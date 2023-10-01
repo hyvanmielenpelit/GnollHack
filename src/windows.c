@@ -1239,34 +1239,34 @@ unsigned long *colormasks UNUSED;
     enum statusfields idx1, idx2, *fieldlist;
     char *nb, *text = (char *) ptr;
 
-    static enum statusfields gsu_fieldorder[][23] = {
+    static enum statusfields gsu_fieldorder[][24] = {
         /* line one */
         { BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD, //BL_ALIGN,
           BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH,
-          BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH },
+          BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH },
         /* line two, default order */
         { BL_MODE, BL_LEVELDESC, // BL_GOLD,
           BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT,
-          BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD,
+          BL_MOVE, BL_UWEP, BL_UWEP2, BL_UQUIVER, BL_XP, BL_EXP, BL_HD,
           BL_TIME, BL_REALTIME,
           BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION,
           BL_FLUSH },
         /* move time to the end */
         { BL_MODE, BL_LEVELDESC, //BL_GOLD,
           BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT,
-          BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD,
+          BL_MOVE, BL_UWEP, BL_UWEP2, BL_UQUIVER, BL_XP, BL_EXP, BL_HD,
           BL_2WEP, BL_SKILL,BL_HUNGER, BL_CAP, BL_CONDITION,
           BL_TIME, BL_REALTIME, BL_FLUSH },
         /* move experience and time to the end */
         { BL_MODE, BL_LEVELDESC, // BL_GOLD,
           BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT,
           BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION,
-          BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_REALTIME, BL_FLUSH },
+          BL_MOVE, BL_UWEP, BL_UWEP2, BL_UQUIVER, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_REALTIME, BL_FLUSH },
         /* move level description plus gold and experience and time to end */
         { BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT,
           BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION,
           BL_MODE, BL_LEVELDESC, //BL_GOLD,
-          BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_REALTIME, BL_FLUSH },
+          BL_MOVE, BL_UWEP, BL_UWEP2, BL_UQUIVER, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_REALTIME, BL_FLUSH },
     };
 
     /* in case interface is using genl_status_update() but has not

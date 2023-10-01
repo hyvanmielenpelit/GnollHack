@@ -58,36 +58,40 @@
 #define F_POWER    12
 #define F_MAXPOWER 13
 #define F_AC       14
-#define F_LEVEL    15
-#define F_EXP      16
-#define F_ALIGN    17
-#define F_TIME     18
-#define F_REALTIME 19
-#define F_SCORE    20
-#define F_MODE     21
+#define F_MOVE     15
+#define F_UWEP     16
+#define F_UWEP2    17
+#define F_UQUIVER  18
+#define F_LEVEL    19
+#define F_EXP      20
+#define F_ALIGN    21
+#define F_TIME     22
+#define F_REALTIME 23
+#define F_SCORE    24
+#define F_MODE     25
 
 /* status conditions grouped by columns; tty orders these differently */
-#define F_STONE    20
-#define F_SLIME    21
-#define F_STRNGL   22
-#define F_FOODPOIS 23
-#define F_TERMILL  24
-#define F_ROT      25
-#define F_LYCANTHROPY 26
+#define F_STONE    26
+#define F_SLIME    27
+#define F_STRNGL   28
+#define F_FOODPOIS 29
+#define F_TERMILL  30
+#define F_ROT      31
+#define F_LYCANTHROPY 32
 
-#define F_HUNGER   27
-#define F_ENCUMBER 28
-#define F_LEV      29
-#define F_FLY      30
-#define F_RIDE     31
+#define F_HUNGER   33
+#define F_ENCUMBER 34
+#define F_LEV      35
+#define F_FLY      36
+#define F_RIDE     37
 
-#define F_BLIND    32
-#define F_DEAF     33
-#define F_STUN     34
-#define F_CONF     35
-#define F_HALLU    36
+#define F_BLIND    38
+#define F_DEAF     39
+#define F_STUN     40
+#define F_CONF     41
+#define F_HALLU    42
 
-#define NUM_STATS 37
+#define NUM_STATS 43
 
 static void FDECL(update_fancy_status, (struct xwindow *));
 static void FDECL(update_fancy_status_field, (int));
@@ -108,14 +112,14 @@ static int X11_status_colors[MAXBLSTATS];
 static int hpbar_percent, hpbar_color;
 
 #define X11_NUM_STATUS_LINES 2
-#define X11_NUM_STATUS_FIELD 19
+#define X11_NUM_STATUS_FIELD 20
 
 static enum statusfields X11_fieldorder[X11_NUM_STATUS_LINES][X11_NUM_STATUS_FIELD] = {
     { BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_ALIGN,
       BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH,
-      BL_FLUSH, BL_FLUSH },
+      BL_FLUSH, BL_FLUSH, BL_FLUSH },
     { BL_MODE, BL_LEVELDESC, BL_GOLD, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX,
-      BL_AC, BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_REALTIME, BL_HUNGER,
+      BL_AC, BL_MOVE, BL_UWEP, BL_UWEP2, BL_UQUIVER, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_REALTIME, BL_HUNGER,
       BL_CAP, BL_CONDITION, BL_FLUSH }
 };
 
@@ -551,6 +555,7 @@ unsigned long *colormasks UNUSED;
         { BL_MOVE, F_MOVE },
         { BL_UWEP, F_UWEP },
         { BL_UWEP2, F_UWEP2 },
+        { BL_UQUIVER, F_UQUIVER },
         /*{ BL_HD, F_ },*/
         { BL_TIME, F_TIME },
         { BL_REALTIME, F_REALTIME },

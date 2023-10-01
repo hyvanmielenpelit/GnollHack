@@ -456,6 +456,7 @@ boolean border;
             case BL_MOVE:
             case BL_UWEP:
             case BL_UWEP2:
+            case BL_UQUIVER:
             case BL_TIME:
             case BL_REALTIME:
                 spacing[fld] = 0; // status_activefields[fld] ? 1 : 0;
@@ -948,7 +949,7 @@ boolean border;
         BL_LEVELDESC,
 		BL_GOLD,
 		//BL_ALIGN,
-        BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD,
+        BL_MOVE, BL_UWEP, BL_UWEP2, BL_UQUIVER, BL_XP, BL_EXP, BL_HD,
         /* 2:blank (but only if time or score or both enabled) */
         BL_TIME,
         BL_REALTIME,

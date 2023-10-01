@@ -911,17 +911,17 @@ void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt, BOOLE
 
     if (!enable)
     {
-        if (fieldidx == BL_UWEP || fieldidx == BL_UWEP2)
+        if (fieldidx == BL_UWEP || fieldidx == BL_UWEP2 || fieldidx == BL_UQUIVER)
         {
             unsigned long owepflags = 0UL;
             if (fieldidx == BL_UWEP)
                 owepflags |= OBJDATA_FLAGS_UWEP;
             else if (fieldidx == BL_UWEP2)
                 owepflags |= OBJDATA_FLAGS_UWEP2;
+            else if (fieldidx == BL_UQUIVER)
+                owepflags |= OBJDATA_FLAGS_UQUIVER;
 
             lib_callbacks.callback_send_object_data(0, 0, 0, 1, 0, 0, owepflags);
-            if(fieldidx == BL_UWEP)
-                lib_callbacks.callback_send_object_data(0, 0, 0, 1, 0, 0, OBJDATA_FLAGS_UQUIVER);
         }
     }
 }
@@ -965,16 +965,16 @@ void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int colo
 
     lib_callbacks.callback_status_update(idx, txt ? utf8buf : 0, condbits, chg, percent, color, !colormasks ? NULL : condcolors);
 
-    if (idx == BL_UWEP || idx == BL_UWEP2)
+    if (idx == BL_UWEP || idx == BL_UWEP2 || idx == BL_UQUIVER)
     {
-        struct obj* wep = idx == BL_UWEP ? (uwep ? uwep : uarmg) : (uwep2 ? uwep2 : uarmg);
+        struct obj* wep = idx == BL_UQUIVER ? uquiver : idx == BL_UWEP ? (uwep ? uwep : uarmg) : (uwep2 ? uwep2 : uarmg);
         unsigned long oflags = 0UL;
         if (Hallucination)
             oflags |= OBJDATA_FLAGS_HALLUCINATION;
 
         unsigned long owepflags = 0UL;
-        boolean islauncher = wep && is_launcher(wep);
-        struct obj* ammo = idx == BL_UWEP ? uquiver : uquiver;
+        boolean islauncher = wep && wep != uquiver && is_launcher(wep);
+        struct obj* ammo = idx == BL_UQUIVER ? (struct obj*)0 : idx == BL_UWEP ? uquiver : uquiver;
 
         if (idx == BL_UWEP)
             owepflags |= OBJDATA_FLAGS_UWEP;
@@ -986,7 +986,16 @@ void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int colo
             if (wep && !is_weapon(wep) && u.twoweap)
                 owepflags |= OBJDATA_FLAGS_NOT_WEAPON2;
         }
+        else if (idx == BL_UQUIVER)
+        {
+            islauncher = FALSE;
+            owepflags |= OBJDATA_FLAGS_UQUIVER;
+            if (wep && is_ammo(wep))
+                owepflags |= OBJDATA_FLAGS_IS_AMMO;
+            if (wep && throwing_weapon(wep))
+                owepflags |= OBJDATA_FLAGS_THROWING_WEAPON;
 
+        }
         if (islauncher)
         {
             if (!ammo)
@@ -1000,23 +1009,6 @@ void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int colo
 
         struct objclassdata ocdata = get_objclassdata(wep);
         lib_callbacks.callback_send_object_data(0, 0, wep, wep ? 2 : 1, wep ? wep->where : 0, &ocdata, oflags | owepflags);
-
-        if (idx == BL_UWEP)
-        {
-            unsigned long oammoflags = OBJDATA_FLAGS_UQUIVER;
-            struct obj* ammo = uquiver;
-
-            if (ammo)
-            {
-                set_obj_glyph(ammo);
-                if (is_ammo(ammo))
-                    oammoflags |= OBJDATA_FLAGS_IS_AMMO;
-                if (throwing_weapon(ammo))
-                    oammoflags |= OBJDATA_FLAGS_THROWING_WEAPON;
-            }
-            ocdata = get_objclassdata(ammo);
-            lib_callbacks.callback_send_object_data(0, 0, ammo, ammo ? 2 : 1, ammo ? ammo->where : 0, &ocdata, oflags | oammoflags);
-        }
     }
 }
 

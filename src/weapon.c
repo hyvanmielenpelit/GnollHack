@@ -4421,6 +4421,37 @@ boolean is_left_arm;
     }
 }
 
+void
+print_quivered_weapon_style_string(buf)
+char* buf;
+{
+    if (uquiver)
+    {
+        if (throwing_weapon(uquiver) && !is_ammo(uquiver))
+            Strcpy(buf, "t");
+        else if (is_ammo(uquiver))
+        {
+            if (uwep)
+            {
+                if (is_launcher(uwep))
+                {
+                    if(ammo_and_launcher(uquiver, uwep))
+                        Strcpy(buf, "A");
+                    else
+                        Strcpy(buf, "e");
+                }
+                else
+                    Strcpy(buf, "a");
+            }
+            else
+                Strcpy(buf, "a");
+        }
+        else
+            Strcpy(buf, "?");
+    }
+    else
+        Strcpy(buf, "-");
+}
 
 int
 exceptionality_digging_speed_bonus(obj)

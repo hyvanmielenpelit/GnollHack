@@ -7142,8 +7142,10 @@ namespace GnollHackX.Pages.Game
 
                             valtext = "";
                             valtext2 = "";
+                            string valtext3 = "";
                             bool isenabled1 = false;
                             bool isenabled2 = false;
+                            bool isenabled3 = false;
                             lock (StatusFieldLock)
                             {
                                 if (StatusFields[(int)statusfields.BL_UWEP] != null && StatusFields[(int)statusfields.BL_UWEP].IsEnabled && StatusFields[(int)statusfields.BL_UWEP].Text != null)
@@ -7156,8 +7158,13 @@ namespace GnollHackX.Pages.Game
                                     valtext2 = StatusFields[(int)statusfields.BL_UWEP2].Text;
                                     isenabled2 = StatusFields[(int)statusfields.BL_UWEP2].IsEnabled;
                                 }
+                                if (StatusFields[(int)statusfields.BL_UQUIVER] != null && StatusFields[(int)statusfields.BL_UQUIVER].IsEnabled && StatusFields[(int)statusfields.BL_UQUIVER].Text != null)
+                                {
+                                    valtext3 = StatusFields[(int)statusfields.BL_UQUIVER].Text;
+                                    isenabled3 = StatusFields[(int)statusfields.BL_UQUIVER].IsEnabled;
+                                }
                             }
-                            if (valtext != "" || valtext2 != "")
+                            if (valtext != "" || valtext2 != "" || valtext3 != "")
                             {
                                 target_width = target_scale * GHApp._statusWeaponStyleBitmap.Width;
                                 target_height = target_scale * GHApp._statusWeaponStyleBitmap.Height;
@@ -7459,7 +7466,7 @@ namespace GnollHackX.Pages.Game
                                             }
                                         }
 
-                                        if (isenabled1 || isenabled2)
+                                        if (isenabled3 && valtext3 != "")
                                         {
                                             /* Throwing weapons in quiver (which are not ammo by definition) */
                                             if (_weaponStyleObjDataItem[2] != null && _weaponStyleObjDataItem[2].IsThrowingWeapon && !_weaponStyleObjDataItem[2].IsAmmo)
@@ -7489,7 +7496,6 @@ namespace GnollHackX.Pages.Game
                                                 }
                                             }
                                         }
-
                                     }
                                     textPaint.TextSize = savedfontsize;
                                     textPaint.Typeface = savedtypeface;
@@ -7520,7 +7526,10 @@ namespace GnollHackX.Pages.Game
                             }
 
                             /* Right aligned */
-                            float turnsleft = canvaswidth - hmargin;
+                            bool turnsprinted = false;
+                            float finalleftcurx = curx;
+                            curx = canvaswidth - hmargin;
+                            float turnsleft = curx;
 
                             /* Turns */
                             valtext = "";
@@ -7536,26 +7545,31 @@ namespace GnollHackX.Pages.Game
                                 target_width = target_scale * GHApp._statusTurnsBitmap.Width;
                                 target_height = target_scale * GHApp._statusTurnsBitmap.Height;
                                 float print_width = textPaint.MeasureText(valtext);
-                                curx = canvaswidth - hmargin - print_width - innerspacing - target_width;
-                                turnsleft = curx;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                float newcurx = canvaswidth - hmargin - print_width - innerspacing - target_width;
+                                if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
+                                {
+                                    turnsprinted = true;
+                                    curx = newcurx;
+                                    turnsleft = curx;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
 #if GNH_MAP_PROFILING && DEBUG
                                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                canvas.DrawBitmap(GHApp._statusTurnsBitmap, statusDest, textPaint);
+                                    canvas.DrawBitmap(GHApp._statusTurnsBitmap, statusDest, textPaint);
 #if GNH_MAP_PROFILING && DEBUG
                                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                curx += target_width;
-                                curx += innerspacing;
+                                    curx += target_width;
+                                    curx += innerspacing;
 #if GNH_MAP_PROFILING && DEBUG
                                 StartProfiling(GHProfilingStyle.Text);
 #endif
-                                canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                    canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
 #if GNH_MAP_PROFILING && DEBUG
                                 StopProfiling(GHProfilingStyle.Text);
 #endif
-                                curx += print_width;
+                                    curx += print_width;
+                                }
                             }
 
                             /* Gold */
@@ -7578,25 +7592,29 @@ namespace GnollHackX.Pages.Game
                                 target_width = target_scale * GHApp._statusGoldBitmap.Width;
                                 target_height = target_scale * GHApp._statusGoldBitmap.Height;
                                 float print_width = textPaint.MeasureText(printtext);
-                                curx = turnsleft - stdspacing - print_width - innerspacing - target_width;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                float newcurx = turnsleft - (turnsprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
+                                if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
+                                {
+                                    curx = newcurx;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
 #if GNH_MAP_PROFILING && DEBUG
                                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                canvas.DrawBitmap(GHApp._statusGoldBitmap, statusDest, textPaint);
+                                    canvas.DrawBitmap(GHApp._statusGoldBitmap, statusDest, textPaint);
 #if GNH_MAP_PROFILING && DEBUG
                                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                curx += target_width;
-                                curx += innerspacing;
+                                    curx += target_width;
+                                    curx += innerspacing;
 #if GNH_MAP_PROFILING && DEBUG
                                 StartProfiling(GHProfilingStyle.Text);
 #endif
-                                canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                    canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
 #if GNH_MAP_PROFILING && DEBUG
                                 StopProfiling(GHProfilingStyle.Text);
 #endif
-                                curx += print_width;
+                                    curx += print_width;
+                                }
                             }
 
 
@@ -8708,6 +8726,7 @@ namespace GnollHackX.Pages.Game
 
                         valtext = "";
                         valtext2 = "";
+                        string valtext3 = "";
                         lock (StatusFieldLock)
                         {
                             if (StatusFields[(int)statusfields.BL_UWEP] != null && StatusFields[(int)statusfields.BL_UWEP].IsEnabled && StatusFields[(int)statusfields.BL_UWEP].Text != null)
@@ -8718,15 +8737,23 @@ namespace GnollHackX.Pages.Game
                             {
                                 valtext2 = StatusFields[(int)statusfields.BL_UWEP2].Text;
                             }
+                            if (StatusFields[(int)statusfields.BL_UQUIVER] != null && StatusFields[(int)statusfields.BL_UQUIVER].IsEnabled && StatusFields[(int)statusfields.BL_UQUIVER].Text != null)
+                            {
+                                valtext3 = StatusFields[(int)statusfields.BL_UQUIVER].Text;
+                            }
                         }
-                        if (valtext != "")
+                        if (valtext != "" || valtext2 != "" || valtext3 != "")
                         {
                             lock (_mapOffsetLock)
                             {
                                 _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
                             canvas.DrawText("Weapon style:", tx, ty, textPaint);
-                            string printtext = valtext2 != "" ? valtext + "/" + valtext2 : valtext;
+                            string printtext = valtext;
+                            if(valtext2 != "")
+                                printtext += "/" + valtext2;
+                            if (valtext3 != "")
+                                printtext += "/" + valtext3;
                             canvas.DrawText(printtext, tx + indentation, ty, textPaint);
                             icon_width = icon_height * (float)GHApp._statusWeaponStyleBitmap.Width / (float)GHApp._statusWeaponStyleBitmap.Height;
                             icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;

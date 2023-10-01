@@ -325,6 +325,8 @@ register struct obj *obj;
 {
     Sprintf(debug_buf_3, "setuqwep, hasobj=%d", obj != 0);
     setworncore(obj, W_QUIVER, TRUE);
+    context.botl = context.botlx = TRUE;
+    status_reassess();
     /* no extra handling needed; this used to include a call to
        update_inventory() but that's already performed by setworn() */
     return;

@@ -4101,6 +4101,7 @@ E int FDECL(get_skill_critical_strike_chance, (enum p_skills, BOOLEAN_P, BOOLEAN
 E double FDECL(get_wand_damage_multiplier, (int));
 E int FDECL(get_exceptionality_multiplier, (UCHAR_P));
 E void FDECL(print_weapon_style_string, (char*, BOOLEAN_P));
+E void FDECL(print_quivered_weapon_style_string, (char*));
 E int FDECL(limited_skill_level, (enum p_skills, BOOLEAN_P, BOOLEAN_P));
 E int FDECL(adjusted_limited_skill_level, (enum p_skills, BOOLEAN_P, BOOLEAN_P));
 E int FDECL(adjusted_skill_level, (enum p_skills));

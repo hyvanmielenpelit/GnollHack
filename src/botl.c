@@ -17,12 +17,12 @@ const char *const enc_stat[] = { "",         "Burdened",  "Stressed",
                                  "Strained", "Overtaxed", "Overloaded" };
 
 const enum statusfields fieldorder1[MAX_STATUS_LINE_ITEMS] = { BL_TITLE, BL_STR, BL_DX,    BL_CO,    BL_IN,   BL_WI,    BL_CH, BL_GOLD,  /*BL_ALIGN,*/ BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH };
-const enum statusfields fieldorder2[MAX_STATUS_LINE_ITEMS] = { BL_MODE, BL_LEVELDESC, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT, BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_REALTIME, BL_SCORE, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH };
-const enum statusfields fieldorder2_2statuslines[MAX_STATUS_LINE_ITEMS] = { BL_MODE, BL_LEVELDESC, BL_HP, BL_HPMAX,  BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT, BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_REALTIME, BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION, BL_FLUSH, BL_FLUSH };
+const enum statusfields fieldorder2[MAX_STATUS_LINE_ITEMS] = { BL_MODE, BL_LEVELDESC, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT, BL_MOVE, BL_UWEP, BL_UWEP2, BL_UQUIVER, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_REALTIME, BL_SCORE, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH };
+const enum statusfields fieldorder2_2statuslines[MAX_STATUS_LINE_ITEMS] = { BL_MODE, BL_LEVELDESC, BL_HP, BL_HPMAX,  BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT, BL_MOVE, BL_UWEP, BL_UWEP2, BL_UQUIVER, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_REALTIME, BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION, BL_FLUSH };
 const enum statusfields fieldorder3[MAX_STATUS_LINE_ITEMS] = { BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH };
 
 const enum statusfields fieldorder1_alt[MAX_STATUS_LINE_ITEMS] = { BL_TITLE, BL_STR, BL_DX,    BL_CO,    BL_IN,  BL_WI,    BL_CH, BL_ALIGN, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH };
-const enum statusfields fieldorder2_alt[MAX_STATUS_LINE_ITEMS] = { BL_LEVELDESC, BL_HP,   BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT, BL_MOVE, BL_UWEP, BL_UWEP2, BL_XP, BL_EXP, BL_HD, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH };
+const enum statusfields fieldorder2_alt[MAX_STATUS_LINE_ITEMS] = { BL_LEVELDESC, BL_HP,   BL_HPMAX, BL_ENE, BL_ENEMAX, BL_AC, BL_MC_LVL, BL_MC_PCT, BL_MOVE, BL_UWEP, BL_UWEP2, BL_UQUIVER, BL_XP, BL_EXP, BL_HD, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH };
 const enum statusfields fieldorder3_alt[MAX_STATUS_LINE_ITEMS] = { BL_MODE, BL_GOLD, BL_TIME, BL_REALTIME, BL_SCORE, BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH };
 
 const enum statusfields fieldorder4[MAX_STATUS_LINE_ITEMS] = { BL_PARTYSTATS, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH };
@@ -970,6 +970,7 @@ STATIC_VAR const struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTAT("move", " MS:%s", ANY_LONG, 10, BL_MOVE),
     INIT_BLSTAT("primary-weapon", " W:%s", ANY_STR, 20, BL_UWEP),
     INIT_BLSTAT("secondary-weapon", "/%s", ANY_STR, 20, BL_UWEP2),
+    INIT_BLSTAT("quivered-weapon", "|%s", ANY_STR, 20, BL_UQUIVER),
     INIT_BLSTAT("HD", " HD:%s", ANY_INT, 10, BL_HD),
     INIT_BLSTAT("time", " T:%s", ANY_LONG, 20, BL_TIME),
     INIT_BLSTAT("realtime", " %s", ANY_STR, MAXVALWIDTH, BL_REALTIME),
@@ -1166,6 +1167,10 @@ bot_via_windowport()
     /* Secondary weapon style */
     print_weapon_style_string(blstats[idx][BL_UWEP2].val, TRUE);
     valset[BL_UWEP2] = TRUE;
+
+    /* Quivered weapon style */
+    print_quivered_weapon_style_string(blstats[idx][BL_UQUIVER].val);
+    valset[BL_UQUIVER] = TRUE;
 
     /* Time (moves) */
     blstats[idx][BL_TIME].a.a_long = moves;
@@ -1839,8 +1844,10 @@ boolean *valsetlist;
             || ((i == BL_MOVE) && !flags.showmove)
             || ((i == BL_UWEP) && !flags.show_weapon_style)
             || ((i == BL_UWEP2) && (!flags.show_weapon_style || (uwep && is_wieldable_weapon(uwep) && objects[uwep->otyp].oc_bimanual) || (!u.twoweap && !uarms)))
+            || ((i == BL_UQUIVER) && (!uquiver || !throwing_weapon(uquiver) || is_ammo(uquiver)))
             || ((i == BL_HD) && !Upolyd)
-            || ((i == BL_XP || i == BL_EXP) && Upolyd)) {
+            || ((i == BL_XP || i == BL_EXP) && Upolyd)) 
+        {
             //notpresent++;
             continue;
         }
@@ -1913,6 +1920,7 @@ boolean reassessment; /* TRUE: just recheck fields w/o other initialization */
                        : (fld == BL_MOVE) ? flags.showmove
                         : (fld == BL_UWEP) ? flags.show_weapon_style
                         : (fld == BL_UWEP2) ? flags.show_weapon_style && !(uwep && is_wieldable_weapon(uwep) && objects[uwep->otyp].oc_bimanual) && (u.twoweap || uarms)
+                        : (fld == BL_UQUIVER) ? uquiver && throwing_weapon(uquiver) && !is_ammo(uquiver)
                         : (fld == BL_XP) ? (boolean) !Upolyd
                          : (fld == BL_HD) ? (boolean) Upolyd
                            : TRUE;
