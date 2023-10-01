@@ -196,6 +196,7 @@
     <None Remove="Assets\UI\status-mc.png" />
     <None Remove="Assets\UI\status-modern-mode.png" />
     <None Remove="Assets\UI\status-move.png" />
+    <None Remove="Assets\UI\status-quivered-weapon-style.png" />
     <None Remove="Assets\UI\status-turns.png" />
     <None Remove="Assets\UI\status-weapon-style.png" />
     <None Remove="Assets\UI\status-wizard-mode.png" />
@@ -295,6 +296,7 @@
     <EmbeddedResource Include="Assets\UI\rest.png" />
     <EmbeddedResource Include="Assets\UI\save.png" />
     <EmbeddedResource Include="Assets\UI\status-empty-handed.png" />
+    <EmbeddedResource Include="Assets\UI\status-quivered-weapon-style.png" />
     <EmbeddedResource Include="Assets\UI\unwield.png" />
     <EmbeddedResource Include="Assets\Lato-Bold.ttf" />
     <EmbeddedResource Include="Assets\Lato-Regular.ttf" />

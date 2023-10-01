@@ -1693,6 +1693,7 @@ uqwepgone()
     if (uquiver) {
         setworn((struct obj *) 0, W_QUIVER);
         update_inventory();
+        status_reassess();
     }
 }
 

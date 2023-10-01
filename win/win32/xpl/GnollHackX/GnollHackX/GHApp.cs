@@ -967,6 +967,7 @@ namespace GnollHackX
         public static SKBitmap _statusMCBitmap;
         public static SKBitmap _statusMoveBitmap;
         public static SKBitmap _statusWeaponStyleBitmap;
+        public static SKBitmap _statusQuiveredWeaponStyleBitmap;
         public static SKBitmap _statusEmptyHandedBitmap;
 
         public static SKBitmap _statusGoldBitmap;
@@ -1510,6 +1511,11 @@ namespace GnollHackX
             {
                 _statusWeaponStyleBitmap = SKBitmap.Decode(stream);
                 _statusWeaponStyleBitmap.SetImmutable();
+            }
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-quivered-weapon-style.png"))
+            {
+                _statusQuiveredWeaponStyleBitmap = SKBitmap.Decode(stream);
+                _statusQuiveredWeaponStyleBitmap.SetImmutable();
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-empty-handed.png"))
             {

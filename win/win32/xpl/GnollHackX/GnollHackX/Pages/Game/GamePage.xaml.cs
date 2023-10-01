@@ -7471,11 +7471,28 @@ namespace GnollHackX.Pages.Game
                                             /* Throwing weapons in quiver (which are not ammo by definition) */
                                             if (_weaponStyleObjDataItem[2] != null && _weaponStyleObjDataItem[2].IsThrowingWeapon && !_weaponStyleObjDataItem[2].IsAmmo)
                                             {
-                                                textPaint.TextSize = basefontsize;
-                                                string printtext = "/";
-                                                print_width = textPaint.MeasureText(printtext);
-                                                canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                                curx += print_width;
+                                                curx += innerspacing; /* More space to other weapon styles */
+                                                target_width = target_scale * GHApp._statusQuiveredWeaponStyleBitmap.Width;
+                                                target_height = target_scale * GHApp._statusQuiveredWeaponStyleBitmap.Height;
+                                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+#if GNH_MAP_PROFILING && DEBUG
+                                                StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                                canvas.DrawBitmap(GHApp._statusQuiveredWeaponStyleBitmap, statusDest, textPaint);
+#if GNH_MAP_PROFILING && DEBUG
+                                                StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                                curx += target_width;
+                                                curx += innerspacing;
+
+                                                //SKColor oldcolor = textPaint.Color;
+                                                //textPaint.Color = SKColors.Cyan;
+                                                //textPaint.TextSize = shieldfontsize;
+                                                //string printtext = "+";
+                                                //print_width = textPaint.MeasureText(printtext);
+                                                //canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                //textPaint.Color = oldcolor;
+                                                //curx += print_width;
                                                 using (new SKAutoCanvasRestore(canvas, true))
                                                 {
                                                     GlyphImageSource gis = _paintGlyphImageSource;

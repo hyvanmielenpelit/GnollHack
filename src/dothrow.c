@@ -108,6 +108,7 @@ boolean firing;
         weldmsg(obj);
         return 1;
     }
+
     if (is_wet_towel(obj))
         dry_a_towel(obj, -1, FALSE);
 
@@ -146,8 +147,8 @@ boolean firing;
     m_shot.n = multishot;
     for (m_shot.i = 1; m_shot.i <= m_shot.n; m_shot.i++) 
     {
-        update_u_action(obj && uwep && ammo_and_launcher(obj, uwep) ? ACTION_TILE_FIRE : ACTION_TILE_THROW);
-        if (firing && uwep && obj && ammo_and_launcher(obj, uwep))
+        update_u_action(ammo_and_launcher(obj, uwep) ? ACTION_TILE_FIRE : ACTION_TILE_THROW);
+        if (firing && ammo_and_launcher(obj, uwep))
             play_monster_simple_weapon_sound(&youmonst, 0, uwep, OBJECT_SOUND_TYPE_FIRE);
         else
             play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_THROW);
@@ -175,7 +176,6 @@ boolean firing;
     m_shot.n = m_shot.i = 0;
     m_shot.o = STRANGE_OBJECT;
     m_shot.s = FALSE;
-
     return 1;
 }
 
