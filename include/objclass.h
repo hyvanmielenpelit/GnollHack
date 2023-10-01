@@ -377,7 +377,8 @@ struct material_definition {
     uchar color;
     schar acbonus_armor[MAX_ARMOR_TYPES];
     schar mcbonus_armor[MAX_ARMOR_TYPES];
-    schar spell_casting_penalty_armor[MAX_ARMOR_TYPES];
+    double spell_casting_penalty_armor[MAX_ARMOR_TYPES];
+    double spell_casting_penalty_multiplier;
     double weight_multiplier;
     double cost_multiplier;
     double cost_addition;
@@ -401,14 +402,14 @@ struct material_definition {
     unsigned long extra_oflags5;
     unsigned long extra_oflags6;
 };
-extern struct material_definition material_definitions[MAX_MATERIAL_TYPES]; /* in o_init.c */
+extern const struct material_definition material_definitions[MAX_MATERIAL_TYPES]; /* in o_init.c */
 
 #define MAX_WISHING_MATERIALS 10
 struct material_wishing_definition {
     uchar material[MAX_WISHING_MATERIALS];
     schar probability[MAX_WISHING_MATERIALS];
 };
-extern struct material_wishing_definition material_wishing_definitions[MAX_MATINIT_TYPES]; /* in o_init.c */
+extern const struct material_wishing_definition material_wishing_definitions[MAX_MATINIT_TYPES]; /* in o_init.c */
 
 struct objclass {
     short oc_name_idx;              /* index of actual name */

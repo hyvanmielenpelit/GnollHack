@@ -2262,11 +2262,11 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             }
         }
 
-        long splpenalty = obj ? get_object_spell_casting_penalty(obj) : objects[otyp].oc_spell_casting_penalty;
+        long splpenalty = obj ? get_object_spell_casting_penalty(obj) : objects[otyp].oc_spell_casting_penalty * ARMOR_SPELL_CASTING_PENALTY_MULTIPLIER;
         if (objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_class != WAND_CLASS &&
             (objects[otyp].oc_class == ARMOR_CLASS || (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || splpenalty != 0))
         {
-            Sprintf(buf2, "%s%ld%%", splpenalty <= 0 ? "+" : "", -splpenalty * ARMOR_SPELL_CASTING_PENALTY_MULTIPLIER);
+            Sprintf(buf2, "%s%ld%%", splpenalty <= 0 ? "+" : "", -splpenalty);
             if (splpenalty < 0)
                 Sprintf(buf, "Spell casting bonus:    %s (somatic spells only)", buf2);
             else

@@ -4748,24 +4748,28 @@ int spell;
     return 0;
 }
 
+/* Now a percentage */
 long
 get_object_spell_casting_penalty(obj)
 struct obj* obj;
 {
     if (!obj)
-        return 0;
+        return 0L;
 
-    long res = objects[obj->otyp].oc_spell_casting_penalty;
-
+    double res = (double)objects[obj->otyp].oc_spell_casting_penalty;
     if (obj->material != objects[obj->otyp].oc_material && is_armor(obj))
     {
+        res = res * material_definitions[obj->material].spell_casting_penalty_multiplier;
         res += material_definitions[obj->material].spell_casting_penalty_armor[objects[obj->otyp].oc_armor_category];
     }
 
     if (res > 0 && has_obj_mythic_spellcasting(obj))
         return 0;
 
-    return res;
+    if (res < 0)
+        res = 0;
+
+    return (long)(res * (double)ARMOR_SPELL_CASTING_PENALTY_MULTIPLIER);
 }
 
 STATIC_OVL int
@@ -4777,51 +4781,51 @@ boolean limited;
      * the probability of player's success at cast a given spell.
      */
     int chance, statused = A_INT;
-    long armor_penalty;
+    long armor_penalty_percentage;
     int skill;
 
-    /* Calculate intrinsic ability (armor_penalty) */
-    armor_penalty = 0L; // urole.spelbase;
     statused = attribute_value_for_spellbook(spellid(spell));
 
+    /* Calculate intrinsic ability (armor_penalty) */
+    armor_penalty_percentage = 0L; // urole.spelbase;
     if (!(objects[spellid(spell)].oc_spell_flags & S1_NO_SOMATIC_COMPONENT))
     {
         if (uarm)
-            armor_penalty += get_object_spell_casting_penalty(uarm);
+            armor_penalty_percentage += get_object_spell_casting_penalty(uarm);
         if (uarms)
-            armor_penalty += get_object_spell_casting_penalty(uarms);
+            armor_penalty_percentage += get_object_spell_casting_penalty(uarms);
         if (uarmh)
-            armor_penalty += get_object_spell_casting_penalty(uarmh);
+            armor_penalty_percentage += get_object_spell_casting_penalty(uarmh);
         if (uarmg)
-            armor_penalty += get_object_spell_casting_penalty(uarmg);
+            armor_penalty_percentage += get_object_spell_casting_penalty(uarmg);
         if (uarmf)
-            armor_penalty += get_object_spell_casting_penalty(uarmf);
+            armor_penalty_percentage += get_object_spell_casting_penalty(uarmf);
         if (uarmu)
-            armor_penalty += get_object_spell_casting_penalty(uarmu);
+            armor_penalty_percentage += get_object_spell_casting_penalty(uarmu);
         if (uarmo)
-            armor_penalty += get_object_spell_casting_penalty(uarmo);
+            armor_penalty_percentage += get_object_spell_casting_penalty(uarmo);
         if (uarmb)
-            armor_penalty += get_object_spell_casting_penalty(uarmb);
+            armor_penalty_percentage += get_object_spell_casting_penalty(uarmb);
         if (umisc)
-            armor_penalty += get_object_spell_casting_penalty(umisc);
+            armor_penalty_percentage += get_object_spell_casting_penalty(umisc);
         if (umisc2)
-            armor_penalty += get_object_spell_casting_penalty(umisc2);
+            armor_penalty_percentage += get_object_spell_casting_penalty(umisc2);
         if (umisc3)
-            armor_penalty += get_object_spell_casting_penalty(umisc3);
+            armor_penalty_percentage += get_object_spell_casting_penalty(umisc3);
         if (umisc4)
-            armor_penalty += get_object_spell_casting_penalty(umisc4);
+            armor_penalty_percentage += get_object_spell_casting_penalty(umisc4);
         if (umisc5)
-            armor_penalty += get_object_spell_casting_penalty(umisc5);
+            armor_penalty_percentage += get_object_spell_casting_penalty(umisc5);
         if (uamul)
-            armor_penalty += get_object_spell_casting_penalty(uamul);
+            armor_penalty_percentage += get_object_spell_casting_penalty(uamul);
         if (uleft)
-            armor_penalty += get_object_spell_casting_penalty(uleft);
+            armor_penalty_percentage += get_object_spell_casting_penalty(uleft);
         if (uright)
-            armor_penalty += get_object_spell_casting_penalty(uright);
+            armor_penalty_percentage += get_object_spell_casting_penalty(uright);
         if (ublindf)
-            armor_penalty += get_object_spell_casting_penalty(ublindf);
+            armor_penalty_percentage += get_object_spell_casting_penalty(ublindf);
         if (uwep)
-            armor_penalty += get_object_spell_casting_penalty(uwep);
+            armor_penalty_percentage += get_object_spell_casting_penalty(uwep);
     }
 
     /* Calculate success chance */
@@ -4838,7 +4842,7 @@ boolean limited;
     bonus += 5L * (long)u.uspellcastingbonus_all; /* items */
 
     chance += (int)bonus;
-    chance -= (int)(ARMOR_SPELL_CASTING_PENALTY_MULTIPLIER * armor_penalty);
+    chance -= (int)armor_penalty_percentage;
 
     if (limited)
     {

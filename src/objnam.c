@@ -5521,7 +5521,7 @@ retry:
         uchar affix_idx;
         for (affix_idx = 0; affix_idx <= 1; affix_idx++)
         {
-            struct mythic_definition* mythic_definitions = (affix_idx == 0 ? mythic_prefix_qualities : mythic_suffix_qualities);
+            const struct mythic_definition* mythic_definitions = (affix_idx == 0 ? mythic_prefix_qualities : mythic_suffix_qualities);
             int mythic_quality = (affix_idx == 0 ? mythic_prefix : mythic_suffix);
             uchar* otmp_mythic_quality_ptr = (affix_idx == 0 ? &otmp->mythic_prefix : &otmp->mythic_suffix);
 
