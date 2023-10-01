@@ -1351,8 +1351,7 @@ unsigned doname_flags;
 
     /* "empty" goes at the beginning, but item count goes at the end */
     if ((obj->oclass == TOOL_CLASS && (objects[obj->otyp].oc_subtyp == TOOLTYPE_JAR || objects[obj->otyp].oc_subtyp == TOOLTYPE_CAN || objects[obj->otyp].oc_subtyp == TOOLTYPE_GRAIL) && obj->charges == 0 && !known)
-        || (obj->oclass == TOOL_CLASS && (objects[obj->otyp].oc_subtyp == TOOLTYPE_LANTERN || objects[obj->otyp].oc_subtyp == TOOLTYPE_LAMP) && obj->otyp != MAGIC_LAMP && obj->age == 0L && !obj->lamplit && (obj->speflags & SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO) != 0)
-        || (obj->otyp == MAGIC_LAMP && obj->special_quality == 0 && (obj->speflags & SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO) != 0)
+        || is_light_source_empty(obj)
         || (cknown
         /* bag of tricks: include "empty" prefix if it's known to
            be empty but its precise number of charges isn't known

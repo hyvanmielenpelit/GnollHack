@@ -817,6 +817,7 @@ namespace GnollHackX
                 case BorderStyles.None:
                     break;
                 case BorderStyles.Simple:
+                case BorderStyles.SimpleAlternative:
                     {
                         double bordermarginsmall = GetSmallBorderMargin(width, height);
                         double bordermarginx = bordermarginsmall + (width / GHConstants.BackgroundBorderDivisor - bordermarginsmall) / 2;
@@ -825,6 +826,7 @@ namespace GnollHackX
                         return new Thickness(bordermargin, 0, bordermargin, 0);
                     }
                 case BorderStyles.Small:
+                case BorderStyles.SmallAlternative:
                     {
                         double bordermargin = GetSmallBorderMargin(width, height);
                         return new Thickness(bordermargin, 0, bordermargin, 0);
@@ -842,6 +844,7 @@ namespace GnollHackX
                 case BorderStyles.None:
                     break;
                 case BorderStyles.Simple:
+                case BorderStyles.SimpleAlternative:
                     {
                         double bordermarginx = (width / GHConstants.BackgroundBorderDivisor);
                         double bordermarginy = (height / GHConstants.BackgroundBorderDivisor);
@@ -849,6 +852,7 @@ namespace GnollHackX
                         return new Thickness(bordermargin, Math.Min((double)GHApp.SimpleFrameTopHorizontalBitmap.Height, bordermargin / GHConstants.BackgroundTopBorderExtraDivisor), bordermargin, bottom);
                     }
                 case BorderStyles.Small:
+                case BorderStyles.SmallAlternative:
                     {
                         double bordermargin = GetSmallBorderMargin(width, height);
                         return new Thickness(bordermargin, bordermargin, bordermargin, bottom);
@@ -871,6 +875,7 @@ namespace GnollHackX
                 case BorderStyles.None:
                     break;
                 case BorderStyles.Simple:
+                case BorderStyles.SimpleAlternative:
                     {
                         double bordermarginx = (width / GHConstants.BackgroundBorderDivisor);
                         double bordermarginy = (height / GHConstants.BackgroundBorderDivisor);
@@ -878,6 +883,7 @@ namespace GnollHackX
                         return new Thickness(bordermargin, top, bordermargin, Math.Min((double)GHApp.SimpleFrameTopHorizontalBitmap.Height, bordermargin / GHConstants.BackgroundTopBorderExtraDivisor));
                     }
                 case BorderStyles.Small:
+                case BorderStyles.SmallAlternative:
                     {
                         double bordermargin = GetSmallBorderMargin(width, height);
                         return new Thickness(bordermargin, top, bordermargin, bordermargin);
@@ -906,7 +912,25 @@ namespace GnollHackX
             double bordermarginx = (width / GHConstants.BackgroundBorderDivisor);
             double bordermarginy = (height / GHConstants.BackgroundBorderDivisor);
             double bordermargin = Math.Min(bordermarginx, bordermarginy);
-            SKBitmap cornerbitmap = borderstyle == BorderStyles.Simple ? GHApp.SimpleFrameTopLeftCornerBitmap : borderstyle == BorderStyles.Small ? GHApp.SimpleFrameSmallTopLeftCornerBitmap : GHApp.SimpleFrameTopLeftCornerBitmap;
+            SKBitmap cornerbitmap;
+            switch(borderstyle)
+            {
+                case BorderStyles.Simple:
+                    cornerbitmap = GHApp.SimpleFrameTopLeftCornerBitmap;
+                    break;
+                case BorderStyles.Small:
+                    cornerbitmap = GHApp.SimpleFrameSmallTopLeftCornerBitmap;
+                    break;
+                case BorderStyles.SimpleAlternative:
+                    cornerbitmap = GHApp.SimpleFrame2TopLeftCornerBitmap;
+                    break;
+                case BorderStyles.SmallAlternative:
+                    cornerbitmap = GHApp.SimpleFrame2SmallTopLeftCornerBitmap;
+                    break;
+                default:
+                    cornerbitmap = GHApp.SimpleFrameTopLeftCornerBitmap;
+                    break;
+            }
             double scale = Math.Max(0.1, Math.Min(1.0, bordermargin / (double)cornerbitmap.Height));
             return scale;
         }

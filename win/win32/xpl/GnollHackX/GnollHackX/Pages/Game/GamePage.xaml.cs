@@ -2978,7 +2978,7 @@ namespace GnollHackX.Pages.Game
                 case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
                     MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
                     MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;
-                    MenuBackground.BorderStyle = BorderStyles.Simple;
+                    MenuBackground.BorderStyle = BorderStyles.SimpleAlternative;
                     MenuCanvas.RevertBlackAndWhite = true;
                     MenuCanvas.UseTextOutline = false;
                     MenuCanvas.HideMenuLetters = true;
@@ -2995,13 +2995,13 @@ namespace GnollHackX.Pages.Game
                 case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
                     MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
                     MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;
-                    MenuBackground.BorderStyle = BorderStyles.Simple;
                     MenuCanvas.RevertBlackAndWhite = true;
                     MenuCanvas.UseTextOutline = false;
                     MenuCanvas.HideMenuLetters = false;
                     MenuCanvas.MenuButtonStyle = false;
                     MenuCanvas.ClickOKOnSelection = menuinfo.SelectionHow == SelectionMode.Single;
                     MenuCanvas.MenuGlyphAtBottom = false;
+                    MenuBackground.BorderStyle = MenuCanvas.ClickOKOnSelection ? BorderStyles.SimpleAlternative : BorderStyles.Simple;
                     break;
                 default:
                     MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;

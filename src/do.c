@@ -2428,9 +2428,9 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
-    /* Mythic status */
     if (obj)
     {
+        /* Mythic status */
         boolean nonmythic = (is_weapon(obj) || is_armor(obj)) && otyp_non_mythic(otyp)
             && !obj->oartifact && !objects[otyp].oc_unique && !(objects[otyp].oc_flags3 & O3_UNIQUE);
         if (obj->dknown && name_known && (obj->mythic_prefix || obj->mythic_suffix || nonmythic))
@@ -2488,6 +2488,14 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     Sprintf(buf, "Burning time left:      %ld turn%s", burnleft, plur(burnleft));
                     putstr(datawin, ATR_INDENT_AT_COLON, buf);
                     Sprintf(buf, "Maximum burning time:   %ld turn%s", maxburn, plur(maxburn));
+                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                }
+            }
+            else
+            {
+                if (is_light_source_empty(obj))
+                {
+                    Strcpy(buf, "Burning time left:      Empty");
                     putstr(datawin, ATR_INDENT_AT_COLON, buf);
                 }
             }

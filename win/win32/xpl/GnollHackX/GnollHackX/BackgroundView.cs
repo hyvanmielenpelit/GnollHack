@@ -111,6 +111,16 @@ namespace GnollHackX
                     borderhorizontal = GHApp.SimpleFrameTopHorizontalBitmap;
                     bordervertical = GHApp.SimpleFrameLeftVerticalBitmap; ;
                     break;
+                case BorderStyles.SimpleAlternative:
+                    bordertl = GHApp.SimpleFrame2TopLeftCornerBitmap; ;
+                    borderhorizontal = GHApp.SimpleFrame2TopHorizontalBitmap;
+                    bordervertical = GHApp.SimpleFrame2LeftVerticalBitmap; ;
+                    break;
+                case BorderStyles.SmallAlternative:
+                    bordertl = GHApp.SimpleFrame2SmallTopLeftCornerBitmap; ;
+                    borderhorizontal = GHApp.SimpleFrame2TopHorizontalBitmap;
+                    bordervertical = GHApp.SimpleFrame2LeftVerticalBitmap; ;
+                    break;
                 case BorderStyles.Custom:
                     bordertl = CustomBorderTopLeftCorner;
                     borderhorizontal = CustomBorderTopHorizontal;

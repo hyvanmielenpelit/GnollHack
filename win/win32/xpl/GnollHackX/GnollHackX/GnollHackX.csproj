@@ -114,6 +114,10 @@
     <None Remove="Assets\UI\frame-topleft-small.png" />
     <None Remove="Assets\UI\frame-topleft.png" />
     <None Remove="Assets\UI\frame-vertical.png" />
+    <None Remove="Assets\UI\frame2-horizontal.png" />
+    <None Remove="Assets\UI\frame2-topleft-small.png" />
+    <None Remove="Assets\UI\frame2-topleft.png" />
+    <None Remove="Assets\UI\frame2-vertical.png" />
     <None Remove="Assets\UI\genesis.png" />
     <None Remove="Assets\UI\genocided.png" />
     <None Remove="Assets\UI\handedness.png" />
@@ -273,6 +277,10 @@
     <EmbeddedResource Include="Assets\gnollhack-logo-test-2.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-2.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits.png" />
+    <EmbeddedResource Include="Assets\UI\frame2-horizontal.png" />
+    <EmbeddedResource Include="Assets\UI\frame2-topleft-small.png" />
+    <EmbeddedResource Include="Assets\UI\frame2-topleft.png" />
+    <EmbeddedResource Include="Assets\UI\frame2-vertical.png" />
     <EmbeddedResource Include="Assets\UI\missing_icon.png" />
     <EmbeddedResource Include="Assets\Immortal-Regular.ttf" />
     <EmbeddedResource Include="Assets\main-menu-dwarf.jpg" />

@@ -1579,6 +1579,8 @@ namespace GnollHackX
         None = 0,
         Simple,
         Small,
+        SimpleAlternative,
+        SmallAlternative,
         Custom
     }
 

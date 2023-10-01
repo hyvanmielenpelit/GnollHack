@@ -709,6 +709,11 @@ namespace GnollHackX
         public static SKBitmap SimpleFrameTopHorizontalBitmap { get; set; }
         public static SKBitmap SimpleFrameLeftVerticalBitmap { get; set; }
 
+        public static SKBitmap SimpleFrame2TopLeftCornerBitmap { get; set; }
+        public static SKBitmap SimpleFrame2SmallTopLeftCornerBitmap { get; set; }
+        public static SKBitmap SimpleFrame2TopHorizontalBitmap { get; set; }
+        public static SKBitmap SimpleFrame2LeftVerticalBitmap { get; set; }
+
         public static SKBitmap ScrollBitmap { get; set; }
         public static SKBitmap YouBitmap { get; set; }
 
@@ -769,6 +774,26 @@ namespace GnollHackX
                 {
                     SimpleFrameLeftVerticalBitmap = SKBitmap.Decode(stream);
                     SimpleFrameLeftVerticalBitmap.SetImmutable();
+                }
+                using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame2-topleft.png"))
+                {
+                    SimpleFrame2TopLeftCornerBitmap = SKBitmap.Decode(stream);
+                    SimpleFrame2TopLeftCornerBitmap.SetImmutable();
+                }
+                using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame2-topleft-small.png"))
+                {
+                    SimpleFrame2SmallTopLeftCornerBitmap = SKBitmap.Decode(stream);
+                    SimpleFrame2SmallTopLeftCornerBitmap.SetImmutable();
+                }
+                using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame2-horizontal.png"))
+                {
+                    SimpleFrame2TopHorizontalBitmap = SKBitmap.Decode(stream);
+                    SimpleFrame2TopHorizontalBitmap.SetImmutable();
+                }
+                using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame2-vertical.png"))
+                {
+                    SimpleFrame2LeftVerticalBitmap = SKBitmap.Decode(stream);
+                    SimpleFrame2LeftVerticalBitmap.SetImmutable();
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.scroll.png"))
                 {
