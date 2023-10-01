@@ -12066,9 +12066,9 @@ namespace GnollHackX.Pages.Game
                             {
                                 /* Just add the total row height */
                                 y += totalRowHeight;
-                                y += totalRowExtraSpacing;
                                 mi.DrawBounds.Right = mi.DrawBounds.Left + totalRowWidth;
                                 mi.DrawBounds.Bottom = mi.DrawBounds.Top + totalRowHeight;
+                                y += totalRowExtraSpacing;
                             }
                             else
                             {
@@ -12201,9 +12201,6 @@ namespace GnollHackX.Pages.Game
                                 mi.DrawBounds.Right = canvaswidth - rightmenupadding;
                                 _lastDrawnMenuItemIdx = idx;
 
-                                /* Space between buttons / rows */
-                                y += totalRowExtraSpacing;
-
                                 /* Count circle */
                                 if (mi.Count > 0 && !(mi.DrawBounds.Bottom <= 0 || mi.DrawBounds.Top >= canvasheight))
                                 {
@@ -12224,6 +12221,9 @@ namespace GnollHackX.Pages.Game
                                     textPaint.TextSize = textPaint.TextSize / Math.Max(1.0f, totscale);
                                     canvas.DrawText(str, circlex, circley - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent, textPaint);
                                 }
+
+                                /* Space between buttons / rows */
+                                y += totalRowExtraSpacing;
                             }
                         }
                         if(IsLandscape ? canvaswidth > canvasheight : canvaswidth <= canvasheight)
