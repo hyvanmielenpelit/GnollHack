@@ -12060,11 +12060,13 @@ namespace GnollHackX.Pages.Game
 
                             float totalRowHeight = topPadding + bottomPadding + ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? relsuffixsize : 0.0f) + (mi.IsSuffix2TextVisible ? relsuffixsize : 0.0f)) * (textPaint.FontSpacing) + 2 * generallinepadding;
                             float totalRowWidth = canvaswidth - leftmenupadding - rightmenupadding;
+                            float totalRowExtraSpacing = IsMiButton ? 12.0f * scale : 0f;
 
                             if (y + totalRowHeight <= 0 || y >= canvasheight)
                             {
                                 /* Just add the total row height */
                                 y += totalRowHeight;
+                                y += totalRowExtraSpacing;
                                 mi.DrawBounds.Right = mi.DrawBounds.Left + totalRowWidth;
                                 mi.DrawBounds.Bottom = mi.DrawBounds.Top + totalRowHeight;
                             }
@@ -12200,14 +12202,7 @@ namespace GnollHackX.Pages.Game
                                 _lastDrawnMenuItemIdx = idx;
 
                                 /* Space between buttons / rows */
-                                if(IsMiButton)
-                                {
-                                    y += 12 * scale;
-                                }
-                                else
-                                {
-                                    //y += 0;
-                                }
+                                y += totalRowExtraSpacing;
 
                                 /* Count circle */
                                 if (mi.Count > 0 && !(mi.DrawBounds.Bottom <= 0 || mi.DrawBounds.Top >= canvasheight))
@@ -12541,17 +12536,20 @@ namespace GnollHackX.Pages.Game
 
                         HighlightMenuItems(e.Location);
 
-                        Device.StartTimer(TimeSpan.FromSeconds(GHConstants.LongMenuTapThreshold), () =>
+                        if (!MenuCanvas.ClickOKOnSelection)
                         {
-                            if (_savedMenuSender == null || _savedMenuEventArgs == null)
-                                return false;
-                            DateTime curtime = DateTime.Now;
-                            if (curtime - _savedMenuTimeStamp < TimeSpan.FromSeconds(GHConstants.LongMenuTapThreshold * 0.8))
-                                return false; /* Changed touch position */
+                            Device.StartTimer(TimeSpan.FromSeconds(GHConstants.LongMenuTapThreshold), () =>
+                            {
+                                if (_savedMenuSender == null || _savedMenuEventArgs == null)
+                                    return false;
+                                DateTime curtime = DateTime.Now;
+                                if (curtime - _savedMenuTimeStamp < TimeSpan.FromSeconds(GHConstants.LongMenuTapThreshold * 0.8))
+                                    return false; /* Changed touch position */
 
-                            MenuCanvas_LongTap(_savedMenuSender, _savedMenuEventArgs);
-                            return false;
-                        });
+                                MenuCanvas_LongTap(_savedMenuSender, _savedMenuEventArgs);
+                                return false;
+                            });
+                        }
                     }
 
                     e.Handled = true;
