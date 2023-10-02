@@ -48,12 +48,12 @@ NON_PASSWALL:(00,00,42,17)
 TELEPORT_REGION:(13,05,17,06),(0,0,0,0),up
 TELEPORT_REGION:(13,05,17,06),(0,0,0,0),down
 
-DOOR:closed,(12,09),subtype:door_modron
-DOOR:closed,(15,07),subtype:door_modron
+DOOR:locked,(12,09),subtype:door_modron
+DOOR:locked,(15,07),subtype:door_modron
 DOOR:closed,(21,06),subtype:door_modron
 DOOR:locked,(14,10),subtype:door_modron
 DOOR:locked,(28,10),subtype:door_modron
-DOOR:closed,(30,09),subtype:door_modron
+DOOR:locked,(30,09),subtype:door_modron
 DOOR:closed,(03,08),subtype:door_modron,secret_door
 DOOR:closed,(39,08),subtype:door_modron,secret_door
 
@@ -70,7 +70,9 @@ CARPET:(20,08,22,09),carpet_modron_spherical_plaque
 
 # Portal room guards
 MONSTER:('M',"modron monodrone"),(14,06),hostile,waitforu
-MONSTER:('M',"modron duodrone"),(15,06),hostile,waitforu
+MONSTER:('M',"modron duodrone"),(15,06),hostile,waitforu {
+    OBJECT:('(', "skeleton key")
+}
 MONSTER:('M',"modron monodrone"),(16,06),hostile,waitforu
 
 # Central room guard
@@ -114,9 +116,8 @@ MONSTER:('M',"modron quinton"),(08,08),waitforu,hostile {
 }
 MONSTER:('M',"modron pentadrone"),(09,08),hostile,waitforu
 
-# 3: Cube and normal key holder
+# 3: Cube holder
 MONSTER:('M',"modron quinton"),(33,08),waitforu,hostile {
-    OBJECT:('(', "skeleton key")
     OBJECT:('7', "modronite cube")
     [50%]:OBJECT:random_contents
 }
@@ -185,12 +186,12 @@ TELEPORT_REGION:(20,03,28,05),(0,0,0,0),up
 TELEPORT_REGION:(20,03,28,05),(0,0,0,0),down
 
 DOOR:locked,(24,06),subtype:door_modron,keytype:"geometric key",special_quality:4
-DOOR:closed,(11,07),subtype:door_modron
-DOOR:closed,(37,07),subtype:door_modron
+DOOR:locked,(11,07),subtype:door_modron
+DOOR:locked,(37,07),subtype:door_modron
 DOOR:closed,(11,10),subtype:door_modron,secret_door
 DOOR:closed,(37,10),subtype:door_modron,secret_door
-DOOR:closed,(11,13),subtype:door_modron
-DOOR:closed,(37,13),subtype:door_modron
+DOOR:locked,(11,13),subtype:door_modron
+DOOR:locked,(37,13),subtype:door_modron
 DOOR:locked,(19,10),subtype:door_magic,keytype:"magic key"
 DOOR:locked,(29,10),subtype:door_magic,keytype:"magic key"
 
@@ -323,14 +324,14 @@ TELEPORT_REGION:(19,09,21,10),(0,0,0,0),down
 MODRON_PORTAL:(20,09),level_teleporter,teleport_up,matching_portal,tetrahedral,inactive
 MODRON_PORTAL:(30,09),level_teleporter,teleport_down,matching_portal,cylindrical,inactive
 
-DOOR:closed,(25,07),subtype:door_modron
+DOOR:locked,(25,07),subtype:door_modron
 DOOR:locked,(22,10),subtype:door_modron,keytype:"geometric key",special_quality:3,non_passdoor
 DOOR:closed,(19,13),subtype:door_modron,secret_door
 DOOR:closed,(31,13),subtype:door_modron,secret_door
 DOOR:locked,(17,08),subtype:door_modron,keytype:"magic key"
 DOOR:locked,(33,08),subtype:door_modron,keytype:"magic key"
-DOOR:closed,(22,06),subtype:door_modron
-DOOR:closed,(28,06),subtype:door_modron
+DOOR:locked,(22,06),subtype:door_modron
+DOOR:locked,(28,06),subtype:door_modron
 
 DOOR:locked,(28,10),subtype:door_modron,keytype:"geometric key",special_quality:2,non_passdoor
 
@@ -512,17 +513,17 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),special_quality:1,(18,1
 }
 
 DOOR:locked,(42,10),subtype:door_modron,keytype:"geometric key",special_quality:2,non_passdoor
-DOOR:closed,(50,09),subtype:door_modron
-DOOR:closed,(50,11),subtype:door_modron
-DOOR:closed,(56,09),subtype:door_modron
+DOOR:locked,(50,09),subtype:door_modron
+DOOR:locked,(50,11),subtype:door_modron
+DOOR:locked,(56,09),subtype:door_modron
 DOOR:locked,(56,11),subtype:door_modron,keytype:"magic key",special_quality:1
 DOOR:locked,(52,12),subtype:door_modron
 
 DOOR:locked,(20,12),subtype:door_modron
-DOOR:closed,(16,09),subtype:door_modron
+DOOR:locked,(16,09),subtype:door_modron
 DOOR:locked,(16,11),subtype:door_modron,keytype:"magic key",special_quality:1
-DOOR:closed,(22,09),subtype:door_modron
-DOOR:closed,(22,11),subtype:door_modron
+DOOR:locked,(22,09),subtype:door_modron
+DOOR:locked,(22,11),subtype:door_modron
 DOOR:locked,(30,10),subtype:door_modron,keytype:"geometric key",special_quality:1,non_passdoor
 
 REGION:(32,02,40,06),lit,"temple"

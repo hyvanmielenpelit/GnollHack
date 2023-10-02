@@ -2077,14 +2077,14 @@ AMULET("amulet of seeing", "cylindrical",
  * description shuffling stops when a non-magic amulet is encountered
  */
 OBJECT(OBJ("cheap plastic imitation of the Amulet of Yendor",
-       "Amulet of Yendor", None, None, None, 24, OD_NONE, 0, 0, 0),
+       "Amulet of Yendor", None, None, None, 32, OD_NONE, 0, 0, 0),
        BITS(0, 0, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, 0, 0, 0, MATINIT_BASE_MATERIAL, MAT_PLASTIC),
        NO_POWER, NO_POWER, NO_POWER, P1_NONE, AMULET_CLASS, 0, MULTIGEN_SINGLE, 0, 10, 0,
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0,
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
        1, HI_METAL, OBJECT_SOUNDSET_GENERIC, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_UNBURIABLE, O4_NONE, O5_NONE, O6_NONE),
 OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
-       "Amulet of Yendor", None, None, None, 24, OD_NONE, 0, 0, 0),
+       "Amulet of Yendor", None, None, None, 32, OD_NONE, 0, 0, 0),
        BITS(0, 0, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 1, 1, 0, 0, 0, 0, 0, MATINIT_BASE_MATERIAL, MAT_MITHRIL),
        NO_POWER, NO_POWER, NO_POWER, P1_NONE, AMULET_CLASS, 0, MULTIGEN_SINGLE, 0, 10, 30000,
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0,

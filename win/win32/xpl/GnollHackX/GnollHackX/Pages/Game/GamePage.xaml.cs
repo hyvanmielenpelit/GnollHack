@@ -2085,10 +2085,19 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.PostGameStatus:
                                 PostToForum(req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString);
                                 break;
+                            case GHRequestType.DebugLog:
+                                DisplayDebugLog(req.RequestString);
+                                break;
                         }
                     }
                 }
             }
+        }
+
+        private async void DisplayDebugLog(string logstr)
+        {
+            if(GHApp.DebugLogMessages && logstr != null && logstr != "")
+                await DisplayAlert("Debug Log", logstr, "OK");
         }
 
         private List<ForumPostAttachment> _forumPostAttachments = new List<ForumPostAttachment>();
