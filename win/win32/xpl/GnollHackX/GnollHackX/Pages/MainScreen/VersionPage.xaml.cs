@@ -28,7 +28,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             InitializeComponent();
 #if GNH_MAUI
-        On<iOS>().SetUseSafeArea(false);
+            On<iOS>().SetUseSafeArea(false);
 #else
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
 #endif
@@ -90,10 +90,18 @@ namespace GnollHackX.Pages.MainScreen
 
             PortVersionTitleLabel.Text = Device.RuntimePlatform + " Port Version:";
             PortBuildTitleLabel.Text = Device.RuntimePlatform + " Port Build:";
+            PortConfigurationTitleLabel.Text ="Port Configuration:";
 
             GnollHackVersionLabel.Text = GHApp.GHVersionString;
+            GnollHackConfigurationLabel.Text = GHApp.GHDebug ? "Debug" : "Release";
             PortVersionLabel.Text = VersionTracking.CurrentVersion;
             PortBuildLabel.Text = VersionTracking.CurrentBuild;
+            PortConfigurationLabel.Text =
+#if DEBUG
+                "Debug";
+#else
+                "Release";
+#endif
             GnollHackCompatibilityLabel.Text = compatstr == "" ? "" : "From " + compatstr;
             FMODVersionLabel.Text = GHApp.FMODVersionString;
             SkiaVersionLabel.Text = GHApp.SkiaVersionString + " (# " + GHApp.SkiaSharpVersionString + ")";
@@ -139,8 +147,6 @@ namespace GnollHackX.Pages.MainScreen
                         ((Label)v).FontSize = newsize;
                     }
                 }
-                //KeyLabel.FontSize = newsize;
-                //ValueLabel.FontSize = newsize;
                 LongTitleLabel.FontSize = newsize;
                 LongLabel.FontSize = newsize;
 

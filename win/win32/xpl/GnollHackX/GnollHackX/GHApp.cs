@@ -420,6 +420,7 @@ namespace GnollHackX
         public static ulong GHVersionCompatibility { get; set; }
         public static string GHVersionCompatibilityString { get { return VersionNumberToString(GHVersionCompatibility); } }
         public static ulong GHPreviousVersionNumber { get; set; }
+        public static bool GHDebug { get; set; }
         public static string SkiaVersionString { get; set; }
         public static string SkiaSharpVersionString { get; set; }
         public static string FMODVersionString { get; set; }

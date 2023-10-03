@@ -2086,7 +2086,7 @@ namespace GnollHackX.Pages.Game
                                 PostToForum(req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString);
                                 break;
                             case GHRequestType.DebugLog:
-                                DisplayDebugLog(req.RequestString);
+                                DisplayDebugLog(req.RequestString, req.RequestInt, req.RequestInt2);
                                 break;
                         }
                     }
@@ -2094,10 +2094,29 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private async void DisplayDebugLog(string logstr)
+        private async void DisplayDebugLog(string logstr, int param1, int param2)
         {
             if(GHApp.DebugLogMessages && logstr != null && logstr != "")
-                await DisplayAlert("Debug Log", logstr, "OK");
+            {
+#if DEBUG
+                string titlestring = "Debug Log (D)";
+#else
+                string titlestring = "Debug Log (R)";
+#endif
+                switch (param1)
+                {
+                    default: /* Both release and debug modes */
+                    case 0:
+                        await DisplayAlert(titlestring, logstr, "OK");
+                        break;
+                    case 1: /* Debug mode only */
+#if DEBUG
+                        await DisplayAlert(titlestring, logstr, "OK");
+#endif
+                        break;
+                }
+
+            }
         }
 
         private List<ForumPostAttachment> _forumPostAttachments = new List<ForumPostAttachment>();
