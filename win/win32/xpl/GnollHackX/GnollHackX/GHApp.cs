@@ -1696,6 +1696,10 @@ namespace GnollHackX
 
         public static async Task ListFileDescriptors(Page page)
         {
+            /* Send Diagnostic Data via C */
+            GnollHackService?.ReportProcesses();
+
+            /* Print processes via C# */
             int id = Process.GetCurrentProcess().Id;
             string path = Path.Combine("/proc", id.ToString(), "fd");
             string[] files = Directory.GetFiles(path);

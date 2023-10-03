@@ -1294,7 +1294,16 @@ namespace GnollHackX
         DIAGNOSTIC_DATA_PANIC,
         DIAGNOSTIC_DATA_CRASH_REPORT,
         DIAGNOSTIC_DATA_ATTACHMENT,
+        DIAGNOSTIC_DATA_PROCESS_INFORMATION,
+        DIAGNOSTIC_DATA_CREATE_ATTACHMENT_FROM_TEXT,
     }
+
+    public enum diagnostic_data_attachment_types
+    {
+        DIAGNOSTIC_DATA_ATTACHMENT_GENERIC = 0,
+        DIAGNOSTIC_DATA_ATTACHMENT_FILE_DESCRIPTOR_LIST,
+    }
+
 
     public enum debug_log_types
     {

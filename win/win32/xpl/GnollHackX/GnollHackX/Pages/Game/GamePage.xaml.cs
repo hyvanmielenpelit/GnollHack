@@ -2137,28 +2137,79 @@ namespace GnollHackX.Pages.Game
 
         private async void PostToForum(bool is_game_status, int status_type, int status_datatype, string status_string)
         {
-            if (is_game_status ? !GHApp.PostingGameStatus : !GHApp.PostingDiagnosticData)
-                return;
+            if(!is_game_status && 
+                (status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CREATE_ATTACHMENT_FROM_TEXT 
+                 || status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_ATTACHMENT))
+            {
+                /* Bypass send checks */
+            }
+            else if (!is_game_status && !GHApp.PostingDiagnosticData && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_PROCESS_INFORMATION )
+            {
+                /* Critical information -- Ask the player */
+                bool sendok = await DisplayAlert("Critical Diagnostic Data", "GnollHack would like to send critical diagnostic data to the development team. Allow?", "Yes", "No");
+                if (!sendok)
+                {
+                    goto cleanup;
+                }
+            }
+            else
+            {
+                if (is_game_status ? !GHApp.PostingGameStatus : !GHApp.PostingDiagnosticData)
+                    return;
+            }
 
             if (is_game_status && status_string != null && status_string != "" && status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT)
             {
                 switch(status_datatype)
                 {
                     case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_GENERIC:
-                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "application/zip", "game data", !is_game_status, status_type));
+                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "application/zip", "game data", !is_game_status, status_type, false));
                         break;
                     case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_TEXT:
-                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/plain", "dumplog", !is_game_status, status_type));
+                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/plain", "dumplog", !is_game_status, status_type, false));
                         break;
                     case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_HTML:
-                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/html", "HTML dumplog", !is_game_status, status_type));
+                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/html", "HTML dumplog", !is_game_status, status_type, false));
                         break;
                 }
                 return;
             }
             else if(!is_game_status && status_string != null && status_string != "" && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_ATTACHMENT)
             {
-                _forumPostAttachments.Add(new ForumPostAttachment(status_string, "application/zip", "diagnostic data", !is_game_status, status_type));
+                _forumPostAttachments.Add(new ForumPostAttachment(status_string, "application/zip", "diagnostic data", !is_game_status, status_type, false));
+                return;
+            }
+            else if (!is_game_status && status_string != null && status_string != "" && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CREATE_ATTACHMENT_FROM_TEXT)
+            {
+                if (status_datatype == (int)diagnostic_data_attachment_types.DIAGNOSTIC_DATA_ATTACHMENT_FILE_DESCRIPTOR_LIST)
+                    status_string = status_string.Replace(" | ", Environment.NewLine);
+
+                string tempdirpath = Path.Combine(GHApp.GHPath, "temp");
+                if (!Directory.Exists(tempdirpath))
+                   GHApp.CheckCreateDirectory(tempdirpath);
+                int number = 0;
+                string temp_string;
+                do
+                {
+                    temp_string = Path.Combine(tempdirpath, "tmp_attachment_" + number + ".txt");
+                    number++;
+                } while (File.Exists(temp_string));
+
+                try
+                {
+                    using (FileStream fs = new FileStream(temp_string, FileMode.Create))
+                    {
+                        using (StreamWriter sw = new StreamWriter(fs))
+                        {
+                            sw.Write(status_string);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
+                _forumPostAttachments.Add(new ForumPostAttachment(temp_string, "text/plain", "diagnostic data", !is_game_status, status_type, true));
                 return;
             }
 
@@ -2197,6 +2248,9 @@ namespace GnollHackX.Pages.Game
                         break;
                     case (int)diagnostic_data_types.DIAGNOSTIC_DATA_IMPOSSIBLE:
                         message = player_name + " - Impossible: " + message + " [" + info + "]";
+                        break;
+                    case (int)diagnostic_data_types.DIAGNOSTIC_DATA_PROCESS_INFORMATION:
+                        message = player_name + " - Process Information:\n" + message + "\n[" + info + "]";
                         break;
                     default:
                         message = player_name + " - Diagnostics: " + message + " [" + info + "]";
@@ -2299,7 +2353,23 @@ namespace GnollHackX.Pages.Game
                 Debug.WriteLine(e.Message);
             }
 
+        cleanup:
+            foreach(var attachment in _forumPostAttachments)
+            {
+                if(attachment.IsTemporary)
+                {
+                    try
+                    {
+                        File.Delete(attachment.FullPath);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine(e.Message);
+                    }
+                }
+            }
             _forumPostAttachments.Clear();
+            return;
         }
 
         private void CreateWindowView(int winid)

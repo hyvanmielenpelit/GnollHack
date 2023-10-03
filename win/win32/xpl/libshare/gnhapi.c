@@ -453,6 +453,12 @@ LibCheckCurrentFileDescriptor(const char* dir)
         return -4;
 }
 
+void
+LibReportProcesses()
+{
+    maybe_report_processes("Process Report Requested", 24);
+}
+
 int GnollHackStart(cmdlineargs)
 char* cmdlineargs;
 {

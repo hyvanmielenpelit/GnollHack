@@ -9,9 +9,9 @@
 
 #include "hack.h"
 #include "dlb.h"
-//#ifdef UNIX
-//#include <stdio.h>
-//#endif
+#ifdef UNIX
+#include <stdio.h>
+#endif
 #ifdef TTY_GRAPHICS
 #include "wintty.h" /* more() */
 #endif
@@ -641,28 +641,76 @@ char errbuf[];
     {
         Sprintf(errbuf, "Cannot create file \"%s\" for level %d (errno %d).",
             lock, lev, errno);
+        maybe_report_processes(errbuf, errno);
     }
 
     return fd;
 }
 
-//STATIC_OVL void
-//paniclog_processes(logtext)
-//const char* logtext;
-//{
-//    impossible("%s", logtext);
-//#ifdef UNIX
-//    char line[BUFSZ];
-//    char cmd[BUFSZ];
-//    Sprintf(cmd, "/usr/bin/ls -l /proc/%d/fd", getpid());
-//    FILE* output = popen(cmd, "r");
-//    while (fgets(line, BUFSZ - 1, output))
-//    {
-//        paniclog("process open", line);
-//    }
-//    pclose(output);
-//#endif
-//}
+void
+maybe_report_processes(logtext, error_number)
+const char* logtext;
+int error_number;
+{
+#ifdef UNIX
+    if (error_number == EMFILE)
+    {
+        char line[BUFSZ];
+        char cmd[BUFSZ];
+        char msgbuf[BUFSZ] = "";
+        int pid = (int)getpid();
+        Sprintf(cmd, "ls -l /proc/%d/fd", pid);
+        FILE* poutput = popen(cmd, "r");
+        if (poutput)
+        {
+            if (logtext)
+            {
+                Strcpy(msgbuf, logtext);
+                Strcat(msgbuf, " - ");
+            }
+            Strcat(msgbuf, cmd);
+
+            char* outbuf = 0;
+            while (fgets(line, BUFSZ - 1, poutput))
+            {
+                line[BUFSZ - 1] = 0;
+                if (!outbuf)
+                {
+                    outbuf = (char*)alloc(strlen(line) + 3 + 1);
+                    if (outbuf)
+                    {
+                        Strcpy(outbuf, line);
+                        Strcat(outbuf, " | ");
+                    }
+                }
+                else
+                {
+                    char* newoutbuf = (char*)alloc(strlen(outbuf) + strlen(line) + 3 + 1);
+                    if (newoutbuf)
+                    {
+                        Strcpy(newoutbuf, outbuf);
+                        Strcat(newoutbuf, line);
+                        Strcat(newoutbuf, " | ");
+                        free((genericptr_t)outbuf);
+                        outbuf = newoutbuf;
+                    }
+                }
+            }
+            pclose(poutput);
+            if (outbuf)
+            {
+                /* Note that cannot create a log file for writing since the file descriptor limit has been reached */
+                if (*outbuf && issue_gui_command)
+                {
+                    issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_CREATE_ATTACHMENT_FROM_TEXT, DIAGNOSTIC_DATA_ATTACHMENT_FILE_DESCRIPTOR_LIST, outbuf);
+                    issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_PROCESS_INFORMATION, 0, msgbuf);
+                }
+                free((genericptr_t)outbuf);
+            }
+        }
+    }
+#endif
+}
 
 int
 open_levelfile(lev, errbuf)
@@ -700,6 +748,7 @@ char errbuf[];
     {
         Sprintf(errbuf, "Cannot open file \"%s\" for level %d (errno %d).",
             lock, lev, errno);
+        maybe_report_processes(errbuf, errno);
     }
     return fd;
 }
@@ -996,6 +1045,7 @@ char errbuf[];
     {
         Sprintf(errbuf, "Cannot create bones \"%s\", id %s (errno %d).", lock,
             *bonesid, errno);
+        maybe_report_processes(errbuf, errno);
     }
 #if defined(VMS) && !defined(SECURE)
     /*

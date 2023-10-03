@@ -11,19 +11,21 @@ namespace GnollHackX
         public string Description { get; set; }
         public bool IsDiagnostic { get; set; }
         public int AttachmentType { get; set; }
+        public bool IsTemporary { get; set; }
 
 
         public ForumPostAttachment()
         {
 
         }
-        public ForumPostAttachment(string fullPath, string contentType, string description, bool isDiagnostic, int attachmentType)
+        public ForumPostAttachment(string fullPath, string contentType, string description, bool isDiagnostic, int attachmentType, bool isTemporary)
         {
             FullPath = fullPath;
             ContentType = contentType;
             Description = description;
             IsDiagnostic = isDiagnostic;
             AttachmentType = attachmentType;
+            IsTemporary = isTemporary;
         }
     }
 }

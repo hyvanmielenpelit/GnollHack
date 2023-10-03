@@ -1288,6 +1288,8 @@ E void NDECL(mk_dgl_extrainfo);
 E void FDECL(trackwish, (char*));
 #endif
 E int FDECL(check_current_fd, (const char*));
+E void FDECL(maybe_report_processes, (const char*, int));
+
 
 /* ### fountain.c ### */
 
