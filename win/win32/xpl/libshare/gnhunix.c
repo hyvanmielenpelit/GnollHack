@@ -70,6 +70,7 @@ getlock()
         error("Cannot open %s", fq_lock);
         return;
     }
+    issue_debuglog_fd(fd, "getlock");
     (void) close(fd);
 
     if(!recover_savefile())

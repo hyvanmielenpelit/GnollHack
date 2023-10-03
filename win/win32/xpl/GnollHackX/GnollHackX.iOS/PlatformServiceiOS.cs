@@ -164,6 +164,20 @@ namespace GnollHackX.iOS
             return NSBundle.MainBundle.BundlePath;
         }
 
+        public string GetCanonicalPath(string fileName)
+        {
+            try
+            {
+                NSFileManager fm = new NSFileManager();
+                string destination = fm.GetSymbolicLinkDestination(fileName, out var error);
+                return destination;
+            }
+            catch (Exception)
+            {
+                return fileName;
+            }
+        }
+
         public string GetAbsoluteOnDemandAssetPath(string assetPack)
         {
             return null;

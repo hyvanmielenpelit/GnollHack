@@ -695,7 +695,7 @@ enum gui_command_types {
     GUI_CMD_POST_GAME_STATUS,
     GUI_CMD_POST_DIAGNOSTIC_DATA,
     GUI_CMD_LIBRARY_MANUAL,
-    GUI_CMD_DEBUG_LOG,
+    GUI_CMD_DEBUGLOG,
     GUI_CMD_GAME_START,
     GUI_CMD_GAME_ENDED,
 };
@@ -723,6 +723,14 @@ enum diagnostic_data_types
     DIAGNOSTIC_DATA_PANIC,
     DIAGNOSTIC_DATA_CRASH_REPORT,
 };
+
+enum debug_log_types
+{
+    DEBUGLOG_GENERAL = 0,
+    DEBUGLOG_DEBUG_ONLY,
+    DEBUGLOG_FILE_DESCRIPTOR,
+};
+
 
 enum takeoff_wear_commands {
     TAKEOFF_WEAR_CMD_TAKEOFF = 0,

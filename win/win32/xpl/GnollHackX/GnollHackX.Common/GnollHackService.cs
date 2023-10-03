@@ -281,7 +281,8 @@ namespace GnollHackX.Unknown
         public static extern int LibIsDebug();
         [DllImport(PlatformConstants.dll)]
         public static extern int LibValidateSaveFile(string filename, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_buffer);
-
+        [DllImport(PlatformConstants.dll)]
+        public static extern int LibCheckCurrentFileDescriptor(string dir);
         private void LoadNativeLibrary(string libName)
         {
 #if __ANDROID__
@@ -963,6 +964,11 @@ namespace GnollHackX.Unknown
             int res = LibValidateSaveFile(filename, buffer);
             res_str = Encoding.UTF8.GetString(buffer);
             return res != 0;
+        }
+
+        public int CheckCurrentFileDescriptor()
+        {
+            return LibCheckCurrentFileDescriptor(GetGnollHackPath());
         }
 
         public int StartGnollHack(GHGame ghGame)

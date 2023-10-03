@@ -1287,7 +1287,7 @@ E void NDECL(mk_dgl_extrainfo);
 #ifdef WISH_TRACKER
 E void FDECL(trackwish, (char*));
 #endif
-
+E int FDECL(check_current_fd, (const char*));
 
 /* ### fountain.c ### */
 

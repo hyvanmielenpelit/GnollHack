@@ -1683,6 +1683,52 @@ namespace GnollHackX
 #endif
         }
 
+        public static void DebugCheckCurrentFileDescriptor(string str)
+        {
+#if DEBUG
+            if (GnollHackService == null)
+                return;
+
+            int fd = GnollHackService.CheckCurrentFileDescriptor();
+            Debug.WriteLine("GHApp Debug: File Descriptor is " + fd + ", " + str);
+#endif
+        }
+
+        public static async Task ListFileDescriptors(Page page)
+        {
+            int id = Process.GetCurrentProcess().Id;
+            string path = Path.Combine("/proc", id.ToString(), "fd");
+            string[] files = Directory.GetFiles(path);
+            string output = "";
+            if(files != null)
+            {
+                foreach (string file in files)
+                {
+                    FileInfo fileInfo = new FileInfo(file); 
+                    string canpath = GHApp.PlatformService?.GetCanonicalPath(file);
+                    output += fileInfo.Name + " -> " + canpath + "\n";
+                }
+            }
+            output += "\n";
+            var proc = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "ls",
+                    Arguments = "-l " + path,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true
+                }
+            };
+            proc.Start();
+            while (!proc.StandardOutput.EndOfStream)
+            {
+                output += proc.StandardOutput.ReadLine() + "\n";
+            }
+            await page.DisplayAlert("FDs", output, "OK");
+        }
+
         public static void PlayButtonClickedSound()
         {
             if (_fmodService != null)

@@ -459,6 +459,7 @@ struct obj *corpse;
 
     clear_bypasses();
     fd = open_bonesfile(&u.uz, &bonesid);
+    issue_debuglog_fd(fd, "savebones");
     if (fd >= 0) {
         (void) nhclose(fd);
         if (wizard) {
@@ -705,6 +706,7 @@ getbones()
     if (no_bones_level(&u.uz))
         return 0;
     fd = open_bonesfile(&u.uz, &bonesid);
+    issue_debuglog_fd(fd, "getbones");
     if (fd < 0)
         return 0;
 

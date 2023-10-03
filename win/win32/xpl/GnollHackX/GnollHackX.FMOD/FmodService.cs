@@ -165,7 +165,7 @@ namespace GnollHackX.Unknown
             if (res != RESULT.OK)
                 return;
 
-            res = _system.initialize(1024, FMOD.Studio.INITFLAGS.NORMAL, FMOD.INITFLAGS.NORMAL, IntPtr.Zero);
+            res = _system.initialize(GHConstants.MaxChannels, FMOD.Studio.INITFLAGS.NORMAL, FMOD.INITFLAGS.NORMAL, IntPtr.Zero);
             if (res != RESULT.OK)
                 return;
 
@@ -275,37 +275,6 @@ namespace GnollHackX.Unknown
                                     string msg = ex.Message;
                                 }
                             }
-                            //using (BinaryReader br = new BinaryReader(fs))
-                            //{
-                            //    int mb = 0;
-                            //    bool endreached = false;
-                            //    while(!endreached)
-                            //    {
-                            //        try
-                            //        {
-                            //            byte[] data2 = br.ReadBytes(1024 * 1024);
-                            //            if (data2 == null || data2.Length == 0)
-                            //                break;
-                            //            mb++;
-                            //        }
-                            //        catch(Exception ex)
-                            //        {
-                            //            string str = ex.Message;
-                            //            endreached = true;
-                            //        }
-                            //    }
-                            //    int length = (mb + 1) * 1024 * 1024;
-
-                            //    fs.Seek(0, SeekOrigin.Begin);
-                            //    try
-                            //    {
-                            //        data = br.ReadBytes(length);
-                            //    }
-                            //    catch (Exception ex) 
-                            //    {
-                            //        string msg = ex.Message;
-                            //    }
-                            //}
                         }
                     }
                     else
@@ -431,8 +400,6 @@ namespace GnollHackX.Unknown
             }
             return RESULT.OK;
         }
-
-        //private RESULT GNHDialogueEventCallback(EVENT_CALLBACK_TYPE type, IntPtr _event, IntPtr parameters)
 
         public static RESULT GNHDialogueEventCallback(EVENT_CALLBACK_TYPE type, IntPtr _event, IntPtr parameters)
         {

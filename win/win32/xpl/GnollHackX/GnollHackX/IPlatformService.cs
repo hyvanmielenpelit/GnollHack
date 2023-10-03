@@ -28,6 +28,7 @@ namespace GnollHackX
         void RevertAnimatorDuration(bool isfinal);
         string GetBaseUrl();
         string GetAssetsPath();
+        string GetCanonicalPath(string fileName);
         string GetAbsoluteOnDemandAssetPath(string assetPack);
         string GetAbsoluteOnDemandAssetPath(string assetPack, string relativeAssetPath);
         void RequestAppReview(ContentPage page);

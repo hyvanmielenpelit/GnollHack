@@ -292,6 +292,19 @@ namespace GnollHackX.Droid
             return "file:///android_asset/";
         }
 
+        public string GetCanonicalPath(string fileName)
+        {
+            try
+            {
+                Java.IO.File file = new Java.IO.File(fileName);
+                return file.CanonicalPath;
+            }
+            catch (Exception) 
+            {
+                return fileName;
+            }
+        }
+
         public string GetAbsoluteOnDemandAssetPath(string assetPack)
         {
 #if GNH_MAUI

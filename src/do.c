@@ -6708,6 +6708,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     {
         /* returning to previously visited level; reload it */
         fd = open_levelfile(new_ledger, whynot);
+        issue_debuglog_fd(fd, "goto_level");
         if (tricked_fileremoved(fd, whynot))
         {
             /* we'll reach here if running in wizard mode */

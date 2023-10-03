@@ -54,6 +54,7 @@ namespace GnollHackX
         void SaveAndRestoreSavedGame();
         void TallyRealTime();
         bool ValidateSaveFile(string filename, out string out_str);
+        int CheckCurrentFileDescriptor();
         int GetMaxManuals();
         bool IsDebug();
     }

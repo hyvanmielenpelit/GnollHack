@@ -494,6 +494,8 @@ namespace GnollHackX.Pages.MainScreen
                                         s.CopyTo(t);
                                     }
                                     await DisplayAlert("Game Saved", "Saved game \'" + file.FileName + "\' has been saved to the save directory as a non-scoring imported saved game.", "OK");
+                                    if (out_str != "" && GHApp.DebugLogMessages)
+                                        await DisplayAlert("ValidateSaveFile Messge", out_str, "OK");
                                 }
                                 else
                                 {

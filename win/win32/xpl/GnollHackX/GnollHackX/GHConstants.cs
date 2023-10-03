@@ -1266,7 +1266,7 @@ namespace GnollHackX
         GUI_CMD_POST_GAME_STATUS,
         GUI_CMD_POST_DIAGNOSTIC_DATA,
         GUI_CMD_LIBRARY_MANUAL,
-        GUI_CMD_DEBUG_LOG,
+        GUI_CMD_DEBUGLOG,
         GUI_CMD_GAME_START,
         GUI_CMD_GAME_ENDED,
     }
@@ -1294,6 +1294,13 @@ namespace GnollHackX
         DIAGNOSTIC_DATA_PANIC,
         DIAGNOSTIC_DATA_CRASH_REPORT,
         DIAGNOSTIC_DATA_ATTACHMENT,
+    }
+
+    public enum debug_log_types
+    {
+        DEBUGLOG_GENERAL = 0,
+        DEBUGLOG_DEBUG_ONLY,
+        DEBUGLOG_FILE_DESCRIPTOR,
     }
 
     public enum popup_text_types
@@ -1452,12 +1459,11 @@ namespace GnollHackX
         public const int MaxPlayedZapAnimations = 16;
         public const int MaxNormalImmediateSoundInstances = 36;
         public const int MaxLongImmediateSoundInstances = 48;
-        //public const int DefaultPanTime = 5;
+        public const int MaxChannels = 108;
         public const int PIT_BOTTOM_BORDER = 2;
         public const int SPECIAL_HEIGHT_IN_PIT = -32;
         public const int SPECIAL_HEIGHT_LEVITATION = 16;
         public const float OBJECT_PIT_SCALING_FACTOR = 0.75f;
-        //public const long MoveIntervals = 3;
         public const int NUM_BUFF_BIT_ULONGS = 8;
         public const int BUFFS_PER_TILE = 24;
         public const int MAX_PROPS = 170;

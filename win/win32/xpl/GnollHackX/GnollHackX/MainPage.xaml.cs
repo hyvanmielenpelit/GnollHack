@@ -273,11 +273,15 @@ namespace GnollHackX
             await TryReadSecrets();
             await InitializeServices();
 
+            GHApp.DebugCheckCurrentFileDescriptor("StartUpTasks");
+
             Assembly assembly = GetType().GetTypeInfo().Assembly;
             GHApp.InitAdditionalTypefaces(assembly);
             GHApp.InitSymbolBitmaps(assembly);
             GHApp.InitGameBitmaps(assembly);
             carouselView.Init();
+
+            GHApp.DebugCheckCurrentFileDescriptor("StartUpTasks2");
 
             string verstr = "?";
             string verid = "?";
@@ -335,6 +339,8 @@ namespace GnollHackX
             VersionLabel.Text = verid;
             GnollHackLabel.Text = "GnollHack";
 
+            GHApp.DebugCheckCurrentFileDescriptor("StartUpTasks3");
+
             string prev_version = Preferences.Get("VersionId", "");
             ulong prev_vernum = (ulong)Preferences.Get("VersionNumber", 0L);
             GHApp.GHPreviousVersionNumber = prev_vernum;
@@ -351,6 +357,8 @@ namespace GnollHackX
             Preferences.Set("VersionId", verid);
             Preferences.Set("VersionNumber", (long)vernum);
 
+            GHApp.DebugCheckCurrentFileDescriptor("StartUpTasks4");
+
             GHApp.PlatformService.OnDemandPackStatusNotification += OnDemandPackEventHandler;
             StartFetchOnDemandFiles();
             GHApp.SetSoundBanksUpForLoading();
@@ -360,6 +368,8 @@ namespace GnollHackX
                 await TryLoadBanks(0);
                 await TryLoadBanks(2);
             }
+
+            GHApp.DebugCheckCurrentFileDescriptor("StartUpTasks5");
 
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             generalVolume = Preferences.Get("GeneralVolume", GHConstants.DefaultGeneralVolume);
@@ -381,6 +391,8 @@ namespace GnollHackX
             {
                 Debug.WriteLine(ex.Message);
             }
+
+            GHApp.DebugCheckCurrentFileDescriptor("StartUpTasks6");
         }
 
         private void OnDemandPackEventHandler(object sender, AssetPackStatusEventArgs e)

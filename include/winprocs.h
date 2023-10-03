@@ -171,6 +171,7 @@ extern
 #define print_glyph (*windowprocs.win_print_glyph)
 #define issue_gui_command (*windowprocs.win_issue_gui_command)
 #define issue_simple_gui_command(x) (*windowprocs.win_issue_gui_command)(x, 0, 0, (char*)0)
+#define issue_debuglog_fd(f, s) if(windowprocs.win_issue_gui_command) (*windowprocs.win_issue_gui_command)(GUI_CMD_DEBUGLOG, DEBUGLOG_FILE_DESCRIPTOR, f, s)
 #define raw_print (*windowprocs.win_raw_print)
 #define raw_print_bold (*windowprocs.win_raw_print_bold)
 #define nhgetch (*windowprocs.win_nhgetch)

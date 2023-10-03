@@ -1822,7 +1822,7 @@ namespace GnollHackX
                         }
                     }
                     break;
-                case (int)gui_command_types.GUI_CMD_DEBUG_LOG:
+                case (int)gui_command_types.GUI_CMD_DEBUGLOG:
                     if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.DebugLog, cmd_param, cmd_param2, cmd_str));

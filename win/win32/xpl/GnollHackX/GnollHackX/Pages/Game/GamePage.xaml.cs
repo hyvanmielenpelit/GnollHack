@@ -694,12 +694,16 @@ namespace GnollHackX.Pages.Game
 
         public async void StartGame()
         {
+            GHApp.DebugCheckCurrentFileDescriptor("StartGame1");
+
             _mainPage.GameStarted = true;
             LoadingProgressBar.Progress = 0.0;
 
             var tasks = new List<Task>();
             _gnollHackService = GHApp.GnollHackService;
             _gnollHackService.InitializeGnollHack();
+
+            GHApp.DebugCheckCurrentFileDescriptor("StartGame2");
 
             if (!GHApp.StartGameDataSet)
             {
@@ -738,6 +742,7 @@ namespace GnollHackX.Pages.Game
                     }
                 }));
                 await Task.WhenAll(tasks);
+                GHApp.DebugCheckCurrentFileDescriptor("StartGame3");
                 tasks.Clear();
 
                 tasks.Add(LoadingProgressBar.ProgressTo(0.6, 100, Easing.Linear));
@@ -773,6 +778,7 @@ namespace GnollHackX.Pages.Game
 
                 }));
                 await Task.WhenAll(tasks);
+                GHApp.DebugCheckCurrentFileDescriptor("StartGame4");
                 tasks.Clear();
 
                 tasks.Add(LoadingProgressBar.ProgressTo(0.7, 100, Easing.Linear));
@@ -815,6 +821,7 @@ namespace GnollHackX.Pages.Game
                 }
             }));
             await Task.WhenAll(tasks);
+            GHApp.DebugCheckCurrentFileDescriptor("StartGame5");
             tasks.Clear();
 
             await LoadingProgressBar.ProgressTo(0.95, 50, Easing.Linear);
@@ -924,6 +931,7 @@ namespace GnollHackX.Pages.Game
             });
 
             await LoadingProgressBar.ProgressTo(1.0, 20, Easing.Linear);
+            GHApp.DebugCheckCurrentFileDescriptor("StartGame6");
         }
 
         public async void RestartGame()
@@ -2094,28 +2102,34 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private async void DisplayDebugLog(string logstr, int param1, int param2)
+        private async void DisplayDebugLog(string log_str, int log_type, int log_param)
         {
-            if(GHApp.DebugLogMessages && logstr != null && logstr != "")
+            if(GHApp.DebugLogMessages && log_str != null && log_str != "")
             {
 #if DEBUG
                 string titlestring = "Debug Log (D)";
 #else
                 string titlestring = "Debug Log (R)";
 #endif
-                switch (param1)
+                switch (log_type)
                 {
-                    default: /* Both release and debug modes */
-                    case 0:
-                        await DisplayAlert(titlestring, logstr, "OK");
+                    default:
+                    case (int)debug_log_types.DEBUGLOG_GENERAL: /* Both release and debug modes */
+                        Debug.WriteLine(log_str);
+                        await DisplayAlert(titlestring, log_str, "OK");
                         break;
-                    case 1: /* Debug mode only */
+                    case (int)debug_log_types.DEBUGLOG_DEBUG_ONLY: /* Debug mode only */
 #if DEBUG
-                        await DisplayAlert(titlestring, logstr, "OK");
+                        Debug.WriteLine(log_str);
+                        await DisplayAlert(titlestring, log_str, "OK");
+#endif
+                        break;
+                    case (int)debug_log_types.DEBUGLOG_FILE_DESCRIPTOR:
+#if DEBUG
+                        Debug.WriteLine("File descriptor value: " + log_param + " @ " + log_str);
 #endif
                         break;
                 }
-
             }
         }
 

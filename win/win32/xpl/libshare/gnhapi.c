@@ -325,7 +325,6 @@ int LibZapGlyphToCornerGlyph(int adjglyph, unsigned long adjflags, int source_di
     return zap_glyph_to_corner_glyph(adjglyph, adjflags, source_dir);
 }
 
-
 int
 LibChmod(const char* filename, unsigned int mode)
 {
@@ -378,7 +377,7 @@ void gnhapi_raw_print(const char* text)
     {
         write_text2buf_utf8(buf, UTF8BUFSZ, text);
         if (*gnhapi_putstr_buffer)
-            Strcat(gnhapi_putstr_buffer, " ");
+            Strcat(gnhapi_putstr_buffer, "\n");
         Strcpy(eos(gnhapi_putstr_buffer), buf);
     }
 }
@@ -391,6 +390,19 @@ void gnhapi_putstr_ex(winid wid, const char* text, int attr, int color, int appe
 void gnhapi_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int append)
 {
     gnhapi_raw_print(text);
+}
+
+void
+gnhapi_issue_gui_command(cmd_id, cmd_param, cmd_param2, cmd_str)
+int cmd_id, cmd_param, cmd_param2;
+const char* cmd_str;
+{
+    if (cmd_id == GUI_CMD_DEBUGLOG)
+    {
+        char buf[BUFSZ];
+        Sprintf(buf, "DebugLog: %d, %s", cmd_param2, cmd_str);
+        gnhapi_raw_print(buf);
+    }
 }
 
 int
@@ -407,6 +419,7 @@ LibValidateSaveFile(const char* filename, char* output_str)
     windowprocs.win_putstr_ex = gnhapi_putstr_ex;
     windowprocs.win_putstr_ex2 = gnhapi_putstr_ex2;
     windowprocs.win_raw_print = gnhapi_raw_print;
+    windowprocs.win_issue_gui_command = gnhapi_issue_gui_command;
 
     Strcpy(SAVEF, filename);
 #ifdef COMPRESS_EXTENSION
@@ -429,6 +442,15 @@ LibValidateSaveFile(const char* filename, char* output_str)
         Strcpy(output_str, buf);
     }
     return res;
+}
+
+int
+LibCheckCurrentFileDescriptor(const char* dir)
+{
+    if (!chdir(dir))
+        return check_current_fd((const char*)0);
+    else
+        return -4;
 }
 
 int GnollHackStart(cmdlineargs)

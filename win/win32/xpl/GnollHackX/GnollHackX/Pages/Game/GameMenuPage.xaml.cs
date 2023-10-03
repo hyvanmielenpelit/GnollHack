@@ -23,9 +23,7 @@ namespace GnollHackX.Pages.Game
     public partial class GameMenuPage : ContentPage
     {
         public GamePage _gamePage;
-        //private int _optionsViewCellIndex = 1;
-        //private int _gcViewCellIndex = 2;
-
+ 
         public GameMenuPage(GamePage gamePage)
         {
             InitializeComponent();
@@ -43,8 +41,13 @@ namespace GnollHackX.Pages.Game
                 btnQuit.Text = "Quit Game";
             }
 
-            btnGC.IsVisible = GHApp.DeveloperMode;
             btnOptions.IsVisible = GHApp.DeveloperMode;
+            btnGC.IsVisible = btnDebug.IsVisible =
+#if DEBUG
+                GHApp.DeveloperMode;
+#else
+                false;
+#endif
 
             //_gcViewCellIndex = InfoSection.IndexOf(GCViewCell);
             //_optionsViewCellIndex = InfoSection.IndexOf(OptionsViewCell);
@@ -123,17 +126,13 @@ namespace GnollHackX.Pages.Game
         public void UpdateLayout()
         {
             MainLayout.IsEnabled = true;
-            btnGC.IsVisible = GHApp.DeveloperMode;
             btnOptions.IsVisible = GHApp.DeveloperMode;
-
-            //if (GHApp.DeveloperMode && !InfoSection.Contains(OptionsViewCell) && _optionsViewCellIndex >= 0)
-            //    InfoSection.Insert(_optionsViewCellIndex, OptionsViewCell);
-            //if (!GHApp.DeveloperMode && InfoSection.Contains(OptionsViewCell))
-            //    InfoSection.Remove(OptionsViewCell);
-            //if (GHApp.DeveloperMode && !InfoSection.Contains(GCViewCell) && _gcViewCellIndex >= 0)
-            //    InfoSection.Insert(_gcViewCellIndex, GCViewCell);
-            //if (!GHApp.DeveloperMode && InfoSection.Contains(GCViewCell))
-            //    InfoSection.Remove(GCViewCell);
+            btnGC.IsVisible = btnDebug.IsVisible =
+#if DEBUG
+                GHApp.DeveloperMode;
+#else
+                false;
+#endif
         }
 
         private bool _backPressed = false;
@@ -166,6 +165,13 @@ namespace GnollHackX.Pages.Game
 
             btnGC.Text = "Done";
             btnGC.TextColor = GHColors.Red;
+            MainLayout.IsEnabled = true;
+        }
+
+        private async void btnDebug_Clicked(object sender, EventArgs e)
+        {
+            MainLayout.IsEnabled = false;
+            await GHApp.ListFileDescriptors(this);
             MainLayout.IsEnabled = true;
         }
 
