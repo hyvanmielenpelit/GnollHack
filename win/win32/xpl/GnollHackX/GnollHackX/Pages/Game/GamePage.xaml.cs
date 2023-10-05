@@ -2143,7 +2143,7 @@ namespace GnollHackX.Pages.Game
             {
                 /* Bypass send checks */
             }
-            else if (!is_game_status && !GHApp.PostingDiagnosticData && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_PROCESS_INFORMATION )
+            else if (!is_game_status && !GHApp.PostingDiagnosticData && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CRITICAL )
             {
                 /* Critical information -- Ask the player */
                 bool sendok = await DisplayAlert("Critical Diagnostic Data", "GnollHack would like to send critical diagnostic data to the development team. Allow?", "Yes", "No");
@@ -2176,7 +2176,15 @@ namespace GnollHackX.Pages.Game
             }
             else if(!is_game_status && status_string != null && status_string != "" && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_ATTACHMENT)
             {
-                _forumPostAttachments.Add(new ForumPostAttachment(status_string, "application/zip", "diagnostic data", !is_game_status, status_type, false));
+                switch (status_datatype)
+                {
+                    case (int)diagnostic_data_attachment_types.DIAGNOSTIC_DATA_ATTACHMENT_GENERIC:
+                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "application/zip", "diagnostic data", !is_game_status, status_type, false));
+                        break;
+                    case (int)diagnostic_data_attachment_types.DIAGNOSTIC_DATA_ATTACHMENT_FILE_DESCRIPTOR_LIST:
+                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/plain", "file descriptor list", !is_game_status, status_type, true));
+                        break;
+                }
                 return;
             }
             else if (!is_game_status && status_string != null && status_string != "" && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CREATE_ATTACHMENT_FROM_TEXT)
@@ -2249,8 +2257,8 @@ namespace GnollHackX.Pages.Game
                     case (int)diagnostic_data_types.DIAGNOSTIC_DATA_IMPOSSIBLE:
                         message = player_name + " - Impossible: " + message + " [" + info + "]";
                         break;
-                    case (int)diagnostic_data_types.DIAGNOSTIC_DATA_PROCESS_INFORMATION:
-                        message = player_name + " - Process Information:\n" + message + "\n[" + info + "]";
+                    case (int)diagnostic_data_types.DIAGNOSTIC_DATA_CRITICAL:
+                        message = player_name + " - Critical:\n" + message + "\n[" + info + "]";
                         break;
                     default:
                         message = player_name + " - Diagnostics: " + message + " [" + info + "]";

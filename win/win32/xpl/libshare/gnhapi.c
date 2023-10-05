@@ -454,9 +454,9 @@ LibCheckCurrentFileDescriptor(const char* dir)
 }
 
 void
-LibReportProcesses()
+LibReportFileDescriptors()
 {
-    maybe_report_processes("Process Report Requested", 24);
+    maybe_report_file_descriptors("Process Report Requested", 24);
 }
 
 int GnollHackStart(cmdlineargs)

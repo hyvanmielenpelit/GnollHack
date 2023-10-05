@@ -284,7 +284,7 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern int LibCheckCurrentFileDescriptor(string dir);
         [DllImport(PlatformConstants.dll)]
-        public static extern int LibReportProcesses();
+        public static extern int LibReportFileDescriptors();
 
         private void LoadNativeLibrary(string libName)
         {
@@ -974,9 +974,9 @@ namespace GnollHackX.Unknown
             return LibCheckCurrentFileDescriptor(GetGnollHackPath());
         }
 
-        public void ReportProcesses()
+        public void ReportFileDescriptors()
         {
-            LibReportProcesses();
+            LibReportFileDescriptors();
         }
 
         public int StartGnollHack(GHGame ghGame)

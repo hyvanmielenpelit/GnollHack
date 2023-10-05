@@ -641,25 +641,25 @@ char errbuf[];
     {
         Sprintf(errbuf, "Cannot create file \"%s\" for level %d (errno %d).",
             lock, lev, errno);
-        maybe_report_processes(errbuf, errno);
+        maybe_report_file_descriptors(errbuf, errno);
     }
 
     return fd;
 }
 
 void
-maybe_report_processes(logtext, error_number)
+maybe_report_file_descriptors(logtext, error_number)
 const char* logtext;
 int error_number;
 {
-#ifdef UNIX
+#if defined(UNIX) && defined(GNH_MOBILE)
     if (error_number == EMFILE)
     {
-        char line[BUFSZ];
         char cmd[BUFSZ];
         char msgbuf[BUFSZ] = "";
+        (void)mkdir("temp", 0700);
         int pid = (int)getpid();
-        Sprintf(cmd, "ls -l /proc/%d/fd", pid);
+        Sprintf(cmd, "ls -l /proc/%d/fd > temp/file_descriptors.txt", pid);
         FILE* poutput = popen(cmd, "r");
         if (poutput)
         {
@@ -669,43 +669,11 @@ int error_number;
                 Strcat(msgbuf, " - ");
             }
             Strcat(msgbuf, cmd);
-
-            char* outbuf = 0;
-            while (fgets(line, BUFSZ - 1, poutput))
-            {
-                line[BUFSZ - 1] = 0;
-                if (!outbuf)
-                {
-                    outbuf = (char*)alloc(strlen(line) + 3 + 1);
-                    if (outbuf)
-                    {
-                        Strcpy(outbuf, line);
-                        Strcat(outbuf, " | ");
-                    }
-                }
-                else
-                {
-                    char* newoutbuf = (char*)alloc(strlen(outbuf) + strlen(line) + 3 + 1);
-                    if (newoutbuf)
-                    {
-                        Strcpy(newoutbuf, outbuf);
-                        Strcat(newoutbuf, line);
-                        Strcat(newoutbuf, " | ");
-                        free((genericptr_t)outbuf);
-                        outbuf = newoutbuf;
-                    }
-                }
-            }
             pclose(poutput);
-            if (outbuf)
+            if (issue_gui_command)
             {
-                /* Note that cannot create a log file for writing since the file descriptor limit has been reached */
-                if (*outbuf && issue_gui_command)
-                {
-                    issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_CREATE_ATTACHMENT_FROM_TEXT, DIAGNOSTIC_DATA_ATTACHMENT_FILE_DESCRIPTOR_LIST, outbuf);
-                    issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_PROCESS_INFORMATION, 0, msgbuf);
-                }
-                free((genericptr_t)outbuf);
+                issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_ATTACHMENT, DIAGNOSTIC_DATA_ATTACHMENT_FILE_DESCRIPTOR_LIST, "temp/file_descriptors.txt");
+                issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_CRITICAL, 0, msgbuf);
             }
         }
     }
@@ -748,7 +716,7 @@ char errbuf[];
     {
         Sprintf(errbuf, "Cannot open file \"%s\" for level %d (errno %d).",
             lock, lev, errno);
-        maybe_report_processes(errbuf, errno);
+        maybe_report_file_descriptors(errbuf, errno);
     }
     return fd;
 }
@@ -1045,7 +1013,7 @@ char errbuf[];
     {
         Sprintf(errbuf, "Cannot create bones \"%s\", id %s (errno %d).", lock,
             *bonesid, errno);
-        maybe_report_processes(errbuf, errno);
+        maybe_report_file_descriptors(errbuf, errno);
     }
 #if defined(VMS) && !defined(SECURE)
     /*
