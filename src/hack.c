@@ -1271,8 +1271,6 @@ int mode;
             }
             return TRUE;
         }
-        //if (mode == TRAVP_TRAVEL)
-        //    context.run = 8;
     }
     if (u.tx != u.ux || u.ty != u.uy) {
         xchar travel[COLNO][ROWNO];
@@ -1388,7 +1386,6 @@ int mode;
                                     && x == u.tx && y == u.ty) {
                                     nomul(0);
                                     /* reset run so domove run checks work */
-                                    //context.run = 8;
                                     iflags.travelcc.x = iflags.travelcc.y = 0;
                                 }
                                 return TRUE;
@@ -1888,12 +1885,12 @@ domove_core()
         if (context.run)
         {
             /* Check if new monsters have come to vision */
-            struct monst* mtmp;
-            for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+            struct monst* mtmp2;
+            for (mtmp2 = fmon; mtmp2; mtmp2 = mtmp2->nmon)
             {
-                if (!DEADMONSTER(mtmp) && canspotmon(mtmp) && !is_peaceful(mtmp) && isok(mtmp->mx, mtmp->my) && couldsee(mtmp->mx, mtmp->my) && !(mtmp->mon_flags & MON_FLAGS_SPOTTED_IN_RUN))
+                if (!DEADMONSTER(mtmp2) && canspotmon(mtmp2) && !is_peaceful(mtmp2) && isok(mtmp2->mx, mtmp2->my) && couldsee(mtmp2->mx, mtmp2->my) && !(mtmp2->mon_flags & MON_FLAGS_SPOTTED_IN_RUN))
                 {
-                    You("spot %s.  You stop %s.", a_monnam(mtmp), context.travel ? "travelling" : "running");
+                    You("spot %s.  You stop %s.", a_monnam(mtmp2), context.travel ? "travelling" : "running");
                     nomul(0);
                     context.move = 0;
                     return;
@@ -1908,7 +1905,6 @@ domove_core()
         {
             if (context.run) 
             {
-
                 if (iflags.mention_walls) 
                 {
                     if (trap && trap->tseen)

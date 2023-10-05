@@ -649,8 +649,8 @@ char errbuf[];
 
 void
 maybe_report_file_descriptors(logtext, error_number)
-const char* logtext;
-int error_number;
+const char* logtext UNUSED;
+int error_number UNUSED;
 {
 #if defined(UNIX) && defined(GNH_MOBILE)
     if (error_number == EMFILE)

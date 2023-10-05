@@ -1732,7 +1732,7 @@ struct monst* targetmonst;
     already_known = (sobj->oclass == SPBOOK_CLASS /* spell */
                      || objects[otyp].oc_name_known);
     char effbuf[BUFSZ] = "";
-    boolean isyou = !targetmonst || targetmonst == &youmonst;
+    //boolean isyou = !targetmonst || targetmonst == &youmonst;
 
     switch (otyp) {
     case SCR_MAIL:
