@@ -659,7 +659,8 @@ int error_number UNUSED;
         char msgbuf[BUFSZ] = "";
         (void)mkdir("temp", 0700);
         int pid = (int)getpid();
-        Sprintf(cmd, "ls -l /proc/%d/fd > temp/file_descriptors.txt", pid);
+        //Sprintf(cmd, "ls -l /proc/%d/fd > temp/file_descriptors.txt", pid);
+        Sprintf(cmd, "lsof -p %d > temp/file_descriptors.txt", pid);
         FILE* poutput = popen(cmd, "r");
         if (poutput)
         {

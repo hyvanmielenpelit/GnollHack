@@ -1701,25 +1701,14 @@ namespace GnollHackX
 
             /* Print processes via C# */
             int id = Process.GetCurrentProcess().Id;
-            string path = Path.Combine("/proc", id.ToString(), "fd");
-            string[] files = Directory.GetFiles(path);
+            //string path = Path.Combine("/proc", id.ToString(), "fd");
             string output = "";
-            if(files != null)
-            {
-                foreach (string file in files)
-                {
-                    FileInfo fileInfo = new FileInfo(file); 
-                    string canpath = GHApp.PlatformService?.GetCanonicalPath(file);
-                    output += fileInfo.Name + " -> " + canpath + "\n";
-                }
-            }
-            output += "\n";
             var proc = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = "ls",
-                    Arguments = "-l " + path,
+                    FileName = "lsof",
+                    Arguments = "-p " + id.ToString(),
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     CreateNoWindow = true
@@ -1730,7 +1719,7 @@ namespace GnollHackX
             {
                 output += proc.StandardOutput.ReadLine() + "\n";
             }
-            await page.DisplayAlert("FDs", output, "OK");
+            await page.DisplayAlert("File Descriptors", output, "OK");
         }
 
         public static void PlayButtonClickedSound()
