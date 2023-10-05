@@ -2733,7 +2733,7 @@ struct monst* targetmonst;
         break;
     case SPE_CURSE:
     case SPE_BLESS:
-        if (!bless_or_curse(sobj, targetmonst, isyou))
+        if (!bless_or_curse(sobj, targetmonst, confused))
         {
             *effect_happened_ptr = 0;
             return 0;
@@ -4519,6 +4519,9 @@ boolean confused; /* Is caster confused */
             free((genericptr_t)pick_list);
             if(!(is_serviced_spell && !isyou))
                 u.uconduct.gnostic++;
+            if (!is_serviced_spell && confused)
+                pline_ex1(ATR_NONE, CLR_MSG_FAIL, "Oops... You mispronounce the magic words.");
+
             enum sfx_sound_types soundid = SFX_BLESS_ITEM_SUCCESS;
             int textcolor = CLR_MSG_ATTENTION;
             if ((otyp == SPE_BLESS && (is_serviced_spell || !confused)) || (otyp == SPE_CURSE && !is_serviced_spell && confused))
