@@ -418,7 +418,7 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
         /* Clear context-dependent UI */
         clear_context_menu();
         if (ui_has_input())
-            context.travel = context.travel1 = context.travel_mode = context.mv = context.run = 0;
+            clear_run_and_travel();
 
         /* Redraw screen */
         if (!context.mv || Blind)
@@ -531,8 +531,7 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
                 if (context.mv) 
                 {
                     if (multi < COLNO && !--multi)
-                        context.travel = context.travel1 = context.travel_mode = context.mv =
-                        context.run = 0;
+                        clear_run_and_travel();
                     domove();
                 }
                 else 

@@ -1884,6 +1884,23 @@ domove_core()
             nomul(0);
             return;
         }
+
+        if (context.run)
+        {
+            /* Check if new monsters have come to vision */
+            struct monst* mtmp;
+            for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+            {
+                if (!DEADMONSTER(mtmp) && canspotmon(mtmp) && !is_peaceful(mtmp) && isok(mtmp->mx, mtmp->my) && couldsee(mtmp->mx, mtmp->my) && !(mtmp->mon_flags & MON_FLAGS_SPOTTED_IN_RUN))
+                {
+                    You("spot %s.  You stop %s.", a_monnam(mtmp), context.travel ? "travelling" : "running");
+                    nomul(0);
+                    context.move = 0;
+                    return;
+                }
+            }
+        }
+
         if (((trap = t_at(x, y)) && trap->tseen)
             || (Blind && !Levitation && !Flying && !is_clinger(youmonst.data)
                 /* && is_pool_or_lava(x, y) */ 
@@ -3643,7 +3660,7 @@ register int nval;
     multi = nval;
     if (nval == 0)
         multi_reason = NULL;
-    context.travel = context.travel1 = context.travel_mode = context.mv = context.run = 0;
+    clear_run_and_travel();
 }
 
 /* called when a non-movement, multi-turn action has completed */
@@ -3730,7 +3747,7 @@ kill_player(knam, k_format)
 register const char* knam;
 int k_format;
 {
-    context.travel = context.travel1 = context.travel_mode = context.mv = context.run = 0;
+    clear_run_and_travel();
     if (Upolyd)
     {
         u.mh = 0;
@@ -3764,7 +3781,7 @@ int k_format;
     deduct_player_hp(n);
 
     if(n > 0)
-        context.travel = context.travel1 = context.travel_mode = context.mv = context.run = 0;
+        clear_run_and_travel();
 
     if (u.uhp < 1) 
     {
@@ -4047,6 +4064,31 @@ adjusted_delay_output()
     else
     {
         delay_output();
+    }
+}
+
+void
+clear_run_and_travel(VOID_ARGS)
+{
+    if (context.run)
+    {
+        struct monst* mtmp;
+        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+            mtmp->mon_flags &= ~MON_FLAGS_SPOTTED_IN_RUN;
+    }
+    context.travel = context.travel1 = context.travel_mode = context.mv = context.run = 0;
+}
+
+void
+mark_spotted_monsters_in_run(VOID_ARGS)
+{
+    struct monst* mtmp;
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+    {
+        if (!DEADMONSTER(mtmp) && canspotmon(mtmp) && isok(mtmp->mx, mtmp->my) && couldsee(mtmp->mx, mtmp->my))
+            mtmp->mon_flags |= MON_FLAGS_SPOTTED_IN_RUN;
+        else
+            mtmp->mon_flags &= ~MON_FLAGS_SPOTTED_IN_RUN;
     }
 }
 

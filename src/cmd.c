@@ -7333,7 +7333,7 @@ register char *cmd;
 
     /* handle most movement commands */
     prefix_seen = FALSE;
-    context.travel = context.travel1 = context.travel_mode = context.mv = context.run = 0;
+    clear_run_and_travel();
     spkey = ch2spkeys(*cmd, NHKF_RUN, NHKF_CLICKLOOK);
 
     if (flags.prefer_fast_move)
@@ -7358,6 +7358,7 @@ register char *cmd;
     case NHKF_RUSH:
         if (movecmd(cmd[1])) {
             context.run = 2;
+            mark_spotted_monsters_in_run();
             domove_attempting |= DOMOVE_RUSH;
         } else
             prefix_seen = TRUE;
@@ -7369,6 +7370,7 @@ register char *cmd;
     case NHKF_RUN:
         if (movecmd(lowc(cmd[1]))) {
             context.run = 3;
+            mark_spotted_monsters_in_run();
             domove_attempting |= DOMOVE_RUSH;
         } else
             prefix_seen = TRUE;
@@ -7404,6 +7406,7 @@ register char *cmd;
         if (movecmd(lowc(cmd[1]))) {
             context.run = 1;
             context.nopick = 1;
+            mark_spotted_monsters_in_run();
             domove_attempting |= DOMOVE_RUSH;
         } else
             prefix_seen = TRUE;
@@ -7446,6 +7449,7 @@ register char *cmd;
             context.travel_mode = (spkey == NHKF_TRAVEL_WALK) ? TRAVEL_MODE_WALK : TRAVEL_MODE_NORMAL;
             context.tmid = 0;
             context.toid = 0;
+            mark_spotted_monsters_in_run();
             if (isok(u.tx, u.ty))
             {
                 if (spkey == NHKF_TRAVEL_ATTACK)
@@ -7471,12 +7475,14 @@ register char *cmd;
             movecmd(Cmd.num_pad ? unmeta(*cmd) : lowc(*cmd))) 
         {
             context.run = 1;
+            mark_spotted_monsters_in_run();
             domove_attempting |= DOMOVE_RUSH;
         } 
         else if (Cmd.gnh_layout ? (digit(unctrl(*cmd)) && movecmd(unctrl(*cmd))) :
             movecmd(unctrl(*cmd))) 
         {
             context.run = 3;
+            mark_spotted_monsters_in_run();
             domove_attempting |= DOMOVE_RUSH;
         }
         break;
@@ -7505,9 +7511,8 @@ register char *cmd;
            feedback and led to strangeness if the key pressed
            ('u' in particular) was overloaded for num_pad use */
         You_cant("get there from here...");
-        context.run = 0;
+        clear_run_and_travel();
         context.nopick = context.forcefight = FALSE;
-        context.move = context.mv = FALSE;
         multi = 0;
         return;
     }

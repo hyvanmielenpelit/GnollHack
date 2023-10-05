@@ -444,16 +444,14 @@ register struct monst *mtmp;
                 buf[0] = highc(buf[0]);
                 play_sfx_sound(SFX_SOMETHING_IN_WAY);
                 You("stop.  %s is in the way!", buf);
-                context.travel = context.travel1 = context.travel_mode = context.mv = context.run
-                    = 0;
+                clear_run_and_travel();
                 return TRUE;
             } 
             else if ((!mon_can_move(mtmp) || (mtmp->data->mmove == 0)) && rn2(6)) 
             {
                 play_sfx_sound(SFX_PET_DOES_NOT_MOVE);
                 pline("%s doesn't seem to move!", Monnam(mtmp));
-                context.travel = context.travel1 = context.travel_mode = context.mv = context.run
-                    = 0;
+                clear_run_and_travel();
                 return TRUE;
             }
             else

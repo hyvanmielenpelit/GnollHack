@@ -1383,6 +1383,8 @@ E struct extended_menu_info NDECL(active_menu_info);
 E struct extended_menu_info FDECL(menu_group_heading_info, (CHAR_P));
 E struct extended_menu_info FDECL(menu_special_mark_info, (CHAR_P));
 E const char* FDECL(get_cmap_or_cmap_variation_glyph_explanation, (int));
+E void NDECL(clear_run_and_travel);
+E void NDECL(mark_spotted_monsters_in_run);
 E void NDECL(reset_hack);
 
 /* ### hacklib.c ### */
