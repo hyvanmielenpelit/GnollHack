@@ -2203,6 +2203,7 @@ namespace GnollHackX.Pages.Game
                     number++;
                 } while (File.Exists(temp_string));
 
+                GHApp.GnollHackService.Chmod(tempdirpath, (uint)ChmodPermissions.S_IALL);
                 try
                 {
                     using (FileStream fs = new FileStream(temp_string, FileMode.Create))

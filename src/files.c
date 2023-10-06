@@ -47,8 +47,14 @@ const
 
 #if defined(UNIX) && (defined(QT_GRAPHICS) || defined(ANDROID) || defined(GNH_MOBILE))
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <dirent.h>
 #include <stdlib.h>
+#ifdef GNH_IOS
+#include <fcntl.h>
+#include <errno.h>
+#include <sys/param.h>
+#endif
 #endif
 
 #if defined(UNIX) || defined(VMS) || !defined(NO_SIGNAL)
@@ -647,6 +653,55 @@ char errbuf[];
     return fd;
 }
 
+#if defined(UNIX) && defined(GNH_IOS) && defined(GNH_MOBILE)
+#ifndef F_GETPATH
+#define F_GETPATH 127
+#endif
+#ifndef MAXPATHLEN
+#define MAXPATHLEN 4096
+#endif
+char *
+gnh_lsof(VOID_ARGS)
+{
+    int flags;
+    int fd;
+    char buf[MAXPATHLEN + 1];
+    int n = 1;
+    char outbuf[MAXPATHLEN + BUFSZ * 2];
+    char* outptr = 0;
+
+    for (fd = 0; fd < (int)FD_SETSIZE; fd++) {
+        errno = 0;
+        flags = fcntl(fd, F_GETFD, 0);
+        if (flags == -1 && errno) {
+            if (errno != EBADF) {
+                return;
+            }
+            else
+                continue;
+        }
+        fcntl(fd, F_GETPATH, buf);
+        Sprintf(outbuf, "File Descriptor %d number %d in use for: %s | ", fd, n, buf);
+        if (!outptr)
+        {
+            outptr = (char*)alloc(strlen(outbuf + 1));
+            Strcpy(outptr, outbuf);
+        }
+        else
+        {
+            char* newptr = (char*)alloc(strlen(outptr) + strlen(outbuf) + 1);
+            Strcpy(newptr, outptr);
+            Strcat(newptr, outbuf);
+            free((genericptr_t)outptr);
+            outptr = newptr;
+        }
+        ++n;
+    }
+
+    return outptr;
+}
+#endif
+
 void
 maybe_report_file_descriptors(logtext, error_number)
 const char* logtext UNUSED;
@@ -655,12 +710,27 @@ int error_number UNUSED;
 #if defined(UNIX) && defined(GNH_MOBILE)
     if (error_number == EMFILE)
     {
+#if GNH_IOS
+        char* ptr = gnh_lsof();
+        if (ptr)
+        {
+            if (issue_gui_command)
+            {
+                issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_CREATE_ATTACHMENT_FROM_TEXT, DIAGNOSTIC_DATA_ATTACHMENT_FILE_DESCRIPTOR_LIST, ptr);
+                issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_CRITICAL, 0, "gnh_lsof");
+            }
+            free((genericptr_t)ptr);
+        }
+#else
         char cmd[BUFSZ];
         char msgbuf[BUFSZ] = "";
         (void)mkdir("temp", 0700);
         int pid = (int)getpid();
-        //Sprintf(cmd, "ls -l /proc/%d/fd > temp/file_descriptors.txt", pid);
+#ifdef GNH_ANDROID
         Sprintf(cmd, "lsof -p %d > temp/file_descriptors.txt", pid);
+#else
+        Sprintf(cmd, "ls -l /proc/%d/fd > temp/file_descriptors.txt", pid);
+#endif
         FILE* poutput = popen(cmd, "r");
         if (poutput)
         {
@@ -677,6 +747,7 @@ int error_number UNUSED;
                 issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_CRITICAL, 0, msgbuf);
             }
         }
+#endif
     }
 #endif
 }

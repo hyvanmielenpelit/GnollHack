@@ -1698,28 +1698,29 @@ namespace GnollHackX
         {
             /* Send Diagnostic Data via C */
             GnollHackService?.ReportFileDescriptors();
-
-            /* Print processes via C# */
-            int id = Process.GetCurrentProcess().Id;
-            //string path = Path.Combine("/proc", id.ToString(), "fd");
-            string output = "";
-            var proc = new Process
+            if(IsAndroid)
             {
-                StartInfo = new ProcessStartInfo
+                /* Print file descriptors via C# */
+                int id = Process.GetCurrentProcess().Id;
+                string output = "";
+                var proc = new Process
                 {
-                    FileName = "lsof",
-                    Arguments = "-p " + id.ToString(),
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    CreateNoWindow = true
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "lsof",
+                        Arguments = "-p " + id.ToString(),
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        CreateNoWindow = true
+                    }
+                };
+                proc.Start();
+                while (!proc.StandardOutput.EndOfStream)
+                {
+                    output += proc.StandardOutput.ReadLine() + "\n";
                 }
-            };
-            proc.Start();
-            while (!proc.StandardOutput.EndOfStream)
-            {
-                output += proc.StandardOutput.ReadLine() + "\n";
+                await page.DisplayAlert("File Descriptors", "GnollHack will now attempt to send critical diagnostic data." + (output != "" ? "The information is as follows:\n\n" + output : ""), "OK");
             }
-            await page.DisplayAlert("File Descriptors", output, "OK");
         }
 
         public static void PlayButtonClickedSound()
