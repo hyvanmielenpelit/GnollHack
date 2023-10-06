@@ -675,7 +675,7 @@ gnh_lsof(VOID_ARGS)
         flags = fcntl(fd, F_GETFD, 0);
         if (flags == -1 && errno) {
             if (errno != EBADF) {
-                return;
+                return outptr;
             }
             else
                 continue;
