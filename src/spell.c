@@ -2607,6 +2607,7 @@ struct monst* targetmonst;
     case SPE_POWER_WORD_STUN:
     case SPE_POWER_WORD_BLIND:
     case SPE_SUNLIGHT_BEAM:
+    case SPE_RAY_OF_RADIANCE:
     case SPE_RESURRECTION:
     case SPE_RAISE_MINOR_ZOMBIE:
     case SPE_CREATE_MINOR_MUMMY:
