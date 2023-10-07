@@ -102,6 +102,22 @@ namespace GnollHackX
             }
         }
 
+        public static void InitFileDescriptors()
+        {
+#if DEBUG
+            int limitbefore = GnollHackService.GetFileDescriptorLimit(false);
+#endif
+            if (!GnollHackService.IncreaseFileDescriptorLimitsToAtLeast(GHConstants.MinimumFileDescriptorLimit, GHConstants.MinimumFileDescriptorLimit))
+                Debug.WriteLine("Failed to set file descriptor limits.");
+            else
+            {
+#if DEBUG
+                int limitafter = GnollHackService.GetFileDescriptorLimit(false);
+                Debug.WriteLine("File descriptor limit changed from " + limitbefore + " to " + limitafter + ".");
+#endif
+            }
+        }
+
         private static Secrets _currentSecrets = null;
         public static Secrets CurrentSecrets
         {
@@ -1708,7 +1724,7 @@ namespace GnollHackX
                     StartInfo = new ProcessStartInfo
                     {
                         FileName = "lsof",
-                        Arguments = "-p " + id.ToString(),
+                        Arguments = "-a -p " + id.ToString(),
                         UseShellExecute = false,
                         RedirectStandardOutput = true,
                         CreateNoWindow = true

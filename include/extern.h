@@ -1289,7 +1289,11 @@ E void FDECL(trackwish, (char*));
 #endif
 E int FDECL(check_current_fd, (const char*));
 E void FDECL(maybe_report_file_descriptors, (const char*, int));
-
+#if defined(UNIX) && defined(GNH_MOBILE)
+E char* NDECL(gnh_lsof);
+E boolean FDECL(increase_file_descriptor_limits_to_at_least, (unsigned long, unsigned long));
+E int FDECL(get_file_descriptor_limit, (BOOLEAN_P));
+#endif
 
 /* ### fountain.c ### */
 

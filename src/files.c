@@ -54,6 +54,7 @@ const
 #include <fcntl.h>
 #include <errno.h>
 #include <sys/param.h>
+#include <sys/resource.h>
 #endif
 #endif
 
@@ -653,24 +654,80 @@ char errbuf[];
     return fd;
 }
 
-#if defined(UNIX) && defined(GNH_IOS) && defined(GNH_MOBILE)
+#if defined(UNIX) && defined(GNH_MOBILE)
+boolean
+increase_file_descriptor_limits_to_at_least(new_cur_minimum, new_max_minimum)
+unsigned long new_cur_minimum, new_max_minimum;
+{
+    struct rlimit rlim;
+    if (getrlimit(RLIMIT_NOFILE, &rlim) == 0) 
+    {
+        if (rlim.rlim_max != RLIM_INFINITY && rlim.rlim_max < (rlim_t)new_max_minimum)
+            rlim.rlim_max = (rlim_t)new_max_minimum;
+        if (rlim.rlim_cur != RLIM_INFINITY && rlim.rlim_cur < (rlim_t)new_cur_minimum)
+            rlim.rlim_cur = (rlim_t)new_cur_minimum;
+        if (setrlimit(RLIMIT_NOFILE, &rlim) == -1) 
+        {
+            /* Failed */
+            return FALSE;
+        }
+        return TRUE;
+    }
+    else 
+    {
+        /* Failed */
+        return FALSE;
+    }
+}
+
+int
+get_file_descriptor_limit(is_max_limit)
+boolean is_max_limit;
+{
+    struct rlimit rlim;
+    if (getrlimit(RLIMIT_NOFILE, &rlim) == 0)
+    {
+        if (is_max_limit)
+        {
+            if (rlim.rlim_max == RLIM_INFINITY)
+                return -1;
+            else
+                return (int)rlim.rlim_max;
+        }
+        else
+        {
+            if (rlim.rlim_cur == RLIM_INFINITY)
+                return -1;
+            else
+                return (int)rlim.rlim_cur;
+        }
+    }
+    else
+    {
+        /* Failed */
+        return -2;
+    }
+}
+
+/* Dummy for non-Mac/iOS systems */
 #ifndef F_GETPATH
 #define F_GETPATH 127
 #endif
-#ifndef MAXPATHLEN
-#define MAXPATHLEN 4096
-#endif
+
 char *
 gnh_lsof(VOID_ARGS)
 {
+    char* outptr = 0;
+#ifdef GNH_IOS
     int flags;
     int fd;
-    char buf[MAXPATHLEN + 1];
+    char buf[MAXPATHLEN + 1 + BUFSZ * 2];
     int n = 1;
-    char outbuf[MAXPATHLEN + BUFSZ * 2];
-    char* outptr = 0;
+    char outbuf[MAXPATHLEN + BUFSZ * 4];
 
     for (fd = 0; fd < (int)FD_SETSIZE; fd++) {
+        *buf = 0;
+        *outbuf = 0;
         errno = 0;
         flags = fcntl(fd, F_GETFD, 0);
         if (flags == -1 && errno) {
@@ -681,10 +738,10 @@ gnh_lsof(VOID_ARGS)
                 continue;
         }
         fcntl(fd, F_GETPATH, buf);
-        Sprintf(outbuf, "File Descriptor %d number %d in use for: %s | ", fd, n, buf);
+        Sprintf(outbuf, "File Descriptor %d (number %d) in use for: %s | ", fd, n, buf);
         if (!outptr)
         {
-            outptr = (char*)alloc(strlen(outbuf + 1));
+            outptr = (char*)alloc(strlen(outbuf) + 1);
             Strcpy(outptr, outbuf);
         }
         else
@@ -697,7 +754,7 @@ gnh_lsof(VOID_ARGS)
         }
         ++n;
     }
-
+#endif
     return outptr;
 }
 #endif
@@ -727,7 +784,7 @@ int error_number UNUSED;
         (void)mkdir("temp", 0700);
         int pid = (int)getpid();
 #ifdef GNH_ANDROID
-        Sprintf(cmd, "lsof -p %d > temp/file_descriptors.txt", pid);
+        Sprintf(cmd, "lsof -a -p %d > temp/file_descriptors.txt", pid);
 #else
         Sprintf(cmd, "ls -l /proc/%d/fd > temp/file_descriptors.txt", pid);
 #endif

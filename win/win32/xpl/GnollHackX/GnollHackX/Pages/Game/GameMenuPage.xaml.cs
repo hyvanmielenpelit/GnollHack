@@ -41,7 +41,13 @@ namespace GnollHackX.Pages.Game
                 btnQuit.Text = "Quit Game";
             }
 
-            btnOptions.IsVisible = btnGC.IsVisible = btnDebug.IsVisible = GHApp.DeveloperMode;
+            btnOptions.IsVisible = GHApp.DeveloperMode;
+            btnGC.IsVisible = btnDebug.IsVisible =
+#if DEBUG
+                GHApp.DeveloperMode;
+#else
+                false;
+#endif
         }
 
         private async void btnSave_Clicked(object sender, EventArgs e)
@@ -111,7 +117,13 @@ namespace GnollHackX.Pages.Game
         public void UpdateLayout()
         {
             MainLayout.IsEnabled = true;
-            btnOptions.IsVisible = btnGC.IsVisible = btnDebug.IsVisible = GHApp.DeveloperMode;
+            btnOptions.IsVisible = GHApp.DeveloperMode;
+            btnGC.IsVisible = btnDebug.IsVisible =
+#if DEBUG
+                GHApp.DeveloperMode;
+#else
+                false;
+#endif
         }
 
         private bool _backPressed = false;

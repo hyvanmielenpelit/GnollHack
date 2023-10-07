@@ -285,6 +285,10 @@ namespace GnollHackX.Unknown
         public static extern int LibCheckCurrentFileDescriptor(string dir);
         [DllImport(PlatformConstants.dll)]
         public static extern int LibReportFileDescriptors();
+        [DllImport(PlatformConstants.dll)]
+        public static extern int LibIncreaseFileDescriptorLimitsToAtLeast(int min_cur, int min_max);
+        [DllImport(PlatformConstants.dll)]
+        public static extern int LibGetFileDescriptorLimit(int is_max_limit);
 
         private void LoadNativeLibrary(string libName)
         {
@@ -977,6 +981,14 @@ namespace GnollHackX.Unknown
         public void ReportFileDescriptors()
         {
             LibReportFileDescriptors();
+        }
+        public bool IncreaseFileDescriptorLimitsToAtLeast(int min_cur, int min_max)
+        {
+            return LibIncreaseFileDescriptorLimitsToAtLeast(min_cur, min_max) != 0;
+        }
+        public int GetFileDescriptorLimit(bool is_max_limit)
+        {
+            return LibGetFileDescriptorLimit(is_max_limit ? 1 : 0);
         }
 
         public int StartGnollHack(GHGame ghGame)

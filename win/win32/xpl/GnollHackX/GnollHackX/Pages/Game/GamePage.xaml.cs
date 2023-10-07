@@ -694,16 +694,12 @@ namespace GnollHackX.Pages.Game
 
         public async void StartGame()
         {
-            GHApp.DebugCheckCurrentFileDescriptor("StartGame1");
-
             _mainPage.GameStarted = true;
             LoadingProgressBar.Progress = 0.0;
 
             var tasks = new List<Task>();
             _gnollHackService = GHApp.GnollHackService;
             _gnollHackService.InitializeGnollHack();
-
-            GHApp.DebugCheckCurrentFileDescriptor("StartGame2");
 
             if (!GHApp.StartGameDataSet)
             {
@@ -742,7 +738,6 @@ namespace GnollHackX.Pages.Game
                     }
                 }));
                 await Task.WhenAll(tasks);
-                GHApp.DebugCheckCurrentFileDescriptor("StartGame3");
                 tasks.Clear();
 
                 tasks.Add(LoadingProgressBar.ProgressTo(0.6, 100, Easing.Linear));
@@ -778,7 +773,6 @@ namespace GnollHackX.Pages.Game
 
                 }));
                 await Task.WhenAll(tasks);
-                GHApp.DebugCheckCurrentFileDescriptor("StartGame4");
                 tasks.Clear();
 
                 tasks.Add(LoadingProgressBar.ProgressTo(0.7, 100, Easing.Linear));
@@ -821,7 +815,6 @@ namespace GnollHackX.Pages.Game
                 }
             }));
             await Task.WhenAll(tasks);
-            GHApp.DebugCheckCurrentFileDescriptor("StartGame5");
             tasks.Clear();
 
             await LoadingProgressBar.ProgressTo(0.95, 50, Easing.Linear);
@@ -931,7 +924,7 @@ namespace GnollHackX.Pages.Game
             });
 
             await LoadingProgressBar.ProgressTo(1.0, 20, Easing.Linear);
-            GHApp.DebugCheckCurrentFileDescriptor("StartGame6");
+            GHApp.DebugCheckCurrentFileDescriptor("StartGameFinished");
         }
 
         public async void RestartGame()

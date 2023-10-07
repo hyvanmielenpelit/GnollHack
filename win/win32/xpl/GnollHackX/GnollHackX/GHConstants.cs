@@ -1421,9 +1421,9 @@ namespace GnollHackX
         None = 0x00
     }
 
-
     public class GHConstants
     {
+        public const int MinimumFileDescriptorLimit = 4096;
         public const int InputBufferLength = 32;
         public const int BUFSZ = 256;
         public const int UTF8BUFSZ = 256 * 4;
@@ -1468,7 +1468,7 @@ namespace GnollHackX
         public const int MaxPlayedZapAnimations = 16;
         public const int MaxNormalImmediateSoundInstances = 36;
         public const int MaxLongImmediateSoundInstances = 48;
-        public const int MaxChannels = 108;
+        public const int MaxChannels = 512;
         public const int PIT_BOTTOM_BORDER = 2;
         public const int SPECIAL_HEIGHT_IN_PIT = -32;
         public const int SPECIAL_HEIGHT_LEVITATION = 16;
@@ -1571,7 +1571,6 @@ namespace GnollHackX
         public const bool DefaultLighterDarkening = true;
         public const bool DefaultAlternativeLayerDrawing = false;
     }
-
 
     [StructLayout(LayoutKind.Sequential)]
     public struct GHSelectedItem

@@ -459,6 +459,18 @@ LibReportFileDescriptors()
     maybe_report_file_descriptors("Process Report Requested", 24);
 }
 
+int
+LibIncreaseFileDescriptorLimitsToAtLeast(int min_cur, int min_max)
+{
+    return increase_file_descriptor_limits_to_at_least((unsigned long)min_cur, (unsigned long)min_max);
+}
+
+int
+LibGetFileDescriptorLimit(int is_max_limit)
+{
+    return get_file_descriptor_limit((boolean)is_max_limit);
+}
+
 int GnollHackStart(cmdlineargs)
 char* cmdlineargs;
 {
