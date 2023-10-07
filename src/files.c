@@ -5506,7 +5506,8 @@ unsigned oid; /* book identifier */
     char line[BUFSZ], lastline[BUFSZ];
 
     int scope = 0;
-    int linect = 0, passagecnt = 0, targetpassage = 0;
+    //int linect = 0;
+    int passagecnt = 0, targetpassage = 0;
     const char *badtranslation = "an incomprehensible foreign translation";
     boolean matchedsection = FALSE, matchedtitle = FALSE;
     winid tribwin = WIN_ERR;
@@ -5555,7 +5556,7 @@ unsigned oid; /* book identifier */
 
     *line = *lastline = '\0';
     while (dlb_fgets(line, sizeof line, fp) != 0) {
-        linect++;
+        //linect++;
         (void) strip_newline(line);
         switch (line[0]) {
         case '%':
@@ -5614,8 +5615,8 @@ unsigned oid; /* book identifier */
                 if (scope)
                     --scope;
             } else {
-                debugpline1("tribute file error: bad %% command, line %d.",
-                            linect);
+                //debugpline1("tribute file error: bad %% command, line %d.",
+                //            linect);
             }
             break;
         case '#':

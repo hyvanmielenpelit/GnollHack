@@ -1482,7 +1482,7 @@ save_msghistory(fd, mode)
 int fd, mode;
 {
     char *msg, *attrs, *colors;
-    int msgcount = 0;
+    //int msgcount = 0;
     int msglen = 0;
     int minusone = -1;
     boolean init = TRUE;
@@ -1502,11 +1502,11 @@ int fd, mode;
             bwrite(fd, (genericptr_t) msg, msglen);
             bwrite(fd, (genericptr_t) attrs, msglen);
             bwrite(fd, (genericptr_t) colors, msglen);
-            ++msgcount;
+            //++msgcount;
         }
         bwrite(fd, (genericptr_t) &minusone, sizeof(int));
     }
-    debugpline1("Stored %d messages into savefile.", msgcount);
+    //debugpline1("Stored %d messages into savefile.", msgcount);
     /* note: we don't attempt to handle release_data() here */
 }
 

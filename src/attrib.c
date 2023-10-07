@@ -1257,12 +1257,11 @@ restore_attrib()
 
 void
 exercise(i, inc_or_dec)
-int i;
-boolean inc_or_dec;
+int i UNUSED;
+boolean inc_or_dec UNUSED;
 {
     /* exercise system has been deactivated -- JG */
-    return;
-
+#if 0
     debugpline0("Exercise:");
     if (i == A_INT || i == A_CHA)
         return; /* can't exercise these */
@@ -1290,6 +1289,7 @@ boolean inc_or_dec;
     }
     if (moves > 0 && (i == A_STR || i == A_CON))
         (void) encumber_msg();
+#endif
 }
 
 STATIC_OVL void
