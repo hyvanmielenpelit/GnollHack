@@ -1062,7 +1062,7 @@ ANVIL:(16,10),montype:"flind lord"
 # Barracks of flinds and flind lords
 REGION:(01,09,07,11),lit,"barracks"
 
-# Yeenaghu's bodyguards and guard dogs.
+# Yeenaghu's bodyguards and guard dogs
 MONSTER:('d',"shoosuva"),(02,05)
 MONSTER:('d',"shoosuva"),(02,07)
 MONSTER:('d',"shoosuva"),(18,05)
@@ -1118,7 +1118,7 @@ CONTAINER:('(', "chest"),(18,02), locked, trapped, no_pickup {
    [50%]:OBJECT:random_contents
 }
 
-# Some random weapons and armor.
+# Some random weapons and armor
 OBJECT:'[',random
 OBJECT:'[',random
 OBJECT:')',random
@@ -1129,14 +1129,12 @@ OBJECT:'!',random
 OBJECT:'?',random
 OBJECT:'?',random
 OBJECT:'?',random
-# Some traps.
-TRAP:"fire", random
-TRAP:"fire", random
-TRAP:"sleep gas", random
-TRAP:"sleep gas", random
+
+# Some traps
 TRAP:"magic", random
 TRAP:"magic", random
-# Random monsters.
+
+# Random monsters
 MONSTER:('G',"flind lord"),random
 MONSTER:('G',"flind lord"),random
 MONSTER:('G',"flind lord"),random
