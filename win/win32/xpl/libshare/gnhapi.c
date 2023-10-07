@@ -460,9 +460,9 @@ LibReportFileDescriptors()
 }
 
 int
-LibIncreaseFileDescriptorLimitsToAtLeast(int min_cur, int min_max)
+LibIncreaseFileDescriptorLimitToAtLeast(int min_cur)
 {
-    return increase_file_descriptor_limits_to_at_least((unsigned long)min_cur, (unsigned long)min_max);
+    return increase_file_descriptor_limit_to_at_least((unsigned long)min_cur);
 }
 
 int

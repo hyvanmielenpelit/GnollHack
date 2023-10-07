@@ -655,15 +655,20 @@ char errbuf[];
 }
 
 #if defined(UNIX) && defined(GNH_MOBILE)
+/* This changes the soft limit */
 boolean
-increase_file_descriptor_limits_to_at_least(new_cur_minimum, new_max_minimum)
-unsigned long new_cur_minimum, new_max_minimum;
+increase_file_descriptor_limit_to_at_least(new_cur_minimum)
+unsigned long new_cur_minimum;
 {
     struct rlimit rlim;
     if (getrlimit(RLIMIT_NOFILE, &rlim) == 0) 
     {
-        if (rlim.rlim_max != RLIM_INFINITY && rlim.rlim_max < (rlim_t)new_max_minimum)
-            rlim.rlim_max = (rlim_t)new_max_minimum;
+        if (rlim.rlim_max != RLIM_INFINITY && rlim.rlim_max < (rlim_t)new_cur_minimum)
+        {
+            /* Limit the file descriptor number to lower of 32768 and current hard limit */
+            rlim_t maxlimit = min((rlim_t)32768, rlim.rlim_max);
+            new_cur_minimum = min(new_cur_minimum, (unsigned long)maxlimit);
+        }
         if (rlim.rlim_cur != RLIM_INFINITY && rlim.rlim_cur < (rlim_t)new_cur_minimum)
             rlim.rlim_cur = (rlim_t)new_cur_minimum;
         if (setrlimit(RLIMIT_NOFILE, &rlim) == -1) 

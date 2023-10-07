@@ -4368,7 +4368,7 @@ register struct permonst *ptr;
     /* minions are hostile to players that have strayed at all */
     if (is_minion(ptr))
         return (boolean) (u.ualign.record >= 0);
-
+    
     /* Last case:  a chance of a co-aligned monster being
      * hostile.  This chance is greater if the player has strayed
      * (u.ualign.record negative) or the monster is not strongly aligned.

@@ -107,13 +107,14 @@ namespace GnollHackX
 #if DEBUG
             int limitbefore = GnollHackService.GetFileDescriptorLimit(false);
 #endif
-            if (!GnollHackService.IncreaseFileDescriptorLimitsToAtLeast(GHConstants.MinimumFileDescriptorLimit, GHConstants.MinimumFileDescriptorLimit))
+            if (!GnollHackService.IncreaseFileDescriptorLimitToAtLeast(GHConstants.MinimumFileDescriptorLimit))
                 Debug.WriteLine("Failed to set file descriptor limits.");
             else
             {
 #if DEBUG
                 int limitafter = GnollHackService.GetFileDescriptorLimit(false);
-                Debug.WriteLine("File descriptor limit changed from " + limitbefore + " to " + limitafter + ".");
+                int hardlimit = GnollHackService.GetFileDescriptorLimit(true);
+                Debug.WriteLine("File descriptor limit changed from " + limitbefore + " to " + limitafter + " (hard limit: " + hardlimit + ").");
 #endif
             }
         }

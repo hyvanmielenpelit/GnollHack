@@ -286,7 +286,7 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern int LibReportFileDescriptors();
         [DllImport(PlatformConstants.dll)]
-        public static extern int LibIncreaseFileDescriptorLimitsToAtLeast(int min_cur, int min_max);
+        public static extern int LibIncreaseFileDescriptorLimitToAtLeast(int min_cur);
         [DllImport(PlatformConstants.dll)]
         public static extern int LibGetFileDescriptorLimit(int is_max_limit);
 
@@ -982,9 +982,9 @@ namespace GnollHackX.Unknown
         {
             LibReportFileDescriptors();
         }
-        public bool IncreaseFileDescriptorLimitsToAtLeast(int min_cur, int min_max)
+        public bool IncreaseFileDescriptorLimitToAtLeast(int min_cur)
         {
-            return LibIncreaseFileDescriptorLimitsToAtLeast(min_cur, min_max) != 0;
+            return LibIncreaseFileDescriptorLimitToAtLeast(min_cur) != 0;
         }
         public int GetFileDescriptorLimit(bool is_max_limit)
         {

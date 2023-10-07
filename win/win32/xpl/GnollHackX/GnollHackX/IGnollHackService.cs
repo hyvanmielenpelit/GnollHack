@@ -56,7 +56,7 @@ namespace GnollHackX
         bool ValidateSaveFile(string filename, out string out_str);
         int CheckCurrentFileDescriptor();
         void ReportFileDescriptors();
-        bool IncreaseFileDescriptorLimitsToAtLeast(int min_cur, int min_max);
+        bool IncreaseFileDescriptorLimitToAtLeast(int min_cur);
         int GetFileDescriptorLimit(bool is_max_limit);
         int GetMaxManuals();
         bool IsDebug();
