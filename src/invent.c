@@ -4514,11 +4514,12 @@ boolean* return_to_inv_ptr;
         int selected_action = cmd_idx - 1;
         if (extcmdlist[selected_action].ef_funct && pickcnt != 0)
         {
+            struct obj* otmpsplit = 0;
             if (pickcnt <= -1 || pickcnt >= otmp->quan)
                 getobj_autoselect_obj = otmp;
             else
             {
-                struct obj* otmpsplit = splitobj(otmp, pickcnt);
+                otmpsplit = splitobj(otmp, pickcnt);
                 getobj_autoselect_obj = otmpsplit;
             }
 
@@ -4533,6 +4534,10 @@ boolean* return_to_inv_ptr;
             res = (extcmdlist[selected_action].ef_funct)();
             getobj_autoselect_obj = (struct obj*)0;
             repeatmenu = (boolean)((extcmdlist[selected_action].flags & ALLOW_RETURN_TO_INVENTORY) != 0) && !res;
+
+            if (repeatmenu && otmpsplit && otmpsplit != otmp)
+                (void)merged(&otmp, &otmpsplit); /* Merge the split object back to the original */
+
             if (return_to_inv_ptr)
                 *return_to_inv_ptr = repeatmenu;
         }

@@ -2097,8 +2097,12 @@ namespace GnollHackX.Pages.Game
 
         private async void DisplayDebugLog(string log_str, int log_type, int log_param)
         {
-            Debug.WriteLine("DebugLog: " + log_str + ", Type: " + log_type + ", Param: " + log_param);
-            if (GHApp.DebugLogMessages && log_str != null && log_str != "")
+            if (log_str != null)
+                Debug.WriteLine("DebugLog: " + log_str + ", Type: " + log_type + ", Param: " + log_param);
+            else
+                return;
+
+            if (GHApp.DebugLogMessages && log_str != "")
             {
 #if DEBUG
                 string titlestring = "Debug Log (D)";

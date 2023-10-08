@@ -539,7 +539,6 @@ char *mbox;
 boolean adminmsg;
 {
     FILE* mb = fopen(mbox, "r");
-    issue_debuglog_fd(mb ? fileno(mb) : -2, "read_simplemail");
     char curline[128], *msg;
     boolean seen_one_already = FALSE;
 #ifdef SIMPLE_MAIL

@@ -1140,7 +1140,6 @@ char errbuf[];
     fd = creat(file, FCMASK);
 #endif
 #endif
-    issue_debuglog_fd(fd, "create_bonesfile");
     if (fd < 0 && errbuf) /* failure explanation */
     {
         Sprintf(errbuf, "Cannot create bones \"%s\", id %s (errno %d).", lock,
@@ -1218,7 +1217,6 @@ char **bonesid;
 #else
     fd = open(fq_bones, O_RDONLY | O_BINARY, 0);
 #endif
-    issue_debuglog_fd(fd, "open_bonesfile");
     return fd;
 }
 
