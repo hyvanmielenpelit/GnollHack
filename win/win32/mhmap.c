@@ -4428,7 +4428,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             cglyph = maybe_get_replaced_glyph(cglyph, i, j, zeroreplacementinfo);
                             int ctile = glyph2tile[cglyph];
                             int tile_animation_idx = get_tile_animation_index_from_glyph(cglyph);
-                            //ctile = maybe_get_replaced_tile(ctile, i, j, zeroreplacementinfo, (enum autodraw_types*)0);
                             ctile = maybe_get_animated_tile(ctile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, animation_timers.general_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum autodraw_types*)0);
                             int c_sheet_idx = TILE_SHEET_IDX(ctile);
                             t_x = TILEBMP_X(ctile);
