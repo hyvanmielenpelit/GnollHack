@@ -272,7 +272,7 @@ MONSTER:('m',"chaos mimic"),$place[1],m_feature "fountain"
 MONSTER:('m',"chaos mimic"),$place[2],m_feature "fountain"
 MONSTER:('m',"chaos mimic"),$place[3],m_feature "fountain"
 # The demon of the swamp
-MONSTER:('&',"Jubilex"),(25,08)
+MONSTER:('&',"Jubilex"),(25,08),level_boss
 CONTAINER:('(',"oilskin sack"),buried,(25,08) {
    OBJECT:('$',"gold piece"),quantity:(2000+(3d1000))
    [25%]:OBJECT:artifact
@@ -564,7 +564,7 @@ OBJECT:random,random
 OBJECT:random,random
 
 # The resident nasty
-MONSTER:('&',"Orcus"),(33,15),keep_original_inventory
+MONSTER:('&',"Orcus"),(33,15),keep_original_inventory,level_boss
 {
   OBJECT:('(',"ornamental key"),special_quality:4
 }
@@ -666,7 +666,7 @@ SPECIAL_REGION:(01,01,20,10),region_special_level_seen
 
 # The fellow in residence
 
-MONSTER:('&',"Dispater"),(12,07) {
+MONSTER:('&',"Dispater"),(12,07),level_boss {
    OBJECT:('(',"ornamental key"),special_quality:3
 }
 CONTAINER:('(',"chest"),trapped,locked,(12,07),keytype:('(',"ornamental key"),special_quality:3,no_pickup {
@@ -874,7 +874,7 @@ BRAZIER:(30,06)
 BRAZIER:(41,06)
 
 # The fellow in residence
-MONSTER:('&',"Baalzebub"),(35,06) {
+MONSTER:('&',"Baalzebub"),(35,06),level_boss {
   OBJECT:('(',"ornamental key"),special_quality:5
 }
 CONTAINER:('(',"chest"),trapped,locked,(35,06),keytype:('(',"ornamental key"),special_quality:5,no_pickup {
@@ -1051,7 +1051,7 @@ MAZEWALK:(00,06),west
 REGION:(00,05,20,07),unlit,"ordinary"
 
 # The fellow in residence
-MONSTER:('&',"Yeenaghu"),(18,06),keep_original_inventory,waitforu {
+MONSTER:('&',"Yeenaghu"),(18,06),keep_original_inventory,level_boss,waitforu {
   OBJECT:('(',"ornamental key"),special_quality:6
 }
 
@@ -1063,25 +1063,25 @@ ANVIL:(16,10),montype:"flind lord"
 REGION:(01,09,07,11),lit,"barracks"
 
 # Yeenaghu's bodyguards and guard dogs
-MONSTER:('d',"shoosuva"),(02,05)
-MONSTER:('d',"shoosuva"),(02,07)
-MONSTER:('d',"shoosuva"),(18,05)
-MONSTER:('d',"shoosuva"),(18,07)
-MONSTER:('G',"flind"),(08,05)
-MONSTER:('G',"flind lord"),(08,06)
-MONSTER:('T',"thoul"),(08,07)
-MONSTER:('G',"flind lord"),(09,05)
-MONSTER:('T',"thoul"),(09,06)
-MONSTER:('G',"flind lord"),(09,07)
-MONSTER:('T',"thoul"),(10,05)
-MONSTER:('G',"flind lord"),(10,06)
-MONSTER:('T',"thoul"),(10,07)
-MONSTER:('G',"flind lord"),(11,05)
-MONSTER:('T',"thoul"),(11,06)
-MONSTER:('G',"flind lord"),(11,07)
-MONSTER:('T',"thoul"),(12,05)
-MONSTER:('G',"flind lord"),(12,06)
-MONSTER:('G',"flind"),(12,07)
+MONSTER:('d',"shoosuva"),(02,05),use_boss_hostility
+MONSTER:('d',"shoosuva"),(02,07),use_boss_hostility
+MONSTER:('d',"shoosuva"),(18,05),use_boss_hostility
+MONSTER:('d',"shoosuva"),(18,07),use_boss_hostility
+MONSTER:('G',"flind"),(08,05),use_boss_hostility
+MONSTER:('G',"flind lord"),(08,06),use_boss_hostility
+MONSTER:('T',"thoul"),(08,07),use_boss_hostility
+MONSTER:('G',"flind lord"),(09,05),use_boss_hostility
+MONSTER:('T',"thoul"),(09,06),use_boss_hostility
+MONSTER:('G',"flind lord"),(09,07),use_boss_hostility
+MONSTER:('T',"thoul"),(10,05),use_boss_hostility
+MONSTER:('G',"flind lord"),(10,06),use_boss_hostility
+MONSTER:('T',"thoul"),(10,07),use_boss_hostility
+MONSTER:('G',"flind lord"),(11,05),use_boss_hostility
+MONSTER:('T',"thoul"),(11,06),use_boss_hostility
+MONSTER:('G',"flind lord"),(11,07),use_boss_hostility
+MONSTER:('T',"thoul"),(12,05),use_boss_hostility
+MONSTER:('G',"flind lord"),(12,06),use_boss_hostility
+MONSTER:('G',"flind"),(12,07),use_boss_hostility
 
 # Decorations
 BRAZIER:(01,05)
@@ -1135,18 +1135,18 @@ TRAP:"magic", random
 TRAP:"magic", random
 
 # Random monsters
-MONSTER:('G',"flind lord"),random
-MONSTER:('G',"flind lord"),random
-MONSTER:('G',"flind lord"),random
-MONSTER:('G',"flind lord"),random
-MONSTER:('G',"flind"),random
-MONSTER:('G',"flind"),random
-MONSTER:('G',"flind"),random
-MONSTER:('G',"flind"),random
-MONSTER:('d',"shoosuva"),random
-MONSTER:('d',"shoosuva"),random
-MONSTER:('d',"shoosuva"),random
-MONSTER:('d',"shoosuva"),random
+MONSTER:('G',"flind lord"),random,use_boss_hostility
+MONSTER:('G',"flind lord"),random,use_boss_hostility
+MONSTER:('G',"flind lord"),random,use_boss_hostility
+MONSTER:('G',"flind lord"),random,use_boss_hostility
+MONSTER:('G',"flind"),random,use_boss_hostility
+MONSTER:('G',"flind"),random,use_boss_hostility
+MONSTER:('G',"flind"),random,use_boss_hostility
+MONSTER:('G',"flind"),random,use_boss_hostility
+MONSTER:('d',"shoosuva"),random,use_boss_hostility
+MONSTER:('d',"shoosuva"),random,use_boss_hostility
+MONSTER:('d',"shoosuva"),random,use_boss_hostility
+MONSTER:('d',"shoosuva"),random,use_boss_hostility
 MONSTER:('z',"ghoul"),random
 MONSTER:('z',"ghast"),random
 MONSTER:('z',"ghast"),random

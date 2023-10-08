@@ -210,6 +210,7 @@ struct monst {
 #define MON_FLAGS_SPLEVEL_RESIDENT  0x00000010UL
 #define MON_FLAGS_YOUR_CHILD        0x00000020UL
 #define MON_FLAGS_SPOTTED_IN_RUN    0x00000040UL /* Spotted for purposes of determining whether to stop travel, run and similar commands */
+#define MON_FLAGS_LEVEL_BOSS        0x00000080UL
 
     unsigned long mstrategy; /* for monsters with mflag3: current strategy */
 

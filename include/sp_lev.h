@@ -196,6 +196,8 @@ enum sp_mon_var_flags {
     SP_M_V_MAXHP,
     SP_M_V_LEVEL_ADJUSTMENT,
     SP_M_V_KEEP_ORIGINAL_INVENTORY,
+    SP_M_V_LEVEL_BOSS,
+    SP_M_V_BOSS_HOSTILITY,
 
     SP_M_V_END
 };
@@ -473,7 +475,8 @@ typedef struct {
     xchar x, y, class, appear;
     schar peaceful, asleep;
     long female, invis, cancelled, revived, avenge, fleeing, blinded,
-        paralyzed, stunned, confused, waitforu, protector, maxhp, level_adjustment, keep_original_invent;
+        paralyzed, stunned, confused, waitforu, protector, maxhp, level_adjustment, keep_original_invent,
+        level_boss, use_boss_hostility;
     long seentraps;
     long has_invent;
 } monster;

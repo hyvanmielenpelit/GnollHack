@@ -1832,6 +1832,21 @@ struct mkroom *croom;
     unsigned long mmflags = 0UL;
     if (m->maxhp)
         mmflags |= MM_MAX_HP;
+    if (m->use_boss_hostility)
+    {
+        struct monst* lboss;
+        for (lboss = fmon; lboss; lboss = lboss->nmon)
+        {
+            if (lboss->mon_flags & MON_FLAGS_LEVEL_BOSS)
+            {
+                if(is_peaceful(lboss))
+                    mmflags |= MM_PEACEFUL;
+                else
+                    mmflags |= MM_ANGRY;
+                break;
+            }
+        }
+    }
 
     if (m->align != -(MAX_REGISTERS + 2))
         mtmp = mk_roamer(pm, Amask2align(amask), x, y, m->peaceful);
@@ -1852,6 +1867,8 @@ struct mkroom *croom;
         }
 
         mtmp->mon_flags |= MON_FLAGS_SPLEVEL_RESIDENT; /* Created specifically for the special level; don't remove in bones if staying on the level */
+        if (m->level_boss)
+            mtmp->mon_flags |= MON_FLAGS_LEVEL_BOSS;
 
         /*
          * This doesn't complain if an attempt is made to give a
@@ -3935,6 +3952,8 @@ struct sp_coder *coder;
     tmpmons.confused = 0;
     tmpmons.waitforu = 0;
     tmpmons.keep_original_invent = 0;
+    tmpmons.level_boss = 0;
+    tmpmons.use_boss_hostility = 0;
     tmpmons.protector = 0;
     tmpmons.seentraps = 0;
     tmpmons.has_invent = 0;
@@ -3992,6 +4011,14 @@ struct sp_coder *coder;
         case SP_M_V_KEEP_ORIGINAL_INVENTORY:
             if (OV_typ(parm) == SPOVAR_INT)
                 tmpmons.keep_original_invent = OV_i(parm);
+            break;
+        case SP_M_V_LEVEL_BOSS:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpmons.level_boss = OV_i(parm);
+            break;
+        case SP_M_V_BOSS_HOSTILITY:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpmons.use_boss_hostility = OV_i(parm);
             break;
         case SP_M_V_PROTECTOR:
             if (OV_typ(parm) == SPOVAR_INT)

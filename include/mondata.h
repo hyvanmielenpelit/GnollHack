@@ -217,7 +217,7 @@
 #define is_valkyrie(ptr) (((ptr)->mflags7 & M7_VALKYRIE) != 0L)
 #define is_wizard(ptr) (((ptr)->mflags7 & M7_WIZARD) != 0L)
 
-/* combinations */
+/* combinations and others */
 #define is_not_living(ptr) \
     (is_undead(ptr) || has_mflag_is_nonliving(ptr))
 #define is_living(ptr) !is_not_living(ptr)
@@ -229,6 +229,9 @@
 
 #define mon_is_literate(m) (is_speaking((m)->data) && !mindless((m)->data) && haseyes((m)->data))
 #define feet_fit_boots(ptr) (!nonbootfeet(ptr) && !is_animal(ptr) && !slithy(ptr) && !nolimbs(ptr) && !is_whirly(ptr))
+#define is_cloned_wizard(m) (((m)->mon_flags & MON_FLAGS_CLONED_WIZ) != 0L)
+#define is_level_boss(m) (((m)->mon_flags & MON_FLAGS_LEVEL_BOSS) != 0L)
+
 
 /* Resistances and properties */
 #define has_innate(ptr, bit) \

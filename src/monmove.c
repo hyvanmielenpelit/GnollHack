@@ -1115,8 +1115,12 @@ void
 check_boss_fight(mtmp)
 struct monst* mtmp;
 {
+    if (!mtmp)
+        return;
+
     /* Trigger a boss fight if you can see the monster */
-    if ((windowprocs.wincap2 & WC2_SCREEN_TEXT) && is_boss_monster(mtmp->data) && !mtmp->boss_fight_started && !DEADMONSTER(mtmp) && !is_peaceful(mtmp) && canspotmon(mtmp) && couldsee(mtmp->mx, mtmp->my) && !(mtmp->mstrategy & STRAT_WAITFORU) && !mtmp->msleeping && !(mtmp->mon_flags & MON_FLAGS_CLONED_WIZ))
+    if ((windowprocs.wincap2 & WC2_SCREEN_TEXT) && (is_boss_monster(mtmp->data) || is_level_boss(mtmp)) && !mtmp->boss_fight_started 
+        && !DEADMONSTER(mtmp) && !is_peaceful(mtmp) && canspotmon(mtmp) && couldsee(mtmp->mx, mtmp->my) && !(mtmp->mstrategy & STRAT_WAITFORU) && !mtmp->msleeping && !is_cloned_wizard(mtmp))
     {
         mtmp->boss_fight_started = 1;
         newsym(mtmp->mx, mtmp->my);
