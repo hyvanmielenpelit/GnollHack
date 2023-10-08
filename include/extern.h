@@ -1531,6 +1531,7 @@ E void FDECL(fully_identify_obj, (struct obj *));
 E int FDECL(identify, (struct obj *));
 E int FDECL(count_unidentified, (struct obj *, boolean(*)(OBJ_P), BOOLEAN_P));
 E int FDECL(count_unknown, (struct obj*, boolean(*)(OBJ_P), BOOLEAN_P));
+E int FDECL(count_objects_in_class, (struct obj*, CHAR_P, boolean(*)(OBJ_P), BOOLEAN_P));
 E int FDECL(identify_pack, (int, BOOLEAN_P));
 E void NDECL(learn_unseen_invent);
 E void FDECL(prinv, (const char *, struct obj *, long));

@@ -146,6 +146,7 @@ struct extended_menu_info {
     const char* colors;
     int style; /* Generic style or subtype; used in menu data */
     char special_mark;
+    int num_items; /* Number of items in e.g. category */
     unsigned long menu_flags;
 };
 
@@ -170,6 +171,7 @@ struct extended_create_window_info {
 #define MENU_FLAGS_ACTIVE                       0x00000040
 #define MENU_FLAGS_USE_COLOR_FOR_SUFFIXES       0x00000080
 #define MENU_FLAGS_USE_SPECIAL_SYMBOLS          0x00000100
+#define MENU_FLAGS_USE_NUM_ITEMS                0x00000200
 
 #define MENU_DATAFLAGS_HAS_OBJECT_DATA          0x01
 #define MENU_DATAFLAGS_HAS_MONSTER_DATA         0x02

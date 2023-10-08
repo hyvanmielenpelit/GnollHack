@@ -1181,19 +1181,23 @@ int how;               /* type of query */
     if ((qflags & UNKNOWN_TYPES) && (unknown_count = count_unknown(olist, ofilter, (qflags & BY_NEXTHERE) != 0)) > 0) {
         do_unknown = TRUE;
     }
-    if ((qflags & BUC_BLESSED) && count_buc(olist, BUC_BLESSED, ofilter, (qflags & BY_NEXTHERE) != 0)) {
+    int blessed_count = 0;
+    if ((qflags & BUC_BLESSED) && (blessed_count = count_buc(olist, BUC_BLESSED, ofilter, (qflags & BY_NEXTHERE) != 0)) > 0) {
         do_blessed = TRUE;
         num_buc_types++;
     }
-    if ((qflags & BUC_CURSED) && count_buc(olist, BUC_CURSED, ofilter, (qflags & BY_NEXTHERE) != 0)) {
+    int cursed_count = 0;
+    if ((qflags & BUC_CURSED) && (cursed_count = count_buc(olist, BUC_CURSED, ofilter, (qflags & BY_NEXTHERE) != 0)) > 0) {
         do_cursed = TRUE;
         num_buc_types++;
     }
-    if ((qflags & BUC_UNCURSED) && count_buc(olist, BUC_UNCURSED, ofilter, (qflags & BY_NEXTHERE) != 0)) {
+    int uncursed_count = 0;
+    if ((qflags & BUC_UNCURSED) && (uncursed_count = count_buc(olist, BUC_UNCURSED, ofilter, (qflags & BY_NEXTHERE) != 0)) > 0) {
         do_uncursed = TRUE;
         num_buc_types++;
     }
-    if ((qflags & BUC_UNKNOWN) && count_buc(olist, BUC_UNKNOWN, ofilter, (qflags & BY_NEXTHERE) != 0)) {
+    int unknown_buc_count = 0;
+    if ((qflags & BUC_UNKNOWN) && (unknown_buc_count = count_buc(olist, BUC_UNKNOWN, ofilter, (qflags & BY_NEXTHERE) != 0)) > 0) {
         do_buc_unknown = TRUE;
         num_buc_types++;
     }
@@ -1220,15 +1224,18 @@ int how;               /* type of query */
     win = create_nhwindow(NHW_MENU);
     start_menu_ex(win, GHMENU_STYLE_PICK_CATEGORY_LIST);
     pack = flags.inv_order;
+    struct extended_menu_info info = { 0 };
+    info.menu_flags |= MENU_FLAGS_USE_NUM_ITEMS;
 
     if (qflags & CHOOSE_ALL) {
         invlet = 'A';
         any = zeroany;
         any.a_int = 'A';
-        add_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
+        info.num_items = objcnt;
+        add_extended_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
                  (qflags & WORN_TYPES) ? "Auto-select every item being worn"
                                        : "Auto-select every item",
-                 MENU_UNSELECTED);
+                 MENU_UNSELECTED, info);
 
         any = zeroany;
         add_menu(win, NO_GLYPH, &any, 0, 0, ATR_HALF_SIZE, NO_COLOR, "", MENU_UNSELECTED);
@@ -1238,9 +1245,10 @@ int how;               /* type of query */
         invlet = 'a';
         any = zeroany;
         any.a_int = ALL_TYPES_SELECTED;
-        add_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
+        info.num_items = objcnt;
+        add_extended_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
                  (qflags & WORN_TYPES) ? "All worn types" : "All types",
-                 MENU_UNSELECTED);
+                 MENU_UNSELECTED, info);
         invlet = 'b';
     } else
         invlet = 'a';
@@ -1253,13 +1261,14 @@ int how;               /* type of query */
                 if (!collected_type_name) {
                     any = zeroany;
                     any.a_int = curr->oclass;
-                    add_menu(
+                    info.num_items = count_objects_in_class(olist, curr->oclass, ofilter, (qflags & BY_NEXTHERE) != 0);
+                    add_extended_menu(
                         win, NO_GLYPH, &any, invlet++,
                         def_oc_syms[(int) objects[curr->otyp].oc_class].sym,
                         ATR_NONE, NO_COLOR, let_to_name(*pack, FALSE,
                                               (how != PICK_NONE)
                                                   && iflags.menu_head_objsym),
-                        MENU_UNSELECTED);
+                        MENU_UNSELECTED, info);
                     collected_type_name = TRUE;
                 }
             }
@@ -1282,8 +1291,9 @@ int how;               /* type of query */
         invlet = 'u';
         any = zeroany;
         any.a_int = 'u';
-        add_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR, "Unpaid items",
-                 MENU_UNSELECTED);
+        info.num_items = unpaid_count;
+        add_extended_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR, "Unpaid items",
+                 MENU_UNSELECTED, info);
     }
     /* billed items: checked by caller, so always include if BILLED_TYPES */
     if (qflags & BILLED_TYPES) {
@@ -1297,16 +1307,18 @@ int how;               /* type of query */
         invlet = 'I';
         any = zeroany;
         any.a_int = 'I';
-        add_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
-            "Unidentified items", MENU_UNSELECTED);
+        info.num_items = unidentified_count;
+        add_extended_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
+            "Unidentified items", MENU_UNSELECTED, info);
     }
 
     if (do_unknown) {
         invlet = 'K';
         any = zeroany;
         any.a_int = 'K';
-        add_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
-            "Unknown items", MENU_UNSELECTED);
+        info.num_items = unknown_count;
+        add_extended_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
+            "Unknown items", MENU_UNSELECTED, info);
     }
 
     /* items with b/u/c/unknown if there are any;
@@ -1316,29 +1328,33 @@ int how;               /* type of query */
         invlet = 'B';
         any = zeroany;
         any.a_int = 'B';
-        add_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
-                 "Items known to be Blessed", MENU_UNSELECTED);
+        info.num_items = blessed_count;
+        add_extended_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
+                 "Items known to be Blessed", MENU_UNSELECTED, info);
     }
     if (do_cursed) {
         invlet = 'C';
         any = zeroany;
         any.a_int = 'C';
-        add_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
-                 "Items known to be Cursed", MENU_UNSELECTED);
+        info.num_items = cursed_count;
+        add_extended_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
+                 "Items known to be Cursed", MENU_UNSELECTED, info);
     }
     if (do_uncursed) {
         invlet = 'U';
         any = zeroany;
         any.a_int = 'U';
-        add_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
-                 "Items known to be Uncursed", MENU_UNSELECTED);
+        info.num_items = uncursed_count;
+        add_extended_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
+                 "Items known to be Uncursed", MENU_UNSELECTED, info);
     }
     if (do_buc_unknown) {
         invlet = 'X';
         any = zeroany;
         any.a_int = 'X';
-        add_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
-                 "Items of unknown Bless/Curse status", MENU_UNSELECTED);
+        info.num_items = unknown_buc_count;
+        add_extended_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
+                 "Items of unknown Bless/Curse status", MENU_UNSELECTED, info);
     }
 
     end_menu(win, qstr);

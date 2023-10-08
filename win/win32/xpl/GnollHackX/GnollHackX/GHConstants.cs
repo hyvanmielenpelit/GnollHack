@@ -129,6 +129,7 @@ namespace GnollHackX
         MENU_FLAGS_ACTIVE =                     0x00000040,
         MENU_FLAGS_USE_COLOR_FOR_SUFFIXES =     0x00000080,
         MENU_FLAGS_USE_SPECIAL_SYMBOLS =        0x00000100,
+        MENU_FLAGS_USE_NUM_ITEMS =              0x00000200,
     }
 
     [Flags]

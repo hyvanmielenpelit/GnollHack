@@ -12379,6 +12379,26 @@ namespace GnollHackX.Pages.Game
                                     textPaint.TextSize = textPaint.TextSize / Math.Max(1.0f, totscale);
                                     canvas.DrawText(str, circlex, circley - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent, textPaint);
                                 }
+                                /* Num items circle */
+                                else if (mi.UseNumItems && !(mi.DrawBounds.Bottom <= 0 || mi.DrawBounds.Top >= canvasheight))
+                                {
+                                    float circleradius = mi.DrawBounds.Height * 0.90f / 2;
+                                    float circlex = mi.DrawBounds.Right - circleradius - 5;
+                                    float circley = (mi.DrawBounds.Top + mi.DrawBounds.Bottom) / 2;
+                                    textPaint.Color = SKColors.DarkBlue;
+                                    canvas.DrawCircle(circlex, circley, circleradius, textPaint);
+                                    textPaint.TextAlign = SKTextAlign.Center;
+                                    textPaint.Color = SKColors.White;
+                                    str = mi.NumItems.ToString();
+                                    float maxsize = 1.0f * 2.0f * circleradius / (float)Math.Sqrt(2);
+                                    textPaint.TextSize = (float)mi.FontSize * scale;
+                                    textPaint.MeasureText(str, ref textBounds);
+                                    float scalex = textBounds.Width / maxsize;
+                                    float scaley = textBounds.Height / maxsize;
+                                    float totscale = Math.Max(scalex, scaley);
+                                    textPaint.TextSize = textPaint.TextSize / Math.Max(1.0f, totscale);
+                                    canvas.DrawText(str, circlex, circley - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent, textPaint);
+                                }
 
                                 /* Space between buttons / rows */
                                 y += totalRowExtraSpacing;

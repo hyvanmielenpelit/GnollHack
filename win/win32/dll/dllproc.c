@@ -1212,7 +1212,7 @@ dll_add_extended_menu(winid wid, int glyph, const ANY_P *identifier,
     struct objclassdata ocdata = get_objclassdata(info.object);
     dll_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, color,
         str, presel, info.object ? info.object->quan : 0, info.object ? info.object->o_id : 0, 
-        info.monster ? info.monster->m_id : 0, info.heading_for_group_accelerator, info.special_mark, info.menu_flags, 1, info.style, 
+        info.monster ? info.monster->m_id : 0, info.heading_for_group_accelerator, info.special_mark, info.num_items, info.menu_flags, 1, info.style, 
         info.object, &ocdata);
 }
 

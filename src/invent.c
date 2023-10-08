@@ -3912,6 +3912,30 @@ boolean bynexthere;
     return unid_cnt;
 }
 
+/* count the items in an object class */
+int
+count_objects_in_class(objchn, oclass, filterfunc, bynexthere)
+struct obj* objchn;
+char oclass;
+boolean FDECL((*filterfunc), (OBJ_P));
+boolean bynexthere;
+{
+    int cnt = 0;
+    struct obj* obj;
+    for (obj = objchn; obj; obj = (bynexthere ? obj->nexthere : obj->nobj))
+    {
+        if (filterfunc && !(*filterfunc)(obj))
+            continue;
+
+        if (obj->oclass != oclass)
+            continue;
+
+        ++cnt;
+    }
+    return cnt;
+}
+
+
 /* count the items whose name is not known */
 int
 count_unknown(objchn, filterfunc, bynexthere)

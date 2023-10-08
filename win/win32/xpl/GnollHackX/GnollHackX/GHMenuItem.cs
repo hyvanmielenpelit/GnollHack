@@ -49,6 +49,8 @@ namespace GnollHackX
         public string EntryString { get; set; }
         public Color EntryTextColor { get; set; }
         public int MaxCount { get; set; }
+        public bool UseNumItems { get; set; }
+        public int NumItems { get; set; }
         public char Accelerator { get; set; }
         public char GroupAccelerator { get; set; }
         public char SpecialMark { get; set; }
