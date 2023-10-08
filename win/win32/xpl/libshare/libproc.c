@@ -1100,7 +1100,6 @@ void lib_print_conditions(const char** names)
             const char* name = names[i];
             int color = get_condition_color(cond_mask);
             int attr = get_condition_attr(cond_mask);
-            //debuglog("cond '%s' active. col=%s attr=%x", name, colname(color), attr);
             lib_putstr_ex(WIN_STATUS, " ", ATR_NONE, CLR_WHITE, 0);
             lib_putstr_ex(WIN_STATUS, name, hl_attrmask_to_atr(attr), color, 0);
         }
@@ -1193,7 +1192,6 @@ void print_status_field(int idx, boolean first_field)
             }
         }
         lib_putstr_ex(WIN_STATUS, val, hl_attrmask_to_atr(attr), color, 0);
-        //    debuglog("field %d: %s color %s", idx+1, val, colname(color));
     }
 }
 
@@ -1658,7 +1656,9 @@ void debuglog(const char* fmt, ...)
         Strcpy(buf, "(null)");
     }
 
-    if (lib_callbacks.callback_raw_print)
+    if(lib_callbacks.callback_issue_gui_command)
+        lib_issue_gui_command(GUI_CMD_DEBUGLOG, DEBUGLOG_GENERAL, 0, buf);
+    else if (lib_callbacks.callback_raw_print)
         lib_raw_print(buf);
 }
 

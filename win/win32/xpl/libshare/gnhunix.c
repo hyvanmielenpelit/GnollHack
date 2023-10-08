@@ -70,7 +70,6 @@ getlock()
         error("Cannot open %s", fq_lock);
         return;
     }
-    issue_debuglog_fd(fd, "getlock");
     (void) close(fd);
 
     if(!recover_savefile())
@@ -92,8 +91,6 @@ gotlock:
     }
     else
     {
-        //debuglog("created lock(%s)", fq_lock);
-
         if(write(fd, (genericptr_t) &hackpid, sizeof(hackpid)) != sizeof(hackpid))
         {
             error("cannot write lock (%s)", fq_lock);

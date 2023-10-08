@@ -5048,7 +5048,7 @@ WAND(None, "jeweled", None, None, None,
 /* coins ... - so far, gold is all there is */
 #define COIN(name,prob,metal,worth) \
     OBJECT(OBJ(name, None, None, None, None, 0, OD_NONE, 0, 0, COIN_REPLACEMENT),                       \
-       BITS(0, 1, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, 0, 0, P_NONE, MATINIT_BASE_MATERIAL, metal),    \
+       BITS(1, 1, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, 0, 0, P_NONE, MATINIT_BASE_MATERIAL, metal),    \
        NO_POWER, NO_POWER, NO_POWER, P1_NONE, COIN_CLASS, prob, MULTIGEN_SINGLE, 0, 1, worth, \
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \

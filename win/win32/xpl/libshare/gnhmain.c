@@ -91,7 +91,6 @@ char** argv;
     remove_lock_file(HLOCK);
     // make sure RECORD exists
     fp = fopen_datafile(RECORD, "a", SCOREPREFIX);
-    issue_debuglog_fd(fp ? fileno(fp) : -2, "record");
     fclose(fp);
 
     check_recordfile((char*)0);

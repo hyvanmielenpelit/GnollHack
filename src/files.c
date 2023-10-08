@@ -518,7 +518,6 @@ char *reasonbuf; /* reasonbuf must be at least BUFSZ, supplied by caller */
             continue;
         filename = fqname("validate", prefcnt, 3);
         if ((fp = fopen(filename, "w"))) {
-            issue_debuglog_fd(fileno(fp), "validate_prefix_locations");
             fclose(fp);
             (void) unlink(filename);
         } else {
@@ -557,7 +556,6 @@ int prefix;
 
     filename = fqname(filename, prefix, prefix == TROUBLEPREFIX ? 3 : 0);
     fp = fopen(filename, mode);
-    issue_debuglog_fd(fp ? fileno(fp) : -2, "fopen_datafile");
     return fp;
 }
 
@@ -1674,7 +1672,6 @@ boolean check_has_backup_savefile(VOID_ARGS)
 #else
             fd = open(bakbuf, O_RDONLY | O_BINARY, 0);
 #endif
-            issue_debuglog_fd(fd, "check_has_backup_savefile");
             if (fd >= 0)
             {
                 valres = validate(fd, (char*)0);
@@ -2156,7 +2153,6 @@ struct save_game_stats* stats_ptr;
      *  and game state
      */
     if ((fd = open(filename, O_RDONLY | O_BINARY, 0)) >= 0) {
-        issue_debuglog_fd(fd, "plname_from_running");
         if (read(fd, (genericptr_t)&hpid, sizeof hpid) == sizeof hpid
             && read(fd, (genericptr_t)&savelev, sizeof(savelev)) == sizeof savelev
             && read(fd, (genericptr_t)savename, sizeof savename) == sizeof savename
@@ -2450,7 +2446,6 @@ boolean uncomp;
     if (uncomp) {
         if ((cf = fopen(cfn, RDBMODE)) == (FILE *) 0)
             return;
-        issue_debuglog_fd(fileno(cf), "docompress_file2");
         (void) fclose(cf);
     }
 
@@ -2668,7 +2663,6 @@ boolean uncomp;
             pline("Error in zlib docompress_file %s", filename);
             return;
         }
-        issue_debuglog_fd(fileno(uncompressedfile), "docompress_file");
         compressedfile = gzopen(cfn, "wb");
         if (compressedfile == NULL) {
             if (errno == 0) {
@@ -2735,7 +2729,6 @@ boolean uncomp;
             gzclose(compressedfile);
             return;
         }
-        issue_debuglog_fd(fileno(uncompressedfile), "docompress_file3");
 
         /* Copy from the compressed to the uncompressed file */
 
@@ -2860,7 +2853,6 @@ int retryct;
         nesting--;
         return FALSE;
     }
-    issue_debuglog_fd(lockfd, "lock_file");
     sflock.l_type = F_WRLCK;
     sflock.l_whence = SEEK_SET;
     sflock.l_start = 0;
@@ -2946,7 +2938,6 @@ int retryct;
         }
 #endif /* USE_FCNTL */
     }
-    issue_debuglog_fd(lockfd, "lock_file2");
 #endif /* UNIX || VMS */
 
 #if (defined(AMIGA) || defined(WIN32) || defined(MSDOS)) \
@@ -2969,7 +2960,6 @@ int retryct;
         lockptr = open(lockname, O_RDWR | O_CREAT | O_EXCL, S_IWRITE);
 #endif
 #endif
-        issue_debuglog_fd(lockptr, "lock_file3");
         if (OPENFAILURE(lockptr)) {
             raw_printf("Waiting for access to %s.  (%d retries left).",
                        filename, retryct);
@@ -4913,7 +4903,6 @@ const char *dir UNUSED_if_not_OS2_CODEVIEW;
 #if defined(UNIX) || defined(VMS)
     fq_record = fqname(RECORD, SCOREPREFIX, 0);
     fd = open(fq_record, O_RDWR, 0);
-    issue_debuglog_fd(fd, "check_recordfile");
     if (fd >= 0) {
 #ifdef VMS /* must be stream-lf to use UPDATE_RECORD_IN_PLACE */
         if (!file_is_stmlf(fd)) {
@@ -4925,7 +4914,6 @@ const char *dir UNUSED_if_not_OS2_CODEVIEW;
 #endif
         (void) nhclose(fd); /* RECORD is accessible */
     } else if ((fd = open(fq_record, O_CREAT | O_RDWR, FCMASK)) >= 0) {
-        issue_debuglog_fd(fd, "check_recordfile2");
         (void) nhclose(fd); /* RECORD newly created */
 #if defined(VMS) && !defined(SECURE)
         /* Re-protect RECORD with world:read+write+execute+delete access. */
@@ -4961,7 +4949,6 @@ const char *dir UNUSED_if_not_OS2_CODEVIEW;
 
         buf[0] = '\0';
         fd = open(fq_record, O_RDWR);
-        issue_debuglog_fd(fd, "check_recordfile3");
         if (!(fd == -1 && errno == ENOENT)) {
             if (fd >= 0) {
                 (void) nhclose(fd);
@@ -4989,7 +4976,6 @@ const char *dir UNUSED_if_not_OS2_CODEVIEW;
 #else
         fd = open(fq_record, O_CREAT | O_RDWR, S_IREAD | S_IWRITE);
 #endif
-        issue_debuglog_fd(fd, "check_recordfile4");
         if (fd <= 0) {
             raw_printf("Warning: cannot write record '%s'", tmp);
             wait_synch();
@@ -5000,7 +4986,6 @@ const char *dir UNUSED_if_not_OS2_CODEVIEW;
         /* open succeeded => 'record' exists */
         (void) nhclose(fd);
     }
-    issue_debuglog_fd(fd, "check_recordfile5");
 #else /* MICRO || WIN32*/
 
 #ifdef MAC
@@ -5356,7 +5341,6 @@ assure_syscf_file()
 #else
     fd = open(SYSCF_FILE, O_RDONLY, 0);
 #endif
-    issue_debuglog_fd(fd, "assure_syscf_file");
     if (fd >= 0) {
         /* readable */
         close(fd);

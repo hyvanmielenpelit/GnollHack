@@ -2097,7 +2097,8 @@ namespace GnollHackX.Pages.Game
 
         private async void DisplayDebugLog(string log_str, int log_type, int log_param)
         {
-            if(GHApp.DebugLogMessages && log_str != null && log_str != "")
+            Debug.WriteLine("DebugLog: " + log_str + ", Type: " + log_type + ", Param: " + log_param);
+            if (GHApp.DebugLogMessages && log_str != null && log_str != "")
             {
 #if DEBUG
                 string titlestring = "Debug Log (D)";
@@ -2108,19 +2109,14 @@ namespace GnollHackX.Pages.Game
                 {
                     default:
                     case (int)debug_log_types.DEBUGLOG_GENERAL: /* Both release and debug modes */
-                        Debug.WriteLine(log_str);
                         await DisplayAlert(titlestring, log_str, "OK");
                         break;
                     case (int)debug_log_types.DEBUGLOG_DEBUG_ONLY: /* Debug mode only */
 #if DEBUG
-                        Debug.WriteLine(log_str);
                         await DisplayAlert(titlestring, log_str, "OK");
 #endif
                         break;
                     case (int)debug_log_types.DEBUGLOG_FILE_DESCRIPTOR:
-#if DEBUG
-                        Debug.WriteLine("File descriptor value: " + log_param + " @ " + log_str);
-#endif
                         break;
                 }
             }
@@ -12385,10 +12381,16 @@ namespace GnollHackX.Pages.Game
                                     float circleradius = mi.DrawBounds.Height * 0.90f / 2;
                                     float circlex = mi.DrawBounds.Right - circleradius - 5;
                                     float circley = (mi.DrawBounds.Top + mi.DrawBounds.Bottom) / 2;
-                                    textPaint.Color = SKColors.DarkBlue;
+                                    textPaint.Color = _numItemsBackgroundColor;
+                                    textPaint.Style = SKPaintStyle.Fill;
                                     canvas.DrawCircle(circlex, circley, circleradius, textPaint);
+                                    //textPaint.Color = SKColors.Black;
+                                    //textPaint.Style = SKPaintStyle.Stroke;
+                                    //textPaint.StrokeWidth = circleradius / 10;
+                                    //canvas.DrawCircle(circlex, circley, circleradius, textPaint);
+                                    textPaint.Style = SKPaintStyle.Fill;
                                     textPaint.TextAlign = SKTextAlign.Center;
-                                    textPaint.Color = SKColors.White;
+                                    textPaint.Color = SKColors.Black;
                                     str = mi.NumItems.ToString();
                                     float maxsize = 1.0f * 2.0f * circleradius / (float)Math.Sqrt(2);
                                     textPaint.TextSize = (float)mi.FontSize * scale;
@@ -12411,6 +12413,7 @@ namespace GnollHackX.Pages.Game
                 }
             }
         }
+        private readonly SKColor _numItemsBackgroundColor = new SKColor(228, 203, 158);
 
         private int CountTextSplitRows(string[] textsplit, float x_start, float canvaswidth, float rightmenupadding, SKPaint textPaint, bool usespecialsymbols, out List<float> rowWidths)
         {
