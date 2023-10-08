@@ -4502,18 +4502,21 @@ boolean via_attack;
     if (is_tame(mtmp))
         return;
     mtmp->mpeaceful = 0;
-    if (mtmp->ispriest) {
+    if (mtmp->ispriest) 
+    {
         if (p_coaligned(mtmp))
             adjalign(-5); /* very bad */
         else
             adjalign(2);
-    } else
+    } 
+    else
         adjalign(-1); /* attacking peaceful monsters is bad */
 
     mtmp->mon_flags &= ~MON_FLAGS_SUMMONED_AT_ALTAR; //Angry summoned creatures do not go back to their plane
 
-    if (couldsee(mtmp->mx, mtmp->my)) {
-        if (humanoid(mtmp->data) || mtmp->isshk || mtmp->isgd)
+    if (couldsee(mtmp->mx, mtmp->my)) 
+    {
+        if (humanoid(mtmp->data) || is_speaking(mtmp->data) || mtmp->isshk || mtmp->isgd)
         {
             play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_GET_ANGRY);
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s gets angry!", Monnam(mtmp));
@@ -4529,23 +4532,27 @@ boolean via_attack;
 
     /* attacking your own quest leader will anger his or her guardians */
     if (!context.mon_moving /* should always be the case here */
-        && mtmp->data == &mons[quest_info(MS_LEADER)]) {
+        && mtmp->data == &mons[quest_info(MS_LEADER)])
+    {
         struct monst *mon;
         struct permonst *q_guardian = &mons[quest_info(MS_GUARDIAN)];
         int got_mad = 0;
 
         /* guardians will sense this attack even if they can't see it */
-        for (mon = fmon; mon; mon = mon->nmon) {
+        for (mon = fmon; mon; mon = mon->nmon) 
+        {
             if (DEADMONSTER(mon))
                 continue;
             if (mon->data == q_guardian && mon->mpeaceful)
             {
                 mon->mpeaceful = 0;
-                if (canseemon(mon))
+                newsym(mon->mx, mon->my);
+                if (canspotmon(mon))
                     ++got_mad;
             }
         }
-        if (got_mad && !Hallucination) {
+        if (got_mad && !Hallucination)
+        {
             const char *who = pm_common_name(q_guardian);
 
             if (got_mad > 1)
@@ -4555,15 +4562,46 @@ boolean via_attack;
         }
     }
 
+    /* attacking a level boss will anger his or her bodyguards */
+    if (!context.mon_moving /* should always be the case here */
+        && (mtmp->mon_flags & MON_FLAGS_LEVEL_BOSS) != 0)
+    {
+        struct monst* mon, *last_mon = 0;
+        int got_mad = 0;
+
+        /* guardians will sense this attack even if they can't see it */
+        for (mon = fmon; mon; mon = mon->nmon) 
+        {
+            if (DEADMONSTER(mon))
+                continue;
+            if ((mon->mon_flags & MON_FLAGS_BOSS_HOSTILITY) != 0 && mon->mpeaceful)
+            {
+                mon->mpeaceful = 0;
+                last_mon = mon;
+                newsym(mon->mx, mon->my);
+                if (canspotmon(mon))
+                    ++got_mad;
+            }
+        }
+        if (got_mad && !Hallucination) 
+        {
+            const char* who = got_mad > 1 ? "Others" : last_mon ? Amonnam(last_mon) : "A monster";
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s allied with %s %s to be angry too...",
+                who, mon_nam(mtmp), vtense(who, "appear"));
+        }
+    }
+
     /* make other peaceful monsters react */
-    if (!context.mon_moving) {
+    if (!context.mon_moving) 
+    {
         static const char *const Exclam[] = {
             "Gasp!", "Uh-oh.", "Oh my!", "What?", "Why?",
         };
         struct monst *mon;
         int mndx = mtmp->mnum;
 
-        for (mon = fmon; mon; mon = mon->nmon) {
+        for (mon = fmon; mon; mon = mon->nmon) 
+        {
             if (DEADMONSTER(mon))
                 continue;
             if (mon == mtmp) /* the mpeaceful test catches this since mtmp */
@@ -4571,18 +4609,24 @@ boolean via_attack;
 
             if (!mindless(mon->data) && is_peaceful(mon)
                 && couldsee(mon->mx, mon->my) && mon_can_move(mon)
-                && !is_blinded(mon) && m_canseeu(mon)) {
+                && !is_blinded(mon) && m_canseeu(mon)) 
+            {
                 boolean exclaimed = FALSE;
 
-                if (humanoid(mon->data) || mon->isshk || mon->ispriest || mon->issmith || mon->isnpc) {
-                    if (is_watch(mon->data)) {
+                if (humanoid(mon->data) || mon->isshk || mon->ispriest || mon->issmith || mon->isnpc) 
+                {
+                    if (is_watch(mon->data)) 
+                    {
                         context.global_minimum_volume = 0.25f;
                         play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_HALT_YOURE_UNDER_ARREST);
                         context.global_minimum_volume = 0.0f;
                         verbalize_angry1("Halt!  You're under arrest!");
                         (void) angry_guards(!!Deaf);
-                    } else {
-                        if (!rn2(5)) {
+                    }
+                    else 
+                    {
+                        if (!rn2(5)) 
+                        {
                             verbalize_talk1(Exclam[mon->m_id % SIZE(Exclam)]);
                             exclaimed = TRUE;
                         }
@@ -4591,14 +4635,18 @@ boolean via_attack;
                         if (mon->isshk || mon->ispriest || mon->issmith || mon->isnpc)
                             continue;
 
-                        if (mon->data->mlevel < rn2(10)) {
+                        if (mon->data->mlevel < rn2(10)) 
+                        {
                             monflee(mon, rn2(50) + 25, TRUE, !exclaimed);
                             exclaimed = TRUE;
                         }
-                        if (is_tame(mon)) {
+                        if (is_tame(mon)) 
+                        {
                             /* mustn't set mpeaceful to 0 as below;
                                perhaps reduce tameness? */
-                        } else {
+                        }
+                        else 
+                        {
                             mon->mpeaceful = 0;
                             adjalign(-1);
                             update_game_music();
@@ -4609,10 +4657,13 @@ boolean via_attack;
                             }
                         }
                     }
-                } else if (mon->data->mlet == mtmp->data->mlet
+                } 
+                else if (mon->data->mlet == mtmp->data->mlet
                            && big_little_match(mndx, mon->mnum)
-                           && !rn2(3)) {
-                    if (!rn2(4)) {
+                           && !rn2(3))
+                {
+                    if (!rn2(4))
+                    {
                         growl(mon);
                         exclaimed = TRUE;
                     }
@@ -4622,6 +4673,7 @@ boolean via_attack;
             }
         }
     }
+    flush_screen(1);
 }
 
 /* wake up a monster, possibly making it angry in the process */

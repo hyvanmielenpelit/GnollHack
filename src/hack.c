@@ -2314,7 +2314,7 @@ domove_core()
                 mtmp->mtame = mtmp->mpeaceful = mtmp->msleeping = 0;
                 if (mtmp->mleashed)
                     m_unleash(mtmp, TRUE);
-                refresh_m_tile_gui_info(mtmp, TRUE);
+                newsym(mtmp->mx, mtmp->my);
                 growl(mtmp);
             } 
             else 

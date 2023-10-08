@@ -3073,6 +3073,7 @@ boolean flush;
         flush_screen(1);
 }
 
+/* Note: if something has an impact on the ASCII graphics (peaceful and tame, in particular), use newsym instead; this is only for info not shown in ASCII */
 void
 refresh_m_tile_gui_info(mtmp, flush)
 struct monst* mtmp;

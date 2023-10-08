@@ -1869,6 +1869,8 @@ struct mkroom *croom;
         mtmp->mon_flags |= MON_FLAGS_SPLEVEL_RESIDENT; /* Created specifically for the special level; don't remove in bones if staying on the level */
         if (m->level_boss)
             mtmp->mon_flags |= MON_FLAGS_LEVEL_BOSS;
+        if (m->use_boss_hostility)
+            mtmp->mon_flags |= MON_FLAGS_BOSS_HOSTILITY;
 
         /*
          * This doesn't complain if an attempt is made to give a

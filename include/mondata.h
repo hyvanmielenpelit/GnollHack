@@ -231,6 +231,7 @@
 #define feet_fit_boots(ptr) (!nonbootfeet(ptr) && !is_animal(ptr) && !slithy(ptr) && !nolimbs(ptr) && !is_whirly(ptr))
 #define is_cloned_wizard(m) (((m)->mon_flags & MON_FLAGS_CLONED_WIZ) != 0L)
 #define is_level_boss(m) (((m)->mon_flags & MON_FLAGS_LEVEL_BOSS) != 0L)
+#define uses_level_boss_hostility(m) (((m)->mon_flags & MON_FLAGS_BOSS_HOSTILITY) != 0L)
 
 
 /* Resistances and properties */
