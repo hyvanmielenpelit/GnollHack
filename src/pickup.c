@@ -1060,7 +1060,6 @@ int show_weights;
                 get_obj_location(curr, &x, &y, CONTAINED_TOO | BURIED_TOO);
                 int glyph = obj_to_glyph(curr, rn2_on_display_rng);
                 int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, curr, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
-
                 add_extended_menu(win, gui_glyph, &any,
                     applied_invlet, applied_group_accelerator, ATR_NONE, NO_COLOR, 
                     show_weights > 0 ? (flags.inventory_weights_last ? doname_with_price_and_weight_last(curr, loadstonecorrectly) : doname_with_price_and_weight_first(curr, loadstonecorrectly)) : doname_with_price(curr), 

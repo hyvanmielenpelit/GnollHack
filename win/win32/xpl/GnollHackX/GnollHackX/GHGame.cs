@@ -1047,10 +1047,10 @@ namespace GnollHackX
         public void ClientCallback_AddMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, int color, string text, byte presel)
         {
             ClientCallback_AddExtendedMenu(winid, glyph, identifier, accel, groupaccel, attributes, color, text, presel,
-                0, 0, 0, '\0', '\0', 0, 0, 0, 0, IntPtr.Zero, IntPtr.Zero);
+                0, 0UL, 0UL, '\0', '\0', 0UL, 0, 0, IntPtr.Zero, IntPtr.Zero);
         }
         public void ClientCallback_AddExtendedMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, int color, string text, byte presel, 
-            int maxcount, UInt64 oid, UInt64 mid, char headingaccel, char special_mark, int numitems, ulong menuflags, byte dataflags, int style, IntPtr otmpdata_ptr, IntPtr otypdata_ptr)
+            int maxcount, UInt64 oid, UInt64 mid, char headingaccel, char special_mark, ulong menuflags, byte dataflags, int style, IntPtr otmpdata_ptr, IntPtr otypdata_ptr)
         {
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("AddExtendedMenu");
             obj otmpdata = otmpdata_ptr == IntPtr.Zero ? new obj() : (obj)Marshal.PtrToStructure(otmpdata_ptr, typeof(obj));
@@ -1081,7 +1081,7 @@ namespace GnollHackX
                     mi.Text = text;
                     mi.Count = (presel != 0) ? -1 : 0;
                     mi.UseNumItems = (menuflags & (ulong)MenuFlags.MENU_FLAGS_USE_NUM_ITEMS) != 0;
-                    mi.NumItems = numitems;
+                    mi.NumItems = mi.UseNumItems ? maxcount : 0;
                     mi.Selected = (presel != 0);
                     mi.MaxCount = maxcount;
 //                    mi.SelectedSliderValue = maxcount + 1;

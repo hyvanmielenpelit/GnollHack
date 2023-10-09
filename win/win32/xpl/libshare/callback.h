@@ -90,7 +90,7 @@ typedef VoidConstCharBooleanCallback DisplayFileCallback;
 typedef void(__callconv* StartMenuCallback)(int, int);
 typedef void(__callconv* AddMenuCallback)(int, int, long long, CHAR_P, CHAR_P, int, int, const char*, UCHAR_P);
 typedef void(__callconv* AddExtendedMenuCallback)(int, int, long long, CHAR_P, CHAR_P, int, int, const char*, UCHAR_P, int,
-    unsigned long long, unsigned long long, CHAR_P, CHAR_P, int, unsigned long, UCHAR_P, int, struct obj*, struct objclassdata*);
+    unsigned long long, unsigned long long, CHAR_P, CHAR_P, unsigned long, UCHAR_P, int, struct obj*, struct objclassdata*);
 typedef void(__callconv* EndMenuCallback)(int, const char*, const char*);
 typedef int(__callconv* SelectMenuCallback)(int, int, long long**, int*);
 typedef void(__callconv* MessageMenuCallback)(int);
