@@ -170,19 +170,6 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage.BreatheAnimations = BreatheAnimationSwitch.IsToggled;
             Preferences.Set("BreatheAnimations", BreatheAnimationSwitch.IsToggled);
 
-            //if (_gamePage != null)
-            //    _gamePage.MapNoClipMode = !YesClipAlternateSwitch.IsToggled;
-            //Preferences.Set("MapNoClipMode", !YesClipNormalSwitch.IsToggled);
-
-            //if (_gamePage != null)
-            //    _gamePage.MapAlternateNoClipMode = !YesClipAlternateSwitch.IsToggled;
-            //Preferences.Set("MapAlternateNoClipMode", !YesClipAlternateSwitch.IsToggled);
-
-            //if (_gamePage != null)
-            //    _gamePage.ZoomChangeCenterMode = ZoomChangeCenterSwitch.IsToggled;
-            //Preferences.Set("ZoomChangeCenterMode", ZoomChangeCenterSwitch.IsToggled);
-
-
             GHApp.HideAndroidNavigationBar = NavBarSwitch.IsToggled;
             Preferences.Set("HideAndroidNavigationBar", GHApp.HideAndroidNavigationBar);
 
@@ -384,7 +371,6 @@ namespace GnollHackX.Pages.MainScreen
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting;
-            //bool altnoclipmode = GHConstants.DefaultMapAlternateNoClipMode, zoomchangecenter = GHConstants.DefaultZoomChangeCenterMode;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             string customlink = "";
             int[] cmdidxs = new int[6];
@@ -424,10 +410,6 @@ namespace GnollHackX.Pages.MainScreen
                 graphics = Preferences.Get("GraphicsStyle", 1);
                 maprefresh = Preferences.Get("MapRefreshRate", (int)UIUtils.GetDefaultMapFPS());
                 mapgrid = Preferences.Get("MapGrid", false);
-                //noclipmode = Preferences.Get("MapNoClipMode", GHConstants.DefaultMapNoClipMode);
-                //altnoclipmode = Preferences.Get("MapAlternateNoClipMode", GHConstants.DefaultMapAlternateNoClipMode);
-                //zoomchangecenter = Preferences.Get("ZoomChangeCenterMode", GHConstants.DefaultZoomChangeCenterMode);
-
                 forcemaxmsg = false; /* Always starts as false */
                 ForceMaxMessageSwitch.IsEnabled = false;
                 ForceMaxMessageLabel.TextColor = GHColors.Gray;
@@ -481,9 +463,6 @@ namespace GnollHackX.Pages.MainScreen
                 simplecmdlayout = _gamePage.UseSimpleCmdLayout;
                 msgnum = _gamePage.NumDisplayedMessages;
                 petrows = _gamePage.NumDisplayedPetRows;
-                //noclipmode = _gamePage.MapNoClipMode;
-                //altnoclipmode = _gamePage.MapAlternateNoClipMode;
-                //zoomchangecenter = _gamePage.ZoomChangeCenterMode;
                 lighterdarkening = _gamePage.LighterDarkening;
                 accuratedrawing = _gamePage.AlternativeLayerDrawing;
                 wallends = _gamePage.DrawWallEnds;
@@ -504,8 +483,6 @@ namespace GnollHackX.Pages.MainScreen
             WalkArrowSwitch.IsToggled = walkarrows;
             YesClipNormalSwitch.IsToggled = !noclipmode;
             SilentModeSwitch.IsToggled = silentmode;
-            //YesClipAlternateSwitch.IsToggled = !altnoclipmode;
-            //ZoomChangeCenterSwitch.IsToggled = zoomchangecenter;
             MemorySwitch.IsToggled = mem;
             FPSSwitch.IsToggled = fps;
             GPUSwitch.IsToggled = gpu;
