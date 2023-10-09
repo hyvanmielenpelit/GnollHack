@@ -136,35 +136,37 @@ struct simple_layer_info {
 #define LFLAGS_NO_WALL_END_AUTODRAW     0x80000000UL /* NO_WALL_END_AUTODRAW(x, y) is true */
 
 /* These are standard flags replacing earlier glyph system -- To be used mostly in map_glyph for tty */
-#define LMFLAGS_PET                     0x00000001UL
-#define LMFLAGS_PEACEFUL                0x00000002UL
-#define LMFLAGS_DETECTED                0x00000004UL
-#define LMFLAGS_RIDDEN                  0x00000008UL
-#define LMFLAGS_CANSPOTMON              0x00000010UL /* canspotmon is true */
-#define LMFLAGS_YOU                     0x00000020UL
-#define LMFLAGS_BEING_HIT               0x00000040UL
-#define LMFLAGS_KILLED                  0x00000080UL
-#define LMFLAGS_U_TETHERED              0x00000100UL /* You are tethered */
-#define LMFLAGS_TETHERED                0x00000200UL /* Monster is tethered */
-#define LMFLAGS_DROPPING_PIERCER        0x00000400UL
-#define LMFLAGS_WORM_TAIL               0x00000800UL
-#define LMFLAGS_WORM_SEEN               0x00001000UL
-#define LMFLAGS_WORM_HEAD               0x00002000UL
-#define LMFLAGS_WORM_TAILEND            0x00004000UL
-#define LMFLAGS_INVISIBLE_TRANSPARENT   0x00008000UL
-#define LMFLAGS_SEMI_TRANSPARENT        0x00010000UL
-#define LMFLAGS_RADIAL_TRANSPARENCY     0x00020000UL
-#define LMFLAGS_GLASS_TRANSPARENCY      0x00040000UL
-#define LMFLAGS_CAN_SPOT_SELF           0x00080000UL
-#define LMFLAGS_LONG_WORM_WITH_TAIL     0x00100000UL
-#define LMFLAGS_LONG_WORM_TAIL          0x00200000UL
-#define LMFLAGS_BOSS_MONSTER_FIGHT      0x00400000UL
-#define LMFLAGS_FADES_UPON_DEATH        0x00800000UL
-#define LMFLAGS_FLYING                  0x01000000UL
-#define LMFLAGS_LEVITATING              0x02000000UL
-#define LMFLAGS_BLOBBY_ANIMATION        0x04000000UL
-#define LMFLAGS_SWIM_ANIMATION          0x08000000UL
-#define LMFLAGS_SHARK_ANIMATION         0x10000000UL
+#define LMFLAGS_PET                         0x00000001UL
+#define LMFLAGS_PEACEFUL                    0x00000002UL
+#define LMFLAGS_DETECTED                    0x00000004UL
+#define LMFLAGS_RIDDEN                      0x00000008UL
+#define LMFLAGS_CANSPOTMON                  0x00000010UL /* canspotmon is true */
+#define LMFLAGS_YOU                         0x00000020UL
+#define LMFLAGS_BEING_HIT                   0x00000040UL
+#define LMFLAGS_KILLED                      0x00000080UL
+#define LMFLAGS_U_TETHERED                  0x00000100UL /* You are tethered */
+#define LMFLAGS_TETHERED                    0x00000200UL /* Monster is tethered */
+#define LMFLAGS_DROPPING_PIERCER            0x00000400UL
+#define LMFLAGS_WORM_TAIL                   0x00000800UL
+#define LMFLAGS_WORM_SEEN                   0x00001000UL
+#define LMFLAGS_WORM_HEAD                   0x00002000UL
+#define LMFLAGS_WORM_TAILEND                0x00004000UL
+#define LMFLAGS_INVISIBLE_TRANSPARENT       0x00008000UL
+#define LMFLAGS_SEMI_TRANSPARENT            0x00010000UL
+#define LMFLAGS_RADIAL_TRANSPARENCY         0x00020000UL
+#define LMFLAGS_GLASS_TRANSPARENCY          0x00040000UL
+#define LMFLAGS_CAN_SPOT_SELF               0x00080000UL
+#define LMFLAGS_LONG_WORM_WITH_TAIL         0x00100000UL
+#define LMFLAGS_LONG_WORM_TAIL              0x00200000UL
+#define LMFLAGS_BOSS_MONSTER_FIGHT          0x00400000UL
+#define LMFLAGS_FADES_UPON_DEATH            0x00800000UL
+#define LMFLAGS_FLYING                      0x01000000UL
+#define LMFLAGS_LEVITATING                  0x02000000UL
+#define LMFLAGS_BLOBBY_ANIMATION            0x04000000UL
+#define LMFLAGS_SWIM_ANIMATION              0x08000000UL
+#define LMFLAGS_SHARK_ANIMATION             0x10000000UL
+#define LMFLAGS_HUMAN_BREATHE_ANIMATION     0x20000000UL
+#define LMFLAGS_ANIMAL_BREATHE_ANIMATION    0x40000000UL
 
 #define MISSILE_FLAGS_CORRODEABLE   0x00000001UL
 #define MISSILE_FLAGS_ROTTABLE      0x00000002UL

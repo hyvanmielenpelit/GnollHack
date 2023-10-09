@@ -312,6 +312,73 @@ namespace GnollHackX.Pages.Game
             new SKPoint(0f, 0.1f),
         };
 
+        private SKPoint[] _humanBreatheAnimation = new SKPoint[]
+        {
+            new SKPoint(0.99000f, 1.000f),
+            new SKPoint(0.99025f, 0.9995f),
+            new SKPoint(0.99050f, 0.9990f),
+            new SKPoint(0.99100f, 0.9980f),
+            new SKPoint(0.99200f, 0.9960f),
+            new SKPoint(0.99300f, 0.9940f),
+            new SKPoint(0.99400f, 0.9920f),
+            new SKPoint(0.99500f, 0.9900f),
+            new SKPoint(0.99600f, 0.9880f),
+            new SKPoint(0.99700f, 0.9860f),
+            new SKPoint(0.99800f, 0.9840f),
+            new SKPoint(0.99900f, 0.9820f),
+            new SKPoint(0.99950f, 0.9810f),
+            new SKPoint(0.99975f, 0.9805f),
+            new SKPoint(1.00000f, 0.9800f),
+            new SKPoint(1.00000f, 0.9800f),
+            new SKPoint(0.99975f, 0.9805f),
+            new SKPoint(0.99950f, 0.9810f),
+            new SKPoint(0.99900f, 0.9820f),
+            new SKPoint(0.99800f, 0.9840f),
+            new SKPoint(0.99700f, 0.9860f),
+            new SKPoint(0.99600f, 0.9880f),
+            new SKPoint(0.99500f, 0.9900f),
+            new SKPoint(0.99400f, 0.9920f),
+            new SKPoint(0.99300f, 0.9940f),
+            new SKPoint(0.99200f, 0.9960f),
+            new SKPoint(0.99100f, 0.9980f),
+            new SKPoint(0.99050f, 0.9990f),
+            new SKPoint(0.99025f, 0.9995f),
+        };
+
+        private SKPoint[] _animalBreatheAnimation = new SKPoint[]
+        {
+            new SKPoint(1.0000f, 0.9800f),
+            new SKPoint(0.9995f, 0.9805f),
+            new SKPoint(0.9990f, 0.9810f),
+            new SKPoint(0.9980f, 0.9820f),
+            new SKPoint(0.9960f, 0.9840f),
+            new SKPoint(0.9940f, 0.9860f),
+            new SKPoint(0.9920f, 0.9880f),
+            new SKPoint(0.9900f, 0.9900f),
+            new SKPoint(0.9880f, 0.9920f),
+            new SKPoint(0.9860f, 0.9940f),
+            new SKPoint(0.9840f, 0.9960f),
+            new SKPoint(0.9820f, 0.9980f),
+            new SKPoint(0.9810f, 0.9990f),
+            new SKPoint(0.9805f, 0.9995f),
+            new SKPoint(0.9800f, 1.0000f),
+            new SKPoint(0.9800f, 1.0000f),
+            new SKPoint(0.9805f, 0.9995f),
+            new SKPoint(0.9810f, 0.9990f),
+            new SKPoint(0.9820f, 0.9980f),
+            new SKPoint(0.9840f, 0.9960f),
+            new SKPoint(0.9860f, 0.9940f),
+            new SKPoint(0.9880f, 0.9920f),
+            new SKPoint(0.9900f, 0.9900f),
+            new SKPoint(0.9920f, 0.9880f),
+            new SKPoint(0.9940f, 0.9860f),
+            new SKPoint(0.9960f, 0.9840f),
+            new SKPoint(0.9980f, 0.9820f),
+            new SKPoint(0.9990f, 0.9810f),
+            new SKPoint(0.9995f, 0.9805f),
+            new SKPoint(1.0000f, 0.9800f),
+        };
+
         private readonly object _isSizeAllocatedProcessedLock = new object();
         private bool _isSizeAllocatedProcessed = false;
         public bool IsSizeAllocatedProcessed { get { lock (_isSizeAllocatedProcessedLock) { return _isSizeAllocatedProcessed; } } set { lock (_isSizeAllocatedProcessedLock) { _isSizeAllocatedProcessed = value; } } }
@@ -337,6 +404,10 @@ namespace GnollHackX.Pages.Game
         private readonly object _drawWallEndsLock = new object();
         private bool _drawWallEnds = false;
         public bool DrawWallEnds { get { lock (_drawWallEndsLock) { return _drawWallEnds; } } set { lock (_drawWallEndsLock) { _drawWallEnds = value; } } }
+
+        private readonly object _breatheAnimationLock = new object();
+        private bool _breatheAnimations = false;
+        public bool BreatheAnimations { get { lock (_breatheAnimationLock) { return _breatheAnimations; } } set { lock (_breatheAnimationLock) { _breatheAnimations = value; } } }
 
         private readonly object _accurateLayerDrawingLock = new object();
         private bool _accurateLayerDrawing = false;
@@ -638,6 +709,7 @@ namespace GnollHackX.Pages.Game
             WalkArrows = Preferences.Get("WalkArrows", true);
             LighterDarkening = Preferences.Get("LighterDarkening", GHConstants.DefaultLighterDarkening);
             DrawWallEnds = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
+            BreatheAnimations = Preferences.Get("BreatheAnimations", GHConstants.DefaultBreatheAnimations);
             AlternativeLayerDrawing = Preferences.Get("AlternativeLayerDrawing", GHConstants.DefaultAlternativeLayerDrawing);
 
             float deffontsize = GetDefaultMapFontSize();
@@ -3915,7 +3987,7 @@ namespace GnollHackX.Pages.Game
             bool is_monster_like_layer, bool is_object_like_layer, bool obj_in_pit, int obj_height, bool is_missile_layer, int missile_height,
             bool loc_is_you, bool canspotself, bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem, bool tileflag_floortile, bool tileflag_height_is_clipping,
             bool hflip_glyph, bool vflip_glyph,
-            ObjectDataItem otmp_round, int autodraw, bool drawwallends, long generalcounterdiff, float canvaswidth, float canvasheight, int enlargement,
+            ObjectDataItem otmp_round, int autodraw, bool drawwallends, bool breatheanimations, long generalcounterdiff, float canvaswidth, float canvasheight, int enlargement,
             ref short[,] draw_shadow, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY,
             ref float enlMinDrawX, ref float enlMaxDrawX, ref float enlMinDrawY, ref float enlMaxDrawY)
         {
@@ -4151,12 +4223,29 @@ namespace GnollHackX.Pages.Game
                         dscalex = dscaley = ((float)(90 - Math.Min(44L, generalcounterdiff))) / 90;
                 }
 
-                if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) == 0
-                    && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_BLOBBY_ANIMATION) != 0)
+                if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) == 0)                   
                 {
-                    long animationframe = generalcountervalue % _blobAnimation.Length;
-                    dscalex *= _blobAnimation[animationframe].X;
-                    dscaley *= _blobAnimation[animationframe].Y;
+                    if((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_BLOBBY_ANIMATION) != 0)
+                    {
+                        long animationframe = generalcountervalue % _blobAnimation.Length;
+                        dscalex *= _blobAnimation[animationframe].X;
+                        dscaley *= _blobAnimation[animationframe].Y;
+                    }
+                    else if(breatheanimations)
+                    {
+                        if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_HUMAN_BREATHE_ANIMATION) != 0)
+                        {
+                            long animationframe = generalcountervalue % _humanBreatheAnimation.Length;
+                            dscalex *= _humanBreatheAnimation[animationframe].X;
+                            dscaley *= _humanBreatheAnimation[animationframe].Y;
+                        }
+                        else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_ANIMAL_BREATHE_ANIMATION) != 0)
+                        {
+                            long animationframe = generalcountervalue % _animalBreatheAnimation.Length;
+                            dscalex *= _animalBreatheAnimation[animationframe].X;
+                            dscaley *= _animalBreatheAnimation[animationframe].Y;
+                        }
+                    }
                 }
 
                 correction_x = width * (mapx - draw_map_x) + width * dscalex * (draw_map_x - mapx) + width * (1.0f - dscalex) / 2;
@@ -5129,6 +5218,7 @@ namespace GnollHackX.Pages.Game
             float canvaswidth = canvasView.CanvasSize.Width;
             float canvasheight = canvasView.CanvasSize.Height;
             bool drawwallends = DrawWallEnds;
+            bool breatheanimations = BreatheAnimations;
 
             canvas.Clear(SKColors.Black);
             if (canvaswidth <= 16 || canvasheight <= 16)
@@ -5481,7 +5571,7 @@ namespace GnollHackX.Pages.Game
                                                                                 scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
                                                                                 monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                 loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
-                                                                                hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, generalcounterdiff, canvaswidth, canvasheight, enlargement,
+                                                                                hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement,
                                                                                 ref draw_shadow, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
                                                                         }
                                                                     }
@@ -5624,7 +5714,7 @@ namespace GnollHackX.Pages.Game
                                                                                         scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
                                                                                         monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                         loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
-                                                                                        hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, generalcounterdiff, canvaswidth, canvasheight, enlargement,
+                                                                                        hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement,
                                                                                         ref draw_shadow, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
                                                                                 }
                                                                                 else
@@ -5635,7 +5725,7 @@ namespace GnollHackX.Pages.Game
                                                                                         scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
                                                                                         monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                         loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
-                                                                                        hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, generalcounterdiff, canvaswidth, canvasheight, enlargement,
+                                                                                        hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement,
                                                                                         ref draw_shadow, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
                                                                                 }
                                                                             }

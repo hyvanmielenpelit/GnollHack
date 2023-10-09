@@ -2960,6 +2960,12 @@ boolean exclude_ascii;
             if (has_blobby_animation(used_mtmp->data) && !Hallucination)
                 gbuf[y][x].layers.monster_flags |= LMFLAGS_BLOBBY_ANIMATION;
 
+            if (has_human_breathe_animation(used_mtmp->data) && !Hallucination)
+                gbuf[y][x].layers.monster_flags |= LMFLAGS_HUMAN_BREATHE_ANIMATION;
+
+            if (has_animal_breathe_animation(used_mtmp->data) && !Hallucination)
+                gbuf[y][x].layers.monster_flags |= LMFLAGS_ANIMAL_BREATHE_ANIMATION;
+
             if (loc_is_you)
             {
                 if (mtmp && mtmp != &youmonst) /* Steed */

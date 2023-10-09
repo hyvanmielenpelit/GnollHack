@@ -261,36 +261,38 @@ namespace GnollHackX
     [Flags]
     public enum LayerMonsterFlags : ulong
     {
-        None =                          0x00000000UL,
-        LMFLAGS_PET =                   0x00000001UL,
-        LMFLAGS_PEACEFUL =              0x00000002UL,
-        LMFLAGS_RIDDEN =                0x00000004UL,
-        LMFLAGS_DETECTED =              0x00000008UL,
-        LMFLAGS_CANSPOTMON =            0x00000010UL,
-        LMFLAGS_YOU =                   0x00000020UL,
-        LMFLAGS_BEING_HIT =             0x00000040UL,
-        LMFLAGS_KILLED =                0x00000080UL,
-        LMFLAGS_U_TETHERED =            0x00000100UL, /* You are tethered */
-        LMFLAGS_TETHERED =              0x00000200UL, /* Monster is tethered */
-        LMFLAGS_DROPPING_PIERCER =      0x00000400UL,
-        LMFLAGS_WORM_TAIL =             0x00000800UL,
-        LMFLAGS_WORM_SEEN =             0x00001000UL,
-        LMFLAGS_WORM_HEAD =             0x00002000UL,
-        LMFLAGS_WORM_TAILEND =          0x00004000UL,
-        LMFLAGS_INVISIBLE_TRANSPARENT = 0x00008000UL,
-        LMFLAGS_SEMI_TRANSPARENT =      0x00010000UL,
-        LMFLAGS_RADIAL_TRANSPARENCY =   0x00020000UL,
-        LMFLAGS_GLASS_TRANSPARENCY =    0x00040000UL,
-        LMFLAGS_CAN_SPOT_SELF =         0x00080000UL,
-        LMFLAGS_LONG_WORM_WITH_TAIL =   0x00100000UL,
-        LMFLAGS_LONG_WORM_TAIL =        0x00200000UL,
-        LMFLAGS_BOSS_MONSTER_FIGHT =    0x00400000UL,
-        LMFLAGS_FADES_UPON_DEATH =      0x00800000UL,
-        LMFLAGS_FLYING =                0x01000000UL,
-        LMFLAGS_LEVITATING =            0x02000000UL,
-        LMFLAGS_BLOBBY_ANIMATION =      0x04000000UL,
-        LMFLAGS_SWIM_ANIMATION =        0x08000000UL,
-        LMFLAGS_SHARK_ANIMATION =       0x10000000UL,
+        None =                              0x00000000UL,
+        LMFLAGS_PET =                       0x00000001UL,
+        LMFLAGS_PEACEFUL =                  0x00000002UL,
+        LMFLAGS_RIDDEN =                    0x00000004UL,
+        LMFLAGS_DETECTED =                  0x00000008UL,
+        LMFLAGS_CANSPOTMON =                0x00000010UL,
+        LMFLAGS_YOU =                       0x00000020UL,
+        LMFLAGS_BEING_HIT =                 0x00000040UL,
+        LMFLAGS_KILLED =                    0x00000080UL,
+        LMFLAGS_U_TETHERED =                0x00000100UL, /* You are tethered */
+        LMFLAGS_TETHERED =                  0x00000200UL, /* Monster is tethered */
+        LMFLAGS_DROPPING_PIERCER =          0x00000400UL,
+        LMFLAGS_WORM_TAIL =                 0x00000800UL,
+        LMFLAGS_WORM_SEEN =                 0x00001000UL,
+        LMFLAGS_WORM_HEAD =                 0x00002000UL,
+        LMFLAGS_WORM_TAILEND =              0x00004000UL,
+        LMFLAGS_INVISIBLE_TRANSPARENT =     0x00008000UL,
+        LMFLAGS_SEMI_TRANSPARENT =          0x00010000UL,
+        LMFLAGS_RADIAL_TRANSPARENCY =       0x00020000UL,
+        LMFLAGS_GLASS_TRANSPARENCY =        0x00040000UL,
+        LMFLAGS_CAN_SPOT_SELF =             0x00080000UL,
+        LMFLAGS_LONG_WORM_WITH_TAIL =       0x00100000UL,
+        LMFLAGS_LONG_WORM_TAIL =            0x00200000UL,
+        LMFLAGS_BOSS_MONSTER_FIGHT =        0x00400000UL,
+        LMFLAGS_FADES_UPON_DEATH =          0x00800000UL,
+        LMFLAGS_FLYING =                    0x01000000UL,
+        LMFLAGS_LEVITATING =                0x02000000UL,
+        LMFLAGS_BLOBBY_ANIMATION =          0x04000000UL,
+        LMFLAGS_SWIM_ANIMATION =            0x08000000UL,
+        LMFLAGS_SHARK_ANIMATION =           0x10000000UL,
+        LMFLAGS_HUMAN_BREATHE_ANIMATION =   0x20000000UL,
+        LMFLAGS_ANIMAL_BREATHE_ANIMATION =  0x40000000UL,
     }
 
     [Flags]
@@ -1569,6 +1571,7 @@ namespace GnollHackX
         public const bool DefaultReadStreamingBankToMemory = false;
         public const bool DefaultCopyStreamingBankToDisk = false;
         public const bool DefaultDrawWallEnds = true;
+        public const bool DefaultBreatheAnimations = true;
         public const bool DefaultLighterDarkening = true;
         public const bool DefaultAlternativeLayerDrawing = false;
     }

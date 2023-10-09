@@ -367,6 +367,8 @@
 #define M6_USES_CAT_SUBTYPES        0x00200000UL   /* Can have cat breeds */
 #define M6_BLOB_ANIMATION           0x00400000UL   /* GUI can add a blobby stand animation */
 #define M6_SHARK_ANIMATION          0x00800000UL   /* Special animation where the portion above the surface changes */
+#define M6_HUMAN_BREATHE_ANIMATION  0x01000000UL   /* GUI can add a human breathe (2 legs standing) animation */
+#define M6_ANIMAL_BREATHE_ANIMATION 0x02000000UL   /* GUI can add an animal breathe (4 legs standing) animation */
 
 #define M7_NONE                     0x00000000UL
 #define M7_ARCHAEOLOGIST            0x00000001UL   /* monster can use archaeologist items */

@@ -166,6 +166,10 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage.DrawWallEnds = WallEndSwitch.IsToggled;
             Preferences.Set("DrawWallEnds", WallEndSwitch.IsToggled);
 
+            if (_gamePage != null)
+                _gamePage.BreatheAnimations = BreatheAnimationSwitch.IsToggled;
+            Preferences.Set("BreatheAnimations", BreatheAnimationSwitch.IsToggled);
+
             //if (_gamePage != null)
             //    _gamePage.MapNoClipMode = !YesClipAlternateSwitch.IsToggled;
             //Preferences.Set("MapNoClipMode", !YesClipNormalSwitch.IsToggled);
@@ -376,7 +380,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             int cursor = 0, graphics = 0, maprefresh = (int)UIUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
             bool mem = false, fps = false, gpu = GHApp.IsGPUDefault, simplecmdlayout = true, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
-            bool allowbones = true, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
+            bool allowbones = true, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds, breatheanimations = GHConstants.DefaultBreatheAnimations;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting;
@@ -448,6 +452,7 @@ namespace GnollHackX.Pages.MainScreen
                 lighterdarkening = Preferences.Get("LighterDarkening", GHConstants.DefaultLighterDarkening);
                 accuratedrawing = Preferences.Get("AlternativeLayerDrawing", GHConstants.DefaultAlternativeLayerDrawing);
                 wallends = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
+                breatheanimations = Preferences.Get("BreatheAnimations", GHConstants.DefaultBreatheAnimations);
             }
             else
             {
@@ -482,6 +487,7 @@ namespace GnollHackX.Pages.MainScreen
                 lighterdarkening = _gamePage.LighterDarkening;
                 accuratedrawing = _gamePage.AlternativeLayerDrawing;
                 wallends = _gamePage.DrawWallEnds;
+                breatheanimations = _gamePage.BreatheAnimations;
             }
             CursorPicker.SelectedIndex = cursor;
             GraphicsPicker.SelectedIndex = graphics;
@@ -610,6 +616,7 @@ namespace GnollHackX.Pages.MainScreen
         }
 #endif
             WallEndSwitch.IsToggled = wallends;
+            BreatheAnimationSwitch.IsToggled = breatheanimations;
 
             _doChangeVolume = !GHApp.IsMuted;
         }
