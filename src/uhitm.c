@@ -1716,7 +1716,6 @@ boolean* obj_destroyed;
 
     if (valid_weapon_attack)
     {
-
         /* to be valid a projectile must have had the correct projector */
         damage += adjust_damage(weapon_skill_dmg_bonus(wep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE, !is_golf_swing_with_stone, TRUE, 0, TRUE), &youmonst, mon, wep ? objects[wep->otyp].oc_damagetype : AD_PHYS, ADFLAGS_NONE);
         /* [this assumes that `!thrown' implies wielded...] */

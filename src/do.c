@@ -3322,6 +3322,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             putstr(datawin, ATR_HEADING, buf);
 
             int powercnt = 0;
+            char mbuf[BUFSZ];
             if (obj->mythic_prefix)
             {
                 for (i = 0; i < MAX_MYTHIC_PREFIX_POWERS; i++)
@@ -3330,11 +3331,17 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     if (mythic_prefix_powers[i].description && (mythic_prefix_qualities[obj->mythic_prefix].mythic_powers & bit) && mythic_power_applies_to_obj(obj, mythic_prefix_powers[i].power_flags) && strcmp(mythic_prefix_powers[i].description, ""))
                     {
                         powercnt++;
-                        Sprintf(buf, " %2d - %s", powercnt, mythic_prefix_powers[i].description);
+                        Strcpy(mbuf, mythic_prefix_powers[i].description);
+                        if (mythic_prefix_powers[i].power_type == MYTHIC_POWER_TYPE_SLAYING)
+                        {
+                            has_slaying = TRUE;
+                            if (index(mythic_prefix_powers[i].description, '%'))
+                                Sprintf(mbuf, mythic_prefix_powers[i].description, mythic_prefix_powers[i].parameter2 * (is_ammo(obj) || is_missile(obj) ? 2.0 : 1.0));
+                        }
+
+                        Sprintf(buf, " %2d - %s", powercnt, mbuf);
                         
                         putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-                        if (mythic_prefix_powers[i].power_type == MYTHIC_POWER_TYPE_SLAYING)
-                            has_slaying = TRUE;
                     }
                     if (!mythic_prefix_powers[i].description)
                         break;
@@ -3348,7 +3355,15 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     if (mythic_suffix_powers[i].description && (mythic_suffix_qualities[obj->mythic_suffix].mythic_powers & bit) && mythic_power_applies_to_obj(obj, mythic_suffix_powers[i].power_flags) && strcmp(mythic_suffix_powers[i].description, ""))
                     {
                         powercnt++;
-                        Sprintf(buf, " %2d - %s", powercnt, mythic_suffix_powers[i].description);
+                        Strcpy(mbuf, mythic_suffix_powers[i].description);
+                        if (mythic_suffix_powers[i].power_type == MYTHIC_POWER_TYPE_SLAYING)
+                        {
+                            has_slaying = TRUE;
+                            if (index(mythic_suffix_powers[i].description, '%'))
+                                Sprintf(mbuf, mythic_suffix_powers[i].description, mythic_suffix_powers[i].parameter2 * (is_ammo(obj) || is_missile(obj) ? 2.0 : 1.0));
+                        }
+
+                        Sprintf(buf, " %2d - %s", powercnt, mbuf);
                         
                         putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
                         if (mythic_suffix_powers[i].power_type == MYTHIC_POWER_TYPE_SLAYING)

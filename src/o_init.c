@@ -448,18 +448,18 @@ NEARDATA const struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SU
 {
     { "Lightness", "Weighs one-eight of normal", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
     { "Sorcery", "Incurs no spellcasting penalty", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
-    { "Troll slaying", "Double damage to trolls", MYTHIC_POWER_TYPE_SLAYING, 0L, 2.0, S_TROLL, 0UL , MYTHIC_POWER_FLAG_WEAPON_ONLY },
+    { "Troll slaying", "%.0fx base damage and enchantment to trolls", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_TROLL, 0UL , MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Troll revival prevention", "Prevents revival of trolls", MYTHIC_POWER_TYPE_PREVENTS_REVIVAL, 0L, 0.0, S_TROLL, 0UL , MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
-    { "Were slaying", "Double damage to lycanthropes", MYTHIC_POWER_TYPE_SLAYING, 0L, 2.0, 0, M2_WERE, MYTHIC_POWER_FLAG_WEAPON_ONLY | MYTHIC_POWER_FLAG_ALSO_SHAPESHIFTERS },
+    { "Were slaying", "%.0fx base damage and enchantment to lycanthropes", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_WERE, MYTHIC_POWER_FLAG_WEAPON_ONLY | MYTHIC_POWER_FLAG_ALSO_SHAPESHIFTERS },
     { "Lycanthropy resistance", "Lycanthropy resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, LYCANTHROPY_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
-    { "Giant slaying", "Double damage to giants", MYTHIC_POWER_TYPE_SLAYING, 0L, 2.0, 0, M2_GIANT, MYTHIC_POWER_FLAG_WEAPON_ONLY },
-    { "Demon slaying", "Double damage to demons", MYTHIC_POWER_TYPE_SLAYING, 0L, 2.0, 0, M2_DEMON, MYTHIC_POWER_FLAG_WEAPON_ONLY | MYTHIC_POWER_FLAG_ALSO_SHAPESHIFTERS },
-    { "Angel slaying", "Double damage to angels", MYTHIC_POWER_TYPE_SLAYING, 0L, 2.0, 0, M2_ANGEL, MYTHIC_POWER_FLAG_WEAPON_ONLY | MYTHIC_POWER_FLAG_ALSO_SHAPESHIFTERS },
-    { "Ogre slaying", "Double damage to ogres", MYTHIC_POWER_TYPE_SLAYING, 0L, 2.0, S_OGRE, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
-    { "Orc slaying", "Double damage to orcs", MYTHIC_POWER_TYPE_SLAYING, 0L, 2.0, S_ORC, M2_ORC, MYTHIC_POWER_FLAG_WEAPON_ONLY },
-    { "Elf slaying", "Double damage to elves", MYTHIC_POWER_TYPE_SLAYING, 0L, 2.0, 0, M2_ELF, MYTHIC_POWER_FLAG_WEAPON_ONLY },
-    { "Dragon slaying", "Double damage to dragons", MYTHIC_POWER_TYPE_SLAYING, 0L, 2.0, S_DRAGON, 0UL , MYTHIC_POWER_FLAG_WEAPON_ONLY },
-    { "Undead destruction", "Double damage to undead", MYTHIC_POWER_TYPE_SLAYING, 0L, 2.0, 0, M2_UNDEAD, MYTHIC_POWER_FLAG_WEAPON_ONLY | MYTHIC_POWER_FLAG_ALSO_SHAPESHIFTERS },
+    { "Giant slaying", "%.0fx base damage and enchantment to giants", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_GIANT, MYTHIC_POWER_FLAG_WEAPON_ONLY },
+    { "Demon slaying", "%.0fx base damage and enchantment to demons", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_DEMON, MYTHIC_POWER_FLAG_WEAPON_ONLY | MYTHIC_POWER_FLAG_ALSO_SHAPESHIFTERS },
+    { "Angel slaying", "%.0fx base damage and enchantment to angels", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_ANGEL, MYTHIC_POWER_FLAG_WEAPON_ONLY | MYTHIC_POWER_FLAG_ALSO_SHAPESHIFTERS },
+    { "Ogre slaying", "%.0fx base damage and enchantment to ogres", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_OGRE, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
+    { "Orc slaying", "%.0fx base damage and enchantment to orcs", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_ORC, M2_ORC, MYTHIC_POWER_FLAG_WEAPON_ONLY },
+    { "Elf slaying", "%.0fx base damage and enchantment to elves", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_ELF, MYTHIC_POWER_FLAG_WEAPON_ONLY },
+    { "Dragon slaying", "%.0fx base damage and enchantment to dragons", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, S_DRAGON, 0UL , MYTHIC_POWER_FLAG_WEAPON_ONLY },
+    { "Undead destruction", "%.0fx base damage and enchantment to undead", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_UNDEAD, MYTHIC_POWER_FLAG_WEAPON_ONLY | MYTHIC_POWER_FLAG_ALSO_SHAPESHIFTERS },
     { "Speed", "Increases speed to very fast", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, VERY_FAST, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
     { "Wounding", WOUNDING_DESC, MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Defense", "Enchantment and quality provide AC and MC", MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY | MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
@@ -470,7 +470,7 @@ NEARDATA const struct mythic_power_definition mythic_suffix_powers[MAX_MYTHIC_SU
     { "Fire resistance", "Fire immunity", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, FIRE_IMMUNITY, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
     { "Cold resistance", "Cold immunity", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, COLD_IMMUNITY, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
     { "Shock resistance", "Shock immunity", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, SHOCK_IMMUNITY, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
-    { "Cockatrice slaying", "Triple damage to cockatrices", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_COCKATRICE, MYTHIC_POWER_FLAG_WEAPON_ONLY },
+    { "Cockatrice slaying", "%.0fx base damage and enchantment to cockatrices", MYTHIC_POWER_TYPE_SLAYING, 0L, 3.0, 0, M2_COCKATRICE, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Stone resistance", "Petrification resistance", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, STONE_RESISTANCE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
     { "Searching", "Searching", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, SEARCHING, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
     { "See invisible", "See invisible", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, SEE_INVISIBLE, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO },
@@ -1571,7 +1571,7 @@ struct monst* mattacker UNUSED;
                     )
                    )
                 {
-                    double pmult = mythic_powers[i].parameter2;
+                    double pmult = mythic_powers[i].parameter2 * (is_ammo(otmp) || is_missile(otmp) ? 2.0 : 1.0);
                     if (pmult > 1.0)
                     {
                         multiplier += pmult - 1.0;
