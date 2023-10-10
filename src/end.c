@@ -1037,7 +1037,7 @@ boolean taken;
         
         if (c == 'y') {
             /* caller has already ID'd everything */
-            (void) display_inventory((char *) 0, TRUE, 0);
+            (void) display_inventory((char *) 0, FALSE, 0);
             container_contents(invent, TRUE, TRUE, FALSE, 0);
         }
         if (c == 'q')
