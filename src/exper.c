@@ -104,7 +104,7 @@ int
 enmaxadjustment()
 {
     int baseen = u.ubaseenmax;
-    int baseadj = ((int)(max(0, max(ACURR(A_INT), ACURR(A_WIS)) - 1) * (u.ulevel + 3)) / 6) + u.ubaseendrain;
+    int baseadj = (int)((max(0.0, (2.0 * (double)ACURR(A_INT) + (double)ACURR(A_WIS)) / 3.0 - 1.0) * (double)(u.ulevel + 3)) / 6.0) + u.ubaseendrain;
     int adj = baseadj;
     int otyp = 0;
     struct obj* uitem;
