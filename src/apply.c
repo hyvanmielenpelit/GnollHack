@@ -2113,7 +2113,7 @@ struct obj **optr;
 
             any.a_void = 0;
             win = create_nhwindow(NHW_MENU);
-            start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST);
+            start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST_AUTO_OK);
 
             for (struct obj* cobj = level.objects[u.ux][u.ux]; cobj; cobj = cobj->nexthere)
                 if (is_obj_candelabrum(cobj)) 
@@ -6121,7 +6121,7 @@ boolean useonlyautostashes;
     winid win;
     
     win = create_nhwindow(NHW_MENU);
-    start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST);
+    start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST_AUTO_OK);
     int cnt = 0;
 
     for (struct obj* otmp = objchain; otmp; otmp = usenexthere ? otmp->nexthere : otmp->nobj)

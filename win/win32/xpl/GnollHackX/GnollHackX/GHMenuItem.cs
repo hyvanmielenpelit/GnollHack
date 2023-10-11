@@ -133,6 +133,7 @@ namespace GnollHackX
                     case ghmenu_styles.GHMENU_STYLE_PERMANENT_INVENTORY:
                     case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
                     case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                    case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST_AUTO_OK:
                     case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
                     case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
                     case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
@@ -314,6 +315,7 @@ namespace GnollHackX
                         case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                        case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST_AUTO_OK:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
                             break;
@@ -389,6 +391,7 @@ namespace GnollHackX
                         case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                        case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST_AUTO_OK:
                             break;
                         case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
                             break;
@@ -485,6 +488,7 @@ namespace GnollHackX
                     case ghmenu_styles.GHMENU_STYLE_OTHERS_INVENTORY:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                    case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST_AUTO_OK:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
                         break;

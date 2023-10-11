@@ -3208,6 +3208,20 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.AllowLongTap = false;
                     MenuCanvas.AllowHighlight = true;
                     break;
+                case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST_AUTO_OK:
+                    MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
+                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;
+                    MenuBackground.BorderStyle = BorderStyles.SimpleAlternative;
+                    MenuCanvas.RevertBlackAndWhite = true;
+                    MenuCanvas.UseTextOutline = false;
+                    MenuCanvas.HideMenuLetters = false;
+                    MenuCanvas.MenuButtonStyle = false;
+                    MenuCanvas.ClickOKOnSelection = true;
+                    MenuCanvas.MenuGlyphAtBottom = false;
+                    MenuCanvas.AllowLongTap = false;
+                    MenuCanvas.AllowHighlight = true;
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
                 default:
                     MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
                     MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;

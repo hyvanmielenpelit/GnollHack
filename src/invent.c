@@ -3113,6 +3113,8 @@ struct obj* otmp_only;
                     && !(otmp->owornmask & W_WIELDED_WEAPON))
                 || (!strcmp(word, "stash") /* exclude worn items and other containers */
                     && (otmp->owornmask & (W_ARMOR | W_ACCESSORY | W_MISCITEMS) || Is_container(otmp) || !can_stash_objs()))
+                || (!strcmp(word, "stash into a container on the floor") /* exclude worn items and other containers */
+                    && (otmp->owornmask & (W_ARMOR | W_ACCESSORY | W_MISCITEMS) || Is_container(otmp) || !can_floor_stash_objs()))
                 || (!strcmp(word, "mark as auto-stash") /* exclude not a container or already auto-stash */
                     && (!(Is_proper_container(otmp) || (Is_container(otmp) && !objects[otmp->otyp].oc_name_known)) || (otmp->speflags & SPEFLAGS_AUTOSTASH) != 0))
                 || (!strcmp(word, "unmark as auto-stash") /* exclude if not an auto-stash */
@@ -3229,6 +3231,7 @@ struct obj* otmp_only;
                     && (!Is_astralevel(&u.uz) ^ (otmp->oclass != AMULET_CLASS)))
                 /* suppress container being stashed into */
                 || (!strcmp(word, "stash") && !ck_bag(otmp))
+                || (!strcmp(word, "stash into a container on the floor") && !ck_bag(otmp))
                 /* worn armor (shirt, suit) covered by worn armor (suit, cloak)
                    or accessory (ring) covered by cursed worn armor (gloves) */
                 || (taking_off(word)
@@ -4376,10 +4379,11 @@ boolean* return_to_inv_ptr;
                         : getobj_ready_objs);
                 }
 
-                if (!strcmp(extcmdlist[i].getobj_word, "stash"))
+                boolean isstashing = !strcmp(extcmdlist[i].getobj_word, "stash") || !strcmp(extcmdlist[i].getobj_word, "stash into a container on the floor");
+                if (isstashing)
                     set_current_container_to_dummyobj();
                 boolean acceptable = acceptable_getobj_obj(otmp, class_list, extcmdlist[i].getobj_word);
-                if (!strcmp(extcmdlist[i].getobj_word, "stash"))
+                if (isstashing)
                     set_current_container_to_null();
                 if (!acceptable)
                     continue;
@@ -4428,10 +4432,11 @@ boolean* return_to_inv_ptr;
                         : getobj_ready_objs);
                 }
 
-                if (!strcmp(extcmdlist[i].getobj_word, "stash"))
+                boolean isstashing = !strcmp(extcmdlist[i].getobj_word, "stash") || !strcmp(extcmdlist[i].getobj_word, "stash into a container on the floor");
+                if (isstashing)
                     set_current_container_to_dummyobj();
                 boolean acceptable = acceptable_getobj_obj(otmp, class_list, extcmdlist[i].getobj_word);
-                if (!strcmp(extcmdlist[i].getobj_word, "stash"))
+                if (isstashing)
                     set_current_container_to_null();
                 if (!acceptable)
                     continue;

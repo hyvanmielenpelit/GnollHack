@@ -4688,6 +4688,22 @@ can_stash_objs()
     return FALSE;
 }
 
+boolean
+can_floor_stash_objs()
+{
+    if (!can_reach_floor(TRUE))
+        return FALSE;
+
+    struct obj* otmp;
+    for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
+    {
+        if (Is_container(otmp) && !(otmp->dknown && objects[otmp->otyp].oc_name_known && (!Is_proper_container(otmp) || otmp->olocked)))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+
 STATIC_VAR struct obj dummy_container = { 0 };
 
 void
@@ -4753,6 +4769,50 @@ dostash()
         container = select_other_container(invent, (struct obj*)0, FALSE, TRUE);
     }
 
+    if (!container)
+    {
+        pline1(Never_mind);
+        return 0;
+    }
+
+    if (!stash_obj_in_container(otmp, container))
+    {
+        /* couldn't put selected item into container for some
+           reason; might need to undo splitobj() */
+        (void)unsplitobj(otmp);
+    }
+    return 1;
+}
+
+/* the stashfloor command */
+int
+dostashfloor()
+{
+    struct obj* otmp = (struct obj*)0;
+
+    if (!can_floor_stash_objs()) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_ex1(ATR_NONE, CLR_MSG_FAIL, !can_reach_floor(TRUE) ? "cannot reach any containers on the floor to stash items into." : "do not know of any containers on the floor to stash items into.");
+        return 0;
+    }
+
+    current_container = &dummy_container; /* dummy for getobj with stash */
+    otmp = getobj(getobj_stash_objs, "stash", 0, "");
+    current_container = 0;
+    if (!otmp)
+    {
+        pline1(Never_mind);
+        return 0;
+    }
+
+    if (Is_container(otmp)) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_ex1(ATR_NONE, CLR_MSG_FAIL, "cannot stash that.");
+        return 0;
+    }
+
+    struct obj* container = 0;
+    container = select_other_container(level.objects[u.ux][u.uy], (struct obj*)0, TRUE, FALSE);
     if (!container)
     {
         pline1(Never_mind);
