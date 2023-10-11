@@ -2621,8 +2621,8 @@ int skill_id;
             }
             else if (skill_id == P_DISARM_TRAP)
             {
-                int arrowtrap_chance = untrap_probability(ARROW_TRAP, lvl);
-                int magictrap_chance = untrap_probability(MAGIC_TRAP, lvl);
+                int arrowtrap_chance = untrap_probability(ARROW_TRAP, lvl, &youmonst);
+                int magictrap_chance = untrap_probability(MAGIC_TRAP, lvl, &youmonst);
                 Sprintf(arrowbuf, "%d%%", arrowtrap_chance);
                 Sprintf(magicbuf, "%d%%", magictrap_chance);
             }
@@ -3322,8 +3322,8 @@ enhance_weapon_skill()
                     }
                     else if (i == P_DISARM_TRAP)
                     {
-                        int arrowtrap_chance = untrap_probability(ARROW_TRAP, P_SKILL_LEVEL(i));
-                        int magictrap_chance = untrap_probability(MAGIC_TRAP, P_SKILL_LEVEL(i));
+                        int arrowtrap_chance = untrap_probability(ARROW_TRAP, P_SKILL_LEVEL(i), &youmonst);
+                        int magictrap_chance = untrap_probability(MAGIC_TRAP, P_SKILL_LEVEL(i), &youmonst);
                         char abuf[BUFSZ] = "";
                         char mbuf[BUFSZ] = "";
                         Sprintf(abuf, "%d%%", arrowtrap_chance);
@@ -3332,8 +3332,8 @@ enhance_weapon_skill()
                         if (can_advance(i, speedy) || could_advance(i))
                         {
                             int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1); /* restricted is not able to advance, so we need not consider it here */
-                            int arrowtrap_chance2 = untrap_probability(ARROW_TRAP, nextlevel);
-                            int magictrap_chance2 = untrap_probability(MAGIC_TRAP, nextlevel);
+                            int arrowtrap_chance2 = untrap_probability(ARROW_TRAP, nextlevel, &youmonst);
+                            int magictrap_chance2 = untrap_probability(MAGIC_TRAP, nextlevel, &youmonst);
                             char abuf2[BUFSZ] = "";
                             char mbuf2[BUFSZ] = "";
                             Sprintf(abuf2, "%d%%", arrowtrap_chance2);
