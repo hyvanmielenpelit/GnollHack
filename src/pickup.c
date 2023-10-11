@@ -1231,6 +1231,7 @@ int how;               /* type of query */
         any = zeroany;
         any.a_int = 'A';
         info.num_items = objcnt;
+        info.menu_flags |= MENU_FLAGS_AUTO_CLICK_OK;
         add_extended_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
                  (qflags & WORN_TYPES) ? "Auto-select every item being worn"
                                        : "Auto-select every item",
@@ -1245,12 +1246,15 @@ int how;               /* type of query */
         any = zeroany;
         any.a_int = ALL_TYPES_SELECTED;
         info.num_items = objcnt;
+        info.menu_flags |= MENU_FLAGS_AUTO_CLICK_OK;
         add_extended_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
                  (qflags & WORN_TYPES) ? "All worn types" : "All types",
                  MENU_UNSELECTED, info);
         invlet = 'b';
     } else
         invlet = 'a';
+
+    info.menu_flags &= ~MENU_FLAGS_AUTO_CLICK_OK;
     do {
         collected_type_name = FALSE;
         for (curr = olist; curr; curr = FOLLOW(curr, qflags)) {

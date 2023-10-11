@@ -131,6 +131,8 @@ namespace GnollHackX.Controls
         public bool MenuButtonStyle { get; set; }
         public bool ClickOKOnSelection { get; set; }
         public bool MenuGlyphAtBottom { get; set; }
+        public bool AllowLongTap { get; set; } = true;
+        public bool AllowHighlight { get; set; }
 
         public CanvasTypes CanvasType { get; set; }
 

@@ -3159,6 +3159,8 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.MenuButtonStyle = true;
                     MenuCanvas.ClickOKOnSelection = true;
                     MenuCanvas.MenuGlyphAtBottom = false;
+                    MenuCanvas.AllowLongTap = false;
+                    MenuCanvas.AllowHighlight = true;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
                 case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
@@ -3171,6 +3173,8 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.MenuButtonStyle = true;
                     MenuCanvas.ClickOKOnSelection = true;
                     MenuCanvas.MenuGlyphAtBottom = true;
+                    MenuCanvas.AllowLongTap = false;
+                    MenuCanvas.AllowHighlight = true;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
                 case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
@@ -3188,6 +3192,21 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.ClickOKOnSelection = menuinfo.SelectionHow == SelectionMode.Single;
                     MenuCanvas.MenuGlyphAtBottom = false;
                     MenuBackground.BorderStyle = MenuCanvas.ClickOKOnSelection ? BorderStyles.SimpleAlternative : BorderStyles.Simple;
+                    MenuCanvas.AllowLongTap = false;
+                    MenuCanvas.AllowHighlight = true;
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
+                    MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
+                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;
+                    MenuBackground.BorderStyle = BorderStyles.Simple;
+                    MenuCanvas.RevertBlackAndWhite = true;
+                    MenuCanvas.UseTextOutline = false;
+                    MenuCanvas.HideMenuLetters = false;
+                    MenuCanvas.MenuButtonStyle = false;
+                    MenuCanvas.ClickOKOnSelection = false;
+                    MenuCanvas.MenuGlyphAtBottom = false;
+                    MenuCanvas.AllowLongTap = false;
+                    MenuCanvas.AllowHighlight = true;
                     break;
                 default:
                     MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
@@ -3199,6 +3218,8 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.MenuButtonStyle = false;
                     MenuCanvas.ClickOKOnSelection = false;
                     MenuCanvas.MenuGlyphAtBottom = false;
+                    MenuCanvas.AllowLongTap = true;
+                    MenuCanvas.AllowHighlight = false;
                     break;
             }
 
@@ -12478,10 +12499,6 @@ namespace GnollHackX.Pages.Game
                                     textPaint.Color = _numItemsBackgroundColor;
                                     textPaint.Style = SKPaintStyle.Fill;
                                     canvas.DrawCircle(circlex, circley, circleradius, textPaint);
-                                    //textPaint.Color = SKColors.Black;
-                                    //textPaint.Style = SKPaintStyle.Stroke;
-                                    //textPaint.StrokeWidth = circleradius / 10;
-                                    //canvas.DrawCircle(circlex, circley, circleradius, textPaint);
                                     textPaint.Style = SKPaintStyle.Fill;
                                     textPaint.TextAlign = SKTextAlign.Center;
                                     textPaint.Color = SKColors.Black;
@@ -12811,7 +12828,7 @@ namespace GnollHackX.Pages.Game
 
                         HighlightMenuItems(e.Location);
 
-                        if (!MenuCanvas.ClickOKOnSelection)
+                        if (MenuCanvas.AllowLongTap)
                         {
                             Device.StartTimer(TimeSpan.FromSeconds(GHConstants.LongMenuTapThreshold), () =>
                             {
@@ -13121,7 +13138,7 @@ namespace GnollHackX.Pages.Game
 
         private void ClearHighlightMenuItems()
         {
-            if (!MenuCanvas.ClickOKOnSelection)
+            if (!MenuCanvas.AllowHighlight)
                 return;
             lock (MenuCanvas.MenuItemLock)
             {
@@ -13130,8 +13147,6 @@ namespace GnollHackX.Pages.Game
 
                 for (int idx = 0; idx < MenuCanvas.MenuItems.Count; idx++)
                 {
-                    if (idx >= MenuCanvas.MenuItems.Count)
-                        break;
                     MenuCanvas.MenuItems[idx].Highlighted = false;
                 }
             }
@@ -13139,7 +13154,7 @@ namespace GnollHackX.Pages.Game
 
         private void HighlightMenuItems(SKPoint p)
         {
-            if (!MenuCanvas.ClickOKOnSelection)
+            if (!MenuCanvas.AllowHighlight)
                 return;
             lock (MenuCanvas.MenuItemLock)
             {
@@ -13158,7 +13173,7 @@ namespace GnollHackX.Pages.Game
                         {
                             if (MenuCanvas.SelectionHow == SelectionMode.Multiple)
                             {
-                                if(!MenuCanvas.MenuItems[idx].Selected)
+                                if(!MenuCanvas.MenuItems[idx].Selected && MenuCanvas.MenuItems[idx].IsAutoClickOk)
                                     MenuCanvas.MenuItems[idx].Highlighted = true;
                             }
                             else if (MenuCanvas.SelectionHow == SelectionMode.Single)
@@ -13216,7 +13231,11 @@ namespace GnollHackX.Pages.Game
                             {
                                 MenuCanvas.MenuItems[idx].Selected = !MenuCanvas.MenuItems[idx].Selected;
                                 if (MenuCanvas.MenuItems[idx].Selected)
+                                {
                                     MenuCanvas.MenuItems[idx].Count = -1;
+                                    if(MenuCanvas.MenuItems[idx].IsAutoClickOk)
+                                        doclickok = true;
+                                }
                                 else
                                     MenuCanvas.MenuItems[idx].Count = 0;
                             }

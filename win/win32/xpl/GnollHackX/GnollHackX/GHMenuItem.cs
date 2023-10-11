@@ -664,12 +664,17 @@ namespace GnollHackX
 
         public bool Selected { get; set; }
         public bool Highlighted { get; set; }
+        public bool IsButtonStyle { get; set; }
+        public bool IsAutoClickOk { get; set; }
 
         public bool IsButton
         {
             get
             {
-                return (_menuInfo.Style == ghmenu_styles.GHMENU_STYLE_START_GAME_MENU || _menuInfo.Style == ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER || _menuInfo.Style == ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY) 
+                return (IsButtonStyle
+                    || _menuInfo.Style == ghmenu_styles.GHMENU_STYLE_START_GAME_MENU 
+                    || _menuInfo.Style == ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER 
+                    || _menuInfo.Style == ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY) 
                     && Identifier != 0;
             }
         }
