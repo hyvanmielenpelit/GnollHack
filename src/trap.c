@@ -5100,8 +5100,8 @@ struct trap *ttmp;
     if (!ttmp)
         return FALSE;
 
-    boolean res = FALSE;
-    int probability = 0;
+    //boolean res = FALSE;
+    //int probability = 0;
     int usedskilllevel = max(P_UNSKILLED, min(P_EXPERT, P_SKILL_LEVEL(P_DISARM_TRAP) + (Enhanced_untrap ? 1 : 0))); /* (Role_if(PM_ROGUE) && u.uhave.questart) */
 
     //probability = untrap_probability(ttmp->ttyp, usedskilllevel, &youmonst);
@@ -5125,9 +5125,9 @@ struct trap *ttmp;
     case -1:
         return !rn2(2) ? -1 : 0;
     case 0:
-        return !rn2(3) ? -1 : rn2(2);
+        return !rn2(3) ? -1 : !!rn2(2);
     case 1:
-        return !rn2(6) ? -1 : rn2(5);
+        return !rn2(6) ? -1 : !!rn2(5);
     default:
         if (checkdiff <= -2)
         {
