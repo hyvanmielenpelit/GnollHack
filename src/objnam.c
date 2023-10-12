@@ -1387,7 +1387,9 @@ unsigned doname_flags;
              * printed to avoid ambiguity between an item whose curse
              * status is unknown, and an item known to be uncursed.
              */
-                 || ((!known || !objects[obj->otyp].oc_enchantable
+                 || ((!known 
+                      || (!objects[obj->otyp].oc_enchantable && !objects[obj->otyp].oc_charged)
+                      || (obj->oclass == GEM_CLASS && objects[obj->otyp].oc_enchantable && obj->enchantment == 0 && obj->elemental_enchantment == 0 && obj->exceptionality == 0)
                       || obj->oclass == ARMOR_CLASS
                       || obj->oclass == RING_CLASS
                       || obj->oclass == MISCELLANEOUS_CLASS

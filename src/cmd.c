@@ -5846,6 +5846,7 @@ struct ext_func_tab extcmdlist[] = {
 #endif
     { 'p', "pay", "pay your shopping bill", dopay },
     { ',', "pickup", "pick up things at the current location", dopickup },
+    { M(15), "pickupstash", "pick up things at the current location and stash them into a container", dopickupstash },
     { M(1), "polyself", "polymorph self", /* Special hotkey launchable from GUI */
             wiz_polyself, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { M('p'), "pray", "pray to the gods for help",
@@ -7200,7 +7201,7 @@ STATIC_OVL boolean
 accept_menu_prefix(cmd_func)
 int NDECL((*cmd_func));
 {
-    if (cmd_func == dopickup || cmd_func == dotip
+    if (cmd_func == dopickup || cmd_func == dopickupstash || cmd_func == dotip
         /* eat, #offer, and apply tinning-kit all use floorfood() to pick
            an item on floor or in invent; 'm' skips picking from floor
            (ie, inventory only) rather than request use of menu operation */
@@ -9603,6 +9604,8 @@ enum create_context_menu_types menu_type;
         if (showpickup)
         {
             add_context_menu(',', cmd_from_func(dopickup), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Pick Up", cxname(otmp), 0, NO_COLOR);
+            if(can_stash_objs())
+                add_context_menu(M(15), cmd_from_func(dopickupstash), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Stash", cxname(otmp), 0, NO_COLOR);
             boolean eat_added = FALSE;
             boolean loot_added = FALSE;
             for (otmp_here = otmp; otmp_here; otmp_here = otmp_here->nexthere)

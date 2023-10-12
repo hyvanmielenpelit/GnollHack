@@ -3399,6 +3399,27 @@ dopickup(VOID_ARGS)
     return pickup(-count);
 }
 
+/* the pick up and stash command */
+int
+dopickupstash(VOID_ARGS)
+{
+    int count, tmpcount, ret;
+
+    /* awful kludge to work around parse()'s pre-decrement */
+    count = (multi || (save_cm && *save_cm == cmd_from_func(dopickup)))
+        ? multi + 1 : 0;
+    multi = 0; /* always reset */
+
+    if ((ret = pickup_checks() >= 0))
+        return ret;
+    else if (ret == -2) {
+        tmpcount = -count;
+        return loot_mon(u.ustuck, &tmpcount, (boolean*)0);
+    } /* else ret == -1 */
+
+    return pickup(-count);
+}
+
 /* stop running if we see something interesting */
 /* turn around a corner if that is the only way we can proceed */
 /* do not turn left or right twice */
