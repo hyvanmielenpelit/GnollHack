@@ -4874,7 +4874,12 @@ dotip()
         return 0;
 
     /* normal case */
-    if (Is_container(cobj) || cobj->otyp == HORN_OF_PLENTY) {
+    if (Is_container(cobj) || cobj->otyp == HORN_OF_PLENTY) 
+    {
+        char ynqbuf[BUFSZ];
+        Sprintf(ynqbuf, "Are you sure to tip %s?", thecxname(cobj));
+        if(!paranoid_query_ex(ATR_NONE, CLR_MSG_WARNING, ParanoidTip, "Tipping Container", ynqbuf))
+            return 0;
         tipcontainer(cobj);
         return 1;
     }

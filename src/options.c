@@ -1508,6 +1508,8 @@ STATIC_VAR const struct paranoia_opts {
       "yes vs y to enter into a trap" },
     { PARANOID_AUTOALL, "Autoall", 1, (const char*)0, 0,
       "y to select all items" },
+    { PARANOID_TIP, "tip", 2, (const char*)0, 0,
+      "yes vs y to tip a container" },
       /* for config file parsing; interactive menu skips these */
     { 0, "none", 4, 0, 0, 0 }, /* require full word match */
     { ~0, "all", 3, 0, 0, 0 }, /* ditto */

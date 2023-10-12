@@ -182,6 +182,7 @@ struct flag {
 #define PARANOID_WATER      0x0200
 #define PARANOID_TRAP       0x0400
 #define PARANOID_AUTOALL    0x0800
+#define PARANOID_TIP        0x1000
     int pickup_burden; /* maximum burden before prompt */
     int pile_limit;    /* controls feedback when walking over objects */
     char inv_order[MAX_OBJECT_CLASSES];
@@ -637,6 +638,8 @@ enum runmode_types {
 #define ParanoidTrap ((flags.paranoia_bits & PARANOID_TRAP) != 0)
 /* auto-select all: accepting auto-select all */
 #define ParanoidAutoSelectAll ((flags.paranoia_bits & PARANOID_AUTOALL) != 0)
+/* tip: accepting tipping a container */
+#define ParanoidTip ((flags.paranoia_bits & PARANOID_TIP) != 0)
 
 /* command parsing, mainly dealing with number_pad handling;
    not saved and restored */
