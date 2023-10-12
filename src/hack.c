@@ -2752,7 +2752,7 @@ boolean pick;
          */
         pit = (trap && is_pit(trap->ttyp));
         if (pick && !pit)
-            (void) pickup(1);
+            (void) pickup(1, FALSE);
 
         if (trap) 
         {
@@ -2774,7 +2774,7 @@ boolean pick;
             }
         }
         if (pick && pit)
-            (void) pickup(1);
+            (void) pickup(1, FALSE);
     }
 
     /* Warning alerts you to ice danger */
@@ -3393,15 +3393,15 @@ dopickup(VOID_ARGS)
         return ret;
     else if (ret == -2) {
         tmpcount = -count;
-        return loot_mon(u.ustuck, &tmpcount, (boolean *) 0);
+        return loot_mon(u.ustuck, &tmpcount, (boolean *) 0, FALSE);
     } /* else ret == -1 */
 
-    return pickup(-count);
+    return pickup(-count, FALSE);
 }
 
 /* the pick up and stash command */
 int
-dopickupstash(VOID_ARGS)
+doput2bag(VOID_ARGS)
 {
     int count, tmpcount, ret;
 
@@ -3414,10 +3414,10 @@ dopickupstash(VOID_ARGS)
         return ret;
     else if (ret == -2) {
         tmpcount = -count;
-        return loot_mon(u.ustuck, &tmpcount, (boolean*)0);
+        return loot_mon(u.ustuck, &tmpcount, (boolean*)0, TRUE);
     } /* else ret == -1 */
 
-    return pickup(-count);
+    return pickup(-count, TRUE);
 }
 
 /* stop running if we see something interesting */

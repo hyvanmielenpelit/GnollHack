@@ -5846,7 +5846,6 @@ struct ext_func_tab extcmdlist[] = {
 #endif
     { 'p', "pay", "pay your shopping bill", dopay },
     { ',', "pickup", "pick up things at the current location", dopickup },
-    { M(15), "pickupstash", "pick up things at the current location and stash them into a container", dopickupstash },
     { M(1), "polyself", "polymorph self", /* Special hotkey launchable from GUI */
             wiz_polyself, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { M('p'), "pray", "pray to the gods for help",
@@ -5854,6 +5853,7 @@ struct ext_func_tab extcmdlist[] = {
     { C('p'), "prevmsg", "view recent game messages",
             doprev_message, IFBURIED | GENERALCMD },
     { 'P', "puton", "put on an accessory (ring, amulet, etc)", doputon, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_accessories, "put on", "put on" },
+    { M(15), "put2bag", "pick up things at the current location and stash them into a container", doput2bag, AUTOCOMPLETE },
     { 'q', "quaff", "quaff (drink) something", dodrink, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_beverages, "drink", "drink" },
     { M('q'), "quit", "exit without saving current game",
             done2, IFBURIED | AUTOCOMPLETE | GENERALCMD },
@@ -7201,7 +7201,7 @@ STATIC_OVL boolean
 accept_menu_prefix(cmd_func)
 int NDECL((*cmd_func));
 {
-    if (cmd_func == dopickup || cmd_func == dopickupstash || cmd_func == dotip
+    if (cmd_func == dopickup || cmd_func == doput2bag || cmd_func == dotip
         /* eat, #offer, and apply tinning-kit all use floorfood() to pick
            an item on floor or in invent; 'm' skips picking from floor
            (ie, inventory only) rather than request use of menu operation */
@@ -9594,18 +9594,19 @@ enum create_context_menu_types menu_type;
 
         struct obj* otmp_here;
         boolean showpickup = FALSE;
+        int objcnt = 0;
         for (otmp_here = otmp; otmp_here; otmp_here = otmp_here->nexthere)
             if (otmp_here != uchain)
             {
                 showpickup = TRUE;
-                break;
+                objcnt++;
             }
 
         if (showpickup)
         {
             add_context_menu(',', cmd_from_func(dopickup), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Pick Up", cxname(otmp), 0, NO_COLOR);
-            if(can_stash_objs())
-                add_context_menu(M(15), cmd_from_func(dopickupstash), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Stash", cxname(otmp), 0, NO_COLOR);
+            if(count_bags_for_stashing(invent, objcnt == 1 ? otmp : 0, FALSE) > 0)
+                add_context_menu(M(15), cmd_from_func(doput2bag), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Put into Bag", cxname(otmp), 0, NO_COLOR);
             boolean eat_added = FALSE;
             boolean loot_added = FALSE;
             for (otmp_here = otmp; otmp_here; otmp_here = otmp_here->nexthere)

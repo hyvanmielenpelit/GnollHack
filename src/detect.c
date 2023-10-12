@@ -2052,7 +2052,7 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
         int itemsfound = unearth_objs(&youmonst, u.ux, u.uy, TRUE, TRUE);
         if (itemsfound)
         {
-            (void)pickup(1);
+            (void)pickup(1, FALSE);
         }
         else
         {

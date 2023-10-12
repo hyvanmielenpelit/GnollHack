@@ -240,9 +240,9 @@ struct flag {
     uchar spellorder;
     schar max_hint_difficulty; /* Maximum difficulty level where hints are shown */
     boolean non_scoring; /* The game has been, for example, loaded from an imported save file and has thereby become non-scoring */
+    uchar auto_bag_in_style;
 
     /* Emergency reserved variables to make non-save-game-breaking changes */
-    char reserved_char2;
     short reserved_short1;
     short reserved_short2;
     int reserved_int1;

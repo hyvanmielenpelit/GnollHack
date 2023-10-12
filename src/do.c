@@ -7277,7 +7277,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
 
     /* assume this will always return TRUE when changing level */
     (void) in_out_region(u.ux, u.uy);
-    (void) pickup(1);
+    (void) pickup(1, FALSE);
 
 #ifdef WHEREIS_FILE
     touch_whereis();

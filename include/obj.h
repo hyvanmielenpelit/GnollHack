@@ -752,6 +752,25 @@ enum elemental_enchantments {
 #define is_obj_found_this_turn(obj) \
     (((obj)->speflags & SPEFLAGS_FOUND_THIS_TURN) != 0)
 
+#define is_obj_weight_reduced_by_wizardry(o) \
+    ((o)->oclass == REAGENT_CLASS || (o)->oclass == SPBOOK_CLASS \
+    || (o)->oclass == WAND_CLASS || (o)->oclass == SCROLL_CLASS \
+    )
+
+#define is_obj_weight_reduced_by_treasure_hauling(o) \
+    ((o)->oclass == COIN_CLASS || (o)->oclass == GEM_CLASS \
+    || (o)->oclass == RING_CLASS || (o)->oclass == AMULET_CLASS \
+    || (o)->oclass == MISCELLANEOUS_CLASS \
+    || (o)->material == MAT_SILVER \
+    || (o)->material == MAT_GOLD \
+    || (o)->material == MAT_PLATINUM \
+    || (o)->material == MAT_MITHRIL \
+    || (o)->material == MAT_ADAMANTIUM \
+    || (o)->material == MAT_GEMSTONE \
+    )
+
+#define is_obj_weight_reduced_by_the_glutton(o) \
+    ((o)->oclass == POTION_CLASS || is_obj_normally_edible(o))
 
 /* 'PRIZE' values override obj->corpsenm so prizes mustn't be object types
    which use that field for monster type (or other overloaded purpose) */

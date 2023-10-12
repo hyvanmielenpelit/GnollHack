@@ -548,8 +548,9 @@ register struct obj *otmp;
  * or not it succeeded.
  */
 int
-pickup(what)
+pickup(what, do_auto_in_bag)
 int what; /* should be a long */
+boolean do_auto_in_bag;
 {
     int i, n, res = 0, count, n_tried = 0, n_picked = 0;
     menu_item *pick_list = (menu_item *) 0;
@@ -653,7 +654,7 @@ int what; /* should be a long */
         n_tried = n;
         for (n_picked = i = 0; i < n; i++) {
             res = pickup_object(pick_list[i].item.a_obj, pick_list[i].count,
-                                FALSE);
+                                FALSE, do_auto_in_bag);
             if (res < 0)
                 break; /* can't continue */
             n_picked += res;
@@ -682,7 +683,7 @@ int what; /* should be a long */
             obj = *objchain_p;
             lcount = min(obj->quan, (long) count);
             n_tried++;
-            if (pickup_object(obj, lcount, FALSE) > 0)
+            if (pickup_object(obj, lcount, FALSE, do_auto_in_bag) > 0)
                 n_picked++; /* picked something */
             goto end_query;
 
@@ -749,7 +750,7 @@ int what; /* should be a long */
                 lcount = obj->quan;
 
             n_tried++;
-            if ((res = pickup_object(obj, lcount, FALSE)) < 0)
+            if ((res = pickup_object(obj, lcount, FALSE, do_auto_in_bag)) < 0)
                 break;
             n_picked += res;
         }
@@ -1667,10 +1668,10 @@ boolean telekinesis;
  * up, 1 if otherwise.
  */
 int
-pickup_object(obj, count, telekinesis)
+pickup_object(obj, count, telekinesis, do_auto_in_bag)
 struct obj *obj;
 long count;
-boolean telekinesis; /* not picking it up directly by hand */
+boolean telekinesis, do_auto_in_bag; /* not picking it up directly by hand */
 {
     int res, nearload;
 
@@ -1734,6 +1735,7 @@ boolean telekinesis; /* not picking it up directly by hand */
         obj = splitobj(obj, count);
 
     /* Finally, pick the object up */
+    struct obj* oldobj = obj;
     obj = pick_obj(obj);
 
     if (uwep && uwep == obj)
@@ -1743,7 +1745,135 @@ boolean telekinesis; /* not picking it up directly by hand */
     /* Display message regarding a new item in inventory */
     prinv(nearload == SLT_ENCUMBER ? moderateloadmsg : (char*)0, obj, count);
     mrg_to_wielded = FALSE;
+
+    if (do_auto_in_bag && obj && obj == oldobj)
+        auto_bag_in(invent, obj, FALSE);
+
     return 1;
+}
+
+void
+auto_bag_in(objchn_container, obj, bynexthere)
+struct obj* objchn_container, * obj;
+boolean bynexthere;
+{
+    if (!objchn_container || !obj)
+        return;
+
+    struct obj* curr;
+    struct obj* bag_of_holding = 0;
+    struct obj* bag_of_the_glutton = 0;
+    struct obj* bag_of_treasure_hauling = 0;
+    struct obj* bag_of_wizardry = 0;
+    struct obj* normal_bag = 0;
+
+    for (curr = objchn_container; curr; curr = (bynexthere ? curr->nexthere : curr->nobj))
+    {
+        if (objects[curr->otyp].oc_name_known)
+        {
+            if (curr->otyp == BAG_OF_HOLDING && curr->bknown && !curr->cursed && obj->oclass != WAND_CLASS)
+            {
+                if (!bag_of_holding || (curr->blessed && !bag_of_holding->blessed))
+                    bag_of_holding = curr;
+            }
+            else if (curr->otyp == BAG_OF_THE_GLUTTON && curr->bknown && !curr->cursed)
+            {
+                if (!bag_of_the_glutton || (curr->blessed && !bag_of_the_glutton->blessed))
+                    bag_of_the_glutton = curr;
+            }
+            else if (curr->otyp == BAG_OF_TREASURE_HAULING && curr->bknown && !curr->cursed)
+            {
+                if (!bag_of_treasure_hauling || (curr->blessed && !bag_of_treasure_hauling->blessed))
+                    bag_of_treasure_hauling = curr;
+            }
+            else if (curr->otyp == BAG_OF_WIZARDRY && curr->bknown && !curr->cursed)
+            {
+                if (!bag_of_wizardry || (curr->blessed && !bag_of_wizardry->blessed))
+                    bag_of_wizardry = curr;
+            }
+            else if (Is_proper_container(curr) && !Is_mbag(curr))
+            {
+                if (!normal_bag)
+                    normal_bag = curr;
+            }
+        }
+    }
+
+    int num_choices = 0;
+    if (bag_of_holding)
+        num_choices++;
+    if (bag_of_the_glutton)
+        num_choices++;
+    if (bag_of_treasure_hauling)
+        num_choices++;
+    if (bag_of_wizardry)
+        num_choices++;
+    if (normal_bag)
+        num_choices++;
+
+    if (!num_choices)
+        return;
+
+    switch (flags.auto_bag_in_style)
+    {
+    case 0:
+    default:
+    {
+        struct obj* used_container = 0;
+        if (!used_container && bag_of_treasure_hauling && is_obj_weight_reduced_by_treasure_hauling(obj))
+            used_container = bag_of_treasure_hauling;
+        if (!used_container && bag_of_wizardry && is_obj_weight_reduced_by_wizardry(obj))
+            used_container = bag_of_wizardry;
+        if (!used_container && bag_of_the_glutton && is_obj_weight_reduced_by_the_glutton(obj))
+            used_container = bag_of_the_glutton;
+        if (!used_container && bag_of_holding && obj->oclass != WAND_CLASS)
+            used_container = bag_of_holding;
+        if (!used_container && normal_bag)
+            used_container = normal_bag;
+        if (used_container)
+            stash_obj_in_container(obj, used_container);
+        break;
+    }
+    }
+}
+
+int
+count_bags_for_stashing(objchn_container, single_obj, bynexthere)
+struct obj* objchn_container, *single_obj;
+boolean bynexthere;
+{
+    if (!can_stash_objs())
+        return 0;
+
+    int cnt = 0;
+    struct obj* curr;
+    for (curr = objchn_container; curr; curr = (bynexthere ? curr->nexthere : curr->nobj))
+    {
+        if (objects[curr->otyp].oc_name_known)
+        {
+            if (curr->otyp == BAG_OF_HOLDING && curr->bknown && !curr->cursed && (!single_obj || single_obj->oclass != WAND_CLASS))
+            {
+                cnt++;
+            }
+            else if (curr->otyp == BAG_OF_THE_GLUTTON && curr->bknown && !curr->cursed)
+            {
+                cnt++;
+            }
+            else if (curr->otyp == BAG_OF_TREASURE_HAULING && curr->bknown && !curr->cursed)
+            {
+                cnt++;
+            }
+            else if (curr->otyp == BAG_OF_WIZARDRY && curr->bknown && !curr->cursed)
+            {
+                cnt++;
+            }
+            else if (Is_proper_container(curr) && !Is_mbag(curr))
+            {
+                cnt++;
+            }
+        }
+    }
+    return cnt;
 }
 
 /*
@@ -2350,7 +2480,7 @@ doloot()
         mtmp = m_at(cc.x, cc.y);
         if (mtmp)
         {
-            timepassed = loot_mon(mtmp, &prev_inquiry, &prev_loot);
+            timepassed = loot_mon(mtmp, &prev_inquiry, &prev_loot, FALSE);
             if(timepassed)
                 did_something = TRUE;
         }
@@ -2636,10 +2766,11 @@ reverse_loot()
 /* loot_mon() returns amount of time passed.
  */
 int
-loot_mon(mtmp, passed_info, prev_loot)
+loot_mon(mtmp, passed_info, prev_loot, do_auto_in_bag)
 struct monst *mtmp;
 int *passed_info;
 boolean *prev_loot;
+boolean do_auto_in_bag;
 {
     int c = -1;
     int timepassed = 0;
@@ -2706,7 +2837,7 @@ boolean *prev_loot;
     if (u.uswallow) 
     {
         int count = passed_info ? *passed_info : 0;
-        timepassed = pickup(count);
+        timepassed = pickup(count, do_auto_in_bag);
     }
     return timepassed;
 }
@@ -3226,7 +3357,7 @@ boolean dobot;
     int res = 0;
     if (!dobot)
         context.skip_botl = TRUE;
-    res = pickup_object(obj, obj->quan, FALSE);
+    res = pickup_object(obj, obj->quan, FALSE, FALSE);
     context.skip_botl = FALSE;
     if (res <= 0)
     {

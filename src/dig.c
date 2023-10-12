@@ -833,7 +833,7 @@ int ttyp;
             } else
                 reset_utrap(TRUE);
             if (oldobjs != newobjs) /* something unearthed */
-                (void) pickup(1);   /* detects pit */
+                (void) pickup(1, FALSE);   /* detects pit */
         } else if (mtmp) {
             if (is_flying(mtmp) || is_levitating(mtmp)) {
                 if (canseemon(mtmp))
@@ -873,7 +873,7 @@ int ttyp;
                 if (newobjs)
                     impact_drop((struct obj *) 0, x, y, 0);
                 if (oldobjs != newobjs)
-                    (void) pickup(1);
+                    (void) pickup(1, FALSE);
                 if (shopdoor && madeby_u)
                     pay_for_damage("ruin", FALSE);
 
@@ -1218,7 +1218,7 @@ coord *cc;
     int vartyp = levl[dig_x][dig_y].floorvartyp ? levl[dig_x][dig_y].floorvartyp : get_initial_location_vartype(typ, subtyp);
     create_simple_location(dig_x, dig_y, typ, subtyp, vartyp, 0, back_to_broken_glyph(dig_x, dig_y), 0, 0, 0, TRUE);
     if (doautopickup)
-        (void)pickup(1);
+        (void)pickup(1, FALSE);
     return;
 }
 
@@ -3419,7 +3419,7 @@ dodig()
     int itemsfound = unearth_objs(&youmonst, u.ux, u.uy, TRUE, FALSE);
     if (itemsfound)
     {
-        (void)pickup(1);
+        (void)pickup(1, FALSE);
     }
     else
     {

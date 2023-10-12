@@ -3357,29 +3357,13 @@ register struct obj *obj;
 
         for (contents = obj->cobj; contents; contents = contents->nobj)
         {
-            if (obj->otyp == BAG_OF_WIZARDRY
-                && (contents->oclass == REAGENT_CLASS || contents->oclass == SPBOOK_CLASS
-                    || contents->oclass == WAND_CLASS || contents->oclass == SCROLL_CLASS
-                    || objects[contents->otyp].oc_flags & O1_NONE
-                    ))
+            if (obj->otyp == BAG_OF_WIZARDRY && is_obj_weight_reduced_by_wizardry(contents))
                 cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 15) / 16)
                 : ((weight(contents) + 7) / 8);
-            else if (obj->otyp == BAG_OF_TREASURE_HAULING
-                && (contents->oclass == COIN_CLASS || contents->oclass == GEM_CLASS
-                    || contents->oclass == RING_CLASS || contents->oclass == AMULET_CLASS
-                    || contents->oclass == MISCELLANEOUS_CLASS
-                    || contents->material == MAT_SILVER
-                    || contents->material == MAT_GOLD
-                    || contents->material == MAT_PLATINUM
-                    || contents->material == MAT_MITHRIL
-                    || contents->material == MAT_ADAMANTIUM
-                    || contents->material == MAT_GEMSTONE
-                    ))
+            else if (obj->otyp == BAG_OF_TREASURE_HAULING && is_obj_weight_reduced_by_treasure_hauling(contents))
                 cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 63) / 64)
                 : ((weight(contents) + 31) / 32);
-            else if (obj->otyp == BAG_OF_THE_GLUTTON
-                && (contents->oclass == POTION_CLASS || is_obj_normally_edible(contents)
-                    ))
+            else if (obj->otyp == BAG_OF_THE_GLUTTON && is_obj_weight_reduced_by_the_glutton(contents))
                 cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 19) / 20)
                 : ((weight(contents) + 9) / 10);
             else

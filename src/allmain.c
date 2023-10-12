@@ -87,7 +87,7 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
         flags.verbose = FALSE;
         context.rndencode = rnd(9000);
         set_wear((struct obj *) 0); /* for side-effects of starting gear */
-        (void) pickup(1);      /* autopickup at initial location */
+        (void) pickup(1, FALSE);      /* autopickup at initial location */
         flags.verbose = oldverbose;
     }
 
@@ -325,7 +325,7 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
                         {
                             You("smell something buried underground.");
                             (void)unearth_objs(&youmonst, u.ux, u.uy, TRUE, TRUE);
-                            (void)pickup(1);
+                            (void)pickup(1, FALSE);
                             nomul(0);
                         }
                     }

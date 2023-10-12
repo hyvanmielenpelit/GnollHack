@@ -953,13 +953,13 @@ init_options()
     flags.sound_volume_ui = 50;
 
     flags.spellorder = SORTBY_NONE;
+    flags.auto_bag_in_style = 0;
     flags.force_hint = (CasualMode || ModernMode);
     flags.max_hint_difficulty = DEFAULT_MAX_HINT_DIFFICULTY;
 
     /* since this is done before init_objects(), do partial init here */
     objects[SLIME_MOLD].oc_name_idx = SLIME_MOLD;
     nmcpy(pl_fruit, OBJ_NAME(objects[SLIME_MOLD]), PL_FSIZ);
-
 }
 
 void

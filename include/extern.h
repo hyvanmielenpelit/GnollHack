@@ -1361,7 +1361,7 @@ E char *FDECL(in_rooms, (XCHAR_P, XCHAR_P, int));
 E boolean FDECL(in_town, (int, int));
 E void FDECL(check_special_room, (BOOLEAN_P));
 E int NDECL(dopickup);
-E int NDECL(dopickupstash);
+E int NDECL(doput2bag);
 E void NDECL(lookaround);
 E boolean FDECL(crawl_destination, (int, int));
 E int NDECL(monster_nearby);
@@ -2654,8 +2654,10 @@ E int FDECL(stash_obj_in_container, (struct obj*, struct obj*));
 E int FDECL(in_container, (struct obj *));
 E int FDECL(out_container, (struct obj *));
 #endif
-E int FDECL(pickup, (int));
-E int FDECL(pickup_object, (struct obj *, long, BOOLEAN_P));
+E void FDECL(auto_bag_in, (struct obj*, struct obj*, BOOLEAN_P));
+E int FDECL(count_bags_for_stashing, (struct obj*, struct obj*, BOOLEAN_P));
+E int FDECL(pickup, (int, BOOLEAN_P));
+E int FDECL(pickup_object, (struct obj *, long, BOOLEAN_P, BOOLEAN_P));
 E int FDECL(query_category, (const char *, struct obj *, int,
                              menu_item **, int));
 E int FDECL(query_objlist, (const char *, struct obj **, int,
@@ -2672,7 +2674,7 @@ E void FDECL(observe_quantum_cat, (struct obj *, BOOLEAN_P, BOOLEAN_P));
 E boolean FDECL(container_gone, (int (*)(OBJ_P)));
 E boolean NDECL(u_handsy);
 E int FDECL(use_container, (struct obj **, int, BOOLEAN_P));
-E int FDECL(loot_mon, (struct monst *, int *, boolean *));
+E int FDECL(loot_mon, (struct monst *, int *, boolean *, BOOLEAN_P));
 E int NDECL(dotip);
 E boolean FDECL(is_autopickup_exception, (struct obj *, BOOLEAN_P));
 E boolean FDECL(autopick_testobj, (struct obj *, BOOLEAN_P));

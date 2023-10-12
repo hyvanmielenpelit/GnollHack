@@ -4587,7 +4587,7 @@ struct obj *obj;
             if (otmp && proficient) {
                 You("wrap your bullwhip around %s on the %s.",
                     an(singular(otmp, xname)), surface(u.ux, u.uy));
-                if (rnl(6) || pickup_object(otmp, 1L, TRUE) < 1)
+                if (rnl(6) || pickup_object(otmp, 1L, TRUE, FALSE) < 1)
                     pline1(msg_slipsfree);
                 update_u_action_revert(ACTION_TILE_NO_ACTION);
                 return 1;
@@ -5327,7 +5327,7 @@ struct obj *obj;
     case 1: /* Object */
         if ((otmp = level.objects[cc.x][cc.y]) != 0) {
             You("snag an object from the %s!", surface(cc.x, cc.y));
-            (void) pickup_object(otmp, 1L, FALSE);
+            (void) pickup_object(otmp, 1L, FALSE, FALSE);
             /* If pickup fails, leave it alone */
             newsym(cc.x, cc.y);
             return 1;
