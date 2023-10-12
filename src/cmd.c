@@ -8268,7 +8268,7 @@ boolean doit;
     if (OBJ_AT(u.ux, u.uy)) {
         struct obj *otmp = level.objects[u.ux][u.uy];
 
-        Sprintf(buf, "Pick up %s", otmp->nexthere ? "items" : doname_with_weight_last(otmp, objects[LOADSTONE].oc_name_known));
+        Sprintf(buf, "Pick up %s", otmp->nexthere ? "items" : doname_with_weight_last(otmp, objects[LOADSTONE].oc_name_known, FALSE));
         add_herecmd_menuitem(win, dopickup, buf);
 
         if (Is_container(otmp)) {

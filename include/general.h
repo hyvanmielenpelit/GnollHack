@@ -645,6 +645,14 @@ enum context_menu_styles {
 #define MONDIED_FLAGS_NONE                             0x00000000
 #define MONDIED_FLAGS_NO_DEATH_ACTION                  0x00000001
 
+#define DONAME_WITH_PRICE                   0x0001
+#define DONAME_VAGUE_QUAN                   0x0002
+#define DONAME_WITH_WEIGHT_FIRST            0x0004
+#define DONAME_WITH_WEIGHT_LAST             0x0008
+#define DONAME_LOADSTONE_CORRECTLY          0x0010
+#define DONAME_LIT_IN_FRONT                 0x0020
+#define DONAME_HIDE_REMAINING_LIT_TURNS     0x0040
+
 /* Moved from shk.c */
 #define NOTANGRY(mon) ((mon)->mpeaceful)
 #define ANGRY(mon) (!NOTANGRY(mon))

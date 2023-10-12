@@ -71,7 +71,6 @@ STATIC_DCL short FDECL(rnd_otyp_by_namedesc, (const char *, CHAR_P, int));
 STATIC_DCL boolean FDECL(wishymatch, (const char *, const char *, BOOLEAN_P));
 STATIC_DCL void FDECL(releaseobuf, (char *));
 STATIC_DCL char *FDECL(minimal_xname, (struct obj *));
-STATIC_DCL char *FDECL(doname_base, (struct obj *obj, unsigned));
 STATIC_DCL char *FDECL(just_an, (char *str, const char *));
 STATIC_DCL boolean FDECL(singplur_lookup, (char *, char *, BOOLEAN_P,
                                            const char *const *));
@@ -1264,15 +1263,8 @@ struct obj *obj;
     return FALSE;
 }
 
-#define DONAME_WITH_PRICE 0x0001
-#define DONAME_VAGUE_QUAN 0x0002
-#define DONAME_WITH_WEIGHT_FIRST 0x0004
-#define DONAME_WITH_WEIGHT_LAST 0x0008
-#define DONAME_LOADSTONE_CORRECTLY 0x0010
-#define DONAME_LIT_IN_FRONT  0x0020
-
-STATIC_OVL char *
-doname_base(obj, doname_flags)
+char *
+doname_with_flags(obj, doname_flags)
 struct obj *obj;
 unsigned doname_flags;
 {
@@ -1652,7 +1644,8 @@ weapon_here:
             break;
         }
 
-        if (is_obj_light_source(obj) && object_stats_known(obj)
+        if (!(doname_flags & DONAME_HIDE_REMAINING_LIT_TURNS)
+            && is_obj_light_source(obj) && object_stats_known(obj)
             && (obj->speflags & SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO) != 0)
         {
             long maxburn = obj_light_maximum_burn_time(obj);
@@ -1677,14 +1670,14 @@ weapon_here:
                     Strcat(prefix, "lit ");
 
                 if (burnleftset)
-                    Sprintf(burnbuf, " (%ld turns left)", burnleft);
+                    Sprintf(burnbuf, " (%ld turn%s left)", burnleft, plur(burnleft));
                 Sprintf(eos(bp), " with %s candle%s%s%s", tmpbuf, plur(obj->special_quality),
                     " attached", burnbuf);
             }
             else
             {
                 if (burnleftset)
-                    Sprintf(burnbuf, ", %ld turns left", burnleft);
+                    Sprintf(burnbuf, ", %ld turn%s left", burnleft, plur(burnleft));
                 Sprintf(eos(bp), " (%s candle%s%s%s)", tmpbuf, plur(obj->special_quality),
                     !obj->lamplit ? " attached" : ", lit", burnbuf);
             }
@@ -1705,19 +1698,19 @@ weapon_here:
                 {
                     Strcat(prefix, "lit ");
                     if (burnleftset)
-                        Sprintf(eos(bp), " (%ld turns left)", burnleft);
+                        Sprintf(eos(bp), " (%ld turn%s left)", burnleft, plur(burnleft));
                 }
                 else
                 {
                     if (burnleftset)
-                        Sprintf(burnbuf, ", %ld turns left", burnleft);
+                        Sprintf(burnbuf, ", %ld turn%s left", burnleft, plur(burnleft));
                     Sprintf(eos(bp), " (lit%s)", burnbuf);
                 }
             }
             else
             {
                 if (burnleftset)
-                    Sprintf(eos(bp), " (%ld turns left)", burnleft);
+                    Sprintf(eos(bp), " (%ld turn%s left)", burnleft, plur(burnleft));
             }
             break;
         }
@@ -1734,19 +1727,19 @@ weapon_here:
                 {
                     Strcat(prefix, "lit ");
                     if (burnleftset)
-                        Sprintf(eos(bp), " (%ld turns left)", burnleft);
+                        Sprintf(eos(bp), " (%ld turn%s left)", burnleft, plur(burnleft));
                 }
                 else
                 {
                     if (burnleftset)
-                        Sprintf(burnbuf, ", %ld turns left", burnleft);
+                        Sprintf(burnbuf, ", %ld turn%s left", burnleft, plur(burnleft));
                     Sprintf(eos(bp), " (lit%s)", burnbuf);
                 }
             }
             else
             {
                 if (burnleftset)
-                    Sprintf(eos(bp), " (%ld turns left)", burnleft);
+                    Sprintf(eos(bp), " (%ld turn%s left)", burnleft, plur(burnleft));
             }
         }
         break;
@@ -2044,14 +2037,14 @@ char *
 doname(obj)
 struct obj *obj;
 {
-    return doname_base(obj, 0U);
+    return doname_with_flags(obj, 0U);
 }
 
 char*
 doname_in_text(obj)
 struct obj* obj;
 {
-    return doname_base(obj, DONAME_LIT_IN_FRONT);
+    return doname_with_flags(obj, DONAME_LIT_IN_FRONT);
 }
 
 /* Name of object including price. */
@@ -2059,7 +2052,7 @@ char *
 doname_with_price(obj)
 struct obj *obj;
 {
-    return doname_base(obj, DONAME_WITH_PRICE);
+    return doname_with_flags(obj, DONAME_WITH_PRICE);
 }
 
 /* Name of object including price. */
@@ -2068,7 +2061,7 @@ doname_with_price_and_weight_last(obj,  loadstonecorrectly)
 struct obj* obj;
 boolean loadstonecorrectly;
 {
-    return doname_base(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
+    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
 }
 
 /* Name of object including price. */
@@ -2076,7 +2069,7 @@ char*
 doname_in_text_with_price_and_weight_last(obj)
 struct obj* obj;
 {
-    return doname_base(obj, DONAME_LIT_IN_FRONT | DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (objects[LOADSTONE].oc_name_known ? DONAME_LOADSTONE_CORRECTLY : 0));
+    return doname_with_flags(obj, DONAME_LIT_IN_FRONT | DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (objects[LOADSTONE].oc_name_known ? DONAME_LOADSTONE_CORRECTLY : 0));
 }
 
 /* Name of object including price. */
@@ -2085,7 +2078,7 @@ doname_with_price_and_weight_first(obj, loadstonecorrectly)
 struct obj* obj;
 boolean loadstonecorrectly;
 {
-    return doname_base(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
+    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
 }
 
 /* "some" instead of precise quantity if obj->dknown not set */
@@ -2105,40 +2098,40 @@ struct obj *obj;
      * TODO: add obj->qknown flag for 'quantity known' on stackable
      * items; it could overlay obj->cknown since no containers stack.
      */
-    return doname_base(obj, DONAME_VAGUE_QUAN);
+    return doname_with_flags(obj, DONAME_VAGUE_QUAN);
 }
 
 char*
-doname_with_weight_first(obj, loadstonecorrectly)
+doname_with_weight_first(obj, loadstonecorrectly, is_perm_inv)
 struct obj* obj;
-boolean loadstonecorrectly;
+boolean loadstonecorrectly, is_perm_inv;
 
 {
-    return doname_base(obj, DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
+    return doname_with_flags(obj, DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (is_perm_inv ? DONAME_HIDE_REMAINING_LIT_TURNS : 0));
 }
 
 char*
 doname_with_weight_first_true(obj)
 struct obj* obj;
 {
-    return doname_base(obj, DONAME_WITH_WEIGHT_FIRST | DONAME_LOADSTONE_CORRECTLY);
+    return doname_with_flags(obj, DONAME_WITH_WEIGHT_FIRST | DONAME_LOADSTONE_CORRECTLY);
 }
 
 char*
 doname_with_weight_last_true(obj)
 struct obj* obj;
 {
-    return doname_base(obj, DONAME_WITH_WEIGHT_LAST | DONAME_LOADSTONE_CORRECTLY);
+    return doname_with_flags(obj, DONAME_WITH_WEIGHT_LAST | DONAME_LOADSTONE_CORRECTLY);
 }
 
 
 
 char*
-doname_with_weight_last(obj, loadstonecorrectly)
+doname_with_weight_last(obj, loadstonecorrectly, is_perm_inv)
 struct obj* obj;
-boolean loadstonecorrectly;
+boolean loadstonecorrectly, is_perm_inv;
 {
-    return doname_base(obj, DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
+    return doname_with_flags(obj, DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (is_perm_inv ? DONAME_HIDE_REMAINING_LIT_TURNS : 0));
 }
 
 
