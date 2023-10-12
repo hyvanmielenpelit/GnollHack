@@ -2679,6 +2679,7 @@ E int NDECL(dotip);
 E boolean FDECL(is_autopickup_exception, (struct obj *, BOOLEAN_P));
 E boolean FDECL(autopick_testobj, (struct obj *, BOOLEAN_P));
 E boolean FDECL(maybe_disturb_container_monster, (struct obj* ));
+E int FDECL(handle_knapsack_prefull, (int, int, boolean*, struct obj**, struct obj*, int, int));
 E int NDECL(handle_knapsack_full);
 E int NDECL(dostash);
 E int NDECL(dostashfloor);

@@ -151,8 +151,7 @@ int *itemcount;
  *          (ie, treated as if it had just been "?a").
  */
 STATIC_OVL boolean
-query_classes(oclasses, one_at_a_time, everything, action, objs, here,
-              menu_on_demand)
+query_classes(oclasses, one_at_a_time, everything, action, objs, here, menu_on_demand)
 char oclasses[];
 boolean *one_at_a_time, *everything;
 const char *action;
@@ -172,15 +171,17 @@ int *menu_on_demand;
     *one_at_a_time = *everything = m_seen = FALSE;
     if (menu_on_demand)
         *menu_on_demand = 0;
-    iletct = collect_obj_classes(ilets, objs, here,
-                                 (boolean FDECL((*), (OBJ_P))) 0, &itemcount);
+    iletct = collect_obj_classes(ilets, objs, here, (boolean FDECL((*), (OBJ_P))) 0, &itemcount);
     if (iletct == 0)
         return FALSE;
 
-    if (iletct == 1) {
+    if (iletct == 1)
+    {
         oclasses[0] = def_char_to_objclass(ilets[0]);
         oclasses[1] = '\0';
-    } else { /* more than one choice available */
+    }
+    else 
+    { /* more than one choice available */
         /* additional choices */
         ilets[iletct++] = ' ';
         ilets[iletct++] = 'a';
@@ -224,35 +225,48 @@ int *menu_on_demand;
         if (*inbuf == '\033')
             return FALSE;
 
-        for (p = inbuf; (sym = *p++) != 0; ) {
+        for (p = inbuf; (sym = *p++) != 0; )
+        {
             if (sym == ' ')
                 continue;
             else if (sym == 'A')
                 *one_at_a_time = TRUE;
             else if (sym == 'a')
                 *everything = TRUE;
-            else if (sym == ':') {
+            else if (sym == ':') 
+            {
                 simple_look(objs, here); /* dumb if objs==invent */
                 /* if we just scanned the contents of a container
                    then mark it as having known contents */
                 if (objs->where == OBJ_CONTAINED)
                     objs->ocontainer->cknown = 1;
                 goto ask_again;
-            } else if (sym == 'i') {
+            }
+            else if (sym == 'i') 
+            {
                 (void) display_inventory((char *) 0, TRUE, 1);
                 goto ask_again;
-            } else if (sym == 'm') {
+            }
+            else if (sym == 'm') 
+            {
                 m_seen = TRUE;
-            } else if (index("uIBUCX", sym)) {
+            } 
+            else if (index("uIBUCX", sym)) 
+            {
                 add_valid_menu_class(sym); /* 'u' or 'B','U','C',or 'X' */
                 filtered = TRUE;
-            } else {
+            }
+            else
+            {
                 oc_of_sym = def_char_to_objclass(sym);
-                if (index(ilets, sym)) {
+                if (index(ilets, sym)) 
+                {
                     add_valid_menu_class(oc_of_sym);
                     oclasses[oclassct++] = oc_of_sym;
                     oclasses[oclassct] = '\0';
-                } else {
+                } 
+                else 
+                {
                     if (!where)
                         where = !strcmp(action, "pick up") ? "here"
                                 : !strcmp(action, "take out") ? "inside" : "";
@@ -265,12 +279,14 @@ int *menu_on_demand;
             }
         } /* for p:sym in inbuf */
 
-        if (m_seen && menu_on_demand) {
+        if (m_seen && menu_on_demand) 
+        {
             *menu_on_demand = (((*everything || !oclassct) && !filtered)
                                ? -2 : -3);
             return FALSE;
         }
-        if (!oclassct && (!*everything || not_everything)) {
+        if (!oclassct && (!*everything || not_everything))
+        {
             /* didn't pick anything,
                or tried to pick something that's not present */
             *one_at_a_time = TRUE; /* force 'A' */
@@ -573,18 +589,21 @@ boolean do_auto_in_bag;
     else /* pick anything */
         count = 0;
 
-    if (!u.uswallow) {
+    if (!u.uswallow) 
+    {
         struct trap *ttmp;
 
         /* no auto-pick if no-pick move, nothing there, or in a pool */
         if (autopickup && (context.nopick || !OBJ_AT(u.ux, u.uy)
                            || (is_pool(u.ux, u.uy) && !Underwater)
-                           || is_lava(u.ux, u.uy))) {
+                           || is_lava(u.ux, u.uy)))
+        {
             read_engr_at(u.ux, u.uy);
             return 0;
         }
         /* no pickup if levitating & not on air or water level */
-        if (!can_reach_floor(TRUE)) {
+        if (!can_reach_floor(TRUE))
+        {
             if ((multi && !context.run) || (autopickup && !(flags.pickup || flags.pickup_thrown))
                 || ((ttmp = t_at(u.ux, u.uy)) != 0
                     && uteetering_at_seen_pit(ttmp)))
@@ -595,11 +614,13 @@ boolean do_auto_in_bag;
          * action, or possibly paralyzed, sleeping, etc.... and they just
          * teleported onto the object.  They shouldn't pick it up.
          */
-        if ((multi && !context.run) || (autopickup && !(flags.pickup || flags.pickup_thrown))) {
+        if ((multi && !context.run) || (autopickup && !(flags.pickup || flags.pickup_thrown))) 
+        {
             check_here(FALSE);
             return 0;
         }
-        if (notake(youmonst.data)) {
+        if (notake(youmonst.data)) 
+        {
             if (!autopickup)
                 You("are physically incapable of picking anything up.");
             else
@@ -614,10 +635,13 @@ boolean do_auto_in_bag;
     }
 
     add_valid_menu_class(0); /* reset */
-    if (!u.uswallow) {
+    if (!u.uswallow) 
+    {
         objchain_p = &level.objects[u.ux][u.uy];
         traverse_how = BY_NEXTHERE;
-    } else {
+    }
+    else 
+    {
         objchain_p = &u.ustuck->minvent;
         traverse_how = 0; /* nobj */
     }
@@ -627,7 +651,8 @@ boolean do_auto_in_bag;
      * Automatic pickup has been split into its own menu-style routine
      * to make things less confusing.
      */
-    if (autopickup) {
+    if (autopickup) 
+    {
         n = autopick(*objchain_p, traverse_how, &pick_list);
         goto menu_pickup;
     }
@@ -636,11 +661,13 @@ boolean do_auto_in_bag;
     int container_cnt = count_other_containers(invent, (struct obj*)0, &last_container, FALSE);
     struct obj* used_container = 0;
 
-    if (flags.menu_style != MENU_TRADITIONAL || iflags.menu_requested) {
+    if (flags.menu_style != MENU_TRADITIONAL || iflags.menu_requested) 
+    {
         /* use menus exclusively */
         traverse_how |= AUTOSELECT_SINGLE
                         | (flags.sortpack ? INVORDER_SORT : 0);
-        if (count) { /* looking for N of something */
+        if (count) 
+        { /* looking for N of something */
             char qbuf[QBUFSZ];
 
             Sprintf(qbuf, "Pick %d of what?", count);
@@ -650,7 +677,9 @@ boolean do_auto_in_bag;
             /* correct counts, if any given */
             for (i = 0; i < n; i++)
                 pick_list[i].count = count;
-        } else {
+        }
+        else 
+        {
             n = query_objlist("Pick up what?", objchain_p,
                               (traverse_how | FEEL_COCKATRICE),
                               &pick_list, PICK_ANY, all_but_uchain, 2);
@@ -658,79 +687,83 @@ boolean do_auto_in_bag;
 
     menu_pickup:
         n_tried = n;
-        for (n_picked = i = 0; i < n; i++) {
-            res = pickup_object(pick_list[i].item.a_obj, pick_list[i].count,
-                                FALSE, do_auto_in_bag);
+        for (n_picked = i = 0; i < n; i++) 
+        {
+            res = pickup_object(pick_list[i].item.a_obj, pick_list[i].count, FALSE, do_auto_in_bag);
             if (res < 0)
                 break; /* can't continue */
             n_picked += res;
-            if(res > 0 && container_cnt > 0 && !do_auto_in_bag)
-            {
-                if (used_container)
-                {
-                    if (!stash_obj_in_container(pick_list[i].item.a_obj, used_container))
-                        break;
-                }
-                else if (i < n - 1 && inv_cnt(FALSE) >= 52)
-                {
-                    int j;
-                    boolean noncoin_nonmergeable_found = FALSE;
-                    for (j = i + 1; j < n; j++)
-                    {
-                        if (pick_list[j].item.a_obj->oclass != COIN_CLASS && !merge_choice(invent, pick_list[j].item.a_obj))
-                        {
-                            noncoin_nonmergeable_found = TRUE;
-                            break;
-                        }
-                    }
-                    if (noncoin_nonmergeable_found)
-                    {
-                        boolean doforbreak = FALSE;
-                        if (flags.knapsack_prompt)
-                        {
-                            Your_ex1(ATR_NONE, CLR_MSG_ATTENTION, "knapsack cannot accommodate any more items.");
-                            char qbuf[QBUFSZ];
-                            Sprintf(qbuf, "Stash %s and the remaining items into a container?", thecxname(pick_list[i].item.a_obj));
-                            char ans = yn_function_es(YN_STYLE_KNAPSACK_FULL, ATR_NONE, CLR_MSG_ATTENTION, "Your Knapsack Is Full", qbuf, ynaqchars, 'a', ynaq3descs, (const char*)0);
-                            switch (ans)
-                            {
-                            default:
-                            case 'a':
-                                auto_bag_in(invent, pick_list[i].item.a_obj, FALSE);
-                                do_auto_in_bag = TRUE;
-                                break;
-                            case 'y':
-                                used_container = select_other_container(invent, (struct obj*)0, FALSE, FALSE);
-                                if (used_container)
-                                {
-                                    if (!stash_obj_in_container(pick_list[i].item.a_obj, used_container))
-                                        doforbreak = TRUE;
-                                }
-                                break;
-                            case 'n':
-                                doforbreak = TRUE; /* No point to continue further here, since knapsack is full */
-                                break;
-                            case 'q':
-                                doforbreak = TRUE;
-                                break;
-                            }
-                            if (ans == 'a')
-                            {
-                                do_auto_in_bag = TRUE;
-                            }
-                        }
-                        else
-                            do_auto_in_bag = TRUE;
-                        if (doforbreak)
-                            break;
-                    }
-                }
-            }
+            if (handle_knapsack_prefull(res, container_cnt, &do_auto_in_bag, &used_container, pick_list[i].item.a_obj, i, n) < 0)
+                break;
+            //if(res > 0 && container_cnt > 0 && !do_auto_in_bag)
+            //{
+            //    if (used_container)
+            //    {
+            //        if (!stash_obj_in_container(pick_list[i].item.a_obj, used_container))
+            //            break;
+            //    }
+            //    else if (i < n - 1 && inv_cnt(FALSE) >= 52)
+            //    {
+            //        int j;
+            //        boolean noncoin_nonmergeable_found = FALSE;
+            //        for (j = i + 1; j < n; j++)
+            //        {
+            //            if (pick_list[j].item.a_obj->oclass != COIN_CLASS && !merge_choice(invent, pick_list[j].item.a_obj))
+            //            {
+            //                noncoin_nonmergeable_found = TRUE;
+            //                break;
+            //            }
+            //        }
+            //        if (noncoin_nonmergeable_found)
+            //        {
+            //            boolean doforbreak = FALSE;
+            //            if (flags.knapsack_prompt)
+            //            {
+            //                Your_ex1(ATR_NONE, CLR_MSG_ATTENTION, "knapsack cannot accommodate any more items.");
+            //                char qbuf[QBUFSZ];
+            //                Sprintf(qbuf, "Stash %s and the remaining items into a container?", thecxname(pick_list[i].item.a_obj));
+            //                char ans = yn_function_es(YN_STYLE_KNAPSACK_FULL, ATR_NONE, CLR_MSG_ATTENTION, "Your Knapsack Is Full", qbuf, ynaqchars, 'a', ynaq3descs, (const char*)0);
+            //                switch (ans)
+            //                {
+            //                default:
+            //                case 'a':
+            //                    auto_bag_in(invent, pick_list[i].item.a_obj, FALSE);
+            //                    do_auto_in_bag = TRUE;
+            //                    break;
+            //                case 'y':
+            //                    used_container = select_other_container(invent, (struct obj*)0, FALSE, FALSE);
+            //                    if (used_container)
+            //                    {
+            //                        if (!stash_obj_in_container(pick_list[i].item.a_obj, used_container))
+            //                            doforbreak = TRUE;
+            //                    }
+            //                    break;
+            //                case 'n':
+            //                    doforbreak = TRUE; /* No point to continue further here, since knapsack is full */
+            //                    break;
+            //                case 'q':
+            //                    doforbreak = TRUE;
+            //                    break;
+            //                }
+            //                if (ans == 'a')
+            //                {
+            //                    do_auto_in_bag = TRUE;
+            //                }
+            //            }
+            //            else
+            //                do_auto_in_bag = TRUE;
+            //            if (doforbreak)
+            //                break;
+            //        }
+            //    }
+            //}
         }
         if (pick_list)
             free((genericptr_t) pick_list);
 
-    } else {
+    } 
+    else 
+    {
         /* old style interface */
         int ct = 0;
         long lcount;
@@ -755,14 +788,17 @@ boolean do_auto_in_bag;
                 n_picked++; /* picked something */
             goto end_query;
 
-        } else if (ct >= 2) {
+        } 
+        else if (ct >= 2)
+        {
             int via_menu = 0;
 
             There("are %s objects here.", (ct <= 10) ? "several" : "many");
             if (!query_classes(oclasses, &selective, &all_of_a_type,
                                "pick up", *objchain_p,
                                (traverse_how & BY_NEXTHERE) ? TRUE : FALSE,
-                               &via_menu)) {
+                               &via_menu)) 
+            {
                 if (!via_menu)
                     goto pickupdone;
                 if (selective)
@@ -777,7 +813,8 @@ boolean do_auto_in_bag;
         bycat = (menu_class_present('B') || menu_class_present('U')
                  || menu_class_present('C') || menu_class_present('X'));
 
-        for (obj = *objchain_p; obj; obj = obj2) {
+        for (obj = *objchain_p; obj; obj = obj2) 
+        {
             obj2 = FOLLOW(obj, traverse_how);
             if (bycat ? !allow_category(obj)
                       : (!selective && oclasses[0]
@@ -785,19 +822,22 @@ boolean do_auto_in_bag;
                 continue;
 
             lcount = -1L;
-            if (!all_of_a_type) {
+            if (!all_of_a_type) 
+            {
                 char qbuf[BUFSZ];
 
                 (void) safe_qbuf(qbuf, "Pick up ", "?", obj, doname,
                                  ansimpleoname, something);
-                switch ((obj->quan < 2L) ? ynaq(qbuf) : ynNaq(qbuf)) {
+                switch ((obj->quan < 2L) ? ynaq(qbuf) : ynNaq(qbuf)) 
+                {
                 case 'q':
                     goto end_query; /* out 2 levels */
                 case 'n':
                     continue;
                 case 'a':
                     all_of_a_type = TRUE;
-                    if (selective) {
+                    if (selective) 
+                    {
                         selective = FALSE;
                         oclasses[0] = obj->oclass;
                         oclasses[1] = '\0';
@@ -826,7 +866,8 @@ boolean do_auto_in_bag;
         ; /* statement required after label */
     }
 
-    if (!u.uswallow) {
+    if (!u.uswallow)
+    {
         if (hides_under(youmonst.data))
             (void) hideunder(&youmonst);
 
@@ -849,6 +890,75 @@ boolean do_auto_in_bag;
     return (n_tried > 0 || more_action > 0);
 }
 
+int
+handle_knapsack_prefull(res, container_cnt, do_auto_in_bag_ptr, used_container_ptr, obj, i, n)
+int res, container_cnt, i, n;
+boolean* do_auto_in_bag_ptr;
+struct obj** used_container_ptr;
+struct obj* obj;
+{
+    if (res > 0 && container_cnt > 0 && !*do_auto_in_bag_ptr)
+    {
+        if (*used_container_ptr)
+        {
+            if (!stash_obj_in_container(obj, *used_container_ptr))
+                return -1;
+        }
+        else if (i < n - 1 && inv_cnt(FALSE) >= 52)
+        {
+            int j;
+            boolean noncoin_nonmergeable_found = FALSE;
+            for (j = i + 1; j < n; j++)
+            {
+                if (obj->oclass != COIN_CLASS && !merge_choice(invent, obj))
+                {
+                    noncoin_nonmergeable_found = TRUE;
+                    break;
+                }
+            }
+            if (noncoin_nonmergeable_found)
+            {
+                if (flags.knapsack_prompt)
+                {
+                    bot();
+                    Your_ex1(ATR_NONE, CLR_MSG_ATTENTION, "knapsack cannot accommodate any more items.");
+                    char qbuf[QBUFSZ];
+                    Sprintf(qbuf, "Stash %s and the remaining items into a container?", thecxname(obj));
+                    char ans = yn_function_es(YN_STYLE_KNAPSACK_FULL, ATR_NONE, CLR_MSG_ATTENTION, "Your Knapsack Is Full", qbuf, ynaqchars, 'a', ynaq3descs, (const char*)0);
+                    switch (ans)
+                    {
+                    default:
+                    case 'a':
+                        auto_bag_in(invent, obj, FALSE);
+                        *do_auto_in_bag_ptr = TRUE;
+                        break;
+                    case 'y':
+                        *used_container_ptr = select_other_container(invent, (struct obj*)0, FALSE, FALSE);
+                        if (*used_container_ptr)
+                        {
+                            if (!stash_obj_in_container(obj, *used_container_ptr))
+                                return -1;
+                        }
+                        else
+                            return -1;
+                        break;
+                    case 'n':
+                        return -1;
+                    case 'q':
+                        return -1;
+                    }
+                    if (ans == 'a')
+                    {
+                        *do_auto_in_bag_ptr = TRUE;
+                    }
+                }
+                else
+                    *do_auto_in_bag_ptr = TRUE;
+            }
+        }
+    }
+    return 0;
+}
 
 int
 handle_knapsack_full(VOID_ARGS)
@@ -3004,9 +3114,11 @@ int
 stash_obj_in_container(obj, container)
 struct obj* obj, *container;
 {
-
+    struct obj* saved_container = current_container;
     current_container = container;
-    return in_container(obj);
+    int res = in_container(obj);
+    current_container = saved_container;
+    return res;
 }
 
 /* Returns: -1 to stop, 1 item was inserted, 0 item was not inserted. */
@@ -4177,10 +4289,9 @@ struct obj* other_container;
     if(command_id == 4 && *u.ushops)
         sellobj_state(SELL_DELIBERATE);
 
-    if (query_classes(selection, &one_by_one, &allflag, action, *objlist,
-                      FALSE, &menu_on_request)) {
-        if (askchain(objlist, (one_by_one ? (char *) 0 : selection), allflag,
-                     actionfunc, checkfunc, 0, action))
+    if (query_classes(selection, &one_by_one, &allflag, action, *objlist, FALSE, &menu_on_request)) 
+    {
+        if (askchain(objlist, (one_by_one ? (char *) 0 : selection), allflag, actionfunc, checkfunc, 0, action))
             used = 1;
     } 
     else if (menu_on_request < 0) 
@@ -4281,7 +4392,6 @@ struct obj* other_container UNUSED;
     else if (command_id == 4 && *u.ushops)
         sellobj_state(SELL_DELIBERATE);
 
-
     if (retry) 
     {
         all_categories = (retry == -2);
@@ -4323,19 +4433,29 @@ struct obj* other_container UNUSED;
         free((genericptr_t) pick_list);
     }
 
-    if (loot_everything) 
+    boolean do_auto_in_bag = FALSE;
+    struct obj* last_container = 0;
+    int container_cnt = count_other_containers(invent, current_container, &last_container, FALSE);
+    struct obj* used_container = 0;
+
+    if (loot_everything)
     {
+        n = 0;
+        for (otmp = current_container->cobj; otmp; otmp = otmp->nobj)
+            n++;
         switch (command_id)
         {
         case 0:
             current_container->cknown = 1;
-            for (otmp = current_container->cobj; otmp; otmp = otmp2)
+            for (otmp = current_container->cobj, i = 0; otmp; otmp = otmp2, i++)
             {
                 otmp2 = otmp->nobj;
-                res = out_container_nobot(otmp);
+                res = do_auto_in_bag ? out_container_and_autostash_nobot(otmp) : out_container_nobot(otmp);
                 if (res < 0)
                     break;
                 n_looted += res;
+                if (!carried(current_container) && handle_knapsack_prefull(res, container_cnt, &do_auto_in_bag, &used_container, otmp, i, n) < 0)
+                    break;
             }
             bot();
             if (res == -2 && flags.knapsack_prompt)
@@ -4453,12 +4573,14 @@ struct obj* other_container UNUSED;
                 switch (command_id)
                 {
                 case 0:
-                    res = out_container_nobot(otmp);
+                    res = do_auto_in_bag ? out_container_and_autostash_nobot(otmp) : out_container_nobot(otmp);
                     if (res == -2 && flags.knapsack_prompt)
                     {
                         bot();
                         more_action = handle_knapsack_full();
                     }
+                    else if (!carried(current_container) && handle_knapsack_prefull(res, container_cnt, &do_auto_in_bag, &used_container, otmp, i, n) < 0)
+                        break;
                     break;
                 case 1:
                     res = in_container_nobot(otmp);
