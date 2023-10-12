@@ -409,6 +409,10 @@ namespace GnollHackX.Pages.Game
         private bool _breatheAnimations = false;
         public bool BreatheAnimations { get { lock (_breatheAnimationLock) { return _breatheAnimations; } } set { lock (_breatheAnimationLock) { _breatheAnimations = value; } } }
 
+        private readonly object _showPut2BagContextCommandLock = new object();
+        private bool _showPut2BagContextCommand = false;
+        public bool ShowPut2BagContextCommand { get { lock (_showPut2BagContextCommandLock) { return _showPut2BagContextCommand; } } set { lock (_showPut2BagContextCommandLock) { _showPut2BagContextCommand = value; } } }
+        
         private readonly object _accurateLayerDrawingLock = new object();
         private bool _accurateLayerDrawing = false;
         public bool AlternativeLayerDrawing { get { lock (_accurateLayerDrawingLock) { return _accurateLayerDrawing; } } set { lock (_accurateLayerDrawingLock) { _accurateLayerDrawing = value; } } }
@@ -710,6 +714,7 @@ namespace GnollHackX.Pages.Game
             LighterDarkening = Preferences.Get("LighterDarkening", GHConstants.DefaultLighterDarkening);
             DrawWallEnds = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
             BreatheAnimations = Preferences.Get("BreatheAnimations", GHConstants.DefaultBreatheAnimations);
+            ShowPut2BagContextCommand = Preferences.Get("ShowPut2BagContextCommand", GHConstants.DefaultShowPut2BagContextCommand);
             AlternativeLayerDrawing = Preferences.Get("AlternativeLayerDrawing", GHConstants.DefaultAlternativeLayerDrawing);
 
             float deffontsize = GetDefaultMapFontSize();
@@ -1525,7 +1530,6 @@ namespace GnollHackX.Pages.Game
         }
         public void AddContextMenu(AddContextMenuData data)
         {
-            _contextMenuData.Add(data);
             int cmddefchar = data.cmd_def_char;
             int cmdcurchar = data.cmd_cur_char;
             if (cmddefchar < 0)
@@ -1541,6 +1545,10 @@ namespace GnollHackX.Pages.Game
             int SitCmd = GHUtils.Ctrl('s');
             int RideCmd = GHUtils.Meta('R');
             int PickToBagCmd = GHUtils.Meta(15);
+            if (cmddefchar == PickToBagCmd && !ShowPut2BagContextCommand)
+                return; /* Do not add */
+
+            _contextMenuData.Add(data);
 
             switch ((char)cmddefchar)
             {
