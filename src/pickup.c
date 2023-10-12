@@ -632,6 +632,10 @@ boolean do_auto_in_bag;
         goto menu_pickup;
     }
 
+    struct obj* last_container = 0;
+    int container_cnt = count_other_containers(invent, (struct obj*)0, &last_container, FALSE);
+    struct obj* used_container = 0;
+
     if (flags.menu_style != MENU_TRADITIONAL || iflags.menu_requested) {
         /* use menus exclusively */
         traverse_how |= AUTOSELECT_SINGLE
@@ -660,6 +664,68 @@ boolean do_auto_in_bag;
             if (res < 0)
                 break; /* can't continue */
             n_picked += res;
+            if(res > 0 && container_cnt > 0 && !do_auto_in_bag)
+            {
+                if (used_container)
+                {
+                    if (!stash_obj_in_container(pick_list[i].item.a_obj, used_container))
+                        break;
+                }
+                else if (i < n - 1 && inv_cnt(FALSE) >= 52)
+                {
+                    int j;
+                    boolean noncoin_nonmergeable_found = FALSE;
+                    for (j = i + 1; j < n; j++)
+                    {
+                        if (pick_list[j].item.a_obj->oclass != COIN_CLASS && !merge_choice(invent, pick_list[j].item.a_obj))
+                        {
+                            noncoin_nonmergeable_found = TRUE;
+                            break;
+                        }
+                    }
+                    if (noncoin_nonmergeable_found)
+                    {
+                        boolean doforbreak = FALSE;
+                        if (flags.knapsack_prompt)
+                        {
+                            Your_ex1(ATR_NONE, CLR_MSG_ATTENTION, "knapsack cannot accommodate any more items.");
+                            char qbuf[QBUFSZ];
+                            Sprintf(qbuf, "Stash %s and the remaining items into a container?", thecxname(pick_list[i].item.a_obj));
+                            char ans = yn_function_es(YN_STYLE_KNAPSACK_FULL, ATR_NONE, CLR_MSG_ATTENTION, "Your Knapsack Is Full", qbuf, ynaqchars, 'a', ynaq3descs, (const char*)0);
+                            switch (ans)
+                            {
+                            default:
+                            case 'a':
+                                auto_bag_in(invent, pick_list[i].item.a_obj, FALSE);
+                                do_auto_in_bag = TRUE;
+                                break;
+                            case 'y':
+                                used_container = select_other_container(invent, (struct obj*)0, FALSE, FALSE);
+                                if (used_container)
+                                {
+                                    if (!stash_obj_in_container(pick_list[i].item.a_obj, used_container))
+                                        doforbreak = TRUE;
+                                }
+                                break;
+                            case 'n':
+                                doforbreak = TRUE; /* No point to continue further here, since knapsack is full */
+                                break;
+                            case 'q':
+                                doforbreak = TRUE;
+                                break;
+                            }
+                            if (ans == 'a')
+                            {
+                                do_auto_in_bag = TRUE;
+                            }
+                        }
+                        else
+                            do_auto_in_bag = TRUE;
+                        if (doforbreak)
+                            break;
+                    }
+                }
+            }
         }
         if (pick_list)
             free((genericptr_t) pick_list);
@@ -1771,7 +1837,7 @@ boolean bynexthere;
 
     for (curr = objchn_container; curr; curr = (bynexthere ? curr->nexthere : curr->nobj))
     {
-        if (objects[curr->otyp].oc_name_known && curr != obj)
+        if (objects[curr->otyp].oc_name_known && curr != obj && !curr->olocked)
         {
             if (curr->otyp == BAG_OF_HOLDING && curr->bknown && !curr->cursed && obj->oclass != WAND_CLASS)
             {
@@ -1793,7 +1859,9 @@ boolean bynexthere;
                 if (!bag_of_wizardry || (curr->blessed && !bag_of_wizardry->blessed))
                     bag_of_wizardry = curr;
             }
-            else if (Is_proper_container(curr) && !Is_mbag(curr) && (objects[curr->otyp].oc_flags4 & (O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS | O4_CONTAINER_ACCEPTS_ONLY_WEAPONS)) == 0)
+            else if (Is_proper_container(curr) && !Is_mbag(curr) 
+                && (objects[curr->otyp].oc_flags4 & (O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS | O4_CONTAINER_ACCEPTS_ONLY_WEAPONS)) == 0 
+                && !((objects[curr->otyp].oc_flags4 & (O4_CONTAINER_HAS_LID)) && !(curr->speflags & (SPEFLAGS_LID_OPENED))))
             {
                 if (!normal_bag)
                     normal_bag = curr;
