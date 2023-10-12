@@ -34,7 +34,7 @@ STATIC_DCL int FDECL(lift_object, (struct obj *, struct obj *, long *,
 STATIC_DCL boolean FDECL(mbag_explodes, (struct obj *, struct obj*, int));
 STATIC_DCL long FDECL(boh_loss, (struct obj *container, int));
 STATIC_PTR int FDECL(in_container_core, (struct obj*, BOOLEAN_P));
-STATIC_PTR int FDECL(out_container_core, (struct obj*, BOOLEAN_P));
+STATIC_PTR int FDECL(out_container_core, (struct obj*, BOOLEAN_P, BOOLEAN_P));
 STATIC_PTR int FDECL(move_container_core, (struct obj*, BOOLEAN_P));
 STATIC_PTR int FDECL(out_container_and_drop_core, (struct obj*, BOOLEAN_P));
 STATIC_PTR int FDECL(pickup_and_in_container_core, (struct obj*, BOOLEAN_P));
@@ -43,6 +43,8 @@ STATIC_PTR int FDECL(out_container, (struct obj*));
 STATIC_PTR int FDECL(move_container, (struct obj*));
 STATIC_PTR int FDECL(out_container_and_drop, (struct obj*));
 STATIC_PTR int FDECL(pickup_and_in_container, (struct obj*));
+STATIC_PTR int FDECL(out_container_and_autostash, (struct obj*));
+STATIC_PTR int FDECL(out_container_and_autostash_nobot, (struct obj*));
 STATIC_PTR int FDECL(in_container_nobot, (struct obj*));
 STATIC_PTR int FDECL(out_container_nobot, (struct obj*));
 STATIC_PTR int FDECL(move_container_nobot, (struct obj*));
@@ -3283,7 +3285,7 @@ boolean dobot;
 
     obj->nomerge = 1;
     int res = 0;
-    if ((res = out_container_core(obj, dobot)) <= 0)
+    if ((res = out_container_core(obj, dobot, FALSE)) <= 0)
     {
         obj->nomerge = 0;
         return res;
@@ -3332,7 +3334,7 @@ boolean dobot;
 
     obj->nomerge = 1;
     int res = 0;
-    if ((res = out_container_core(obj, dobot)) <= 0)
+    if ((res = out_container_core(obj, dobot, FALSE)) <= 0)
     {
         obj->nomerge = 0;
         return res;
@@ -3396,26 +3398,42 @@ boolean dobot;
     return res;
 }
 
+/* Returns: -1 to stop, 1 item was moved, 0 item was not moved. */
+STATIC_PTR int
+out_container_and_autostash(obj)
+register struct obj* obj;
+{
+    return out_container_core(obj, TRUE, TRUE);
+}
+
+/* Returns: -1 to stop, 1 item was moved, 0 item was not moved. */
+STATIC_PTR int
+out_container_and_autostash_nobot(obj)
+register struct obj* obj;
+{
+    return out_container_core(obj, FALSE, TRUE);
+}
+
 
 /* Returns: -1 to stop, 1 item was removed, 0 item was not removed. */
 STATIC_PTR int
 out_container(obj)
 register struct obj* obj;
 {
-    return out_container_core(obj, TRUE);
+    return out_container_core(obj, TRUE, FALSE);
 }
 
 STATIC_PTR int
 out_container_nobot(obj)
 register struct obj* obj;
 {
-    return out_container_core(obj, FALSE);
+    return out_container_core(obj, FALSE, FALSE);
 }
 
 STATIC_PTR int
-out_container_core(obj, dobot)
+out_container_core(obj, dobot, do_auto_in_bag)
 register struct obj *obj;
-boolean dobot;
+boolean dobot, do_auto_in_bag;
 {
     register struct obj *otmp;
     boolean is_gold = (obj->oclass == COIN_CLASS);
@@ -3479,10 +3497,13 @@ boolean dobot;
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_PICK_UP);
         delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
     }
-    if (dobot && is_gold) 
+    if (do_auto_in_bag && otmp && otmp == obj)
+        auto_bag_in(invent, otmp, FALSE);
+    if (dobot && is_gold)
     {
         bot(); /* update character's gold piece count immediately */
     }
+
     res = 1;
 default_outcountainer_end:
     context.skip_botl = FALSE;
@@ -3605,8 +3626,8 @@ container_gone(fn)
 int FDECL((*fn), (OBJ_P));
 {
     /* result is only meaningful while use_container() is executing */
-    return ((fn == in_container || fn == out_container || fn == move_container || fn == pickup_and_in_container || fn == out_container_and_drop
-        || fn == in_container_nobot || fn == out_container_nobot || fn == move_container_nobot || fn == pickup_and_in_container_nobot || fn == out_container_and_drop_nobot)
+    return ((fn == in_container || fn == out_container || fn == move_container || fn == pickup_and_in_container || fn == out_container_and_drop || fn == out_container_and_autostash
+        || fn == in_container_nobot || fn == out_container_nobot || fn == move_container_nobot || fn == pickup_and_in_container_nobot || fn == out_container_and_drop_nobot || fn == out_container_and_autostash_nobot)
             && !current_container);
 }
 
@@ -3668,7 +3689,7 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
 {
     struct obj *otmp, *obj = *objp;
     boolean quantum_cat, cursed_mbag, loot_out, loot_in, loot_in_first,
-        stash_one, move_to_another, move_to_another_on_floor, loot_out_and_drop,
+        stash_one, move_to_another, move_to_another_on_floor, loot_out_and_drop, loot_out_and_stash,
         pickup_and_loot_in, inokay, outokay, outmaybe;
     char c, emptymsg[BUFSZ], qbuf[QBUFSZ], pbuf[QBUFSZ], xbuf[QBUFSZ];
     int used = 0;
@@ -3816,6 +3837,7 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
             Strcat(inokay ? pbuf : xbuf, "rs");  /* reversed, stash */
             Strcat(outmaybe && other_containter_count > 0 ? pbuf : xbuf, "m"); /* move to inventory container */
             Strcat(outmaybe && floor_containter_count > 0 ? pbuf : xbuf, "c"); /* move to floor container */
+            Strcat(outmaybe && other_containter_count > 0 ? pbuf : xbuf, "a"); /* take out and auto-stash */
             Strcat(outmaybe ? pbuf : xbuf, "d"); /* take out and drop */
             Strcat(inokay &&
                 (level.objects[u.ux][u.uy] && !(level.objects[u.ux][u.uy] == current_container && !level.objects[u.ux][u.uy]->nexthere)) ? pbuf : xbuf,
@@ -3860,10 +3882,11 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
     move_to_another = (c == 'm');
     move_to_another_on_floor = (c == 'c');
     loot_out_and_drop = (c == 'd');
+    loot_out_and_stash = (c == 'a');
     pickup_and_loot_in = (c == 'p');
 
     /* out-only or out before in */
-    if (move_to_another || move_to_another_on_floor || (loot_out && !loot_in_first) || loot_out_and_drop)
+    if (move_to_another || move_to_another_on_floor || (loot_out && !loot_in_first) || loot_out_and_drop || loot_out_and_stash)
     {
         if (!Has_contents(current_container)) 
         {
@@ -3877,13 +3900,13 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
             add_valid_menu_class(0); /* reset */
             if (flags.menu_style == MENU_TRADITIONAL)
                 used |= traditional_loot(
-                    move_to_another ? 2 : move_to_another_on_floor ? 3 : loot_out_and_drop ? 4 : 0,
+                    move_to_another ? 2 : move_to_another_on_floor ? 3 : loot_out_and_drop ? 4 : loot_out_and_stash ? 5 : 0,
                     current_container, 
                     move_to_another_on_floor ? (floor_containter_count == 1 && last_floor_container ? last_floor_container : (struct obj*)0) : (other_containter_count == 1 && last_container ? last_container : (struct obj*)0)
                 );
             else
                 used |= (menu_loot(0, 
-                    move_to_another ? 2 : move_to_another_on_floor ? 3 : loot_out_and_drop ? 4 : 0, 
+                    move_to_another ? 2 : move_to_another_on_floor ? 3 : loot_out_and_drop ? 4 : loot_out_and_stash ? 5 : 0,
                     current_container, 
                     move_to_another_on_floor ? (floor_containter_count == 1 && last_floor_container ? last_floor_container : (struct obj*)0) : (other_containter_count == 1 && last_container ? last_container : (struct obj*)0)
                 ) > 0 );
@@ -3918,9 +3941,9 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
     {
         add_valid_menu_class(0); /* reset */
         if (flags.menu_style == MENU_TRADITIONAL)
-            used |= traditional_loot(pickup_and_loot_in ? 5 : 1, (struct obj*)0, (struct obj*)0);
+            used |= traditional_loot(pickup_and_loot_in ? 6 : 1, (struct obj*)0, (struct obj*)0);
         else
-            used |= (menu_loot(0, pickup_and_loot_in ? 5 : 1, (struct obj*)0, (struct obj*)0) > 0);
+            used |= (menu_loot(0, pickup_and_loot_in ? 6 : 1, (struct obj*)0, (struct obj*)0) > 0);
         add_valid_menu_class(0);
     } 
     else if (stash_one) 
@@ -3995,8 +4018,9 @@ int command_id;
    1 = put in,
    2 = move items in a container to a(nother) container in inventory,
    3 = move items in a container to a(nother) container on floor,
-   4 = take items out of a container and drop them on floor, and
-   5 = pick up items from floor and put them in a container
+   4 = take items out of a container and drop them on floor,
+   5 = take items out of a container and stash automatically, and
+   6 = pick up items from floor and put them in a container
  */
 struct obj* applied_container;
 struct obj* other_container;
@@ -4069,6 +4093,12 @@ struct obj* other_container;
         checkfunc = (int FDECL((*), (OBJ_P))) 0;
         break;
     case 5:
+        action = "take out and auto-stash";
+        objlist = &(current_container->cobj);
+        actionfunc = out_container_and_autostash;
+        checkfunc = (int FDECL((*), (OBJ_P))) 0;
+        break;
+    case 6:
         action = "pick up and put in";
         objlist = &level.objects[u.ux][u.uy];
         actionfunc = pickup_and_in_container;
@@ -4105,8 +4135,9 @@ int command_id;
    1 = put in, 
    2 = move items in a container to a(nother) container in inventory, 
    3 = move items in a container to a(nother) container on floor,
-   4 = take items out of a container and drop them on floor, and
-   5 = pick up items from the floor and put them in a container
+   4 = take items out of a container and drop them on floor,
+   5 = take items out of a container and stash them automatically, and
+   6 = pick up items from the floor and put them in a container
  */
 struct obj* applied_container;
 struct obj* other_container UNUSED;
@@ -4139,6 +4170,9 @@ struct obj* other_container UNUSED;
         action = "Take out and drop";
         break;
     case 5:
+        action = "Take out and auto-stash";
+        break;
+    case 6:
         action = "Pick up and put in";
         break;
     default:
@@ -4189,9 +4223,9 @@ struct obj* other_container UNUSED;
         all_categories = FALSE;
         Sprintf(buf, "%s what type of objects?", action);
         mflags = (ALL_TYPES | UNPAID_TYPES | BUCX_TYPES | UNIDENTIFIED_TYPES | UNKNOWN_TYPES | CHOOSE_ALL);
-        if (command_id == 5)
+        if (command_id == 6)
             mflags |= BY_NEXTHERE;
-        n = query_category(buf, command_id == 1 ? invent : command_id == 5 ? level.objects[u.ux][u.uy] : current_container->cobj,
+        n = query_category(buf, command_id == 1 ? invent : command_id == 6 ? level.objects[u.ux][u.uy] : current_container->cobj,
                            mflags, &pick_list, PICK_ANY);
         if (!n)
             return 0;
@@ -4288,6 +4322,18 @@ struct obj* other_container UNUSED;
             break;
         case 5:
             current_container->cknown = 1;
+            for (otmp = current_container->cobj; otmp; otmp = otmp2)
+            {
+                otmp2 = otmp->nobj;
+                res = out_container_and_autostash_nobot(otmp);
+                if (res < 0)
+                    break;
+                n_looted += res;
+            }
+            bot();
+            break;
+        case 6:
+            current_container->cknown = 1;
             for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp2)
             {
                 otmp2 = otmp->nexthere;
@@ -4308,7 +4354,7 @@ struct obj* other_container UNUSED;
         mflags = INVORDER_SORT;
         if (command_id == 1 && flags.invlet_constant)
             mflags |= USE_INVLET;
-        if (command_id == 5)
+        if (command_id == 6)
             mflags |= BY_NEXTHERE;
         if (command_id == 0 || command_id == 2)
             current_container->cknown = 1;
@@ -4318,7 +4364,7 @@ struct obj* other_container UNUSED;
             Sprintf(movebuf, " from %s to %s", cxname(current_container), cxname(move_target_container));
 
         Sprintf(buf, "%s what%s?", action, movebuf);
-        n = query_objlist(buf, command_id == 1 ? &invent : command_id == 5 ? &level.objects[u.ux][u.uy] : &(current_container->cobj),
+        n = query_objlist(buf, command_id == 1 ? &invent : command_id == 6 ? &level.objects[u.ux][u.uy] : &(current_container->cobj),
                           mflags, &pick_list, PICK_ANY,
                           all_categories ? allow_all : allow_category, 2);
         if (n)
@@ -4359,6 +4405,9 @@ struct obj* other_container UNUSED;
                     res = out_container_and_drop_nobot(otmp);
                     break;
                 case 5:
+                    res = out_container_and_autostash_nobot(otmp);
+                    break;
+                case 6:
                     res = pickup_and_in_container_nobot(otmp);
                     break;
                 default:
@@ -4404,7 +4453,7 @@ struct obj *obj;
 boolean outokay, inokay, alreadyused, more_containers;
 {
     /* underscore is not a choice; it's used to skip element [0] */
-    static const char lootchars[] = "_:oibrsnqmcdp", abc_chars[] = "_:abcdenqfghi";
+    static const char lootchars[] = "_:oibrsnqmcdpa", abc_chars[] = "_:abcdenqfghij";
     winid win;
     anything any;
     menu_item *pick_list;
@@ -4476,6 +4525,13 @@ boolean outokay, inokay, alreadyused, more_containers;
             levl[u.ux][u.uy].typ == GROUND || levl[u.ux][u.uy].floortyp == GROUND ? "ground" :
             "floor");
         Sprintf(buf, "move %s to %s", something, ((0 && other_containter_count == 1 && last_container) ? thesimpleoname(last_container) : contbuf));
+        add_menu(win, NO_GLYPH, &any, menuselector[any.a_int], 0, ATR_NONE, NO_COLOR,
+            buf, MENU_UNSELECTED);
+    }
+    if (outokay && other_containter_count > 0 && !carried(obj))
+    {
+        any.a_int = 13; /* 'a' */
+        Sprintf(buf, "take %s out and stash it automatically", something);
         add_menu(win, NO_GLYPH, &any, menuselector[any.a_int], 0, ATR_NONE, NO_COLOR,
             buf, MENU_UNSELECTED);
     }
