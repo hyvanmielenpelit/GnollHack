@@ -2655,7 +2655,7 @@ E int FDECL(in_container, (struct obj *));
 E int FDECL(out_container, (struct obj *));
 #endif
 E void FDECL(auto_bag_in, (struct obj*, struct obj*, BOOLEAN_P));
-E int FDECL(count_bags_for_stashing, (struct obj*, struct obj*, BOOLEAN_P));
+E int FDECL(count_bags_for_stashing, (struct obj*, struct obj*, BOOLEAN_P, BOOLEAN_P));
 E int FDECL(pickup, (int, BOOLEAN_P));
 E int FDECL(pickup_object, (struct obj *, long, BOOLEAN_P, BOOLEAN_P));
 E int FDECL(query_category, (const char *, struct obj *, int,

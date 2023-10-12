@@ -1544,7 +1544,7 @@ namespace GnollHackX.Pages.Game
             int DigCmd = GHUtils.Ctrl('g');
             int SitCmd = GHUtils.Ctrl('s');
             int RideCmd = GHUtils.Meta('R');
-            int PickToBagCmd = GHUtils.Meta(15);
+            int PickToBagCmd = ';';
             if (cmddefchar == PickToBagCmd && !ShowPut2BagContextCommand)
                 return; /* Do not add */
 

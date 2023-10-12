@@ -1757,7 +1757,7 @@ auto_bag_in(objchn_container, obj, bynexthere)
 struct obj* objchn_container, * obj;
 boolean bynexthere;
 {
-    if (!objchn_container || !obj)
+    if (!objchn_container || !obj || Is_container(obj) || unfit_for_container(obj))
         return;
 
     struct obj* curr;
@@ -1769,7 +1769,7 @@ boolean bynexthere;
 
     for (curr = objchn_container; curr; curr = (bynexthere ? curr->nexthere : curr->nobj))
     {
-        if (objects[curr->otyp].oc_name_known)
+        if (objects[curr->otyp].oc_name_known && curr != obj)
         {
             if (curr->otyp == BAG_OF_HOLDING && curr->bknown && !curr->cursed && obj->oclass != WAND_CLASS)
             {
@@ -1791,7 +1791,7 @@ boolean bynexthere;
                 if (!bag_of_wizardry || (curr->blessed && !bag_of_wizardry->blessed))
                     bag_of_wizardry = curr;
             }
-            else if (Is_proper_container(curr) && !Is_mbag(curr))
+            else if (Is_proper_container(curr) && !Is_mbag(curr) && (objects[curr->otyp].oc_flags4 & (O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS | O4_CONTAINER_ACCEPTS_ONLY_WEAPONS)) == 0)
             {
                 if (!normal_bag)
                     normal_bag = curr;
@@ -1814,22 +1814,29 @@ boolean bynexthere;
     if (!num_choices)
         return;
 
+    boolean maybe_cancellation = (objects[obj->otyp].oc_name_known ? (objects[obj->otyp].oc_flags5 & O5_MBAG_DESTROYING_ITEM) != 0 : obj->oclass == WAND_CLASS);
     switch (flags.auto_bag_in_style)
     {
     case 0:
     default:
     {
         struct obj* used_container = 0;
-        if (!used_container && bag_of_treasure_hauling && is_obj_weight_reduced_by_treasure_hauling(obj))
+        if (!used_container && bag_of_treasure_hauling && is_obj_weight_reduced_by_treasure_hauling(obj) && !maybe_cancellation)
             used_container = bag_of_treasure_hauling;
-        if (!used_container && bag_of_wizardry && is_obj_weight_reduced_by_wizardry(obj))
+        if (!used_container && bag_of_wizardry && is_obj_weight_reduced_by_wizardry(obj) && !maybe_cancellation)
             used_container = bag_of_wizardry;
-        if (!used_container && bag_of_the_glutton && is_obj_weight_reduced_by_the_glutton(obj))
+        if (!used_container && bag_of_the_glutton && is_obj_weight_reduced_by_the_glutton(obj) && !maybe_cancellation)
             used_container = bag_of_the_glutton;
-        if (!used_container && bag_of_holding && obj->oclass != WAND_CLASS)
+        if (!used_container && bag_of_holding && !maybe_cancellation)
             used_container = bag_of_holding;
         if (!used_container && normal_bag)
             used_container = normal_bag;
+        if (!used_container && bag_of_treasure_hauling && !maybe_cancellation)
+            used_container = bag_of_treasure_hauling;
+        if (!used_container && bag_of_wizardry && !maybe_cancellation)
+            used_container = bag_of_wizardry;
+        if (!used_container && bag_of_the_glutton && !maybe_cancellation)
+            used_container = bag_of_the_glutton;
         if (used_container)
             stash_obj_in_container(obj, used_container);
         break;
@@ -1838,36 +1845,51 @@ boolean bynexthere;
 }
 
 int
-count_bags_for_stashing(objchn_container, single_obj, bynexthere)
-struct obj* objchn_container, *single_obj;
-boolean bynexthere;
+count_bags_for_stashing(objchn_container, objchn, bynexthere_container, bynexthere_obj)
+struct obj* objchn_container, *objchn;
+boolean bynexthere_container, bynexthere_obj;
 {
     if (!can_stash_objs())
         return 0;
 
-    int cnt = 0;
     struct obj* curr;
-    for (curr = objchn_container; curr; curr = (bynexthere ? curr->nexthere : curr->nobj))
+    int fitcnt = 0;
+    int no_cancellation_cnt = 0;
+    for (curr = objchn; curr; curr = (bynexthere_obj ? curr->nexthere : curr->nobj))
+    {
+        if (!Is_container(curr) && !unfit_for_container(curr))
+        {
+            fitcnt++;
+            if (!(objects[curr->otyp].oc_name_known ? (objects[curr->otyp].oc_flags5 & O5_MBAG_DESTROYING_ITEM) != 0 : curr->oclass == WAND_CLASS))
+                no_cancellation_cnt++;
+        }
+    }
+
+    if(!fitcnt)
+        return 0;
+
+    int cnt = 0;
+    for (curr = objchn_container; curr; curr = (bynexthere_container ? curr->nexthere : curr->nobj))
     {
         if (objects[curr->otyp].oc_name_known)
         {
-            if (curr->otyp == BAG_OF_HOLDING && curr->bknown && !curr->cursed && (!single_obj || single_obj->oclass != WAND_CLASS))
+            if (curr->otyp == BAG_OF_HOLDING && curr->bknown && !curr->cursed && no_cancellation_cnt > 0)
             {
                 cnt++;
             }
-            else if (curr->otyp == BAG_OF_THE_GLUTTON && curr->bknown && !curr->cursed)
+            else if (curr->otyp == BAG_OF_THE_GLUTTON && curr->bknown && !curr->cursed && no_cancellation_cnt > 0)
             {
                 cnt++;
             }
-            else if (curr->otyp == BAG_OF_TREASURE_HAULING && curr->bknown && !curr->cursed)
+            else if (curr->otyp == BAG_OF_TREASURE_HAULING && curr->bknown && !curr->cursed && no_cancellation_cnt > 0)
             {
                 cnt++;
             }
-            else if (curr->otyp == BAG_OF_WIZARDRY && curr->bknown && !curr->cursed)
+            else if (curr->otyp == BAG_OF_WIZARDRY && curr->bknown && !curr->cursed && no_cancellation_cnt > 0)
             {
                 cnt++;
             }
-            else if (Is_proper_container(curr) && !Is_mbag(curr))
+            else if (Is_proper_container(curr) && !Is_mbag(curr) && (objects[curr->otyp].oc_flags4 & (O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS | O4_CONTAINER_ACCEPTS_ONLY_WEAPONS)) == 0)
             {
                 cnt++;
             }

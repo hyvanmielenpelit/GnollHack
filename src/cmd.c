@@ -5788,7 +5788,7 @@ struct ext_func_tab extcmdlist[] = {
             enter_explore_mode, IFBURIED },
     { 'f', "fire", "fire ammunition from quiver", dofire, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_allowall, "fire" },
     { M('f'), "force", "force a lock", doforce, AUTOCOMPLETE | INCMDMENU },
-    { ';', "glance", "show what type of thing a map symbol corresponds to",
+    { '\'', "glance", "show what type of thing a map symbol corresponds to",
             doquickwhatis, IFBURIED | GENERALCMD },
     { M('g'), "genocided", "list genocided monsters",
             dogenocidedmonsters, IFBURIED },
@@ -5853,7 +5853,7 @@ struct ext_func_tab extcmdlist[] = {
     { C('p'), "prevmsg", "view recent game messages",
             doprev_message, IFBURIED | GENERALCMD },
     { 'P', "puton", "put on an accessory (ring, amulet, etc)", doputon, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_accessories, "put on", "put on" },
-    { M(15), "put2bag", "pick up things at the current location and stash them into a container", doput2bag, AUTOCOMPLETE },
+    { ';', "put2bag", "pick up things at the current location and stash them into a container", doput2bag },
     { 'q', "quaff", "quaff (drink) something", dodrink, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_beverages, "drink", "drink" },
     { M('q'), "quit", "exit without saving current game",
             done2, IFBURIED | AUTOCOMPLETE | GENERALCMD },
@@ -9605,8 +9605,8 @@ enum create_context_menu_types menu_type;
         if (showpickup)
         {
             add_context_menu(',', cmd_from_func(dopickup), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Pick Up", cxname(otmp), 0, NO_COLOR);
-            if(count_bags_for_stashing(invent, objcnt == 1 ? otmp : 0, FALSE) > 0)
-                add_context_menu(M(15), cmd_from_func(doput2bag), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Put into Bag", cxname(otmp), 0, NO_COLOR);
+            if(count_bags_for_stashing(invent, otmp, FALSE, TRUE) > 0)
+                add_context_menu(';', cmd_from_func(doput2bag), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Put into Bag", cxname(otmp), 0, NO_COLOR);
             boolean eat_added = FALSE;
             boolean loot_added = FALSE;
             for (otmp_here = otmp; otmp_here; otmp_here = otmp_here->nexthere)
