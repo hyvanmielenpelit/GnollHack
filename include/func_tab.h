@@ -21,6 +21,7 @@
 #define SINGLE_OBJ_CMD_INFO         0x0200 /* Displayed in inventory for single objects under info commands */
 #define CASUALMODECMD               0x0400 /* casual/explore/wizard-mode command */
 #define ALLOW_RETURN_TO_INVENTORY   0x0800 /* if invoked from inventory, return to inventory when done */
+#define ALLOW_RETURN_TO_CMD_MENU    0x1000 /* if invoked from inventory, return to cmd menu when done */
 
 struct ext_func_tab {
     uchar key;

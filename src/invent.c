@@ -4312,7 +4312,7 @@ boolean* return_to_inv_ptr;
         return 0;
 
     int res = 0;
-    boolean repeatmenu = FALSE;
+    boolean repeatmenu = FALSE, returntoinv = FALSE;
     xchar x = 0, y = 0;
     get_obj_location(otmp, &x, &y, CONTAINED_TOO | BURIED_TOO);
     int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
@@ -4523,6 +4523,7 @@ boolean* return_to_inv_ptr;
 
         res = 0;
         repeatmenu = FALSE;
+        returntoinv = FALSE;
         int selected_action = cmd_idx - 1;
         if (extcmdlist[selected_action].ef_funct && pickcnt != 0)
         {
@@ -4545,13 +4546,14 @@ boolean* return_to_inv_ptr;
 
             res = (extcmdlist[selected_action].ef_funct)();
             getobj_autoselect_obj = (struct obj*)0;
-            repeatmenu = (boolean)((extcmdlist[selected_action].flags & ALLOW_RETURN_TO_INVENTORY) != 0) && !res;
+            repeatmenu = (boolean)((extcmdlist[selected_action].flags & ALLOW_RETURN_TO_CMD_MENU) != 0) && !res;
+            returntoinv = (boolean)((extcmdlist[selected_action].flags & ALLOW_RETURN_TO_INVENTORY) != 0) && !res;
 
-            if (repeatmenu && otmpsplit && otmpsplit != otmp)
+            if ((repeatmenu || returntoinv) && otmpsplit && otmpsplit != otmp)
                 (void)merged(&otmp, &otmpsplit); /* Merge the split object back to the original */
 
             if (return_to_inv_ptr)
-                *return_to_inv_ptr = repeatmenu;
+                *return_to_inv_ptr = returntoinv;
         }
     } while (repeatmenu);
     return res;
@@ -4818,6 +4820,7 @@ boolean addinventoryheader, wornonly;
    }
 #endif
    /* Favorites */
+   boolean favorites_printed = FALSE;
    classcount = 0;
    for (srtinv = sortedinvent; (otmp = srtinv->obj) != 0; ++srtinv)
    {
@@ -4839,6 +4842,7 @@ boolean addinventoryheader, wornonly;
                MENU_UNSELECTED,
                menu_group_heading_info('\0'));
            classcount++;
+           favorites_printed = TRUE;
        }
        if (wizid)
            any.a_obj = otmp;
@@ -4889,7 +4893,7 @@ nextclass:
                     menu_group_heading_info(*invlet > ILLOBJ_CLASS && *invlet < MAX_OBJECT_CLASSES ? def_oc_syms[(int)(*invlet)].sym : '\0'));
                 classcount++;
             }
-            else if (!flags.sortpack && !classcount)
+            else if (!flags.sortpack && !classcount && favorites_printed)
             {
                 add_extended_menu(win, NO_GLYPH, &any,
                     0, 0, iflags.menu_headings, NO_COLOR,
