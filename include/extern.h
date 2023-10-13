@@ -639,6 +639,8 @@ E void FDECL(dropz, (struct obj *, BOOLEAN_P));
 E void FDECL(obj_no_longer_held, (struct obj *));
 E int NDECL(doddrop);
 E int NDECL(dodropmany);
+E int NDECL(doautostash);
+E int FDECL(autobag, (struct obj*));
 E int NDECL(dodown);
 E int NDECL(doup);
 #ifdef INSURANCE
@@ -2654,7 +2656,7 @@ E int FDECL(stash_obj_in_container, (struct obj*, struct obj*));
 E int FDECL(in_container, (struct obj *));
 E int FDECL(out_container, (struct obj *));
 #endif
-E void FDECL(auto_bag_in, (struct obj*, struct obj*, BOOLEAN_P));
+E int FDECL(auto_bag_in, (struct obj*, struct obj*, BOOLEAN_P));
 E int FDECL(count_bags_for_stashing, (struct obj*, struct obj*, BOOLEAN_P, BOOLEAN_P));
 E int FDECL(pickup, (int, BOOLEAN_P));
 E int FDECL(pickup_object, (struct obj *, long, BOOLEAN_P, BOOLEAN_P));

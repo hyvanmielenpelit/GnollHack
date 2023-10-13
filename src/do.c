@@ -19,6 +19,7 @@ STATIC_DCL boolean NDECL(teleport_sink);
 STATIC_DCL void FDECL(dosinkring, (struct obj *));
 STATIC_PTR int NDECL(wipeoff);
 STATIC_DCL int FDECL(menu_drop, (int));
+STATIC_DCL int FDECL(menu_autostash, (int));
 STATIC_DCL int NDECL(currentlevel_rewrite);
 STATIC_DCL void NDECL(final_level);
 STATIC_DCL void FDECL(print_corpse_properties, (winid, int));
@@ -5693,6 +5694,13 @@ register struct obj *obj;
     return 1;
 }
 
+int
+autobag(obj) /* To inventory */
+register struct obj* obj;
+{
+    return auto_bag_in(invent, obj, FALSE);
+}
+
 /* dropx - take dropped item out of inventory;
    called in several places - may produce output
    (eg ship_object() and dropy() -> sellobj() both produce output) */
@@ -6137,6 +6145,178 @@ int retry;
  drop_done:
     return n_dropped;
 }
+
+
+/* autostash command: stash several things automatically */
+int
+doautostash()
+{
+    int result = 0;
+
+    if (!invent) 
+    {
+        You("have nothing to stash.");
+        return 0;
+    }
+    if (!count_bags_for_stashing(invent, invent, FALSE, FALSE))
+    {
+        You("have no appropriate containers to stash your items into.");
+        return 0;
+    }
+    add_valid_menu_class(0); /* clear any classes already there */
+    if (flags.menu_style != MENU_TRADITIONAL
+        || (result = ggetobj("put in bag", autobag, 0, FALSE, (unsigned*)0, 3)) < -1)
+        result = menu_autostash(result);
+    if (result)
+        reset_occupations();
+
+    return result;
+}
+
+/* Drop things from the hero's inventory, using a menu. */
+STATIC_OVL int
+menu_autostash(retry)
+int retry;
+{
+    int n, i, n_autobagged = 0;
+    long cnt;
+    struct obj* otmp, * otmp2;
+    menu_item* pick_list = (menu_item*)0;
+    boolean all_categories = TRUE;
+    boolean autobag_everything = FALSE;
+
+    if (retry)
+    {
+        all_categories = (retry == -2);
+    }
+    else if (flags.menu_style == MENU_FULL)
+    {
+        all_categories = FALSE;
+        n = query_category("Put what type of items into bag?", invent,
+            UNPAID_TYPES | UNIDENTIFIED_TYPES | UNKNOWN_TYPES | ALL_TYPES | CHOOSE_ALL | BUC_BLESSED
+            | BUC_CURSED | BUC_UNCURSED | BUC_UNKNOWN,
+            &pick_list, PICK_ANY);
+        if (!n)
+            goto autobag_done;
+        for (i = 0; i < n; i++)
+        {
+            if (pick_list[i].item.a_int == ALL_TYPES_SELECTED)
+                all_categories = TRUE;
+            else if (pick_list[i].item.a_int == 'A')
+            {
+                if (ParanoidAutoSelectAll)
+                {
+                    if (yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "All Items Selected", "Are you sure to put all items into bag?") != 'y')
+                    {
+                        free((genericptr_t)pick_list);
+                        return 0;
+                    }
+                }
+
+                autobag_everything = TRUE;
+            }
+            else
+                add_valid_menu_class(pick_list[i].item.a_int);
+        }
+        free((genericptr_t)pick_list);
+    }
+    else if (flags.menu_style == MENU_COMBINATION)
+    {
+        unsigned ggoresults = 0;
+
+        all_categories = FALSE;
+        /* Gather valid classes via traditional GnollHack method */
+        i = ggetobj("put in bag", autobag, 0, TRUE, &ggoresults, 3);
+        if (i == -2)
+            all_categories = TRUE;
+        if (ggoresults & ALL_FINISHED)
+        {
+            n_autobagged = i;
+            goto autobag_done;
+        }
+    }
+
+    if (autobag_everything)
+    {
+        /*
+         * Dropping a burning potion of oil while levitating can cause
+         * an explosion which might destroy some of hero's inventory,
+         * so the old code
+         *      for (otmp = invent; otmp; otmp = otmp2) {
+         *          otmp2 = otmp->nobj;
+         *          n_autobagged += drop(otmp);
+         *      }
+         * was unreliable and could lead to an "object lost" panic.
+         *
+         * Use the bypass bit to mark items already processed (hence
+         * not autobaggable) and rescan inventory until no unbypassed
+         * items remain.
+         */
+        bypass_objlist(invent, FALSE); /* clear bypass bit for invent */
+        while ((otmp = nxt_unbypassed_obj(invent)) != 0)
+            n_autobagged += auto_bag_in(invent, otmp, FALSE);
+        /* we might not have autobagged everything (worn armor, welded weapon,
+           cursed loadstones), so reset any remaining inventory to normal */
+        bypass_objlist(invent, FALSE);
+    }
+    else
+    {
+        /* should coordinate with perm invent, maybe not show worn items */
+        n = query_objlist("What would you like to put in bag?", &invent,
+            (USE_INVLET | INVORDER_SORT), &pick_list, PICK_ANY,
+            all_categories ? allow_all : allow_category, 3);
+        if (n > 0 && pick_list)
+        {
+            /*
+             * picklist[] contains a set of pointers into inventory, but
+             * as soon as something gets autobagged, they might become stale
+             * (see the autobag_everything code above for an explanation).
+             * Just checking to see whether one is still in the invent
+             * chain is not sufficient validation since destroyed items
+             * will be freed and items we've split here might have already
+             * reused that memory and put the same pointer value back into
+             * invent.  Ditto for using invlet to validate.  So we start
+             * by setting bypass on all of invent, then check each pointer
+             * to verify that it is in invent and has that bit set.
+             */
+            bypass_objlist(invent, TRUE);
+            for (i = 0; i < n; i++)
+            {
+                otmp = pick_list[i].item.a_obj;
+                for (otmp2 = invent; otmp2; otmp2 = otmp2->nobj)
+                    if (otmp2 == otmp)
+                        break;
+                if (!otmp2 || !otmp2->bypass)
+                    continue;
+                /* found next selected invent item */
+                cnt = pick_list[i].count;
+                if (cnt < otmp->quan)
+                {
+                    if (welded(otmp, &youmonst))
+                    {
+                        ; /* don't split */
+                    }
+                    else if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && otmp->cursed)
+                    {
+                        /* same kludge as getobj(), for canletgo()'s use */
+                        otmp->corpsenm = (int)cnt; /* don't split */
+                    }
+                    else
+                    {
+                        otmp = splitobj(otmp, cnt);
+                    }
+                }
+                n_autobagged += auto_bag_in(invent, otmp, FALSE);
+            }
+            bypass_objlist(invent, FALSE); /* reset invent to normal */
+            free((genericptr_t)pick_list);
+        }
+    }
+
+autobag_done:
+    return n_autobagged;
+}
+
 
 /* on a ladder, used in goto_level */
 STATIC_VAR NEARDATA boolean at_ladder = FALSE;

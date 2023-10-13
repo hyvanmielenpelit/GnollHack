@@ -65,6 +65,8 @@ extern int NDECL(doextlist);          /**/
 extern int NDECL(enter_explore_mode); /**/
 extern int NDECL(dodrop);             /**/
 extern int NDECL(doddrop);            /**/
+extern int NDECL(dodropmany);         /**/
+extern int NDECL(doautostash);        /**/
 extern int NDECL(dodown);             /**/
 extern int NDECL(doup);               /**/
 extern int NDECL(donull);             /**/
@@ -5751,6 +5753,7 @@ struct ext_func_tab extcmdlist[] = {
             doattributes, IFBURIED | AUTOCOMPLETE },
     { '@', "autopickup", "toggle the pickup option on/off",
             dotogglepickup, IFBURIED },
+    { M(15), "autostash", "auto-stash specific item types", doautostash, AUTOCOMPLETE },
 #if defined (USE_TILES) && !defined(GNH_MOBILE)
     { M('b'), "bars", "toggle tile hit point bars on/off",
             dotogglehpbars, IFBURIED | AUTOCOMPLETE },

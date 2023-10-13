@@ -228,6 +228,7 @@ E const char ynaqchars[];
 E const char ynNaqchars[];
 E const char dnqchars[];
 E const char sdqchars[];
+E const char sadqchars[];
 
 E const char yndescs[];
 E const char ynqdescs[];
@@ -241,6 +242,7 @@ E const char bcqdescs[];
 E const char fnqdescs[];
 E const char dnqdescs[];
 E const char sdqdescs[];
+E const char sadqdescs[];
 
 E NEARDATA long yn_number;
 

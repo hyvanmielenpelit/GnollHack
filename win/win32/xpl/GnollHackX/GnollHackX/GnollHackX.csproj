@@ -84,6 +84,7 @@
     <None Remove="Assets\UI\arrow_upright.png" />
     <None Remove="Assets\UI\attributes.png" />
     <None Remove="Assets\UI\autopickup.png" />
+    <None Remove="Assets\UI\autostash.png" />
     <None Remove="Assets\UI\background-loading-screen.jpg" />
     <None Remove="Assets\UI\background-loading-screen.png" />
     <None Remove="Assets\UI\background-oldpaper.png" />
@@ -279,6 +280,7 @@
     <EmbeddedResource Include="Assets\gnollhack-logo-test-2.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-2.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits.png" />
+    <EmbeddedResource Include="Assets\UI\autostash.png" />
     <EmbeddedResource Include="Assets\UI\frame2-horizontal.png" />
     <EmbeddedResource Include="Assets\UI\frame2-topleft-small.png" />
     <EmbeddedResource Include="Assets\UI\frame2-topleft.png" />

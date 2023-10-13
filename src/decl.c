@@ -86,6 +86,7 @@ const char ynaqchars[] = "ynaq";
 const char ynNaqchars[] = "yn#aq";
 const char dnqchars[] = "dnq";
 const char sdqchars[] = "sdq";
+const char sadqchars[] = "sadq";
 
 const char yndescs[] = "Yes\nNo";
 const char ynqdescs[] = "Yes\nNo\nCancel";
@@ -96,6 +97,7 @@ const char ynaq3descs[] = "Yes\nNo\nAuto\nCancel";
 const char ynNaqdescs[] = "Yes\nNo\nCount\nAll\nCancel";
 const char dnqdescs[] = "Disarm\nNeglect\nCancel";
 const char sdqdescs[] = "Stash\nDrop\nNothing";
+const char sadqdescs[] = "Stash\nAuto\nDrop\nNothing";
 
 NEARDATA long yn_number = 0L;
 

@@ -929,7 +929,7 @@ struct obj* obj;
                     {
                     default:
                     case 'a':
-                        auto_bag_in(invent, obj, FALSE);
+                        (void)auto_bag_in(invent, obj, FALSE);
                         *do_auto_in_bag_ptr = TRUE;
                         break;
                     case 'y':
@@ -969,26 +969,35 @@ handle_knapsack_full(VOID_ARGS)
     if (cnt > 0)
     {
         /* Ask for putting things in a bag or drop items */
-        char ans = yn_function_es(YN_STYLE_KNAPSACK_FULL, ATR_NONE, CLR_MSG_ATTENTION, "Your Knapsack Is Full", "Stash items into a container or Drop them?", sdqchars, 'q', sdqdescs, (const char*)0);
-        if (ans == 's')
+        char ans = yn_function_es(YN_STYLE_KNAPSACK_FULL, ATR_NONE, CLR_MSG_ATTENTION, "Your Knapsack Is Full", "Stash items into a container or Drop them?", sadqchars, 'q', sadqdescs, (const char*)0);
+        switch (ans)
         {
-            struct obj* container = select_other_container(invent, (struct obj*)0, FALSE);
-            if (container)
+        case 's':
             {
-                current_container = container;
-                add_valid_menu_class(0); /* reset */
-                if (flags.menu_style == MENU_TRADITIONAL)
-                    more_action |= traditional_loot(1, (struct obj*)0, (struct obj*)0);
-                else
-                    more_action |= (menu_loot(0, 1, (struct obj*)0, (struct obj*)0) > 0);
-                add_valid_menu_class(0);
-                if (more_action)
-                    update_inventory();
+                struct obj* container = select_other_container(invent, (struct obj*)0, FALSE);
+                if (container)
+                {
+                    current_container = container;
+                    add_valid_menu_class(0); /* reset */
+                    if (flags.menu_style == MENU_TRADITIONAL)
+                        more_action |= traditional_loot(1, (struct obj*)0, (struct obj*)0);
+                    else
+                        more_action |= (menu_loot(0, 1, (struct obj*)0, (struct obj*)0) > 0);
+                    add_valid_menu_class(0);
+                    if (more_action)
+                        update_inventory();
+                }
+                break;
             }
-        }
-        else if (ans == 'd')
-        {
+        case 'a':
+            more_action = doautostash();
+            break;
+        case 'd':
             more_action = doddrop();
+            break;
+        case 'q':
+        default:
+            break;
         }
     }
     else
@@ -1925,18 +1934,18 @@ boolean telekinesis, do_auto_in_bag; /* not picking it up directly by hand */
     mrg_to_wielded = FALSE;
 
     if (do_auto_in_bag && obj && obj == oldobj)
-        auto_bag_in(invent, obj, FALSE);
+        (void)auto_bag_in(invent, obj, FALSE);
 
     return 1;
 }
 
-void
+int
 auto_bag_in(objchn_container, obj, bynexthere)
 struct obj* objchn_container, * obj;
 boolean bynexthere;
 {
     if (!objchn_container || !obj || Is_container(obj) || unfit_for_container(obj))
-        return;
+        return 0;
 
     struct obj* curr;
     struct obj* bag_of_holding = 0;
@@ -1992,7 +2001,7 @@ boolean bynexthere;
         num_choices++;
 
     if (!num_choices)
-        return;
+        return 0;
 
     boolean maybe_cancellation = (objects[obj->otyp].oc_name_known ? (objects[obj->otyp].oc_flags5 & O5_MBAG_DESTROYING_ITEM) != 0 : obj->oclass == WAND_CLASS);
     switch (flags.auto_bag_in_style)
@@ -2018,10 +2027,11 @@ boolean bynexthere;
         if (!used_container && bag_of_the_glutton && !maybe_cancellation)
             used_container = bag_of_the_glutton;
         if (used_container)
-            stash_obj_in_container(obj, used_container);
+            return stash_obj_in_container(obj, used_container);
         break;
     }
     }
+    return 0;
 }
 
 int
@@ -3678,7 +3688,7 @@ boolean dobot, do_auto_in_bag;
         delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
     }
     if (do_auto_in_bag && otmp && otmp == obj)
-        auto_bag_in(invent, otmp, FALSE);
+        (void)auto_bag_in(invent, otmp, FALSE);
     if (dobot && is_gold)
     {
         bot(); /* update character's gold piece count immediately */
