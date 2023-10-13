@@ -575,6 +575,9 @@ boolean do_auto_in_bag;
     boolean autopickup = what > 0;
     struct obj **objchain_p;
     int traverse_how;
+    struct obj* last_container = 0;
+    int container_cnt = count_other_containers(invent, (struct obj*)0, &last_container, FALSE);
+    struct obj* used_container = 0;
 
     /* we might have arrived here while fainted or sleeping, via
        random teleport or levitation timeout; if so, skip check_here
@@ -656,10 +659,6 @@ boolean do_auto_in_bag;
         n = autopick(*objchain_p, traverse_how, &pick_list);
         goto menu_pickup;
     }
-
-    struct obj* last_container = 0;
-    int container_cnt = count_other_containers(invent, (struct obj*)0, &last_container, FALSE);
-    struct obj* used_container = 0;
 
     if (flags.menu_style != MENU_TRADITIONAL || iflags.menu_requested) 
     {
