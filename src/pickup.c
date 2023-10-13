@@ -1380,7 +1380,6 @@ int how;               /* type of query */
     } else
         invlet = 'a';
 
-    info.menu_flags &= ~MENU_FLAGS_AUTO_CLICK_OK;
     do {
         collected_type_name = FALSE;
         for (curr = olist; curr; curr = FOLLOW(curr, qflags)) {
@@ -1391,6 +1390,10 @@ int how;               /* type of query */
                     any = zeroany;
                     any.a_int = curr->oclass;
                     info.num_items = count_objects_in_class(olist, curr->oclass, ofilter, (qflags & BY_NEXTHERE) != 0);
+                    if(ccount == 1)
+                        info.menu_flags |= MENU_FLAGS_AUTO_CLICK_OK;
+                    else
+                        info.menu_flags &= ~MENU_FLAGS_AUTO_CLICK_OK;
                     add_extended_menu(
                         win, NO_GLYPH, &any, invlet++,
                         def_oc_syms[(int) objects[curr->otyp].oc_class].sym,
@@ -1409,6 +1412,7 @@ int how;               /* type of query */
         }
     } while (*pack);
 
+    info.menu_flags &= ~MENU_FLAGS_AUTO_CLICK_OK;
     if (do_unpaid || do_unidentified || do_unknown || (qflags & BILLED_TYPES) || do_blessed || do_cursed
         || do_uncursed || do_buc_unknown) {
         any = zeroany;
