@@ -2752,7 +2752,10 @@ namespace GnollHackX.Pages.Game
                     res = "resource://" + GHApp.AppResourceName + ".Assets.UI.cancel.png";
                     break;
                 case 'a':
-                    res = "resource://" + GHApp.AppResourceName + ".Assets.UI.yestoall.png";
+                    if (desc == "Auto")
+                        res = "resource://" + GHApp.AppResourceName + ".Assets.UI.autostash.png";
+                    else
+                        res = "resource://" + GHApp.AppResourceName + ".Assets.UI.yestoall.png";
                     break;
                 case 'r':
                     res = "resource://" + GHApp.AppResourceName + ".Assets.UI.rightring.png";
