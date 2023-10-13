@@ -354,8 +354,12 @@ NEARDATA const char getobj_toss_objs[] = { ALLOW_COUNT, COIN_CLASS,
                                            ALL_CLASSES, WEAPON_CLASS, 0 };
 NEARDATA const char getobj_tippables[] = { ALL_CLASSES, TOOL_CLASS, 0 };
 NEARDATA const char getobj_zap_syms[] = { WAND_CLASS, 0 };
-NEARDATA const char getobj_mark_autostashs[] = { ALL_CLASSES,  TOOL_CLASS, 0 };
-NEARDATA const char getobj_unmark_autostashs[] = { ALL_CLASSES,  TOOL_CLASS, 0 };
+NEARDATA const char getobj_favorites[] = {
+    WEAPON_CLASS, ARMOR_CLASS,  POTION_CLASS,
+    SCROLL_CLASS, WAND_CLASS,   RING_CLASS,   AMULET_CLASS, MISCELLANEOUS_CLASS,
+    FOOD_CLASS,   REAGENT_CLASS,  TOOL_CLASS,   GEM_CLASS,   ART_CLASS,
+    ROCK_CLASS,      BALL_CLASS,   CHAIN_CLASS,  SPBOOK_CLASS, 0
+};
 
 /* originally from dog.c */
 NEARDATA char dogname[PL_PSIZ] = DUMMY;

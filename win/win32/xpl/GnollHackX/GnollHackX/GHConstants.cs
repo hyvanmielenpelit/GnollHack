@@ -1139,7 +1139,7 @@ namespace GnollHackX
         SPEFLAGS_INSCRIPTION_REVEALED          = 0x00800000UL,
         SPEFLAGS_ALTERNATIVE_APPEARANCE        = 0x01000000UL, /* Alternative glyph is used for the object */
         SPEFLAGS_ROTTING_STATUS_KNOWN          = 0x02000000UL,
-        SPEFLAGS_AUTOSTASH                     = 0x04000000UL,
+        SPEFLAGS_FAVORITE                     = 0x04000000UL,
         SPEFLAGS_EMPTY_NOTICED                 = 0x08000000UL,
         SPEFLAGS_BEING_BROKEN                  = 0x10000000UL,
         SPEFLAGS_GIVEN_OUT_BLUE_SMOKE          = 0x20000000UL,

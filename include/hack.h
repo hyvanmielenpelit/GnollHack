@@ -263,6 +263,7 @@ struct sortloot_item {
     xchar orderclass; /* order rather than object class; 0 => not yet init'd */
     xchar subclass; /* subclass for some classes */
     xchar disco; /* discovery status */
+    xchar favorite; /* favorite status */
 };
 typedef struct sortloot_item Loot;
 

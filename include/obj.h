@@ -87,7 +87,7 @@ struct obj {
 #define SPEFLAGS_INSCRIPTION_REVEALED          0x00800000UL
 #define SPEFLAGS_ALTERNATIVE_APPEARANCE        0x01000000UL /* Alternative glyph is used for the object */
 #define SPEFLAGS_ROTTING_STATUS_KNOWN          0x02000000UL
-#define SPEFLAGS_AUTOSTASH                     0x04000000UL
+#define SPEFLAGS_FAVORITE                      0x04000000UL
 #define SPEFLAGS_EMPTY_NOTICED                 0x08000000UL
 #define SPEFLAGS_BEING_BROKEN                  0x10000000UL
 #define SPEFLAGS_GIVEN_OUT_BLUE_SMOKE          0x20000000UL

@@ -933,7 +933,7 @@ struct obj* obj;
                         *do_auto_in_bag_ptr = TRUE;
                         break;
                     case 'y':
-                        *used_container_ptr = select_other_container(invent, (struct obj*)0, FALSE, FALSE);
+                        *used_container_ptr = select_other_container(invent, (struct obj*)0, FALSE);
                         if (*used_container_ptr)
                         {
                             if (!stash_obj_in_container(obj, *used_container_ptr))
@@ -972,7 +972,7 @@ handle_knapsack_full(VOID_ARGS)
         char ans = yn_function_es(YN_STYLE_KNAPSACK_FULL, ATR_NONE, CLR_MSG_ATTENTION, "Your Knapsack Is Full", "Stash items into a container or Drop them?", sdqchars, 'q', sdqdescs, (const char*)0);
         if (ans == 's')
         {
-            struct obj* container = select_other_container(invent, (struct obj*)0, FALSE, FALSE);
+            struct obj* container = select_other_container(invent, (struct obj*)0, FALSE);
             if (container)
             {
                 current_container = container;
@@ -4236,7 +4236,7 @@ struct obj* other_container;
         {
             move_target_container = (struct obj*)0;
             /* Select container here */
-            move_target_container = select_other_container(invent, applied_container, FALSE, FALSE);
+            move_target_container = select_other_container(invent, applied_container, FALSE);
             if (!move_target_container)
                 return 0;
         }
@@ -4256,7 +4256,7 @@ struct obj* other_container;
         {
             move_target_container = (struct obj*)0;
             /* Select container here */
-            move_target_container = select_other_container(level.objects[u.ux][u.uy], applied_container, TRUE, FALSE);
+            move_target_container = select_other_container(level.objects[u.ux][u.uy], applied_container, TRUE);
             if (!move_target_container)
                 return 0;
         }
@@ -4369,7 +4369,7 @@ struct obj* other_container UNUSED;
         {
             move_target_container = (struct obj*)0;
             /* Choose another container */
-            move_target_container = select_other_container(invent, applied_container, FALSE, FALSE);
+            move_target_container = select_other_container(invent, applied_container, FALSE);
             if (!move_target_container)
                 return 0;
         }
@@ -4384,7 +4384,7 @@ struct obj* other_container UNUSED;
         {
             move_target_container = (struct obj*)0;
             /* Choose another container */
-            move_target_container = select_other_container(level.objects[u.ux][u.uy], applied_container, TRUE, FALSE);
+            move_target_container = select_other_container(level.objects[u.ux][u.uy], applied_container, TRUE);
             if (!move_target_container)
                 return 0;
         }
@@ -5150,29 +5150,7 @@ dostash()
         return 0;
     }
 
-    /* Check auto-stashes */
-    struct obj* stash = 0;
-    struct obj* autostash = 0;
-    int autostashcount = 0;
-    for (stash = invent; stash; stash = stash->nobj)
-    {
-        if (Is_container(stash) && (stash->speflags & SPEFLAGS_AUTOSTASH) != 0)
-        {
-            autostash = stash;
-            autostashcount++;
-        }
-    }
-
-    struct obj* container = 0;
-    if (!autostashcount || !autostash)
-        container = select_other_container(invent, (struct obj*)0, FALSE, FALSE);
-    else if (autostashcount == 1)
-        container = autostash;
-    else
-    {
-        container = select_other_container(invent, (struct obj*)0, FALSE, TRUE);
-    }
-
+    struct obj* container = select_other_container(invent, (struct obj*)0, FALSE);
     if (!container)
     {
         pline1(Never_mind);
@@ -5215,8 +5193,7 @@ dostashfloor()
         return 0;
     }
 
-    struct obj* container = 0;
-    container = select_other_container(level.objects[u.ux][u.uy], (struct obj*)0, TRUE, FALSE);
+    struct obj* container = select_other_container(level.objects[u.ux][u.uy], (struct obj*)0, TRUE);
     if (!container)
     {
         pline1(Never_mind);

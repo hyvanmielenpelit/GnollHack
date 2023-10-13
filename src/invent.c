@@ -226,6 +226,7 @@ struct obj *obj;
           : (objects[otyp].oc_uname) ? 3 /* named (partially discovered) */
             : 2; /* undiscovered */
     sort_item->disco = (xchar) k;
+    sort_item->favorite = (obj->speflags & SPEFLAGS_FAVORITE) != 0;
 }
 
 /* sortloot() formatting routine; for alphabetizing, not shown to user */
@@ -346,6 +347,12 @@ const genericptr vptr2;
             loot_classify(sli1, obj1);
         if (!sli2->orderclass)
             loot_classify(sli2, obj2);
+
+        /* Sort by favorite descending. */
+        val1 = sli1->favorite;
+        val2 = sli2->favorite;
+        if (val1 != val2)
+            return (int)(val2 - val1);
 
         /* Sort by class. */
         val1 = sli1->orderclass;
@@ -534,14 +541,14 @@ boolean FDECL((*filterfunc), (OBJ_P));
             continue;
         sliarray[i].obj = o, sliarray[i].indx = (int) i;
         sliarray[i].str = (char *) 0;
-        sliarray[i].orderclass = sliarray[i].subclass = sliarray[i].disco = 0;
+        sliarray[i].orderclass = sliarray[i].subclass = sliarray[i].disco = sliarray[i].favorite = 0;
         ++i;
     }
     n = i;
     /* add a terminator so that we don't have to pass 'n' back to caller */
     sliarray[n].obj = (struct obj *) 0, sliarray[n].indx = -1;
     sliarray[n].str = (char *) 0;
-    sliarray[n].orderclass = sliarray[n].subclass = sliarray[n].disco = 0;
+    sliarray[n].orderclass = sliarray[n].subclass = sliarray[n].disco = sliarray[i].favorite = 0;
 
     /* do the sort; if no sorting is requested, we'll just return
        a sortloot_item array reflecting the current ordering */
@@ -3115,10 +3122,10 @@ struct obj* otmp_only;
                     && (otmp->owornmask & (W_ARMOR | W_ACCESSORY | W_MISCITEMS) || Is_container(otmp) || !can_stash_objs()))
                 || (!strcmp(word, "stash into a container on the floor") /* exclude worn items and other containers */
                     && (otmp->owornmask & (W_ARMOR | W_ACCESSORY | W_MISCITEMS) || Is_container(otmp) || !can_floor_stash_objs()))
-                || (!strcmp(word, "mark as auto-stash") /* exclude not a container or already auto-stash */
-                    && (!(Is_proper_container(otmp) || (Is_container(otmp) && !objects[otmp->otyp].oc_name_known)) || (otmp->speflags & SPEFLAGS_AUTOSTASH) != 0))
-                || (!strcmp(word, "unmark as auto-stash") /* exclude if not an auto-stash */
-                    && ((otmp->speflags & SPEFLAGS_AUTOSTASH) == 0))
+                || (!strcmp(word, "mark as favorite") /* exclude already a favorite */
+                    && (otmp->speflags & SPEFLAGS_FAVORITE))
+                || (!strcmp(word, "unmark as favorite") /* exclude if not a favorite */
+                    && !(otmp->speflags & SPEFLAGS_FAVORITE))
                 || (putting_on(word) /* exclude if already worn */
                     && (otmp->owornmask & (W_ARMOR | W_ACCESSORY | W_MISCITEMS)))
                 || (trading_items(word) /* exclude if already worn and unpaid items */
@@ -4810,6 +4817,52 @@ boolean addinventoryheader, wornonly;
            "", MENU_UNSELECTED);
    }
 #endif
+   /* Favorites */
+   classcount = 0;
+   for (srtinv = sortedinvent; (otmp = srtinv->obj) != 0; ++srtinv)
+   {
+       if (lets && !index(lets, otmp->invlet))
+           continue;
+       if (wornonly && !otmp->owornmask)
+           continue;
+       if (!(otmp->speflags & SPEFLAGS_FAVORITE))
+           continue;
+       if (wizid && !not_fully_identified(otmp))
+           continue;
+       any = zeroany; /* all bits zero */
+       ilet = otmp->invlet;
+       if (!classcount)
+       {
+           add_extended_menu(win, NO_GLYPH, &any,
+               0, 0, iflags.menu_headings, NO_COLOR,
+               "Favorites",
+               MENU_UNSELECTED,
+               menu_group_heading_info('\0'));
+           classcount++;
+       }
+       if (wizid)
+           any.a_obj = otmp;
+       else
+           any.a_char = ilet;
+
+       /*calculate weight sum here*/
+       if (otmp->otyp == LOADSTONE && !loadstonecorrectly)
+           wtcount += objects[LUCKSTONE].oc_weight;
+       else
+           wtcount += otmp->owt;
+
+       char applied_class_accelerator = wizid ? def_oc_syms[(int)otmp->oclass].sym : 0;
+
+       int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
+       int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
+       add_extended_menu(win, gui_glyph, &any, ilet,
+           applied_class_accelerator, ATR_NONE, NO_COLOR,
+           show_weights > 0 ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply)
+               : doname_with_weight_first(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply))
+           : doname_with_flags(otmp, iflags.perm_invent && !want_reply ? DONAME_HIDE_REMAINING_LIT_TURNS : 0), MENU_UNSELECTED, obj_to_extended_menu_info(otmp));
+   }
+
+   /* Others by class */
 nextclass:
     classcount = 0;
     for (srtinv = sortedinvent; (otmp = srtinv->obj) != 0; ++srtinv) 
@@ -4818,7 +4871,9 @@ nextclass:
             continue;
         if (wornonly && !otmp->owornmask)
             continue;
-        if (!flags.sortpack || otmp->oclass == *invlet) 
+        if (otmp->speflags & SPEFLAGS_FAVORITE)
+            continue;
+        if (!flags.sortpack || otmp->oclass == *invlet)
         {
             if (wizid && !not_fully_identified(otmp))
                 continue;
@@ -4834,6 +4889,16 @@ nextclass:
                     menu_group_heading_info(*invlet > ILLOBJ_CLASS && *invlet < MAX_OBJECT_CLASSES ? def_oc_syms[(int)(*invlet)].sym : '\0'));
                 classcount++;
             }
+            else if (!flags.sortpack && !classcount)
+            {
+                add_extended_menu(win, NO_GLYPH, &any,
+                    0, 0, iflags.menu_headings, NO_COLOR,
+                    "Items",
+                    MENU_UNSELECTED,
+                    menu_group_heading_info('\0'));
+                classcount++;
+            }
+
             if (wizid)
                 any.a_obj = otmp;
             else

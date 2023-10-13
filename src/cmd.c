@@ -5958,8 +5958,8 @@ struct ext_func_tab extcmdlist[] = {
     { C('y'), "yell", "yell for your companions",
             doyell, IFBURIED | AUTOCOMPLETE | INCMDMENU },
     { 'z', "zap", "zap a wand", dozap, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_zap_syms, "zap" },
-    { M(8), "markautostash", "mark a container as auto-stash", domarkautostash, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_mark_autostashs, "mark as auto-stash", "mark as auto-stash"  },
-    { M(9), "unmarkautostash", "unmark a container as auto-stash", dounmarkautostash, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_unmark_autostashs, "unmark as auto-stash", "unmark as auto-stash" },
+    { M(8), "favorite", "mark an item as favorite", dofavorite, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_favorites, "mark as favorite", "mark as favorite"  },
+    { M(9), "unfavorite", "unmark an item as favorite", dounfavorite, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_favorites, "unmark as favorite", "unmark as favorite" },
     { 'Z', "cast", "cast a spell", docast, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
     { 'X', "mix", "prepare a spell from material components",
             domix, AUTOCOMPLETE | INSPELLMENU },
@@ -9646,49 +9646,50 @@ enum create_context_menu_types menu_type;
 }
 
 int
-domarkautostash(VOID_ARGS)
+dofavorite(VOID_ARGS)
 {
-    struct obj* obj = getobj(getobj_mark_autostashs, "mark as auto-stash", 0, "");
+    struct obj* obj = getobj(getobj_favorites, "mark as favorite", 0, "");
     if (!obj)
         return 0;
 
-    if (obj && (Is_proper_container(obj) || (Is_container(obj) && !objects[obj->otyp].oc_name_known)))
+    if (obj->oclass != COIN_CLASS)
     {
-        if (obj->speflags & SPEFLAGS_AUTOSTASH)
+        if (obj->speflags & SPEFLAGS_FAVORITE)
         {
-            pline("%s is already an auto-stash.", The(cxname(obj)));
+            pline("%s is already a favorite.", The(cxname(obj)));
         }
         else
         {
-            obj->speflags |= SPEFLAGS_AUTOSTASH;
-            pline("%s is now marked as an auto-stash.", The(cxname(obj)));
+            obj->speflags |= SPEFLAGS_FAVORITE;
+            pline("%s is now marked as a favorite.", The(cxname(obj)));
+            update_inventory();
         }
     }
     else
     {
-        pline("%s is not an auto-stashable item.", The(cxname(obj)));
+        pline("%s is not an item that can be marked as a favorite.", The(cxname(obj)));
     }
 
     return 0;
 }
 
 int
-dounmarkautostash(VOID_ARGS)
+dounfavorite(VOID_ARGS)
 {
-    struct obj* obj = getobj(getobj_unmark_autostashs, "unmark as auto-stash", 0, "");
+    struct obj* obj = getobj(getobj_favorites, "unmark as favorite", 0, "");
     if (!obj)
         return 0;
 
-    if (!(obj->speflags & SPEFLAGS_AUTOSTASH))
+    if (!(obj->speflags & SPEFLAGS_FAVORITE))
     {
-        pline("%s is not an auto-stash.", The(cxname(obj)));
+        pline("%s is not a favorite.", The(cxname(obj)));
     }
     else
     {
-        obj->speflags &= ~SPEFLAGS_AUTOSTASH;
-        pline("%s was unmarked as an auto-stash.", The(cxname(obj)));
+        obj->speflags &= ~SPEFLAGS_FAVORITE;
+        pline("%s was unmarked as a favorite.", The(cxname(obj)));
+        update_inventory();
     }
-
     return 0;
 }
 

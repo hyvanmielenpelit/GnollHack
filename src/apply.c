@@ -6106,11 +6106,10 @@ boolean usenexthere;
 }
 
 struct obj*
-select_other_container(objchain, this_container, usenexthere, useonlyautostashes)
+select_other_container(objchain, this_container, usenexthere)
 struct obj* objchain;
 struct obj* this_container;
 boolean usenexthere;
-boolean useonlyautostashes;
 {
     if (!objchain)
     {
@@ -6129,8 +6128,7 @@ boolean useonlyautostashes;
         if (cnt >= 52)
             break;
 
-        if ((Is_proper_container(otmp) || (Is_container(otmp) && !objects[otmp->otyp].oc_name_known)) && otmp != this_container && !otmp->olocked
-            && (!useonlyautostashes || (otmp->speflags & SPEFLAGS_AUTOSTASH)))
+        if ((Is_proper_container(otmp) || (Is_container(otmp) && !objects[otmp->otyp].oc_name_known)) && otmp != this_container && !otmp->olocked)
         {
             anything any = zeroany;
             any.a_obj = otmp;
