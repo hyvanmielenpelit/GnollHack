@@ -4941,8 +4941,10 @@ nextclass:
         add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
                  "Special", MENU_UNSELECTED, menu_heading_info());
         any.a_char = '*';
-        add_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR,
-                 "(list everything)", MENU_UNSELECTED);
+        struct extended_menu_info info = zeroextendedmenuinfo;
+        info.menu_flags |= MENU_FLAGS_AUTO_CLICK_OK;
+        add_extended_menu(win, NO_GLYPH, &any, '*', 0, ATR_NONE, NO_COLOR,
+                 "(list everything)", MENU_UNSELECTED, info);
     }
     unsortloot(&sortedinvent);
     /* for permanent inventory where we intend to show everything but

@@ -1349,7 +1349,7 @@ int how;               /* type of query */
     win = create_nhwindow(NHW_MENU);
     start_menu_ex(win, GHMENU_STYLE_PICK_CATEGORY_LIST);
     pack = flags.inv_order;
-    struct extended_menu_info info = { 0 };
+    struct extended_menu_info info = zeroextendedmenuinfo;
     info.menu_flags |= MENU_FLAGS_USE_NUM_ITEMS;
 
     if (qflags & CHOOSE_ALL) {

@@ -353,7 +353,7 @@ NEARDATA const char getobj_readable[] = { ALL_CLASSES, SCROLL_CLASS,
 NEARDATA const char getobj_cuddly[] = { TOOL_CLASS, GEM_CLASS, 0 };
 
 NEARDATA const char getobj_toss_objs[] = { ALLOW_COUNT, COIN_CLASS,
-                                           ALL_CLASSES, WEAPON_CLASS, 0 };
+                                           ALL_CLASSES, WEAPON_CLASS, GEM_CLASS, 0 };
 NEARDATA const char getobj_tippables[] = { ALL_CLASSES, TOOL_CLASS, 0 };
 NEARDATA const char getobj_zap_syms[] = { WAND_CLASS, 0 };
 NEARDATA const char getobj_favorites[] = {

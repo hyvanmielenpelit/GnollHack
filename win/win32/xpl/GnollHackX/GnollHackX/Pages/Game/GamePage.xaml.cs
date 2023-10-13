@@ -3236,6 +3236,18 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.AllowHighlight = true;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
+                    MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
+                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;
+                    MenuBackground.BorderStyle = BorderStyles.Simple;
+                    MenuCanvas.RevertBlackAndWhite = true;
+                    MenuCanvas.UseTextOutline = false;
+                    MenuCanvas.HideMenuLetters = false;
+                    MenuCanvas.MenuButtonStyle = false;
+                    MenuCanvas.ClickOKOnSelection = false;
+                    MenuCanvas.MenuGlyphAtBottom = false;
+                    MenuCanvas.AllowLongTap = true;
+                    MenuCanvas.AllowHighlight = true;
+                    break;
                 default:
                     MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
                     MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;
@@ -13197,16 +13209,16 @@ namespace GnollHackX.Pages.Game
                     if (MenuCanvas.MenuItems[idx].DrawBounds.Contains(p))
                     {
                         GHMenuItem mi = MenuCanvas.MenuItems[idx];
-                        if (mi.Identifier != 0)
+                        if (mi.Identifier != 0 && (mi.IsAutoClickOk || MenuCanvas.ClickOKOnSelection))
                         {
                             if (MenuCanvas.SelectionHow == SelectionMode.Multiple)
                             {
-                                if(!MenuCanvas.MenuItems[idx].Selected && MenuCanvas.MenuItems[idx].IsAutoClickOk)
-                                    MenuCanvas.MenuItems[idx].Highlighted = true;
+                                if(!mi.Selected)
+                                    mi.Highlighted = true;
                             }
                             else if (MenuCanvas.SelectionHow == SelectionMode.Single)
                             {
-                                MenuCanvas.MenuItems[idx].Highlighted = true;
+                                mi.Highlighted = true;
                             }
                         }
                         break;
@@ -13281,7 +13293,7 @@ namespace GnollHackX.Pages.Game
                                 if(!MenuOKButton.IsEnabled)
                                     MenuOKButton.IsEnabled = true;
 
-                                if (MenuCanvas.ClickOKOnSelection)
+                                if (MenuCanvas.MenuItems[idx].IsAutoClickOk || MenuCanvas.ClickOKOnSelection)
                                     doclickok = true;
                             }
                         }

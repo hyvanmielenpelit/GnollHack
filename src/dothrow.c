@@ -21,7 +21,7 @@ STATIC_DCL void FDECL(sho_obj_return_to_u, (struct obj * obj));
 STATIC_DCL boolean FDECL(mhurtle_step, (genericptr_t, int, int));
 
 STATIC_VAR NEARDATA const char toss_objs[] = { ALLOW_COUNT, COIN_CLASS,
-                                           ALL_CLASSES, WEAPON_CLASS, 0 };
+                                           ALL_CLASSES, WEAPON_CLASS, GEM_CLASS, 0 };
 /* different default choices when wielding a sling (gold must be included) */
 STATIC_VAR NEARDATA const char bullets[] = { ALLOW_COUNT, COIN_CLASS, ALL_CLASSES,
                                          GEM_CLASS, WEAPON_CLASS, 0 };
