@@ -349,9 +349,9 @@ LibSaveAndRestoreSavedGame(void)
         save_currentstate(); /* In the case save fails */
 #endif
         int saveres = dosave0(TRUE);
+        issue_simple_gui_command(GUI_CMD_WAIT_FOR_RESUME);
         if (saveres)
         {
-            issue_simple_gui_command(GUI_CMD_WAIT_FOR_RESUME);
             exit_hack_code = 1; /* reload upon exit */
             u.uhp = -1; /* universal game's over indicator */
             /* make sure they see the Saving message */
