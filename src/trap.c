@@ -7362,7 +7362,7 @@ boolean nocorpse;
         {
             int xx = mon->mx, yy = mon->my;
 
-            monkilled(mon, "", AD_PHYS, XKILL_NOCORPSE);
+            monkilled(mon, "", AD_PHYS, nocorpse ? XKILL_NOCORPSE : 0);
             if (DEADMONSTER(mon)) 
             {
                 newsym(xx, yy);
