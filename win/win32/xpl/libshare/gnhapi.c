@@ -339,11 +339,28 @@ LibSaveAndRestoreSavedGame(void)
         && !program_state.exiting && !program_state.freeing_dynamic_data
         && !saving && !restoring && !reseting && !check_pointing)
     {
+        /* Reset certain animations so they do not play upon loading */
+        reset_monster_origin_coordinates(&youmonst);
+        reset_all_monster_origin_coordinates();
+        reset_all_object_origin_coordinates();
+        reset_found_this_turn();
+
 #ifdef INSURANCE
-        save_currentstate();
+        save_currentstate(); /* In the case save fails */
 #endif
-        issue_simple_gui_command(GUI_CMD_WAIT_FOR_RESUME);
-        /* Already in the right state */
+        int saveres = dosave0(TRUE);
+        if (saveres)
+        {
+            issue_simple_gui_command(GUI_CMD_WAIT_FOR_RESUME);
+            exit_hack_code = 1; /* reload upon exit */
+            u.uhp = -1; /* universal game's over indicator */
+            /* make sure they see the Saving message */
+            display_nhwindow(WIN_MESSAGE, TRUE);
+            exit_nhwindows((char*)0);
+            nh_terminate(EXIT_SUCCESS);
+        }
+        else
+            (void)doredraw();
     }
 }
 

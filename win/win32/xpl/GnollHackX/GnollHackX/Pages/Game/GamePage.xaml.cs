@@ -15080,7 +15080,7 @@ namespace GnollHackX.Pages.Game
 
         public void StopWaitAndResumeSavedGame()
         {
-            if (_currentGame != null && GHApp.GameSaved)
+            if (_currentGame != null)
             {
                 ConcurrentQueue<GHResponse> queue;
                 if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
