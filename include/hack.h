@@ -547,6 +547,10 @@ extern short tile2enlargement[MAX_TILES];
 #define XKILL_NOCORPSE  2
 #define XKILL_NOCONDUCT 4
 #define XKILL_DROPDEAD  8
+#define XKILL_DISINTEGRATED  16
+#define XKILL_STONED  32
+#define XKILL_DIGESTED  64
+
 
 /* pline_flags; mask values for custompline()'s first argument */
 /* #define PLINE_ORDINARY 0 */

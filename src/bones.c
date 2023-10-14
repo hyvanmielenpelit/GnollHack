@@ -491,7 +491,7 @@ make_bones:
             && !(Inhell && mptr == &mons[PM_DEMOGORGON])
             && !(Inhell && mptr == &mons[PM_ASMODEUS])
             )
-            || mtmp->iswiz || mptr == &mons[PM_MEDUSA]
+            || mtmp->iswiz || is_medusa(mptr)
             || mptr->msound == MS_NEMESIS || mptr->msound == MS_LEADER
             || mptr == &mons[PM_VLAD_THE_IMPALER]
             || (mptr == &mons[PM_ORACLE] && !fixuporacle(mtmp)))

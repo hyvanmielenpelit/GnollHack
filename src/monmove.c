@@ -162,7 +162,7 @@ struct monst* mon;
                 if(is_peaceful(mon) && (special_talk || (!is_undead(mon->data) && !is_demon(mon->data) && !In_endgame(&u.uz) && !Is_sanctum(&u.uz)
                     && !mon->isshk && !mon->isgd && !mon->ispriest && !mon->issmith && !mon->isnpc && !is_watch(mon->data) && !is_mercenary(mon->data)
                     && !is_lord(mon->data) && !is_prince(mon->data) && mon->m_lev < 10
-                    && !(mon->iswiz || mon->data == &mons[PM_MEDUSA] || (mon->data->geno & G_UNIQ) != 0
+                    && !(mon->iswiz || is_medusa(mon->data) || (mon->data->geno & G_UNIQ) != 0
                         || mon->data->msound == MS_NEMESIS || mon->data->msound == MS_LEADER || mon->data->msound == MS_ORACLE
                         || mon->data->msound == MS_GUARDIAN || mon->data->msound == MS_BRIBE
                         || mon->data == &mons[PM_VLAD_THE_IMPALER] || mon->data == &mons[PM_ALEAX]
@@ -808,7 +808,7 @@ register struct monst *mtmp;
     if (mdat->msound == MS_SHRIEK && !um_dist(mtmp->mx, mtmp->my, 1))
         m_respond(mtmp);
 
-    if (mdat == &mons[PM_MEDUSA] && couldsee(mtmp->mx, mtmp->my))
+    if (is_medusa(mdat) && couldsee(mtmp->mx, mtmp->my))
         m_respond(mtmp);
 
     if (DEADMONSTER(mtmp))
@@ -953,7 +953,7 @@ register struct monst *mtmp;
                 deduct_monster_hp(m2, adjust_damage(rnd(15), mtmp, m2, AD_PSIO, ADFLAGS_NONE));
                 //m2->mhp -= rnd(15);
                 if (DEADMONSTER(m2))
-                    monkilled(m2, "", AD_DRIN);
+                    monkilled(m2, "", AD_DRIN, 0);
                 else
                 {
                     if (m2->msleeping)

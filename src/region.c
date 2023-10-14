@@ -1111,7 +1111,7 @@ genericptr_t p2;
                 if (heros_fault(reg))
                     killed(mtmp);
                 else
-                    monkilled(mtmp, "gas cloud", AD_DRST);
+                    monkilled(mtmp, "gas cloud", AD_DRST, 0);
 
                 if (DEADMONSTER(mtmp)) 
                 { /* not lifesaved */

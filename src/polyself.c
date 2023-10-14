@@ -2087,7 +2087,7 @@ dogaze()
                          * works on the monster's turn, but for it to *not* have an
                          * effect would be too weird.
                          */
-                        if (mtmp->data == &mons[PM_MEDUSA] && !is_cancelled(mtmp)) 
+                        if (is_medusa(mtmp->data) && !is_cancelled(mtmp))
                         {
                             pline("Gazing at the awake %s is not a very good idea.",
                                 l_monnam(mtmp));

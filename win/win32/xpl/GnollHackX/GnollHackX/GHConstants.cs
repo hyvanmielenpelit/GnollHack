@@ -295,6 +295,7 @@ namespace GnollHackX
         LMFLAGS_SHARK_ANIMATION =           0x10000000UL,
         LMFLAGS_HUMAN_BREATHE_ANIMATION =   0x20000000UL,
         LMFLAGS_ANIMAL_BREATHE_ANIMATION =  0x40000000UL,
+        LMFLAGS_STONED =                    0x80000000UL,
     }
 
     [Flags]

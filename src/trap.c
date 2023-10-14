@@ -3404,11 +3404,8 @@ register struct monst *mtmp;
                 deduct_monster_hp(mtmp, adjust_damage(dmgval2, (struct monst*)0, mtmp, AD_MAGM, ADFLAGS_NONE));
 
                 if (DEADMONSTER(mtmp))
-                    monkilled(mtmp,
-                              in_sight
-                                  ? "compression from an anti-magic field"
-                                  : (const char *) 0,
-                              -AD_MAGM);
+                    monkilled(mtmp, in_sight ? "compression from an anti-magic field" : (const char *) 0,
+                              AD_MAGM, 0);
                 if (DEADMONSTER(mtmp))
                     trapkilled = TRUE;
                 if (see_it)
@@ -3640,8 +3637,7 @@ boolean byplayer;
     if (cansee(mon->mx, mon->my))
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s turns to stone.", Monnam(mon));
     if (byplayer) {
-        stoned = TRUE;
-        xkilled(mon, XKILL_NOMSG);
+        xkilled(mon, XKILL_NOMSG | XKILL_STONED);
     } else
         monstone(mon);
 }
@@ -7366,7 +7362,7 @@ boolean nocorpse;
         {
             int xx = mon->mx, yy = mon->my;
 
-            monkilled(mon, "", nocorpse ? -AD_RBRE : AD_PHYS);
+            monkilled(mon, "", AD_PHYS, XKILL_NOCORPSE);
             if (DEADMONSTER(mon)) 
             {
                 newsym(xx, yy);

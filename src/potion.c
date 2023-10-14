@@ -2588,7 +2588,7 @@ do_illness: /* Pestilence's potion of healing effect */
                     if (your_fault)
                         killed(mon);
                     else
-                        monkilled(mon, "", AD_ACID);
+                        monkilled(mon, "", AD_ACID, 0);
                 }
             }
             break;

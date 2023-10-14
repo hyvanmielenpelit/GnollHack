@@ -252,7 +252,6 @@ reset_global_variables(VOID_ARGS)
     tbx = tby = 0;
     defer_see_monsters = FALSE;
     in_mklev = FALSE;
-    stoned = FALSE; /* done to monsters hit by 'c' */
     unweapon1 = FALSE;
     unweapon2 = FALSE;
     mrg_to_wielded = FALSE;

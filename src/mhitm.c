@@ -962,7 +962,7 @@ struct attack *mattk;
         return MM_MISS;
     }
     /* call mon_reflects 2x, first test, then, if visible, print message */
-    if (magr->data == &mons[PM_MEDUSA] && mon_reflects(mdef, (char *) 0))
+    if (is_medusa(magr->data) && mon_reflects(mdef, (char *) 0))
     {
         if (canseemon(mdef))
         {
@@ -1210,7 +1210,7 @@ struct attack *mattk;
     {
         boolean was_leashed = (magr->mleashed != 0);
 
-        mondead_with_flags(magr, MONDIED_FLAGS_NO_DEATH_ACTION);
+        mondead_with_flags(magr, MONDEAD_FLAGS_NO_DEATH_ACTION);
         if (!DEADMONSTER(magr))
             return result; /* life saved */
         result |= MM_AGR_DIED;
@@ -1308,7 +1308,7 @@ register struct obj* omonwep;
     damage += adjust_damage(magr->mdaminc, magr, mdef, increase_damage_adtyp, ADFLAGS_NONE);
 
     if ((touch_petrifies(pd) /* or flesh_petrifies() */
-         || (mattk->adtyp == AD_DGST && pd == &mons[PM_MEDUSA]))
+         || (mattk->adtyp == AD_DGST && is_medusa(pd)))
         && !resists_ston(magr)) 
     {
         /* Note: no cancellation applies because the mon touches the petrifying creature by attacking bare handed */
@@ -2230,7 +2230,7 @@ register struct obj* omonwep;
         if (isdisintegrated)
             disintegrate_mon(mdef, -1, mweapon ? xname(mweapon) : mon_nam(magr));
         else
-            monkilled(mdef, "", (int) mattk->adtyp);
+            monkilled(mdef, "", (int) mattk->adtyp, 0);
 
         if (!DEADMONSTER(mdef))
             return res; /* mdef lifesaved */
@@ -2684,7 +2684,7 @@ assess_dmg:
 
         if (magr->mhp <= 0)
         {
-            monkilled(magr, "", (int) mddat->mattk[i].adtyp);
+            monkilled(magr, "", (int) mddat->mattk[i].adtyp, 0);
             update_m_action_core(mdef, action_before, 1, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
             return (mdead | mhit | MM_AGR_DIED);
         }

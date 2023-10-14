@@ -1418,7 +1418,7 @@ struct obj *obj;
         if (vis)
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s doesn't have a reflection.", Monnam(mtmp));
     }
-    else if (monable && mtmp->data == &mons[PM_MEDUSA]) 
+    else if (monable && is_medusa(mtmp->data))
     {
         if (mon_reflects(mtmp, "The gaze is reflected away by %s %s!"))
         {
@@ -1429,8 +1429,7 @@ struct obj *obj;
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is turned to stone!", Monnam(mtmp));
 
         play_sfx_sound_at_location(SFX_PETRIFY, mtmp->mx, mtmp->my);
-        stoned = TRUE;
-        killed(mtmp);
+        killed_by_stoning(mtmp);
     } 
     else if (monable && mtmp->data == &mons[PM_FLOATING_EYE]) 
     {

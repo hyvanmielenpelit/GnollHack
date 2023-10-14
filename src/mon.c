@@ -14,7 +14,7 @@
 #include "mfndpos.h"
 #include <ctype.h>
 
-STATIC_VAR boolean vamp_rise_msg, disintegested;
+STATIC_VAR boolean vamp_rise_msg;
 
 STATIC_DCL void FDECL(sanity_check_single_mon, (struct monst *, BOOLEAN_P,
                                                 const char *));
@@ -3247,12 +3247,16 @@ register struct monst* mtmp;
 }
 
 void
-mondead_with_flags(mtmp, mdiedflags)
+mondead_with_flags(mtmp, mondeadflags)
 register struct monst *mtmp;
-unsigned long mdiedflags;
+unsigned long mondeadflags;
 {
     struct permonst *mptr;
     int tmp;
+    boolean disintegrated = (mondeadflags & MONDEAD_FLAGS_DISINTEGRATED) != 0;
+    boolean disgested = (mondeadflags & MONDEAD_FLAGS_DIGESTED) != 0;
+    boolean stoned = (mondeadflags & MONDEAD_FLAGS_STONED) != 0;
+    boolean disintegested = disintegrated || disgested || (mondeadflags & MONDEAD_FLAGS_GENERIC_NO_CORPSE) != 0;
 
     reset_monster_origin_coordinates(mtmp);
     mtmp->mhp = 0; /* in case caller hasn't done this */
@@ -3368,9 +3372,9 @@ unsigned long mdiedflags;
     if (mtmp->isgd && !grddead(mtmp))
         return;
 
-    if (!(mdiedflags & MONDIED_FLAGS_NO_DEATH_ACTION))
+    if (!(mondeadflags & MONDEAD_FLAGS_NO_DEATH_ACTION))
     {
-        add_glyph_buffer_layer_flags(mtmp->mx, mtmp->my, 0UL, LMFLAGS_KILLED);
+        add_glyph_buffer_layer_flags(mtmp->mx, mtmp->my, 0UL, LMFLAGS_KILLED | (disintegrated ? LMFLAGS_FADES_UPON_DEATH : 0UL) | (stoned ? LMFLAGS_STONED : 0UL));
         update_m_action_core(mtmp, ACTION_TILE_DEATH, 4, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
         m_wait_until_action();
     }
@@ -3443,7 +3447,7 @@ unsigned long mdiedflags;
         wizdead();
     if (mtmp->data->msound == MS_NEMESIS)
         nemdead();
-    if (mtmp->data == &mons[PM_MEDUSA])
+    if (is_medusa(mtmp->data))
     {
         if (flags.showscore && !u.uachieve.killed_medusa)
             context.botl = 1;
@@ -3532,12 +3536,12 @@ unsigned long mdiedflags;
     if (glyph_is_invisible(levl[mtmp->mx][mtmp->my].hero_memory_layers.glyph))
         unmap_object(mtmp->mx, mtmp->my);
 
-    if (!(mdiedflags & MONDIED_FLAGS_NO_DEATH_ACTION))
+    if (!(mondeadflags & MONDEAD_FLAGS_NO_DEATH_ACTION))
     {
         m_wait_until_end();
     }
 
-    remove_glyph_buffer_layer_flags(mtmp->mx, mtmp->my, 0UL, LMFLAGS_KILLED);
+    remove_glyph_buffer_layer_flags(mtmp->mx, mtmp->my, 0UL, LMFLAGS_KILLED | LMFLAGS_STONED);
     mtmp->action = ACTION_TILE_NO_ACTION;
 
     m_detach(mtmp, mptr, TRUE);
@@ -3642,7 +3646,7 @@ boolean was_swallowed; /* digestion */
 
 /* drop (perhaps) a cadaver and remove monster */
 void
-mondied(mdef)
+mondied(mdef) /* mondead + perhaps make a corpse */
 register struct monst *mdef;
 {
     mondead(mdef);
@@ -3782,7 +3786,7 @@ struct monst *mdef;
      * could */
     if (u.uswallow && u.ustuck == mdef)
         wasinside = TRUE;
-    mondead(mdef);
+    mondead_with_flags(mdef, MONDEAD_FLAGS_STONED);
     if (wasinside) {
         if (is_animal(mdef->data))
             You("%s through an opening in the new %s.",
@@ -3792,13 +3796,12 @@ struct monst *mdef;
 
 /* another monster has killed the monster mdef */
 void
-monkilled(mdef, fltxt, how)
+monkilled(mdef, fltxt, adtyp, xkill_flags)
 struct monst *mdef;
 const char *fltxt;
-int how;
+int adtyp, xkill_flags;
 {
     boolean be_sad = FALSE; /* true if unseen pet is killed */
-
     if ((mdef->wormno ? worm_known(mdef) : cansee(mdef->mx, mdef->my))
         && fltxt)
     {
@@ -3810,17 +3813,16 @@ int how;
         be_sad = (is_tame(mdef) != 0);
 
     /* no corpses if digested or disintegrated */
-    disintegested = (how == AD_DGST || how == -AD_RBRE);
-
+    boolean disintegested = adtyp == AD_DGST || (xkill_flags & (XKILL_NOCORPSE | XKILL_DISINTEGRATED | XKILL_DIGESTED)) != 0; // (how == AD_DGST || how == -AD_RBRE);
     boolean is_transforming_vampshifter = mdef->cham >= LOW_PM && is_vampshifter(mdef) && mdef->cham != mdef->mnum
         && !(mvitals[mdef->cham].mvflags & MV_GENOCIDED);
 
     if (!disintegested && !is_transforming_vampshifter)
         play_simple_monster_sound(mdef, MONSTER_SOUND_TYPE_DEATH);
 
-    if (disintegested)
-        mondead(mdef);
-    else
+    if (disintegested)  /* No corpse by calling just mondead; disintegration should go to disintegrate_mon */
+        mondead_with_flags(mdef, (xkill_flags & XKILL_DISINTEGRATED) ? MONDEAD_FLAGS_DISINTEGRATED : (xkill_flags & XKILL_DIGESTED) ? MONDEAD_FLAGS_DIGESTED : MONDEAD_FLAGS_GENERIC_NO_CORPSE);
+    else /* Make corpse */
         mondied(mdef);
 
     if (be_sad && DEADMONSTER(mdef))
@@ -3860,6 +3862,20 @@ struct monst *mtmp;
     xkilled(mtmp, XKILL_GIVEMSG);
 }
 
+void
+killed_by_stoning(mtmp)
+struct monst* mtmp;
+{
+    xkilled(mtmp, XKILL_GIVEMSG | XKILL_STONED);
+}
+
+void
+killed_by_disintegration(mtmp)
+struct monst* mtmp;
+{
+    xkilled(mtmp, XKILL_GIVEMSG | XKILL_DISINTEGRATED);
+}
+
 /* the player has killed the monster mtmp */
 void
 xkilled(mtmp, xkill_flags)
@@ -3876,7 +3892,9 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
             nomsg = (xkill_flags & XKILL_NOMSG) != 0,
             dropdead = (xkill_flags & XKILL_DROPDEAD) != 0,
             nocorpse = (xkill_flags & XKILL_NOCORPSE) != 0,
-            noconduct = (xkill_flags & XKILL_NOCONDUCT) != 0;
+            noconduct = (xkill_flags & XKILL_NOCONDUCT) != 0,
+            stoned = (xkill_flags & XKILL_STONED) != 0,
+            disintegrated = (xkill_flags & XKILL_DISINTEGRATED) != 0;
 
     if(!nomsg && !stoned)
         play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_DEATH);
@@ -3956,13 +3974,11 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
     }
 
     vamp_rise_msg = FALSE; /* might get set in mondead(); only checked below */
-    disintegested = nocorpse; /* alternate vamp_rise message needed if true */
     /* dispose of monster and make cadaver */
     if (stoned)
         monstone(mtmp);
     else
-        mondead(mtmp);
-    disintegested = FALSE; /* reset */
+        mondead_with_flags(mtmp, (disintegrated ? MONDEAD_FLAGS_DISINTEGRATED : 0UL) | (nocorpse ? MONDEAD_FLAGS_GENERIC_NO_CORPSE : 0UL));
 
     /* shopkeeper adds lost money in debit bill in the case heor she is revived */
     if (mtmp->isshk && has_eshk(mtmp))
@@ -3976,7 +3992,6 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
          * lifesaved_monster() since the message appears only when _you_
          * kill it (as opposed to visible lifesaving which always appears).
          */
-        stoned = FALSE;
         if (!cansee(x, y) && !vamp_rise_msg)
             pline("Maybe not...");
         return;
@@ -3988,10 +4003,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
     mndx = mtmp->mnum;
 
     if (stoned) 
-    {
-        stoned = FALSE;
         goto cleanup;
-    }
 
     if (nocorpse || LEVEL_SPECIFIC_NOCORPSE(mdat))
         goto cleanup;
@@ -4431,10 +4443,9 @@ struct monst *mtmp;
         }
         aggravate();
     }
-    if (mtmp->data == &mons[PM_MEDUSA])
+    if (is_medusa(mtmp->data))
     {
         register int i;
-
         for (i = 0; i < NATTK; i++)
             if (mtmp->data->mattk[i].aatyp == AT_GAZE)
             {
@@ -6728,7 +6739,7 @@ boolean override_mextra, polyspot, msg;
 void
 reset_mon(VOID_ARGS)
 {
-    vamp_rise_msg = disintegested = 0;
+    vamp_rise_msg = 0;
 }
 
 

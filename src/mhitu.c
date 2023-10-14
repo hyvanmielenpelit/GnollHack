@@ -765,7 +765,7 @@ register struct monst *mtmp;
                     first_attack = FALSE;
                 }
                 update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : mattk->aatyp == AT_KICK ? ACTION_TILE_KICK : ACTION_TILE_ATTACK);
-                play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
+                play_monster_attack_sound(mtmp, i, OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
                 if (foundyou)
                 {
@@ -799,7 +799,7 @@ register struct monst *mtmp;
                 }
 
                 update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
-                play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
+                play_monster_attack_sound(mtmp, i, OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
                 sum[i] = hitmu(mtmp, mattk, (struct obj*)0);
                 update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
@@ -809,7 +809,7 @@ register struct monst *mtmp;
         case AT_GAZE: /* can affect you either ranged or not */
             /* Medusa gaze already operated through m_respond in
                dochug(); don't gaze more than once per round. */
-            if (mdat != &mons[PM_MEDUSA])
+            if (is_medusa(mdat))
             {
                 if (first_attack)
                 {
@@ -818,7 +818,7 @@ register struct monst *mtmp;
                 }
 
                 update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
-                play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
+                play_monster_attack_sound(mtmp, i, OBJECT_SOUND_TYPE_FIRE);
                 m_wait_until_action();
                 sum[i] = gazemu(mtmp, mattk);
                 update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
@@ -835,7 +835,7 @@ register struct monst *mtmp;
                 }
 
                 update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
-                play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
+                play_monster_attack_sound(mtmp, i, OBJECT_SOUND_TYPE_FIRE);
                 m_wait_until_action();
                 sum[i] = explmu(mtmp, mattk, foundyou);
                 update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
@@ -853,7 +853,7 @@ register struct monst *mtmp;
                 if (foundyou)
                 {
                     update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
-                    play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
+                    play_monster_attack_sound(mtmp, i, OBJECT_SOUND_TYPE_SWING_MELEE);
                     m_wait_until_action();
                     if (u.uswallow
                         || (!mtmp->mspec_used && tmp > (j = rnd(20 + i)))) {
@@ -3728,7 +3728,7 @@ boolean ufound;
                 if (!Hallucination)
                     You_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "are caught in a blast of kaleidoscopic light!");
                 /* avoid hallucinating the black light as it dies */
-                mondead_with_flags(mtmp, MONDIED_FLAGS_NO_DEATH_ACTION);    /* remove it from map now */
+                mondead_with_flags(mtmp, MONDEAD_FLAGS_NO_DEATH_ACTION);    /* remove it from map now */
                 kill_agr = FALSE; /* already killed (maybe lifesaved) */
                 chg =
                     make_hallucinated(HHallucination + (long)basedmg, FALSE, 0L);
@@ -3752,7 +3752,7 @@ boolean ufound;
         }
     }
     if (kill_agr)
-        mondead_with_flags(mtmp, MONDIED_FLAGS_NO_DEATH_ACTION);
+        mondead_with_flags(mtmp, MONDEAD_FLAGS_NO_DEATH_ACTION);
     wake_nearto(mtmp->mx, mtmp->my, 7 * 7);
     
     if (spef_idx < MAX_SPECIAL_EFFECTS)
@@ -3813,17 +3813,15 @@ struct attack *mattk;
             if (!canseemon(mtmp))
                 break; /* silently */
             pline("%s %s.", Monnam(mtmp),
-                  (mtmp->data == &mons[PM_MEDUSA] && is_cancelled(mtmp))
+                  (is_medusa(mtmp->data) && is_cancelled(mtmp))
                       ? "doesn't look all that ugly"
                       : "gazes ineffectually");
             break;
         }
-        if (Reflecting && couldsee(mtmp->mx, mtmp->my)
-            && mtmp->data == &mons[PM_MEDUSA]) 
+        if (Reflecting && couldsee(mtmp->mx, mtmp->my) && is_medusa(mtmp->data))
         {
             /* hero has line of sight to Medusa and she's not blind */
             boolean useeit = canseemon(mtmp);
-
             if (useeit)
             {
                 play_sfx_sound(SFX_GENERAL_REFLECTS);
@@ -3852,8 +3850,7 @@ struct attack *mattk;
                 display_m_being_hit(mtmp, HIT_PETRIFIED, 0, 0UL, FALSE);
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is turned to stone!", Monnam(mtmp));
             }
-            stoned = TRUE;
-            killed(mtmp);
+            killed_by_stoning(mtmp);
 
             if (!DEADMONSTER(mtmp))
                 break;
@@ -4650,8 +4647,7 @@ struct attack *mattk;
             play_sfx_sound_at_location(SFX_PETRIFY, mtmp->mx, mtmp->my);
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s turns to stone!", Monnam(mtmp));
             display_m_being_hit(mtmp, HIT_PETRIFIED, 0, 0UL, FALSE);
-            stoned = 1;
-            xkilled(mtmp, XKILL_NOMSG);
+            xkilled(mtmp, XKILL_NOMSG | XKILL_STONED);
             update_u_action_core(action_before, 1, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
             if (!DEADMONSTER(mtmp))
                 return 1;

@@ -1744,7 +1744,7 @@ boolean verbose;
 boolean thrown;
 {
     /* The Wiz, Medusa and the quest nemeses aren't even made peaceful. */
-    if (!mtmp || mtmp->iswiz || mtmp->data == &mons[PM_MEDUSA]
+    if (!mtmp || mtmp->iswiz || is_medusa(mtmp->data)
         || (mtmp->data->mflags3 & M3_WANTSARTI))
         return FALSE;
 

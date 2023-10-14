@@ -182,7 +182,7 @@ struct obj *obj;
         //mon->mhp -= dam;
         if (DEADMONSTER(mon))
         {
-            monkilled(mon, "", AD_RBRE);
+            monkilled(mon, "", AD_RBRE, 0);
             return 1;
         }
         m.has_defense = m.has_offense = m.has_misc = 0;
@@ -3810,7 +3810,7 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
                           is_not_living(mon->data) ? "destroyed" : "killed");
                 xkilled(mon, XKILL_NOMSG | XKILL_NOCONDUCT);
             } else
-                monkilled(mon, "fire", AD_FIRE);
+                monkilled(mon, "fire", AD_FIRE, 0);
         } 
         else 
         {

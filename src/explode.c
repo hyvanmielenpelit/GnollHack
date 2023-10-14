@@ -642,9 +642,7 @@ int expltype;
                     } 
                     else 
                     {
-                        if (xkflg)
-                            adtyp = AD_RBRE; /* no corpse */
-                        monkilled(mtmp, "", (int) adtyp);
+                        monkilled(mtmp, "", (int) adtyp, xkflg);
                     }
                 }
                 else if (!context.mon_moving) 

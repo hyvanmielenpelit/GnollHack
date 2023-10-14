@@ -147,7 +147,6 @@ NEARDATA coord inv_pos = { 0, 0 };
 
 NEARDATA boolean defer_see_monsters = FALSE;
 NEARDATA boolean in_mklev = FALSE;
-NEARDATA boolean stoned = FALSE; /* done to monsters hit by 'c' */
 NEARDATA boolean unweapon1 = FALSE;
 NEARDATA boolean unweapon2 = FALSE;
 NEARDATA boolean mrg_to_wielded = FALSE;

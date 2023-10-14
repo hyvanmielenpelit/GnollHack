@@ -17712,6 +17712,15 @@ enum object_sound_types sound_type;
 }
 
 void
+play_monster_attack_sound(mtmp, attack_number, sound_type)
+struct monst* mtmp;
+int attack_number;
+enum object_sound_types sound_type;
+{
+    play_monster_simple_weapon_sound(mtmp, attack_number, (struct obj*)0, sound_type);
+}
+
+void
 play_monster_attack_floor_sound(mtmp, attack_number, sound_type)
 struct monst* mtmp;
 int attack_number;

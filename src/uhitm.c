@@ -3539,9 +3539,7 @@ register struct attack *mattk;
 
         /* engulfing a cockatrice or digesting a Rider or Medusa */
         fatal_gulp = (touch_petrifies(pd) && !Stone_resistance)
-                     || (mattk->adtyp == AD_DGST
-                         && (is_rider(pd) || (pd == &mons[PM_MEDUSA]
-                                              && !Stone_resistance)));
+                     || (mattk->adtyp == AD_DGST && (is_rider(pd) || (is_medusa(pd) && !Stone_resistance)));
 
         if ((mattk->adtyp == AD_DGST && !Slow_digestion) || fatal_gulp)
             eating_conducts(pd);
@@ -4735,12 +4733,12 @@ int dmg;
 {
     pline("%s %s!", Monnam(mon),
           (dmg > mon->mhp / 2) ? "wails in agony" : "cries out in pain");
-    deduct_monster_hp(mon, adjust_damage(dmg, (struct monst*)0, mon, AD_PHYS, ADFLAGS_NONE));
+    deduct_monster_hp(mon, adjust_damage(dmg, (struct monst*)0, mon, AD_BLND, ADFLAGS_NONE));
     wake_nearto(mon->mx, mon->my, 30);
     remove_monster_and_nearby_waitforu(mon);
     if (DEADMONSTER(mon)) {
         if (context.mon_moving)
-            monkilled(mon, (char *) 0, AD_BLND);
+            monkilled(mon, (char *) 0, AD_BLND, 0);
         else
             killed(mon);
     } else if (cansee(mon->mx, mon->my) && !canspotmon(mon)) {

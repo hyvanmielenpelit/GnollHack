@@ -876,7 +876,8 @@
 
 #define emitted_light_range(ptr) ((ptr)->lightrange)
 #define touch_petrifies(ptr) (((ptr)->mflags1 & M1_TOUCH_PETRIFIES) != 0)
-#define flesh_petrifies(ptr) (touch_petrifies(ptr) || (ptr) == &mons[PM_MEDUSA])
+#define is_medusa(ptr) ((ptr) == &mons[PM_MEDUSA])
+#define flesh_petrifies(ptr) (touch_petrifies(ptr) || is_medusa(ptr))
 #define is_vampire(ptr) ((ptr)->mlet == S_VAMPIRE)
 
 #define mon_ambient_sound(ptr) get_monster_ambient_sound_id((ptr)->soundset)//((ptr)->soundset <= MONSTER_SOUNDSET_NONE ? GHSOUND_NONE : monster_soundsets[(ptr)->soundset].sounds[MONSTER_SOUND_TYPE_AMBIENT].ghsound < MAX_GHSOUNDS ? monster_soundsets[(ptr)->soundset].sounds[MONSTER_SOUND_TYPE_AMBIENT].ghsound : GHSOUND_NONE)

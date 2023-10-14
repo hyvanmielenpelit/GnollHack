@@ -642,8 +642,12 @@ enum context_menu_styles {
 #define MKOBJ_FLAGS_PARAM_IS_MNUM                      0x00010000
 #define MKOBJ_FLAGS_FOUND_THIS_TURN                    0x00020000
 
-#define MONDIED_FLAGS_NONE                             0x00000000
-#define MONDIED_FLAGS_NO_DEATH_ACTION                  0x00000001
+#define MONDEAD_FLAGS_NONE                             0x00000000
+#define MONDEAD_FLAGS_NO_DEATH_ACTION                  0x00000001
+#define MONDEAD_FLAGS_DISINTEGRATED                    0x00000002
+#define MONDEAD_FLAGS_STONED                           0x00000004
+#define MONDEAD_FLAGS_DIGESTED                         0x00000008
+#define MONDEAD_FLAGS_GENERIC_NO_CORPSE                0x00000010
 
 #define DONAME_WITH_PRICE                   0x0001
 #define DONAME_VAGUE_QUAN                   0x0002

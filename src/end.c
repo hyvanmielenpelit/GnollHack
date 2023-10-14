@@ -1363,7 +1363,7 @@ int how;
 
     if (how < PANICKED)
     {
-        add_glyph_buffer_layer_flags(u.ux, u.uy, 0UL, LMFLAGS_KILLED);
+        add_glyph_buffer_layer_flags(u.ux, u.uy, 0UL, LMFLAGS_KILLED | (how == STONING ? LMFLAGS_STONED : 0UL));
         update_u_action(ACTION_TILE_DEATH);
         if(how != STONING && how != DISINTEGRATION)
             play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_DEATH);
@@ -1501,14 +1501,14 @@ int how;
         killer.hint_idx = 0;
         if (how < PANICKED)
         {
-            remove_glyph_buffer_layer_flags(u.ux, u.uy, 0UL, LMFLAGS_KILLED);
+            remove_glyph_buffer_layer_flags(u.ux, u.uy, 0UL, LMFLAGS_KILLED | LMFLAGS_STONED);
             update_u_action_revert(ACTION_TILE_NO_ACTION);
         }
         return;
     }
 
     /* Just in case revert to normal without updating screen */
-    remove_glyph_buffer_layer_flags(u.ux, u.uy, 0UL, LMFLAGS_KILLED);
+    remove_glyph_buffer_layer_flags(u.ux, u.uy, 0UL, LMFLAGS_KILLED | LMFLAGS_STONED);
     u.action = ACTION_TILE_NO_ACTION;
 
     really_done(how);

@@ -1299,7 +1299,7 @@ cure_petrification_here:
             if (DEADMONSTER(mtmp))
             {
                 if (m_using)
-                    monkilled(mtmp, "", AD_RBRE);
+                    monkilled(mtmp, "", AD_RBRE, 0);
                 else
                     killed(mtmp);
             }
@@ -7101,7 +7101,7 @@ int duration;
                 if (youattack)
                     killed(mdef);
                 else
-                    monkilled(mdef, "", AD_SPEL);
+                    monkilled(mdef, "", AD_SPEL, 0);
             }
         }
     }
@@ -9242,9 +9242,9 @@ const char *fltxt;
     }
 
     if (type < 0)
-        monkilled(mon, (char*)0, -AD_RBRE);
+        monkilled(mon, (char*)0, AD_DISN, XKILL_NOCORPSE | XKILL_DISINTEGRATED);
     else
-        xkilled(mon, XKILL_NOMSG | XKILL_NOCORPSE);
+        xkilled(mon, XKILL_NOMSG | XKILL_NOCORPSE | XKILL_DISINTEGRATED);
 }
 
 void
@@ -9599,7 +9599,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                         if (type < 0)
                         {
                             /* mon has just been killed by another monster */
-                            monkilled(mon, fltxt, AD_RBRE);
+                            monkilled(mon, fltxt, AD_RBRE, 0);
                         } 
                         else 
                         {
@@ -11251,7 +11251,7 @@ int dmg, adtyp, tell;
             if (DEADMONSTER(mtmp))
             {
                 if (m_using)
-                    monkilled(mtmp, "", AD_RBRE);
+                    monkilled(mtmp, "", AD_RBRE, 0);
                 else
                     killed(mtmp);
             }
@@ -11307,7 +11307,7 @@ int dmg, adtyp, tell;
             if (DEADMONSTER(mtmp))
             {
                 if (m_using)
-                    monkilled(mtmp, "", AD_RBRE);
+                    monkilled(mtmp, "", AD_RBRE, 0);
                 else
                     killed(mtmp);
             }

@@ -17,6 +17,7 @@ using System.Text.RegularExpressions;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
+using static Xamarin.Essentials.Permissions;
 
 #if GNH_MAUI
 using GnollHackX;
@@ -4194,7 +4195,8 @@ namespace GnollHackX.Pages.Game
                 }
 
                 /* Death transparency */
-                if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) != 0
+                if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) != 0 
+                    && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_STONED) == 0
                     && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) != 0)
                 {
                     opaqueness = opaqueness * ((float)(20L - Math.Min(20L, generalcounterdiff))) / 20;
@@ -4270,7 +4272,8 @@ namespace GnollHackX.Pages.Game
             if (is_monster_like_layer)
             {
                 if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) != 0
-                && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) == 0)
+                    && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_STONED) == 0
+                    && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) == 0)
                 {
                     if (enlargement > 0)
                     {
@@ -4493,7 +4496,8 @@ namespace GnollHackX.Pages.Game
             if (is_monster_like_layer)
             {
                 if ((layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_KILLED) != 0
-                && (layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) == 0)
+                    && (layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_STONED) == 0
+                    && (layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_FADES_UPON_DEATH) == 0)
                 {
                     /* Death rotation */
                     float rotateheight = 0.5f * height * dscaley; //((float)(enlargement > 0 ? GHApp._enlargementDefs[enlargement].height_in_tiles - 1 : 0) * -0.5f + 0.75f)
