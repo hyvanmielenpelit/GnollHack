@@ -182,7 +182,7 @@ struct obj *obj;
         //mon->mhp -= dam;
         if (DEADMONSTER(mon))
         {
-            monkilled(mon, "", AD_RBRE, 0);
+            monkilled(mon, "", AD_MAGM, 0);
             return 1;
         }
         m.has_defense = m.has_offense = m.has_misc = 0;

@@ -3404,8 +3404,7 @@ register struct monst *mtmp;
                 deduct_monster_hp(mtmp, adjust_damage(dmgval2, (struct monst*)0, mtmp, AD_MAGM, ADFLAGS_NONE));
 
                 if (DEADMONSTER(mtmp))
-                    monkilled(mtmp, in_sight ? "compression from an anti-magic field" : (const char *) 0,
-                              AD_MAGM, 0);
+                    monkilled(mtmp, in_sight ? "compression from an anti-magic field" : (const char *) 0, AD_MAGM, 0);
                 if (DEADMONSTER(mtmp))
                     trapkilled = TRUE;
                 if (see_it)
@@ -7362,7 +7361,7 @@ boolean nocorpse;
         {
             int xx = mon->mx, yy = mon->my;
 
-            monkilled(mon, "", AD_PHYS, nocorpse ? XKILL_NOCORPSE : 0);
+            monkilled(mon, "", obj ? objects[obj->otyp].oc_damagetype : AD_PHYS, nocorpse ? XKILL_NOCORPSE : 0);
             if (DEADMONSTER(mon)) 
             {
                 newsym(xx, yy);

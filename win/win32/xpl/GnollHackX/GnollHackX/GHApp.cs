@@ -28,6 +28,10 @@ namespace GnollHackX
             GetDependencyServices();
             PlatformService.InitializePlatform();
 
+            _batteryChargeLevel = Battery.ChargeLevel;
+            _batteryChargeLevelTimeStamp = DateTime.Now;
+            Battery.BatteryInfoChanged += Battery_BatteryInfoChanged;
+
             InitBaseTypefaces();
             InitializeCachedBitmaps();
 
@@ -56,6 +60,44 @@ namespace GnollHackX
             CopyStreamingBankToDisk = Preferences.Get("CopyStreamingBankToDisk", GHConstants.DefaultCopyStreamingBankToDisk);
 
             BackButtonPressed += EmptyBackButtonPressed;
+        }
+
+        private static double _batteryChargeLevel = -1;
+        private static double _previousBatteryChargeLevel = -1;
+        private static DateTime _batteryChargeLevelTimeStamp;
+        private static DateTime _previousBatteryChargeLevelTimeStamp;
+        private static readonly object _batteryLock = new object();
+
+        private static void Battery_BatteryInfoChanged(object sender, BatteryInfoChangedEventArgs e)
+        {
+            lock (_batteryLock)
+            {
+                _previousBatteryChargeLevel = _batteryChargeLevel;
+                _previousBatteryChargeLevelTimeStamp = _batteryChargeLevelTimeStamp;
+                _batteryChargeLevel = e.ChargeLevel;
+                _batteryChargeLevelTimeStamp = DateTime.Now;
+            }
+        }
+
+        public static double BatteryChargeLevel {  get { lock (_batteryLock) { return _batteryChargeLevel * 100.0; } } }
+        public static double BatteryConsumption
+        { 
+            get
+            { 
+                lock (_batteryLock)
+                {
+                    if(_batteryChargeLevel < 0 || _previousBatteryChargeLevel < 0)
+                        return 0;
+                    TimeSpan ts = _batteryChargeLevelTimeStamp - _previousBatteryChargeLevelTimeStamp;
+                    double ms = ts.TotalMilliseconds;
+                    if (ms > 0)
+                    {
+                        return (_previousBatteryChargeLevel - _batteryChargeLevel) * 100.0 * 1000.0 * 60.0 * 60.0 / ms;
+                    }
+                    else
+                        return 0;
+                } 
+            } 
         }
 
 #if GNH_MAUI

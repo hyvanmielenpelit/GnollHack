@@ -501,6 +501,8 @@ namespace GnollHackX.Pages.Game
         }
         public StackLayout UsedButtonRowStack { get { return UseSimpleCmdLayout ? SimpleButtonRowStack : ButtonRowStack; } }
 
+        public bool ShowBattery { get; set; }
+
         public bool ShowFPS { get; set; }
         private double _fps;
         private long _counterValueDiff;
@@ -699,6 +701,7 @@ namespace GnollHackX.Pages.Game
             GraphicsStyle = (GHGraphicsStyle)Preferences.Get("GraphicsStyle", 1);
             MapRefreshRate = (MapRefreshRateStyle)Preferences.Get("MapRefreshRate", (int)UIUtils.GetDefaultMapFPS());
             ShowFPS = Preferences.Get("ShowFPS", false);
+            ShowBattery = Preferences.Get("ShowBattery", false);
             UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", GHApp.IsGPUDefault);
             UseSimpleCmdLayout = Preferences.Get("UseSimpleCmdLayout", true);
             ShowMemoryUsage = Preferences.Get("ShowMemoryUsage", false);
@@ -997,7 +1000,6 @@ namespace GnollHackX.Pages.Game
                     if (_stopWatch.IsRunning)
                         _stopWatch.Stop();
                 }
-
                 return IsGameOn;
             });
 
@@ -3198,6 +3200,7 @@ namespace GnollHackX.Pages.Game
                 case ghmenu_styles.GHMENU_STYLE_CHARACTER:
                 case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL:
                 case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
+                case ghmenu_styles.GHMENU_STYLE_CHAT:                    
                     MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
                     MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;
                     MenuCanvas.RevertBlackAndWhite = true;
@@ -3568,6 +3571,22 @@ namespace GnollHackX.Pages.Game
                     textPaint.Color = SKColors.Black.WithAlpha(128);
                     float textmargin = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                     SKRect bkrect = new SKRect(xText - textmargin, 5.0f - textmargin, xText + textWidth + textmargin, 5.0f - textmargin + textPaint.FontSpacing);
+                    canvas.DrawRect(bkrect, textPaint);
+                    textPaint.Color = SKColors.Yellow;
+                    canvas.DrawText(str, xText, yText, textPaint);
+                }
+
+                if (ShowBattery)
+                {
+                    str = "Battery: " + string.Format("{0:0.0}", GHApp.BatteryChargeLevel) + "%" + ", " + string.Format("{0:0.0}", GHApp.BatteryConsumption);
+                    textPaint.Typeface = GHApp.LatoBold;
+                    textPaint.TextSize = 26;
+                    textWidth = textPaint.MeasureText(str, ref textBounds);
+                    yText = -textPaint.FontMetrics.Ascent + 5.0f + (ShowFPS ? textPaint.FontSpacing : 0) + (ShowMemoryUsage ? textPaint.FontSpacing : 0);
+                    xText = canvaswidth - textWidth - 5.0f;
+                    textPaint.Color = SKColors.Black.WithAlpha(128);
+                    float textmargin = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                    SKRect bkrect = new SKRect(xText - textmargin, yText + textPaint.FontMetrics.Ascent - textmargin, xText + textWidth + textmargin, yText + textPaint.FontMetrics.Ascent - textmargin + textPaint.FontSpacing);
                     canvas.DrawRect(bkrect, textPaint);
                     textPaint.Color = SKColors.Yellow;
                     canvas.DrawText(str, xText, yText, textPaint);

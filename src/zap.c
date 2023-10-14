@@ -1287,7 +1287,7 @@ cure_petrification_here:
             dmg = d(48, 6);
             context.bypasses = TRUE; /* for make_corpse() */
             int hp_before = mtmp->mhp;
-            deduct_monster_hp(mtmp, dmg);
+            deduct_monster_hp(mtmp, adjust_damage(dmg, &youmonst, mtmp, AD_CLRC, ADFLAGS_SPELL_DAMAGE));
             int hp_after = mtmp->mhp;
 
             int damagedealt = hp_before - hp_after;
@@ -1299,7 +1299,7 @@ cure_petrification_here:
             if (DEADMONSTER(mtmp))
             {
                 if (m_using)
-                    monkilled(mtmp, "", AD_RBRE, 0);
+                    monkilled(mtmp, "", AD_CLRC, 0);
                 else
                     killed(mtmp);
             }
@@ -8427,7 +8427,7 @@ uchar* out_flags_ptr;
 {
     double damage = 0;
     int dmg = 0;
-    register int abstype = abs(type) % 10;
+    register int abstype = abs(type) % NUM_ZAP;
     boolean sho_shieldeff = FALSE;
     boolean sho_hit_eff = TRUE;
     boolean sleep_eff = FALSE;
@@ -9197,7 +9197,7 @@ const char* fltxt;
 void //STATIC_OVL 
 disintegrate_mon(mon, type, fltxt)
 struct monst *mon;
-int type; /* hero vs other */ /* 100 == disintegrate just items and caller takes care of the killing and messaging*/
+int type; /* hero vs other */ /* 100 == disintegrate just items and caller takes care of the killing and messaging */
 const char *fltxt;
 {
     if (!mon)
@@ -9242,7 +9242,7 @@ const char *fltxt;
     }
 
     if (type < 0)
-        monkilled(mon, (char*)0, AD_DISN, XKILL_NOCORPSE | XKILL_DISINTEGRATED);
+        monkilled(mon, (char*)0, abs(type) + 1, XKILL_NOCORPSE | XKILL_DISINTEGRATED);
     else
         xkilled(mon, XKILL_NOMSG | XKILL_NOCORPSE | XKILL_DISINTEGRATED);
 }
@@ -9599,7 +9599,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                         if (type < 0)
                         {
                             /* mon has just been killed by another monster */
-                            monkilled(mon, fltxt, AD_RBRE, 0);
+                            monkilled(mon, fltxt, abstype + 1, 0);
                         } 
                         else 
                         {
@@ -11251,7 +11251,7 @@ int dmg, adtyp, tell;
             if (DEADMONSTER(mtmp))
             {
                 if (m_using)
-                    monkilled(mtmp, "", AD_RBRE, 0);
+                    monkilled(mtmp, "", adtyp, 0);
                 else
                     killed(mtmp);
             }
@@ -11307,7 +11307,7 @@ int dmg, adtyp, tell;
             if (DEADMONSTER(mtmp))
             {
                 if (m_using)
-                    monkilled(mtmp, "", AD_RBRE, 0);
+                    monkilled(mtmp, "", adtyp, 0);
                 else
                     killed(mtmp);
             }

@@ -42,7 +42,7 @@
  *    Note that 1-10 correspond to the types of attack used in buzz().
  *    Please don't disturb the order unless you rewrite the buzz() code.
  */
-#define AD_NONE (-1)   /* None */
+#define AD_NONE (-1) /* none */
 #define AD_ANY (-1) /* fake damage; attacktype_fordmg wildcard */
 #define AD_PHYS 0   /* ordinary physical */
 #define AD_MAGM 1   /* magic missiles FIRST RAY */
@@ -100,8 +100,8 @@
 #define AD_CLRC 240 /* random clerical spell */
 #define AD_SPEL 241 /* random magic spell */
 #define AD_RBRE 242 /* random breath weapon */
-#define AD_DMNS 243 /* Summons demons */
-#define AD_LYCA 244 /* Lycanthrope summon */
+#define AD_DMNS 243 /* summons demons */
+#define AD_LYCA 244 /* lycanthrope summon */
 #define AD_GNOL 245 /* summons gnolls, Yeenaghu */
 #define AD_GHUL 246 /* summons ghouls, Yeenaghu */
 #define AD_UNDO 247 /* summons undead, Orcus */
