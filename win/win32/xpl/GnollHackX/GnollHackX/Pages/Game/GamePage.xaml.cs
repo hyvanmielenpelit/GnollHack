@@ -12246,13 +12246,12 @@ namespace GnollHackX.Pages.Game
 
         private void MenuCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
-            SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
             SwitchableCanvasView referenceCanvasView = MenuCanvas;
             float canvaswidth = referenceCanvasView.CanvasSize.Width;
             float canvasheight = referenceCanvasView.CanvasSize.Height;
-            float x = 0, y = 0;
+            float x, y;
             string str;
             SKRect textBounds = new SKRect();
             float scale = (float)Math.Sqrt((double)(canvaswidth * canvasheight / (float)(referenceCanvasView.Width * referenceCanvasView.Height)));
@@ -12285,7 +12284,7 @@ namespace GnollHackX.Pages.Game
                 {
                     curmenuoffset = _menuScrollOffset;
                 }
-                y += curmenuoffset;
+                y = curmenuoffset;
                 double menumarginx = MenuCanvas.MenuButtonStyle ? 30.0 : 15.0;
                 double menuwidth = Math.Max(1, Math.Min(MenuCanvas.Width - menumarginx * 2, UIUtils.MenuViewWidthRequest(referenceCanvasView.MenuStyle)));
                 float menuwidthoncanvas = (float)(menuwidth * scale);
