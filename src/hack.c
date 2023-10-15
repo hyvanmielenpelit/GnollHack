@@ -1888,7 +1888,11 @@ domove_core()
             struct monst* mtmp2;
             for (mtmp2 = fmon; mtmp2; mtmp2 = mtmp2->nmon)
             {
-                if (!DEADMONSTER(mtmp2) && canspotmon(mtmp2) && !is_peaceful(mtmp2) && isok(mtmp2->mx, mtmp2->my) && couldsee(mtmp2->mx, mtmp2->my) && !(mtmp2->mon_flags & MON_FLAGS_SPOTTED_IN_RUN))
+                if (!DEADMONSTER(mtmp2) && !(mtmp2->mon_flags & MON_FLAGS_SPOTTED_IN_RUN) 
+                    && canspotmon(mtmp2) && !is_peaceful(mtmp2)
+                    && M_AP_TYPE(mtmp2) != M_AP_FURNITURE && M_AP_TYPE(mtmp2) != M_AP_OBJECT 
+                    && isok(mtmp2->mx, mtmp2->my) && couldsee(mtmp2->mx, mtmp2->my) 
+                    )
                 {
                     You("spot %s.  You stop %s.", a_monnam(mtmp2), context.travel ? "travelling" : "running");
                     nomul(0);

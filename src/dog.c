@@ -1152,7 +1152,7 @@ long nmv; /* number of moves */
     } 
     else
 #endif
-        if (nmv >= LARGEST_INT) /* paranoia */
+    if (nmv >= LARGEST_INT) /* paranoia */
         imv = LARGEST_INT - 1;
     else
         imv = (int) nmv;
@@ -1224,7 +1224,7 @@ long nmv; /* number of moves */
         mtmp->mprops[STUNNED] = 0;
 
     /* might finish eating or be able to use special ability again */
-    if (imv > mtmp->meating)
+    if (mtmp->meating > 0 && imv > mtmp->meating)
         finish_meating(mtmp);
     else
         mtmp->meating -= imv;

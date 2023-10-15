@@ -2454,7 +2454,8 @@ finish_meating(mtmp)
 struct monst *mtmp;
 {
     mtmp->meating = 0;
-    if (M_AP_TYPE(mtmp) && mtmp->mappearance && mtmp->cham == NON_PM) {
+    if (!is_mimic(mtmp->data) && M_AP_TYPE(mtmp) && mtmp->mappearance && mtmp->cham == NON_PM) 
+    {
         /* was eating a mimic and now appearance needs resetting */
         mtmp->m_ap_type = 0;
         mtmp->mappearance = 0;
