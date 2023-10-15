@@ -3267,6 +3267,11 @@ namespace GnollHackX.Pages.Game
                     break;
             }
 
+            if (MenuCanvas.ClickOKOnSelection && !MenuCanvas.MenuButtonStyle)
+                MenuOKButton.Text = "Auto";
+            else
+                MenuOKButton.Text = "OK";
+
             /* Reset glyph */
             MenuWindowGlyphImage.Source = null;
 
