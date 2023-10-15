@@ -62,6 +62,9 @@ namespace GnollHackX
             BackButtonPressed += EmptyBackButtonPressed;
         }
 
+
+        public static bool BatterySavingMode { get; set; }
+
         private static double _batteryChargeLevel = -1;
         private static double _previousBatteryChargeLevel = -1;
         private static DateTime _batteryChargeLevelTimeStamp;

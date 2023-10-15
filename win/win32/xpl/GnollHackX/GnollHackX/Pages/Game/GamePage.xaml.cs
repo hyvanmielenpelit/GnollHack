@@ -12172,8 +12172,17 @@ namespace GnollHackX.Pages.Game
             GameMenuButton.IsEnabled = false;
             SimpleGameMenuButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
+
+            if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
+                canvasView.AbortAnimation("GeneralAnimationCounter");
+            _mapUpdateStopWatch.Stop();
             TouchDictionary.Clear();
+
             await ShowGameMenu(sender, e);
+
+            if (!canvasView.AnimationIsRunning("GeneralAnimationCounter"))
+                StartMainCanvasAnimation();
+
             GameMenuButton.IsEnabled = true;
             SimpleGameMenuButton.IsEnabled = true;
         }

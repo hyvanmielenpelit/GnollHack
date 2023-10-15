@@ -1003,6 +1003,9 @@ namespace GnollHackX
 
         public static uint GetAuxiliaryCanvasAnimationInterval()
         {
+            if (GHApp.BatterySavingMode)
+                return 16;
+
             if (GHApp.DisplayRefreshRate >= 120.0f)
                 return 8;
             else if (GHApp.DisplayRefreshRate >= 90.0f)
@@ -1010,8 +1013,12 @@ namespace GnollHackX
             else
                 return 16;
         }
+
         public static int GetAuxiliaryCanvasAnimationFrequency()
         {
+            if (GHApp.BatterySavingMode)
+                return 60;
+
             if (GHApp.DisplayRefreshRate >= 120.0f)
                 return 120;
             else if (GHApp.DisplayRefreshRate >= 90.0f)
