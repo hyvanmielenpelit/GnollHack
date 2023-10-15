@@ -268,8 +268,8 @@ int *menu_on_demand;
                 else 
                 {
                     if (!where)
-                        where = !strcmp(action, "pick up") ? "here"
-                                : !strcmp(action, "take out") ? "inside" : "";
+                        where = strstr(action, "pick up") ? "here"
+                                : strstr(action, "take out") ? "inside" : "";
                     if (*where)
                         There("are no %c's %s.", sym, where);
                     else
@@ -669,7 +669,7 @@ boolean do_auto_in_bag;
         { /* looking for N of something */
             char qbuf[QBUFSZ];
 
-            Sprintf(qbuf, "Pick %d of what?", count);
+            Sprintf(qbuf, "Pick%s %d of what?", do_auto_in_bag ? " and out into bag" : "", count);
             val_for_n_or_more = count; /* set up callback selector */
             n = query_objlist(qbuf, objchain_p, traverse_how,
                               &pick_list, PICK_ONE, n_or_more, 2);
@@ -679,7 +679,7 @@ boolean do_auto_in_bag;
         }
         else 
         {
-            n = query_objlist("Pick up what?", objchain_p,
+            n = query_objlist(do_auto_in_bag ? "Pick up and auto-stash what?" : "Pick up what?", objchain_p,
                               (traverse_how | FEEL_COCKATRICE),
                               &pick_list, PICK_ANY, all_but_uchain, 2);
         }
@@ -697,7 +697,6 @@ boolean do_auto_in_bag;
         }
         if (pick_list)
             free((genericptr_t) pick_list);
-
     } 
     else 
     {
@@ -716,7 +715,8 @@ boolean do_auto_in_bag;
         for (obj = *objchain_p; obj; obj = FOLLOW(obj, traverse_how))
             ct++;
 
-        if (ct == 1 && count) {
+        if (ct == 1 && count)
+        {
             /* if only one thing, then pick it */
             obj = *objchain_p;
             lcount = min(obj->quan, (long) count);
@@ -724,7 +724,6 @@ boolean do_auto_in_bag;
             if (pickup_object(obj, lcount, FALSE, do_auto_in_bag) > 0)
                 n_picked++; /* picked something */
             goto end_query;
-
         } 
         else if (ct >= 2)
         {
@@ -732,7 +731,7 @@ boolean do_auto_in_bag;
 
             There("are %s objects here.", (ct <= 10) ? "several" : "many");
             if (!query_classes(oclasses, &selective, &all_of_a_type,
-                               "pick up", *objchain_p,
+                do_auto_in_bag ? "pick up and auto-stash" : "pick up", *objchain_p,
                                (traverse_how & BY_NEXTHERE) ? TRUE : FALSE,
                                &via_menu)) 
             {
@@ -740,7 +739,7 @@ boolean do_auto_in_bag;
                     goto pickupdone;
                 if (selective)
                     traverse_how |= INVORDER_SORT;
-                n = query_objlist("Pick up what?", objchain_p, traverse_how,
+                n = query_objlist(do_auto_in_bag ? "Pick up and auto-stash what?" : "Pick up what?", objchain_p, traverse_how,
                                   &pick_list, PICK_ANY,
                                   (via_menu == -2) ? allow_all
                                                    : allow_category, 2);
@@ -763,7 +762,7 @@ boolean do_auto_in_bag;
             {
                 char qbuf[BUFSZ];
 
-                (void) safe_qbuf(qbuf, "Pick up ", "?", obj, doname,
+                (void) safe_qbuf(qbuf, do_auto_in_bag ? "Pick up " : "Pick up and auto-stash ", "?", obj, doname,
                                  ansimpleoname, something);
                 switch ((obj->quan < 2L) ? ynaq(qbuf) : ynNaq(qbuf)) 
                 {
@@ -1944,7 +1943,7 @@ boolean bynexthere;
     if (!num_choices)
         return 0;
 
-    boolean maybe_cancellation = (objects[obj->otyp].oc_name_known ? (objects[obj->otyp].oc_flags5 & O5_MBAG_DESTROYING_ITEM) != 0 : obj->oclass == WAND_CLASS);
+    boolean maybe_cancellation = (objects[obj->otyp].oc_name_known || objects[WAN_CANCELLATION].oc_name_known ? (objects[obj->otyp].oc_flags5 & O5_MBAG_DESTROYING_ITEM) != 0 : obj->oclass == WAND_CLASS);
     switch (flags.auto_bag_in_style)
     {
     case 0:
@@ -4672,7 +4671,7 @@ boolean outokay, inokay, alreadyused, more_containers;
     if (outokay && other_containter_count > 0 && !carried(obj))
     {
         any.a_int = 13; /* 'a' */
-        Sprintf(buf, "take %s out and stash it automatically", something);
+        Sprintf(buf, "take %s out and auto-stash it", something);
         add_menu(win, NO_GLYPH, &any, menuselector[any.a_int], 0, ATR_NONE, NO_COLOR,
             buf, MENU_UNSELECTED);
     }

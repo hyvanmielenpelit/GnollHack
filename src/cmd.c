@@ -5848,6 +5848,7 @@ struct ext_func_tab extcmdlist[] = {
             wiz_panic, IFBURIED },
 #endif
     { 'p', "pay", "pay your shopping bill", dopay },
+    { ';', "pickstash", "pick up things at the current location and stash them into a container", doput2bag },
     { ',', "pickup", "pick up things at the current location", dopickup },
     { M(1), "polyself", "polymorph self", /* Special hotkey launchable from GUI */
             wiz_polyself, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
@@ -5856,7 +5857,6 @@ struct ext_func_tab extcmdlist[] = {
     { C('p'), "prevmsg", "view recent game messages",
             doprev_message, IFBURIED | GENERALCMD },
     { 'P', "puton", "put on an accessory (ring, amulet, etc)", doputon, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_accessories, "put on", "put on" },
-    { ';', "put2bag", "pick up things at the current location and stash them into a container", doput2bag },
     { 'q', "quaff", "quaff (drink) something", dodrink, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_beverages, "drink", "drink" },
     { M('q'), "quit", "exit without saving current game",
             done2, IFBURIED | AUTOCOMPLETE | GENERALCMD },
@@ -8240,7 +8240,8 @@ boolean doit;
 
     if ((u.ux == xupstair && u.uy == yupstair)
         || (u.ux == sstairs.sx && u.uy == sstairs.sy && sstairs.up)
-        || (u.ux == xupladder && u.uy == yupladder)) {
+        || (u.ux == xupladder && u.uy == yupladder)) 
+    {
         Sprintf(buf, "Go up the %s",
                 (u.ux == xupladder && u.uy == yupladder)
                 ? "ladder" : "stairs");
@@ -8248,13 +8249,15 @@ boolean doit;
     }
     if ((u.ux == xdnstair && u.uy == ydnstair)
         || (u.ux == sstairs.sx && u.uy == sstairs.sy && !sstairs.up)
-        || (u.ux == xdnladder && u.uy == ydnladder)) {
+        || (u.ux == xdnladder && u.uy == ydnladder)) 
+    {
         Sprintf(buf, "Go down the %s",
                 (u.ux == xdnladder && u.uy == ydnladder)
                 ? "ladder" : "stairs");
         add_herecmd_menuitem(win, dodown, buf);
     }
-    if (u.usteed) { /* another movement choice */
+    if (u.usteed)
+    { /* another movement choice */
         Sprintf(buf, "Dismount %s",
                 x_monnam(u.usteed, ARTICLE_THE, (char *) 0, SUPPRESS_SADDLE, FALSE));
         add_herecmd_menuitem(win, doride, buf);
@@ -8268,17 +8271,24 @@ boolean doit;
     }
 #endif
 
-    if (OBJ_AT(u.ux, u.uy)) {
-        struct obj *otmp = level.objects[u.ux][u.uy];
-
+    struct obj* otmp = level.objects[u.ux][u.uy];
+    if (otmp) 
+    {
         Sprintf(buf, "Pick up %s", otmp->nexthere ? "items" : doname_with_weight_last(otmp, objects[LOADSTONE].oc_name_known, FALSE));
         add_herecmd_menuitem(win, dopickup, buf);
 
-        if (Is_container(otmp)) {
+        if (count_bags_for_stashing(invent, otmp, FALSE, TRUE) > 0)
+        {
+            Sprintf(buf, "Pick up and auto-stash %s", otmp->nexthere ? "items" : doname_with_weight_last(otmp, objects[LOADSTONE].oc_name_known, FALSE));
+            add_herecmd_menuitem(win, doput2bag, buf);
+        }
+        if (Is_container(otmp)) 
+        {
             Sprintf(buf, "Loot %s", doname(otmp));
             add_herecmd_menuitem(win, doloot, buf);
         }
-        if (otmp->oclass == FOOD_CLASS) {
+        if (otmp->oclass == FOOD_CLASS) 
+        {
             Sprintf(buf, "Eat %s", doname(otmp));
             add_herecmd_menuitem(win, doeat, buf);
         }
@@ -8295,15 +8305,19 @@ boolean doit;
     npick = select_menu(win, PICK_ONE, &picks);
     destroy_nhwindow(win);
     ch = '\0';
-    if (npick > 0) {
+    if (npick > 0) 
+    {
         int NDECL((*func)) = picks->item.a_nfunc;
         free((genericptr_t) picks);
 
-        if (doit) {
+        if (doit) 
+        {
             int ret = (*func)();
 
             ch = (char) ret;
-        } else {
+        } 
+        else 
+        {
             ch = cmd_from_func(func);
         }
     }
@@ -9609,7 +9623,7 @@ enum create_context_menu_types menu_type;
         {
             add_context_menu(',', cmd_from_func(dopickup), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Pick Up", cxname(otmp), 0, NO_COLOR);
             if(count_bags_for_stashing(invent, otmp, FALSE, TRUE) > 0)
-                add_context_menu(';', cmd_from_func(doput2bag), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Put into Bag", cxname(otmp), 0, NO_COLOR);
+                add_context_menu(';', cmd_from_func(doput2bag), CONTEXT_MENU_STYLE_GENERAL, otmp->gui_glyph, "Pick & Stash", cxname(otmp), 0, NO_COLOR);
             boolean eat_added = FALSE;
             boolean loot_added = FALSE;
             for (otmp_here = otmp; otmp_here; otmp_here = otmp_here->nexthere)

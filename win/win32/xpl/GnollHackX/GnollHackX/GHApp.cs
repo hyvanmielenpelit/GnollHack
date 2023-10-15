@@ -1346,7 +1346,7 @@ namespace GnollHackX
                     _moreBtnMatrix[3, 3, 3] = new GHCommandButtonItem("Monster", AppResourceName + ".Assets.UI.monster.png", GHUtils.Meta(4));
 
                     _moreBtnMatrix[3, 0, 4] = new GHCommandButtonItem("Spells", AppResourceName + ".Assets.UI.spells.png", (int)'+');
-                    _moreBtnMatrix[3, 1, 4] = new GHCommandButtonItem("Put into Bag", AppResourceName + ".Assets.UI.picktobag.png", (int)';');
+                    _moreBtnMatrix[3, 1, 4] = new GHCommandButtonItem("Pick & Stash", AppResourceName + ".Assets.UI.picktobag.png", (int)';');
                     _moreBtnMatrix[3, 2, 4] = new GHCommandButtonItem("Autostash", AppResourceName + ".Assets.UI.autostash.png", GHUtils.Meta(15));
 
                     _moreBtnMatrix[3, 0, 5] = new GHCommandButtonItem("Help", AppResourceName + ".Assets.UI.help.png", (int)'?');
