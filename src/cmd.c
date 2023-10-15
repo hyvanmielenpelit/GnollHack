@@ -9611,12 +9611,11 @@ enum create_context_menu_types menu_type;
 
         struct obj* otmp_here;
         boolean showpickup = FALSE;
-        int objcnt = 0;
         for (otmp_here = otmp; otmp_here; otmp_here = otmp_here->nexthere)
             if (otmp_here != uchain)
             {
                 showpickup = TRUE;
-                objcnt++;
+                break;
             }
 
         if (showpickup)

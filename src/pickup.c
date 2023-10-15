@@ -4403,7 +4403,7 @@ struct obj* other_container UNUSED;
         n = 0;
         for (otmp = current_container->cobj; otmp; otmp = otmp->nobj)
             n++;
-        boolean obj_gone_type;
+        uchar obj_gone;
         switch (command_id)
         {
         case 0:
@@ -4411,12 +4411,12 @@ struct obj* other_container UNUSED;
             for (otmp = current_container->cobj, i = 0; otmp; otmp = otmp2, i++)
             {
                 otmp2 = otmp->nobj;
-                obj_gone_type = FALSE;
-                res = out_container_core(otmp, FALSE, do_auto_in_bag, &obj_gone_type);
+                obj_gone = FALSE;
+                res = out_container_core(otmp, FALSE, do_auto_in_bag, &obj_gone);
                 if (res < 0)
                     break;
                 n_looted += res;
-                if (!carried(current_container) && !obj_gone_type && handle_knapsack_prefull(res, container_cnt, &do_auto_in_bag, &used_container, otmp, i, n, check_nonmergeable_nobj(otmp->nobj)) < 0)
+                if (!carried(current_container) && !obj_gone && handle_knapsack_prefull(res, container_cnt, &do_auto_in_bag, &used_container, otmp, i, n, check_nonmergeable_nobj(otmp->nobj)) < 0)
                     break;
             }
             bot();
@@ -4521,7 +4521,7 @@ struct obj* other_container UNUSED;
         {
             n_looted = 0;
             context.quit_pressed = FALSE;
-            boolean obj_gone_type;
+            uchar obj_gone;
             for (i = 0; i < n; i++)
             {
                 n_looted++;
@@ -4536,14 +4536,14 @@ struct obj* other_container UNUSED;
                 switch (command_id)
                 {
                 case 0:
-                    obj_gone_type = FALSE;
-                    res = out_container_core(otmp, FALSE, do_auto_in_bag, &obj_gone_type);
+                    obj_gone = FALSE;
+                    res = out_container_core(otmp, FALSE, do_auto_in_bag, &obj_gone);
                     if (res == -2 && flags.knapsack_prompt)
                     {
                         bot();
                         more_action = handle_knapsack_full();
                     }
-                    else if (!carried(current_container) && !obj_gone_type && handle_knapsack_prefull(res, container_cnt, &do_auto_in_bag, &used_container, otmp, i, n, check_nonmergeable_nobj(otmp->nobj)) < 0)
+                    else if (!carried(current_container) && !obj_gone && handle_knapsack_prefull(res, container_cnt, &do_auto_in_bag, &used_container, otmp, i, n, check_nonmergeable_nobj(otmp->nobj)) < 0)
                         break;
                     break;
                 case 1:
