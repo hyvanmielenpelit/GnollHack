@@ -5129,7 +5129,8 @@ struct obj *obj;
             return 1; /* burn nutrition; maybe pass out */
 
         play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_SWING_MELEE);
-        display_gui_effect(GUI_EFFECT_POLEARM, is_spear(obj) ? GUI_POLEARM_SPEAR : is_lance(obj) ? GUI_POLEARM_LANCE : GUI_POLEARM_THRUSTED, u.ux, u.uy, bhitpos.x, bhitpos.y, 0UL);
+        if(dist2(u.ux, u.uy, bhitpos.x, bhitpos.y) > 0)
+            display_gui_effect(GUI_EFFECT_POLEARM, is_spear(obj) ? GUI_POLEARM_SPEAR : is_lance(obj) ? GUI_POLEARM_LANCE : GUI_POLEARM_THRUSTED, u.ux, u.uy, bhitpos.x, bhitpos.y, 0UL);
         context.polearm.hitmon = mtmp;
         check_caitiff(mtmp);
         notonhead = (bhitpos.x != mtmp->mx || bhitpos.y != mtmp->my);
@@ -5139,7 +5140,8 @@ struct obj *obj;
                && sobj_at(STATUE, bhitpos.x, bhitpos.y)) 
     {
         play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_SWING_MELEE);
-        display_gui_effect(GUI_EFFECT_POLEARM, is_spear(obj) ? GUI_POLEARM_SPEAR : is_lance(obj) ? GUI_POLEARM_LANCE : GUI_POLEARM_THRUSTED, u.ux, u.uy, bhitpos.x, bhitpos.y, 0UL);
+        if (dist2(u.ux, u.uy, bhitpos.x, bhitpos.y) > 0)
+            display_gui_effect(GUI_EFFECT_POLEARM, is_spear(obj) ? GUI_POLEARM_SPEAR : is_lance(obj) ? GUI_POLEARM_LANCE : GUI_POLEARM_THRUSTED, u.ux, u.uy, bhitpos.x, bhitpos.y, 0UL);
 
         struct trap *t = t_at(bhitpos.x, bhitpos.y);
 
@@ -5163,7 +5165,8 @@ struct obj *obj;
     else 
     {
         play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_SWING_MELEE);
-        display_gui_effect(GUI_EFFECT_POLEARM, is_spear(obj) ? GUI_POLEARM_SPEAR : is_lance(obj) ? GUI_POLEARM_LANCE : GUI_POLEARM_THRUSTED, u.ux, u.uy, bhitpos.x, bhitpos.y, 0UL);
+        if (dist2(u.ux, u.uy, bhitpos.x, bhitpos.y) > 0)
+            display_gui_effect(GUI_EFFECT_POLEARM, is_spear(obj) ? GUI_POLEARM_SPEAR : is_lance(obj) ? GUI_POLEARM_LANCE : GUI_POLEARM_THRUSTED, u.ux, u.uy, bhitpos.x, bhitpos.y, 0UL);
 
         /* no monster here and no statue seen or remembered here */
         (void) unmap_invisible(bhitpos.x, bhitpos.y);

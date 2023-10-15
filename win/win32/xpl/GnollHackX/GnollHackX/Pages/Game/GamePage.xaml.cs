@@ -6299,6 +6299,9 @@ namespace GnollHackX.Pages.Game
                                             {
                                                 int dx = eff.X2 - eff.X1;
                                                 int dy = eff.Y2 - eff.Y1;
+                                                if (dx == 0 && dy == 0)
+                                                    break;
+
                                                 float length;
                                                 canvas.Translate(tx + width / 2, ty + height / 2);
                                                 if (dx == 0)
