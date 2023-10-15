@@ -15022,6 +15022,21 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        public async Task RunPerformanceTests()
+        {
+            Debug.WriteLine("Starting Performance Tests");
+            await Task.Delay(1000);
+            Debug.WriteLine("Hide all Xamarin components");
+            WornItemsLayout.IsVisible = false;
+            AbilityLayout.IsVisible = false;
+            UIGrid.IsVisible = false;
+            await Task.Delay(5000);
+            WornItemsLayout.IsVisible = true;
+            AbilityLayout.IsVisible = true;
+            UIGrid.IsVisible = true;
+            Debug.WriteLine("Finished Performance Tests");
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         uint MakePixel(byte red, byte green, byte blue, byte alpha) =>
         (uint)((alpha << 24) | (blue << 16) | (green << 8) | red);

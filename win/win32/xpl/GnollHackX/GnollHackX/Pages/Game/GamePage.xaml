@@ -42,7 +42,7 @@
                     </StackLayout>
                 </AbsoluteLayout>
 
-                <Grid Grid.Row="0" InputTransparent="True" CascadeInputTransparent="False"
+                <Grid x:Name="UIGrid" Grid.Row="0" InputTransparent="True" CascadeInputTransparent="False"
                       HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />

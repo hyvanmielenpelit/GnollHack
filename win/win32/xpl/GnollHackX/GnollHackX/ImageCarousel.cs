@@ -90,7 +90,10 @@ namespace GnollHackX
                     _counterValue++;
                     if (_counterValue >= (long)int.MaxValue)
                         _counterValue = 0;
-                    InvalidateSurface();
+                    byte alpha = GetSecondBitmapAlpha(_counterValue);
+                    byte prevalpha = GetSecondBitmapAlpha(_counterValue - 1);
+                    if (alpha > 0 || prevalpha > 0)
+                        InvalidateSurface();
                     return _timerIsOn;
                 });
             }
@@ -184,7 +187,7 @@ namespace GnollHackX
 
                         if (cnt > 1)
                         {
-                            byte alpha = GetSecondBitmapAlpha();
+                            byte alpha = GetSecondBitmapAlpha(_counterValue);
                             if (alpha > 0)
                             {
                                 int idx2 = GetSecondBitmapIndex();
@@ -258,11 +261,11 @@ namespace GnollHackX
             return (int)(firstidx + 1) % cnt;
         }
 
-        private byte GetSecondBitmapAlpha()
+        private byte GetSecondBitmapAlpha(long counter)
         {
             long slidedurationinticks = (_slideDurationInMilliseconds * _refreshFrequency) / 1000;
             long transitiondurationinticks = (_transitionDurationInMilliseconds * _refreshFrequency) / 1000;
-            long countercycleticks = _counterValue % slidedurationinticks;
+            long countercycleticks = counter % slidedurationinticks;
             double opacity = Math.Min(1.0, (double)Math.Max(0, transitiondurationinticks - (slidedurationinticks - countercycleticks)) / (double)transitiondurationinticks);
             return (byte)(255.0 * opacity);
         }

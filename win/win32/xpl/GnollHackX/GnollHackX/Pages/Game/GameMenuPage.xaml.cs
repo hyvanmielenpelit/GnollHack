@@ -42,7 +42,7 @@ namespace GnollHackX.Pages.Game
             }
 
             btnOptions.IsVisible = GHApp.DeveloperMode;
-            btnGC.IsVisible = btnDebug.IsVisible =
+            btnGC.IsVisible = btnDebug.IsVisible = btnRunTests.IsVisible =
 #if DEBUG
                 GHApp.DeveloperMode;
 #else
@@ -118,7 +118,7 @@ namespace GnollHackX.Pages.Game
         {
             MainLayout.IsEnabled = true;
             btnOptions.IsVisible = GHApp.DeveloperMode;
-            btnGC.IsVisible = btnDebug.IsVisible =
+            btnGC.IsVisible = btnDebug.IsVisible = btnRunTests.IsVisible =
 #if DEBUG
                 GHApp.DeveloperMode;
 #else
@@ -166,6 +166,15 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = true;
         }
 
+        private async void btnRunTests_Clicked(object sender, EventArgs e)
+        {
+            MainLayout.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            await _gamePage.RunPerformanceTests();
+            MainLayout.IsEnabled = true;
+        }
+
         private async void btnTips_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;
@@ -197,5 +206,6 @@ namespace GnollHackX.Pages.Game
             await App.Current.MainPage.Navigation.PushModalAsync(verPage);
             MainLayout.IsEnabled = true;
         }
+
     }
 }
