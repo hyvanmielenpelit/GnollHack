@@ -2661,7 +2661,7 @@ E int FDECL(out_container, (struct obj *));
 E int FDECL(auto_bag_in, (struct obj*, struct obj*, BOOLEAN_P));
 E int FDECL(count_bags_for_stashing, (struct obj*, struct obj*, BOOLEAN_P, BOOLEAN_P));
 E int FDECL(pickup, (int, BOOLEAN_P));
-E int FDECL(pickup_object, (struct obj *, long, BOOLEAN_P, BOOLEAN_P));
+E int FDECL(pickup_object, (struct obj *, long, BOOLEAN_P, BOOLEAN_P, uchar*));
 E int FDECL(query_category, (const char *, struct obj *, int,
                              menu_item **, int));
 E int FDECL(query_objlist, (const char *, struct obj **, int,
@@ -2683,7 +2683,7 @@ E int NDECL(dotip);
 E boolean FDECL(is_autopickup_exception, (struct obj *, BOOLEAN_P));
 E boolean FDECL(autopick_testobj, (struct obj *, BOOLEAN_P));
 E boolean FDECL(maybe_disturb_container_monster, (struct obj* ));
-E int FDECL(handle_knapsack_prefull, (int, int, boolean*, struct obj**, struct obj*, int, int));
+E int FDECL(handle_knapsack_prefull, (int, int, boolean*, struct obj**, struct obj*, int, int, uchar));
 E int NDECL(handle_knapsack_full);
 E int NDECL(dostash);
 E int NDECL(dostashfloor);

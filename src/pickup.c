@@ -34,7 +34,7 @@ STATIC_DCL int FDECL(lift_object, (struct obj *, struct obj *, long *,
 STATIC_DCL boolean FDECL(mbag_explodes, (struct obj *, struct obj*, int));
 STATIC_DCL long FDECL(boh_loss, (struct obj *container, int));
 STATIC_PTR int FDECL(in_container_core, (struct obj*, BOOLEAN_P));
-STATIC_PTR int FDECL(out_container_core, (struct obj*, BOOLEAN_P, BOOLEAN_P));
+STATIC_PTR int FDECL(out_container_core, (struct obj*, BOOLEAN_P, BOOLEAN_P, uchar*));
 STATIC_PTR int FDECL(move_container_core, (struct obj*, BOOLEAN_P));
 STATIC_PTR int FDECL(out_container_and_drop_core, (struct obj*, BOOLEAN_P));
 STATIC_PTR int FDECL(pickup_and_in_container_core, (struct obj*, BOOLEAN_P));
@@ -63,6 +63,8 @@ STATIC_DCL boolean NDECL(reverse_loot);
 STATIC_DCL int FDECL(do_loot_cont, (struct obj **, int, int));
 STATIC_DCL void FDECL(tipcontainer, (struct obj *));
 STATIC_DCL void FDECL(loot_decoration, (int, int, int, boolean*));
+STATIC_OVL boolean FDECL(check_nonmergeable_nobj, (struct obj*));
+STATIC_DCL boolean FDECL(check_nonmergeable_pick_list, (menu_item*, int, int));
 
 /* define for query_objlist() and autopickup() */
 #define FOLLOW(curr, flags) \
@@ -688,11 +690,12 @@ boolean do_auto_in_bag;
         n_tried = n;
         for (n_picked = i = 0; i < n; i++) 
         {
-            res = pickup_object(pick_list[i].item.a_obj, pick_list[i].count, FALSE, do_auto_in_bag);
+            uchar obj_gone = FALSE;
+            res = pickup_object(pick_list[i].item.a_obj, pick_list[i].count, FALSE, do_auto_in_bag, &obj_gone);
             if (res < 0)
                 break; /* can't continue */
             n_picked += res;
-            if (handle_knapsack_prefull(res, container_cnt, &do_auto_in_bag, &used_container, pick_list[i].item.a_obj, i, n) < 0)
+            if (!obj_gone && handle_knapsack_prefull(res, container_cnt, &do_auto_in_bag, &used_container, pick_list[i].item.a_obj, i, n, check_nonmergeable_pick_list(pick_list, i + 1, n)) < 0)
                 break;
         }
         if (pick_list)
@@ -721,7 +724,7 @@ boolean do_auto_in_bag;
             obj = *objchain_p;
             lcount = min(obj->quan, (long) count);
             n_tried++;
-            if (pickup_object(obj, lcount, FALSE, do_auto_in_bag) > 0)
+            if (pickup_object(obj, lcount, FALSE, do_auto_in_bag, (uchar*)0) > 0)
                 n_picked++; /* picked something */
             goto end_query;
         } 
@@ -794,7 +797,7 @@ boolean do_auto_in_bag;
                 lcount = obj->quan;
 
             n_tried++;
-            if ((res = pickup_object(obj, lcount, FALSE, do_auto_in_bag)) < 0)
+            if ((res = pickup_object(obj, lcount, FALSE, do_auto_in_bag, (uchar*)0)) < 0)
                 break;
             n_picked += res;
         }
@@ -827,11 +830,12 @@ boolean do_auto_in_bag;
 }
 
 int
-handle_knapsack_prefull(res, container_cnt, do_auto_in_bag_ptr, used_container_ptr, obj, i, n)
+handle_knapsack_prefull(res, container_cnt, do_auto_in_bag_ptr, used_container_ptr, obj, i, n, noncoin_nonmergeable_found)
 int res, container_cnt, i, n;
 boolean* do_auto_in_bag_ptr;
 struct obj** used_container_ptr;
 struct obj* obj;
+uchar noncoin_nonmergeable_found;
 {
     if (res > 0 && container_cnt > 0 && !*do_auto_in_bag_ptr)
     {
@@ -842,16 +846,6 @@ struct obj* obj;
         }
         else if (i < n - 1 && inv_cnt(FALSE) >= 52)
         {
-            int j;
-            boolean noncoin_nonmergeable_found = FALSE;
-            for (j = i + 1; j < n; j++)
-            {
-                if (obj->oclass != COIN_CLASS && !merge_choice(invent, obj))
-                {
-                    noncoin_nonmergeable_found = TRUE;
-                    break;
-                }
-            }
             if (noncoin_nonmergeable_found)
             {
                 if (flags.knapsack_prompt)
@@ -1795,10 +1789,11 @@ boolean telekinesis;
  * up, 1 if otherwise.
  */
 int
-pickup_object(obj, count, telekinesis, do_auto_in_bag)
+pickup_object(obj, count, telekinesis, do_auto_in_bag, obj_gone_ptr)
 struct obj *obj;
 long count;
 boolean telekinesis, do_auto_in_bag; /* not picking it up directly by hand */
+uchar* obj_gone_ptr; /* 1 = merged, 2 = put in bag, 3 = gone */
 {
     int res, nearload;
 
@@ -1864,6 +1859,8 @@ boolean telekinesis, do_auto_in_bag; /* not picking it up directly by hand */
     /* Finally, pick the object up */
     struct obj* oldobj = obj;
     obj = pick_obj(obj);
+    if(obj_gone_ptr && obj != oldobj) /* merged */
+        *obj_gone_ptr = 1;
 
     if (uwep && uwep == obj)
         mrg_to_wielded = TRUE;
@@ -1874,8 +1871,11 @@ boolean telekinesis, do_auto_in_bag; /* not picking it up directly by hand */
     mrg_to_wielded = FALSE;
 
     if (do_auto_in_bag && obj && obj == oldobj)
-        (void)auto_bag_in(invent, obj, FALSE);
-
+    {
+        int bagres = auto_bag_in(invent, obj, FALSE);
+        if (bagres && obj_gone_ptr)
+            *obj_gone_ptr = 2;
+    }
     return 1;
 }
 
@@ -3415,7 +3415,7 @@ boolean dobot;
 
     obj->nomerge = 1;
     int res = 0;
-    if ((res = out_container_core(obj, dobot, FALSE)) <= 0)
+    if ((res = out_container_core(obj, dobot, FALSE, (uchar*)0)) <= 0)
     {
         obj->nomerge = 0;
         return res;
@@ -3464,7 +3464,7 @@ boolean dobot;
 
     obj->nomerge = 1;
     int res = 0;
-    if ((res = out_container_core(obj, dobot, FALSE)) <= 0)
+    if ((res = out_container_core(obj, dobot, FALSE, (uchar*)0)) <= 0)
     {
         obj->nomerge = 0;
         return res;
@@ -3511,8 +3511,11 @@ boolean dobot;
     int res = 0;
     if (!dobot)
         context.skip_botl = TRUE;
-    res = pickup_object(obj, obj->quan, FALSE, FALSE);
+    uchar obj_gone = FALSE;
+    res = pickup_object(obj, obj->quan, FALSE, FALSE, &obj_gone);
     context.skip_botl = FALSE;
+    if (obj_gone)
+        return res;
     if (res <= 0)
     {
         obj->nomerge = 0;
@@ -3533,7 +3536,7 @@ STATIC_PTR int
 out_container_and_autostash(obj)
 register struct obj* obj;
 {
-    return out_container_core(obj, TRUE, TRUE);
+    return out_container_core(obj, TRUE, TRUE, (uchar*)0);
 }
 
 /* Returns: -1 to stop, 1 item was moved, 0 item was not moved. */
@@ -3541,7 +3544,7 @@ STATIC_PTR int
 out_container_and_autostash_nobot(obj)
 register struct obj* obj;
 {
-    return out_container_core(obj, FALSE, TRUE);
+    return out_container_core(obj, FALSE, TRUE, (uchar*)0);
 }
 
 
@@ -3550,20 +3553,21 @@ STATIC_PTR int
 out_container(obj)
 register struct obj* obj;
 {
-    return out_container_core(obj, TRUE, FALSE);
+    return out_container_core(obj, TRUE, FALSE, (uchar*)0);
 }
 
 STATIC_PTR int
 out_container_nobot(obj)
 register struct obj* obj;
 {
-    return out_container_core(obj, FALSE, FALSE);
+    return out_container_core(obj, FALSE, FALSE, (uchar*)0);
 }
 
 STATIC_PTR int
-out_container_core(obj, dobot, do_auto_in_bag)
+out_container_core(obj, dobot, do_auto_in_bag, obj_gone_ptr)
 register struct obj *obj;
 boolean dobot, do_auto_in_bag;
+uchar* obj_gone_ptr;
 {
     register struct obj *otmp;
     boolean is_gold = (obj->oclass == COIN_CLASS);
@@ -3616,6 +3620,8 @@ boolean dobot, do_auto_in_bag;
         pick_pick(obj); /* shopkeeper feedback */
 
     otmp = addinv(obj);
+    if (obj_gone_ptr && otmp != obj)
+        *obj_gone_ptr = 1;
     loadlev = near_capacity();
     prinv(loadlev ? ((loadlev < MOD_ENCUMBER)
                         ? "You have a little trouble removing"
@@ -3628,7 +3634,11 @@ boolean dobot, do_auto_in_bag;
         delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
     }
     if (do_auto_in_bag && otmp && otmp == obj)
-        (void)auto_bag_in(invent, otmp, FALSE);
+    {
+        int bagres = auto_bag_in(invent, otmp, FALSE);
+        if (obj_gone_ptr && bagres)
+            *obj_gone_ptr = 2;
+    }
     if (dobot && is_gold)
     {
         bot(); /* update character's gold piece count immediately */
@@ -4393,6 +4403,7 @@ struct obj* other_container UNUSED;
         n = 0;
         for (otmp = current_container->cobj; otmp; otmp = otmp->nobj)
             n++;
+        boolean obj_gone_type;
         switch (command_id)
         {
         case 0:
@@ -4400,11 +4411,12 @@ struct obj* other_container UNUSED;
             for (otmp = current_container->cobj, i = 0; otmp; otmp = otmp2, i++)
             {
                 otmp2 = otmp->nobj;
-                res = do_auto_in_bag ? out_container_and_autostash_nobot(otmp) : out_container_nobot(otmp);
+                obj_gone_type = FALSE;
+                res = out_container_core(otmp, FALSE, do_auto_in_bag, &obj_gone_type);
                 if (res < 0)
                     break;
                 n_looted += res;
-                if (!carried(current_container) && handle_knapsack_prefull(res, container_cnt, &do_auto_in_bag, &used_container, otmp, i, n) < 0)
+                if (!carried(current_container) && !obj_gone_type && handle_knapsack_prefull(res, container_cnt, &do_auto_in_bag, &used_container, otmp, i, n, check_nonmergeable_nobj(otmp->nobj)) < 0)
                     break;
             }
             bot();
@@ -4509,6 +4521,7 @@ struct obj* other_container UNUSED;
         {
             n_looted = 0;
             context.quit_pressed = FALSE;
+            boolean obj_gone_type;
             for (i = 0; i < n; i++)
             {
                 n_looted++;
@@ -4523,13 +4536,14 @@ struct obj* other_container UNUSED;
                 switch (command_id)
                 {
                 case 0:
-                    res = do_auto_in_bag ? out_container_and_autostash_nobot(otmp) : out_container_nobot(otmp);
+                    obj_gone_type = FALSE;
+                    res = out_container_core(otmp, FALSE, do_auto_in_bag, &obj_gone_type);
                     if (res == -2 && flags.knapsack_prompt)
                     {
                         bot();
                         more_action = handle_knapsack_full();
                     }
-                    else if (!carried(current_container) && handle_knapsack_prefull(res, container_cnt, &do_auto_in_bag, &used_container, otmp, i, n) < 0)
+                    else if (!carried(current_container) && !obj_gone_type && handle_knapsack_prefull(res, container_cnt, &do_auto_in_bag, &used_container, otmp, i, n, check_nonmergeable_nobj(otmp->nobj)) < 0)
                         break;
                     break;
                 case 1:
@@ -4584,6 +4598,37 @@ struct obj* other_container UNUSED;
         sellobj_state(SELL_NORMAL);
 
     return n_looted + more_action;
+}
+
+STATIC_OVL
+boolean
+check_nonmergeable_nobj(objchn)
+struct obj* objchn;
+{
+    struct obj* otmp;
+    for (otmp = objchn; otmp; otmp = otmp->nobj)
+    {
+        if (otmp->oclass != COIN_CLASS && !merge_choice(invent, otmp))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+STATIC_OVL
+boolean
+check_nonmergeable_pick_list(pick_list, i, n)
+menu_item* pick_list;
+int i, n;
+{
+    struct obj* otmp;
+    int j;
+    for (j = i; j < n; j++)
+    {
+        otmp = pick_list[j].item.a_obj;
+        if (otmp->oclass != COIN_CLASS && !merge_choice(invent, otmp))
+            return TRUE;
+    }
+    return FALSE;
 }
 
 STATIC_OVL char
