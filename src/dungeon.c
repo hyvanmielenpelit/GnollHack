@@ -3253,15 +3253,27 @@ boolean printdun;
 
         if (mptr->feat.naltar > 0) 
         {
+            aligntyp altaralign = Amask2align(Msa2amask(mptr->feat.msalign));
+            boolean isyouralign = altaralign == u.ualign.type;
+            boolean isaligned = altaralign != A_NONE;
+            char abuf[BUFSZ];
             /* Temples + non-temple altars get munged into just "altars" */
+            /* only print out altar's god if they are all to your god; alignment for other aligned altars */
             if (mptr->feat.ntemple != mptr->feat.naltar)
-                ADDNTOBUF("altar", mptr->feat.naltar);
+            {
+                Sprintf(abuf, "%s%saltar%s%s", !isyouralign && isaligned ? align_str(altaralign) : "", !isyouralign && isaligned ? " " : "",
+                    isyouralign ? " to " : "", isyouralign ? align_gname(altaralign) : "");
+                ADDNTOBUF(abuf, mptr->feat.naltar);
+            }
             else
-                ADDNTOBUF("temple", mptr->feat.ntemple);
+            {
+                Sprintf(abuf, "%s%stemple%s%s", !isyouralign && isaligned ? align_str(altaralign) : "", !isyouralign && isaligned ? " " : "",
+                    isyouralign ? " to " : "", isyouralign ? align_gname(altaralign) : "");
+                ADDNTOBUF(abuf, mptr->feat.ntemple);
+            }
 
-            /* only print out altar's god if they are all to your god */
-            if (Amask2align(Msa2amask(mptr->feat.msalign)) == u.ualign.type)
-                Sprintf(eos(buf), " to %s", align_gname(u.ualign.type));
+            //if (altaralign == u.ualign.type)
+            //    Sprintf(eos(buf), " to %s", align_gname(altaralign));
         }
         ADDNTOBUF("smithy", mptr->feat.nsmithy);
         if (mptr->feat.nnpcroom > 0)

@@ -210,7 +210,7 @@ struct linfo {
  */
 
 /* Because clearly GnollHack needs more ways to specify alignment */
-#define Amask2msa(x) ((x) == 4 ? 3 : (x) &AM_MASK)
+#define Amask2msa(x) (((x) & AM_MASK) == 4 ? 3 : (x) & AM_MASK)
 #define Msa2amask(x) ((x) == 3 ? 4 : (x))
 #define MSA_NONE 0 /* unaligned or multiple alignments */
 #define MSA_LAWFUL 1
