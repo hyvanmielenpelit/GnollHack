@@ -294,8 +294,9 @@ char roomno;
 
 /* called from check_special_room() when the player enters the residence */
 void
-in_npc_room(roomno)
+in_npc_room(roomno, ignore_already_there)
 int roomno;
+boolean ignore_already_there;
 {
     struct monst* npc;
     struct enpc* enpc_p;
@@ -304,7 +305,7 @@ int roomno;
     int npctype = 0;
 
     /* don't do anything if hero is already in the room */
-    if (npc_room_occupied(u.urooms0))
+    if (!ignore_already_there && npc_room_occupied(u.urooms0))
         return;
 
     if ((npc = findnpc((char)roomno)) != 0)

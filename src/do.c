@@ -7457,6 +7457,7 @@ char* wakeupbuf;
     heal_ailments_upon_revival();
     if (wakeupbuf)
     {
+        int ux = u.ux, uy = u.uy;
         if (isok(altar_x, altar_y))
         {
             if (MON_AT(altar_x, altar_y))
@@ -7473,6 +7474,7 @@ char* wakeupbuf;
                 mnexto(m_at(u.ux, u.uy));
             Sprintf(wakeupbuf, "After being dead for a while, you suddenly feel the saving grace of %s, and wake up.", u_gname());
         }
+        newsym(ux, uy);
     }
 }
 

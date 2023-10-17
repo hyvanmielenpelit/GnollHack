@@ -3168,7 +3168,7 @@ register boolean newlev;
             rt = 0;
             break;
         case NPCROOM:
-            in_npc_room(roomno + ROOMOFFSET);
+            in_npc_room(roomno + ROOMOFFSET, FALSE);
             msg_given = TRUE;
             rt = 0;
             break;

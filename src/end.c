@@ -1486,8 +1486,19 @@ int how;
             if (teleinstead)
             {
                 char wakeupbuf[BUFSZ] = "";
+                context.reviving = TRUE;
                 revival_at_altar(wakeupbuf);
+                char* ptr;
+                for (ptr = &u.urooms[0]; *ptr; ptr++) {
+                    int roomno = *ptr - ROOMOFFSET, rt = rooms[roomno].rtype;
+                    if (rt == NPCROOM)
+                    {
+                        in_npc_room(roomno + ROOMOFFSET, TRUE);
+                        break;
+                    }
+                }
                 revival_popup_message(wakeupbuf);
+                context.reviving = FALSE;
             }
             death_hint();
         }

@@ -2373,7 +2373,7 @@ E int FDECL(npc_move, (struct monst*));
 E char FDECL(npc_room_occupied, (char*));
 E struct monst* FDECL(findnpc, (CHAR_P));
 E boolean FDECL(in_his_npc_room, (struct monst*));
-E void FDECL(in_npc_room, (int));
+E void FDECL(in_npc_room, (int, BOOLEAN_P));
 E void FDECL(npcini, (d_level*, struct mkroom*, int, int, UCHAR_P, int));
 E void FDECL(newenpc, (struct monst*));
 E void FDECL(free_enpc, (struct monst*));
