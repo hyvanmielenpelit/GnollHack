@@ -1563,7 +1563,6 @@ int propid;
     if (propid == WARNING || propid == SEE_INVISIBLE)
     {
         see_monsters();
-        flush_screen(1);
         check_seen_bosses();
     }
 }

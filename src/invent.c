@@ -1243,7 +1243,6 @@ boolean verbose;
                     self_invis_message();
                 }
             }
-            flush_screen(1);
             check_seen_bosses();
         }
         else if (!See_invisible && saw_invisible)
@@ -1588,12 +1587,9 @@ boolean verbose;
         context.botl = context.botlx = TRUE;
         refresh_u_tile_gui_info(FALSE);
     }
-    if (check_bosses)    
-    {
-        flush_screen(1);
-        check_seen_bosses();
-    }
 
+    if (check_bosses)    
+        check_seen_bosses();
 }
 
 /*
