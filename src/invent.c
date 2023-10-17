@@ -1094,7 +1094,7 @@ boolean verbose;
     struct monst* old_usteed = u.usteed;
     int old_ulycn = u.ulycn;
     int old_move = get_u_move_speed(TRUE);
-
+    boolean check_bosses = FALSE;
 
     unsigned long previous_warntype_obj = context.warntype.obj;
     int oldstr = ACURR(A_STR);
@@ -1228,7 +1228,7 @@ boolean verbose;
             /* can now see invisible monsters */
             set_mimic_blocking(); /* do special mimic handling */
             see_monsters();
-
+            check_bosses = TRUE;
             if (Invis)
             {
                 state_change_detected = TRUE;
@@ -1243,6 +1243,8 @@ boolean verbose;
                     self_invis_message();
                 }
             }
+            flush_screen(1);
+            check_seen_bosses();
         }
         else if (!See_invisible && saw_invisible)
         {
@@ -1336,6 +1338,8 @@ boolean verbose;
     {
         vision_full_recalc = 1;
         see_monsters();
+        if (XRay_vision)
+            check_bosses = TRUE;
     }
 
     /* Magical breathing*/
@@ -1584,6 +1588,12 @@ boolean verbose;
         context.botl = context.botlx = TRUE;
         refresh_u_tile_gui_info(FALSE);
     }
+    if (check_bosses)    
+    {
+        flush_screen(1);
+        check_seen_bosses();
+    }
+
 }
 
 /*

@@ -1560,8 +1560,12 @@ int propid;
 {
     if (!propid)
         return;
-    if (propid == WARNING|| propid == SEE_INVISIBLE)
+    if (propid == WARNING || propid == SEE_INVISIBLE)
+    {
         see_monsters();
+        flush_screen(1);
+        check_seen_bosses();
+    }
 }
 
 const struct innate *

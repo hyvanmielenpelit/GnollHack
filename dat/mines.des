@@ -1177,29 +1177,38 @@ TRAP:random,random
 TRAP:random,random
 TRAP:random,random
 # Random monsters
-MONSTER:('g',"gnome king"),random,maxhp,hostile {
+MONSTER:('g',"gnome king"),random,maxhp,level_boss,hostile,level_adjustment:5,male,"Vorni III" {
   OBJECT: class_treasure_weapon, notcursed
-  OBJECT: ('[', "royal crown")
+  OBJECT: ('[', "royal crown"),enchantment:4,blessed
 }
-MONSTER:('g',"gnome lord"),random,hostile
-MONSTER:('g',"gnome lord"),random,hostile
-MONSTER:('g',"gnome lord"),random,hostile
-MONSTER:('g',"gnomish wizard"),random,hostile
-MONSTER:('g',"gnomish wizard"),random,hostile
-MONSTER:('g',"gnome"),random,hostile
-MONSTER:('g',"gnome"),random,hostile
-MONSTER:('g',"gnome"),random,hostile
-MONSTER:('g',"gnome"),random,hostile
-MONSTER:('g',"gnome"),random,hostile
-MONSTER:('g',"gnome"),random,hostile
-MONSTER:('g',"gnome"),random,hostile
-MONSTER:('g',"gnome"),random,hostile
-MONSTER:('g',"gnome"),random,hostile
-MONSTER:('h',"halfling"),random,hostile
-MONSTER:('h',"halfling"),random,hostile
-MONSTER:('h',"dwarf"),random,hostile
-MONSTER:('h',"dwarf"),random,hostile
-MONSTER:('h',"dwarf"),random,hostile
+MONSTER:('g',"gnome lord"),random,hostile,maxhp,level_adjustment:5,keep_original_inventory,male,"Duke Wigglestitch" {
+  OBJECT: ('[', "gnomish felt hat"),enchantment:2,blessed
+  OBJECT: ('/', "lightning")
+}
+MONSTER:('g',"gnome lord"),random,hostile,maxhp,level_adjustment:5,keep_original_inventory,male,"Count Nepleweple" {
+  OBJECT: ('[', "gnomish felt hat"),enchantment:3,blessed
+  OBJECT: ('/', "create monster")
+}
+MONSTER:('g',"gnome lord"),random,hostile,maxhp,level_adjustment:5,keep_original_inventory,male,"Baron Briskmask" {
+  OBJECT: ('[', "gnomish felt hat"),enchantment:4,blessed
+  OBJECT: ('!', "paralysis")
+}
+MONSTER:('g',"gnomish wizard"),random,hostile,maxhp,level_adjustment:5,"Archwizard Alyur"
+MONSTER:('g',"gnomish wizard"),random,hostile,maxhp,level_adjustment:5,"Archwizard Saxif"
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('h',"halfling"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('h',"halfling"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('h',"dwarf"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('h',"dwarf"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('h',"dwarf"),random,hostile,maxhp,level_adjustment:5
 MONSTER:'h',random,hostile
 
 
@@ -1344,30 +1353,39 @@ TRAP:random,random
 TRAP:random,random
 TRAP:random,random
 # Random monsters.
-MONSTER:('g',"gnome king"),random,maxhp,hostile {
+MONSTER:('g',"gnome king"),random,maxhp,level_boss,hostile,level_adjustment:5,male,"Vorni III" {
   OBJECT: class_treasure_weapon, notcursed
-  OBJECT: ('[', "royal crown")
+  OBJECT: ('[', "royal crown"),enchantment:4,blessed
 }
-MONSTER:('g',"gnome lord"),random,hostile
-MONSTER:('g',"gnome lord"),random,hostile
-MONSTER:('g',"gnome lord"),random,hostile
-MONSTER:('g',"gnomish wizard"),random,hostile
-MONSTER:('g',"gnomish wizard"),random,hostile
-MONSTER:('g',"gnome"),random,hostile
-MONSTER:('g',"gnome"),random,hostile
-MONSTER:('g',"gnome"),random,hostile
-MONSTER:('g',"gnome"),random,hostile
-MONSTER:('g',"gnome"),random,hostile
-MONSTER:('g',"gnome"),random,hostile
-MONSTER:('g',"gnome"),random,hostile
-MONSTER:('g',"gnome"),random,hostile
-MONSTER:('g',"gnome"),random,hostile
-MONSTER:('h',"halfling"),random,hostile
-MONSTER:('h',"halfling"),random,hostile
-MONSTER:('h',"dwarf"),random,hostile
-MONSTER:('h',"dwarf"),random,hostile
-MONSTER:('h',"dwarf"),random,hostile
-MONSTER:'h',random,hostile
+MONSTER:('g',"gnome lord"),random,hostile,maxhp,level_adjustment:5,keep_original_inventory,male,"Duke Wigglestitch" {
+  OBJECT: ('[', "gnomish felt hat"),enchantment:2,blessed
+  OBJECT: ('/', "lightning")
+}
+MONSTER:('g',"gnome lord"),random,hostile,maxhp,level_adjustment:35,keep_original_inventory,male,"Count Nepleweple" {
+  OBJECT: ('[', "gnomish felt hat"),enchantment:3,blessed
+  OBJECT: ('/', "create monster")
+}
+MONSTER:('g',"gnome lord"),random,hostile,maxhp,level_adjustment:5,keep_original_inventory,male,"Baron Briskmask" {
+  OBJECT: ('[', "gnomish felt hat"),enchantment:4,blessed
+  OBJECT: ('!', "paralysis")
+}
+MONSTER:('g',"gnomish wizard"),random,hostile,maxhp,level_adjustment:5,"Archwizard Alyur"
+MONSTER:('g',"gnomish wizard"),random,hostile,maxhp,level_adjustment:5,"Archwizard Saxif"
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('h',"halfling"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('h',"halfling"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('h',"dwarf"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('h',"dwarf"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('h',"dwarf"),random,hostile,maxhp,level_adjustment:5
+MONSTER:'h',random,hostile,maxhp
 
 
 # "Catacombs" by Kelly Bailey

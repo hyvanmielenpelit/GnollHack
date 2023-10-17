@@ -1313,6 +1313,7 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
         set_mimic_blocking(); /* do special mimic handling */
         see_monsters();       /* see invisible monsters */
         newsym(u.ux, u.uy);   /* see yourself! */
+        check_seen_bosses();
         donotcheckfurther = TRUE;
     }
 
@@ -2656,6 +2657,7 @@ struct obj *otmp;
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Suddenly you can see yourself.");
                     makeknown(typ);
                 }
+                check_seen_bosses();
                 if (typ != RIN_SUPREME_POWER)
                     break;
 

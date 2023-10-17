@@ -580,9 +580,13 @@ toggle_blindness()
         }
     }
 
-    /* update dknown flag for inventory picked up while blind */
     if (!Blind)
+    {
+        /* update dknown flag for inventory picked up while blind */
         learn_unseen_invent();
+        /* check if a boss monster has appeared into view */
+        check_seen_bosses();
+    }
 }
 
 boolean
@@ -1251,6 +1255,7 @@ struct obj *otmp;
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "can see through yourself, but you are visible!");
             unkn--;
         }
+        check_seen_bosses();
         break;
     }
     case POT_DWARVEN_MUSHROOM_BREW:

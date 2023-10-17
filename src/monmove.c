@@ -1132,6 +1132,15 @@ struct monst* mtmp;
     }
 }
 
+void
+check_seen_bosses(VOID_ARGS)
+{
+    struct monst* mtmp;
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+        if (canseemon(mtmp))
+            check_boss_fight(mtmp);
+}
+
 
 STATIC_VAR NEARDATA const char practical[] = { WEAPON_CLASS, ARMOR_CLASS,
                                            GEM_CLASS, FOOD_CLASS, MISCELLANEOUS_CLASS, 0 };
