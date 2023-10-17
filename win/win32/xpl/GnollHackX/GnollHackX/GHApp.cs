@@ -60,6 +60,7 @@ namespace GnollHackX
             UseSingleDumpLog = Preferences.Get("UseSingleDumpLog", GHConstants.DefaultUseSingleDumpLog);
             ReadStreamingBankToMemory = Preferences.Get("ReadStreamingBankToMemory", GHConstants.DefaultReadStreamingBankToMemory);
             CopyStreamingBankToDisk = Preferences.Get("CopyStreamingBankToDisk", GHConstants.DefaultCopyStreamingBankToDisk);
+            AppSwitchSaveStyle = Preferences.Get("AppSwitchSaveStyle", 0);
 
             BackButtonPressed += EmptyBackButtonPressed;
         }
@@ -245,6 +246,8 @@ namespace GnollHackX
         private static readonly object _savingGameLock = new object();
         private static bool _savingGame = false;
         public static bool SavingGame { get { lock (_savingGameLock) { return _savingGame; } } set { lock (_savingGameLock) { _savingGame = value; } } }
+
+        public static int AppSwitchSaveStyle { get; set; }
 
         private static readonly object _gameSavedLock = new object();
         private static bool _gameSaved = false;

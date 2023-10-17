@@ -272,7 +272,7 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern int LibChmod(string filename, uint mode);
         [DllImport(PlatformConstants.dll)]
-        public static extern void LibSaveAndRestoreSavedGame();
+        public static extern void LibSaveAndRestoreSavedGame(int save_style);
         [DllImport(PlatformConstants.dll)]
         public static extern void LibTallyRealTime();
         [DllImport(PlatformConstants.dll)]
@@ -946,9 +946,9 @@ namespace GnollHackX.Unknown
             return res;
         }
 
-        public void SaveAndRestoreSavedGame()
+        public void SaveAndRestoreSavedGame(int save_style)
         {
-            LibSaveAndRestoreSavedGame();
+            LibSaveAndRestoreSavedGame(save_style);
         }
         public void TallyRealTime()
         {

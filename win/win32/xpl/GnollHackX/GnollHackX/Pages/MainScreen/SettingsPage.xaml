@@ -746,6 +746,33 @@
                                     <Switch x:Name="HTMLDumpLogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
                             </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Save on Switching Apps"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Picker x:Name="SaveStylePicker"
+                                            Title="Select a save style"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="140"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="EndAndExpand" >
+                                        <Picker.ItemsSource>
+                                            <x:Array Type="{x:Type x:String}">
+                                                <x:String>Save Game</x:String>
+                                                <x:String>Checkpoint</x:String>
+                                            </x:Array>
+                                        </Picker.ItemsSource>
+                                    </Picker>
+                                </StackLayout>
+                            </ViewCell>
                         </TableSection>
                     </TableRoot>
                 </TableView>

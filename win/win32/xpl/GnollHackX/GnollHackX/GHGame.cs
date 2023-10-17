@@ -91,7 +91,7 @@ namespace GnollHackX
                 if(!GHApp.CancelSaveGame)
                 {
                     GHApp.SavingGame = true;
-                    GHApp.GnollHackService.SaveAndRestoreSavedGame();
+                    GHApp.GnollHackService.SaveAndRestoreSavedGame(GHApp.AppSwitchSaveStyle);
                 }
                 GHApp.GameSaved = false;
                 GHApp.SavingGame = false;

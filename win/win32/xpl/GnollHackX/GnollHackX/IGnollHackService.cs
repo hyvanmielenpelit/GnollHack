@@ -51,7 +51,7 @@ namespace GnollHackX
 
         int StartGnollHack(GHGame ghGame);
 
-        void SaveAndRestoreSavedGame();
+        void SaveAndRestoreSavedGame(int save_style);
         void TallyRealTime();
         bool ValidateSaveFile(string filename, out string out_str);
         int CheckCurrentFileDescriptor();

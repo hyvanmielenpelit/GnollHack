@@ -332,35 +332,47 @@ LibChmod(const char* filename, unsigned int mode)
 }
 
 void
-LibSaveAndRestoreSavedGame(void)
+LibSaveAndRestoreSavedGame(int save_style)
 {
     if (program_state.something_worth_saving 
         && !program_state.gameover && !program_state.panicking 
         && !program_state.exiting && !program_state.freeing_dynamic_data
         && !saving && !restoring && !reseting && !check_pointing)
     {
-        /* Reset certain animations so they do not play upon loading */
-        reset_monster_origin_coordinates(&youmonst);
-        reset_all_monster_origin_coordinates();
-        reset_all_object_origin_coordinates();
-        reset_found_this_turn();
+        switch (save_style)
+        {
+        case 1: /* Checkpoint only */
+#ifdef INSURANCE
+            save_currentstate(); /* In the case save fails */
+#endif
+            issue_parametered_gui_command(GUI_CMD_WAIT_FOR_RESUME, 0);
+            break;
+        default:
+        case 0: /* Save game with checkpoint as a backup */
+            /* Reset certain animations so they do not play upon loading */
+            reset_monster_origin_coordinates(&youmonst);
+            reset_all_monster_origin_coordinates();
+            reset_all_object_origin_coordinates();
+            reset_found_this_turn();
 
 #ifdef INSURANCE
-        save_currentstate(); /* In the case save fails */
+            save_currentstate(); /* In the case save fails */
 #endif
-        int saveres = dosave0(TRUE);
-        issue_parametered_gui_command(GUI_CMD_WAIT_FOR_RESUME, saveres);
-        if (saveres)
-        {
-            exit_hack_code = 1; /* reload upon exit */
-            u.uhp = -1; /* universal game's over indicator */
-            /* make sure they see the Saving message */
-            display_nhwindow(WIN_MESSAGE, TRUE);
-            exit_nhwindows((char*)0);
-            nh_terminate(EXIT_SUCCESS);
+            int saveres = dosave0(TRUE);
+            issue_parametered_gui_command(GUI_CMD_WAIT_FOR_RESUME, saveres);
+            if (saveres)
+            {
+                exit_hack_code = 1; /* reload upon exit */
+                u.uhp = -1; /* universal game's over indicator */
+                /* make sure they see the Saving message */
+                display_nhwindow(WIN_MESSAGE, TRUE);
+                exit_nhwindows((char*)0);
+                nh_terminate(EXIT_SUCCESS);
+            }
+            else
+                (void)doredraw();
+            break;
         }
-        else
-            (void)doredraw();
     }
 }
 

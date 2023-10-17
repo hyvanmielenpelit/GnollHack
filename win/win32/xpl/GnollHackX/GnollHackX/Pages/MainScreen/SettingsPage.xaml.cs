@@ -359,6 +359,11 @@ namespace GnollHackX.Pages.MainScreen
                 Preferences.Set("AlternativeLayerDrawing", AlternativeLayerDrawingSwitch.IsToggled);
             }
 
+            if (SaveStylePicker.SelectedIndex > -1)
+            {
+                Preferences.Set("AppSwitchSaveStyle", SaveStylePicker.SelectedIndex);
+            }
+
             if (_mainPage != null)
                 _mainPage.UpdateLayout();
 
@@ -373,7 +378,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private void SetInitialValues()
         {
-            int cursor = 0, graphics = 0, maprefresh = (int)UIUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
+            int cursor = 0, graphics = 0, savestyle = 0, maprefresh = (int)UIUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
             bool mem = false, fps = false, battery = false, gpu = GHApp.IsGPUDefault, simplecmdlayout = true, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations, put2bag = GHConstants.DefaultShowPut2BagContextCommand;
@@ -413,6 +418,7 @@ namespace GnollHackX.Pages.MainScreen
             customlink = Preferences.Get("CustomGameStatusLink", "");
             allowbones = Preferences.Get("AllowBones", true);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
+            savestyle = Preferences.Get("AppSwitchSaveStyle", 0);
             if (_gamePage == null)
             {
                 cursor = Preferences.Get("CursorStyle", 1);
@@ -484,6 +490,7 @@ namespace GnollHackX.Pages.MainScreen
             CursorPicker.SelectedIndex = cursor;
             GraphicsPicker.SelectedIndex = graphics;
             RefreshRatePicker.SelectedIndex = Math.Min(RefreshRatePicker.Items.Count - 1, maprefresh);
+            SaveStylePicker.SelectedIndex = savestyle;
             GridSwitch.IsToggled = mapgrid;
             HitPointBarSwitch.IsToggled = hpbars;
             ClassicStatusBarSwitch.IsToggled = nhstatusbarclassic;
