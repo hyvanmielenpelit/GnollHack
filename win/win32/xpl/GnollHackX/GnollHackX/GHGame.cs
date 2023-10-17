@@ -591,14 +591,12 @@ namespace GnollHackX
                         desc = res;
 
                     if (responses.Contains(res))
-                    {
-                        if (GHGame.RequestDictionary.TryGetValue(this, out queue))
-                        {
-                            queue.Enqueue(new GHRequest(this, GHRequestType.HideYnResponses));
-                        }
                         return val;
-                    }
 
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses));
+                    }
                     ClientCallback_RawPrint("'" + desc + "': Invalid input!");
                     cnt++;
                 }
@@ -1752,7 +1750,15 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_WAIT_FOR_RESUME:
                     GHApp.GameSaved = true;
+                    GHApp.GameSaveResult = cmd_param;
                     GHApp.SavingGame = false;
+                    if(cmd_param != 0)
+                    {
+                        if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                        {
+                            queue.Enqueue(new GHRequest(this,GHRequestType.CloseAllDialogs));
+                        }
+                    }
                     while (!_restoreRequested)
                     {
                         Thread.Sleep(GHConstants.PollingInterval);

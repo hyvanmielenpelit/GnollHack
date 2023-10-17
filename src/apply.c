@@ -5016,6 +5016,16 @@ int* max_range;
     }
 }
 
+//boolean
+//can_pole_hit_in_melee(obj, mon, min_range, max_range)
+//struct obj* obj;
+//struct monst* mon;
+//{
+//    int min_range = 0, max_range = 0;
+//    get_pole_type_weapon_min_max_distances(obj, mon, &min_range, &max_range);
+//    return (min_range <= 1 && max_range >= 1);
+//}
+
 /* Distance attacks by pole-weapons */
 STATIC_OVL int
 use_pole(obj)

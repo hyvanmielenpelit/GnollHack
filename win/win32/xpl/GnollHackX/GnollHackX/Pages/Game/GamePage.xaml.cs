@@ -18,6 +18,7 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using static Xamarin.Essentials.Permissions;
+using System.Collections;
 
 #if GNH_MAUI
 using GnollHackX;
@@ -2175,9 +2176,39 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.DebugLog:
                                 DisplayDebugLog(req.RequestString, req.RequestInt, req.RequestInt2);
                                 break;
+                            case GHRequestType.CloseAllDialogs:
+                                CloseAllDialogs();
+                                break;
                         }
                     }
                 }
+            }
+        }
+
+        private void CloseAllDialogs()
+        {
+            if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
+                MenuCanvas.AbortAnimation("GeneralAnimationCounter");
+            if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
+                TextCanvas.AbortAnimation("GeneralAnimationCounter");
+
+            TextGrid.IsVisible = false;
+            MenuGrid.IsVisible = false;
+            MenuWindowGlyphImage.StopAnimation();
+            MenuCountBackgroundGrid.IsVisible = false;
+            GetLineGrid.IsVisible = false;
+            PopupGrid.IsVisible = false;
+            TextWindowGlyphImage.StopAnimation();
+            YnGrid.IsVisible = false;
+
+            if (!LoadingGrid.IsVisible && (!MainGrid.IsVisible || !canvasView.AnimationIsRunning("GeneralAnimationCounter")))
+            {
+                MainGrid.IsVisible = true;
+                lock (RefreshScreenLock)
+                {
+                    RefreshScreen = true;
+                }
+                StartMainCanvasAnimation();
             }
         }
 
@@ -3200,7 +3231,9 @@ namespace GnollHackX.Pages.Game
                 case ghmenu_styles.GHMENU_STYLE_CHARACTER:
                 case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL:
                 case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL_ALTERNATE:
-                case ghmenu_styles.GHMENU_STYLE_CHAT:                    
+                case ghmenu_styles.GHMENU_STYLE_CHAT:
+                case ghmenu_styles.GHMENU_STYLE_SKILLS:
+                case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
                     MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
                     MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;
                     MenuCanvas.RevertBlackAndWhite = true;
@@ -12027,6 +12060,14 @@ namespace GnollHackX.Pages.Game
         private void YnButton_Clicked(object sender, EventArgs e)
         {
             LabeledImageButton ghb = (LabeledImageButton)sender;
+
+            /* This is slightly slower and flickers less with two consecutive yn questions than a direct call to HideYnResponses() */
+            ConcurrentQueue<GHRequest> queue;
+            if (GHGame.RequestDictionary.TryGetValue(CurrentGame, out queue))
+            {
+                queue.Enqueue(new GHRequest(CurrentGame, GHRequestType.HideYnResponses));
+            }
+
             GenericButton_Clicked(sender, e, ghb.GHCommand);
         }
 

@@ -349,7 +349,7 @@ LibSaveAndRestoreSavedGame(void)
         save_currentstate(); /* In the case save fails */
 #endif
         int saveres = dosave0(TRUE);
-        issue_simple_gui_command(GUI_CMD_WAIT_FOR_RESUME);
+        issue_parametered_gui_command(GUI_CMD_WAIT_FOR_RESUME, saveres);
         if (saveres)
         {
             exit_hack_code = 1; /* reload upon exit */

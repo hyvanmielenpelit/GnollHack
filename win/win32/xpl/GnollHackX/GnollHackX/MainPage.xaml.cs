@@ -136,10 +136,10 @@ namespace GnollHackX
                 FmodLogoImage.IsVisible = false;
 
                 bool previousInformationShown = false;
-                if (GHApp.InformAboutGameTermination)
+                if (GHApp.InformAboutGameTermination && (GHApp.DebugLogMessages ||  GHApp.GameSaveStatus == 0))
                 {
                     GHApp.InformAboutGameTermination = false;
-                    await DisplayAlert("Unexpected Game Termination", "GnollHack was unexpectedly terminated when running on background. This may have been instructed by the operating system or the user. Your game may have been saved before the termination.", "OK");
+                    await DisplayAlert("Unexpected Game Termination", "GnollHack was unexpectedly terminated when running on background. This may have been instructed by the operating system or the user." + (GHApp.GameSaveStatus == 0 ? " Your game may be recoverable from the crash." : " Your game was saved before the termination."), "OK");
                     previousInformationShown = true;
                 }
                 if (GHApp.InformAboutIncompatibleSavedGames)

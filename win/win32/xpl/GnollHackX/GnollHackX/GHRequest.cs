@@ -57,6 +57,7 @@ namespace GnollHackX
         PostDiagnosticData,
         RestartGame,
         DebugLog,
+        CloseAllDialogs,
     }
 
     public struct AddContextMenuData

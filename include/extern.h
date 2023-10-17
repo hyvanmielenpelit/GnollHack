@@ -112,6 +112,7 @@ E void FDECL(use_magic_whistle, (struct obj*));
 E int FDECL(count_other_containers, (struct obj*, struct obj*, struct obj**, BOOLEAN_P));
 E struct obj* FDECL(select_other_container, (struct obj*, struct obj*, BOOLEAN_P));
 E void FDECL(get_pole_type_weapon_min_max_distances, (struct obj*, struct monst*, int*, int*));
+//E boolean FDECL(can_pole_hit_in_melee, (struct obj*, struct monst*));
 E int FDECL(use_grail, (struct obj*, BOOLEAN_P));
 E int FDECL(use_salve, (struct obj*, BOOLEAN_P));
 E int NDECL(floorapply);

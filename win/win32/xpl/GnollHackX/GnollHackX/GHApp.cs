@@ -48,8 +48,10 @@ namespace GnollHackX
             ClassicMode = Preferences.Get("ClassicMode", false);
             CasualMode = Preferences.Get("CasualMode", false);
             LoadBanks = Preferences.Get("LoadSoundBanks", true);
+            GameSaveStatus = Preferences.Get("GameSaveResult", 0);
             InformAboutGameTermination = Preferences.Get("WentToSleepWithGameOn", false);
             Preferences.Set("WentToSleepWithGameOn", false);
+            Preferences.Set("GameSaveResult", 0);
             InformAboutCrashReport = !InformAboutGameTermination;
             PostingGameStatus = Preferences.Get("PostingGameStatus", GHConstants.DefaultPosting);
             PostingDiagnosticData = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
@@ -114,6 +116,7 @@ namespace GnollHackX
         private static readonly object _currentGHGameLock = new object();
         private static GHGame _currentGHGame = null;
         public static GHGame CurrentGHGame { get { lock (_currentGHGameLock) { return _currentGHGame; } } set { lock (_currentGHGameLock) { _currentGHGame = value; } } }
+        public static int GameSaveStatus = 0;
         public static bool InformAboutGameTermination = false;
         public static bool InformAboutCrashReport = false;
         public static bool InformAboutIncompatibleSavedGames = false;
@@ -247,6 +250,9 @@ namespace GnollHackX
         private static bool _gameSaved = false;
         public static bool GameSaved { get { lock (_gameSavedLock) { return _gameSaved; } } set { lock (_gameSavedLock) { _gameSaved = value; } } }
 
+        private static readonly object _gameSaveResultLock = new object();
+        public static int GameSaveResult { get { lock (_gameSaveResultLock) { return Preferences.Get("GameSaveResult", 0); } } set { lock (_gameSaveResultLock) { Preferences.Set("GameSaveResult", value); } } }
+
         public static void CollectGarbage()
         {
             GC.Collect();
@@ -288,6 +294,7 @@ namespace GnollHackX
             {
                 //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
                 Preferences.Set("WentToSleepWithGameOn", true);
+                Preferences.Set("GameSaveResult", 0);
                 CurrentGHGame.ActiveGamePage.SaveGameAndWaitForResume();
             }
             CollectGarbage();
@@ -309,6 +316,7 @@ namespace GnollHackX
                 //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
                 bool wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
                 Preferences.Set("WentToSleepWithGameOn", false);
+                Preferences.Set("GameSaveResult", 0);
                 if (wenttosleep && (GameSaved || SavingGame))
                 {
                     CurrentGHGame.ActiveGamePage.StopWaitAndResumeSavedGame();
