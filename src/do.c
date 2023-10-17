@@ -6922,7 +6922,6 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     vision_full_recalc = 0; /* don't let that reenable vision yet */
     flush_screen(-1);       /* ensure all map flushes are postponed */
     char wakeupbuf[BUFSZ] = "";
-    boolean displaywakeup = FALSE;
 
     if (portal == 1 && !In_endgame(&u.uz))
     {
@@ -7032,41 +7031,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     }
     else if ((at_location & 2) && !In_endgame(&u.uz))
     {
-        int altar_x = 0, altar_y = 0;
-        int x, y;
-        boolean dobreak = FALSE;
-        for (x = 1; x < COLNO; x++)
-        {
-            for (y = 0; y < ROWNO; y++)
-            {
-                if (IS_ALTAR(levl[x][y].typ))
-                {
-                    altar_x = x;
-                    altar_y = y;
-                    if (a_align(x, y) == u.ualign.type)
-                    {
-                        dobreak = TRUE;
-                        break;
-                    }
-                }
-            }
-            if (dobreak)
-                break;
-        }
-
-        set_itimeout(&HInvulnerable, 0L);
-        heal_ailments_upon_revival();
-        displaywakeup = TRUE;
-        if (isok(altar_x, altar_y))
-        {
-            u_on_newpos(altar_x, altar_y);
-            Sprintf(wakeupbuf, "After being dead for a while, you suddenly feel the saving grace of %s, and wake up at %s altar.", u_gname(), u_ghisher());
-        }
-        else
-        {
-            u_on_rndspot(FALSE);
-            Sprintf(wakeupbuf, "After being dead for a while, you suddenly feel the saving grace of %s, and wake up.", u_gname());
-        }
+        revival_at_altar(wakeupbuf);
     }
     else 
     { /* trap door or level_tele or In_endgame */
@@ -7146,12 +7111,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         set_special_level_seen(&u.uz, TRUE);
     }
 
-    if (displaywakeup)
-    {
-        play_sfx_sound(SFX_REVIVAL);
-        pline_ex1(ATR_NONE, CLR_MSG_SUCCESS, wakeupbuf);
-        display_popup_text(wakeupbuf, "Revival", POPUP_TEXT_REVIVAL, ATR_NONE, CLR_MSG_SUCCESS, NO_GLYPH, POPUP_FLAGS_NONE);
-    }
+    revival_popup_message(wakeupbuf);
 
     /* special levels can have a custom arrival message */
     deliver_splev_message();
@@ -7466,6 +7426,67 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     context.reviving = FALSE;
 }
 
+
+void
+revival_at_altar(wakeupbuf)
+char* wakeupbuf;
+{
+    int altar_x = 0, altar_y = 0;
+    int x, y;
+    boolean dobreak = FALSE;
+    for (x = 1; x < COLNO; x++)
+    {
+        for (y = 0; y < ROWNO; y++)
+        {
+            if (IS_ALTAR(levl[x][y].typ))
+            {
+                altar_x = x;
+                altar_y = y;
+                if (a_align(x, y) == u.ualign.type)
+                {
+                    dobreak = TRUE;
+                    break;
+                }
+            }
+        }
+        if (dobreak)
+            break;
+    }
+
+    set_itimeout(&HInvulnerable, 0L);
+    heal_ailments_upon_revival();
+    if (wakeupbuf)
+    {
+        if (isok(altar_x, altar_y))
+        {
+            if (MON_AT(altar_x, altar_y))
+                mnexto(m_at(altar_x, altar_y));
+            u_on_newpos(altar_x, altar_y);
+            if (MON_AT(u.ux, u.uy))
+                mnexto(m_at(u.ux, u.uy));
+            Sprintf(wakeupbuf, "After being dead for a while, you suddenly feel the saving grace of %s, and wake up at %s altar.", u_gname(), u_ghisher());
+        }
+        else
+        {
+            u_on_rndspot(FALSE);
+            if (MON_AT(u.ux, u.uy))
+                mnexto(m_at(u.ux, u.uy));
+            Sprintf(wakeupbuf, "After being dead for a while, you suddenly feel the saving grace of %s, and wake up.", u_gname());
+        }
+    }
+}
+
+void
+revival_popup_message(wakeupbuf)
+char* wakeupbuf;
+{
+    if (wakeupbuf && *wakeupbuf)
+    {
+        play_sfx_sound(SFX_REVIVAL);
+        pline_ex1(ATR_NONE, CLR_MSG_SUCCESS, wakeupbuf);
+        display_popup_text(wakeupbuf, "Revival", POPUP_TEXT_REVIVAL, ATR_NONE, CLR_MSG_SUCCESS, NO_GLYPH, POPUP_FLAGS_NONE);
+    }
+}
 
 STATIC_OVL void
 final_level()

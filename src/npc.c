@@ -328,6 +328,13 @@ int roomno;
                 enpc_p->enter_time = 0L;
             }
 
+            if (context.reviving && !npc->mpeaceful)
+            {
+                /* Revival pacifies nearby NPCs */
+                npc->mpeaceful = 1;
+                newsym(npc->mx, npc->my);
+            }
+
             if (context.reviving && (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_COMMENTS_ON_REVIVAL))
             {
                 int dialogueline = NPC_LINE_REVIVAL;

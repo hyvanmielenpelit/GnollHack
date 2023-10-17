@@ -1485,10 +1485,9 @@ int how;
 
             if (teleinstead)
             {
-                tele();
-                if (!Confusion)
-                    play_sfx_sound(SFX_ACQUIRE_CONFUSION);
-                make_confused(itimeout_incr(HConfusion, d(2, 3)), FALSE);
+                char wakeupbuf[BUFSZ] = "";
+                revival_at_altar(wakeupbuf);
+                revival_popup_message(wakeupbuf);
             }
             death_hint();
         }

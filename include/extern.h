@@ -652,6 +652,8 @@ E void FDECL(goto_level, (d_level *, UCHAR_P, BOOLEAN_P, BOOLEAN_P, XCHAR_P));
 E void FDECL(schedule_goto, (d_level *, UCHAR_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, long,
                              const char *, const char *));
 E void NDECL(deferred_goto);
+E void FDECL(revival_at_altar, (char*));
+E void FDECL(revival_popup_message, (char*));
 E boolean FDECL(revive_corpse, (struct obj *));
 E boolean FDECL(animate_corpse, (struct obj*, int));
 E void FDECL(revive_mon, (ANY_P *, long));
