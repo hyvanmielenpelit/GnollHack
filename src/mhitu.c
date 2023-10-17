@@ -736,7 +736,7 @@ register struct monst *mtmp;
         tmp = tmp2; // Revert hit bonus to original value
         sum[i] = 0;
         mon_currwep = (struct obj *)0;
-
+         
         if (!orig_mpeaceful && mtmp->mpeaceful && !Conflict && !is_crazed(mtmp)) /* The monster has become peaceful in the middle of attacks, so it stops attacking */
             break;
 
