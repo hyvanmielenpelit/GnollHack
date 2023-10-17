@@ -729,12 +729,17 @@ register struct monst *mtmp;
     unsigned int bite_butt_count = 0;
 
     boolean first_attack = TRUE;
+    boolean orig_mpeaceful = mtmp->mpeaceful;
 
     for (i = 0; i < NATTK; i++) 
     {
         tmp = tmp2; // Revert hit bonus to original value
         sum[i] = 0;
         mon_currwep = (struct obj *)0;
+
+        if (!orig_mpeaceful && mtmp->mpeaceful && !Conflict && !is_crazed(mtmp)) /* The monster has become peaceful in the middle of attacks, so it stops attacking */
+            break;
+
         mattk = getmattk(mtmp, &youmonst, i, sum, &alt_attk);
         if ((u.uswallow && mattk->aatyp != AT_ENGL)
             || (skipnonmagc && mattk->aatyp != AT_MAGC && mattk->aatyp != AT_SMMN))
