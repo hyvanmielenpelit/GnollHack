@@ -1195,20 +1195,20 @@ MONSTER:('g',"gnome lord"),random,hostile,maxhp,level_adjustment:5,keep_original
 }
 MONSTER:('g',"gnomish wizard"),random,hostile,maxhp,level_adjustment:5,"Archwizard Alyur"
 MONSTER:('g',"gnomish wizard"),random,hostile,maxhp,level_adjustment:5,"Archwizard Saxif"
-MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('h',"halfling"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('h',"halfling"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('h',"dwarf"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('h',"dwarf"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('h',"dwarf"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('h',"halfling"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('h',"halfling"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('h',"dwarf"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('h',"dwarf"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('h',"dwarf"),random,hostile,maxhp,level_adjustment:3
 MONSTER:'h',random,hostile
 
 
@@ -1371,20 +1371,20 @@ MONSTER:('g',"gnome lord"),random,hostile,maxhp,level_adjustment:5,keep_original
 }
 MONSTER:('g',"gnomish wizard"),random,hostile,maxhp,level_adjustment:5,"Archwizard Alyur"
 MONSTER:('g',"gnomish wizard"),random,hostile,maxhp,level_adjustment:5,"Archwizard Saxif"
-MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('h',"halfling"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('h',"halfling"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('h',"dwarf"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('h',"dwarf"),random,hostile,maxhp,level_adjustment:5
-MONSTER:('h',"dwarf"),random,hostile,maxhp,level_adjustment:5
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('g',"gnome"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('h',"halfling"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('h',"halfling"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('h',"dwarf"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('h',"dwarf"),random,hostile,maxhp,level_adjustment:3
+MONSTER:('h',"dwarf"),random,hostile,maxhp,level_adjustment:3
 MONSTER:'h',random,hostile,maxhp
 
 
