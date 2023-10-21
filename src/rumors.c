@@ -46,6 +46,7 @@
 STATIC_DCL void FDECL(init_rumors, (dlb *));
 STATIC_DCL void FDECL(init_oracles, (dlb *));
 STATIC_DCL void FDECL(couldnt_open_file, (const char *));
+STATIC_DCL size_t NDECL(count_remaining_major_consultations);
 
 /* rumor size variables are signed so that value -1 can be used as a flag */
 STATIC_VAR long true_rumor_size = 0L, false_rumor_size;
@@ -56,7 +57,7 @@ STATIC_VAR long true_rumor_end, false_rumor_end;
 /* oracles are handled differently from rumors... */
 STATIC_VAR int oracle_flg = 0; /* -1=>don't use, 0=>need init, 1=>init done */
 STATIC_VAR size_t oracle_cnt = 0;
-STATIC_VAR unsigned long *oracle_loc = 0;
+STATIC_VAR long *oracle_loc = 0;
 
 STATIC_OVL void
 init_rumors(fp)
@@ -418,13 +419,25 @@ dlb *fp;
     (void) dlb_fgets(line, sizeof line, fp);
     if (sscanf(line, "%5d\n", &cnt) == 1 && cnt > 0) {
         oracle_cnt = (size_t) cnt;
-        oracle_loc = (unsigned long *) alloc((size_t)cnt * sizeof(long));
+        oracle_loc = (long *) alloc((size_t)cnt * sizeof(long));
         for (i = 0; i < cnt; i++) {
             (void) dlb_fgets(line, sizeof line, fp);
             (void) sscanf(line, "%5lx\n", &oracle_loc[i]);
         }
     }
     return;
+}
+
+STATIC_OVL size_t
+count_remaining_major_consultations(VOID_ARGS)
+{
+    size_t i, cnt = 0;
+    for (i = 0; i < oracle_cnt; i++) 
+    {
+        if (oracle_loc[i] >= 0)
+            cnt++;
+    }
+    return cnt;
 }
 
 void
@@ -434,7 +447,7 @@ int fd, mode;
     if (perform_bwrite(mode)) {
         bwrite(fd, (genericptr_t) &oracle_cnt, sizeof oracle_cnt);
         if (oracle_cnt)
-            bwrite(fd, (genericptr_t) oracle_loc, oracle_cnt * sizeof(unsigned long));
+            bwrite(fd, (genericptr_t) oracle_loc, oracle_cnt * sizeof(long));
     }
     if (release_data(mode)) {
         if (oracle_cnt) {
@@ -455,8 +468,8 @@ int fd;
 {
     mread(fd, (genericptr_t) &oracle_cnt, sizeof oracle_cnt);
     if (oracle_cnt) {
-        oracle_loc = (unsigned long *) alloc(oracle_cnt * sizeof(unsigned long));
-        mread(fd, (genericptr_t) oracle_loc, oracle_cnt * sizeof(unsigned long));
+        oracle_loc = (long *) alloc(oracle_cnt * sizeof(long));
+        mread(fd, (genericptr_t) oracle_loc, oracle_cnt * sizeof(long));
         oracle_flg = 1; /* no need to call init_oracles() */
     }
 }
@@ -470,7 +483,7 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
 {
     winid tmpwin;
     dlb *oracles;
-    int oracle_idx;
+    int oracle_idx, used_oracle_idx, i;
     char *endp, line[COLNO], xbuf[BUFSZ];
 
     /* early return if we couldn't open ORACLEFILE on previous attempt,
@@ -487,14 +500,36 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
             if (oracle_cnt == 0)
                 goto close_oracles;
         }
+        size_t remaining_count = count_remaining_major_consultations();
         /* oracle_loc[0] is the special oracle;
            oracle_loc[1..oracle_cnt-1] are normal ones */
-        if (oracle_cnt <= 1 && !special)
+        if (remaining_count <= 1 && !special)
             goto close_oracles; /*(shouldn't happen)*/
-        oracle_idx = special ? 0 : rnd((int) oracle_cnt - 1);
-        (void) dlb_fseek(oracles, (long) oracle_loc[oracle_idx], SEEK_SET);
+        oracle_idx = special ? 0 : rnd((int)remaining_count - 1);
+        used_oracle_idx = 0;
+        if (!special)
+        {
+            i = 0;
+            while(i < oracle_idx)
+            {
+                used_oracle_idx++;
+                i++;
+                if (used_oracle_idx >= oracle_cnt)
+                    break;
+                while (oracle_loc[used_oracle_idx] < 0)
+                {
+                    used_oracle_idx++;
+                    if (used_oracle_idx >= oracle_cnt)
+                        break;
+                }
+            }
+        }
+        if (used_oracle_idx >= oracle_cnt || oracle_loc[used_oracle_idx] < 0)
+            goto close_oracles;
+
+        (void) dlb_fseek(oracles, oracle_loc[used_oracle_idx], SEEK_SET);
         if (!special) /* move offset of very last one into this slot */
-            oracle_loc[oracle_idx] = oracle_loc[--oracle_cnt];
+            oracle_loc[used_oracle_idx] = -1; // oracle_loc[oracle_idx] = oracle_loc[--oracle_cnt];
 
         int glyph = any_mon_to_glyph(mtmp, rn2_on_display_rng);
         int gui_glyph = maybe_get_replaced_glyph(glyph, mtmp->mx, mtmp->my, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL, 0UL, 0UL, MAT_NONE, 0));
@@ -512,9 +547,9 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
         putstr(tmpwin, 0, "");
 
         if (mtmp && oraclesstyle == 1)
-            play_voice_oracle_major_consultation(mtmp, oracle_idx - 1);
+            play_voice_oracle_major_consultation(mtmp, used_oracle_idx - 1);
 
-        while (dlb_fgets(line, COLNO, oracles) && strcmp(line, "---\n")) 
+        while (dlb_fgets(line, COLNO, oracles) && strcmp(line, "---\n"))
         {
             if ((endp = index(line, '\n')) != 0)
                 *endp = 0;
@@ -522,11 +557,13 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
             putstr(tmpwin, 0, xcryptbuf);
             if(!u.uevent.elbereth_known && strstri(xcryptbuf, "Elbereth"))
                 u.uevent.elbereth_known = 1;
+            if (!u.uevent.invocation_ritual_known && strstri(xcryptbuf, "sanctuary"))
+                u.uevent.invocation_ritual_known = 1;
         }
         display_nhwindow(tmpwin, TRUE);
         destroy_nhwindow(tmpwin);
 
- close_oracles:
+    close_oracles:
         (void) dlb_fclose(oracles);
     } else {
         couldnt_open_file(ORACLEFILE);
@@ -590,7 +627,7 @@ struct monst *oracl;
         break;
     case 'n':
         if (umoney <= minor_cost /* don't even ask */
-            || (oracle_cnt == 1 || oracle_flg < 0))
+            || (count_remaining_major_consultations() == 1 || oracle_flg < 0))
             return 0;
 
         play_monster_special_dialogue_line(oracl, ORACLE_LINE_THEN_DOST_THOU_DESIRE_A_MAJOR_ONE);

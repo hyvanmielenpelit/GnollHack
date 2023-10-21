@@ -2280,8 +2280,6 @@ int
 dochatmon(mtmp)
 struct monst* mtmp;
 {
-    boolean elbereth_was_known = (boolean)u.uevent.elbereth_known;
-
     if (!mtmp || 
         ((!canspotmon(mtmp) || mtmp->mundetected || M_AP_TYPE(mtmp) == M_AP_FURNITURE || M_AP_TYPE(mtmp) == M_AP_OBJECT) && !is_tame(mtmp)))
     {
@@ -2289,6 +2287,9 @@ struct monst* mtmp;
         pline_ex1(ATR_NONE, CLR_MSG_FAIL, Blind ? "You cannot see there anyone to talk to." : "There is no-one to talk to.");
         return 0;
     }
+
+    unsigned was_ritual_known = u.uevent.invocation_ritual_known;
+    unsigned was_elbereth_known = u.uevent.elbereth_known;
 
     if (!canspotmon(mtmp) && is_tame(mtmp))
         pline("You cannot see anyone but then you feel %s's familiar presence there.", noit_mon_nam(mtmp));
@@ -4281,7 +4282,7 @@ struct monst* mtmp;
                 {
                     stopsdialogue = available_chat_list[j].stops_dialogue;
                     res = (available_chat_list[j].function_ptr)(mtmp);
-
+                    bot();
                     if (res == 2) /* Changed level or the like and mtmp does not exist anymore */
                     {
                         result = 1;
@@ -4303,9 +4304,18 @@ struct monst* mtmp;
     } while (i > 0 && !stopsdialogue && !stop_chat);
     
 end_of_chat_here:
-    if (!elbereth_was_known && u.uevent.elbereth_known)
+    if (!was_elbereth_known && u.uevent.elbereth_known)
+    {
         standard_hint("You can engrave \'Elbereth\' on the ground to protect yourself against attacking monsters.", &u.uhint.elbereth);
-
+    }
+    
+    if (!was_ritual_known && u.uevent.invocation_ritual_known && !u.uevent.invoked && !(u.uachieve.bell && u.uachieve.book && u.uachieve.menorah))
+    {
+        if (!was_elbereth_known && u.uevent.elbereth_known)
+            delay_output_milliseconds(500);
+        play_sfx_sound(SFX_HINT);
+        custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0, "Find the Candelabrum of Invocation, Silver Bell, and the Book of the Dead");
+    }
     return result;
 }
 

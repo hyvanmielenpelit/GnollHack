@@ -115,6 +115,7 @@ struct u_event {
     Bitfield(role_achievement_2, 1);  /* passed the second requirement of the role achievement */
 
     Bitfield(elbereth_known, 1);      /* has learned of Elbereth */
+    Bitfield(invocation_ritual_known, 1); /* has learned of the invocation ritual */
 
     unsigned short ranks_attained;
 };
