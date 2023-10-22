@@ -1767,6 +1767,42 @@ struct obj* obj;
     return ocflags;
 }
 
+boolean
+can_wear_miscellaneous(ptr, otyp)
+struct permonst* ptr;
+int otyp;
+{
+    switch (objects[otyp].oc_subtyp)
+    {
+        default:
+        case MISC_MULTIPLE_PERMITTED:
+        case MISC_WINGS:
+        case MISC_IOUN_STONE:
+        case MISC_EXTRA_ARMS:
+        case MISC_BROOCH:
+            return TRUE;
+        case MISC_PANTS:
+        case MISC_SKIRT:
+        case MISC_BELT:
+            return !nolimbs(ptr);
+        case MISC_WRIST_WATCH:
+        case MISC_BRACELET:
+        case MISC_BRACERS:
+            return !nohands(ptr);
+        case MISC_NOSERING:
+        case MISC_HEADBAND:
+        case MISC_EARRINGS:
+        case MISC_MASK:
+            return has_head(ptr);
+        case MISC_EYEGLASSES:
+        case MISC_BLINDFOLD:
+            return haseyes(ptr) && has_head(ptr);
+        case MISC_SCARF:
+        case MISC_NECKTIE:
+            return has_neck(ptr);
+    }
+}
+
 
 STATIC_VAR boolean object_init_values_saved = FALSE;
 
@@ -1783,9 +1819,5 @@ save_initial_objects_values(VOID_ARGS)
     }
 
 }
-
-
-
-
 
 /*o_init.c*/

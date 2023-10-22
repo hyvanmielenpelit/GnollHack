@@ -46,7 +46,7 @@
 STATIC_DCL void FDECL(init_rumors, (dlb *));
 STATIC_DCL void FDECL(init_oracles, (dlb *));
 STATIC_DCL void FDECL(couldnt_open_file, (const char *));
-STATIC_DCL size_t NDECL(count_remaining_major_consultations);
+STATIC_DCL int NDECL(count_remaining_major_consultations);
 
 /* rumor size variables are signed so that value -1 can be used as a flag */
 STATIC_VAR long true_rumor_size = 0L, false_rumor_size;
@@ -428,10 +428,11 @@ dlb *fp;
     return;
 }
 
-STATIC_OVL size_t
+STATIC_OVL int
 count_remaining_major_consultations(VOID_ARGS)
 {
-    size_t i, cnt = 0;
+    int cnt = 0;
+    size_t i;
     for (i = 0; i < oracle_cnt; i++) 
     {
         if (oracle_loc[i] >= 0)
@@ -493,19 +494,21 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
 
     oracles = dlb_fopen(ORACLEFILE, "r");
 
-    if (oracles) {
-        if (oracle_flg == 0) { /* if this is the first outoracle() */
+    if (oracles) 
+    {
+        if (oracle_flg == 0) 
+        { /* if this is the first outoracle() */
             init_oracles(oracles);
             oracle_flg = 1;
             if (oracle_cnt == 0)
                 goto close_oracles;
         }
-        size_t remaining_count = count_remaining_major_consultations();
+        int remaining_count = count_remaining_major_consultations();
         /* oracle_loc[0] is the special oracle;
            oracle_loc[1..oracle_cnt-1] are normal ones */
         if (remaining_count <= 1 && !special)
             goto close_oracles; /*(shouldn't happen)*/
-        oracle_idx = special ? 0 : rnd((int)remaining_count - 1);
+        oracle_idx = special ? 0 : rnd(remaining_count - 1);
         used_oracle_idx = 0;
         if (!special)
         {
@@ -565,7 +568,9 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
 
     close_oracles:
         (void) dlb_fclose(oracles);
-    } else {
+    } 
+    else 
+    {
         couldnt_open_file(ORACLEFILE);
         oracle_flg = -1; /* don't try to open it again */
     }

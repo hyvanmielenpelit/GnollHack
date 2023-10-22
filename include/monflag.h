@@ -369,7 +369,8 @@
 #define M6_SHARK_ANIMATION          0x00800000UL   /* Special animation where the portion above the surface changes */
 #define M6_HUMAN_BREATHE_ANIMATION  0x01000000UL   /* GUI can add a human breathe (2 legs standing) animation */
 #define M6_ANIMAL_BREATHE_ANIMATION 0x02000000UL   /* GUI can add an animal breathe (4 legs standing) animation */
-#define M6_WANTS_TO_WEAR_OBJECTS    0x04000000UL   /* Override animal etc. flags preventing the use of items */
+#define M6_ABLE_TO_WEAR_OBJECTS     0x04000000UL   /* Override animal etc. flags preventing the use of items */
+#define M6_NONGLOVE_HANDS           0x08000000UL   /* Has hands but not of the kind that can fit into gloves */
 
 #define M7_NONE                     0x00000000UL
 #define M7_ARCHAEOLOGIST            0x00000001UL   /* monster can use archaeologist items */

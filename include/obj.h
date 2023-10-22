@@ -343,6 +343,7 @@ enum elemental_enchantments {
 #define is_armor(o) ((o)->oclass == ARMOR_CLASS)
 #define is_otyp_amulet(otyp) (objects[otyp].oc_class == AMULET_CLASS)
 #define is_amulet(o) ((o)->oclass == AMULET_CLASS)
+#define is_blindfold(o) ((o)->otyp == BLINDFOLD || (o)->otyp == TOWEL)
 #define is_wet_towel(o) ((o)->otyp == TOWEL && (o)->special_quality > 0)
 #define is_otyp_bimanual(otyp)                                            \
     ((objects[otyp].oc_class == WEAPON_CLASS || objects[otyp].oc_class == TOOL_CLASS) \

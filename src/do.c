@@ -4886,6 +4886,7 @@ struct permonst* ptr;
 
     print_monster_statistics(datawin, mon, ptr);
     print_monster_intrinsics(datawin, mon, ptr);
+    print_monster_wearables(datawin, mon, ptr);
     print_monster_status(datawin, mon);
 
     display_nhwindow(datawin, FALSE);

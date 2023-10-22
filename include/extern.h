@@ -2427,7 +2427,7 @@ E unsigned long FDECL(get_obj_oc_flags3, (struct obj*));
 E unsigned long FDECL(get_obj_oc_flags4, (struct obj*));
 E unsigned long FDECL(get_obj_oc_flags5, (struct obj*));
 E unsigned long FDECL(get_obj_oc_flags6, (struct obj*));
-
+E boolean FDECL(can_wear_miscellaneous, (struct permonst*, int));
 
 /* ### objects.c ### */
 
@@ -4363,6 +4363,7 @@ E void FDECL(probe_monster, (struct monst *));
 E int FDECL(probe_object, (struct obj*));
 E void FDECL(display_monster_information, (struct monst*));
 E void FDECL(print_monster_intrinsics, (winid win, struct monst*, struct permonst*));
+E void FDECL(print_monster_wearables, (winid win, struct monst*, struct permonst*));
 E void FDECL(print_monster_status, (winid win, struct monst*));
 E void FDECL(print_monster_statistics, (winid win, struct monst*, struct permonst*));
 E void FDECL(display_monster_inventory, (struct monst*, BOOLEAN_P));

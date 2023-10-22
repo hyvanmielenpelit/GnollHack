@@ -124,8 +124,6 @@ struct monst *mon;
     return (struct obj *) 0; /* don't drop anything */
 }
 
-
-
 struct obj*
 m_has_wearable_armor_or_accessory(mon)
 struct monst* mon;
@@ -136,15 +134,31 @@ struct monst* mon;
         {
             if ((obj->owornmask & (W_ARMOR | W_ACCESSORY)) == 0)
             {
-                if ((is_suit(obj) || is_robe(obj) || is_shirt(obj)) && cantweararm(mon->data))
+                if (is_suit(obj) && !can_wear_suit(mon->data))
                     continue;
-                if ((is_cloak(obj)) && (cantweararm(mon->data) && mon->data->msize != MZ_SMALL))
+                if (is_robe(obj) && !can_wear_robe(mon->data))
                     continue;
-                if ((obj->oclass == AMULET_CLASS || is_helmet(obj)) && !has_place_to_put_helmet_on(mon->data))
+                if (is_shirt(obj) && !can_wear_shirt(mon->data))
                     continue;
-                if ((obj->oclass == RING_CLASS || is_gloves(obj) || is_bracers(obj)) && nohands(mon->data))
+                if (is_cloak(obj) && !can_wear_cloak(mon->data))
                     continue;
-                if ((is_boots(obj)) && nolimbs(mon->data))
+                if (is_helmet(obj) && !can_wear_helmet(mon->data))
+                    continue;
+                if (is_gloves(obj) && !can_wear_gloves(mon->data))
+                    continue;
+                if (is_bracers(obj) && !can_wear_bracers(mon->data))
+                    continue;
+                if (is_boots(obj) && !can_wear_boots(mon->data))
+                    continue;
+                if (is_shield(obj) && !can_wear_shield(mon->data))
+                    continue;
+                if (is_amulet(obj) && !can_wear_amulet(mon->data))
+                    continue;
+                if (is_blindfold(obj) && !can_wear_blindfold(mon->data))
+                    continue;
+                if (obj->oclass == RING_CLASS && !can_wear_rings(mon->data))
+                    continue;
+                if (obj->oclass == MISCELLANEOUS_CLASS && !can_wear_miscellaneous(mon->data, obj->otyp))
                     continue;
                 return obj;
             }

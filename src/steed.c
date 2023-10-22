@@ -27,7 +27,7 @@ struct monst *mtmp;
     if (!mtmp)
         return FALSE;
 
-    return is_steed(mtmp->data);
+    return can_wear_saddle(mtmp->data);
 }
 
 int
