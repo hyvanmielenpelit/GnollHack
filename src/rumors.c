@@ -484,7 +484,8 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
 {
     winid tmpwin;
     dlb *oracles;
-    int oracle_idx, used_oracle_idx, i;
+    int oracle_idx, i;
+    size_t used_oracle_idx;
     char *endp, line[COLNO], xbuf[BUFSZ];
 
     /* early return if we couldn't open ORACLEFILE on previous attempt,
