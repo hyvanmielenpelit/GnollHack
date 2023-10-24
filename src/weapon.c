@@ -3263,21 +3263,21 @@ enhance_weapon_skill()
                             switch (i)
                             {
                             case P_DIGGING:
-                                tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE);
-                                dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE);
-                                criticalhitpct = digging_skill_speed_bonus(nextlevel);
+                                tohitbonus2 = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE);
+                                dmgbonus2 = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE);
+                                criticalhitpct2 = digging_skill_speed_bonus(nextlevel);
                                 addplus2 = TRUE;
                                 break;
                             case P_RIDING:
-                                tohitbonus = riding_skill_hit_bonus(nextlevel);
-                                dmgbonus = riding_skill_dmg_bonus(nextlevel);
-                                criticalhitpct = riding_skill_jousting_bonus(nextlevel);
+                                tohitbonus2 = riding_skill_hit_bonus(nextlevel);
+                                dmgbonus2 = riding_skill_dmg_bonus(nextlevel);
+                                criticalhitpct2 = riding_skill_jousting_bonus(nextlevel);
                                 addplus2 = TRUE;
                                 break;
                             default:
-                                tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE);
-                                dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE);
-                                criticalhitpct = get_skill_critical_strike_chance(i, TRUE, FALSE, 0, FALSE);
+                                tohitbonus2 = weapon_skill_hit_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE);
+                                dmgbonus2 = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE, FALSE, FALSE, 0, FALSE);
+                                criticalhitpct2 = get_skill_critical_strike_chance(i, TRUE, FALSE, 0, FALSE);
                                 break;
                             }
 
@@ -3288,7 +3288,7 @@ enhance_weapon_skill()
                             {
                                 Sprintf(hbuf2, "--");
                                 Sprintf(dbuf2, "--");
-                                criticalhitpct = get_skill_critical_strike_chance(P_MARTIAL_ARTS, TRUE, FALSE, 0, FALSE);
+                                criticalhitpct2 = get_skill_critical_strike_chance(P_MARTIAL_ARTS, TRUE, FALSE, 0, FALSE);
                             }
                             else
                             {
