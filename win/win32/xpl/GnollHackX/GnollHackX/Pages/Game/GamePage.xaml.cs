@@ -13719,7 +13719,6 @@ namespace GnollHackX.Pages.Game
             float x = 0, y = 0;
             string str;
             float scale = canvaswidth / (float)TextCanvas.Width;
-
             canvas.Clear();
 
             if (canvaswidth <= 16 || canvasheight <= 16)
@@ -13735,28 +13734,35 @@ namespace GnollHackX.Pages.Game
             {
                 if (TextCanvas.GHWindow != null && TextCanvas.GHWindow.Ascension)
                 {
-                    float ssize = 10 * scale;
-                    float padding = ssize / 2;
-                    float sspacing = ssize * 5;
-                    int wsparkes = Math.Max(1, (int)Math.Ceiling((canvaswidth - 2 * padding) / sspacing));
-                    int hsparkes = Math.Max(1, (int)Math.Ceiling((canvasheight - 2 * padding) / sspacing));
-                    float wspacing = (canvaswidth - 2 * padding) / wsparkes;
-                    float hspacing = (canvasheight - 2 * padding) / hsparkes;
-                    long df = 2;
+                    //float ssize = 10 * scale;
+                    //float padding = ssize / 2;
+                    //float sspacing = ssize * 5;
+                    //int wsparkes = Math.Max(1, (int)Math.Ceiling((canvaswidth - 2 * padding) / sspacing));
+                    //int hsparkes = Math.Max(1, (int)Math.Ceiling((canvasheight - 2 * padding) / sspacing));
+                    //float wspacing = (canvaswidth - 2 * padding) / wsparkes;
+                    //float hspacing = (canvasheight - 2 * padding) / hsparkes;
+                    //long df = 2;
+                    //long counter;
+                    //lock (AnimationTimerLock)
+                    //{
+                    //    counter = AnimationTimers.general_animation_counter;
+                    //}
+                    //long ctr_diff = 0;
+                    //for (int i = 0; i <= wsparkes; i++)
+                    //    UIUtils.DrawSparkle(canvas, textPaint, padding + i * wspacing, padding, ssize, counter - (ctr_diff += df), true);
+                    //for (int i = 0; i <= wsparkes; i++)
+                    //    UIUtils.DrawSparkle(canvas, textPaint, padding + i * wspacing, canvasheight - padding, ssize, counter - (ctr_diff += df), true);
+                    //for (int j = 1; j < hsparkes; j++)
+                    //    UIUtils.DrawSparkle(canvas, textPaint, padding, padding + j * hspacing, ssize, counter - (ctr_diff += df), true);
+                    //for (int j = 1; j < hsparkes; j++)
+                    //    UIUtils.DrawSparkle(canvas, textPaint, canvaswidth - padding, padding + j * hspacing, ssize, counter - (ctr_diff += df), true);
+
                     long counter;
                     lock (AnimationTimerLock)
                     {
                         counter = AnimationTimers.general_animation_counter;
                     }
-                    long ctr_diff = 0;
-                    for (int i = 0; i <= wsparkes; i++)
-                        UIUtils.DrawSparkle(canvas, textPaint, padding + i * wspacing, padding, ssize, counter - (ctr_diff += df), true);
-                    for (int i = 0; i <= wsparkes; i++)
-                        UIUtils.DrawSparkle(canvas, textPaint, padding + i * wspacing, canvasheight - padding, ssize, counter - (ctr_diff += df), true);
-                    for (int j = 1; j < hsparkes; j++)
-                        UIUtils.DrawSparkle(canvas, textPaint, padding, padding + j * hspacing, ssize, counter - (ctr_diff += df), true);
-                    for (int j = 1; j < hsparkes; j++)
-                        UIUtils.DrawSparkle(canvas, textPaint, canvaswidth - padding, padding + j * hspacing, ssize, counter - (ctr_diff += df), true);
+                    UIUtils.DrawRandomSparkles(canvas, textPaint, canvaswidth, canvasheight, scale, counter);
                 }
 
                 textPaint.Typeface = GHApp.UnderwoodTypeface;

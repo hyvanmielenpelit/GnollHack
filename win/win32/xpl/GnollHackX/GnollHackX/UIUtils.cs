@@ -1106,6 +1106,30 @@ namespace GnollHackX
             paint.Style = oldStyle;
             paint.Color = oldColor;
         }
+
+        private static List<SKPoint> sparkleList = new List<SKPoint>();
+
+        public static void DrawRandomSparkles(SKCanvas canvas, SKPaint paint, float canvaswidth, float canvasheight, float scale, long generalcounter)
+        {
+            if (sparkleList.Count == 0)
+            {
+                Random random = new Random();
+                for (int i = 0; i < 64; i++)
+                {
+                    sparkleList.Add(new SKPoint((float)random.NextDouble(), (float)random.NextDouble()));
+                }
+            }
+            long df = 3;
+            long ctr_diff = 0;
+            float ssize = 10 * scale;
+            float padding = ssize / 2;
+            float width = canvaswidth - 2 * padding;
+            float height = canvasheight - 2 * padding;
+            foreach (SKPoint point in sparkleList)
+            {
+                DrawSparkle(canvas, paint, padding + point.X * width, padding + point.Y * height,  ssize, generalcounter - (ctr_diff += df), true);
+            }
+        }
     }
 
     public class TouchEntry
