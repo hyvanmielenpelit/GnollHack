@@ -4456,9 +4456,37 @@ namespace GnollHackX.Pages.Game
                 maxDrawY = mUpdateRect.Bottom;
         }
 
+        struct SavedRect
+        {
+            public SKBitmap Bitmap;
+            public SKRect Rect;
+            public SavedRect(SKBitmap bitmap, SKRect rect)
+            {
+                Bitmap = bitmap;
+                Rect = rect;
+            }
+        }
+        Dictionary<SavedRect, SKBitmap> _savedRects = new Dictionary<SavedRect, SKBitmap>();
         public void DrawTileWithRadialTransparency(SKCanvas canvas, bool delayedDraw, SKBitmap tileSheet, SKRect sourcerect, SKRect targetrect, LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint)
             //, ref SKRect baseUpdateRect, ref SKRect enlUpdateRect)
         {
+            bool cache = false;
+            if (sourcerect.Left % GHConstants.TileWidth == 0 && sourcerect.Top % GHConstants.TileHeight == 0 
+                && sourcerect.Width == GHConstants.TileWidth && sourcerect.Height == GHConstants.TileHeight)
+                cache = true;
+
+            if(cache)
+            {
+                SavedRect sr = new SavedRect(tileSheet, sourcerect);
+                SKBitmap bmp = null;
+                if (_savedRects.TryGetValue(sr, out bmp) && bmp != null)
+                {
+                    SKRect bmpsourcerect = new SKRect(0, 0, (float)bmp.Width, (float)bmp.Height);
+                    DrawSplitBitmap(canvas, delayedDraw, destSplitY, bmp, bmpsourcerect, targetrect, paint);
+                    return;
+                }
+            }
+
             IntPtr tempptraddr = _tempBitmap.GetPixels();
             IntPtr tileptraddr = tileSheet.GetPixels();
             double mid_x = (double)GHConstants.TileWidth / 2.0 - 0.5;
@@ -4501,14 +4529,37 @@ namespace GnollHackX.Pages.Game
 
             if ((layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT) != 0)
                 paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
+
+            if (cache)
+            {
+                SavedRect sr = new SavedRect(tileSheet, sourcerect);
+                if (!_savedRects.ContainsKey(sr))
+                {
+                    try
+                    {
+                        SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+                        _tempBitmap.CopyTo(newbmp);
+                        newbmp.SetImmutable();
+                        _savedRects.Add(sr, newbmp);
+                        DrawSplitBitmap(canvas, delayedDraw, destSplitY, newbmp, tempsourcerect, targetrect, paint); //, ref baseUpdateRect, ref enlUpdateRect);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                }
+            }
+            else
+            {
 #if GNH_MAP_PROFILING && DEBUG
             StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-            DrawSplitBitmap(canvas, delayedDraw, destSplitY, _tempBitmap, tempsourcerect, targetrect, paint); //, ref baseUpdateRect, ref enlUpdateRect);
-            //canvas.DrawBitmap(_tempBitmap, tempsourcerect, targetrect, paint);
+                DrawSplitBitmap(canvas, delayedDraw, destSplitY, _tempBitmap, tempsourcerect, targetrect, paint); //, ref baseUpdateRect, ref enlUpdateRect);
+                                                                                                                  //canvas.DrawBitmap(_tempBitmap, tempsourcerect, targetrect, paint);
 #if GNH_MAP_PROFILING && DEBUG
             StopProfiling(GHProfilingStyle.Bitmap);
 #endif
+            }
         }
 
         private List<GHDrawCommand> _drawCommandList = new List<GHDrawCommand>();
