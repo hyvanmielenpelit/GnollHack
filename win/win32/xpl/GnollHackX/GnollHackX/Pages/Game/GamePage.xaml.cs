@@ -4243,7 +4243,10 @@ namespace GnollHackX.Pages.Game
                 move_offset_y = base_move_offset_y;
                 if (layer_idx == (int)layer_types.MAX_LAYERS)
                 {
-                    opaqueness = (draw_shadow[mapx, mapy] & 2) != 0 && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY) != 0 ? 0.65f : 0.5f;
+                    if((draw_shadow[mapx, mapy] & 2) != 0)
+                        opaqueness = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0 ? 1.0f : (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY) != 0 ? 0.65f : 0.5f;
+                    else
+                        opaqueness = 0.5f;
                 }
                 else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT | LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT | LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY)) != 0)
                 {
@@ -4408,6 +4411,7 @@ namespace GnollHackX.Pages.Game
 
                 //SKRect baseUpdateRect = new SKRect();
                 //SKRect enlUpdateRect = new SKRect();
+                paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
                 if (is_monster_like_layer && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0)
                 {
                     DrawTileWithRadialTransparency(canvas, delayedDraw, TileMap[sheet_idx], sourcerect, targetrect, _mapData[mapx, mapy].Layers, splitY, opaqueness, paint);
@@ -4415,7 +4419,6 @@ namespace GnollHackX.Pages.Game
                 }
                 else
                 {
-                    paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
 #if GNH_MAP_PROFILING && DEBUG
                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -5899,7 +5902,7 @@ namespace GnollHackX.Pages.Game
                                                                                 }
                                                                                 else
                                                                                 {
-                                                                                    float minDrawX = 0, maxDrawX = 0, minDrawY = 0, maxDrawY = 0;
+                                                                                    //float minDrawX = 0, maxDrawX = 0, minDrawY = 0, maxDrawY = 0;
                                                                                     PaintMapTile(canvas, false, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
                                                                                         offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
                                                                                         scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
