@@ -4541,7 +4541,11 @@ namespace GnollHackX.Pages.Game
                     try
                     {
                         if (_savedRects.Count >= GHConstants.MaxBitmapCacheSize)
+                        {
+                            foreach (SKBitmap bmp in _savedRects.Values)
+                                bmp.Dispose();
                             _savedRects.Clear(); /* Clear the whole dictonary for the sake of ease; should almost never happen normally anyway */
+                        }
 
                         SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight, SKColorType.Rgba8888, SKAlphaType.Unpremul);
                         _tempBitmap.CopyTo(newbmp);
@@ -10183,7 +10187,11 @@ namespace GnollHackX.Pages.Game
                                     try
                                     {
                                         if (_savedAutoDrawBitmaps.Count >= GHConstants.MaxBitmapCacheSize)
+                                        {
+                                            foreach (SKBitmap bmp in _savedAutoDrawBitmaps.Values)
+                                                bmp.Dispose();
                                             _savedAutoDrawBitmaps.Clear(); /* Clear the whole dictonary for the sake of ease; should almost never happen normally anyway */
+                                        }
 
                                         SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
                                         _paintBitmap.CopyTo(newbmp);
@@ -10366,7 +10374,11 @@ namespace GnollHackX.Pages.Game
                                 try
                                 {
                                     if (_savedAutoDrawBitmaps.Count >= GHConstants.MaxBitmapCacheSize)
+                                    {
+                                        foreach(SKBitmap bmp in _savedAutoDrawBitmaps.Values)
+                                            bmp.Dispose();
                                         _savedAutoDrawBitmaps.Clear(); /* Clear the whole dictonary for the sake of ease; should almost never happen normally anyway */
+                                    }
 
                                     SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
                                     _paintBitmap.CopyTo(newbmp);
