@@ -77,6 +77,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\GHCommandButtonItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHConstants.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHDelegates.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHDrawCommand.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHEditor.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHFloatingText.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHConditionText.cs" />
@@ -156,6 +157,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\GHEditor.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHFloatingText.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHConditionText.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHDrawCommand.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHScreenFilter.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHGUIEffect.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHNumberPickItem.cs" />

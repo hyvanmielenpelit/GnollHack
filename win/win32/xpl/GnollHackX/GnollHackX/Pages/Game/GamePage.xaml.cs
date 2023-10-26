@@ -17,7 +17,6 @@ using System.Text.RegularExpressions;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
-using static Xamarin.Essentials.Permissions;
 using System.Collections;
 
 #if GNH_MAUI
@@ -36,6 +35,7 @@ using GnollHackX.Controls;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.PlatformConfiguration;
 using SkiaSharp.Views.Forms;
+using static Xamarin.Essentials.Permissions;
 
 namespace GnollHackX.Pages.Game
 #endif

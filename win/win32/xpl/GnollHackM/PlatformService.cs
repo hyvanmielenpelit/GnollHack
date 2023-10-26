@@ -116,6 +116,11 @@ namespace GnollHackM
         {
             throw new NotImplementedException();
         }
+
+        public string GetCanonicalPath(string fileName)
+        {
+            throw new NotImplementedException();
+        }    
     }
 }
 #endif
