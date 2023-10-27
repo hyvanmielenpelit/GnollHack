@@ -133,6 +133,12 @@
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\VersionPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\Game\GameMenuPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\MainPage.xaml.cs" />
+		<None Remove="Assets\UI\frame2-horizontal.png" />
+		<None Remove="Assets\UI\frame2-topleft-small.png" />
+		<None Remove="Assets\UI\frame2-topleft.png" />
+		<None Remove="Assets\UI\frame2-vertical.png" />
+		<None Remove="Assets\UI\picktobag.png" />
+		<None Remove="Assets\UI\status-quivered-weapon-style.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -574,6 +580,10 @@
 	  <EmbeddedResource Include="Assets\UI\frame-topleft-small.png" />
 	  <EmbeddedResource Include="Assets\UI\frame-topleft.png" />
 	  <EmbeddedResource Include="Assets\UI\frame-vertical.png" />
+	  <EmbeddedResource Include="Assets\UI\frame2-horizontal.png" />
+	  <EmbeddedResource Include="Assets\UI\frame2-topleft-small.png" />
+	  <EmbeddedResource Include="Assets\UI\frame2-topleft.png" />
+	  <EmbeddedResource Include="Assets\UI\frame2-vertical.png" />
 	  <EmbeddedResource Include="Assets\UI\genesis.png" />
 	  <EmbeddedResource Include="Assets\UI\genocided.png" />
 	  <EmbeddedResource Include="Assets\UI\handedness.png" />
@@ -609,6 +619,7 @@
 	  <EmbeddedResource Include="Assets\UI\orb_glass.png" />
 	  <EmbeddedResource Include="Assets\UI\overview.png" />
 	  <EmbeddedResource Include="Assets\UI\pay.png" />
+	  <EmbeddedResource Include="Assets\UI\picktobag.png" />
 	  <EmbeddedResource Include="Assets\UI\pickup.png" />
 	  <EmbeddedResource Include="Assets\UI\polymorph.png" />
 	  <EmbeddedResource Include="Assets\UI\pray.png" />
@@ -653,6 +664,7 @@
 	  <EmbeddedResource Include="Assets\UI\status-mc.png" />
 	  <EmbeddedResource Include="Assets\UI\status-modern-mode.png" />
 	  <EmbeddedResource Include="Assets\UI\status-move.png" />
+	  <EmbeddedResource Include="Assets\UI\status-quivered-weapon-style.png" />
 	  <EmbeddedResource Include="Assets\UI\status-turns.png" />
 	  <EmbeddedResource Include="Assets\UI\status-weapon-style.png" />
 	  <EmbeddedResource Include="Assets\UI\status-wizard-mode.png" />
