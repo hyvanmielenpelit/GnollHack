@@ -42,6 +42,9 @@ on.
         }        A pool of water or moat or a pool of lava.
         \        An opulent throne.
         `        A boulder or statue.
+        9        A reagent.
+        8        A miscellaneous magic item.
+        7        An art object.
         A to Z, a to z, and several others:  Monsters.
         I        Invisible or unseen monster's last known location
 
@@ -164,8 +167,8 @@ Commands:
         ^Z      Suspend the game.  (^Y instead of ^Z if number_pad is -1.)
         M-z     View or manage a spell.
         :       Look at what is here.
-        ;       Look at what is somewhere else.
         ,       Pick up some things.
+        ;       Pick up objects and put them into the best containers for them.
         @       Toggle the pickup option.
         ^       Ask for the type of a trap you found earlier.
         )       Tell what weapon you are wielding.

@@ -88,9 +88,13 @@ $       gold    count your gold
 _       travel  move via a shortest-path algorithm to a point on the map
 .       rest    wait a moment
 ,       pickup  pick up all you can carry
+;       pickstash pick up objects and stash them into the best containers
 @               toggle "pickup" (auto pickup) option on and off
 :       look    look at what is here
-;       farlook look at what is somewhere else by selecting a map symbol
+/       whatis  show what type of thing a symbol corresponds to
+
+Commands with no default keybinding:
+        farlook look at what is somewhere else by selecting a map symbol
 
 Keyboards that have a meta key can also use these extended commands
 via the meta modifier instead of the # prefix:
