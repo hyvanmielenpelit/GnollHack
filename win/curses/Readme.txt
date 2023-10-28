@@ -52,7 +52,7 @@ looks best to you during a game.  Also, the align_status and
 align_message options may be set during the game, so you can experiment
 to see what arraingement looks best to you.
 
-For menus, in addition to the normal configurable keybindings for menu
+For menus, in addition to the normal configurable key bindings for menu
 navigation descrived in the Guidebook, you can use the right and left
 arrows to to forward or backward one page, respectively, and the home
 and end keys to go to the first and last pages, respectively.
