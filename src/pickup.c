@@ -673,7 +673,7 @@ boolean do_auto_in_bag;
 
             Sprintf(qbuf, "Pick%s %d of what?", do_auto_in_bag ? " and out into bag" : "", count);
             val_for_n_or_more = count; /* set up callback selector */
-            n = query_objlist(qbuf, objchain_p, traverse_how,
+            n = query_objlist(qbuf, objchain_p, traverse_how | OBJECT_COMPARISON,
                               &pick_list, PICK_ONE, n_or_more, 2);
             /* correct counts, if any given */
             for (i = 0; i < n; i++)
@@ -682,7 +682,7 @@ boolean do_auto_in_bag;
         else 
         {
             n = query_objlist(do_auto_in_bag ? "Pick up and auto-stash what?" : "Pick up what?", objchain_p,
-                              (traverse_how | FEEL_COCKATRICE),
+                              (traverse_how | FEEL_COCKATRICE | OBJECT_COMPARISON),
                               &pick_list, PICK_ANY, all_but_uchain, 2);
         }
 
@@ -742,7 +742,7 @@ boolean do_auto_in_bag;
                     goto pickupdone;
                 if (selective)
                     traverse_how |= INVORDER_SORT;
-                n = query_objlist(do_auto_in_bag ? "Pick up and auto-stash what?" : "Pick up what?", objchain_p, traverse_how,
+                n = query_objlist(do_auto_in_bag ? "Pick up and auto-stash what?" : "Pick up what?", objchain_p, traverse_how | OBJECT_COMPARISON,
                                   &pick_list, PICK_ANY,
                                   (via_menu == -2) ? allow_all
                                                    : allow_category, 2);
@@ -1075,6 +1075,7 @@ int show_weights;
     anything any;
     boolean printed_type_name, first,
             sorted = (qflags & INVORDER_SORT) != 0,
+            comparison_stats = (qflags & OBJECT_COMPARISON) != 0 && iflags.show_comparison_stats,
             engulfer = (qflags & INCLUDE_HERO) != 0;
     unsigned sortflags;
     Loot *sortedolist, *srtoli;
@@ -1180,7 +1181,7 @@ int show_weights;
                 int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, curr, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
                 add_extended_menu(win, gui_glyph, &any,
                     applied_invlet, applied_group_accelerator, ATR_NONE, NO_COLOR, 
-                    show_weights > 0 ? (flags.inventory_weights_last ? doname_with_price_and_weight_last(curr, loadstonecorrectly) : doname_with_price_and_weight_first(curr, loadstonecorrectly)) : doname_with_price(curr), 
+                    show_weights > 0 ? (flags.inventory_weights_last ? doname_with_price_and_weight_last_and_comparison(curr, loadstonecorrectly, comparison_stats) : doname_with_price_and_weight_first_and_comparison(curr, loadstonecorrectly, comparison_stats)) : doname_with_price_and_comparison(curr, comparison_stats),
                     MENU_UNSELECTED, obj_to_extended_menu_info(curr));
                 first = FALSE;
             }
@@ -4506,6 +4507,8 @@ struct obj* other_container UNUSED;
             mflags |= USE_INVLET;
         if (command_id == 6)
             mflags |= BY_NEXTHERE;
+        if (command_id == 6 || ((command_id == 0 || command_id == 4 || command_id == 5) && !carried(current_container)))
+            mflags |= OBJECT_COMPARISON;
         if (command_id == 0 || command_id == 2)
             current_container->cknown = 1;
 

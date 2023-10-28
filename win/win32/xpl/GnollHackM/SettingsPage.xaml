@@ -761,7 +761,7 @@
                                             TitleColor="Black"
                                             HorizontalTextAlignment="End"
                                             BackgroundColor="Transparent"
-                                            WidthRequest="140"
+                                            WidthRequest="130"
                                             VerticalOptions="Center"
                                             HorizontalOptions="EndAndExpand" >
                                         <Picker.ItemsSource>

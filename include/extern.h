@@ -2456,14 +2456,17 @@ E char *FDECL(doname, (struct obj *));
 E char* FDECL(doname_with_flags, (struct obj* obj, unsigned));
 E char* FDECL(doname_in_text, (struct obj*));
 E char* FDECL(doname_in_text_with_price_and_weight_last, (struct obj*));
-E char *FDECL(doname_with_price, (struct obj *));
 E char *FDECL(doname_vague_quan, (struct obj *));
 E char* FDECL(doname_with_weight_first_true, (struct obj*));
 E char* FDECL(doname_with_weight_last_true, (struct obj*));
 E char* FDECL(doname_with_weight_first, (struct obj*, BOOLEAN_P, BOOLEAN_P));
 E char* FDECL(doname_with_weight_last, (struct obj*, BOOLEAN_P, BOOLEAN_P));
+E char* FDECL(doname_with_price, (struct obj*));
 E char* FDECL(doname_with_price_and_weight_first, (struct obj*, BOOLEAN_P));
 E char* FDECL(doname_with_price_and_weight_last, (struct obj*, BOOLEAN_P));
+E char* FDECL(doname_with_price_and_comparison, (struct obj*, BOOLEAN_P));
+E char* FDECL(doname_with_price_and_weight_first_and_comparison, (struct obj*, BOOLEAN_P, BOOLEAN_P));
+E char* FDECL(doname_with_price_and_weight_last_and_comparison, (struct obj*, BOOLEAN_P, BOOLEAN_P));
 E boolean FDECL(not_fully_identified, (struct obj *));
 E boolean FDECL(is_obj_unknown, (struct obj*));
 E char *FDECL(corpse_xname, (struct obj *, const char *, unsigned));
@@ -2521,6 +2524,7 @@ E boolean FDECL(find_key_otyp_by_description, (char*, int*, int*));
 E void FDECL(print_lock_with_buf, (char*, int, int, BOOLEAN_P));
 E char* NDECL(nextobuf);
 E char* FDECL(str_upper_start, (const char*));
+E void FDECL(print_comparison_stats, (struct obj*, char*));
 
 /* ### options.c ### */
 

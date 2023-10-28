@@ -448,6 +448,7 @@ extern short tile2enlargement[MAX_TILES];
 #define SIGNAL_ESCAPE 0x20    /* return -2 rather than 0 for ESC */
 #define FEEL_COCKATRICE 0x40  /* engage cockatrice checks and react */
 #define INCLUDE_HERO 0x80     /* show hero among engulfer's inventory */
+#define OBJECT_COMPARISON 0x100     /* compare objects with currently worn ones */
 
 /* Flags to control query_category() */
 /* BY_NEXTHERE used by query_category() too, so skip 0x01 */

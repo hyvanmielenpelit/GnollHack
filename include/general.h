@@ -656,6 +656,7 @@ enum context_menu_styles {
 #define DONAME_LOADSTONE_CORRECTLY          0x0010
 #define DONAME_LIT_IN_FRONT                 0x0020
 #define DONAME_HIDE_REMAINING_LIT_TURNS     0x0040
+#define DONAME_COMPARISON                   0x0080
 
 /* Moved from shk.c */
 #define NOTANGRY(mon) ((mon)->mpeaceful)

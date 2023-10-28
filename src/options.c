@@ -260,6 +260,7 @@ static struct Bool_Opt {
     { "showrealtime", "show elapsed wall-clock time in status line", &flags.showrealtime, TRUE, SET_IN_GAME },
     { "showscore", "show current score in status line", &flags.showscore, TRUE, SET_IN_GAME },
     { "show_buff_timer", "show buff timer on tiles", &flags.show_buff_timer, FALSE, SET_IN_GAME},
+    { "show_comparison_stats", "show comparison statistics for items when picking them up", &iflags.show_comparison_stats, FALSE, SET_IN_GAME },
     { "show_decorations", "show decorations via colors in ASCII mode", &flags.show_decorations, TRUE, SET_IN_GAME },
     { "show_grid", "show grid between tiles", &flags.show_grid, FALSE, SET_IN_GAME},
     { "show_tile_mon_hp_bar", "show monster hit points on tiles", &flags.show_tile_mon_hp_bar, FALSE, SET_IN_GAME},

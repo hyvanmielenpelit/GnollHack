@@ -6300,6 +6300,7 @@ boolean picked_some, explicit_cmd;
         {
             char buf[BUFSZ];
             char buf2[BUFSZ];
+            char compbuf[BUFSZ] = "";
             int count = 0;
             int totalweight = 0;
 
@@ -6340,7 +6341,20 @@ boolean picked_some, explicit_cmd;
                     //Nothing
                 }
                 putstr_ex(tmpwin, buf2, ATR_INDENT_AT_DASH, NO_COLOR, 1);
-                putstr_ex(tmpwin, buf, ATR_INDENT_AT_DASH | attr, color, 0);
+                boolean compstatsprinted = FALSE;
+                if (iflags.show_comparison_stats)
+                {
+                    print_comparison_stats(otmp, compbuf);
+                    if (*compbuf)
+                    {
+                        compstatsprinted = TRUE;
+                        putstr_ex(tmpwin, buf, ATR_INDENT_AT_DASH | attr, color, 1);
+                        Sprintf(buf2, " (%s)", compbuf);
+                        putstr_ex(tmpwin, buf2, ATR_INDENT_AT_DASH, NO_COLOR, 0);
+                    }
+                }
+                if(!compstatsprinted)
+                    putstr_ex(tmpwin, buf, ATR_INDENT_AT_DASH | attr, color, 0);
             }
 
             if (flags.show_weight_summary)

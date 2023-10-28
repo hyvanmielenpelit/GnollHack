@@ -1277,7 +1277,8 @@ unsigned doname_flags;
             weightfirst = (doname_flags & DONAME_WITH_WEIGHT_FIRST) != 0,
             weightlast = (doname_flags & DONAME_WITH_WEIGHT_LAST) != 0,
             loadstonecorrectly = (doname_flags & DONAME_LOADSTONE_CORRECTLY) != 0,
-            lit_in_front = (doname_flags & DONAME_LIT_IN_FRONT) != 0;
+            lit_in_front = (doname_flags & DONAME_LIT_IN_FRONT) != 0,
+            comparison_stats = (doname_flags & DONAME_COMPARISON) != 0;
     boolean known, dknown, cknown, bknown, lknown, tknown;
     int omndx = obj->corpsenm, isenchanted = 0;
     char prefix[PREFIXBUFSZ];
@@ -1922,6 +1923,15 @@ weapon_here:
         else if (nochrg > 0)
             Strcat(bp, " (no charge)");
     }
+
+    if (comparison_stats)
+    {
+        char compbuf[BUFSZ] = "";
+        print_comparison_stats(obj, compbuf);
+        if (*compbuf)
+            Sprintf(eos(bp), " (%s)", compbuf);
+    }
+
     if (!strncmp(prefix, "a ", 2)) {
         /* save current prefix, without "a "; might be empty */
         Strcpy(tmpbuf, prefix + 2);
@@ -2051,6 +2061,14 @@ struct obj *obj;
     return doname_with_flags(obj, DONAME_WITH_PRICE);
 }
 
+char*
+doname_with_price_and_comparison(obj, comparison_stats)
+struct obj* obj;
+boolean comparison_stats;
+{
+    return doname_with_flags(obj, DONAME_WITH_PRICE | (comparison_stats ? DONAME_COMPARISON : 0));
+}
+
 /* Name of object including price. */
 char*
 doname_with_price_and_weight_last(obj,  loadstonecorrectly)
@@ -2058,6 +2076,14 @@ struct obj* obj;
 boolean loadstonecorrectly;
 {
     return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
+}
+
+char*
+doname_with_price_and_weight_last_and_comparison(obj, loadstonecorrectly, comparison_stats)
+struct obj* obj;
+boolean loadstonecorrectly, comparison_stats;
+{
+    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (comparison_stats ? DONAME_COMPARISON : 0));
 }
 
 /* Name of object including price. */
@@ -2075,6 +2101,14 @@ struct obj* obj;
 boolean loadstonecorrectly;
 {
     return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
+}
+
+char*
+doname_with_price_and_weight_first_and_comparison(obj, loadstonecorrectly, comparison_stats)
+struct obj* obj;
+boolean loadstonecorrectly, comparison_stats;
+{
+    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (comparison_stats ? DONAME_COMPARISON : 0));
 }
 
 /* "some" instead of precise quantity if obj->dknown not set */
@@ -6076,6 +6110,77 @@ int otyp, material;
         }
     }
     return FALSE;
+}
+
+void
+print_comparison_stats(obj, buf)
+struct obj* obj;
+char* buf;
+{
+    if (!obj || !buf)
+        return;
+
+    *buf = 0;
+
+    struct item_description_stats obj_stats = { 0 };
+    (void)itemdescription_core(obj, obj->otyp, &obj_stats);
+
+    struct obj* launcher = uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : 0;
+    struct obj* cwep = is_ammo(obj) ? (uquiver && launcher && ammo_and_launcher(uquiver, launcher) && ammo_and_launcher(obj, launcher) ? uquiver : 0) :
+        is_thrown_weapon_only(obj) ? (uquiver && is_thrown_weapon_only(uquiver) ? uquiver : 0) :
+        (is_wieldable_weapon(obj) && uwep && is_launcher(obj) == is_launcher(uwep)) ? uwep :
+        (is_wieldable_weapon(obj) && uswapwep && is_launcher(obj) == is_launcher(uswapwep)) ? uswapwep : 0;
+    if (cwep && cwep != obj && uwep2 != obj && uswapwep2 != obj && obj_stats.weapon_stats_printed)
+    {
+        struct item_description_stats cwep_stats = { 0 };
+        (void)itemdescription_core(cwep, cwep->otyp, &cwep_stats);
+        if (cwep_stats.stats_set && cwep_stats.weapon_stats_printed)
+        {
+            double dmgdiff = obj_stats.avg_damage - cwep_stats.avg_damage;
+            if (*buf)
+                Strcat(buf, ", ");
+            Sprintf(eos(buf), "%s%.1f damage", dmgdiff >= 0 ? "+" : "", dmgdiff);
+        }
+    }
+    if (is_armor(obj) && obj_stats.armor_stats_printed)
+    {
+        struct obj* current_armor = 0;
+        if (is_suit(obj))
+            current_armor = uarm;
+        else if (is_cloak(obj))
+            current_armor = uarmc;
+        else if (is_robe(obj))
+            current_armor = uarmo;
+        else if (is_shirt(obj))
+            current_armor = uarmu;
+        else if (is_helmet(obj))
+            current_armor = uarmh;
+        else if (is_gloves(obj))
+            current_armor = uarmg;
+        else if (is_boots(obj))
+            current_armor = uarmf;
+        else if (is_bracers(obj))
+            current_armor = uarmb;
+        else if (is_shield(obj))
+            current_armor = uarms;
+
+        if (current_armor && obj != current_armor && is_armor(current_armor))
+        {
+            struct item_description_stats armor_stats = { 0 };
+            (void)itemdescription_core(current_armor, current_armor->otyp, &armor_stats);
+            if (armor_stats.stats_set && armor_stats.armor_stats_printed)
+            {
+                int acdiff = obj_stats.ac_bonus - armor_stats.ac_bonus;
+                int mcdiff = obj_stats.mc_bonus - armor_stats.mc_bonus;
+                if (*buf)
+                    Strcat(buf, ", ");
+                Sprintf(eos(buf), "%s%d AC %s", acdiff >= 0 ? "+" : "", acdiff, acdiff <= 0 ? "bonus" : "penalty");
+                if (*buf)
+                    Strcat(buf, ", ");
+                Sprintf(eos(buf), "%s%d MC %s", mcdiff >= 0 ? "+" : "", mcdiff, mcdiff >= 0 ? "bonus" : "penalty");
+            }
+        }
+    }
 }
 
 /*objnam.c*/
