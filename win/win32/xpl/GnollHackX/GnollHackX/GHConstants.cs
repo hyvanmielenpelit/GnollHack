@@ -1477,6 +1477,7 @@ namespace GnollHackX
         public const int MaxLongImmediateSoundInstances = 48;
         public const int MaxChannels = 512;
         public const int MaxBitmapCacheSize = 64;
+        public const int MaxDarkenedBitmapCacheSize = 256;
         public const int PIT_BOTTOM_BORDER = 2;
         public const int SPECIAL_HEIGHT_IN_PIT = -32;
         public const int SPECIAL_HEIGHT_LEVITATION = 16;
