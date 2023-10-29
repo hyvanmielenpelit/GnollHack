@@ -78,6 +78,7 @@ namespace GnollHackX.Pages.Game
         private int _mapCursorY;
 
         private Dictionary<SavedDarkenedBitmap, SKBitmap> _darkenedBitmaps = new Dictionary<SavedDarkenedBitmap, SKBitmap>();
+        private Dictionary<SavedDarkenedAutodrawBitmap, SKBitmap> _darkenedAutodrawBitmaps = new Dictionary<SavedDarkenedAutodrawBitmap, SKBitmap>();
 
         private readonly object _uLock = new object();
         private int _ux = 0;
@@ -413,8 +414,11 @@ namespace GnollHackX.Pages.Game
                     _lighterDarkening = value; 
                     foreach (SKBitmap bmp in _darkenedBitmaps.Values) 
                         bmp.Dispose(); 
-                    _darkenedBitmaps.Clear(); 
-                } 
+                    _darkenedBitmaps.Clear();
+                    foreach (SKBitmap bmp in _darkenedAutodrawBitmaps.Values)
+                        bmp.Dispose();
+                    _darkenedAutodrawBitmaps.Clear();
+                }
             } 
         }
 
@@ -4454,7 +4458,7 @@ namespace GnollHackX.Pages.Game
                 //    enlRestore.Dispose();
             }
 
-            DrawAutoDraw(autodraw, canvas, paint, otmp_round,
+            DrawAutoDraw(autodraw, canvas, delayedDraw, paint, otmp_round,
                 layer_idx, mapx, mapy,
                 tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem,
                 tx, ty, width, height,
@@ -4559,7 +4563,7 @@ namespace GnollHackX.Pages.Game
                         {
                             foreach (SKBitmap bmp in _savedRects.Values)
                                 bmp.Dispose();
-                            _savedRects.Clear(); /* Clear the whole dictonary for the sake of ease; should almost never happen normally anyway */
+                            _savedRects.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
                         }
 
                         SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight, SKColorType.Rgba8888, SKAlphaType.Unpremul);
@@ -6012,48 +6016,113 @@ namespace GnollHackX.Pages.Game
                                                                     {
                                                                         lock (_lighterDarkeningLock)
                                                                         {
-                                                                            SKBitmap usedDarkenedBitmap;
-                                                                            int darken_percentage = GetDarkenPercentage(dc.MapX, dc.MapY, lighter_darkening);
-                                                                            SavedDarkenedBitmap cachekey = new SavedDarkenedBitmap(dc.SourceBitmap, dc.SourceRect, darken_percentage);
-                                                                            SKRect cacheRect = new SKRect(0, 0, dc.SourceRect.Width, dc.SourceRect.Height);
-                                                                            if (_darkenedBitmaps.ContainsKey(cachekey) && _darkenedBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap))
+                                                                            if (dc.IsAutoDraw)
                                                                             {
-                                                                                paint.Color = dc.PaintColor;
-                                                                                canvas.SetMatrix(dc.Matrix);
-                                                                                canvas.DrawBitmap(usedDarkenedBitmap, cacheRect, dc.DestinationRect, paint);
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                /* Copy source bitmao to _paintCanvas and darken it */
-                                                                                paint.Color = SKColors.Black;
-                                                                                darkeningCanvas.DrawBitmap(dc.SourceBitmap, dc.SourceRect, cacheRect, paint);
-                                                                                DoDarkening(darkeningCanvas, paint, cacheRect.Left, cacheRect.Top, cacheRect.Width, cacheRect.Height, darken_percentage);
+                                                                                SKBitmap usedDarkenedBitmap;
+                                                                                int darken_percentage = GetDarkenPercentage(dc.MapX, dc.MapY, lighter_darkening);
+                                                                                AutoDrawParameterDefinition modadparams = dc.AutoDrawParameters;
+                                                                                modadparams.tx = 0;
+                                                                                modadparams.ty = 0;
+                                                                                modadparams.scaled_x_padding = 0;
+                                                                                modadparams.scaled_y_padding = 0;
+                                                                                modadparams.scale = 1;
+                                                                                modadparams.targetscale = 1;
+                                                                                SavedDarkenedAutodrawBitmap cachekey = new SavedDarkenedAutodrawBitmap(modadparams, darken_percentage);
+                                                                                SKRect sourceRect = new SKRect(0, 0, dc.AutoDrawParameters.width, dc.AutoDrawParameters.height);
+                                                                                SKRect destRect = new SKRect(dc.AutoDrawParameters.tx + dc.AutoDrawParameters.scaled_x_padding,
+                                                                                    dc.AutoDrawParameters.ty + dc.AutoDrawParameters.scaled_y_padding,
+                                                                                    dc.AutoDrawParameters.tx + dc.AutoDrawParameters.scaled_x_padding + dc.AutoDrawParameters.width * dc.AutoDrawParameters.scale * dc.AutoDrawParameters.targetscale,
+                                                                                    dc.AutoDrawParameters.ty + dc.AutoDrawParameters.scaled_y_padding + dc.AutoDrawParameters.height * dc.AutoDrawParameters.scale * dc.AutoDrawParameters.targetscale);
 
-                                                                                /* Save to cache as immutable */
-                                                                                try
+                                                                                if (_darkenedAutodrawBitmaps.ContainsKey(cachekey) && _darkenedAutodrawBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap))
                                                                                 {
-                                                                                    if (_darkenedBitmaps.Count >= GHConstants.MaxDarkenedBitmapCacheSize)
+                                                                                    paint.Color = dc.PaintColor;
+                                                                                    canvas.SetMatrix(dc.Matrix);
+                                                                                    canvas.DrawBitmap(usedDarkenedBitmap, sourceRect, destRect, paint);
+                                                                                }
+                                                                                else
+                                                                                {
+
+                                                                                    paint.Color = dc.PaintColor;
+                                                                                    canvas.SetMatrix(dc.Matrix);
+                                                                                    DrawAutoDraw(dc.AutoDrawParameters.autodraw, darkeningCanvas, false, paint, dc.AutoDrawParameters.otmp_round,
+                                                                                        dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
+                                                                                        dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, 0, 0,
+                                                                                        dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, 1, 1,
+                                                                                        0, 0, height, dc.AutoDrawParameters.is_inventory,
+                                                                                        dc.AutoDrawParameters.drawwallends);
+                                                                                    DoDarkening(darkeningCanvas, paint, 0, 0, dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, darken_percentage);
+
+                                                                                    /* Save to cache as immutable */
+                                                                                    try
                                                                                     {
-                                                                                        foreach (SKBitmap bmp in _darkenedBitmaps.Values)
-                                                                                            bmp.Dispose();
-                                                                                        _darkenedBitmaps.Clear(); /* Clear the whole dictonary for the sake of ease; should almost never happen normally anyway */
+                                                                                        if (_darkenedAutodrawBitmaps.Count >= GHConstants.MaxDarkenedAutodrawBitmapCacheSize)
+                                                                                        {
+                                                                                            foreach (SKBitmap bmp in _darkenedAutodrawBitmaps.Values)
+                                                                                                bmp.Dispose();
+                                                                                            _darkenedAutodrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
+                                                                                        }
+
+                                                                                        SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
+                                                                                        _paintBitmap.CopyTo(newbmp);
+                                                                                        newbmp.SetImmutable();
+                                                                                        _darkenedAutodrawBitmaps.Add(cachekey, newbmp);
+                                                                                        usedDarkenedBitmap = newbmp;
+                                                                                    }
+                                                                                    catch (Exception ex)
+                                                                                    {
+                                                                                        Debug.WriteLine(ex.Message);
+                                                                                        usedDarkenedBitmap = _paintBitmap;
                                                                                     }
 
-                                                                                    SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
-                                                                                    _paintBitmap.CopyTo(newbmp);
-                                                                                    newbmp.SetImmutable();
-                                                                                    _darkenedBitmaps.Add(cachekey, newbmp);
-                                                                                    usedDarkenedBitmap = newbmp;
+                                                                                    canvas.DrawBitmap(usedDarkenedBitmap, sourceRect, destRect, paint);
                                                                                 }
-                                                                                catch (Exception ex)
+                                                                            }
+                                                                            else
+                                                                            { 
+                                                                                SKBitmap usedDarkenedBitmap;
+                                                                                int darken_percentage = GetDarkenPercentage(dc.MapX, dc.MapY, lighter_darkening);
+                                                                                SavedDarkenedBitmap cachekey = new SavedDarkenedBitmap(dc.SourceBitmap, dc.SourceRect, darken_percentage);
+                                                                                SKRect cacheRect = new SKRect(0, 0, dc.SourceRect.Width, dc.SourceRect.Height);
+                                                                                if (_darkenedBitmaps.ContainsKey(cachekey) && _darkenedBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap))
                                                                                 {
-                                                                                    Debug.WriteLine(ex.Message);
-                                                                                    usedDarkenedBitmap = _paintBitmap;
+                                                                                    paint.Color = dc.PaintColor;
+                                                                                    canvas.SetMatrix(dc.Matrix);
+                                                                                    canvas.DrawBitmap(usedDarkenedBitmap, cacheRect, dc.DestinationRect, paint);
                                                                                 }
+                                                                                else
+                                                                                {
+                                                                                    /* Copy source bitmap to _paintCanvas and darken it */
+                                                                                    paint.Color = SKColors.Black;
+                                                                                    darkeningCanvas.DrawBitmap(dc.SourceBitmap, dc.SourceRect, cacheRect, paint);
+                                                                                    DoDarkening(darkeningCanvas, paint, cacheRect.Left, cacheRect.Top, cacheRect.Width, cacheRect.Height, darken_percentage);
 
-                                                                                paint.Color = dc.PaintColor;
-                                                                                canvas.SetMatrix(dc.Matrix);
-                                                                                canvas.DrawBitmap(usedDarkenedBitmap, cacheRect, dc.DestinationRect, paint);
+                                                                                    /* Save to cache as immutable */
+                                                                                    try
+                                                                                    {
+                                                                                        if (_darkenedBitmaps.Count >= GHConstants.MaxDarkenedBitmapCacheSize)
+                                                                                        {
+                                                                                            foreach (SKBitmap bmp in _darkenedBitmaps.Values)
+                                                                                                bmp.Dispose();
+                                                                                            _darkenedBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
+                                                                                        }
+
+                                                                                        SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
+                                                                                        _paintBitmap.CopyTo(newbmp);
+                                                                                        newbmp.SetImmutable();
+                                                                                        _darkenedBitmaps.Add(cachekey, newbmp);
+                                                                                        usedDarkenedBitmap = newbmp;
+                                                                                    }
+                                                                                    catch (Exception ex)
+                                                                                    {
+                                                                                        Debug.WriteLine(ex.Message);
+                                                                                        usedDarkenedBitmap = _paintBitmap;
+                                                                                    }
+
+                                                                                    paint.Color = dc.PaintColor;
+                                                                                    canvas.SetMatrix(dc.Matrix);
+                                                                                    canvas.DrawBitmap(usedDarkenedBitmap, cacheRect, dc.DestinationRect, paint);
+                                                                                }
                                                                             }
                                                                         }
                                                                     }
@@ -6061,7 +6130,17 @@ namespace GnollHackX.Pages.Game
                                                                     {
                                                                         paint.Color = dc.PaintColor;
                                                                         canvas.SetMatrix(dc.Matrix);
-                                                                        canvas.DrawBitmap(dc.SourceBitmap, dc.SourceRect, dc.DestinationRect, paint);
+                                                                        if(dc.IsAutoDraw)
+                                                                        {
+                                                                                DrawAutoDraw(dc.AutoDrawParameters.autodraw, canvas, false, paint, dc.AutoDrawParameters.otmp_round,
+                                                                                    dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
+                                                                                    dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, dc.AutoDrawParameters.tx, dc.AutoDrawParameters.ty,
+                                                                                    dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, dc.AutoDrawParameters.scale, dc.AutoDrawParameters.targetscale,
+                                                                                    dc.AutoDrawParameters.scaled_x_padding, dc.AutoDrawParameters.scaled_y_padding, dc.AutoDrawParameters.scaled_tile_height, dc.AutoDrawParameters.is_inventory,
+                                                                                    dc.AutoDrawParameters.drawwallends);
+                                                                        }
+                                                                        else
+                                                                            canvas.DrawBitmap(dc.SourceBitmap, dc.SourceRect, dc.DestinationRect, paint);
                                                                     }
                                                                 }
                                                             }
@@ -9513,6 +9592,17 @@ namespace GnollHackX.Pages.Game
             return false;
         }
 
+        struct SavedDarkenedAutodrawBitmap
+        {
+            AutoDrawParameterDefinition AutodrawParameters;
+            float DarkenPercentage;
+            public SavedDarkenedAutodrawBitmap(AutoDrawParameterDefinition autodrawParameters, float darkenPercentage)
+            {
+                AutodrawParameters = autodrawParameters;
+                DarkenPercentage = darkenPercentage;
+            }
+        }
+
         struct SavedDarkenedBitmap
         {
             SKBitmap Bitmap;
@@ -9542,13 +9632,32 @@ namespace GnollHackX.Pages.Game
 
         Dictionary<SavedAutodrawBitmap, SKBitmap> _savedAutoDrawBitmaps = new Dictionary<SavedAutodrawBitmap, SKBitmap>();
 
-        public void DrawAutoDraw(int autodraw, SKCanvas canvas, SKPaint paint, ObjectDataItem otmp_round,
+        public void DrawAutoDraw(int autodraw, SKCanvas canvas, bool delayedDraw, SKPaint paint, ObjectDataItem otmp_round,
             int layer_idx, int mapx, int mapy,
             bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem,
             float tx, float ty, float width, float height,
             float scale, float targetscale, float scaled_x_padding, float scaled_y_padding, float scaled_tile_height,
             bool is_inventory, bool drawwallends)
         {
+            if (delayedDraw)
+            {
+                ulong contents_no = 0;
+                ulong contents_id_sum = 0;
+                if(otmp_round != null)
+                {
+                    foreach(ObjectDataItem otmp in otmp_round.ContainedObjs)
+                    {
+                        contents_no++;
+                        contents_id_sum += otmp.ObjData.o_id;
+                    }
+                }
+                _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, paint.Color, mapx, mapy, new AutoDrawParameterDefinition(autodraw, otmp_round, layer_idx, 
+                     tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem,
+                     tx, ty, width, height, scale, targetscale, scaled_x_padding, scaled_y_padding, scaled_tile_height,
+                     is_inventory, drawwallends, contents_no, contents_id_sum)));
+                return;
+            }
+
             /******************/
             /* AUTODRAW START */
             /******************/
@@ -10272,7 +10381,7 @@ namespace GnollHackX.Pages.Game
                                         {
                                             foreach (SKBitmap bmp in _savedAutoDrawBitmaps.Values)
                                                 bmp.Dispose();
-                                            _savedAutoDrawBitmaps.Clear(); /* Clear the whole dictonary for the sake of ease; should almost never happen normally anyway */
+                                            _savedAutoDrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
                                         }
 
                                         SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
@@ -10459,7 +10568,7 @@ namespace GnollHackX.Pages.Game
                                     {
                                         foreach(SKBitmap bmp in _savedAutoDrawBitmaps.Values)
                                             bmp.Dispose();
-                                        _savedAutoDrawBitmaps.Clear(); /* Clear the whole dictonary for the sake of ease; should almost never happen normally anyway */
+                                        _savedAutoDrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
                                     }
 
                                     SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);

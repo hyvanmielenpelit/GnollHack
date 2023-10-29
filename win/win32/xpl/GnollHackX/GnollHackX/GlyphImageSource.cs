@@ -423,7 +423,7 @@ namespace GnollHackX
                         }
 
                         canvas.DrawBitmap(ReferenceGamePage.TileMap[sheet_idx], sourcerect, targetrect, paint);
-                        ReferenceGamePage.DrawAutoDraw(autodraw, canvas, paint, ObjData,
+                        ReferenceGamePage.DrawAutoDraw(autodraw, canvas, false, paint, ObjData,
                             (int)layer_types.LAYER_OBJECT, 0, 0,
                             tileflag_halfsize, false, tileflag_fullsizeditem,
                             0, 0, tileWidth, tileHeight,
@@ -460,7 +460,7 @@ namespace GnollHackX
                             SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                             SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
                             canvas.DrawBitmap(ReferenceGamePage.TileMap[sheet_idx], sourcerect, targetrect, paint);
-                            ReferenceGamePage.DrawAutoDraw(autodraw, canvas, paint, ObjData,
+                            ReferenceGamePage.DrawAutoDraw(autodraw, canvas, false, paint, ObjData,
                                 (int)layer_types.LAYER_OBJECT, 0, 0,
                                 tileflag_halfsize, false, true,
                                 0, 0, tileWidth, tileHeight,
@@ -529,7 +529,7 @@ namespace GnollHackX
                                     SKRect sourcerect = new SKRect(etile_x, etile_y, etile_x + GHConstants.TileWidth, etile_y + GHConstants.TileHeight);
                                     SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
                                     canvas.DrawBitmap(ReferenceGamePage.TileMap[e_sheet_idx], sourcerect, targetrect, paint);
-                                    ReferenceGamePage.DrawAutoDraw(autodraw, canvas, paint, ObjData,
+                                    ReferenceGamePage.DrawAutoDraw(autodraw, canvas, false, paint, ObjData,
                                         (int)layer_types.LAYER_OBJECT, 0, 0,
                                         tileflag_halfsize, false, true,
                                         0, 0, tileWidth, tileHeight,
@@ -540,7 +540,6 @@ namespace GnollHackX
                     }
                 }
             }
-
         }
     }
 }
