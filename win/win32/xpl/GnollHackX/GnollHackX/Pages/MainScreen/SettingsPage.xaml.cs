@@ -411,7 +411,7 @@ namespace GnollHackX.Pages.MainScreen
             bank = Preferences.Get("LoadSoundBanks", true);
             html = Preferences.Get("UseHTMLDumpLogs", GHConstants.DefaultHTMLDumpLogs);
             singledumplog = Preferences.Get("UseSingleDumpLog", GHConstants.DefaultUseSingleDumpLog);
-            streamingbanktomemory = Preferences.Get("ReadStreamingBankToMemory", GHConstants.DefaultReadStreamingBankToMemory);
+            streamingbanktomemory = Preferences.Get("ReadStreamingBankToMemory", GHApp.DefaultStreamingBankToMemory);
             streamingbanktodisk = Preferences.Get("CopyStreamingBankToDisk", GHConstants.DefaultCopyStreamingBankToDisk);
             postgamestatus = Preferences.Get("PostingGameStatus", GHConstants.DefaultPosting);
             postdiagnostics = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
@@ -753,8 +753,8 @@ namespace GnollHackX.Pages.MainScreen
                     loadBanks = false;
             }
 
-            bool readmem_oldvalue = Preferences.Get("ReadStreamingBankToMemory", false);
-            bool copydisk_oldvalue = Preferences.Get("CopyStreamingBankToDisk", false);
+            bool readmem_oldvalue = Preferences.Get("ReadStreamingBankToMemory", GHApp.DefaultStreamingBankToMemory);
+            bool copydisk_oldvalue = Preferences.Get("CopyStreamingBankToDisk", GHConstants.DefaultCopyStreamingBankToDisk);
 
             if (StreamingBankToMemorySwitch.IsToggled != readmem_oldvalue || StreamingBankToDiskSwitch.IsToggled != copydisk_oldvalue)
             {

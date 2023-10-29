@@ -32,6 +32,8 @@ namespace GnollHackX
             _batteryChargeLevelTimeStamp = DateTime.Now;
             Battery.BatteryInfoChanged += Battery_BatteryInfoChanged;
 
+            TotalMemory = GHApp.PlatformService.GetDeviceMemoryInBytes();
+
             InitBaseTypefaces();
             InitializeCachedBitmaps();
 
@@ -58,13 +60,22 @@ namespace GnollHackX
             CustomGameStatusLink = Preferences.Get("CustomGameStatusLink", "");
             UseHTMLDumpLogs = Preferences.Get("UseHTMLDumpLogs", GHConstants.DefaultHTMLDumpLogs);
             UseSingleDumpLog = Preferences.Get("UseSingleDumpLog", GHConstants.DefaultUseSingleDumpLog);
-            ReadStreamingBankToMemory = Preferences.Get("ReadStreamingBankToMemory", GHConstants.DefaultReadStreamingBankToMemory);
+            ReadStreamingBankToMemory = Preferences.Get("ReadStreamingBankToMemory", DefaultStreamingBankToMemory);
             CopyStreamingBankToDisk = Preferences.Get("CopyStreamingBankToDisk", GHConstants.DefaultCopyStreamingBankToDisk);
             AppSwitchSaveStyle = Preferences.Get("AppSwitchSaveStyle", 0);
 
             BackButtonPressed += EmptyBackButtonPressed;
         }
 
+        public static ulong TotalMemory { get; set; }
+        public static bool DefaultStreamingBankToMemory 
+        { 
+            get 
+            {
+                return !GHConstants.UseDefaultAndroidBanksToMemory || GHConstants.DefaultReadStreamingBankToMemory ? GHConstants.DefaultReadStreamingBankToMemory :
+                    IsAndroid && TotalMemory >= GHConstants.AndroidBanksToMemoryThreshold;
+            }
+        }
 
         public static bool BatterySavingMode { get; set; }
 
@@ -1051,6 +1062,7 @@ namespace GnollHackX
 
         public static SKBitmap _searchBitmap;
         public static SKBitmap _waitBitmap;
+        public static SKBitmap _damageBitmap;
 
 
         public static bool StartGameDataSet = false;
@@ -1625,6 +1637,11 @@ namespace GnollHackX
                 _waitBitmap = SKBitmap.Decode(stream);
                 _waitBitmap.SetImmutable();
             }
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-damage.png"))
+            {
+                _damageBitmap = SKBitmap.Decode(stream);
+                _damageBitmap.SetImmutable();
+            }
         }
 
         public static readonly List<SelectableShortcutButton> SelectableShortcutButtons = new List<SelectableShortcutButton>()
@@ -2105,6 +2122,18 @@ namespace GnollHackX
             else if (trimmed_str == "&sptra;")
             {
                 bitmap = _spellTransmutationBitmap;
+            }
+            else if (trimmed_str == "&damage;")
+            {
+                bitmap = _damageBitmap;
+            }
+            else if (trimmed_str == "&AC;")
+            {
+                bitmap = _statusACBitmap;
+            }
+            else if (trimmed_str == "&MC;")
+            {
+                bitmap = _statusMCBitmap;
             }
 
             if (bitmap != null)

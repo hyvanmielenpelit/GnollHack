@@ -139,6 +139,7 @@
 		<None Remove="Assets\UI\frame2-vertical.png" />
 		<None Remove="Assets\UI\picktobag.png" />
 		<None Remove="Assets\UI\status-quivered-weapon-style.png" />
+		<None Remove="Assets\UI\symbol-damage.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -685,6 +686,7 @@
 	  <EmbeddedResource Include="Assets\UI\symbol-adds.png" />
 	  <EmbeddedResource Include="Assets\UI\symbol-casts.png" />
 	  <EmbeddedResource Include="Assets\UI\symbol-cooldown.png" />
+	  <EmbeddedResource Include="Assets\UI\symbol-damage.png" />
 	  <EmbeddedResource Include="Assets\UI\symbol-food.png" />
 	  <EmbeddedResource Include="Assets\UI\symbol-mana.png" />
 	  <EmbeddedResource Include="Assets\UI\symbol-spell-abjuration.png" />

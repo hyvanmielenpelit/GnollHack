@@ -2524,7 +2524,7 @@ E boolean FDECL(find_key_otyp_by_description, (char*, int*, int*));
 E void FDECL(print_lock_with_buf, (char*, int, int, BOOLEAN_P));
 E char* NDECL(nextobuf);
 E char* FDECL(str_upper_start, (const char*));
-E void FDECL(print_comparison_stats, (struct obj*, char*));
+E void FDECL(print_comparison_stats, (struct obj*, char*, winid, UCHAR_P, BOOLEAN_P, char*, char*, char*));
 
 /* ### options.c ### */
 

@@ -1179,10 +1179,29 @@ int show_weights;
                 get_obj_location(curr, &x, &y, CONTAINED_TOO | BURIED_TOO);
                 int glyph = obj_to_glyph(curr, rn2_on_display_rng);
                 int gui_glyph = maybe_get_replaced_glyph(glyph, x, y, data_to_replacement_info(glyph, LAYER_OBJECT, curr, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
+                char objbuf[BUFSZ * 2];
+                char attrs[BUFSZ * 2];
+                char colors[BUFSZ * 2];
+                memset(attrs, ATR_NONE, sizeof(attrs));
+                memset(colors, NO_COLOR, sizeof(colors));
+                Strcpy(objbuf, 
+                    show_weights > 0 ? 
+                    (flags.inventory_weights_last ? doname_with_price_and_weight_last(curr, loadstonecorrectly) : doname_with_price_and_weight_first(curr, loadstonecorrectly)) : 
+                    doname_with_price(curr));
+                struct extended_menu_info eminfo = obj_to_extended_menu_info(curr);
+                if (comparison_stats)
+                {
+                    char compbuf[BUFSZ];
+                    print_comparison_stats(curr, compbuf, WIN_ERR, TRUE, TRUE, objbuf, attrs, colors);
+                    eminfo.attrs = attrs;
+                    eminfo.colors = colors;
+                    eminfo.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
+                }
+
                 add_extended_menu(win, gui_glyph, &any,
                     applied_invlet, applied_group_accelerator, ATR_NONE, NO_COLOR, 
-                    show_weights > 0 ? (flags.inventory_weights_last ? doname_with_price_and_weight_last_and_comparison(curr, loadstonecorrectly, comparison_stats) : doname_with_price_and_weight_first_and_comparison(curr, loadstonecorrectly, comparison_stats)) : doname_with_price_and_comparison(curr, comparison_stats),
-                    MENU_UNSELECTED, obj_to_extended_menu_info(curr));
+                    objbuf,
+                    MENU_UNSELECTED, eminfo);
                 first = FALSE;
             }
         }
@@ -4502,13 +4521,11 @@ struct obj* other_container UNUSED;
     }
     else 
     {
-        mflags = INVORDER_SORT;
+        mflags = INVORDER_SORT | OBJECT_COMPARISON;
         if (command_id == 1 && flags.invlet_constant)
             mflags |= USE_INVLET;
         if (command_id == 6)
             mflags |= BY_NEXTHERE;
-        if (command_id == 6 || ((command_id == 0 || command_id == 4 || command_id == 5) && !carried(current_container)))
-            mflags |= OBJECT_COMPARISON;
         if (command_id == 0 || command_id == 2)
             current_container->cknown = 1;
 

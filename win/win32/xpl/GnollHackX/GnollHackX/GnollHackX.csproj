@@ -219,6 +219,7 @@
     <None Remove="Assets\UI\symbol-adds.png" />
     <None Remove="Assets\UI\symbol-casts.png" />
     <None Remove="Assets\UI\symbol-cooldown.png" />
+    <None Remove="Assets\UI\symbol-damage.png" />
     <None Remove="Assets\UI\symbol-food.png" />
     <None Remove="Assets\UI\symbol-mana.png" />
     <None Remove="Assets\UI\symbol-spell-abjuration.png" />
@@ -301,6 +302,7 @@
     <EmbeddedResource Include="Assets\UI\save.png" />
     <EmbeddedResource Include="Assets\UI\status-empty-handed.png" />
     <EmbeddedResource Include="Assets\UI\status-quivered-weapon-style.png" />
+    <EmbeddedResource Include="Assets\UI\symbol-damage.png" />
     <EmbeddedResource Include="Assets\UI\unwield.png" />
     <EmbeddedResource Include="Assets\Lato-Bold.ttf" />
     <EmbeddedResource Include="Assets\Lato-Regular.ttf" />

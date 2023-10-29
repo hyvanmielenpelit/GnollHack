@@ -1573,8 +1573,10 @@ namespace GnollHackX
         public const string InstallTimePackName = "installtimepack";
         public const string OnDemandPackName = "ondemandpack";
         public const string UserDataDirectory = "usrdata";
-        public const string ManualFilePrefix = "manual_id_";    
+        public const string ManualFilePrefix = "manual_id_";
+        public const bool UseDefaultAndroidBanksToMemory = true;
         public const bool DefaultReadStreamingBankToMemory = false;
+        public const ulong AndroidBanksToMemoryThreshold = 3500000000UL;
         public const bool DefaultCopyStreamingBankToDisk = false;
         public const bool DefaultDrawWallEnds = true;
         public const bool DefaultBreatheAnimations = true;

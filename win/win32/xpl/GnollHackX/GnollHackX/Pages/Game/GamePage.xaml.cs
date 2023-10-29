@@ -13049,6 +13049,8 @@ namespace GnollHackX.Pages.Game
             float spacelength = textPaint.MeasureText(" ");
             int idx = 0;
             int rowidx = 0;
+            int special_coloring = 0;
+            SKColor orig_color = textPaint.Color;
             foreach (string split_str in textsplit)
             {
                 bool nowrap = false;
@@ -13074,6 +13076,8 @@ namespace GnollHackX.Pages.Game
                 SKRect source_rect = new SKRect();
                 if(usespecialsymbols && (symbolbitmap = GetGameSpecialSymbol(split_str, out source_rect)) != null)
                 {
+                    special_coloring = 0;
+                    textPaint.Color = orig_color;
                     float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
                     float bmpwidth = bmpheight * (float)symbolbitmap.Width / (float)Math.Max(1, symbolbitmap.Height);
                     float bmpmargin = bmpheight / 8;
@@ -13093,6 +13097,10 @@ namespace GnollHackX.Pages.Game
                         SKRect bmptargetrect = new SKRect(bmpx, bmpy, bmpx + bmpwidth, bmpy + bmpheight);
                         canvas.DrawBitmap(symbolbitmap, source_rect, bmptargetrect, textPaint);
                     }
+                    if (split_str == "&damage;" || split_str == "&MC;")
+                        special_coloring = 1;
+                    else if (split_str == "&AC;")
+                        special_coloring = -1;
                     isfirstprintonrow = false;
                 }
                 else
@@ -13132,9 +13140,30 @@ namespace GnollHackX.Pages.Game
                             textPaint.Style = SKPaintStyle.Fill;
                             textPaint.StrokeWidth = 0;
                         }
+                        if (special_coloring != 0)
+                        {
+                            double res;
+                            if(double.TryParse(split_str, NumberStyles.Any, CultureInfo.InvariantCulture, out res))
+                            {
+                                res = res * special_coloring;
+                                if (res > 0)
+                                    textPaint.Color = UIUtils.NHColor2SKColorCore((int)nhcolor.CLR_BRIGHT_GREEN, (int)MenuItemAttributes.None, revertblackandwhite, false);
+                                else if (res < 0)
+                                    textPaint.Color = UIUtils.NHColor2SKColorCore((int)nhcolor.CLR_RED, (int)MenuItemAttributes.None, revertblackandwhite, false);
+                                else
+                                    textPaint.Color = orig_color;
+                            }
+                            else
+                                textPaint.Color = orig_color;
+                        }
                         canvas.DrawText(split_str, x, y, textPaint);
                     }
 
+                    if(special_coloring != 0)
+                    {
+                        special_coloring = 0;
+                        textPaint.Color = orig_color;
+                    }
                     isfirstprintonrow = false;
                 }
 

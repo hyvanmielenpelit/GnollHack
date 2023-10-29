@@ -6306,7 +6306,9 @@ boolean picked_some, explicit_cmd;
 
             display_nhwindow(WIN_MESSAGE, FALSE);
 
-            tmpwin = create_nhwindow(NHW_MENU);
+            struct extended_create_window_info ecwinfo = zerocreatewindowinfo;
+            ecwinfo.create_flags = WINDOW_CREATE_FLAGS_USE_SPECIAL_SYMBOLS;
+            tmpwin = create_nhwindow_ex(NHW_MENU, 0, NO_GLYPH, ecwinfo);
 
             if (dfeature) {
                 putstr(tmpwin, 0, fbuf);
@@ -6341,20 +6343,17 @@ boolean picked_some, explicit_cmd;
                     //Nothing
                 }
                 putstr_ex(tmpwin, buf2, ATR_INDENT_AT_DASH, NO_COLOR, 1);
-                boolean compstatsprinted = FALSE;
+                putstr_ex(tmpwin, buf, ATR_INDENT_AT_DASH | attr, color, 1);
                 if (iflags.show_comparison_stats)
                 {
-                    print_comparison_stats(otmp, compbuf);
-                    if (*compbuf)
-                    {
-                        compstatsprinted = TRUE;
-                        putstr_ex(tmpwin, buf, ATR_INDENT_AT_DASH | attr, color, 1);
-                        Sprintf(buf2, " (%s)", compbuf);
-                        putstr_ex(tmpwin, buf2, ATR_INDENT_AT_DASH, NO_COLOR, 0);
-                    }
+                    boolean add_parentheses = (windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) == 0; /* Only if not using symbols */
+                    if (!add_parentheses) /* Need a space in that case first */
+                        putstr_ex(tmpwin, " ", ATR_INDENT_AT_DASH, NO_COLOR, 1);
+                    print_comparison_stats(otmp, compbuf, tmpwin, add_parentheses, TRUE, 0, 0, 0);
                 }
-                if(!compstatsprinted)
-                    putstr_ex(tmpwin, buf, ATR_INDENT_AT_DASH | attr, color, 0);
+                else
+                    putstr_ex(tmpwin, "", ATR_INDENT_AT_DASH | attr, color, 0);
+
             }
 
             if (flags.show_weight_summary)

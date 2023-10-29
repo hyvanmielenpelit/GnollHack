@@ -1927,7 +1927,7 @@ weapon_here:
     if (comparison_stats)
     {
         char compbuf[BUFSZ] = "";
-        print_comparison_stats(obj, compbuf);
+        print_comparison_stats(obj, compbuf, WIN_ERR, FALSE, FALSE, 0, 0, 0);
         if (*compbuf)
             Sprintf(eos(bp), " (%s)", compbuf);
     }
@@ -6113,14 +6113,21 @@ int otyp, material;
 }
 
 void
-print_comparison_stats(obj, buf)
+print_comparison_stats(obj, buf, datawin, add_parentheses, use_symbols, objbuf, attrs, colors)
 struct obj* obj;
-char* buf;
+char *buf, *objbuf, *attrs, *colors;
+winid datawin;
+uchar add_parentheses; /* 1 = add parentheses, 2 = add ", " instead to start and close with ")" */
+boolean use_symbols;
 {
-    if (!obj || !buf)
+    if (!obj)
         return;
 
     *buf = 0;
+    char tmpbuf[BUFSZ];
+    boolean do_putstr = datawin != WIN_ERR;
+    boolean do_special_symbols = (windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0 && use_symbols;
+    boolean parentheses_stripped = datawin == WIN_ERR && do_special_symbols;
 
     struct item_description_stats obj_stats = { 0 };
     (void)itemdescription_core(obj, obj->otyp, &obj_stats);
@@ -6130,16 +6137,77 @@ char* buf;
         is_thrown_weapon_only(obj) ? (uquiver && is_thrown_weapon_only(uquiver) ? uquiver : 0) :
         (is_wieldable_weapon(obj) && uwep && is_launcher(obj) == is_launcher(uwep)) ? uwep :
         (is_wieldable_weapon(obj) && uswapwep && is_launcher(obj) == is_launcher(uswapwep)) ? uswapwep : 0;
-    if (cwep && cwep != obj && uwep2 != obj && uswapwep2 != obj && obj_stats.weapon_stats_printed)
+
+    int dmgpos = -1;
+    int acpos = -1;
+    int mcpos = -1;
+    size_t dmglen = 0;
+    size_t aclen = 0;
+    size_t mclen = 0;
+    char dmgcolor = NO_COLOR;
+    char accolor = NO_COLOR;
+    char mccolor = NO_COLOR;
+
+    boolean need_closing = FALSE;
+    if (obj_stats.weapon_stats_printed)
     {
-        struct item_description_stats cwep_stats = { 0 };
-        (void)itemdescription_core(cwep, cwep->otyp, &cwep_stats);
-        if (cwep_stats.stats_set && cwep_stats.weapon_stats_printed)
+        double dmgdiff = obj_stats.avg_damage;
+        boolean isdmgdiff = FALSE;
+        boolean skip_weapon_print = FALSE;
+        if (cwep && cwep != obj && uwep2 != obj && uswapwep2 != obj)
         {
-            double dmgdiff = obj_stats.avg_damage - cwep_stats.avg_damage;
+            struct item_description_stats cwep_stats = { 0 };
+            (void)itemdescription_core(cwep, cwep->otyp, &cwep_stats);
+            if (cwep_stats.stats_set && cwep_stats.weapon_stats_printed)
+            {
+                isdmgdiff = TRUE;
+                dmgdiff = obj_stats.avg_damage - cwep_stats.avg_damage;
+            }
+        }
+        else
+            skip_weapon_print = TRUE;
+
+        if (!skip_weapon_print)
+        {
             if (*buf)
-                Strcat(buf, ", ");
-            Sprintf(eos(buf), "%s%.1f damage", dmgdiff >= 0 ? "+" : "", dmgdiff);
+            {
+                Strcpy(tmpbuf, do_special_symbols ? " " : ", ");
+                Strcat(buf, tmpbuf);
+                if (do_putstr)
+                    putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+            }
+            else
+            {
+                if (add_parentheses)
+                {
+                    Strcpy(tmpbuf, add_parentheses == 2 ? ", " : do_special_symbols && !parentheses_stripped ? " ( " :" (");
+                    Strcat(buf, tmpbuf);
+                    if (do_putstr)
+                        putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+                }
+            }
+            if (do_special_symbols)
+            {
+                Strcpy(tmpbuf, "&damage; ");
+                Strcat(buf, tmpbuf);
+                if (do_putstr)
+                    putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+            }
+            dmgpos = (int)strlen(buf);
+            Sprintf(tmpbuf, "%s%.1f", isdmgdiff && dmgdiff >= 0 ? "+" : "", dmgdiff);
+            dmglen = strlen(tmpbuf);
+            dmgcolor = dmgdiff > 0 ? CLR_BRIGHT_GREEN : dmgdiff < 0 ? CLR_RED : NO_COLOR;
+            Strcat(buf, tmpbuf);
+            if (do_putstr)
+                putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, dmgcolor, 1);
+            if (!do_special_symbols)
+            {
+                Strcpy(tmpbuf, " damage");
+                Strcat(buf, tmpbuf);
+                if (do_putstr)
+                    putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+            }
+            need_closing = TRUE;
         }
     }
     if (is_armor(obj) && obj_stats.armor_stats_printed)
@@ -6164,20 +6232,139 @@ char* buf;
         else if (is_shield(obj))
             current_armor = uarms;
 
+        int acdiff = obj_stats.ac_bonus;
+        int mcdiff = obj_stats.mc_bonus;
+        boolean skip_armor_print = FALSE;
         if (current_armor && obj != current_armor && is_armor(current_armor))
         {
             struct item_description_stats armor_stats = { 0 };
             (void)itemdescription_core(current_armor, current_armor->otyp, &armor_stats);
             if (armor_stats.stats_set && armor_stats.armor_stats_printed)
             {
-                int acdiff = obj_stats.ac_bonus - armor_stats.ac_bonus;
-                int mcdiff = obj_stats.mc_bonus - armor_stats.mc_bonus;
-                if (*buf)
-                    Strcat(buf, ", ");
-                Sprintf(eos(buf), "%s%d AC %s", acdiff >= 0 ? "+" : "", acdiff, acdiff <= 0 ? "bonus" : "penalty");
-                if (*buf)
-                    Strcat(buf, ", ");
-                Sprintf(eos(buf), "%s%d MC %s", mcdiff >= 0 ? "+" : "", mcdiff, mcdiff >= 0 ? "bonus" : "penalty");
+                acdiff = obj_stats.ac_bonus - armor_stats.ac_bonus;
+                mcdiff = obj_stats.mc_bonus - armor_stats.mc_bonus;
+            }
+            else
+                skip_armor_print = TRUE;
+        }
+        if (!skip_armor_print)
+        {
+            if (*buf)
+            {
+                Strcpy(tmpbuf, ", ");
+                Strcat(buf, tmpbuf);
+                if (do_putstr)
+                    putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+            }
+            else
+            {
+                if (add_parentheses)
+                {
+                    Strcpy(tmpbuf, add_parentheses == 2 ? ", " : do_special_symbols && !parentheses_stripped ? " ( " : " (");
+                    Strcat(buf, tmpbuf);
+                    if (do_putstr)
+                        putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+                }
+            }
+
+            if (do_special_symbols)
+            {
+                Strcpy(tmpbuf, "&AC; ");
+                Strcat(buf, tmpbuf);
+                if (do_putstr)
+                    putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+            }
+
+            acpos = (int)strlen(buf);
+            Sprintf(tmpbuf, "%s%d", acdiff >= 0 ? "+" : "", acdiff);
+            aclen = strlen(tmpbuf);
+            Strcat(buf, tmpbuf);
+            accolor = acdiff < 0 ? CLR_BRIGHT_GREEN : acdiff > 0 ? CLR_RED : NO_COLOR;
+            if (do_putstr)
+                putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, accolor, 1);
+            
+            if (!do_special_symbols)
+            {
+                Strcpy(tmpbuf, " AC");
+                Strcat(buf, tmpbuf);
+                if (do_putstr)
+                    putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+            }
+            if (*buf)
+            {
+                Strcpy(tmpbuf, do_special_symbols ? " " : ", ");
+                Strcat(buf, tmpbuf);
+                if (do_putstr)
+                    putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+            }
+            if (do_special_symbols)
+            {
+                Strcpy(tmpbuf, "&MC; ");
+                Strcat(buf, tmpbuf);
+                if (do_putstr)
+                    putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+            }
+            mcpos = (int)strlen(buf);
+            Sprintf(tmpbuf, "%s%d", mcdiff >= 0 ? "+" : "", mcdiff);
+            mclen = strlen(tmpbuf);
+            mccolor = mcdiff > 0 ? CLR_BRIGHT_GREEN : mcdiff < 0 ? CLR_RED : NO_COLOR;
+            Strcat(buf, tmpbuf);
+            if (do_putstr)
+                putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, mccolor, 1);
+            if (!do_special_symbols)
+            {
+                Strcpy(tmpbuf, " MC");
+                Strcat(buf, tmpbuf);
+                if (do_putstr)
+                    putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+            }
+            need_closing = TRUE;
+        }
+    }
+
+    if (add_parentheses && need_closing)
+    {
+        Strcpy(tmpbuf, ")");
+        Strcat(buf, tmpbuf);
+        if (do_putstr)
+            putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 0);
+    }
+    else
+    {
+        if (do_putstr)
+            putstr_ex(datawin, "", ATR_INDENT_AT_DASH, NO_COLOR, 0);
+    }
+    
+    if (objbuf && attrs && colors)
+    {
+        size_t orig_objbuf_len = strlen(objbuf);
+        Strcat(objbuf, buf);
+        size_t len = strlen(objbuf);
+        attrs[len] = 0;
+        colors[len] = 0;
+        size_t i;
+        if (dmgpos >= 0)
+        {
+            for (i = orig_objbuf_len + (size_t)dmgpos; i < orig_objbuf_len + (size_t)dmgpos + dmglen; i++)
+            {
+                attrs[i] = ATR_NONE;
+                colors[i] = dmgcolor;
+            }
+        }
+        if (acpos >= 0)
+        {
+            for (i = orig_objbuf_len + (size_t)acpos; i < orig_objbuf_len + (size_t)acpos + aclen; i++)
+            {
+                attrs[i] = ATR_NONE;
+                colors[i] = accolor;
+            }
+        }
+        if (mcpos >= 0)
+        {
+            for (i = orig_objbuf_len + (size_t)mcpos; i < orig_objbuf_len + (size_t)mcpos + mclen; i++)
+            {
+                attrs[i] = ATR_NONE;
+                colors[i] = mccolor;
             }
         }
     }
