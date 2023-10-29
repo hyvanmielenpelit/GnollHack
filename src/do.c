@@ -764,13 +764,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
     
     struct window_procs saved_procs = windowprocs;
     if (stats_ptr)
-    {
-#ifdef SAFEPROCS
-        windowprocs = *get_safe_procs(0);
-#else
-        return 0;
-#endif
-    }
+        itemdesc_redirect();
 
     winid datawin = WIN_ERR;
     int glyph = obj ? obj_to_glyph(obj, rn2_on_display_rng) : otyp + GLYPH_OBJ_OFF;

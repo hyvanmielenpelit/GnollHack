@@ -4254,10 +4254,10 @@ E char* FDECL(print_dumphtml_filename_to_buffer, (char*));
 E void FDECL(html_dump_glyph, (int, int, int, nhsym, int, unsigned long));
 #endif
 #endif
-
 #if defined(ANDROID) && defined(DUMPLOG)
 E void FDECL(and_get_dumplog_dir, (char*));
 #endif
+E void NDECL(itemdesc_redirect);
 E void NDECL(reset_windows);
 
 
