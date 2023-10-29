@@ -203,16 +203,17 @@ REGEXOBJ = posixregex.o
 #
 # files for a straight tty port using no native windowing system
 WINTTYSRC = ../win/tty/getline.c ../win/tty/termcap.c ../win/tty/topl.c \
-	../win/tty/wintty.c
-WINTTYOBJ = getline.o termcap.o topl.o wintty.o
+	../win/tty/wintty.c ../win/share/safeprocs.c
+WINTTYOBJ = getline.o termcap.o topl.o wintty.o safeprocs.o
 #
 # Files for curses interface
 WINCURSESSRC = ../win/curses/cursmain.c ../win/curses/curswins.c \
 	../win/curses/cursmisc.c ../win/curses/cursdial.c \
 	../win/curses/cursstat.c ../win/curses/cursinit.c \
-	../win/curses/cursmesg.c ../win/curses/cursinvt.c
+	../win/curses/cursmesg.c ../win/curses/cursinvt.c \
+	../win/share/safeprocs.c
 WINCURSESOBJ = cursmain.o curswins.o cursmisc.o cursdial.o cursstat.o \
-	cursinit.o cursmesg.o cursinvt.o
+	cursinit.o cursmesg.o cursinvt.o safeprocs.o
 #
 # files for an X11 port
 # (tile.c is a generated source file)
