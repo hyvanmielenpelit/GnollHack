@@ -3171,7 +3171,7 @@ STATIC_OVL void
 itemdesc_putstr_ex(win, str, attr, color, app)
 winid win UNUSED;
 int attr UNUSED, app UNUSED, color UNUSED;
-const char* str;
+const char* str UNUSED;
 {
     return;
 }

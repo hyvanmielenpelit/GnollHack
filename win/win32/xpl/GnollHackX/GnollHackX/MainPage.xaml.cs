@@ -148,6 +148,11 @@ namespace GnollHackX
                     await DisplayAlert("Incompatible Saved Games", "GnollHack has been updated to a newer version, for which your existing saved games are incompatible. To downgrade back to the earlier version, back up first your save files using About -> Export Saved Games and then follow the instructions at About -> Downgrade.", "OK");
                     previousInformationShown = true;
                 }
+                if (GHApp.InformAboutSlowSounds)
+                {
+                    await DisplayAlert("Slow Sounds", "GnollHack is running on Android in Debug Mode using the APK format, which causes sounds to play slow. Please switch Streaming Banks to Memory on in Settings.", "OK");
+                    previousInformationShown = true;
+                }
                 if (!previousInformationShown)
                 {
                     bool ReviewRequested = Preferences.Get("StoreReviewRequested", false);

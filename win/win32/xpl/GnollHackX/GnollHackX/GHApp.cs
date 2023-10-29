@@ -145,6 +145,14 @@ namespace GnollHackX
         public static bool InformAboutCrashReport = false;
         public static bool InformAboutIncompatibleSavedGames = false;
 
+        public static bool InformAboutSlowSounds
+        {
+            get
+            {
+                return IsAndroid && IsDebug && LoadBanks && !ReadStreamingBankToMemory;
+            }
+        }
+
         public static bool IsGPUDefault
         {
             get
