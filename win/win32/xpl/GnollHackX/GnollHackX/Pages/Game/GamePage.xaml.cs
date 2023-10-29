@@ -9643,8 +9643,14 @@ namespace GnollHackX.Pages.Game
             {
                 ulong contents_no = 0;
                 ulong contents_id_sum = 0;
-                if(otmp_round != null)
+                int item_charges = 0;
+                int item_special_quality = 0;
+                bool item_lit = false;
+                if (otmp_round != null)
                 {
+                    item_charges = otmp_round.ObjData.charges;
+                    item_special_quality = otmp_round.ObjData.special_quality;
+                    item_lit = otmp_round.LampLit;
                     foreach(ObjectDataItem otmp in otmp_round.ContainedObjs)
                     {
                         contents_no++;
@@ -9654,7 +9660,7 @@ namespace GnollHackX.Pages.Game
                 _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, paint.Color, mapx, mapy, new AutoDrawParameterDefinition(autodraw, otmp_round, layer_idx, 
                      tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem,
                      tx, ty, width, height, scale, targetscale, scaled_x_padding, scaled_y_padding, scaled_tile_height,
-                     is_inventory, drawwallends, contents_no, contents_id_sum)));
+                     is_inventory, drawwallends, contents_no, contents_id_sum, item_charges, item_special_quality, item_lit)));
                 return;
             }
 

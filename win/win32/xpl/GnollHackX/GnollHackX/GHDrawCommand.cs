@@ -26,12 +26,15 @@ namespace GnollHackX
         public bool drawwallends;
         public ulong contents_no;
         public ulong contents_id_sum;
+        public int item_charges;
+        public int item_special_quality;
+        public bool item_lit;
 
         public AutoDrawParameterDefinition(int autodrawInit, ObjectDataItem otmp_roundInit,
             int layer_idxInit, bool tileflag_halfsizeInit, bool tileflag_normalobjmissileInit, bool tileflag_fullsizeditemInit,
             float txInit, float tyInit, float widthInit, float heightInit,
             float scaleInit, float targetscaleInit, float scaled_x_paddingInit, float scaled_y_paddingInit, float scaled_tile_heightInit,
-            bool is_inventoryInit, bool drawwallendsInit, ulong contents_noInit, ulong contents_id_sumInit)
+            bool is_inventoryInit, bool drawwallendsInit, ulong contents_noInit, ulong contents_id_sumInit, int item_chargesInit, int item_special_qualityInit, bool item_litInit)
         {
             autodraw = autodrawInit;
             otmp_round = otmp_roundInit;
@@ -52,6 +55,9 @@ namespace GnollHackX
             drawwallends = drawwallendsInit;
             contents_no = contents_noInit;
             contents_id_sum = contents_id_sumInit;
+            item_charges = item_chargesInit;
+            item_special_quality = item_special_qualityInit;
+            item_lit = item_litInit;
         }
     }
 
