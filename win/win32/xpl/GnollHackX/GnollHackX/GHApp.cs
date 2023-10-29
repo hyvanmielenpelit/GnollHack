@@ -72,8 +72,20 @@ namespace GnollHackX
         { 
             get 
             {
-                return !GHConstants.UseDefaultAndroidBanksToMemory || GHConstants.DefaultReadStreamingBankToMemory ? GHConstants.DefaultReadStreamingBankToMemory :
-                    IsAndroid && TotalMemory >= GHConstants.AndroidBanksToMemoryThreshold;
+                return GHConstants.DefaultReadStreamingBankToMemory || 
+                    IsDebug && IsAndroid && TotalMemory >= GHConstants.AndroidBanksToMemoryThreshold;
+            }
+        }
+
+        public static bool IsDebug
+        {
+            get
+            {
+#if DEBUG
+                return true;
+#else
+                return false;
+#endif
             }
         }
 
