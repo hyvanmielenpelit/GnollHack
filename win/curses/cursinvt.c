@@ -59,7 +59,7 @@ curses_update_inv(void)
 void
 curses_add_inv(int y,
                int glyph UNUSED,
-               CHAR_P accelerator, int attr, int nhcolor, const char *str, const char* attrs UNUSED, const char* colors UNUSED)
+               CHAR_P accelerator, int attr, int nhcolor, const char *str, const char* attrs, const char* colors)
 {
     WINDOW *win = curses_get_nhwin(INV_WIN);
     int color = NO_COLOR;
@@ -104,14 +104,60 @@ curses_add_inv(int y,
         get_menu_coloring(str_mutable, &color, (int *) &attr);
         curses_attr = curses_convert_attr(attr);
     }
-    if (color == NO_COLOR) color = nhcolor;
-    if (color == NO_COLOR) color = NONE;
-    curses_toggle_color_attr(win, color, curses_attr, ON);
-    /* wattron(win, curses_attr); */
-    wprintw(win, "%s", str);
-    /* wattroff(win, curses_attr); */
-    curses_toggle_color_attr(win, color, curses_attr, OFF);
-    wclrtoeol(win);
+    if (attrs && colors)
+    {
+        if (color == NO_COLOR) color = nhcolor;
+        char* tp = str;
+        char* ap = attrs;
+        char* cp = colors;
+        int orig_color = color;
+        int orig_attr = attr;
+        attr_t orig_curses_attr = curses_attr;
+        if (curses_attr != A_NORMAL)
+            curses_toggle_color_attr(win, NONE, curses_attr, ON);
+        if (color != NO_COLOR)
+            curses_toggle_color_attr(win, orig_color, NONE, ON);
+        while (*tp)
+        {
+            attr_t newcursesattr = curses_convert_attr(*ap);
+            if (curses_attr != newcursesattr)
+            {
+                if (curses_attr != A_NORMAL)
+                    curses_toggle_color_attr(win, NONE, curses_attr, OFF);
+                if (newcursesattr != A_NORMAL)
+                    curses_toggle_color_attr(win, NONE, newcursesattr, ON);
+                else if (orig_curses_attr != A_NORMAL)
+                    curses_toggle_color_attr(win, NONE, orig_curses_attr, ON);
+            }
+
+            if (*cp != color)
+            {
+                if (color != NO_COLOR)
+                    curses_toggle_color_attr(win, color, NONE, OFF);
+                if (*cp != NO_COLOR)
+                    curses_toggle_color_attr(win, *cp, NONE, ON);
+                else if (orig_color != NO_COLOR)
+                    curses_toggle_color_attr(win, orig_color, NONE, ON);
+            }
+
+            wprintw(win, "%c", *tp);
+            tp++;
+            ap++;
+            cp++;
+        }
+        wclrtoeol(win);
+    }
+    else
+    {
+        if (color == NO_COLOR) color = nhcolor;
+        if (color == NO_COLOR) color = NONE;
+        curses_toggle_color_attr(win, color, curses_attr, ON);
+        /* wattron(win, curses_attr); */
+        wprintw(win, "%s", str);
+        /* wattroff(win, curses_attr); */
+        curses_toggle_color_attr(win, color, curses_attr, OFF);
+        wclrtoeol(win);
+    }
 }
 
 void
