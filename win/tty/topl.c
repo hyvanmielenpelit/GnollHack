@@ -818,7 +818,7 @@ boolean purged; /* True: took history's pointers, False: just cloned them */
         free((genericptr_t)snapshot_mesg_colors), snapshot_mesg_colors = (char**)0;
 
     }
-    if (snapshot_mesg_colors) {
+    if (snapshot_mesg_attrs) {
         /* snapshot pointers are no longer in use */
         if (purged) {
             int i;
