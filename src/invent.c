@@ -46,6 +46,7 @@ STATIC_DCL struct obj *FDECL(find_unpaid, (struct obj *, struct obj **));
 STATIC_DCL int FDECL(menu_identify, (int));
 STATIC_DCL boolean FDECL(tool_in_use, (struct obj *));
 STATIC_DCL char FDECL(obj_to_let, (struct obj *));
+STATIC_DCL void FDECL(add_inventory_menu_item, (winid, struct obj*, CHAR_P, BOOLEAN_P, BOOLEAN_P, int, BOOLEAN_P, BOOLEAN_P, int*));
 
 static int lastinvnr = 51; /* 0 ... 51 (never saved&restored) */
 
@@ -4226,7 +4227,7 @@ ddoinv()
         pickcnt = 0;
         return_to_inv = FALSE;
         invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, 1, FALSE);
-        if (!invlet || invlet == '\033' || invlet == '\0')
+        if (invlet == '\033' || invlet == '\0')
             return 0;
 
         if (flags.inventory_obj_cmd)
@@ -4643,6 +4644,56 @@ free_pickinv_cache()
     }
 }
 
+STATIC_OVL void
+add_inventory_menu_item(win, otmp, ilet, wizid, loadstonecorrectly, show_weights, want_reply, comparison_stats, wtcount_ptr)
+winid win;
+struct obj* otmp;
+char ilet;
+boolean wizid, loadstonecorrectly, want_reply, comparison_stats;
+int show_weights;
+int* wtcount_ptr;
+{
+    anything any = zeroany;
+    if (wizid)
+        any.a_obj = otmp;
+    else
+        any.a_char = ilet;
+
+    /*calculate weight sum here*/
+    if (otmp->otyp == LOADSTONE && !loadstonecorrectly)
+        *wtcount_ptr += objects[LUCKSTONE].oc_weight;
+    else
+        *wtcount_ptr += otmp->owt;
+
+    char applied_class_accelerator = wizid ? def_oc_syms[(int)otmp->oclass].sym : 0;
+
+    int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
+    int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
+
+    char objbuf[BUFSZ * 2];
+    char attrs[BUFSZ * 2];
+    char colors[BUFSZ * 2];
+    memset(attrs, ATR_NONE, sizeof(attrs));
+    memset(colors, NO_COLOR, sizeof(colors));
+    Strcpy(objbuf,
+        show_weights > 0 ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply)
+            : doname_with_weight_first(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply))
+        : doname_with_flags(otmp, iflags.perm_invent && !want_reply ? DONAME_HIDE_REMAINING_LIT_TURNS : 0));
+    struct extended_menu_info eminfo = obj_to_extended_menu_info(otmp);
+    if (comparison_stats)
+    {
+        char compbuf[BUFSZ];
+        print_comparison_stats(otmp, compbuf, WIN_ERR, TRUE, TRUE, objbuf, attrs, colors);
+        eminfo.attrs = attrs;
+        eminfo.colors = colors;
+        eminfo.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
+    }
+
+    add_extended_menu(win, gui_glyph, &any, ilet,
+        applied_class_accelerator, ATR_NONE, NO_COLOR,
+        objbuf, MENU_UNSELECTED, eminfo);
+}
+
 /*
  * Internal function used by display_inventory and getobj that can display
  * inventory and return a count as well as a letter. If out_cnt is not null,
@@ -4671,7 +4722,7 @@ boolean addinventoryheader, wornonly;
     Loot *sortedinvent, *srtinv;
     boolean wizid = FALSE;
     int wtcount = 0;
-
+    boolean comparison_stats = !wornonly && iflags.show_comparison_stats && !iflags.in_dumplog && !program_state.gameover;
     boolean loadstonecorrectly = FALSE;
 
     if(show_weights == 1) // Inventory
@@ -4850,26 +4901,7 @@ boolean addinventoryheader, wornonly;
            classcount++;
            favorites_printed = TRUE;
        }
-       if (wizid)
-           any.a_obj = otmp;
-       else
-           any.a_char = ilet;
-
-       /*calculate weight sum here*/
-       if (otmp->otyp == LOADSTONE && !loadstonecorrectly)
-           wtcount += objects[LUCKSTONE].oc_weight;
-       else
-           wtcount += otmp->owt;
-
-       char applied_class_accelerator = wizid ? def_oc_syms[(int)otmp->oclass].sym : 0;
-
-       int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
-       int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
-       add_extended_menu(win, gui_glyph, &any, ilet,
-           applied_class_accelerator, ATR_NONE, NO_COLOR,
-           show_weights > 0 ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply)
-               : doname_with_weight_first(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply))
-           : doname_with_flags(otmp, iflags.perm_invent && !want_reply ? DONAME_HIDE_REMAINING_LIT_TURNS : 0), MENU_UNSELECTED, obj_to_extended_menu_info(otmp));
+       add_inventory_menu_item(win, otmp, ilet, wizid, loadstonecorrectly, show_weights, want_reply, comparison_stats && !otmp->owornmask, &wtcount);
    }
 
    /* Others by class */
@@ -4908,27 +4940,7 @@ nextclass:
                     menu_group_heading_info('\0'));
                 classcount++;
             }
-
-            if (wizid)
-                any.a_obj = otmp;
-            else
-                any.a_char = ilet;
-
-            /*calculate weight sum here*/
-            if(otmp->otyp == LOADSTONE && !loadstonecorrectly)
-                wtcount += objects[LUCKSTONE].oc_weight;
-            else
-                wtcount += otmp->owt;
-
-            char applied_class_accelerator = wizid ? def_oc_syms[(int)otmp->oclass].sym : 0;
-
-            int glyph = obj_to_glyph(otmp, rn2_on_display_rng);
-            int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_OBJECT, otmp, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
-            add_extended_menu(win, gui_glyph, &any, ilet,
-                applied_class_accelerator, ATR_NONE, NO_COLOR, 
-                show_weights > 0 ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply) 
-                    : doname_with_weight_first(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply)) 
-                    : doname_with_flags(otmp, iflags.perm_invent && !want_reply ? DONAME_HIDE_REMAINING_LIT_TURNS : 0), MENU_UNSELECTED, obj_to_extended_menu_info(otmp));
+            add_inventory_menu_item(win, otmp, ilet, wizid, loadstonecorrectly, show_weights, want_reply, comparison_stats && !otmp->owornmask, &wtcount);
         }
     }
     if (flags.sortpack) 

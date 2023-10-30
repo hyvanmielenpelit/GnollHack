@@ -1278,7 +1278,7 @@ unsigned doname_flags;
             weightlast = (doname_flags & DONAME_WITH_WEIGHT_LAST) != 0,
             loadstonecorrectly = (doname_flags & DONAME_LOADSTONE_CORRECTLY) != 0,
             lit_in_front = (doname_flags & DONAME_LIT_IN_FRONT) != 0,
-            comparison_stats = (doname_flags & DONAME_COMPARISON) != 0;
+            comparison_stats = (doname_flags & DONAME_COMPARISON) != 0 && iflags.show_comparison_stats && !iflags.in_dumplog && !program_state.gameover;
     boolean known, dknown, cknown, bknown, lknown, tknown;
     int omndx = obj->corpsenm, isenchanted = 0;
     char prefix[PREFIXBUFSZ];

@@ -1075,7 +1075,7 @@ int show_weights;
     anything any;
     boolean printed_type_name, first,
             sorted = (qflags & INVORDER_SORT) != 0,
-            comparison_stats = (qflags & OBJECT_COMPARISON) != 0 && iflags.show_comparison_stats,
+            comparison_stats = (qflags & OBJECT_COMPARISON) != 0 && iflags.show_comparison_stats && !iflags.in_dumplog && !program_state.gameover,
             engulfer = (qflags & INCLUDE_HERO) != 0;
     unsigned sortflags;
     Loot *sortedolist, *srtoli;
