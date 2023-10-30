@@ -5751,6 +5751,7 @@ register struct obj *obj;
 
             known = TRUE;
             (void)identify_pack(1, FALSE);
+            update_inventory();
         }
         else
         {

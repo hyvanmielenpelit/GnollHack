@@ -4035,7 +4035,6 @@ boolean learning_id; /* true if we just read unknown identify scroll */
             res += idres;
         }
     }
-    update_inventory();
     return res;
 }
 
@@ -5036,7 +5035,6 @@ nextclass:
                     }
                 }
             }
-            update_inventory();
         }
         else 
         {

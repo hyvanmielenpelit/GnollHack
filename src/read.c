@@ -2650,6 +2650,7 @@ struct monst* targetmonst;
         if (invent)
         {
             int res = identify_pack(cval, !already_known);
+            update_inventory();
             if (res > 0)
             {
                 pline_ex(ATR_NONE, NO_COLOR, "The scroll disappears.");
@@ -2672,7 +2673,8 @@ struct monst* targetmonst;
         else if (invent)
         {
             (void)identify_pack(cval, !already_known);
-        } 
+            update_inventory();
+        }
         else
         {
             /* when casting a spell we know we're not confused,

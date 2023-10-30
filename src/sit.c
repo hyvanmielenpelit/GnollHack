@@ -394,6 +394,7 @@ dosit()
                 {
                     /* rn2(5) agrees w/seffects() */
                     (void)identify_pack(rn2(5), FALSE);
+                    update_inventory();
                 }
                 break;
             case 13:

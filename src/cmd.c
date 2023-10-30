@@ -1639,6 +1639,7 @@ wiz_identify(VOID_ARGS)
             iflags.override_ID = C('I');
         (void) display_inventory((char *) 0, FALSE, 0);
         iflags.override_ID = 0;
+        update_inventory();
     } else
         pline(unavailcmd, visctrl((int) cmd_from_func(wiz_identify)));
     return 0;
