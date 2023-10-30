@@ -111,7 +111,6 @@ curses_add_inv(int y,
         const char* ap = attrs;
         const char* cp = colors;
         int orig_color = color;
-        int orig_attr = attr;
         attr_t orig_curses_attr = curses_attr;
         if (curses_attr != A_NORMAL)
             curses_toggle_color_attr(win, NONE, curses_attr, ON);
@@ -139,6 +138,9 @@ curses_add_inv(int y,
                 else if (orig_color != NO_COLOR)
                     curses_toggle_color_attr(win, orig_color, NONE, ON);
             }
+
+            color = *cp == NO_COLOR && orig_color != NO_COLOR ? orig_color : *cp;
+            curses_attr = newcursesattr == A_NORMAL && orig_curses_attr != A_NORMAL ? orig_curses_attr : newcursesattr;
 
             wprintw(win, "%c", *tp);
             tp++;
