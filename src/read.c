@@ -4511,7 +4511,7 @@ boolean confused; /* Is caster confused */
     {
         char qbuf[BUFSZ];
         Sprintf(qbuf, "What would you like to %s?", (otyp == SPE_BLESS ? "bless" : "curse"));
-        n = query_objlist(qbuf, &objchn, (SIGNAL_NOMENU | SIGNAL_ESCAPE | USE_INVLET | INVORDER_SORT),
+        n = query_objlist(qbuf, &objchn, (SIGNAL_NOMENU | SIGNAL_ESCAPE | USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON),
             &pick_list, PICK_ONE, allow_all_but_coins, 0);
         if (n && pick_list && pick_list[0].item.a_obj)
         {

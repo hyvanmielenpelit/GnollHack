@@ -6120,7 +6120,7 @@ winid datawin;
 uchar add_parentheses; /* 1 = add parentheses, 2 = add ", " instead to start and close with ")" */
 boolean use_symbols;
 {
-    if (!obj)
+    if (!obj || obj->owornmask)
         return;
 
     *buf = 0;

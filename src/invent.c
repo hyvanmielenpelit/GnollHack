@@ -3871,7 +3871,7 @@ int id_limit;
             original_id_limit <= 1 ? "" : first ? " first" : " next");
 
         n = query_objlist(buf, &invent, (SIGNAL_NOMENU | SIGNAL_ESCAPE
-                                         | USE_INVLET | INVORDER_SORT),
+                                         | USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON),
                           &pick_list, id_limit == 1 ? PICK_ONE : PICK_ANY, not_fully_identified, 0);
 
         if (n > 0)
@@ -5945,7 +5945,7 @@ dotypeinv()
     }
     if (query_objlist((char *) 0, &invent,
                       ((flags.invlet_constant ? USE_INVLET : 0)
-                       | INVORDER_SORT),
+                       | INVORDER_SORT | OBJECT_COMPARISON),
                       &pick_list, PICK_NONE, this_type_only, 1) > 0)
         free((genericptr_t) pick_list);
     return 0;
@@ -7511,7 +7511,7 @@ register struct obj *obj;
                      "that");
 
     if (obj->cobj) {
-        n = query_objlist(qbuf, &(obj->cobj), INVORDER_SORT,
+        n = query_objlist(qbuf, &(obj->cobj), INVORDER_SORT | OBJECT_COMPARISON,
                           &selected, PICK_NONE, allow_all, 5); //Looking at things in container's inventory far away
     } else {
         invdisp_nothing(qbuf, "(empty)");
@@ -7563,7 +7563,7 @@ boolean as_if_seen;
         only.x = x;
         only.y = y;
         if (query_objlist("Things that are buried here:",
-                          &level.buriedobjlist, INVORDER_SORT,
+                          &level.buriedobjlist, INVORDER_SORT | OBJECT_COMPARISON,
                           &selected, PICK_NONE, only_here, 2) > 0)
             free((genericptr_t) selected);
         only.x = only.y = 0;

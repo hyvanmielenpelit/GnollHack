@@ -5301,7 +5301,7 @@ struct monst* mtmp;
 
     /* should coordinate with perm invent, maybe not show worn items */
     n = query_objlist(qbuf, &invent,
-        (USE_INVLET | INVORDER_SORT), &pick_list, PICK_ANY,
+        (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON), &pick_list, PICK_ANY,
         allow_all, 3);
     if (n > 0) 
     {
@@ -8140,7 +8140,7 @@ boolean FDECL((*allow), (OBJ_P)); /* allow function */
 
     /* should coordinate with perm invent, maybe not show worn items */
     n = query_objlist("What would you like to sell?", &invent,
-        (USE_INVLET | INVORDER_SORT), &pick_list, PICK_ANY, allow, 3);
+        (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON), &pick_list, PICK_ANY, allow, 3);
 
     if (n > 0 && pick_list)
     {
@@ -9103,7 +9103,7 @@ long id_cost;
     Strcpy(buf, "What would you like to identify?");
 
     n = query_objlist(buf, &invent, (SIGNAL_NOMENU | SIGNAL_ESCAPE
-        | USE_INVLET | INVORDER_SORT),
+        | USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON),
         &pick_list, PICK_ANY, not_fully_identified, 0);
 
     if (n > 0)
