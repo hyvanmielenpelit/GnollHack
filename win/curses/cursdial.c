@@ -1264,8 +1264,26 @@ menu_display_page(nhmenu *menu, WINDOW * win, int page_num)
             menu_color = get_menu_coloring(menu_item_ptr->str, &mcolor, &mattr);
         }
 
-        if ((menu_item_ptr->attrs && menu_item_ptr->colors) && !menu_color)
+        if (menu_item_ptr->attrs && menu_item_ptr->colors)
         {
+            color = mcolor;
+            attr = mattr;
+            if (!menu_color)
+                color = menu_item_ptr->color;
+            if (color != NO_COLOR)
+            {
+                curses_toggle_color_attr(win, color, NONE, ON);
+            }
+            curses_attr = curses_convert_attr(attr) | menu_item_ptr->attr;
+            if(curses_attr != A_NORMAL)
+                curses_toggle_color_attr(win, NONE, curses_attr, ON);
+
+            int orig_attr = mattr;
+            int orig_color = color;
+            attr_t orig_curses_attr = curses_attr;
+
+            num_lines = curses_num_lines(menu_item_ptr->str, entry_cols);
+
             size_t len = strlen(menu_item_ptr->str);
             num_lines = curses_num_lines(menu_item_ptr->str, entry_cols);
             
@@ -1301,6 +1319,10 @@ menu_display_page(nhmenu *menu, WINDOW * win, int page_num)
                             {
                                 curses_toggle_color_attr(win, NONE, newcursesattr, ON);
                             }
+                            else if (orig_curses_attr != A_NORMAL)
+                            {
+                                curses_toggle_color_attr(win, NONE, orig_curses_attr, ON);
+                            }
                         }
                         if (color != *cp)
                         {
@@ -1312,11 +1334,15 @@ menu_display_page(nhmenu *menu, WINDOW * win, int page_num)
                             {
                                 curses_toggle_color_attr(win, *cp, NONE, ON);
                             }
+                            else if (orig_color != NO_COLOR)
+                            {
+                                curses_toggle_color_attr(win, orig_color, NONE, ON);
+                            }
                         }
 
-                        attr = *ap;
-                        color = *cp;
-                        curses_attr = newcursesattr;
+                        attr = newcursesattr == A_NORMAL && orig_curses_attr != A_NORMAL ? orig_attr : *ap;
+                        color = *cp == NO_COLOR && orig_color != NO_COLOR ? orig_color : *cp;
+                        curses_attr = newcursesattr == A_NORMAL && orig_curses_attr != A_NORMAL ? orig_curses_attr : newcursesattr;
 
                         mvwprintw(win, menu_item_ptr->line_num + count + 1, start_col + mx, "%c", *tp);
 
