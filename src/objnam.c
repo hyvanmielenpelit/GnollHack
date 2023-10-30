@@ -6196,7 +6196,7 @@ boolean use_symbols;
             dmgpos = (int)strlen(buf);
             Sprintf(tmpbuf, "%s%.1f", isdmgdiff && dmgdiff >= 0 ? "+" : "", dmgdiff);
             dmglen = strlen(tmpbuf);
-            dmgcolor = dmgdiff > 0 ? CLR_BRIGHT_GREEN : dmgdiff < 0 ? CLR_RED : NO_COLOR;
+            dmgcolor = dmgdiff > 0 ? CLR_BRIGHT_GREEN : dmgdiff < 0 ? CLR_RED : CLR_GRAY;
             Strcat(buf, tmpbuf);
             if (do_putstr)
                 putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, dmgcolor, 1);
@@ -6279,7 +6279,7 @@ boolean use_symbols;
             Sprintf(tmpbuf, "%s%d", acdiff >= 0 ? "+" : "", acdiff);
             aclen = strlen(tmpbuf);
             Strcat(buf, tmpbuf);
-            accolor = acdiff < 0 ? CLR_BRIGHT_GREEN : acdiff > 0 ? CLR_RED : NO_COLOR;
+            accolor = acdiff < 0 ? CLR_BRIGHT_GREEN : acdiff > 0 ? CLR_RED : CLR_GRAY;
             if (do_putstr)
                 putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, accolor, 1);
             
@@ -6307,7 +6307,7 @@ boolean use_symbols;
             mcpos = (int)strlen(buf);
             Sprintf(tmpbuf, "%s%d", mcdiff >= 0 ? "+" : "", mcdiff);
             mclen = strlen(tmpbuf);
-            mccolor = mcdiff > 0 ? CLR_BRIGHT_GREEN : mcdiff < 0 ? CLR_RED : NO_COLOR;
+            mccolor = mcdiff > 0 ? CLR_BRIGHT_GREEN : mcdiff < 0 ? CLR_RED : CLR_GRAY;
             Strcat(buf, tmpbuf);
             if (do_putstr)
                 putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, mccolor, 1);

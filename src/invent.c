@@ -3883,6 +3883,7 @@ int id_limit;
                 res += identify(pick_list[i].item.a_obj);
             free((genericptr_t) pick_list);
             mark_synch(); /* Before we loop to pop open another menu */
+            update_inventory();
             first = 0;
         } 
         else if (n == -2)
@@ -5033,6 +5034,7 @@ nextclass:
                     {
                         play_sfx_sound(SFX_IDENTIFY_SUCCESS);
                         (void)identify(otmp);
+                        update_inventory();
                     }
                 }
             }
