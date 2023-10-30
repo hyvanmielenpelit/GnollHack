@@ -1683,6 +1683,10 @@ boolean free_data;
             cw->mlist = temp->next;
             if (temp->str)
                 free((genericptr_t) temp->str);
+            if (temp->menu_info.attrs)
+                free((genericptr_t)temp->menu_info.attrs);
+            if (temp->menu_info.colors)
+                free((genericptr_t)temp->menu_info.colors);
             free((genericptr_t) temp);
         }
     }
@@ -1953,6 +1957,7 @@ struct WinDesc *cw;
     int n, attr_n, curr_page, page_lines, resp_len;
     boolean finished, counting, reset_count;
     char *cp, *rp, resp[QBUFSZ], gacc[QBUFSZ], *msave, *morestr, really_morc;
+    const char* cptr, *aptr;
 #define MENU_EXPLICIT_CHOICE 0x7f /* pseudo menu manipulation char */
 
     curr_page = page_lines = 0;
@@ -2062,7 +2067,9 @@ struct WinDesc *cw;
                      * actually output the character.  We're faster doing
                      * this.
                      */
-                    for (n = 0, cp = curr->str;
+                    int orig_color = color;
+                    int orig_attr = attr;
+                    for (n = 0, cp = curr->str, aptr = curr->menu_info.attrs, cptr = curr->menu_info.colors;
                          *cp &&
 #ifndef WIN32CON
                             (int) ++ttyDisplay->curx < (int) ttyDisplay->cols;
@@ -2070,24 +2077,46 @@ struct WinDesc *cw;
                             (int) ttyDisplay->curx < (int) ttyDisplay->cols;
                          ttyDisplay->curx++,
 #endif
-                         cp++, n++) {
-                        if (n == attr_n && (color != NO_COLOR
-                                            || attr != ATR_NONE))
-                            toggle_menu_attr(TRUE, color, attr);
+                         cp++, n++)
+                    {
+                        if (curr->menu_info.attrs && curr->menu_info.colors)
+                        {
+                            if (n >= attr_n)
+                            {
+                                if(n > attr_n && (color != NO_COLOR || attr != ATR_NONE))
+                                    toggle_menu_attr(FALSE, color, attr);
+                                if (*cptr != NO_COLOR || orig_color != NO_COLOR || *aptr != ATR_NONE || orig_attr != ATR_NONE)
+                                    toggle_menu_attr(TRUE, *cptr != NO_COLOR ? *cptr : orig_color, *aptr != ATR_NONE ? *aptr : orig_attr);
+                                color = *cptr != NO_COLOR ? *cptr : orig_color;
+                                attr = *aptr != ATR_NONE ? *aptr : orig_attr;
+                                aptr++, cptr++;
+                            }
+                        }
+                        else
+                        {
+                            if (n == attr_n && (color != NO_COLOR || attr != ATR_NONE))
+                                toggle_menu_attr(TRUE, color, attr);
+                        }
+
                         if (n == 2
                             && curr->identifier.a_void != 0
-                            && curr->selected) {
+                            && curr->selected) 
+                        {
                             if (curr->count == -1L)
                                 (void) putchar('+'); /* all selected */
                             else
                                 (void) putchar('#'); /* count selected */
-                        } else
+                        } 
+                        else
                             (void) doputchar((nhsym)*cp, TRUE);
+
                     } /* for *cp */
                     if (n > attr_n && (color != NO_COLOR || attr != ATR_NONE))
                         toggle_menu_attr(FALSE, color, attr);
                 } /* if npages > 0 */
-            } else {
+            }
+            else
+            {
                 page_start = 0;
                 page_end = 0;
                 page_lines = 0;
@@ -3194,7 +3223,7 @@ int attr;                   /* attribute for string (like tty_putstr()) */
 int color;                  /* color for string (like tty_putstr_ex()) */
 const char* str;            /* menu string */
 boolean preselected;        /* item is marked as selected */
-struct extended_menu_info info UNUSED;
+struct extended_menu_info info;
 {
     register struct WinDesc* cw = 0;
     tty_menu_item* item;
@@ -3239,6 +3268,11 @@ struct extended_menu_info info UNUSED;
     item->attr = attr;
     item->color = color;
     item->str = dupstr(newstr ? newstr : "");
+    item->menu_info = info;
+    if (info.attrs)
+        item->menu_info.attrs = cpystr(str, info.attrs);
+    if (info.colors)
+        item->menu_info.colors = cpystr(str, info.colors);
 
     item->next = cw->mlist;
     cw->mlist = item;
