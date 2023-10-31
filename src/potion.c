@@ -1969,38 +1969,41 @@ healup(nhp, nxtra, curesick, cureblind, curehallucination, curestun, cureconfusi
 int nhp, nxtra;
 register boolean curesick, cureblind, curehallucination, curestun, cureconfusion;
 {
-    if (nxtra > 0) 
+    int cur_hp_before = (Upolyd ? u.mh : u.uhp);
+    int max_hp_before = (Upolyd ? u.mhmax : u.uhpmax);
+    int nxtra_limit = max(0, cur_hp_before + nhp - max_hp_before);
+    int gained_nxtra = min(nxtra_limit, nxtra);
+    if (gained_nxtra > 0)
     {
-        int max_hp_before = (Upolyd ? u.mhmax : u.uhpmax);
         if (Upolyd)
         {
             if (u.basemhdrain < 0)
             {
-                u.basemhdrain += nxtra;
+                u.basemhdrain += gained_nxtra;
                 if (u.basemhdrain > 0)
                 {
-                    nxtra = u.basemhdrain;
+                    gained_nxtra = u.basemhdrain;
                     u.basemhdrain = 0;
                 }
                 else
-                    nxtra = 0;
+                    gained_nxtra = 0;
             }
-            u.basemhmax += nxtra;
+            u.basemhmax += gained_nxtra;
         }
         else 
         {
             if (u.ubasehpdrain < 0)
             {
-                u.ubasehpdrain += nxtra;
+                u.ubasehpdrain += gained_nxtra;
                 if (u.ubasehpdrain > 0)
                 {
-                    nxtra = u.ubasehpdrain;
+                    gained_nxtra = u.ubasehpdrain;
                     u.ubasehpdrain = 0;
                 }
                 else
-                    nxtra = 0;
+                    gained_nxtra = 0;
             }
-            u.ubasehpmax += nxtra;
+            u.ubasehpmax += gained_nxtra;
         }
         updatemaxhp();
         int max_hp_after = (Upolyd ? u.mhmax : u.uhpmax);
@@ -2011,7 +2014,6 @@ register boolean curesick, cureblind, curehallucination, curestun, cureconfusion
             Sprintf(fbuf, "+%d max HP", max_hp_gain);
             display_floating_text(u.ux, u.uy, fbuf, FLOATING_TEXT_ATTRIBUTE_GAIN, ATR_NONE, NO_COLOR, 0UL);
         }
-
     }
 
     if (nhp > 0)

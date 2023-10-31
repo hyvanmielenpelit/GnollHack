@@ -91,17 +91,20 @@ struct obj *obj;
                     if (vis)
                         pline1(empty);
                 } else {
-                    if (vis) {
+                    boolean frightened = !(is_not_living(mon->data) || is_demon(mon->data) || is_angel(mon->data) || mindless(mon->data) || is_fearless(mon->data));
+                    if (vis) 
+                    {
                         play_sfx_sound(SFX_SURPRISE_ATTACK);
                         pline_ex(ATR_NONE, CLR_MSG_WARNING,
                             "As %s opens the bottle, an enormous %s emerges!",
                               mon_nam(mon),
                               Hallucination ? rndmonnam(NULL)
                                             : (const char *) "ghost");
-                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s is frightened to death, and unable to move.",
-                              Monnam(mon));
+                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s %s.",
+                              Monnam(mon), !frightened ? "looks surprised" : "is frightened to death, and unable to move");
                     }
-                    paralyze_monst(mon, 3, FALSE);
+                    if(frightened)
+                        paralyze_monst(mon, 3, FALSE);
                 }
                 return 2;
             }
