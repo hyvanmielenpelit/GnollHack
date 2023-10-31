@@ -6300,17 +6300,51 @@ boolean picked_some, explicit_cmd;
         if (dfeature)
             pline1(fbuf);
         read_engr_at(u.ux, u.uy); /* Eric Backus */
+
         char* attrs = 0, * colors = 0;
         char* item_name_buf = doname_in_text_with_price_and_weight_last_and_comparison(otmp, &attrs, &colors);
+        int mattr = ATR_NONE, mcolor = NO_COLOR;
+
+        if (iflags.use_menu_color && get_menu_coloring(item_name_buf, &mcolor, &mattr))
+        {
+            if (attrs && colors)
+            {
+                size_t len = strlen(item_name_buf);
+                size_t i;
+                if (mattr != ATR_NONE)
+                {
+                    for (i = 0; i < len; i++)
+                    {
+                        if (attrs[i] == ATR_NONE)
+                            attrs[i] = mattr;
+                    }
+                }
+                if (mcolor != NO_COLOR)
+                {
+                    for (i = 0; i < len; i++)
+                    {
+                        if (colors[i] == NO_COLOR)
+                            colors[i] = mcolor;
+                    }
+                }
+            }
+        }
+
         if (attrs && colors)
         {
             char startbuf[BUFSZ];
-            Sprintf(startbuf, "You %s ", verb);
+            Sprintf(startbuf, "You %s here ", verb);
             concatenate_colored_text(startbuf, ".", ATR_NONE, NO_COLOR, item_name_buf, attrs, colors);
             pline1_multi_ex(item_name_buf, attrs, colors, ATR_NONE, NO_COLOR);
         }
         else
-            You("%s here %s.", verb, item_name_buf); //See on the ground
+        {
+            int multicolors[2] = { NO_COLOR, NO_COLOR };
+            multicolors[1] = mcolor;
+            int multiattrs[2] = { ATR_NONE, ATR_NONE };
+            multiattrs[1] = mattr;
+            pline_multi_ex(ATR_NONE, NO_COLOR, multiattrs, multicolors, "You %s here %s.", verb, item_name_buf); //See on the ground
+        }
 
         iflags.last_msg = PLNMSG_ONE_ITEM_HERE;
         if (otmp->otyp == CORPSE)
