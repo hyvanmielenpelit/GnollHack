@@ -1264,9 +1264,10 @@ struct obj *obj;
 }
 
 char *
-doname_with_flags(obj, doname_flags)
+doname_with_flags(obj, doname_flags, attrs_ptr, colors_ptr)
 struct obj *obj;
 unsigned doname_flags;
+char** attrs_ptr, ** colors_ptr;
 {
     if (!obj)
         return xname(obj); /* Returns an empty string */
@@ -1924,14 +1925,6 @@ weapon_here:
             Strcat(bp, " (no charge)");
     }
 
-    if (comparison_stats)
-    {
-        char compbuf[BUFSZ] = "";
-        print_comparison_stats(obj, compbuf, WIN_ERR, FALSE, FALSE, 0, 0, 0);
-        if (*compbuf)
-            Sprintf(eos(bp), " (%s)", compbuf);
-    }
-
     if (!strncmp(prefix, "a ", 2)) {
         /* save current prefix, without "a "; might be empty */
         Strcpy(tmpbuf, prefix + 2);
@@ -2024,7 +2017,6 @@ weapon_here:
         char buf[OBUFSZ];
         Sprintf(buf, "%s - %s", weightbuf, bp);
         Strcpy(bp, buf);
-
     }
     
     if (weightlast)
@@ -2036,6 +2028,21 @@ weapon_here:
         Strcpy(bp, buf);
     }
 
+    if (comparison_stats)
+    {
+        char* attrs = nextobuf();
+        char* colors = nextobuf();
+        memset(attrs, ATR_NONE, OBUFSZ - 1);
+        memset(colors, NO_COLOR, OBUFSZ - 1);
+        attrs[OBUFSZ - 1] = colors[OBUFSZ - 1] = 0;
+        char compbuf[BUFSZ] = "";
+        print_comparison_stats(obj, compbuf, WIN_ERR, TRUE, FALSE, bp, attrs, colors);
+        if (attrs_ptr)
+            *attrs_ptr = attrs;
+        if (colors_ptr)
+            *colors_ptr = colors;
+    }
+
     return bp;
 }
 
@@ -2043,14 +2050,14 @@ char *
 doname(obj)
 struct obj *obj;
 {
-    return doname_with_flags(obj, 0U);
+    return doname_with_flags(obj, 0U, (char**)0, (char**)0);
 }
 
 char*
 doname_in_text(obj)
 struct obj* obj;
 {
-    return doname_with_flags(obj, DONAME_LIT_IN_FRONT);
+    return doname_with_flags(obj, DONAME_LIT_IN_FRONT, (char**)0, (char**)0);
 }
 
 /* Name of object including price. */
@@ -2058,15 +2065,16 @@ char *
 doname_with_price(obj)
 struct obj *obj;
 {
-    return doname_with_flags(obj, DONAME_WITH_PRICE);
+    return doname_with_flags(obj, DONAME_WITH_PRICE, (char**)0, (char**)0);
 }
 
 char*
-doname_with_price_and_comparison(obj, comparison_stats)
+doname_with_price_and_comparison(obj, comparison_stats, attrs_ptr, colors_ptr)
 struct obj* obj;
 boolean comparison_stats;
+char** attrs_ptr, ** colors_ptr;
 {
-    return doname_with_flags(obj, DONAME_WITH_PRICE | (comparison_stats ? DONAME_COMPARISON : 0));
+    return doname_with_flags(obj, DONAME_WITH_PRICE | (comparison_stats ? DONAME_COMPARISON : 0), attrs_ptr, colors_ptr);
 }
 
 /* Name of object including price. */
@@ -2075,15 +2083,16 @@ doname_with_price_and_weight_last(obj,  loadstonecorrectly)
 struct obj* obj;
 boolean loadstonecorrectly;
 {
-    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
+    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0), (char**)0, (char**)0);
 }
 
 char*
-doname_with_price_and_weight_last_and_comparison(obj, loadstonecorrectly, comparison_stats)
+doname_with_price_and_weight_last_and_comparison(obj, loadstonecorrectly, comparison_stats, attrs_ptr, colors_ptr)
 struct obj* obj;
 boolean loadstonecorrectly, comparison_stats;
+char** attrs_ptr, ** colors_ptr;
 {
-    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (comparison_stats ? DONAME_COMPARISON : 0));
+    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (comparison_stats ? DONAME_COMPARISON : 0), attrs_ptr, colors_ptr);
 }
 
 /* Name of object including price. */
@@ -2091,15 +2100,16 @@ char*
 doname_in_text_with_price_and_weight_last(obj)
 struct obj* obj;
 {
-    return doname_with_flags(obj, DONAME_LIT_IN_FRONT | DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (objects[LOADSTONE].oc_name_known ? DONAME_LOADSTONE_CORRECTLY : 0));
+    return doname_with_flags(obj, DONAME_LIT_IN_FRONT | DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | (objects[LOADSTONE].oc_name_known ? DONAME_LOADSTONE_CORRECTLY : 0), (char**)0, (char**)0);
 }
 
 /* Name of object including price. */
 char*
-doname_in_text_with_price_and_weight_last_and_comparison(obj)
+doname_in_text_with_price_and_weight_last_and_comparison(obj, attrs_ptr, colors_ptr)
 struct obj* obj;
+char** attrs_ptr, ** colors_ptr;
 {
-    return doname_with_flags(obj, DONAME_LIT_IN_FRONT | DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | DONAME_COMPARISON | (objects[LOADSTONE].oc_name_known ? DONAME_LOADSTONE_CORRECTLY : 0));
+    return doname_with_flags(obj, DONAME_LIT_IN_FRONT | DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | DONAME_COMPARISON | (objects[LOADSTONE].oc_name_known ? DONAME_LOADSTONE_CORRECTLY : 0), attrs_ptr, colors_ptr);
 }
 
 
@@ -2109,15 +2119,16 @@ doname_with_price_and_weight_first(obj, loadstonecorrectly)
 struct obj* obj;
 boolean loadstonecorrectly;
 {
-    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0));
+    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0), (char**)0, (char**)0);
 }
 
 char*
-doname_with_price_and_weight_first_and_comparison(obj, loadstonecorrectly, comparison_stats)
+doname_with_price_and_weight_first_and_comparison(obj, loadstonecorrectly, comparison_stats, attrs_ptr, colors_ptr)
 struct obj* obj;
 boolean loadstonecorrectly, comparison_stats;
+char** attrs_ptr, ** colors_ptr;
 {
-    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (comparison_stats ? DONAME_COMPARISON : 0));
+    return doname_with_flags(obj, DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (comparison_stats ? DONAME_COMPARISON : 0), attrs_ptr, colors_ptr);
 }
 
 /* "some" instead of precise quantity if obj->dknown not set */
@@ -2137,7 +2148,7 @@ struct obj *obj;
      * TODO: add obj->qknown flag for 'quantity known' on stackable
      * items; it could overlay obj->cknown since no containers stack.
      */
-    return doname_with_flags(obj, DONAME_VAGUE_QUAN);
+    return doname_with_flags(obj, DONAME_VAGUE_QUAN, (char**)0, (char**)0);
 }
 
 char*
@@ -2146,21 +2157,21 @@ struct obj* obj;
 boolean loadstonecorrectly, is_perm_inv;
 
 {
-    return doname_with_flags(obj, DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (is_perm_inv ? DONAME_HIDE_REMAINING_LIT_TURNS : 0));
+    return doname_with_flags(obj, DONAME_WITH_WEIGHT_FIRST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (is_perm_inv ? DONAME_HIDE_REMAINING_LIT_TURNS : 0), (char**)0, (char**)0);
 }
 
 char*
 doname_with_weight_first_true(obj)
 struct obj* obj;
 {
-    return doname_with_flags(obj, DONAME_WITH_WEIGHT_FIRST | DONAME_LOADSTONE_CORRECTLY);
+    return doname_with_flags(obj, DONAME_WITH_WEIGHT_FIRST | DONAME_LOADSTONE_CORRECTLY, (char**)0, (char**)0);
 }
 
 char*
 doname_with_weight_last_true(obj)
 struct obj* obj;
 {
-    return doname_with_flags(obj, DONAME_WITH_WEIGHT_LAST | DONAME_LOADSTONE_CORRECTLY);
+    return doname_with_flags(obj, DONAME_WITH_WEIGHT_LAST | DONAME_LOADSTONE_CORRECTLY, (char**)0, (char**)0);
 }
 
 
@@ -2170,7 +2181,7 @@ doname_with_weight_last(obj, loadstonecorrectly, is_perm_inv)
 struct obj* obj;
 boolean loadstonecorrectly, is_perm_inv;
 {
-    return doname_with_flags(obj, DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (is_perm_inv ? DONAME_HIDE_REMAINING_LIT_TURNS : 0));
+    return doname_with_flags(obj, DONAME_WITH_WEIGHT_LAST | (loadstonecorrectly ? DONAME_LOADSTONE_CORRECTLY : 0) | (is_perm_inv ? DONAME_HIDE_REMAINING_LIT_TURNS : 0), (char**)0, (char**)0);
 }
 
 
@@ -6348,9 +6359,6 @@ boolean use_symbols;
     {
         size_t orig_objbuf_len = strlen(objbuf);
         Strcat(objbuf, buf);
-        size_t len = strlen(objbuf);
-        attrs[len] = 0;
-        colors[len] = 0;
         size_t i;
         if (dmgpos >= 0)
         {
@@ -6376,6 +6384,9 @@ boolean use_symbols;
                 colors[i] = mccolor;
             }
         }
+        size_t len = strlen(objbuf);
+        attrs[len] = 0;
+        colors[len] = 0;
     }
 }
 

@@ -4677,7 +4677,7 @@ int* wtcount_ptr;
     Strcpy(objbuf,
         show_weights > 0 ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply)
             : doname_with_weight_first(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply))
-        : doname_with_flags(otmp, iflags.perm_invent && !want_reply ? DONAME_HIDE_REMAINING_LIT_TURNS : 0));
+        : doname_with_flags(otmp, iflags.perm_invent && !want_reply ? DONAME_HIDE_REMAINING_LIT_TURNS : 0, (char**)0, (char**)0));
     struct extended_menu_info eminfo = obj_to_extended_menu_info(otmp);
     if (comparison_stats)
     {
@@ -6300,7 +6300,18 @@ boolean picked_some, explicit_cmd;
         if (dfeature)
             pline1(fbuf);
         read_engr_at(u.ux, u.uy); /* Eric Backus */
-        You("%s here %s.", verb, doname_in_text_with_price_and_weight_last_and_comparison(otmp)); //See on the ground
+        char* attrs = 0, * colors = 0;
+        char* item_name_buf = doname_in_text_with_price_and_weight_last_and_comparison(otmp, &attrs, &colors);
+        if (attrs && colors)
+        {
+            char startbuf[BUFSZ];
+            Sprintf(startbuf, "You %s ", verb);
+            concatenate_colored_text(startbuf, ".", ATR_NONE, NO_COLOR, item_name_buf, attrs, colors);
+            pline1_multi_ex(item_name_buf, attrs, colors, ATR_NONE, NO_COLOR);
+        }
+        else
+            You("%s here %s.", verb, item_name_buf); //See on the ground
+
         iflags.last_msg = PLNMSG_ONE_ITEM_HERE;
         if (otmp->otyp == CORPSE)
             feel_cockatrice(otmp, FALSE);

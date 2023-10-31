@@ -2453,10 +2453,10 @@ E boolean FDECL(the_unique_obj, (struct obj *));
 E boolean FDECL(the_unique_pm, (struct permonst *));
 E boolean FDECL(erosion_matters, (struct obj *));
 E char *FDECL(doname, (struct obj *));
-E char* FDECL(doname_with_flags, (struct obj* obj, unsigned));
+E char* FDECL(doname_with_flags, (struct obj* obj, unsigned, char**, char**));
 E char* FDECL(doname_in_text, (struct obj*));
 E char* FDECL(doname_in_text_with_price_and_weight_last, (struct obj*));
-E char* FDECL(doname_in_text_with_price_and_weight_last_and_comparison, (struct obj*));
+E char* FDECL(doname_in_text_with_price_and_weight_last_and_comparison, (struct obj*, char**, char**));
 E char *FDECL(doname_vague_quan, (struct obj *));
 E char* FDECL(doname_with_weight_first_true, (struct obj*));
 E char* FDECL(doname_with_weight_last_true, (struct obj*));
@@ -2465,9 +2465,9 @@ E char* FDECL(doname_with_weight_last, (struct obj*, BOOLEAN_P, BOOLEAN_P));
 E char* FDECL(doname_with_price, (struct obj*));
 E char* FDECL(doname_with_price_and_weight_first, (struct obj*, BOOLEAN_P));
 E char* FDECL(doname_with_price_and_weight_last, (struct obj*, BOOLEAN_P));
-E char* FDECL(doname_with_price_and_comparison, (struct obj*, BOOLEAN_P));
-E char* FDECL(doname_with_price_and_weight_first_and_comparison, (struct obj*, BOOLEAN_P, BOOLEAN_P));
-E char* FDECL(doname_with_price_and_weight_last_and_comparison, (struct obj*, BOOLEAN_P, BOOLEAN_P));
+E char* FDECL(doname_with_price_and_comparison, (struct obj*, BOOLEAN_P, char**, char**));
+E char* FDECL(doname_with_price_and_weight_first_and_comparison, (struct obj*, BOOLEAN_P, BOOLEAN_P, char**, char**));
+E char* FDECL(doname_with_price_and_weight_last_and_comparison, (struct obj*, BOOLEAN_P, BOOLEAN_P, char**, char**));
 E boolean FDECL(not_fully_identified, (struct obj *));
 E boolean FDECL(is_obj_unknown, (struct obj*));
 E char *FDECL(corpse_xname, (struct obj *, const char *, unsigned));
@@ -2526,6 +2526,7 @@ E void FDECL(print_lock_with_buf, (char*, int, int, BOOLEAN_P));
 E char* NDECL(nextobuf);
 E char* FDECL(str_upper_start, (const char*));
 E void FDECL(print_comparison_stats, (struct obj*, char*, winid, UCHAR_P, BOOLEAN_P, char*, char*, char*));
+E void FDECL(concatenate_colored_text, (const char*, const char*, int, int, char*, char*, char*));
 
 /* ### options.c ### */
 
@@ -2746,6 +2747,7 @@ E void VDECL(impossible, (const char *, ...)) PRINTF_F(1, 2);
 E void VDECL(config_error_add, (const char *, ...)) PRINTF_F(1, 2);
 E void NDECL(reset_pline);
 E int* NDECL(get_colorless_multicolor_buffer);
+E void FDECL(pline1_multi_ex, (const char*, const char*, const char*, int, int));
 
 /* ### polyself.c ### */
 

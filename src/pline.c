@@ -412,11 +412,6 @@ VA_DECL(const char *, line)
         flush_screen(!flags.show_cursor_on_u); // show_cursor_on_u actually indicates that there is a getpos going on, in which case the cursor should not be returned to the player
 
     boolean usemulti = pline_prefix_text || pline_separator_text || domulti;
-    //if (domulti)
-    //{
-    //    putmesg_ex2(multi_line, attrs, colors);
-    //}
-    //else 
     if (usemulti)
     {
         size_t line_len = strlen(original_line);
@@ -505,6 +500,38 @@ VA_DECL(const char *, line)
     /* provide closing brace for the nested block
        which immediately follows USE_OLDARGS's VA_DECL() */
     VA_END();
+#endif
+}
+
+
+void
+pline1_multi_ex(line, attrs, colors, attr, color)
+const char* line, * attrs, * colors;
+int attr, color;
+{
+
+    if (!line || !*line)
+        return;
+#ifdef HANGUPHANDLING
+    if (program_state.done_hup)
+        return;
+#endif
+    if (program_state.wizkit_wishing)
+        return;
+
+    if (!saving && !restoring && !reseting && !check_pointing && iflags.window_inited)
+    {
+        if (vision_full_recalc)
+            vision_recalc(0);
+    }
+
+    if (u.ux && !program_state.in_bones && iflags.window_inited)
+        flush_screen(!flags.show_cursor_on_u);
+
+    putstr_ex2(WIN_MESSAGE, line, attrs, colors, attr, color, 0);
+
+#if defined (DUMPLOG) || defined (DUMPHTML)
+    dumplogmsg(line, attrs, colors, attr, color);
 #endif
 }
 
@@ -1294,6 +1321,49 @@ get_colorless_multicolor_buffer(VOID_ARGS)
         multicolor_buffer[i] = NO_COLOR;
 
     return multicolor_buffer;
+}
+
+void
+concatenate_colored_text(prefix, suffix, attr, color, text_buf, attrs_buf, colors_buf)
+const char* prefix, * suffix;
+int attr, color;
+char* text_buf, * attrs_buf, * colors_buf;
+{
+    if (!prefix || !suffix || !text_buf || !attrs_buf || !colors_buf)
+        return;
+
+    char saved_text[OBUFSZ];
+    char saved_attrs[OBUFSZ];
+    char saved_colors[OBUFSZ];
+
+    size_t len = strlen(text_buf);
+    memcpy(saved_text, text_buf, len);
+    memcpy(saved_attrs, attrs_buf, len);
+    memcpy(saved_colors, colors_buf, len);
+    saved_text[len] = 0;
+    saved_attrs[len] = 0;
+    saved_colors[len] = 0;
+
+    size_t prefix_len = strlen(prefix);
+    size_t suffix_len = strlen(suffix);
+
+    text_buf[0] = 0;
+    Strcat(text_buf, prefix);
+    Strcat(text_buf, saved_text);
+    Strcat(text_buf, suffix);
+
+    memset(attrs_buf, attr, prefix_len);
+    memcpy(attrs_buf + prefix_len, saved_attrs, len);
+    memset(attrs_buf + prefix_len + len, attr, suffix_len);
+
+    memset(colors_buf, color, prefix_len);
+    memcpy(colors_buf + prefix_len, saved_colors, len);
+    memset(colors_buf + prefix_len + len, color, suffix_len);
+
+    size_t total_len = prefix_len + len + suffix_len;
+    text_buf[total_len] = 0;
+    attrs_buf[total_len] = 0;
+    colors_buf[total_len] = 0;
 }
 
 /*pline.c*/
