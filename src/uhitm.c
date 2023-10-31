@@ -251,11 +251,14 @@ struct monst *mtmp;
 
     if (Role_if(PM_KNIGHT) && u.ualign.type == A_LAWFUL
         && (!mon_can_move(mtmp)
-            || (is_fleeing(mtmp) && !mtmp->mavenge))) {
+            || (is_fleeing(mtmp) && !mtmp->mavenge && mtmp != u.ustuck))) 
+    {
         play_sfx_sound(SFX_CAITIFF);
         You_ex(ATR_NONE, CLR_MSG_WARNING, "caitiff!");
         adjalign(-1);
-    } else if (Role_if(PM_SAMURAI) && is_peaceful(mtmp)) {
+    } 
+    else if (Role_if(PM_SAMURAI) && is_peaceful(mtmp)) 
+    {
         /* attacking peaceful creatures is bad for the samurai's giri */
         play_sfx_sound(SFX_CAITIFF);
         You_ex(ATR_NONE, CLR_MSG_WARNING, "dishonorably attack the innocent!");
