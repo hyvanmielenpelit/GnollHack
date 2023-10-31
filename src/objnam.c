@@ -2037,10 +2037,13 @@ weapon_here:
         attrs[OBUFSZ - 1] = colors[OBUFSZ - 1] = 0;
         char compbuf[BUFSZ] = "";
         print_comparison_stats(obj, compbuf, WIN_ERR, ATR_NONE, NO_COLOR, TRUE, FALSE, bp, attrs, colors);
-        if (attrs_ptr)
-            *attrs_ptr = attrs;
-        if (colors_ptr)
-            *colors_ptr = colors;
+        if (*compbuf)
+        {
+            if (attrs_ptr)
+                *attrs_ptr = attrs;
+            if (colors_ptr)
+                *colors_ptr = colors;
+        }
     }
 
     return bp;

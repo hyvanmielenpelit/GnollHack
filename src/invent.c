@@ -6590,15 +6590,23 @@ print_things_here_to_window(VOID_ARGS)
             int mcolor = NO_COLOR, mattr = ATR_NONE;
             if (attrs && colors)
             {
+                int used_color, used_attr;
                 if (iflags.use_menu_color && get_menu_coloring(item_name_buf, &mcolor, &mattr))
-                    putstr_ex2(tmpwin, item_name_buf, attrs, colors, mattr, mcolor, 0);
+                {
+                    used_color = mcolor;
+                    used_attr = mattr;
+                }
                 else
-                    putstr_ex2(tmpwin, item_name_buf, attrs, colors, attr, textcolor, 0);
+                {
+                    used_color = textcolor;
+                    used_attr = attr;
+                }
+                putstr_ex2(tmpwin, item_name_buf, attrs, colors, used_attr, used_color, 0);
             }
             else
             {
                 //Sprintf(buf2, "%s", item_name_buf); // (flags.inventory_weights_last ? doname_with_price_and_weight_last(otmp, objects[LOADSTONE].oc_name_known) : doname_with_price_and_weight_first(otmp, objects[LOADSTONE].oc_name_known)));
-                if (iflags.use_menu_color && get_menu_coloring(buf2, &mcolor, &mattr))
+                if (iflags.use_menu_color && get_menu_coloring(item_name_buf, &mcolor, &mattr))
                     putstr_ex(tmpwin, item_name_buf, mattr, mcolor, 0);
                 else
                     putstr_ex(tmpwin, item_name_buf, attr, textcolor, 0);

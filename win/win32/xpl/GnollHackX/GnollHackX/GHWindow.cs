@@ -474,7 +474,23 @@ namespace GnollHackX
 
         public void PutStrEx2(string str, byte[] attributes, byte[] colors, int attribute, int color, int append)
         {
-            PutStrEx(attributes != null ? attributes[0] : attribute, str, append, colors != null ? colors[0] : color);
+            if (str == null)
+                return;
+            if(attributes == null || colors == null)
+                PutStrEx(attribute, str, append, color);
+            else
+            {
+                int len = str.Length;
+                int len2 = attributes.Length;
+                int len3 = colors.Length;
+                int minlen = Math.Min(Math.Min(len, len2), len3);
+
+                for (int i = 0; i < minlen; i++)
+                    PutStrEx(attributes[i] == (int)MenuItemAttributes.None ? attribute : attributes[i], 
+                        str.Substring(i, 1), 
+                        i == minlen - 1 ? append : 1, 
+                        colors[i] == (int)nhcolor.NO_COLOR ? color : colors[i]);
+            }
         }
 
         public double TextWindowMaximumWidth
