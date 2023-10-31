@@ -1192,7 +1192,7 @@ int show_weights;
                 if (comparison_stats)
                 {
                     char compbuf[BUFSZ];
-                    print_comparison_stats(curr, compbuf, WIN_ERR, TRUE, TRUE, objbuf, attrs, colors);
+                    print_comparison_stats(curr, compbuf, WIN_ERR, ATR_NONE, NO_COLOR, TRUE, TRUE, objbuf, attrs, colors);
                     eminfo.attrs = attrs;
                     eminfo.colors = colors;
                     eminfo.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;

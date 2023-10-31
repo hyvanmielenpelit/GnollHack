@@ -2036,7 +2036,7 @@ weapon_here:
         memset(colors, NO_COLOR, OBUFSZ - 1);
         attrs[OBUFSZ - 1] = colors[OBUFSZ - 1] = 0;
         char compbuf[BUFSZ] = "";
-        print_comparison_stats(obj, compbuf, WIN_ERR, TRUE, FALSE, bp, attrs, colors);
+        print_comparison_stats(obj, compbuf, WIN_ERR, ATR_NONE, NO_COLOR, TRUE, FALSE, bp, attrs, colors);
         if (attrs_ptr)
             *attrs_ptr = attrs;
         if (colors_ptr)
@@ -6133,10 +6133,11 @@ int otyp, material;
 }
 
 void
-print_comparison_stats(obj, buf, datawin, add_parentheses, use_symbols, objbuf, attrs, colors)
+print_comparison_stats(obj, buf, datawin, attr, color, add_parentheses, use_symbols, objbuf, attrs, colors)
 struct obj* obj;
 char *buf, *objbuf, *attrs, *colors;
 winid datawin;
+int attr, color; /* for putstr only */
 uchar add_parentheses; /* 1 = add parentheses, 2 = add ", " instead to start and close with ")" */
 boolean use_symbols;
 {
@@ -6194,7 +6195,7 @@ boolean use_symbols;
                 Strcpy(tmpbuf, do_special_symbols ? " " : ", ");
                 Strcat(buf, tmpbuf);
                 if (do_putstr)
-                    putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+                    putstr_ex(datawin, tmpbuf, attr, color, 1);
             }
             else
             {
@@ -6203,7 +6204,7 @@ boolean use_symbols;
                     Strcpy(tmpbuf, add_parentheses == 2 ? ", " : do_special_symbols && !parentheses_stripped ? " ( " :" (");
                     Strcat(buf, tmpbuf);
                     if (do_putstr)
-                        putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+                        putstr_ex(datawin, tmpbuf, attr, color, 1);
                 }
             }
             if (do_special_symbols)
@@ -6211,7 +6212,7 @@ boolean use_symbols;
                 Strcpy(tmpbuf, "&damage; ");
                 Strcat(buf, tmpbuf);
                 if (do_putstr)
-                    putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+                    putstr_ex(datawin, tmpbuf, attr, color, 1);
             }
             dmgpos = (int)strlen(buf);
             Sprintf(tmpbuf, "%s%.1f", isdmgdiff && dmgdiff >= 0 ? "+" : "", dmgdiff);
@@ -6219,13 +6220,13 @@ boolean use_symbols;
             dmgcolor = dmgdiff > 0 ? CLR_BRIGHT_GREEN : dmgdiff < 0 ? CLR_RED : CLR_GRAY;
             Strcat(buf, tmpbuf);
             if (do_putstr)
-                putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, dmgcolor, 1);
+                putstr_ex(datawin, tmpbuf, attr, dmgcolor, 1);
             if (!do_special_symbols)
             {
                 Strcpy(tmpbuf, " damage");
                 Strcat(buf, tmpbuf);
                 if (do_putstr)
-                    putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+                    putstr_ex(datawin, tmpbuf, attr, color, 1);
             }
             need_closing = TRUE;
         }
@@ -6274,7 +6275,7 @@ boolean use_symbols;
                 Strcpy(tmpbuf, ", ");
                 Strcat(buf, tmpbuf);
                 if (do_putstr)
-                    putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+                    putstr_ex(datawin, tmpbuf, attr, color, 1);
             }
             else
             {
@@ -6283,7 +6284,7 @@ boolean use_symbols;
                     Strcpy(tmpbuf, add_parentheses == 2 ? ", " : do_special_symbols && !parentheses_stripped ? " ( " : " (");
                     Strcat(buf, tmpbuf);
                     if (do_putstr)
-                        putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+                        putstr_ex(datawin, tmpbuf, attr, color, 1);
                 }
             }
 
@@ -6292,7 +6293,7 @@ boolean use_symbols;
                 Strcpy(tmpbuf, "&AC; ");
                 Strcat(buf, tmpbuf);
                 if (do_putstr)
-                    putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+                    putstr_ex(datawin, tmpbuf, attr, color, 1);
             }
 
             acpos = (int)strlen(buf);
@@ -6301,28 +6302,28 @@ boolean use_symbols;
             Strcat(buf, tmpbuf);
             accolor = acdiff < 0 ? CLR_BRIGHT_GREEN : acdiff > 0 ? CLR_RED : CLR_GRAY;
             if (do_putstr)
-                putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, accolor, 1);
+                putstr_ex(datawin, tmpbuf, attr, accolor, 1);
             
             if (!do_special_symbols)
             {
                 Strcpy(tmpbuf, " AC");
                 Strcat(buf, tmpbuf);
                 if (do_putstr)
-                    putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+                    putstr_ex(datawin, tmpbuf, attr, color, 1);
             }
             if (*buf)
             {
                 Strcpy(tmpbuf, do_special_symbols ? " " : ", ");
                 Strcat(buf, tmpbuf);
                 if (do_putstr)
-                    putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+                    putstr_ex(datawin, tmpbuf, attr, color, 1);
             }
             if (do_special_symbols)
             {
                 Strcpy(tmpbuf, "&MC; ");
                 Strcat(buf, tmpbuf);
                 if (do_putstr)
-                    putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+                    putstr_ex(datawin, tmpbuf, attr, color, 1);
             }
             mcpos = (int)strlen(buf);
             Sprintf(tmpbuf, "%s%d", mcdiff >= 0 ? "+" : "", mcdiff);
@@ -6330,13 +6331,13 @@ boolean use_symbols;
             mccolor = mcdiff > 0 ? CLR_BRIGHT_GREEN : mcdiff < 0 ? CLR_RED : CLR_GRAY;
             Strcat(buf, tmpbuf);
             if (do_putstr)
-                putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, mccolor, 1);
+                putstr_ex(datawin, tmpbuf, attr, mccolor, 1);
             if (!do_special_symbols)
             {
                 Strcpy(tmpbuf, " MC");
                 Strcat(buf, tmpbuf);
                 if (do_putstr)
-                    putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 1);
+                    putstr_ex(datawin, tmpbuf, attr, color, 1);
             }
             need_closing = TRUE;
         }
@@ -6347,12 +6348,12 @@ boolean use_symbols;
         Strcpy(tmpbuf, ")");
         Strcat(buf, tmpbuf);
         if (do_putstr)
-            putstr_ex(datawin, tmpbuf, ATR_INDENT_AT_DASH, NO_COLOR, 0);
+            putstr_ex(datawin, tmpbuf, attr, color, 0);
     }
     else
     {
         if (do_putstr)
-            putstr_ex(datawin, "", ATR_INDENT_AT_DASH, NO_COLOR, 0);
+            putstr_ex(datawin, "", attr, color, 0);
     }
     
     if (objbuf && attrs && colors)

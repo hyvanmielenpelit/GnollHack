@@ -4682,7 +4682,7 @@ int* wtcount_ptr;
     if (comparison_stats)
     {
         char compbuf[BUFSZ];
-        print_comparison_stats(otmp, compbuf, WIN_ERR, TRUE, TRUE, objbuf, attrs, colors);
+        print_comparison_stats(otmp, compbuf, WIN_ERR, ATR_NONE, NO_COLOR, TRUE, TRUE, objbuf, attrs, colors);
         eminfo.attrs = attrs;
         eminfo.colors = colors;
         eminfo.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
@@ -6405,7 +6405,7 @@ boolean picked_some, explicit_cmd;
                     boolean add_parentheses = (windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) == 0; /* Only if not using symbols */
                     if (!add_parentheses) /* Need a space in that case first */
                         putstr_ex(tmpwin, " ", ATR_INDENT_AT_DASH, NO_COLOR, 1);
-                    print_comparison_stats(otmp, compbuf, tmpwin, add_parentheses, TRUE, 0, 0, 0);
+                    print_comparison_stats(otmp, compbuf, tmpwin, ATR_INDENT_AT_DASH | attr, color, add_parentheses, TRUE, 0, 0, 0);
                 }
                 else
                     putstr_ex(tmpwin, "", ATR_INDENT_AT_DASH | attr, color, 0);
