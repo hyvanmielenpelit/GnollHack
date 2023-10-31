@@ -2096,6 +2096,15 @@ struct obj* obj;
 
 /* Name of object including price. */
 char*
+doname_in_text_with_price_and_weight_last_and_comparison(obj)
+struct obj* obj;
+{
+    return doname_with_flags(obj, DONAME_LIT_IN_FRONT | DONAME_WITH_PRICE | DONAME_WITH_WEIGHT_LAST | DONAME_COMPARISON | (objects[LOADSTONE].oc_name_known ? DONAME_LOADSTONE_CORRECTLY : 0));
+}
+
+
+/* Name of object including price. */
+char*
 doname_with_price_and_weight_first(obj, loadstonecorrectly)
 struct obj* obj;
 boolean loadstonecorrectly;

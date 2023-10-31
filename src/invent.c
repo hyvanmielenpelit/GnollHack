@@ -6300,7 +6300,7 @@ boolean picked_some, explicit_cmd;
         if (dfeature)
             pline1(fbuf);
         read_engr_at(u.ux, u.uy); /* Eric Backus */
-        You("%s here %s.", verb, doname_in_text_with_price_and_weight_last(otmp)); //See on the ground
+        You("%s here %s.", verb, doname_in_text_with_price_and_weight_last_and_comparison(otmp)); //See on the ground
         iflags.last_msg = PLNMSG_ONE_ITEM_HERE;
         if (otmp->otyp == CORPSE)
             feel_cockatrice(otmp, FALSE);
