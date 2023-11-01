@@ -9651,10 +9651,16 @@ namespace GnollHackX.Pages.Game
                     item_charges = otmp_round.ObjData.charges;
                     item_special_quality = otmp_round.ObjData.special_quality;
                     item_lit = otmp_round.LampLit;
-                    foreach(ObjectDataItem otmp in otmp_round.ContainedObjs)
+                    if(otmp_round.ContainedObjs != null)
                     {
-                        contents_no++;
-                        contents_id_sum += otmp.ObjData.o_id;
+                        foreach (ObjectDataItem otmp in otmp_round.ContainedObjs)
+                        {
+                            if(otmp != null)
+                            {
+                                contents_no++;
+                                contents_id_sum += otmp.ObjData.o_id;
+                            }
+                        }
                     }
                 }
                 _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, paint.Color, mapx, mapy, new AutoDrawParameterDefinition(autodraw, otmp_round, layer_idx, 
