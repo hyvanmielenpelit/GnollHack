@@ -1453,20 +1453,33 @@ u_ranged_strdex_to_hit_bonus()
     return sbon;
 }
 
-
 int strength_tohit_bonus(str)
 int str;
 {
-    int sbon = 0;
+    return (int)strength_tohit_bonus(str, FALSE);
+}
+
+double strength_tohit_bonus_core(str, is_average)
+int str;
+boolean is_average;
+{
+    double sbon = 0;
     if (str <= 18)
-        sbon = max(-2, (str - 6) / 4);
+        sbon = (double)max(-2, (str - 6) / 4);
     else
     {
         if (str <= STR18(100))
         {
             sbon = 3;
-            if (rn2(100) < str - 18)
-                sbon++;
+            if (is_average)
+            {
+                sbon += ((double)(str - 18)) / 100.0;
+            }
+            else
+            {
+                if (rn2(100) < str - 18)
+                    sbon++;
+            }
         }
         else if (str == STR19(19))
             sbon = 5;
@@ -1583,8 +1596,6 @@ struct monst* mon;
     return bonus;
 
 }
-
-
 
 /* monster to hit bonus for strength and dex*/
 int

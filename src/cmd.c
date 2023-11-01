@@ -2330,7 +2330,7 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
                 mons[i].difficulty, mons[i].mcolor);
             (void)write(fd, buf, strlen(buf));
             Sprintf(buf, ",%d,%d,%d,%d,%0.1f\n",
-                strength_tohit_bonus(mons[i].str), (int)strength_damage_bonus_core(mons[i].str, TRUE), dexterity_tohit_bonus(mons[i].dex), dexterity_ac_bonus(mons[i].dex),constitution_hp_bonus(mons[i].con));
+                (int)strength_tohit_bonus_core(mons[i].str, TRUE), (int)strength_damage_bonus_core(mons[i].str, TRUE), dexterity_tohit_bonus(mons[i].dex), dexterity_ac_bonus(mons[i].dex),constitution_hp_bonus(mons[i].con));
             (void)write(fd, buf, strlen(buf));
 
         }
@@ -3730,7 +3730,7 @@ int mode, final, attrindx;
     if (attrindx == A_STR)
     {
         int currstr = ACURR(A_STR);
-        int tohitbonus_constant = (currstr < STR18(100) ? strength_tohit_bonus(min(18, currstr)) : strength_tohit_bonus(currstr));
+        int tohitbonus_constant = (currstr < STR18(100) ? (int)strength_tohit_bonus_core(min(18, currstr), TRUE) : (int)strength_tohit_bonus_core(currstr, TRUE));
         int tohitbonus_random = ((currstr > 18 && currstr < STR18(100)) ? 1 : 0);
         int dmgbonus_constant = (currstr < STR18(100) ? (int)strength_damage_bonus_core(min(18, currstr), TRUE) : (int)strength_damage_bonus_core(currstr, TRUE));
         int dmgbonus_random = ((currstr > 18 && currstr < STR18(100)) ? 2 : 0);
