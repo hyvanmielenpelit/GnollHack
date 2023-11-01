@@ -4087,6 +4087,7 @@ E int FDECL(m_ranged_strdex_to_hit_bonus, (struct monst*));
 E int FDECL(m_str_dmg_bonus, (struct monst*));
 E int FDECL(m_thrown_str_dmg_bonus, (struct monst*));
 E int FDECL(strength_damage_bonus, (int));
+E double FDECL(strength_damage_bonus_core, (int, BOOLEAN_P));
 E int FDECL(strength_tohit_bonus, (int));
 E int FDECL(dexterity_ac_bonus, (int));
 E int FDECL(dexterity_tohit_bonus, (int));

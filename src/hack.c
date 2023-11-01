@@ -3844,8 +3844,8 @@ weight_cap()
     if (ACURR(A_STR) >= STR18(100)) //Used to be STR18(1), but anything below 18/00 is now random
     {
         //7 lbs per bonus since CON cannot increase in the same way
-        carrcap += ((long)(7 * 16)) * (strength_damage_bonus(ACURR(A_STR))- strength_damage_bonus(18));
-        carrcap += ((long)(7 * 16)) * (strength_tohit_bonus(ACURR(A_STR)) - strength_tohit_bonus(18));
+        carrcap += (long)((7.0 * 16.0) * (strength_damage_bonus_core(ACURR(A_STR), TRUE) - strength_damage_bonus_core(18, TRUE)));
+        carrcap += (long)((7 * 16) * (strength_tohit_bonus(ACURR(A_STR)) - strength_tohit_bonus(18)));
     }
 
 //    if (Upolyd) {

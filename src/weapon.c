@@ -1502,23 +1502,37 @@ u_thrown_str_dmg_bonus()
     return u_str_dmg_bonus() / 2;
 }
 
-
 int
 strength_damage_bonus(str)
 int str;
 {
-    int sbon = 0;
+    return (int)strength_damage_bonus_core(str, FALSE);
+}
+
+double
+strength_damage_bonus_core(str, is_average)
+int str;
+boolean is_average;
+{
+    double sbon = 0;
     if (str <= 18)
-        sbon = max(-2, (str - 5) / 2);
+        sbon = (double)max(-2, (str - 5) / 2);
     else
     {
         sbon = 6;
         if (str <= STR18(100))
         {
-            if (rn2(100) < str - 18)
-                sbon++;
-            if (rn2(100) < str - 18)
-                sbon++;
+            if (is_average)
+            {
+                sbon += 2.0 * ((double)(str - 18)) / 100.0;
+            }
+            else
+            {
+                if (rn2(100) < str - 18)
+                    sbon++;
+                if (rn2(100) < str - 18)
+                    sbon++;
+            }
         }
         else if (str == STR19(19))
             sbon = 9; /* up to 19 */
@@ -1536,8 +1550,8 @@ int str;
             sbon = 15;
     }
     return sbon;
-
 }
+
 /* monster damage bonus for strength*/
 int
 m_str_dmg_bonus(mon)

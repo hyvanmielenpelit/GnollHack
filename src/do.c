@@ -1688,9 +1688,9 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             else if (is_ammo(obj) && uswapwep && is_launcher(uswapwep) && (objects[uswapwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
                 dmg_bonus += (double)objects[uswapwep->otyp].oc_fixed_damage_bonus;
             else if(is_otyp_nonmelee_throwing_weapon(otyp) || objects[otyp].oc_skill == P_NONE)
-                dmg_bonus += (double)((int)strength_damage_bonus(ACURR(A_STR)) / 2);
+                dmg_bonus += strength_damage_bonus_core(ACURR(A_STR), TRUE) / 2;
             else
-                dmg_bonus += (double)strength_damage_bonus(ACURR(A_STR));
+                dmg_bonus += strength_damage_bonus_core(ACURR(A_STR), TRUE);
 
             wep_avg_dmg += dmg_bonus;
             wep_multipliable_avg_dmg += dmg_bonus;
@@ -1712,7 +1712,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
     else
     {
         /* Otherwise get full melee strength damage bonus */
-        double str_bonus = (double)strength_damage_bonus(ACURR(A_STR));
+        double str_bonus = strength_damage_bonus_core(ACURR(A_STR), TRUE);
         wep_avg_dmg += str_bonus;
         wep_multipliable_avg_dmg += str_bonus;
     }
