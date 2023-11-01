@@ -1456,7 +1456,7 @@ u_ranged_strdex_to_hit_bonus()
 int strength_tohit_bonus(str)
 int str;
 {
-    return (int)strength_tohit_bonus(str, FALSE);
+    return (int)strength_tohit_bonus_core(str, FALSE);
 }
 
 double strength_tohit_bonus_core(str, is_average)
