@@ -551,7 +551,7 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
         putstr(tmpwin, 0, "");
 
         if (mtmp && oraclesstyle == 1)
-            play_voice_oracle_major_consultation(mtmp, used_oracle_idx - 1);
+            play_voice_oracle_major_consultation(mtmp, (int)used_oracle_idx - 1);
 
         while (dlb_fgets(line, COLNO, oracles) && strcmp(line, "---\n"))
         {
