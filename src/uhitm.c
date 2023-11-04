@@ -18,7 +18,6 @@ STATIC_DCL boolean FDECL(hmon_hitmon, (struct monst *, struct obj *, int,
                                        int, boolean *));
 STATIC_DCL int FDECL(joust, (struct monst *, struct obj *));
 STATIC_DCL void NDECL(demonpet);
-STATIC_DCL boolean FDECL(m_slips_free, (struct monst *, struct attack *));
 STATIC_DCL int FDECL(explum, (struct monst *, struct attack *));
 STATIC_DCL void FDECL(start_engulf, (struct monst *));
 STATIC_DCL void NDECL(end_engulf);
@@ -152,7 +151,7 @@ struct obj *wep; /* uwep for attack(), null for kick_monster() */
         if (M_AP_TYPE(mtmp) && !Protection_from_shape_changers
             /* applied pole-arm attack is too far to get stuck */
             && distu(mtmp->mx, mtmp->my) <= 2) {
-            if (!u.ustuck && !is_fleeing(mtmp) && dmgtype(mtmp->data, AD_STCK))
+            if (!u.ustuck && !is_fleeing(mtmp) && check_stuck_and_slip(mtmp))
             {
                 play_sfx_sound(SFX_ACQUIRE_GRAB);
                 u.ustuck = mtmp;
@@ -2509,7 +2508,7 @@ struct obj *obj;
 
 /* check whether slippery clothing protects from hug or wrap attack */
 /* [currently assumes that you are the attacker] */
-STATIC_OVL boolean
+boolean
 m_slips_free(mdef, mattk)
 struct monst *mdef;
 struct attack *mattk;
@@ -4610,13 +4609,6 @@ struct monst *mtmp;
 {
     const char *fmt = "Wait!  That's %s!", *generic = "a monster", *what = 0;
 
-    if (!u.ustuck && !is_fleeing(mtmp) && dmgtype(mtmp->data, AD_STCK))
-    {
-        play_sfx_sound(SFX_ACQUIRE_GRAB);
-        u.ustuck = mtmp;
-        refresh_m_tile_gui_info(mtmp, FALSE);
-    }
-
     if (Blind) 
     {
         if (!(Blind_telepat || Unblind_telepat || Detect_monsters))
@@ -4649,12 +4641,22 @@ struct monst *mtmp;
         pline_ex(ATR_NONE, CLR_MSG_WARNING, fmt, what);
     }
 
+    /* Make mimic grab you */
+    if (!u.ustuck && !is_fleeing(mtmp) && check_stuck_and_slip(mtmp))
+    {
+        play_sfx_sound(SFX_ACQUIRE_GRAB);
+        u.ustuck = mtmp;
+        refresh_m_tile_gui_info(mtmp, FALSE);
+    }
+
     wakeup(mtmp, FALSE); /* clears mimicking */
     /* if hero is blind, wakeup() won't display the monster even though
        it's no longer concealed */
     if (!canspotmon(mtmp)
         && !glyph_is_invisible(levl[mtmp->mx][mtmp->my].hero_memory_layers.glyph))
         map_invisible(mtmp->mx, mtmp->my);
+
+    flush_screen(1);
 }
 
 STATIC_OVL void

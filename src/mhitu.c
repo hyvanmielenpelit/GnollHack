@@ -10,7 +10,6 @@
 
 STATIC_VAR NEARDATA struct obj *mon_currwep = (struct obj *) 0;
 
-STATIC_DCL boolean FDECL(u_slip_free, (struct monst *, struct attack *));
 STATIC_DCL int FDECL(passiveum, (struct permonst *, struct monst *,
                                  struct attack *));
 STATIC_DCL void FDECL(mayberem, (struct monst *, const char *,
@@ -24,6 +23,7 @@ STATIC_DCL void FDECL(missmu, (struct monst *, BOOLEAN_P, struct attack *));
 STATIC_DCL void FDECL(mswings, (struct monst *, struct obj *, int));
 STATIC_DCL void FDECL(wildmiss, (struct monst *, struct attack *));
 STATIC_DCL void FDECL(hitmsg, (struct monst *, struct attack *, int, BOOLEAN_P));
+STATIC_DCL boolean FDECL(u_slip_free_core, (struct monst*, struct attack*, BOOLEAN_P));
 
 /* See comment in mhitm.c.  If we use this a lot it probably should be */
 /* changed to a parameter to mhitu. */
@@ -1368,11 +1368,33 @@ struct monst* mtmp;
     }
 }
 
+boolean
+check_stuck_and_slip(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp)
+        return FALSE;
+
+    struct attack* atk = dmgtype_fromattack(mtmp->data, AD_STCK, AT_ANY);
+    if (!atk)
+        return FALSE;
+    return !u_slip_free_core(mtmp, atk, TRUE);
+}
+
 /* check whether slippery clothing protects from hug or wrap attack */
-STATIC_OVL boolean
+boolean
 u_slip_free(mtmp, mattk)
+struct monst* mtmp;
+struct attack* mattk;
+{
+    return u_slip_free_core(mtmp, mattk, FALSE);
+}
+
+STATIC_OVL boolean
+u_slip_free_core(mtmp, mattk, stuck)
 struct monst *mtmp;
 struct attack *mattk;
+boolean stuck;
 {
     struct obj *obj = (uarmc ? uarmc : (uarmo ? uarmo : uarm));
 
@@ -1387,7 +1409,7 @@ struct attack *mattk;
         && (!obj->cursed || rn2(3))) {
         pline("%s %s your %s %s!", Monnam(mtmp),
               (mattk->adtyp == AD_WRAP) ? "slips off of"
-                                        : "grabs you, but cannot hold onto",
+                                        : (stuck ? "tries to stick to you, but fails to attach onto" : "grabs you, but cannot hold onto"),
               obj->greased ? "greased" : "slippery",
               /* avoid "slippery slippery cloak"
                  for undiscovered oilskin cloak */
@@ -2424,7 +2446,7 @@ register struct obj* omonwep;
         break;
     case AD_STCK:
         hitmsg(mtmp, mattk, damagedealt, TRUE);
-        if (!is_cancelled(mtmp) && !u.ustuck && !sticks(youmonst.data))
+        if (!is_cancelled(mtmp) && !u.ustuck && !sticks(youmonst.data) && check_stuck_and_slip(mtmp))
         {
             play_sfx_sound(SFX_ACQUIRE_GRAB);
             u.ustuck = mtmp;

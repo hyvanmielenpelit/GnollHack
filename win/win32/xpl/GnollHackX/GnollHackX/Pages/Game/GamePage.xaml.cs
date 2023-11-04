@@ -3320,9 +3320,15 @@ namespace GnollHackX.Pages.Game
             }
 
             if (MenuCanvas.ClickOKOnSelection && !MenuCanvas.MenuButtonStyle)
+            {
                 MenuOKButton.Text = "Auto";
+                MenuOKButton.Opacity = 0.5;
+            }
             else
+            {
                 MenuOKButton.Text = "OK";
+                MenuOKButton.Opacity = 1.0;
+            }
 
             /* Reset glyph */
             MenuWindowGlyphImage.Source = null;
@@ -6004,7 +6010,6 @@ namespace GnollHackX.Pages.Game
                                                             bool dodarkening = true;
                                                             using (SKCanvas darkeningCanvas = new SKCanvas(_paintBitmap))
                                                             {
-                                                                darkeningCanvas.Clear(SKColors.Transparent);
                                                                 foreach (GHDrawCommand dc in _drawCommandList)
                                                                 {
                                                                     if (dc.EndDarkening)
@@ -6014,6 +6019,7 @@ namespace GnollHackX.Pages.Game
                                                                     }
                                                                     if (dodarkening && DarkenedPos(dc.MapX, dc.MapY))
                                                                     {
+                                                                        darkeningCanvas.Clear(SKColors.Transparent);
                                                                         lock (_lighterDarkeningLock)
                                                                         {
                                                                             if (dc.IsAutoDraw)

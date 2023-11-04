@@ -3591,8 +3591,8 @@ uwep_skill_type()
 int
 weapon_skill_hit_bonus(weapon, use_this_skill, nextlevel, limit_by_twoweap, apply_extra_bonuses, use_this_level, use_adjusted_sklvl)
 struct obj *weapon;
-int use_this_skill, use_this_level, use_adjusted_sklvl;
-boolean nextlevel, limit_by_twoweap, apply_extra_bonuses;
+int use_this_skill, use_this_level;
+boolean nextlevel, limit_by_twoweap, apply_extra_bonuses, use_adjusted_sklvl;
 {
     int bonus = 0;
     static const char bad_skill[] = "weapon_skill_hit_bonus: bad skill %d";
@@ -3751,8 +3751,8 @@ boolean nextlevel, limit_by_twoweap, apply_extra_bonuses;
 int
 weapon_skill_dmg_bonus(weapon, use_this_skill, nextlevel, limit_by_twoweap, apply_extra_bonuses, use_this_level, use_adjusted_sklvl)
 struct obj *weapon;
-int use_this_skill, use_this_level, use_adjusted_sklvl;
-boolean nextlevel, limit_by_twoweap, apply_extra_bonuses;
+int use_this_skill, use_this_level;
+boolean nextlevel, limit_by_twoweap, apply_extra_bonuses, use_adjusted_sklvl;
 {
     int bonus = 0;
     boolean apply_two_weapon_bonus = apply_extra_bonuses && (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))));

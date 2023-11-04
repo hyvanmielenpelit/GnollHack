@@ -1815,6 +1815,8 @@ E void NDECL(reset_mhitm);
 
 /* ### mhitu.c ### */
 
+E boolean FDECL(u_slip_free, (struct monst*, struct attack*));
+E boolean FDECL(check_stuck_and_slip, (struct monst*));
 E const char *FDECL(mpoisons_subj, (struct monst *, struct attack *));
 E void NDECL(u_slow_down);
 E struct monst *NDECL(cloneu);
@@ -3839,7 +3841,7 @@ E void NDECL(m_wait_until_action);
 E void NDECL(u_wait_until_end);
 E void NDECL(m_wait_until_end);
 E void FDECL(remove_monster_and_nearby_waitforu, (struct monst*));
-
+E boolean FDECL(m_slips_free, (struct monst*, struct attack*));
 
 /* ### unixmain.c ### */
 
