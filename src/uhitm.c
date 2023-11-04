@@ -4448,7 +4448,7 @@ boolean wep_was_destroyed;
                 incr_itimeout(&HParalyzed, basedmg);
                 context.botl = context.botlx = 1;
                 refresh_u_tile_gui_info(TRUE);
-                standard_hint("Get free action as early as possible. Use ranged weapons to attack monsters with paralyzing passive defense.", &u.uhint.paralyzed_by_cube);
+                standard_hint("Get paralysis resistance as early as possible. Use ranged weapons to attack monsters with paralyzing passive defense.", &u.uhint.paralyzed_by_cube);
             }
             break;
         case AD_COLD: /* brown mold or blue jelly */

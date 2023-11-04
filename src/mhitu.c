@@ -2322,7 +2322,7 @@ register struct obj* omonwep;
                 incr_itimeout(&HParalyzed, (rnd(8) + 2));
                 context.botl = context.botlx = 1;
                 refresh_u_tile_gui_info(TRUE);
-                standard_hint("Get free action as early as possible. Avoid engaging in close combat with paralyzing monsters before that.", &u.uhint.paralyzed_by_monster);
+                standard_hint("Get paralysis resistance as early as possible. Avoid engaging in close combat with paralyzing monsters before that.", &u.uhint.paralyzed_by_monster);
                 /* No new paralysis for a while */
                 set_itimeout(&HFree_action, 20);
                 refresh_u_tile_gui_info(TRUE);

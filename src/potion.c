@@ -2833,7 +2833,7 @@ const char* introline;
             incr_itimeout(&HParalyzed, duration);
             refresh_u_tile_gui_info(TRUE);
             context.botl = context.botlx = 1;
-            standard_hint("You should acquire free action as early as possible. Keep pets around to protect you while paralyzed.", &u.uhint.paralyzed_by_thrown_potion);
+            standard_hint("You should acquire paralysis resistance as early as possible. Keep pets around to protect you while paralyzed.", &u.uhint.paralyzed_by_thrown_potion);
 #if 0
             nomul(-d(3 - 1 * bcsign(obj), 4)); // rnd(5));
             multi_reason = "frozen by a potion";
