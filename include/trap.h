@@ -123,11 +123,23 @@ enum trap_types {
     TRAPNUM      = 26
 };
 
+enum trap_difficulty_types
+{
+    SIMPLE_MECHANICAL_TRAP = 0,
+    COMPLEX_MECHANICAL_TRAP,
+    SIMPLE_MAGICAL_TRAP,
+    COMPLEX_MAGICAL_TRAP,
+    SPECIALLY_DISARMABLE_TRAP,
+    NOT_DISARMABLE_TRAP,
+};
+
 struct trap_type_definition {
     const char* name;
     const char* type_name;
     const char* apply_verb;
     enum obj_material_types material;
+    enum trap_difficulty_types tdifficulty;
+    int training;
     unsigned long tdflags;
 };
 
@@ -143,7 +155,7 @@ struct trap_type_definition {
 #define TRAPDEF_FLAGS_APPLIABLE                 0x00000100UL
 
 
-extern struct trap_type_definition trap_type_definitions[TRAPNUM];
+extern const struct trap_type_definition trap_type_definitions[TRAPNUM];
 
 #define is_pit(ttyp) ((ttyp) == PIT || (ttyp) == SPIKED_PIT)
 #define is_hole(ttyp)  ((ttyp) == HOLE || (ttyp) == TRAPDOOR)

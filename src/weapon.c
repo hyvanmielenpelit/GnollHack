@@ -2501,6 +2501,8 @@ int skill_id;
             char lvlsuccbuf[BUFSZ] = "";
             char discbuf[BUFSZ] = "";
             char arrowbuf[BUFSZ] = "";
+            char rustbuf[BUFSZ] = "";
+            char telebuf[BUFSZ] = "";
             char magicbuf[BUFSZ] = "";
             char savingbuf[BUFSZ] = "";
             char acbuf[BUFSZ] = "";
@@ -2647,8 +2649,12 @@ int skill_id;
             else if (skill_id == P_DISARM_TRAP)
             {
                 int arrowtrap_chance = untrap_probability(ARROW_TRAP, lvl, &youmonst);
+                int rusttrap_chance = untrap_probability(RUST_TRAP, lvl, &youmonst);
+                int teletrap_chance = untrap_probability(TELEP_TRAP, lvl, &youmonst);
                 int magictrap_chance = untrap_probability(MAGIC_TRAP, lvl, &youmonst);
                 Sprintf(arrowbuf, "%d%%", arrowtrap_chance);
+                Sprintf(rustbuf, "%d%%", rusttrap_chance);
+                Sprintf(telebuf, "%d%%", teletrap_chance);
                 Sprintf(magicbuf, "%d%%", magictrap_chance);
             }
             else if (skill_id == P_RIDING)
@@ -2722,12 +2728,22 @@ int skill_id;
             }
             if (strcmp(arrowbuf, ""))
             {
-                Sprintf(buf, "    * Arrow trap untrap chance %s", arrowbuf);
+                Sprintf(buf, "    * %s to untrap simple traps", arrowbuf);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
+            }
+            if (strcmp(rustbuf, ""))
+            {
+                Sprintf(buf, "    * %s to untrap complex traps", rustbuf);
+                putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
+            }
+            if (strcmp(telebuf, ""))
+            {
+                Sprintf(buf, "    * %s to untrap minor magical traps", telebuf);
                 putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(magicbuf, ""))
             {
-                Sprintf(buf, "    * Magic trap untrap chance %s", magicbuf);
+                Sprintf(buf, "    * %s to untrap major magical traps", magicbuf);
                 putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(limitbuf, ""))
