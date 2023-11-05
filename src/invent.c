@@ -7312,7 +7312,7 @@ doorganize() /* inventory organizer by Del Lamb */
 
     /* get 'to' slot to use as destination */
     for (trycnt = 1; ; ++trycnt) {
-#if GNH_MOBILE
+#ifdef GNH_MOBILE
         let = '?';
 #else
         char qbuf[QBUFSZ];

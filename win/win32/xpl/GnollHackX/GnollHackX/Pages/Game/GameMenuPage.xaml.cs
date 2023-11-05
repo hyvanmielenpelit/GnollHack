@@ -43,11 +43,7 @@ namespace GnollHackX.Pages.Game
 
             btnOptions.IsVisible = GHApp.DeveloperMode;
             btnGC.IsVisible = btnDebug.IsVisible = btnRunTests.IsVisible =
-#if DEBUG
-                GHApp.DeveloperMode;
-#else
-                false;
-#endif
+                GHApp.DeveloperMode && GHApp.DebugLogMessages;
         }
 
         private async void btnSave_Clicked(object sender, EventArgs e)
@@ -119,11 +115,7 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = true;
             btnOptions.IsVisible = GHApp.DeveloperMode;
             btnGC.IsVisible = btnDebug.IsVisible = btnRunTests.IsVisible =
-#if DEBUG
-                GHApp.DeveloperMode;
-#else
-                false;
-#endif
+                GHApp.DeveloperMode && GHApp.DebugLogMessages;
         }
 
         private bool _backPressed = false;

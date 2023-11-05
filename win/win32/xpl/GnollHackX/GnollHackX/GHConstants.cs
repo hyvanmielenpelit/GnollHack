@@ -1431,7 +1431,7 @@ namespace GnollHackX
 
     public class GHConstants
     {
-        public const int MinimumFileDescriptorLimit = 4096;
+        public const int MinimumFileDescriptorLimit = 16384;
         public const int InputBufferLength = 32;
         public const int BUFSZ = 256;
         public const int UTF8BUFSZ = 256 * 4;

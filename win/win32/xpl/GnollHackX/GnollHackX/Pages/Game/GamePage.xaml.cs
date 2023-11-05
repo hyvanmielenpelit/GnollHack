@@ -2429,9 +2429,10 @@ namespace GnollHackX.Pages.Game
                             DiscordWebHookPostWithAttachment post = new DiscordWebHookPostWithAttachment(message);
                             foreach (ForumPostAttachment attachment in _forumPostAttachments)
                             {
-                                FileInfo fileinfo = new FileInfo(attachment.FullPath);
+                                string fullFilePath = attachment.FullPath;
+                                FileInfo fileinfo = new FileInfo(fullFilePath);
                                 string filename = fileinfo.Name;
-                                if (File.Exists(attachment.FullPath))
+                                if (File.Exists(fullFilePath))
                                     post.AddAttachment(attachment.Description, filename);
                             }
                             string json = JsonConvert.SerializeObject(post);
@@ -2444,12 +2445,13 @@ namespace GnollHackX.Pages.Game
                             int aidx = 0;
                             foreach (ForumPostAttachment attachment in _forumPostAttachments)
                             {
-                                bool fileexists = File.Exists(attachment.FullPath);
+                                string fullFilePath = attachment.FullPath;
+                                bool fileexists = File.Exists(fullFilePath);
                                 if (fileexists)
                                 {
-                                    FileInfo fileinfo = new FileInfo(attachment.FullPath);
+                                    FileInfo fileinfo = new FileInfo(fullFilePath);
                                     string filename = fileinfo.Name;
-                                    var stream = new FileStream(attachment.FullPath, FileMode.Open);
+                                    var stream = new FileStream(fullFilePath, FileMode.Open);
                                     StreamContent content2 = new StreamContent(stream);
                                     //byte[] bytes = new byte[stream.Length];
                                     //int bytesread = await stream.ReadAsync(bytes, 0, bytes.Length);
