@@ -9469,7 +9469,7 @@ write_items()
     }
 
     short i_idx;
-    for (i = 0; i < cnt_objs; i++)
+    for (i = 0; i < (short)cnt_objs; i++)
     {
         i_idx = item_indices[i];
 
