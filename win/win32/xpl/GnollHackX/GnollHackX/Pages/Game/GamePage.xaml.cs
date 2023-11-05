@@ -2219,6 +2219,7 @@ namespace GnollHackX.Pages.Game
             PopupGrid.IsVisible = false;
             TextWindowGlyphImage.StopAnimation();
             YnGrid.IsVisible = false;
+            HideDirections();
 
             if (!LoadingGrid.IsVisible && (!MainGrid.IsVisible || !canvasView.AnimationIsRunning("GeneralAnimationCounter")))
             {

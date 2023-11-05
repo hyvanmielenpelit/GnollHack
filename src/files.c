@@ -50,11 +50,11 @@ const
 #include <sys/stat.h>
 #include <dirent.h>
 #include <stdlib.h>
+#include <sys/resource.h>
 #ifdef GNH_IOS
 #include <fcntl.h>
 #include <errno.h>
 #include <sys/param.h>
-#include <sys/resource.h>
 #endif
 #endif
 
@@ -779,6 +779,25 @@ int error_number UNUSED;
 #if defined(UNIX) && defined(GNH_MOBILE)
     if (error_number == EMFILE)
     {
+        char extbuf[BUFSZ] = "";
+        struct rlimit rlim = { 0 };
+        if (getrlimit(RLIMIT_NOFILE, &rlim) == 0)
+        {
+            char curbuf[BUFSZ];
+            char maxbuf[BUFSZ];
+            if (rlim.rlim_cur == RLIM_INFINITY)
+                Strcpy(curbuf, "Inf");
+            else
+                Sprintf(curbuf, "%ld", (long)rlim.rlim_cur);
+
+            if (rlim.rlim_max == RLIM_INFINITY)
+                Strcpy(maxbuf, "Inf");
+            else
+                Sprintf(maxbuf, "%ld", (long)rlim.rlim_max);
+
+            Sprintf(extbuf, " (c:%s, m:%s)", curbuf, maxbuf);
+        }
+
 #if defined(GNH_IOS)
         char* ptr = gnh_lsof();
         if (ptr)
@@ -787,25 +806,7 @@ int error_number UNUSED;
             {
                 char titlebuf[BUFSZ];
                 Strcpy(titlebuf, "gnh_lsof");
-
-                struct rlimit rlim = { 0 };
-                if (getrlimit(RLIMIT_NOFILE, &rlim) == 0)
-                {
-                    char curbuf[BUFSZ];
-                    char maxbuf[BUFSZ];
-                    if (rlim.rlim_cur == RLIM_INFINITY)
-                        Strcpy(curbuf, "Inf");
-                    else
-                        Sprintf(curbuf, "%ld", (long)rlim.rlim_cur);
-
-                    if (rlim.rlim_max == RLIM_INFINITY)
-                        Strcpy(maxbuf, "Inf");
-                    else
-                        Sprintf(maxbuf, "%ld", (long)rlim.rlim_max);
-
-                    Sprintf(eos(titlebuf), " (c:%s, m:%s)", curbuf, maxbuf);
-                }
-
+                Strcat(titlebuf, extbuf);
                 issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_CREATE_ATTACHMENT_FROM_TEXT, DIAGNOSTIC_DATA_ATTACHMENT_FILE_DESCRIPTOR_LIST, ptr);
                 issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_CRITICAL, 0, titlebuf);
             }
@@ -814,41 +815,63 @@ int error_number UNUSED;
 #else
         char cmd[BUFSZ];
         char msgbuf[BUFSZ] = "";
-        (void)mkdir("temp", 0777);
+        //(void)mkdir("temp", 0777);
         int pid = (int)getpid();
-        char cwd[PATH_MAX];
-        if (getcwd(cwd, sizeof(cwd)) != NULL) {
-            printf("Current working dir: %s\n", cwd);
-        }
-        else
-            *cwd = 0;
-
-        char pathbuf[PATH_MAX + BUFSZ];
-        if (cwd)
-            Sprintf(pathbuf, "%s/temp/file_descriptors.txt", cwd);
-        else
-            Strcpy(pathbuf, "temp/file_descriptors.txt");
+        //char cwd[PATH_MAX];
+        //char pathbuf[PATH_MAX + BUFSZ];
+        //if (getcwd(cwd, sizeof(cwd)) != NULL)
+        //    Sprintf(pathbuf, "%s/temp/file_descriptors.txt", cwd);
+        //else
+        //    Strcpy(pathbuf, "temp/file_descriptors.txt");
 
 #ifdef GNH_ANDROID
-        Sprintf(cmd, "lsof -a -p %d > temp/file_descriptors.txt", pid);
+        Sprintf(cmd, "lsof -p %d 2>&1", pid);
 #else
-        Sprintf(cmd, "ls -l /proc/%d/fd > temp/file_descriptors.txt", pid);
+        Sprintf(cmd, "ls -l /proc/%d/fd 2>&1", pid);
 #endif
         FILE* poutput = popen(cmd, "r");
         if (poutput)
         {
+            char buf[BUFSZ];
+            char* outputbuf = 0;
+            while (fgets(buf, BUFSZ - 1, poutput))
+            {
+                buf[BUFSZ - 1] = 0;
+                if (!outputbuf)
+                {
+                    outputbuf = (char*)alloc(strlen(buf) + 1);
+                    if (!outputbuf)
+                        break;
+                    Strcpy(outputbuf, buf);
+                }
+                else
+                {
+                    char* newoutbuf = (char*)alloc(strlen(outputbuf) + strlen(buf) + 1);
+                    if (!newoutbuf)
+                        break;
+                    Strcpy(newoutbuf, outputbuf);
+                    Strcat(newoutbuf, buf);
+                    free((genericptr_t)outputbuf);
+                    outputbuf = newoutbuf;
+                }
+            }
+            pclose(poutput);
+
             if (logtext)
             {
                 Strcpy(msgbuf, logtext);
                 Strcat(msgbuf, " - ");
             }
             Strcat(msgbuf, cmd);
-            pclose(poutput);
+            Strcat(msgbuf, extbuf);
+
             if (issue_gui_command)
             {
-                issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_ATTACHMENT, DIAGNOSTIC_DATA_ATTACHMENT_FILE_DESCRIPTOR_LIST, pathbuf);
+                issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_CREATE_ATTACHMENT_FROM_TEXT, DIAGNOSTIC_DATA_ATTACHMENT_FILE_DESCRIPTOR_LIST, outputbuf ? outputbuf : "(No output)");
                 issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_CRITICAL, 0, msgbuf);
             }
+            if (outputbuf)
+                free((genericptr_t)outputbuf);
         }
 #endif
     }
