@@ -2320,7 +2320,10 @@ namespace GnollHackX.Pages.Game
             else if (!is_game_status && status_string != null && status_string != "" && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CREATE_ATTACHMENT_FROM_TEXT)
             {
                 if (status_datatype == (int)diagnostic_data_attachment_types.DIAGNOSTIC_DATA_ATTACHMENT_FILE_DESCRIPTOR_LIST)
+                {
                     status_string = status_string.Replace(" | ", Environment.NewLine);
+                    status_string = status_string.Replace("◙", Environment.NewLine);
+                }
 
                 string tempdirpath = Path.Combine(GHApp.GHPath, "temp");
                 if (!Directory.Exists(tempdirpath))

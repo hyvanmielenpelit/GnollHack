@@ -583,11 +583,22 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 
 void lib_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char* cmd_str)
 {
-    char utf8buf[UTF8BUFSZ];
+    char* utf8buf = 0;
     if (cmd_str)
-        write_text2buf_utf8(utf8buf, UTF8BUFSZ, cmd_str);
+    {
+        size_t utf8bufsize = strlen(cmd_str) * 4 + 1;
+        utf8buf = (char*)alloc(utf8bufsize); 
+        if (!utf8buf)
+            return;
+        if (!*cmd_str)
+            *utf8buf = 0;
+        else
+            write_text2buf_utf8(utf8buf, utf8bufsize, cmd_str);
+    }
 
-    lib_callbacks.callback_issue_gui_command(cmd_id, cmd_param, cmd_param2, cmd_str ? utf8buf : 0);
+    lib_callbacks.callback_issue_gui_command(cmd_id, cmd_param, cmd_param2, utf8buf);
+    if (utf8buf)
+        free((genericptr_t)utf8buf);
 
     switch (cmd_id)
     {
