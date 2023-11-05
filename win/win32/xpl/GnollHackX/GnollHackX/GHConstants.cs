@@ -80,6 +80,7 @@ namespace GnollHackX
         IndentPeriod =  0x00001800,
         IndentDoubleSpace = 0x00004800,
         IndentBracketOrDoubleSpace = 0x0000C800,
+        IndentMask =    0x0000F800,
         AlignCenter =   0x00010000,
         AlignRight =    0x00020000,
         Inactive =      0x00040000,

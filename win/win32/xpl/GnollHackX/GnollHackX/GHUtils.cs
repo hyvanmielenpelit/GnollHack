@@ -35,27 +35,27 @@ namespace GnollHackX
 
             string str = usedtext;
 
-            if ((usedattributes & (((int)MenuItemAttributes.IndentDash) | (int)MenuItemAttributes.IndentColon | (int)MenuItemAttributes.IndentAstr | (int)MenuItemAttributes.IndentSpace | (int)MenuItemAttributes.IndentBracket)) != 0)
+            if ((usedattributes & (int)MenuItemAttributes.IndentMask) != 0)
             {
                 string cstr = " ", cstr2 = "";
-                if ((usedattributes & (int)MenuItemAttributes.IndentBracketOrDoubleSpace) == (int)MenuItemAttributes.IndentBracketOrDoubleSpace)
+                if ((usedattributes & (int)MenuItemAttributes.IndentMask) == (int)MenuItemAttributes.IndentBracketOrDoubleSpace)
                 {
                     cstr = "]";
                     cstr2 = "  ";
                 }
-                else if ((usedattributes & (int)MenuItemAttributes.IndentDoubleSpace) == (int)MenuItemAttributes.IndentDoubleSpace)
+                else if ((usedattributes & (int)MenuItemAttributes.IndentMask) == (int)MenuItemAttributes.IndentDoubleSpace)
                     cstr = "  ";
-                else if ((usedattributes & (int)MenuItemAttributes.IndentPeriod) == (int)MenuItemAttributes.IndentPeriod)
+                else if ((usedattributes & (int)MenuItemAttributes.IndentMask) == (int)MenuItemAttributes.IndentPeriod)
                     cstr = ".";
-                else if ((usedattributes & (int)MenuItemAttributes.IndentDash) == (int)MenuItemAttributes.IndentDash)
+                else if ((usedattributes & (int)MenuItemAttributes.IndentMask) == (int)MenuItemAttributes.IndentDash)
                     cstr = "-";
-                else if ((usedattributes & (int)MenuItemAttributes.IndentColon) == (int)MenuItemAttributes.IndentColon)
+                else if ((usedattributes & (int)MenuItemAttributes.IndentMask) == (int)MenuItemAttributes.IndentColon)
                     cstr = ":";
-                else if ((usedattributes & (int)MenuItemAttributes.IndentAstr) == (int)MenuItemAttributes.IndentAstr)
+                else if ((usedattributes & (int)MenuItemAttributes.IndentMask) == (int)MenuItemAttributes.IndentAstr)
                     cstr = "*";
-                else if ((usedattributes & (int)MenuItemAttributes.IndentSpace) == (int)MenuItemAttributes.IndentSpace)
+                else if ((usedattributes & (int)MenuItemAttributes.IndentMask) == (int)MenuItemAttributes.IndentSpace)
                     cstr = " ";
-                else if ((usedattributes & (int)MenuItemAttributes.IndentBracket) == (int)MenuItemAttributes.IndentBracket)
+                else if ((usedattributes & (int)MenuItemAttributes.IndentMask) == (int)MenuItemAttributes.IndentBracket)
                     cstr = "]";
 
                 int idx = str.IndexOf(cstr);

@@ -2779,7 +2779,7 @@ int attr, color;
     if (attr & ATR_ORDERED_LIST)
     {
         const char* dp = 0;
-        if (attr & ATR_INDENT_AT_DASH)
+        if ((attr & ATR_INDENT_MASK) == ATR_INDENT_AT_DASH)
             dp = strchr(p, '-');
 
         if (dp && dp > p)
@@ -2812,7 +2812,7 @@ int attr, color;
 
         if (attr & (ATR_TABLE_ROW | ATR_TABLE_HEADER))
         {
-            if ((attr & ATR_INDENT_AT_COLON) ? (*p == ':') : (p < endp - 1 && *p == ' ' && *(p + 1) == ' '))
+            if ((attr & ATR_INDENT_MASK) == ATR_INDENT_AT_COLON ? (*p == ':') : (p < endp - 1 && *p == ' ' && *(p + 1) == ' '))
             {
                 if (td_added)
                     td_changed = TRUE;
@@ -2832,7 +2832,7 @@ int attr, color;
 
         if (attr & (ATR_TABLE_ROW | ATR_TABLE_HEADER))
         {
-            if (((attr & ATR_INDENT_AT_COLON) ? (*p == ':') : (p < endp - 1 && *p == ' ' && *(p + 1) == ' ')) || i == 0)
+            if (((attr & ATR_INDENT_MASK) == ATR_INDENT_AT_COLON ? (*p == ':') : (p < endp - 1 && *p == ' ' && *(p + 1) == ' ')) || i == 0)
             {
                 if (td_added)
                     fprintf(fp, "%s", (attr & ATR_TABLE_HEADER) ? TH_E : TD_E);

@@ -129,6 +129,7 @@ typedef struct mi {
 #define ATR_INDENT_AT_PERIOD (ATR_INDENT_AT_DASH | ATR_INDENT_AT_COLON) /* With automatic wrap, indents at the first space (.) + spaces after it */
 #define ATR_INDENT_AT_DOUBLE_SPACE (ATR_INDENT_AT_DASH | ATR_INDENT_AT_SPACE) /* With automatic wrap, indents at the first double space (  ) + spaces after it */
 #define ATR_INDENT_AT_BRACKET_OR_DOUBLE_SPACE (ATR_INDENT_AT_BRACKET | ATR_INDENT_AT_DASH | ATR_INDENT_AT_SPACE) /* With automatic wrap, indents at the first double space (  ) + spaces after it */
+#define ATR_INDENT_MASK         (ATR_INDENT_AT_DASH | ATR_INDENT_AT_COLON | ATR_INDENT_AT_ASTR | ATR_INDENT_AT_SPACE | ATR_INDENT_AT_BRACKET)
 #define ATR_ALIGN_CENTER        0x00010000
 #define ATR_ALIGN_RIGHT         0x00020000
 #define ATR_INACTIVE            0x00040000

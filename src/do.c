@@ -8859,7 +8859,7 @@ const char* str;
     if (removetrailingcolon && slen > 0 && buf[slen - 1] == ':')
         buf[slen - 1] = 0;
 
-    if ((attr & (ATR_INDENT_AT_COLON)) != 0)
+    if ((attr & ATR_INDENT_MASK) != ATR_INDENT_AT_COLON)
     {
         char* p = strchr(buf, ':');
         if (p)
@@ -8874,7 +8874,7 @@ const char* str;
             Strcat(buf, buf2);
         }
     }
-    else if ((attr & (ATR_INDENT_AT_DASH)) != 0)
+    else if ((attr & ATR_INDENT_MASK) == ATR_INDENT_AT_DASH)
     {
         char* p = strchr(buf, '-');
         if (p)
@@ -9469,7 +9469,7 @@ write_items()
     }
 
     short i_idx;
-    for (i = 0; i < NUM_MONSTERS - LOW_PM; i++)
+    for (i = 0; i < cnt_objs; i++)
     {
         i_idx = item_indices[i];
 
