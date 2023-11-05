@@ -202,16 +202,18 @@ struct monst {
     /* 10 free bits to 32-bit integer */
 
     unsigned long mon_flags; /* General easy-to-add flags for monsters for things not covered by the above bitfields */
-#define MON_FLAGS_NONE              0x00000000UL
-#define MON_FLAGS_RWRAITH           0x00000001UL
-#define MON_FLAGS_CHAINED           0x00000002UL
-#define MON_FLAGS_CLONED_WIZ        0x00000004UL
-#define MON_FLAGS_SUMMONED_AT_ALTAR 0x00000008UL
-#define MON_FLAGS_SPLEVEL_RESIDENT  0x00000010UL
-#define MON_FLAGS_YOUR_CHILD        0x00000020UL
-#define MON_FLAGS_SPOTTED_IN_RUN    0x00000040UL /* Spotted for purposes of determining whether to stop travel, run and similar commands */
-#define MON_FLAGS_LEVEL_BOSS        0x00000080UL
-#define MON_FLAGS_BOSS_HOSTILITY    0x00000100UL
+#define MON_FLAGS_NONE                  0x00000000UL
+#define MON_FLAGS_RWRAITH               0x00000001UL
+#define MON_FLAGS_CHAINED               0x00000002UL
+#define MON_FLAGS_CLONED_WIZ            0x00000004UL
+#define MON_FLAGS_SUMMONED_AT_ALTAR     0x00000008UL
+#define MON_FLAGS_SPLEVEL_RESIDENT      0x00000010UL
+#define MON_FLAGS_YOUR_CHILD            0x00000020UL
+#define MON_FLAGS_SPOTTED_IN_RUN        0x00000040UL /* Spotted for purposes of determining whether to stop travel, run and similar commands */
+#define MON_FLAGS_LEVEL_BOSS            0x00000080UL
+#define MON_FLAGS_BOSS_HOSTILITY        0x00000100UL
+#define MON_FLAGS_SPOTTED_IN_RUN_FAR    0x00000200UL /* Spotted but too far for purposes of determining whether to stop travel, run and similar commands (reserved for future use) */
+#define MON_FLAGS_SPOTTED_IN_RUN_UNSEEN 0x00000400UL /* Spotted but unseen (e.g. telepathy) for purposes of determining whether to stop travel, run and similar commands (reserved for future use) */
 
     unsigned long mstrategy; /* for monsters with mflag3: current strategy */
 

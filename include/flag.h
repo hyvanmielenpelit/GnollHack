@@ -465,6 +465,7 @@ struct instance_flags {
     boolean takeoff_uses_all;/* takeoff command is implemented using takeoffall command with a single item */
     boolean autoswap_launchers; /* will attempt to swap launchers on for ranged attack and off for melee attack */
     boolean show_comparison_stats; /* shows comparison stats of objects when picking them up */
+    int run_spot_distance;
 
     /* Is the system in demo version */
     boolean demo_version;  /* OBSOLETE */

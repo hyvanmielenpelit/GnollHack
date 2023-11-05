@@ -1882,19 +1882,22 @@ domove_core()
             return;
         }
 
-        if (context.run)
+        if (context.run && iflags.run_spot_distance != 0)
         {
             /* Check if new monsters have come to vision */
             struct monst* mtmp2;
             for (mtmp2 = fmon; mtmp2; mtmp2 = mtmp2->nmon)
             {
-                if (!DEADMONSTER(mtmp2) && !(mtmp2->mon_flags & MON_FLAGS_SPOTTED_IN_RUN) 
-                    && canspotmon(mtmp2) && !is_peaceful(mtmp2)
-                    && M_AP_TYPE(mtmp2) != M_AP_FURNITURE && M_AP_TYPE(mtmp2) != M_AP_OBJECT 
-                    && isok(mtmp2->mx, mtmp2->my) && couldsee(mtmp2->mx, mtmp2->my) 
+                if (!DEADMONSTER(mtmp2) && mtmp2 != u.usteed && !(mtmp2->mon_flags & MON_FLAGS_SPOTTED_IN_RUN) /* Not any of the following: dead, your steed or a previously spotted monster */
+                    && !is_peaceful(mtmp2) /* Hostile */
+                    && canspotmon(mtmp2)  /* Double-check can still in fact spot */
+                    && M_AP_TYPE(mtmp2) != M_AP_FURNITURE && M_AP_TYPE(mtmp2) != M_AP_OBJECT /* Not a mimic */
+                    && isok(mtmp2->mx, mtmp2->my) && couldsee(mtmp2->mx, mtmp2->my) /* Double-check not unseen location */
                     )
                 {
-                    You("spot %s.  You stop %s.", a_monnam(mtmp2), context.travel ? "travelling" : "running");
+                    You("spot %s%s.  You stop %s.", a_monnam(mtmp2), 
+                        iflags.run_spot_distance < 0 ? "" : distu(mtmp2->mx, mtmp2->my) <= RUN_SPOT_NEARBY_DISTANCE * RUN_SPOT_NEARBY_DISTANCE ? " nearby" : " at a distance", 
+                        context.travel ? "travelling" : "running");
                     nomul(0);
                     context.move = 0;
                     return;
@@ -4095,7 +4098,7 @@ clear_run_and_travel(VOID_ARGS)
     {
         struct monst* mtmp;
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
-            mtmp->mon_flags &= ~MON_FLAGS_SPOTTED_IN_RUN;
+            mtmp->mon_flags &= ~(MON_FLAGS_SPOTTED_IN_RUN | MON_FLAGS_SPOTTED_IN_RUN_FAR | MON_FLAGS_SPOTTED_IN_RUN_UNSEEN);
     }
     context.travel = context.travel1 = context.travel_mode = context.mv = context.run = 0;
 }
@@ -4106,10 +4109,17 @@ mark_spotted_monsters_in_run(VOID_ARGS)
     struct monst* mtmp;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
     {
-        if (!DEADMONSTER(mtmp) && canspotmon(mtmp) && isok(mtmp->mx, mtmp->my) && couldsee(mtmp->mx, mtmp->my))
-            mtmp->mon_flags |= MON_FLAGS_SPOTTED_IN_RUN;
+        if (!DEADMONSTER(mtmp) && mtmp != u.usteed && canspotmon(mtmp) && isok(mtmp->mx, mtmp->my))
+        {
+            if(!couldsee(mtmp->mx, mtmp->my))
+                mtmp->mon_flags |= MON_FLAGS_SPOTTED_IN_RUN_UNSEEN;
+            else if (iflags.run_spot_distance < 0 || distu(mtmp->mx, mtmp->my) <= iflags.run_spot_distance * iflags.run_spot_distance)
+                mtmp->mon_flags |= MON_FLAGS_SPOTTED_IN_RUN;
+            else
+                mtmp->mon_flags |= MON_FLAGS_SPOTTED_IN_RUN_FAR;
+        }
         else
-            mtmp->mon_flags &= ~MON_FLAGS_SPOTTED_IN_RUN;
+            mtmp->mon_flags &= ~(MON_FLAGS_SPOTTED_IN_RUN | MON_FLAGS_SPOTTED_IN_RUN_FAR | MON_FLAGS_SPOTTED_IN_RUN_UNSEEN);
     }
 }
 

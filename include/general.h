@@ -596,6 +596,8 @@ enum context_menu_styles {
 #define DEFAULT_MAX_HINT_DIFFICULTY -1
 
 #define NO_SECRET_DOORS_DUNGEON_LEVEL_THRESHOLD 2
+#define DEFAULT_RUN_SPOT_DISTANCE 10
+#define RUN_SPOT_NEARBY_DISTANCE 7
 
 /* Moved from spell.c */
 /* spell retention period, in turns; at 10% of this value, player becomes
