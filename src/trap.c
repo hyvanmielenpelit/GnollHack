@@ -5643,7 +5643,7 @@ struct trap *ttmp;
     newsym(u.ux + u.dx, u.uy + u.dy);
 
     /* gain skill for untrap */
-    if(madebyu)
+    if(!madebyu)
         use_skill(P_DISARM_TRAP, trap_type_definitions[ttyp].training);
 
     return 1;
@@ -5710,7 +5710,7 @@ struct trap* ttmp;
     //default:
     //    break;
     //}
-    if (madebyu)
+    if (!madebyu)
         use_skill(P_DISARM_TRAP, trap_type_definitions[ttyp].training);
 
     int skill_level = P_SKILL_LEVEL(P_DISARM_TRAP);
