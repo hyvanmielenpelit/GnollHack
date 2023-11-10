@@ -8,22 +8,13 @@
 #ifndef YOU_H
 #define YOU_H
 
-#ifndef CONFIG_H
 #include "config.h"
-#endif
-
-#ifndef DUNGEON_H
 #include "dungeon.h"
-#endif
-
 #include "attrib.h"
 #include "monst.h"
-#ifndef PROP_H
 #include "prop.h" /* (needed here for util/makedefs.c) */
-#endif
 #include "skills.h"
 #include "general.h"
-
 #include <time.h>
 
 enum role_types

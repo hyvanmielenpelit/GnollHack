@@ -1972,7 +1972,7 @@ struct materialcomponentlist matlists[] =
     { SPE_MAGIC_ARROW,
     "Any kind of arrow",
     STRANGE_OBJECT,
-    10,
+    20,
         {
             {{ARROW, ELVEN_ARROW, ORCISH_ARROW, YA, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, NO_MATCOMP_MONSTER_ALTERNATIVES, "any type of arrow", 1, MATCOMP_NO_FLAGS},
             NO_MATCOMP,
@@ -1994,7 +1994,7 @@ struct materialcomponentlist matlists[] =
     { SPE_MAGIC_MISSILE,
     "Dart",
     STRANGE_OBJECT,
-    7,
+    15,
         {
             {
                 {DART, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT}, 
@@ -2021,7 +2021,7 @@ struct materialcomponentlist matlists[] =
     { SPE_FORCE_BOLT,
     "Any kind of crossbow bolt or quarrel",
     STRANGE_OBJECT,
-    7,
+    15,
         {
             {
                 {CROSSBOW_BOLT, GNOLLISH_QUARREL, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},
