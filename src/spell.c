@@ -4860,7 +4860,7 @@ boolean limited;
 int spell_skill_base_success_bonus(skill_level)
 int skill_level;
 {
-    return 80 * max(0, skill_level - 1);
+    return 100 * max(0, skill_level - 1);
 }
 
 double spell_skill_ulevel_success_bonus_per_level(skill_level)

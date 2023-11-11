@@ -1936,7 +1936,10 @@ int skill, lvl;
     case P_TWO_HANDED_WEAPON:
     case P_WAND:
     default:
-        return max(1, tmp);
+        if(is_magic_skill(skill))
+            return max(1, (tmp + 1) / 2);
+        else
+            return max(1, tmp);
     }
 
     return max(1, tmp);

@@ -22,7 +22,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         8, 0,
         5, 1000, 7500,
         TRUE, CMAP_SOKOBAN,
-        NPC_SERVICE_ENCHANT_ACCESSORY | NPC_SERVICE_RECHARGING | NPC_SERVICE_BLESSED_RECHARGING | NPC_SERVICE_IDENTIFY_ACCESSORIES_AND_CHARGED_ITEMS | NPC_SERVICE_BUY_SPELLBOOKS | NPC_SERVICE_TEACH_SPELL_CONE_OF_COLD | NPC_SERVICE_TEACH_SPELL_LIGHTNING_BOLT | NPC_SERVICE_TEACH_SPELL_FORCE_BOLT | NPC_SERVICE_TEACH_SPECIAL_SPELLS | NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS,
+        NPC_SERVICE_ENCHANT_ACCESSORY | NPC_SERVICE_RECHARGING | NPC_SERVICE_BLESSED_RECHARGING | NPC_SERVICE_IDENTIFY_ACCESSORIES_AND_CHARGED_ITEMS | NPC_SERVICE_BUY_SPELLBOOKS | NPC_SERVICE_TEACH_SPELL_CONE_OF_COLD | NPC_SERVICE_TEACH_SPELL_LIGHTNING_BOLT | NPC_SERVICE_TEACH_SPELL_FORCE_BOLT | NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS,
         NPC_FLAGS_HAS_TRUE_RUMORS | NPC_FLAGS_PARQUET_FLOOR | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_HAS_STANDARD_DISTANT_SOUNDS | NPC_FLAGS_MAY_HAVE_PAINTINGS | NPC_FLAGS_ALWAYS_HAS_PAINTING
     },
     {
@@ -112,7 +112,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         0, 0,
         1, 100, 5,
         TRUE, CMAP_GNOMISH_MINES,
-        NPC_SERVICE_GIVE_ORCISH_QUESTS | NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS,
+        NPC_SERVICE_GIVE_ORCISH_QUESTS | NPC_SERVICE_TEACH_SPELL_CONE_OF_COLD | NPC_SERVICE_TEACH_SPELL_LIGHTNING_BOLT | NPC_SERVICE_TEACH_SPELL_FORCE_BOLT | NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS,
         NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL | NPC_FLAGS_HAS_STANDARD_DISTANT_SOUNDS
     },
     {
@@ -127,7 +127,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         0, 0,
         5, 50, 500,
         TRUE, CMAP_GNOMISH_MINES,
-        NPC_SERVICE_GIVE_QUANTUM_QUESTS | NPC_SERVICE_SPECIAL_NPC_HINTS,
+        NPC_SERVICE_GIVE_QUANTUM_QUESTS | NPC_SERVICE_SPECIAL_NPC_HINTS | NPC_SERVICE_TEACH_SPELL_FORCE_BOLT | NPC_SERVICE_TEACH_SPECIAL_SPELLS,
         NPC_FLAGS_NO_GENERATION | NPC_FLAGS_MALE | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_HAS_TRUE_RUMORS | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_TITLE_ARTICLE | NPC_FLAGS_MAJORITY_NORMAL_HELLO | NPC_FLAGS_HAS_STANDARD_DISTANT_SOUNDS | NPC_FLAGS_MAY_HAVE_PAINTINGS
     },
     {
@@ -554,23 +554,15 @@ int mtype;
                 mongets(npc, WAN_TELEPORTATION);
             }
             mongets(npc, CUBIC_GATE);
-            if (!rn2(2))
-                mongets(npc, SPE_TELEPORT_MONSTER);
-            if (!rn2(2))
-                mongets(npc, SPE_TELEPORT_SELF);
-            if (!rn2(3))
-                mongets(npc, SPE_CIRCLE_OF_TELEPORTATION);
-            if (!rn2(4))
-                mongets(npc, SPE_LEVEL_TELEPORT);
-            if (!rn2(5))
+            if (!rn2(10))
                 mongets(npc, SPE_PORTAL);
-            if (!rn2(7))
+            if (!rn2(15))
                 mongets(npc, SPE_DISINTEGRATE);
-            if (!rn2(9))
+            if (!rn2(20))
                 mongets(npc, SPE_SPHERE_OF_ANNIHILATION);
-            if (!rn2(11))
+            if (!rn2(25))
                 mongets(npc, SPE_TIME_STOP);
-            if (!rn2(13))
+            if (!rn2(30))
                 mongets(npc, SPE_BLACK_BLADE_OF_DISASTER);
 
             struct obj* otmp;
@@ -774,10 +766,76 @@ int mtype;
             break;
         }
 
+
+        int cnt = 0;
+        if (npc_subtype_definitions[npctype].service_flags & NPC_SERVICE_TEACH_SPECIAL_SPELLS)
+        {
+            switch (npctype)
+            {
+            case NPC_QUANTUM_MECHANIC:
+                if (rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_HASTE_SELF;
+                    cnt++;
+                }
+                if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_HASTE_MONSTER;
+                    cnt++;
+                }
+                if (!rn2(4) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_TIME_STOP;
+                    cnt++;
+                }
+                if (!rn2(5) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_SPHERE_OF_ANNIHILATION;
+                    cnt++;
+                }
+                if (!rn2(20) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_BLACK_BLADE_OF_DISASTER;
+                    cnt++;
+                }
+                if (rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_TELEPORT_SELF;
+                    cnt++;
+                }
+                if (rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_TELEPORT_MONSTER;
+                    cnt++;
+                }
+                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_CONTROLLED_TELEPORT;
+                    cnt++;
+                }
+                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_CIRCLE_OF_TELEPORTATION;
+                    cnt++;
+                }
+                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_LEVEL_TELEPORT;
+                    cnt++;
+                }
+                if (!rn2(5) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_CONTROLLED_LEVEL_TELEPORT;
+                    cnt++;
+                }
+                break;
+            default:
+                break;
+            }
+        }
+
         if (npc_subtype_definitions[npctype].service_flags & NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS)
         {
-            int cnt = 0;
-
             if (level_difficulty() < 15)
             {
                 ENPC(npc)->special_teach_spells[cnt] = SPE_MAGIC_ARROW;

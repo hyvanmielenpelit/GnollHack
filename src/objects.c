@@ -3515,12 +3515,12 @@ SCROLL("blank paper", "unlabeled", None, 0,  25,  60, 0, 0, 0, 0, 0, 0, 0, S1_NO
      * out in the process, allowing more than 52 spells be known but keeping
      * only 52 be castable at any given time.]
      */
-#define SPELL(name,desc,effectdesc,contentdesc,itemdesc,skill,prob,learndelay,cooldown,\
-            level,manacost,attr,range,radius,skillchance,savingthrowadj,mgc,dir,dirsubtype,extraspelldata,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,\
-            sflags,sflags2,mflags,adtype,color,soundset,flags,flags2,flags3,flags4,flags5,flags6)  \
-        OBJECT(OBJ(name, desc, effectdesc, contentdesc, itemdesc, 0, OD_NONE, 0, 0, 0),                       \
-            BITS(0, 0, 0, 0, mgc, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, dir, 0, skill, MATINIT_BASE_MATERIAL, MAT_PAPER),       \
-            NO_POWER, NO_POWER, NO_POWER, P1_NONE, SPBOOK_CLASS, prob, MULTIGEN_SINGLE, learndelay, 50, (level + 2) * 50 + (level + 1) * (level + 1) * 5,           \
+#define SPELL(name,desc,effectdesc,contentdesc,itemdesc,skill,prob,learndelay,cooldown, \
+            level,manacost,attr,range,radius,skillchance,savingthrowadj,mgc,dir,dirsubtype,extraspelldata,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, \
+            sflags,sflags2,mflags,adtype,color,soundset,flags,flags2,flags3,flags4,flags5,flags6) \
+        OBJECT(OBJ(name, desc, effectdesc, contentdesc, itemdesc, 0, OD_NONE, 0, 0, 0), \
+            BITS(0, 0, 0, 0, mgc, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, dir, 0, skill, MATINIT_BASE_MATERIAL, MAT_PAPER), \
+            NO_POWER, NO_POWER, NO_POWER, P1_NONE, SPBOOK_CLASS, prob, MULTIGEN_SINGLE, learndelay, 50, (level + 2) * 10 + (level + 1) * (level + 1) * 2 + 10, \
             adtype, sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, 0, 0, 0, 0, sflags, sflags2, 0, \
             0, savingthrowadj, 0, 0, cooldown, level, manacost, attr, range, radius, skillchance, extraspelldata, \
             20, color, soundset, \

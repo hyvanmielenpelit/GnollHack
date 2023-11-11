@@ -103,7 +103,7 @@ enum skill_levels {
     MAX_SKILL_LEVELS
 };
 
-#define is_magic_skill(skill) ((skill) >= P_ARCANE_SPELL && (skill) <= P_NECROMANCY_SPELL)
+#define is_magic_skill(skill) ((skill) >= P_FIRST_SPELL && (skill) <= P_LAST_SPELL)
 #define practice_needed_to_advance_for_normal_skill(level) ((level) * (level) * 20)
 #define RIDING_TURNS_TO_EXERCISE_SKILL 50
 #define MARTIAL_PROWESS_SKILL_LEVEL_BONUS 2

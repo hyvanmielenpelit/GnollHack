@@ -8764,7 +8764,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
 
-    int spell_otyps[MAX_SPECIAL_TEACH_SPELLS + 3 + 1] = { 0 };
+    int spell_otyps[MAX_SPECIAL_TEACH_SPELLS + 8 + 1] = { 0 };
     int teach_num = 0;
     if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_SPELL_LIGHTNING_BOLT)
     {
@@ -8780,6 +8780,23 @@ struct monst* mtmp;
     {
         spell_otyps[teach_num] = SPE_FORCE_BOLT;
         teach_num++;
+    }
+    /* Spells that are always present are here; random ones are in ENPC(mtmp)->special_teach_spells */
+    if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_SPECIAL_SPELLS)
+    {
+        switch (ENPC(mtmp)->npc_typ)
+        {
+        case NPC_QUANTUM_MECHANIC:
+            spell_otyps[teach_num] = SPE_MAGICAL_IMPLOSION;
+            teach_num++;
+            spell_otyps[teach_num] = SPE_DISINTEGRATE;
+            teach_num++;
+            spell_otyps[teach_num] = SPE_SLOW_MONSTER;
+            teach_num++;
+            break;
+        default:
+            break;
+        }
     }
     if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & (NPC_SERVICE_TEACH_SPECIAL_SPELLS | NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS))
     {
