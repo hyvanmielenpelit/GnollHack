@@ -303,9 +303,9 @@ STATIC_VAR const struct trobj PriestSmallShield[] = { { SMALL_SHIELD, 1, ARMOR_C
                                 { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
 STATIC_VAR const struct trobj PriestSpikedSilverShield[] = { { SPIKED_SHIELD, 0, ARMOR_CLASS, 1, 0, 1, 0, 0, MAT_SILVER },
                                 { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
-STATIC_VAR const struct trobj ValkyrieSpikedShield[] = { { SPIKED_SHIELD, 3, ARMOR_CLASS, 1, 0, 0, 0, 0, MAT_NONE },
+STATIC_VAR const struct trobj ValkyrieSpikedShield[] = { { SPIKED_SHIELD, 0, ARMOR_CLASS, 1, 0, 0, 0, 0, MAT_NONE },
                                 { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
-STATIC_VAR const struct trobj ValkyrieSpikedSilverShield[] = { { SPIKED_SHIELD, 3, ARMOR_CLASS, 1, 0, 0, 0, 0, MAT_SILVER },
+STATIC_VAR const struct trobj ValkyrieSpikedSilverShield[] = { { SPIKED_SHIELD, 0, ARMOR_CLASS, 1, 0, 0, 0, 0, MAT_SILVER },
                                 { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
 STATIC_VAR const struct trobj KnightLeatherGloves[] = { { LEATHER_GLOVES, 0, ARMOR_CLASS, 1, 0, 0, 0, 0, MAT_NONE },
                                 { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
@@ -1155,7 +1155,6 @@ u_init()
             ini_inv(ValkyrieSpikedSilverShield);
         else
             ini_inv(ValkyrieSpikedShield);
-
 
         if (!rn2(6))
             ini_inv(Lamp);
