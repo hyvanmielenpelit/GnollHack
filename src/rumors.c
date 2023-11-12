@@ -639,7 +639,7 @@ struct monst *oracl;
         play_monster_special_dialogue_line(oracl, ORACLE_LINE_THEN_DOST_THOU_DESIRE_A_MAJOR_ONE);
         Sprintf(qbuf, "\"Then dost thou desire a major one?\" (%ld %s)",
             major_cost, currency(major_cost));
-        if (yn_query(qbuf) != 'y')
+        if (ynq_mon(oracl, qbuf) != 'y')
             return 0;
         u_pay = (umoney < major_cost) ? umoney : major_cost;
         oracleaction = 2;

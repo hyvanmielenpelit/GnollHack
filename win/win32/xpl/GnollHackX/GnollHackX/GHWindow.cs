@@ -621,6 +621,7 @@ namespace GnollHackX
             {
                 switch (_winStyle)
                 {
+                    case ghwindow_styles.GHWINDOW_STYLE_PAGER_SPEAKER:
                     case ghwindow_styles.GHWINDOW_STYLE_OUTRIP:
                         return true;
                     default:

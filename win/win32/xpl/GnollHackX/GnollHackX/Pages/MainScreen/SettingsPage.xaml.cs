@@ -361,6 +361,7 @@ namespace GnollHackX.Pages.MainScreen
 
             if (SaveStylePicker.SelectedIndex > -1)
             {
+                GHApp.AppSwitchSaveStyle = SaveStylePicker.SelectedIndex;
                 Preferences.Set("AppSwitchSaveStyle", SaveStylePicker.SelectedIndex);
             }
 
