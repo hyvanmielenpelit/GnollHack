@@ -1761,7 +1761,7 @@ weapon_here:
         if (obj->oeaten)
             Strcat(prefix, "partly eaten ");
         
-        if (is_obj_rotting_corpse(obj) && (obj->speflags & SPEFLAGS_ROTTING_STATUS_KNOWN) != 0)
+        if (is_obj_rotting_corpse(obj) && obj->rotknown)
         {
             long rotted = get_rotted_status(obj);
             if (obj->orotten || rotted > 3L)
@@ -2223,7 +2223,7 @@ struct obj *otmp;
         return TRUE;
     if ((otmp->mythic_prefix || otmp->mythic_suffix) && !otmp->mknown)
         return TRUE;
-    if (is_obj_rotting_corpse(otmp) && (otmp->speflags & SPEFLAGS_ROTTING_STATUS_KNOWN) == 0)
+    if (is_obj_rotting_corpse(otmp) && otmp->rotknown)
         return TRUE;
     /* otmp->rknown is the only item of interest if we reach here */
     /*

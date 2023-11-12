@@ -145,7 +145,7 @@ boolean verbose_and_update_stats;
                 if (obj) 
                 {
                     obj->owornmask |= wp->w_mask;
-
+                    obj->speflags &= ~SPEFLAGS_PREVIOUSLY_WIELDED;
 
                     /* Prevent getting/blocking intrinsics from wielding
                      * potions, through the quiver, etc.

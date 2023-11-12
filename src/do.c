@@ -739,7 +739,7 @@ register struct obj* obj;
     if(obj->corpsenm > NON_PM)
         learn_corpse_type(obj->corpsenm);
 
-    obj->speflags |= SPEFLAGS_ROTTING_STATUS_KNOWN;
+    obj->rotknown = 1;
     return itemdescription(obj);
 }
 
@@ -1079,7 +1079,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             if (obj)
             {
                 int mnum = obj->corpsenm;
-                if (is_obj_rotting_corpse(obj) && mnum > NON_PM && (obj->speflags & SPEFLAGS_ROTTING_STATUS_KNOWN) != 0)
+                if (is_obj_rotting_corpse(obj) && mnum > NON_PM && obj->rotknown)
                 {
                     long rotted = get_rotted_status(obj);
                     if (rotted > 5L)

@@ -3240,7 +3240,7 @@ struct obj *otmp;
         if (cadaver && mnum >= LOW_PM && !nonrotting_corpse(mnum))
         {
             rotted = get_rotted_status(otmp);
-            otmp->speflags |= SPEFLAGS_ROTTING_STATUS_KNOWN;
+            otmp->rotknown = 1;
             //long age = peek_at_iced_corpse_age(otmp);
 
             ///* worst case rather than random

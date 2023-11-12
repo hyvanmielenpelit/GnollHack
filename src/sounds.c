@@ -4784,7 +4784,8 @@ struct monst* mtmp;
         {
             isspeaking = FALSE;
             pline("(%s hands a note over to you.)  It reads:", noittame_Monnam(mtmp));
-            u.uconduct.literate++;
+            if (!u.uconduct.literate++)
+                livelog_printf(LL_CONDUCT, "became literate by reading a note handed over by %s.", noittame_mon_nam(mtmp));
         }
         if (is_death && isspeaking)
         {

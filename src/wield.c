@@ -401,6 +401,34 @@ dowield()
     return wield_weapon(wep);
 }
 
+int
+dowieldprevwep()
+{
+    multi = 0;
+    if (cantwield(youmonst.data))
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Don't be ridiculous!");
+        return 0;
+    }
+
+    struct obj* wep = 0;
+    struct obj* otmp;
+    for (otmp = invent; otmp; otmp = otmp->nobj)
+    {
+        if (otmp->speflags & SPEFLAGS_PREVIOUSLY_WIELDED)
+        {
+            wep = otmp;
+            break;
+        }
+    }
+
+    if (wep)
+        return wield_weapon(wep);
+    else
+        return 0;
+}
+
 STATIC_OVL
 int
 wield_weapon(wep)
@@ -1566,8 +1594,21 @@ const char *verb; /* "rub",&c */
             setuwep(obj, wepslot);
         }
 
-        if (flags.pushweapon && oldwep && wep != oldwep)
-            setuswapwep(oldwep, swapwepslot);
+        /* refresh wep */
+        wep = selected_hand_is_right ? uwep : uarms;
+        if (oldwep && wep != oldwep)
+        {
+            if (flags.pushweapon)
+                setuswapwep(oldwep, swapwepslot);
+            else
+            {
+                struct obj* otmp;
+                for(otmp = invent; otmp; otmp = otmp->nobj)
+                    otmp->speflags &= ~SPEFLAGS_PREVIOUSLY_WIELDED;
+
+                oldwep->speflags |= SPEFLAGS_PREVIOUSLY_WIELDED;
+            }
+        }
     }
 
 

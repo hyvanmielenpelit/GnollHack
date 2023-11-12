@@ -543,7 +543,7 @@ struct obj* otmp;
     {
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s, an inscription appears on %s in fiery letters:", revealed ? "Again" : "Suddenly", yname(otmp));
         verbalize_ex(ATR_NONE, CLR_ORANGE, "Ash na... dur...");
-        if (otmp->speflags & SPEFLAGS_INSCRIPTION_REVEALED)
+        if (revealed)
         {
             You("still couldn't make much sense of it.");
         }
@@ -561,9 +561,10 @@ struct obj* otmp;
             {
                 You("quite couldn't make sense of what it said.");
             }
+            otmp->speflags |= SPEFLAGS_INSCRIPTION_REVEALED;
         }
-        otmp->speflags |= SPEFLAGS_INSCRIPTION_REVEALED;
-        u.uconduct.literate++;
+        if (!u.uconduct.literate++)
+            livelog_printf(LL_CONDUCT, "became literate by reading an inscription on %s.", acxname(otmp));
     }
 }
 

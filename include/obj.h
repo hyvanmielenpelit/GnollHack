@@ -86,7 +86,7 @@ struct obj {
 #define SPEFLAGS_CLONED_ITEM                   0x00400000UL
 #define SPEFLAGS_INSCRIPTION_REVEALED          0x00800000UL
 #define SPEFLAGS_ALTERNATIVE_APPEARANCE        0x01000000UL /* Alternative glyph is used for the object */
-#define SPEFLAGS_ROTTING_STATUS_KNOWN          0x02000000UL
+#define SPEFLAGS_PREVIOUSLY_WIELDED               0x02000000UL
 #define SPEFLAGS_FAVORITE                      0x04000000UL
 #define SPEFLAGS_EMPTY_NOTICED                 0x08000000UL
 #define SPEFLAGS_BEING_BROKEN                  0x10000000UL
@@ -158,9 +158,8 @@ struct obj {
     Bitfield(tknown, 1); /* trapped status of a container is known */
     Bitfield(nknown, 1); /* artifact's true name is known */
     Bitfield(aknown, 1); /* artifact status is known; if set, the artifact will be termed "the Artifact" instead of "item named Artifact" */
-
     Bitfield(mknown, 1); /* mythic quality is known */
-    /* 1 free bit to 32-bit integer */
+    Bitfield(rotknown, 1); /* rotting status is known */
 
     int corpsenm;         /* type of corpse is mons[corpsenm] */
 #define leashmon corpsenm /* gets m_id of attached pet */

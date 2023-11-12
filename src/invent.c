@@ -1648,8 +1648,7 @@ struct obj *obj;
         picked_container(obj); /* clear no_charge */
     obj_was_thrown = obj->was_thrown;
     obj->was_thrown = 0;       /* not meaningful for invent */
-    obj->speflags &= ~SPEFLAGS_GRABBED_FROM_YOU; /* You got it back! */
-    obj->speflags &= ~SPEFLAGS_CAUGHT_IN_LEAVES; /* Obviously not caught anymore! */
+    obj->speflags &= ~(SPEFLAGS_GRABBED_FROM_YOU | SPEFLAGS_CAUGHT_IN_LEAVES | SPEFLAGS_PREVIOUSLY_WIELDED); /* You got it back / Not in leaves / Not previously held if was not in inventory */
     obj_clear_found(obj); /* Not relevant in inventory */
     obj->speflags |= SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO; /* Has been owned by the hero */
 
@@ -3834,7 +3833,7 @@ struct obj *otmp;
     if (is_obj_rotting_corpse(otmp) && otmp->corpsenm > NON_PM)
         learn_corpse_type(otmp->corpsenm);
     if (is_obj_rotting_corpse(otmp))
-        otmp->speflags |= SPEFLAGS_ROTTING_STATUS_KNOWN;
+        otmp->rotknown = 1;
 }
 
 /* ggetobj callback routine; identify an object and give immediate feedback */
@@ -6745,7 +6744,7 @@ register struct obj *otmp, *obj;
             return FALSE;
     }
 
-    if (is_obj_rotting_corpse(obj) && (obj->speflags & SPEFLAGS_ROTTING_STATUS_KNOWN) != (otmp->speflags & SPEFLAGS_ROTTING_STATUS_KNOWN)) {
+    if (is_obj_rotting_corpse(obj) && obj->rotknown != otmp->rotknown) {
         return FALSE;
     }
 

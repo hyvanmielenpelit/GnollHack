@@ -148,6 +148,7 @@ boolean restore;
             otmp->aknown = 0;
             otmp->nknown = 0;
             otmp->mknown = 0;
+            otmp->rotknown = 0;
             otmp->invlet = 0;
             otmp->no_charge = 0;
             otmp->was_thrown = 0;

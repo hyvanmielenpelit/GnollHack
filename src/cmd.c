@@ -5857,6 +5857,7 @@ struct ext_func_tab extcmdlist[] = {
             dopray, IFBURIED | AUTOCOMPLETE | INCMDMENU },
     { C('p'), "prevmsg", "view recent game messages",
             doprev_message, IFBURIED | GENERALCMD },
+    { M(16), "prevwep", "wield a previously wielded weapon", dowieldprevwep }, /* For wielding back weapons that were wielded before wielding a pick-axe or a saw */
     { 'P', "puton", "put on an accessory (ring, amulet, etc)", doputon, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_accessories, "put on", "put on" },
     { 'q', "quaff", "quaff (drink) something", dodrink, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_beverages, "drink", "drink" },
     { M('q'), "quit", "exit without saving current game",
@@ -9649,6 +9650,19 @@ enum create_context_menu_types menu_type;
         if (Blind || displ_style == 2)
         {
             add_context_menu(':', cmd_from_func(dolook), CONTEXT_MENU_STYLE_GENERAL, NO_GLYPH, "Look Here", "", 0, NO_COLOR);
+        }
+
+        if (uwep && !cantwield(youmonst.data) && (is_pick(uwep) || is_saw(uwep) || is_lamp(uwep))) // Axes are too often main weapons
+        {
+            struct obj* prevwep;
+            for (prevwep = invent; prevwep; prevwep = prevwep->nobj)
+            {
+                if (prevwep->speflags & SPEFLAGS_PREVIOUSLY_WIELDED)
+                {
+                    add_context_menu(M(16), cmd_from_func(dowieldprevwep), CONTEXT_MENU_STYLE_GENERAL, prevwep->gui_glyph, "Wield Last", "", 0, NO_COLOR);
+                    break;
+                }
+            }
         }
 
         if (context.last_picked_obj_oid > 0 && context.last_picked_obj_show_duration_left > 0)

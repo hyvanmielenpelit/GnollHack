@@ -1005,6 +1005,11 @@ namespace GnollHackX
             get { return (bitfields >> 30) & 0x00000001U; }
             set { bitfields = (bitfields & ~(0x00000001U << 30)) | ((value & 0x00000001U) << 30); }
         }
+        public uint rotknown
+        {
+            get { return (bitfields >> 31) & 0x00000001U; }
+            set { bitfields = (bitfields & ~(0x00000001U << 31)) | ((value & 0x00000001U) << 31); }
+        }
 
         public int corpsenm;         /* type of corpse is mons[corpsenm] */
         public int usecount;           /* overloaded for various things that tally */
@@ -1140,8 +1145,8 @@ namespace GnollHackX
         SPEFLAGS_CLONED_ITEM                   = 0x00400000UL,
         SPEFLAGS_INSCRIPTION_REVEALED          = 0x00800000UL,
         SPEFLAGS_ALTERNATIVE_APPEARANCE        = 0x01000000UL, /* Alternative glyph is used for the object */
-        SPEFLAGS_ROTTING_STATUS_KNOWN          = 0x02000000UL,
-        SPEFLAGS_FAVORITE                     = 0x04000000UL,
+        SPEFLAGS_PREVIOUSLY_WIELDED            = 0x02000000UL,
+        SPEFLAGS_FAVORITE                      = 0x04000000UL,
         SPEFLAGS_EMPTY_NOTICED                 = 0x08000000UL,
         SPEFLAGS_BEING_BROKEN                  = 0x10000000UL,
         SPEFLAGS_GIVEN_OUT_BLUE_SMOKE          = 0x20000000UL,
@@ -1152,36 +1157,36 @@ namespace GnollHackX
     [Flags]
     public enum obj_bitfield_types : uint
     {
-        cursed =        0x00000001,
-        blessed =       0x00000002,
-        unpaid =        0x00000004,
-        no_charge =     0x00000008,
-        known =         0x00000010,
-        dknown =        0x00000020,
-        bknown =        0x00000040,
-        rknown =        0x00000080,
-        oeroded =       0x00000100 | 0x00000200,
-        oeroded2 =      0x00000400 | 0x00000800,
-        oerodeproof =   0x00001000,
-        olocked =       0x00002000,
-        degraded_horn = 0x00004000,
-        otrapped =      0x00008000,  /* Monsters will not pick up this item */
-        lamplit =       0x00010000,
-        makingsound =   0x00020000,
-        globby =        0x00040000,
-        greased =       0x00080000,
-        nomerge =       0x00100000,
-        was_thrown =    0x00200000,
-        has_special_tileset = 0x00400000,
-        in_use =        0x00800000,
-        bypass =        0x01000000,
-        cknown =        0x02000000,
-        lknown =        0x04000000,
-        tknown =        0x08000000,
-        nknown =        0x10000000,
-        aknown =        0x20000000,
-        mknown =        0x40000000
-        /* 1 free bit to 32-bit integer */
+        cursed =        0x00000001U,
+        blessed =       0x00000002U,
+        unpaid =        0x00000004U,
+        no_charge =     0x00000008U,
+        known =         0x00000010U,
+        dknown =        0x00000020U,
+        bknown =        0x00000040U,
+        rknown =        0x00000080U,
+        oeroded =       0x00000100U | 0x00000200U,
+        oeroded2 =      0x00000400U | 0x00000800U,
+        oerodeproof =   0x00001000U,
+        olocked =       0x00002000U,
+        degraded_horn = 0x00004000U,
+        otrapped =      0x00008000U,  /* Monsters will not pick up this item */
+        lamplit =       0x00010000U,
+        makingsound =   0x00020000U,
+        globby =        0x00040000U,
+        greased =       0x00080000U,
+        nomerge =       0x00100000U,
+        was_thrown =    0x00200000U,
+        has_special_tileset = 0x00400000U,
+        in_use =        0x00800000U,
+        bypass =        0x01000000U,
+        cknown =        0x02000000U,
+        lknown =        0x04000000U,
+        tknown =        0x08000000U,
+        nknown =        0x10000000U,
+        aknown =        0x20000000U,
+        mknown =        0x40000000U,
+        rotknown =      0x80000000U
     }
 
     [Flags]

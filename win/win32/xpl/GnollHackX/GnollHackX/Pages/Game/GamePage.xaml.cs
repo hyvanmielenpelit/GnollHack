@@ -1567,6 +1567,7 @@ namespace GnollHackX.Pages.Game
             int DigCmd = GHUtils.Ctrl('g');
             int SitCmd = GHUtils.Ctrl('s');
             int RideCmd = GHUtils.Meta('R');
+            int PrevWepCmd = GHUtils.Meta(16);
             int PickToBagCmd = ';';
             if (cmddefchar == PickToBagCmd && !ShowPut2BagContextCommand)
                 return; /* Do not add */
@@ -1718,6 +1719,8 @@ namespace GnollHackX.Pages.Game
                         icon_string = GHApp.AppResourceName + ".Assets.UI.ride.png";
                     else if (cmddefchar == PickToBagCmd)
                         icon_string = GHApp.AppResourceName + ".Assets.UI.picktobag.png";
+                    else if (cmddefchar == PrevWepCmd)
+                        icon_string = GHApp.AppResourceName + ".Assets.UI.wield.png";
                     else
                         icon_string = GHApp.AppResourceName + ".Assets.UI.missing_icon.png";
                     break;
