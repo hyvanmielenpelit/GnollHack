@@ -12,6 +12,7 @@
 #include "general.h"
 #include "tiledata.h"
 #include "layer.h"
+#include "prop.h"
 
 #define E extern
 
@@ -2894,6 +2895,7 @@ E int FDECL(smith_move, (struct monst*));
 /* ### prop.c ### */
 E void NDECL(props_init);
 E const char* FDECL(get_property_name, (int));
+E struct propname FDECL(get_property_name_ex, (int));
 E const char* FDECL(get_status_name, (struct monst*, int));
 
 /* ### quest.c ### */

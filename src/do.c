@@ -266,8 +266,10 @@ docharacterstatistics()
 
             char dbuf2[BUFSZ];
             char dbuf3[BUFSZ];
-
-            Strcpy(dbuf2, get_property_name(i));
+            struct propname pn = get_property_name_ex(i);
+            boolean haspdesc = pn.prop_desc != 0;
+            Sprintf(dbuf2, "%s%s%s%s", pn.prop_noun, haspdesc ? " (" : "", haspdesc ? pn.prop_desc : "", haspdesc ? ")" : "");
+            //Strcpy(dbuf2, get_property_name(i));
             *dbuf2 = highc(*dbuf2);
             Strcpy(dbuf3, "");
 
@@ -347,7 +349,10 @@ docharacterstatistics()
                     abil_count++;
 
                     char dbuf2[BUFSIZ] = "";
-                    Strcpy(dbuf2, get_property_name(intrinsic_ability[table_index].propid));
+                    struct propname pn = get_property_name_ex(intrinsic_ability[table_index].propid);
+                    boolean haspdesc = pn.prop_desc != 0;
+                    Sprintf(dbuf2, "%s%s%s%s", pn.prop_noun, haspdesc ? " (" : "", haspdesc ? pn.prop_desc : "", haspdesc ? ")" : "");
+                    //Strcpy(dbuf2, get_property_name(intrinsic_ability[table_index].propid));
                     *dbuf2 = highc(*dbuf2);
 
                     Sprintf(buf, " Level %2d - %s", intrinsic_ability[table_index].ulevel, dbuf2);
@@ -2688,7 +2693,10 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     }
                     if (j <= 3)
                     {
-                        Strcpy(buf2, get_property_name(prop));
+                        struct propname pn = get_property_name_ex(prop);
+                        boolean haspdesc = pn.prop_desc != 0;
+                        Sprintf(buf2, "%s%s%s%s", pn.prop_noun, haspdesc ? " (" : "", haspdesc ? pn.prop_desc : "", haspdesc ? ")" : "");
+                        //Strcpy(buf2, get_property_name(prop));
                         *buf2 = highc(*buf2);
                     }
                     else if (j == 4)
@@ -3658,32 +3666,46 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         if (artilist[obj->oartifact].worn_prop > 0)
         {
             char defensetext[BUFSZ];
-            Strcpy(defensetext, get_property_name(artilist[obj->oartifact].worn_prop));
+            char descrtext[BUFSZ];
+            struct propname pn = get_property_name_ex(artilist[obj->oartifact].worn_prop);
+            Strcpy(defensetext, pn.prop_noun);
             *defensetext = highc(*defensetext);
+            if (pn.prop_desc)
+                Sprintf(descrtext, " (%s)", pn.prop_desc);
+            else
+                Strcpy(descrtext, "");
 
             powercnt++;
             if (is_wieldable_weapon(obj))
-                Sprintf(buf, " %2d - %s when wielded", powercnt, defensetext);
+                Sprintf(buf, " %2d - %s when wielded%s", powercnt, defensetext, descrtext);
             else
-                Sprintf(buf, " %2d - %s when worn", powercnt, defensetext);
+                Sprintf(buf, " %2d - %s when worn%s", powercnt, defensetext, descrtext);
             
             putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
         }
         if (artilist[obj->oartifact].carried_prop > 0)
         {
             char defensetext[BUFSZ];
-            Strcpy(defensetext, get_property_name(artilist[obj->oartifact].carried_prop));
+            char descrtext[BUFSZ];
+            struct propname pn = get_property_name_ex(artilist[obj->oartifact].carried_prop);
+            Strcpy(defensetext, pn.prop_noun);
             *defensetext = highc(*defensetext);
+            if (pn.prop_desc)
+                Sprintf(descrtext, " (%s)", pn.prop_desc);
+            else
+                Strcpy(descrtext, "");
 
             powercnt++;
-            Sprintf(buf, " %2d - %s when carried", powercnt, defensetext);
+            Sprintf(buf, " %2d - %s when carried%s", powercnt, defensetext, descrtext);
             putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
         }
         if (artilist[obj->oartifact].inv_prop > 0)
         {
             char invoketext[BUFSZ];
             char repowertext[BUFSZ];
+            char descrtext[BUFSZ];
             Strcpy(repowertext, "");
+            Strcpy(descrtext, "");
 
             if (artilist[obj->oartifact].inv_prop > LAST_PROP)
             {
@@ -3693,12 +3715,17 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             }
             else
             {
-                Strcpy(invoketext, get_property_name(artilist[obj->oartifact].inv_prop));
+                struct propname pn = get_property_name_ex(artilist[obj->oartifact].inv_prop);
+                Strcpy(invoketext, pn.prop_noun);
                 *invoketext = highc(*invoketext);
+                if (pn.prop_desc)
+                    Sprintf(descrtext, " (%s)", pn.prop_desc);
+                else
+                    Strcpy(descrtext, "");
             }
 
             powercnt++;
-            Sprintf(buf, " %2d - %s when invoked", powercnt, invoketext);
+            Sprintf(buf, " %2d - %s when invoked%s", powercnt, invoketext, descrtext);
             putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
 
             if (artilist[obj->oartifact].inv_prop <= LAST_PROP /* switchable property */
@@ -3922,14 +3949,21 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     && bit != SPFX_CHA_25
                     )
                 {
-                    const char* propname = get_property_name(propnum);
-                    if (propname)
+                    struct propname pn = get_property_name_ex(propnum);
+                    if (pn.prop_noun)
                     {
                         char propbuf[BUFSZ];
-                        Strcpy(propbuf, propname);
+                        char descrbuf[BUFSZ];
+                        Strcpy(descrbuf, "");
+                        Strcpy(propbuf, pn.prop_noun);
                         *propbuf = highc(*propbuf);
+                        if (pn.prop_desc)
+                            Sprintf(descrbuf, " (%s)", pn.prop_desc);
+                        else
+                            Strcpy(descrbuf, "");
+
                         powercnt++;
-                        Sprintf(buf, " %2d - %s %s", powercnt, propbuf, endbuf);
+                        Sprintf(buf, " %2d - %s %s%s", powercnt, propbuf, endbuf, descrbuf);
                         
                         putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
                     }

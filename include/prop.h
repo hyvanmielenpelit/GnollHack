@@ -327,6 +327,7 @@ struct propname {
     int prop_num;
     const char* prop_name;
     const char* prop_noun;
+    const char* prop_desc;
 };
 
 extern const struct propname propertynames[];

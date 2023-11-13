@@ -73,7 +73,7 @@ const struct propname propertynames[] = {
     { HALF_PHYSICAL_DAMAGE, "receiving half normal physical damage", "half received physical damage" },
     { REGENERATION, "regenerating", "regeneration" },
     { ENERGY_REGENERATION, "regenerating mana", "mana regeneration" },
-    { MAGICAL_PROTECTION, "magically protected", "magical protection" },
+    { MAGICAL_PROTECTION, "magically protected", "magical protection" ,"-3 AC, +1 MC"},
     { PROT_FROM_SHAPE_CHANGERS, "protected from shape changers", "protection from shape changers" },
     { POLYMORPH_CONTROL, "controlling polymorphing", "polymorph control" },
     { UNCHANGING, "unchanging", "unchange" },
@@ -110,9 +110,9 @@ const struct propname propertynames[] = {
     { BLOCKS_BLINDNESS, "blocking blindness", "blocks blindness"  },
     { BLOCKS_CLAIRVOYANCE, "blocking clairvoyance", "blocks clairvoyance" },
     { HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS, "receiving half physical damage from undead and demons", "half physical damage from undead and demons" },
-    { MAGICAL_SHIELDING, "magically shielded", "magical shielding" },
-    { MAGICAL_BARKSKIN, "magically barkskinned", "magical barkskin" },
-    { MAGICAL_STONESKIN, "magically stoneskinned", "magical stoneskin" },
+    { MAGICAL_SHIELDING, "magically shielded", "magical shielding", "-6 AC, +2 MC" },
+    { MAGICAL_BARKSKIN, "magically barkskinned", "magical barkskin", "-12 AC, +4 MC" },
+    { MAGICAL_STONESKIN, "magically stoneskinned", "magical stoneskin", "-18 AC, +6 MC" },
     { XRAY_VISION, "having X-ray vision", "X-ray vision" },
     { VERY_FAST, "very fast", "very fast speed" },
     { SLOWED, "slowed", "slow speed" },
@@ -436,6 +436,24 @@ int prop_index;
 
     return "";
 }
+
+struct propname
+get_property_name_ex(prop_index)
+int prop_index;
+{
+    int idx;
+    for (idx = 0; propertynames[idx].prop_num; idx++)
+    {
+        if (propertynames[idx].prop_num == prop_index)
+        {
+            return propertynames[idx];
+        }
+    }
+
+    struct propname res = { 0 };
+    return res;
+}
+
 
 const char*
 get_status_name(mtmp, status_index)
