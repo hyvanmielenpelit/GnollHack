@@ -4740,21 +4740,33 @@ int final;
 
     int role_ac_bonus = get_role_AC_bonus();
     int role_mc_bonus = get_role_MC_bonus();
+    char protbuf[BUFSZ];
     if (role_ac_bonus != 0 || role_mc_bonus != 0)
     {
-        char protbuf[BUFSZ];
         Sprintf(protbuf, "innate protection (-%d to AC and +%d to MC)", role_ac_bonus, role_mc_bonus);
         you_have(protbuf, "");
     }
 
     if (Magical_protection)
-        you_have("magical protection (-3 to AC and +1 to MC)", from_what(MAGICAL_PROTECTION));
+    {
+        Sprintf(protbuf, "magical protection (%d to AC and +%d to MC)", -MAGICAL_PROTECTION_AC_BONUS, MAGICAL_PROTECTION_MC_BONUS);
+        you_have(protbuf, from_what(MAGICAL_PROTECTION));
+    }
     if (Magical_shielding)
-        you_have("magical shielding (-6 to AC and +2 to MC)", from_what(MAGICAL_SHIELDING));
+    {
+        Sprintf(protbuf, "magical shielding (%d to AC and +%d to MC)", -MAGICAL_SHIELDING_AC_BONUS, MAGICAL_SHIELDING_MC_BONUS);
+        you_have(protbuf, from_what(MAGICAL_SHIELDING));
+    }
     if (Magical_barkskin)
-        you_have("magical barkskin (-12 to AC and +4 to MC)", from_what(MAGICAL_BARKSKIN));
+    {
+        Sprintf(protbuf, "magical barkskin (%d to AC and +%d to MC)", -MAGICAL_BARKSKIN_AC_BONUS, MAGICAL_BARKSKIN_MC_BONUS);
+        you_have(protbuf, from_what(MAGICAL_BARKSKIN));
+    }
     if (Magical_stoneskin)
-        you_have("magical stoneskin (-18 to AC and +6 to MC)", from_what(MAGICAL_STONESKIN));
+    {
+        Sprintf(protbuf, "magical stoneskin (%d to AC and +%d to MC)", -MAGICAL_STONESKIN_AC_BONUS, MAGICAL_STONESKIN_MC_BONUS);
+        you_have(protbuf, from_what(MAGICAL_STONESKIN));
+    }
     if (Titan_strength)
         you_are("magically as strong as a titan", from_what(TITAN_STRENGTH));
     if (Divine_dexterity)

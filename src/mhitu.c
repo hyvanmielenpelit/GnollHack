@@ -1622,13 +1622,13 @@ struct monst *mon;
     if (is_you)
     {
         if (Magical_stoneskin)
-            mc += 6;
+            mc += MAGICAL_STONESKIN_MC_BONUS;
         else if (Magical_barkskin)
-            mc += 4;
+            mc += MAGICAL_BARKSKIN_MC_BONUS;
         else if (Magical_shielding)
-            mc += 2;
+            mc += MAGICAL_SHIELDING_MC_BONUS;
         else if (Magical_protection)
-            mc += 1;
+            mc += MAGICAL_PROTECTION_MC_BONUS;
 
         /* Divine protection */
         mc += u.ublessed / 3;
@@ -1639,13 +1639,13 @@ struct monst *mon;
     else
     {
         if (mon->mprops[MAGICAL_STONESKIN] != 0)
-            mc += 6;
+            mc += MAGICAL_STONESKIN_MC_BONUS;
         else if (mon->mprops[MAGICAL_BARKSKIN] != 0)
-            mc += 4;
+            mc += MAGICAL_BARKSKIN_MC_BONUS;
         else if (mon->mprops[MAGICAL_SHIELDING] != 0)
-            mc += 2;
+            mc += MAGICAL_SHIELDING_MC_BONUS;
         else if (mon->mprops[MAGICAL_PROTECTION] != 0)
-            mc += 1;
+            mc += MAGICAL_PROTECTION_MC_BONUS;
     }
 
     return mc;

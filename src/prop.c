@@ -9,6 +9,10 @@
 #define PCLR_NONE  {0, 0, 0}
 #define PCLR_WHITE {255, 255, 255}
 
+#define PROP_DESC_STR(A) #A
+#define PROP_DESC_XSTR(A) PROP_DESC_STR(A)
+#define AC_MC_DESC(acbon, mcbon) PROP_DESC_XSTR(-acbon) " AC, +" PROP_DESC_XSTR(mcbon) " MC"
+
 /* Moved from timeout.c */
 const struct propname propertynames[] = {
     { INVULNERABLE, "invulnerable", "invulnerability" },
@@ -73,7 +77,7 @@ const struct propname propertynames[] = {
     { HALF_PHYSICAL_DAMAGE, "receiving half normal physical damage", "half received physical damage" },
     { REGENERATION, "regenerating", "regeneration" },
     { ENERGY_REGENERATION, "regenerating mana", "mana regeneration" },
-    { MAGICAL_PROTECTION, "magically protected", "magical protection" ,"-3 AC, +1 MC"},
+    { MAGICAL_PROTECTION, "magically protected", "magical protection", AC_MC_DESC(MAGICAL_PROTECTION_AC_BONUS, MAGICAL_PROTECTION_MC_BONUS) },
     { PROT_FROM_SHAPE_CHANGERS, "protected from shape changers", "protection from shape changers" },
     { POLYMORPH_CONTROL, "controlling polymorphing", "polymorph control" },
     { UNCHANGING, "unchanging", "unchange" },
@@ -110,9 +114,9 @@ const struct propname propertynames[] = {
     { BLOCKS_BLINDNESS, "blocking blindness", "blocks blindness"  },
     { BLOCKS_CLAIRVOYANCE, "blocking clairvoyance", "blocks clairvoyance" },
     { HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS, "receiving half physical damage from undead and demons", "half physical damage from undead and demons" },
-    { MAGICAL_SHIELDING, "magically shielded", "magical shielding", "-6 AC, +2 MC" },
-    { MAGICAL_BARKSKIN, "magically barkskinned", "magical barkskin", "-12 AC, +4 MC" },
-    { MAGICAL_STONESKIN, "magically stoneskinned", "magical stoneskin", "-18 AC, +6 MC" },
+    { MAGICAL_SHIELDING, "magically shielded", "magical shielding", AC_MC_DESC(MAGICAL_SHIELDING_AC_BONUS, MAGICAL_SHIELDING_MC_BONUS) },
+    { MAGICAL_BARKSKIN, "magically barkskinned", "magical barkskin", AC_MC_DESC(MAGICAL_BARKSKIN_AC_BONUS, MAGICAL_BARKSKIN_MC_BONUS) },
+    { MAGICAL_STONESKIN, "magically stoneskinned", "magical stoneskin", AC_MC_DESC(MAGICAL_STONESKIN_AC_BONUS, MAGICAL_STONESKIN_MC_BONUS) },
     { XRAY_VISION, "having X-ray vision", "X-ray vision" },
     { VERY_FAST, "very fast", "very fast speed" },
     { SLOWED, "slowed", "slow speed" },

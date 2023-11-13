@@ -2738,13 +2738,13 @@ find_ac()
     uac -= u.uacbonus;
 
     if (Magical_stoneskin)
-        uac -= 18;
+        uac -= MAGICAL_STONESKIN_AC_BONUS;
     else if (Magical_barkskin)
-        uac -= 12;
+        uac -= MAGICAL_BARKSKIN_AC_BONUS;
     else if (Magical_shielding)
-        uac -= 6;
+        uac -= MAGICAL_SHIELDING_AC_BONUS;
     else if (Magical_protection)
-        uac -= 3;
+        uac -= MAGICAL_PROTECTION_AC_BONUS;
     
     /* Divine protection */
     uac -= u.ublessed;

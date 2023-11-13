@@ -2879,7 +2879,6 @@ E char *FDECL(piousness, (BOOLEAN_P, const char *));
 E void FDECL(mstatusline, (struct monst *));
 E void FDECL(print_mstatusline, (char*, struct monst*, int, BOOLEAN_P));
 E void NDECL(ustatusline);
-
 E char FDECL(smithy_occupied, (char*));
 E struct monst* FDECL(findsmith, (CHAR_P));
 E boolean FDECL(inhissmithy, (struct monst*));
@@ -2893,6 +2892,7 @@ E void FDECL(restsmith, (struct monst*, BOOLEAN_P));
 E int FDECL(smith_move, (struct monst*));
 
 /* ### prop.c ### */
+
 E void NDECL(props_init);
 E const char* FDECL(get_property_name, (int));
 E struct propname FDECL(get_property_name_ex, (int));

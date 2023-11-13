@@ -1347,13 +1347,13 @@ register struct monst *mon;
     mac -= mon->macbonus;
 
     if (mon->mprops[MAGICAL_STONESKIN])
-        mac -= 18;
+        mac -= MAGICAL_STONESKIN_AC_BONUS;
     else if (mon->mprops[MAGICAL_BARKSKIN])
-        mac -= 12;
+        mac -= MAGICAL_BARKSKIN_AC_BONUS;
     else if (mon->mprops[MAGICAL_SHIELDING])
-        mac -= 6;
+        mac -= MAGICAL_SHIELDING_AC_BONUS;
     else if (mon->mprops[MAGICAL_PROTECTION])
-        mac -= 3;
+        mac -= MAGICAL_PROTECTION_AC_BONUS;
 
     return mac;
 }

@@ -268,7 +268,7 @@ docharacterstatistics()
             char dbuf3[BUFSZ];
             struct propname pn = get_property_name_ex(i);
             boolean haspdesc = pn.prop_desc != 0;
-            Sprintf(dbuf2, "%s%s%s%s", pn.prop_noun, haspdesc ? " (" : "", haspdesc ? pn.prop_desc : "", haspdesc ? ")" : "");
+            Sprintf(dbuf2, "%s%s%s%s", pn.prop_noun ? pn.prop_noun : "", haspdesc ? " (" : "", haspdesc ? pn.prop_desc : "", haspdesc ? ")" : "");
             //Strcpy(dbuf2, get_property_name(i));
             *dbuf2 = highc(*dbuf2);
             Strcpy(dbuf3, "");
@@ -351,7 +351,7 @@ docharacterstatistics()
                     char dbuf2[BUFSIZ] = "";
                     struct propname pn = get_property_name_ex(intrinsic_ability[table_index].propid);
                     boolean haspdesc = pn.prop_desc != 0;
-                    Sprintf(dbuf2, "%s%s%s%s", pn.prop_noun, haspdesc ? " (" : "", haspdesc ? pn.prop_desc : "", haspdesc ? ")" : "");
+                    Sprintf(dbuf2, "%s%s%s%s", pn.prop_noun ? pn.prop_noun : "", haspdesc ? " (" : "", haspdesc ? pn.prop_desc : "", haspdesc ? ")" : "");
                     //Strcpy(dbuf2, get_property_name(intrinsic_ability[table_index].propid));
                     *dbuf2 = highc(*dbuf2);
 
@@ -2695,7 +2695,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     {
                         struct propname pn = get_property_name_ex(prop);
                         boolean haspdesc = pn.prop_desc != 0;
-                        Sprintf(buf2, "%s%s%s%s", pn.prop_noun, haspdesc ? " (" : "", haspdesc ? pn.prop_desc : "", haspdesc ? ")" : "");
+                        Sprintf(buf2, "%s%s%s%s", pn.prop_noun ? pn.prop_noun : "", haspdesc ? " (" : "", haspdesc ? pn.prop_desc : "", haspdesc ? ")" : "");
                         //Strcpy(buf2, get_property_name(prop));
                         *buf2 = highc(*buf2);
                     }
@@ -3668,7 +3668,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             char defensetext[BUFSZ];
             char descrtext[BUFSZ];
             struct propname pn = get_property_name_ex(artilist[obj->oartifact].worn_prop);
-            Strcpy(defensetext, pn.prop_noun);
+            Strcpy(defensetext, pn.prop_noun ? pn.prop_noun : "");
             *defensetext = highc(*defensetext);
             if (pn.prop_desc)
                 Sprintf(descrtext, " (%s)", pn.prop_desc);
@@ -3688,7 +3688,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             char defensetext[BUFSZ];
             char descrtext[BUFSZ];
             struct propname pn = get_property_name_ex(artilist[obj->oartifact].carried_prop);
-            Strcpy(defensetext, pn.prop_noun);
+            Strcpy(defensetext, pn.prop_noun ? pn.prop_noun : "");
             *defensetext = highc(*defensetext);
             if (pn.prop_desc)
                 Sprintf(descrtext, " (%s)", pn.prop_desc);
@@ -3716,7 +3716,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             else
             {
                 struct propname pn = get_property_name_ex(artilist[obj->oartifact].inv_prop);
-                Strcpy(invoketext, pn.prop_noun);
+                Strcpy(invoketext, pn.prop_noun ? pn.prop_noun : "");
                 *invoketext = highc(*invoketext);
                 if (pn.prop_desc)
                     Sprintf(descrtext, " (%s)", pn.prop_desc);
