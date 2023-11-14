@@ -1532,8 +1532,7 @@ int selected_encounter, x, y, max_attk_monsters;
                     long itemflags = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].iflags;
                     if (otyp > STRANGE_OBJECT)
                     {
-                        struct obj* otmp = mksobj(otyp, !!(itemflags & MI_INITIALIZE), !!(itemflags & MI_ALLOW_ARTIFACTS), FALSE);
-
+                        struct obj* otmp = mksobj(otyp, !!(itemflags & MI_INITIALIZE), !!(itemflags & MI_ALLOW_ARTIFACTS), oartifact > 0 ? MKOBJ_TYPE_ARTIFACT_BASE : MKOBJ_TYPE_NORMAL);
                         if (otmp)
                         {
                             /* Make it into the artifact */

@@ -906,7 +906,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             }
 
             Sprintf(buf, "%s%s of %s%s",
-                    (Role_if(PM_ARCHAEOLOGIST) && (obj->speflags & SPEFLAGS_STATUE_HISTORIC))
+                    (Role_if(PM_ARCHAEOLOGIST) && (obj->special_quality == SPEQUAL_STATUE_HISTORIC))
                        ? "historic "
                        : "",
                     actualn_fullbuf,
@@ -5250,7 +5250,7 @@ retry:
     if (open && typ > 0 && Is_otyp_container_with_lid(typ))
         mkflags |= MKOBJ_FLAGS_OPEN_COFFIN;
 
-    otmp = typ ? mksobj_with_flags(typ, TRUE, FALSE, 2, (struct monst*)0, MAT_NONE, 0L, 0L, mkflags) : mkobj(oclass, FALSE, 2);
+    otmp = typ ? mksobj_with_flags(typ, TRUE, FALSE, MKOBJ_TYPE_WISHING, (struct monst*)0, MAT_NONE, 0L, 0L, mkflags) : mkobj(oclass, FALSE, MKOBJ_TYPE_WISHING);
     typ = otmp->otyp, oclass = otmp->oclass; /* what we actually got */
 
     if (islit && (is_lamp(otmp) || is_candle(otmp) || is_torch(otmp) || is_obj_candelabrum(otmp) || typ == POT_OIL))
@@ -5425,9 +5425,9 @@ retry:
                 delete_contents(otmp); /* no spellbook */
             
             if(ishistoric)
-                otmp->speflags |= SPEFLAGS_STATUE_HISTORIC;
+                otmp->special_quality = SPEQUAL_STATUE_HISTORIC;
             else
-                otmp->speflags &= ~SPEFLAGS_STATUE_HISTORIC;
+                otmp->special_quality = 0;
 
             break;
         case SCALE_MAIL:

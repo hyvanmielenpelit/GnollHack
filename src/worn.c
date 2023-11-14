@@ -1553,6 +1553,7 @@ boolean racialexception;
 {
     struct obj *old, *best, *obj;
     int unseen = !canseemon(mon);
+    boolean ispeaceful = is_peaceful(mon);
     boolean autocurse;
     char nambuf[BUFSZ];
 
@@ -1575,8 +1576,12 @@ boolean racialexception;
         return 0; /* no such thing as better misc items */
     best = old;
 
-    for (obj = mon->minvent; obj; obj = obj->nobj) {
-        switch (flag) 
+    for (obj = mon->minvent; obj; obj = obj->nobj) 
+    {
+        if (ispeaceful && (obj->speflags & SPEFLAGS_INTENDED_FOR_SALE) != 0)
+            continue;
+
+        switch (flag)
         {
         case W_AMUL:
             if (obj->oclass != AMULET_CLASS

@@ -856,7 +856,7 @@ boolean createcorpse;
     case PM_TARRASQUE:
         if (!exist_artifact(DAGGER, artiname(ART_TOOTH_OF_TARRASQUE)))
         {
-            obj = mksobj_found_at(DAGGER, x, y, FALSE, FALSE);
+            obj = mksobj_at_with_flags(DAGGER, x, y, FALSE, FALSE, MKOBJ_TYPE_ARTIFACT_BASE, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_FOUND_THIS_TURN);
             if (obj)
             {
                 obj->quan = 1;
@@ -3771,7 +3771,7 @@ struct monst *mdef;
         }
         /* Archaeologists should not break unique statues */
         if (mdef->data->geno & G_UNIQ)
-            otmp->speflags |= SPEFLAGS_STATUE_HISTORIC;
+            otmp->special_quality = SPEQUAL_STATUE_HISTORIC;
         otmp->owt = weight(otmp);
     } else
         otmp = mksobj_at(ROCK, x, y, TRUE, FALSE);

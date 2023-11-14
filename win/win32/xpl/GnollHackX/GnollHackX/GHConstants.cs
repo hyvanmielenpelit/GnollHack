@@ -1125,7 +1125,7 @@ namespace GnollHackX
         SPEFLAGS_MALE                          = 0x00000004UL,
         SPEFLAGS_FACING_RIGHT                  = 0x00000008UL,
         SPEFLAGS_SCHROEDINGERS_BOX             = 0x00000010UL,
-        SPEFLAGS_STATUE_HISTORIC               = 0x00000020UL,
+        SPEFLAGS_INTENDED_FOR_SALE             = 0x00000020UL,
         SPEFLAGS_CORPSE_ON_ICE                 = 0x00000040UL,
         SPEFLAGS_DETECTED                      = 0x00000080UL,
         SPEFLAGS_SERVICED_SPELL                = 0x00000100UL,

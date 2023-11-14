@@ -993,7 +993,7 @@ gcrownu()
     {
         class_gift = GAUNTLETS_OF_BALANCE;
 
-        obj = mksobj(class_gift, FALSE, FALSE, FALSE);
+        obj = mksobj(class_gift, FALSE, FALSE, MKOBJ_TYPE_ARTIFACT_BASE);
         obj = oname(obj, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
         obj->enchantment = 1;
         at_your_feet("A pair of gauntlets");
@@ -1363,7 +1363,7 @@ gcrownu()
             else if (Role_if(PM_KNIGHT) && !lance_already_exists)
             {
                 class_gift = LANCE;
-                obj = mksobj(LANCE, FALSE, FALSE, FALSE);
+                obj = mksobj(LANCE, FALSE, FALSE, MKOBJ_TYPE_ARTIFACT_BASE);
                 obj = oname(obj, artiname(ART_RHONGOMYNIAD));
                 obj->enchantment = 1;
                 at_your_feet("A lance");
@@ -1381,7 +1381,7 @@ gcrownu()
             else if ((Role_if(PM_KNIGHT) || Role_if(PM_ARCHAEOLOGIST)) && !grail_already_exists)
             {
                 class_gift = GRAIL_OF_HEALING;
-                obj = mksobj(GRAIL_OF_HEALING, FALSE, FALSE, FALSE);
+                obj = mksobj(GRAIL_OF_HEALING, FALSE, FALSE, MKOBJ_TYPE_ARTIFACT_BASE);
                 obj = oname(obj, artiname(ART_HOLY_GRAIL));
                 at_your_feet("A grail");
                 dropyf(obj);
@@ -1410,7 +1410,7 @@ gcrownu()
             else if (!katana_already_exists)
             {
                 class_gift = KATANA;
-                obj = mksobj(KATANA, FALSE, FALSE, FALSE);
+                obj = mksobj(KATANA, FALSE, FALSE, MKOBJ_TYPE_ARTIFACT_BASE);
                 obj = oname(obj, artiname(ART_KATANA_OF_MASAMUNE));
                 obj->enchantment = 1;
                 at_your_feet("A katana");
@@ -1493,7 +1493,7 @@ gcrownu()
             else if (Role_if(PM_ARCHAEOLOGIST) && !grail_already_exists)
             {
                 class_gift = GRAIL_OF_HEALING;
-                obj = mksobj(GRAIL_OF_HEALING, FALSE, FALSE, FALSE);
+                obj = mksobj(GRAIL_OF_HEALING, FALSE, FALSE, MKOBJ_TYPE_ARTIFACT_BASE);
                 obj = oname(obj, artiname(ART_HOLY_GRAIL));
                 at_your_feet("A grail");
                 dropyf(obj);
@@ -1521,7 +1521,7 @@ gcrownu()
             }
             else if (!already_exists)
             {
-                obj = mksobj(LONG_SWORD, FALSE, FALSE, FALSE);
+                obj = mksobj(LONG_SWORD, FALSE, FALSE, MKOBJ_TYPE_ARTIFACT_BASE);
                 obj = oname(obj, artiname(ART_VORPAL_BLADE));
                 obj->enchantment = 1;
                 at_your_feet("A sword");
@@ -1575,7 +1575,7 @@ gcrownu()
             }
             else if (!already_exists)
             {
-                obj = mksobj(chaotic_crowning_gift_baseitem, FALSE, FALSE, FALSE);
+                obj = mksobj(chaotic_crowning_gift_baseitem, FALSE, FALSE, MKOBJ_TYPE_ARTIFACT_BASE);
                 obj = oname(obj, artiname(chaotic_crowning_gift_oartifact));
                 obj->enchantment = 1;
                 at_your_feet(An(swordbuf));
@@ -2910,11 +2910,11 @@ dosacrifice()
                     {
                         struct obj* otmp2 = (struct obj*)0;
                         if (objects[otmp->otyp].oc_skill == P_BOW)
-                            otmp2 = mksobj_with_flags(ARROW, FALSE, FALSE, FALSE, (struct monst*)0, MAT_SILVER, 0L, 0L, 0UL);
+                            otmp2 = mksobj_with_flags(ARROW, FALSE, FALSE, MKOBJ_TYPE_DIVINE_GIFT, (struct monst*)0, MAT_SILVER, 0L, 0L, 0UL);
                         else if(objects[otmp->otyp].oc_skill == P_CROSSBOW)
-                            otmp2 = mksobj_with_flags(CROSSBOW_BOLT, FALSE, FALSE, FALSE, (struct monst*)0, MAT_SILVER, 0L, 0L, 0UL);
+                            otmp2 = mksobj_with_flags(CROSSBOW_BOLT, FALSE, FALSE, MKOBJ_TYPE_DIVINE_GIFT, (struct monst*)0, MAT_SILVER, 0L, 0L, 0UL);
                         else if (objects[otmp->otyp].oc_skill == P_SLING)
-                            otmp2 = mksobj_with_flags(SLING_BULLET, FALSE, FALSE, FALSE, (struct monst*)0, MAT_SILVER, 0L, 0L, 0UL);
+                            otmp2 = mksobj_with_flags(SLING_BULLET, FALSE, FALSE, MKOBJ_TYPE_DIVINE_GIFT, (struct monst*)0, MAT_SILVER, 0L, 0L, 0UL);
 
                         if (otmp2)
                         {

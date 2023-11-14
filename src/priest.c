@@ -359,7 +359,7 @@ int mtype;
         /* now his/her goodies... */
         if (montype == PM_HIGH_PRIEST)
         {
-            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, priest, MAT_NONE, MANUAL_MANUAL_OF_THE_PLANES, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, priest, MAT_NONE, MANUAL_MANUAL_OF_THE_PLANES, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(priest, otmp);
         }
@@ -398,21 +398,21 @@ int mtype;
 
             if (montype != PM_HIGH_PRIEST)
             {
-                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, priest, MAT_NONE, MANUAL_GUIDE_TO_ALTARS_AND_SACRIFICE, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, priest, MAT_NONE, MANUAL_GUIDE_TO_ALTARS_AND_SACRIFICE, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
                 if (otmp)
                     (void)mpickobj(priest, otmp);
 
-                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, priest, MAT_NONE, MANUAL_GUIDE_TO_PRAYING, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, priest, MAT_NONE, MANUAL_GUIDE_TO_PRAYING, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
                 if (otmp)
                     (void)mpickobj(priest, otmp);
 
-                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, priest, MAT_NONE, MANUAL_CATALOGUE_OF_CLERICAL_SPELLS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, priest, MAT_NONE, MANUAL_CATALOGUE_OF_CLERICAL_SPELLS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
                 if (otmp)
                     (void)mpickobj(priest, otmp);
 
                 if (context.game_difficulty < 0)
                 {
-                    otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, priest, MAT_NONE, MANUAL_INTRODUCTION_TO_BLESSED_AND_CURSED_ITEMS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                    otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, priest, MAT_NONE, MANUAL_INTRODUCTION_TO_BLESSED_AND_CURSED_ITEMS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
                     if (otmp)
                         (void)mpickobj(priest, otmp);
                 }
@@ -563,24 +563,24 @@ int mtype;
         set_mhostility(smith); /* mpeaceful may have changed */
 
         (void)mongetsgold(smith, 3000L + (long)rn2(6) * 500L);
-        struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, smith, MAT_NONE, MANUAL_GUIDE_TO_DRAGON_SCALE_MAILS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+        struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, smith, MAT_NONE, MANUAL_GUIDE_TO_DRAGON_SCALE_MAILS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
         if (otmp)
             (void)mpickobj(smith, otmp);
 
-        otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, smith, MAT_NONE, MANUAL_CATALOGUE_OF_WEAPONS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+        otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, smith, MAT_NONE, MANUAL_CATALOGUE_OF_WEAPONS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
         if (otmp)
             (void)mpickobj(smith, otmp);
 
-        otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, smith, MAT_NONE, MANUAL_CATALOGUE_OF_ARMOR, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+        otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, smith, MAT_NONE, MANUAL_CATALOGUE_OF_ARMOR, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
         if (otmp)
             (void)mpickobj(smith, otmp);
 
         if (context.game_difficulty < 0)
         {
-            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, smith, MAT_NONE, MANUAL_ARMOR_101, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, smith, MAT_NONE, MANUAL_ARMOR_101, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(smith, otmp);
-            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, smith, MAT_NONE, MANUAL_WEAPONS_101, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, smith, MAT_NONE, MANUAL_WEAPONS_101, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(smith, otmp);
         }

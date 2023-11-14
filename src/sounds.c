@@ -6791,7 +6791,7 @@ struct monst* mtmp;
 
     if (!otmp->owornmask 
         && otmp->oclass != COIN_CLASS
-        && ((otmp->speflags & SPEFLAGS_GRABBED_FROM_YOU) || mtmp->isnpc || mtmp->issmith ||
+        && ((otmp->speflags & (SPEFLAGS_GRABBED_FROM_YOU | SPEFLAGS_INTENDED_FOR_SALE)) || mtmp->isnpc || mtmp->issmith ||
                (otmp->oclass != WEAPON_CLASS /* monsters do not currently sell their weapons */
             && otmp->oclass != ROCK_CLASS /* or giants their boulders */
             && !(is_pick(otmp) && needspick(mtmp->data)) /* or dwarves their picks */
@@ -8782,6 +8782,7 @@ struct monst* mtmp;
         spell_otyps[teach_num] = SPE_FORCE_BOLT;
         teach_num++;
     }
+
     /* Spells that are always present are here; random ones are in ENPC(mtmp)->special_teach_spells */
     if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_SPECIAL_SPELLS)
     {
@@ -8799,6 +8800,14 @@ struct monst* mtmp;
             break;
         }
     }
+
+    /* Non-random arcane spells here */
+    if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS)
+    {
+        spell_otyps[teach_num] = SPE_MAGIC_ARROW;
+        teach_num++;
+    }
+
     if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & (NPC_SERVICE_TEACH_SPECIAL_SPELLS | NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS))
     {
         int i;
@@ -10775,7 +10784,7 @@ boolean initialize;
         otmp = 0;
     }
 
-    struct obj* craftedobj = mksobj_with_flags(forge_dest_otyp, initialize, FALSE, 3, (struct monst*)0, material, 0L, 0L, MKOBJ_FLAGS_FORCE_BASE_MATERIAL);
+    struct obj* craftedobj = mksobj_with_flags(forge_dest_otyp, initialize, FALSE, MKOBJ_TYPE_CRAFTING, (struct monst*)0, material, 0L, 0L, MKOBJ_FLAGS_FORCE_BASE_MATERIAL);
     if (craftedobj)
     {
         if (quan > 0)

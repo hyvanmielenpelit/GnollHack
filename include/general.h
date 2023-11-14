@@ -624,6 +624,18 @@ enum context_menu_styles {
 #define TAMEDOG_FORCE_NON_UNIQUE    1
 #define TAMEDOG_FORCE_ALL           2
 
+#define MKOBJ_TYPE_NORMAL           0  /* Floor and hostile monster inventory */
+#define MKOBJ_TYPE_CONTAINER        1  /* Less restrictions than normal */
+#define MKOBJ_TYPE_WISHING          2  /* No random unrequested properties */
+#define MKOBJ_TYPE_CRAFTING         3  /* No random unrequested properties */
+#define MKOBJ_TYPE_ARTIFACT_BASE    4  /* No random unrequested properties */
+#define MKOBJ_TYPE_GENERATED        5  /* No random unrequested properties */
+#define MKOBJ_TYPE_INITIAL          6  /* No random unrequested properties; no overly powerful items */
+#define MKOBJ_TYPE_SPLEV_PRESET     -1 /* Preset item in a special level */
+#define MKOBJ_TYPE_NPC_SELLING      -2 /* Random item sellable in NPC inventory */
+#define MKOBJ_TYPE_DIVINE_GIFT      -3 /* Gifted by god */
+
+#define MKOBJ_RANDOM_PROPERTY_MAX_TYPE 1
 
 #define MKOBJ_FLAGS_OPEN_COFFIN                        0x00000001
 #define MKOBJ_FLAGS_MONSTER_SPECIFIED                  0x00000002

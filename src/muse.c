@@ -3903,7 +3903,7 @@ struct monst* mon;
 
     switch (rnd(18)) {
     case 1:
-        otmp = mksobj(POT_GAIN_LEVEL, FALSE, FALSE, 2);
+        otmp = mksobj(POT_GAIN_LEVEL, FALSE, FALSE, MKOBJ_TYPE_WISHING);
         if (otmp)
         {
             bless(otmp);
@@ -3912,10 +3912,10 @@ struct monst* mon;
         }
         break;
     case 2:
-        otmp = mksobj(WAN_CREATE_MONSTER, TRUE, FALSE, 2);
+        otmp = mksobj(WAN_CREATE_MONSTER, TRUE, FALSE, MKOBJ_TYPE_WISHING);
         break;
     case 3:
-        otmp = mksobj(AMULET_OF_LIFE_SAVING, FALSE, FALSE, 2);
+        otmp = mksobj(AMULET_OF_LIFE_SAVING, FALSE, FALSE, MKOBJ_TYPE_WISHING);
         if (otmp)
         {
             bless(otmp);
@@ -3925,7 +3925,7 @@ struct monst* mon;
         break;
     case 4:
         if (!mon->mprops[DISPLACED] && !cantweararm(mon->data)) {
-            otmp = mksobj(CLOAK_OF_DISPLACEMENT, FALSE, FALSE, 2);
+            otmp = mksobj(CLOAK_OF_DISPLACEMENT, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if (otmp)
             {
                 bless(otmp);
@@ -3935,12 +3935,12 @@ struct monst* mon;
             }
         }
         else {
-            otmp = mksobj(WAN_DIGGING, TRUE, FALSE, 2);
+            otmp = mksobj(WAN_DIGGING, TRUE, FALSE, MKOBJ_TYPE_WISHING);
         }
         break;
     case 5:
         if (!nohands(mon->data)) {
-            otmp = mksobj(GAUNTLETS_OF_DEXTERITY, FALSE, FALSE, 2);
+            otmp = mksobj(GAUNTLETS_OF_DEXTERITY, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if (otmp)
             {
                 bless(otmp);
@@ -3950,7 +3950,7 @@ struct monst* mon;
             }
         }
         else {
-            otmp = mksobj(POT_FULL_HEALING, FALSE, FALSE, 2);
+            otmp = mksobj(POT_FULL_HEALING, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if(otmp)
                 bless(otmp);
         }
@@ -3959,7 +3959,7 @@ struct monst* mon;
         if (!resists_magic(mon)) {
             if (!cantweararm(mon->data))
             {
-                otmp = mksobj(CLOAK_OF_MAGIC_RESISTANCE, FALSE, FALSE, 2);
+                otmp = mksobj(CLOAK_OF_MAGIC_RESISTANCE, FALSE, FALSE, MKOBJ_TYPE_WISHING);
                 if (otmp)
                 {
                     otmp->oerodeproof = 1;
@@ -3967,7 +3967,7 @@ struct monst* mon;
                 }
             }
             else
-                otmp = mksobj(IOUN_STONE_OF_MAGIC_RESISTANCE, FALSE, FALSE, 2);
+                otmp = mksobj(IOUN_STONE_OF_MAGIC_RESISTANCE, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if (otmp)
             {
                 bless(otmp);
@@ -3975,12 +3975,12 @@ struct monst* mon;
             }
         }
         else {
-            otmp = mksobj(WAN_CREATE_MONSTER, TRUE, FALSE, 2);
+            otmp = mksobj(WAN_CREATE_MONSTER, TRUE, FALSE, MKOBJ_TYPE_WISHING);
         }
         break;
     case 7:
         if (!cantweararm(mon->data)) {
-            otmp = mksobj(PLATE_MAIL, FALSE, FALSE, 2);
+            otmp = mksobj(PLATE_MAIL, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if (otmp)
             {
                 bless(otmp);
@@ -3992,7 +3992,7 @@ struct monst* mon;
             }
         }
         else {
-            otmp = mksobj(BAG_OF_HOLDING, FALSE, FALSE, 2);
+            otmp = mksobj(BAG_OF_HOLDING, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if (otmp)
             {
                 bless(otmp);
@@ -4001,7 +4001,7 @@ struct monst* mon;
         }
         break;
     case 8:
-        otmp = mksobj(POT_PARALYSIS, FALSE, FALSE, 2);
+        otmp = mksobj(POT_PARALYSIS, FALSE, FALSE, MKOBJ_TYPE_WISHING);
         if (otmp)
         {
             bless(otmp);
@@ -4011,7 +4011,7 @@ struct monst* mon;
         break;
     case 9:
         if (!mon->mprops[WATER_WALKING] && !sliparm(mon->data)) {
-            otmp = mksobj(WATER_WALKING_BOOTS, FALSE, FALSE, 2);
+            otmp = mksobj(WATER_WALKING_BOOTS, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if (otmp)
             {
                 bless(otmp);
@@ -4021,7 +4021,7 @@ struct monst* mon;
             }
         }
         else {
-            otmp = mksobj(RIN_SLOW_DIGESTION, FALSE, FALSE, 2);
+            otmp = mksobj(RIN_SLOW_DIGESTION, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if(otmp)
                 bless(otmp);
         }
@@ -4030,7 +4030,7 @@ struct monst* mon;
         if (!mon_reflects(mon, (char*)0)) {
             if (humanoid(mon->data))
             {
-                otmp = mksobj(SHIELD_OF_REFLECTION, FALSE, FALSE, 2);
+                otmp = mksobj(SHIELD_OF_REFLECTION, FALSE, FALSE, MKOBJ_TYPE_WISHING);
                 if (otmp)
                 {
                     otmp->oerodeproof = 1;
@@ -4038,7 +4038,7 @@ struct monst* mon;
                 }
             }
             else
-                otmp = mksobj(AMULET_OF_REFLECTION, FALSE, FALSE, 2);
+                otmp = mksobj(AMULET_OF_REFLECTION, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if (otmp)
             {
                 bless(otmp);
@@ -4046,14 +4046,14 @@ struct monst* mon;
             }
         }
         else {
-            otmp = mksobj(POT_EXTRA_HEALING, FALSE, FALSE, 2);
+            otmp = mksobj(POT_EXTRA_HEALING, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if(otmp)
                 bless(otmp);
         }
         break;
     case 11:
         if (!nohands(mon->data) && !strongmonst(mon->data)) {
-            otmp = mksobj(GAUNTLETS_OF_OGRE_POWER, FALSE, FALSE, 2);
+            otmp = mksobj(GAUNTLETS_OF_OGRE_POWER, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if (otmp)
             {
                 bless(otmp);
@@ -4063,14 +4063,14 @@ struct monst* mon;
             }
         }
         else {
-            otmp = mksobj(POT_GAIN_LEVEL, FALSE, FALSE, 2);
+            otmp = mksobj(POT_GAIN_LEVEL, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if(otmp)
                 curse(otmp);
         }
         break;
     case 12:
         if (!is_fast(mon) && !is_very_fast(mon) && !is_ultra_fast(mon) && !is_super_fast(mon) && !is_lightning_fast(mon) && feet_fit_boots(mon->data)) {
-            otmp = mksobj(SPEED_BOOTS, FALSE, FALSE, 2);
+            otmp = mksobj(SPEED_BOOTS, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if (otmp)
             {
                 bless(otmp);
@@ -4080,7 +4080,7 @@ struct monst* mon;
             }
         }
         else {
-            otmp = mksobj(POT_FULL_HEALING, FALSE, FALSE, 2);
+            otmp = mksobj(POT_FULL_HEALING, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if(otmp)
                 bless(otmp);
         }
@@ -4088,7 +4088,7 @@ struct monst* mon;
     case 13:
         if (!has_telepathy(mon)
             && !sliparm(mon->data) && !has_horns(mon->data) && has_head(mon->data)) {
-            otmp = mksobj(HELM_OF_TELEPATHY, FALSE, FALSE, 2);
+            otmp = mksobj(HELM_OF_TELEPATHY, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if (otmp)
             {
                 bless(otmp);
@@ -4098,14 +4098,14 @@ struct monst* mon;
             }
         }
         else {
-            otmp = mksobj(POT_EXTRA_HEALING, FALSE, FALSE, 2);
+            otmp = mksobj(POT_EXTRA_HEALING, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if(otmp)
                 bless(otmp);
         }
         break;
     case 14:
         if (!sliparm(mon->data) && !has_horns(mon->data) && has_head(mon->data)) {
-            otmp = mksobj(HELM_OF_BRILLIANCE, FALSE, FALSE, 2);
+            otmp = mksobj(HELM_OF_BRILLIANCE, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if (otmp)
             {
                 bless(otmp);
@@ -4115,7 +4115,7 @@ struct monst* mon;
             }
         }
         else {
-            otmp = mksobj(UNICORN_HORN, TRUE, FALSE, 2);
+            otmp = mksobj(UNICORN_HORN, TRUE, FALSE, MKOBJ_TYPE_WISHING);
             if (otmp)
             {
                 bless(otmp);
@@ -4126,7 +4126,7 @@ struct monst* mon;
         break;
     case 15:
         if (!cantweararm(mon->data)) {
-            otmp = mksobj(CLOAK_OF_PROTECTION, FALSE, FALSE, 2);
+            otmp = mksobj(CLOAK_OF_PROTECTION, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if (otmp)
             {
                 bless(otmp);
@@ -4136,7 +4136,7 @@ struct monst* mon;
             }
         }
         else {
-            otmp = mksobj(RIN_PROTECTION, FALSE, FALSE, 2);
+            otmp = mksobj(RIN_PROTECTION, FALSE, FALSE, MKOBJ_TYPE_WISHING);
             if (otmp)
             {
                 bless(otmp);
@@ -4145,7 +4145,7 @@ struct monst* mon;
         }
         break;
     case 16: /* Monsters can wish for certain artifacts */
-        otmp = mk_artifact((struct obj*)0, mon_aligntyp(mon), 2);
+        otmp = mk_artifact((struct obj*)0, mon_aligntyp(mon), MKARTIFACT_FLAGS_NONE);
         if (otmp) {
             bless(otmp);
             if (is_weapon(otmp) || is_armor(otmp))
@@ -4161,18 +4161,18 @@ struct monst* mon;
     case 17:
         switch (rnd(3)) {
         case 1:
-            otmp = mksobj(WAN_PETRIFICATION, TRUE, FALSE, 2);
+            otmp = mksobj(WAN_PETRIFICATION, TRUE, FALSE, MKOBJ_TYPE_WISHING);
             break;
         case 2:
-            otmp = mksobj(WAN_DISINTEGRATION, TRUE, FALSE, 2);
+            otmp = mksobj(WAN_DISINTEGRATION, TRUE, FALSE, MKOBJ_TYPE_WISHING);
             break;
         case 3:
-            otmp = mksobj(WAN_DEATH, TRUE, FALSE, 2);
+            otmp = mksobj(WAN_DEATH, TRUE, FALSE, MKOBJ_TYPE_WISHING);
             break;
         }
         break;
     case 18:
-        otmp = mksobj(EGG, FALSE, FALSE, 2);
+        otmp = mksobj(EGG, FALSE, FALSE, MKOBJ_TYPE_WISHING);
         if (otmp)
         {
             otmp->corpsenm = PM_COCKATRICE;
@@ -4181,7 +4181,7 @@ struct monst* mon;
         }
         break;
     default:
-        otmp = mksobj(POT_GAIN_LEVEL, FALSE, FALSE, 2);
+        otmp = mksobj(POT_GAIN_LEVEL, FALSE, FALSE, MKOBJ_TYPE_WISHING);
         if(otmp)
             curse(otmp);
     }

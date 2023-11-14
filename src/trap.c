@@ -675,8 +675,7 @@ int *fail_reason;
     struct monst *mon = 0, *shkp;
     struct obj *item;
     coord cc;
-    boolean historic = (Role_if(PM_ARCHAEOLOGIST)
-                        && (statue->speflags & SPEFLAGS_STATUE_HISTORIC) != 0),
+    boolean historic = (Role_if(PM_ARCHAEOLOGIST) && statue->special_quality == SPEQUAL_STATUE_HISTORIC),
             golem_xform = FALSE, use_saved_traits;
     const char *comes_to_life;
     char statuename[BUFSZ], tmpbuf[BUFSZ];
@@ -1013,7 +1012,7 @@ t_missile(otyp, trap)
 int otyp;
 struct trap *trap;
 {
-    struct obj *otmp = mksobj_with_flags(otyp, TRUE, FALSE, FALSE, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_FORCE_BASE_MATERIAL);
+    struct obj *otmp = mksobj_with_flags(otyp, TRUE, FALSE, MKOBJ_TYPE_GENERATED, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_FORCE_BASE_MATERIAL);
 
     otmp->quan = 1L;
     otmp->opoisoned = 0;

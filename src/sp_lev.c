@@ -2300,13 +2300,13 @@ struct mkroom *croom;
     {
         if (!exist_artifact(ORNAMENTAL_ORCISH_DAGGER, artiname(ART_GRIMTOOTH)) && rn2(3))
         {
-            otmp = mksobj(ORNAMENTAL_ORCISH_DAGGER, FALSE, FALSE, FALSE);
+            otmp = mksobj(ORNAMENTAL_ORCISH_DAGGER, FALSE, FALSE, MKOBJ_TYPE_ARTIFACT_BASE);
             otmp = oname(otmp, artiname(ART_GRIMTOOTH));
             otmp->enchantment = 3 + rnd(4);
         }
         else
         {
-            otmp = mksobj(ORCISH_DAGGER, FALSE, FALSE, FALSE);
+            otmp = mksobj(ORCISH_DAGGER, FALSE, FALSE, MKOBJ_TYPE_NORMAL);
             otmp->enchantment = 2 + rnd(3);
             otmp->mythic_prefix = MYTHIC_PREFIX_VAMPIRIC;
             otmp->exceptionality = EXCEPTIONALITY_ELITE;
@@ -2372,7 +2372,7 @@ struct mkroom *croom;
         else if (otmp->otyp == CHEST && o->enchantment)
             otmp->speflags |= SPEFLAGS_SCHROEDINGERS_BOX;
         else if (otmp->otyp == STATUE && o->enchantment)
-            otmp->speflags |= SPEFLAGS_STATUE_HISTORIC;
+            otmp->special_quality = SPEQUAL_STATUE_HISTORIC;
         else if (otmp->otyp == EGG && o->enchantment)
             otmp->speflags |= SPEFLAGS_YOURS;
         else

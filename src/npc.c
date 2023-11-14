@@ -526,7 +526,7 @@ int mtype;
                 mongets(npc, rnd_class(FIRST_GEM, LAST_GEM));
             }
 
-            struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE,npc,  MAT_NONE, MANUAL_CATALOGUE_OF_GEMS_AND_STONES, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc,  MAT_NONE, MANUAL_CATALOGUE_OF_GEMS_AND_STONES, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(npc, otmp);
 
@@ -568,25 +568,25 @@ int mtype;
             struct obj* otmp;
             if (!rn2(2))
             {
-                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, MANUAL_CATALOGUE_OF_SCROLLS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, MANUAL_CATALOGUE_OF_SCROLLS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
                 if (otmp)
                     (void)mpickobj(npc, otmp);
             }
             if (!rn2(2))
             {
-                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, MANUAL_CATALOGUE_OF_WANDS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, MANUAL_CATALOGUE_OF_WANDS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
                 if (otmp)
                     (void)mpickobj(npc, otmp);
             }
             if (!rn2(2))
             {
-                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, MANUAL_CATALOGUE_OF_MISCELLANEOUS_MAGIC_ITEMS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, MANUAL_CATALOGUE_OF_MISCELLANEOUS_MAGIC_ITEMS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
                 if (otmp)
                     (void)mpickobj(npc, otmp);
             }
             if (!rn2(2))
             {
-                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, MANUAL_CATALOGUE_OF_MAGIC_SPELLS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, MANUAL_CATALOGUE_OF_MAGIC_SPELLS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
                 if (otmp)
                     (void)mpickobj(npc, otmp);
             }
@@ -602,7 +602,7 @@ int mtype;
             mongets(npc, ELVEN_WAYBREAD);
             if (!rn2(10))
             {
-                struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, MANUAL_CATALOGUE_OF_ARTIFACTS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, MANUAL_CATALOGUE_OF_ARTIFACTS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
                 if (otmp)
                     (void)mpickobj(npc, otmp);
             }
@@ -615,7 +615,7 @@ int mtype;
             long exclusionbits = 0L, exclusionbits2 = 0L;
             for (i = 0; i < cnt; i++)
             {
-                struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, exclusionbits, exclusionbits2, MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS);
+                struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, exclusionbits, exclusionbits2, MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS);
                 if (otmp)
                 {
                     if (otmp->manualidx < 32)
@@ -629,15 +629,15 @@ int mtype;
         }
         case NPC_HERMIT2:
         {
-            struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, MANUAL_GURATHULS_GUIDE_TO_ASCENSION, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, MANUAL_GURATHULS_GUIDE_TO_ASCENSION, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(npc, otmp);
 
-            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, MANUAL_INFERNAL_INHABITANTS_OF_GEHENNOM, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, MANUAL_INFERNAL_INHABITANTS_OF_GEHENNOM, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(npc, otmp);
 
-            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, MANUAL_CATALOGUE_OF_RINGS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, MANUAL_CATALOGUE_OF_RINGS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(npc, otmp);
 
@@ -651,19 +651,19 @@ int mtype;
         }
         case NPC_ORC_HERMIT3:
         {
-            struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, MANUAL_CATALOGUE_OF_TOOLS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, MANUAL_CATALOGUE_OF_TOOLS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(npc, otmp);
 
-            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, MANUAL_CATALOGUE_OF_MAGIC_SPELLS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, MANUAL_CATALOGUE_OF_MAGIC_SPELLS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(npc, otmp);
 
-            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, MANUAL_CATALOGUE_OF_WANDS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, MANUAL_CATALOGUE_OF_WANDS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(npc, otmp);
 
-            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, MANUAL_CATALOGUE_OF_ARTIFACTS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, MANUAL_CATALOGUE_OF_ARTIFACTS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(npc, otmp);
 
@@ -671,7 +671,7 @@ int mtype;
         }
         case NPC_HERMIT3:
         {
-            struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, MANUAL_ADVANCED_READING_IN_KNOWN_MONSTERS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, MANUAL_ADVANCED_READING_IN_KNOWN_MONSTERS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(npc, otmp);
 
@@ -679,7 +679,7 @@ int mtype;
             long exclusionbits = 0L, exclusionbits2 = 0L;
             for (i = 0; i < cnt; i++)
             {
-                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, exclusionbits, exclusionbits2, MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS);
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, exclusionbits, exclusionbits2, MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS);
                 if (otmp)
                 {
                     if(otmp->manualidx < 32)
@@ -690,7 +690,7 @@ int mtype;
                 }
             }
 
-            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, MANUAL_CATALOGUE_OF_TOOLS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, MANUAL_CATALOGUE_OF_TOOLS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(npc, otmp);
 
@@ -698,7 +698,7 @@ int mtype;
             cnt = 2 + rnd(2);
             for (i = 0; i < cnt; i++)
             {
-                otmp = mksobj_with_flags(GNOMISH_FELT_HAT, TRUE, FALSE, FALSE, npc, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_FORCE_MYTHIC_OR_LEGENDARY);
+                otmp = mksobj_with_flags(GNOMISH_FELT_HAT, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_FORCE_MYTHIC_OR_LEGENDARY);
                 if (otmp)
                     (void)mpickobj(npc, otmp);
             }
@@ -706,30 +706,30 @@ int mtype;
         }
         case NPC_ARTIFICER:
         {
-            struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, depth(&u.uz) > depth(&medusa_level) ? MANUAL_SECRETS_OF_SCARE_MONSTER : MANUAL_MASTER_CLASS_IN_WANDS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, depth(&u.uz) > depth(&medusa_level) ? MANUAL_SECRETS_OF_SCARE_MONSTER : MANUAL_MASTER_CLASS_IN_WANDS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(npc, otmp);
 
-            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, MANUAL_PRINCIPLES_OF_MAGIC, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, MANUAL_PRINCIPLES_OF_MAGIC, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(npc, otmp);
 
-            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, MANUAL_CATALOGUE_OF_MAGIC_SPELLS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, MANUAL_CATALOGUE_OF_MAGIC_SPELLS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(npc, otmp);
 
-            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, MANUAL_CATALOGUE_OF_WANDS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+            otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, MANUAL_CATALOGUE_OF_WANDS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             if (otmp)
                 (void)mpickobj(npc, otmp);
             if (!rn2(2))
             {
-                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, MANUAL_CATALOGUE_OF_SCROLLS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, MANUAL_CATALOGUE_OF_SCROLLS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
                 if (otmp)
                     (void)mpickobj(npc, otmp);
             }
             if (!rn2(2))
             {
-                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, npc, MAT_NONE, MANUAL_CATALOGUE_OF_POTIONS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, MANUAL_CATALOGUE_OF_POTIONS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
                 if (otmp)
                     (void)mpickobj(npc, otmp);
             }
@@ -751,8 +751,34 @@ int mtype;
                     (void)mpickobj(npc, otmp);
             }
 
+            /* Staffs */
+            int cnt = rnd(3);
+            for (i = 0; i < cnt; i++)
+            {
+                otmp = mksobj(rnd_class(STAFF_OF_THE_MAGI, STAFF_OF_FROST), TRUE, TRUE, MKOBJ_TYPE_NPC_SELLING);
+                if (otmp)
+                    (void)mpickobj(npc, otmp);
+            }
+
+            /* Robes */
+            cnt = rn2(3);
+            for (i = 0; i < cnt; i++)
+            {
+                otmp = mksobj(rnd_class(ROBE_OF_PROTECTION, ROBE_OF_STARRY_WISDOM), TRUE, TRUE, MKOBJ_TYPE_NPC_SELLING);
+                if (otmp)
+                    (void)mpickobj(npc, otmp);
+            }
+
+            /* Cloaks */
+            if (!cnt || !rn2(5))
+            {
+                otmp = mksobj(CLOAK_OF_MAGIC_RESISTANCE, TRUE, TRUE, MKOBJ_TYPE_NPC_SELLING);
+                if (otmp)
+                    (void)mpickobj(npc, otmp);
+            }
+
             /* Reagents */
-            int cnt = 10 + rnd(10);
+            cnt = 10 + rnd(10);
             for (i = 0; i < cnt; i++)
             {
                 otmp = mksobj(random_reagent_otyp(TRUE, TRUE, 2), FALSE, FALSE, FALSE);
@@ -838,8 +864,6 @@ int mtype;
         {
             if (level_difficulty() < 15)
             {
-                ENPC(npc)->special_teach_spells[cnt] = SPE_MAGIC_ARROW;
-                cnt++;
                 if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_SHOCKING_TOUCH;
@@ -868,6 +892,46 @@ int mtype;
                 if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_CIRCLE_OF_LIGHTNING;
+                    cnt++;
+                }
+                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_FIREBALL;
+                    cnt++;
+                }
+                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_ICE_STORM;
+                    cnt++;
+                }
+                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_THUNDERSTORM;
+                    cnt++;
+                }
+                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_GREATER_MAGIC_MISSILE;
+                    cnt++;
+                }
+                if (!rn2(6) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_FORCE_STRIKE;
+                    cnt++;
+                }
+                if (!rn2(7) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_INCINERATE;
+                    cnt++;
+                }
+                if (!rn2(8) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_ELECTROCUTE;
+                    cnt++;
+                }
+                if (!rn2(9) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_GLACIAL_GRASP;
                     cnt++;
                 }
                 if ((!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS) || cnt == 0)

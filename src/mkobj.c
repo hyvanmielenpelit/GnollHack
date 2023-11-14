@@ -255,7 +255,7 @@ mksobj_at(otyp, x, y, init, artif)
 int otyp, x, y;
 boolean init, artif;
 {
-    return mksobj_at_with_flags(otyp, x, y, init, artif, 0, (struct monst*)0, MAT_NONE, 0L, 0L, 0UL);
+    return mksobj_at_with_flags(otyp, x, y, init, artif, MKOBJ_TYPE_NORMAL, (struct monst*)0, MAT_NONE, 0L, 0L, 0UL);
 }
 
 struct obj *
@@ -263,7 +263,7 @@ mksobj_found_at(otyp, x, y, init, artif)
 int otyp, x, y;
 boolean init, artif;
 {
-    return mksobj_at_with_flags(otyp, x, y, init, artif, 0, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_FOUND_THIS_TURN);
+    return mksobj_at_with_flags(otyp, x, y, init, artif, MKOBJ_TYPE_NORMAL, (struct monst*)0, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_FOUND_THIS_TURN);
 }
 
 struct obj*
@@ -630,7 +630,7 @@ struct obj *box;
             if (!rn2(4))
             {
                 /* A random catalogue */
-                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, FALSE, (struct monst*)0, MAT_NONE, FIRST_CATALOGUE + rn2(NUM_CATALOGUES), 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
+                otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_CONTAINER, (struct monst*)0, MAT_NONE, FIRST_CATALOGUE + rn2(NUM_CATALOGUES), 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
             }
             else if (rn2(3))
                 otmp = mkobj(SCROLL_CLASS, FALSE, TRUE);
@@ -1445,7 +1445,7 @@ mksobj_with_flags(otyp, init, artif, mkobj_type, mowner, material, param, param2
 int otyp;
 boolean init;
 boolean artif;
-int mkobj_type; /* 0 = floor, 1 = box, 2 = wishing, -1 = special level preset item */
+int mkobj_type; /* Note: mkobj_type >= 2 does not randomly generate unrequested special characteristics */
 struct monst* mowner;
 uchar material;
 long param, param2;
@@ -1456,7 +1456,7 @@ unsigned long mkflags;
     char let = objects[otyp].oc_class;
     boolean forcemythic = (mkflags & MKOBJ_FLAGS_FORCE_MYTHIC_OR_LEGENDARY) != 0;
     boolean forcelegendary = (mkflags & MKOBJ_FLAGS_FORCE_LEGENDARY) != 0;
-    boolean forcebasematerial = (mkflags & MKOBJ_FLAGS_FORCE_BASE_MATERIAL) != 0 || mkobj_type == 2;
+    boolean forcebasematerial = (mkflags & MKOBJ_FLAGS_FORCE_BASE_MATERIAL) != 0 || mkobj_type > MKOBJ_RANDOM_PROPERTY_MAX_TYPE;
     boolean param_is_spquality = (mkflags & MKOBJ_FLAGS_PARAM_IS_SPECIAL_QUALITY) != 0;
     boolean param_is_mnum = (mkflags & MKOBJ_FLAGS_PARAM_IS_MNUM) != 0;
     boolean foundthisturn = (mkflags & MKOBJ_FLAGS_FOUND_THIS_TURN) != 0;
@@ -1513,12 +1513,15 @@ unsigned long mkflags;
     if ((objects[otmp->otyp].oc_flags4 & O4_CONTAINER_HAS_LID) && (mkflags & MKOBJ_FLAGS_OPEN_COFFIN))
         otmp->speflags |= SPEFLAGS_LID_OPENED;
 
+    if (mkobj_type == MKOBJ_TYPE_NPC_SELLING)
+        otmp->speflags |= SPEFLAGS_INTENDED_FOR_SALE;
+
     if(foundthisturn)
         obj_set_found(otmp);
 
     int leveldiff = level_difficulty();
     /* Change type before init if need be*/
-    if (mkobj_type == 0 && (In_mines(&u.uz) || leveldiff < 10))
+    if (mkobj_type == MKOBJ_TYPE_NORMAL && (In_mines(&u.uz) || leveldiff < 10))
     {
         if (otyp == FROST_HORN || otyp == FIRE_HORN)
         {
@@ -1532,7 +1535,7 @@ unsigned long mkflags;
         }
     }
     
-    if (mkobj_type == 0 && !Inhell) /* No instadeath wands on floor ever, except in Gehennom */
+    if (mkobj_type == MKOBJ_TYPE_NORMAL && !Inhell) /* No instadeath wands on floor ever, except in Gehennom */
     {
         if (otmp->otyp == WAN_DEATH || otmp->otyp == WAN_DISINTEGRATION || otmp->otyp == WAN_PETRIFICATION)
         {
@@ -1541,7 +1544,7 @@ unsigned long mkflags;
         }
     }
 
-    if (mkobj_type >= 0 && mkobj_type < 2 && (depth(&u.uz) == 1 || depth(&u.uz) == 2 || leveldiff < 5))
+    if (mkobj_type == MKOBJ_TYPE_INITIAL || ((mkobj_type == MKOBJ_TYPE_NORMAL || mkobj_type == MKOBJ_TYPE_CONTAINER) && (depth(&u.uz) == 1 || depth(&u.uz) == 2 || leveldiff < 5)))
     {
         if (otmp->otyp == WAN_WISHING)
         {
@@ -1584,11 +1587,11 @@ unsigned long mkflags;
             else
                 blessorcurse(otmp, 10);
 
-            if (mkobj_type < 2 && is_poisonable(otmp) && !rn2(100) && !(objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED))
+            if (mkobj_type <= MKOBJ_RANDOM_PROPERTY_MAX_TYPE && is_poisonable(otmp) && !rn2(100) && !(objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED))
                 otmp->opoisoned = 1;
-            else if (is_elemental_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (mkobj_type < 2 && (is_multigen(otmp) ? !rn2(40) : !rn2(160)))))
+            else if (is_elemental_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (mkobj_type <= MKOBJ_RANDOM_PROPERTY_MAX_TYPE && (is_multigen(otmp) ? !rn2(40) : !rn2(160)))))
             {
-                if (is_death_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (mkobj_type < 2 && !rn2(10))))
+                if (is_death_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (mkobj_type <= MKOBJ_RANDOM_PROPERTY_MAX_TYPE && !rn2(10))))
                 {
                     otmp->elemental_enchantment = DEATH_ENCHANTMENT;
                     if (is_multigen(otmp))
@@ -2083,7 +2086,7 @@ unsigned long mkflags;
         curse(otmp);
 
     /* Exceptionality */
-    if (can_have_exceptionality(otmp) && mkobj_type < 2 && otmp->oartifact == 0)
+    if (can_have_exceptionality(otmp) && mkobj_type <= MKOBJ_RANDOM_PROPERTY_MAX_TYPE && otmp->oartifact == 0)
     {
         if ((mkflags & MKOBJ_FLAGS_PARAM_IS_EXCEPTIONALITY) && param >= 0)
         {
@@ -2173,7 +2176,7 @@ unsigned long mkflags;
     }
 
     /* Mythic quality */
-    if (can_obj_have_mythic(otmp) && (forcemythic || forcelegendary || (leveldiff >= 3 && mkobj_type < 2)) && otmp->oartifact == 0)
+    if (can_obj_have_mythic(otmp) && (forcemythic || forcelegendary || (leveldiff >= 3 && mkobj_type <= MKOBJ_RANDOM_PROPERTY_MAX_TYPE)) && otmp->oartifact == 0)
     {
         boolean doublechance = !!(objects[otmp->otyp].oc_flags4 & O4_DOUBLE_MYTHIC_CHANCE);
         boolean makemythic = FALSE;

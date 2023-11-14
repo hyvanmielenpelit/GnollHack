@@ -1580,7 +1580,7 @@ register const struct trobj * trop;
             otyp = (int)trop->trotyp;
             if (otyp != UNDEF_TYP)
             {
-                obj = mksobj_with_flags(otyp, TRUE, FALSE, FALSE, (struct monst*)0, trop->material, 0L, 0L, MKOBJ_FLAGS_FORCE_BASE_MATERIAL);
+                obj = mksobj_with_flags(otyp, TRUE, FALSE, MKOBJ_TYPE_INITIAL, (struct monst*)0, trop->material, 0L, 0L, MKOBJ_FLAGS_FORCE_BASE_MATERIAL);
             }
             else
             { /* UNDEF_TYP */
@@ -2094,7 +2094,7 @@ mk_obj_with_material_in_container_known(container, itemtype, material)
 struct obj* container;
 int itemtype, material;
 {
-    struct obj* otmp = mksobj_with_flags(itemtype, FALSE, FALSE, TRUE, (struct monst*)0, material, 0L, 0L, 0UL);
+    struct obj* otmp = mksobj_with_flags(itemtype, FALSE, FALSE, MKOBJ_TYPE_CONTAINER, (struct monst*)0, material, 0L, 0L, 0UL);
     if (otmp)
     {
         otmp->bknown = 1;

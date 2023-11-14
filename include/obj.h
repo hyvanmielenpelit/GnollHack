@@ -59,6 +59,9 @@ struct obj {
                   OBSOLETE (moved to speflags): historic and gender for statues */
     short charges; /* number of charges for wand or charged tool ( >= -1 ), always set to -1/0 by cancellation */
     short special_quality; /* item-specific special quality, e.g., the amount of wetness of a towel, number of candles attached to candelabrum, not affected by cancellation */
+
+#define SPEQUAL_STATUE_HISTORIC                1
+
     unsigned long speflags; /* anything else that might be going on with an item, not affected by cancellation */
 
 #define SPEFLAGS_YOURS                         0x00000001UL
@@ -66,7 +69,7 @@ struct obj {
 #define SPEFLAGS_MALE                          0x00000004UL
 #define SPEFLAGS_FACING_RIGHT                  0x00000008UL
 #define SPEFLAGS_SCHROEDINGERS_BOX             0x00000010UL
-#define SPEFLAGS_STATUE_HISTORIC               0x00000020UL
+#define SPEFLAGS_INTENDED_FOR_SALE             0x00000020UL  /* Monsters will not wear this item */
 #define SPEFLAGS_CORPSE_ON_ICE                 0x00000040UL
 #define SPEFLAGS_DETECTED                      0x00000080UL
 #define SPEFLAGS_SERVICED_SPELL                0x00000100UL
@@ -86,7 +89,7 @@ struct obj {
 #define SPEFLAGS_CLONED_ITEM                   0x00400000UL
 #define SPEFLAGS_INSCRIPTION_REVEALED          0x00800000UL
 #define SPEFLAGS_ALTERNATIVE_APPEARANCE        0x01000000UL /* Alternative glyph is used for the object */
-#define SPEFLAGS_PREVIOUSLY_WIELDED               0x02000000UL
+#define SPEFLAGS_PREVIOUSLY_WIELDED            0x02000000UL
 #define SPEFLAGS_FAVORITE                      0x04000000UL
 #define SPEFLAGS_EMPTY_NOTICED                 0x08000000UL
 #define SPEFLAGS_BEING_BROKEN                  0x10000000UL
