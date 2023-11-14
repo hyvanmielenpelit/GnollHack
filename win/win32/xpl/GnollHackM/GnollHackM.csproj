@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net7.0-android;net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
+		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-		<!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
 		<OutputType>Exe</OutputType>
 		<RootNamespace>GnollHackM</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -30,7 +30,7 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
 		<ProvisioningType>manual</ProvisioningType>
 		<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
 		<CodesignProvision>Apple Dev M Development 2023</CodesignProvision>
@@ -437,7 +437,7 @@
 	  <None Remove="Platforms\Android\libs\arm64-v8a\libgnollhackdroid.so" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net7.0-android'">
+	<ItemGroup Condition="'$(TargetFramework)'=='net8.0-android'">
       <!--<EmbeddedJar Include="Platforms\Android\jars\fmod.jar" />-->
 	  <AndroidLibrary Include="Platforms\Android\jars\fmod.jar" />
 	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libfmod.so" />
@@ -467,7 +467,7 @@
 	  <Compile Include="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net7.0-ios' or '$(TargetFramework)'=='net7.0-maccatalyst'">
+	<ItemGroup Condition="'$(TargetFramework)'=='net8.0-ios' or '$(TargetFramework)'=='net8.0-maccatalyst'">
 		<NativeReference Include="Platforms\iOS\libs\libfmodstudio_iphoneos.a">
 			<Kind>Static</Kind>
 			<Frameworks>AudioToolbox CoreAudio</Frameworks>
@@ -510,7 +510,7 @@
 	<PropertyGroup>
 		<DefineConstants>$(DefineConstants);GNH_MAUI</DefineConstants>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
 		<DefineConstants>$(DefineConstants);UNITY_IPHONE</DefineConstants>
 	</PropertyGroup>
 
@@ -731,11 +731,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="SkiaSharp" Version="2.88.3" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.3" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="2.88.3" />
+		<PackageReference Include="SkiaSharp" Version="2.88.6" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.6" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="2.88.6" />
 	</ItemGroup>
 
 	<ItemGroup>
