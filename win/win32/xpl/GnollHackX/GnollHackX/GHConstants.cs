@@ -1586,7 +1586,8 @@ namespace GnollHackX
         public const bool DefaultCopyStreamingBankToDisk = false;
         public const bool DefaultDrawWallEnds = true;
         public const bool DefaultBreatheAnimations = true;
-        public const bool DefaultShowPickNStashContextCommand = true;        
+        public const bool DefaultShowPickNStashContextCommand = true;
+        public const bool DefaultShowPrevWepContextCommand = true;
         public const bool DefaultLighterDarkening = true;
         public const bool DefaultAlternativeLayerDrawing = false;
     }

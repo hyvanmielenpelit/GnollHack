@@ -485,7 +485,7 @@ LibCheckCurrentFileDescriptor(const char* dir)
 void
 LibReportFileDescriptors()
 {
-    maybe_report_file_descriptors("Process Report Requested", 24);
+    maybe_report_file_descriptors("File Descriptor Report Requested", 24);
 }
 
 int

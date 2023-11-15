@@ -433,7 +433,11 @@ namespace GnollHackX.Pages.Game
         private readonly object _showPut2BagContextCommandLock = new object();
         private bool _showPut2BagContextCommand = false;
         public bool ShowPut2BagContextCommand { get { lock (_showPut2BagContextCommandLock) { return _showPut2BagContextCommand; } } set { lock (_showPut2BagContextCommandLock) { _showPut2BagContextCommand = value; } } }
-        
+
+        private readonly object _showPrevWepContextCommandLock = new object();
+        private bool _showPrevWepContextCommand = false;
+        public bool ShowPrevWepContextCommand { get { lock (_showPrevWepContextCommandLock) { return _showPrevWepContextCommand; } } set { lock (_showPrevWepContextCommandLock) { _showPrevWepContextCommand = value; } } }
+
         private readonly object _accurateLayerDrawingLock = new object();
         private bool _accurateLayerDrawing = false;
         public bool AlternativeLayerDrawing { get { lock (_accurateLayerDrawingLock) { return _accurateLayerDrawing; } } set { lock (_accurateLayerDrawingLock) { _accurateLayerDrawing = value; } } }
@@ -739,6 +743,7 @@ namespace GnollHackX.Pages.Game
             DrawWallEnds = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
             BreatheAnimations = Preferences.Get("BreatheAnimations", GHConstants.DefaultBreatheAnimations);
             ShowPut2BagContextCommand = Preferences.Get("ShowPut2BagContextCommand", GHConstants.DefaultShowPickNStashContextCommand);
+            ShowPrevWepContextCommand = Preferences.Get("ShowPrevWepContextCommand", GHConstants.DefaultShowPrevWepContextCommand);
             AlternativeLayerDrawing = Preferences.Get("AlternativeLayerDrawing", GHConstants.DefaultAlternativeLayerDrawing);
 
             float deffontsize = GetDefaultMapFontSize();
@@ -1568,8 +1573,10 @@ namespace GnollHackX.Pages.Game
             int SitCmd = GHUtils.Ctrl('s');
             int RideCmd = GHUtils.Meta('R');
             int PrevWepCmd = GHUtils.Meta(16);
-            int PickToBagCmd = ';';
-            if (cmddefchar == PickToBagCmd && !ShowPut2BagContextCommand)
+            int PickNStashCmd = ';';
+            if (cmddefchar == PickNStashCmd && !ShowPut2BagContextCommand)
+                return; /* Do not add */
+            if (cmddefchar == PrevWepCmd && !ShowPrevWepContextCommand)
                 return; /* Do not add */
 
             _contextMenuData.Add(data);
@@ -1717,7 +1724,7 @@ namespace GnollHackX.Pages.Game
                         icon_string = GHApp.AppResourceName + ".Assets.UI.sit.png";
                     else if (cmddefchar == RideCmd)
                         icon_string = GHApp.AppResourceName + ".Assets.UI.ride.png";
-                    else if (cmddefchar == PickToBagCmd)
+                    else if (cmddefchar == PickNStashCmd)
                         icon_string = GHApp.AppResourceName + ".Assets.UI.picktobag.png";
                     else if (cmddefchar == PrevWepCmd)
                         icon_string = GHApp.AppResourceName + ".Assets.UI.wield.png";
