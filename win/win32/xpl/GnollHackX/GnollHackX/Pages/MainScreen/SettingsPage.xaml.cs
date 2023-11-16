@@ -174,13 +174,13 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage.BreatheAnimations = BreatheAnimationSwitch.IsToggled;
             Preferences.Set("BreatheAnimations", BreatheAnimationSwitch.IsToggled);
 
-            if (_gamePage != null)
-                _gamePage.ShowPut2BagContextCommand = Put2BagSwitch.IsToggled;
-            Preferences.Set("ShowPut2BagContextCommand", Put2BagSwitch.IsToggled);
+            //if (_gamePage != null)
+            //    _gamePage.ShowPut2BagContextCommand = Put2BagSwitch.IsToggled;
+            //Preferences.Set("ShowPut2BagContextCommand", Put2BagSwitch.IsToggled);
 
-            if (_gamePage != null)
-                _gamePage.ShowPrevWepContextCommand = PrevWepSwitch.IsToggled;
-            Preferences.Set("ShowPrevWepContextCommand", PrevWepSwitch.IsToggled);
+            //if (_gamePage != null)
+            //    _gamePage.ShowPrevWepContextCommand = PrevWepSwitch.IsToggled;
+            //Preferences.Set("ShowPrevWepContextCommand", PrevWepSwitch.IsToggled);
 
             GHApp.HideAndroidNavigationBar = NavBarSwitch.IsToggled;
             Preferences.Set("HideAndroidNavigationBar", GHApp.HideAndroidNavigationBar);
@@ -386,7 +386,7 @@ namespace GnollHackX.Pages.MainScreen
             int cursor = 0, graphics = 0, savestyle = 0, maprefresh = (int)UIUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
             bool mem = false, fps = false, battery = false, gpu = GHApp.IsGPUDefault, simplecmdlayout = true, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
-            bool breatheanimations = GHConstants.DefaultBreatheAnimations, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
+            bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting;
@@ -456,8 +456,8 @@ namespace GnollHackX.Pages.MainScreen
                 accuratedrawing = Preferences.Get("AlternativeLayerDrawing", GHConstants.DefaultAlternativeLayerDrawing);
                 wallends = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
                 breatheanimations = Preferences.Get("BreatheAnimations", GHConstants.DefaultBreatheAnimations);
-                put2bag = Preferences.Get("ShowPut2BagContextCommand", GHConstants.DefaultShowPickNStashContextCommand);
-                prevwep = Preferences.Get("ShowPrevWepContextCommand", GHConstants.DefaultShowPrevWepContextCommand);
+                //put2bag = Preferences.Get("ShowPut2BagContextCommand", GHConstants.DefaultShowPickNStashContextCommand);
+                //prevwep = Preferences.Get("ShowPrevWepContextCommand", GHConstants.DefaultShowPrevWepContextCommand);
             }
             else
             {
@@ -491,8 +491,8 @@ namespace GnollHackX.Pages.MainScreen
                 accuratedrawing = _gamePage.AlternativeLayerDrawing;
                 wallends = _gamePage.DrawWallEnds;
                 breatheanimations = _gamePage.BreatheAnimations;
-                put2bag = _gamePage.ShowPut2BagContextCommand;
-                prevwep = _gamePage.ShowPrevWepContextCommand;
+                //put2bag = _gamePage.ShowPut2BagContextCommand;
+                //prevwep = _gamePage.ShowPrevWepContextCommand;
             }
             CursorPicker.SelectedIndex = cursor;
             GraphicsPicker.SelectedIndex = graphics;
@@ -622,8 +622,8 @@ namespace GnollHackX.Pages.MainScreen
 #endif
             WallEndSwitch.IsToggled = wallends;
             BreatheAnimationSwitch.IsToggled = breatheanimations;
-            Put2BagSwitch.IsToggled = put2bag;
-            PrevWepSwitch.IsToggled = prevwep;
+            //Put2BagSwitch.IsToggled = put2bag;
+            //PrevWepSwitch.IsToggled = prevwep;
 
             _doChangeVolume = !GHApp.IsMuted;
         }

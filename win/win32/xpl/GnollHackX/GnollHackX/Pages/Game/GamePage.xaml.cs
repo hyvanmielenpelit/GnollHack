@@ -433,13 +433,13 @@ namespace GnollHackX.Pages.Game
         private bool _breatheAnimations = false;
         public bool BreatheAnimations { get { lock (_breatheAnimationLock) { return _breatheAnimations; } } set { lock (_breatheAnimationLock) { _breatheAnimations = value; } } }
 
-        private readonly object _showPut2BagContextCommandLock = new object();
-        private bool _showPut2BagContextCommand = false;
-        public bool ShowPut2BagContextCommand { get { lock (_showPut2BagContextCommandLock) { return _showPut2BagContextCommand; } } set { lock (_showPut2BagContextCommandLock) { _showPut2BagContextCommand = value; } } }
+        //private readonly object _showPut2BagContextCommandLock = new object();
+        //private bool _showPut2BagContextCommand = false;
+        //public bool ShowPut2BagContextCommand { get { lock (_showPut2BagContextCommandLock) { return _showPut2BagContextCommand; } } set { lock (_showPut2BagContextCommandLock) { _showPut2BagContextCommand = value; } } }
 
-        private readonly object _showPrevWepContextCommandLock = new object();
-        private bool _showPrevWepContextCommand = false;
-        public bool ShowPrevWepContextCommand { get { lock (_showPrevWepContextCommandLock) { return _showPrevWepContextCommand; } } set { lock (_showPrevWepContextCommandLock) { _showPrevWepContextCommand = value; } } }
+        //private readonly object _showPrevWepContextCommandLock = new object();
+        //private bool _showPrevWepContextCommand = false;
+        //public bool ShowPrevWepContextCommand { get { lock (_showPrevWepContextCommandLock) { return _showPrevWepContextCommand; } } set { lock (_showPrevWepContextCommandLock) { _showPrevWepContextCommand = value; } } }
 
         private readonly object _accurateLayerDrawingLock = new object();
         private bool _accurateLayerDrawing = false;
@@ -601,6 +601,11 @@ namespace GnollHackX.Pages.Game
         public SKRect SkillRect { get { lock (_skillRectLock) { return _skillRect; } } set { lock (_skillRectLock) { _skillRect = value; } } }
         private bool _skillRectDrawn = false;
 
+        private readonly object _prevWepRectLock = new object();
+        private SKRect _prevWepRect = new SKRect();
+        public SKRect PrevWepRect { get { lock (_prevWepRectLock) { return _prevWepRect; } } set { lock (_prevWepRectLock) { _prevWepRect = value; } } }
+        private bool _prevWepRectDrawn = false;
+
         private readonly object _healthRectLock = new object();
         private SKRect _healthRect = new SKRect();
         public SKRect HealthRect { get { lock (_healthRectLock) { return _healthRect; } } set { lock (_healthRectLock) { _healthRect = value; } } }
@@ -745,8 +750,8 @@ namespace GnollHackX.Pages.Game
             LighterDarkening = Preferences.Get("LighterDarkening", GHConstants.DefaultLighterDarkening);
             DrawWallEnds = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
             BreatheAnimations = Preferences.Get("BreatheAnimations", GHConstants.DefaultBreatheAnimations);
-            ShowPut2BagContextCommand = Preferences.Get("ShowPut2BagContextCommand", GHConstants.DefaultShowPickNStashContextCommand);
-            ShowPrevWepContextCommand = Preferences.Get("ShowPrevWepContextCommand", GHConstants.DefaultShowPrevWepContextCommand);
+            //ShowPut2BagContextCommand = Preferences.Get("ShowPut2BagContextCommand", GHConstants.DefaultShowPickNStashContextCommand);
+            //ShowPrevWepContextCommand = Preferences.Get("ShowPrevWepContextCommand", GHConstants.DefaultShowPrevWepContextCommand);
             AlternativeLayerDrawing = Preferences.Get("AlternativeLayerDrawing", GHConstants.DefaultAlternativeLayerDrawing);
 
             float deffontsize = GetDefaultMapFontSize();
@@ -856,6 +861,11 @@ namespace GnollHackX.Pages.Game
                     {
                         GHApp._skillBitmap = SKBitmap.Decode(stream);
                         GHApp._skillBitmap.SetImmutable();
+                    }
+                    using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.UI.wield.png"))
+                    {
+                        GHApp._prevWepBitmap = SKBitmap.Decode(stream);
+                        GHApp._prevWepBitmap.SetImmutable();
                     }
 
                     GHApp.InitializeArrowButtons(assembly);
@@ -1575,12 +1585,12 @@ namespace GnollHackX.Pages.Game
             int DigCmd = GHUtils.Ctrl('g');
             int SitCmd = GHUtils.Ctrl('s');
             int RideCmd = GHUtils.Meta('R');
-            int PrevWepCmd = GHUtils.Meta(16);
-            int PickNStashCmd = ';';
-            if (cmddefchar == PickNStashCmd && !ShowPut2BagContextCommand)
-                return; /* Do not add */
-            if (cmddefchar == PrevWepCmd && !ShowPrevWepContextCommand)
-                return; /* Do not add */
+            //int PrevWepCmd = GHUtils.Meta(16);
+            //int PickNStashCmd = ';';
+            //if (cmddefchar == PickNStashCmd && !ShowPut2BagContextCommand)
+            //    return; /* Do not add */
+            //if (cmddefchar == PrevWepCmd && !ShowPrevWepContextCommand)
+            //    return; /* Do not add */
 
             _contextMenuData.Add(data);
 
@@ -1712,6 +1722,9 @@ namespace GnollHackX.Pages.Game
                     else
                         icon_string = GHApp.AppResourceName + ".Assets.UI.chat.png";
                     break;
+                case ';':
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.picktobag.png";
+                    break;
                 default:
                     if (cmddefchar == LastPickedCmd)
                         icon_string = GHApp.AppResourceName + ".Assets.UI.lastitem.png";
@@ -1727,10 +1740,10 @@ namespace GnollHackX.Pages.Game
                         icon_string = GHApp.AppResourceName + ".Assets.UI.sit.png";
                     else if (cmddefchar == RideCmd)
                         icon_string = GHApp.AppResourceName + ".Assets.UI.ride.png";
-                    else if (cmddefchar == PickNStashCmd)
-                        icon_string = GHApp.AppResourceName + ".Assets.UI.picktobag.png";
-                    else if (cmddefchar == PrevWepCmd)
-                        icon_string = GHApp.AppResourceName + ".Assets.UI.wield.png";
+                    //else if (cmddefchar == PickNStashCmd)
+                    //    icon_string = GHApp.AppResourceName + ".Assets.UI.picktobag.png";
+                    //else if (cmddefchar == PrevWepCmd)
+                    //    icon_string = GHApp.AppResourceName + ".Assets.UI.wield.png";
                     else
                         icon_string = GHApp.AppResourceName + ".Assets.UI.missing_icon.png";
                     break;
@@ -7232,6 +7245,8 @@ namespace GnollHackX.Pages.Game
                 /* Window strings */
                 float lastStatusRowPrintY = 0.0f;
                 float lastStatusRowFontSpacing = 0.0f;
+                float herewindowtop = canvasheight;
+                float messagewindowtop = canvasheight;
 
                 lock (_canvasButtonLock)
                 {
@@ -7285,6 +7300,18 @@ namespace GnollHackX.Pages.Game
                                         float addition = newleft - winRect.Left;
                                         winRect.Left += addition;
                                         winRect.Right += addition;
+                                    }
+
+                                    switch (_currentGame.Windows[i].WindowType)
+                                    {
+                                        case GHWinType.Here:
+                                            herewindowtop = winRect.Top;
+                                            break;
+                                        case GHWinType.Message:
+                                            messagewindowtop = winRect.Top;
+                                            break;
+                                        default:
+                                            break;
                                     }
 
                                     using (SKPaint winPaint = new SKPaint())
@@ -7583,6 +7610,7 @@ namespace GnollHackX.Pages.Game
                     _healthRectDrawn = false;
                     _manaRectDrawn = false;
                     _skillRectDrawn = false;
+                    _prevWepRectDrawn = false;
                     float orbleft = 5.0f;
                     float orbbordersize = (float)(lAbilitiesButton.Width / canvasView.Width) * canvaswidth;
 
@@ -8982,16 +9010,22 @@ namespace GnollHackX.Pages.Game
                         }
 
                         bool orbsok = false;
+                        bool prevwepok = false;
                         bool skillbuttonok = false;
                         lock (StatusFieldLock)
                         {
                             orbsok = StatusFields[(int)statusfields.BL_HPMAX] != null && StatusFields[(int)statusfields.BL_HPMAX].Text != "" && StatusFields[(int)statusfields.BL_HPMAX].Text != "0";
                             skillbuttonok = StatusFields[(int)statusfields.BL_SKILL] != null && StatusFields[(int)statusfields.BL_SKILL].Text != null && StatusFields[(int)statusfields.BL_SKILL].Text == "Skill";
                         }
-
+                        lock (_weaponStyleObjDataItemLock)
+                        {
+                            prevwepok = _weaponStyleObjDataItem[0] != null ? _weaponStyleObjDataItem[0].PreviousWeaponFound : false;
+                        }
                         float lastdrawnrecty = ClassicStatusBar ? Math.Max(abilitybuttonbottom, lastStatusRowPrintY + 0.0f * lastStatusRowFontSpacing) : statusbarheight;
                         tx = orbleft;
                         ty = lastdrawnrecty + 5.0f;
+                        if (orbsok && skillbuttonok && prevwepok && ty + orbbordersize * 4 + 5 + 15 + 15 > Math.Min(herewindowtop, messagewindowtop))
+                            skillbuttonok = false;
 
                         /* HP and MP */
                         if ((ShowOrbs | !ClassicStatusBar) && orbsok)
@@ -9076,6 +9110,35 @@ namespace GnollHackX.Pages.Game
                             StopProfiling(GHProfilingStyle.Text);
 #endif
                             textPaint.TextAlign = SKTextAlign.Left;
+                            lastdrawnrecty = skillDest.Bottom + textPaint.FontSpacing;
+                        }
+
+                        if (prevwepok)
+                        {
+                            SKRect prevWepDest = new SKRect(tx, lastdrawnrecty + 15.0f, tx + orbbordersize, lastdrawnrecty + 15.0f + orbbordersize);
+                            PrevWepRect = prevWepDest;
+                            _prevWepRectDrawn = true;
+                            textPaint.Color = SKColors.White;
+                            textPaint.Typeface = GHApp.LatoRegular;
+                            textPaint.TextSize = 9.5f * prevWepDest.Width / 50.0f;
+                            textPaint.TextAlign = SKTextAlign.Center;
+#if GNH_MAP_PROFILING && DEBUG
+                            StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                            canvas.DrawBitmap(GHApp._prevWepBitmap, prevWepDest, textPaint);
+#if GNH_MAP_PROFILING && DEBUG
+                            StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+                            float text_x = (prevWepDest.Left + prevWepDest.Right) / 2;
+                            float text_y = prevWepDest.Bottom - textPaint.FontMetrics.Ascent;
+#if GNH_MAP_PROFILING && DEBUG
+                            StartProfiling(GHProfilingStyle.Text);
+#endif
+                            canvas.DrawText("Wield Last", text_x, text_y, textPaint);
+#if GNH_MAP_PROFILING && DEBUG
+                            StopProfiling(GHProfilingStyle.Text);
+#endif
+                            textPaint.TextAlign = SKTextAlign.Left;
                         }
                     }
                     
@@ -9087,6 +9150,8 @@ namespace GnollHackX.Pages.Game
                         ManaRect = new SKRect();
                     if (!_skillRectDrawn)
                         SkillRect = new SKRect();
+                    if (!_prevWepRectDrawn)
+                        PrevWepRect = new SKRect();
 
                     /* Number Pad and Direction Arrows */
                     _canvasButtonRect.Right = canvaswidth * (float)(0.8);
@@ -11526,6 +11591,7 @@ namespace GnollHackX.Pages.Game
         public float _statusClipBottom = 0;
         private bool _touchMoved = false;
         private bool _touchWithinSkillButton = false;
+        private bool _touchWithinPrevWepButton = false;
         private bool _touchWithinHealthOrb = false;
         private bool _touchWithinManaOrb = false;
         private bool _touchWithinStatusBar = false;
@@ -11567,6 +11633,7 @@ namespace GnollHackX.Pages.Game
                         _savedSender = null;
                         _savedEventArgs = null;
                         _touchWithinSkillButton = false;
+                        _touchWithinPrevWepButton = false;
                         _touchWithinHealthOrb = false;
                         _touchWithinManaOrb = false;
                         _touchWithinStatusBar = false;
@@ -11586,6 +11653,10 @@ namespace GnollHackX.Pages.Game
                             if (SkillRect.Contains(e.Location))
                             {
                                 _touchWithinSkillButton = true;
+                            }
+                            else if (PrevWepRect.Contains(e.Location))
+                            {
+                                _touchWithinPrevWepButton = true;
                             }
                             else if (HealthRect.Contains(e.Location))
                             {
@@ -11650,7 +11721,7 @@ namespace GnollHackX.Pages.Game
 
                                 if (TouchDictionary.Count == 1)
                                 {
-                                    if (_touchWithinSkillButton || _touchWithinHealthOrb || _touchWithinManaOrb || _touchWithinStatusBar || (_touchWithinPet > 0 && !_showDirections && !_showNumberPad) || _touchWithinYouButton)
+                                    if (_touchWithinSkillButton || _touchWithinPrevWepButton || _touchWithinHealthOrb || _touchWithinManaOrb || _touchWithinStatusBar || (_touchWithinPet > 0 && !_showDirections && !_showNumberPad) || _touchWithinYouButton)
                                     {
                                         /* Do nothing */
                                     }
@@ -11824,6 +11895,7 @@ namespace GnollHackX.Pages.Game
                                     _savedSender = null;
                                     _savedEventArgs = null;
                                     _touchWithinSkillButton = false;
+                                    _touchWithinPrevWepButton = false;
                                     _touchWithinHealthOrb = false;
                                     _touchWithinManaOrb = false;
                                     _touchWithinStatusBar = false;
@@ -12004,6 +12076,10 @@ namespace GnollHackX.Pages.Game
                             else if (_touchWithinSkillButton)
                             {
                                 GenericButton_Clicked(sender, e, (int)'S');
+                            }
+                            else if (_touchWithinPrevWepButton)
+                            {
+                                GenericButton_Clicked(sender, e, GHUtils.Meta(16));
                             }
                             else if (_touchWithinHealthOrb)
                             {
@@ -12498,6 +12574,7 @@ namespace GnollHackX.Pages.Game
                 bool notweapon = is_uwep ? notweapon1 : is_uwep2 ? notweapon2 : false;
                 bool isammo = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_IS_AMMO) != 0UL;
                 bool isthrowingweapon = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_THROWING_WEAPON) != 0UL;
+                bool prevwepfound = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_PREV_WEP_FOUND) != 0UL;
 
                 int idx = is_uwep ? 0 : is_uwep2 ? 1 : 2;
                 lock (_weaponStyleObjDataItemLock)
@@ -12508,7 +12585,7 @@ namespace GnollHackX.Pages.Game
                             _weaponStyleObjDataItem[idx] = null;
                             break;
                         case 2: /* Add item */
-                            _weaponStyleObjDataItem[idx] = new ObjectDataItem(otmp, otypdata, hallucinated, outofammo, wrongammo, notbeingused, notweapon, foundthisturn, isammo, isthrowingweapon);
+                            _weaponStyleObjDataItem[idx] = new ObjectDataItem(otmp, otypdata, hallucinated, outofammo, wrongammo, notbeingused, notweapon, foundthisturn, isammo, isthrowingweapon, prevwepfound);
                             break;
                         case 3: /* Add container item to previous item */
                             _weaponStyleObjDataItem[idx].ContainedObjs.Add(new ObjectDataItem(otmp, otypdata, hallucinated));

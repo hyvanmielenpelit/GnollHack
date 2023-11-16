@@ -381,7 +381,7 @@
                                     <Switch x:Name="BreatheAnimationSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
                             </ViewCell>
-                            <ViewCell>
+                            <!--<ViewCell>
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Context Pick and Stash"
                                            FontFamily="Underwood" TextColor="Black"
@@ -400,7 +400,7 @@
                                            HorizontalOptions="Start" />
                                     <Switch x:Name="PrevWepSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 </StackLayout>
-                            </ViewCell>
+                            </ViewCell>-->
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Bar Command 1" x:Name="SimpleCommandBarButton1Label"

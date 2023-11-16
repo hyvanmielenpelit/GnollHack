@@ -1211,6 +1211,7 @@ namespace GnollHackX
         OBJDATA_FLAGS_FOUND_THIS_TURN = 0x00008000UL,
         OBJDATA_FLAGS_IS_AMMO =         0x00010000UL, /* is_ammo is TRUE */
         OBJDATA_FLAGS_THROWING_WEAPON = 0x00020000UL, /* throwing_weapon is TRUE */
+        OBJDATA_FLAGS_PREV_WEP_FOUND =  0x00040000UL,
     }
 
     [Flags]
@@ -1586,8 +1587,8 @@ namespace GnollHackX
         public const bool DefaultCopyStreamingBankToDisk = false;
         public const bool DefaultDrawWallEnds = true;
         public const bool DefaultBreatheAnimations = true;
-        public const bool DefaultShowPickNStashContextCommand = true;
-        public const bool DefaultShowPrevWepContextCommand = true;
+        //public const bool DefaultShowPickNStashContextCommand = true;
+        //public const bool DefaultShowPrevWepContextCommand = true;
         public const bool DefaultLighterDarkening = true;
         public const bool DefaultAlternativeLayerDrawing = false;
     }

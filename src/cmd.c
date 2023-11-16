@@ -9664,18 +9664,18 @@ enum create_context_menu_types menu_type;
             add_context_menu(':', cmd_from_func(dolook), CONTEXT_MENU_STYLE_GENERAL, NO_GLYPH, "Look Here", "", 0, NO_COLOR);
         }
 
-        if (uwep && !cantwield(youmonst.data) && (is_pick(uwep) || is_saw(uwep) || is_lamp(uwep))) // Axes are too often main weapons
-        {
-            struct obj* prevwep;
-            for (prevwep = invent; prevwep; prevwep = prevwep->nobj)
-            {
-                if (prevwep->speflags & SPEFLAGS_PREVIOUSLY_WIELDED)
-                {
-                    add_context_menu(M(16), cmd_from_func(dowieldprevwep), CONTEXT_MENU_STYLE_GENERAL, prevwep->gui_glyph, "Wield Last", "", 0, NO_COLOR);
-                    break;
-                }
-            }
-        }
+        //if (uwep && !cantwield(youmonst.data) && (is_pick(uwep) || is_saw(uwep) || is_lamp(uwep))) // Axes are too often main weapons
+        //{
+        //    struct obj* prevwep;
+        //    for (prevwep = invent; prevwep; prevwep = prevwep->nobj)
+        //    {
+        //        if (prevwep->speflags & SPEFLAGS_PREVIOUSLY_WIELDED)
+        //        {
+        //            add_context_menu(M(16), cmd_from_func(dowieldprevwep), CONTEXT_MENU_STYLE_GENERAL, prevwep->gui_glyph, "Wield Last", "", 0, NO_COLOR);
+        //            break;
+        //        }
+        //    }
+        //}
 
         if (context.last_picked_obj_oid > 0 && context.last_picked_obj_show_duration_left > 0)
         {

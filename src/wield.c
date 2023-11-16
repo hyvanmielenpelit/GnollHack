@@ -426,7 +426,11 @@ dowieldprevwep()
     if (wep)
         return wield_weapon(wep);
     else
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "couldn't locate your previous weapon!");
         return 0;
+    }
 }
 
 STATIC_OVL
@@ -1448,6 +1452,9 @@ wield_tool(obj, verb)
 struct obj *obj;
 const char *verb; /* "rub",&c */
 {
+    if (!obj)
+        return FALSE;
+
     const char *what;
     boolean more_than_1;
 
@@ -1575,6 +1582,7 @@ const char *verb; /* "rub",&c */
             setuswapwep((struct obj*)0, W_SWAPWEP2);
 
         struct obj *oldwep = selected_hand_is_right ? uwep: uarms;
+        obj->speflags |= SPEFLAGS_PREVIOUSLY_WIELDED;
 
         if (will_weld(obj, &youmonst))
         {
@@ -1596,19 +1604,23 @@ const char *verb; /* "rub",&c */
 
         /* refresh wep */
         wep = selected_hand_is_right ? uwep : uarms;
+        boolean setprevwepflag = FALSE;
         if (oldwep && wep != oldwep)
         {
             if (flags.pushweapon)
                 setuswapwep(oldwep, swapwepslot);
             else
             {
-                struct obj* otmp;
-                for(otmp = invent; otmp; otmp = otmp->nobj)
-                    otmp->speflags &= ~SPEFLAGS_PREVIOUSLY_WIELDED;
-
-                oldwep->speflags |= SPEFLAGS_PREVIOUSLY_WIELDED;
+                setprevwepflag = TRUE;
             }
         }
+
+        struct obj* otmp;
+        for (otmp = invent; otmp; otmp = otmp->nobj)
+            otmp->speflags &= ~SPEFLAGS_PREVIOUSLY_WIELDED;
+
+        if(setprevwepflag && oldwep)
+            oldwep->speflags |= SPEFLAGS_PREVIOUSLY_WIELDED;
     }
 
 

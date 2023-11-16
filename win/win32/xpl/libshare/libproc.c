@@ -1003,7 +1003,21 @@ void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int colo
         struct obj* ammo = idx == BL_UQUIVER ? (struct obj*)0 : idx == BL_UWEP ? uquiver : uquiver;
 
         if (idx == BL_UWEP)
+        {
             owepflags |= OBJDATA_FLAGS_UWEP;
+            if (uwep && (is_pick(uwep) || is_saw(uwep) || is_axe(uwep) || is_whip(uwep) || is_hook(uwep) || is_appliable_pole_type_weapon(uwep) || is_lamp(uwep)))
+            {
+                struct obj* prevwep;
+                for (prevwep = invent; prevwep; prevwep = prevwep->nobj)
+                {
+                    if (prevwep->speflags & SPEFLAGS_PREVIOUSLY_WIELDED)
+                    {
+                        owepflags |= OBJDATA_FLAGS_PREV_WEP_FOUND;
+                        break;
+                    }
+                }
+            }
+        }
         else if (idx == BL_UWEP2)
         {
             owepflags |= OBJDATA_FLAGS_UWEP2;
