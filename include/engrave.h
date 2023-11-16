@@ -28,6 +28,7 @@ struct engr {
 
 #define ENGR_FLAGS_NONE             0x0000
 #define ENGR_FLAGS_NON_SMUDGING     0x0001
+#define ENGR_FLAGS_SEEN             0x0002
 
 #define newengr(lth) \
     (struct engr *) alloc((size_t)(lth) + sizeof(struct engr))

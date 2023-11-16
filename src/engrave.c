@@ -407,6 +407,7 @@ int x, y;
             char ybuf[BUFSZ];
             Sprintf(ybuf, "You %s", (Blind) ? "feel the words" : "read");
             custompline_ex_prefix(ATR_NONE, CLR_MSG_ATTENTION, ybuf, ATR_NONE, CLR_MSG_ATTENTION, ": ", ATR_NONE, CLR_MSG_TEXT, 0U, "\"%s\".", et);
+            ep->engr_flags |= ENGR_FLAGS_SEEN;
             //You_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s: \"%s\".", (Blind) ? "feel the words" : "read", et);
             if (context.run > 1)
                 nomul(0);
@@ -440,7 +441,7 @@ unsigned short e_flags;
         exercise(A_WIS, TRUE);
     ep->engr_time = e_time;
     ep->engr_type = e_type > 0 ? e_type : rnd(ENGR_BLOOD);
-    ep->engr_flags = e_flags;
+    ep->engr_flags = e_flags | (!in_mklev && u.ux > 0 && x == u.ux && y == u.uy ? ENGR_FLAGS_SEEN : 0);
     ep->engr_lth = smem;
 }
 
@@ -453,6 +454,48 @@ int x, y;
 
     if (ep)
         del_engr(ep);
+}
+
+size_t
+count_engravings(VOID_ARGS)
+{
+    register struct engr* ep = head_engr;
+    size_t cnt = 0;
+
+    while (ep) {
+        cnt++;
+        ep = ep->nxt_engr;
+    }
+    return cnt;
+}
+
+coord*
+get_engraving_coords(array_size_ptr)
+size_t* array_size_ptr;
+{
+    coord* coordarray = 0;
+    size_t cnt = count_engravings();   
+    if (cnt > 0)
+    {
+        coordarray = (coord*)alloc(cnt * sizeof(coord));
+        if (coordarray)
+        {
+            memset((genericptr_t)coordarray, 0, cnt * sizeof(coord));
+            register struct engr* ep = head_engr;
+            size_t idx;
+            for (idx = 0; idx < cnt && ep; idx++, ep = ep->nxt_engr)
+            {
+                coordarray[idx].x = ep->engr_x;
+                coordarray[idx].y = ep->engr_y;
+            }
+        }
+        else
+            cnt = 0;
+    }
+    
+    if (array_size_ptr)
+        *array_size_ptr = cnt;
+    return coordarray;
 }
 
 /*
@@ -995,6 +1038,7 @@ doengrave()
     /* Something has changed the engraving here */
     if (*buf) {
         make_engr_at(u.ux, u.uy, buf, moves, type, ENGR_FLAGS_NONE);
+        newsym(u.ux, u.uy);
         if (!Blind)
         {
             pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_text2, "%s now reads: \"%s\".", type == ENGR_SIGNPOST ? "sign" : "engraving", buf);
@@ -1257,6 +1301,7 @@ doengrave()
 
     /* Put the engraving onto the map */
     make_engr_at(u.ux, u.uy, buf, moves - multi, type, ENGR_FLAGS_NONE);
+    newsym(u.ux, u.uy);
 
     if (!strcmp(buf, Elbereth_word))
         u.uevent.elbereth_known = 1;
@@ -1400,6 +1445,7 @@ struct engr *ep;
 
     ep->engr_x = tx;
     ep->engr_y = ty;
+    ep->engr_flags &= ~ENGR_FLAGS_SEEN;
 }
 
 /* Create a headstone at the given location.

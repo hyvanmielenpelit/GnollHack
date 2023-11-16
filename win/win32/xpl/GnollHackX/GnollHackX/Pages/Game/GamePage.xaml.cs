@@ -18,6 +18,9 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Collections;
+using System.Data;
+using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
+
 
 #if GNH_MAUI
 using GnollHackX;
@@ -5298,6 +5301,264 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        SKColor _dustColor = new SKColor(64, 64, 64, 127);
+        SKColor _engraveOutlineColor = new SKColor(96, 96, 96, 63);
+        SKColor _engraveFillColor = new SKColor(64, 64, 64, 191);
+        SKColor _burnOutlineColor = SKColors.Black.WithAlpha(63);
+        SKColor _burnFillColor = SKColors.Black.WithAlpha(191);
+        SKColor _bloodOutlineColor = SKColors.Red.WithAlpha(63);
+        SKColor _bloodFillColor = SKColors.Red.WithAlpha(191);
+        SKColor _headStoneFillColor = new SKColor(96, 96, 96, 191);
+        SKColor _headStoneOutlineColor = new SKColor(160, 160, 160, 191);
+        SKColor _signPostFillColor = SKColors.Brown.WithAlpha(191);
+        SKColor _signPostOutlineColor = SKColors.SandyBrown.WithAlpha(191);
+        SKColor _magicShineOutlineColor = SKColors.Cyan;
+        float[] _shineAnimation = new float[]
+        {
+            0.0f,
+            0.0025f,
+            0.005f,
+            0.0075f,
+            0.01f,
+            0.0125f,
+            0.015f,
+            0.0175f,
+            0.02f,
+            0.0275f,
+            0.035f,
+            0.0425f,
+            0.05f,
+            0.0625f,
+            0.0750f,
+            0.0875f,
+            0.1f,
+            0.125f,
+            0.15f,
+            0.175f,
+            0.2f,
+            0.225f,
+            0.25f,
+            0.275f,
+            0.3f,
+            0.325f,
+            0.35f,
+            0.375f,
+            0.4f,
+            0.425f,
+            0.45f,
+            0.475f,
+            0.5f,
+            0.525f,
+            0.55f,
+            0.575f,
+            0.6f,
+            0.625f,
+            0.65f,
+            0.675f,
+            0.7f,
+            0.725f,
+            0.75f,
+            0.775f,
+            0.8f,
+            0.825f,
+            0.875f,
+            0.875f,
+            0.9f,
+            0.9125f,
+            0.925f,
+            0.9375f,
+            0.95f,
+            0.9575f,
+            0.965f,
+            0.9725f,
+            0.98f,
+            0.9825f,
+            0.985f,
+            0.9875f,
+            0.99f,
+            0.9925f,
+            0.995f,
+            0.9975f,
+            1.0f,
+            0.9975f,
+            0.995f,
+            0.9925f,
+            0.99f,
+            0.9875f,
+            0.985f,
+            0.9825f,
+            0.98f,
+            0.9725f,
+            0.965f,
+            0.9575f,
+            0.95f,
+            0.9375f,
+            0.925f,
+            0.9125f,
+            0.9f,
+            0.875f,
+            0.875f,
+            0.825f,
+            0.8f,
+            0.775f,
+            0.775f,
+            0.725f,
+            0.7f,
+            0.675f,
+            0.675f,
+            0.625f,
+            0.6f,
+            0.575f,
+            0.575f,
+            0.525f,
+            0.5f,
+            0.475f,
+            0.475f,
+            0.425f,
+            0.4f,
+            0.375f,
+            0.375f,
+            0.325f,
+            0.3f,
+            0.275f,
+            0.275f,
+            0.225f,
+            0.2f,
+            0.175f,
+            0.175f,
+            0.125f,
+            0.1f,
+            0.0875f,
+            0.0750f,
+            0.0625f,
+            0.05f,
+            0.0425f,
+            0.035f,
+            0.0275f,
+            0.02f,
+            0.0175f,
+            0.015f,
+            0.0125f,
+            0.01f,
+            0.0075f,
+            0.005f,
+            0.0025f,
+            0.0f,
+        };
+
+        void DrawEngraving(SKCanvas canvas, SKPaint textPaint, int mapx, int mapy, float offsetX, float offsetY, float usedOffsetX, float usedOffsetY, float mapFontAscent,
+            float width, float height, long generalcountervalue)
+        {
+            /* Skip drawing certain engravings */
+            switch (_mapData[mapx, mapy].Engraving.EngrType)
+            {
+                case (int)EngravingType.ENGR_HEADSTONE:
+                case (int)EngravingType.ENGR_SIGNPOST:
+                    return;
+                default:
+                    break;
+            }
+
+            /* Draw engraving */
+            if (_mapData[mapx, mapy].Engraving.Text != null && _mapData[mapx, mapy].Engraving.Text != "" && _mapData[mapx, mapy].Engraving.RowSplit != null)
+            {
+                int len = _mapData[mapx, mapy].Engraving.Text.Length;
+                SKColor oldcolor = textPaint.Color;
+                SKTypeface oldtypeface = textPaint.Typeface;
+                float oldtextsize = textPaint.TextSize;
+                textPaint.TextSize = 10;
+                if ((_mapData[mapx, mapy].Engraving.GeneralFlags & 1) != 0)
+                    textPaint.Typeface = GHApp.EndorTypeface;
+                else
+                    textPaint.Typeface = GHApp.EndorTypeface;
+
+                SKColor outlineColor = SKColors.Black;
+                SKColor fillColor = SKColors.Black;
+                bool hasOutline = false;
+                switch (_mapData[mapx, mapy].Engraving.EngrType)
+                {
+                    case (int)EngravingType.DUST:
+                        fillColor = _dustColor;
+                        break;
+                    case (int)EngravingType.ENGRAVE:
+                        hasOutline = true;
+                        fillColor = _engraveFillColor;
+                        outlineColor = _engraveOutlineColor;
+                        break;
+                    case (int)EngravingType.BURN:
+                        hasOutline = true;
+                        fillColor = _burnFillColor;
+                        outlineColor = _burnOutlineColor;
+                        break;
+                    case (int)EngravingType.ENGR_BLOOD:
+                        hasOutline = true;
+                        fillColor = _bloodFillColor;
+                        outlineColor = _bloodOutlineColor;
+                        break;
+                    case (int)EngravingType.ENGR_HEADSTONE:
+                        hasOutline = true;
+                        fillColor = _headStoneFillColor;
+                        outlineColor = _headStoneOutlineColor;
+                        break;
+                    case (int)EngravingType.ENGR_SIGNPOST:
+                        hasOutline = true;
+                        fillColor = _signPostFillColor;
+                        outlineColor = _signPostOutlineColor;
+                        break;
+                    default:
+                        textPaint.Color = SKColors.Black;
+                        break;
+                }
+
+                float atwidth = textPaint.MeasureText("A");
+                if (atwidth > 0)
+                {
+                    float wpadding = width / 32;
+                    float stwidth = atwidth * 4;
+                    int rowcnt = _mapData[mapx, mapy].Engraving.RowSplit.Length;
+                    int rowidx = -1;
+                    float rscale = (width - 2 * wpadding) / stwidth;
+                    float prerowheight = textPaint.FontSpacing * rscale;
+                    float rowhscale = prerowheight * rowcnt > height ? height / (prerowheight * rowcnt) : 1.0f;
+                    float rowheight = prerowheight * rowhscale;
+                    foreach (string str in _mapData[mapx, mapy].Engraving.RowSplit)
+                    {
+                        rowidx++;
+                        textPaint.TextSize = 10;
+                        float twidth = textPaint.MeasureText(str);
+                        float usedtwidth = twidth > stwidth ? twidth : stwidth;
+                        float tscale = rowhscale * (width - 2 * wpadding) / usedtwidth;
+                        textPaint.TextSize = tscale * 10;
+                        float act_text_width = twidth * tscale;
+                        float tx = offsetX + usedOffsetX + width * (float)mapx + wpadding + (width - act_text_width) / 2;
+                        float ty = offsetY + usedOffsetY + height * (float)mapy + mapFontAscent - textPaint.FontMetrics.Ascent
+                            + (height - rowheight * rowcnt) / 2 + rowidx * rowheight + (rowheight - textPaint.FontSpacing) / 2;
+                        textPaint.Style = SKPaintStyle.Fill;
+                        textPaint.Color = fillColor;
+                        canvas.DrawText(str, tx, ty, textPaint);
+                        if (hasOutline)
+                        {
+                            textPaint.Style = SKPaintStyle.Stroke;
+                            textPaint.Color = outlineColor;
+                            textPaint.StrokeWidth = textPaint.TextSize / 5;
+                            canvas.DrawText(str, tx, ty, textPaint);
+                        }
+                        if ((_mapData[mapx, mapy].Engraving.GeneralFlags & 1) != 0)
+                        {
+                            textPaint.Style = SKPaintStyle.Fill;
+                            int alen = _shineAnimation.Length;
+                            textPaint.Color = _magicShineOutlineColor.WithAlpha((byte)(_shineAnimation[generalcountervalue % alen] * 255));
+                            canvas.DrawText(str, tx, ty, textPaint);
+                        }
+                    }
+                }
+                textPaint.Color = oldcolor;
+                textPaint.Typeface = oldtypeface;
+                textPaint.TextSize = oldtextsize;
+                textPaint.Style = SKPaintStyle.Fill;
+            }
+        }
+
         void GetBaseMoveOffsets(int mapx, int mapy, sbyte monster_origin_x, sbyte monster_origin_y, float width, float height, long maincounterdiff, long moveIntervals, ref float base_move_offset_x, ref float base_move_offset_y)
         {
             int movediffx = (int)monster_origin_x - mapx;
@@ -5824,6 +6085,9 @@ namespace GnollHackX.Pages.Game
                                                     {
                                                         for (int mapx = startX; mapx <= endX; mapx++)
                                                         {
+                                                            if (layer_idx == (int)layer_types.LAYER_FEATURE_DOODAD && _mapData[mapx, mapy].Engraving.HasEngraving)
+                                                                DrawEngraving(canvas, textPaint, mapx, mapy, offsetX, offsetY, usedOffsetX, usedOffsetY, mapFontAscent, width, height, generalcountervalue);
+
                                                             if (_mapData[mapx, mapy].Layers.layer_glyphs == null || _mapData[mapx, mapy].Layers.layer_gui_glyphs == null)
                                                                 continue;
 
@@ -12315,6 +12579,24 @@ namespace GnollHackX.Pages.Game
                         }
                     }
                 }
+            }
+        }
+
+        public void ClearEngravingData(int x, int y)
+        {
+            lock (_mapDataLock)
+            {
+                if (GHUtils.isok(x, y))
+                    _mapData[x, y].Engraving = new EngravingInfo();
+            }
+        }
+
+        public void AddEngravingData(int x, int y, string engraving_text, int etype, ulong eflags, ulong gflags)
+        {
+            lock(_mapDataLock)
+            {
+                if (GHUtils.isok(x, y))
+                    _mapData[x, y].Engraving = new EngravingInfo(engraving_text, etype, eflags, gflags);
             }
         }
 

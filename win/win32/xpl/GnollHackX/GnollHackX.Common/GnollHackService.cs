@@ -166,7 +166,8 @@ namespace GnollHackX.Unknown
             ReportPlayerNameCallback callback_report_player_name,
             ReportPlayTimeCallback callback_report_play_time,
             SendObjectDataCallback callback_send_object_data,
-            SendMonsterDataCallback callback_send_monster_data
+            SendMonsterDataCallback callback_send_monster_data,
+            SendEngravingDataCallback callback_send_engraving_data
         );
 
         [DllImport(PlatformConstants.dll)]
@@ -1104,7 +1105,8 @@ namespace GnollHackX.Unknown
                 ghGame.ClientCallback_ReportPlayerName,
                 ghGame.ClientCallback_ReportPlayTime,
                 ghGame.ClientCallback_SendObjectData,
-                ghGame.ClientCallback_SendMonsterData
+                ghGame.ClientCallback_SendMonsterData,
+                ghGame.ClientCallback_SendEngravingData
                 );
 
         }

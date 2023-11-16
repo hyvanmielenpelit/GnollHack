@@ -660,7 +660,8 @@ int RunGnollHack(
     ReportPlayerNameCallback callback_report_player_name,
     ReportPlayTimeCallback callback_report_play_time,
     SendObjectDataCallback callback_send_object_data,
-    SendMonsterDataCallback callback_send_monster_data
+    SendMonsterDataCallback callback_send_monster_data,
+    SendEngravingDataCallback callback_send_engraving_data
 )
 {
     char cmdbuf[BUFSZ] = "";
@@ -824,6 +825,7 @@ int RunGnollHack(
     lib_callbacks.callback_report_play_time = callback_report_play_time;
     lib_callbacks.callback_send_object_data = callback_send_object_data;
     lib_callbacks.callback_send_monster_data = callback_send_monster_data;
+    lib_callbacks.callback_send_engraving_data = callback_send_engraving_data;
 
     windowprocs.win_raw_print = libdef_raw_print;
     windowprocs.win_raw_print_bold = libdef_raw_print_bold;

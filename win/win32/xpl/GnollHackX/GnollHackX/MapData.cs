@@ -23,6 +23,7 @@ namespace GnollHackX
         public bool MapAnimated { get; set; }
         public bool RedrawTile { get; set; }
         public bool HasEnlargementOrAnimationOrSpecialHeight { get; set; }
+        public EngravingInfo Engraving;
     }
 
 }

@@ -213,4 +213,6 @@ namespace GnollHackX
     public delegate void SendObjectDataCallback(int x, int y, IntPtr otmp_ptr, int cmdtype, int where, IntPtr otypdata_ptr, ulong oflags);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void SendMonsterDataCallback(int cmdtype, int x, int y, IntPtr monster_data_ptr, ulong oflags);
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void SendEngravingDataCallback(int cmdtype, int x, int y, string engraving_text, int etype, ulong eflags, ulong gflags);
 }

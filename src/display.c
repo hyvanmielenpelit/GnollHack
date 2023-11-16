@@ -3573,6 +3573,23 @@ int cursor_on_u;
             }
         }
     }
+
+    size_t ecnt = 0;
+    coord* ecoords = get_engraving_coords(&ecnt);
+    if (ecoords)
+    {
+        int eidx;
+        xchar ex, ey;
+        for (eidx = 0; eidx < ecnt; eidx++)
+        {
+            ex = ecoords[eidx].x;
+            ey = ecoords[eidx].y;
+            if (isok(ex, ey))
+                gbuf[ey][ex].layers.layer_flags |= LFLAGS_L_ENGRAVING;
+        }
+        free((genericptr_t)ecoords);
+    }
+
 #endif
     issue_simple_gui_command(Is_really_rogue_level(&u.uz) ? GUI_CMD_FORCE_ASCII : GUI_CMD_UNFORCE_ASCII);
     issue_simple_gui_command(GUI_CMD_START_FLUSH);

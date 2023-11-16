@@ -127,7 +127,8 @@ DLL int WINAPI RunGnollHack(
     ReportPlayerNameCallback callback_report_player_name,
     ReportPlayTimeCallback callback_report_play_time,
     SendObjectDataCallback callback_send_object_data,
-    SendMonsterDataCallback callback_send_monster_data
+    SendMonsterDataCallback callback_send_monster_data,
+    SendEngravingDataCallback callback_send_engraving_data
 )
 {
     /* Set wincaps */
@@ -228,6 +229,7 @@ DLL int WINAPI RunGnollHack(
     dll_callbacks.callback_report_play_time = callback_report_play_time;
     dll_callbacks.callback_send_object_data = callback_send_object_data;
     dll_callbacks.callback_send_monster_data = callback_send_monster_data;
+    dll_callbacks.callback_send_engraving_data = callback_send_engraving_data;
 
     /* Start GnollHack by calling main */
     return GnollHackStart(cmdlineargs);

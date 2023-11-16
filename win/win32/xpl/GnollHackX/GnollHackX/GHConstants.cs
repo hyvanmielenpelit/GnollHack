@@ -1619,4 +1619,94 @@ namespace GnollHackX
         Custom
     }
 
+    public enum EngravingType
+    {
+        DUST = 1,
+        ENGRAVE,
+        BURN,
+        MARK,
+        ENGR_BLOOD,
+        ENGR_HEADSTONE,
+        ENGR_SIGNPOST
+    }
+
+    public struct EngravingInfo
+    {
+        public bool HasEngraving;
+        public string Text;
+        public int EngrType;
+        public ulong EngrFlags;
+        public ulong GeneralFlags;
+        public string[] RowSplit;
+
+        public EngravingInfo(string text, int etype, ulong eflags, ulong gflags)
+        {
+            HasEngraving = true;
+            Text = text;
+            EngrType = etype;
+            EngrFlags = eflags;
+            GeneralFlags = gflags;
+
+            string[] TextSplit;
+            if(text != null)
+               TextSplit = text.Split();
+            else
+                TextSplit = null;
+            if (TextSplit != null)
+            {
+                int defmaxrowlen = 5;
+                int maxrows = 6;
+                int currows = (text.Length - 1) / defmaxrowlen + 1;
+                int usedmaxrowlen = defmaxrowlen;
+                if (currows > maxrows)
+                    usedmaxrowlen = (int)Math.Ceiling((double)defmaxrowlen * (double)currows / (double)maxrows);
+
+                List<string> list = new List<string>();
+                string builtString = "";
+                for(int i = 0; i < TextSplit.Length; i++)
+                {
+                    string str = TextSplit[i].Trim();
+                    if (string.IsNullOrWhiteSpace(str))
+                    {
+                        if(i == TextSplit.Length - 1)
+                        {
+                            list.Add(str);
+                            builtString = "";
+                        }
+                        continue;
+                    }
+
+                    if (builtString.Length >= (usedmaxrowlen * 4) / 5 && builtString.Length + str.Length >= (usedmaxrowlen * 9) / 5)
+                    {
+                        list.Add(builtString);
+                        if (str.Length >= usedmaxrowlen || i == TextSplit.Length - 1)
+                        {
+                            list.Add(str);
+                            builtString = "";
+                        }
+                        else
+                        {
+                            builtString = str;
+                        }
+                    }
+                    else
+                    {
+                        if(builtString != "")
+                            builtString += " " + str;
+                        else
+                            builtString = str;
+
+                        if (str.Length >= usedmaxrowlen || i == TextSplit.Length - 1)
+                        {
+                            list.Add(builtString);
+                            builtString = "";
+                        }
+                    }
+                }
+                RowSplit = list.ToArray();
+            }
+            else
+                RowSplit = null;
+        }
+    }
 }

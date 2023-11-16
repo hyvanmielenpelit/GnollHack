@@ -411,7 +411,7 @@ namespace GnollHackX
             }
 
             _gamePage.ClearAllObjectData(x, y);
-
+            _gamePage.ClearEngravingData(x, y);
         }
 
         public int ClientCallback_AskName(string modeName, string modeDescription, IntPtr out_string_ptr)
@@ -1263,6 +1263,16 @@ namespace GnollHackX
             {
                 case 0: /* Add Pet */
                     _gamePage.AddPetData(monster_data);
+                    break;
+            }
+        }
+
+        public void ClientCallback_SendEngravingData(int cmdtype, int x, int y, string engraving_text, int etype, ulong eflgs, ulong gflags)
+        {
+            switch (cmdtype)
+            {
+                case 0: /* Add engraving */
+                    _gamePage.AddEngravingData(x, y, engraving_text, etype, eflgs, gflags);
                     break;
             }
         }

@@ -1149,6 +1149,8 @@ E void FDECL(del_engr, (struct engr *));
 E void FDECL(rloc_engr, (struct engr *));
 E void FDECL(make_grave, (int, int, const char *, BOOLEAN_P));
 E void FDECL(make_signpost, (int, int, const char*, BOOLEAN_P));
+E size_t NDECL(count_engravings);
+E coord* FDECL(get_engraving_coords, (size_t*));
 
 /* ### exper.c ### */
 

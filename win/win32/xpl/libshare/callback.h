@@ -162,6 +162,7 @@ typedef void (__callconv* ReportPlayerNameCallback)(char*);
 typedef void (__callconv* ReportPlayTimeCallback)(long, long);
 typedef void(__callconv* SendObjectDataCallback)(int, int, struct obj*, int, int, struct objclassdata*, unsigned long);
 typedef void(__callconv* SendMonsterDataCallback)(int, int, int, struct monst_info*, unsigned long);
+typedef void(__callconv* SendEngravingDataCallback)(int, int, int, const char*, int, unsigned long, unsigned long);
 
 struct callback_procs {
     InitWindowsCallback callback_init_nhwindows;
@@ -259,6 +260,7 @@ struct callback_procs {
     ReportPlayTimeCallback callback_report_play_time;
     SendObjectDataCallback callback_send_object_data;
     SendMonsterDataCallback callback_send_monster_data;
+    SendEngravingDataCallback callback_send_engraving_data;
 };
 
 

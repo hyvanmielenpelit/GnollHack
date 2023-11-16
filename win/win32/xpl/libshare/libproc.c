@@ -579,6 +579,17 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
             }
         }
     }
+
+    /* Add engravings */
+    /* Note: print_glyph clears engraving data */
+    struct engr* en;
+    if ((layers.layer_flags & LFLAGS_L_ENGRAVING) != 0 && (en = engr_at(x, y)) != 0 && (en->engr_flags & ENGR_FLAGS_SEEN) != 0 && en->engr_txt && *en->engr_txt)
+    {
+        unsigned long gflags = 0UL;
+        if (((!strcmp(en->engr_txt, Elbereth_word) || !strcmp(en->engr_txt, Gilthoniel_word)) && !Inhell) || (!strcmp(en->engr_txt, Morgoth_word) && Inhell))
+            gflags |= 1;
+        lib_callbacks.callback_send_engraving_data(0, x, y, en->engr_txt, (int)en->engr_type, (unsigned long)en->engr_flags, gflags);
+    }
 }
 
 void lib_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char* cmd_str)
