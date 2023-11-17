@@ -1143,7 +1143,7 @@ namespace GnollHackX
         SPEFLAGS_WILL_TURN_TO_DUST_ON_PICKUP   = 0x00100000UL,
         SPEFLAGS_CAUGHT_IN_LEAVES              = 0x00200000UL,
         SPEFLAGS_CLONED_ITEM                   = 0x00400000UL,
-        SPEFLAGS_INSCRIPTION_REVEALED          = 0x00800000UL,
+        SPEFLAGS_NO_PREVIOUS_WEAPON            = 0x00800000UL,
         SPEFLAGS_ALTERNATIVE_APPEARANCE        = 0x01000000UL, /* Alternative glyph is used for the object */
         SPEFLAGS_PREVIOUSLY_WIELDED            = 0x02000000UL,
         SPEFLAGS_FAVORITE                      = 0x04000000UL,
@@ -1212,6 +1212,7 @@ namespace GnollHackX
         OBJDATA_FLAGS_IS_AMMO =         0x00010000UL, /* is_ammo is TRUE */
         OBJDATA_FLAGS_THROWING_WEAPON = 0x00020000UL, /* throwing_weapon is TRUE */
         OBJDATA_FLAGS_PREV_WEP_FOUND =  0x00040000UL,
+        OBJDATA_FLAGS_PREV_UNWIELD =    0x00080000UL,
     }
 
     [Flags]

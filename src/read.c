@@ -535,7 +535,7 @@ struct obj* otmp;
     if (!otmp || otmp->oartifact != ART_RULING_RING_OF_YENDOR)
         return;
 
-    boolean revealed = (otmp->speflags & SPEFLAGS_INSCRIPTION_REVEALED) != 0;
+    boolean revealed = otmp->special_quality == 1;
 
     if (Blind)
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "You feel that an inscription appears%s on %s, but you cannot see it.", revealed ? " again" : "", yname(otmp));
@@ -561,7 +561,7 @@ struct obj* otmp;
             {
                 You("quite couldn't make sense of what it said.");
             }
-            otmp->speflags |= SPEFLAGS_INSCRIPTION_REVEALED;
+            otmp->special_quality = 1;
         }
         if (!u.uconduct.literate++)
             livelog_printf(LL_CONDUCT, "became literate by reading an inscription on %s.", acxname(otmp));

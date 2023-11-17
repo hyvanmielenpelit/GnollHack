@@ -1060,6 +1060,7 @@ namespace GnollHackX
         public static SKBitmap _logoBitmap;
         public static SKBitmap _skillBitmap;
         public static SKBitmap _prevWepBitmap;
+        public static SKBitmap _prevUnwieldBitmap;
         public static SKBitmap[] _arrowBitmap = new SKBitmap[9];
         public static SKBitmap _orbBorderBitmap;
         public static SKBitmap _orbFillBitmap;

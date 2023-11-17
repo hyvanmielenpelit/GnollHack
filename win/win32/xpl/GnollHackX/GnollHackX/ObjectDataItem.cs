@@ -89,6 +89,7 @@ namespace GnollHackX
         public bool IsAmmo { get; set; }
         public bool IsThrowingWeapon { get; set; }
         public bool PreviousWeaponFound { get; set; }
+        public bool PreviousUnwield { get; set; }
 
         public ObjectDataItem()
         {
@@ -107,7 +108,7 @@ namespace GnollHackX
             Hallucinated = hallucinated;
             FoundThisTurn = foundthisturn;
         }
-        public ObjectDataItem(obj objData, objclassdata otypdata, bool hallucinated, bool outofammo, bool wrongammo, bool notbeingused,  bool notweapon, bool foundthisturn, bool isammo, bool isthrowingweapon, bool prevwepfound)
+        public ObjectDataItem(obj objData, objclassdata otypdata, bool hallucinated, bool outofammo, bool wrongammo, bool notbeingused,  bool notweapon, bool foundthisturn, bool isammo, bool isthrowingweapon, bool prevwepfound, bool prevunwield)
         {
             ObjData = objData;
             OtypData = otypdata;
@@ -120,6 +121,7 @@ namespace GnollHackX
             IsAmmo = isammo;
             IsThrowingWeapon = isthrowingweapon;
             PreviousWeaponFound = prevwepfound;
+            PreviousUnwield = prevunwield;
         }
     }
 }

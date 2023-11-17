@@ -412,24 +412,48 @@ dowieldprevwep()
         return 0;
     }
 
-    struct obj* wep = 0;
-    struct obj* otmp;
-    for (otmp = invent; otmp; otmp = otmp->nobj)
+    if (uwep && (uwep->speflags & SPEFLAGS_NO_PREVIOUS_WEAPON))
     {
-        if (otmp->speflags & SPEFLAGS_PREVIOUSLY_WIELDED)
+        if (welded(uwep, &youmonst))
         {
-            wep = otmp;
-            break;
+            weldmsg(uwep);
+            /* previously interrupted armor removal mustn't be resumed */
+            reset_remarm();
+            return 0;
         }
+        struct obj* otmp = uwep;
+        int result = ready_weapon((struct obj*)0, W_WEP);
+        boolean unwield_succeeded = uwep == (struct obj*)0;
+        if (unwield_succeeded)
+        {
+            otmp->speflags &= ~SPEFLAGS_NO_PREVIOUS_WEAPON;
+            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_UNWIELD);
+            update_all_character_properties((struct obj*)0, TRUE);
+            status_reassess();
+        }
+        return result;
     }
-
-    if (wep)
-        return wield_weapon(wep);
     else
     {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_ex(ATR_NONE, CLR_MSG_FAIL, "couldn't locate your previous weapon!");
-        return 0;
+        struct obj* wep = 0;
+        struct obj* otmp;
+        for (otmp = invent; otmp; otmp = otmp->nobj)
+        {
+            if (otmp->speflags & SPEFLAGS_PREVIOUSLY_WIELDED)
+            {
+                wep = otmp;
+                break;
+            }
+        }
+
+        if (wep)
+            return wield_weapon(wep);
+        else
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            You_ex(ATR_NONE, CLR_MSG_FAIL, "couldn't locate your previous weapon!");
+            return 0;
+        }
     }
 }
 
@@ -1533,6 +1557,8 @@ const char *verb; /* "rub",&c */
         return FALSE;
     }
 
+    obj->speflags &= ~SPEFLAGS_NO_PREVIOUS_WEAPON;
+
     if (uquiver == obj)
         setuqwep((struct obj *) 0);
     else if (bimanual(obj) && uswapwep == obj)
@@ -1582,7 +1608,8 @@ const char *verb; /* "rub",&c */
             setuswapwep((struct obj*)0, W_SWAPWEP2);
 
         struct obj *oldwep = selected_hand_is_right ? uwep: uarms;
-        obj->speflags |= SPEFLAGS_PREVIOUSLY_WIELDED;
+        if(!oldwep)
+            obj->speflags |= SPEFLAGS_NO_PREVIOUS_WEAPON;
 
         if (will_weld(obj, &youmonst))
         {

@@ -1648,7 +1648,7 @@ struct obj *obj;
         picked_container(obj); /* clear no_charge */
     obj_was_thrown = obj->was_thrown;
     obj->was_thrown = 0;       /* not meaningful for invent */
-    obj->speflags &= ~(SPEFLAGS_GRABBED_FROM_YOU | SPEFLAGS_CAUGHT_IN_LEAVES | SPEFLAGS_PREVIOUSLY_WIELDED); /* You got it back / Not in leaves / Not previously held if was not in inventory */
+    obj->speflags &= ~(SPEFLAGS_GRABBED_FROM_YOU | SPEFLAGS_CAUGHT_IN_LEAVES | SPEFLAGS_PREVIOUSLY_WIELDED | SPEFLAGS_NO_PREVIOUS_WEAPON); /* You got it back / Not in leaves / Not previously held if was not in inventory */
     obj_clear_found(obj); /* Not relevant in inventory */
     obj->speflags |= SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO; /* Has been owned by the hero */
 

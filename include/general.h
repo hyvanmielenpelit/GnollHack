@@ -824,6 +824,7 @@ enum yn_function_styles {
 #define OBJDATA_FLAGS_IS_AMMO           0x00010000UL /* is_ammo is TRUE */
 #define OBJDATA_FLAGS_THROWING_WEAPON   0x00020000UL /* throwing_weapon is TRUE */
 #define OBJDATA_FLAGS_PREV_WEP_FOUND    0x00040000UL
+#define OBJDATA_FLAGS_PREV_UNWIELD      0x00080000UL
 
 /* Monster abilities */
 #define BREATH_WEAPON_MANA_COST 15

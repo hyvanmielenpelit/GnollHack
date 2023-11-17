@@ -875,6 +875,11 @@ namespace GnollHackX.Pages.Game
                         GHApp._prevWepBitmap = SKBitmap.Decode(stream);
                         GHApp._prevWepBitmap.SetImmutable();
                     }
+                    using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.UI.unwield.png"))
+                    {
+                        GHApp._prevUnwieldBitmap = SKBitmap.Decode(stream);
+                        GHApp._prevUnwieldBitmap.SetImmutable();
+                    }
 
                     GHApp.InitializeArrowButtons(assembly);
                     GHApp.InitializeUIBitmaps(assembly);
@@ -9056,6 +9061,7 @@ namespace GnollHackX.Pages.Game
 
                         bool orbsok = false;
                         bool prevwepok = false;
+                        bool isunwield = false;
                         bool skillbuttonok = false;
                         lock (StatusFieldLock)
                         {
@@ -9064,7 +9070,11 @@ namespace GnollHackX.Pages.Game
                         }
                         lock (_weaponStyleObjDataItemLock)
                         {
-                            prevwepok = _weaponStyleObjDataItem[0] != null ? _weaponStyleObjDataItem[0].PreviousWeaponFound : false;
+                            if(_weaponStyleObjDataItem[0] != null)
+                            {
+                                prevwepok = _weaponStyleObjDataItem[0].PreviousWeaponFound || _weaponStyleObjDataItem[0].PreviousUnwield;
+                                isunwield = _weaponStyleObjDataItem[0].PreviousUnwield;
+                            }
                         }
                         float lastdrawnrecty = ClassicStatusBar ? Math.Max(abilitybuttonbottom, lastStatusRowPrintY + 0.0f * lastStatusRowFontSpacing) : statusbarheight;
                         tx = orbleft;
@@ -9170,7 +9180,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                             StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                            canvas.DrawBitmap(GHApp._prevWepBitmap, prevWepDest, textPaint);
+                            canvas.DrawBitmap(isunwield ? GHApp._prevUnwieldBitmap : GHApp._prevWepBitmap, prevWepDest, textPaint);
 #if GNH_MAP_PROFILING && DEBUG
                             StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -9179,7 +9189,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                             StartProfiling(GHProfilingStyle.Text);
 #endif
-                            canvas.DrawText("Wield Last", text_x, text_y, textPaint);
+                            canvas.DrawText(isunwield ? "Unwield" : "Wield Last", text_x, text_y, textPaint);
 #if GNH_MAP_PROFILING && DEBUG
                             StopProfiling(GHProfilingStyle.Text);
 #endif
@@ -12651,6 +12661,7 @@ namespace GnollHackX.Pages.Game
                 bool isammo = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_IS_AMMO) != 0UL;
                 bool isthrowingweapon = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_THROWING_WEAPON) != 0UL;
                 bool prevwepfound = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_PREV_WEP_FOUND) != 0UL;
+                bool prevunwield = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_PREV_UNWIELD) != 0UL;
 
                 int idx = is_uwep ? 0 : is_uwep2 ? 1 : 2;
                 lock (_weaponStyleObjDataItemLock)
@@ -12661,7 +12672,7 @@ namespace GnollHackX.Pages.Game
                             _weaponStyleObjDataItem[idx] = null;
                             break;
                         case 2: /* Add item */
-                            _weaponStyleObjDataItem[idx] = new ObjectDataItem(otmp, otypdata, hallucinated, outofammo, wrongammo, notbeingused, notweapon, foundthisturn, isammo, isthrowingweapon, prevwepfound);
+                            _weaponStyleObjDataItem[idx] = new ObjectDataItem(otmp, otypdata, hallucinated, outofammo, wrongammo, notbeingused, notweapon, foundthisturn, isammo, isthrowingweapon, prevwepfound, prevunwield);
                             break;
                         case 3: /* Add container item to previous item */
                             _weaponStyleObjDataItem[idx].ContainedObjs.Add(new ObjectDataItem(otmp, otypdata, hallucinated));
