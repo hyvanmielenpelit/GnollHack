@@ -2838,9 +2838,9 @@ int x, y;
         change_layer_damage_displayed(x, y, 0);
         change_layer_hit_tile(x, y, 0);
 
-        unsigned long old_flags = gbuf[y][x].layers.layer_flags;
+        unsigned long old_mflags = gbuf[y][x].layers.monster_flags;
         gbuf[y][x].layers.monster_flags = 0UL;
-        if (old_flags != gbuf[y][x].layers.layer_flags)
+        if (old_mflags != gbuf[y][x].layers.monster_flags)
         {
             gbuf[y][x].isnew = 1;
             if (gbuf_start[y] > x)
@@ -2892,9 +2892,8 @@ boolean exclude_ascii;
 
         show_gui_glyph_on_layer(x, y, glyph, gui_glyph, LAYER_MONSTER);
         clear_monster_extra_info(x, y);
-        show_extra_info(x, y, disp_flags, disp_mflags, hit_tile_id, damage_displayed);
-
         clear_monster_layerinfo(&gbuf[y][x].layers);
+        show_extra_info(x, y, disp_flags, disp_mflags, hit_tile_id, damage_displayed);
         gbuf[y][x].layers.monster_origin_x = x0;
         gbuf[y][x].layers.monster_origin_y = y0;
         gbuf[y][x].layers.m_id = mtmp && mtmp != &youmonst ? mtmp->m_id : 0;
