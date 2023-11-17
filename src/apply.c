@@ -4897,7 +4897,7 @@ STATIC_OVL int
 get_invalid_polearm_position(x, y)
 int x, y;
 {
-    return !isok(x, y) || !ACCESSIBLE(levl[x][y].typ) ? 1 : 
+    return !isok(x, y) || !POLEARM_ACCESSIBLE(levl[x][y].typ) ? 1 :
             distu(x, y) < polearm_range_min ? 2 :
             distu(x, y) > polearm_range_max ? 3 : 0;
 }

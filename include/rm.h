@@ -864,6 +864,7 @@ extern const struct tree_subtype_definition tree_subtype_definitions[MAX_TREE_SU
 #define IS_FURNITURE(typ) ((typ) >= STAIRS && (typ) <= ALTAR)
 #define IS_AIR(typ) ((typ) == AIR || (typ) == CLOUD)
 #define IS_SOFT(typ) ((typ) == AIR || (typ) == CLOUD || IS_POOL(typ))
+#define POLEARM_ACCESSIBLE(typ) (ACCESSIBLE(typ) || IS_POOL(typ) || typ == LAVAPOOL) /* good position for polearm attack */
 
 #define IS_SOLID_FLOOR(typ) ((typ) == ROOM || (typ) == CORR || (typ) == GRASS || (typ) == GROUND)
  /* Location types for which floortyp is zero */
