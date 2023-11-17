@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Collections.Concurrent;
+
 
 #if GNH_MAUI
 using GnollHackX;
@@ -656,7 +658,7 @@ namespace GnollHackX
             return (double)skwidth / scale;
         }
 
-        private Dictionary<long, TouchEntry> TouchDictionary = new Dictionary<long, TouchEntry>();
+        private ConcurrentDictionary<long, TouchEntry> TouchDictionary = new ConcurrentDictionary<long, TouchEntry>();
         private readonly object _textScrollLock = new object();
         private float _textScrollOffset = 0;
         private float _textScrollSpeed = 0; /* pixels per second */
@@ -733,7 +735,7 @@ namespace GnollHackX
                     if (TouchDictionary.ContainsKey(e.Id))
                         TouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
                     else
-                        TouchDictionary.Add(e.Id, new TouchEntry(e.Location, DateTime.Now));
+                        TouchDictionary.TryAdd(e.Id, new TouchEntry(e.Location, DateTime.Now));
 
                     if (TouchDictionary.Count > 1)
                         TouchMoved = true;
@@ -881,7 +883,10 @@ namespace GnollHackX
                         }
 
                         if (TouchDictionary.ContainsKey(e.Id))
-                            TouchDictionary.Remove(e.Id);
+                        {
+                            TouchEntry removedEntry;
+                            TouchDictionary.TryRemove(e.Id, out removedEntry);
+                        }
                         else
                             TouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
 
@@ -929,7 +934,10 @@ namespace GnollHackX
                     break;
                 case SKTouchAction.Cancelled:
                     if (TouchDictionary.ContainsKey(e.Id))
-                        TouchDictionary.Remove(e.Id);
+                    {
+                        TouchEntry removedEntry;
+                        TouchDictionary.TryRemove(e.Id, out removedEntry);
+                    }
                     else
                         TouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
 

@@ -1621,8 +1621,10 @@ const char *verb; /* "rub",&c */
 
         if(setprevwepflag && oldwep)
             oldwep->speflags |= SPEFLAGS_PREVIOUSLY_WIELDED;
-    }
 
+        context.botl = context.botlx = TRUE;
+        status_reassess();
+    }
 
     /* refresh wep */
     wep = selected_hand_is_right ? uwep : uarms;

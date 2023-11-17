@@ -15,6 +15,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Collections.Concurrent;
 
 namespace GnollHackX
 {
@@ -578,6 +579,19 @@ namespace GnollHackX
             ulong patchver = (vernum >> 8) & 0xFFUL;
             ulong editver = (vernum) & 0xFFUL;
             string verstr = majorver + "." + minorver + "." + patchver + (editver > 0 ? (" (Build " + editver + ")") : "");
+            return verstr;
+        }
+
+        public static string VersionNumberToFileNameSuffix(ulong vernum)
+        {
+            if (vernum == 0UL)
+                return "";
+
+            ulong majorver = (vernum >> 24) & 0xFFUL;
+            ulong minorver = (vernum >> 16) & 0xFFUL;
+            ulong patchver = (vernum >> 8) & 0xFFUL;
+            ulong editver = (vernum) & 0xFFUL;
+            string verstr = majorver + minorver + patchver + "-" + editver;
             return verstr;
         }
 
@@ -1886,7 +1900,7 @@ namespace GnollHackX
 
             CheckCreateDirectory(targetpath);
 
-            string filepath = Path.Combine(targetpath, "crash_report.zip");
+            string filepath = Path.Combine(targetpath, "crash_report-" + GHApp.VersionNumberToFileNameSuffix(GHApp.GHVersionNumber) + ".zip");
             if (File.Exists(filepath))
                 File.Delete(filepath);
 
@@ -2166,7 +2180,7 @@ namespace GnollHackX
         }
 
         static readonly object _cachedBitmapsLock = new object();
-        static readonly Dictionary<string, SKBitmap> _cachedBitmaps = new Dictionary<string, SKBitmap>();
+        static readonly ConcurrentDictionary<string, SKBitmap> _cachedBitmaps = new ConcurrentDictionary<string, SKBitmap>();
 
         public static void InitializeCachedBitmaps()
         {
@@ -2220,7 +2234,7 @@ namespace GnollHackX
                             if (newBitmap != null)
                             {
                                 newBitmap.SetImmutable();
-                                _cachedBitmaps.Add("resource://" + imagePath, newBitmap);
+                                _cachedBitmaps.TryAdd("resource://" + imagePath, newBitmap);
                             }
                         }
                     }
@@ -2252,7 +2266,7 @@ namespace GnollHackX
                             {
                                 newBitmap.SetImmutable();
                                 if (addToCache)
-                                    _cachedBitmaps.Add(sourcePath, newBitmap);
+                                    _cachedBitmaps.TryAdd(sourcePath, newBitmap);
 
                                 return newBitmap;
                             }

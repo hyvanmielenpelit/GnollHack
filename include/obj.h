@@ -284,7 +284,7 @@ enum elemental_enchantments {
 #define is_whip(o) is_otyp_whip((o)->otyp) 
 #define is_otyp_hook(otyp)                                             \
     (objects[otyp].oc_class == TOOL_CLASS && objects[otyp].oc_subtyp == TOOLTYPE_HOOK)
-#define is_hook(o) is_otyp_whip((o)->otyp) 
+#define is_hook(o) is_otyp_hook((o)->otyp) 
 #define is_otyp_sword(otyp) \
     (objects[otyp].oc_class == WEAPON_CLASS                     \
      && objects[otyp].oc_skill == P_SWORD)

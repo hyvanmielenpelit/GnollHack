@@ -80,8 +80,8 @@ namespace GnollHackX.Pages.Game
         private int _mapCursorX;
         private int _mapCursorY;
 
-        private Dictionary<SavedDarkenedBitmap, SKBitmap> _darkenedBitmaps = new Dictionary<SavedDarkenedBitmap, SKBitmap>();
-        private Dictionary<SavedDarkenedAutodrawBitmap, SKBitmap> _darkenedAutodrawBitmaps = new Dictionary<SavedDarkenedAutodrawBitmap, SKBitmap>();
+        private ConcurrentDictionary<SavedDarkenedBitmap, SKBitmap> _darkenedBitmaps = new ConcurrentDictionary<SavedDarkenedBitmap, SKBitmap>();
+        private ConcurrentDictionary<SavedDarkenedAutodrawBitmap, SKBitmap> _darkenedAutodrawBitmaps = new ConcurrentDictionary<SavedDarkenedAutodrawBitmap, SKBitmap>();
 
         private readonly object _uLock = new object();
         private int _ux = 0;
@@ -4526,7 +4526,7 @@ namespace GnollHackX.Pages.Game
                 Rect = rect;
             }
         }
-        Dictionary<SavedRect, SKBitmap> _savedRects = new Dictionary<SavedRect, SKBitmap>();
+        ConcurrentDictionary<SavedRect, SKBitmap> _savedRects = new ConcurrentDictionary<SavedRect, SKBitmap>();
         public void DrawTileWithRadialTransparency(SKCanvas canvas, bool delayedDraw, SKBitmap tileSheet, SKRect sourcerect, SKRect targetrect, LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint, int mapX, int mapY)
             //, ref SKRect baseUpdateRect, ref SKRect enlUpdateRect)
         {
@@ -4607,7 +4607,7 @@ namespace GnollHackX.Pages.Game
                         SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight, SKColorType.Rgba8888, SKAlphaType.Unpremul);
                         _tempBitmap.CopyTo(newbmp);
                         newbmp.SetImmutable();
-                        _savedRects.Add(sr, newbmp);
+                        _savedRects.TryAdd(sr, newbmp);
                         DrawSplitBitmap(canvas, delayedDraw, destSplitY, newbmp, tempsourcerect, targetrect, paint, mapX, mapY); //, ref baseUpdateRect, ref enlUpdateRect);
                     }
                     catch (Exception ex)
@@ -5329,6 +5329,9 @@ namespace GnollHackX.Pages.Game
         float[] _shineAnimation = new float[]
         {
             0.0f,
+            0.0f,
+            0.0f,
+            0.0f,
             0.0025f,
             0.005f,
             0.0075f,
@@ -5456,6 +5459,9 @@ namespace GnollHackX.Pages.Game
             0.0075f,
             0.005f,
             0.0025f,
+            0.0f,
+            0.0f,
+            0.0f,
             0.0f,
         };
 
@@ -6365,7 +6371,7 @@ namespace GnollHackX.Pages.Game
                                                                                         SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
                                                                                         _paintBitmap.CopyTo(newbmp);
                                                                                         newbmp.SetImmutable();
-                                                                                        _darkenedAutodrawBitmaps.Add(cachekey, newbmp);
+                                                                                        _darkenedAutodrawBitmaps.TryAdd(cachekey, newbmp);
                                                                                         usedDarkenedBitmap = newbmp;
                                                                                     }
                                                                                     catch (Exception ex)
@@ -6409,7 +6415,7 @@ namespace GnollHackX.Pages.Game
                                                                                         SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
                                                                                         _paintBitmap.CopyTo(newbmp);
                                                                                         newbmp.SetImmutable();
-                                                                                        _darkenedBitmaps.Add(cachekey, newbmp);
+                                                                                        _darkenedBitmaps.TryAdd(cachekey, newbmp);
                                                                                         usedDarkenedBitmap = newbmp;
                                                                                     }
                                                                                     catch (Exception ex)
@@ -9981,7 +9987,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        Dictionary<SavedAutodrawBitmap, SKBitmap> _savedAutoDrawBitmaps = new Dictionary<SavedAutodrawBitmap, SKBitmap>();
+        ConcurrentDictionary<SavedAutodrawBitmap, SKBitmap> _savedAutoDrawBitmaps = new ConcurrentDictionary<SavedAutodrawBitmap, SKBitmap>();
 
         public void DrawAutoDraw(int autodraw, SKCanvas canvas, bool delayedDraw, SKPaint paint, ObjectDataItem otmp_round,
             int layer_idx, int mapx, int mapy,
@@ -10750,7 +10756,7 @@ namespace GnollHackX.Pages.Game
                                         SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
                                         _paintBitmap.CopyTo(newbmp);
                                         newbmp.SetImmutable();
-                                        _savedAutoDrawBitmaps.Add(cachekey, newbmp);
+                                        _savedAutoDrawBitmaps.TryAdd(cachekey, newbmp);
                                         usedContentsBitmap = newbmp;
                                     }
                                     catch (Exception ex)
@@ -10937,7 +10943,7 @@ namespace GnollHackX.Pages.Game
                                     SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
                                     _paintBitmap.CopyTo(newbmp);
                                     newbmp.SetImmutable();
-                                    _savedAutoDrawBitmaps.Add(cachekey2, newbmp);
+                                    _savedAutoDrawBitmaps.TryAdd(cachekey2, newbmp);
                                     usedForegroundBitmap = newbmp;
                                 }
                                 catch (Exception ex)
@@ -11580,7 +11586,7 @@ namespace GnollHackX.Pages.Game
             return sb_xheight;
         }
 
-        private Dictionary<long, TouchEntry> TouchDictionary = new Dictionary<long, TouchEntry>();
+        private ConcurrentDictionary<long, TouchEntry> TouchDictionary = new ConcurrentDictionary<long, TouchEntry>();
         private readonly object _mapOffsetLock = new object();
         public float _mapOffsetX = 0;
         public float _mapOffsetY = 0;
@@ -11643,7 +11649,7 @@ namespace GnollHackX.Pages.Game
                         if (TouchDictionary.ContainsKey(e.Id))
                             TouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
                         else
-                            TouchDictionary.Add(e.Id, new TouchEntry(e.Location, DateTime.Now));
+                            TouchDictionary.TryAdd(e.Id, new TouchEntry(e.Location, DateTime.Now));
 
                         if (TouchDictionary.Count > 1)
                             _touchMoved = true;
@@ -11906,7 +11912,7 @@ namespace GnollHackX.Pages.Game
                                     SKPoint curloc = e.Location;
                                     SKPoint otherloc;
 
-                                    Dictionary<long, TouchEntry>.KeyCollection keys = TouchDictionary.Keys;
+                                    var keys = TouchDictionary.Keys;
                                     long other_key = 0;
                                     foreach (long key in keys)
                                     {
@@ -12135,7 +12141,10 @@ namespace GnollHackX.Pages.Game
                                 }
                             }
                             if (TouchDictionary.ContainsKey(e.Id))
-                                TouchDictionary.Remove(e.Id);
+                            {
+                                TouchEntry removedEntry;
+                                TouchDictionary.TryRemove(e.Id, out removedEntry);
+                            }
                             else
                                 TouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
 
@@ -12147,7 +12156,10 @@ namespace GnollHackX.Pages.Game
                         break;
                     case SKTouchAction.Cancelled:
                         if (TouchDictionary.ContainsKey(e.Id))
-                            TouchDictionary.Remove(e.Id);
+                        {
+                            TouchEntry removedEntry;
+                            TouchDictionary.TryRemove(e.Id, out removedEntry);
+                        }
                         else
                             TouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
 
@@ -13684,7 +13696,7 @@ namespace GnollHackX.Pages.Game
         private bool _menuScrollSpeedOn = false;
         private DateTime _menuScrollSpeedReleaseStamp;
 
-        private Dictionary<long, TouchEntry> MenuTouchDictionary = new Dictionary<long, TouchEntry>();
+        private ConcurrentDictionary<long, TouchEntry> MenuTouchDictionary = new ConcurrentDictionary<long, TouchEntry>();
         private object _savedMenuSender = null;
         private SKTouchEventArgs _savedMenuEventArgs = null;
         private DateTime _savedMenuTimeStamp;
@@ -13709,7 +13721,7 @@ namespace GnollHackX.Pages.Game
                     if (MenuTouchDictionary.ContainsKey(e.Id))
                         MenuTouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
                     else
-                        MenuTouchDictionary.Add(e.Id, new TouchEntry(e.Location, DateTime.Now));
+                        MenuTouchDictionary.TryAdd(e.Id, new TouchEntry(e.Location, DateTime.Now));
 
                     lock(_menuScrollLock)
                     {
@@ -13868,7 +13880,10 @@ namespace GnollHackX.Pages.Game
                                 MenuCanvas_NormalClickRelease(sender, e);
                             }
                             if (MenuTouchDictionary.ContainsKey(e.Id))
-                                MenuTouchDictionary.Remove(e.Id);
+                            {
+                                TouchEntry removedEntry;
+                                MenuTouchDictionary.TryRemove(e.Id, out removedEntry);
+                            }
                             else
                                 MenuTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
 
@@ -13917,7 +13932,10 @@ namespace GnollHackX.Pages.Game
                     break;
                 case SKTouchAction.Cancelled:
                     if (MenuTouchDictionary.ContainsKey(e.Id))
-                        MenuTouchDictionary.Remove(e.Id);
+                    {
+                        TouchEntry removedEntry;
+                        MenuTouchDictionary.TryRemove(e.Id, out removedEntry);
+                    }
                     else
                         MenuTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
 
@@ -14483,7 +14501,7 @@ namespace GnollHackX.Pages.Game
         private bool _textScrollSpeedOn = false;
         private DateTime _textScrollSpeedReleaseStamp;
 
-        private Dictionary<long, TouchEntry> TextTouchDictionary = new Dictionary<long, TouchEntry>();
+        private ConcurrentDictionary<long, TouchEntry> TextTouchDictionary = new ConcurrentDictionary<long, TouchEntry>();
         private object _savedTextSender = null;
         private SKTouchEventArgs _savedTextEventArgs = null;
         private DateTime _savedTextTimeStamp;
@@ -14663,7 +14681,7 @@ namespace GnollHackX.Pages.Game
                         if (TextTouchDictionary.ContainsKey(e.Id))
                             TextTouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
                         else
-                            TextTouchDictionary.Add(e.Id, new TouchEntry(e.Location, DateTime.Now));
+                            TextTouchDictionary.TryAdd(e.Id, new TouchEntry(e.Location, DateTime.Now));
 
                         lock (_textScrollLock)
                         {
@@ -14813,7 +14831,10 @@ namespace GnollHackX.Pages.Game
                                     DelayedTextHide();
                                 }
                                 if (TextTouchDictionary.ContainsKey(e.Id))
-                                    TextTouchDictionary.Remove(e.Id);
+                                {
+                                    TouchEntry removedEntry;
+                                    TextTouchDictionary.TryRemove(e.Id, out removedEntry);
+                                }
                                 else
                                     TextTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
 
@@ -14865,7 +14886,10 @@ namespace GnollHackX.Pages.Game
                         break;
                     case SKTouchAction.Cancelled:
                         if (TextTouchDictionary.ContainsKey(e.Id))
-                            TextTouchDictionary.Remove(e.Id);
+                        {
+                            TouchEntry removedEntry;
+                            TextTouchDictionary.TryRemove(e.Id, out removedEntry);
+                        }
                         else
                             TextTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
 
@@ -14912,7 +14936,7 @@ namespace GnollHackX.Pages.Game
 
 
         public readonly object CommandButtonLock = new object();
-        private Dictionary<long, TouchEntry> CommandTouchDictionary = new Dictionary<long, TouchEntry>();
+        private ConcurrentDictionary<long, TouchEntry> CommandTouchDictionary = new ConcurrentDictionary<long, TouchEntry>();
         private object _savedCommandSender = null;
         private SKTouchEventArgs _savedCommandEventArgs = null;
         private DateTime _savedCommandTimeStamp;
@@ -15099,7 +15123,7 @@ namespace GnollHackX.Pages.Game
                         if (CommandTouchDictionary.ContainsKey(e.Id))
                             CommandTouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
                         else
-                            CommandTouchDictionary.Add(e.Id, new TouchEntry(e.Location, DateTime.Now));
+                            CommandTouchDictionary.TryAdd(e.Id, new TouchEntry(e.Location, DateTime.Now));
 
                         if (CommandTouchDictionary.Count > 1)
                             _commandTouchMoved = true;
@@ -15310,7 +15334,10 @@ namespace GnollHackX.Pages.Game
                                 }
 
                                 if (CommandTouchDictionary.ContainsKey(e.Id))
-                                    CommandTouchDictionary.Remove(e.Id);
+                                {
+                                    TouchEntry removedEntry;
+                                    CommandTouchDictionary.TryRemove(e.Id, out removedEntry);
+                                }
                                 else
                                     CommandTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
 
@@ -15322,7 +15349,10 @@ namespace GnollHackX.Pages.Game
                         break;
                     case SKTouchAction.Cancelled:
                         if (CommandTouchDictionary.ContainsKey(e.Id))
-                            CommandTouchDictionary.Remove(e.Id);
+                        {
+                            TouchEntry removedEntry;
+                            CommandTouchDictionary.TryRemove(e.Id, out removedEntry);
+                        }
                         else
                             CommandTouchDictionary.Clear(); /* Something's wrong; reset the touch dictionary */
                         e.Handled = true;
