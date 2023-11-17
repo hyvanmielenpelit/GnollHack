@@ -4344,20 +4344,23 @@ namespace GnollHackX.Pages.Game
                     }
                     else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_SWIM_ANIMATION) != 0)
                     {
-                        long animationframe = generalcountervalue % _swimAnimation.Length;
-                        move_offset_x += _swimAnimation[animationframe].X * scale * targetscale;
-                        move_offset_y += _swimAnimation[animationframe].Y * scale * targetscale;
-                    }
-                    else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_SHARK_ANIMATION) != 0)
-                    {
-                        long animationframe = generalcountervalue % _sharkAnimation.Length;
-                        float target_y_change = _sharkAnimation[animationframe].Y * scale * targetscale;
-                        move_offset_x += _sharkAnimation[animationframe].X * scale * targetscale;
-                        move_offset_y += target_y_change;
-                        if(mapy == draw_map_y)
+                        if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_SPECIAL_ANIMATION) != 0)
                         {
-                            scaled_tile_height -= target_y_change;
-                            sourcerect = new SKRect(sourcerect.Left, sourcerect.Top, sourcerect.Right, sourcerect.Bottom - _sharkAnimation[animationframe].Y);
+                            long animationframe = generalcountervalue % _sharkAnimation.Length;
+                            float target_y_change = _sharkAnimation[animationframe].Y * scale * targetscale;
+                            move_offset_x += _sharkAnimation[animationframe].X * scale * targetscale;
+                            move_offset_y += target_y_change;
+                            if (mapy == draw_map_y)
+                            {
+                                scaled_tile_height -= target_y_change;
+                                sourcerect = new SKRect(sourcerect.Left, sourcerect.Top, sourcerect.Right, sourcerect.Bottom - _sharkAnimation[animationframe].Y);
+                            }
+                        }
+                        else
+                        {
+                            long animationframe = generalcountervalue % _swimAnimation.Length;
+                            move_offset_x += _swimAnimation[animationframe].X * scale * targetscale;
+                            move_offset_y += _swimAnimation[animationframe].Y * scale * targetscale;
                         }
                     }
                 }

@@ -2951,7 +2951,7 @@ boolean exclude_ascii;
                 extra_mflags |= LMFLAGS_FLYING;
 
             if (has_swimming(used_mtmp) && IS_POOL(levl[x][y].typ) && !has_blobby_animation(used_mtmp->data) && !Hallucination)
-                extra_mflags |= (has_shark_animation(used_mtmp->data) ? LMFLAGS_SHARK_ANIMATION : LMFLAGS_SWIM_ANIMATION);
+                extra_mflags |= LMFLAGS_SWIM_ANIMATION | (has_shark_animation(used_mtmp->data) ? LMFLAGS_SPECIAL_ANIMATION : 0UL);
 
             if (is_levitating(used_mtmp))
                 extra_mflags |= LMFLAGS_LEVITATING;
