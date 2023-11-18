@@ -231,7 +231,7 @@ struct obj *obj;
         {
             mtmp->meating = objects[obj->otyp].oc_delay;
             nutrit = objects[obj->otyp].oc_nutrition;
-            if(obj->otyp == TIN && (obj->special_quality == 1 || (obj->corpsenm >= LOW_PM && (is_vegetarian_food(&mons[obj->corpsenm]) || is_vegan_food(&mons[obj->corpsenm])))))
+            if(obj->otyp == TIN && (obj->special_quality == SPEQUAL_TIN_CONTAINS_SPINACH || (obj->corpsenm >= LOW_PM && (is_vegetarian_food(&mons[obj->corpsenm]) || is_vegan_food(&mons[obj->corpsenm])))))
                 is_veg = TRUE;
             else if(obj->material == MAT_VEGGY)
                 is_veg = TRUE;

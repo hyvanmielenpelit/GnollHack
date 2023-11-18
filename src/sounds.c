@@ -10520,7 +10520,7 @@ struct monst* mtmp;
     popup_talk_line_ex(mtmp, talkbuf, ATR_NONE, NO_COLOR, TRUE, FALSE);
 
     otmp->age = MAX_OIL_IN_LAMP;
-    otmp->special_quality = 1;
+    otmp->special_quality = SPEQUAL_LIGHT_SOURCE_FUNCTIONAL;
     update_inventory();
 
     play_monster_special_dialogue_line(mtmp, SMITH_LINE_THANK_YOU_FOR_USING_MY_SERVICES);

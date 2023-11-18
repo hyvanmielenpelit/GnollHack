@@ -522,7 +522,7 @@ int otyp; /* used iff obj is null */
         if (material == MAT_VEGGY || otyp == EGG)
             return TRUE;
         if (otyp == TIN && corpsenm == NON_PM) /* implies obj is non-null */
-            return (boolean) (obj->special_quality == 1); /* 0 = empty, 1 = spinach */
+            return (boolean) (obj->special_quality == SPEQUAL_TIN_CONTAINS_SPINACH); /* 0 = empty, 1 = spinach */
         if (otyp == TIN || otyp == CORPSE)
             return (boolean) (corpsenm >= LOW_PM
                               && vegetarian(&mons[corpsenm]));

@@ -4904,7 +4904,7 @@ dotip()
         spillage = "wax";
     } else if ((cobj->otyp == POT_OIL && cobj->lamplit)
                || (cobj->otyp == OIL_LAMP && cobj->age != 0L)
-               || (cobj->otyp == MAGIC_LAMP && cobj->special_quality == 1)) {
+               || (cobj->otyp == MAGIC_LAMP && cobj->special_quality == SPEQUAL_MAGIC_LAMP_CONTAINS_DJINN)) {
         spillage = "oil";
         /* todo: reduce potion's remaining burn timer or oil lamp's fuel */
     } else if (cobj->otyp == CAN_OF_GREASE && cobj->charges > 0) {

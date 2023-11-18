@@ -183,7 +183,7 @@ boolean restore;
                 /* 0: delivered in-game via external event;
                    1: from bones or wishing; 2: written with marker */
                 if (otmp->special_quality == 0)
-                    otmp->special_quality = 1;
+                    otmp->special_quality = SPEQUAL_MAIL_FROM_BONES_OR_WISHING;
 #endif
             } 
             else if (otmp->otyp == EGG) 

@@ -1711,14 +1711,14 @@ unsigned long mkflags;
             {
             case TALLOW_CANDLE:
             case WAX_CANDLE:
-                otmp->special_quality = 1;
+                otmp->special_quality = SPEQUAL_LIGHT_SOURCE_FUNCTIONAL;
                 otmp->age = candle_starting_burn_time(otmp);
                 otmp->lamplit = 0;
                 otmp->quan = 1L + (long) (rn2(2) ? rn2(7) : 0);
                 blessorcurse(otmp, 5);
                 break;
             case TORCH:
-                otmp->special_quality = 1;
+                otmp->special_quality = SPEQUAL_LIGHT_SOURCE_FUNCTIONAL;
                 otmp->age = torch_starting_burn_time(otmp);
                 otmp->lamplit = 0;
                 otmp->quan = 1L;
@@ -1739,18 +1739,18 @@ unsigned long mkflags;
                 break;
             case BRASS_LANTERN:
             case OIL_LAMP:
-                otmp->special_quality = 1;
+                otmp->special_quality = SPEQUAL_LIGHT_SOURCE_FUNCTIONAL;
                 otmp->age = lamp_starting_burn_time(otmp);
                 otmp->lamplit = 0;
                 blessorcurse(otmp, 5);
                 break;
             case MAGIC_CANDLE:
-                otmp->special_quality = 2;
+                otmp->special_quality = SPEQUAL_MAGIC_CANDLE_UNUSED;
                 otmp->lamplit = 0;
                 blessorcurse(otmp, 2);
                 break;
             case MAGIC_LAMP:
-                otmp->special_quality = 1;
+                otmp->special_quality = SPEQUAL_MAGIC_LAMP_CONTAINS_DJINN;
                 otmp->lamplit = 0;
                 blessorcurse(otmp, 2);
                 break;

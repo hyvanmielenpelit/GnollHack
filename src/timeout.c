@@ -2320,8 +2320,8 @@ boolean already_lit;
 
         if (obj->otyp == MAGIC_CANDLE)
         {
-            if (obj->special_quality == 2)
-                obj->special_quality = 1;
+            if (obj->special_quality == SPEQUAL_MAGIC_CANDLE_UNUSED)
+                obj->special_quality = SPEQUAL_MAGIC_CANDLE_PARTLY_USED;
         }
     }
     else
@@ -2333,8 +2333,8 @@ boolean already_lit;
             break;
         case MAGIC_CANDLE:
             //obj->lamplit = 1;
-            if (obj->special_quality == 2)
-                obj->special_quality = 1;
+            if (obj->special_quality == SPEQUAL_MAGIC_CANDLE_UNUSED)
+                obj->special_quality = SPEQUAL_MAGIC_CANDLE_PARTLY_USED;
             //do_timer = FALSE;
             break;
         case POT_OIL:

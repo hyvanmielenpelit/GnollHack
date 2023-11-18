@@ -4190,7 +4190,6 @@ struct obj* obj, * potion;
         exercise(A_WIS, TRUE);
     }
     makeknown(POT_OIL);
-    //obj->special_quality = 1;
     update_inventory();
     return 1;
 }

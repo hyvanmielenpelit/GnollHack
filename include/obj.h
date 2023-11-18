@@ -61,6 +61,15 @@ struct obj {
     short special_quality; /* item-specific special quality, e.g., the amount of wetness of a towel, number of candles attached to candelabrum, not affected by cancellation */
 
 #define SPEQUAL_STATUE_HISTORIC                1
+#define SPEQUAL_RULING_RING_INSCRIPTION_READ   1
+#define SPEQUAL_MAIL_FROM_BONES_OR_WISHING     1
+#define SPEQUAL_MAIL_FROM_MAGIC_MARKER         2
+#define SPEQUAL_MAGIC_LAMP_CONTAINS_DJINN      1
+#define SPEQUAL_TIN_CONTAINS_SPINACH           1
+#define SPEQUAL_MAGIC_CANDLE_PARTLY_USED       1
+#define SPEQUAL_MAGIC_CANDLE_UNUSED            2
+#define SPEQUAL_LIGHT_SOURCE_FUNCTIONAL        1
+#define SPEQUAL_UBALL_SPECIAL                  1
 
     unsigned long speflags; /* anything else that might be going on with an item, not affected by cancellation */
 

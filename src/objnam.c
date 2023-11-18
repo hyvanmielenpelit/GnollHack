@@ -1685,7 +1685,7 @@ weapon_here:
         {
             if ((is_candle(obj) && obj->otyp != MAGIC_CANDLE
                 && obj->age < candle_maximum_burn_time(obj))
-                || (obj->otyp == MAGIC_CANDLE && obj->special_quality < 2)
+                || (obj->otyp == MAGIC_CANDLE && obj->special_quality < SPEQUAL_MAGIC_CANDLE_UNUSED)
                 || (is_torch(obj) && obj->age < torch_maximum_burn_time(obj))
                 )
                 Strcat(prefix, "partly used ");
@@ -5349,7 +5349,7 @@ retry:
             otmp->special_quality = 0;
         } else if (contents == CONTAINER_SPINACH) {
             otmp->corpsenm = NON_PM;
-            otmp->special_quality = 1;
+            otmp->special_quality = SPEQUAL_TIN_CONTAINS_SPINACH;
         }
         break;
     case TOWEL:
@@ -5371,7 +5371,7 @@ retry:
     case SCR_MAIL:
         /* 0: delivered in-game via external event (or randomly for fake mail);
            1: from bones or wishing; 2: written with marker */
-        otmp->special_quality = 1;
+        otmp->special_quality = SPEQUAL_MAIL_FROM_BONES_OR_WISHING;
         break;
     default:
         break;

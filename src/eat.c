@@ -1760,7 +1760,7 @@ int forcetype;
             && (obj->corpsenm == NON_PM /* empty or already spinach */
                 || !vegetarian(&mons[obj->corpsenm])))) { /* replace meat */
         obj->corpsenm = NON_PM; /* not based on any monster */
-        obj->special_quality = 1;           /* spinach */
+        obj->special_quality = SPEQUAL_TIN_CONTAINS_SPINACH;           /* spinach */
         return;
     } else if (forcetype == HEALTHY_TIN) {
         r = tin_variety(obj, FALSE);
