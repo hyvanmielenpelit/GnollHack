@@ -1137,6 +1137,22 @@ boolean* obj_destroyed;
         else
             Strcpy(saved_oname, bare_artifactname(obj));
 
+        /* Play hit sound */
+        if (is_long_worm_with_tail(mon->data) && isok(bhitpos.x, bhitpos.y) && !is_wseg_head(mon, bhitpos.x, bhitpos.y))
+        {
+            if (thrown == HMON_MELEE)
+                play_monster_weapon_hit_sound_at_location(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), 0, obj, damage, thrown, bhitpos.x, bhitpos.y);
+            else
+                play_object_hit_sound_at_location(obj, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), damage, thrown, bhitpos.x, bhitpos.y);
+        }
+        else
+        {
+            if (thrown == HMON_MELEE)
+                play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), 0, obj, damage, thrown);
+            else
+                play_object_hit_sound(obj, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), damage, thrown);
+        }
+
         if (is_weapon(obj) || obj->oclass == GEM_CLASS) 
         {
             /* is it not a melee weapon? */
@@ -1463,10 +1479,11 @@ boolean* obj_destroyed;
                             luck_change += -5;
                     }
 
-                    if (touch_petrifies(&mons[obj->corpsenm])) 
+                    if (obj->corpsenm >= LOW_PM && touch_petrifies(&mons[obj->corpsenm]))
                     {
                         /*learn_egg_type(obj->corpsenm);*/
-                        pline("Splat!  You hit %s with %s %s egg%s!",
+                        pline1("Splat!");
+                        You("hit %s with %s %s egg%s!",
                             mon_nam(mon),
                             obj->known ? "the" : cnt > 1L ? "some" : "a",
                             obj->known ? mons[obj->corpsenm].mname
@@ -1501,7 +1518,7 @@ boolean* obj_destroyed;
 
                         if (touch_petrifies(mdat) && !stale_egg(obj))
                         {
-                            pline_The("egg%s %s alive any more...", plur(cnt),
+                            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "egg%s %s alive any more...", plur(cnt),
                                 (cnt == 1L) ? "isn't" : "aren't");
                             if (obj->timed)
                                 obj_stop_timers(obj);
@@ -1521,9 +1538,7 @@ boolean* obj_destroyed;
                             useup_eggs(obj);
                             exercise(A_WIS, FALSE);
                         }
-
                         change_luck(luck_change, TRUE);
-
                     }
                     break;
 #undef useup_eggs
@@ -1550,7 +1565,7 @@ boolean* obj_destroyed;
                         }
                         else if (obj->otyp == BLINDING_VENOM) 
                         {
-                            pline_The("venom blinds %s%s!", mon_nam(mon),
+                            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "venom blinds %s%s!", mon_nam(mon),
                                 !is_blinded(mon) ? "" : " further");
                         }
                         else 
@@ -1565,7 +1580,7 @@ boolean* obj_destroyed;
                                 && mdat != &mons[PM_FLOATING_EYE])
                                 whom = strcat(strcat(s_suffix(whom), " "),
                                     mbodypart(mon, FACE));
-                            pline("%s %s over %s!", what,
+                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s over %s!", what,
                                 vtense(what, "splash"), whom);
                         }
                         setmangry(mon, TRUE);
@@ -1956,21 +1971,6 @@ boolean* obj_destroyed;
 
     if (!already_killed)
     {
-        if (is_long_worm_with_tail(mon->data) && isok(bhitpos.x, bhitpos.y) && !is_wseg_head(mon, bhitpos.x, bhitpos.y))
-        {
-            if (thrown == HMON_MELEE)
-                play_monster_weapon_hit_sound_at_location(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), 0, obj, damage, thrown, bhitpos.x, bhitpos.y);
-            else
-                play_object_hit_sound_at_location(obj, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), damage, thrown, bhitpos.x, bhitpos.y);
-        }
-        else
-        {
-            if (thrown == HMON_MELEE)
-                play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), 0, obj, damage, thrown);
-            else
-                play_object_hit_sound(obj, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), damage, thrown);
-        }
-
         deduct_monster_hp(mon, damage); //    mon->mhp -= tmp;
         remove_monster_and_nearby_waitforu(mon);
     }
