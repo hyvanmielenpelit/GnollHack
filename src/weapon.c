@@ -1923,18 +1923,20 @@ int skill, lvl;
 
     switch (skill)
     {
-    case P_BARE_HANDED_COMBAT:
     case P_DODGE:
     case P_SHIELD:
     case P_DIGGING:
     case P_RIDING:
     case P_DISARM_TRAP:
         return max(1, (tmp + 1) / 2);
+    case P_BARE_HANDED_COMBAT:
+        return max(1, (tmp + 2) / 3);
     case P_MARTIAL_ARTS:
-        return max(1, (tmp + 6) / 2);
+        return max(1, (tmp + 7) / 3);
     case P_DUAL_WEAPON_COMBAT:
     case P_TWO_HANDED_WEAPON:
     case P_WAND:
+        return max(1, tmp);
     default:
         if(is_magic_skill(skill))
             return max(1, (tmp + 1) / 2);
