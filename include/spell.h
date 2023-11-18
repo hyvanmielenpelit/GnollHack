@@ -35,16 +35,6 @@ struct spell {
 #define spellid(spell) spl_book[spell].sp_id
 #define spellknow(spell) spl_book[spell].sp_know
 
-#define MAGICAL_PROTECTION_AC_BONUS 3
-#define MAGICAL_SHIELDING_AC_BONUS 6
-#define MAGICAL_BARKSKIN_AC_BONUS 12
-#define MAGICAL_STONESKIN_AC_BONUS 18
-
-#define MAGICAL_PROTECTION_MC_BONUS 1
-#define MAGICAL_SHIELDING_MC_BONUS 2
-#define MAGICAL_BARKSKIN_MC_BONUS 4
-#define MAGICAL_STONESKIN_MC_BONUS 6
-
 extern const char* spl_sortchoices[NUM_SPELL_SORTBY];
 extern short spl_orderindx[MAXSPELL];
 

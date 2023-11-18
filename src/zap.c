@@ -11638,10 +11638,21 @@ int otyp;
     struct obj* otmp;
 
     otmp = mksobj(otyp, FALSE, FALSE, FALSE);
-    if (otmp && otmp != &zeroobj) 
+    if (otmp) 
     {
         otmp->age = d(objects[spell_otmp->otyp].oc_spell_dur_dice, objects[spell_otmp->otyp].oc_spell_dur_diesize) + objects[spell_otmp->otyp].oc_spell_dur_plus;
         otmp->nomerge = 1;
+        switch (spell_otmp->otyp)
+        {
+        case SPE_MAGE_ARMOR:
+            otmp->enchantment = max(0, P_SKILL_LEVEL(objects[spell_otmp->otyp].oc_skill) - 1) * 2 + (u.ulevel - 1) / 4;
+            break;
+        case SPE_BLACK_BLADE_OF_DISASTER:
+            otmp->enchantment = max(0, P_SKILL_LEVEL(objects[spell_otmp->otyp].oc_skill) - 1);
+            break;
+        default:
+            break;
+        }
         begin_existence(otmp);
         
         const char

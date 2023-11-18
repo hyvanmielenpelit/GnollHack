@@ -30,6 +30,8 @@
 
 /* *INDENT-OFF* */
 /* clang-format off */
+#define SP_STR(A) #A     
+#define SP_XSTR(A) SP_STR(A)
 
 #ifndef OBJECTS_PASS_2_
 /* first pass */
@@ -50,6 +52,7 @@ struct monst { struct monst *dummy; };  /* lint: struct obj's union */
 #else /* !OBJECTS_PASS_2_ */
 /* second pass */
 #include "color.h"
+#include "general.h"
 //#define COLOR_FIELD(X) X,
 #endif /* !OBJECTS_PASS_2_ */
 
@@ -3525,6 +3528,7 @@ SCROLL("blank paper", "unlabeled", None, 0,  25,  60, 0, 0, 0, 0, 0, 0, 0, S1_NO
             0, savingthrowadj, 0, 0, cooldown, level, manacost, attr, range, radius, skillchance, extraspelldata, \
             20, color, soundset, \
             dirsubtype, 0, 0, 0, PERMITTED_ALL, mflags, flags, flags2, flags3, flags4 | O4_FLOOR_TILE, flags5, flags6)
+
 /* Spellbook description normally refers to book covers (primarily color).
    Parchment and vellum would never be used for such, but rather than
    eliminate those, finagle their definitions to refer to the pages
@@ -3818,9 +3822,9 @@ SPELL("black blade of disaster", "ebony", None, "long-forgotten conjuration magi
     P_CONJURATION_SPELL,   2, 10, 0,
     11,200, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 3, 10, 30, 
     S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_NONE, CLR_BLACK, OBJECT_SOUNDSET_SPELLBOOK, O1_DISINTEGRATION_RESISTANT, O2_NONE, O3_NONE, O4_VERY_RARE, O5_NONE, O6_NONE),
-SPELL("mage armor",   "ornamental", None, None, "Summons a wizard-friendly magical armor with AC4",
+SPELL("mage armor",   "ornamental", None, None, "Summons a wizard-friendly magical armor",
     P_CONJURATION_SPELL,   4,  1, 0, 
-    1, 12, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 4, 20, 200, 
+    1, 12, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 4, 20, 500, 
     S1_NONE, S2_NONE, ALL_TARGETS, AD_NONE, CLR_GREEN, OBJECT_SOUNDSET_SPELLBOOK, O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 SPELL("call hierarch modron",  "spherical", None, "alien conjuration magic", "Summons a permanent hierarch modron",
     P_CONJURATION_SPELL,   0,  5, 0,
@@ -3877,7 +3881,7 @@ SPELL("protection from curses", "cross-patterned", None, None, "Items of the cas
     5, 40, A_WIS, 0, 0, 100, 0, 1, NODIR, CURSE_RESISTANCE, 0, 0, 0, 0, 10, 6, 25,
     S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, CLR_BRIGHT_MAGENTA, OBJECT_SOUNDSET_SPELLBOOK,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
-SPELL("protection",     "dull", None, None, "Gives -3 bonus to AC and +3 to MC",
+SPELL("protection",     "dull", None, None, "Gives -" SP_XSTR(MAGICAL_PROTECTION_AC_BONUS) " bonus to AC and +" SP_XSTR(MAGICAL_PROTECTION_MC_BONUS) " to MC",
     P_CLERIC_SPELL,    4,  3, 0, 
     2, 16, A_WIS, 0, 0, 100, 0, 1, NODIR, MAGICAL_PROTECTION, 0, 0, 0, 0, 2, 10, 130,
     S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_PAPER, OBJECT_SOUNDSET_SPELLBOOK,
@@ -4083,12 +4087,12 @@ SPELL("stick to giant anaconda", "amber-studded", None, None, "Summons a permane
     8, 150, A_MAX_WIS_CHA, 0, 0, 200, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0,
     S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, CLR_ORANGE, OBJECT_SOUNDSET_SPELLBOOK,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
-SPELL("barkskin",     "emerald-studded", None, None, "Gives -12 bonus to AC and +4 to MC",
+SPELL("barkskin",     "emerald-studded", None, None, "Gives -" SP_XSTR(MAGICAL_BARKSKIN_AC_BONUS) " bonus to AC and +" SP_XSTR(MAGICAL_BARKSKIN_MC_BONUS) " to MC",
     P_NATURE_SPELL,   4,   3, 0, 
     4, 15, A_MAX_WIS_CHA, 0, 0, 100, 0, 1, NODIR, MAGICAL_BARKSKIN, 0, 0, 0, 0, 2, 10, 130,
     S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, CLR_GREEN, OBJECT_SOUNDSET_SPELLBOOK,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
-SPELL("stoneskin",     "diamond-studded", None, None, "Gives -18 bonus to AC and +6 to MC",
+SPELL("stoneskin",     "diamond-studded", None, None, "Gives -" SP_XSTR(MAGICAL_STONESKIN_AC_BONUS) " bonus to AC and +" SP_XSTR(MAGICAL_STONESKIN_MC_BONUS) " to MC",
     P_NATURE_SPELL,   4,   3, 0, 
     7, 30, A_MAX_WIS_CHA, 0, 0, 100, 0, 1, NODIR, MAGICAL_STONESKIN, 0, 0, 0, 0, 2, 10, 130,
     S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, CLR_WHITE, OBJECT_SOUNDSET_SPELLBOOK,
@@ -4560,7 +4564,7 @@ SPELL("time stop",   "ancient", None, "an ancient movement spell", "Stops the fl
     S1_NO_SOMATIC_COMPONENT | S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_NONE, CLR_MAGENTA, OBJECT_SOUNDSET_SPELLBOOK,
     O1_NONE, O2_NONE, O3_NONE, O4_VERY_RARE, O5_NONE, O6_NONE),
 
-SPELL("shield",     "obsidian-studded", None, None, "Gives -6 bonus to AC and +2 to MC",
+SPELL("shield",     "obsidian-studded", None, None, "Gives -" SP_XSTR(MAGICAL_SHIELDING_AC_BONUS) " bonus to AC and +" SP_XSTR(MAGICAL_SHIELDING_MC_BONUS) " to MC",
     P_ABJURATION_SPELL, 4, 3, 0, 
     -1, 3, A_MAX_INT_WIS, 0, 0, 100, 0, 1, NODIR, MAGICAL_SHIELDING, 0, 0, 0, 0, 2, 10, 240,
     S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, CLR_BLACK, OBJECT_SOUNDSET_SPELLBOOK,
@@ -5467,5 +5471,8 @@ objects_init()
 }
 
 #endif /* !OBJECTS_PASS_2_ */
+
+#undef SP_STR
+#undef SP_XSTR
 
 /*objects.c*/
