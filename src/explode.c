@@ -1041,12 +1041,10 @@ enum explosion_types expltype;
         context.expl_intervals_to_wait_until_end = 0;
         enum animation_types anim = explosion_type_definitions[expltype].animation;
         boolean playing_anim = (iflags.using_gui_tiles && anim > 0 && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY);
-        boolean see_it;
         for (i = 0; i < 3; i++)
             for (j = 0; j < 3; j++)
             {
-                see_it = cansee(i + x - 1, j + y - 1);
-                if (!isok(i + x - 1, j + y - 1) || !see_it)
+                if (!isok(i + x - 1, j + y - 1) || !cansee(i + x - 1, j + y - 1))
                     continue;
 
                 show_glyph_on_layer(i + x - 1, j + y - 1, explosion_to_glyph(expltype, explosion[i][j]), defsyms[explosion[i][j]].layer);
