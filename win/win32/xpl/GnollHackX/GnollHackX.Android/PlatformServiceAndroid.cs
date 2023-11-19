@@ -28,6 +28,7 @@ using System.Threading;
 using Android.Util;
 using AndroidX.Core.App;
 using Android.Content.PM;
+using Android.Views.InputMethods;
 
 #if GNH_MAUI
 namespace GnollHackM
@@ -407,6 +408,22 @@ namespace GnollHackX.Droid
         {
             InitOnDemandPackStatusNotificationEventHandler();
             //StartForegroundService();
+        }
+
+        public void HideKeyboard()
+        {
+            var context = Android.App.Application.Context;
+            var inputMethodManager = context.GetSystemService(Android.Content.Context.InputMethodService) as InputMethodManager;
+            if (inputMethodManager != null)
+            {
+                var activity = MainActivity.CurrentMainActivity;
+                if(activity != null)
+                {
+                    var token = activity.CurrentFocus?.WindowToken;
+                    inputMethodManager.HideSoftInputFromWindow(token, HideSoftInputFlags.None);
+                    activity.Window.DecorView.ClearFocus();
+                }
+            }
         }
     }
 

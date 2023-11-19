@@ -399,7 +399,22 @@ namespace GnollHackX.Pages.Game
 
         private readonly object _forceAllMessagesLock = new object();
         private bool _forceAllMessages = false;
-        public bool ForceAllMessages { get { lock (_forceAllMessagesLock) { return _forceAllMessages; } } set { lock (_forceAllMessagesLock) { _forceAllMessages = value; } } }
+        public bool ForceAllMessages 
+        { 
+            get { lock (_forceAllMessagesLock) { return _forceAllMessages; } } 
+            set 
+            { 
+                lock (_forceAllMessagesLock) 
+                { 
+                    _forceAllMessages = value; 
+                    MessageFilterEntry.Text = "";
+                    bool was_visible = MessageFilterFrame.IsVisible;
+                    MessageFilterFrame.IsVisible = LongerMessageHistory && value; 
+                    if (was_visible && !MessageFilterFrame.IsVisible) 
+                        GHApp.PlatformService.HideKeyboard(); 
+                } 
+            } 
+        }
 
         public bool HasAllMessagesTransparentBackground { get; set; } = true;
 
@@ -459,6 +474,7 @@ namespace GnollHackX.Pages.Game
             set
             {
                 _longerMessageHistory = value;
+                MessageFilterFrame.IsVisible = _longerMessageHistory && ForceAllMessages;
                 if (_currentGame != null)
                 {
                     ConcurrentQueue<GHResponse> queue;
@@ -3740,7 +3756,7 @@ namespace GnollHackX.Pages.Game
 
         public float GetTextScale()
         {
-            return (float)((lAbilitiesButton.Width <= 0 ? lAbilitiesButton.WidthRequest : lAbilitiesButton.Width) / 50.0f) / (float)GetCanvasScale();
+            return (float)((lWornItemsButton.Width <= 0 ? lWornItemsButton.WidthRequest : lWornItemsButton.Width) / 50.0f) / (float)GetCanvasScale();
         }
 
 #if GNH_MAP_PROFILING && DEBUG
@@ -7533,6 +7549,9 @@ namespace GnollHackX.Pages.Game
                                                             }
                                                             msgHistoryItem.WrappedTextRows.Add(line);
                                                         }
+
+                                                        if(!msgHistoryItem.MatchFilter)
+                                                            continue;
 
                                                         int lineidx;
                                                         for (lineidx = 0; lineidx < msgHistoryItem.WrappedTextRows.Count; lineidx++)
@@ -16134,6 +16153,20 @@ namespace GnollHackX.Pages.Game
                 StartCommandCanvasAnimation();
             else if (!LoadingGrid.IsVisible && MainGrid.IsVisible && !canvasView.AnimationIsRunning("GeneralAnimationCounter"))
                 StartMainCanvasAnimation();
+        }
+
+        private void MessageFilterEntry_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            lock(_msgHistoryLock)
+            {
+                if(_msgHistory != null)
+                {
+                    foreach (GHMsgHistoryItem msg in _msgHistory)
+                    {
+                        msg.Filter = MessageFilterEntry.Text;
+                    }
+                }
+            }
         }
     }
 }

@@ -29,6 +29,35 @@ namespace GnollHackX
 
         public bool IsLast { get; set; }
 
+        private string _filter = null;
+        public string Filter { get { return _filter; } set { _filter = value; _isMatchCalculated = false; } }
+        private bool _isMatchCalculated = false;
+        private bool _calculatedMatch = false;
+        public bool MatchFilter
+        {
+            get
+            {
+                if (_isMatchCalculated)
+                {
+                    return _calculatedMatch; 
+                }
+                else
+                {
+                    if (Filter == null || Filter == "")
+                    {
+                        _calculatedMatch = true;
+                        _isMatchCalculated = true;
+                    }
+                    else
+                    {
+                        _calculatedMatch = Text.IndexOf(Filter, StringComparison.OrdinalIgnoreCase) >= 0; // Text.Contains(Filter);
+                        _isMatchCalculated = true;
+                    }
+                    return _calculatedMatch;
+                }
+            }
+        }
+
         public GHMsgHistoryItem()
         {
             IsLast = false;

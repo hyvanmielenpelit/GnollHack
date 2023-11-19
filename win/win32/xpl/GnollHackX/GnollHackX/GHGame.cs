@@ -195,6 +195,10 @@ namespace GnollHackX
             }
         }
 
+        public List<GHMsgHistoryItem> GetMessages()
+        {
+            return _longer_message_history;
+        }
 
         public void ClientCallback_InitWindows()
         {

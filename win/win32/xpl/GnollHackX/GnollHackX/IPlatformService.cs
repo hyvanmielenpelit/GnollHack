@@ -12,6 +12,7 @@ namespace GnollHackX
     {
         void InitializePlatform();
         void CloseApplication();
+        void HideKeyboard();
 
         string GetVersionString();
         ulong GetDeviceMemoryInBytes();

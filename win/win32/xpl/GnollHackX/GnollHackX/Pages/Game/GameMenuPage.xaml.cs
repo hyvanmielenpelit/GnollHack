@@ -4,6 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO.Compression;
+
+using System.IO;
+
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
@@ -41,7 +45,7 @@ namespace GnollHackX.Pages.Game
                 btnQuit.Text = "Quit Game";
             }
 
-            btnOptions.IsVisible = GHApp.DeveloperMode;
+            btnOptions.IsVisible = btnMessages.IsVisible = GHApp.DeveloperMode;
             btnGC.IsVisible = btnDebug.IsVisible = btnRunTests.IsVisible =
                 GHApp.DeveloperMode && GHApp.DebugLogMessages;
         }
@@ -113,7 +117,7 @@ namespace GnollHackX.Pages.Game
         public void UpdateLayout()
         {
             MainLayout.IsEnabled = true;
-            btnOptions.IsVisible = GHApp.DeveloperMode;
+            btnOptions.IsVisible = btnMessages.IsVisible = GHApp.DeveloperMode;
             btnGC.IsVisible = btnDebug.IsVisible = btnRunTests.IsVisible =
                 GHApp.DeveloperMode && GHApp.DebugLogMessages;
         }
@@ -199,5 +203,57 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = true;
         }
 
+        private async void btnMessages_Clicked(object sender, EventArgs e)
+        {
+            MainLayout.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            await GHApp.CheckAndRequestWritePermission(this);
+            await GHApp.CheckAndRequestReadPermission(this);
+
+            try
+            {
+                string ghdir = GHApp.GnollHackService.GetGnollHackPath();
+                string targetpath = Path.Combine(ghdir, "temp");
+
+                GHApp.CheckCreateDirectory(targetpath);
+
+                ulong vernum = GHApp.GHVersionNumber;
+                ulong majorver = (vernum >> 24) & 0xFFUL;
+                ulong minorver = (vernum >> 16) & 0xFFUL;
+                ulong patchlvl = (vernum >> 8) & 0xFFUL;
+                ulong editlvl = (vernum) & 0xFFUL;
+                string versionstring = majorver.ToString() + minorver.ToString() + patchlvl.ToString() + "-" + editlvl;
+                string filepath = Path.Combine(targetpath, "messages-" + versionstring + ".txt");
+                if (File.Exists(filepath))
+                    File.Delete(filepath);
+
+                var curgame = _gamePage.CurrentGame;
+                List<GHMsgHistoryItem> messages = curgame.GetMessages();
+                using (StreamWriter sw = File.CreateText(filepath))
+                {
+                    foreach (GHMsgHistoryItem msg in messages)
+                    {
+                        sw.WriteLine(msg.Text);
+                    }
+                }
+
+                if (File.Exists(filepath))
+                {
+                    await GHApp.ShareFile(this, filepath, "GnollHack Messages");
+                    File.Delete(filepath);
+                }
+                else
+                {
+                    await DisplayAlert("Message File Not Found", "GnollHack could not find " + filepath + ".", "OK");
+                }
+            }
+            catch (Exception ex) 
+            {
+                Debug.WriteLine(ex.Message);
+                await DisplayAlert("Error Creating Message File", "An error occurred while creating the message file: " + ex.Message, "OK");
+            }
+
+            MainLayout.IsEnabled = true;
+        }
     }
 }
