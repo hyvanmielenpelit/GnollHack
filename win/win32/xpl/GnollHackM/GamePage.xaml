@@ -44,7 +44,7 @@
                     <Frame x:Name="MessageFilterFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" IsVisible="False"
                            AbsoluteLayout.LayoutBounds="0.0, 0.0, AutoSize, AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional" >
                         <Entry x:Name="MessageFilterEntry" FontFamily="Underwood" FontSize="18" TextColor="White" BackgroundColor="#66000000" Placeholder="Search" PlaceholderColor="LightGray"
-                                   WidthRequest="200" HorizontalTextAlignment="Center" TextChanged="MessageFilterEntry_TextChanged" />
+                                   WidthRequest="200" Keyboard="Default" HorizontalTextAlignment="Center" TextChanged="MessageFilterEntry_TextChanged" />
                     </Frame>
                 </AbsoluteLayout>
 

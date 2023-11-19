@@ -408,10 +408,10 @@ namespace GnollHackX.Pages.Game
                 { 
                     _forceAllMessages = value; 
                     MessageFilterEntry.Text = "";
-                    bool was_visible = MessageFilterFrame.IsVisible;
+                    //bool was_visible = MessageFilterFrame.IsVisible;
                     MessageFilterFrame.IsVisible = LongerMessageHistory && value; 
-                    if (was_visible && !MessageFilterFrame.IsVisible) 
-                        GHApp.PlatformService.HideKeyboard(); 
+                    //if (was_visible && !MessageFilterFrame.IsVisible) 
+                    //    GHApp.PlatformService.HideKeyboard(); 
                 } 
             } 
         }
@@ -15494,7 +15494,8 @@ namespace GnollHackX.Pages.Game
                 _messageScrollSpeedOn = false;
                 _messageScrollSpeedRecords.Clear();
             }
-
+            MessageFilterEntry.Unfocus();
+            ToggleMessageNumberButton.Focus();
             ForceAllMessages = !ForceAllMessages;
         }
 
