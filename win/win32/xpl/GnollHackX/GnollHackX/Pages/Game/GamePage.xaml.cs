@@ -409,7 +409,8 @@ namespace GnollHackX.Pages.Game
                     _forceAllMessages = value; 
                     MessageFilterEntry.Text = "";
                     //bool was_visible = MessageFilterFrame.IsVisible;
-                    MessageFilterFrame.IsVisible = LongerMessageHistory && value; 
+                    MessageFilterFrame.IsVisible = LongerMessageHistory && value;
+                    UpdateMessageFilter();
                     //if (was_visible && !MessageFilterFrame.IsVisible) 
                     //    GHApp.PlatformService.HideKeyboard(); 
                 } 
@@ -474,7 +475,9 @@ namespace GnollHackX.Pages.Game
             set
             {
                 _longerMessageHistory = value;
+                MessageFilterEntry.Text = "";
                 MessageFilterFrame.IsVisible = _longerMessageHistory && ForceAllMessages;
+                UpdateMessageFilter();
                 if (_currentGame != null)
                 {
                     ConcurrentQueue<GHResponse> queue;
@@ -16156,18 +16159,33 @@ namespace GnollHackX.Pages.Game
                 StartMainCanvasAnimation();
         }
 
-        private void MessageFilterEntry_TextChanged(object sender, TextChangedEventArgs e)
+        void UpdateMessageFilter()
         {
-            lock(_msgHistoryLock)
+            lock (_msgHistoryLock)
             {
-                if(_msgHistory != null)
+                if (_msgHistory != null)
                 {
-                    foreach (GHMsgHistoryItem msg in _msgHistory)
+                    if(LongerMessageHistory)
                     {
-                        msg.Filter = MessageFilterEntry.Text;
+                        foreach (GHMsgHistoryItem msg in _msgHistory)
+                        {
+                            msg.Filter = MessageFilterEntry.Text;
+                        }
+                    }
+                    else
+                    {
+                        foreach (GHMsgHistoryItem msg in _msgHistory)
+                        {
+                            msg.Filter = null;
+                        }
                     }
                 }
             }
+        }
+
+        private void MessageFilterEntry_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdateMessageFilter();
         }
     }
 }
