@@ -1236,7 +1236,7 @@ unsigned short trflags;
                             //delay_output_milliseconds(150);
                             play_sfx_sound(SFX_ROCK_HITS_HARD_HELMET);
                         }
-                        pline("Fortunately, you are wearing a hard helmet.");
+                        pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "Fortunately, you are wearing a hard helmet.");
                     }
                     dmg = 2;
                 } 
@@ -1547,7 +1547,7 @@ unsigned short trflags;
         if (Role_if(PM_RANGER) && !trap->madeby_u && !trap->once
             && In_quest(&u.uz) && Is_qlocate(&u.uz))
         {
-            pline("Fortunately it has a bottom after all...");
+            pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "Fortunately it has a bottom after all...");
             trap->once = 1;
         } 
         else if (u.umonnum == PM_PIT_VIPER || u.umonnum == PM_PIT_FIEND)
@@ -1969,7 +1969,7 @@ unsigned short trflags;
                 trap->launch2.x, trap->launch2.y, style)) {
                 deltrap(trap);
                 newsym(u.ux, u.uy); /* get rid of trap symbol */
-                pline("Fortunately for you, no boulder was released.");
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "Fortunately for you, no boulder was released.");
             }
         }
         break;
@@ -3528,7 +3528,7 @@ register struct monst *mtmp;
 
                 newsym(mtmp->mx, mtmp->my);
                 if (in_sight)
-                    pline("Click!  %s triggers %s.", Monnam(mtmp),
+                    pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Click!  %s triggers %s.", Monnam(mtmp),
                           trap->tseen ? "a rolling boulder trap" : something);
                 if (launch_obj(BOULDER, trap->launch.x, trap->launch.y,
                                trap->launch2.x, trap->launch2.y, style)) 

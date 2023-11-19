@@ -3355,11 +3355,11 @@ boolean confused, helmet_protects, byu, skip_uswallow;
         You("are hit by %s!", doname(otmp2));
         if (uarmh && helmet_protects) {
             if (is_metallic(uarmh)) {
-                pline("Fortunately, you are wearing a hard helmet.");
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "Fortunately, you are wearing a hard helmet.");
                 if (dmg > 2)
                     dmg = 2;
             } else if (flags.verbose) {
-                pline("%s does not protect you.", Yname2(uarmh));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s does not protect you.", Yname2(uarmh));
             }
         }
     } else
@@ -3417,7 +3417,7 @@ boolean confused, byu;
         if (helmet) {
             if (is_metallic(helmet)) {
                 if (canspotmon(mtmp))
-                    pline("Fortunately, %s is wearing a hard helmet.",
+                    pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_SUCCESS : CLR_MSG_ATTENTION, "Fortunately, %s is wearing a hard helmet.",
                           mon_nam(mtmp));
                 else if (!Deaf)
                     You_hear("a clanging sound.");
@@ -3425,7 +3425,7 @@ boolean confused, byu;
                     mdmg = 2;
             } else {
                 if (canspotmon(mtmp))
-                    pline("%s's %s does not protect %s.", Monnam(mtmp),
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s's %s does not protect %s.", Monnam(mtmp),
                           xname(helmet), mhim(mtmp));
             }
         }

@@ -1308,14 +1308,14 @@ boolean hitsroof;
             if (less_damage && damage < (Upolyd ? u.mh : u.uhp))
             {
                 if (!artimsg)
-                    pline("Fortunately, you are wearing a hard helmet.");
+                    pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "Fortunately, you are wearing a hard helmet.");
                 /* helmet definitely protects you when it blocks petrification
                  */
             }
             else if (!petrifier) 
             {
                 if (flags.verbose)
-                    Your("%s does not protect you.", helm_simple_name(uarmh));
+                    Your_ex(ATR_NONE, CLR_MSG_WARNING, "%s does not protect you.", helm_simple_name(uarmh));
             }
         } 
         else if (petrifier && !Stone_resistance
@@ -2640,7 +2640,7 @@ struct obj *obj;
                       ceiling(u.ux, u.uy), body_part(HEAD));
             /* some self damage? */
             if (uarmh)
-                pline("Fortunately, you are wearing %s!",
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "Fortunately, you are wearing %s!",
                       an(helm_simple_name(uarmh)));
         }
         bhitpos.x = u.ux;

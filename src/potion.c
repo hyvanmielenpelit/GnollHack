@@ -1383,7 +1383,7 @@ struct obj *otmp;
 
             if (Sick_resistance || Role_if(PM_HEALER))
             {
-                pline("Fortunately, you have been immunized.");
+                pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "Fortunately, you have been immunized.");
             } 
             else
             {
