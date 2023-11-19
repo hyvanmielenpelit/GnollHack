@@ -697,6 +697,17 @@
                             </ViewCell>
                             <ViewCell>
                                 <StackLayout Orientation="Horizontal">
+                                    <Label x:Name="LongerMessageHistoryLabel"
+                                           Text="Longer Message History"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start" />
+                                    <Switch x:Name="LongerMessageHistorySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>                            
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
                                     <Label Text="Post Game Status"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"

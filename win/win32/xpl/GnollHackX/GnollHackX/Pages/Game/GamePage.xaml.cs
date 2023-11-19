@@ -449,6 +449,27 @@ namespace GnollHackX.Pages.Game
         //private bool _showPrevWepContextCommand = false;
         //public bool ShowPrevWepContextCommand { get { lock (_showPrevWepContextCommandLock) { return _showPrevWepContextCommand; } } set { lock (_showPrevWepContextCommandLock) { _showPrevWepContextCommand = value; } } }
 
+        bool _longerMessageHistory = false;
+        public bool LongerMessageHistory
+        {
+            get
+            {
+                return _longerMessageHistory;
+            }
+            set
+            {
+                _longerMessageHistory = value;
+                if (_currentGame != null)
+                {
+                    ConcurrentQueue<GHResponse> queue;
+                    if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                    {
+                        queue.Enqueue(new GHResponse(_currentGame, GHRequestType.UseLongerMessageHistory, value));
+                    }
+                }
+            }
+        }
+
         private readonly object _accurateLayerDrawingLock = new object();
         private bool _accurateLayerDrawing = false;
         public bool AlternativeLayerDrawing { get { lock (_accurateLayerDrawingLock) { return _accurateLayerDrawing; } } set { lock (_accurateLayerDrawingLock) { _accurateLayerDrawing = value; } } }
@@ -479,7 +500,7 @@ namespace GnollHackX.Pages.Game
 
         private int _shownMessageRows = GHConstants.DefaultMessageRows;
         public int NumDisplayedMessages { get { return _shownMessageRows; } set { _shownMessageRows = value; } }
-        public int ActualDisplayedMessages { get { return ForceAllMessages ? GHConstants.AllMessageRows : NumDisplayedMessages; } }
+        public int ActualDisplayedMessages { get { return ForceAllMessages ? (LongerMessageHistory ? GHConstants.MaxFullMessageHistoryLength : GHConstants.AllMessageRows) : NumDisplayedMessages; } }
 
         private int _shownPetRows = GHConstants.DefaultPetRows;
         public int NumDisplayedPetRows { get { return _shownPetRows; } set { _shownPetRows = value; } }
@@ -761,6 +782,7 @@ namespace GnollHackX.Pages.Game
             //ShowPut2BagContextCommand = Preferences.Get("ShowPut2BagContextCommand", GHConstants.DefaultShowPickNStashContextCommand);
             //ShowPrevWepContextCommand = Preferences.Get("ShowPrevWepContextCommand", GHConstants.DefaultShowPrevWepContextCommand);
             AlternativeLayerDrawing = Preferences.Get("AlternativeLayerDrawing", GHConstants.DefaultAlternativeLayerDrawing);
+            _longerMessageHistory = Preferences.Get("LongerMessageHistory", false); /* Cannot send response command yet */
 
             float deffontsize = GetDefaultMapFontSize();
             MapFontSize = Preferences.Get("MapFontSize", deffontsize);
@@ -984,6 +1006,7 @@ namespace GnollHackX.Pages.Game
 
             IsGameOn = true;
 
+            /* Polling timer */
             Device.StartTimer(TimeSpan.FromSeconds(1.0 / GHConstants.PollingFrequency), () =>
             {
                 if(!StartingPositionsSet && !canvasView.CanvasSize.IsEmpty && IsSizeAllocatedProcessed && lAbilitiesButton.Width > 0)
@@ -1001,6 +1024,7 @@ namespace GnollHackX.Pages.Game
                 return IsGameOn;
             });
 
+            /* Cursor and FPS update timer */
             Device.StartTimer(TimeSpan.FromSeconds(0.5), () =>
             {
                 _cursorIsOn = !_cursorIsOn;
@@ -2898,8 +2922,8 @@ namespace GnollHackX.Pages.Game
             TipView.InvalidateSurface();
         }
         private readonly object _msgHistoryLock = new object();
-        private List<GHMsgHistoryItem> _msgHistory = null;
-        private void PrintHistory(List<GHMsgHistoryItem> msgHistory)
+        private GHMsgHistoryItem[] _msgHistory = null;
+        private void PrintHistory(GHMsgHistoryItem[] msgHistory)
         {
             lock (_msgHistoryLock)
             {
@@ -7468,7 +7492,7 @@ namespace GnollHackX.Pages.Game
                                                 lock (_refreshMsgHistoryRowCountLock)
                                                 {
                                                     bool refreshsmallesttop = true;
-                                                    for (idx = _msgHistory.Count - 1; idx >= 0 && j >= 0; idx--)
+                                                    for (idx = _msgHistory.Length - 1; idx >= 0 && j >= 0; idx--)
                                                     {
                                                         GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
                                                         //longLine = msgHistoryItem.Text;
@@ -7616,7 +7640,7 @@ namespace GnollHackX.Pages.Game
                                                         {
                                                             _messageSmallestTop = canvasheight;
                                                             j = ActualDisplayedMessages - 1;
-                                                            for (idx = _msgHistory.Count - 1; idx >= 0 && j >= 0; idx--)
+                                                            for (idx = _msgHistory.Length - 1; idx >= 0 && j >= 0; idx--)
                                                             {
                                                                 GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
                                                                 int lineidx;

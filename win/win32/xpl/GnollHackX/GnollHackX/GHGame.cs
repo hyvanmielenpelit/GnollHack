@@ -39,6 +39,8 @@ namespace GnollHackX
         private bool _characternameSet = false;
         private string _characterName = "";
         private object _characterNameLock = new object();
+        private bool _useLongerMessageHistory = false;
+
         private readonly GamePage _gamePage;
         public GamePage ActiveGamePage { get { return _gamePage; } }
 
@@ -56,6 +58,7 @@ namespace GnollHackX
         public int MessageWindowId { get; set; }
         public int StatusWindowId { get; set; }
         private List<GHMsgHistoryItem> _message_history = new List<GHMsgHistoryItem>();
+        private List<GHMsgHistoryItem> _longer_message_history = new List<GHMsgHistoryItem>();
 
         public static ConcurrentDictionary<GHGame, ConcurrentQueue<GHRequest>> RequestDictionary { get { return _concurrentRequestDictionary; } }
         public static ConcurrentDictionary<GHGame, ConcurrentQueue<GHResponse>> ResponseDictionary { get { return _concurrentResponseDictionary; } }
@@ -72,6 +75,8 @@ namespace GnollHackX
             GHGame.RequestDictionary.TryAdd(this, new ConcurrentQueue<GHRequest>());
             GHGame.ResponseDictionary.TryAdd(this, new ConcurrentQueue<GHResponse>());
             _gamePage = gamePage;
+            if(_gamePage != null)
+                _useLongerMessageHistory = _gamePage.LongerMessageHistory;
         }
 
         ~GHGame()
@@ -175,6 +180,13 @@ namespace GnollHackX
                             break;
                         case GHRequestType.TallyRealTime:
                             RequestTallyRealTime();
+                            break;
+                        case GHRequestType.UseLongerMessageHistory:
+                            if(_useLongerMessageHistory != response.ResponseBoolValue)
+                            {
+                                _useLongerMessageHistory = response.ResponseBoolValue;
+                                UpdateMessageHistory();
+                            }
                             break;
                         default:
                             break;
@@ -631,48 +643,65 @@ namespace GnollHackX
         {
             RawPrintEx(str, 1, (int)nhcolor.NO_COLOR);
         }
-        public void RawPrintEx(string str, int attr, int color)
-        {
-            if (_message_history.Count > 0)
-                _message_history[_message_history.Count - 1].IsLast = false;
-            _message_history.Add(new GHMsgHistoryItem(str, attr, color));
-            if (_message_history.Count > GHConstants.MaxMessageHistoryLength)
-                _message_history.RemoveAt(0);
 
-            List<GHMsgHistoryItem> sendlist = new List<GHMsgHistoryItem>();
-            sendlist.AddRange(_message_history);
-            if (sendlist.Count > 0)
-                sendlist[sendlist.Count - 1].IsLast = true;
+        public void UpdateMessageHistory()
+        {
             ConcurrentQueue<GHRequest> queue;
             if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
-                queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, sendlist));
+                queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, _useLongerMessageHistory ? _longer_message_history.ToArray() : _message_history.ToArray()));
             }
+        }
+
+        public void AddNewMessage(GHMsgHistoryItem newmsg)
+        {
+            if (newmsg == null)
+                return;
+
+            if (_message_history.Count > 0)
+                _message_history[_message_history.Count - 1].IsLast = false;
+            _message_history.Add(newmsg);
+            if (_message_history.Count > GHConstants.MaxMessageHistoryLength)
+                _message_history.RemoveAt(0);
+            if (_message_history.Count > 0)
+                _message_history[_message_history.Count - 1].IsLast = true;
+
+            if (_longer_message_history.Count > 0)
+                _longer_message_history[_longer_message_history.Count - 1].IsLast = false;
+            _longer_message_history.Add(newmsg);
+            if (_longer_message_history.Count > GHConstants.MaxFullMessageHistoryLength)
+                _longer_message_history.RemoveAt(0);
+            if (_longer_message_history.Count > 0)
+                _longer_message_history[_longer_message_history.Count - 1].IsLast = true;
+
+            UpdateMessageHistory();
+        }
+
+        public void RawPrintEx(string str, int attr, int color)
+        {
+            GHMsgHistoryItem newmsg = new GHMsgHistoryItem(str, attr, color);
+            AddNewMessage(newmsg);
         }
         public void RawPrintEx2(string str, byte[] attrs, byte[] colors, int attr, int color)
         {
-            //if (attrs != null && attrs.Length > 0)
-            //    attr = attrs[0];
-            //if (colors != null && colors.Length > 0)
-            //    color = colors[0];
+            GHMsgHistoryItem newmsg = new GHMsgHistoryItem(str, attrs, colors, attr, color);
+            AddNewMessage(newmsg);
 
-            //RawPrintEx(str, attr, color);
+            //if (_message_history.Count > 0)
+            //    _message_history[_message_history.Count - 1].IsLast = false;
+            //_message_history.Add(new GHMsgHistoryItem(str, attrs, colors, attr, color));
+            //if (_message_history.Count > GHConstants.MaxMessageHistoryLength)
+            //    _message_history.RemoveAt(0);
 
-            if (_message_history.Count > 0)
-                _message_history[_message_history.Count - 1].IsLast = false;
-            _message_history.Add(new GHMsgHistoryItem(str, attrs, colors, attr, color));
-            if (_message_history.Count > GHConstants.MaxMessageHistoryLength)
-                _message_history.RemoveAt(0);
-
-            List<GHMsgHistoryItem> sendlist = new List<GHMsgHistoryItem>();
-            sendlist.AddRange(_message_history);
-            if (sendlist.Count > 0)
-                sendlist[sendlist.Count - 1].IsLast = true;
-            ConcurrentQueue<GHRequest> queue;
-            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
-            {
-                queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, sendlist));
-            }
+            //List<GHMsgHistoryItem> sendlist = new List<GHMsgHistoryItem>();
+            //sendlist.AddRange(_message_history);
+            //if (sendlist.Count > 0)
+            //    sendlist[sendlist.Count - 1].IsLast = true;
+            //ConcurrentQueue<GHRequest> queue;
+            //if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+            //{
+            //    queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, _message_history.ToArray()));
+            //}
         }
         public void ClientCallback_PutStrEx(int win_id, string str, int attributes, int color, int append)
         {
@@ -955,9 +984,9 @@ namespace GnollHackX
                 _msgIndex = 0;
 
             int res = 0;
-            if (_msgIndex < _message_history.Count)
+            if (_msgIndex < _longer_message_history.Count)
             {
-                string text = _message_history[_msgIndex].Text;
+                string text = _longer_message_history[_msgIndex].Text;
                 int msgLength = text.Length;
                 if (text_ptr != IntPtr.Zero)
                 {
@@ -967,27 +996,27 @@ namespace GnollHackX
                 }
                 if (attributes_ptr != IntPtr.Zero)
                 {
-                    if(_message_history[_msgIndex].Attributes != null)
+                    if(_longer_message_history[_msgIndex].Attributes != null)
                     {
-                        Marshal.Copy(_message_history[_msgIndex].Attributes, 0, attributes_ptr, msgLength);
+                        Marshal.Copy(_longer_message_history[_msgIndex].Attributes, 0, attributes_ptr, msgLength);
                     }
                     else
                     {
                         for (int i = 0; i < msgLength; i++)
-                            Marshal.WriteByte(attributes_ptr, i, (byte)_message_history[_msgIndex].Attribute);
+                            Marshal.WriteByte(attributes_ptr, i, (byte)_longer_message_history[_msgIndex].Attribute);
                     }
                     Marshal.WriteByte(attributes_ptr, msgLength, 0);
                 }
                 if (colors_ptr != IntPtr.Zero)
                 {
-                    if (_message_history[_msgIndex].Colors != null)
+                    if (_longer_message_history[_msgIndex].Colors != null)
                     {
-                        Marshal.Copy(_message_history[_msgIndex].Colors, 0, colors_ptr, msgLength);
+                        Marshal.Copy(_longer_message_history[_msgIndex].Colors, 0, colors_ptr, msgLength);
                     }
                     else
                     {
                         for(int i = 0; i < msgLength; i++)
-                            Marshal.WriteByte(colors_ptr, i, (byte)_message_history[_msgIndex].NHColor);
+                            Marshal.WriteByte(colors_ptr, i, (byte)_longer_message_history[_msgIndex].NHColor);
                     }
                     Marshal.WriteByte(colors_ptr, msgLength, 0);
                 }
@@ -1745,9 +1774,10 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_MESSAGE_HISTORY:
                     _message_history.Clear();
+                    _longer_message_history.Clear();
                     if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
-                        queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, new List<GHMsgHistoryItem>()));
+                        queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory));
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_LOAD_INTRO_SOUND_BANK:

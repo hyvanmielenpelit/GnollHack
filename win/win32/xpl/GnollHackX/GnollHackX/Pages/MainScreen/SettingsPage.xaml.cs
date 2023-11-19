@@ -174,6 +174,10 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage.BreatheAnimations = BreatheAnimationSwitch.IsToggled;
             Preferences.Set("BreatheAnimations", BreatheAnimationSwitch.IsToggled);
 
+            if (_gamePage != null)
+                _gamePage.LongerMessageHistory = LongerMessageHistorySwitch.IsToggled;
+            Preferences.Set("LongerMessageHistory", LongerMessageHistorySwitch.IsToggled);
+
             //if (_gamePage != null)
             //    _gamePage.ShowPut2BagContextCommand = Put2BagSwitch.IsToggled;
             //Preferences.Set("ShowPut2BagContextCommand", Put2BagSwitch.IsToggled);
@@ -390,6 +394,7 @@ namespace GnollHackX.Pages.MainScreen
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting;
+            bool longermsghistory = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             string customlink = "";
             int[] cmdidxs = new int[6];
@@ -458,6 +463,7 @@ namespace GnollHackX.Pages.MainScreen
                 breatheanimations = Preferences.Get("BreatheAnimations", GHConstants.DefaultBreatheAnimations);
                 //put2bag = Preferences.Get("ShowPut2BagContextCommand", GHConstants.DefaultShowPickNStashContextCommand);
                 //prevwep = Preferences.Get("ShowPrevWepContextCommand", GHConstants.DefaultShowPrevWepContextCommand);
+                longermsghistory = Preferences.Get("LongerMessageHistory", false);
             }
             else
             {
@@ -493,6 +499,7 @@ namespace GnollHackX.Pages.MainScreen
                 breatheanimations = _gamePage.BreatheAnimations;
                 //put2bag = _gamePage.ShowPut2BagContextCommand;
                 //prevwep = _gamePage.ShowPrevWepContextCommand;
+                longermsghistory = _gamePage.LongerMessageHistory;
             }
             CursorPicker.SelectedIndex = cursor;
             GraphicsPicker.SelectedIndex = graphics;
@@ -624,6 +631,7 @@ namespace GnollHackX.Pages.MainScreen
             BreatheAnimationSwitch.IsToggled = breatheanimations;
             //Put2BagSwitch.IsToggled = put2bag;
             //PrevWepSwitch.IsToggled = prevwep;
+            LongerMessageHistorySwitch.IsToggled = longermsghistory;
 
             _doChangeVolume = !GHApp.IsMuted;
         }

@@ -58,6 +58,7 @@ namespace GnollHackX
         RestartGame,
         DebugLog,
         CloseAllDialogs,
+        UseLongerMessageHistory,
     }
 
     public struct AddContextMenuData
@@ -143,7 +144,7 @@ namespace GnollHackX
         public int RequestNhColor { get; set; }
         public int RequestGlyph { get; set; }
         public ulong RequestFlags { get; set; }
-        public List<GHMsgHistoryItem> MessageHistory { get; set; }
+        public GHMsgHistoryItem[] MessageHistory { get; set; } = null;
         public string Responses { get; set; }
         public string ResponseDescriptions { get; set; }
         public List<GHPutStrItem> RequestPutStrItems { get; set; }
@@ -285,7 +286,7 @@ namespace GnollHackX
             RequestString = requeststring;
             RequestStringAttributes = attributes;
         }
-        public GHRequest(GHGame ghGame, GHRequestType requesttype, List<GHMsgHistoryItem> msgHistory)
+        public GHRequest(GHGame ghGame, GHRequestType requesttype, GHMsgHistoryItem[] msgHistory)
         {
             RequestingGame = ghGame;
             RequestType = requesttype;
