@@ -649,7 +649,11 @@ namespace GnollHackX
             ConcurrentQueue<GHRequest> queue;
             if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
-                queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, _useLongerMessageHistory ? _longer_message_history.ToArray() : _message_history.ToArray()));
+                List<GHMsgHistoryItem> relevantlist = _useLongerMessageHistory ? _longer_message_history : _message_history;
+                if(relevantlist.Count == 0)
+                    queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory)); /* Print null history */
+                else
+                    queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, relevantlist.ToArray()));
             }
         }
 
