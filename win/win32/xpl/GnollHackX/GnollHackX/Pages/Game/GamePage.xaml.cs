@@ -672,7 +672,11 @@ namespace GnollHackX.Pages.Game
         private readonly object _youRectLock = new object();
         private SKRect _youRect = new SKRect();
         public SKRect YouRect { get { lock (_youRectLock) { return _youRect; } } set { lock (_youRectLock) { _youRect = value; } } }
+
+        private readonly object _youRectDrawnLock = new object();
+
         private bool _youRectDrawn = false;
+        public bool YouRectDrawn { get { lock (_youRectDrawnLock) { return _youRectDrawn; } } set { lock (_youRectDrawnLock) { _youRectDrawn = value; } } }
 
         public readonly object TargetClipLock = new object();
         public float _originMapOffsetWithNewClipX;
@@ -9417,7 +9421,7 @@ namespace GnollHackX.Pages.Game
                     textPaint.Style = SKPaintStyle.Fill;
                 }
 
-                _youRectDrawn = false;
+                YouRectDrawn = false;
                 /* Status Screen */
                 if (ShowExtendedStatusBar)
                 {
@@ -9450,7 +9454,7 @@ namespace GnollHackX.Pages.Game
                     SKRect utouchrect = new SKRect(urect.Left - youtouchmargin, urect.Top - youtouchmargin, urect.Right + youtouchmargin, urect.Bottom + youtouchmargin);
                     canvas.DrawBitmap(GHApp.YouBitmap, urect, textPaint);
                     YouRect = utouchrect;
-                    _youRectDrawn = true;
+                    YouRectDrawn = true;
 
                     textPaint.Style = SKPaintStyle.Fill;
                     textPaint.Typeface = GHApp.UnderwoodTypeface;
@@ -9971,7 +9975,7 @@ namespace GnollHackX.Pages.Game
                         }
                     }                   
 
-                    if(!_youRectDrawn)
+                    if(!YouRectDrawn)
                         YouRect = new SKRect();
                 }
 
