@@ -59,6 +59,7 @@ namespace GnollHackX
         DebugLog,
         CloseAllDialogs,
         UseLongerMessageHistory,
+        SaveInsuranceCheckPoint,
     }
 
     public struct AddContextMenuData

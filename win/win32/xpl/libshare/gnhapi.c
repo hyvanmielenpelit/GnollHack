@@ -341,9 +341,14 @@ LibSaveAndRestoreSavedGame(int save_style)
     {
         switch (save_style)
         {
-        case 1: /* Checkpoint only */
+        case 2: /* Checkpoint only and no wait */
 #ifdef INSURANCE
-            save_currentstate(); /* In the case save fails */
+            save_currentstate();
+#endif
+            break;
+        case 1: /* Checkpoint only and wait for resume */
+#ifdef INSURANCE
+            save_currentstate();
 #endif
             issue_parametered_gui_command(GUI_CMD_WAIT_FOR_RESUME, 0);
             break;

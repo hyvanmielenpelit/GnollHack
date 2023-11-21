@@ -93,7 +93,8 @@ namespace GnollHackX
             if(_saveRequested)
             {
                 _saveRequested = false;
-                if(!GHApp.CancelSaveGame)
+                _checkPointRequested = false;
+                if (!GHApp.CancelSaveGame)
                 {
                     GHApp.SavingGame = true;
                     GHApp.GnollHackService.SaveAndRestoreSavedGame(GHApp.AppSwitchSaveStyle);
@@ -101,6 +102,12 @@ namespace GnollHackX
                 GHApp.GameSaved = false;
                 GHApp.SavingGame = false;
             }
+            else if (_checkPointRequested)
+            {
+                _checkPointRequested = false;
+                GHApp.GnollHackService.SaveAndRestoreSavedGame(2); /* Check point and return immediately */
+            }
+
             if (_timeTallyRequested)
             {
                 _timeTallyRequested = false;
@@ -174,6 +181,9 @@ namespace GnollHackX
                             break;
                         case GHRequestType.SaveGameAndWaitForResume:
                             RequestSaveGame();
+                            break;
+                        case GHRequestType.SaveInsuranceCheckPoint:
+                            RequestCheckPoint();
                             break;
                         case GHRequestType.StopWaitAndRestoreSavedGame:
                             RequestRestoreSavedGame();
@@ -2159,7 +2169,8 @@ namespace GnollHackX
 
         bool _saveRequested = false;
         bool _restoreRequested = false;
-        /* Other functions */
+        bool _checkPointRequested = false;
+
         private void RequestSaveGame()
         {
             _saveRequested = true;
@@ -2168,6 +2179,11 @@ namespace GnollHackX
         private void RequestRestoreSavedGame()
         {
             _restoreRequested = true;
+        }
+
+        private void RequestCheckPoint()
+        {
+            _checkPointRequested = true;
         }
 
         bool _timeTallyRequested = false;

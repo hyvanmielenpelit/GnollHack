@@ -94,18 +94,32 @@ namespace GnollHackX
 
         private static double _batteryChargeLevel = -1;
         private static double _previousBatteryChargeLevel = -1;
+        private static double _previousBatteryCheckPointChargeLevel = 2; /* Dummy initial value of 200% */
         private static DateTime _batteryChargeLevelTimeStamp;
         private static DateTime _previousBatteryChargeLevelTimeStamp;
         private static readonly object _batteryLock = new object();
 
         private static void Battery_BatteryInfoChanged(object sender, BatteryInfoChangedEventArgs e)
         {
+            double chargediff;
+            double prevcheckpointcharge;
             lock (_batteryLock)
             {
+                prevcheckpointcharge = _previousBatteryCheckPointChargeLevel;
                 _previousBatteryChargeLevel = _batteryChargeLevel;
                 _previousBatteryChargeLevelTimeStamp = _batteryChargeLevelTimeStamp;
                 _batteryChargeLevel = e.ChargeLevel;
                 _batteryChargeLevelTimeStamp = DateTime.Now;
+                chargediff = _batteryChargeLevel - _previousBatteryChargeLevel;
+            }
+
+            if (chargediff < 0 && CurrentGHGame != null && e.ChargeLevel >= 0.03 && e.ChargeLevel <= 0.05 && e.ChargeLevel - prevcheckpointcharge < -0.0075)
+            {
+                lock (_batteryLock)
+                {
+                    _previousBatteryCheckPointChargeLevel = e.ChargeLevel;
+                }
+                CurrentGHGame.ActiveGamePage.SaveCheckPoint();
             }
         }
 
@@ -330,7 +344,10 @@ namespace GnollHackX
                 //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
                 Preferences.Set("WentToSleepWithGameOn", true);
                 Preferences.Set("GameSaveResult", 0);
-                CurrentGHGame.ActiveGamePage.SaveGameAndWaitForResume();
+                if (GHApp.BatteryChargeLevel > 2) /* Save only if there is enough battery left to prevent save file corruption when the phone powers off */
+                {
+                    CurrentGHGame.ActiveGamePage.SaveGameAndWaitForResume();
+                }
             }
             CollectGarbage();
         }

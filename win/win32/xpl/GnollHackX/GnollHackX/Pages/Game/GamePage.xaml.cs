@@ -16117,6 +16117,18 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        public void SaveCheckPoint()
+        {
+            if (_currentGame != null)
+            {
+                ConcurrentQueue<GHResponse> queue;
+                if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                {
+                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.SaveInsuranceCheckPoint));
+                }
+            }
+        }
+
         public void TallyRealTime()
         {
             if (_currentGame != null)
