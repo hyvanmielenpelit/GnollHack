@@ -591,7 +591,7 @@ namespace GnollHackX
             ulong minorver = (vernum >> 16) & 0xFFUL;
             ulong patchver = (vernum >> 8) & 0xFFUL;
             ulong editver = (vernum) & 0xFFUL;
-            string verstr = majorver + minorver + patchver + "-" + editver;
+            string verstr = majorver + "." + minorver + "." + patchver + "-" + editver;
             return verstr;
         }
 

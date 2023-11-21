@@ -1757,7 +1757,6 @@ weapon_here:
         }
         break;
     case FOOD_CLASS:
-
         if (obj->oeaten)
             Strcat(prefix, "partly eaten ");
         

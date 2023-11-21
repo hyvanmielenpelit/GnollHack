@@ -2116,7 +2116,7 @@ int x, y;
             }
         }
 
-    return otmp;
+    return (struct obj*)0;
 }
 
 /* Note: uses nobj, not nexthere */
