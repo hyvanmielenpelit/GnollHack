@@ -2381,6 +2381,25 @@ struct obj* obj;
 }
 
 char*
+prepend_quan(quan, name)
+long quan;
+const char* name; /* Should be already in plural */
+{
+    char* buf = nextobuf();
+    Sprintf(buf, "%ld %s", quan, name);
+    return buf;
+}
+
+char*
+aqcxname(obj)
+struct obj* obj;
+{
+    if (obj->otyp == CORPSE)
+        return obj->quan == 1 ? corpse_xname(obj, (const char*)0, CXN_ARTICLE) : prepend_quan(obj->quan, corpse_xname(obj, (const char*)0, CXN_NORMAL));
+    return obj->oartifact && obj->aknown ? the(xname(obj)) : obj->quan != 1 ? prepend_quan(obj->quan, xname(obj)) : an(xname(obj));
+}
+
+char*
 thecxname(obj)
 struct obj* obj;
 {
