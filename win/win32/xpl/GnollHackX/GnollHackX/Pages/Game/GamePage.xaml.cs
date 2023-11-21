@@ -2821,12 +2821,13 @@ namespace GnollHackX.Pages.Game
                 YnQuestionLabel.Text = "";
             else
                 YnQuestionLabel.Text = introline + " ";
-
-            YnQuestionLabel.Text += question;
+            
+            if(question != null)
+                YnQuestionLabel.Text += question;
 
             /* Buttons */
             LabeledImageButton[] btnList = { ZeroButton, FirstButton, SecondButton, ThirdButton, FourthButton };
-            if (responses.Length == 0)
+            if (responses == null || responses.Length == 0)
                 return;
             else
             {
@@ -2835,7 +2836,7 @@ namespace GnollHackX.Pages.Game
                     if (i < responses.Length)
                     {
                         btnList[i].BtnLetter = responses[i];
-                        if (descriptions != null && descr_list.Length > i)
+                        if (descriptions != null && descr_list != null && descr_list.Length > i)
                             btnList[i].LblText = descr_list[i];
                         else
                             btnList[i].LblText = btnList[i].BtnLetter.ToString();
