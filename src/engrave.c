@@ -498,6 +498,27 @@ size_t* array_size_ptr;
     return coordarray;
 }
 
+void
+unsee_engravings(VOID_ARGS)
+{
+    register struct engr* ep = head_engr;
+    while (ep) {
+        ep->engr_flags &= ~ENGR_FLAGS_SEEN;
+        ep = ep->nxt_engr;
+    }
+}
+
+void
+forget_engravings(VOID_ARGS)
+{
+    register struct engr* ep = head_engr;
+    while (ep) {
+        if(ep->engr_x != u.ux || ep->engr_y != u.uy)
+            ep->engr_flags &= ~ENGR_FLAGS_SEEN;
+        ep = ep->nxt_engr;
+    }
+}
+
 /*
  * freehand - returns true if player has a free hand
  */

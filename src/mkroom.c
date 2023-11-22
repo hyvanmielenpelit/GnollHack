@@ -986,7 +986,6 @@ place_main_monst_here:
                             }
                         }
                         box->speflags |= SPEFLAGS_NO_PICKUP;
-                        //make_engr_at(sx, sy, Inhell ? Morgoth_word : Gilthoniel_word, 0L, ENGRAVE);
                         context.made_armory_box_count++;
                     }
                 }

@@ -587,6 +587,7 @@ make_bones:
         //ttmp->madeby_mon = 0; //Keep madeby_mon flags to indicate that the traps are not original (mostly relevant in Sokoban)
         ttmp->tseen = (ttmp->ttyp == HOLE);
     }
+    unsee_engravings();
     resetobjs(fobj, FALSE);
     resetobjs(level.buriedobjlist, FALSE);
 

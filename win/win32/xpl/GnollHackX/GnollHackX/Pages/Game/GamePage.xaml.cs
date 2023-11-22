@@ -414,6 +414,8 @@ namespace GnollHackX.Pages.Game
                     MessageFilterEntry.Text = "";
                     UpdateMessageFilter();
                 }
+                else
+                    RefreshMsgHistoryRowCounts = true;
             }
         }
 
@@ -485,6 +487,8 @@ namespace GnollHackX.Pages.Game
                     MessageFilterEntry.Text = "";
                     UpdateMessageFilter();
                 }
+                else
+                    RefreshMsgHistoryRowCounts = true;
                 if (_currentGame != null)
                 {
                     ConcurrentQueue<GHResponse> queue;
@@ -2960,6 +2964,7 @@ namespace GnollHackX.Pages.Game
             {
                 _msgHistory = msgHistory;
             }
+            RefreshMsgHistoryRowCounts = true;
         }
 
         private async void AskName(string modeName, string modeDescription)
@@ -7522,7 +7527,7 @@ namespace GnollHackX.Pages.Game
 
                                                 lock (_refreshMsgHistoryRowCountLock)
                                                 {
-                                                    bool refreshsmallesttop = true;
+                                                    bool refreshsmallesttop = false;
                                                     for (idx = _msgHistory.Length - 1; idx >= 0 && j >= 0; idx--)
                                                     {
                                                         GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
@@ -7677,6 +7682,8 @@ namespace GnollHackX.Pages.Game
                                                             for (idx = _msgHistory.Length - 1; idx >= 0 && j >= 0; idx--)
                                                             {
                                                                 GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
+                                                                if (!msgHistoryItem.MatchFilter)
+                                                                    continue;
                                                                 int lineidx;
                                                                 for (lineidx = 0; lineidx < msgHistoryItem.WrappedTextRows.Count; lineidx++)
                                                                 {
@@ -7689,6 +7696,14 @@ namespace GnollHackX.Pages.Game
                                                                         _messageSmallestTop = ty + textPaint.FontMetrics.Ascent;
                                                                 }
                                                                 j -= msgHistoryItem.WrappedTextRows.Count;
+                                                            }
+                                                            float topScrollLimit = Math.Max(0, -_messageSmallestTop);
+                                                            if (_messageScrollOffset > topScrollLimit)
+                                                            {
+                                                                _messageScrollOffset = topScrollLimit;
+                                                                _messageScrollSpeed = 0;
+                                                                _messageScrollSpeedOn = false;
+                                                                _messageScrollSpeedRecords.Clear();
                                                             }
                                                         }
                                                     }
@@ -16214,6 +16229,7 @@ namespace GnollHackX.Pages.Game
                     }
                 }
             }
+            RefreshMsgHistoryRowCounts = true;
         }
 
         private void MessageFilterEntry_TextChanged(object sender, TextChangedEventArgs e)

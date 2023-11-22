@@ -1505,6 +1505,7 @@ int howmuch;
 
     forget_map(howmuch);
     forget_traps();
+    forget_engravings();
 
     /* 1 in 3 chance of forgetting some levels */
     if (!rn2(3))

@@ -7104,6 +7104,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     {
         forget_map(ALL_MAP); /* forget the map */
         forget_traps();      /* forget all traps too */
+        forget_engravings();
         familiar = TRUE;
         level_info[new_ledger].flags &= ~FORGOTTEN;
     }

@@ -1151,6 +1151,8 @@ E void FDECL(make_grave, (int, int, const char *, BOOLEAN_P));
 E void FDECL(make_signpost, (int, int, const char*, BOOLEAN_P));
 E size_t NDECL(count_engravings);
 E coord* FDECL(get_engraving_coords, (size_t*));
+E void NDECL(unsee_engravings);
+E void NDECL(forget_engravings);
 
 /* ### exper.c ### */
 
