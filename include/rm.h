@@ -1093,39 +1093,39 @@ extern struct symsetentry symset[NUM_GRAPHICS]; /* from drawing.c */
  * The 5 possible states of doors
  */
 
-#define D_NODOOR 0
-#define D_BROKEN 1
-#define D_ISOPEN 2
-#define D_CLOSED 4
-#define D_LOCKED 8
-#define D_TRAPPED 16
-#define D_SECRET 32 /* only used by sp_lev.c, NOT in rm-struct */
-#define D_PORTCULLIS 64 /* this is an open portcullis, similar to D_NODOOR */
-#define D_MASK 0xFF
+#define D_NODOOR ((unsigned short)0)
+#define D_BROKEN ((unsigned short)1)
+#define D_ISOPEN ((unsigned short)2)
+#define D_CLOSED ((unsigned short)4)
+#define D_LOCKED ((unsigned short)8)
+#define D_TRAPPED ((unsigned short)16)
+#define D_SECRET ((unsigned short)32) /* only used by sp_lev.c, NOT in rm-struct */
+#define D_PORTCULLIS ((unsigned short)64) /* this is an open portcullis, similar to D_NODOOR */
+#define D_MASK ((unsigned short)0xFF)
 
 /*
  * Some altars are considered as shrines, so we need a flag.
  */
-#define AM_SHRINE 8
+#define AM_SHRINE ((unsigned short)8)
 
 /*
  * Thrones should only be looted once.
  */
-#define T_LOOTED 1
+#define T_LOOTED ((unsigned short)1)
 
 /*
  * Trees have more than one kick result.
  */
-#define TREE_LOOTED 1
-#define TREE_SWARM 2
-#define TREE_HAS_BEE_HIVE 4
+#define TREE_LOOTED ((unsigned short)1)
+#define TREE_SWARM ((unsigned short)2)
+#define TREE_HAS_BEE_HIVE ((unsigned short)4)
 
 /*
  * Fountains have limits, and special warnings.
  */
-#define F_LOOTED 16
-#define F_WARNED 32
-#define F_KNOWN 64
+#define F_LOOTED ((unsigned short)16)
+#define F_WARNED ((unsigned short)32)
+#define F_KNOWN ((unsigned short)64)
 #define FOUNTAIN_IS_WARNED(x, y) (levl[x][y].looted & F_WARNED)
 #define FOUNTAIN_IS_LOOTED(x, y) (levl[x][y].looted & F_LOOTED)
 #define FOUNTAIN_IS_KNOWN(x, y) (levl[x][y].looted & F_KNOWN)
@@ -1141,59 +1141,59 @@ extern struct symsetentry symset[NUM_GRAPHICS]; /* from drawing.c */
  * of instantly trapping the door, and if it was defined as trapped,
  * the guards consider that you have already been warned!
  */
-#define D_WARNED 16
+#define D_WARNED ((unsigned short)16)
 
 /*
  * Sinks have 3 different types of loot that shouldn't be abused
  */
-#define S_LPUDDING 1
-#define S_LDWASHER 2
-#define S_LRING 4
+#define S_LPUDDING ((unsigned short)1)
+#define S_LDWASHER ((unsigned short)2)
+#define S_LRING ((unsigned short)4)
 
 /*
  * The four directions for a DrawBridge.
  */
-#define DB_NORTH    0x0000
-#define DB_SOUTH    0x0001
-#define DB_EAST     0x0002
-#define DB_WEST     0x0003
-#define DB_DIR      0x0003 /* mask for direction */
+#define DB_NORTH    ((unsigned short)0x0000)
+#define DB_SOUTH    ((unsigned short)0x0001)
+#define DB_EAST     ((unsigned short)0x0002)
+#define DB_WEST     ((unsigned short)0x0003)
+#define DB_DIR      ((unsigned short)0x0003) /* mask for direction */
 
 /*
  * What's under a drawbridge.
  */
-#define DB_MOAT     0x0000
-#define DB_LAVA     0x0004
-#define DB_ICE      0x0008
-#define DB_GROUND   0x0010
+#define DB_MOAT     ((unsigned short)0x0000)
+#define DB_LAVA     ((unsigned short)0x0004)
+#define DB_ICE      ((unsigned short)0x0008)
+#define DB_GROUND   ((unsigned short)0x0010)
 #define DB_UNDER    (DB_MOAT | DB_LAVA | DB_ICE | DB_GROUND) // 28 /* mask for underneath */
 
 /*
  * Wall information.  Nondiggable also applies to iron bars.
  */
-#define WM_MASK 0x07 /* wall mode (bottom three bits) */
-#define W_NONDIGGABLE 0x08
-#define W_NONPASSWALL 0x10
+#define WM_MASK ((unsigned short)0x07) /* wall mode (bottom three bits) */
+#define W_NONDIGGABLE ((unsigned short)0x08)
+#define W_NONPASSWALL ((unsigned short)0x10)
 
 /*
  * Ladders (in Vlad's tower) may be up or down.
  */
-#define LA_UP 1
-#define LA_DOWN 2
+#define LA_UP ((unsigned short)1)
+#define LA_DOWN ((unsigned short)2)
 
 /*
  * Room areas may be iced pools
  */
-#define ICED_POOL 8
-#define ICED_MOAT 16
+#define ICED_POOL ((unsigned short)8)
+#define ICED_MOAT ((unsigned short)16)
 
 /*
  * General flags for all locations
  */
-#define L_INDESTRUCTIBLE    0x0100  /* Currently used just for doors */
-#define L_USES_UP_KEY       0x0200  /* Currently used just for doors */
-#define L_NON_PASSDOOR      0x0400  /* Currently used just for doors */
-#define L_INITIALLY_UNLIT   0x0800
+#define L_INDESTRUCTIBLE    ((unsigned short)0x0100)  /* Currently used just for doors */
+#define L_USES_UP_KEY       ((unsigned short)0x0200)  /* Currently used just for doors */
+#define L_NON_PASSDOOR      ((unsigned short)0x0400)  /* Currently used just for doors */
+#define L_INITIALLY_UNLIT   ((unsigned short)0x0800)
 
 
 /*
@@ -1246,11 +1246,11 @@ struct rm {
     Bitfield(click_kick_ok, 1); /* No query when clicking to kick  */
 };
 
-#define DECORATION_FLAGS_NONE               0x00
-#define DECORATION_FLAGS_ITEM_IN_HOLDER     0x01
-#define DECORATION_FLAGS_ITEM2_IN_HOLDER    0x02
-#define DECORATION_FLAGS_ITEM3_IN_HOLDER    0x04
-#define DECORATION_FLAGS_SEEN               0x08
+#define DECORATION_FLAGS_NONE               ((uchar)0x00)
+#define DECORATION_FLAGS_ITEM_IN_HOLDER     ((uchar)0x01)
+#define DECORATION_FLAGS_ITEM2_IN_HOLDER    ((uchar)0x02)
+#define DECORATION_FLAGS_ITEM3_IN_HOLDER    ((uchar)0x04)
+#define DECORATION_FLAGS_SEEN               ((uchar)0x08)
 
 #define SET_TYPLIT(x, y, ttyp, tsubtyp, llit)                              \
     {                                                             \
