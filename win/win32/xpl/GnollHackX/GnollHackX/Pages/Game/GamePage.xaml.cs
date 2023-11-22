@@ -407,14 +407,14 @@ namespace GnollHackX.Pages.Game
                 lock (_forceAllMessagesLock) 
                 { 
                     _forceAllMessages = value; 
+                }
+                MessageFilterFrame.IsVisible = LongerMessageHistory && value;
+                if (MessageFilterEntry.Text != "")
+                {
                     MessageFilterEntry.Text = "";
-                    //bool was_visible = MessageFilterFrame.IsVisible;
-                    MessageFilterFrame.IsVisible = LongerMessageHistory && value;
                     UpdateMessageFilter();
-                    //if (was_visible && !MessageFilterFrame.IsVisible) 
-                    //    GHApp.PlatformService.HideKeyboard(); 
-                } 
-            } 
+                }
+            }
         }
 
         public bool HasAllMessagesTransparentBackground { get; set; } = true;
@@ -465,19 +465,26 @@ namespace GnollHackX.Pages.Game
         //private bool _showPrevWepContextCommand = false;
         //public bool ShowPrevWepContextCommand { get { lock (_showPrevWepContextCommandLock) { return _showPrevWepContextCommand; } } set { lock (_showPrevWepContextCommandLock) { _showPrevWepContextCommand = value; } } }
 
+        private readonly object _longerMessageHistoryLock = new object();
         bool _longerMessageHistory = false;
         public bool LongerMessageHistory
         {
             get
             {
-                return _longerMessageHistory;
+                lock (_longerMessageHistoryLock) { return _longerMessageHistory; };
             }
             set
             {
-                _longerMessageHistory = value;
-                MessageFilterEntry.Text = "";
-                MessageFilterFrame.IsVisible = _longerMessageHistory && ForceAllMessages;
-                UpdateMessageFilter();
+                lock(_longerMessageHistoryLock) 
+                {
+                    _longerMessageHistory = value; 
+                }
+                MessageFilterFrame.IsVisible = value && ForceAllMessages;
+                if (MessageFilterEntry.Text != "")
+                {
+                    MessageFilterEntry.Text = "";
+                    UpdateMessageFilter();
+                }
                 if (_currentGame != null)
                 {
                     ConcurrentQueue<GHResponse> queue;
@@ -15502,9 +15509,16 @@ namespace GnollHackX.Pages.Game
                 _messageScrollSpeedOn = false;
                 _messageScrollSpeedRecords.Clear();
             }
-            MessageFilterEntry.Unfocus();
-            ToggleMessageNumberButton.Focus();
-            ForceAllMessages = !ForceAllMessages;
+            if(MessageFilterFrame.IsVisible && MessageFilterEntry.IsVisible)
+            {
+                MessageFilterEntry.Unfocus();
+                if(UpperCmdGrid.IsVisible)
+                    ESCButton.Focus();
+                else
+                    SimpleESCButton.Focus();
+            }
+            bool prevForceAllMessages = ForceAllMessages;
+            ForceAllMessages = !prevForceAllMessages;
         }
 
         private readonly object _tipLock = new object();
@@ -16186,14 +16200,16 @@ namespace GnollHackX.Pages.Game
                     {
                         foreach (GHMsgHistoryItem msg in _msgHistory)
                         {
-                            msg.Filter = MessageFilterEntry.Text;
+                            if(msg != null)
+                                msg.Filter = MessageFilterEntry.Text;
                         }
                     }
                     else
                     {
                         foreach (GHMsgHistoryItem msg in _msgHistory)
                         {
-                            msg.Filter = null;
+                            if (msg != null)
+                                msg.Filter = null;
                         }
                     }
                 }
