@@ -374,6 +374,11 @@ struct monst* origmonst;
     boolean surpress_noeffect_message = FALSE;
     //boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mtmp, otmp, 0, 0, 0, NOTELL);
     boolean magic_cancellation_success = check_magic_cancellation_success(mtmp, save_adj);
+    boolean iswand = objects[otyp].oc_class == WAND_CLASS;
+    boolean zapped_by_u = origmonst == &youmonst;
+    boolean gainwandskill = iswand && zapped_by_u && (otmp->speflags & SPEFLAGS_BEING_BROKEN) == 0;
+    int wandskilladded = 0;
+    
     if (u.uswallow && mtmp == u.ustuck)
         reveal_invis = FALSE;
 
@@ -405,8 +410,8 @@ struct monst* origmonst;
             hit_with_hit_tile(zap_type_text, mtmp, exclam(dmg), -1, "", HIT_GENERAL, FALSE);
             (void) inflict_spell_damage(mtmp, otmp, origmonst, dmg, AD_MAGM, TELL);
         }
-        if (objects[otyp].oc_class == WAND_CLASS)
-            use_skill(P_WAND, 1);
+        if (gainwandskill)
+            wandskilladded = 1;
         learn_it = TRUE;
         break;
     case SPE_SHOCKING_TOUCH:
@@ -739,7 +744,8 @@ struct monst* origmonst;
             if (skill_level > P_UNSKILLED)
                 save_adj -= 2 * (skill_level - P_UNSKILLED);
         }
-        if (!check_ability_resistance_success(mtmp, A_WIS, save_adj)) {
+        if (!check_ability_resistance_success(mtmp, A_WIS, save_adj)) 
+        {
             if (disguised_mimic)
                 seemimic(mtmp);
 
@@ -758,6 +764,8 @@ struct monst* origmonst;
                 special_effect_wait_until_end(0);
             }
         }
+        if (gainwandskill)
+            wandskilladded = 3;
         break;
     case SPE_HASTE_MONSTER:
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
@@ -857,6 +865,8 @@ struct monst* origmonst;
         if (is_tame(mtmp))
             helpful_gesture = TRUE;
         special_effect_wait_until_end(0);
+        if (gainwandskill)
+            wandskilladded = 3;
         break;
     }
     case SPE_SILENCE:
@@ -886,6 +896,8 @@ struct monst* origmonst;
                 monflee(mtmp, duration, FALSE, TRUE);
             }
             special_effect_wait_until_end(0);
+            if (gainwandskill)
+                wandskilladded = 3;
         }
         break;
     case SPE_FEAR:
@@ -911,6 +923,8 @@ struct monst* origmonst;
         {
             res = 1;
             wake = TRUE;
+            if (gainwandskill)
+                wandskilladded = 3;
         }
         break;
     case SPE_NEGATE_UNDEATH:
@@ -1058,6 +1072,8 @@ struct monst* origmonst;
         {
             play_sfx_sound_at_location(SFX_POLYMORPH_FAIL, mtmp->mx, mtmp->my);
         }
+        if (gainwandskill)
+            wandskilladded = 3;
         break;
     case WAN_CANCELLATION:
     case SPE_CANCELLATION:
@@ -1074,6 +1090,8 @@ struct monst* origmonst;
             (void)nonadditive_increase_mon_property_verbosely(mtmp, CANCELLATION_RESISTANCE, 10);
             special_effect_wait_until_end(0);
         }
+        if (gainwandskill)
+            wandskilladded = 3;
         break;
     case WAN_DISJUNCTION:
     case SPE_DISJUNCTION:
@@ -1087,6 +1105,8 @@ struct monst* origmonst;
         special_effect_wait_until_action(0);
         (void)cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, duration);
         special_effect_wait_until_end(0);
+        if (gainwandskill)
+            wandskilladded = 3;
         break;
     case SPE_LOWER_MAGIC_RESISTANCE:
     case SPE_DIMINISH_MAGIC_RESISTANCE:
@@ -1105,6 +1125,8 @@ struct monst* origmonst;
         if (disguised_mimic)
             seemimic(mtmp);
         reveal_invis = !u_teleport_mon(mtmp, TRUE);
+        if (gainwandskill)
+            wandskilladded = 3;
         break;
     case WAN_MAKE_INVISIBLE: {
         res = 1;
@@ -1117,7 +1139,8 @@ struct monst* origmonst;
         special_effect_wait_until_action(0);
         increase_mon_property_verbosely(mtmp, INVISIBILITY, duration);
         special_effect_wait_until_end(0);
-
+        if (gainwandskill)
+            wandskilladded = 3;
         if (!oldinvis && knowninvisible(mtmp)) {
             reveal_invis = TRUE;
             learn_it = TRUE;
@@ -1127,8 +1150,12 @@ struct monst* origmonst;
     case WAN_LOCKING:
     case SPE_WIZARD_LOCK:
         wake = closeholdingtrap(mtmp, &learn_it);
-        if(wake)
+        if (wake)
+        {
+            if (gainwandskill)
+                wandskilladded = 3;
             res = 1;
+        }
         break;
     case SPE_PROBE:
     case WAN_PROBING:
@@ -1136,6 +1163,8 @@ struct monst* origmonst;
         wake = FALSE;
         reveal_invis = TRUE;
         probe_monster(mtmp);
+        if (gainwandskill)
+            wandskilladded = 1;
         learn_it = TRUE;
         break;
     case WAN_OPENING:
@@ -1153,12 +1182,18 @@ struct monst* origmonst;
             /* zap which hits steed will only release saddle if it
                doesn't hit a holding or falling trap; playability
                here overrides the more logical target ordering */
+            if (gainwandskill)
+                wandskilladded = 3;
         } else if (openholdingtrap(mtmp, &learn_it)) {
             res = 1;
+            if (gainwandskill)
+                wandskilladded = 3;
             break;
         } else if (openfallingtrap(mtmp, TRUE, &learn_it)) {
             /* mtmp might now be on the migrating monsters list */
             res = 1;
+            if (gainwandskill)
+                wandskilladded = 3;
             break;
         } else if ((obj = which_armor(mtmp, W_SADDLE)) != 0) {
             res = 1;
@@ -1176,6 +1211,8 @@ struct monst* origmonst;
             }
             obj_extract_self(obj);
             mdrop_obj(mtmp, obj, FALSE, TRUE);
+            if (gainwandskill)
+                wandskilladded = 3;
         }
         break;
     case JAR_OF_MEDICINAL_SALVE:
@@ -1529,6 +1566,8 @@ cure_petrification_here:
        that the wand itself has been seen */
     if (learn_it)
         learnwand(otmp);
+    if (wandskilladded > 0)
+        use_skill(P_WAND, wandskilladded);
     return res;
 }
 
