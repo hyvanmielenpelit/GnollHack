@@ -489,14 +489,18 @@ make_bones:
         if (((mptr->difficulty > maxmlev || (mptr->geno & G_UNIQ) != 0)
             && !(mtmp->mon_flags & MON_FLAGS_SPLEVEL_RESIDENT)
             && !(Invocation_lev(&u.uz) && mptr == &mons[PM_BAPHOMET])
+            && !(Is_sanctum(&u.uz) && mptr == &mons[PM_HIGH_PRIEST])
             && !(Inhell && mptr == &mons[PM_DEMOGORGON])
             && !(Inhell && mptr == &mons[PM_ASMODEUS])
+            && !((mtmp->mpeaceful && (mptr->geno & G_UNIQ) == 0) || mtmp->isshk || mtmp->issmith || mtmp->isnpc || mtmp->ispriest)
             )
             || mtmp->iswiz || is_medusa(mptr)
             || mptr->msound == MS_NEMESIS || mptr->msound == MS_LEADER
             || mptr == &mons[PM_VLAD_THE_IMPALER]
             || (mptr == &mons[PM_ORACLE] && !fixuporacle(mtmp)))
             mongone(mtmp);
+        else if (!mtmp->mpeaceful && (is_watch(mptr) || mtmp->issmith || mtmp->isnpc || mtmp->ispriest)) /* Shopkeepers are pacified upon loading */
+            mtmp->mpeaceful = 1;
     }
     if (u.usteed)
         dismount_steed(DISMOUNT_BONES);
