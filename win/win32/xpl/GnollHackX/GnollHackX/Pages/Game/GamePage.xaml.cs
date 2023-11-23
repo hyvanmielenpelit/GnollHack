@@ -19,13 +19,13 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Collections;
 using System.Data;
-using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 
 
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
 using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
 
@@ -35,8 +35,9 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
 using GnollHackX.Controls;
-using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.PlatformConfiguration;
+using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
+using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 using SkiaSharp.Views.Forms;
 using static Xamarin.Essentials.Permissions;
 

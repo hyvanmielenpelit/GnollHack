@@ -121,6 +121,10 @@ namespace GnollHackM
         {
             throw new NotImplementedException();
         }    
+        public void HideKeyboard()
+        {
+            throw new NotImplementedException();
+        }    
     }
 }
 #endif
