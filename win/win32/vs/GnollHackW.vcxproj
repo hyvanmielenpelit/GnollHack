@@ -13,6 +13,7 @@
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PlatformToolset>v143</PlatformToolset>
+    <EnableASAN>true</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PlatformToolset>v143</PlatformToolset>
@@ -323,15 +324,15 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="InitialBuild">
-	  <Message Text="Start building beforegnollhack.proj using initial build" Importance="High" />
-	  <MSBuild Projects="beforegnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+    <Message Text="Start building beforegnollhack.proj using initial build" Importance="High" />
+    <MSBuild Projects="beforegnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
   <Target Name="AfterBuild">
-	  <Message Text="Start building aftergnollhack.proj" Importance="High" />
-	  <MSBuild Projects="aftergnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+    <Message Text="Start building aftergnollhack.proj" Importance="High" />
+    <MSBuild Projects="aftergnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
   <Target Name="AfterClean">
-	  <Message Text="Start cleaning aftergnollhack.proj" Importance="High" />
-	  <MSBuild Projects="aftergnollhack.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
+    <Message Text="Start cleaning aftergnollhack.proj" Importance="High" />
+    <MSBuild Projects="aftergnollhack.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
   </Target>
 </Project>

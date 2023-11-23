@@ -198,7 +198,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
             if (strlen(envp) > 0)
             {
                 fqn_prefix[SYSCONFPREFIX] =
-                    (char *) alloc(strlen(envp) + 10);
+                    (char *) alloc(strlen(envp) + 12);
                 Strcpy(fqn_prefix[SYSCONFPREFIX], envp);
                 append_slash(fqn_prefix[SYSCONFPREFIX]);
                 Strcat(fqn_prefix[SYSCONFPREFIX], "GnollHack\\");

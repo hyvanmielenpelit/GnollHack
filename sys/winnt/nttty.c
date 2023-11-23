@@ -872,23 +872,25 @@ term_attr_fixup(int attrmask)
 void
 term_start_attr(int attrib)
 {
-    console.current_nhattr[attrib] = TRUE;
-    if (attrib) console.current_nhattr[ATR_NONE] = FALSE;
+    int used_attrib = (attrib & ATR_INVERSE);
+    console.current_nhattr[used_attrib] = TRUE;
+    if (used_attrib) console.current_nhattr[ATR_NONE] = FALSE;
 }
 
 void
 term_end_attr(int attrib)
 {
     int k;
+    int used_attrib = (attrib & ATR_INVERSE);
 
-    switch (attrib) {
+    switch (used_attrib) {
     case ATR_INVERSE:
     case ATR_ULINE:
     case ATR_BLINK:
     case ATR_BOLD:
         break;
     }
-    console.current_nhattr[attrib] = FALSE;
+    console.current_nhattr[used_attrib] = FALSE;
     console.current_nhattr[ATR_NONE] = TRUE;
     /* re-evaluate all attr now for performance at output time */
     for (k=ATR_NONE; k <= ATR_INVERSE; ++k) {

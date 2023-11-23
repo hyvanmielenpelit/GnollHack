@@ -272,7 +272,7 @@ VA_DECL(const char *, line)
                     }
                 }
                 int len1 = (int)(p - sp);
-                int len2 = (int)(ep - p + 1);
+                int len2 = (int)(ep - p);
                 if (len1 < 0)
                     len1 = 0;
                 if (len2 < 0)
@@ -290,8 +290,8 @@ VA_DECL(const char *, line)
 
                 if (len2 > 0)
                 {
-                    Strncpy(sbuf, p, len2);
-                    sbuf[len2] = 0;
+                    Strncpy(sbuf, p, len2 + 1); /* +1 for including % */
+                    sbuf[len2 + 1] = 0;
                     switch (typechar)
                     {
                     case 'c':
@@ -327,9 +327,8 @@ VA_DECL(const char *, line)
                             Sprintf(cbuf, sbuf, va_arg(the_args, unsigned int));
                         break;
                     case '%':
-                        Strncpy(cbuf, sbuf, len2 - 1);
-                        cbuf[len2 - 1] = 0;
-                        break;
+                        Strncpy(cbuf, sbuf, len2);
+                        cbuf[len2] = 0;
                         break;
                     }
                     size_t clen = strlen(cbuf);
