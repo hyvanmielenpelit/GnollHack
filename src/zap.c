@@ -1562,12 +1562,12 @@ cure_petrification_here:
             map_invisible(bhitpos.x, bhitpos.y);
     }
 
+    if (wandskilladded > 0)
+        use_skill(P_WAND, wandskilladded);
     /* if effect was observable then discover the wand type provided
        that the wand itself has been seen */
     if (learn_it)
         learnwand(otmp);
-    if (wandskilladded > 0)
-        use_skill(P_WAND, wandskilladded);
     return res;
 }
 
@@ -7710,7 +7710,7 @@ struct obj *obj;
 
         /* Give skill points for wand use */
         if (objects[otyp].oc_class == WAND_CLASS)
-            use_skill(P_WAND, 2);
+            use_skill(P_WAND, osubtype == RAY_WND_MAGIC_MISSILE || osubtype == RAY_MAGIC_MISSILE ? 1 : 2);
 
         disclose = TRUE;
     }
