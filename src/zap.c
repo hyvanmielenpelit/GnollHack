@@ -404,9 +404,9 @@ struct monst* origmonst;
             play_sfx_sound_at_location(SFX_MAGIC_ARROW_HIT, mtmp->mx, mtmp->my);
             hit_with_hit_tile(zap_type_text, mtmp, exclam(dmg), -1, "", HIT_GENERAL, FALSE);
             (void) inflict_spell_damage(mtmp, otmp, origmonst, dmg, AD_MAGM, TELL);
-        } 
-        //else
-        //    miss(zap_type_text, mtmp);
+        }
+        if (objects[otyp].oc_class == WAND_CLASS)
+            use_skill(P_WAND, 1);
         learn_it = TRUE;
         break;
     case SPE_SHOCKING_TOUCH:
@@ -7671,26 +7671,7 @@ struct obj *obj;
 
         /* Give skill points for wand use */
         if (objects[otyp].oc_class == WAND_CLASS)
-        {
             use_skill(P_WAND, 2);
-        }
-
-        /*
-        if (otyp == WAN_DIGGING || otyp == SPE_DIG)
-            zap_dig();
-        else if (otyp == SPE_FINGER_OF_DEATH)
-            buzz(ZT_SPELL(ZT_DEATH), u.ulevel / 2 + 1, u.ux, u.uy, u.dx, u.dy);
-        else if (otyp == WAN_DEATH)
-            buzz(ZT_WAND(ZT_DEATH), 1, u.ux, u.uy, u.dx, u.dy);
-        else if (otyp >= SPE_MAGIC_MISSILE && otyp <= SPE_DISINTEGRATE)
-            buzz(otyp - SPE_MAGIC_MISSILE + 10, u.ulevel / 2 + 1, u.ux, u.uy,
-                 u.dx, u.dy);
-        else if (otyp >= WAN_MAGIC_MISSILE && otyp <= WAN_LIGHTNING)
-            buzz(otyp - WAN_MAGIC_MISSILE,
-                 (otyp == WAN_MAGIC_MISSILE) ? 2 : 6, u.ux, u.uy, u.dx, u.dy);
-        else
-            impossible("weffects: unexpected spell or wand");
-            */
 
         disclose = TRUE;
     }
