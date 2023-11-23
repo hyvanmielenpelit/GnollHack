@@ -57,8 +57,8 @@ namespace GnollHackX
         public int MapWindowId { get; set; }
         public int MessageWindowId { get; set; }
         public int StatusWindowId { get; set; }
-        private List<GHMsgHistoryItem> _message_history = new List<GHMsgHistoryItem>();
-        private List<GHMsgHistoryItem> _longer_message_history = new List<GHMsgHistoryItem>();
+        private List<GHMsgHistoryItem> _message_history = new List<GHMsgHistoryItem>(GHConstants.MaxMessageHistoryLength + 1);
+        private List<GHMsgHistoryItem> _longer_message_history = new List<GHMsgHistoryItem>(GHConstants.MaxMessageHistoryLength + 1);
 
         public static ConcurrentDictionary<GHGame, ConcurrentQueue<GHRequest>> RequestDictionary { get { return _concurrentRequestDictionary; } }
         public static ConcurrentDictionary<GHGame, ConcurrentQueue<GHResponse>> ResponseDictionary { get { return _concurrentResponseDictionary; } }
@@ -687,7 +687,7 @@ namespace GnollHackX
             if (_longer_message_history.Count > 0)
                 _longer_message_history[_longer_message_history.Count - 1].IsLast = false;
             _longer_message_history.Add(newmsg);
-            if (_longer_message_history.Count > GHConstants.MaxFullMessageHistoryLength)
+            if (_longer_message_history.Count > GHConstants.MaxLongerMessageHistoryLength)
                 _longer_message_history.RemoveAt(0);
             if (_longer_message_history.Count > 0)
                 _longer_message_history[_longer_message_history.Count - 1].IsLast = true;

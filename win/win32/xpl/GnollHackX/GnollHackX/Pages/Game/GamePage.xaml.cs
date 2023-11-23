@@ -530,7 +530,7 @@ namespace GnollHackX.Pages.Game
 
         private int _shownMessageRows = GHConstants.DefaultMessageRows;
         public int NumDisplayedMessages { get { return _shownMessageRows; } set { _shownMessageRows = value; } }
-        public int ActualDisplayedMessages { get { return ForceAllMessages ? (LongerMessageHistory ? GHConstants.MaxFullMessageHistoryLength : GHConstants.AllMessageRows) : NumDisplayedMessages; } }
+        public int ActualDisplayedMessages { get { return ForceAllMessages ? (LongerMessageHistory ? GHConstants.MaxLongerMessageHistoryLength : GHConstants.AllMessageRows) : NumDisplayedMessages; } }
 
         private int _shownPetRows = GHConstants.DefaultPetRows;
         public int NumDisplayedPetRows { get { return _shownPetRows; } set { _shownPetRows = value; } }
