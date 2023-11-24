@@ -4711,7 +4711,7 @@ boolean addinventoryheader, wornonly;
     static const char not_carrying_anything[] = "Not carrying anything";
     struct obj *otmp, wizid_fakeobj;
     char ilet, ret;
-    char *invlet = flags.inv_order;
+    char *classlet = flags.inv_order;
     int n, classcount;
     winid win;                        /* windows being used */
     anything any;
@@ -4803,7 +4803,7 @@ boolean addinventoryheader, wornonly;
             if (otmp)
                 ret = message_menu(otmp->invlet,
                                    want_reply ? PICK_ONE : PICK_NONE,
-                                   xprname(otmp, (char *) 0, lets[0],
+                                   xprname(otmp, (char *) 0, !lets ? otmp->invlet : lets[0],
                                            TRUE, 0L, 0L));
         }
         if (out_cnt)
@@ -4913,7 +4913,7 @@ nextclass:
             continue;
         if (otmp->speflags & SPEFLAGS_FAVORITE)
             continue;
-        if (!flags.sortpack || otmp->oclass == *invlet)
+        if (!flags.sortpack || otmp->oclass == *classlet)
         {
             if (wizid && !not_fully_identified(otmp))
                 continue;
@@ -4923,10 +4923,10 @@ nextclass:
             {
                 add_extended_menu(win, NO_GLYPH, &any,
                     0, 0, iflags.menu_headings, NO_COLOR,
-                         let_to_name(*invlet, FALSE,
+                         let_to_name(*classlet, FALSE,
                                      (want_reply && iflags.menu_head_objsym)),
                          MENU_UNSELECTED,
-                    menu_group_heading_info(*invlet > ILLOBJ_CLASS && *invlet < MAX_OBJECT_CLASSES ? def_oc_syms[(int)(*invlet)].sym : '\0'));
+                    menu_group_heading_info(*classlet > ILLOBJ_CLASS && *classlet < MAX_OBJECT_CLASSES ? def_oc_syms[(int)(*classlet)].sym : '\0'));
                 classcount++;
             }
             else if (!flags.sortpack && !classcount && favorites_printed)
@@ -4943,11 +4943,11 @@ nextclass:
     }
     if (flags.sortpack) 
     {
-        if (*++invlet)
+        if (*++classlet)
             goto nextclass;
-        if (--invlet != venom_inv) 
+        if (--classlet != venom_inv) 
         {
-            invlet = venom_inv;
+            classlet = venom_inv;
             goto nextclass;
         }
     }
@@ -5314,7 +5314,7 @@ char avoidlet;
 {
     struct obj *otmp;
     char ilet, ret = 0;
-    char *invlet = flags.inv_order;
+    char *classlet = flags.inv_order;
     int n, classcount, invdone = 0;
     winid win;
     anything any;
@@ -5330,12 +5330,12 @@ char avoidlet;
                 ilet = otmp->invlet;
                 if (ilet == avoidlet)
                     continue;
-                if (!flags.sortpack || otmp->oclass == *invlet) {
+                if (!flags.sortpack || otmp->oclass == *classlet) {
                     if (flags.sortpack && !classcount) {
                         any = zeroany; /* zero */
                         add_extended_menu(win, NO_GLYPH, &any, 0, 0,
                                  iflags.menu_headings | ATR_HEADING, NO_COLOR,
-                                 let_to_name(*invlet, FALSE, FALSE),
+                                 let_to_name(*classlet, FALSE, FALSE),
                                  MENU_UNSELECTED, menu_heading_info());
                         classcount++;
                     }
@@ -5348,7 +5348,7 @@ char avoidlet;
                                  doname_with_weight_first(otmp, TRUE, FALSE)), MENU_UNSELECTED, obj_to_extended_menu_info(otmp));
                 }
             }
-            if (flags.sortpack && *++invlet)
+            if (flags.sortpack && *++classlet)
                 continue;
             invdone = 1;
         }
@@ -5527,7 +5527,7 @@ dounpaid()
     winid win;
     struct obj *otmp, *marker, *contnr;
     register char ilet;
-    char *invlet = flags.inv_order;
+    char *classlet = flags.inv_order;
     int classcount, count, num_so_far;
     long cost, totcost;
 
@@ -5560,9 +5560,9 @@ dounpaid()
         for (otmp = invent; otmp; otmp = otmp->nobj) {
             ilet = otmp->invlet;
             if (otmp->unpaid) {
-                if (!flags.sortpack || otmp->oclass == *invlet) {
+                if (!flags.sortpack || otmp->oclass == *classlet) {
                     if (flags.sortpack && !classcount) {
-                        putstr(win, 0, let_to_name(*invlet, TRUE, FALSE));
+                        putstr(win, 0, let_to_name(*classlet, TRUE, FALSE));
                         classcount++;
                     }
 
@@ -5575,7 +5575,7 @@ dounpaid()
                 }
             }
         }
-    } while (flags.sortpack && (*++invlet));
+    } while (flags.sortpack && (*++classlet));
 
     if (count > num_so_far) {
         /* something unpaid is contained */
@@ -5628,7 +5628,7 @@ dounidentified()
     winid win;
     struct obj* otmp;
     register char ilet;
-    char* invlet = flags.inv_order;
+    char* classlet = flags.inv_order;
     int classcount, count;
 
     count = count_unidentified(invent, 0, FALSE);
@@ -5650,9 +5650,9 @@ dounidentified()
         for (otmp = invent; otmp; otmp = otmp->nobj) {
             ilet = otmp->invlet;
             if (not_fully_identified(otmp)) {
-                if (!flags.sortpack || otmp->oclass == *invlet) {
+                if (!flags.sortpack || otmp->oclass == *classlet) {
                     if (flags.sortpack && !classcount) {
-                        putstr(win, 0, let_to_name(*invlet, 2, FALSE));
+                        putstr(win, 0, let_to_name(*classlet, 2, FALSE));
                         classcount++;
                     }
 
@@ -5661,7 +5661,7 @@ dounidentified()
                 }
             }
         }
-    } while (flags.sortpack && (*++invlet));
+    } while (flags.sortpack && (*++classlet));
 
     display_nhwindow(win, FALSE);
     destroy_nhwindow(win);
@@ -5673,7 +5673,7 @@ dounknown()
     winid win;
     struct obj* otmp;
     register char ilet;
-    char* invlet = flags.inv_order;
+    char* classlet = flags.inv_order;
     int classcount, count;
 
     count = count_unknown(invent, 0, FALSE);
@@ -5695,9 +5695,9 @@ dounknown()
         for (otmp = invent; otmp; otmp = otmp->nobj) {
             ilet = otmp->invlet;
             if (is_obj_unknown(otmp)) {
-                if (!flags.sortpack || otmp->oclass == *invlet) {
+                if (!flags.sortpack || otmp->oclass == *classlet) {
                     if (flags.sortpack && !classcount) {
-                        putstr(win, 0, let_to_name(*invlet, 2, FALSE));
+                        putstr(win, 0, let_to_name(*classlet, 2, FALSE));
                         classcount++;
                     }
 
@@ -5706,7 +5706,7 @@ dounknown()
                 }
             }
         }
-    } while (flags.sortpack && (*++invlet));
+    } while (flags.sortpack && (*++classlet));
 
     display_nhwindow(win, FALSE);
     destroy_nhwindow(win);

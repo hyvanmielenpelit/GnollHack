@@ -32,7 +32,7 @@ STATIC_VAR NEARDATA const char drop_types[] = { ALLOW_COUNT, COIN_CLASS,
 
 /* 'd' command: drop one inventory item */
 int
-dodrop()
+dodrop(VOID_ARGS)
 {
     int result, i = (invent) ? 0 : (SIZE(drop_types) - 1);
 
@@ -49,7 +49,7 @@ dodrop()
 
 /* the M('y') command - Character statistics */
 int
-docharacterstatistics()
+docharacterstatistics(VOID_ARGS)
 {
     int glyph = player_to_glyph_index(urole.rolenum, urace.racenum, Upolyd ? u.mfemale : flags.female, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
     int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, 0UL, MAT_NONE, 0));
@@ -253,6 +253,7 @@ docharacterstatistics()
         long innate_intrinsic = u.uprops[i].intrinsic & (INTRINSIC | FROM_FORM);
         long temporary_intrinsic = u.uprops[i].intrinsic & TIMEOUT;
         long extrinsic = u.uprops[i].extrinsic;
+        boolean is_recurring = property_definitions[i].recurring;
         boolean o_stats_known = FALSE;
         if (extrinsic)
         {
@@ -260,7 +261,7 @@ docharacterstatistics()
             if (obj)
                 o_stats_known = object_stats_known(obj);
         }
-        if (innate_intrinsic || o_stats_known || temporary_intrinsic)
+        if (innate_intrinsic || o_stats_known || (temporary_intrinsic && !is_recurring))
         {
             intrinsic_count++;
 
@@ -306,7 +307,7 @@ docharacterstatistics()
                 Sprintf(eos(dbuf3), "%s", cxname(obj));
             }
             
-            if (temporary_intrinsic)
+            if (temporary_intrinsic && !is_recurring)
             {
                 if (strcmp(dbuf3, ""))
                     Sprintf(eos(dbuf3), ", ");
@@ -319,8 +320,6 @@ docharacterstatistics()
 
             Sprintf(buf, " %2d - %s (%s)", intrinsic_count, dbuf2, dbuf3);
             putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-
-
         }
     }
     if (intrinsic_count == 0)
@@ -328,8 +327,6 @@ docharacterstatistics()
         Sprintf(buf, " (None)");
         putstr(datawin, 0, buf);
     }
-
-
 
     /* Level-up intrinsics */
     for(i = 1; i <= 2; i++)
@@ -381,7 +378,7 @@ STATIC_VAR NEARDATA const char item_description_objects[] = { ALL_CLASSES, ALLOW
 
 /* the M('x') command - Item descriptions */
 int
-doitemdescriptions()
+doitemdescriptions(VOID_ARGS)
 {
     boolean proceedtoinventory = getobj_autoselect_obj ? TRUE : floorexamine();
     if (!proceedtoinventory)
@@ -390,14 +387,13 @@ doitemdescriptions()
     int i = (invent) ? 0 : (SIZE(item_description_objects) - 1);
 
     return itemdescription(getobj(&item_description_objects[i], "examine", 1, ""));
-
 }
 
 /* Returns TRUE if we proceed to inventory.
  * Object may be either on floor or in inventory.
  */
 boolean
-floorexamine()
+floorexamine(VOID_ARGS)
 {
     register struct obj* otmp;
     char qbuf[QBUFSZ];
