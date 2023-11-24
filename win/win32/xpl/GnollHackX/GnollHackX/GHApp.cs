@@ -113,7 +113,7 @@ namespace GnollHackX
                 chargediff = _batteryChargeLevel - _previousBatteryChargeLevel;
             }
 
-            if (chargediff < 0 && CurrentGHGame != null && e.ChargeLevel >= 0.03 && e.ChargeLevel <= 0.05 && e.ChargeLevel - prevcheckpointcharge < -0.0075)
+            if (chargediff < 0 && CurrentGHGame != null && e.ChargeLevel >= 0.04 && e.ChargeLevel <= 0.06 && e.ChargeLevel - prevcheckpointcharge < -0.0075)
             {
                 lock (_batteryLock)
                 {
@@ -344,7 +344,7 @@ namespace GnollHackX
                 //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
                 Preferences.Set("WentToSleepWithGameOn", true);
                 Preferences.Set("GameSaveResult", 0);
-                if (GHApp.BatteryChargeLevel > 2) /* Save only if there is enough battery left to prevent save file corruption when the phone powers off */
+                if (GHApp.BatteryChargeLevel > 3) /* Save only if there is enough battery left to prevent save file corruption when the phone powers off */
                 {
                     CurrentGHGame.ActiveGamePage.SaveGameAndWaitForResume();
                 }

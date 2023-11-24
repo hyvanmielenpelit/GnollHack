@@ -2371,19 +2371,22 @@ namespace GnollHackX.Pages.Game
             {
                 /* Bypass send checks */
             }
-            else if (!is_game_status && !GHApp.PostingDiagnosticData && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CRITICAL )
+            else if (!is_game_status && !GHApp.PostingDiagnosticData && (status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CRITICAL || status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC))
             {
-                /* Critical information -- Ask the player */
-                bool sendok = await DisplayAlert("Critical Diagnostic Data", "GnollHack would like to send critical diagnostic data to the development team. Allow?", "Yes", "No");
+                /* Critical or panic information -- Ask the player */
+                bool sendok;
+                if (status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC)
+                    sendok = await DisplayAlert("Panic Diagnostic Data", "GnollHack would like to send panic diagnostic data to the development team. Allow?", "Yes", "No");
+                else
+                    sendok = await DisplayAlert("Critical Diagnostic Data", "GnollHack would like to send critical diagnostic data to the development team. Allow?", "Yes", "No");
+
                 if (!sendok)
-                {
                     goto cleanup;
-                }
             }
             else
             {
                 if (is_game_status ? !GHApp.PostingGameStatus : !GHApp.PostingDiagnosticData)
-                    return;
+                    goto cleanup;
             }
 
             if (is_game_status && status_string != null && status_string != "" && status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT)
@@ -2457,7 +2460,7 @@ namespace GnollHackX.Pages.Game
             if (status_string != null)
                 message = status_string;
             if (message == "")
-                return;
+                goto cleanup;
 
             if (!is_game_status)
             {

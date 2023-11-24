@@ -778,8 +778,6 @@ VA_DECL(const char *, str)
         raw_print(buf);
         paniclog("panic", buf);
 #ifdef GNOLLHACK_MAIN_PROGRAM
-        if (issue_gui_command)
-            issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_PANIC, 0, buf);
         if (open_special_view)
         {
             struct special_view_info info = { 0 };
@@ -787,6 +785,8 @@ VA_DECL(const char *, str)
             info.text = buf;
             (void)open_special_view(info);
         }
+        if (issue_gui_command)
+            issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_PANIC, 0, buf);
 #endif
     }
 #ifdef WIN32
