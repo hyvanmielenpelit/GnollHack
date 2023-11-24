@@ -693,6 +693,20 @@ namespace GnollHackX
                 _longer_message_history[_longer_message_history.Count - 1].IsLast = true;
 
             UpdateMessageHistory();
+            SwitchOffLongerMessageHistory(); /* Just to make sure that it does not remain on the slow down the game */
+        }
+
+        public void SwitchOffLongerMessageHistory()
+        {
+            if (_useLongerMessageHistory && _longer_message_history.Count > GHConstants.MaxMessageHistoryLength)
+            {
+                ConcurrentQueue<GHRequest> queue;
+                if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                {
+                    /* _useLongerMessageHistory will be turned off by the response to this request */
+                    queue.Enqueue(new GHRequest(this, GHRequestType.UseLongerMessageHistory, false));
+                }
+            }
         }
 
         public void RawPrintEx(string str, int attr, int color)

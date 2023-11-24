@@ -176,7 +176,8 @@ namespace GnollHackX.Pages.MainScreen
 
             if (_gamePage != null)
                 _gamePage.LongerMessageHistory = LongerMessageHistorySwitch.IsToggled;
-            Preferences.Set("LongerMessageHistory", LongerMessageHistorySwitch.IsToggled);
+            //Preferences.Set("LongerMessageHistory", LongerMessageHistorySwitch.IsToggled);
+            GHApp.SavedLongerMessageHistory = LongerMessageHistorySwitch.IsToggled;
 
             //if (_gamePage != null)
             //    _gamePage.ShowPut2BagContextCommand = Put2BagSwitch.IsToggled;
@@ -463,7 +464,7 @@ namespace GnollHackX.Pages.MainScreen
                 breatheanimations = Preferences.Get("BreatheAnimations", GHConstants.DefaultBreatheAnimations);
                 //put2bag = Preferences.Get("ShowPut2BagContextCommand", GHConstants.DefaultShowPickNStashContextCommand);
                 //prevwep = Preferences.Get("ShowPrevWepContextCommand", GHConstants.DefaultShowPrevWepContextCommand);
-                longermsghistory = Preferences.Get("LongerMessageHistory", false);
+                longermsghistory = GHApp.SavedLongerMessageHistory; // Preferences.Get("LongerMessageHistory", false);
             }
             else
             {

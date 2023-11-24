@@ -139,6 +139,7 @@ namespace GnollHackX
         public string IntroLineString { get; set; }
         public string TitleString { get; set; }
         public uint RequestStringAttributes { get; set; }
+        public bool RequestBool { get; set; }
         public int RequestInt { get; set; }
         public int RequestInt2 { get; set; }
         public int RequestAttr { get; set; }
@@ -172,6 +173,12 @@ namespace GnollHackX
             RequestingGame = ghGame;
             RequestType = requesttype;
             RequestInt = requestint;
+        }
+        public GHRequest(GHGame ghGame, GHRequestType requesttype, bool requestbool)
+        {
+            RequestingGame = ghGame;
+            RequestType = requesttype;
+            RequestBool = requestbool;
         }
         public GHRequest(GHGame ghGame, GHRequestType requesttype, int requestint, int requestint2)
         {

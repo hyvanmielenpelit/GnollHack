@@ -817,7 +817,7 @@ namespace GnollHackX.Pages.Game
             //ShowPut2BagContextCommand = Preferences.Get("ShowPut2BagContextCommand", GHConstants.DefaultShowPickNStashContextCommand);
             //ShowPrevWepContextCommand = Preferences.Get("ShowPrevWepContextCommand", GHConstants.DefaultShowPrevWepContextCommand);
             AlternativeLayerDrawing = Preferences.Get("AlternativeLayerDrawing", GHConstants.DefaultAlternativeLayerDrawing);
-            _longerMessageHistory = Preferences.Get("LongerMessageHistory", false); /* Cannot send response command yet */
+            _longerMessageHistory = GHApp.SavedLongerMessageHistory; //Preferences.Get("LongerMessageHistory", false); /* Cannot send response command yet, hence private variable */
 
             float deffontsize = GetDefaultMapFontSize();
             MapFontSize = Preferences.Get("MapFontSize", deffontsize);
@@ -2295,6 +2295,10 @@ namespace GnollHackX.Pages.Game
                                 break;
                             case GHRequestType.CloseAllDialogs:
                                 CloseAllDialogs();
+                                break;
+                            case GHRequestType.UseLongerMessageHistory:
+                                LongerMessageHistory = req.RequestBool;
+                                GHApp.SavedLongerMessageHistory = req.RequestBool;
                                 break;
                         }
                     }

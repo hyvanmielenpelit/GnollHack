@@ -159,6 +159,7 @@ namespace GnollHackX
         public static bool InformAboutGameTermination = false;
         public static bool InformAboutCrashReport = false;
         public static bool InformAboutIncompatibleSavedGames = false;
+        public static bool SavedLongerMessageHistory { get; set; }
 
         public static bool InformAboutSlowSounds
         {
