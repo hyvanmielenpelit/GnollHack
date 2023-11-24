@@ -1279,7 +1279,7 @@ boolean hitsroof;
     }
     else
     { /* neither potion nor other breaking object */
-        boolean less_damage = uarmh && is_metallic(uarmh), artimsg = FALSE;
+        boolean less_damage = uarmh && is_hard_helmet(uarmh), artimsg = FALSE;
         int basedmg = is_launcher(obj) ? d(1, 2) : weapon_total_dmg_value(obj, &youmonst, &youmonst, 1);
         double damage = adjust_damage(basedmg, (struct monst*)0, &youmonst, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE);
 

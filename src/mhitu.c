@@ -567,7 +567,7 @@ register struct monst *mtmp;
                 return 0; /* lurkers don't attack */
 
             obj = which_armor(mtmp, WORN_HELMET);
-            if (obj && is_metallic(obj)) {
+            if (obj && is_hard_helmet(obj)) {
                 Your("blow glances off %s %s.", s_suffix(mon_nam(mtmp)),
                      helm_simple_name(obj));
             } else {

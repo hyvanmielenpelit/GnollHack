@@ -1804,7 +1804,7 @@ struct obj *otmp;
             } 
             else if (has_ceiling(&u.uz))
             {
-                int dmg = rnd(!uarmh ? 10 : !is_metallic(uarmh) ? 6 : 3);
+                int dmg = rnd(!uarmh ? 10 : !is_hard_helmet(uarmh) ? 6 : 3);
 
                 You("hit your %s on the %s.", body_part(HEAD),
                     ceiling(u.ux, u.uy));

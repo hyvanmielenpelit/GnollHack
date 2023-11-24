@@ -2073,7 +2073,7 @@ struct obj* origobj;
                 special_effect_wait_until_action(0);
                 play_sfx_sound(SFX_ROCK_HITS_YOU_ON_HEAD);
                 pline("It falls on your %s!", body_part(HEAD));
-                dmg = rnd((uarmh && is_metallic(uarmh)) ? 2 : 6);
+                dmg = rnd((uarmh && is_hard_helmet(uarmh)) ? 2 : 6);
                 losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "falling rock", KILLED_BY_AN);
                 if (iflags.using_gui_sounds)
                 {

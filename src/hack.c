@@ -2820,7 +2820,7 @@ boolean pick;
             { /* jumps to greet you, not attack */
                 ;
             } 
-            else if (uarmh && is_metallic(uarmh)) 
+            else if (uarmh && is_hard_helmet(uarmh))
             {
                 play_sfx_sound(SFX_ROCK_HITS_HARD_HELMET);
                 pline("Its blow glances off your %s.",

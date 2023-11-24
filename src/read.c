@@ -3355,7 +3355,7 @@ boolean confused, helmet_protects, byu, skip_uswallow;
         play_object_hit_sound(otmp2, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(&youmonst), dmg, HMON_THROWN);
         You("are hit by %s!", doname(otmp2));
         if (uarmh && helmet_protects) {
-            if (is_metallic(uarmh)) {
+            if (is_hard_helmet(uarmh)) {
                 pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "Fortunately, you are wearing a hard helmet.");
                 if (dmg > 2)
                     dmg = 2;
@@ -3416,7 +3416,7 @@ boolean confused, byu;
                      body_part(HEAD));
 
         if (helmet) {
-            if (is_metallic(helmet)) {
+            if (is_hard_helmet(helmet)) {
                 if (canspotmon(mtmp))
                     pline_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_SUCCESS : CLR_MSG_ATTENTION, "Fortunately, %s is wearing a hard helmet.",
                           mon_nam(mtmp));

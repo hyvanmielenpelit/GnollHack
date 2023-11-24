@@ -6,6 +6,7 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "general.h"
+#include "objclass.h"
 
 #ifndef OBJ_H
 #define OBJ_H
@@ -671,9 +672,11 @@ enum elemental_enchantments {
     (is_key(obj) || (obj)->otyp == LOCK_PICK)
 
 /* misc helpers, simple enough to be macros */
-#define is_flimsy(otmp)                           \
-    ((otmp)->material <= MAT_LEATHER \
-     || (get_obj_oc_flags2(otmp) & O2_FLIMSY) != 0)
+#define is_flimsy(otmp) \
+    (is_material_flimsy(otmp) || (get_obj_oc_flags2(otmp) & O2_FLIMSY) != 0)
+
+#define is_hard_helmet(otmp)  ((is_metallic(otmp) || !is_flimsy(otmp)) && !is_fragile(otmp)) 
+
 #define is_plural(o) \
     ((o)->quan != 1L                                                    \
      /* "the Eyes of the Overworld" are plural, but                     \

@@ -7445,7 +7445,7 @@ struct obj *obj; /* wand or spell */
             /* similar to zap_dig() */
             pline("A rock is dislodged from the %s and falls on your %s.",
                   ceiling(x, y), body_part(HEAD));
-            dmg = rnd((uarmh && is_metallic(uarmh)) ? 2 : 6);
+            dmg = rnd((uarmh && is_hard_helmet(uarmh)) ? 2 : 6);
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "falling rock", KILLED_BY_AN);
             if ((otmp = mksobj_at(ROCK, x, y, FALSE, FALSE)) != 0) {
                 (void) xname(otmp); /* set dknown, maybe bknown */

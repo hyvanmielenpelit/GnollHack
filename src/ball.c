@@ -51,7 +51,7 @@ ballfall()
 
         pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "iron ball falls on your %s.", body_part(HEAD));
         if (uarmh) {
-            if (is_metallic(uarmh)) {
+            if (is_hard_helmet(uarmh)) {
                 pline_ex(ATR_NONE, CLR_MSG_SUCCESS, "Fortunately, you are wearing a hard helmet.");
                 dmg = 3;
             } else if (flags.verbose)

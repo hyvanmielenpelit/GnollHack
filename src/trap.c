@@ -1227,7 +1227,7 @@ unsigned short trflags;
 
             if (uarmh) 
             {
-                if (is_metallic(uarmh)) 
+                if (is_hard_helmet(uarmh))
                 {
                     if (flags.verbose)
                     {
