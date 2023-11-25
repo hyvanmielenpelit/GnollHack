@@ -785,8 +785,9 @@ VA_DECL(const char *, str)
             info.text = buf;
             (void)open_special_view(info);
         }
-        if (issue_gui_command)
-            issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_PANIC, 0, buf);
+        /* Special view now handles both sending the crash report and forum posting */
+        //if (issue_gui_command)
+        //    issue_gui_command(GUI_CMD_POST_DIAGNOSTIC_DATA, DIAGNOSTIC_DATA_PANIC, 0, buf);
 #endif
     }
 #ifdef WIN32

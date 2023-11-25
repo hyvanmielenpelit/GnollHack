@@ -2288,7 +2288,7 @@ namespace GnollHackX.Pages.Game
                                 break;
                             case GHRequestType.PostDiagnosticData:
                             case GHRequestType.PostGameStatus:
-                                PostToForum(req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString);
+                                PostToForum(req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, false);
                                 break;
                             case GHRequestType.DebugLog:
                                 DisplayDebugLog(req.RequestString, req.RequestInt, req.RequestInt2);
@@ -2367,23 +2367,19 @@ namespace GnollHackX.Pages.Game
 
         private List<ForumPostAttachment> _forumPostAttachments = new List<ForumPostAttachment>();
 
-        private async void PostToForum(bool is_game_status, int status_type, int status_datatype, string status_string)
+        private async void PostToForum(bool is_game_status, int status_type, int status_datatype, string status_string, bool forcesend)
         {
-            if(!is_game_status && 
+            if(forcesend ||
+                (!is_game_status && 
                 (status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CREATE_ATTACHMENT_FROM_TEXT 
-                 || status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_ATTACHMENT))
+                 || status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_ATTACHMENT)))
             {
                 /* Bypass send checks */
             }
-            else if (!is_game_status && !GHApp.PostingDiagnosticData && (status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CRITICAL || status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC))
+            else if (!is_game_status && !GHApp.PostingDiagnosticData && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CRITICAL)
             {
                 /* Critical or panic information -- Ask the player */
-                bool sendok;
-                if (status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC)
-                    sendok = await DisplayAlert("Panic Diagnostic Data", "GnollHack would like to send panic diagnostic data to the development team. Allow?", "Yes", "No");
-                else
-                    sendok = await DisplayAlert("Critical Diagnostic Data", "GnollHack would like to send critical diagnostic data to the development team. Allow?", "Yes", "No");
-
+                bool sendok = await DisplayAlert("Critical Diagnostic Data", "GnollHack would like to send critical diagnostic data to the development team. Allow?", "Yes", "No");
                 if (!sendok)
                     goto cleanup;
             }
@@ -15996,8 +15992,10 @@ namespace GnollHackX.Pages.Game
         public async void ReportPanic(string text)
         {
             bool answer = await DisplayAlert("Panic", (text != null ? text : "GnollHack has panicked. See the Panic Log.") + 
-                "\nDo you want to send a crash report to help the developer fix the cause? This will create a zip archive of the files in your game directory and ask it to be shared further.", 
+                "\nDo you want to report the panic and send a crash report to help the developer fix the cause? This will create a zip archive of the files in your game directory and ask it to be shared further.", 
                 "Yes", "No");
+
+            PostToForum(false, (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC, 0, text, answer);
             if (answer)
             {
                 await GHApp.CreateCrashReport(this);
