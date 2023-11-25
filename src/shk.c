@@ -5578,7 +5578,7 @@ struct monst* shkp;
 }
 
 void
-reset_shk()
+reset_shk(VOID_ARGS)
 {
     pickmovetime = 0L;
     followmsg = 0;

@@ -2510,7 +2510,7 @@ status_eval_next_unhilite()
 
 /* called by options handling when 'statushilites' value is changed */
 void
-reset_status_hilites()
+reset_status_hilites(VOID_ARGS)
 {
     if (iflags.hilite_delta) {
         int i;

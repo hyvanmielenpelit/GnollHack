@@ -332,7 +332,7 @@ recalc_wt()
 
 /* called when eating interrupted by an event */
 void
-reset_eat()
+reset_eat(VOID_ARGS)
 {
     /* we only set a flag here - the actual reset process is done after
      * the round is spent eating.
@@ -482,7 +482,7 @@ struct obj *old_obj, *new_obj;
 }
 
 STATIC_OVL void
-do_reset_eat()
+do_reset_eat(VOID_ARGS)
 {
     debugpline0("do_reset_eat...");
     if (context.victual.piece) {

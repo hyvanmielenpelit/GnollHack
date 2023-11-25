@@ -276,7 +276,7 @@ timed_occupation(VOID_ARGS)
  *                      Setting traps.
  */
 void
-reset_occupations()
+reset_occupations(VOID_ARGS)
 {
     reset_remarm();
     reset_pick();

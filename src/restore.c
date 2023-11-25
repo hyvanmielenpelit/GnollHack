@@ -2096,7 +2096,7 @@ const char *name;
 }
 
 void
-reset_restpref()
+reset_restpref(VOID_ARGS)
 {
 #ifdef ZEROCOMP
     if (iflags.zerocomp)

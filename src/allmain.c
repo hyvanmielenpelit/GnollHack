@@ -596,7 +596,7 @@ struct monst* mtmp;
 }
 
 void
-reset_all_monster_origin_coordinates()
+reset_all_monster_origin_coordinates(VOID_ARGS)
 {
     struct monst* mtmp;
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
@@ -619,7 +619,7 @@ struct obj* obj;
 }
 
 void
-reset_all_object_origin_coordinates()
+reset_all_object_origin_coordinates(VOID_ARGS)
 {
     struct obj* obj;
     for (obj = fobj; obj; obj = obj->nobj)

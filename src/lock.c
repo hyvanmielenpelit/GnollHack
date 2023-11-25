@@ -446,7 +446,7 @@ forcelock(VOID_ARGS)
 }
 
 void
-reset_pick()
+reset_pick(VOID_ARGS)
 {
     xlock.usedtime = xlock.chance = xlock.picktyp = 0;
     xlock.magic_key = FALSE;

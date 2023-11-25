@@ -2877,7 +2877,7 @@ struct monst *mon;
 }
 
 void
-reset_vision()
+reset_vision(VOID_ARGS)
 {
     memset((genericptr_t)&colbump, 0, sizeof(colbump));
 }

@@ -3419,7 +3419,7 @@ reset_gamestate(VOID_ARGS)
 }
 
 STATIC_DCL void
-reset_remaining_static_variables()
+reset_remaining_static_variables(VOID_ARGS)
 {
 #ifdef PANICTRACE
     aborting = FALSE;
@@ -3460,7 +3460,7 @@ reset_remaining_static_variables()
 }
 
 STATIC_DCL void
-reset_remaining_dynamic_data()
+reset_remaining_dynamic_data(VOID_ARGS)
 {
     free_dynamic_data_A();
     free_dynamic_data_B();

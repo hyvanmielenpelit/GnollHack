@@ -4348,7 +4348,7 @@ STATIC_VAR struct trapinfo {
 } trapinfo;
 
 void
-reset_trapset()
+reset_trapset(VOID_ARGS)
 {
     trapinfo.tobj = 0;
     trapinfo.force_bungle = 0;
