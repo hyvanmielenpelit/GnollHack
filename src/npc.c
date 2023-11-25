@@ -22,7 +22,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         8, 0,
         5, 1000, 7500,
         TRUE, CMAP_SOKOBAN,
-        NPC_SERVICE_ENCHANT_ACCESSORY | NPC_SERVICE_RECHARGING | NPC_SERVICE_BLESSED_RECHARGING | NPC_SERVICE_IDENTIFY_ACCESSORIES_AND_CHARGED_ITEMS | NPC_SERVICE_BUY_SPELLBOOKS | NPC_SERVICE_TEACH_SPELL_CONE_OF_COLD | NPC_SERVICE_TEACH_SPELL_LIGHTNING_BOLT | NPC_SERVICE_TEACH_SPELL_FORCE_BOLT | NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS,
+        NPC_SERVICE_ENCHANT_ACCESSORY | NPC_SERVICE_RECHARGING | NPC_SERVICE_BLESSED_RECHARGING | NPC_SERVICE_IDENTIFY_ACCESSORIES_AND_CHARGED_ITEMS | NPC_SERVICE_BUY_SPELLBOOKS | NPC_SERVICE_TEACH_WIZARD_SPELLS,
         NPC_FLAGS_HAS_TRUE_RUMORS | NPC_FLAGS_PARQUET_FLOOR | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_HAS_STANDARD_DISTANT_SOUNDS | NPC_FLAGS_MAY_HAVE_PAINTINGS | NPC_FLAGS_ALWAYS_HAS_PAINTING
     },
     {
@@ -112,7 +112,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         0, 0,
         1, 100, 5,
         TRUE, CMAP_GNOMISH_MINES,
-        NPC_SERVICE_GIVE_ORCISH_QUESTS | NPC_SERVICE_TEACH_SPELL_CONE_OF_COLD | NPC_SERVICE_TEACH_SPELL_LIGHTNING_BOLT | NPC_SERVICE_TEACH_SPELL_FORCE_BOLT | NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS,
+        NPC_SERVICE_GIVE_ORCISH_QUESTS | NPC_SERVICE_TEACH_SPECIAL_SPELLS | NPC_SERVICE_TEACH_WIZARD_SPELLS,
         NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_ITEMS | NPC_FLAGS_COMMENTS_ON_REVIVAL | NPC_FLAGS_HAS_STANDARD_DISTANT_SOUNDS
     },
     {
@@ -127,7 +127,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         0, 0,
         5, 50, 500,
         TRUE, CMAP_GNOMISH_MINES,
-        NPC_SERVICE_GIVE_QUANTUM_QUESTS | NPC_SERVICE_SPECIAL_NPC_HINTS | NPC_SERVICE_TEACH_SPELL_FORCE_BOLT | NPC_SERVICE_TEACH_SPECIAL_SPELLS,
+        NPC_SERVICE_GIVE_QUANTUM_QUESTS | NPC_SERVICE_SPECIAL_NPC_HINTS | NPC_SERVICE_TEACH_SPECIAL_SPELLS,
         NPC_FLAGS_NO_GENERATION | NPC_FLAGS_MALE | NPC_FLAGS_DISPLAY_NAME_ONLY | NPC_FLAGS_HAS_TRUE_RUMORS | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_NO_ADVICE | NPC_FLAGS_NO_TITLE_ARTICLE | NPC_FLAGS_MAJORITY_NORMAL_HELLO | NPC_FLAGS_HAS_STANDARD_DISTANT_SOUNDS | NPC_FLAGS_MAY_HAVE_PAINTINGS
     },
     {
@@ -860,10 +860,21 @@ int mtype;
             }
         }
 
-        if (npc_subtype_definitions[npctype].service_flags & NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS)
+        if (npc_subtype_definitions[npctype].service_flags & NPC_SERVICE_TEACH_WIZARD_SPELLS)
         {
             if (level_difficulty() < 15)
             {
+                if (cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = !rn2(3) ? SPE_INVISIBILITY : !rn2(2) ? SPE_CHARM_MONSTER : SPE_MASS_SLEEP;
+                    cnt++;
+                }
+                if (cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = !rn2(3) ? SPE_POLYMORPH : !rn2(2) ? SPE_CREATE_STONE_GOLEM : SPE_FLESH_TO_STONE;
+                    cnt++;
+                }
+
                 if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_SHOCKING_TOUCH;
@@ -892,16 +903,6 @@ int mtype;
                 if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_CIRCLE_OF_LIGHTNING;
-                    cnt++;
-                }
-                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
-                {
-                    ENPC(npc)->special_teach_spells[cnt] = SPE_FIREBALL;
-                    cnt++;
-                }
-                if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
-                {
-                    ENPC(npc)->special_teach_spells[cnt] = SPE_ICE_STORM;
                     cnt++;
                 }
                 if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
@@ -936,12 +937,23 @@ int mtype;
                 }
                 if ((!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS) || cnt == 0)
                 {
-                    ENPC(npc)->special_teach_spells[cnt] = SPE_FIRE_BOLT;
+                    ENPC(npc)->special_teach_spells[cnt] = SPE_ICE_STORM;
                     cnt++;
                 }
             }
             else if (Inhell)
             {
+                if (cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = !rn2(3) ? SPE_SPHERE_OF_DOMINATION : !rn2(2) ? SPE_DEATH_ENCHANT_ITEM : SPE_MASS_CHARM;
+                    cnt++;
+                }
+                if (cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = !rn2(3) ? SPE_CREATE_GOLD_GOLEM : !rn2(2) ? SPE_CREATE_GEMSTONE_GOLEM : SPE_TOUCH_OF_PETRIFICATION;
+                    cnt++;
+                }
+
                 if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = rn2(2) ? SPE_INCINERATE : SPE_FLAME_BURST;
@@ -985,6 +997,17 @@ int mtype;
             }
             else
             {
+                if (cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = !rn2(3) ? SPE_DOMINATE_MONSTER : !rn2(2) ? SPE_LIGHTNING_ENCHANT_ITEM : SPE_MASS_FEAR;
+                    cnt++;
+                }
+                if (cnt < MAX_SPECIAL_TEACH_SPELLS)
+                {
+                    ENPC(npc)->special_teach_spells[cnt] = !rn2(3) ? SPE_WATER_BREATHING : !rn2(2) ? SPE_CREATE_SILVER_GOLEM : SPE_TITAN_STRENGTH;
+                    cnt++;
+                }
+
                 if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
                 {
                     ENPC(npc)->special_teach_spells[cnt] = SPE_FORCE_STRIKE;

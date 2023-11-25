@@ -668,9 +668,9 @@ uchar capitalize_style;
     else
     {
         if (objects[booktype].oc_spell_level == -1)
-            Sprintf(lvlbuf, "minor cantrip");
+            Strcpy(lvlbuf, "minor cantrip");
         else if (objects[booktype].oc_spell_level == 0)
-            Sprintf(lvlbuf, "major cantrip");
+            Strcpy(lvlbuf, "major cantrip");
         else if (objects[booktype].oc_spell_level > 0)
             Sprintf(lvlbuf, "%s%ld", include_level ? "level " : "", objects[booktype].oc_spell_level);
         else

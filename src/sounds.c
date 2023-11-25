@@ -8765,21 +8765,19 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
 
-    int spell_otyps[MAX_SPECIAL_TEACH_SPELLS + 8 + 1] = { 0 };
+    int spell_otyps[MAX_SPECIAL_TEACH_SPELLS + 16 + 1] = { 0 };
     int teach_num = 0;
-    if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_SPELL_LIGHTNING_BOLT)
+
+    /* Non-random arcane spells first */
+    if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_WIZARD_SPELLS)
     {
+        spell_otyps[teach_num] = SPE_MAGIC_ARROW;
+        teach_num++;
+        spell_otyps[teach_num] = SPE_FORCE_BOLT;
+        teach_num++;
         spell_otyps[teach_num] = SPE_LIGHTNING_BOLT;
         teach_num++;
-    }
-    if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_SPELL_CONE_OF_COLD)
-    {
         spell_otyps[teach_num] = SPE_CONE_OF_COLD;
-        teach_num++;
-    }
-    if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_SPELL_FORCE_BOLT)
-    {
-        spell_otyps[teach_num] = SPE_FORCE_BOLT;
         teach_num++;
     }
 
@@ -8789,6 +8787,8 @@ struct monst* mtmp;
         switch (ENPC(mtmp)->npc_typ)
         {
         case NPC_QUANTUM_MECHANIC:
+            spell_otyps[teach_num] = SPE_FORCE_BOLT;
+            teach_num++;
             spell_otyps[teach_num] = SPE_MAGICAL_IMPLOSION;
             teach_num++;
             spell_otyps[teach_num] = SPE_DISINTEGRATE;
@@ -8796,19 +8796,22 @@ struct monst* mtmp;
             spell_otyps[teach_num] = SPE_SLOW_MONSTER;
             teach_num++;
             break;
+        case NPC_ORC_HERMIT3:
+            spell_otyps[teach_num] = SPE_FIRE_BOLT;
+            teach_num++;
+            spell_otyps[teach_num] = SPE_FIREBALL;
+            teach_num++;
+            spell_otyps[teach_num] = SPE_CREATE_IRON_GOLEM;
+            teach_num++;
+            spell_otyps[teach_num] = SPE_SPHERE_OF_CHARMING;
+            teach_num++;
+            break;
         default:
             break;
         }
     }
 
-    /* Non-random arcane spells here */
-    if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS)
-    {
-        spell_otyps[teach_num] = SPE_MAGIC_ARROW;
-        teach_num++;
-    }
-
-    if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & (NPC_SERVICE_TEACH_SPECIAL_SPELLS | NPC_SERVICE_TEACH_RANDOM_ARCANE_SPELLS))
+    if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & (NPC_SERVICE_TEACH_SPECIAL_SPELLS | NPC_SERVICE_TEACH_WIZARD_SPELLS))
     {
         int i;
         for (i = 0; i < MAX_SPECIAL_TEACH_SPELLS && ENPC(mtmp)->special_teach_spells[i] > STRANGE_OBJECT; i++)
@@ -10928,18 +10931,20 @@ int* spell_otyps;
             char buf[BUFSIZ] = "";
             char buf2[BUFSIZ] = "";
             char bufc[BUFSIZ] = "";
+            char lvlbuf[BUFSIZ] = "";
+            print_spell_level_text(lvlbuf, spell_to_learn, TRUE, 0, FALSE);
             if (iflags.using_gui_sounds)
             {
-                Sprintf(buf, "learn a new spell");
-                Sprintf(buf2, "learning the spell '%s'", OBJ_NAME(objects[spell_to_learn]));
-                Sprintf(bufc, "'%s'", OBJ_NAME(objects[spell_to_learn]));
+                Strcpy(buf, "learn a new spell");
+                Sprintf(buf2, "teaching '%s'", OBJ_NAME(objects[spell_to_learn]));
+                Sprintf(bufc, "'%s', %s,", OBJ_NAME(objects[spell_to_learn]), *lvlbuf ? an(lvlbuf) : "a spell of unknown type");
                 *(bufc + 1) = highc(*(bufc + 1));
                 txt = bufc;
             }
             else
             {
-                Sprintf(buf, "learn the spell '%s'", OBJ_NAME(objects[spell_to_learn]));
-                Sprintf(buf2, "learning the spell '%s'", OBJ_NAME(objects[spell_to_learn]));
+                Sprintf(buf, "learn '%s', %s", OBJ_NAME(objects[spell_to_learn]), *lvlbuf ? an(lvlbuf) : "a spell of unknown type");
+                Sprintf(buf2, "teaching '%s'", OBJ_NAME(objects[spell_to_learn]));
                 txt = 0;
             }
             context.spbook.book = &pseudo;
