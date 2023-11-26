@@ -299,7 +299,7 @@ STATIC_VAR const struct trobj KnightSmallShield[] = { { SMALL_SHIELD, 0, ARMOR_C
                                 { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
 STATIC_VAR const struct trobj KnightSpikedSilverShield[] = { { SPIKED_SHIELD, 0, ARMOR_CLASS, 1, 0, 0, 0, 0, MAT_SILVER },
                                 { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
-STATIC_VAR const struct trobj PriestSmallShield[] = { { SMALL_SHIELD, 1, ARMOR_CLASS, 1, 0, 1, 0, 0, MAT_NONE },
+STATIC_VAR const struct trobj PriestSmallShield[] = { { SMALL_SHIELD, 0, ARMOR_CLASS, 1, 0, 1, 0, 0, MAT_NONE },
                                 { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };
 STATIC_VAR const struct trobj PriestSpikedSilverShield[] = { { SPIKED_SHIELD, 0, ARMOR_CLASS, 1, 0, 1, 0, 0, MAT_SILVER },
                                 { 0, 0, 0, 0, 0, 0, 0, 0, MAT_NONE } };

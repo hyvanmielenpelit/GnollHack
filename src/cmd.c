@@ -3899,11 +3899,11 @@ int final;
                   /* better phrasing desperately wanted... */
                   : Blind_because_of_blindfold_only ? "deliberately"
                     : "temporarily");
-        if (wizard && (Blinded & TIMEOUT) != 0L
-            && !u.uroleplay.blind && haseyes(youmonst.data))
-            Sprintf(eos(buf), " (%ld)", (Blinded & TIMEOUT));
+        //if (wizard && (Blinded & TIMEOUT) != 0L
+        //    && !u.uroleplay.blind && haseyes(youmonst.data))
+        //    Sprintf(eos(buf), " (%ld)", (Blinded & TIMEOUT));
         /* !haseyes: avoid "you are innately blind innately" */
-        you_are(buf, !haseyes(youmonst.data) ? "" : from_what(BLINDED));
+        you_are(buf, !haseyes(youmonst.data) || !(magic || is_innate(BLINDED) || cause_known(BLINDED)) ? "" : from_what(BLINDED));
     }
     if (Deaf)
         you_are("deaf", !(magic || is_innate(DEAF) || cause_known(DEAF)) ? "" : from_what(DEAF));
