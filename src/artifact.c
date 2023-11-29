@@ -2609,7 +2609,7 @@ struct obj *obj;
         return 0;
     }
 
-
+    wish_insurance_check(oart->inv_prop == ARTINVOKE_WISHING);
     check_arti_name_discovery(obj);
     
     if (oart->aflags & AF_INVOKE_EXPENDS_CHARGE)

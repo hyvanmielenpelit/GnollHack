@@ -5935,6 +5935,7 @@ dozap()
         return 0;
     }
 
+    wish_insurance_check(obj->otyp == WAN_WISHING);
     check_unpaid(obj);
 
     /* zappable addition done by GAN 11/03/86 */
@@ -12028,6 +12029,21 @@ int otyp;
     }
     return NON_PM;
 
+}
+
+void
+wish_insurance_check(check_insurance)
+int check_insurance;
+{
+    /* Save insurance check point before zapping a wand of wishing on mobile, since saving the game is disabled during wishing on mobile */
+    if (check_insurance)
+    {
+#ifdef GNH_MOBILE
+#ifdef INSURANCE
+        save_currentstate();
+#endif
+#endif
+    }
 }
 
 void

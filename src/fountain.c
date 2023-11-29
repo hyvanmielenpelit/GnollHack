@@ -59,10 +59,11 @@ STATIC_OVL void
 dowaterdemon()
 {
     struct monst *mtmp;
-
-    if (!(mvitals[PM_WATER_DEMON].mvflags & MV_GONE)) {
+    if (!(mvitals[PM_WATER_DEMON].mvflags & MV_GONE)) 
+    {
         if ((mtmp = makemon(&mons[PM_WATER_DEMON], u.ux, u.uy,
-                            NO_MM_FLAGS)) != 0) {
+                            NO_MM_FLAGS)) != 0)
+        {
             if (!Blind)
                 You("unleash %s!", a_monnam(mtmp));
             else
@@ -70,15 +71,18 @@ dowaterdemon()
 
             /* Give those on low levels a (slightly) better chance of survival
              */
-            if (rnd(100) > (80 + level_difficulty())) {
+            if (rnd(100) > (80 + level_difficulty()))
+            {
                 pline("Grateful for %s release, %s grants you a wish!",
                       mhis(mtmp), mhe(mtmp));
                 /* give a wish and discard the monster (mtmp set to null) */
                 mongrantswish(&mtmp);
-            } else if (t_at(mtmp->mx, mtmp->my))
+            } 
+            else if (t_at(mtmp->mx, mtmp->my))
                 (void) mintrap(mtmp);
         }
-    } else
+    } 
+    else
         pline_The("fountain bubbles furiously for a moment, then calms.");
 }
 
@@ -488,7 +492,8 @@ drinkfountain()
             break;
         case 23: /* Water demon */
             pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "water tastes bitter.");
-            if (zlevel > 12) {
+            if (zlevel > 12) 
+            {
                 if (item_prevents_summoning(PM_WATER_DEMON)) 
                 {
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "You have a passing sensation of relief.");
@@ -1074,7 +1079,8 @@ register struct obj *obj;
             }
             break;
         case 21: /* Water Demon */
-            if(zlevel > 12) { 
+            if(zlevel > 12)
+            { 
                 if (item_prevents_summoning(PM_WATER_DEMON))
                 {
                     pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "You have a passing sensation of relief.");
@@ -1083,13 +1089,15 @@ register struct obj *obj;
                 {
                     dowaterdemon();
                 }
-            } else
+            }
+            else
             {
                 You_ex(ATR_NONE, CLR_MSG_WARNING, "feel as if something evil is watching you.");
             }
             break;
         case 22: /* Water Nymph */
-            if (zlevel > 4) {
+            if (zlevel > 4) 
+            {
                 dowaternymph();
             }
             else

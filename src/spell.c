@@ -2478,6 +2478,8 @@ struct monst* targetmonst;
         //}
     //}
 
+    wish_insurance_check(spellid(spell) == SPE_WISH);
+
     //One spell preparation is used, successful casting or not
     if(spellamount(spell) > 0)
         spellamount(spell)--;

@@ -749,9 +749,12 @@ doengrave()
      * therefore will know they are using a charge.
      */
     case WAND_CLASS:
-        if (zappable(otmp)) {
+        wish_insurance_check(otmp->otyp == WAN_WISHING);
+        if (zappable(otmp)) 
+        {
             check_unpaid(otmp);
-            if (otmp->cursed && !rn2(WAND_BACKFIRE_CHANCE)) {
+            if (otmp->cursed && !rn2(WAND_BACKFIRE_CHANCE))
+            {
                 wand_explode(otmp, 0);
                 return 1;
             }
@@ -759,7 +762,8 @@ doengrave()
             if (!can_reach_floor(TRUE))
                 ptext = FALSE;
 
-            switch (otmp->otyp) {
+            switch (otmp->otyp) 
+            {
             /* DUST wands */
             default:
                 break;
