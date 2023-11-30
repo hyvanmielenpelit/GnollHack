@@ -1140,7 +1140,7 @@ namespace GnollHackX
         SPEFLAGS_LID_OPENED                    = 0x00020000UL,
         SPEFLAGS_GRABBED_FROM_YOU              = 0x00040000UL,
         SPEFLAGS_ADDED_TO_YOUR_BILL            = 0x00080000UL,
-        SPEFLAGS_WILL_TURN_TO_DUST_ON_PICKUP   = 0x00100000UL,
+        SPEFLAGS_CERTAIN_WISH                  = 0x00100000UL,
         SPEFLAGS_CAUGHT_IN_LEAVES              = 0x00200000UL,
         SPEFLAGS_CLONED_ITEM                   = 0x00400000UL,
         SPEFLAGS_NO_PREVIOUS_WEAPON            = 0x00800000UL,

@@ -2823,6 +2823,7 @@ E int NDECL(dodip);
 E int FDECL(refill_obj_with_oil, (struct obj*, struct obj*));
 E void FDECL(mongrantswish, (struct monst **));
 E void FDECL(djinni_from_bottle, (struct obj *));
+E void FDECL(convert_magic_lamp_to_oil_lamp, (struct obj*));
 E struct monst *FDECL(split_mon, (struct monst *, struct monst *));
 E const char *NDECL(bottlename);
 E void NDECL(reset_potion);

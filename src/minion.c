@@ -824,12 +824,12 @@ boolean* stop_chat_ptr;
         {
             struct monst tmpmon = *mtmp; /* Save Yeenaghu's data */
             play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_PLEASED);
-            verbalize_ex(ATR_NONE, CLR_MSG_GOD, "You have pleased me, my minion. I will grant one wish!");
+            verbalize_ex1(ATR_NONE, CLR_MSG_GOD, "You have pleased me, my minion. I will grant one wish!");
             /* give a wish and discard the monster (mtmp set to null) */
             mongrantswish(&mtmp);
             //mongrantswish removes the monster (calls mongone)
             play_simple_monster_sound(&tmpmon, MONSTER_SOUND_TYPE_LAUGHTER);
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The demon lord laughs, then vanishes.");
+            pline_ex1(ATR_NONE, CLR_MSG_ATTENTION, "The demon lord laughs, then vanishes.");
             if (stop_chat_ptr)
                 *stop_chat_ptr = TRUE;
             return 1;
@@ -837,7 +837,7 @@ boolean* stop_chat_ptr;
         if (u.ualign.type != A_LAWFUL)
         {
             play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_NOT_PLEASED);
-            verbalize_ex(ATR_NONE, CLR_MSG_GOD, "You have not pleased me! Prove your allegiance to the Abyss, and you shall be rewarded.");
+            verbalize_ex1(ATR_NONE, CLR_MSG_GOD, "You have not pleased me! Prove your allegiance to the Abyss, and you shall be rewarded.");
             play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_SCOWLS);
             play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s scowls at you, then vanishes.", Amonnam(mtmp));
@@ -845,7 +845,7 @@ boolean* stop_chat_ptr;
         else
         {
             play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_DISPLEASE);
-            verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Your ways displease me. Follow the path of the Abyss, and you shall be rewarded.");
+            verbalize_ex1(ATR_NONE, CLR_MSG_GOD, "Your ways displease me. Follow the path of the Abyss, and you shall be rewarded.");
             play_monster_special_dialogue_line(mtmp, YEENAGHU_LINE_SCOWLS);
             play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s scowls at you menacingly, then vanishes.", Amonnam(mtmp));

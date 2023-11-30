@@ -12035,7 +12035,8 @@ void
 wish_insurance_check(check_insurance)
 int check_insurance;
 {
-    /* Save insurance check point before zapping a wand of wishing on mobile, since saving the game is disabled during wishing on mobile */
+    /* Save insurance checkpoint before zapping a wand of wishing or other similar device on mobile, since saving the game is disabled during wishing on mobile */
+    /* Should be placed before charges are deducted; and omitted from random wish gain in order to avoid abuse */
     if (check_insurance)
     {
 #ifdef GNH_MOBILE

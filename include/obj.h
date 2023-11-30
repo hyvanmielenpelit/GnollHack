@@ -71,6 +71,7 @@ struct obj {
 #define SPEQUAL_MAGIC_CANDLE_UNUSED            2
 #define SPEQUAL_LIGHT_SOURCE_FUNCTIONAL        1
 #define SPEQUAL_UBALL_SPECIAL                  1
+#define SPEQUAL_WILL_TURN_TO_DUST_ON_PICKUP   1
 
     unsigned long speflags; /* anything else that might be going on with an item, not affected by cancellation */
 
@@ -94,7 +95,7 @@ struct obj {
 #define SPEFLAGS_LID_OPENED                    0x00020000UL
 #define SPEFLAGS_GRABBED_FROM_YOU              0x00040000UL
 #define SPEFLAGS_ADDED_TO_YOUR_BILL            0x00080000UL
-#define SPEFLAGS_WILL_TURN_TO_DUST_ON_PICKUP   0x00100000UL
+#define SPEFLAGS_CERTAIN_WISH                  0x00100000UL
 #define SPEFLAGS_CAUGHT_IN_LEAVES              0x00200000UL
 #define SPEFLAGS_CLONED_ITEM                   0x00400000UL
 #define SPEFLAGS_NO_PREVIOUS_WEAPON            0x00800000UL

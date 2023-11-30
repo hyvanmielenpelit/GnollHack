@@ -2702,36 +2702,35 @@ dorub()
     }
 
     /* now uwep is obj */
-    if (uwep->otyp == MAGIC_LAMP) {
-        if ((uwep->special_quality == 1) && !rn2(3)) {
+    if (uwep->otyp == MAGIC_LAMP) 
+    {
+        if ((uwep->special_quality == 1) && !rn2(3)) 
+        {
+            /* Note: save insurance even though djinni does not guarantee a wish; better than losing wish for sure, and abuse is equally possible by saving before starting rubbing */
             play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
             check_unpaid_usage(uwep, TRUE); /* unusual item use */
-            /* bones preparation:  perform the lamp transformation
-               before releasing the djinni in case the latter turns out
-               to be fatal (a hostile djinni has no chance to attack yet,
-               but an indebted one who grants a wish might bestow an
-               artifact which blasts the hero with lethal results) */
-            uwep->otyp = OIL_LAMP;
-            uwep->speflags = 0; /* for safety */
-            uwep->age = rn1(500, 1000);
-            if (uwep->lamplit)
-                begin_burn(uwep, TRUE);
             djinni_from_bottle(uwep);
             makeknown(MAGIC_LAMP);
             update_inventory();
-        } else if (rn2(2)) {
+        }
+        else if (rn2(2))
+        {
             play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, 0, u.ux, u.uy, FALSE);
             play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
             special_effect_wait_until_action(0);
             You("%s smoke.", !Blind ? "see a puff of" : "smell");
             special_effect_wait_until_end(0);
-        } else
+        }
+        else
             pline1(nothing_happens);
-    } else if (obj->otyp == BRASS_LANTERN) {
+    } 
+    else if (obj->otyp == BRASS_LANTERN) 
+    {
         /* message from Adventure */
         pline("Rubbing the electric lamp is not particularly rewarding.");
         pline("Anyway, nothing exciting happens.");
-    } else
+    }
+    else
         pline1(nothing_happens);
     return 1;
 }

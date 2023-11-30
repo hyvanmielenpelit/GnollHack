@@ -1798,7 +1798,7 @@ boolean telekinesis;
     }
 
     if (obj->otyp == SCR_SCARE_MONSTER && result <= 0 && !container)
-        obj->speflags &= ~SPEFLAGS_WILL_TURN_TO_DUST_ON_PICKUP;
+        obj->special_quality = 0;
 
     return result;
 }
@@ -1846,8 +1846,8 @@ uchar* obj_gone_ptr; /* 1 = merged, 2 = put in bag, 3 = gone */
     {
         if (obj->blessed)
             obj->blessed = 0;
-        else if (!(obj->speflags & SPEFLAGS_WILL_TURN_TO_DUST_ON_PICKUP) && !obj->cursed)
-            obj->speflags |= SPEFLAGS_WILL_TURN_TO_DUST_ON_PICKUP;
+        else if (obj->special_quality == 0 && !obj->cursed)
+            obj->special_quality = SPEQUAL_WILL_TURN_TO_DUST_ON_PICKUP;
         else 
         {
             char dcbuf[BUFSZ] = "";
