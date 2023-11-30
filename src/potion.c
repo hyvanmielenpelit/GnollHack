@@ -4320,6 +4320,7 @@ struct obj* obj;
        artifact which blasts the hero with lethal results) */
         obj->otyp = OIL_LAMP;
         obj->special_quality = 0; /* for safety */
+        obj->speflags &= ~SPEFLAGS_CERTAIN_WISH;
         obj->age = rn1(500, 1000);
         if (obj->lamplit)
             begin_burn(obj, TRUE);
