@@ -1593,6 +1593,7 @@ namespace GnollHackX
         //public const bool DefaultShowPrevWepContextCommand = true;
         public const bool DefaultLighterDarkening = true;
         public const bool DefaultAlternativeLayerDrawing = false;
+        public const float CriticalBatteryChargeLevel = 0.15f;
     }
 
     [StructLayout(LayoutKind.Sequential)]

@@ -88,6 +88,7 @@
     <None Remove="Assets\UI\background-loading-screen.jpg" />
     <None Remove="Assets\UI\background-loading-screen.png" />
     <None Remove="Assets\UI\background-oldpaper.png" />
+    <None Remove="Assets\UI\battery-frame.png" />
     <None Remove="Assets\UI\break.png" />
     <None Remove="Assets\UI\cancel.png" />
     <None Remove="Assets\UI\cast.png" />
@@ -282,6 +283,7 @@
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-2.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits.png" />
     <EmbeddedResource Include="Assets\UI\autostash.png" />
+    <EmbeddedResource Include="Assets\UI\battery-frame.png" />
     <EmbeddedResource Include="Assets\UI\frame2-horizontal.png" />
     <EmbeddedResource Include="Assets\UI\frame2-topleft-small.png" />
     <EmbeddedResource Include="Assets\UI\frame2-topleft.png" />

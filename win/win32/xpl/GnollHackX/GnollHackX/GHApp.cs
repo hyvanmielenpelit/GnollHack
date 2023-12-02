@@ -1086,6 +1086,9 @@ namespace GnollHackX
         public static SKBitmap _orbFillBitmapBlue;
         public static SKBitmap _orbGlassBitmap;
 
+        public static SKBitmap _batteryFrameBitmap;
+        public static SKBitmap _batteryRedFrameBitmap;
+
         public static SKBitmap _statusWizardBitmap;
         public static SKBitmap _statusCasualBitmap;
         public static SKBitmap _statusCasualClassicBitmap;
@@ -1561,6 +1564,30 @@ namespace GnollHackX
             {
                 _orbGlassBitmap = SKBitmap.Decode(stream);
                 _orbGlassBitmap.SetImmutable();
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.battery-frame.png"))
+            {
+                _batteryFrameBitmap = SKBitmap.Decode(stream);
+                _batteryFrameBitmap.SetImmutable();
+            }
+
+            using (SKPaint bmpPaint = new SKPaint())
+            {
+                bmpPaint.Color = SKColors.White;
+                var redbitmap = new SKBitmap(_batteryFrameBitmap.Width, _batteryFrameBitmap.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
+                var redcanvas = new SKCanvas(redbitmap);
+                redcanvas.Clear(SKColors.Transparent);
+                bmpPaint.ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
+                    {
+                    1.0f,  0,     0,    0, 0,
+                    0,     0.0f,  0,    0, 0,
+                    0,     0,     0.0f, 0, 0,
+                    0,     0,     0,    1, 0
+                    });
+                redcanvas.DrawBitmap(_batteryFrameBitmap, 0, 0, bmpPaint);
+                _batteryRedFrameBitmap = redbitmap;
+                _batteryRedFrameBitmap.SetImmutable();
             }
 
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-wizard-mode.png"))
