@@ -25,6 +25,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music/Room/Temple", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Level/Medusa", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Level/Castle", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music/Room/Court", BACKGROUND_MUSIC_VOLUME * 3.0f },
     { SOUND_BANK_MASTER, "event:/Music/Dungeon/Gnomish-Mines-Normal", BACKGROUND_MUSIC_VOLUME * 2.5f},
     { SOUND_BANK_MASTER, "event:/Music/Level/Mine-Town", BACKGROUND_MUSIC_VOLUME * 2.5f},
 
@@ -208,9 +209,11 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music/NPC/Tertiary", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/NPC/Artificer", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/NPC/Warp Engineer", BACKGROUND_MUSIC_VOLUME * 2.0f },
+    { SOUND_BANK_MASTER, "event:/Music/NPC/Hermit", BACKGROUND_MUSIC_VOLUME * 3.0f },
     { SOUND_BANK_MASTER, "event:/Music/Shop/Izchak", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/Room/Leprechaun Hall", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/Level/Quantum Core", BACKGROUND_MUSIC_VOLUME * 2.0f },
+    { SOUND_BANK_MASTER, "event:/Music/Level/Fort Ludious", BACKGROUND_MUSIC_VOLUME * 3.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Disintegrate", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Life Saved", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Healing/Healing", 0.3f },
@@ -19706,6 +19709,8 @@ struct d_level* dlvl;
         return GHSOUND_ENDGAME_MUSIC_ASTRAL;
     else if (Is_quantum_core_level(dlvl))
         return GHSOUND_DUNGEON_NORMAL_MUSIC_QUANTUM_CORE;
+    else if (Is_knox(dlvl))
+        return GHSOUND_DUNGEON_NORMAL_MUSIC_FORT_LUDIOS;
     else
         return get_dungeon_music(dnum);
 }
@@ -19791,6 +19796,7 @@ struct mkroom* room;
         case OROOM:
             break;
         case COURT:
+            res = GHSOUND_DUNGEON_NORMAL_MUSIC_COURT;
             break;
         case SWAMP:
             break;
@@ -19836,6 +19842,8 @@ struct mkroom* room;
                     break;
                 case NPC_HERMIT2:
                 case NPC_HERMIT3:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_HERMIT;
+                    break;
                 case NPC_ELVEN_BARD:
                     res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_TERTIARY;
                     break;
@@ -19862,6 +19870,9 @@ struct mkroom* room;
                     break;
                 case NPC_HERMIT2:
                 case NPC_HERMIT3:
+                case NPC_ORC_HERMIT3:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_HERMIT;
+                    break;
                 case NPC_ELVEN_BARD:
                     res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_TERTIARY;
                     break;
@@ -19885,6 +19896,9 @@ struct mkroom* room;
                     break;
                 case NPC_HERMIT2:
                 case NPC_HERMIT3:
+                case NPC_ORC_HERMIT3:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_HERMIT;
+                    break;
                 case NPC_ELVEN_BARD:
                     res = GHSOUND_DUNGEON_NORMAL_MUSIC_NPC_TERTIARY;
                     break;
