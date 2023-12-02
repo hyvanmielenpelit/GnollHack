@@ -675,6 +675,7 @@ xchar x, y;
             {
                 lev->doormask &= ~D_MASK;
                 lev->doormask |= D_NODOOR;
+                lev->subtyp = 0;
             }
             else
             {
@@ -713,6 +714,7 @@ xchar x, y;
             {
                 lev->doormask &= ~D_MASK;
                 lev->doormask |= D_NODOOR;
+                lev->subtyp = 0;
                 no_unblock = FALSE;
             }
             else

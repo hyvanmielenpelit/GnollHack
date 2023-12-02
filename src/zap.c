@@ -10472,7 +10472,6 @@ short exploding_wand_typ;
         case ZT_PETRIFICATION:
             if (door_subtype_definitions[lev->subtyp].material == MAT_WOOD && !is_door_indestructible_at_ptr(lev))
             {
-                //new_doormask = D_NODOOR;
                 see_txt = "The door petrifies!";
                 sense_txt = "hear stone cracking.";
                 new_door_subtype = DOOR_SUBTYPE_STONE;
@@ -10539,6 +10538,8 @@ short exploding_wand_typ;
             {
                 lev->doormask &= ~D_MASK;
                 lev->doormask |= new_doormask;
+                if(new_doormask == D_NODOOR)
+                    lev->subtyp = 0;
             }
 
             if (new_door_subtype >= 0)

@@ -474,7 +474,15 @@ int force;
                     if (*in_rooms(x, y, SHOPBASE))
                         add_damage(x, y, 0L);
                     levl[x][y].doormask &= ~D_MASK;
-                    levl[x][y].doormask |= D_NODOOR;
+                    if ((levl[x][y].doormask & D_MASK) == D_BROKEN)
+                    {
+                        levl[x][y].doormask |= D_NODOOR;
+                        levl[x][y].subtyp = 0;
+                    }
+                    else
+                    {
+                        levl[x][y].doormask |= D_BROKEN;
+                    }
                     unblock_vision_and_hearing_at_point(x, y);
                     newsym(x, y);
                     break;

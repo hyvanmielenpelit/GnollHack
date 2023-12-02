@@ -564,7 +564,7 @@ dig(VOID_ARGS)
             }
             else 
             {
-                ltype = DOOR, lflags = D_NODOOR;
+                ltype = DOOR, lsubtype = 0, lflags = D_NODOOR;
             }
             digtxt = "You make an opening in the wall.";
             play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
@@ -643,6 +643,7 @@ dig(VOID_ARGS)
             {
                 lev->doormask &= ~D_MASK;
                 lev->doormask |= D_NODOOR;
+                lev->subtyp = 0;
                 newsym(dpx, dpy);
             }
         }
@@ -1798,6 +1799,7 @@ register struct monst *mtmp;
             if (is_door_destroyed_by_booby_trap_at_ptr(here))
             {
                 here->doormask |= D_NODOOR;
+                here->subtyp = 0;
             }
             else
             {
@@ -2285,6 +2287,7 @@ struct obj* origobj;
                     pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is razed!", get_door_name_at_ptr(room));
                 watch_dig((struct monst*)0, zx, zy, TRUE);
                 room->doormask = (D_NODOOR | otherflags);
+                room->subtyp = 0;
                 unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                 newsym(zx, zy);
                 force_redraw_at(zx, zy);

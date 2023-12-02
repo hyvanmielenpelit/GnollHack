@@ -1474,6 +1474,7 @@ dokick() {
                     {
                         maploc->doormask &= ~D_MASK;
                         maploc->doormask |= D_NODOOR;
+                        maploc->subtyp = 0;
                     }
                 }
                 else if ((maploc->doormask & D_MASK) != D_NODOOR && (maploc->doormask & D_MASK) != D_PORTCULLIS
@@ -1880,6 +1881,7 @@ dokick() {
             {
                 maploc->doormask &= ~D_MASK;
                 maploc->doormask |= D_NODOOR;
+                maploc->subtyp = 0;
                 if (!rn2(2))
                 {
                     struct obj* otmp = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
@@ -1896,6 +1898,7 @@ dokick() {
             exercise(A_STR, TRUE);
             maploc->doormask &= ~D_MASK;
             maploc->doormask |= D_NODOOR;
+            maploc->subtyp = 0;
 
             struct obj* otmp = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
             otmp->quan = 1;

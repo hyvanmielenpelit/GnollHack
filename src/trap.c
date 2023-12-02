@@ -6342,6 +6342,7 @@ boolean force;
                 {
                     levl[x][y].doormask &= ~D_MASK;
                     levl[x][y].doormask |= D_NODOOR;
+                    levl[x][y].subtyp = 0;
                     unblock_vision_and_hearing_at_point(x, y);
                 }
                 newsym(x, y);

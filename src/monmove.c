@@ -1910,6 +1910,7 @@ register int after;
                         if (is_door_destroyed_by_booby_trap_at_ptr(here))
                         {
                             here->doormask |= D_NODOOR;
+                            here->subtyp = 0;
                         }
                         else
                         {
@@ -1946,6 +1947,7 @@ register int after;
                         if (is_door_destroyed_by_booby_trap_at_ptr(here))
                         {
                             here->doormask |= D_NODOOR;
+                            here->subtyp = 0;
                         }
                         else
                         {
@@ -1985,6 +1987,7 @@ register int after;
                         {
                             here->doormask &= ~D_MASK;
                             here->doormask |= D_NODOOR;
+                            here->subtyp = 0;
                             door_intact = FALSE;
                             unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
                             newsym(mtmp->mx, mtmp->my);
@@ -2014,6 +2017,7 @@ register int after;
                         {
                             here->doormask &= ~D_MASK;
                             here->doormask |= D_NODOOR;
+                            here->subtyp = 0;
                         }
                         else
                         {

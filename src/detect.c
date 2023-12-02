@@ -1731,9 +1731,13 @@ int x, y;
 {
     struct rm* lev = &levl[x][y];
     int newmask = lev->doormask & ~WM_MASK;
+    int subtype = lev->subtyp;
     if (Is_really_rogue_level(&u.uz))
+    {
         /* rogue didn't have doors, only doorways */
         newmask = D_NODOOR;
+        subtype = 0;
+    }
     else
     {
         /* newly exposed door is closed */
@@ -1742,7 +1746,7 @@ int x, y;
     }
     /* Add other flags than door mask */
     newmask |= (lev->doormask & ~D_MASK);
-    transform_location_type_and_flags(x, y, DOOR, lev->subtyp, newmask);
+    transform_location_type_and_flags(x, y, DOOR, subtype, newmask);
 }
 
 STATIC_PTR void
@@ -1840,6 +1844,7 @@ genericptr_t num;
             {
                 levl[zx][zy].doormask &= ~D_MASK;
                 levl[zx][zy].doormask |= D_NODOOR;
+                levl[zx][zy].subtyp = 0;
             }
         }
         else

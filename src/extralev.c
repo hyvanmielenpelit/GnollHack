@@ -77,6 +77,7 @@ int x, y, dir;
             dodoor(fromx, fromy, &rooms[r[x][y].nroom]);
             levl[fromx][fromy].doormask &= ~D_MASK;
             levl[fromx][fromy].doormask |= D_NODOOR;
+            levl[fromx][fromy].subtyp = 0;
             fromy++;
         }
         if (y >= 2) {
@@ -100,6 +101,7 @@ int x, y, dir;
             dodoor(tox, toy, &rooms[r[x][y].nroom]);
             levl[tox][toy].doormask &= ~D_MASK;
             levl[tox][toy].doormask |= D_NODOOR;
+            levl[tox][toy].subtyp = 0;
             toy--;
         }
         roguejoin(fromx, fromy, tox, toy, FALSE);
@@ -121,6 +123,7 @@ int x, y, dir;
             dodoor(fromx, fromy, &rooms[r[x][y].nroom]);
             levl[fromx][fromy].doormask &= ~D_MASK;
             levl[fromx][fromy].doormask |= D_NODOOR;
+            levl[fromx][fromy].subtyp = 0;
             fromx++;
         }
         if (x >= 2) {
@@ -144,6 +147,7 @@ int x, y, dir;
             dodoor(tox, toy, &rooms[r[x][y].nroom]);
             levl[tox][toy].doormask &= ~D_MASK;
             levl[tox][toy].doormask |= D_NODOOR;
+            levl[tox][toy].subtyp = 0;
             tox--;
         }
         roguejoin(fromx, fromy, tox, toy, TRUE);
