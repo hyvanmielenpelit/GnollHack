@@ -8865,7 +8865,8 @@ namespace GnollHackX.Pages.Game
                                 curx += print_width;
                             }
 
-                            float chargePercentage = (float)GHApp.BatteryChargeLevel / 100;
+                            double chargeLevel = GHApp.BatteryChargeLevel;
+                            float chargePercentage = (float)chargeLevel / 100;
                             if (ShowBattery || chargePercentage <= GHConstants.CriticalBatteryChargeLevel)
                             {
                                 target_width = target_scale * GHApp._batteryFrameBitmap.Width;
@@ -8873,15 +8874,33 @@ namespace GnollHackX.Pages.Game
                                 curx = dungeonleft - innerspacing * 3 - target_width;
                                 statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
                                 canvas.DrawBitmap(GHApp._batteryFrameBitmap, statusDest, textPaint);
+                                int alen = _shineAnimation.Length;
 
-                                if(chargePercentage <= GHConstants.CriticalBatteryChargeLevel)
+                                if (chargePercentage <= GHConstants.CriticalBatteryChargeLevel)
                                 {
-                                    int alen = _shineAnimation.Length;
                                     textPaint.Color = _magicShineOutlineColor.WithAlpha((byte)(_shineAnimation[generalcountervalue % alen] * 255));
                                     canvas.DrawBitmap(GHApp._batteryRedFrameBitmap, statusDest, textPaint);
                                 }
 
                                 const int topMargin = 11, bottomMargin = 4, hMargin = 6;
+
+                                if (chargeLevel <= 9)
+                                {
+                                    string drawtext = ((int)chargeLevel).ToString();
+                                    textPaint.TextSize = diffontsize;
+                                    textPaint.TextAlign = SKTextAlign.Center;
+                                    float alpha = _shineAnimation[generalcountervalue % alen];
+                                    textPaint.Color = new SKColor(255, (byte)(alpha * 0 + (1 - alpha) * 255), (byte)(alpha * 0 + (1 - alpha) * 255));
+                                    float vsize = target_height - (topMargin + bottomMargin) * target_scale;
+                                    float fsize = textPaint.FontSpacing;
+                                    float vpadding = (vsize - fsize) / 2;
+                                    SKPoint drawpoint = new SKPoint(curx + target_width / 2, cury + (topMargin * target_scale) + vpadding - textPaint.FontMetrics.Ascent);
+                                    canvas.DrawText(drawtext, drawpoint, textPaint);
+                                    textPaint.TextAlign = SKTextAlign.Left;
+                                    textPaint.TextSize = basefontsize;
+                                    textPaint.Color = SKColors.White;
+                                }
+
                                 int totalHeight = GHApp._batteryFrameBitmap.Height;
                                 int fillHeight = totalHeight - topMargin - bottomMargin;
                                 float calcFillHeight = fillHeight * chargePercentage;
