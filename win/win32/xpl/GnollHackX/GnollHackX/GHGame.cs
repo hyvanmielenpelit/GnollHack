@@ -572,7 +572,7 @@ namespace GnollHackX
         public int ClientCallback_YnFunction(int style, int attr, int color, int glyph, string title, string question, string responses, string def, string descriptions, string introline, ulong ynflags)
         {
             if(question != null)
-                RawPrintEx(question, attr, color);
+                RawPrintEx(question, attr, color, false);
 
             ConcurrentQueue<GHRequest> queue;
             if (responses == null || responses == "")
@@ -651,11 +651,11 @@ namespace GnollHackX
 
         public void ClientCallback_RawPrint(string str)
         {
-            RawPrintEx(str, 0, (int)nhcolor.NO_COLOR);
+            RawPrintEx(str, (int)MenuItemAttributes.None, (int)nhcolor.NO_COLOR, false);
         }
         public void ClientCallback_RawPrintBold(string str)
         {
-            RawPrintEx(str, 1, (int)nhcolor.NO_COLOR);
+            RawPrintEx(str, (int)MenuItemAttributes.Bold, (int)nhcolor.NO_COLOR, false);
         }
 
         public void UpdateMessageHistory()
@@ -671,7 +671,7 @@ namespace GnollHackX
             }
         }
 
-        public void AddNewMessage(GHMsgHistoryItem newmsg)
+        public void AddNewMessage(GHMsgHistoryItem newmsg, bool update_message_history)
         {
             if (newmsg == null)
                 return;
@@ -692,8 +692,11 @@ namespace GnollHackX
             if (_longer_message_history.Count > 0)
                 _longer_message_history[_longer_message_history.Count - 1].IsLast = true;
 
-            UpdateMessageHistory();
-            SwitchOffLongerMessageHistory(); /* Just to make sure that it does not remain on the slow down the game */
+            if(update_message_history)
+            {
+                UpdateMessageHistory();
+                SwitchOffLongerMessageHistory(); /* Just to make sure that it does not remain on the slow down the game */
+            }
         }
 
         public void SwitchOffLongerMessageHistory()
@@ -709,15 +712,15 @@ namespace GnollHackX
             }
         }
 
-        public void RawPrintEx(string str, int attr, int color)
+        public void RawPrintEx(string str, int attr, int color, bool is_restoring)
         {
             GHMsgHistoryItem newmsg = new GHMsgHistoryItem(str, attr, color);
-            AddNewMessage(newmsg);
+            AddNewMessage(newmsg, !is_restoring);
         }
-        public void RawPrintEx2(string str, byte[] attrs, byte[] colors, int attr, int color)
+        public void RawPrintEx2(string str, byte[] attrs, byte[] colors, int attr, int color, bool is_restoring)
         {
             GHMsgHistoryItem newmsg = new GHMsgHistoryItem(str, attrs, colors, attr, color);
-            AddNewMessage(newmsg);
+            AddNewMessage(newmsg, !is_restoring);
 
             //if (_message_history.Count > 0)
             //    _message_history[_message_history.Count - 1].IsLast = false;
@@ -742,7 +745,7 @@ namespace GnollHackX
 
             if (_ghWindows[win_id].WindowPrintStyle == GHWindowPrintLocations.RawPrint)
             {
-                RawPrintEx(str, attributes, color);
+                RawPrintEx(str, attributes, color, false);
             }
             else
             {
@@ -778,7 +781,7 @@ namespace GnollHackX
 
             if (_ghWindows[win_id].WindowPrintStyle == GHWindowPrintLocations.RawPrint)
             {
-                RawPrintEx2(str, attributes, colors, attr, color);
+                RawPrintEx2(str, attributes, colors, attr, color, false);
             }
             else
             {
@@ -1065,7 +1068,7 @@ namespace GnollHackX
 
         public void ClientCallback_PutMsgHistory(string msg, IntPtr attributes_ptr, IntPtr colors_ptr, byte is_restoring)
         {
-            if(msg != null)
+            if (msg != null)
             {
                 int str_length = msg.Length;
                 byte[] attributes = new byte[str_length + 1];
@@ -1088,8 +1091,10 @@ namespace GnollHackX
                     Marshal.Copy(colors_ptr, colors, 0, str_length + 1);
                 }
 
-                RawPrintEx2(msg, attributes, colors, (int)MenuItemAttributes.None, (int)nhcolor.NO_COLOR);
+                RawPrintEx2(msg, attributes, colors, (int)MenuItemAttributes.None, (int)nhcolor.NO_COLOR, is_restoring != 0);
             }
+            else if (is_restoring != 0)
+                UpdateMessageHistory();
         }
 
         public void ClientCallback_StartMenu(int winid, int style)
