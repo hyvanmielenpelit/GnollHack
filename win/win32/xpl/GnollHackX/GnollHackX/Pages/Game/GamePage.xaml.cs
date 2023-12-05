@@ -2295,6 +2295,9 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.PostGameStatus:
                                 PostToForum(req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, false);
                                 break;
+                            case GHRequestType.PostXlogEntry:
+                                PostXlogEntry(req.RequestInt, req.RequestInt2, req.RequestString);
+                                break;
                             case GHRequestType.DebugLog:
                                 DisplayDebugLog(req.RequestString, req.RequestInt, req.RequestInt2);
                                 break;
@@ -2546,7 +2549,7 @@ namespace GnollHackX.Pages.Game
                                     post.AddAttachment(attachment.Description, filename);
                             }
                             string json = JsonConvert.SerializeObject(post);
-                            MultipartFormDataContent multicontent = new MultipartFormDataContent("--boundary");
+                            MultipartFormDataContent multicontent = new MultipartFormDataContent("-------------------boundary");
                             StringContent content1 = new StringContent(json, Encoding.UTF8, "application/json");
                             ContentDispositionHeaderValue cdhv = new ContentDispositionHeaderValue("form-data");
                             cdhv.Name = "payload_json";
@@ -2619,6 +2622,127 @@ namespace GnollHackX.Pages.Game
                 }
             }
             _forumPostAttachments.Clear();
+            return;
+        }
+
+        
+        private List<ForumPostAttachment> _xlogPostAttachments = new List<ForumPostAttachment>();
+
+        private async void PostXlogEntry(int status_type, int status_datatype, string xlogentry_string)
+        {
+            if (!GHApp.PostingXlogEntries)
+                return;
+
+            if (xlogentry_string == null || xlogentry_string == "")
+            {
+                _xlogPostAttachments.Clear();
+                return;
+            }
+
+            if (status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT)
+            {
+                switch (status_datatype)
+                {
+                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_GENERIC:
+                        _xlogPostAttachments.Add(new ForumPostAttachment(xlogentry_string, "application/zip", "game data", false, status_type, false));
+                        break;
+                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_TEXT:
+                        _xlogPostAttachments.Add(new ForumPostAttachment(xlogentry_string, "text/plain", "dumplog", false, status_type, false));
+                        break;
+                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_HTML:
+                        _xlogPostAttachments.Add(new ForumPostAttachment(xlogentry_string, "text/html", "HTML dumplog", false, status_type, false));
+                        break;
+                }
+                return;
+            }
+
+            try
+            {
+                string postaddress = GHApp.GetXlogPostAddress();
+                if (postaddress != null && postaddress.Length > 8 && postaddress.Substring(0, 8) == "https://" && Uri.IsWellFormedUriString(postaddress, UriKind.Absolute))
+                {
+                    using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
+                    {
+                        MultipartFormDataContent multicontent = new MultipartFormDataContent("-------------------boundary");
+
+                        StringContent content1 = new StringContent(GHApp.XlogUserName, Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhv1 = new ContentDispositionHeaderValue("form-data");
+                        cdhv1.Name = "UserName";
+                        content1.Headers.ContentDisposition = cdhv1;
+                        multicontent.Add(content1);
+
+                        StringContent content2 = new StringContent(GHApp.XlogEmail, Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
+                        cdhv2.Name = "Email";
+                        content2.Headers.ContentDisposition = cdhv2;
+                        multicontent.Add(content2);
+
+                        StringContent content3 = new StringContent(GHApp.XlogPassword, Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhv3 = new ContentDispositionHeaderValue("form-data");
+                        cdhv3.Name = "Password";
+                        content3.Headers.ContentDisposition = cdhv3;
+                        multicontent.Add(content3);
+
+                        StringContent content4 = new StringContent(GHApp.XlogAntiForgeryToken, Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhv4 = new ContentDispositionHeaderValue("form-data");
+                        cdhv4.Name = "AntiForgeryToken";
+                        content4.Headers.ContentDisposition = cdhv4;
+                        multicontent.Add(content4);
+
+                        foreach (ForumPostAttachment attachment in _xlogPostAttachments)
+                        {
+                            string fullFilePath = attachment.FullPath;
+                            bool fileexists = File.Exists(fullFilePath);
+                            if (fileexists)
+                            {
+                                FileInfo fileinfo = new FileInfo(fullFilePath);
+                                string filename = fileinfo.Name;
+                                var stream = new FileStream(fullFilePath, FileMode.Open);
+                                StreamContent content5 = new StreamContent(stream);
+                                ContentDispositionHeaderValue cdhv5 = new ContentDispositionHeaderValue("form-data");
+                                cdhv5.Name = attachment.ContentType == "text/plain" ? "PlainTextDumplog" : attachment.ContentType == "text/html" ? "HtmlDumplog" : "GameData";
+                                content5.Headers.ContentDisposition = cdhv5;
+                                multicontent.Add(content5);
+                            }
+                        }
+                        using (var cts = new CancellationTokenSource())
+                        {
+                            cts.CancelAfter(_xlogPostAttachments.Count == 0 ? 10000 : 120000);
+                            string jsonResponse = "";
+                            using (HttpResponseMessage response = await client.PostAsync(postaddress, multicontent, cts.Token))
+                            {
+                                jsonResponse = await response.Content.ReadAsStringAsync();
+                                Debug.WriteLine(jsonResponse);
+                            }
+                        }
+                        content1.Dispose();
+                        content2.Dispose();
+                        content3.Dispose();
+                        content4.Dispose();
+                        multicontent.Dispose();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
+            foreach (var attachment in _xlogPostAttachments)
+            {
+                if (attachment.IsTemporary)
+                {
+                    try
+                    {
+                        File.Delete(attachment.FullPath);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine(e.Message);
+                    }
+                }
+            }
+            _xlogPostAttachments.Clear();
             return;
         }
 

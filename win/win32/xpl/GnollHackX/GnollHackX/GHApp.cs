@@ -58,6 +58,7 @@ namespace GnollHackX
             InformAboutCrashReport = !InformAboutGameTermination;
             PostingGameStatus = Preferences.Get("PostingGameStatus", GHConstants.DefaultPosting);
             PostingDiagnosticData = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
+            PostingXlogEntries = Preferences.Get("PostingXlogEntries", GHConstants.DefaultPosting);
             CustomGameStatusLink = Preferences.Get("CustomGameStatusLink", "");
             UseHTMLDumpLogs = Preferences.Get("UseHTMLDumpLogs", GHConstants.DefaultHTMLDumpLogs);
             UseSingleDumpLog = Preferences.Get("UseSingleDumpLog", GHConstants.DefaultUseSingleDumpLog);
@@ -2331,7 +2332,10 @@ namespace GnollHackX
 
         public static bool PostingGameStatus { get; set; }
         public static bool PostingDiagnosticData { get; set; }
+        public static bool PostingXlogEntries { get; set; }
         public static string CustomGameStatusLink { get; set; }
+        public static string CustomXlogRegisterationAddress { get; set; }
+        public static string CustomXlogPostAddress { get; set; }
 
         public static string GetGameStatusPostAddress()
         {
@@ -2352,6 +2356,42 @@ namespace GnollHackX
         {
             return CurrentUserSecrets.DefaultDiagnosticDataPostAddress;
         }
+
+        public static string GetXlogPostAddress()
+        {
+            if (CustomXlogPostAddress != null && CustomXlogPostAddress != "")
+            {
+                return CustomXlogPostAddress;
+            }
+            else
+            {
+                return CurrentUserSecrets.DefaultXlogPostAddress;
+            }
+        }
+
+        public static string GetXlogRegisterationAddress()
+        {
+            if (CustomXlogRegisterationAddress != null && CustomXlogRegisterationAddress != "")
+            {
+                return CustomXlogRegisterationAddress;
+            }
+            else
+            {
+                return CurrentUserSecrets.DefaultXlogRegisterationAddress;
+            }
+        }
+
+        public static string XlogUserName { get; set; } = "";
+        public static string XlogEmail { get; set; } = "";
+        public static string XlogPassword { get; set; } = "";
+        public static string XlogAntiForgeryToken 
+        {
+            get
+            {
+                return CurrentUserSecrets.DefaultXlogAntiForgeryToken;
+            }
+        }
+
         public static bool IsValidHttpsURL(string uriString)
         {
             try

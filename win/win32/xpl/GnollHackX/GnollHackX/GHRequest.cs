@@ -55,6 +55,7 @@ namespace GnollHackX
         YnConfirmation,
         PostGameStatus,
         PostDiagnosticData,
+        PostXlogEntry,
         RestartGame,
         DebugLog,
         CloseAllDialogs,

@@ -124,7 +124,7 @@ namespace GnollHackX
                         }
                         else if (scalecurrent == -1.0f)
                         {
-                            /* GnollHack could determine current animator duration scale */
+                            /* GnollHack could not determine current animator duration scale */
                         }
                     }
                 }

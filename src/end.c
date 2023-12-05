@@ -2179,12 +2179,15 @@ int how;
             char dlbuf[BUFSZ * 4];
             char* dlfilename = print_dumplog_filename_to_buffer(dlbuf);
             if (dlfilename)
+            {
                 issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT_ATTACHMENT, GAME_STATUS_ATTACHMENT_DUMPLOG_TEXT, dlfilename);
-
+            }
     #if defined(DUMPHTML)
             dlfilename = print_dumphtml_filename_to_buffer(dlbuf);
             if (dlfilename)
+            {
                 issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT_ATTACHMENT, GAME_STATUS_ATTACHMENT_DUMPLOG_HTML, dlfilename);
+            }
     #endif
     #endif
             char totalpostbuf[BUFSZ * 4];

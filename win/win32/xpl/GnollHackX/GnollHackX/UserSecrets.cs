@@ -9,6 +9,9 @@ namespace GnollHackX
     {
         public string EncodedDefaultGamePostAddress = "";
         public string EncodedDefaultDiagnosticDataPostAddress = "";
+        public string EncodedDefaultXlogRegisterationAddress = "";
+        public string EncodedDefaultXlogPostAddress = "";
+        public string EncodedDefaultXlogAntiForgeryToken = "";
 
         public UserSecrets()
         {
@@ -28,6 +31,30 @@ namespace GnollHackX
             get
             {
                 return GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultDiagnosticDataPostAddress);
+            }
+        }
+
+        public string DefaultXlogRegisterationAddress
+        {
+            get
+            {
+                return GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultXlogRegisterationAddress);
+            }
+        }
+
+        public string DefaultXlogPostAddress
+        {
+            get
+            {
+                return GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultXlogPostAddress);
+            }
+        }
+
+        public string DefaultXlogAntiForgeryToken
+        {
+            get
+            {
+                return GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultXlogAntiForgeryToken);
             }
         }
     }

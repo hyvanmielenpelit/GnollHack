@@ -122,6 +122,8 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("PostingGameStatus", PostGameStatusSwitch.IsToggled);
             GHApp.PostingDiagnosticData = PostDiagnosticDataSwitch.IsToggled;
             Preferences.Set("PostingDiagnosticData", PostDiagnosticDataSwitch.IsToggled);
+            GHApp.PostingXlogEntries = PostXlogSwitch.IsToggled;
+            Preferences.Set("PostingXlogEntries", PostXlogSwitch.IsToggled);
 
             GHApp.CustomGameStatusLink = _customGameStatusLink;
             Preferences.Set("CustomGameStatusLink", _customGameStatusLink);
@@ -394,7 +396,7 @@ namespace GnollHackX.Pages.MainScreen
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
-            bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting;
+            bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting;
             bool longermsghistory = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             string customlink = "";
@@ -426,6 +428,7 @@ namespace GnollHackX.Pages.MainScreen
             streamingbanktodisk = Preferences.Get("CopyStreamingBankToDisk", GHConstants.DefaultCopyStreamingBankToDisk);
             postgamestatus = Preferences.Get("PostingGameStatus", GHConstants.DefaultPosting);
             postdiagnostics = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
+            postxlog = Preferences.Get("PostingXlogEntries", GHConstants.DefaultPosting);
             customlink = Preferences.Get("CustomGameStatusLink", "");
             allowbones = Preferences.Get("AllowBones", true);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
@@ -563,6 +566,7 @@ namespace GnollHackX.Pages.MainScreen
             BonesSwitch.IsToggled = allowbones;
             PostGameStatusSwitch.IsToggled = postgamestatus;
             PostDiagnosticDataSwitch.IsToggled = postdiagnostics;
+            PostXlogSwitch.IsToggled = postxlog;
             _customGameStatusLink = customlink;
             CustomLinkLabel.Text = customlink == "" ? "Default" : "Custom";
             CustomLinkButton.Text = customlink == "" ? "Add" : "Edit";
