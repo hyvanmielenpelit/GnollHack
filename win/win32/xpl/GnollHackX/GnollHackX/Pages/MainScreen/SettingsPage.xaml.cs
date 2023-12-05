@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Collections.Concurrent;
+using GnollHackX.Controls;
+
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
@@ -127,6 +129,15 @@ namespace GnollHackX.Pages.MainScreen
 
             GHApp.CustomGameStatusLink = _customGameStatusLink;
             Preferences.Set("CustomGameStatusLink", _customGameStatusLink);
+
+            GHApp.CustomXlogAccountLink = _customXlogAccountLink;
+            Preferences.Set("CustomXlogAccountLink", _customXlogAccountLink);
+            GHApp.CustomXlogPostLink = _customXlogPostLink;
+            Preferences.Set("CustomXlogPostLink", _customXlogPostLink);
+            GHApp.XlogUserName = PostXlogUserNameEntry.Text;
+            Preferences.Set("XlogUserName", PostXlogUserNameEntry.Text);
+            GHApp.XlogPassword = PostXlogPasswordEntry.Text;
+            Preferences.Set("XlogPassword", PostXlogPasswordEntry.Text);
 
             if (_gamePage != null)
                 _gamePage.MapGrid = GridSwitch.IsToggled;
@@ -400,6 +411,11 @@ namespace GnollHackX.Pages.MainScreen
             bool longermsghistory = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             string customlink = "";
+            string customxlogaccountlink = "";
+            string customxlogpostlink = "";
+            string xlog_username = "";
+            string xlog_password = "";
+
             int[] cmdidxs = new int[6];
             for (int i = 0; i < 6; i++)
             {
@@ -430,6 +446,10 @@ namespace GnollHackX.Pages.MainScreen
             postdiagnostics = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
             postxlog = Preferences.Get("PostingXlogEntries", GHConstants.DefaultPosting);
             customlink = Preferences.Get("CustomGameStatusLink", "");
+            customxlogaccountlink = Preferences.Get("CustomXlogAccountLink", "");
+            customxlogpostlink = Preferences.Get("CustomXlogPostLink", "");
+            xlog_username = Preferences.Get("XlogUserName", "");
+            xlog_password = Preferences.Get("XlogPassword", "");
             allowbones = Preferences.Get("AllowBones", true);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
             savestyle = Preferences.Get("AppSwitchSaveStyle", 0);
@@ -570,6 +590,17 @@ namespace GnollHackX.Pages.MainScreen
             _customGameStatusLink = customlink;
             CustomLinkLabel.Text = customlink == "" ? "Default" : "Custom";
             CustomLinkButton.Text = customlink == "" ? "Add" : "Edit";
+
+            _customXlogAccountLink = customxlogaccountlink;
+            CustomXlogAccountLinkLabel.Text = customxlogaccountlink == "" ? "Default" : "Custom";
+            CustomXlogAccountButton.Text = customxlogaccountlink == "" ? "Link" : "Link";
+
+            _customXlogPostLink = customxlogpostlink;
+            CustomXlogPostLinkLabel.Text = customxlogpostlink == "" ? "Default" : "Custom";
+            CustomXlogPostButton.Text = customxlogpostlink == "" ? "Link" : "Link";
+
+            PostXlogUserNameEntry.Text = xlog_username;
+            PostXlogPasswordEntry.Text = xlog_password;
 
             SimpleCommandBarButton1Picker.SelectedIndex = cmdidxs[0];
             SimpleCommandBarButton2Picker.SelectedIndex = cmdidxs[1];
@@ -794,12 +825,18 @@ namespace GnollHackX.Pages.MainScreen
         }
 
 
+        private CustomImageButton _linkButtonClicked = null;
+        private Label _linkLabel = null;
+        private int _linkIndex = 0;
 
         private string _customGameStatusLink = "";
         private void CustomLinkButton_Clicked(object sender, EventArgs e)
         {
             CustomLinkButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
+            _linkButtonClicked = CustomLinkButton;
+            _linkLabel = CustomLinkLabel;
+            _linkIndex = 0;
             TextCaption.Text = "Enter Custom Webhook Link:";
             TextEntry.Text = _customGameStatusLink;
             TextOkButton.IsEnabled = true;
@@ -832,19 +869,41 @@ namespace GnollHackX.Pages.MainScreen
                 return;
             }
 
-            _customGameStatusLink = res;
-            if (res == "")
-                CustomLinkLabel.Text = "Default";
-            else
-                CustomLinkLabel.Text = "Custom";
+            bool isLinkEmpty = false;
+            switch(_linkIndex)
+            {
+                default:
+                case 0:
+                    _customGameStatusLink = res;
+                    isLinkEmpty = _customGameStatusLink == "";
+                    break;
+                case 1:
+                    _customXlogAccountLink = res;
+                    isLinkEmpty = _customXlogAccountLink == "";
+                    break;
+                case 2:
+                    _customXlogPostLink = res;
+                    isLinkEmpty = _customXlogPostLink == "";
+                    break;
+            }
 
-            CustomLinkButton.Text = _customGameStatusLink == "" ? "Add" : "Edit";
+            if (_linkButtonClicked == null) _linkButtonClicked = CustomLinkButton;
+            if (_linkLabel == null) _linkLabel = CustomLinkLabel;
+
+            if (res == "")
+                _linkLabel.Text = "Default";
+            else
+                _linkLabel.Text = "Custom";
+
+            if(_linkIndex != 1)
+                _linkButtonClicked.Text = isLinkEmpty ? "Add" : "Edit";
 
             TextGrid.IsVisible = false;
             TextEntry.Text = "";
             TextCaption.Text = "";
             TextFrame.BorderColor = GHColors.Black;
-            CustomLinkButton.IsEnabled = true;
+
+            _linkButtonClicked.IsEnabled = true;
         }
 
 
@@ -858,7 +917,9 @@ namespace GnollHackX.Pages.MainScreen
             TextEntry.Text = "";
             TextCaption.Text = "";
             TextFrame.BorderColor = GHColors.Black;
-            CustomLinkButton.IsEnabled = true;
+
+            if (_linkButtonClicked == null) _linkButtonClicked = CustomLinkButton;
+            _linkButtonClicked.IsEnabled = true;
         }
 
         private bool _backPressed = false;
@@ -908,6 +969,62 @@ namespace GnollHackX.Pages.MainScreen
             SimpleCommandBarButton4Label.TextColor = e.Value ? GHColors.Black : GHColors.Gray;
             SimpleCommandBarButton5Label.TextColor = e.Value ? GHColors.Black : GHColors.Gray;
             SimpleCommandBarButton6Label.TextColor = e.Value ? GHColors.Black : GHColors.Gray;
+        }
+
+        private async void XlogAccountButton_Clicked(object sender, EventArgs e)
+        {
+            XlogAccountButton.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            await OpenBrowser(new Uri(GHApp.XlogAccountAddress));
+            XlogAccountButton.IsEnabled = true;
+        }
+
+        private string _customXlogAccountLink = "";
+        private void CustomXlogAccountButton_Clicked(object sender, EventArgs e)
+        {
+            CustomXlogAccountButton.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            _linkButtonClicked = CustomXlogAccountButton;
+            _linkLabel = CustomXlogAccountLinkLabel;
+            _linkIndex = 1;
+            TextCaption.Text = "Enter Custom Account Link:";
+            TextEntry.Text = _customXlogAccountLink;
+            TextOkButton.IsEnabled = true;
+            TextCancelButton.IsEnabled = true;
+            TextGrid.IsVisible = true;
+
+        }
+
+        private string _customXlogPostLink = "";
+        private void CustomXlogPostButton_Clicked(object sender, EventArgs e)
+        {
+            CustomXlogPostButton.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            _linkButtonClicked = CustomXlogPostButton;
+            _linkLabel = CustomXlogPostLinkLabel;
+            _linkIndex = 2;
+            TextCaption.Text = "Enter Custom Post Link:";
+            TextEntry.Text = _customXlogPostLink;
+            TextOkButton.IsEnabled = true;
+            TextCancelButton.IsEnabled = true;
+            TextGrid.IsVisible = true;
+        }
+
+        public async Task OpenBrowser(Uri uri)
+        {
+            try
+            {
+                await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Cannot Open Web Page", "GnollHack cannot open the webpage at " + uri.OriginalString + ". Error: " + ex.Message, "OK");
+            }
+        }
+
+        private void XlogTestButton_Clicked(object sender, EventArgs e)
+        {
+
         }
     }
 }

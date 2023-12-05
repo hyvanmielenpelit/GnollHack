@@ -2531,7 +2531,7 @@ namespace GnollHackX.Pages.Game
 
             try
             {
-                string postaddress = is_game_status ? GHApp.GetGameStatusPostAddress() : GHApp.GetDiagnosticDataPostAddress();
+                string postaddress = is_game_status ? GHApp.GameStatusPostAddress : GHApp.DiagnosticDataPostAddress;
                 if (postaddress != null && postaddress.Length > 8 && postaddress.Substring(0, 8) == "https://" && Uri.IsWellFormedUriString(postaddress, UriKind.Absolute))
                 {
                     using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
@@ -2633,6 +2633,9 @@ namespace GnollHackX.Pages.Game
             if (!GHApp.PostingXlogEntries)
                 return;
 
+            if (GHApp.XlogUserName == "")
+                return;
+
             if (xlogentry_string == null || xlogentry_string == "")
             {
                 _xlogPostAttachments.Clear();
@@ -2658,7 +2661,7 @@ namespace GnollHackX.Pages.Game
 
             try
             {
-                string postaddress = GHApp.GetXlogPostAddress();
+                string postaddress = GHApp.XlogPostAddress;
                 if (postaddress != null && postaddress.Length > 8 && postaddress.Substring(0, 8) == "https://" && Uri.IsWellFormedUriString(postaddress, UriKind.Absolute))
                 {
                     using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
@@ -2670,12 +2673,6 @@ namespace GnollHackX.Pages.Game
                         cdhv1.Name = "UserName";
                         content1.Headers.ContentDisposition = cdhv1;
                         multicontent.Add(content1);
-
-                        StringContent content2 = new StringContent(GHApp.XlogEmail, Encoding.UTF8, "text/plain");
-                        ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
-                        cdhv2.Name = "Email";
-                        content2.Headers.ContentDisposition = cdhv2;
-                        multicontent.Add(content2);
 
                         StringContent content3 = new StringContent(GHApp.XlogPassword, Encoding.UTF8, "text/plain");
                         ContentDispositionHeaderValue cdhv3 = new ContentDispositionHeaderValue("form-data");
@@ -2716,7 +2713,6 @@ namespace GnollHackX.Pages.Game
                             }
                         }
                         content1.Dispose();
-                        content2.Dispose();
                         content3.Dispose();
                         content4.Dispose();
                         multicontent.Dispose();

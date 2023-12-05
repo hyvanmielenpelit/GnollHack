@@ -726,7 +726,7 @@
                                     <Label x:Name="CustomLinkLabel"
                                                Text="Default"
                                                FontFamily="Underwood" TextColor="Blue"
-                                               FontSize="15"
+                                               FontSize="14"
                                                VerticalOptions="CenterAndExpand" 
                                                HorizontalOptions="EndAndExpand" />
                                     <controls:CustomImageButton x:Name="CustomLinkButton" Text="Edit" FontSize="13" WidthRequest="80" HeightRequest="50" FontFamily="Diablo"
@@ -754,6 +754,78 @@
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
                                     <Switch x:Name="PostXlogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="  Account"
+                                               FontFamily="Underwood" TextColor="Black"
+                                               FontSize="15"
+                                               VerticalOptions="CenterAndExpand" 
+                                               HorizontalOptions="Start" />
+                                    <controls:CustomImageButton x:Name="XlogAccountButton" Text="Setup" FontSize="13" WidthRequest="90" HeightRequest="50" FontFamily="Diablo"
+                                                BackgroundColor="Transparent" TextColor="White"
+                                                Clicked="XlogAccountButton_Clicked"
+                                                VerticalOptions="CenterAndExpand" 
+                                                HorizontalOptions="Start" />
+                                    <Label x:Name="CustomXlogAccountLinkLabel"
+                                               Text="Default"
+                                               FontFamily="Underwood" TextColor="Blue"
+                                               FontSize="14"
+                                               VerticalOptions="CenterAndExpand" 
+                                               HorizontalOptions="EndAndExpand" />
+                                    <controls:CustomImageButton x:Name="CustomXlogAccountButton" Text="Link" FontSize="13" WidthRequest="80" HeightRequest="50" FontFamily="Diablo"
+                                                BackgroundColor="Transparent" TextColor="White"
+                                                Clicked="CustomXlogAccountButton_Clicked"
+                                                VerticalOptions="CenterAndExpand" 
+                                                HorizontalOptions="End" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="  Posting"
+                                               FontFamily="Underwood" TextColor="Black"
+                                               FontSize="15"
+                                               VerticalOptions="CenterAndExpand" 
+                                               HorizontalOptions="Start" />
+                                    <controls:CustomImageButton x:Name="XlogTestButton" Text="Test" FontSize="13" WidthRequest="90" HeightRequest="50" FontFamily="Diablo"
+                                                BackgroundColor="Transparent" TextColor="White"
+                                                Clicked="XlogTestButton_Clicked"
+                                                VerticalOptions="CenterAndExpand" 
+                                                HorizontalOptions="Start" />
+                                    <Label x:Name="CustomXlogPostLinkLabel"
+                                               Text="Default"
+                                               FontFamily="Underwood" TextColor="Blue"
+                                               FontSize="14"
+                                               VerticalOptions="CenterAndExpand" 
+                                               HorizontalOptions="EndAndExpand" />
+                                    <controls:CustomImageButton x:Name="CustomXlogPostButton" Text="Link" FontSize="13" WidthRequest="80" HeightRequest="50" FontFamily="Diablo"
+                                                BackgroundColor="Transparent" TextColor="White"
+                                                Clicked="CustomXlogPostButton_Clicked"
+                                                VerticalOptions="CenterAndExpand" 
+                                                HorizontalOptions="End" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="  User Name"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Entry x:Name="PostXlogUserNameEntry" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="Enter user name" PlaceholderColor="Gray"
+                                           TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
+                                </StackLayout>
+                            </ViewCell>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="  Password"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                                    <Entry x:Name="PostXlogPasswordEntry" IsPassword="True"  HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="Enter password" PlaceholderColor="Gray"
+                                           TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                                 </StackLayout>
                             </ViewCell>
                             <ViewCell>

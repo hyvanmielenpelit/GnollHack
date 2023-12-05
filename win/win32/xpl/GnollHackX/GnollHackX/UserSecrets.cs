@@ -34,7 +34,7 @@ namespace GnollHackX
             }
         }
 
-        public string DefaultXlogRegisterationAddress
+        public string DefaultXlogAccountLink
         {
             get
             {

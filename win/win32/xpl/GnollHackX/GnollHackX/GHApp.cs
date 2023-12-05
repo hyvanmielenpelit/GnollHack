@@ -60,6 +60,8 @@ namespace GnollHackX
             PostingDiagnosticData = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
             PostingXlogEntries = Preferences.Get("PostingXlogEntries", GHConstants.DefaultPosting);
             CustomGameStatusLink = Preferences.Get("CustomGameStatusLink", "");
+            CustomXlogAccountLink = Preferences.Get("CustomXlogAccountLink", "");
+            CustomXlogPostLink = Preferences.Get("CustomXlogPostLink", "");
             UseHTMLDumpLogs = Preferences.Get("UseHTMLDumpLogs", GHConstants.DefaultHTMLDumpLogs);
             UseSingleDumpLog = Preferences.Get("UseSingleDumpLog", GHConstants.DefaultUseSingleDumpLog);
             ReadStreamingBankToMemory = Preferences.Get("ReadStreamingBankToMemory", DefaultStreamingBankToMemory);
@@ -2334,55 +2336,66 @@ namespace GnollHackX
         public static bool PostingDiagnosticData { get; set; }
         public static bool PostingXlogEntries { get; set; }
         public static string CustomGameStatusLink { get; set; }
-        public static string CustomXlogRegisterationAddress { get; set; }
-        public static string CustomXlogPostAddress { get; set; }
+        public static string CustomXlogAccountLink { get; set; }
+        public static string CustomXlogPostLink { get; set; }
 
-        public static string GetGameStatusPostAddress()
+        public static string GameStatusPostAddress
         {
-            if (CustomGameStatusLink != null && CustomGameStatusLink != "")
+            get
             {
-                return CustomGameStatusLink;
-            }
-            else
-            {
+                if (CustomGameStatusLink != null && CustomGameStatusLink != "")
+                {
+                    return CustomGameStatusLink;
+                }
+                else
+                {
 #if DEBUG
-                return CurrentUserSecrets.DefaultDiagnosticDataPostAddress;
+                    return CurrentUserSecrets.DefaultDiagnosticDataPostAddress;
 #else
                 return CurrentUserSecrets.DefaultGamePostAddress;
 #endif
+                }
             }
         }
-        public static string GetDiagnosticDataPostAddress()
+        public static string DiagnosticDataPostAddress
         {
-            return CurrentUserSecrets.DefaultDiagnosticDataPostAddress;
-        }
-
-        public static string GetXlogPostAddress()
-        {
-            if (CustomXlogPostAddress != null && CustomXlogPostAddress != "")
+            get
             {
-                return CustomXlogPostAddress;
-            }
-            else
-            {
-                return CurrentUserSecrets.DefaultXlogPostAddress;
+                return CurrentUserSecrets.DefaultDiagnosticDataPostAddress;
             }
         }
 
-        public static string GetXlogRegisterationAddress()
+        public static string XlogPostAddress
         {
-            if (CustomXlogRegisterationAddress != null && CustomXlogRegisterationAddress != "")
+            get
             {
-                return CustomXlogRegisterationAddress;
+                if (CustomXlogPostLink != null && CustomXlogPostLink != "")
+                {
+                    return CustomXlogPostLink;
+                }
+                else
+                {
+                    return CurrentUserSecrets.DefaultXlogPostAddress;
+                }
             }
-            else
+        }
+
+        public static string XlogAccountAddress
+        {
+            get
             {
-                return CurrentUserSecrets.DefaultXlogRegisterationAddress;
+                if (CustomXlogAccountLink != null && CustomXlogAccountLink != "")
+                {
+                    return CustomXlogAccountLink;
+                }
+                else
+                {
+                    return CurrentUserSecrets.DefaultXlogAccountLink;
+                }
             }
         }
 
         public static string XlogUserName { get; set; } = "";
-        public static string XlogEmail { get; set; } = "";
         public static string XlogPassword { get; set; } = "";
         public static string XlogAntiForgeryToken 
         {
