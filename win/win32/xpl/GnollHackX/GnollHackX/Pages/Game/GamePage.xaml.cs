@@ -2686,6 +2686,12 @@ namespace GnollHackX.Pages.Game
                         content4.Headers.ContentDisposition = cdhv4;
                         multicontent.Add(content4);
 
+                        StringContent content2 = new StringContent(xlogentry_string, Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
+                        cdhv2.Name = "XLogEntry";
+                        content2.Headers.ContentDisposition = cdhv2;
+                        multicontent.Add(content2);
+
                         foreach (ForumPostAttachment attachment in _xlogPostAttachments)
                         {
                             string fullFilePath = attachment.FullPath;
@@ -2713,6 +2719,7 @@ namespace GnollHackX.Pages.Game
                             }
                         }
                         content1.Dispose();
+                        content2.Dispose();
                         content3.Dispose();
                         content4.Dispose();
                         multicontent.Dispose();
