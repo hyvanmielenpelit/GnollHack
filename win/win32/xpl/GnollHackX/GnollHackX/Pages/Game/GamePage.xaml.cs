@@ -19,6 +19,8 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Collections;
 using System.Data;
+using System.Xml.Linq;
+
 
 
 #if GNH_MAUI
@@ -3851,7 +3853,7 @@ namespace GnollHackX.Pages.Game
                     textPaint.Typeface = GHApp.LatoBold;
                     textPaint.TextSize = 26;
                     textWidth = textPaint.MeasureText(str, ref textBounds);
-                    yText = -textPaint.FontMetrics.Ascent + 5 + (ShowFPS ? textPaint.FontSpacing : 0);
+                    yText = -textPaint.FontMetrics.Ascent + 5; // + (ShowFPS ? textPaint.FontSpacing : 0);
                     xText = canvaswidth - textWidth - 5;
                     textPaint.Color = SKColors.Black.WithAlpha(128);
                     float textmargin = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
@@ -15442,20 +15444,48 @@ namespace GnollHackX.Pages.Game
 
                 if (ShowFPS)
                 {
-                    string str;
-                    float textWidth, xText, yText;
+                    //string str;
+                    //float textWidth, xText, yText;
 
+                    //lock (_fpslock)
+                    //{
+                    //    str = "FPS: " + string.Format("{0:0.0}", _fps) + ", D:" + _counterValueDiff;
+                    //}
+                    //textPaint.Typeface = GHApp.LatoBold;
+                    //textPaint.TextSize = 26;
+                    //textPaint.Color = SKColors.Yellow;
+                    //textWidth = textPaint.MeasureText(str);
+                    //yText = -textPaint.FontMetrics.Ascent + 5;
+                    //xText = canvaswidth - textWidth - 5;
+                    //canvas.DrawText(str, xText, yText, textPaint);
+
+                    float textscale = GetTextScale();
+                    textPaint.TextSize = _statusbar_basefontsize * textscale;
+                    float target_scale = textPaint.FontSpacing / GHApp._statusWizardBitmap.Height; // All are 64px high
+                    float target_width = target_scale * GHApp._fpsBitmap.Width;
+                    float target_height = target_scale * GHApp._fpsBitmap.Height;
+                    float curx = canvaswidth - target_width - 5;
+                    float cury = 5;
+                    SKRect statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                    canvas.DrawBitmap(GHApp._fpsBitmap, statusDest, textPaint);
+
+                    string drawtext;
                     lock (_fpslock)
                     {
-                        str = "FPS: " + string.Format("{0:0.0}", _fps) + ", D:" + _counterValueDiff;
+                        drawtext = string.Format("{0:0.0}", _fps);
                     }
-                    textPaint.Typeface = GHApp.LatoBold;
-                    textPaint.TextSize = 26;
-                    textPaint.Color = SKColors.Yellow;
-                    textWidth = textPaint.MeasureText(str);
-                    yText = -textPaint.FontMetrics.Ascent + 5;
-                    xText = canvaswidth - textWidth - 5;
-                    canvas.DrawText(str, xText, yText, textPaint);
+
+                    const int topMargin = 4, bottomMargin = 16;
+                    textPaint.Color = SKColors.White;
+                    textPaint.TextSize = _statusbar_diffontsize * textscale;
+                    textPaint.TextAlign = SKTextAlign.Center;
+                    float vsize = target_height - (topMargin + bottomMargin) * target_scale;
+                    float fsize = textPaint.FontSpacing;
+                    float vpadding = (vsize - fsize) / 2;
+                    SKPoint drawpoint = new SKPoint(curx + target_width / 2, cury + (topMargin * target_scale) + vpadding - textPaint.FontMetrics.Ascent);
+                    canvas.DrawText(drawtext, drawpoint, textPaint);
+                    textPaint.TextAlign = SKTextAlign.Left;
+                    textPaint.TextSize = _statusbar_basefontsize * textscale;
                 }
             }
             lock (_commandFPSCounterLock)
