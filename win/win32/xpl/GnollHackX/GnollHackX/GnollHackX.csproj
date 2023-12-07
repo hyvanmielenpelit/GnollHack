@@ -112,6 +112,7 @@
     <None Remove="Assets\UI\fight.png" />
     <None Remove="Assets\UI\fire.png" />
     <None Remove="Assets\UI\forcelock.png" />
+    <None Remove="Assets\UI\fps.png" />
     <None Remove="Assets\UI\frame-horizontal.png" />
     <None Remove="Assets\UI\frame-topleft-small.png" />
     <None Remove="Assets\UI\frame-topleft.png" />
@@ -284,6 +285,7 @@
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits.png" />
     <EmbeddedResource Include="Assets\UI\autostash.png" />
     <EmbeddedResource Include="Assets\UI\battery-frame.png" />
+    <EmbeddedResource Include="Assets\UI\fps.png" />
     <EmbeddedResource Include="Assets\UI\frame2-horizontal.png" />
     <EmbeddedResource Include="Assets\UI\frame2-topleft-small.png" />
     <EmbeddedResource Include="Assets\UI\frame2-topleft.png" />

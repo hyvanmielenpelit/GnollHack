@@ -134,6 +134,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\Pages\Game\GameMenuPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\MainPage.xaml.cs" />
 		<None Remove="Assets\UI\battery-frame.png" />
+		<None Remove="Assets\UI\fps.png" />
 		<None Remove="Assets\UI\frame2-horizontal.png" />
 		<None Remove="Assets\UI\frame2-topleft-small.png" />
 		<None Remove="Assets\UI\frame2-topleft.png" />
@@ -579,6 +580,7 @@
 	  <EmbeddedResource Include="Assets\UI\fight.png" />
 	  <EmbeddedResource Include="Assets\UI\fire.png" />
 	  <EmbeddedResource Include="Assets\UI\forcelock.png" />
+	  <EmbeddedResource Include="Assets\UI\fps.png" />
 	  <EmbeddedResource Include="Assets\UI\frame-horizontal.png" />
 	  <EmbeddedResource Include="Assets\UI\frame-topleft-small.png" />
 	  <EmbeddedResource Include="Assets\UI\frame-topleft.png" />

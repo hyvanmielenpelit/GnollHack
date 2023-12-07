@@ -3861,24 +3861,24 @@ namespace GnollHackX.Pages.Game
                     canvas.DrawText(str, xText, yText, textPaint);
                 }
 
-                if (ShowFPS)
-                {
-                    lock (_fpslock)
-                    {
-                        str = "FPS: " + string.Format("{0:0.0}", _fps) + ", D:" + _counterValueDiff;
-                    }
-                    textPaint.Typeface = GHApp.LatoBold;
-                    textPaint.TextSize = 26;
-                    textWidth = textPaint.MeasureText(str, ref textBounds);
-                    yText = -textPaint.FontMetrics.Ascent + 5.0f;
-                    xText = canvaswidth - textWidth - 5.0f;
-                    textPaint.Color = SKColors.Black.WithAlpha(128);
-                    float textmargin = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
-                    SKRect bkrect = new SKRect(xText - textmargin, 5.0f - textmargin, xText + textWidth + textmargin, 5.0f - textmargin + textPaint.FontSpacing);
-                    canvas.DrawRect(bkrect, textPaint);
-                    textPaint.Color = SKColors.Yellow;
-                    canvas.DrawText(str, xText, yText, textPaint);
-                }
+                //if (ShowFPS)
+                //{
+                //    lock (_fpslock)
+                //    {
+                //        str = "FPS: " + string.Format("{0:0.0}", _fps) + ", D:" + _counterValueDiff;
+                //    }
+                //    textPaint.Typeface = GHApp.LatoBold;
+                //    textPaint.TextSize = 26;
+                //    textWidth = textPaint.MeasureText(str, ref textBounds);
+                //    yText = -textPaint.FontMetrics.Ascent + 5.0f;
+                //    xText = canvaswidth - textWidth - 5.0f;
+                //    textPaint.Color = SKColors.Black.WithAlpha(128);
+                //    float textmargin = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                //    SKRect bkrect = new SKRect(xText - textmargin, 5.0f - textmargin, xText + textWidth + textmargin, 5.0f - textmargin + textPaint.FontSpacing);
+                //    canvas.DrawRect(bkrect, textPaint);
+                //    textPaint.Color = SKColors.Yellow;
+                //    canvas.DrawText(str, xText, yText, textPaint);
+                //}
 
                 //if (ShowBattery)
                 //{
@@ -8992,17 +8992,19 @@ namespace GnollHackX.Pages.Game
                                 curx += print_width;
                             }
 
+                            float batteryleft = dungeonleft;
                             double chargeLevel = GHApp.BatteryChargeLevel;
                             float chargePercentage = (float)chargeLevel / 100;
                             if (ShowBattery || chargePercentage <= GHConstants.CriticalBatteryChargeLevel)
                             {
                                 target_width = target_scale * GHApp._batteryFrameBitmap.Width;
                                 target_height = target_scale * GHApp._batteryFrameBitmap.Height;
-                                curx = dungeonleft - innerspacing * 3 - target_width;
+                                curx = dungeonleft - innerspacing * 5 - target_width;
                                 statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
                                 canvas.DrawBitmap(GHApp._batteryFrameBitmap, statusDest, textPaint);
-                                int alen = _shineAnimation.Length;
+                                batteryleft = curx;
 
+                                int alen = _shineAnimation.Length;
                                 if (chargePercentage <= GHConstants.CriticalBatteryChargeLevel)
                                 {
                                     textPaint.Color = _magicShineOutlineColor.WithAlpha((byte)(_shineAnimation[generalcountervalue % alen] * 255));
@@ -9042,6 +9044,34 @@ namespace GnollHackX.Pages.Game
                                 textPaint.Color = SKColors.White;
 
                                 curx += target_width;
+                            }
+
+                            if(ShowFPS)
+                            {
+                                target_width = target_scale * GHApp._fpsBitmap.Width;
+                                target_height = target_scale * GHApp._fpsBitmap.Height;
+                                curx = batteryleft - innerspacing * 5 - target_width;
+                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                canvas.DrawBitmap(GHApp._fpsBitmap, statusDest, textPaint);
+                                batteryleft = curx;
+
+                                string drawtext;
+                                lock (_fpslock)
+                                {
+                                    drawtext = string.Format("{0:0.0}", _fps);
+                                }
+
+                                const int topMargin = 4, bottomMargin = 16;
+                                textPaint.Color = SKColors.White;
+                                textPaint.TextSize = diffontsize;
+                                textPaint.TextAlign = SKTextAlign.Center;
+                                float vsize = target_height - (topMargin + bottomMargin) * target_scale;
+                                float fsize = textPaint.FontSpacing;
+                                float vpadding = (vsize - fsize) / 2;
+                                SKPoint drawpoint = new SKPoint(curx + target_width / 2, cury + (topMargin * target_scale) + vpadding - textPaint.FontMetrics.Ascent);
+                                canvas.DrawText(drawtext, drawpoint, textPaint);
+                                textPaint.TextAlign = SKTextAlign.Left;
+                                textPaint.TextSize = basefontsize;
                             }
 
                             /* Pets */

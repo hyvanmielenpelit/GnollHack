@@ -1091,6 +1091,7 @@ namespace GnollHackX
 
         public static SKBitmap _batteryFrameBitmap;
         public static SKBitmap _batteryRedFrameBitmap;
+        public static SKBitmap _fpsBitmap;
 
         public static SKBitmap _statusWizardBitmap;
         public static SKBitmap _statusCasualBitmap;
@@ -1573,6 +1574,12 @@ namespace GnollHackX
             {
                 _batteryFrameBitmap = SKBitmap.Decode(stream);
                 _batteryFrameBitmap.SetImmutable();
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.fps.png"))
+            {
+                _fpsBitmap = SKBitmap.Decode(stream);
+                _fpsBitmap.SetImmutable();
             }
 
             using (SKPaint bmpPaint = new SKPaint())
