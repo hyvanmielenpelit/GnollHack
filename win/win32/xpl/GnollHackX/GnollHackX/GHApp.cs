@@ -2376,14 +2376,20 @@ namespace GnollHackX
         {
             get
             {
+                string address;
                 if (CustomXlogPostLink != null && CustomXlogPostLink != "")
                 {
-                    return CustomXlogPostLink;
+                    address = CustomXlogPostLink;
                 }
                 else
                 {
-                    return CurrentUserSecrets.DefaultXlogPostAddress;
+                    address = CurrentUserSecrets.DefaultXlogPostAddress;
                 }
+#if DEBUG
+                return address?.Replace("https://", "https://test-");
+#else
+                return address;
+#endif
             }
         }
 
