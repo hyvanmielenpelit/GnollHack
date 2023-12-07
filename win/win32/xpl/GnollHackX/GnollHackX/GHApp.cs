@@ -2397,14 +2397,20 @@ namespace GnollHackX
         {
             get
             {
+                string address;
                 if (CustomXlogAccountLink != null && CustomXlogAccountLink != "")
                 {
-                    return CustomXlogAccountLink;
+                    address = CustomXlogAccountLink;
                 }
                 else
                 {
-                    return CurrentUserSecrets.DefaultXlogAccountLink;
+                    address = CurrentUserSecrets.DefaultXlogAccountLink;
                 }
+#if DEBUG
+                return address?.Replace("https://", "https://test-");
+#else
+                return address;
+#endif
             }
         }
 
