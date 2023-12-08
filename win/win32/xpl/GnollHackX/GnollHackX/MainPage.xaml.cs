@@ -38,7 +38,17 @@ namespace GnollHackX
 {
     public partial class MainPage : ContentPage
     {
-        public bool GameStarted { get; set; }
+        private object _gameStartedLock = new object();
+        private bool _gameStarted = false;
+        public bool GameStarted { get { lock (_gameStartedLock) { return _gameStarted; } } set { lock (_gameStartedLock) { _gameStarted = value; } } }
+
+        private object _generalTimerLock = new object();
+        private bool _generaTimerIsOn = false;
+        public bool GeneralTimerIsOn { get { lock (_generalTimerLock) { return _generaTimerIsOn; } } set { lock (_generalTimerLock) { _generaTimerIsOn = value; } } }
+
+        private object _stopGeneralTimerLock = new object();
+        private bool _stopGeneraTimerIsOn = false;
+        public bool StopGeneralTimer { get { lock (_stopGeneralTimerLock) { return _stopGeneraTimerIsOn; } } set { lock (_stopGeneralTimerLock) { _stopGeneraTimerIsOn = value; } } }
 
         public MainPage()
         {
@@ -49,6 +59,126 @@ namespace GnollHackX
 #else
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
 #endif
+        }
+
+        public void StartGeneralTimer()
+        {
+            if(!GeneralTimerIsOn)
+            {
+                GeneralTimerIsOn = true;
+                Device.StartTimer(TimeSpan.FromSeconds(5), () =>
+                {
+                    if (GameStarted || StopGeneralTimer)
+                    {
+                        GeneralTimerIsOn = false;
+                        StopGeneralTimer = false;
+                        return false;
+                    }
+
+                    GeneralTimerTasks();
+                    return true;
+                });
+            }
+        }
+
+        private void GeneralTimerTasks()
+        {
+            ProcessPostQueues();
+        }
+
+        private void ProcessPostQueues()
+        {
+            if(GHApp.HasInternetAccess)
+            {
+                string directory = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
+                string directory2 = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
+                bool has_files = Directory.Exists(directory) && Directory.GetFiles(directory)?.Length > 0;
+                bool has_files2 = Directory.Exists(directory2) && Directory.GetFiles(directory2)?.Length > 0;
+                if(!has_files && !has_files2)
+                {
+                    StopGeneralTimer = true;
+                }
+                else
+                {
+                    if (has_files)
+                        ProcessPostQueue(false, directory, GHConstants.ForumPostFileNamePrefix);
+                    if (has_files2)
+                        ProcessPostQueue(true, directory2, GHConstants.XlogPostFileNamePrefix);
+                }
+            }
+        }
+
+        private async void ProcessPostQueue(bool isxlog, string dir, string fileprefix)
+        {
+            if(dir != null && Directory.Exists(dir))
+            {
+                string[] filepaths = Directory.GetFiles(dir);
+                if (filepaths != null)
+                {
+                    Debug.WriteLine("ProcessPostQueue in " + dir + ": " + filepaths.Length);
+                    foreach (string str in filepaths)
+                    {
+                        Debug.WriteLine(str);
+                    }
+                    foreach (string filepath in filepaths)
+                    {
+                        if (filepath != null)
+                        {
+                            FileInfo fileinfo = new FileInfo(filepath);
+                            if (fileinfo != null && fileinfo.Exists && (fileprefix == null || fileprefix == "" || fileinfo.Name.StartsWith(fileprefix)))
+                            {
+                                ForumPost post = null;
+                                try
+                                {
+                                    string json = "";
+                                    using (Stream stream = File.OpenRead(filepath))
+                                    {
+                                        if (stream != null)
+                                        {
+                                            using (StreamReader sr = new StreamReader(stream))
+                                            {
+                                                json = sr.ReadToEnd();
+                                            }
+                                            post = JsonConvert.DeserializeObject<ForumPost>(json);
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine(ex.Message);
+                                    File.Delete(filepath); // Assume corrupted
+                                    post = null;
+                                }
+
+                                if (post != null)
+                                {
+                                    try
+                                    {
+                                        bool res;
+
+                                        if (isxlog)
+                                            res = await GHApp.SendXlogFile(post.status_string, post.status_type, post.status_datatype, post.attachments, true);
+                                        else
+                                            res = await GHApp.SendForumPost(post.is_game_status, post.status_string, post.status_type, post.status_datatype, post.attachments, true);
+
+                                        if (res)
+                                        {
+                                            Debug.WriteLine((isxlog ? "XLogFile" : "Forum post") + " was sent successfully: " + filepath);
+                                            File.Delete(filepath);
+                                        }
+                                        else
+                                            Debug.WriteLine("Sending " + (isxlog ? "XLogFile" : "forum post") + " failed: " + filepath);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine(ex.Message);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public void ActivateLocalGameButton()
@@ -106,7 +236,7 @@ namespace GnollHackX
                     {
                         await DisplayAlert("Invalid Animator Duration Scale",
                             "GnollHack has detected invalid animator settings. If your device has a setting named \"Remove Animations\" under Settings -> Accessibility -> Visibility Enhancements, this setting must be set to Off. If your device does not have this setting, please manually adjust the value of \"Animator duration scale\" to 1x under Settings -> Developer Options -> Animator duration scale. ", "OK");
-                        CloseApp();
+                        await CloseApp();
                     }
                     else
                     {
@@ -120,7 +250,7 @@ namespace GnollHackX
                             else
                                 await DisplayAlert("Invalid Animator Duration Scale",
                                     "GnollHack failed to automatically adjust Animator Duration Scale and it has become turned Off. Please check that the value is 1x under Settings -> Developer Options -> Animator duration scale. If your device has a setting named \"Remove Animations\" under Settings -> Accessibility -> Visibility Enhancements, this setting needs to be disabled, too.", "OK");
-                            CloseApp();
+                            await CloseApp();
                         }
                         else if (scalecurrent == -1.0f)
                         {
@@ -176,7 +306,10 @@ namespace GnollHackX
 
             UpperButtonGrid.IsEnabled = true;
             LogoGrid.IsEnabled = true;
+
+            StartGeneralTimer();
         }
+
         public async Task InitializeServices()
         {
             bool resetFiles = Preferences.Get("ResetAtStart", true);
@@ -492,7 +625,7 @@ namespace GnollHackX
             //await Task.WhenAll(tasklist2);
         }
 
-        private void ExitAppButton_Clicked(object sender, EventArgs e)
+        private async void ExitAppButton_Clicked(object sender, EventArgs e)
         {
             UpperButtonGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -514,14 +647,15 @@ namespace GnollHackX
             }
             else
             {
-                CloseApp();
+                await CloseApp();
             }
         }
 
-        private void CloseApp()
+        private async Task CloseApp()
         {
             GHApp.PlatformService.CloseApplication();
-            Thread.Sleep(75);
+            await Task.Delay(75);
+            //Thread.Sleep(75);
             System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
 
@@ -650,30 +784,14 @@ namespace GnollHackX
 
         private void ClassicModeSwitch_Toggled(object sender, ToggledEventArgs e)
         {
-            GHApp.ClassicMode = classicModeSwitch.IsToggled;
+            GHApp.ClassicMode = e.Value;
             Preferences.Set("ClassicMode", GHApp.ClassicMode);
-            if(classicModeSwitch.IsToggled)
-            {
-
-            }
-            else
-            {
-                //wizardModeSwitch.IsToggled = false;
-            }
         }
 
         private void CasualModeSwitch_Toggled(object sender, ToggledEventArgs e)
         {
-            GHApp.CasualMode = casualModeSwitch.IsToggled;
+            GHApp.CasualMode = e.Value;
             Preferences.Set("CasualMode", GHApp.CasualMode);
-            if (casualModeSwitch.IsToggled)
-            {
-                //wizardModeSwitch.IsToggled = false;
-            }
-            else
-            {
-
-            }
         }
 
         private enum popup_style
@@ -693,7 +811,7 @@ namespace GnollHackX
                     await Task.Delay(50);
                 }
 
-                CloseApp();
+                await CloseApp();
             }
             PopupGrid.IsVisible = false;
         }
@@ -730,15 +848,7 @@ namespace GnollHackX
 
         private void wizardModeSwitch_Toggled(object sender, ToggledEventArgs e)
         {
-            if (wizardModeSwitch.IsToggled)
-            {
-                //classicModeSwitch.IsToggled = true;
-                //casualModeSwitch.IsToggled = false;
-            }
-            else
-            {
 
-            }
         }
 
         private void PopupLabelTapGestureRecognizer_Tapped(object sender, EventArgs e)

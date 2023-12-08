@@ -12,6 +12,8 @@ using System.Net.Http.Headers;
 using System.Net.Http;
 
 using System.Threading;
+using System.Text.RegularExpressions;
+
 
 
 #if GNH_MAUI
@@ -37,6 +39,8 @@ namespace GnollHackX.Pages.MainScreen
         private GameMenuPage _gameMenuPage;
         private MainPage _mainPage;
         private bool _doChangeVolume = false;
+        public Regex XlogUserNameValidationExpression { get; set; }
+
         public SettingsPage(GameMenuPage gameMenuPage, MainPage mainPage)
         {
             InitializeComponent();
@@ -77,6 +81,8 @@ namespace GnollHackX.Pages.MainScreen
             SimpleCommandBarButton4Picker.ItemDisplayBinding = new Binding("Name");
             SimpleCommandBarButton5Picker.ItemDisplayBinding = new Binding("Name");
             SimpleCommandBarButton6Picker.ItemDisplayBinding = new Binding("Name");
+
+            XlogUserNameValidationExpression = new Regex(@"^[A-Za-z0-9_]{1,31}$");
 
             SetInitialValues();
 
@@ -381,7 +387,7 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage.LighterDarkening = LighterDarkeningSwitch.IsToggled;
             Preferences.Set("LighterDarkening", LighterDarkeningSwitch.IsToggled);
 
-            if (MainSection.Contains(AlternativeDrawingViewCell))
+            if (AlternativeDrawingStackLayout.IsVisible)
             {
                 if (_gamePage != null)
                     _gamePage.AlternativeLayerDrawing = AlternativeLayerDrawingSwitch.IsToggled;
@@ -559,8 +565,7 @@ namespace GnollHackX.Pages.MainScreen
                 NavBarSwitch.IsEnabled = false;
                 NavBarLabel.IsEnabled = false;
                 NavBarLabel.TextColor = GHColors.Gray;
-                if (MainSection.Contains(NavBarViewCell))
-                    MainSection.Remove(NavBarViewCell);
+                NavBarStackLayout.IsVisible = false;
             }
             StatusBarSwitch.IsToggled = statusbar;
             if (!GHApp.IsiOS)
@@ -568,8 +573,7 @@ namespace GnollHackX.Pages.MainScreen
                 StatusBarSwitch.IsEnabled = false;
                 StatusBarLabel.IsEnabled = false;
                 StatusBarLabel.TextColor = GHColors.Gray;
-                if (MainSection.Contains(StatusBarViewCell))
-                    MainSection.Remove(StatusBarViewCell);
+                StatusBarStackLayout.IsVisible = false;
             }
             DeveloperSwitch.IsToggled = devmode;
             LogMessageSwitch.IsToggled = logmessages;
@@ -827,6 +831,14 @@ namespace GnollHackX.Pages.MainScreen
         {
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
+            if (PostXlogUserNameEntry.Text != null && PostXlogUserNameEntry.Text != "" && !XlogUserNameValidationExpression.IsMatch(PostXlogUserNameEntry.Text))
+            {
+                PostXlogUserNameLabel.TextColor = Color.Red;
+                await MainScrollView.ScrollToAsync(PostXlogUserNameStackLayout.X, PostXlogUserNameStackLayout.Y, true);
+                PostXlogUserNameEntry.Focus();
+                CloseButton.IsEnabled = true;
+                return;
+            }
             await MaybeShowPleaseWait();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }

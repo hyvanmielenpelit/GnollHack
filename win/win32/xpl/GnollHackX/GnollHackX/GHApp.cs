@@ -16,6 +16,10 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Concurrent;
+using System.Net.Http.Headers;
+using System.Net.Http;
+using System.Text;
+using System.Threading;
 
 namespace GnollHackX
 {
@@ -32,6 +36,9 @@ namespace GnollHackX
             _batteryChargeLevel = Battery.ChargeLevel;
             _batteryChargeLevelTimeStamp = DateTime.Now;
             Battery.BatteryInfoChanged += Battery_BatteryInfoChanged;
+
+            _networkAccessState = Connectivity.NetworkAccess;
+            Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
 
             TotalMemory = GHApp.PlatformService.GetDeviceMemoryInBytes();
 
@@ -69,6 +76,18 @@ namespace GnollHackX
             AppSwitchSaveStyle = Preferences.Get("AppSwitchSaveStyle", 0);
 
             BackButtonPressed += EmptyBackButtonPressed;
+        }
+
+        private static object _networkAccessLock = new object();
+        private static NetworkAccess _networkAccessState = NetworkAccess.None;
+        public static bool HasInternetAccess { get { lock (_networkAccessLock) { return _networkAccessState == NetworkAccess.Internet; } } }
+
+        private static void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
+        {
+            lock(_networkAccessLock)
+            {
+                _networkAccessState = e.NetworkAccess;
+            }
         }
 
         public static ulong TotalMemory { get; set; }
@@ -2683,6 +2702,266 @@ namespace GnollHackX
                 return false;
             }
         }
+
+        public static async Task<bool> SendXlogFile(string xlogentry_string, int status_type, int status_datatype, List<ForumPostAttachment> xlogattachments, bool is_from_queue)
+        {
+            bool res = false;
+            try
+            {
+                string postaddress = XlogPostAddress;
+                if (postaddress != null && postaddress.Length > 8 && postaddress.Substring(0, 8) == "https://" && Uri.IsWellFormedUriString(postaddress, UriKind.Absolute))
+                {
+                    using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
+                    {
+                        MultipartFormDataContent multicontent = new MultipartFormDataContent("-------------------boundary");
+
+                        StringContent content1 = new StringContent(XlogUserName, Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhv1 = new ContentDispositionHeaderValue("form-data");
+                        cdhv1.Name = "UserName";
+                        content1.Headers.ContentDisposition = cdhv1;
+                        multicontent.Add(content1);
+
+                        StringContent content3 = new StringContent(XlogPassword, Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhv3 = new ContentDispositionHeaderValue("form-data");
+                        cdhv3.Name = "Password";
+                        content3.Headers.ContentDisposition = cdhv3;
+                        multicontent.Add(content3);
+
+                        StringContent content4 = new StringContent(XlogAntiForgeryToken, Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhv4 = new ContentDispositionHeaderValue("form-data");
+                        cdhv4.Name = "AntiForgeryToken";
+                        content4.Headers.ContentDisposition = cdhv4;
+                        multicontent.Add(content4);
+
+                        StringContent content2 = new StringContent(xlogentry_string, Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
+                        cdhv2.Name = "XLogEntry";
+                        content2.Headers.ContentDisposition = cdhv2;
+                        multicontent.Add(content2);
+
+                        if (xlogattachments != null)
+                        {
+                            foreach (ForumPostAttachment attachment in xlogattachments)
+                            {
+                                string fullFilePath = attachment.FullPath;
+                                bool fileexists = File.Exists(fullFilePath);
+                                if (fileexists)
+                                {
+                                    FileInfo fileinfo = new FileInfo(fullFilePath);
+                                    string filename = fileinfo.Name;
+                                    var stream = new FileStream(fullFilePath, FileMode.Open);
+                                    StreamContent content5 = new StreamContent(stream);
+                                    ContentDispositionHeaderValue cdhv5 = new ContentDispositionHeaderValue("form-data");
+                                    cdhv5.Name = attachment.ContentType == "text/plain" ? "PlainTextDumplog" : attachment.ContentType == "text/html" ? "HtmlDumplog" : "GameData";
+                                    content5.Headers.ContentDisposition = cdhv5;
+                                    multicontent.Add(content5);
+                                }
+                            }
+                        }
+                        using (var cts = new CancellationTokenSource())
+                        {
+                            cts.CancelAfter(xlogattachments == null || xlogattachments.Count == 0 ? 10000 : 120000);
+                            string responseContent = "";
+                            using (HttpResponseMessage response = await client.PostAsync(postaddress, multicontent, cts.Token))
+                            {
+                                responseContent = await response.Content.ReadAsStringAsync();
+                                Debug.WriteLine(responseContent);
+                                res = response.IsSuccessStatusCode;
+                                if (!res && !is_from_queue)
+                                {
+                                    string targetpath = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
+                                    if (!Directory.Exists(targetpath))
+                                        GHApp.CheckCreateDirectory(targetpath);
+                                    if (Directory.Exists(targetpath))
+                                    {
+                                        string targetfilename;
+                                        string targetfilepath;
+                                        int id = 0;
+                                        do
+                                        {
+                                            targetfilename = GHConstants.XlogPostFileNamePrefix + id + GHConstants.XlogPostFileNameSuffix;
+                                            targetfilepath = Path.Combine(targetpath, targetfilename);
+                                            id++;
+                                        } while (File.Exists(targetfilepath));
+
+                                        using (StreamWriter sw = File.CreateText(targetfilepath))
+                                        {
+                                            ForumPost fp = new ForumPost(true, status_type, status_datatype, xlogentry_string, xlogattachments != null ? xlogattachments : new List<ForumPostAttachment>());
+                                            string json = JsonConvert.SerializeObject(fp);
+                                            Debug.WriteLine(json);
+                                            sw.Write(json);
+                                        }
+                                        string[] filepaths = Directory.GetFiles(targetpath);
+                                        if (filepaths != null)
+                                        {
+                                            Debug.WriteLine("Files in " + targetpath + ": " + filepaths.Length);
+                                            foreach (string str in filepaths)
+                                            {
+                                                Debug.WriteLine(str);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        content1.Dispose();
+                        content2.Dispose();
+                        content3.Dispose();
+                        content4.Dispose();
+                        multicontent.Dispose();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+            if (res && xlogattachments != null)
+            {
+                foreach (var attachment in xlogattachments)
+                {
+                    if (attachment.IsTemporary)
+                    {
+                        try
+                        {
+                            File.Delete(attachment.FullPath);
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine(e.Message);
+                        }
+                    }
+                }
+            }
+            return res;
+        }
+        public static async Task<bool> SendForumPost(bool is_game_status, string message, int status_type, int status_datatype, List<ForumPostAttachment> forumpostattachments, bool is_from_queue)
+        {
+            bool res = false;
+            try
+            {
+                string postaddress = is_game_status ? GHApp.GameStatusPostAddress : GHApp.DiagnosticDataPostAddress;
+                if (postaddress != null && postaddress.Length > 8 && postaddress.Substring(0, 8) == "https://" && Uri.IsWellFormedUriString(postaddress, UriKind.Absolute))
+                {
+                    using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
+                    {
+                        HttpContent content = null;
+                        if (forumpostattachments != null && forumpostattachments.Count > 0)
+                        {
+                            DiscordWebHookPostWithAttachment post = new DiscordWebHookPostWithAttachment(message);
+                            foreach (ForumPostAttachment attachment in forumpostattachments)
+                            {
+                                string fullFilePath = attachment.FullPath;
+                                FileInfo fileinfo = new FileInfo(fullFilePath);
+                                string filename = fileinfo.Name;
+                                if (File.Exists(fullFilePath))
+                                    post.AddAttachment(attachment.Description, filename);
+                            }
+                            string json = JsonConvert.SerializeObject(post);
+                            MultipartFormDataContent multicontent = new MultipartFormDataContent("-------------------boundary");
+                            StringContent content1 = new StringContent(json, Encoding.UTF8, "application/json");
+                            ContentDispositionHeaderValue cdhv = new ContentDispositionHeaderValue("form-data");
+                            cdhv.Name = "payload_json";
+                            content1.Headers.ContentDisposition = cdhv;
+                            multicontent.Add(content1);
+                            int aidx = 0;
+                            foreach (ForumPostAttachment attachment in forumpostattachments)
+                            {
+                                string fullFilePath = attachment.FullPath;
+                                bool fileexists = File.Exists(fullFilePath);
+                                if (fileexists)
+                                {
+                                    FileInfo fileinfo = new FileInfo(fullFilePath);
+                                    string filename = fileinfo.Name;
+                                    var stream = new FileStream(fullFilePath, FileMode.Open);
+                                    StreamContent content2 = new StreamContent(stream);
+                                    //byte[] bytes = new byte[stream.Length];
+                                    //int bytesread = await stream.ReadAsync(bytes, 0, bytes.Length);
+                                    //ByteArrayContent content2 = new ByteArrayContent(bytes);
+                                    ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
+                                    cdhv2.Name = "files[" + aidx + "]";
+                                    cdhv2.FileName = filename;
+                                    content2.Headers.ContentDisposition = cdhv2;
+                                    content2.Headers.ContentType = new MediaTypeHeaderValue(attachment.ContentType);
+                                    multicontent.Add(content2);
+                                    aidx++;
+                                }
+                            }
+                            content = multicontent;
+                        }
+                        else
+                        {
+                            DiscordWebHookPost post = new DiscordWebHookPost(message);
+                            string json = JsonConvert.SerializeObject(post);
+                            content = new StringContent(json, Encoding.UTF8, "application/json");
+                        }
+
+                        using (var cts = new CancellationTokenSource())
+                        {
+                            cts.CancelAfter(is_game_status || forumpostattachments == null || forumpostattachments.Count == 0 ? 10000 : 120000);
+                            string responseContent = "";
+                            using (HttpResponseMessage response = await client.PostAsync(postaddress, content, cts.Token))
+                            {
+                                responseContent = await response.Content.ReadAsStringAsync();
+                                Debug.WriteLine(responseContent);
+                                res = response.IsSuccessStatusCode;
+                                if (!res && !is_from_queue)
+                                {
+                                    string targetpath = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
+                                    if (!Directory.Exists(targetpath))
+                                        GHApp.CheckCreateDirectory(targetpath);
+                                    if (Directory.Exists(targetpath))
+                                    {
+                                        string targetfilename;
+                                        string targetfilepath;
+                                        int id = 0;
+                                        do
+                                        {
+                                            targetfilename = GHConstants.ForumPostFileNamePrefix + id + GHConstants.ForumPostFileNameSuffix;
+                                            targetfilepath = Path.Combine(targetpath, targetfilename);
+                                            id++;
+                                        } while (File.Exists(targetfilepath));
+
+                                        using (StreamWriter sw = File.CreateText(targetfilepath))
+                                        {
+                                            ForumPost fp = new ForumPost(is_game_status, status_type, status_datatype, message, forumpostattachments != null ? forumpostattachments : new List<ForumPostAttachment>());
+                                            string json = JsonConvert.SerializeObject(fp);
+                                            sw.Write(json);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        content.Dispose();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
+            if(forumpostattachments != null)
+            {
+                foreach (var attachment in forumpostattachments)
+                {
+                    if (attachment.IsTemporary)
+                    {
+                        try
+                        {
+                            File.Delete(attachment.FullPath);
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine(e.Message);
+                        }
+                    }
+                }
+            }
+
+            return res;
+        }
+
     }
 
     class SecretsFileSizeComparer : IComparer<SecretsFile>

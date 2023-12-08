@@ -1595,6 +1595,12 @@ namespace GnollHackX
         public const bool DefaultLighterDarkening = true;
         public const bool DefaultAlternativeLayerDrawing = false;
         public const float CriticalBatteryChargeLevel = 0.15f;
+        public const string ForumPostQueueDirectory = "forumpost";
+        public const string ForumPostFileNamePrefix = "queued_forum_post_";
+        public const string ForumPostFileNameSuffix = ".txt";
+        public const string XlogPostQueueDirectory = "xlogpost";
+        public const string XlogPostFileNamePrefix = "queued_xlog_post_";
+        public const string XlogPostFileNameSuffix = ".txt";
     }
 
     [StructLayout(LayoutKind.Sequential)]

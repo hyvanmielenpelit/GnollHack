@@ -2531,82 +2531,9 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
-            try
-            {
-                string postaddress = is_game_status ? GHApp.GameStatusPostAddress : GHApp.DiagnosticDataPostAddress;
-                if (postaddress != null && postaddress.Length > 8 && postaddress.Substring(0, 8) == "https://" && Uri.IsWellFormedUriString(postaddress, UriKind.Absolute))
-                {
-                    using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
-                    {
-                        HttpContent content = null;
-                        if (_forumPostAttachments.Count > 0)
-                        {
-                            DiscordWebHookPostWithAttachment post = new DiscordWebHookPostWithAttachment(message);
-                            foreach (ForumPostAttachment attachment in _forumPostAttachments)
-                            {
-                                string fullFilePath = attachment.FullPath;
-                                FileInfo fileinfo = new FileInfo(fullFilePath);
-                                string filename = fileinfo.Name;
-                                if (File.Exists(fullFilePath))
-                                    post.AddAttachment(attachment.Description, filename);
-                            }
-                            string json = JsonConvert.SerializeObject(post);
-                            MultipartFormDataContent multicontent = new MultipartFormDataContent("-------------------boundary");
-                            StringContent content1 = new StringContent(json, Encoding.UTF8, "application/json");
-                            ContentDispositionHeaderValue cdhv = new ContentDispositionHeaderValue("form-data");
-                            cdhv.Name = "payload_json";
-                            content1.Headers.ContentDisposition = cdhv;
-                            multicontent.Add(content1);
-                            int aidx = 0;
-                            foreach (ForumPostAttachment attachment in _forumPostAttachments)
-                            {
-                                string fullFilePath = attachment.FullPath;
-                                bool fileexists = File.Exists(fullFilePath);
-                                if (fileexists)
-                                {
-                                    FileInfo fileinfo = new FileInfo(fullFilePath);
-                                    string filename = fileinfo.Name;
-                                    var stream = new FileStream(fullFilePath, FileMode.Open);
-                                    StreamContent content2 = new StreamContent(stream);
-                                    //byte[] bytes = new byte[stream.Length];
-                                    //int bytesread = await stream.ReadAsync(bytes, 0, bytes.Length);
-                                    //ByteArrayContent content2 = new ByteArrayContent(bytes);
-                                    ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
-                                    cdhv2.Name = "files[" + aidx + "]";
-                                    cdhv2.FileName = filename;
-                                    content2.Headers.ContentDisposition = cdhv2;
-                                    content2.Headers.ContentType = new MediaTypeHeaderValue(attachment.ContentType);
-                                    multicontent.Add(content2);
-                                    aidx++;
-                                }
-                            }
-                            content = multicontent;
-                        }
-                        else
-                        {
-                            DiscordWebHookPost post = new DiscordWebHookPost(message);
-                            string json = JsonConvert.SerializeObject(post);
-                            content = new StringContent(json, Encoding.UTF8, "application/json");
-                        }
-
-                        using (var cts = new CancellationTokenSource())
-                        {
-                            cts.CancelAfter(is_game_status || _forumPostAttachments.Count == 0 ? 10000 : 120000);
-                            string jsonResponse = "";
-                            using (HttpResponseMessage response = await client.PostAsync(postaddress, content, cts.Token))
-                            {
-                                jsonResponse = await response.Content.ReadAsStringAsync();
-                                Debug.WriteLine(jsonResponse);
-                            }
-                        }
-                        content.Dispose();
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
+            await GHApp.SendForumPost(is_game_status, message, status_type, status_datatype, _forumPostAttachments, false);
+            _forumPostAttachments.Clear();
+            return;
 
         cleanup:
             foreach(var attachment in _forumPostAttachments)
@@ -2635,9 +2562,6 @@ namespace GnollHackX.Pages.Game
             if (!GHApp.PostingXlogEntries)
                 return;
 
-            if (GHApp.XlogUserName == "")
-                return;
-
             if (xlogentry_string == null || xlogentry_string == "")
             {
                 _xlogPostAttachments.Clear();
@@ -2661,92 +2585,7 @@ namespace GnollHackX.Pages.Game
                 return;
             }
 
-            try
-            {
-                string postaddress = GHApp.XlogPostAddress;
-                if (postaddress != null && postaddress.Length > 8 && postaddress.Substring(0, 8) == "https://" && Uri.IsWellFormedUriString(postaddress, UriKind.Absolute))
-                {
-                    using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
-                    {
-                        MultipartFormDataContent multicontent = new MultipartFormDataContent("-------------------boundary");
-
-                        StringContent content1 = new StringContent(GHApp.XlogUserName, Encoding.UTF8, "text/plain");
-                        ContentDispositionHeaderValue cdhv1 = new ContentDispositionHeaderValue("form-data");
-                        cdhv1.Name = "UserName";
-                        content1.Headers.ContentDisposition = cdhv1;
-                        multicontent.Add(content1);
-
-                        StringContent content3 = new StringContent(GHApp.XlogPassword, Encoding.UTF8, "text/plain");
-                        ContentDispositionHeaderValue cdhv3 = new ContentDispositionHeaderValue("form-data");
-                        cdhv3.Name = "Password";
-                        content3.Headers.ContentDisposition = cdhv3;
-                        multicontent.Add(content3);
-
-                        StringContent content4 = new StringContent(GHApp.XlogAntiForgeryToken, Encoding.UTF8, "text/plain");
-                        ContentDispositionHeaderValue cdhv4 = new ContentDispositionHeaderValue("form-data");
-                        cdhv4.Name = "AntiForgeryToken";
-                        content4.Headers.ContentDisposition = cdhv4;
-                        multicontent.Add(content4);
-
-                        StringContent content2 = new StringContent(xlogentry_string, Encoding.UTF8, "text/plain");
-                        ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
-                        cdhv2.Name = "XLogEntry";
-                        content2.Headers.ContentDisposition = cdhv2;
-                        multicontent.Add(content2);
-
-                        foreach (ForumPostAttachment attachment in _xlogPostAttachments)
-                        {
-                            string fullFilePath = attachment.FullPath;
-                            bool fileexists = File.Exists(fullFilePath);
-                            if (fileexists)
-                            {
-                                FileInfo fileinfo = new FileInfo(fullFilePath);
-                                string filename = fileinfo.Name;
-                                var stream = new FileStream(fullFilePath, FileMode.Open);
-                                StreamContent content5 = new StreamContent(stream);
-                                ContentDispositionHeaderValue cdhv5 = new ContentDispositionHeaderValue("form-data");
-                                cdhv5.Name = attachment.ContentType == "text/plain" ? "PlainTextDumplog" : attachment.ContentType == "text/html" ? "HtmlDumplog" : "GameData";
-                                content5.Headers.ContentDisposition = cdhv5;
-                                multicontent.Add(content5);
-                            }
-                        }
-                        using (var cts = new CancellationTokenSource())
-                        {
-                            cts.CancelAfter(_xlogPostAttachments.Count == 0 ? 10000 : 120000);
-                            string jsonResponse = "";
-                            using (HttpResponseMessage response = await client.PostAsync(postaddress, multicontent, cts.Token))
-                            {
-                                jsonResponse = await response.Content.ReadAsStringAsync();
-                                Debug.WriteLine(jsonResponse);
-                            }
-                        }
-                        content1.Dispose();
-                        content2.Dispose();
-                        content3.Dispose();
-                        content4.Dispose();
-                        multicontent.Dispose();
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
-
-            foreach (var attachment in _xlogPostAttachments)
-            {
-                if (attachment.IsTemporary)
-                {
-                    try
-                    {
-                        File.Delete(attachment.FullPath);
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine(e.Message);
-                    }
-                }
-            }
+            await GHApp.SendXlogFile(xlogentry_string, status_type, status_datatype, _xlogPostAttachments, false);
             _xlogPostAttachments.Clear();
             return;
         }
@@ -3329,6 +3168,7 @@ namespace GnollHackX.Pages.Game
             }
             _mainPage.ActivateLocalGameButton();
             _mainPage.PlayMainScreenVideoAndMusic(); /* Just to be doubly sure */
+            _mainPage.StartGeneralTimer(); /* Just to be doubly sure */
             if (GHApp.GameMuteMode)
                 GHApp.GameMuteMode = false;
             GHApp.CurrentGamePage = null;

@@ -189,7 +189,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             ResetGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            bool answer = await DisplayAlert("Delete All User Data?", "Are you sure to delete all files in the userdata directory?", "Yes", "No");
+            bool answer = await DisplayAlert("Delete All User Data?", "Are you sure to delete all files in the " + GHConstants.UserDataDirectory + " directory?", "Yes", "No");
             if (answer)
             {
                 try
@@ -511,6 +511,36 @@ namespace GnollHackX.Pages.MainScreen
                 await DisplayAlert("Error", "An error occurred while trying to import files: " + ex.Message, "OK");
             }
             ResetGrid.IsEnabled = true;
+        }
+
+        private async void btnDeletePostQueues_Clicked(object sender, EventArgs e)
+        {
+            ResetGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            bool answer = await DisplayAlert("Clear All Post Queues?", "Are you sure to delete all files in the " + GHConstants.ForumPostQueueDirectory + " and " + GHConstants.XlogPostQueueDirectory + " directories?", "Yes", "No");
+            if (answer)
+            {
+                try
+                {
+                    string datadir = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
+                    if (Directory.Exists(datadir))
+                        Directory.Delete(datadir, true);
+
+                    datadir = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
+                    if (Directory.Exists(datadir))
+                        Directory.Delete(datadir, true);
+
+                    btnDeleteUserData.Text = "Done";
+                    btnDeleteUserData.TextColor = GHColors.Red;
+                }
+                catch
+                {
+                    btnDeleteUserData.Text = "Failed";
+                    btnDeleteUserData.TextColor = GHColors.Red;
+                }
+            }
+            ResetGrid.IsEnabled = true;
+
         }
     }
 }
