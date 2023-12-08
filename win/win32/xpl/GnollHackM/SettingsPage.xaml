@@ -19,7 +19,7 @@
                     HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" Margin="0,10,0,0" />
                 <ScrollView x:Name="MainScrollView" Grid.Row="1" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="Fill" BackgroundColor="Transparent" Margin="18,0">
                     <StackLayout>
-                        <Label Text="General" FontSize="20" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
+                        <Label Text="General" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
                             <Label Text="GPU Acceleration"
                                            FontFamily="Underwood" TextColor="Black"
@@ -148,7 +148,7 @@
                             <Switch x:Name="FPSSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
 
-                        <Label Text="Interface" FontSize="20" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
+                        <Label Text="Interface" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Simple Command Layout"
                                            FontFamily="Underwood" TextColor="Black"
@@ -349,7 +349,7 @@
                             <Switch x:Name="BreatheAnimationSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
 
-                        <Label Text="Bar Commands" FontSize="20" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
+                        <Label Text="Bar Commands" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Bar Command 1" x:Name="SimpleCommandBarButton1Label"
                                            FontFamily="Underwood" TextColor="Black"
@@ -465,7 +465,7 @@
                                     HorizontalOptions="EndAndExpand" >
                             </Picker>
                         </StackLayout>
-                        <Label Text="Volume" FontSize="20" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
+                        <Label Text="Volume" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Master Volume"
                                     FontFamily="Underwood" TextColor="Black"
@@ -521,7 +521,7 @@
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                         </StackLayout>
 
-                        <Label Text="Posting" FontSize="20" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
+                        <Label Text="Posting" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Post Game Status"
                                     FontFamily="Underwood" TextColor="Black"
@@ -631,7 +631,7 @@
                                     TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                         </StackLayout>
 
-                        <Label Text="System" FontSize="20" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
+                        <Label Text="System" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Developer Mode"
                                     FontFamily="Underwood" TextColor="Black"

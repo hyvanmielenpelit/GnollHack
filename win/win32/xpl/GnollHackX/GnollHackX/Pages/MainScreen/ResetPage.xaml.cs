@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -517,18 +518,41 @@ namespace GnollHackX.Pages.MainScreen
         {
             ResetGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            bool answer = await DisplayAlert("Clear All Post Queues?", "Are you sure to delete all files in the " + GHConstants.ForumPostQueueDirectory + " and " + GHConstants.XlogPostQueueDirectory + " directories?", "Yes", "No");
+            string directory1 = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
+            string directory2 = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
+            int nofiles1 = 0;
+            int nofiles2 = 0;
+            if (Directory.Exists(directory1))
+            {
+                string[] files1 = Directory.GetFiles(directory1);
+                if( files1 != null )
+                {
+                    nofiles1 = files1.Length;
+                }
+            }
+            if (Directory.Exists(directory2))
+            {
+                string[] files2 = Directory.GetFiles(directory2);
+                if (files2 != null)
+                {
+                    nofiles2 = files2.Length;
+                }
+            }
+
+            bool answer = await DisplayAlert("Clear All Post Queues?", 
+                "Are you sure to delete all files in the " + GHConstants.ForumPostQueueDirectory + " (" + nofiles1 + " file" + (nofiles1 == 1 ? "" : "s" ) + ") and " + 
+                GHConstants.XlogPostQueueDirectory + " (" + nofiles2 +  " file" + (nofiles2 == 1 ? "" : "s" ) + ") directories?",
+                "Yes", "No");
+
             if (answer)
             {
                 try
                 {
-                    string datadir = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
-                    if (Directory.Exists(datadir))
-                        Directory.Delete(datadir, true);
+                    if (Directory.Exists(directory1))
+                        Directory.Delete(directory1, true);
 
-                    datadir = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
-                    if (Directory.Exists(datadir))
-                        Directory.Delete(datadir, true);
+                    if (Directory.Exists(directory2))
+                        Directory.Delete(directory2, true);
 
                     btnDeleteUserData.Text = "Done";
                     btnDeleteUserData.TextColor = GHColors.Red;
@@ -540,7 +564,6 @@ namespace GnollHackX.Pages.MainScreen
                 }
             }
             ResetGrid.IsEnabled = true;
-
         }
     }
 }
