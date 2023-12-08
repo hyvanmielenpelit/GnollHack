@@ -380,6 +380,10 @@ namespace GnollHackX
             if (PlatformService != null)
                 PlatformService.OverrideAnimatorDuration();
 
+            /* Check current battery and internet connection when returning to app */
+            Battery_BatteryInfoChanged(null, new BatteryInfoChangedEventArgs(Battery.ChargeLevel, Battery.State, Battery.PowerSource));
+            Connectivity_ConnectivityChanged(null, new ConnectivityChangedEventArgs(Connectivity.NetworkAccess, Connectivity.ConnectionProfiles));
+
             CancelSaveGame = true;
             SleepMuteMode = false;
             if (CurrentMainPage != null)
@@ -2762,47 +2766,48 @@ namespace GnollHackX
                         {
                             cts.CancelAfter(xlogattachments == null || xlogattachments.Count == 0 ? 10000 : 120000);
                             string responseContent = "";
-                            using (HttpResponseMessage response = await client.PostAsync(postaddress, multicontent, cts.Token))
-                            {
-                                responseContent = await response.Content.ReadAsStringAsync();
-                                Debug.WriteLine(responseContent);
-                                res = response.IsSuccessStatusCode;
-                                if (!res && !is_from_queue)
-                                {
-                                    string targetpath = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
-                                    if (!Directory.Exists(targetpath))
-                                        GHApp.CheckCreateDirectory(targetpath);
-                                    if (Directory.Exists(targetpath))
-                                    {
-                                        string targetfilename;
-                                        string targetfilepath;
-                                        int id = 0;
-                                        do
-                                        {
-                                            targetfilename = GHConstants.XlogPostFileNamePrefix + id + GHConstants.XlogPostFileNameSuffix;
-                                            targetfilepath = Path.Combine(targetpath, targetfilename);
-                                            id++;
-                                        } while (File.Exists(targetfilepath));
 
-                                        using (StreamWriter sw = File.CreateText(targetfilepath))
-                                        {
-                                            ForumPost fp = new ForumPost(true, status_type, status_datatype, xlogentry_string, xlogattachments != null ? xlogattachments : new List<ForumPostAttachment>());
-                                            string json = JsonConvert.SerializeObject(fp);
-                                            Debug.WriteLine(json);
-                                            sw.Write(json);
-                                        }
-                                        string[] filepaths = Directory.GetFiles(targetpath);
-                                        if (filepaths != null)
-                                        {
-                                            Debug.WriteLine("Files in " + targetpath + ": " + filepaths.Length);
-                                            foreach (string str in filepaths)
-                                            {
-                                                Debug.WriteLine(str);
-                                            }
-                                        }
-                                    }
+                            try
+                            {
+                                using (HttpResponseMessage response = await client.PostAsync(postaddress, multicontent, cts.Token))
+                                {
+                                    responseContent = await response.Content.ReadAsStringAsync();
+                                    Debug.WriteLine(responseContent);
+                                    res = response.IsSuccessStatusCode;
                                 }
                             }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex.Message);
+                                res = false;
+                            }
+
+                            if (!res && !is_from_queue)
+                            {
+                                string targetpath = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
+                                if (!Directory.Exists(targetpath))
+                                    GHApp.CheckCreateDirectory(targetpath);
+                                if (Directory.Exists(targetpath))
+                                {
+                                    string targetfilename;
+                                    string targetfilepath;
+                                    int id = 0;
+                                    do
+                                    {
+                                        targetfilename = GHConstants.XlogPostFileNamePrefix + id + GHConstants.XlogPostFileNameSuffix;
+                                        targetfilepath = Path.Combine(targetpath, targetfilename);
+                                        id++;
+                                    } while (File.Exists(targetfilepath));
+
+                                    using (StreamWriter sw = File.CreateText(targetfilepath))
+                                    {
+                                        ForumPost fp = new ForumPost(true, status_type, status_datatype, xlogentry_string, xlogattachments != null ? xlogattachments : new List<ForumPostAttachment>());
+                                        string json = JsonConvert.SerializeObject(fp);
+                                        Debug.WriteLine(json);
+                                        sw.Write(json);
+                                    }
+                                }
+                            }                            
                         }
                         content1.Dispose();
                         content2.Dispose();
@@ -2900,34 +2905,44 @@ namespace GnollHackX
                         {
                             cts.CancelAfter(is_game_status || forumpostattachments == null || forumpostattachments.Count == 0 ? 10000 : 120000);
                             string responseContent = "";
-                            using (HttpResponseMessage response = await client.PostAsync(postaddress, content, cts.Token))
-                            {
-                                responseContent = await response.Content.ReadAsStringAsync();
-                                Debug.WriteLine(responseContent);
-                                res = response.IsSuccessStatusCode;
-                                if (!res && !is_from_queue)
-                                {
-                                    string targetpath = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
-                                    if (!Directory.Exists(targetpath))
-                                        GHApp.CheckCreateDirectory(targetpath);
-                                    if (Directory.Exists(targetpath))
-                                    {
-                                        string targetfilename;
-                                        string targetfilepath;
-                                        int id = 0;
-                                        do
-                                        {
-                                            targetfilename = GHConstants.ForumPostFileNamePrefix + id + GHConstants.ForumPostFileNameSuffix;
-                                            targetfilepath = Path.Combine(targetpath, targetfilename);
-                                            id++;
-                                        } while (File.Exists(targetfilepath));
 
-                                        using (StreamWriter sw = File.CreateText(targetfilepath))
-                                        {
-                                            ForumPost fp = new ForumPost(is_game_status, status_type, status_datatype, message, forumpostattachments != null ? forumpostattachments : new List<ForumPostAttachment>());
-                                            string json = JsonConvert.SerializeObject(fp);
-                                            sw.Write(json);
-                                        }
+                            try
+                            {
+                                using (HttpResponseMessage response = await client.PostAsync(postaddress, content, cts.Token))
+                                {
+                                    responseContent = await response.Content.ReadAsStringAsync();
+                                    Debug.WriteLine(responseContent);
+                                    res = response.IsSuccessStatusCode;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex.Message);
+                                res = false;
+                            }
+
+                            if (!res && !is_from_queue)
+                            {
+                                string targetpath = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
+                                if (!Directory.Exists(targetpath))
+                                    GHApp.CheckCreateDirectory(targetpath);
+                                if (Directory.Exists(targetpath))
+                                {
+                                    string targetfilename;
+                                    string targetfilepath;
+                                    int id = 0;
+                                    do
+                                    {
+                                        targetfilename = GHConstants.ForumPostFileNamePrefix + id + GHConstants.ForumPostFileNameSuffix;
+                                        targetfilepath = Path.Combine(targetpath, targetfilename);
+                                        id++;
+                                    } while (File.Exists(targetfilepath));
+
+                                    using (StreamWriter sw = File.CreateText(targetfilepath))
+                                    {
+                                        ForumPost fp = new ForumPost(is_game_status, status_type, status_datatype, message, forumpostattachments != null ? forumpostattachments : new List<ForumPostAttachment>());
+                                        string json = JsonConvert.SerializeObject(fp);
+                                        sw.Write(json);
                                     }
                                 }
                             }
