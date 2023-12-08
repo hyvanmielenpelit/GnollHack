@@ -20,10 +20,20 @@ using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
+using System.Net;
+using System.ComponentModel;
 
 namespace GnollHackX
 {
     public delegate Task<bool> BackButtonHandler(object sender, EventArgs e);
+    public struct SendResult
+    {
+        public bool IsSuccess;
+        public bool HasHttpStatusCode;
+        public HttpStatusCode StatusCode;
+        public string Message;
+    }
+
 
     public static class GHApp
     {
@@ -74,6 +84,8 @@ namespace GnollHackX
             ReadStreamingBankToMemory = Preferences.Get("ReadStreamingBankToMemory", DefaultStreamingBankToMemory);
             CopyStreamingBankToDisk = Preferences.Get("CopyStreamingBankToDisk", GHConstants.DefaultCopyStreamingBankToDisk);
             AppSwitchSaveStyle = Preferences.Get("AppSwitchSaveStyle", 0);
+            XlogUserName = Preferences.Get("XlogUserName", "");
+            XlogPassword = Preferences.Get("XlogPassword", "");
 
             BackButtonPressed += EmptyBackButtonPressed;
         }
@@ -2446,6 +2458,21 @@ namespace GnollHackX
                 return CurrentUserSecrets.DefaultXlogAntiForgeryToken;
             }
         }
+        //private static bool _xlogUserNameVerified;
+        //private static readonly object _xlogUserNameVerifiedLock = new object();
+        //public static bool XlogUserNameVerified { get { lock (_xlogUserNameVerifiedLock) { return _xlogUserNameVerified; } } set { lock (_xlogUserNameVerifiedLock) { _xlogUserNameVerified = value; } } }
+        //public static async void TryVerifyXlogUserName()
+        //{
+        //    if (XlogUserName == null || XlogUserName == "")
+        //    {
+        //        XlogUserNameVerified = false;
+        //    }
+        //    else
+        //    {
+        //        SendResult res = await SendXlogFile("", 1, 0, new List<ForumPostAttachment>(), true);
+        //        XlogUserNameVerified = res.IsSuccess;
+        //    }
+        //}
 
         public static bool IsValidHttpsURL(string uriString)
         {
@@ -2707,9 +2734,9 @@ namespace GnollHackX
             }
         }
 
-        public static async Task<bool> SendXlogFile(string xlogentry_string, int status_type, int status_datatype, List<ForumPostAttachment> xlogattachments, bool is_from_queue)
+        public static async Task<SendResult> SendXlogFile(string xlogentry_string, int status_type, int status_datatype, List<ForumPostAttachment> xlogattachments, bool is_from_queue)
         {
-            bool res = false;
+            SendResult res = new SendResult();
             try
             {
                 string postaddress = XlogPostAddress;
@@ -2773,16 +2800,19 @@ namespace GnollHackX
                                 {
                                     responseContent = await response.Content.ReadAsStringAsync();
                                     Debug.WriteLine(responseContent);
-                                    res = response.IsSuccessStatusCode;
+                                    res.IsSuccess = response.IsSuccessStatusCode;
+                                    res.HasHttpStatusCode = true;
+                                    res.StatusCode = response.StatusCode;
                                 }
                             }
                             catch (Exception ex)
                             {
                                 Debug.WriteLine(ex.Message);
-                                res = false;
+                                res.IsSuccess = false;
+                                res.Message = ex.Message;
                             }
 
-                            if (!res && !is_from_queue)
+                            if (!res.IsSuccess && !is_from_queue)
                             {
                                 string targetpath = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
                                 if (!Directory.Exists(targetpath))
@@ -2820,8 +2850,9 @@ namespace GnollHackX
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
+                res.Message = e.Message;
             }
-            if (res && xlogattachments != null)
+            if (res.IsSuccess && xlogattachments != null)
             {
                 foreach (var attachment in xlogattachments)
                 {
@@ -2840,9 +2871,9 @@ namespace GnollHackX
             }
             return res;
         }
-        public static async Task<bool> SendForumPost(bool is_game_status, string message, int status_type, int status_datatype, List<ForumPostAttachment> forumpostattachments, bool is_from_queue)
+        public static async Task<SendResult> SendForumPost(bool is_game_status, string message, int status_type, int status_datatype, List<ForumPostAttachment> forumpostattachments, bool is_from_queue)
         {
-            bool res = false;
+            SendResult res = new SendResult();
             try
             {
                 string postaddress = is_game_status ? GHApp.GameStatusPostAddress : GHApp.DiagnosticDataPostAddress;
@@ -2912,16 +2943,19 @@ namespace GnollHackX
                                 {
                                     responseContent = await response.Content.ReadAsStringAsync();
                                     Debug.WriteLine(responseContent);
-                                    res = response.IsSuccessStatusCode;
+                                    res.IsSuccess = response.IsSuccessStatusCode;
+                                    res.HasHttpStatusCode = true;
+                                    res.StatusCode = response.StatusCode;
                                 }
                             }
                             catch (Exception ex)
                             {
                                 Debug.WriteLine(ex.Message);
-                                res = false;
+                                res.IsSuccess = false;
+                                res.Message = ex.Message;
                             }
 
-                            if (!res && !is_from_queue)
+                            if (!res.IsSuccess && !is_from_queue)
                             {
                                 string targetpath = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
                                 if (!Directory.Exists(targetpath))
@@ -2954,9 +2988,10 @@ namespace GnollHackX
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
+                res.Message = e.Message;
             }
 
-            if(forumpostattachments != null)
+            if (forumpostattachments != null)
             {
                 foreach (var attachment in forumpostattachments)
                 {

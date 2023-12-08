@@ -831,13 +831,16 @@ namespace GnollHackX.Pages.MainScreen
         {
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            if (PostXlogUserNameEntry.Text != null && PostXlogUserNameEntry.Text != "" && !XlogUserNameValidationExpression.IsMatch(PostXlogUserNameEntry.Text))
+            if (PostXlogUserNameEntry.Text != null && PostXlogUserNameEntry.Text != "")
             {
-                PostXlogUserNameLabel.TextColor = Color.Red;
-                await MainScrollView.ScrollToAsync(PostXlogUserNameStackLayout.X, PostXlogUserNameStackLayout.Y, true);
-                PostXlogUserNameEntry.Focus();
-                CloseButton.IsEnabled = true;
-                return;
+                if (!XlogUserNameValidationExpression.IsMatch(PostXlogUserNameEntry.Text))
+                {
+                    PostXlogUserNameLabel.TextColor = Color.Red;
+                    await MainScrollView.ScrollToAsync(PostXlogUserNameStackLayout.X, PostXlogUserNameStackLayout.Y, true);
+                    PostXlogUserNameEntry.Focus();
+                    CloseButton.IsEnabled = true;
+                    return;
+                }
             }
             await MaybeShowPleaseWait();
             await App.Current.MainPage.Navigation.PopModalAsync();
@@ -1044,74 +1047,21 @@ namespace GnollHackX.Pages.MainScreen
         private async void XlogTestButton_Clicked(object sender, EventArgs e)
         {
             XlogTestButton.IsEnabled = false;
-            try
+            SendResult res = await GHApp.SendXlogFile("", 1, 0, new List<ForumPostAttachment>(), true);
+            if (res.IsSuccess)
             {
-                string postaddress = GHApp.XlogPostAddress;
-                if (postaddress != null && postaddress.Length > 8 && postaddress.Substring(0, 8) == "https://" && Uri.IsWellFormedUriString(postaddress, UriKind.Absolute))
-                {
-                    using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
-                    {
-                        MultipartFormDataContent multicontent = new MultipartFormDataContent("-------------------boundary");
-
-                        StringContent content1 = new StringContent(GHApp.XlogUserName, Encoding.UTF8, "text/plain");
-                        ContentDispositionHeaderValue cdhv1 = new ContentDispositionHeaderValue("form-data");
-                        cdhv1.Name = "UserName";
-                        content1.Headers.ContentDisposition = cdhv1;
-                        multicontent.Add(content1);
-
-                        StringContent content3 = new StringContent(GHApp.XlogPassword, Encoding.UTF8, "text/plain");
-                        ContentDispositionHeaderValue cdhv3 = new ContentDispositionHeaderValue("form-data");
-                        cdhv3.Name = "Password";
-                        content3.Headers.ContentDisposition = cdhv3;
-                        multicontent.Add(content3);
-
-                        StringContent content4 = new StringContent(GHApp.XlogAntiForgeryToken, Encoding.UTF8, "text/plain");
-                        ContentDispositionHeaderValue cdhv4 = new ContentDispositionHeaderValue("form-data");
-                        cdhv4.Name = "AntiForgeryToken";
-                        content4.Headers.ContentDisposition = cdhv4;
-                        multicontent.Add(content4);
-
-                        StringContent content2 = new StringContent("", Encoding.UTF8, "text/plain");
-                        ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
-                        cdhv2.Name = "XLogEntry";
-                        content2.Headers.ContentDisposition = cdhv2;
-                        multicontent.Add(content2);
-
-                        using (var cts = new CancellationTokenSource())
-                        {
-                            cts.CancelAfter(10000);
-                            string jsonResponse = "";
-                            using (HttpResponseMessage response = await client.PostAsync(postaddress, multicontent, cts.Token))
-                            {
-                                if (response.IsSuccessStatusCode)
-                                {
-                                    await DisplayAlert("Connection Success",
-                                        "Connection to Top Score Server was successful (status code " + (int)response.StatusCode + ", " + response.StatusCode.ToString() + ")",
-                                        "OK");
-                                }
-                                else
-                                {
-                                    await DisplayAlert("Connection Failed",
-                                        "Connection to Top Score Server failed with status code " + (int)response.StatusCode + " (" + response.StatusCode.ToString() + ")",
-                                        "OK");
-                                }
-                                jsonResponse = await response.Content.ReadAsStringAsync();
-                                Debug.WriteLine(jsonResponse);
-                            }
-                        }
-                        content1.Dispose();
-                        content2.Dispose();
-                        content3.Dispose();
-                        content4.Dispose();
-                        multicontent.Dispose();
-                    }
-                }
-                else
-                    await DisplayAlert("Invalid Top Score Post Address", "Address for posting top scores is invalid: " + postaddress, "OK");
+                await DisplayAlert("Connection Success",
+                    "Connection to Top Score Server was successful." +
+                    (res.HasHttpStatusCode ? " Status code " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : ""),
+                    "OK");
             }
-            catch (Exception ex)
+            else
             {
-                Debug.WriteLine(ex.Message);
+                await DisplayAlert("Connection Failed",
+                    "Connection to Top Score Server failed." +
+                    (res.HasHttpStatusCode ? " Status code " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : "") +
+                    (res.Message != null ? " Message: " + res.Message : ""),
+                    "OK");
             }
             XlogTestButton.IsEnabled = true;
         }

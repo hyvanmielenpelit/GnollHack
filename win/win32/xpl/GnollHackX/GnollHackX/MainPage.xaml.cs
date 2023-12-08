@@ -154,20 +154,23 @@ namespace GnollHackX
                                 {
                                     try
                                     {
-                                        bool res;
-
+                                        SendResult res;
                                         if (isxlog)
                                             res = await GHApp.SendXlogFile(post.status_string, post.status_type, post.status_datatype, post.attachments, true);
                                         else
                                             res = await GHApp.SendForumPost(post.is_game_status, post.status_string, post.status_type, post.status_datatype, post.attachments, true);
 
-                                        if (res)
+                                        if (res.IsSuccess)
                                         {
                                             Debug.WriteLine((isxlog ? "XLogFile" : "Forum post") + " was sent successfully: " + filepath);
                                             File.Delete(filepath);
                                         }
                                         else
-                                            Debug.WriteLine("Sending " + (isxlog ? "XLogFile" : "forum post") + " failed: " + filepath);
+                                        {
+                                            Debug.WriteLine("Sending " + (isxlog ? "XLogFile" : "forum post") + " failed: " + filepath +
+                                                (!res.HasHttpStatusCode ? "" : ", StatusCode: " + (int)res.StatusCode) + "(" + res.StatusCode.ToString() + ")" +
+                                                (res.Message == null ? "" : ", Message: " + res.Message));
+                                        }
                                     }
                                     catch (Exception ex)
                                     {

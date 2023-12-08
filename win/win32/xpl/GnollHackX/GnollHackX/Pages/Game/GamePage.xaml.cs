@@ -2512,6 +2512,10 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
+                string username = GHApp.XlogUserName;
+                if (username != null && username != "")
+                    message = message + " [" + username + "]";
+
                 string portver = VersionTracking.CurrentVersion;
                 DevicePlatform platform = DeviceInfo.Platform;
                 string platstr = platform != null ? platform.ToString() : "";
@@ -2585,7 +2589,7 @@ namespace GnollHackX.Pages.Game
                 return;
             }
 
-            await GHApp.SendXlogFile(xlogentry_string, status_type, status_datatype, _xlogPostAttachments, false);
+            SendResult res = await GHApp.SendXlogFile(xlogentry_string, status_type, status_datatype, _xlogPostAttachments, false);
             _xlogPostAttachments.Clear();
             return;
         }
