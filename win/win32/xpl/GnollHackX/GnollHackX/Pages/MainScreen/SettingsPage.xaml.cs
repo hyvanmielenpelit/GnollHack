@@ -402,7 +402,10 @@ namespace GnollHackX.Pages.MainScreen
             }
 
             if (_mainPage != null)
+            {
                 _mainPage.UpdateLayout();
+                _mainPage.StartGeneralTimer(); /* Just in case something's changed */
+            }
 
             if (_gameMenuPage != null)
                 _gameMenuPage.UpdateLayout();
