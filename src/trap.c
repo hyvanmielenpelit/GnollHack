@@ -5096,7 +5096,7 @@ int ttyp;
 
     //boolean res = FALSE;
     //int probability = 0;
-    int usedskilllevel = max(P_UNSKILLED, min(P_EXPERT, P_SKILL_LEVEL(P_DISARM_TRAP) + (Enhanced_untrap ? 1 : 0))); /* (Role_if(PM_ROGUE) && u.uhave.questart) */
+    int usedskilllevel = max(P_UNSKILLED, min(P_GRAND_MASTER, P_SKILL_LEVEL(P_DISARM_TRAP) + (Enhanced_untrap ? 1 : 0))); /* (Role_if(PM_ROGUE) && u.uhave.questart) */
 
     //probability = untrap_probability(ttmp->ttyp, usedskilllevel, &youmonst);
     if (Fumbling & !rn2(2))
