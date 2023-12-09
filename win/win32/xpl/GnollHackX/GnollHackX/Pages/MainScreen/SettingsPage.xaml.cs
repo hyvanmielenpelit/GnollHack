@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Collections.Concurrent;
-using GnollHackX.Controls;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http.Headers;
@@ -28,6 +27,7 @@ using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using GnollHackX.Pages.Game;
+using GnollHackX.Controls;
 
 namespace GnollHackX.Pages.MainScreen
 #endif
@@ -836,7 +836,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 if (!XlogUserNameValidationExpression.IsMatch(PostXlogUserNameEntry.Text))
                 {
-                    PostXlogUserNameLabel.TextColor = Color.Red;
+                    PostXlogUserNameLabel.TextColor = GHColors.Red;
                     await MainScrollView.ScrollToAsync(PostXlogUserNameStackLayout.X, PostXlogUserNameStackLayout.Y, true);
                     PostXlogUserNameEntry.Focus();
                     CloseButton.IsEnabled = true;
