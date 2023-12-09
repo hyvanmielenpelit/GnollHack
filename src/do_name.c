@@ -4041,7 +4041,7 @@ STATIC_VAR const char* const manual_names[MAX_MANUAL_TYPES] = {
     /* Catalogues */
     "Catalogue of Weapons", "Catalogue of Armor", "Catalogue of Rings", "Catalogue of Potions", "Catalogue of Scrolls", "Catalogue of Wands",
     "Catalogue of Miscellaneous Magic Items", "Catalogue of Tools", "Catalogue of Magic Spells", "Catalogue of Clerical Spells",
-    "Catalogue of Comestibles", "Catalogue of Gems and Stones", "Catalogue of Artifacts",
+    "Catalogue of Comestibles", "Catalogue of Gems and Stones", "Catalogue of Artifacts", "Catalogue of Amulets",
 };
 
 const char*
@@ -4330,6 +4330,9 @@ struct obj* obj;
                 break;
             case MANUAL_CATALOGUE_OF_GEMS_AND_STONES:
                 itemclass = GEM_CLASS;
+                break;
+            case MANUAL_CATALOGUE_OF_AMULETS:
+                itemclass = AMULET_CLASS;
                 break;
             default:
                 break;
