@@ -2377,7 +2377,11 @@ namespace GnollHackX
 
         public static bool PostingGameStatus { get; set; }
         public static bool PostingDiagnosticData { get; set; }
-        public static bool PostingXlogEntries { get; set; }
+
+        private static readonly object _postingXlogEntriesLock = new object();
+        private static bool _postingXlogEntries;
+        public static bool PostingXlogEntries { get { lock (_postingXlogEntriesLock) { return _postingXlogEntries; } } set { lock (_postingXlogEntriesLock) { _postingXlogEntries = value; } } }
+
         public static string CustomGameStatusLink { get; set; }
         public static string CustomXlogAccountLink { get; set; }
         public static string CustomXlogPostLink { get; set; }
@@ -2482,7 +2486,7 @@ namespace GnollHackX
 
         public static async void TryVerifyXlogUserName()
         {
-            if (XlogUserNameVerified)
+            if (XlogUserNameVerified || !PostingXlogEntries)
                 return;
             else
                 await TryVerifyXlogUserNameAsync();
@@ -2490,7 +2494,7 @@ namespace GnollHackX
 
         public static async Task TryVerifyXlogUserNameAsync()
         {
-            if (XlogUserNameVerified)
+            if (XlogUserNameVerified || !PostingXlogEntries)
                 return;
 
             string username = XlogUserName;

@@ -94,13 +94,13 @@ namespace GnollHackX
                 string directory2 = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
                 bool has_files = Directory.Exists(directory) && Directory.GetFiles(directory)?.Length > 0;
                 bool has_files2 = Directory.Exists(directory2) && Directory.GetFiles(directory2)?.Length > 0;
-                if (!has_files && !has_files2 && (string.IsNullOrEmpty(GHApp.XlogUserName) || GHApp.XlogUserNameVerified))
+                if (!has_files && !has_files2 && (!GHApp.PostingXlogEntries || string.IsNullOrEmpty(GHApp.XlogUserName) || GHApp.XlogUserNameVerified))
                 {
                     StopGeneralTimer = true;
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(GHApp.XlogUserName) && !GHApp.XlogUserNameVerified)
+                    if (GHApp.PostingXlogEntries && !string.IsNullOrEmpty(GHApp.XlogUserName) && !GHApp.XlogUserNameVerified)
                         await GHApp.TryVerifyXlogUserNameAsync();
                     if (has_files)
                         await ProcessPostQueue(false, directory, GHConstants.ForumPostFileNamePrefix);
