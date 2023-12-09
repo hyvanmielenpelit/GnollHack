@@ -2299,7 +2299,7 @@ struct monst* targetmonst;
     int otyp, skill, role_skill, res = 0;
     boolean confused = (Confusion != 0);
     boolean stunned = (Stunned != 0);
-    struct obj *pseudo;
+    //struct obj *pseudo;
     boolean effect_happened = 1;
     //coord cc;
 
@@ -2510,14 +2510,17 @@ struct monst* targetmonst;
     context.botl = 1;
     exercise(A_WIS, TRUE);
     /* pseudo is a temporary "false" object containing the spell stats */
-    pseudo = mksobj(spellid(spell), FALSE, FALSE, FALSE);
-    pseudo->blessed = pseudo->cursed = 0;
-    pseudo->quan = 20L; /* do not let useup get it */
+    //pseudo = mksobj(spellid(spell), FALSE, FALSE, FALSE);
+    struct obj pseudo = zeroobj;
+    pseudo.otyp = spellid(spell);
+    pseudo.oclass = SPBOOK_CLASS;
+    pseudo.quan = 20L; /* do not let useup get it */
+    //pseudo->blessed = pseudo->cursed = 0;
     /*
      * Find the skill the hero has in a spell type category.
      * See spell_skilltype for categories.
      */
-    otyp = pseudo->otyp;
+    otyp = pseudo.otyp;
     skill = spell_skilltype(otyp);
     role_skill = P_SKILL_LEVEL(skill);
 
@@ -2755,7 +2758,7 @@ struct monst* targetmonst;
                 play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
                 u_wait_until_action();
 
-                if ((damage = zapyourself(pseudo, TRUE)) != 0)
+                if ((damage = zapyourself(&pseudo, TRUE)) != 0)
                 {
                     char buf[BUFSZ];
 
@@ -2770,7 +2773,7 @@ struct monst* targetmonst;
                 update_u_action(ACTION_TILE_CAST_DIR);
                 play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
                 u_wait_until_action();
-                weffects(pseudo);
+                weffects(&pseudo);
 
             }
         } 
@@ -2781,7 +2784,7 @@ struct monst* targetmonst;
             update_u_action(ACTION_TILE_CAST_NODIR);
             play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
             u_wait_until_action();
-            weffects(pseudo);
+            weffects(&pseudo);
         }
 
         update_inventory(); /* spell may modify inventory */
@@ -2861,7 +2864,7 @@ struct monst* targetmonst;
             play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
             u_wait_until_action();
         }
-        (void) seffects(pseudo, &effect_happened, targetmonst);
+        (void) seffects(&pseudo, &effect_happened, targetmonst);
         break;
 
     /* these are all duplicates of potion effects */
@@ -2876,7 +2879,7 @@ struct monst* targetmonst;
         update_u_action(ACTION_TILE_CAST_NODIR);
         play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
-        (void) peffects(pseudo);
+        (void) peffects(&pseudo);
         break;
     /* end of potion-like spells */
 
@@ -2906,8 +2909,8 @@ struct monst* targetmonst;
         special_effect_wait_until_action(0);
         if (!Blocks_Clairvoyance) {
             if (role_skill >= P_SKILLED)
-                pseudo->blessed = 1; /* detect monsters as well as map */
-            do_vicinity_map(pseudo);
+                pseudo.blessed = 1; /* detect monsters as well as map */
+            do_vicinity_map(&pseudo);
         /* at present, only one thing blocks clairvoyance */
         } else if (uarmh && uarmh->otyp == CORNUTHAUM)
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "sense a pointy hat on top of your %s.", body_part(HEAD));
@@ -2918,14 +2921,14 @@ struct monst* targetmonst;
         update_u_action(ACTION_TILE_CAST_NODIR);
         play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
-        outrumor(&youmonst, pseudo, 1, BY_SPELL);
+        outrumor(&youmonst, &pseudo, 1, BY_SPELL);
         break;
     case SPE_MAJOR_CONSULTATION:
         //play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
         update_u_action(ACTION_TILE_CAST_NODIR);
         play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
-        outoracle(&youmonst, pseudo, FALSE, 2);
+        outoracle(&youmonst, &pseudo, FALSE, 2);
         break;
     case SPE_PROTECTION:
     case SPE_SHIELD:
@@ -3107,7 +3110,7 @@ struct monst* targetmonst;
     }
     default:
         impossible("Unknown spell %d attempted.", spell);
-        obfree(pseudo, (struct obj *) 0);
+        //obfree(pseudo, (struct obj *) 0);
         return 0;
     }
 
@@ -3123,10 +3126,10 @@ struct monst* targetmonst;
         use_skill(skill, (spellev(spell) + 2) * pointsmultiplier);
 
     int result = effect_happened;
-    if (pseudo->otyp > STRANGE_OBJECT && objects[pseudo->otyp].oc_spell_flags & S1_DOES_NOT_TAKE_A_TURN)
+    if (otyp > STRANGE_OBJECT && objects[otyp].oc_spell_flags & S1_DOES_NOT_TAKE_A_TURN)
         result = 0;
 
-    obfree(pseudo, (struct obj *) 0); /* now, get rid of it */
+    //obfree(pseudo, (struct obj *) 0); /* now, get rid of it */
     u_wait_until_end();
     update_u_action_revert(ACTION_TILE_NO_ACTION);
 
