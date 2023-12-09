@@ -2853,7 +2853,7 @@ namespace GnollHackX
 
                             if (res.IsSuccess)
                                 SetXlogUserNameVerified(true, username, password);
-                            else if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */ || (int)res.StatusCode == 423 /* Locked out */))
+                            else if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */ || res.StatusCode == HttpStatusCode.Locked /* 423 */))
                                 SetXlogUserNameVerified(false, null, null);
 
                             if (!res.IsSuccess && !is_from_queue)
