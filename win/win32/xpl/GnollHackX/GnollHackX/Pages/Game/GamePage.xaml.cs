@@ -2513,7 +2513,7 @@ namespace GnollHackX.Pages.Game
             else
             {
                 string username = GHApp.XlogUserName;
-                if (username != null && username != "")
+                if (!string.IsNullOrWhiteSpace(username) && GHApp.XlogUserNameVerified)
                     message = message + " [" + username + "]";
 
                 string portver = VersionTracking.CurrentVersion;

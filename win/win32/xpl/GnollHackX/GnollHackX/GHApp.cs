@@ -392,9 +392,10 @@ namespace GnollHackX
             if (PlatformService != null)
                 PlatformService.OverrideAnimatorDuration();
 
-            /* Check current battery and internet connection when returning to app */
+            /* Check current battery level, internet connection, and xlog user name when returning to app */
             Battery_BatteryInfoChanged(null, new BatteryInfoChangedEventArgs(Battery.ChargeLevel, Battery.State, Battery.PowerSource));
             Connectivity_ConnectivityChanged(null, new ConnectivityChangedEventArgs(Connectivity.NetworkAccess, Connectivity.ConnectionProfiles));
+            TryVerifyXlogUserName();
 
             CancelSaveGame = true;
             SleepMuteMode = false;
@@ -2449,8 +2450,12 @@ namespace GnollHackX
             }
         }
 
-        public static string XlogUserName { get; set; } = "";
-        public static string XlogPassword { get; set; } = "";
+        private static readonly object _xlogCreditialLock = new object();
+        private static string _xlogUserName = "";
+        private static string _xlogPassword = "";
+
+        public static string XlogUserName { get { lock (_xlogCreditialLock) { return _xlogUserName; } } set { lock (_xlogCreditialLock) { _xlogUserName = value; } } }
+        public static string XlogPassword { get { lock (_xlogCreditialLock) { return _xlogPassword; } } set { lock (_xlogCreditialLock) { _xlogPassword = value; } } }
         public static string XlogAntiForgeryToken 
         {
             get
@@ -2458,21 +2463,53 @@ namespace GnollHackX
                 return CurrentUserSecrets.DefaultXlogAntiForgeryToken;
             }
         }
-        //private static bool _xlogUserNameVerified;
-        //private static readonly object _xlogUserNameVerifiedLock = new object();
-        //public static bool XlogUserNameVerified { get { lock (_xlogUserNameVerifiedLock) { return _xlogUserNameVerified; } } set { lock (_xlogUserNameVerifiedLock) { _xlogUserNameVerified = value; } } }
-        //public static async void TryVerifyXlogUserName()
-        //{
-        //    if (XlogUserName == null || XlogUserName == "")
-        //    {
-        //        XlogUserNameVerified = false;
-        //    }
-        //    else
-        //    {
-        //        SendResult res = await SendXlogFile("", 1, 0, new List<ForumPostAttachment>(), true);
-        //        XlogUserNameVerified = res.IsSuccess;
-        //    }
-        //}
+
+        private static string _verifiedUserName;
+        private static string _verifiedPassword;
+        private static bool _xlogUserNameVerified;
+        private static readonly object _xlogUserNameVerifiedLock = new object();
+        public static bool XlogUserNameVerified { get { lock (_xlogUserNameVerifiedLock) { return _xlogUserNameVerified; } } }
+
+        public static void SetXlogUserNameVerified(bool isverified, string username, string password)
+        {
+            lock(_xlogUserNameVerifiedLock)
+            {
+                _xlogUserNameVerified = isverified;
+                _verifiedUserName = username;
+                _verifiedPassword = password;
+            }
+        }
+
+        public static async void TryVerifyXlogUserName()
+        {
+            if (XlogUserNameVerified)
+                return;
+            else
+                await TryVerifyXlogUserNameAsync();
+        }
+
+        public static async Task TryVerifyXlogUserNameAsync()
+        {
+            if (XlogUserNameVerified)
+                return;
+
+            string username = XlogUserName;
+            string password = XlogPassword;
+            if (!string.IsNullOrEmpty(username))
+            {
+                if(_verifiedUserName != null && _verifiedPassword != null && username == _verifiedUserName && password == _verifiedPassword)
+                {
+                    lock (_xlogUserNameVerifiedLock)
+                    {
+                        _xlogUserNameVerified = true;
+                    }
+                }
+                else
+                {
+                    await SendXlogFile("", 1, 0, new List<ForumPostAttachment>(), true);
+                }
+            }
+        }
 
         public static bool IsValidHttpsURL(string uriString)
         {
@@ -2746,13 +2783,15 @@ namespace GnollHackX
                     {
                         MultipartFormDataContent multicontent = new MultipartFormDataContent("-------------------boundary");
 
-                        StringContent content1 = new StringContent(XlogUserName, Encoding.UTF8, "text/plain");
+                        string username = XlogUserName;
+                        string password = XlogPassword;
+                        StringContent content1 = new StringContent(username, Encoding.UTF8, "text/plain");
                         ContentDispositionHeaderValue cdhv1 = new ContentDispositionHeaderValue("form-data");
                         cdhv1.Name = "UserName";
                         content1.Headers.ContentDisposition = cdhv1;
                         multicontent.Add(content1);
 
-                        StringContent content3 = new StringContent(XlogPassword, Encoding.UTF8, "text/plain");
+                        StringContent content3 = new StringContent(password, Encoding.UTF8, "text/plain");
                         ContentDispositionHeaderValue cdhv3 = new ContentDispositionHeaderValue("form-data");
                         cdhv3.Name = "Password";
                         content3.Headers.ContentDisposition = cdhv3;
@@ -2791,7 +2830,7 @@ namespace GnollHackX
                         }
                         using (var cts = new CancellationTokenSource())
                         {
-                            cts.CancelAfter(xlogattachments == null || xlogattachments.Count == 0 ? 10000 : 120000);
+                            cts.CancelAfter(string.IsNullOrEmpty(xlogentry_string) ? 5000 : xlogattachments == null || xlogattachments.Count == 0 ? 10000 : 120000);
                             string responseContent = "";
 
                             try
@@ -2812,11 +2851,16 @@ namespace GnollHackX
                                 res.Message = ex.Message;
                             }
 
+                            if (res.IsSuccess)
+                                SetXlogUserNameVerified(true, username, password);
+                            else if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */ || (int)res.StatusCode == 423 /* Locked out */))
+                                SetXlogUserNameVerified(false, null, null);
+
                             if (!res.IsSuccess && !is_from_queue)
                             {
                                 string targetpath = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
                                 if (!Directory.Exists(targetpath))
-                                    GHApp.CheckCreateDirectory(targetpath);
+                                    CheckCreateDirectory(targetpath);
                                 if (Directory.Exists(targetpath))
                                 {
                                     string targetfilename;

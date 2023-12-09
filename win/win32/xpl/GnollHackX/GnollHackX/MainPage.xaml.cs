@@ -66,7 +66,7 @@ namespace GnollHackX
             if(!GeneralTimerIsOn)
             {
                 GeneralTimerIsOn = true;
-                Device.StartTimer(TimeSpan.FromSeconds(5), () =>
+                Device.StartTimer(TimeSpan.FromSeconds(GHConstants.MainScreenGeneralCounterIntervalInSeconds), () =>
                 {
                     if (GameStarted || StopGeneralTimer)
                     {
@@ -81,34 +81,36 @@ namespace GnollHackX
             }
         }
 
-        private void GeneralTimerTasks()
+        private async void GeneralTimerTasks()
         {
-            ProcessPostQueues();
+            await GeneralTimerTasksAsync();
         }
 
-        private void ProcessPostQueues()
+        private async Task GeneralTimerTasksAsync()
         {
-            if(GHApp.HasInternetAccess)
+            if (GHApp.HasInternetAccess)
             {
                 string directory = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
                 string directory2 = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
                 bool has_files = Directory.Exists(directory) && Directory.GetFiles(directory)?.Length > 0;
                 bool has_files2 = Directory.Exists(directory2) && Directory.GetFiles(directory2)?.Length > 0;
-                if(!has_files && !has_files2)
+                if (!has_files && !has_files2 && (string.IsNullOrEmpty(GHApp.XlogUserName) || GHApp.XlogUserNameVerified))
                 {
                     StopGeneralTimer = true;
                 }
                 else
                 {
+                    if (!string.IsNullOrEmpty(GHApp.XlogUserName) && !GHApp.XlogUserNameVerified)
+                        await GHApp.TryVerifyXlogUserNameAsync();
                     if (has_files)
-                        ProcessPostQueue(false, directory, GHConstants.ForumPostFileNamePrefix);
+                        await ProcessPostQueue(false, directory, GHConstants.ForumPostFileNamePrefix);
                     if (has_files2)
-                        ProcessPostQueue(true, directory2, GHConstants.XlogPostFileNamePrefix);
+                        await ProcessPostQueue(true, directory2, GHConstants.XlogPostFileNamePrefix);
                 }
             }
         }
 
-        private async void ProcessPostQueue(bool isxlog, string dir, string fileprefix)
+        private async Task ProcessPostQueue(bool isxlog, string dir, string fileprefix)
         {
             if(dir != null && Directory.Exists(dir))
             {
@@ -168,7 +170,7 @@ namespace GnollHackX
                                         else
                                         {
                                             Debug.WriteLine("Sending " + (isxlog ? "XLogFile" : "forum post") + " failed: " + filepath +
-                                                (!res.HasHttpStatusCode ? "" : ", StatusCode: " + (int)res.StatusCode) + "(" + res.StatusCode.ToString() + ")" +
+                                                (!res.HasHttpStatusCode ? "" : ", StatusCode: " + (int)res.StatusCode) + " (" + res.StatusCode.ToString() + ")" +
                                                 (res.Message == null ? "" : ", Message: " + res.Message));
                                         }
                                     }
@@ -310,6 +312,7 @@ namespace GnollHackX
             UpperButtonGrid.IsEnabled = true;
             LogoGrid.IsEnabled = true;
 
+            await GeneralTimerTasksAsync();
             StartGeneralTimer();
         }
 

@@ -151,6 +151,7 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("XlogUserName", PostXlogUserNameEntry.Text);
             GHApp.XlogPassword = PostXlogPasswordEntry.Text;
             Preferences.Set("XlogPassword", PostXlogPasswordEntry.Text);
+            GHApp.TryVerifyXlogUserName();
 
             if (_gamePage != null)
                 _gamePage.MapGrid = GridSwitch.IsToggled;
@@ -827,7 +828,7 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
-        private async void Button_Clicked(object sender, EventArgs e)
+        private async void CloseButton_Clicked(object sender, EventArgs e)
         {
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();

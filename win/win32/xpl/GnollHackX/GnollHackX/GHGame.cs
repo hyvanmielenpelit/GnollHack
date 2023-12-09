@@ -1277,7 +1277,7 @@ namespace GnollHackX
         public void ClientCallback_FreeMemory(ref IntPtr ptr)
         {
             IntPtr inComingIntPtr = ptr;
-            Boolean issame = (inComingIntPtr == _outGoingIntPtr);
+            bool issame = (inComingIntPtr == _outGoingIntPtr);
             if (!issame)
                 Debug.WriteLine("Not same");
 
@@ -1921,6 +1921,9 @@ namespace GnollHackX
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.DebugLog, cmd_param, cmd_param2, cmd_str));
                     }
+                    break;
+                case (int)gui_command_types.GUI_CMD_GAME_ENDED:
+                    GHApp.TryVerifyXlogUserName(); /* In case not verified yet; in advance of possibly posting files to the server and forums */
                     break;
                 default:
                     break;

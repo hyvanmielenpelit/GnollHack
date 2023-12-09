@@ -1562,6 +1562,8 @@ int how;
     }
     update_game_music();
 
+    issue_simple_gui_command(GUI_CMD_GAME_ENDED);
+
     const char* endtext = 0;
     const char* endinfotext = 0;
     int screentextstyle = 0;
@@ -2215,8 +2217,6 @@ int how;
 
     if (CasualMode && how == ASCENDED && has_existing_save_file)
         (void)delete_savefile(); /* The casual mode character gets deleted only upon ascension */
-
-    issue_simple_gui_command(GUI_CMD_GAME_ENDED);
 
     if (have_windows)
         exit_nhwindows((char*)0);
