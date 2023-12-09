@@ -4516,6 +4516,7 @@ boolean stop_at_first_hit_object;
         hit_only_one == 3 ? (bucstatus == -1 ? 1 : bucstatus == 0 ? 4 : 7) :
         hit_only_one == 4 ? (bucstatus == -1 ? 2 : bucstatus == 0 ? 4 : 6) :
         0;
+    int hitores;
 
     if (obj->otyp == SPE_FORCE_BOLT || obj->otyp == SPE_FORCE_STRIKE || obj->otyp == WAN_STRIKING)
     {
@@ -4534,8 +4535,7 @@ boolean stop_at_first_hit_object;
     poly_zapped = -1;
     for (otmp = level.objects[tx][ty]; otmp; otmp = next_obj) 
     {
-        context.bhitcount++;
-        if (hit_only_one && hitanything > bhitlimit)
+        if (hit_only_one && context.bhitcount >= bhitlimit)
             break;
 
         next_obj = otmp->nexthere;
@@ -4544,7 +4544,9 @@ boolean stop_at_first_hit_object;
             && hides_under(youmonst.data))
             continue;
 
-        hitanything += (*fhito)(otmp, obj, origmonst);
+        hitores = (*fhito)(otmp, obj, origmonst);
+        hitanything += hitores;
+        context.bhitcount += hitores;
 
         if (hitanything && stop_at_first_hit_object)
             break;
