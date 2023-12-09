@@ -1051,6 +1051,8 @@ namespace GnollHackX.Pages.MainScreen
         private async void XlogTestButton_Clicked(object sender, EventArgs e)
         {
             XlogTestButton.IsEnabled = false;
+            GHApp.XlogUserName = PostXlogUserNameEntry.Text;
+            GHApp.XlogPassword = PostXlogPasswordEntry.Text;
             SendResult res = await GHApp.SendXlogFile("", 1, 0, new List<ForumPostAttachment>(), true);
             if (res.IsSuccess)
             {

@@ -2510,7 +2510,11 @@ namespace GnollHackX
                 }
                 else
                 {
-                    await SendXlogFile("", 1, 0, new List<ForumPostAttachment>(), true);
+                    SendResult res = await SendXlogFile("", 1, 0, new List<ForumPostAttachment>(), true);
+                    if (res.IsSuccess)
+                        Debug.WriteLine("XLog user name successfully verified.");
+                    else
+                        Debug.WriteLine("XLog user name verification failed.");
                 }
             }
         }
@@ -2781,6 +2785,7 @@ namespace GnollHackX
             try
             {
                 string postaddress = XlogPostAddress;
+                Debug.WriteLine("XlogPostAddress: " + postaddress);
                 if (postaddress != null && postaddress.Length > 8 && postaddress.Substring(0, 8) == "https://" && Uri.IsWellFormedUriString(postaddress, UriKind.Absolute))
                 {
                     using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
@@ -2794,24 +2799,29 @@ namespace GnollHackX
                         cdhv1.Name = "UserName";
                         content1.Headers.ContentDisposition = cdhv1;
                         multicontent.Add(content1);
+                        Debug.WriteLine("UserName: " + username);
 
                         StringContent content3 = new StringContent(password, Encoding.UTF8, "text/plain");
                         ContentDispositionHeaderValue cdhv3 = new ContentDispositionHeaderValue("form-data");
                         cdhv3.Name = "Password";
                         content3.Headers.ContentDisposition = cdhv3;
                         multicontent.Add(content3);
+                        Debug.WriteLine("Password: " + password);
 
                         StringContent content4 = new StringContent(XlogAntiForgeryToken, Encoding.UTF8, "text/plain");
                         ContentDispositionHeaderValue cdhv4 = new ContentDispositionHeaderValue("form-data");
                         cdhv4.Name = "AntiForgeryToken";
                         content4.Headers.ContentDisposition = cdhv4;
                         multicontent.Add(content4);
+                        Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
 
-                        StringContent content2 = new StringContent(xlogentry_string, Encoding.UTF8, "text/plain");
+                        string adjusted_entry_string = xlogentry_string.Replace("○", "\t").Replace("◙", Environment.NewLine);
+                        StringContent content2 = new StringContent(adjusted_entry_string, Encoding.UTF8, "text/plain");
                         ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
                         cdhv2.Name = "XLogEntry";
                         content2.Headers.ContentDisposition = cdhv2;
                         multicontent.Add(content2);
+                        Debug.WriteLine("XLogEntry: " + adjusted_entry_string);
 
                         if (xlogattachments != null)
                         {
@@ -2826,9 +2836,11 @@ namespace GnollHackX
                                     var stream = new FileStream(fullFilePath, FileMode.Open);
                                     StreamContent content5 = new StreamContent(stream);
                                     ContentDispositionHeaderValue cdhv5 = new ContentDispositionHeaderValue("form-data");
-                                    cdhv5.Name = attachment.ContentType == "text/plain" ? "PlainTextDumplog" : attachment.ContentType == "text/html" ? "HtmlDumplog" : "GameData";
+                                    cdhv5.Name = attachment.ContentType == "text/plain" ? "PlainTextDumpLog" : attachment.ContentType == "text/html" ? "HtmlDumpLog" : "GameData";
+                                    cdhv5.FileName = filename;
                                     content5.Headers.ContentDisposition = cdhv5;
                                     multicontent.Add(content5);
+                                    Debug.WriteLine("File Added: " + cdhv5.Name + ", " + fullFilePath);
                                 }
                             }
                         }
@@ -2836,6 +2848,8 @@ namespace GnollHackX
                         {
                             cts.CancelAfter(string.IsNullOrEmpty(xlogentry_string) ? 5000 : xlogattachments == null || xlogattachments.Count == 0 ? 10000 : 120000);
                             string responseContent = "";
+                            //string htmlrequest = await multicontent.ReadAsStringAsync();
+                            //Debug.WriteLine(htmlrequest);
 
                             try
                             {
