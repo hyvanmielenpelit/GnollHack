@@ -2906,7 +2906,7 @@ namespace GnollHackX
 
                                     using (StreamWriter sw = File.CreateText(targetfilepath))
                                     {
-                                        ForumPost fp = new ForumPost(true, true, status_type, status_datatype, xlogentry_string, xlogattachments != null ? xlogattachments : new List<ForumPostAttachment>(), false);
+                                        ForumPost fp = new ForumPost(1, true, status_type, status_datatype, xlogentry_string, xlogattachments != null ? xlogattachments : new List<ForumPostAttachment>(), false);
                                         string json = JsonConvert.SerializeObject(fp);
                                         Debug.WriteLine(json);
                                         sw.Write(json);
@@ -3061,7 +3061,7 @@ namespace GnollHackX
 
                                     using (StreamWriter sw = File.CreateText(targetfilepath))
                                     {
-                                        ForumPost fp = new ForumPost(false, is_game_status, status_type, status_datatype, message, forumpostattachments != null ? forumpostattachments : new List<ForumPostAttachment>(), false);
+                                        ForumPost fp = new ForumPost(0, is_game_status, status_type, status_datatype, message, forumpostattachments != null ? forumpostattachments : new List<ForumPostAttachment>(), false);
                                         string json = JsonConvert.SerializeObject(fp);
                                         sw.Write(json);
                                     }

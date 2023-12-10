@@ -2273,12 +2273,12 @@ namespace GnollHackX.Pages.Game
                                 break;
                             case GHRequestType.PostDiagnosticData:
                             case GHRequestType.PostGameStatus:
-                                _mainPage.EnqueuePost(new ForumPost(false, req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
+                                _mainPage.EnqueuePost(new ForumPost(0, req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
                                 _mainPage.StartGeneralTimer();
                                 //PostToForum(req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, false);
                                 break;
                             case GHRequestType.PostXlogEntry:
-                                _mainPage.EnqueuePost(new ForumPost(true, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
+                                _mainPage.EnqueuePost(new ForumPost(1, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
                                 //PostXlogEntry(req.RequestInt, req.RequestInt2, req.RequestString);
                                 break;
                             case GHRequestType.DebugLog:
@@ -15852,7 +15852,7 @@ namespace GnollHackX.Pages.Game
             {
                 await GHApp.CreateCrashReport(this);
             }
-            _mainPage.EnqueuePost(new ForumPost(false, false, (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC, 0, text, null, answer));
+            _mainPage.EnqueuePost(new ForumPost(0, false, (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC, 0, text, null, answer));
             //PostToForum(false, (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC, 0, text, answer);
 
             ConcurrentQueue<GHResponse> queue;

@@ -210,13 +210,15 @@ namespace GnollHackX
         {
             while(_postingQueue.TryDequeue(out var post))
             {
-                if (post.is_xlog)
+                switch(post.post_type)
                 {
-                    await PostXlogEntryAsync(post.status_type, post.status_datatype, post.status_string);
-                }
-                else
-                {
-                    await PostToForumAsync(post.is_game_status, post.status_type, post.status_datatype, post.status_string, post.forcesend);
+                    case 1:
+                        await PostXlogEntryAsync(post.status_type, post.status_datatype, post.status_string);
+                        break;
+                    case 0:
+                    default:
+                        await PostToForumAsync(post.is_game_status, post.status_type, post.status_datatype, post.status_string, post.forcesend);
+                        break;
                 }
             }
         }
