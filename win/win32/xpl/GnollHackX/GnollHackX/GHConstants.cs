@@ -1601,7 +1601,7 @@ namespace GnollHackX
         public const string XlogPostQueueDirectory = "xlogpost";
         public const string XlogPostFileNamePrefix = "queued_xlog_post_";
         public const string XlogPostFileNameSuffix = ".txt";
-        public const double MainScreenGeneralCounterIntervalInSeconds = 5;
+        public const double MainScreenGeneralCounterIntervalInSeconds = 2.0;
     }
 
     [StructLayout(LayoutKind.Sequential)]

@@ -809,7 +809,7 @@ time_t when;
         else 
         {
             writexlentry(xlfile, t0, how);
-            (void) fclose(xlfile);
+            (void)fclose(xlfile);
         }
         unlock_file(XLOGFILE);
     }

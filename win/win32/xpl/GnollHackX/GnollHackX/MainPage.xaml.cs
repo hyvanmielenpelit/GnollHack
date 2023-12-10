@@ -46,6 +46,10 @@ namespace GnollHackX
         private bool _generaTimerIsOn = false;
         public bool GeneralTimerIsOn { get { lock (_generalTimerLock) { return _generaTimerIsOn; } } set { lock (_generalTimerLock) { _generaTimerIsOn = value; } } }
 
+        private object _generalTimerWorkOnTasksLock = new object();
+        private bool _generaTimerWorkOnTasks = false;
+        public bool GeneralTimerWorkOnTasks { get { lock (_generalTimerWorkOnTasksLock) { return _generaTimerWorkOnTasks; } } set { lock (_generalTimerWorkOnTasksLock) { _generaTimerWorkOnTasks = value; } } }
+
         private object _stopGeneralTimerLock = new object();
         private bool _stopGeneraTimerIsOn = false;
         public bool StopGeneralTimer { get { lock (_stopGeneralTimerLock) { return _stopGeneraTimerIsOn; } } set { lock (_stopGeneralTimerLock) { _stopGeneraTimerIsOn = value; } } }
@@ -66,6 +70,7 @@ namespace GnollHackX
             if(!GeneralTimerIsOn)
             {
                 GeneralTimerIsOn = true;
+                GeneralTimerTasks();
                 Device.StartTimer(TimeSpan.FromSeconds(GHConstants.MainScreenGeneralCounterIntervalInSeconds), () =>
                 {
                     if (GameStarted || StopGeneralTimer)
@@ -88,36 +93,43 @@ namespace GnollHackX
 
         private async Task GeneralTimerTasksAsync()
         {
-            if (GHApp.HasInternetAccess)
+            bool hasinternet = GHApp.HasInternetAccess;
+            if (!GeneralTimerWorkOnTasks)
             {
+                GeneralTimerWorkOnTasks = true;
                 string directory = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
                 string directory2 = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
                 bool has_files = Directory.Exists(directory) && Directory.GetFiles(directory)?.Length > 0;
                 bool has_files2 = Directory.Exists(directory2) && Directory.GetFiles(directory2)?.Length > 0;
-                if (!has_files && !has_files2 && (!GHApp.PostingXlogEntries || string.IsNullOrEmpty(GHApp.XlogUserName) || GHApp.XlogUserNameVerified))
+                bool xlogusernameok = (!GHApp.PostingXlogEntries || string.IsNullOrEmpty(GHApp.XlogUserName) || GHApp.XlogUserNameVerified);
+                bool postingqueueempty = _postingQueue.Count == 0;
+                if (!has_files && !has_files2 && xlogusernameok && postingqueueempty)
                 {
                     StopGeneralTimer = true;
                 }
                 else
                 {
-                    if (GHApp.PostingXlogEntries && !string.IsNullOrEmpty(GHApp.XlogUserName) && !GHApp.XlogUserNameVerified)
+                    if (hasinternet && GHApp.PostingXlogEntries && !string.IsNullOrEmpty(GHApp.XlogUserName) && !GHApp.XlogUserNameVerified)
                         await GHApp.TryVerifyXlogUserNameAsync();
-                    if (has_files)
-                        await ProcessPostQueue(false, directory, GHConstants.ForumPostFileNamePrefix);
-                    if (has_files2)
-                        await ProcessPostQueue(true, directory2, GHConstants.XlogPostFileNamePrefix);
+                    if (_postingQueue.Count > 0)
+                        await ProcessPostingQueue();
+                    if (hasinternet && has_files)
+                        await ProcessSavedPosts(false, directory, GHConstants.ForumPostFileNamePrefix);
+                    if (hasinternet && has_files2)
+                        await ProcessSavedPosts(true, directory2, GHConstants.XlogPostFileNamePrefix);
                 }
+                GeneralTimerWorkOnTasks = false;
             }
         }
 
-        private async Task ProcessPostQueue(bool isxlog, string dir, string fileprefix)
+        private async Task ProcessSavedPosts(bool isxlog, string dir, string fileprefix)
         {
             if(dir != null && Directory.Exists(dir))
             {
                 string[] filepaths = Directory.GetFiles(dir);
                 if (filepaths != null)
                 {
-                    Debug.WriteLine("ProcessPostQueue in " + dir + ": " + filepaths.Length);
+                    Debug.WriteLine("ProcessSavedPosts in " + dir + ": " + filepaths.Length);
                     foreach (string str in filepaths)
                     {
                         Debug.WriteLine(str);
@@ -185,6 +197,261 @@ namespace GnollHackX
                 }
             }
         }
+
+        private readonly ConcurrentQueue<ForumPost> _postingQueue = new ConcurrentQueue<ForumPost>();
+
+        public void EnqueuePost(ForumPost post)
+        {
+            _postingQueue.Enqueue(post);
+            StartGeneralTimer();
+        }
+
+        private async Task ProcessPostingQueue()
+        {
+            while(_postingQueue.TryDequeue(out var post))
+            {
+                if (post.is_xlog)
+                {
+                    await PostXlogEntryAsync(post.status_type, post.status_datatype, post.status_string);
+                }
+                else
+                {
+                    await PostToForumAsync(post.is_game_status, post.status_type, post.status_datatype, post.status_string, post.forcesend);
+                }
+            }
+        }
+
+
+        private List<ForumPostAttachment> _forumPostAttachments = new List<ForumPostAttachment>();
+
+        public async void PostToForum(bool is_game_status, int status_type, int status_datatype, string status_string, bool forcesend)
+        {
+            await PostToForumAsync(is_game_status, status_type, status_datatype, status_string, forcesend);
+        }
+
+        public async Task PostToForumAsync(bool is_game_status, int status_type, int status_datatype, string status_string, bool forcesend)
+        {
+            if (forcesend ||
+                (!is_game_status &&
+                (status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CREATE_ATTACHMENT_FROM_TEXT
+                 || status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_ATTACHMENT)))
+            {
+                /* Bypass send checks */
+            }
+            else if (!is_game_status && !GHApp.PostingDiagnosticData && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CRITICAL)
+            {
+                /* Critical or panic information -- Ask the player */
+                bool sendok = await DisplayAlert("Critical Diagnostic Data", "GnollHack would like to send critical diagnostic data to the development team. Allow?", "Yes", "No");
+                if (!sendok)
+                    goto cleanup;
+            }
+            else
+            {
+                if (is_game_status ? !GHApp.PostingGameStatus : !GHApp.PostingDiagnosticData)
+                    goto cleanup;
+            }
+
+            if (is_game_status && status_string != null && status_string != "" && status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT)
+            {
+                switch (status_datatype)
+                {
+                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_GENERIC:
+                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "application/zip", "game data", !is_game_status, status_type, false));
+                        break;
+                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_TEXT:
+                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/plain", "dumplog", !is_game_status, status_type, false));
+                        break;
+                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_HTML:
+                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/html", "HTML dumplog", !is_game_status, status_type, false));
+                        break;
+                }
+                return;
+            }
+            else if (!is_game_status && status_string != null && status_string != "" && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_ATTACHMENT)
+            {
+                switch (status_datatype)
+                {
+                    case (int)diagnostic_data_attachment_types.DIAGNOSTIC_DATA_ATTACHMENT_GENERIC:
+                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "application/zip", "diagnostic data", !is_game_status, status_type, false));
+                        break;
+                    case (int)diagnostic_data_attachment_types.DIAGNOSTIC_DATA_ATTACHMENT_FILE_DESCRIPTOR_LIST:
+                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/plain", "file descriptor list", !is_game_status, status_type, true));
+                        break;
+                }
+                return;
+            }
+            else if (!is_game_status && status_string != null && status_string != "" && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CREATE_ATTACHMENT_FROM_TEXT)
+            {
+                if (status_datatype == (int)diagnostic_data_attachment_types.DIAGNOSTIC_DATA_ATTACHMENT_FILE_DESCRIPTOR_LIST)
+                {
+                    status_string = status_string.Replace(" | ", Environment.NewLine);
+                    status_string = status_string.Replace("◙", Environment.NewLine);
+                }
+
+                string tempdirpath = Path.Combine(GHApp.GHPath, "temp");
+                if (!Directory.Exists(tempdirpath))
+                    GHApp.CheckCreateDirectory(tempdirpath);
+                int number = 0;
+                string temp_string;
+                do
+                {
+                    temp_string = Path.Combine(tempdirpath, "tmp_attachment_" + number + ".txt");
+                    number++;
+                } while (File.Exists(temp_string));
+
+                GHApp.GnollHackService.Chmod(tempdirpath, (uint)ChmodPermissions.S_IALL);
+                try
+                {
+                    using (FileStream fs = new FileStream(temp_string, FileMode.Create))
+                    {
+                        using (StreamWriter sw = new StreamWriter(fs))
+                        {
+                            sw.Write(status_string);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
+                _forumPostAttachments.Add(new ForumPostAttachment(temp_string, "text/plain", "diagnostic data", !is_game_status, status_type, true));
+                return;
+            }
+
+            string message = "";
+            if (status_string != null)
+                message = status_string;
+            if (message == "")
+                goto cleanup;
+
+            if (!is_game_status)
+            {
+                string ver = GHApp.GHVersionString + " / " + VersionTracking.CurrentVersion + " / " + VersionTracking.CurrentBuild;
+                string manufacturer = DeviceInfo.Manufacturer;
+                if (manufacturer.Length > 0)
+                    manufacturer = manufacturer.Substring(0, 1).ToUpper() + manufacturer.Substring(1);
+                string device_model = manufacturer + " " + DeviceInfo.Model;
+                string platform = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
+
+                ulong TotalMemInBytes = GHApp.PlatformService.GetDeviceMemoryInBytes();
+                ulong TotalMemInMB = (TotalMemInBytes / 1024) / 1024;
+                ulong FreeDiskSpaceInBytes = GHApp.PlatformService.GetDeviceFreeDiskSpaceInBytes();
+                ulong FreeDiskSpaceInGB = ((FreeDiskSpaceInBytes / 1024) / 1024) / 1024;
+                ulong TotalDiskSpaceInBytes = GHApp.PlatformService.GetDeviceTotalDiskSpaceInBytes();
+                ulong TotalDiskSpaceInGB = ((TotalDiskSpaceInBytes / 1024) / 1024) / 1024;
+
+                string totmem = TotalMemInMB + " MB";
+                string diskspace = FreeDiskSpaceInGB + " GB" + " / " + TotalDiskSpaceInGB + " GB";
+
+                string player_name = Preferences.Get("LastUsedPlayerName", "Unknown Player");
+                string info = ver + ", " + platform + ", " + device_model + ", " + totmem + ", " + diskspace;
+
+                switch (status_type)
+                {
+                    case (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC:
+                        message = player_name + " - Panic: " + message + " [" + info + "]";
+                        break;
+                    case (int)diagnostic_data_types.DIAGNOSTIC_DATA_IMPOSSIBLE:
+                        message = player_name + " - Impossible: " + message + " [" + info + "]";
+                        break;
+                    case (int)diagnostic_data_types.DIAGNOSTIC_DATA_CRITICAL:
+                        message = player_name + " - Critical:\n" + message + "\n[" + info + "]";
+                        break;
+                    default:
+                        message = player_name + " - Diagnostics: " + message + " [" + info + "]";
+                        break;
+                }
+            }
+            else
+            {
+                string username = GHApp.XlogUserName;
+                if (GHApp.PostingXlogEntries && !string.IsNullOrWhiteSpace(username) && GHApp.XlogUserNameVerified)
+                    message = message + " [" + username + "]";
+
+                string portver = VersionTracking.CurrentVersion;
+                DevicePlatform platform = DeviceInfo.Platform;
+                string platstr = platform != null ? platform.ToString() : "";
+                if (platstr == null)
+                    platstr = "";
+                string platid;
+                if (platstr.Length > 0)
+                    platid = platstr.Substring(0, 1).ToLower();
+                else
+                    platid = "";
+
+                switch (status_type)
+                {
+                    default:
+                        message = message + " [" + portver + platid + "]";
+                        break;
+                }
+            }
+
+            await GHApp.SendForumPost(is_game_status, message, status_type, status_datatype, _forumPostAttachments, false);
+            _forumPostAttachments.Clear();
+            return;
+
+        cleanup:
+            foreach (var attachment in _forumPostAttachments)
+            {
+                if (attachment.IsTemporary)
+                {
+                    try
+                    {
+                        File.Delete(attachment.FullPath);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine(e.Message);
+                    }
+                }
+            }
+            _forumPostAttachments.Clear();
+            return;
+        }
+
+
+        private List<ForumPostAttachment> _xlogPostAttachments = new List<ForumPostAttachment>();
+
+        public async void PostXlogEntry(int status_type, int status_datatype, string xlogentry_string)
+        {
+            await PostXlogEntryAsync(status_type, status_datatype, xlogentry_string);
+        }
+
+        public async Task PostXlogEntryAsync(int status_type, int status_datatype, string xlogentry_string)
+        {
+            if (!GHApp.PostingXlogEntries)
+                return;
+
+            if (xlogentry_string == null || xlogentry_string == "")
+            {
+                _xlogPostAttachments.Clear();
+                return;
+            }
+
+            if (status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT)
+            {
+                switch (status_datatype)
+                {
+                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_GENERIC:
+                        _xlogPostAttachments.Add(new ForumPostAttachment(xlogentry_string, "application/zip", "game data", false, status_type, false));
+                        break;
+                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_TEXT:
+                        _xlogPostAttachments.Add(new ForumPostAttachment(xlogentry_string, "text/plain", "dumplog", false, status_type, false));
+                        break;
+                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_HTML:
+                        _xlogPostAttachments.Add(new ForumPostAttachment(xlogentry_string, "text/html", "HTML dumplog", false, status_type, false));
+                        break;
+                }
+                return;
+            }
+
+            Debug.WriteLine("Starting posting xlog entry: " + xlogentry_string);
+            SendResult res = await GHApp.SendXlogFile(xlogentry_string, status_type, status_datatype, _xlogPostAttachments, false);
+            _xlogPostAttachments.Clear();
+            return;
+        }
+
 
         public void ActivateLocalGameButton()
         {
@@ -312,7 +579,6 @@ namespace GnollHackX
             UpperButtonGrid.IsEnabled = true;
             LogoGrid.IsEnabled = true;
 
-            await GeneralTimerTasksAsync();
             StartGeneralTimer();
         }
 
@@ -653,16 +919,24 @@ namespace GnollHackX
             }
             else
             {
+                ExitAppButton.IsEnabled = false;
+                ExitAppButton.TextColor = GHColors.Red;
                 await CloseApp();
+                /* Should not come here */
+                ExitAppButton.TextColor = GHColors.White;
+                ExitAppButton.IsEnabled = true;
             }
         }
 
         private async Task CloseApp()
         {
+            StopGeneralTimer = true; /* Stop timer */
+            Task t1 = GeneralTimerTasksAsync(); /* Make sure outstanding queues are processed before closing application */
+            Task t2 = Task.Delay(1000); /* Give 1 second to close at maximum */
+            await Task.WhenAny(t1, t2);
             GHApp.PlatformService.CloseApplication();
-            await Task.Delay(75);
-            //Thread.Sleep(75);
-            System.Diagnostics.Process.GetCurrentProcess().Kill();
+            await Task.Delay(100);
+            Process.GetCurrentProcess().Kill();
         }
 
         private async void ClearFilesButton_Clicked(object sender, EventArgs e)
@@ -817,7 +1091,9 @@ namespace GnollHackX
                     await Task.Delay(50);
                 }
 
+                PopupOkButton.IsEnabled = false;
                 await CloseApp();
+                PopupOkButton.IsEnabled = true; /* Should not come here */
             }
             PopupGrid.IsVisible = false;
         }

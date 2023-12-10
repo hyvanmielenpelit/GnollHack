@@ -2823,6 +2823,9 @@ namespace GnollHackX
                         multicontent.Add(content2);
                         Debug.WriteLine("XLogEntry: " + adjusted_entry_string);
 
+                        List<FileStream> filestreams = new List<FileStream>();
+                        List<StreamContent> contents = new List<StreamContent>();
+
                         if (xlogattachments != null)
                         {
                             foreach (ForumPostAttachment attachment in xlogattachments)
@@ -2833,8 +2836,10 @@ namespace GnollHackX
                                 {
                                     FileInfo fileinfo = new FileInfo(fullFilePath);
                                     string filename = fileinfo.Name;
-                                    var stream = new FileStream(fullFilePath, FileMode.Open);
+                                    FileStream stream = new FileStream(fullFilePath, FileMode.Open);
                                     StreamContent content5 = new StreamContent(stream);
+                                    filestreams.Add(stream);
+                                    contents.Add(content5);
                                     ContentDispositionHeaderValue cdhv5 = new ContentDispositionHeaderValue("form-data");
                                     cdhv5.Name = attachment.ContentType == "text/plain" ? "PlainTextDumpLog" : attachment.ContentType == "text/html" ? "HtmlDumpLog" : "GameData";
                                     cdhv5.FileName = filename;
@@ -2870,9 +2875,17 @@ namespace GnollHackX
                             }
 
                             if (res.IsSuccess)
+                            {
                                 SetXlogUserNameVerified(true, username, password);
-                            else if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */ || res.StatusCode == HttpStatusCode.Locked /* 423 */))
-                                SetXlogUserNameVerified(false, null, null);
+                                Debug.WriteLine("XLog entry successfully sent. Status Code: " + (int)res.StatusCode);
+                            }
+                            else
+                            {
+                                Debug.WriteLine("Sending XLog entry failed. Status Code: " + (int)res.StatusCode);
+                                if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */ || res.StatusCode == HttpStatusCode.Locked /* 423 */))
+                                    SetXlogUserNameVerified(false, null, null);
+
+                            }
 
                             if (!res.IsSuccess && !is_from_queue)
                             {
@@ -2893,7 +2906,7 @@ namespace GnollHackX
 
                                     using (StreamWriter sw = File.CreateText(targetfilepath))
                                     {
-                                        ForumPost fp = new ForumPost(true, status_type, status_datatype, xlogentry_string, xlogattachments != null ? xlogattachments : new List<ForumPostAttachment>());
+                                        ForumPost fp = new ForumPost(true, true, status_type, status_datatype, xlogentry_string, xlogattachments != null ? xlogattachments : new List<ForumPostAttachment>(), false);
                                         string json = JsonConvert.SerializeObject(fp);
                                         Debug.WriteLine(json);
                                         sw.Write(json);
@@ -2905,6 +2918,16 @@ namespace GnollHackX
                         content2.Dispose();
                         content3.Dispose();
                         content4.Dispose();
+                        foreach(FileStream fs in filestreams)
+                        {
+                            fs.Dispose();
+                        }
+                        filestreams.Clear();
+                        foreach (StreamContent cnt in contents)
+                        {
+                            cnt.Dispose();
+                        }
+                        contents.Clear();
                         multicontent.Dispose();
                     }
                 }
@@ -2944,6 +2967,9 @@ namespace GnollHackX
                     using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
                     {
                         HttpContent content = null;
+                        StringContent content1 = null;
+                        List<FileStream> filestreams = new List<FileStream>();
+                        List<StreamContent> contents = new List<StreamContent>();
                         if (forumpostattachments != null && forumpostattachments.Count > 0)
                         {
                             DiscordWebHookPostWithAttachment post = new DiscordWebHookPostWithAttachment(message);
@@ -2957,7 +2983,7 @@ namespace GnollHackX
                             }
                             string json = JsonConvert.SerializeObject(post);
                             MultipartFormDataContent multicontent = new MultipartFormDataContent("-------------------boundary");
-                            StringContent content1 = new StringContent(json, Encoding.UTF8, "application/json");
+                            content1 = new StringContent(json, Encoding.UTF8, "application/json");
                             ContentDispositionHeaderValue cdhv = new ContentDispositionHeaderValue("form-data");
                             cdhv.Name = "payload_json";
                             content1.Headers.ContentDisposition = cdhv;
@@ -2973,9 +2999,8 @@ namespace GnollHackX
                                     string filename = fileinfo.Name;
                                     var stream = new FileStream(fullFilePath, FileMode.Open);
                                     StreamContent content2 = new StreamContent(stream);
-                                    //byte[] bytes = new byte[stream.Length];
-                                    //int bytesread = await stream.ReadAsync(bytes, 0, bytes.Length);
-                                    //ByteArrayContent content2 = new ByteArrayContent(bytes);
+                                    filestreams.Add(stream);
+                                    contents.Add(content2);
                                     ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
                                     cdhv2.Name = "files[" + aidx + "]";
                                     cdhv2.FileName = filename;
@@ -3036,14 +3061,27 @@ namespace GnollHackX
 
                                     using (StreamWriter sw = File.CreateText(targetfilepath))
                                     {
-                                        ForumPost fp = new ForumPost(is_game_status, status_type, status_datatype, message, forumpostattachments != null ? forumpostattachments : new List<ForumPostAttachment>());
+                                        ForumPost fp = new ForumPost(false, is_game_status, status_type, status_datatype, message, forumpostattachments != null ? forumpostattachments : new List<ForumPostAttachment>(), false);
                                         string json = JsonConvert.SerializeObject(fp);
                                         sw.Write(json);
                                     }
                                 }
                             }
                         }
-                        content.Dispose();
+                        if(content1 != null)
+                            content1.Dispose();
+                        if (content != null)
+                            content.Dispose();
+                        foreach (FileStream fs in filestreams)
+                        {
+                            fs.Dispose();
+                        }
+                        filestreams.Clear();
+                        foreach (StreamContent cnt in contents)
+                        {
+                            cnt.Dispose();
+                        }
+                        contents.Clear();
                     }
                 }
             }

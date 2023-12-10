@@ -21,8 +21,6 @@ using System.Collections;
 using System.Data;
 using System.Xml.Linq;
 
-
-
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
@@ -462,14 +460,6 @@ namespace GnollHackX.Pages.Game
         private bool _breatheAnimations = false;
         public bool BreatheAnimations { get { lock (_breatheAnimationLock) { return _breatheAnimations; } } set { lock (_breatheAnimationLock) { _breatheAnimations = value; } } }
 
-        //private readonly object _showPut2BagContextCommandLock = new object();
-        //private bool _showPut2BagContextCommand = false;
-        //public bool ShowPut2BagContextCommand { get { lock (_showPut2BagContextCommandLock) { return _showPut2BagContextCommand; } } set { lock (_showPut2BagContextCommandLock) { _showPut2BagContextCommand = value; } } }
-
-        //private readonly object _showPrevWepContextCommandLock = new object();
-        //private bool _showPrevWepContextCommand = false;
-        //public bool ShowPrevWepContextCommand { get { lock (_showPrevWepContextCommandLock) { return _showPrevWepContextCommand; } } set { lock (_showPrevWepContextCommandLock) { _showPrevWepContextCommand = value; } } }
-
         private readonly object _longerMessageHistoryLock = new object();
         bool _longerMessageHistory = false;
         public bool LongerMessageHistory
@@ -714,14 +704,6 @@ namespace GnollHackX.Pages.Game
         private bool _mapNoClipMode = false;
         public bool MapNoClipMode { get { lock (_mapNoClipModeLock) { return _mapNoClipMode; } } set { lock (_mapNoClipModeLock) { _mapNoClipMode = value; } } }
 
-        //private object _mapAlternateNoClipModeLock = new object();
-        //private bool _mapAlternateNoClipMode = false;
-        //public bool MapAlternateNoClipMode { get { lock (_mapAlternateNoClipModeLock) { return _mapAlternateNoClipMode; } } set { lock (_mapAlternateNoClipModeLock) { _mapAlternateNoClipMode = value; } } }
-
-        //private object _zoomChangeCenterModeLock = new object();
-        //private bool _zoomChangeCenterMode = false;
-        //public bool ZoomChangeCenterMode { get { lock (_zoomChangeCenterModeLock) { return _zoomChangeCenterMode; } } set { lock (_zoomChangeCenterModeLock) { _zoomChangeCenterMode = value; } } }
-
         private readonly object _mapLookModeLock = new object();
         private bool _mapLookMode = false;
         public bool MapLookMode { get { lock (_mapLookModeLock) { return _mapLookMode; } } set { lock (_mapLookModeLock) { _mapLookMode = value; } } }
@@ -821,10 +803,8 @@ namespace GnollHackX.Pages.Game
             LighterDarkening = Preferences.Get("LighterDarkening", GHConstants.DefaultLighterDarkening);
             DrawWallEnds = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
             BreatheAnimations = Preferences.Get("BreatheAnimations", GHConstants.DefaultBreatheAnimations);
-            //ShowPut2BagContextCommand = Preferences.Get("ShowPut2BagContextCommand", GHConstants.DefaultShowPickNStashContextCommand);
-            //ShowPrevWepContextCommand = Preferences.Get("ShowPrevWepContextCommand", GHConstants.DefaultShowPrevWepContextCommand);
             AlternativeLayerDrawing = Preferences.Get("AlternativeLayerDrawing", GHConstants.DefaultAlternativeLayerDrawing);
-            _longerMessageHistory = GHApp.SavedLongerMessageHistory; //Preferences.Get("LongerMessageHistory", false); /* Cannot send response command yet, hence private variable */
+            _longerMessageHistory = GHApp.SavedLongerMessageHistory; /* Cannot send response command yet, hence using private variable */
 
             float deffontsize = GetDefaultMapFontSize();
             MapFontSize = Preferences.Get("MapFontSize", deffontsize);
@@ -836,8 +816,6 @@ namespace GnollHackX.Pages.Game
                 _mapMiniOffsetY = Preferences.Get("MapMiniOffsetY", 0.0f);
             }
             MapNoClipMode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
-            //MapAlternateNoClipMode = Preferences.Get("MapAlternateNoClipMode", GHConstants.DefaultMapAlternateNoClipMode);
-            //ZoomChangeCenterMode = Preferences.Get("ZoomChangeCenterMode", GHConstants.DefaultZoomChangeCenterMode);
 
             for (int i = 0; i < 6; i++)
             {
@@ -2295,10 +2273,13 @@ namespace GnollHackX.Pages.Game
                                 break;
                             case GHRequestType.PostDiagnosticData:
                             case GHRequestType.PostGameStatus:
-                                PostToForum(req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, false);
+                                _mainPage.EnqueuePost(new ForumPost(false, req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
+                                _mainPage.StartGeneralTimer();
+                                //PostToForum(req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, false);
                                 break;
                             case GHRequestType.PostXlogEntry:
-                                PostXlogEntry(req.RequestInt, req.RequestInt2, req.RequestString);
+                                _mainPage.EnqueuePost(new ForumPost(true, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
+                                //PostXlogEntry(req.RequestInt, req.RequestInt2, req.RequestString);
                                 break;
                             case GHRequestType.DebugLog:
                                 DisplayDebugLog(req.RequestString, req.RequestInt, req.RequestInt2);
@@ -2373,225 +2354,6 @@ namespace GnollHackX.Pages.Game
                         break;
                 }
             }
-        }
-
-        private List<ForumPostAttachment> _forumPostAttachments = new List<ForumPostAttachment>();
-
-        private async void PostToForum(bool is_game_status, int status_type, int status_datatype, string status_string, bool forcesend)
-        {
-            if(forcesend ||
-                (!is_game_status && 
-                (status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CREATE_ATTACHMENT_FROM_TEXT 
-                 || status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_ATTACHMENT)))
-            {
-                /* Bypass send checks */
-            }
-            else if (!is_game_status && !GHApp.PostingDiagnosticData && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CRITICAL)
-            {
-                /* Critical or panic information -- Ask the player */
-                bool sendok = await DisplayAlert("Critical Diagnostic Data", "GnollHack would like to send critical diagnostic data to the development team. Allow?", "Yes", "No");
-                if (!sendok)
-                    goto cleanup;
-            }
-            else
-            {
-                if (is_game_status ? !GHApp.PostingGameStatus : !GHApp.PostingDiagnosticData)
-                    goto cleanup;
-            }
-
-            if (is_game_status && status_string != null && status_string != "" && status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT)
-            {
-                switch(status_datatype)
-                {
-                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_GENERIC:
-                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "application/zip", "game data", !is_game_status, status_type, false));
-                        break;
-                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_TEXT:
-                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/plain", "dumplog", !is_game_status, status_type, false));
-                        break;
-                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_HTML:
-                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/html", "HTML dumplog", !is_game_status, status_type, false));
-                        break;
-                }
-                return;
-            }
-            else if(!is_game_status && status_string != null && status_string != "" && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_ATTACHMENT)
-            {
-                switch (status_datatype)
-                {
-                    case (int)diagnostic_data_attachment_types.DIAGNOSTIC_DATA_ATTACHMENT_GENERIC:
-                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "application/zip", "diagnostic data", !is_game_status, status_type, false));
-                        break;
-                    case (int)diagnostic_data_attachment_types.DIAGNOSTIC_DATA_ATTACHMENT_FILE_DESCRIPTOR_LIST:
-                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/plain", "file descriptor list", !is_game_status, status_type, true));
-                        break;
-                }
-                return;
-            }
-            else if (!is_game_status && status_string != null && status_string != "" && status_type == (int)diagnostic_data_types.DIAGNOSTIC_DATA_CREATE_ATTACHMENT_FROM_TEXT)
-            {
-                if (status_datatype == (int)diagnostic_data_attachment_types.DIAGNOSTIC_DATA_ATTACHMENT_FILE_DESCRIPTOR_LIST)
-                {
-                    status_string = status_string.Replace(" | ", Environment.NewLine);
-                    status_string = status_string.Replace("◙", Environment.NewLine);
-                }
-
-                string tempdirpath = Path.Combine(GHApp.GHPath, "temp");
-                if (!Directory.Exists(tempdirpath))
-                   GHApp.CheckCreateDirectory(tempdirpath);
-                int number = 0;
-                string temp_string;
-                do
-                {
-                    temp_string = Path.Combine(tempdirpath, "tmp_attachment_" + number + ".txt");
-                    number++;
-                } while (File.Exists(temp_string));
-
-                GHApp.GnollHackService.Chmod(tempdirpath, (uint)ChmodPermissions.S_IALL);
-                try
-                {
-                    using (FileStream fs = new FileStream(temp_string, FileMode.Create))
-                    {
-                        using (StreamWriter sw = new StreamWriter(fs))
-                        {
-                            sw.Write(status_string);
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.Message);
-                }
-                _forumPostAttachments.Add(new ForumPostAttachment(temp_string, "text/plain", "diagnostic data", !is_game_status, status_type, true));
-                return;
-            }
-
-            string message = "";
-            if (status_string != null)
-                message = status_string;
-            if (message == "")
-                goto cleanup;
-
-            if (!is_game_status)
-            {
-                string ver = GHApp.GHVersionString + " / " + VersionTracking.CurrentVersion + " / " + VersionTracking.CurrentBuild;
-                string manufacturer = DeviceInfo.Manufacturer;
-                if (manufacturer.Length > 0)
-                    manufacturer = manufacturer.Substring(0, 1).ToUpper() + manufacturer.Substring(1);
-                string device_model = manufacturer + " " + DeviceInfo.Model;
-                string platform = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
-
-                ulong TotalMemInBytes = GHApp.PlatformService.GetDeviceMemoryInBytes();
-                ulong TotalMemInMB = (TotalMemInBytes / 1024) / 1024;
-                ulong FreeDiskSpaceInBytes = GHApp.PlatformService.GetDeviceFreeDiskSpaceInBytes();
-                ulong FreeDiskSpaceInGB = ((FreeDiskSpaceInBytes / 1024) / 1024) / 1024;
-                ulong TotalDiskSpaceInBytes = GHApp.PlatformService.GetDeviceTotalDiskSpaceInBytes();
-                ulong TotalDiskSpaceInGB = ((TotalDiskSpaceInBytes / 1024) / 1024) / 1024;
-
-                string totmem = TotalMemInMB + " MB";
-                string diskspace = FreeDiskSpaceInGB + " GB" + " / " + TotalDiskSpaceInGB + " GB";
-
-                string player_name = Preferences.Get("LastUsedPlayerName", "Unknown Player");
-                string info = ver + ", " + platform + ", " + device_model + ", " + totmem + ", " + diskspace;
-
-                switch(status_type)
-                {
-                    case (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC:
-                        message = player_name + " - Panic: " + message + " [" + info + "]";
-                        break;
-                    case (int)diagnostic_data_types.DIAGNOSTIC_DATA_IMPOSSIBLE:
-                        message = player_name + " - Impossible: " + message + " [" + info + "]";
-                        break;
-                    case (int)diagnostic_data_types.DIAGNOSTIC_DATA_CRITICAL:
-                        message = player_name + " - Critical:\n" + message + "\n[" + info + "]";
-                        break;
-                    default:
-                        message = player_name + " - Diagnostics: " + message + " [" + info + "]";
-                        break;
-                }
-            }
-            else
-            {
-                string username = GHApp.XlogUserName;
-                if (GHApp.PostingXlogEntries && !string.IsNullOrWhiteSpace(username) && GHApp.XlogUserNameVerified)
-                    message = message + " [" + username + "]";
-
-                string portver = VersionTracking.CurrentVersion;
-                DevicePlatform platform = DeviceInfo.Platform;
-                string platstr = platform != null ? platform.ToString() : "";
-                if (platstr == null)
-                    platstr = "";
-                string platid;
-                if (platstr.Length > 0)
-                    platid = platstr.Substring(0, 1).ToLower();
-                else
-                    platid = "";
-
-                switch (status_type)
-                {
-                    default:
-                        message = message + " [" + portver + platid + "]";
-                        break;
-                }
-            }
-
-            await GHApp.SendForumPost(is_game_status, message, status_type, status_datatype, _forumPostAttachments, false);
-            _forumPostAttachments.Clear();
-            return;
-
-        cleanup:
-            foreach(var attachment in _forumPostAttachments)
-            {
-                if(attachment.IsTemporary)
-                {
-                    try
-                    {
-                        File.Delete(attachment.FullPath);
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine(e.Message);
-                    }
-                }
-            }
-            _forumPostAttachments.Clear();
-            return;
-        }
-
-        
-        private List<ForumPostAttachment> _xlogPostAttachments = new List<ForumPostAttachment>();
-
-        private async void PostXlogEntry(int status_type, int status_datatype, string xlogentry_string)
-        {
-            if (!GHApp.PostingXlogEntries)
-                return;
-
-            if (xlogentry_string == null || xlogentry_string == "")
-            {
-                _xlogPostAttachments.Clear();
-                return;
-            }
-
-            if (status_type == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT)
-            {
-                switch (status_datatype)
-                {
-                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_GENERIC:
-                        _xlogPostAttachments.Add(new ForumPostAttachment(xlogentry_string, "application/zip", "game data", false, status_type, false));
-                        break;
-                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_TEXT:
-                        _xlogPostAttachments.Add(new ForumPostAttachment(xlogentry_string, "text/plain", "dumplog", false, status_type, false));
-                        break;
-                    case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_HTML:
-                        _xlogPostAttachments.Add(new ForumPostAttachment(xlogentry_string, "text/html", "HTML dumplog", false, status_type, false));
-                        break;
-                }
-                return;
-            }
-
-            SendResult res = await GHApp.SendXlogFile(xlogentry_string, status_type, status_datatype, _xlogPostAttachments, false);
-            _xlogPostAttachments.Clear();
-            return;
         }
 
         private void CreateWindowView(int winid)
@@ -16086,11 +15848,12 @@ namespace GnollHackX.Pages.Game
                 "\nDo you want to report the panic and send a crash report to help the developer fix the cause? This will create a zip archive of the files in your game directory and ask it to be shared further.", 
                 "Yes", "No");
 
-            PostToForum(false, (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC, 0, text, answer);
             if (answer)
             {
                 await GHApp.CreateCrashReport(this);
             }
+            _mainPage.EnqueuePost(new ForumPost(false, false, (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC, 0, text, null, answer));
+            //PostToForum(false, (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC, 0, text, answer);
 
             ConcurrentQueue<GHResponse> queue;
             if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
@@ -16154,10 +15917,6 @@ namespace GnollHackX.Pages.Game
             UIGrid.IsVisible = true;
             Debug.WriteLine("Finished Performance Tests");
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        uint MakePixel(byte red, byte green, byte blue, byte alpha) =>
-        (uint)((alpha << 24) | (blue << 16) | (green << 8) | red);
 
         private void GetLineEntryText_TextChanged(object sender, TextChangedEventArgs e)
         {
