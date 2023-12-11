@@ -1057,21 +1057,26 @@ namespace GnollHackX.Pages.MainScreen
         private async void XlogTestButton_Clicked(object sender, EventArgs e)
         {
             XlogTestButton.IsEnabled = false;
+            XlogTestButton.TextColor = GHColors.Yellow;
+            XlogTestButton.Text = "Wait";
             GHApp.XlogUserName = PostXlogUserNameEntry.Text;
             GHApp.XlogPassword = PostXlogPasswordEntry.Text;
             GHApp.XlogReleaseAccount = XlogReleaseAccountSwitch.IsToggled;
             SendResult res = await GHApp.SendXlogFile("", 1, 0, new List<ForumPostAttachment>(), true);
+            XlogTestButton.Text = "Test";
             if (res.IsSuccess)
             {
+                XlogTestButton.TextColor = GHColors.BrighterGreen;
                 await DisplayAlert("Connection Success",
-                    "Connection to Top Score Server was successful." +
+                    "Connection to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "Top Score Server was successful." +
                     (res.HasHttpStatusCode ? " Status code " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : ""),
                     "OK");
             }
             else
             {
+                XlogTestButton.TextColor = GHColors.Red;
                 await DisplayAlert("Connection Failed",
-                    "Connection to Top Score Server failed." +
+                    "Connection to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "Top Score Server failed." +
                     (res.HasHttpStatusCode ? " Status code " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : "") +
                     (res.Message != null ? " Message: " + res.Message : ""),
                     "OK");
