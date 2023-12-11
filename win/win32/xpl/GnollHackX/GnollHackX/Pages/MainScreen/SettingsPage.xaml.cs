@@ -151,6 +151,8 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("XlogUserName", PostXlogUserNameEntry.Text);
             GHApp.XlogPassword = PostXlogPasswordEntry.Text;
             Preferences.Set("XlogPassword", PostXlogPasswordEntry.Text);
+            GHApp.XlogReleaseAccount = XlogReleaseAccountSwitch.IsToggled;
+            Preferences.Set("XlogReleaseAccount", XlogReleaseAccountSwitch.IsToggled);
             GHApp.TryVerifyXlogUserName();
 
             if (_gamePage != null)
@@ -425,7 +427,7 @@ namespace GnollHackX.Pages.MainScreen
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting;
-            bool longermsghistory = false;
+            bool longermsghistory = false, xlog_release_account = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             string customlink = "";
             string customxlogaccountlink = "";
@@ -467,6 +469,7 @@ namespace GnollHackX.Pages.MainScreen
             customxlogpostlink = Preferences.Get("CustomXlogPostLink", "");
             xlog_username = Preferences.Get("XlogUserName", "");
             xlog_password = Preferences.Get("XlogPassword", "");
+            xlog_release_account = Preferences.Get("XlogReleaseAccount", false);
             allowbones = Preferences.Get("AllowBones", true);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
             savestyle = Preferences.Get("AppSwitchSaveStyle", 0);
@@ -616,6 +619,8 @@ namespace GnollHackX.Pages.MainScreen
 
             PostXlogUserNameEntry.Text = xlog_username;
             PostXlogPasswordEntry.Text = xlog_password;
+            XlogReleaseAccountSwitch.IsToggled = xlog_release_account;
+            XlogReleaseAccountStackLayout.IsVisible = GHApp.IsDebug;
 
             SimpleCommandBarButton1Picker.SelectedIndex = cmdidxs[0];
             SimpleCommandBarButton2Picker.SelectedIndex = cmdidxs[1];

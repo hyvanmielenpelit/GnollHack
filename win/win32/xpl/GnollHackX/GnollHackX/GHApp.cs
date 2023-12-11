@@ -86,6 +86,7 @@ namespace GnollHackX
             AppSwitchSaveStyle = Preferences.Get("AppSwitchSaveStyle", 0);
             XlogUserName = Preferences.Get("XlogUserName", "");
             XlogPassword = Preferences.Get("XlogPassword", "");
+            XlogReleaseAccount = Preferences.Get("XlogReleaseAccount", false);
 
             BackButtonPressed += EmptyBackButtonPressed;
         }
@@ -2426,7 +2427,10 @@ namespace GnollHackX
                     address = CurrentUserSecrets.DefaultXlogPostAddress;
                 }
 #if DEBUG
-                return address?.Replace("https://", "https://test-");
+                if(XlogReleaseAccount)
+                    return address;
+                else
+                    return address?.Replace("https://", "https://test-");
 #else
                 return address;
 #endif
@@ -2447,7 +2451,10 @@ namespace GnollHackX
                     address = CurrentUserSecrets.DefaultXlogAccountLink;
                 }
 #if DEBUG
-                return address?.Replace("https://", "https://test-");
+                if (XlogReleaseAccount)
+                    return address;
+                else
+                    return address?.Replace("https://", "https://test-");
 #else
                 return address;
 #endif
@@ -2467,6 +2474,10 @@ namespace GnollHackX
                 return CurrentUserSecrets.DefaultXlogAntiForgeryToken;
             }
         }
+
+        private static readonly object _xlogReleaseAccountLock = new object();
+        private static bool _xlogReleaseAccount;
+        public static bool XlogReleaseAccount { get { lock (_xlogReleaseAccountLock) { return _xlogReleaseAccount; } } set { lock (_xlogReleaseAccountLock) { _xlogReleaseAccount = value; } } }
 
         private static string _verifiedUserName;
         private static string _verifiedPassword;
