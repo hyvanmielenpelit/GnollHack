@@ -675,13 +675,12 @@ namespace GnollHackX.Pages.MainScreen
             LighterDarkeningSwitch.IsToggled = lighterdarkening;
             AlternativeLayerDrawingSwitch.IsToggled = accuratedrawing;
 #if !DEBUG
-        if(!AlternativeLayerDrawingSwitch.IsToggled)
-        {
-            AlternativeLayerDrawingSwitch.IsEnabled = false;
-            AlternativeDrawingLabel.TextColor = Color.Gray;
-            if (MainSection.Contains(AlternativeDrawingViewCell))
-                MainSection.Remove(AlternativeDrawingViewCell);    
-        }
+            if(!AlternativeLayerDrawingSwitch.IsToggled)
+            {
+                AlternativeLayerDrawingSwitch.IsEnabled = false;
+                AlternativeDrawingLabel.TextColor = Color.Gray;
+                AlternativeDrawingStackLayout.IsVisible = false;
+            }
 #endif
             WallEndSwitch.IsToggled = wallends;
             BreatheAnimationSwitch.IsToggled = breatheanimations;
@@ -1069,7 +1068,7 @@ namespace GnollHackX.Pages.MainScreen
                 XlogTestButton.TextColor = GHColors.BrighterGreen;
                 await DisplayAlert("Connection Success",
                     "Connection to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "Top Score Server was successful." +
-                    (res.HasHttpStatusCode ? " Status code " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : ""),
+                    (res.HasHttpStatusCode ? " Status code: " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : ""),
                     "OK");
             }
             else
@@ -1077,7 +1076,7 @@ namespace GnollHackX.Pages.MainScreen
                 XlogTestButton.TextColor = GHColors.Red;
                 await DisplayAlert("Connection Failed",
                     "Connection to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "Top Score Server failed." +
-                    (res.HasHttpStatusCode ? " Status code " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : "") +
+                    (res.HasHttpStatusCode ? " Status code: " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : "") +
                     (res.Message != null ? " Message: " + res.Message : ""),
                     "OK");
             }
