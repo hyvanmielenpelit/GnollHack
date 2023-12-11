@@ -1006,6 +1006,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             XlogAccountButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
+            GHApp.XlogReleaseAccount = XlogReleaseAccountSwitch.IsToggled;
             await OpenBrowser(new Uri(GHApp.XlogAccountAddress));
             XlogAccountButton.IsEnabled = true;
         }
@@ -1058,6 +1059,7 @@ namespace GnollHackX.Pages.MainScreen
             XlogTestButton.IsEnabled = false;
             GHApp.XlogUserName = PostXlogUserNameEntry.Text;
             GHApp.XlogPassword = PostXlogPasswordEntry.Text;
+            GHApp.XlogReleaseAccount = XlogReleaseAccountSwitch.IsToggled;
             SendResult res = await GHApp.SendXlogFile("", 1, 0, new List<ForumPostAttachment>(), true);
             if (res.IsSuccess)
             {
