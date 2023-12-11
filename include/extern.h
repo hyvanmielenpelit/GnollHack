@@ -1449,6 +1449,8 @@ FDECL(fuzzymatch, (const char *, const char *, const char *, BOOLEAN_P));
 E void FDECL(init_random, (int FDECL((*fn), (int))));
 E void FDECL(reseed_random, (int FDECL((*fn), (int))));
 E time_t NDECL(getnow);
+E time_t FDECL(convert2UTC, (time_t));
+E time_t NDECL(getUTC);
 E int NDECL(getyear);
 #if 0
 E char *FDECL(yymmdd, (time_t));

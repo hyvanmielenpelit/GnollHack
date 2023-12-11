@@ -2845,7 +2845,7 @@ namespace GnollHackX
                                     cdhv5.FileName = filename;
                                     content5.Headers.ContentDisposition = cdhv5;
                                     multicontent.Add(content5);
-                                    Debug.WriteLine("File Added: " + cdhv5.Name + ", " + fullFilePath);
+                                    Debug.WriteLine("XLog entry, file added: " + cdhv5.Name + ", " + fullFilePath);
                                 }
                             }
                         }
@@ -2861,6 +2861,7 @@ namespace GnollHackX
                                 using (HttpResponseMessage response = await client.PostAsync(postaddress, multicontent, cts.Token))
                                 {
                                     responseContent = await response.Content.ReadAsStringAsync();
+                                    Debug.WriteLine("XLog entry response content:");
                                     Debug.WriteLine(responseContent);
                                     res.IsSuccess = response.IsSuccessStatusCode;
                                     res.HasHttpStatusCode = true;
@@ -2869,7 +2870,7 @@ namespace GnollHackX
                             }
                             catch (Exception ex)
                             {
-                                Debug.WriteLine(ex.Message);
+                                Debug.WriteLine("Exception occurred while sending XLog entry: " + ex.Message);
                                 res.IsSuccess = false;
                                 res.Message = ex.Message;
                             }

@@ -994,7 +994,7 @@ int FDECL((*fn), (int));
 }
 
 time_t
-getnow()
+getnow(VOID_ARGS)
 {
     time_t datetime = 0;
 
@@ -1002,16 +1002,29 @@ getnow()
     return datetime;
 }
 
+time_t
+convert2UTC(raw_time)
+time_t raw_time;
+{
+    struct tm* utctm = gmtime((TIME_type)&raw_time);
+    return mktime(utctm);
+}
+
+time_t
+getUTC(VOID_ARGS)
+{
+    return convert2UTC(getnow());
+}
+
 STATIC_OVL struct tm *
-getlt()
+getlt(VOID_ARGS)
 {
     time_t date = getnow();
-
     return localtime((LOCALTIME_type) &date);
 }
 
 int
-getyear()
+getyear(VOID_ARGS)
 {
     return (1900 + getlt()->tm_year);
 }
