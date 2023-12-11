@@ -407,7 +407,7 @@ VA_DECL(const char *, line)
         if (vision_full_recalc)
             vision_recalc(0);
     }
-    if (u.ux && !program_state.in_bones && iflags.window_inited)
+    if (u.ux && !program_state.in_bones && iflags.window_inited && WIN_MAP != WIN_ERR)
         flush_screen(!flags.show_cursor_on_u); // show_cursor_on_u actually indicates that there is a getpos going on, in which case the cursor should not be returned to the player
 
     boolean usemulti = pline_prefix_text || pline_separator_text || domulti;
@@ -518,13 +518,13 @@ int attr, color;
     if (program_state.wizkit_wishing)
         return;
 
-    if (!saving && !restoring && !reseting && !check_pointing && iflags.window_inited)
+    if (!saving && !restoring && !reseting && !check_pointing && iflags.window_inited && WIN_MAP != WIN_ERR)
     {
         if (vision_full_recalc)
             vision_recalc(0);
     }
 
-    if (u.ux && !program_state.in_bones && iflags.window_inited)
+    if (u.ux && !program_state.in_bones && iflags.window_inited && WIN_MAP != WIN_ERR)
         flush_screen(!flags.show_cursor_on_u);
 
     putstr_ex2(WIN_MESSAGE, line, attrs, colors, attr, color, 0);
