@@ -3127,7 +3127,7 @@ get_current_game_score()
     long utotal = 0;
     long Deepest_Dungeon_Level = deepest_lev_reached(FALSE);
     long Achievements_Score = (long)(u.uachieve.amulet + u.uachieve.ascended + u.uachieve.bell + u.uachieve.book + u.uachieve.enter_gehennom + u.uachieve.finish_sokoban +
-        u.uachieve.killed_medusa + u.uachieve.killed_yacc + u.uachieve.menorah + u.uachieve.prime_codex + u.uachieve.mines_luckstone +
+        u.uachieve.killed_medusa + u.uachieve.killed_yacc + u.uachieve.killed_demogorgon + u.uachieve.menorah + u.uachieve.prime_codex + u.uachieve.mines_luckstone +
         !!In_endgame(&u.uz) + !!Is_astralevel(&u.uz) + u.uevent.invoked 
         + u.uhave.prime_codex /* Various things that yield points when carried out of the Dungeons of Doom */
         + u.uachieve.role_achievement /* Special role-specific achievement */

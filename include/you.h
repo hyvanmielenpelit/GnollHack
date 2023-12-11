@@ -144,6 +144,7 @@ struct u_achieve {
     /* Other Achievements */
     Bitfield(role_achievement, 1); /* Special achievement for the role */
     Bitfield(crowned, 1); /* Became Hand of Elbereth, Envoy of Balance, or Glory of Arioch */
+    Bitfield(killed_demogorgon, 1);
 };
 
 enum kill_hints

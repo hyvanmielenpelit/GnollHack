@@ -3469,7 +3469,18 @@ unsigned long mondeadflags;
         }
         u.uachieve.killed_yacc = 1;
     }
-    else if (mtmp->data == &mons[PM_DEATH]) 
+    else if (mtmp->data == &mons[PM_DEMOGORGON])
+    {
+        if (flags.showscore && !u.uachieve.killed_demogorgon)
+            context.botl = 1;
+        if (!u.uachieve.killed_demogorgon)
+        {
+            achievement_gained("Defeated Demogorgon");
+            livelog_printf(LL_ACHIEVE | LL_UMONST, "%s", "killed Demogorgon");
+        }
+        u.uachieve.killed_demogorgon = 1;
+    }
+    else if (mtmp->data == &mons[PM_DEATH])
     {
         switch (mvitals[tmp].died) 
         {

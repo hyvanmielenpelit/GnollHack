@@ -443,6 +443,8 @@ encodeachieve()
         r |= 1L << 28;
     if (u.uachieve.crowned)
         r |= 1L << 29;
+    if (u.uachieve.killed_demogorgon)
+        r |= 1L << 30;
 
     return r;
 }
@@ -633,6 +635,7 @@ encode_extended_achievements()
     add_achieveX(buf, "obtained_the_sokoban_prize", u.uachieve.finish_sokoban);
     add_achieveX(buf, "defeated_medusa", u.uachieve.killed_medusa);
     add_achieveX(buf, "defeated_yacc", u.uachieve.killed_yacc);
+    add_achieveX(buf, "defeated_demogorgon", u.uachieve.killed_demogorgon);
     add_achieveX(buf, "obtained_the_prime_codex", u.uachieve.prime_codex);
     add_achieveX(buf, "consulted_the_oracle", u.uachieve.consulted_oracle);
     add_achieveX(buf, "read_a_discworld_novel", u.uachieve.read_discworld_novel);

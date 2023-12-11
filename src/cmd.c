@@ -5623,6 +5623,11 @@ int final;
         you_have("defeated Yacc, the Demon Lord of Bovines", "");
         num_achievements++;
     }
+    if (u.uachieve.killed_demogorgon)
+    {
+        you_have("defeated Demogorgon, the Prince of Demons", "");
+        num_achievements++;
+    }
     if (!num_achievements)
     {
         you_have_not("earned any achievements", "");
