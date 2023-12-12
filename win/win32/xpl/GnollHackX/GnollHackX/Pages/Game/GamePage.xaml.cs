@@ -8619,7 +8619,7 @@ namespace GnollHackX.Pages.Game
                                     canvas.DrawBitmap(GHApp._batteryRedFrameBitmap, statusDest, textPaint);
                                 }
 
-                                const int topMargin = 11, bottomMargin = 4, hMargin = 6;
+                                const int topMargin = 12, bottomMargin = 5, hMargin = 6;
 
                                 if (chargeLevel <= 9)
                                 {
