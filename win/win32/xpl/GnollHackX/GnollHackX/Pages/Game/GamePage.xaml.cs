@@ -2274,7 +2274,6 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.PostDiagnosticData:
                             case GHRequestType.PostGameStatus:
                                 _mainPage.EnqueuePost(new ForumPost(0, req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
-                                _mainPage.StartGeneralTimer();
                                 //PostToForum(req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, false);
                                 break;
                             case GHRequestType.PostXlogEntry:
