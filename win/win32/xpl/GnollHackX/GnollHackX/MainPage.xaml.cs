@@ -581,6 +581,7 @@ namespace GnollHackX
             UpperButtonGrid.IsEnabled = true;
             LogoGrid.IsEnabled = true;
 
+            GHApp.InitializeConnectivity();
             StartGeneralTimer();
         }
 
@@ -689,6 +690,7 @@ namespace GnollHackX
 
             Assembly assembly = GetType().GetTypeInfo().Assembly;
             GHApp.InitAdditionalTypefaces(assembly);
+            GHApp.InitAdditionalCachedBitmaps(assembly);
             GHApp.InitSymbolBitmaps(assembly);
             GHApp.InitGameBitmaps(assembly);
             carouselView.Init();

@@ -14,14 +14,12 @@ using System.IO.Compression;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Linq;
 using System.Collections.Concurrent;
 using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Net;
-using System.ComponentModel;
 
 namespace GnollHackX
 {
@@ -47,15 +45,12 @@ namespace GnollHackX
             _batteryChargeLevelTimeStamp = DateTime.Now;
             Battery.BatteryInfoChanged += Battery_BatteryInfoChanged;
 
-            _networkAccessState = Connectivity.NetworkAccess;
-            Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
-
             TotalMemory = GHApp.PlatformService.GetDeviceMemoryInBytes();
 
-            InitBaseTypefaces();
-            InitializeCachedBitmaps();
-
             Assembly assembly = typeof(App).GetTypeInfo().Assembly;
+            InitBaseTypefaces(assembly);
+            InitBaseCachedBitmaps(assembly);
+
             ButtonNormalImageSource = ImageSource.FromResource(AppResourceName + ".Assets.button_normal.png", assembly);
             ButtonSelectedImageSource = ImageSource.FromResource(AppResourceName + ".Assets.button_selected.png", assembly);
             ButtonDisabledImageSource = ImageSource.FromResource(AppResourceName + ".Assets.button_disabled.png", assembly);
@@ -94,6 +89,19 @@ namespace GnollHackX
         private static object _networkAccessLock = new object();
         private static NetworkAccess _networkAccessState = NetworkAccess.None;
         public static bool HasInternetAccess { get { lock (_networkAccessLock) { return _networkAccessState == NetworkAccess.Internet; } } }
+
+        public static void InitializeConnectivity()
+        {
+            try
+            {
+                _networkAccessState = Connectivity.NetworkAccess;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
+        }
 
         private static void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
@@ -394,8 +402,15 @@ namespace GnollHackX
                 PlatformService.OverrideAnimatorDuration();
 
             /* Check current battery level, internet connection, and xlog user name when returning to app */
-            Battery_BatteryInfoChanged(null, new BatteryInfoChangedEventArgs(Battery.ChargeLevel, Battery.State, Battery.PowerSource));
-            Connectivity_ConnectivityChanged(null, new ConnectivityChangedEventArgs(Connectivity.NetworkAccess, Connectivity.ConnectionProfiles));
+            try
+            {
+                Battery_BatteryInfoChanged(null, new BatteryInfoChangedEventArgs(Battery.ChargeLevel, Battery.State, Battery.PowerSource));
+                Connectivity_ConnectivityChanged(null, new ConnectivityChangedEventArgs(Connectivity.NetworkAccess, Connectivity.ConnectionProfiles));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
             TryVerifyXlogUserName();
 
             CancelSaveGame = true;
@@ -679,9 +694,8 @@ namespace GnollHackX
                 return LatoRegular;
         }
 
-        public static void InitBaseTypefaces()
+        public static void InitBaseTypefaces(Assembly assembly)
         {
-            Assembly assembly = typeof(App).GetTypeInfo().Assembly;
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.diablo_h.ttf"))
             {
                 if (stream != null)
@@ -2275,17 +2289,47 @@ namespace GnollHackX
         static readonly object _cachedBitmapsLock = new object();
         static readonly ConcurrentDictionary<string, SKBitmap> _cachedBitmaps = new ConcurrentDictionary<string, SKBitmap>();
 
-        public static void InitializeCachedBitmaps()
+        public static void InitBaseCachedBitmaps(Assembly assembly)
         {
             lock (_cachedBitmapsLock)
             {
                 try
                 {
                     _cachedBitmaps.Clear();
-                    Assembly assembly = typeof(App).GetTypeInfo().Assembly;
                     string[] cachedBitmaps = new string[]
                     {
                     AppResourceName + ".Assets.UI.missing_icon.png",
+                    AppResourceName + ".Assets.FMOD-Logo-192-White.png",
+                    AppResourceName + ".Assets.gnollhack-logo-test-2.png",
+                    };
+                    foreach (string imagePath in cachedBitmaps)
+                    {
+                        using (Stream stream = assembly.GetManifestResourceStream(imagePath))
+                        {
+                            SKBitmap newBitmap = SKBitmap.Decode(stream);
+                            if (newBitmap != null)
+                            {
+                                newBitmap.SetImmutable();
+                                _cachedBitmaps.TryAdd("resource://" + imagePath, newBitmap);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
+        }
+
+        public static void InitAdditionalCachedBitmaps(Assembly assembly)
+        {
+            lock (_cachedBitmapsLock)
+            {
+                try
+                {
+                    string[] cachedBitmaps = new string[]
+                    {
                     AppResourceName + ".Assets.UI.yes.png",
                     AppResourceName + ".Assets.UI.yestoall.png",
                     AppResourceName + ".Assets.UI.no.png",
@@ -2306,7 +2350,6 @@ namespace GnollHackX
                     AppResourceName + ".Assets.UI.stone-travel-on.png",
                     AppResourceName + ".Assets.UI.stone-altmap-off.png",
                     AppResourceName + ".Assets.UI.stone-altmap-on.png",
-                    AppResourceName + ".Assets.UI.tombstone.png",
                     AppResourceName + ".Assets.UI.stairs-down.png",
                     AppResourceName + ".Assets.UI.stairs-up.png",
                     AppResourceName + ".Assets.UI.chat.png",
@@ -2316,8 +2359,7 @@ namespace GnollHackX
                     AppResourceName + ".Assets.UI.offer.png",
                     AppResourceName + ".Assets.UI.loot.png",
                     AppResourceName + ".Assets.UI.lastitem.png",
-                    AppResourceName + ".Assets.FMOD-Logo-192-White.png",
-                    AppResourceName + ".Assets.gnollhack-logo-test-2.png",
+                    AppResourceName + ".Assets.tombstone.png",
                     };
                     foreach (string imagePath in cachedBitmaps)
                     {
@@ -2332,12 +2374,12 @@ namespace GnollHackX
                         }
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine(ex.Message);
                 }
             }
         }
-
         public static SKBitmap GetCachedImageSourceBitmap(string sourcePath, bool addToCache)
         {
             if (sourcePath == null || sourcePath == "")
