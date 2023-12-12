@@ -417,6 +417,10 @@ can_make_bones()
        in bones files */
     if (discover || ModernMode || CasualMode || flags.non_scoring) // In ModernMode bones files could work, but the player is not supposed to die in that mode, so something odd would have happened to get here
         return FALSE;
+#if !defined(DEBUG) && defined(GNH_MOBILE)
+    if (wizard)
+        return FALSE;
+#endif
     if (!flags.bones)
         return FALSE;
     if (ledger_no(&u.uz) <= 0 || ledger_no(&u.uz) > maxledgerno())
