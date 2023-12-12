@@ -2894,9 +2894,8 @@ namespace GnollHackX
                             else
                             {
                                 Debug.WriteLine("Sending XLog entry failed. Status Code: " + (int)res.StatusCode);
-                                if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */ || res.StatusCode == HttpStatusCode.Locked /* 423 */))
+                                if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */)) // || res.StatusCode == HttpStatusCode.Locked /* 423 */
                                     SetXlogUserNameVerified(false, null, null);
-
                             }
 
                             if (!res.IsSuccess && !is_from_queue)

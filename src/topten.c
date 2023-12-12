@@ -517,7 +517,7 @@ int how;
     print_xlog_entry(buf, tt, how);
     Fprintf(rfile, "%s", buf);
 
-    if (issue_gui_command)
+    if (issue_gui_command && ModeAllowsPostToForum)
     {
 #if defined (DUMPLOG) || defined (DUMPHTML)
         char dlbuf[BUFSZ * 4];

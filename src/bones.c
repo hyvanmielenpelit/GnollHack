@@ -413,6 +413,10 @@ can_make_bones()
 {
     register struct trap *ttmp;
 
+    /* don't let multiple restarts generate multiple copies of objects
+       in bones files */
+    if (discover || ModernMode || CasualMode || flags.non_scoring) // In ModernMode bones files could work, but the player is not supposed to die in that mode, so something odd would have happened to get here
+        return FALSE;
     if (!flags.bones)
         return FALSE;
     if (ledger_no(&u.uz) <= 0 || ledger_no(&u.uz) > maxledgerno())
@@ -432,10 +436,6 @@ can_make_bones()
     if (depth(&u.uz) <= 0                 /* bulletproofing for endgame */
         || (!rn2(1 + (depth(&u.uz) >> 2)) /* fewer ghosts on low levels */
             && !wizard))
-        return FALSE;
-    /* don't let multiple restarts generate multiple copies of objects
-       in bones files */
-    if (discover || ModernMode || CasualMode || flags.non_scoring) // In ModernMode bones files could work, but the player is not supposed to die in that mode, so something odd would have happened to get here
         return FALSE;
     return TRUE;
 }
@@ -704,6 +704,7 @@ getbones()
 
     if (!flags.bones)
         return 0;
+
     /* wizard check added by GAN 02/05/87 */
     if (rn2(3) /* only once in three times do we find bones */
         && !wizard)
