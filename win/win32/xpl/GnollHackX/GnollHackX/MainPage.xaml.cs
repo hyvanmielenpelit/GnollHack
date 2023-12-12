@@ -103,13 +103,13 @@ namespace GnollHackX
                 bool has_files2 = Directory.Exists(directory2) && Directory.GetFiles(directory2)?.Length > 0;
                 bool xlogusernameok = (!GHApp.PostingXlogEntries || string.IsNullOrEmpty(GHApp.XlogUserName) || GHApp.XlogUserNameVerified);
                 bool postingqueueempty = _postingQueue.Count == 0;
-                if (!has_files && !has_files2 && xlogusernameok && postingqueueempty)
+                if (!has_files && !has_files2 && (xlogusernameok || GHApp.XlogCredentialsIncorrect) && postingqueueempty)
                 {
                     StopGeneralTimer = true;
                 }
                 else
                 {
-                    if (hasinternet && GHApp.PostingXlogEntries && !string.IsNullOrEmpty(GHApp.XlogUserName) && !GHApp.XlogUserNameVerified)
+                    if (hasinternet && GHApp.PostingXlogEntries && !GHApp.XlogCredentialsIncorrect && !string.IsNullOrEmpty(GHApp.XlogUserName) && !GHApp.XlogUserNameVerified)
                         await GHApp.TryVerifyXlogUserNameAsync();
                     if (_postingQueue.Count > 0)
                         await ProcessPostingQueue();

@@ -2543,6 +2543,10 @@ namespace GnollHackX
         private static readonly object _xlogUserNameVerifiedLock = new object();
         public static bool XlogUserNameVerified { get { lock (_xlogUserNameVerifiedLock) { return _xlogUserNameVerified; } } }
 
+        private static readonly object _xlogCredentialsIncorrectLock = new object();
+        private static bool _xlogCredentialsIncorrect;
+        public static bool XlogCredentialsIncorrect { get { lock (_xlogCredentialsIncorrectLock) { return _xlogCredentialsIncorrect; } } set { lock (_xlogCredentialsIncorrectLock) { _xlogCredentialsIncorrect = value; } } }
+
         public static void SetXlogUserNameVerified(bool isverified, string username, string password)
         {
             lock(_xlogUserNameVerifiedLock)
@@ -2954,6 +2958,7 @@ namespace GnollHackX
                                 res.Message = ex.Message;
                             }
 
+                            XlogCredentialsIncorrect = false;
                             if (res.IsSuccess)
                             {
                                 SetXlogUserNameVerified(true, username, password);
@@ -2964,6 +2969,8 @@ namespace GnollHackX
                                 Debug.WriteLine("Sending XLog entry failed. Status Code: " + (int)res.StatusCode);
                                 if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */)) // || res.StatusCode == HttpStatusCode.Locked /* 423 */
                                     SetXlogUserNameVerified(false, null, null);
+                                if (res.StatusCode == HttpStatusCode.Forbidden)
+                                    XlogCredentialsIncorrect = true;
                             }
 
                             if (!res.IsSuccess && !is_from_queue)

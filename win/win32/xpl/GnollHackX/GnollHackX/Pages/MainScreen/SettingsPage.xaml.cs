@@ -153,6 +153,7 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("XlogPassword", PostXlogPasswordEntry.Text);
             GHApp.XlogReleaseAccount = XlogReleaseAccountSwitch.IsToggled;
             Preferences.Set("XlogReleaseAccount", XlogReleaseAccountSwitch.IsToggled);
+            GHApp.XlogCredentialsIncorrect = false;
             if (!GHApp.AreCredentialsVerified(PostXlogUserNameEntry.Text, PostXlogPasswordEntry.Text))
                 GHApp.SetXlogUserNameVerified(false, null, null);
             GHApp.TryVerifyXlogUserName();
@@ -1063,6 +1064,8 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.XlogUserName = PostXlogUserNameEntry.Text;
             GHApp.XlogPassword = PostXlogPasswordEntry.Text;
             GHApp.XlogReleaseAccount = XlogReleaseAccountSwitch.IsToggled;
+            GHApp.SetXlogUserNameVerified(false, null, null);
+            GHApp.XlogCredentialsIncorrect = false;
             SendResult res = await GHApp.SendXlogFile("", 1, 0, new List<ForumPostAttachment>(), true);
             XlogTestButton.Text = "Test";
             if (res.IsSuccess)
