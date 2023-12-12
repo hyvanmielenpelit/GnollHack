@@ -38,6 +38,11 @@ namespace GnollHackX.Pages.MainScreen
             _fileName = fileName;
             ScoresView.BindingContext = this;
             MainGrid.BindingContext = this;
+            if(GHApp.PostingXlogEntries)
+            {
+                CloseButton.IsVisible = false;
+                CloseGrid.IsVisible = true;
+            }
         }
 
         public TopScorePage()
@@ -369,6 +374,14 @@ namespace GnollHackX.Pages.MainScreen
             {
                 await DisplayAlert("Top Score Info Missing", "Selected top score information does not exist.", "OK");
             }
+        }
+
+        private async void ServerButton_Clicked(object sender, EventArgs e)
+        {
+            ServerButton.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            await OpenBrowser(new Uri(GHApp.XlogTopScoreAddress));
+            ServerButton.IsEnabled = true;
         }
     }
 }

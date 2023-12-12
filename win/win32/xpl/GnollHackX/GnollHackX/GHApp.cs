@@ -2503,6 +2503,22 @@ namespace GnollHackX
             }
         }
 
+        public static string XlogTopScoreAddress
+        {
+            get
+            {
+                string address = XlogPostAddress;
+                string shortened_address;
+                if (address.Length > 8)
+                    shortened_address = address.Substring(0, address.Length - 8);
+                else
+                    shortened_address = "";
+
+                string final_address = shortened_address + GHConstants.XlogTopScorePage;
+                return final_address;
+            }
+        }
+
         private static readonly object _xlogCreditialLock = new object();
         private static string _xlogUserName = "";
         private static string _xlogPassword = "";
@@ -2537,17 +2553,27 @@ namespace GnollHackX
             }
         }
 
+        public static bool AreCredentialsVerified(string username, string password)
+        {
+            lock (_xlogUserNameVerifiedLock)
+            {
+                return _xlogUserNameVerified && _verifiedUserName != null && _verifiedPassword != null && username == _verifiedUserName && password == _verifiedPassword;
+            }
+        }
+
         public static async void TryVerifyXlogUserName()
         {
-            if (XlogUserNameVerified || !PostingXlogEntries)
-                return;
-            else
-                await TryVerifyXlogUserNameAsync();
+            await TryVerifyXlogUserNameAsync();
         }
 
         public static async Task TryVerifyXlogUserNameAsync()
         {
-            if (XlogUserNameVerified || !PostingXlogEntries)
+            if(!PostingXlogEntries)
+            {
+                SetXlogUserNameVerified(false, null, null);
+                return;
+            }
+            if (XlogUserNameVerified)
                 return;
 
             string username = XlogUserName;

@@ -153,6 +153,8 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("XlogPassword", PostXlogPasswordEntry.Text);
             GHApp.XlogReleaseAccount = XlogReleaseAccountSwitch.IsToggled;
             Preferences.Set("XlogReleaseAccount", XlogReleaseAccountSwitch.IsToggled);
+            if (!GHApp.AreCredentialsVerified(PostXlogUserNameEntry.Text, PostXlogPasswordEntry.Text))
+                GHApp.SetXlogUserNameVerified(false, null, null);
             GHApp.TryVerifyXlogUserName();
 
             if (_gamePage != null)
