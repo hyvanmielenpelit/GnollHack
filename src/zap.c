@@ -1209,6 +1209,7 @@ struct monst* origmonst;
             } else if (canspotmon(mtmp)) {
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s falls off.", buf);
             }
+            Strcpy(debug_buf_2, "bhitm");
             obj_extract_self(obj);
             mdrop_obj(mtmp, obj, FALSE, TRUE);
             if (gainwandskill)
@@ -2800,6 +2801,7 @@ boolean replaceundead;
             /* transfer the ghost's inventory along with it */
             while ((otmp = ghost->minvent) != 0) 
             {
+                Strcpy(debug_buf_2, "revive1");
                 obj_extract_self(otmp);
                 add_to_minv(mtmp, otmp);
             }
@@ -2866,6 +2868,7 @@ boolean replaceundead;
         m_useup(corpse->ocarry, corpse);
         break;
     case OBJ_CONTAINED:
+        Strcpy(debug_buf_2, "revive2");
         obj_extract_self(corpse);
         obfree(corpse, (struct obj *) 0);
         break;
@@ -3554,7 +3557,6 @@ int id;
     long old_wornmask, new_wornmask = 0L;
     boolean can_merge = (id == STRANGE_OBJECT);
     int obj_location = obj->where;
-    Strcpy(debug_buf_4, "poly_obj");
 
     if (obj->otyp == BOULDER)
         sokoban_guilt();
@@ -3573,7 +3575,6 @@ int id;
         {
             if (otmp)
                 delobj(otmp);
-            Strcpy(debug_buf_2, "polyobj");
             otmp = mkobj(obj->oclass, FALSE, FALSE);
         } while (--try_limit > 0
                  && objects[otmp->otyp].oc_magic != magic_obj);
@@ -3968,6 +3969,7 @@ struct obj *obj;
             } else {
                 /* unlikely to get here since genociding monsters also
                    sets the G_NOCORPSE flag; drop statue's contents */
+                Strcpy(debug_buf_2, "flesh_to_stone_obj");
                 while ((item = obj->cobj) != 0) {
                     bypass_obj(item); /* make stone-to-flesh miss it */
                     obj_extract_self(item);
@@ -9402,6 +9404,7 @@ const char *fltxt;
                 if (mon == u.usteed && otmp->otyp == SADDLE)
                     dismount_steed(DISMOUNT_FELL);
             }
+            Strcpy(debug_buf_2, "disintegrate_mon");
             obj_extract_self(otmp);
             obfree(otmp, (struct obj *) 0);
         }
@@ -10100,6 +10103,7 @@ const char *msg;
 
         do 
         {
+            Strcpy(debug_buf_2, "melt_ice");
             obj_extract_self(otmp); /* boulder isn't being pushed */
             if (!boulder_hits_pool(otmp, x, y, FALSE))
                 impossible("melt_ice: no pool?");
@@ -10696,6 +10700,7 @@ boolean verbose;
 
     if (obj->where == OBJ_FLOOR) 
     {
+        Strcpy(debug_buf_2, "fracture_rock");
         obj_extract_self(obj); /* move rocks back on top */
         obj_set_found(obj);
         place_object(obj, obj->ox, obj->oy);
@@ -10720,6 +10725,7 @@ register struct obj* obj;
         && activate_statue_trap(trap, obj->ox, obj->oy, TRUE))
         return FALSE;
     /* drop any objects contained inside the statue */
+    Strcpy(debug_buf_2, "pre_break_statue");
     while ((item = obj->cobj) != 0) {
         obj_extract_self(item);
         obj_set_found(item);

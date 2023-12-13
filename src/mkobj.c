@@ -334,7 +334,6 @@ unsigned long mkflags;
 {
     int tprob;
     int i = 0;
-    Strcpy(debug_buf_1, "mkobj_with_flags");
 
     for (int try_ct = 0; try_ct < 20; try_ct++)
     {
@@ -369,10 +368,9 @@ unsigned long rndflags;
 {
     if (oclass < 0 || oclass >= MAX_OBJECT_CLASSES)
     {
-        impossible("probtype error, oclass=%d, buf1=%s, buf1=%s", (int)oclass, debug_buf_1, debug_buf_2);
+        impossible("probtype error, oclass=%d", (int)oclass);
         oclass = WEAPON_CLASS;
     }
-    *debug_buf_1 = *debug_buf_2 = 0;
 
     int i = 0;
     boolean also_rare = !!(rndflags & MKOBJ_FLAGS_ALSO_RARE);
@@ -533,7 +531,6 @@ unsigned long rndflags;
     }
 
 random_spellbook_here:
-    Strcpy(debug_buf_1, "random_spellbook_objectid");
     return random_objectid_from_class(SPBOOK_CLASS, mowner, rndflags | MKOBJ_FLAGS_NORMAL_SPELLBOOK);
 }
 
@@ -658,7 +655,6 @@ struct obj *box;
         }
         else if (box->otyp == SARCOPHAGUS || box->otyp == COFFIN)
         {
-            Sprintf(debug_buf_2, "mkbox_cnts, otyp=%d", box->otyp);
             char item_classes[6] = { COIN_CLASS, GEM_CLASS, MISCELLANEOUS_CLASS, AMULET_CLASS, RING_CLASS, WEAPON_CLASS };
             otmp = mkobj(item_classes[rn2(6)], TRUE, TRUE);
             if (otmp->oclass == COIN_CLASS)
@@ -675,7 +671,6 @@ struct obj *box;
 
             for (tprob = rnd(100); (tprob -= iprobs->iprob) > 0; iprobs++)
                 ;
-            Sprintf(debug_buf_2, "mkbox_cnts iprobs, otyp=%d", box->otyp);
             if (!(otmp = mkobj(iprobs->iclass, TRUE, TRUE)))
                 continue;
 
@@ -978,6 +973,8 @@ replace_object(obj, otmp)
 struct obj *obj;
 struct obj *otmp;
 {
+    Sprintf(debug_buf_3, "replace_object: otyp=%d, where=%d", obj->otyp, obj->where);
+    *debug_buf_4 = 0;
     otmp->where = obj->where;
     switch (obj->where) {
     case OBJ_FREE:
@@ -1024,7 +1021,7 @@ struct obj *otmp;
         obj->makingsound = 0;
         break;
     default:
-        panic("replace_object: obj position");
+        panic("replace_object: obj position: otyp=%d, where=%d", obj->otyp, obj->where);
         break;
     }
 }
@@ -1238,6 +1235,7 @@ void
 clear_memoryobjs()
 {
     struct obj* obj; // , * contained_obj;
+    Strcpy(debug_buf_2, "clear_memoryobjs");
     while ((obj = memoryobjs) != 0) {
         obj_extract_self(obj);
         //while ((contained_obj = obj->cobj) != 0) {
@@ -1262,6 +1260,8 @@ int x, y;
         level.locations[x][y].hero_memory_layers.layer_glyphs[LAYER_COVER_OBJECT] = NO_GLYPH;
         level.locations[x][y].hero_memory_layers.layer_gui_glyphs[LAYER_COVER_OBJECT] = NO_GLYPH;
         level.locations[x][y].hero_memory_layers.o_id = 0;
+
+        Strcpy(debug_buf_2, "clear_hero_object_memory_at");
 
         /* Clear actual memory objects */
         struct obj* obj; // , * contained_obj;
@@ -3793,12 +3793,14 @@ void
 remove_memory_object(otmp)
 register struct obj* otmp;
 {
+    Sprintf(debug_buf_4, "remove_memory_object: otyp=%d, where=%d", otmp->otyp, otmp->where);
+
     xchar x = otmp->ox;
     xchar y = otmp->oy;
 
     if (otmp->where != OBJ_HEROMEMORY)
     {
-        panic("remove_memory_object: obj not in hero memory");
+        panic("remove_memory_object: obj not in hero memory: otyp=%d, where=%d", otmp->otyp, otmp->where);
         return;
     }
     extract_nexthere(otmp, &level.locations[x][y].hero_memory_layers.memory_objchn);
@@ -3945,12 +3947,14 @@ void
 remove_object(otmp)
 register struct obj *otmp;
 {
+    Sprintf(debug_buf_4, "remove_object, otyp=%d", otmp->otyp);
+
     xchar x = otmp->ox;
     xchar y = otmp->oy;
 
     if (otmp->where != OBJ_FLOOR)
     {
-        panic("remove_object: obj not on floor");
+        panic("remove_object: obj not on floor, otyp=%d", otmp->otyp);
         return;
     }
     extract_nexthere(otmp, &level.objects[x][y]);
@@ -3969,6 +3973,7 @@ struct monst *mtmp;
 {
     struct obj *otmp, *mwep = MON_WEP(mtmp);
     boolean keeping_mon = (!DEADMONSTER(mtmp));
+    Strcpy(debug_buf_2, "discard_minvent");
 
     while ((otmp = mtmp->minvent) != 0) {
         /* this has now become very similar to m_useupall()... */
@@ -4015,6 +4020,8 @@ void
 obj_extract_self(obj)
 struct obj *obj;
 {
+    Sprintf(debug_buf_3, "obj_extract_self: otyp=%d, where=%d", obj->otyp, obj->where);
+    *debug_buf_4 = 0;
     switch (obj->where) {
     case OBJ_FREE:
         break;
@@ -4046,7 +4053,7 @@ struct obj *obj;
         remove_memory_object(obj);
         break;
     default:
-        panic("obj_extract_self");
+        panic("obj_extract_self: otyp=%d, where=%d", obj->otyp, obj->where);
         break;
     }
 }
@@ -4070,7 +4077,7 @@ struct obj *obj, **head_ptr;
     }
     if (!curr)
     {
-        panic("extract_nobj: object lost");
+        panic("extract_nobj: object lost, otyp=%d, where=%d, buf1=%s, buf2=%s, buf3=%s, buf4=%s", !obj ? -1 : obj->otyp, !obj ? -1 : obj->where, debug_buf_1, debug_buf_2, debug_buf_3, debug_buf_4);
         return;
     }
     obj->where = OBJ_FREE;
@@ -4940,6 +4947,7 @@ struct obj **obj1, **obj2;
             if (otmp1->oeaten)
                 otmp1->oeaten += o2wt;
             otmp1->quan = 1L;
+            Strcpy(debug_buf_2, "obj_absorb");
             obj_extract_self(otmp2);
             newsym(otmp2->ox, otmp2->oy); /* in case of floor */
             obfree(otmp2, (struct obj*)0);

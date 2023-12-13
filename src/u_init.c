@@ -1445,7 +1445,6 @@ void
 add_school_specific_spellbooks(VOID_ARGS)
 {
     int skill;
-    Strcpy(debug_buf_2, "add_school_specific_spellbooks");
     for (skill = P_FIRST_SPELL; skill <= P_LAST_SPELL; skill++)
     {
         if (P_SKILL_LEVEL(skill) >= P_BASIC)
@@ -1569,8 +1568,6 @@ register const struct trobj * trop;
     struct obj *obj;
     int otyp;
     long quan;
-    Strcpy(debug_buf_2, "ini_inv");
-    Strcpy(debug_buf_4, "ini_inv");
 
     while (trop->trclass) 
     {

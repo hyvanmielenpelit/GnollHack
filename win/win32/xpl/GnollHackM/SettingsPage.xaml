@@ -467,7 +467,7 @@
                         </StackLayout>
                         <Label Text="Volume" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="Master Volume"
+                            <Label Text="Master"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center"
@@ -476,7 +476,7 @@
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="Music Volume"
+                            <Label Text="Music"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center"
@@ -485,7 +485,7 @@
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="Ambient Volume"
+                            <Label Text="Ambient"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center"
@@ -494,7 +494,7 @@
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="Dialogue Volume"
+                            <Label Text="Dialogue"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center"
@@ -503,7 +503,7 @@
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="Effects Volume"
+                            <Label Text="Effects"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center"
@@ -512,7 +512,7 @@
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="Interface Volume"
+                            <Label Text="Interface"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center"

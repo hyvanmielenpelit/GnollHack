@@ -5258,6 +5258,7 @@ struct monst* mtmp;
                         pline("%s picks up %s.", noittame_Monnam(mtmp),
                             distant_name(otmp, doname));
 
+                    Strcpy(debug_buf_2, "do_chat_pet_pickitems");
                     obj_extract_self(otmp);
                     newsym(omx, omy);
                     (void)mpickobj(mtmp, otmp);
@@ -6522,6 +6523,7 @@ struct monst* mtmp;
                     if (quan < item_to_buy->quan)
                         item_to_buy = splitobj(item_to_buy, quan);
                     
+                    Strcpy(debug_buf_2, "do_chat_buy_items");
                     obj_extract_self(item_to_buy);
                     hold_another_object(item_to_buy, "Oops!  %s out of your grasp!",
                         The(aobjnam(item_to_buy, "slip")),
@@ -6674,6 +6676,7 @@ struct monst* mtmp;
                     if (item_to_take->quan > 1 && pick_list[i].count > 0 && pick_list[i].count < item_to_take->quan)
                         item_to_take = splitobj(item_to_take, pick_list[i].count);
 
+                    Strcpy(debug_buf_2, "do_chat_pet_take_items");
                     obj_extract_self(item_to_take);
 
                     play_simple_object_sound_at_location(item_to_take, mtmp->mx, mtmp->my, OBJECT_SOUND_TYPE_GIVE);

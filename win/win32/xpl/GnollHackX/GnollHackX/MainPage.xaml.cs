@@ -45,10 +45,12 @@ namespace GnollHackX
         private object _generalTimerLock = new object();
         private bool _generaTimerIsOn = false;
         public bool GeneralTimerIsOn { get { lock (_generalTimerLock) { return _generaTimerIsOn; } } set { lock (_generalTimerLock) { _generaTimerIsOn = value; } } }
+        public bool CheckAndSetGeneralTimerIsOn { get { lock (_generalTimerLock) { bool oldval = _generaTimerIsOn; _generaTimerIsOn = true; return oldval; } } }
 
         private object _generalTimerWorkOnTasksLock = new object();
         private bool _generaTimerWorkOnTasks = false;
         public bool GeneralTimerWorkOnTasks { get { lock (_generalTimerWorkOnTasksLock) { return _generaTimerWorkOnTasks; } } set { lock (_generalTimerWorkOnTasksLock) { _generaTimerWorkOnTasks = value; } } }
+        public bool CheckAndSetGeneralTimerWorkOnTasks { get { lock (_generalTimerWorkOnTasksLock) { bool oldval = _generaTimerWorkOnTasks; _generaTimerWorkOnTasks = true; return oldval; } } }
 
         private object _stopGeneralTimerLock = new object();
         private bool _stopGeneraTimerIsOn = false;
@@ -67,9 +69,8 @@ namespace GnollHackX
 
         public void StartGeneralTimer()
         {
-            if(!GeneralTimerIsOn)
+            if(!CheckAndSetGeneralTimerIsOn)
             {
-                GeneralTimerIsOn = true;
                 GeneralTimerTasks();
                 Device.StartTimer(TimeSpan.FromSeconds(GHConstants.MainScreenGeneralCounterIntervalInSeconds), () =>
                 {
@@ -94,9 +95,8 @@ namespace GnollHackX
         private async Task GeneralTimerTasksAsync()
         {
             bool hasinternet = GHApp.HasInternetAccess;
-            if (!GeneralTimerWorkOnTasks)
+            if (!CheckAndSetGeneralTimerWorkOnTasks)
             {
-                GeneralTimerWorkOnTasks = true;
                 string directory = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
                 string directory2 = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
                 bool has_files = Directory.Exists(directory) && Directory.GetFiles(directory)?.Length > 0;
@@ -333,7 +333,7 @@ namespace GnollHackX
                 if (manufacturer.Length > 0)
                     manufacturer = manufacturer.Substring(0, 1).ToUpper() + manufacturer.Substring(1);
                 string device_model = manufacturer + " " + DeviceInfo.Model;
-                string platform = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
+                string platform_with_version = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
 
                 ulong TotalMemInBytes = GHApp.PlatformService.GetDeviceMemoryInBytes();
                 ulong TotalMemInMB = (TotalMemInBytes / 1024) / 1024;
@@ -346,7 +346,7 @@ namespace GnollHackX
                 string diskspace = FreeDiskSpaceInGB + " GB" + " / " + TotalDiskSpaceInGB + " GB";
 
                 string player_name = Preferences.Get("LastUsedPlayerName", "Unknown Player");
-                string info = ver + ", " + platform + ", " + device_model + ", " + totmem + ", " + diskspace;
+                string info = ver + ", " + platform_with_version + ", " + device_model + ", " + totmem + ", " + diskspace;
 
                 switch (status_type)
                 {
@@ -364,30 +364,24 @@ namespace GnollHackX
                         break;
                 }
             }
+
+            bool isCustomXlogServerLink = string.IsNullOrWhiteSpace(GHApp.CustomXlogPostLink);
+            string username = GHApp.XlogUserName;
+            if (GHApp.PostingXlogEntries && !string.IsNullOrWhiteSpace(username) && GHApp.XlogUserNameVerified)
+                message = message + (isCustomXlogServerLink ? "{" : " [") + username + (isCustomXlogServerLink ? "}" : "]");
+
+            string portver = VersionTracking.CurrentVersion;
+            DevicePlatform platform = DeviceInfo.Platform;
+            string platstr = platform != null ? platform.ToString() : "";
+            if (platstr == null)
+                platstr = "";
+            string platid;
+            if (platstr.Length > 0)
+                platid = platstr.Substring(0, 1).ToLower();
             else
-            {
-                string username = GHApp.XlogUserName;
-                if (GHApp.PostingXlogEntries && !string.IsNullOrWhiteSpace(username) && GHApp.XlogUserNameVerified)
-                    message = message + " [" + username + "]";
+                platid = "";
 
-                string portver = VersionTracking.CurrentVersion;
-                DevicePlatform platform = DeviceInfo.Platform;
-                string platstr = platform != null ? platform.ToString() : "";
-                if (platstr == null)
-                    platstr = "";
-                string platid;
-                if (platstr.Length > 0)
-                    platid = platstr.Substring(0, 1).ToLower();
-                else
-                    platid = "";
-
-                switch (status_type)
-                {
-                    default:
-                        message = message + " [" + portver + platid + "]";
-                        break;
-                }
-            }
+            message = message + " [" + portver + platid + "]";
 
             await GHApp.SendForumPost(is_game_status, message, status_type, status_datatype, _forumPostAttachments, false);
             _forumPostAttachments.Clear();

@@ -2696,6 +2696,7 @@ struct attack *mattk;
         if (!Upolyd)
             break; /* no longer have ability to steal */
         /* take the object away from the monster */
+        Strcpy(debug_buf_2, "steal_it");
         obj_extract_self(otmp);
         if ((unwornmask = otmp->owornmask) != 0L) {
             mdef->worn_item_flags &= ~unwornmask;
@@ -2973,6 +2974,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
            real gold only, no lesser coins */
         mongold = findgold(mdef->minvent);
         if (mongold) {
+            Strcpy(debug_buf_2, "damageum");
             obj_extract_self(mongold);
             if (merge_choice(invent, mongold) || inv_cnt(FALSE) < 52) {
                 addinv(mongold);

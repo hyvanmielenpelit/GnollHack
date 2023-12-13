@@ -2063,6 +2063,7 @@ struct monst *mtmp;
                         distant_name(otmp, doname));
             else if (ecount == 2)
                 Sprintf(buf, "%s engulfs several objects.", Monnam(mtmp));
+            Strcpy(debug_buf_2, "meatobj1");
             obj_extract_self(otmp);
             (void) mpickobj(mtmp, otmp); /* slurp */
 
@@ -2100,6 +2101,7 @@ struct monst *mtmp;
 
                 /* contents of eaten containers become engulfed; this
                    is arbitrary, but otherwise g.cubes are too powerful */
+                Strcpy(debug_buf_2, "meatobj2");
                 while ((otmp3 = otmp->cobj) != 0)
                 {
                     obj_extract_self(otmp3);
@@ -2168,6 +2170,7 @@ register struct monst *mtmp;
         if (is_obj_no_pickup(gold))
             return;
         mat_idx = gold->material;
+        Strcpy(debug_buf_2, "mpickgold");
         obj_extract_self(gold);
         add_to_minv(mtmp, gold);
         if (cansee(mtmp->mx, mtmp->my)) 
@@ -2240,6 +2243,7 @@ register const char *str;
                         : distant_name(otmp3, doname));
             }
 
+            Strcpy(debug_buf_2, "mpickstuff");
             obj_extract_self(otmp3);      /* remove from floor */
             (void) mpickobj(mtmp, otmp3); /* may merge and free otmp3 */
             m_dowear(mtmp, FALSE);
@@ -3738,6 +3742,7 @@ struct monst *mdef;
         || !rn2(2 + ((int) (mdef->data->geno & G_FREQ) > 2))) {
         oldminvent = 0;
         /* some objects may end up outside the statue */
+        Strcpy(debug_buf_2, "monstone");
         while ((obj = mdef->minvent) != 0) {
             obj_extract_self(obj);
             obj_no_longer_held(obj);
@@ -5664,6 +5669,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
                    same zap that the monster that held it is polymorphed */
                 if (polyspot)
                     bypass_obj(otmp);
+                Strcpy(debug_buf_2, "newcham");
                 obj_extract_self(otmp);
                 /* probably ought to give some "drop" message here */
                 if (flooreffects(otmp, mtmp->mx, mtmp->my, ""))
@@ -6734,6 +6740,7 @@ boolean override_mextra, polyspot, msg;
                    same zap that the monster that held it is polymorphed */
                 if (polyspot)
                     bypass_obj(otmp);
+                Strcpy(debug_buf_2, "revert_mon_polymorph");
                 obj_extract_self(otmp);
                 /* probably ought to give some "drop" message here */
                 if (flooreffects(otmp, mtmp->mx, mtmp->my, ""))

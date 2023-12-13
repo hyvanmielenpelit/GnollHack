@@ -2460,7 +2460,7 @@ namespace GnollHackX
             get
             {
                 string address;
-                if (CustomXlogPostLink != null && CustomXlogPostLink != "")
+                if (!string.IsNullOrWhiteSpace(CustomXlogPostLink))
                 {
                     address = CustomXlogPostLink;
                 }
@@ -2898,7 +2898,18 @@ namespace GnollHackX
                         multicontent.Add(content4);
                         Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
 
-                        string adjusted_entry_string = xlogentry_string.Replace("○", "\t").Replace("◙", Environment.NewLine);
+                        string adjusted_entry_string = "";
+                        if(!string.IsNullOrWhiteSpace(adjusted_entry_string))
+                        {
+                            adjusted_entry_string = xlogentry_string.Replace("○", "\t").Replace("◙", Environment.NewLine);
+                            adjusted_entry_string = adjusted_entry_string.Replace(Environment.NewLine, "") // Should be just on at the end
+                                    + "\tplatform=" + DeviceInfo.Platform.ToString()?.ToLower()
+                                    + "\tplatformversion=" + DeviceInfo.VersionString?.ToLower()
+                                    + "\tportversion=" + VersionTracking.CurrentVersion?.ToLower()
+                                    + "\tportbuild=" + VersionTracking.CurrentBuild?.ToLower()
+                                    + Environment.NewLine;
+                        }
+
                         StringContent content2 = new StringContent(adjusted_entry_string, Encoding.UTF8, "text/plain");
                         ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
                         cdhv2.Name = "XLogEntry";

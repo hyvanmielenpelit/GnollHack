@@ -5275,6 +5275,7 @@ retry:
     {
         place_object(otmp, u.ux, u.uy); /* make it viable light source */
         begin_burn(otmp, FALSE);
+        Strcpy(debug_buf_2, "readobjnam");
         obj_extract_self(otmp); /* now release it for caller's use */
     }
 

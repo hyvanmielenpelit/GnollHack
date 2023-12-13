@@ -1491,7 +1491,6 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
 
             if (wep_mask && !(obj->owornmask & wep_mask)) 
             {
-                Strcpy(debug_buf_4, "throwit");
                 setworn(obj, wep_mask);
             }
             thrownobj = (struct obj *) 0;

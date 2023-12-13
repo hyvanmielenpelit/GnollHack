@@ -738,7 +738,6 @@ merged(potmp, pobj)
 struct obj **potmp, **pobj;
 {
     register struct obj *otmp = *potmp, *obj = *pobj;
-    Strcpy(debug_buf_4, "merged");
 
     if (mergable(otmp, obj)) {
         /* Approximate age: we do it this way because if we were to
@@ -767,6 +766,7 @@ struct obj **potmp, **pobj;
             otmp = *potmp = uoname(otmp, UONAME(obj));
         if (!has_oname(otmp) && has_oname(obj))
             otmp = *potmp = oname(otmp, ONAME(obj));
+        Strcpy(debug_buf_2, "merged");
         obj_extract_self(obj);
 
         /* really should merge the timeouts */
@@ -1804,6 +1804,7 @@ const char *drop_fmt, *drop_arg, *hold_msg;
         newsym(u.ux, u.uy);
 
         if (!touch_artifact(obj, &youmonst)) {
+            Strcpy(debug_buf_2, "hold_another_object1");
             obj_extract_self(obj); /* remove it from the floor */
             dropy(obj);            /* now put it back again :-) */
             return obj;
@@ -1811,10 +1812,12 @@ const char *drop_fmt, *drop_arg, *hold_msg;
             /* loose your grip if you revert your form */
             if (drop_fmt)
                 pline(drop_fmt, drop_arg);
+            Strcpy(debug_buf_2, "hold_another_object2");
             obj_extract_self(obj);
             dropy(obj);
             return obj;
         }
+        Strcpy(debug_buf_2, "hold_another_object3");
         obj_extract_self(obj);
 #if 0
         if (crysknife) {
@@ -1990,6 +1993,7 @@ register struct obj *obj;
         context.last_picked_obj_oid = 0;
         context.last_picked_obj_show_duration_left = 0;
     }
+    Sprintf(debug_buf_4, "freeinv: otyp=%d", obj->otyp);
     extract_nobj(obj, &invent);
     freeinv_core(obj);
     update_inventory();
@@ -2040,6 +2044,7 @@ unsigned long newsym_flags;
         return;
     }
     update_map = (obj->where == OBJ_FLOOR);
+    Strcpy(debug_buf_2, "delobj_with_flags");
     obj_extract_self(obj);
     if (update_map)
         newsym_with_flags(obj->ox, obj->oy, newsym_flags);
@@ -7235,6 +7240,9 @@ doorganize() /* inventory organizer by Del Lamb */
     char *objname, *uobjname, *otmpname, *uotmpname;
     const char *adj_type;
     boolean ever_mind = FALSE, collect;
+    Strcpy(debug_buf_2, "doorganize");
+    *debug_buf_3 = 0;
+    *debug_buf_4 = 0;
 
     if (!invent) {
         You1("aren't carrying anything to adjust.");

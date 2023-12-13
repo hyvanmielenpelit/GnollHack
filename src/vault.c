@@ -762,6 +762,7 @@ int goldx, goldy; /* <gold->ox, gold->oy> */
                 newsym(grd->mx, grd->my);
             }
         }
+        Strcpy(debug_buf_2, "gd_pick_corridor_gold");
         obj_extract_self(gold);
         add_to_minv(grd, gold);
         newsym(goldx, goldy);

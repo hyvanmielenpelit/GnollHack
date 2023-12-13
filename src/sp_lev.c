@@ -2135,7 +2135,6 @@ struct mkroom *croom;
     schar x, y;
     char c;
     boolean named; /* has a name been supplied in level description? */
-    Sprintf(debug_buf_2, "create_object, oclass=%d, id=%d", o->class, o->id);
 
     named = o->name.str ? TRUE : FALSE;
 
@@ -2546,6 +2545,7 @@ struct mkroom *croom;
                 (void) add_to_container(cobj, otmp);
                 cobj->owt = weight(cobj);
             } else {
+                Strcpy(debug_buf_2, "create_object1");
                 obj_extract_self(otmp);
                 obfree(otmp, NULL);
                 return;
@@ -2593,6 +2593,7 @@ struct mkroom *croom;
             while (was->minvent) {
                 obj = was->minvent;
                 obj->owornmask = 0;
+                Strcpy(debug_buf_2, "create_object2");
                 obj_extract_self(obj);
                 (void) add_to_container(otmp, obj);
             }

@@ -467,6 +467,19 @@ int how;
     Sprintf(buffer, "version=%d.%d.%d", tt->ver_major, tt->ver_minor,
         tt->patchlevel);
     Sprintf(eos(buffer), "%cedit=%d", XLOG_SEP, EDITLEVEL);
+//#if defined(GNH_ANDROID) || defined(ANDROID)
+//    Sprintf(eos(buffer), "%cplatform=%s", XLOG_SEP, "android");
+//#elif defined(GNH_IOS)
+//    Sprintf(eos(buffer), "%cplatform=%s", XLOG_SEP, "ios");
+//#elif defined(WIN32)
+//    Sprintf(eos(buffer), "%cplatform=%s", XLOG_SEP, "windows");
+//#elif defined(MAC)
+//    Sprintf(eos(buffer), "%cplatform=%s", XLOG_SEP, "mac");
+//#elif defined(UNIX)
+//    Sprintf(eos(buffer), "%cplatform=%s", XLOG_SEP, "unix");
+//#else
+//    Sprintf(eos(buffer), "%cplatform=%s", XLOG_SEP, "unknown");
+//#endif
     Sprintf(eos(buffer), "%cpoints=%ld%cdeathdnum=%d%cdeathlev=%d", XLOG_SEP,
         tt->points, XLOG_SEP, tt->deathdnum, XLOG_SEP, tt->deathlev);
     Sprintf(eos(buffer), "%cmaxlvl=%d%chp=%d%cmaxhp=%d", XLOG_SEP, tt->maxlvl,

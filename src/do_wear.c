@@ -277,7 +277,6 @@ Boots_off(VOID_ARGS)
     struct obj *otmp = uarmf;
     int otyp = otmp->otyp;
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
-    Strcpy(debug_buf_4, "Boots_off");
 
     if (flags.verbose && otmp)
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TAKE_OFF);
@@ -344,7 +343,6 @@ Cloak_off(VOID_ARGS)
     struct obj *otmp = uarmc;
     int otyp = otmp->otyp;
     long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
-    Strcpy(debug_buf_4, "Cloak_off");
 
     if (flags.verbose && otmp)
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TAKE_OFF);
@@ -434,8 +432,6 @@ Helmet_off(VOID_ARGS)
     if (!uarmh)
         return 0;
 
-    Strcpy(debug_buf_4, "Helmet_off");
-
     if (flags.verbose && uarmh)
         play_simple_object_sound(uarmh, OBJECT_SOUND_TYPE_TAKE_OFF);
 
@@ -499,7 +495,6 @@ int
 Gloves_off(VOID_ARGS)
 {
     boolean on_purpose = !context.mon_moving && !uarmg->in_use;
-    Strcpy(debug_buf_4, "Gloves_off");
 
     if (flags.verbose && uarmg)
         play_simple_object_sound(uarmg, OBJECT_SOUND_TYPE_TAKE_OFF);
@@ -543,7 +538,6 @@ Shield_on(VOID_ARGS)
 int
 Shield_off(VOID_ARGS)
 {
-    Strcpy(debug_buf_4, "Shield_off");
     if (flags.verbose && uarms)
         play_simple_object_sound(uarms, OBJECT_SOUND_TYPE_TAKE_OFF);
 
@@ -572,7 +566,6 @@ Shirt_on(VOID_ARGS)
 int
 Shirt_off(VOID_ARGS)
 {
-    Strcpy(debug_buf_4, "Shirt_off");
     if (flags.verbose && uarmu)
         play_simple_object_sound(uarmu, OBJECT_SOUND_TYPE_TAKE_OFF);
 
@@ -600,7 +593,6 @@ Robe_on(VOID_ARGS)
 int
 Robe_off(VOID_ARGS)
 {
-    Strcpy(debug_buf_4, "Robe_off");
     if (flags.verbose && uarmo)
         play_simple_object_sound(uarmo, OBJECT_SOUND_TYPE_TAKE_OFF);
 
@@ -627,7 +619,6 @@ Bracers_on(VOID_ARGS)
 int
 Bracers_off(VOID_ARGS)
 {
-    Strcpy(debug_buf_4, "Bracers_off");
     if (flags.verbose && uarmb)
         play_simple_object_sound(uarmb, OBJECT_SOUND_TYPE_TAKE_OFF);
 
@@ -647,7 +638,6 @@ long wearslotmask;
     if (!ud)
         return 0;
 
-    Strcpy(debug_buf_4, "MiscellaneousItem_on");
     if (flags.verbose && ud)
         play_simple_object_sound(ud, OBJECT_SOUND_TYPE_WEAR);
 
@@ -683,7 +673,6 @@ struct obj* ud;
     if (!ud)
         return 0;
 
-    Strcpy(debug_buf_4, "MiscellaneousItem_off");
     if (flags.verbose && ud)
         play_simple_object_sound(ud, OBJECT_SOUND_TYPE_TAKE_OFF);
 
@@ -708,7 +697,6 @@ Armor_on(VOID_ARGS)
     if (!uarm)
         return 0;
 
-    Strcpy(debug_buf_4, "Armor_on");
     if (flags.verbose && uarm)
         play_simple_object_sound(uarm, OBJECT_SOUND_TYPE_WEAR);
     /*
@@ -795,7 +783,6 @@ Amulet_off()
     if (!uamul)
         return;
 
-    Strcpy(debug_buf_4, "Amulet_off");
     if (flags.verbose && uamul)
         play_simple_object_sound(uamul, OBJECT_SOUND_TYPE_TAKE_OFF);
 
@@ -945,7 +932,6 @@ boolean gone;
     if (!obj)
         return;
 
-    Strcpy(debug_buf_4, "Ring_off_or_gone");
     if (flags.verbose && obj && !gone)
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_TAKE_OFF);
 
@@ -991,7 +977,6 @@ void
 Blindf_on(otmp)
 struct obj *otmp;
 {
-    Strcpy(debug_buf_4, "Blindf_on");
     /* blindfold might be wielded; release it for wearing */
     if (otmp->owornmask & W_WEAPON)
         remove_worn_item(otmp, FALSE);
@@ -1494,7 +1479,6 @@ armoroff(otmp)
 register struct obj *otmp;
 {
     register int delay = -objects[otmp->otyp].oc_delay;
-    Strcpy(debug_buf_4, "armoroff");
 
     if (cursed(otmp))
         return 0;
@@ -2237,8 +2221,6 @@ boolean in_takeoff_wear;
     boolean armor, ring, eyewear;
     int added_time = 0;
     int delay = 0;
-
-    Strcpy(debug_buf_4, "accessory_or_armor_on");
 
     if (obj->owornmask & (W_ACCESSORY | W_ARMOR)) 
     {

@@ -4170,6 +4170,7 @@ unpunish()
 {
     struct obj *savechain = uchain;
 
+    Strcpy(debug_buf_2, "unpunish");
     obj_extract_self(uchain);
     newsym(uchain->ox, uchain->oy);
     setworn((struct obj *) 0, W_CHAIN);

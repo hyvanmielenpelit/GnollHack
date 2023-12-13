@@ -461,6 +461,7 @@ dig(VOID_ARGS)
             if ((bobj = sobj_at(BOULDER, dpx, dpy)) != 0) 
             {
                 /* another boulder here, restack it to the top */
+                Strcpy(debug_buf_2, "dig");
                 obj_extract_self(bobj);
                 place_object(bobj, dpx, dpy);
             }
@@ -2930,6 +2931,7 @@ buried_ball_to_punishment()
     cc.y = u.uy;
     ball = buried_ball(&cc);
     if (ball) {
+        Strcpy(debug_buf_2, "buried_ball_to_punishment");
         obj_extract_self(ball);
 #if 0
         /* rusting buried metallic objects is not implemented yet */
@@ -2953,6 +2955,7 @@ buried_ball_to_freedom()
     cc.y = u.uy;
     ball = buried_ball(&cc);
     if (ball) {
+        Strcpy(debug_buf_2, "buried_ball_to_freedom");
         obj_extract_self(ball);
 #if 0
         /* rusting buried metallic objects is not implemented yet */
@@ -2997,6 +3000,7 @@ boolean *dealloced;
     if (otmp->lamplit && otmp->otyp != POT_OIL)
         end_burn(otmp, TRUE);
 
+    Strcpy(debug_buf_2, "bury_an_obj");
     obj_extract_self(otmp);
 
     if (is_obj_unburiable(otmp)) //(otmp == uchain || obj_resists(otmp, 0, 0))
@@ -3116,6 +3120,7 @@ boolean verbose, buriedsearchableonly;
             }
             else
             {
+                Strcpy(debug_buf_2, "unearth_objs");
                 obj_extract_self(otmp);
                 if (otmp->timed)
                     (void) stop_timer(ROT_ORGANIC, obj_to_any(otmp));
@@ -3163,6 +3168,7 @@ long timeout UNUSED;
         if (obj->cobj == cobj_to_bury)
             break; /* Something's wrong, avoid infine loop */
     }
+    Strcpy(debug_buf_2, "rot_organic");
     obj_extract_self(obj);
     obfree(obj, (struct obj *) 0);
 }

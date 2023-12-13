@@ -2659,6 +2659,7 @@ struct obj **optr;
     begin_burn(obj, FALSE); /* after shop billing */
     if (split1off && carried(obj)) 
     {
+        Strcpy(debug_buf_2, "light_cocktail");
         obj_extract_self(obj); /* free from inv */
         obj->nomerge = 1;
         obj = hold_another_object(obj, "You drop %s!", doname(obj),
@@ -4698,6 +4699,7 @@ struct obj *obj;
                 gotit = FALSE; /* can't pull it free */
             }
             if (gotit) {
+                Strcpy(debug_buf_2, "use_whip");
                 obj_extract_self(otmp);
                 possibly_unwield(mtmp, FALSE);
                 setmnotwielded(mtmp, otmp);
@@ -5218,6 +5220,7 @@ struct obj *obj;
     setnotworn(obj);
     /* useup() is appropriate, but we want costly_alteration()'s message */
     costly_alteration(obj, COST_SPLAT);
+    Strcpy(debug_buf_2, "use_cream_pie");
     obj_extract_self(obj);
     delobj(obj);
     return 0;

@@ -1238,6 +1238,7 @@ boolean polyspot;
     if (!attacktype(mon->data, AT_WEAP)) {
         setmnotwielded(mon, mw_tmp);
         mon->weapon_strategy = NO_WEAPON_WANTED;
+        Strcpy(debug_buf_2, "possibly_unwield");
         obj_extract_self(obj);
         if (cansee(mon->mx, mon->my)) {
             pline("%s drops %s.", Monnam(mon), distant_name(obj, doname));

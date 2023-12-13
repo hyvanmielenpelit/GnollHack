@@ -4131,6 +4131,7 @@ dodip()
                 docall(&fakeobj, (char*)0);
             }
         }
+        Strcpy(debug_buf_2, "dodip");
         obj_extract_self(singlepotion);
         singlepotion = hold_another_object(singlepotion,
                                            "You juggle and drop %s!",

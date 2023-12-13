@@ -846,6 +846,7 @@ struct obj *obj; /* only scatter this obj        */
         } else {
             obj = (struct obj *) 0; /* all used */
         }
+        Strcpy(debug_buf_2, "scatter1");
         obj_extract_self(otmp);
         used_up = FALSE;
 
@@ -862,6 +863,7 @@ struct obj *obj; /* only scatter this obj        */
                 place_object(otmp, sx, sy);
                 if ((otmp = sobj_at(BOULDER, sx, sy)) != 0) {
                     /* another boulder here, restack it to the top */
+                    Strcpy(debug_buf_2, "scatter2");
                     obj_extract_self(otmp);
                     place_object(otmp, sx, sy);
                 }

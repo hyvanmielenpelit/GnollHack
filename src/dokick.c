@@ -721,6 +721,7 @@ xchar x, y; /* coordinates where object was before the impact, not after */
             if (otmp->quan > 1L) {
                 useup(otmp);
             } else {
+                Strcpy(debug_buf_2, "container_impact_dmg");
                 obj_extract_self(otmp);
                 obfree(otmp, (struct obj *) 0);
             }
@@ -909,6 +910,7 @@ boolean is_golf_swing;
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s loose.", The(distant_name(kickedobj, xname)),
                   otense(kickedobj, "come"));
         kickedobj->speflags &= ~SPEFLAGS_CAUGHT_IN_LEAVES;
+        Strcpy(debug_buf_2, "really_kick_object");
         obj_extract_self(kickedobj);
         newsym(x, y);
         if (costly && (!costly_spot(u.ux, u.uy)
@@ -1038,6 +1040,7 @@ boolean is_golf_swing;
 
     if (costly && !isgold)
         addtobill(kickedobj, FALSE, FALSE, TRUE);
+    Strcpy(debug_buf_2, "really_kick_object2");
     obj_extract_self(kickedobj);
     (void) snuff_candle(kickedobj);
     newsym(x, y);
@@ -2077,6 +2080,7 @@ xchar dlev;          /* if !0 send to dlev near player */
         if ((isrock && obj->otyp == BOULDER)
             || rn2(obj->otyp == BOULDER ? 30 : 3))
             continue;
+        Strcpy(debug_buf_2, "impact_drop");
         obj_extract_self(obj);
 
         if (costly) {
@@ -2254,6 +2258,7 @@ boolean shop_floor_obj;
             if (otmp->otyp == EGG && (otmp->speflags & SPEFLAGS_YOURS) && otmp->corpsenm >= LOW_PM)
                 change_luck(-1* (int)min(otmp->quan, 5L), TRUE);
         }
+        Strcpy(debug_buf_2, "ship_object");
         obj_extract_self(otmp);
         obfree(otmp, (struct obj *) 0);
         return TRUE;
@@ -2308,6 +2313,7 @@ boolean near_hero;
         if (!near_hero ^ (where == MIGR_WITH_HERO))
             continue;
 
+        Strcpy(debug_buf_2, "obj_delivery");
         obj_extract_self(otmp);
         otmp->owornmask = 0L;
 
@@ -2383,6 +2389,7 @@ unsigned long deliverflags;
             continue;
 
         if ((mtmp->data->mflags2 & otmp->corpsenm) != 0) {
+            Strcpy(debug_buf_2, "deliver_obj_to_mon");
             obj_extract_self(otmp);
             otmp->owornmask = 0L;
             otmp->ox = otmp->oy = 0;

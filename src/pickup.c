@@ -2069,6 +2069,7 @@ struct obj *otmp;
         delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
     }
 
+    Strcpy(debug_buf_2, "pick_obj");
     obj_extract_self(otmp);
     newsym(ox, oy);
 
@@ -2452,6 +2453,7 @@ boolean* got_something_ptr;
                     }
                 }
                 play_simple_object_sound(newobj, OBJECT_SOUND_TYPE_PICK_UP);
+                Strcpy(debug_buf_2, "loot_decoration");
                 obj_extract_self(newobj);
                 newobj = hold_another_object(newobj, "Oops!  %s out of your grasp!",
                     The(aobjnam(newobj, "slip")), (const char*)0);
@@ -2982,6 +2984,7 @@ boolean do_auto_in_bag;
             }
 
             play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_APPLY);
+            Strcpy(debug_buf_2, "loot_mon");
             obj_extract_self(otmp);
 
             if ((unwornmask = otmp->owornmask) != 0L)
@@ -3070,6 +3073,7 @@ int held;
             otmp = curr->nobj;
             if (!rn2(13)) 
             {
+                Strcpy(debug_buf_2, "boh_loss");
                 obj_extract_self(curr);
                 loss += mbag_item_gone(held, curr);
             }
@@ -3340,6 +3344,7 @@ boolean dobot;
 
         explode(u.ux, u.uy, RAY_MAGIC_MISSILE, (struct monst*)0, 2, 6, 0, saved_otyp, saved_oclass, EXPL_MAGICAL);
         /*delete_contents(current_container);*/
+        Strcpy(debug_buf_2, "in_container_core");
         register struct obj* curr;
         while ((curr = current_container->cobj) != 0) {
             obj_extract_self(curr);
@@ -3623,6 +3628,7 @@ uchar* obj_gone_ptr;
         obj = splitobj(obj, count);
 
     /* Remove the object from the list. */
+    Strcpy(debug_buf_2, "out_container_core");
     obj_extract_self(obj);
     current_container->owt = weight(current_container);
 
@@ -3751,6 +3757,7 @@ boolean makecat, givemsg;
             livecat->u_know_mname = TRUE; /* It is famous! */
             if (deadcat)
             {
+                Strcpy(debug_buf_2, "observe_quantum_cat");
                 obj_extract_self(deadcat);
                 obfree(deadcat, (struct obj *) 0), deadcat = 0;
             }
@@ -5048,6 +5055,7 @@ struct obj *box; /* or bag */
         pline("%s out%c",
               box->cobj->nobj ? "Objects spill" : "An object spills",
               terse ? ':' : '.');
+        Strcpy(debug_buf_2, "tip_container");
         for (otmp = box->cobj; otmp; otmp = nobj) {
             nobj = otmp->nobj;
             obj_extract_self(otmp);

@@ -246,6 +246,7 @@ moverock()
                 case LANDMINE:
                     if (rn2(10))
                     {
+                        Strcpy(debug_buf_2, "moverock1");
                         obj_extract_self(otmp);
                         place_object(otmp, rx, ry);
                         newsym(sx, sy);
@@ -286,6 +287,7 @@ moverock()
                 case SPIKED_PIT:
                 case PIT:
                     play_sfx_sound_at_location(SFX_BOULDER_FILLS_PIT, rx, ry);
+                    Strcpy(debug_buf_2, "moverock2");
                     obj_extract_self(otmp);
                     /* vision kludge to get messages right;
                        the pit will temporarily be seen even
@@ -345,6 +347,7 @@ moverock()
                     {
                         (void) rloco(otmp);
                     } else {
+                        Strcpy(debug_buf_2, "moverock3");
                         obj_extract_self(otmp);
                         add_to_migration(otmp);
                         get_level(&dest, newlev);

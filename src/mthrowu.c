@@ -744,6 +744,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 
         if (!objgone && range == -1)
         { /* special case */
+            Strcpy(debug_buf_2, "ohitmon");
             obj_extract_self(otmp);    /* free it for motion again */
             return 0;
         }
@@ -800,11 +801,13 @@ struct obj *obj;         /* missile (or stack providing it) */
         /* location, not its existence */
         if (MON_WEP(mon) == obj)
             setmnotwielded(mon, obj);
+        Strcpy(debug_buf_2, "m_throw1");
         obj_extract_self(obj);
         singleobj = obj;
         obj = (struct obj *) 0;
     } else {
         singleobj = splitobj(obj, 1L);
+        Strcpy(debug_buf_2, "m_throw2");
         obj_extract_self(singleobj);
     }
 
@@ -1584,6 +1587,7 @@ m_useupall(mon, obj)
 struct monst *mon;
 struct obj *obj;
 {
+    Strcpy(debug_buf_2, "m_useupall");
     obj_extract_self(obj);
     if (obj->owornmask) {
         if (obj == MON_WEP(mon))
@@ -1766,6 +1770,7 @@ struct attack *mattk;
         }
         else 
         {
+            Strcpy(debug_buf_2, "spitmu");
             obj_extract_self(otmp);
             obfree(otmp, (struct obj *) 0);
         }

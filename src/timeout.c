@@ -1588,6 +1588,7 @@ long timeout;
             useup(egg);
         } else {
             /* free egg here because we use it above */
+            Strcpy(debug_buf_2, "hatch_egg");
             obj_extract_self(egg);
             obfree(egg, (struct obj *) 0);
         }
@@ -1899,6 +1900,7 @@ long timeout;
                 /* get rid of candles and burning oil potions;
                    we know this object isn't carried by hero,
                    nor is it migrating */
+                Strcpy(debug_buf_2, "burn_object1");
                 obj_extract_self(obj);
                 obfree(obj, (struct obj *) 0);
                 obj = (struct obj *) 0;
@@ -1949,6 +1951,7 @@ long timeout;
                to avoid false complaint of deleting worn item */
             if (obj->where == OBJ_MIGRATING)
                 obj->owornmask = 0L;
+            Strcpy(debug_buf_2, "burn_object2");
             obj_extract_self(obj);
             obfree(obj, (struct obj *) 0);
         }
@@ -2111,6 +2114,7 @@ long timeout;
                     so obfree won't think this item is worn */
                 if (obj->where == OBJ_MIGRATING)
                     obj->owornmask = 0L;
+                Strcpy(debug_buf_2, "burn_object3");
                 obj_extract_self(obj);
                 obfree(obj, (struct obj*)0);
             }
@@ -2236,6 +2240,7 @@ long timeout;
                        so obfree won't think this item is worn */
                     if (obj->where == OBJ_MIGRATING)
                         obj->owornmask = 0L;
+                    Strcpy(debug_buf_2, "burn_object4");
                     obj_extract_self(obj);
                     obfree(obj, (struct obj *) 0);
                 }
@@ -2561,6 +2566,7 @@ long timeout;
     else {
         /* clear migrating obj's destination code
            so obfree won't think this item is worn */
+        Strcpy(debug_buf_2, "unsummon_item");
         obj_extract_self(obj);
         obfree(obj, (struct obj*) 0);
     }

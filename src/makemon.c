@@ -265,7 +265,6 @@ struct obj* obj;
 
     int otyp = obj->otyp;
     boolean generate_random_item = FALSE;
-    Strcpy(debug_buf_1, "m_inityour");
 
     if (obj->oartifact)
     {
@@ -1281,7 +1280,6 @@ register struct monst *mtmp;
     int mndx = mtmp->mnum;
     int n = 0;
     int i;
-    Sprintf(debug_buf_2, "m_initinv, mnum=%d", mtmp->mnum);
 
     if (Is_really_rogue_level(&u.uz))
         return;
@@ -4644,7 +4642,6 @@ register struct monst *mtmp;
             } else if (s_sym == COIN_CLASS) {
                 appear = GOLD_PIECE;
             } else {
-                Sprintf(debug_buf_2, "set_mimic_sym, s_sym=%d,roll=%d", s_sym, roll);
                 otmp = mkobj((char) s_sym, FALSE, FALSE);
                 appear = otmp->otyp;
                 set_mimic_existing_mobj(mtmp, otmp);

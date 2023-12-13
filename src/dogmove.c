@@ -1334,6 +1334,7 @@ int udist;
                                     pline("%s picks up %s.", Monnam(mtmp), distant_name(otmp, doname));
                             }
 
+                            Strcpy(debug_buf_2, "dog_invent");
                             obj_extract_self(otmp);
                             newsym(omx, omy);
                             (void) mpickobj(mtmp, otmp);

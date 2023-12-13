@@ -70,6 +70,7 @@ boolean restore;
         
         if (otmp->in_use) 
         {
+            Strcpy(debug_buf_2, "resetobjs");
             obj_extract_self(otmp);
             dealloc_obj(otmp);
             continue;
@@ -99,7 +100,6 @@ boolean restore;
                         }
                         else
                         {
-                            Strcpy(debug_buf_1, "resetobjs");
                             otmp->otyp = random_objectid_from_class(otmp->oclass, (struct monst*)0, MKOBJ_FLAGS_ALSO_RARE);
                             otmp->elemental_enchantment = 0;
                             otmp->exceptionality = 0;
@@ -312,6 +312,7 @@ int x, y;
     u.twoweap = 0; /* ensure curse() won't cause swapwep to drop twice */
     while ((otmp = invent) != 0) 
     {
+        Strcpy(debug_buf_2, "drop_upon_death");
         obj_extract_self(otmp);
         /* when turning into green slime, all gear remains held;
            other types "arise from the dead" do aren't holding

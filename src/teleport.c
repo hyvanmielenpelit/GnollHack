@@ -2006,6 +2006,7 @@ register struct obj *obj;
     obj->speflags &= ~SPEFLAGS_CAUGHT_IN_LEAVES;
     obj_clear_found(obj);
 
+    Strcpy(debug_buf_2, "rloco");
     obj_extract_self(obj);
     otx = obj->ox;
     oty = obj->oy;

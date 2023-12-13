@@ -871,6 +871,7 @@ int *fail_reason;
     }
 
     /* transfer any statue contents to monster's inventory */
+    Strcpy(debug_buf_2, "animate_statue");
     while ((item = statue->cobj) != 0) {
         obj_extract_self(item);
         (void) mpickobj(mon, item);
@@ -943,6 +944,7 @@ struct obj *objchn, *saddle;
                 /* move saddle */
                 xchar x, y;
                 if (get_obj_location(objchn, &x, &y, 0)) {
+                    Strcpy(debug_buf_2, "keep_saddle_with_steedcorpse");
                     obj_extract_self(saddle);
                     place_object(saddle, x, y);
                     stackobj(saddle);
@@ -2251,13 +2253,17 @@ int style;
     }
 
     if (otmp->quan == 1L) {
+        Strcpy(debug_buf_2, "launch_obj1");
         obj_extract_self(otmp);
         singleobj = otmp;
         otmp = (struct obj *) 0;
     } else {
         singleobj = splitobj(otmp, 1L);
-        if(singleobj)
+        if (singleobj)
+        {
+            Strcpy(debug_buf_2, "launch_obj2");
             obj_extract_self(singleobj);
+        }
     }
     newsym(x1, y1);
 
@@ -2481,6 +2487,7 @@ int style;
 
                 You_hear("a loud crash%s!",
                          cansee(bhitpos.x, bhitpos.y) ? bmsg : "");
+                Strcpy(debug_buf_2, "launch_obj3");
                 obj_extract_self(otmp2);
                 /* pass off the otrapped flag to the next boulder */
                 otmp2->otrapped = singleobj->otrapped;
@@ -3796,6 +3803,7 @@ int x, y;
 {
     struct obj *otmp;
     struct trap *t;
+    Strcpy(debug_buf_2, "fill_pit");
 
     if ((t = t_at(x, y)) && is_pit(t->ttyp)
         && (otmp = sobj_at(BOULDER, x, y))) {
@@ -4367,6 +4375,7 @@ xchar x, y;
             for (otmp = obj->cobj; otmp; otmp = ncobj) 
             {
                 ncobj = otmp->nobj;
+                Strcpy(debug_buf_2, "fire_damage");
                 obj_extract_self(otmp);
                 if (!flooreffects(otmp, x, y, ""))
                     place_object(otmp, x, y);
@@ -5731,7 +5740,6 @@ struct trap* ttmp;
             genotyp = WAN_POLYMORPH;
             break;
         case MAGIC_TRAP:
-            Strcpy(debug_buf_1, "disarm_magical_trap");
             genotyp = random_objectid_from_class(WAND_CLASS, (struct monst*)0, 0UL);
             break;
         case LEVEL_TELEP:

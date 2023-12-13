@@ -2750,6 +2750,7 @@ struct monst *mtmp;
         mquaffmsg(mtmp, otmp);
         if (has_edog(mtmp))
         {
+            Strcpy(debug_buf_2, "use_misc");
             obj_extract_self(otmp);
             place_object(otmp, mtmp->mx, mtmp->my);
             dog_eat(mtmp, otmp, mtmp->mx, mtmp->my, FALSE);

@@ -111,6 +111,7 @@ register struct monst *mtmp;
     ygold = findgold(invent);
 
     if (fgold && (!ygold || fgold->quan > ygold->quan || !rn2(5))) {
+        Strcpy(debug_buf_2, "stealgold");
         obj_extract_self(fgold);
         add_to_minv(mtmp, fgold);
         newsym(u.ux, u.uy);
@@ -220,7 +221,6 @@ boolean unchain_ball; /* whether to unpunish or just unwield */
         cancel_don();
     if (!obj->owornmask)
         return;
-    Strcpy(debug_buf_4, "remove_worn_item");
 
     if (obj->owornmask & W_ARMOR) {
         if (obj == uskin) {
@@ -796,6 +796,7 @@ struct monst *mon;
            for the other roles are not */
         if (is_obj_unremovable_from_the_game(obj) || is_quest_artifact(obj))
         {
+            Strcpy(debug_buf_2, "mdrop_special_objs");
             obj_extract_self(obj);
             if (mon->mx) 
             {
@@ -834,12 +835,14 @@ boolean is_mon_dead;
         if (canspotmon(mtmp))
             pline("%s gold %s.", s_suffix(Monnam(mtmp)),
                   canseemon(mtmp) ? "vanishes" : "seems to vanish");
+        Strcpy(debug_buf_2, "release_monster_objects1");
         obj_extract_self(otmp);
         obfree(otmp, (struct obj *) 0);
     } /* isgd && has gold */
 
     while ((otmp = (is_pet ? droppables(mtmp) : mtmp->minvent)) != 0) 
     {
+        Strcpy(debug_buf_2, "release_monster_objects2");
         obj_extract_self(otmp);
         if (((otmp->speflags & SPEFLAGS_CLONED_ITEM) || ((mtmp->issummoned || mtmp->ispartymember) && (!is_mon_dead || otmp->oclass == COIN_CLASS)))
             /* When leaving without dying, summoned and joined monsters take their possessions with them, except central artifacts 
@@ -914,6 +917,7 @@ struct monst* mtmp;
     struct obj* otmp;
     int omx = mtmp->mx, omy = mtmp->my;
 
+    Strcpy(debug_buf_2, "mdrop_droppable_objs");
     while ((otmp = droppables(mtmp)) != 0)
     {
         obj_extract_self(otmp);

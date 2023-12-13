@@ -143,6 +143,7 @@ long amount;
 
     if (mongold->quan > amount)
         mongold = splitobj(mongold, amount);
+    Strcpy(debug_buf_2, "money2u");
     obj_extract_self(mongold);
 
     if (!merge_choice(invent, mongold) && inv_cnt(FALSE) >= 52) {
@@ -303,6 +304,7 @@ register struct monst *shkp;
     for (mtmp = migrating_mons; mtmp; mtmp = mtmp->nmon)
         clear_unpaid(shkp, mtmp->minvent);
 
+    Strcpy(debug_buf_2, "setpaid");
     while ((obj = billobjs) != 0) {
         obj_extract_self(obj);
         dealloc_obj(obj);
@@ -967,6 +969,7 @@ register struct obj *obj;
 {
     register struct obj *curr;
 
+    Strcpy(debug_buf_2, "delete_contents");
     while ((curr = obj->cobj) != 0) {
         obj_extract_self(curr);
         obfree(curr, (struct obj *) 0);
@@ -1817,6 +1820,7 @@ boolean itemize;
             bp->useup = 0;
             buy = PAY_SOME;
         } else { /* completely used-up, so get rid of it */
+            Strcpy(debug_buf_2, "dopayobj");
             obj_extract_self(obj);
             /* assert( obj == *obj_p ); */
             dealloc_obj(obj);
@@ -4132,6 +4136,7 @@ boolean catchup; /* restoring a level */
         while ((otmp = level.objects[x][y]) != 0)
             /* Don't mess w/ boulders -- just merge into wall */
             if (otmp->otyp == BOULDER || otmp->otyp == ROCK) {
+                Strcpy(debug_buf_2, "repair_damage");
                 obj_extract_self(otmp);
                 obfree(otmp, (struct obj *) 0);
             } else {

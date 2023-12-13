@@ -343,6 +343,7 @@ boolean destroyit;
         /* Put the contents on ground at the hero's feet. */
         while ((otmp = box->cobj) != 0) 
         {
+            Strcpy(debug_buf_2, "breakchestlock");
             obj_extract_self(otmp);
             if (!rn2(3) || otmp->oclass == POTION_CLASS) 
             {
