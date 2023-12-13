@@ -326,10 +326,10 @@ namespace GnollHackX
             if (message == "")
                 goto cleanup;
 
-            bool isCustomXlogServerLink = string.IsNullOrWhiteSpace(GHApp.CustomXlogPostLink);
+            bool isCustomXlogServerLink = !string.IsNullOrWhiteSpace(GHApp.CustomXlogPostLink);
             string username = GHApp.XlogUserName;
             if (GHApp.PostingXlogEntries && !string.IsNullOrWhiteSpace(username) && GHApp.XlogUserNameVerified)
-                message = message + (isCustomXlogServerLink ? "{" : " [") + username + (isCustomXlogServerLink ? "}" : "]");
+                message = message + (isCustomXlogServerLink ? " {" : " [") + username + (isCustomXlogServerLink ? "}" : "]");
 
             string portver = VersionTracking.CurrentVersion;
             DevicePlatform platform = DeviceInfo.Platform;

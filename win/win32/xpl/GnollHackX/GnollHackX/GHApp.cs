@@ -2899,7 +2899,7 @@ namespace GnollHackX
                         Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
 
                         string adjusted_entry_string = "";
-                        if(!string.IsNullOrWhiteSpace(adjusted_entry_string))
+                        if(!string.IsNullOrWhiteSpace(xlogentry_string))
                         {
                             adjusted_entry_string = xlogentry_string.Replace("○", "\t").Replace("◙", Environment.NewLine);
                             adjusted_entry_string = adjusted_entry_string.Replace(Environment.NewLine, "") // Should be just on at the end
@@ -2984,7 +2984,7 @@ namespace GnollHackX
                                     XlogCredentialsIncorrect = true;
                             }
 
-                            if (!res.IsSuccess && !is_from_queue)
+                            if (!res.IsSuccess && !is_from_queue && !string.IsNullOrWhiteSpace(xlogentry_string))
                             {
                                 string targetpath = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
                                 if (!Directory.Exists(targetpath))
