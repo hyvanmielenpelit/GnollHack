@@ -780,6 +780,11 @@ VA_DECL(const char *, str)
 #ifdef GNOLLHACK_MAIN_PROGRAM
         if (open_special_view)
         {
+            /* Add mode to posted panic */
+            char mbuf[BUFSZ] = "";
+            (void)describe_mode(mbuf);
+            Sprintf(eos(buf), " [%s]", mbuf);
+
             struct special_view_info info = { 0 };
             info.viewtype = SPECIAL_VIEW_PANIC;
             info.text = buf;

@@ -326,6 +326,24 @@ namespace GnollHackX
             if (message == "")
                 goto cleanup;
 
+            bool isCustomXlogServerLink = string.IsNullOrWhiteSpace(GHApp.CustomXlogPostLink);
+            string username = GHApp.XlogUserName;
+            if (GHApp.PostingXlogEntries && !string.IsNullOrWhiteSpace(username) && GHApp.XlogUserNameVerified)
+                message = message + (isCustomXlogServerLink ? "{" : " [") + username + (isCustomXlogServerLink ? "}" : "]");
+
+            string portver = VersionTracking.CurrentVersion;
+            DevicePlatform platform = DeviceInfo.Platform;
+            string platstr = platform != null ? platform.ToString() : "";
+            if (platstr == null)
+                platstr = "";
+            string platid;
+            if (platstr.Length > 0)
+                platid = platstr.Substring(0, 1).ToLower();
+            else
+                platid = "";
+
+            message = message + " [" + portver + platid + "]";
+
             if (!is_game_status)
             {
                 string ver = GHApp.GHVersionString + " / " + VersionTracking.CurrentVersion + " / " + VersionTracking.CurrentBuild;
@@ -364,24 +382,6 @@ namespace GnollHackX
                         break;
                 }
             }
-
-            bool isCustomXlogServerLink = string.IsNullOrWhiteSpace(GHApp.CustomXlogPostLink);
-            string username = GHApp.XlogUserName;
-            if (GHApp.PostingXlogEntries && !string.IsNullOrWhiteSpace(username) && GHApp.XlogUserNameVerified)
-                message = message + (isCustomXlogServerLink ? "{" : " [") + username + (isCustomXlogServerLink ? "}" : "]");
-
-            string portver = VersionTracking.CurrentVersion;
-            DevicePlatform platform = DeviceInfo.Platform;
-            string platstr = platform != null ? platform.ToString() : "";
-            if (platstr == null)
-                platstr = "";
-            string platid;
-            if (platstr.Length > 0)
-                platid = platstr.Substring(0, 1).ToLower();
-            else
-                platid = "";
-
-            message = message + " [" + portver + platid + "]";
 
             await GHApp.SendForumPost(is_game_status, message, status_type, status_datatype, _forumPostAttachments, false);
             _forumPostAttachments.Clear();
