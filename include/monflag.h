@@ -88,10 +88,10 @@
 #define MR_FREE_ACTION             0x02000000UL   /* immune to paralysis */
 #define MR_STUN                    0x04000000UL   /* immune to stun */
 #define MR_LEVITATION_CONTROL      0x08000000UL        
-#define MR_FIRE_VULNERABLITY       0x10000000UL        
-#define MR_COLD_VULNERABLITY       0x20000000UL        
-#define MR_SHOCK_VULNERABLITY      0x40000000UL        
-#define MR_MAGIC_MISSILE_VULNERABLITY      0x80000000UL        
+#define MR_FIRE_VULNERABILITY      0x10000000UL        
+#define MR_COLD_VULNERABILITY      0x20000000UL        
+#define MR_SHOCK_VULNERABILITY     0x40000000UL        
+#define MR_MAGIC_MISSILE_VULNERABILITY     0x80000000UL        
 
 #define MR2_NONE                           0x00000000UL
 #define MR2_FIRE_RESISTANCE                0x00000001UL        

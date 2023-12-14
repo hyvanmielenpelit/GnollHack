@@ -1865,6 +1865,15 @@ namespace GnollHackX
                         queue.Enqueue(new GHRequest(this, GHRequestType.PostXlogEntry, cmd_param, cmd_param2, status_str));
                     }
                     break;
+                case (int)gui_command_types.GUI_CMD_POST_BONES_FILE:
+                    if (cmd_str != null)
+                        status_str = cmd_str;
+
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.PostBonesFile, cmd_param, cmd_param2, status_str));
+                    }
+                    break;
                 case (int)gui_command_types.GUI_CMD_LIBRARY_MANUAL:
                     if(cmd_param >= 0 && cmd_param < GHConstants.MaxGHWindows)
                     {

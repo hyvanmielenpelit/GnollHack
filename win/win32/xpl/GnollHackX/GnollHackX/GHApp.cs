@@ -20,6 +20,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Net;
+using System.Net.Mail;
 
 namespace GnollHackX
 {
@@ -2519,6 +2520,22 @@ namespace GnollHackX
             }
         }
 
+        public static string BonesPostAddress
+        {
+            get
+            {
+                string address = XlogPostAddress;
+                string shortened_address;
+                if (address.Length > 8)
+                    shortened_address = address.Substring(0, address.Length - 8);
+                else
+                    shortened_address = "";
+
+                string final_address = shortened_address + GHConstants.BonesPostPage;
+                return final_address;
+            }
+        }
+
         private static readonly object _xlogCreditialLock = new object();
         private static string _xlogUserName = "";
         private static string _xlogPassword = "";
@@ -3210,6 +3227,151 @@ namespace GnollHackX
             return res;
         }
 
+        public static async Task<SendResult> SendBonesFile(string bones_filename, int status_type, int status_datatype, bool is_from_queue)
+        {
+            SendResult res = new SendResult();
+            try
+            {
+                string postaddress = BonesPostAddress;
+                Debug.WriteLine("BonesPostAddress: " + postaddress);
+                if (postaddress != null && postaddress.Length > 8 && postaddress.Substring(0, 8) == "https://" && Uri.IsWellFormedUriString(postaddress, UriKind.Absolute))
+                {
+                    using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
+                    {
+                        MultipartFormDataContent multicontent = new MultipartFormDataContent("-------------------boundary");
+
+                        string username = XlogUserName;
+                        string password = XlogPassword;
+                        StringContent content1 = new StringContent(username, Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhv1 = new ContentDispositionHeaderValue("form-data");
+                        cdhv1.Name = "UserName";
+                        content1.Headers.ContentDisposition = cdhv1;
+                        multicontent.Add(content1);
+                        Debug.WriteLine("UserName: " + username);
+
+                        StringContent content3 = new StringContent(password, Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhv3 = new ContentDispositionHeaderValue("form-data");
+                        cdhv3.Name = "Password";
+                        content3.Headers.ContentDisposition = cdhv3;
+                        multicontent.Add(content3);
+                        Debug.WriteLine("Password: " + password);
+
+                        StringContent content4 = new StringContent(XlogAntiForgeryToken, Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhv4 = new ContentDispositionHeaderValue("form-data");
+                        cdhv4.Name = "AntiForgeryToken";
+                        content4.Headers.ContentDisposition = cdhv4;
+                        multicontent.Add(content4);
+                        Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
+
+                        List<FileStream> filestreams = new List<FileStream>();
+                        List<StreamContent> contents = new List<StreamContent>();
+
+                        string full_filepath = Path.Combine(GHApp.GHPath, bones_filename);
+                        bool fileexists = File.Exists(full_filepath);
+                        if (fileexists)
+                        {
+                            FileInfo fileinfo = new FileInfo(full_filepath);
+                            string filename = fileinfo.Name;
+                            FileStream stream = new FileStream(full_filepath, FileMode.Open);
+                            StreamContent content5 = new StreamContent(stream);
+                            filestreams.Add(stream);
+                            contents.Add(content5);
+                            ContentDispositionHeaderValue cdhv5 = new ContentDispositionHeaderValue("form-data");
+                            cdhv5.Name = "BonesFile";
+                            cdhv5.FileName = filename;
+                            content5.Headers.ContentDisposition = cdhv5;
+                            multicontent.Add(content5);
+                            Debug.WriteLine("Bones file added: " + cdhv5.Name + ", " + bones_filename);
+                        }
+                        using (var cts = new CancellationTokenSource())
+                        {
+                            cts.CancelAfter(string.IsNullOrEmpty(bones_filename) ? 5000 : 120000);
+                            string responseContent = "";
+                            try
+                            {
+                                using (HttpResponseMessage response = await client.PostAsync(postaddress, multicontent, cts.Token))
+                                {
+                                    responseContent = await response.Content.ReadAsStringAsync();
+                                    Debug.WriteLine("Bones file response content:");
+                                    Debug.WriteLine(responseContent);
+                                    res.IsSuccess = response.IsSuccessStatusCode;
+                                    res.HasHttpStatusCode = true;
+                                    res.StatusCode = response.StatusCode;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine("Exception occurred while sending bones file: " + ex.Message);
+                                res.IsSuccess = false;
+                                res.Message = ex.Message;
+                            }
+
+                            XlogCredentialsIncorrect = false;
+                            if (res.IsSuccess)
+                            {
+                                SetXlogUserNameVerified(true, username, password);
+                                Debug.WriteLine("Bones file successfully sent. Status Code: " + (int)res.StatusCode);
+                            }
+                            else
+                            {
+                                Debug.WriteLine("Sending bones file failed. Status Code: " + (int)res.StatusCode);
+                                if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */)) // || res.StatusCode == HttpStatusCode.Locked /* 423 */
+                                    SetXlogUserNameVerified(false, null, null);
+                                if (res.StatusCode == HttpStatusCode.Forbidden)
+                                    XlogCredentialsIncorrect = true;
+                            }
+
+                            if (!res.IsSuccess && !is_from_queue && !string.IsNullOrWhiteSpace(bones_filename))
+                            {
+                                string targetpath = Path.Combine(GHApp.GHPath, GHConstants.BonesPostQueueDirectory);
+                                if (!Directory.Exists(targetpath))
+                                    CheckCreateDirectory(targetpath);
+                                if (Directory.Exists(targetpath))
+                                {
+                                    string targetfilename;
+                                    string targetfilepath;
+                                    int id = 0;
+                                    do
+                                    {
+                                        targetfilename = GHConstants.BonesPostFileNamePrefix + id + GHConstants.BonesPostFileNameSuffix;
+                                        targetfilepath = Path.Combine(targetpath, targetfilename);
+                                        id++;
+                                    } while (File.Exists(targetfilepath));
+
+                                    using (StreamWriter sw = File.CreateText(targetfilepath))
+                                    {
+                                        ForumPost fp = new ForumPost(2, true, status_type, status_datatype, bones_filename, null, false);
+                                        string json = JsonConvert.SerializeObject(fp);
+                                        Debug.WriteLine(json);
+                                        sw.Write(json);
+                                    }
+                                }
+                            }
+                        }
+                        content1.Dispose();
+                        content3.Dispose();
+                        content4.Dispose();
+                        foreach (FileStream fs in filestreams)
+                        {
+                            fs.Dispose();
+                        }
+                        filestreams.Clear();
+                        foreach (StreamContent cnt in contents)
+                        {
+                            cnt.Dispose();
+                        }
+                        contents.Clear();
+                        multicontent.Dispose();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+                res.Message = e.Message;
+            }
+            return res;
+        }
     }
 
     class SecretsFileSizeComparer : IComparer<SecretsFile>

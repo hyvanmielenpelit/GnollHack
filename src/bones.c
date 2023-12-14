@@ -695,6 +695,13 @@ make_bones:
     bclose(fd);
     commit_bonesfile(&u.uz);
     compress_bonesfile();
+#if !defined(COMPRESS) && !defined(ZLIB_COMP)
+    if (issue_gui_command)
+    {
+        const char* fq_bones = fqname(bones, BONESPREFIX, 0);
+        issue_gui_command(GUI_CMD_POST_BONES_FILE, 0, 0, fq_bones);
+    }
+#endif
 }
 
 int

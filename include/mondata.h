@@ -648,16 +648,16 @@
     (has_innate_or_property(mon, DEATH_RESISTANCE))
 
 #define has_fire_vulnerability(mon) \
-    (has_innate((mon)->data, MR_FIRE_VULNERABLITY) || has_property(mon, FIRE_VULNERABILITY))
+    (has_innate((mon)->data, MR_FIRE_VULNERABILITY) || has_property(mon, FIRE_VULNERABILITY))
 
 #define has_cold_vulnerability(mon) \
-    (has_innate((mon)->data, MR_COLD_VULNERABLITY) || has_property(mon, COLD_VULNERABILITY))
+    (has_innate((mon)->data, MR_COLD_VULNERABILITY) || has_property(mon, COLD_VULNERABILITY))
 
 #define has_elec_vulnerability(mon) \
-    (has_innate((mon)->data, MR_SHOCK_VULNERABLITY) || has_property(mon, SHOCK_VULNERABILITY))
+    (has_innate((mon)->data, MR_SHOCK_VULNERABILITY) || has_property(mon, SHOCK_VULNERABILITY))
 
 #define has_magm_vulnerability(mon) \
-    (has_innate((mon)->data, MR_MAGIC_MISSILE_VULNERABLITY) || has_property(mon, MAGIC_MISSILE_VULNERABILITY))
+    (has_innate((mon)->data, MR_MAGIC_MISSILE_VULNERABILITY) || has_property(mon, MAGIC_MISSILE_VULNERABILITY))
 
 #define has_invulnerable(mon) \
     (has_property(mon, INVULNERABLE))

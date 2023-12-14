@@ -2274,11 +2274,12 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.PostDiagnosticData:
                             case GHRequestType.PostGameStatus:
                                 _mainPage.EnqueuePost(new ForumPost(0, req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
-                                //PostToForum(req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, false);
                                 break;
                             case GHRequestType.PostXlogEntry:
                                 _mainPage.EnqueuePost(new ForumPost(1, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
-                                //PostXlogEntry(req.RequestInt, req.RequestInt2, req.RequestString);
+                                break;
+                            case GHRequestType.PostBonesFile:
+                                //_mainPage.EnqueuePost(new ForumPost(2, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
                                 break;
                             case GHRequestType.DebugLog:
                                 DisplayDebugLog(req.RequestString, req.RequestInt, req.RequestInt2);

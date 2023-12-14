@@ -1281,6 +1281,7 @@ namespace GnollHackX
         GUI_CMD_POST_GAME_STATUS,
         GUI_CMD_POST_DIAGNOSTIC_DATA,
         GUI_CMD_POST_XLOG_ENTRY,
+        GUI_CMD_POST_BONES_FILE,
         GUI_CMD_LIBRARY_MANUAL,
         GUI_CMD_DEBUGLOG,
         GUI_CMD_GAME_START,
@@ -1602,6 +1603,10 @@ namespace GnollHackX
         public const string XlogPostFileNamePrefix = "queued_xlog_post_";
         public const string XlogPostFileNameSuffix = ".txt";
         public const string XlogTopScorePage = "TopScores";
+        public const string BonesPostQueueDirectory = "bonespost";
+        public const string BonesPostFileNamePrefix = "queued_bones_post_";
+        public const string BonesPostFileNameSuffix = ".txt";
+        public const string BonesPostPage = "bones";
         public const double MainScreenGeneralCounterIntervalInSeconds = 2.0;
 #if GNH_MAUI
         public const string PortName = "GnollHackM";

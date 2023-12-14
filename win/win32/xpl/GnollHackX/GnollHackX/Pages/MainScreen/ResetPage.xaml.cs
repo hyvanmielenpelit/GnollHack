@@ -520,8 +520,10 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
             string directory1 = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
             string directory2 = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
+            string directory3 = Path.Combine(GHApp.GHPath, GHConstants.BonesPostQueueDirectory);
             int nofiles1 = 0;
             int nofiles2 = 0;
+            int nofiles3 = 0;
             if (Directory.Exists(directory1))
             {
                 string[] files1 = Directory.GetFiles(directory1);
@@ -538,10 +540,20 @@ namespace GnollHackX.Pages.MainScreen
                     nofiles2 = files2.Length;
                 }
             }
+            if (Directory.Exists(directory3))
+            {
+                string[] files3 = Directory.GetFiles(directory3);
+                if (files3 != null)
+                {
+                    nofiles3 = files3.Length;
+                }
+            }
 
             bool answer = await DisplayAlert("Clear All Post Queues?", 
-                "Are you sure to delete all files in the " + GHConstants.ForumPostQueueDirectory + " (" + nofiles1 + " file" + (nofiles1 == 1 ? "" : "s" ) + ") and " + 
-                GHConstants.XlogPostQueueDirectory + " (" + nofiles2 +  " file" + (nofiles2 == 1 ? "" : "s" ) + ") directories?",
+                "Are you sure to delete all files in the " + 
+                GHConstants.ForumPostQueueDirectory + " (" + nofiles1 + " file" + (nofiles1 == 1 ? "" : "s" ) + "), " + 
+                GHConstants.XlogPostQueueDirectory + " (" + nofiles2 +  " file" + (nofiles2 == 1 ? "" : "s" ) + ") and " +
+                GHConstants.BonesPostQueueDirectory + " (" + nofiles3 + " file" + (nofiles3 == 1 ? "" : "s") + ") directories?",
                 "Yes", "No");
 
             if (answer)

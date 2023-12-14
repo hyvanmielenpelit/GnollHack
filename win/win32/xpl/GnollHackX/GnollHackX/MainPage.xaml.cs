@@ -99,11 +99,13 @@ namespace GnollHackX
             {
                 string directory = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
                 string directory2 = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
+                string directory3 = Path.Combine(GHApp.GHPath, GHConstants.BonesPostQueueDirectory);
                 bool has_files = Directory.Exists(directory) && Directory.GetFiles(directory)?.Length > 0;
                 bool has_files2 = Directory.Exists(directory2) && Directory.GetFiles(directory2)?.Length > 0;
+                bool has_files3 = Directory.Exists(directory3) && Directory.GetFiles(directory3)?.Length > 0;
                 bool xlogusernameok = (!GHApp.PostingXlogEntries || string.IsNullOrEmpty(GHApp.XlogUserName) || GHApp.XlogUserNameVerified);
                 bool postingqueueempty = _postingQueue.Count == 0;
-                if (!has_files && !has_files2 && (xlogusernameok || GHApp.XlogCredentialsIncorrect) && postingqueueempty)
+                if (!has_files && !has_files2 && !has_files3 && (xlogusernameok || GHApp.XlogCredentialsIncorrect) && postingqueueempty)
                 {
                     StopGeneralTimer = true;
                 }
@@ -114,15 +116,17 @@ namespace GnollHackX
                     if (_postingQueue.Count > 0)
                         await ProcessPostingQueue();
                     if (hasinternet && has_files)
-                        await ProcessSavedPosts(false, directory, GHConstants.ForumPostFileNamePrefix);
+                        await ProcessSavedPosts(0, directory, GHConstants.ForumPostFileNamePrefix);
                     if (hasinternet && has_files2)
-                        await ProcessSavedPosts(true, directory2, GHConstants.XlogPostFileNamePrefix);
+                        await ProcessSavedPosts(1, directory2, GHConstants.XlogPostFileNamePrefix);
+                    if (hasinternet && has_files3)
+                        await ProcessSavedPosts(2, directory3, GHConstants.BonesPostFileNamePrefix);
                 }
                 GeneralTimerWorkOnTasks = false;
             }
         }
 
-        private async Task ProcessSavedPosts(bool isxlog, string dir, string fileprefix)
+        private async Task ProcessSavedPosts(int post_type, string dir, string fileprefix)
         {
             if(dir != null && Directory.Exists(dir))
             {
@@ -169,19 +173,32 @@ namespace GnollHackX
                                     try
                                     {
                                         SendResult res;
-                                        if (isxlog)
-                                            res = await GHApp.SendXlogFile(post.status_string, post.status_type, post.status_datatype, post.attachments, true);
-                                        else
-                                            res = await GHApp.SendForumPost(post.is_game_status, post.status_string, post.status_type, post.status_datatype, post.attachments, true);
+                                        string typestr = "";
+                                        switch(post_type)
+                                        {
+                                            case 2:
+                                                typestr = "Bones file";
+                                                res = await GHApp.SendBonesFile(post.status_string, post.status_type, post.status_datatype, true);
+                                                break;
+                                            case 1:
+                                                typestr = "Xlog";
+                                                res = await GHApp.SendXlogFile(post.status_string, post.status_type, post.status_datatype, post.attachments, true);
+                                                break;
+                                            case 0:
+                                            default:
+                                                typestr = "Forum post";
+                                                res = await GHApp.SendForumPost(post.is_game_status, post.status_string, post.status_type, post.status_datatype, post.attachments, true);
+                                                break;
+                                        }
 
                                         if (res.IsSuccess)
                                         {
-                                            Debug.WriteLine((isxlog ? "XLogFile" : "Forum post") + " was sent successfully: " + filepath);
+                                            Debug.WriteLine(typestr + " was sent successfully: " + filepath);
                                             File.Delete(filepath);
                                         }
                                         else
                                         {
-                                            Debug.WriteLine("Sending " + (isxlog ? "XLogFile" : "forum post") + " failed: " + filepath +
+                                            Debug.WriteLine("Sending " + typestr.ToLower() + " failed: " + filepath +
                                                 (!res.HasHttpStatusCode ? "" : ", StatusCode: " + (int)res.StatusCode) + " (" + res.StatusCode.ToString() + ")" +
                                                 (res.Message == null ? "" : ", Message: " + res.Message));
                                         }
@@ -212,6 +229,9 @@ namespace GnollHackX
             {
                 switch(post.post_type)
                 {
+                    case 2:
+                        await PostBonesFileAsync(post.status_type, post.status_datatype, post.status_string);
+                        break;
                     case 1:
                         await PostXlogEntryAsync(post.status_type, post.status_datatype, post.status_string);
                         break;
@@ -448,6 +468,16 @@ namespace GnollHackX
             return;
         }
 
+        public async void PostBonesFile(int status_type, int status_datatype, string bones_filename)
+        {
+            await PostBonesFileAsync(status_type, status_datatype, bones_filename);
+        }
+
+        public async Task PostBonesFileAsync(int status_type, int status_datatype, string bones_filename)
+        {
+            Debug.WriteLine("Starting posting bones file: " + bones_filename);
+            await GHApp.SendBonesFile(bones_filename, status_type, status_datatype, false);
+        }
 
         public void ActivateLocalGameButton()
         {
