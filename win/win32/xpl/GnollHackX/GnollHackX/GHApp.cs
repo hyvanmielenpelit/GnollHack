@@ -2905,6 +2905,7 @@ namespace GnollHackX
                             adjusted_entry_string = adjusted_entry_string.Replace(Environment.NewLine, "") // Should be just on at the end
                                     + "\tplatform=" + DeviceInfo.Platform.ToString()?.ToLower()
                                     + "\tplatformversion=" + DeviceInfo.VersionString?.ToLower()
+                                    + "\tport=" + GHConstants.PortName?.ToLower()
                                     + "\tportversion=" + VersionTracking.CurrentVersion?.ToLower()
                                     + "\tportbuild=" + VersionTracking.CurrentBuild?.ToLower()
                                     + Environment.NewLine;

@@ -689,9 +689,9 @@ make_bones:
     store_savefileinfo(fd);
     bwrite(fd, (genericptr_t) &c, sizeof c);
     bwrite(fd, (genericptr_t) bonesid, (size_t) c); /* DD.nnn */
-    savefruitchn(fd, WRITE_SAVE | FREE_SAVE);
+    savefruitchn(fd, WRITE_SAVE);
     update_mlstmv(); /* update monsters for eventual restoration */
-    savelev(fd, ledger_no(&u.uz), WRITE_SAVE | FREE_SAVE);
+    savelev(fd, ledger_no(&u.uz), WRITE_SAVE);
     bclose(fd);
     commit_bonesfile(&u.uz);
     compress_bonesfile();

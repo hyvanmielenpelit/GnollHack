@@ -1603,6 +1603,11 @@ namespace GnollHackX
         public const string XlogPostFileNameSuffix = ".txt";
         public const string XlogTopScorePage = "TopScores";
         public const double MainScreenGeneralCounterIntervalInSeconds = 2.0;
+#if GNH_MAUI
+        public const string PortName = "GnollHackM";
+#else
+        public const string PortName = "GnollHackX";
+#endif
     }
 
     [StructLayout(LayoutKind.Sequential)]
