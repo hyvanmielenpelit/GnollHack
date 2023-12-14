@@ -410,7 +410,7 @@ struct monst *oracle;
 
 /* check whether bones are feasible */
 boolean
-can_make_bones()
+can_make_bones(VOID_ARGS)
 {
     register struct trap *ttmp;
 
@@ -698,7 +698,7 @@ make_bones:
 }
 
 int
-getbones()
+getbones(VOID_ARGS)
 {
     register int fd;
     register int ok;
