@@ -132,6 +132,14 @@
                             <Switch x:Name="YesClipNormalSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
+                            <Label Text="Allow Ghost Levels"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                            <Switch x:Name="BonesSwitch" Toggled="BonesSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Show Battery"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -521,7 +529,7 @@
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                         </StackLayout>
 
-                        <Label Text="Posting" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
+                        <Label Text="Forum Posting" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Post Game Status"
                                     FontFamily="Underwood" TextColor="Black"
@@ -556,6 +564,8 @@
                                     HorizontalOptions="Start" />
                             <Switch x:Name="PostDiagnosticDataSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
+
+                        <Label Text="Server Posting" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Post Top Scores"
                                     FontFamily="Underwood" TextColor="Black"
@@ -565,7 +575,15 @@
                             <Switch x:Name="PostXlogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="  Account"
+                            <Label Text="Post Bones Files" x:Name="PostBonesLabel"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                            <Switch x:Name="PostBonesSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                            <Label Text="Account"
                                         FontFamily="Underwood" TextColor="Black"
                                         FontSize="15"
                                         VerticalOptions="CenterAndExpand" 
@@ -588,7 +606,7 @@
                                         HorizontalOptions="End" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="  Posting"
+                            <Label Text="Posting"
                                         FontFamily="Underwood" TextColor="Black"
                                         FontSize="15"
                                         VerticalOptions="CenterAndExpand" 
@@ -611,7 +629,7 @@
                                         HorizontalOptions="End" />
                         </StackLayout>
                         <StackLayout x:Name="PostXlogUserNameStackLayout" Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="  User Name"
+                            <Label Text="User Name"
                                     x:Name="PostXlogUserNameLabel" 
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -621,7 +639,7 @@
                                     TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="  Password"
+                            <Label Text="Password"
                                     x:Name="PostXlogPasswordLabel" 
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -631,7 +649,7 @@
                                     TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                         </StackLayout>
                         <StackLayout x:Name="XlogReleaseAccountStackLayout" Orientation="Horizontal" HeightRequest="40" IsVisible="False">
-                            <Label Text="  Use Release Account"
+                            <Label Text="Use Release Account"
                                     x:Name="XlogReleaseAccountLabel"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -698,14 +716,6 @@
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
                             <Switch x:Name="StreamingBankToDiskSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="StreamingBankToDiskSwitch_Toggled" />
-                        </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="Allow Ghost Levels"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
-                            <Switch x:Name="BonesSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
                             <Label x:Name="LongerMessageHistoryLabel"

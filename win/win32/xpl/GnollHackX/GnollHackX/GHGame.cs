@@ -1845,33 +1845,59 @@ namespace GnollHackX
                     _restoreRequested = false;
                     break;
                 case (int)gui_command_types.GUI_CMD_POST_DIAGNOSTIC_DATA:
-                case (int)gui_command_types.GUI_CMD_POST_GAME_STATUS:
-                    if(cmd_str != null)
-                        status_str = cmd_str;
-
-                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                    if (GHApp.PostingDiagnosticData)
                     {
-                        queue.Enqueue(new GHRequest(this,
-                            cmd_id == (int)gui_command_types.GUI_CMD_POST_GAME_STATUS ? GHRequestType.PostGameStatus : GHRequestType.PostDiagnosticData, 
-                            cmd_param, cmd_param2, status_str));
+                        if (cmd_str != null)
+                            status_str = cmd_str;
+
+                        if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                        {
+                            queue.Enqueue(new GHRequest(this,
+                                GHRequestType.PostDiagnosticData,
+                                cmd_param, cmd_param2, status_str));
+                        }
+                    }
+                    break;
+                case (int)gui_command_types.GUI_CMD_POST_GAME_STATUS:
+                    if (GHApp.PostingGameStatus)
+                    {
+                        if (cmd_str != null)
+                            status_str = cmd_str;
+
+                        if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                        {
+                            queue.Enqueue(new GHRequest(this,
+                                GHRequestType.PostGameStatus,
+                                cmd_param, cmd_param2, status_str));
+                        }
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_POST_XLOG_ENTRY:
-                    if (cmd_str != null)
-                        status_str = cmd_str;
-
-                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                    if(GHApp.PostingXlogEntries)
                     {
-                        queue.Enqueue(new GHRequest(this, GHRequestType.PostXlogEntry, cmd_param, cmd_param2, status_str));
+                        if (cmd_str != null)
+                            status_str = cmd_str;
+
+                        if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                        {
+                            queue.Enqueue(new GHRequest(this, GHRequestType.PostXlogEntry, cmd_param, cmd_param2, status_str));
+                        }
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_POST_BONES_FILE:
-                    if (cmd_str != null)
-                        status_str = cmd_str;
-
-                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                    if(GHApp.AllowBones && GHApp.PostingBonesFiles)
                     {
-                        queue.Enqueue(new GHRequest(this, GHRequestType.PostBonesFile, cmd_param, cmd_param2, status_str));
+                        Random rnd = new Random();
+                        if (rnd.NextDouble() < GHConstants.BonesPostChance)
+                        {
+                            if (cmd_str != null)
+                                status_str = cmd_str;
+
+                            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                            {
+                                queue.Enqueue(new GHRequest(this, GHRequestType.PostBonesFile, cmd_param, cmd_param2, status_str));
+                            }
+                        }
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_LIBRARY_MANUAL:

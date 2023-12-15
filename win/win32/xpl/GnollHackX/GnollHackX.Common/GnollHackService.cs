@@ -995,7 +995,7 @@ namespace GnollHackX.Unknown
         public int StartGnollHack(GHGame ghGame)
         {
             string filesdir = GetGnollHackPath();
-            bool allowbones = Preferences.Get("AllowBones", true);
+            bool allowbones = GHApp.AllowBones;
             ulong runflags = (ulong)(ghGame.WizardMode ? RunGnollHackFlags.WizardMode : 0) |
                 (ulong)(GHApp.FullVersionMode ? RunGnollHackFlags.FullVersion : 0) |
                 (ulong)(ghGame.ModernMode ? RunGnollHackFlags.ModernMode : 0) |

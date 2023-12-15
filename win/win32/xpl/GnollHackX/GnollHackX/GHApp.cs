@@ -21,6 +21,7 @@ using System.Text;
 using System.Threading;
 using System.Net;
 using System.Net.Mail;
+using System.Linq;
 
 namespace GnollHackX
 {
@@ -83,6 +84,7 @@ namespace GnollHackX
             XlogUserName = Preferences.Get("XlogUserName", "");
             XlogPassword = Preferences.Get("XlogPassword", "");
             XlogReleaseAccount = Preferences.Get("XlogReleaseAccount", false);
+            AllowBones = Preferences.Get("AllowBones", true);
 
             BackButtonPressed += EmptyBackButtonPressed;
         }
@@ -2419,12 +2421,25 @@ namespace GnollHackX
             }
         }
 
-        public static bool PostingGameStatus { get; set; }
-        public static bool PostingDiagnosticData { get; set; }
+        private static readonly object _postingGameStatusLock = new object();
+        private static bool _postingGameStatus;
+        public static bool PostingGameStatus { get { lock (_postingGameStatusLock) { return _postingGameStatus; } } set { lock (_postingGameStatusLock) { _postingGameStatus = value; } } }
+
+        private static readonly object _postingDiagnosticDataLock = new object();
+        private static bool _postingDiagnosticData;
+        public static bool PostingDiagnosticData { get { lock (_postingDiagnosticDataLock) { return _postingDiagnosticData; } } set { lock (_postingDiagnosticDataLock) { _postingDiagnosticData = value; } } }
 
         private static readonly object _postingXlogEntriesLock = new object();
         private static bool _postingXlogEntries;
         public static bool PostingXlogEntries { get { lock (_postingXlogEntriesLock) { return _postingXlogEntries; } } set { lock (_postingXlogEntriesLock) { _postingXlogEntries = value; } } }
+
+        private static readonly object _postingBonesFilesLock = new object();
+        private static bool _postingBonesFiles;
+        public static bool PostingBonesFiles { get { lock (_postingBonesFilesLock) { return _postingBonesFiles; } } set { lock (_postingBonesFilesLock) { _postingBonesFiles = value; } } }
+
+        private static readonly object _allowBonesLock = new object();
+        private static bool _allowBones;
+        public static bool AllowBones { get { lock (_allowBonesLock) { return _allowBones; } } set { lock (_allowBonesLock) { _allowBones = value; } } }
 
         public static string CustomGameStatusLink { get; set; }
         public static string CustomXlogAccountLink { get; set; }
@@ -3230,8 +3245,13 @@ namespace GnollHackX
         public static async Task<SendResult> SendBonesFile(string bones_filename, int status_type, int status_datatype, bool is_from_queue)
         {
             SendResult res = new SendResult();
+            bool didReceiveBonesFile = false;
+            bool didWriteBonesFileSuccessfully = false;
+            string receivedBonesFileName = null;
             try
             {
+                string username = XlogUserName;
+                string password = XlogPassword;
                 string postaddress = BonesPostAddress;
                 Debug.WriteLine("BonesPostAddress: " + postaddress);
                 if (postaddress != null && postaddress.Length > 8 && postaddress.Substring(0, 8) == "https://" && Uri.IsWellFormedUriString(postaddress, UriKind.Absolute))
@@ -3240,8 +3260,6 @@ namespace GnollHackX
                     {
                         MultipartFormDataContent multicontent = new MultipartFormDataContent("-------------------boundary");
 
-                        string username = XlogUserName;
-                        string password = XlogPassword;
                         StringContent content1 = new StringContent(username, Encoding.UTF8, "text/plain");
                         ContentDispositionHeaderValue cdhv1 = new ContentDispositionHeaderValue("form-data");
                         cdhv1.Name = "UserName";
@@ -3262,6 +3280,13 @@ namespace GnollHackX
                         content4.Headers.ContentDisposition = cdhv4;
                         multicontent.Add(content4);
                         Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
+
+                        StringContent content2 = new StringContent("", Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
+                        cdhv2.Name = "Data";
+                        content2.Headers.ContentDisposition = cdhv2;
+                        multicontent.Add(content2);
+                        Debug.WriteLine("Data: ");
 
                         List<FileStream> filestreams = new List<FileStream>();
                         List<StreamContent> contents = new List<StreamContent>();
@@ -3285,18 +3310,68 @@ namespace GnollHackX
                         }
                         using (var cts = new CancellationTokenSource())
                         {
-                            cts.CancelAfter(string.IsNullOrEmpty(bones_filename) ? 5000 : 120000);
-                            string responseContent = "";
+                            cts.CancelAfter(string.IsNullOrEmpty(bones_filename) ? 10000 : 120000);
+                            byte[] bytearray = null;
                             try
                             {
                                 using (HttpResponseMessage response = await client.PostAsync(postaddress, multicontent, cts.Token))
                                 {
-                                    responseContent = await response.Content.ReadAsStringAsync();
-                                    Debug.WriteLine("Bones file response content:");
-                                    Debug.WriteLine(responseContent);
+                                    bytearray = await response.Content.ReadAsByteArrayAsync();
                                     res.IsSuccess = response.IsSuccessStatusCode;
                                     res.HasHttpStatusCode = true;
                                     res.StatusCode = response.StatusCode;
+                                    if(res.IsSuccess)
+                                    {
+                                        // Delete sent file first
+                                        try
+                                        {
+                                            File.Delete(full_filepath);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Debug.WriteLine(ex.Message);
+                                        }
+
+                                        //We may or may not have received another bones file in return
+                                        if (bytearray != null && bytearray.Length > 0)
+                                        {
+                                            didReceiveBonesFile = true;
+                                            if (response.Headers.TryGetValues("Content-Disposition", out IEnumerable<string> contdisp))
+                                            {
+                                                if (contdisp != null)
+                                                {
+                                                    List<string> list = contdisp.ToList();
+                                                    if (list.Count > 0)
+                                                    {
+                                                        if (ContentDispositionHeaderValue.TryParse(list[0], out ContentDispositionHeaderValue rcdhv))
+                                                        {
+                                                            string filename = rcdhv.FileName;
+                                                            if (!string.IsNullOrWhiteSpace(filename))
+                                                            {
+                                                                string receivedfilepath = Path.Combine(GHApp.GHPath, filename);
+                                                                if (!File.Exists(receivedfilepath))
+                                                                {
+                                                                    try
+                                                                    {
+                                                                        using (FileStream fs = File.OpenWrite(filename))
+                                                                        {
+                                                                            await fs.WriteAsync(bytearray, 0, bytearray.Length);
+                                                                        }
+                                                                        didWriteBonesFileSuccessfully = true;
+                                                                        receivedBonesFileName = filename;
+                                                                    }
+                                                                    catch (Exception ex)
+                                                                    {
+                                                                        Debug.WriteLine(ex.Message);
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             catch (Exception ex)
@@ -3349,6 +3424,7 @@ namespace GnollHackX
                             }
                         }
                         content1.Dispose();
+                        content2.Dispose();
                         content3.Dispose();
                         content4.Dispose();
                         foreach (FileStream fs in filestreams)
@@ -3362,6 +3438,67 @@ namespace GnollHackX
                         }
                         contents.Clear();
                         multicontent.Dispose();
+                    }
+                }
+                if (didReceiveBonesFile)
+                {
+                    if (didWriteBonesFileSuccessfully && receivedBonesFileName != null)
+                    {
+                        // Confirm with server that the file was successfully written to disk
+                        Debug.WriteLine("Starting confirming received bones file");
+                        using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
+                        {
+                            MultipartFormDataContent multicontent = new MultipartFormDataContent("-------------------boundary");
+
+                            StringContent content1 = new StringContent(username, Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhv1 = new ContentDispositionHeaderValue("form-data");
+                            cdhv1.Name = "UserName";
+                            content1.Headers.ContentDisposition = cdhv1;
+                            multicontent.Add(content1);
+                            Debug.WriteLine("UserName: " + username);
+
+                            StringContent content3 = new StringContent(password, Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhv3 = new ContentDispositionHeaderValue("form-data");
+                            cdhv3.Name = "Password";
+                            content3.Headers.ContentDisposition = cdhv3;
+                            multicontent.Add(content3);
+                            Debug.WriteLine("Password: " + password);
+
+                            StringContent content4 = new StringContent(XlogAntiForgeryToken, Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhv4 = new ContentDispositionHeaderValue("form-data");
+                            cdhv4.Name = "AntiForgeryToken";
+                            content4.Headers.ContentDisposition = cdhv4;
+                            multicontent.Add(content4);
+                            Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
+
+                            StringContent content2 = new StringContent(receivedBonesFileName, Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
+                            cdhv2.Name = "Data";
+                            content2.Headers.ContentDisposition = cdhv2;
+                            multicontent.Add(content2);
+                            Debug.WriteLine("Data: " + receivedBonesFileName);
+
+                            using (var cts = new CancellationTokenSource())
+                            {
+                                cts.CancelAfter(10000);
+                                try
+                                {
+                                    using (HttpResponseMessage response = await client.PostAsync(postaddress, multicontent, cts.Token))
+                                    {
+                                        // Nothing
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine("Exception occurred while confirming received bones file: " + ex.Message);
+                                }
+                            }
+                            content1.Dispose();
+                            content2.Dispose();
+                            content3.Dispose();
+                            content4.Dispose();
+                            multicontent.Dispose();
+                        }
                     }
                 }
             }

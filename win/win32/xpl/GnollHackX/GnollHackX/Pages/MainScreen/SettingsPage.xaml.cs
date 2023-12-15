@@ -87,6 +87,7 @@ namespace GnollHackX.Pages.MainScreen
             SetInitialValues();
 
             ClassicStatusBarSwitch_Toggled(null, new ToggledEventArgs(ClassicStatusBarSwitch.IsToggled));
+            BonesSwitch_Toggled(null, new ToggledEventArgs(BonesSwitch.IsToggled));
         }
 
         private async void ContentPage_Disappearing(object sender, EventArgs e)
@@ -131,6 +132,7 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage.UseMainGLCanvas = GPUSwitch.IsToggled;
             Preferences.Set("UseMainGLCanvas", GPUSwitch.IsToggled);
 
+            GHApp.AllowBones = BonesSwitch.IsToggled;
             Preferences.Set("AllowBones", BonesSwitch.IsToggled);
 
             GHApp.PostingGameStatus = PostGameStatusSwitch.IsToggled;
@@ -139,6 +141,8 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("PostingDiagnosticData", PostDiagnosticDataSwitch.IsToggled);
             GHApp.PostingXlogEntries = PostXlogSwitch.IsToggled;
             Preferences.Set("PostingXlogEntries", PostXlogSwitch.IsToggled);
+            GHApp.PostingBonesFiles = PostBonesSwitch.IsToggled;
+            Preferences.Set("PostingBonesFiles", PostBonesSwitch.IsToggled);
 
             GHApp.CustomGameStatusLink = _customGameStatusLink;
             Preferences.Set("CustomGameStatusLink", _customGameStatusLink);
@@ -1086,6 +1090,19 @@ namespace GnollHackX.Pages.MainScreen
                     "OK");
             }
             XlogTestButton.IsEnabled = true;
+        }
+
+        private void BonesSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            PostBonesSwitch.IsEnabled = e.Value;
+            if (e.Value)
+            {
+                PostBonesLabel.TextColor = GHColors.Black;
+            }
+            else
+            {
+                PostBonesLabel.TextColor = GHColors.Gray;
+            }
         }
     }
 }

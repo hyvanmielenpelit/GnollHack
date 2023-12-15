@@ -97,6 +97,7 @@ namespace GnollHackX
             bool hasinternet = GHApp.HasInternetAccess;
             if (!CheckAndSetGeneralTimerWorkOnTasks)
             {
+                bool dopostbones = GHApp.PostingBonesFiles && GHApp.AllowBones;
                 string directory = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
                 string directory2 = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
                 string directory3 = Path.Combine(GHApp.GHPath, GHConstants.BonesPostQueueDirectory);
@@ -105,21 +106,25 @@ namespace GnollHackX
                 bool has_files3 = Directory.Exists(directory3) && Directory.GetFiles(directory3)?.Length > 0;
                 bool xlogusernameok = (!GHApp.PostingXlogEntries || string.IsNullOrEmpty(GHApp.XlogUserName) || GHApp.XlogUserNameVerified);
                 bool postingqueueempty = _postingQueue.Count == 0;
-                if (!has_files && !has_files2 && !has_files3 && (xlogusernameok || GHApp.XlogCredentialsIncorrect) && postingqueueempty)
+                if ((!has_files || !GHApp.PostingGameStatus) 
+                    && (!has_files2 || !GHApp.PostingXlogEntries) 
+                    && (!has_files3 || !dopostbones || GameStarted) 
+                    && (xlogusernameok || GHApp.XlogCredentialsIncorrect || (!GHApp.PostingXlogEntries && !dopostbones)) 
+                    && postingqueueempty)
                 {
                     StopGeneralTimer = true;
                 }
                 else
                 {
-                    if (hasinternet && GHApp.PostingXlogEntries && !GHApp.XlogCredentialsIncorrect && !string.IsNullOrEmpty(GHApp.XlogUserName) && !GHApp.XlogUserNameVerified)
+                    if (hasinternet && (GHApp.PostingXlogEntries || dopostbones) && !GHApp.XlogCredentialsIncorrect && !string.IsNullOrEmpty(GHApp.XlogUserName) && !GHApp.XlogUserNameVerified)
                         await GHApp.TryVerifyXlogUserNameAsync();
                     if (_postingQueue.Count > 0)
                         await ProcessPostingQueue();
-                    if (hasinternet && has_files)
+                    if (hasinternet && has_files && GHApp.PostingGameStatus)
                         await ProcessSavedPosts(0, directory, GHConstants.ForumPostFileNamePrefix);
-                    if (hasinternet && has_files2)
+                    if (hasinternet && has_files2 && GHApp.PostingXlogEntries)
                         await ProcessSavedPosts(1, directory2, GHConstants.XlogPostFileNamePrefix);
-                    if (hasinternet && has_files3)
+                    if (hasinternet && has_files3 && dopostbones && !GameStarted) // Do not fetch bones files while the game is on
                         await ProcessSavedPosts(2, directory3, GHConstants.BonesPostFileNamePrefix);
                 }
                 GeneralTimerWorkOnTasks = false;
