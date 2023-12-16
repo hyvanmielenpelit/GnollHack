@@ -2279,7 +2279,7 @@ namespace GnollHackX.Pages.Game
                                 _mainPage.EnqueuePost(new ForumPost(1, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
                                 break;
                             case GHRequestType.PostBonesFile:
-                                //_mainPage.EnqueuePost(new ForumPost(2, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
+                                _mainPage.EnqueuePost(new ForumPost(2, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
                                 break;
                             case GHRequestType.DebugLog:
                                 DisplayDebugLog(req.RequestString, req.RequestInt, req.RequestInt2);

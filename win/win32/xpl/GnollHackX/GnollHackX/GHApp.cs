@@ -73,6 +73,7 @@ namespace GnollHackX
             PostingGameStatus = Preferences.Get("PostingGameStatus", GHConstants.DefaultPosting);
             PostingDiagnosticData = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
             PostingXlogEntries = Preferences.Get("PostingXlogEntries", GHConstants.DefaultPosting);
+            PostingBonesFiles = Preferences.Get("PostingBonesFiles", GHConstants.DefaultPosting);
             CustomGameStatusLink = Preferences.Get("CustomGameStatusLink", "");
             CustomXlogAccountLink = Preferences.Get("CustomXlogAccountLink", "");
             CustomXlogPostLink = Preferences.Get("CustomXlogPostLink", "");
@@ -2604,7 +2605,7 @@ namespace GnollHackX
 
         public static async Task TryVerifyXlogUserNameAsync()
         {
-            if(!PostingXlogEntries)
+            if(!PostingXlogEntries && !PostingBonesFiles)
             {
                 SetXlogUserNameVerified(false, null, null);
                 return;
@@ -3434,6 +3435,19 @@ namespace GnollHackX
                                                 }
                                             }
                                         }
+                                    }
+                                    else
+                                    {
+                                        string str = "";
+                                        try
+                                        {
+                                            str = await response.Content.ReadAsStringAsync();
+                                        }
+                                        catch (Exception ex) 
+                                        {
+                                            Debug.WriteLine(ex.Message);
+                                        }
+                                        Debug.WriteLine(str);
                                     }
                                 }
                             }

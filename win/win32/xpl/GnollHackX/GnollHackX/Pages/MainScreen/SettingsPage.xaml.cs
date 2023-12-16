@@ -433,7 +433,7 @@ namespace GnollHackX.Pages.MainScreen
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
-            bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting;
+            bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting;
             bool longermsghistory = false, xlog_release_account = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             string customlink = "";
@@ -471,6 +471,7 @@ namespace GnollHackX.Pages.MainScreen
             postgamestatus = Preferences.Get("PostingGameStatus", GHConstants.DefaultPosting);
             postdiagnostics = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
             postxlog = Preferences.Get("PostingXlogEntries", GHConstants.DefaultPosting);
+            postbones = Preferences.Get("PostingBonesFiles", GHConstants.DefaultPosting);
             customlink = Preferences.Get("CustomGameStatusLink", "");
             customxlogaccountlink = Preferences.Get("CustomXlogAccountLink", "");
             customxlogpostlink = Preferences.Get("CustomXlogPostLink", "");
@@ -612,6 +613,7 @@ namespace GnollHackX.Pages.MainScreen
             PostGameStatusSwitch.IsToggled = postgamestatus;
             PostDiagnosticDataSwitch.IsToggled = postdiagnostics;
             PostXlogSwitch.IsToggled = postxlog;
+            PostBonesSwitch.IsToggled = postbones;
             _customGameStatusLink = customlink;
             CustomLinkLabel.Text = customlink == "" ? "Default" : "Custom";
             CustomLinkButton.Text = customlink == "" ? "Add" : "Edit";

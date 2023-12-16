@@ -566,13 +566,16 @@ namespace GnollHackX.Pages.MainScreen
                     if (Directory.Exists(directory2))
                         Directory.Delete(directory2, true);
 
-                    btnDeleteUserData.Text = "Done";
-                    btnDeleteUserData.TextColor = GHColors.Red;
+                    if (Directory.Exists(directory3))
+                        Directory.Delete(directory3, true);
+
+                    btnDeletePostQueues.Text = "Done";
+                    btnDeletePostQueues.TextColor = GHColors.Red;
                 }
                 catch
                 {
-                    btnDeleteUserData.Text = "Failed";
-                    btnDeleteUserData.TextColor = GHColors.Red;
+                    btnDeletePostQueues.Text = "Failed";
+                    btnDeletePostQueues.TextColor = GHColors.Red;
                 }
             }
             ResetGrid.IsEnabled = true;
