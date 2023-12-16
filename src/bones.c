@@ -699,7 +699,7 @@ make_bones:
     if (issue_gui_command)
     {
         const char* fq_bones = fqname(bones, BONESPREFIX, 0);
-        issue_gui_command(GUI_CMD_POST_BONES_FILE, 0, 0, fq_bones);
+        issue_gui_command(GUI_CMD_POST_BONES_FILE, context.game_difficulty - MIN_DIFFICULTY_LEVEL, 0, fq_bones);
     }
 #endif
 }

@@ -3247,7 +3247,7 @@ namespace GnollHackX
             SendResult res = new SendResult();
             bool didReceiveBonesFile = false;
             bool didWriteBonesFileSuccessfully = false;
-            string receivedBonesFileName = null;
+            string receivedBonesServerFilePath = null;
             try
             {
                 string username = XlogUserName;
@@ -3281,12 +3281,68 @@ namespace GnollHackX
                         multicontent.Add(content4);
                         Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
 
-                        StringContent content2 = new StringContent("", Encoding.UTF8, "text/plain");
+                        StringContent content2 = new StringContent("SendBonesFile", Encoding.UTF8, "text/plain");
                         ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
-                        cdhv2.Name = "Data";
+                        cdhv2.Name = "Command";
                         content2.Headers.ContentDisposition = cdhv2;
                         multicontent.Add(content2);
-                        Debug.WriteLine("Data: ");
+                        Debug.WriteLine("Command: SendBonesFile");
+
+                        StringContent content5 = new StringContent(status_type.ToString(), Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhv5 = new ContentDispositionHeaderValue("form-data");
+                        cdhv5.Name = "Data";
+                        content5.Headers.ContentDisposition = cdhv5;
+                        multicontent.Add(content5);
+                        Debug.WriteLine("Data: " + status_type.ToString());
+
+                        StringContent contentE1 = new StringContent(DeviceInfo.Platform.ToString(), Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhve1 = new ContentDispositionHeaderValue("form-data");
+                        cdhve1.Name = "Platform";
+                        contentE1.Headers.ContentDisposition = cdhve1;
+                        multicontent.Add(contentE1);
+                        Debug.WriteLine("Platform: " + DeviceInfo.Platform.ToString());
+
+                        StringContent contentE2 = new StringContent(DeviceInfo.VersionString, Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhve2 = new ContentDispositionHeaderValue("form-data");
+                        cdhve2.Name = "PlatformVersion";
+                        contentE2.Headers.ContentDisposition = cdhve2;
+                        multicontent.Add(contentE2);
+                        Debug.WriteLine("PlatformVersion: " + DeviceInfo.VersionString);
+
+                        StringContent contentE3 = new StringContent(GHConstants.PortName, Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhve3 = new ContentDispositionHeaderValue("form-data");
+                        cdhve3.Name = "Port";
+                        contentE3.Headers.ContentDisposition = cdhve3;
+                        multicontent.Add(contentE3);
+                        Debug.WriteLine("Port: " + GHConstants.PortName);
+
+                        StringContent contentE4 = new StringContent(VersionTracking.CurrentVersion, Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhve4 = new ContentDispositionHeaderValue("form-data");
+                        cdhve4.Name = "PortVersion";
+                        contentE4.Headers.ContentDisposition = cdhve4;
+                        multicontent.Add(contentE4);
+                        Debug.WriteLine("PortVersion: " + VersionTracking.CurrentVersion);
+
+                        StringContent contentE5 = new StringContent(VersionTracking.CurrentBuild, Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhve5 = new ContentDispositionHeaderValue("form-data");
+                        cdhve5.Name = "PortBuild";
+                        contentE5.Headers.ContentDisposition = cdhve5;
+                        multicontent.Add(contentE5);
+                        Debug.WriteLine("PortBuild: " + VersionTracking.CurrentBuild);
+
+                        StringContent contentE6 = new StringContent(GHApp.GHVersionNumber.ToString(), Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhve6 = new ContentDispositionHeaderValue("form-data");
+                        cdhve6.Name = "VersionNumber";
+                        contentE6.Headers.ContentDisposition = cdhve6;
+                        multicontent.Add(contentE6);
+                        Debug.WriteLine("VersionNumber: " + GHApp.GHVersionNumber.ToString());
+
+                        StringContent contentE7 = new StringContent(GHApp.GHVersionCompatibility.ToString(), Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhve7 = new ContentDispositionHeaderValue("form-data");
+                        cdhve7.Name = "VersionCompatibilityNumber";
+                        contentE7.Headers.ContentDisposition = cdhve7;
+                        multicontent.Add(contentE7);
+                        Debug.WriteLine("VersionCompatibilityNumber: " + GHApp.GHVersionCompatibility.ToString());
 
                         List<FileStream> filestreams = new List<FileStream>();
                         List<StreamContent> contents = new List<StreamContent>();
@@ -3298,15 +3354,15 @@ namespace GnollHackX
                             FileInfo fileinfo = new FileInfo(full_filepath);
                             string filename = fileinfo.Name;
                             FileStream stream = new FileStream(full_filepath, FileMode.Open);
-                            StreamContent content5 = new StreamContent(stream);
+                            StreamContent content6 = new StreamContent(stream);
                             filestreams.Add(stream);
-                            contents.Add(content5);
-                            ContentDispositionHeaderValue cdhv5 = new ContentDispositionHeaderValue("form-data");
-                            cdhv5.Name = "BonesFile";
-                            cdhv5.FileName = filename;
-                            content5.Headers.ContentDisposition = cdhv5;
-                            multicontent.Add(content5);
-                            Debug.WriteLine("Bones file added: " + cdhv5.Name + ", " + bones_filename);
+                            contents.Add(content6);
+                            ContentDispositionHeaderValue cdhv6 = new ContentDispositionHeaderValue("form-data");
+                            cdhv6.Name = "BonesFile";
+                            cdhv6.FileName = filename;
+                            content6.Headers.ContentDisposition = cdhv6;
+                            multicontent.Add(content6);
+                            Debug.WriteLine("Bones file added: " + cdhv6.Name + ", " + bones_filename);
                         }
                         using (var cts = new CancellationTokenSource())
                         {
@@ -3316,7 +3372,8 @@ namespace GnollHackX
                             {
                                 using (HttpResponseMessage response = await client.PostAsync(postaddress, multicontent, cts.Token))
                                 {
-                                    bytearray = await response.Content.ReadAsByteArrayAsync();
+                                    if(response.Content.Headers.ContentType.MediaType == "application/octet-stream")
+                                        bytearray = await response.Content.ReadAsByteArrayAsync();
                                     res.IsSuccess = response.IsSuccessStatusCode;
                                     res.HasHttpStatusCode = true;
                                     res.StatusCode = response.StatusCode;
@@ -3329,7 +3386,7 @@ namespace GnollHackX
                                         }
                                         catch (Exception ex)
                                         {
-                                            Debug.WriteLine(ex.Message);
+                                            Debug.WriteLine("Deleting sent bones file from client failed: " + ex.Message);
                                         }
 
                                         //We may or may not have received another bones file in return
@@ -3358,11 +3415,17 @@ namespace GnollHackX
                                                                             await fs.WriteAsync(bytearray, 0, bytearray.Length);
                                                                         }
                                                                         didWriteBonesFileSuccessfully = true;
-                                                                        receivedBonesFileName = filename;
+
+                                                                        if(response.Headers.TryGetValues("X-GH-BonesFilePath", out IEnumerable<string> bonesfilepathienum))
+                                                                        {
+                                                                            var bonesfilepathlist = bonesfilepathienum.ToList();
+                                                                            if(bonesfilepathlist.Count > 0)
+                                                                                receivedBonesServerFilePath = bonesfilepathlist[0];
+                                                                        }
                                                                     }
                                                                     catch (Exception ex)
                                                                     {
-                                                                        Debug.WriteLine(ex.Message);
+                                                                        Debug.WriteLine("Writing received bones file failed: " + ex.Message);
                                                                     }
                                                                 }
                                                             }
@@ -3398,6 +3461,7 @@ namespace GnollHackX
 
                             if (!res.IsSuccess && !is_from_queue && !string.IsNullOrWhiteSpace(bones_filename))
                             {
+                                Debug.WriteLine("Writing a bones file send request to queue on disk.");
                                 string targetpath = Path.Combine(GHApp.GHPath, GHConstants.BonesPostQueueDirectory);
                                 if (!Directory.Exists(targetpath))
                                     CheckCreateDirectory(targetpath);
@@ -3427,6 +3491,14 @@ namespace GnollHackX
                         content2.Dispose();
                         content3.Dispose();
                         content4.Dispose();
+                        content5.Dispose();
+                        contentE1.Dispose();
+                        contentE2.Dispose();
+                        contentE3.Dispose();
+                        contentE4.Dispose();
+                        contentE5.Dispose();
+                        contentE6.Dispose();
+                        contentE7.Dispose();
                         foreach (FileStream fs in filestreams)
                         {
                             fs.Dispose();
@@ -3442,7 +3514,7 @@ namespace GnollHackX
                 }
                 if (didReceiveBonesFile)
                 {
-                    if (didWriteBonesFileSuccessfully && receivedBonesFileName != null)
+                    if (didWriteBonesFileSuccessfully && receivedBonesServerFilePath != null)
                     {
                         // Confirm with server that the file was successfully written to disk
                         Debug.WriteLine("Starting confirming received bones file");
@@ -3471,12 +3543,68 @@ namespace GnollHackX
                             multicontent.Add(content4);
                             Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
 
-                            StringContent content2 = new StringContent(receivedBonesFileName, Encoding.UTF8, "text/plain");
+                            StringContent content2 = new StringContent("ConfirmReceipt", Encoding.UTF8, "text/plain");
                             ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
-                            cdhv2.Name = "Data";
+                            cdhv2.Name = "Command";
                             content2.Headers.ContentDisposition = cdhv2;
                             multicontent.Add(content2);
-                            Debug.WriteLine("Data: " + receivedBonesFileName);
+                            Debug.WriteLine("Command: ConfirmReceipt");
+
+                            StringContent content5 = new StringContent(receivedBonesServerFilePath, Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhv5 = new ContentDispositionHeaderValue("form-data");
+                            cdhv5.Name = "Data";
+                            content5.Headers.ContentDisposition = cdhv5;
+                            multicontent.Add(content5);
+                            Debug.WriteLine("Data: " + receivedBonesServerFilePath);
+
+                            StringContent contentE1 = new StringContent(DeviceInfo.Platform.ToString(), Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhve1 = new ContentDispositionHeaderValue("form-data");
+                            cdhve1.Name = "Platform";
+                            contentE1.Headers.ContentDisposition = cdhve1;
+                            multicontent.Add(contentE1);
+                            Debug.WriteLine("Platform: " + DeviceInfo.Platform.ToString());
+
+                            StringContent contentE2 = new StringContent(DeviceInfo.VersionString, Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhve2 = new ContentDispositionHeaderValue("form-data");
+                            cdhve2.Name = "PlatformVersion";
+                            contentE2.Headers.ContentDisposition = cdhve2;
+                            multicontent.Add(contentE2);
+                            Debug.WriteLine("PlatformVersion: " + DeviceInfo.VersionString);
+
+                            StringContent contentE3 = new StringContent(GHConstants.PortName, Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhve3 = new ContentDispositionHeaderValue("form-data");
+                            cdhve3.Name = "Port";
+                            contentE3.Headers.ContentDisposition = cdhve3;
+                            multicontent.Add(contentE3);
+                            Debug.WriteLine("Port: " + GHConstants.PortName);
+
+                            StringContent contentE4 = new StringContent(VersionTracking.CurrentVersion, Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhve4 = new ContentDispositionHeaderValue("form-data");
+                            cdhve4.Name = "PortVersion";
+                            contentE4.Headers.ContentDisposition = cdhve4;
+                            multicontent.Add(contentE4);
+                            Debug.WriteLine("PortVersion: " + VersionTracking.CurrentVersion);
+
+                            StringContent contentE5 = new StringContent(VersionTracking.CurrentBuild, Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhve5 = new ContentDispositionHeaderValue("form-data");
+                            cdhve5.Name = "PortBuild";
+                            contentE5.Headers.ContentDisposition = cdhve5;
+                            multicontent.Add(contentE5);
+                            Debug.WriteLine("PortBuild: " + VersionTracking.CurrentBuild);
+
+                            StringContent contentE6 = new StringContent(GHApp.GHVersionNumber.ToString(), Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhve6 = new ContentDispositionHeaderValue("form-data");
+                            cdhve6.Name = "VersionNumber";
+                            contentE6.Headers.ContentDisposition = cdhve6;
+                            multicontent.Add(contentE6);
+                            Debug.WriteLine("VersionNumber: " + GHApp.GHVersionNumber.ToString());
+
+                            StringContent contentE7 = new StringContent(GHApp.GHVersionCompatibility.ToString(), Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhve7 = new ContentDispositionHeaderValue("form-data");
+                            cdhve7.Name = "VersionCompatibilityNumber";
+                            contentE7.Headers.ContentDisposition = cdhve7;
+                            multicontent.Add(contentE7);
+                            Debug.WriteLine("VersionCompatibilityNumber: " + GHApp.GHVersionCompatibility.ToString());
 
                             using (var cts = new CancellationTokenSource())
                             {
@@ -3490,13 +3618,21 @@ namespace GnollHackX
                                 }
                                 catch (Exception ex)
                                 {
-                                    Debug.WriteLine("Exception occurred while confirming received bones file: " + ex.Message);
+                                    Debug.WriteLine("Exception occurred while confirming received bones file (" + receivedBonesServerFilePath + "): " + ex.Message);
                                 }
                             }
                             content1.Dispose();
                             content2.Dispose();
                             content3.Dispose();
                             content4.Dispose();
+                            content5.Dispose();
+                            contentE1.Dispose();
+                            contentE2.Dispose();
+                            contentE3.Dispose();
+                            contentE4.Dispose();
+                            contentE5.Dispose();
+                            contentE6.Dispose();
+                            contentE7.Dispose();
                             multicontent.Dispose();
                         }
                     }
