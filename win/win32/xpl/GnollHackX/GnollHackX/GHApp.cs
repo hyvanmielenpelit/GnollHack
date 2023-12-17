@@ -3380,75 +3380,76 @@ namespace GnollHackX
                                     res.StatusCode = response.StatusCode;
                                     if(res.IsSuccess)
                                     {
-                                        // Delete sent file first
-                                        try
+                                        if(res.StatusCode == HttpStatusCode.OK)
                                         {
-                                            File.Delete(full_filepath);
-                                            Debug.WriteLine("Deleted sent bones file: " + full_filepath);
+                                            // Delete sent file first on OK status code
+                                            try
+                                            {
+                                                File.Delete(full_filepath);
+                                                Debug.WriteLine("Deleted the sent bones file: " + full_filepath);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Debug.WriteLine("Deleting the sent bones file from client failed: " + ex.Message);
+                                            }
                                         }
-                                        catch (Exception ex)
-                                        {
-                                            Debug.WriteLine("Deleting sent bones file from client failed: " + ex.Message);
-                                        }
+                                        else
+                                            Debug.WriteLine("Not deleting the sent bones file because status code was " + (int)res.StatusCode + " (" + res.StatusCode.ToString() +")");
 
                                         //We may or may not have received another bones file in return
                                         if (bytearray != null && bytearray.Length > 0)
                                         {
                                             Debug.WriteLine("Received new bones file as byte array");
                                             didReceiveBonesFile = true;
-                                            if (response.Headers.TryGetValues("Content-Disposition", out IEnumerable<string> contdisp))
+                                            Debug.WriteLine("Response Headers: " + response.Headers.ToString());
+                                            if (response.Headers.TryGetValues("X-GH-OriginalFileName", out IEnumerable<string> origFileNames))
                                             {
-                                                if (contdisp != null)
+                                                if (origFileNames != null)
                                                 {
-                                                    List<string> list = contdisp.ToList();
+                                                    List<string> list = origFileNames.ToList();
                                                     if (list.Count > 0)
                                                     {
-                                                        if (ContentDispositionHeaderValue.TryParse(list[0], out ContentDispositionHeaderValue rcdhv))
+                                                        string filename = list[0];
+                                                        if (!string.IsNullOrWhiteSpace(filename))
                                                         {
-                                                            string filename = rcdhv.FileName;
-                                                            if (!string.IsNullOrWhiteSpace(filename))
+                                                            string savepath = Path.Combine(GHApp.GHPath, filename);
+                                                            if (!File.Exists(savepath))
                                                             {
-                                                                string savepath = Path.Combine(GHApp.GHPath, filename);
-                                                                if (!File.Exists(savepath))
+                                                                Debug.WriteLine("Starting writing bones byte array into file: " + savepath);
+                                                                try
                                                                 {
-                                                                    Debug.WriteLine("Starting writing bones byte array into file: " + savepath);
-                                                                    try
+                                                                    using (FileStream fs = File.OpenWrite(savepath))
                                                                     {
-                                                                        using (FileStream fs = File.OpenWrite(savepath))
-                                                                        {
-                                                                            await fs.WriteAsync(bytearray, 0, bytearray.Length);
-                                                                        }
-                                                                        didWriteBonesFileSuccessfully = true;
-
-                                                                        if(response.Headers.TryGetValues("X-GH-BonesFilePath", out IEnumerable<string> bonesfilepathienum))
-                                                                        {
-                                                                            var bonesfilepathlist = bonesfilepathienum.ToList();
-                                                                            if(bonesfilepathlist.Count > 0)
-                                                                                receivedBonesServerFilePath = bonesfilepathlist[0];
-                                                                        }
+                                                                        await fs.WriteAsync(bytearray, 0, bytearray.Length);
                                                                     }
-                                                                    catch (Exception ex)
+                                                                    didWriteBonesFileSuccessfully = true;
+
+                                                                    if(response.Headers.TryGetValues("X-GH-BonesFilePath", out IEnumerable<string> bonesfilepathienum))
                                                                     {
-                                                                        Debug.WriteLine("Writing received bones file failed: " + ex.Message);
+                                                                        var bonesfilepathlist = bonesfilepathienum.ToList();
+                                                                        if(bonesfilepathlist.Count > 0)
+                                                                            receivedBonesServerFilePath = bonesfilepathlist[0];
                                                                     }
                                                                 }
-                                                                else
-                                                                    Debug.WriteLine("Bones file already exists: " + savepath);
+                                                                catch (Exception ex)
+                                                                {
+                                                                    Debug.WriteLine("Writing received bones file failed: " + ex.Message);
+                                                                }
                                                             }
                                                             else
-                                                                Debug.WriteLine("Bones file name is null or empty.");
+                                                                Debug.WriteLine("Bones file already exists: " + savepath);
                                                         }
                                                         else
-                                                            Debug.WriteLine("Could not parse bones Content-Disposition values.");
+                                                            Debug.WriteLine("Bones file name is null or empty.");
                                                     }
                                                     else
-                                                        Debug.WriteLine("Bones Content-Disposition list is empty.");
+                                                        Debug.WriteLine("Bones original file name list is empty.");
                                                 }
                                                 else
-                                                    Debug.WriteLine("Bones Content-Disposition list is null.");
+                                                    Debug.WriteLine("Bones original file name list is null.");
                                             }
                                             else
-                                                Debug.WriteLine("Could not find bones Content-Disposition header.");
+                                                Debug.WriteLine("Could not find bones original file name header.");
                                         }
                                         else
                                         {
@@ -3658,9 +3659,21 @@ namespace GnollHackX
                                     using (HttpResponseMessage response = await client.PostAsync(postaddress, multicontent, cts.Token))
                                     {
                                         if(response.IsSuccessStatusCode)
-                                            Debug.WriteLine("Bones confirmation response received successfully. Status code: " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")");
+                                            Debug.WriteLine("Bones confirmation response received successfully. Status code: " + (int)response.StatusCode + " (" + response.StatusCode.ToString() + ")");
                                         else
-                                            Debug.WriteLine("Sending bones confirmation failed. Status code: " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")");
+                                        {
+                                            Debug.WriteLine("Sending bones confirmation failed. Status code: " + (int)response.StatusCode + " (" + response.StatusCode.ToString() + ")");
+                                            string str = "";
+                                            try
+                                            {
+                                                str = await response.Content.ReadAsStringAsync();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Debug.WriteLine("Reading bones confirmation response content failed: " + ex.Message);
+                                            }
+                                            Debug.WriteLine("Bones confirmation response content: " + str);
+                                        }
                                     }
                                 }
                                 catch (Exception ex)
