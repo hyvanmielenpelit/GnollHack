@@ -1898,6 +1898,10 @@ namespace GnollHackX
                                 queue.Enqueue(new GHRequest(this, GHRequestType.PostBonesFile, cmd_param, cmd_param2, status_str));
                             }
                         }
+                        else
+                        {
+                            Debug.WriteLine("Randomly did not post the bones file " + status_str + " to the server for user " + GHApp.XlogUserName + ".");
+                        }
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_LIBRARY_MANUAL:
