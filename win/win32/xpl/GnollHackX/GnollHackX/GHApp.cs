@@ -3384,6 +3384,7 @@ namespace GnollHackX
                                         try
                                         {
                                             File.Delete(full_filepath);
+                                            Debug.WriteLine("Deleted sent bones file: " + full_filepath);
                                         }
                                         catch (Exception ex)
                                         {
@@ -3393,6 +3394,7 @@ namespace GnollHackX
                                         //We may or may not have received another bones file in return
                                         if (bytearray != null && bytearray.Length > 0)
                                         {
+                                            Debug.WriteLine("Received new bones file as byte array");
                                             didReceiveBonesFile = true;
                                             if (response.Headers.TryGetValues("Content-Disposition", out IEnumerable<string> contdisp))
                                             {
@@ -3406,12 +3408,13 @@ namespace GnollHackX
                                                             string filename = rcdhv.FileName;
                                                             if (!string.IsNullOrWhiteSpace(filename))
                                                             {
-                                                                string receivedfilepath = Path.Combine(GHApp.GHPath, filename);
-                                                                if (!File.Exists(receivedfilepath))
+                                                                string savepath = Path.Combine(GHApp.GHPath, filename);
+                                                                if (!File.Exists(savepath))
                                                                 {
+                                                                    Debug.WriteLine("Starting writing bones byte array into file: " + savepath);
                                                                     try
                                                                     {
-                                                                        using (FileStream fs = File.OpenWrite(filename))
+                                                                        using (FileStream fs = File.OpenWrite(savepath))
                                                                         {
                                                                             await fs.WriteAsync(bytearray, 0, bytearray.Length);
                                                                         }
@@ -3429,15 +3432,42 @@ namespace GnollHackX
                                                                         Debug.WriteLine("Writing received bones file failed: " + ex.Message);
                                                                     }
                                                                 }
+                                                                else
+                                                                    Debug.WriteLine("Bones file already exists: " + savepath);
                                                             }
+                                                            else
+                                                                Debug.WriteLine("Bones file name is null or empty.");
                                                         }
+                                                        else
+                                                            Debug.WriteLine("Could not parse bones Content-Disposition values.");
                                                     }
+                                                    else
+                                                        Debug.WriteLine("Bones Content-Disposition list is empty.");
                                                 }
+                                                else
+                                                    Debug.WriteLine("Bones Content-Disposition list is null.");
                                             }
+                                            else
+                                                Debug.WriteLine("Could not find bones Content-Disposition header.");
+                                        }
+                                        else
+                                        {
+                                            Debug.WriteLine("Bones byte array was null or empty.");
+                                            string str = "";
+                                            try
+                                            {
+                                                str = await response.Content.ReadAsStringAsync();
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Debug.WriteLine("Reading bones response content failed: " + ex.Message);
+                                            }
+                                            Debug.WriteLine("Bones response content: " + str);
                                         }
                                     }
                                     else
                                     {
+                                        Debug.WriteLine("No bones file received in exchange.");
                                         string str = "";
                                         try
                                         {
@@ -3445,9 +3475,9 @@ namespace GnollHackX
                                         }
                                         catch (Exception ex) 
                                         {
-                                            Debug.WriteLine(ex.Message);
+                                            Debug.WriteLine("Reading bones response content failed: " + ex.Message);
                                         }
-                                        Debug.WriteLine(str);
+                                        Debug.WriteLine("Bones response content: " + str);
                                     }
                                 }
                             }
@@ -3627,7 +3657,10 @@ namespace GnollHackX
                                 {
                                     using (HttpResponseMessage response = await client.PostAsync(postaddress, multicontent, cts.Token))
                                     {
-                                        // Nothing
+                                        if(response.IsSuccessStatusCode)
+                                            Debug.WriteLine("Bones confirmation response received successfully. Status code: " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")");
+                                        else
+                                            Debug.WriteLine("Sending bones confirmation failed. Status code: " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")");
                                     }
                                 }
                                 catch (Exception ex)
