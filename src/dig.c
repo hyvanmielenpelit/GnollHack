@@ -17,6 +17,7 @@ STATIC_DCL int NDECL(dig);
 STATIC_DCL void FDECL(dig_up_grave, (coord *));
 STATIC_DCL int FDECL(adj_pit_checks, (coord *, char *));
 STATIC_DCL void FDECL(pit_flow, (struct trap *, SCHAR_P));
+STATIC_OVL void FDECL(create_tree_remnants, (int, int, boolean*));
 
 /* Indices returned by dig_typ() */
 enum dig_types {
@@ -490,9 +491,6 @@ dig(VOID_ARGS)
                 play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
                 digtxt = "You cut down the tree.";
                 struct mkroom* r = which_room(dpx, dpy);
-                short special_quality = lev->special_quality;
-                int fruittype = tree_subtype_definitions[lev->subtyp].fruit_type;
-                int glyph = layers_at(dpx, dpy).layer_gui_glyphs[LAYER_COVER_FEATURE];
 
                 /* Change the location type */
                 int typ = lev->floortyp ? lev->floortyp : r && r->orig_rtype == GARDEN ? GRASS : ROOM;
@@ -500,29 +498,7 @@ dig(VOID_ARGS)
                 int vartyp = lev->floorvartyp ? lev->floorvartyp : get_initial_location_vartype(typ, subtyp);
                 create_simple_location(dpx, dpy, typ, subtyp, vartyp, 0, back_to_broken_glyph(dpx, dpy), 0, 0, 0, FALSE);
                 uncatch_tree_objects(dpx, dpy);
-
-                /* Wood */
-                struct obj* otmp_wood = mksobj_found_at(PIECE_OF_WOOD, dpx, dpy, FALSE, FALSE);
-                otmp_wood->quan = d(1, 3);
-                otmp_wood->owt = weight(otmp_wood);
-
-                /* Possibly some fruits */
-                if (special_quality > 0 && fruittype > STRANGE_OBJECT)
-                {
-                    struct obj* otmp = mksobj_found_at(fruittype, dpx, dpy, TRUE, FALSE); //rnd_treefruit_at(dpx, dpy);
-                    otmp->quan = special_quality;
-                    otmp->owt = weight(otmp);
-                    lev->special_quality = 0;
-                }
-                if (windowprocs.wincap2 & WC2_FADING_ANIMATIONS)
-                {
-                    feel_newsym(dpx, dpy);
-                    done_feelnewsym = TRUE;
-                    play_special_effect_with_details_at(0, dpx, dpy, glyph, LAYER_GENERAL_EFFECT, -2, 20, 0, 0, TRUE);
-                    special_effect_wait_until_action(0);
-                    special_effect_wait_until_end(0);
-                    clear_found_this_turn_at(dpx, dpy);
-                }
+                create_tree_remnants(dpx, dpy, &done_feelnewsym);
             }
             else 
             {
@@ -1993,6 +1969,44 @@ boolean unexpected;
     }
 }
 
+STATIC_OVL void
+create_tree_remnants(x, y, done_feelnewsym_ptr)
+int x, y;
+boolean* done_feelnewsym_ptr;
+{
+    if (!isok(x, y))
+        return;
+
+    struct rm* lev = &levl[x][y];
+    short special_quality = lev->special_quality;
+    int fruittype = tree_subtype_definitions[lev->subtyp].fruit_type;
+    int glyph = layers_at(x, y).layer_gui_glyphs[LAYER_COVER_FEATURE];
+
+    /* Wood */
+    struct obj* otmp_wood = mksobj_found_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
+    otmp_wood->quan = d(1, 3);
+    otmp_wood->owt = weight(otmp_wood);
+
+    /* Possibly some fruits */
+    if (special_quality > 0 && fruittype > STRANGE_OBJECT)
+    {
+        struct obj* otmp = mksobj_found_at(fruittype, x, y, TRUE, FALSE); //rnd_treefruit_at(dpx, dpy);
+        otmp->quan = special_quality;
+        otmp->owt = weight(otmp);
+        lev->special_quality = 0;
+    }
+    if (windowprocs.wincap2 & WC2_FADING_ANIMATIONS)
+    {
+        feel_newsym(x, y);
+        if(done_feelnewsym_ptr)
+            *done_feelnewsym_ptr = TRUE;
+        play_special_effect_with_details_at(0, x, y, glyph, LAYER_GENERAL_EFFECT, -2, 20, 0, 0, TRUE);
+        special_effect_wait_until_action(0);
+        special_effect_wait_until_end(0);
+        clear_found_this_turn_at(x, y);
+    }
+}
+
 void
 zap_try_destroy_tree(x, y)
 int x, y;
@@ -2006,6 +2020,7 @@ int x, y;
         uncatch_tree_objects(x, y);
         create_current_floor_location((xchar)x, (xchar)y, 0, back_to_broken_glyph((xchar)x, (xchar)y), FALSE);
         unblock_vision_and_hearing_at_point(x, y); /* vision */
+        create_tree_remnants(x, y, (boolean*)0);
         newsym(x, y);
         force_redraw_at(x, y);
         pline_The_ex1(ATR_NONE, CLR_MSG_ATTENTION, "tree splinters into pieces!");
