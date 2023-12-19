@@ -626,6 +626,10 @@ reset_all_object_origin_coordinates(VOID_ARGS)
     {
         reset_object_origin_coordinates(obj);
     }
+    for (obj = memoryobjs; obj; obj = obj->nobj)
+    {
+        reset_object_origin_coordinates(obj);
+    }
 }
 
 void

@@ -1124,6 +1124,7 @@ register struct obj* otmp;
         free_omid(dummy); /* only one association with m_id*/
     dummy->owornmask = 0L; /* dummy object is not worn */
     obj_clear_found(dummy);
+    reset_object_origin_coordinates(dummy);
 
     /* Add to memoryobjs chain */
     add_to_memoryobjs(dummy);
