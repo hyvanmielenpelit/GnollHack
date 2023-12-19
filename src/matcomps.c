@@ -1013,7 +1013,7 @@ struct materialcomponentlist matlists[] =
         }
     },
 
-    { SPE_CELESTIAL_DOVE,
+    { SPE_SUMMON_CELESTIAL_DOVE,
         "Feather",
         STRANGE_OBJECT,
         2,
@@ -1026,7 +1026,7 @@ struct materialcomponentlist matlists[] =
         }
     },
 
-    { SPE_CELESTIAL_EAGLE,
+    { SPE_SUMMON_CELESTIAL_EAGLE,
         "Feather",
         STRANGE_OBJECT,
         1,

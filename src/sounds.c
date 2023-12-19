@@ -8845,7 +8845,7 @@ struct monst* mtmp;
     case A_LAWFUL:
         spell_otyps[4] = SPE_CURE_SICKNESS;
         spell_otyps[5] = SPE_CURE_BLINDNESS;
-        spell_otyps[6] = SPE_CELESTIAL_DOVE;
+        spell_otyps[6] = SPE_SUMMON_CELESTIAL_DOVE;
         break;
     case A_NEUTRAL:
         spell_otyps[4] = SPE_STICK_TO_SNAKE;
