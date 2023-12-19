@@ -6926,6 +6926,10 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     }
     else 
     {
+        Strcpy(debug_buf_1, "goto_level");
+        Strcpy(debug_buf_2, "goto_level");
+        Strcpy(debug_buf_3, "goto_level");
+        Strcpy(debug_buf_4, "goto_level");
         /* returning to previously visited level; reload it */
         fd = open_levelfile(new_ledger, whynot);
         if (tricked_fileremoved(fd, whynot))

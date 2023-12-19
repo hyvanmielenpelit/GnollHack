@@ -370,6 +370,7 @@ int fd;
 {
     int count;
     light_source *ls;
+    Strcpy(debug_buf_4, "restore_light_sources");
 
     /* restore elements */
     mread(fd, (genericptr_t) &count, sizeof count);

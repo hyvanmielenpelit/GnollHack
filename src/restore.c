@@ -180,6 +180,7 @@ register int fd;
 {
     int cnt;
     s_level *tmplev, *x;
+    Strcpy(debug_buf_4, "restlevchn");
 
     sp_levchn = (s_level *) 0;
     mread(fd, (genericptr_t) &cnt, sizeof(int));
@@ -207,6 +208,7 @@ boolean ghostly;
 {
     int counter;
     struct damage *tmp_dam;
+    Strcpy(debug_buf_4, "restdamage");
 
     mread(fd, (genericptr_t) &counter, sizeof(counter));
     if (!counter)
@@ -250,6 +252,7 @@ int fd;
 struct obj *otmp;
 {
     size_t buflen;
+    Strcpy(debug_buf_4, "restobj");
 
     mread(fd, (genericptr_t) otmp, sizeof(struct obj));
 
@@ -312,6 +315,8 @@ boolean ghostly, frozen;
     register struct obj *otmp, *otmp2 = 0;
     register struct obj *first = (struct obj *) 0;
     size_t buflen;
+    Strcpy(debug_buf_3, "restobjchn");
+    Strcpy(debug_buf_4, "restobjchn");
 
     while (1) {
         mread(fd, (genericptr_t) &buflen, sizeof buflen);
@@ -403,6 +408,7 @@ int fd;
 struct monst *mtmp;
 {
     size_t buflen;
+    Strcpy(debug_buf_4, "restmon");
 
     mread(fd, (genericptr_t) mtmp, sizeof(struct monst));
 
@@ -495,6 +501,8 @@ boolean ghostly;
     register struct monst *mtmp, *mtmp2 = 0;
     register struct monst *first = (struct monst *) 0;
     size_t buflen;
+    Strcpy(debug_buf_3, "restmonchn");
+    Strcpy(debug_buf_4, "restmonchn");
 
     while (1) {
         mread(fd, (genericptr_t) &buflen, sizeof(buflen));
@@ -571,6 +579,7 @@ loadfruitchn(fd)
 int fd;
 {
     register struct fruit *flist, *fnext;
+    Strcpy(debug_buf_4, "loadfruitchn");
 
     flist = 0;
     while (fnext = newfruit(), mread(fd, (genericptr_t) fnext, sizeof *fnext), fnext->fid != 0)
@@ -638,6 +647,9 @@ unsigned int *stuckid, *steedid;
     char timebuf[15];
     unsigned long uid;
     boolean defer_perm_invent;
+    Strcpy(debug_buf_2, "restgamestate");
+    Strcpy(debug_buf_3, "restgamestate");
+    Strcpy(debug_buf_4, "restgamestate");
 
     mread(fd, (genericptr_t) &uid, sizeof uid);
     if (SYSOPT_CHECK_SAVE_UID
@@ -962,6 +974,10 @@ register int fd;
     struct obj *otmp;
     struct save_game_stats dummy_stats = { 0 };
     boolean was_corrupted = FALSE;
+    Strcpy(debug_buf_1, "dorestore0");
+    Strcpy(debug_buf_2, "dorestore0");
+    Strcpy(debug_buf_3, "dorestore0");
+    Strcpy(debug_buf_4, "dorestore0");
 
     restoring = TRUE;
     get_plname_from_file(fd, plname);
@@ -1129,6 +1145,7 @@ struct cemetery **cemeteryaddr;
 {
     struct cemetery *bonesinfo, **bonesaddr;
     int flag;
+    Strcpy(debug_buf_4, "restcemetery");
 
     mread(fd, (genericptr_t) &flag, sizeof flag);
     if (flag == 0) {
@@ -1179,6 +1196,7 @@ boolean rlecomp;
 #else /* !RLECOMP */
     nhUse(rlecomp);
 #endif /* ?RLECOMP */
+    Strcpy(debug_buf_4, "rest_levl");
     mread(fd, (genericptr_t) levl, sizeof levl);
 }
 
@@ -1209,6 +1227,9 @@ boolean ghostly;
 #ifdef TOS
     short tlev;
 #endif
+    Strcpy(debug_buf_2, "getlev");
+    Strcpy(debug_buf_3, "getlev");
+    Strcpy(debug_buf_4, "getlev");
 
     if (ghostly)
         clear_id_mapping();
@@ -1421,6 +1442,7 @@ register int fd;
     int slen = 0;
     struct gamelog_line tmp;
     char* tmpstr = 0;
+    Strcpy(debug_buf_4, "restore_gamelog");
 
     while (1) {
         mread(fd, &slen, sizeof slen);
@@ -1444,6 +1466,7 @@ register int fd;
     char msg[BUFSZ];
     char attrs[BUFSZ];
     char colors[BUFSZ];
+    Strcpy(debug_buf_4, "restore_msghistory");
 
     while (1) {
         mread(fd, (genericptr_t) &msgsize, sizeof(msgsize));
@@ -2237,7 +2260,7 @@ register size_t len;
                 (void) ask_delete_invalid_savefile("corrupted", TRUE);
                 error("Error restoring old game.");
             }
-            panic("Error reading level file.");
+            panic("Error reading level file: buf1=%s, buf2=%s, buf3=%s, buf4=%s", debug_buf_1, debug_buf_2, debug_buf_3, debug_buf_4);
             return;
         }
     }

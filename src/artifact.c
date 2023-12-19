@@ -143,6 +143,7 @@ void
 restore_artifacts(fd)
 int fd;
 {
+    Strcpy(debug_buf_4, "restore_artifacts");
     mread(fd, (genericptr_t) artiexist, sizeof artiexist);
     mread(fd, (genericptr_t) artidisco, sizeof artidisco);
     hack_artifacts(); /* redo non-saved special cases */

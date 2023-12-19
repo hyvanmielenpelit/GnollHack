@@ -467,6 +467,7 @@ void
 restore_oracles(fd)
 int fd;
 {
+    Strcpy(debug_buf_4, "restore_oracles");
     mread(fd, (genericptr_t) &oracle_cnt, sizeof oracle_cnt);
     if (oracle_cnt) {
         oracle_loc = (long *) alloc(oracle_cnt * sizeof(long));

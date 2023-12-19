@@ -2785,6 +2785,7 @@ int fd;
 struct mkroom *r;
 {
     short i;
+    Strcpy(debug_buf_4, "rest_room");
 
     mread(fd, (genericptr_t) r, sizeof(struct mkroom));
     for (i = 0; i < r->nsubrooms; i++) {

@@ -1394,6 +1394,7 @@ int fd;
 {
     struct engr *ep;
     size_t lth;
+    Strcpy(debug_buf_4, "rest_engravings");
 
     head_engr = 0;
     while (1) {

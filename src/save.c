@@ -156,6 +156,10 @@ boolean quietly;
     xchar ltmp;
     d_level uz_save;
     char whynot[BUFSZ];
+    Strcpy(debug_buf_1, "dosave0");
+    Strcpy(debug_buf_2, "dosave0");
+    Strcpy(debug_buf_3, "dosave0");
+    Strcpy(debug_buf_4, "dosave0");
 
 #ifdef WHEREIS_FILE
     delete_whereis();

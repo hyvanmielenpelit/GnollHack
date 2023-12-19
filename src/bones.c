@@ -741,6 +741,10 @@ getbones(VOID_ARGS)
                 return 0;
             }
         }
+        Strcpy(debug_buf_1, "getbones");
+        Strcpy(debug_buf_2, "getbones");
+        Strcpy(debug_buf_3, "getbones");
+        Strcpy(debug_buf_4, "getbones");
         mread(fd, (genericptr_t) &c, sizeof c); /* length incl. '\0' */
         mread(fd, (genericptr_t) oldbonesid, (size_t) c); /* DD.nnn */
         if (strcmp(bonesid, oldbonesid) != 0
