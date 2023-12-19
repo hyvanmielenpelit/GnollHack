@@ -531,7 +531,7 @@
 
                         <Label Text="Forum Posting" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="Post Game Status"
+                            <Label Text="Post Game Progress"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
