@@ -8886,7 +8886,7 @@ const char* str;
     else if ((attr & (ATR_TITLE)) == ATR_TITLE)
         return; // Strcat(buf, "# "); // No need to print the title twice
 
-    if ((attr & (ATR_INDENT_AT_COLON)) != 0)
+    if ((attr & ATR_INDENT_MASK) == ATR_INDENT_AT_COLON)
         Strcat(buf, "- **");
 
     Strcat(buf, str);
@@ -8894,7 +8894,7 @@ const char* str;
     if (removetrailingcolon && slen > 0 && buf[slen - 1] == ':')
         buf[slen - 1] = 0;
 
-    if ((attr & ATR_INDENT_MASK) != ATR_INDENT_AT_COLON)
+    if ((attr & ATR_INDENT_MASK) == ATR_INDENT_AT_COLON)
     {
         char* p = strchr(buf, ':');
         if (p)
