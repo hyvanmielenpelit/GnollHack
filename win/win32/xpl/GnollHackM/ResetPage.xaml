@@ -37,6 +37,8 @@
                                         HorizontalOptions="Center" Clicked="btnDeleteUserData_Clicked" UseVaryingBackgroundImages ="False" />
                         <controls:CustomImageButton x:Name="btnDeletePostQueues" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Post Queues" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" Clicked="btnDeletePostQueues_Clicked" UseVaryingBackgroundImages ="False" />
+                        <controls:CustomImageButton x:Name="btnDeleteAppLog" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete App Log" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" Clicked="btnDeleteAppLog_Clicked" UseVaryingBackgroundImages ="False" />
                         <controls:CustomImageButton x:Name="btnDownloadTestFiles" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Test Files" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" Clicked="btnDownloadTestFiles_Clicked" UseVaryingBackgroundImages ="False" />
                         <controls:CustomImageButton x:Name="btnImportTestFiles" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Import Test Files" BackgroundColor="Transparent" TextColor="White"

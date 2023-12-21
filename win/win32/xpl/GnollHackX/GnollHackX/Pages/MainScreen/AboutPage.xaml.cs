@@ -216,15 +216,15 @@ namespace GnollHackX.Pages.MainScreen
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             string fulltargetpath = Path.Combine(GHApp.GHPath, "paniclog");
-            var displFilePage = new DisplayFilePage(fulltargetpath, "Panic Log");
-            string errormsg = "";
+            var displFilePage = new DisplayFilePage(fulltargetpath, "Panic Log", 0, true);
+            string errormsg;
             if (!System.IO.File.Exists(fulltargetpath))
             {
                 await DisplayAlert("No Panic Log", "Panic Log does not exist.", "OK");
             }
             else if (!displFilePage.ReadFile(out errormsg))
             {
-                await DisplayAlert("Error Opening File", "GnollHack cannot open the paniclog file.", "OK");
+                await DisplayAlert("Error Opening File", "GnollHack cannot open the paniclog file: " + errormsg, "OK");
             }
             else
             {
@@ -233,6 +233,28 @@ namespace GnollHackX.Pages.MainScreen
             AboutGrid.IsEnabled = true;
         }
 
+        private async void btnViewGHLog_Clicked(object sender, EventArgs e)
+        {
+            AboutGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            string fulltargetpath = Path.Combine(GHApp.GHPath, GHConstants.AppLogDirectory, GHConstants.AppLogFileName);
+            var displFilePage = new DisplayFilePage(fulltargetpath, "App Log", 0, true, false, true);
+            string errormsg;
+            
+            if (!System.IO.File.Exists(fulltargetpath))
+            {
+                await DisplayAlert("No App Log", "App Log does not exist.", "OK");
+            }
+            else if (!displFilePage.ReadFile(out errormsg))
+            {
+                await DisplayAlert("Error Opening File", "GnollHack cannot open the App Log file: " + errormsg, "OK");
+            }
+            else
+            {
+                await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
+            }
+            AboutGrid.IsEnabled = true;
+        }
 
         private double _currentPageWidth = 0;
         private double _currentPageHeight = 0;
@@ -278,15 +300,15 @@ namespace GnollHackX.Pages.MainScreen
                             string gnhpath = GHApp.GHPath;
                             if (file.FileName.EndsWith("zip", StringComparison.OrdinalIgnoreCase))
                             {
-                                string savedirpath = Path.Combine(gnhpath, "save");
+                                string savedirpath = Path.Combine(gnhpath, GHConstants.SaveDirectory);
                                 GHApp.CheckCreateDirectory(savedirpath);
 
-                                string tempdirpath = Path.Combine(gnhpath, "save", "temp");
+                                string tempdirpath = Path.Combine(gnhpath, GHConstants.SaveDirectory, "temp");
                                 if (Directory.Exists(tempdirpath))
                                     Directory.Delete(tempdirpath, true);
                                 GHApp.CheckCreateDirectory(tempdirpath);
     
-                                string temp2dirpath = Path.Combine(gnhpath, "save", "zip");
+                                string temp2dirpath = Path.Combine(gnhpath, GHConstants.SaveDirectory, "zip");
                                 if (Directory.Exists(temp2dirpath))
                                     Directory.Delete(temp2dirpath, true);
                                 GHApp.CheckCreateDirectory(temp2dirpath);
@@ -347,7 +369,7 @@ namespace GnollHackX.Pages.MainScreen
                                 if (GHApp.GnollHackService.ValidateSaveFile(file.FullPath, out out_str))
                                 {
                                     string targetfilename = file.FileName + ".i";
-                                    string savedirpath = Path.Combine(gnhpath, "save");
+                                    string savedirpath = Path.Combine(gnhpath, GHConstants.SaveDirectory);
                                     GHApp.CheckCreateDirectory(savedirpath);
 
                                     string fulltargetpath = Path.Combine(savedirpath, targetfilename);

@@ -1585,6 +1585,10 @@ namespace GnollHackX
         public const string InstallTimePackName = "installtimepack";
         public const string OnDemandPackName = "ondemandpack";
         public const string UserDataDirectory = "usrdata";
+        public const string AppLogDirectory = "log";
+        public const string AppLogFileName = "ghlog.txt";
+        public const string SaveDirectory = "save";
+        public const string DumplogDirectory = "dumplog";
         public const string ManualFilePrefix = "manual_id_";
         public const bool DefaultReadStreamingBankToMemory = false;
         public const ulong AndroidBanksToMemoryThreshold = 3500000000UL;
@@ -1609,6 +1613,7 @@ namespace GnollHackX
         public const string BonesPostPage = "bones";
         public const double BonesPostChance = 2.0 / 3.0;
         public const double MainScreenGeneralCounterIntervalInSeconds = 2.0;
+        public const long MaxGHLogSize = 20000000;
 #if GNH_MAUI
         public const string PortName = "GnollHackM";
 #else

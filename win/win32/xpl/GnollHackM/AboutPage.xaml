@@ -24,8 +24,8 @@
                                         Margin="0,0,0,16" HorizontalOptions="Center" VerticalOptions="Center" Clicked="btnVersion_Clicked" UseVaryingBackgroundImages ="False" />
                         <controls:CustomImageButton x:Name="btnCreditsW" Text="Credits" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnCreditsW_Clicked" UseVaryingBackgroundImages ="False" />
-                        <controls:CustomImageButton x:Name="btnCreditsX" Text="Cross-Platform" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnCreditsX_Clicked" UseVaryingBackgroundImages ="False" />
+                        <!--<controls:CustomImageButton x:Name="btnCreditsX" Text="Cross-Platform" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnCreditsX_Clicked" UseVaryingBackgroundImages ="False" />-->
                         <controls:CustomImageButton x:Name="btnLicense" Text="License" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnLicense_Clicked" UseVaryingBackgroundImages ="False" />
                         <controls:CustomImageButton x:Name="btnGitHub" Text="Source Code" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
@@ -46,6 +46,8 @@
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnCrashReport_Clicked" UseVaryingBackgroundImages ="False" />
                         <controls:CustomImageButton x:Name="btnDowngrade" Text="Downgrade" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnDowngrade_Clicked" UseVaryingBackgroundImages ="False" />
+                        <controls:CustomImageButton x:Name="btnViewGHLog" Text="View App Log" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                    HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnViewGHLog_Clicked" UseVaryingBackgroundImages ="False" />
                         <controls:CustomImageButton x:Name="btnViewPanicLog" Text="View Panic Log" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                     HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnViewPanicLog_Clicked" UseVaryingBackgroundImages ="False" />
                     </StackLayout>

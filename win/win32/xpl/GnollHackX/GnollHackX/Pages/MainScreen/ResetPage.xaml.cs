@@ -484,7 +484,7 @@ namespace GnollHackX.Pages.MainScreen
                                 if (GHApp.GnollHackService.ValidateSaveFile(file.FullPath, out out_str))
                                 {
                                     string targetfilename = file.FileName + ".i";
-                                    string savedirpath = Path.Combine(gnhpath, "save");
+                                    string savedirpath = Path.Combine(gnhpath, GHConstants.SaveDirectory);
                                     GHApp.CheckCreateDirectory(savedirpath);
 
                                     string fulltargetpath = Path.Combine(savedirpath, targetfilename);
@@ -579,6 +579,32 @@ namespace GnollHackX.Pages.MainScreen
                 }
             }
             ResetGrid.IsEnabled = true;
+        }
+
+        private async void btnDeleteAppLog_Clicked(object sender, EventArgs e)
+        {
+            ResetGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            bool answer = await DisplayAlert("Delete App Log?", "Are you sure to delete all files in the " + GHConstants.AppLogDirectory + " directory?", "Yes", "No");
+            if (answer)
+            {
+                try
+                {
+                    string datadir = Path.Combine(GHApp.GHPath, GHConstants.AppLogDirectory);
+                    if (Directory.Exists(datadir))
+                        Directory.Delete(datadir, true);
+
+                    btnDeleteAppLog.Text = "Done";
+                    btnDeleteAppLog.TextColor = GHColors.Red;
+                }
+                catch
+                {
+                    btnDeleteAppLog.Text = "Failed";
+                    btnDeleteAppLog.TextColor = GHColors.Red;
+                }
+            }
+            ResetGrid.IsEnabled = true;
+
         }
     }
 }

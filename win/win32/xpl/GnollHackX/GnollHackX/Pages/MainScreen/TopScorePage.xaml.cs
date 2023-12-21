@@ -307,8 +307,8 @@ namespace GnollHackX.Pages.MainScreen
 
             if(tsi != null)
             {
-                string fulltargetpath = Path.Combine(GHApp.GHPath, "dumplog", tsi.GetDumplogFileName());
-                string fullhtmltargetpath = Path.Combine(GHApp.GHPath, "dumplog", tsi.GetHTMLDumplogFileName());
+                string fulltargetpath = Path.Combine(GHApp.GHPath, GHConstants.DumplogDirectory, tsi.GetDumplogFileName());
+                string fullhtmltargetpath = Path.Combine(GHApp.GHPath, GHConstants.DumplogDirectory, tsi.GetHTMLDumplogFileName());
                 bool dumplogexists = File.Exists(fulltargetpath);
                 bool htmldumplogexists = File.Exists(fullhtmltargetpath);
 
@@ -323,7 +323,7 @@ namespace GnollHackX.Pages.MainScreen
                         if (openhtml)
                         {
                             //HTMLDumplogDisplayed = await OpenFileInLauncher(fullhtmltargetpath);
-                            var displFilePage = new DisplayFilePage(fullhtmltargetpath, "Dumplog - " + tsi.Name, 0, true, true);
+                            var displFilePage = new DisplayFilePage(fullhtmltargetpath, "Dumplog - " + tsi.Name, 0, true, true, false);
                             string errormsg = "";
                             if (!displFilePage.ReadFile(out errormsg))
                             {

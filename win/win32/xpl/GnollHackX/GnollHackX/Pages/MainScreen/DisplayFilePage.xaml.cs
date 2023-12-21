@@ -32,11 +32,11 @@ namespace GnollHackX.Pages.MainScreen
         {
         }
 
-        public DisplayFilePage(string fileName, string header, int fixedWidth) : this(fileName, header, fixedWidth, false, false)
+        public DisplayFilePage(string fileName, string header, int fixedWidth) : this(fileName, header, fixedWidth, false, false, false)
         {
         }
 
-        public DisplayFilePage(string fileName, string header, int fixedWidth, bool displayshare) : this(fileName, header, fixedWidth, displayshare, false)
+        public DisplayFilePage(string fileName, string header, int fixedWidth, bool displayshare) : this(fileName, header, fixedWidth, displayshare, false, false)
         {
 
         }
@@ -45,7 +45,7 @@ namespace GnollHackX.Pages.MainScreen
         public bool UseFixedFontSize { get; set; }
         public double FontSize { get; set; } = 13.0;
 
-        public DisplayFilePage(string fileName, string header, int fixedWidth, bool displayshare, bool isHtml)
+        public DisplayFilePage(string fileName, string header, int fixedWidth, bool displayshare, bool isHtml, bool isScrolledDown)
         {
             InitializeComponent();
 #if GNH_MAUI
@@ -60,6 +60,7 @@ namespace GnollHackX.Pages.MainScreen
             BottomLayout.IsVisible = displayshare;
             CloseButton.IsVisible = !displayshare;
             _isHtml = isHtml;
+            TextLabel.InitiallyRolledDown = isScrolledDown;
         }
 
         private async void CloseButton_Clicked(object sender, EventArgs e)

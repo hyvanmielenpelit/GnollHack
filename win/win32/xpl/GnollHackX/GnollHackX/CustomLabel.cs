@@ -66,7 +66,7 @@ namespace GnollHackX
         public string Text
         {
             get { return (string)GetValue(TextProperty); }
-            set { SetValue(TextProperty, value); SplitRows(); UpdateLabel(); }
+            set { SetValue(TextProperty, value); SplitRows(); UpdateLabel(); UpdateRolledDown(); }
         }
 
         public static readonly BindableProperty FontFamilyProperty = BindableProperty.Create(
@@ -156,8 +156,18 @@ namespace GnollHackX
         public bool IsScrollable
         {
             get { return (bool)GetValue(IsScrollableProperty); }
-            set { UpdateScrollable(value, value && !IsScrollable); SetValue(IsScrollableProperty, value); }
+            set { UpdateScrollable(value, value && !IsScrollable); SetValue(IsScrollableProperty, value); UpdateRolledDown(); }
         }
+
+        public static readonly BindableProperty InitiallyRolledDownProperty = BindableProperty.Create(
+            "InitiallyRolledDown", typeof(bool), typeof(CustomLabel), false);
+
+        public bool InitiallyRolledDown
+        {
+            get { return (bool)GetValue(InitiallyRolledDownProperty); }
+            set { SetValue(InitiallyRolledDownProperty, value); UpdateRolledDown(); }
+        }
+
         public static readonly BindableProperty WordWrapSeparatorProperty = BindableProperty.Create(
             "WordWrapSeparator", typeof(char), typeof(CustomLabel), ' ');
 
@@ -215,6 +225,24 @@ namespace GnollHackX
         {
             InvalidateSurface();
             InvalidateMeasure();
+        }
+
+        private readonly object _initialYPosLock = new object();
+        private bool _calculateInitialYPos = false;
+        public bool CalculateInitialYPos { get { lock (_initialYPosLock) { return _calculateInitialYPos; } } set { lock (_initialYPosLock) { _calculateInitialYPos = value; } } }
+
+        private void UpdateRolledDown()
+        {
+            lock (_textScrollLock)
+            {
+                _textScrollSpeed = 0;
+                _textScrollSpeedRecordOn = false;
+                _textScrollSpeedRecords.Clear();
+                _textScrollOffset = 0;
+            }
+            if (InitiallyRolledDown)
+                CalculateInitialYPos = true;
+            InvalidateSurface();
         }
 
         private void UpdateScrollable(bool newval, bool updaterows)
@@ -511,13 +539,8 @@ namespace GnollHackX
             float canvasheight = this.CanvasSize.Height;
             float scale = GHApp.DisplayScale;
             float scale2 = this.Width == 0 ? 1.0f : canvaswidth / (float)this.Width;
-            float usedTextOffset = 0;
 
             canvas.Clear();
-            lock (_textScrollLock)
-            {
-                usedTextOffset = _textScrollOffset;
-            }
 
             lock (_isFirstLock)
             {
@@ -532,10 +555,9 @@ namespace GnollHackX
                     float x = 0, y = 0;
                     textPaint.Typeface = GetFontTypeface();
                     textPaint.TextSize = (float)FontSize * scale;
-                    string[] textRows;
                     if (!(IsScrollable && TouchMoved) || _isFirst)
                         SplitRows();
-                    textRows = TextRows;
+                    string[] textRows = TextRows;
                     switch (VerticalTextAlignment)
                     {
                         case TextAlignment.Start:
@@ -548,6 +570,25 @@ namespace GnollHackX
                         case TextAlignment.End:
                             y = canvasheight - textPaint.FontSpacing * textRows.Length;
                             break;
+                    }
+
+                    float usedTextOffset = 0;
+                    if (CalculateInitialYPos)
+                    {
+                        CalculateInitialYPos = false;
+                        float textHeight = textRows.Length * textPaint.FontSpacing;
+                        float bottomScrollLimit = Math.Min(0, CanvasSize.Height - textHeight);
+                        lock (_textScrollLock)
+                        {
+                            usedTextOffset = _textScrollOffset = bottomScrollLimit;
+                        }
+                    }
+                    else
+                    {
+                        lock (_textScrollLock)
+                        {
+                            usedTextOffset = _textScrollOffset;
+                        }
                     }
 
                     y += usedTextOffset;
@@ -698,15 +739,7 @@ namespace GnollHackX
             if (propertyName == nameof(GeneralAnimationCounter))
                 UpdateLabelScroll();
             else if (propertyName == nameof(IsVisible))
-            {
-                lock (_textScrollLock)
-                {
-                    _textScrollOffset = 0;
-                    _textScrollSpeed = 0;
-                    TextScrollSpeedOn = false;
-                    _textScrollSpeedRecords.Clear();
-                }
-            }
+                UpdateRolledDown();
         }
 
         private DateTime _textScrollSpeedReleaseStamp;
@@ -1059,10 +1092,7 @@ namespace GnollHackX
             {
                 _currentWidth = width;
                 _currentHeight = height;
-                lock (_textScrollLock)
-                {
-                    _textScrollOffset = 0;
-                }
+                UpdateRolledDown();
                 UpdateScrollable(IsScrollable, true);
             }
         }

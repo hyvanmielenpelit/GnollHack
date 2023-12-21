@@ -378,18 +378,13 @@ namespace GnollHackX.Unknown
         public void ClearSavedGames()
         {
             string filesdir = GetGnollHackPath();
-
-            string[] ghdirlist = { "save" };
-            foreach (string ghdir in ghdirlist)
+            string fulldirepath = Path.Combine(filesdir, GHConstants.SaveDirectory);
+            if (Directory.Exists(fulldirepath))
             {
-                string fulldirepath = Path.Combine(filesdir, ghdir);
-                if (Directory.Exists(fulldirepath))
+                DirectoryInfo disave = new DirectoryInfo(fulldirepath);
+                foreach (FileInfo file in disave.GetFiles())
                 {
-                    DirectoryInfo disave = new DirectoryInfo(fulldirepath);
-                    foreach (FileInfo file in disave.GetFiles())
-                    {
-                        file.Delete();
-                    }
+                    file.Delete();
                 }
             }
         }
@@ -397,18 +392,13 @@ namespace GnollHackX.Unknown
         public void ClearDumplogs()
         {
             string filesdir = GetGnollHackPath();
-
-            string[] ghdirlist = { "dumplog" };
-            foreach (string ghdir in ghdirlist)
+            string fulldirepath = Path.Combine(filesdir, GHConstants.DumplogDirectory);
+            if (Directory.Exists(fulldirepath))
             {
-                string fulldirepath = Path.Combine(filesdir, ghdir);
-                if (Directory.Exists(fulldirepath))
+                DirectoryInfo disave = new DirectoryInfo(fulldirepath);
+                foreach (FileInfo file in disave.GetFiles())
                 {
-                    DirectoryInfo disave = new DirectoryInfo(fulldirepath);
-                    foreach (FileInfo file in disave.GetFiles())
-                    {
-                        file.Delete();
-                    }
+                    file.Delete();
                 }
             }
         }
@@ -500,7 +490,7 @@ namespace GnollHackX.Unknown
             //}
 
             /* Make relevant directories */
-            string[] ghdirlist = { "save", "dumplog" };
+            string[] ghdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory };
             foreach (string ghdir in ghdirlist)
             {
                 string fulldirepath = Path.Combine(filesdir, ghdir);

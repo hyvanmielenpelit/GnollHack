@@ -1172,13 +1172,16 @@ VA_DECL(const char *, s)
     VA_INIT(s, const char *);
     if (program_state.in_impossible)
     {
-        panic("impossible called impossible");
+        Vsprintf(pbuf, s, VA_ARGS);
+        pbuf[BUFSZ - 1] = '\0';
+        panic("impossible called impossible: %s, %s", pbuf, debug_buf_1);
         return;
     }
 
     program_state.in_impossible = 1;
     Vsprintf(pbuf, s, VA_ARGS);
     pbuf[BUFSZ - 1] = '\0'; /* sanity */
+    Strcpy(debug_buf_1, pbuf);
     paniclog("impossible", pbuf);
     if (iflags.debug_fuzzer)
     {

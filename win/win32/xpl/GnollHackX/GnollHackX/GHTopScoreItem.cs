@@ -214,7 +214,7 @@ namespace GnollHackX
             get
             {
                 //string filename = GetDumplogFileName();
-                //string fulltargetpath = Path.Combine(GHApp.GHPath, "dumplog", filename);
+                //string fulltargetpath = Path.Combine(GHApp.GHPath, GHConstants.DumplogDirectory, filename);
                 //bool res = File.Exists(fulltargetpath);
                 //return res;
                 return true;

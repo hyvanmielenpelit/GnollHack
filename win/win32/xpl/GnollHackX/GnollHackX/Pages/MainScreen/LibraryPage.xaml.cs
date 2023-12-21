@@ -118,7 +118,7 @@ namespace GnollHackX.Pages.MainScreen
                 if (_manuals.TryGetValue(ghbutton.BtnCommand, out sm))
                 {
                     string errormsg;
-                    var dispfilepage = new DisplayFilePage(null, sm.Name, 0, false, false);
+                    var dispfilepage = new DisplayFilePage(null, sm.Name, 0, false, false, false);
                     dispfilepage.OverridingText = sm.Text;
                     dispfilepage.UseFixedFontSize = true;
                     dispfilepage.FontSize = 14;

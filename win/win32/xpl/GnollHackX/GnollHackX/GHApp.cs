@@ -858,7 +858,7 @@ namespace GnollHackX
 
         //public static void SaveDumplogTypefaces(Assembly assembly)
         //{
-        //    string targetdir = Path.Combine(GHPath, "dumplog");
+        //    string targetdir = Path.Combine(GHPath, GHConstants.DumplogDirectory);
         //    if (!Directory.Exists(targetdir))
         //        return;
 
@@ -2024,7 +2024,7 @@ namespace GnollHackX
                 {
                     archive.CreateEntryFromFile(fPath, Path.GetFileName(fPath));
                 }
-                string[] ghsubdirlist = { "save", "dumplog" };
+                string[] ghsubdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory };
                 foreach (string ghsubdir in ghsubdirlist)
                 {
                     string subdirpath = Path.Combine(ghdir, ghsubdir);
@@ -2055,7 +2055,7 @@ namespace GnollHackX
 
             using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
             {
-                string[] ghsubdirlist = { "dumplog" };
+                string[] ghsubdirlist = { GHConstants.DumplogDirectory };
                 foreach (string ghsubdir in ghsubdirlist)
                 {
                     string subdirpath = Path.Combine(ghdir, ghsubdir);
@@ -2092,7 +2092,7 @@ namespace GnollHackX
 
             using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
             {
-                string[] ghsubdirlist = { "save" };
+                string[] ghsubdirlist = { GHConstants.SaveDirectory };
                 foreach (string ghsubdir in ghsubdirlist)
                 {
                     string subdirpath = Path.Combine(ghdir, ghsubdir);
@@ -2178,7 +2178,7 @@ namespace GnollHackX
         {
             try
             {
-                string savepath = Path.Combine(GHPath, "save");
+                string savepath = Path.Combine(GHPath, GHConstants.SaveDirectory);
                 string[] savefiles = Directory.GetFiles(savepath);
                 if (savefiles != null && savefiles.Length > 0)
                     InformAboutIncompatibleSavedGames = true;
@@ -3007,7 +3007,7 @@ namespace GnollHackX
                             if (res.IsSuccess)
                             {
                                 SetXlogUserNameVerified(true, username, password);
-                                Debug.WriteLine("XLog entry successfully sent. Status Code: " + (int)res.StatusCode);
+                                WriteGHLog((string.IsNullOrEmpty(xlogentry_string) ? "Server authentication successful." : "XLog entry successfully sent.") + " (" + (int)res.StatusCode + ")");
                             }
                             else
                             {
@@ -3020,6 +3020,7 @@ namespace GnollHackX
 
                             if (!res.IsSuccess && !is_from_queue && !string.IsNullOrWhiteSpace(xlogentry_string))
                             {
+                                WriteGHLog((string.IsNullOrEmpty(xlogentry_string) ? "Server authentication failed." : "Sending XLog entry failed.") + " Writing XLog entry to disk. Status Code: " + (int)res.StatusCode + ", Message: "+ res.Message);
                                 string targetpath = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
                                 if (!Directory.Exists(targetpath))
                                     CheckCreateDirectory(targetpath);
@@ -3386,11 +3387,11 @@ namespace GnollHackX
                                             try
                                             {
                                                 File.Delete(full_filepath);
-                                                Debug.WriteLine("Deleted the sent bones file: " + full_filepath);
+                                                WriteGHLog("Deleted the sent bones file: " + full_filepath);
                                             }
                                             catch (Exception ex)
                                             {
-                                                Debug.WriteLine("Deleting the sent bones file from client failed: " + ex.Message);
+                                                WriteGHLog("Deleting the sent bones file from client failed: " + ex.Message);
                                             }
                                         }
                                         else
@@ -3399,7 +3400,7 @@ namespace GnollHackX
                                         //We may or may not have received another bones file in return
                                         if (bytearray != null && bytearray.Length > 0)
                                         {
-                                            Debug.WriteLine("Received new bones file as byte array");
+                                            WriteGHLog("Received a new bones file as a byte array. Writing the bones file to disk.");
                                             didReceiveBonesFile = true;
                                             Debug.WriteLine("Response Headers: " + response.Headers.ToString());
                                             if (response.Headers.TryGetValues("X-GH-OriginalFileName", out IEnumerable<string> origFileNames))
@@ -3433,27 +3434,27 @@ namespace GnollHackX
                                                                 }
                                                                 catch (Exception ex)
                                                                 {
-                                                                    Debug.WriteLine("Writing received bones file failed: " + ex.Message);
+                                                                    WriteGHLog("Writing received bones file failed: " + ex.Message);
                                                                 }
                                                             }
                                                             else
-                                                                Debug.WriteLine("Bones file already exists: " + savepath);
+                                                                WriteGHLog("Bones file already exists: " + savepath);
                                                         }
                                                         else
-                                                            Debug.WriteLine("Bones file name is null or empty.");
+                                                            WriteGHLog("Bones file name is null or empty.");
                                                     }
                                                     else
-                                                        Debug.WriteLine("Bones original file name list is empty.");
+                                                        WriteGHLog("Bones original file name list is empty.");
                                                 }
                                                 else
-                                                    Debug.WriteLine("Bones original file name list is null.");
+                                                    WriteGHLog("Bones original file name list is null.");
                                             }
                                             else
-                                                Debug.WriteLine("Could not find bones original file name header.");
+                                                WriteGHLog("Could not find bones original file name header.");
                                         }
                                         else
                                         {
-                                            Debug.WriteLine("Bones byte array was null or empty.");
+                                            WriteGHLog("Bones byte array was null or empty.");
                                             string str = "";
                                             try
                                             {
@@ -3461,14 +3462,14 @@ namespace GnollHackX
                                             }
                                             catch (Exception ex)
                                             {
-                                                Debug.WriteLine("Reading bones response content failed: " + ex.Message);
+                                                WriteGHLog("Reading bones response content failed: " + ex.Message);
                                             }
-                                            Debug.WriteLine("Bones response content: " + str);
+                                            WriteGHLog("Bones response content: " + str);
                                         }
                                     }
                                     else
                                     {
-                                        Debug.WriteLine("No bones file received in exchange.");
+                                        Debug.WriteLine("No bones file received in exchange. (" + (int)res.StatusCode + ")");
                                         string str = "";
                                         try
                                         {
@@ -3493,7 +3494,7 @@ namespace GnollHackX
                             if (res.IsSuccess)
                             {
                                 SetXlogUserNameVerified(true, username, password);
-                                Debug.WriteLine("Bones file successfully sent. Status Code: " + (int)res.StatusCode);
+                                WriteGHLog("Bones file successfully sent. (" + (int)res.StatusCode + ")");
                             }
                             else
                             {
@@ -3506,7 +3507,7 @@ namespace GnollHackX
 
                             if (!res.IsSuccess && !is_from_queue && !string.IsNullOrWhiteSpace(bones_filename))
                             {
-                                Debug.WriteLine("Writing a bones file send request to queue on disk.");
+                                WriteGHLog("Writing a bones file send request to queue on disk. Status Code: " + (int)res.StatusCode + ", Message: " + res.Message);
                                 string targetpath = Path.Combine(GHApp.GHPath, GHConstants.BonesPostQueueDirectory);
                                 if (!Directory.Exists(targetpath))
                                     CheckCreateDirectory(targetpath);
@@ -3588,6 +3589,7 @@ namespace GnollHackX
                             multicontent.Add(content4);
                             Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
 
+
                             StringContent content2 = new StringContent("ConfirmReceipt", Encoding.UTF8, "text/plain");
                             ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
                             cdhv2.Name = "Command";
@@ -3659,7 +3661,7 @@ namespace GnollHackX
                                     using (HttpResponseMessage response = await client.PostAsync(postaddress, multicontent, cts.Token))
                                     {
                                         if(response.IsSuccessStatusCode)
-                                            Debug.WriteLine("Bones confirmation response received successfully. Status code: " + (int)response.StatusCode + " (" + response.StatusCode.ToString() + ")");
+                                            WriteGHLog("Bones confirmation response received successfully. Status code: " + (int)response.StatusCode + " (" + response.StatusCode.ToString() + ")");
                                         else
                                         {
                                             Debug.WriteLine("Sending bones confirmation failed. Status code: " + (int)response.StatusCode + " (" + response.StatusCode.ToString() + ")");
@@ -3704,6 +3706,38 @@ namespace GnollHackX
                 res.Message = e.Message;
             }
             return res;
+        }
+
+        public static void WriteGHLog(string loggedtext)
+        {
+            try
+            {
+                Debug.WriteLine(loggedtext);
+                string logdir = Path.Combine(GHPath, GHConstants.AppLogDirectory);
+                string logfullpath = Path.Combine(logdir, GHConstants.AppLogFileName);
+                if(!Directory.Exists(logdir))
+                {
+                    CheckCreateDirectory(logdir);
+                }
+                if(Directory.Exists(logdir))
+                {
+                    if(File.Exists(logfullpath))
+                    {
+                        FileInfo fi = new FileInfo(logfullpath);
+                        if(fi.Length > GHConstants.MaxGHLogSize)
+                            File.Delete(logfullpath);
+                    }
+                    var now = DateTime.UtcNow;
+                    File.AppendAllText(logfullpath, now.ToString("yyyy-MM-dd HH:mm:ss") + ": " 
+                        + loggedtext
+                        + " [" + VersionTracking.CurrentVersion + "]" 
+                        + Environment.NewLine);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
     }
 

@@ -972,11 +972,12 @@ namespace GnollHackX
             Process.GetCurrentProcess().Kill();
         }
 
-        private async void ClearFilesButton_Clicked(object sender, EventArgs e)
+        private async void ResetButton_Clicked(object sender, EventArgs e)
         {
             UpperButtonGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             carouselView.Stop();
+            StopGeneralTimer = true;
             var resetPage = new ResetPage();
             resetPage.Disappearing += (sender2, e2) =>
             {
@@ -984,6 +985,8 @@ namespace GnollHackX
                 UpperButtonGrid.IsEnabled = true;
             };
             await App.Current.MainPage.Navigation.PushModalAsync(resetPage);
+            StopGeneralTimer = false;
+            StartGeneralTimer();
             UpperButtonGrid.IsEnabled = true;
         }
 
@@ -1031,6 +1034,7 @@ namespace GnollHackX
             UpperButtonGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             carouselView.Stop();
+            StopGeneralTimer = true;
             var aboutPage = new AboutPage();
             aboutPage.Disappearing += (sender2, e2) =>
             {
@@ -1038,6 +1042,8 @@ namespace GnollHackX
                 UpperButtonGrid.IsEnabled = true;
             };
             await App.Current.MainPage.Navigation.PushModalAsync(aboutPage);
+            StopGeneralTimer = false;
+            StartGeneralTimer();
             UpperButtonGrid.IsEnabled = true;
         }
 
@@ -1174,6 +1180,7 @@ namespace GnollHackX
         public void Suspend()
         {
             carouselView.Stop();
+            StopGeneralTimer = true;
         }
 
         public void Resume()
@@ -1182,6 +1189,8 @@ namespace GnollHackX
             {
                 carouselView.Play();
             }
+            StopGeneralTimer = false;
+            StartGeneralTimer();
         }
     }
 
