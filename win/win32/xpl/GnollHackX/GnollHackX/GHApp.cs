@@ -3725,7 +3725,16 @@ namespace GnollHackX
                     {
                         FileInfo fi = new FileInfo(logfullpath);
                         if(fi.Length > GHConstants.MaxGHLogSize)
+                        {
+                            string[] lines = File.ReadAllLines(logfullpath);
                             File.Delete(logfullpath);
+                            List<string> halflines = new List<string>(lines.Length / 2 + 1);
+                            for (int i = lines.Length / 2; i < lines.Length; i++)
+                            {
+                                halflines.Add(lines[i]);
+                            }
+                            File.AppendAllLines(logfullpath, halflines);
+                        }
                     }
                     var now = DateTime.UtcNow;
                     File.AppendAllText(logfullpath, now.ToString("yyyy-MM-dd HH:mm:ss") + ": " 

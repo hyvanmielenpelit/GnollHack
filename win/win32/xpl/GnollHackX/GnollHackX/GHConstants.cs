@@ -1613,7 +1613,7 @@ namespace GnollHackX
         public const string BonesPostPage = "bones";
         public const double BonesPostChance = 2.0 / 3.0;
         public const double MainScreenGeneralCounterIntervalInSeconds = 2.0;
-        public const long MaxGHLogSize = 20000000;
+        public const long MaxGHLogSize = 10000000;
 #if GNH_MAUI
         public const string PortName = "GnollHackM";
 #else
