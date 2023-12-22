@@ -3708,39 +3708,43 @@ namespace GnollHackX
             return res;
         }
 
+        private static readonly object _ghlogLock = new object();
         public static void WriteGHLog(string loggedtext)
         {
             try
             {
-                Debug.WriteLine(loggedtext);
-                string logdir = Path.Combine(GHPath, GHConstants.AppLogDirectory);
-                string logfullpath = Path.Combine(logdir, GHConstants.AppLogFileName);
-                if(!Directory.Exists(logdir))
+                lock (_ghlogLock)
                 {
-                    CheckCreateDirectory(logdir);
-                }
-                if(Directory.Exists(logdir))
-                {
-                    if(File.Exists(logfullpath))
+                    Debug.WriteLine(loggedtext);
+                    string logdir = Path.Combine(GHPath, GHConstants.AppLogDirectory);
+                    string logfullpath = Path.Combine(logdir, GHConstants.AppLogFileName);
+                    if (!Directory.Exists(logdir))
                     {
-                        FileInfo fi = new FileInfo(logfullpath);
-                        if(fi.Length > GHConstants.MaxGHLogSize)
-                        {
-                            string[] lines = File.ReadAllLines(logfullpath);
-                            File.Delete(logfullpath);
-                            List<string> halflines = new List<string>(lines.Length / 2 + 1);
-                            for (int i = lines.Length / 2; i < lines.Length; i++)
-                            {
-                                halflines.Add(lines[i]);
-                            }
-                            File.AppendAllLines(logfullpath, halflines);
-                        }
+                        CheckCreateDirectory(logdir);
                     }
-                    var now = DateTime.UtcNow;
-                    File.AppendAllText(logfullpath, now.ToString("yyyy-MM-dd HH:mm:ss") + ": " 
-                        + loggedtext
-                        + " [" + VersionTracking.CurrentVersion + "]" 
-                        + Environment.NewLine);
+                    if (Directory.Exists(logdir))
+                    {
+                        if (File.Exists(logfullpath))
+                        {
+                            FileInfo fi = new FileInfo(logfullpath);
+                            if (fi.Length > GHConstants.MaxGHLogSize)
+                            {
+                                string[] lines = File.ReadAllLines(logfullpath);
+                                File.Delete(logfullpath);
+                                List<string> halflines = new List<string>(lines.Length / 2 + 1);
+                                for (int i = lines.Length / 2; i < lines.Length; i++)
+                                {
+                                    halflines.Add(lines[i]);
+                                }
+                                File.AppendAllLines(logfullpath, halflines);
+                            }
+                        }
+                        var now = DateTime.UtcNow;
+                        File.AppendAllText(logfullpath, now.ToString("yyyy-MM-dd HH:mm:ss") + ": "
+                            + loggedtext
+                            + " [" + VersionTracking.CurrentVersion + "]"
+                            + Environment.NewLine);
+                    }
                 }
             }
             catch (Exception ex)

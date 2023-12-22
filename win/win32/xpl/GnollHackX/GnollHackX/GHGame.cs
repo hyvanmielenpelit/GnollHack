@@ -1859,11 +1859,15 @@ namespace GnollHackX
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_POST_GAME_STATUS:
+                    if (cmd_str != null)
+                        status_str = cmd_str;
+
                     if (GHApp.PostingGameStatus)
                     {
-                        if (cmd_str != null)
-                            status_str = cmd_str;
-
+                        if (cmd_param == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT)
+                            GHApp.WriteGHLog("Forum Post: Attaching the file " + cmd_str + " to the next post.");
+                        else
+                            GHApp.WriteGHLog("Forum Post: Posting game progress to the server: " + status_str);
                         if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                         {
                             queue.Enqueue(new GHRequest(this,
@@ -1871,28 +1875,37 @@ namespace GnollHackX
                                 cmd_param, cmd_param2, status_str));
                         }
                     }
+                    else
+                    {
+                        GHApp.WriteGHLog("Forum Post: Received a request to post game progress to the server, but Post Game Progress setting is off.");
+                    }
                     break;
                 case (int)gui_command_types.GUI_CMD_POST_XLOG_ENTRY:
-                    if(GHApp.PostingXlogEntries)
+                    if (cmd_str != null)
+                        status_str = cmd_str;
+                    if (GHApp.PostingXlogEntries)
                     {
-                        if (cmd_str != null)
-                            status_str = cmd_str;
-
+                        GHApp.WriteGHLog("XLog Posted: Posting the top score entry to the server.");
                         if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                         {
                             queue.Enqueue(new GHRequest(this, GHRequestType.PostXlogEntry, cmd_param, cmd_param2, status_str));
                         }
                     }
+                    else
+                    {
+                        GHApp.WriteGHLog("Received a request to post the top score entry to the server, but Post Top Scores setting is off.");
+                    }
                     break;
                 case (int)gui_command_types.GUI_CMD_POST_BONES_FILE:
-                    if(GHApp.AllowBones && GHApp.PostingBonesFiles)
+                    if (cmd_str != null)
+                        status_str = cmd_str;
+
+                    if (GHApp.AllowBones && GHApp.PostingBonesFiles)
                     {
                         Random rnd = new Random();
                         if (rnd.NextDouble() < GHConstants.BonesPostChance)
                         {
-                            if (cmd_str != null)
-                                status_str = cmd_str;
-
+                            GHApp.WriteGHLog("Bones Posted: Chose to post the bones file (" + status_str + ") to the server for user " + GHApp.XlogUserName + ".");
                             if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                             {
                                 queue.Enqueue(new GHRequest(this, GHRequestType.PostBonesFile, cmd_param, cmd_param2, status_str));
@@ -1900,8 +1913,15 @@ namespace GnollHackX
                         }
                         else
                         {
-                            GHApp.WriteGHLog("Random: Chose not to post the bones file " + status_str + " to the server for user " + GHApp.XlogUserName + ". Bones file retained locally.");
+                            GHApp.WriteGHLog("Bones Retained: Chose not to post the bones file (" + status_str + ") to the server for user " + GHApp.XlogUserName + ". Bones file retained locally.");
                         }
+                    }
+                    else
+                    {
+                        GHApp.WriteGHLog("Received a request to post the bones file " + status_str + " to the server, but "
+                            + (!GHApp.AllowBones && !GHApp.PostingBonesFiles ? "Allow Ghost Levels and Post Bones Files settings are both off" : GHApp.AllowBones ? "Allow Ghost Levels setting is off" : "Post Bones Files setting is off")
+                            + (GHApp.AllowBones ? ". Allow Ghost Levels was probably on when the game was started" : "")
+                            + ". Retaining the bones file locally.");
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_LIBRARY_MANUAL:
