@@ -2272,6 +2272,8 @@ namespace GnollHackX.Pages.Game
                                     ToggleTravelModeButton_Clicked(ToggleTravelModeButton, new EventArgs());
                                 break;
                             case GHRequestType.PostDiagnosticData:
+                                _mainPage.EnqueuePost(new GHPost(0, req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
+                                break;
                             case GHRequestType.PostGameStatus:
                                 _mainPage.EnqueuePost(new GHPost(0, req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
                                 break;

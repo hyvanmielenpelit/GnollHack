@@ -2626,7 +2626,7 @@ namespace GnollHackX
                 }
                 else
                 {
-                    SendResult res = await SendXlogFile("", 1, 0, new List<GHPostAttachment>(), true);
+                    SendResult res = await SendXLogEntry("", 1, 0, new List<GHPostAttachment>(), true);
                     if (res.IsSuccess)
                         Debug.WriteLine("XLog user name successfully verified.");
                     else
@@ -2895,7 +2895,7 @@ namespace GnollHackX
             }
         }
 
-        public static async Task<SendResult> SendXlogFile(string xlogentry_string, int status_type, int status_datatype, List<GHPostAttachment> xlogattachments, bool is_from_queue)
+        public static async Task<SendResult> SendXLogEntry(string xlogentry_string, int status_type, int status_datatype, List<GHPostAttachment> xlogattachments, bool is_from_queue)
         {
             SendResult res = new SendResult();
             try
@@ -3007,11 +3007,11 @@ namespace GnollHackX
                             if (res.IsSuccess)
                             {
                                 SetXlogUserNameVerified(true, username, password);
-                                WriteGHLog((string.IsNullOrEmpty(xlogentry_string) ? "Server authentication successful." : "XLog entry successfully sent.") + " (" + (int)res.StatusCode + ")");
+                                WriteGHLog((string.IsNullOrEmpty(xlogentry_string) ? "Server authentication successful" : "XLog entry successfully sent") + (is_from_queue ? " from the post queue" : "") + ". (" + (int)res.StatusCode + ")");
                             }
                             else
                             {
-                                Debug.WriteLine("Sending XLog entry failed. Status Code: " + (int)res.StatusCode);
+                                Debug.WriteLine("Sending " + (string.IsNullOrEmpty(xlogentry_string) ? "server authentication" : "XLog entry") + " failed. Status Code: " + (int)res.StatusCode);
                                 if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */)) // || res.StatusCode == HttpStatusCode.Locked /* 423 */
                                     SetXlogUserNameVerified(false, null, null);
                                 if (res.StatusCode == HttpStatusCode.Forbidden)
@@ -3021,37 +3021,7 @@ namespace GnollHackX
                             if (!res.IsSuccess && !is_from_queue && !string.IsNullOrWhiteSpace(xlogentry_string))
                             {
                                 WriteGHLog((string.IsNullOrEmpty(xlogentry_string) ? "Server authentication failed." : "Sending XLog entry failed.") + " Writing the send request to disk. Status Code: " + (int)res.StatusCode + ", Message: "+ res.Message);
-                                string targetpath = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
-                                if (!Directory.Exists(targetpath))
-                                    CheckCreateDirectory(targetpath);
-                                if (Directory.Exists(targetpath))
-                                {
-                                    string targetfilename;
-                                    string targetfilepath;
-                                    int id = 0;
-                                    do
-                                    {
-                                        targetfilename = GHConstants.XlogPostFileNamePrefix + id + GHConstants.XlogPostFileNameSuffix;
-                                        targetfilepath = Path.Combine(targetpath, targetfilename);
-                                        id++;
-                                    } while (File.Exists(targetfilepath));
-
-                                    try
-                                    {
-                                        using (StreamWriter sw = File.CreateText(targetfilepath))
-                                        {
-                                            GHPost fp = new GHPost(1, true, status_type, status_datatype, xlogentry_string, xlogattachments != null ? xlogattachments : new List<GHPostAttachment>(), false);
-                                            string json = JsonConvert.SerializeObject(fp);
-                                            Debug.WriteLine(json);
-                                            sw.Write(json);
-                                            WriteGHLog((string.IsNullOrEmpty(xlogentry_string) ? "Server authentication request" : "XLog entry send request") + " written to the queue on disk: " + targetfilepath);
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        WriteGHLog("Writing the " + (string.IsNullOrEmpty(xlogentry_string) ? "server authentication request" : "XLog entry send request") + " to the queue on disk using path " + targetfilepath + " failed: " + ex.Message);
-                                    }
-                                }
+                                SaveXLogEntryToDisk(status_type, status_datatype, xlogentry_string, xlogattachments);
                             }                            
                         }
                         content1.Dispose();
@@ -3077,26 +3047,66 @@ namespace GnollHackX
                 Debug.WriteLine(e.Message);
                 res.Message = e.Message;
             }
-            if (res.IsSuccess && xlogattachments != null)
+            if (xlogattachments != null)
             {
-                foreach (var attachment in xlogattachments)
+                if(res.IsSuccess)
                 {
-                    if (attachment.IsTemporary)
+                    foreach (var attachment in xlogattachments)
                     {
-                        try
+                        if (attachment.IsTemporary)
                         {
-                            File.Delete(attachment.FullPath);
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.WriteLine(e.Message);
+                            try
+                            {
+                                File.Delete(attachment.FullPath);
+                            }
+                            catch (Exception e)
+                            {
+                                Debug.WriteLine(e.Message);
+                            }
                         }
                     }
                 }
+                xlogattachments.Clear();
             }
             return res;
         }
-        public static async Task<SendResult> SendForumPost(bool is_game_status, string message, int status_type, int status_datatype, List<GHPostAttachment> forumpostattachments, bool is_from_queue)
+
+        public static void SaveXLogEntryToDisk(int status_type, int status_datatype, string xlogentry_string, List<GHPostAttachment> xlogattachments)
+        {
+            string targetpath = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
+            if (!Directory.Exists(targetpath))
+                CheckCreateDirectory(targetpath);
+            if (Directory.Exists(targetpath))
+            {
+                string targetfilename;
+                string targetfilepath;
+                int id = 0;
+                do
+                {
+                    targetfilename = GHConstants.XlogPostFileNamePrefix + id + GHConstants.XlogPostFileNameSuffix;
+                    targetfilepath = Path.Combine(targetpath, targetfilename);
+                    id++;
+                } while (File.Exists(targetfilepath));
+
+                try
+                {
+                    using (StreamWriter sw = File.CreateText(targetfilepath))
+                    {
+                        GHPost fp = new GHPost(1, true, status_type, status_datatype, xlogentry_string, xlogattachments != null ? xlogattachments : new List<GHPostAttachment>(), false);
+                        string json = JsonConvert.SerializeObject(fp);
+                        Debug.WriteLine(json);
+                        sw.Write(json);
+                        WriteGHLog((string.IsNullOrEmpty(xlogentry_string) ? "Server authentication request" : "XLog entry send request") + " written to the queue on disk: " + targetfilepath);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    WriteGHLog("Writing the " + (string.IsNullOrEmpty(xlogentry_string) ? "server authentication request" : "XLog entry send request") + " to the queue on disk using path " + targetfilepath + " failed: " + ex.Message);
+                }
+            }
+        }
+
+        public static async Task<SendResult> SendForumPost(bool is_game_status, string message, int status_type, int status_datatype, List<GHPostAttachment> forumpostattachments, bool forcesend, bool is_from_queue)
         {
             SendResult res = new SendResult();
             try
@@ -3189,37 +3199,8 @@ namespace GnollHackX
 
                             if (!res.IsSuccess && !is_from_queue)
                             {
-                                string targetpath = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
                                 WriteGHLog("Forum post send request redirected to the queue on disk. Status Code: " + (int)res.StatusCode + ", Message: " + res.Message);
-                                if (!Directory.Exists(targetpath))
-                                    GHApp.CheckCreateDirectory(targetpath);
-                                if (Directory.Exists(targetpath))
-                                {
-                                    string targetfilename;
-                                    string targetfilepath;
-                                    int id = 0;
-                                    do
-                                    {
-                                        targetfilename = GHConstants.ForumPostFileNamePrefix + id + GHConstants.ForumPostFileNameSuffix;
-                                        targetfilepath = Path.Combine(targetpath, targetfilename);
-                                        id++;
-                                    } while (File.Exists(targetfilepath));
-
-                                    try
-                                    {
-                                        using (StreamWriter sw = File.CreateText(targetfilepath))
-                                        {
-                                            GHPost fp = new GHPost(0, is_game_status, status_type, status_datatype, message, forumpostattachments != null ? forumpostattachments : new List<GHPostAttachment>(), false);
-                                            string json = JsonConvert.SerializeObject(fp);
-                                            sw.Write(json);
-                                            WriteGHLog("Forum post send request written to the queue on disk: " + targetfilepath);
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        WriteGHLog("Writing the forum post send request to the queue on disk using path " + targetfilepath + " failed: " + ex.Message);
-                                    }
-                                }
+                                SaveForumPostToDisk(is_game_status, status_type, status_datatype, message, forumpostattachments, forcesend);
                             }
                         }
                         if(content1 != null)
@@ -3247,23 +3228,61 @@ namespace GnollHackX
 
             if (forumpostattachments != null)
             {
-                foreach (var attachment in forumpostattachments)
+                if(res.IsSuccess)
                 {
-                    if (attachment.IsTemporary)
+                    foreach (var attachment in forumpostattachments)
                     {
-                        try
+                        if (attachment.IsTemporary)
                         {
-                            File.Delete(attachment.FullPath);
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.WriteLine(e.Message);
+                            try
+                            {
+                                File.Delete(attachment.FullPath);
+                            }
+                            catch (Exception e)
+                            {
+                                Debug.WriteLine(e.Message);
+                            }
                         }
                     }
                 }
+                forumpostattachments.Clear();
             }
 
             return res;
+        }
+
+        public static void SaveForumPostToDisk(bool is_game_status, int status_type, int status_datatype, string message, List<GHPostAttachment> forumpostattachments, bool forcesend)
+        {
+            string targetpath = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
+            if (!Directory.Exists(targetpath))
+                GHApp.CheckCreateDirectory(targetpath);
+            if (Directory.Exists(targetpath))
+            {
+                string targetfilename;
+                string targetfilepath;
+                int id = 0;
+                do
+                {
+                    targetfilename = GHConstants.ForumPostFileNamePrefix + id + GHConstants.ForumPostFileNameSuffix;
+                    targetfilepath = Path.Combine(targetpath, targetfilename);
+                    id++;
+                } while (File.Exists(targetfilepath));
+
+                try
+                {
+                    using (StreamWriter sw = File.CreateText(targetfilepath))
+                    {
+                        GHPost fp = new GHPost(0, is_game_status, status_type, status_datatype, message, forumpostattachments != null ? forumpostattachments : new List<GHPostAttachment>(), forcesend);
+                        string json = JsonConvert.SerializeObject(fp);
+                        sw.Write(json);
+                        WriteGHLog("Forum post send request written to the queue on disk: " + targetfilepath);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    WriteGHLog("Writing the forum post send request to the queue on disk using path " + targetfilepath + " failed: " + ex.Message);
+                }
+            }
         }
 
         public static async Task<SendResult> SendBonesFile(string bones_filename, int status_type, int status_datatype, bool is_from_queue)
@@ -3533,37 +3552,7 @@ namespace GnollHackX
                             if (!res.IsSuccess && !is_from_queue && !string.IsNullOrWhiteSpace(bones_filename))
                             {
                                 WriteGHLog("Bones file send request redirected to the queue on disk. Status Code: " + (int)res.StatusCode + ", Message: " + res.Message);
-                                string targetpath = Path.Combine(GHApp.GHPath, GHConstants.BonesPostQueueDirectory);
-                                if (!Directory.Exists(targetpath))
-                                    CheckCreateDirectory(targetpath);
-                                if (Directory.Exists(targetpath))
-                                {
-                                    string targetfilename;
-                                    string targetfilepath;
-                                    int id = 0;
-                                    do
-                                    {
-                                        targetfilename = GHConstants.BonesPostFileNamePrefix + id + GHConstants.BonesPostFileNameSuffix;
-                                        targetfilepath = Path.Combine(targetpath, targetfilename);
-                                        id++;
-                                    } while (File.Exists(targetfilepath));
-
-                                    try
-                                    {
-                                        using (StreamWriter sw = File.CreateText(targetfilepath))
-                                        {
-                                            GHPost fp = new GHPost(2, true, status_type, status_datatype, bones_filename, null, false);
-                                            string json = JsonConvert.SerializeObject(fp);
-                                            Debug.WriteLine(json);
-                                            sw.Write(json);
-                                        }
-                                        WriteGHLog("Bones file send request written to the queue on disk: " + targetfilepath);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        WriteGHLog("Writing the bones file send request to the queue on disk using path " + targetfilepath + " failed: " + ex.Message);
-                                    }
-                                }
+                                SaveBonesPostToDisk(status_type, status_datatype, bones_filename);
                             }
                         }
                         content1.Dispose();
@@ -3741,6 +3730,85 @@ namespace GnollHackX
                 res.Message = e.Message;
             }
             return res;
+        }
+
+        public static void SaveBonesPostToDisk(int status_type, int status_datatype, string bones_filename)
+        {
+            string targetpath = Path.Combine(GHApp.GHPath, GHConstants.BonesPostQueueDirectory);
+            if (!Directory.Exists(targetpath))
+                CheckCreateDirectory(targetpath);
+            if (Directory.Exists(targetpath))
+            {
+                string targetfilename;
+                string targetfilepath;
+                int id = 0;
+                do
+                {
+                    targetfilename = GHConstants.BonesPostFileNamePrefix + id + GHConstants.BonesPostFileNameSuffix;
+                    targetfilepath = Path.Combine(targetpath, targetfilename);
+                    id++;
+                } while (File.Exists(targetfilepath));
+
+                try
+                {
+                    using (StreamWriter sw = File.CreateText(targetfilepath))
+                    {
+                        GHPost fp = new GHPost(2, true, status_type, status_datatype, bones_filename, null, false);
+                        string json = JsonConvert.SerializeObject(fp);
+                        Debug.WriteLine(json);
+                        sw.Write(json);
+                    }
+                    WriteGHLog("Bones file send request written to the queue on disk: " + targetfilepath);
+                }
+                catch (Exception ex)
+                {
+                    WriteGHLog("Writing the bones file send request to the queue on disk using path " + targetfilepath + " failed: " + ex.Message);
+                }
+            }
+        }
+
+
+        public static string AddDiagnosticInfo(string info_str, int status_type)
+        {
+            if (info_str == null)
+                info_str = "";
+
+            string ver = GHApp.GHVersionString + " / " + VersionTracking.CurrentVersion + " / " + VersionTracking.CurrentBuild;
+            string manufacturer = DeviceInfo.Manufacturer;
+            if (manufacturer.Length > 0)
+                manufacturer = manufacturer.Substring(0, 1).ToUpper() + manufacturer.Substring(1);
+            string device_model = manufacturer + " " + DeviceInfo.Model;
+            string platform_with_version = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
+
+            ulong TotalMemInBytes = GHApp.PlatformService.GetDeviceMemoryInBytes();
+            ulong TotalMemInMB = (TotalMemInBytes / 1024) / 1024;
+            ulong FreeDiskSpaceInBytes = GHApp.PlatformService.GetDeviceFreeDiskSpaceInBytes();
+            ulong FreeDiskSpaceInGB = ((FreeDiskSpaceInBytes / 1024) / 1024) / 1024;
+            ulong TotalDiskSpaceInBytes = GHApp.PlatformService.GetDeviceTotalDiskSpaceInBytes();
+            ulong TotalDiskSpaceInGB = ((TotalDiskSpaceInBytes / 1024) / 1024) / 1024;
+
+            string totmem = TotalMemInMB + " MB";
+            string diskspace = FreeDiskSpaceInGB + " GB" + " / " + TotalDiskSpaceInGB + " GB";
+
+            string player_name = Preferences.Get("LastUsedPlayerName", "Unknown Player");
+            string info = ver + ", " + platform_with_version + ", " + device_model + ", " + totmem + ", " + diskspace;
+
+            switch (status_type)
+            {
+                case (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC:
+                    info_str = player_name + " - Panic: " + info_str + " [" + info + "]";
+                    break;
+                case (int)diagnostic_data_types.DIAGNOSTIC_DATA_IMPOSSIBLE:
+                    info_str = player_name + " - Impossible: " + info_str + " [" + info + "]";
+                    break;
+                case (int)diagnostic_data_types.DIAGNOSTIC_DATA_CRITICAL:
+                    info_str = player_name + " - Critical:\n" + info_str + "\n[" + info + "]";
+                    break;
+                default:
+                    info_str = player_name + " - Diagnostics: " + info_str + " [" + info + "]";
+                    break;
+            }
+            return info_str;
         }
 
         private static readonly object _ghlogLock = new object();
