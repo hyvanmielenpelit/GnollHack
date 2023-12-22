@@ -26,8 +26,6 @@
 	<string>GnollHack</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.soundmindgames.GnollHack</string>
-	<key>CFBundleVersion</key>
-	<string>99</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>CFBundleName</key>
@@ -35,12 +33,14 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.43</string>
+	<string>1.44</string>
 	<key>UIStatusBarHidden</key>
 	<true/>
 	<key>UIRequiresFullScreen</key>
 	<true/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CFBundleVersion</key>
+	<string>100</string>
 </dict>
 </plist>
