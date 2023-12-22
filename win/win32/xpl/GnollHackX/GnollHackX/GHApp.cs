@@ -42,6 +42,7 @@ namespace GnollHackX
             VersionTracking.Track();
             GetDependencyServices();
             PlatformService.InitializePlatform();
+            GHPath = GnollHackService.GetGnollHackPath();
 
             _batteryChargeLevel = Battery.ChargeLevel;
             _batteryChargeLevelTimeStamp = DateTime.Now;
@@ -606,7 +607,7 @@ namespace GnollHackX
         public static string SkiaVersionString { get; set; }
         public static string SkiaSharpVersionString { get; set; }
         public static string FMODVersionString { get; set; }
-        public static string GHPath { get; set; }
+        public static string GHPath { get; private set; } = ".";
         public static bool LoadBanks { get; set; }
 
         public static event BackButtonHandler BackButtonPressed;
@@ -2183,9 +2184,9 @@ namespace GnollHackX
                 if (savefiles != null && savefiles.Length > 0)
                     InformAboutIncompatibleSavedGames = true;
             }
-            catch
+            catch (Exception ex)
             {
-                /* Nothing */
+                Debug.WriteLine(ex.Message);
             }
         }
 
@@ -3078,7 +3079,7 @@ namespace GnollHackX
 
         public static void SaveXLogEntryToDisk(int status_type, int status_datatype, string xlogentry_string, List<GHPostAttachment> xlogattachments)
         {
-            string targetpath = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
+            string targetpath = Path.Combine(GHPath, GHConstants.XlogPostQueueDirectory);
             if (!Directory.Exists(targetpath))
                 CheckCreateDirectory(targetpath);
             if (Directory.Exists(targetpath))
@@ -3258,7 +3259,7 @@ namespace GnollHackX
 
         public static void SaveForumPostToDisk(bool is_game_status, int status_type, int status_datatype, string message, List<GHPostAttachment> forumpostattachments, bool forcesend)
         {
-            string targetpath = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
+            string targetpath = Path.Combine(GHPath, GHConstants.ForumPostQueueDirectory);
             if (!Directory.Exists(targetpath))
                 GHApp.CheckCreateDirectory(targetpath);
             if (Directory.Exists(targetpath))
@@ -3395,7 +3396,7 @@ namespace GnollHackX
                         List<FileStream> filestreams = new List<FileStream>();
                         List<StreamContent> contents = new List<StreamContent>();
 
-                        string full_filepath = Path.Combine(GHApp.GHPath, bones_filename);
+                        string full_filepath = Path.Combine(GHPath, bones_filename);
                         bool fileexists = File.Exists(full_filepath);
                         if (fileexists)
                         {
@@ -3462,7 +3463,7 @@ namespace GnollHackX
                                                         string filename = list[0];
                                                         if (!string.IsNullOrWhiteSpace(filename))
                                                         {
-                                                            string savepath = Path.Combine(GHApp.GHPath, filename);
+                                                            string savepath = Path.Combine(GHPath, filename);
                                                             if (!File.Exists(savepath))
                                                             {
                                                                 Debug.WriteLine("Starting writing bones byte array into file: " + savepath);
@@ -3739,7 +3740,7 @@ namespace GnollHackX
 
         public static void SaveBonesPostToDisk(int status_type, int status_datatype, string bones_filename)
         {
-            string targetpath = Path.Combine(GHApp.GHPath, GHConstants.BonesPostQueueDirectory);
+            string targetpath = Path.Combine(GHPath, GHConstants.BonesPostQueueDirectory);
             if (!Directory.Exists(targetpath))
                 CheckCreateDirectory(targetpath);
             if (Directory.Exists(targetpath))

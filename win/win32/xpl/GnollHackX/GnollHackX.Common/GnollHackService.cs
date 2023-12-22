@@ -450,7 +450,18 @@ namespace GnollHackX.Unknown
         public string GetGnollHackPath()
         {
 #if __ANDROID__
-            return Android.App.Application.Context.FilesDir.Path;
+            try
+            {
+                string path = Android.App.Application.Context.FilesDir.Path;
+                if (string.IsNullOrWhiteSpace(path))
+                    return ".";
+                else
+                    return path;
+            }
+            catch
+            {
+                return ".";
+            }
 #elif __IOS__
             try
             {

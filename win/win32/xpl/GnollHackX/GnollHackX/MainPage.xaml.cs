@@ -592,7 +592,6 @@ namespace GnollHackX
 
             string verstr = "?";
             string verid = "?";
-            string path = ".";
             string fmodverstr = "?";
             string skiaverstr = "?";
             string skiasharpverstr = "?";
@@ -606,7 +605,6 @@ namespace GnollHackX
                 vernum = GHApp.GnollHackService.GetVersionNumber();
                 vercompat = GHApp.GnollHackService.GetVersionCompatibility();
                 isdebug = GHApp.GnollHackService.IsDebug();
-                path = GHApp.GnollHackService.GetGnollHackPath();
                 fmodverstr = GHApp.FmodService.GetVersionString();
                 skiaverstr = SkiaSharpVersion.Native.ToString();
                 Assembly skiaSharpAssem = typeof(SkiaSharpVersion).Assembly;
@@ -638,7 +636,6 @@ namespace GnollHackX
             GHApp.GHVersionCompatibility = vercompat;
             GHApp.GHVersionId = verid;
             GHApp.GHDebug = isdebug;
-            GHApp.GHPath = path;
             GHApp.FMODVersionString = fmodverstr;
             GHApp.SkiaVersionString = skiaverstr;
             GHApp.SkiaSharpVersionString = skiasharpverstr;
