@@ -1611,7 +1611,7 @@ namespace GnollHackX
         public const string BonesPostFileNamePrefix = "queued_bones_post_";
         public const string BonesPostFileNameSuffix = ".txt";
         public const string BonesPostPage = "bones";
-        public const double BonesPostChance = 2.0 / 3.0;
+        public const double BonesPostBaseChance = 2.0 / 3.0;
         public const double MainScreenGeneralCounterIntervalInSeconds = 2.0;
         public const long MaxGHLogSize = 4194304;
 #if GNH_MAUI

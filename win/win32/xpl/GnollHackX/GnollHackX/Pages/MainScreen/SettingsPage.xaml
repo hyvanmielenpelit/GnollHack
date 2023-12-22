@@ -657,6 +657,15 @@
                                     HorizontalOptions="Start" />
                             <Switch x:Name="XlogReleaseAccountSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
+                        <StackLayout x:Name="ForcePostBonesStackLayout" Orientation="Horizontal" HeightRequest="40" IsVisible="False">
+                            <Label Text="Force Post Bones"
+                                    x:Name="ForcePostBonesLabel"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                            <Switch x:Name="ForcePostBonesSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </StackLayout>
 
                         <Label Text="System" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                         <StackLayout Orientation="Horizontal" HeightRequest="40">

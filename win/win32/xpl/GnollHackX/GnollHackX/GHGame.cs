@@ -1906,7 +1906,7 @@ namespace GnollHackX
                     if (GHApp.AllowBones && GHApp.PostingBonesFiles)
                     {
                         Random rnd = new Random();
-                        if (rnd.NextDouble() < GHConstants.BonesPostChance)
+                        if (GHApp.ForcePostBones || rnd.NextDouble() < GHConstants.BonesPostBaseChance)
                         {
                             GHApp.WriteGHLog("Bones Post: Chose to post the bones file (" + status_str + ") to the server for user " + GHApp.XlogUserName + ".");
                             if (GHGame.RequestDictionary.TryGetValue(this, out queue))

@@ -81,6 +81,7 @@ namespace GnollHackX
             UseSingleDumpLog = Preferences.Get("UseSingleDumpLog", GHConstants.DefaultUseSingleDumpLog);
             ReadStreamingBankToMemory = Preferences.Get("ReadStreamingBankToMemory", DefaultStreamingBankToMemory);
             CopyStreamingBankToDisk = Preferences.Get("CopyStreamingBankToDisk", GHConstants.DefaultCopyStreamingBankToDisk);
+            ForcePostBones = IsDebug && Preferences.Get("ForcePostBones", false);
             AppSwitchSaveStyle = Preferences.Get("AppSwitchSaveStyle", 0);
             XlogUserName = Preferences.Get("XlogUserName", "");
             XlogPassword = Preferences.Get("XlogPassword", "");
@@ -461,7 +462,6 @@ namespace GnollHackX
         private readonly static object _gameMuteModeLock = new object();
         private static bool _gameMuteMode = false;
         public static bool GameMuteMode { get { lock (_gameMuteModeLock) { return _gameMuteMode; } } set { UpdateSoundMuteness(value, SilentMode, SleepMuteMode); lock (_gameMuteModeLock) { _gameMuteMode = value; } } }    /* Muteness due to game state */
-        /* Game can also have mute mode */
 
         public static void UpdateSoundMuteness(bool newGameMuted, bool newSilentMode, bool newSleepMuteMode)
         {
@@ -2551,6 +2551,11 @@ namespace GnollHackX
                 return final_address;
             }
         }
+
+        private static readonly object _forcePostBonesLock = new object();
+        private static bool _forcePostBones = false;
+        public static bool ForcePostBones { get { lock (_forcePostBonesLock) { return _forcePostBones; } } set { lock (_forcePostBonesLock) { _forcePostBones = value; } } }
+
 
         private static readonly object _xlogCreditialLock = new object();
         private static string _xlogUserName = "";
