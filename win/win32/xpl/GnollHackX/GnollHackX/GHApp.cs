@@ -3199,7 +3199,7 @@ namespace GnollHackX
 
                             if(res.IsSuccess)
                             {
-                                WriteGHLog("Sent the forum post" + (is_from_queue ? " from the post queue" : "") + " successfully to the server (" + (int)res.StatusCode + ")");
+                                WriteGHLog("Forum post successfully sent" + (is_from_queue ? " from the post queue" : "") + ". (" + (int)res.StatusCode + ")");
                             }
 
                             if (!res.IsSuccess && !is_from_queue)
@@ -3427,7 +3427,7 @@ namespace GnollHackX
                                     res.StatusCode = response.StatusCode;
                                     if(res.IsSuccess)
                                     {
-                                        WriteGHLog("Sent the bones file" + (is_from_queue ? " from the post queue" : "") + " successfully to the server (" + (int)res.StatusCode + "): " + full_filepath);
+                                        WriteGHLog("Bones file successfully sent" + (is_from_queue ? " from the post queue" : "") + ". (" + (int)res.StatusCode + "): " + full_filepath);
                                         if (res.StatusCode == HttpStatusCode.OK)
                                         {
                                             // Delete sent file first on OK status code
