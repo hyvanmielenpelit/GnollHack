@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GnollHackX
 {
-    public class ForumPostAttachment
+    public class GHPostAttachment
     {
         public string FullPath { get; set; }
         public string ContentType { get; set; }
@@ -14,11 +14,11 @@ namespace GnollHackX
         public bool IsTemporary { get; set; }
 
 
-        public ForumPostAttachment()
+        public GHPostAttachment()
         {
 
         }
-        public ForumPostAttachment(string fullPath, string contentType, string description, bool isDiagnostic, int attachmentType, bool isTemporary)
+        public GHPostAttachment(string fullPath, string contentType, string description, bool isDiagnostic, int attachmentType, bool isTemporary)
         {
             FullPath = fullPath;
             ContentType = contentType;

@@ -67,8 +67,8 @@
 		<None Remove="..\GnollHackX\GnollHackX\DiscordWebHookPost.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\DiscordWebHookPostWithAttachment.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\EventArgs.cs" />
-		<None Remove="..\GnollHackX\GnollHackX\ForumPost.cs" />
-		<None Remove="..\GnollHackX\GnollHackX\ForumPostAttachment.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHPost.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHPostAttachment.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\HttpClientDownloadWithProgress.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHAnimationTimerList.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHApp.cs" />
@@ -154,8 +154,8 @@
 		<Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookPost.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookPostWithAttachment.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\EventArgs.cs" />
-		<Compile Include="..\GnollHackX\GnollHackX\ForumPost.cs" />
-		<Compile Include="..\GnollHackX\GnollHackX\ForumPostAttachment.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHPost.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHPostAttachment.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\HttpClientDownloadWithProgress.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHAnimationTimerList.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHApp.cs" />

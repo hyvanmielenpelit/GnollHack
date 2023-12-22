@@ -150,7 +150,7 @@ namespace GnollHackX
                             FileInfo fileinfo = new FileInfo(filepath);
                             if (fileinfo != null && fileinfo.Exists && (fileprefix == null || fileprefix == "" || fileinfo.Name.StartsWith(fileprefix)))
                             {
-                                ForumPost post = null;
+                                GHPost post = null;
                                 try
                                 {
                                     string json = "";
@@ -162,7 +162,7 @@ namespace GnollHackX
                                             {
                                                 json = sr.ReadToEnd();
                                             }
-                                            post = JsonConvert.DeserializeObject<ForumPost>(json);
+                                            post = JsonConvert.DeserializeObject<GHPost>(json);
                                         }
                                     }
                                 }
@@ -220,9 +220,9 @@ namespace GnollHackX
             }
         }
 
-        private readonly ConcurrentQueue<ForumPost> _postingQueue = new ConcurrentQueue<ForumPost>();
+        private readonly ConcurrentQueue<GHPost> _postingQueue = new ConcurrentQueue<GHPost>();
 
-        public void EnqueuePost(ForumPost post)
+        public void EnqueuePost(GHPost post)
         {
             _postingQueue.Enqueue(post);
             StartGeneralTimer();
@@ -249,7 +249,7 @@ namespace GnollHackX
         }
 
 
-        private List<ForumPostAttachment> _forumPostAttachments = new List<ForumPostAttachment>();
+        private List<GHPostAttachment> _forumPostAttachments = new List<GHPostAttachment>();
 
         public async void PostToForum(bool is_game_status, int status_type, int status_datatype, string status_string, bool forcesend)
         {
@@ -283,13 +283,13 @@ namespace GnollHackX
                 switch (status_datatype)
                 {
                     case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_GENERIC:
-                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "application/zip", "game data", !is_game_status, status_type, false));
+                        _forumPostAttachments.Add(new GHPostAttachment(status_string, "application/zip", "game data", !is_game_status, status_type, false));
                         break;
                     case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_TEXT:
-                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/plain", "dumplog", !is_game_status, status_type, false));
+                        _forumPostAttachments.Add(new GHPostAttachment(status_string, "text/plain", "dumplog", !is_game_status, status_type, false));
                         break;
                     case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_HTML:
-                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/html", "HTML dumplog", !is_game_status, status_type, false));
+                        _forumPostAttachments.Add(new GHPostAttachment(status_string, "text/html", "HTML dumplog", !is_game_status, status_type, false));
                         break;
                 }
                 return;
@@ -299,10 +299,10 @@ namespace GnollHackX
                 switch (status_datatype)
                 {
                     case (int)diagnostic_data_attachment_types.DIAGNOSTIC_DATA_ATTACHMENT_GENERIC:
-                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "application/zip", "diagnostic data", !is_game_status, status_type, false));
+                        _forumPostAttachments.Add(new GHPostAttachment(status_string, "application/zip", "diagnostic data", !is_game_status, status_type, false));
                         break;
                     case (int)diagnostic_data_attachment_types.DIAGNOSTIC_DATA_ATTACHMENT_FILE_DESCRIPTOR_LIST:
-                        _forumPostAttachments.Add(new ForumPostAttachment(status_string, "text/plain", "file descriptor list", !is_game_status, status_type, true));
+                        _forumPostAttachments.Add(new GHPostAttachment(status_string, "text/plain", "file descriptor list", !is_game_status, status_type, true));
                         break;
                 }
                 return;
@@ -341,7 +341,7 @@ namespace GnollHackX
                 {
                     Debug.WriteLine(e.Message);
                 }
-                _forumPostAttachments.Add(new ForumPostAttachment(temp_string, "text/plain", "diagnostic data", !is_game_status, status_type, true));
+                _forumPostAttachments.Add(new GHPostAttachment(temp_string, "text/plain", "diagnostic data", !is_game_status, status_type, true));
                 return;
             }
 
@@ -432,7 +432,7 @@ namespace GnollHackX
         }
 
 
-        private List<ForumPostAttachment> _xlogPostAttachments = new List<ForumPostAttachment>();
+        private List<GHPostAttachment> _xlogPostAttachments = new List<GHPostAttachment>();
 
         public async void PostXlogEntry(int status_type, int status_datatype, string xlogentry_string)
         {
@@ -455,13 +455,13 @@ namespace GnollHackX
                 switch (status_datatype)
                 {
                     case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_GENERIC:
-                        _xlogPostAttachments.Add(new ForumPostAttachment(xlogentry_string, "application/zip", "game data", false, status_type, false));
+                        _xlogPostAttachments.Add(new GHPostAttachment(xlogentry_string, "application/zip", "game data", false, status_type, false));
                         break;
                     case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_TEXT:
-                        _xlogPostAttachments.Add(new ForumPostAttachment(xlogentry_string, "text/plain", "dumplog", false, status_type, false));
+                        _xlogPostAttachments.Add(new GHPostAttachment(xlogentry_string, "text/plain", "dumplog", false, status_type, false));
                         break;
                     case (int)game_status_data_types.GAME_STATUS_ATTACHMENT_DUMPLOG_HTML:
-                        _xlogPostAttachments.Add(new ForumPostAttachment(xlogentry_string, "text/html", "HTML dumplog", false, status_type, false));
+                        _xlogPostAttachments.Add(new GHPostAttachment(xlogentry_string, "text/html", "HTML dumplog", false, status_type, false));
                         break;
                 }
                 return;

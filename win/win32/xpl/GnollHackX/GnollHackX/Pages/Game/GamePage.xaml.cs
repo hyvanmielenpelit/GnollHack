@@ -2273,13 +2273,13 @@ namespace GnollHackX.Pages.Game
                                 break;
                             case GHRequestType.PostDiagnosticData:
                             case GHRequestType.PostGameStatus:
-                                _mainPage.EnqueuePost(new ForumPost(0, req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
+                                _mainPage.EnqueuePost(new GHPost(0, req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
                                 break;
                             case GHRequestType.PostXlogEntry:
-                                _mainPage.EnqueuePost(new ForumPost(1, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
+                                _mainPage.EnqueuePost(new GHPost(1, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
                                 break;
                             case GHRequestType.PostBonesFile:
-                                _mainPage.EnqueuePost(new ForumPost(2, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
+                                _mainPage.EnqueuePost(new GHPost(2, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
                                 break;
                             case GHRequestType.DebugLog:
                                 DisplayDebugLog(req.RequestString, req.RequestInt, req.RequestInt2);
@@ -15852,7 +15852,7 @@ namespace GnollHackX.Pages.Game
             {
                 await GHApp.CreateCrashReport(this);
             }
-            _mainPage.EnqueuePost(new ForumPost(0, false, (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC, 0, text, null, answer));
+            _mainPage.EnqueuePost(new GHPost(0, false, (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC, 0, text, null, answer));
             //PostToForum(false, (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC, 0, text, answer);
 
             ConcurrentQueue<GHResponse> queue;

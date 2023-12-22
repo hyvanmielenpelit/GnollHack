@@ -1072,7 +1072,7 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.XlogReleaseAccount = XlogReleaseAccountSwitch.IsToggled;
             GHApp.SetXlogUserNameVerified(false, null, null);
             GHApp.XlogCredentialsIncorrect = false;
-            SendResult res = await GHApp.SendXlogFile("", 1, 0, new List<ForumPostAttachment>(), true);
+            SendResult res = await GHApp.SendXlogFile("", 1, 0, new List<GHPostAttachment>(), true);
             XlogTestButton.Text = "Test";
             if (res.IsSuccess)
             {

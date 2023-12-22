@@ -1900,7 +1900,7 @@ namespace GnollHackX
                         }
                         else
                         {
-                            Debug.WriteLine("Randomly did not post the bones file " + status_str + " to the server for user " + GHApp.XlogUserName + ".");
+                            GHApp.WriteGHLog("Random: Chose not to post the bones file " + status_str + " to the server for user " + GHApp.XlogUserName + ". Bones file retained locally.");
                         }
                     }
                     break;

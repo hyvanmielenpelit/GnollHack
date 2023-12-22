@@ -4,22 +4,22 @@ using System.Text;
 
 namespace GnollHackX
 {
-    public class ForumPost
+    public class GHPost
     {
         public int post_type;
         public bool is_game_status;
         public int status_type;
         public int status_datatype;
         public string status_string;
-        public List<ForumPostAttachment> attachments;
+        public List<GHPostAttachment> attachments;
         public bool forcesend;
 
-        public ForumPost() 
+        public GHPost() 
         {
             
         }
 
-        public ForumPost(int post_type, bool is_game_status, int status_type, int status_datatype, string status_string, List<ForumPostAttachment> attachments, bool forcesend)
+        public GHPost(int post_type, bool is_game_status, int status_type, int status_datatype, string status_string, List<GHPostAttachment> attachments, bool forcesend)
         {
             this.post_type = post_type;
             this.is_game_status = is_game_status;

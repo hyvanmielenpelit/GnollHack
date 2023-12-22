@@ -2626,7 +2626,7 @@ namespace GnollHackX
                 }
                 else
                 {
-                    SendResult res = await SendXlogFile("", 1, 0, new List<ForumPostAttachment>(), true);
+                    SendResult res = await SendXlogFile("", 1, 0, new List<GHPostAttachment>(), true);
                     if (res.IsSuccess)
                         Debug.WriteLine("XLog user name successfully verified.");
                     else
@@ -2895,7 +2895,7 @@ namespace GnollHackX
             }
         }
 
-        public static async Task<SendResult> SendXlogFile(string xlogentry_string, int status_type, int status_datatype, List<ForumPostAttachment> xlogattachments, bool is_from_queue)
+        public static async Task<SendResult> SendXlogFile(string xlogentry_string, int status_type, int status_datatype, List<GHPostAttachment> xlogattachments, bool is_from_queue)
         {
             SendResult res = new SendResult();
             try
@@ -2956,7 +2956,7 @@ namespace GnollHackX
 
                         if (xlogattachments != null)
                         {
-                            foreach (ForumPostAttachment attachment in xlogattachments)
+                            foreach (GHPostAttachment attachment in xlogattachments)
                             {
                                 string fullFilePath = attachment.FullPath;
                                 bool fileexists = File.Exists(fullFilePath);
@@ -3038,7 +3038,7 @@ namespace GnollHackX
 
                                     using (StreamWriter sw = File.CreateText(targetfilepath))
                                     {
-                                        ForumPost fp = new ForumPost(1, true, status_type, status_datatype, xlogentry_string, xlogattachments != null ? xlogattachments : new List<ForumPostAttachment>(), false);
+                                        GHPost fp = new GHPost(1, true, status_type, status_datatype, xlogentry_string, xlogattachments != null ? xlogattachments : new List<GHPostAttachment>(), false);
                                         string json = JsonConvert.SerializeObject(fp);
                                         Debug.WriteLine(json);
                                         sw.Write(json);
@@ -3088,7 +3088,7 @@ namespace GnollHackX
             }
             return res;
         }
-        public static async Task<SendResult> SendForumPost(bool is_game_status, string message, int status_type, int status_datatype, List<ForumPostAttachment> forumpostattachments, bool is_from_queue)
+        public static async Task<SendResult> SendForumPost(bool is_game_status, string message, int status_type, int status_datatype, List<GHPostAttachment> forumpostattachments, bool is_from_queue)
         {
             SendResult res = new SendResult();
             try
@@ -3105,7 +3105,7 @@ namespace GnollHackX
                         if (forumpostattachments != null && forumpostattachments.Count > 0)
                         {
                             DiscordWebHookPostWithAttachment post = new DiscordWebHookPostWithAttachment(message);
-                            foreach (ForumPostAttachment attachment in forumpostattachments)
+                            foreach (GHPostAttachment attachment in forumpostattachments)
                             {
                                 string fullFilePath = attachment.FullPath;
                                 FileInfo fileinfo = new FileInfo(fullFilePath);
@@ -3121,7 +3121,7 @@ namespace GnollHackX
                             content1.Headers.ContentDisposition = cdhv;
                             multicontent.Add(content1);
                             int aidx = 0;
-                            foreach (ForumPostAttachment attachment in forumpostattachments)
+                            foreach (GHPostAttachment attachment in forumpostattachments)
                             {
                                 string fullFilePath = attachment.FullPath;
                                 bool fileexists = File.Exists(fullFilePath);
@@ -3193,7 +3193,7 @@ namespace GnollHackX
 
                                     using (StreamWriter sw = File.CreateText(targetfilepath))
                                     {
-                                        ForumPost fp = new ForumPost(0, is_game_status, status_type, status_datatype, message, forumpostattachments != null ? forumpostattachments : new List<ForumPostAttachment>(), false);
+                                        GHPost fp = new GHPost(0, is_game_status, status_type, status_datatype, message, forumpostattachments != null ? forumpostattachments : new List<GHPostAttachment>(), false);
                                         string json = JsonConvert.SerializeObject(fp);
                                         sw.Write(json);
                                     }
@@ -3525,7 +3525,7 @@ namespace GnollHackX
 
                                     using (StreamWriter sw = File.CreateText(targetfilepath))
                                     {
-                                        ForumPost fp = new ForumPost(2, true, status_type, status_datatype, bones_filename, null, false);
+                                        GHPost fp = new GHPost(2, true, status_type, status_datatype, bones_filename, null, false);
                                         string json = JsonConvert.SerializeObject(fp);
                                         Debug.WriteLine(json);
                                         sw.Write(json);
