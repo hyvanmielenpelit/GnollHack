@@ -3773,6 +3773,30 @@ namespace GnollHackX
             }
         }
 
+        public static string AddForumPostInfo(string message)
+        {
+            if (message == null)
+                message = "";
+
+            bool isCustomXlogServerLink = !string.IsNullOrWhiteSpace(CustomXlogPostLink);
+            string username = XlogUserName;
+            if (PostingXlogEntries && !string.IsNullOrWhiteSpace(username) && XlogUserNameVerified)
+                message = message + (isCustomXlogServerLink ? " {" : " [") + username + (isCustomXlogServerLink ? "}" : "]");
+
+            string portver = VersionTracking.CurrentVersion;
+            DevicePlatform platform = DeviceInfo.Platform;
+            string platstr = platform != null ? platform.ToString() : "";
+            if (platstr == null)
+                platstr = "";
+            string platid;
+            if (platstr.Length > 0)
+                platid = platstr.Substring(0, 1).ToLower();
+            else
+                platid = "";
+
+            message = message + " [" + portver + platid + "]";
+            return message;
+        }
 
         public static string AddDiagnosticInfo(string info_str, int status_type)
         {

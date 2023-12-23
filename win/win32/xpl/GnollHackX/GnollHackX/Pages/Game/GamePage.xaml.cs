@@ -15855,7 +15855,6 @@ namespace GnollHackX.Pages.Game
                 await GHApp.CreateCrashReport(this);
             }
             _mainPage.EnqueuePost(new GHPost(0, false, (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC, 0, text, null, answer));
-            //PostToForum(false, (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC, 0, text, answer);
 
             ConcurrentQueue<GHResponse> queue;
             if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))

@@ -1865,9 +1865,13 @@ namespace GnollHackX
                     if (GHApp.PostingGameStatus)
                     {
                         if (cmd_param == (int)game_status_types.GAME_STATUS_RESULT_ATTACHMENT)
+                        {
                             GHApp.WriteGHLog("Forum Post: Attaching the file " + cmd_str + " to the next post.");
+                        }
                         else
+                        {
                             GHApp.WriteGHLog("Forum Post: Posting game progress to the server: " + status_str);
+                        }
                         if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                         {
                             queue.Enqueue(new GHRequest(this,

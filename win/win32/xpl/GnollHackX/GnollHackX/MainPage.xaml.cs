@@ -271,7 +271,7 @@ namespace GnollHackX
                         else
                         {
                             GHApp.SaveForumPostToDisk(post.is_game_status, post.status_type, post.status_datatype, 
-                                post.is_game_status ? post.status_string : GHApp.AddDiagnosticInfo(post.status_string, post.status_type), 
+                                post.is_game_status ? GHApp.AddForumPostInfo(post.status_string) : GHApp.AddDiagnosticInfo(GHApp.AddForumPostInfo(post.status_string), post.status_type), 
                                 _forumPostAttachments, post.forcesend);
                             _forumPostAttachments.Clear();
                         }
