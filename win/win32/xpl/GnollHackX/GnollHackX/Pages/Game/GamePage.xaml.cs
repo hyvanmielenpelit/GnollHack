@@ -15991,15 +15991,15 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        public bool IgnoreSave()
-        {
-            /* Saving and reloading would lead to loss of the wish, so do not save; the game attempts to do insurance before expending charge from the wand of wishing and other similar situations instead */
-            return GetLineGrid.IsVisible && _getLineStyle == (int)getline_types.GETLINE_WISHING;
-        }
+        //public bool IgnoreSave()
+        //{
+        //    /* Saving and reloading would lead to loss of the wish, so do not save; the game attempts to do insurance before expending charge from the wand of wishing and other similar situations instead */
+        //    return GetLineGrid.IsVisible && _getLineStyle == (int)getline_types.GETLINE_WISHING;
+        //}
 
         public void SaveGameAndWaitForResume()
         {
-            if (_currentGame != null && !IgnoreSave())
+            if (_currentGame != null) // && !IgnoreSave()
             {
                 ConcurrentQueue<GHResponse> queue;
                 if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))

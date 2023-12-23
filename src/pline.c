@@ -402,7 +402,7 @@ VA_DECL(const char *, line)
             goto pline_done;
     }
 
-    if (!saving && !restoring && !reseting && !check_pointing && iflags.window_inited)
+    if (!saving && !restoring && !reseting && !check_pointing && iflags.window_inited && WIN_MAP != WIN_ERR)
     {
         if (vision_full_recalc)
             vision_recalc(0);

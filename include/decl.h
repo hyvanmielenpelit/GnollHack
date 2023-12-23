@@ -216,6 +216,7 @@ E boolean restoring;
 E boolean saving;
 E boolean reseting;
 E boolean check_pointing;
+E boolean ignore_onsleep_autosave;
 E boolean ransacked;
 
 E struct gamelog_line* gamelog;

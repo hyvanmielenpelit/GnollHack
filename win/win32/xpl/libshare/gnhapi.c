@@ -337,7 +337,7 @@ LibSaveAndRestoreSavedGame(int save_style)
     if (program_state.something_worth_saving 
         && !program_state.gameover && !program_state.panicking 
         && !program_state.exiting && !program_state.freeing_dynamic_data
-        && !saving && !restoring && !reseting && !check_pointing)
+        && !saving && !restoring && !reseting && !check_pointing && !ignore_onsleep_autosave)
     {
         switch (save_style)
         {

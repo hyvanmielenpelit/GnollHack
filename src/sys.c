@@ -228,6 +228,7 @@ reset_global_variables(VOID_ARGS)
 
     saving = FALSE;
     check_pointing = FALSE;
+    ignore_onsleep_autosave = FALSE;
     restoring = FALSE;
     ransacked = FALSE;
     occupation = 0;

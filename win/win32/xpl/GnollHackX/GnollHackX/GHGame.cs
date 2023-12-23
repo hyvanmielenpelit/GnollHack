@@ -297,6 +297,7 @@ namespace GnollHackX
                 queue.Enqueue(new GHRequest(this, GHRequestType.HideLoadingScreen));
             }
         }
+
         public int ClientCallback_CreateGHWindow(int wintype, int style, int glyph, byte dataflags, IntPtr objdata_ptr, IntPtr otypdata_ptr)
         {
             obj objdata = objdata_ptr == IntPtr.Zero ? new obj() : (obj)Marshal.PtrToStructure(objdata_ptr, typeof(obj));
@@ -335,6 +336,7 @@ namespace GnollHackX
             }
             return handle;
         }
+
         public void ClientCallback_DestroyGHWindow(int winHandle)
         {
             if (winHandle < 0)
@@ -351,6 +353,7 @@ namespace GnollHackX
                 _ghWindows[winHandle] = null;
             }
         }
+
         public void ClientCallback_ClearGHWindow(int winHandle)
         {
             if (winHandle < 0)
@@ -361,6 +364,7 @@ namespace GnollHackX
                     _ghWindows[winHandle].Clear();
             }
         }
+
         public void ClientCallback_DisplayGHWindow(int winHandle, byte blocking)
         {
             if (winHandle < 0)
@@ -384,6 +388,7 @@ namespace GnollHackX
                 int res = ClientCallback_nhgetch();
             }
         }
+
         public void ClientCallback_ExitWindows(string str)
         {
             Debug.WriteLine("ClientCallback_ExitWindows");
@@ -527,6 +532,7 @@ namespace GnollHackX
                 return 0;
 
         }
+
         public int ClientCallback_nh_poskey(out int x, out int y, out int mod)
         {
             Debug.WriteLine("ClientCallback_nh_poskey");
@@ -567,8 +573,8 @@ namespace GnollHackX
             }
             else
                 return 0;
-
         }
+
         public int ClientCallback_YnFunction(int style, int attr, int color, int glyph, string title, string question, string responses, string def, string descriptions, string introline, ulong ynflags)
         {
             if(question != null)
@@ -634,7 +640,6 @@ namespace GnollHackX
             return 27;
         }
 
-
         public void ClientCallback_Cliparound(int x, int y, byte force)
         {
             if (force == 0 && (_gamePage.MapNoClipMode || _gamePage.MapLookMode || _gamePage.ZoomMiniMode)) //|| (!_gamePage.ZoomAlternateMode && _gamePage.MapNoClipMode) || (_gamePage.ZoomAlternateMode && _gamePage.MapAlternateNoClipMode) 
@@ -653,6 +658,7 @@ namespace GnollHackX
         {
             RawPrintEx(str, (int)MenuItemAttributes.None, (int)nhcolor.NO_COLOR, false);
         }
+
         public void ClientCallback_RawPrintBold(string str)
         {
             RawPrintEx(str, (int)MenuItemAttributes.Bold, (int)nhcolor.NO_COLOR, false);
@@ -717,6 +723,7 @@ namespace GnollHackX
             GHMsgHistoryItem newmsg = new GHMsgHistoryItem(str, attr, color);
             AddNewMessage(newmsg, !is_restoring);
         }
+
         public void RawPrintEx2(string str, byte[] attrs, byte[] colors, int attr, int color, bool is_restoring)
         {
             GHMsgHistoryItem newmsg = new GHMsgHistoryItem(str, attrs, colors, attr, color);
@@ -738,6 +745,7 @@ namespace GnollHackX
             //    queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, _message_history.ToArray()));
             //}
         }
+
         public void ClientCallback_PutStrEx(int win_id, string str, int attributes, int color, int append)
         {
             if (win_id < 0 || win_id >= GHConstants.MaxGHWindows || _ghWindows[win_id] == null || str == null)
@@ -752,6 +760,7 @@ namespace GnollHackX
                 _ghWindows[win_id].PutStrEx(attributes, str, append, color);
             }
         }
+
         public void ClientCallback_PutStrEx2(int win_id, string str, IntPtr attributes_ptr, IntPtr colors_ptr, int attr, int color, int append)
         {
             if (win_id < 0 || win_id >= GHConstants.MaxGHWindows || _ghWindows[win_id] == null || str == null)
@@ -788,12 +797,14 @@ namespace GnollHackX
                 _ghWindows[win_id].PutStrEx2(str, attributes_ptr != IntPtr.Zero ? attributes : null, colors_ptr != IntPtr.Zero ? colors : null, attr, color, append);
             }
         }
+
         public void ClientCallback_DelayOutput()
         {
             if (ClientCallback_UIHasInput() > 0)
                 return;
             Thread.Sleep(GHConstants.DelayOutputDurationInMilliseconds);
         }
+
         public void ClientCallback_DelayOutputMilliseconds(int milliseconds)
         {
             if (ClientCallback_UIHasInput() > 0)
@@ -821,6 +832,7 @@ namespace GnollHackX
                 }
             } while (current_counter_value < start_counter_value + (long)intervals);
         }
+
         public void ClientCallback_PreferenceUpdate(string str)
         {
             if(str == "statuslines")
@@ -828,6 +840,7 @@ namespace GnollHackX
                 _ghWindows[StatusWindowId].Clear();
             }
         }
+
         public void ClientCallback_StatusInit(int reassessment)
         {
             if (reassessment != 0)
@@ -838,6 +851,7 @@ namespace GnollHackX
                 _gamePage.StatusFields[i] = new GHStatusField();
             }
         }
+
         public void ClientCallback_StatusFinish()
         {
 

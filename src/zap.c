@@ -11570,6 +11570,7 @@ boolean is_wiz_wish, play_sound;
             play_sfx_sound(SFX_WISH_FOR_OBJECT);
         You("may wish for an object.");
     }
+    ignore_onsleep_autosave = TRUE;
 retry:
     Strcpy(promptbuf, "For what do you wish");
     if (iflags.cmdassist && tries > 0)
@@ -11599,10 +11600,14 @@ retry:
         pline1(thats_enough_tries);
         otmp = readobjnam((char *) 0, (struct obj *) 0, is_wiz_wish, (boolean*)0);
         if (!otmp)
+        {
+            ignore_onsleep_autosave = FALSE;
             return; /* for safety; should never happen */
+        }
     } else if (otmp == &nothing) {
         /* explicitly wished for "nothing", presumably attempting
            to retain wishless conduct */
+        ignore_onsleep_autosave = FALSE;
         return;
     }
 
@@ -11648,6 +11653,7 @@ retry:
                                    (const char *) 0);
         u.uprayer_timeout += rn1(100, 50) / (Role_if(PM_PRIEST) ? 2 : 1); /* the gods take notice */
     }
+    ignore_onsleep_autosave = FALSE;
 }
 
 void

@@ -78,6 +78,7 @@ STATIC_VAR struct save_procs {
 STATIC_VAR unsigned ustuck_id = 0, usteed_id = 0;
 boolean saving = FALSE;
 boolean check_pointing = FALSE;
+boolean ignore_onsleep_autosave = FALSE;
 
 int
 dosave()
