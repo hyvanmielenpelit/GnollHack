@@ -2077,6 +2077,7 @@ E boolean FDECL(monnear, (struct monst *, int, int));
 E boolean FDECL(mon_somewhat_near, (struct monst*, int, int));
 E void NDECL(dmonsfree);
 E int FDECL(mcalcmove, (struct monst *));
+E int FDECL(mexpectedmove, (struct monst*));
 E void NDECL(update_monster_timeouts);
 E void FDECL(replmon, (struct monst *, struct monst *));
 E void FDECL(relmon, (struct monst *, struct monst **));

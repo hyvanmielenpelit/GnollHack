@@ -1240,6 +1240,32 @@ struct monst *mon;
     return mmove;
 }
 
+int
+mexpectedmove(mon)
+struct monst* mon;
+{
+    int mmove = mon->data->mmove;
+
+    if (is_slow(mon))
+        mmove = (2 * mmove + 1) / 3;
+    else if (is_lightning_fast(mon))
+        mmove = (8 * mmove + 2) / 3;
+    else if (is_super_fast(mon))
+        mmove = (7 * mmove + 2) / 3;
+    else if (is_ultra_fast(mon))
+        mmove = (6 * mmove + 2) / 3;
+    else if (is_very_fast(mon))
+        mmove = (5 * mmove + 2) / 3;
+    else if (is_fast(mon))
+        mmove = (4 * mmove + 2) / 3;
+
+    if (mon == u.usteed && u.ugallop && context.mv) {
+        mmove = (int)(1.5 * (double)mmove);
+    }
+
+    return mmove;
+}
+
 /* actions that happen once per ``turn'', regardless of each
    individual monster's metabolism; some of these might need to
    be reclassified to occur more in proportion with movement rate */

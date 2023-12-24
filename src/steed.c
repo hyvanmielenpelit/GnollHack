@@ -176,7 +176,7 @@ doride(VOID_ARGS)
         if (getdir((char*)0) && isok(u.ux + u.dx, u.uy + u.dy))
         {
             update_u_facing(TRUE);
-            return (mount_steed(m_at(u.ux + u.dx, u.uy + u.dy)));
+            return (int)mount_steed(m_at(u.ux + u.dx, u.uy + u.dy));
         }
         else
         {
@@ -855,13 +855,12 @@ int reason; /* Player was thrown off etc. */
         in_steed_dismounting = TRUE;
         (void) float_down(0L, W_SADDLE);
         in_steed_dismounting = FALSE;
-        context.botl = context.botlx = TRUE;
         (void) encumber_msg();
         vision_full_recalc = 1;
-    } else
-        context.botl = context.botlx = TRUE;
+    } 
     /* polearms behave differently when not mounted */
     update_unweapon();
+    context.botl = context.botlx = TRUE;
     /*
     if (uwep && is_pole(uwep))
         unweapon = TRUE;

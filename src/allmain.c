@@ -1786,10 +1786,13 @@ boolean return_expected_value;
     int moveamt = 0;
 
     /* calculate how much time passed. */
-    if (u.usteed && u.umoved)
+    if (u.usteed && (u.umoved || return_expected_value))
     {
         /* your speed doesn't augment steed's speed */
-        moveamt = mcalcmove(u.usteed);
+        if(return_expected_value)
+            moveamt = mexpectedmove(u.usteed);
+        else
+            moveamt = mcalcmove(u.usteed);
     }
     else
     {
