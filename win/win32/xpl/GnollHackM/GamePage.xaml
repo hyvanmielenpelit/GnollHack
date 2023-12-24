@@ -196,7 +196,6 @@
                         <gnh:GHCachedImage x:Name="MenuWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15,15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
                         <controls:SwitchableCanvasView x:Name="MenuCanvas" UseGL="False" CanvasType="MenuCanvas" RevertBlackAndWhite="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" EnableTouchEvents="True" />
                     </Grid>
-
                     <Grid x:Name="MenuCloseGrid" BackgroundColor="Transparent" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
@@ -216,7 +215,6 @@
                         <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
                             <StackLayout x:Name="MenuCountLayout" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
                                 <Label x:Name="MenuCountCaption" Text="Select Count" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
-
                                 <Picker x:Name="CountPicker"
                                         VerticalOptions="Center"
                                         VerticalTextAlignment="Center"
@@ -231,7 +229,6 @@
                                         TitleColor="Gray"
                                         Title="Count"
                                         />
-
                                 <Entry x:Name="MenuCountEntry" IsVisible="False"
                                     HorizontalTextAlignment="Center"
                                     VerticalTextAlignment="Center"
@@ -246,7 +243,6 @@
                                     WidthRequest="180"
                                     Completed="MenuEntry_Completed"
                                     />
-
                                 <Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="65" />

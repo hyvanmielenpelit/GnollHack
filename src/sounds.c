@@ -2409,7 +2409,7 @@ struct monst* mtmp;
 
         chatnum++;
 
-        if (is_speaking(mtmp->data) && is_mon_talkative(mtmp))
+        if (is_mon_talkative(mtmp))
         {
             /* Who are you? */
             Strcpy(available_chat_list[chatnum].name, "\"Who are you?\"");
@@ -3074,7 +3074,6 @@ struct monst* mtmp;
 
             if (OBJ_AT(mtmp->mx, mtmp->my) && !mtmp->issummoned && !mtmp->ispartymember)
             {
-            
                 Strcpy(available_chat_list[chatnum].name, "Command to pick the items on the ground");
                 available_chat_list[chatnum].function_ptr = &do_chat_pet_pickitems;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
@@ -3090,6 +3089,46 @@ struct monst* mtmp;
                 chatnum++;
             }
 
+        }
+
+        /* Command to the steed */
+        if (mtmp == u.usteed && is_tame(mtmp) && is_peaceful(mtmp))
+        {
+            if (can_breathe(u.usteed->data))
+            {
+                int mcolor = NO_COLOR;
+                any = zeroany;
+                available_chat_list[chatnum].function_ptr = &dosteedbreathemon;
+                available_chat_list[chatnum].charnum = 'a' + chatnum;
+                available_chat_list[chatnum].stops_dialogue = TRUE;
+                if (u.usteed->mspec_used > 0)
+                {
+                    Sprintf(available_chat_list[chatnum].name, "Breath weapon cooling down (%u round%s left)", u.usteed->mspec_used, plur(u.usteed->mspec_used));
+                    mcolor = CLR_GRAY;
+                }
+                else
+                {
+                    char cooldownbuf[BUFSZ];
+                    struct attack* mattk = attacktype_fordmg(u.usteed->data, AT_BREA, AD_ANY);
+                    int typ = get_ray_adtyp(mattk->adtyp);
+                    if (typ == AD_SLEE)
+                        Sprintf(cooldownbuf, "%dd%d+%d", MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DIESIZE, MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_CONSTANT);
+                    else
+                        Sprintf(cooldownbuf, "%dd%d+%d", MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DIESIZE, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_CONSTANT);
+                    const char* steedbreathefmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ?
+                        "%s (&cool; %s after use)" : "%s (%s round cooldown after use)";
+                    Sprintf(available_chat_list[chatnum].name, steedbreathefmt, "Command the steed to use breath weapon", cooldownbuf);
+                    any.a_char = available_chat_list[chatnum].charnum;
+                }
+
+                struct extended_menu_info minfo = zeroextendedmenuinfo;
+                minfo.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
+                add_extended_menu(win, NO_GLYPH, &any,
+                    any.a_char, 0, ATR_NONE, mcolor,
+                    available_chat_list[chatnum].name, MENU_UNSELECTED, minfo);
+
+                chatnum++;
+            }
         }
 
         /* These are available also for hostile creatures */

@@ -2772,6 +2772,7 @@ E int FDECL(monster_attribute_minimum, (struct permonst*, int));
 E void NDECL(rehumanize);
 E int NDECL(dobreathe);
 E int NDECL(dosteedbreathe);
+E int FDECL(dosteedbreathemon, (struct monst*));
 E int NDECL(dospit);
 E int NDECL(doremove);
 E int NDECL(dospinweb);

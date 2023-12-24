@@ -13087,6 +13087,10 @@ namespace GnollHackX.Pages.Game
                 float topPadding = 0;
                 float maintext_x_start = 0;
                 float fontspacingpadding = 0;
+                bool wrapglyph = MenuCanvas.GHWindow != null ? MenuCanvas.GHWindow.WrapGlyph : false;
+                float glyphpadding = 0;
+                float glyphystart = scale * (float)Math.Max(0.0, MenuWindowGlyphImage.Y - MenuCanvas.Y);
+                float glyphyend = scale * (float)Math.Max(0.0, MenuWindowGlyphImage.Y + MenuWindowGlyphImage.Height - MenuCanvas.Y);
                 lock (MenuCanvas.MenuItemLock)
                 {
                     bool has_pictures = false;
@@ -13132,6 +13136,11 @@ namespace GnollHackX.Pages.Game
                             textPaint.Typeface = GHApp.GetTypefaceByName(mi.FontFamily);
                             textPaint.TextSize = mainfontsize;
                             textPaint.TextAlign = SKTextAlign.Left;
+
+                            if (MenuWindowGlyphImage.IsVisible && wrapglyph)
+                                glyphpadding = scale * (float)Math.Max(0.0, MenuCanvas.X + MenuCanvas.Width - MenuWindowGlyphImage.X);
+                            else
+                                glyphpadding = 0;
 
                             mi.DrawBounds.Top = y;
                             //if (mi.DrawBounds.Top >= canvasheight)
@@ -13290,7 +13299,7 @@ namespace GnollHackX.Pages.Game
                                 {
                                     indent_start_x += textPaint.MeasureText(indentstr);
                                 }
-                                DrawTextSplit(canvas, maintextsplit, mainrowwidths, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton, totalRowWidth, 0, 0, 0, 0);
+                                DrawTextSplit(canvas, maintextsplit, mainrowwidths, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
                                 /* Rewind and next line */
                                 x = start_x;
                                 y += textPaint.FontMetrics.Descent + fontspacingpadding;
@@ -13303,7 +13312,7 @@ namespace GnollHackX.Pages.Game
                                     textPaint.TextSize = suffixfontsize;
                                     y += fontspacingpadding;
                                     y -= textPaint.FontMetrics.Ascent;
-                                    DrawTextSplit(canvas, suffixtextsplit, suffixrowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton, totalRowWidth, 0, 0, 0, 0);
+                                    DrawTextSplit(canvas, suffixtextsplit, suffixrowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
                                     /* Rewind and next line */
                                     x = start_x;
                                     y += textPaint.FontMetrics.Descent + fontspacingpadding;
@@ -13318,7 +13327,7 @@ namespace GnollHackX.Pages.Game
                                     fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                                     y += fontspacingpadding;
                                     y -= textPaint.FontMetrics.Ascent;
-                                    DrawTextSplit(canvas, suffix2textsplit, suffix2rowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton, totalRowWidth, 0, 0, 0, 0);
+                                    DrawTextSplit(canvas, suffix2textsplit, suffix2rowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
                                     /* Rewind and next line */
                                     x = start_x;
                                     y += textPaint.FontMetrics.Descent + fontspacingpadding;

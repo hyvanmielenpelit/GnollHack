@@ -236,7 +236,8 @@ STATIC_DCL void FDECL(show_direction_keys, (winid, CHAR_P, BOOLEAN_P));
 STATIC_DCL boolean FDECL(help_dir, (CHAR_P, int, const char *));
 STATIC_DCL void FDECL(add_command_menu_items, (winid, int));
 STATIC_DCL void NDECL(check_gui_special_effect);
-STATIC_DCL int FDECL(print_monster_abilities, (winid));
+STATIC_DCL int FDECL(print_monster_abilities, (winid, int));
+STATIC_DCL int FDECL(print_steed_abilities, (winid, int));
 STATIC_DCL void FDECL(print_weapon_skill_line_core, (enum p_skills, BOOLEAN_P, int));
 STATIC_DCL void FDECL(print_weapon_skill_line, (struct obj*, BOOLEAN_P, int));
 
@@ -858,7 +859,7 @@ doability(VOID_ARGS)
             any = zeroany;
             any.a_int = abilitynum + 1;
 
-            int monabilitynum = print_monster_abilities(WIN_ERR);
+            int monabilitynum = print_monster_abilities(WIN_ERR, 0); /* Count monster abilities */
             add_extended_menu(win, MONSTER_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF, &any,
                 0, 0, ATR_NONE, NO_COLOR,
                 available_ability_list[abilitynum].name, MENU_UNSELECTED, monabilitynum > 0 ? active_menu_info() : zeroextendedmenuinfo);
@@ -1118,7 +1119,7 @@ domonsterability(VOID_ARGS)
     struct extended_create_window_info createinfo = extended_create_window_info_from_mon(&youmonst);
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_MONSTER_COMMAND_MENU, gui_glyph, createinfo);
     start_menu_ex(win, GHMENU_STYLE_MONSTER_ABILITY);
-    int abilitynum = print_monster_abilities(win);
+    int abilitynum = print_monster_abilities(win, 0);
     end_menu(win, "Monster Abilities");
 
     if (abilitynum <= 0)
@@ -1151,11 +1152,11 @@ domonsterability(VOID_ARGS)
 
 STATIC_OVL
 int
-print_monster_abilities(win)
+print_monster_abilities(win, abilitynum)
 winid win;
+int abilitynum;
 {
     anything any;
-    int abilitynum = 0;
     int glyph = 0, gui_glyph = 0;
     const char* fmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ?
         "%s (&mana; %d)" : "%s (%d mana)";
@@ -1468,49 +1469,62 @@ winid win;
             0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
             "Your Steed's Abilities", MENU_UNSELECTED, menu_heading_info());
 
-        if (can_breathe(u.usteed->data))
-        {
-            if (win != WIN_ERR)
-            {
-                struct extended_menu_info steedmenuinfo = zeroextendedmenuinfo;
-                int mcolor = NO_COLOR;
-                steedmenuinfo.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
-                any = zeroany;
-                if (u.usteed->mspec_used > 0)
-                {
-                    Sprintf(available_ability_list[abilitynum].name, "Breath weapon cooling down (%u round%s left)", u.usteed->mspec_used , plur(u.usteed->mspec_used));
-                    mcolor = CLR_GRAY;
-                }
-                else
-                {
-                    char cooldownbuf[BUFSZ];
-                    struct attack* mattk = attacktype_fordmg(u.usteed->data, AT_BREA, AD_ANY);
-                    int typ = get_ray_adtyp(mattk->adtyp);
-                    if (typ == AD_SLEE)
-                        Sprintf(cooldownbuf, "%dd%d+%d", MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DIESIZE, MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_CONSTANT);
-                    else
-                        Sprintf(cooldownbuf, "%dd%d+%d", MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DIESIZE, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_CONSTANT);
-                    const char* steedbreathefmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ?
-                        "%s (&cool; %s after use)" : "%s (%s round cooldown after use)";
-                    Sprintf(available_ability_list[abilitynum].name, steedbreathefmt, "Command steed to use breath weapon", cooldownbuf);
-                    any.a_int = abilitynum + 1;
-                    mcolor = NO_COLOR;
-                }
-
-                available_ability_list[abilitynum].function_ptr = &dosteedbreathe;
-                available_ability_list[abilitynum].target_mtmp = 0;
-
-                add_extended_menu(win, NO_GLYPH, &any,
-                    0, 0, ATR_NONE, mcolor,
-                    available_ability_list[abilitynum].name, MENU_UNSELECTED, steedmenuinfo);
-            }
-            abilitynum++;
-        }
+        abilitynum = print_steed_abilities(win, abilitynum);
     }
 
     return abilitynum;
 }
 
+STATIC_OVL
+int
+print_steed_abilities(win, abilitynum)
+winid win;
+int abilitynum;
+{
+    if (!u.usteed)
+        return 0;
+
+    anything any;
+    if (can_breathe(u.usteed->data))
+    {
+        if (win != WIN_ERR)
+        {
+            struct extended_menu_info steedmenuinfo = zeroextendedmenuinfo;
+            int mcolor = NO_COLOR;
+            steedmenuinfo.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
+            any = zeroany;
+            if (u.usteed->mspec_used > 0)
+            {
+                Sprintf(available_ability_list[abilitynum].name, "Breath weapon cooling down (%u round%s left)", u.usteed->mspec_used, plur(u.usteed->mspec_used));
+                mcolor = CLR_GRAY;
+            }
+            else
+            {
+                char cooldownbuf[BUFSZ];
+                struct attack* mattk = attacktype_fordmg(u.usteed->data, AT_BREA, AD_ANY);
+                int typ = get_ray_adtyp(mattk->adtyp);
+                if (typ == AD_SLEE)
+                    Sprintf(cooldownbuf, "%dd%d+%d", MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DIESIZE, MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_CONSTANT);
+                else
+                    Sprintf(cooldownbuf, "%dd%d+%d", MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DIESIZE, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_CONSTANT);
+                const char* steedbreathefmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ?
+                    "%s (&cool; %s after use)" : "%s (%s round cooldown after use)";
+                Sprintf(available_ability_list[abilitynum].name, steedbreathefmt, "Command the steed to use breath weapon", cooldownbuf);
+                any.a_int = abilitynum + 1;
+                mcolor = NO_COLOR;
+            }
+
+            available_ability_list[abilitynum].function_ptr = &dosteedbreathe;
+            available_ability_list[abilitynum].target_mtmp = 0;
+
+            add_extended_menu(win, NO_GLYPH, &any,
+                0, 0, ATR_NONE, mcolor,
+                available_ability_list[abilitynum].name, MENU_UNSELECTED, steedmenuinfo);
+        }
+        abilitynum++;
+    }
+    return abilitynum;
+}
 
 #undef MAXNAMELENGTH
 #undef MAXABILITYNUM
