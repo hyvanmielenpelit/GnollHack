@@ -1196,8 +1196,9 @@ register struct monst *mtmp;
 }
 
 int
-mcalcmove(mon)
+mcalcmove(mon, return_expected_value)
 struct monst *mon;
+boolean return_expected_value;
 {
     int mmove = mon->data->mmove;
     int mmove_adj;
@@ -1219,7 +1220,16 @@ struct monst *mon;
     else if (is_fast(mon))
         mmove = (4 * mmove + 2) / 3;
 
-    if (mon == u.usteed && u.ugallop && context.mv) {
+    if (return_expected_value)
+    {
+        if (mon == u.usteed && u.ugallop && context.mv)
+            return (int)(1.5 * (double)mmove);
+        else
+            return mmove;
+    }
+
+    if (mon == u.usteed && u.ugallop && context.mv) 
+    {
         /* increase movement by a factor of 1.5; also increase variance of
            movement speed (if it's naturally 24, we don't want it to always
            become 36) */
@@ -1236,32 +1246,6 @@ struct monst *mon;
     mmove -= mmove_adj;
     if (rn2(NORMAL_SPEED) < mmove_adj)
         mmove += NORMAL_SPEED;
-
-    return mmove;
-}
-
-int
-mexpectedmove(mon)
-struct monst* mon;
-{
-    int mmove = mon->data->mmove;
-
-    if (is_slow(mon))
-        mmove = (2 * mmove + 1) / 3;
-    else if (is_lightning_fast(mon))
-        mmove = (8 * mmove + 2) / 3;
-    else if (is_super_fast(mon))
-        mmove = (7 * mmove + 2) / 3;
-    else if (is_ultra_fast(mon))
-        mmove = (6 * mmove + 2) / 3;
-    else if (is_very_fast(mon))
-        mmove = (5 * mmove + 2) / 3;
-    else if (is_fast(mon))
-        mmove = (4 * mmove + 2) / 3;
-
-    if (mon == u.usteed && u.ugallop && context.mv) {
-        mmove = (int)(1.5 * (double)mmove);
-    }
 
     return mmove;
 }

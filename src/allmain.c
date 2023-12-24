@@ -166,7 +166,7 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
                            to skip dead monsters here because they will have
                            been purged at end of their previous round of moving */
                         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
-                            mtmp->movement += mcalcmove(mtmp);
+                            mtmp->movement += mcalcmove(mtmp, FALSE);
 
                         /* occasionally add another monster; since this takes
                            place after movement has been allotted, the new
@@ -1789,10 +1789,7 @@ boolean return_expected_value;
     if (u.usteed && (u.umoved || return_expected_value))
     {
         /* your speed doesn't augment steed's speed */
-        if(return_expected_value)
-            moveamt = mexpectedmove(u.usteed);
-        else
-            moveamt = mcalcmove(u.usteed);
+        moveamt = mcalcmove(u.usteed, return_expected_value);
     }
     else
     {
