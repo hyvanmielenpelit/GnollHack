@@ -1478,22 +1478,27 @@ winid win;
                 any = zeroany;
                 if (u.usteed->mspec_used > 0)
                 {
-                    Strcpy(available_ability_list[abilitynum].name, "(Breath weapon cooling down)");
+                    Sprintf(available_ability_list[abilitynum].name, "Breath weapon cooling down (%u round%s left)", u.usteed->mspec_used , plur(u.usteed->mspec_used));
                     mcolor = CLR_GRAY;
                 }
                 else
                 {
+                    char cooldownbuf[BUFSZ];
+                    struct attack* mattk = attacktype_fordmg(u.usteed->data, AT_BREA, AD_ANY);
+                    int typ = get_ray_adtyp(mattk->adtyp);
+                    if (typ == AD_SLEE)
+                        Sprintf(cooldownbuf, "%dd%d+%d", MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_CONSTANT);
+                    else
+                        Sprintf(cooldownbuf, "%dd%d+%d", MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_CONSTANT);
                     const char* steedbreathefmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ?
-                        "%s (&cool; %s)" : "%s (%s round cooldown)";
-                    Sprintf(available_ability_list[abilitynum].name, steedbreathefmt, "Command steed to use breath weapon", "1d10+4");
+                        "%s (&cool; %s after use)" : "%s (%s round cooldown after use)";
+                    Sprintf(available_ability_list[abilitynum].name, steedbreathefmt, "Command steed to use breath weapon", cooldownbuf);
                     any.a_int = abilitynum + 1;
                     mcolor = NO_COLOR;
                 }
 
                 available_ability_list[abilitynum].function_ptr = &dosteedbreathe;
                 available_ability_list[abilitynum].target_mtmp = 0;
-
-                any = zeroany;
 
                 add_extended_menu(win, NO_GLYPH, &any,
                     0, 0, ATR_NONE, mcolor,

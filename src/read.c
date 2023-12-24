@@ -789,7 +789,6 @@ boolean verbose, dopopup;
                 alter_cost(obj, 0L);
 #endif
         }
-
     }
     else if (objects[obj->otyp].oc_charged && rtype > 0)  // obj->oclass == WEAPON_CLASS)
     {

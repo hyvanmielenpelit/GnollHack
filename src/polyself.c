@@ -1650,10 +1650,10 @@ dosteedbreathe()
 
         buzz((int)(-(20 + typ - 1)), (struct obj*)0, u.usteed, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, u.ux, u.uy, u.dx, u.dy);
 
-        u.usteed->mspec_used = (5 + rn2(10));
-        if (typ == AD_SLEE && !Sleep_resistance)
-            u.usteed->mspec_used += rnd(20);
-
+        if (typ == AD_SLEE)
+            u.usteed->mspec_used += (MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_CONSTANT + d(MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DIESIZE));
+        else
+            u.usteed->mspec_used = (MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_CONSTANT + d(MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DIESIZE));
     }
     return 1;
 }
