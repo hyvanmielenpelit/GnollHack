@@ -623,7 +623,8 @@ namespace GnollHackX
                 {
                     case ghwindow_styles.GHWINDOW_STYLE_PAGER_SPEAKER:
                     case ghwindow_styles.GHWINDOW_STYLE_OUTRIP:
-                    case ghwindow_styles.GHWINDOW_STYLE_MONSTER_COMMAND_MENU:                        
+                    case ghwindow_styles.GHWINDOW_STYLE_MONSTER_COMMAND_MENU:
+                    case ghwindow_styles.GHWINDOW_STYLE_ENLIGHTENMENT_SCREEN:                        
                         return true;
                     default:
                         return false;
