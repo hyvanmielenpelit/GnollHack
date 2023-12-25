@@ -2918,7 +2918,7 @@ struct monst* mtmp;
                 chatnum++;
             }
 
-            if (mtmp->data->mlet == S_DOG && !mtmp->mstaying && mtmp->mwantstomove)
+            if (mtmp->data->mlet == S_DOG && !mtmp->mstaying && mtmp->mwantstomove && mtmp != u.usteed)
             {
                 Strcpy(available_chat_list[chatnum].name, "Command to sit down");
                 available_chat_list[chatnum].function_ptr = &do_chat_pet_sit;
@@ -2935,7 +2935,7 @@ struct monst* mtmp;
                 chatnum++;
             }
 
-            if (mtmp->data->mlet == S_DOG)
+            if (mtmp->data->mlet == S_DOG && mtmp != u.usteed)
             {
                 Strcpy(available_chat_list[chatnum].name, "Command to give paw");
                 available_chat_list[chatnum].function_ptr = &do_chat_pet_givepaw;
@@ -2950,10 +2950,9 @@ struct monst* mtmp;
                     available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
-
             }
 
-            if (!mtmp->mstaying && mtmp->mwantstomove)
+            if (!mtmp->mstaying && mtmp->mwantstomove && mtmp != u.usteed)
             {
 
                 if (is_animal(mtmp->data))
@@ -2977,8 +2976,7 @@ struct monst* mtmp;
                 chatnum++;
             }
 
-
-            if (mtmp->mstaying || !mtmp->mwantstomove)
+            if ((mtmp->mstaying || !mtmp->mwantstomove) && mtmp != u.usteed)
             {
                 if (is_animal(mtmp->data))
                     Strcpy(available_chat_list[chatnum].name, "Command to stop staying put");
@@ -3002,7 +3000,7 @@ struct monst* mtmp;
             }
 
 
-            if (!mtmp->mcomingtou)
+            if (!mtmp->mcomingtou && mtmp != u.usteed)
             {
 
                 Strcpy(available_chat_list[chatnum].name, "Command to follow you");
@@ -3020,30 +3018,12 @@ struct monst* mtmp;
                 chatnum++;
             }
 
-            if (mtmp->mcomingtou)
+            if (mtmp->mcomingtou && mtmp != u.usteed)
             {
                 Strcpy(available_chat_list[chatnum].name, "Command to stop following you");
                 available_chat_list[chatnum].function_ptr = &do_chat_pet_unfollow;
                 available_chat_list[chatnum].charnum = 'a' + chatnum;
                 available_chat_list[chatnum].stops_dialogue = TRUE;
-
-                any = zeroany;
-                any.a_char = available_chat_list[chatnum].charnum;
-
-                add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE, NO_COLOR,
-                    available_chat_list[chatnum].name, MENU_UNSELECTED);
-
-                chatnum++;
-            }
-
-
-
-            if (mtmp->minvent)
-            {
-                Strcpy(available_chat_list[chatnum].name, "Display inventory");
-                available_chat_list[chatnum].function_ptr = &do_chat_pet_display_inventory;
-                available_chat_list[chatnum].charnum = 'a' + chatnum;
 
                 any = zeroany;
                 any.a_char = available_chat_list[chatnum].charnum;
@@ -3089,43 +3069,59 @@ struct monst* mtmp;
                 chatnum++;
             }
 
-        }
-
-        /* Command to the steed */
-        if (mtmp == u.usteed && is_tame(mtmp) && is_peaceful(mtmp))
-        {
-            if (can_breathe(u.usteed->data))
+            /* Commands to the steed */
+            if (mtmp == u.usteed)
             {
-                int mcolor = NO_COLOR;
-                any = zeroany;
-                available_chat_list[chatnum].function_ptr = &dosteedbreathemon;
-                available_chat_list[chatnum].charnum = 'a' + chatnum;
-                available_chat_list[chatnum].stops_dialogue = TRUE;
-                if (u.usteed->mspec_used > 0)
+                if (can_breathe(mtmp->data))
                 {
-                    Sprintf(available_chat_list[chatnum].name, "Breath weapon cooling down (%u round%s left)", u.usteed->mspec_used, plur(u.usteed->mspec_used));
-                    mcolor = CLR_GRAY;
-                }
-                else
-                {
-                    char cooldownbuf[BUFSZ];
-                    struct attack* mattk = attacktype_fordmg(u.usteed->data, AT_BREA, AD_ANY);
-                    int typ = get_ray_adtyp(mattk->adtyp);
-                    if (typ == AD_SLEE)
-                        Sprintf(cooldownbuf, "%dd%d+%d", MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DIESIZE, MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_CONSTANT);
+                    int mcolor = NO_COLOR;
+                    any = zeroany;
+                    available_chat_list[chatnum].function_ptr = &dosteedbreathemon;
+                    available_chat_list[chatnum].charnum = 'a' + chatnum;
+                    available_chat_list[chatnum].stops_dialogue = TRUE;
+                    if (mtmp->mspec_used > 0)
+                    {
+                        Sprintf(available_chat_list[chatnum].name, "Breath weapon cooling down (%u round%s left)", mtmp->mspec_used, plur(mtmp->mspec_used));
+                        mcolor = CLR_GRAY;
+                    }
                     else
-                        Sprintf(cooldownbuf, "%dd%d+%d", MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DIESIZE, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_CONSTANT);
-                    const char* steedbreathefmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ?
-                        "%s (&cool; %s after use)" : "%s (%s round cooldown after use)";
-                    Sprintf(available_chat_list[chatnum].name, steedbreathefmt, "Command the steed to use breath weapon", cooldownbuf);
-                    any.a_char = available_chat_list[chatnum].charnum;
-                }
+                    {
+                        char cooldownbuf[BUFSZ];
+                        struct attack* mattk = attacktype_fordmg(mtmp->data, AT_BREA, AD_ANY);
+                        int typ = get_ray_adtyp(mattk->adtyp);
+                        if (typ == AD_SLEE)
+                            Sprintf(cooldownbuf, "%dd%d+%d", MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_DIESIZE, MONSTER_BREATH_WEAPON_SLEEP_COOLDOWN_CONSTANT);
+                        else
+                            Sprintf(cooldownbuf, "%dd%d+%d", MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DICE, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_DIESIZE, MONSTER_BREATH_WEAPON_NORMAL_COOLDOWN_CONSTANT);
+                        const char* steedbreathefmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ?
+                            "%s (&cool; %s after use)" : "%s (%s round cooldown after use)";
+                        Sprintf(available_chat_list[chatnum].name, steedbreathefmt, "Command the steed to use breath weapon", cooldownbuf);
+                        any.a_char = available_chat_list[chatnum].charnum;
+                    }
 
-                struct extended_menu_info minfo = zeroextendedmenuinfo;
-                minfo.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
-                add_extended_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE, mcolor,
-                    available_chat_list[chatnum].name, MENU_UNSELECTED, minfo);
+                    struct extended_menu_info minfo = zeroextendedmenuinfo;
+                    minfo.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
+                    add_extended_menu(win, NO_GLYPH, &any,
+                        any.a_char, 0, ATR_NONE, mcolor,
+                        available_chat_list[chatnum].name, MENU_UNSELECTED, minfo);
+
+                    chatnum++;
+                }
+            }
+
+            /* Last, display inventory */
+            if (mtmp->minvent)
+            {
+                Strcpy(available_chat_list[chatnum].name, "Display inventory");
+                available_chat_list[chatnum].function_ptr = &do_chat_pet_display_inventory;
+                available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+                any = zeroany;
+                any.a_char = available_chat_list[chatnum].charnum;
+
+                add_menu(win, NO_GLYPH, &any,
+                    any.a_char, 0, ATR_NONE, NO_COLOR,
+                    available_chat_list[chatnum].name, MENU_UNSELECTED);
 
                 chatnum++;
             }
