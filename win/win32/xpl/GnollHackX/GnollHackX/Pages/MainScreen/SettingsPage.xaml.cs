@@ -1125,19 +1125,23 @@ namespace GnollHackX.Pages.MainScreen
             if (res.IsSuccess)
             {
                 XlogTestButton.TextColor = GHColors.BrighterGreen;
-                await DisplayAlert("Connection Success",
-                    "Connection to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "Top Score Server was successful." +
-                    (res.HasHttpStatusCode ? " Status code: " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : ""),
-                    "OK");
+                PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
+                PopupTitleLabel.Text = "Connection Success";
+                PopupLabel.Text = "Connection to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "Top Score Server was successful." +
+                    (res.HasHttpStatusCode ? " Status code: " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : "");
+                PopupOkButton.IsEnabled = true;
+                PopupGrid.IsVisible = true;
             }
             else
             {
                 XlogTestButton.TextColor = GHColors.Red;
-                await DisplayAlert("Connection Failed",
-                    "Connection to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "Top Score Server failed." +
+                PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
+                PopupTitleLabel.Text = "Connection Failed";
+                PopupLabel.Text = "Connection to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "Top Score Server failed." +
                     (res.HasHttpStatusCode ? " Status code: " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : "") +
-                    (res.Message != null ? " Message: " + res.Message : ""),
-                    "OK");
+                    (res.Message != null ? " Message: " + res.Message : "");
+                PopupOkButton.IsEnabled = true;
+                PopupGrid.IsVisible = true;
             }
             XlogTestButton.IsEnabled = true;
         }
