@@ -91,6 +91,20 @@ namespace GnollHackX.Pages.MainScreen
             ClassicStatusBarSwitch_Toggled(null, new ToggledEventArgs(ClassicStatusBarSwitch.IsToggled));
             BonesSwitch_Toggled(null, new ToggledEventArgs(BonesSwitch.IsToggled));
             BonesListSwitch_Toggled(null, new ToggledEventArgs(BonesListSwitch.IsToggled));
+
+            if(!GHApp.RecommendedSettingsChecked)
+            {
+                GHApp.RecommendedSettingsChecked = true;
+                Preferences.Set("RecommendedSettingsChecked", true);
+                if (!GHApp.PostingXlogEntries || string.IsNullOrWhiteSpace(GHApp.XlogUserName))
+                {
+                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
+                    PopupTitleLabel.Text = "Recommended Settings";
+                    PopupLabel.Text = "It is recommended that you set up a GnollHack Account and turn on top score posting and bones sharing to enjoy the full GnollHack experience. These settings are found under the Server Posting section.";
+                    PopupOkButton.IsEnabled = true;
+                    PopupGrid.IsVisible = true;
+                }
+            }
         }
 
         private async void ContentPage_Disappearing(object sender, EventArgs e)

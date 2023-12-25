@@ -90,9 +90,12 @@ namespace GnollHackX
             XlogReleaseAccount = Preferences.Get("XlogReleaseAccount", false);
             AllowBones = Preferences.Get("AllowBones", true);
             BonesAllowedUsers = Preferences.Get("BonesAllowedUsers", "");
+            RecommendedSettingsChecked = Preferences.Get("RecommendedSettingsChecked", false);
 
             BackButtonPressed += EmptyBackButtonPressed;
         }
+
+        public static bool RecommendedSettingsChecked { get; set; }
 
         private static object _networkAccessLock = new object();
         private static NetworkAccess _networkAccessState = NetworkAccess.None;
