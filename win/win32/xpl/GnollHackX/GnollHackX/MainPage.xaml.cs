@@ -985,6 +985,8 @@ namespace GnollHackX
         private popup_style _popupStyle = popup_style.GeneralDialog;
         private async void PopupOkButton_Clicked(object sender, EventArgs e)
         {
+            PopupOkButton.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
             if(_popupStyle == popup_style.DisableAutoUpdate)
             {
                 if (PopupNoAgainCheckBox.IsChecked)
@@ -993,11 +995,10 @@ namespace GnollHackX
                     await Task.Delay(50);
                 }
 
-                PopupOkButton.IsEnabled = false;
                 await CloseApp();
-                PopupOkButton.IsEnabled = true; /* Should not come here */
             }
             PopupGrid.IsVisible = false;
+            PopupOkButton.IsEnabled = true;
         }
 
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)

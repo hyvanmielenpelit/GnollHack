@@ -75,6 +75,7 @@ namespace GnollHackX
             PostingDiagnosticData = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
             PostingXlogEntries = Preferences.Get("PostingXlogEntries", GHConstants.DefaultPosting);
             PostingBonesFiles = Preferences.Get("PostingBonesFiles", GHConstants.DefaultPosting);
+            BonesUserListIsBlack = Preferences.Get("BonesUserListIsBlack", false);
             CustomGameStatusLink = Preferences.Get("CustomGameStatusLink", "");
             CustomXlogAccountLink = Preferences.Get("CustomXlogAccountLink", "");
             CustomXlogPostLink = Preferences.Get("CustomXlogPostLink", "");
@@ -88,6 +89,7 @@ namespace GnollHackX
             XlogPassword = Preferences.Get("XlogPassword", "");
             XlogReleaseAccount = Preferences.Get("XlogReleaseAccount", false);
             AllowBones = Preferences.Get("AllowBones", true);
+            BonesAllowedUsers = Preferences.Get("BonesAllowedUsers", "");
 
             BackButtonPressed += EmptyBackButtonPressed;
         }
@@ -2439,6 +2441,10 @@ namespace GnollHackX
         private static bool _postingBonesFiles;
         public static bool PostingBonesFiles { get { lock (_postingBonesFilesLock) { return _postingBonesFiles; } } set { lock (_postingBonesFilesLock) { _postingBonesFiles = value; } } }
 
+        private static readonly object _bonesUserListIsBlackLock = new object();
+        private static bool _bonesUserListIsBlack;
+        public static bool BonesUserListIsBlack { get { lock (_bonesUserListIsBlackLock) { return _bonesUserListIsBlack; } } set { lock (_bonesUserListIsBlackLock) { _bonesUserListIsBlack = value; } } }
+
         private static readonly object _allowBonesLock = new object();
         private static bool _allowBones;
         public static bool AllowBones { get { lock (_allowBonesLock) { return _allowBones; } } set { lock (_allowBonesLock) { _allowBones = value; } } }
@@ -2557,6 +2563,9 @@ namespace GnollHackX
         private static bool _forcePostBones = false;
         public static bool ForcePostBones { get { lock (_forcePostBonesLock) { return _forcePostBones; } } set { lock (_forcePostBonesLock) { _forcePostBones = value; } } }
 
+        private static readonly object _bonesAllowedUsersLock = new object();
+        private static string _bonesAllowedUsers = "";
+        public static string BonesAllowedUsers { get { lock (_bonesAllowedUsersLock) { return _bonesAllowedUsers; } } set { lock (_bonesAllowedUsersLock) { _bonesAllowedUsers = value; } } }
 
         private static readonly object _xlogCreditialLock = new object();
         private static string _xlogUserName = "";
@@ -3330,6 +3339,14 @@ namespace GnollHackX
                         multicontent.Add(content4);
                         Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
 
+                        string convertedUsers = (BonesUserListIsBlack ? "!" : "") + BonesAllowedUsers;
+                        StringContent content7 = new StringContent(convertedUsers, Encoding.UTF8, "text/plain");
+                        ContentDispositionHeaderValue cdhv7 = new ContentDispositionHeaderValue("form-data");
+                        cdhv7.Name = "AllowedUsers";
+                        content7.Headers.ContentDisposition = cdhv7;
+                        multicontent.Add(content7);
+                        Debug.WriteLine("AllowedUsers: " + convertedUsers);
+
                         StringContent content2 = new StringContent("SendBonesFile", Encoding.UTF8, "text/plain");
                         ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
                         cdhv2.Name = "Command";
@@ -3566,6 +3583,7 @@ namespace GnollHackX
                         content3.Dispose();
                         content4.Dispose();
                         content5.Dispose();
+                        content7.Dispose();
                         contentE1.Dispose();
                         contentE2.Dispose();
                         contentE3.Dispose();
@@ -3617,6 +3635,13 @@ namespace GnollHackX
                             multicontent.Add(content4);
                             Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
 
+                            string convertedUsers = (BonesUserListIsBlack ? "!" : "") + BonesAllowedUsers;
+                            StringContent content7 = new StringContent(convertedUsers, Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhv7 = new ContentDispositionHeaderValue("form-data");
+                            cdhv7.Name = "AllowedUsers";
+                            content7.Headers.ContentDisposition = cdhv7;
+                            multicontent.Add(content7);
+                            Debug.WriteLine("AllowedUsers: " + convertedUsers);
 
                             StringContent content2 = new StringContent("ConfirmReceipt", Encoding.UTF8, "text/plain");
                             ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
@@ -3718,6 +3743,7 @@ namespace GnollHackX
                             content3.Dispose();
                             content4.Dispose();
                             content5.Dispose();
+                            content7.Dispose();
                             contentE1.Dispose();
                             contentE2.Dispose();
                             contentE3.Dispose();

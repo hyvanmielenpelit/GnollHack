@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:gnh="clr-namespace:GnollHackM" xmlns:controls="clr-namespace:GnollHackM"
+             xmlns:gnh="clr-namespace:GnollHackM" 
+             xmlns:controls="clr-namespace:GnollHackM"
              x:Class="GnollHackM.SettingsPage"
              BackgroundColor="Black"
              Appearing="ContentPage_Appearing"
@@ -580,7 +581,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="PostBonesSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                            <Switch x:Name="PostBonesSwitch" Toggled="PostBonesSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Account"
@@ -646,6 +647,28 @@
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
                             <Entry x:Name="PostXlogPasswordEntry" IsPassword="True" MaxLength="63" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="Enter password" PlaceholderColor="Gray"
+                                    TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                            <Label Text="Bones Users Black Listed" x:Name="BonesListLabel"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                            <Switch x:Name="BonesListSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="BonesListSwitch_Toggled" />
+                        </StackLayout>
+                        <StackLayout x:Name="BonesAllowedUsersStackLayout" Orientation="Horizontal" HeightRequest="40">
+                            <Label Text="Bones From"
+                                    x:Name="BonesAllowedUsersLabel" 
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" >
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="BonesAllowedUsersLabel_TapGestureRecognizer_Tapped" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                            <Entry x:Name="BonesAllowedUsersEntry" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="All users" PlaceholderColor="Gray"
                                     TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                         </StackLayout>
                         <StackLayout x:Name="XlogReleaseAccountStackLayout" Orientation="Horizontal" HeightRequest="40" IsVisible="False">
@@ -809,8 +832,27 @@
                     </Frame>
                 </Grid>
             </Grid>
+
+            <Grid x:Name="PopupGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
+              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
+                <Grid WidthRequest="600" Margin="5" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                    <Frame x:Name="PopupFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                        <StackLayout x:Name="PopupLayout" Padding="5"
+                                     HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label Text="" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
+                                       VerticalTextAlignment="Center" HorizontalOptions="Center"  />
+                            <Label Text="" x:Name="PopupLabel" FontFamily="Underwood" FontSize="16" TextColor="White"
+                                       VerticalTextAlignment="Start" HorizontalOptions="Center"  />
+                            <controls:CustomImageButton x:Name="PopupOkButton" Text="OK" FontSize="19" WidthRequest="170" Margin="0,10,0,0" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
+                                        Clicked="PopupOkButton_Clicked" />
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+            </Grid>
+
             <AbsoluteLayout x:Name="WaitLayout" IsVisible="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000">
-                <Label Text="Please Wait..." x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="30" TextColor="White"
+                <Label Text="Please Wait..." FontFamily="Immortal" FontSize="30" TextColor="White"
                                        VerticalTextAlignment="Center" HorizontalOptions="Center" AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1" AbsoluteLayout.LayoutFlags="All" />
             </AbsoluteLayout>
         </Grid>

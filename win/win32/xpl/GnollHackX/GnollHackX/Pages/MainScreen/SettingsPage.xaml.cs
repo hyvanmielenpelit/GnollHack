@@ -40,6 +40,7 @@ namespace GnollHackX.Pages.MainScreen
         private MainPage _mainPage;
         private bool _doChangeVolume = false;
         public Regex XlogUserNameValidationExpression { get; set; }
+        public Regex BonesAllowedUsersValidationExpression { get; set; }
 
         public SettingsPage(GameMenuPage gameMenuPage, MainPage mainPage)
         {
@@ -83,11 +84,13 @@ namespace GnollHackX.Pages.MainScreen
             SimpleCommandBarButton6Picker.ItemDisplayBinding = new Binding("Name");
 
             XlogUserNameValidationExpression = new Regex(@"^[A-Za-z0-9_]{1,31}$");
+            BonesAllowedUsersValidationExpression = new Regex(@"^[A-Za-z0-9_\,\*\? ]*$");
 
             SetInitialValues();
 
             ClassicStatusBarSwitch_Toggled(null, new ToggledEventArgs(ClassicStatusBarSwitch.IsToggled));
             BonesSwitch_Toggled(null, new ToggledEventArgs(BonesSwitch.IsToggled));
+            BonesListSwitch_Toggled(null, new ToggledEventArgs(BonesListSwitch.IsToggled));
         }
 
         private async void ContentPage_Disappearing(object sender, EventArgs e)
@@ -143,7 +146,9 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("PostingXlogEntries", PostXlogSwitch.IsToggled);
             GHApp.PostingBonesFiles = PostBonesSwitch.IsToggled;
             Preferences.Set("PostingBonesFiles", PostBonesSwitch.IsToggled);
-
+            GHApp.BonesUserListIsBlack = BonesListSwitch.IsToggled;
+            Preferences.Set("BonesUserListIsBlack", BonesListSwitch.IsToggled);
+            
             GHApp.CustomGameStatusLink = _customGameStatusLink;
             Preferences.Set("CustomGameStatusLink", _customGameStatusLink);
 
@@ -155,6 +160,8 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("XlogUserName", PostXlogUserNameEntry.Text);
             GHApp.XlogPassword = PostXlogPasswordEntry.Text;
             Preferences.Set("XlogPassword", PostXlogPasswordEntry.Text);
+            GHApp.BonesAllowedUsers = BonesAllowedUsersEntry.Text;
+            Preferences.Set("BonesAllowedUsers", BonesAllowedUsersEntry.Text);
             GHApp.XlogReleaseAccount = XlogReleaseAccountSwitch.IsToggled;
             Preferences.Set("XlogReleaseAccount", XlogReleaseAccountSwitch.IsToggled);
             if (GHApp.IsDebug)
@@ -438,7 +445,7 @@ namespace GnollHackX.Pages.MainScreen
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
-            bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting;
+            bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false;
             bool longermsghistory = false, xlog_release_account = false, forcepostbones = false;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             string customlink = "";
@@ -446,6 +453,7 @@ namespace GnollHackX.Pages.MainScreen
             string customxlogpostlink = "";
             string xlog_username = "";
             string xlog_password = "";
+            string bones_allowed_users = "";
 
             int[] cmdidxs = new int[6];
             for (int i = 0; i < 6; i++)
@@ -477,12 +485,14 @@ namespace GnollHackX.Pages.MainScreen
             postdiagnostics = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
             postxlog = Preferences.Get("PostingXlogEntries", GHConstants.DefaultPosting);
             postbones = Preferences.Get("PostingBonesFiles", GHConstants.DefaultPosting);
+            boneslistisblack = Preferences.Get("BonesUserListIsBlack", false);            
             customlink = Preferences.Get("CustomGameStatusLink", "");
             customxlogaccountlink = Preferences.Get("CustomXlogAccountLink", "");
             customxlogpostlink = Preferences.Get("CustomXlogPostLink", "");
             xlog_username = Preferences.Get("XlogUserName", "");
             xlog_password = Preferences.Get("XlogPassword", "");
             xlog_release_account = Preferences.Get("XlogReleaseAccount", false);
+            bones_allowed_users = Preferences.Get("BonesAllowedUsers", "");
             forcepostbones = Preferences.Get("ForcePostBones", false);
             allowbones = Preferences.Get("AllowBones", true);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
@@ -620,6 +630,7 @@ namespace GnollHackX.Pages.MainScreen
             PostDiagnosticDataSwitch.IsToggled = postdiagnostics;
             PostXlogSwitch.IsToggled = postxlog;
             PostBonesSwitch.IsToggled = postbones;
+            BonesListSwitch.IsToggled = boneslistisblack;
             _customGameStatusLink = customlink;
             CustomLinkLabel.Text = customlink == "" ? "Default" : "Custom";
             CustomLinkButton.Text = customlink == "" ? "Add" : "Edit";
@@ -634,6 +645,7 @@ namespace GnollHackX.Pages.MainScreen
 
             PostXlogUserNameEntry.Text = xlog_username;
             PostXlogPasswordEntry.Text = xlog_password;
+            BonesAllowedUsersEntry.Text = bones_allowed_users;
             XlogReleaseAccountSwitch.IsToggled = xlog_release_account;
             XlogReleaseAccountStackLayout.IsVisible = GHApp.IsDebug;
             ForcePostBonesSwitch.IsToggled = forcepostbones;
@@ -856,6 +868,8 @@ namespace GnollHackX.Pages.MainScreen
         {
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
+            PostXlogUserNameLabel.TextColor = GHColors.Black;
+            BonesAllowedUsersLabel.TextColor = GHColors.Black;
             if (PostXlogUserNameEntry.Text != null && PostXlogUserNameEntry.Text != "")
             {
                 if (!XlogUserNameValidationExpression.IsMatch(PostXlogUserNameEntry.Text))
@@ -863,6 +877,17 @@ namespace GnollHackX.Pages.MainScreen
                     PostXlogUserNameLabel.TextColor = GHColors.Red;
                     await MainScrollView.ScrollToAsync(PostXlogUserNameStackLayout.X, PostXlogUserNameStackLayout.Y, true);
                     PostXlogUserNameEntry.Focus();
+                    CloseButton.IsEnabled = true;
+                    return;
+                }
+            }
+            if (BonesAllowedUsersEntry.Text != null && BonesAllowedUsersEntry.Text != "")
+            {
+                if (!BonesAllowedUsersValidationExpression.IsMatch(BonesAllowedUsersEntry.Text))
+                {
+                    BonesAllowedUsersLabel.TextColor = GHColors.Red;
+                    await MainScrollView.ScrollToAsync(BonesAllowedUsersStackLayout.X, BonesAllowedUsersStackLayout.Y, true);
+                    BonesAllowedUsersEntry.Focus();
                     CloseButton.IsEnabled = true;
                     return;
                 }
@@ -1073,6 +1098,7 @@ namespace GnollHackX.Pages.MainScreen
         private async void XlogTestButton_Clicked(object sender, EventArgs e)
         {
             XlogTestButton.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
             XlogTestButton.TextColor = GHColors.Yellow;
             XlogTestButton.Text = "Wait";
             GHApp.XlogUserName = PostXlogUserNameEntry.Text;
@@ -1113,6 +1139,54 @@ namespace GnollHackX.Pages.MainScreen
             {
                 PostBonesLabel.TextColor = GHColors.Gray;
             }
+            PostBonesSwitch_Toggled(sender, new ToggledEventArgs(PostBonesSwitch.IsToggled));
+        }
+
+        private void BonesAllowedUsersLabel_TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
+            PopupTitleLabel.Text = BonesListSwitch.IsToggled ? "Disallowed Users for Bones" : "Allowed Users for Bones";
+            PopupLabel.Text = "Users are separated by space or comma. * is any number of any characters and ? one character of any kind.";
+            PopupOkButton.IsEnabled = true;
+            PopupGrid.IsVisible = true;
+        }
+
+        private void PopupOkButton_Clicked(object sender, EventArgs e)
+        {
+            PopupOkButton.IsEnabled = false;
+            PopupGrid.IsVisible = false;
+            GHApp.PlayButtonClickedSound();
+            PopupOkButton.IsEnabled = true;
+        }
+
+        private void BonesListSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if(e.Value)
+            {
+                BonesAllowedUsersLabel.Text = "No Bones From";
+            }
+            else
+            {
+                BonesAllowedUsersLabel.Text = "Bones From";
+            }
+        }
+
+        private void PostBonesSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            bool val = e.Value && PostBonesSwitch.IsEnabled;
+            BonesListSwitch.IsEnabled = val;
+            BonesAllowedUsersEntry.IsEnabled = val;
+            if (val)
+            {
+                BonesListLabel.TextColor = GHColors.Black;
+                BonesAllowedUsersLabel.TextColor = GHColors.Black;
+            }
+            else
+            {
+                BonesListLabel.TextColor = GHColors.Gray;
+                BonesAllowedUsersLabel.TextColor = GHColors.Gray;
+            }
+
         }
     }
 }
