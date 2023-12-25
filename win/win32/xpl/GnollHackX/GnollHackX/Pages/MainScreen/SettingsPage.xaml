@@ -567,15 +567,6 @@
                         </StackLayout>
 
                         <Label Text="Server Posting" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout x:Name="XlogReleaseAccountStackLayout" Orientation="Horizontal" HeightRequest="40" IsVisible="False">
-                            <Label Text="Use Release Account"
-                                    x:Name="XlogReleaseAccountLabel"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
-                            <Switch x:Name="XlogReleaseAccountSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Account"
                                         FontFamily="Underwood" TextColor="Black"
@@ -641,6 +632,15 @@
                                     HorizontalOptions="Start" />
                             <Entry x:Name="PostXlogPasswordEntry" IsPassword="True" MaxLength="63" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="Enter password" PlaceholderColor="Gray"
                                     TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
+                        </StackLayout>
+                        <StackLayout x:Name="XlogReleaseAccountStackLayout" Orientation="Horizontal" HeightRequest="40" IsVisible="False">
+                            <Label Text="Use Release Account"
+                                    x:Name="XlogReleaseAccountLabel"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                            <Switch x:Name="XlogReleaseAccountSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Post Top Scores"
