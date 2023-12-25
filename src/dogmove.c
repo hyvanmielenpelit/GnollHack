@@ -1179,18 +1179,13 @@ struct edog *edog;
     /* Non-eaters do not get hungry */
     if (is_non_eater(mtmp->data))
     {
-        edog->hungrytime = monstermoves + 500;
+        edog->hungrytime = max(edog->hungrytime, monstermoves + PET_NONEATER_NUTRITION);
         return FALSE;
     }
 
-    if (monstermoves >= edog->hungrytime + 500) 
+    if (monstermoves >= edog->hungrytime + PET_WEAK_TIME) 
     {
-        if (is_non_eater(mtmp->data)) //(!carnivorous(mtmp->data) && !herbivorous(mtmp->data))
-        {
-            edog->hungrytime = monstermoves + 500;
-            /* but not too high; it might polymorph */
-        }
-        else if (!edog->mhpmax_penalty && !is_not_living(mtmp->data))
+        if (!edog->mhpmax_penalty && !is_not_living(mtmp->data))
         {
             /* starving pets are limited in healing */
             int newmhpmax = mtmp->mhpmax / 3;
@@ -1211,7 +1206,7 @@ struct edog *edog;
                 You_feel("worried about %s.", y_monnam(mtmp));
             stop_occupation();
         }
-        else if ((monstermoves >= edog->hungrytime + 750 && !is_not_living(mtmp->data))
+        else if ((monstermoves >= edog->hungrytime + PET_STARVING_TIME && !is_not_living(mtmp->data))
                    || DEADMONSTER(mtmp)) 
         {
  dog_died:
@@ -1228,12 +1223,12 @@ struct edog *edog;
             mondied(mtmp);
             return  TRUE;
         }
-        else if (context.hungry_message_displayed == FALSE && (monstermoves - edog->hungrytime + 500) % 50 == 0)
+        else if (context.hungry_message_displayed == FALSE && (monstermoves - edog->hungrytime + PET_WEAK_TIME) % 50 == 0)
         {
             context.hungry_message_displayed = TRUE;
             if (cansee(mtmp->mx, mtmp->my))
                 pline("%s is %s from hunger.", Monnam(mtmp), 
-                    monstermoves >= edog->hungrytime + 700 ? "getting more crazed" : monstermoves >= edog->hungrytime + 650 ? "crazed" : monstermoves >= edog->hungrytime + 550 ? "getting more confused" : "confused");
+                    monstermoves >= edog->hungrytime + PET_STARVING_TIME - 50 ? "getting more crazed" : monstermoves >= edog->hungrytime + PET_STARVING_TIME - 100 ? "crazed" : monstermoves >= edog->hungrytime + PET_STARVING_TIME + 50 ? "getting more confused" : "confused");
             else if (couldsee(mtmp->mx, mtmp->my))
                 beg(mtmp);
             else
@@ -1247,7 +1242,7 @@ struct edog *edog;
         {
             context.hungry_message_displayed = TRUE;
             if (cansee(mtmp->mx, mtmp->my))
-                pline("%s seems %shungry.", Monnam(mtmp), monstermoves >= edog->hungrytime + 400 ? "extremely " : monstermoves >= edog->hungrytime + 200 ? "very " : "");
+                pline("%s seems %shungry.", Monnam(mtmp), monstermoves >= edog->hungrytime + PET_EXTREMELY_HUNGRY_TIME ? "extremely " : monstermoves >= edog->hungrytime + PET_VERY_HUNGRY_TIME ? "very " : "");
             else if (couldsee(mtmp->mx, mtmp->my))
                 beg(mtmp);
             stop_occupation();
@@ -1281,7 +1276,7 @@ int udist;
      */
     if (droppables(mtmp)) 
     {
-        if ((!rn2(udist + 1) || !rn2(edog->apport)) && mtmp->mwantstodrop && !mtmp->ispartymember && !is_packmule(mtmp->data))
+        if ((!rn2(udist + 1) || !rn2(edog->apport)) && mtmp->mwantstodrop && !mtmp->ispartymember && !mtmp->isminion && !is_packmule(mtmp->data))
             if (rn2(10) < edog->apport) 
             {
                 mdrop_droppable_objs(mtmp);
@@ -1298,7 +1293,8 @@ int udist;
 #ifdef MAIL
             && obj->otyp != SCR_MAIL
 #endif
-            ) {
+            )
+        {
             int edible = dogfood(mtmp, obj);
 
             if ((edible <= CADAVER
@@ -1310,7 +1306,7 @@ int udist;
 
             carryamt = can_carry(mtmp, obj);
             if (carryamt > 0 && !obj->cursed && !is_obj_unique(obj) && !is_quest_artifact(obj) 
-                && !mtmp->issummoned && !mtmp->ispartymember && !is_packmule(mtmp->data)
+                && !mtmp->issummoned && !mtmp->ispartymember && !mtmp->isminion && !is_packmule(mtmp->data)
                 && could_reach_item(mtmp, obj->ox, obj->oy) && !onnopickup(obj->ox, obj->oy, mtmp) && !is_obj_no_pickup(obj))
             {
                 if (rn2(20) < edog->apport + 3)
@@ -1369,7 +1365,7 @@ struct monst* mtmp;
     if (EDOG(mtmp)->hungrytime > monstermoves && mtmp->mcomingtou)
         return FALSE;
 
-    return (EDOG(mtmp)->hungrytime < monstermoves + 3000); /* twice the satiated amount for the player for convenience */
+    return (EDOG(mtmp)->hungrytime < monstermoves + PET_SATIATED_NUTRITION); /* twice the satiated amount for the player for convenience */
 }
 
 
@@ -1825,10 +1821,10 @@ int after; /* this is extra fast monster movement */
     int omx, omy; /* original mtmp position */
     int appr, whappr, udist;
     int i, j, k;
-    register struct edog *edog = EDOG(mtmp);
+    register struct edog *edog = has_edog(mtmp) ? EDOG(mtmp) : 0;
     struct obj *obj = (struct obj *) 0;
     xchar foodtyp;
-    boolean has_edog, cursemsg[9], do_eat = FALSE;
+    boolean cursemsg[9], do_eat = FALSE;
     boolean better_with_displacing = FALSE;
     xchar nix, niy;      /* position mtmp is (considering) moving to */
     register int nx, ny; /* temporary coordinates */
@@ -1846,11 +1842,12 @@ int after; /* this is extra fast monster movement */
      * spend all their energy defending the player.  (They are the only
      * monsters with other structures that can be tame.)
      */
-    has_edog = !mtmp->isminion;
+
+    /* It seems that tame angels can have both structures --JG */
 
     omx = mtmp->mx;
     omy = mtmp->my;
-    if (has_edog && dog_hunger(mtmp, edog))
+    if (dog_hunger(mtmp, edog))
         return 2; /* starved */
 
     udist = distu(omx, omy);
@@ -1863,7 +1860,8 @@ int after; /* this is extra fast monster movement */
             return 1;
         }
         udist = 1;
-    } else if (!udist)
+    } 
+    else if (!udist)
         /* maybe we tamed him while being swallowed --jgm */
         return 0;
 
@@ -1873,7 +1871,7 @@ int after; /* this is extra fast monster movement */
     cursedobj[0] = 0;
     info[0] = 0;         /* ditto */
 
-    if (has_edog)
+    if (has_edog(mtmp))
     {
         if (edog->chastised > 0)
         {
@@ -1886,11 +1884,11 @@ int after; /* this is extra fast monster movement */
             goto newdogpos; /* eating something */
 
         whappr = (monstermoves - edog->whistletime < 5);
-    } else
+    }
+    else
         whappr = 0;
 
-    appr = dog_goal(mtmp, has_edog ? edog : (struct edog *) 0, after, udist,
-                    whappr);
+    appr = dog_goal(mtmp, has_edog(mtmp) ? edog : (struct edog*)0, after, udist, whappr);
     if (appr == -2)
         return 0;
 
@@ -1908,7 +1906,7 @@ int after; /* this is extra fast monster movement */
     if (is_crazed(mtmp) || (Conflict && !check_ability_resistance_success(mtmp, A_WIS, 0)))
     {
         allowflags |= (ALLOW_U  | ALLOW_TM);
-        if (!has_edog) 
+        if (mtmp->isminion)
         {
             /* Guardian angel refuses to be conflicted; rather,
              * it disappears, angrily, and sends in some nasties
@@ -1924,7 +1922,8 @@ int after; /* this is extra fast monster movement */
         You("get released!");
     }
 #endif
-    if (can_operate_objects(mtmp->data)) {
+    if (can_operate_objects(mtmp->data)) 
+    {
         allowflags |= OPENDOOR;
         if (monhaskey(mtmp, TRUE))
             allowflags |= UNLOCKDOOR;
@@ -1944,7 +1943,7 @@ int after; /* this is extra fast monster movement */
     if(!mtmp->notraveltimer)
     {
         /* Find travel path if comingtou or if is a guardian angel that cannot see you */
-        if ((mtmp->mcomingtou || (!has_edog && !couldsee(mtmp->mx, mtmp->my))) && !mtmp->notraveltimer)
+        if ((mtmp->mcomingtou || (mtmp->isminion && !couldsee(mtmp->mx, mtmp->my))) && !mtmp->notraveltimer)
         {
             xchar mon_dx = 0, mon_dy = 0;
 
@@ -1999,7 +1998,7 @@ int after; /* this is extra fast monster movement */
             continue;
 
         /* if a guardian, try to stay close by choice -- Now handled above by activating pathing --JG */
-//        if (!has_edog && !mtmp->mcomingtou && (j = distu(nx, ny)) > 16 && j >= udist)
+//        if (mtmp->isminion && !mtmp->mcomingtou && (j = distu(nx, ny)) > 16 && j >= udist)
 //            continue;
 
         boolean monatres = MON_AT(nx, ny);
@@ -2075,11 +2074,15 @@ int after; /* this is extra fast monster movement */
              */
             struct trap *trap;
 
-            if ((info[i] & ALLOW_TRAPS) && (trap = t_at(nx, ny))) {
-                if (mtmp->mleashed) {
+            if ((info[i] & ALLOW_TRAPS) && (trap = t_at(nx, ny))) 
+            {
+                if (mtmp->mleashed) 
+                {
                     if (!Deaf)
                         whimper(mtmp);
-                } else {
+                }
+                else
+                {
                     /* 1/40 chance of stepping on it anyway, in case
                      * it has to pass one to follow the player...
                      */
@@ -2091,7 +2094,7 @@ int after; /* this is extra fast monster movement */
 
         /* dog eschews cursed objects, but likes dog food */
         /* (minion isn't interested; `cursemsg' stays FALSE) */
-        if (has_edog)
+        if (!mtmp->isminion)
             for (obj = level.objects[nx][ny]; obj; obj = obj->nexthere) 
             {
                 if (obj->blessed && mon_eschews_blessed(mtmp)) /* animals and angels eschew cursed objects */
@@ -2114,7 +2117,7 @@ int after; /* this is extra fast monster movement */
                     cursemsg[i] = TRUE;
                     cursedobj[i] = obj;
                 }
-                else if ((foodtyp = dogfood(mtmp, obj)) < MANFOOD && !onnopickup(nx, ny, mtmp) && !is_obj_no_pickup(obj) && dog_wants_to_eat(mtmp) &&
+                else if ((foodtyp = dogfood(mtmp, obj)) < MANFOOD && !onnopickup(nx, ny, mtmp) && !is_obj_no_pickup(obj) && dog_wants_to_eat(mtmp) && has_edog(mtmp) &&
                     (!EDOG(mtmp)->chastised || (EDOG(mtmp)->chastised && !(obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge && costly_spot(obj->ox, obj->oy)))))
                          && (foodtyp < ACCFOOD || edog->hungrytime <= monstermoves))
                 {
@@ -2141,7 +2144,7 @@ int after; /* this is extra fast monster movement */
            away. */
         if (!mtmp->mleashed && !mtmp->mcomingtou && distmin(mtmp->mx, mtmp->my, u.ux, u.uy) > 5)
         {
-            k = has_edog ? uncursedcnt : cnt;
+            k = !mtmp->isminion ? uncursedcnt : cnt;
             for (j = 0; j < MTSZ && j < k - 1; j++)
                 if (nx == mtmp->mtrack[j].x && ny == mtmp->mtrack[j].y)
                     if (rn2(MTSZ * (k - j)))

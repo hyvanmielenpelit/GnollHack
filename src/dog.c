@@ -59,7 +59,7 @@ boolean set_tameness;
     EDOG(mtmp)->dropdist = 10000;
     EDOG(mtmp)->apport = ACURR(A_CHA);
     EDOG(mtmp)->whistletime = 0;
-    EDOG(mtmp)->hungrytime = 1000 + monstermoves;
+    EDOG(mtmp)->hungrytime = PET_INITIAL_NUTRITION + monstermoves;
     EDOG(mtmp)->ogoal.x = -1; /* force error if used before set */
     EDOG(mtmp)->ogoal.y = -1;
     EDOG(mtmp)->abuse = 0;
