@@ -567,21 +567,14 @@
                         </StackLayout>
 
                         <Label Text="Server Posting" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="Post Top Scores"
+                        <StackLayout x:Name="XlogReleaseAccountStackLayout" Orientation="Horizontal" HeightRequest="40" IsVisible="False">
+                            <Label Text="Use Release Account"
+                                    x:Name="XlogReleaseAccountLabel"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="PostXlogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="Post Bones Files" x:Name="PostBonesLabel"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
-                            <Switch x:Name="PostBonesSwitch" Toggled="PostBonesSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                            <Switch x:Name="XlogReleaseAccountSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Account"
@@ -650,7 +643,23 @@
                                     TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="Bones Users Black Listed" x:Name="BonesListLabel"
+                            <Label Text="Post Top Scores"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                            <Switch x:Name="PostXlogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                            <Label Text="Post Bones Files" x:Name="PostBonesLabel"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                            <Switch x:Name="PostBonesSwitch" Toggled="PostBonesSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                            <Label Text="  Use Blacklist" x:Name="BonesListLabel"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
@@ -658,7 +667,7 @@
                             <Switch x:Name="BonesListSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="BonesListSwitch_Toggled" />
                         </StackLayout>
                         <StackLayout x:Name="BonesAllowedUsersStackLayout" Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="Bones From"
+                            <Label Text="  Whitelist"
                                     x:Name="BonesAllowedUsersLabel" 
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -671,17 +680,8 @@
                             <Entry x:Name="BonesAllowedUsersEntry" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="All users" PlaceholderColor="Gray"
                                     TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                         </StackLayout>
-                        <StackLayout x:Name="XlogReleaseAccountStackLayout" Orientation="Horizontal" HeightRequest="40" IsVisible="False">
-                            <Label Text="Use Release Account"
-                                    x:Name="XlogReleaseAccountLabel"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
-                            <Switch x:Name="XlogReleaseAccountSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
                         <StackLayout x:Name="ForcePostBonesStackLayout" Orientation="Horizontal" HeightRequest="40" IsVisible="False">
-                            <Label Text="Force Post Bones"
+                            <Label Text="  Force Post Bones"
                                     x:Name="ForcePostBonesLabel"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"

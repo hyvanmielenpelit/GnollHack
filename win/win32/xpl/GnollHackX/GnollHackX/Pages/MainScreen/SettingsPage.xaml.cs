@@ -1163,11 +1163,11 @@ namespace GnollHackX.Pages.MainScreen
         {
             if(e.Value)
             {
-                BonesAllowedUsersLabel.Text = "No Bones From";
+                BonesAllowedUsersLabel.Text = "  Blacklist";
             }
             else
             {
-                BonesAllowedUsersLabel.Text = "Bones From";
+                BonesAllowedUsersLabel.Text = "  Whitelist";
             }
         }
 
