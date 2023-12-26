@@ -1127,8 +1127,8 @@ namespace GnollHackX.Pages.MainScreen
                 XlogTestButton.TextColor = GHColors.BrighterGreen;
                 PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
                 PopupTitleLabel.Text = "Connection Success";
-                PopupLabel.Text = "Connection to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "Top Score Server was successful." +
-                    (res.HasHttpStatusCode ? " Status code: " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : "");
+                PopupLabel.Text = "Connection to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "GnollHack Server was successful." +
+                    (res.HasHttpStatusCode && res.StatusCode != System.Net.HttpStatusCode.OK? " Status Code: " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : "");
                 PopupOkButton.IsEnabled = true;
                 PopupGrid.IsVisible = true;
             }
@@ -1137,8 +1137,8 @@ namespace GnollHackX.Pages.MainScreen
                 XlogTestButton.TextColor = GHColors.Red;
                 PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
                 PopupTitleLabel.Text = "Connection Failed";
-                PopupLabel.Text = "Connection to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "Top Score Server failed." +
-                    (res.HasHttpStatusCode ? " Status code: " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : "") +
+                PopupLabel.Text = "Connection to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "GnollHack Server failed." +
+                    (res.HasHttpStatusCode ? " Status Code: " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : "") +
                     (res.Message != null ? " Message: " + res.Message : "");
                 PopupOkButton.IsEnabled = true;
                 PopupGrid.IsVisible = true;
@@ -1182,10 +1182,12 @@ namespace GnollHackX.Pages.MainScreen
             if(e.Value)
             {
                 BonesAllowedUsersLabel.Text = "  Blacklist";
+                BonesAllowedUsersEntry.Placeholder = "No users";
             }
             else
             {
                 BonesAllowedUsersLabel.Text = "  Whitelist";
+                BonesAllowedUsersEntry.Placeholder = "All users";
             }
         }
 
