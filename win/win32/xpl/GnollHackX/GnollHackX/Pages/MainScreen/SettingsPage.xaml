@@ -677,7 +677,7 @@
                                     <TapGestureRecognizer Tapped="BonesAllowedUsersLabel_TapGestureRecognizer_Tapped" />
                                 </Label.GestureRecognizers>
                             </Label>
-                            <Entry x:Name="BonesAllowedUsersEntry" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="All users" PlaceholderColor="Gray"
+                            <Entry x:Name="BonesAllowedUsersEntry" MaxLength="2047" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="All users" PlaceholderColor="Gray"
                                     TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                         </StackLayout>
                         <StackLayout x:Name="ForcePostBonesStackLayout" Orientation="Horizontal" HeightRequest="40" IsVisible="False">

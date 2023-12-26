@@ -84,7 +84,7 @@ namespace GnollHackX.Pages.MainScreen
             SimpleCommandBarButton6Picker.ItemDisplayBinding = new Binding("Name");
 
             XlogUserNameValidationExpression = new Regex(@"^[A-Za-z0-9_]{1,31}$");
-            BonesAllowedUsersValidationExpression = new Regex(@"^[A-Za-z0-9_\,\*\? ]*$");
+            BonesAllowedUsersValidationExpression = new Regex(@"^([A-Za-z0-9_]*[ \,]+)*([A-Za-z0-9_]*)?$");
 
             SetInitialValues();
 
@@ -1164,7 +1164,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
             PopupTitleLabel.Text = BonesListSwitch.IsToggled ? "Disallowed Users for Bones" : "Allowed Users for Bones";
-            PopupLabel.Text = "Users are separated by space or comma. * is any number of any characters and ? one character of any kind.";
+            PopupLabel.Text = "User names are separated by space or comma. User names are case insensitive.";
             PopupOkButton.IsEnabled = true;
             PopupGrid.IsVisible = true;
         }

@@ -3342,7 +3342,7 @@ namespace GnollHackX
                         multicontent.Add(content4);
                         Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
 
-                        string convertedUsers = (BonesUserListIsBlack ? "!" : "") + BonesAllowedUsers;
+                        string convertedUsers = (BonesUserListIsBlack ? "!" : "") + BonesAllowedUsers.Trim();
                         StringContent content7 = new StringContent(convertedUsers, Encoding.UTF8, "text/plain");
                         ContentDispositionHeaderValue cdhv7 = new ContentDispositionHeaderValue("form-data");
                         cdhv7.Name = "AllowedUsers";
