@@ -3368,6 +3368,10 @@ boolean printdun;
         Sprintf(buf, "%sHeard distant grunting and bellowing.", PREFIX);
         putstr(win, ATR_INDENT_AT_SPACE, buf);
     }
+    if (mptr->flags.quantum_hint_shown) {
+        Sprintf(buf, "%sHad a sensation of the fabric of reality stretching back and forth.", PREFIX);
+        putstr(win, ATR_INDENT_AT_SPACE, buf);
+    }
 
     /* print out branches */
     if (mptr->br) {
