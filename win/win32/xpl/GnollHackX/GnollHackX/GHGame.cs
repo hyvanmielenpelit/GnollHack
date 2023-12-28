@@ -1940,8 +1940,8 @@ namespace GnollHackX
                     else
                     {
                         GHApp.WriteGHLog("Received a request to post the bones file " + status_str + " to the server, but "
-                            + (!GHApp.AllowBones && !GHApp.PostingBonesFiles ? "Allow Ghost Levels and Post Bones Files settings are both off" : GHApp.AllowBones ? "Allow Ghost Levels setting is off" : "Post Bones Files setting is off")
-                            + (GHApp.AllowBones ? ". Allow Ghost Levels was probably on when the game was started" : "")
+                            + (!GHApp.AllowBones && !GHApp.PostingBonesFiles ? "Allow Ghost Levels and Bones File Sharing settings are both off" : GHApp.AllowBones ? "Allow Ghost Levels setting is off" : "Bones File Sharing setting is off")
+                            + (!GHApp.AllowBones ? ". Allow Ghost Levels was probably on when the game was started" : "")
                             + ". Retaining the bones file locally.");
                     }
                     break;

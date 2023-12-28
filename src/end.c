@@ -924,9 +924,9 @@ time_t when; /* date+time at end of game */
     /* character name and basic role info */
     Sprintf(pbuf, "%s, %s %s %s %s", plname,
             aligns[1 - u.ualign.type].adj,
-            genders[flags.female].adj,
+            genders[Ufemale].adj,
             urace.adj,
-            (flags.female && urole.name.f) ? urole.name.f : urole.name.m);
+            (Ufemale && urole.name.f) ? urole.name.f : urole.name.m);
     putstr(0, ATR_SUBHEADING, pbuf);
     putstr(NHW_DUMPTXT, 0, "");
 

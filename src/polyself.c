@@ -380,7 +380,7 @@ newman(VOID_ARGS)
     play_sfx_sound(SFX_POLYMORPH_NEW_MAN);
     polyman("feel like a new %s!",
             /* use saved gender we're about to revert to, not current */
-            ((Upolyd ? u.mfemale : flags.female) && urace.individual.f)
+            (Ufemale && urace.individual.f)
                 ? urace.individual.f
                 : (urace.individual.m)
                    ? urace.individual.m

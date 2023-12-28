@@ -15,6 +15,7 @@
 #include "prop.h" /* (needed here for util/makedefs.c) */
 #include "skills.h"
 #include "general.h"
+#include "flag.h"
 #include <time.h>
 
 enum role_types
@@ -614,6 +615,8 @@ struct you {
 }; /* end of `struct you' */
 
 #define Upolyd (u.umonnum != u.umonster)
+#define Ufemale (Upolyd ? u.mfemale : flags.female) /* Your original true gender (before polymorph) */
+
 #define SUM_INIT_ATTRIBUTES 75
 
 #endif /* YOU_H */

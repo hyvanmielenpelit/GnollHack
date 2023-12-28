@@ -100,7 +100,7 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
                     PopupTitleLabel.Text = "Recommended Settings";
-                    PopupLabel.Text = "It is recommended that you set up a GnollHack Account and turn on top score posting and bones sharing to enjoy the full GnollHack experience. These settings are found under the Server Posting section.";
+                    PopupLabel.Text = "It is recommended that you set up a GnollHack Account and turn on Post Top Scores and Bones File Sharing to enjoy the full GnollHack experience. These settings are found under the Server Posting section.";
                     PopupOkButton.IsEnabled = true;
                     PopupGrid.IsVisible = true;
                 }
@@ -1163,8 +1163,8 @@ namespace GnollHackX.Pages.MainScreen
         private void BonesAllowedUsersLabel_TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
             PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
-            PopupTitleLabel.Text = BonesListSwitch.IsToggled ? "Disallowed Users for Bones" : "Allowed Users for Bones";
-            PopupLabel.Text = "User names are separated by space or comma. User names are case insensitive.";
+            PopupTitleLabel.Text = BonesListSwitch.IsToggled ? "Disallowed Users for Received Bones" : "Allowed Users for Received Bones";
+            PopupLabel.Text = (BonesListSwitch.IsToggled ? "You can define users whose bones files you do not want to receive. " : "You can define the group of users from whom you want to receive bones files. ") + "User names are separated by a space or comma. User names are not case-sensitive.";
             PopupOkButton.IsEnabled = true;
             PopupGrid.IsVisible = true;
         }

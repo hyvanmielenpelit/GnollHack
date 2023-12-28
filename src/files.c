@@ -5824,7 +5824,7 @@ const char* buffer;
                 LLOG_SEP,
                 urace.filecode,
                 LLOG_SEP,
-                genders[flags.female].filecode,
+                genders[Ufemale].filecode,
                 LLOG_SEP,
                 aligns[u.ualign.type == A_NONE ? 3 : 1 - u.ualign.type].filecode,
                 LLOG_SEP,
@@ -5910,7 +5910,7 @@ const char* str;
             char cbuf[BUFSZ];
             (void)describe_mode(mbuf);
             Sprintf(cbuf, "%.3s %.3s %.3s %.3s XL:%d", urole.filecode,
-                urace.filecode, genders[flags.female].filecode,
+                urace.filecode, genders[Ufemale].filecode,
                 aligns[1 - u.ualign.type].filecode, u.ulevel);
             long currenttime = get_current_game_duration();
             char* duration = format_duration_with_units(currenttime);
@@ -6227,7 +6227,7 @@ boolean playing; /**< True if game is running.  */
         botl_score(),
         urole.filecode,
         urace.filecode,
-        genders[flags.female].filecode,
+        genders[Ufemale].filecode,
         aligns[u.ualign.type == A_NONE ? 3 : 1 - u.ualign.type].filecode,
         encodeconduct(),
         u.uhave.amulet ? 1 : 0,

@@ -651,7 +651,7 @@
                             <Switch x:Name="PostXlogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="Post Bones Files" x:Name="PostBonesLabel"
+                            <Label Text="Bones File Sharing" x:Name="PostBonesLabel"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 

@@ -1898,7 +1898,7 @@ namefloorobj()
         char tmpbuf[BUFSZ];
 
         /* straight role name */
-        unames[0] = ((Upolyd ? u.mfemale : flags.female) && urole.name.f)
+        unames[0] = (Ufemale && urole.name.f)
                      ? urole.name.f
                      : urole.name.m;
         /* random rank title for hero's role
