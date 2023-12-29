@@ -4492,9 +4492,13 @@ boolean* return_to_inv_ptr;
 
                 Sprintf(buf, "%s%s", cmdbuf, shortcutbuf);
 
-                add_menu(win, NO_GLYPH, &any,
+                struct extended_menu_info info = zeroextendedmenuinfo;
+                if(efp->flags & CMD_MENU_AUTO_CLICK_OK)
+                    info.menu_flags |= MENU_FLAGS_AUTO_CLICK_OK;
+
+                add_extended_menu(win, NO_GLYPH, &any,
                     0, 0, ATR_NONE, NO_COLOR,
-                    buf, MENU_UNSELECTED);
+                    buf, MENU_UNSELECTED, info);
 
                 actioncount++;
             }

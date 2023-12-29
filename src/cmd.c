@@ -5993,7 +5993,7 @@ struct ext_func_tab extcmdlist[] = {
     { 'w', "wield", "wield (put in use) a weapon", dowield, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_wield_objs, "wield" },
     { M('w'), "wipe", "wipe off your face", dowipe, AUTOCOMPLETE | INCMDMENU },
     { 'x', "swap", "swap wielded and secondary weapons", doswapweapon_right_or_both, INCMDMENU },
-    { M('x'), "examine", "describe an item", doitemdescriptions, IFBURIED | AUTOCOMPLETE | SINGLE_OBJ_CMD_INFO | ALLOW_RETURN_TO_INVENTORY | ALLOW_RETURN_TO_CMD_MENU, 0, getobj_allobj, "examine" },
+    { M('x'), "examine", "describe an item", doitemdescriptions, IFBURIED | AUTOCOMPLETE | SINGLE_OBJ_CMD_INFO | ALLOW_RETURN_TO_INVENTORY | ALLOW_RETURN_TO_CMD_MENU | CMD_MENU_AUTO_CLICK_OK, 0, getobj_allobj, "examine" },
     { M(5), "unwield", "unwield a weapon", dounwield, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_unwield_objs, "unwield"},
     { '}', "you", "describe your character", docharacterstatistics, IFBURIED | AUTOCOMPLETE },
     { C('y'), "yell", "yell for your companions",

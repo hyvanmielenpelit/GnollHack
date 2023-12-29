@@ -3095,7 +3095,6 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.AllowHighlight = true;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
-                case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
                 case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
                 case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
                 case ghmenu_styles.GHMENU_STYLE_CHARACTER:
@@ -3142,6 +3141,7 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.AllowLongTap = false;
                     MenuCanvas.AllowHighlight = true;
                     break;
+                case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
                 case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
                     MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
                     MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;
