@@ -4263,7 +4263,7 @@ boolean incr;
             /* if we return, we lifesaved, and that calls update_hunger_status */
             return;
         }
-        pray_hint("recover from fainting due to hunger", "eating food", &u.uhint.got_fainting);
+        pray_hint("recover from fainting due to hunger", "eating food (including fresh edible corpses)", &u.uhint.got_fainting);
     }
 
     if (newhs != u.uhs) {
@@ -4298,7 +4298,7 @@ boolean incr;
                 && (occupation != eatfood && occupation != opentin))
                 stop_occupation();
             clear_run_and_travel();
-            pray_hint("recover from hunger", "eating food", & u.uhint.got_hungry);
+            pray_hint("recover from hunger", "eating food (including fresh edible corpses)", &u.uhint.got_hungry);
             break;
         case WEAK:
             if (Hallucination)
@@ -4319,7 +4319,7 @@ boolean incr;
                 && (occupation != eatfood && occupation != opentin))
                 stop_occupation();
             clear_run_and_travel();
-            pray_hint("recover from weakness due to hunger", "eating food", &u.uhint.got_weak);
+            pray_hint("recover from weakness due to hunger", "eating food (including fresh edible corpses)", &u.uhint.got_weak);
             break;
         }
         u.uhs = newhs;
