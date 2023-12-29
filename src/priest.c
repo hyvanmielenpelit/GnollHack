@@ -390,7 +390,7 @@ int mtype;
                 otmp->enchantment = max(otmp->enchantment, rnd(2) + 2);
             (void) mongets(priest, POT_FULL_HEALING);
 
-            m_dowear(priest, TRUE);
+            m_dowear(priest, TRUE, FALSE);
         }
         else
         {

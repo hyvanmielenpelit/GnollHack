@@ -876,7 +876,7 @@ int *fail_reason;
         obj_extract_self(item);
         (void) mpickobj(mon, item);
     }
-    m_dowear(mon, TRUE);
+    m_dowear(mon, TRUE, FALSE);
 
     /* in case statue is wielded and hero zaps stone-to-flesh at self */
     if (statue->owornmask)

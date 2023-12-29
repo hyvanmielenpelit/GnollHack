@@ -1150,7 +1150,7 @@ boolean fromspell;
             if ((otmp = which_armor(mtmp, W_ARMS)) == 0
                 || otmp->otyp != SHIELD_OF_REFLECTION) {
                 (void) mongets(mtmp, AMULET_OF_REFLECTION);
-                m_dowear(mtmp, TRUE);
+                m_dowear(mtmp, TRUE, FALSE);
             }
         }
     }

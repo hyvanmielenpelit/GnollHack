@@ -3211,7 +3211,7 @@ aligntyp alignment;
         if (is_armed(ptr))
             m_initweap(mtmp); /* equip with weapons / armor */
         m_initinv(mtmp); /* add on a few special items incl. more armor */
-        m_dowear(mtmp, TRUE);
+        m_dowear(mtmp, TRUE, FALSE);
 
         if ((saddled || (!rn2(100) && is_domestic(ptr)))
             && can_saddle(mtmp) && !which_armor(mtmp, W_SADDLE)) 

@@ -1373,9 +1373,9 @@ register struct monst *mon;
  * already worn body armor is too obviously buggy...
  */
 void
-m_dowear(mon, creation)
+m_dowear(mon, creation, commanded)
 register struct monst *mon;
-boolean creation;
+boolean creation, commanded;
 {
 #define RACE_EXCEPTION TRUE
     /* Note the restrictions here are the same as in dowear in do_wear.c
@@ -1390,8 +1390,7 @@ boolean creation;
 
     /* give mummies a chance to wear their wrappings
      * and let skeletons wear their initial armor */
-    if (mindless(mon->data)
-        && (!creation || !(mon->data->mlet == S_GREATER_UNDEAD || mon->data->mlet == S_LESSER_UNDEAD)))
+    if (mindless(mon->data) && (!creation && !commanded)) // !(mon->data->mlet == S_GREATER_UNDEAD || mon->data->mlet == S_LESSER_UNDEAD)))
         return;
 
     boolean wears_shirt = FALSE;

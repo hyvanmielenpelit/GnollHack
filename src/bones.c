@@ -570,7 +570,7 @@ make_bones:
            a wrapping unless already carrying one */
         if (mtmp->data->mlet == S_GREATER_UNDEAD && !m_carrying(mtmp, MUMMY_WRAPPING))
             (void) mongets(mtmp, MUMMY_WRAPPING);
-        m_dowear(mtmp, TRUE);
+        m_dowear(mtmp, TRUE, FALSE);
     }
     if (mtmp) {
         mtmp->m_lev = (u.ulevel ? u.ulevel : 1);

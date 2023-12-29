@@ -1341,7 +1341,7 @@ int udist;
                                 mtmp->weapon_strategy = NEED_HTH_WEAPON;
                                 (void) mon_wield_item(mtmp, FALSE, 0, 0);
                             }
-                            m_dowear(mtmp, FALSE);
+                            m_dowear(mtmp, FALSE, FALSE);
                         }
                     }
                 }

@@ -5990,7 +5990,7 @@ struct monst* mtmp;
     if (!mtmp)
         return 0;
 
-    m_dowear(mtmp, FALSE);
+    m_dowear(mtmp, FALSE, TRUE);
     return 1;
 }
 

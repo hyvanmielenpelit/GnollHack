@@ -3849,7 +3849,7 @@ spo_end_moninvent(coder)
 struct sp_coder *coder UNUSED;
 {
     if (invent_carrying_monster)
-        m_dowear(invent_carrying_monster, TRUE);
+        m_dowear(invent_carrying_monster, TRUE, FALSE);
     invent_carrying_monster = NULL;
 }
 

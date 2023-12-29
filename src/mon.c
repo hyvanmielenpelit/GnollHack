@@ -1678,7 +1678,7 @@ movemon()
 
             mtmp->worn_item_flags &= ~I_SPECIAL;
             oldworn = mtmp->worn_item_flags;
-            m_dowear(mtmp, FALSE);
+            m_dowear(mtmp, FALSE, FALSE);
             if (mtmp->worn_item_flags != oldworn || !mon_can_move(mtmp))
                 continue;
         }
@@ -2256,7 +2256,7 @@ register const char *str;
             Strcpy(debug_buf_2, "mpickstuff");
             obj_extract_self(otmp3);      /* remove from floor */
             (void) mpickobj(mtmp, otmp3); /* may merge and free otmp3 */
-            m_dowear(mtmp, FALSE);
+            m_dowear(mtmp, FALSE, FALSE);
             newsym(mtmp->mx, mtmp->my);
             return TRUE; /* pick only one object */
         }
@@ -5661,7 +5661,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
     if (!(mtmp->worn_item_flags & W_ARMG))
         mselftouch(mtmp, "No longer petrify-resistant, ", !context.mon_moving);
 
-    m_dowear(mtmp, FALSE);
+    m_dowear(mtmp, FALSE, FALSE);
 
     /* This ought to re-test can_carry() on each item in the inventory
      * rather than just checking ex-giants & boulders, but that'd be
@@ -6732,7 +6732,7 @@ boolean override_mextra, polyspot, msg;
     if (!(mtmp->worn_item_flags & W_ARMG))
         mselftouch(mtmp, "No longer petrify-resistant, ", !context.mon_moving);
 
-    m_dowear(mtmp, FALSE);
+    m_dowear(mtmp, FALSE, FALSE);
 
     /* This ought to re-test can_carry() on each item in the inventory
      * rather than just checking ex-giants & boulders, but that'd be

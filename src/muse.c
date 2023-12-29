@@ -2860,7 +2860,7 @@ struct monst *mtmp;
     case MUSE_WAN_WISHING: {
         /* wear any armor items previously wished for before
          * using another wish */
-        m_dowear(mtmp, FALSE);
+        m_dowear(mtmp, FALSE, FALSE);
         mzapmsg(mtmp, otmp, FALSE);
         otmp->charges--;
         if (!vismon && !Deaf)

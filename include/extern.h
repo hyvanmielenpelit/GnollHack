@@ -4347,7 +4347,7 @@ E void FDECL(update_mon_extrinsics, (struct monst*, BOOLEAN_P));
 E void FDECL(update_all_mon_statistics, (struct monst *, BOOLEAN_P));
 E void FDECL(update_all_mon_statistics_core, (struct monst*, BOOLEAN_P));
 E int FDECL(find_mac, (struct monst *));
-E void FDECL(m_dowear, (struct monst *, BOOLEAN_P));
+E void FDECL(m_dowear, (struct monst *, BOOLEAN_P, BOOLEAN_P));
 E struct obj *FDECL(which_armor, (struct monst *, long));
 E void FDECL(mon_break_armor, (struct monst *, BOOLEAN_P));
 E void FDECL(bypass_obj, (struct obj *));

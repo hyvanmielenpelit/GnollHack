@@ -969,7 +969,7 @@ int trap_type;
                                 (void)mongets(mon, ORCISH_SHIELD);
                             if (!m_carrying(mon, ORCISH_SHORT_SWORD))
                                 (void)mongets(mon, ORCISH_SHORT_SWORD);
-                            m_dowear(mon, TRUE);
+                            m_dowear(mon, TRUE, FALSE);
                             struct obj* box = mksobj_at(LARGE_BOX, xx, yy + dy, FALSE, FALSE);
                             struct obj* pie = mksobj(CREAM_PIE, FALSE, FALSE, FALSE);
                             add_to_container(box, pie);
@@ -999,7 +999,7 @@ int trap_type;
                             if (!m_carrying(mon, ORCISH_ARROW))
                                 m_initthrow(mon, ORCISH_ARROW, 10, 12, TRUE, -1, -1, MAT_NONE);
 
-                            m_dowear(mon, TRUE);
+                            m_dowear(mon, TRUE, FALSE);
                             mongets(mon, CREAM_PIE);
                             struct obj* box = mksobj_at(LARGE_BOX, xx, yy + dy, FALSE, FALSE);
                             struct obj* pie = mksobj(CREAM_PIE, FALSE, FALSE, FALSE);

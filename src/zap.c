@@ -751,7 +751,7 @@ struct monst* origmonst;
 
             play_sfx_sound_at_location(SFX_ACQUIRE_SLOW, mtmp->mx, mtmp->my);
             increase_mon_property_verbosely(mtmp, SLOWED, duration);
-            m_dowear(mtmp, FALSE); /* might want speed boots */
+            m_dowear(mtmp, FALSE, FALSE); /* might want speed boots */
             if (u.uswallow && (mtmp == u.ustuck) && is_whirly(mtmp->data)) {
                 You_ex(ATR_NONE, CLR_MSG_SPELL, "disrupt %s!", mon_nam(mtmp));
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A huge hole opens up...");
@@ -861,7 +861,7 @@ struct monst* origmonst;
         boolean visible_effect = increase_mon_property_verbosely(mtmp, VERY_FAST, duration);
         if (visible_effect)
             makeknown(WAN_SPEED_MONSTER);
-        m_dowear(mtmp, FALSE); /* might want speed boots */
+        m_dowear(mtmp, FALSE, FALSE); /* might want speed boots */
         if (is_tame(mtmp))
             helpful_gesture = TRUE;
         special_effect_wait_until_end(0);
