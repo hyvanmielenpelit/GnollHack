@@ -20,9 +20,6 @@ STATIC_DCL int FDECL(do_chat_rumors, (struct monst*));
 STATIC_DCL struct monst* FDECL(ask_target_monster, (struct monst*));
 
 STATIC_DCL void FDECL(hermit_talk, (struct monst*, const char**, enum ghsound_types));
-#if 0
-STATIC_DCL void FDECL(hermit_talk_with_startindex, (struct monst*, const char**, enum ghsound_types, UCHAR_P, int));
-#endif
 STATIC_DCL void FDECL(popup_talk, (struct monst*, const char**, enum ghsound_types, int, int, BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL void FDECL(popup_talk_core, (struct monst*, const char**, enum ghsound_types, UCHAR_P, int, int, int, BOOLEAN_P, BOOLEAN_P));
 
@@ -30,7 +27,6 @@ STATIC_DCL int FDECL(do_chat_hermit_dungeons, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_quests, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_gnomish_mines, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_sokoban, (struct monst*));
-//STATIC_DCL int FDECL(do_chat_hermit_sokoprizes, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_further_advice, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_castle, (struct monst*));
 STATIC_DCL int FDECL(do_chat_hermit_gehennom, (struct monst*));
@@ -2651,23 +2647,6 @@ struct monst* mtmp;
 
                 chatnum++;
             }
-
-            //if (mtmp->hermit_told_sokoban)
-            //{
-            //    Strcpy(available_chat_list[chatnum].name, "Ask about the prizes in Sokoban");
-            //    available_chat_list[chatnum].function_ptr = &do_chat_hermit_sokoprizes;
-            //    available_chat_list[chatnum].charnum = 'a' + chatnum;
-
-            //    any = zeroany;
-            //    any.a_char = available_chat_list[chatnum].charnum;
-
-            //    add_menu(win, NO_GLYPH, &any,
-            //        any.a_char, 0, ATR_NONE, NO_COLOR,
-            //        available_chat_list[chatnum].name, MENU_UNSELECTED);
-
-            //    chatnum++;
-            //}
-
         }
 
         if (is_speaking(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_ADVANCED_QUESTS) != 0)
@@ -8470,7 +8449,6 @@ struct monst* mtmp;
     return 1;
 }
 
-
 STATIC_OVL int
 do_chat_quantum_mechanic_research_support(mtmp)
 struct monst* mtmp;
@@ -8691,7 +8669,6 @@ struct monst* mtmp;
     return 1;
 }
 
-
 STATIC_OVL int
 do_chat_npc_reconciliation(mtmp)
 struct monst* mtmp;
@@ -8782,7 +8759,6 @@ struct monst* mtmp;
     //return spell_service_query(mtmp, SCR_CHARGING, 0, "recharge an item", cost, "recharging an item", NPC_LINE_WOULD_YOU_LIKE_TO_RECHARGE_AN_ITEM);
     return general_service_query_with_item_cost_adjustment_and_extra(mtmp, recharge_item_func, "charge", "recharging", cost, objects[WAN_WISHING].oc_cost, 50L, "recharging an item", QUERY_STYLE_COMPONENTS, (char*)0, NPC_LINE_WHAT_WOULD_YOU_LIKE_TO_CHARGE);
 }
-
 
 STATIC_OVL int
 do_chat_npc_blessed_recharge(mtmp)
@@ -8899,7 +8875,6 @@ struct monst* mtmp;
     return spell_teaching(mtmp, spell_otyps);
 }
 
-
 STATIC_OVL int
 do_chat_watchman_reconciliation(mtmp)
 struct monst* mtmp;
@@ -8974,7 +8949,6 @@ struct monst* mtmp;
     return 1; 
 }
 
-
 STATIC_OVL int
 do_chat_npc_identify_gems_and_stones(mtmp)
 struct monst* mtmp;
@@ -8983,7 +8957,6 @@ struct monst* mtmp;
         max(1L, (long)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
         NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_GEM_OR_STONE, NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_ONE_MORE_GEM_OR_STONE);
 }
-
 
 STATIC_OVL int
 do_chat_npc_sell_gems_and_stones(mtmp)
@@ -9007,9 +8980,6 @@ struct obj* otmp;
 {
     if (!otmp)
         return FALSE;
-
-    //if(objects[otmp->otyp].oc_name_known)
-    //    return (otmp->otyp == DILITHIUM_CRYSTAL);
 
     return maybe_gem(otmp);
 }
@@ -9117,44 +9087,8 @@ long minor_id_cost;
     res = service_identify(mtmp, minor_id_cost);
     context.npc_identify_type = 0;
 
-
-    //int cnt = 0, unided = 0;
-
-    //do
-    //{
-        //if (!cnt)
-        //{
-            //play_monster_special_dialogue_line(mtmp, spdialogue1);
-            //Sprintf(qbuf, "Would you like to identify %s? (%d %s)", an(identify_item_str), minor_id_cost, currency((long)minor_id_cost));
-        //}
-        //else
-        //{
-        //    play_monster_special_dialogue_line_with_flags(mtmp, spdialogue2, PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED);
-        //    Sprintf(qbuf, "Would you like to identify one more %s? (%d %s)", identify_item_str, minor_id_cost, currency((long)minor_id_cost));
-        //}
-
-        //switch (yn_query_mon(mtmp, qbuf)) {
-        //default:
-        //    return 0;
-        //case 'y':
-        //    if (umoney < (long)minor_id_cost) {
-        //        play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
-        //        You("don't have enough money for that!");
-        //        return 0;
-        //    }
-        //    break;
-        //}
-
-        //context.npc_identify_type = id_idx;
-        //res = identify_pack(1, FALSE);
-        //context.npc_identify_type = 0;
-
-    //} while (res > 0 && unided > 0 && umoney >= (long)minor_id_cost && cnt < 100); /* Paranoid limit */
-
     return (res > 0);
 }
-
-
 
 /* menu of unidentified objects */
 int
@@ -9244,7 +9178,6 @@ long id_cost;
     }
     return res;
 }
-
 
 STATIC_OVL int
 sell_to_npc(obj, mtmp, items_left_in_list, auto_yes)
@@ -9432,7 +9365,6 @@ merge_obj_back:
     return res;
 }
 
-
 STATIC_OVL int
 do_chat_quest_chat(mtmp)
 struct monst* mtmp;
@@ -9443,7 +9375,6 @@ struct monst* mtmp;
     (void)quest_chat(mtmp, TRUE); /* To avoid two consecutive hints */
     return 0;
 }
-
 
 double
 service_cost_charisma_adjustment(cha)
@@ -9483,7 +9414,6 @@ const char* line;
     popup_talk(mtmp, linearray, GHSOUND_NONE, ATR_NONE, NO_COLOR, TRUE, FALSE);
 }
 
-
 void
 popup_talk_line_ex(mtmp, line, attr, color, printtext, addquotes)
 struct monst* mtmp;
@@ -9516,19 +9446,6 @@ enum ghsound_types soundid;
 {
     popup_talk(mtmp, linearray, soundid, ATR_NONE, CLR_MSG_TALK_NORMAL, TRUE, TRUE);
 }
-
-#if 0
-STATIC_OVL void
-hermit_talk_with_startindex(mtmp, linearray, soundid, soundindextype, startindex)
-struct monst* mtmp;
-const char** linearray;
-enum ghsound_types soundid;
-uchar soundindextype; /* 0 = LineIndex, 1 = MsgIndex */
-int startindex;
-{
-    popup_talk_core(mtmp, linearray, soundid, soundindextype, startindex, ATR_NONE, NO_COLOR, TRUE, TRUE);
-}
-#endif
 
 STATIC_OVL void
 popup_talk(mtmp, linearray, soundid, attr, color, printtext, addquotes)
@@ -9617,7 +9534,6 @@ struct monst* mtmp;
     return 1;
 }
 
-
 STATIC_OVL int
 do_chat_quantum_special_wand(mtmp)
 struct monst* mtmp;
@@ -9673,7 +9589,6 @@ struct monst* mtmp;
     return 1;
 }
 
-
 STATIC_OVL int 
 do_chat_hermit_dungeons(mtmp)
 struct monst* mtmp;
@@ -9709,6 +9624,7 @@ struct monst* mtmp;
     mtmp->hermit_told_quests = 1;
     return 1;
 }
+
 STATIC_OVL int
 do_chat_hermit_gnomish_mines(mtmp)
 struct monst* mtmp;
@@ -9727,7 +9643,6 @@ struct monst* mtmp;
     mtmp->hermit_told_gnomish_mines = 1;
     return 1;
 }
-
 
 STATIC_OVL int
 do_chat_hermit3_gnomish_mines(mtmp)
@@ -9799,7 +9714,6 @@ struct monst* mtmp;
     return 1;
 }
 
-
 STATIC_OVL int
 do_chat_hermit_sokoban(mtmp)
 struct monst* mtmp;
@@ -9818,23 +9732,6 @@ struct monst* mtmp;
     return 1;
 }
 
-
-//STATIC_OVL int
-//do_chat_hermit_sokoprizes(mtmp)
-//struct monst* mtmp;
-//{
-//    if (!m_speak_check(mtmp))
-//        return 0;
-//
-//    const char* linearray[2] = {
-//        "They say that the wizard will gift either an amulet of reflection or a bag of holding to whomever passes the tests.",
-//        0 };
-//    hermit_talk(mtmp, linearray);
-//
-//    return 1;
-//}
-
-
 STATIC_OVL int
 do_chat_hermit_castle(mtmp)
 struct monst* mtmp;
@@ -9852,6 +9749,7 @@ struct monst* mtmp;
 
     return 1;
 }
+
 STATIC_OVL int
 do_chat_hermit_gehennom(mtmp)
 struct monst* mtmp;
@@ -9867,6 +9765,7 @@ struct monst* mtmp;
 
     return 1;
 }
+
 STATIC_OVL int
 do_chat_hermit_wizard_of_yendor(mtmp)
 struct monst* mtmp;

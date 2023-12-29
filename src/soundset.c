@@ -170,6 +170,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Ray/Camera Flash/Camera Flash Create", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Music/Dungeon/Quest-Normal", BACKGROUND_MUSIC_VOLUME * 2.0f },
+    { SOUND_BANK_MASTER, "event:/Music/Dungeon/Quest-Completed", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/Dungeon/Vlad-Tower-Normal", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/Dungeon/Modron-Normal", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/Dungeon/Bovine-Normal", BACKGROUND_MUSIC_VOLUME * 1.5f },
@@ -19650,7 +19651,7 @@ int dnum;
     else if (dnum == sokoban_dnum)
         res = GHSOUND_SOKOBAN_MUSIC_NORMAL;
     else if (dnum == quest_dnum)
-        res = GHSOUND_QUEST_MUSIC_NORMAL;
+        res = u.uevent.qcompleted ? GHSOUND_QUEST_MUSIC_COMPLETED : GHSOUND_QUEST_MUSIC_NORMAL;
     else if (dnum == gehennom_dnum)
         res = GHSOUND_GEHENNOM_MUSIC_NORMAL;
     else if (dnum == tower_dnum)
