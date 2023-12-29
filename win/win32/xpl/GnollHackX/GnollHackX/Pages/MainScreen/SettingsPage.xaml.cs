@@ -100,7 +100,7 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
                     PopupTitleLabel.Text = "Recommended Settings";
-                    PopupLabel.Text = "It is recommended that you set up a GnollHack Account and turn on Post Top Scores and Bones File Sharing to enjoy the full GnollHack experience. These settings are found under the Server Posting section.";
+                    PopupLabel.Text = "It is recommended that you set up a GnollHack Account and turn on Post Top Scores and Share Bones Files to enjoy the full GnollHack experience. These settings are found under the Server Posting section.";
                     PopupOkButton.IsEnabled = true;
                     PopupGrid.IsVisible = true;
                 }
