@@ -5521,20 +5521,26 @@ int final;
             if (context.quest_flags & QUEST_FLAGS_HEARD_OF_BOOK_OWNER)
                 putstr(en_win, ATR_INDENT_AT_DASH, "  - Rumored to be held by the Wizard of Yendor in his tower in Gehennom.");
         }
-        if (!u.uevent.invoked && (context.quest_flags & QUEST_FLAGS_HEARD_OF_AMULET_IN_SANCTUM))
+        if (!u.uevent.invoked && ((context.quest_flags & QUEST_FLAGS_HEARD_OF_AMULET_IN_SANCTUM) || u.uevent.heard_of_invocation_ritual || u.uevent.invocation_ritual_known))
         {
             Sprintf(goalbuf, "seeking to access Moloch's Sanctum%s", (context.quest_flags & QUEST_FLAGS_HEARD_OF_AMULET_IN_GEHENNOM) ? " in Gehennom" : "");
             you_are(goalbuf, "");
             if (context.quest_flags & QUEST_FLAGS_HEARD_OF_RITUAL)
             {
+                if (!u.uevent.invocation_ritual_known && context.quest_flags & QUEST_FLAGS_HEARD_ORACLE_KNOWS_MORE_DETAILS)
+                {
+                    putstr(en_win, ATR_INDENT_AT_DASH, "  - Consult the Oracle of Delphi for details of the Ritual.");
+                }
+
                 char invocbuf[BUFSZ];
                 Sprintf(invocbuf, "  - Perform the Invocation Ritual%s.", (context.quest_flags& QUEST_FLAGS_HEARD_OF_VIBRATING_SQUARE) ? " at the Vibrating Square at the bottom of Gehennom" : "");
                 putstr(en_win, ATR_INDENT_AT_DASH, invocbuf);
-                if (!u.uevent.invocation_ritual_known && (context.quest_flags & QUEST_FLAGS_HEARD_ORACLE_KNOWS_MORE_DETAILS))
+
+                if (u.uevent.invocation_ritual_known)
                 {
-                    Sprintf(invocbuf, "  - Consult the Oracle of Delphi for details of the Ritual.");
-                    putstr(en_win, ATR_INDENT_AT_DASH, invocbuf);
+                    putstr(en_win, ATR_INDENT_AT_DASH, "  - Use the Candelabrum of Invocation, Silver Bell, and Book of the Dead to enter the Sanctum.");
                 }
+
             }
         }
         else if (!u.uevent.invoked && !u.uevent.gehennom_entered && (context.quest_flags & QUEST_FLAGS_HEARD_OF_AMULET_IN_GEHENNOM))

@@ -1601,6 +1601,7 @@ E void NDECL(update_here_window);
 E void NDECL(reset_inventory);
 E struct obj* FDECL(contains_otyp, (struct obj*, int));
 E void FDECL(invocation_ritual_quest_update, (BOOLEAN_P));
+E void FDECL(play_hint_sound_with_delay, (BOOLEAN_P));
 
 /* ### ioctl.c ### */
 

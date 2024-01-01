@@ -107,8 +107,8 @@ struct u_event {
     Bitfield(role_achievement_2, 1);  /* passed the second requirement of the role achievement */
 
     Bitfield(elbereth_known, 1);      /* has learned of Elbereth */
-    Bitfield(invocation_ritual_known, 1); /* has learned of the invocation ritual */
-    Bitfield(heard_of_invocation_ritual, 1); /* has heard of the invocation ritual and the items necessary for it */
+    Bitfield(invocation_ritual_known, 1); /* has learned how to conduct the invocation ritual from the Oracle */
+    Bitfield(heard_of_invocation_ritual, 1); /* has heard of the invocation ritual and the items necessary for it; enables the quest update */
 
     unsigned short ranks_attained;
 };

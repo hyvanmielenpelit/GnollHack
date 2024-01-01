@@ -566,7 +566,7 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
             {
                 u.uevent.invocation_ritual_known = 1;
                 u.uevent.heard_of_invocation_ritual = 1;
-                context.quest_flags |= QUEST_FLAGS_HEARD_OF_BOOK | QUEST_FLAGS_HEARD_OF_BELL | QUEST_FLAGS_HEARD_OF_MENORAH | QUEST_FLAGS_HEARD_OF_VIBRATING_SQUARE;
+                context.quest_flags |= QUEST_FLAGS_HEARD_OF_BOOK | QUEST_FLAGS_HEARD_OF_BELL | QUEST_FLAGS_HEARD_OF_MENORAH | QUEST_FLAGS_HEARD_OF_VIBRATING_SQUARE | QUEST_FLAGS_HEARD_OF_AMULET_IN_SANCTUM | QUEST_FLAGS_HEARD_OF_AMULET_IN_GEHENNOM;
             }
         }
         display_nhwindow(tmpwin, TRUE);

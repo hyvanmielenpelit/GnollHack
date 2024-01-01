@@ -246,7 +246,7 @@ struct obj *obj; /* quest artifact; possibly null if carrying Amulet */
         if ((otmp = carrying(BELL_OF_OPENING)) == 0)
         {
             com_pager((struct monst*)0, 5);
-            context.quest_flags |= QUEST_FLAGS_HEARD_OF_BELL | QUEST_FLAGS_HEARD_OF_BELL_OWNER | QUEST_FLAGS_HEARD_OF_BELL | QUEST_FLAGS_HEARD_OF_BELL_OWNER_IS_NEMESIS;
+            context.quest_flags |= QUEST_FLAGS_HEARD_OF_BELL | QUEST_FLAGS_HEARD_OF_BELL_OWNER | QUEST_FLAGS_HEARD_OF_BELL_OWNER_IS_NEMESIS;
         }
     }
     Qstat(got_thanks) = TRUE;
