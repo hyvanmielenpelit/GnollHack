@@ -2285,7 +2285,9 @@ struct monst* mtmp;
     }
 
     unsigned was_ritual_known = u.uevent.invocation_ritual_known;
+    unsigned had_heard_of_ritual = u.uevent.heard_of_invocation_ritual;
     unsigned was_elbereth_known = u.uevent.elbereth_known;
+    boolean hint_shown_already = FALSE;
 
     if (!canspotmon(mtmp) && is_tame(mtmp))
         pline("You cannot see anyone but then you feel %s's familiar presence there.", noit_mon_nam(mtmp));
@@ -4321,14 +4323,15 @@ end_of_chat_here:
     if (!was_elbereth_known && u.uevent.elbereth_known)
     {
         standard_hint("You can engrave \'Elbereth\' on the ground to protect yourself against attacking monsters.", &u.uhint.elbereth);
+        hint_shown_already = TRUE;
     }
     
-    if (!was_ritual_known && u.uevent.invocation_ritual_known && !u.uevent.invoked && !(u.uachieve.bell && u.uachieve.book && u.uachieve.menorah))
+    if (!u.uevent.invoked && !(u.uachieve.bell && u.uachieve.book && u.uachieve.menorah))
     {
-        if (!was_elbereth_known && u.uevent.elbereth_known)
-            delay_output_milliseconds(500);
-        play_sfx_sound(SFX_HINT);
-        custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0, "Find the Candelabrum of Invocation, Silver Bell, and the Book of the Dead");
+        if (!was_ritual_known && !had_heard_of_ritual && (u.uevent.invocation_ritual_known || u.uevent.heard_of_invocation_ritual))
+        {
+            invocation_ritual_quest_update(hint_shown_already);
+        }
     }
     return result;
 }
@@ -9622,6 +9625,8 @@ struct monst* mtmp;
     hermit_talk(mtmp, linearray, GHSOUND_HERMIT1_QUESTS);
 
     mtmp->hermit_told_quests = 1;
+    context.quest_flags |= QUEST_FLAGS_HEARD_OF_AMULET_IN_GEHENNOM;
+
     return 1;
 }
 
@@ -9833,6 +9838,8 @@ struct monst* mtmp;
     hermit_talk(mtmp, linearray, GHSOUND_HERMIT2_VAMPIRE_LORD);
 
     mtmp->hermit2_told_vampire_lord = 1;
+    context.quest_flags |= QUEST_FLAGS_HEARD_OF_MENORAH | QUEST_FLAGS_HEARD_OF_MENORAH_OWNER | QUEST_FLAGS_HEARD_OF_AMULET_IN_SANCTUM;
+
     return 1;
 }
 STATIC_OVL int
@@ -9850,6 +9857,8 @@ struct monst* mtmp;
     hermit_talk(mtmp, linearray, GHSOUND_HERMIT2_WIZARD_OF_YENDOR);
 
     mtmp->hermit2_told_wizard_of_yendor = 1;
+    context.quest_flags |= QUEST_FLAGS_HEARD_OF_BOOK | QUEST_FLAGS_HEARD_OF_BOOK_OWNER | QUEST_FLAGS_HEARD_OF_AMULET_IN_SANCTUM;
+
     return 1;
 }
 STATIC_OVL int
@@ -9873,6 +9882,8 @@ struct monst* mtmp;
     hermit_talk(mtmp, linearray, GHSOUND_HERMIT2_SILVER_BELL);
 
     mtmp->hermit2_told_silver_bell = 1;
+    context.quest_flags |= QUEST_FLAGS_HEARD_OF_BELL | QUEST_FLAGS_HEARD_OF_BELL_OWNER | QUEST_FLAGS_HEARD_OF_AMULET_IN_SANCTUM;
+
     return 1;
 }
 STATIC_OVL int
@@ -9889,6 +9900,8 @@ struct monst* mtmp;
     hermit_talk(mtmp, linearray, GHSOUND_HERMIT2_CANDELABRUM);
 
     mtmp->hermit2_told_candelabrum = 1;
+    context.quest_flags |= QUEST_FLAGS_HEARD_OF_MENORAH | QUEST_FLAGS_HEARD_OF_MENORAH_OWNER | QUEST_FLAGS_HEARD_OF_AMULET_IN_SANCTUM;
+
     return 1;
 }
 STATIC_OVL int
@@ -9905,6 +9918,8 @@ struct monst* mtmp;
     hermit_talk(mtmp, linearray, GHSOUND_HERMIT2_BOOK_OF_THE_DEAD);
 
     mtmp->hermit2_told_book_of_the_dead = 1;
+    context.quest_flags |= QUEST_FLAGS_HEARD_OF_BOOK | QUEST_FLAGS_HEARD_OF_BOOK_OWNER;
+
     return 1;
 }
 STATIC_OVL int
@@ -9922,6 +9937,9 @@ struct monst* mtmp;
     hermit_talk(mtmp, linearray, GHSOUND_HERMIT2_RITUAL);
 
     mtmp->hermit2_told_ritual = 1;
+    u.uevent.heard_of_invocation_ritual = 1;
+    context.quest_flags |= QUEST_FLAGS_HEARD_OF_BOOK | QUEST_FLAGS_HEARD_OF_BELL | QUEST_FLAGS_HEARD_OF_MENORAH | QUEST_FLAGS_HEARD_OF_RITUAL | QUEST_FLAGS_HEARD_OF_AMULET_IN_SANCTUM | QUEST_FLAGS_HEARD_ORACLE_KNOWS_MORE_DETAILS;
+
     return 1;
 }
 STATIC_OVL int

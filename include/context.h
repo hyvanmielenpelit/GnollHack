@@ -252,6 +252,7 @@ struct context_info
     boolean skip_botl;
     boolean amonket_generated;
     uchar town_portal_return_flags;
+    unsigned long quest_flags;
 
     /* Emergency reserved booleans to make non-save-game-breaking changes */
     boolean reserved_bool3;
@@ -263,11 +264,23 @@ struct context_info
     short reserved_short2;
     int reserved_int1;
     int reserved_int2;
-    unsigned long reserved_ulong1;
     unsigned long reserved_ulong2;
 
 };
 
 extern NEARDATA struct context_info context;
+
+#define QUEST_FLAGS_HEARD_OF_BELL                       0x00000001UL
+#define QUEST_FLAGS_HEARD_OF_BOOK                       0x00000002UL
+#define QUEST_FLAGS_HEARD_OF_MENORAH                    0x00000004UL
+#define QUEST_FLAGS_HEARD_OF_BELL_OWNER                 0x00000008UL
+#define QUEST_FLAGS_HEARD_OF_BOOK_OWNER                 0x00000010UL
+#define QUEST_FLAGS_HEARD_OF_MENORAH_OWNER              0x00000020UL
+#define QUEST_FLAGS_HEARD_OF_VIBRATING_SQUARE           0x00000040UL
+#define QUEST_FLAGS_HEARD_OF_AMULET_IN_SANCTUM          0x00000080UL
+#define QUEST_FLAGS_HEARD_OF_RITUAL                     0x00000100UL
+#define QUEST_FLAGS_HEARD_OF_BELL_OWNER_IS_NEMESIS      0x00000200UL
+#define QUEST_FLAGS_HEARD_OF_AMULET_IN_GEHENNOM         0x00000400UL
+#define QUEST_FLAGS_HEARD_ORACLE_KNOWS_MORE_DETAILS     0x00000800UL
 
 #endif /* CONTEXT_H */

@@ -563,7 +563,11 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
             if(!u.uevent.elbereth_known && strstri(xcryptbuf, "Elbereth"))
                 u.uevent.elbereth_known = 1;
             if (!u.uevent.invocation_ritual_known && strstri(xcryptbuf, "sanctuary"))
+            {
                 u.uevent.invocation_ritual_known = 1;
+                u.uevent.heard_of_invocation_ritual = 1;
+                context.quest_flags |= QUEST_FLAGS_HEARD_OF_BOOK | QUEST_FLAGS_HEARD_OF_BELL | QUEST_FLAGS_HEARD_OF_MENORAH | QUEST_FLAGS_HEARD_OF_VIBRATING_SQUARE;
+            }
         }
         display_nhwindow(tmpwin, TRUE);
         destroy_nhwindow(tmpwin);

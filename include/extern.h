@@ -1600,6 +1600,7 @@ E void NDECL(print_things_here_to_window);
 E void NDECL(update_here_window);
 E void NDECL(reset_inventory);
 E struct obj* FDECL(contains_otyp, (struct obj*, int));
+E void FDECL(invocation_ritual_quest_update, (BOOLEAN_P));
 
 /* ### ioctl.c ### */
 
@@ -2937,6 +2938,7 @@ E void FDECL(qt_pager_ex, (struct monst*, int, int, int, BOOLEAN_P));
 E struct permonst *NDECL(qt_montype);
 E void NDECL(deliver_splev_message);
 E void FDECL(write_quest_texts, (int));
+E const char* NDECL(neminame);
 
 /* ### random.c ### */
 

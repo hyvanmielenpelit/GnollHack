@@ -26,7 +26,6 @@ STATIC_DCL void FDECL(Fread, (genericptr_t, long, long, dlb *));
 STATIC_DCL struct qtmsg *FDECL(construct_qtlist, (long));
 STATIC_DCL const char *NDECL(intermed);
 STATIC_DCL struct obj *FDECL(find_qarti, (struct obj *));
-STATIC_DCL const char *NDECL(neminame);
 STATIC_DCL const char *NDECL(guardname);
 STATIC_DCL const char *NDECL(homebase);
 STATIC_DCL void FDECL(qtext_pronoun, (CHAR_P, CHAR_P));
@@ -258,7 +257,7 @@ unsigned whichchains;
 }
 
 /* return your role nemesis' name */
-STATIC_OVL const char *
+const char *
 neminame()
 {
     int i = urole.neminum;

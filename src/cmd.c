@@ -5471,19 +5471,18 @@ int final;
 
     if (!u.uachieve.ascended || !u.uachieve.amulet || !u.uachieve.role_achievement)
     {
+        char goalbuf[BUFSZ];
         putstr(en_win, ATR_TITLE, "Goals:");
         if (!final)
             putstr(en_win, ATR_HALF_SIZE, " ");
 
         if (!u.uachieve.amulet)
         {
-            char goalbuf[BUFSZ];
             Sprintf(goalbuf, "on a mission to recover the Amulet of Yendor for %s", u_gname());
             you_are(goalbuf, "");
         }
         else if (!u.uachieve.ascended)
         {
-            char goalbuf[BUFSZ];
             Sprintf(goalbuf, "on a mission to sacrifice the Amulet of Yendor on the high altar to %s on the Astral Plane", u_gname());
             you_are(goalbuf, "");
             if (!u.uachieve.entered_elemental_planes && !u.uachieve.entered_astral_plane)
@@ -5494,9 +5493,54 @@ int final;
         }
         if (!u.uachieve.role_achievement)
         {
-            char goalbuf[BUFSZ];
             Sprintf(goalbuf, "an optional quest to %s", get_role_achievement_description(FALSE));
             you_have(goalbuf, "");
+        }
+        if (!u.uachieve.menorah && (context.quest_flags & QUEST_FLAGS_HEARD_OF_MENORAH))
+        {
+            Strcpy(goalbuf, "searching for the Candelabrum of Invocation");
+            you_are(goalbuf, "");
+            if (context.quest_flags & QUEST_FLAGS_HEARD_OF_MENORAH_OWNER)
+                putstr(en_win, ATR_INDENT_AT_DASH, "  - Rumored to be held by Vlad the Impaler in his tower in Gehennom.");
+        }
+        if (!u.uachieve.bell && (context.quest_flags & QUEST_FLAGS_HEARD_OF_BELL))
+        {
+            Strcpy(goalbuf, "searching for the Silver Bell");
+            you_are(goalbuf, "");
+            if (context.quest_flags & QUEST_FLAGS_HEARD_OF_BELL_OWNER)
+            {
+                char heldbybuf[BUFSZ];
+                Sprintf(heldbybuf, "  - Rumored to be held by %s near your home.", (context.quest_flags & QUEST_FLAGS_HEARD_OF_BELL_OWNER_IS_NEMESIS) ? neminame() : "a great enemy of yours");
+                putstr(en_win, ATR_INDENT_AT_DASH, heldbybuf);
+            }
+        }
+        if (!u.uachieve.book && (context.quest_flags & QUEST_FLAGS_HEARD_OF_BOOK))
+        {
+            Strcpy(goalbuf, "searching for the Book of the Dead");
+            you_are(goalbuf, "");
+            if (context.quest_flags & QUEST_FLAGS_HEARD_OF_BOOK_OWNER)
+                putstr(en_win, ATR_INDENT_AT_DASH, "  - Rumored to be held by the Wizard of Yendor in his tower in Gehennom.");
+        }
+        if (!u.uevent.invoked && (context.quest_flags & QUEST_FLAGS_HEARD_OF_AMULET_IN_SANCTUM))
+        {
+            Sprintf(goalbuf, "seeking to access Moloch's Sanctum%s", (context.quest_flags & QUEST_FLAGS_HEARD_OF_AMULET_IN_GEHENNOM) ? " in Gehennom" : "");
+            you_are(goalbuf, "");
+            if (context.quest_flags & QUEST_FLAGS_HEARD_OF_RITUAL)
+            {
+                char invocbuf[BUFSZ];
+                Sprintf(invocbuf, "  - Perform the Invocation Ritual%s.", (context.quest_flags& QUEST_FLAGS_HEARD_OF_VIBRATING_SQUARE) ? " at the Vibrating Square at the bottom of Gehennom" : "");
+                putstr(en_win, ATR_INDENT_AT_DASH, invocbuf);
+                if (!u.uevent.invocation_ritual_known && (context.quest_flags & QUEST_FLAGS_HEARD_ORACLE_KNOWS_MORE_DETAILS))
+                {
+                    Sprintf(invocbuf, "  - Consult the Oracle of Delphi for details of the Ritual.");
+                    putstr(en_win, ATR_INDENT_AT_DASH, invocbuf);
+                }
+            }
+        }
+        else if (!u.uevent.invoked && !u.uevent.gehennom_entered && (context.quest_flags & QUEST_FLAGS_HEARD_OF_AMULET_IN_GEHENNOM))
+        {
+            Strcpy(goalbuf, "seeking to enter Gehennom at the bottom of the Dungeons of Doom");
+            you_are(goalbuf, "");
         }
     }
 
@@ -5540,6 +5584,11 @@ int final;
     if (u.uachieve.menorah)
     {
         you_have("found the Candelabrum of Invocation", "");
+        num_achievements++;
+    }
+    if (u.uevent.invoked)
+    {
+        you_have("performed the Invocation Ritual", "");
         num_achievements++;
     }
     if (u.uachieve.prime_codex)

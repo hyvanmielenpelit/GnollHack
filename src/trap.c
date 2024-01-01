@@ -3556,7 +3556,8 @@ register struct monst *mtmp;
             if (see_it && !Blind) 
             {
                 seetrap(trap); /* before messages */
-                if (in_sight) {
+                if (in_sight) 
+                {
                     char buf[BUFSZ], *p, *monnm = mon_nam(mtmp);
 
                     if (nolimbs(mtmp->data)

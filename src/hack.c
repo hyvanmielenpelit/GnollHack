@@ -2567,6 +2567,8 @@ invocation_message()
         if (otmp && otmp->special_quality == 7 && otmp->lamplit)
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s!", The(xname(otmp)),
                   Blind ? "throbs palpably" : "glows with a strange light");
+
+        invocation_ritual_quest_update(FALSE);
     }
 }
 
