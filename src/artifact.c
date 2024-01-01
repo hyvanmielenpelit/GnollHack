@@ -176,7 +176,7 @@ aligntyp alignment; /* target alignment, or A_NONE */
 uchar mkflags; /* for monks */
 {
     const struct artifact *a;
-    int m, n, altn;
+    int m, n, altn, i;
     boolean by_align = (alignment != A_NONE);
     short o_typ = (by_align || !otmp) ? 0 : otmp->otyp;
     boolean unique = !by_align && otmp && is_otyp_unique(o_typ);
@@ -253,8 +253,21 @@ uchar mkflags; /* for monks */
     if (n) 
     {
         /* found at least one candidate; pick one at random */
-        m = eligible[rn2(n)]; /* [0..n-1] */
-        a = &artilist[m];
+        int totalprob = 0, roll;
+        for (i = 0; i < n; i++)
+        {
+            totalprob += ((artilist[eligible[i]].aflags2 & AF2_RARE) ? ARTIFACT_RARE_CHANCE : ARTIFACT_NORMAL_CHANCE);
+        }
+        roll = totalprob > 1 ? rn2(totalprob) : 0;
+        m = -1;
+        do
+        {
+            m++;
+            roll -= ((artilist[eligible[m]].aflags2 & AF2_RARE) ? ARTIFACT_RARE_CHANCE : ARTIFACT_NORMAL_CHANCE);
+        } while (roll >= 0 && m < n - 1);
+
+        //m = eligible[rn2(n)]; /* [0..n-1] */
+        a = &artilist[eligible[m]];
 
         /* make an appropriate object if necessary, then christen it */
         if (by_align || !otmp)
@@ -263,8 +276,8 @@ uchar mkflags; /* for monks */
         if (otmp) 
         {
             otmp = oname(otmp, a->name);
-            otmp->oartifact = m;
-            artiexist[m] = TRUE;
+            otmp->oartifact = eligible[m];
+            artiexist[eligible[m]] = TRUE;
             otmp->exceptionality = artilist[otmp->oartifact].exceptionality;
             otmp->mythic_prefix = artilist[otmp->oartifact].mythic_prefix;
             otmp->mythic_suffix = artilist[otmp->oartifact].mythic_suffix;

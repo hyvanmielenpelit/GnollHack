@@ -5074,7 +5074,7 @@ COIN("gold piece", 1000, MAT_GOLD, 1),
 #define GENERAL_ROCK(name,desc,itemdesc,power1,power2,power3,pflags,kn,prob,wt,gval, enchtype, charge, recharge, sdice, sdam, splus, ldice, ldam, lplus, mgc,nutr,mohs,glass,color,height,soundset,subtyp,skill,wepsubtyp,\
             flags,flags2,flags3,flags4,flags5,flags6,powconfermask,odflags,stand_anim,enlarge,replacement) \
         OBJECT(OBJ(name, desc, None, None, itemdesc, height, odflags, stand_anim, enlarge, replacement),            \
-            BITS(kn, 1, (enchtype > 0 || charge > 0 ? 1 : 0), 0, mgc, enchtype, charge, recharge, 0, 0, 0,           \
+            BITS(kn, (charge > 0 ? 0 : 1), (enchtype > 0 || charge > 0 ? 1 : 0), 0, mgc, enchtype, charge, recharge, 0, 0, 0,           \
             HARDGEM(mohs), 0, subtyp, skill, MATINIT_BASE_MATERIAL, glass), \
             power1, power2, power3, pflags, GEM_CLASS, prob, MULTIGEN_SINGLE, 0, wt, gval, \
             0, sdice, sdam, splus, ldice, ldam, lplus, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \

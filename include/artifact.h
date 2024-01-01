@@ -70,7 +70,10 @@
 #define AF2_MATERIAL_NAME_4TH_WORD_DN          (AF2_MATERIAL_NAME_2ND_WORD_DN | AF2_MATERIAL_NAME_3RD_WORD_DN)  
 #define AF2_NO_MATERIAL_NAME                   0x00002000UL  
 #define AF2_SHOW_BASE_MATERIAL_NAME            0x00004000UL  
+#define AF2_RARE                               0x00008000UL  
 
+#define ARTIFACT_NORMAL_CHANCE 100
+#define ARTIFACT_RARE_CHANCE 25
 
 #define has_artifact_floor_tile(artifact_idx) \
     ((artilist[(artifact_idx)].aflags2 & AF2_FLOOR_TILE) != 0)
