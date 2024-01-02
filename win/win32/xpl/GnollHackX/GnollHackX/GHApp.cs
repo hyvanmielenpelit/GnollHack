@@ -230,24 +230,47 @@ namespace GnollHackX
 #if GNH_MAUI
                 return false;
 #else
+                if(IsiOS)
+                    return GHConstants.IsGPUDefault; /* No need to check on Apple */
+
                 string manufacturer = DeviceInfo.Manufacturer;
                 string model = DeviceInfo.Model;
-                bool isGooglePixel6orGreater = false;
-                if (manufacturer != null && model != null && model.Length >= 7 &&
-                    manufacturer.ToLower() == "google" && model.Substring(0, 6).ToLower() == "pixel ")
+                bool isGoogleMali = false;
+                bool isSamsungMali = false;
+                bool isVivo = false;
+                bool isAlldocube = false;
+                if (!string.IsNullOrWhiteSpace(manufacturer) && !string.IsNullOrWhiteSpace(model))
                 {
-                    int pixelver;
-                    string endstr = model.Substring(6);
-                    int cnt = 0;
-                    foreach (char c in endstr)
+                    string manufacturer_lc = manufacturer.ToLower();
+                    if (manufacturer_lc == "google")
                     {
-                        if (c < '0' || c > '9')
-                            break;
-                        cnt++;
+                        if (model.Length >= 7 && model.Substring(0, 6).ToLower() == "pixel ")
+                        {
+                            int pixelver;
+                            string endstr = model.Substring(6);
+                            int cnt = 0;
+                            foreach (char c in endstr)
+                            {
+                                if (c < '0' || c > '9')
+                                    break;
+                                cnt++;
+                            }
+                            isGoogleMali = cnt > 0 && int.TryParse(endstr.Substring(0, cnt), out pixelver) && pixelver >= 6;
+                        }
+                        else if (model.Length >= 7 && model.Substring(0, 7).ToLower() == "bluejay")
+                            isGoogleMali = true;
                     }
-                    isGooglePixel6orGreater = cnt > 0 && int.TryParse(endstr.Substring(0, cnt), out pixelver) && pixelver >= 6;
+                    else if (manufacturer_lc == "samsung")
+                    {
+                        if (model.Length >= 5 && model.Substring(0, 5).ToLower() == "a03su")
+                            isSamsungMali = true;
+                    }
+                    else if (manufacturer_lc == "vivo")
+                        isVivo = true;
+                    else if (manufacturer_lc == "alldocube")
+                        isAlldocube = true;
                 }
-                return isGooglePixel6orGreater ? false : GHConstants.IsGPUDefault;
+                return isGoogleMali || isSamsungMali || isVivo || isAlldocube ? false : GHConstants.IsGPUDefault;
 #endif
             }
         }
