@@ -2513,7 +2513,8 @@ struct mkroom *croom;
     }
 
     /* contents */
-    if (o->containment & SP_OBJ_CONTENT) 
+    boolean added_to_container = FALSE;
+    if (o->containment & SP_OBJ_CONTENT)
     {
         if (!container_idx) 
         {
@@ -2561,9 +2562,9 @@ struct mkroom *croom;
             remove_object(otmp);
             if (cobj) 
             {
-                otmp = add_to_container(cobj, otmp);
+                otmp = add_to_container(cobj, otmp); /* note that otmp may have merged with another item in the container */
                 cobj->owt = weight(cobj);
-                return; /* object might have been merged with another in the container */
+                added_to_container = TRUE;
             }
             else 
             {
@@ -2671,6 +2672,10 @@ struct mkroom *croom;
             }
         }
     }
+
+    if(added_to_container)
+        return; /* The rest is not appropriate anymore */
+
     otmp->owt = weight(otmp);
     stackobj(otmp);
 
