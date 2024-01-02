@@ -562,6 +562,8 @@ const char* achievement_name;
 {
     play_sfx_sound(SFX_ACHIEVEMENT);
     custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "ACHIEVEMENT", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0U, "%s", achievement_name);
+    if(flags.showscore)
+        context.botl = context.botlx = 1; /* Make sure score get updated when visible on the status bar */
 }
 
 /*quest.c*/
