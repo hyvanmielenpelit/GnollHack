@@ -230,8 +230,8 @@ namespace GnollHackX
 #if GNH_MAUI
                 return false;
 #else
-                if(IsiOS)
-                    return GHConstants.IsGPUDefault; /* No need to check on Apple */
+                if (IsiOS || !GHConstants.IsGPUDefault)
+                    return GHConstants.IsGPUDefault; /* No need to check on Apple or if GHConstants.IsGPUDefault is set to false */
 
                 string manufacturer = DeviceInfo.Manufacturer;
                 string model = DeviceInfo.Model;
