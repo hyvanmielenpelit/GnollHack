@@ -2514,6 +2514,7 @@ struct mkroom *croom;
 
     /* contents */
     boolean added_to_container = FALSE;
+    boolean added_to_monster_inventory = FALSE;
     if (o->containment & SP_OBJ_CONTENT)
     {
         if (!container_idx) 
@@ -2553,6 +2554,7 @@ struct mkroom *croom;
                     /* we lost track of it. */
                     return;
                 }
+                added_to_monster_inventory = TRUE;
             }
         } 
         else
@@ -2674,15 +2676,20 @@ struct mkroom *croom;
     }
 
     if(added_to_container)
-        return; /* The rest is not appropriate anymore */
+        return; /* The rest is not appropriate anymore for an item in a container */
 
     otmp->owt = weight(otmp);
-    stackobj(otmp);
+
+    if(!added_to_monster_inventory)
+        stackobj(otmp);
 
     if (o->lit) 
     {
         begin_burn(otmp, FALSE);
     }
+
+    if (added_to_monster_inventory)
+        return; /* The rest is not appropriate anymore for an item in monster inventory */
 
     if (o->buried)
     {
