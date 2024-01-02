@@ -17,8 +17,6 @@
 STATIC_DCL void NDECL(on_start);
 STATIC_DCL void NDECL(on_locate);
 STATIC_DCL void NDECL(on_goal);
-STATIC_DCL boolean NDECL(not_capable);
-STATIC_DCL int FDECL(is_pure, (BOOLEAN_P));
 STATIC_DCL void FDECL(expulsion, (BOOLEAN_P));
 STATIC_DCL boolean FDECL(chat_with_leader, (struct monst*, BOOLEAN_P));
 STATIC_DCL boolean FDECL(chat_with_nemesis, (struct monst*, BOOLEAN_P));
@@ -150,13 +148,13 @@ ok_to_quest()
                       && is_pure(FALSE) > 0);
 }
 
-STATIC_OVL boolean
+boolean
 not_capable()
 {
     return (boolean) (u.ulevel < MIN_QUEST_LEVEL);
 }
 
-STATIC_OVL int
+int
 is_pure(talk)
 boolean talk;
 {

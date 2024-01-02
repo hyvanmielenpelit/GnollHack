@@ -44,6 +44,7 @@ STATIC_VAR struct qtlists qt_list;
 STATIC_VAR dlb *msg_file;
 /* used by ldrname() and neminame(), then copied into cvt_buf */
 STATIC_VAR char nambuf[sizeof cvt_buf];
+STATIC_VAR char nambuf2[sizeof cvt_buf];
 
 /* dump the character msg list to check appearance;
    build with DEBUG enabled and use DEBUGFILES=questpgr.c
@@ -185,9 +186,9 @@ ldrname()
 {
     int i = urole.ldrnum;
 
-    Sprintf(nambuf, "%s%s", is_mname_proper_name(&mons[i]) ? "" : "the ",
+    Sprintf(nambuf2, "%s%s", is_mname_proper_name(&mons[i]) ? "" : "the ",
             mons[i].mname);
-    return nambuf;
+    return nambuf2;
 }
 
 /* return your intermediate target string */

@@ -5454,6 +5454,7 @@ show_conduct(final)
 int final;
 {
     char buf[BUFSZ];
+    char goalbuf[BUFSZ];
     int ngenocided;
     int dumpwin;
 
@@ -5468,10 +5469,10 @@ int final;
 #else
     dumpwin = en_win;
 #endif
-
-    if (!u.uachieve.ascended || !u.uachieve.amulet || !u.uachieve.role_achievement)
+    boolean added_goals = FALSE;
+    if (!u.uachieve.ascended || !u.uachieve.amulet)
     {
-        char goalbuf[BUFSZ];
+        added_goals = TRUE;
         putstr(en_win, ATR_TITLE, "Goals:");
         if (!final)
             putstr(en_win, ATR_HALF_SIZE, " ");
@@ -5491,19 +5492,84 @@ int final;
                 you_are(goalbuf, "");
             }
         }
-        if (!u.uachieve.role_achievement)
+    }
+
+    boolean looking_for_menorah = !u.uachieve.menorah && (context.quest_flags & QUEST_FLAGS_HEARD_OF_MENORAH);
+    boolean looking_for_bell = !u.uachieve.bell && (context.quest_flags & QUEST_FLAGS_HEARD_OF_BELL);
+    boolean looking_for_book = !u.uachieve.book && (context.quest_flags & QUEST_FLAGS_HEARD_OF_BOOK);
+    boolean seeking_to_enter_sanctum = !u.uevent.invoked && ((context.quest_flags & QUEST_FLAGS_HEARD_OF_AMULET_IN_SANCTUM) || u.uevent.heard_of_invocation_ritual || u.uevent.invocation_ritual_known);
+    boolean seeking_to_enter_gehennom = !u.uevent.invoked && !u.uevent.gehennom_entered && (context.quest_flags & QUEST_FLAGS_HEARD_OF_AMULET_IN_GEHENNOM);
+    boolean on_nh_quest = ((quest_status.got_quest || quest_status.met_leader || u.uevent.qcalled) && !(u.uevent.qcompleted || u.uevent.qexpelled || quest_status.leader_is_dead));
+    boolean added_quests = FALSE;
+
+    if (!final /* Do not print intermediate quests / related game hints / spoilers in dumplog */
+        && (!u.uachieve.role_achievement || looking_for_menorah || looking_for_bell || looking_for_book || seeking_to_enter_sanctum || seeking_to_enter_gehennom || on_nh_quest))
+    {
+        added_quests = TRUE;
+        if(added_goals)
+            putstr(dumpwin, ATR_NONE, "");
+        putstr(en_win, ATR_TITLE, "Quests:");
+        if (!final)
+            putstr(en_win, ATR_HALF_SIZE, " ");
+
+        if (!(u.uevent.qcompleted || u.uevent.qexpelled || quest_status.leader_is_dead))
         {
-            Sprintf(goalbuf, "an optional quest to %s", get_role_achievement_description(FALSE));
-            you_have(goalbuf, "");
+            if (quest_status.got_quest)
+            {
+                if (quest_status.killed_nemesis && quest_status.touched_artifact)
+                {
+                    Sprintf(goalbuf, "defeated %s and %s to return %s to %s", neminame(), final ? "needed" : "need", the(artiname(urole.questarti)), ldrname());
+                    you_have(goalbuf, "");
+                }
+                else if (quest_status.killed_nemesis)
+                {
+                    Sprintf(goalbuf, "defeated %s and %s to recover %s", neminame(), final ? "needed" : "need", the(artiname(urole.questarti)));
+                    you_have(goalbuf, "");
+                }
+                else if (quest_status.touched_artifact)
+                {
+                    Sprintf(goalbuf, "on a quest to defeat %s but already %s recovered %s", neminame(), final ? "had" : "have", the(artiname(urole.questarti)));
+                    you_are(goalbuf, "");
+                }
+                else
+                {
+                    Sprintf(goalbuf, "on a quest to defeat %s and recover %s", neminame(), the(artiname(urole.questarti)));
+                    you_are(goalbuf, "");
+                }
+            }
+            else if (quest_status.met_leader)
+            {
+                if (is_pure(FALSE) <= 0)
+                {
+                    Strcpy(goalbuf, "seeking to convert yourself back to your original alignment to be admitted to your quest");
+                    you_are(goalbuf, "");
+                }
+                else if (not_capable())
+                {
+                    Sprintf(goalbuf, "seeking to achieve the rank of %s at level %d to access your quest", rank_of(MIN_QUEST_LEVEL, Role_switch, flags.female), MIN_QUEST_LEVEL);
+                    you_are(goalbuf, "");
+                }
+                else
+                {
+                    Sprintf(goalbuf, "achieved the rank of %s and need to speak again with %s to start your quest", rank_of(MIN_QUEST_LEVEL, Role_switch, flags.female), ldrname());
+                    you_have(goalbuf, "");
+                }
+            }
+            else if (u.uevent.qcalled)
+            {
+                Sprintf(goalbuf, "been summoned by %s to %s", ldrname(), urole.homebase);
+                you_have(goalbuf, "");
+            }
         }
-        if (!u.uachieve.menorah && (context.quest_flags & QUEST_FLAGS_HEARD_OF_MENORAH))
+
+        if (looking_for_menorah)
         {
             Strcpy(goalbuf, "searching for the Candelabrum of Invocation");
             you_are(goalbuf, "");
             if (context.quest_flags & QUEST_FLAGS_HEARD_OF_MENORAH_OWNER)
                 putstr(en_win, ATR_INDENT_AT_DASH, "  - Rumored to be held by Vlad the Impaler in his tower in Gehennom.");
         }
-        if (!u.uachieve.bell && (context.quest_flags & QUEST_FLAGS_HEARD_OF_BELL))
+        if (looking_for_bell)
         {
             Strcpy(goalbuf, "searching for the Silver Bell");
             you_are(goalbuf, "");
@@ -5514,14 +5580,14 @@ int final;
                 putstr(en_win, ATR_INDENT_AT_DASH, heldbybuf);
             }
         }
-        if (!u.uachieve.book && (context.quest_flags & QUEST_FLAGS_HEARD_OF_BOOK))
+        if (looking_for_book)
         {
             Strcpy(goalbuf, "searching for the Book of the Dead");
             you_are(goalbuf, "");
             if (context.quest_flags & QUEST_FLAGS_HEARD_OF_BOOK_OWNER)
                 putstr(en_win, ATR_INDENT_AT_DASH, "  - Rumored to be held by the Wizard of Yendor in his tower in Gehennom.");
         }
-        if (!u.uevent.invoked && ((context.quest_flags & QUEST_FLAGS_HEARD_OF_AMULET_IN_SANCTUM) || u.uevent.heard_of_invocation_ritual || u.uevent.invocation_ritual_known))
+        if (seeking_to_enter_sanctum)
         {
             Sprintf(goalbuf, "seeking to access Moloch's Sanctum%s", (context.quest_flags & QUEST_FLAGS_HEARD_OF_AMULET_IN_GEHENNOM) ? " in Gehennom" : "");
             you_are(goalbuf, "");
@@ -5533,7 +5599,7 @@ int final;
                 }
 
                 char invocbuf[BUFSZ];
-                Sprintf(invocbuf, "  - Perform the Invocation Ritual%s.", (context.quest_flags& QUEST_FLAGS_HEARD_OF_VIBRATING_SQUARE) ? " at the Vibrating Square at the bottom of Gehennom" : "");
+                Sprintf(invocbuf, "  - Perform the Invocation Ritual%s.", (context.quest_flags & QUEST_FLAGS_HEARD_OF_VIBRATING_SQUARE) ? " at the Vibrating Square at the bottom of Gehennom" : "");
                 putstr(en_win, ATR_INDENT_AT_DASH, invocbuf);
 
                 if (u.uevent.invocation_ritual_known)
@@ -5543,15 +5609,23 @@ int final;
 
             }
         }
-        else if (!u.uevent.invoked && !u.uevent.gehennom_entered && (context.quest_flags & QUEST_FLAGS_HEARD_OF_AMULET_IN_GEHENNOM))
+        else if (seeking_to_enter_gehennom)
         {
             Strcpy(goalbuf, "seeking to enter Gehennom at the bottom of the Dungeons of Doom");
             you_are(goalbuf, "");
         }
+
+        if (!u.uachieve.role_achievement)
+        {
+            Sprintf(goalbuf, "an optional quest to %s", get_role_achievement_description(FALSE));
+            you_have(goalbuf, "");
+        }
     }
 
     int num_achievements = 0;
-    putstr(dumpwin, ATR_NONE, "");
+    if(added_goals || added_quests)
+        putstr(dumpwin, ATR_NONE, "");
+    
     putstr(en_win, ATR_TITLE, "Achievements:");
     if (!final)
         putstr(en_win, ATR_HALF_SIZE, " ");
@@ -5567,9 +5641,14 @@ int final;
     }
     if (u.uachieve.crowned && u.uevent.uhand_of_elbereth > 0)
     {
-        char achbuf[BUFSZ];
-        Sprintf(achbuf, "become %s", hofe_titles[u.uevent.uhand_of_elbereth - 1]);
-        you_have(achbuf, "");
+        Sprintf(goalbuf, "become %s", hofe_titles[u.uevent.uhand_of_elbereth - 1]);
+        you_have(goalbuf, "");
+        num_achievements++;
+    }
+    if (u.uevent.qcompleted)
+    {
+        Sprintf(goalbuf, "completed your quest by defeating %s and recovering %s", neminame(), the(artiname(urole.questarti)));
+        you_have(goalbuf, "");
         num_achievements++;
     }
     if (u.uachieve.role_achievement)

@@ -2923,6 +2923,8 @@ E boolean FDECL(quest_talk, (struct monst *, BOOLEAN_P));
 E void FDECL(quest_stat_check, (struct monst *));
 E void FDECL(finish_quest, (struct obj *));
 E void FDECL(achievement_gained, (const char*));
+E boolean NDECL(not_capable);
+E int FDECL(is_pure, (BOOLEAN_P));
 
 /* ### questpgr.c ### */
 
