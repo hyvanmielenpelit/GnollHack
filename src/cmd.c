@@ -5551,7 +5551,7 @@ int final;
                 }
                 else
                 {
-                    Sprintf(goalbuf, "achieved the rank of %s and need to speak again with %s to start your quest", rank_of(MIN_QUEST_LEVEL, Role_switch, flags.female), ldrname());
+                    Sprintf(goalbuf, "achieved the rank of %s and %s to speak again with %s to start your quest", rank_of(MIN_QUEST_LEVEL, Role_switch, flags.female), final ? "needed" : "need", ldrname());
                     you_have(goalbuf, "");
                 }
             }
