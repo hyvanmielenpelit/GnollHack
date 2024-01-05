@@ -5551,6 +5551,8 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
         long _totalFrames = 0L;
 #endif
+        StringBuilder _lineBuilder = new StringBuilder(GHConstants.LineBuilderInitialCapacity);
+        string[] _attributeStrings = new string[6] { "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma" };
 
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -7290,30 +7292,36 @@ namespace GnollHackX.Pages.Game
                                                             refreshsmallesttop = true;
                                                             msgHistoryItem.WrappedTextRows.Clear();
                                                             float lineLength = 0.0f;
-                                                            string line = "";
+                                                            //string line = "";
+                                                            _lineBuilder.Clear();
                                                             string[] txtsplit = msgHistoryItem.TextSplit;
                                                             bool firstonline = true;
                                                             for (int widx = 0; widx < txtsplit.Length; widx++)
                                                             {
                                                                 string word = txtsplit[widx];
-                                                                string wordWithSpace = word + " ";
-                                                                float wordLength = textPaint.MeasureText(wordWithSpace);
+                                                                //string wordWithSpace = word + " ";
+                                                                float wordLength = textPaint.MeasureText(word);
                                                                 float wordWithSpaceLength = wordLength + spaceLength;
                                                                 if (lineLength + wordLength > lineLengthLimit && !firstonline)
                                                                 {
-                                                                    msgHistoryItem.WrappedTextRows.Add(line);
-                                                                    line = wordWithSpace;
+                                                                    msgHistoryItem.WrappedTextRows.Add(_lineBuilder.ToString());
+                                                                    //line = wordWithSpace;
+                                                                    _lineBuilder.Clear();
+                                                                    _lineBuilder.Append(word);
+                                                                    _lineBuilder.Append(" ");
                                                                     lineLength = wordWithSpaceLength;
                                                                     firstonline = true;
                                                                 }
                                                                 else
                                                                 {
-                                                                    line += wordWithSpace;
+                                                                    //line += wordWithSpace;
+                                                                    _lineBuilder.Append(word);
+                                                                    _lineBuilder.Append(" ");
                                                                     lineLength += wordWithSpaceLength;
                                                                     firstonline = false;
                                                                 }
                                                             }
-                                                            msgHistoryItem.WrappedTextRows.Add(line);
+                                                            msgHistoryItem.WrappedTextRows.Add(_lineBuilder.ToString());
                                                         }
 
                                                         if(!msgHistoryItem.MatchFilter)
@@ -9393,8 +9401,7 @@ namespace GnollHackX.Pages.Game
                             }
                             if (valtext != "" && ty < box_bottom_draw_threshold)
                             {
-                                string[] statstring = new string[6] { "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma" };
-                                string printtext = statstring[i] + ":";
+                                string printtext = _attributeStrings[i] + ":";
                                 canvas.DrawText(printtext, tx, ty, textPaint);
                                 textPaint.Color = UIUtils.NHColor2SKColorCore(valcolor, 0, true, false);
                                 canvas.DrawText(valtext, tx + indentation, ty, textPaint);

@@ -1614,6 +1614,7 @@ namespace GnollHackX
         public const double BonesPostBaseChance = 2.0 / 3.0;
         public const double MainScreenGeneralCounterIntervalInSeconds = 2.0;
         public const long MaxGHLogSize = 4194304;
+        public const int LineBuilderInitialCapacity = 256;
 #if GNH_MAUI
         public const string PortName = "GnollHackM";
 #else
