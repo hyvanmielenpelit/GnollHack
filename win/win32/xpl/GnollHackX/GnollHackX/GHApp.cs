@@ -259,6 +259,8 @@ namespace GnollHackX
                         }
                         else if (model.Length >= 7 && model.Substring(0, 7).ToLower() == "bluejay")
                             isGoogleMali = true;
+                        else if (model.Length >= 4 && model.Substring(0, 4).ToLower() == "lynx")
+                            isGoogleMali = true;
                     }
                     else if (manufacturer_lc == "samsung")
                     {
