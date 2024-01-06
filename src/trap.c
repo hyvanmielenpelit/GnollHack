@@ -22,7 +22,6 @@ STATIC_DCL boolean FDECL(isclearpath, (coord *, int, SCHAR_P, SCHAR_P));
 STATIC_DCL void FDECL(dofiretrap, (struct obj *, int));
 STATIC_DCL void NDECL(domagictrap);
 STATIC_DCL boolean FDECL(emergency_disrobe, (boolean *));
-STATIC_DCL int FDECL(succeed_untrap, (int));
 STATIC_DCL void FDECL(move_into_trap, (struct trap *));
 STATIC_DCL int FDECL(try_disarm, (struct trap *, BOOLEAN_P));
 STATIC_DCL void FDECL(reward_untrap, (struct trap *, struct monst *));
@@ -56,35 +55,35 @@ STATIC_VAR const char *const blindgas[6] = { "humid",   "odorless",
 
 /* Note these names are not currently being used, instead use the explanations in defsyms and defsym_variations */
 const struct trap_type_definition trap_type_definitions[TRAPNUM] = {
-    {"", "", "", MAT_NONE, SIMPLE_MECHANICAL_TRAP, 0, TRAPDEF_FLAGS_NONE},
-    {"arrow trap", "trap", "", MAT_METAL, SIMPLE_MECHANICAL_TRAP, 10, TRAPDEF_FLAGS_NONE},
-    {"dart trap", "trap", "", MAT_METAL, SIMPLE_MECHANICAL_TRAP, 10, TRAPDEF_FLAGS_NONE},
-    {"falling rock trap", "trap", "", MAT_MINERAL, COMPLEX_MECHANICAL_TRAP, 20, TRAPDEF_FLAGS_NONE},
-    {"squeaky board", "trap", "", MAT_WOOD, SIMPLE_MECHANICAL_TRAP, 10, TRAPDEF_FLAGS_NONE},
-    {"bear trap", "trap", "", MAT_METAL, SIMPLE_MECHANICAL_TRAP, 10, TRAPDEF_FLAGS_NONE},
-    {"land mine", "mine", "", MAT_MINERAL, COMPLEX_MECHANICAL_TRAP, 20, TRAPDEF_FLAGS_NONE},
-    {"rolling boulder trap", "trap", "", MAT_MINERAL, COMPLEX_MECHANICAL_TRAP, 20, TRAPDEF_FLAGS_NONE},
-    {"sleep gas trap", "trap", "", MAT_MINERAL, COMPLEX_MECHANICAL_TRAP, 20, TRAPDEF_FLAGS_NONE},
-    {"rust trap", "trap", "", MAT_MINERAL, COMPLEX_MECHANICAL_TRAP, 20, TRAPDEF_FLAGS_NONE},
-    {"fire trap", "trap", "", MAT_MINERAL, COMPLEX_MAGICAL_TRAP, 40, TRAPDEF_FLAGS_NONE},
-    {"pit", "trap", "", MAT_MINERAL, NOT_DISARMABLE_TRAP, 0, TRAPDEF_FLAGS_NOT_DISARMABLE},
-    {"spiked pit", "trap", "", MAT_MINERAL, NOT_DISARMABLE_TRAP, 0, TRAPDEF_FLAGS_NOT_DISARMABLE},
-    {"hole", "hole", "", MAT_MINERAL, NOT_DISARMABLE_TRAP, 0, TRAPDEF_FLAGS_VISIBLE_AT_START | TRAPDEF_FLAGS_NOT_DISARMABLE},
-    {"trap door", "trap door", "", MAT_MINERAL, NOT_DISARMABLE_TRAP, 0, TRAPDEF_FLAGS_NOT_DISARMABLE},
-    {"teleport trap", "trap", "", MAT_ENERGY, SIMPLE_MAGICAL_TRAP, 30, TRAPDEF_FLAGS_NONE},
-    {"level teleport trap", "trap", "", MAT_ENERGY, SIMPLE_MAGICAL_TRAP, 30, TRAPDEF_FLAGS_NONE},
-    {"magic portal", "portal", "", MAT_ENERGY, NOT_DISARMABLE_TRAP, 0,
+    {"", "", "", MAT_NONE,                              SIMPLE_MECHANICAL_TRAP,     SIMPLE_MECHANICAL_TRAP,     0, TRAPDEF_FLAGS_NONE},
+    {"arrow trap", "trap", "", MAT_METAL,               SIMPLE_MECHANICAL_TRAP,     SIMPLE_MECHANICAL_TRAP,     10, TRAPDEF_FLAGS_NONE},
+    {"dart trap", "trap", "", MAT_METAL,                SIMPLE_MECHANICAL_TRAP,     SIMPLE_MECHANICAL_TRAP,     10, TRAPDEF_FLAGS_NONE},
+    {"falling rock trap", "trap", "", MAT_MINERAL,      COMPLEX_MECHANICAL_TRAP,    COMPLEX_MECHANICAL_TRAP,    20, TRAPDEF_FLAGS_NONE},
+    {"squeaky board", "trap", "", MAT_WOOD,             SIMPLE_MECHANICAL_TRAP,     SIMPLE_MECHANICAL_TRAP,     10, TRAPDEF_FLAGS_NONE},
+    {"bear trap", "trap", "", MAT_METAL,                SIMPLE_MECHANICAL_TRAP,     SIMPLE_MECHANICAL_TRAP,     10, TRAPDEF_FLAGS_NONE},
+    {"land mine", "mine", "", MAT_MINERAL,              COMPLEX_MECHANICAL_TRAP,    COMPLEX_MECHANICAL_TRAP,    20, TRAPDEF_FLAGS_NONE},
+    {"rolling boulder trap", "trap", "", MAT_MINERAL,   COMPLEX_MECHANICAL_TRAP,    COMPLEX_MECHANICAL_TRAP,    20, TRAPDEF_FLAGS_NONE},
+    {"sleep gas trap", "trap", "", MAT_MINERAL,         COMPLEX_MECHANICAL_TRAP,    COMPLEX_MECHANICAL_TRAP,    20, TRAPDEF_FLAGS_NONE},
+    {"rust trap", "trap", "", MAT_MINERAL,              COMPLEX_MECHANICAL_TRAP,    COMPLEX_MECHANICAL_TRAP,    20, TRAPDEF_FLAGS_NONE},
+    {"fire trap", "trap", "", MAT_MINERAL,              COMPLEX_MAGICAL_TRAP,       COMPLEX_MAGICAL_TRAP,       40, TRAPDEF_FLAGS_NONE},
+    {"pit", "trap", "", MAT_MINERAL,                    NOT_DISARMABLE_TRAP,        SIMPLE_MECHANICAL_TRAP,     0, TRAPDEF_FLAGS_NOT_DISARMABLE},
+    {"spiked pit", "trap", "", MAT_MINERAL,             NOT_DISARMABLE_TRAP,        SIMPLE_MECHANICAL_TRAP,     0, TRAPDEF_FLAGS_NOT_DISARMABLE},
+    {"hole", "hole", "", MAT_MINERAL,                   NOT_DISARMABLE_TRAP,        SIMPLE_MECHANICAL_TRAP,     0, TRAPDEF_FLAGS_VISIBLE_AT_START | TRAPDEF_FLAGS_NOT_DISARMABLE},
+    {"trap door", "trap door", "", MAT_MINERAL,         NOT_DISARMABLE_TRAP,        SIMPLE_MECHANICAL_TRAP,     0, TRAPDEF_FLAGS_NOT_DISARMABLE},
+    {"teleport trap", "trap", "", MAT_ENERGY,           SIMPLE_MAGICAL_TRAP,        SIMPLE_MAGICAL_TRAP,        30, TRAPDEF_FLAGS_NONE},
+    {"level teleport trap", "trap", "", MAT_ENERGY,     SIMPLE_MAGICAL_TRAP,        SIMPLE_MAGICAL_TRAP,        30, TRAPDEF_FLAGS_NONE},
+    {"magic portal", "portal", "", MAT_ENERGY,          NOT_DISARMABLE_TRAP,        NOT_DISARMABLE_TRAP,        0,
         TRAPDEF_FLAGS_NO_TRY_ESCAPE | TRAPDEF_FLAGS_NOT_OVERRIDEN | TRAPDEF_FLAGS_NOT_GENERATED | TRAPDEF_FLAGS_NOT_DISARMABLE},
-    {"web", "web", "", MAT_ORGANIC, SPECIALLY_DISARMABLE_TRAP, 10, TRAPDEF_FLAGS_NONE},
-    {"statue", "statue", "", MAT_MINERAL, SIMPLE_MAGICAL_TRAP, 30, TRAPDEF_FLAGS_NO_STEP_CONFIRMATION | TRAPDEF_FLAGS_IGNORED_BY_MONSTERS },
-    {"magic trap", "trap", "", MAT_ENERGY, COMPLEX_MAGICAL_TRAP, 40, TRAPDEF_FLAGS_NONE},
-    {"anti-magic trap", "trap", "", MAT_ENERGY, SIMPLE_MAGICAL_TRAP, 30, TRAPDEF_FLAGS_NO_TRY_ESCAPE },
-    {"polymorph trap", "trap", "", MAT_ENERGY, COMPLEX_MAGICAL_TRAP, 40, TRAPDEF_FLAGS_NONE},
-    {"geometric magic portal", "portal", "", MAT_ENERGY, NOT_DISARMABLE_TRAP, 0,
+    {"web", "web", "", MAT_ORGANIC,                     SPECIALLY_DISARMABLE_TRAP,  SPECIALLY_DISARMABLE_TRAP,  10, TRAPDEF_FLAGS_NONE},
+    {"statue", "statue", "", MAT_MINERAL,               SIMPLE_MAGICAL_TRAP,        SIMPLE_MAGICAL_TRAP,        30, TRAPDEF_FLAGS_NO_STEP_CONFIRMATION | TRAPDEF_FLAGS_IGNORED_BY_MONSTERS },
+    {"magic trap", "trap", "", MAT_ENERGY,              COMPLEX_MAGICAL_TRAP,       COMPLEX_MAGICAL_TRAP,       40, TRAPDEF_FLAGS_NONE},
+    {"anti-magic trap", "trap", "", MAT_ENERGY,         SIMPLE_MAGICAL_TRAP,        SIMPLE_MAGICAL_TRAP,        30, TRAPDEF_FLAGS_NO_TRY_ESCAPE },
+    {"polymorph trap", "trap", "", MAT_ENERGY,          COMPLEX_MAGICAL_TRAP,       COMPLEX_MAGICAL_TRAP,       40, TRAPDEF_FLAGS_NONE},
+    {"geometric magic portal", "portal","", MAT_ENERGY, NOT_DISARMABLE_TRAP,        NOT_DISARMABLE_TRAP,        0,
         TRAPDEF_FLAGS_NO_TRY_ESCAPE | TRAPDEF_FLAGS_NOT_OVERRIDEN | TRAPDEF_FLAGS_NOT_GENERATED | TRAPDEF_FLAGS_NOT_DISARMABLE},
-    {"lever", "lever", "pull", MAT_METAL, NOT_DISARMABLE_TRAP, 0,
+    {"lever", "lever", "pull", MAT_METAL,               NOT_DISARMABLE_TRAP,        NOT_DISARMABLE_TRAP,        0,
         TRAPDEF_FLAGS_APPLIABLE | TRAPDEF_FLAGS_NO_TRY_ESCAPE | TRAPDEF_FLAGS_TELEOK | TRAPDEF_FLAGS_VISIBLE_AT_START | TRAPDEF_FLAGS_NOT_OVERRIDEN | TRAPDEF_FLAGS_IGNORED_BY_MONSTERS | TRAPDEF_FLAGS_NOT_GENERATED | TRAPDEF_FLAGS_NO_STEP_CONFIRMATION | TRAPDEF_FLAGS_NOT_DISARMABLE},
-    {"vibrating square", "vibrating square", "", MAT_MINERAL, NOT_DISARMABLE_TRAP, 0,
+    {"vibrating square", "vibrating square", "", MAT_MINERAL, NOT_DISARMABLE_TRAP, NOT_DISARMABLE_TRAP,         0,
         TRAPDEF_FLAGS_NO_TRY_ESCAPE | TRAPDEF_FLAGS_TELEOK | TRAPDEF_FLAGS_NOT_OVERRIDEN | TRAPDEF_FLAGS_NOT_GENERATED | TRAPDEF_FLAGS_NO_STEP_CONFIRMATION | TRAPDEF_FLAGS_IGNORED_BY_MONSTERS | TRAPDEF_FLAGS_NOT_DISARMABLE}
 };
 
@@ -5097,9 +5096,10 @@ dountrap()
 }
 
 /* Did the untrap succeed? */
-STATIC_OVL int
-succeed_untrap(ttyp)
+int
+succeed_untrap(ttyp, helping_another)
 int ttyp;
+boolean helping_another;
 {
     if (ttyp < 0 || ttyp >= TRAPNUM)
         return FALSE;
@@ -5112,7 +5112,7 @@ int ttyp;
     if (Fumbling & !rn2(2))
         return -1;
 
-    int trap_dif = trap_difficulty(ttyp, &youmonst);
+    int trap_dif = trap_difficulty(ttyp, helping_another, &youmonst);
     int skill_lvl = max(0, usedskilllevel - 1);
     int checkdiff = skill_lvl - trap_dif;
     if (Confusion || Hallucination)
@@ -5162,20 +5162,21 @@ int ttyp;
 }
 
 int
-trap_difficulty(trap_type, mon)
+trap_difficulty(trap_type, helping_another, mon)
 int trap_type;
+boolean helping_another;
 struct monst* mon;
 {
     if (trap_type < 0 || trap_type >= TRAPNUM)
         return NOT_DISARMABLE_TRAP;
-
-    int diflevel = trap_type_definitions[trap_type].tdifficulty;
+     
+    int diflevel = helping_another ? trap_type_definitions[trap_type].thelpdifficulty : trap_type_definitions[trap_type].tdifficulty;
     if (diflevel == SPECIALLY_DISARMABLE_TRAP)
     {
         switch (trap_type)
         {
         case WEB:
-            diflevel = webmaker(mon->data) ? SIMPLE_MECHANICAL_TRAP : COMPLEX_MAGICAL_TRAP;
+            diflevel = webmaker(mon->data) ? SIMPLE_MECHANICAL_TRAP : (helping_another ? COMPLEX_MECHANICAL_TRAP : COMPLEX_MAGICAL_TRAP);
             break;
         default:
             diflevel = NOT_DISARMABLE_TRAP;
@@ -5360,7 +5361,7 @@ struct monst* mon;
     //    break;
     //}
 
-    int trap_dif = trap_difficulty(trap_type, mon);
+    int trap_dif = trap_difficulty(trap_type, FALSE, mon);
     int skill_lvl = max(0, skill_level - 1);
     int checkdiff = skill_lvl - trap_dif;
 
@@ -5520,7 +5521,7 @@ boolean force_failure;
     }
 
     /* Will our hero succeed? */
-    int success = succeed_untrap(ttmp->ttyp);
+    int success = succeed_untrap(ttmp->ttyp, FALSE);
     if (force_failure || success <= 0)
     {
         play_sfx_sound(SFX_DISARM_TRAP_FAIL);
@@ -5979,7 +5980,7 @@ struct trap *ttmp;
         return 1;
 
     /* Will our hero succeed? */
-    untrap_result = succeed_untrap(ttmp->ttyp);
+    untrap_result = succeed_untrap(ttmp->ttyp, TRUE);
     if (untrap_result > 0 && mon_can_move(mtmp) && !is_tame(mtmp) && !is_peaceful(mtmp) && rn2(3))
     {
         play_sfx_sound(SFX_MONSTER_DOES_NOT_ALLOW);
@@ -6339,7 +6340,7 @@ boolean force;
 
         if (levl[x][y].doormask & D_TRAPPED) 
         {
-            ch = succeed_untrap(ARROW_TRAP);  /*untrap_probability(ARROW_TRAP, P_SKILL_LEVEL(P_DISARM_TRAP), &youmonst); */ // ACURR(A_DEX) + (Role_if(PM_ROGUE) ? u.ulevel * 3 : u.ulevel);
+            ch = succeed_untrap(ARROW_TRAP, FALSE);  /*untrap_probability(ARROW_TRAP, P_SKILL_LEVEL(P_DISARM_TRAP), &youmonst); */ // ACURR(A_DEX) + (Role_if(PM_ROGUE) ? u.ulevel * 3 : u.ulevel);
             //exercise(A_DEX, TRUE);
             if (!force && ch < 0) 
             {
@@ -6505,7 +6506,7 @@ boolean force;
 
         if (otmp->otrapped)
         {
-            ch = succeed_untrap(SLP_GAS_TRAP);
+            ch = succeed_untrap(SLP_GAS_TRAP, FALSE);
             //ch = untrap_probability(SLP_GAS_TRAP, P_SKILL_LEVEL(P_DISARM_TRAP), &youmonst); // ACURR(A_DEX) + (Role_if(PM_ROGUE) ? u.ulevel * 3 : u.ulevel);
             //exercise(A_DEX, TRUE);
 

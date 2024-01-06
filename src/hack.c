@@ -2322,14 +2322,22 @@ domove_core()
         /* if trapped, there's a chance the pet goes wild */
         if (mtmp->mtrapped && is_safepet(mtmp))
         {
-            if (mtmp->mtame > 0 && !rn2(mtmp->mtame))
+            struct trap* ttmp = t_at(x, y);
+            if (ttmp && succeed_untrap(ttmp->ttyp, TRUE) <= 0 && rn2(4)) /* Extra 25% chance not to stop to make sure that pets won't block passages; can be regarded as the pet actively seeking to get out of the trap, too */ // mtmp->mtame > 0 && !rn2(mtmp->mtame))
             {
-                mtmp->mtame = mtmp->mpeaceful = mtmp->msleeping = 0;
-                if (mtmp->mleashed)
-                    m_unleash(mtmp, TRUE);
-                newsym(mtmp->mx, mtmp->my);
-                growl(mtmp);
-            } 
+                //mtmp->mtame = mtmp->mpeaceful = mtmp->msleeping = 0;
+                //if (mtmp->mleashed)
+                //    m_unleash(mtmp, TRUE);
+                //newsym(mtmp->mx, mtmp->my);
+                //growl(mtmp);
+                u.ux = u.ux0, u.uy = u.uy0;
+                if (u.usteed)
+                    u.usteed->mx = u.ux, u.usteed->my = u.uy;
+                yelp(mtmp);
+                play_sfx_sound(SFX_SOMETHING_IN_WAY);
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "stop.  %s is trapped and can't move.", upstart(y_monnam(mtmp)));
+                goto finish_move;
+            }
             else 
             {
                 yelp(mtmp);
@@ -2388,7 +2396,7 @@ domove_core()
             newsym(x, y);
             newsym(u.ux0, u.uy0);
 
-            You("%s %s.", is_tame(mtmp) ? "swap places with" : is_displaceable_peaceful(mtmp) ? "displace" : "frighten",
+            You("%s %s.", is_tame(mtmp) ? "swap places with" : is_displaceable_peaceful(mtmp) ? "displace" : "annoy",
                 pnambuf);
 
             /* check for displacing it into pools and traps */
@@ -2442,6 +2450,7 @@ domove_core()
         }
     }
 
+finish_move:
     reset_occupations();
     if (context.run)
     {

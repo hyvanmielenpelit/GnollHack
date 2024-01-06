@@ -3747,6 +3747,7 @@ E void NDECL(reest_track);
 
 /* ### trap.c ### */
 
+E int FDECL(succeed_untrap, (int, BOOLEAN_P));
 E boolean FDECL(burnarmor, (struct monst *));
 E int FDECL(erode_obj, (struct obj *, const char *, int, int));
 E boolean FDECL(grease_protect, (struct obj *, const char *, struct monst *));
@@ -3776,7 +3777,7 @@ E boolean FDECL(fire_damage, (struct obj *, BOOLEAN_P, XCHAR_P, XCHAR_P));
 E int FDECL(fire_damage_chain,
             (struct obj *, BOOLEAN_P, BOOLEAN_P, XCHAR_P, XCHAR_P));
 E boolean FDECL(lava_damage, (struct obj *, XCHAR_P, XCHAR_P));
-E void acid_damage(struct obj *);
+E void FDECL(acid_damage, (struct obj *));
 E int FDECL(water_damage, (struct obj *, const char *, BOOLEAN_P));
 E void FDECL(water_damage_chain, (struct obj *, BOOLEAN_P));
 E boolean NDECL(drown);
@@ -3804,7 +3805,7 @@ E boolean NDECL(lava_effects);
 E void NDECL(sink_into_lava);
 E void NDECL(sokoban_guilt);
 E int FDECL(untrap_probability, (int, int, struct monst*));
-E int FDECL(trap_difficulty, (int, struct monst*));
+E int FDECL(trap_difficulty, (int, BOOLEAN_P, struct monst*));
 E const char* FDECL(get_trap_name, (int));
 E const char* FDECL(get_trap_explanation, (struct trap*));
 E int FDECL(get_shooting_trap_object, (struct trap*));

@@ -139,6 +139,7 @@ struct trap_type_definition {
     const char* apply_verb;
     enum obj_material_types material;
     enum trap_difficulty_types tdifficulty;
+    enum trap_difficulty_types thelpdifficulty;
     int training;
     unsigned long tdflags;
 };
