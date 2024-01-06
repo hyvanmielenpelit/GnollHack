@@ -1040,7 +1040,7 @@ struct materialcomponentlist matlists[] =
     },
 
     { SPE_SUMMON_PHOENIX,
-        "Ruby, 1 feather, 2 sulfurous ash",
+        "Ruby, feather, 2 sulfurous ash",
         STRANGE_OBJECT,
         2,
         {
@@ -3352,7 +3352,7 @@ struct materialcomponentlist matlists[] =
     },
 
     { SPE_MASS_CREATE_DRACOLICH,
-    "1 black opals, 2 skulls, 2 mandrake roots",
+    "Black opal, 2 skulls, 2 mandrake roots",
     STRANGE_OBJECT,
     1,
         {
