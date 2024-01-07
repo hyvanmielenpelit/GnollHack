@@ -4679,7 +4679,7 @@ boolean outokay, inokay, alreadyused, more_containers;
 
     any = zeroany;
     win = create_nhwindow(NHW_MENU);
-    start_menu_ex(win, GHMENU_STYLE_ITEM_COMMAND);
+    start_menu_ex(win, GHMENU_STYLE_GENERAL_COMMAND);
 
     any.a_int = 1; /* ':' */
     Sprintf(buf, "Look inside %s", thesimpleoname(obj));

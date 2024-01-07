@@ -5220,7 +5220,7 @@ docommandmenu(VOID_ARGS)
     int n = 0;
 
     menuwin = create_nhwindow(NHW_MENU);
-    start_menu_ex(menuwin, GHMENU_STYLE_ITEM_COMMAND);
+    start_menu_ex(menuwin, GHMENU_STYLE_GENERAL_COMMAND);
 
     add_command_menu_items(menuwin, INCMDMENU);
 
@@ -5250,7 +5250,7 @@ dospellmainmenu(VOID_ARGS)
     int n = 0;
 
     menuwin = create_nhwindow(NHW_MENU);
-    start_menu_ex(menuwin, GHMENU_STYLE_ITEM_COMMAND);
+    start_menu_ex(menuwin, GHMENU_STYLE_GENERAL_COMMAND);
 
     add_command_menu_items(menuwin, INSPELLMENU);
 

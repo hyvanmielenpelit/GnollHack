@@ -102,7 +102,7 @@ namespace GnollHackX
                 string trimmed_maintext = _mainText.Trim();
                 _mainTextSplit = trimmed_maintext.Split(' ');
 
-                if (first_parenthesis_open > 0 && !(_menuInfo.Style == ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND))  /* Ignore cases where the entire row is in parentheses */
+                if (first_parenthesis_open > 0 && !(_menuInfo.Style == ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND || _menuInfo.Style == ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND))  /* Ignore cases where the entire row is in parentheses */
                 {
                     _suffixText = ParseSuffixText(value, false, altdivisors);
                     _suffix2Text = ParseSuffixText(value, true, altdivisors);
@@ -143,8 +143,6 @@ namespace GnollHackX
                     case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
-                        res = 1;
-                        break;
                     case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
                     case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
                     case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
@@ -494,11 +492,11 @@ namespace GnollHackX
                     case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
+                    case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
                     case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
                         res = res * 16.0 / 15.0;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
-                    case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHAT:
                         break;
