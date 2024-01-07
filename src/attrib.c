@@ -2407,7 +2407,7 @@ struct monst* mon;
         }
 
         /* Mythic */
-        if (has_obj_mythic_great_strength(uitem) && worn)
+        if (worn && has_obj_mythic_great_strength(uitem))
         {
             long afixmincandidate = STR18(100);
             afixmincandidate += applicable_enchantment;
@@ -2415,6 +2415,15 @@ struct monst* mon;
             /* Take the highest minimum (most constraining) */
             if (afixmincandidate > *afixmin_ptr[A_STR])
                 *afixmin_ptr[A_STR] = (schar)min(STR19(25), afixmincandidate);
+        }
+        if (worn && has_obj_mythic_great_constitution(uitem))
+        {
+            long afixmincandidate = 18;
+            afixmincandidate += applicable_enchantment;
+
+            /* Take the highest minimum (most constraining) */
+            if (afixmincandidate > *afixmin_ptr[A_CON])
+                *afixmin_ptr[A_CON] = (schar)min(25, afixmincandidate);
         }
 
         /* Following are for all items */

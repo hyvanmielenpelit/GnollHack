@@ -887,6 +887,8 @@ enum mythic_prefix_types {
     MYTHIC_PREFIX_SORCERERS,
     MYTHIC_PREFIX_OLYMPIAN,
     MYTHIC_PREFIX_JOTUNHEIMIAN,
+    MYTHIC_PREFIX_CIMMERIAN,
+    MYTHIC_PREFIX_MELNIBONEAN,
     MAX_MYTHIC_PREFIXES
 };
 
@@ -968,6 +970,7 @@ enum mythic_prefix_power_types {
     MYTHIC_PREFIX_POWER_INDEX_UNCURSEABLE,
     MYTHIC_PREFIX_POWER_INDEX_GREAT_STRENGTH,
     MYTHIC_PREFIX_POWER_INDEX_SORCERY,
+    MYTHIC_PREFIX_POWER_INDEX_GREAT_CONSTITUTION,
     MAX_MYTHIC_PREFIX_POWERS
 };
 
@@ -987,6 +990,7 @@ enum mythic_prefix_power_types {
 #define MYTHIC_PREFIX_POWER_UNCURSEABLE             (1UL << MYTHIC_PREFIX_POWER_INDEX_UNCURSEABLE)
 #define MYTHIC_PREFIX_POWER_GREAT_STRENGTH          (1UL << MYTHIC_PREFIX_POWER_INDEX_GREAT_STRENGTH)
 #define MYTHIC_PREFIX_POWER_SORCERY                 (1UL << MYTHIC_PREFIX_POWER_INDEX_SORCERY)
+#define MYTHIC_PREFIX_POWER_GREAT_CONSTITUTION      (1UL << MYTHIC_PREFIX_POWER_INDEX_GREAT_CONSTITUTION)
 
 enum mythic_suffix_power_types {
     MYTHIC_SUFFIX_POWER_INDEX_LIGHTNESS = 0,
@@ -1106,6 +1110,7 @@ extern NEARDATA const struct mythic_power_definition mythic_suffix_powers[MAX_MY
 #define has_obj_mythic_return_to_hand(o)        has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_RETURN_TO_HAND_AFTER_THROW)
 #define has_obj_mythic_uncurseable(o)           has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_UNCURSEABLE)
 #define has_obj_mythic_great_strength(o)        has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_GREAT_STRENGTH)
+#define has_obj_mythic_great_constitution(o)    has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_GREAT_CONSTITUTION)
 
 #define is_obj_uncurseable(o) \
     ((get_obj_oc_flags(o) & O1_NOT_CURSEABLE) != 0 || has_obj_mythic_uncurseable(o))
