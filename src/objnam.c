@@ -4506,7 +4506,7 @@ boolean* removed_from_game_ptr;
             && !strstri(bp, "sword ") && !strstri(bp, "dagger ") && !strstri(bp, "arrow ") && !strstri(bp, "arrows ")
             && !strstri(bp, "axe ") && !strstri(bp, "bolt ") && !strstri(bp, "quarrel ") && !strstri(bp, "sling-bullet ")
             && !strstri(bp, "bolts ") && !strstri(bp, "quarrels ") && !strstri(bp, "sling-bullets ")
-            && !strstri(bp, "mace ") && !strstri(bp, "flail ") && !strstri(bp, "hammer ") && !strstri(bp, "morning star ")
+            && !strstri(bp, "mace ") && !strstri(bp, "flail ") && !strstri(bp, "hammer ") && !strstri(bp, "morning star ") && !strstri(bp, "mattock ")
             && !strstri(bp, "staff ") && !strstri(bp, "bow ") && !strstri(bp, "crossbow ")
             && !strstri(bp, "robe ") && !strstri(bp, "cloak ") && !strstri(bp, "gloves ")
             && !strstri(bp, "gauntlets ") && !strstri(bp, "belt ") && !strstri(bp, "girdle ")
@@ -4539,6 +4539,7 @@ boolean* removed_from_game_ptr;
         && strncmpi(bp, "tooth of tarrasque", 18) /* not the "Tarrasque" monster! */
         && strncmpi(bp, "wand of orcus", 13) /* not the "Orcus" monster! */
         && strncmpi(bp, "triple-headed flail of yeenaghu", 31) /* not the "Yeenaghu" monster! */
+        && strncmpi(bp, "mattock of the titans", 21) /* not the "Titan" monster! */
         && strncmpi(bp, "ninja-to", 8)     /* not the "ninja" rank */
         && strncmpi(bp, "master key", 10)  /* not the "master" rank */
         && strncmpi(bp, "death cap", 9)  /* not the "death" monster */
