@@ -9,6 +9,8 @@ Makefile
 *.o
 dat/gitinfo.txt
 dat/nhdat
+dat/engrave
+dat/epitaph
 dat/quest_levs
 dat/spec_levs
 doc/Guidebook
