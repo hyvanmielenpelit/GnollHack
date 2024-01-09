@@ -6826,7 +6826,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     u.ustuck = 0; /* idem */
     u.uinwater = 0;
     u.uundetected = 0; /* not hidden, even if means are available */
-    keepdogs(context.reviving);
+    keepdogs(context.reviving, TRUE);
     removealtarsummons();
     if (u.uswallow) /* idem */
         u.uswldtim = u.uswallow = 0;

@@ -1835,8 +1835,10 @@ int how;
        (bones creation isn't a factor, but pline() messaging is; used to
        be done even sooner, but we need it to come after dump_everything()
        so that any accompanying pets are still on the map during dump) */
-    if (how == ESCAPED || how == ASCENDED)
-        keepdogs(TRUE);
+    if (how == ESCAPED)
+        keepdogs(TRUE, TRUE); /* Just nearby pets following to the ground level */
+    else if (how == ASCENDED)
+        keepdogs(TRUE, FALSE); /* All pets surviving to the point of ascension */
 
     /* finish_paybill should be called after disclosure but before bones */
     if (bones_ok && taken)
@@ -2044,25 +2046,26 @@ int how;
             Strcpy(pbuf, "You");
             if (mtmp || Schroedingers_cat)
             {
+                dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint, 1);
                 int petindex = 0;
                 while (mtmp)
                 {
-                    Sprintf(eos(pbuf), "%s %s",
+                    Sprintf(pbuf, "%s %s",
                         petcount == 1 ? " and" : petindex < petcount - 1 ? "," : ", and",
                        mon_nam(mtmp));
                     mtmp = mtmp->nmon;
                     petindex++;
+                    dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint, 1);
                 }
 
                 /* [it might be more robust to create a housecat and add it to
                    mydogs; it doesn't have to be placed on the map for that] */
+                pbuf[0] = '\0';
                 if (Schroedingers_cat)
                 {
-                    Sprintf(eos(pbuf), "%s Schroedinger's cat", petcount == 1 ? " and" : ", and");
+                    Sprintf(pbuf, "%s Schroedinger's cat", petcount == 1 ? " and" : ", and");
                 }
                 Strcat(pbuf, " ");
-                dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint, 1);
-                pbuf[0] = '\0';
             }
             else
             {

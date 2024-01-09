@@ -1382,8 +1382,8 @@ long nmv; /* number of moves */
 
 /* called when you move to another level */
 void
-keepdogs(pets_only)
-boolean pets_only; /* true for ascension or final escape */
+keepdogs(pets_only, nearby_only)
+boolean pets_only, nearby_only; /* pets_only is true for ascension or final escape */
 {
     register struct monst *mtmp, *mtmp2;
     register struct obj *obj;
@@ -1415,7 +1415,7 @@ boolean pets_only; /* true for ascension or final escape */
             mtmp->mwantstomove = 1;
             mtmp->mwantstodrop = 1;
         }
-        if ((((monnear(mtmp, u.ux, u.uy) || (is_tame(mtmp) && mon_somewhat_near(mtmp, u.ux, u.uy))) && levl_follower(mtmp))
+        if (!nearby_only || ((((monnear(mtmp, u.ux, u.uy) || (is_tame(mtmp) && mon_somewhat_near(mtmp, u.ux, u.uy))) && levl_follower(mtmp))
              /* the wiz will level t-port from anywhere to chase
                 the amulet; if you don't have it, will chase you
                 only if in range. -3. */
@@ -1425,7 +1425,7 @@ boolean pets_only; /* true for ascension or final escape */
                    to avoid following */
                 || (mtmp == u.usteed))
             /* monster won't follow if it hasn't noticed you yet */
-            && !(mtmp->mstrategy & STRAT_WAITFORU))
+            && !(mtmp->mstrategy & STRAT_WAITFORU)))
         {
             stay_behind = FALSE;
             if (mtmp->mtrapped)

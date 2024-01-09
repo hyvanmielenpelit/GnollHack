@@ -1711,7 +1711,7 @@ wiz_makemap(VOID_ARGS)
         dmonsfree(); /* purge dead monsters from 'fmon' */
         /* keep steed and other adjacent pets after releasing them
            from traps, stopping eating, &c as if hero were ascending */
-        keepdogs(TRUE); /* (pets-only; normally we'd be using 'FALSE' here) */
+        keepdogs(TRUE, TRUE); /* (pets-only; normally we'd be using 'FALSE' here) */
 
         /* discard current level; "saving" is used to release dynamic data */
         savelev(-1, ledger_no(&u.uz), FREE_SAVE);
