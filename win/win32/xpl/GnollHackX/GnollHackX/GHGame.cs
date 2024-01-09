@@ -1973,11 +1973,22 @@ namespace GnollHackX
                             {
                                 string filename = GHConstants.ManualFilePrefix + cmd_param2.ToString() + ".json";
                                 string filepath = Path.Combine(datadir, filename);
-                                StoredManual manual = new StoredManual(cmd_str, cmd_param2, windowText);
+                                if (File.Exists(filepath))
+                                {
+                                    try
+                                    {
+                                        File.Delete(filepath); /* Delete and update with the newest version; the existing one can be outdated */
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine(ex);
+                                    }
+                                }
                                 if (!File.Exists(filepath))
                                 {
                                     try
                                     {
+                                        StoredManual manual = new StoredManual(cmd_str, cmd_param2, windowText);
                                         string json = JsonConvert.SerializeObject(manual, Formatting.Indented);
                                         using (FileStream fs = File.Create(filepath))
                                         {
@@ -1987,9 +1998,9 @@ namespace GnollHackX
                                             }
                                         }
                                     }
-                                    catch
+                                    catch (Exception ex)
                                     {
-                                        break;
+                                        Debug.WriteLine(ex);
                                     }
                                 }
                             }
