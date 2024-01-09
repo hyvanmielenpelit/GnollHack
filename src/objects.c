@@ -2657,7 +2657,7 @@ TOOL("mirror",   "looking glass", None, None, None,
 TOOL("magic mirror", "looking glass", None, None, None, 
     TOOLTYPE_GENERAL, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 13, 10, 0, 0, 0, 0, 0, 0, /* Base item for The Magic Mirror of Merlin */
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_GLASS, HI_SILVER, 24, OBJECT_SOUNDSET_GENERIC, 
-    O1_NONE, O2_NONE, O3_INVOKABLE, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
+    O1_NONE, O2_NONE, O3_INVOKABLE | O3_NO_GENERATION | O3_NO_WISH, O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL),
 TOOL("holy symbol", "religious symbol", None, None, "Religious symbol that can be applied to turn undead", 
     TOOLTYPE_GENERAL, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, 
     CHARGED_1D15_15, RECHARGING_HOLY_SYMBOL, 10, 10,100, 0, 0, 0, 0, 0, 0,

@@ -91,12 +91,32 @@ boolean restore;
                 {
                     /* prevent duplicate--revert to ordinary obj */
                     /* Non-generable base item*/
-                    if (objects[otmp->otyp].oc_prob == 0 || objects[otmp->otyp].oc_flags3 & O3_NO_GENERATION)
+                    if (objects[otmp->otyp].oc_prob == 0 || (objects[otmp->otyp].oc_flags3 & O3_NO_GENERATION) != 0)
                     {
                         if (artilist[otmp->oartifact].maskotyp && objects[artilist[otmp->oartifact].maskotyp].oc_prob > 0 && !(objects[artilist[otmp->oartifact].maskotyp].oc_flags3 & O3_NO_GENERATION))
                         {
                             otmp->otyp = artilist[otmp->oartifact].maskotyp;
-                            otmp->material = objects[otmp->otyp].oc_material;
+                            /* Keep the artifact's material for weapons or armor; should not create particularly odd situations with artifacts of these classes */
+                            if(objects[otmp->otyp].oc_class != WEAPON_CLASS && objects[otmp->otyp].oc_class != ARMOR_CLASS)
+                                otmp->material = objects[otmp->otyp].oc_material;
+                            if (otmp->charges > 0 && objects[otmp->otyp].oc_charged == CHARGED_NOT_CHARGED)
+                            {
+                                if (objects[otmp->otyp].oc_enchantable > ENCHTYPE_NO_ENCHANTMENT)
+                                {
+                                    int maxench = get_max_enchantment(objects[otmp->otyp].oc_enchantable);
+                                    otmp->enchantment = min(maxench, otmp->enchantment + otmp->charges);
+                                }
+                                otmp->charges = 0;
+                            }
+                            if (otmp->enchantment > 0 && objects[otmp->otyp].oc_enchantable == ENCHTYPE_NO_ENCHANTMENT)
+                            {
+                                if (objects[otmp->otyp].oc_charged > CHARGED_NOT_CHARGED)
+                                {
+                                    short maxcharges = get_max_charge(objects[otmp->otyp].oc_charged);
+                                    otmp->charges = min(maxcharges, otmp->enchantment + otmp->charges);
+                                }
+                                otmp->enchantment = 0;
+                            }
                         }
                         else
                         {
