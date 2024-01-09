@@ -1240,7 +1240,7 @@ const struct Race races[] = {
         { 3, 0, 1, 3, 1, 0 }, /* Hit points */
         { 0, 2, 0, 1, 0, 1 }  /* Energy 1d2*/
     },
-            /* Array terminator */
+    /* Array terminator */
     { 0, 0, 0, 0 }
 };
 
