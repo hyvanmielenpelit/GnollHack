@@ -99,21 +99,21 @@ boolean restore;
                             /* Keep the artifact's material for weapons or armor; should not create particularly odd situations with artifacts of these classes */
                             if(objects[otmp->otyp].oc_class != WEAPON_CLASS && objects[otmp->otyp].oc_class != ARMOR_CLASS)
                                 otmp->material = objects[otmp->otyp].oc_material;
-                            if (otmp->charges > 0 && objects[otmp->otyp].oc_charged == CHARGED_NOT_CHARGED)
+                            if (otmp->charges != 0 && objects[otmp->otyp].oc_charged == CHARGED_NOT_CHARGED)
                             {
                                 if (objects[otmp->otyp].oc_enchantable > ENCHTYPE_NO_ENCHANTMENT)
                                 {
                                     int maxench = get_max_enchantment(objects[otmp->otyp].oc_enchantable);
-                                    otmp->enchantment = min(maxench, otmp->enchantment + otmp->charges);
+                                    otmp->enchantment = max(-maxench, min(maxench, otmp->enchantment + otmp->charges));
                                 }
                                 otmp->charges = 0;
                             }
-                            if (otmp->enchantment > 0 && objects[otmp->otyp].oc_enchantable == ENCHTYPE_NO_ENCHANTMENT)
+                            if (otmp->enchantment != 0 && objects[otmp->otyp].oc_enchantable == ENCHTYPE_NO_ENCHANTMENT)
                             {
                                 if (objects[otmp->otyp].oc_charged > CHARGED_NOT_CHARGED)
                                 {
                                     short maxcharges = get_max_charge(objects[otmp->otyp].oc_charged);
-                                    otmp->charges = min(maxcharges, otmp->enchantment + otmp->charges);
+                                    otmp->charges = max(0, min(maxcharges, otmp->enchantment + otmp->charges));
                                 }
                                 otmp->enchantment = 0;
                             }
