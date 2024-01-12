@@ -91,11 +91,13 @@ namespace GnollHackX
             AllowBones = Preferences.Get("AllowBones", true);
             BonesAllowedUsers = Preferences.Get("BonesAllowedUsers", "");
             RecommendedSettingsChecked = Preferences.Get("RecommendedSettingsChecked", false);
+            RecordGame = Preferences.Get("RecordGame", false);
 
             BackButtonPressed += EmptyBackButtonPressed;
         }
 
         public static bool RecommendedSettingsChecked { get; set; }
+        public static bool RecordGame { get; set; }
 
         private static object _networkAccessLock = new object();
         private static NetworkAccess _networkAccessState = NetworkAccess.None;

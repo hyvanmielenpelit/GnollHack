@@ -92,6 +92,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\GHPetDataItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHPutStrItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHPutStrInstructions.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHRecordedFunctionCall.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHResponse.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHRequest.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHScreenText.cs" />
@@ -179,6 +180,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\GHPetDataItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHPutStrItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHPutStrInstructions.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHRecordedFunctionCall.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHResponse.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHRequest.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHScreenText.cs" />
