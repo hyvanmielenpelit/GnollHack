@@ -1721,7 +1721,7 @@ namespace GnollHackX
 
         public int ClientCallback_PlayImmediateSound(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid, ulong play_flags)
         {
-            RecordFunctionCall(RecordedFunctionID.PlayImmediateSound, ghsound, eventPath, bankid, eventVolume, soundVolume, arraysize, parameterNames, parameterValues, sound_type, play_group, dialogue_mid, play_flags);
+            RecordFunctionCall(RecordedFunctionID.PlayImmediateSound, ghsound, eventPath, bankid, eventVolume, soundVolume, parameterNames, parameterValues, arraysize, sound_type, play_group, dialogue_mid, play_flags);
 
             if (GHApp.FmodService != null && !GHApp.IsMuted)
             {

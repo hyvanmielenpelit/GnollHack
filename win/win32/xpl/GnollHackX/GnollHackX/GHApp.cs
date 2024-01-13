@@ -4049,7 +4049,7 @@ namespace GnollHackX
                                         break;
                                     case (int)RecordedFunctionID.ExitWindows:
                                         {
-                                            string str = br.ReadString();
+                                            string str = br.ReadInt32() == 0 ? null : br.ReadString();
                                             game.ClientCallback_ExitWindows(str);
                                         }
                                         break;
@@ -4090,9 +4090,9 @@ namespace GnollHackX
                                         break;
                                     case (int)RecordedFunctionID.AskName:
                                         {
-                                            string modeName = br.ReadString();
-                                            string modeDescription = br.ReadString();
-                                            string chName = br.ReadString();
+                                            string modeName = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            string modeDescription = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            string chName = br.ReadInt32() == 0 ? null : br.ReadString();
                                             /* No asking name in replay */
                                             //game.ClientCallback_AskName(modeName, modeDescription, chName);
                                             Thread.Sleep(100);
@@ -4131,12 +4131,12 @@ namespace GnollHackX
                                             int attr = br.ReadInt32();
                                             int color = br.ReadInt32();
                                             int glyph = br.ReadInt32();
-                                            string title = br.ReadString();
-                                            string question = br.ReadString();
-                                            string responses = br.ReadString();
-                                            string def = br.ReadString();
-                                            string descriptions = br.ReadString();
-                                            string introline = br.ReadString();
+                                            string title = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            string question = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            string responses = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            string def = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            string descriptions = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            string introline = br.ReadInt32() == 0 ? null : br.ReadString();
                                             ulong ynflags = br.ReadUInt64();
                                             int res = br.ReadInt32();
                                             /* No function call in replay */
@@ -4154,20 +4154,20 @@ namespace GnollHackX
                                         break;
                                     case (int)RecordedFunctionID.RawPrint:
                                         {
-                                            string str = br.ReadString();
+                                            string str = br.ReadInt32() == 0 ? null : br.ReadString();
                                             game.ClientCallback_RawPrint(str);
                                         }
                                         break;
                                     case (int)RecordedFunctionID.RawPrintBold:
                                         {
-                                            string str = br.ReadString();
+                                            string str = br.ReadInt32() == 0 ? null : br.ReadString();
                                             game.ClientCallback_RawPrintBold(str);
                                         }
                                         break;
                                     case (int)RecordedFunctionID.PutStrEx:
                                         {
                                             int win_id = br.ReadInt32();
-                                            string str = br.ReadString();
+                                            string str = br.ReadInt32() == 0 ? null : br.ReadString();
                                             int attributes = br.ReadInt32();
                                             int color = br.ReadInt32();
                                             int append = br.ReadInt32();
@@ -4177,10 +4177,12 @@ namespace GnollHackX
                                     case (int)RecordedFunctionID.PutStrEx2:
                                         {
                                             int win_id = br.ReadInt32();
-                                            string str = br.ReadString();
-                                            int len = str.Length + 1;
-                                            byte[] attributes_bytes = br.ReadBytes(len);
-                                            byte[] colors_bytes = br.ReadBytes(len);
+                                            string str = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            //int len = str.Length + 1;
+                                            int attr_len = br.ReadInt32();
+                                            byte[] attributes_bytes = br.ReadBytes(attr_len);
+                                            int color_len = br.ReadInt32();
+                                            byte[] colors_bytes = br.ReadBytes(color_len);
                                             int attributes = br.ReadInt32();
                                             int color = br.ReadInt32();
                                             int append = br.ReadInt32();
@@ -4217,7 +4219,7 @@ namespace GnollHackX
                                         break;
                                     case (int)RecordedFunctionID.PreferenceUpdate:
                                         {
-                                            string str = br.ReadString();
+                                            string str = br.ReadInt32() == 0 ? null : br.ReadString();
                                             game.ClientCallback_PreferenceUpdate(str);
                                         }
                                         break;
@@ -4235,8 +4237,8 @@ namespace GnollHackX
                                     case (int)RecordedFunctionID.StatusEnable:
                                         {
                                             int fieldidx = br.ReadInt32();
-                                            string nm = br.ReadString();
-                                            string fmt = br.ReadString();
+                                            string nm = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            string fmt = br.ReadInt32() == 0 ? null : br.ReadString();
                                             byte enable = br.ReadByte();
                                             game.ClientCallback_StatusEnable(fieldidx, nm, fmt, enable);
                                         }
@@ -4244,13 +4246,14 @@ namespace GnollHackX
                                     case (int)RecordedFunctionID.StatusUpdate:
                                         {
                                             int fieldidx = br.ReadInt32();
-                                            string text = br.ReadString();
+                                            string text = br.ReadInt32() == 0 ? null : br.ReadString();
                                             long condbits = br.ReadInt64();
                                             int cng = br.ReadInt32();
                                             int percent = br.ReadInt32();
                                             int color = br.ReadInt32();
-                                            short[] condcolors = new short[(int)bl_conditions.NUM_BL_CONDITIONS];
-                                            for(int i = 0; i < (int)bl_conditions.NUM_BL_CONDITIONS; i++)
+                                            int condlen = br.ReadInt32();
+                                            short[] condcolors = new short[condlen];
+                                            for(int i = 0; i < condlen; i++)
                                                 condcolors[i] = br.ReadInt16();
 
                                             unsafe
@@ -4270,10 +4273,12 @@ namespace GnollHackX
                                         break;
                                     case (int)RecordedFunctionID.PutMsgHistory:
                                         {
-                                            string msg = br.ReadString();
-                                            int len = msg.Length + 1;
-                                            byte[] attributes_bytes = br.ReadBytes(len);
-                                            byte[] colors_bytes = br.ReadBytes(len);
+                                            string msg = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            //int len = msg.Length + 1;
+                                            int attr_len = br.ReadInt32();
+                                            byte[] attributes_bytes = br.ReadBytes(attr_len);
+                                            int color_len = br.ReadInt32();
+                                            byte[] colors_bytes = br.ReadBytes(color_len);
                                             byte is_restoring = br.ReadByte();
                                             unsafe
                                             {
@@ -4306,7 +4311,7 @@ namespace GnollHackX
                                             char groupaccel = br.ReadChar();
                                             int attr = br.ReadInt32();
                                             int color = br.ReadInt32();
-                                            string text = br.ReadString();
+                                            string text = br.ReadInt32() == 0 ? null : br.ReadString();
                                             byte presel = br.ReadByte();
                                             int maxcount = br.ReadInt32();
                                             ulong oid = br.ReadUInt64();
@@ -4339,8 +4344,8 @@ namespace GnollHackX
                                     case (int)RecordedFunctionID.EndMenu:
                                         {
                                             int winid = br.ReadInt32();
-                                            string prompt = br.ReadString();
-                                            string subtitle = br.ReadString();
+                                            string prompt = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            string subtitle = br.ReadInt32() == 0 ? null : br.ReadString();
                                             game.ClientCallback_EndMenu(winid, prompt, subtitle);
                                         }
                                         break;
@@ -4362,7 +4367,7 @@ namespace GnollHackX
                                         break;
                                     case (int)RecordedFunctionID.ReportPlayerName:
                                         {
-                                            string name = br.ReadString();
+                                            string name = br.ReadInt32() == 0 ? null : br.ReadString();
                                             //game.ClientCallback_ReportPlayerName(name);
                                         }
                                         break;
@@ -4430,7 +4435,7 @@ namespace GnollHackX
                                             int cmdtype = br.ReadInt32();
                                             int x = br.ReadInt32();
                                             int y = br.ReadInt32();
-                                            string engraving_text = br.ReadString();
+                                            string engraving_text = br.ReadInt32() == 0 ? null : br.ReadString();
                                             int etype = br.ReadInt32();
                                             ulong eflags = br.ReadUInt64();
                                             ulong gflags = br.ReadUInt64();
@@ -4443,11 +4448,11 @@ namespace GnollHackX
                                             int style = br.ReadInt32();
                                             int attr = br.ReadInt32();
                                             int color = br.ReadInt32();
-                                            string query = br.ReadString();
-                                            string placeholder = br.ReadString();
-                                            string linesuffix = br.ReadString();
-                                            string introline = br.ReadString();
-                                            string line = br.ReadString();
+                                            string query = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            string placeholder = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            string linesuffix = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            string introline = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            string line = br.ReadInt32() == 0 ? null : br.ReadString();
 
                                             //game.ClientCallback_GetLine(style, attr, color, query, placeholder, linesuffix, introline, line);
                                         }
@@ -4463,8 +4468,8 @@ namespace GnollHackX
                                             int cmd_cur_char = br.ReadInt32();
                                             int style = br.ReadInt32();
                                             int glyph = br.ReadInt32();
-                                            string cmd_text = br.ReadString();
-                                            string target_text = br.ReadString();
+                                            string cmd_text = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            string target_text = br.ReadInt32() == 0 ? null : br.ReadString();
                                             int attr = br.ReadInt32();
                                             int color = br.ReadInt32();
                                             game.ClientCallback_AddContextMenu(cmd_def_char, cmd_cur_char, style, glyph, cmd_text, target_text, attr, color);
@@ -4495,7 +4500,7 @@ namespace GnollHackX
                                         {
                                             int x = br.ReadInt32();
                                             int y = br.ReadInt32();
-                                            string text = br.ReadString();
+                                            string text = br.ReadInt32() == 0 ? null : br.ReadString();
                                             int style = br.ReadInt32();
                                             int attr = br.ReadInt32();
                                             int color = br.ReadInt32();
@@ -4505,9 +4510,9 @@ namespace GnollHackX
                                         break;
                                     case (int)RecordedFunctionID.DisplayScreenText:
                                         {
-                                            string text = br.ReadString();
-                                            string supertext = br.ReadString();
-                                            string subtext = br.ReadString();
+                                            string text = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            string supertext = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            string subtext = br.ReadInt32() == 0 ? null : br.ReadString();
                                             int style = br.ReadInt32();
                                             int attr = br.ReadInt32();
                                             int color = br.ReadInt32();
@@ -4517,8 +4522,8 @@ namespace GnollHackX
                                         break;
                                     case (int)RecordedFunctionID.DisplayPopupText:
                                         {
-                                            string text = br.ReadString();
-                                            string title = br.ReadString();
+                                            string text = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            string title = br.ReadInt32() == 0 ? null : br.ReadString();
                                             int style = br.ReadInt32();
                                             int attr = br.ReadInt32();
                                             int color = br.ReadInt32();
@@ -4550,17 +4555,19 @@ namespace GnollHackX
                                     case (int)RecordedFunctionID.PlayImmediateSound:
                                         {
                                             int ghsound = br.ReadInt32();
-                                            string eventPath = br.ReadString();
+                                            string eventPath = br.ReadInt32() == 0 ? null : br.ReadString();
                                             int bankid = br.ReadInt32();
                                             double eventVolume = br.ReadDouble();
                                             double soundVolume = br.ReadDouble();
-                                            int arraysize = br.ReadInt32();
-                                            string[] parameterNames = new string[arraysize];
-                                            for (int j = 0; j < arraysize; j++)
+                                            int parameterNameArraySize = br.ReadInt32();
+                                            string[] parameterNames = new string[parameterNameArraySize];
+                                            for (int j = 0; j < parameterNameArraySize; j++)
                                                 parameterNames[j] = br.ReadString();
-                                            float[] parameterValues = new float[arraysize];
-                                            for (int j = 0; j < arraysize; j++)
+                                            int parameterValueArraySize = br.ReadInt32();
+                                            float[] parameterValues = new float[parameterValueArraySize];
+                                            for (int j = 0; j < parameterValueArraySize; j++)
                                                 parameterValues[j] = br.ReadSingle();
+                                            int arraysize = br.ReadInt32();
                                             int sound_type = br.ReadInt32();
                                             int play_group = br.ReadInt32();
                                             uint dialogue_mid = br.ReadUInt32();
@@ -4572,7 +4579,7 @@ namespace GnollHackX
                                     case (int)RecordedFunctionID.PlayMusic:
                                         {
                                             int ghsound = br.ReadInt32();
-                                            string eventPath = br.ReadString();
+                                            string eventPath = br.ReadInt32() == 0 ? null : br.ReadString();
                                             int bankid = br.ReadInt32();
                                             double eventVolume = br.ReadDouble();
                                             double soundVolume = br.ReadDouble();
@@ -4582,7 +4589,7 @@ namespace GnollHackX
                                     case (int)RecordedFunctionID.PlayLevelAmbient:
                                         {
                                             int ghsound = br.ReadInt32();
-                                            string eventPath = br.ReadString();
+                                            string eventPath = br.ReadInt32() == 0 ? null : br.ReadString();
                                             int bankid = br.ReadInt32();
                                             double eventVolume = br.ReadDouble();
                                             double soundVolume = br.ReadDouble();
@@ -4592,7 +4599,7 @@ namespace GnollHackX
                                     case (int)RecordedFunctionID.PlayEnvironmentAmbient:
                                         {
                                             int ghsound = br.ReadInt32();
-                                            string eventPath = br.ReadString();
+                                            string eventPath = br.ReadInt32() == 0 ? null : br.ReadString();
                                             int bankid = br.ReadInt32();
                                             double eventVolume = br.ReadDouble();
                                             double soundVolume = br.ReadDouble();
@@ -4602,7 +4609,7 @@ namespace GnollHackX
                                     case (int)RecordedFunctionID.PlayOccupationAmbient:
                                         {
                                             int ghsound = br.ReadInt32();
-                                            string eventPath = br.ReadString();
+                                            string eventPath = br.ReadInt32() == 0 ? null : br.ReadString();
                                             int bankid = br.ReadInt32();
                                             double eventVolume = br.ReadDouble();
                                             double soundVolume = br.ReadDouble();
@@ -4612,7 +4619,7 @@ namespace GnollHackX
                                     case (int)RecordedFunctionID.PlayEffectAmbient:
                                         {
                                             int ghsound = br.ReadInt32();
-                                            string eventPath = br.ReadString();
+                                            string eventPath = br.ReadInt32() == 0 ? null : br.ReadString();
                                             int bankid = br.ReadInt32();
                                             double eventVolume = br.ReadDouble();
                                             double soundVolume = br.ReadDouble();
@@ -4628,7 +4635,7 @@ namespace GnollHackX
                                     case (int)RecordedFunctionID.AddAmbientSound:
                                         {
                                             int ghsound = br.ReadInt32();
-                                            string eventPath = br.ReadString();
+                                            string eventPath = br.ReadInt32() == 0 ? null : br.ReadString();
                                             int bankid = br.ReadInt32();
                                             double eventVolume = br.ReadDouble();
                                             double soundVolume = br.ReadDouble();
@@ -4668,17 +4675,17 @@ namespace GnollHackX
                                             int cmd_id = br.ReadInt32();
                                             int cmd_param = br.ReadInt32();
                                             int cmd_param2 = br.ReadInt32();
-                                            string cmd_str = br.ReadString();
+                                            string cmd_str = br.ReadInt32() == 0 ? null : br.ReadString();
                                             game.ClientCallback_IssueGuiCommand(cmd_id, cmd_param, cmd_param2, cmd_str);
                                         }
                                         break;
                                     case (int)RecordedFunctionID.OutRip:
                                         {
                                             int winid = br.ReadInt32();
-                                            string player_name = br.ReadString();
+                                            string player_name = br.ReadInt32() == 0 ? null : br.ReadString();
                                             int points = br.ReadInt32();
-                                            string killer = br.ReadString();
-                                            string timestr = br.ReadString();
+                                            string killer = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            string timestr = br.ReadInt32() == 0 ? null : br.ReadString();
                                             game.ClientCallback_OutRip(winid, player_name, points, killer, timestr);
                                         }
                                         break;
@@ -4690,8 +4697,8 @@ namespace GnollHackX
                                     case (int)RecordedFunctionID.OpenSpecialView:
                                         {
                                             int viewtype = br.ReadInt32();
-                                            string text = br.ReadString();
-                                            string title = br.ReadString();
+                                            string text = br.ReadInt32() == 0 ? null : br.ReadString();
+                                            string title = br.ReadInt32() == 0 ? null : br.ReadString();
                                             int attr = br.ReadInt32();
                                             int color = br.ReadInt32();
                                             game.ClientCallback_OpenSpecialView(viewtype, text, title, attr, color);
