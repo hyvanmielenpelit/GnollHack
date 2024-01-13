@@ -15,11 +15,13 @@ using Xamarin.Essentials;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
+using System.Linq;
+using System.Drawing;
 
 namespace GnollHackX
 {
     public class GHGame
-   {
+    {
         public RunGnollHackFlags StartFlags { get; set; }
         private static ConcurrentDictionary<GHGame, ConcurrentQueue<GHRequest>> _concurrentRequestDictionary = new ConcurrentDictionary<GHGame, ConcurrentQueue<GHRequest>>();
         private static ConcurrentDictionary<GHGame, ConcurrentQueue<GHResponse>> _concurrentResponseDictionary = new ConcurrentDictionary<GHGame, ConcurrentQueue<GHResponse>>();
@@ -59,13 +61,14 @@ namespace GnollHackX
 
         public static ConcurrentDictionary<GHGame, ConcurrentQueue<GHRequest>> RequestDictionary { get { return _concurrentRequestDictionary; } }
         public static ConcurrentDictionary<GHGame, ConcurrentQueue<GHResponse>> ResponseDictionary { get { return _concurrentResponseDictionary; } }
-        public string CharacterName {
+        public string CharacterName 
+        {
             get { lock (_characterNameLock) { return _characterName; } } 
             set { lock (_characterNameLock) { _characterName = value; } }
         }
-        public bool WizardMode { get { return _gamePage.EnableWizardMode; } }
-        public bool CasualMode { get { return _gamePage.EnableCasualMode; } }
-        public bool ModernMode { get { return _gamePage.EnableModernMode; } }
+        public bool WizardMode { get { return _gamePage != null ? _gamePage.EnableWizardMode : false; } }
+        public bool CasualMode { get { return _gamePage != null ? _gamePage.EnableCasualMode : false; } }
+        public bool ModernMode { get { return _gamePage != null ? _gamePage.EnableModernMode : false; } }
 
         public GHGame(GamePage gamePage)
         {
@@ -298,10 +301,10 @@ namespace GnollHackX
 
         public int ClientCallback_CreateGHWindow(int wintype, int style, int glyph, byte dataflags, IntPtr objdata_ptr, IntPtr otypdata_ptr)
         {
-            RecordFunctionCall(RecordedFunctionID.CreateWindow, wintype, style, glyph, dataflags, objdata_ptr, otypdata_ptr);
-
             obj objdata = objdata_ptr == IntPtr.Zero ? new obj() : (obj)Marshal.PtrToStructure(objdata_ptr, typeof(obj));
             objclassdata otypdata = otypdata_ptr == IntPtr.Zero ? new objclassdata() : (objclassdata)Marshal.PtrToStructure(otypdata_ptr, typeof(objclassdata));
+
+            RecordFunctionCall(RecordedFunctionID.CreateWindow, wintype, style, glyph, dataflags, objdata, otypdata);
 
             if (_lastWindowHandle >= GHConstants.MaxGHWindows) /* Should not happen, but paranoid */
                 _lastWindowHandle = GHConstants.MaxGHWindows - 1;
@@ -463,7 +466,6 @@ namespace GnollHackX
         public int ClientCallback_AskName(string modeName, string modeDescription, IntPtr out_string_ptr)
         {
             Debug.WriteLine("ClientCallback_AskName");
-            RecordFunctionCall(RecordedFunctionID.AskName, modeName, modeDescription, out_string_ptr);
 
             ConcurrentQueue<GHRequest> queue;
             _characternameSet = false;
@@ -482,13 +484,20 @@ namespace GnollHackX
                     byte[] utf8text = Encoding.UTF8.GetBytes(CharacterName);
                     Marshal.Copy(utf8text, 0, out_string_ptr, utf8text.Length);
                     Marshal.WriteByte(out_string_ptr, utf8text.Length, 0);
+                    RecordFunctionCall(RecordedFunctionID.AskName, modeName, modeDescription, CharacterName);
                     return 1;
                 }
                 else
+                {
+                    RecordFunctionCall(RecordedFunctionID.AskName, modeName, modeDescription, "");
                     return 0;
+                }
             }
             else
+            {
+                RecordFunctionCall(RecordedFunctionID.AskName, modeName, modeDescription, "");
                 return 0;
+            }
         }
 
         public void ClientCallback_get_nh_event()
@@ -525,7 +534,7 @@ namespace GnollHackX
         public int ClientCallback_nhgetch()
         {
             Debug.WriteLine("ClientCallback_nhgetch");
-            RecordFunctionCall(RecordedFunctionID.GetChar);
+            WriteFunctionCallsToDisk();
 
             ConcurrentQueue<GHRequest> queue;
             if (GHGame.RequestDictionary.TryGetValue(this, out queue))
@@ -547,16 +556,20 @@ namespace GnollHackX
                     _inputBuffer[_inputBufferLocation] = 0;
                     _inputBufferLocation--;
                 }
+                RecordFunctionCall(RecordedFunctionID.GetChar, res);
                 return res;
             }
             else
+            {
+                RecordFunctionCall(RecordedFunctionID.GetChar, 0);
                 return 0;
-
+            }
         }
 
         public int ClientCallback_nh_poskey(out int x, out int y, out int mod)
         {
             Debug.WriteLine("ClientCallback_nh_poskey");
+            WriteFunctionCallsToDisk();
 
             x = 0;
             y = 0;
@@ -606,6 +619,7 @@ namespace GnollHackX
             if (question != null)
                 RawPrintEx(question, attr, color, false);
 
+            WriteFunctionCallsToDisk();
             ConcurrentQueue<GHRequest> queue;
             if (responses == null || responses == "")
             {
@@ -2453,12 +2467,14 @@ namespace GnollHackX
 
             _recordedFunctionCalls.Add(new GHRecordedFunctionCall(functionID, args, DateTime.Now));
         }
+
         private void RecordFunctionCallImmediately(RecordedFunctionID functionID, params object[] args)
         {
             if (!GHApp.RecordGame)
                 return;
 
-            // Write to disk
+            RecordFunctionCall(functionID, args);
+            WriteFunctionCallsToDisk();
         }
 
         private void WriteFunctionCallsToDisk()
@@ -2468,12 +2484,138 @@ namespace GnollHackX
 
             if (_recordedFunctionCalls.Count > 0)
             {
-                // Check if file exists; if not, create it and do header
-                foreach (GHRecordedFunctionCall rfc in _recordedFunctionCalls)
+                try
                 {
-                    // Write item
+                    string dir = Path.Combine(GHApp.GHPath, GHConstants.ReplayDirectory);
+                    if (!Directory.Exists(dir))
+                        GHApp.CheckCreateDirectory(dir);
+                    if (Directory.Exists(dir))
+                    {
+                        string filepath = Path.Combine(dir, "replay-" + GHApp.GHVersionNumber.ToString() + "-" + DateTime.Now.ToBinary().ToString() + ".gnhrec");
+                        bool fileDidExist = File.Exists(filepath);
+                        using (FileStream fileStream = File.OpenWrite(filepath))
+                        {
+                            if (fileStream != null)
+                            {
+                                using (BinaryWriter writer = new BinaryWriter(fileStream))
+                                {
+                                    if(!fileDidExist)
+                                    {
+                                        /* Write header */
+                                        writer.Write(GHApp.GHVersionNumber);
+                                        writer.Write(GHApp.GHVersionCompatibility);
+                                        writer.Write(DateTime.Now.ToBinary());
+                                        writer.Write(Preferences.Get("LastUsedPlayerName", ""));
+                                        writer.Write(WizardMode);
+                                        writer.Write(ModernMode);
+                                        writer.Write(CasualMode);
+                                        writer.Write(0); /* int for future use */
+                                        writer.Write(0); /* int for future use */
+                                        writer.Write(0UL); /* flags for future use */
+                                        writer.Write(0UL); /* flags for future use */
+                                    }
+                                    foreach (GHRecordedFunctionCall rfc in _recordedFunctionCalls)
+                                    {
+                                        if (rfc == null)
+                                            continue;
+
+                                        writer.Write((int)rfc.RecordedFunctionID);
+                                        writer.Write(rfc.Time.ToBinary());
+                                        int noOfArgs = rfc.Args == null ? 0 : rfc.Args.Length;
+                                        writer.Write((byte)noOfArgs);
+                                        for (int i = 0; i < noOfArgs; i++)
+                                        {
+                                            object o = rfc.Args[i];
+                                            if (o == null)
+                                            {
+                                                writer.Write(0);
+                                            }
+                                            else if (o is bool)
+                                            {
+                                                writer.Write((bool)o);
+                                            }
+                                            else if (o is byte)
+                                            {
+                                                writer.Write((byte)o);
+                                            }
+                                            else if (o is sbyte)
+                                            {
+                                                writer.Write((sbyte)o);
+                                            }
+                                            else if (o is short)
+                                            {
+                                                writer.Write((short)o);
+                                            }
+                                            else if (o is ushort)
+                                            {
+                                                writer.Write((ushort)o);
+                                            }
+                                            else if (o is int)
+                                            {
+                                                writer.Write((int)o);
+                                            }
+                                            else if (o is uint)
+                                            {
+                                                writer.Write((uint)o);
+                                            }
+                                            else if (o is long)
+                                            {
+                                                writer.Write((long)o);
+                                            }
+                                            else if (o is ulong)
+                                            {
+                                                writer.Write((ulong)o);
+                                            }
+                                            else if (o is string)
+                                            {
+                                                writer.Write((string)o);
+                                            }
+                                            else if (o is byte[])
+                                            {
+                                                writer.Write((byte[])o);
+                                            }
+                                            else if (o is short[])
+                                            {
+                                                short[] arr = (short[])o;
+                                                for(int j = 0; j < arr.Length; j++)
+                                                    writer.Write(arr[j]);
+                                            }
+                                            else if (o.GetType().IsValueType) // Is struct
+                                            {
+                                                byte[] arr = null;
+                                                IntPtr ptr = IntPtr.Zero;
+                                                int size = 0;
+                                                try
+                                                {
+                                                    size = Marshal.SizeOf(o);
+                                                    arr = new byte[size];
+                                                    ptr = Marshal.AllocHGlobal(size);
+                                                    Marshal.StructureToPtr(o, ptr, true);
+                                                    Marshal.Copy(ptr, arr, 0, size);
+                                                }
+                                                catch (Exception e)
+                                                {
+                                                    Debug.WriteLine(e.Message);
+                                                }
+                                                finally
+                                                {
+                                                    Marshal.FreeHGlobal(ptr);
+                                                }
+                                                writer.Write(size);
+                                                writer.Write(arr);
+                                            }
+                                        }
+                                    }
+                                }
+                                _recordedFunctionCalls.Clear();
+                            }
+                        }
+                    }
                 }
-                _recordedFunctionCalls.Clear();
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
             }
         }
     }

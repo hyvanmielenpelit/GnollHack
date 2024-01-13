@@ -429,5 +429,13 @@ namespace GnollHackX.Pages.MainScreen
             }
             AboutGrid.IsEnabled = true;
         }
+
+        private void btnReplays_Clicked(object sender, EventArgs e)
+        {
+            AboutGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+
+            AboutGrid.IsEnabled = true;
+        }
     }
 }

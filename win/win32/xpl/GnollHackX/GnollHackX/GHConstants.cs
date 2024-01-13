@@ -1589,7 +1589,10 @@ namespace GnollHackX
         public const string AppLogFileName = "ghlog.txt";
         public const string SaveDirectory = "save";
         public const string DumplogDirectory = "dumplog";
+        public const string ReplayDirectory = "replay";
         public const string ManualFilePrefix = "manual_id_";
+        public const string ReplayPrefix = "replay-";
+        public const string ReplayAffix = ".gnhrec";
         public const bool DefaultReadStreamingBankToMemory = false;
         public const ulong AndroidBanksToMemoryThreshold = 3500000000UL;
         public const bool DefaultCopyStreamingBankToDisk = false;
@@ -1743,6 +1746,7 @@ namespace GnollHackX
     public enum RecordedFunctionID
     {
         Undefined = 0,
+        EndOfFile,
         InitializeWindows,
         CreateWindow,
         DestroyWindow,

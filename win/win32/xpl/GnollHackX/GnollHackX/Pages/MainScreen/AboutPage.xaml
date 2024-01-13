@@ -40,12 +40,14 @@
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnImportSavedGames_Clicked" UseVaryingBackgroundImages ="False" />
                         <controls:CustomImageButton x:Name="btnSavedGames" Text="Export Saved Games" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnSavedGames_Clicked" UseVaryingBackgroundImages ="False" />
+                        <controls:CustomImageButton x:Name="btnReplays" Text="Replays" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnReplays_Clicked" UseVaryingBackgroundImages ="False" />
                         <controls:CustomImageButton x:Name="btnDumplogs" Text="Dumplogs" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnDumplogs_Clicked" UseVaryingBackgroundImages ="False" />
                         <controls:CustomImageButton x:Name="btnCrashReport" Text="Crash Report" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnCrashReport_Clicked" UseVaryingBackgroundImages ="False" />
-                        <controls:CustomImageButton x:Name="btnDowngrade" Text="Downgrade" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnDowngrade_Clicked" UseVaryingBackgroundImages ="False" />
+                        <!--<controls:CustomImageButton x:Name="btnDowngrade" Text="Downgrade" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnDowngrade_Clicked" UseVaryingBackgroundImages ="False" />-->
                         <controls:CustomImageButton x:Name="btnViewGHLog" Text="View App Log" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                     HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnViewGHLog_Clicked" UseVaryingBackgroundImages ="False" />
                         <controls:CustomImageButton x:Name="btnViewPanicLog" Text="View Panic Log" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"

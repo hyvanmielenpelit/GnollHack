@@ -856,8 +856,20 @@ namespace GnollHackX.Pages.Game
             return GHConstants.MapFontDefaultSize * (density * c_numerator) / c_denominator;
         }
 
-        public async void StartGame()
+        public async void StartNewGame()
         {
+            await StartGame(null);
+        }
+
+        public async void StartReplay(string replayFileName)
+        {
+            await StartGame(replayFileName);
+        }
+
+        string _replayFileName = null;
+        public async Task StartGame(string replayFileName)
+        {
+            _replayFileName = replayFileName;
             _mainPage.GameStarted = true;
             LoadingProgressBar.Progress = 0.0;
 
@@ -993,7 +1005,11 @@ namespace GnollHackX.Pages.Game
 
             await LoadingProgressBar.ProgressTo(0.95, 50, Easing.Linear);
 
-            Thread t = new Thread(new ThreadStart(GNHThreadProc));
+            Thread t;
+            if(replayFileName != null)
+                t = new Thread(new ThreadStart(GNHThreadProcForReplay));
+            else
+                t = new Thread(new ThreadStart(GNHThreadProc));
             _gnhthread = t;
             _gnhthread.Start();
 
@@ -2114,6 +2130,13 @@ namespace GnollHackX.Pages.Game
             _currentGame.StartFlags = RunGnollHackFlags.ForceLastPlayerName;
             GHApp.CurrentGHGame = _currentGame;
             _gnollHackService.StartGnollHack(_currentGame);
+        }
+
+        protected void GNHThreadProcForReplay()
+        {
+            _currentGame = new GHGame(this);
+            GHApp.CurrentGHGame = _currentGame;
+            GHApp.PlayReplay(_currentGame, _replayFileName);
         }
 
         private void pollRequestQueue()

@@ -22,6 +22,7 @@ using System.Threading;
 using System.Net;
 using System.Net.Mail;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace GnollHackX
 {
@@ -3940,6 +3941,513 @@ namespace GnollHackX
             {
                 Debug.WriteLine(ex.Message);
             }
+        }
+
+        public static int PlayReplay(GHGame game, string replayFileName)
+        {
+            if (game == null || string.IsNullOrWhiteSpace(replayFileName))
+                return 2;
+
+            try
+            {
+                using (FileStream fs = File.OpenRead(replayFileName))
+                {
+                    if (fs != null)
+                    {
+                        using (BinaryReader br = new BinaryReader(fs))
+                        {
+                            /* Header */
+                            ulong verno = br.ReadUInt64();
+                            ulong vercompat = br.ReadUInt64();
+                            ulong date = br.ReadUInt64();
+                            string plname = br.ReadString();
+                            bool wizmode = br.ReadBoolean();
+                            bool modernmode = br.ReadBoolean();
+                            bool casualmode = br.ReadBoolean();
+                            int int1 = br.ReadInt32();
+                            int int2 = br.ReadInt32();
+                            ulong flags1 = br.ReadUInt64();
+                            ulong flags2 = br.ReadUInt64();
+
+                            int cmd;
+                            bool breakwhile;
+                            ulong time;
+                            do
+                            {
+                                breakwhile = false;
+                                cmd = br.ReadInt32();
+                                time = br.ReadUInt64();
+                                switch (cmd)
+                                {
+                                    case (int)RecordedFunctionID.EndOfFile:
+                                        breakwhile = true;
+                                        break;
+                                    case (int)RecordedFunctionID.InitializeWindows:
+                                        game.ClientCallback_InitWindows();
+                                        break;
+                                    case (int)RecordedFunctionID.CreateWindow:
+                                        {
+                                            int wintype = br.ReadInt32();
+                                            int style = br.ReadInt32();
+                                            int glyph = br.ReadInt32();
+                                            byte dataflags = br.ReadByte();
+
+                                            int objdata_size = br.ReadInt32();
+                                            byte[] objdata_bytes = br.ReadBytes(objdata_size);
+                                            unsafe
+                                            {
+                                                fixed (byte* objdata_byte_ptr = objdata_bytes)
+                                                {
+                                                    IntPtr objdata_ptr = (IntPtr)objdata_byte_ptr;
+
+                                                    int otypdata_size = br.ReadInt32();
+                                                    byte[] otypdata_bytes = br.ReadBytes(otypdata_size);
+                                                    fixed (byte* otypdata_byte_ptr = otypdata_bytes)
+                                                    {
+                                                        IntPtr otypdata_ptr = (IntPtr)otypdata_byte_ptr;
+                                                        game.ClientCallback_CreateGHWindow(wintype, style, glyph, dataflags, objdata_ptr, otypdata_ptr);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.DestroyWindow:
+                                        {
+                                            int winHandle = br.ReadInt32();
+                                            game.ClientCallback_DestroyGHWindow(winHandle);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.ClearWindow:
+                                        {
+                                            int winHandle = br.ReadInt32();
+                                            game.ClientCallback_ClearGHWindow(winHandle);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.DisplayWindow:
+                                        {
+                                            int winHandle = br.ReadInt32();
+                                            byte blocking = br.ReadByte();
+                                            game.ClientCallback_DisplayGHWindow(winHandle, blocking);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.ExitWindows:
+                                        {
+                                            string str = br.ReadString();
+                                            game.ClientCallback_ExitWindows(str);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.PlayerSelection:
+                                        {
+                                            game.ClientCallback_PlayerSelection();
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.Curs:
+                                        {
+                                            int winHandle = br.ReadInt32();
+                                            int x = br.ReadInt32();
+                                            int y = br.ReadInt32();
+                                            game.ClientCallback_Curs(winHandle, x, y);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.PrintGlyph:
+                                        {
+                                            int winHandle = br.ReadInt32();
+                                            int x = br.ReadInt32();
+                                            int y = br.ReadInt32();
+                                            int glyph = br.ReadInt32();
+                                            int bkglyph = br.ReadInt32();
+                                            int symbol = br.ReadInt32();
+                                            int ocolor = br.ReadInt32();
+                                            uint special = br.ReadUInt32();
+                                            int layers_size = br.ReadInt32();
+                                            byte[] layers_bytes = br.ReadBytes(layers_size);
+                                            unsafe
+                                            {
+                                                fixed (byte* layers_byte_ptr = layers_bytes)
+                                                {
+                                                    IntPtr layers_ptr = (IntPtr)layers_byte_ptr;
+                                                    game.ClientCallback_PrintGlyph(winHandle, x, y, glyph, bkglyph, symbol, ocolor, special, layers_ptr);
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.AskName:
+                                        {
+                                            string modeName = br.ReadString();
+                                            string modeDescription = br.ReadString();
+                                            string chName = br.ReadString();
+                                            /* No asking name in replay */
+                                            //game.ClientCallback_AskName(modeName, modeDescription, chName);
+                                            Thread.Sleep(100);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.GetEvent:
+                                        {
+                                            /* No function call in replay */
+                                            //game.ClientCallback_get_nh_event();
+                                            Thread.Sleep(100);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.GetChar:
+                                        {
+                                            int res = br.ReadInt32();
+                                            /* No function call in replay */
+                                            //game.ClientCallback_nhgetch();
+                                            Thread.Sleep(100);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.PosKey:
+                                        {
+                                            int x = br.ReadInt32();
+                                            int y = br.ReadInt32();
+                                            int mod = br.ReadInt32();
+                                            int res = br.ReadInt32();
+                                            /* No function call in replay */
+                                            //game.ClientCallback_nh_poskey();
+                                            Thread.Sleep(100);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.YnFunction:
+                                        {
+                                            //int style, int attr, int color, int glyph, string title, string question, string responses, string def, string descriptions, string introline, ulong ynflags
+                                            int style = br.ReadInt32();
+                                            int attr = br.ReadInt32();
+                                            int color = br.ReadInt32();
+                                            int glyph = br.ReadInt32();
+                                            string title = br.ReadString();
+                                            string question = br.ReadString();
+                                            string responses = br.ReadString();
+                                            string def = br.ReadString();
+                                            string descriptions = br.ReadString();
+                                            string introline = br.ReadString();
+                                            ulong ynflags = br.ReadUInt64();
+                                            int res = br.ReadInt32();
+                                            /* No function call in replay */
+                                            //game.ClientCallback_YnFunction();
+                                            Thread.Sleep(100);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.ClipAround:
+                                        {
+                                            int x = br.ReadInt32();
+                                            int y = br.ReadInt32();
+                                            byte force = br.ReadByte();
+                                            game.ClientCallback_Cliparound(x, y, force);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.RawPrint:
+                                        {
+                                            string str = br.ReadString();
+                                            game.ClientCallback_RawPrint(str);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.RawPrintBold:
+                                        {
+                                            string str = br.ReadString();
+                                            game.ClientCallback_RawPrintBold(str);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.PutStrEx:
+                                        {
+                                            int win_id = br.ReadInt32();
+                                            string str = br.ReadString();
+                                            int attributes = br.ReadInt32();
+                                            int color = br.ReadInt32();
+                                            int append = br.ReadInt32();
+                                            game.ClientCallback_PutStrEx(win_id, str, attributes, color, append);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.PutStrEx2:
+                                        {
+                                            int win_id = br.ReadInt32();
+                                            string str = br.ReadString();
+                                            int len = str.Length + 1;
+                                            byte[] attributes_bytes = br.ReadBytes(len);
+                                            byte[] colors_bytes = br.ReadBytes(len);
+                                            int attributes = br.ReadInt32();
+                                            int color = br.ReadInt32();
+                                            int append = br.ReadInt32();
+                                            unsafe
+                                            {
+                                                fixed (byte* attributes_byte_ptr = attributes_bytes)
+                                                {
+                                                    IntPtr attributes_ptr = (IntPtr)attributes_byte_ptr;
+                                                    fixed (byte* colors_byte_ptr = colors_bytes)
+                                                    {
+                                                        IntPtr colors_ptr = (IntPtr)colors_byte_ptr;
+                                                        game.ClientCallback_PutStrEx2(win_id, str, attributes_ptr, colors_ptr, attributes, color, append);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.DelayOutput:
+                                        {
+                                            game.ClientCallback_DelayOutput();
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.DelayOutputMilliseconds:
+                                        {
+                                            int ms = br.ReadInt32();
+                                            game.ClientCallback_DelayOutputMilliseconds(ms);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.DelayOutputIntervals:
+                                        {
+                                            int i = br.ReadInt32();
+                                            game.ClientCallback_DelayOutputIntervals(i);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.PreferenceUpdate:
+                                        {
+                                            string str = br.ReadString();
+                                            game.ClientCallback_PreferenceUpdate(str);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.StatusInit:
+                                        {
+                                            int reassessment = br.ReadInt32();
+                                            game.ClientCallback_StatusInit(reassessment);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.StatusFinish:
+                                        {
+                                            game.ClientCallback_StatusFinish();
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.StatusEnable:
+                                        {
+                                            int fieldidx = br.ReadInt32();
+                                            string nm = br.ReadString();
+                                            string fmt = br.ReadString();
+                                            byte enable = br.ReadByte();
+                                            game.ClientCallback_StatusEnable(fieldidx, nm, fmt, enable);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.StatusUpdate:
+                                        {
+                                            int fieldidx = br.ReadInt32();
+                                            string text = br.ReadString();
+                                            long condbits = br.ReadInt64();
+                                            int cng = br.ReadInt32();
+                                            int percent = br.ReadInt32();
+                                            int color = br.ReadInt32();
+                                            short[] condcolors = new short[(int)bl_conditions.NUM_BL_CONDITIONS];
+                                            for(int i = 0; i < (int)bl_conditions.NUM_BL_CONDITIONS; i++)
+                                                condcolors[i] = br.ReadInt16();
+
+                                            unsafe
+                                            {
+                                                fixed(short* p = condcolors)
+                                                {
+                                                    IntPtr condcolorptr = (IntPtr)p;
+                                                    game.ClientCallback_StatusUpdate(fieldidx, text, condbits, cng, percent, color, condcolorptr);
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.GetMsgHistory:
+                                        {
+                                            //game.GetMsgHistory();
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.PutMsgHistory:
+                                        {
+                                            string msg = br.ReadString();
+                                            int len = msg.Length + 1;
+                                            byte[] attributes_bytes = br.ReadBytes(len);
+                                            byte[] colors_bytes = br.ReadBytes(len);
+                                            byte is_restoring = br.ReadByte();
+                                            unsafe
+                                            {
+                                                fixed (byte* attributes_byte_ptr = attributes_bytes)
+                                                {
+                                                    IntPtr attributes_ptr = (IntPtr)attributes_byte_ptr;
+                                                    fixed (byte* colors_byte_ptr = colors_bytes)
+                                                    {
+                                                        IntPtr colors_ptr = (IntPtr)colors_byte_ptr;
+                                                        game.ClientCallback_PutMsgHistory(msg, attributes_ptr, colors_ptr, is_restoring);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.StartMenu:
+                                        {
+                                            int winid = br.ReadInt32();
+                                            int style = br.ReadInt32();
+                                            game.ClientCallback_StartMenu(winid, style);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.AddExtendedMenu:
+                                        {
+                                            int winid = br.ReadInt32();
+                                            int style = br.ReadInt32();
+                                            int glyph = br.ReadInt32();
+                                            long identifier = br.ReadInt64();
+                                            char accel = br.ReadChar();
+                                            char groupaccel = br.ReadChar();
+                                            int attribute = br.ReadInt32();
+                                            int color = br.ReadInt32();
+                                            string text = br.ReadString();
+                                            byte presel = br.ReadByte();
+                                            int maxcount = br.ReadInt32();
+                                            ulong oid = br.ReadUInt64();
+                                            ulong mid = br.ReadUInt64();
+                                            char headingaccel = br.ReadChar();
+                                            char special_mark = br.ReadChar();
+                                            ulong menuflags = br.ReadUInt64();
+                                            byte dataflags = br.ReadByte();
+
+                                            int objdata_size = br.ReadInt32();
+                                            byte[] objdata_bytes = br.ReadBytes(objdata_size);
+                                            unsafe
+                                            {
+                                                fixed (byte* objdata_byte_ptr = objdata_bytes)
+                                                {
+                                                    IntPtr otmpdata_ptr = (IntPtr)objdata_byte_ptr;
+
+                                                    int otypdata_size = br.ReadInt32();
+                                                    byte[] otypdata_bytes = br.ReadBytes(otypdata_size);
+                                                    fixed (byte* otypdata_byte_ptr = otypdata_bytes)
+                                                    {
+                                                        IntPtr otypdata_ptr = (IntPtr)otypdata_byte_ptr;
+                                                        game.ClientCallback_AddExtendedMenu(winid, glyph, identifier, accel, groupaccel, attribute, color, text, presel,
+                                                            maxcount, oid, mid, headingaccel, special_mark, menuflags, dataflags, style, otmpdata_ptr, otypdata_ptr);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.EndMenu:
+                                        {
+                                            int winid = br.ReadInt32();
+                                            string prompt = br.ReadString();
+                                            string subtitle = br.ReadString();
+                                            game.ClientCallback_EndMenu(winid, prompt, subtitle);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.SelectMenu:
+                                        {
+                                            int winid = br.ReadInt32();
+                                            int how = br.ReadInt32();
+                                            int listsize = br.ReadInt32();
+                                            int count = br.ReadInt32();
+                                            //IntPtr picklistptr;
+                                            //int listsize;
+                                            //game.ClientCallback_SelectMenu(winid, how, out picklistptr, out listsize);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.FreeMemory:
+                                        {
+                                            //game.ClientCallback_FreeMemory();
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.ReportPlayerName:
+                                        {
+                                            string name = br.ReadString();
+                                            //game.ClientCallback_ReportPlayerName(name);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.ReportPlayTime:
+                                        {
+                                            long timePassed = br.ReadInt64();
+                                            long currentPlayTime = br.ReadInt64();
+                                            //game.ClientCallback_ReportPlayTime(timePassed, currentPlayTime);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.SendObjectData:
+                                        {
+                                            int x = br.ReadInt32();
+                                            int y = br.ReadInt32();
+
+                                            int objdata_size = br.ReadInt32();
+                                            byte[] objdata_bytes = br.ReadBytes(objdata_size);
+
+                                            int cmdtype = br.ReadInt32();
+                                            int where = br.ReadInt32();
+
+                                            int otypdata_size = br.ReadInt32();
+                                            byte[] otypdata_bytes = br.ReadBytes(otypdata_size);
+
+                                            ulong oflags = br.ReadUInt64();
+
+                                            unsafe
+                                            {
+                                                fixed (byte* objdata_byte_ptr = objdata_bytes)
+                                                {
+                                                    IntPtr otmp_ptr = (IntPtr)objdata_byte_ptr;
+
+                                                    fixed (byte* otypdata_byte_ptr = otypdata_bytes)
+                                                    {
+                                                        IntPtr otypdata_ptr = (IntPtr)otypdata_byte_ptr;
+                                                        game.ClientCallback_SendObjectData(x, y, otmp_ptr, cmdtype, where, otypdata_ptr, oflags);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.SendMonsterData:
+                                        {
+                                            int cmdtype = br.ReadInt32();
+                                            int x = br.ReadInt32();
+                                            int y = br.ReadInt32();
+
+                                            int mondata_size = br.ReadInt32();
+                                            byte[] mondata_bytes = br.ReadBytes(mondata_size);
+
+                                            ulong oflags = br.ReadUInt64();
+
+                                            unsafe
+                                            {
+                                                fixed (byte* monster_data_byte_ptr = mondata_bytes)
+                                                {
+                                                    IntPtr monster_data_ptr = (IntPtr)monster_data_byte_ptr;
+                                                    game.ClientCallback_SendMonsterData(cmdtype, x, y, monster_data_ptr, oflags);
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.SendEngravingData:
+                                        {
+                                            int cmdtype = br.ReadInt32();
+                                            int x = br.ReadInt32();
+                                            int y = br.ReadInt32();
+                                            string engraving_text = br.ReadString();
+                                            int etype = br.ReadInt32();
+                                            ulong eflags = br.ReadUInt64();
+                                            ulong gflags = br.ReadUInt64();
+
+                                            game.ClientCallback_SendEngravingData(cmdtype, x, y, engraving_text, etype, eflags, gflags);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.GetLine:
+                                        {
+                                            int style = br.ReadInt32();
+                                            int attr = br.ReadInt32();
+                                            int color = br.ReadInt32();
+                                            string query = br.ReadString();
+                                            string placeholder = br.ReadString();
+                                            string linesuffix = br.ReadString();
+                                            string introline = br.ReadString();
+                                            string line = br.ReadString();
+
+                                            //game.ClientCallback_GetLine(style, attr, color, query, placeholder, linesuffix, introline, line);
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            } while (!breakwhile);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            return 0;
         }
     }
 

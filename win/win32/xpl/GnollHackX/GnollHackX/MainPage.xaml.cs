@@ -372,7 +372,7 @@ namespace GnollHackX
             gamePage.EnableCasualMode = casualModeSwitch.IsToggled;
             gamePage.EnableModernMode = !classicModeSwitch.IsToggled;
             await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
-            gamePage.StartGame();
+            gamePage.StartNewGame();
         }
 
         private bool _firsttime = true;
