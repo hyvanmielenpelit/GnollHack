@@ -606,5 +606,42 @@ namespace GnollHackX.Pages.MainScreen
             ResetGrid.IsEnabled = true;
 
         }
+
+        private async void btnDeleteReplays_Clicked(object sender, EventArgs e)
+        {
+            ResetGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            string directory1 = Path.Combine(GHApp.GHPath, GHConstants.ReplayDirectory);
+            int nofiles1 = 0;
+            if (Directory.Exists(directory1))
+            {
+                string[] files1 = Directory.GetFiles(directory1);
+                if (files1 != null)
+                {
+                    nofiles1 = files1.Length;
+                }
+            }
+            bool answer = await DisplayAlert("Delete All Replays?", "Are you sure to delete all files (" + nofiles1 + ") in the " + GHConstants.ReplayDirectory + " directory?", "Yes", "No");
+            if (answer)
+            {
+                try
+                {
+                    string datadir = Path.Combine(GHApp.GHPath, GHConstants.ReplayDirectory);
+                    if (Directory.Exists(datadir))
+                        Directory.Delete(datadir, true);
+
+                    btnDeleteReplays.Text = "Done";
+                    btnDeleteReplays.TextColor = GHColors.Red;
+                }
+                catch (Exception ex)
+                {
+                    btnDeleteReplays.Text = "Failed";
+                    btnDeleteReplays.TextColor = GHColors.Red;
+                    await DisplayAlert("Deletion Failed", "GnollHack failed to delete the files in " + GHConstants.ReplayDirectory + ": " + ex.Message, "OK");
+                }
+            }
+            ResetGrid.IsEnabled = true;
+
+        }
     }
 }

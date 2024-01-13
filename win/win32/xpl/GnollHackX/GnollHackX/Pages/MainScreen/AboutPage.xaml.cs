@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Net.WebRequestMethods;
+using GnollHackX.Pages.Game;
+
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
@@ -24,8 +26,11 @@ namespace GnollHackX.Pages.MainScreen
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AboutPage : ContentPage
     {
-        public AboutPage()
+        MainPage _mainPage = null;
+        public AboutPage(MainPage mainPage)
         {
+            _mainPage = mainPage;
+
             InitializeComponent();
 #if GNH_MAUI
             On<iOS>().SetUseSafeArea(true);
@@ -430,10 +435,45 @@ namespace GnollHackX.Pages.MainScreen
             AboutGrid.IsEnabled = true;
         }
 
-        private void btnReplays_Clicked(object sender, EventArgs e)
+        private async void btnReplays_Clicked(object sender, EventArgs e)
         {
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
+
+            string dir = Path.Combine(GHApp.GHPath, GHConstants.ReplayDirectory);
+            if(Directory.Exists(dir))
+            {
+                int idx = 0;
+                string[] files = Directory.GetFiles(dir);
+                if(files != null && files.Length > 0)
+                {
+                    bool ans = await DisplayAlert("Replays Available", "There are " + files.Length + " replays available. Play one of them?", "Yes", "No");
+                    if(ans)
+                    {
+                        foreach (string file in files)
+                        {
+                            idx++;
+                            ans = await DisplayAlert("Replay " + idx + " / " + files.Length, "Replay file " + file + "?", "Yes", "No");
+                            if(ans)
+                            {
+                                var gamePage = new GamePage(_mainPage);
+                                GHApp.CurrentGamePage = gamePage;
+                                await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
+                                gamePage.StartReplay(file);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    await DisplayAlert("No Replays", "There are no replays in the replay directory.", "OK");
+                }
+            }
+            else
+            {
+                await DisplayAlert("No Replays", "There are no replays.", "OK");
+            }
 
             AboutGrid.IsEnabled = true;
         }

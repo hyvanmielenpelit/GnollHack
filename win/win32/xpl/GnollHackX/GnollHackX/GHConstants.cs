@@ -214,6 +214,7 @@ namespace GnollHackX
         CasualMode =            0x00000010, /* Save games are preserved */
         DisableBones =          0x00000020, /* Force flags.bones to off */
         ForceLastPlayerName =   0x00000040, /* Use LastUsedPlayerName as preset player name */
+        PlayingReplay =         0x00000080, /* Game is a replay */
     }
 
     [Flags]

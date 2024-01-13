@@ -898,7 +898,7 @@ namespace GnollHackX
             GHApp.PlayButtonClickedSound();
             carouselView.Stop();
             StopGeneralTimer = true;
-            var aboutPage = new AboutPage();
+            var aboutPage = new AboutPage(this);
             aboutPage.Disappearing += (sender2, e2) =>
             {
                 carouselView.Play();

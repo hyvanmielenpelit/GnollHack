@@ -387,6 +387,13 @@ LibTallyRealTime()
     tally_realtime();
 }
 
+void
+LibRedrawScreen()
+{
+    bot();
+    (void)doredraw();
+}
+
 int
 LibGetMaxManuals()
 {

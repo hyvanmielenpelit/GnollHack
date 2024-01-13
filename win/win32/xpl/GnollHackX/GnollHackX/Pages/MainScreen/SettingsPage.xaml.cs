@@ -152,6 +152,21 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.AllowBones = BonesSwitch.IsToggled;
             Preferences.Set("AllowBones", BonesSwitch.IsToggled);
 
+            bool oldRecordGame = GHApp.RecordGame;
+            GHApp.RecordGame = RecordSwitch.IsToggled;
+            Preferences.Set("RecordGame", RecordSwitch.IsToggled);
+            if (_gamePage != null && oldRecordGame != RecordSwitch.IsToggled)
+            {
+                if (RecordSwitch.IsToggled)
+                {
+                    _gamePage.RequestRedrawScreen();
+                }
+                else
+                {
+                    _gamePage.RequestEndReplayFile();
+                }
+            }
+
             GHApp.PostingGameStatus = PostGameStatusSwitch.IsToggled;
             Preferences.Set("PostingGameStatus", PostGameStatusSwitch.IsToggled);
             GHApp.PostingDiagnosticData = PostDiagnosticDataSwitch.IsToggled;
@@ -455,7 +470,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             int cursor = 0, graphics = 0, savestyle = 0, maprefresh = (int)UIUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
             bool mem = false, fps = false, battery = false, gpu = GHApp.IsGPUDefault, simplecmdlayout = true, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
-            bool allowbones = true, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
+            bool allowbones = true, recordgame = false, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
@@ -509,6 +524,7 @@ namespace GnollHackX.Pages.MainScreen
             bones_allowed_users = Preferences.Get("BonesAllowedUsers", "");
             forcepostbones = Preferences.Get("ForcePostBones", false);
             allowbones = Preferences.Get("AllowBones", true);
+            recordgame = Preferences.Get("RecordGame", false);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
             savestyle = Preferences.Get("AppSwitchSaveStyle", 0);
             if (_gamePage == null)
@@ -640,6 +656,7 @@ namespace GnollHackX.Pages.MainScreen
             StreamingBankToMemorySwitch.IsToggled = streamingbanktomemory;
             StreamingBankToDiskSwitch.IsToggled = streamingbanktodisk;
             BonesSwitch.IsToggled = allowbones;
+            RecordSwitch.IsToggled = recordgame;
             PostGameStatusSwitch.IsToggled = postgamestatus;
             PostDiagnosticDataSwitch.IsToggled = postdiagnostics;
             PostXlogSwitch.IsToggled = postxlog;
@@ -1206,6 +1223,10 @@ namespace GnollHackX.Pages.MainScreen
                 BonesListLabel.TextColor = GHColors.Gray;
                 BonesAllowedUsersLabel.TextColor = GHColors.Gray;
             }
+        }
+
+        private void RecordSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
 
         }
     }

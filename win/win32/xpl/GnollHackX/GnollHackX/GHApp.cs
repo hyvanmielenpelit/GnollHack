@@ -23,6 +23,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Timers;
 
 namespace GnollHackX
 {
@@ -2495,9 +2496,9 @@ namespace GnollHackX
                 else
                 {
 #if DEBUG
-                    return CurrentUserSecrets.DefaultDiagnosticDataPostAddress;
+                    return CurrentUserSecrets?.DefaultDiagnosticDataPostAddress;
 #else
-                return CurrentUserSecrets.DefaultGamePostAddress;
+                return CurrentUserSecrets?.DefaultGamePostAddress;
 #endif
                 }
             }
@@ -2506,7 +2507,11 @@ namespace GnollHackX
         {
             get
             {
-                return CurrentUserSecrets.DefaultDiagnosticDataPostAddress;
+                string address = CurrentUserSecrets?.DefaultDiagnosticDataPostAddress;
+                if (address == null)
+                    return "";
+                else
+                    return address;
             }
         }
 
@@ -2521,8 +2526,10 @@ namespace GnollHackX
                 }
                 else
                 {
-                    address = CurrentUserSecrets.DefaultXlogPostAddress;
+                    address = CurrentUserSecrets?.DefaultXlogPostAddress;
                 }
+                if (address == null)
+                    return "";
 #if DEBUG
                 if(XlogReleaseAccount)
                     return address;
@@ -2545,7 +2552,7 @@ namespace GnollHackX
                 }
                 else
                 {
-                    address = CurrentUserSecrets.DefaultXlogAccountLink;
+                    address = CurrentUserSecrets?.DefaultXlogAccountLink;
                 }
 #if DEBUG
                 if (XlogReleaseAccount)
@@ -2608,7 +2615,7 @@ namespace GnollHackX
         {
             get
             {
-                return CurrentUserSecrets.DefaultXlogAntiForgeryToken;
+                return CurrentUserSecrets?.DefaultXlogAntiForgeryToken;
             }
         }
 
@@ -3969,14 +3976,24 @@ namespace GnollHackX
                             ulong flags1 = br.ReadUInt64();
                             ulong flags2 = br.ReadUInt64();
 
-                            int cmd;
+                            if(game.ActiveGamePage != null)
+                            {
+                                game.ActiveGamePage.EnableWizardMode = wizmode;
+                                game.ActiveGamePage.EnableModernMode = modernmode;
+                                game.ActiveGamePage.EnableCasualMode = casualmode;
+                            }
+
+                            int cmd = -1, prevcmd = -1;
                             bool breakwhile;
                             ulong time;
+                            byte noOfArgs;
                             do
                             {
                                 breakwhile = false;
+                                prevcmd = cmd;
                                 cmd = br.ReadInt32();
                                 time = br.ReadUInt64();
+                                noOfArgs = br.ReadByte();
                                 switch (cmd)
                                 {
                                     case (int)RecordedFunctionID.EndOfFile:
@@ -4287,7 +4304,7 @@ namespace GnollHackX
                                             long identifier = br.ReadInt64();
                                             char accel = br.ReadChar();
                                             char groupaccel = br.ReadChar();
-                                            int attribute = br.ReadInt32();
+                                            int attr = br.ReadInt32();
                                             int color = br.ReadInt32();
                                             string text = br.ReadString();
                                             byte presel = br.ReadByte();
@@ -4312,7 +4329,7 @@ namespace GnollHackX
                                                     fixed (byte* otypdata_byte_ptr = otypdata_bytes)
                                                     {
                                                         IntPtr otypdata_ptr = (IntPtr)otypdata_byte_ptr;
-                                                        game.ClientCallback_AddExtendedMenu(winid, glyph, identifier, accel, groupaccel, attribute, color, text, presel,
+                                                        game.ClientCallback_AddExtendedMenu(winid, glyph, identifier, accel, groupaccel, attr, color, text, presel,
                                                             maxcount, oid, mid, headingaccel, special_mark, menuflags, dataflags, style, otmpdata_ptr, otypdata_ptr);
                                                     }
                                                 }
@@ -4435,6 +4452,257 @@ namespace GnollHackX
                                             //game.ClientCallback_GetLine(style, attr, color, query, placeholder, linesuffix, introline, line);
                                         }
                                         break;
+                                    case (int)RecordedFunctionID.ClearContextMenu:
+                                        {
+                                            game.ClientCallback_ClearContextMenu();
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.AddContextMenu:
+                                        {
+                                            int cmd_def_char = br.ReadInt32();
+                                            int cmd_cur_char = br.ReadInt32();
+                                            int style = br.ReadInt32();
+                                            int glyph = br.ReadInt32();
+                                            string cmd_text = br.ReadString();
+                                            string target_text = br.ReadString();
+                                            int attr = br.ReadInt32();
+                                            int color = br.ReadInt32();
+                                            game.ClientCallback_AddContextMenu(cmd_def_char, cmd_cur_char, style, glyph, cmd_text, target_text, attr, color);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.UpdateStatusButton:
+                                        {
+                                            int btncmd = br.ReadInt32();
+                                            int btn = br.ReadInt32();
+                                            int val = br.ReadInt32();
+                                            ulong bflags = br.ReadUInt64();
+                                            game.ClientCallback_UpdateStatusButton(btncmd, btn, val, bflags);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.ToggleAnimationTimer:
+                                        {
+                                            int timetype = br.ReadInt32();
+                                            int timerid = br.ReadInt32();
+                                            int state = br.ReadInt32();
+                                            int x = br.ReadInt32();
+                                            int y = br.ReadInt32();
+                                            int layer = br.ReadInt32();
+                                            ulong tflags = br.ReadUInt64();
+                                            game.ClientCallback_ToggleAnimationTimer(timetype, timerid, state, x, y, layer, tflags);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.DisplayFloatingText:
+                                        {
+                                            int x = br.ReadInt32();
+                                            int y = br.ReadInt32();
+                                            string text = br.ReadString();
+                                            int style = br.ReadInt32();
+                                            int attr = br.ReadInt32();
+                                            int color = br.ReadInt32();
+                                            ulong tflags = br.ReadUInt64();
+                                            game.ClientCallback_DisplayFloatingText(x, y, text, style, attr, color, tflags);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.DisplayScreenText:
+                                        {
+                                            string text = br.ReadString();
+                                            string supertext = br.ReadString();
+                                            string subtext = br.ReadString();
+                                            int style = br.ReadInt32();
+                                            int attr = br.ReadInt32();
+                                            int color = br.ReadInt32();
+                                            ulong tflags = br.ReadUInt64();
+                                            game.ClientCallback_DisplayScreenText(text, supertext, subtext, style, attr, color, tflags);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.DisplayPopupText:
+                                        {
+                                            string text = br.ReadString();
+                                            string title = br.ReadString();
+                                            int style = br.ReadInt32();
+                                            int attr = br.ReadInt32();
+                                            int color = br.ReadInt32();
+                                            int glyph = br.ReadInt32();
+                                            ulong tflags = br.ReadUInt64();
+                                            game.ClientCallback_DisplayPopupText(text, title, style, attr, color, glyph, tflags);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.DisplayGUIEffect:
+                                        {
+                                            int style = br.ReadInt32();
+                                            int subtype = br.ReadInt32();
+                                            int x = br.ReadInt32();
+                                            int y = br.ReadInt32();
+                                            int x2 = br.ReadInt32();
+                                            int y2 = br.ReadInt32();
+                                            ulong tflags = br.ReadUInt64();
+                                            game.ClientCallback_DisplayGUIEffect(style, subtype, x, y, x2, y2, tflags);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.UpdateCursor:
+                                        {
+                                            int style = br.ReadInt32();
+                                            int force_paint = br.ReadInt32();
+                                            int show_on_u = br.ReadInt32();
+                                            game.ClientCallback_UpdateCursor(style, force_paint, show_on_u);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.PlayImmediateSound:
+                                        {
+                                            int ghsound = br.ReadInt32();
+                                            string eventPath = br.ReadString();
+                                            int bankid = br.ReadInt32();
+                                            double eventVolume = br.ReadDouble();
+                                            double soundVolume = br.ReadDouble();
+                                            int arraysize = br.ReadInt32();
+                                            string[] parameterNames = new string[arraysize];
+                                            for (int j = 0; j < arraysize; j++)
+                                                parameterNames[j] = br.ReadString();
+                                            float[] parameterValues = new float[arraysize];
+                                            for (int j = 0; j < arraysize; j++)
+                                                parameterValues[j] = br.ReadSingle();
+                                            int sound_type = br.ReadInt32();
+                                            int play_group = br.ReadInt32();
+                                            uint dialogue_mid = br.ReadUInt32();
+                                            ulong play_flags = br.ReadUInt64();
+                                            game.ClientCallback_PlayImmediateSound(ghsound, eventPath, bankid, eventVolume, soundVolume, parameterNames, parameterValues, 
+                                                arraysize, sound_type, play_group, dialogue_mid, play_flags);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.PlayMusic:
+                                        {
+                                            int ghsound = br.ReadInt32();
+                                            string eventPath = br.ReadString();
+                                            int bankid = br.ReadInt32();
+                                            double eventVolume = br.ReadDouble();
+                                            double soundVolume = br.ReadDouble();
+                                            game.ClientCallback_PlayMusic(ghsound, eventPath, bankid, eventVolume, soundVolume);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.PlayLevelAmbient:
+                                        {
+                                            int ghsound = br.ReadInt32();
+                                            string eventPath = br.ReadString();
+                                            int bankid = br.ReadInt32();
+                                            double eventVolume = br.ReadDouble();
+                                            double soundVolume = br.ReadDouble();
+                                            game.ClientCallback_PlayLevelAmbient(ghsound, eventPath, bankid, eventVolume, soundVolume);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.PlayEnvironmentAmbient:
+                                        {
+                                            int ghsound = br.ReadInt32();
+                                            string eventPath = br.ReadString();
+                                            int bankid = br.ReadInt32();
+                                            double eventVolume = br.ReadDouble();
+                                            double soundVolume = br.ReadDouble();
+                                            game.ClientCallback_PlayEnvironmentAmbient(ghsound, eventPath, bankid, eventVolume, soundVolume);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.PlayOccupationAmbient:
+                                        {
+                                            int ghsound = br.ReadInt32();
+                                            string eventPath = br.ReadString();
+                                            int bankid = br.ReadInt32();
+                                            double eventVolume = br.ReadDouble();
+                                            double soundVolume = br.ReadDouble();
+                                            game.ClientCallback_PlayOccupationAmbient(ghsound, eventPath, bankid, eventVolume, soundVolume);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.PlayEffectAmbient:
+                                        {
+                                            int ghsound = br.ReadInt32();
+                                            string eventPath = br.ReadString();
+                                            int bankid = br.ReadInt32();
+                                            double eventVolume = br.ReadDouble();
+                                            double soundVolume = br.ReadDouble();
+                                            game.ClientCallback_PlayEffectAmbient(ghsound, eventPath, bankid, eventVolume, soundVolume);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.SetEffectAmbientVolume:
+                                        {
+                                            double soundVolume = br.ReadDouble();
+                                            game.ClientCallback_SetEffectAmbientVolume(soundVolume);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.AddAmbientSound:
+                                        {
+                                            int ghsound = br.ReadInt32();
+                                            string eventPath = br.ReadString();
+                                            int bankid = br.ReadInt32();
+                                            double eventVolume = br.ReadDouble();
+                                            double soundVolume = br.ReadDouble();
+                                            ulong soundSourceId = br.ReadUInt64();
+                                            int res = br.ReadInt32();
+                                            // Add table of key-value pairs of souneSourceIds
+                                            res = game.ClientCallback_AddAmbientSound(ghsound, eventPath, bankid, eventVolume, soundVolume, out soundSourceId);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.DeleteAmbientSound:
+                                        {
+                                            ulong soundSourceId = br.ReadUInt64();
+                                            int res = br.ReadInt32();
+                                            // Get from table of key-value pairs of souneSourceIds
+                                            res = game.ClientCallback_DeleteAmbientSound(soundSourceId);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.SetAmbientSoundVolume:
+                                        {
+                                            ulong soundSourceId = br.ReadUInt64();
+                                            double soundVolume = br.ReadDouble();
+                                            int res = br.ReadInt32();
+                                            // Get from table of key-value pairs of souneSourceIds
+                                            res = game.ClientCallback_SetAmbientSoundVolume(soundSourceId, soundVolume);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.StopAllSounds:
+                                        {
+                                            uint stop_flags = br.ReadUInt32();
+                                            uint dialogue_mid = br.ReadUInt32();
+                                            int res = br.ReadInt32();
+                                            res = game.ClientCallback_StopAllSounds(stop_flags, dialogue_mid);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.IssueGuiCommand:
+                                        {
+                                            int cmd_id = br.ReadInt32();
+                                            int cmd_param = br.ReadInt32();
+                                            int cmd_param2 = br.ReadInt32();
+                                            string cmd_str = br.ReadString();
+                                            game.ClientCallback_IssueGuiCommand(cmd_id, cmd_param, cmd_param2, cmd_str);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.OutRip:
+                                        {
+                                            int winid = br.ReadInt32();
+                                            string player_name = br.ReadString();
+                                            int points = br.ReadInt32();
+                                            string killer = br.ReadString();
+                                            string timestr = br.ReadString();
+                                            game.ClientCallback_OutRip(winid, player_name, points, killer, timestr);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.UIHasInput:
+                                        {
+                                            //int res = game.ClientCallback_UIHasInput();
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.OpenSpecialView:
+                                        {
+                                            int viewtype = br.ReadInt32();
+                                            string text = br.ReadString();
+                                            string title = br.ReadString();
+                                            int attr = br.ReadInt32();
+                                            int color = br.ReadInt32();
+                                            game.ClientCallback_OpenSpecialView(viewtype, text, title, attr, color);
+                                        }
+                                        break;
+                                    case (int)RecordedFunctionID.ExitHack:
+                                        {
+                                            int status = br.ReadInt32();
+                                            game.ClientCallback_ExitHack(status);
+                                        }
+                                        break;
                                     default:
                                         break;
                                 }
@@ -4446,6 +4714,7 @@ namespace GnollHackX
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
+                return 1;
             }
             return 0;
         }

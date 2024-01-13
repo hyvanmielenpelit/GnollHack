@@ -867,6 +867,8 @@ namespace GnollHackX.Pages.Game
         }
 
         string _replayFileName = null;
+        public bool PlayingReplay { get { return _replayFileName != null; } }
+
         public async Task StartGame(string replayFileName)
         {
             _replayFileName = replayFileName;
@@ -2135,6 +2137,7 @@ namespace GnollHackX.Pages.Game
         protected void GNHThreadProcForReplay()
         {
             _currentGame = new GHGame(this);
+            _currentGame.StartFlags = RunGnollHackFlags.PlayingReplay;
             GHApp.CurrentGHGame = _currentGame;
             GHApp.PlayReplay(_currentGame, _replayFileName);
         }
@@ -16137,6 +16140,30 @@ namespace GnollHackX.Pages.Game
         private void MessageFilterEntry_TextChanged(object sender, TextChangedEventArgs e)
         {
             UpdateMessageFilter();
+        }
+
+        public void RequestRedrawScreen()
+        {
+            if (_currentGame != null)
+            {
+                ConcurrentQueue<GHResponse> queue;
+                if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                {
+                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.RedrawScreen));
+                }
+            }
+        }
+
+        public void RequestEndReplayFile()
+        {
+            if (_currentGame != null)
+            {
+                ConcurrentQueue<GHResponse> queue;
+                if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                {
+                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.EndReplayFile));
+                }
+            }
         }
     }
 }

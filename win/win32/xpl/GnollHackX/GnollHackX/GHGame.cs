@@ -17,12 +17,14 @@ using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 using System.Linq;
 using System.Drawing;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace GnollHackX
 {
     public class GHGame
     {
         public RunGnollHackFlags StartFlags { get; set; }
+        public bool PlayingReplay { get { return (StartFlags & RunGnollHackFlags.PlayingReplay) != 0; } }
         private static ConcurrentDictionary<GHGame, ConcurrentQueue<GHRequest>> _concurrentRequestDictionary = new ConcurrentDictionary<GHGame, ConcurrentQueue<GHRequest>>();
         private static ConcurrentDictionary<GHGame, ConcurrentQueue<GHResponse>> _concurrentResponseDictionary = new ConcurrentDictionary<GHGame, ConcurrentQueue<GHResponse>>();
         private int[] _inputBuffer = new int[GHConstants.InputBufferLength];
@@ -114,6 +116,12 @@ namespace GnollHackX
                 GHApp.GnollHackService.TallyRealTime();
             }
 
+            if (_redrawScreenRequested)
+            {
+                _redrawScreenRequested = false;
+                GHApp.GnollHackService.RedrawScreen();
+            }
+
             ConcurrentQueue<GHResponse> queue;
             GHResponse response;
             if(GHGame.ResponseDictionary.TryGetValue(this, out queue))
@@ -197,6 +205,12 @@ namespace GnollHackX
                                 _useLongerMessageHistory = response.ResponseBoolValue;
                                 UpdateMessageHistory();
                             }
+                            break;
+                        case GHRequestType.RedrawScreen:
+                            RedrawScreen();
+                            break;
+                        case GHRequestType.EndReplayFile:
+                            EndReplayFile();
                             break;
                         default:
                             break;
@@ -509,7 +523,8 @@ namespace GnollHackX
         public void ClientCallback_ExitHack(int status)
         {
             Debug.WriteLine("ClientCallback_ExitHack");
-            RecordFunctionCall(RecordedFunctionID.ExitHack);
+            RecordFunctionCall(RecordedFunctionID.ExitHack, status);
+            RecordFunctionCallImmediately(RecordedFunctionID.EndOfFile);
 
             ConcurrentQueue<GHRequest> queue;
             switch (status)
@@ -1199,19 +1214,19 @@ namespace GnollHackX
                 }
             }
         }
-        public void ClientCallback_AddMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, int color, string text, byte presel)
+        public void ClientCallback_AddMenu(int winid, int glyph, long identifier, char accel, char groupaccel, int attr, int color, string text, byte presel)
         {
-            ClientCallback_AddExtendedMenu(winid, glyph, identifier, accel, groupaccel, attributes, color, text, presel,
+            ClientCallback_AddExtendedMenu(winid, glyph, identifier, accel, groupaccel, attr, color, text, presel,
                 0, 0UL, 0UL, '\0', '\0', 0UL, 0, 0, IntPtr.Zero, IntPtr.Zero);
         }
-        public void ClientCallback_AddExtendedMenu(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, int color, string text, byte presel, 
-            int maxcount, UInt64 oid, UInt64 mid, char headingaccel, char special_mark, ulong menuflags, byte dataflags, int style, IntPtr otmpdata_ptr, IntPtr otypdata_ptr)
+        public void ClientCallback_AddExtendedMenu(int winid, int glyph, long identifier, char accel, char groupaccel, int attr, int color, string text, byte presel, 
+            int maxcount, ulong oid, ulong mid, char headingaccel, char special_mark, ulong menuflags, byte dataflags, int style, IntPtr otmpdata_ptr, IntPtr otypdata_ptr)
         {
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("AddExtendedMenu");
             obj otmpdata = otmpdata_ptr == IntPtr.Zero ? new obj() : (obj)Marshal.PtrToStructure(otmpdata_ptr, typeof(obj));
             objclassdata otypdata = otypdata_ptr == IntPtr.Zero ? new objclassdata() : (objclassdata)Marshal.PtrToStructure(otypdata_ptr, typeof(objclassdata));
 
-            RecordFunctionCall(RecordedFunctionID.AddExtendedMenu, winid, glyph, identifier, accel, groupaccel, attributes, color, text, presel,
+            RecordFunctionCall(RecordedFunctionID.AddExtendedMenu, winid, glyph, identifier, accel, groupaccel, attr, color, text, presel,
                 maxcount, oid, mid, headingaccel, special_mark, menuflags, dataflags, style, otmpdata, otypdata);
 
             lock (_ghWindowsLock)
@@ -1226,7 +1241,7 @@ namespace GnollHackX
                         mi.Accelerator = accel;
                     mi.GroupAccelerator = groupaccel;
                     mi.SpecialMark = special_mark;
-                    mi.Attributes = attributes;
+                    mi.Attributes = attr;
                     mi.Glyph = glyph;
                     mi.UseUpperSide = (menuflags & (ulong)MenuFlags.MENU_FLAGS_ACTIVE) != 0;
                     mi.UseColorForSuffixes = (menuflags & (ulong)MenuFlags.MENU_FLAGS_USE_COLOR_FOR_SUFFIXES) != 0;
@@ -1706,7 +1721,7 @@ namespace GnollHackX
 
         public int ClientCallback_PlayImmediateSound(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid, ulong play_flags)
         {
-            RecordFunctionCall(RecordedFunctionID.PlayImmediateSound, ghsound, eventPath, bankid, eventVolume, soundVolume, parameterNames, parameterValues, arraysize, sound_type, play_group, dialogue_mid, play_flags);
+            RecordFunctionCall(RecordedFunctionID.PlayImmediateSound, ghsound, eventPath, bankid, eventVolume, soundVolume, arraysize, parameterNames, parameterValues, sound_type, play_group, dialogue_mid, play_flags);
 
             if (GHApp.FmodService != null && !GHApp.IsMuted)
             {
@@ -2458,11 +2473,25 @@ namespace GnollHackX
         {
             _timeTallyRequested = true;
         }
+        
+        bool _redrawScreenRequested = false;
+        private void RedrawScreen()
+        {
+            _replayTimeStamp = DateTime.Now;
+            //Record function calls to initit windows etc. (perhaps could be saved somewhere when the game starts)
+            _redrawScreenRequested = true;
+        }
+
+        private void EndReplayFile()
+        {
+            RecordFunctionCallImmediately(RecordedFunctionID.EndOfFile);
+            _replayTimeStamp = DateTime.Now;
+        }
 
         private List<GHRecordedFunctionCall> _recordedFunctionCalls = new List<GHRecordedFunctionCall>();
         private void RecordFunctionCall(RecordedFunctionID functionID, params object[] args)
         {
-            if (!GHApp.RecordGame)
+            if (!GHApp.RecordGame || PlayingReplay)
                 return;
 
             _recordedFunctionCalls.Add(new GHRecordedFunctionCall(functionID, args, DateTime.Now));
@@ -2470,16 +2499,17 @@ namespace GnollHackX
 
         private void RecordFunctionCallImmediately(RecordedFunctionID functionID, params object[] args)
         {
-            if (!GHApp.RecordGame)
+            if (!GHApp.RecordGame || PlayingReplay)
                 return;
 
             RecordFunctionCall(functionID, args);
             WriteFunctionCallsToDisk();
         }
 
+        private DateTime _replayTimeStamp = DateTime.Now;
         private void WriteFunctionCallsToDisk()
         {
-            if (!GHApp.RecordGame)
+            if (!GHApp.RecordGame || PlayingReplay)
                 return;
 
             if (_recordedFunctionCalls.Count > 0)
@@ -2491,9 +2521,9 @@ namespace GnollHackX
                         GHApp.CheckCreateDirectory(dir);
                     if (Directory.Exists(dir))
                     {
-                        string filepath = Path.Combine(dir, "replay-" + GHApp.GHVersionNumber.ToString() + "-" + DateTime.Now.ToBinary().ToString() + ".gnhrec");
+                        string filepath = Path.Combine(dir, "replay-" + GHApp.GHVersionNumber.ToString() + "-" + _replayTimeStamp.ToBinary().ToString() + ".gnhrec");
                         bool fileDidExist = File.Exists(filepath);
-                        using (FileStream fileStream = File.OpenWrite(filepath))
+                        using (FileStream fileStream = new FileStream(filepath, fileDidExist ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.None))
                         {
                             if (fileStream != null)
                             {
@@ -2568,16 +2598,26 @@ namespace GnollHackX
                                             }
                                             else if (o is string)
                                             {
+                                                writer.Write(((string)o).Length);
                                                 writer.Write((string)o);
                                             }
                                             else if (o is byte[])
                                             {
+                                                writer.Write(((byte[])o).Length);
                                                 writer.Write((byte[])o);
                                             }
                                             else if (o is short[])
                                             {
+                                                writer.Write(((short[])o).Length);
                                                 short[] arr = (short[])o;
                                                 for(int j = 0; j < arr.Length; j++)
+                                                    writer.Write(arr[j]);
+                                            }
+                                            else if (o is float[])
+                                            {
+                                                writer.Write(((float[])o).Length);
+                                                float[] arr = (float[])o;
+                                                for (int j = 0; j < arr.Length; j++)
                                                     writer.Write(arr[j]);
                                             }
                                             else if (o.GetType().IsValueType) // Is struct

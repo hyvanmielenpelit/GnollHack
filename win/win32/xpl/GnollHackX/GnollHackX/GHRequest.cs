@@ -62,6 +62,8 @@ namespace GnollHackX
         CloseAllDialogs,
         UseLongerMessageHistory,
         SaveInsuranceCheckPoint,
+        RedrawScreen,
+        EndReplayFile,
     }
 
     public struct AddContextMenuData
