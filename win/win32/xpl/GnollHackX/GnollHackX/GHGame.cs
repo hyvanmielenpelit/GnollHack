@@ -1196,7 +1196,7 @@ namespace GnollHackX
             }
             else if (is_restoring != 0)
             {
-                RecordFunctionCallImmediately(RecordedFunctionID.PutMsgHistory, msg, null, null, is_restoring);
+                RecordFunctionCallImmediately(RecordedFunctionID.PutMsgHistory, null, null, null, is_restoring);
                 UpdateMessageHistory();
             }
         }
@@ -2572,6 +2572,10 @@ namespace GnollHackX
                                             {
                                                 writer.Write((sbyte)o);
                                             }
+                                            else if (o is char)
+                                            {
+                                                writer.Write((char)o);
+                                            }
                                             else if (o is short)
                                             {
                                                 writer.Write((short)o);
@@ -2596,9 +2600,17 @@ namespace GnollHackX
                                             {
                                                 writer.Write((ulong)o);
                                             }
+                                            else if (o is float)
+                                            {
+                                                writer.Write((float)o);
+                                            }
+                                            else if (o is double)
+                                            {
+                                                writer.Write((double)o);
+                                            }
                                             else if (o is string)
                                             {
-                                                writer.Write(((string)o).Length);
+                                                writer.Write(((string)o).Length + 1);
                                                 writer.Write((string)o);
                                             }
                                             else if (o is byte[])
@@ -2619,6 +2631,21 @@ namespace GnollHackX
                                                 float[] arr = (float[])o;
                                                 for (int j = 0; j < arr.Length; j++)
                                                     writer.Write(arr[j]);
+                                            }
+                                            else if (o is string[])
+                                            {
+                                                writer.Write(((string[])o).Length);
+                                                string[] arr = (string[])o;
+                                                for (int j = 0; j < arr.Length; j++)
+                                                {
+                                                    if(arr[j] == null)
+                                                        writer.Write(0);
+                                                    else
+                                                    {
+                                                        writer.Write(arr[j].Length + 1);
+                                                        writer.Write(arr[j]);
+                                                    }
+                                                }
                                             }
                                             else if (o.GetType().IsValueType) // Is struct
                                             {

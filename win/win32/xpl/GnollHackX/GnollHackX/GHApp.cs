@@ -3950,11 +3950,14 @@ namespace GnollHackX
             }
         }
 
+        static Dictionary<ulong, ulong> _soundSourceIdDictionary = new Dictionary<ulong, ulong>();
+
         public static int PlayReplay(GHGame game, string replayFileName)
         {
             if (game == null || string.IsNullOrWhiteSpace(replayFileName))
                 return 2;
 
+            _soundSourceIdDictionary.Clear();
             try
             {
                 using (FileStream fs = File.OpenRead(replayFileName))
@@ -4180,9 +4183,9 @@ namespace GnollHackX
                                             string str = br.ReadInt32() == 0 ? null : br.ReadString();
                                             //int len = str.Length + 1;
                                             int attr_len = br.ReadInt32();
-                                            byte[] attributes_bytes = br.ReadBytes(attr_len);
+                                            byte[] attributes_bytes = attr_len == 0 ? null : br.ReadBytes(attr_len);
                                             int color_len = br.ReadInt32();
-                                            byte[] colors_bytes = br.ReadBytes(color_len);
+                                            byte[] colors_bytes = color_len == 0 ? null : br.ReadBytes(color_len);
                                             int attributes = br.ReadInt32();
                                             int color = br.ReadInt32();
                                             int append = br.ReadInt32();
@@ -4276,18 +4279,18 @@ namespace GnollHackX
                                             string msg = br.ReadInt32() == 0 ? null : br.ReadString();
                                             //int len = msg.Length + 1;
                                             int attr_len = br.ReadInt32();
-                                            byte[] attributes_bytes = br.ReadBytes(attr_len);
+                                            byte[] attributes_bytes = attr_len == 0 ? null : br.ReadBytes(attr_len);
                                             int color_len = br.ReadInt32();
-                                            byte[] colors_bytes = br.ReadBytes(color_len);
+                                            byte[] colors_bytes = color_len == 0 ? null : br.ReadBytes(color_len);
                                             byte is_restoring = br.ReadByte();
                                             unsafe
                                             {
                                                 fixed (byte* attributes_byte_ptr = attributes_bytes)
                                                 {
-                                                    IntPtr attributes_ptr = (IntPtr)attributes_byte_ptr;
+                                                    IntPtr attributes_ptr = attributes_bytes == null ? IntPtr.Zero : (IntPtr)attributes_byte_ptr;
                                                     fixed (byte* colors_byte_ptr = colors_bytes)
                                                     {
-                                                        IntPtr colors_ptr = (IntPtr)colors_byte_ptr;
+                                                        IntPtr colors_ptr = colors_bytes == null ? IntPtr.Zero : (IntPtr)colors_byte_ptr;
                                                         game.ClientCallback_PutMsgHistory(msg, attributes_ptr, colors_ptr, is_restoring);
                                                     }
                                                 }
@@ -4304,7 +4307,6 @@ namespace GnollHackX
                                     case (int)RecordedFunctionID.AddExtendedMenu:
                                         {
                                             int winid = br.ReadInt32();
-                                            int style = br.ReadInt32();
                                             int glyph = br.ReadInt32();
                                             long identifier = br.ReadInt64();
                                             char accel = br.ReadChar();
@@ -4320,6 +4322,7 @@ namespace GnollHackX
                                             char special_mark = br.ReadChar();
                                             ulong menuflags = br.ReadUInt64();
                                             byte dataflags = br.ReadByte();
+                                            int style = br.ReadInt32();
 
                                             int objdata_size = br.ReadInt32();
                                             byte[] objdata_bytes = br.ReadBytes(objdata_size);
@@ -4562,7 +4565,7 @@ namespace GnollHackX
                                             int parameterNameArraySize = br.ReadInt32();
                                             string[] parameterNames = new string[parameterNameArraySize];
                                             for (int j = 0; j < parameterNameArraySize; j++)
-                                                parameterNames[j] = br.ReadString();
+                                                parameterNames[j] = br.ReadInt32() == 0 ? null : br.ReadString();
                                             int parameterValueArraySize = br.ReadInt32();
                                             float[] parameterValues = new float[parameterValueArraySize];
                                             for (int j = 0; j < parameterValueArraySize; j++)
@@ -4639,27 +4642,33 @@ namespace GnollHackX
                                             int bankid = br.ReadInt32();
                                             double eventVolume = br.ReadDouble();
                                             double soundVolume = br.ReadDouble();
-                                            ulong soundSourceId = br.ReadUInt64();
-                                            int res = br.ReadInt32();
-                                            // Add table of key-value pairs of souneSourceIds
-                                            res = game.ClientCallback_AddAmbientSound(ghsound, eventPath, bankid, eventVolume, soundVolume, out soundSourceId);
+                                            ulong origSoundSourceId = br.ReadUInt64();
+                                            int origRes = br.ReadInt32();
+                                            ulong soundSourceId;
+                                            int res = game.ClientCallback_AddAmbientSound(ghsound, eventPath, bankid, eventVolume, soundVolume, out soundSourceId);
+                                            _soundSourceIdDictionary.Add(origSoundSourceId, soundSourceId);
                                         }
                                         break;
                                     case (int)RecordedFunctionID.DeleteAmbientSound:
                                         {
-                                            ulong soundSourceId = br.ReadUInt64();
+                                            ulong origSoundSourceId = br.ReadUInt64();
                                             int res = br.ReadInt32();
-                                            // Get from table of key-value pairs of souneSourceIds
-                                            res = game.ClientCallback_DeleteAmbientSound(soundSourceId);
+                                            if(_soundSourceIdDictionary.TryGetValue(origSoundSourceId, out ulong soundSourceId))
+                                            {
+                                                res = game.ClientCallback_DeleteAmbientSound(soundSourceId);
+                                                _soundSourceIdDictionary.Remove(origSoundSourceId);
+                                            }
                                         }
                                         break;
                                     case (int)RecordedFunctionID.SetAmbientSoundVolume:
                                         {
-                                            ulong soundSourceId = br.ReadUInt64();
+                                            ulong origSoundSourceId = br.ReadUInt64();
                                             double soundVolume = br.ReadDouble();
                                             int res = br.ReadInt32();
-                                            // Get from table of key-value pairs of souneSourceIds
-                                            res = game.ClientCallback_SetAmbientSoundVolume(soundSourceId, soundVolume);
+                                            if (_soundSourceIdDictionary.TryGetValue(origSoundSourceId, out ulong soundSourceId))
+                                            {
+                                                res = game.ClientCallback_SetAmbientSoundVolume(soundSourceId, soundVolume);
+                                            }
                                         }
                                         break;
                                     case (int)RecordedFunctionID.StopAllSounds:
@@ -4691,6 +4700,7 @@ namespace GnollHackX
                                         break;
                                     case (int)RecordedFunctionID.UIHasInput:
                                         {
+                                            int queueCount = br.ReadInt32();
                                             //int res = game.ClientCallback_UIHasInput();
                                         }
                                         break;
@@ -4711,6 +4721,7 @@ namespace GnollHackX
                                         }
                                         break;
                                     default:
+                                        breakwhile = true; /* error; quitting */
                                         break;
                                 }
                             } while (!breakwhile);
@@ -4723,6 +4734,7 @@ namespace GnollHackX
                 Debug.WriteLine(ex.Message);
                 return 1;
             }
+            _soundSourceIdDictionary.Clear();
             return 0;
         }
     }
