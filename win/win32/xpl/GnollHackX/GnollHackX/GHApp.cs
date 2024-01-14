@@ -2059,17 +2059,23 @@ namespace GnollHackX
                 {
                     archive.CreateEntryFromFile(fPath, Path.GetFileName(fPath));
                 }
-                string[] ghsubdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory };
+                string[] ghsubdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory, GHConstants.ReplayDirectory, GHConstants.UserDataDirectory };
                 foreach (string ghsubdir in ghsubdirlist)
                 {
                     string subdirpath = Path.Combine(ghdir, ghsubdir);
-                    string[] subfiles = Directory.GetFiles(subdirpath);
-                    foreach (var fPath in subfiles)
+                    if(Directory.Exists(subdirpath))
                     {
-                        archive.CreateEntryFromFile(fPath, Path.Combine(ghsubdir, Path.GetFileName(fPath)));
+                        string[] subfiles = Directory.GetFiles(subdirpath);
+                        if(subfiles != null)
+                        {
+                            foreach (var fPath in subfiles)
+                            {
+                                if(fPath != null)
+                                    archive.CreateEntryFromFile(fPath, Path.Combine(ghsubdir, Path.GetFileName(fPath)));
+                            }
+                        }
                     }
                 }
-
             }
             return zipFile;
         }
