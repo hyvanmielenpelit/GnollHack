@@ -4095,8 +4095,23 @@ namespace GnollHackX
                                                 for (int j = 0; j < tilesperrow_sz; j++)
                                                     TilesPerRow[j] = tilesperrow[j];
                                             }
+                                            unsafe
+                                            {
+                                                fixed(int* p1 = gl2ti)
+                                                {
+                                                    IntPtr ptr_gl2ti = (IntPtr)p1;
+                                                    fixed (byte* p2 = gltifl)
+                                                    {
+                                                        IntPtr ptr_gltifl = (IntPtr)p2;
+                                                        fixed (short* p3 = ti2an)
+                                                        {
+                                                            IntPtr ptr_ti2an = (IntPtr)p3;
+                                                            GnollHackService.SetArrays(ptr_gl2ti, gl2ti.Length, ptr_gltifl, gltifl.Length, ptr_ti2an, ti2an.Length); /* Need to initialize since the drawing routine uses the library table to do the animations */
+                                                        }
+                                                    }
+                                                }
+                                            }
                                             game.ClientCallback_InitWindows();
-
                                         }
                                         break;
                                     case (int)RecordedFunctionID.CreateWindow:

@@ -22,6 +22,7 @@ namespace GnollHackX
         void GetGlyphArrays(out IntPtr gl2ti, out int size1, out IntPtr gltifl, out int gltifl_size);
         void GetTileArrays(out IntPtr ti2an, out int size2, out IntPtr ti2en, out int size3, out IntPtr ti2ad, out int size4, out IntPtr anoff_ptr, out int anoff_size, out IntPtr enoff_ptr, out int enoff_size, out IntPtr reoff_ptr, out int reoff_size);
         int GetTotalTiles();
+        void SetArrays(IntPtr ptr_gl2ti, int size_gl2ti, IntPtr ptr_gltifl, int size_gltifl, IntPtr ptr_ti2an, int size_ti2an);
         int GetUnexploredGlyph();
         int GetNoGlyph();
         void GetOffs(out int a, out int e, out int r, out int gen_tile, out int hit_tile, out int ui_tile, out int spell_tile, out int skill_tile, out int command_tile, out int buff_tile, out int cursor_off);

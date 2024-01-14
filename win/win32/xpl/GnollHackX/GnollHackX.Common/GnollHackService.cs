@@ -189,6 +189,8 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern int CountTotalTiles();
         [DllImport(PlatformConstants.dll)]
+        public static extern int LibSetArrays(IntPtr ptr_gl2ti, int size_gl2ti, IntPtr ptr_gltifl, int size_gltifl, IntPtr ptr_ti2an, int size_ti2an);
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetUnexploredGlyph();
         [DllImport(PlatformConstants.dll)]
         public static extern int LibGetNoGlyph();
@@ -863,6 +865,10 @@ namespace GnollHackX.Unknown
             }
 
             return array;
+        }
+        public void SetArrays(IntPtr ptr_gl2ti, int size_gl2ti, IntPtr ptr_gltifl, int size_gltifl, IntPtr ptr_ti2an, int size_ti2an)
+        {
+            LibSetArrays(ptr_gl2ti, size_gl2ti, ptr_gltifl, size_gltifl, ptr_ti2an, size_ti2an);
         }
         public int GetTileAnimationIndexFromGlyph(int glyph)
         {

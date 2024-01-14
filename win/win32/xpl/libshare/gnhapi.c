@@ -116,9 +116,41 @@ void GetReplacementOffsets(int** reoff_ptr, int* size_ptr)
     *size_ptr = 0;
 #endif
 }
+
 int CountTotalTiles()
 {
     return process_tiledata(2, (const char*)0, (int*)0, (uchar*)0);
+}
+
+void LibSetArrays(int* gl2ti, int size_gl2ti, uchar* gltifl, int size_gltifl, short* ti2an, int size_ti2an)
+{
+#ifdef USE_TILES
+    int i;
+    if (gl2ti)
+    {
+        int arrsiz_gl2ti = min(size_gl2ti, (int)SIZE(glyph2tile));
+        for (i = 0; i < arrsiz_gl2ti; i++)
+        {
+            glyph2tile[i] = gl2ti[i];
+        }
+    }
+    if (gltifl)
+    {
+        int arrsiz_gltifl = min(size_gltifl, (int)SIZE(glyphtileflags));
+        for (i = 0; i < arrsiz_gltifl; i++)
+        {
+            glyphtileflags[i] = gltifl[i];
+        }
+    }
+    if (ti2an)
+    {
+        int arrsiz_ti2an = min(size_ti2an, (int)SIZE(tile2animation));
+        for (i = 0; i < arrsiz_ti2an; i++)
+        {
+            tile2animation[i] = ti2an[i];
+        }
+    }
+#endif
 }
 
 int LibGetUnexploredGlyph()
