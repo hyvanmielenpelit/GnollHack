@@ -3957,19 +3957,19 @@ namespace GnollHackX
         }
 
         static Dictionary<ulong, ulong> _soundSourceIdDictionary = new Dictionary<ulong, ulong>();
-        public static bool IsTimeStampedFunctionCall(sbyte cmd)
+        public static bool IsTimeStampedFunctionCall(byte cmd)
         {
             switch (cmd)
             {
-                case (sbyte)RecordedFunctionID.GetEvent:
-                case (sbyte)RecordedFunctionID.GetChar:
-                case (sbyte)RecordedFunctionID.GetLine:
-                case (sbyte)RecordedFunctionID.YnFunction:
-                case (sbyte)RecordedFunctionID.SelectMenu:
-                case (sbyte)RecordedFunctionID.DisplayWindow:
-                case (sbyte)RecordedFunctionID.DisplayPopupText:
-                case (sbyte)RecordedFunctionID.InitializeWindows:
-                case (sbyte)RecordedFunctionID.ExitHack:                    
+                case (byte)RecordedFunctionID.GetEvent:
+                case (byte)RecordedFunctionID.GetChar:
+                case (byte)RecordedFunctionID.GetLine:
+                case (byte)RecordedFunctionID.YnFunction:
+                case (byte)RecordedFunctionID.SelectMenu:
+                case (byte)RecordedFunctionID.DisplayWindow:
+                case (byte)RecordedFunctionID.DisplayPopupText:
+                case (byte)RecordedFunctionID.InitializeWindows:
+                case (byte)RecordedFunctionID.ExitHack:                    
                     return true;
                 default:
                     return false;
@@ -3982,7 +3982,7 @@ namespace GnollHackX
                 return 2;
 
             _soundSourceIdDictionary.Clear();
-            sbyte prevcmd_sb = -1;
+            byte prevcmd_byte = 0;
             try
             {
                 using (FileStream fs = File.OpenRead(replayFileName))
@@ -4011,7 +4011,7 @@ namespace GnollHackX
                                 game.ActiveGamePage.EnableCasualMode = casualmode;
                             }
 
-                            sbyte cmd_sb = -1;
+                            byte cmd_byte = 0;
                             int cmd;
                             bool breakwhile;
                             ulong time;
@@ -4019,10 +4019,10 @@ namespace GnollHackX
                             {
                                 breakwhile = false;
                                 time = 0UL;
-                                prevcmd_sb = cmd_sb;
-                                cmd_sb = br.ReadSByte();
-                                cmd = (int)cmd_sb;
-                                if(IsTimeStampedFunctionCall(cmd_sb))
+                                prevcmd_byte = cmd_byte;
+                                cmd_byte = br.ReadByte();
+                                cmd = (int)cmd_byte;
+                                if(IsTimeStampedFunctionCall(cmd_byte))
                                     time = br.ReadUInt64(); /* Time is only for input functions */
                                 switch (cmd)
                                 {
@@ -4823,7 +4823,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(prevcmd_sb + ": " + ex.Message);
+                Debug.WriteLine(prevcmd_byte + ": " + ex.Message);
                 return 1;
             }
             _soundSourceIdDictionary.Clear();

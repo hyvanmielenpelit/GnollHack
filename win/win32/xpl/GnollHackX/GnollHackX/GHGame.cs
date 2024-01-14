@@ -2581,8 +2581,8 @@ namespace GnollHackX
                                         if (rfc == null)
                                             continue;
 
-                                        writer.Write((sbyte)rfc.RecordedFunctionID);
-                                        if(GHApp.IsTimeStampedFunctionCall((sbyte)rfc.RecordedFunctionID))
+                                        writer.Write((byte)rfc.RecordedFunctionID);
+                                        if(GHApp.IsTimeStampedFunctionCall((byte)rfc.RecordedFunctionID))
                                             writer.Write(rfc.Time.ToBinary());
                                         int noOfArgs = rfc.Args == null ? 0 : rfc.Args.Length;
                                         //writer.Write((byte)noOfArgs);
