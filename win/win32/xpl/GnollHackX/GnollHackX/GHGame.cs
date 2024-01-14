@@ -18,6 +18,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.Drawing;
 using System.Runtime.InteropServices.ComTypes;
+using System.IO.Compression;
 
 namespace GnollHackX
 {
@@ -2560,6 +2561,7 @@ namespace GnollHackX
                     {
                         string filepath = Path.Combine(dir, "replay-" + GHApp.GHVersionNumber.ToString() + "-" + _replayTimeStamp.ToBinary().ToString() + ".gnhrec");
                         bool fileDidExist = File.Exists(filepath);
+                        bool eofFound = false;
                         using (FileStream fileStream = new FileStream(filepath, fileDidExist ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.None))
                         {
                             if (fileStream != null)
@@ -2586,6 +2588,8 @@ namespace GnollHackX
                                         if (rfc == null)
                                             continue;
 
+                                        if (rfc.RecordedFunctionID == RecordedFunctionID.EndOfFile)
+                                            eofFound = true;
                                         writer.Write((byte)rfc.RecordedFunctionID);
                                         if(GHApp.IsTimeStampedFunctionCall((byte)rfc.RecordedFunctionID))
                                             writer.Write(rfc.Time.ToBinary());
@@ -2721,6 +2725,18 @@ namespace GnollHackX
                                 }
                                 _recordedFunctionCalls.Clear();
                             }
+                        }
+                        if(eofFound && File.Exists(filepath))
+                        {
+                            string zipFile = filepath + ".zip";
+                            if(File.Exists(zipFile))
+                                File.Delete(zipFile);
+                            using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+                            {
+                                archive.CreateEntryFromFile(filepath, Path.GetFileName(filepath));
+                            }
+                            if (File.Exists(filepath) && File.Exists(zipFile))
+                                File.Delete(filepath);
                         }
                     }
                 }

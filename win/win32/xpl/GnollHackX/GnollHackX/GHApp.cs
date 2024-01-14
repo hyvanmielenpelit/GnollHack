@@ -3982,11 +3982,35 @@ namespace GnollHackX
             if (game == null || string.IsNullOrWhiteSpace(replayFileName))
                 return 2;
 
+            string usedReplayFileName = replayFileName;
+            bool isZip = replayFileName.Length > 4 && replayFileName.EndsWith(".zip");
+            try
+            {
+                if (isZip)
+                {
+                    using (ZipArchive ziparch = ZipFile.OpenRead(replayFileName))
+                    {
+                        string dir = Path.GetDirectoryName(replayFileName);
+                        ziparch.ExtractToDirectory(string.IsNullOrWhiteSpace(dir) ? "." : dir);
+                    }
+                    string unZippedFileName = replayFileName.Substring(0, replayFileName.Length - 4);
+                    if (File.Exists(unZippedFileName))
+                    {
+                        usedReplayFileName = unZippedFileName;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return 3;
+            }
+
             _soundSourceIdDictionary.Clear();
             byte prevcmd_byte = 0;
             try
             {
-                using (FileStream fs = File.OpenRead(replayFileName))
+                using (FileStream fs = File.OpenRead(usedReplayFileName))
                 {
                     if (fs != null)
                     {
@@ -4865,6 +4889,10 @@ namespace GnollHackX
                 return 1;
             }
             _soundSourceIdDictionary.Clear();
+            if (isZip && File.Exists(replayFileName) && File.Exists(usedReplayFileName) && replayFileName != usedReplayFileName)
+            {
+                File.Delete(usedReplayFileName);
+            }
             return 0;
         }
     }
