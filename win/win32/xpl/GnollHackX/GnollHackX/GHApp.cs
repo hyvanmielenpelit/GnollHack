@@ -24,6 +24,7 @@ using System.Net.Mail;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Timers;
+using Xamarin.Forms.PlatformConfiguration;
 
 namespace GnollHackX
 {
@@ -4094,8 +4095,8 @@ namespace GnollHackX
                                                 for (int j = 0; j < tilesperrow_sz; j++)
                                                     TilesPerRow[j] = tilesperrow[j];
                                             }
-
                                             game.ClientCallback_InitWindows();
+
                                         }
                                         break;
                                     case (int)RecordedFunctionID.CreateWindow:
@@ -4774,10 +4775,32 @@ namespace GnollHackX
                                     case (int)RecordedFunctionID.IssueGuiCommand:
                                         {
                                             int cmd_id = br.ReadInt32();
-                                            int cmd_param = br.ReadInt32();
-                                            int cmd_param2 = br.ReadInt32();
-                                            string cmd_str = br.ReadInt32() == 0 ? null : br.ReadString();
-                                            game.ClientCallback_IssueGuiCommand(cmd_id, cmd_param, cmd_param2, cmd_str);
+                                            switch(cmd_id)
+                                            {
+                                                case (int)gui_command_types.GUI_CMD_LOAD_GLYPHS:
+                                                    int gl2ti_sz = br.ReadInt32();
+                                                    int[] gl2ti = new int[gl2ti_sz];
+                                                    for (int j = 0; j < gl2ti_sz; j++)
+                                                        gl2ti[j] = br.ReadInt32();
+
+                                                    int gltifl_sz = br.ReadInt32();
+                                                    byte[] gltifl = new byte[gltifl_sz];
+                                                    for (int j = 0; j < gltifl_sz; j++)
+                                                        gltifl[j] = br.ReadByte();
+
+                                                    lock (Glyph2TileLock)
+                                                    {
+                                                        Glyph2Tile = gl2ti;
+                                                        GlyphTileFlags = gltifl;
+                                                    }
+                                                    break;
+                                                default:
+                                                    int cmd_param = br.ReadInt32();
+                                                    int cmd_param2 = br.ReadInt32();
+                                                    string cmd_str = br.ReadInt32() == 0 ? null : br.ReadString();
+                                                    game.ClientCallback_IssueGuiCommand(cmd_id, cmd_param, cmd_param2, cmd_str);
+                                                    break;
+                                            }
                                         }
                                         break;
                                     case (int)RecordedFunctionID.OutRip:

@@ -1884,33 +1884,38 @@ namespace GnollHackX
 
         public void ClientCallback_IssueGuiCommand(int cmd_id, int cmd_param, int cmd_param2, string cmd_str)
         {
-            RecordFunctionCall(RecordedFunctionID.IssueGuiCommand, cmd_id, cmd_param, cmd_param2, cmd_str);
+            if(cmd_id != (int)gui_command_types.GUI_CMD_LOAD_GLYPHS)
+                RecordFunctionCall(RecordedFunctionID.IssueGuiCommand, cmd_id, cmd_param, cmd_param2, cmd_str);
 
             ConcurrentQueue<GHRequest> queue;
             string status_str = "";
             switch (cmd_id)
             {
                 case (int)gui_command_types.GUI_CMD_LOAD_GLYPHS:
-                    /* Reinitialize  glyph2tile after object shuffling */
-                    IntPtr gl2ti_ptr;
-                    int gl2ti_size;
-                    IntPtr gltifl_ptr;
-                    int gltifl_size;
-
-                    _gamePage.GnollHackService.GetGlyphArrays(out gl2ti_ptr, out gl2ti_size, out gltifl_ptr, out gltifl_size);
-                    lock (GHApp.Glyph2TileLock)
+                    if(!PlayingReplay)
                     {
-                        if (gl2ti_ptr != IntPtr.Zero && gl2ti_size > 0)
+                        /* Reinitialize  glyph2tile after object shuffling */
+                        IntPtr gl2ti_ptr;
+                        int gl2ti_size;
+                        IntPtr gltifl_ptr;
+                        int gltifl_size;
+
+                        _gamePage.GnollHackService.GetGlyphArrays(out gl2ti_ptr, out gl2ti_size, out gltifl_ptr, out gltifl_size);
+                        lock (GHApp.Glyph2TileLock)
                         {
-                            if(GHApp.Glyph2Tile == null || gl2ti_size != GHApp.Glyph2Tile.Length)
-                                GHApp.Glyph2Tile = new int[gl2ti_size];
-                            Marshal.Copy(gl2ti_ptr, GHApp.Glyph2Tile, 0, gl2ti_size);
-                        }
-                        if (gltifl_ptr != IntPtr.Zero && gltifl_size > 0)
-                        {
-                            if (GHApp.GlyphTileFlags == null || gltifl_size != GHApp.GlyphTileFlags.Length)
-                                GHApp.GlyphTileFlags = new byte[gltifl_size];
-                            Marshal.Copy(gltifl_ptr, GHApp.GlyphTileFlags, 0, gltifl_size);
+                            if (gl2ti_ptr != IntPtr.Zero && gl2ti_size > 0)
+                            {
+                                if (GHApp.Glyph2Tile == null || gl2ti_size != GHApp.Glyph2Tile.Length)
+                                    GHApp.Glyph2Tile = new int[gl2ti_size];
+                                Marshal.Copy(gl2ti_ptr, GHApp.Glyph2Tile, 0, gl2ti_size);
+                            }
+                            if (gltifl_ptr != IntPtr.Zero && gltifl_size > 0)
+                            {
+                                if (GHApp.GlyphTileFlags == null || gltifl_size != GHApp.GlyphTileFlags.Length)
+                                    GHApp.GlyphTileFlags = new byte[gltifl_size];
+                                Marshal.Copy(gltifl_ptr, GHApp.GlyphTileFlags, 0, gltifl_size);
+                            }
+                            RecordFunctionCall(RecordedFunctionID.IssueGuiCommand, cmd_id, GHApp.Glyph2Tile, GHApp.GlyphTileFlags);
                         }
                     }
                     break;
