@@ -3957,6 +3957,24 @@ namespace GnollHackX
         }
 
         static Dictionary<ulong, ulong> _soundSourceIdDictionary = new Dictionary<ulong, ulong>();
+        public static bool IsTimeStampedFunctionCall(sbyte cmd)
+        {
+            switch (cmd)
+            {
+                case (sbyte)RecordedFunctionID.GetEvent:
+                case (sbyte)RecordedFunctionID.GetChar:
+                case (sbyte)RecordedFunctionID.GetLine:
+                case (sbyte)RecordedFunctionID.YnFunction:
+                case (sbyte)RecordedFunctionID.SelectMenu:
+                case (sbyte)RecordedFunctionID.DisplayWindow:
+                case (sbyte)RecordedFunctionID.DisplayPopupText:
+                case (sbyte)RecordedFunctionID.InitializeWindows:
+                case (sbyte)RecordedFunctionID.ExitHack:                    
+                    return true;
+                default:
+                    return false;
+            }
+        }
 
         public static int PlayReplay(GHGame game, string replayFileName)
         {
@@ -3964,6 +3982,7 @@ namespace GnollHackX
                 return 2;
 
             _soundSourceIdDictionary.Clear();
+            sbyte prevcmd_sb = -1;
             try
             {
                 using (FileStream fs = File.OpenRead(replayFileName))
@@ -3992,24 +4011,92 @@ namespace GnollHackX
                                 game.ActiveGamePage.EnableCasualMode = casualmode;
                             }
 
-                            int cmd = -1, prevcmd = -1;
+                            sbyte cmd_sb = -1;
+                            int cmd;
                             bool breakwhile;
                             ulong time;
-                            byte noOfArgs;
                             do
                             {
                                 breakwhile = false;
-                                prevcmd = cmd;
-                                cmd = br.ReadInt32();
-                                time = br.ReadUInt64();
-                                noOfArgs = br.ReadByte();
+                                time = 0UL;
+                                prevcmd_sb = cmd_sb;
+                                cmd_sb = br.ReadSByte();
+                                cmd = (int)cmd_sb;
+                                if(IsTimeStampedFunctionCall(cmd_sb))
+                                    time = br.ReadUInt64(); /* Time is only for input functions */
                                 switch (cmd)
                                 {
                                     case (int)RecordedFunctionID.EndOfFile:
                                         breakwhile = true;
                                         break;
                                     case (int)RecordedFunctionID.InitializeWindows:
-                                        game.ClientCallback_InitWindows();
+                                        {
+                                            int gl2ti_sz = br.ReadInt32();
+                                            int[] gl2ti = new int[gl2ti_sz];
+                                            for (int j = 0; j < gl2ti_sz; j++)
+                                                gl2ti[j] = br.ReadInt32();
+
+                                            int gltifl_sz = br.ReadInt32();
+                                            byte[] gltifl = new byte[gltifl_sz];
+                                            for (int j = 0; j < gltifl_sz; j++)
+                                                gltifl[j] = br.ReadByte();
+
+                                            int ti2an_sz = br.ReadInt32();
+                                            short[] ti2an = new short[ti2an_sz];
+                                            for (int j = 0; j < ti2an_sz; j++)
+                                                ti2an[j] = br.ReadInt16();
+
+                                            int ti2en_sz = br.ReadInt32();
+                                            short[] ti2en = new short[ti2en_sz];
+                                            for (int j = 0; j < ti2en_sz; j++)
+                                                ti2en[j] = br.ReadInt16();
+
+                                            int ti2ad_sz = br.ReadInt32();
+                                            short[] ti2ad = new short[ti2ad_sz];
+                                            for (int j = 0; j < ti2ad_sz; j++)
+                                                ti2ad[j] = br.ReadInt16();
+
+                                            int anoff_sz = br.ReadInt32();
+                                            int[] anoff = new int[anoff_sz];
+                                            for (int j = 0; j < anoff_sz; j++)
+                                                anoff[j] = br.ReadInt32();
+
+                                            int enoff_sz = br.ReadInt32();
+                                            int[] enoff = new int[enoff_sz];
+                                            for (int j = 0; j < enoff_sz; j++)
+                                                enoff[j] = br.ReadInt32();
+
+                                            int reoff_sz = br.ReadInt32();
+                                            int[] reoff = new int[reoff_sz];
+                                            for (int j = 0; j < reoff_sz; j++)
+                                                reoff[j] = br.ReadInt32();
+
+                                            int nosheets = br.ReadInt32();
+                                            int notiles = br.ReadInt32();
+
+                                            int tilesperrow_sz = br.ReadInt32();
+                                            int[] tilesperrow = new int[tilesperrow_sz];
+                                            for (int j = 0; j < tilesperrow_sz; j++)
+                                                tilesperrow[j] = br.ReadInt32();
+
+                                            lock (Glyph2TileLock)
+                                            {
+                                                Glyph2Tile = gl2ti;
+                                                GlyphTileFlags = gltifl;
+                                                Tile2Animation = ti2an;
+                                                Tile2Enlargement = ti2en;
+                                                Tile2Autodraw = ti2ad;
+                                                AnimationOffsets = anoff;
+                                                EnlargementOffsets = enoff;
+                                                ReplacementOffsets = reoff;
+                                                UsedTileSheets = nosheets;
+                                                TotalTiles = notiles;
+                                                for (int j = 0; j < tilesperrow_sz; j++)
+                                                    TilesPerRow[j] = tilesperrow[j];
+                                            }
+
+                                            game.ClientCallback_InitWindows();
+                                        }
                                         break;
                                     case (int)RecordedFunctionID.CreateWindow:
                                         {
@@ -4135,7 +4222,6 @@ namespace GnollHackX
                                         break;
                                     case (int)RecordedFunctionID.YnFunction:
                                         {
-                                            //int style, int attr, int color, int glyph, string title, string question, string responses, string def, string descriptions, string introline, ulong ynflags
                                             int style = br.ReadInt32();
                                             int attr = br.ReadInt32();
                                             int color = br.ReadInt32();
@@ -4737,7 +4823,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine(prevcmd_sb + ": " + ex.Message);
                 return 1;
             }
             _soundSourceIdDictionary.Clear();

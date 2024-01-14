@@ -227,84 +227,114 @@ namespace GnollHackX
         public void ClientCallback_InitWindows()
         {
             Debug.WriteLine("ClientCallback_InitWindows");
-            RecordFunctionCall(RecordedFunctionID.InitializeWindows);
 
-            /* Initialize now glyph2tile and other relevant arrays */
-            IntPtr gl2ti_ptr;
-            int gl2ti_size;
-            IntPtr gltifl_ptr;
-            int gltifl_size;
-            IntPtr ti2an_ptr;
-            int ti2an_size;
-            IntPtr ti2en_ptr;
-            int ti2en_size;
-            IntPtr ti2ad_ptr;
-            int ti2ad_size;
-            IntPtr anoff_ptr;
-            int anoff_size;
-            IntPtr enoff_ptr;
-            int enoff_size;
-            IntPtr reoff_ptr;
-            int reoff_size;
-            _gamePage.GnollHackService.GetGlyphArrays(out gl2ti_ptr, out gl2ti_size, out gltifl_ptr, out gltifl_size);
-            _gamePage.GnollHackService.GetTileArrays(out ti2an_ptr, out ti2an_size, out ti2en_ptr, out ti2en_size, out ti2ad_ptr, out ti2ad_size,
-                out anoff_ptr, out anoff_size, out enoff_ptr, out enoff_size, out reoff_ptr, out reoff_size);
-            lock (GHApp.Glyph2TileLock)
+            if (!PlayingReplay)
             {
-                if (gl2ti_ptr != IntPtr.Zero && gl2ti_size > 0)
+                /* In replay, the arrays are not initialized by the game, so should not fetch them, but read them from the replay file. */
+                /* Initialize now glyph2tile and other relevant arrays */
+                IntPtr gl2ti_ptr;
+                int gl2ti_size;
+                IntPtr gltifl_ptr;
+                int gltifl_size;
+                IntPtr ti2an_ptr;
+                int ti2an_size;
+                IntPtr ti2en_ptr;
+                int ti2en_size;
+                IntPtr ti2ad_ptr;
+                int ti2ad_size;
+                IntPtr anoff_ptr;
+                int anoff_size;
+                IntPtr enoff_ptr;
+                int enoff_size;
+                IntPtr reoff_ptr;
+                int reoff_size;
+                _gamePage.GnollHackService.GetGlyphArrays(out gl2ti_ptr, out gl2ti_size, out gltifl_ptr, out gltifl_size);
+                _gamePage.GnollHackService.GetTileArrays(out ti2an_ptr, out ti2an_size, out ti2en_ptr, out ti2en_size, out ti2ad_ptr, out ti2ad_size,
+                    out anoff_ptr, out anoff_size, out enoff_ptr, out enoff_size, out reoff_ptr, out reoff_size);
+                lock (GHApp.Glyph2TileLock)
                 {
-                    GHApp.Glyph2Tile = new int[gl2ti_size];
-                    Marshal.Copy(gl2ti_ptr, GHApp.Glyph2Tile, 0, gl2ti_size);
+                    if (gl2ti_ptr != IntPtr.Zero && gl2ti_size > 0)
+                    {
+                        GHApp.Glyph2Tile = new int[gl2ti_size];
+                        Marshal.Copy(gl2ti_ptr, GHApp.Glyph2Tile, 0, gl2ti_size);
+                    }
+                    if (gltifl_ptr != IntPtr.Zero && gltifl_size > 0)
+                    {
+                        GHApp.GlyphTileFlags = new byte[gltifl_size];
+                        Marshal.Copy(gltifl_ptr, GHApp.GlyphTileFlags, 0, gltifl_size);
+                    }
+                    if (ti2an_ptr != IntPtr.Zero && ti2an_size > 0)
+                    {
+                        GHApp.Tile2Animation = new short[ti2an_size];
+                        Marshal.Copy(ti2an_ptr, GHApp.Tile2Animation, 0, ti2an_size);
+                    }
+                    if (ti2en_ptr != IntPtr.Zero && ti2en_size > 0)
+                    {
+                        GHApp.Tile2Enlargement = new short[ti2en_size];
+                        Marshal.Copy(ti2en_ptr, GHApp.Tile2Enlargement, 0, ti2en_size);
+                    }
+                    if (ti2ad_ptr != IntPtr.Zero && ti2ad_size > 0)
+                    {
+                        GHApp.Tile2Autodraw = new short[ti2ad_size];
+                        Marshal.Copy(ti2ad_ptr, GHApp.Tile2Autodraw, 0, ti2ad_size);
+                    }
+                    if (anoff_ptr != IntPtr.Zero && anoff_size > 0)
+                    {
+                        GHApp.AnimationOffsets = new int[anoff_size];
+                        Marshal.Copy(anoff_ptr, GHApp.AnimationOffsets, 0, anoff_size);
+                    }
+                    if (enoff_ptr != IntPtr.Zero && enoff_size > 0)
+                    {
+                        GHApp.EnlargementOffsets = new int[enoff_size];
+                        Marshal.Copy(enoff_ptr, GHApp.EnlargementOffsets, 0, enoff_size);
+                    }
+                    if (reoff_ptr != IntPtr.Zero && reoff_size > 0)
+                    {
+                        GHApp.ReplacementOffsets = new int[reoff_size];
+                        Marshal.Copy(reoff_ptr, GHApp.ReplacementOffsets, 0, reoff_size);
+                    }
                 }
-                if (gltifl_ptr != IntPtr.Zero && gltifl_size > 0)
+
+                int total_tiles_used = _gamePage.GnollHackService.GetTotalTiles();
+                int total_sheets_used = Math.Min(GHConstants.MaxTileSheets, (total_tiles_used - 1) / GHConstants.NumberOfTilesPerSheet + 1);
+
+                lock (GHApp.Glyph2TileLock)
                 {
-                    GHApp.GlyphTileFlags = new byte[gltifl_size];
-                    Marshal.Copy(gltifl_ptr, GHApp.GlyphTileFlags, 0, gltifl_size);
-                }
-                if (ti2an_ptr != IntPtr.Zero && ti2an_size > 0)
-                {
-                    GHApp.Tile2Animation = new short[ti2an_size];
-                    Marshal.Copy(ti2an_ptr, GHApp.Tile2Animation, 0, ti2an_size);
-                }
-                if (ti2en_ptr != IntPtr.Zero && ti2en_size > 0)
-                {
-                    GHApp.Tile2Enlargement = new short[ti2en_size];
-                    Marshal.Copy(ti2en_ptr, GHApp.Tile2Enlargement, 0, ti2en_size);
-                }
-                if (ti2ad_ptr != IntPtr.Zero && ti2ad_size > 0)
-                {
-                    GHApp.Tile2Autodraw = new short[ti2ad_size];
-                    Marshal.Copy(ti2ad_ptr, GHApp.Tile2Autodraw, 0, ti2ad_size);
-                }
-                if (anoff_ptr != IntPtr.Zero && anoff_size > 0)
-                {
-                    GHApp.AnimationOffsets = new int[anoff_size];
-                    Marshal.Copy(anoff_ptr, GHApp.AnimationOffsets, 0, anoff_size);
-                }
-                if (enoff_ptr != IntPtr.Zero && enoff_size > 0)
-                {
-                    GHApp.EnlargementOffsets = new int[enoff_size];
-                    Marshal.Copy(enoff_ptr, GHApp.EnlargementOffsets, 0, enoff_size);
-                }
-                if (reoff_ptr != IntPtr.Zero && reoff_size > 0)
-                {
-                    GHApp.ReplacementOffsets = new int[reoff_size];
-                    Marshal.Copy(reoff_ptr, GHApp.ReplacementOffsets, 0, reoff_size);
+                    GHApp.UsedTileSheets = total_sheets_used;
+                    GHApp.TotalTiles = total_tiles_used;
+                    for (int i = 0; i < total_sheets_used; i++)
+                    {
+                        GHApp.TilesPerRow[i] = _gamePage.TileMap[i].Width / GHConstants.TileWidth;
+                    }
                 }
             }
 
-            int total_tiles_used = _gamePage.GnollHackService.GetTotalTiles();
-            int total_sheets_used = Math.Min(GHConstants.MaxTileSheets, (total_tiles_used - 1) / GHConstants.NumberOfTilesPerSheet + 1);
-
+            int[] gl2ti = null;
+            byte[] gltifl = null;
+            short[] ti2an = null;
+            short[] ti2en = null;
+            short[] ti2ad = null;
+            int[] anoff = null;
+            int[] enoff = null;
+            int[] reoff = null;
+            int nosheets = 0;
+            int notiles = 0;
+            int[] tilesperrow = null;
             lock (GHApp.Glyph2TileLock)
             {
-                GHApp.UsedTileSheets = total_sheets_used;
-                GHApp.TotalTiles = total_tiles_used;
-                for (int i = 0; i < total_sheets_used; i++)
-                {
-                    GHApp.TilesPerRow[i] = _gamePage.TileMap[i].Width / GHConstants.TileWidth;
-                }
+                gl2ti = GHApp.Glyph2Tile;
+                gltifl = GHApp.GlyphTileFlags;
+                ti2an = GHApp.Tile2Animation;
+                ti2en = GHApp.Tile2Enlargement;
+                ti2ad = GHApp.Tile2Autodraw;
+                anoff = GHApp.AnimationOffsets;
+                enoff = GHApp.EnlargementOffsets;
+                reoff = GHApp.ReplacementOffsets;
+                nosheets = GHApp.UsedTileSheets;
+                notiles = GHApp.TotalTiles;
+                tilesperrow = GHApp.TilesPerRow;
             }
+            RecordFunctionCall(RecordedFunctionID.InitializeWindows, gl2ti, gltifl, ti2an, ti2en, ti2ad, anoff, enoff, reoff, nosheets, notiles, tilesperrow);
 
             ConcurrentQueue<GHRequest> queue;
             if (GHGame.RequestDictionary.TryGetValue(this, out queue))
@@ -1196,7 +1226,7 @@ namespace GnollHackX
             }
             else if (is_restoring != 0)
             {
-                RecordFunctionCallImmediately(RecordedFunctionID.PutMsgHistory, null, null, null, is_restoring);
+                RecordFunctionCallImmediately(RecordedFunctionID.PutMsgHistory, msg, null, null, is_restoring);
                 UpdateMessageHistory();
             }
         }
@@ -2163,10 +2193,12 @@ namespace GnollHackX
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_DEBUGLOG:
-                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
-                    {
-                        queue.Enqueue(new GHRequest(this, GHRequestType.DebugLog, cmd_param, cmd_param2, cmd_str));
-                    }
+                    if(!string.IsNullOrWhiteSpace(cmd_str) && GHApp.DebugLogMessages)
+                        GHApp.WriteGHLog(cmd_str);
+                    //if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                    //{
+                    //    queue.Enqueue(new GHRequest(this, GHRequestType.DebugLog, cmd_param, cmd_param2, cmd_str));
+                    //}
                     break;
                 case (int)gui_command_types.GUI_CMD_GAME_ENDED:
                     GHApp.TryVerifyXlogUserName(); /* In case not verified yet; in advance of possibly posting files to the server and forums */
@@ -2549,10 +2581,11 @@ namespace GnollHackX
                                         if (rfc == null)
                                             continue;
 
-                                        writer.Write((int)rfc.RecordedFunctionID);
-                                        writer.Write(rfc.Time.ToBinary());
+                                        writer.Write((sbyte)rfc.RecordedFunctionID);
+                                        if(GHApp.IsTimeStampedFunctionCall((sbyte)rfc.RecordedFunctionID))
+                                            writer.Write(rfc.Time.ToBinary());
                                         int noOfArgs = rfc.Args == null ? 0 : rfc.Args.Length;
-                                        writer.Write((byte)noOfArgs);
+                                        //writer.Write((byte)noOfArgs);
                                         for (int i = 0; i < noOfArgs; i++)
                                         {
                                             object o = rfc.Args[i];
@@ -2623,6 +2656,13 @@ namespace GnollHackX
                                                 writer.Write(((short[])o).Length);
                                                 short[] arr = (short[])o;
                                                 for(int j = 0; j < arr.Length; j++)
+                                                    writer.Write(arr[j]);
+                                            }
+                                            else if (o is int[])
+                                            {
+                                                writer.Write(((int[])o).Length);
+                                                int[] arr = (int[])o;
+                                                for (int j = 0; j < arr.Length; j++)
                                                     writer.Write(arr[j]);
                                             }
                                             else if (o is float[])
