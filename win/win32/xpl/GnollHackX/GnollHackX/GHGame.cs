@@ -990,6 +990,9 @@ namespace GnollHackX
 
         public void ClientCallback_StatusUpdate(int fieldidx, string text, long condbits, int cng, int percent, int color, IntPtr condcolorptr)
         {
+            if(fieldidx != (int)statusfields.BL_CONDITION)
+                RecordFunctionCall(RecordedFunctionID.StatusUpdate, fieldidx, text, condbits, cng, percent, color, null);
+
             long oldbits = 0L;
             if (fieldidx >= 0 && fieldidx < (int)statusfields.MAXBLSTATS)
             {
@@ -1009,8 +1012,6 @@ namespace GnollHackX
             {
                 case (int)statusfields.BL_SKILL:
                     {
-                        RecordFunctionCall(RecordedFunctionID.StatusUpdate, fieldidx, text, condbits, cng, percent, color, null);
-
                         GHRequestType rtype;
                         if (text != null && text == "Skill")
                             rtype = GHRequestType.ShowSkillButton;
@@ -1029,7 +1030,6 @@ namespace GnollHackX
                     {
                         if (cng != 0 && text != null && text != "")
                         {
-                            RecordFunctionCall(RecordedFunctionID.StatusUpdate, fieldidx, text, condbits, cng, percent, color, null);
                             ConcurrentQueue<GHRequest> queue;
                             if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                             {
