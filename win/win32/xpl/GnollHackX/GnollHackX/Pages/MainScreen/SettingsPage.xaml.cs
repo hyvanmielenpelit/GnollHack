@@ -152,19 +152,23 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.AllowBones = BonesSwitch.IsToggled;
             Preferences.Set("AllowBones", BonesSwitch.IsToggled);
 
-            bool oldRecordGame = GHApp.RecordGame;
-            GHApp.RecordGame = RecordSwitch.IsToggled;
-            Preferences.Set("RecordGame", RecordSwitch.IsToggled);
-            if (_gamePage != null && oldRecordGame != RecordSwitch.IsToggled)
+            if(RecordSwitch.IsEnabled)
             {
-                if (RecordSwitch.IsToggled)
-                {
-                    _gamePage.RequestRedrawScreen();
-                }
-                else
-                {
-                    _gamePage.RequestEndReplayFile();
-                }
+                //bool oldRecordGame = GHApp.RecordGame;
+                GHApp.RecordGame = RecordSwitch.IsToggled;
+                Preferences.Set("RecordGame", RecordSwitch.IsToggled);
+                //if (_gamePage != null && oldRecordGame != RecordSwitch.IsToggled && !RecordSwitch.IsToggled)
+                //{
+                    //_gamePage.RequestEndReplayFile();
+                    //if (RecordSwitch.IsToggled)
+                    //{
+                    //    _gamePage.RequestRedrawScreen();
+                    //}
+                    //else
+                    //{
+                    //    _gamePage.RequestEndReplayFile();
+                    //}
+                //}
             }
 
             GHApp.PostingGameStatus = PostGameStatusSwitch.IsToggled;
@@ -657,6 +661,11 @@ namespace GnollHackX.Pages.MainScreen
             StreamingBankToDiskSwitch.IsToggled = streamingbanktodisk;
             BonesSwitch.IsToggled = allowbones;
             RecordSwitch.IsToggled = recordgame;
+            if (_gamePage != null) /* Cannot turn on or off in the middle of the game; need to save and restart; otherwise either relevant commands are not recorded or things may get prone to bugs */
+            {
+                RecordSwitch.IsEnabled = false;
+                RecordLabel.TextColor = GHColors.Gray;
+            }
             PostGameStatusSwitch.IsToggled = postgamestatus;
             PostDiagnosticDataSwitch.IsToggled = postdiagnostics;
             PostXlogSwitch.IsToggled = postxlog;
@@ -1228,6 +1237,22 @@ namespace GnollHackX.Pages.MainScreen
         private void RecordSwitch_Toggled(object sender, ToggledEventArgs e)
         {
 
+        }
+
+        private void RecordLabel_TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            if(RecordSwitch.IsEnabled)
+            {
+                //Nothing currently
+            }
+            else
+            {
+                PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
+                PopupTitleLabel.Text = "Toggling Recording Disallowed";
+                PopupLabel.Text = "Toggling recording on and off is disallowed during the game. Save the game first and then change the setting from the main screen.";
+                PopupOkButton.IsEnabled = true;
+                PopupGrid.IsVisible = true;
+            }
         }
     }
 }

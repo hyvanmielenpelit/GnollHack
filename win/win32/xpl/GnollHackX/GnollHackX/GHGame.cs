@@ -1222,12 +1222,12 @@ namespace GnollHackX
                     Marshal.Copy(colors_ptr, colors, 0, str_length + 1);
                 }
 
-                RecordFunctionCallImmediately(RecordedFunctionID.PutMsgHistory, msg, attributes, colors, is_restoring);
+                //RecordFunctionCallImmediately(RecordedFunctionID.PutMsgHistory, msg, attributes, colors, is_restoring); // Not needed in replays
                 RawPrintEx2(msg, attributes, colors, (int)MenuItemAttributes.None, (int)nhcolor.NO_COLOR, is_restoring != 0);
             }
             else if (is_restoring != 0)
             {
-                RecordFunctionCallImmediately(RecordedFunctionID.PutMsgHistory, msg, null, null, is_restoring);
+                //RecordFunctionCallImmediately(RecordedFunctionID.PutMsgHistory, msg, null, null, is_restoring); // Not needed in replays
                 UpdateMessageHistory();
             }
         }
@@ -2562,10 +2562,13 @@ namespace GnollHackX
                         string filepath = Path.Combine(dir, "replay-" + GHApp.GHVersionNumber.ToString() + "-" + _replayTimeStamp.ToBinary().ToString() + ".gnhrec");
                         bool fileDidExist = File.Exists(filepath);
                         bool eofFound = false;
+                        long appendSize = 0L;
+                        long existingSize = 0L;
                         using (FileStream fileStream = new FileStream(filepath, fileDidExist ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.None))
                         {
                             if (fileStream != null)
                             {
+                                existingSize = fileStream.Length;
                                 using (BinaryWriter writer = new BinaryWriter(fileStream))
                                 {
                                     if(!fileDidExist)
@@ -2574,25 +2577,33 @@ namespace GnollHackX
                                         writer.Write(GHApp.GHVersionNumber);
                                         writer.Write(GHApp.GHVersionCompatibility);
                                         writer.Write(DateTime.Now.ToBinary());
-                                        writer.Write(Preferences.Get("LastUsedPlayerName", ""));
+                                        string plName = Preferences.Get("LastUsedPlayerName", "");
+                                        writer.Write(plName);
                                         writer.Write(WizardMode);
                                         writer.Write(ModernMode);
                                         writer.Write(CasualMode);
-                                        writer.Write(0); /* int for future use */
+                                        writer.Write(0); /* Recording type: 0 = full; 1 = ascii only */
                                         writer.Write(0); /* int for future use */
                                         writer.Write(0UL); /* flags for future use */
                                         writer.Write(0UL); /* flags for future use */
+                                        appendSize += 3 * 8L + (long)plName.Length + 1L + 3 * 1L + 2 * 4L + 2 * 8L;
                                     }
                                     foreach (GHRecordedFunctionCall rfc in _recordedFunctionCalls)
                                     {
                                         if (rfc == null)
                                             continue;
 
+                                        long saveSize = 0L;
                                         if (rfc.RecordedFunctionID == RecordedFunctionID.EndOfFile)
                                             eofFound = true;
                                         writer.Write((byte)rfc.RecordedFunctionID);
-                                        if(GHApp.IsTimeStampedFunctionCall((byte)rfc.RecordedFunctionID))
+                                        saveSize += 1L;
+                                        if (GHApp.IsTimeStampedFunctionCall((byte)rfc.RecordedFunctionID))
+                                        {
                                             writer.Write(rfc.Time.ToBinary());
+                                            saveSize += 8L;
+                                        }
+
                                         int noOfArgs = rfc.Args == null ? 0 : rfc.Args.Length;
                                         //writer.Write((byte)noOfArgs);
                                         for (int i = 0; i < noOfArgs; i++)
@@ -2601,98 +2612,123 @@ namespace GnollHackX
                                             if (o == null)
                                             {
                                                 writer.Write(0);
+                                                saveSize += 4L;
                                             }
                                             else if (o is bool)
                                             {
                                                 writer.Write((bool)o);
+                                                saveSize += 1L;
                                             }
                                             else if (o is byte)
                                             {
                                                 writer.Write((byte)o);
+                                                saveSize += 1L;
                                             }
                                             else if (o is sbyte)
                                             {
                                                 writer.Write((sbyte)o);
+                                                saveSize += 1L;
                                             }
                                             else if (o is char)
                                             {
                                                 writer.Write((char)o);
+                                                saveSize += 2L;
                                             }
                                             else if (o is short)
                                             {
                                                 writer.Write((short)o);
+                                                saveSize += 2L;
                                             }
                                             else if (o is ushort)
                                             {
                                                 writer.Write((ushort)o);
+                                                saveSize += 2L;
                                             }
                                             else if (o is int)
                                             {
                                                 writer.Write((int)o);
+                                                saveSize += 4L;
                                             }
                                             else if (o is uint)
                                             {
                                                 writer.Write((uint)o);
+                                                saveSize += 4L;
                                             }
                                             else if (o is long)
                                             {
                                                 writer.Write((long)o);
+                                                saveSize += 8L;
                                             }
                                             else if (o is ulong)
                                             {
                                                 writer.Write((ulong)o);
+                                                saveSize += 8L;
                                             }
                                             else if (o is float)
                                             {
                                                 writer.Write((float)o);
+                                                saveSize += 4L;
                                             }
                                             else if (o is double)
                                             {
                                                 writer.Write((double)o);
+                                                saveSize += 8L;
                                             }
                                             else if (o is string)
                                             {
-                                                writer.Write(((string)o).Length + 1);
+                                                int len = ((string)o).Length + 1;
+                                                writer.Write(len);
                                                 writer.Write((string)o);
+                                                saveSize += 4L + (long)len;
                                             }
                                             else if (o is byte[])
                                             {
-                                                writer.Write(((byte[])o).Length);
+                                                int len = ((byte[])o).Length;
+                                                writer.Write(len);
                                                 writer.Write((byte[])o);
+                                                saveSize += 4L + (long)len;
                                             }
                                             else if (o is short[])
                                             {
-                                                writer.Write(((short[])o).Length);
                                                 short[] arr = (short[])o;
-                                                for(int j = 0; j < arr.Length; j++)
+                                                writer.Write(arr.Length);
+                                                for (int j = 0; j < arr.Length; j++)
                                                     writer.Write(arr[j]);
+                                                saveSize += 4L + (long)arr.Length * 2L;
                                             }
                                             else if (o is int[])
                                             {
-                                                writer.Write(((int[])o).Length);
                                                 int[] arr = (int[])o;
+                                                writer.Write(arr.Length);
                                                 for (int j = 0; j < arr.Length; j++)
                                                     writer.Write(arr[j]);
+                                                saveSize += 4L + (long)arr.Length * 4L;
                                             }
                                             else if (o is float[])
                                             {
-                                                writer.Write(((float[])o).Length);
                                                 float[] arr = (float[])o;
+                                                writer.Write(arr.Length);
                                                 for (int j = 0; j < arr.Length; j++)
                                                     writer.Write(arr[j]);
+                                                saveSize += 4L + (long)arr.Length * 4L;
                                             }
                                             else if (o is string[])
                                             {
-                                                writer.Write(((string[])o).Length);
                                                 string[] arr = (string[])o;
+                                                writer.Write(arr.Length);
+                                                saveSize += 4L;
                                                 for (int j = 0; j < arr.Length; j++)
                                                 {
                                                     if(arr[j] == null)
+                                                    {
                                                         writer.Write(0);
+                                                        saveSize += 4L;
+                                                    }
                                                     else
                                                     {
                                                         writer.Write(arr[j].Length + 1);
                                                         writer.Write(arr[j]);
+                                                        saveSize += 4L + (long)arr[j].Length + 1L;
                                                     }
                                                 }
                                             }
@@ -2719,11 +2755,19 @@ namespace GnollHackX
                                                 }
                                                 writer.Write(size);
                                                 writer.Write(arr);
+                                                saveSize += 4L + (long)size;
                                             }
                                         }
+                                        appendSize += saveSize;
+//#if DEBUG
+//                                        Debug.WriteLine("Replay saved: " + rfc.RecordedFunctionID.ToString() + ": saved " + saveSize + " bytes");
+//#endif
                                     }
                                 }
                                 _recordedFunctionCalls.Clear();
+//#if DEBUG
+//                                Debug.WriteLine("Replay all written: Existing: " + existingSize + " bytes; Appended: " + appendSize + " bytes");
+//#endif
                             }
                         }
                         if(eofFound && File.Exists(filepath))
@@ -2737,6 +2781,10 @@ namespace GnollHackX
                             }
                             if (File.Exists(filepath) && File.Exists(zipFile))
                                 File.Delete(filepath);
+
+#if DEBUG
+                            Debug.WriteLine("Replay Finalized: Existing: " + existingSize + " bytes; Appended: " + appendSize + " bytes");
+#endif
                         }
                     }
                 }

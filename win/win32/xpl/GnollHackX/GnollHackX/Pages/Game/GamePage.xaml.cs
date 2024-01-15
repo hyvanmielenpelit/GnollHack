@@ -1007,8 +1007,20 @@ namespace GnollHackX.Pages.Game
 
             await LoadingProgressBar.ProgressTo(0.95, 50, Easing.Linear);
 
+            if (PlayingReplay)
+            {
+                MainGrid.IsEnabled = false;
+                MenuGrid.IsEnabled = false;
+                TextGrid.IsEnabled = false;
+                GetLineGrid.IsEnabled = false;
+                YnGrid.IsEnabled = false;
+                PopupGrid.IsEnabled = false;
+                MoreCommandsGrid.IsEnabled = false;
+                TipView.IsEnabled = false;
+            }
+
             Thread t;
-            if(replayFileName != null)
+            if(PlayingReplay)
                 t = new Thread(new ThreadStart(GNHThreadProcForReplay));
             else
                 t = new Thread(new ThreadStart(GNHThreadProc));
