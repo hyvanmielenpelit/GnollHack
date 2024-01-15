@@ -2545,6 +2545,10 @@ namespace GnollHackX
         }
 
         private DateTime _replayTimeStamp = DateTime.Now;
+        private long _headerSize = 0L;
+        private long _noOfCommmands = 0L;
+        private long[] _commandSize = new long[(int)RecordedFunctionID.NumberOfFunctionCalls];
+
         private void WriteFunctionCallsToDisk()
         {
             if (!GHApp.RecordGame || PlayingReplay)
@@ -2586,12 +2590,15 @@ namespace GnollHackX
                                         writer.Write(0); /* int for future use */
                                         writer.Write(0UL); /* flags for future use */
                                         writer.Write(0UL); /* flags for future use */
-                                        appendSize += 3 * 8L + (long)plName.Length + 1L + 3 * 1L + 2 * 4L + 2 * 8L;
+                                        _headerSize += 3 * 8L + (long)plName.Length + 1L + 3 * 1L + 2 * 4L + 2 * 8L;
+                                        appendSize += _headerSize;
                                     }
                                     foreach (GHRecordedFunctionCall rfc in _recordedFunctionCalls)
                                     {
                                         if (rfc == null)
                                             continue;
+
+                                        _noOfCommmands++;
 
                                         long saveSize = 0L;
                                         if (rfc.RecordedFunctionID == RecordedFunctionID.EndOfFile)
@@ -2758,18 +2765,13 @@ namespace GnollHackX
                                                 saveSize += 4L + (long)size;
                                             }
                                         }
+                                        _commandSize[(int)rfc.RecordedFunctionID] += saveSize;
                                         appendSize += saveSize;
-//#if DEBUG
-//                                        Debug.WriteLine("Replay saved: " + rfc.RecordedFunctionID.ToString() + ": saved " + saveSize + " bytes");
-//#endif
                                     }
                                 }
                                 _recordedFunctionCalls.Clear();
-//#if DEBUG
-//                                Debug.WriteLine("Replay all written: Existing: " + existingSize + " bytes; Appended: " + appendSize + " bytes");
-//#endif
                             }
-                        }
+                        } 
                         if(eofFound && File.Exists(filepath))
                         {
                             string zipFile = filepath + ".zip";
@@ -2782,9 +2784,22 @@ namespace GnollHackX
                             if (File.Exists(filepath) && File.Exists(zipFile))
                                 File.Delete(filepath);
 
-#if DEBUG
-                            Debug.WriteLine("Replay Finalized: Existing: " + existingSize + " bytes; Appended: " + appendSize + " bytes");
-#endif
+                            Debug.WriteLine("Replay Finalized: Existing: " + existingSize + " bytes; Appended: " + appendSize + " bytes; Total: " + (existingSize + appendSize).ToString());
+
+                            long totalCommands = 0L;
+                            for(RecordedFunctionID i = RecordedFunctionID.InitializeWindows; i < RecordedFunctionID.NumberOfFunctionCalls; i++)
+                            {
+                                totalCommands += _commandSize[(int)i];
+                            }
+                            Debug.WriteLine("Header: " + _headerSize + " bytes; Commands (" + _noOfCommmands +"): " + totalCommands + " bytes; Total: " + (_headerSize + totalCommands));
+                            for (RecordedFunctionID i = RecordedFunctionID.InitializeWindows; i < RecordedFunctionID.NumberOfFunctionCalls; i++)
+                            {
+                                Debug.WriteLine("- " + i.ToString() + ": " + _commandSize[(int)i] + string.Format(" bytes ({0:P2})", ((double)_commandSize[(int)i]) / ((double)totalCommands)));
+                                _commandSize[(int)i] = 0L;
+                            }
+                            _noOfCommmands = 0L;
+                            _headerSize = 0L;
+                            _replayTimeStamp = DateTime.Now;
                         }
                     }
                 }

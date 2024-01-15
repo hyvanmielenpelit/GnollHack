@@ -1813,5 +1813,6 @@ namespace GnollHackX
         UIHasInput,
         OpenSpecialView,
         ExitHack,
+        NumberOfFunctionCalls
     }
 }
