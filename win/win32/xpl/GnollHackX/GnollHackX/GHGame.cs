@@ -2784,17 +2784,17 @@ namespace GnollHackX
                             if (File.Exists(filepath) && File.Exists(zipFile))
                                 File.Delete(filepath);
 
-                            Debug.WriteLine("Replay Finalized: Existing: " + existingSize + " bytes; Appended: " + appendSize + " bytes; Total: " + (existingSize + appendSize).ToString());
+                            GHApp.MaybeWriteGHLog("Replay Finalized: Existing: " + existingSize + " bytes; Appended: " + appendSize + " bytes; Total: " + (existingSize + appendSize).ToString());
 
                             long totalCommands = 0L;
                             for(RecordedFunctionID i = RecordedFunctionID.InitializeWindows; i < RecordedFunctionID.NumberOfFunctionCalls; i++)
                             {
                                 totalCommands += _commandSize[(int)i];
                             }
-                            Debug.WriteLine("Header: " + _headerSize + " bytes; Commands (" + _noOfCommmands +"): " + totalCommands + " bytes; Total: " + (_headerSize + totalCommands));
+                            GHApp.MaybeWriteGHLog("Header: " + _headerSize + " bytes; Commands (" + _noOfCommmands +"): " + totalCommands + " bytes; Total: " + (_headerSize + totalCommands));
                             for (RecordedFunctionID i = RecordedFunctionID.InitializeWindows; i < RecordedFunctionID.NumberOfFunctionCalls; i++)
                             {
-                                Debug.WriteLine("- " + i.ToString() + ": " + _commandSize[(int)i] + string.Format(" bytes ({0:P2})", ((double)_commandSize[(int)i]) / ((double)totalCommands)));
+                                GHApp.MaybeWriteGHLog("- " + i.ToString() + ": " + _commandSize[(int)i] + string.Format(" bytes ({0:P2})", ((double)_commandSize[(int)i]) / ((double)totalCommands)));
                                 _commandSize[(int)i] = 0L;
                             }
                             _noOfCommmands = 0L;

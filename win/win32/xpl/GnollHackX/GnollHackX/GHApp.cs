@@ -3912,6 +3912,17 @@ namespace GnollHackX
             return info_str;
         }
 
+        public static void MaybeWriteGHLog(string loggedtext)
+        {
+            if (string.IsNullOrWhiteSpace(loggedtext))
+                return;
+
+            if (DebugLogMessages)
+                WriteGHLog(loggedtext);
+            else
+                Debug.WriteLine(loggedtext);
+        }
+
         private static readonly object _ghlogLock = new object();
         public static void WriteGHLog(string loggedtext)
         {

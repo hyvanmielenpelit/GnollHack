@@ -2828,7 +2828,7 @@ namespace GnollHackX.Pages.Game
                     break;
                 case (int)getline_types.GETLINE_WISHING:
                     GetLineEntryText.Placeholder = "Type your wish here";
-                    _getLineRegex = new Regex(@"^[A-Za-z0-9_ \(\:\)\+\-]{0,128}$");
+                    _getLineRegex = new Regex(@"^[A-Za-z0-9_ \(\:\)\+\-\']{0,128}$");
                     break;
                 case (int)getline_types.GETLINE_GENESIS:
                 case (int)getline_types.GETLINE_POLYMORPH:
@@ -2851,7 +2851,7 @@ namespace GnollHackX.Pages.Game
                     break;
                 case (int)getline_types.GETLINE_QUESTION:
                     GetLineEntryText.Placeholder = "Type the answer here";
-                    _getLineRegex = new Regex(@"^[A-Za-z0-9_ \$\*\&\.\,\<\>\=\?\!\#\(\:\;\)\+\-]{0,128}$");
+                    _getLineRegex = new Regex(@"^[A-Za-z0-9_ \$\*\&\.\,\<\>\=\?\!\#\(\:\;\)\+\-\']{0,128}$");
                     break;
                 case (int)getline_types.GETLINE_MENU_SEARCH:
                     GetLineEntryText.Placeholder = "Type the search here";
