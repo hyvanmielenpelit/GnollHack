@@ -2331,10 +2331,20 @@ namespace GnollHackX.Pages.Game
                                 LongerMessageHistory = req.RequestBool;
                                 GHApp.SavedLongerMessageHistory = req.RequestBool;
                                 break;
+                            case GHRequestType.InformRecordingWentOff:
+                                GHApp.RecordGame = false;
+                                Preferences.Set("RecordGame", false);
+                                InformRecordingWentOff();
+                                break;
                         }
                     }
                 }
             }
+        }
+
+        private async void InformRecordingWentOff()
+        {
+            await DisplayAlert("Recording Switched Off", "Game recording has been switched off due to critically low disk space.", "OK");
         }
 
         private void CloseAllDialogs()

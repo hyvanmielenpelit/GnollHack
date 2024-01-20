@@ -452,6 +452,16 @@ namespace GnollHackX
                     await DisplayAlert("Slow Sounds", "GnollHack is running on Android in Debug Mode using the APK format, which causes sounds to play slow. Please switch Streaming Banks to Memory on in Settings.", "OK");
                     previousInformationShown = true;
                 }
+                if (GHApp.InformAboutRecordingSetOff)
+                {
+                    await DisplayAlert("Recording Switched Off", string.Format("You are are running low on free disk space ({0:0.00} GB). Game recording has been switched off in Settings." + (GHApp.InformAboutFreeDiskSpace ? " Please consider freeing disk space on your device." : ""), (double)GHConstants.LowFreeDiskSpaceThresholdInBytes / (1024 * 1024 * 1024)), "OK");
+                    previousInformationShown = true;
+                }
+                else if (GHApp.InformAboutFreeDiskSpace)
+                {
+                    await DisplayAlert("Very Low Free Disk Space", string.Format("You are are running very low on free disk space ({0:0.00} GB). Please consider freeing disk space on your device.", (double)GHConstants.VeryLowFreeDiskSpaceThresholdInBytes / (1024 * 1024 * 1024)), "OK");
+                    previousInformationShown = true;
+                }
                 if (!previousInformationShown)
                 {
                     bool ReviewRequested = Preferences.Get("StoreReviewRequested", false);

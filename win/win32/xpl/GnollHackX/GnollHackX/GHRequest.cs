@@ -64,6 +64,7 @@ namespace GnollHackX
         SaveInsuranceCheckPoint,
         RedrawScreen,
         EndReplayFile,
+        InformRecordingWentOff,
     }
 
     public struct AddContextMenuData

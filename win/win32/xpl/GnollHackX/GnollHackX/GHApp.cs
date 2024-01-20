@@ -95,12 +95,31 @@ namespace GnollHackX
             BonesAllowedUsers = Preferences.Get("BonesAllowedUsers", "");
             RecommendedSettingsChecked = Preferences.Get("RecommendedSettingsChecked", false);
             RecordGame = Preferences.Get("RecordGame", false);
+            ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
+            if(FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
+            {
+                if(RecordGame)
+                {
+                    RecordGame = false;
+                    Preferences.Set("RecordGame", false);
+                    InformAboutRecordingSetOff = true;
+                }
+                
+                if (FreeDiskSpaceInBytes < GHConstants.VeryLowFreeDiskSpaceThresholdInBytes)
+                {
+                    InformAboutFreeDiskSpace = true;
+                }
+            }
 
             BackButtonPressed += EmptyBackButtonPressed;
         }
 
         public static bool RecommendedSettingsChecked { get; set; }
-        public static bool RecordGame { get; set; }
+
+        
+        private static readonly object _recordGameLock = new object();
+        private static bool _recordGame = false;
+        public static bool RecordGame { get { lock (_recordGameLock) { return _recordGame; } } set { lock (_recordGameLock) { _recordGame = value; } } }
 
         private static object _networkAccessLock = new object();
         private static NetworkAccess _networkAccessState = NetworkAccess.None;
@@ -218,6 +237,8 @@ namespace GnollHackX
         public static bool InformAboutGameTermination = false;
         public static bool InformAboutCrashReport = false;
         public static bool InformAboutIncompatibleSavedGames = false;
+        public static bool InformAboutRecordingSetOff = false;
+        public static bool InformAboutFreeDiskSpace = false;
         public static bool SavedLongerMessageHistory { get; set; }
 
         public static bool InformAboutSlowSounds

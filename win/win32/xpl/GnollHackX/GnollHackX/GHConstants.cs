@@ -1619,6 +1619,9 @@ namespace GnollHackX
         public const double MainScreenGeneralCounterIntervalInSeconds = 2.0;
         public const long MaxGHLogSize = 4194304;
         public const int LineBuilderInitialCapacity = 256;
+        public const ulong LowFreeDiskSpaceThresholdInBytes = 1024 * 1024 * 2024;
+        public const ulong VeryLowFreeDiskSpaceThresholdInBytes = 512 * 1024 * 2024;
+        public const ulong CritiallyLowFreeDiskSpaceThresholdInBytes = 128 * 1024 * 2024;
 #if GNH_MAUI
         public const string PortName = "GnollHackM";
 #else

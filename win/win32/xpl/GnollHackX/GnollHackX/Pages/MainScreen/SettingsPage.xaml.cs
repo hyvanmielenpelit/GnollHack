@@ -661,7 +661,7 @@ namespace GnollHackX.Pages.MainScreen
             StreamingBankToDiskSwitch.IsToggled = streamingbanktodisk;
             BonesSwitch.IsToggled = allowbones;
             RecordSwitch.IsToggled = recordgame;
-            if (_gamePage != null) /* Cannot turn on or off in the middle of the game; need to save and restart; otherwise either relevant commands are not recorded or things may get prone to bugs */
+            if (_gamePage != null || (!RecordSwitch.IsToggled && GHApp.PlatformService.GetDeviceFreeDiskSpaceInBytes() < GHConstants.LowFreeDiskSpaceThresholdInBytes)) /* Cannot turn on or off in the middle of the game; need to save and restart; otherwise either relevant commands are not recorded or things may get prone to bugs */
             {
                 RecordSwitch.IsEnabled = false;
                 RecordLabel.TextColor = GHColors.Gray;
@@ -1247,11 +1247,22 @@ namespace GnollHackX.Pages.MainScreen
             }
             else
             {
-                PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
-                PopupTitleLabel.Text = "Toggling Recording Disallowed";
-                PopupLabel.Text = "Toggling recording on and off is disallowed during the game. Save the game first and then change the setting from the main screen.";
-                PopupOkButton.IsEnabled = true;
-                PopupGrid.IsVisible = true;
+                if(_gamePage != null)
+                {
+                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
+                    PopupTitleLabel.Text = "Toggling Recording Disallowed";
+                    PopupLabel.Text = "Toggling recording on and off is disallowed during the game. Save the game first and then change the setting from the main screen.";
+                    PopupOkButton.IsEnabled = true;
+                    PopupGrid.IsVisible = true;
+                }
+                else
+                {
+                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
+                    PopupTitleLabel.Text = "Insufficient Disk Space";
+                    PopupLabel.Text = string.Format("There is too little free disk space for switching on game recording ({0:0.00} GB). Please consider freeing disk space on your device.", (double)GHApp.PlatformService.GetDeviceFreeDiskSpaceInBytes() / (1024 * 1024 * 1024));
+                    PopupOkButton.IsEnabled = true;
+                    PopupGrid.IsVisible = true;
+                }
             }
         }
     }

@@ -7,6 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Net.WebRequestMethods;
 using GnollHackX.Pages.Game;
+using static System.Net.Mime.MediaTypeNames;
+using static Xamarin.Essentials.AppleSignInAuthenticator;
+
+
 
 #if GNH_MAUI
 using GnollHackX;

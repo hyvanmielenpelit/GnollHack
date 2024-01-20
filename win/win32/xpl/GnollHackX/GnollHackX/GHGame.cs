@@ -19,6 +19,7 @@ using System.Linq;
 using System.Drawing;
 using System.Runtime.InteropServices.ComTypes;
 using System.IO.Compression;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace GnollHackX
 {
@@ -581,6 +582,7 @@ namespace GnollHackX
         {
             Debug.WriteLine("ClientCallback_nhgetch");
             WriteFunctionCallsToDisk();
+            CheckEndReplay();
 
             ConcurrentQueue<GHRequest> queue;
             if (GHGame.RequestDictionary.TryGetValue(this, out queue))
@@ -616,6 +618,7 @@ namespace GnollHackX
         {
             Debug.WriteLine("ClientCallback_nh_poskey");
             WriteFunctionCallsToDisk();
+            CheckEndReplay();
 
             x = 0;
             y = 0;
@@ -666,6 +669,8 @@ namespace GnollHackX
                 RawPrintEx(question, attr, color, false);
 
             WriteFunctionCallsToDisk();
+            CheckEndReplay();
+
             ConcurrentQueue<GHRequest> queue;
             if (responses == null || responses == "")
             {
@@ -2542,6 +2547,22 @@ namespace GnollHackX
 
             RecordFunctionCall(functionID, args);
             WriteFunctionCallsToDisk();
+            if(functionID != RecordedFunctionID.EndOfFile)
+                CheckEndReplay();
+        }
+
+        private void CheckEndReplay()
+        {
+            if (GHApp.PlatformService.GetDeviceFreeDiskSpaceInBytes() < GHConstants.CritiallyLowFreeDiskSpaceThresholdInBytes)
+            {
+                EndReplayFile();
+                GHApp.RecordGame = false; /* Preferences relating to RecordGame will be set off on the game page in another thread just in case */
+                ConcurrentQueue<GHRequest> queue;
+                if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                {
+                    queue.Enqueue(new GHRequest(this, GHRequestType.InformRecordingWentOff));
+                }
+            }
         }
 
         private DateTime _replayTimeStamp = DateTime.Now;
