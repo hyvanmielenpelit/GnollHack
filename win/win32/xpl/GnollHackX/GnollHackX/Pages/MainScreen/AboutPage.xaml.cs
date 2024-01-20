@@ -445,39 +445,42 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
 
             string dir = Path.Combine(GHApp.GHPath, GHConstants.ReplayDirectory);
-            if(Directory.Exists(dir))
-            {
-                int idx = 0;
-                string[] files = Directory.GetFiles(dir);
-                if(files != null && files.Length > 0)
-                {
-                    bool ans = await DisplayAlert("Replays Available", "There are " + files.Length + " replays available. Play one of them?", "Yes", "No");
-                    if(ans)
-                    {
-                        foreach (string file in files)
-                        {
-                            idx++;
-                            ans = await DisplayAlert("Replay " + idx + " / " + files.Length, "Replay file " + file + "?", "Yes", "No");
-                            if(ans)
-                            {
-                                var gamePage = new GamePage(_mainPage);
-                                GHApp.CurrentGamePage = gamePage;
-                                await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
-                                gamePage.StartReplay(file);
-                                break;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    await DisplayAlert("No Replays", "There are no replays in the replay directory.", "OK");
-                }
-            }
-            else
-            {
-                await DisplayAlert("No Replays", "There are no replays.", "OK");
-            }
+            SelectFilePage selectFilePage = new SelectFilePage(dir, _mainPage);
+            await App.Current.MainPage.Navigation.PushModalAsync(selectFilePage);
+
+            //if(Directory.Exists(dir))
+            //{
+            //    int idx = 0;
+            //    string[] files = Directory.GetFiles(dir);
+            //    if(files != null && files.Length > 0)
+            //    {
+            //        bool ans = await DisplayAlert("Replays Available", "There are " + files.Length + " replays available. Play one of them?", "Yes", "No");
+            //        if(ans)
+            //        {
+            //            foreach (string file in files)
+            //            {
+            //                idx++;
+            //                ans = await DisplayAlert("Replay " + idx + " / " + files.Length, "Replay file " + file + "?", "Yes", "No");
+            //                if(ans)
+            //                {
+            //                    var gamePage = new GamePage(_mainPage);
+            //                    GHApp.CurrentGamePage = gamePage;
+            //                    await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
+            //                    gamePage.StartReplay(file);
+            //                    break;
+            //                }
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        await DisplayAlert("No Replays", "There are no replays in the replay directory.", "OK");
+            //    }
+            //}
+            //else
+            //{
+            //    await DisplayAlert("No Replays", "There are no replays.", "OK");
+            //}
 
             AboutGrid.IsEnabled = true;
         }

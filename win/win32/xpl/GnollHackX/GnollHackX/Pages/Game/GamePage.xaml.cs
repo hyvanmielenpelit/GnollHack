@@ -2222,6 +2222,9 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.ShowOutRipPage:
                                 ShowOutRipPage(req.RequestOutRipInfo != null ? req.RequestOutRipInfo : new GHOutRipInfo("", 0, "", ""), req.RequestingGHWindow);
                                 break;
+                            case GHRequestType.HideOutRipPage:
+                                HideOutRipPage();
+                                break;
                             case GHRequestType.CreateWindowView:
                                 CreateWindowView(req.RequestInt);
                                 break;
@@ -3313,6 +3316,10 @@ namespace GnollHackX.Pages.Game
         {
             var outRipPage = new OutRipPage(this, ghwindow, outripinfo);
             await App.Current.MainPage.Navigation.PushModalAsync(outRipPage);
+        }
+        private async void HideOutRipPage()
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)

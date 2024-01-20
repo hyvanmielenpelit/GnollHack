@@ -1622,6 +1622,10 @@ namespace GnollHackX
         public const ulong LowFreeDiskSpaceThresholdInBytes = 1024 * 1024 * 2024;
         public const ulong VeryLowFreeDiskSpaceThresholdInBytes = 512 * 1024 * 2024;
         public const ulong CritiallyLowFreeDiskSpaceThresholdInBytes = 128 * 1024 * 2024;
+        public const int ReplayStandardDelay = 100; /* Milliseconds */
+        public const int ReplayOutripDelay = 400; /* Milliseconds */
+        public const int ReplayPopupDelay = 400; /* Milliseconds */
+        
 #if GNH_MAUI
         public const string PortName = "GnollHackM";
 #else

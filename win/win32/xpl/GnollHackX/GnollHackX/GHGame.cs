@@ -584,6 +584,12 @@ namespace GnollHackX
             WriteFunctionCallsToDisk();
             CheckEndReplay();
 
+            if (PlayingReplay)
+            {
+                Thread.Sleep(GHConstants.ReplayStandardDelay);
+                return 0;
+            }
+
             ConcurrentQueue<GHRequest> queue;
             if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
@@ -623,6 +629,12 @@ namespace GnollHackX
             x = 0;
             y = 0;
             mod = 0;
+
+            if (PlayingReplay)
+            {
+                Thread.Sleep(GHConstants.ReplayStandardDelay);
+                return 0;
+            }
 
             ConcurrentQueue<GHRequest> queue;
             if (GHGame.RequestDictionary.TryGetValue(this, out queue))
@@ -670,6 +682,12 @@ namespace GnollHackX
 
             WriteFunctionCallsToDisk();
             CheckEndReplay();
+
+            if (PlayingReplay)
+            {
+                Thread.Sleep(GHConstants.ReplayStandardDelay);
+                return 27;
+            }
 
             ConcurrentQueue<GHRequest> queue;
             if (responses == null || responses == "")
@@ -1724,6 +1742,8 @@ namespace GnollHackX
             }
 
             int val = ClientCallback_nhgetch();
+            if(PlayingReplay)
+                Thread.Sleep(GHConstants.ReplayPopupDelay);
             if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 queue.Enqueue(new GHRequest(this, GHRequestType.HidePopupText));
@@ -2055,6 +2075,9 @@ namespace GnollHackX
                     _restoreRequested = false;
                     break;
                 case (int)gui_command_types.GUI_CMD_POST_DIAGNOSTIC_DATA:
+                    if (PlayingReplay)
+                        break;
+
                     if (GHApp.PostingDiagnosticData)
                     {
                         if (cmd_str != null)
@@ -2069,6 +2092,9 @@ namespace GnollHackX
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_POST_GAME_STATUS:
+                    if (PlayingReplay)
+                        break;
+
                     if (cmd_str != null)
                         status_str = cmd_str;
 
@@ -2095,6 +2121,9 @@ namespace GnollHackX
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_POST_XLOG_ENTRY:
+                    if (PlayingReplay)
+                        break;
+
                     if (cmd_str != null)
                         status_str = cmd_str;
                     if (GHApp.PostingXlogEntries)
@@ -2114,6 +2143,9 @@ namespace GnollHackX
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_POST_BONES_FILE:
+                    if (PlayingReplay)
+                        break;
+
                     if (cmd_str != null)
                         status_str = cmd_str;
 
@@ -2142,7 +2174,10 @@ namespace GnollHackX
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_LIBRARY_MANUAL:
-                    if(cmd_param >= 0 && cmd_param < GHConstants.MaxGHWindows)
+                    if (PlayingReplay)
+                        break;
+
+                    if (cmd_param >= 0 && cmd_param < GHConstants.MaxGHWindows)
                     {
                         string windowText = "";
                         lock (_ghWindowsLock)
@@ -2212,6 +2247,8 @@ namespace GnollHackX
                     //}
                     break;
                 case (int)gui_command_types.GUI_CMD_GAME_ENDED:
+                    if (PlayingReplay)
+                        break;
                     GHApp.TryVerifyXlogUserName(); /* In case not verified yet; in advance of possibly posting files to the server and forums */
                     break;
                 default:
@@ -2236,6 +2273,21 @@ namespace GnollHackX
             }
 
             int res = ClientCallback_nhgetch();
+            if(PlayingReplay)
+            {
+                /* Only like this for replay, as normal hiding code is a bit more robust */
+                Thread.Sleep(GHConstants.ReplayOutripDelay);
+                lock (_ghWindowsLock)
+                {
+                    if (_ghWindows[winid] != null)
+                    {
+                        if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                        {
+                            queue.Enqueue(new GHRequest(this, GHRequestType.HideOutRipPage));
+                        }
+                    }
+                }
+            }
         }
 
         public int ClientCallback_UIHasInput()
@@ -2553,6 +2605,9 @@ namespace GnollHackX
 
         private void CheckEndReplay()
         {
+            if (!GHApp.RecordGame || PlayingReplay)
+                return;
+
             if (GHApp.PlatformService.GetDeviceFreeDiskSpaceInBytes() < GHConstants.CritiallyLowFreeDiskSpaceThresholdInBytes)
             {
                 EndReplayFile();

@@ -23,6 +23,7 @@ namespace GnollHackX.Pages.Game
         GamePage _gamePage;
         GHWindow _window;
         int _glyph;
+        bool _playingReplay = false;
 
         public OutRipPage(GamePage gamePage, GHWindow window, GHOutRipInfo outripinfo)
         {
@@ -45,11 +46,13 @@ namespace GnollHackX.Pages.Game
             _glyphImageSource.Opacity = 0.5f;
             _glyphImageSource.Glyph = _window.Glyph;
             PlayerImage.BindingContext = this;
+            _playingReplay = gamePage.PlayingReplay;
         }
 
         private async void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
-            await App.Current.MainPage.Navigation.PopModalAsync();
+            if(!_playingReplay)
+                await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
         private GlyphImageSource _glyphImageSource = new GlyphImageSource();
@@ -72,7 +75,8 @@ namespace GnollHackX.Pages.Game
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            _gamePage.GenericButton_Clicked(sender, e, 27);
+            if (!_playingReplay)
+                _gamePage.GenericButton_Clicked(sender, e, 27);
         }
     }
 }

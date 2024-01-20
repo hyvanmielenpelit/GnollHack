@@ -93,6 +93,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\GHPutStrItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHPutStrInstructions.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHRecordedFunctionCall.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHRecordedRecordedGameFile.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHResponse.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHRequest.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHScreenText.cs" />
@@ -131,6 +132,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\TopScorePage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\LibraryPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\DisplayFilePage.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\SelectFilePage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\EditorPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\VersionPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\Game\GameMenuPage.xaml.cs" />
@@ -181,6 +183,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\GHPutStrItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHPutStrInstructions.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHRecordedFunctionCall.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHRecordedGameFile.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHResponse.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHRequest.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHScreenText.cs" />
@@ -220,6 +223,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\TopScorePage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\LibraryPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\DisplayFilePage.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\SelectFilePage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\EditorPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\VersionPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\Game\GameMenuPage.xaml.cs" />

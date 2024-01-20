@@ -36,6 +36,7 @@ namespace GnollHackX
         ShowSkillButton,
         HideSkillButton,
         ShowOutRipPage,
+        HideOutRipPage,
         FadeToBlack,
         FadeFromBlack,
         ShowGUITips,

@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:gnollhackclient="clr-namespace:GnollHackM" 
+             xmlns:controls="clr-namespace:GnollHackM"
+             BackgroundColor="Black"
+             x:Class="GnollHackM.SelectFilePage">
+    <ContentPage.Content>
+        <Grid>
+            <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+            <Grid x:Name="MainGrid" WidthRequest="900" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label x:Name="HeaderLabel" Grid.Row="0" Text="Select Recorded Game" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="Black" FontFamily="Immortal"/>
+                <Label Grid.Row="1" x:Name="RecordingsLabel" Text="0 game recordings available" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="16" TextColor="Black" FontFamily="Immortal"/>
+                <ListView x:Name="MainListView" Grid.Row="2" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand" SelectionMode="Single"  BackgroundColor="Transparent" ItemSelected="MainListView_ItemSelected" HasUnevenRows="True">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Margin="0,5">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Text="{Binding FormattedIndex}" Grid.Column="0" FontFamily="Underwood" TextColor="Black" FontSize="15" HorizontalOptions="Center" />
+                                    <StackLayout Grid.Column="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
+                                        <Label Text="{Binding FormattedName}" FontFamily="Underwood" TextColor="Black" FontSize="15" HorizontalOptions="StartAndExpand" />
+                                        <Label Text="{Binding FormattedInformation}" FontFamily="Underwood" TextColor="Black" FontSize="14" HorizontalOptions="StartAndExpand" />
+                                    </StackLayout>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <Grid x:Name="BottomLayout" Grid.Row="3" HeightRequest="120" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <controls:CustomImageButton Grid.Row="0" Grid.Column="0" Text="Share" x:Name="ShareButton" Clicked="ShareButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="FillAndExpand" />
+                    <controls:CustomImageButton Grid.Row="0" Grid.Column="1" Text="Play" x:Name="SelectButton" Clicked="SelectButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" />
+                    <controls:CustomImageButton Grid.Row="1" Grid.Column="0" Text="Delete" x:Name="DeleteButton" Clicked="DeleteButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="FillAndExpand" />
+                    <controls:CustomImageButton Grid.Row="1" Grid.Column="1" Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" />
+                </Grid>
+            </Grid>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
