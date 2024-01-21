@@ -20,6 +20,7 @@ using System.Drawing;
 using System.Runtime.InteropServices.ComTypes;
 using System.IO.Compression;
 using static System.Net.Mime.MediaTypeNames;
+using System.Collections;
 
 namespace GnollHackX
 {
@@ -441,7 +442,19 @@ namespace GnollHackX
 
             if((blocking != 0 && ismap) || ismenu || istext)
             {
-                int res = ClientCallback_nhgetch();
+                if(PlayingReplay)
+                {
+                    Thread.Sleep(GHConstants.ReplayDisplayWindowDelay);
+                    ConcurrentQueue<GHRequest> queue;
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.HideTextWindow));
+                    }
+                }
+                else
+                {
+                    int res = ClientCallback_nhgetch();
+                }
             }
         }
 
@@ -581,8 +594,7 @@ namespace GnollHackX
         public int ClientCallback_nhgetch()
         {
             Debug.WriteLine("ClientCallback_nhgetch");
-            WriteFunctionCallsToDisk();
-            CheckEndReplay();
+            WriteFunctionCallsAndCheckEnd();
 
             if (PlayingReplay)
             {
@@ -623,8 +635,7 @@ namespace GnollHackX
         public int ClientCallback_nh_poskey(out int x, out int y, out int mod)
         {
             Debug.WriteLine("ClientCallback_nh_poskey");
-            WriteFunctionCallsToDisk();
-            CheckEndReplay();
+            WriteFunctionCallsAndCheckEnd();
 
             x = 0;
             y = 0;
@@ -680,14 +691,7 @@ namespace GnollHackX
             if (question != null)
                 RawPrintEx(question, attr, color, false);
 
-            WriteFunctionCallsToDisk();
-            CheckEndReplay();
-
-            if (PlayingReplay)
-            {
-                Thread.Sleep(GHConstants.ReplayStandardDelay);
-                return 27;
-            }
+            WriteFunctionCallsAndCheckEnd();
 
             ConcurrentQueue<GHRequest> queue;
             if (responses == null || responses == "")
@@ -717,33 +721,40 @@ namespace GnollHackX
                     queue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses, style, attr, color, glyph, title, question, responses, descriptions, introline, ynflags));
                 }
 
-                int cnt = 0;
-                while(cnt < 5)
+                if(PlayingReplay)
                 {
-                    int val = ClientCallback_nhgetch();
-                    string desc = "";
-                    if (val < 0)
+                    Thread.Sleep(GHConstants.ReplayYnDelay);
+                }
+                else
+                {
+                    int cnt = 0;
+                    while (cnt < 5)
                     {
-                        desc = "Numpad direction " + Math.Abs(val);
-                        val = 27;
-                    }
+                        int val = ClientCallback_nhgetch();
+                        string desc = "";
+                        if (val < 0)
+                        {
+                            desc = "Numpad direction " + Math.Abs(val);
+                            val = 27;
+                        }
 
-                    string res = Char.ConvertFromUtf32(val);
-                    if (desc == "")
-                        desc = res;
+                        string res = Char.ConvertFromUtf32(val);
+                        if (desc == "")
+                            desc = res;
 
-                    if (responses.Contains(res))
-                    {
-                        RecordFunctionCall(RecordedFunctionID.YnFunction, style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags, val);
-                        return val;
-                    }
+                        if (responses.Contains(res))
+                        {
+                            RecordFunctionCall(RecordedFunctionID.YnFunction, style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags, val);
+                            return val;
+                        }
 
-                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
-                    {
-                        queue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses));
+                        if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                        {
+                            queue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses));
+                        }
+                        ClientCallback_RawPrint("'" + desc + "': Invalid input!");
+                        cnt++;
                     }
-                    ClientCallback_RawPrint("'" + desc + "': Invalid input!");
-                    cnt++;
                 }
             }
             if (GHGame.RequestDictionary.TryGetValue(this, out queue))
@@ -1337,11 +1348,9 @@ namespace GnollHackX
                 }
             }
         }
-        public int ClientCallback_SelectMenu(int winid, int how, out IntPtr picklistptr, out int listsize)
-        {
-            GHApp.DebugWriteProfilingStopwatchTimeAndStart("SelectMenu");
-            Debug.WriteLine("ClientCallback_SelectMenu");
 
+        bool DoShowMenu(int winid, int how)
+        {
             ConcurrentQueue<GHRequest> queue;
             bool enqueued = false;
 
@@ -1363,6 +1372,50 @@ namespace GnollHackX
                     }
                 }
             }
+            return enqueued;
+        }
+
+        public int Replay_SelectMenu(int winid, int how, int cnt)
+        {
+            bool enqueued = DoShowMenu(winid, how);
+            if(enqueued)
+            {
+                Thread.Sleep(GHConstants.ReplayMenuDelay);
+                ConcurrentQueue<GHRequest> queue;
+                if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                {
+                    queue.Enqueue(new GHRequest(this, GHRequestType.HideMenuPage));
+                }
+            }
+            return cnt;
+        }
+
+        public int ClientCallback_SelectMenu(int winid, int how, out IntPtr picklistptr, out int listsize)
+        {
+            GHApp.DebugWriteProfilingStopwatchTimeAndStart("SelectMenu");
+            Debug.WriteLine("ClientCallback_SelectMenu");
+
+            //ConcurrentQueue<GHRequest> queue;
+            bool enqueued = DoShowMenu(winid, how);
+
+            //lock (_ghWindowsLock)
+            //{
+            //    if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
+            //    {
+            //        SelectionMode smode = (SelectionMode)how;
+            //        _ghWindows[winid].MenuInfo.SelectionHow = smode;
+
+            //        /* Clear menu response */
+            //        _ghWindows[winid].SelectedMenuItems = null;
+            //        _ghWindows[winid].WasCancelled = false;
+
+            //        if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+            //        {
+            //            queue.Enqueue(new GHRequest(this, GHRequestType.ShowMenuPage, _ghWindows[winid], _ghWindows[winid].MenuInfo));
+            //            enqueued = true;
+            //        }
+            //    }
+            //}
 
             //lock (_gamePage.RefreshScreenLock)
             //{
@@ -1396,7 +1449,7 @@ namespace GnollHackX
 
             /* Handle result */
             int cnt = 0;
-            Int64[] picklist = null;
+            long[] picklist = null;
 
             IntPtr arrayptr;
 
@@ -1409,14 +1462,14 @@ namespace GnollHackX
                 else
                 {
                     cnt = _ghWindows[winid].SelectedMenuItems.Count;
-                    picklist = new Int64[cnt * 2];
+                    picklist = new long[cnt * 2];
                     for(int i = 0; i < cnt; i++)
                     {
                         picklist[2 * i] = _ghWindows[winid].SelectedMenuItems[i].Identifier;
-                        picklist[2 * i + 1] = (Int64)_ghWindows[winid].SelectedMenuItems[i].Count;
+                        picklist[2 * i + 1] = (long)_ghWindows[winid].SelectedMenuItems[i].Count;
                     }
                 }
-                Int64 i64var = 0;
+                long i64var = 0;
                 int size = (picklist == null ? 0 : picklist.Length);
                 if (cnt < 1)
                     arrayptr = Marshal.AllocHGlobal(Marshal.SizeOf(i64var) * 1); /* One int */
@@ -1435,7 +1488,7 @@ namespace GnollHackX
             //{
             //    _gamePage.RefreshScreen = true;
             //}
-            RecordFunctionCall(RecordedFunctionID.SelectMenu, winid, how, listsize, cnt);
+            RecordFunctionCall(RecordedFunctionID.SelectMenu, winid, how, picklist, listsize, cnt);
             return cnt;
         }
 
@@ -1531,24 +1584,34 @@ namespace GnollHackX
             {
                 _getLineString = null;
                 queue.Enqueue(new GHRequest(this, GHRequestType.GetLine, query, placeholder, linesuffix, introline, style, attr, color));
-                while (_getLineString == null)
-                {
-                    Thread.Sleep(GHConstants.PollingInterval);
-                    pollResponseQueue();
-                }
 
-                RecordFunctionCall(RecordedFunctionID.GetLine, style, attr, color, query, placeholder, linesuffix, introline, _getLineString);
-
-                byte[] utf8text = Encoding.UTF8.GetBytes(_getLineString);
-                if (out_string_ptr != IntPtr.Zero)
+                if(PlayingReplay)
                 {
-                    Marshal.Copy(utf8text, 0, out_string_ptr, utf8text.Length);
-                    Marshal.WriteByte(out_string_ptr, utf8text.Length, 0);
-                    return 1;
+                    Thread.Sleep(GHConstants.ReplayGetLineDelay);
+                    queue.Enqueue(new GHRequest(this, GHRequestType.HideGetLine));
+                    return 0;
                 }
                 else
                 {
-                    return 0;
+                    while (_getLineString == null)
+                    {
+                        Thread.Sleep(GHConstants.PollingInterval);
+                        pollResponseQueue();
+                    }
+
+                    RecordFunctionCall(RecordedFunctionID.GetLine, style, attr, color, query, placeholder, linesuffix, introline, _getLineString);
+
+                    byte[] utf8text = Encoding.UTF8.GetBytes(_getLineString);
+                    if (out_string_ptr != IntPtr.Zero)
+                    {
+                        Marshal.Copy(utf8text, 0, out_string_ptr, utf8text.Length);
+                        Marshal.WriteByte(out_string_ptr, utf8text.Length, 0);
+                        return 1;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
                 }
             }
             else
@@ -2575,12 +2638,24 @@ namespace GnollHackX
             _replayTimeStamp = DateTime.Now;
             //Record function calls to initit windows etc. (perhaps could be saved somewhere when the game starts)
             _redrawScreenRequested = true;
+            _replayContinuation = 0;
         }
 
         private void EndReplayFile()
         {
             RecordFunctionCallImmediately(RecordedFunctionID.EndOfFile);
             _replayTimeStamp = DateTime.Now;
+            _replayContinuation = 0;
+        }
+
+        private void ContinueToNextReplayFile()
+        {
+            string plName = Preferences.Get("LastUsedPlayerName", "");
+            DateTime saved_timestamp = _replayTimeStamp;
+            int next_replayContinuation = _replayContinuation + 1;
+            RecordFunctionCallImmediately(RecordedFunctionID.ContinueToNextFile, GHApp.GHVersionNumber, _replayTimeStamp.ToBinary(), plName, next_replayContinuation);
+            _replayTimeStamp = saved_timestamp; /* Use existing time stamp, and new continuation number */
+            _replayContinuation = next_replayContinuation;
         }
 
         private List<GHRecordedFunctionCall> _recordedFunctionCalls = new List<GHRecordedFunctionCall>();
@@ -2598,14 +2673,14 @@ namespace GnollHackX
                 return;
 
             RecordFunctionCall(functionID, args);
-            WriteFunctionCallsToDisk();
-            if(functionID != RecordedFunctionID.EndOfFile)
-                CheckEndReplay();
+            long len = WriteFunctionCallsToDisk();
+            if(functionID != RecordedFunctionID.EndOfFile && functionID != RecordedFunctionID.ContinueToNextFile)
+                CheckEndReplay(len);
         }
 
-        private void CheckEndReplay()
+        private void CheckEndReplay(long currentLengthInBytes)
         {
-            if (!GHApp.RecordGame || PlayingReplay)
+            if (!GHApp.RecordGame || PlayingReplay || currentLengthInBytes <= 0)
                 return;
 
             if (GHApp.PlatformService.GetDeviceFreeDiskSpaceInBytes() < GHConstants.CritiallyLowFreeDiskSpaceThresholdInBytes)
@@ -2618,18 +2693,29 @@ namespace GnollHackX
                     queue.Enqueue(new GHRequest(this, GHRequestType.InformRecordingWentOff));
                 }
             }
+            else if (currentLengthInBytes >= GHConstants.MaxSingleReplayFileSizeInBytes)
+            {
+                ContinueToNextReplayFile();
+            }
+        }
+
+        private void WriteFunctionCallsAndCheckEnd()
+        {
+            CheckEndReplay(WriteFunctionCallsToDisk());            
         }
 
         private DateTime _replayTimeStamp = DateTime.Now;
+        int _replayContinuation = 0;
         private long _headerSize = 0L;
         private long _noOfCommmands = 0L;
         private long[] _commandSize = new long[(int)RecordedFunctionID.NumberOfFunctionCalls];
 
-        private void WriteFunctionCallsToDisk()
+        private long WriteFunctionCallsToDisk()
         {
             if (!GHApp.RecordGame || PlayingReplay)
-                return;
+                return 0L;
 
+            long res = 0L;
             if (_recordedFunctionCalls.Count > 0)
             {
                 try
@@ -2639,7 +2725,8 @@ namespace GnollHackX
                         GHApp.CheckCreateDirectory(dir);
                     if (Directory.Exists(dir))
                     {
-                        string filepath = Path.Combine(dir, "replay-" + GHApp.GHVersionNumber.ToString() + "-" + _replayTimeStamp.ToBinary().ToString() + ".gnhrec");
+                        string plName = Preferences.Get("LastUsedPlayerName", "");
+                        string filepath = Path.Combine(dir, GHApp.GetReplayFileName(GHApp.GHVersionNumber, _replayTimeStamp.ToBinary(), plName, _replayContinuation));
                         bool fileDidExist = File.Exists(filepath);
                         bool eofFound = false;
                         long appendSize = 0L;
@@ -2657,7 +2744,6 @@ namespace GnollHackX
                                         writer.Write(GHApp.GHVersionNumber);
                                         writer.Write(GHApp.GHVersionCompatibility);
                                         writer.Write(DateTime.Now.ToBinary());
-                                        string plName = Preferences.Get("LastUsedPlayerName", "");
                                         writer.Write(plName);
                                         writer.Write(WizardMode);
                                         writer.Write(ModernMode);
@@ -2677,7 +2763,7 @@ namespace GnollHackX
                                         _noOfCommmands++;
 
                                         long saveSize = 0L;
-                                        if (rfc.RecordedFunctionID == RecordedFunctionID.EndOfFile)
+                                        if (rfc.RecordedFunctionID == RecordedFunctionID.EndOfFile || rfc.RecordedFunctionID == RecordedFunctionID.ContinueToNextFile)
                                             eofFound = true;
                                         writer.Write((byte)rfc.RecordedFunctionID);
                                         saveSize += 1L;
@@ -2787,6 +2873,30 @@ namespace GnollHackX
                                                     writer.Write(arr[j]);
                                                 saveSize += 4L + (long)arr.Length * 4L;
                                             }
+                                            else if (o is uint[])
+                                            {
+                                                uint[] arr = (uint[])o;
+                                                writer.Write(arr.Length);
+                                                for (int j = 0; j < arr.Length; j++)
+                                                    writer.Write(arr[j]);
+                                                saveSize += 4L + (long)arr.Length * 4L;
+                                            }
+                                            else if (o is long[])
+                                            {
+                                                long[] arr = (long[])o;
+                                                writer.Write(arr.Length);
+                                                for (int j = 0; j < arr.Length; j++)
+                                                    writer.Write(arr[j]);
+                                                saveSize += 4L + (long)arr.Length * 8L;
+                                            }
+                                            else if (o is ulong[])
+                                            {
+                                                ulong[] arr = (ulong[])o;
+                                                writer.Write(arr.Length);
+                                                for (int j = 0; j < arr.Length; j++)
+                                                    writer.Write(arr[j]);
+                                                saveSize += 4L + (long)arr.Length * 8L;
+                                            }
                                             else if (o is float[])
                                             {
                                                 float[] arr = (float[])o;
@@ -2846,6 +2956,7 @@ namespace GnollHackX
                                     }
                                 }
                                 _recordedFunctionCalls.Clear();
+                                res = existingSize + appendSize;
                             }
                         } 
                         if(eofFound && File.Exists(filepath))
@@ -2875,7 +2986,9 @@ namespace GnollHackX
                             }
                             _noOfCommmands = 0L;
                             _headerSize = 0L;
-                            _replayTimeStamp = DateTime.Now;
+                            _replayTimeStamp = DateTime.Now; /* Will be overridden if continuing to next record file, but this is here just to make it point away from the finished file just in case */
+                            _replayContinuation = 0;
+                            res = -1; /* Indicating the file has been finalized and zipped */
                         }
                     }
                 }
@@ -2884,6 +2997,7 @@ namespace GnollHackX
                     Debug.WriteLine(ex.Message);
                 }
             }
+            return res;
         }
     }
 }

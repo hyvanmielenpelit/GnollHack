@@ -1621,11 +1621,22 @@ namespace GnollHackX
         public const int LineBuilderInitialCapacity = 256;
         public const ulong LowFreeDiskSpaceThresholdInBytes = 1024 * 1024 * 2024;
         public const ulong VeryLowFreeDiskSpaceThresholdInBytes = 512 * 1024 * 2024;
-        public const ulong CritiallyLowFreeDiskSpaceThresholdInBytes = 128 * 1024 * 2024;
+        public const ulong CritiallyLowFreeDiskSpaceThresholdInBytes = 64 * 1024 * 2024;
+        public const long MaxSingleReplayFileSizeInBytes = 16 * 1024 * 2024;
+        public const string ReplayFileNamePrefix = "replay-";
+        public const string ReplayContinuationFileNamePrefix = "rpcont-";
+        public const string ReplayFileNameMiddleDivisor = "-";
+        public const string ReplayFileContinuationNumberDivisor = "_";
+        public const string ReplayFileNameSuffix = ".gnhrec";
+        public const string ReplayZipFileNameSuffix = ".zip";
         public const int ReplayStandardDelay = 100; /* Milliseconds */
-        public const int ReplayOutripDelay = 400; /* Milliseconds */
-        public const int ReplayPopupDelay = 400; /* Milliseconds */
-        
+        public const int ReplayOutripDelay = 800; /* Milliseconds */
+        public const int ReplayPopupDelay = 600; /* Milliseconds */
+        public const int ReplayYnDelay = 600; /* Milliseconds */
+        public const int ReplayMenuDelay = 600; /* Milliseconds */
+        public const int ReplayGetLineDelay = 600; /* Milliseconds */
+        public const int ReplayDisplayWindowDelay = 600; /* Milliseconds */
+
 #if GNH_MAUI
         public const string PortName = "GnollHackM";
 #else
@@ -1755,6 +1766,15 @@ namespace GnollHackX
     {
         Undefined = 0,
         EndOfFile,
+        ContinueToNextFile,
+        Reserved1,
+        Reserved2,
+        Reserved3,
+        Reserved4,
+        Reserved5,
+        Reserved6,
+        Reserved7,
+
         InitializeWindows,
         CreateWindow,
         DestroyWindow,

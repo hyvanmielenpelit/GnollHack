@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -69,12 +71,32 @@ namespace GnollHackX.Pages.MainScreen
                     ObservableCollection<GHRecordedGameFile> gHRecordedGameFiles = new ObservableCollection<GHRecordedGameFile>();
                     foreach (string file in files)
                     {
-                        if (File.Exists(file))
+                        if (file != null && File.Exists(file))
                         {
-                            i++;
                             FileInfo fi = new FileInfo(file);
-                            gHRecordedGameFiles.Add(new GHRecordedGameFile(i, Path.Combine(dirPath, file), fi.Name, fi.Extension, fi.Length, fi.CreationTime, fi.LastWriteTime));
-                            totalBytes += fi.Length;
+                            if (!string.IsNullOrWhiteSpace(fi.Name) && fi.Name.StartsWith(GHConstants.ReplayFileNamePrefix))
+                            {
+                                i++;
+                                long contLen = 0L;
+                                int middleLen = fi.Name.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length;
+                                if(middleLen > 0)
+                                {
+                                    string middleStr = fi.Name.Substring(GHConstants.ReplayFileNamePrefix.Length, middleLen);
+                                    foreach (string contFile in files)
+                                    {
+                                        if (contFile != null && File.Exists(contFile))
+                                        {
+                                            FileInfo contFI = new FileInfo(contFile);
+                                            if (!string.IsNullOrWhiteSpace(contFI.Name) && contFI.Name.StartsWith(GHConstants.ReplayContinuationFileNamePrefix + middleStr))
+                                            {
+                                                contLen += contFI.Length;
+                                            }
+                                        }
+                                    }
+                                }
+                                gHRecordedGameFiles.Add(new GHRecordedGameFile(i, Path.Combine(dirPath, file), fi.Name, fi.Extension, fi.Length + contLen, fi.CreationTime, fi.LastWriteTime));
+                                totalBytes += fi.Length + contLen;
+                            }
                         }
                     }
                     MainListView.ItemsSource = gHRecordedGameFiles;
@@ -102,10 +124,50 @@ namespace GnollHackX.Pages.MainScreen
             {
                 try
                 {
+                    /* Create zip of al relevant files */
+                    string zipFile = Path.Combine(GHApp.GHPath, GHConstants.ReplayDirectory, "SharedReplay.zip");
+                    if(File.Exists(zipFile))
+                        File.Delete(zipFile);
+
+                    using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+                    {
+                        archive.CreateEntryFromFile(filePath, Path.GetFileName(filePath));
+
+                        FileInfo fi = new FileInfo(filePath);
+                        string dir = fi.DirectoryName;
+                        string fileName = fi.Name;
+                        if (fileName != null && fileName.StartsWith(GHConstants.ReplayFileNamePrefix))
+                        {
+                            bool isZip = fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+                            int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? GHConstants.ReplayZipFileNameSuffix.Length : 0);
+                            if (subLen > 0 && Directory.Exists(dir))
+                            {
+                                string[] files = Directory.GetFiles(dir);
+                                if (files != null)
+                                {
+                                    foreach (string file in files)
+                                    {
+                                        if (file != null)
+                                        {
+                                            string contStart = GHConstants.ReplayContinuationFileNamePrefix + fileName.Substring(GHConstants.ReplayFileNamePrefix.Length, subLen);
+                                            FileInfo contFI = new FileInfo(file);
+                                            if(contFI != null && contFI.Name != null)
+                                            {
+                                                if (contFI.Name.StartsWith(contStart) && (!isZip || file.EndsWith(GHConstants.ReplayZipFileNameSuffix)) && File.Exists(file))
+                                                {
+                                                    archive.CreateEntryFromFile(file, Path.GetFileName(file));
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                     await Share.RequestAsync(new ShareFileRequest
                     {
                         Title = "Sharing " + recfile.FileName,
-                        File = new ShareFile(filePath)
+                        File = new ShareFile(zipFile)
                     });
                 }
                 catch (Exception ex)
@@ -192,6 +254,38 @@ namespace GnollHackX.Pages.MainScreen
                     try
                     {
                         File.Delete(filePath);
+
+                        /* Delete also continuation files */
+                        FileInfo fi = new FileInfo(filePath);
+                        string dir = fi.DirectoryName;
+                        string fileName = fi.Name;
+                        if (fileName != null && fileName.StartsWith(GHConstants.ReplayFileNamePrefix))
+                        {
+                            bool isZip = fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+                            int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? GHConstants.ReplayZipFileNameSuffix.Length : 0);
+                            if (subLen > 0 && Directory.Exists(dir))
+                            {
+                                string[] files = Directory.GetFiles(dir);
+                                if (files != null)
+                                {
+                                    foreach (string file in files)
+                                    {
+                                        if (file != null)
+                                        {
+                                            string contStart = GHConstants.ReplayContinuationFileNamePrefix + fileName.Substring(GHConstants.ReplayFileNamePrefix.Length, subLen);
+                                            FileInfo contFI = new FileInfo(file);
+                                            if (contFI != null && contFI.Name != null)
+                                            {
+                                                if (contFI.Name.StartsWith(contStart) && (!isZip || file.EndsWith(GHConstants.ReplayZipFileNameSuffix)) && File.Exists(file))
+                                                {
+                                                    File.Delete(file);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         UpdateRecordings();
                     }
                     catch (Exception ex)

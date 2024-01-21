@@ -2193,6 +2193,9 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.GetLine:
                                 GetLine(req.RequestString, req.PlaceHolderString, req.DefValueString, req.IntroLineString, req.RequestInt, req.RequestAttr, req.RequestNhColor);
                                 break;
+                            case GHRequestType.HideGetLine:
+                                HideGetLine();
+                                break;
                             case GHRequestType.ReturnToMainMenu:
                                 IsGameOn = false;
                                 ClearMap();
@@ -2236,6 +2239,9 @@ namespace GnollHackX.Pages.Game
                                 break;
                             case GHRequestType.DisplayWindowView:
                                 DisplayWindowView(req.RequestInt, req.RequestPutStrItems);
+                                break;
+                            case GHRequestType.HideTextWindow:
+                                DelayedTextHide();
                                 break;
                             case GHRequestType.HideLoadingScreen:
                                 HideLoadingScreen();
@@ -2502,6 +2508,13 @@ namespace GnollHackX.Pages.Game
                 TextCanvas.PutStrItems = items;
             }
 
+            if(PlayingReplay)
+            {
+                TextStack.IsEnabled = false;
+                TextCanvas.IsEnabled = false;
+                TextCanvas.EnableTouchEvents = false;
+            }
+
             if (GHApp.IsiOS)
             {
                 /* On iOS, fade in the text window. NOTE: this was originally a work-around for bad layout performance on iOS */
@@ -2656,6 +2669,8 @@ namespace GnollHackX.Pages.Game
                         btnList[i].IsVisible = false;
                     }
                     btnList[i].ImgSourcePath = GetYnImgSourcePath(btnList[i].BtnLetter, btnList[i].LblText);
+                    if (PlayingReplay)
+                        btnList[i].IsEnabled = false;
                 }
             }
 
@@ -2878,7 +2893,22 @@ namespace GnollHackX.Pages.Game
                     _getLineRegex = new Regex(@"^[A-Za-z0-9_ åäöÅÄÖ\$\*\&\.\,\<\>\=\?\!\#\(\:\;\)\+\-]{0,128}$");
                     break;
             }
+
+            if(PlayingReplay)
+            {
+                GetLineOkButton.IsEnabled = false;
+                GetLineCancelButton.IsEnabled = false;
+                GetLineQuestionMarkButton.IsEnabled = false;
+                GetLineEntryText.IsEnabled = false;
+            }
             GetLineGrid.IsVisible = true;
+        }
+
+        private void HideGetLine()
+        {
+            GetLineGrid.IsVisible = false;
+            GetLineEntryText.Text = "";
+            GetLineCaption.Text = "";
         }
 
         private void GetLineOkButton_Clicked(object sender, EventArgs e)
@@ -2929,9 +2959,7 @@ namespace GnollHackX.Pages.Game
                 queue.Enqueue(new GHResponse(_currentGame, GHRequestType.GetLine, res));
             }
 
-            GetLineGrid.IsVisible = false;
-            GetLineEntryText.Text = "";
-            GetLineCaption.Text = "";
+            HideGetLine();
         }
 
         private void GetLineQuestionMarkButton_Clicked(object sender, EventArgs e)
@@ -2948,9 +2976,7 @@ namespace GnollHackX.Pages.Game
                 queue.Enqueue(new GHResponse(_currentGame, GHRequestType.GetLine, res));
             }
 
-            GetLineGrid.IsVisible = false;
-            GetLineEntryText.Text = "";
-            GetLineCaption.Text = "";
+            HideGetLine();
         }
 
         private void GetLineCancelButton_Clicked(object sender, EventArgs e)
@@ -2966,9 +2992,7 @@ namespace GnollHackX.Pages.Game
                 queue.Enqueue(new GHResponse(_currentGame, GHRequestType.GetLine, '\x1B'.ToString()));
             }
 
-            GetLineGrid.IsVisible = false;
-            GetLineEntryText.Text = "";
-            GetLineCaption.Text = "";
+            HideGetLine();
         }
 
         private void GetChar()
@@ -3268,6 +3292,16 @@ namespace GnollHackX.Pages.Game
             {
                 _menuDrawOnlyClear = false;
                 _menuRefresh = true;
+            }
+
+            if(PlayingReplay)
+            {
+                MenuOKButton.IsEnabled = false;
+                MenuCancelButton.IsEnabled = false;
+                MenuHeaderLabel.IsEnabled = false;
+                MenuStack.IsEnabled = false;
+                MenuCanvas.IsEnabled = false;
+                MenuCanvas.EnableTouchEvents = false;
             }
 
             if (GHApp.IsiOS)
@@ -14424,6 +14458,9 @@ namespace GnollHackX.Pages.Game
         private bool unselect_on_tap = false;
         private void MenuTapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
+            if (PlayingReplay)
+                return;
+
             if (MenuCanvas.SelectionHow == SelectionMode.Multiple)
             {
                 lock (MenuCanvas.MenuItemLock)
@@ -15917,15 +15954,22 @@ namespace GnollHackX.Pages.Game
 
         public async void ReportPanic(string text)
         {
-            bool answer = await DisplayAlert("Panic", (text != null ? text : "GnollHack has panicked. See the Panic Log.") + 
-                "\nDo you want to report the panic and send a crash report to help the developer fix the cause? This will create a zip archive of the files in your game directory and ask it to be shared further.", 
-                "Yes", "No");
-
-            if (answer)
+            if (!PlayingReplay)
             {
-                await GHApp.CreateCrashReport(this);
+                bool answer = await DisplayAlert("Panic", (text != null ? text : "GnollHack has panicked. See the Panic Log.") +
+                    "\nDo you want to report the panic and send a crash report to help the developer fix the cause? This will create a zip archive of the files in your game directory and ask it to be shared further.",
+                    "Yes", "No");
+
+                if (answer)
+                {
+                    await GHApp.CreateCrashReport(this);
+                }
+                _mainPage.EnqueuePost(new GHPost(0, false, (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC, 0, text, null, answer));
             }
-            _mainPage.EnqueuePost(new GHPost(0, false, (int)diagnostic_data_types.DIAGNOSTIC_DATA_PANIC, 0, text, null, answer));
+            else
+            {
+                await DisplayAlert("Panic (Replay: Press OK)", (text != null ? text : "GnollHack has panicked. See the Panic Log."), "OK");
+            }
 
             ConcurrentQueue<GHResponse> queue;
             if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
@@ -15959,7 +16003,7 @@ namespace GnollHackX.Pages.Game
 
         public async void ReportCrashDetected()
         {
-            if(GHApp.InformAboutCrashReport)
+            if(GHApp.InformAboutCrashReport && !PlayingReplay)
             {
                 bool answer = await DisplayAlert("Crash Detected", "A crashed game has been detected. GnollHack will attempt to restore this game. Also, do you want to create a crash report? This will create a zip archive of the files in your game directory and ask it to be shared further." + (UseMainGLCanvas ? " If the problem persists, try switching GPU Acceleration off in Settings." : ""), "Yes", "No");
                 if (answer)

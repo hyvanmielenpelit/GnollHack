@@ -312,6 +312,7 @@ namespace GnollHackX
                 }
             }
         }
+
         public void Clear()
         {
             switch(WindowType)
