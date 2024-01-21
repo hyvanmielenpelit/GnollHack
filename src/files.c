@@ -639,7 +639,7 @@ char errbuf[];
     fd = creat(fq_lock, FCMASK);
 #endif
 #endif /* MICRO || WIN32 */
-    issue_debuglog_fd(fd, "create_levelfile");
+    //issue_debuglog_fd(fd, "create_levelfile");
     if (fd >= 0)
         level_info[lev].flags |= LFILE_EXISTS;
     else if (errbuf) /* failure explanation */
@@ -905,7 +905,7 @@ char errbuf[];
 #endif
         fd = open(fq_lock, O_RDONLY | O_BINARY, 0);
 #endif
-    issue_debuglog_fd(fd, "open_levelfile");
+    //issue_debuglog_fd(fd, "open_levelfile");
 
     /* for failure, return an explanation that our caller can use;
        settle for `lock' instead of `fq_lock' because the latter
@@ -1451,7 +1451,7 @@ create_savefile()
 #define getuid() vms_getuid()
 #endif /* VMS && !SECURE */
 #endif /* MICRO */
-    issue_debuglog_fd(fd, "create_savefile");
+    //issue_debuglog_fd(fd, "create_savefile");
 
     return fd;
 }
@@ -1469,7 +1469,7 @@ open_savefile()
 #else
     fd = open(fq_save, O_RDONLY | O_BINARY, 0);
 #endif
-    issue_debuglog_fd(fd, "open_savefile");
+    //issue_debuglog_fd(fd, "open_savefile");
     return fd;
 }
 
