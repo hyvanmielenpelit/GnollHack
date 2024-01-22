@@ -4027,6 +4027,87 @@ namespace GnollHackX
             return (contNumber > 0 ? GHConstants.ReplayContinuationFileNamePrefix : GHConstants.ReplayFileNamePrefix) + versionCode.ToString() + GHConstants.ReplayFileNameMiddleDivisor + timeStampInBinary.ToString() + (contNumber > 0 ? (GHConstants.ReplayFileContinuationNumberDivisor + contNumber.ToString()) : "") + GHConstants.ReplayFileNameSuffix;
         }
 
+
+        public static bool ValidateReplayFile(string replayFileName, out string out_str)
+        {
+            if (string.IsNullOrWhiteSpace(replayFileName))
+            {
+                out_str = "File name is null or whitespace.";
+                return false;
+            }
+
+            if (!File.Exists(replayFileName))
+            {
+                out_str = "File " + replayFileName + " does not exist.";
+                return false;
+            }
+
+            bool res = false;
+            bool isZip = replayFileName.Length > 4 && replayFileName.EndsWith(GHConstants.ReplayZipFileNameSuffix); /* Note if first is zip, all continued ones are assumed to be zip's, too */
+            string usedReplayFileName = replayFileName;
+
+            try
+            {
+                if (isZip)
+                {
+                    string unZippedFileName = replayFileName.Substring(0, replayFileName.Length - 4);
+                    if (File.Exists(unZippedFileName))
+                        File.Delete(unZippedFileName);
+
+                    using (ZipArchive ziparch = ZipFile.OpenRead(replayFileName))
+                    {
+                        string dir = Path.GetDirectoryName(replayFileName);
+                        ziparch.ExtractToDirectory(string.IsNullOrWhiteSpace(dir) ? "." : dir);
+                    }
+
+                    if (File.Exists(unZippedFileName))
+                    {
+                        usedReplayFileName = unZippedFileName;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                out_str = ex.Message;
+                goto end_here;
+            }
+
+            try
+            {
+                using (FileStream fs = File.OpenRead(usedReplayFileName))
+                {
+                    if (fs != null)
+                    {
+                        using (BinaryReader br = new BinaryReader(fs))
+                        {
+                            /* Header */
+                            ulong verno = br.ReadUInt64();
+                            ulong vercompat = br.ReadUInt64();
+
+                            bool isValid = GHVersionNumber == verno ? true :
+                                GHVersionNumber > verno ? GHVersionCompatibility <= verno : /* If the replay is made with an older GnollHack version than the current app, check that current app version's compatibility covers the replay's version */
+                                vercompat <= GHVersionNumber; /* If the replay is made with a newer GnollHack version than the current app, check that replay's version compatibility covers the current app version */
+                            res = isValid;
+                            out_str = isValid ? "Replay is valid." : "Replay " + usedReplayFileName + " has invalid version: " + verno + ", compatibility: " + vercompat + " vs the app's " + GHVersionNumber + ", compatibility: " + GHVersionCompatibility;
+                        }
+                    }
+                    else
+                        out_str = "Replay file stream is null.";
+                }
+            }
+            catch (Exception ex)
+            {
+                out_str = ex.Message;
+            }
+
+        end_here:
+            if (isZip && File.Exists(replayFileName) && File.Exists(usedReplayFileName) && replayFileName != usedReplayFileName)
+            {
+                File.Delete(usedReplayFileName);
+            }
+            return res;
+        }
+
         public static int PlayReplay(GHGame game, string replayFileName)
         {
             if (game == null || string.IsNullOrWhiteSpace(replayFileName))

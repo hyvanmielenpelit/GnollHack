@@ -484,5 +484,130 @@ namespace GnollHackX.Pages.MainScreen
 
             AboutGrid.IsEnabled = true;
         }
+
+        private async void btnImportReplays_Clicked(object sender, EventArgs e)
+        {
+            AboutGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            await GHApp.CheckAndRequestWritePermission(this);
+            await GHApp.CheckAndRequestReadPermission(this);
+            try
+            {
+                FileResult file = await FilePicker.PickAsync();
+
+                if (file != null)
+                {
+                    using (Stream s = await file.OpenReadAsync())
+                    {
+                        if (s != null)
+                        {
+                            string gnhpath = GHApp.GHPath;
+                            if (file.FileName.EndsWith(GHConstants.ReplaySharedZipFileNameSuffix, StringComparison.OrdinalIgnoreCase))
+                            {
+                                string savedirpath = Path.Combine(gnhpath, GHConstants.ReplayDirectory);
+                                GHApp.CheckCreateDirectory(savedirpath);
+
+                                string tempdirpath = Path.Combine(gnhpath, GHConstants.ReplayDirectory, "temp");
+                                if (Directory.Exists(tempdirpath))
+                                    Directory.Delete(tempdirpath, true);
+                                GHApp.CheckCreateDirectory(tempdirpath);
+
+                                string temp2dirpath = Path.Combine(gnhpath, GHConstants.ReplayDirectory, "zip");
+                                if (Directory.Exists(temp2dirpath))
+                                    Directory.Delete(temp2dirpath, true);
+                                GHApp.CheckCreateDirectory(temp2dirpath);
+
+                                string ziptargetfilename = file.FileName;
+                                string fulltargetpath = Path.Combine(tempdirpath, ziptargetfilename);
+                                string fulltargetpath2 = Path.Combine(savedirpath, ziptargetfilename);
+                                if (System.IO.File.Exists(fulltargetpath2))
+                                    System.IO.File.Delete(fulltargetpath2);
+
+                                using (Stream t = System.IO.File.Open(fulltargetpath, FileMode.Create))
+                                {
+                                    s.CopyTo(t);
+                                }
+                                using (ZipArchive ziparch = ZipFile.OpenRead(fulltargetpath))
+                                {
+                                    ziparch.ExtractToDirectory(temp2dirpath);
+                                }
+                                int nextracted = 0;
+                                int ntotalfiles = 0;
+                                int ninvalid = 0;
+                                string[] extractedfiles = Directory.GetFiles(temp2dirpath);
+                                if (extractedfiles != null)
+                                {
+                                    foreach (string filestr in extractedfiles)
+                                    {
+                                        if (System.IO.File.Exists(filestr))
+                                        {
+                                            FileInfo fileInfo = new FileInfo(filestr);
+                                            string out_str = "";
+                                            if (fileInfo != null && fileInfo.Name != null && fileInfo.Name.StartsWith(GHConstants.ReplayFileNamePrefix) && GHApp.ValidateReplayFile(filestr, out out_str))
+                                            {
+                                                string finalname = Path.Combine(savedirpath, fileInfo.Name);
+                                                if (System.IO.File.Exists(finalname))
+                                                    System.IO.File.Delete(finalname);
+                                                System.IO.File.Move(filestr, finalname);
+                                                nextracted++;
+                                                ntotalfiles++;
+
+                                                bool isZip = fileInfo.Name.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+                                                int len = fileInfo.Name.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? GHConstants.ReplayZipFileNameSuffix.Length : 0);
+                                                if(len > 0)
+                                                {
+                                                    string middleStr = fileInfo.Name.Substring(GHConstants.ReplayFileNamePrefix.Length, len);
+                                                    foreach (string contstr in extractedfiles)
+                                                    {
+                                                        if (System.IO.File.Exists(contstr))
+                                                        {
+                                                            FileInfo contFileInfo = new FileInfo(contstr);
+                                                            if (contFileInfo != null && contFileInfo.Name != null && contFileInfo.Name.StartsWith(GHConstants.ReplayContinuationFileNamePrefix))
+                                                            {
+                                                                int contLen = contFileInfo.Name.Length - GHConstants.ReplayContinuationFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? GHConstants.ReplayZipFileNameSuffix.Length : 0);
+                                                                if (contLen >= len && contFileInfo.Name.Substring(GHConstants.ReplayContinuationFileNamePrefix.Length, len) == middleStr)
+                                                                {
+                                                                    string contfinalname = Path.Combine(savedirpath, contFileInfo.Name);
+                                                                    if (System.IO.File.Exists(contfinalname))
+                                                                        System.IO.File.Delete(contfinalname);
+                                                                    System.IO.File.Move(contstr, contfinalname);
+                                                                    ntotalfiles++;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                GHApp.MaybeWriteGHLog(out_str);
+                                                ninvalid++;
+                                            }
+                                        }
+                                    }
+                                }
+                                Directory.Delete(tempdirpath, true);
+                                Directory.Delete(temp2dirpath, true);
+                                if (extractedfiles.Length == 0)
+                                    await DisplayAlert("No Files in Zip", "There are no files in \'" + ziptargetfilename + "\'.", "OK");
+                                else if (nextracted > 0)
+                                    await DisplayAlert("Replays Saved from Zip", nextracted + " replay " + (nextracted == 1 ? "" : "s") + " (" + ntotalfiles + " file" + (ntotalfiles == 1 ? "" : "s") + ") from \'" + ziptargetfilename + "\' have been saved to the replay directory." + (ninvalid > 0 ? " (" + ninvalid + " were invalid.)" : ""), "OK");
+                                else
+                                    await DisplayAlert("No Replays Saved from Zip", "No replays from \'" + ziptargetfilename + "\' were saved to the replay directory." + (ninvalid > 0 ? " (" + ninvalid + " were invalid.)" : ""), "OK");
+                            }
+                            else
+                            {
+                                await DisplayAlert("Shared Zip File Not Recognized", file.FileName + " is not recognized as a shared replay zip file. Its file name must end with " + GHConstants.ReplaySharedZipFileNameSuffix + ".", "OK");
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", "An error occurred while trying to import a replay: " + ex.Message, "OK");
+            }
+            AboutGrid.IsEnabled = true;
+        }
     }
 }

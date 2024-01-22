@@ -1622,13 +1622,14 @@ namespace GnollHackX
         public const ulong LowFreeDiskSpaceThresholdInBytes = 1024 * 1024 * 2024;
         public const ulong VeryLowFreeDiskSpaceThresholdInBytes = 512 * 1024 * 2024;
         public const ulong CritiallyLowFreeDiskSpaceThresholdInBytes = 64 * 1024 * 2024;
-        public const long MaxSingleReplayFileSizeInBytes = 16 * 1024 * 2024;
+        public const long MaxSingleReplayFileSizeInBytes = 8 * 1024 * 2024;
         public const string ReplayFileNamePrefix = "replay-";
         public const string ReplayContinuationFileNamePrefix = "rpcont-";
         public const string ReplayFileNameMiddleDivisor = "-";
         public const string ReplayFileContinuationNumberDivisor = "_";
         public const string ReplayFileNameSuffix = ".gnhrec";
         public const string ReplayZipFileNameSuffix = ".zip";
+        public const string ReplaySharedZipFileNameSuffix = ".shared.zip";        
         public const int ReplayStandardDelay = 100; /* Milliseconds */
         public const int ReplayOutripDelay = 800; /* Milliseconds */
         public const int ReplayPopupDelay = 600; /* Milliseconds */
