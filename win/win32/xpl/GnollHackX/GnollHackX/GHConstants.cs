@@ -1842,4 +1842,14 @@ namespace GnollHackX
         ExitHack,
         NumberOfFunctionCalls
     }
+
+    public enum GHPlatform
+    {
+        Unknown = 0,
+        Android = 1,
+        iOS = 2,
+        Windows = 3,
+        MacOS = 4,
+        Unix = 5,
+    }
 }

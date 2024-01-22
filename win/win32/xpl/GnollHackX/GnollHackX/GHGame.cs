@@ -2749,7 +2749,7 @@ namespace GnollHackX
                                         writer.Write(ModernMode);
                                         writer.Write(CasualMode);
                                         writer.Write(0); /* Recording type: 0 = full; 1 = ascii only */
-                                        writer.Write(0); /* int for future use */
+                                        writer.Write((int)GHApp.PlatformId);
                                         writer.Write(0UL); /* flags for future use */
                                         writer.Write(0UL); /* flags for future use */
                                         _headerSize += 3 * 8L + (long)plName.Length + 1L + 3 * 1L + 2 * 4L + 2 * 8L;
