@@ -6,11 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Net.WebRequestMethods;
-using GnollHackX.Pages.Game;
 using static System.Net.Mime.MediaTypeNames;
-using static Xamarin.Essentials.AppleSignInAuthenticator;
-
-
 
 #if GNH_MAUI
 using GnollHackX;
@@ -23,6 +19,8 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
+using GnollHackX.Pages.Game;
+using static Xamarin.Essentials.AppleSignInAuthenticator;
 
 namespace GnollHackX.Pages.MainScreen
 #endif

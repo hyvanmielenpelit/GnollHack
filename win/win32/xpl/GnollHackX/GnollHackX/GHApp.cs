@@ -4,6 +4,7 @@ using GnollHackM;
 #else
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration;
 using GnollHackX.Pages.Game;
 #endif
 using Newtonsoft.Json;
@@ -24,7 +25,6 @@ using System.Net.Mail;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Timers;
-using Xamarin.Forms.PlatformConfiguration;
 
 namespace GnollHackX
 {
