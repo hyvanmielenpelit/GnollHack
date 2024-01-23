@@ -1017,6 +1017,10 @@ namespace GnollHackX.Pages.Game
                 PopupGrid.IsEnabled = false;
                 MoreCommandsGrid.IsEnabled = false;
                 TipView.IsEnabled = false;
+                GHApp.ResetReplay();
+                UpdateReplaySpeedButtons();
+                UpdateReplayPauseButton();
+                ReplayGrid.IsVisible = true;
             }
 
             Thread t;
@@ -16237,6 +16241,72 @@ namespace GnollHackX.Pages.Game
                     queue.Enqueue(new GHResponse(_currentGame, GHRequestType.EndReplayFile));
                 }
             }
+        }
+
+
+        private void ReplayQuitButton_Clicked(object sender, EventArgs e)
+        {
+            GHApp.StopReplay = true;
+        }
+
+        private void UpdateReplaySpeedButtons()
+        {
+            double speed = GHApp.ReplaySpeed;
+            ReplayHeaderLabel.Text = string.Format("Replay Speed: {0:0.##}x", speed);
+            ReplayFasterButton.Text = string.Format("{0:0.##}x", speed * 2);
+            ReplaySlowerButton.Text = string.Format("{0:0.##}x", speed / 2);
+            if(GHApp.ReplaySpeed >= 128)
+            {
+                ReplayFasterButton.TextColor = GHColors.Gray;
+                ReplayFasterButton.IsEnabled = false;
+            }
+            else
+            {
+                ReplayFasterButton.TextColor = GHColors.White;
+                ReplayFasterButton.IsEnabled = true;
+            }
+            if (GHApp.ReplaySpeed <= 1.0/128)
+            {
+                ReplaySlowerButton.TextColor = GHColors.Gray;
+                ReplaySlowerButton.IsEnabled = false;
+            }
+            else
+            {
+                ReplaySlowerButton.TextColor = GHColors.White;
+                ReplaySlowerButton.IsEnabled = true;
+            }
+        }
+        private void UpdateReplayPauseButton()
+        {
+            if(GHApp.PauseReplay)
+                ReplayPauseButton.Text = "Play";
+            else
+                ReplayPauseButton.Text = "Pause";
+        }
+
+        private void ReplayFasterButton_Clicked(object sender, EventArgs e)
+        {
+            if(GHApp.ReplaySpeed < 128)
+            {
+                GHApp.ReplaySpeed = GHApp.ReplaySpeed * 2;
+                UpdateReplaySpeedButtons();
+            }
+        }
+
+
+        private void ReplaySlowerButton_Clicked(object sender, EventArgs e)
+        {
+            if (GHApp.ReplaySpeed > 1.0 / 128)
+            {
+                GHApp.ReplaySpeed = GHApp.ReplaySpeed / 2;
+                UpdateReplaySpeedButtons();
+            }
+        }
+
+        private void ReplayPauseButton_Clicked(object sender, EventArgs e)
+        {
+            GHApp.PauseReplay = !GHApp.PauseReplay;
+            UpdateReplayPauseButton();
         }
     }
 }

@@ -366,6 +366,32 @@
                                           Touch="TipView_Touch"
                                           AbsoluteLayout.LayoutBounds="0.0, 0, 1.0, 1.0"
                                           AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional"/>
+            <Grid x:Name="ReplayGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" IsVisible="False">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Frame x:Name="ReplayFrame" HorizontalOptions="CenterAndExpand" VerticalOptions="End" HeightRequest="90" BackgroundColor="#88000000" BorderColor="Black" CornerRadius="10" Margin="3">
+                    <Grid Margin="2" BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="85">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Row="0" x:Name="ReplayHeaderLabel" Text="" TextColor="White" HorizontalOptions="Center" VerticalOptions="End" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontFamily="Immortal" FontSize="15" />
+                        <StackLayout Grid.Row="1" BackgroundColor="Transparent" Orientation="Horizontal" HeightRequest="50">
+                            <controls:CustomImageButton x:Name="ReplayPauseButton" Text="Pause" Clicked="ReplayPauseButton_Clicked" WidthRequest="75" HeightRequest="42" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="White"/>
+                            <controls:CustomImageButton x:Name="ReplaySlowerButton" Text="0.50x" Clicked="ReplaySlowerButton_Clicked" WidthRequest="75" HeightRequest="42" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="White"/>
+                            <controls:CustomImageButton x:Name="ReplayFasterButton" Text="2.00x" Clicked="ReplayFasterButton_Clicked" WidthRequest="75" HeightRequest="42" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="White"/>
+                            <controls:CustomImageButton x:Name="ReplayQuitButton" Text="Quit" Clicked="ReplayQuitButton_Clicked" WidthRequest="75" HeightRequest="42" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="White"/>
+                        </StackLayout>
+                    </Grid>
+                </Frame>
+            </Grid>
             <Grid x:Name="LoadingGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
                 <gnh:GHCachedImage Source="resource://GnollHackX.Assets.dgn_entrance.jpg" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
                                 Aspect="AspectFill" CacheImage="False" />

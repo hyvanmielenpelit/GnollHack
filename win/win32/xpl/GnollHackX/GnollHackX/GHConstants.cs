@@ -1449,6 +1449,10 @@ namespace GnollHackX
         public const int MapCols = 80;
         public const int MapRows = 21;
         public const int DelayOutputDurationInMilliseconds = 50;
+        public const int ExitWindowsWithStringDelay = 1100;
+        public const int FadeToBlackDelay = 325;
+        public const int FadeToBlackDuration = 200;
+        public const int FadeFromBlackDuration = 200;
         public const int MaxMessageHistoryLength = 256;
         public const int MaxLongerMessageHistoryLength = 16384;
         public const float MoveDistanceThreshold = 25.0f;

@@ -4108,6 +4108,25 @@ namespace GnollHackX
             return res;
         }
 
+        private static readonly object _replayLock = new object();
+        private static bool _stopReplay = false;
+        private static bool _pauseReplay = false;
+        private static double _replaySpeed = 1.0;
+
+        public static bool StopReplay { get { lock (_replayLock) { return _stopReplay; } } set { lock (_replayLock) { _stopReplay = value; } } }
+        public static bool PauseReplay { get { lock (_replayLock) { return _pauseReplay; } } set { lock (_replayLock) { _pauseReplay = value; } } }
+        public static double ReplaySpeed { get { lock (_replayLock) { return _replaySpeed; } } set { lock (_replayLock) { _replaySpeed = value; } } }
+
+        public static void ResetReplay()
+        {
+            lock (_replayLock)
+            {
+                _stopReplay = false;
+                _pauseReplay = false;
+                _replaySpeed = 1.0;
+            }
+        }
+
         public static int PlayReplay(GHGame game, string replayFileName)
         {
             if (game == null || string.IsNullOrWhiteSpace(replayFileName))
@@ -4213,6 +4232,19 @@ namespace GnollHackX
                                         cmd = (int)cmd_byte;
                                         if (IsTimeStampedFunctionCall(cmd_byte))
                                             time = br.ReadUInt64(); /* Time is only for input functions */
+
+                                        do
+                                        {
+                                            if (StopReplay)
+                                            {
+                                                cmd = (int)RecordedFunctionID.EndOfFile;
+                                                break;
+                                            }
+                                            else if (PauseReplay)
+                                                Thread.Sleep(GHConstants.PollingInterval);
+                                        } 
+                                        while (PauseReplay);
+
                                         switch (cmd)
                                         {
                                             case (int)RecordedFunctionID.EndOfFile:
@@ -4408,14 +4440,14 @@ namespace GnollHackX
                                                     string chName = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     /* No asking name in replay */
                                                     //game.ClientCallback_AskName(modeName, modeDescription, chName);
-                                                    Thread.Sleep(GHConstants.ReplayStandardDelay);
+                                                    Thread.Sleep((int)(GHConstants.ReplayStandardDelay / ReplaySpeed));
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.GetEvent:
                                                 {
                                                     /* No function call in replay */
                                                     //game.ClientCallback_get_nh_event();
-                                                    Thread.Sleep(GHConstants.ReplayStandardDelay);
+                                                    Thread.Sleep((int)(GHConstants.ReplayStandardDelay / ReplaySpeed));
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.GetChar:
@@ -4423,7 +4455,7 @@ namespace GnollHackX
                                                     int res = br.ReadInt32();
                                                     /* No function call in replay */
                                                     //game.ClientCallback_nhgetch();
-                                                    Thread.Sleep(GHConstants.ReplayStandardDelay);
+                                                    Thread.Sleep((int)(GHConstants.ReplayStandardDelay / ReplaySpeed));
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.PosKey:
@@ -4434,7 +4466,7 @@ namespace GnollHackX
                                                     int res = br.ReadInt32();
                                                     /* No function call in replay */
                                                     //game.ClientCallback_nh_poskey();
-                                                    Thread.Sleep(GHConstants.ReplayStandardDelay);
+                                                    Thread.Sleep((int)(GHConstants.ReplayStandardDelay / ReplaySpeed));
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.YnFunction:
