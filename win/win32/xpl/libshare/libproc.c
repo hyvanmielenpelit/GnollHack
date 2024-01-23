@@ -472,7 +472,7 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 
     lib_callbacks.callback_print_glyph(wid, x, y, layers.glyph, layers.bkglyph, symbol, ocolor, special, &layers);
 
-    if (program_state.in_bones)
+    if (program_state.in_bones || program_state.in_tricked)
         return;
 
     /* Now send all object data */

@@ -208,6 +208,7 @@ E NEARDATA struct sinfo {
     int in_paniclog;
 #endif
     int wizkit_wishing;
+    int in_tricked;
 } program_state;
 
 E int exit_hack_code;

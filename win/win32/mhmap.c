@@ -1012,7 +1012,7 @@ onCreate(HWND hWnd, WPARAM wParam, LPARAM lParam)
 static void
 paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 {
-    if (program_state.freeing_dynamic_data == 1 || program_state.exiting || in_mklev || program_state.in_bones)
+    if (program_state.freeing_dynamic_data == 1 || program_state.exiting || in_mklev || program_state.in_bones || program_state.in_tricked)
         return;
 
     int ntile;
@@ -5409,7 +5409,7 @@ static void dirtyAll(PNHMapWindow data)
 
 static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
 {
-    if (program_state.freeing_dynamic_data == 1 || program_state.exiting || reseting || restoring || in_mklev || program_state.in_bones)
+    if (program_state.freeing_dynamic_data == 1 || program_state.exiting || reseting || restoring || in_mklev || program_state.in_bones || program_state.in_tricked)
         return;
 
     data->mapDirty[x][y] = TRUE;

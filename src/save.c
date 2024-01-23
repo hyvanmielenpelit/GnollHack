@@ -499,10 +499,12 @@ int fd;
 char *whynot;
 {
     if (fd < 0) {
+        program_state.in_tricked = 1;
         pline1(whynot);
         pline("Probably someone removed it.");
         Strcpy(killer.name, whynot);
         done(TRICKED);
+        program_state.in_tricked = 0;
         return TRUE;
     }
     return FALSE;
