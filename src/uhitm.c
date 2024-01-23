@@ -545,7 +545,8 @@ register struct monst *mtmp;
         }
     }
 
-    if (strcmp(qbuf, ""))
+    boolean do_bash_prompt = strcmp(qbuf, "") != 0;
+    if (do_bash_prompt)
     {
         char ans = yn_query(qbuf);
         if (ans == 'n')
@@ -556,6 +557,27 @@ register struct monst *mtmp;
         }
         else
             unweapon1 = unweapon2 = FALSE;
+    }
+
+    boolean has_right_weapon = (uwep && is_weapon(uwep));
+    boolean has_left_weapon = (u.twoweap && uwep2 && is_weapon(uwep2));
+    if (!do_bash_prompt && ParanoidMonkWeapon && Role_if(PM_MONK) && u.uconduct.weaphit == 0 && (has_right_weapon || has_left_weapon))
+    {
+        if(has_right_weapon && !has_left_weapon)
+            Sprintf(qbuf, "You begin attacking with %s. Continue?", yname(uwep));
+        else if (!has_right_weapon && has_left_weapon)
+            Sprintf(qbuf, "You begin attacking with %s. Continue?", yname(uwep2));
+        else if (has_right_weapon && has_left_weapon)
+            Sprintf(qbuf, "You begin attacking with %s and %s. Continue?", yname(uwep), cxname(uwep2));
+        else
+            Sprintf(qbuf, "You begin attacking with %s. Continue?", "weapons");
+        char ans = yn_query_ex(ATR_NONE, CLR_MSG_WARNING, "Attacking with Weapon", qbuf);
+        if (ans != 'y')
+        {
+            nomul(0);
+            context.move = FALSE;
+            return TRUE;
+        }
     }
 
     exercise(A_STR, TRUE); /* you're exercising muscles */
@@ -624,7 +646,7 @@ int dieroll;
         long oldweaphit = u.uconduct.weaphit;
 
         /* KMH, conduct */
-        if (weapon && (weapon->oclass == WEAPON_CLASS || is_weptool(weapon)))
+        if (weapon && is_weapon(weapon))
             if (!u.uconduct.weaphit++)
                 livelog_printf(LL_CONDUCT, "%s", "hit with a wielded weapon for the first time");
 

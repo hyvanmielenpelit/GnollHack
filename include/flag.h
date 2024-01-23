@@ -170,19 +170,20 @@ struct flag {
 #define NEW_MOON 0
 #define FULL_MOON 4
     unsigned paranoia_bits; /* alternate confirmation prompting */
-#define PARANOID_CONFIRM    0x0001
-#define PARANOID_QUIT       0x0002
-#define PARANOID_DIE        0x0004
-#define PARANOID_BONES      0x0008
-#define PARANOID_HIT        0x0010
-#define PARANOID_PRAY       0x0020
-#define PARANOID_REMOVE     0x0040
-#define PARANOID_BREAK      0x0080
-#define PARANOID_WERECHANGE 0x0100
-#define PARANOID_WATER      0x0200
-#define PARANOID_TRAP       0x0400
-#define PARANOID_AUTOALL    0x0800
-#define PARANOID_TIP        0x1000
+#define PARANOID_CONFIRM        0x0001
+#define PARANOID_QUIT           0x0002
+#define PARANOID_DIE            0x0004
+#define PARANOID_BONES          0x0008
+#define PARANOID_HIT            0x0010
+#define PARANOID_PRAY           0x0020
+#define PARANOID_REMOVE         0x0040
+#define PARANOID_BREAK          0x0080
+#define PARANOID_WERECHANGE     0x0100
+#define PARANOID_WATER          0x0200
+#define PARANOID_TRAP           0x0400
+#define PARANOID_AUTOALL        0x0800
+#define PARANOID_TIP            0x1000
+#define PARANOID_MONK_WEAPON    0x2000
     int pickup_burden; /* maximum burden before prompt */
     int pile_limit;    /* controls feedback when walking over objects */
     char inv_order[MAX_OBJECT_CLASSES];
@@ -642,6 +643,8 @@ enum runmode_types {
 #define ParanoidAutoSelectAll ((flags.paranoia_bits & PARANOID_AUTOALL) != 0)
 /* tip: accepting tipping a container */
 #define ParanoidTip ((flags.paranoia_bits & PARANOID_TIP) != 0)
+/* tip: accepting attacking with a weapon as a monk */
+#define ParanoidMonkWeapon ((flags.paranoia_bits & PARANOID_MONK_WEAPON) != 0)
 
 /* command parsing, mainly dealing with number_pad handling;
    not saved and restored */

@@ -850,7 +850,7 @@ init_options()
     flags.end_own = FALSE;
     flags.end_top = 3;
     flags.end_around = 2;
-    flags.paranoia_bits = PARANOID_PRAY | PARANOID_AUTOALL; /* old prayconfirm=TRUE */
+    flags.paranoia_bits = PARANOID_PRAY | PARANOID_AUTOALL | PARANOID_MONK_WEAPON; /* old prayconfirm=TRUE */
     flags.runmode = RUN_LEAP;
     iflags.msg_history = 20;
     /* msg_window has conflicting defaults for multi-interface binary */
@@ -1514,6 +1514,8 @@ STATIC_VAR const struct paranoia_opts {
       "y to select all items" },
     { PARANOID_TIP, "tip", 2, (const char*)0, 0,
       "yes vs y to tip a container" },
+    { PARANOID_MONK_WEAPON, "monk-weapon", 1, (const char*)0, 0,
+      "y to attack with a weapon as a monk" },
       /* for config file parsing; interactive menu skips these */
     { 0, "none", 4, 0, 0, 0 }, /* require full word match */
     { ~0, "all", 3, 0, 0, 0 }, /* ditto */

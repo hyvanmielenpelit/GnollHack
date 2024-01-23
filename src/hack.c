@@ -1971,9 +1971,9 @@ domove_core()
                 {
                     /* If blind, you still get the question */
 
-                    char ynqbuf[BUFSZ] = "";
+                    char ynqbuf[BUFSZ];
                     Sprintf(ynqbuf, "Are you sure you want to enter the %s?", is_pool(x, y) ? (Is_waterlevel(&u.uz) ? "water" : "pool") : is_lava(x, y) ? "lava" : "location");
-                    char tbuf[BUFSZ] = "";
+                    char tbuf[BUFSZ];
                     Sprintf(tbuf, "Entering %s?", is_pool(x, y) ? (Is_waterlevel(&u.uz) ? "Water" : "Pool") : is_lava(x, y) ? "Lava" : "Location");
 
                     if (!paranoid_query_ex(ATR_NONE, CLR_MSG_WARNING, ParanoidWater, tbuf, ynqbuf))
