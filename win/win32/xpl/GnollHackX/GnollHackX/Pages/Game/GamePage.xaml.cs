@@ -16247,12 +16247,12 @@ namespace GnollHackX.Pages.Game
         private void ReplayQuitButton_Clicked(object sender, EventArgs e)
         {
             GHApp.StopReplay = true;
+            UpdateReplayHeaderLabel();
         }
 
         private void UpdateReplaySpeedButtons()
         {
             double speed = GHApp.ReplaySpeed;
-            ReplayHeaderLabel.Text = string.Format("Replay Speed: {0:0.##}x", speed);
             ReplayFasterButton.Text = string.Format("{0:0.##}x", speed * 2);
             ReplaySlowerButton.Text = string.Format("{0:0.##}x", speed / 2);
             if(GHApp.ReplaySpeed >= 128)
@@ -16275,15 +16275,45 @@ namespace GnollHackX.Pages.Game
                 ReplaySlowerButton.TextColor = GHColors.White;
                 ReplaySlowerButton.IsEnabled = true;
             }
+            UpdateReplayHeaderLabel();
         }
         private void UpdateReplayPauseButton()
         {
             if(GHApp.PauseReplay)
+            {
                 ReplayPauseButton.Text = "Play";
+                ReplayPauseButton.TextColor = GHColors.BrighterGreen;
+            }
             else
+            {
                 ReplayPauseButton.Text = "Pause";
+                ReplayPauseButton.TextColor = GHColors.Yellow;
+            }
+
+            UpdateReplayHeaderLabel();
         }
 
+        private void UpdateReplayHeaderLabel()
+        {
+            if(GHApp.StopReplay)
+            {
+                ReplayHeaderLabel.Text = "Stopping Replay...";
+                ReplayHeaderLabel.TextColor = GHColors.BrighterRed;
+            }
+            else
+            {
+                if (GHApp.PauseReplay)
+                {
+                    ReplayHeaderLabel.Text = string.Format("Replay Speed: Paused at {0:0.##}x", GHApp.ReplaySpeed);
+                    ReplayHeaderLabel.TextColor = GHColors.Yellow;
+                }
+                else
+                {
+                    ReplayHeaderLabel.Text = string.Format("Replay Speed: {0:0.##}x", GHApp.ReplaySpeed);
+                    ReplayHeaderLabel.TextColor = GHColors.White;
+                }
+            }
+        }
         private void ReplayFasterButton_Clicked(object sender, EventArgs e)
         {
             if(GHApp.ReplaySpeed < 128)
