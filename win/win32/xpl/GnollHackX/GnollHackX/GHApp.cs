@@ -739,7 +739,7 @@ namespace GnollHackX
             ulong minorver = (vernum >> 16) & 0xFFUL;
             ulong patchver = (vernum >> 8) & 0xFFUL;
             ulong editver = (vernum) & 0xFFUL;
-            string verstr = majorver + "." + minorver + "." + patchver + "-" + editver;
+            string verstr = majorver.ToString() + minorver.ToString() + patchver.ToString() + "-" + editver;
             return verstr;
         }
 
@@ -2123,7 +2123,7 @@ namespace GnollHackX
 
             CheckCreateDirectory(targetpath);
 
-            string filepath = Path.Combine(targetpath, "dumplogs.zip");
+            string filepath = Path.Combine(targetpath, "dumplogs-" + VersionNumberToFileNameSuffix(GHVersionNumber) + ".zip");
             if (File.Exists(filepath))
                 File.Delete(filepath);
 
@@ -2154,13 +2154,7 @@ namespace GnollHackX
 
             CheckCreateDirectory(targetpath);
 
-            ulong vernum = GHVersionNumber;
-            ulong majorver = (vernum >> 24) & 0xFFUL;
-            ulong minorver = (vernum >> 16) & 0xFFUL;
-            ulong patchlvl = (vernum >> 8) & 0xFFUL;
-            ulong editlvl = (vernum) & 0xFFUL;
-            string versionstring = majorver.ToString() + minorver.ToString() + patchlvl.ToString() + "-" + editlvl;
-            string filepath = Path.Combine(targetpath, "savedgames-" + versionstring + ".zip");
+            string filepath = Path.Combine(targetpath, "savedgames-" + VersionNumberToFileNameSuffix(GHVersionNumber) + ".zip");
             if (File.Exists(filepath))
                 File.Delete(filepath);
 
@@ -2170,6 +2164,37 @@ namespace GnollHackX
             using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
             {
                 string[] ghsubdirlist = { GHConstants.SaveDirectory };
+                foreach (string ghsubdir in ghsubdirlist)
+                {
+                    string subdirpath = Path.Combine(ghdir, ghsubdir);
+                    string[] subfiles = Directory.GetFiles(subdirpath);
+                    foreach (var fPath in subfiles)
+                    {
+                        archive.CreateEntryFromFile(fPath, Path.GetFileName(fPath));
+                    }
+                }
+
+            }
+            return zipFile;
+        }
+
+        public static string CreateReplayZipArchive()
+        {
+            string ghdir = GnollHackService.GetGnollHackPath();
+            string targetpath = Path.Combine(ghdir, "archive");
+
+            CheckCreateDirectory(targetpath);
+
+            string filepath = Path.Combine(targetpath, "replays-" + VersionNumberToFileNameSuffix(GHVersionNumber) + GHConstants.ReplaySharedZipFileNameSuffix);
+            if (File.Exists(filepath))
+                File.Delete(filepath);
+
+            string zipFile = filepath;
+            string[] files = Directory.GetFiles(ghdir);
+
+            using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+            {
+                string[] ghsubdirlist = { GHConstants.ReplayDirectory };
                 foreach (string ghsubdir in ghsubdirlist)
                 {
                     string subdirpath = Path.Combine(ghdir, ghsubdir);

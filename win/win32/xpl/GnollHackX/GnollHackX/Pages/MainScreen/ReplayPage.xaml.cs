@@ -125,7 +125,7 @@ namespace GnollHackX.Pages.MainScreen
                 try
                 {
                     /* Create zip of al relevant files */
-                    string zipFile = Path.Combine(GHApp.GHPath, GHConstants.ReplayDirectory, "Replays" + GHConstants.ReplaySharedZipFileNameSuffix);
+                    string zipFile = Path.Combine(GHApp.GHPath, GHConstants.ReplayDirectory, "replay" + GHConstants.ReplaySharedZipFileNameSuffix);
                     if(File.Exists(zipFile))
                         File.Delete(zipFile);
 

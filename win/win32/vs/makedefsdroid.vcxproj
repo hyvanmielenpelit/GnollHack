@@ -286,6 +286,15 @@
           Overwrite="true"
           Encoding="UTF-8"/>
 	  <PropertyGroup>
+		  <InputFile>$(XamarinStartScreenDir)ImportExportPage.xaml</InputFile>
+		  <OutputFile>$(MauiMainDir)ImportExportPage.xaml</OutputFile>
+	  </PropertyGroup>
+	  <WriteLinesToFile
+          File="$(OutputFile)"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Overwrite="true"
+          Encoding="UTF-8"/>
+	  <PropertyGroup>
           <InputFile>$(XamarinStartScreenDir)EditorPage.xaml</InputFile>
           <OutputFile>$(MauiMainDir)EditorPage.xaml</OutputFile>
       </PropertyGroup>
