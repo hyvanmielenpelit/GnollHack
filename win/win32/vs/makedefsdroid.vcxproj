@@ -277,8 +277,8 @@
           Overwrite="true"
           Encoding="UTF-8"/>
 	  <PropertyGroup>
-		  <InputFile>$(XamarinStartScreenDir)SelectFilePage.xaml</InputFile>
-		  <OutputFile>$(MauiMainDir)SelectFilePage.xaml</OutputFile>
+		  <InputFile>$(XamarinStartScreenDir)ReplayPage.xaml</InputFile>
+		  <OutputFile>$(MauiMainDir)ReplayPage.xaml</OutputFile>
 	  </PropertyGroup>
 	  <WriteLinesToFile
           File="$(OutputFile)"

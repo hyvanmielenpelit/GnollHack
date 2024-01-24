@@ -533,7 +533,7 @@
     <EmbeddedResource Update="Pages\MainScreen\ResetPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\MainScreen\SelectFilePage.xaml">
+    <EmbeddedResource Update="Pages\MainScreen\ReplayPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\MainScreen\SettingsPage.xaml">
@@ -563,6 +563,9 @@
     </Compile>
     <Compile Update="Pages\MainScreen\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\MainScreen\ReplayPage.xaml.cs">
+      <DependentUpon>ReplayPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>

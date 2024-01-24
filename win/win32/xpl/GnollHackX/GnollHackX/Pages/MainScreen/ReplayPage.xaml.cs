@@ -25,11 +25,11 @@ namespace GnollHackX.Pages.MainScreen
 #endif
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class SelectFilePage : ContentPage
+	public partial class ReplayPage : ContentPage
 	{
         MainPage _mainPage = null;
         string _directory = null;
-		public SelectFilePage(string dir, MainPage mainPage)
+		public ReplayPage(string dir, MainPage mainPage)
 		{
 			InitializeComponent();
 #if GNH_MAUI

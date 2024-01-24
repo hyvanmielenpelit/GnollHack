@@ -443,7 +443,7 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
 
             string dir = Path.Combine(GHApp.GHPath, GHConstants.ReplayDirectory);
-            SelectFilePage selectFilePage = new SelectFilePage(dir, _mainPage);
+            ReplayPage selectFilePage = new ReplayPage(dir, _mainPage);
             await App.Current.MainPage.Navigation.PushModalAsync(selectFilePage);
 
             //if(Directory.Exists(dir))

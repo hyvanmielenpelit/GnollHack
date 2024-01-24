@@ -132,7 +132,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\TopScorePage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\LibraryPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\DisplayFilePage.xaml.cs" />
-		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\SelectFilePage.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\ReplayPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\EditorPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\VersionPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\Game\GameMenuPage.xaml.cs" />
@@ -223,7 +223,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\TopScorePage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\LibraryPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\DisplayFilePage.xaml.cs" />
-		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\SelectFilePage.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\ReplayPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\EditorPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\VersionPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\Game\GameMenuPage.xaml.cs" />
