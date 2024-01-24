@@ -35,6 +35,7 @@ d_level *lev;
                          in any dungeon (level 1 isn't multiway) */
                       || Is_botlevel(lev)
                       || (Is_branchlev(lev) && lev->dlevel > 1)
+                      || (u.uz.dnum == main_dungeon_dnum && u.uz.dlevel == 1)
                       /* no bones in the invocation level */
                       || (In_hell(lev)
                           && lev->dlevel == dunlevs_in_dungeon(lev) - 1));
@@ -448,9 +449,9 @@ can_make_bones(VOID_ARGS)
         return FALSE;
     if (no_bones_level(&u.uz))
         return FALSE; /* no bones for specific levels */
-    if (u.uswallow) {
+    if (u.uswallow) 
         return FALSE; /* no bones when swallowed */
-    }
+
     if (!Is_branchlev(&u.uz)) {
         /* no bones on non-branches with portals */
         for (ttmp = ftrap; ttmp; ttmp = ttmp->ntrap)
