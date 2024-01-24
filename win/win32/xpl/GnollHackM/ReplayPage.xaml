@@ -42,19 +42,17 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <Grid x:Name="BottomLayout" Grid.Row="3" HeightRequest="120" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <controls:CustomImageButton Grid.Row="0" Grid.Column="0" Text="Share" x:Name="ShareButton" Clicked="ShareButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="FillAndExpand" />
-                    <controls:CustomImageButton Grid.Row="0" Grid.Column="1" Text="Play" x:Name="SelectButton" Clicked="SelectButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" />
-                    <controls:CustomImageButton Grid.Row="1" Grid.Column="0" Text="Delete" x:Name="DeleteButton" Clicked="DeleteButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="FillAndExpand" />
-                    <controls:CustomImageButton Grid.Row="1" Grid.Column="1" Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="StartAndExpand" VerticalOptions="FillAndExpand" />
+                <Grid x:Name="BottomLayout" Grid.Row="3" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand">
+                    <StackLayout x:Name="ButtonMainStack" Orientation="Vertical"  HorizontalOptions="CenterAndExpand">
+                        <StackLayout Orientation="Horizontal">
+                            <controls:CustomImageButton Text="Share" x:Name="ShareButton" Clicked="ShareButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                            <controls:CustomImageButton Text="Play" x:Name="SelectButton" Clicked="SelectButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="StartAndExpand" VerticalOptions="Center" />
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                            <controls:CustomImageButton Text="Delete" x:Name="DeleteButton" Clicked="DeleteButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                            <controls:CustomImageButton Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="StartAndExpand" VerticalOptions="Center" />
+                        </StackLayout>
+                    </StackLayout>
                 </Grid>
             </Grid>
         </Grid>

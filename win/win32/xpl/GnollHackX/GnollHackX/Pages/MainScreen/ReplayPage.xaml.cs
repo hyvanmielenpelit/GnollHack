@@ -221,6 +221,15 @@ namespace GnollHackX.Pages.MainScreen
                 MainListView.Margin = UIUtils.GetMiddleElementMarginWithBorder(bkgView.BorderStyle, width, height);
                 HeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 BottomLayout.Margin = UIUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
+
+                if(width > height && width - BottomLayout.Margin.Left - BottomLayout.Margin.Right >= 500)
+                {
+                    ButtonMainStack.Orientation = StackOrientation.Horizontal;
+                }
+                else
+                {
+                    ButtonMainStack.Orientation = StackOrientation.Vertical;
+                }
             }
         }
 
