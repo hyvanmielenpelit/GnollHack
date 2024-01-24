@@ -2725,8 +2725,9 @@ namespace GnollHackX
                         GHApp.CheckCreateDirectory(dir);
                     if (Directory.Exists(dir))
                     {
-                        string plName = Preferences.Get("LastUsedPlayerName", "");
-                        string filepath = Path.Combine(dir, GHApp.GetReplayFileName(GHApp.GHVersionNumber, _replayTimeStamp.ToBinary(), plName, _replayContinuation));
+                        string configString = ""; /* Used to be player name, but in replays we do not in fact know it in advance before the replay starts */
+                        long timeBinary = _replayTimeStamp.ToBinary();
+                        string filepath = Path.Combine(dir, GHApp.GetReplayFileName(GHApp.GHVersionNumber, timeBinary, _replayContinuation));
                         bool fileDidExist = File.Exists(filepath);
                         bool eofFound = false;
                         long appendSize = 0L;
@@ -2743,8 +2744,8 @@ namespace GnollHackX
                                         /* Write header */
                                         writer.Write(GHApp.GHVersionNumber);
                                         writer.Write(GHApp.GHVersionCompatibility);
-                                        writer.Write(DateTime.Now.ToBinary());
-                                        writer.Write(plName);
+                                        writer.Write(timeBinary);
+                                        writer.Write(configString);
                                         writer.Write(WizardMode);
                                         writer.Write(ModernMode);
                                         writer.Write(CasualMode);
@@ -2752,7 +2753,7 @@ namespace GnollHackX
                                         writer.Write((int)GHApp.PlatformId);
                                         writer.Write(0UL); /* flags for future use */
                                         writer.Write(0UL); /* flags for future use */
-                                        _headerSize += 3 * 8L + (long)plName.Length + 1L + 3 * 1L + 2 * 4L + 2 * 8L;
+                                        _headerSize += 3 * 8L + (long)configString.Length + 1L + 3 * 1L + 2 * 4L + 2 * 8L;
                                         appendSize += _headerSize;
                                     }
                                     foreach (GHRecordedFunctionCall rfc in _recordedFunctionCalls)
@@ -2961,13 +2962,31 @@ namespace GnollHackX
                         } 
                         if(eofFound && File.Exists(filepath))
                         {
-                            string zipFile = filepath + ".zip";
+                            string zipFile = filepath + (GHApp.UseGZipForReplays ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix);
                             if(File.Exists(zipFile))
                                 File.Delete(zipFile);
-                            using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+
+                            if(GHApp.UseGZipForReplays)
                             {
-                                archive.CreateEntryFromFile(filepath, Path.GetFileName(filepath));
+                                using (FileStream originalFileStream = File.Open(filepath, FileMode.Open))
+                                {
+                                    using (FileStream compressedFileStream = File.Create(zipFile))
+                                    {
+                                        using (var compressor = new GZipStream(compressedFileStream, CompressionMode.Compress))
+                                        {
+                                            originalFileStream.CopyTo(compressor);
+                                        }
+                                    }
+                                }
                             }
+                            else
+                            {
+                                using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+                                {
+                                    archive.CreateEntryFromFile(filepath, Path.GetFileName(filepath));
+                                }
+                            }
+
                             if (File.Exists(filepath) && File.Exists(zipFile))
                                 File.Delete(filepath);
 

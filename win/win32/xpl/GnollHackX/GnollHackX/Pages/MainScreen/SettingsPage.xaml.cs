@@ -171,6 +171,12 @@ namespace GnollHackX.Pages.MainScreen
                 //}
             }
 
+            if(GZipSwitch.IsEnabled)
+            {
+                GHApp.UseGZipForReplays = GZipSwitch.IsToggled;
+                Preferences.Set("UseGZipForReplays", GZipSwitch.IsToggled);
+            }
+
             GHApp.PostingGameStatus = PostGameStatusSwitch.IsToggled;
             Preferences.Set("PostingGameStatus", PostGameStatusSwitch.IsToggled);
             GHApp.PostingDiagnosticData = PostDiagnosticDataSwitch.IsToggled;
@@ -474,7 +480,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             int cursor = 0, graphics = 0, savestyle = 0, maprefresh = (int)UIUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
             bool mem = false, fps = false, battery = false, gpu = GHApp.IsGPUDefault, simplecmdlayout = true, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
-            bool allowbones = true, recordgame = false, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
+            bool allowbones = true, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
@@ -529,6 +535,7 @@ namespace GnollHackX.Pages.MainScreen
             forcepostbones = Preferences.Get("ForcePostBones", false);
             allowbones = Preferences.Get("AllowBones", true);
             recordgame = Preferences.Get("RecordGame", false);
+            gzip = Preferences.Get("UseGZipForReplays", GHConstants.GZipIsDefaultReplayCompression);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
             savestyle = Preferences.Get("AppSwitchSaveStyle", 0);
             if (_gamePage == null)
@@ -665,6 +672,12 @@ namespace GnollHackX.Pages.MainScreen
             {
                 RecordSwitch.IsEnabled = false;
                 RecordLabel.TextColor = GHColors.Gray;
+            }
+            GZipSwitch.IsToggled = gzip;
+            if (_gamePage != null) /* Cannot turn on or off in the middle of the game; need to save and restart */
+            {
+                GZipSwitch.IsEnabled = false;
+                GZipLabel.TextColor = GHColors.Gray;
             }
             PostGameStatusSwitch.IsToggled = postgamestatus;
             PostDiagnosticDataSwitch.IsToggled = postdiagnostics;
@@ -1264,6 +1277,33 @@ namespace GnollHackX.Pages.MainScreen
                     PopupGrid.IsVisible = true;
                 }
             }
+        }
+
+        private void GZipLabel_TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            if (GZipSwitch.IsEnabled)
+            {
+                PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
+                PopupTitleLabel.Text = "Replay Compression Format";
+                PopupLabel.Text = "Replay compression format can be either zip (off) or gzip (on).";
+                PopupOkButton.IsEnabled = true;
+                PopupGrid.IsVisible = true;
+            }
+            else
+            {
+                if (_gamePage != null)
+                {
+                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
+                    PopupTitleLabel.Text = "Changing Replay Compression Disallowed";
+                    PopupLabel.Text = "Changing the replay compression format is disallowed during the game. Save the game first and then change the setting from the main screen.";
+                    PopupOkButton.IsEnabled = true;
+                    PopupGrid.IsVisible = true;
+                }
+            }
+        }
+        private void GZipSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+
         }
     }
 }

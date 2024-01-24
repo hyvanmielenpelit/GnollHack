@@ -95,6 +95,7 @@ namespace GnollHackX
             BonesAllowedUsers = Preferences.Get("BonesAllowedUsers", "");
             RecommendedSettingsChecked = Preferences.Get("RecommendedSettingsChecked", false);
             RecordGame = Preferences.Get("RecordGame", false);
+            UseGZipForReplays = Preferences.Get("UseGZipForReplays", GHConstants.GZipIsDefaultReplayCompression);
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if(FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
             {
@@ -4022,7 +4023,7 @@ namespace GnollHackX
             }
         }
 
-        public static string GetReplayFileName(ulong versionCode, long timeStampInBinary, string playerName, int contNumber) /* PlayerName is unused for the time being */
+        public static string GetReplayFileName(ulong versionCode, long timeStampInBinary, int contNumber)
         {
             return (contNumber > 0 ? GHConstants.ReplayContinuationFileNamePrefix : GHConstants.ReplayFileNamePrefix) + versionCode.ToString() + GHConstants.ReplayFileNameMiddleDivisor + timeStampInBinary.ToString() + (contNumber > 0 ? (GHConstants.ReplayFileContinuationNumberDivisor + contNumber.ToString()) : "") + GHConstants.ReplayFileNameSuffix;
         }
@@ -4043,21 +4044,40 @@ namespace GnollHackX
             }
 
             bool res = false;
-            bool isZip = replayFileName.Length > 4 && replayFileName.EndsWith(GHConstants.ReplayZipFileNameSuffix); /* Note if first is zip, all continued ones are assumed to be zip's, too */
+            bool isGZip = replayFileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && replayFileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
+            bool isNormalZip = replayFileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && replayFileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+            bool isZip = isGZip || isNormalZip;
+            string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
             string usedReplayFileName = replayFileName;
 
             try
             {
                 if (isZip)
                 {
-                    string unZippedFileName = replayFileName.Substring(0, replayFileName.Length - 4);
+                    string unZippedFileName = replayFileName.Substring(0, replayFileName.Length - usedZipSuffix.Length);
                     if (File.Exists(unZippedFileName))
                         File.Delete(unZippedFileName);
 
-                    using (ZipArchive ziparch = ZipFile.OpenRead(replayFileName))
+                    if(isGZip)
                     {
-                        string dir = Path.GetDirectoryName(replayFileName);
-                        ziparch.ExtractToDirectory(string.IsNullOrWhiteSpace(dir) ? "." : dir);
+                        using (FileStream compressedFileStream = File.Open(replayFileName, FileMode.Open))
+                        {
+                            using (FileStream outputFileStream = File.Create(unZippedFileName))
+                            {
+                                using (var decompressor = new GZipStream(compressedFileStream, CompressionMode.Decompress))
+                                {
+                                    decompressor.CopyTo(outputFileStream);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        using (ZipArchive ziparch = ZipFile.OpenRead(replayFileName))
+                        {
+                            string dir = Path.GetDirectoryName(replayFileName);
+                            ziparch.ExtractToDirectory(string.IsNullOrWhiteSpace(dir) ? "." : dir);
+                        }
                     }
 
                     if (File.Exists(unZippedFileName))
@@ -4127,13 +4147,22 @@ namespace GnollHackX
             }
         }
 
+        private static readonly object _gzipLock = new object();
+        private static bool _useGZipForReplays = GHConstants.GZipIsDefaultReplayCompression;
+
+        public static bool UseGZipForReplays { get { lock (_gzipLock) { return _useGZipForReplays; } } set { lock (_gzipLock) { _useGZipForReplays = value; } } }
+
+        /* Called from GHGame thread! */
         public static int PlayReplay(GHGame game, string replayFileName)
         {
             if (game == null || string.IsNullOrWhiteSpace(replayFileName))
                 return 2;
 
             bool exitHackCalled = false;
-            bool isZip = replayFileName.Length > 4 && replayFileName.EndsWith(GHConstants.ReplayZipFileNameSuffix); /* Note if first is zip, all continued ones are assumed to be zip's, too */
+            bool isGZip = replayFileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && replayFileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
+            bool isNormalZip = replayFileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && replayFileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+            bool isZip = isGZip || isNormalZip;
+            string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
             bool contnextfile = false;
             string rawFileName = replayFileName;
             do
@@ -4155,14 +4184,30 @@ namespace GnollHackX
                 {
                     if (isZip)
                     {
-                        string unZippedFileName = rawFileName.Substring(0, rawFileName.Length - 4);
+                        string unZippedFileName = rawFileName.Substring(0, rawFileName.Length - usedZipSuffix.Length);
                         if (File.Exists(unZippedFileName))
                             File.Delete(unZippedFileName);
 
-                        using (ZipArchive ziparch = ZipFile.OpenRead(rawFileName))
+                        if (isGZip)
                         {
-                            string dir = Path.GetDirectoryName(rawFileName);
-                            ziparch.ExtractToDirectory(string.IsNullOrWhiteSpace(dir) ? "." : dir);
+                            using (FileStream compressedFileStream = File.Open(rawFileName, FileMode.Open))
+                            {
+                                using (FileStream outputFileStream = File.Create(unZippedFileName))
+                                {
+                                    using (var decompressor = new GZipStream(compressedFileStream, CompressionMode.Decompress))
+                                    {
+                                        decompressor.CopyTo(outputFileStream);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            using (ZipArchive ziparch = ZipFile.OpenRead(rawFileName))
+                            {
+                                string dir = Path.GetDirectoryName(rawFileName);
+                                ziparch.ExtractToDirectory(string.IsNullOrWhiteSpace(dir) ? "." : dir);
+                            }
                         }
 
                         if (File.Exists(unZippedFileName))
@@ -4254,11 +4299,11 @@ namespace GnollHackX
                                                 {
                                                     ulong nextfile_versionnumber = br.ReadUInt64();
                                                     long nextfile_timestamp = br.ReadInt64();
-                                                    string nextfile_plname = br.ReadInt32() == 0 ? null : br.ReadString();
+                                                    string nextfile_config_string = br.ReadInt32() == 0 ? null : br.ReadString(); /* unused */
                                                     int nextfile_replay_continuation = br.ReadInt32();
-                                                    rawFileName = Path.Combine(GHPath, GHConstants.ReplayDirectory, GetReplayFileName(nextfile_versionnumber, nextfile_timestamp, nextfile_plname, nextfile_replay_continuation));
+                                                    rawFileName = Path.Combine(GHPath, GHConstants.ReplayDirectory, GetReplayFileName(nextfile_versionnumber, nextfile_timestamp, nextfile_replay_continuation));
                                                     if (isZip)
-                                                        rawFileName += GHConstants.ReplayZipFileNameSuffix;
+                                                        rawFileName += usedZipSuffix;
                                                     contnextfile = true;
                                                     breakwhile = true;
                                                 }

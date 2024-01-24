@@ -1633,7 +1633,9 @@ namespace GnollHackX
         public const string ReplayFileContinuationNumberDivisor = "_";
         public const string ReplayFileNameSuffix = ".gnhrec";
         public const string ReplayZipFileNameSuffix = ".zip";
-        public const string ReplaySharedZipFileNameSuffix = ".shared.zip";        
+        public const string ReplayGZipFileNameSuffix = ".gz";
+        public const string ReplaySharedZipFileNameSuffix = ".shared.zip";
+        public const bool GZipIsDefaultReplayCompression = true;
         public const int ReplayStandardDelay = 100; /* Milliseconds */
         public const int ReplayOutripDelay = 800; /* Milliseconds */
         public const int ReplayPopupDelay = 600; /* Milliseconds */

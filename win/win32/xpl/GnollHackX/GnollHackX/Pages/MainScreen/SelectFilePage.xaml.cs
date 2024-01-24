@@ -138,8 +138,11 @@ namespace GnollHackX.Pages.MainScreen
                         string fileName = fi.Name;
                         if (fileName != null && fileName.StartsWith(GHConstants.ReplayFileNamePrefix))
                         {
-                            bool isZip = fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
-                            int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? GHConstants.ReplayZipFileNameSuffix.Length : 0);
+                            bool isGZip = fileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
+                            bool isNormalZip = fileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+                            bool isZip = isGZip || isNormalZip;
+                            string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
+                            int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
                             if (subLen > 0 && Directory.Exists(dir))
                             {
                                 string[] files = Directory.GetFiles(dir);
@@ -153,7 +156,7 @@ namespace GnollHackX.Pages.MainScreen
                                             FileInfo contFI = new FileInfo(file);
                                             if(contFI != null && contFI.Name != null)
                                             {
-                                                if (contFI.Name.StartsWith(contStart) && (!isZip || file.EndsWith(GHConstants.ReplayZipFileNameSuffix)) && File.Exists(file))
+                                                if (contFI.Name.StartsWith(contStart) && (!isZip || file.EndsWith(usedZipSuffix)) && File.Exists(file))
                                                 {
                                                     archive.CreateEntryFromFile(file, Path.GetFileName(file));
                                                 }
@@ -261,8 +264,11 @@ namespace GnollHackX.Pages.MainScreen
                         string fileName = fi.Name;
                         if (fileName != null && fileName.StartsWith(GHConstants.ReplayFileNamePrefix))
                         {
-                            bool isZip = fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
-                            int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? GHConstants.ReplayZipFileNameSuffix.Length : 0);
+                            bool isGZip = fileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
+                            bool isNormalZip = fileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+                            bool isZip = isGZip || isNormalZip;
+                            string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
+                            int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
                             if (subLen > 0 && Directory.Exists(dir))
                             {
                                 string[] files = Directory.GetFiles(dir);
@@ -276,7 +282,7 @@ namespace GnollHackX.Pages.MainScreen
                                             FileInfo contFI = new FileInfo(file);
                                             if (contFI != null && contFI.Name != null)
                                             {
-                                                if (contFI.Name.StartsWith(contStart) && (!isZip || file.EndsWith(GHConstants.ReplayZipFileNameSuffix)) && File.Exists(file))
+                                                if (contFI.Name.StartsWith(contStart) && (!isZip || file.EndsWith(usedZipSuffix)) && File.Exists(file))
                                                 {
                                                     File.Delete(file);
                                                 }

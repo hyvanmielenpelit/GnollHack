@@ -550,8 +550,11 @@ namespace GnollHackX.Pages.MainScreen
                                                 nextracted++;
                                                 ntotalfiles++;
 
-                                                bool isZip = fileInfo.Name.EndsWith(GHConstants.ReplayZipFileNameSuffix);
-                                                int len = fileInfo.Name.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? GHConstants.ReplayZipFileNameSuffix.Length : 0);
+                                                bool isGZip = fileInfo.Name.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileInfo.Name.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
+                                                bool isNormalZip = fileInfo.Name.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileInfo.Name.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+                                                bool isZip = isGZip || isNormalZip;
+                                                string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
+                                                int len = fileInfo.Name.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
                                                 if(len > 0)
                                                 {
                                                     string middleStr = fileInfo.Name.Substring(GHConstants.ReplayFileNamePrefix.Length, len);
@@ -562,7 +565,7 @@ namespace GnollHackX.Pages.MainScreen
                                                             FileInfo contFileInfo = new FileInfo(contstr);
                                                             if (contFileInfo != null && contFileInfo.Name != null && contFileInfo.Name.StartsWith(GHConstants.ReplayContinuationFileNamePrefix))
                                                             {
-                                                                int contLen = contFileInfo.Name.Length - GHConstants.ReplayContinuationFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? GHConstants.ReplayZipFileNameSuffix.Length : 0);
+                                                                int contLen = contFileInfo.Name.Length - GHConstants.ReplayContinuationFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
                                                                 if (contLen >= len && contFileInfo.Name.Substring(GHConstants.ReplayContinuationFileNamePrefix.Length, len) == middleStr)
                                                                 {
                                                                     string contfinalname = Path.Combine(savedirpath, contFileInfo.Name);
