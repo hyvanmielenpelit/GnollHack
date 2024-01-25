@@ -4050,8 +4050,8 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
             && (x != u.ux || y != u.uy)
             /* no extra item from kops--too easy to abuse */
             && mdat->mlet != S_KOP
-            /* no items from cloned monsters */
-            && !mtmp->mcloned) 
+            /* no items from cloned or revived monsters */
+            && !mtmp->mcloned && !mtmp->mrevived)
         {
             otmp = mkobj_with_flags(RANDOM_CLASS, TRUE, TRUE, mtmp, MAT_NONE, 0L, 0L, MKOBJ_FLAGS_FOUND_THIS_TURN | (is_lord(mdat) || is_prince(mdat) || (mdat->geno & G_UNIQ) ? MKOBJ_FLAGS_ALSO_RARE : 0UL));
             /* don't create large objects from small monsters */
