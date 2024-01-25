@@ -1598,7 +1598,7 @@ namespace GnollHackX
                 if(PlayingReplay)
                 {
                     WaitAndCheckPauseReplay(GHConstants.ReplayGetLineDelay1);
-                    if(!string.IsNullOrWhiteSpace(enteredLine))
+                    if(!string.IsNullOrWhiteSpace(enteredLine) && enteredLine != "?" && enteredLine != '\x1B'.ToString()) /* If help or cancel button was pressed */
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.EnterGetLineText, enteredLine));
                         WaitAndCheckPauseReplay(GHConstants.ReplayGetLineDelay2);
