@@ -536,6 +536,19 @@ int mnum;
             putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
         }
 
+        if (vegan(ptr))
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Vegan food", cnt);
+            putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+        }
+        else if (vegetarian(ptr))
+        {
+            cnt++;
+            Sprintf(buf, "  %d - Vegetarian food", cnt);
+            putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+        }
+
         if (mnum == PM_LIZARD)
         {
             cnt++;

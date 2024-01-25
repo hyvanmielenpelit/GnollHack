@@ -17872,7 +17872,7 @@ anything* surface_source_ptr;
 
         boolean you_defend = (mdef == &youmonst);
 
-        surface_material = mdef->data->natural_armor_material_type;
+        surface_material = mdef->data->body_material_type;
         if (you_defend)
         {
             /* Maybe change if you are wearing armor */

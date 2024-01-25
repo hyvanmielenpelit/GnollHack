@@ -675,11 +675,11 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     Strcpy(actualn_fullbuf, actualn_startbuf);
     Strcpy(dn_fullbuf, dn_startbuf);
 
-    if (dknown)
+    if (dknown && obj->otyp != CORPSE)
     {
         if ((nn && (objects[obj->otyp].oc_flags5 & O5_SHOW_BASE_MATERIAL_NAME) != 0) || 
             (!nn && (artifact_description_exists ? (artilist[obj->oartifact].aflags2 & AF2_SHOW_BASE_MATERIAL_NAME) != 0 : (OBJ_DESCR_FLAGS(obj->otyp) & OD_SHOW_BASE_MATERIAL_NAME) != 0 && (OBJ_DESCR_FLAGS(obj->otyp) & OD_NO_MATERIAL_NAME) == 0))
-            || (obj->material != objects[obj->otyp].oc_material && ((nn && (objects[obj->otyp].oc_flags5 & O5_NO_MATERIAL_NAME) == 0) 
+            || (obj->material != objects[obj->otyp].oc_material && ((nn && (objects[obj->otyp].oc_flags5 & O5_NO_MATERIAL_NAME) == 0)
                 || (!nn && (artifact_description_exists ? (artilist[obj->oartifact].aflags2 & AF2_NO_MATERIAL_NAME) == 0 : (OBJ_DESCR_FLAGS(obj->otyp) & OD_NO_MATERIAL_NAME) == 0)))
                )
            )

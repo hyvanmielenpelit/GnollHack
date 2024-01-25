@@ -79,17 +79,17 @@ struct permonst {
     uchar msound;               /* noise it makes (6 bits) */
     uchar msize;                /* physical size (3 bits) */
     uchar heads;                /* number of heads */
-    int lightrange;                /* range of emitted light, if any */
-    uchar natural_armor_material_type; /* one of the obj_material_types */
+    int lightrange;             /* range of emitted light, if any */
+    uchar body_material_type;   /* one of the obj_material_types */
     int str,                    /* strength */
         dex,                    /* dexterity */
         con,                    /* constitution */
-        intl,                    /* intelligence */
+        intl,                   /* intelligence */
         wis,                    /* wisdom */
         cha;                    /* charisma */
-    unsigned long mresists;             /* resistances */
-    unsigned long mresists2;             /* more resistances */
-    unsigned long mconveys;             /* conveyed by eating */
+    unsigned long mresists;     /* resistances */
+    unsigned long mresists2;    /* more resistances */
+    unsigned long mconveys;     /* conveyed by eating */
     unsigned long mflags1,      /* boolean bitflags */
         mflags2, mflags3, mflags4, mflags5, mflags6, mflags7, mflags8;       /* more boolean bitflags, if added, remember to update NUM_MFLAGS above */
     int difficulty;        /* toughness (formerly from  makedefs -m) */
