@@ -2339,7 +2339,9 @@ namespace GnollHackX
             if(PlayingReplay)
             {
                 /* Only like this for replay, as normal hiding code is a bit more robust */
-                WaitAndCheckPauseReplay(GHConstants.ReplayOutripDelay);
+                if (!GHApp.StopReplay) /* No pause, since outrip page hides the controls */
+                    Thread.Sleep((int)(GHConstants.ReplayOutripDelay / GHApp.ReplaySpeed));
+
                 lock (_ghWindowsLock)
                 {
                     if (_ghWindows[winid] != null)
@@ -2355,6 +2357,9 @@ namespace GnollHackX
 
         public int ClientCallback_UIHasInput()
         {
+            if (PlayingReplay)
+                return 0;
+
             ConcurrentQueue<GHResponse> queue;
             if (GHGame.ResponseDictionary.TryGetValue(this, out queue))
             {

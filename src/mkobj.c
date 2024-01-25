@@ -2926,7 +2926,7 @@ int id;
     {
     case CORPSE:
         start_corpse_timeout(obj);
-        /* Change the corpse's spe to match the monster's body material */
+        /* Change the corpse's material to match the monster's body material */
         if (id >= LOW_PM && id < NUM_MONSTERS && mons[id].body_material_type != MAT_NONE)
             obj->material = mons[id].body_material_type;
         obj->owt = weight(obj);
@@ -3524,7 +3524,7 @@ unsigned corpstatflags;
             }
         }
 
-        /* Change the corpse's spe to match the monster's body material */
+        /* Change the corpse's material to match the monster's body material */
         if (objtype == CORPSE)
         {
             if (!ptr && otmp->corpsenm >= LOW_PM && otmp->corpsenm < NUM_MONSTERS)
