@@ -51,8 +51,8 @@ namespace GnollHackX.Pages.MainScreen
             if (string.IsNullOrWhiteSpace(_directory))
                 return;
 
-            MainListView.ItemsSource = null;
-            MainListView.SelectedItem = null;
+            ReplayCollectionView.ItemsSource = null;
+            ReplayCollectionView.SelectedItem = null;
             ShareButton.IsEnabled = false;
             SelectButton.IsEnabled = false;
             DeleteButton.IsEnabled = false;
@@ -99,7 +99,7 @@ namespace GnollHackX.Pages.MainScreen
                             }
                         }
                     }
-                    MainListView.ItemsSource = gHRecordedGameFiles;
+                    ReplayCollectionView.ItemsSource = gHRecordedGameFiles;
                 }
             }
             RecordingsLabel.Text = i.ToString() + " recording" + (i == 1 ? "" : "s") + ", " + (totalBytes / 1024) + " kB";
@@ -112,10 +112,10 @@ namespace GnollHackX.Pages.MainScreen
 
             GHRecordedGameFile recfile = null;
             string filePath = null;
-            if (MainListView.SelectedItem != null)
+            if (ReplayCollectionView.SelectedItem != null)
             {
-                if (MainListView.SelectedItem is GHRecordedGameFile)
-                    recfile = ((GHRecordedGameFile)MainListView.SelectedItem);
+                if (ReplayCollectionView.SelectedItem is GHRecordedGameFile)
+                    recfile = ((GHRecordedGameFile)ReplayCollectionView.SelectedItem);
                 if (recfile != null)
                     filePath = recfile.FilePath;
             }
@@ -186,10 +186,10 @@ namespace GnollHackX.Pages.MainScreen
             SelectButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             string filePath = null;
-            if (MainListView.SelectedItem != null)
+            if (ReplayCollectionView.SelectedItem != null)
             {
-                if(MainListView.SelectedItem is GHRecordedGameFile)
-                    filePath = ((GHRecordedGameFile)MainListView.SelectedItem).FilePath;
+                if(ReplayCollectionView.SelectedItem is GHRecordedGameFile)
+                    filePath = ((GHRecordedGameFile)ReplayCollectionView.SelectedItem).FilePath;
             }
 
             if (filePath != null)
@@ -218,7 +218,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 _currentPageWidth = width;
                 _currentPageHeight = height;
-                MainListView.Margin = UIUtils.GetMiddleElementMarginWithBorder(bkgView.BorderStyle, width, height);
+                ReplayCollectionView.Margin = UIUtils.GetMiddleElementMarginWithBorder(bkgView.BorderStyle, width, height);
                 HeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 BottomLayout.Margin = UIUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
 
@@ -243,6 +243,29 @@ namespace GnollHackX.Pages.MainScreen
             DeleteButton.TextColor = GHColors.White;
         }
 
+        private void MainListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(ReplayCollectionView.SelectedItem != null)
+            {
+                ShareButton.IsEnabled = true;
+                SelectButton.IsEnabled = true;
+                DeleteButton.IsEnabled = true;
+                ShareButton.TextColor = GHColors.White;
+                SelectButton.TextColor = GHColors.White;
+                DeleteButton.TextColor = GHColors.White;
+            }
+            else
+            {
+                ShareButton.IsEnabled = false;
+                SelectButton.IsEnabled = false;
+                DeleteButton.IsEnabled = false;
+                ShareButton.TextColor = GHColors.Gray;
+                SelectButton.TextColor = GHColors.Gray;
+                DeleteButton.TextColor = GHColors.Gray;
+            }
+        }
+
+
         private async void DeleteButton_Clicked(object sender, EventArgs e)
         {
             DeleteButton.IsEnabled = false;
@@ -251,10 +274,10 @@ namespace GnollHackX.Pages.MainScreen
 
             string filePath = null;
 
-            if (MainListView.SelectedItem != null)
+            if (ReplayCollectionView.SelectedItem != null)
             {
-                if (MainListView.SelectedItem is GHRecordedGameFile)
-                    recfile = ((GHRecordedGameFile)MainListView.SelectedItem);
+                if (ReplayCollectionView.SelectedItem is GHRecordedGameFile)
+                    recfile = ((GHRecordedGameFile)ReplayCollectionView.SelectedItem);
                 if (recfile != null)
                     filePath = recfile.FilePath;
             }
@@ -311,5 +334,6 @@ namespace GnollHackX.Pages.MainScreen
             }
             DeleteButton.IsEnabled = true;
         }
+
     }
 }

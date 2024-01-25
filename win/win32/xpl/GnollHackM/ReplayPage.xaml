@@ -20,28 +20,36 @@
                 </Grid.ColumnDefinitions>
                 <Label x:Name="HeaderLabel" Grid.Row="0" Text="Select Recorded Game" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="Black" FontFamily="Immortal"/>
                 <Label Grid.Row="1" x:Name="RecordingsLabel" Text="0 game recordings available" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="16" TextColor="Black" FontFamily="Immortal"/>
-                <ListView x:Name="MainListView" Grid.Row="2" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand" SelectionMode="Single"  BackgroundColor="Transparent" ItemSelected="MainListView_ItemSelected" HasUnevenRows="True">
-                    <ListView.ItemTemplate>
+                <CollectionView x:Name="ReplayCollectionView" Grid.Row="2" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand" SelectionMode="Single"  BackgroundColor="Transparent" SelectionChanged="MainListView_SelectionChanged" >
+                    <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <ViewCell>
-                                <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Margin="0,5">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="30" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Label Text="{Binding FormattedIndex}" Grid.Column="0" FontFamily="Underwood" TextColor="Black" FontSize="15" HorizontalOptions="Center" />
-                                    <StackLayout Grid.Column="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
-                                        <Label Text="{Binding FormattedName}" FontFamily="Underwood" TextColor="Black" FontSize="15" HorizontalOptions="StartAndExpand" />
-                                        <Label Text="{Binding FormattedInformation}" FontFamily="Underwood" TextColor="Black" FontSize="14" HorizontalOptions="StartAndExpand" />
-                                    </StackLayout>
-                                </Grid>
-                            </ViewCell>
+                            <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Margin="0,5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Normal" />
+                                        <VisualState Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="#88FF8800" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Label Text="{Binding FormattedIndex}" Grid.Column="0" FontFamily="Underwood" TextColor="Black" FontSize="15" HorizontalOptions="Center" />
+                                <StackLayout Grid.Column="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
+                                    <Label Text="{Binding FormattedName}" FontFamily="Underwood" TextColor="Black" FontSize="15" HorizontalOptions="StartAndExpand" />
+                                    <Label Text="{Binding FormattedInformation}" FontFamily="Underwood" TextColor="Black" FontSize="14" HorizontalOptions="StartAndExpand" />
+                                </StackLayout>
+                            </Grid>
                         </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
                 <Grid x:Name="BottomLayout" Grid.Row="3" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand">
                     <StackLayout x:Name="ButtonMainStack" Orientation="Vertical"  HorizontalOptions="CenterAndExpand">
                         <StackLayout Orientation="Horizontal">
