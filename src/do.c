@@ -3397,7 +3397,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         /* Item properties */
         if (ocflags & ~(O1_THROWN_WEAPON_ONLY | O1_MELEE_AND_THROWN_WEAPON
             | O1_SPELLTOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD) 
-            || (ocflags5 & (O5_MBAG_DESTROYING_ITEM | O5_CANCELLATION_NO_EXPLOSION_BUT_DRAIN))
+            || (ocflags5 & (O5_MBAG_DESTROYING_ITEM | O5_CANCELLATION_NO_EXPLOSION_BUT_DRAIN | O5_PERMANENTLY_GREASED))
             || otyp_shines_magical_light(otyp)
             || is_otyp_special_praying_item(otyp) || otyp_consumes_nutrition_every_20_rounds(otyp)
             || (obj ? is_death_enchantable(obj) : is_otyp_death_enchantable(otyp)) //|| is_otyp_elemental_enchantable(otyp) 
@@ -3539,6 +3539,12 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Strips magic bag destroying items of charges; does not explode", powercnt);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (ocflags5 & O5_PERMANENTLY_GREASED)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Permanently greased", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
             }
 

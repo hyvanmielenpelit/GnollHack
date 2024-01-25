@@ -2551,7 +2551,7 @@ struct attack *mattk;
 
     /* if monster's cloak/armor is greased, your grab slips off; this
        protection might fail (33% chance) when the armor is cursed */
-    if (obj && (obj->greased || obj->otyp == OILSKIN_CLOAK)
+    if (obj && (obj->greased || (objects[obj->otyp].oc_flags5 & O5_PERMANENTLY_GREASED) != 0 || obj->otyp == OILSKIN_CLOAK)
         && (!obj->cursed || rn2(3))) {
         You("%s %s %s %s!",
             mattk->adtyp == AD_WRAP ? "slip off of"

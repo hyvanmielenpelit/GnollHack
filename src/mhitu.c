@@ -1405,7 +1405,7 @@ boolean stuck;
 
     /* if your cloak/armor is greased, monster slips off; this
        protection might fail (33% chance) when the armor is cursed */
-    if (obj && (obj->greased || obj->otyp == OILSKIN_CLOAK)
+    if (obj && (obj->greased || (objects[obj->otyp].oc_flags5 & O5_PERMANENTLY_GREASED) != 0 || obj->otyp == OILSKIN_CLOAK)
         && (!obj->cursed || rn2(3))) {
         pline("%s %s your %s %s!", Monnam(mtmp),
               (mattk->adtyp == AD_WRAP) ? "slips off of"
