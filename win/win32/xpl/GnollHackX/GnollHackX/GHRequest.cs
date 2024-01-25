@@ -12,6 +12,7 @@ namespace GnollHackX
         PosKey,
         GetLine,
         HideGetLine,
+        EnterGetLineText,
         PrintTopLine,
         PrintHistory,
         AskName,

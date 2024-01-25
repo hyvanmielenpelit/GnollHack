@@ -2200,6 +2200,9 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.HideGetLine:
                                 HideGetLine();
                                 break;
+                            case GHRequestType.EnterGetLineText:
+                                EnterGetLineText(req.RequestString);
+                                break;
                             case GHRequestType.ReturnToMainMenu:
                                 IsGameOn = false;
                                 ClearMap();
@@ -2903,7 +2906,7 @@ namespace GnollHackX.Pages.Game
                 GetLineOkButton.IsEnabled = false;
                 GetLineCancelButton.IsEnabled = false;
                 GetLineQuestionMarkButton.IsEnabled = false;
-                GetLineEntryText.IsEnabled = false;
+                //GetLineEntryText.IsEnabled = false;
             }
             GetLineGrid.IsVisible = true;
         }
@@ -2913,6 +2916,14 @@ namespace GnollHackX.Pages.Game
             GetLineGrid.IsVisible = false;
             GetLineEntryText.Text = "";
             GetLineCaption.Text = "";
+        }
+
+        private void EnterGetLineText(string enteredLine)
+        {
+            if(enteredLine != null)
+            {
+                GetLineEntryText.Text = enteredLine;
+            }
         }
 
         private void GetLineOkButton_Clicked(object sender, EventArgs e)

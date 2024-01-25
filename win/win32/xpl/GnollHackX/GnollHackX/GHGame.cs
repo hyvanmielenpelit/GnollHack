@@ -1573,7 +1573,17 @@ namespace GnollHackX
             }
         }
 
+        public int Replay_GetLine(int style, int attr, int color, string query, string placeholder, string linesuffix, string introline, IntPtr out_string_ptr, string enteredLine)
+        {
+            return GetLine(style, attr, color, query, placeholder, linesuffix, introline, out_string_ptr, enteredLine);
+        }
+
         public int ClientCallback_GetLine(int style, int attr, int color, string query, string placeholder, string linesuffix, string introline, IntPtr out_string_ptr)
+        {
+            return GetLine(style, attr, color, query, placeholder, linesuffix, introline, out_string_ptr, null);
+        }
+
+        private int GetLine(int style, int attr, int color, string query, string placeholder, string linesuffix, string introline, IntPtr out_string_ptr, string enteredLine)
         {
             Debug.WriteLine("ClientCallback_GetLine");
             if (query == null)
@@ -1587,7 +1597,12 @@ namespace GnollHackX
 
                 if(PlayingReplay)
                 {
-                    WaitAndCheckPauseReplay(GHConstants.ReplayGetLineDelay);
+                    WaitAndCheckPauseReplay(GHConstants.ReplayGetLineDelay1);
+                    if(!string.IsNullOrWhiteSpace(enteredLine))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.EnterGetLineText, enteredLine));
+                        WaitAndCheckPauseReplay(GHConstants.ReplayGetLineDelay2);
+                    }
                     queue.Enqueue(new GHRequest(this, GHRequestType.HideGetLine));
                     return 0;
                 }

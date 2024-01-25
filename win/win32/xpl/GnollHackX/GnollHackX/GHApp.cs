@@ -4866,7 +4866,7 @@ namespace GnollHackX
                                                     string linesuffix = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     string introline = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     string line = br.ReadInt32() == 0 ? null : br.ReadString();
-                                                    game.ClientCallback_GetLine(style, attr, color, query, placeholder, linesuffix, introline, IntPtr.Zero);
+                                                    game.Replay_GetLine(style, attr, color, query, placeholder, linesuffix, introline, IntPtr.Zero, line);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.ClearContextMenu:

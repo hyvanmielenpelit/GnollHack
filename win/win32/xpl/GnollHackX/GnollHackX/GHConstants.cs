@@ -1641,7 +1641,8 @@ namespace GnollHackX
         public const int ReplayPopupDelay = 600; /* Milliseconds */
         public const int ReplayYnDelay = 600; /* Milliseconds */
         public const int ReplayMenuDelay = 600; /* Milliseconds */
-        public const int ReplayGetLineDelay = 600; /* Milliseconds */
+        public const int ReplayGetLineDelay1 = 400; /* Milliseconds */
+        public const int ReplayGetLineDelay2 = 1000; /* Milliseconds */
         public const int ReplayDisplayWindowDelay = 600; /* Milliseconds */
 
 #if GNH_MAUI
