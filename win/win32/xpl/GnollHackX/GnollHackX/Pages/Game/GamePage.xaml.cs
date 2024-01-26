@@ -791,7 +791,7 @@ namespace GnollHackX.Pages.Game
             MapRefreshRate = (MapRefreshRateStyle)Preferences.Get("MapRefreshRate", (int)UIUtils.GetDefaultMapFPS());
             ShowFPS = Preferences.Get("ShowFPS", false);
             ShowBattery = Preferences.Get("ShowBattery", false);
-            ShowFPS = Preferences.Get("ShowRecording", true);
+            ShowRecording = Preferences.Get("ShowRecording", true);
             UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", GHApp.IsGPUDefault);
             UseSimpleCmdLayout = Preferences.Get("UseSimpleCmdLayout", true);
             ShowMemoryUsage = Preferences.Get("ShowMemoryUsage", false);
