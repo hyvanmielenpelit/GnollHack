@@ -872,16 +872,13 @@ namespace GnollHackX.Pages.Game
         }
 
         private readonly object _replayLock = new object();
-        string _replayFileName = null;
+        private string _replayFileName = null;
+        public string ReplayFileName { get { lock (_replayLock) { return _replayFileName; } } set { lock (_replayLock) { _replayFileName = value; } } }
         public bool PlayingReplay { get { lock (_replayLock) { return _replayFileName != null; } } }
 
         public async Task StartGame(string replayFileName)
         {
-            lock(_replayLock)
-            {
-                _replayFileName = replayFileName;
-            }
-
+            ReplayFileName = replayFileName;
             _mainPage.GameStarted = true;
             LoadingProgressBar.Progress = 0.0;
 
@@ -2165,7 +2162,7 @@ namespace GnollHackX.Pages.Game
             _currentGame = new GHGame(this);
             _currentGame.StartFlags = RunGnollHackFlags.PlayingReplay;
             GHApp.CurrentGHGame = _currentGame;
-            GHApp.PlayReplay(_currentGame, _replayFileName);
+            GHApp.PlayReplay(_currentGame, ReplayFileName);
         }
 
         private void pollRequestQueue()
