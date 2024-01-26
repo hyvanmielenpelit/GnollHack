@@ -33,7 +33,7 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.50</string>
+	<string>1.51</string>
 	<key>UIStatusBarHidden</key>
 	<true/>
 	<key>UIRequiresFullScreen</key>
@@ -41,6 +41,6 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>CFBundleVersion</key>
-	<string>106</string>
+	<string>107</string>
 </dict>
 </plist>
