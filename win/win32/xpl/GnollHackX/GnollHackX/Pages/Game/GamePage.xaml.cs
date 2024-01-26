@@ -871,12 +871,17 @@ namespace GnollHackX.Pages.Game
             await StartGame(replayFileName);
         }
 
+        private readonly object _replayLock = new object();
         string _replayFileName = null;
-        public bool PlayingReplay { get { return _replayFileName != null; } }
+        public bool PlayingReplay { get { lock (_replayLock) { return _replayFileName != null; } } }
 
         public async Task StartGame(string replayFileName)
         {
-            _replayFileName = replayFileName;
+            lock(_replayLock)
+            {
+                _replayFileName = replayFileName;
+            }
+
             _mainPage.GameStarted = true;
             LoadingProgressBar.Progress = 0.0;
 
