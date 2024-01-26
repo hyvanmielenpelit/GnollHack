@@ -146,6 +146,11 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("ShowBattery", BatterySwitch.IsToggled);
 
             if (_gamePage != null)
+                _gamePage.ShowRecording = ShowRecordingSwitch.IsToggled;
+            Preferences.Set("ShowRecording", ShowRecordingSwitch.IsToggled);
+
+
+            if (_gamePage != null)
                 _gamePage.UseMainGLCanvas = GPUSwitch.IsToggled;
             Preferences.Set("UseMainGLCanvas", GPUSwitch.IsToggled);
 
@@ -479,7 +484,7 @@ namespace GnollHackX.Pages.MainScreen
         private void SetInitialValues()
         {
             int cursor = 0, graphics = 0, savestyle = 0, maprefresh = (int)UIUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
-            bool mem = false, fps = false, battery = false, gpu = GHApp.IsGPUDefault, simplecmdlayout = true, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
+            bool mem = false, fps = false, battery = false, showrecording = true, gpu = GHApp.IsGPUDefault, simplecmdlayout = true, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
@@ -562,6 +567,7 @@ namespace GnollHackX.Pages.MainScreen
                 mem = Preferences.Get("ShowMemoryUsage", false);
                 fps = Preferences.Get("ShowFPS", false);
                 battery = Preferences.Get("ShowBattery", false);
+                showrecording = Preferences.Get("ShowRecording", true);
                 gpu = Preferences.Get("UseMainGLCanvas", GHApp.IsGPUDefault);
                 simplecmdlayout = Preferences.Get("UseSimpleCmdLayout", true);
                 msgnum = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
@@ -598,6 +604,7 @@ namespace GnollHackX.Pages.MainScreen
                 mem = _gamePage.ShowMemoryUsage;
                 fps = _gamePage.ShowFPS;
                 battery = _gamePage.ShowBattery;
+                showrecording = _gamePage.ShowRecording;
                 gpu = _gamePage.UseMainGLCanvas;
                 simplecmdlayout = _gamePage.UseSimpleCmdLayout;
                 msgnum = _gamePage.NumDisplayedMessages;
@@ -629,6 +636,7 @@ namespace GnollHackX.Pages.MainScreen
             MemorySwitch.IsToggled = mem;
             FPSSwitch.IsToggled = fps;
             BatterySwitch.IsToggled = battery;
+            ShowRecordingSwitch.IsToggled = showrecording;
             GPUSwitch.IsToggled = gpu;
             SimpleCmdLayoutSwitch.IsToggled = simplecmdlayout;
             NavBarSwitch.IsToggled = navbar;

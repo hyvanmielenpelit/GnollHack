@@ -588,6 +588,10 @@ namespace GnollHackX.Pages.Game
         private bool _showFPS;
         public bool ShowFPS { get { lock (_showFPSLock) { return _showFPS; } } set { lock (_showFPSLock) { _showFPS = value; } } }
 
+        private readonly object _showRecordingLock = new object();
+        private bool _showRecording = true;
+        public bool ShowRecording { get { lock (_showRecordingLock) { return _showRecording; } } set { lock (_showRecordingLock) { _showRecording = value; } } }
+
         private double _fps;
         private long _counterValueDiff;
         private long _previousMainFPSCounterValue = 0L;
@@ -787,6 +791,7 @@ namespace GnollHackX.Pages.Game
             MapRefreshRate = (MapRefreshRateStyle)Preferences.Get("MapRefreshRate", (int)UIUtils.GetDefaultMapFPS());
             ShowFPS = Preferences.Get("ShowFPS", false);
             ShowBattery = Preferences.Get("ShowBattery", false);
+            ShowFPS = Preferences.Get("ShowRecording", true);
             UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", GHApp.IsGPUDefault);
             UseSimpleCmdLayout = Preferences.Get("UseSimpleCmdLayout", true);
             ShowMemoryUsage = Preferences.Get("ShowMemoryUsage", false);
@@ -8768,6 +8773,7 @@ namespace GnollHackX.Pages.Game
                                 curx += target_width;
                             }
 
+                            float fpsleft = batteryleft;
                             if(ShowFPS)
                             {
                                 target_width = target_scale * GHApp._fpsBitmap.Width;
@@ -8775,7 +8781,7 @@ namespace GnollHackX.Pages.Game
                                 curx = batteryleft - innerspacing * 5 - target_width;
                                 statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
                                 canvas.DrawBitmap(GHApp._fpsBitmap, statusDest, textPaint);
-                                batteryleft = curx;
+                                fpsleft = curx;
 
                                 string drawtext;
                                 lock (_fpslock)
@@ -8794,6 +8800,22 @@ namespace GnollHackX.Pages.Game
                                 canvas.DrawText(drawtext, drawpoint, textPaint);
                                 textPaint.TextAlign = SKTextAlign.Left;
                                 textPaint.TextSize = basefontsize;
+                            }
+
+                            if(ShowRecording)
+                            {
+                                if (GHApp.RecordGame && !PlayingReplay)
+                                {
+                                    target_width = rowheight / 4;
+                                    target_height = rowheight;
+                                    curx = fpsleft - innerspacing * 6 - target_width;
+                                    SKPoint dotpoint = new SKPoint(curx + target_width / 2, cury + target_height / 2);
+                                    float dotradius = target_width / 2;
+                                    textPaint.Color = SKColors.Red;
+                                    textPaint.Style = SKPaintStyle.Fill;
+                                    canvas.DrawCircle(dotpoint, dotradius, textPaint);
+                                    curx += target_width;
+                                }
                             }
 
                             /* Pets */
@@ -15175,28 +15197,13 @@ namespace GnollHackX.Pages.Game
 
                 if (ShowFPS)
                 {
-                    //string str;
-                    //float textWidth, xText, yText;
-
-                    //lock (_fpslock)
-                    //{
-                    //    str = "FPS: " + string.Format("{0:0.0}", _fps) + ", D:" + _counterValueDiff;
-                    //}
-                    //textPaint.Typeface = GHApp.LatoBold;
-                    //textPaint.TextSize = 26;
-                    //textPaint.Color = SKColors.Yellow;
-                    //textWidth = textPaint.MeasureText(str);
-                    //yText = -textPaint.FontMetrics.Ascent + 5;
-                    //xText = canvaswidth - textWidth - 5;
-                    //canvas.DrawText(str, xText, yText, textPaint);
-
                     float textscale = GetTextScale();
                     textPaint.TextSize = _statusbar_basefontsize * textscale;
                     float target_scale = textPaint.FontSpacing / GHApp._statusWizardBitmap.Height; // All are 64px high
                     float target_width = target_scale * GHApp._fpsBitmap.Width;
                     float target_height = target_scale * GHApp._fpsBitmap.Height;
-                    float curx = canvaswidth - target_width - 5;
-                    float cury = 5;
+                    float curx = canvaswidth - target_width - 24 * target_scale;
+                    float cury = 16 * target_scale;
                     SKRect statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
                     canvas.DrawBitmap(GHApp._fpsBitmap, statusDest, textPaint);
 
