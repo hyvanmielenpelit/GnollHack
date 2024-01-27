@@ -1509,7 +1509,7 @@ namespace GnollHackX
         public void ClientCallback_ReportPlayerName(string used_player_name)
         {
             RecordFunctionCall(RecordedFunctionID.ReportPlayerName, used_player_name);
-
+            _knownPlayerName = used_player_name;
             if (used_player_name != null && used_player_name != "")
                 Preferences.Set("LastUsedPlayerName", used_player_name);
         }
@@ -2750,6 +2750,7 @@ namespace GnollHackX
         private long _headerSize = 0L;
         private long _noOfCommmands = 0L;
         private long[] _commandSize = new long[(int)RecordedFunctionID.NumberOfFunctionCalls];
+        private string _knownPlayerName = null;
 
         private long WriteFunctionCallsToDisk()
         {
@@ -2762,13 +2763,14 @@ namespace GnollHackX
                 try
                 {
                     string dir = Path.Combine(GHApp.GHPath, GHConstants.ReplayDirectory);
+                    string knownPlayerName = null;
                     if (!Directory.Exists(dir))
                         GHApp.CheckCreateDirectory(dir);
                     if (Directory.Exists(dir))
                     {
                         string configString = ""; /* Used to be player name, but in replays we do not in fact know it in advance before the replay starts */
                         long timeBinary = _replayTimeStamp.ToBinary();
-                        string filepath = Path.Combine(dir, GHApp.GetReplayFileName(GHApp.GHVersionNumber, timeBinary, _replayContinuation));
+                        string filepath = Path.Combine(dir, GHApp.GetReplayFileName(GHApp.GHVersionNumber, timeBinary, _replayContinuation, null));
                         bool fileDidExist = File.Exists(filepath);
                         bool eofFound = false;
                         long appendSize = 0L;
@@ -3003,13 +3005,20 @@ namespace GnollHackX
                         } 
                         if(eofFound && File.Exists(filepath))
                         {
-                            string zipFile = filepath + (GHApp.UseGZipForReplays ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix);
+                            string newFilepath = Path.Combine(dir, GHApp.GetReplayFileName(GHApp.GHVersionNumber, timeBinary, _replayContinuation, _knownPlayerName));
+                            string zipFile = newFilepath + (GHApp.UseGZipForReplays ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix);
                             if(File.Exists(zipFile))
                                 File.Delete(zipFile);
-
-                            if(GHApp.UseGZipForReplays)
+                            if (newFilepath != filepath)
                             {
-                                using (FileStream originalFileStream = File.Open(filepath, FileMode.Open))
+                                if (File.Exists(newFilepath))
+                                    File.Delete(newFilepath);
+                                File.Move(filepath, newFilepath);
+                            }
+
+                            if (GHApp.UseGZipForReplays)
+                            {
+                                using (FileStream originalFileStream = File.Open(newFilepath, FileMode.Open))
                                 {
                                     using (FileStream compressedFileStream = File.Create(zipFile))
                                     {
@@ -3024,12 +3033,12 @@ namespace GnollHackX
                             {
                                 using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
                                 {
-                                    archive.CreateEntryFromFile(filepath, Path.GetFileName(filepath));
+                                    archive.CreateEntryFromFile(newFilepath, Path.GetFileName(newFilepath));
                                 }
                             }
 
-                            if (File.Exists(filepath) && File.Exists(zipFile))
-                                File.Delete(filepath);
+                            if (File.Exists(newFilepath) && File.Exists(zipFile))
+                                File.Delete(newFilepath);
 
                             GHApp.MaybeWriteGHLog("Replay Finalized: Existing: " + existingSize + " bytes; Appended: " + appendSize + " bytes; Total: " + (existingSize + appendSize).ToString());
 
