@@ -2124,9 +2124,12 @@ boolean* obj_destroyed;
             else if (silverobj && saved_oname[0]) {
                 /* guard constructed format string against '%' in
                    saved_oname[] from xname(via cxname()) */
+                char* oname_ptr = saved_oname;
+                if (strlen(oname_ptr) > 4 && !strncmpi(oname_ptr, "the ", 4))
+                    oname_ptr += 4;
                 Sprintf(silverobjbuf, "Your %s%s %s",
-                    strstri(saved_oname, "silver") || !reallysilverobj ? "" : "silver ",
-                    saved_oname, vtense(saved_oname, "sear"));
+                    strstri(oname_ptr, "silver") || !reallysilverobj ? "" : "silver ",
+                    oname_ptr, vtense(oname_ptr, "sear"));
                 (void)strNsubst(silverobjbuf, "%", "%%", 0);
                 Strcat(silverobjbuf, " %s!");
                 fmt = silverobjbuf;
