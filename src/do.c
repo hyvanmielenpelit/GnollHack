@@ -1385,8 +1385,13 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         }
 
         /* Add mythic base damage now here if mknown */
-        if (obj && has_obj_mythic_triple_base_damage(obj) && obj->mknown)
-            exceptionality_multiplier += 2;
+        if (obj && obj->mknown)
+        {
+            if (has_obj_mythic_triple_base_damage(obj))
+                exceptionality_multiplier += 2;
+            else if (has_obj_mythic_double_base_damage(obj))
+                exceptionality_multiplier += 1;
+        }
 
         boolean printmaindmgtype = FALSE;
         boolean doubledamagetopermittedtargets = FALSE;
@@ -1670,7 +1675,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         }
 
         /* Damage - Silver*/
-        if ((obj ? obj->material : objects[otyp].oc_material) == MAT_SILVER)
+        if (obj ? obj_counts_as_silver(obj) : objects[otyp].oc_material == MAT_SILVER)
         {
             Sprintf(buf, "Silver bonus damage:    ");
             maindiceprinted = TRUE;

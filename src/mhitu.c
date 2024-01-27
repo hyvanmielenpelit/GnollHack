@@ -2005,7 +2005,7 @@ register struct obj* omonwep;
                 }
 
                 boolean silvermsg = FALSE;
-                if (otmp->material == MAT_SILVER && Hate_silver)
+                if (obj_counts_as_silver(otmp) && Hate_silver)
                 {
                     damage += adjust_damage(rnd(20), mtmp, &youmonst, objects[otmp->otyp].oc_damagetype, ADFLAGS_NONE);
                     silvermsg = TRUE;

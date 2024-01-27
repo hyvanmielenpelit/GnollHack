@@ -1704,7 +1704,7 @@ register struct obj *obj;
         if (obj->otyp == AMULET_OF_STRANGULATION
             || obj->otyp == RIN_SLOW_DIGESTION)
             return TABU;
-        if (mon_hates_silver(mon) && obj->material == MAT_SILVER)
+        if (mon_hates_silver(mon) && obj_counts_as_silver(obj))
             return TABU;
         if (slurps_items(mptr) && is_slurpable(obj))
             return ACCFOOD;

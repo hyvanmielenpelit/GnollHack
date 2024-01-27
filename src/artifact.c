@@ -623,7 +623,7 @@ struct obj *obj;
     const struct artifact *arti;
 
     /* any silver object is effective */
-    if (obj->material == MAT_SILVER)
+    if (obj_counts_as_silver(obj))
         return TRUE;
 
     /* any blessed object is effective */
@@ -854,7 +854,7 @@ struct monst *mon;
             if(badclass || badalign)
                 dmg += d((Antimagic_or_resistance ? 2 : 4), (self_willed ? 10 : 4));
             /* add half (maybe quarter) of the usual silver damage bonus */
-            if (obj->material == MAT_SILVER && Hate_silver)
+            if (obj_counts_as_silver(obj) && Hate_silver)
                 dmg += rnd(10);
             damage = adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
 
@@ -3718,7 +3718,7 @@ boolean loseit;    /* whether to drop it if hero can longer touch it */
     if (touch_artifact(obj, &youmonst)) {
         char buf[BUFSZ];
         double damage = 0;
-        boolean ag = (obj->material == MAT_SILVER && Hate_silver),
+        boolean ag = (obj_counts_as_silver(obj) && Hate_silver),
             bane = bane_applies(get_artifact(obj), &youmonst),
             inappr_character = ((objects[obj->otyp].oc_flags4 & O4_INAPPROPRIATE_CHARACTERS_CANT_HANDLE) != 0 && inappropriate_monster_character_type(&youmonst, obj)),
             inappr_exceptionality = inappropriate_exceptionality(&youmonst, obj);

@@ -2340,7 +2340,7 @@ struct obj *otmp;
         return 0;
     if (otyp == CORPSE && is_rider(&mons[otmp->corpsenm]))
         return 0;
-    if (otmp->material == MAT_SILVER && mon_hates_silver(mtmp)
+    if (obj_counts_as_silver(otmp) && mon_hates_silver(mtmp)
         && (otyp != BELL_OF_OPENING || !wants_bell(mdat)))
         return 0;
 

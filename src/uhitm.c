@@ -1001,7 +1001,7 @@ boolean* obj_destroyed;
     int needenchantmsg = 0;
     double poisondamage = 0;
     boolean enchantkilled = FALSE, unenchantmsg = FALSE;
-    boolean silvermsg = FALSE, silverobj = FALSE;
+    boolean silvermsg = FALSE, silverobj = FALSE, reallysilverobj = FALSE;
     boolean lightobj = FALSE;
     boolean valid_weapon_attack = FALSE;
     boolean unarmed = !uwep && !uarm && !uarms;
@@ -1137,6 +1137,7 @@ boolean* obj_destroyed;
                 /* silver gauntelts? */
                 damage += adjust_damage(special_dmgval(&youmonst, mon, W_ARMG, &silverhit), &youmonst, mon, AD_PHYS, ADFLAGS_NONE);
                 barehand_silver_gauntlets = !!(silverhit & W_ARMG);
+                reallysilverobj = uarmg && uarmg->material == MAT_SILVER;
                 if (barehand_silver_gauntlets)
                     silvermsg = TRUE;
             }
@@ -1199,11 +1200,12 @@ boolean* obj_destroyed;
                 else
                     damage = adjust_damage(rnd(2), &youmonst, mon, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE);
 
-                if (obj->material == MAT_SILVER
+                if (obj_counts_as_silver(obj)
                     && mon_hates_silver(mon)) 
                 {
                     silvermsg = TRUE;
                     silverobj = TRUE;
+                    reallysilverobj = obj->material == MAT_SILVER;
 
                     /* if it will already inflict dmg, make it worse */
                     damage += adjust_damage(rnd((min(1, (int)damage)) ? 20 : 10), &youmonst, mon, AD_PHYS, ADFLAGS_NONE);
@@ -1332,11 +1334,12 @@ boolean* obj_destroyed;
                 {
                     damage += adjust_damage(special_hit_dmg, &youmonst, mon, spec_adtyp, ADFLAGS_NONE);
                 }
-                if (obj->material == MAT_SILVER
+                if (obj_counts_as_silver(obj)
                     && mon_hates_silver(mon)) 
                 {
                     silvermsg = TRUE;
                     silverobj = TRUE;
+                    reallysilverobj = obj->material == MAT_SILVER;
                 }
 
                 if ((artifact_light(obj) || obj_shines_magical_light(obj) || has_obj_mythic_magical_light(obj)) && obj->lamplit
@@ -1667,12 +1670,13 @@ boolean* obj_destroyed;
                      * Things like silver wands can arrive here so
                      * so we need another silver check.
                      */
-                    if (obj->material == MAT_SILVER
+                    if (obj_counts_as_silver(obj)
                         && mon_hates_silver(mon)) 
                     {
                         damage += adjust_damage(rnd(20), &youmonst, mon, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE);
                         silvermsg = TRUE;
                         silverobj = TRUE;
+                        reallysilverobj = obj->material == MAT_SILVER;
                     }
                 }
             }
@@ -2116,19 +2120,24 @@ boolean* obj_destroyed;
             else if (barehand_silver_rings == 2)
                 fmt = "Your silver rings sear %s!";
             else if (barehand_silver_gauntlets)
-                fmt = "Your silver gauntlets sear %s!";
+                fmt = reallysilverobj ? "Your silver gauntlets sear %s!" : "Your gauntlets sear %s!";
             else if (silverobj && saved_oname[0]) {
                 /* guard constructed format string against '%' in
                    saved_oname[] from xname(via cxname()) */
                 Sprintf(silverobjbuf, "Your %s%s %s",
-                    strstri(saved_oname, "silver") ? "" : "silver ",
+                    strstri(saved_oname, "silver") || !reallysilverobj ? "" : "silver ",
                     saved_oname, vtense(saved_oname, "sear"));
                 (void)strNsubst(silverobjbuf, "%", "%%", 0);
                 Strcat(silverobjbuf, " %s!");
                 fmt = silverobjbuf;
             }
-            else
+            else if (reallysilverobj)
                 fmt = "The silver sears %s!";
+            else 
+            {
+                *whom = highc(*whom);
+                fmt = "%s is seared!";
+            }
         }
         else {
             *whom = highc(*whom); /* "it" -> "It" */
@@ -2523,7 +2532,7 @@ struct obj *obj;
         || obj->otyp == MIRROR          /* silver in the reflective surface */
         || obj->otyp == MAGIC_MIRROR          /* silver in the reflective surface */
         || obj->otyp == CLOVE_OF_GARLIC /* causes shades to flee */
-        || obj->material == MAT_SILVER)
+        || obj_counts_as_silver(obj))
         return TRUE;
     return FALSE;
 }
@@ -3856,7 +3865,7 @@ register struct monst *mon;
             if (u.twoweap && uarms /* set up 'altwep' flag for next iteration */
                 /* only consider seconary when wielding one-handed primary */
                 && !bimanual(uwep)
-                && !(uarms->material == MAT_SILVER && Hate_silver))
+                && !(obj_counts_as_silver(uarms) && Hate_silver))
                 altwep = !altwep; /* toggle for next attack */
             weapon = *originalweapon;
             if (!weapon) /* no need to go beyond no-gloves to rings; not ...*/

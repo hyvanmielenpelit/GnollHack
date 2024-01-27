@@ -158,10 +158,13 @@ const char* verb_in_past_tense;
 
                 display_u_being_hit(HIT_GENERAL, damagedealt, 0UL);
             }
-            if (obj && obj->material == MAT_SILVER && Hate_silver)
+            if (obj && obj_counts_as_silver(obj) && Hate_silver)
             {
                 /* extra damage already applied by weapon_dmg_value() */
-                pline_The("silver sears your flesh!");
+                if(obj->material == MAT_SILVER)
+                    pline_The("silver sears your flesh!");
+                else
+                    pline("%s your flesh!", Tobjnam(obj, "sear"));
                 exercise(A_CON, FALSE);
             }
             if (is_acid)
@@ -662,11 +665,13 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
             }
         }
 
-        if (otmp->material == MAT_SILVER
+        if (obj_counts_as_silver(otmp)
             && mon_hates_silver(mtmp))
         {
-            if (vis)
+            if (vis && otmp->material == MAT_SILVER)
                 pline_The_ex(ATR_NONE, CLR_MSG_MYSTICAL, "silver sears %s flesh!", s_suffix(mon_nam(mtmp)));
+            else if (vis)
+                pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s %s flesh!", Tobjnam(otmp, "sear"), s_suffix(mon_nam(mtmp)));
             else if (verbose && !target)
                 pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Its flesh is seared!");
         }
@@ -2109,6 +2114,11 @@ boolean your_fault, from_invent;
              || otmp->material == MAT_GOLD
              || otmp->material == MAT_SILVER
              || otmp->material == MAT_PLATINUM
+             || otmp->material == MAT_BRONZE
+             || otmp->material == MAT_BRASS
+             || otmp->material == MAT_COPPER
+             || otmp->material == MAT_ORICHALCUM
+             || otmp->material == MAT_MITHRIL
         )
         pline("Clink!");
     else

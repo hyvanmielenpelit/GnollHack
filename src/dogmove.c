@@ -2102,7 +2102,7 @@ int after; /* this is extra fast monster movement */
                     cursemsg[i] = TRUE;
                     cursedobj[i] = obj;
                 }
-                else if (obj->material == MAT_SILVER && mon_eschews_silver(mtmp))
+                else if (obj_counts_as_silver(obj) && mon_eschews_silver(mtmp))
                 {
                     cursemsg[i] = TRUE;
                     cursedobj[i] = obj;
