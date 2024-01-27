@@ -1532,6 +1532,16 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
         double base_avg_dmg = 0.5 * ((double)wsdice * (double)exceptionality_multiplier * (1.0 + (double)wsdam) / 2.0 + (double)wsdmgplus * (double)exceptionality_multiplier
             + wldice * (double)exceptionality_multiplier * (1.0 + (double)wldam) / 2.0 + (double)wldmgplus * (double)exceptionality_multiplier);
+        /* Add mythic great damage if mknown */
+        if (obj && obj->mknown)
+        {
+            if (has_obj_mythic_great_damage(obj))
+            {
+                base_avg_dmg += MYTHIC_GREAT_DAMAGE_BASE_GAIN;
+                if(obj->known && objects[otyp].oc_enchantable)
+                    base_avg_dmg += obj->enchantment;
+            }
+        }
         wep_avg_dmg += base_avg_dmg;
         wep_multipliable_avg_dmg += base_avg_dmg;
         if (doubledamagetopermittedtargets)
