@@ -1861,4 +1861,14 @@ namespace GnollHackX
         MacOS = 4,
         Unix = 5,
     }
+
+    public enum PlayReplayResult
+    {
+        Success = 0,
+        Error = 1,
+        GameIsNull = 2,
+        FilePathIsNullOrEmpty = 3,
+        FileDoesNotExist = 4,
+        InvalidVersion = 5,
+    }
 }

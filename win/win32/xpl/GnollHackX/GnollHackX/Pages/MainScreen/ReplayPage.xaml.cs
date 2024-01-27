@@ -68,6 +68,7 @@ namespace GnollHackX.Pages.MainScreen
                 string[] files = Directory.GetFiles(dirPath);
                 if (files != null)
                 {
+                    Array.Sort(files, new FileDateComparer());
                     ObservableCollection<GHRecordedGameFile> gHRecordedGameFiles = new ObservableCollection<GHRecordedGameFile>();
                     foreach (string file in files)
                     {
@@ -194,10 +195,31 @@ namespace GnollHackX.Pages.MainScreen
 
             if (filePath != null)
             {
-                var gamePage = new GamePage(_mainPage);
-                GHApp.CurrentGamePage = gamePage;
-                await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
-                gamePage.StartReplay(filePath);
+                string outstr;
+                if(GHApp.ValidateReplayFile(filePath, out outstr))
+                {
+                    var gamePage = new GamePage(_mainPage);
+                    GHApp.CurrentGamePage = gamePage;
+                    await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
+                    gamePage.StartReplay(filePath);
+                }
+                else
+                {
+                    FileInfo fi = new FileInfo(filePath);
+                    bool ans = await DisplayAlert("Replay Invalid", "Replay " + fi.Name + " is invalid: " + outstr + ". Delete it?", "Yes", "No");
+                    if(ans)
+                    {
+                        try
+                        {
+                            GHApp.DeleteReplay(filePath);
+                            UpdateRecordings();
+                        }
+                        catch (Exception ex)
+                        {
+                            await DisplayAlert("Deletion Failed", "GnollHack failed to delete game recording " + filePath + ": " + ex.Message, "OK");
+                        }
+                    }
+                }
             }
             SelectButton.IsEnabled = true;
         }
@@ -288,42 +310,7 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     try
                     {
-                        File.Delete(filePath);
-
-                        /* Delete also continuation files */
-                        FileInfo fi = new FileInfo(filePath);
-                        string dir = fi.DirectoryName;
-                        string fileName = fi.Name;
-                        if (fileName != null && fileName.StartsWith(GHConstants.ReplayFileNamePrefix))
-                        {
-                            bool isGZip = fileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
-                            bool isNormalZip = fileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
-                            bool isZip = isGZip || isNormalZip;
-                            string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
-                            int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
-                            if (subLen > 0 && Directory.Exists(dir))
-                            {
-                                string[] files = Directory.GetFiles(dir);
-                                if (files != null)
-                                {
-                                    foreach (string file in files)
-                                    {
-                                        if (file != null)
-                                        {
-                                            string contStart = GHConstants.ReplayContinuationFileNamePrefix + fileName.Substring(GHConstants.ReplayFileNamePrefix.Length, subLen);
-                                            FileInfo contFI = new FileInfo(file);
-                                            if (contFI != null && contFI.Name != null)
-                                            {
-                                                if (contFI.Name.StartsWith(contStart) && (!isZip || file.EndsWith(usedZipSuffix)) && File.Exists(file))
-                                                {
-                                                    File.Delete(file);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        GHApp.DeleteReplay(filePath);
                         UpdateRecordings();
                     }
                     catch (Exception ex)
@@ -334,6 +321,26 @@ namespace GnollHackX.Pages.MainScreen
             }
             DeleteButton.IsEnabled = true;
         }
+    }
 
+    public class FileDateComparer : IComparer<string>
+    {
+        public int Compare(string s1, string s2)
+        {
+            try
+            {
+                if (!File.Exists(s1))
+                    return -1;
+                if (!File.Exists(s2))
+                    return 1;
+                FileInfo fileInfo1 = new FileInfo(s1);
+                FileInfo fileInfo2 = new FileInfo(s2);
+                return -1 * fileInfo1.CreationTime.CompareTo(fileInfo2.CreationTime);
+            }
+            catch
+            { 
+                return -1; 
+            }
+        }
     }
 }

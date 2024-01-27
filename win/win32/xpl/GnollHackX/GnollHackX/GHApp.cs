@@ -4048,11 +4048,53 @@ namespace GnollHackX
             }
         }
 
+        public static void DeleteReplay(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+                return;
+
+            File.Delete(filePath);
+
+            /* Delete also continuation files */
+            FileInfo fi = new FileInfo(filePath);
+            string dir = fi.DirectoryName;
+            string fileName = fi.Name;
+            if (fileName != null && fileName.StartsWith(GHConstants.ReplayFileNamePrefix))
+            {
+                bool isGZip = fileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
+                bool isNormalZip = fileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+                bool isZip = isGZip || isNormalZip;
+                string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
+                int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
+                if (subLen > 0 && Directory.Exists(dir))
+                {
+                    string[] files = Directory.GetFiles(dir);
+                    if (files != null)
+                    {
+                        foreach (string file in files)
+                        {
+                            if (file != null)
+                            {
+                                string contStart = GHConstants.ReplayContinuationFileNamePrefix + fileName.Substring(GHConstants.ReplayFileNamePrefix.Length, subLen);
+                                FileInfo contFI = new FileInfo(file);
+                                if (contFI != null && contFI.Name != null)
+                                {
+                                    if (contFI.Name.StartsWith(contStart) && (!isZip || file.EndsWith(usedZipSuffix)) && File.Exists(file))
+                                    {
+                                        File.Delete(file);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         public static string GetReplayFileName(ulong versionCode, long timeStampInBinary, int contNumber)
         {
             return (contNumber > 0 ? GHConstants.ReplayContinuationFileNamePrefix : GHConstants.ReplayFileNamePrefix) + versionCode.ToString() + GHConstants.ReplayFileNameMiddleDivisor + timeStampInBinary.ToString() + (contNumber > 0 ? (GHConstants.ReplayFileContinuationNumberDivisor + contNumber.ToString()) : "") + GHConstants.ReplayFileNameSuffix;
         }
-
 
         public static bool ValidateReplayFile(string replayFileName, out string out_str)
         {
@@ -4178,10 +4220,12 @@ namespace GnollHackX
         public static bool UseGZipForReplays { get { lock (_gzipLock) { return _useGZipForReplays; } } set { lock (_gzipLock) { _useGZipForReplays = value; } } }
 
         /* Called from GHGame thread! */
-        public static int PlayReplay(GHGame game, string replayFileName)
+        public static PlayReplayResult PlayReplay(GHGame game, string replayFileName)
         {
-            if (game == null || string.IsNullOrWhiteSpace(replayFileName))
-                return 2;
+            if (game == null)
+                return PlayReplayResult.GameIsNull;
+            if(string.IsNullOrWhiteSpace(replayFileName))
+                return PlayReplayResult.FilePathIsNullOrEmpty;
 
             bool exitHackCalled = false;
             bool isGZip = replayFileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && replayFileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
@@ -4199,7 +4243,7 @@ namespace GnollHackX
                 {
                     if (!exitHackCalled)
                         game.ClientCallback_ExitHack(0);
-                    return 4;
+                    return PlayReplayResult.FileDoesNotExist;
                 }
 
                 string usedReplayFileName = rawFileName;
@@ -4246,7 +4290,7 @@ namespace GnollHackX
                     MaybeWriteGHLog(ex.Message);
                     if (!exitHackCalled)
                         game.ClientCallback_ExitHack(0);
-                    return 3;
+                    return PlayReplayResult.Error;
                 }
 
                 contnextfile = false;
@@ -5161,9 +5205,9 @@ namespace GnollHackX
                                 else
                                 {
                                     if (!exitHackCalled)
-                                        game.ClientCallback_ExitHack(0);
+                                        game.ClientCallback_ExitHack(2);
                                     MaybeWriteGHLog("Replay " + usedReplayFileName + " has invalid version: " + verno + ", compatibility: " + vercompat + " vs the app's " + GHVersionNumber + ", compatibility: " + GHVersionCompatibility);
-                                    return 5;
+                                    return PlayReplayResult.InvalidVersion;
                                 }
                             }
                         }
@@ -5174,7 +5218,7 @@ namespace GnollHackX
                     if (!exitHackCalled)
                         game.ClientCallback_ExitHack(0);
                     MaybeWriteGHLog(prevcmd_byte + ": " + ex.Message);
-                    return 1;
+                    return PlayReplayResult.Error;
                 }
                 _soundSourceIdDictionary.Clear();
                 if (isZip && File.Exists(origRawFileName) && File.Exists(usedReplayFileName) && origRawFileName != usedReplayFileName)
@@ -5186,7 +5230,7 @@ namespace GnollHackX
 
             if (!exitHackCalled)
                 game.ClientCallback_ExitHack(0);
-            return 0;
+            return PlayReplayResult.Success;
         }
     }
 
