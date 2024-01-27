@@ -1636,14 +1636,15 @@ namespace GnollHackX
         public const string ReplayGZipFileNameSuffix = ".gz";
         public const string ReplaySharedZipFileNameSuffix = ".shared.zip";
         public const bool GZipIsDefaultReplayCompression = true;
-        public const int ReplayStandardDelay = 100; /* Milliseconds */
-        public const int ReplayOutripDelay = 800; /* Milliseconds */
-        public const int ReplayPopupDelay = 600; /* Milliseconds */
-        public const int ReplayYnDelay = 600; /* Milliseconds */
-        public const int ReplayMenuDelay = 600; /* Milliseconds */
-        public const int ReplayGetLineDelay1 = 400; /* Milliseconds */
-        public const int ReplayGetLineDelay2 = 1000; /* Milliseconds */
-        public const int ReplayDisplayWindowDelay = 600; /* Milliseconds */
+        public const int ReplayStandardDelay = 128; /* Milliseconds */
+        public const int ReplayGetEventDelay = 16; /* Milliseconds */
+        public const int ReplayOutripDelay = 1024; /* Milliseconds */
+        public const int ReplayPopupDelay = 512; /* Milliseconds */
+        public const int ReplayYnDelay = 512; /* Milliseconds */
+        public const int ReplayMenuDelay = 512; /* Milliseconds */
+        public const int ReplayGetLineDelay1 = 512; /* Milliseconds */
+        public const int ReplayGetLineDelay2 = 1024; /* Milliseconds */
+        public const int ReplayDisplayWindowDelay = 512; /* Milliseconds */
 
 #if GNH_MAUI
         public const string PortName = "GnollHackM";

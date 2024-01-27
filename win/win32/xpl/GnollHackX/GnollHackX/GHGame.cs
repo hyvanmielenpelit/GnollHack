@@ -2403,6 +2403,12 @@ namespace GnollHackX
                     break;
                 case (int)special_view_types.SPECIAL_VIEW_GUI_TIPS:
                     {
+                        if (PlayingReplay)
+                        {
+                            Debug.WriteLine("View GUI Tips in Replay");
+                            break;
+                        }
+
                         if (Preferences.Get("GUITipsShown", false))
                             break;
 
@@ -2421,6 +2427,11 @@ namespace GnollHackX
                     }
                 case (int)special_view_types.SPECIAL_VIEW_CRASH_DETECTED:
                     {
+                        if (PlayingReplay)
+                        {
+                            Debug.WriteLine("Crash Detected in Replay");
+                            break;
+                        }
                         ConcurrentQueue<GHRequest> queue;
                         if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                         {
@@ -2455,6 +2466,11 @@ namespace GnollHackX
                     break;
                 case (int)special_view_types.SPECIAL_VIEW_MESSAGE:
                     {
+                        if (PlayingReplay)
+                        {
+                            Debug.WriteLine("Message in Replay: " + text);
+                            break;
+                        }
                         ConcurrentQueue<GHRequest> queue;
                         if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                         {
@@ -2474,6 +2490,11 @@ namespace GnollHackX
                 case (int)special_view_types.SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_Y:
                 case (int)special_view_types.SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_N:
                     {
+                        if (PlayingReplay)
+                        {
+                            Debug.WriteLine("YN Confirmation in Replay: " + title + ": " + text);
+                            break;
+                        }
                         ConcurrentQueue<GHRequest> queue;
                         if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                         {

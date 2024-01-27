@@ -4517,7 +4517,7 @@ namespace GnollHackX
                                                 {
                                                     /* No function call in replay */
                                                     //game.ClientCallback_get_nh_event();
-                                                    Thread.Sleep((int)(GHConstants.ReplayStandardDelay / ReplaySpeed));
+                                                    Thread.Sleep((int)(GHConstants.ReplayGetEventDelay / ReplaySpeed));
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.GetChar:
