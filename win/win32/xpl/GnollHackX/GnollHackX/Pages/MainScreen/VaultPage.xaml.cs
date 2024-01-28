@@ -24,8 +24,12 @@ namespace GnollHackX.Pages.MainScreen
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class VaultPage : ContentPage
     {
-        public VaultPage()
+        private MainPage _mainPage;
+
+        public VaultPage(MainPage mainPage)
         {
+            _mainPage = mainPage;
+
             InitializeComponent();
 #if GNH_MAUI
             On<iOS>().SetUseSafeArea(true);
@@ -59,6 +63,20 @@ namespace GnollHackX.Pages.MainScreen
             rib.GridHeight = 150;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
             rib.BtnClicked += btnLibrary_Clicked;
+            VaultLayout.Children.Add(rib);
+
+            rib = new LabeledImageButton();
+            rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.chronicle.png";
+            rib.LblText = "Replays";
+            rib.LblFontSize = 20;
+            rib.LblFontColor = GHColors.Black;
+            rib.LblFontFamily = "Immortal";
+            rib.ImgWidth = 120;
+            rib.ImgHeight = 120;
+            rib.GridWidth = 120;
+            rib.GridHeight = 150;
+            rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.BtnClicked += btnReplays_Clicked;
             VaultLayout.Children.Add(rib);
         }
 
@@ -149,8 +167,18 @@ namespace GnollHackX.Pages.MainScreen
             libPage.ReadLibrary();
             await App.Current.MainPage.Navigation.PushModalAsync(libPage);
             VaultLayout.IsEnabled = true;
-
         }
 
+        private async void btnReplays_Clicked(object sender, EventArgs e)
+        {
+            VaultLayout.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+
+            string dir = Path.Combine(GHApp.GHPath, GHConstants.ReplayDirectory);
+            ReplayPage selectFilePage = new ReplayPage(dir, _mainPage);
+            await App.Current.MainPage.Navigation.PushModalAsync(selectFilePage);
+
+            VaultLayout.IsEnabled = true;
+        }
     }
 }

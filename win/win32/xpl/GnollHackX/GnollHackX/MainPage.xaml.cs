@@ -954,7 +954,7 @@ namespace GnollHackX
             UpperButtonGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             carouselView.Stop();
-            var vaultPage = new VaultPage();
+            var vaultPage = new VaultPage(this);
             vaultPage.Disappearing += (sender2, e2) =>
             {
                 carouselView.Play();
