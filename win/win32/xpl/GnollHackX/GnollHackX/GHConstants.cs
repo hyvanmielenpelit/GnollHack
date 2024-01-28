@@ -1870,5 +1870,6 @@ namespace GnollHackX
         FilePathIsNullOrEmpty = 3,
         FileDoesNotExist = 4,
         InvalidVersion = 5,
+        Restarting = 6,
     }
 }

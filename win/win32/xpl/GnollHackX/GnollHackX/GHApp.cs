@@ -25,6 +25,7 @@ using System.Net.Mail;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Timers;
+using System.Collections;
 
 namespace GnollHackX
 {
@@ -4199,10 +4200,18 @@ namespace GnollHackX
         private static bool _stopReplay = false;
         private static bool _pauseReplay = false;
         private static double _replaySpeed = 1.0;
+        private static int _replayGotoTurn = -1;
+        private static int _originalReplayTurn = -1;
+        private static int _replayTurn = -1;
+        private static string _replayRealTime = null;
 
         public static bool StopReplay { get { lock (_replayLock) { return _stopReplay; } } set { lock (_replayLock) { _stopReplay = value; } } }
         public static bool PauseReplay { get { lock (_replayLock) { return _pauseReplay; } } set { lock (_replayLock) { _pauseReplay = value; } } }
         public static double ReplaySpeed { get { lock (_replayLock) { return _replaySpeed; } } set { lock (_replayLock) { _replaySpeed = value; } } }
+        public static int GoToTurn { get { lock (_replayLock) { return _replayGotoTurn; } } set { lock (_replayLock) { _replayGotoTurn = value; if (value == -1) _originalReplayTurn = -1; else _originalReplayTurn = _replayTurn; } } }
+        public static int OriginalReplayTurn { get { lock (_replayLock) { return _originalReplayTurn; } } }
+        public static int ReplayTurn { get { lock (_replayLock) { return _replayTurn; } } set { lock (_replayLock) { _replayTurn = value; } } }
+        public static string ReplayRealTime { get { lock (_replayLock) { return _replayRealTime; } } set { lock (_replayLock) { _replayRealTime = value; } } }
 
         public static void ResetReplay()
         {
@@ -4211,6 +4220,10 @@ namespace GnollHackX
                 _stopReplay = false;
                 _pauseReplay = false;
                 _replaySpeed = 1.0;
+                _replayGotoTurn = -1;
+                _originalReplayTurn = -1;
+                _replayTurn = -1;
+                _replayRealTime = null;
             }
         }
 
@@ -4235,8 +4248,24 @@ namespace GnollHackX
             string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
             bool contnextfile = false;
             string rawFileName = replayFileName;
+            bool restartReplay = false;
             do
             {
+                if(restartReplay)
+                {
+                    restartReplay = false;
+                    rawFileName = replayFileName;
+                    ReplayTurn = 0;
+                    GoToTurn = GoToTurn; /* Reset original replay turn */
+                    ConcurrentQueue<GHRequest> queue;
+                    if (GHGame.RequestDictionary.TryGetValue(game, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(game, GHRequestType.CloseAllDialogs));
+                        queue.Enqueue(new GHRequest(game, GHRequestType.RestartReplay));
+                    }
+                    return PlayReplayResult.Restarting;
+                }
+
                 if (string.IsNullOrWhiteSpace(rawFileName))
                     break;
 
@@ -4355,10 +4384,10 @@ namespace GnollHackX
                                                 cmd = (int)RecordedFunctionID.EndOfFile;
                                                 break;
                                             }
-                                            else if (PauseReplay)
+                                            else if (PauseReplay && GoToTurn < 0)
                                                 Thread.Sleep(GHConstants.PollingInterval);
                                         } 
-                                        while (PauseReplay);
+                                        while (PauseReplay && GoToTurn < 0);
 
                                         switch (cmd)
                                         {
@@ -4561,14 +4590,16 @@ namespace GnollHackX
                                                     string chName = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     /* No asking name in replay */
                                                     //game.ClientCallback_AskName(modeName, modeDescription, chName);
-                                                    Thread.Sleep((int)(GHConstants.ReplayStandardDelay / ReplaySpeed));
+                                                    if(GoToTurn < 0)
+                                                        Thread.Sleep((int)(GHConstants.ReplayStandardDelay / ReplaySpeed));
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.GetEvent:
                                                 {
                                                     /* No function call in replay */
                                                     //game.ClientCallback_get_nh_event();
-                                                    Thread.Sleep((int)(GHConstants.ReplayGetEventDelay / ReplaySpeed));
+                                                    if (GoToTurn < 0)
+                                                        Thread.Sleep((int)(GHConstants.ReplayGetEventDelay / ReplaySpeed));
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.GetChar:
@@ -4576,7 +4607,8 @@ namespace GnollHackX
                                                     int res = br.ReadInt32();
                                                     /* No function call in replay */
                                                     //game.ClientCallback_nhgetch();
-                                                    Thread.Sleep((int)(GHConstants.ReplayStandardDelay / ReplaySpeed));
+                                                    if (GoToTurn < 0)
+                                                        Thread.Sleep((int)(GHConstants.ReplayStandardDelay / ReplaySpeed));
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.PosKey:
@@ -4587,7 +4619,8 @@ namespace GnollHackX
                                                     int res = br.ReadInt32();
                                                     /* No function call in replay */
                                                     //game.ClientCallback_nh_poskey();
-                                                    Thread.Sleep((int)(GHConstants.ReplayStandardDelay / ReplaySpeed));
+                                                    if (GoToTurn < 0)
+                                                        Thread.Sleep((int)(GHConstants.ReplayStandardDelay / ReplaySpeed));
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.YnFunction:
@@ -4604,7 +4637,8 @@ namespace GnollHackX
                                                     string introline = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     ulong ynflags = br.ReadUInt64();
                                                     int res = br.ReadInt32();
-                                                    game.ClientCallback_YnFunction(style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags);
+                                                    if (GoToTurn < 0 || ReplayTurn < GoToTurn)
+                                                        game.ClientCallback_YnFunction(style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.ClipAround:
@@ -4719,6 +4753,25 @@ namespace GnollHackX
                                                     for (int i = 0; i < condlen; i++)
                                                         condcolors[i] = br.ReadInt16();
 
+                                                    if(fieldidx == (int)statusfields.BL_TIME && !string.IsNullOrWhiteSpace(text) && int.TryParse(text.Trim(), out int curTurn))
+                                                    {
+                                                        ReplayTurn = curTurn;
+                                                    }
+                                                    else if (fieldidx == (int)statusfields.BL_REALTIME && !string.IsNullOrWhiteSpace(text))
+                                                    {
+                                                        ReplayRealTime = text;
+                                                    }
+                                                    if(GoToTurn >= 0)
+                                                    {
+                                                        if (ReplayTurn >= GoToTurn && GoToTurn >= OriginalReplayTurn) /* Was searching for a túrn in the future */
+                                                            GoToTurn = -1;
+                                                        else if (GoToTurn < OriginalReplayTurn)
+                                                        {
+                                                            restartReplay = true;
+                                                            breakwhile = true;
+                                                        }
+                                                    }
+
                                                     unsafe
                                                     {
                                                         fixed (short* p = condcolors)
@@ -4821,7 +4874,8 @@ namespace GnollHackX
                                                         br.ReadInt64();
                                                     int listsize = br.ReadInt32();
                                                     int count = br.ReadInt32();
-                                                    game.Replay_SelectMenu(winid, how, count);
+                                                    if (GoToTurn < 0 || ReplayTurn < GoToTurn)
+                                                        game.Replay_SelectMenu(winid, how, count);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.FreeMemory:
@@ -4918,7 +4972,8 @@ namespace GnollHackX
                                                     string linesuffix = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     string introline = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     string line = br.ReadInt32() == 0 ? null : br.ReadString();
-                                                    game.Replay_GetLine(style, attr, color, query, placeholder, linesuffix, introline, IntPtr.Zero, line);
+                                                    if (GoToTurn < 0 || ReplayTurn < GoToTurn)
+                                                        game.Replay_GetLine(style, attr, color, query, placeholder, linesuffix, introline, IntPtr.Zero, line);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.ClearContextMenu:
@@ -4969,7 +5024,8 @@ namespace GnollHackX
                                                     int attr = br.ReadInt32();
                                                     int color = br.ReadInt32();
                                                     ulong tflags = br.ReadUInt64();
-                                                    game.ClientCallback_DisplayFloatingText(x, y, text, style, attr, color, tflags);
+                                                    if (GoToTurn < 0 || ReplayTurn >= GoToTurn)
+                                                        game.ClientCallback_DisplayFloatingText(x, y, text, style, attr, color, tflags);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.DisplayScreenText:
@@ -4981,7 +5037,8 @@ namespace GnollHackX
                                                     int attr = br.ReadInt32();
                                                     int color = br.ReadInt32();
                                                     ulong tflags = br.ReadUInt64();
-                                                    game.ClientCallback_DisplayScreenText(text, supertext, subtext, style, attr, color, tflags);
+                                                    if (GoToTurn < 0 || ReplayTurn >= GoToTurn)
+                                                        game.ClientCallback_DisplayScreenText(text, supertext, subtext, style, attr, color, tflags);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.DisplayPopupText:
@@ -4993,7 +5050,8 @@ namespace GnollHackX
                                                     int color = br.ReadInt32();
                                                     int glyph = br.ReadInt32();
                                                     ulong tflags = br.ReadUInt64();
-                                                    game.ClientCallback_DisplayPopupText(text, title, style, attr, color, glyph, tflags);
+                                                    if (GoToTurn < 0 || ReplayTurn >= GoToTurn)
+                                                        game.ClientCallback_DisplayPopupText(text, title, style, attr, color, glyph, tflags);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.DisplayGUIEffect:
@@ -5005,7 +5063,8 @@ namespace GnollHackX
                                                     int x2 = br.ReadInt32();
                                                     int y2 = br.ReadInt32();
                                                     ulong tflags = br.ReadUInt64();
-                                                    game.ClientCallback_DisplayGUIEffect(style, subtype, x, y, x2, y2, tflags);
+                                                    if (GoToTurn < 0 || ReplayTurn >= GoToTurn)
+                                                        game.ClientCallback_DisplayGUIEffect(style, subtype, x, y, x2, y2, tflags);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.UpdateCursor:
@@ -5036,7 +5095,8 @@ namespace GnollHackX
                                                     int play_group = br.ReadInt32();
                                                     uint dialogue_mid = br.ReadUInt32();
                                                     ulong play_flags = br.ReadUInt64();
-                                                    game.ClientCallback_PlayImmediateSound(ghsound, eventPath, bankid, eventVolume, soundVolume, parameterNames, parameterValues,
+                                                    if (GoToTurn < 0 || ReplayTurn >= GoToTurn)
+                                                        game.ClientCallback_PlayImmediateSound(ghsound, eventPath, bankid, eventVolume, soundVolume, parameterNames, parameterValues,
                                                         arraysize, sound_type, play_group, dialogue_mid, play_flags);
                                                 }
                                                 break;
@@ -5234,7 +5294,7 @@ namespace GnollHackX
                     File.Delete(usedReplayFileName);
                 }
             }
-            while (contnextfile);
+            while (contnextfile || restartReplay);
 
             if (!exitHackCalled)
                 game.ClientCallback_ExitHack(0);

@@ -433,7 +433,8 @@ namespace GnollHackX
             {
                 if (_ghWindows[winHandle] != null)
                 {
-                    _ghWindows[winHandle].Display(blocking != 0);
+                    if(!PlayingReplay || GHApp.GoToTurn < 0)
+                        _ghWindows[winHandle].Display(blocking != 0);
                     ismenu = (_ghWindows[winHandle].WindowType == GHWinType.Menu);
                     istext = (_ghWindows[winHandle].WindowType == GHWinType.Text);
                     ismap = (_ghWindows[winHandle].WindowType == GHWinType.Map);
@@ -444,11 +445,14 @@ namespace GnollHackX
             {
                 if(PlayingReplay)
                 {
-                    WaitAndCheckPauseReplay(GHConstants.ReplayDisplayWindowDelay);
-                    ConcurrentQueue<GHRequest> queue;
-                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                    if(GHApp.GoToTurn < 0)
                     {
-                        queue.Enqueue(new GHRequest(this, GHRequestType.HideTextWindow));
+                        WaitAndCheckPauseReplay(GHConstants.ReplayDisplayWindowDelay);
+                        ConcurrentQueue<GHRequest> queue;
+                        if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                        {
+                            queue.Enqueue(new GHRequest(this, GHRequestType.HideTextWindow));
+                        }
                     }
                 }
                 else
@@ -465,7 +469,7 @@ namespace GnollHackX
 
             ClientCallback_RawPrint(str);
 
-            if (!string.IsNullOrWhiteSpace(str))
+            if (!string.IsNullOrWhiteSpace(str) && GHApp.GoToTurn < 0)
                 Thread.Sleep(GHConstants.ExitWindowsWithStringDelay);
 
             lock (_ghWindowsLock)
@@ -598,7 +602,8 @@ namespace GnollHackX
 
             if (PlayingReplay)
             {
-                Thread.Sleep((int)(GHConstants.ReplayStandardDelay / GHApp.ReplaySpeed));
+                if (GHApp.GoToTurn < 0)
+                    Thread.Sleep((int)(GHConstants.ReplayStandardDelay / GHApp.ReplaySpeed));
                 return 0;
             }
 
@@ -643,7 +648,8 @@ namespace GnollHackX
 
             if (PlayingReplay)
             {
-                Thread.Sleep((int)(GHConstants.ReplayStandardDelay / GHApp.ReplaySpeed));
+                if (GHApp.GoToTurn < 0)
+                    Thread.Sleep((int)(GHConstants.ReplayStandardDelay / GHApp.ReplaySpeed));
                 return 0;
             }
 
@@ -934,7 +940,8 @@ namespace GnollHackX
             RecordFunctionCall(RecordedFunctionID.DelayOutput);
             if (ClientCallback_UIHasInput() > 0)
                 return;
-            Thread.Sleep(GHConstants.DelayOutputDurationInMilliseconds);
+            if (!PlayingReplay || GHApp.GoToTurn < 0)
+                Thread.Sleep(GHConstants.DelayOutputDurationInMilliseconds);
         }
 
         public void ClientCallback_DelayOutputMilliseconds(int milliseconds)
@@ -942,11 +949,14 @@ namespace GnollHackX
             RecordFunctionCall(RecordedFunctionID.DelayOutputMilliseconds, milliseconds);
             if (ClientCallback_UIHasInput() > 0)
                 return;
-            Thread.Sleep(milliseconds);
+            if (!PlayingReplay || GHApp.GoToTurn < 0)
+                Thread.Sleep(milliseconds);
         }
         public void ClientCallback_DelayOutputIntervals(int intervals)
         {
             RecordFunctionCall(RecordedFunctionID.DelayOutputIntervals, intervals);
+            if (PlayingReplay && GHApp.GoToTurn >= 0)
+                return;
 
             long start_counter_value = 0L;
             long current_counter_value = 0L;
@@ -2024,6 +2034,8 @@ namespace GnollHackX
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_FADE_TO_BLACK:
+                    if (PlayingReplay && GHApp.GoToTurn >= 0)
+                        return;
                     if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.FadeToBlack, GHConstants.FadeToBlackDuration));
@@ -2031,9 +2043,13 @@ namespace GnollHackX
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_COLLECT_GARBAGE:
+                    if (PlayingReplay && GHApp.GoToTurn >= 0)
+                        return;
                     GHApp.CollectGarbage();
                     break;
                 case (int)gui_command_types.GUI_CMD_FADE_FROM_BLACK:
+                    if (PlayingReplay && GHApp.GoToTurn >= 0)
+                        return;
                     if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.FadeFromBlack, GHConstants.FadeFromBlackDuration));
@@ -2354,7 +2370,7 @@ namespace GnollHackX
             if(PlayingReplay)
             {
                 /* Only like this for replay, as normal hiding code is a bit more robust */
-                if (!GHApp.StopReplay) /* No pause, since outrip page hides the controls */
+                if (!GHApp.StopReplay && GHApp.GoToTurn < 0) /* No pause, since outrip page hides the controls */
                     Thread.Sleep((int)(GHConstants.ReplayOutripDelay / GHApp.ReplaySpeed));
 
                 lock (_ghWindowsLock)
@@ -2763,7 +2779,6 @@ namespace GnollHackX
                 try
                 {
                     string dir = Path.Combine(GHApp.GHPath, GHConstants.ReplayDirectory);
-                    string knownPlayerName = null;
                     if (!Directory.Exists(dir))
                         GHApp.CheckCreateDirectory(dir);
                     if (Directory.Exists(dir))
@@ -3071,7 +3086,7 @@ namespace GnollHackX
 
         private void WaitAndCheckPauseReplay(int baseDelay)
         {
-            if (!PlayingReplay)
+            if (!PlayingReplay || GHApp.GoToTurn >= 0)
                 return;
 
             if(!GHApp.StopReplay)
@@ -3081,10 +3096,10 @@ namespace GnollHackX
                 {
                     if (GHApp.StopReplay)
                         break;
-                    else if (GHApp.PauseReplay)
+                    else if (GHApp.PauseReplay && GHApp.GoToTurn < 0)
                         Thread.Sleep(GHConstants.PollingInterval);
                 }
-                while (GHApp.PauseReplay);
+                while (GHApp.PauseReplay && GHApp.GoToTurn < 0);
             }
         }
     }

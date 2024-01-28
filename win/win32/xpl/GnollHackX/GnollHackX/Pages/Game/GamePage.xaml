@@ -387,10 +387,38 @@
                             <controls:CustomImageButton x:Name="ReplayPauseButton" Text="Pause" Clicked="ReplayPauseButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="White"/>
                             <controls:CustomImageButton x:Name="ReplaySlowerButton" Text="0.50x" Clicked="ReplaySlowerButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="White"/>
                             <controls:CustomImageButton x:Name="ReplayFasterButton" Text="2.00x" Clicked="ReplayFasterButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="White"/>
+                            <controls:CustomImageButton IsVisible="False" x:Name="ReplayGotoButton" Text="Go To" Clicked="ReplayGotoButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="White"/>
+                            <controls:CustomImageButton IsVisible="False" IsEnabled="False" x:Name="ReplaySearchButton" Text="Search" Clicked="ReplaySearchButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="12" BackgroundColor="Transparent" TextColor="Gray"/>
                             <controls:CustomImageButton x:Name="ReplayQuitButton" Text="Quit" Clicked="ReplayQuitButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="#FFFFAAAA"/>
                         </StackLayout>
                     </Grid>
                 </Frame>
+                <Grid x:Name="GotoTurnGrid" IsVisible="False"  BackgroundColor="#66000000" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
+                    <Frame x:Name="GotoTurnFrame" Margin="0,50,0,10" WidthRequest="440" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand">
+                        <StackLayout x:Name="GotoTurnLayout" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                            <Label x:Name="GotoTurnCaption" Text="Go to Turn" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                                <Entry x:Name="GotoTurnEntryText" Keyboard="Numeric" WidthRequest="360" HorizontalOptions="Center" Placeholder="Enter the turn here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
+                                       HorizontalTextAlignment="Center" FontSize="20" />
+                            </StackLayout>
+                            <Grid WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="65" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <controls:CustomImageButton Grid.Column="0" x:Name="GotoTurnOkButton" Text="OK" FontSize="19" WidthRequest="160" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                            BackgroundColor="Transparent" TextColor="White"
+                                            Clicked="GotoTurnOkButton_Clicked" />
+                                <controls:CustomImageButton Grid.Column="1" x:Name="GotoTurnCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                            BackgroundColor="Transparent" TextColor="White"
+                                            Clicked="GotoTurnCancelButton_Clicked" />
+                            </Grid>
+                        </StackLayout>
+                    </Frame>
+                </Grid>
             </Grid>
             <Grid x:Name="LoadingGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
                 <gnh:GHCachedImage Source="resource://GnollHackX.Assets.dgn_entrance.jpg" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 

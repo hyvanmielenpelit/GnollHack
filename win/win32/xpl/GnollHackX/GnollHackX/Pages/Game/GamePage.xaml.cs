@@ -863,12 +863,12 @@ namespace GnollHackX.Pages.Game
 
         public async void StartNewGame()
         {
-            await StartGame(null);
+            await StartGame(null, -1);
         }
 
-        public async void StartReplay(string replayFileName)
+        public async void StartReplay(string replayFileName, int fromTurn)
         {
-            await StartGame(replayFileName);
+            await StartGame(replayFileName, fromTurn);
         }
 
         private readonly object _replayLock = new object();
@@ -876,7 +876,7 @@ namespace GnollHackX.Pages.Game
         public string ReplayFileName { get { lock (_replayLock) { return _replayFileName; } } set { lock (_replayLock) { _replayFileName = value; } } }
         public bool PlayingReplay { get { lock (_replayLock) { return _replayFileName != null; } } }
 
-        public async Task StartGame(string replayFileName)
+        public async Task StartGame(string replayFileName, int fromTurn)
         {
             ReplayFileName = replayFileName;
             _mainPage.GameStarted = true;
@@ -1025,6 +1025,7 @@ namespace GnollHackX.Pages.Game
                 MoreCommandsGrid.IsEnabled = false;
                 TipView.IsEnabled = false;
                 GHApp.ResetReplay();
+                GHApp.GoToTurn = fromTurn;
                 UpdateReplaySpeedButtons();
                 UpdateReplayPauseButton();
                 ReplayGrid.IsVisible = true;
@@ -1155,6 +1156,22 @@ namespace GnollHackX.Pages.Game
             await Task.Delay(50);
 
             Thread t = new Thread(new ThreadStart(GNHThreadProcForRestart));
+            _gnhthread = t;
+            _gnhthread.Start();
+        }
+
+        public async void RestartReplay()
+        {
+            _currentGame = null;
+            GHApp.CurrentGHGame = null;
+            _gnhthread = null;
+
+            /* Collect garbage at this point */
+            await Task.Delay(50);
+            GHApp.CollectGarbage();
+            await Task.Delay(50);
+
+            Thread t = new Thread(new ThreadStart(GNHThreadProcForReplay));
             _gnhthread = t;
             _gnhthread.Start();
         }
@@ -2229,6 +2246,9 @@ namespace GnollHackX.Pages.Game
                                 break;
                             case GHRequestType.RestartGame:
                                 RestartGame();
+                                break;
+                            case GHRequestType.RestartReplay:
+                                RestartReplay();
                                 break;
                             case GHRequestType.ShowMenuPage:
                                 ShowMenuCanvas(req.RequestMenuInfo != null ? req.RequestMenuInfo : new GHMenuInfo(ghmenu_styles.GHMENU_STYLE_GENERAL), req.RequestingGHWindow);
@@ -5667,7 +5687,7 @@ namespace GnollHackX.Pages.Game
 
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
         {
-            if (!MainGrid.IsVisible)
+            if (!MainGrid.IsVisible || GHApp.GoToTurn >= 0)
                 return;
 
             SKImageInfo info = e.Info;
@@ -16303,11 +16323,19 @@ namespace GnollHackX.Pages.Game
             {
                 ReplayPauseButton.Text = "Play";
                 ReplayPauseButton.TextColor = GHColors.BrighterGreen;
+                ReplaySlowerButton.IsVisible = false;
+                ReplayFasterButton.IsVisible = false;
+                ReplayGotoButton.IsVisible = true;
+                ReplaySearchButton.IsVisible = true;
             }
             else
             {
                 ReplayPauseButton.Text = "Pause";
                 ReplayPauseButton.TextColor = GHColors.Yellow;
+                ReplaySlowerButton.IsVisible = true;
+                ReplayFasterButton.IsVisible = true;
+                ReplayGotoButton.IsVisible = false;
+                ReplaySearchButton.IsVisible = false;
             }
 
             UpdateReplayHeaderLabel();
@@ -16357,6 +16385,58 @@ namespace GnollHackX.Pages.Game
         {
             GHApp.PauseReplay = !GHApp.PauseReplay;
             UpdateReplayPauseButton();
+        }
+
+        private void ReplayGotoButton_Clicked(object sender, EventArgs e)
+        {
+            GotoTurnEntryText.Text = "";
+            GotoTurnFrame.BorderColor = GHColors.Black;
+            GotoTurnOkButton.IsEnabled = true;
+            GotoTurnCancelButton.IsEnabled = true;
+            GotoTurnGrid.IsVisible = true;
+        }
+
+        private void ReplaySearchButton_Clicked(object sender, EventArgs e)
+        {
+
+        }
+
+        private void GotoTurnOkButton_Clicked(object sender, EventArgs e)
+        {
+            GotoTurnOkButton.IsEnabled = false;
+            GotoTurnCancelButton.IsEnabled = false;
+
+            if (string.IsNullOrWhiteSpace(GotoTurnEntryText.Text))
+            {
+                GHApp.GoToTurn = -1;
+            }
+            else
+            {
+                string txt = GotoTurnEntryText.Text.Trim();
+                if (int.TryParse(txt, out int turn))
+                {
+                    GHApp.GoToTurn = turn;
+                }
+                else
+                {
+                    GotoTurnFrame.BorderColor = GHColors.Red;
+                    GotoTurnEntryText.Focus();
+                    GotoTurnOkButton.IsEnabled = true;
+                    GotoTurnCancelButton.IsEnabled = true;
+                    return;
+                }
+            }
+            GotoTurnGrid.IsVisible = false;
+        }
+
+        private void GotoTurnCancelButton_Clicked(object sender, EventArgs e)
+        {
+            GotoTurnOkButton.IsEnabled = false;
+            GotoTurnCancelButton.IsEnabled = false;
+
+            GHApp.GoToTurn = -1;
+
+            GotoTurnGrid.IsVisible = false;
         }
     }
 }
