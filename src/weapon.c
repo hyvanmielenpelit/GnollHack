@@ -233,7 +233,6 @@ struct obj* launcher;
     return m_weapon_range(&youmonst, ammo, launcher);
 }
 
-
 int
 m_weapon_range(mtmp, ammo, launcher)
 struct monst* mtmp;
@@ -356,18 +355,26 @@ int use_type; // OBSOLETE: /* 0 = Melee weapon (full enchantment bonuses), 1 = t
     if(mattacker && cursed_items_are_positive_mon(mattacker) && otmp->cursed)
     { 
         if (Is_weapon || Is_worn_gauntlets)
+        {
             tmp += abs(applicable_enchantment);
+            if (has_obj_mythic_great_accuracy(otmp))
+                tmp += MYTHIC_GREAT_ACCURACY_BASE_GAIN + abs(applicable_enchantment);
+        }
     }
     else
     {
         if (Is_weapon || Is_worn_gauntlets)
+        { 
             tmp += applicable_enchantment;
+            if (has_obj_mythic_great_accuracy(otmp))
+                tmp += MYTHIC_GREAT_ACCURACY_BASE_GAIN + applicable_enchantment;
+        }
     }
     tmp += objects[otmp->otyp].oc_hitbonus;
 
     return tmp;
-
 }
+
 int
 weapon_to_hit_value(otmp, mon, mattacker, use_type)
 struct obj *otmp;
@@ -512,9 +519,17 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
 #endif
 
             if (mattacker && cursed_items_are_positive_mon(mattacker) && otmp->cursed)
+            {
                 tmp2 += abs(applicable_enchantment);
+                if (has_obj_mythic_great_damage(otmp))
+                    tmp2 += MYTHIC_GREAT_DAMAGE_BASE_GAIN + abs(applicable_enchantment);
+            }
             else
+            {
                 tmp2 += applicable_enchantment;
+                if (has_obj_mythic_great_damage(otmp))
+                    tmp2 += MYTHIC_GREAT_DAMAGE_BASE_GAIN + applicable_enchantment;
+            }
 
             if (tmp2 < 0)
                 tmp2 = 0;

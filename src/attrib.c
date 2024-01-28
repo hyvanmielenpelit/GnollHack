@@ -2429,14 +2429,6 @@ struct monst* mon;
         {
             u.uspellcastingbonus_all += MYTHIC_SPELL_CASTING_BASE_GAIN + (schar)applicable_enchantment;
         }
-        if (worn && has_obj_mythic_great_accuracy(uitem))
-        {
-            *hitinc_ptr += MYTHIC_GREAT_ACCURACY_BASE_GAIN + (schar)applicable_enchantment;
-        }
-        if (worn && has_obj_mythic_great_damage(uitem))
-        {
-            *daminc_ptr += MYTHIC_GREAT_DAMAGE_BASE_GAIN + (schar)applicable_enchantment;
-        }
         /* Following are for all items */
         /* Luck */
         if (is_you)
