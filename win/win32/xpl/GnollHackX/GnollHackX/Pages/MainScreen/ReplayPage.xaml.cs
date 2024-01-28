@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -79,24 +80,54 @@ namespace GnollHackX.Pages.MainScreen
                             {
                                 i++;
                                 long contLen = 0L;
-                                int middleLen = fi.Name.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length;
-                                if(middleLen > 0)
+                                bool isGZip = fi.Name.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fi.Name.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
+                                bool isNormalZip = fi.Name.Length > GHConstants.ReplayZipFileNameSuffix.Length && fi.Name.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+                                bool isZip = isGZip || isNormalZip;
+                                if(!isZip)
                                 {
-                                    string middleStr = fi.Name.Substring(GHConstants.ReplayFileNamePrefix.Length, middleLen);
-                                    foreach (string contFile in files)
+                                    try
                                     {
-                                        if (contFile != null && File.Exists(contFile))
+                                        GHApp.DeleteReplay(file);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine(ex);
+                                    }
+                                }
+                                else
+                                {
+                                    string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
+                                    int middleLen = fi.Name.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
+                                    if (middleLen > 0)
+                                    {
+                                        string middleStr = fi.Name.Substring(GHConstants.ReplayFileNamePrefix.Length, middleLen);
+                                        foreach (string contFile in files)
                                         {
-                                            FileInfo contFI = new FileInfo(contFile);
-                                            if (!string.IsNullOrWhiteSpace(contFI.Name) && contFI.Name.StartsWith(GHConstants.ReplayContinuationFileNamePrefix + middleStr))
+                                            if (contFile != null && File.Exists(contFile))
                                             {
-                                                contLen += contFI.Length;
+                                                FileInfo contFI = new FileInfo(contFile);
+                                                if (!string.IsNullOrWhiteSpace(contFI.Name) && contFI.Name.StartsWith(GHConstants.ReplayContinuationFileNamePrefix + middleStr))
+                                                {
+                                                    if(contFile.EndsWith(usedZipSuffix))
+                                                        contLen += contFI.Length;
+                                                    else
+                                                    {
+                                                        try
+                                                        {
+                                                            File.Delete(contFile);
+                                                        }
+                                                        catch (Exception ex)
+                                                        {
+                                                            Debug.WriteLine(ex);
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     }
+                                    gHRecordedGameFiles.Add(new GHRecordedGameFile(i, Path.Combine(dirPath, file), fi.Name, fi.Extension, fi.Length + contLen, fi.CreationTime, fi.LastWriteTime));
+                                    totalBytes += fi.Length + contLen;
                                 }
-                                gHRecordedGameFiles.Add(new GHRecordedGameFile(i, Path.Combine(dirPath, file), fi.Name, fi.Extension, fi.Length + contLen, fi.CreationTime, fi.LastWriteTime));
-                                totalBytes += fi.Length + contLen;
                             }
                         }
                     }
