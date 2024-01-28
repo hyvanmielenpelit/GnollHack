@@ -78,7 +78,6 @@ namespace GnollHackX.Pages.MainScreen
                             FileInfo fi = new FileInfo(file);
                             if (!string.IsNullOrWhiteSpace(fi.Name) && fi.Name.StartsWith(GHConstants.ReplayFileNamePrefix))
                             {
-                                i++;
                                 long contLen = 0L;
                                 bool isGZip = fi.Name.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fi.Name.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
                                 bool isNormalZip = fi.Name.Length > GHConstants.ReplayZipFileNameSuffix.Length && fi.Name.EndsWith(GHConstants.ReplayZipFileNameSuffix);
@@ -96,6 +95,7 @@ namespace GnollHackX.Pages.MainScreen
                                 }
                                 else
                                 {
+                                    i++;
                                     string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
                                     int middleLen = fi.Name.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
                                     if (middleLen > 0)
