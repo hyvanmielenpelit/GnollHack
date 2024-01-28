@@ -388,7 +388,7 @@
                             <controls:CustomImageButton x:Name="ReplaySlowerButton" Text="0.50x" Clicked="ReplaySlowerButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="White"/>
                             <controls:CustomImageButton x:Name="ReplayFasterButton" Text="2.00x" Clicked="ReplayFasterButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="White"/>
                             <controls:CustomImageButton IsVisible="False" x:Name="ReplayGotoButton" Text="Go To" Clicked="ReplayGotoButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="White"/>
-                            <controls:CustomImageButton IsVisible="False" IsEnabled="False" x:Name="ReplaySearchButton" Text="Search" Clicked="ReplaySearchButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="12" BackgroundColor="Transparent" TextColor="Gray"/>
+                            <controls:CustomImageButton IsVisible="False" x:Name="ReplayNextButton" Text="Next" Clicked="ReplayNextButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="12" BackgroundColor="Transparent" TextColor="White"/>
                             <controls:CustomImageButton x:Name="ReplayQuitButton" Text="Quit" Clicked="ReplayQuitButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="#FFFFAAAA"/>
                         </StackLayout>
                     </Grid>

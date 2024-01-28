@@ -16326,7 +16326,7 @@ namespace GnollHackX.Pages.Game
                 ReplaySlowerButton.IsVisible = false;
                 ReplayFasterButton.IsVisible = false;
                 ReplayGotoButton.IsVisible = true;
-                ReplaySearchButton.IsVisible = true;
+                ReplayNextButton.IsVisible = true;
             }
             else
             {
@@ -16335,7 +16335,7 @@ namespace GnollHackX.Pages.Game
                 ReplaySlowerButton.IsVisible = true;
                 ReplayFasterButton.IsVisible = true;
                 ReplayGotoButton.IsVisible = false;
-                ReplaySearchButton.IsVisible = false;
+                ReplayNextButton.IsVisible = false;
             }
 
             UpdateReplayHeaderLabel();
@@ -16396,9 +16396,14 @@ namespace GnollHackX.Pages.Game
             GotoTurnGrid.IsVisible = true;
         }
 
-        private void ReplaySearchButton_Clicked(object sender, EventArgs e)
+        private void ReplayNextButton_Clicked(object sender, EventArgs e)
         {
-
+            ReplayNextButton.IsEnabled = false;
+            if (GHApp.ReplayTurn >= 0)
+            {
+                GHApp.GoToTurn = GHApp.ReplayTurn + 1;
+            }
+            ReplayNextButton.IsEnabled = true;
         }
 
         private void GotoTurnOkButton_Clicked(object sender, EventArgs e)

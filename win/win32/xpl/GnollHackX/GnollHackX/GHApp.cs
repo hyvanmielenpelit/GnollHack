@@ -4637,7 +4637,7 @@ namespace GnollHackX
                                                     string introline = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     ulong ynflags = br.ReadUInt64();
                                                     int res = br.ReadInt32();
-                                                    if (GoToTurn < 0 || ReplayTurn < GoToTurn)
+                                                    if (GoToTurn < 0 || ReplayTurn >= GoToTurn - 1)
                                                         game.ClientCallback_YnFunction(style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags);
                                                 }
                                                 break;
@@ -4874,7 +4874,7 @@ namespace GnollHackX
                                                         br.ReadInt64();
                                                     int listsize = br.ReadInt32();
                                                     int count = br.ReadInt32();
-                                                    if (GoToTurn < 0 || ReplayTurn < GoToTurn)
+                                                    if (GoToTurn < 0 || ReplayTurn >= GoToTurn - 1)
                                                         game.Replay_SelectMenu(winid, how, count);
                                                 }
                                                 break;
@@ -4972,7 +4972,7 @@ namespace GnollHackX
                                                     string linesuffix = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     string introline = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     string line = br.ReadInt32() == 0 ? null : br.ReadString();
-                                                    if (GoToTurn < 0 || ReplayTurn < GoToTurn)
+                                                    if (GoToTurn < 0 || ReplayTurn >= GoToTurn - 1)
                                                         game.Replay_GetLine(style, attr, color, query, placeholder, linesuffix, introline, IntPtr.Zero, line);
                                                 }
                                                 break;
@@ -5024,7 +5024,7 @@ namespace GnollHackX
                                                     int attr = br.ReadInt32();
                                                     int color = br.ReadInt32();
                                                     ulong tflags = br.ReadUInt64();
-                                                    if (GoToTurn < 0 || ReplayTurn >= GoToTurn)
+                                                    if (GoToTurn < 0 || ReplayTurn >= GoToTurn - 1)
                                                         game.ClientCallback_DisplayFloatingText(x, y, text, style, attr, color, tflags);
                                                 }
                                                 break;
@@ -5037,7 +5037,7 @@ namespace GnollHackX
                                                     int attr = br.ReadInt32();
                                                     int color = br.ReadInt32();
                                                     ulong tflags = br.ReadUInt64();
-                                                    if (GoToTurn < 0 || ReplayTurn >= GoToTurn)
+                                                    if (GoToTurn < 0 || ReplayTurn >= GoToTurn - 1)
                                                         game.ClientCallback_DisplayScreenText(text, supertext, subtext, style, attr, color, tflags);
                                                 }
                                                 break;
@@ -5050,7 +5050,7 @@ namespace GnollHackX
                                                     int color = br.ReadInt32();
                                                     int glyph = br.ReadInt32();
                                                     ulong tflags = br.ReadUInt64();
-                                                    if (GoToTurn < 0 || ReplayTurn >= GoToTurn)
+                                                    if (GoToTurn < 0 || ReplayTurn >= GoToTurn - 1)
                                                         game.ClientCallback_DisplayPopupText(text, title, style, attr, color, glyph, tflags);
                                                 }
                                                 break;
@@ -5063,7 +5063,7 @@ namespace GnollHackX
                                                     int x2 = br.ReadInt32();
                                                     int y2 = br.ReadInt32();
                                                     ulong tflags = br.ReadUInt64();
-                                                    if (GoToTurn < 0 || ReplayTurn >= GoToTurn)
+                                                    if (GoToTurn < 0 || ReplayTurn >= GoToTurn - 1)
                                                         game.ClientCallback_DisplayGUIEffect(style, subtype, x, y, x2, y2, tflags);
                                                 }
                                                 break;
@@ -5095,7 +5095,7 @@ namespace GnollHackX
                                                     int play_group = br.ReadInt32();
                                                     uint dialogue_mid = br.ReadUInt32();
                                                     ulong play_flags = br.ReadUInt64();
-                                                    if (GoToTurn < 0 || ReplayTurn >= GoToTurn)
+                                                    if (GoToTurn < 0 || ReplayTurn >= GoToTurn - 1)
                                                         game.ClientCallback_PlayImmediateSound(ghsound, eventPath, bankid, eventVolume, soundVolume, parameterNames, parameterValues,
                                                         arraysize, sound_type, play_group, dialogue_mid, play_flags);
                                                 }
