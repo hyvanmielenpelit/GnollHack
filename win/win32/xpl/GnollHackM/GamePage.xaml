@@ -382,7 +382,8 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Row="0" x:Name="ReplayHeaderLabel" Text="" TextColor="White" HorizontalOptions="Center" VerticalOptions="End" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontFamily="Immortal" FontSize="15" Margin="0" />
+                        <Label Grid.Row="0" x:Name="ReplayHeaderLabel" Text="" TextColor="White" HorizontalOptions="Center" VerticalOptions="End" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontFamily="Immortal" FontSize="14" Margin="0" />
+                        <Label Grid.Row="0" x:Name="ReplayRealTimeLabel" Text="" TextColor="White" HorizontalOptions="End" VerticalOptions="End" HorizontalTextAlignment="End" VerticalTextAlignment="Center" FontFamily="Lato-Regular" FontSize="13" Margin="0" />
                         <StackLayout Grid.Row="1" Margin="0" BackgroundColor="Transparent" Orientation="Horizontal" HeightRequest="40">
                             <controls:CustomImageButton x:Name="ReplayPauseButton" Text="Pause" Clicked="ReplayPauseButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="White"/>
                             <controls:CustomImageButton x:Name="ReplaySlowerButton" Text="0.50x" Clicked="ReplaySlowerButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="White"/>

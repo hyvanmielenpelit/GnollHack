@@ -1024,6 +1024,8 @@ namespace GnollHackX.Pages.Game
                 PopupGrid.IsEnabled = false;
                 MoreCommandsGrid.IsEnabled = false;
                 TipView.IsEnabled = false;
+                ReplayRealTimeLabel.Text = "";
+                ReplayHeaderLabel.Text = "";
                 GHApp.ResetReplay();
                 GHApp.GoToTurn = fromTurn;
                 UpdateReplaySpeedButtons();
@@ -1136,6 +1138,16 @@ namespace GnollHackX.Pages.Game
                 {
                     if (_stopWatch.IsRunning)
                         _stopWatch.Stop();
+                }
+                if(PlayingReplay)
+                {
+                    string realTime = GHApp.ReplayRealTime;
+                    if (string.IsNullOrEmpty(realTime))
+                        ReplayRealTimeLabel.Text = "";
+                    else if (realTime != ReplayRealTimeLabel.Text)
+                        ReplayRealTimeLabel.Text = realTime;
+
+                    UpdateReplayHeaderLabel();
                 }
                 return IsGameOn;
             });
@@ -16343,21 +16355,34 @@ namespace GnollHackX.Pages.Game
 
         private void UpdateReplayHeaderLabel()
         {
-            if(GHApp.StopReplay)
+            int currentTurn = GHApp.ReplayTurn;
+            int gotoTurn = GHApp.GoToTurn;
+            int originalTurn = GHApp.OriginalReplayTurn;
+            if (GHApp.StopReplay)
             {
                 ReplayHeaderLabel.Text = "Stopping Replay...";
                 ReplayHeaderLabel.TextColor = GHColors.BrighterRed;
+            }
+            else if (gotoTurn >= 0)
+            {
+                double percentage = currentTurn <= originalTurn ? 0.0 : gotoTurn <= originalTurn ? 1.0 : currentTurn < gotoTurn ? (currentTurn - originalTurn) / (gotoTurn - originalTurn) : 1.0;
+                if(percentage > 0.0)
+                    ReplayHeaderLabel.Text = string.Format("Rewinding to T:{0} ({1:0.#}%)", gotoTurn, percentage * 100);
+                else
+                    ReplayHeaderLabel.Text = string.Format("Rewinding to T:{0}...", gotoTurn);
+
+                ReplayHeaderLabel.TextColor = GHColors.LightBlue;
             }
             else
             {
                 if (GHApp.PauseReplay)
                 {
-                    ReplayHeaderLabel.Text = string.Format("Replay Speed: Paused at {0:0.##}x", GHApp.ReplaySpeed);
+                    ReplayHeaderLabel.Text = string.Format("Speed: Paused at {0:0.##}x", GHApp.ReplaySpeed);
                     ReplayHeaderLabel.TextColor = GHColors.Yellow;
                 }
                 else
                 {
-                    ReplayHeaderLabel.Text = string.Format("Replay Speed: {0:0.##}x", GHApp.ReplaySpeed);
+                    ReplayHeaderLabel.Text = string.Format("Speed: {0:0.##}x", GHApp.ReplaySpeed);
                     ReplayHeaderLabel.TextColor = GHColors.White;
                 }
             }
@@ -16403,6 +16428,7 @@ namespace GnollHackX.Pages.Game
             {
                 GHApp.GoToTurn = GHApp.ReplayTurn + 1;
             }
+            UpdateReplayHeaderLabel();
             ReplayNextButton.IsEnabled = true;
         }
 
@@ -16431,6 +16457,7 @@ namespace GnollHackX.Pages.Game
                     return;
                 }
             }
+            UpdateReplayHeaderLabel();
             GotoTurnGrid.IsVisible = false;
         }
 
@@ -16440,6 +16467,7 @@ namespace GnollHackX.Pages.Game
             GotoTurnCancelButton.IsEnabled = false;
 
             GHApp.GoToTurn = -1;
+            UpdateReplayHeaderLabel();
 
             GotoTurnGrid.IsVisible = false;
         }
