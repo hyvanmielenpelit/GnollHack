@@ -1054,6 +1054,12 @@ namespace GnollHackX
 
             switch(fieldidx)
             {
+                case (int)statusfields.BL_TIME:
+                    if (GHApp.RecordGame && _knownFirstTurn == -1 && !string.IsNullOrWhiteSpace(text) && int.TryParse(text.Trim(), out int turn))
+                    {
+                        _knownFirstTurn = turn;
+                    }
+                    break;
                 case (int)statusfields.BL_SKILL:
                     {
                         GHRequestType rtype;
@@ -2767,6 +2773,7 @@ namespace GnollHackX
         private long _noOfCommmands = 0L;
         private long[] _commandSize = new long[(int)RecordedFunctionID.NumberOfFunctionCalls];
         private string _knownPlayerName = null;
+        private int _knownFirstTurn = -1;
 
         private long WriteFunctionCallsToDisk()
         {
@@ -2785,7 +2792,7 @@ namespace GnollHackX
                     {
                         string configString = ""; /* Used to be player name, but in replays we do not in fact know it in advance before the replay starts */
                         long timeBinary = _replayTimeStamp.ToBinary();
-                        string filepath = Path.Combine(dir, GHApp.GetReplayFileName(GHApp.GHVersionNumber, timeBinary, _replayContinuation, null));
+                        string filepath = Path.Combine(dir, GHApp.GetReplayFileName(GHApp.GHVersionNumber, timeBinary, _replayContinuation, null, -1, true));
                         bool fileDidExist = File.Exists(filepath);
                         bool eofFound = false;
                         long appendSize = 0L;
@@ -3020,7 +3027,7 @@ namespace GnollHackX
                         } 
                         if(eofFound && File.Exists(filepath))
                         {
-                            string newFilepath = Path.Combine(dir, GHApp.GetReplayFileName(GHApp.GHVersionNumber, timeBinary, _replayContinuation, _knownPlayerName));
+                            string newFilepath = Path.Combine(dir, GHApp.GetReplayFileName(GHApp.GHVersionNumber, timeBinary, _replayContinuation, _knownPlayerName, _knownFirstTurn, true));
                             string zipFile = newFilepath + (GHApp.UseGZipForReplays ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix);
                             if(File.Exists(zipFile))
                                 File.Delete(zipFile);

@@ -26,6 +26,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Timers;
 using System.Collections;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace GnollHackX
 {
@@ -4092,9 +4093,15 @@ namespace GnollHackX
             }
         }
 
-        public static string GetReplayFileName(ulong versionCode, long timeStampInBinary, int contNumber, string playerName)
+        public static string GetReplayFileName(ulong versionCode, long timeStampInBinary, int contNumber, string playerName, int firstTurn, bool newFormat)
         {
-            return (contNumber > 0 ? GHConstants.ReplayContinuationFileNamePrefix : GHConstants.ReplayFileNamePrefix) + (playerName != null ? playerName + "-" : "") + versionCode.ToString() + GHConstants.ReplayFileNameMiddleDivisor + timeStampInBinary.ToString() + (contNumber > 0 ? (GHConstants.ReplayFileContinuationNumberDivisor + contNumber.ToString()) : "") + GHConstants.ReplayFileNameSuffix;
+            return (contNumber > 0 ? GHConstants.ReplayContinuationFileNamePrefix : GHConstants.ReplayFileNamePrefix) 
+                + (playerName != null ? playerName + "-" : "") 
+                + (firstTurn >= 0 ? "T" + firstTurn + "-" : "") 
+                + (newFormat ? VersionNumberToFileNameSuffix(versionCode) : versionCode.ToString()) 
+                + GHConstants.ReplayFileNameMiddleDivisor + (newFormat ? ((ulong)timeStampInBinary).ToString() :  timeStampInBinary.ToString()) 
+                + (contNumber > 0 ? (GHConstants.ReplayFileContinuationNumberDivisor + contNumber.ToString()) : "") 
+                + GHConstants.ReplayFileNameSuffix;
         }
 
         public static bool ValidateReplayFile(string replayFileName, out string out_str)
@@ -4241,6 +4248,7 @@ namespace GnollHackX
                 return PlayReplayResult.FilePathIsNullOrEmpty;
 
             string knownPlayerName = null;
+            int knownFirstTurn = -1;
             bool exitHackCalled = false;
             bool isGZip = replayFileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && replayFileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
             bool isNormalZip = replayFileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && replayFileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
@@ -4400,12 +4408,14 @@ namespace GnollHackX
                                                     long nextfile_timestamp = br.ReadInt64();
                                                     string nextfile_config_string = br.ReadInt32() == 0 ? null : br.ReadString(); /* unused */
                                                     int nextfile_replay_continuation = br.ReadInt32();
-                                                    rawFileName = Path.Combine(GHPath, GHConstants.ReplayDirectory, GetReplayFileName(nextfile_versionnumber, nextfile_timestamp, nextfile_replay_continuation, knownPlayerName));
+                                                    rawFileName = Path.Combine(GHPath, GHConstants.ReplayDirectory, GetReplayFileName(nextfile_versionnumber, nextfile_timestamp, nextfile_replay_continuation, knownPlayerName, knownFirstTurn, true));
                                                     if (isZip)
                                                         rawFileName += usedZipSuffix;
-                                                    if(!File.Exists(rawFileName))
+                                                    for(int i = 0; i < 8; i++) /* Support for various other name formats */
                                                     {
-                                                        rawFileName = Path.Combine(GHPath, GHConstants.ReplayDirectory, GetReplayFileName(nextfile_versionnumber, nextfile_timestamp, nextfile_replay_continuation, null));
+                                                        if (File.Exists(rawFileName))
+                                                            break;
+                                                        rawFileName = Path.Combine(GHPath, GHConstants.ReplayDirectory, GetReplayFileName(nextfile_versionnumber, nextfile_timestamp, nextfile_replay_continuation, (i & 1) != 0 ? null : knownPlayerName, (i & 2) != 0 ? -1 : knownFirstTurn, (i & 4) == 0));
                                                         if (isZip)
                                                             rawFileName += usedZipSuffix;
                                                     }
@@ -4756,6 +4766,8 @@ namespace GnollHackX
                                                     if(fieldidx == (int)statusfields.BL_TIME && !string.IsNullOrWhiteSpace(text) && int.TryParse(text.Trim(), out int curTurn))
                                                     {
                                                         ReplayTurn = curTurn;
+                                                        if(knownFirstTurn == -1)
+                                                            knownFirstTurn = curTurn;
                                                     }
                                                     else if (fieldidx == (int)statusfields.BL_REALTIME && !string.IsNullOrWhiteSpace(text))
                                                     {
