@@ -268,6 +268,7 @@ namespace GnollHackX
                 bool isSamsungMali = false;
                 bool isVivo = false;
                 bool isAlldocube = false;
+                bool isDoogee= false;
                 if (!string.IsNullOrWhiteSpace(manufacturer) && !string.IsNullOrWhiteSpace(model))
                 {
                     string manufacturer_lc = manufacturer.ToLower();
@@ -288,6 +289,8 @@ namespace GnollHackX
                         }
                         else if (model.Length >= 7 && model.Substring(0, 7).ToLower() == "bluejay")
                             isGoogleMali = true;
+                        else if (model.Length >= 6 && model.Substring(0, 6).ToLower() == "oriole")
+                            isGoogleMali = true;
                         else if (model.Length >= 4 && model.Substring(0, 4).ToLower() == "lynx")
                             isGoogleMali = true;
                     }
@@ -300,8 +303,10 @@ namespace GnollHackX
                         isVivo = true;
                     else if (manufacturer_lc == "alldocube")
                         isAlldocube = true;
+                    else if (manufacturer_lc == "doogee")
+                        isDoogee = true;
                 }
-                return isGoogleMali || isSamsungMali || isVivo || isAlldocube ? false : GHConstants.IsGPUDefault;
+                return isGoogleMali || isSamsungMali || isVivo || isAlldocube || isDoogee ? false : GHConstants.IsGPUDefault;
 #endif
             }
         }
