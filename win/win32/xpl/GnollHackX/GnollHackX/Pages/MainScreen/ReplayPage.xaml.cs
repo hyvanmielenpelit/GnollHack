@@ -53,8 +53,8 @@ namespace GnollHackX.Pages.MainScreen
             if (string.IsNullOrWhiteSpace(_directory))
                 return;
 
-            ReplayCollectionView.ItemsSource = null;
             ReplayCollectionView.SelectedItem = null;
+            ReplayCollectionView.ItemsSource = null;
             ShareButton.IsEnabled = false;
             SelectButton.IsEnabled = false;
             DeleteButton.IsEnabled = false;
