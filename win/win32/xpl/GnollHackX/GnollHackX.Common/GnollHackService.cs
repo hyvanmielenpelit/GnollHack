@@ -279,8 +279,6 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern void LibTallyRealTime();
         [DllImport(PlatformConstants.dll)]
-        public static extern void LibRedrawScreen();
-        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetMaxManuals();
         [DllImport(PlatformConstants.dll)]
         public static extern int LibIsDebug();
@@ -963,11 +961,6 @@ namespace GnollHackX.Unknown
         public void TallyRealTime()
         {
             LibTallyRealTime();
-        }
-
-        public void RedrawScreen()
-        {
-            LibRedrawScreen();
         }
 
         public int GetMaxManuals()

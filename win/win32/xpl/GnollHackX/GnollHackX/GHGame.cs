@@ -119,12 +119,6 @@ namespace GnollHackX
                 GHApp.GnollHackService.TallyRealTime();
             }
 
-            if (_redrawScreenRequested)
-            {
-                _redrawScreenRequested = false;
-                GHApp.GnollHackService.RedrawScreen();
-            }
-
             ConcurrentQueue<GHResponse> queue;
             GHResponse response;
             if(GHGame.ResponseDictionary.TryGetValue(this, out queue))
@@ -208,9 +202,6 @@ namespace GnollHackX
                                 _useLongerMessageHistory = response.ResponseBoolValue;
                                 UpdateMessageHistory();
                             }
-                            break;
-                        case GHRequestType.RedrawScreen:
-                            RedrawScreen();
                             break;
                         case GHRequestType.EndReplayFile:
                             EndReplayFile();
@@ -2156,6 +2147,8 @@ namespace GnollHackX
                         GHApp.FmodService.UnloadIntroSoundBank();
                     break;
                 case (int)gui_command_types.GUI_CMD_WAIT_FOR_RESUME:
+                    if (PlayingReplay)
+                        break;
                     GHApp.GameSaved = true;
                     GHApp.GameSaveResult = cmd_param;
                     GHApp.SavingGame = false;
@@ -2676,34 +2669,33 @@ namespace GnollHackX
 
         private void RequestSaveGame()
         {
+            if (PlayingReplay)
+                return;
             _saveRequested = true;
         }
 
         private void RequestRestoreSavedGame()
         {
+            if (PlayingReplay)
+                return;
             _restoreRequested = true;
         }
 
         private void RequestCheckPoint()
         {
+            if (PlayingReplay)
+                return;
             _checkPointRequested = true;
         }
 
         bool _timeTallyRequested = false;
         private void RequestTallyRealTime()
         {
+            if (PlayingReplay)
+                return;
             _timeTallyRequested = true;
         }
         
-        bool _redrawScreenRequested = false;
-        private void RedrawScreen()
-        {
-            _replayTimeStamp = DateTime.Now;
-            //Record function calls to initit windows etc. (perhaps could be saved somewhere when the game starts)
-            _redrawScreenRequested = true;
-            _replayContinuation = 0;
-        }
-
         private void EndReplayFile()
         {
             RecordFunctionCallImmediately(RecordedFunctionID.EndOfFile);

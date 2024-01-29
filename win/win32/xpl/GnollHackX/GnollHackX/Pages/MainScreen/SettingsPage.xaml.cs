@@ -159,21 +159,8 @@ namespace GnollHackX.Pages.MainScreen
 
             if(RecordSwitch.IsEnabled)
             {
-                //bool oldRecordGame = GHApp.RecordGame;
                 GHApp.RecordGame = RecordSwitch.IsToggled;
                 Preferences.Set("RecordGame", RecordSwitch.IsToggled);
-                //if (_gamePage != null && oldRecordGame != RecordSwitch.IsToggled && !RecordSwitch.IsToggled)
-                //{
-                    //_gamePage.RequestEndReplayFile();
-                    //if (RecordSwitch.IsToggled)
-                    //{
-                    //    _gamePage.RequestRedrawScreen();
-                    //}
-                    //else
-                    //{
-                    //    _gamePage.RequestEndReplayFile();
-                    //}
-                //}
             }
 
             if(GZipSwitch.IsEnabled)

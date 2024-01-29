@@ -16271,18 +16271,6 @@ namespace GnollHackX.Pages.Game
             UpdateMessageFilter();
         }
 
-        public void RequestRedrawScreen()
-        {
-            if (_currentGame != null)
-            {
-                ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
-                {
-                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.RedrawScreen));
-                }
-            }
-        }
-
         public void RequestEndReplayFile()
         {
             if (_currentGame != null)

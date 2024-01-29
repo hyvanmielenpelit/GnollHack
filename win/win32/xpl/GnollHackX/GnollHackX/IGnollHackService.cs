@@ -54,7 +54,6 @@ namespace GnollHackX
 
         void SaveAndRestoreSavedGame(int save_style);
         void TallyRealTime();
-        void RedrawScreen();
         bool ValidateSaveFile(string filename, out string out_str);
         int CheckCurrentFileDescriptor();
         void ReportFileDescriptors();

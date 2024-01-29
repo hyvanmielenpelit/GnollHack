@@ -66,7 +66,6 @@ namespace GnollHackX
         CloseAllDialogs,
         UseLongerMessageHistory,
         SaveInsuranceCheckPoint,
-        RedrawScreen,
         EndReplayFile,
         InformRecordingWentOff,
         RestartReplay,
