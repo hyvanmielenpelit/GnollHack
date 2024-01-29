@@ -4292,11 +4292,11 @@ namespace GnollHackX
                 string usedReplayFileName = rawFileName;
                 string origRawFileName = rawFileName;
 
-                try
+                if (isZip && rawFileName.Length > usedZipSuffix.Length)
                 {
-                    if (isZip)
+                    string unZippedFileName = rawFileName.Substring(0, rawFileName.Length - usedZipSuffix.Length);
+                    try
                     {
-                        string unZippedFileName = rawFileName.Substring(0, rawFileName.Length - usedZipSuffix.Length);
                         if (File.Exists(unZippedFileName))
                             File.Delete(unZippedFileName);
 
@@ -4327,13 +4327,15 @@ namespace GnollHackX
                             usedReplayFileName = unZippedFileName;
                         }
                     }
-                }
-                catch (Exception ex)
-                {
-                    MaybeWriteGHLog(ex.Message);
-                    if (!exitHackCalled)
-                        game.ClientCallback_ExitHack(0);
-                    return PlayReplayResult.Error;
+                    catch (Exception ex)
+                    {
+                        MaybeWriteGHLog(ex.Message);
+                        if (!exitHackCalled)
+                            game.ClientCallback_ExitHack(0);
+                        if (File.Exists(unZippedFileName))
+                            File.Delete(unZippedFileName);
+                        return PlayReplayResult.Error;
+                    }
                 }
 
                 contnextfile = false;
@@ -5292,6 +5294,10 @@ namespace GnollHackX
                                     if (!exitHackCalled)
                                         game.ClientCallback_ExitHack(2);
                                     MaybeWriteGHLog("Replay " + usedReplayFileName + " has invalid version: " + verno + ", compatibility: " + vercompat + " vs the app's " + GHVersionNumber + ", compatibility: " + GHVersionCompatibility);
+                                    if (isZip && File.Exists(origRawFileName) && File.Exists(usedReplayFileName) && origRawFileName != usedReplayFileName)
+                                    {
+                                        File.Delete(usedReplayFileName);
+                                    }
                                     return PlayReplayResult.InvalidVersion;
                                 }
                             }
@@ -5303,6 +5309,10 @@ namespace GnollHackX
                     if (!exitHackCalled)
                         game.ClientCallback_ExitHack(0);
                     MaybeWriteGHLog(prevcmd_byte + ": " + ex.Message);
+                    if (isZip && File.Exists(origRawFileName) && File.Exists(usedReplayFileName) && origRawFileName != usedReplayFileName)
+                    {
+                        File.Delete(usedReplayFileName);
+                    }
                     return PlayReplayResult.Error;
                 }
                 _soundSourceIdDictionary.Clear();

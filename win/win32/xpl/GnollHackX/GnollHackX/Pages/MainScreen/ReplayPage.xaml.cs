@@ -243,11 +243,15 @@ namespace GnollHackX.Pages.MainScreen
                                             string searchString = GHConstants.ReplayFileNameMiddleDivisor + middleStr + GHConstants.ReplayFileNameSuffix + (GHApp.UseGZipForReplays ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix);
                                             foreach (string mainFile in files)
                                             {
-                                                if (mainFile != null && File.Exists(mainFile) && mainFile.StartsWith(GHConstants.ReplayFileNamePrefix) && mainFile.EndsWith(searchString))
+                                                if (mainFile != null && File.Exists(mainFile) && mainFile.EndsWith(searchString))
                                                 {
-                                                    mainFileFound = true;
-                                                    mainFileName = mainFile;
-                                                    break;
+                                                    FileInfo mainFI = new FileInfo(mainFile);
+                                                    if (mainFI != null && mainFI.Name != null && mainFI.Name.StartsWith(GHConstants.ReplayFileNamePrefix))
+                                                    {
+                                                        mainFileFound = true;
+                                                        mainFileName = mainFile;
+                                                        break;
+                                                    }
                                                 }
                                             }
                                         }
@@ -255,7 +259,7 @@ namespace GnollHackX.Pages.MainScreen
                                         {
                                             FileInfo mainFI = new FileInfo(mainFileName);
                                             int mainMiddleLen = mainFI.Name.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (GHApp.UseGZipForReplays ? GHConstants.ReplayGZipFileNameSuffix.Length : GHConstants.ReplayZipFileNameSuffix.Length);
-                                            int numberStart = fi.Name.Length - extraRemoved - GHConstants.ReplayFileNameSuffix.Length - 1;
+                                            int numberStart = fi.Name.Length - extraRemoved - GHConstants.ReplayFileNameSuffix.Length;
                                             if (mainMiddleLen > 0 && numberStart > 0)
                                             {
                                                 try
@@ -266,10 +270,13 @@ namespace GnollHackX.Pages.MainScreen
                                                     string newFile = Path.Combine(dirPath, newFileName);
                                                     string zipFile = newFile + (GHApp.UseGZipForReplays ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix);
 
-                                                    if (File.Exists(newFile))
-                                                        File.Delete(newFile);
+                                                    if(newFile != file)
+                                                    {
+                                                        if (File.Exists(newFile))
+                                                            File.Delete(newFile);
 
-                                                    File.Move(file, newFile);
+                                                        File.Move(file, newFile);
+                                                    }
 
                                                     /* Zip it */
                                                     if (GHApp.UseGZipForReplays)
