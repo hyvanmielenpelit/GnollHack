@@ -3640,10 +3640,10 @@ boolean nextlevel, limit_by_twoweap, apply_extra_bonuses, use_adjusted_sklvl;
     boolean apply_two_weapon_bonus = apply_extra_bonuses && (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))));
     boolean apply_two_handed_weapon_bonus = apply_extra_bonuses && weapon && bimanual(weapon) && is_weapon(weapon) && !is_launcher(weapon);
     boolean Is_worn_gauntlets = (weapon && is_gloves(weapon) && (weapon->owornmask & W_ARMG));
-    boolean apply_martial_arts_bonus = ((!weapon/* && (!uarmg || (uarmg && !is_metallic(uarmg)))*/) || (Is_worn_gauntlets/* && !is_metallic(weapon)*/));
     int wep_type = weapon_skill_type(weapon);
     int type = use_this_skill ? use_this_skill : wep_type;
-    
+    boolean apply_martial_arts_bonus = type == P_MARTIAL_ARTS && ((!weapon/* && (!uarmg || (uarmg && !is_metallic(uarmg)))*/) || (Is_worn_gauntlets/* && !is_metallic(weapon)*/));
+
     if (type == P_BARE_HANDED_COMBAT || type == P_MARTIAL_ARTS || Is_worn_gauntlets)
     {
         enum p_skills type2 = (enum p_skills)type;
@@ -3799,9 +3799,9 @@ boolean nextlevel, limit_by_twoweap, apply_extra_bonuses, use_adjusted_sklvl;
     boolean apply_two_weapon_bonus = apply_extra_bonuses && (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))));
     boolean apply_two_handed_weapon_bonus = apply_extra_bonuses && weapon && bimanual(weapon) && is_weapon(weapon) && !is_launcher(weapon);
     boolean Is_worn_gauntlets = (weapon && is_gloves(weapon) && (weapon->owornmask & W_ARMG));
-    boolean apply_martial_arts_bonus = ((!weapon/* && (!uarmg || (uarmg && !is_metallic(uarmg)))*/) || (Is_worn_gauntlets/* && !is_metallic(weapon)*/));
     int wep_type = weapon_skill_type(weapon);
     int type = use_this_skill > P_NONE ? use_this_skill : wep_type;
+    boolean apply_martial_arts_bonus = type == P_MARTIAL_ARTS && ((!weapon/* && (!uarmg || (uarmg && !is_metallic(uarmg)))*/) || (Is_worn_gauntlets/* && !is_metallic(weapon)*/));
 
     if (type == P_BARE_HANDED_COMBAT || type == P_MARTIAL_ARTS || Is_worn_gauntlets)
     {
