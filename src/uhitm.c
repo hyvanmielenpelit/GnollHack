@@ -647,8 +647,7 @@ int dieroll;
 
         /* KMH, conduct */
         if (weapon && is_weapon(weapon))
-            if (!u.uconduct.weaphit++)
-                livelog_printf(LL_CONDUCT, "%s", "hit with a wielded weapon for the first time");
+            u.uconduct.weaphit++; /* Livelog is below */
 
         /* we hit the monster; be careful: it might die or
            be knocked into a different location */
