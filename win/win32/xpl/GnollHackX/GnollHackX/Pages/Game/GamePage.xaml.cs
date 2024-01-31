@@ -1016,7 +1016,22 @@ namespace GnollHackX.Pages.Game
 
             if (PlayingReplay)
             {
-                MainGrid.IsEnabled = false;
+                //MainGrid.IsEnabled = false;
+                lWornItemsButton.IsEnabled = false;
+                lAbilitiesButton.IsEnabled = false;
+                ContextLayout.IsEnabled = false;
+
+                GameMenuButton.IsEnabled = false;
+                ESCButton.IsEnabled = false;
+                LookModeButton.IsEnabled = false;
+                ToggleTravelModeButton.IsEnabled = false;
+                ButtonRowStack.IsEnabled = false;
+
+                SimpleGameMenuButton.IsEnabled = false;
+                SimpleESCButton.IsEnabled = false;
+                SimpleLookModeButton.IsEnabled = false;
+                SimpleButtonRowStack.IsEnabled = false;
+
                 MenuGrid.IsEnabled = false;
                 TextGrid.IsEnabled = false;
                 GetLineGrid.IsEnabled = false;
@@ -12224,11 +12239,11 @@ namespace GnollHackX.Pages.Game
                                     }
                                 }
                             }
-                            else if (_touchWithinSkillButton)
+                            else if (_touchWithinSkillButton && !PlayingReplay)
                             {
                                 GenericButton_Clicked(sender, e, (int)'S');
                             }
-                            else if (_touchWithinPrevWepButton)
+                            else if (_touchWithinPrevWepButton && !PlayingReplay)
                             {
                                 GenericButton_Clicked(sender, e, GHUtils.Meta(16));
                             }
@@ -12248,12 +12263,12 @@ namespace GnollHackX.Pages.Game
                                     _statusOffsetY = 0.0f;
                                 }
                             }
-                            else if (_touchWithinYouButton)
+                            else if (_touchWithinYouButton && !PlayingReplay)
                             {
                                 ShowExtendedStatusBar = false;
                                 GenericButton_Clicked(sender, e, (int)'}');
                             }
-                            else if (_touchWithinPet > 0 && !_showDirections && !_showNumberPad)
+                            else if (_touchWithinPet > 0 && !_showDirections && !_showNumberPad && !PlayingReplay)
                             {
                                 ConcurrentQueue<GHResponse> queue;
                                 if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
@@ -12262,7 +12277,7 @@ namespace GnollHackX.Pages.Game
                                     queue.Enqueue(new GHResponse(_currentGame, GHRequestType.GetChar, (int)'{'));
                                 }
                             }
-                            else
+                            else if (!PlayingReplay || ShowExtendedStatusBar)
                             {
                                 TouchEntry entry;
                                 bool res = TouchDictionary.TryGetValue(e.Id, out entry);
