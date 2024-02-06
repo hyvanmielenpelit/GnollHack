@@ -275,49 +275,51 @@ namespace GnollHackX.Pages.MainScreen
                                         if (System.IO.File.Exists(filestr))
                                         {
                                             FileInfo fileInfo = new FileInfo(filestr);
-                                            string out_str = "";
-                                            if (fileInfo != null && fileInfo.Name != null && fileInfo.Name.StartsWith(GHConstants.ReplayFileNamePrefix) && GHApp.ValidateReplayFile(filestr, out out_str))
+                                            if (fileInfo != null && fileInfo.Name != null && fileInfo.Name.StartsWith(GHConstants.ReplayFileNamePrefix))
                                             {
-                                                string finalname = Path.Combine(savedirpath, fileInfo.Name);
-                                                if (System.IO.File.Exists(finalname))
-                                                    System.IO.File.Delete(finalname);
-                                                System.IO.File.Move(filestr, finalname);
-                                                nextracted++;
-                                                ntotalfiles++;
-
-                                                bool isGZip = fileInfo.Name.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileInfo.Name.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
-                                                bool isNormalZip = fileInfo.Name.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileInfo.Name.EndsWith(GHConstants.ReplayZipFileNameSuffix);
-                                                bool isZip = isGZip || isNormalZip;
-                                                string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
-                                                int len = fileInfo.Name.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
-                                                if (len > 0)
+                                                if (GHApp.ValidateReplayFile(filestr, out string out_str))
                                                 {
-                                                    string middleStr = fileInfo.Name.Substring(GHConstants.ReplayFileNamePrefix.Length, len);
-                                                    foreach (string contstr in extractedfiles)
+                                                    string finalname = Path.Combine(savedirpath, fileInfo.Name);
+                                                    if (System.IO.File.Exists(finalname))
+                                                        System.IO.File.Delete(finalname);
+                                                    System.IO.File.Move(filestr, finalname);
+                                                    nextracted++;
+                                                    ntotalfiles++;
+
+                                                    bool isGZip = fileInfo.Name.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileInfo.Name.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
+                                                    bool isNormalZip = fileInfo.Name.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileInfo.Name.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+                                                    bool isZip = isGZip || isNormalZip;
+                                                    string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
+                                                    int len = fileInfo.Name.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
+                                                    if (len > 0)
                                                     {
-                                                        if (System.IO.File.Exists(contstr))
+                                                        string middleStr = fileInfo.Name.Substring(GHConstants.ReplayFileNamePrefix.Length, len);
+                                                        foreach (string contstr in extractedfiles)
                                                         {
-                                                            FileInfo contFileInfo = new FileInfo(contstr);
-                                                            if (contFileInfo != null && contFileInfo.Name != null && contFileInfo.Name.StartsWith(GHConstants.ReplayContinuationFileNamePrefix))
+                                                            if (System.IO.File.Exists(contstr))
                                                             {
-                                                                int contLen = contFileInfo.Name.Length - GHConstants.ReplayContinuationFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
-                                                                if (contLen >= len && contFileInfo.Name.Substring(GHConstants.ReplayContinuationFileNamePrefix.Length, len) == middleStr)
+                                                                FileInfo contFileInfo = new FileInfo(contstr);
+                                                                if (contFileInfo != null && contFileInfo.Name != null && contFileInfo.Name.StartsWith(GHConstants.ReplayContinuationFileNamePrefix))
                                                                 {
-                                                                    string contfinalname = Path.Combine(savedirpath, contFileInfo.Name);
-                                                                    if (System.IO.File.Exists(contfinalname))
-                                                                        System.IO.File.Delete(contfinalname);
-                                                                    System.IO.File.Move(contstr, contfinalname);
-                                                                    ntotalfiles++;
+                                                                    int contLen = contFileInfo.Name.Length - GHConstants.ReplayContinuationFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
+                                                                    if (contLen >= len && contFileInfo.Name.Substring(GHConstants.ReplayContinuationFileNamePrefix.Length, len) == middleStr)
+                                                                    {
+                                                                        string contfinalname = Path.Combine(savedirpath, contFileInfo.Name);
+                                                                        if (System.IO.File.Exists(contfinalname))
+                                                                            System.IO.File.Delete(contfinalname);
+                                                                        System.IO.File.Move(contstr, contfinalname);
+                                                                        ntotalfiles++;
+                                                                    }
                                                                 }
                                                             }
                                                         }
                                                     }
                                                 }
-                                            }
-                                            else
-                                            {
-                                                GHApp.MaybeWriteGHLog(out_str);
-                                                ninvalid++;
+                                                else
+                                                {
+                                                    GHApp.MaybeWriteGHLog(out_str);
+                                                    ninvalid++;
+                                                }
                                             }
                                         }
                                     }
