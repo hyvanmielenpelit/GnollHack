@@ -1533,27 +1533,48 @@ namespace GnollHackX.Pages.Game
         {
             long counter_increment = 1;
             int subCounterMax = 0;
+            double framespeed = 1.0;
             switch (MapRefreshRate)
             {
                 case MapRefreshRateStyle.MapFPS20:
-                    counter_increment = 2; /* Animations skip at every other frame at 20fps to get 40fps */
+                    framespeed = 2.0; /* Animations skip at every other frame at 20fps to get 40fps */
                     break;
                 case MapRefreshRateStyle.MapFPS30:
                     break;
                 case MapRefreshRateStyle.MapFPS40:
                     break;
                 case MapRefreshRateStyle.MapFPS60:
-                    subCounterMax = 1; /* Animations proceed at every other frame at 60fps to get 30fps */
+                    framespeed = 0.5;
+                    //subCounterMax = 1; /* Animations proceed at every other frame at 60fps to get 30fps */
                     break;
                 case MapRefreshRateStyle.MapFPS80:
-                    subCounterMax = 1; /* Animations proceed at every other frame at 80fps to get 40fps */
+                    framespeed = 0.5;
+                    //subCounterMax = 1; /* Animations proceed at every other frame at 80fps to get 40fps */
                     break;
                 case MapRefreshRateStyle.MapFPS90:
-                    subCounterMax = 2; /* Animations proceed at every third frame at 90fps to get 30fps */
+                    framespeed = 1.0 / 3.0;
+                    //subCounterMax = 2; /* Animations proceed at every third frame at 90fps to get 30fps */
                     break;
                 case MapRefreshRateStyle.MapFPS120:
-                    subCounterMax = 2; /* Animations proceed at every third frame at 120fps to get 40fps */
+                    framespeed = 1.0 / 3.0;
+                    //subCounterMax = 2; /* Animations proceed at every third frame at 120fps to get 40fps */
                     break;
+            }
+            if(PlayingReplay)
+            {
+                double rpspeed = GHApp.ReplaySpeed;
+                framespeed = framespeed * rpspeed;
+            }
+            if(framespeed >= 1)
+            {
+                counter_increment = (long)Math.Round(framespeed);
+                subCounterMax = 0;
+            }
+            else if(framespeed > 0)
+            {
+                double inverse = 1.0 / framespeed;
+                counter_increment = 1L;
+                subCounterMax = Math.Max(1, (int)Math.Round(inverse) - 1);
             }
             if(subCounterMax > 0)
             {
