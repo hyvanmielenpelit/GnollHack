@@ -2264,7 +2264,10 @@ namespace GnollHackX.Pages.Game
                                 GetChar();
                                 break;
                             case GHRequestType.AskName:
-                                AskName(req.RequestString, req.RequestString2);
+                                AskName(req.RequestString, req.RequestString2, req.RequestString3);
+                                break;
+                            case GHRequestType.HideAskNamePage:
+                                HideAskNamePage();
                                 break;
                             case GHRequestType.GetLine:
                                 GetLine(req.RequestString, req.PlaceHolderString, req.DefValueString, req.IntroLineString, req.RequestInt, req.RequestAttr, req.RequestNhColor);
@@ -2860,9 +2863,9 @@ namespace GnollHackX.Pages.Game
             RefreshMsgHistoryRowCounts = true;
         }
 
-        private async void AskName(string modeName, string modeDescription)
+        private async void AskName(string modeName, string modeDescription, string replayEnteredPlayerName)
         {
-            var namePage = new NamePage(this, modeName, modeDescription);
+            var namePage = new NamePage(this, modeName, modeDescription, replayEnteredPlayerName);
             await App.Current.MainPage.Navigation.PushModalAsync(namePage);
         }
 
@@ -3442,6 +3445,10 @@ namespace GnollHackX.Pages.Game
             await App.Current.MainPage.Navigation.PushModalAsync(outRipPage);
         }
         private async void HideOutRipPage()
+        {
+            await App.Current.MainPage.Navigation.PopModalAsync();
+        }
+        private async void HideAskNamePage()
         {
             await App.Current.MainPage.Navigation.PopModalAsync();
         }

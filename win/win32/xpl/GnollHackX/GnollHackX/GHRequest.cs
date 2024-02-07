@@ -16,6 +16,7 @@ namespace GnollHackX
         PrintTopLine,
         PrintHistory,
         AskName,
+        HideAskNamePage,
         ReturnToMainMenu,
         ShowMenuPage,
         HideMenuPage,
@@ -143,6 +144,7 @@ namespace GnollHackX
         public GHOutRipInfo RequestOutRipInfo { get; set; }
         public string RequestString { get; set; }
         public string RequestString2 { get; set; }
+        public string RequestString3 { get; set; }
         public string PlaceHolderString { get; set; }
         public string DefValueString { get; set; }
         public string IntroLineString { get; set; }
@@ -256,6 +258,14 @@ namespace GnollHackX
             RequestType = requesttype;
             RequestString = requeststring;
             RequestString2 = requeststring2;
+        }
+        public GHRequest(GHGame ghGame, GHRequestType requesttype, string requeststring, string requeststring2, string requeststring3)
+        {
+            RequestingGame = ghGame;
+            RequestType = requesttype;
+            RequestString = requeststring;
+            RequestString2 = requeststring2;
+            RequestString3 = requeststring3;
         }
         public GHRequest(GHGame ghGame, GHRequestType requesttype, string titlestring, string requeststring, string acceptstring, string cancelstring)
         {

@@ -517,6 +517,19 @@ namespace GnollHackX
             _gamePage.ClearEngravingData(x, y);
         }
 
+        public int Replay_AskName(string modeName, string modeDescription, string enteredPlayerName)
+        {
+            ConcurrentQueue<GHRequest> queue;
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+            {
+                queue.Enqueue(new GHRequest(this, GHRequestType.AskName, modeName, modeDescription, enteredPlayerName));
+                WaitAndCheckPauseReplay(GHConstants.ReplayAskNameDelay2);
+                queue.Enqueue(new GHRequest(this, GHRequestType.HideAskNamePage));
+                return 0;
+            }
+            return 1;
+        }
+
         public int ClientCallback_AskName(string modeName, string modeDescription, IntPtr out_string_ptr)
         {
             Debug.WriteLine("ClientCallback_AskName");

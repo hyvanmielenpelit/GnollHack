@@ -4610,10 +4610,7 @@ namespace GnollHackX
                                                     string modeName = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     string modeDescription = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     string chName = br.ReadInt32() == 0 ? null : br.ReadString();
-                                                    /* No asking name in replay */
-                                                    //game.ClientCallback_AskName(modeName, modeDescription, chName);
-                                                    if(GoToTurn < 0)
-                                                        Thread.Sleep((int)(GHConstants.ReplayStandardDelay / ReplaySpeed));
+                                                    game.Replay_AskName(modeName, modeDescription, chName);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.GetEvent:

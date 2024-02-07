@@ -1647,6 +1647,8 @@ namespace GnollHackX
         public const int ReplayStandardDelay = 128; /* Milliseconds */
         public const int ReplayGetEventDelay = 16; /* Milliseconds */
         public const int ReplayOutripDelay = 1024; /* Milliseconds */
+        public const int ReplayAskNameDelay1 = 512; /* Milliseconds */
+        public const int ReplayAskNameDelay2 = 1536; /* Milliseconds */
         public const int ReplayPopupDelay = 512; /* Milliseconds */
         public const int ReplayYnDelay = 512; /* Milliseconds */
         public const int ReplayMenuDelay = 512; /* Milliseconds */

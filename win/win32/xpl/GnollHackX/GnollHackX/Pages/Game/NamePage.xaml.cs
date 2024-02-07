@@ -25,8 +25,9 @@ namespace GnollHackX.Pages.Game
         public Regex ValidationExpression { get; set; }
         private GHGame _currentGame;
         private GamePage _gamePage;
+        private string _replayEnteredName = null;
 
-        public NamePage(GamePage gamepage, string modeName, string modeDescription)
+        public NamePage(GamePage gamepage, string modeName, string modeDescription, string replayEnteredPlayerName)
         {
             InitializeComponent();
 #if GNH_MAUI
@@ -37,6 +38,8 @@ namespace GnollHackX.Pages.Game
             ValidationExpression = new Regex(@"^[A-Za-z0-9_]{1,31}$");
             _currentGame = gamepage.CurrentGame;
             _gamePage = gamepage;
+            _replayEnteredName = replayEnteredPlayerName;
+
             if (!string.IsNullOrWhiteSpace(modeName))
             {
                 lblModeName.Text = "Game is in " + modeName;
@@ -58,6 +61,12 @@ namespace GnollHackX.Pages.Game
                 lblModeDescription.Text = "";
                 lblModeName.IsVisible = false;
                 lblModeDescription.IsVisible = false;
+            }
+            if(_gamePage.PlayingReplay)
+            {
+                mainStack.IsEnabled = false;
+                btnOK.IsEnabled = false;
+                btnCancel.IsEnabled = false;                
             }
         }
 
@@ -98,8 +107,21 @@ namespace GnollHackX.Pages.Game
         protected override void OnAppearing()
         {
             base.OnAppearing();
-
-            eName.Focus();
+            if(_gamePage.PlayingReplay)
+            {
+                if(!string.IsNullOrWhiteSpace(_replayEnteredName))
+                {
+                    Device.StartTimer(TimeSpan.FromMilliseconds(GHConstants.ReplayAskNameDelay1), () =>
+                    {
+                        eName.Text = _replayEnteredName;
+                        return false;
+                    });
+                }
+            }
+            else
+            {
+                eName.Focus();
+            }
         }
 
         private bool _backPressed = false;
