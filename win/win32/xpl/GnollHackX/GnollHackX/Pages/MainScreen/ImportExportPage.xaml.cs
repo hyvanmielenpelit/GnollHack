@@ -85,17 +85,17 @@ namespace GnollHackX.Pages.MainScreen
                         if (s != null)
                         {
                             string gnhpath = GHApp.GHPath;
-                            if (file.FileName.EndsWith("zip", StringComparison.OrdinalIgnoreCase))
+                            if (file.FileName.EndsWith(GHConstants.SavedGameSharedZipFileNameSuffix, StringComparison.OrdinalIgnoreCase))
                             {
                                 string savedirpath = Path.Combine(gnhpath, GHConstants.SaveDirectory);
                                 GHApp.CheckCreateDirectory(savedirpath);
 
-                                string tempdirpath = Path.Combine(gnhpath, GHConstants.SaveDirectory, "temp");
+                                string tempdirpath = Path.Combine(gnhpath, GHConstants.SaveDirectory, GHConstants.UnzipTempSubDirectory);
                                 if (Directory.Exists(tempdirpath))
                                     Directory.Delete(tempdirpath, true);
                                 GHApp.CheckCreateDirectory(tempdirpath);
 
-                                string temp2dirpath = Path.Combine(gnhpath, GHConstants.SaveDirectory, "zip");
+                                string temp2dirpath = Path.Combine(gnhpath, GHConstants.SaveDirectory, GHConstants.UnzipZipSubDirectory);
                                 if (Directory.Exists(temp2dirpath))
                                     Directory.Delete(temp2dirpath, true);
                                 GHApp.CheckCreateDirectory(temp2dirpath);
@@ -240,12 +240,12 @@ namespace GnollHackX.Pages.MainScreen
                                 string savedirpath = Path.Combine(gnhpath, GHConstants.ReplayDirectory);
                                 GHApp.CheckCreateDirectory(savedirpath);
 
-                                string tempdirpath = Path.Combine(gnhpath, GHConstants.ReplayDirectory, "temp");
+                                string tempdirpath = Path.Combine(gnhpath, GHConstants.ReplayDirectory, GHConstants.UnzipTempSubDirectory);
                                 if (Directory.Exists(tempdirpath))
                                     Directory.Delete(tempdirpath, true);
                                 GHApp.CheckCreateDirectory(tempdirpath);
 
-                                string temp2dirpath = Path.Combine(gnhpath, GHConstants.ReplayDirectory, "zip");
+                                string temp2dirpath = Path.Combine(gnhpath, GHConstants.ReplayDirectory, GHConstants.UnzipZipSubDirectory);
                                 if (Directory.Exists(temp2dirpath))
                                     Directory.Delete(temp2dirpath, true);
                                 GHApp.CheckCreateDirectory(temp2dirpath);
@@ -443,15 +443,39 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
             string directory1 = Path.Combine(GHApp.GHPath, GHConstants.ReplayDirectory);
             int nofiles1 = 0;
+            int nofiles_main = 0;
+            int nofiles_cont = 0;
+            //int nofiles_shared = 0;
+            int nofiles_other = 0;
             if (Directory.Exists(directory1))
             {
                 string[] files1 = Directory.GetFiles(directory1);
                 if (files1 != null)
                 {
                     nofiles1 = files1.Length;
+                    foreach(string file in files1)
+                    {
+                        if(!string.IsNullOrWhiteSpace(file))
+                        {
+                            FileInfo fileInfo = new FileInfo(file);
+                            if(fileInfo != null && !string.IsNullOrWhiteSpace(fileInfo.Name))
+                            {
+                                if (fileInfo.Name.StartsWith(GHConstants.ReplayFileNamePrefix))
+                                    nofiles_main++;
+                                else if (fileInfo.Name.StartsWith(GHConstants.ReplayContinuationFileNamePrefix))
+                                    nofiles_cont++;
+                                //else if (fileInfo.Name.StartsWith(GHConstants.ReplaySharedZipFileNamePrefix))
+                                //    nofiles_shared++;
+                                else
+                                    nofiles_other++;
+                            }
+                        }
+                    }
                 }
             }
-            bool answer = await DisplayAlert("Delete All Replays?", "Are you sure to delete all files (" + nofiles1 + ") in the " + GHConstants.ReplayDirectory + " directory?", "Yes", "No");
+            bool answer = await DisplayAlert("Delete All Replays?", "Are you sure to delete all files (" 
+                + nofiles1 + ": " + nofiles_main + " main, " + nofiles_cont + " continuation, "/* + nofiles_shared + " shared, "*/ + nofiles_other + " other) in the " 
+                + GHConstants.ReplayDirectory + " directory?", "Yes", "No");
             if (answer)
             {
                 try

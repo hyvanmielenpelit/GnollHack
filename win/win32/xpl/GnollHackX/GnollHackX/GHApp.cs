@@ -2085,11 +2085,11 @@ namespace GnollHackX
         public static string CreateGameZipArchive()
         {
             string ghdir = GnollHackService.GetGnollHackPath();
-            string targetpath = Path.Combine(ghdir, "archive");
+            string targetpath = Path.Combine(ghdir, GHConstants.ArchiveDirectory);
 
             CheckCreateDirectory(targetpath);
 
-            string filepath = Path.Combine(targetpath, "crash_report-" + GHApp.VersionNumberToFileNameSuffix(GHApp.GHVersionNumber) + ".zip");
+            string filepath = Path.Combine(targetpath, "crash_report-" + GHApp.VersionNumberToFileNameSuffix(GHApp.GHVersionNumber) + GHConstants.GenericZipFileNameSuffix);
             if (File.Exists(filepath))
                 File.Delete(filepath);
 
@@ -2126,11 +2126,11 @@ namespace GnollHackX
         public static string CreateDumplogZipArchive()
         {
             string ghdir = GnollHackService.GetGnollHackPath();
-            string targetpath = Path.Combine(ghdir, "archive");
+            string targetpath = Path.Combine(ghdir, GHConstants.ArchiveDirectory);
 
             CheckCreateDirectory(targetpath);
 
-            string filepath = Path.Combine(targetpath, "dumplogs-" + VersionNumberToFileNameSuffix(GHVersionNumber) + ".zip");
+            string filepath = Path.Combine(targetpath, "dumplogs-" + VersionNumberToFileNameSuffix(GHVersionNumber) + GHConstants.GenericZipFileNameSuffix);
             if (File.Exists(filepath))
                 File.Delete(filepath);
 
@@ -2157,11 +2157,11 @@ namespace GnollHackX
         public static string CreateSavedGamesZipArchive()
         {
             string ghdir = GnollHackService.GetGnollHackPath();
-            string targetpath = Path.Combine(ghdir, "archive");
+            string targetpath = Path.Combine(ghdir, GHConstants.ArchiveDirectory);
 
             CheckCreateDirectory(targetpath);
 
-            string filepath = Path.Combine(targetpath, "savedgames-" + VersionNumberToFileNameSuffix(GHVersionNumber) + ".zip");
+            string filepath = Path.Combine(targetpath, "savedgames-" + VersionNumberToFileNameSuffix(GHVersionNumber) + GHConstants.SavedGameSharedZipFileNameSuffix);
             if (File.Exists(filepath))
                 File.Delete(filepath);
 
@@ -2188,17 +2188,15 @@ namespace GnollHackX
         public static string CreateReplayZipArchive()
         {
             string ghdir = GnollHackService.GetGnollHackPath();
-            string targetpath = Path.Combine(ghdir, "archive");
+            string targetpath = Path.Combine(ghdir, GHConstants.ArchiveDirectory);
 
             CheckCreateDirectory(targetpath);
 
-            string filepath = Path.Combine(targetpath, "replays-" + VersionNumberToFileNameSuffix(GHVersionNumber) + GHConstants.ReplaySharedZipFileNameSuffix);
+            string filepath = Path.Combine(targetpath, GHConstants.ReplayAllSharedZipFileNamePrefix + VersionNumberToFileNameSuffix(GHVersionNumber) + GHConstants.ReplaySharedZipFileNameSuffix);
             if (File.Exists(filepath))
                 File.Delete(filepath);
 
             string zipFile = filepath;
-            string[] files = Directory.GetFiles(ghdir);
-
             using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
             {
                 string[] ghsubdirlist = { GHConstants.ReplayDirectory };
@@ -2208,10 +2206,17 @@ namespace GnollHackX
                     string[] subfiles = Directory.GetFiles(subdirpath);
                     foreach (var fPath in subfiles)
                     {
-                        archive.CreateEntryFromFile(fPath, Path.GetFileName(fPath));
+                        if(!string.IsNullOrWhiteSpace(fPath))
+                        {
+                            FileInfo fi = new FileInfo(fPath);
+                            if (!string.IsNullOrWhiteSpace(fi.Name))
+                            {
+                                if(!fi.Name.StartsWith(GHConstants.ReplaySharedZipFileNamePrefix))
+                                    archive.CreateEntryFromFile(fPath, Path.GetFileName(fPath));
+                            }
+                        }
                     }
                 }
-
             }
             return zipFile;
         }

@@ -347,41 +347,45 @@ namespace GnollHackX.Pages.MainScreen
                     filePath = recfile.FilePath;
             }
 
-            if (filePath != null && recfile != null)
+            if (!string.IsNullOrWhiteSpace(filePath) && recfile != null)
             {
                 try
                 {
-                    /* Create zip of al relevant files */
-                    string zipFile = Path.Combine(GHApp.GHPath, GHConstants.ReplayDirectory, "replay" + GHConstants.ReplaySharedZipFileNameSuffix);
-                    if(File.Exists(zipFile))
-                        File.Delete(zipFile);
+                    /* Create zip of all relevant files */
+                    string targetpath = Path.Combine(GHApp.GHPath, GHConstants.ArchiveDirectory);
+                    if (!Directory.Exists(targetpath))
+                        GHApp.CheckCreateDirectory(targetpath);
 
-                    using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+                    FileInfo fi = new FileInfo(filePath);
+                    string fileName = fi.Name;
+                    string dir = fi.DirectoryName;
+                    if (!string.IsNullOrWhiteSpace(fileName) && fileName.StartsWith(GHConstants.ReplayFileNamePrefix) && Directory.Exists(dir))
                     {
-                        archive.CreateEntryFromFile(filePath, Path.GetFileName(filePath));
-
-                        FileInfo fi = new FileInfo(filePath);
-                        string dir = fi.DirectoryName;
-                        string fileName = fi.Name;
-                        if (fileName != null && fileName.StartsWith(GHConstants.ReplayFileNamePrefix))
+                        bool isGZip = fileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
+                        bool isNormalZip = fileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+                        bool isZip = isGZip || isNormalZip;
+                        string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
+                        int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
+                        if (subLen > 0)
                         {
-                            bool isGZip = fileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
-                            bool isNormalZip = fileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
-                            bool isZip = isGZip || isNormalZip;
-                            string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
-                            int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
-                            if (subLen > 0 && Directory.Exists(dir))
+                            string subString = fileName.Substring(GHConstants.ReplayFileNamePrefix.Length, subLen);
+                            string zipFile = Path.Combine(targetpath, GHConstants.ReplaySharedZipFileNamePrefix + subString + GHConstants.ReplaySharedZipFileNameSuffix);
+                            if (File.Exists(zipFile))
+                                File.Delete(zipFile);
+
+                            using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
                             {
+                                archive.CreateEntryFromFile(filePath, Path.GetFileName(filePath));
                                 string[] files = Directory.GetFiles(dir);
                                 if (files != null)
                                 {
                                     foreach (string file in files)
                                     {
-                                        if (file != null)
+                                        if (!string.IsNullOrWhiteSpace(file))
                                         {
-                                            string contStart = GHConstants.ReplayContinuationFileNamePrefix + fileName.Substring(GHConstants.ReplayFileNamePrefix.Length, subLen);
+                                            string contStart = GHConstants.ReplayContinuationFileNamePrefix + subString;
                                             FileInfo contFI = new FileInfo(file);
-                                            if(contFI != null && contFI.Name != null)
+                                            if (contFI != null && !string.IsNullOrWhiteSpace(contFI.Name))
                                             {
                                                 if (contFI.Name.StartsWith(contStart) && (!isZip || file.EndsWith(usedZipSuffix)) && File.Exists(file))
                                                 {
@@ -392,13 +396,13 @@ namespace GnollHackX.Pages.MainScreen
                                     }
                                 }
                             }
+                            await Share.RequestAsync(new ShareFileRequest
+                            {
+                                Title = "Sharing " + recfile.FileName,
+                                File = new ShareFile(zipFile)
+                            });
                         }
                     }
-                    await Share.RequestAsync(new ShareFileRequest
-                    {
-                        Title = "Sharing " + recfile.FileName,
-                        File = new ShareFile(zipFile)
-                    });
                 }
                 catch (Exception ex)
                 {

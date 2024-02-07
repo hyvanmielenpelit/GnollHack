@@ -213,9 +213,9 @@ namespace GnollHackX.Pages.Game
             try
             {
                 string ghdir = GHApp.GnollHackService.GetGnollHackPath();
-                string targetpath = Path.Combine(ghdir, "temp");
-
-                GHApp.CheckCreateDirectory(targetpath);
+                string targetpath = Path.Combine(ghdir, GHConstants.ArchiveDirectory);
+                if (!Directory.Exists(targetpath))
+                    GHApp.CheckCreateDirectory(targetpath);
 
                 ulong vernum = GHApp.GHVersionNumber;
                 ulong majorver = (vernum >> 24) & 0xFFUL;

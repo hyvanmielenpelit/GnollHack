@@ -395,14 +395,14 @@ namespace GnollHackX.Pages.MainScreen
                         if (s != null)
                         {
                             string gnhpath = GHApp.GHPath;
-                            if (file.FileName.EndsWith("zip", StringComparison.OrdinalIgnoreCase))
+                            if (file.FileName.EndsWith(GHConstants.GenericZipFileNameSuffix, StringComparison.OrdinalIgnoreCase))
                             {
-                                string tempdirpath = Path.Combine(gnhpath, "temp");
+                                string tempdirpath = Path.Combine(gnhpath, GHConstants.TempDirectory);
                                 if (Directory.Exists(tempdirpath))
                                     Directory.Delete(tempdirpath, true);
                                 GHApp.CheckCreateDirectory(tempdirpath);
 
-                                string temp2dirpath = Path.Combine(gnhpath, "zip");
+                                string temp2dirpath = Path.Combine(gnhpath, GHConstants.ZipDirectory);
                                 if (Directory.Exists(temp2dirpath))
                                     Directory.Delete(temp2dirpath, true);
                                 GHApp.CheckCreateDirectory(temp2dirpath);

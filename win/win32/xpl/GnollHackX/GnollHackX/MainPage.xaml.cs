@@ -317,7 +317,7 @@ namespace GnollHackX
                     status_string = status_string.Replace("◙", Environment.NewLine);
                 }
 
-                string tempdirpath = Path.Combine(GHApp.GHPath, "temp");
+                string tempdirpath = Path.Combine(GHApp.GHPath, GHConstants.UploadDirectory);
                 if (!Directory.Exists(tempdirpath))
                     GHApp.CheckCreateDirectory(tempdirpath);
                 int number = 0;
@@ -669,10 +669,22 @@ namespace GnollHackX
             Preferences.Set("VersionId", verid);
             Preferences.Set("VersionNumber", (long)vernum);
 
+            try
+            {
+                /* Clean the archive temp directory */
+                string archive_path = Path.Combine(GHApp.GHPath, GHConstants.ArchiveDirectory);
+                if (Directory.Exists(archive_path))
+                    Directory.Delete(archive_path, true);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
             GHApp.PlatformService.OnDemandPackStatusNotification += OnDemandPackEventHandler;
             StartFetchOnDemandFiles();
+
             GHApp.SetSoundBanksUpForLoading();
- 
             if (GHApp.LoadBanks)
             {
                 await TryLoadBanks(0);
