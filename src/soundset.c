@@ -173,6 +173,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music/Dungeon/Quest-Completed", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/Dungeon/Vlad-Tower-Normal", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/Dungeon/Modron-Normal", BACKGROUND_MUSIC_VOLUME * 2.0f },
+    { SOUND_BANK_MASTER, "event:/Music/Room/Modron Temple", BACKGROUND_MUSIC_VOLUME },
     { SOUND_BANK_MASTER, "event:/Music/Dungeon/Bovine-Normal", BACKGROUND_MUSIC_VOLUME * 1.5f },
     { SOUND_BANK_MASTER, "event:/Music/Dungeon/Large-Circular-Dungeon-Normal", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/End Game/Normal", BACKGROUND_MUSIC_VOLUME * 2.0f },
@@ -215,6 +216,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music/Room/Leprechaun Hall", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/Level/Quantum Core", BACKGROUND_MUSIC_VOLUME * 2.0f },
     { SOUND_BANK_MASTER, "event:/Music/Level/Fort Ludious", BACKGROUND_MUSIC_VOLUME * 3.0f },
+
     { SOUND_BANK_MASTER, "event:/SFX/General/Disintegrate", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Life Saved", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Healing/Healing", 0.3f },
@@ -19824,7 +19826,10 @@ struct mkroom* room;
             res = GHSOUND_DUNGEON_NORMAL_MUSIC_ORACLE;
             break;
         case TEMPLE:
-            res = GHSOUND_DUNGEON_NORMAL_MUSIC_TEMPLE;
+            if(In_modron_level(&u.uz))
+                res = GHSOUND_MODRON_MUSIC_TEMPLE;
+            else
+                res = GHSOUND_DUNGEON_NORMAL_MUSIC_TEMPLE;
             break;
         case SMITHY:
             if (Inhell)
