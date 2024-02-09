@@ -11591,7 +11591,7 @@ retry:
      *  value to remain distinct.
      */
     Strcpy(bufcpy, buf);
-    boolean isremovedfromgame = FALSE;;
+    boolean isremovedfromgame = FALSE;
     otmp = readobjnam(buf, &nothing, is_wiz_wish, &isremovedfromgame);
     if (!otmp) {
         pline(isremovedfromgame ? "The requested object has been removed from the game." : "Nothing fitting that description exists in the game.");

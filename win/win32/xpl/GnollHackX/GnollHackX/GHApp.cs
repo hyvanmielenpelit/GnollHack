@@ -79,6 +79,7 @@ namespace GnollHackX
             PostingGameStatus = Preferences.Get("PostingGameStatus", GHConstants.DefaultPosting);
             PostingDiagnosticData = Preferences.Get("PostingDiagnosticData", GHConstants.DefaultPosting);
             PostingXlogEntries = Preferences.Get("PostingXlogEntries", GHConstants.DefaultPosting);
+            PostingReplays = Preferences.Get("PostingReplays", GHConstants.DefaultPosting);
             PostingBonesFiles = Preferences.Get("PostingBonesFiles", GHConstants.DefaultPosting);
             BonesUserListIsBlack = Preferences.Get("BonesUserListIsBlack", false);
             CustomGameStatusLink = Preferences.Get("CustomGameStatusLink", "");
@@ -95,6 +96,7 @@ namespace GnollHackX
             XlogReleaseAccount = Preferences.Get("XlogReleaseAccount", false);
             AllowBones = Preferences.Get("AllowBones", true);
             BonesAllowedUsers = Preferences.Get("BonesAllowedUsers", "");
+            EmptyWishIsNothing = Preferences.Get("EmptyWishIsNothing", true);
             RecommendedSettingsChecked = Preferences.Get("RecommendedSettingsChecked", false);
             RecordGame = Preferences.Get("RecordGame", false);
             UseGZipForReplays = Preferences.Get("UseGZipForReplays", GHConstants.GZipIsDefaultReplayCompression);
@@ -2548,6 +2550,10 @@ namespace GnollHackX
         private static bool _postingXlogEntries;
         public static bool PostingXlogEntries { get { lock (_postingXlogEntriesLock) { return _postingXlogEntries; } } set { lock (_postingXlogEntriesLock) { _postingXlogEntries = value; } } }
 
+        private static readonly object _postingReplaysLock = new object();
+        private static bool _postingReplays;
+        public static bool PostingReplays { get { lock (_postingReplaysLock) { return _postingReplays; } } set { lock (_postingReplaysLock) { _postingReplays = value; } } }
+
         private static readonly object _postingBonesFilesLock = new object();
         private static bool _postingBonesFiles;
         public static bool PostingBonesFiles { get { lock (_postingBonesFilesLock) { return _postingBonesFiles; } } set { lock (_postingBonesFilesLock) { _postingBonesFiles = value; } } }
@@ -2559,6 +2565,10 @@ namespace GnollHackX
         private static readonly object _allowBonesLock = new object();
         private static bool _allowBones;
         public static bool AllowBones { get { lock (_allowBonesLock) { return _allowBones; } } set { lock (_allowBonesLock) { _allowBones = value; } } }
+
+        private static readonly object _emptyWishIsNothingLock = new object();
+        private static bool _emptyWishIsNothing;
+        public static bool EmptyWishIsNothing { get { lock (_emptyWishIsNothingLock) { return _emptyWishIsNothing; } } set { lock (_emptyWishIsNothingLock) { _emptyWishIsNothing = value; } } }
 
         public static string CustomGameStatusLink { get; set; }
         public static string CustomXlogAccountLink { get; set; }
@@ -2737,7 +2747,7 @@ namespace GnollHackX
 
         public static async Task TryVerifyXlogUserNameAsync()
         {
-            if(!PostingXlogEntries && !PostingBonesFiles)
+            if(!PostingXlogEntries && !PostingReplays && !PostingBonesFiles)
             {
                 SetXlogUserNameVerified(false, null, null);
                 return;
