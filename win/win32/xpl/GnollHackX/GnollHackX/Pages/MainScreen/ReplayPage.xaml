@@ -57,7 +57,7 @@
                             <controls:CustomImageButton Text="Play" x:Name="SelectButton" Clicked="SelectButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="StartAndExpand" VerticalOptions="Center" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
-                            <controls:CustomImageButton Text="Delete" x:Name="DeleteButton" Clicked="DeleteButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                            <controls:CustomImageButton Text="Multiple" x:Name="MultiButton" Clicked="MultiButton_Clicked" FontFamily="Diablo" FontSize="14" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                             <controls:CustomImageButton Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="StartAndExpand" VerticalOptions="Center" />
                         </StackLayout>
                     </StackLayout>
