@@ -1151,7 +1151,10 @@ boolean* obj_destroyed;
             }
 
             /* Play hit sound; note that uarmg == 0 indicates bare-handed */
-            play_monster_weapon_hit_sound_at_location(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), 0, uarmg, damage, thrown, bhitpos.x, bhitpos.y);
+            if (is_long_worm_with_tail(mon->data) && isok(bhitpos.x, bhitpos.y) && !is_wseg_head(mon, bhitpos.x, bhitpos.y))
+                play_monster_weapon_hit_sound_at_location(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), 0, uarmg, damage, thrown, bhitpos.x, bhitpos.y);
+            else
+                play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), 0, uarmg, damage, thrown);
         }
         valid_weapon_attack = (damage > 0);
     }
