@@ -331,7 +331,48 @@ namespace GnollHackX.Pages.MainScreen
                     ReplayCollectionView.ItemsSource = gHRecordedGameFiles;
                 }
             }
-            RecordingsLabel.Text = i.ToString() + " replay" + (i == 1 ? "" : "s") + ", " + (totalBytes < 1024 * 1024 ? string.Format("{0} kB", totalBytes / 1024) : string.Format("{0:0.0} MB" , (double)totalBytes / (1024 * 1024)));
+            //RecordingsLabel.Text = i.ToString() + " replay" + (i == 1 ? "" : "s") + ", " + (totalBytes < 1024 * 1024 ? string.Format("{0} kB", totalBytes / 1024) : string.Format("{0:0.0} MB" , (double)totalBytes / (1024 * 1024)));
+            UpdateRecordingsLabel();
+        }
+
+        private void UpdateRecordingsLabel()
+        {
+            if(IsMultiSelect)
+            {
+                int i = 0;
+                long totalBytes = 0;
+                if (ReplayCollectionView.SelectedItems != null)
+                {
+                    i = ReplayCollectionView.SelectedItems.Count;
+                    foreach (object obj in ReplayCollectionView.SelectedItems)
+                    {
+                        if(obj is GHRecordedGameFile)
+                        {
+                            GHRecordedGameFile file = (GHRecordedGameFile)obj;
+                            totalBytes += file.FileSize;
+                        }
+                    }
+                }
+                RecordingsLabel.Text = i.ToString() + " replay" + (i == 1 ? "" : "s") + " selected, " + (totalBytes < 1024 * 1024 ? string.Format("{0} kB", totalBytes / 1024) : string.Format("{0:0.0} MB", (double)totalBytes / (1024 * 1024)));
+            }
+            else
+            {
+                int i = 0;
+                long totalBytes = 0;
+                if(ReplayCollectionView.ItemsSource != null)
+                {
+                    if(ReplayCollectionView.ItemsSource is ObservableCollection<GHRecordedGameFile>)
+                    {
+                        ObservableCollection<GHRecordedGameFile> fileCollection = (ObservableCollection<GHRecordedGameFile>)ReplayCollectionView.ItemsSource;
+                        i = fileCollection.Count;
+                        foreach(GHRecordedGameFile file in fileCollection)
+                        {
+                            totalBytes += file.FileSize;
+                        }
+                    }
+                }
+                RecordingsLabel.Text = i.ToString() + " replay" + (i == 1 ? "" : "s") + ", " + (totalBytes < 1024 * 1024 ? string.Format("{0} kB", totalBytes / 1024) : string.Format("{0:0.0} MB", (double)totalBytes / (1024 * 1024)));
+            }
         }
 
         private async void ShareButton_Clicked(object sender, EventArgs e)
@@ -628,6 +669,7 @@ namespace GnollHackX.Pages.MainScreen
                     ShareButton.TextColor = GHColors.Gray;
                     SelectButton.TextColor = GHColors.Gray;
                 }
+                UpdateRecordingsLabel();
             }
         }
 
@@ -725,7 +767,6 @@ namespace GnollHackX.Pages.MainScreen
                 ReplayCollectionView.SelectionMode = SelectionMode.Single;
                 MultiButton.Text = "Multiple";
                 SelectButton.Text = "Play";
-                SelectButton.TextColor = GHColors.BrighterGreen;
                 bkgView.BorderStyle = BorderStyles.Simple;
             }
             else
@@ -734,9 +775,9 @@ namespace GnollHackX.Pages.MainScreen
                 ReplayCollectionView.SelectionMode = SelectionMode.Multiple;
                 MultiButton.Text = "Single";
                 SelectButton.Text = "Delete";
-                SelectButton.TextColor = GHColors.Red;
                 bkgView.BorderStyle = BorderStyles.SimpleAlternative;
             }
+            UpdateRecordingsLabel();
         }
     }
 
