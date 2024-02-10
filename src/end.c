@@ -1840,34 +1840,6 @@ int how;
     else if (how == ASCENDED)
         keepdogs(TRUE, FALSE); /* All pets surviving to the point of ascension */
 
-    /* finish_paybill should be called after disclosure but before bones */
-    if (bones_ok && taken)
-        finish_paybill();
-
-    /* grave creation should be after disclosure so it doesn't have
-       this grave in the current level's features for #overview */
-    if (bones_ok && u.ugrave_arise == NON_PM
-        && !(mvitals[u.umonnum].mvflags & MV_NOCORPSE))
-    {
-        int mnum = u.umonnum;
-
-        if (!Upolyd) 
-        {
-            /* Base corpse on race when not poly'd since original
-             * u.umonnum is based on role, and all role monsters
-             * are human.
-             */
-            mnum = urace.monsternum;
-        }
-        corpse = mk_named_object(CORPSE, &mons[mnum], u.ux, u.uy, plname);
-        corpse->nknown = 1;
-        Sprintf(pbuf, "%s, ", plname);
-        formatkiller(eos(pbuf), sizeof pbuf - strlen(pbuf), how, TRUE);
-        make_grave(u.ux, u.uy, pbuf, TRUE);
-    }
-
-    pbuf[0] = '\0'; /* clear grave text; also lint suppression */
-
     /* calculate score, before creating bones [container gold] */
     {
         umoney = money_cnt(invent);
@@ -1917,15 +1889,6 @@ int how;
                  : "revenant persists",
              an(pm_monster_name(&mons[u.ugrave_arise], flags.female)));
         display_nhwindow(WIN_MESSAGE, FALSE);
-    }
-
-    if (bones_ok) 
-    {
-        if (!wizard || paranoid_query_ex(ATR_NONE, NO_COLOR, ParanoidBones, (char*)0, "Save bones?"))
-            savebones(how, endtime, corpse);
-        /* corpse may be invalid pointer now so
-            ensure that it isn't used again */
-        corpse = (struct obj *) 0;
     }
 
     /* update gold for the rip output, which can't use hidden_gold()
@@ -2211,6 +2174,42 @@ int how;
             Sprintf(totalpostbuf, "%s (%s), %ld point%s, T:%ld (%s), %s [%s]", plname, cbuf, u.u_gamescore, plur(u.u_gamescore), moves, duration, postbuf, mbuf);
             issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_RESULT, how, totalpostbuf);
         }
+    }
+
+    /* finish_paybill should be called after disclosure but before bones */
+    if (bones_ok && taken)
+        finish_paybill();
+
+    /* grave creation should be after disclosure so it doesn't have
+       this grave in the current level's features for #overview */
+    if (bones_ok && u.ugrave_arise == NON_PM
+        && !(mvitals[u.umonnum].mvflags & MV_NOCORPSE))
+    {
+        int mnum = u.umonnum;
+
+        if (!Upolyd)
+        {
+            /* Base corpse on race when not poly'd since original
+             * u.umonnum is based on role, and all role monsters
+             * are human.
+             */
+            mnum = urace.monsternum;
+        }
+        corpse = mk_named_object(CORPSE, &mons[mnum], u.ux, u.uy, plname);
+        corpse->nknown = 1;
+        Sprintf(pbuf, "%s, ", plname);
+        formatkiller(eos(pbuf), sizeof pbuf - strlen(pbuf), how, TRUE);
+        make_grave(u.ux, u.uy, pbuf, TRUE);
+        pbuf[0] = '\0'; /* clear grave text; also lint suppression */
+    }
+
+    if (bones_ok)
+    {
+        if (!wizard || paranoid_query_ex(ATR_NONE, NO_COLOR, ParanoidBones, (char*)0, "Save bones?"))
+            savebones(how, endtime, corpse);
+        /* corpse may be invalid pointer now so
+            ensure that it isn't used again */
+        corpse = (struct obj*)0;
     }
 
     /* "So when I die, the first thing I will see in Heaven is a
