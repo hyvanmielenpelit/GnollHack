@@ -368,29 +368,6 @@
                             <Switch x:Name="EmptyWishIsNothingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
 
-                        <Label Text="Recording" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="Record Game"
-                                    x:Name="RecordLabel"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start">
-                                <Label.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="RecordLabel_TapGestureRecognizer_Tapped" />
-                                </Label.GestureRecognizers>
-                            </Label>
-                            <Switch x:Name="RecordSwitch" Toggled="RecordSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="Show Recording"
-                                           FontFamily="Underwood" TextColor="Black"
-                                           FontSize="15"
-                                           VerticalOptions="Center" 
-                                           HorizontalOptions="Start" />
-                            <Switch x:Name="ShowRecordingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-
                         <Label Text="Bar Commands" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Bar Command 1" x:Name="SimpleCommandBarButton1Label"
@@ -561,6 +538,29 @@
                                     HorizontalOptions="Start" />
                             <Slider x:Name="UIVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
+                        </StackLayout>
+
+                        <Label Text="Recording" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
+                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                            <Label Text="Record Game"
+                                    x:Name="RecordLabel"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="RecordLabel_TapGestureRecognizer_Tapped" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                            <Switch x:Name="RecordSwitch" Toggled="RecordSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                            <Label Text="Show Recording"
+                                           FontFamily="Underwood" TextColor="Black"
+                                           FontSize="15"
+                                           VerticalOptions="Center" 
+                                           HorizontalOptions="Start" />
+                            <Switch x:Name="ShowRecordingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
 
                         <Label Text="Forum Posting" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
@@ -750,19 +750,6 @@
                             <Switch x:Name="LogMessageSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
-                            <Label Text="GZip Replay Compression"
-                                    x:Name="GZipLabel"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start">
-                                <Label.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="GZipLabel_TapGestureRecognizer_Tapped" />
-                                </Label.GestureRecognizers>
-                            </Label>
-                            <Switch x:Name="GZipSwitch" Toggled="GZipSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Show Memory"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -828,6 +815,19 @@
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
                             <Switch x:Name="HTMLDumpLogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                            <Label Text="GZip Replay Compression"
+                                    x:Name="GZipLabel"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="GZipLabel_TapGestureRecognizer_Tapped" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                            <Switch x:Name="GZipSwitch" Toggled="GZipSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
                         <StackLayout Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Save on Switching Apps"
