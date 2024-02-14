@@ -1310,7 +1310,7 @@ struct obj *otmp;
         }
         break;
     case POT_SLEEPING:
-        if (Sleep_resistance || Free_action)
+        if (Sleep_resistance) // || Free_action
         {
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "yawn.");
         } 
@@ -2856,7 +2856,8 @@ const char* introline;
         break;
     case POT_SLEEPING:
         kn++;
-        if (!Free_action && !Sleep_resistance) {
+        if (!Sleep_resistance) // !Free_action && 
+        {
             play_sfx_sound(SFX_ACQUIRE_SLEEP);
             Strcpy(dcbuf, "You feel rather tired.");
             pline_ex1(ATR_NONE, CLR_MSG_WARNING, dcbuf);

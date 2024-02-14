@@ -1772,7 +1772,7 @@ boolean* obj_destroyed;
         if(u.twoweap && obj && uarms && obj == uarms) /* Dual weapon combat skill is increased when you successfully hit with a weapon in your left hand */
             use_skill(P_DUAL_WEAPON_COMBAT, 1);
 
-        if (two_handed_bonus_applies(uwep))
+        if (thrown == HMON_MELEE && obj && uwep && obj == uwep && two_handed_bonus_applies(obj))
             use_skill(P_TWO_HANDED_WEAPON, 1);
     }
 

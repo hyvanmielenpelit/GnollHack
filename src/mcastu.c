@@ -690,7 +690,7 @@ int spellnum;
             impossible("no reason for monster to cast disappear spell?");
         break;
     case MGC_STUN_YOU:
-        if (Antimagic_or_resistance || Free_action || Invulnerable) {
+        if (Antimagic_or_resistance || Free_action || Stun_resistance || Invulnerable) {
             u_shieldeff();
             if (!Stunned)
             {

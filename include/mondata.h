@@ -768,7 +768,7 @@
 #define resists_magic(mon) \
     (has_innate((mon)->data, MR_MAGIC) || has_property(mon, ANTIMAGIC))
 #define resists_charm(mon) \
-    (has_innate((mon)->data, MR_CHARM) || has_property(mon, CHARM_RESISTANCE) || is_undead((mon)->data) || mon_has_no_apparent_mind(mon))
+    (has_innate((mon)->data, MR_CHARM) || has_property(mon, CHARM_RESISTANCE) || is_undead((mon)->data) || mon_has_no_apparent_mind(mon) || is_vampshifter(mon))
 #define resists_fear(mon) \
     (has_innate((mon)->data, MR_FEAR) || has_property(mon, FEAR_RESISTANCE) || is_undead((mon)->data) || mon_has_no_apparent_mind(mon) || is_vampshifter(mon))
 #define is_reflecting(mon) \
@@ -779,11 +779,11 @@
 #define resists_flash(mon) \
     (has_innate((mon)->data, MR_FLASH) || has_property(mon, FLASH_RESISTANCE) || is_blinded(mon) || !haseyes((mon)->data) )
 #define resists_sickness(mon) \
-    (has_innate((mon)->data, MR_SICK) || has_property(mon, SICK_RESISTANCE) ||  is_not_living((mon)->data) || is_demon((mon)->data) || is_elemental((mon)->data) || is_incorporeal((mon)->data) || unsolid((mon)->data) || is_vampshifter(mon) )
+    (has_innate((mon)->data, MR_SICK) || has_property(mon, SICK_RESISTANCE) || is_not_living((mon)->data) || is_demon((mon)->data) || is_elemental((mon)->data) || is_incorporeal((mon)->data) || unsolid((mon)->data) || is_vampshifter(mon) )
 #define resists_paralysis(mon) \
-    (has_innate((mon)->data, MR_FREE_ACTION) || has_property(mon, FREE_ACTION) ||  is_not_living((mon)->data) || is_vampshifter(mon))
+    (has_innate((mon)->data, MR_FREE_ACTION) || has_property(mon, FREE_ACTION) || is_not_living((mon)->data) || is_vampshifter(mon))
 #define resists_stun(mon) \
-    (has_innate((mon)->data, MR_STUN) || has_property(mon, STUN_RESISTANCE) ||  mindless((mon)->data) || is_not_living((mon)->data) || is_vampshifter(mon))
+    (has_innate((mon)->data, MR_STUN) || has_property(mon, STUN_RESISTANCE) || mindless((mon)->data) || is_not_living((mon)->data) || is_vampshifter(mon))
 
 /* other "resists" definitions */
 #define resists_bisection(mon) \
