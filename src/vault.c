@@ -1299,8 +1299,8 @@ struct obj* obj;
 
     /* accumulate contained gold */
     for (otmp = obj->cobj; otmp; otmp = otmp->nobj)
-        if (obj->otyp >= FIRST_GEM && obj->otyp <= LAST_GEM && (program_state.gameover || objects[obj->otyp].oc_name_known))
-            value += objects[obj->otyp].oc_cost * obj->quan;
+        if (otmp->otyp >= FIRST_GEM && otmp->otyp <= LAST_GEM && (program_state.gameover || objects[otmp->otyp].oc_name_known))
+            value += objects[otmp->otyp].oc_cost * otmp->quan;
         else if (Has_contents(otmp))
             value += contained_gem_value(otmp);
 
