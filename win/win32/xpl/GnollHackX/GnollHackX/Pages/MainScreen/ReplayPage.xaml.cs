@@ -779,6 +779,11 @@ namespace GnollHackX.Pages.MainScreen
             }
             UpdateRecordingsLabel();
         }
+
+        private void ServerSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+
+        }
     }
 
     public class FileDateComparer : IComparer<string>
