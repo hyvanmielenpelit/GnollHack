@@ -10,6 +10,7 @@
 
 #include "general.h"
 #include "soundset.h"
+#include "objclass.h"
 
 #define E extern
 
