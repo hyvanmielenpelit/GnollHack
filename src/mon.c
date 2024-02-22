@@ -1144,8 +1144,8 @@ register struct monst *mtmp;
          * water damage to dead monsters' inventory, but survivors need to
          * be handled here.  Swimmers are able to protect their stuff...
          */
-        if (!is_clinger(mtmp->data) && !is_swimmer(mtmp->data)
-            && !amphibious(mtmp->data)) 
+        if (!mon_clings_on_water(mtmp) && !mon_walks_on_water(mtmp) && !has_swimming(mtmp)
+            && !has_magical_breathing(mtmp) && !amphibious(mtmp->data)) 
         {
             play_sfx_sound_at_location(SFX_FALL_INTO_PIT, mtmp->mx, mtmp->my);
 
@@ -2440,9 +2440,9 @@ long flag;
 
     nodiag = NODIAG(mdat - mons);
     wantpool = mdat->mlet == S_EEL;
-    poolok = (((is_flying(mon) || is_levitating(mon) || is_clinger(mdat)) && !Is_waterlevel(&u.uz))
+    poolok = (((is_flying(mon) || is_levitating(mon) || mon_clings_on_water(mon)) && !Is_waterlevel(&u.uz))
               || (is_swimmer(mdat) && !wantpool));
-    lavaok = (is_flying(mon) || is_levitating(mon) || is_clinger(mdat) || likes_lava(mdat));
+    lavaok = (is_flying(mon) || is_levitating(mon) || mon_clings_on_water(mon) || likes_lava(mdat));
     wallwalk = ((flag & (ALLOW_WALL)) != 0L);
     thrudoor = ((flag & (BUSTDOOR)) != 0L);
     poisongas_ok = ((is_not_living(mdat) || is_vampshifter(mon)

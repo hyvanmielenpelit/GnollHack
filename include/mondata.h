@@ -841,6 +841,8 @@
     (has_innate_telepathy((mon)->data) || has_property(mon, TELEPAT))
 #define has_detect_monsters(mon) \
     (has_property(mon, DETECT_MONSTERS))
+#define has_water_walking(mon) \
+    (has_property(mon, WATER_WALKING))
 
 #define has_stunning_corpse(ptr) (((ptr)->mconveys & MC_STUNNING_CORPSE) != 0L)
 #define has_acidic_corpse(ptr) (((ptr)->mconveys & MC_ACIDIC_CORPSE) != 0L)
@@ -937,6 +939,8 @@
 
 /* Other */
 #define is_mon_talkative(mon) (is_speaking((mon)->data) && (is_peaceful(mon) || is_chatty((mon)->data)))
+#define mon_clings_on_water(mon) (is_clinger((mon)->data) && !Is_waterlevel(&u.uz))
+#define mon_walks_on_water(mon) (has_water_walking(mon) && !Is_waterlevel(&u.uz))
 
 /* monkeys are tameable via bananas but not pacifiable via food,
    otherwise their theft attack could be nullified too easily;
