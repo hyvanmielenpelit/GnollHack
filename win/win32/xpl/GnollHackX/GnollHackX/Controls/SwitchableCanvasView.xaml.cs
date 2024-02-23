@@ -85,12 +85,6 @@ namespace GnollHackX.Controls
             Touch?.Invoke(sender, e);
         }
 
-#if GNH_MAUI
-        private void internalGLView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
-        {
-            PaintSurface?.Invoke(sender, e);
-        }
-#else
         private void internalGLView_PaintSurface(object sender, SKPaintGLSurfaceEventArgs e)
         {
             SKImageInfo info = new SKImageInfo();
@@ -98,7 +92,6 @@ namespace GnollHackX.Controls
             SKPaintSurfaceEventArgs convargs = new SKPaintSurfaceEventArgs(e.Surface, info);
             PaintSurface?.Invoke(sender, convargs);
         }
-#endif
 
         private void internalGLView_Touch(object sender, SKTouchEventArgs e)
         {
