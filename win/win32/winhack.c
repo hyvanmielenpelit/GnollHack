@@ -171,6 +171,36 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
             resource_idx = IDB_PNG_TILES_4;
 #endif // IDB_PNG_TILES_4
             break;
+        case 4:
+#if defined(IDB_PNG_TILES_5)
+            resource_idx = IDB_PNG_TILES_5;
+#endif // IDB_PNG_TILES_5
+            break;
+        case 5:
+#if defined(IDB_PNG_TILES_6)
+            resource_idx = IDB_PNG_TILES_6;
+#endif // IDB_PNG_TILES_6
+            break;
+        case 6:
+#if defined(IDB_PNG_TILES_7)
+            resource_idx = IDB_PNG_TILES_7;
+#endif // IDB_PNG_TILES_7
+            break;
+        case 7:
+#if defined(IDB_PNG_TILES_8)
+            resource_idx = IDB_PNG_TILES_8;
+#endif // IDB_PNG_TILES_8
+            break;
+        case 8:
+#if defined(IDB_PNG_TILES_9)
+            resource_idx = IDB_PNG_TILES_9;
+#endif // IDB_PNG_TILES_9
+            break;
+        case 9:
+#if defined(IDB_PNG_TILES_10)
+            resource_idx = IDB_PNG_TILES_10;
+#endif // IDB_PNG_TILES_10
+            break;
         }
 
         _GnollHack_app.bmpTiles[i] = LoadPNGFromResource(hInstance, resource_idx, TILE_BK_COLOR);

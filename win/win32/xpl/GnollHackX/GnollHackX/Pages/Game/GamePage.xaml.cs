@@ -888,26 +888,27 @@ namespace GnollHackX.Pages.Game
 
             if (!GHApp.StartGameDataSet)
             {
-                Assembly assembly = GetType().GetTypeInfo().Assembly;
-                tasks.Add(LoadingProgressBar.ProgressTo(0.3, 600, Easing.Linear));
-                tasks.Add(Task.Run(() =>
+                int total_tiles_used = _gnollHackService.GetTotalTiles();
+                int total_sheets_used = Math.Min(GHConstants.MaxTileSheets, (total_tiles_used - 1) / GHConstants.NumberOfTilesPerSheet + 1);
+                lock (GHApp.Glyph2TileLock)
                 {
-                    using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack_64x96_transparent_32bits.png"))
-                    {
-                        GHApp._tileMap[0] = SKImage.FromEncodedData(stream); // SKBitmap.Decode(stream);
-                        //GHApp._tileMap[0].SetImmutable();
-                    }
-                }));
-                await Task.WhenAll(tasks);
-                tasks.Clear();
+                    GHApp.UsedTileSheets = total_sheets_used;
+                    GHApp.TotalTiles = total_tiles_used;
+                }
 
-                tasks.Add(LoadingProgressBar.ProgressTo(0.4, 100, Easing.Linear));
+                Assembly assembly = GetType().GetTypeInfo().Assembly;
+                tasks.Add(LoadingProgressBar.ProgressTo(0.4, 700, Easing.Linear));
                 tasks.Add(Task.Run(() =>
                 {
-                    using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack_64x96_transparent_32bits-2.png"))
+                    for(int tilesheetidx = 1; tilesheetidx <= total_sheets_used; tilesheetidx++)
                     {
-                        GHApp._tileMap[1] = SKImage.FromEncodedData(stream); // SKBitmap.Decode(stream);
-                        //GHApp._tileMap[1].SetImmutable();
+                        using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack_64x96_transparent_32bits" + (tilesheetidx > 1 ? "-" + tilesheetidx : "") + ".png"))
+                        {
+                            SKBitmap bmp = SKBitmap.Decode(stream);
+                            bmp.SetImmutable();
+                            GHApp._tileMap[tilesheetidx - 1] = SKImage.FromBitmap(bmp); // SKBitmap.Decode(stream);
+                            //GHApp._tileMap[tilesheetidx].SetImmutable();
+                        }
                     }
                 }));
                 await Task.WhenAll(tasks);

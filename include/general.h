@@ -681,8 +681,8 @@ enum context_menu_styles {
 #define GUI_SPECIAL_EFFECT_LEVEL_DEPTH_THRESHOLD 10
 
 /* Basic tile information */
-#define NUM_TILES_PER_SHEET 16224
-#define MAX_TILE_SHEETS 2
+#define NUM_TILES_PER_SHEET 2400
+#define MAX_TILE_SHEETS 12
 #define MAX_TILES (MAX_TILE_SHEETS * NUM_TILES_PER_SHEET)
 
 /* mode values for findtravelpath() and m_findtravelpath() */

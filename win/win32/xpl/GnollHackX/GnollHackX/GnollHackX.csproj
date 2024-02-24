@@ -9,7 +9,7 @@
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>$(DefineConstants);GNH_MAP_PROFILING;</DefineConstants>
+    <!-- <DefineConstants>$(DefineConstants);GNH_MAP_PROFILING;</DefineConstants> -->
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -53,7 +53,15 @@
     <None Remove="Assets\ghsecrets.sjson" />
     <None Remove="Assets\ghsettings.json" />
     <None Remove="Assets\gnollhack-logo-test-2.png" />
+    <None Remove="Assets\gnollhack_64x96_transparent_32bits-10.png" />
     <None Remove="Assets\gnollhack_64x96_transparent_32bits-2.png" />
+    <None Remove="Assets\gnollhack_64x96_transparent_32bits-3.png" />
+    <None Remove="Assets\gnollhack_64x96_transparent_32bits-4.png" />
+    <None Remove="Assets\gnollhack_64x96_transparent_32bits-5.png" />
+    <None Remove="Assets\gnollhack_64x96_transparent_32bits-6.png" />
+    <None Remove="Assets\gnollhack_64x96_transparent_32bits-7.png" />
+    <None Remove="Assets\gnollhack_64x96_transparent_32bits-8.png" />
+    <None Remove="Assets\gnollhack_64x96_transparent_32bits-9.png" />
     <None Remove="Assets\gnollhack_64x96_transparent_32bits.png" />
     <None Remove="Assets\Immortal-Regular.ttf" />
     <None Remove="Assets\imrl.otf" />
@@ -282,7 +290,15 @@
     <EmbeddedResource Include="Assets\ghsecrets.sjson" />
     <EmbeddedResource Include="Assets\ghsettings.json" />
     <EmbeddedResource Include="Assets\gnollhack-logo-test-2.png" />
+    <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-10.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-2.png" />
+    <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-3.png" />
+    <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-4.png" />
+    <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-5.png" />
+    <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-6.png" />
+    <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-7.png" />
+    <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-8.png" />
+    <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-9.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits.png" />
     <EmbeddedResource Include="Assets\UI\autostash.png" />
     <EmbeddedResource Include="Assets\UI\battery-frame.png" />
