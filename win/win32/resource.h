@@ -40,6 +40,15 @@
 #define IDR_RCDATA_INTRO                182
 #define IDR_RCDATA_MUSIC                183
 #define IDR_RCDATA_PRELIMINARY          184
+#define IDB_PNG_TILES_3                 185
+#define IDB_PNG_TILES_4                 186
+#define IDB_PNG_TILES_5                 187
+#define IDB_PNG_TILES_6                 188
+#define IDB_PNG_TILES_7                 189
+#define IDB_PNG_TILES_8                 190
+#define IDB_PNG_TILES_9                 191
+#define IDB_PNG1                        192
+#define IDB_PNG_TILES_10                192
 #define IDC_TEXT_VIEW                   1000
 #define IDC_TEXT_CONTROL                1000
 #define IDC_CMD_MOVE_NW                 1001
@@ -208,7 +217,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        185
+#define _APS_NEXT_RESOURCE_VALUE        193
 #define _APS_NEXT_COMMAND_VALUE         32853
 #define _APS_NEXT_CONTROL_VALUE         1343
 #define _APS_NEXT_SYMED_VALUE           110

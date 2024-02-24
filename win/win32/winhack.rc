@@ -447,6 +447,22 @@ IDB_PNG_FMODLOGO        PNG                     "FMOD-Logo-32.png"
 
 IDB_PNG_TILES_2         PNG                     "gnollhack_64x96_transparent_32bits-2.png"
 
+IDB_PNG_TILES_3         PNG                     "gnollhack_64x96_transparent_32bits-3.png"
+
+IDB_PNG_TILES_4         PNG                     "gnollhack_64x96_transparent_32bits-4.png"
+
+IDB_PNG_TILES_5         PNG                     "gnollhack_64x96_transparent_32bits-5.png"
+
+IDB_PNG_TILES_6         PNG                     "gnollhack_64x96_transparent_32bits-6.png"
+
+IDB_PNG_TILES_7         PNG                     "gnollhack_64x96_transparent_32bits-7.png"
+
+IDB_PNG_TILES_8         PNG                     "gnollhack_64x96_transparent_32bits-8.png"
+
+IDB_PNG_TILES_9         PNG                     "gnollhack_64x96_transparent_32bits-9.png"
+
+IDB_PNG_TILES_10        PNG                     "gnollhack_64x96_transparent_32bits-10.png"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
