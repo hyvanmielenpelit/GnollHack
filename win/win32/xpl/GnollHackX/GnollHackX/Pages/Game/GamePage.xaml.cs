@@ -82,9 +82,9 @@ namespace GnollHackX.Pages.Game
         private int _mapCursorY;
 
         private readonly object _darkenedBitmapLock = new object();
-        private ConcurrentDictionary<SavedDarkenedBitmap, SKBitmap> _darkenedBitmaps = new ConcurrentDictionary<SavedDarkenedBitmap, SKBitmap>();
+        private ConcurrentDictionary<SavedDarkenedBitmap, SKImage> _darkenedBitmaps = new ConcurrentDictionary<SavedDarkenedBitmap, SKImage>();
         private readonly object _darkenedAutoDrawBitmapLock = new object();
-        private ConcurrentDictionary<SavedDarkenedAutodrawBitmap, SKBitmap> _darkenedAutodrawBitmaps = new ConcurrentDictionary<SavedDarkenedAutodrawBitmap, SKBitmap>();
+        private ConcurrentDictionary<SavedDarkenedAutodrawBitmap, SKImage> _darkenedAutodrawBitmaps = new ConcurrentDictionary<SavedDarkenedAutodrawBitmap, SKImage>();
 
         private readonly object _uLock = new object();
         private int _ux = 0;
@@ -439,13 +439,13 @@ namespace GnollHackX.Pages.Game
                 }
                 lock (_darkenedBitmapLock)
                 {
-                    foreach (SKBitmap bmp in _darkenedBitmaps.Values)
+                    foreach (SKImage bmp in _darkenedBitmaps.Values)
                         bmp.Dispose();
                     _darkenedBitmaps.Clear();
                 }
                 lock (_darkenedAutoDrawBitmapLock)
                 {
-                    foreach (SKBitmap bmp in _darkenedAutodrawBitmaps.Values)
+                    foreach (SKImage bmp in _darkenedAutodrawBitmaps.Values)
                         bmp.Dispose();
                     _darkenedAutodrawBitmaps.Clear();
                 }
@@ -744,7 +744,7 @@ namespace GnollHackX.Pages.Game
         private float UsedMapFontAscent { get { lock (_mapFontAscentLock) { return _mapFontAscent; } } set { lock (_mapFontAscentLock) { _mapFontAscent = value; } } }
         public readonly object AnimationTimerLock = new object();
         public GHAnimationTimerList AnimationTimers = new GHAnimationTimerList();
-        public SKBitmap[] TileMap { get { return GHApp._tileMap; } }
+        public SKImage[] TileMap { get { return GHApp._tileMap; } }
 
         public readonly object _floatingTextLock = new object();
         public List<GHFloatingText> _floatingTexts = new List<GHFloatingText>();
@@ -894,8 +894,8 @@ namespace GnollHackX.Pages.Game
                 {
                     using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack_64x96_transparent_32bits.png"))
                     {
-                        GHApp._tileMap[0] = SKBitmap.Decode(stream);
-                        GHApp._tileMap[0].SetImmutable();
+                        GHApp._tileMap[0] = SKImage.FromEncodedData(stream); // SKBitmap.Decode(stream);
+                        //GHApp._tileMap[0].SetImmutable();
                     }
                 }));
                 await Task.WhenAll(tasks);
@@ -906,8 +906,8 @@ namespace GnollHackX.Pages.Game
                 {
                     using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack_64x96_transparent_32bits-2.png"))
                     {
-                        GHApp._tileMap[1] = SKBitmap.Decode(stream);
-                        GHApp._tileMap[1].SetImmutable();
+                        GHApp._tileMap[1] = SKImage.FromEncodedData(stream); // SKBitmap.Decode(stream);
+                        //GHApp._tileMap[1].SetImmutable();
                     }
                 }));
                 await Task.WhenAll(tasks);
@@ -3831,7 +3831,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
+                canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect);
 #if GNH_MAP_PROFILING && DEBUG
                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -3892,7 +3892,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                canvas.DrawBitmap(TileMap[m_sheet_idx], sourcerect, targetrect);
+                canvas.DrawImage(TileMap[m_sheet_idx], sourcerect, targetrect);
 #if GNH_MAP_PROFILING && DEBUG
                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -3916,7 +3916,7 @@ namespace GnollHackX.Pages.Game
 
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
+                canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect);
 
                 if (_mapData[mapx, mapy].Symbol != null && _mapData[mapx, mapy].Symbol != "")
                 {
@@ -3941,7 +3941,7 @@ namespace GnollHackX.Pages.Game
 
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
+                canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect);
 
                 if (_mapData[mapx, mapy].Symbol != null && _mapData[mapx, mapy].Symbol != "")
                 {
@@ -4013,7 +4013,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                             StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                            canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                            canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
 #if GNH_MAP_PROFILING && DEBUG
                             StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -4064,7 +4064,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                             StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                            canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                            canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
 #if GNH_MAP_PROFILING && DEBUG
                             StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -4126,7 +4126,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
 #if GNH_MAP_PROFILING && DEBUG
                                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -4149,7 +4149,7 @@ namespace GnollHackX.Pages.Game
 
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
+                canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect);
             }
             else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_BEING_HIT) != 0)
             {
@@ -4162,7 +4162,7 @@ namespace GnollHackX.Pages.Game
 
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect);
+                canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect);
             }
         }
 
@@ -4532,9 +4532,9 @@ namespace GnollHackX.Pages.Game
 
         struct SavedRect
         {
-            public SKBitmap Bitmap;
+            public SKImage Bitmap;
             public SKRect Rect;
-            public SavedRect(SKBitmap bitmap, SKRect rect)
+            public SavedRect(SKImage bitmap, SKRect rect)
             {
                 Bitmap = bitmap;
                 Rect = rect;
@@ -4542,10 +4542,11 @@ namespace GnollHackX.Pages.Game
         }
 
         private readonly object _saveRectLock = new object();
-        ConcurrentDictionary<SavedRect, SKBitmap> _savedRects = new ConcurrentDictionary<SavedRect, SKBitmap>();
-        public void DrawTileWithRadialTransparency(SKCanvas canvas, bool delayedDraw, SKBitmap tileSheet, SKRect sourcerect, SKRect targetrect, LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint, int mapX, int mapY)
+        ConcurrentDictionary<SavedRect, SKImage> _savedRects = new ConcurrentDictionary<SavedRect, SKImage>();
+        public void DrawTileWithRadialTransparency(SKCanvas canvas, bool delayedDraw, SKImage tileSheet, SKRect sourcerect, SKRect targetrect, LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint, int mapX, int mapY)
             //, ref SKRect baseUpdateRect, ref SKRect enlUpdateRect)
         {
+#if false
             bool cache = false;
             if (sourcerect.Left % GHConstants.TileWidth == 0 && sourcerect.Top % GHConstants.TileHeight == 0 
                 && sourcerect.Width == GHConstants.TileWidth && sourcerect.Height == GHConstants.TileHeight)
@@ -4554,7 +4555,7 @@ namespace GnollHackX.Pages.Game
             if(cache)
             {
                 SavedRect sr = new SavedRect(tileSheet, sourcerect);
-                SKBitmap bmp = null;
+                SKImage bmp = null;
                 bool getsuccessful;
                 lock (_saveRectLock)
                 {
@@ -4569,6 +4570,7 @@ namespace GnollHackX.Pages.Game
             }
 
             IntPtr tempptraddr = _tempBitmap.GetPixels();
+            
             IntPtr tileptraddr = tileSheet.GetPixels();
             double mid_x = (double)GHConstants.TileWidth / 2.0 - 0.5;
             double mid_y = (double)GHConstants.TileHeight / 2.0 - 0.5;
@@ -4636,7 +4638,7 @@ namespace GnollHackX.Pages.Game
                             }
                             _savedRects.TryAdd(sr, newbmp);
                         }
-                        DrawSplitBitmap(canvas, delayedDraw, destSplitY, newbmp, tempsourcerect, targetrect, paint, mapX, mapY); //, ref baseUpdateRect, ref enlUpdateRect);
+                        DrawSplitBitmap(canvas, delayedDraw, destSplitY, SKImage.FromBitmap(newbmp), tempsourcerect, targetrect, paint, mapX, mapY); //, ref baseUpdateRect, ref enlUpdateRect);
                     }
                     catch (Exception ex)
                     {
@@ -4649,24 +4651,25 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
             StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                DrawSplitBitmap(canvas, delayedDraw, destSplitY, _tempBitmap, tempsourcerect, targetrect, paint, mapX, mapY); //, ref baseUpdateRect, ref enlUpdateRect);
+                DrawSplitBitmap(canvas, delayedDraw, destSplitY, SKImage.FromBitmap(_tempBitmap), tempsourcerect, targetrect, paint, mapX, mapY); //, ref baseUpdateRect, ref enlUpdateRect);
                                                                                                                   //canvas.DrawBitmap(_tempBitmap, tempsourcerect, targetrect, paint);
 #if GNH_MAP_PROFILING && DEBUG
             StopProfiling(GHProfilingStyle.Bitmap);
 #endif
             }
+#endif
         }
 
         private List<GHDrawCommand> _drawCommandList = new List<GHDrawCommand>();
 
-        public void DrawSplitBitmap(SKCanvas canvas, bool delayedDraw, float destSplitY, SKBitmap bitmap, SKRect source, SKRect dest, SKPaint paint, int mapX, int mapY) //, ref SKRect baseUpdateRect, ref SKRect enlUpdateRect)
+        public void DrawSplitBitmap(SKCanvas canvas, bool delayedDraw, float destSplitY, SKImage bitmap, SKRect source, SKRect dest, SKPaint paint, int mapX, int mapY) //, ref SKRect baseUpdateRect, ref SKRect enlUpdateRect)
         {
             if (destSplitY <= dest.Top || delayedDraw)
             {
                 if(delayedDraw)
                     _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, source, dest, bitmap, paint.Color, mapX, mapY));
                 else
-                    canvas.DrawBitmap(bitmap, source, dest, paint);
+                    canvas.DrawImage(bitmap, source, dest, paint);
                 //baseUpdateRect = dest;
                 //enlUpdateRect = new SKRect();
             }
@@ -4688,7 +4691,7 @@ namespace GnollHackX.Pages.Game
                 float sourceSplitY = source.Top + (source.Bottom - source.Top) * topDestScale;
                 SKRect enlSource = new SKRect(source.Left, source.Top, source.Right, sourceSplitY);
                 SKRect baseSource = new SKRect(source.Left, sourceSplitY, source.Right, source.Bottom);
-                canvas.DrawBitmap(bitmap, baseSource, baseDest, paint);
+                canvas.DrawImage(bitmap, baseSource, baseDest, paint);
                 //enlCanvas.DrawBitmap(bitmap, enlSource, enlDest, paint);
                 _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, enlSource, enlDest, bitmap, paint.Color, mapX, mapY));
                 //baseUpdateRect = baseDest;
@@ -6353,7 +6356,7 @@ namespace GnollHackX.Pages.Game
                                                                         {
                                                                             if (dc.IsAutoDraw)
                                                                             {
-                                                                                SKBitmap usedDarkenedBitmap = null;
+                                                                                SKImage usedDarkenedBitmap = null;
                                                                                 int darken_percentage = GetDarkenPercentage(dc.MapX, dc.MapY, lighter_darkening);
                                                                                 AutoDrawParameterDefinition modadparams = dc.AutoDrawParameters;
                                                                                 modadparams.tx = 0;
@@ -6378,7 +6381,7 @@ namespace GnollHackX.Pages.Game
                                                                                 {
                                                                                     paint.Color = dc.PaintColor;
                                                                                     canvas.SetMatrix(dc.Matrix);
-                                                                                    canvas.DrawBitmap(usedDarkenedBitmap, sourceRect, destRect, paint);
+                                                                                    canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect, paint);
                                                                                 }
                                                                                 else
                                                                                 {
@@ -6396,33 +6399,34 @@ namespace GnollHackX.Pages.Game
                                                                                     /* Save to cache as immutable */
                                                                                     try
                                                                                     {
-                                                                                        SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
-                                                                                        _paintBitmap.CopyTo(newbmp);
-                                                                                        newbmp.SetImmutable();
+                                                                                        //SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
+                                                                                        //_paintBitmap.CopyTo(newbmp);
+                                                                                        //newbmp.SetImmutable();
+                                                                                        SKImage newbmp = SKImage.FromBitmap(_paintBitmap);
                                                                                         usedDarkenedBitmap = newbmp;
                                                                                         lock(_darkenedAutoDrawBitmapLock)
                                                                                         {
                                                                                             if (_darkenedAutodrawBitmaps.Count >= GHConstants.MaxDarkenedAutodrawBitmapCacheSize)
                                                                                             {
-                                                                                                foreach (SKBitmap bmp in _darkenedAutodrawBitmaps.Values)
+                                                                                                foreach (SKImage bmp in _darkenedAutodrawBitmaps.Values)
                                                                                                     bmp.Dispose();
                                                                                                 _darkenedAutodrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
                                                                                             }
                                                                                             _darkenedAutodrawBitmaps.TryAdd(cachekey, newbmp);
                                                                                         }
+                                                                                        canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect, paint);
                                                                                     }
                                                                                     catch (Exception ex)
                                                                                     {
                                                                                         Debug.WriteLine(ex.Message);
-                                                                                        usedDarkenedBitmap = _paintBitmap;
+                                                                                        //usedDarkenedBitmap = _paintBitmap;
+                                                                                        canvas.DrawBitmap(_paintBitmap, sourceRect, destRect, paint);
                                                                                     }
-
-                                                                                    canvas.DrawBitmap(usedDarkenedBitmap, sourceRect, destRect, paint);
                                                                                 }
                                                                             }
                                                                             else
                                                                             { 
-                                                                                SKBitmap usedDarkenedBitmap = null;
+                                                                                SKImage usedDarkenedBitmap = null;
                                                                                 int darken_percentage = GetDarkenPercentage(dc.MapX, dc.MapY, lighter_darkening);
                                                                                 SavedDarkenedBitmap cachekey = new SavedDarkenedBitmap(dc.SourceBitmap, dc.SourceRect, darken_percentage);
                                                                                 SKRect cacheRect = new SKRect(0, 0, dc.SourceRect.Width, dc.SourceRect.Height);
@@ -6435,42 +6439,44 @@ namespace GnollHackX.Pages.Game
                                                                                 {
                                                                                     paint.Color = dc.PaintColor;
                                                                                     canvas.SetMatrix(dc.Matrix);
-                                                                                    canvas.DrawBitmap(usedDarkenedBitmap, cacheRect, dc.DestinationRect, paint);
+                                                                                    canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect, paint);
                                                                                 }
                                                                                 else
                                                                                 {
                                                                                     /* Copy source bitmap to _paintCanvas and darken it */
                                                                                     paint.Color = SKColors.Black;
-                                                                                    darkeningCanvas.DrawBitmap(dc.SourceBitmap, dc.SourceRect, cacheRect, paint);
+                                                                                    darkeningCanvas.DrawImage(dc.SourceBitmap, dc.SourceRect, cacheRect, paint);
                                                                                     DoDarkening(darkeningCanvas, paint, cacheRect.Left, cacheRect.Top, cacheRect.Width, cacheRect.Height, darken_percentage);
+
+                                                                                    paint.Color = dc.PaintColor;
+                                                                                    canvas.SetMatrix(dc.Matrix);
 
                                                                                     /* Save to cache as immutable */
                                                                                     try
                                                                                     {
-                                                                                        SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
-                                                                                        _paintBitmap.CopyTo(newbmp);
-                                                                                        newbmp.SetImmutable();
+                                                                                        //SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
+                                                                                        //_paintBitmap.CopyTo(newbmp);
+                                                                                        //newbmp.SetImmutable();
+                                                                                        SKImage newbmp = SKImage.FromBitmap(_paintBitmap);
                                                                                         usedDarkenedBitmap = newbmp;
                                                                                         lock(_darkenedBitmapLock)
                                                                                         {
                                                                                             if (_darkenedBitmaps.Count >= GHConstants.MaxDarkenedBitmapCacheSize)
                                                                                             {
-                                                                                                foreach (SKBitmap bmp in _darkenedBitmaps.Values)
+                                                                                                foreach (SKImage bmp in _darkenedBitmaps.Values)
                                                                                                     bmp.Dispose();
                                                                                                 _darkenedBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
                                                                                             }
                                                                                             _darkenedBitmaps.TryAdd(cachekey, newbmp);
                                                                                         }
+                                                                                        canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect, paint);
                                                                                     }
                                                                                     catch (Exception ex)
                                                                                     {
                                                                                         Debug.WriteLine(ex.Message);
-                                                                                        usedDarkenedBitmap = _paintBitmap;
+                                                                                        //usedDarkenedBitmap = _paintBitmap;
+                                                                                        canvas.DrawBitmap(_paintBitmap, cacheRect, dc.DestinationRect, paint);
                                                                                     }
-
-                                                                                    paint.Color = dc.PaintColor;
-                                                                                    canvas.SetMatrix(dc.Matrix);
-                                                                                    canvas.DrawBitmap(usedDarkenedBitmap, cacheRect, dc.DestinationRect, paint);
                                                                                 }
                                                                             }
                                                                         }
@@ -6489,7 +6495,7 @@ namespace GnollHackX.Pages.Game
                                                                                     dc.AutoDrawParameters.drawwallends);
                                                                         }
                                                                         else
-                                                                            canvas.DrawBitmap(dc.SourceBitmap, dc.SourceRect, dc.DestinationRect, paint);
+                                                                            canvas.DrawImage(dc.SourceBitmap, dc.SourceRect, dc.DestinationRect, paint);
                                                                     }
                                                                 }
                                                             }
@@ -8605,7 +8611,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                             StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                            canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                            canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
 #if GNH_MAP_PROFILING && DEBUG
                                             StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -8653,7 +8659,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                             StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                            canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                            canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
 #if GNH_MAP_PROFILING && DEBUG
                                             StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -8708,7 +8714,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
 #if GNH_MAP_PROFILING && DEBUG
                                                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -9040,7 +9046,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                             StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                            canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                                            canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
 #if GNH_MAP_PROFILING && DEBUG
                                                             StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -9085,7 +9091,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                             StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                            canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                                            canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
 #if GNH_MAP_PROFILING && DEBUG
                                                             StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -9137,7 +9143,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                                canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
 #if GNH_MAP_PROFILING && DEBUG
                                                                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -9927,7 +9933,7 @@ namespace GnollHackX.Pages.Game
                                     target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
                                     target_rt.Bottom = target_rt.Top + marksize;
 
-                                    canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                    canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
                                     canvas.DrawText(statusname, tx + marksize + markpadding, ty, textPaint);
                                     lock (_mapOffsetLock)
                                     {
@@ -9974,7 +9980,7 @@ namespace GnollHackX.Pages.Game
                                     target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
                                     target_rt.Bottom = target_rt.Top + marksize;
 
-                                    canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                    canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
                                     canvas.DrawText(conditionname, tx + marksize + markpadding, ty, textPaint);
                                     lock (_mapOffsetLock)
                                     {
@@ -10031,7 +10037,7 @@ namespace GnollHackX.Pages.Game
                                         target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
                                         target_rt.Bottom = target_rt.Top + marksize;
 
-                                        canvas.DrawBitmap(TileMap[sheet_idx], source_rt, target_rt);
+                                        canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
                                         if (propname != null)
                                             canvas.DrawText(propname, tx + marksize + markpadding, ty, textPaint);
                                         lock (_mapOffsetLock)
@@ -10060,7 +10066,7 @@ namespace GnollHackX.Pages.Game
 
 #if GNH_MAP_PROFILING && DEBUG
             if ((_totalFrames % 120) == 0)
-                Debug.WriteLine("Frames: " + _totalFrames + ", bmp: " + _profilingStopwatchBmp.ElapsedTicks / _totalFrames + ", text: " + _profilingStopwatchText.ElapsedTicks / _totalFrames + ", rect: " + _profilingStopwatchRect.ElapsedTicks / _totalFrames);
+                GHApp.MaybeWriteGHLog("Frames: " + _totalFrames + ", bmp: " + _profilingStopwatchBmp.ElapsedTicks / _totalFrames + ", text: " + _profilingStopwatchText.ElapsedTicks / _totalFrames + ", rect: " + _profilingStopwatchRect.ElapsedTicks / _totalFrames);
 #endif
         }
 
@@ -10131,10 +10137,10 @@ namespace GnollHackX.Pages.Game
 
         struct SavedDarkenedBitmap
         {
-            SKBitmap Bitmap;
+            SKImage Bitmap;
             SKRect SourceRect;
             float DarkenPercentage;
-            public SavedDarkenedBitmap(SKBitmap bitmap, SKRect skrect, float darkenPercentage)
+            public SavedDarkenedBitmap(SKImage bitmap, SKRect skrect, float darkenPercentage)
             {
                 Bitmap = bitmap;
                 SourceRect = skrect;
@@ -10387,7 +10393,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                    canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
+                                    canvas.DrawImage(TileMap[a_sheet_idx], source_rt, target_rt, paint);
 #if GNH_MAP_PROFILING && DEBUG
                                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -10513,7 +10519,7 @@ namespace GnollHackX.Pages.Game
                                 canvas.Translate(target_x + (hflip_seg ? width : 0), target_y + (vflip_seg ? height : 0));
                                 canvas.Scale(hflip_seg ? -1 : 1, vflip_seg ? -1 : 1, 0, 0);
                                 paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                                canvas.DrawBitmap(TileMap[sheet_idx], sourcerect, targetrect, paint);
+                                canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect, paint);
                             }
                         }
                     }
@@ -10586,7 +10592,7 @@ namespace GnollHackX.Pages.Game
                                 canvas.Translate(target_x, target_y);
                                 canvas.Scale(1, 1, 0, 0);
                                 paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                                canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
+                                canvas.DrawImage(TileMap[a_sheet_idx], source_rt, target_rt, paint);
                             }
 
                             cnt++;
@@ -10661,7 +10667,7 @@ namespace GnollHackX.Pages.Game
                             canvas.RotateDegrees(-90);
                             canvas.Translate(-target_width, 0);
                             paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                            canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
+                            canvas.DrawImage(TileMap[a_sheet_idx], source_rt, target_rt, paint);
                         }
 
                         cnt++;
@@ -10726,7 +10732,7 @@ namespace GnollHackX.Pages.Game
                             canvas.Translate(target_x, target_y);
                             canvas.Scale(1, 1, 0, 0);
                             paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                            canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
+                            canvas.DrawImage(TileMap[a_sheet_idx], source_rt, target_rt, paint);
                         }
 
                         cnt++;
@@ -10811,7 +10817,7 @@ namespace GnollHackX.Pages.Game
                             canvas.Translate(target_x, target_y);
                             canvas.Scale(1, 1, 0, 0);
                             paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                            canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
+                            canvas.DrawImage(TileMap[a_sheet_idx], source_rt, target_rt, paint);
                         }
                         cnt++;
                     }
@@ -10858,7 +10864,7 @@ namespace GnollHackX.Pages.Game
                         {
                             canvas.Translate(dest_x, dest_y);
                             paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                            canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
+                            canvas.DrawImage(TileMap[a_sheet_idx], source_rt, target_rt, paint);
                         }
 
                         /* Color */
@@ -10907,7 +10913,7 @@ namespace GnollHackX.Pages.Game
                                 {
                                     _paintCanvas.Clear(SKColors.Transparent);
                                     paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
-                                    _paintCanvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt, paint);
+                                    _paintCanvas.DrawImage(TileMap[a_sheet_idx], source_rt, target_rt, paint);
                                     if ((GHApp._autodraws[autodraw].parameter3 & 1) != 0)
                                     {
                                         paint.BlendMode = SKBlendMode.Modulate;
@@ -11069,7 +11075,7 @@ namespace GnollHackX.Pages.Game
                         using (new SKAutoCanvasRestore(canvas, true))
                         {
                             canvas.Translate(dest_x, dest_y);
-                            canvas.DrawBitmap(TileMap[a2_sheet_idx], source_rt, target_rt, paint);
+                            canvas.DrawImage(TileMap[a2_sheet_idx], source_rt, target_rt, paint);
                         }
 
                         /* Fourth, opaque foreground */
@@ -11109,7 +11115,7 @@ namespace GnollHackX.Pages.Game
                             using (SKCanvas _paintCanvas = new SKCanvas(_paintBitmap))
                             {
                                 _paintCanvas.Clear(SKColors.Transparent);
-                                _paintCanvas.DrawBitmap(TileMap[a2_sheet_idx], source_rt, target_rt, paint);
+                                _paintCanvas.DrawImage(TileMap[a2_sheet_idx], source_rt, target_rt, paint);
                                 paint.Color = capcolor;
                                 paint.BlendMode = SKBlendMode.Modulate;
                                 _paintCanvas.DrawRect(target_rt, paint);
@@ -11361,7 +11367,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                    canvas.DrawBitmap(TileMap[a_sheet_idx], source_rt, target_rt);
+                    canvas.DrawImage(TileMap[a_sheet_idx], source_rt, target_rt);
 #if GNH_MAP_PROFILING && DEBUG
                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -11495,7 +11501,7 @@ namespace GnollHackX.Pages.Game
                                     {
                                         canvas.Translate(target_x + (hflip_link ? target_width : 0), target_y + (vflip_link ? target_height : 0));
                                         canvas.Scale(hflip_link ? -1 : 1, vflip_link ? -1 : 1, 0, 0);
-                                        canvas.DrawBitmap(TileMap[a_sheet_idx], sourcerect, targetrect, paint);
+                                        canvas.DrawImage(TileMap[a_sheet_idx], sourcerect, targetrect, paint);
                                     }
                                 }
                             }
@@ -11603,7 +11609,7 @@ namespace GnollHackX.Pages.Game
                                     {
                                         canvas.Translate(target_x + (hflip_link ? target_width : 0), target_y + (vflip_link ? target_height : 0));
                                         canvas.Scale(hflip_link ? -1 : 1, vflip_link ? -1 : 1, 0, 0);
-                                        canvas.DrawBitmap(TileMap[a_sheet_idx], sourcerect, targetrect, paint);
+                                        canvas.DrawImage(TileMap[a_sheet_idx], sourcerect, targetrect, paint);
                                     }
                                 }
                             }
@@ -13631,7 +13637,7 @@ namespace GnollHackX.Pages.Game
                 if (string.IsNullOrWhiteSpace(s))
                     nowrap = true;
                 rowidx++;
-                SKBitmap symbolbitmap = null;
+                SKImage symbolbitmap = null;
                 float printlength = 0;
                 float marginlength = 0;
                 SKRect source_rect = new SKRect();
@@ -13667,7 +13673,7 @@ namespace GnollHackX.Pages.Game
             return rows;
         }
 
-        public SKBitmap GetGameSpecialSymbol(string str, out SKRect source_rect)
+        public SKImage GetGameSpecialSymbol(string str, out SKRect source_rect)
         {
             source_rect = new SKRect();
             if (str == null || !str.StartsWith("&"))
@@ -13754,7 +13760,7 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
-                SKBitmap bitmap = GHApp.GetSpecialSymbol(str, out source_rect);
+                SKImage bitmap = GHApp.GetSpecialSymbol(str, out source_rect);
                 return bitmap;
             }
         }
@@ -13790,7 +13796,7 @@ namespace GnollHackX.Pages.Game
                     && y - curmenuoffset + textPaint.FontMetrics.Descent >= glyphystart)
                     usedglyphpadding = glyphpadding;
 
-                SKBitmap symbolbitmap = null;
+                SKImage symbolbitmap = null;
                 SKRect source_rect = new SKRect();
                 if(usespecialsymbols && (symbolbitmap = GetGameSpecialSymbol(split_str, out source_rect)) != null)
                 {
@@ -13813,7 +13819,7 @@ namespace GnollHackX.Pages.Game
                         float bmpx = x;
                         float bmpy = y + textPaint.FontMetrics.Ascent;
                         SKRect bmptargetrect = new SKRect(bmpx, bmpy, bmpx + bmpwidth, bmpy + bmpheight);
-                        canvas.DrawBitmap(symbolbitmap, source_rect, bmptargetrect, textPaint);
+                        canvas.DrawImage(symbolbitmap, source_rect, bmptargetrect, textPaint);
                     }
                     if (split_str == "&damage;" || split_str == "&MC;")
                         special_coloring = 1;

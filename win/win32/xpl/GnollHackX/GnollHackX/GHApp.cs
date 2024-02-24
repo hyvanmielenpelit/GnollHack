@@ -1272,7 +1272,7 @@ namespace GnollHackX
         public static int[] EnlargementOffsets { get; set; }
         public static int[] ReplacementOffsets { get; set; }
         public static int Glyph2TileSize { get; set; }
-        public static SKBitmap[] _tileMap = new SKBitmap[GHConstants.MaxTileSheets];
+        public static SKImage[] _tileMap = new SKImage[GHConstants.MaxTileSheets];
         public static int UsedTileSheets { get; set; }
         public static int TotalTiles { get; set; }
         public static int UnexploredGlyph { get; set; }
@@ -2305,7 +2305,7 @@ namespace GnollHackX
             }
         }
 
-        public static SKBitmap GetSpecialSymbol(string str, out SKRect source_rect)
+        public static SKImage GetSpecialSymbol(string str, out SKRect source_rect)
         {
             source_rect = new SKRect();
             if (str == null || !str.StartsWith("&"))
@@ -2403,7 +2403,7 @@ namespace GnollHackX
                 source_rect.Right = bitmap.Width;
                 source_rect.Bottom = bitmap.Height;
             }
-            return bitmap;
+            return SKImage.FromBitmap(bitmap);
         }
 
         static readonly object _cachedBitmapsLock = new object();
