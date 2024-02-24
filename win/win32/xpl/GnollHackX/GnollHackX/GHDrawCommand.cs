@@ -66,7 +66,7 @@ namespace GnollHackX
         public SKMatrix Matrix { get; set; }
         public SKRect SourceRect { get; set; }
         public SKRect DestinationRect { get; set; }
-        public SKBitmap SourceBitmap { get; set; }
+        public SKImage SourceBitmap { get; set; }
         public SKColor PaintColor { get; set; }
         public bool EndDarkening { get; set; }
         public int MapX { get; set; }
@@ -78,7 +78,7 @@ namespace GnollHackX
         {
 
         }
-        public GHDrawCommand(SKMatrix matrix, SKRect sourceRect, SKRect destinationRect, SKBitmap sourceBitmap, SKColor paintColor, int mapX, int mapY)
+        public GHDrawCommand(SKMatrix matrix, SKRect sourceRect, SKRect destinationRect, SKImage sourceBitmap, SKColor paintColor, int mapX, int mapY)
         {
             Matrix = matrix;
             SourceRect = sourceRect;
