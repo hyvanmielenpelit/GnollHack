@@ -13,7 +13,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
+                    <!--<RowDefinition Height="Auto" />-->
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -51,11 +51,11 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-                <StackLayout x:Name="ServerStack" Grid.Row="3" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
+                <!--<StackLayout x:Name="ServerStack" Grid.Row="3" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
                     <Label x:Name="ServerLabel" Text="Server" HorizontalOptions="End" VerticalOptions="Center" HorizontalTextAlignment="End" TextColor="Black" FontFamily="Diablo" FontSize="16" />
                     <Switch x:Name="ServerSwitch" HorizontalOptions="Start" VerticalOptions="Center" IsToggled="False" Toggled="ServerSwitch_Toggled" />
-                </StackLayout>
-                <Grid x:Name="BottomLayout" Grid.Row="4" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand">
+                </StackLayout>-->
+                <Grid x:Name="BottomLayout" Grid.Row="3" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand">
                     <StackLayout x:Name="ButtonMainStack" Orientation="Vertical"  HorizontalOptions="CenterAndExpand">
                         <StackLayout Orientation="Horizontal">
                             <controls:CustomImageButton Text="Share" x:Name="ShareButton" Clicked="ShareButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
