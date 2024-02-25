@@ -4378,7 +4378,7 @@ struct obj* obj;
             putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Switching between weapons by swapping two readied sets of weapons does not cost you a turn.");
             putstr(datawin, ATR_INDENT_AT_PERIOD, "3. You can also fight with two weapons at once, but this comes a penalty to hit and damage, which depends on your skill level.");
             putstr(datawin, ATR_INDENT_AT_PERIOD, "4. You gain weapon skill points by hitting with the weapon successfully.");
-            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You gain two-weapon-fighting skill points when you it hit successfully with your off-hand weapon.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You gain dual wielding skill points when you it hit successfully with your off-hand weapon.");
             putstr(datawin, ATR_INDENT_AT_PERIOD, "6. Ranged weapons incur a -30 to hit penalty when thrown or fired in melee combat.");
             putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Weapons may be enchanted to be flaming, freezing, and electrified, which all cost extra damage. The enchantment may dissipate upon hit.");
             putstr(datawin, ATR_INDENT_AT_PERIOD, "8. Glass and bone weapons can be enchanted to be death-magical, which slays the target instantly upon hit. The enchantment is consequently dispelled.");

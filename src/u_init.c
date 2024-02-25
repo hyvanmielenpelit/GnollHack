@@ -2141,9 +2141,9 @@ boolean is_past_participle;
         break;
     case ROLE_CAVEMAN:
         if (is_past_participle)
-            res = "attained the level of Grand Master in bludgeoning weapons";
+            res = "attained the level of Grand Master in Bludgeoning Weapons";
         else
-            res = "attain the level of Grand Master in bludgeoning weapons";
+            res = "attain the level of Grand Master in Bludgeoning Weapons";
         break;
     case ROLE_HEALER:
         if (is_past_participle)
@@ -2159,9 +2159,9 @@ boolean is_past_participle;
         break;
     case ROLE_MONK:
         if (is_past_participle)
-            res = "attained the level of Grand Master in martial arts";
+            res = "attained the level of Grand Master in Martial Arts";
         else
-            res = "attain the level of Grand Master in martial arts";
+            res = "attain the level of Grand Master in Martial Arts";
         break;
     case ROLE_PRIEST:
         if (is_past_participle)
@@ -2177,9 +2177,9 @@ boolean is_past_participle;
         break;
     case ROLE_RANGER:
         if (is_past_participle)
-            res = "attained the level of Grand Master in bow or crossbow";
+            res = "attained the level of Grand Master in Bow or Crossbow";
         else
-            res = "attain the level of Grand Master in bow or crossbow";
+            res = "attain the level of Grand Master in Bow or Crossbow";
         break;
     case ROLE_SAMURAI:
         if (is_past_participle)
@@ -2195,9 +2195,9 @@ boolean is_past_participle;
         break;
     case ROLE_VALKYRIE:
         if (is_past_participle)
-            res = "attained the level of Grand Master in two-weapon combat";
+            res = "attained the level of Grand Master in Dual Wielding";
         else
-            res = "achieve the level of Grand Master in two-weapon combat";
+            res = "achieve the level of Grand Master in Dual Wielding";
         break;
     case ROLE_WIZARD:
         if (is_past_participle)
