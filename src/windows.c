@@ -2960,7 +2960,7 @@ int x, y, sym, color;
 nhsym ch;
 unsigned long special;
 {
-    char buf[BUFSZ]; /* do_screen_description requires this :( */
+    char buf[BUFSZ] = ""; /* do_screen_description requires this :( */
     const char* firstmatch = "unknown"; /* and this */
     coord cc;
     int desc_found = 0;
