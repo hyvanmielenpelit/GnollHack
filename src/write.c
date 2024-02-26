@@ -193,7 +193,7 @@ register struct obj *pen;
 
         if (!strcmpi(OBJ_NAME(objects[i]), nm))
             goto found;
-        if (!strcmpi(OBJ_DESCR(objects[i]), nm)) {
+        if (OBJ_DESCR(objects[i]) && !strcmpi(OBJ_DESCR(objects[i]), nm)) {
             by_descr = TRUE;
             goto found;
         }
