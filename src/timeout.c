@@ -1061,8 +1061,8 @@ nh_timeout()
                 You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are starting to gain mana %sless rapidly than before.",
                     Rapider_energy_regeneration || Rapid_energy_regeneration || Energy_regeneration ? "" : "much ");
                 break;
-            case MELEE_LIFE_LEECH:
-                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are starting to lose your ability to leech life in melee.");
+            case WOUNDING_RESISTANCE:
+                You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "you are starting to feel more vulnerable to wounding.");
                 break;
             case CRAZED:
                 You_ex(ATR_NONE, CLR_MSG_ATTENTION, "are starting to feel more sane than before.");
@@ -4249,11 +4249,11 @@ boolean was_flying;
                 Rapider_energy_regeneration || Rapid_energy_regeneration || Energy_regeneration ? "" : "much ");
         }
         break;
-    case MELEE_LIFE_LEECH:
-        if (!Melee_life_leech)
+    case WOUNDING_RESISTANCE:
+        if (!Wounding_resistance)
         {
             play_sfx_sound(SFX_PROTECTION_END_WARNING);
-            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "have lost your ability to leech life in melee!");
+            You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "vulnerable to wounding!");
         }
         break;
     case CRAZED:

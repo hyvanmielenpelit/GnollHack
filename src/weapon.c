@@ -358,7 +358,7 @@ int use_type; // OBSOLETE: /* 0 = Melee weapon (full enchantment bonuses), 1 = t
         {
             tmp += abs(applicable_enchantment);
             if (has_obj_mythic_great_accuracy(otmp))
-                tmp += MYTHIC_GREAT_ACCURACY_BASE_GAIN + abs(applicable_enchantment);
+                tmp += d(MYTHIC_GREAT_ACCURACY_DICE, MYTHIC_GREAT_ACCURACY_DIESIZE) + abs(applicable_enchantment);
         }
     }
     else
@@ -367,7 +367,7 @@ int use_type; // OBSOLETE: /* 0 = Melee weapon (full enchantment bonuses), 1 = t
         { 
             tmp += applicable_enchantment;
             if (has_obj_mythic_great_accuracy(otmp))
-                tmp += MYTHIC_GREAT_ACCURACY_BASE_GAIN + applicable_enchantment;
+                tmp += d(MYTHIC_GREAT_ACCURACY_DICE, MYTHIC_GREAT_ACCURACY_DIESIZE) + applicable_enchantment;
         }
     }
     tmp += objects[otmp->otyp].oc_hitbonus;
@@ -522,13 +522,13 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
             {
                 tmp2 += abs(applicable_enchantment);
                 if (has_obj_mythic_great_damage(otmp))
-                    tmp2 += MYTHIC_GREAT_DAMAGE_BASE_GAIN + abs(applicable_enchantment);
+                    tmp2 += d(MYTHIC_GREAT_DAMAGE_DICE, MYTHIC_GREAT_DAMAGE_DIESIZE) + abs(applicable_enchantment);
             }
             else
             {
                 tmp2 += applicable_enchantment;
                 if (has_obj_mythic_great_damage(otmp))
-                    tmp2 += MYTHIC_GREAT_DAMAGE_BASE_GAIN + applicable_enchantment;
+                    tmp2 += d(MYTHIC_GREAT_DAMAGE_DICE, MYTHIC_GREAT_DAMAGE_DIESIZE) + applicable_enchantment;
             }
 
             if (tmp2 < 0)

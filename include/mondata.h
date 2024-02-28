@@ -626,8 +626,8 @@
 #define has_divine_regeneration(mon) \
     has_property(mon, DIVINE_REGENERATION)
 
-#define has_melee_life_leech(mon) \
-    has_property(mon, MELEE_LIFE_LEECH)
+#define has_wounding_resistance(mon) \
+    has_property(mon, WOUNDING_RESISTANCE)
 
 #define has_crazed(mon) \
     has_property(mon, CRAZED)
@@ -717,9 +717,12 @@
 #define pm_resists_elec(ptr) \
     (has_innate2(ptr, MR2_SHOCK_RESISTANCE))
 
+#define pm_resists_wounding(ptr) \
+    (has_innate2(ptr, MR2_WOUNDING_RESISTANCE))
+
 /* resistances at the time of acquisition */
 #define is_mon_immune_to_fire(mon) \
-    ( pm_immune_to_fire((mon)->data) || has_property(mon, FIRE_IMMUNITY))
+    (pm_immune_to_fire((mon)->data) || has_property(mon, FIRE_IMMUNITY))
 #define is_mon_immune_to_cold(mon) \
     (pm_immune_to_cold((mon)->data) || has_property(mon, COLD_IMMUNITY))
 #define is_mon_immune_to_elec(mon) \
@@ -754,6 +757,9 @@
 
 #define resists_disint(mon) \
     (pm_resists_disint((mon)->data) || has_property(mon, DISINTEGRATION_RESISTANCE))
+
+#define resists_wounding(mon) \
+    (pm_resists_wounding((mon)->data) || has_wounding_resistance(mon))
 
 #define resists_sleep(mon) \
     (has_innate((mon)->data, MR_SLEEP) || has_property(mon, SLEEP_RESISTANCE) || is_undead((mon)->data) || is_vampshifter(mon))

@@ -1537,7 +1537,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         {
             if (has_obj_mythic_great_damage(obj))
             {
-                base_avg_dmg += MYTHIC_GREAT_DAMAGE_BASE_GAIN;
+                base_avg_dmg += MYTHIC_GREAT_DAMAGE_DICE * (double)(1 + MYTHIC_GREAT_DAMAGE_DIESIZE) / 2;
                 if(obj->known && objects[otyp].oc_enchantable)
                     base_avg_dmg += obj->enchantment;
             }

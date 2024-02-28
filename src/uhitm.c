@@ -2189,7 +2189,7 @@ boolean* obj_destroyed;
     int crit_strike_die_roll_threshold = crit_strike_probability / 5;
 
     /* Wounding */
-    if (obj && !uses_spell_flags && !is_rider(mon->data))
+    if (obj && !uses_spell_flags)
     {
         int extradmg = 0;
         if (
@@ -2222,21 +2222,23 @@ boolean* obj_destroyed;
 
         if (extradmg > 0)
         {
-            mon->mbasehpdrain -= extradmg;
-            update_mon_maxhp(mon);
+            if (!resists_wounding(mon))
+            {
+                mon->mbasehpdrain -= extradmg;
+                update_mon_maxhp(mon);
 
-            if (mon->mhp > mon->mhpmax)
-                mon->mhp = mon->mhpmax;
+                if (mon->mhp > mon->mhpmax)
+                    mon->mhp = mon->mhpmax;
 
+                char* whom = mon_nam(mon);
+                if (canspotmon(mon))
+                {
+                    pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s deeply into %s!", Yobjnam2(obj, "cut"), whom);
+                }
+            }
             if (DEADMONSTER(mon))
             {
                 destroyed = TRUE;
-            }
-
-            char* whom = mon_nam(mon);
-            if (canspotmon(mon))
-            {
-                pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s deeply into %s!", Yobjnam2(obj, "cut"), whom);
             }
         }
     }

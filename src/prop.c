@@ -170,7 +170,7 @@ const struct propname propertynames[] = {
     { RAPID_ENERGY_REGENERATION, "rapidly regenerating mana", "rapid mana regeneration" },
     { RAPIDER_ENERGY_REGENERATION, "very rapidly regenerating mana", "very rapid mana regeneration" },
     { RAPIDEST_ENERGY_REGENERATION, "very very rapidly regenerating mana", "very very rapid mana regeneration" },
-    { MELEE_LIFE_LEECH, "having melee life leech", "melee life leech" },
+    { WOUNDING_RESISTANCE, "resistant to wounding", "wounding resistance" },
     { CRAZED, "crazed", "crazedness" },
     { DIVINE_REGENERATION, "extremely rapidly regenerating", "extremely rapid regeneration" },
     { IMPROVED_FIRE_RESISTANCE, "75% resistant to fire", "75% fire resistance" },
@@ -345,7 +345,7 @@ NEARDATA struct prop_info property_definitions[MAX_PROPS] =
     { "rapid-energy-regeneration",    1, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_BUFF_CANCELLABLE},  /* RAPID_ENERGY_REGENERATION = 151 */
     { "rapider-energy-regeneration",  1, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_BUFF_CANCELLABLE},  /* RAPIDER_ENERGY_REGENERATION = 152 */
     { "rapidest-energy-regeneration", 1, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_BUFF_CANCELLABLE},  /* RAPIDEST_ENERGY_REGENERATION = 153 */
-    { "melee-life-leech",             1, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_BUFF_CANCELLABLE},  /* MELEE_LIFE_LEECH = 154 */
+    { "wounding-resistance",          1, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_BUFF_CANCELLABLE},  /* WOUNDING_RESISTANCE = 154 */
     { "crazed",                       1, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_BUFF_CANCELLABLE},  /* CRAZED = 155 */
     { "divine-regeneration",          1, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_BUFF_CANCELLABLE},  /* DIVINE_REGENERATION = 156 */
     { "improved-fire-resistance",     1, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_BUFF_CANCELLABLE},  /* IMPROVED_FIRE_RESISTANCE = 157 */

@@ -4466,8 +4466,9 @@ int final;
     if (Bisection_resistance)
         you_cannot("be bisected", from_what(BISECTION_RESISTANCE));
     if (Halluc_resistance)
-        enl_msg(You_, "resist", "resisted", " hallucinations",
-                from_what(HALLUC_RES));
+        enl_msg(You_, "resist", "resisted", " hallucinations", from_what(HALLUC_RES));
+    if (Wounding_resistance)
+        enl_msg(You_, "resist", "resisted", " wounding", from_what(WOUNDING_RESISTANCE));
     if (u.uedibility || maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
         you_can("recognize detrimental food", "");
 
@@ -4753,9 +4754,6 @@ int final;
         else
             enl_msg("You cause", "", "d", " 150% damage", from_what(HEROISM));
     }
-    if (Melee_life_leech)
-        enl_msg("You leech", "", "d", " life in melee", from_what(MELEE_LIFE_LEECH));
-
 
     int role_ac_bonus = get_role_AC_bonus();
     int role_mc_bonus = get_role_MC_bonus();

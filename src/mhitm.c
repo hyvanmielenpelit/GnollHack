@@ -2091,7 +2091,7 @@ register struct obj* omonwep;
     int crit_strike_die_roll_threshold = crit_strike_probability / 5;
 
     /* Wounding */
-    if (mweapon && !uses_spell_flags && !isdisintegrated && !is_rider(mdef->data))
+    if (mweapon && !uses_spell_flags && !isdisintegrated)
     {
         int extradmg = 0;
         if(
@@ -2125,10 +2125,9 @@ register struct obj* omonwep;
 
         if (extradmg > 0)
         {
-            mdef->mbasehpdrain -= extradmg;
-
-            if (extradmg > 0)
+            if (!resists_wounding(mdef))
             {
+                mdef->mbasehpdrain -= extradmg;
                 if (canspotmon(mdef) && canspotmon(magr))
                 {
                     pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s's %s %s deeply into %s!", Monnam(magr), cxname(mweapon), otense(mweapon, "cut"), mon_nam(mdef));

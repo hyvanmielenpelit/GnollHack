@@ -3091,12 +3091,19 @@ register struct obj* omonwep;
             if (objects[omonwep->otyp].oc_aflags & A1_USE_FULL_DAMAGE_INSTEAD_OF_EXTRA)
                 extradmg = (int)ceil(damage);
 
-            permdmg2 += extradmg;
-
+            if (!resists_wounding(&youmonst) && !Wounding_resistance)
+                permdmg2 += extradmg;
         }
 
         if (has_obj_mythic_wounding(omonwep))
-            permdmg2 += mythic_wounding_amount(omonwep);
+        {
+            int mythicdmg = mythic_wounding_amount(omonwep);
+            if (mythicdmg > 0)
+            {
+                if(!resists_wounding(&youmonst) && !Wounding_resistance)
+                    permdmg2 += mythicdmg;
+            }
+        }
 
         if (permdmg2 > 0)
         {
@@ -3139,11 +3146,12 @@ register struct obj* omonwep;
             deduct_monster_hp(mtmp, (double)-life_leech);
 
             if (mtmp->mhp > hpbefore)
-
-            if (extradmg > 0)
             {
-                play_sfx_sound(SFX_LIFE_LEECH);
-                pline("%s's %s %s your life energy!", Monnam(mtmp), cxname(omonwep), otense(omonwep, "leech"));
+                if (extradmg > 0)
+                {
+                    play_sfx_sound(SFX_LIFE_LEECH);
+                    pline("%s's %s %s your life energy!", Monnam(mtmp), cxname(omonwep), otense(omonwep, "leech"));
+                }
             }
         }
     }
