@@ -1545,7 +1545,7 @@ unsigned long mkflags;
         }
     }
 
-    if (mkobj_type == MKOBJ_TYPE_INITIAL || ((mkobj_type == MKOBJ_TYPE_NORMAL || mkobj_type == MKOBJ_TYPE_CONTAINER) && (depth(&u.uz) == 1 || depth(&u.uz) == 2 || leveldiff < 5)))
+    if ((mkobj_type == MKOBJ_TYPE_INITIAL && !discover) || ((mkobj_type == MKOBJ_TYPE_NORMAL || mkobj_type == MKOBJ_TYPE_CONTAINER) && (depth(&u.uz) == 1 || depth(&u.uz) == 2 || leveldiff < 5)))
     {
         if (otmp->otyp == WAN_WISHING)
         {
