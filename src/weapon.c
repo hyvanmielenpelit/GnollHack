@@ -2567,7 +2567,7 @@ int skill_id;
             if (skill_id == P_WAND)
             {
                 int tohitbonus = wand_skill_hit_bonus(lvl);
-                double dicemult = get_wand_damage_multiplier(lvl);
+                double dicemult = get_wand_skill_damage_multiplier(lvl);
                 //char cbuf[BUFSZ] = "";
                 Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
                 //Sprintf(cbuf, "%d%%", criticalhitpct);
@@ -3166,7 +3166,7 @@ enhance_weapon_skill()
                     {
                         int tohitbonus = wand_skill_hit_bonus(P_SKILL_LEVEL(i));
                         //int criticalhitpct = get_skill_critical_strike_chance(i, FALSE, 0, FALSE);
-                        double dicemult = get_wand_damage_multiplier(P_SKILL_LEVEL(i));
+                        double dicemult = get_wand_skill_damage_multiplier(P_SKILL_LEVEL(i));
                         char hbuf[BUFSZ] = "";
                         //char cbuf[BUFSZ] = "";
                         char dbuf[BUFSZ] = "";
@@ -3180,7 +3180,7 @@ enhance_weapon_skill()
                             int nextlevel = min(P_MAX_SKILL_LEVEL(i), P_SKILL_LEVEL(i) + 1);
                             int tohitbonus2 = wand_skill_hit_bonus(nextlevel);
                             //int criticalhitpct2 = get_skill_critical_strike_chance(i, TRUE, 0, FALSE);
-                            double dicemult2 = get_wand_damage_multiplier(nextlevel);
+                            double dicemult2 = get_wand_skill_damage_multiplier(nextlevel);
                             char hbuf2[BUFSZ] = "";
                             //char cbuf2[BUFSZ] = "";
                             char dbuf2[BUFSZ] = "";
@@ -4341,7 +4341,7 @@ int use_this_level;
 }
 
 double
-get_wand_damage_multiplier(skill_level)
+get_wand_skill_damage_multiplier(skill_level)
 int skill_level;
 {
     double res = 0.5;
@@ -4359,18 +4359,32 @@ int skill_level;
         res = 2.0;
         break;
     case P_EXPERT:
-        res = 3.0;
+        res = 2.5;
         break;
     case P_MASTER:
-        res = 4.0;
+        res = 3.0;
         break;
     case P_GRAND_MASTER:
-        res = 6.0;
+        res = 4.0;
         break;
     default:
         break;
     }
     return res;
+}
+
+double
+get_wand_exceptionality_damage_multiplier(exceptionality)
+uchar exceptionality;
+{
+    if (exceptionality <= EXCEPTIONALITY_NORMAL || exceptionality >= MAX_EXCEPTIONALITY_TYPES)
+        return 1.0;
+    else if (exceptionality == EXCEPTIONALITY_EXCEPTIONAL)
+        return 2.0;
+    else if (exceptionality == EXCEPTIONALITY_ELITE)
+        return 3.0;
+    else
+        return 4.0;
 }
 
 int

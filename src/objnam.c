@@ -769,7 +769,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     case ARMOR_CLASS:
         /* depends on order of the dragon scales objects -- Special case, ignores the modifiers above */
         if (typ >= GRAY_DRAGON_SCALES && typ <= YELLOW_DRAGON_SCALES) {
-            Sprintf(buf, "set of %s", actualn_fullbuf);
+            Sprintf(eos(buf), "set of %s", actualn_fullbuf);
             break;
         }
 
@@ -970,11 +970,11 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         if (!dknown)
             Strcpy(buf, "wand");
         else if (nn)
-            Sprintf(buf, "wand of %s", actualn_fullbuf);
+            Sprintf(eos(buf), "wand of %s", actualn_fullbuf);
         else if (un)
-            Sprintf(buf, "wand called %s", un);
+            Sprintf(eos(buf), "wand called %s", un);
         else
-            Sprintf(buf, "%s wand", dn_fullbuf);
+            Sprintf(eos(buf), "%s wand", dn_fullbuf);
         break;
     case SPBOOK_CLASS:
         if (objects[typ].oc_subtyp == BOOKTYPE_NOVEL || objects[typ].oc_subtyp == BOOKTYPE_MANUAL) { /* 3.6 tribute */

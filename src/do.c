@@ -1851,13 +1851,37 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
     {
         if (objects[otyp].oc_class == WAND_CLASS || objects[otyp].oc_class == SCROLL_CLASS || (objects[otyp].oc_class == TOOL_CLASS && is_otyp_spelltool(otyp)))
         {
+            double exceptionality_multiplier = 1.0;
+            if (obj && obj->exceptionality)
+            {
+                exceptionality_multiplier = get_wand_exceptionality_damage_multiplier(obj->exceptionality);
+                Sprintf(buf, "Wand quality:           %s", obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? "Exceptional (double base damage)" :
+                    obj->exceptionality == EXCEPTIONALITY_ELITE ? "Elite (triple base damage)" :
+                    obj->exceptionality == EXCEPTIONALITY_CELESTIAL ? "Celestial (quadruple base damage)" :
+                    obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL ? "Primordial (quadruple base damage)" :
+                    obj->exceptionality == EXCEPTIONALITY_INFERNAL ? "Infernal (quadruple base damage)" :
+                    "Unknown quality"
+                );
+
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
+
             boolean use_wand_skill = objects[otyp].oc_class == WAND_CLASS || objects[otyp].oc_skill == P_WAND;
+            double skill_multiplier = use_wand_skill ? get_wand_skill_damage_multiplier(P_SKILL_LEVEL(P_WAND)) : 1.0;
+            if (use_wand_skill)
+            {
+                char slnbuf[BUFSZ] = "";
+                skill_level_name(P_WAND, slnbuf, FALSE);
+                *slnbuf = highc(*slnbuf);
+                Sprintf(buf, "Wand skill level:       %s (%.1fx base damage)", slnbuf, skill_multiplier);
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
+
             const char *itemname_hc = objects[otyp].oc_class == WAND_CLASS ? "Wand" : objects[otyp].oc_class == SCROLL_CLASS ? "Scroll" : "Item";
             const char *itemname_lc = objects[otyp].oc_class == WAND_CLASS ? "wand" : objects[otyp].oc_class == SCROLL_CLASS ? "scroll" : "item";
             const char* itempadding = objects[otyp].oc_class == SCROLL_CLASS ? "" : "  ";
             if (objects[otyp].oc_spell_dmg_dice > 0 || objects[otyp].oc_spell_dmg_diesize > 0 || objects[otyp].oc_spell_dmg_plus != 0)
             {
-                double dicemult = use_wand_skill ? get_wand_damage_multiplier(P_SKILL_LEVEL(P_WAND)) : 1.0;
                 boolean maindiceprinted = FALSE;
                 if(objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
                     Sprintf(buf, "%s healing amount:  %s", itemname_hc, itempadding);
@@ -1871,7 +1895,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 if (objects[otyp].oc_spell_dmg_dice > 0 && objects[otyp].oc_spell_dmg_diesize > 0)
                 {
                     maindiceprinted = TRUE;
-                    Sprintf(plusbuf, "%dd%d", max(1, (int)((double)objects[otyp].oc_spell_dmg_dice * dicemult)), objects[otyp].oc_spell_dmg_diesize);
+                    Sprintf(plusbuf, "%dd%d", max(1, (int)((double)objects[otyp].oc_spell_dmg_dice * skill_multiplier * exceptionality_multiplier)), objects[otyp].oc_spell_dmg_diesize);
                     Strcat(buf, plusbuf);
                 }
 
@@ -1888,14 +1912,6 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
                 if (objects[otyp].oc_flags5 & O5_EFFECT_FOR_BLESSED_ONLY)
                     Strcat(buf, " (blessed only)");
-
-                if (use_wand_skill)
-                {
-                    char slnbuf[BUFSZ] = "";
-                    skill_level_name(P_WAND, slnbuf, FALSE);
-                    *slnbuf = lowc(*slnbuf);
-                    Sprintf(eos(buf), " (%.1fx, %s in %s)", dicemult, slnbuf, skill_name(P_WAND, TRUE));
-                }
 
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
 

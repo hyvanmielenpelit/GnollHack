@@ -653,7 +653,7 @@ struct obj *instr;
         consume_obj_charge(instr, TRUE);
         You("produce a strange, vibrating sound.");
         wake_nearby();
-        int dur_dice = objects[instr->otyp].oc_spell_dur_dice;
+        int dur_dice = objects[instr->otyp].oc_spell_dur_dice * (1 + (int)min(4, instr->exceptionality));
         int dur_diesize = objects[instr->otyp].oc_spell_dur_diesize;
         int dur_plus = objects[instr->otyp].oc_spell_dur_plus;
         int radius = 10;
@@ -691,7 +691,7 @@ struct obj *instr;
             is_scary = TRUE;
         }
         You("produce a %sgrave sound.", is_scary ? "frightful, " : "");
-        awaken_monsters(u.ulevel * 30, is_scary);
+        awaken_monsters(u.ulevel * 30 * (1 + (int)min(4, instr->exceptionality)), is_scary);
         exercise(A_WIS, FALSE);
         makeknown(instr->otyp);
         break;

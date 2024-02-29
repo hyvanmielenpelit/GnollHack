@@ -165,7 +165,7 @@ int expltype;
                 adtyp = (uchar)objects[objtype].oc_damagetype;
         }
     }
-    int damui = objtype > 0 ? get_spell_damage(objtype, origmonst, &youmonst) : max(0, d(dmg_n, dmg_d) + dmg_p);
+    int damui = objtype > 0 ? get_spell_damage(objtype, 0, origmonst, &youmonst) : max(0, d(dmg_n, dmg_d) + dmg_p);
     double damu = adjust_damage(damui, origmonst, &youmonst, adtyp, olet < MAX_OBJECT_CLASSES ? ADFLAGS_SPELL_DAMAGE : ADFLAGS_NONE);
     if (olet == WAND_CLASS)
     {
@@ -544,7 +544,7 @@ int expltype;
                 idamnonres += adjust_damage(destroy_mitem(mtmp, WAND_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
                 idamnonres += adjust_damage(destroy_mitem(mtmp, RING_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
 
-                int ddami = objtype > 0 ? get_spell_damage(objtype, origmonst, mtmp) : max(0, d(dmg_n, dmg_d) + dmg_p);
+                int ddami = objtype > 0 ? get_spell_damage(objtype, 0, origmonst, mtmp) : max(0, d(dmg_n, dmg_d) + dmg_p);
                 double ddam = adjust_damage(ddami, (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
 
                 if (explmask[i][j] == 1) 

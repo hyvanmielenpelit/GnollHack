@@ -2115,6 +2115,7 @@ unsigned long mkflags;
         }
         else
         {
+            boolean iswand = otmp->oclass == WAND_CLASS || (otmp->oclass == TOOL_CLASS && is_spelltool(otmp));
             boolean halfchance = !!(objects[otmp->otyp].oc_flags5 & O5_HALF_EXCEPTIONALITY_CHANCE);
             boolean doublechance = !!(objects[otmp->otyp].oc_flags5 & O5_DOUBLE_EXCEPTIONALITY_CHANCE);
             uchar ownerimpliedexcep = (mkflags & MKOBJ_FLAGS_OWNER_IS_LAWFUL) ? EXCEPTIONALITY_CELESTIAL :
@@ -2122,7 +2123,7 @@ unsigned long mkflags;
                 (mkflags & MKOBJ_FLAGS_OWNER_IS_NONALIGNED) ? EXCEPTIONALITY_ELITE : 0;
             if (In_endgame(&u.uz))
             {
-                if (doublechance || !rn2(halfchance ? 4 : 2))
+                if (!iswand && (doublechance || !rn2(halfchance ? 4 : 2)))
                     otmp->exceptionality = ownerimpliedexcep ? ownerimpliedexcep : (!rn2(3) && otmp->material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
                 else if (!rn2(halfchance ? 4 : 2))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
@@ -2131,7 +2132,7 @@ unsigned long mkflags;
             }
             else if (Inhell)
             {
-                if (!rn2(halfchance ? 20 : doublechance ? 5 : 10))
+                if (!iswand && !rn2(halfchance ? 20 : doublechance ? 5 : 10))
                     otmp->exceptionality = ownerimpliedexcep ? ownerimpliedexcep : (!rn2(3) && otmp->material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
                 else if (!rn2(halfchance ? 8 : doublechance ? 2 : 4))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
@@ -2140,26 +2141,26 @@ unsigned long mkflags;
             }
             else if (leveldiff >= 16)
             {
-                if (!rn2(halfchance ? 400 : doublechance ? 100 : 200))
+                if (!iswand && !rn2(halfchance ? 400 : doublechance ? 100 : 200))
                     otmp->exceptionality = ownerimpliedexcep ? ownerimpliedexcep : (!rn2(3) && otmp->material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
-                else if (!rn2(halfchance ? 20 : doublechance ? 5 : 10))
+                else if (!iswand && !rn2(halfchance ? 20 : doublechance ? 5 : 10))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
                 else if (!rn2(halfchance ? 8 : doublechance ? 2 : 4))
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
-            else if (leveldiff >= 8)
+            else if (leveldiff >= 8 && !iswand)
             {
                 if (!rn2(halfchance ? 100 : doublechance ? 25 : 50))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
                 else if (!rn2(halfchance ? 16 : doublechance ? 4 : 8))
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
-            else if (leveldiff < 2)
+            else if (leveldiff < 2 && !iswand)
             {
                 if (!rn2(halfchance ? 400 : doublechance ? 100 : 200))
                     otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
             }
-            else
+            else if (!iswand)
             {
                 if (!rn2(halfchance ? 400 : doublechance ? 100 : 200))
                     otmp->exceptionality = EXCEPTIONALITY_ELITE;
@@ -4303,7 +4304,7 @@ boolean tipping; /* caller emptying entire contents; affects shop handling */
         const char *what;
 
         consume_obj_charge(horn, !tipping);
-        if (!rn2(13)) 
+        if (!rn2(13 - min(4, horn->exceptionality)))
         {
             obj = mkobj(POTION_CLASS, FALSE, FALSE);
             if (objects[obj->otyp].oc_magic)
@@ -4316,7 +4317,7 @@ boolean tipping; /* caller emptying entire contents; affects shop handling */
         else 
         {
             obj = mkobj(FOOD_CLASS, FALSE, FALSE);
-            if (obj->otyp == FOOD_RATION && !rn2(7))
+            if (obj->otyp == FOOD_RATION && !rn2(7 - min(4, horn->exceptionality)))
             {
                 obj->otyp = LUMP_OF_ROYAL_JELLY;
                 obj->material = objects[obj->otyp].oc_material;

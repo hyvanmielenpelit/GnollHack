@@ -138,9 +138,10 @@ struct monst* targetmonst;
     return skill_level;
 }
 
-int 
-get_spell_damage(otyp, origmonst, targetmonst)
+int
+get_spell_damage(otyp, exceptionality, origmonst, targetmonst)
 int otyp;
+uchar exceptionality;
 struct monst* origmonst;
 struct monst* targetmonst;
 {
@@ -162,7 +163,8 @@ struct monst* targetmonst;
         else
             skill_level = is_prince(origmonst->data) ? P_SKILLED : is_lord(origmonst->data) || is_wizard(origmonst->data) ? P_BASIC : P_UNSKILLED; /* No increase in wand damage for monsters to avoid unnecessary instadeaths */
 
-        dicemult = get_wand_damage_multiplier(skill_level);
+        dicemult = get_wand_skill_damage_multiplier(skill_level);
+        dicemult *= get_wand_exceptionality_damage_multiplier(exceptionality);
     }
 
     int dmg = d(max(1, (int)((double)objects[otyp].oc_spell_dmg_dice * dicemult)), objects[otyp].oc_spell_dmg_diesize) + objects[otyp].oc_spell_dmg_plus;
@@ -369,7 +371,7 @@ struct monst* origmonst;
     boolean disguised_mimic = (is_mimic(mtmp->data)
                                && M_AP_TYPE(mtmp) != M_AP_NOTHING);
     int duration = get_obj_spell_duration(otmp);
-    int dmg = get_spell_damage(otyp, origmonst, mtmp);
+    int dmg = get_spell_damage(otyp, otmp->exceptionality, origmonst, mtmp);
     int save_adj = get_saving_throw_adjustment(otmp, mtmp, origmonst);
     boolean surpress_noeffect_message = FALSE;
     //boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mtmp, otmp, 0, 0, 0, NOTELL);
@@ -5357,7 +5359,7 @@ register struct obj *obj;
         {
             if (dist2(u.ux, u.uy, mon->mx, mon->my) <= radius * (radius + 1))
             {
-                int dmg = get_spell_damage(obj->otyp, &youmonst, mon);
+                int dmg = get_spell_damage(obj->otyp, 0, &youmonst, mon);
                 if (is_undead(mon->data) || is_demon(mon->data) || is_vampshifter(mon) || hates_light(mon->data))
                 {
                     if (is_peaceful(mon))
@@ -5386,7 +5388,7 @@ register struct obj *obj;
                 if (is_peaceful(mon))
                     setmangry(mon, FALSE);
 
-                int dmg = get_spell_damage(obj->otyp, &youmonst, mon);
+                int dmg = get_spell_damage(obj->otyp, 0, &youmonst, mon);
                 if (is_mon_immune_to_fire(mon))
                 {
                     if (canspotmon(mon))
@@ -5418,7 +5420,7 @@ register struct obj *obj;
                 if (is_peaceful(mon))
                     setmangry(mon, FALSE);
 
-                int dmg = get_spell_damage(obj->otyp, &youmonst, mon);
+                int dmg = get_spell_damage(obj->otyp, 0, &youmonst, mon);
                 if (is_mon_immune_to_cold(mon))
                 {
                     if (canspotmon(mon))
@@ -5450,7 +5452,7 @@ register struct obj *obj;
                 if (is_peaceful(mon))
                     setmangry(mon, FALSE);
 
-                int dmg = get_spell_damage(obj->otyp, &youmonst, mon);
+                int dmg = get_spell_damage(obj->otyp, 0, &youmonst, mon);
                 if (is_mon_immune_to_elec(mon))
                 {
                     if (canspotmon(mon))
@@ -5482,7 +5484,7 @@ register struct obj *obj;
                 if(is_peaceful(mon))
                     setmangry(mon, FALSE);
 
-                int dmg = get_spell_damage(obj->otyp, &youmonst, mon);
+                int dmg = get_spell_damage(obj->otyp, 0, &youmonst, mon);
                 if (resists_magic(mon))
                 {
                     if (canspotmon(mon))
@@ -6077,7 +6079,7 @@ boolean ordinary;
         return 0.0;
 
     boolean learn_it = FALSE;
-    int basedmg = get_spell_damage(obj->otyp, &youmonst, &youmonst);
+    int basedmg = get_spell_damage(obj->otyp, obj->exceptionality, &youmonst, &youmonst);
     int duration = get_obj_spell_duration(obj);
     double damage = 0;
     //boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, obj, FALSE, 0, 0, NOTELL);
@@ -8609,7 +8611,7 @@ uchar* out_flags_ptr;
     //Base damage here, set to zero, if not needed
     if (origobj)
     {
-        dmg = get_spell_damage(origobj->otyp, origmonst, mon);
+        dmg = get_spell_damage(origobj->otyp, origobj->exceptionality, origmonst, mon);
     }
     else
         dmg = d(dmgdice, dicesize) + dmgplus;
@@ -8879,7 +8881,7 @@ const char *fltxt;
     //Base damage here, set to zero, if not needed
     if (origobj)
     {
-        dam = get_spell_damage(origobj->otyp, origmonst, &youmonst);
+        dam = get_spell_damage(origobj->otyp, origobj->exceptionality, origmonst, &youmonst);
     }
     else
         dam = d(dmgdice, dicesize) + dmgplus;
@@ -9870,7 +9872,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
             {
                 if (origobj)
                 {
-                    long dam = (long)get_spell_damage(origobj_copy.otyp, origmonst, &youmonst);
+                    long dam = (long)get_spell_damage(origobj_copy.otyp, origobj_copy.exceptionality, origmonst, &youmonst);
                     (void)flashburn(dam);
                 }
                 else
