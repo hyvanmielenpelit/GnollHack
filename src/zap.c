@@ -151,19 +151,22 @@ struct monst* targetmonst;
     /* Skill bonus from using wand -- affects only non-tame monsters for the player */
     double dicemult = 1.0;
     boolean same_side = (origmonst && targetmonst && ((origmonst == targetmonst) || ((origmonst == &youmonst) && is_tame(targetmonst)) || ((origmonst != &youmonst && !is_peaceful(origmonst) && !is_peaceful(targetmonst)))));
-    if (origmonst && (objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && objects[otyp].oc_skill == P_WAND)))
+    if (objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && objects[otyp].oc_skill == P_WAND))
     {
-        int skill_level = P_UNSKILLED;
-        if (same_side)
+        if (origmonst)
         {
-            /* Use unskilled */
-        }
-        else if (origmonst == &youmonst)
-            skill_level = P_SKILL_LEVEL(P_WAND);
-        else
-            skill_level = is_prince(origmonst->data) ? P_SKILLED : is_lord(origmonst->data) || is_wizard(origmonst->data) ? P_BASIC : P_UNSKILLED; /* No increase in wand damage for monsters to avoid unnecessary instadeaths */
+            int skill_level = P_UNSKILLED;
+            if (same_side)
+            {
+                /* Use unskilled */
+            }
+            else if (origmonst == &youmonst)
+                skill_level = P_SKILL_LEVEL(P_WAND);
+            else
+                skill_level = is_prince(origmonst->data) ? P_SKILLED : is_lord(origmonst->data) || is_wizard(origmonst->data) ? P_BASIC : P_UNSKILLED; /* No increase in wand damage for monsters to avoid unnecessary instadeaths */
 
-        dicemult = get_wand_skill_damage_multiplier(skill_level);
+            dicemult *= get_wand_skill_damage_multiplier(skill_level);
+        }
         dicemult *= get_wand_exceptionality_damage_multiplier(exceptionality);
     }
 
