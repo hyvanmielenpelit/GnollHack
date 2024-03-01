@@ -291,7 +291,7 @@ NEARDATA const struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFI
 #define MYTHIC_MANA_GAIN_DESC "Increases maximum mana by " MYTHIC_DESC_XSTR(MYTHIC_MANA_GAIN_PERCENTAGE) "%"
 #define MYTHIC_HP_GAIN_DESC "Increases maximum hit points by " MYTHIC_DESC_XSTR(MYTHIC_HP_GAIN_PERCENTAGE) "%"
 #define MYTHIC_SPELL_CASTING_DESC "+" MYTHIC_DESC_XSTR(MYTHIC_SPELL_CASTING_BASE_GAIN_PERCENTAGE) "% plus 5% per enchantment to casting all spells"
-#define MYTHIC_GREAT_ACCURACY_DESC "Increases to-hit by +" MYTHIC_DESC_XSTR(MYTHIC_GREAT_ACCURACY_DICE) "d" MYTHIC_DESC_XSTR(MYTHIC_GREAT_ACCURACY_DIESIZE) " plus enchantment bonus"
+#define MYTHIC_GREAT_ACCURACY_DESC "Increases to-hit by +" MYTHIC_DESC_XSTR(MYTHIC_GREAT_ACCURACY_BASE) " plus enchantment bonus"
 #define MYTHIC_GREAT_DAMAGE_DESC "Increases damage by +" MYTHIC_DESC_XSTR(MYTHIC_GREAT_DAMAGE_DICE) "d" MYTHIC_DESC_XSTR(MYTHIC_GREAT_DAMAGE_DIESIZE) " plus enchantment bonus"
 
 NEARDATA const struct mythic_power_definition mythic_prefix_powers[MAX_MYTHIC_PREFIX_POWERS] =

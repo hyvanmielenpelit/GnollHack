@@ -1102,10 +1102,9 @@ extern NEARDATA const struct mythic_power_definition mythic_suffix_powers[MAX_MY
 #define MYTHIC_MANA_GAIN_PERCENTAGE 25
 #define MYTHIC_SPELL_CASTING_BASE_GAIN_PERCENTAGE 50
 #define MYTHIC_SPELL_CASTING_BASE_GAIN (MYTHIC_SPELL_CASTING_BASE_GAIN_PERCENTAGE / 5)
-#define MYTHIC_GREAT_ACCURACY_DICE 2
-#define MYTHIC_GREAT_ACCURACY_DIESIZE 4
+#define MYTHIC_GREAT_ACCURACY_BASE 5
 #define MYTHIC_GREAT_DAMAGE_DICE 2
-#define MYTHIC_GREAT_DAMAGE_DIESIZE 4
+#define MYTHIC_GREAT_DAMAGE_DIESIZE 8
 
 #define has_obj_mythic_lightness(o)             has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_LIGHTNESS)
 #define has_obj_mythic_spellcasting(o)          (has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_SORCERY) || has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_SORCERY))
