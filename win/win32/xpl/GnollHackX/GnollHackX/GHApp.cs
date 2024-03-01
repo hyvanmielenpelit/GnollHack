@@ -295,6 +295,10 @@ namespace GnollHackX
                             isGoogleMali = true;
                         else if (model.Length >= 4 && model.Substring(0, 4).ToLower() == "lynx")
                             isGoogleMali = true;
+                        else if (model.Length >= 5 && model.Substring(0, 5).ToLower() == "husky")
+                            isGoogleMali = true;
+                        else if (model.Length >= 5 && model.Substring(0, 5).ToLower() == "raven")
+                            isGoogleMali = true;
                     }
                     else if (manufacturer_lc == "samsung")
                     {

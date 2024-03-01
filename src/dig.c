@@ -1403,7 +1403,7 @@ struct obj *obj;
             } 
             else if (lev->typ == IRONBARS) 
             {
-                play_object_hit_sound(obj, HIT_SURFACE_SOURCE_LOCATION, xy_to_any( rx, ry), 0, HMON_MELEE);
+                play_object_hit_sound(obj, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(rx, ry), 0, HMON_MELEE);
                 pline("Clang!");
                 wake_nearby();
             }

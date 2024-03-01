@@ -2779,7 +2779,7 @@ SPELLTOOL("frost horn",   "spiral horn", "blast of frost", None, "When improvise
 SPELLTOOL("fire horn",    "curved horn", "blast of fire", None, "When improvised, playing causes a blast of fire to eminate from the horn.", 
     TOOLTYPE_HORN, 0, 0, 1, CHARGED_1D30_30, RECHARGING_MUSICAL_INSTRUMENT, 
     3, 18, 50, RAY, RAY_WND_FIRE, AD_FIRE, 12, 6, 0, 0, 0, 0, 0, 0, 0, P_WAND, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_HORN, 
-    S1_NONE, S2_NONE, 
+    S1_NONE, S2_NONE,                                                                                                                                                                                                                                                                                               
     O1_FIRE_RESISTANT, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 SPELLTOOL("horn of chaos", "polished horn", None, None, "When improvised, playing causes nearby monsters to become crazed, attacking each other.", 
     TOOLTYPE_HORN, 0, 0, 1, CHARGED_1D4_4, RECHARGING_MUSICAL_INSTRUMENT, 

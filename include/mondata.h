@@ -733,7 +733,7 @@
     (has_innate((mon)->data, MR_ACID) || has_property(mon, ACID_IMMUNITY) || is_incorporeal((mon)->data))
 
 #define mon_resists_fire_weakly(mon) \
-    ( pm_resists_fire((mon)->data) || has_property(mon, FIRE_RESISTANCE))
+    (pm_resists_fire((mon)->data) || has_property(mon, FIRE_RESISTANCE))
 #define mon_resists_cold_weakly(mon) \
     (pm_resists_cold((mon)->data) || has_property(mon, COLD_RESISTANCE) || is_vampshifter(mon))
 #define mon_resists_elec_weakly(mon) \
