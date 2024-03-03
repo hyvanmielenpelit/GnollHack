@@ -7429,11 +7429,11 @@ struct monst* mtmp;
     char qbuf[QBUFSZ];
 
     multi = 0;
-    umoney = money_cnt(invent);
+    umoney = money_cnt(invent) + ESHK(mtmp)->credit - ESHK(mtmp)->debit;
 
     if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
         return 0;
-    else if (!umoney) 
+    else if (umoney <= 0) 
     {
         play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
         You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_ATTENTION, NO_GLYPH, POPUP_FLAGS_NONE);
@@ -9103,7 +9103,11 @@ long id_cost;
     int n, i;
     char buf[BUFSZ];
     int res = 0, id_res = 0;
-    long umoney = money_cnt(invent);
+    long uinvgold = money_cnt(invent);
+    long shkcredit = 0L;
+    if (mtmp->isshk && has_eshk(mtmp))
+        shkcredit += ESHK(mtmp)->credit - ESHK(mtmp)->debit;
+    long umoney = uinvgold + shkcredit;
 
     Strcpy(buf, "What would you like to identify?");
 
@@ -9166,11 +9170,44 @@ long id_cost;
             }
 
             play_sfx_sound(SFX_IDENTIFY_SUCCESS);
-            money2mon(mtmp, id_cost);
-            umoney = money_cnt(invent);
+
+            boolean skipmoney = FALSE;
+            long charged_id_cost = id_cost;
+            long deducted_credit_amount = 0L;
+            if (shkcredit > 0L && mtmp->isshk && has_eshk(mtmp))
+            {
+                long oldshkcredit = shkcredit;
+                ESHK(mtmp)->credit -= charged_id_cost;
+                if (ESHK(mtmp)->credit < 0)
+                {
+                    charged_id_cost = charged_id_cost + ESHK(mtmp)->credit;
+                    ESHK(mtmp)->credit = 0L;
+                    if (charged_id_cost <= 0)
+                        skipmoney = TRUE;
+                }
+                else
+                {
+                    skipmoney = TRUE;
+                }
+                shkcredit = ESHK(mtmp)->credit - ESHK(mtmp)->debit;
+                deducted_credit_amount = oldshkcredit - shkcredit;
+            }
+
+            if(!skipmoney)
+                money2mon(mtmp, charged_id_cost);
+            uinvgold = money_cnt(invent);
+            umoney = uinvgold + shkcredit;
             bot();
             id_res = identify(otmp);
             res += id_res;
+            if (deducted_credit_amount > 0)
+            {
+                pline("%ld %s has been deducted from your credit.", deducted_credit_amount, currency(deducted_credit_amount));
+                if(!shkcredit)
+                    pline1("Your credit has now been used up.");
+                else
+                    pline("%ld %s of net credit is remaining.", shkcredit, currency(shkcredit));
+            }
             if (itemize)
                 update_inventory();
         }
