@@ -300,7 +300,7 @@ WALLIFY
 LEVEL: "minetn-2"
 ROOM: "ordinary" , lit, (3,3), (center,center), (31,15) floortype:location_ground decoration_style:0 {
 FOUNTAIN: (17, 5),fountain_healing
-FOUNTAIN: (13, 8),fountain_water
+FOUNTAIN: (13, 8),fountain_magic
 SIGNPOST: (15, 6),signpost_normal,"Stay out of the fountains!"
 
 [75%]: SUBROOM: "ordinary", random, (2,0), (2,2) floorsubtype:floor_parquet {
@@ -430,7 +430,7 @@ RANDOM_CORRIDORS
 LEVEL: "minetn-3"
 ROOM: "ordinary",lit,(3,3),(center,center),(31,15) floortype:location_ground decoration_style:0 {
 FOUNTAIN:(01,06),fountain_healing
-FOUNTAIN:(29,13),fountain_water
+FOUNTAIN:(29,13),fountain_magic
 
 SUBROOM:"ordinary",random,(2,2),(2,2) decoration_style:2 {
   ROOMDOOR: false,closed,south,random
@@ -554,7 +554,7 @@ RANDOM_CORRIDORS
 LEVEL: "minetn-4"
 ROOM: "ordinary",lit,(3,3),(center,center),(30,15) floortype:location_ground decoration_style:0 {
 FOUNTAIN:(08,07),fountain_healing
-FOUNTAIN:(18,07),fountain_water
+FOUNTAIN:(18,07),fountain_magic
 SIGNPOST:(06,07),signpost_normal,"Stay out of the fountain!"
 SIGNPOST:(20,07),signpost_normal,"Stay out of the fountain!"
 
@@ -719,7 +719,7 @@ IF [50%] {
 STAIR:(01,01),up
 STAIR:(46,03),down
 FOUNTAIN:(50,09),fountain_healing
-FOUNTAIN:(10,15),fountain_water
+FOUNTAIN:(10,15),fountain_magic
 FOUNTAIN:(66,18),fountain_mana
 SIGNPOST:(07,04),signpost_normal,"Welcome to Mine Town"
 
@@ -850,7 +850,7 @@ REGION:(00,00,38,15),lit,"ordinary"
 STAIR:levregion(01,03,20,19),(0,0,39,15),up
 STAIR:levregion(61,03,75,19),(0,0,39,15),down
 FOUNTAIN:(22,07),fountain_healing
-FOUNTAIN:(09,13),fountain_water
+FOUNTAIN:(09,13),fountain_magic
 REGION:(13,5,14,6),unlit,"ordinary"
 REGION:(9,7,11,9),lit,"candle shop"
 REGION:(16,4,18,6),lit,"tool shop" floorsubtype:floor_parquet
@@ -931,7 +931,7 @@ MONSTER: ('@', "watch captain"), random, peaceful
 LEVEL: "minetn-7"
 ROOM: "ordinary" , lit, (3,3), (center,center), (30,15) floortype:location_ground decoration_style:0 {
 FOUNTAIN: (12, 07),fountain_healing
-FOUNTAIN: (11, 13),fountain_water
+FOUNTAIN: (11, 13),fountain_magic
 SIGNPOST: (09, 08), signpost_normal, "Stay out of the fountains!"
 
 SUBROOM: "npcroom", random, (2,2), (4,2) decoration_style:2 {

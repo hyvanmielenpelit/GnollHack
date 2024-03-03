@@ -22,9 +22,9 @@ ROOM: "ordinary" , lit, (3,3), (center,center), (11,9) tileset:tower_tileset dec
 
   SUBROOM: "delphi" , lit , (4,3) , (3,3) floorsubtype:floor_marble tileset:garden_tileset decoration_style:0 {
     FOUNTAIN: (0, 1),fountain_healing
-    FOUNTAIN: (1, 0),fountain_mana
-    FOUNTAIN: (1, 2),fountain_mana
-    FOUNTAIN: (2, 1),fountain_healing
+    FOUNTAIN: (1, 0),fountain_magic
+    FOUNTAIN: (1, 2),fountain_magic
+    FOUNTAIN: (2, 1),fountain_mana
     MONSTER: ('@', "Oracle"), (1,1)
     ROOMDOOR: false , nodoor , random, random
   }
