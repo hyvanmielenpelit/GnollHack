@@ -484,7 +484,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SkiaSharp.Views.Forms" Version="2.80.3" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2578" />
