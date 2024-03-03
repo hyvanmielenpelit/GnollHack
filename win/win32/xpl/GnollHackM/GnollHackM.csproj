@@ -746,7 +746,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="SkiaSharp" Version="3.0.0-preview.2.1" />
