@@ -630,13 +630,14 @@ register struct obj *obj;
     /* (quantity could be > 1 if merged daggers got polymorphed) */
     if ((ftyp == FOUNTAIN_MAGIC)
         && obj->oclass == WEAPON_CLASS && objects[obj->otyp].oc_subtyp == WEP_LONG_SWORD && !is_demon_obj(obj)
-        && obj->quan == 1L && u.ulevel >= 5 && !rn2(6)
+        && obj->quan == 1L && u.ulevel >= 5 && !rn2(4)
         && !obj->oartifact
         && !exist_artifact(LONG_SWORD, artiname(ART_EXCALIBUR)))
     {
         if (u.ualign.type != A_LAWFUL) 
         {
             /* Ha!  Trying to cheat her. */
+            play_sfx_sound(SFX_PRAY_FAIL);
             pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "A freezing mist rises from the %s and envelopes the sword.",
                   hliquid("water"));
             pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "fountain disappears!");
@@ -651,6 +652,7 @@ register struct obj *obj;
         {
             /* The lady of the lake acts! - Eric Backus */
             /* Be *REAL* nice */
+            play_sfx_sound(SFX_PRAY_GIFT);
             pline_ex(ATR_NONE, CLR_MSG_MYSTICAL,
               "From the murky depths, a hand reaches up to bless the sword.");
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "As the hand retreats, the fountain disappears!");
