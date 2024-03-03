@@ -38,6 +38,7 @@
 
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	    <UseInterpreter>false</UseInterpreter>
 	</PropertyGroup>
 
 	<ItemGroup>
