@@ -89,6 +89,9 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet">
+      <Version>0.13.12</Version>
+    </PackageReference>
     <PackageReference Include="SkiaSharp.Views.Forms">
       <Version>2.80.3</Version>
     </PackageReference>
