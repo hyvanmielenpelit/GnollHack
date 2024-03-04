@@ -2603,7 +2603,7 @@ accessory_has_effect(otmp)
 struct obj *otmp;
 {
     pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Magic spreads through your body as you digest the %s.",
-          (otmp->oclass == RING_CLASS) ? "ring" : "amulet");
+          (otmp->oclass == RING_CLASS) ? "ring" : (otmp->oclass == AMULET_CLASS) ? "amulet" : cxname(otmp));
 }
 
 STATIC_OVL void
@@ -2766,11 +2766,14 @@ struct obj *otmp;
             context.botl = 1;
             break;
         case RIN_FORTITUDE:
+        case PERIAPT_OF_VITALITY:
             u.ubasehpmax += d(1, 4);
             updatemaxhp();
             break;
         case RIN_THE_SERPENT_GOD:
         case RIN_WIZARDRY:
+        case AMULET_OF_MANA:
+        case DEMON_BLOOD_TALISMAN:
             u.ubaseenmax += d(1, 4);
             updatemaxen();
             break;
