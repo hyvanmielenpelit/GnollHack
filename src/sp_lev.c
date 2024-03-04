@@ -2461,6 +2461,8 @@ struct mkroom *croom;
         otmp->mythic_prefix = (uchar)o->mythic_prefix;
     if (o->mythic_suffix >= 0)
         otmp->mythic_suffix = (uchar)o->mythic_suffix;
+    if (is_obj_uncurseable(otmp) && otmp->cursed)
+        uncurse(otmp);
     if (o->age >= 0)
         otmp->age = (long)o->age;
     if (o->special_quality != -127)
