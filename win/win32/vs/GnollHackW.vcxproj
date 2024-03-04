@@ -313,22 +313,6 @@
     <Image Include="$(WinWin32Dir)gnollhack-logo-test-2.png" />
     <Image Include="$(WinWin32Dir)FMOD-Logo-32.png" />
     <Image Include="$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png" />
-    <Image Include="$(WinWin32Dir)gnollhack_64x96_transparent_32bits-3.png" />
-    <Image Include="$(WinWin32Dir)gnollhack_64x96_transparent_32bits-4.png" />
-    <Image Include="$(WinWin32Dir)gnollhack_64x96_transparent_32bits-5.png" />
-    <Image Include="$(WinWin32Dir)gnollhack_64x96_transparent_32bits-6.png" />
-    <Image Include="$(WinWin32Dir)gnollhack_64x96_transparent_32bits-7.png" />
-    <Image Include="$(WinWin32Dir)gnollhack_64x96_transparent_32bits-8.png" />
-    <Image Include="$(WinWin32Dir)gnollhack_64x96_transparent_32bits-9.png" />
-    <Image Include="$(WinWin32Dir)gnollhack_64x96_transparent_32bits-10.png" />
-    <Image Include="gnollhack_64x96_transparent_32bits-10.png" />
-    <Image Include="gnollhack_64x96_transparent_32bits-3.png" />
-    <Image Include="gnollhack_64x96_transparent_32bits-4.png" />
-    <Image Include="gnollhack_64x96_transparent_32bits-5.png" />
-    <Image Include="gnollhack_64x96_transparent_32bits-6.png" />
-    <Image Include="gnollhack_64x96_transparent_32bits-7.png" />
-    <Image Include="gnollhack_64x96_transparent_32bits-8.png" />
-    <Image Include="gnollhack_64x96_transparent_32bits-9.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="$(WinWin32Dir)uwch.ttf" />

@@ -151,14 +151,6 @@
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\VersionPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\Game\GameMenuPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\MainPage.xaml.cs" />
-		<None Remove="Assets\gnollhack_64x96_transparent_32bits-10.png" />
-		<None Remove="Assets\gnollhack_64x96_transparent_32bits-3.png" />
-		<None Remove="Assets\gnollhack_64x96_transparent_32bits-4.png" />
-		<None Remove="Assets\gnollhack_64x96_transparent_32bits-5.png" />
-		<None Remove="Assets\gnollhack_64x96_transparent_32bits-6.png" />
-		<None Remove="Assets\gnollhack_64x96_transparent_32bits-7.png" />
-		<None Remove="Assets\gnollhack_64x96_transparent_32bits-8.png" />
-		<None Remove="Assets\gnollhack_64x96_transparent_32bits-9.png" />
 		<None Remove="Assets\UI\battery-frame.png" />
 		<None Remove="Assets\UI\fps.png" />
 		<None Remove="Assets\UI\frame2-horizontal.png" />
@@ -254,7 +246,6 @@
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\Game\NamePage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\Game\OutRipPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\MainPage.xaml.cs" />
-		<EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-4.png" />
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -570,14 +561,7 @@
 	  <EmbeddedResource Include="Assets\ghsecrets.sjson" />
 	  <EmbeddedResource Include="Assets\ghsettings.json" />
 	  <EmbeddedResource Include="Assets\gnollhack-logo-test-2.png" />
-	  <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-10.png" />
 	  <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-2.png" />
-	  <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-3.png" />
-	  <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-5.png" />
-	  <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-6.png" />
-	  <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-7.png" />
-	  <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-8.png" />
-	  <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-9.png" />
 	  <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits.png" />
 	  <EmbeddedResource Include="Assets\Immortal-Regular.ttf" />
 	  <EmbeddedResource Include="Assets\Lato-Bold.ttf" />
