@@ -3,15 +3,15 @@
   <Import Project="files.props"/>
   <!-- TODO not copying record-->
   <Target Name="Build">
-    <Copy SkipUnchangedFiles="false" SourceFiles="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png" DestinationFolder="$(XamarinAssetsDir)"/>
+    <Copy SkipUnchangedFiles="false" SourceFiles="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-3.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-4.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-5.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-6.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-7.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-8.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-9.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-10.png" DestinationFolder="$(XamarinAssetsDir)"/>
 	<Message Text="Copied tilesets from $(WinWin32Dir) to $(XamarinAssetsDir)" Importance="High" />
-    <Copy SkipUnchangedFiles="false" SourceFiles="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png" DestinationFolder="$(MauiAssetsDir)"/>
+    <Copy SkipUnchangedFiles="false" SourceFiles="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-3.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-4.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-5.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-6.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-7.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-8.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-9.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-10.png" DestinationFolder="$(MauiAssetsDir)"/>
 	<Message Text="Copied tilesets from $(WinWin32Dir) to $(MauiAssetsDir)" Importance="High" />
   </Target>
   <Target Name="Clean">
-    <Delete Files="$(XamarinAssetsDir)gnollhack_64x96_transparent_32bits.png;$(XamarinAssetsDir)gnollhack_64x96_transparent_32bits-2.png"/>
+    <Delete Files="$(XamarinAssetsDir)gnollhack_64x96_transparent_32bits.png;$(XamarinAssetsDir)gnollhack_64x96_transparent_32bits-2.png;$(XamarinAssetsDir)gnollhack_64x96_transparent_32bits-3.png;$(XamarinAssetsDir)gnollhack_64x96_transparent_32bits-4.png;$(XamarinAssetsDir)gnollhack_64x96_transparent_32bits-5.png;$(XamarinAssetsDir)gnollhack_64x96_transparent_32bits-6.png;$(XamarinAssetsDir)gnollhack_64x96_transparent_32bits-7.png;$(XamarinAssetsDir)gnollhack_64x96_transparent_32bits-8.png;$(XamarinAssetsDir)gnollhack_64x96_transparent_32bits-9.png;$(XamarinAssetsDir)gnollhack_64x96_transparent_32bits-10.png"/>
 	<Message Text="Deleted tilesets from $(XamarinAssetsDir)" Importance="High" />
-    <Delete Files="$(MauiAssetsDir)gnollhack_64x96_transparent_32bits.png;$(MauiAssetsDir)gnollhack_64x96_transparent_32bits-2.png"/>
+    <Delete Files="$(MauiAssetsDir)gnollhack_64x96_transparent_32bits.png;$(MauiAssetsDir)gnollhack_64x96_transparent_32bits-2.png;$(MauiAssetsDir)gnollhack_64x96_transparent_32bits-3.png;$(MauiAssetsDir)gnollhack_64x96_transparent_32bits-4.png;$(MauiAssetsDir)gnollhack_64x96_transparent_32bits-5.png;$(MauiAssetsDir)gnollhack_64x96_transparent_32bits-6.png;$(MauiAssetsDir)gnollhack_64x96_transparent_32bits-7.png;$(MauiAssetsDir)gnollhack_64x96_transparent_32bits-8.png;$(MauiAssetsDir)gnollhack_64x96_transparent_32bits-9.png;$(MauiAssetsDir)gnollhack_64x96_transparent_32bits-10.png"/>
 	<Message Text="Deleted tilesets from $(MauiAssetsDir)" Importance="High" />
   </Target>
 </Project>
