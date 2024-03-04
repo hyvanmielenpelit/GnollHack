@@ -376,7 +376,7 @@ boolean mod;
                     if (is_quest_artifact(otmp))
                         otmp->nknown = TRUE;
 
-                    if (otmp->mythic_prefix == MYTHIC_PREFIX_HALLOWED && otmp->cursed)
+                    if (is_obj_uncurseable(otmp) && otmp->cursed)
                     {
                         uncurse(otmp);
                         otmp->enchantment = (short)abs(otmp->enchantment);

@@ -2236,6 +2236,7 @@ struct mkroom *croom;
                         else
                         {
                             otmp->mythic_prefix = MYTHIC_PREFIX_OLYMPIAN;
+                            otmp->cursed = 0;
                         }
                     }
                 }
