@@ -10,6 +10,10 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
+using Azure.Identity;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Azure.Storage.Blobs.Specialized;
 
 #if GNH_MAUI
 using GnollHackX;
@@ -48,7 +52,7 @@ namespace GnollHackX.Pages.MainScreen
             _mainPage = mainPage;
             ShareButton.IsEnabled = false;
             SelectButton.IsEnabled = false;
-            
+
             UpdateRecordings();
         }
 
@@ -783,6 +787,28 @@ namespace GnollHackX.Pages.MainScreen
         private void ServerSwitch_Toggled(object sender, ToggledEventArgs e)
         {
 
+        }
+
+        private async void UploadButton_Clicked(object sender, EventArgs e)
+        {
+            BlobServiceClient client = GHApp.GetBlobServiceClient();
+            if (client == null)
+                return;
+            BlobContainerClient containerClient = client.GetBlobContainerClient(GHConstants.AzureBlobStorageReplayContainerName);
+            if (containerClient == null)
+                return;
+            await GHApp.ListBlobPrefixes(containerClient, null, null);
+        }
+
+        private async void ServerButton_Clicked(object sender, EventArgs e)
+        {
+            BlobServiceClient client = GHApp.GetBlobServiceClient();
+            if (client == null)
+                return;
+            BlobContainerClient containerClient = client.GetBlobContainerClient(GHConstants.AzureBlobStorageReplayContainerName);
+            if (containerClient == null)
+                return;
+            await GHApp.ListBlobsHierarchicalListing(containerClient, null, null);
         }
     }
 
