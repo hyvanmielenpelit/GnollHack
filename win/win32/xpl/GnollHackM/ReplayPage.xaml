@@ -56,14 +56,20 @@
                     <Switch x:Name="ServerSwitch" HorizontalOptions="Start" VerticalOptions="Center" IsToggled="False" Toggled="ServerSwitch_Toggled" />
                 </StackLayout>-->
                 <Grid x:Name="BottomLayout" Grid.Row="3" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand">
-                    <StackLayout x:Name="ButtonMainStack" Orientation="Vertical"  HorizontalOptions="CenterAndExpand">
+                    <StackLayout x:Name="OuterButtonMainStack" Orientation="Vertical"  HorizontalOptions="CenterAndExpand">
                         <StackLayout Orientation="Horizontal">
-                            <controls:CustomImageButton Text="Share" x:Name="ShareButton" Clicked="ShareButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                            <controls:CustomImageButton Text="Play" x:Name="SelectButton" Clicked="SelectButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="StartAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
                             <controls:CustomImageButton Text="Multiple" x:Name="MultiButton" Clicked="MultiButton_Clicked" FontFamily="Diablo" FontSize="14" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                            <controls:CustomImageButton Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="StartAndExpand" VerticalOptions="Center" />
+                            <controls:CustomImageButton Text="Server" x:Name="ServerButton" Clicked="ServerButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="StartAndExpand" VerticalOptions="Center" />
+                        </StackLayout>
+                        <StackLayout x:Name="ButtonMainStack" Orientation="Vertical"  HorizontalOptions="CenterAndExpand">
+                            <StackLayout Orientation="Horizontal">
+                                <controls:CustomImageButton Text="Upload" x:Name="UploadButton" Clicked="UploadButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <controls:CustomImageButton Text="Play" x:Name="SelectButton" Clicked="SelectButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="StartAndExpand" VerticalOptions="Center" />
+                            </StackLayout>
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                                <controls:CustomImageButton Text="Share" x:Name="ShareButton" Clicked="ShareButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <controls:CustomImageButton Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="StartAndExpand" VerticalOptions="Center" />
+                            </StackLayout>
                         </StackLayout>
                     </StackLayout>
                 </Grid>

@@ -27,6 +27,10 @@ using System.Security.Cryptography;
 using System.Timers;
 using System.Collections;
 using static System.Net.Mime.MediaTypeNames;
+using Azure.Identity;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Azure;
 
 namespace GnollHackX
 {
@@ -2712,6 +2716,22 @@ namespace GnollHackX
             }
         }
 
+        public static string CustomAzureBlobStorageConnectionString { get; set; }
+        public static string AzureBlobStorageConnectionString
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(CustomAzureBlobStorageConnectionString))
+                {
+                    return CustomAzureBlobStorageConnectionString;
+                }
+                else
+                {
+                    return CurrentUserSecrets?.DefaultAzureBlobStorageConnectionString;
+                }
+            }
+        }
+
         private static readonly object _xlogReleaseAccountLock = new object();
         private static bool _xlogReleaseAccount;
         public static bool XlogReleaseAccount { get { lock (_xlogReleaseAccountLock) { return _xlogReleaseAccount; } } set { lock (_xlogReleaseAccountLock) { _xlogReleaseAccount = value; } } }
@@ -5342,6 +5362,212 @@ namespace GnollHackX
             if (!exitHackCalled)
                 game.ClientCallback_ExitHack(0);
             return PlayReplayResult.Success;
+        }
+
+        private static BlobServiceClient _blobServiceClient = null;
+
+        public static BlobServiceClient GetBlobServiceClient()
+        {
+            if (_blobServiceClient != null)
+                return _blobServiceClient;
+
+            string connectionString = AzureBlobStorageConnectionString;
+            BlobServiceClient client = null;
+            if (string.IsNullOrWhiteSpace(connectionString))
+                return client;
+            
+            try
+            {
+                client = new BlobServiceClient(connectionString);
+                _blobServiceClient = client;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            return client;
+        }
+
+        public static async Task ListBlobPrefixes(BlobContainerClient container,
+                                               string prefix,
+                                               int? segmentSize)
+        {
+            Debug.WriteLine("Listing All Blob Prefixes under " + (prefix != null ? prefix : "root"));
+            try
+            {
+                // Call the listing operation and return pages of the specified size.
+                var resultSegment = container.GetBlobsByHierarchyAsync(prefix: prefix, delimiter: "/")
+                    .AsPages(default, segmentSize);
+
+                var enumer = resultSegment.GetAsyncEnumerator();
+
+                try
+                {
+                    // Enumerate the blobs returned for each page.
+                    while (await enumer.MoveNextAsync())
+                    {
+                        Page<BlobHierarchyItem> blobPage = enumer.Current;
+                        // A hierarchical listing may return both virtual directories and blobs.
+                        foreach (BlobHierarchyItem blobhierarchyItem in blobPage.Values)
+                        {
+                            if (blobhierarchyItem.IsPrefix)
+                            {
+                                // Write out the prefix of the virtual directory.
+                                Debug.WriteLine("Virtual directory prefix: " + blobhierarchyItem.Prefix);
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
+                finally
+                {
+                    if (enumer != null)
+                        await enumer.DisposeAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
+        public static async Task ListBlobsFlatListing(BlobContainerClient blobContainerClient, string prefix, int? segmentSize)
+        {
+            try
+            {
+                // Call the listing operation and return pages of the specified size.
+                var blobs = blobContainerClient.GetBlobsAsync(BlobTraits.None, BlobStates.None, prefix);
+                var resultSegment = blobs.AsPages(default, segmentSize);
+
+                // Enumerate the blobs returned for each page.
+                var enumer = resultSegment.GetAsyncEnumerator();
+                try
+                {
+                    while (await enumer.MoveNextAsync())
+                    {
+                        foreach (BlobItem blobItem in enumer.Current.Values)
+                        {
+                            Debug.WriteLine(blobItem.Name);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
+                finally
+                {
+                    if (enumer != null)
+                        await enumer.DisposeAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
+        public static async Task ListBlobsHierarchicalListing(BlobContainerClient container,
+                                                       string prefix,
+                                                       int? segmentSize)
+        {
+            try
+            {
+                // Call the listing operation and return pages of the specified size.
+                var resultSegment = container.GetBlobsByHierarchyAsync(prefix: prefix, delimiter: "/")
+                    .AsPages(default, segmentSize);
+
+                var enumer = resultSegment.GetAsyncEnumerator();
+
+                try
+                {
+                    // Enumerate the blobs returned for each page.
+                    while (await enumer.MoveNextAsync())
+                    {
+                        Page<BlobHierarchyItem> blobPage = enumer.Current;
+                        // A hierarchical listing may return both virtual directories and blobs.
+                        foreach (BlobHierarchyItem blobhierarchyItem in blobPage.Values)
+                        {
+                            if (blobhierarchyItem.IsPrefix)
+                            {
+                                // Write out the prefix of the virtual directory.
+                                Debug.WriteLine("Virtual directory prefix: " + blobhierarchyItem.Prefix);
+
+                                // Call recursively with the prefix to traverse the virtual directory.
+                                await ListBlobsHierarchicalListing(container, blobhierarchyItem.Prefix, null);
+                            }
+                            else
+                            {
+                                // Write out the name of the blob.
+                                Debug.WriteLine("Blob name: " + blobhierarchyItem.Blob.Name);
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
+                finally
+                {
+                    if (enumer != null)
+                        await enumer.DisposeAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
+        public static async Task UploadFromFileAsync(
+            BlobContainerClient containerClient,
+            string localFilePath)
+        {
+            string fileName = Path.GetFileName(localFilePath);
+            BlobClient blobClient = containerClient.GetBlobClient(fileName);
+
+            await blobClient.UploadAsync(localFilePath, true);
+        }
+
+        public static async Task SetTags(BlobClient blobClient)
+        {
+            Dictionary<string, string> tags =
+                new Dictionary<string, string>
+            {
+                { "Sealed", "false" },
+                { "Content", "image" },
+                { "Date", "2020-04-20" }
+            };
+
+            await blobClient.SetTagsAsync(tags);
+        }
+
+        public static async Task FindBlobsbyTags(BlobServiceClient serviceClient)
+        {
+            string query = @"""Date"" >= '2020-04-20' AND ""Date"" <= '2020-04-30'";
+
+            // Find Blobs given a tags query
+            Console.WriteLine("Find Blob by Tags query: " + query + Environment.NewLine);
+
+            List<TaggedBlobItem> blobs = new List<TaggedBlobItem>();
+            var taggedBlobs = serviceClient.FindBlobsByTagsAsync(query);
+            var enumer = taggedBlobs.GetAsyncEnumerator();
+            while (await enumer.MoveNextAsync())
+            {
+                blobs.Add(enumer.Current);
+            }
+
+            foreach (var filteredBlob in blobs)
+            {
+
+                Console.WriteLine($"BlobIndex result: ContainerName= {filteredBlob.BlobContainerName}, " +
+                    $"BlobName= {filteredBlob.BlobName}");
+            }
+
         }
     }
 
