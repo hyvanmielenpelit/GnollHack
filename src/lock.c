@@ -379,6 +379,9 @@ boolean destroyit;
 STATIC_PTR int
 forcelock(VOID_ARGS)
 {
+    if (!xlock.box)
+        return 0;
+
     if ((xlock.box->ox != u.ux) || (xlock.box->oy != u.uy))
         return ((xlock.usedtime = 0)); /* you or it moved */
 
@@ -424,13 +427,19 @@ forcelock(VOID_ARGS)
     {
         //nothing, normal case
     }
-    else if (xlock.box->keyotyp != xlock.key->otyp || xlock.box->special_quality != xlock.key->special_quality)
+    else
     {
         play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);
         if (xlock.box->keyotyp == MAGIC_KEY)
             You_ex(ATR_NONE, CLR_MSG_FAIL, "fail to force the magic lock on the %s.", cxname(xlock.box));
         else
-            You_ex(ATR_NONE, CLR_MSG_FAIL, "fail to force the lock on the %s.", cxname(xlock.box));
+        {
+            const char* lock_desc = get_lock_description_by_otyp(xlock.box->keyotyp, xlock.box->special_quality, TRUE);
+            if(lock_desc && *lock_desc)
+                You_ex(ATR_NONE, CLR_MSG_FAIL, "fail to force the %s lock on the %s.", get_lock_description_by_otyp(xlock.box->keyotyp, xlock.box->special_quality, TRUE), cxname(xlock.box));
+            else
+                You_ex(ATR_NONE, CLR_MSG_FAIL, "fail to force the lock on the %s.", cxname(xlock.box));
+        }
 
         return 0;
     }

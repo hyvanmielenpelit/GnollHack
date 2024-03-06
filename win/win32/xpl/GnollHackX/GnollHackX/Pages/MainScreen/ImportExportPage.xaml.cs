@@ -131,8 +131,8 @@ namespace GnollHackX.Pages.MainScreen
                                                     System.IO.File.Delete(finalname);
                                                 System.IO.File.Move(filestr, finalname);
                                                 nextracted++;
-                                                if (out_str != "" && GHApp.DebugLogMessages)
-                                                    await DisplayAlert("ValidateSaveFile Messge", out_str, "OK");
+                                                if (!string.IsNullOrWhiteSpace(out_str) && GHApp.DebugLogMessages)
+                                                    await DisplayAlert("ValidateSaveFile Message", out_str, "OK");
                                             }
                                             else
                                             {
@@ -167,8 +167,8 @@ namespace GnollHackX.Pages.MainScreen
                                         s.CopyTo(t);
                                     }
                                     await DisplayAlert("Game Saved", "Saved game \'" + file.FileName + "\' has been saved to the save directory as a non-scoring imported saved game.", "OK");
-                                    if (out_str != "" && GHApp.DebugLogMessages)
-                                        await DisplayAlert("ValidateSaveFile Messge", out_str, "OK");
+                                    if (!string.IsNullOrWhiteSpace(out_str) && GHApp.DebugLogMessages)
+                                        await DisplayAlert("ValidateSaveFile Message", out_str, "OK");
                                 }
                                 else
                                 {
