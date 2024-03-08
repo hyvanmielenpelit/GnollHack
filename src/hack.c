@@ -2875,7 +2875,6 @@ boolean pick;
                 You_ex(ATR_NONE, CLR_MSG_ATTENTION, "surprise %s!",
                     Blind && !sensemon(mtmp) ? something : a_monnam(mtmp));
                 mtmp->mpeaceful = 0;
-                set_mhostility(mtmp);
                 newsym(mtmp->mx, mtmp->my);
             }
             else

@@ -664,13 +664,14 @@ struct monst *summoner;
 
             /* this honors genocide but overrides extinction; it ignores
                 inside-hell-only (G_HELL) & outside-hell-only (G_NOHELL) */
-            if ((mtmp = makemon(&mons[makeindex], bypos.x, bypos.y, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_NASTY_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL))) != 0)
+            if ((mtmp = makemon(&mons[makeindex], bypos.x, bypos.y, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_NASTY_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL))) != 0)
             {
-                mtmp->msleeping = 0;
+                mtmp->msleeping = mtmp->mpeaceful = mtmp->mtame = 0;
+                set_mhostility(mtmp);
                 newsym(mtmp->mx, mtmp->my);
             }
             else /* random monster to substitute for geno'd selection */
-                mtmp = makemon((struct permonst *) 0, bypos.x, bypos.y, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_NASTY_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
+                mtmp = makemon((struct permonst *) 0, bypos.x, bypos.y, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_NASTY_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
 
             if (mtmp)
             {
@@ -752,7 +753,7 @@ struct monst* summoner;
     for (i = 1; i <= summon_num; i++)
     {
         mtmp = makemon_limited((struct permonst*) 0, bypos.x, bypos.y, 
-            MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END | MM_ANGRY, 0UL, 
+            MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END, 0UL, 
             0, 0, 0, max(1, ml - 1), 0, 0);
 
         if (mtmp)
@@ -769,6 +770,7 @@ struct monst* summoner;
             mtmp->mspecialsummon_used = 30;
             mtmp->mspecialsummon2_used = 30;
 
+            mtmp->mpeaceful = 0;
             newsym(mtmp->mx, mtmp->my);
             count++;
         }
