@@ -4229,7 +4229,7 @@ struct obj *tstone;
         return;
     }
 
-    if (tstone->otyp == TOUCHSTONE && (tstone->cursed || tstone->charges <= 0)
+    if (tstone->otyp == TOUCHSTONE && tstone->cursed
         && obj->oclass == GEM_CLASS && !is_graystone(obj)
         && !obj_resists(obj, 80, 100)) 
     {

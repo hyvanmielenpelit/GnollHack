@@ -3212,6 +3212,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
         /* no Half_physical_damage adjustment here */
         losehp(adjust_damage(rnd(20), (struct monst*)0, &youmonst, AD_CLRC, ADFLAGS_NONE), "residual undead turning effect", KILLED_BY_AN);
         exercise(A_CON, FALSE);
+        update_inventory(); /* In case of holy symbol or prayerstone */
         return 1;
     }
 
@@ -3223,6 +3224,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
         /* haltingly aligned is least likely to anger */
         if (u.ualign.record <= 0 || rnl(u.ualign.record))
             angrygods(u.ualign.type);
+        update_inventory(); /* In case of holy symbol or prayerstone */
         return 0;
     }
 
@@ -3264,6 +3266,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
 
         pleased(alignment); /* nice */
     }
+    update_inventory(); /* In case of holy symbol or prayerstone */
     return 1;
 }
 
