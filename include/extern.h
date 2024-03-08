@@ -666,7 +666,7 @@ E boolean NDECL(floorexamine);
 E int FDECL(itemdescription, (struct obj*));
 E int FDECL(itemdescription_core, (struct obj*, int, struct item_description_stats*));
 E int FDECL(corpsedescription, (struct obj*));
-E void FDECL(printweight, (char*, int, BOOLEAN_P, BOOLEAN_P));
+E void FDECL(printweight, (char*, int, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 E int FDECL(monsterdescription, (struct monst*));
 E int FDECL(monsterdescription_core, (struct monst*, struct permonst*));
 E int NDECL(dotogglehpbars);

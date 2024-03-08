@@ -104,6 +104,7 @@ namespace GnollHackX
             EmptyWishIsNothing = Preferences.Get("EmptyWishIsNothing", true);
             RecommendedSettingsChecked = Preferences.Get("RecommendedSettingsChecked", false);
             RecordGame = Preferences.Get("RecordGame", false);
+            AutoUploadReplays = Preferences.Get("AutoUploadReplays", false);
             UseGZipForReplays = Preferences.Get("UseGZipForReplays", GHConstants.GZipIsDefaultReplayCompression);
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if(FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
@@ -130,6 +131,8 @@ namespace GnollHackX
         private static readonly object _recordGameLock = new object();
         private static bool _recordGame = false;
         public static bool RecordGame { get { lock (_recordGameLock) { return _recordGame; } } set { lock (_recordGameLock) { _recordGame = value; } } }
+        private static bool _autoUploadReplays = false;
+        public static bool AutoUploadReplays { get { lock (_recordGameLock) { return _autoUploadReplays; } } set { lock (_recordGameLock) { _autoUploadReplays = value; } } }
 
         private static object _networkAccessLock = new object();
         private static NetworkAccess _networkAccessState = NetworkAccess.None;
