@@ -89,6 +89,7 @@ namespace GnollHackX
             CustomGameStatusLink = Preferences.Get("CustomGameStatusLink", "");
             CustomXlogAccountLink = Preferences.Get("CustomXlogAccountLink", "");
             CustomXlogPostLink = Preferences.Get("CustomXlogPostLink", "");
+            CustomCloudStorageConnectionString = Preferences.Get("CustomCloudStorageConnectionString", "");
             UseHTMLDumpLogs = Preferences.Get("UseHTMLDumpLogs", GHConstants.DefaultHTMLDumpLogs);
             UseSingleDumpLog = Preferences.Get("UseSingleDumpLog", GHConstants.DefaultUseSingleDumpLog);
             ReadStreamingBankToMemory = Preferences.Get("ReadStreamingBankToMemory", DefaultStreamingBankToMemory);
@@ -2581,6 +2582,7 @@ namespace GnollHackX
         public static string CustomGameStatusLink { get; set; }
         public static string CustomXlogAccountLink { get; set; }
         public static string CustomXlogPostLink { get; set; }
+        public static string CustomCloudStorageConnectionString { get; set; }
 
         public static string GameStatusPostAddress
         {
@@ -2609,6 +2611,20 @@ namespace GnollHackX
                     return "";
                 else
                     return address;
+            }
+        }
+        public static string CloudStorageConnectionString
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(CustomCloudStorageConnectionString))
+                {
+                    return CustomCloudStorageConnectionString;
+                }
+                else
+                {
+                    return CurrentUserSecrets?.DefaultAzureBlobStorageConnectionString;
+                }
             }
         }
 
@@ -2713,22 +2729,6 @@ namespace GnollHackX
             get
             {
                 return CurrentUserSecrets?.DefaultXlogAntiForgeryToken;
-            }
-        }
-
-        public static string CustomAzureBlobStorageConnectionString { get; set; }
-        public static string AzureBlobStorageConnectionString
-        {
-            get
-            {
-                if (!string.IsNullOrWhiteSpace(CustomAzureBlobStorageConnectionString))
-                {
-                    return CustomAzureBlobStorageConnectionString;
-                }
-                else
-                {
-                    return CurrentUserSecrets?.DefaultAzureBlobStorageConnectionString;
-                }
             }
         }
 
@@ -5371,7 +5371,7 @@ namespace GnollHackX
             if (_blobServiceClient != null)
                 return _blobServiceClient;
 
-            string connectionString = AzureBlobStorageConnectionString;
+            string connectionString = CloudStorageConnectionString;
             BlobServiceClient client = null;
             if (string.IsNullOrWhiteSpace(connectionString))
                 return client;

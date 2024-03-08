@@ -205,6 +205,10 @@ namespace GnollHackX.Pages.MainScreen
                 GHApp.ForcePostBones = ForcePostBonesSwitch.IsToggled;
                 Preferences.Set("ForcePostBones", ForcePostBonesSwitch.IsToggled);
             }
+
+            GHApp.CustomCloudStorageConnectionString = _customCloudStorageConnectionString;
+            Preferences.Set("CustomCloudStorageConnectionString", _customCloudStorageConnectionString);
+
             GHApp.XlogCredentialsIncorrect = false;
             if (!GHApp.AreCredentialsVerified(PostXlogUserNameEntry.Text, PostXlogPasswordEntry.Text))
                 GHApp.SetXlogUserNameVerified(false, null, null);
@@ -487,6 +491,7 @@ namespace GnollHackX.Pages.MainScreen
             string customlink = "";
             string customxlogaccountlink = "";
             string customxlogpostlink = "";
+            string customcloudstorage = "";
             string xlog_username = "";
             string xlog_password = "";
             string bones_allowed_users = "";
@@ -524,6 +529,7 @@ namespace GnollHackX.Pages.MainScreen
             postbones = Preferences.Get("PostingBonesFiles", GHConstants.DefaultPosting);
             boneslistisblack = Preferences.Get("BonesUserListIsBlack", false);            
             customlink = Preferences.Get("CustomGameStatusLink", "");
+            customcloudstorage = Preferences.Get("CustomCloudStorageConnectionString", "");
             customxlogaccountlink = Preferences.Get("CustomXlogAccountLink", "");
             customxlogpostlink = Preferences.Get("CustomXlogPostLink", "");
             xlog_username = Preferences.Get("XlogUserName", "");
@@ -708,6 +714,10 @@ namespace GnollHackX.Pages.MainScreen
             XlogReleaseAccountStackLayout.IsVisible = GHApp.IsDebug;
             ForcePostBonesSwitch.IsToggled = forcepostbones;
             ForcePostBonesStackLayout.IsVisible = GHApp.IsDebug;
+
+            _customCloudStorageConnectionString = customcloudstorage;
+            CustomCloudStorageLabel.Text = customcloudstorage == "" ? "Default" : "Custom";
+            CustomCloudStorageButton.Text = customcloudstorage == "" ? "Add" : "Edit";
 
             SimpleCommandBarButton1Picker.SelectedIndex = cmdidxs[0];
             SimpleCommandBarButton2Picker.SelectedIndex = cmdidxs[1];
@@ -968,6 +978,7 @@ namespace GnollHackX.Pages.MainScreen
             _linkLabel = CustomLinkLabel;
             _linkIndex = 0;
             TextCaption.Text = "Enter Custom Webhook Link:";
+            TextEntry.Placeholder = "Enter the link here";
             TextEntry.Text = _customGameStatusLink;
             TextOkButton.IsEnabled = true;
             TextCancelButton.IsEnabled = true;
@@ -990,7 +1001,21 @@ namespace GnollHackX.Pages.MainScreen
                 res.Trim();
             }
 
-            if (res != "" && !GHApp.IsValidHttpsURL(res))
+            bool isValid;
+            switch (_linkIndex)
+            {
+                default:
+                case 0:
+                case 1:
+                case 2:
+                    isValid = GHApp.IsValidHttpsURL(res);
+                    break;
+                case 3:
+                    isValid = true; /* any custom connection string does currently */
+                    break;
+            }
+
+            if (res != "" && !isValid)
             {
                 TextFrame.BorderColor = GHColors.Red;
                 TextEntry.Focus();
@@ -999,7 +1024,7 @@ namespace GnollHackX.Pages.MainScreen
                 return;
             }
 
-            bool isLinkEmpty = false;
+            bool isLinkEmpty;
             switch(_linkIndex)
             {
                 default:
@@ -1014,6 +1039,10 @@ namespace GnollHackX.Pages.MainScreen
                 case 2:
                     _customXlogPostLink = res;
                     isLinkEmpty = _customXlogPostLink == "";
+                    break;
+                case 3:
+                    _customCloudStorageConnectionString = res;
+                    isLinkEmpty = _customCloudStorageConnectionString == "";
                     break;
             }
 
@@ -1119,11 +1148,11 @@ namespace GnollHackX.Pages.MainScreen
             _linkLabel = CustomXlogAccountLinkLabel;
             _linkIndex = 1;
             TextCaption.Text = "Enter Custom Account Link:";
+            TextEntry.Placeholder = "Enter the link here";
             TextEntry.Text = _customXlogAccountLink;
             TextOkButton.IsEnabled = true;
             TextCancelButton.IsEnabled = true;
             TextGrid.IsVisible = true;
-
         }
 
         private string _customXlogPostLink = "";
@@ -1135,6 +1164,7 @@ namespace GnollHackX.Pages.MainScreen
             _linkLabel = CustomXlogPostLinkLabel;
             _linkIndex = 2;
             TextCaption.Text = "Enter Custom Post Link:";
+            TextEntry.Placeholder = "Enter the link here";
             TextEntry.Text = _customXlogPostLink;
             TextOkButton.IsEnabled = true;
             TextCancelButton.IsEnabled = true;
@@ -1309,6 +1339,22 @@ namespace GnollHackX.Pages.MainScreen
         private void GZipSwitch_Toggled(object sender, ToggledEventArgs e)
         {
 
+        }
+
+        private string _customCloudStorageConnectionString = "";
+        private void CustomCloudStorageButton_Clicked(object sender, EventArgs e)
+        {
+            CustomCloudStorageButton.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            _linkButtonClicked = CustomCloudStorageButton;
+            _linkLabel = CustomCloudStorageLabel;
+            _linkIndex = 3;
+            TextCaption.Text = "Enter Custom Connection String:";
+            TextEntry.Placeholder = "Enter the string here";
+            TextEntry.Text = _customCloudStorageConnectionString;
+            TextOkButton.IsEnabled = true;
+            TextCancelButton.IsEnabled = true;
+            TextGrid.IsVisible = true;
         }
     }
 }
