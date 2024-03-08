@@ -1847,36 +1847,41 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
+    boolean use_wand_skill = objects[otyp].oc_class == WAND_CLASS || objects[otyp].oc_skill == P_WAND;
+    double skill_multiplier = 1.0;
+    double exceptionality_multiplier = 1.0;
+    if (objects[otyp].oc_class == WAND_CLASS || (objects[otyp].oc_class == TOOL_CLASS && is_otyp_spelltool(otyp)))
+    {
+        if (obj && obj->exceptionality)
+        {
+            exceptionality_multiplier = get_wand_exceptionality_damage_multiplier(obj->exceptionality);
+            Sprintf(buf, "Wand quality:           %s", obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? "Exceptional (double base damage)" :
+                obj->exceptionality == EXCEPTIONALITY_ELITE ? "Elite (triple base damage)" :
+                obj->exceptionality == EXCEPTIONALITY_CELESTIAL ? "Celestial (quadruple base damage)" :
+                obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL ? "Primordial (quadruple base damage)" :
+                obj->exceptionality == EXCEPTIONALITY_INFERNAL ? "Infernal (quadruple base damage)" :
+                "Unknown quality"
+            );
+
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+
+        if (obj && use_wand_skill)
+        {
+            skill_multiplier = get_wand_skill_damage_multiplier(P_SKILL_LEVEL(P_WAND));
+
+            char slnbuf[BUFSZ] = "";
+            skill_level_name(P_WAND, slnbuf, FALSE);
+            *slnbuf = highc(*slnbuf);
+            Sprintf(buf, "Wand skill level:       %s (%.1fx base damage)", slnbuf, skill_multiplier);
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+    }
+
     if (stats_known)
     {
         if (objects[otyp].oc_class == WAND_CLASS || objects[otyp].oc_class == SCROLL_CLASS || (objects[otyp].oc_class == TOOL_CLASS && is_otyp_spelltool(otyp)))
         {
-            double exceptionality_multiplier = 1.0;
-            if (obj && obj->exceptionality)
-            {
-                exceptionality_multiplier = get_wand_exceptionality_damage_multiplier(obj->exceptionality);
-                Sprintf(buf, "Wand quality:           %s", obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? "Exceptional (double base damage)" :
-                    obj->exceptionality == EXCEPTIONALITY_ELITE ? "Elite (triple base damage)" :
-                    obj->exceptionality == EXCEPTIONALITY_CELESTIAL ? "Celestial (quadruple base damage)" :
-                    obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL ? "Primordial (quadruple base damage)" :
-                    obj->exceptionality == EXCEPTIONALITY_INFERNAL ? "Infernal (quadruple base damage)" :
-                    "Unknown quality"
-                );
-
-                putstr(datawin, ATR_INDENT_AT_COLON, buf);
-            }
-
-            boolean use_wand_skill = objects[otyp].oc_class == WAND_CLASS || objects[otyp].oc_skill == P_WAND;
-            double skill_multiplier = use_wand_skill ? get_wand_skill_damage_multiplier(P_SKILL_LEVEL(P_WAND)) : 1.0;
-            if (use_wand_skill)
-            {
-                char slnbuf[BUFSZ] = "";
-                skill_level_name(P_WAND, slnbuf, FALSE);
-                *slnbuf = highc(*slnbuf);
-                Sprintf(buf, "Wand skill level:       %s (%.1fx base damage)", slnbuf, skill_multiplier);
-                putstr(datawin, ATR_INDENT_AT_COLON, buf);
-            }
-
             const char *itemname_hc = objects[otyp].oc_class == WAND_CLASS ? "Wand" : objects[otyp].oc_class == SCROLL_CLASS ? "Scroll" : "Item";
             const char *itemname_lc = objects[otyp].oc_class == WAND_CLASS ? "wand" : objects[otyp].oc_class == SCROLL_CLASS ? "scroll" : "item";
             const char* itempadding = objects[otyp].oc_class == SCROLL_CLASS ? "" : "  ";
@@ -2314,29 +2319,36 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
+    }
 
-        if (objects[otyp].oc_charged)
+    /* CHARGES */
+    if (objects[otyp].oc_charged)
+    {
+        if (obj && obj->known)
         {
-            if (obj && obj->known)
-            {
-                Sprintf(buf, "Charges left:           %d", obj->charges);
-                putstr(datawin, ATR_INDENT_AT_COLON, buf);
-            }
-            else
-            {
-                Sprintf(buf, "Charges:                %s", "Yes");                
-                putstr(datawin, ATR_INDENT_AT_COLON, buf);
-            }
+            Sprintf(buf, "Charges left:           %d", obj->charges);
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+        else if (stats_known)
+        {
+            Sprintf(buf, "Charges:                %s", "Yes");
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
 
+        if (stats_known)
+        {
             Sprintf(buf, "Maximum charges:        %d", get_max_charge(objects[otyp].oc_charged));
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
 
-            if (obj && obj->known)
-            {
-                Sprintf(buf, "Rechargings before:     %d", (int)obj->recharged);
-                putstr(datawin, ATR_INDENT_AT_COLON, buf);
-            }
+        if (obj && obj->known)
+        {
+            Sprintf(buf, "Rechargings before:     %d", (int)obj->recharged);
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
 
+        if (stats_known)
+        {
             char rechargebuf[BUFSZ];
             Strcpy(rechargebuf, get_recharge_text(objects[otyp].oc_recharging));
             *rechargebuf = highc(*rechargebuf);
@@ -2344,91 +2356,95 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             Sprintf(buf, "Recharging type:        %s", rechargebuf);
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
+    }
 
-        if (objects[otyp].oc_enchantable)
+    /* ENCHANTMENT */
+    if (objects[otyp].oc_enchantable)
+    {
+        if (obj && obj->known)
         {
-            if (obj && obj->known)
+            Strcpy(buf, "");
+
+            char bonusbuf[BUFSZ] = "";
+            boolean display_ac = affectsac && !(objects[otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_AC);
+            boolean display_mc = affectsmc && !(objects[otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_MC);
+
+            if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
             {
-                Strcpy(buf, "");
+                int enchplus = obj->enchantment;
+                int tohitplus = enchplus; // is_launcher(obj) ? (enchplus + 1 * sgn(enchplus)) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 0) / 2 : enchplus;
+                int dmgplus = enchplus; //  is_launcher(obj) ? (enchplus + 0) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 1 * sgn(enchplus)) / 2 : enchplus;
 
-                char bonusbuf[BUFSZ] = "";
-                boolean display_ac = affectsac && !(objects[otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_AC);
-                boolean display_mc = affectsmc && !(objects[otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_MC);
+                double ench_bonus = (double)dmgplus;
+                wep_avg_dmg += ench_bonus;
+                wep_multipliable_avg_dmg += ench_bonus;
+                if (wep_avg_dmg < 0)
+                    wep_avg_dmg = 0;
 
-                if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
+                if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
                 {
-                    int enchplus = obj->enchantment;
-                    int tohitplus = enchplus; // is_launcher(obj) ? (enchplus + 1 * sgn(enchplus)) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 0) / 2 : enchplus;
-                    int dmgplus = enchplus; //  is_launcher(obj) ? (enchplus + 0) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 1 * sgn(enchplus)) / 2 : enchplus;
-
-                    double ench_bonus = (double)dmgplus;
-                    wep_avg_dmg += ench_bonus;
-                    wep_multipliable_avg_dmg += ench_bonus;
-                    if (wep_avg_dmg < 0)
-                        wep_avg_dmg = 0;
-
-                    if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
-                    {
-                        enchplus *= 2;
-                        wep_all_extra_avg_dmg += enchplus;
-                    }
-                    if (tohitplus == dmgplus)
-                        Sprintf(bonusbuf, " (%s%d to hit and damage", tohitplus >= 0 ? "+" : "", tohitplus);
-                    else
-                        Sprintf(bonusbuf, " (%s%d to hit and %s%d to damage", tohitplus >= 0 ? "+" : "", tohitplus, dmgplus >= 0 ? "+" : "", dmgplus);
+                    enchplus *= 2;
+                    wep_all_extra_avg_dmg += enchplus;
                 }
+                if (tohitplus == dmgplus)
+                    Sprintf(bonusbuf, " (%s%d to hit and damage", tohitplus >= 0 ? "+" : "", tohitplus);
+                else
+                    Sprintf(bonusbuf, " (%s%d to hit and %s%d to damage", tohitplus >= 0 ? "+" : "", tohitplus, dmgplus >= 0 ? "+" : "", dmgplus);
+            }
 
-                if (display_ac || display_mc)
-                {
-                    if (!*bonusbuf)
-                        Strcpy(bonusbuf, " (");
-                    else
-                        Strcat(bonusbuf, ", ");
-                }
+            if (display_ac || display_mc)
+            {
+                if (!*bonusbuf)
+                    Strcpy(bonusbuf, " (");
+                else
+                    Strcat(bonusbuf, ", ");
+            }
 
-                if (display_ac && display_mc)
-                {
-                    if(obj->enchantment == 0)
-                        Strcat(bonusbuf, "+0 to AC and MC");
-                    else
-                        Sprintf(eos(bonusbuf), "%s%d to AC and %s%d to MC",
-                            obj->enchantment <= 0 ? "+" : "",
-                            -obj->enchantment,
-                            obj->enchantment / 3 >= 0 ? "+" : "",
-                            obj->enchantment / 3
-                        );
-                    knownacbonus += obj->enchantment;
-                    knownmcbonus += obj->enchantment / 3;
-                }
-                else if (display_ac)
-                {
-                    Sprintf(eos(bonusbuf), "%s%d %s to AC",
+            if (display_ac && display_mc)
+            {
+                if (obj->enchantment == 0)
+                    Strcat(bonusbuf, "+0 to AC and MC");
+                else
+                    Sprintf(eos(bonusbuf), "%s%d to AC and %s%d to MC",
                         obj->enchantment <= 0 ? "+" : "",
                         -obj->enchantment,
-                        obj->enchantment >= 0 ? "bonus" : "penalty");
-                    knownacbonus += obj->enchantment;
-                }
-                else if (display_mc)
-                {
-                    Sprintf(eos(bonusbuf), "%s%d %s to MC",
                         obj->enchantment / 3 >= 0 ? "+" : "",
-                        obj->enchantment / 3,
-                        obj->enchantment / 3 >= 0 ? "bonus" : "penalty");
-                    knownmcbonus += obj->enchantment / 3;
-                }
-                if (*bonusbuf)
-                    Strcat(bonusbuf, ")");
-
-                Sprintf(buf, "Enchantment status:     %s%d%s", obj->enchantment >= 0 ? "+" : "", obj->enchantment, bonusbuf);
-                putstr(datawin, ATR_INDENT_AT_COLON, buf);
-
+                        obj->enchantment / 3
+                    );
+                knownacbonus += obj->enchantment;
+                knownmcbonus += obj->enchantment / 3;
             }
-            else
+            else if (display_ac)
             {
-                Sprintf(buf, "Enchantable:            %s", "Yes");
-                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                Sprintf(eos(bonusbuf), "%s%d %s to AC",
+                    obj->enchantment <= 0 ? "+" : "",
+                    -obj->enchantment,
+                    obj->enchantment >= 0 ? "bonus" : "penalty");
+                knownacbonus += obj->enchantment;
             }
+            else if (display_mc)
+            {
+                Sprintf(eos(bonusbuf), "%s%d %s to MC",
+                    obj->enchantment / 3 >= 0 ? "+" : "",
+                    obj->enchantment / 3,
+                    obj->enchantment / 3 >= 0 ? "bonus" : "penalty");
+                knownmcbonus += obj->enchantment / 3;
+            }
+            if (*bonusbuf)
+                Strcat(bonusbuf, ")");
 
+            Sprintf(buf, "Enchantment status:     %s%d%s", obj->enchantment >= 0 ? "+" : "", obj->enchantment, bonusbuf);
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+
+        }
+        else if (stats_known)
+        {
+            Sprintf(buf, "Enchantable:            %s", "Yes");
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+
+        if (stats_known)
+        {
             int max_ench = obj ? get_obj_max_enchantment(obj) : get_max_enchantment(objects[otyp].oc_enchantable);
             Sprintf(buf, "Safe enchantable level: %s%d or below", max_ench >= 0 ? "+" : "", max_ench);
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
