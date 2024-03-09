@@ -39,6 +39,9 @@ STATIC_DCL void FDECL(eataccessory, (struct obj *));
 STATIC_DCL const char *FDECL(foodword, (struct obj *));
 STATIC_DCL int FDECL(tin_variety, (struct obj *, BOOLEAN_P));
 STATIC_DCL boolean FDECL(maybe_cannibal, (int, BOOLEAN_P));
+STATIC_DCL int FDECL(get_corpse_reqtime, (struct obj*));
+STATIC_DCL int FDECL(get_food_nmod, (struct obj*, int));
+
 
 char msgbuf[BUFSZ];
 
@@ -1857,12 +1860,13 @@ const char *mesg;
             what = the(what);
 
         char smellsbuf[BUFSZ];
-        const char* eatit = "Eat it?";
+        boolean chokewarn = u.uhs == SATIATED && u.uhunger >= NUTRITION_CHOKE_AMOUNT - tintxts[r].nut;
+        const char* eatit = chokewarn ? "However, you are feeling very full; eat it nevertheless?" : "Eat it?";
         Sprintf(smellsbuf, "It smells like %s.", what);
         pline1(smellsbuf);
 
         //if (yn_query("Eat it?") == 'n') 
-        if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_ATTENTION, "Tin Opened", eatit, ynchars, 'n', yndescs, smellsbuf) != 'y')
+        if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, chokewarn ? CLR_MSG_WARNING : CLR_MSG_ATTENTION, "Tin Opened", eatit, ynchars, 'n', yndescs, smellsbuf) != 'y')
         {
             if (flags.verbose)
                 You("discard the open tin.");
@@ -1913,7 +1917,13 @@ const char *mesg;
     else
     { /* spinach... */
         char containsbuf[BUFSZ];
-        const char* eatit = "Eat it?";
+        int nutr = tin->blessed
+            ? 600                   /* blessed */
+            : !tin->cursed
+            ? (400 + rnd(200))   /* uncursed */
+            : (200 + rnd(400)); /* cursed */
+        boolean chokewarn = u.uhs == SATIATED && u.uhunger >= NUTRITION_CHOKE_AMOUNT - nutr;
+        const char* eatit = chokewarn ? "However, you are feeling very full; eat it nevertheless?" : "Eat it?";
         if (tin->cursed)
         {
             Sprintf(containsbuf, "It contains some decaying%s%s substance.",
@@ -1928,7 +1938,7 @@ const char *mesg;
         pline1(containsbuf);
 
         //if (yn_query("Eat it?") == 'n') 
-        if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_ATTENTION, "Tin Opened", eatit, ynchars, 'n', yndescs, containsbuf) != 'y')
+        if (yn_function_es(YN_STYLE_GENERAL, ATR_NONE, chokewarn ? CLR_MSG_WARNING : CLR_MSG_ATTENTION, "Tin Opened", eatit, ynchars, 'n', yndescs, containsbuf) != 'y')
         {
             if (flags.verbose)
                 You("discard the open tin.");
@@ -1960,11 +1970,6 @@ const char *mesg;
 
         tin = costly_tin(COST_OPEN);
 
-        int nutr = tin->blessed
-            ? 600                   /* blessed */
-            : !tin->cursed
-            ? (400 + rnd(200))   /* uncursed */
-            : (200 + rnd(400)); /* cursed */
         lesshungry(nutr);
         display_nutrition_floating_text(u.ux, u.uy, nutr);
     }
@@ -2319,7 +2324,7 @@ struct obj *otmp;
     }
 
     /* delay is weight dependent */
-    context.victual.reqtime = 3 + ((!glob ? mons[mnum].cwt : otmp->owt) >> 6);
+    context.victual.reqtime = get_corpse_reqtime(otmp); // 3 + ((!glob ? mons[mnum].cwt : otmp->owt) >> 6);
 
     if (!tp && !nonrotting_corpse(mnum) && (otmp->orotten))
     { //  || !rn2(7)
@@ -3473,6 +3478,25 @@ doeat()
         return 1; /* got blasted so use a turn */
     }
 
+    if (otmp->otyp != TIN) //Tins are treated separately, since you do not know their nutrition before
+    {
+        int total_nutrition = obj_nutrition(otmp, &youmonst);
+        int nutrition_left = otmp->oeaten ? otmp->oeaten : total_nutrition;
+        int reqtime = otmp->otyp == CORPSE ? get_corpse_reqtime(otmp) : is_obj_normally_edible(otmp) && objects[otmp->otyp].oc_delay && total_nutrition > 0 ? rounddiv(objects[otmp->otyp].oc_delay * nutrition_left, total_nutrition) : 1;
+        int nmod = get_food_nmod(otmp, reqtime);
+        boolean chokewarn = u.uhs == SATIATED && can_obj_cause_choking(otmp) && u.uhunger >= NUTRITION_CHOKE_AMOUNT + min(0, nmod) * (int)mon_nutrition_size_multiplier(&youmonst);
+        if (chokewarn)
+        {
+            char qbuf[QBUFSZ];
+            Sprintf(qbuf, "You are feeling very full; eat %s nevertheless?", thecxname(otmp));
+            char ans = yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_WARNING, NO_GLYPH, (const char*)0, qbuf, ynqchars, 'n', ynqdescs, (const char*)0, 0UL);
+            if (ans != 'y')
+            {
+                return 0;
+            }
+        }
+    }
+
     if (is_metallic(otmp) && rust_causing_and_ironvorous(youmonst.data)
         && otmp->oerodeproof)
     {
@@ -3873,20 +3897,8 @@ doeat()
 
     debugpline1("after rounddiv: victual.reqtime == %d",
                 context.victual.reqtime);
-    /*
-     * calculate the modulo value (nutrit. units per round eating)
-     * note: this isn't exact - you actually lose a little nutrition due
-     *       to this method.
-     * TODO: add in a "remainder" value to be given at the end of the meal.
-     */
-    if (context.victual.reqtime == 0 || otmp->oeaten == 0)
-        /* possible if most has been eaten before */
-        context.victual.nmod = 0;
-    else if ((int) otmp->oeaten >= context.victual.reqtime)
-        context.victual.nmod = -((int) otmp->oeaten
-                                 / context.victual.reqtime);
-    else
-        context.victual.nmod = context.victual.reqtime % otmp->oeaten;
+
+    context.victual.nmod = get_food_nmod(otmp, context.victual.reqtime);
     context.victual.canchoke = (u.uhs == SATIATED) && can_obj_cause_choking(otmp);
 
     if (!dont_start)
@@ -3934,7 +3946,7 @@ struct obj *obj;
 STATIC_OVL int
 bite()
 {
-    if (context.victual.canchoke && u.uhunger >= 2000) 
+    if (context.victual.canchoke && u.uhunger >= NUTRITION_CHOKE_AMOUNT)
     {
         choke(context.victual.piece);
         return 1;
@@ -4079,7 +4091,7 @@ int num;
     debugpline1("lesshungry(%d)", num);
     u.uhunger += num;
 
-    if (u.uhunger >= 2000)
+    if (u.uhunger >= NUTRITION_CHOKE_AMOUNT)
     {
         if (!iseating || context.victual.canchoke) 
         {
@@ -4099,7 +4111,7 @@ int num;
         /* Have lesshungry() report when you're nearly full so all eating
          * warns when you're about to choke.
          */
-        if (u.uhunger >= 1500) 
+        if (u.uhunger >= NUTRITION_FULL_AMOUNT) 
         {
             if (!context.victual.eating
                 || (context.victual.eating && !context.victual.fullwarn)) 
@@ -4377,6 +4389,7 @@ int corpsecheck; /* 0, no check, 1, corpses, 2, tinnable corpses */
                then the trap would just get eaten on the _next_ turn... */
             Sprintf(qbuf, "There is a bear trap here (%s); eat it?",
                     u_in_beartrap ? "holding you" : "armed");
+            
             if ((c = yn_function(qbuf, ynqchars, 'n', ynqdescs)) == 'y')
             {
                 deltrap(ttmp);
@@ -4438,9 +4451,11 @@ int corpsecheck; /* 0, no check, 1, corpses, 2, tinnable corpses */
                "There are <N objects> here; <verb> one?" */
             Sprintf(qbuf, "There %s ", otense(otmp, "are"));
             Sprintf(qsfx, " here; %s %s?", verb, one ? "it" : "one");
+
             (void) safe_qbuf(qbuf, qbuf, qsfx, otmp, doname, ansimpleoname,
                              one ? something : (const char *) "things");
-            if ((c = yn_function(qbuf, ynqchars, 'n', ynqdescs)) == 'y')
+            
+            if ((c = yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, (const char*)0, qbuf, ynqchars, 'n', ynqdescs, (const char*)0, 0UL)) == 'y')
                 return  otmp;
             else if (c == 'q')
                 return (struct obj *) 0;
@@ -4645,6 +4660,41 @@ int threat;
         break;
     }
     return FALSE;
+}
+
+STATIC_OVL
+int get_corpse_reqtime(otmp)
+struct obj* otmp;
+{
+    if (!otmp || otmp->corpsenm < LOW_PM || otmp->corpsenm >= NUM_MONSTERS)
+        return 0;
+
+    return 3 + ((!otmp->globby ? mons[otmp->corpsenm].cwt : otmp->owt) >> 6);
+}
+
+STATIC_OVL
+int get_food_nmod(otmp, reqtime)
+struct obj* otmp;
+int reqtime;
+{
+    if (!otmp)
+        return 0;
+
+    /*
+     * calculate the modulo value (nutrit. units per round eating)
+     * note: this isn't exact - you actually lose a little nutrition due
+     *       to this method.
+     * TODO: add in a "remainder" value to be given at the end of the meal.
+     */
+    int nutrition_left = otmp->oeaten ? (int)otmp->oeaten : obj_nutrition(otmp, &youmonst);
+
+    if (!otmp || reqtime == 0 || nutrition_left == 0)
+        /* possible if most has been eaten before */
+        return 0;
+    else if (nutrition_left >= reqtime)
+        return -(nutrition_left / reqtime);
+    else
+        return reqtime % nutrition_left;
 }
 
 

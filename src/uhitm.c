@@ -3564,7 +3564,7 @@ register struct attack *mattk;
     if (!engulf_target(&youmonst, mdef))
         return 0;
 
-    if (u.uhunger < 1500 && !u.uswallow)
+    if (u.uhunger < NUTRITION_FULL_AMOUNT && !u.uswallow)
     {
         for (otmp = mdef->minvent; otmp; otmp = otmp->nobj)
             (void) snuff_lit(otmp);
