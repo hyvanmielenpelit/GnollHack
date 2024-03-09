@@ -2362,7 +2362,7 @@ register struct obj* omonwep;
          * still _can_ attack you when you're flying or mounted.
          * [FIXME: why can't a flying attacker overcome this?]
          */
-        if (u.usteed || Levitation || Flying)
+        if (u.usteed || Moves_above_ground)
         {
             pline("%s tries to reach your %s %s!", Monst_name, sidestr, leg);
             damage = 0;

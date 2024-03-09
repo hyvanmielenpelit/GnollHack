@@ -957,7 +957,7 @@ int x, y;
     if (is_pool(x, y) && !u.uinwater) 
     {
         if ((Is_waterlevel(&u.uz) && levl[x][y].typ == WATER)
-            || !(Levitation || Flying || Walks_on_water))
+            || !(Moves_above_ground || Walks_on_water))
         {
             multi = 0; /* can move, so drown() allows crawling out of water */
             (void) drown();

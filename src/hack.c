@@ -1180,9 +1180,8 @@ int mode;
         && (x != u.ux || y != u.uy)) 
     {
         struct trap *t = t_at(x, y);
-
-        if ((t && t->tseen)
-            || (!Levitation && !Flying && !is_clinger(youmonst.data)
+        if ((t && t->tseen && !(is_trap_avoidable_by_flying(t->ttyp) && Moves_above_ground) && !(is_pit(t->ttyp) && has_pitwalk(youmonst.data)))
+            || (!Moves_above_ground
                 && is_pool_or_lava(x, y) && levl[x][y].seenv))
             return (mode == TEST_TRAP);
     }
@@ -1911,8 +1910,8 @@ domove_core()
             }
         }
 
-        if (((trap = t_at(x, y)) && trap->tseen)
-            || (Blind && !Levitation && !Flying && !is_clinger(youmonst.data)
+        if (((trap = t_at(x, y)) && trap->tseen && !(is_trap_avoidable_by_flying(trap->ttyp) && Moves_above_ground) && !(is_pit(trap->ttyp) && has_pitwalk(youmonst.data)))
+            || (Blind && !Moves_above_ground
                 /* && is_pool_or_lava(x, y) */ 
                 && levl[x][y].seenv))
         {
@@ -1984,8 +1983,8 @@ domove_core()
                 }
             }
             else if(trap && trap->tseen && !(trap_type_definitions[trap->ttyp].tdflags & TRAPDEF_FLAGS_NO_STEP_CONFIRMATION)
-                && !((is_hole(trap->ttyp) || is_pit(trap->ttyp) || trap->ttyp == BEAR_TRAP || trap->ttyp == SQKY_BOARD) && (Flying || Levitation) && !Sokoban)
-                && !(trap->ttyp == PIT && has_pitwalk(youmonst.data))
+                && !(is_trap_avoidable_by_flying(trap->ttyp) && Moves_above_ground)
+                && !(is_pit(trap->ttyp) && has_pitwalk(youmonst.data))
                 )
             {
                 char ynqbuf[BUFSZ] = "";
@@ -2566,7 +2565,7 @@ invocation_message()
         nomul(0); /* stop running or travelling */
         if (u.usteed)
             Sprintf(buf, "beneath %s", y_monnam(u.usteed));
-        else if (Levitation || Flying)
+        else if (Moves_above_ground)
             Strcpy(buf, "beneath you");
         else
             Sprintf(buf, "under your %s", makeplural(body_part(FOOT)));

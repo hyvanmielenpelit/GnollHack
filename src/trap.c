@@ -1072,8 +1072,6 @@ unsigned short trflags;
     //int oldumort;
     int steed_article = ARTICLE_THE;
 
-    nomul(0);
-
     /* KMH -- You can't escape the Sokoban level traps */
     if (Sokoban && (is_pit(ttype) || is_hole(ttype))) 
     {
@@ -1114,7 +1112,9 @@ unsigned short trflags;
         }
     }
 
-    if (u.usteed) 
+    nomul(0);
+
+    if (u.usteed)
     {
         u.usteed->mtrapseen |= (1 << (ttype - 1));
         /* suppress article in various steed messages when using its
@@ -1283,7 +1283,7 @@ unsigned short trflags;
         break;
 
     case SQKY_BOARD: /* stepped on a squeaky board */
-        if ((Levitation || Flying) && !forcetrap) 
+        if (Moves_above_ground && !forcetrap)
         {
             if (!Blind) 
             {
@@ -1309,7 +1309,7 @@ unsigned short trflags;
     {
         int dmg = d(2, 4);
 
-        if ((Levitation || Flying) && !forcetrap)
+        if (Moves_above_ground && !forcetrap)
             break;
         feeltrap(trap);
 
@@ -1872,7 +1872,7 @@ unsigned short trflags;
         unsigned steed_mid = 0;
         struct obj *saddle = 0;
 
-        if ((Levitation || Flying) && !forcetrap) 
+        if (Moves_above_ground && !forcetrap)
         {
             if (!already_seen && rn2(3))
                 break;
@@ -1950,7 +1950,7 @@ unsigned short trflags;
 
     case ROLLING_BOULDER_TRAP: 
     {
-        if ((Levitation || Flying) && !forcetrap) 
+        if (Moves_above_ground && !forcetrap)
         {
             if (!already_seen && rn2(3))
                 break;

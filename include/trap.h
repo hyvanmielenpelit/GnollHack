@@ -161,6 +161,7 @@ extern const struct trap_type_definition trap_type_definitions[TRAPNUM];
 #define is_pit(ttyp) ((ttyp) == PIT || (ttyp) == SPIKED_PIT)
 #define is_hole(ttyp)  ((ttyp) == HOLE || (ttyp) == TRAPDOOR)
 #define is_lever(ttyp)  ((ttyp) == LEVER)
+#define is_trap_avoidable_by_flying(ttyp) ((is_hole(ttyp) && !Sokoban) || is_pit(ttyp) || is_lever(ttyp) || ttyp == BEAR_TRAP || ttyp == SQKY_BOARD || ttyp == ROLLING_BOULDER_TRAP || ttyp == VIBRATING_SQUARE)
 
 #define MKTRAP_NO_FLAGS                    0x00000000UL
 #define MKTRAPFLAG_GARDEN_GNOME_ITEMS      0x00000001UL

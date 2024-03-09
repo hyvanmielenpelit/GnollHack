@@ -5284,7 +5284,7 @@ const char *verb;
         /* Reasonably bulky objects (arbitrary) splash when dropped.
          * If you're floating above the water even small things make
          * noise.  Stuff dropped near fountains always misses */
-        if ((Blind || (Levitation || Flying)) && !Deaf
+        if ((Blind || Moves_above_ground) && !Deaf
             && ((x == u.ux) && (y == u.uy))) 
         {
             if (!Underwater) 
@@ -5294,7 +5294,7 @@ const char *verb;
                 {
                     pline("Splash!");
                 } 
-                else if (Levitation || Flying) 
+                else if (Moves_above_ground)
                 {
                     pline("Plop!");
                 }

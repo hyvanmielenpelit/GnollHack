@@ -5052,7 +5052,7 @@ retry:
             create_simple_location(x, y, LAVAPOOL, 0, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             del_engr_at(x, y);
             pline("A pool of molten lava.");
-            if (!(Levitation || Flying))
+            if (!Moves_above_ground)
                 (void) lava_effects();
             newsym(x, y);
             return (struct obj *) &zeroobj;

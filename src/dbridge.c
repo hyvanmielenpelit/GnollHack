@@ -428,7 +428,7 @@ int x, y;
                           || is_floater(etmp->edata));
     /* must force call to lava_effects in e_died if is_u */
     if (is_lava(x, y))
-        return (boolean) ((is_u(etmp) && (Levitation || Flying))
+        return (boolean) ((is_u(etmp) && Moves_above_ground)
                           || likes_lava(etmp->edata)
                           || is_flyer(etmp->edata));
     if (is_db_wall(x, y))

@@ -434,7 +434,7 @@ int force;
                             Your("chain breaks!");
                             reset_utrap(TRUE);
                         }
-                        if (Levitation || Flying || is_clinger(youmonst.data)) 
+                        if (Moves_above_ground)
                         {
                             if (!tu_pit) 
                             { /* no pit here previously */

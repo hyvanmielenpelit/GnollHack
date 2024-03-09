@@ -3206,7 +3206,7 @@ int final;
 STATIC_OVL boolean
 walking_on_water()
 {
-    if (u.uinwater || Levitation || Flying)
+    if (u.uinwater || Moves_above_ground)
         return FALSE;
     return (boolean) (Walks_on_water
                       && (is_pool(u.ux, u.uy) || is_lava(u.ux, u.uy)));

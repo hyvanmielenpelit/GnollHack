@@ -131,7 +131,7 @@ register struct monst *mtmp;
         if (!strncmp(what, "rear ", 5))
             what += 5;
         pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s quickly snatches some gold from %s %s %s!", Monnam(mtmp),
-              (Levitation || Flying) ? "beneath" : "between", whose, what);
+            Moves_above_ground ? "beneath" : "between", whose, what);
         if (!ygold || !rn2(5)) {
             if (!tele_restrict(mtmp))
             {

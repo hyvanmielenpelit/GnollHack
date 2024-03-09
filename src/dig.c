@@ -722,7 +722,7 @@ int ttyp;
     boolean madeby_obj = (madeby == BY_OBJECT);
     boolean madeby_mon = madeby && !madeby_u && !madeby_obj;
     boolean at_u = (x == u.ux) && (y == u.uy);
-    boolean wont_fall = Levitation || Flying;
+    boolean wont_fall = Moves_above_ground;
 
     if (at_u && u.utrap) {
         if (u.utraptype == TT_BURIEDBALL)
@@ -801,7 +801,7 @@ int ttyp;
         /* in case we're digging down while encased in solid rock
            which is blocking levitation or flight */
         switch_terrain();
-        if (Levitation || Flying)
+        if (Moves_above_ground)
             wont_fall = TRUE;
 
         if (at_u) {
@@ -834,7 +834,7 @@ int ttyp;
             /* in case we're digging down while encased in solid rock
                which is blocking levitation or flight */
             switch_terrain();
-            if (Levitation || Flying)
+            if (Moves_above_ground)
                 wont_fall = TRUE;
 
             /* check for leashed pet that can't fall right now */
@@ -933,7 +933,7 @@ const char *fillmsg;
 
     if (fillmsg)
         pline(fillmsg, hliquid(typ == LAVAPOOL ? "lava" : "water"));
-    if (u_spot && !(Levitation || Flying)) {
+    if (u_spot && !Moves_above_ground) {
         if (typ == LAVAPOOL)
             (void) lava_effects();
         else if (!Walks_on_water)

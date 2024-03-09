@@ -503,6 +503,7 @@
 #define Underwater (u.uinwater)
 
 #define Survives_without_air (Breathless || (Underwater && (Amphibious || Swimming)))
+#define Moves_above_ground (Levitation || Flying || (is_clinger(youmonst.data) && !Is_airlevel(&u.uz)))
 
 /* Note that Underwater and u.uinwater are both used in code.
    The latter form is for later implementation of other in-water

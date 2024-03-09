@@ -86,7 +86,7 @@ unsigned long gpflags;
         else if (is_lava(x, y)) 
         {
             if (mtmp == &youmonst)
-                return (Levitation || Flying
+                return (Moves_above_ground
                         || (Fire_immunity && Walks_on_water && uarmf
                             && uarmf->oerodeproof)
                         || (Upolyd && likes_lava(youmonst.data)));
