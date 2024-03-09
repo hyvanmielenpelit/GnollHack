@@ -607,7 +607,7 @@ void
 fill_zoo(sroom)
 struct mkroom *sroom;
 {
-    struct monst *mon;
+    //struct monst *mon;
     register int sx, sy, i;
     int sh, tx = 0, ty = 0, goldlim = 0, type = sroom->rtype;
     int rmno = (int) ((sroom - rooms) + ROOMOFFSET);
@@ -794,11 +794,11 @@ place_main_monst_here:
 
             if (mon_one_in_chance > 1 && rn2(mon_one_in_chance))
             {
-                mon = (struct monst*) 0; //No monster
+                //mon = (struct monst*) 0; //No monster
             }
             else
             {
-                mon = makemon((type == COURT)
+                (void)makemon((type == COURT)
                            ? (Is_yeenaghu_level(&u.uz) ? yeenaghumon() : courtmon())
                            : (type == BARRACKS)
                               ? (Is_yeenaghu_level(&u.uz) ? yeenaghumon() : squadmon())

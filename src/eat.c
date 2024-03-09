@@ -3480,9 +3480,9 @@ doeat()
 
     if (otmp->otyp != TIN) //Tins are treated separately, since you do not know their nutrition before
     {
-        int total_nutrition = obj_nutrition(otmp, &youmonst);
-        int nutrition_left = otmp->oeaten ? otmp->oeaten : total_nutrition;
-        int reqtime = otmp->otyp == CORPSE ? get_corpse_reqtime(otmp) : is_obj_normally_edible(otmp) && objects[otmp->otyp].oc_delay && total_nutrition > 0 ? rounddiv(objects[otmp->otyp].oc_delay * nutrition_left, total_nutrition) : 1;
+        int total_nutrition = (int)obj_nutrition(otmp, &youmonst);
+        int nutrition_left = otmp->oeaten ? (int)otmp->oeaten : total_nutrition;
+        int reqtime = otmp->otyp == CORPSE ? get_corpse_reqtime(otmp) : is_obj_normally_edible(otmp) && objects[otmp->otyp].oc_delay && total_nutrition > 0 ? rounddiv((int)objects[otmp->otyp].oc_delay * nutrition_left, total_nutrition) : 1;
         int nmod = get_food_nmod(otmp, reqtime);
         boolean chokewarn = u.uhs == SATIATED && can_obj_cause_choking(otmp) && u.uhunger >= NUTRITION_CHOKE_AMOUNT + min(0, nmod) * (int)mon_nutrition_size_multiplier(&youmonst);
         if (chokewarn)
@@ -4686,7 +4686,7 @@ int reqtime;
      *       to this method.
      * TODO: add in a "remainder" value to be given at the end of the meal.
      */
-    int nutrition_left = otmp->oeaten ? (int)otmp->oeaten : obj_nutrition(otmp, &youmonst);
+    int nutrition_left = otmp->oeaten ? (int)otmp->oeaten : (int)obj_nutrition(otmp, &youmonst);
 
     if (!otmp || reqtime == 0 || nutrition_left == 0)
         /* possible if most has been eaten before */
