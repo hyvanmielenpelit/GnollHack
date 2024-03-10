@@ -5528,12 +5528,21 @@ namespace GnollHackX
 
         public static async Task UploadFromFileAsync(
             BlobContainerClient containerClient,
-            string localFilePath)
+            string prefix, string localFilePath, CancellationToken cancellationToken)
         {
-            string fileName = Path.GetFileName(localFilePath);
-            BlobClient blobClient = containerClient.GetBlobClient(fileName);
+            string blobName;
+            if (prefix == null)
+            {
+                blobName = Path.GetFileName(localFilePath);
+            }
+            else
+            {
+                string delimiter = "/";
+                blobName = prefix + delimiter + Path.GetFileName(localFilePath);
+            }
 
-            await blobClient.UploadAsync(localFilePath, true);
+            BlobClient blobClient = containerClient.GetBlobClient(blobName);
+            await blobClient.UploadAsync(localFilePath, true, cancellationToken);
         }
 
         public static async Task SetTags(BlobClient blobClient)
