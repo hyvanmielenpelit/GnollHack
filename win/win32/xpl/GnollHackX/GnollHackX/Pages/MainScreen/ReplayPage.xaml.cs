@@ -40,6 +40,8 @@ namespace GnollHackX.Pages.MainScreen
     {
         MainPage _mainPage = null;
         string _directory = null;
+        string _subDirectoryLocal = null;
+        string _subDirectoryServer = null;
 
         public bool IsMultiSelect { get { return ReplayCollectionView.SelectionMode == SelectionMode.Multiple; } }
 
@@ -159,7 +161,7 @@ namespace GnollHackX.Pages.MainScreen
                                             {
                                                 i++;
                                                 FileInfo zipFI = new FileInfo(zipFile);
-                                                gHRecordedGameFiles.Add(new GHRecordedGameFile(i, Path.Combine(dirPath, zipFile), zipFI.Name, zipFI.Extension, zipFI.Length + 0, 1, zipFI.CreationTime, zipFI.LastWriteTime));
+                                                gHRecordedGameFiles.Add(new GHRecordedGameFile(i, Path.Combine(dirPath, zipFile), zipFI.Name, zipFI.Extension, false, zipFI.Length + 0, 1, zipFI.CreationTime, zipFI.LastWriteTime));
                                                 totalBytes += zipFI.Length + 0;
                                             }
                                         }
@@ -202,7 +204,7 @@ namespace GnollHackX.Pages.MainScreen
                                                 }
                                             }
                                         }
-                                        gHRecordedGameFiles.Add(new GHRecordedGameFile(i, Path.Combine(dirPath, file), fi.Name, fi.Extension, fi.Length + contLen, 1 + noOfContFiles, fi.CreationTime, fi.LastWriteTime));
+                                        gHRecordedGameFiles.Add(new GHRecordedGameFile(i, Path.Combine(dirPath, file), fi.Name, fi.Extension, false, fi.Length + contLen, 1 + noOfContFiles, fi.CreationTime, fi.LastWriteTime));
                                         totalBytes += fi.Length + contLen;
                                     }
                                 }
@@ -588,14 +590,28 @@ namespace GnollHackX.Pages.MainScreen
                 return;
             }
 
+            GHRecordedGameFile rgf = null;
+            if (ReplayCollectionView.SelectedItem != null)
+            {
+                if (ReplayCollectionView.SelectedItem is GHRecordedGameFile)
+                    rgf = (GHRecordedGameFile)ReplayCollectionView.SelectedItem;
+            }
+
+            if(rgf != null && rgf.IsFolder)
+            {
+                if(ServerSwitch.IsEnabled)
+                    _subDirectoryServer = rgf.FilePath;
+                else
+                    _subDirectoryLocal = rgf.FilePath;
+                UpdateRecordings();
+                return;
+            }
+
             SelectButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             string filePath = null;
-            if (ReplayCollectionView.SelectedItem != null)
-            {
-                if(ReplayCollectionView.SelectedItem is GHRecordedGameFile)
-                    filePath = ((GHRecordedGameFile)ReplayCollectionView.SelectedItem).FilePath;
-            }
+            if (rgf != null)
+                filePath = rgf.FilePath;
 
             if (filePath != null)
             {
@@ -668,10 +684,28 @@ namespace GnollHackX.Pages.MainScreen
                     MoreButton.IsEnabled = true;
                     SelectButton.IsEnabled = true;
                     MoreButton.TextColor = GHColors.White;
-                    SelectButton.TextColor = GHColors.BrighterGreen;
+                    if(ReplayCollectionView.SelectedItem is GHRecordedGameFile)
+                    {
+                        GHRecordedGameFile rgf = (GHRecordedGameFile)ReplayCollectionView.SelectedItem;
+                        if(rgf.IsFolder)
+                        {
+                            SelectButton.TextColor = GHColors.BrighterBlue;
+                            SelectButton.Text = "Open";
+                        }
+                        else
+                        {
+                            SelectButton.TextColor = GHColors.BrighterGreen;
+                            SelectButton.Text = "Play";
+                        }
+                    }
+                    else
+                    {
+                        SelectButton.TextColor = GHColors.White;
+                    }
                 }
                 else
                 {
+                    SelectButton.Text = "Play";
                     MoreButton.IsEnabled = false;
                     SelectButton.IsEnabled = false;
                     MoreButton.TextColor = GHColors.Gray;
@@ -680,6 +714,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             else if (ReplayCollectionView.SelectionMode == SelectionMode.Multiple)
             {
+                SelectButton.Text = "Play";
                 if (ReplayCollectionView.SelectedItems.Count > 0)
                 {
                     MoreButton.IsEnabled = true;
@@ -830,8 +865,13 @@ namespace GnollHackX.Pages.MainScreen
 
             try
             {
+                if(!string.IsNullOrWhiteSpace(_subDirectoryServer))
+                {
+                    gHRecordedGameFiles.Add(new GHRecordedGameFile(0, null, "(Back)", "", true, 0, 1, DateTime.Now, DateTime.Now));
+                }
+
                 // Call the listing operation and return pages of the specified size.
-                var resultSegment = containerClient.GetBlobsByHierarchyAsync(prefix: null, delimiter: "/")
+                var resultSegment = containerClient.GetBlobsByHierarchyAsync(prefix: _subDirectoryServer, delimiter: "/")
                     .AsPages(default, null);
 
                 var enumer = resultSegment.GetAsyncEnumerator();
@@ -849,21 +889,20 @@ namespace GnollHackX.Pages.MainScreen
                             {
                                 // Write out the prefix of the virtual directory.
                                 Debug.WriteLine(i + ": Virtual directory prefix: " + blobhierarchyItem.Prefix);
-                                i++;
-                                gHRecordedGameFiles.Add(new GHRecordedGameFile(i, blobhierarchyItem.Prefix, blobhierarchyItem.Prefix, "", 0, 1, DateTime.Now, DateTime.Now));
+                                gHRecordedGameFiles.Add(new GHRecordedGameFile(i, blobhierarchyItem.Prefix, blobhierarchyItem.Prefix, "", true, 0, 1, DateTime.Now, DateTime.Now));
                             }
                             else if(blobhierarchyItem.Blob != null)
                             {
                                 Debug.WriteLine(i + ": Item name without prefix: " + blobhierarchyItem.Blob?.Name);
                                 i++;
-                                gHRecordedGameFiles.Add(new GHRecordedGameFile(i, blobhierarchyItem.Blob?.Name, blobhierarchyItem.Blob?.Name, "", 0, 1, DateTime.Now, DateTime.Now));
+                                gHRecordedGameFiles.Add(new GHRecordedGameFile(i, blobhierarchyItem.Blob?.Name, blobhierarchyItem.Blob?.Name, "", false, 0, 1, DateTime.Now, DateTime.Now));
 
                             }
                             else
                             {
                                 Debug.WriteLine(i + ": No Blob name");
                                 i++;
-                                gHRecordedGameFiles.Add(new GHRecordedGameFile(i, "?", "?", "", 0, 1, DateTime.Now, DateTime.Now));
+                                gHRecordedGameFiles.Add(new GHRecordedGameFile(i, "?", "?", "", false, 0, 1, DateTime.Now, DateTime.Now));
 
                             }
                         }
