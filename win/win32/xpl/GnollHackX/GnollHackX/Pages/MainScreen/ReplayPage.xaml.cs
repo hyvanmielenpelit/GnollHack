@@ -370,13 +370,17 @@ namespace GnollHackX.Pages.MainScreen
                 long totalBytes = 0;
                 if (ReplayCollectionView.SelectedItems != null)
                 {
-                    i = ReplayCollectionView.SelectedItems.Count;
+                    //i = ReplayCollectionView.SelectedItems.Count;
                     foreach (object obj in ReplayCollectionView.SelectedItems)
                     {
                         if(obj is GHRecordedGameFile)
                         {
                             GHRecordedGameFile file = (GHRecordedGameFile)obj;
-                            totalBytes += file.FileSize;
+                            if(!file.IsFolder)
+                            {
+                                i++;
+                                totalBytes += file.FileSize;
+                            }
                         }
                     }
                 }
@@ -391,10 +395,14 @@ namespace GnollHackX.Pages.MainScreen
                     if(ReplayCollectionView.ItemsSource is ObservableCollection<GHRecordedGameFile>)
                     {
                         ObservableCollection<GHRecordedGameFile> fileCollection = (ObservableCollection<GHRecordedGameFile>)ReplayCollectionView.ItemsSource;
-                        i = fileCollection.Count;
+                        //i = fileCollection.Count;
                         foreach(GHRecordedGameFile file in fileCollection)
                         {
-                            totalBytes += file.FileSize;
+                            if(!file.IsFolder)
+                            {
+                                i++;
+                                totalBytes += file.FileSize;
+                            }
                         }
                     }
                 }
@@ -689,7 +697,7 @@ namespace GnollHackX.Pages.MainScreen
                         GHRecordedGameFile rgf = (GHRecordedGameFile)ReplayCollectionView.SelectedItem;
                         if(rgf.IsFolder)
                         {
-                            SelectButton.TextColor = GHColors.BrighterBlue;
+                            SelectButton.TextColor = GHColors.LightBlue;
                             SelectButton.Text = "Open";
                         }
                         else
@@ -895,7 +903,10 @@ namespace GnollHackX.Pages.MainScreen
                             {
                                 Debug.WriteLine(i + ": Item name without prefix: " + blobhierarchyItem.Blob?.Name);
                                 i++;
-                                gHRecordedGameFiles.Add(new GHRecordedGameFile(i, blobhierarchyItem.Blob?.Name, blobhierarchyItem.Blob?.Name, "", false, 0, 1, DateTime.Now, DateTime.Now));
+                                gHRecordedGameFiles.Add(new GHRecordedGameFile(i, blobhierarchyItem.Blob?.Name, blobhierarchyItem.Blob?.Name, "", false, 
+                                    blobhierarchyItem.Blob?.Properties.ContentLength ?? 0, 1,
+                                      (blobhierarchyItem.Blob?.Properties.CreatedOn ?? DateTimeOffset.Now).DateTime,
+                                      (blobhierarchyItem.Blob?.Properties.LastModified ?? DateTimeOffset.Now).DateTime));
 
                             }
                             else
@@ -924,6 +935,7 @@ namespace GnollHackX.Pages.MainScreen
             }
 
             ReplayCollectionView.ItemsSource = gHRecordedGameFiles;
+            UpdateRecordingsLabel();
         }
 
         private object _uploadDownloadLock = new object();
@@ -969,6 +981,9 @@ namespace GnollHackX.Pages.MainScreen
                                 if (recfile != null)
                                     filePath = recfile.FilePath;
                             }
+
+                            if (recfile != null && recfile.IsFolder)
+                                continue;
 
                             if (!string.IsNullOrWhiteSpace(filePath) && recfile != null && File.Exists(filePath))
                             {
