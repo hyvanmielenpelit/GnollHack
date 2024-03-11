@@ -5526,9 +5526,7 @@ namespace GnollHackX
             }
         }
 
-        public static async Task UploadFromFileAsync(
-            BlobContainerClient containerClient,
-            string prefix, string localFilePath, CancellationToken cancellationToken)
+        public static async Task UploadFromFileAsync(BlobContainerClient containerClient, string prefix, string localFilePath, CancellationToken cancellationToken)
         {
             string blobName;
             if (prefix == null)
@@ -5543,6 +5541,24 @@ namespace GnollHackX
 
             BlobClient blobClient = containerClient.GetBlobClient(blobName);
             await blobClient.UploadAsync(localFilePath, true, cancellationToken);
+        }
+
+        public static async Task DownloadFileAsync(BlobContainerClient containerClient, string prefix, string blobName, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(blobName))
+                return;
+
+            BlobClient blobClient = containerClient.GetBlobClient(blobName);
+            string targetDir = Path.Combine(GHApp.GHPath, "replays-download");
+            if(!Directory.Exists(targetDir))
+                GHApp.CheckCreateDirectory(targetDir);
+            string targetFile;
+            if (string.IsNullOrWhiteSpace(prefix) || blobName.Length <= prefix.Length)
+                targetFile = blobName;
+            else
+                targetFile = blobName.Substring(prefix.Length);
+            string targetPath = Path.Combine(targetDir, targetFile);
+            await blobClient.DownloadToAsync(targetPath, cancellationToken);
         }
 
         public static async Task SetTags(BlobClient blobClient)

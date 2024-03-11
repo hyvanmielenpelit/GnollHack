@@ -593,8 +593,9 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void SelectButton_Clicked(object sender, EventArgs e)
         {
-            if(IsMultiSelect)
+            if (IsMultiSelect)
             {
+                /* Should be single-select */
                 return;
             }
 
@@ -614,6 +615,15 @@ namespace GnollHackX.Pages.MainScreen
                 UpdateRecordings();
                 return;
             }
+
+            /* Play or Open */
+            if (ServerSwitch.IsToggled)
+            {
+                /* Download */
+                DownloadButton_Clicked(sender, e);
+                return;
+            }
+
 
             SelectButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -685,59 +695,126 @@ namespace GnollHackX.Pages.MainScreen
 
         private void MainListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(ReplayCollectionView.SelectionMode == SelectionMode.Single)
+            UpdateButtons();
+        }
+
+        private void UpdateButtons()
+        {
+            if(ServerSwitch.IsToggled)
             {
-                if (ReplayCollectionView.SelectedItem != null)
+                MoreButton.IsEnabled = false;
+                MoreButton.TextColor = GHColors.Gray;
+                if (ReplayCollectionView.SelectionMode == SelectionMode.Single)
                 {
-                    MoreButton.IsEnabled = true;
-                    SelectButton.IsEnabled = true;
-                    MoreButton.TextColor = GHColors.White;
-                    if(ReplayCollectionView.SelectedItem is GHRecordedGameFile)
+                    if (ReplayCollectionView.SelectedItem is GHRecordedGameFile)
                     {
-                        GHRecordedGameFile rgf = (GHRecordedGameFile)ReplayCollectionView.SelectedItem;
-                        if(rgf.IsFolder)
+                        if (ReplayCollectionView.SelectedItem != null)
                         {
-                            SelectButton.TextColor = GHColors.LightBlue;
-                            SelectButton.Text = "Open";
+                            SelectButton.IsEnabled = true;
+                            GHRecordedGameFile rgf = (GHRecordedGameFile)ReplayCollectionView.SelectedItem;
+                            if (rgf.IsFolder)
+                            {
+                                SelectButton.TextColor = GHColors.LightBlue;
+                                SelectButton.Text = "Open";
+                                SelectButton.FontSize = 15;
+                            }
+                            else
+                            {
+                                SelectButton.TextColor = GHColors.Yellow;
+                                SelectButton.Text = "Download";
+                                SelectButton.FontSize = 13;
+                            }
                         }
                         else
                         {
-                            SelectButton.TextColor = GHColors.BrighterGreen;
-                            SelectButton.Text = "Play";
+                            SelectButton.IsEnabled = false;
+                            SelectButton.TextColor = GHColors.Gray;
+                            SelectButton.Text = "Download";
+                            SelectButton.FontSize = 13;
                         }
                     }
                     else
                     {
-                        SelectButton.TextColor = GHColors.White;
+                        SelectButton.IsEnabled = false;
+                        SelectButton.TextColor = GHColors.Gray;
+                        SelectButton.Text = "Download";
+                        SelectButton.FontSize = 13;
                     }
                 }
-                else
+                else if (ReplayCollectionView.SelectionMode == SelectionMode.Multiple)
                 {
-                    SelectButton.Text = "Play";
-                    MoreButton.IsEnabled = false;
-                    SelectButton.IsEnabled = false;
-                    MoreButton.TextColor = GHColors.Gray;
-                    SelectButton.TextColor = GHColors.Gray;
+                    SelectButton.Text = "Download";
+                    SelectButton.FontSize = 13;
+                    if (ReplayCollectionView.SelectedItems.Count > 0)
+                    {
+                        SelectButton.IsEnabled = true;
+                        SelectButton.TextColor = GHColors.Yellow;
+                    }
+                    else
+                    {
+                        SelectButton.IsEnabled = false;
+                        SelectButton.TextColor = GHColors.Gray;
+                    }
+                    UpdateRecordingsLabel();
                 }
             }
-            else if (ReplayCollectionView.SelectionMode == SelectionMode.Multiple)
+            else
             {
-                SelectButton.Text = "Play";
-                if (ReplayCollectionView.SelectedItems.Count > 0)
+                SelectButton.FontSize = 15;
+                if (ReplayCollectionView.SelectionMode == SelectionMode.Single)
                 {
-                    MoreButton.IsEnabled = true;
-                    SelectButton.IsEnabled = false;
-                    MoreButton.TextColor = GHColors.White;
-                    SelectButton.TextColor = GHColors.Gray;
+                    if (ReplayCollectionView.SelectedItem != null)
+                    {
+                        MoreButton.IsEnabled = true;
+                        SelectButton.IsEnabled = true;
+                        MoreButton.TextColor = GHColors.White;
+                        if (ReplayCollectionView.SelectedItem is GHRecordedGameFile)
+                        {
+                            GHRecordedGameFile rgf = (GHRecordedGameFile)ReplayCollectionView.SelectedItem;
+                            if (rgf.IsFolder)
+                            {
+                                SelectButton.TextColor = GHColors.LightBlue;
+                                SelectButton.Text = "Open";
+                            }
+                            else
+                            {
+                                SelectButton.TextColor = GHColors.BrighterGreen;
+                                SelectButton.Text = "Play";
+                            }
+                        }
+                        else
+                        {
+                            SelectButton.TextColor = GHColors.White;
+                        }
+                    }
+                    else
+                    {
+                        SelectButton.Text = "Play";
+                        MoreButton.IsEnabled = false;
+                        SelectButton.IsEnabled = false;
+                        MoreButton.TextColor = GHColors.Gray;
+                        SelectButton.TextColor = GHColors.Gray;
+                    }
                 }
-                else
+                else if (ReplayCollectionView.SelectionMode == SelectionMode.Multiple)
                 {
-                    MoreButton.IsEnabled = false;
-                    SelectButton.IsEnabled = false;
-                    MoreButton.TextColor = GHColors.Gray;
-                    SelectButton.TextColor = GHColors.Gray;
+                    SelectButton.Text = "Play";
+                    if (ReplayCollectionView.SelectedItems.Count > 0)
+                    {
+                        MoreButton.IsEnabled = true;
+                        SelectButton.IsEnabled = false;
+                        MoreButton.TextColor = GHColors.White;
+                        SelectButton.TextColor = GHColors.Gray;
+                    }
+                    else
+                    {
+                        MoreButton.IsEnabled = false;
+                        SelectButton.IsEnabled = false;
+                        MoreButton.TextColor = GHColors.Gray;
+                        SelectButton.TextColor = GHColors.Gray;
+                    }
+                    UpdateRecordingsLabel();
                 }
-                UpdateRecordingsLabel();
             }
         }
 
@@ -850,6 +927,7 @@ namespace GnollHackX.Pages.MainScreen
         private void ServerSwitch_Toggled(object sender, ToggledEventArgs e)
         {
             UpdateLocalOrServerRecordings(e.Value);
+            UpdateButtons();
         }
 
         private async void UpdateServerRecordings()
@@ -861,6 +939,7 @@ namespace GnollHackX.Pages.MainScreen
             if (containerClient == null)
                 return;
 
+            RecordingsLabel.Text = "(Loading...)";
             ReplayCollectionView.SelectedItem = null;
             ReplayCollectionView.ItemsSource = null;
             MoreButton.IsEnabled = false;
@@ -869,6 +948,7 @@ namespace GnollHackX.Pages.MainScreen
             SelectButton.TextColor = GHColors.Gray;
 
             ObservableCollection<GHRecordedGameFile> gHRecordedGameFiles = new ObservableCollection<GHRecordedGameFile>();
+            List<string> contFiles = new List<string>();            
             int i = 0;
 
             try
@@ -901,20 +981,94 @@ namespace GnollHackX.Pages.MainScreen
                             }
                             else if(blobhierarchyItem.Blob != null)
                             {
-                                Debug.WriteLine(i + ": Item name without prefix: " + blobhierarchyItem.Blob?.Name);
-                                i++;
-                                gHRecordedGameFiles.Add(new GHRecordedGameFile(i, blobhierarchyItem.Blob?.Name, blobhierarchyItem.Blob?.Name, "", false, 
-                                    blobhierarchyItem.Blob?.Properties.ContentLength ?? 0, 1,
-                                      (blobhierarchyItem.Blob?.Properties.CreatedOn ?? DateTimeOffset.Now).DateTime,
-                                      (blobhierarchyItem.Blob?.Properties.LastModified ?? DateTimeOffset.Now).DateTime));
+                                Debug.WriteLine(i + ": Item name without prefix: " + blobhierarchyItem.Blob.Name);
+                                if(!string.IsNullOrWhiteSpace(blobhierarchyItem.Blob.Name))
+                                {
+                                    string nameWithoutPrefix;
+                                    if(string.IsNullOrWhiteSpace(_subDirectoryServer))
+                                    {
+                                        nameWithoutPrefix = blobhierarchyItem.Blob.Name;
+                                    }
+                                    else
+                                    {
+                                        if (blobhierarchyItem.Blob.Name.Length > _subDirectoryServer.Length && blobhierarchyItem.Blob.Name.StartsWith(_subDirectoryServer))
+                                            nameWithoutPrefix = blobhierarchyItem.Blob.Name.Substring(_subDirectoryServer.Length);
+                                        else
+                                            nameWithoutPrefix = blobhierarchyItem.Blob.Name;
+                                    }
 
+                                    if(nameWithoutPrefix.StartsWith(GHConstants.ReplayFileNamePrefix))
+                                    {
+                                        i++;
+                                        gHRecordedGameFiles.Add(new GHRecordedGameFile(i, blobhierarchyItem.Blob?.Name, blobhierarchyItem.Blob?.Name, "", false,
+                                            blobhierarchyItem.Blob?.Properties.ContentLength ?? 0, 1,
+                                              (blobhierarchyItem.Blob?.Properties.CreatedOn ?? DateTimeOffset.Now).DateTime,
+                                              (blobhierarchyItem.Blob?.Properties.LastModified ?? DateTimeOffset.Now).DateTime));
+                                    }
+                                    else if (nameWithoutPrefix.StartsWith(GHConstants.ReplayContinuationFileNamePrefix))
+                                    {
+                                        if(!string.IsNullOrWhiteSpace(blobhierarchyItem.Blob.Name))
+                                            contFiles.Add(blobhierarchyItem.Blob.Name);
+                                    }
+                                }
                             }
                             else
                             {
-                                Debug.WriteLine(i + ": No Blob name");
-                                i++;
-                                gHRecordedGameFiles.Add(new GHRecordedGameFile(i, "?", "?", "", false, 0, 1, DateTime.Now, DateTime.Now));
+                                Debug.WriteLine(i + ": Blob is null");
+                                //i++;
+                                //gHRecordedGameFiles.Add(new GHRecordedGameFile(i, "?", "?", "", false, 0, 1, DateTime.Now, DateTime.Now));
 
+                            }
+                        }
+                    }
+
+                    string prefix = !string.IsNullOrWhiteSpace(_subDirectoryServer) ? _subDirectoryServer : "";
+                    foreach (string contFileName in  contFiles)
+                    {
+                        if (string.IsNullOrWhiteSpace(contFileName))
+                            continue;
+
+                        int extraRemoved = 0;
+                        for (int j = contFileName.Length - GHConstants.ReplayFileNameSuffix.Length - GHConstants.ReplayGZipFileNameSuffix.Length - 1; j >= 0; j--)
+                        {
+                            char c = contFileName[j];
+                            if (c >= '0' && c <= '9')
+                            {
+                                if (j == 0)
+                                {
+                                    extraRemoved = 0; /* Error */
+                                    break;
+                                }
+                                else
+                                    extraRemoved++;
+                            }
+                            else if (c == GHConstants.ReplayFileContinuationNumberDivisor[0])
+                            {
+                                extraRemoved++;
+                                break;
+                            }
+                            else
+                            {
+                                extraRemoved = 0; /* Error */
+                                break;
+                            }
+                        }
+                        if (contFileName.Length > prefix.Length + GHConstants.ReplayFileNamePrefix.Length + GHConstants.ReplayFileNameSuffix.Length + GHConstants.ReplayGZipFileNameSuffix.Length + extraRemoved)
+                        {
+                            string middlePart = contFileName.Substring(
+                                prefix.Length + GHConstants.ReplayFileNamePrefix.Length,
+                                contFileName.Length - prefix.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - GHConstants.ReplayGZipFileNameSuffix.Length - extraRemoved);
+
+                            foreach (GHRecordedGameFile rgf in gHRecordedGameFiles)
+                            {
+                                if(rgf != null && rgf.FilePath != null)
+                                {
+                                    if (rgf.FilePath.StartsWith(prefix + GHConstants.ReplayFileNamePrefix + middlePart))
+                                    {
+                                        rgf.ContinuationFiles.Add(contFileName);
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }
@@ -1105,6 +1259,154 @@ namespace GnollHackX.Pages.MainScreen
                                                 }
                                             }
                                         }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        await DisplayAlert("Upload File Failure", "GnollHack failed to upload " + filePath + ": " + ex.Message, "OK");
+                    }
+                }
+            }
+
+            if (_uploadDownloadCts != null)
+            {
+                _uploadDownloadCts.Dispose();
+                _uploadDownloadCts = null;
+            }
+            UploadDownloadFileLabel.Text = "Done.";
+            UploadDownloadGrid.IsVisible = false;
+            UploadButton.IsEnabled = true;
+            PopupCancelButton_Clicked(sender, e);
+        }
+
+        private async void DownloadButton_Clicked(object sender, EventArgs e)
+        {
+            SelectButton.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+
+            UploadDownloadTitleLabel.Text = "Downloading...";
+            UploadDownloadFileLabel.Text = "Initializing...";
+            UploadDownloadStatusLabel.Text = "Please wait...";
+            UploadDownloadGrid.IsVisible = true;
+            UploadDownloadCancelled = false;
+            if (_uploadDownloadCts == null)
+                _uploadDownloadCts = new CancellationTokenSource();
+
+            BlobServiceClient blobServiceClient = GHApp.GetBlobServiceClient();
+            BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(GHConstants.AzureBlobStorageReplayContainerName);
+            string prefix = _subDirectoryServer;
+
+            if (IsMultiSelect && ReplayCollectionView.SelectedItems != null && ReplayCollectionView.SelectedItems.Count != 1)
+            {
+                int noFiles = ReplayCollectionView.SelectedItems.Count;
+                if (noFiles > 0)
+                {
+                    try
+                    {
+                        foreach (object selItem in ReplayCollectionView.SelectedItems)
+                        {
+                            if (UploadDownloadCancelled)
+                                break;
+
+                            GHRecordedGameFile recfile = null;
+                            string filePath = null;
+                            if (selItem != null)
+                            {
+                                if (selItem is GHRecordedGameFile)
+                                    recfile = ((GHRecordedGameFile)selItem);
+                                if (recfile != null)
+                                    filePath = recfile.FilePath;
+                            }
+
+                            if (recfile != null && recfile.IsFolder)
+                                continue;
+
+                            if (!string.IsNullOrWhiteSpace(filePath) && recfile != null && File.Exists(filePath))
+                            {
+                                string fileName = string.IsNullOrWhiteSpace(prefix) || prefix.Length >= filePath.Length ? filePath : filePath.Substring(prefix.Length);
+                                if (!string.IsNullOrWhiteSpace(fileName) && fileName.StartsWith(GHConstants.ReplayFileNamePrefix))
+                                {
+                                    UploadDownloadFileLabel.Text = fileName;
+                                    await GHApp.DownloadFileAsync(blobContainerClient, prefix, filePath, _uploadDownloadCts.Token);
+                                    if (UploadDownloadCancelled)
+                                        break;
+
+                                    List<string> files = recfile.ContinuationFiles;
+                                    if (files != null)
+                                    {
+                                        foreach (string file in files)
+                                        {
+                                            if (UploadDownloadCancelled)
+                                                break;
+
+                                            if (!string.IsNullOrWhiteSpace(file))
+                                            {
+                                                string contFileName = string.IsNullOrWhiteSpace(prefix) || prefix.Length >= file.Length ? file : file.Substring(prefix.Length);
+                                                UploadDownloadFileLabel.Text = contFileName;
+                                                await GHApp.DownloadFileAsync(blobContainerClient, prefix, file, _uploadDownloadCts.Token);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        await DisplayAlert("Download File Failure", "GnollHack failed to download " + noFiles + " replay" + (noFiles != 1 ? "s" : "") + ": " + ex.Message, "OK");
+                    }
+                }
+            }
+            else
+            {
+                GHRecordedGameFile recfile = null;
+                string filePath = null;
+                if (IsMultiSelect)
+                {
+                    if (ReplayCollectionView.SelectedItems != null && ReplayCollectionView.SelectedItems.Count == 1)
+                    {
+                        if (ReplayCollectionView.SelectedItems[0] is GHRecordedGameFile)
+                            recfile = ((GHRecordedGameFile)ReplayCollectionView.SelectedItems[0]);
+                        if (recfile != null)
+                            filePath = recfile.FilePath;
+                    }
+                }
+                else
+                {
+                    if (ReplayCollectionView.SelectedItem != null)
+                    {
+                        if (ReplayCollectionView.SelectedItem is GHRecordedGameFile)
+                            recfile = ((GHRecordedGameFile)ReplayCollectionView.SelectedItem);
+                        if (recfile != null)
+                            filePath = recfile.FilePath;
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(filePath) && recfile != null)
+                {
+                    try
+                    {
+                        string fileName = string.IsNullOrWhiteSpace(prefix) || prefix.Length >= filePath.Length ? filePath : filePath.Substring(prefix.Length);
+                        if (!string.IsNullOrWhiteSpace(fileName) && fileName.StartsWith(GHConstants.ReplayFileNamePrefix))
+                        {
+                            UploadDownloadFileLabel.Text = fileName;
+                            await GHApp.DownloadFileAsync(blobContainerClient, prefix, filePath, _uploadDownloadCts.Token);
+                            List<string> files = recfile.ContinuationFiles;
+                            if (files != null)
+                            {
+                                foreach (string file in files)
+                                {
+                                    if (UploadDownloadCancelled)
+                                        break;
+
+                                    if (!string.IsNullOrWhiteSpace(file))
+                                    {
+                                        string contFileName = string.IsNullOrWhiteSpace(prefix) || prefix.Length >= file.Length ? file : file.Substring(prefix.Length);
+                                        UploadDownloadFileLabel.Text = contFileName;
+                                        await GHApp.DownloadFileAsync(blobContainerClient, prefix, file, _uploadDownloadCts.Token);
                                     }
                                 }
                             }
