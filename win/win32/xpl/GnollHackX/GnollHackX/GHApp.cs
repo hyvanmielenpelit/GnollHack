@@ -5549,7 +5549,7 @@ namespace GnollHackX
                 return;
 
             BlobClient blobClient = containerClient.GetBlobClient(blobName);
-            string targetDir = Path.Combine(GHApp.GHPath, "replays-download");
+            string targetDir = Path.Combine(GHApp.GHPath, GHConstants.ReplayDownloadFromCloudDirectory);
             if(!Directory.Exists(targetDir))
                 GHApp.CheckCreateDirectory(targetDir);
             string targetFile;
@@ -5558,44 +5558,9 @@ namespace GnollHackX
             else
                 targetFile = blobName.Substring(prefix.Length);
             string targetPath = Path.Combine(targetDir, targetFile);
+            if(File.Exists(targetPath))
+                File.Delete(targetPath);
             await blobClient.DownloadToAsync(targetPath, cancellationToken);
-        }
-
-        public static async Task SetTags(BlobClient blobClient)
-        {
-            Dictionary<string, string> tags =
-                new Dictionary<string, string>
-            {
-                { "Sealed", "false" },
-                { "Content", "image" },
-                { "Date", "2020-04-20" }
-            };
-
-            await blobClient.SetTagsAsync(tags);
-        }
-
-        public static async Task FindBlobsbyTags(BlobServiceClient serviceClient)
-        {
-            string query = @"""Date"" >= '2020-04-20' AND ""Date"" <= '2020-04-30'";
-
-            // Find Blobs given a tags query
-            Console.WriteLine("Find Blob by Tags query: " + query + Environment.NewLine);
-
-            List<TaggedBlobItem> blobs = new List<TaggedBlobItem>();
-            var taggedBlobs = serviceClient.FindBlobsByTagsAsync(query);
-            var enumer = taggedBlobs.GetAsyncEnumerator();
-            while (await enumer.MoveNextAsync())
-            {
-                blobs.Add(enumer.Current);
-            }
-
-            foreach (var filteredBlob in blobs)
-            {
-
-                Console.WriteLine($"BlobIndex result: ContainerName= {filteredBlob.BlobContainerName}, " +
-                    $"BlobName= {filteredBlob.BlobName}");
-            }
-
         }
     }
 

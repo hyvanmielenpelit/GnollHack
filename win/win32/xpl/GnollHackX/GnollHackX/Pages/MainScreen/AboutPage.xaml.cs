@@ -262,8 +262,7 @@ namespace GnollHackX.Pages.MainScreen
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
 
-            string dir = Path.Combine(GHApp.GHPath, GHConstants.ReplayDirectory);
-            ReplayPage selectFilePage = new ReplayPage(dir, _mainPage);
+            ReplayPage selectFilePage = new ReplayPage(_mainPage);
             await App.Current.MainPage.Navigation.PushModalAsync(selectFilePage);
 
             AboutGrid.IsEnabled = true;

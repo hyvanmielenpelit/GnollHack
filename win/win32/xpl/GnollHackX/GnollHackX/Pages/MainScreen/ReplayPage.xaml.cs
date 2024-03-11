@@ -39,13 +39,15 @@ namespace GnollHackX.Pages.MainScreen
     public partial class ReplayPage : ContentPage
     {
         MainPage _mainPage = null;
-        string _directory = null;
         string _subDirectoryLocal = null;
         string _subDirectoryServer = null;
 
         public bool IsMultiSelect { get { return ReplayCollectionView.SelectionMode == SelectionMode.Multiple; } }
+        public bool IsLocal { get { return FolderPicker.SelectedIndex == 0; } }
+        public bool IsCloud { get { return FolderPicker.SelectedIndex == 1; } }
+        public bool IsDownload { get { return FolderPicker.SelectedIndex == 2; } }
 
-		public ReplayPage(string dir, MainPage mainPage)
+        public ReplayPage(MainPage mainPage)
 		{
 			InitializeComponent();
 #if GNH_MAUI
@@ -54,17 +56,17 @@ namespace GnollHackX.Pages.MainScreen
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
 #endif
 
-            _directory = dir;
             _mainPage = mainPage;
             MoreButton.IsEnabled = false;
             SelectButton.IsEnabled = false;
+            FolderPicker.SelectedIndex = 0;
 
             UpdateRecordings();
         }
 
         private void UpdateRecordings()
         {
-            UpdateLocalOrServerRecordings(ServerSwitch.IsToggled);
+            UpdateLocalOrServerRecordings(IsCloud);
         }
 
         private void UpdateLocalOrServerRecordings(bool isServer)
@@ -82,9 +84,6 @@ namespace GnollHackX.Pages.MainScreen
 
         private void UpdateLocalRecordings()
         {
-            if (string.IsNullOrWhiteSpace(_directory))
-                return;
-
             ReplayCollectionView.SelectedItem = null;
             ReplayCollectionView.ItemsSource = null;
             MoreButton.IsEnabled = false;
@@ -92,7 +91,7 @@ namespace GnollHackX.Pages.MainScreen
             MoreButton.TextColor = GHColors.Gray;
             SelectButton.TextColor = GHColors.Gray;
 
-            string dirPath = Path.Combine(GHApp.GHPath, _directory);
+            string dirPath = Path.Combine(GHApp.GHPath, IsDownload ? GHConstants.ReplayDownloadFromCloudDirectory : GHConstants.ReplayDirectory);
             int i = 0;
             long totalBytes = 0L;
             if (Directory.Exists(dirPath))
@@ -608,7 +607,7 @@ namespace GnollHackX.Pages.MainScreen
 
             if(rgf != null && rgf.IsFolder)
             {
-                if(ServerSwitch.IsEnabled)
+                if(IsCloud)
                     _subDirectoryServer = rgf.FilePath;
                 else
                     _subDirectoryLocal = rgf.FilePath;
@@ -617,7 +616,7 @@ namespace GnollHackX.Pages.MainScreen
             }
 
             /* Play or Open */
-            if (ServerSwitch.IsToggled)
+            if (IsCloud)
             {
                 /* Download */
                 DownloadButton_Clicked(sender, e);
@@ -700,7 +699,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private void UpdateButtons()
         {
-            if(ServerSwitch.IsToggled)
+            if(IsCloud)
             {
                 MoreButton.IsEnabled = false;
                 MoreButton.TextColor = GHColors.Gray;
@@ -922,12 +921,6 @@ namespace GnollHackX.Pages.MainScreen
                 bkgView.BorderStyle = BorderStyles.SimpleAlternative;
             }
             UpdateRecordingsLabel();
-        }
-
-        private void ServerSwitch_Toggled(object sender, ToggledEventArgs e)
-        {
-            UpdateLocalOrServerRecordings(e.Value);
-            UpdateButtons();
         }
 
         private async void UpdateServerRecordings()
@@ -1414,7 +1407,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        await DisplayAlert("Upload File Failure", "GnollHack failed to upload " + filePath + ": " + ex.Message, "OK");
+                        await DisplayAlert("Download File Failure", "GnollHack failed to download " + filePath + ": " + ex.Message, "OK");
                     }
                 }
             }
@@ -1459,6 +1452,18 @@ namespace GnollHackX.Pages.MainScreen
             _uploadDownloadCts.Cancel();
             UploadDownloadCancelled = true;
             UploadDownloadGrid.IsVisible = false;
+        }
+
+        private void ServerSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            UpdateLocalOrServerRecordings(e.Value);
+            UpdateButtons();
+        }
+
+        private void FolderPicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateLocalOrServerRecordings(IsCloud);
+            UpdateButtons();
         }
     }
 
