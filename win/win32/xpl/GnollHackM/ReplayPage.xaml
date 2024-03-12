@@ -42,10 +42,10 @@
                                         </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
-                                <Label Text="{Binding FormattedIndex}" Grid.Column="0" FontFamily="Underwood" TextColor="Black" FontSize="15" HorizontalOptions="Center" />
+                                <Label Text="{Binding FormattedIndex}" Grid.Column="0" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="15" HorizontalOptions="Center" />
                                 <StackLayout Grid.Column="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
-                                    <Label Text="{Binding FormattedName}" FontFamily="Underwood" TextColor="Black" FontSize="{Binding FormattedNameFontSize}" HorizontalOptions="StartAndExpand" />
-                                    <Label Text="{Binding FormattedInformation}" FontFamily="Underwood" TextColor="Black" FontSize="14" HorizontalOptions="StartAndExpand" />
+                                    <Label Text="{Binding FormattedName}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="{Binding FormattedNameFontSize}" HorizontalOptions="StartAndExpand" />
+                                    <Label Text="{Binding FormattedInformation}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="14" HorizontalOptions="StartAndExpand" />
                                 </StackLayout>
                             </Grid>
                         </DataTemplate>

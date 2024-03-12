@@ -1111,7 +1111,27 @@ namespace GnollHackX.Pages.MainScreen
             gHRecordedGameFiles.Sort(new RecordedGameFileComparer());
             ObservableCollection<GHRecordedGameFile> oc = new ObservableCollection<GHRecordedGameFile>();
             foreach(GHRecordedGameFile rgf in gHRecordedGameFiles)
+            {
+                if(!rgf.IsFolder)
+                {
+                    string nameWithoutPrefix;
+                    string nameext = rgf.FileName + rgf.Extension;
+                    if (string.IsNullOrWhiteSpace(_subDirectoryServer) || nameext.Length <= _subDirectoryServer.Length || !nameext.StartsWith(_subDirectoryServer))
+                        nameWithoutPrefix = rgf.FileName + rgf.Extension;
+                    else
+                        nameWithoutPrefix = nameext.Substring(_subDirectoryServer.Length);
+                    string basePath = Path.Combine(GHApp.GHPath, GHConstants.ReplayDownloadFromCloudDirectory);
+                    string filePath;
+                    if (!string.IsNullOrWhiteSpace(_subDirectoryServer) && _subDirectoryServer.Length > 0)
+                        filePath = Path.Combine(basePath, _subDirectoryServer[_subDirectoryServer.Length - 1] == GHConstants.AzureBlobStorageDelimiter[0] ? _subDirectoryServer.Substring(0, _subDirectoryServer.Length - 1) : _subDirectoryServer, nameWithoutPrefix);
+                    else
+                        filePath = Path.Combine(basePath, nameWithoutPrefix);
+
+                    if (File.Exists(filePath))
+                        rgf.Downloaded = true;
+                }
                 oc.Add(rgf);
+            }
 
             ReplayCollectionView.ItemsSource = oc;
             UpdateRecordingsLabel();
@@ -1173,6 +1193,7 @@ namespace GnollHackX.Pages.MainScreen
                                 {
                                     UploadDownloadFileLabel.Text = fileName;
                                     await GHApp.UploadFromFileAsync(blobContainerClient, prefix, filePath, _uploadDownloadCts.Token);
+                                    recfile.Uploaded = true;
                                     if (UploadDownloadCancelled)
                                         break;
 
@@ -1356,6 +1377,7 @@ namespace GnollHackX.Pages.MainScreen
                                 {
                                     UploadDownloadFileLabel.Text = fileName;
                                     await GHApp.DownloadFileAsync(blobContainerClient, prefix, filePath, _uploadDownloadCts.Token);
+                                    recfile.Downloaded = true;
                                     if (UploadDownloadCancelled)
                                         break;
 
@@ -1528,9 +1550,9 @@ namespace GnollHackX.Pages.MainScreen
                 if(s1 == null && s2 == null)
                     return 0;
                 if (s1 == null)
-                    return 1;
-                if (s2 == null)
                     return -1;
+                if (s2 == null)
+                    return 1;
 
                 string comp1str = (string.IsNullOrWhiteSpace(s1.FileName) ? "" : s1.FileName) + (string.IsNullOrWhiteSpace(s1.Extension) ? "" : s1.Extension);
                 string comp2str = (string.IsNullOrWhiteSpace(s2.FileName) ? "" : s2.FileName) + (string.IsNullOrWhiteSpace(s2.Extension) ? "" : s2.Extension);
@@ -1539,22 +1561,26 @@ namespace GnollHackX.Pages.MainScreen
                     if(s1.FilePath == null && s2.FilePath == null)
                         return 0;
                     if (s1.FilePath == null)
-                        return 1;
-                    if (s2.FilePath == null)
                         return -1;
+                    if (s2.FilePath == null)
+                        return 1;
                     return string.Compare(comp1str, comp2str);
                 }
                 if (s1.IsFolder)
-                    return 1;
-                if (s2.IsFolder)
                     return -1;
+                if (s2.IsFolder)
+                    return 1;
                 if (s1.FilePath == null && s2.FilePath == null)
                     return 0;
                 if (s1.FilePath == null)
-                    return 1;
-                if (s2.FilePath == null)
                     return -1;
-                return string.Compare(comp1str, comp2str);
+                if (s2.FilePath == null)
+                    return 1;
+                int res = -1 * DateTime.Compare(s1.LastWriteTime, s2.LastWriteTime);
+                if (res != 0)
+                    return res;
+                else
+                    return string.Compare(comp1str, comp2str);
             }
             catch
             {
