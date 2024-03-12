@@ -40,6 +40,7 @@ namespace GnollHackX.Pages.MainScreen
     {
         MainPage _mainPage = null;
         string _subDirectoryLocal = null;
+        string _subDirectoryDownload = null;
         string _subDirectoryServer = null;
 
         public bool IsMultiSelect { get { return ReplayCollectionView.SelectionMode == SelectionMode.Multiple; } }
@@ -92,7 +93,11 @@ namespace GnollHackX.Pages.MainScreen
             SelectButton.TextColor = GHColors.Gray;
 
             string dirPath = Path.Combine(GHApp.GHPath, IsDownload ? GHConstants.ReplayDownloadFromCloudDirectory : GHConstants.ReplayDirectory);
-            if(IsDownload && !string.IsNullOrWhiteSpace(_subDirectoryLocal))
+            if(IsDownload && !string.IsNullOrWhiteSpace(_subDirectoryDownload))
+            {
+                dirPath = Path.Combine(dirPath, _subDirectoryDownload);
+            }
+            else if (IsLocal && !string.IsNullOrWhiteSpace(_subDirectoryLocal))
             {
                 dirPath = Path.Combine(dirPath, _subDirectoryLocal);
             }
@@ -101,7 +106,7 @@ namespace GnollHackX.Pages.MainScreen
             ObservableCollection<GHRecordedGameFile> gHRecordedGameFiles = new ObservableCollection<GHRecordedGameFile>();
             if (Directory.Exists(dirPath))
             {
-                if (!string.IsNullOrWhiteSpace(_subDirectoryLocal))
+                if (!string.IsNullOrWhiteSpace(IsDownload ? _subDirectoryDownload : _subDirectoryLocal))
                 {
                     gHRecordedGameFiles.Add(new GHRecordedGameFile(0, null, "(Back)", "", true, 0, 1, DateTime.Now, DateTime.Now));
                 }
@@ -630,6 +635,8 @@ namespace GnollHackX.Pages.MainScreen
                 if(IsCloud)
                     _subDirectoryServer = rgf.FilePath;
                 else if(IsDownload)
+                    _subDirectoryDownload = string.IsNullOrWhiteSpace(rgf.FilePath) ? null : rgf.FileName + rgf.Extension;
+                else if (IsLocal)
                     _subDirectoryLocal = string.IsNullOrWhiteSpace(rgf.FilePath) ? null : rgf.FileName + rgf.Extension;
                 UpdateRecordings();
                 return;
