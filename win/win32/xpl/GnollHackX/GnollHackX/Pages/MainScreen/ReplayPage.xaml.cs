@@ -92,15 +92,35 @@ namespace GnollHackX.Pages.MainScreen
             SelectButton.TextColor = GHColors.Gray;
 
             string dirPath = Path.Combine(GHApp.GHPath, IsDownload ? GHConstants.ReplayDownloadFromCloudDirectory : GHConstants.ReplayDirectory);
+            if(IsDownload && !string.IsNullOrWhiteSpace(_subDirectoryLocal))
+            {
+                dirPath = Path.Combine(dirPath, _subDirectoryLocal);
+            }
             int i = 0;
             long totalBytes = 0L;
+            ObservableCollection<GHRecordedGameFile> gHRecordedGameFiles = new ObservableCollection<GHRecordedGameFile>();
             if (Directory.Exists(dirPath))
             {
+                if (!string.IsNullOrWhiteSpace(_subDirectoryLocal))
+                {
+                    gHRecordedGameFiles.Add(new GHRecordedGameFile(0, null, "(Back)", "", true, 0, 1, DateTime.Now, DateTime.Now));
+                }
+
+                string[] directories = Directory.GetDirectories(dirPath);
+                if(directories != null && directories.Length > 0)
+                {
+                    Array.Sort(directories);
+                    foreach(string dir in directories)
+                    {
+                        DirectoryInfo di = new DirectoryInfo(dir);
+                        gHRecordedGameFiles.Add(new GHRecordedGameFile(i, dir, di.Name, di.Extension, true, 0, 1, di.CreationTime, di.LastWriteTime));
+                    }
+                }
+
                 string[] files = Directory.GetFiles(dirPath);
-                if (files != null)
+                if (files != null && files.Length > 0)
                 {
                     Array.Sort(files, new FileDateComparer());
-                    ObservableCollection<GHRecordedGameFile> gHRecordedGameFiles = new ObservableCollection<GHRecordedGameFile>();
                     foreach (string file in files)
                     {
                         if (file != null && File.Exists(file))
@@ -355,9 +375,9 @@ namespace GnollHackX.Pages.MainScreen
                             }
                         }
                     }
-                    ReplayCollectionView.ItemsSource = gHRecordedGameFiles;
                 }
             }
+            ReplayCollectionView.ItemsSource = gHRecordedGameFiles;
             UpdateRecordingsLabel();
         }
 
@@ -609,8 +629,8 @@ namespace GnollHackX.Pages.MainScreen
             {
                 if(IsCloud)
                     _subDirectoryServer = rgf.FilePath;
-                else
-                    _subDirectoryLocal = rgf.FilePath;
+                else if(IsDownload)
+                    _subDirectoryLocal = string.IsNullOrWhiteSpace(rgf.FilePath) ? null : rgf.FileName + rgf.Extension;
                 UpdateRecordings();
                 return;
             }
@@ -940,7 +960,7 @@ namespace GnollHackX.Pages.MainScreen
             MoreButton.TextColor = GHColors.Gray;
             SelectButton.TextColor = GHColors.Gray;
 
-            ObservableCollection<GHRecordedGameFile> gHRecordedGameFiles = new ObservableCollection<GHRecordedGameFile>();
+            List<GHRecordedGameFile> gHRecordedGameFiles = new List<GHRecordedGameFile>();
             List<string> contFiles = new List<string>();            
             int i = 0;
 
@@ -952,7 +972,7 @@ namespace GnollHackX.Pages.MainScreen
                 }
 
                 // Call the listing operation and return pages of the specified size.
-                var resultSegment = containerClient.GetBlobsByHierarchyAsync(prefix: _subDirectoryServer, delimiter: "/")
+                var resultSegment = containerClient.GetBlobsByHierarchyAsync(prefix: _subDirectoryServer, delimiter: GHConstants.AzureBlobStorageDelimiter)
                     .AsPages(default, null);
 
                 var enumer = resultSegment.GetAsyncEnumerator();
@@ -1081,7 +1101,12 @@ namespace GnollHackX.Pages.MainScreen
                 Debug.WriteLine(e.Message);
             }
 
-            ReplayCollectionView.ItemsSource = gHRecordedGameFiles;
+            gHRecordedGameFiles.Sort(new RecordedGameFileComparer());
+            ObservableCollection<GHRecordedGameFile> oc = new ObservableCollection<GHRecordedGameFile>();
+            foreach(GHRecordedGameFile rgf in gHRecordedGameFiles)
+                oc.Add(rgf);
+
+            ReplayCollectionView.ItemsSource = oc;
             UpdateRecordingsLabel();
         }
 
@@ -1484,6 +1509,49 @@ namespace GnollHackX.Pages.MainScreen
             catch
             { 
                 return -1; 
+            }
+        }
+    }
+    public class RecordedGameFileComparer : IComparer<GHRecordedGameFile>
+    {
+        public int Compare(GHRecordedGameFile s1, GHRecordedGameFile s2)
+        {
+            try
+            {
+                if(s1 == null && s2 == null)
+                    return 0;
+                if (s1 == null)
+                    return 1;
+                if (s2 == null)
+                    return -1;
+
+                string comp1str = (string.IsNullOrWhiteSpace(s1.FileName) ? "" : s1.FileName) + (string.IsNullOrWhiteSpace(s1.Extension) ? "" : s1.Extension);
+                string comp2str = (string.IsNullOrWhiteSpace(s2.FileName) ? "" : s2.FileName) + (string.IsNullOrWhiteSpace(s2.Extension) ? "" : s2.Extension);
+                if (s1.IsFolder && s2.IsFolder)
+                {
+                    if(s1.FilePath == null && s2.FilePath == null)
+                        return 0;
+                    if (s1.FilePath == null)
+                        return 1;
+                    if (s2.FilePath == null)
+                        return -1;
+                    return string.Compare(comp1str, comp2str);
+                }
+                if (s1.IsFolder)
+                    return 1;
+                if (s2.IsFolder)
+                    return -1;
+                if (s1.FilePath == null && s2.FilePath == null)
+                    return 0;
+                if (s1.FilePath == null)
+                    return 1;
+                if (s2.FilePath == null)
+                    return -1;
+                return string.Compare(comp1str, comp2str);
+            }
+            catch
+            {
+                return -1;
             }
         }
     }

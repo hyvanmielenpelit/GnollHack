@@ -42,6 +42,7 @@ namespace GnollHackX
 
         public string FilePath { get { return _filePath; } }
         public string FileName { get { return _fileName; } }
+        public string Extension { get { return _extension; } }
         public long FileSize { get { return _fileSize; } }
         public string FormattedIndex
         {

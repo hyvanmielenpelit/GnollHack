@@ -5399,7 +5399,7 @@ namespace GnollHackX
             try
             {
                 // Call the listing operation and return pages of the specified size.
-                var resultSegment = container.GetBlobsByHierarchyAsync(prefix: prefix, delimiter: "/")
+                var resultSegment = container.GetBlobsByHierarchyAsync(prefix: prefix, delimiter: GHConstants.AzureBlobStorageDelimiter)
                     .AsPages(default, segmentSize);
 
                 var enumer = resultSegment.GetAsyncEnumerator();
@@ -5480,7 +5480,7 @@ namespace GnollHackX
             try
             {
                 // Call the listing operation and return pages of the specified size.
-                var resultSegment = container.GetBlobsByHierarchyAsync(prefix: prefix, delimiter: "/")
+                var resultSegment = container.GetBlobsByHierarchyAsync(prefix: prefix, delimiter: GHConstants.AzureBlobStorageDelimiter)
                     .AsPages(default, segmentSize);
 
                 var enumer = resultSegment.GetAsyncEnumerator();
@@ -5535,8 +5535,7 @@ namespace GnollHackX
             }
             else
             {
-                string delimiter = "/";
-                blobName = prefix + delimiter + Path.GetFileName(localFilePath);
+                blobName = prefix + GHConstants.AzureBlobStorageDelimiter + Path.GetFileName(localFilePath);
             }
 
             BlobClient blobClient = containerClient.GetBlobClient(blobName);
@@ -5549,9 +5548,17 @@ namespace GnollHackX
                 return;
 
             BlobClient blobClient = containerClient.GetBlobClient(blobName);
-            string targetDir = Path.Combine(GHApp.GHPath, GHConstants.ReplayDownloadFromCloudDirectory);
-            if(!Directory.Exists(targetDir))
-                GHApp.CheckCreateDirectory(targetDir);
+            string baseDir = Path.Combine(GHApp.GHPath, GHConstants.ReplayDownloadFromCloudDirectory);
+            if (!Directory.Exists(baseDir))
+                GHApp.CheckCreateDirectory(baseDir);
+            string targetDir = baseDir;
+            if(!string.IsNullOrWhiteSpace(prefix) && prefix.Length > 0)
+            {
+                string modPrefix = prefix[prefix.Length - 1] == GHConstants.AzureBlobStorageDelimiter[0] ? prefix.Substring(0, prefix.Length - 1) : prefix;
+                targetDir = Path.Combine(targetDir, modPrefix);
+                if (!Directory.Exists(targetDir))
+                    GHApp.CheckCreateDirectory(targetDir);
+            }
             string targetFile;
             if (string.IsNullOrWhiteSpace(prefix) || blobName.Length <= prefix.Length)
                 targetFile = blobName;
