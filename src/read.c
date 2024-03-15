@@ -1664,7 +1664,7 @@ boolean
 get_valid_targeted_position(x, y, otyp)
 int x, y, otyp;
 {
-    return (!(!isok(x, y) || !cansee(x, y)
+    return (!(!isok(x, y) || !cansee(x, y) || !couldsee(x, y)
         || !ACCESSIBLE(levl[x][y].typ)
         || distu(x, y) > objects[otyp].oc_spell_range * objects[otyp].oc_spell_range));
 }
