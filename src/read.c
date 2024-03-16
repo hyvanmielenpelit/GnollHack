@@ -1664,7 +1664,10 @@ boolean
 get_valid_targeted_position(x, y, otyp)
 int x, y, otyp;
 {
-    return (!(!isok(x, y) || !cansee(x, y) || !couldsee(x, y)
+    if (!isok(x, y) || !isok(u.ux, u.uy) || otyp <= STRANGE_OBJECT || otyp >= NUM_OBJECTS)
+        return FALSE;
+
+    return (!(!cansee(x, y) || !couldsee(x, y)
         || !ACCESSIBLE(levl[x][y].typ)
         || distu(x, y) > objects[otyp].oc_spell_range * objects[otyp].oc_spell_range));
 }
@@ -2367,7 +2370,13 @@ struct monst* targetmonst;
                 int trycnt = 0;
                 while (trycnt < 10)
                 {
-                    (void)getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR);
+                    if (getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR) < 0)
+                    {
+                        if (!is_serviced_spell)
+                            pline1(Never_mind);
+                        break;
+                    }
+
                     if (!get_valid_targeted_position(cc.x, cc.y, otyp))
                     {
                         play_sfx_sound(SFX_GENERAL_NOT_AT_RIGHT_LOCATION);
@@ -2386,6 +2395,8 @@ struct monst* targetmonst;
                 }
             }
 
+            if (!isok(cc.x, cc.y))
+                break;
 
             if (objects[otyp].oc_dir == TARGETED)
             {
@@ -3082,7 +3093,13 @@ struct monst* targetmonst;
                 pline("Where do you want to center the explosion?");
                 getpos_sethilite(display_stinking_cloud_positions,
                                  get_invalid_stinking_cloud_pos);
-                (void) getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR);
+                if (getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR) < 0)
+                {
+                    if (!is_serviced_spell)
+                        pline1(Never_mind);
+                    break;
+                }
+
                 if (!is_valid_stinking_cloud_pos(cc.x, cc.y, FALSE)) 
                 {
                     /* try to reach too far, get burned */
@@ -3225,6 +3242,8 @@ struct monst* targetmonst;
 
             trycnt++;
         }
+        if (!isok(cc.x, cc.y))
+            break;
         if (objects[otyp].oc_dir == TARGETED)
         {
             u.dx = cc.x - u.ux;
@@ -3246,6 +3265,7 @@ struct monst* targetmonst;
         cc.x = u.ux;
         cc.y = u.uy;
         int trycnt = 0;
+
         while (trycnt < 10)
         {
 
@@ -3271,6 +3291,8 @@ struct monst* targetmonst;
 
             trycnt++;
         }
+        if (!isok(cc.x, cc.y))
+            break;
         if (objects[otyp].oc_dir == TARGETED)
         {
             u.dx = cc.x - u.ux;

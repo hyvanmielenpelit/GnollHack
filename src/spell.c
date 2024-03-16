@@ -2798,7 +2798,12 @@ struct monst* targetmonst;
         int trycnt = 0;
         while (trycnt < 10)
         {
-            (void)getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR);
+            if(getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR) < 0)
+            {
+                pline1(Never_mind);
+                break;
+            }
+
             if (!get_valid_targeted_position(cc.x, cc.y, otyp))
             {
                 play_sfx_sound(SFX_GENERAL_NOT_AT_RIGHT_LOCATION);
