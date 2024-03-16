@@ -5513,8 +5513,7 @@ register struct obj *obj;
         {
             if (dist2(u.ux, u.uy, mon->mx, mon->my) <= radius * (radius + 1))
             {
-                if (!DEADMONSTER(mon) && mon != u.usteed && mon != &youmonst
-                    && !check_magic_resistance_and_inflict_damage(mon, (struct obj*)0, &youmonst, FALSE, 0, 0, canspotmon(mon) ? TELL : NOTELL))
+                if (!DEADMONSTER(mon) && mon != u.usteed && mon != &youmonst)
                 {
                     (void)u_teleport_mon(mon, TRUE);
 
