@@ -594,12 +594,9 @@ int x,y;
         : (i > 4) ? PM_GNOLL_KING
         : (i > 2) ? PM_DWARF_KING
         : PM_GNOME_KING;
-    struct monst *mon = makemon(&mons[pm], x, y, MM_WAITFORU);
+    struct monst *mon = makemon(&mons[pm], x, y, MM_WAITFORU | MM_ANGRY);
 
     if (mon) {
-        //mon->msleeping = 1;
-        mon->mpeaceful = 0;
-        set_mhostility(mon);
         /* Give him a sceptre to pound in judgment */
         (void) mongets(mon, MACE);
     }
@@ -825,17 +822,7 @@ place_main_monst_here:
                                              : (type == ANTHOLE)
                                                  ? antholemon()
                                                  : (struct permonst *) 0,
-                          sx, sy, MM_WAITFORU);
-            }
-
-            if (mon)
-            {
-                //mon->msleeping = 1;
-                if (type == COURT && is_peaceful(mon))
-                {
-                    mon->mpeaceful = 0;
-                    set_mhostility(mon);
-                }
+                          sx, sy, MM_WAITFORU | MM_ANGRY);
             }
 
             if (!IS_FLOOR(levl[sx][sy].typ))
