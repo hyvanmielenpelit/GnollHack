@@ -997,7 +997,7 @@ boolean deserted;
             n--;
         else if (inside_shop(sx, sy - 1))
             n++;
-        Sprintf(buf, "Closed for inventory");
+        Sprintf(buf, Closed_for_inventory);
         if (isok(m, n))
         {
             create_simple_location(m, n, SIGNPOST, 0, 0, 0, 0, levl[m][n].typ, levl[m][n].subtyp, levl[m][n].vartyp, FALSE);

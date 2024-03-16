@@ -8785,11 +8785,14 @@ check_closed_for_inventory_hint(VOID_ARGS)
 {
     register struct engr* ep = engr_at(u.ux, u.uy);
     if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && !u.uhint.closed_for_inventory 
-        && ep && ep->engr_type == ENGR_SIGNPOST && ep->engr_txt && !strcmp(ep->engr_txt, "Closed for inventory"))
+        && ep && ep->engr_type == ENGR_SIGNPOST && ep->engr_txt && !strcmp(ep->engr_txt, Closed_for_inventory))
     {
         u.uhint.closed_for_inventory = 1;
         play_sfx_sound(SFX_WARNING);
-        custompline_ex_prefix(ATR_NONE, CLR_MSG_WARNING, "WARNING", ATR_NONE, NO_COLOR, " - ", ATR_NONE, CLR_MSG_WARNING, 0U, "A \"Closed for inventory\" sign indicates that the door is a locked shop door.  The shopkeeper will get angry if you break the door.");
+        char buf[BUFSZ];
+        Sprintf(buf, "A \"%s\" sign is adjacent a locked shop door.", Closed_for_inventory);
+        custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "HINT", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0U, "%s", buf);
+        custompline_ex_prefix(ATR_NONE, CLR_MSG_WARNING, "WARNING", ATR_NONE, NO_COLOR, " - ", ATR_NONE, CLR_MSG_WARNING, 0U, "The shopkeeper will get angry if you break the door.");
         //standard_hint("A \"Closed for inventory\" sign indicates that the door is a locked shop door.  The shopkeeper will get angry if you break the door.", &u.uhint.closed_for_inventory);
     }
 }

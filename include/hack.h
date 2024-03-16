@@ -793,6 +793,8 @@ extern struct objclass saved_objects[NUM_OBJECTS];
 #define Gilthoniel_word "Gilthoniel"
 #define Morgoth_word "Morgoth"
 
+#define Closed_for_inventory "Closed for inventory"
+
 #if defined(BSD) || defined(ULTRIX)
 #define readLenType int
 #else /* e.g. SYSV, __TURBOC__ */
