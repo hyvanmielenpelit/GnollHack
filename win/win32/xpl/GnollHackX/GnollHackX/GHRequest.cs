@@ -62,6 +62,7 @@ namespace GnollHackX
         PostDiagnosticData,
         PostXlogEntry,
         PostBonesFile,
+        PostReplayFile,
         RestartGame,
         DebugLog,
         CloseAllDialogs,

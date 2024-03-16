@@ -2415,6 +2415,9 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.PostBonesFile:
                                 _mainPage.EnqueuePost(new GHPost(2, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
                                 break;
+                            case GHRequestType.PostReplayFile:
+                                _mainPage.EnqueuePost(new GHPost(3, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
+                                break;
                             case GHRequestType.DebugLog:
                                 DisplayDebugLog(req.RequestString, req.RequestInt, req.RequestInt2);
                                 break;

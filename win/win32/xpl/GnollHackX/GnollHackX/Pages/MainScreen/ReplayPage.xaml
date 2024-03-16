@@ -24,7 +24,7 @@
                 <CollectionView x:Name="ReplayCollectionView" Grid.Row="2" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand" SelectionMode="Single"  BackgroundColor="Transparent" SelectionChanged="MainListView_SelectionChanged" >
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Margin="0,5">
+                            <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Margin="0,8">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
@@ -42,10 +42,10 @@
                                         </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
-                                <Label Text="{Binding FormattedIndex}" Grid.Column="0" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="15" HorizontalOptions="Center" />
-                                <StackLayout Grid.Column="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
-                                    <Label Text="{Binding FormattedName}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="{Binding FormattedNameFontSize}" HorizontalOptions="StartAndExpand" />
-                                    <Label Text="{Binding FormattedInformation}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="14" HorizontalOptions="StartAndExpand" />
+                                <Label Text="{Binding FormattedIndex}" Grid.Column="0" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="15" HeightRequest="35" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+                                <StackLayout Grid.Column="1" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" >
+                                    <Label Text="{Binding FormattedName}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="{Binding FormattedNameFontSize}" HorizontalOptions="StartAndExpand" VerticalOptions="EndAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="End" />
+                                    <Label Text="{Binding FormattedInformation}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="{Binding FormattedInfoFontSize}" IsVisible="{Binding FormattedInfoVisible}" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start" />
                                 </StackLayout>
                             </Grid>
                         </DataTemplate>

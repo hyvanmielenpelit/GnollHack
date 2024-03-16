@@ -3085,6 +3085,14 @@ namespace GnollHackX
                             _replayTimeStamp = DateTime.Now; /* Will be overridden if continuing to next record file, but this is here just to make it point away from the finished file just in case */
                             _replayContinuation = 0;
                             res = -1; /* Indicating the file has been finalized and zipped */
+                            if (GHApp.AutoUploadReplays)
+                            {
+                                ConcurrentQueue<GHRequest> queue;
+                                if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                                {
+                                    queue.Enqueue(new GHRequest(this, GHRequestType.PostReplayFile, 0, 0, zipFile));
+                                }
+                            }
                         }
                     }
                 }

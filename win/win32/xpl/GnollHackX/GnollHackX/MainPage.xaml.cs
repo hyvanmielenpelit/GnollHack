@@ -98,19 +98,26 @@ namespace GnollHackX
             if (!CheckAndSetGeneralTimerWorkOnTasks)
             {
                 bool dopostbones = GHApp.PostingBonesFiles && GHApp.AllowBones;
+                bool dopostreplays = GHApp.AutoUploadReplays;
                 string directory = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
                 string directory2 = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
                 string directory3 = Path.Combine(GHApp.GHPath, GHConstants.BonesPostQueueDirectory);
+                string directory4 = Path.Combine(GHApp.GHPath, GHConstants.ReplayPostQueueDirectory);
                 bool has_files = Directory.Exists(directory) && Directory.GetFiles(directory)?.Length > 0;
                 bool has_files2 = Directory.Exists(directory2) && Directory.GetFiles(directory2)?.Length > 0;
                 bool has_files3 = Directory.Exists(directory3) && Directory.GetFiles(directory3)?.Length > 0;
-                bool incorrectcredentials = string.IsNullOrEmpty(GHApp.XlogUserName) || GHApp.XlogCredentialsIncorrect;
+                bool has_files4 = Directory.Exists(directory4) && Directory.GetFiles(directory4)?.Length > 0;
+                bool missingcredentials = string.IsNullOrEmpty(GHApp.XlogUserName);
+                bool incorrectcredentials = GHApp.XlogCredentialsIncorrect;
+                bool missingorincorrectcredentials = missingcredentials || incorrectcredentials;
                 bool postingqueueempty = _postingQueue.Count == 0;
-                if ((!has_files || !GHApp.PostingGameStatus) 
-                    && (!has_files2 || !GHApp.PostingXlogEntries || incorrectcredentials) 
-                    && (!has_files3 || !dopostbones || GameStarted || incorrectcredentials) 
-                    && (GHApp.XlogUserNameVerified || incorrectcredentials || (!GHApp.PostingXlogEntries && !dopostbones)) 
-                    && postingqueueempty)
+                if (postingqueueempty
+                    && (GHApp.XlogUserNameVerified || missingorincorrectcredentials || (!GHApp.PostingXlogEntries && !dopostbones && !dopostreplays))
+                    && (!has_files || !GHApp.PostingGameStatus) 
+                    && (!has_files2 || !GHApp.PostingXlogEntries || missingorincorrectcredentials) 
+                    && (!has_files3 || !dopostbones || GameStarted || missingorincorrectcredentials)
+                    && (!has_files4 || !dopostreplays || incorrectcredentials)
+                    )
                 {
                     StopGeneralTimer = true;
                 }
@@ -118,14 +125,16 @@ namespace GnollHackX
                 {
                     if (_postingQueue.Count > 0)
                         ProcessPostingQueue(); //Saves now posts first to disk in the case app is switched off very quickly before sending is finished
-                    if (hasinternet && !GHApp.XlogUserNameVerified && (GHApp.PostingXlogEntries || dopostbones) && !incorrectcredentials)
+                    if (hasinternet && !GHApp.XlogUserNameVerified && (GHApp.PostingXlogEntries || dopostbones || dopostreplays) && !missingorincorrectcredentials)
                         await GHApp.TryVerifyXlogUserNameAsync();
                     if (hasinternet && has_files && GHApp.PostingGameStatus)
                         await ProcessSavedPosts(0, directory, GHConstants.ForumPostFileNamePrefix);
-                    if (hasinternet && has_files2 && GHApp.PostingXlogEntries && !incorrectcredentials)
+                    if (hasinternet && has_files2 && GHApp.PostingXlogEntries && !missingorincorrectcredentials)
                         await ProcessSavedPosts(1, directory2, GHConstants.XlogPostFileNamePrefix);
-                    if (hasinternet && has_files3 && dopostbones && !GameStarted && !incorrectcredentials) // Do not fetch bones files while the game is on
+                    if (hasinternet && has_files3 && dopostbones && !GameStarted && !missingorincorrectcredentials) // Do not fetch bones files while the game is on
                         await ProcessSavedPosts(2, directory3, GHConstants.BonesPostFileNamePrefix);
+                    if (hasinternet && has_files4 && dopostreplays && !incorrectcredentials)
+                        await ProcessSavedPosts(3, directory4, GHConstants.ReplayPostFileNamePrefix);
                 }
                 GeneralTimerWorkOnTasks = false;
             }
@@ -181,6 +190,10 @@ namespace GnollHackX
                                         string typestr = "";
                                         switch(post_type)
                                         {
+                                            case 3:
+                                                typestr = "Replay";
+                                                res = await GHApp.SendReplayFile(post.status_string, post.status_type, post.status_datatype, true);
+                                                break;
                                             case 2:
                                                 typestr = "Bones file";
                                                 res = await GHApp.SendBonesFile(post.status_string, post.status_type, post.status_datatype, true);
@@ -234,6 +247,9 @@ namespace GnollHackX
             {
                 switch(post.post_type)
                 {
+                    case 3:
+                        GHApp.SaveReplayPostToDisk(post.status_type, post.status_datatype, post.status_string);
+                        break;
                     case 2:
                         //await PostBonesFileAsync(post.status_type, post.status_datatype, post.status_string);
                         GHApp.SaveBonesPostToDisk(post.status_type, post.status_datatype, post.status_string);

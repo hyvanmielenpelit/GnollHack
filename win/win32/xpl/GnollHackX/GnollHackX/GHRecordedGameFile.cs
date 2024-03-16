@@ -5,6 +5,18 @@ using System.Text;
 
 namespace GnollHackX
 {
+    public struct ContinuationFile
+    {
+        public string FileName;
+        public long FileSize;
+
+        public ContinuationFile(string fileName, long fileSize)
+        {
+            FileName = fileName;
+            FileSize = fileSize;
+        }
+    }
+
     public class GHRecordedGameFile
     {
         int _index;
@@ -16,7 +28,7 @@ namespace GnollHackX
         int _numberOfFiles;
         DateTime _creationTime;
         DateTime _lastWriteTime;
-        List<string> _continuationFiles = new List<string>();
+        List<ContinuationFile> _continuationFiles = new List<ContinuationFile>();
         bool _uploaded;
         bool _downloaded;
 
@@ -43,7 +55,6 @@ namespace GnollHackX
             return _isFolder ? _fileName : string.Format("{0}. {1} ({2}, {3:d/M/yyyy HH:mm:ss}, {4} file{5})", _index, _fileName, GetSizeString(), _lastWriteTime, NumberOfFiles, NumberOfFiles == 1 ? "" : "s");
         }
 
-        public Color TextColor { get { return _downloaded || _uploaded ? GHColors.Blue : GHColors.Black; } }
 
         public string FilePath { get { return _filePath; } }
         public string FileName { get { return _fileName; } }
@@ -58,7 +69,7 @@ namespace GnollHackX
         }
         public string FormattedName
         {
-            get { return _fileName; }
+            get { return _fileName == GHConstants.AzureBlobStorageGeneralDirectoryName ? GHConstants.AzureBlobStorageGeneralDirectoryDisplayName : _fileName; }
         }
         public string FormattedInformation
         {
@@ -68,12 +79,18 @@ namespace GnollHackX
         public bool IsZip { get { return _extension == "zip"; } }
         public bool IsFolder { get { return _isFolder; } }
 
-        public double FormattedNameFontSize { get { return _isFolder ? 16.0 : 15.0; } }
+        public double FormattedNameFontSize { get { return _isFolder ? 17.0 : 15.0; } }
+        public double FormattedInfoFontSize { get { return _isFolder && string.IsNullOrWhiteSpace(_filePath) ? 8.0 : 15.0; } }
+        public bool FormattedInfoVisible { get { return !(_isFolder && string.IsNullOrWhiteSpace(_filePath)); } }
+
         public int NumberOfFiles { get { return _numberOfFiles + _continuationFiles.Count; } }
 
-        public List<string> ContinuationFiles { get { return _continuationFiles; } }
+        public List<ContinuationFile> ContinuationFiles { get { return _continuationFiles; } }
 
         public bool Uploaded { get { return _uploaded; } set { _uploaded = value; } }
         public bool Downloaded { get { return _downloaded; } set { _downloaded = value; } }
+        public Color TextColor { get { return _downloaded && _uploaded ? GHColors.Magenta : _downloaded ? GHColors.Blue : _uploaded ? GHColors.Green : GHColors.Black; } }
+
+        public int Index { get { return _index; } set { _index = value; } }
     }
 }

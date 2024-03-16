@@ -2774,7 +2774,7 @@ namespace GnollHackX
 
         public static async Task TryVerifyXlogUserNameAsync()
         {
-            if(!PostingXlogEntries && !PostingReplays && !PostingBonesFiles)
+            if(!PostingXlogEntries && !PostingReplays && !PostingBonesFiles && !AutoUploadReplays)
             {
                 SetXlogUserNameVerified(false, null, null);
                 return;
@@ -3949,6 +3949,74 @@ namespace GnollHackX
                 catch (Exception ex)
                 {
                     WriteGHLog("Writing the bones file send request to the queue on disk using path " + targetfilepath + " failed: " + ex.Message);
+                }
+            }
+        }
+
+        private static CancellationTokenSource _uploadCts = null;
+        public static async Task<SendResult> SendReplayFile(string replay_filename, int status_type, int status_datatype, bool is_from_queue)
+        {
+            SendResult res = new SendResult();
+            BlobServiceClient blobServiceClient = GetBlobServiceClient();
+            BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(GHConstants.AzureBlobStorageReplayContainerName);
+            string prefix = XlogUserNameVerified ? XlogUserName : GHConstants.AzureBlobStorageGeneralDirectoryName;
+            string full_filepath = replay_filename;
+            bool fileexists = File.Exists(full_filepath);
+            if (fileexists)
+            {
+                if (_uploadCts == null)
+                    _uploadCts = new CancellationTokenSource();
+
+                try
+                {
+                    await UploadFromFileAsync(blobContainerClient, prefix, full_filepath, _uploadCts.Token);
+                    res.IsSuccess = true;
+                }
+                catch (Exception ex)
+                {
+                    WriteGHLog(ex.Message);
+                }
+            }
+
+            if (_uploadCts != null)
+            {
+                _uploadCts.Dispose();
+                _uploadCts = null;
+            }
+            return res;
+        }
+
+        public static void SaveReplayPostToDisk(int status_type, int status_datatype, string replay_filename)
+        {
+            string targetpath = Path.Combine(GHPath, GHConstants.ReplayPostQueueDirectory);
+            if (!Directory.Exists(targetpath))
+                CheckCreateDirectory(targetpath);
+            if (Directory.Exists(targetpath))
+            {
+                string targetfilename;
+                string targetfilepath;
+                int id = 0;
+                do
+                {
+                    targetfilename = GHConstants.ReplayPostFileNamePrefix + id + GHConstants.ReplayPostFileNameSuffix;
+                    targetfilepath = Path.Combine(targetpath, targetfilename);
+                    id++;
+                } while (File.Exists(targetfilepath));
+
+                try
+                {
+                    using (StreamWriter sw = File.CreateText(targetfilepath))
+                    {
+                        GHPost fp = new GHPost(2, true, status_type, status_datatype, replay_filename, null, false);
+                        string json = JsonConvert.SerializeObject(fp);
+                        Debug.WriteLine(json);
+                        sw.Write(json);
+                    }
+                    WriteGHLog("Replay file send request written to the queue on disk: " + targetfilepath);
+                }
+                catch (Exception ex)
+                {
+                    WriteGHLog("Writing the replay file send request to the queue on disk using path " + targetfilepath + " failed: " + ex.Message);
                 }
             }
         }
@@ -5542,7 +5610,7 @@ namespace GnollHackX
             await blobClient.UploadAsync(localFilePath, true, cancellationToken);
         }
 
-        public static async Task DownloadFileAsync(BlobContainerClient containerClient, string prefix, string blobName, CancellationToken cancellationToken)
+        public static async Task DownloadFileAsync(BlobContainerClient containerClient, string prefix, string blobName, long fileLength, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(blobName))
                 return;
@@ -5566,7 +5634,13 @@ namespace GnollHackX
                 targetFile = blobName.Substring(prefix.Length);
             string targetPath = Path.Combine(targetDir, targetFile);
             if(File.Exists(targetPath))
-                File.Delete(targetPath);
+            {
+                FileInfo fi = new FileInfo(targetPath);
+                if (fi.Length != fileLength || fileLength <= 0)
+                    File.Delete(targetPath);
+                else /* Skip files with the right length */
+                    return;
+            }
             await blobClient.DownloadToAsync(targetPath, cancellationToken);
         }
     }
