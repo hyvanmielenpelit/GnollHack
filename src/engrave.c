@@ -303,10 +303,9 @@ int cnt;
 {
     if (can_reach_floor(TRUE))
     {
-        struct engr* ep;
-        if ((ep = engr_at(u.ux, u.uy)) && !(ep->engr_type == ENGR_HEADSTONE || ep->engr_type == ENGR_SIGNPOST || (ep->engr_flags & ENGR_FLAGS_NON_SMUDGING) || sengr_at(Gilthoniel_word, u.ux, u.uy, TRUE) || sengr_at(Morgoth_word, u.ux, u.uy, TRUE)))
+        struct engr* ep = engr_at(u.ux, u.uy);
+        if (ep && !(ep->engr_type == ENGR_HEADSTONE || ep->engr_type == ENGR_SIGNPOST || (ep->engr_flags & ENGR_FLAGS_NON_SMUDGING) || sengr_at(Gilthoniel_word, u.ux, u.uy, TRUE) || sengr_at(Morgoth_word, u.ux, u.uy, TRUE)))
             wipe_engr_at(u.ux, u.uy, cnt, FALSE);
-
     }
 }
 

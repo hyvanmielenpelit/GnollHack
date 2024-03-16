@@ -257,7 +257,7 @@ struct u_hint {
 
     boolean elbereth;
     boolean secret_doors_and_corridors;
-    boolean reserved3;
+    boolean closed_for_inventory;
     boolean reserved4;
 };
 

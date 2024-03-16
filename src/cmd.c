@@ -7470,6 +7470,7 @@ register char *cmd;
 
     check_gui_special_effect();
     check_mobbed_hint();
+    check_closed_for_inventory_hint();
 
     iflags.menu_requested = FALSE;
 #ifdef SAFERHANGUP

@@ -69,7 +69,7 @@ namespace GnollHackX
         }
         public string FormattedName
         {
-            get { return _fileName == GHConstants.AzureBlobStorageGeneralDirectoryName ? GHConstants.AzureBlobStorageGeneralDirectoryDisplayName : _fileName; }
+            get { return _fileName; }
         }
         public string FormattedInformation
         {

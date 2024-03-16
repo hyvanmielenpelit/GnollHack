@@ -700,6 +700,7 @@ E void FDECL(grab_hint, (struct monst*));
 E void FDECL(pray_hint, (const char*, const char*, boolean*));
 E void NDECL(death_hint);
 E void NDECL(check_mobbed_hint);
+E void NDECL(check_closed_for_inventory_hint);
 E void FDECL(item_destruction_hint, (int, BOOLEAN_P));
 E void NDECL(heal_ailments_upon_revival);
 #if !defined (GNH_MOBILE) && defined (DEBUG)

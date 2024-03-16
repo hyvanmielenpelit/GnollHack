@@ -8781,6 +8781,20 @@ check_mobbed_hint(VOID_ARGS)
 }
 
 void
+check_closed_for_inventory_hint(VOID_ARGS)
+{
+    register struct engr* ep = engr_at(u.ux, u.uy);
+    if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && !u.uhint.closed_for_inventory 
+        && ep && ep->engr_type == ENGR_SIGNPOST && ep->engr_txt && !strcmp(ep->engr_txt, "Closed for inventory"))
+    {
+        u.uhint.closed_for_inventory = 1;
+        play_sfx_sound(SFX_WARNING);
+        custompline_ex_prefix(ATR_NONE, CLR_MSG_WARNING, "WARNING", ATR_NONE, NO_COLOR, " - ", ATR_NONE, CLR_MSG_WARNING, 0U, "A \"Closed for inventory\" sign indicates that the door is a locked shop door.  The shopkeeper will get angry if you break the door.");
+        //standard_hint("A \"Closed for inventory\" sign indicates that the door is a locked shop door.  The shopkeeper will get angry if you break the door.", &u.uhint.closed_for_inventory);
+    }
+}
+
+void
 death_hint(VOID_ARGS)
 {
     if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && killer.name[0] && killer.hint_idx > 0)
