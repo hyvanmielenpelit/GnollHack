@@ -93,7 +93,7 @@
       <Version>1.10.4</Version>
     </PackageReference>
     <PackageReference Include="Azure.Storage.Blobs">
-      <Version>12.19.1</Version>
+      <Version>12.13.1</Version>
     </PackageReference>
     <PackageReference Include="SkiaSharp.Views.Forms">
       <Version>2.80.3</Version>
