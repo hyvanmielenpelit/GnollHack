@@ -87,6 +87,7 @@ namespace GnollHackX.Pages.MainScreen
         private void UpdateLocalRecordings()
         {
             ReplayCollectionView.SelectedItem = null;
+            ReplayCollectionView.SelectedItems.Clear();
             ReplayCollectionView.ItemsSource = null;
             MoreButton.IsEnabled = false;
             SelectButton.IsEnabled = false;
@@ -618,20 +619,20 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void SelectButton_Clicked(object sender, EventArgs e)
         {
-            if (IsMultiSelect && !IsCloud)
-            {
-                /* Should be single-select, except for download in cloud */
-                return;
-            }
-
             GHRecordedGameFile rgf = null;
-            if (ReplayCollectionView.SelectedItem != null)
+            if (!IsMultiSelect && ReplayCollectionView.SelectedItem != null)
             {
                 if (ReplayCollectionView.SelectedItem is GHRecordedGameFile)
                     rgf = (GHRecordedGameFile)ReplayCollectionView.SelectedItem;
             }
 
-            if(rgf != null && rgf.IsFolder)
+            if (IsMultiSelect && ReplayCollectionView.SelectedItems.Count == 1)
+            {
+                if (ReplayCollectionView.SelectedItems[0] is GHRecordedGameFile)
+                    rgf = (GHRecordedGameFile)ReplayCollectionView.SelectedItems[0];
+            }
+
+            if (rgf != null && rgf.IsFolder)
             {
                 if(IsCloud)
                     _subDirectoryServer = rgf.FilePath;
@@ -769,17 +770,38 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 else if (ReplayCollectionView.SelectionMode == SelectionMode.Multiple)
                 {
-                    SelectButton.Text = "Download";
-                    SelectButton.FontSize = 13;
-                    if (ReplayCollectionView.SelectedItems.Count > 0)
+                    if (ReplayCollectionView.SelectedItems.Count == 1 && ReplayCollectionView.SelectedItems[0] != null && ReplayCollectionView.SelectedItems[0] is GHRecordedGameFile)
                     {
                         SelectButton.IsEnabled = true;
-                        SelectButton.TextColor = GHColors.Yellow;
+                        GHRecordedGameFile rgf = (GHRecordedGameFile)ReplayCollectionView.SelectedItems[0];
+                        if (rgf.IsFolder)
+                        {
+                            SelectButton.TextColor = GHColors.LightBlue;
+                            SelectButton.Text = "Open";
+                            SelectButton.FontSize = 15;
+                        }
+                        else
+                        {
+                            SelectButton.TextColor = GHColors.Yellow;
+                            SelectButton.Text = "Download";
+                            SelectButton.FontSize = 13;
+                        }
                     }
                     else
                     {
-                        SelectButton.IsEnabled = false;
-                        SelectButton.TextColor = GHColors.Gray;
+
+                        SelectButton.Text = "Download";
+                        SelectButton.FontSize = 13;
+                        if (ReplayCollectionView.SelectedItems.Count > 0)
+                        {
+                            SelectButton.IsEnabled = true;
+                            SelectButton.TextColor = GHColors.Yellow;
+                        }
+                        else
+                        {
+                            SelectButton.IsEnabled = false;
+                            SelectButton.TextColor = GHColors.Gray;
+                        }
                     }
                     UpdateRecordingsLabel();
                 }
@@ -824,20 +846,40 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 else if (ReplayCollectionView.SelectionMode == SelectionMode.Multiple)
                 {
-                    SelectButton.Text = "Play";
-                    if (ReplayCollectionView.SelectedItems.Count > 0)
+                    if(ReplayCollectionView.SelectedItems.Count == 1 && ReplayCollectionView.SelectedItems[0] != null && ReplayCollectionView.SelectedItems[0] is GHRecordedGameFile)
                     {
                         MoreButton.IsEnabled = true;
-                        SelectButton.IsEnabled = false;
+                        SelectButton.IsEnabled = true;
                         MoreButton.TextColor = GHColors.White;
-                        SelectButton.TextColor = GHColors.Gray;
+                        GHRecordedGameFile rgf = (GHRecordedGameFile)ReplayCollectionView.SelectedItems[0];
+                        if (rgf.IsFolder)
+                        {
+                            SelectButton.TextColor = GHColors.LightBlue;
+                            SelectButton.Text = "Open";
+                        }
+                        else
+                        {
+                            SelectButton.TextColor = GHColors.BrighterGreen;
+                            SelectButton.Text = "Play";
+                        }
                     }
                     else
                     {
-                        MoreButton.IsEnabled = false;
-                        SelectButton.IsEnabled = false;
-                        MoreButton.TextColor = GHColors.Gray;
-                        SelectButton.TextColor = GHColors.Gray;
+                        SelectButton.Text = "Play";
+                        if (ReplayCollectionView.SelectedItems.Count > 0)
+                        {
+                            MoreButton.IsEnabled = true;
+                            SelectButton.IsEnabled = false;
+                            MoreButton.TextColor = GHColors.White;
+                            SelectButton.TextColor = GHColors.Gray;
+                        }
+                        else
+                        {
+                            MoreButton.IsEnabled = false;
+                            SelectButton.IsEnabled = false;
+                            MoreButton.TextColor = GHColors.Gray;
+                            SelectButton.TextColor = GHColors.Gray;
+                        }
                     }
                     UpdateRecordingsLabel();
                 }
@@ -933,16 +975,16 @@ namespace GnollHackX.Pages.MainScreen
 
         private void MultiButton_Clicked(object sender, EventArgs e)
         {
-            if(IsMultiSelect)
+            ReplayCollectionView.SelectedItem = null;
+            ReplayCollectionView.SelectedItems.Clear();
+            if (IsMultiSelect)
             {
-                ReplayCollectionView.SelectedItems.Clear();
                 ReplayCollectionView.SelectionMode = SelectionMode.Single;
                 MultiButton.Text = "Multiple";
                 bkgView.BorderStyle = BorderStyles.Simple;
             }
             else
             {
-                ReplayCollectionView.SelectedItem = null;
                 ReplayCollectionView.SelectionMode = SelectionMode.Multiple;
                 MultiButton.Text = "Single";
                 bkgView.BorderStyle = BorderStyles.SimpleAlternative;
@@ -961,6 +1003,7 @@ namespace GnollHackX.Pages.MainScreen
 
             RecordingsLabel.Text = "(Loading...)";
             ReplayCollectionView.SelectedItem = null;
+            ReplayCollectionView.SelectedItems.Clear();
             ReplayCollectionView.ItemsSource = null;
             MoreButton.IsEnabled = false;
             SelectButton.IsEnabled = false;
