@@ -1018,7 +1018,13 @@ namespace GnollHackX.Pages.MainScreen
             {
                 if(!string.IsNullOrWhiteSpace(_subDirectoryServer))
                 {
-                    gHRecordedGameFiles.Add(new GHRecordedGameFile(0, null, "(Back)", "", true, 0, 1, DateTime.Now, DateTime.Now));
+                    GHRecordedGameFile rgfBack = new GHRecordedGameFile(0, null, "(Back)", "", true, 0, 1, DateTime.Now, DateTime.Now);
+                    gHRecordedGameFiles.Add(rgfBack);
+                    ObservableCollection<GHRecordedGameFile> ocBack = new ObservableCollection<GHRecordedGameFile>
+                    {
+                        rgfBack
+                    };
+                    ReplayCollectionView.ItemsSource = ocBack; /* In the case internet hangs up, so at least "Back" shows up */
                 }
 
                 // Call the listing operation and return pages of the specified size.
@@ -1200,6 +1206,9 @@ namespace GnollHackX.Pages.MainScreen
                 oc.Add(rgf);
             }
 
+            ReplayCollectionView.SelectedItem = null;
+            ReplayCollectionView.SelectedItems.Clear();
+            ReplayCollectionView.ItemsSource = null;
             ReplayCollectionView.ItemsSource = oc;
             UpdateRecordingsLabel();
         }
