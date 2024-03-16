@@ -800,12 +800,11 @@ stolen_booty(VOID_ARGS)
     }
     migr_booty_item(rn2(2) ? LONG_SWORD : SILVER_SABER, lootlabel);
     /* create the leader of the orc gang */
-    mtmp = makemon(&mons[PM_ORC_CAPTAIN], 0, 0, MM_NONAME | MM_ANGRY);
+    mtmp = makemon(&mons[PM_ORC_CAPTAIN], 0, 0, MM_NONAME);
     if (mtmp) {
         mtmp = christen_monst(mtmp, gang);
         mtmp->u_know_mname = TRUE; /* Not realistic, but let's do it */
         mtmp->mpeaceful = 0;
-        set_mhostility(mtmp);
         shiny_orc_stuff(mtmp);
         migrate_orc(mtmp, ORC_LEADER);
     }

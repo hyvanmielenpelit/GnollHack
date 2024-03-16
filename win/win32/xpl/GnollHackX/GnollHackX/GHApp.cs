@@ -27,6 +27,10 @@ using System.Security.Cryptography;
 using System.Timers;
 using System.Collections;
 using static System.Net.Mime.MediaTypeNames;
+using Azure.Identity;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Azure;
 
 namespace GnollHackX
 {
@@ -85,6 +89,7 @@ namespace GnollHackX
             CustomGameStatusLink = Preferences.Get("CustomGameStatusLink", "");
             CustomXlogAccountLink = Preferences.Get("CustomXlogAccountLink", "");
             CustomXlogPostLink = Preferences.Get("CustomXlogPostLink", "");
+            CustomCloudStorageConnectionString = Preferences.Get("CustomCloudStorageConnectionString", "");
             UseHTMLDumpLogs = Preferences.Get("UseHTMLDumpLogs", GHConstants.DefaultHTMLDumpLogs);
             UseSingleDumpLog = Preferences.Get("UseSingleDumpLog", GHConstants.DefaultUseSingleDumpLog);
             ReadStreamingBankToMemory = Preferences.Get("ReadStreamingBankToMemory", DefaultStreamingBankToMemory);
@@ -99,6 +104,7 @@ namespace GnollHackX
             EmptyWishIsNothing = Preferences.Get("EmptyWishIsNothing", true);
             RecommendedSettingsChecked = Preferences.Get("RecommendedSettingsChecked", false);
             RecordGame = Preferences.Get("RecordGame", false);
+            AutoUploadReplays = Preferences.Get("AutoUploadReplays", false);
             UseGZipForReplays = Preferences.Get("UseGZipForReplays", GHConstants.GZipIsDefaultReplayCompression);
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if(FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
@@ -125,6 +131,8 @@ namespace GnollHackX
         private static readonly object _recordGameLock = new object();
         private static bool _recordGame = false;
         public static bool RecordGame { get { lock (_recordGameLock) { return _recordGame; } } set { lock (_recordGameLock) { _recordGame = value; } } }
+        private static bool _autoUploadReplays = false;
+        public static bool AutoUploadReplays { get { lock (_recordGameLock) { return _autoUploadReplays; } } set { lock (_recordGameLock) { _autoUploadReplays = value; } } }
 
         private static object _networkAccessLock = new object();
         private static NetworkAccess _networkAccessState = NetworkAccess.None;
@@ -2577,6 +2585,7 @@ namespace GnollHackX
         public static string CustomGameStatusLink { get; set; }
         public static string CustomXlogAccountLink { get; set; }
         public static string CustomXlogPostLink { get; set; }
+        public static string CustomCloudStorageConnectionString { get; set; }
 
         public static string GameStatusPostAddress
         {
@@ -2605,6 +2614,20 @@ namespace GnollHackX
                     return "";
                 else
                     return address;
+            }
+        }
+        public static string CloudStorageConnectionString
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(CustomCloudStorageConnectionString))
+                {
+                    return CustomCloudStorageConnectionString;
+                }
+                else
+                {
+                    return CurrentUserSecrets?.DefaultAzureBlobStorageConnectionString;
+                }
             }
         }
 
@@ -2751,7 +2774,7 @@ namespace GnollHackX
 
         public static async Task TryVerifyXlogUserNameAsync()
         {
-            if(!PostingXlogEntries && !PostingReplays && !PostingBonesFiles)
+            if(!PostingXlogEntries && !PostingReplays && !PostingBonesFiles && !AutoUploadReplays)
             {
                 SetXlogUserNameVerified(false, null, null);
                 return;
@@ -3926,6 +3949,74 @@ namespace GnollHackX
                 catch (Exception ex)
                 {
                     WriteGHLog("Writing the bones file send request to the queue on disk using path " + targetfilepath + " failed: " + ex.Message);
+                }
+            }
+        }
+
+        private static CancellationTokenSource _uploadCts = null;
+        public static async Task<SendResult> SendReplayFile(string replay_filename, int status_type, int status_datatype, bool is_from_queue)
+        {
+            SendResult res = new SendResult();
+            BlobServiceClient blobServiceClient = GetBlobServiceClient();
+            BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(GHConstants.AzureBlobStorageReplayContainerName);
+            string prefix = XlogUserNameVerified ? XlogUserName : GHConstants.AzureBlobStorageGeneralDirectoryName;
+            string full_filepath = replay_filename;
+            bool fileexists = File.Exists(full_filepath);
+            if (fileexists)
+            {
+                if (_uploadCts == null)
+                    _uploadCts = new CancellationTokenSource();
+
+                try
+                {
+                    await UploadFromFileAsync(blobContainerClient, prefix, full_filepath, _uploadCts.Token);
+                    res.IsSuccess = true;
+                }
+                catch (Exception ex)
+                {
+                    WriteGHLog(ex.Message);
+                }
+            }
+
+            if (_uploadCts != null)
+            {
+                _uploadCts.Dispose();
+                _uploadCts = null;
+            }
+            return res;
+        }
+
+        public static void SaveReplayPostToDisk(int status_type, int status_datatype, string replay_filename)
+        {
+            string targetpath = Path.Combine(GHPath, GHConstants.ReplayPostQueueDirectory);
+            if (!Directory.Exists(targetpath))
+                CheckCreateDirectory(targetpath);
+            if (Directory.Exists(targetpath))
+            {
+                string targetfilename;
+                string targetfilepath;
+                int id = 0;
+                do
+                {
+                    targetfilename = GHConstants.ReplayPostFileNamePrefix + id + GHConstants.ReplayPostFileNameSuffix;
+                    targetfilepath = Path.Combine(targetpath, targetfilename);
+                    id++;
+                } while (File.Exists(targetfilepath));
+
+                try
+                {
+                    using (StreamWriter sw = File.CreateText(targetfilepath))
+                    {
+                        GHPost fp = new GHPost(2, true, status_type, status_datatype, replay_filename, null, false);
+                        string json = JsonConvert.SerializeObject(fp);
+                        Debug.WriteLine(json);
+                        sw.Write(json);
+                    }
+                    WriteGHLog("Replay file send request written to the queue on disk: " + targetfilepath);
+                }
+                catch (Exception ex)
+                {
+                    WriteGHLog("Writing the replay file send request to the queue on disk using path " + targetfilepath + " failed: " + ex.Message);
                 }
             }
         }
@@ -5342,6 +5433,215 @@ namespace GnollHackX
             if (!exitHackCalled)
                 game.ClientCallback_ExitHack(0);
             return PlayReplayResult.Success;
+        }
+
+        private static BlobServiceClient _blobServiceClient = null;
+
+        public static BlobServiceClient GetBlobServiceClient()
+        {
+            if (_blobServiceClient != null)
+                return _blobServiceClient;
+
+            string connectionString = CloudStorageConnectionString;
+            BlobServiceClient client = null;
+            if (string.IsNullOrWhiteSpace(connectionString))
+                return client;
+            
+            try
+            {
+                client = new BlobServiceClient(connectionString);
+                _blobServiceClient = client;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            return client;
+        }
+
+        public static async Task ListBlobPrefixes(BlobContainerClient container,
+                                               string prefix,
+                                               int? segmentSize)
+        {
+            Debug.WriteLine("Listing All Blob Prefixes under " + (prefix != null ? prefix : "root"));
+            try
+            {
+                // Call the listing operation and return pages of the specified size.
+                var resultSegment = container.GetBlobsByHierarchyAsync(prefix: prefix, delimiter: GHConstants.AzureBlobStorageDelimiter)
+                    .AsPages(default, segmentSize);
+
+                var enumer = resultSegment.GetAsyncEnumerator();
+
+                try
+                {
+                    // Enumerate the blobs returned for each page.
+                    while (await enumer.MoveNextAsync())
+                    {
+                        Page<BlobHierarchyItem> blobPage = enumer.Current;
+                        // A hierarchical listing may return both virtual directories and blobs.
+                        foreach (BlobHierarchyItem blobhierarchyItem in blobPage.Values)
+                        {
+                            if (blobhierarchyItem.IsPrefix)
+                            {
+                                // Write out the prefix of the virtual directory.
+                                Debug.WriteLine("Virtual directory prefix: " + blobhierarchyItem.Prefix);
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
+                finally
+                {
+                    if (enumer != null)
+                        await enumer.DisposeAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
+        public static async Task ListBlobsFlatListing(BlobContainerClient blobContainerClient, string prefix, int? segmentSize)
+        {
+            try
+            {
+                // Call the listing operation and return pages of the specified size.
+                var blobs = blobContainerClient.GetBlobsAsync(BlobTraits.None, BlobStates.None, prefix);
+                var resultSegment = blobs.AsPages(default, segmentSize);
+
+                // Enumerate the blobs returned for each page.
+                var enumer = resultSegment.GetAsyncEnumerator();
+                try
+                {
+                    while (await enumer.MoveNextAsync())
+                    {
+                        foreach (BlobItem blobItem in enumer.Current.Values)
+                        {
+                            Debug.WriteLine(blobItem.Name);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
+                finally
+                {
+                    if (enumer != null)
+                        await enumer.DisposeAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
+        public static async Task ListBlobsHierarchicalListing(BlobContainerClient container,
+                                                       string prefix,
+                                                       int? segmentSize)
+        {
+            try
+            {
+                // Call the listing operation and return pages of the specified size.
+                var resultSegment = container.GetBlobsByHierarchyAsync(prefix: prefix, delimiter: GHConstants.AzureBlobStorageDelimiter)
+                    .AsPages(default, segmentSize);
+
+                var enumer = resultSegment.GetAsyncEnumerator();
+
+                try
+                {
+                    // Enumerate the blobs returned for each page.
+                    while (await enumer.MoveNextAsync())
+                    {
+                        Page<BlobHierarchyItem> blobPage = enumer.Current;
+                        // A hierarchical listing may return both virtual directories and blobs.
+                        foreach (BlobHierarchyItem blobhierarchyItem in blobPage.Values)
+                        {
+                            if (blobhierarchyItem.IsPrefix)
+                            {
+                                // Write out the prefix of the virtual directory.
+                                Debug.WriteLine("Virtual directory prefix: " + blobhierarchyItem.Prefix);
+
+                                // Call recursively with the prefix to traverse the virtual directory.
+                                await ListBlobsHierarchicalListing(container, blobhierarchyItem.Prefix, null);
+                            }
+                            else
+                            {
+                                // Write out the name of the blob.
+                                Debug.WriteLine("Blob name: " + blobhierarchyItem.Blob.Name);
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
+                finally
+                {
+                    if (enumer != null)
+                        await enumer.DisposeAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
+        public static async Task UploadFromFileAsync(BlobContainerClient containerClient, string prefix, string localFilePath, CancellationToken cancellationToken)
+        {
+            string blobName;
+            if (prefix == null)
+            {
+                blobName = Path.GetFileName(localFilePath);
+            }
+            else
+            {
+                blobName = prefix + GHConstants.AzureBlobStorageDelimiter + Path.GetFileName(localFilePath);
+            }
+
+            BlobClient blobClient = containerClient.GetBlobClient(blobName);
+            await blobClient.UploadAsync(localFilePath, true, cancellationToken);
+        }
+
+        public static async Task DownloadFileAsync(BlobContainerClient containerClient, string prefix, string blobName, long fileLength, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(blobName))
+                return;
+
+            BlobClient blobClient = containerClient.GetBlobClient(blobName);
+            string baseDir = Path.Combine(GHApp.GHPath, GHConstants.ReplayDownloadFromCloudDirectory);
+            if (!Directory.Exists(baseDir))
+                GHApp.CheckCreateDirectory(baseDir);
+            string targetDir = baseDir;
+            if(!string.IsNullOrWhiteSpace(prefix) && prefix.Length > 0)
+            {
+                string modPrefix = prefix[prefix.Length - 1] == GHConstants.AzureBlobStorageDelimiter[0] ? prefix.Substring(0, prefix.Length - 1) : prefix;
+                targetDir = Path.Combine(targetDir, modPrefix);
+                if (!Directory.Exists(targetDir))
+                    GHApp.CheckCreateDirectory(targetDir);
+            }
+            string targetFile;
+            if (string.IsNullOrWhiteSpace(prefix) || blobName.Length <= prefix.Length)
+                targetFile = blobName;
+            else
+                targetFile = blobName.Substring(prefix.Length);
+            string targetPath = Path.Combine(targetDir, targetFile);
+            if(File.Exists(targetPath))
+            {
+                FileInfo fi = new FileInfo(targetPath);
+                if (fi.Length != fileLength || fileLength <= 0)
+                    File.Delete(targetPath);
+                else /* Skip files with the right length */
+                    return;
+            }
+            await blobClient.DownloadToAsync(targetPath, cancellationToken);
         }
     }
 

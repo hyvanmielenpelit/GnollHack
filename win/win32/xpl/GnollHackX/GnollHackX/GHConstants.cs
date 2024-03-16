@@ -1595,6 +1595,7 @@ namespace GnollHackX
         public const string SaveDirectory = "save";
         public const string DumplogDirectory = "dumplog";
         public const string ReplayDirectory = "replay";
+        public const string ReplayDownloadFromCloudDirectory = "replay-cloud";
         public const string ArchiveDirectory = "archive"; /* Directory for sharable archives and files; cleaned and deleted at program start */
         public const string UploadDirectory = "upload"; /* Directory for uploadable files; files are never cleaned automatically, only upon successful upload */
         public const string TempDirectory = "temp";  /* Created and deleted on the go */
@@ -1626,6 +1627,9 @@ namespace GnollHackX
         public const string BonesPostFileNameSuffix = ".txt";
         public const string BonesPostPage = "bones";
         public const double BonesPostBaseChance = 2.0 / 3.0;
+        public const string ReplayPostQueueDirectory = "replaypost";
+        public const string ReplayPostFileNamePrefix = "queued_replay_post_";
+        public const string ReplayPostFileNameSuffix = ".txt";
         public const double MainScreenGeneralCounterIntervalInSeconds = 2.0;
         public const long MaxGHLogSize = 4194304;
         public const int LineBuilderInitialCapacity = 256;
@@ -1643,6 +1647,10 @@ namespace GnollHackX
         public const string ReplaySharedZipFileNamePrefix = "shared-replay-";
         public const string ReplaySharedZipFileNameSuffix = ".zip";
         public const string ReplayAllSharedZipFileNamePrefix = "shared-replays-";
+        public const string AzureBlobStorageReplayContainerName = "replays";
+        public const string AzureBlobStorageDelimiter = "/";
+        public const string AzureBlobStorageGeneralDirectoryName = "__general__012345678901234567890123456789";
+        public const string AzureBlobStorageGeneralDirectoryDisplayName = "[General]";
         public const bool GZipIsDefaultReplayCompression = true;
         public const int ReplayStandardDelay = 128; /* Milliseconds */
         public const int ReplayGetEventDelay = 16; /* Milliseconds */

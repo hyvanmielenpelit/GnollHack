@@ -2012,7 +2012,7 @@ weapon_here:
     if ((wizard && iflags.wizweight) || weightfirst) 
     {
         char weightbuf[OBUFSZ];
-        printweight(weightbuf, objweight_oz, TRUE, TRUE);
+        printweight(weightbuf, objweight_oz, TRUE, TRUE, FALSE);
         char buf[OBUFSZ];
         Sprintf(buf, "%s - %s", weightbuf, bp);
         Strcpy(bp, buf);
@@ -2021,7 +2021,7 @@ weapon_here:
     if (weightlast)
     {
         char weightbuf[OBUFSZ];
-        printweight(weightbuf, objweight_oz, FALSE, FALSE);
+        printweight(weightbuf, objweight_oz, FALSE, FALSE, TRUE);
         char buf[OBUFSZ];
         Sprintf(buf, "%s (%s)", bp, weightbuf);
         Strcpy(bp, buf);

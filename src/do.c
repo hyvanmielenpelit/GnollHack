@@ -441,11 +441,12 @@ floorexamine(VOID_ARGS)
 }
 
 void
-printweight(buf, weight_in_ounces, weight_fixed_width, unit_fixed_width)
+printweight(buf, weight_in_ounces, weight_fixed_width, unit_fixed_width, allow_long)
 char* buf;
 int weight_in_ounces;
 boolean weight_fixed_width;
 boolean unit_fixed_width;
+boolean allow_long;
 {
     double weight_in_pounds = ((double)weight_in_ounces) / 16;
     if (flags.metric_system)
@@ -454,7 +455,13 @@ boolean unit_fixed_width;
         double weight_in_kg = weight_in_pounds * avoirdupois_pound_in_kg;
         double weight_in_grams = weight_in_kg * 1000;
 
-        if (weight_in_kg >= 10000)
+        if (allow_long && flags.detailed_weights)
+        {
+            Sprintf(buf, weight_fixed_width ? "%3.0f g" : "%.0f g", weight_in_grams);
+            if (unit_fixed_width)
+                Strcat(buf, " ");
+        }
+        else if (weight_in_kg >= 10000)
         {
             Sprintf(buf, weight_fixed_width ? "%3.0f" : "%.0f", weight_in_kg / 1000);
             if (unit_fixed_width)
@@ -489,14 +496,22 @@ boolean unit_fixed_width;
     }
     else
     {
-        if (weight_in_pounds >= 1000)
+        if (allow_long && flags.detailed_weights)
+        {
+            Sprintf(buf, weight_fixed_width ? "%3d oz" : "%d oz", weight_in_ounces);
+        }
+        else if (weight_in_pounds >= 1000)
+        {
             Sprintf(buf, weight_fixed_width ? "%3.0f cwt" : "%.0f cwt", weight_in_pounds / 100);
+        }
         else if (flags.detailed_weights && weight_in_ounces < 1000)
         {
-            Sprintf(buf, weight_fixed_width ? "%3d oz." : "%d oz.", weight_in_ounces);
+            Sprintf(buf, weight_fixed_width ? "%3d oz" : "%d oz", weight_in_ounces);
         }
         else if (weight_in_pounds >= 10)
+        {
             Sprintf(buf, weight_fixed_width ? "%3.0f lbs" : "%.0f lbs", weight_in_pounds);
+        }
         else
         {
             if (weight_in_pounds == 1)
@@ -958,7 +973,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
     if(obj && otyp == LOADSTONE && !carried(obj) && !objects[otyp].oc_name_known)
         objweight = objects[LUCKSTONE].oc_weight;
 
-    printweight(buf2, objweight, FALSE, FALSE);
+    printweight(buf2, objweight, FALSE, FALSE, TRUE);
 
     Sprintf(buf, "Weight:                 %s", buf2);    
     putstr(datawin, ATR_INDENT_AT_COLON, buf);

@@ -12,6 +12,7 @@ namespace GnollHackX
         public string EncodedDefaultXlogRegisterationAddress = "";
         public string EncodedDefaultXlogPostAddress = "";
         public string EncodedDefaultXlogAntiForgeryToken = "";
+        public string EncodedDefaultAzureBlobStorageConnectionString = "";
 
         public UserSecrets()
         {
@@ -55,6 +56,14 @@ namespace GnollHackX
             get
             {
                 return GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultXlogAntiForgeryToken);
+            }
+        }
+
+        public string DefaultAzureBlobStorageConnectionString
+        {
+            get
+            {
+                return GHUtils.DecryptString(GHUtils.StrToKey(GetType()?.GetTypeInfo()?.Assembly?.FullName), EncodedDefaultAzureBlobStorageConnectionString);
             }
         }
     }
