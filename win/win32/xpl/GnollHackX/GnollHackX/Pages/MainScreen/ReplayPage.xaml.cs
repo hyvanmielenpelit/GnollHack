@@ -1027,6 +1027,12 @@ namespace GnollHackX.Pages.MainScreen
                     ReplayCollectionView.ItemsSource = ocBack; /* In the case internet hangs up, so at least "Back" shows up */
                 }
 
+                if(!GHApp.HasInternetAccess)
+                {
+                    RecordingsLabel.Text = "No internet access";
+                    return;
+                }
+
                 // Call the listing operation and return pages of the specified size.
                 var resultSegment = containerClient.GetBlobsByHierarchyAsync(prefix: _subDirectoryServer, delimiter: GHConstants.AzureBlobStorageDelimiter)
                     .AsPages(default, null);
