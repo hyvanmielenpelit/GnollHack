@@ -3880,7 +3880,7 @@ SPELL("protection from curses", "cross-patterned", None, None, "Items of the cas
     P_CLERIC_SPELL,    4,  1,   120, 
     5, 40, A_WIS, 0, 0, 100, 0, 1, NODIR, CURSE_RESISTANCE, 0, 0, 0, 0, 10, 6, 25,
     S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, CLR_BRIGHT_MAGENTA, OBJECT_SOUNDSET_SPELLBOOK,
-    O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
+    O1_NOT_CURSEABLE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 SPELL("protection",     "dull", None, None, "Gives -" SP_XSTR(MAGICAL_PROTECTION_AC_BONUS) " bonus to AC and +" SP_XSTR(MAGICAL_PROTECTION_MC_BONUS) " to MC",
     P_CLERIC_SPELL,    4,  3, 0, 
     2, 16, A_WIS, 0, 0, 100, 0, 1, NODIR, MAGICAL_PROTECTION, 0, 0, 0, 0, 2, 10, 130,
