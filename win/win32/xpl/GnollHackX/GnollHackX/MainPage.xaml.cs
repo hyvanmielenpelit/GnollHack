@@ -147,10 +147,10 @@ namespace GnollHackX
                 string[] filepaths = Directory.GetFiles(dir);
                 if (filepaths != null)
                 {
-                    Debug.WriteLine("ProcessSavedPosts in " + dir + ": " + filepaths.Length);
+                    GHApp.MaybeWriteGHLog("ProcessSavedPosts in " + dir + ": " + filepaths.Length);
                     foreach (string str in filepaths)
                     {
-                        Debug.WriteLine(str);
+                        GHApp.MaybeWriteGHLog(str);
                     }
                     foreach (string filepath in filepaths)
                     {
@@ -177,17 +177,17 @@ namespace GnollHackX
                                 }
                                 catch (Exception ex)
                                 {
-                                    Debug.WriteLine(ex.Message);
+                                    GHApp.MaybeWriteGHLog("Exception occurred while reading " + filepath + ": " + ex.Message);
                                     File.Delete(filepath); // Assume corrupted
                                     post = null;
                                 }
 
                                 if (post != null)
                                 {
+                                    string typestr = "";
                                     try
                                     {
                                         SendResult res;
-                                        string typestr = "";
                                         switch(post_type)
                                         {
                                             case 3:
@@ -211,19 +211,19 @@ namespace GnollHackX
 
                                         if (res.IsSuccess)
                                         {
-                                            Debug.WriteLine(typestr + " was sent successfully: " + filepath);
+                                            GHApp.MaybeWriteGHLog(typestr + " was sent successfully: " + filepath);
                                             File.Delete(filepath);
                                         }
                                         else
                                         {
-                                            Debug.WriteLine("Sending " + typestr.ToLower() + " failed: " + filepath +
+                                            GHApp.MaybeWriteGHLog("Sending " + typestr.ToLower() + " failed: " + filepath +
                                                 (!res.HasHttpStatusCode ? "" : ", StatusCode: " + (int)res.StatusCode) + " (" + res.StatusCode.ToString() + ")" +
                                                 (res.Message == null ? "" : ", Message: " + res.Message));
                                         }
                                     }
                                     catch (Exception ex)
                                     {
-                                        Debug.WriteLine(ex.Message);
+                                        GHApp.MaybeWriteGHLog("Exception occurred while sending " + typestr == "" ? "post of unknown type" : typestr.ToLower() + ": " + ex.Message);
                                     }
                                 }
                             }
