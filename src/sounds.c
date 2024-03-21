@@ -4834,7 +4834,7 @@ struct monst* mtmp;
     if (mtmp->mtame > 5 || (mtmp->mtame > 0 && rn2(mtmp->mtame + 1)))
     {
         Sprintf(pbuf, "%s sits down!", noittame_Monnam(mtmp));
-        mtmp->mstaying = 2 + rn2(5);
+        mtmp->mstaying = 1 + rn2(5) + mtmp->mtame + (mtmp->isfaithful ? 100 : 0);
         mtmp->mwantstomove = 0;
         popup_talk_line_ex(mtmp, pbuf, ATR_NONE, CLR_MSG_POSITIVE, TRUE, FALSE);
     }
@@ -5085,7 +5085,7 @@ struct monst* mtmp;
         else
             Sprintf(pbuf, "%s starts to hold its position.", noittame_Monnam(mtmp));
 
-        mtmp->mstaying = 25 + rn2(20);
+        mtmp->mstaying = 15 + rn2(20) + 10 * mtmp->mtame + (mtmp->isfaithful ? 1000 : 0);
         mtmp->mwantstomove = 0;
     }
     else
