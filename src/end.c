@@ -3168,7 +3168,7 @@ get_current_game_score()
         {
             if (mvitals[i].mvflags & MV_SELFIE_TAKEN)
             {
-                Tourist_Selfie_Score += 100L * (mons[i].difficulty + 1);
+                Tourist_Selfie_Score += 35L * (mons[i].difficulty + 1);
             }
         }
     }
