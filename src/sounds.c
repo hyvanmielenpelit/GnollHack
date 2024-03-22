@@ -5350,7 +5350,7 @@ struct monst* mtmp;
             }
 
             /* Give here */
-            int carryamt = can_carry(mtmp, otmp);
+            int carryamt = can_carry_core(mtmp, otmp, TRUE);
 
             if(otmp)
             {

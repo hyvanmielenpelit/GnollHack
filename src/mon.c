@@ -2325,8 +2325,17 @@ struct monst *mtmp;
  */
 int
 can_carry(mtmp, otmp)
+struct monst* mtmp;
+struct obj* otmp;
+{
+    return can_carry_core(mtmp, otmp, FALSE);
+}
+
+int
+can_carry_core(mtmp, otmp, steed_ok)
 struct monst *mtmp;
 struct obj *otmp;
+boolean steed_ok;
 {
     int iquan, otyp = otmp->otyp, newload = otmp->owt;
     struct permonst *mdat = mtmp->data;
@@ -2376,7 +2385,7 @@ struct obj *otmp;
     }
 
     /* steeds don't pick up stuff (to avoid shop abuse) */
-    if (mtmp == u.usteed)
+    if (!steed_ok && mtmp == u.usteed)
         return 0;
     if (mtmp->isshk)
         return iquan; /* no limit */

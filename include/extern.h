@@ -2074,6 +2074,7 @@ E boolean FDECL(mpickstuff, (struct monst *, const char *));
 E int FDECL(curr_mon_load, (struct monst *));
 E int FDECL(max_mon_load, (struct monst *));
 E int FDECL(can_carry, (struct monst *, struct obj *));
+E int FDECL(can_carry_core, (struct monst*, struct obj*, BOOLEAN_P));
 E int FDECL(mfndpos, (struct monst *, coord *, long *, long));
 E int FDECL(mfndpos_xy, (struct monst*, XCHAR_P, XCHAR_P, coord*, long*, long));
 E boolean FDECL(monnear, (struct monst *, int, int));
