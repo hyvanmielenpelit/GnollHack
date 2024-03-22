@@ -3228,7 +3228,7 @@ boolean printdun;
             : (final == 1 && how == ESCAPED) ? "left from"
             : "were");
 
-        putstr_ex(win, buf, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, CLR_ORANGE, 1);
+        putstr_ex(win, buf, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, CLR_RED, 1);
     }
     putstr(win, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, "");
     //putstr(win, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, buf);
