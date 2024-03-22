@@ -135,8 +135,13 @@ namespace GnollHackX
         public static bool AutoUploadReplays { get { lock (_recordGameLock) { return _autoUploadReplays; } } set { lock (_recordGameLock) { _autoUploadReplays = value; } } }
 
         private static object _networkAccessLock = new object();
+#if GNH_MAUI
+        private static Microsoft.Maui.Networking.NetworkAccess _networkAccessState = Microsoft.Maui.Networking.NetworkAccess.None;
+        public static bool HasInternetAccess { get { lock (_networkAccessLock) { return _networkAccessState == Microsoft.Maui.Networking.NetworkAccess.Internet; } } }
+#else
         private static NetworkAccess _networkAccessState = NetworkAccess.None;
         public static bool HasInternetAccess { get { lock (_networkAccessLock) { return _networkAccessState == NetworkAccess.Internet; } } }
+#endif
 
         public static void InitializeConnectivity()
         {

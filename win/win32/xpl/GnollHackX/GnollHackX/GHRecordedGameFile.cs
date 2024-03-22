@@ -89,7 +89,13 @@ namespace GnollHackX
 
         public bool Uploaded { get { return _uploaded; } set { _uploaded = value; } }
         public bool Downloaded { get { return _downloaded; } set { _downloaded = value; } }
-        public Color TextColor { get { return _downloaded && _uploaded ? GHColors.Magenta : _downloaded ? GHColors.Blue : _uploaded ? GHColors.Green : GHColors.Black; } }
+        public
+#if GNH_MAUI
+            Microsoft.Maui.Graphics.Color
+#else
+            Color 
+#endif            
+            TextColor { get { return _downloaded && _uploaded ? GHColors.Magenta : _downloaded ? GHColors.Blue : _uploaded ? GHColors.Green : GHColors.Black; } }
 
         public int Index { get { return _index; } set { _index = value; } }
     }

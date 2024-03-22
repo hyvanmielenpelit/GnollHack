@@ -42,11 +42,16 @@
 
 	<PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
 	    <UseInterpreter>false</UseInterpreter>
+		<!--<AndroidEnableProfiler>true</AndroidEnableProfiler> 
+		<AndroidEnvironment Include="Platforms\Android\Environment.txt" />
+		<RuntimeIdentifier>android-arm64</RuntimeIdentifier>
+		<RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>-->
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
 		<UseInterpreter>false</UseInterpreter>
 		<MtouchInterpreter>-all,FMODService.dll</MtouchInterpreter>
+		<MtouchExtraArgs>$(MtouchExtraArgs) --setenv=DOTNET_DiagnosticPorts=192.168.1.126:9001</MtouchExtraArgs>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -160,6 +165,7 @@
 		<None Remove="Assets\UI\picktobag.png" />
 		<None Remove="Assets\UI\status-quivered-weapon-style.png" />
 		<None Remove="Assets\UI\symbol-damage.png" />
+		<None Remove="Platforms\Android\Environment.txt" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -764,6 +770,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Azure.Identity" Version="1.10.4" />
+		<PackageReference Include="Azure.Storage.Blobs" Version="12.19.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="SkiaSharp" Version="3.0.0-preview.2.1" />
