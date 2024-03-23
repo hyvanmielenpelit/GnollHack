@@ -43,7 +43,6 @@
 	<PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
 	    <UseInterpreter>false</UseInterpreter>
 		<!--<AndroidEnableProfiler>true</AndroidEnableProfiler> 
-		<AndroidEnvironment Include="Platforms\Android\Environment.txt" />
 		<RuntimeIdentifier>android-arm64</RuntimeIdentifier>
 		<RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>-->
 	</PropertyGroup>
@@ -51,7 +50,7 @@
 	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
 		<UseInterpreter>false</UseInterpreter>
 		<MtouchInterpreter>-all,FMODService.dll</MtouchInterpreter>
-		<MtouchExtraArgs>$(MtouchExtraArgs) --setenv=DOTNET_DiagnosticPorts=192.168.1.126:9001</MtouchExtraArgs>
+		<MtouchExtraArgs>$(MtouchExtraArgs) --setenv=DOTNET_DiagnosticPorts=127.0.0.1:9000,suspend,connect</MtouchExtraArgs>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -550,6 +549,9 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
 	  <MtouchLink>SdkOnly</MtouchLink>
 	</PropertyGroup>
+	<ItemGroup>
+	  <AndroidEnvironment Include="Platforms\Android\Environment.txt" />
+	</ItemGroup>
 
 	<ItemGroup>
 	  <EmbeddedResource Include="Assets\archristy.ttf" />

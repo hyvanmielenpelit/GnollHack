@@ -780,7 +780,7 @@ namespace GnollHackX.Pages.MainScreen
             if(!AlternativeLayerDrawingSwitch.IsToggled)
             {
                 AlternativeLayerDrawingSwitch.IsEnabled = false;
-                AlternativeDrawingLabel.TextColor = Color.Gray;
+                AlternativeDrawingLabel.TextColor = GHColors.Gray;
                 AlternativeDrawingStackLayout.IsVisible = false;
             }
 #endif

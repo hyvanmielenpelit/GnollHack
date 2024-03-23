@@ -1,1 +1,1 @@
-DOTNET_DiagnosticPorts=192.168.1.126:9001
+DOTNET_DiagnosticPorts=127.0.0.1:9000,suspend,connect
