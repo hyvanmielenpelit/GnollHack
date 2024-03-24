@@ -99,8 +99,16 @@ boolean drink_yourself;
 
     if (u.dz) 
     {
-        You("throw some %s on the %s.", contents,
-            (u.dz > 0) ? surface(u.ux, u.uy) : ceiling(u.ux, u.uy));
+        if (u.dz > 0 && !u.ux && !u.uy && u.usteed)
+        {
+            You("apply some %s on %s.", contents, mon_nam(u.usteed));
+            weffects(obj);
+        }
+        else
+        {
+            You("throw some %s on the %s.", contents,
+                (u.dz > 0) ? surface(u.ux, u.uy) : ceiling(u.ux, u.uy));
+        }
     }
     else if (!u.dx && !u.dy) 
     {
@@ -189,8 +197,16 @@ boolean drink_yourself;
     if (u.dz)
     {
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
-        You("pour some %s on the %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp),
-            (u.dz > 0) ? surface(u.ux, u.uy) : ceiling(u.ux, u.uy));
+        if (u.dz > 0 && !u.ux && !u.uy && u.usteed)
+        {
+            You("apply some %s on %s.", contents, mon_nam(u.usteed));
+            weffects(obj);
+        }
+        else
+        {
+            You("pour some %s on the %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp),
+                (u.dz > 0) ? surface(u.ux, u.uy) : ceiling(u.ux, u.uy));
+        }
     }
     else if (!u.dx && !u.dy)
     {
