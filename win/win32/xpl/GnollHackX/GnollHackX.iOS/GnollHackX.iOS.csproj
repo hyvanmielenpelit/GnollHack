@@ -124,6 +124,7 @@
     <BundleResource Include="Resources\DejaVuSansMono-BoldOblique.woff" />
     <BundleResource Include="Resources\DejaVuSansMono-Oblique.woff" />
     <BundleResource Include="Resources\DejaVuSansMono.woff" />
+    <BundleResource Include="PrivacyInfo.xcprivacy" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
