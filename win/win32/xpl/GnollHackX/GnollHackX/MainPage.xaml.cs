@@ -868,9 +868,38 @@ namespace GnollHackX
             Task t1 = GeneralTimerTasksAsync(); /* Make sure outstanding queues are processed before closing application */
             Task t2 = Task.Delay(1000); /* Give 1 second to close at maximum */
             await Task.WhenAny(t1, t2);
-            GHApp.PlatformService.CloseApplication();
+            GHApp.FmodService.ReleaseAllSoundInstances();
             await Task.Delay(100);
-            Process.GetCurrentProcess().Kill();
+            GHApp.PlatformService.CloseApplication();
+
+            await Task.Delay(100);
+            try
+            {
+#if GNH_MAUI
+                if (GHApp.IsiOS)
+                    Environment.Exit(0);
+                else
+                    Process.GetCurrentProcess().Kill();
+#else
+                Xamarin.Forms.Application.Current.Quit();
+#endif
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+#if !GNH_MAUI
+            await Task.Delay(100);
+            try
+            {
+                Process.GetCurrentProcess().Kill();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+#endif
         }
 
         private async void ResetButton_Clicked(object sender, EventArgs e)
