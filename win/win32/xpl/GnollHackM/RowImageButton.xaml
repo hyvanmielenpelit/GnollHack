@@ -2,8 +2,10 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:gnh="clr-namespace:GnollHackM"
+             xmlns:controls="clr-namespace:GnollHackM" 
              x:Name="this"
-             x:Class="GnollHackM.RowImageButton">
+             x:Class="GnollHackM.RowImageButton"
+             x:DataType="controls:RowImageButton">
   <ContentView.Content>
         <Grid x:Name="ViewGrid" BindingContext="{x:Reference this}" Margin="{Binding GridMargin}" WidthRequest="{Binding GridWidth, FallbackValue='80'}" HeightRequest="{Binding GridHeight, FallbackValue='320'}" >
             <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
