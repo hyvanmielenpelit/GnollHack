@@ -2,7 +2,9 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:gnh="clr-namespace:GnollHackX" 
+             xmlns:gamepages="clr-namespace:GnollHackX.Pages.Game" 
              x:Class="GnollHackX.Pages.Game.OutRipPage"
+             x:DataType="gamepages:OutRipPage"
              BackgroundColor="Black"
              Disappearing="ContentPage_Disappearing">
     <ContentPage.Content>

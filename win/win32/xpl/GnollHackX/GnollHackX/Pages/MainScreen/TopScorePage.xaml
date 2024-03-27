@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:gnollhackclient="clr-namespace:GnollHackX" xmlns:controls="clr-namespace:GnollHackX.Controls"
+             xmlns:gnh="clr-namespace:GnollHackX" xmlns:controls="clr-namespace:GnollHackX.Controls"
              BackgroundColor="Black"
              x:Class="GnollHackX.Pages.MainScreen.TopScorePage">
     <ContentPage.Content>
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-            <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
             <Grid x:Name="MainGrid" WidthRequest="1100" HorizontalOptions="Center" VerticalOptions="FillAndExpand" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -20,7 +20,7 @@
                 <Label Grid.Row="1" x:Name="NoScoresLabel" IsVisible="false" Text="No top scores available" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="18" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
                 <CollectionView Grid.Row="1" Margin="15,0" x:Name="ScoresView" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand">
                     <CollectionView.Header>
-                        <StackLayout Orientation="Horizontal" Spacing="0" Padding="0" Margin="0,5">
+                        <StackLayout Orientation="Horizontal" Spacing="0" Padding="0" Margin="0,5" x:DataType="gnh:GHTopScoreItem">
                             <Label WidthRequest="35" Text="#" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
                             <Label WidthRequest="155" Text="Name" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
                             <Label WidthRequest="80" Text="Points" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
@@ -37,7 +37,7 @@
                         </StackLayout>
                     </CollectionView.Header>
                     <CollectionView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="gnh:GHTopScoreItem">
                             <Grid Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0" >
                                 <StackLayout Orientation="Horizontal" Spacing="0" Padding="0" Margin="0,5" VerticalOptions="Center" >
                                     <Label WidthRequest="35" Text="{Binding Rank}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono"/>

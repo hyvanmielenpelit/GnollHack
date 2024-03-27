@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:gnollhackclient="clr-namespace:GnollHackX" 
+             xmlns:gnh="clr-namespace:GnollHackX" 
              xmlns:controls="clr-namespace:GnollHackX.Controls"
              BackgroundColor="Black"
              x:Class="GnollHackX.Pages.MainScreen.ReplayPage">
     <ContentPage.Content>
         <Grid>
-            <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
             <Grid x:Name="MainGrid" WidthRequest="900" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -23,7 +23,7 @@
                 <Label Grid.Row="1" x:Name="RecordingsLabel" Text="0 replays available" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="16" TextColor="Black" FontFamily="Immortal"/>
                 <CollectionView x:Name="ReplayCollectionView" Grid.Row="2" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand" SelectionMode="Single"  BackgroundColor="Transparent" SelectionChanged="MainListView_SelectionChanged" >
                     <CollectionView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="gnh:GHRecordedGameFile">
                             <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Margin="0,8">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />

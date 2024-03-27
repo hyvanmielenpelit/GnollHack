@@ -4,12 +4,12 @@ using System.ComponentModel;
 using System.IO;
 using System.Text;
 #if GNH_MAUI
-using GnollHackM;
+using GnollHackX;
+namespace GnollHackM
 #else
 using GnollHackX.Pages.MainScreen;
-#endif
-
 namespace GnollHackX
+#endif
 {
     public class GHTopScoreItem : INotifyPropertyChanged
     {

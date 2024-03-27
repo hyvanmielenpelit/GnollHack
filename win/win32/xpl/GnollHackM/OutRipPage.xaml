@@ -2,7 +2,9 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:gnh="clr-namespace:GnollHackM" 
+             xmlns:gamepages="clr-namespace:GnollHackM" 
              x:Class="GnollHackM.OutRipPage"
+             x:DataType="gamepages:OutRipPage"
              BackgroundColor="Black"
              Disappearing="ContentPage_Disappearing">
     <ContentPage.Content>

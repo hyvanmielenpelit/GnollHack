@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
-
+#if GNH_MAUI
+using GnollHackX;
+namespace GnollHackM
+#else
 namespace GnollHackX
+#endif
 {
     public struct ContinuationFile
     {
