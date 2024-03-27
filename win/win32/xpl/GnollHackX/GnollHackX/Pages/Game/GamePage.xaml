@@ -180,14 +180,14 @@
                 <StackLayout x:Name="MenuStack" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Orientation="Vertical"  BackgroundColor="Transparent">
                     <gnh:CustomLabel x:Name="MenuHeaderLabel"
                        TextColor="Black" FontAttributes="Bold" BackgroundColor="Transparent"
-                       HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
+                       HorizontalOptions="FillAndExpand" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
                         <gnh:CustomLabel.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuTapGestureRecognizer_Tapped" />
                         </gnh:CustomLabel.GestureRecognizers>
                     </gnh:CustomLabel>
                     <gnh:CustomLabel x:Name="MenuSubtitleLabel" UseSpecialSymbols="False"
                        TextColor="Black" Margin="1,2,1,6" BackgroundColor="Transparent"
-                       HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
+                       HorizontalOptions="FillAndExpand" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
                         <gnh:CustomLabel.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuTapGestureRecognizer_Tapped" />
                         </gnh:CustomLabel.GestureRecognizers>

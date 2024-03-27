@@ -75,16 +75,18 @@ namespace GnollHackX
         public const long _transitionDurationInMilliseconds = 3000;
 
         public long _counterValue;
-        public bool _timerIsOn = false;
+        private readonly object _timerIsOnLock = new object();
+        private bool _timerIsOn = false;
+        public bool CheckTimerOnAndSetTrue { get { lock (_timerIsOnLock) { bool oldValue = _timerIsOn; _timerIsOn = true; return oldValue; } } }
+        public bool TimerIsOn { get { lock (_timerIsOnLock) { return _timerIsOn; } } set { lock (_timerIsOnLock) { _timerIsOn = value; } } }
         public void Play()
         {
             if (!_inited)
                 Init();
 
             InvalidateSurface();
-            if(!_timerIsOn)
+            if(!CheckTimerOnAndSetTrue)
             {
-                _timerIsOn = true;
                 Device.StartTimer(TimeSpan.FromSeconds(1.0 / _refreshFrequency), () =>
                 {
                     _counterValue++;
@@ -94,17 +96,17 @@ namespace GnollHackX
                     byte prevalpha = GetSecondBitmapAlpha(_counterValue - 1);
                     if (alpha > 0 || prevalpha > 0)
                         InvalidateSurface();
-                    return _timerIsOn;
+                    return TimerIsOn;
                 });
             }
         }
 
         public void Stop()
         {
-            _timerIsOn = false;
+            TimerIsOn = false;
         }
 
-        private void UpdateCarusel()
+        private void UpdateCarousel()
         {
             InvalidateSurface();
         }
@@ -118,12 +120,17 @@ namespace GnollHackX
             {
                 _currentWidth = width;
                 _currentHeight = height;
-                UpdateCarusel();
+                UpdateCarousel();
             }
         }
 
+        private bool _initialDraw = true;
+
         private void Base_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
+            if (!_initialDraw && !TimerIsOn)
+                return;
+
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
@@ -241,6 +248,7 @@ namespace GnollHackX
                     }
                 }
             }
+            _initialDraw = false;
         }
 
         private int GetFirstBitmapIndex()

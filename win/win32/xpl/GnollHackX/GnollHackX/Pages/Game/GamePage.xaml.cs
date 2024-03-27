@@ -15865,7 +15865,7 @@ namespace GnollHackX.Pages.Game
 
                     // If the parent of this parent isn't the app itself, get the parent's parent.
 #if GNH_MAUI
-                    if (parent.Parent.GetType() == typeof(Microsoft.Maui.Controls.Window))
+                    if (parent.Parent == null || parent.Parent.GetType() == typeof(Microsoft.Maui.Controls.Window))
                         parent = null;
                     else
                         parent = (Microsoft.Maui.Controls.VisualElement)parent.Parent;

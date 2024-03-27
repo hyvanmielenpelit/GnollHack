@@ -1077,11 +1077,20 @@ namespace GnollHackX
                 }
             }
         }
-
         protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
         {
             return CalculateLabelSize(widthConstraint, heightConstraint);
         }
+
+#if GNH_MAUI
+        protected override Size MeasureOverride(double widthConstraint, double heightConstraint)
+        {
+            //return base.MeasureOverride(widthConstraint, heightConstraint);
+            SizeRequest sizeRequest = CalculateLabelSize(widthConstraint, heightConstraint);
+            Size size = new Size(sizeRequest.Request.Width, sizeRequest.Request.Height);
+            return size;
+        }
+#endif
 
         private double _currentWidth = 0;
         private double _currentHeight = 0;
