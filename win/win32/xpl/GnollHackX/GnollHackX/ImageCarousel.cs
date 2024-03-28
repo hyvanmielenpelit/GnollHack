@@ -148,7 +148,7 @@ namespace GnollHackX
                 float scale_x, scale_y, scale;
                 TextAlignment halign;
                 TextAlignment valign;
-                using (SKPaint textPaint = new SKPaint())
+                using (SKPaint bmpPaint = new SKPaint())
                 {
                     int idx = GetFirstBitmapIndex();
                     if(_caruselBitmaps[idx].Bitmap != null)
@@ -190,7 +190,7 @@ namespace GnollHackX
                                 break;
                         }
                         targetRect = new SKRect(target_x, target_y, target_x + target_width, target_y + target_height);
-                        canvas.DrawBitmap(_caruselBitmaps[idx].Bitmap, sourceRect, targetRect, textPaint);
+                        canvas.DrawBitmap(_caruselBitmaps[idx].Bitmap, sourceRect, targetRect, bmpPaint);
 
                         if (cnt > 1)
                         {
@@ -238,10 +238,10 @@ namespace GnollHackX
                                     }
                                     targetRect = new SKRect(target_x, target_y, target_x + target_width, target_y + target_height);
 
-                                    byte oldalpha = textPaint.Color.Alpha;
-                                    textPaint.Color = textPaint.Color.WithAlpha(alpha);
-                                    canvas.DrawBitmap(_caruselBitmaps[idx2].Bitmap, sourceRect, targetRect, textPaint);
-                                    textPaint.Color = textPaint.Color.WithAlpha(oldalpha);
+                                    byte oldalpha = bmpPaint.Color.Alpha;
+                                    bmpPaint.Color = bmpPaint.Color.WithAlpha(alpha);
+                                    canvas.DrawBitmap(_caruselBitmaps[idx2].Bitmap, sourceRect, targetRect, bmpPaint);
+                                    bmpPaint.Color = bmpPaint.Color.WithAlpha(oldalpha);
                                 }
                             }
                         }

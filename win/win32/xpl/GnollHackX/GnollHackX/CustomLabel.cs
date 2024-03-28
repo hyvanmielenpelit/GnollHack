@@ -206,7 +206,7 @@ namespace GnollHackX
 
         private void SplitRows()
         {
-            using (SKPaint textPaint = new SKPaint())
+            using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
                 float scale = GHApp.DisplayScale;
                 textPaint.TextSize = (float)FontSize * scale;
@@ -256,7 +256,7 @@ namespace GnollHackX
             }
         }
 
-        float CalculateTextPartWidth(string textPart, SKPaint textPaint)
+        float CalculateTextPartWidth(string textPart, GHSkiaFontPaint textPaint)
         {
             if(textPart == null || textPart == "")
                 return 0;
@@ -277,7 +277,7 @@ namespace GnollHackX
             }
         }
 
-        public string[] SplitTextWithConstraint(string text, float widthConstraint, SKPaint textPaint)
+        public string[] SplitTextWithConstraint(string text, float widthConstraint, GHSkiaFontPaint textPaint)
         {
             if (text == null)
                 return null;
@@ -382,7 +382,7 @@ namespace GnollHackX
             float longestwidth = 0;
             float totalheight = 0;
             List<float> rowWidths = new List<float>();
-            using (SKPaint textPaint = new SKPaint())
+            using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
                 float scale = GHApp.DisplayScale;
                 textPaint.TextSize = (float)FontSize * scale;
@@ -550,7 +550,7 @@ namespace GnollHackX
 
                 textAreaSize = TextAreaSize;
 
-                using (SKPaint textPaint = new SKPaint())
+                using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
                 {
                     float x = 0, y = 0;
                     textPaint.Typeface = GetFontTypeface();
@@ -594,7 +594,7 @@ namespace GnollHackX
                     y += usedTextOffset;
 
                     float generalpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
-                    textPaint.TextAlign = SKTextAlign.Left;
+                    //textPaint.TextAlign = SKTextAlign.Left;
                     for (int i = 0; i < textRows.Length; i++)
                     {
                         string textRow = textRows[i];
@@ -637,7 +637,7 @@ namespace GnollHackX
                                     float bmpx = x;
                                     float bmpy = y + textPaint.FontMetrics.Ascent;
                                     SKRect bmptargetrect = new SKRect(bmpx, bmpy, bmpx + bmpwidth, bmpy + bmpheight);
-                                    canvas.DrawBitmap(symbolbitmap, source_rect, bmptargetrect, textPaint);
+                                    canvas.DrawBitmap(symbolbitmap, source_rect, bmptargetrect, textPaint.Paint); 
                                     x += bmpwidth + bmpmargin;
                                 }
                                 else
@@ -653,7 +653,8 @@ namespace GnollHackX
                                         SKColor outlinecolor = new SKColor((byte)(255 * OutlineColor.R), (byte)(255 * OutlineColor.G), (byte)(255 * OutlineColor.B), (byte)(255 * OutlineColor.A));
 #endif
                                         textPaint.Color = outlinecolor;
-                                        canvas.DrawText(printedString, x, y, textPaint);
+                                        //canvas.DrawText(printedString, x, y, textPaint);
+                                        textPaint.DrawTextOnCanvas(canvas, printedString, x, y, SKTextAlign.Left);
                                     }
 
                                     textPaint.Style = SKPaintStyle.Fill;
@@ -663,7 +664,8 @@ namespace GnollHackX
                                     SKColor fillcolor = new SKColor((byte)(255 * TextColor.R), (byte)(255 * TextColor.G), (byte)(255 * TextColor.B), (byte)(255 * TextColor.A));
 #endif
                                     textPaint.Color = fillcolor;
-                                    canvas.DrawText(printedString, x, y, textPaint);
+                                    //canvas.DrawText(printedString, x, y, textPaint);
+                                    textPaint.DrawTextOnCanvas(canvas, printedString, x, y, SKTextAlign.Left);
                                     x += textPaint.MeasureText(printedString);
                                 }
                                 cnt++;
@@ -685,7 +687,7 @@ namespace GnollHackX
             if (scale == 0)
                 return 0;
             float skwidth = 0;
-            using (SKPaint textPaint = new SKPaint())
+            using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
                 textPaint.Typeface = GetFontTypeface();
                 textPaint.TextSize = (float)FontSize * scale;

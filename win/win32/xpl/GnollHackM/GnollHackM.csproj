@@ -98,7 +98,6 @@
 		<None Remove="..\GnollHackX\GnollHackX\GHEditor.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHFloatingText.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHConditionText.cs" />
-		<None Remove="..\GnollHackX\GnollHackX\GHScreenFilter.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHGUIEffect.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHMenuInfo.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHMenuItem.cs" />
@@ -112,7 +111,9 @@
 		<None Remove="..\GnollHackX\GnollHackX\GHRecordedRecordedGameFile.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHResponse.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHRequest.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHScreenFilter.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHScreenText.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHSkiaFontPaint.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHStatusField.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHUtils.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHWindow.cs" />
@@ -190,7 +191,6 @@
 		<Compile Include="..\GnollHackX\GnollHackX\GHFloatingText.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHConditionText.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHDrawCommand.cs" />
-		<Compile Include="..\GnollHackX\GnollHackX\GHScreenFilter.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHGUIEffect.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHNumberPickItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHMenuInfo.cs" />
@@ -204,7 +204,9 @@
 		<Compile Include="..\GnollHackX\GnollHackX\GHRecordedGameFile.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHResponse.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHRequest.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHScreenFilter.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHScreenText.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHSkiaFontPaint.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHStatusField.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHTopScoreItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHUtils.cs" />
