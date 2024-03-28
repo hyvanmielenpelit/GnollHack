@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
@@ -15,6 +16,7 @@ namespace GnollHackM
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
+using Xamarin.Essentials;
 
 namespace GnollHackX.Pages.Game
 #endif
@@ -113,7 +115,10 @@ namespace GnollHackX.Pages.Game
                 {
                     Device.StartTimer(TimeSpan.FromMilliseconds(GHConstants.ReplayAskNameDelay1), () =>
                     {
-                        eName.Text = _replayEnteredName;
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            eName.Text = _replayEnteredName;
+                        });
                         return false;
                     });
                 }

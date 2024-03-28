@@ -146,8 +146,8 @@ namespace GnollHackX.Pages.Game
             "Hostile townguard",
         };
 
-        private SKPoint[] _hoverAnimation = new SKPoint[] 
-        { 
+        private SKPoint[] _hoverAnimation = new SKPoint[]
+        {
             new SKPoint(1f, 2f),
             new SKPoint(1.5f, 1.75f),
             new SKPoint(2f, 1.5f),
@@ -400,14 +400,14 @@ namespace GnollHackX.Pages.Game
 
         private readonly object _forceAllMessagesLock = new object();
         private bool _forceAllMessages = false;
-        public bool ForceAllMessages 
-        { 
-            get { lock (_forceAllMessagesLock) { return _forceAllMessages; } } 
-            set 
-            { 
-                lock (_forceAllMessagesLock) 
-                { 
-                    _forceAllMessages = value; 
+        public bool ForceAllMessages
+        {
+            get { lock (_forceAllMessagesLock) { return _forceAllMessages; } }
+            set
+            {
+                lock (_forceAllMessagesLock)
+                {
+                    _forceAllMessages = value;
                 }
                 MessageFilterFrame.IsVisible = LongerMessageHistory && value;
                 if (MessageFilterEntry.Text != "")
@@ -428,14 +428,14 @@ namespace GnollHackX.Pages.Game
 
         private readonly object _lighterDarkeningLock = new object();
         private bool _lighterDarkening = false;
-        public bool LighterDarkening 
-        { 
-            get { lock (_lighterDarkeningLock) { return _lighterDarkening; } } 
-            set 
-            { 
-                lock (_lighterDarkeningLock) 
-                { 
-                    _lighterDarkening = value; 
+        public bool LighterDarkening
+        {
+            get { lock (_lighterDarkeningLock) { return _lighterDarkening; } }
+            set
+            {
+                lock (_lighterDarkeningLock)
+                {
+                    _lighterDarkening = value;
                 }
                 lock (_darkenedBitmapLock)
                 {
@@ -470,9 +470,9 @@ namespace GnollHackX.Pages.Game
             }
             set
             {
-                lock(_longerMessageHistoryLock) 
+                lock (_longerMessageHistoryLock)
                 {
-                    _longerMessageHistory = value; 
+                    _longerMessageHistory = value;
                 }
                 MessageFilterFrame.IsVisible = value && ForceAllMessages;
                 if (MessageFilterEntry.Text != "")
@@ -514,7 +514,7 @@ namespace GnollHackX.Pages.Game
         private ObjectDataItem _uChain = null;
         private ObjectDataItem _uBall = null;
 
-        private ObjectDataItem[] _weaponStyleObjDataItem= new ObjectDataItem[3];
+        private ObjectDataItem[] _weaponStyleObjDataItem = new ObjectDataItem[3];
         private readonly object _weaponStyleObjDataItemLock = new object();
         private bool _drawWeaponStyleAsGlyphs = true;
 
@@ -545,7 +545,7 @@ namespace GnollHackX.Pages.Game
 
                 _mapRefreshRate = value;
 
-                if(canvasView.AnimationIsRunning("GeneralAnimationCounter"))
+                if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
                     canvasView.AbortAnimation("GeneralAnimationCounter");
                 _mapUpdateStopWatch.Stop();
 
@@ -555,15 +555,15 @@ namespace GnollHackX.Pages.Game
         }
 
         public bool ShowMemoryUsage { get; set; }
-        public bool UseMainGLCanvas 
-        { 
-            get { return canvasView.UseGL; } 
-            set { 
-                canvasView.UseGL = value; 
+        public bool UseMainGLCanvas
+        {
+            get { return canvasView.UseGL; }
+            set {
+                canvasView.UseGL = value;
                 MenuCanvas.UseGL = value;
                 TextCanvas.UseGL = value;
                 CommandCanvas.UseGL = value;
-            } 
+            }
         }
         private bool _useSimpleCmdLayout = true;
         public bool UseSimpleCmdLayout
@@ -639,7 +639,10 @@ namespace GnollHackX.Pages.Game
         private bool _showPets = false;
         public bool ShowPets { get { lock (_showPetsLock) { return _showPets; } } set { lock (_showPetsLock) { _showPets = value; } } }
 
+        public readonly object _cursorIsOnLock = new object();
         private bool _cursorIsOn;
+        public bool CursorIsOn { get { lock (_cursorIsOnLock) { return _cursorIsOn; } } set { lock (_cursorIsOnLock) { _cursorIsOn = value; } } }
+
         private bool _showDirections = false;
         private bool _showNumberPad = false;
         private bool ShowNumberPad { get { return _showNumberPad; } set { _showNumberPad = value; } }
@@ -1088,82 +1091,91 @@ namespace GnollHackX.Pages.Game
             /* Polling timer */
             Device.StartTimer(TimeSpan.FromSeconds(1.0 / GHConstants.PollingFrequency), () =>
             {
-                if(!StartingPositionsSet && !canvasView.CanvasSize.IsEmpty && IsSizeAllocatedProcessed && lAbilitiesButton.Width > 0)
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    double statusbarheight = GetStatusBarHeight();
-                    lAbilitiesButton.HeightRequest = statusbarheight;
-                    lWornItemsButton.HeightRequest = statusbarheight;
-                    UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
-                    SimpleUpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
-                    StartingPositionsSet = true;
-                }
+                    if (!StartingPositionsSet && !canvasView.CanvasSize.IsEmpty && IsSizeAllocatedProcessed && lAbilitiesButton.Width > 0)
+                    {
+                        double statusbarheight = GetStatusBarHeight();
+                        lAbilitiesButton.HeightRequest = statusbarheight;
+                        lWornItemsButton.HeightRequest = statusbarheight;
+                        UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
+                        SimpleUpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
+                        StartingPositionsSet = true;
+                    }
 
-                pollRequestQueue();
-
+                    pollRequestQueue();
+                });
                 return IsGameOn;
             });
 
             /* Cursor and FPS update timer */
             Device.StartTimer(TimeSpan.FromSeconds(0.5), () =>
             {
-                _cursorIsOn = !_cursorIsOn;
-                if (ShowFPS)
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    if (!_stopWatch.IsRunning)
+                    lock (_cursorIsOnLock)
                     {
-                        _stopWatch.Restart();
+                        _cursorIsOn = !_cursorIsOn;
+                    }
+                    if (ShowFPS)
+                    {
+                        if (!_stopWatch.IsRunning)
+                        {
+                            _stopWatch.Restart();
+                        }
+                        else
+                        {
+                            _stopWatch.Stop();
+                            TimeSpan ts = _stopWatch.Elapsed;
+                            lock (_fpslock)
+                            {
+                                if (MoreCommandsGrid.IsVisible)
+                                {
+                                    lock (_commandFPSCounterLock)
+                                    {
+                                        _counterValueDiff = _commandFPSCounterValue - _previousCommandFPSCounterValue;
+                                        _previousCommandFPSCounterValue = _commandFPSCounterValue;
+                                    }
+                                }
+                                else
+                                {
+                                    lock (_mainFPSCounterLock)
+                                    {
+                                        _counterValueDiff = _mainFPSCounterValue - _previousMainFPSCounterValue;
+                                        _previousMainFPSCounterValue = _mainFPSCounterValue;
+                                    }
+                                    //lock (AnimationTimerLock)
+                                    //{
+                                    //    currentCounterValue = AnimationTimers.general_animation_counter;
+                                    //}
+                                }
+                                _fps = ts.TotalMilliseconds == 0.0 ? 0.0 : _counterValueDiff / (ts.TotalMilliseconds / 1000.0);
+                                if (_fps < 0.0f || _fps > 500.0f) /* Just in case if it is off somehow */
+                                {
+                                    _fps = 0.0;
+                                    _counterValueDiff = 0;
+                                }
+                            }
+                            _stopWatch.Restart();
+                        }
                     }
                     else
                     {
-                        _stopWatch.Stop();
-                        TimeSpan ts = _stopWatch.Elapsed;
-                        lock (_fpslock)
-                        {
-                            if(MoreCommandsGrid.IsVisible)
-                            {
-                                lock(_commandFPSCounterLock)
-                                {
-                                    _counterValueDiff = _commandFPSCounterValue - _previousCommandFPSCounterValue;
-                                    _previousCommandFPSCounterValue = _commandFPSCounterValue;
-                                }
-                            }
-                            else
-                            {
-                                lock (_mainFPSCounterLock)
-                                {
-                                    _counterValueDiff = _mainFPSCounterValue - _previousMainFPSCounterValue;
-                                    _previousMainFPSCounterValue = _mainFPSCounterValue;
-                                }
-                                //lock (AnimationTimerLock)
-                                //{
-                                //    currentCounterValue = AnimationTimers.general_animation_counter;
-                                //}
-                            }
-                            _fps = ts.TotalMilliseconds == 0.0 ? 0.0 : _counterValueDiff / (ts.TotalMilliseconds / 1000.0);
-                            if (_fps < 0.0f || _fps > 500.0f) /* Just in case if it is off somehow */
-                            {
-                                _fps = 0.0;
-                                _counterValueDiff = 0;
-                            }
-                        }
-                        _stopWatch.Restart();
+                        if (_stopWatch.IsRunning)
+                            _stopWatch.Stop();
                     }
-                }
-                else
-                {
-                    if (_stopWatch.IsRunning)
-                        _stopWatch.Stop();
-                }
-                if(PlayingReplay)
-                {
-                    string realTime = GHApp.ReplayRealTime;
-                    if (string.IsNullOrEmpty(realTime))
-                        ReplayRealTimeLabel.Text = "";
-                    else if (realTime != ReplayRealTimeLabel.Text)
-                        ReplayRealTimeLabel.Text = realTime;
+                    if (PlayingReplay)
+                    {
+                        string realTime = GHApp.ReplayRealTime;
+                        if (string.IsNullOrEmpty(realTime))
+                            ReplayRealTimeLabel.Text = "";
+                        else if (realTime != ReplayRealTimeLabel.Text)
+                            ReplayRealTimeLabel.Text = realTime;
 
-                    UpdateReplayHeaderLabel();
-                }
+                        UpdateReplayHeaderLabel();
+                    }
+                });
+
                 return IsGameOn;
             });
 
@@ -1721,7 +1733,10 @@ namespace GnollHackX.Pages.Game
         {
             Device.StartTimer(TimeSpan.FromSeconds(UIUtils.GetWindowHideSecs()), () =>
             {
-                LoadingGrid.IsVisible = false;
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    LoadingGrid.IsVisible = false;
+                });
                 return false;
             });
         }
@@ -2608,23 +2623,26 @@ namespace GnollHackX.Pages.Game
                 /* On iOS, fade in the text window. NOTE: this was originally a work-around for bad layout performance on iOS */
                 Device.StartTimer(TimeSpan.FromSeconds(1.0 / 20), () =>
                 {
-                    if (TextStack.AnimationIsRunning("TextHideAnimation"))
-                        TextStack.AbortAnimation("TextHideAnimation");
-                    TextStack.Opacity = 0.0;
-                    TextStack.IsVisible = true;
-                    Animation textAnimation = new Animation(v => TextStack.Opacity = (double)v, 0.0, 1.0);
-                    textAnimation.Commit(TextStack, "TextShowAnimation", length: 256,
-                        rate: 16, repeat: () => false);
-
-                    TextGrid.IsVisible = true;
-                    MainGrid.IsVisible = false;
-                    if (dohidemenu)
+                    MainThread.BeginInvokeOnMainThread(() =>
                     {
-                        MenuGrid.IsVisible = false;
-                    }
+                        if (TextStack.AnimationIsRunning("TextHideAnimation"))
+                            TextStack.AbortAnimation("TextHideAnimation");
+                        TextStack.Opacity = 0.0;
+                        TextStack.IsVisible = true;
+                        Animation textAnimation = new Animation(v => TextStack.Opacity = (double)v, 0.0, 1.0);
+                        textAnimation.Commit(TextStack, "TextShowAnimation", length: 256,
+                            rate: 16, repeat: () => false);
+
+                        TextGrid.IsVisible = true;
+                        MainGrid.IsVisible = false;
+                        if (dohidemenu)
+                        {
+                            MenuGrid.IsVisible = false;
+                        }
 #if !GNH_MAUI
-                    TextStack.ForceLayout();
+                        TextStack.ForceLayout();
 #endif
+                    });
                     return false;
                 });
             }
@@ -3411,23 +3429,26 @@ namespace GnollHackX.Pages.Game
                 /* On iOS, fade in the menu. NOTE: this was originally a work-around for bad layout performance on iOS */
                 Device.StartTimer(TimeSpan.FromSeconds(1.0 / 20), () =>
                 {
-                    if (MenuStack.AnimationIsRunning("MenuHideAnimation"))
-                        MenuStack.AbortAnimation("MenuHideAnimation");
-                    MenuStack.Opacity = 0.0;
-                    MenuStack.IsVisible = true;
-                    Animation menuAnimation = new Animation(v => MenuStack.Opacity = (double)v, 0.0, 1.0);
-                    menuAnimation.Commit(MenuStack, "MenuShowAnimation", length: 256,
-                        rate: 16, repeat: () => false);
-
-                    MenuGrid.IsVisible = true;
-                    MainGrid.IsVisible = false;
-                    if (dohidetext)
+                    MainThread.BeginInvokeOnMainThread(() =>
                     {
-                        TextGrid.IsVisible = false;
-                    }
+                        if (MenuStack.AnimationIsRunning("MenuHideAnimation"))
+                            MenuStack.AbortAnimation("MenuHideAnimation");
+                        MenuStack.Opacity = 0.0;
+                        MenuStack.IsVisible = true;
+                        Animation menuAnimation = new Animation(v => MenuStack.Opacity = (double)v, 0.0, 1.0);
+                        menuAnimation.Commit(MenuStack, "MenuShowAnimation", length: 256,
+                            rate: 16, repeat: () => false);
+
+                        MenuGrid.IsVisible = true;
+                        MainGrid.IsVisible = false;
+                        if (dohidetext)
+                        {
+                            TextGrid.IsVisible = false;
+                        }
 #if !GNH_MAUI
-                    MenuStack.ForceLayout();
+                        MenuStack.ForceLayout();
 #endif
+                    });
                     return false;
                 });
             }
@@ -6523,7 +6544,7 @@ namespace GnollHackX.Pages.Game
                             }
 
                             /* Cursor */
-                            if ((GraphicsStyle == GHGraphicsStyle.ASCII || ForceAscii) && CursorStyle == TTYCursorStyle.BlinkingUnderline && _cursorIsOn && _mapCursorX >= 1 && _mapCursorY >= 0)
+                            if ((GraphicsStyle == GHGraphicsStyle.ASCII || ForceAscii) && CursorStyle == TTYCursorStyle.BlinkingUnderline && CursorIsOn && _mapCursorX >= 1 && _mapCursorY >= 0)
                             {
                                 int cx = _mapCursorX, cy = _mapCursorY;
                                 str = "_";
@@ -13966,7 +13987,11 @@ namespace GnollHackX.Pages.Game
                                 if (curtime - _savedMenuTimeStamp < TimeSpan.FromSeconds(GHConstants.LongMenuTapThreshold * 0.8))
                                     return false; /* Changed touch position */
 
-                                MenuCanvas_LongTap(_savedMenuSender, _savedMenuEventArgs);
+                                MainThread.BeginInvokeOnMainThread(() =>
+                                {
+                                    MenuCanvas_LongTap(_savedMenuSender, _savedMenuEventArgs);
+                                });
+
                                 return false;
                             });
                         }
@@ -14521,16 +14546,19 @@ namespace GnollHackX.Pages.Game
                     }
                 }
 
-                MenuGrid.IsVisible = false;
-                MainGrid.IsVisible = true;
-                if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                    MenuCanvas.AbortAnimation("GeneralAnimationCounter");
-                MenuWindowGlyphImage.StopAnimation();
-                lock (RefreshScreenLock)
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    RefreshScreen = true;
-                }
-                StartMainCanvasAnimation();
+                    MenuGrid.IsVisible = false;
+                    MainGrid.IsVisible = true;
+                    if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
+                        MenuCanvas.AbortAnimation("GeneralAnimationCounter");
+                    MenuWindowGlyphImage.StopAnimation();
+                    lock (RefreshScreenLock)
+                    {
+                        RefreshScreen = true;
+                    }
+                    StartMainCanvasAnimation();
+                });
 
                 return false;
             });
@@ -14558,7 +14586,7 @@ namespace GnollHackX.Pages.Game
             }
             Device.StartTimer(TimeSpan.FromSeconds(UIUtils.GetWindowHideSecs()), () =>
             {
-                lock(_delayedTextHideLock)
+                lock (_delayedTextHideLock)
                 {
                     _delayedTextHideOn = false;
                     if (_delayedTextHideCancelled)
@@ -14567,22 +14595,27 @@ namespace GnollHackX.Pages.Game
                         return false;
                     }
                 }
-                TextGrid.IsVisible = false;
-                MainGrid.IsVisible = true;
-                TextWindowGlyphImage.StopAnimation();
-                lock (_textScrollLock)
+
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    _textScrollOffset = 0;
-                    _textScrollSpeed = 0;
-                    _textScrollSpeedOn = false;
-                }
-                if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                    TextCanvas.AbortAnimation("GeneralAnimationCounter");
-                lock (RefreshScreenLock)
-                {
-                    RefreshScreen = true;
-                }
-                StartMainCanvasAnimation();
+                    TextGrid.IsVisible = false;
+                    MainGrid.IsVisible = true;
+                    TextWindowGlyphImage.StopAnimation();
+                    lock (_textScrollLock)
+                    {
+                        _textScrollOffset = 0;
+                        _textScrollSpeed = 0;
+                        _textScrollSpeedOn = false;
+                    }
+                    if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
+                        TextCanvas.AbortAnimation("GeneralAnimationCounter");
+                    lock (RefreshScreenLock)
+                    {
+                        RefreshScreen = true;
+                    }
+                    StartMainCanvasAnimation();
+                });
+
                 return false;
             });
         }

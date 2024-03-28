@@ -206,9 +206,11 @@ namespace GnollHackX.Pages.MainScreen
             {
                 Device.StartTimer(TimeSpan.FromSeconds(1.0 / 20), () =>
                 {
-                    Animation displayFileAnimation = new Animation(v => DisplayWebView.Opacity = (double)v, 0.0, 1.0);
-                        displayFileAnimation.Commit(MainGrid, "DisplayFileShowAnimation", length: 256,
-                    rate: 16, repeat: () => false);
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        Animation displayFileAnimation = new Animation(v => DisplayWebView.Opacity = (double)v, 0.0, 1.0);
+                        displayFileAnimation.Commit(MainGrid, "DisplayFileShowAnimation", length: 256, rate: 16, repeat: () => false);
+                    });
                     return false;
                 });
             }
