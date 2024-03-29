@@ -227,7 +227,6 @@ namespace GnollHackX
 
             return res;
         }
-        public LayoutOptions MainTextVerticalOptions { get { return IsSuffixTextVisible ? LayoutOptions.EndAndExpand : LayoutOptions.CenterAndExpand; } }
         public TextAlignment MainTextVerticalTextAlign { get { return IsSuffixTextVisible ? TextAlignment.End : TextAlignment.Center; } }
         public bool IsGlyphVisible { get { return (Glyph != _noGlyph); } }
 

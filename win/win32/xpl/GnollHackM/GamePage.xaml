@@ -211,7 +211,7 @@
                 </StackLayout>
                 <Grid x:Name="MenuCountBackgroundGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
                          BackgroundColor="#66000000" IsVisible="False">
-                    <Grid x:Name="MenuCountForegroundGrid" WidthRequest="360" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                    <Grid x:Name="MenuCountForegroundGrid" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="Center">
                         <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
                             <StackLayout Spacing="6" x:Name="MenuCountLayout" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
                                 <Label x:Name="MenuCountCaption" Text="Select Count" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />

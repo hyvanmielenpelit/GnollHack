@@ -2187,9 +2187,9 @@ namespace GnollHackX.Pages.Game
                 PopupGrid.BackgroundColor = GHColors.Transparent;
                 PopupFrame.BackgroundColor = _popupDarkerTransparentBlackColor;
                 if (data.glyph != 0 && data.glyph != GHApp.NoGlyph)
-                    PopupTitleLayout.HorizontalOptions = LayoutOptions.StartAndExpand;
+                    PopupTitleLayout.HorizontalOptions = LayoutOptions.Start;
                 else
-                    PopupTitleLayout.HorizontalOptions = LayoutOptions.CenterAndExpand;
+                    PopupTitleLayout.HorizontalOptions = LayoutOptions.Center;
             }
             else if (data.style == (int)popup_text_types.POPUP_TEXT_REVIVAL)
             {
@@ -2200,7 +2200,7 @@ namespace GnollHackX.Pages.Game
                     PopupLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, false);
                 PopupGrid.BackgroundColor = _popupTransparentBlackColor;
                 PopupFrame.BackgroundColor = _popupTransparentBlackColor;
-                PopupTitleLayout.HorizontalOptions = LayoutOptions.CenterAndExpand;
+                PopupTitleLayout.HorizontalOptions = LayoutOptions.Center;
             }
             else
             {
@@ -2216,7 +2216,7 @@ namespace GnollHackX.Pages.Game
                 }
                 PopupGrid.BackgroundColor = _popupTransparentBlackColor;
                 PopupFrame.BackgroundColor = _popupTransparentBlackColor;
-                PopupTitleLayout.HorizontalOptions = LayoutOptions.CenterAndExpand;
+                PopupTitleLayout.HorizontalOptions = LayoutOptions.Center;
             }
 
             PopupImage.Source = null;
@@ -2787,7 +2787,7 @@ namespace GnollHackX.Pages.Game
             YnImage.Source = null;
             if (glyph != 0 && glyph != GHApp.NoGlyph)
             {
-                YnTitleLayout.HorizontalOptions = LayoutOptions.StartAndExpand;
+                YnTitleLayout.HorizontalOptions = LayoutOptions.Start;
                 _ynImageSource.ReferenceGamePage = this;
                 _ynImageSource.UseUpperSide = (ynflags & 1) != 0;
                 _ynImageSource.Glyph = glyph;
@@ -2797,7 +2797,7 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
-                YnTitleLayout.HorizontalOptions = LayoutOptions.CenterAndExpand;
+                YnTitleLayout.HorizontalOptions = LayoutOptions.Center;
                 YnImage.IsVisible = false;
             }
 
@@ -8311,7 +8311,7 @@ namespace GnollHackX.Pages.Game
                                                 curx += target_width;
                                                 curx += innerspacing;
                                             }
-                                            ///* Ammo */
+                                            /* Ammo */
                                             //if (_weaponStyleObjDataItem[2] != null)
                                             //{
                                             //    string printtext = "+";
@@ -14362,7 +14362,7 @@ namespace GnollHackX.Pages.Game
 
             if (_countMenuItem.MaxCount > 100)
             {
-                MenuCountForegroundGrid.VerticalOptions = LayoutOptions.StartAndExpand;
+                MenuCountForegroundGrid.VerticalOptions = LayoutOptions.Start;
                 MenuCountForegroundGrid.Margin = new Thickness(0, 50, 0, 0);
                 CountPicker.IsVisible = false;
                 MenuCountEntry.IsVisible = true;
@@ -14373,7 +14373,7 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
-                MenuCountForegroundGrid.VerticalOptions = LayoutOptions.CenterAndExpand;
+                MenuCountForegroundGrid.VerticalOptions = LayoutOptions.Center;
                 MenuCountForegroundGrid.Margin = new Thickness(0, 0, 0, 0);
                 CountPicker.IsVisible = true;
                 MenuCountEntry.IsVisible = false;
