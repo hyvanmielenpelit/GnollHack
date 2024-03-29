@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using SkiaSharp.Views.Maui.Controls.Hosting;
+#if IOS
+using GnollHackM.Platforms.iOS;
+#endif
 
 namespace GnollHackM;
 
@@ -11,6 +14,11 @@ public static class MauiProgram
 		builder
 			.UseMauiApp<App>()
             .UseSkiaSharp()
+            .ConfigureMauiHandlers((handlers) => {
+#if IOS
+               handlers.AddHandler(typeof(Shell), typeof(CustomShellRenderer));  
+#endif
+            })
             .ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
