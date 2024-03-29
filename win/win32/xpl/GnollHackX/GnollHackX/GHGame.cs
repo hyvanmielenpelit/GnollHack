@@ -1107,7 +1107,7 @@ namespace GnollHackX
                                 int arraysize = (int)bl_conditions.NUM_BL_CONDITIONS; // (int)nhcolor.CLR_MAX + 5;
                                 short[] condcolors = new short[arraysize];
                                 bool condcolorset = false;
-                                if (condcolorptr != null)
+                                if (condcolorptr != IntPtr.Zero)
                                 {
                                     Marshal.Copy(condcolorptr, condcolors, 0, arraysize);
                                     condcolorset = true;

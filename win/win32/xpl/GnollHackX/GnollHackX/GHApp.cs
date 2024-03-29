@@ -707,10 +707,12 @@ namespace GnollHackX
         public static readonly bool IsAndroid = (DeviceInfo.Platform == DevicePlatform.Android);
         public static readonly bool IsiOS = (DeviceInfo.Platform == DevicePlatform.iOS);
         public static readonly bool IsMaui = true;
+        public static readonly string RuntimePlatform = DeviceInfo.Platform.ToString();
 #else
         public static readonly bool IsAndroid = (Device.RuntimePlatform == Device.Android);
         public static readonly bool IsiOS = (Device.RuntimePlatform == Device.iOS);
         public static readonly bool IsMaui = false;
+        public static readonly string RuntimePlatform = Device.RuntimePlatform;
 #endif
         public static readonly float DisplayScale = DeviceDisplay.MainDisplayInfo.Density <= 0 ? 1.0f : (float)DeviceDisplay.MainDisplayInfo.Density;
         public static readonly float DisplayWidth = (float)DeviceDisplay.MainDisplayInfo.Width * DisplayScale;
@@ -4040,7 +4042,7 @@ namespace GnollHackX
 
             string portver = VersionTracking.CurrentVersion;
             DevicePlatform platform = DeviceInfo.Platform;
-            string platstr = platform != null ? platform.ToString() : "";
+            string platstr = platform.ToString();
             if (platstr == null)
                 platstr = "";
             string platid;

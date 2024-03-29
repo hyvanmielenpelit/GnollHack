@@ -8,7 +8,7 @@
     <ContentPage.Content>
         <Grid>
             <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-            <Grid x:Name="MainGrid" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
+            <Grid x:Name="MainGrid" RowSpacing="6" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
@@ -20,7 +20,7 @@
                 <Label x:Name="HeaderLabel" Text="Version" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="Black" FontFamily="Immortal"/>
                 <ScrollView x:Name="TextScrollView" Grid.Row="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
                     <StackLayout Spacing="6">
-                        <Grid x:Name="VersionInfoGrid">
+                        <Grid x:Name="VersionInfoGrid" RowSpacing="4" ColumnSpacing="1">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
@@ -112,7 +112,7 @@
                             <Label Grid.Row="15" Grid.Column="1" x:Name="GameDurationLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
                         </Grid>
-                        <Grid x:Name="LongVersionGrid">
+                        <Grid x:Name="LongVersionGrid" RowSpacing="4">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />

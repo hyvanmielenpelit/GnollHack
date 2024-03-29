@@ -24,7 +24,7 @@ struct objclassdata
     int tile_height;
     short special_quality;
     short max_charges;
-    uchar nhcolor;
+    uchar nh_color;
 
     /* Temporary extra data */
     uchar lamplit;

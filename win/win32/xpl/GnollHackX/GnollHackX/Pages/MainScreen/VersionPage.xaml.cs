@@ -88,8 +88,8 @@ namespace GnollHackX.Pages.MainScreen
                 VersionInfoGrid.RowDefinitions.Remove(SessionPlayTimeRowDefinition);
             }
 
-            PortVersionTitleLabel.Text = Device.RuntimePlatform + " Port Version:";
-            PortBuildTitleLabel.Text = Device.RuntimePlatform + " Port Build:";
+            PortVersionTitleLabel.Text = GHApp.RuntimePlatform + " Port Version:";
+            PortBuildTitleLabel.Text = GHApp.RuntimePlatform + " Port Build:";
             PortConfigurationTitleLabel.Text ="Port Configuration:";
 
             GnollHackVersionLabel.Text = GHApp.GHVersionString;

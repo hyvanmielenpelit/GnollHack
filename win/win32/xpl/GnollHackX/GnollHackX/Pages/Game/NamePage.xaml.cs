@@ -113,20 +113,33 @@ namespace GnollHackX.Pages.Game
             {
                 if(!string.IsNullOrWhiteSpace(_replayEnteredName))
                 {
+#if GNH_MAUI
+                    var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+                    timer.Interval = TimeSpan.FromSeconds(UIUtils.GetWindowHideSecs());
+                    timer.IsRepeating = false;
+                    timer.Tick += (s, e) => { ReplayDoEnterName(); };
+                    timer.Start();
+#else
                     Device.StartTimer(TimeSpan.FromMilliseconds(GHConstants.ReplayAskNameDelay1), () =>
                     {
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            eName.Text = _replayEnteredName;
-                        });
+                        ReplayDoEnterName();
                         return false;
                     });
+#endif
                 }
             }
             else
             {
                 eName.Focus();
             }
+        }
+
+        private void ReplayDoEnterName()
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                eName.Text = _replayEnteredName;
+            });
         }
 
         private bool _backPressed = false;

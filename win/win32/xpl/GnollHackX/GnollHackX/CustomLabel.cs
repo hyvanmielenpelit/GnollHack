@@ -1063,7 +1063,7 @@ namespace GnollHackX
                 }
                 else
                 {
-                    if (_textScrollSpeedReleaseStamp != null)
+                    //if (_textScrollSpeedReleaseStamp != null)
                     {
                         long millisecs_elapsed = (DateTime.Now.Ticks - _textScrollSpeedReleaseStamp.Ticks) / TimeSpan.TicksPerMillisecond;
                         if (millisecs_elapsed > GHConstants.FreeScrollingTime)

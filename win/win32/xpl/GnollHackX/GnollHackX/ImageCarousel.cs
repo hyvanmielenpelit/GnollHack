@@ -76,7 +76,10 @@ namespace GnollHackX
         public const long _slideDurationInMilliseconds = 15000;
         public const long _transitionDurationInMilliseconds = 3000;
 
-        public long _counterValue;
+        private readonly object _counterValueLock = new object();
+        private long _counterValue;
+        public long CounterValue { get { lock (_counterValueLock) { return _counterValue; } } set { lock (_counterValueLock) { _counterValue = value; } } }
+
         private readonly object _timerIsOnLock = new object();
         private bool _timerIsOn = false;
         public bool CheckTimerOnAndSetTrue { get { lock (_timerIsOnLock) { bool oldValue = _timerIsOn; _timerIsOn = true; return oldValue; } } }
@@ -89,21 +92,39 @@ namespace GnollHackX
             InvalidateSurface();
             if(!CheckTimerOnAndSetTrue)
             {
+#if GNH_MAUI
+                    var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+                    timer.Interval = TimeSpan.FromSeconds(1.0 / _refreshFrequency);
+                    timer.IsRepeating = true;
+                    timer.Tick += (s, e) => { DoIncrementCounter(); if (!TimerIsOn) timer.Stop(); };
+                    timer.Start();
+#else
                 Device.StartTimer(TimeSpan.FromSeconds(1.0 / _refreshFrequency), () =>
                 {
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        _counterValue++;
-                        if (_counterValue >= (long)int.MaxValue)
-                            _counterValue = 0;
-                        byte alpha = GetSecondBitmapAlpha(_counterValue);
-                        byte prevalpha = GetSecondBitmapAlpha(_counterValue - 1);
-                        if (alpha > 0 || prevalpha > 0)
-                            InvalidateSurface();
-                    });
+                    DoIncrementCounter();
                     return TimerIsOn;
                 });
+#endif
             }
+        }
+
+        private void DoIncrementCounter()
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                long counter;
+                lock (_counterValueLock)
+                {
+                    _counterValue++;
+                    if (_counterValue >= (long)int.MaxValue)
+                        _counterValue = 0;
+                    counter = _counterValue;
+                }
+                byte alpha = GetSecondBitmapAlpha(counter);
+                byte prevalpha = GetSecondBitmapAlpha(counter - 1);
+                if (alpha > 0 || prevalpha > 0)
+                    InvalidateSurface();
+            });
         }
 
         public void Stop()
@@ -199,7 +220,7 @@ namespace GnollHackX
 
                         if (cnt > 1)
                         {
-                            byte alpha = GetSecondBitmapAlpha(_counterValue);
+                            byte alpha = GetSecondBitmapAlpha(CounterValue);
                             if (alpha > 0)
                             {
                                 int idx2 = GetSecondBitmapIndex();
@@ -261,7 +282,7 @@ namespace GnollHackX
             int cnt = _caruselBitmaps.Length;
             if(cnt == 0)
                 return 0;
-            long idx = _counterValue * 1000 / (_slideDurationInMilliseconds * _refreshFrequency);
+            long idx = CounterValue * 1000 / (_slideDurationInMilliseconds * _refreshFrequency);
             return (int)idx % cnt;
         }
 

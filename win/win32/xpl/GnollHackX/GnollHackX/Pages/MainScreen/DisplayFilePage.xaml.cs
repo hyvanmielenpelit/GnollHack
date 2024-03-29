@@ -204,16 +204,29 @@ namespace GnollHackX.Pages.MainScreen
         {
             if (GHApp.IsiOS && _isHtml)
             {
+#if GNH_MAUI
+                var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+                timer.Interval = TimeSpan.FromSeconds(1.0 / 20);
+                timer.IsRepeating = false;
+                timer.Tick += (s, e) => { DoiOSShowGrid(); };
+                timer.Start();
+#else
                 Device.StartTimer(TimeSpan.FromSeconds(1.0 / 20), () =>
                 {
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        Animation displayFileAnimation = new Animation(v => DisplayWebView.Opacity = (double)v, 0.0, 1.0);
-                        displayFileAnimation.Commit(MainGrid, "DisplayFileShowAnimation", length: 256, rate: 16, repeat: () => false);
-                    });
+                    DoiOSShowGrid();
                     return false;
                 });
+#endif
             }
+        }
+
+        private void DoiOSShowGrid()
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                Animation displayFileAnimation = new Animation(v => DisplayWebView.Opacity = (double)v, 0.0, 1.0);
+                displayFileAnimation.Commit(MainGrid, "DisplayFileShowAnimation", length: 256, rate: 16, repeat: () => false);
+            });
         }
     }
  }

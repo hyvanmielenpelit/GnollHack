@@ -55,6 +55,9 @@ namespace GnollHackX
         private object _stopGeneralTimerLock = new object();
         private bool _stopGeneraTimerIsOn = false;
         public bool StopGeneralTimer { get { lock (_stopGeneralTimerLock) { return _stopGeneraTimerIsOn; } } set { lock (_stopGeneralTimerLock) { _stopGeneraTimerIsOn = value; } } }
+#if GNH_MAUI
+        IDispatcherTimer _generalTimer;
+#endif
 
         public MainPage()
         {
@@ -62,6 +65,10 @@ namespace GnollHackX
 #if GNH_MAUI
             On<iOS>().SetUseSafeArea(true);
             Shell.SetNavBarIsVisible(this, false);
+            _generalTimer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+            _generalTimer.Interval = TimeSpan.FromSeconds(GHConstants.MainScreenGeneralCounterIntervalInSeconds);
+            _generalTimer.IsRepeating = true;
+            _generalTimer.Tick += (s, e) => { if(!DoGeneralTimerTick()) _generalTimer.Stop(); };
 #else
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
 #endif
@@ -72,21 +79,30 @@ namespace GnollHackX
             if(!CheckAndSetGeneralTimerIsOn)
             {
                 GeneralTimerTasks();
+#if GNH_MAUI
+                _generalTimer.Start();
+#else
                 Device.StartTimer(TimeSpan.FromSeconds(GHConstants.MainScreenGeneralCounterIntervalInSeconds), () =>
                 {
-                    if (GameStarted || StopGeneralTimer)
-                    {
-                        GeneralTimerIsOn = false;
-                        StopGeneralTimer = false;
-                        return false;
-                    }
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        GeneralTimerTasks();
-                    });
-                    return true;
+                    return DoGeneralTimerTick();
                 });
+#endif
             }
+        }
+
+        private bool DoGeneralTimerTick()
+        {
+            if (GameStarted || StopGeneralTimer)
+            {
+                GeneralTimerIsOn = false;
+                StopGeneralTimer = false;
+                return false;
+            }
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                GeneralTimerTasks();
+            });
+            return true;
         }
 
         private async void GeneralTimerTasks()
@@ -1030,7 +1046,7 @@ namespace GnollHackX
 
         private void UpdateMobileVersionLabel()
         {
-            MobileVersionLabel.Text = Device.RuntimePlatform + " Version";
+            MobileVersionLabel.Text = GHApp.RuntimePlatform + " Version";
         }
 
         private void ClassicModeSwitch_Toggled(object sender, ToggledEventArgs e)

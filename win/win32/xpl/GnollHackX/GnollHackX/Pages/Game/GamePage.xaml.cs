@@ -850,9 +850,17 @@ namespace GnollHackX.Pages.Game
         {
             float c_numerator = 1.0f;
             float c_denominator = 1.0f;
-            TargetIdiom ti = Device.Idiom;
             var mainDisplayInfo = DeviceDisplay.MainDisplayInfo;
             float density = (float)mainDisplayInfo.Density;
+#if GNH_MAUI
+            DeviceIdiom ti = DeviceInfo.Idiom;
+            if(ti == DeviceIdiom.Tablet || ti == DeviceIdiom.Phone)
+            {
+                c_numerator = 2.0f;
+                c_denominator = 3.0f;
+            }
+#else
+            TargetIdiom ti = Device.Idiom;
             switch (ti)
             {
                 case TargetIdiom.Tablet:
@@ -863,6 +871,7 @@ namespace GnollHackX.Pages.Game
                 default:
                     break;
             }
+#endif
             return GHConstants.MapFontDefaultSize * (density * c_numerator) / c_denominator;
         }
 
@@ -1330,7 +1339,7 @@ namespace GnollHackX.Pages.Game
                             }
                             else
                             {
-                                if (_messageScrollSpeedReleaseStamp != null)
+                                //if (_messageScrollSpeedReleaseStamp != null)
                                 {
                                     long millisecs_elapsed = (DateTime.Now.Ticks - _messageScrollSpeedReleaseStamp.Ticks) / TimeSpan.TicksPerMillisecond;
                                     if (millisecs_elapsed > GHConstants.FreeScrollingTime)
@@ -1438,7 +1447,7 @@ namespace GnollHackX.Pages.Game
                             }
                             else
                             {
-                                if(_menuScrollSpeedReleaseStamp != null)
+                                //if(_menuScrollSpeedReleaseStamp != null)
                                 {
                                     long millisecs_elapsed = (DateTime.Now.Ticks - _menuScrollSpeedReleaseStamp.Ticks) / TimeSpan.TicksPerMillisecond;
                                     if (millisecs_elapsed > GHConstants.FreeScrollingTime)
@@ -1520,7 +1529,7 @@ namespace GnollHackX.Pages.Game
                         }
                         else
                         {
-                            if (_textScrollSpeedReleaseStamp != null)
+                            //if (_textScrollSpeedReleaseStamp != null)
                             {
                                 long millisecs_elapsed = (DateTime.Now.Ticks - _textScrollSpeedReleaseStamp.Ticks) / TimeSpan.TicksPerMillisecond;
                                 if (millisecs_elapsed > GHConstants.FreeScrollingTime)
@@ -3482,30 +3491,19 @@ namespace GnollHackX.Pages.Game
             if (GHApp.IsiOS)
             {
                 /* On iOS, fade in the menu. NOTE: this was originally a work-around for bad layout performance on iOS */
+#if GNH_MAUI
+                var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+                timer.Interval = TimeSpan.FromSeconds(1.0 / 20);
+                timer.IsRepeating = false;
+                timer.Tick += (s, e) => { DoiOSShowMenuCanvas(dohidetext); };
+                timer.Start();
+#else
                 Device.StartTimer(TimeSpan.FromSeconds(1.0 / 20), () =>
                 {
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        if (MenuStack.AnimationIsRunning("MenuHideAnimation"))
-                            MenuStack.AbortAnimation("MenuHideAnimation");
-                        MenuStack.Opacity = 0.0;
-                        MenuStack.IsVisible = true;
-                        Animation menuAnimation = new Animation(v => MenuStack.Opacity = (double)v, 0.0, 1.0);
-                        menuAnimation.Commit(MenuStack, "MenuShowAnimation", length: 256,
-                            rate: 16, repeat: () => false);
-
-                        MenuGrid.IsVisible = true;
-                        MainGrid.IsVisible = false;
-                        if (dohidetext)
-                        {
-                            TextGrid.IsVisible = false;
-                        }
-#if !GNH_MAUI
-                        MenuStack.ForceLayout();
-#endif
-                    });
+                    DoiOSShowMenuCanvas(dohidetext);
                     return false;
                 });
+#endif
             }
             else
             {
@@ -3522,6 +3520,30 @@ namespace GnollHackX.Pages.Game
             _mapUpdateStopWatch.Stop();
             StartMenuCanvasAnimation();
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuCanvas End");
+        }
+
+        private void DoiOSShowMenuCanvas(bool dohidetext)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                if (MenuStack.AnimationIsRunning("MenuHideAnimation"))
+                    MenuStack.AbortAnimation("MenuHideAnimation");
+                MenuStack.Opacity = 0.0;
+                MenuStack.IsVisible = true;
+                Animation menuAnimation = new Animation(v => MenuStack.Opacity = (double)v, 0.0, 1.0);
+                menuAnimation.Commit(MenuStack, "MenuShowAnimation", length: 256,
+                    rate: 16, repeat: () => false);
+
+                MenuGrid.IsVisible = true;
+                MainGrid.IsVisible = false;
+                if (dohidetext)
+                {
+                    TextGrid.IsVisible = false;
+                }
+#if !GNH_MAUI
+                        MenuStack.ForceLayout();
+#endif
+            });
         }
 
         private async void ShowOutRipPage(GHOutRipInfo outripinfo, GHWindow ghwindow)
@@ -11966,14 +11988,18 @@ namespace GnollHackX.Pages.Game
                             {
                                 _savedSender = sender;
                                 _savedEventArgs = e;
+#if GNH_MAUI
+                                var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+                                timer.Interval = TimeSpan.FromSeconds(GHConstants.MoveByHoldingDownThreshold);
+                                timer.IsRepeating = true;
+                                timer.Tick += (s, e) => { if(!DoMoveByHoldingDown()) timer.Stop(); };
+                                timer.Start();
+#else
                                 Device.StartTimer(TimeSpan.FromSeconds(GHConstants.MoveByHoldingDownThreshold), () =>
                                 {
-                                    if (_savedSender == null || _savedEventArgs == null)
-                                        return false;
-
-                                    IssueNHCommandViaTouch(_savedSender, _savedEventArgs);
-                                    return true; /* Continue until cancelled */
+                                    return DoMoveByHoldingDown();
                                 });
+#endif
                             }
                         }
                         else if (ShowExtendedStatusBar)
@@ -12477,6 +12503,15 @@ namespace GnollHackX.Pages.Game
                         break;
                 }
             }
+        }
+
+        private bool DoMoveByHoldingDown()
+        {
+            if (_savedSender == null || _savedEventArgs == null)
+                return false;
+
+            IssueNHCommandViaTouch(_savedSender, _savedEventArgs);
+            return true; /* Continue until cancelled */
         }
 
         public uint PetRectContains(SKPoint p)
@@ -14034,21 +14069,19 @@ namespace GnollHackX.Pages.Game
 
                         if (MenuCanvas.AllowLongTap)
                         {
+#if GNH_MAUI
+                            var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+                            timer.Interval = TimeSpan.FromSeconds(GHConstants.LongMenuTapThreshold);
+                            timer.IsRepeating = false;
+                            timer.Tick += (s, e) => { DoLongMenuTap(); };
+                            timer.Start();
+#else
                             Device.StartTimer(TimeSpan.FromSeconds(GHConstants.LongMenuTapThreshold), () =>
                             {
-                                if (_savedMenuSender == null || _savedMenuEventArgs == null)
-                                    return false;
-                                DateTime curtime = DateTime.Now;
-                                if (curtime - _savedMenuTimeStamp < TimeSpan.FromSeconds(GHConstants.LongMenuTapThreshold * 0.8))
-                                    return false; /* Changed touch position */
-
-                                MainThread.BeginInvokeOnMainThread(() =>
-                                {
-                                    MenuCanvas_LongTap(_savedMenuSender, _savedMenuEventArgs);
-                                });
-
+                                DoLongMenuTap();
                                 return false;
                             });
+#endif
                         }
                     }
 
@@ -14266,6 +14299,20 @@ namespace GnollHackX.Pages.Game
                 default:
                     break;
             }
+        }
+
+        private void DoLongMenuTap()
+        {
+            if (_savedMenuSender == null || _savedMenuEventArgs == null)
+                return;
+            DateTime curtime = DateTime.Now;
+            if (curtime - _savedMenuTimeStamp < TimeSpan.FromSeconds(GHConstants.LongMenuTapThreshold * 0.8))
+                return; /* Changed touch position */
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                MenuCanvas_LongTap(_savedMenuSender, _savedMenuEventArgs);
+            });
         }
 
         private GHMenuItem _countMenuItem = null;
@@ -14579,6 +14626,7 @@ namespace GnollHackX.Pages.Game
                 _menuHideCancelled = false;
                 _menuHideOn = true;
             }
+
             if(GHApp.IsiOS)
             {
                 if (MenuStack.AnimationIsRunning("MenuShowAnimation"))
@@ -14589,33 +14637,46 @@ namespace GnollHackX.Pages.Game
                     rate: 16, repeat: () => false);
                 //MenuStack.IsVisible = false;
             }
+
+#if GNH_MAUI
+            var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+            timer.Interval = TimeSpan.FromSeconds(UIUtils.GetWindowHideSecs());
+            timer.IsRepeating = false;
+            timer.Tick += (s, e) => { DoTimedMenuHide(); };
+            timer.Start();
+#else
             Device.StartTimer(TimeSpan.FromSeconds(UIUtils.GetWindowHideSecs()), () =>
             {
-                lock (_menuHideCancelledLock)
-                {
-                    _menuHideOn = false;
-                    if (_menuHideCancelled)
-                    {
-                        _menuHideCancelled = false;
-                        return false;
-                    }
-                }
-
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    MenuGrid.IsVisible = false;
-                    MainGrid.IsVisible = true;
-                    if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                        MenuCanvas.AbortAnimation("GeneralAnimationCounter");
-                    MenuWindowGlyphImage.StopAnimation();
-                    lock (RefreshScreenLock)
-                    {
-                        RefreshScreen = true;
-                    }
-                    StartMainCanvasAnimation();
-                });
-
+                DoTimedMenuHide();
                 return false;
+            });
+#endif
+        }
+
+        private void DoTimedMenuHide()
+        {
+            lock (_menuHideCancelledLock)
+            {
+                _menuHideOn = false;
+                if (_menuHideCancelled)
+                {
+                    _menuHideCancelled = false;
+                    return;
+                }
+            }
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                MenuGrid.IsVisible = false;
+                MainGrid.IsVisible = true;
+                if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
+                    MenuCanvas.AbortAnimation("GeneralAnimationCounter");
+                MenuWindowGlyphImage.StopAnimation();
+                lock (RefreshScreenLock)
+                {
+                    RefreshScreen = true;
+                }
+                StartMainCanvasAnimation();
             });
         }
 
@@ -14639,39 +14700,51 @@ namespace GnollHackX.Pages.Game
                     rate: 16, repeat: () => false);
                 //TextStack.IsVisible = false;
             }
+#if GNH_MAUI
+            var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+            timer.Interval = TimeSpan.FromSeconds(UIUtils.GetWindowHideSecs());
+            timer.IsRepeating = false;
+            timer.Tick += (s, e) => { DoTimedTextHide(); };
+            timer.Start();
+#else
             Device.StartTimer(TimeSpan.FromSeconds(UIUtils.GetWindowHideSecs()), () =>
             {
-                lock (_delayedTextHideLock)
-                {
-                    _delayedTextHideOn = false;
-                    if (_delayedTextHideCancelled)
-                    {
-                        _delayedTextHideCancelled = false;
-                        return false;
-                    }
-                }
-
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    TextGrid.IsVisible = false;
-                    MainGrid.IsVisible = true;
-                    TextWindowGlyphImage.StopAnimation();
-                    lock (_textScrollLock)
-                    {
-                        _textScrollOffset = 0;
-                        _textScrollSpeed = 0;
-                        _textScrollSpeedOn = false;
-                    }
-                    if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                        TextCanvas.AbortAnimation("GeneralAnimationCounter");
-                    lock (RefreshScreenLock)
-                    {
-                        RefreshScreen = true;
-                    }
-                    StartMainCanvasAnimation();
-                });
-
+                DoTimedTextHide();
                 return false;
+            });
+#endif
+        }
+
+        private void DoTimedTextHide()
+        {
+            lock (_delayedTextHideLock)
+            {
+                _delayedTextHideOn = false;
+                if (_delayedTextHideCancelled)
+                {
+                    _delayedTextHideCancelled = false;
+                    return;
+                }
+            }
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                TextGrid.IsVisible = false;
+                MainGrid.IsVisible = true;
+                TextWindowGlyphImage.StopAnimation();
+                lock (_textScrollLock)
+                {
+                    _textScrollOffset = 0;
+                    _textScrollSpeed = 0;
+                    _textScrollSpeedOn = false;
+                }
+                if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
+                    TextCanvas.AbortAnimation("GeneralAnimationCounter");
+                lock (RefreshScreenLock)
+                {
+                    RefreshScreen = true;
+                }
+                StartMainCanvasAnimation();
             });
         }
 

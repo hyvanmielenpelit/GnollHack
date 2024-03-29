@@ -105,33 +105,24 @@ namespace GnollHackX
                 int glyph = ActiveGlyphImageSource.Glyph;
                 int absglyph = Math.Abs(glyph);
                 int tile = absglyph < GHApp.Glyph2Tile.Length ? GHApp.Glyph2Tile[absglyph] : 0;
-                int anim = tile < GHApp.Tile2Animation.Length ? GHApp.Tile2Animation[tile] : 0;
+                short anim = tile < GHApp.Tile2Animation.Length ? GHApp.Tile2Animation[tile] : (short)0;
                 long _refreshFrequency = (long)Math.Min(60, UIUtils.GetAuxiliaryCanvasAnimationFrequency());
                 if(anim > 0 &&  !_TimerOn)
                 {
                     _StopAnimation = false;
                     _TimerOn = true;
+#if GNH_MAUI
+                    var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+                    timer.Interval = TimeSpan.FromSeconds(1.0 / _refreshFrequency);
+                    timer.IsRepeating = true;
+                    timer.Tick += (s, e) => { if(!DoStartCheck()) timer.Stop(); };
+                    timer.Start();
+#else
                     Device.StartTimer(TimeSpan.FromSeconds(1.0 / _refreshFrequency), () =>
                     {
-                        if (ActiveGlyphImageSource == null ||  GHApp.Glyph2Tile == null || GHApp.Tile2Animation == null || _StopAnimation)
-                        {
-                            _TimerOn = false;
-                            return false;
-                        }
-                        glyph = ActiveGlyphImageSource.Glyph;
-                        absglyph = Math.Abs(glyph);
-                        tile = absglyph < GHApp.Glyph2Tile.Length ? GHApp.Glyph2Tile[absglyph] : 0;
-                        anim = tile < GHApp.Tile2Animation.Length ? GHApp.Tile2Animation[tile] : 0;
-                        _TimerOn = anim > 0;
-                        if (anim > 0)
-                        {
-                            MainThread.BeginInvokeOnMainThread(() =>
-                            {
-                                InvalidateSurface();
-                            });
-                        }
-                        return anim > 0;
+                        return DoStartCheck();
                     });
+#endif
                 }
                 else if (anim == 0 && _TimerOn)
                 {
@@ -142,6 +133,28 @@ namespace GnollHackX
             {
                 _StopAnimation = true;
             }
+        }
+
+        private bool DoStartCheck()
+        {
+            if (ActiveGlyphImageSource == null || GHApp.Glyph2Tile == null || GHApp.Tile2Animation == null || _StopAnimation)
+            {
+                _TimerOn = false;
+                return false;
+            }
+            int glyph = ActiveGlyphImageSource.Glyph;
+            int absglyph = Math.Abs(glyph);
+            int tile = absglyph < GHApp.Glyph2Tile.Length ? GHApp.Glyph2Tile[absglyph] : 0;
+            short anim = tile < GHApp.Tile2Animation.Length ? GHApp.Tile2Animation[tile] : (short)0;
+            _TimerOn = anim > 0;
+            if (anim > 0)
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    InvalidateSurface();
+                });
+            }
+            return anim > 0;
         }
 
         //private GHAspect _aspect = GHAspect.AspectFit;
