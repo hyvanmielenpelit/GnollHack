@@ -19,7 +19,7 @@
                     HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" Margin="30,10,30,10" />
                 <Label Grid.Row="1" x:Name="lblSubtitle" TextColor="Black" Margin="1,2,1,6" BackgroundColor="Transparent" FontFamily="Immortal"
                        HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                <ScrollView Grid.Row="2" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" WidthRequest="480">
+                <ScrollView Grid.Row="2" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" WidthRequest  ="480">
                     <StackLayout x:Name="LibraryLayout" Spacing="6" HorizontalOptions="FillAndExpand">
                         <Label x:Name="EmptyLabel" IsVisible="False" Text="Your library is empty" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="18" TextColor="Black" FontFamily="Immortal"/>
                     </StackLayout>

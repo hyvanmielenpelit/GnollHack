@@ -18,7 +18,7 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" x:Name="lblHeader" Text="Vault" HorizontalTextAlignment="Center" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" Margin="0,10,0,30" />
-                <ScrollView Grid.Row="1" x:Name="VaultScrollView" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" WidthRequest="400" BackgroundColor="Transparent">
+                <ScrollView Grid.Row="1" x:Name="VaultScrollView" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" WidthRequest  ="400" BackgroundColor="Transparent">
                     <StackLayout x:Name="VaultLayout" Spacing="6" HorizontalOptions="FillAndExpand" Orientation="Vertical" >
                     </StackLayout>
                 </ScrollView>

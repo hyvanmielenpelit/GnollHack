@@ -16,7 +16,7 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" x:Name="lblHeader" Text="Reset Menu" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" Margin="0,10,0,30" />
-                <ScrollView Grid.Row="1" x:Name="ResetScrollView" WidthRequest="400"
+                <ScrollView Grid.Row="1" x:Name="ResetScrollView" WidthRequest  ="400"
                             HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
                     <StackLayout x:Name="ResetLayout" HorizontalOptions="FillAndExpand" Orientation="Vertical" Spacing="2">
                         <controls:CustomImageButton x:Name="btnDeleteFiles" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Reset Core Files" BackgroundColor="Transparent" TextColor="White"

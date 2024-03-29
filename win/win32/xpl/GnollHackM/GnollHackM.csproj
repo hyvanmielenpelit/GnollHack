@@ -155,6 +155,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\VersionPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\Game\GameMenuPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\MainPage.xaml.cs" />
+		<None Remove="Assets\UI\autostash.png" />
 		<None Remove="Assets\UI\battery-frame.png" />
 		<None Remove="Assets\UI\fps.png" />
 		<None Remove="Assets\UI\frame2-horizontal.png" />
@@ -589,6 +590,7 @@
 	  <EmbeddedResource Include="Assets\UI\arrow_upright.png" />
 	  <EmbeddedResource Include="Assets\UI\attributes.png" />
 	  <EmbeddedResource Include="Assets\UI\autopickup.png" />
+	  <EmbeddedResource Include="Assets\UI\autostash.png" />
 	  <EmbeddedResource Include="Assets\UI\background-loading-screen.png" />
 	  <EmbeddedResource Include="Assets\UI\background-oldpaper.png" />
 	  <EmbeddedResource Include="Assets\UI\battery-frame.png" />

@@ -985,6 +985,7 @@ namespace GnollHackX.Pages.MainScreen
             TextCaption.Text = "Enter Custom Webhook Link:";
             TextEntry.Placeholder = "Enter the link here";
             TextEntry.Text = _customGameStatusLink;
+            TextEntry.IsEnabled = true;
             TextOkButton.IsEnabled = true;
             TextCancelButton.IsEnabled = true;
             TextGrid.IsVisible = true;
@@ -1064,6 +1065,8 @@ namespace GnollHackX.Pages.MainScreen
 
             TextGrid.IsVisible = false;
             TextEntry.Text = "";
+            TextEntry.Unfocus();
+            TextEntry.IsEnabled = false;
             TextCaption.Text = "";
             TextFrame.BorderColor = GHColors.Black;
 
@@ -1079,6 +1082,8 @@ namespace GnollHackX.Pages.MainScreen
 
             TextGrid.IsVisible = false;
             TextEntry.Text = "";
+            TextEntry.Unfocus();
+            TextEntry.IsEnabled = false;
             TextCaption.Text = "";
             TextFrame.BorderColor = GHColors.Black;
 
@@ -1155,6 +1160,7 @@ namespace GnollHackX.Pages.MainScreen
             TextCaption.Text = "Enter Custom Account Link:";
             TextEntry.Placeholder = "Enter the link here";
             TextEntry.Text = _customXlogAccountLink;
+            TextEntry.IsEnabled = true;
             TextOkButton.IsEnabled = true;
             TextCancelButton.IsEnabled = true;
             TextGrid.IsVisible = true;
@@ -1171,6 +1177,7 @@ namespace GnollHackX.Pages.MainScreen
             TextCaption.Text = "Enter Custom Post Link:";
             TextEntry.Placeholder = "Enter the link here";
             TextEntry.Text = _customXlogPostLink;
+            TextEntry.IsEnabled = true;
             TextOkButton.IsEnabled = true;
             TextCancelButton.IsEnabled = true;
             TextGrid.IsVisible = true;
@@ -1357,6 +1364,7 @@ namespace GnollHackX.Pages.MainScreen
             TextCaption.Text = "Enter Custom Connection String:";
             TextEntry.Placeholder = "Enter the string here";
             TextEntry.Text = _customCloudStorageConnectionString;
+            TextEntry.IsEnabled = true;
             TextOkButton.IsEnabled = true;
             TextCancelButton.IsEnabled = true;
             TextGrid.IsVisible = true;

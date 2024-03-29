@@ -228,7 +228,7 @@
       </PropertyGroup>
       <WriteLinesToFile
           File="$(OutputFile)"
-          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('WidthRequest  =','MaximumWidthRequest=').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
           Overwrite="true"
           Encoding="UTF-8"/>
    	  <PropertyGroup>
@@ -237,7 +237,7 @@
       </PropertyGroup>
       <WriteLinesToFile
           File="$(OutputFile)"
-          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('WidthRequest  =','MaximumWidthRequest=').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
           Overwrite="true"
           Encoding="UTF-8"/>
    	  <PropertyGroup>
@@ -246,7 +246,7 @@
       </PropertyGroup>
       <WriteLinesToFile
           File="$(OutputFile)"
-          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('WidthRequest  =','MaximumWidthRequest=').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
           Overwrite="true"
           Encoding="UTF-8"/>
    	  <PropertyGroup>
@@ -255,7 +255,7 @@
       </PropertyGroup>
       <WriteLinesToFile
           File="$(OutputFile)"
-          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('WidthRequest  =','MaximumWidthRequest=').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
           Overwrite="true"
           Encoding="UTF-8"/>
    	  <PropertyGroup>
@@ -264,7 +264,7 @@
       </PropertyGroup>
       <WriteLinesToFile
           File="$(OutputFile)"
-          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('WidthRequest  =','MaximumWidthRequest=').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
           Overwrite="true"
           Encoding="UTF-8"/>
    	  <PropertyGroup>
@@ -273,7 +273,7 @@
       </PropertyGroup>
       <WriteLinesToFile
           File="$(OutputFile)"
-          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('WidthRequest  =','MaximumWidthRequest=').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
           Overwrite="true"
           Encoding="UTF-8"/>
 	  <PropertyGroup>
@@ -282,7 +282,7 @@
 	  </PropertyGroup>
 	  <WriteLinesToFile
           File="$(OutputFile)"
-          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('WidthRequest  =','MaximumWidthRequest=').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
           Overwrite="true"
           Encoding="UTF-8"/>
 	  <PropertyGroup>
@@ -291,7 +291,7 @@
 	  </PropertyGroup>
 	  <WriteLinesToFile
           File="$(OutputFile)"
-          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('WidthRequest  =','MaximumWidthRequest=').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
           Overwrite="true"
           Encoding="UTF-8"/>
 	  <PropertyGroup>
@@ -300,7 +300,7 @@
       </PropertyGroup>
       <WriteLinesToFile
           File="$(OutputFile)"
-          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('WidthRequest  =','MaximumWidthRequest=').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
           Overwrite="true"
           Encoding="UTF-8"/>
    	  <PropertyGroup>
@@ -309,7 +309,7 @@
       </PropertyGroup>
       <WriteLinesToFile
           File="$(OutputFile)"
-          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('WidthRequest  =','MaximumWidthRequest=').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
           Overwrite="true"
           Encoding="UTF-8"/>
    	  <PropertyGroup>
@@ -318,7 +318,7 @@
       </PropertyGroup>
       <WriteLinesToFile
           File="$(OutputFile)"
-          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('WidthRequest  =','MaximumWidthRequest=').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
           Overwrite="true"
           Encoding="UTF-8"/>
    	  <PropertyGroup>
@@ -327,7 +327,7 @@
       </PropertyGroup>
       <WriteLinesToFile
           File="$(OutputFile)"
-          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.MainScreen','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('WidthRequest  =','MaximumWidthRequest=').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
           Overwrite="true"
           Encoding="UTF-8"/>
    	  <PropertyGroup>
@@ -336,7 +336,7 @@
       </PropertyGroup>
       <WriteLinesToFile
           File="$(OutputFile)"
-          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.Game','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.Game','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('WidthRequest  =','MaximumWidthRequest=').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
           Overwrite="true"
           Encoding="UTF-8"/>
    	  <PropertyGroup>
@@ -345,7 +345,7 @@
       </PropertyGroup>
       <WriteLinesToFile
           File="$(OutputFile)"
-          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.Game','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.Game','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('WidthRequest  =','MaximumWidthRequest=').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
           Overwrite="true"
           Encoding="UTF-8"/>
    	  <PropertyGroup>
@@ -354,7 +354,7 @@
       </PropertyGroup>
       <WriteLinesToFile
           File="$(OutputFile)"
-          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.Game','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.Game','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('WidthRequest  =','MaximumWidthRequest=').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
           Overwrite="true"
           Encoding="UTF-8"/>
    	  <PropertyGroup>
@@ -363,7 +363,7 @@
       </PropertyGroup>
       <WriteLinesToFile
           File="$(OutputFile)"
-          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.Game','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX.Pages.Game','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('WidthRequest  =','MaximumWidthRequest=').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui'))"
           Overwrite="true"
           Encoding="UTF-8"/>
   </Target>

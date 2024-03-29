@@ -410,6 +410,9 @@ namespace GnollHackX.Pages.Game
                     _forceAllMessages = value;
                 }
                 MessageFilterFrame.IsVisible = LongerMessageHistory && value;
+                if (!MessageFilterFrame.IsVisible)
+                    MessageFilterEntry.Unfocus();
+                MessageFilterEntry.IsEnabled = MessageFilterFrame.IsVisible;
                 if (MessageFilterEntry.Text != "")
                 {
                     MessageFilterEntry.Text = "";
@@ -475,6 +478,9 @@ namespace GnollHackX.Pages.Game
                     _longerMessageHistory = value;
                 }
                 MessageFilterFrame.IsVisible = value && ForceAllMessages;
+                if (!MessageFilterFrame.IsVisible)
+                    MessageFilterEntry.Unfocus();
+                MessageFilterEntry.IsEnabled = MessageFilterFrame.IsVisible;
                 if (MessageFilterEntry.Text != "")
                 {
                     MessageFilterEntry.Text = "";
@@ -2522,6 +2528,7 @@ namespace GnollHackX.Pages.Game
             MenuGrid.IsVisible = false;
             MenuWindowGlyphImage.StopAnimation();
             MenuCountBackgroundGrid.IsVisible = false;
+            MenuCountEntry.IsEnabled = false;
             GetLineGrid.IsVisible = false;
             PopupGrid.IsVisible = false;
             TextWindowGlyphImage.StopAnimation();
@@ -2983,6 +2990,7 @@ namespace GnollHackX.Pages.Game
             GetLineEntryText.Text = "";
             GetLineEntryText.MaxLength = GHConstants.BUFSZ - 1;
             GetLineQuestionMarkButton.IsVisible = false;
+            GetLineEntryText.IsEnabled = true;
             GetLineEntryText.IsVisible = true;
             GetLineEntryText.Keyboard = Keyboard.Default;
             GetLineEntryText.WidthRequest = 320;
@@ -3081,6 +3089,8 @@ namespace GnollHackX.Pages.Game
             GetLineGrid.IsVisible = false;
             GetLineEntryText.Text = "";
             GetLineCaption.Text = "";
+            GetLineEntryText.IsEnabled = false;
+            GetLineEntryText.Unfocus();
         }
 
         private void EnterGetLineText(string enteredLine)
@@ -14366,6 +14376,7 @@ namespace GnollHackX.Pages.Game
                 MenuCountForegroundGrid.Margin = new Thickness(0, 50, 0, 0);
                 CountPicker.IsVisible = false;
                 MenuCountEntry.IsVisible = true;
+                MenuCountEntry.IsEnabled = true;
                 if (_countMenuItem.Count == -1)
                     MenuCountEntry.Text = _countMenuItem.MaxCount.ToString();
                 else
@@ -14377,6 +14388,7 @@ namespace GnollHackX.Pages.Game
                 MenuCountForegroundGrid.Margin = new Thickness(0, 0, 0, 0);
                 CountPicker.IsVisible = true;
                 MenuCountEntry.IsVisible = false;
+                MenuCountEntry.IsEnabled = false;
                 _countPickList.Clear();
                 _countPickList.Add(new GHNumberPickItem(-1, "All"));
                 int countselindex = -1;
@@ -14815,11 +14827,15 @@ namespace GnollHackX.Pages.Game
                 }
             }
             MenuCountBackgroundGrid.IsVisible = false;
+            MenuCountEntry.Unfocus();
+            MenuCountEntry.IsEnabled = false;
         }
 
         private void MenuCountCancelButton_Clicked(object sender, EventArgs e)
         {
             MenuCountBackgroundGrid.IsVisible = false;
+            MenuCountEntry.Unfocus();
+            MenuCountEntry.IsEnabled = false;
         }
 
         private void MenuEntry_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -16625,6 +16641,7 @@ namespace GnollHackX.Pages.Game
         private void ReplayGotoButton_Clicked(object sender, EventArgs e)
         {
             GotoTurnEntryText.Text = "";
+            GotoTurnEntryText.IsEnabled = true;
             GotoTurnFrame.BorderColor = GHColors.Black;
             GotoTurnOkButton.IsEnabled = true;
             GotoTurnCancelButton.IsEnabled = true;
@@ -16669,6 +16686,8 @@ namespace GnollHackX.Pages.Game
             }
             UpdateReplayHeaderLabel();
             GotoTurnGrid.IsVisible = false;
+            GotoTurnEntryText.Unfocus();
+            GotoTurnEntryText.IsEnabled = false;
         }
 
         private void GotoTurnCancelButton_Clicked(object sender, EventArgs e)
@@ -16680,6 +16699,8 @@ namespace GnollHackX.Pages.Game
             UpdateReplayHeaderLabel();
 
             GotoTurnGrid.IsVisible = false;
+            GotoTurnEntryText.Unfocus();
+            GotoTurnEntryText.IsEnabled = false;
         }
     }
 }

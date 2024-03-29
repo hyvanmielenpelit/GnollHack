@@ -13,7 +13,7 @@
             <StackLayout x:Name="MainLayout" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
                 <Label x:Name="lblHeader" Text="Menu" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="CenterAndExpand" Margin="0,10,0,20" />
-                <ScrollView x:Name="GameMenuScrollView" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
+                <ScrollView x:Name="GameMenuScrollView" WidthRequest  ="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
                     <StackLayout HorizontalOptions="FillAndExpand" Orientation="Vertical" Spacing="2">
                         <controls:CustomImageButton x:Name="btnSave" Text="Save &amp; Exit Game" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="#FFDDFFDD"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnSave_Clicked" UseVaryingBackgroundImages ="False" />

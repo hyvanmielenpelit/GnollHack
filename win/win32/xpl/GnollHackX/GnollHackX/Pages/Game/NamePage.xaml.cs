@@ -163,7 +163,8 @@ namespace GnollHackX.Pages.Game
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
-
+            eName.Unfocus();
+            eName.IsEnabled = false;
         }
 
         private double _currentPageWidth = 0;

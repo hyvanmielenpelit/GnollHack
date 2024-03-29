@@ -18,7 +18,7 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" x:Name="lblHeader" Text="Manage Files" HorizontalTextAlignment="Center" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" Margin="0,10,0,30" />
-                <ScrollView Grid.Row="1" x:Name="ImportExportScrollView" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
+                <ScrollView Grid.Row="1" x:Name="ImportExportScrollView" WidthRequest  ="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
                     <StackLayout x:Name="ImportExportLayout" HorizontalOptions="FillAndExpand" Orientation="Vertical" Spacing="1">
                         <controls:CustomImageButton x:Name="btnExportSavedGames" Text="Export Saved Games" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnExportSavedGames_Clicked" UseVaryingBackgroundImages ="False" />
