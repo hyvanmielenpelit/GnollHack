@@ -28,7 +28,7 @@ namespace GnollHackX
                 _text = value; 
                 //if (_instructionList.Count < _text.Length)
                 //{
-                //    _instructionList.Add(new GHPutStrInstructions(0, (int)nhcolor.CLR_WHITE, _text.Length - _instructionList.Count));
+                //    _instructionList.Add(new GHPutStrInstructions(0, (int)NhColor.CLR_WHITE, _text.Length - _instructionList.Count));
                 //}
             }
         }
@@ -69,7 +69,7 @@ namespace GnollHackX
                 prevclr = curclr;
                 cnt++;
                 curattr = i < attrlist.Count ? attrlist[i] : 0;
-                curclr = i < colorlist.Count ? colorlist[i] : (int)nhcolor.CLR_WHITE;
+                curclr = i < colorlist.Count ? colorlist[i] : (int)NhColor.CLR_WHITE;
 
                 if(cnt > 1 && (curattr != prevattr || curclr != prevclr))
                 {

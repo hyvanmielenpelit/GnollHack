@@ -45,27 +45,27 @@ namespace GnollHackX
                 res = revertblackwhite ? SKColors.Black : SKColors.White;
 
             bool usealtcolors = (attr & (int)MenuItemAttributes.AltColors) != 0;
-            switch ((nhcolor)nhclr)
+            switch ((NhColor)nhclr)
             {
-                case nhcolor.CLR_BLACK:
+                case NhColor.CLR_BLACK:
                     if(isselected)
                         res = revertblackwhite ? SKColors.Gray : GHVeryDarkGray;
                     else
                         res = revertblackwhite ? SKColors.White : GHDarkGray;
                     break;
-                case nhcolor.CLR_RED:
+                case NhColor.CLR_RED:
                     if (isselected)
                         res = revertblackwhite ? SKColors.DarkRed : GHDarkRed;
                     else
                         res = revertblackwhite ? SKColors.Red : GHRed;
                     break;
-                case nhcolor.CLR_GREEN:
+                case NhColor.CLR_GREEN:
                     if (isselected)
                         res = revertblackwhite ? SKColors.DarkGreen : GHDarkGreen;
                     else
                         res = revertblackwhite ? SKColors.Green : GHGreen;
                     break;
-                case nhcolor.CLR_BROWN:
+                case NhColor.CLR_BROWN:
                     if (usealtcolors)
                         res = GHTitleGold;
                     else
@@ -76,75 +76,75 @@ namespace GnollHackX
                             res = revertblackwhite ? SKColors.Brown : GHBrown;
                     }
                     break;
-                case nhcolor.CLR_BLUE:
+                case NhColor.CLR_BLUE:
                     if (isselected)
                         res = revertblackwhite ? SKColors.DarkBlue : GHDarkBlue;
                     else
                         res = revertblackwhite ? SKColors.Blue : GHBlue;
                     break;
-                case nhcolor.CLR_MAGENTA:
+                case NhColor.CLR_MAGENTA:
                     if (isselected)
                         res = SKColors.DarkMagenta;
                     else
                         res = SKColors.Magenta;
                     break;
-                case nhcolor.CLR_CYAN:
+                case NhColor.CLR_CYAN:
                     if (isselected)
                         res = SKColors.DarkCyan;
                     else
                         res = SKColors.Cyan;
                     break;
-                case nhcolor.CLR_GRAY:
+                case NhColor.CLR_GRAY:
                     if (isselected)
                         res = revertblackwhite ? GHVeryDarkGray : SKColors.Gray;
                     else
                         res = revertblackwhite ? GHDarkGray : SKColors.LightGray;
                     break;
-                case nhcolor.NO_COLOR:
+                case NhColor.NO_COLOR:
                     break;
-                case nhcolor.CLR_ORANGE:
+                case NhColor.CLR_ORANGE:
                     if (isselected)
                         res = SKColors.DarkOrange;
                     else
                         res = SKColors.Orange;
                     break;
-                case nhcolor.CLR_BRIGHT_GREEN:
+                case NhColor.CLR_BRIGHT_GREEN:
                     if (isselected)
                         res = revertblackwhite ? SKColors.Green : GHGreen;
                     else
                         res = revertblackwhite ? GHRevertedBrightGreen : SKColors.LightGreen;
                     break;
-                case nhcolor.CLR_YELLOW:
+                case NhColor.CLR_YELLOW:
                     if (isselected)
                         res = GHDarkYellow;
                     else
                         res = SKColors.Yellow;
                     break;
-                case nhcolor.CLR_BRIGHT_BLUE:
+                case NhColor.CLR_BRIGHT_BLUE:
                     if (isselected)
                         res = revertblackwhite ? SKColors.Blue : GHBlue;
                     else
                         res = revertblackwhite ? SKColors.LightBlue : GHBrightBlue;
                     break;
-                case nhcolor.CLR_BRIGHT_MAGENTA:
+                case NhColor.CLR_BRIGHT_MAGENTA:
                     if (isselected)
                         res = SKColors.Pink;
                     else
                         res = SKColors.LightPink;
                     break;
-                case nhcolor.CLR_BRIGHT_CYAN:
+                case NhColor.CLR_BRIGHT_CYAN:
                     if (isselected)
                         res = revertblackwhite ? SKColors.Cyan : GHCyan;
                     else
                         res = revertblackwhite ? GHBrightCyanReverted : GHBrightCyan;
                     break;
-                case nhcolor.CLR_WHITE:
+                case NhColor.CLR_WHITE:
                     if (isselected)
                         res = revertblackwhite ? SKColors.DarkGray : SKColors.Gray;
                     else
                         res = revertblackwhite ? SKColors.Black : SKColors.White;
                     break;
-                case nhcolor.CLR_MAX:
+                case NhColor.CLR_MAX:
                     break;
                 default:
                     break;
@@ -156,59 +156,59 @@ namespace GnollHackX
         {
             Color res = istitle ? GHColors.TitleGoldColor : revertblackandwhite ? GHColors.Black : GHColors.White;
             bool usealtcolors = (attr & (int)MenuItemAttributes.AltColors) != 0;
-            switch ((nhcolor)nhclr)
+            switch ((NhColor)nhclr)
             {
-                case nhcolor.CLR_BLACK:
+                case NhColor.CLR_BLACK:
                     res = revertblackandwhite ? GHColors.White : GHColors.DarkGray;
                     break;
-                case nhcolor.CLR_RED:
+                case NhColor.CLR_RED:
                     res = revertblackandwhite ? GHColors.Red : GHColors.BrighterRed;
                     break;
-                case nhcolor.CLR_GREEN:
+                case NhColor.CLR_GREEN:
                     res = revertblackandwhite ? GHColors.Green : GHColors.BrighterGreen;
                     break;
-                case nhcolor.CLR_BROWN:
+                case NhColor.CLR_BROWN:
                     if (usealtcolors)
                         res = GHColors.TitleGoldColor;
                     else
                         res = revertblackandwhite ? GHColors.Brown : GHColors.BrighterBrown;
                     break;
-                case nhcolor.CLR_BLUE:
+                case NhColor.CLR_BLUE:
                     res = revertblackandwhite ? GHColors.Blue : GHColors.BrighterBlue;
                     break;
-                case nhcolor.CLR_MAGENTA:
+                case NhColor.CLR_MAGENTA:
                     res = GHColors.Magenta;
                     break;
-                case nhcolor.CLR_CYAN:
+                case NhColor.CLR_CYAN:
                     res = GHColors.Cyan;
                     break;
-                case nhcolor.CLR_GRAY:
+                case NhColor.CLR_GRAY:
                     res = GHColors.LightGray;
                     break;
-                case nhcolor.NO_COLOR:
+                case NhColor.NO_COLOR:
                     break;
-                case nhcolor.CLR_ORANGE:
+                case NhColor.CLR_ORANGE:
                     res = GHColors.Orange;
                     break;
-                case nhcolor.CLR_BRIGHT_GREEN:
+                case NhColor.CLR_BRIGHT_GREEN:
                     res = GHColors.LightGreen;
                     break;
-                case nhcolor.CLR_YELLOW:
+                case NhColor.CLR_YELLOW:
                     res = GHColors.Yellow;
                     break;
-                case nhcolor.CLR_BRIGHT_BLUE:
+                case NhColor.CLR_BRIGHT_BLUE:
                     res = revertblackandwhite ? GHColors.LightBlue : GHColors.BrightBlue;
                     break;
-                case nhcolor.CLR_BRIGHT_MAGENTA:
+                case NhColor.CLR_BRIGHT_MAGENTA:
                     res = GHColors.LightPink;
                     break;
-                case nhcolor.CLR_BRIGHT_CYAN:
+                case NhColor.CLR_BRIGHT_CYAN:
                     res = revertblackandwhite ? GHColors.LightCyan : GHColors.BrightCyan;
                     break;
-                case nhcolor.CLR_WHITE:
+                case NhColor.CLR_WHITE:
                     res = revertblackandwhite ? GHColors.Black : GHColors.White;
                     break;
-                case nhcolor.CLR_MAX:
+                case NhColor.CLR_MAX:
                     break;
                 default:
                     break;
@@ -221,12 +221,12 @@ namespace GnollHackX
             Color bgcolor = revertblackandwhite ? GHColors.White : GHColors.Black;
             Color grayedcolor;
 #if GNH_MAUI
-            if (color == (int)nhcolor.NO_COLOR || color == (revertblackandwhite ? (int)nhcolor.CLR_BLACK : (int)nhcolor.CLR_WHITE))
+            if (color == (int)NhColor.NO_COLOR || color == (revertblackandwhite ? (int)NhColor.CLR_BLACK : (int)NhColor.CLR_WHITE))
                 grayedcolor = new Color((basecolor.Red + bgcolor.Red) / 2, (basecolor.Green + bgcolor.Green) / 2, (basecolor.Blue + bgcolor.Blue) / 2, basecolor.Alpha);
             else /* Special colors are brighter */
                 grayedcolor = new Color((basecolor.Red * 2 + bgcolor.Red) / 3, (basecolor.Green * 2 + bgcolor.Green) / 3, (basecolor.Blue * 2 + bgcolor.Blue) / 3, basecolor.Alpha);
 #else
-            if (color == (int)nhcolor.NO_COLOR || color == (revertblackandwhite ? (int)nhcolor.CLR_BLACK : (int)nhcolor.CLR_WHITE))
+            if (color == (int)NhColor.NO_COLOR || color == (revertblackandwhite ? (int)NhColor.CLR_BLACK : (int)NhColor.CLR_WHITE))
                 grayedcolor = new Color((basecolor.R + bgcolor.R) / 2, (basecolor.G + bgcolor.G) / 2, (basecolor.B + bgcolor.B) / 2, basecolor.A);
             else /* Special colors are brighter */
                 grayedcolor = new Color((basecolor.R * 2 + bgcolor.R) / 3, (basecolor.G * 2 + bgcolor.G) / 3, (basecolor.B * 2 + bgcolor.B) / 3, basecolor.A);
@@ -772,7 +772,7 @@ namespace GnollHackX
                     if (newpsi.Text != "")
                     {
                         newpsi.Text += " ";
-                        newpsi.InstructionList.Add(new GHPutStrInstructions((int)MenuItemAttributes.None, (int)nhcolor.NO_COLOR, 1));
+                        newpsi.InstructionList.Add(new GHPutStrInstructions((int)MenuItemAttributes.None, (int)NhColor.NO_COLOR, 1));
                     }
 
                     int spacecnt = 0;

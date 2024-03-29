@@ -339,8 +339,8 @@ namespace GnollHackX
 
         public int ClientCallback_CreateGHWindow(int wintype, int style, int glyph, byte dataflags, IntPtr objdata_ptr, IntPtr otypdata_ptr)
         {
-            obj objdata = objdata_ptr == IntPtr.Zero ? new obj() : (obj)Marshal.PtrToStructure(objdata_ptr, typeof(obj));
-            objclassdata otypdata = otypdata_ptr == IntPtr.Zero ? new objclassdata() : (objclassdata)Marshal.PtrToStructure(otypdata_ptr, typeof(objclassdata));
+            Obj objdata = objdata_ptr == IntPtr.Zero ? new Obj() : (Obj)Marshal.PtrToStructure(objdata_ptr, typeof(Obj));
+            ObjClassData otypdata = otypdata_ptr == IntPtr.Zero ? new ObjClassData() : (ObjClassData)Marshal.PtrToStructure(otypdata_ptr, typeof(ObjClassData));
 
             RecordFunctionCall(RecordedFunctionID.CreateWindow, wintype, style, glyph, dataflags, objdata, otypdata);
 
@@ -794,13 +794,13 @@ namespace GnollHackX
         public void ClientCallback_RawPrint(string str)
         {
             RecordFunctionCall(RecordedFunctionID.RawPrint, str);
-            RawPrintEx(str, (int)MenuItemAttributes.None, (int)nhcolor.NO_COLOR, false);
+            RawPrintEx(str, (int)MenuItemAttributes.None, (int)NhColor.NO_COLOR, false);
         }
 
         public void ClientCallback_RawPrintBold(string str)
         {
             RecordFunctionCall(RecordedFunctionID.RawPrintBold, str);
-            RawPrintEx(str, (int)MenuItemAttributes.Bold, (int)nhcolor.NO_COLOR, false);
+            RawPrintEx(str, (int)MenuItemAttributes.Bold, (int)NhColor.NO_COLOR, false);
         }
 
         public void UpdateMessageHistory()
@@ -920,7 +920,7 @@ namespace GnollHackX
 
             byte[] colors = new byte[str_length + 1];
             for (int i = 0; i < str_length; i++)
-                colors[i] = (int)nhcolor.NO_COLOR;
+                colors[i] = (int)NhColor.NO_COLOR;
             colors[str_length] = 0;
 
             if (colors_ptr != IntPtr.Zero)
@@ -999,7 +999,7 @@ namespace GnollHackX
             if (reassessment != 0)
                 return;
 
-            for(int i = 0; i < (int)statusfields.MAXBLSTATS; i++)
+            for(int i = 0; i < (int)NhStatusFields.MAXBLSTATS; i++)
             {
                 _gamePage.StatusFields[i] = new GHStatusField();
             }
@@ -1013,7 +1013,7 @@ namespace GnollHackX
         public void ClientCallback_StatusEnable(int fieldidx, string nm, string fmt, byte enable)
         {
             RecordFunctionCall(RecordedFunctionID.StatusEnable, fieldidx, nm, fmt, enable);
-            if (fieldidx >= 0 && fieldidx < (int)statusfields.MAXBLSTATS)
+            if (fieldidx >= 0 && fieldidx < (int)NhStatusFields.MAXBLSTATS)
             {
                 lock (_gamePage.StatusFieldLock)
                 {
@@ -1038,11 +1038,11 @@ namespace GnollHackX
 
         public void ClientCallback_StatusUpdate(int fieldidx, string text, long condbits, int cng, int percent, int color, IntPtr condcolorptr)
         {
-            if(fieldidx != (int)statusfields.BL_CONDITION)
+            if(fieldidx != (int)NhStatusFields.BL_CONDITION)
                 RecordFunctionCall(RecordedFunctionID.StatusUpdate, fieldidx, text, condbits, cng, percent, color, null);
 
             long oldbits = 0L;
-            if (fieldidx >= 0 && fieldidx < (int)statusfields.MAXBLSTATS)
+            if (fieldidx >= 0 && fieldidx < (int)NhStatusFields.MAXBLSTATS)
             {
                 lock (_gamePage.StatusFieldLock)
                 {
@@ -1058,13 +1058,13 @@ namespace GnollHackX
 
             switch(fieldidx)
             {
-                case (int)statusfields.BL_TIME:
+                case (int)NhStatusFields.BL_TIME:
                     if (GHApp.RecordGame && _knownFirstTurn == -1 && !string.IsNullOrWhiteSpace(text) && int.TryParse(text.Trim(), out int turn))
                     {
                         _knownFirstTurn = turn;
                     }
                     break;
-                case (int)statusfields.BL_SKILL:
+                case (int)NhStatusFields.BL_SKILL:
                     {
                         GHRequestType rtype;
                         if (text != null && text == "Skill")
@@ -1079,8 +1079,8 @@ namespace GnollHackX
                         }
                         break;
                     }
-                case (int)statusfields.BL_CAP:
-                case (int)statusfields.BL_HUNGER:
+                case (int)NhStatusFields.BL_CAP:
+                case (int)NhStatusFields.BL_HUNGER:
                     {
                         if (cng != 0 && text != null && text != "")
                         {
@@ -1097,14 +1097,14 @@ namespace GnollHackX
                         }
                         break;
                     }
-                case (int)statusfields.BL_CONDITION:
+                case (int)NhStatusFields.BL_CONDITION:
                     {
                         if (cng != 0 && condbits != 0)
                         {
                             ConcurrentQueue<GHRequest> queue;
                             if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                             {
-                                int arraysize = (int)bl_conditions.NUM_BL_CONDITIONS; // (int)nhcolor.CLR_MAX + 5;
+                                int arraysize = (int)bl_conditions.NUM_BL_CONDITIONS; // (int)NhColor.CLR_MAX + 5;
                                 short[] condcolors = new short[arraysize];
                                 bool condcolorset = false;
                                 if (condcolorptr != IntPtr.Zero)
@@ -1133,7 +1133,7 @@ namespace GnollHackX
                                         if (condcolorset)
                                         {
                                             condcolor = ((int)condcolors[i] & 15);
-                                            //for(int c = 0; c < (int)nhcolor.CLR_MAX; c++)
+                                            //for(int c = 0; c < (int)NhColor.CLR_MAX; c++)
                                             //{
                                             //    long cbit = 1L << c;
                                             //    bool has_cbit = (condcolormasks[c] & cbit) != 0;
@@ -1153,30 +1153,30 @@ namespace GnollHackX
                                         data.tflags = 0UL;
                                         queue.Enqueue(new GHRequest(this, GHRequestType.DisplayConditionText, data));
 
-                                        int filtercolor = (int)nhcolor.CLR_MAX;
+                                        int filtercolor = (int)NhColor.CLR_MAX;
                                         switch(i)
                                         {
                                             case (int)bl_conditions.BL_COND_STONE:
-                                                filtercolor = (int)nhcolor.CLR_BROWN;
+                                                filtercolor = (int)NhColor.CLR_BROWN;
                                                 break;
                                             case (int)bl_conditions.BL_COND_SLIME:
-                                                filtercolor = (int)nhcolor.CLR_BRIGHT_GREEN;
+                                                filtercolor = (int)NhColor.CLR_BRIGHT_GREEN;
                                                 break;
                                             case (int)bl_conditions.BL_COND_STRNGL:
-                                                filtercolor = (int)nhcolor.CLR_RED;
+                                                filtercolor = (int)NhColor.CLR_RED;
                                                 break;
                                             case (int)bl_conditions.BL_COND_SUFFOC:
-                                                filtercolor = (int)nhcolor.CLR_RED;
+                                                filtercolor = (int)NhColor.CLR_RED;
                                                 break;
                                             case (int)bl_conditions.BL_COND_FOODPOIS:
-                                                filtercolor = (int)nhcolor.CLR_MAGENTA;
+                                                filtercolor = (int)NhColor.CLR_MAGENTA;
                                                 break;
                                             case (int)bl_conditions.BL_COND_TERMILL:
-                                                filtercolor = (int)nhcolor.CLR_MAGENTA;
+                                                filtercolor = (int)NhColor.CLR_MAGENTA;
                                                 break;
                                         }
 
-                                        if(filtercolor != (int)nhcolor.CLR_MAX)
+                                        if(filtercolor != (int)NhColor.CLR_MAX)
                                         {
                                             DisplayScreenFilterData fdata = new DisplayScreenFilterData();
                                             fdata.style = 0;
@@ -1268,7 +1268,7 @@ namespace GnollHackX
 
                 byte[] colors = new byte[str_length + 1];
                 for (int i = 0; i < str_length; i++)
-                    colors[i] = (int)nhcolor.NO_COLOR;
+                    colors[i] = (int)NhColor.NO_COLOR;
                 colors[str_length] = 0;
 
                 if (colors_ptr != IntPtr.Zero)
@@ -1277,7 +1277,7 @@ namespace GnollHackX
                 }
 
                 //RecordFunctionCallImmediately(RecordedFunctionID.PutMsgHistory, msg, attributes, colors, is_restoring); // Not needed in replays
-                RawPrintEx2(msg, attributes, colors, (int)MenuItemAttributes.None, (int)nhcolor.NO_COLOR, is_restoring != 0);
+                RawPrintEx2(msg, attributes, colors, (int)MenuItemAttributes.None, (int)NhColor.NO_COLOR, is_restoring != 0);
             }
             else if (is_restoring != 0)
             {
@@ -1308,8 +1308,8 @@ namespace GnollHackX
             int maxcount, ulong oid, ulong mid, char headingaccel, char special_mark, ulong menuflags, byte dataflags, int style, IntPtr otmpdata_ptr, IntPtr otypdata_ptr)
         {
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("AddExtendedMenu");
-            obj otmpdata = otmpdata_ptr == IntPtr.Zero ? new obj() : (obj)Marshal.PtrToStructure(otmpdata_ptr, typeof(obj));
-            objclassdata otypdata = otypdata_ptr == IntPtr.Zero ? new objclassdata() : (objclassdata)Marshal.PtrToStructure(otypdata_ptr, typeof(objclassdata));
+            Obj otmpdata = otmpdata_ptr == IntPtr.Zero ? new Obj() : (Obj)Marshal.PtrToStructure(otmpdata_ptr, typeof(Obj));
+            ObjClassData otypdata = otypdata_ptr == IntPtr.Zero ? new ObjClassData() : (ObjClassData)Marshal.PtrToStructure(otypdata_ptr, typeof(ObjClassData));
 
             RecordFunctionCall(RecordedFunctionID.AddExtendedMenu, winid, glyph, identifier, accel, groupaccel, attr, color, text, presel,
                 maxcount, oid, mid, headingaccel, special_mark, menuflags, dataflags, style, otmpdata, otypdata);
@@ -1563,8 +1563,8 @@ namespace GnollHackX
 
         public void ClientCallback_SendObjectData(int x, int y, IntPtr otmp_ptr, int cmdtype, int where, IntPtr otypdata_ptr, ulong oflags)
         {
-            obj otmp = otmp_ptr == IntPtr.Zero ? new obj() : (obj)Marshal.PtrToStructure(otmp_ptr, typeof(obj));
-            objclassdata otypdata = otypdata_ptr == IntPtr.Zero ? new objclassdata() : (objclassdata)Marshal.PtrToStructure(otypdata_ptr, typeof(objclassdata));
+            Obj otmp = otmp_ptr == IntPtr.Zero ? new Obj() : (Obj)Marshal.PtrToStructure(otmp_ptr, typeof(Obj));
+            ObjClassData otypdata = otypdata_ptr == IntPtr.Zero ? new ObjClassData() : (ObjClassData)Marshal.PtrToStructure(otypdata_ptr, typeof(ObjClassData));
 
             RecordFunctionCall(RecordedFunctionID.SendObjectData, x, y, otmp, cmdtype, where, otypdata, oflags);
             _gamePage.AddObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);

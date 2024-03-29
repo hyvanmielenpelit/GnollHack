@@ -446,7 +446,7 @@ namespace GnollHackX
                                 curattrs.Add(0);
 
                             while (i > curclrs.Count)
-                                curclrs.Add((int)nhcolor.CLR_WHITE);
+                                curclrs.Add((int)NhColor.CLR_WHITE);
 
                             if (i == curattrs.Count)
                                 curattrs.Add(attributes);
@@ -491,7 +491,7 @@ namespace GnollHackX
                 //    PutStrEx(attributes[i] == (int)MenuItemAttributes.None ? attribute : attributes[i], 
                 //        str.Substring(i, 1), 
                 //        i == minlen - 1 ? append : 1, 
-                //        colors[i] == (int)nhcolor.NO_COLOR ? color : colors[i]);
+                //        colors[i] == (int)NhColor.NO_COLOR ? color : colors[i]);
 
                 lock (PutStrsLock)
                 {
@@ -570,7 +570,7 @@ namespace GnollHackX
                                     curattrs[i] = attribute;
 
                                 if (i == curclrs.Count)
-                                    curclrs.Add(idx < colors.Length && colors[idx] != (int)nhcolor.NO_COLOR ? colors[idx] : color);
+                                    curclrs.Add(idx < colors.Length && colors[idx] != (int)NhColor.NO_COLOR ? colors[idx] : color);
                                 else if (i < curattrs.Count)
                                     curclrs[i] = color;
                             }

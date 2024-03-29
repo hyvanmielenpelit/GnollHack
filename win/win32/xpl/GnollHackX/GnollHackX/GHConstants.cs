@@ -6,7 +6,7 @@ using System.Text;
 namespace GnollHackX
 {
     /* Colors */
-    public enum nhcolor
+    public enum NhColor
     {
         CLR_BLACK = 0,
         CLR_RED,
@@ -27,7 +27,7 @@ namespace GnollHackX
         CLR_MAX
     }
 
-    public enum nhaltcolor
+    public enum NhAltColor
     {
         CLR_ALT_BLACK = 0,
         CLR_ALT_RED,
@@ -713,7 +713,7 @@ namespace GnollHackX
         MAX_UI_TILES
     }
 
-    public enum statusfields
+    public enum NhStatusFields
     {
         BL_CHARACTERISTICS = -3, /* alias for BL_STR..BL_CH */
         BL_RESET = -2,           /* Force everything to redisplay */
@@ -831,7 +831,7 @@ namespace GnollHackX
 
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct obj
+    public struct Obj
     {
         public IntPtr nobj;
         public IntPtr v;
@@ -857,7 +857,7 @@ namespace GnollHackX
 
         public sbyte recharged; /* number of times it's been recharged */
         public sbyte where;        /* where the object thinks it is */
-        public sbyte timed; /* # of fuses (timers) attached to this obj */
+        public sbyte timed; /* # of fuses (timers) attached to this Obj */
 
         internal uint bitfields;
 
@@ -1032,7 +1032,7 @@ namespace GnollHackX
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct objclassdata
+    public struct ObjClassData
     {
         public int tile_height;
         public short special_quality;

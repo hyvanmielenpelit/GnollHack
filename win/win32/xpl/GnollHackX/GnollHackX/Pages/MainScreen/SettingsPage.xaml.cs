@@ -98,7 +98,7 @@ namespace GnollHackX.Pages.MainScreen
                 Preferences.Set("RecommendedSettingsChecked", true);
                 if (!GHApp.PostingXlogEntries || string.IsNullOrWhiteSpace(GHApp.XlogUserName))
                 {
-                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
+                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
                     PopupTitleLabel.Text = "Recommended Settings";
                     PopupLabel.Text = "It is recommended that you set up a GnollHack Account and turn on Post Top Scores and Share Bones Files to enjoy the full GnollHack experience. These settings are found under the Server Posting section.";
                     PopupOkButton.IsEnabled = true;
@@ -1204,7 +1204,7 @@ namespace GnollHackX.Pages.MainScreen
             if (res.IsSuccess)
             {
                 XlogTestButton.TextColor = GHColors.BrighterGreen;
-                PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
+                PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
                 PopupTitleLabel.Text = "Connection Success";
                 PopupLabel.Text = "Connection to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "GnollHack Server was successful." +
                     (res.HasHttpStatusCode && res.StatusCode != System.Net.HttpStatusCode.OK? " Status Code: " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : "");
@@ -1214,7 +1214,7 @@ namespace GnollHackX.Pages.MainScreen
             else
             {
                 XlogTestButton.TextColor = GHColors.Red;
-                PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
+                PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
                 PopupTitleLabel.Text = "Connection Failed";
                 PopupLabel.Text = "Connection to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "GnollHack Server failed." +
                     (res.HasHttpStatusCode ? " Status Code: " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : "") +
@@ -1241,7 +1241,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private void BonesAllowedUsersLabel_TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
-            PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
+            PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
             PopupTitleLabel.Text = BonesListSwitch.IsToggled ? "Disallowed Users for Received Bones" : "Allowed Users for Received Bones";
             PopupLabel.Text = (BonesListSwitch.IsToggled ? "You can define users whose bones files you do not want to receive. " : "You can define the group of users from whom you want to receive bones files. ") + "User names are separated by a space or comma. User names are not case-sensitive.";
             PopupOkButton.IsEnabled = true;
@@ -1302,7 +1302,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 if(_gamePage != null)
                 {
-                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
+                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
                     PopupTitleLabel.Text = "Toggling Recording Disallowed";
                     PopupLabel.Text = "Toggling recording on and off is disallowed during the game. Save the game first and then change the setting from the main screen.";
                     PopupOkButton.IsEnabled = true;
@@ -1310,7 +1310,7 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 else
                 {
-                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
+                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
                     PopupTitleLabel.Text = "Insufficient Disk Space";
                     PopupLabel.Text = string.Format("There is too little free disk space for switching on game recording ({0:0.00} GB). Please consider freeing disk space on your device.", (double)GHApp.PlatformService.GetDeviceFreeDiskSpaceInBytes() / (1024 * 1024 * 1024));
                     PopupOkButton.IsEnabled = true;
@@ -1323,7 +1323,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             if (GZipSwitch.IsEnabled)
             {
-                PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
+                PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
                 PopupTitleLabel.Text = "Replay Compression Format";
                 PopupLabel.Text = "Replay compression format can be either zip (off) or gzip (on).";
                 PopupOkButton.IsEnabled = true;
@@ -1333,7 +1333,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 if (_gamePage != null)
                 {
-                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)nhcolor.NO_COLOR, 0, false, true);
+                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
                     PopupTitleLabel.Text = "Changing Replay Compression Disallowed";
                     PopupLabel.Text = "Changing the replay compression format is disallowed during the game. Save the game first and then change the setting from the main screen.";
                     PopupOkButton.IsEnabled = true;

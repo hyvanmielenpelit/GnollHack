@@ -4886,13 +4886,13 @@ namespace GnollHackX
                                                     for (int i = 0; i < condlen; i++)
                                                         condcolors[i] = br.ReadInt16();
 
-                                                    if(fieldidx == (int)statusfields.BL_TIME && !string.IsNullOrWhiteSpace(text) && int.TryParse(text.Trim(), out int curTurn))
+                                                    if(fieldidx == (int)NhStatusFields.BL_TIME && !string.IsNullOrWhiteSpace(text) && int.TryParse(text.Trim(), out int curTurn))
                                                     {
                                                         ReplayTurn = curTurn;
                                                         if(knownFirstTurn == -1)
                                                             knownFirstTurn = curTurn;
                                                     }
-                                                    else if (fieldidx == (int)statusfields.BL_REALTIME && !string.IsNullOrWhiteSpace(text))
+                                                    else if (fieldidx == (int)NhStatusFields.BL_REALTIME && !string.IsNullOrWhiteSpace(text))
                                                     {
                                                         ReplayRealTime = text;
                                                     }

@@ -397,11 +397,11 @@ namespace GnollHackX.Pages.MainScreen
                 if (ReplayCollectionView.SelectedItems != null)
                 {
                     //i = ReplayCollectionView.SelectedItems.Count;
-                    foreach (object obj in ReplayCollectionView.SelectedItems)
+                    foreach (object Obj in ReplayCollectionView.SelectedItems)
                     {
-                        if(obj is GHRecordedGameFile)
+                        if(Obj is GHRecordedGameFile)
                         {
-                            GHRecordedGameFile file = (GHRecordedGameFile)obj;
+                            GHRecordedGameFile file = (GHRecordedGameFile)Obj;
                             if(!file.IsFolder)
                             {
                                 i++;
