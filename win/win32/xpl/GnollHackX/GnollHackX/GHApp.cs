@@ -2907,12 +2907,13 @@ namespace GnollHackX
                     {
 #if GNH_MAUI
                         string sdir = Path.Combine(PlatformService.GetAssetsPath(), "Platforms", GHApp.IsAndroid ? "Android" : GHApp.IsiOS ? "iOS" : "Unknown", sf.source_directory);
+                        string rfile = Path.Combine("Platforms", GHApp.IsAndroid ? "Android" : GHApp.IsiOS ? "iOS" : "Unknown", sf.source_directory, sf.name);
 #else
                         string sdir = Path.Combine(PlatformService.GetAssetsPath(), sf.source_directory);
+                        string rfile = Path.Combine(sf.source_directory, sf.name);
 #endif
                         string sfile = Path.Combine(sdir, sf.name);
 
-                        string rfile = Path.Combine(sf.source_directory, sf.name);
                         if (IsReadToMemoryBank(sf))  //Read to memory first and use from there
                             FmodService.AddLoadableSoundBank(rfile, sf.subtype_id, true, true);
                         else
