@@ -80,8 +80,10 @@ namespace GnollHackX
                         StopGeneralTimer = false;
                         return false;
                     }
-
-                    GeneralTimerTasks();
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        GeneralTimerTasks();
+                    });
                     return true;
                 });
             }

@@ -639,15 +639,17 @@ namespace GnollHackX.Pages.Game
         private bool _showPets = false;
         public bool ShowPets { get { lock (_showPetsLock) { return _showPets; } } set { lock (_showPetsLock) { _showPets = value; } } }
 
-        public readonly object _cursorIsOnLock = new object();
+        private readonly object _cursorIsOnLock = new object();
         private bool _cursorIsOn;
         public bool CursorIsOn { get { lock (_cursorIsOnLock) { return _cursorIsOn; } } set { lock (_cursorIsOnLock) { _cursorIsOn = value; } } }
 
+        private readonly object _showDirectionsLock = new object();
         private bool _showDirections = false;
+        private bool ShowDirections { get { lock (_showDirectionsLock) { return _showDirections; } } set { lock (_showDirectionsLock) { _showDirections = value; } } }
+
+        private readonly object _showNumberPadLock = new object();
         private bool _showNumberPad = false;
-        private bool ShowNumberPad { get { return _showNumberPad; } set { _showNumberPad = value; } }
-        private bool _showWaitIcon = false;
-        public bool ShowWaitIcon { get { return _showWaitIcon; } set { _showWaitIcon = value; } }
+        private bool ShowNumberPad { get { lock (_showNumberPadLock) { return _showNumberPad; } } set { lock (_showNumberPadLock) { _showNumberPad = value; } } }
 
         public readonly object StatusFieldLock = new object();
         public readonly GHStatusField[] StatusFields = new GHStatusField[(int)statusfields.MAXBLSTATS];
@@ -2270,10 +2272,10 @@ namespace GnollHackX.Pages.Game
                                 HideYnResponses();
                                 break;
                             case GHRequestType.ShowDirections:
-                                ShowDirections();
+                                DoShowDirections();
                                 break;
                             case GHRequestType.HideDirections:
-                                HideDirections();
+                                DoHideDirections();
                                 break;
                             case GHRequestType.GetChar:
                                 GetChar();
@@ -2474,7 +2476,7 @@ namespace GnollHackX.Pages.Game
             PopupGrid.IsVisible = false;
             TextWindowGlyphImage.StopAnimation();
             YnGrid.IsVisible = false;
-            HideDirections();
+            DoHideDirections();
 
             if (!LoadingGrid.IsVisible && (!MainGrid.IsVisible || !canvasView.AnimationIsRunning("GeneralAnimationCounter")))
             {
@@ -2850,19 +2852,19 @@ namespace GnollHackX.Pages.Game
         {
             YnGrid.IsVisible = false;
         }
-        private void ShowDirections()
+        private void DoShowDirections()
         {
-            _showDirections = true;
+            ShowDirections = true;
             ShowNumberPad = false;
         }
-        private void HideDirections()
+        private void DoHideDirections()
         {
-            _showDirections = false;
+            ShowDirections = false;
             ShowNumberPad = false;
         }
         public void DoShowNumberPad()
         {
-            if (!_showDirections)
+            if (!ShowDirections)
                 ShowNumberPad = true;
         }
 
@@ -9367,12 +9369,12 @@ namespace GnollHackX.Pages.Game
                     _canvasButtonRect.Left = canvaswidth * (float)(0.2);
                 }
 
-                if (_showDirections || (MapWalkMode && WalkArrows))
+                if (ShowDirections || (MapWalkMode && WalkArrows))
                 {
                     SKRect targetrect;
-                    float buttonsize = _showDirections ? GHConstants.ArrowButtonSize : GHConstants.MoveArrowButtonSize;
+                    float buttonsize = ShowDirections ? GHConstants.ArrowButtonSize : GHConstants.MoveArrowButtonSize;
                     SKColor oldcolor = textPaint.Color;
-                    textPaint.Color = _showDirections ? textPaint.Color.WithAlpha(170) : textPaint.Color.WithAlpha(85);
+                    textPaint.Color = ShowDirections ? textPaint.Color.WithAlpha(170) : textPaint.Color.WithAlpha(85);
 
 
                     for (int i = 0; i < 9; i++)
@@ -10082,13 +10084,13 @@ namespace GnollHackX.Pages.Game
                         YouRect = new SKRect();
                 }
 
-                if (ShowWaitIcon)
-                {
-                    SKRect targetrect;
-                    float size = canvaswidth / 5.0f;
-                    targetrect = new SKRect(canvaswidth / 2 - size / 2, canvasheight / 2 - size / 2, canvaswidth / 2 + size / 2, canvasheight / 2 + size / 2);
-                    canvas.DrawBitmap(GHApp._logoBitmap, targetrect);
-                }
+                //if (ShowWaitIcon)
+                //{
+                //    SKRect targetrect;
+                //    float size = canvaswidth / 5.0f;
+                //    targetrect = new SKRect(canvaswidth / 2 - size / 2, canvasheight / 2 - size / 2, canvaswidth / 2 + size / 2, canvasheight / 2 + size / 2);
+                //    canvas.DrawBitmap(GHApp._logoBitmap, targetrect);
+                //}
             }
 
 #if GNH_MAP_PROFILING && DEBUG
@@ -11903,7 +11905,7 @@ namespace GnollHackX.Pages.Game
                             {
                                 _touchWithinStatusBar = true;
                             }
-                            else if (!_showDirections && !_showNumberPad && ShowPets && (m_id = PetRectContains(e.Location)) != 0)
+                            else if (!ShowDirections && !ShowNumberPad && ShowPets && (m_id = PetRectContains(e.Location)) != 0)
                             {
                                 _touchWithinPet = m_id;
                             }
@@ -11954,7 +11956,7 @@ namespace GnollHackX.Pages.Game
 
                                 if (TouchDictionary.Count == 1)
                                 {
-                                    if (_touchWithinSkillButton || _touchWithinPrevWepButton || _touchWithinHealthOrb || _touchWithinManaOrb || _touchWithinStatusBar || (_touchWithinPet > 0 && !_showDirections && !_showNumberPad) || _touchWithinYouButton)
+                                    if (_touchWithinSkillButton || _touchWithinPrevWepButton || _touchWithinHealthOrb || _touchWithinManaOrb || _touchWithinStatusBar || (_touchWithinPet > 0 && !ShowDirections && !ShowNumberPad) || _touchWithinYouButton)
                                     {
                                         /* Do nothing */
                                     }
@@ -12335,7 +12337,7 @@ namespace GnollHackX.Pages.Game
                                 ShowExtendedStatusBar = false;
                                 GenericButton_Clicked(sender, e, (int)'}');
                             }
-                            else if (_touchWithinPet > 0 && !_showDirections && !_showNumberPad && !PlayingReplay)
+                            else if (_touchWithinPet > 0 && !ShowDirections && !ShowNumberPad && !PlayingReplay)
                             {
                                 ConcurrentQueue<GHResponse> queue;
                                 if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
@@ -12478,7 +12480,7 @@ namespace GnollHackX.Pages.Game
             if (UsedTileHeight > 0)
                 y = (int)((e.Location.Y - offsetY) / UsedTileHeight);
 
-            if (!_showDirections && !_showNumberPad && !(MapWalkMode && WalkArrows))
+            if (!ShowDirections && !ShowNumberPad && !(MapWalkMode && WalkArrows))
             {
                 if (x > 0 && x < GHConstants.MapCols && y >= 0 && y < GHConstants.MapRows)
                 {
@@ -12498,7 +12500,7 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
-                float buttonsize = ShowNumberPad ? GHConstants.NumberButtonSize : _showDirections ? GHConstants.ArrowButtonSize : GHConstants.MoveArrowButtonSize;
+                float buttonsize = ShowNumberPad ? GHConstants.NumberButtonSize : ShowDirections ? GHConstants.ArrowButtonSize : GHConstants.MoveArrowButtonSize;
                 lock (_canvasButtonLock)
                 {
                     if (e.Location.X >= _canvasButtonRect.Left && e.Location.X <= _canvasButtonRect.Right && e.Location.Y >= _canvasButtonRect.Top && e.Location.Y <= _canvasButtonRect.Bottom)
@@ -12526,7 +12528,7 @@ namespace GnollHackX.Pages.Game
                         {
                             lock (_uLock)
                             {
-                                if (_showDirections && GHUtils.isok(_ux, _uy) && GHUtils.isok(x, y))
+                                if (ShowDirections && GHUtils.isok(_ux, _uy) && GHUtils.isok(x, y))
                                 {
                                     int dx = x - _ux;
                                     int dy = y - _uy;

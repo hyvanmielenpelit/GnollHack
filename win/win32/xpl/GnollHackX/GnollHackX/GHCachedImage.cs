@@ -7,6 +7,7 @@ using GnollHackX;
 using SkiaSharp.Views.Forms;
 using Xamarin.Forms;
 using GnollHackX.Controls;
+using Xamarin.Essentials;
 #endif
 using System;
 using System.Collections.Generic;
@@ -111,12 +112,16 @@ namespace GnollHackX
                             _timerOn = false;
                             return false;
                         }
-                        glyph = ActiveGlyphImageSource.Glyph;
-                        absglyph = Math.Abs(glyph);
-                        tile = absglyph < GHApp.Glyph2Tile.Length ? GHApp.Glyph2Tile[absglyph] : 0;
-                        anim = tile < GHApp.Tile2Animation.Length ? GHApp.Tile2Animation[tile] : 0;
-                        if(anim > 0)
-                            InvalidateSurface();
+
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            glyph = ActiveGlyphImageSource.Glyph;
+                            absglyph = Math.Abs(glyph);
+                            tile = absglyph < GHApp.Glyph2Tile.Length ? GHApp.Glyph2Tile[absglyph] : 0;
+                            anim = tile < GHApp.Tile2Animation.Length ? GHApp.Tile2Animation[tile] : 0;
+                            if (anim > 0)
+                                InvalidateSurface();
+                        });
                         _timerOn = anim > 0;
                         return anim > 0;
                     });

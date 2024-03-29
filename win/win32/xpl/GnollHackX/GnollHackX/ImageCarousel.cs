@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+
 #if GNH_MAUI
 using GnollHackX;
 using SkiaSharp.Views.Maui;
@@ -13,6 +14,7 @@ namespace GnollHackM
 #else
 using SkiaSharp.Views.Forms;
 using Xamarin.Forms;
+using Xamarin.Essentials;
 
 namespace GnollHackX
 #endif
@@ -89,13 +91,16 @@ namespace GnollHackX
             {
                 Device.StartTimer(TimeSpan.FromSeconds(1.0 / _refreshFrequency), () =>
                 {
-                    _counterValue++;
-                    if (_counterValue >= (long)int.MaxValue)
-                        _counterValue = 0;
-                    byte alpha = GetSecondBitmapAlpha(_counterValue);
-                    byte prevalpha = GetSecondBitmapAlpha(_counterValue - 1);
-                    if (alpha > 0 || prevalpha > 0)
-                        InvalidateSurface();
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        _counterValue++;
+                        if (_counterValue >= (long)int.MaxValue)
+                            _counterValue = 0;
+                        byte alpha = GetSecondBitmapAlpha(_counterValue);
+                        byte prevalpha = GetSecondBitmapAlpha(_counterValue - 1);
+                        if (alpha > 0 || prevalpha > 0)
+                            InvalidateSurface();
+                    });
                     return TimerIsOn;
                 });
             }
