@@ -87,11 +87,17 @@ namespace GnollHackX
 
         public void StopAnimation()
         {
-            _stopAnimation = true;
+            _StopAnimation = true;
         }
 
+        private readonly object _stopAnimationLock = new object();
         private bool _stopAnimation = false;
+        private bool _StopAnimation { get { lock (_stopAnimationLock) { return _stopAnimation; } } set { lock (_stopAnimationLock) { _stopAnimation = value; } } }
+
+        private readonly object _timerOnLock = new object();
         private bool _timerOn = false;
+        private bool _TimerOn { get { lock (_timerOnLock) { return _timerOn; } } set { lock (_timerOnLock) { _timerOn = value; } } }
+
         public void CheckStartAnimation()
         {
             if (ActiveGlyphImageSource != null && GHApp.Glyph2Tile != null && GHApp.Tile2Animation != null)
@@ -101,39 +107,40 @@ namespace GnollHackX
                 int tile = absglyph < GHApp.Glyph2Tile.Length ? GHApp.Glyph2Tile[absglyph] : 0;
                 int anim = tile < GHApp.Tile2Animation.Length ? GHApp.Tile2Animation[tile] : 0;
                 long _refreshFrequency = (long)Math.Min(60, UIUtils.GetAuxiliaryCanvasAnimationFrequency());
-                if(anim > 0 &&  !_timerOn)
+                if(anim > 0 &&  !_TimerOn)
                 {
-                    _stopAnimation = false;
-                    _timerOn = true;
+                    _StopAnimation = false;
+                    _TimerOn = true;
                     Device.StartTimer(TimeSpan.FromSeconds(1.0 / _refreshFrequency), () =>
                     {
-                        if (ActiveGlyphImageSource == null ||  GHApp.Glyph2Tile == null || GHApp.Tile2Animation == null || _stopAnimation)
+                        if (ActiveGlyphImageSource == null ||  GHApp.Glyph2Tile == null || GHApp.Tile2Animation == null || _StopAnimation)
                         {
-                            _timerOn = false;
+                            _TimerOn = false;
                             return false;
                         }
-
-                        MainThread.BeginInvokeOnMainThread(() =>
+                        glyph = ActiveGlyphImageSource.Glyph;
+                        absglyph = Math.Abs(glyph);
+                        tile = absglyph < GHApp.Glyph2Tile.Length ? GHApp.Glyph2Tile[absglyph] : 0;
+                        anim = tile < GHApp.Tile2Animation.Length ? GHApp.Tile2Animation[tile] : 0;
+                        _TimerOn = anim > 0;
+                        if (anim > 0)
                         {
-                            glyph = ActiveGlyphImageSource.Glyph;
-                            absglyph = Math.Abs(glyph);
-                            tile = absglyph < GHApp.Glyph2Tile.Length ? GHApp.Glyph2Tile[absglyph] : 0;
-                            anim = tile < GHApp.Tile2Animation.Length ? GHApp.Tile2Animation[tile] : 0;
-                            if (anim > 0)
+                            MainThread.BeginInvokeOnMainThread(() =>
+                            {
                                 InvalidateSurface();
-                        });
-                        _timerOn = anim > 0;
+                            });
+                        }
                         return anim > 0;
                     });
                 }
-                else if (anim == 0 && _timerOn)
+                else if (anim == 0 && _TimerOn)
                 {
-                    _stopAnimation = true;
+                    _StopAnimation = true;
                 }
             } 
-            else if (_timerOn)
+            else if (_TimerOn)
             {
-                _stopAnimation = true;
+                _StopAnimation = true;
             }
         }
 
