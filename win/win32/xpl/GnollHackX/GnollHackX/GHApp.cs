@@ -706,9 +706,11 @@ namespace GnollHackX
 #if GNH_MAUI
         public static readonly bool IsAndroid = (DeviceInfo.Platform == DevicePlatform.Android);
         public static readonly bool IsiOS = (DeviceInfo.Platform == DevicePlatform.iOS);
+        public static readonly bool IsMaui = true;
 #else
         public static readonly bool IsAndroid = (Device.RuntimePlatform == Device.Android);
         public static readonly bool IsiOS = (Device.RuntimePlatform == Device.iOS);
+        public static readonly bool IsMaui = false;
 #endif
         public static readonly float DisplayScale = DeviceDisplay.MainDisplayInfo.Density <= 0 ? 1.0f : (float)DeviceDisplay.MainDisplayInfo.Density;
         public static readonly float DisplayWidth = (float)DeviceDisplay.MainDisplayInfo.Width * DisplayScale;
