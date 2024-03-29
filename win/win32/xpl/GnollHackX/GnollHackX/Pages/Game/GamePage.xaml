@@ -27,14 +27,14 @@
                                                   AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional">
                     </controls:SwitchableCanvasView>
 
-                    <StackLayout x:Name="WornItemsLayout" Padding="0,2"
+                    <StackLayout x:Name="WornItemsLayout" Padding="0,2" Spacing="6"
                         HorizontalOptions="End"
                         AbsoluteLayout.LayoutBounds="1.0, 0.0, AutoSize, AutoSize" 
                         AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent" >
                         <controls:LabeledImageButton x:Name="lWornItemsButton" LblText="" BtnLetter="]" LargerFont="True" BtnClicked="GHButton_Clicked" />
                     </StackLayout>
 
-                    <StackLayout x:Name="AbilityLayout" Padding="0,2"
+                    <StackLayout x:Name="AbilityLayout" Padding="0,2" Spacing="6"
                         HorizontalOptions="Start"
                         AbsoluteLayout.LayoutBounds="0.0, 0.0, AutoSize, AutoSize" 
                         AbsoluteLayout.LayoutFlags="PositionProportional" BackgroundColor="Transparent" >
@@ -48,50 +48,50 @@
                     </Frame>
                 </AbsoluteLayout>
 
-                <Grid x:Name="UIGrid" Grid.Row="0" InputTransparent="True" CascadeInputTransparent="False"
+                <Grid x:Name="UIGrid" Grid.Row="0" RowSpacing="0" ColumnSpacing="0" InputTransparent="True" CascadeInputTransparent="False"
                       HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <StackLayout Grid.Row="0" x:Name="UpperCmdLayout" IsVisible="True" Orientation="Vertical" InputTransparent="true" CascadeInputTransparent="false"
+                    <StackLayout Grid.Row="0" x:Name="UpperCmdLayout" IsVisible="True" Orientation="Vertical" InputTransparent="true" CascadeInputTransparent="false" Spacing="6"
                         HorizontalOptions="End">
-                        <StackLayout x:Name="GameMenuLayout" Padding="0" Orientation="Horizontal"
+                        <StackLayout x:Name="GameMenuLayout" Padding="0" Orientation="Horizontal" Spacing="6"
                             HorizontalOptions="End" VerticalOptions="Start" BackgroundColor="Transparent" >
                             <controls:SimpleImageButton x:Name="GameMenuButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-menu.png" BtnClicked="GameMenuButton_Clicked"/>
                             <controls:SimpleImageButton x:Name="ESCButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-cancel.png" BtnClicked="ESCButton_Clicked"/>
                             <controls:SimpleImageButton x:Name="ToggleAutoCenterModeButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-autocenter-on.png" BtnClicked="ToggleAutoCenterModeButton_Clicked"/>
                         </StackLayout>
-                        <StackLayout x:Name="ModeLayout" Padding="0" Orientation="Vertical"
+                        <StackLayout x:Name="ModeLayout" Padding="0" Orientation="Vertical" Spacing="6"
                             HorizontalOptions="End" BackgroundColor="Transparent" >
-                            <StackLayout x:Name="ModeSubLayout1" Padding="0" Orientation="Vertical"
+                            <StackLayout x:Name="ModeSubLayout1" Padding="0" Orientation="Vertical" Spacing="6"
                                 HorizontalOptions="End" BackgroundColor="Transparent" >
                                 <controls:SimpleImageButton x:Name="ToggleZoomMiniButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-minimap-off.png" BtnClicked="ToggleZoomMiniButton_Clicked"/>
                                 <controls:SimpleImageButton x:Name="ToggleZoomAlternateButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-altmap-off.png" BtnClicked="ToggleZoomAlternateButton_Clicked"/>
                             </StackLayout>
-                            <StackLayout x:Name="ModeSubLayout2" Padding="0" Orientation="Vertical"
+                            <StackLayout x:Name="ModeSubLayout2" Padding="0" Orientation="Vertical" Spacing="6"
                                 HorizontalOptions="End" BackgroundColor="Transparent" >
                                 <controls:SimpleImageButton x:Name="LookModeButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-look-off.png" BtnClicked="LookModeButton_Clicked"/>
                                 <controls:SimpleImageButton x:Name="ToggleTravelModeButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-travel-off.png" BtnClicked="ToggleTravelModeButton_Clicked"/>
                             </StackLayout>
                         </StackLayout>
                     </StackLayout>
-                    <StackLayout Grid.Row="0" x:Name="SimpleUpperCmdLayout" IsVisible="True" Orientation="Vertical" InputTransparent="true" CascadeInputTransparent="false"
+                    <StackLayout Grid.Row="0" x:Name="SimpleUpperCmdLayout" IsVisible="True" Orientation="Vertical" InputTransparent="true" CascadeInputTransparent="false" Spacing="6"
                         HorizontalOptions="End">
-                        <StackLayout x:Name="SimpleGameMenuLayout" Padding="0" Orientation="Horizontal"
+                        <StackLayout x:Name="SimpleGameMenuLayout" Padding="0" Orientation="Horizontal" Spacing="6"
                             HorizontalOptions="End" VerticalOptions="Start" BackgroundColor="Transparent" >
                             <controls:SimpleImageButton x:Name="SimpleGameMenuButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-menu.png" BtnClicked="GameMenuButton_Clicked"/>
                             <controls:SimpleImageButton x:Name="SimpleESCButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-cancel.png" BtnClicked="ESCButton_Clicked"/>
                         </StackLayout>
-                        <StackLayout x:Name="SimpleModeLayout" Padding="0" Orientation="Vertical"
+                        <StackLayout x:Name="SimpleModeLayout" Padding="0" Orientation="Vertical" Spacing="6"
                             HorizontalOptions="End" BackgroundColor="Transparent" >
-                            <StackLayout x:Name="SimpleModeSubLayout1" Padding="0" Orientation="Vertical"
+                            <StackLayout x:Name="SimpleModeSubLayout1" Padding="0" Orientation="Vertical" Spacing="6"
                                 HorizontalOptions="End" BackgroundColor="Transparent" >
                                 <controls:SimpleImageButton x:Name="SimpleToggleAutoCenterModeButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-autocenter-on.png" BtnClicked="ToggleAutoCenterModeButton_Clicked"/>
                                 <controls:SimpleImageButton x:Name="SimpleToggleZoomMiniButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-minimap-off.png" BtnClicked="ToggleZoomMiniButton_Clicked"/>
                             </StackLayout>
-                            <StackLayout x:Name="SimpleModeSubLayout2" Padding="0" Orientation="Vertical"
+                            <StackLayout x:Name="SimpleModeSubLayout2" Padding="0" Orientation="Vertical" Spacing="6"
                                 HorizontalOptions="End" BackgroundColor="Transparent" >
                                 <controls:SimpleImageButton x:Name="SimpleLookModeButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-look-off.png" BtnClicked="LookModeButton_Clicked"/>
                             </StackLayout>
@@ -100,11 +100,11 @@
                     <FlexLayout Grid.Row="1" x:Name="ContextLayout" InputTransparent="True" CascadeInputTransparent="False" Padding="0,2" Direction="Column" Wrap="Reverse" 
                                 JustifyContent="End" AlignItems="End" AlignContent="Start" HorizontalOptions="End" VerticalOptions="End" >
                     </FlexLayout>
-                    <StackLayout Grid.Row="1" x:Name="MessageNumberGrid" Padding="0,2"
+                    <StackLayout Grid.Row="1" x:Name="MessageNumberGrid" Padding="0,2" Spacing="6"
                         HorizontalOptions="Start" VerticalOptions="End">
                         <Button x:Name="ToggleMessageNumberButton" Text="" Clicked="ToggleMessageNumberButton_Clicked" HeightRequest="80" WidthRequest="80" BackgroundColor="Transparent" />
                     </StackLayout>
-                    <StackLayout Grid.Row="2" x:Name="ButtonRowStack" IsVisible="True" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" Orientation="Vertical"
+                    <StackLayout Grid.Row="2" x:Name="ButtonRowStack" IsVisible="True" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" Orientation="Vertical" Spacing="6"
                         BackgroundColor="#66000000">
                         <Grid x:Name="UpperCmdGrid" HeightRequest="60" HorizontalOptions="CenterAndExpand" >
                             <Grid.RowDefinitions>
@@ -149,7 +149,7 @@
                             <controls:LabeledImageButton Grid.Column="6" x:Name="lMoreButton" LblText="More" ImgSourcePath="resource://GnollHackX.Assets.UI.more.png" BtnClicked="MoreButton_Clicked" />
                         </Grid>
                     </StackLayout>
-                    <StackLayout Grid.Row="2" x:Name="SimpleButtonRowStack" IsVisible="True" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" Orientation="Vertical"
+                    <StackLayout Grid.Row="2" x:Name="SimpleButtonRowStack" IsVisible="True" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" Orientation="Vertical" Spacing="6"
                         BackgroundColor="#66000000">
                         <Grid x:Name="SimpleCmdGrid" HeightRequest="60" HorizontalOptions="CenterAndExpand" >
                             <Grid.RowDefinitions>
@@ -177,7 +177,7 @@
             </Grid>
             <Grid x:Name="MenuGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000" IsVisible="False">
                 <gnh:BackgroundView x:Name="MenuBackground" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-                <StackLayout x:Name="MenuStack" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Orientation="Vertical"  BackgroundColor="Transparent">
+                <StackLayout x:Name="MenuStack" Spacing="6" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Orientation="Vertical"  BackgroundColor="Transparent">
                     <gnh:CustomLabel x:Name="MenuHeaderLabel"
                        TextColor="Black" FontAttributes="Bold" BackgroundColor="Transparent"
                        HorizontalOptions="FillAndExpand" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
@@ -196,7 +196,7 @@
                         <gnh:GHCachedImage x:Name="MenuWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15,15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
                         <controls:SwitchableCanvasView x:Name="MenuCanvas" UseGL="False" CanvasType="MenuCanvas" RevertBlackAndWhite="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" EnableTouchEvents="True" />
                     </Grid>
-                    <Grid x:Name="MenuCloseGrid" BackgroundColor="Transparent" >
+                    <Grid x:Name="MenuCloseGrid" ColumnSpacing="6" BackgroundColor="Transparent" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
@@ -213,7 +213,7 @@
                          BackgroundColor="#66000000" IsVisible="False">
                     <Grid x:Name="MenuCountForegroundGrid" WidthRequest="360" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
                         <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
-                            <StackLayout x:Name="MenuCountLayout" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                            <StackLayout Spacing="6" x:Name="MenuCountLayout" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
                                 <Label x:Name="MenuCountCaption" Text="Select Count" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
                                 <Picker x:Name="CountPicker"
                                         VerticalOptions="Center"
@@ -243,7 +243,7 @@
                                     WidthRequest="180"
                                     Completed="MenuEntry_Completed"
                                     />
-                                <Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                                <Grid ColumnSpacing="6" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="65" />
                                     </Grid.RowDefinitions>
@@ -274,9 +274,9 @@
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
                 <Grid WidthRequest="440" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" Margin="0,50,0,10" >
                     <Frame x:Name="GetLineFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
-                        <StackLayout x:Name="GetLineLayout" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                        <StackLayout x:Name="GetLineLayout" Spacing="6" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
                             <Label x:Name="GetLineCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                            <StackLayout Spacing="6" Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
                                 <Entry x:Name="GetLineEntryText" WidthRequest="360" HorizontalOptions="Center" Placeholder="Enter the text here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
                                        HorizontalTextAlignment="Center" FontSize="20" TextChanged="GetLineEntryText_TextChanged" />
                                 <controls:CustomImageButton x:Name="GetLineQuestionMarkButton" IsVisible="False" Text="?" FontSize="18" WidthRequest="50" HeightRequest="50" FontFamily="Diablo" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" 
@@ -288,7 +288,7 @@
                                     <TapGestureRecognizer Tapped="GetLineAutoCompleteTapGestureRecognizer_Tapped" />
                                 </Label.GestureRecognizers>
                             </Label>
-                            <Grid WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                            <Grid ColumnSpacing="6" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="65" />
                                 </Grid.RowDefinitions>
@@ -311,9 +311,9 @@
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
                 <Grid WidthRequest="600" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
                     <Frame x:Name="YnFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
-                        <StackLayout x:Name="YnLayout" Padding="5"
+                        <StackLayout x:Name="YnLayout" Padding="5" Spacing="6"
                           HorizontalOptions="Center" VerticalOptions="CenterAndExpand" >
-                            <StackLayout x:Name="YnTitleLayout" Orientation="Horizontal"
+                            <StackLayout x:Name="YnTitleLayout" Orientation="Horizontal" Spacing="6"
                                      HorizontalOptions="CenterAndExpand" VerticalOptions="Center">
                                 <gnh:GHCachedImage x:Name="YnImage" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Center"
                                                 Margin="0,0,5,0" WidthRequest="32" HeightRequest="48"/>
@@ -322,7 +322,7 @@
                             </StackLayout>
                             <Label Text="?" x:Name="YnQuestionLabel" FontFamily="Immortal" FontSize="19" TextColor="White"
                                VerticalTextAlignment="Center" HorizontalOptions="Center"  />
-                            <StackLayout x:Name="YnButtonStack" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Orientation="Horizontal" Margin="0,10,0,0" >
+                            <StackLayout x:Name="YnButtonStack" Spacing="6" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Orientation="Horizontal" Margin="0,10,0,0" >
                                 <controls:LabeledImageButton x:Name="ZeroButton" ImgSourcePath="resource://GnollHackX.Assets.UI.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True"  />
                                 <controls:LabeledImageButton x:Name="FirstButton" ImgSourcePath="resource://GnollHackX.Assets.UI.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True"  />
                                 <controls:LabeledImageButton x:Name="SecondButton" ImgSourcePath="resource://GnollHackX.Assets.UI.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True" />
@@ -337,9 +337,9 @@
                          BackgroundColor="#66000000" IsVisible="False">
                 <Grid WidthRequest="600" Margin="5" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
                     <Frame x:Name="PopupFrame"  BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
-                        <StackLayout x:Name="PopupLayout" Padding="5"
+                        <StackLayout x:Name="PopupLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
-                            <StackLayout x:Name="PopupTitleLayout" Orientation="Horizontal"
+                            <StackLayout x:Name="PopupTitleLayout" Orientation="Horizontal" Spacing="6"
                                      HorizontalOptions="CenterAndExpand" VerticalOptions="Center">
                                 <gnh:GHCachedImage x:Name="PopupImage" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Center"
                                                 Margin="0,0,5,0" WidthRequest="32" HeightRequest="48"/>
@@ -374,7 +374,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Frame x:Name="ReplayFrame" HorizontalOptions="CenterAndExpand" VerticalOptions="End" HeightRequest="65" BackgroundColor="#88000000" BorderColor="Black" CornerRadius="10" Padding="4" Margin="1">
-                    <Grid Margin="0" BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="60" Padding="0" RowSpacing="1" >
+                    <Grid Margin="0" BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="60" Padding="0" RowSpacing="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
@@ -402,7 +402,7 @@
                                 <Entry x:Name="GotoTurnEntryText" Keyboard="Numeric" WidthRequest="360" HorizontalOptions="Center" Placeholder="Enter the turn here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
                                        HorizontalTextAlignment="Center" FontSize="20" />
                             </StackLayout>
-                            <Grid WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                            <Grid ColumnSpacing="6" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="65" />
                                 </Grid.RowDefinitions>
@@ -424,7 +424,7 @@
             <Grid x:Name="LoadingGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
                 <gnh:GHCachedImage Source="resource://GnollHackX.Assets.dgn_entrance.jpg" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
                                 Aspect="AspectFill" CacheImage="False" />
-                <StackLayout HeightRequest="150" WidthRequest="250" HorizontalOptions="Center" VerticalOptions="Center">
+                <StackLayout Spacing="6" HeightRequest="150" WidthRequest="250" HorizontalOptions="Center" VerticalOptions="Center">
                     <Label x:Name="LoadingLabel" Text="Loading..." FontFamily="Diablo" TextColor="White" FontSize="36"
                        HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" 
                        VerticalOptions="End" VerticalTextAlignment="Center"/>

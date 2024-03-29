@@ -77,7 +77,7 @@
                             <!--<Label x:Name="ServerLabel" Text="Cloud" HorizontalOptions="End" VerticalOptions="Center" HorizontalTextAlignment="End" TextColor="Black" FontFamily="Diablo" FontSize="16" />
                             <Switch x:Name="ServerSwitch" HorizontalOptions="Start" VerticalOptions="Center" IsToggled="False" Toggled="ServerSwitch_Toggled" />-->
                         </StackLayout>
-                        <StackLayout x:Name="ButtonMainStack" Orientation="Vertical"  HorizontalOptions="CenterAndExpand">
+                        <StackLayout x:Name="ButtonMainStack" Spacing="6" Orientation="Vertical"  HorizontalOptions="CenterAndExpand">
                            <StackLayout Orientation="Horizontal">
                                 <controls:CustomImageButton Text="More" x:Name="MoreButton" Clicked="MoreButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 <controls:CustomImageButton Text="Play" x:Name="SelectButton" Clicked="SelectButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="StartAndExpand" VerticalOptions="Center" />
@@ -93,7 +93,7 @@
             <Grid x:Name="PopupGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#66000000" IsVisible="False">
                 <Grid WidthRequest="600" Margin="5" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
                     <Frame x:Name="PopupFrame" BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
-                        <StackLayout>
+                        <StackLayout Spacing="6">
                             <Label Text="Actions" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" VerticalTextAlignment="Center" HorizontalOptions="Center"  />
                             <controls:CustomImageButton Text="Upload" x:Name="UploadButton" Clicked="UploadButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                             <controls:CustomImageButton Text="Share" x:Name="ShareButton" Clicked="ShareButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
@@ -106,7 +106,7 @@
             <Grid x:Name="UploadDownloadGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#66000000" IsVisible="False">
                 <Grid WidthRequest="600" Margin="5" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
                     <Frame x:Name="UploadDownloadFrame" BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
-                        <StackLayout>
+                        <StackLayout Spacing="6">
                             <Label Text="Uploading..." x:Name="UploadDownloadTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" VerticalTextAlignment="Center" HorizontalOptions="Center"  />
                             <Label Text="replay.gnhrec.gz" x:Name="UploadDownloadFileLabel" FontFamily="Lato-Regular" FontSize="16" TextColor="White" VerticalTextAlignment="Start" HorizontalOptions="Center"  />
                             <Label Text="Please wait..." x:Name="UploadDownloadStatusLabel" FontFamily="Underwood" FontSize="16" TextColor="White" VerticalTextAlignment="Start" HorizontalOptions="Center"  />

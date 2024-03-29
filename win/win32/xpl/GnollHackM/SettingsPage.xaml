@@ -19,9 +19,9 @@
                 <Label Grid.Row="0" x:Name="lblHeader" Text="Settings" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" Margin="0,10,0,0" />
                 <ScrollView x:Name="MainScrollView" Grid.Row="1" WidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="Fill" BackgroundColor="Transparent" Margin="18,0">
-                    <StackLayout>
+                    <StackLayout Spacing="6">
                         <Label Text="General" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="GPU Acceleration"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -29,7 +29,7 @@
                                            HorizontalOptions="Start" />
                             <Switch x:Name="GPUSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Graphics"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -54,7 +54,7 @@
                                 </Picker.ItemsSource>
                             </Picker>
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Cursor Style"
                                             FontFamily="Underwood" TextColor="Black"
                                             FontSize="15"
@@ -79,7 +79,7 @@
                                 </Picker.ItemsSource>
                             </Picker>
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Map FPS"
                                             FontFamily="Underwood" TextColor="Black"
                                             FontSize="15"
@@ -98,7 +98,7 @@
                                             HorizontalOptions="EndAndExpand" >
                             </Picker>
                         </StackLayout>
-                        <StackLayout x:Name="NavBarStackLayout" Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout x:Name="NavBarStackLayout" Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Hide Navigation"
                                            x:Name="NavBarLabel"
                                            FontFamily="Underwood" TextColor="Black"
@@ -107,7 +107,7 @@
                                            HorizontalOptions="Start" />
                             <Switch x:Name="NavBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout x:Name="StatusBarStackLayout" Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout x:Name="StatusBarStackLayout" Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Hide Status Bar"
                                            x:Name="StatusBarLabel"
                                            FontFamily="Underwood" TextColor="Black"
@@ -116,7 +116,7 @@
                                            HorizontalOptions="Start" />
                             <Switch x:Name="StatusBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Silent Mode"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -124,7 +124,7 @@
                                            HorizontalOptions="Start" />
                             <Switch x:Name="SilentModeSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="SilentModeSwitch_Toggled" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Allow Ghost Levels"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -132,7 +132,7 @@
                                     HorizontalOptions="Start" />
                             <Switch x:Name="BonesSwitch" Toggled="BonesSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Show Battery"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -140,7 +140,7 @@
                                            HorizontalOptions="Start" />
                             <Switch x:Name="BatterySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Show FPS"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -150,7 +150,7 @@
                         </StackLayout>
 
                         <Label Text="Interface" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Simple Command Layout"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -158,7 +158,7 @@
                                            HorizontalOptions="Start" />
                             <Switch x:Name="SimpleCmdLayoutSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="SimpleCmdLayoutSwitch_Toggled" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Messages"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -195,7 +195,7 @@
                                 </Picker.ItemsSource>
                             </Picker>
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label x:Name="ForceMaxMessageLabel"
                                            Text=" Show All"
                                            FontFamily="Underwood" TextColor="Black"
@@ -204,7 +204,7 @@
                                            HorizontalOptions="Start" />
                             <Switch x:Name="ForceMaxMessageSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Grid"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -212,7 +212,7 @@
                                            HorizontalOptions="Start" />
                             <Switch x:Name="GridSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Hit Point Bars"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -220,7 +220,7 @@
                                            HorizontalOptions="Start" />
                             <Switch x:Name="HitPointBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Classic Status Bar"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -229,7 +229,7 @@
                             <Switch x:Name="ClassicStatusBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center"  
                                             Toggled="ClassicStatusBarSwitch_Toggled" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label x:Name="ShowExtendedStatusBarLabel"
                                            Text="Show Status Screen"
                                            FontFamily="Underwood" TextColor="Black"
@@ -238,7 +238,7 @@
                                            HorizontalOptions="Start" />
                             <Switch x:Name="ShowExtendedStatusBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Show Pets" x:Name="PetsLabel"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -246,7 +246,7 @@
                                            HorizontalOptions="Start" />
                             <Switch x:Name="PetSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="PetSwitch_Toggled" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Pet Rows" x:Name="PetRowsLabel"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -274,7 +274,7 @@
                                 </Picker.ItemsSource>
                             </Picker>
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Orbs" x:Name="OrbsLabel"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -284,7 +284,7 @@
                                             Toggled="OrbSwitch_Toggled"/>
                         </StackLayout>
 
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Show Max Hit Points" x:Name="MaxHealthInOrbLabel"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -292,7 +292,7 @@
                                            HorizontalOptions="Start" />
                             <Switch x:Name="MaxHealthInOrbSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Show Max Mana" x:Name="MaxManaInOrbLabel"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -301,7 +301,7 @@
                             <Switch x:Name="MaxManaInOrbSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
 
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Player Mark"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -309,7 +309,7 @@
                                            HorizontalOptions="Start" />
                             <Switch x:Name="PlayerMarkSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Targeting"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -317,7 +317,7 @@
                                            HorizontalOptions="Start" />
                             <Switch x:Name="MonsterTargetingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Walk Arrows"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -325,7 +325,7 @@
                                            HorizontalOptions="Start" />
                             <Switch x:Name="WalkArrowSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Lighter Unlit Areas"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -333,7 +333,7 @@
                                            HorizontalOptions="Start" />
                             <Switch x:Name="LighterDarkeningSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Draw Wall Ends"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -341,7 +341,7 @@
                                            HorizontalOptions="Start" />
                             <Switch x:Name="WallEndSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Breathing Animations"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -349,7 +349,7 @@
                                            HorizontalOptions="Start" />
                             <Switch x:Name="BreatheAnimationSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Default Auto-Center"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -359,7 +359,7 @@
                         </StackLayout>
 
                         <Label Text="Behavior" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Empty Wish is Nothing"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -369,7 +369,7 @@
                         </StackLayout>
 
                         <Label Text="Bar Commands" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Bar Command 1" x:Name="SimpleCommandBarButton1Label"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -388,7 +388,7 @@
                                             HorizontalOptions="EndAndExpand" >
                             </Picker>
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Bar Command 2" x:Name="SimpleCommandBarButton2Label"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -408,7 +408,7 @@
                             </Picker>
                         </StackLayout>
 
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Bar Command 3" x:Name="SimpleCommandBarButton3Label"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -427,7 +427,7 @@
                                     HorizontalOptions="EndAndExpand" >
                             </Picker>
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Bar Command 4" x:Name="SimpleCommandBarButton4Label"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -446,7 +446,7 @@
                                     HorizontalOptions="EndAndExpand" >
                             </Picker>
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Bar Command 5" x:Name="SimpleCommandBarButton5Label"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -465,7 +465,7 @@
                                     HorizontalOptions="EndAndExpand" >
                             </Picker>
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Bar Command 6" x:Name="SimpleCommandBarButton6Label"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -485,7 +485,7 @@
                             </Picker>
                         </StackLayout>
                         <Label Text="Volume" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Master"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -494,7 +494,7 @@
                             <Slider x:Name="GeneralVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Music"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -503,7 +503,7 @@
                             <Slider x:Name="MusicVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Ambient"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -512,7 +512,7 @@
                             <Slider x:Name="AmbientVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Dialogue"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -530,7 +530,7 @@
                             <Slider x:Name="EffectsVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Interface"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -541,7 +541,7 @@
                         </StackLayout>
 
                         <Label Text="Forum Posting" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Post Game Progress"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -549,7 +549,7 @@
                                     HorizontalOptions="Start" />
                             <Switch x:Name="PostGameStatusSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="  Webhook Link"
                                         FontFamily="Underwood" TextColor="Black"
                                         FontSize="15"
@@ -567,7 +567,7 @@
                                         VerticalOptions="CenterAndExpand" 
                                         HorizontalOptions="End" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Post Diagnostic Data"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -577,7 +577,7 @@
                         </StackLayout>
 
                         <Label Text="Server Posting" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Account"
                                         FontFamily="Underwood" TextColor="Black"
                                         FontSize="15"
@@ -600,7 +600,7 @@
                                         VerticalOptions="CenterAndExpand" 
                                         HorizontalOptions="End" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Posting"
                                         FontFamily="Underwood" TextColor="Black"
                                         FontSize="15"
@@ -623,7 +623,7 @@
                                         VerticalOptions="CenterAndExpand" 
                                         HorizontalOptions="End" />
                         </StackLayout>
-                        <StackLayout x:Name="PostXlogUserNameStackLayout" Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout x:Name="PostXlogUserNameStackLayout" Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="User Name"
                                     x:Name="PostXlogUserNameLabel" 
                                     FontFamily="Underwood" TextColor="Black"
@@ -633,7 +633,7 @@
                             <Entry x:Name="PostXlogUserNameEntry" MaxLength="31" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="Enter user name" PlaceholderColor="Gray"
                                     TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Password"
                                     x:Name="PostXlogPasswordLabel" 
                                     FontFamily="Underwood" TextColor="Black"
@@ -643,7 +643,7 @@
                             <Entry x:Name="PostXlogPasswordEntry" IsPassword="True" MaxLength="63" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="Enter password" PlaceholderColor="Gray"
                                     TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                         </StackLayout>
-                        <StackLayout x:Name="XlogReleaseAccountStackLayout" Orientation="Horizontal" HeightRequest="40" IsVisible="False">
+                        <StackLayout x:Name="XlogReleaseAccountStackLayout" Spacing="6" Orientation="Horizontal" HeightRequest="40" IsVisible="False">
                             <Label Text="Use Release Account"
                                     x:Name="XlogReleaseAccountLabel"
                                     FontFamily="Underwood" TextColor="Black"
@@ -652,7 +652,7 @@
                                     HorizontalOptions="Start" />
                             <Switch x:Name="XlogReleaseAccountSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Post Top Scores"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -660,7 +660,7 @@
                                     HorizontalOptions="Start" />
                             <Switch x:Name="PostXlogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40" IsVisible="False">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40" IsVisible="False">
                             <Label Text="Upload Replays"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -668,7 +668,7 @@
                                     HorizontalOptions="Start" />
                             <Switch x:Name="PostReplaysSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Share Bones Files" x:Name="PostBonesLabel"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -676,7 +676,7 @@
                                     HorizontalOptions="Start" />
                             <Switch x:Name="PostBonesSwitch" Toggled="PostBonesSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="  Use Blacklist" x:Name="BonesListLabel"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -684,7 +684,7 @@
                                     HorizontalOptions="Start" />
                             <Switch x:Name="BonesListSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="BonesListSwitch_Toggled" />
                         </StackLayout>
-                        <StackLayout x:Name="BonesAllowedUsersStackLayout" Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout x:Name="BonesAllowedUsersStackLayout" Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="  Whitelist"
                                     x:Name="BonesAllowedUsersLabel" 
                                     FontFamily="Underwood" TextColor="Black"
@@ -698,7 +698,7 @@
                             <Entry x:Name="BonesAllowedUsersEntry" MaxLength="2047" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="All users" PlaceholderColor="Gray"
                                     TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                         </StackLayout>
-                        <StackLayout x:Name="ForcePostBonesStackLayout" Orientation="Horizontal" HeightRequest="40" IsVisible="False">
+                        <StackLayout x:Name="ForcePostBonesStackLayout" Spacing="6" Orientation="Horizontal" HeightRequest="40" IsVisible="False">
                             <Label Text="  Force Post Bones"
                                     x:Name="ForcePostBonesLabel"
                                     FontFamily="Underwood" TextColor="Black"
@@ -709,7 +709,7 @@
                         </StackLayout>
 
                         <Label Text="Replays" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Record Game"
                                     x:Name="RecordLabel"
                                     FontFamily="Underwood" TextColor="Black"
@@ -722,7 +722,7 @@
                             </Label>
                             <Switch x:Name="RecordSwitch" Toggled="RecordSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Show Recording"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
@@ -730,7 +730,7 @@
                                            HorizontalOptions="Start" />
                             <Switch x:Name="ShowRecordingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Auto-Upload to Cloud"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -739,7 +739,7 @@
                             </Label>
                             <Switch x:Name="AutoUploadReplaysSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Cloud Storage"
                                         FontFamily="Underwood" TextColor="Black"
                                         FontSize="15"
@@ -759,7 +759,7 @@
                         </StackLayout>
 
                         <Label Text="System" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Developer Mode"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -767,7 +767,7 @@
                                     HorizontalOptions="Start" />
                             <Switch x:Name="DeveloperSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="DeveloperSwitch_Toggled" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Debug Logging"
                                     x:Name="LogMessageLabel"
                                     FontFamily="Underwood" TextColor="Black"
@@ -776,7 +776,7 @@
                                     HorizontalOptions="Start" />
                             <Switch x:Name="LogMessageSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Show Memory"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -784,7 +784,7 @@
                                     HorizontalOptions="Start" />
                             <Switch x:Name="MemorySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout x:Name="AlternativeDrawingStackLayout" Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout x:Name="AlternativeDrawingStackLayout" Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Alternative Layer Drawing"
                                     x:Name="AlternativeDrawingLabel"
                                     FontFamily="Underwood" TextColor="Black"
@@ -793,7 +793,7 @@
                                     HorizontalOptions="Start" />
                             <Switch x:Name="AlternativeLayerDrawingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Load Sound Banks"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -801,7 +801,7 @@
                                     HorizontalOptions="Start" />
                             <Switch x:Name="SoundBankSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Streaming Banks to Memory"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -809,7 +809,7 @@
                                     HorizontalOptions="Start" />
                             <Switch x:Name="StreamingBankToMemorySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="StreamingBankToMemorySwitch_Toggled" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Streaming Banks to Disk"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -817,7 +817,7 @@
                                     HorizontalOptions="Start" />
                             <Switch x:Name="StreamingBankToDiskSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="StreamingBankToDiskSwitch_Toggled" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label x:Name="LongerMessageHistoryLabel"
                                     Text="Longer Message History"
                                     FontFamily="Underwood" TextColor="Black"
@@ -826,7 +826,7 @@
                                     HorizontalOptions="Start" />
                             <Switch x:Name="LongerMessageHistorySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Use Single Dumplog"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
@@ -834,7 +834,7 @@
                                     HorizontalOptions="Start" />
                             <Switch x:Name="SingleDumpLogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="SingleDumpLogSwitch_Toggled" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Use HTML Dumplog"
                                     x:Name="HTMLDumpLogLabel"
                                     FontFamily="Underwood" TextColor="Black"
@@ -843,7 +843,7 @@
                                     HorizontalOptions="Start" />
                             <Switch x:Name="HTMLDumpLogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="GZip Replay Compression"
                                     x:Name="GZipLabel"
                                     FontFamily="Underwood" TextColor="Black"
@@ -856,7 +856,7 @@
                             </Label>
                             <Switch x:Name="GZipSwitch" Toggled="GZipSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Save on Switching Apps"
                                         FontFamily="Underwood" TextColor="Black"
                                         FontSize="15"
@@ -890,11 +890,11 @@
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
                 <Grid WidthRequest="440" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" Margin="0,50,0,10" >
                     <Frame x:Name="TextFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
-                        <StackLayout x:Name="TextLayout" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                        <StackLayout x:Name="TextLayout" Spacing="6" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
                             <Label x:Name="TextCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
                             <Entry x:Name="TextEntry" WidthRequest="360" HorizontalOptions="Center" Placeholder="Enter the link here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
                                        HorizontalTextAlignment="Center" FontSize="20" />
-                            <Grid WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                            <Grid ColumnSpacing="6" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="65" />
                                 </Grid.RowDefinitions>
@@ -919,7 +919,7 @@
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid WidthRequest="600" Margin="5" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
                     <Frame x:Name="PopupFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
-                        <StackLayout x:Name="PopupLayout" Padding="5"
+                        <StackLayout x:Name="PopupLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
                             <Label Text="" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
                                        VerticalTextAlignment="Center" HorizontalOptions="Center"  />

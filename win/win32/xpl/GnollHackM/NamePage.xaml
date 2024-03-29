@@ -9,7 +9,7 @@
     <ContentPage.Content>
         <Grid>
             <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-            <StackLayout x:Name="mainStack" Padding="10">
+            <StackLayout x:Name="mainStack" Spacing="6" Padding="10">
                 <Label x:Name="WhatNameLabel" Text="What is your name?" FontFamily="Diablo" FontSize="19" Margin="0,10,0,30" TextColor="Black" HorizontalTextAlignment="Center"
                     HorizontalOptions="CenterAndExpand" />
                 <Entry x:Name="eName" WidthRequest="360" HorizontalOptions="Center" HorizontalTextAlignment="Center" PlaceholderColor="Gray" Placeholder="Enter your name here" TextColor="Black" BackgroundColor="#20404040" />

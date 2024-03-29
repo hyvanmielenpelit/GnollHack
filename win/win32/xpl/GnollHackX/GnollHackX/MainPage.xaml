@@ -28,7 +28,7 @@
 
         <Grid x:Name="LogoGrid" RowSpacing="0" IsVisible="false" Opacity="0" AbsoluteLayout.LayoutBounds="60, 35, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="None" >
-            <StackLayout>
+            <StackLayout Spacing="6">
                 <local:GHCachedImage Grid.Row="0" x:Name="MainLogoImage" Source="resource://GnollHackX.Assets.gnollhack-logo-test-2.png" HeightRequest="100" WidthRequest="100"
                    HorizontalOptions="Center" VerticalOptions="End"/>
                 <Label x:Name="GnollHackLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start" 
@@ -40,12 +40,12 @@
             </StackLayout>
         </Grid>
 
-        <StackLayout AbsoluteLayout.LayoutBounds="0.99, 0.99, AutoSize, AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
+        <StackLayout Spacing="6" AbsoluteLayout.LayoutBounds="0.99, 0.99, AutoSize, AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
             <Label x:Name="DownloadLabel" TextColor="White" FontSize="6" FontFamily="Lato" />
             <Label x:Name="VersionLabel" TextColor="White" FontSize="6" FontFamily="Lato" />
         </StackLayout>
         <Grid x:Name="UpperButtonGrid" IsVisible="false" WidthRequest="130" Opacity="0" HorizontalOptions="End" VerticalOptions="Start" Margin="10,10,10,5" AbsoluteLayout.LayoutBounds="1,0,AutoSize,AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
-            <StackLayout>
+            <StackLayout Spacing="4">
                 <controls:CustomImageButton Text="Reset" x:Name="ResetButton" Clicked="ResetButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
                 <controls:CustomImageButton Text="Vault" x:Name="VaultButton" Clicked="VaultButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
                 <controls:CustomImageButton Text="Options" x:Name="OptionsButton" Clicked="OptionsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
@@ -54,10 +54,10 @@
                 <controls:CustomImageButton Text="Exit" x:Name="ExitAppButton" Clicked="ExitAppButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
             </StackLayout>
         </Grid>
-        <StackLayout x:Name="StartButtonLayout" Opacity="0" IsVisible="false"
+        <StackLayout x:Name="StartButtonLayout" Spacing="6" Opacity="0" IsVisible="false"
               HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.5, 0.90, AutoSize, AutoSize"
               AbsoluteLayout.LayoutFlags="PositionProportional" WidthRequest="300">
-            <Grid x:Name="classicModeGrid" IsVisible="True" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+            <Grid x:Name="classicModeGrid" ColumnSpacing="6" IsVisible="True" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
@@ -73,7 +73,7 @@
                 </local:CustomLabel>
                 <Switch x:Name="classicModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="ClassicModeSwitch_Toggled"  />
             </Grid>
-            <Grid x:Name="casualModeGrid" IsVisible="True" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+            <Grid x:Name="casualModeGrid" ColumnSpacing="6" IsVisible="True" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
@@ -89,7 +89,7 @@
                 </local:CustomLabel>
                 <Switch x:Name="casualModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="CasualModeSwitch_Toggled"  />
             </Grid>
-            <Grid x:Name="wizardModeGrid" Margin="0,0,0,15" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+            <Grid x:Name="wizardModeGrid" ColumnSpacing="6" Margin="0,0,0,15" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
@@ -117,13 +117,13 @@
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
             <Grid WidthRequest="600" Margin="5" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
                 <Frame x:Name="PopupFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
-                    <StackLayout x:Name="PopupLayout" Padding="5"
+                    <StackLayout x:Name="PopupLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
                         <Label Text="" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
                                        VerticalTextAlignment="Center" HorizontalOptions="Center"  />
                         <Label Text="" x:Name="PopupLabel" FontFamily="Underwood" FontSize="16" TextColor="White"
                                        VerticalTextAlignment="Start" HorizontalOptions="Center"  />
-                        <StackLayout x:Name="PopupCheckBoxLayout"  IsVisible="false" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
+                        <StackLayout x:Name="PopupCheckBoxLayout" Spacing="6" IsVisible="false" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
                             <CheckBox x:Name="PopupNoAgainCheckBox" IsChecked="False" VerticalOptions="Center" Color="Green" />
                             <Label Text="Do not show again" FontFamily="Underwood" FontSize="16" TextColor="White" VerticalOptions="Center" VerticalTextAlignment="Center">
                                 <Label.GestureRecognizers>
@@ -137,7 +137,5 @@
                 </Frame>
             </Grid>
         </Grid>
-
-    </AbsoluteLayout>
-    
+    </AbsoluteLayout>    
 </ContentPage>
