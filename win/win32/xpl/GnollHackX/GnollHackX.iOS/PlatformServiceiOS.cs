@@ -72,7 +72,11 @@ namespace GnollHackX.iOS
         public void CloseApplication()
         {
             RevertAnimatorDuration(true);
+#if GNH_MAUI
             Environment.Exit(0);
+#else
+            /* Do nothing; fall back to Xamarin.Forms termination after this call */
+#endif
         }
 
         public void SetStatusBarHidden(bool ishidden)

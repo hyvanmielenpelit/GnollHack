@@ -3035,7 +3035,7 @@ namespace GnollHackX.Pages.Game
                     break;
                 case (int)getline_types.GETLINE_WISHING:
                     GetLineEntryText.Placeholder = "Type your wish here";
-                    _getLineRegex = new Regex(@"^[A-Za-z0-9_ \(\:\)\+\-\']{0,128}$");
+                    _getLineRegex = new Regex(@"^[A-Za-z0-9_ \(\:\)\+\-\'\’]{0,128}$");
                     GetLineCancelButton.Text = "Random";
                     break;
                 case (int)getline_types.GETLINE_GENESIS:
@@ -3142,6 +3142,8 @@ namespace GnollHackX.Pages.Game
                 case (int)getline_types.GETLINE_WISHING:
                     if (GHApp.EmptyWishIsNothing && (res == "" || res == " "))
                         res = "nothing";
+                    else
+                        res = res.Replace("’", "'");
                     break;
                 default:
                     break;
