@@ -175,6 +175,7 @@ namespace GnollHackX.Unknown
                 si.SetCategory(AVAudioSessionCategory.Ambient);
 #endif
             _initialized = true;
+            GHApp.MaybeWriteGHLog("FMOD initialized successfully.");
         }
 
         private bool FMODup()
@@ -220,6 +221,8 @@ namespace GnollHackX.Unknown
                             res = _system.loadBankMemory(loadableBank.ByteBuffer, LOAD_BANK_FLAGS.NORMAL, out tmpbank);
                             if (res == RESULT.OK)
                                 _banks.Add(new LoadedBank(tmpbank, loadableBank.SubType));
+                            else
+                                GHApp.MaybeWriteGHLog("LoadBanks, ReadToMemory: Result: " + ((int)res).ToString() + "(" + res.ToString() + ") , bank_path: " + loadableBank.FullPathName);
                         }
                     }
                     else
@@ -231,6 +234,8 @@ namespace GnollHackX.Unknown
                             res = _system.loadBankFile(bank_path, LOAD_BANK_FLAGS.NORMAL, out tmpbank);
                             if (res == RESULT.OK)
                                 _banks.Add(new LoadedBank(tmpbank, loadableBank.SubType));
+                            else
+                                GHApp.MaybeWriteGHLog("LoadBanks, Non-ReadToMemory: Result: " + ((int)res).ToString() + "(" + res.ToString() + ") , bank_path: " + bank_path);
                         }
                     }
                 }
@@ -272,7 +277,7 @@ namespace GnollHackX.Unknown
                                 }
                                 catch (Exception ex)
                                 {
-                                    string msg = ex.Message;
+                                    GHApp.MaybeWriteGHLog("AddLoadableSoundBank, MemoryStream: Path: " + fullfilepath + ", Exception: " + ex.Message);  ;
                                 }
                             }
                         }
@@ -294,7 +299,7 @@ namespace GnollHackX.Unknown
                 }
                 catch (Exception ex)
                 {
-                    string msg = ex.Message;
+                    GHApp.MaybeWriteGHLog("AddLoadableSoundBank: Path: " + fullfilepath + ", Exception: " + ex.Message); ;
                 }
             }
             _loadableSoundBanks.Add(new LoadableBank(fullfilepath, subType, isResource, readToMemory, data));

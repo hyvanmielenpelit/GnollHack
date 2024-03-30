@@ -5,5 +5,5 @@ copy c:\wsl-in\assetpack\installtimeassetpack.zip ..\xpl\GnollHackX\GnollHackX.A
 copy c:\wsl-in\assetpack2\ondemandassetpack.zip ..\xpl\GnollHackX\GnollHackX.Android\assetpacks
 
 if not exist ..\xpl\GnollHackM\Platforms\Android\assetpacks mkdir ..\xpl\GnollHackM\Platforms\Android\assetpacks
-copy c:\wsl-in\assetpack\installtimeassetpack.zip ..\xpl\GnollHackM\Platforms\Android\assetpacks
-copy c:\wsl-in\assetpack2\ondemandassetpack.zip ..\xpl\GnollHackM\Platforms\Android\assetpacks
+copy c:\wsl-in\assetpack-maui\installtimeassetpack.zip ..\xpl\GnollHackM\Platforms\Android\assetpacks
+copy c:\wsl-in\assetpack-maui2\ondemandassetpack.zip ..\xpl\GnollHackM\Platforms\Android\assetpacks

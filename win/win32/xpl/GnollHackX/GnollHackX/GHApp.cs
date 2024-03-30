@@ -2909,7 +2909,8 @@ namespace GnollHackX
                     }
                     else //In assets directory
                     {
-#if GNH_MAUI
+                        /* Assetpacks in .NET MAUI Android Release configuration work as in Xamarin */
+#if GNH_MAUI && !(ANDROID && !DEBUG)
                         string sdir = Path.Combine(PlatformService.GetAssetsPath(), "Platforms", GHApp.IsAndroid ? "Android" : GHApp.IsiOS ? "iOS" : "Unknown", sf.source_directory);
                         string rfile = Path.Combine("Platforms", GHApp.IsAndroid ? "Android" : GHApp.IsiOS ? "iOS" : "Unknown", sf.source_directory, sf.name);
 #else

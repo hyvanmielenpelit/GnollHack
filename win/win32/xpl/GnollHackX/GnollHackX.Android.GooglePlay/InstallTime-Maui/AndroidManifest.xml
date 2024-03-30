@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" xmlns:dist="http://schemas.android.com/apk/distribution" package="com.soundmindgames.gnollhackm" split="installtimepack">
+  <dist:module dist:type="asset-pack">
+    <dist:delivery>
+      <dist:install-time/>
+    </dist:delivery>
+    <dist:fusing dist:include="true" />
+  </dist:module>
+</manifest>
