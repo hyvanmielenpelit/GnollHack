@@ -52,8 +52,8 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
                 <Grid x:Name="BottomLayout" Grid.Row="3" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand">
-                    <StackLayout x:Name="OuterButtonMainStack" Orientation="Vertical"  HorizontalOptions="CenterAndExpand">
-                        <StackLayout x:Name="ServerStack" Grid.Row="3" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
+                    <StackLayout x:Name="OuterButtonMainStack" Spacing="6" Orientation="Vertical"  HorizontalOptions="CenterAndExpand">
+                        <StackLayout x:Name="ServerStack" Grid.Row="3" Spacing="6" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
                             <Picker x:Name="FolderPicker"
                                             Title="Select a folder"
                                             FontFamily="Diablo" 
@@ -61,7 +61,7 @@
                                             TextColor="Black"
                                             TitleColor="Black"
                                             HorizontalTextAlignment="Center"
-                                            BackgroundColor="Transparent"
+                                            BackgroundColor="#22000000"
                                             WidthRequest="200"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Center"
@@ -78,11 +78,11 @@
                             <Switch x:Name="ServerSwitch" HorizontalOptions="Start" VerticalOptions="Center" IsToggled="False" Toggled="ServerSwitch_Toggled" />-->
                         </StackLayout>
                         <StackLayout x:Name="ButtonMainStack" Spacing="6" Orientation="Vertical"  HorizontalOptions="CenterAndExpand">
-                           <StackLayout Orientation="Horizontal">
+                            <StackLayout Orientation="Horizontal" Spacing="6">
                                 <controls:CustomImageButton Text="More" x:Name="MoreButton" Clicked="MoreButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 <controls:CustomImageButton Text="Play" x:Name="SelectButton" Clicked="SelectButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="StartAndExpand" VerticalOptions="Center" />
                             </StackLayout>
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                            <StackLayout Orientation="Horizontal" Spacing="6">
                                 <controls:CustomImageButton Text="Multiple" x:Name="MultiButton" Clicked="MultiButton_Clicked" FontFamily="Diablo" FontSize="14" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                                 <controls:CustomImageButton Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="StartAndExpand" VerticalOptions="Center" />
                             </StackLayout>
