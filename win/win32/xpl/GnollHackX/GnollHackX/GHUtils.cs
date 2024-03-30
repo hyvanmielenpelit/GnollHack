@@ -166,6 +166,11 @@ namespace GnollHackX
 
         public static string StrToKey(string str)
         {
+            if (string.IsNullOrWhiteSpace(str))
+                return "";
+            else
+                str.Replace("M", "X");
+
             string key = "";
             int cnt = 0;
             for(int i = 0; i < str.Length && cnt < 32; i += 2, cnt++)
