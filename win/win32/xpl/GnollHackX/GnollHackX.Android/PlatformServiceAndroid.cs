@@ -110,6 +110,7 @@ namespace GnollHackX.Droid
             //StopForegroundService();
 #if GNH_MAUI
             Platform.CurrentActivity.Finish();
+            Microsoft.Maui.Controls.Application.Current.Quit();
 #else
             MainActivity.CurrentMainActivity.Finish();
 #endif
