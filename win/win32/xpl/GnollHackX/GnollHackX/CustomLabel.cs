@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Collections.Concurrent;
+using SkiaSharp.Views.Maui.Handlers;
+
 
 
 #if GNH_MAUI
@@ -1085,9 +1087,8 @@ namespace GnollHackX
         }
 
 #if GNH_MAUI
-        protected override Size MeasureOverride(double widthConstraint, double heightConstraint)
+        public Size CustomMeasureSize(double widthConstraint, double heightConstraint)
         {
-            //return base.MeasureOverride(widthConstraint, heightConstraint);
             SizeRequest sizeRequest = CalculateLabelSize(widthConstraint, heightConstraint);
             Size size = new Size(sizeRequest.Request.Width, sizeRequest.Request.Height);
             return size;
@@ -1108,4 +1109,18 @@ namespace GnollHackX
             }
         }
     }
+
+#if GNH_MAUI
+    internal class AutoSizeSKCanvasViewHandler : SKCanvasViewHandler
+    {
+        public override Size GetDesiredSize(double widthConstraint, double heightConstraint)
+        {
+            var custom = (this.VirtualView as CustomLabel).CustomMeasureSize(widthConstraint, heightConstraint);
+            if (custom == Size.Zero)
+                return base.GetDesiredSize(widthConstraint, heightConstraint);
+            else
+                return custom;
+        }
+    }
+#endif
 }

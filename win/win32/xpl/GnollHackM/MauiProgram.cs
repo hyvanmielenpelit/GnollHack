@@ -15,8 +15,9 @@ public static class MauiProgram
 			.UseMauiApp<App>()
             .UseSkiaSharp()
             .ConfigureMauiHandlers((handlers) => {
+                handlers.AddHandler(typeof(CustomLabel), typeof(AutoSizeSKCanvasViewHandler));
 #if IOS
-               handlers.AddHandler(typeof(Shell), typeof(CustomShellRenderer));  
+                handlers.AddHandler(typeof(Shell), typeof(CustomShellRenderer));  
 #endif
             })
             .ConfigureFonts(fonts =>
