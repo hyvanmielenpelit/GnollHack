@@ -49,12 +49,15 @@ namespace GnollHackX.Unknown
 {
     public class PlatformConstants
     {
-#if __IOS__
+#if __IOS__ || (GNH_MAUI && IOS)
         public const string dll     = "__Internal";
         public const string library = "gnollhackios";
-#elif __ANDROID__
+#elif __ANDROID__ || (GNH_MAUI && ANDROID)
         public const string dll     = @"libgnollhackdroid.so";
         public const string library = "gnollhackdroid";
+#elif GNH_MAUI && WINDOWS
+        public const string dll = @"libgnollhackwin.dll";
+        public const string library = "gnollhackwin";
 #else
         public const string dll     = @"libgnollhackunknown.so";
         public const string library = "gnollhackunknown";

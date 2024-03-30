@@ -561,7 +561,7 @@
                                         FontSize="14"
                                         VerticalOptions="CenterAndExpand" 
                                         HorizontalOptions="EndAndExpand" />
-                            <controls:CustomImageButton x:Name="CustomLinkButton" Text="Edit" FontSize="13" WidthRequest="80" HeightRequest="50" FontFamily="Diablo"
+                            <controls:CustomImageButton x:Name="CustomLinkButton" Text="Edit" FontSize="13" WidthRequest="80" HeightRequest="35" FontFamily="Diablo"
                                         BackgroundColor="Transparent" TextColor="White"
                                         Clicked="CustomLinkButton_Clicked"
                                         VerticalOptions="CenterAndExpand" 
@@ -583,7 +583,7 @@
                                         FontSize="15"
                                         VerticalOptions="CenterAndExpand" 
                                         HorizontalOptions="Start" />
-                            <controls:CustomImageButton x:Name="XlogAccountButton" Text="Setup" FontSize="13" WidthRequest="90" HeightRequest="50" FontFamily="Diablo"
+                            <controls:CustomImageButton x:Name="XlogAccountButton" Text="Setup" FontSize="13" WidthRequest="90" HeightRequest="35" FontFamily="Diablo"
                                         BackgroundColor="Transparent" TextColor="White"
                                         Clicked="XlogAccountButton_Clicked"
                                         VerticalOptions="CenterAndExpand" 
@@ -594,7 +594,7 @@
                                         FontSize="14"
                                         VerticalOptions="CenterAndExpand" 
                                         HorizontalOptions="EndAndExpand" />
-                            <controls:CustomImageButton x:Name="CustomXlogAccountButton" Text="Link" FontSize="13" WidthRequest="80" HeightRequest="50" FontFamily="Diablo"
+                            <controls:CustomImageButton x:Name="CustomXlogAccountButton" Text="Link" FontSize="13" WidthRequest="80" HeightRequest="35" FontFamily="Diablo"
                                         BackgroundColor="Transparent" TextColor="White"
                                         Clicked="CustomXlogAccountButton_Clicked"
                                         VerticalOptions="CenterAndExpand" 
@@ -606,7 +606,7 @@
                                         FontSize="15"
                                         VerticalOptions="CenterAndExpand" 
                                         HorizontalOptions="Start" />
-                            <controls:CustomImageButton x:Name="XlogTestButton" Text="Test" FontSize="13" WidthRequest="90" HeightRequest="50" FontFamily="Diablo"
+                            <controls:CustomImageButton x:Name="XlogTestButton" Text="Test" FontSize="13" WidthRequest="90" HeightRequest="35" FontFamily="Diablo"
                                         BackgroundColor="Transparent" TextColor="White"
                                         Clicked="XlogTestButton_Clicked"
                                         VerticalOptions="CenterAndExpand" 
@@ -617,7 +617,7 @@
                                         FontSize="14"
                                         VerticalOptions="CenterAndExpand" 
                                         HorizontalOptions="EndAndExpand" />
-                            <controls:CustomImageButton x:Name="CustomXlogPostButton" Text="Link" FontSize="13" WidthRequest="80" HeightRequest="50" FontFamily="Diablo"
+                            <controls:CustomImageButton x:Name="CustomXlogPostButton" Text="Link" FontSize="13" WidthRequest="80" HeightRequest="35" FontFamily="Diablo"
                                         BackgroundColor="Transparent" TextColor="White"
                                         Clicked="CustomXlogPostButton_Clicked"
                                         VerticalOptions="CenterAndExpand" 
@@ -751,7 +751,7 @@
                                         FontSize="14"
                                         VerticalOptions="CenterAndExpand" 
                                         HorizontalOptions="EndAndExpand" />
-                            <controls:CustomImageButton x:Name="CustomCloudStorageButton" Text="Edit" FontSize="13" WidthRequest="80" HeightRequest="50" FontFamily="Diablo"
+                            <controls:CustomImageButton x:Name="CustomCloudStorageButton" Text="Edit" FontSize="13" WidthRequest="80" HeightRequest="35" FontFamily="Diablo"
                                         BackgroundColor="Transparent" TextColor="White"
                                         Clicked="CustomCloudStorageButton_Clicked"
                                         VerticalOptions="CenterAndExpand" 
@@ -925,7 +925,7 @@
                                        VerticalTextAlignment="Center" HorizontalOptions="Center"  />
                             <Label Text="" x:Name="PopupLabel" FontFamily="Underwood" FontSize="16" TextColor="White"
                                        VerticalTextAlignment="Start" HorizontalOptions="Center"  />
-                            <controls:CustomImageButton x:Name="PopupOkButton" Text="OK" FontSize="19" WidthRequest="170" Margin="0,10,0,0" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="PopupOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="60" Margin="0,10,0,0" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="PopupOkButton_Clicked" />
                         </StackLayout>
                     </Frame>

@@ -2039,6 +2039,7 @@ namespace GnollHackX
             GnollHackService?.ReportFileDescriptors();
             if(IsAndroid)
             {
+#if !GNH_MAUI || ANDROID
                 /* Print file descriptors via C# */
                 int id = Process.GetCurrentProcess().Id;
                 string output = "";
@@ -2059,6 +2060,9 @@ namespace GnollHackX
                     output += proc.StandardOutput.ReadLine() + "\n";
                 }
                 await page.DisplayAlert("File Descriptors", "GnollHack will now attempt to send critical diagnostic data." + (output != "" ? "The information is as follows:\n\n" + output : ""), "OK");
+#else
+                await page.DisplayAlert("Unsupported Function", "ListFileDescriptors is unsupported.", "OK");
+#endif
             }
         }
 

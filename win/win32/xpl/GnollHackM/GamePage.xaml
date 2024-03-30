@@ -204,9 +204,8 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <controls:CustomImageButton HorizontalOptions="End" WidthRequest="215" HeightRequest="60" Grid.Column="0"  UseVaryingTextColors="True"  Text="OK" x:Name="MenuOKButton" Clicked="MenuOKButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" >
-                        </controls:CustomImageButton>
-                        <controls:CustomImageButton HorizontalOptions="Start" WidthRequest="215" HeightRequest="60" Grid.Column="1"  UseVaryingTextColors="True" Text="Cancel" x:Name="MenuCancelButton" Clicked="MenuCancelButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" />
+                        <controls:CustomImageButton HorizontalOptions="End" WidthRequest="160" HeightRequest="60" Grid.Column="0"  UseVaryingTextColors="True"  Text="OK" x:Name="MenuOKButton" Clicked="MenuOKButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" />
+                        <controls:CustomImageButton HorizontalOptions="Start" WidthRequest="160" HeightRequest="60" Grid.Column="1"  UseVaryingTextColors="True" Text="Cancel" x:Name="MenuCancelButton" Clicked="MenuCancelButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" />
                     </Grid>
                 </StackLayout>
                 <Grid x:Name="MenuCountBackgroundGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 

@@ -46,7 +46,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             InitializeComponent();
 #if GNH_MAUI
-        On<iOS>().SetUseSafeArea(true);
+            On<iOS>().SetUseSafeArea(true);
 #else
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
 #endif

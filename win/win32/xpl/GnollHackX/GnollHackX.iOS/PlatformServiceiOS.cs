@@ -72,7 +72,7 @@ namespace GnollHackX.iOS
         public void CloseApplication()
         {
             RevertAnimatorDuration(true);
-            //MainActivity.CurrentMainActivity.Finish();
+            Environment.Exit(0);
         }
 
         public void SetStatusBarHidden(bool ishidden)

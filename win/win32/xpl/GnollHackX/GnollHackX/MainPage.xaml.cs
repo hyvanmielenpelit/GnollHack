@@ -890,24 +890,17 @@ namespace GnollHackX
             await Task.Delay(100);
             GHApp.PlatformService.CloseApplication();
 
+#if !GNH_MAUI
             await Task.Delay(100);
             try
             {
-#if GNH_MAUI
-                if (GHApp.IsiOS)
-                    Environment.Exit(0);
-                else
-                    Process.GetCurrentProcess().Kill();
-#else
                 Xamarin.Forms.Application.Current.Quit();
-#endif
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
 
-#if !GNH_MAUI
             await Task.Delay(100);
             try
             {

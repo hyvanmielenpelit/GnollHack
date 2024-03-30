@@ -31,9 +31,9 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <controls:CustomImageButton Grid.Column="0" Text="Save" x:Name="OKButton" Clicked="OKButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="End" VerticalOptions="FillAndExpand"   />
-                    <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CancelButton" Clicked="CancelButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="Center" VerticalOptions="FillAndExpand" />
-                    <controls:CustomImageButton Grid.Column="2" Text="Reset" x:Name="ResetButton" Clicked="ResetButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="Start" VerticalOptions="FillAndExpand" />
+                    <controls:CustomImageButton Grid.Column="0" Text="Save" x:Name="OKButton" Clicked="OKButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="110" HeightRequest="50" HorizontalOptions="End" VerticalOptions="FillAndExpand"   />
+                    <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CancelButton" Clicked="CancelButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="110" HeightRequest="50" HorizontalOptions="Center" VerticalOptions="FillAndExpand" />
+                    <controls:CustomImageButton Grid.Column="2" Text="Reset" x:Name="ResetButton" Clicked="ResetButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="110" HeightRequest="50" HorizontalOptions="Start" VerticalOptions="FillAndExpand" />
                 </Grid>
             </Grid>
         </Grid>
