@@ -50,8 +50,8 @@
                 <controls:CustomImageButton Text="Vault" x:Name="VaultButton" Clicked="VaultButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
                 <controls:CustomImageButton Text="Options" x:Name="OptionsButton" Clicked="OptionsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
                 <controls:CustomImageButton Text="Settings" x:Name="SettingsButton" Clicked="SettingsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
-                <controls:CustomImageButton Text="About" x:Name="CreditsButton" Clicked="CreditsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
-                <controls:CustomImageButton Text="Exit" x:Name="ExitAppButton" Clicked="ExitAppButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
+                <controls:CustomImageButton Text="About" x:Name="AboutButton" Clicked="CreditsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
+                <controls:CustomImageButton Text="Exit" x:Name="ExitButton" Clicked="ExitAppButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
             </StackLayout>
         </Grid>
         <StackLayout x:Name="StartButtonLayout" Spacing="6" Opacity="0" IsVisible="false"

@@ -154,5 +154,11 @@ namespace GnollHackX.Controls
             SKRect targetrect = new SKRect(0, 0, canvaswidth, canvasheight);
             canvas.DrawBitmap(targetBitmap, sourcerect, targetrect);
         }
+
+        public void Redraw()
+        {
+            customCanvasView.InvalidateSurface();
+        }
+
     }
 }

@@ -836,6 +836,18 @@ namespace GnollHackX
             carouselView.Play();
 
             UpperButtonGrid.IsVisible = true;
+
+            if(GHApp.IsiOS && GHApp.IsMaui)
+            {
+                StartLocalGameButton.Redraw();
+                ResetButton.Redraw();
+                VaultButton.Redraw();
+                OptionsButton.Redraw();
+                SettingsButton.Redraw();
+                AboutButton.Redraw();
+                ExitButton.Redraw();
+            }
+
             await UpperButtonGrid.FadeTo(1, 250);
             UpperButtonGrid.Opacity = 1.0;  /* To make sure */
             StartButtonLayout.IsVisible = true;
@@ -871,12 +883,12 @@ namespace GnollHackX
             }
             else
             {
-                ExitAppButton.IsEnabled = false;
-                ExitAppButton.TextColor = GHColors.Red;
+                ExitButton.IsEnabled = false;
+                ExitButton.TextColor = GHColors.Red;
                 await CloseApp();
                 /* Should not come here */
-                ExitAppButton.TextColor = GHColors.White;
-                ExitAppButton.IsEnabled = true;
+                ExitButton.TextColor = GHColors.White;
+                ExitButton.IsEnabled = true;
             }
         }
 
