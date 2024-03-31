@@ -36,6 +36,19 @@
 		<CodesignProvision>Apple Dev M Development 2023</CodesignProvision>
 	</PropertyGroup>
 
+	<!--<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-ios|AnyCPU'">
+		<ProvisioningType>manual</ProvisioningType>
+		<CodesignKey >Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
+		<CodesignProvision>Apple Dev M Development 2023</CodesignProvision>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-ios|AnyCPU'">
+		<ProvisioningType>manual</ProvisioningType>
+		<CodesignKey>Apple Distribution: Hyvan mielen pelit ry (CUG8RS847T)</CodesignKey>
+		<CodesignProvision>Apple Dev M Distribution March 2024</CodesignProvision>
+	</PropertyGroup>-->
+
+
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
