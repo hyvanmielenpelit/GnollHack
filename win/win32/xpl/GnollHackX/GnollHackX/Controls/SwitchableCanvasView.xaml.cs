@@ -77,6 +77,9 @@ namespace GnollHackX.Controls
 
         private void internalCanvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
+            if (UseGL)
+                return; /* Insurance in the case both canvases mistakenly are updated */
+
             PaintSurface?.Invoke(sender, e);
         }
 
@@ -87,6 +90,9 @@ namespace GnollHackX.Controls
 
         private void internalGLView_PaintSurface(object sender, SKPaintGLSurfaceEventArgs e)
         {
+            if (!UseGL)
+                return; /* Insurance in the case both canvases mistakenly are updated */
+
             SKImageInfo info = new SKImageInfo();
             info.ColorType = e.ColorType;
             SKPaintSurfaceEventArgs convargs = new SKPaintSurfaceEventArgs(e.Surface, info);
