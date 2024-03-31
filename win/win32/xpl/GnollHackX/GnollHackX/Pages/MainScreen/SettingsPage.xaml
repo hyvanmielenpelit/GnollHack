@@ -912,6 +912,9 @@
                         </StackLayout>
                     </Frame>
                 </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
             </Grid>
 
             <Grid x:Name="PopupGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
@@ -930,6 +933,9 @@
                         </StackLayout>
                     </Frame>
                 </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
             </Grid>
 
             <AbsoluteLayout x:Name="WaitLayout" IsVisible="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000">

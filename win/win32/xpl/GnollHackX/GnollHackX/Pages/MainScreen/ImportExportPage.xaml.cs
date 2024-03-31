@@ -441,58 +441,79 @@ namespace GnollHackX.Pages.MainScreen
         {
             ImportExportGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            string directory1 = Path.Combine(GHApp.GHPath, GHConstants.ReplayDirectory);
-            int nofiles1 = 0;
-            int nofiles_main = 0;
-            int nofiles_cont = 0;
-            //int nofiles_shared = 0;
-            int nofiles_other = 0;
-            if (Directory.Exists(directory1))
+
+            bool didDelete = false;
+            bool wasSuccess = true;
+            for (int i = 0; i <= 1; i++)
             {
-                string[] files1 = Directory.GetFiles(directory1);
-                if (files1 != null)
+                string targetdir = i == 0 ? GHConstants.ReplayDirectory : GHConstants.ReplayDownloadFromCloudDirectory;
+                string directory1 = Path.Combine(GHApp.GHPath, targetdir);
+                int nofiles1 = 0;
+                int nofiles_main = 0;
+                int nofiles_cont = 0;
+                //int nofiles_shared = 0;
+                int nofiles_other = 0;
+                if (Directory.Exists(directory1))
                 {
-                    nofiles1 = files1.Length;
-                    foreach(string file in files1)
+                    string[] files1 = Directory.GetFiles(directory1);
+                    if (files1 != null)
                     {
-                        if(!string.IsNullOrWhiteSpace(file))
+                        nofiles1 = files1.Length;
+                        foreach (string file in files1)
                         {
-                            FileInfo fileInfo = new FileInfo(file);
-                            if(fileInfo != null && !string.IsNullOrWhiteSpace(fileInfo.Name))
+                            if (!string.IsNullOrWhiteSpace(file))
                             {
-                                if (fileInfo.Name.StartsWith(GHConstants.ReplayFileNamePrefix))
-                                    nofiles_main++;
-                                else if (fileInfo.Name.StartsWith(GHConstants.ReplayContinuationFileNamePrefix))
-                                    nofiles_cont++;
-                                //else if (fileInfo.Name.StartsWith(GHConstants.ReplaySharedZipFileNamePrefix))
-                                //    nofiles_shared++;
-                                else
-                                    nofiles_other++;
+                                FileInfo fileInfo = new FileInfo(file);
+                                if (fileInfo != null && !string.IsNullOrWhiteSpace(fileInfo.Name))
+                                {
+                                    if (fileInfo.Name.StartsWith(GHConstants.ReplayFileNamePrefix))
+                                        nofiles_main++;
+                                    else if (fileInfo.Name.StartsWith(GHConstants.ReplayContinuationFileNamePrefix))
+                                        nofiles_cont++;
+                                    //else if (fileInfo.Name.StartsWith(GHConstants.ReplaySharedZipFileNamePrefix))
+                                    //    nofiles_shared++;
+                                    else
+                                        nofiles_other++;
+                                }
                             }
                         }
                     }
                 }
-            }
-            bool answer = await DisplayAlert("Delete All Replays?", "Are you sure to delete all files (" 
-                + nofiles1 + ": " + nofiles_main + " main, " + nofiles_cont + " continuation, "/* + nofiles_shared + " shared, "*/ + nofiles_other + " other) in the " 
-                + GHConstants.ReplayDirectory + " directory?", "Yes", "No");
-            if (answer)
-            {
-                try
-                {
-                    string datadir = Path.Combine(GHApp.GHPath, GHConstants.ReplayDirectory);
-                    if (Directory.Exists(datadir))
-                        Directory.Delete(datadir, true);
 
-                    btnDeleteReplays.Text = "Done";
-                    btnDeleteReplays.TextColor = GHColors.Red;
-                }
-                catch (Exception ex)
+                if (nofiles1 == 0)
                 {
-                    btnDeleteReplays.Text = "Failed";
-                    btnDeleteReplays.TextColor = GHColors.Red;
-                    await DisplayAlert("Deletion Failed", "GnollHack failed to delete the files in " + GHConstants.ReplayDirectory + ": " + ex.Message, "OK");
+                    await DisplayAlert("No " + (i == 0 ? "Local" : "Downloaded") + " Replay to Delete", "There are no files in the " + targetdir + " directory.", "OK");
+                    continue;
                 }
+
+                bool answer = await DisplayAlert("Delete All " + (i == 0 ? "Local" : "Downloaded") + " Replays?", "Are you sure to delete all files ("
+                    + nofiles1 + ": " + nofiles_main + " main, " + nofiles_cont + " continuation, "/* + nofiles_shared + " shared, "*/ + nofiles_other + " other) in the "
+                    + targetdir + " directory?", "Yes", "No");
+                if (answer)
+                {
+                    try
+                    {
+                        string datadir = Path.Combine(GHApp.GHPath, targetdir);
+                        if (Directory.Exists(datadir))
+                            Directory.Delete(datadir, true);
+                        didDelete = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        wasSuccess = false;
+                        await DisplayAlert("Deletion Failed", "GnollHack failed to delete the files in " + targetdir + ": " + ex.Message, "OK");
+                    }
+                }
+            }
+            if(didDelete && wasSuccess)
+            {
+                btnDeleteReplays.Text = "Done";
+                btnDeleteReplays.TextColor = GHColors.Red;
+            }
+            else if (!wasSuccess)
+            {
+                btnDeleteReplays.Text = "Failed";
+                btnDeleteReplays.TextColor = GHColors.Red;
             }
             ImportExportGrid.IsEnabled = true;
         }

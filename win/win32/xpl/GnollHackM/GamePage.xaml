@@ -260,7 +260,13 @@
                             </StackLayout>
                         </Frame>
                     </Grid>
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer />
+                    </Grid.GestureRecognizers>
                 </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
             </Grid>
             <Grid x:Name="TextGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000" IsVisible="False">
                 <gnh:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Small" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
@@ -268,6 +274,9 @@
                     <gnh:GHCachedImage x:Name="TextWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
                     <controls:SwitchableCanvasView x:Name="TextCanvas" UseGL="False" CanvasType="TextCanvas" RevertBlackAndWhite="True" UseTextOutline="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="TextCanvas_PaintSurface" Touch="TextCanvas_Touch" EnableTouchEvents="True" />
                 </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
             </Grid>
             <Grid x:Name="GetLineGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
@@ -305,8 +314,11 @@
                         </StackLayout>
                     </Frame>
                 </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
             </Grid>
-            <Grid x:Name="YnGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
+            <Grid x:Name="YnGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" InputTransparent="false" 
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
                 <Grid MaximumWidthRequest="600" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
                     <Frame x:Name="YnFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
@@ -331,6 +343,9 @@
                         </StackLayout>
                     </Frame>
                 </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
             </Grid>
             <Grid x:Name="PopupGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
                          BackgroundColor="#66000000" IsVisible="False">
@@ -352,6 +367,9 @@
                         </StackLayout>
                     </Frame>
                 </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
             </Grid>
             <Grid x:Name="MoreCommandsGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#FF000000" IsVisible="False">
                 <controls:SwitchableCanvasView x:Name="CommandCanvas" UseGL="False" CanvasType="CommandCanvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="CommandCanvas_PaintSurface" Touch="CommandCanvas_Touch" EnableTouchEvents="True" />

@@ -102,6 +102,9 @@
                         </StackLayout>
                     </Frame>
                 </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
             </Grid>
             <Grid x:Name="UploadDownloadGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#66000000" IsVisible="False">
                 <Grid WidthRequest  ="600" Margin="5" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
@@ -114,6 +117,9 @@
                         </StackLayout>
                     </Frame>
                 </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
             </Grid>
         </Grid>
     </ContentPage.Content>

@@ -137,6 +137,9 @@
                     </StackLayout>
                 </Frame>
             </Grid>
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer />
+            </Grid.GestureRecognizers>
         </Grid>
     </AbsoluteLayout>    
 </ContentPage>
