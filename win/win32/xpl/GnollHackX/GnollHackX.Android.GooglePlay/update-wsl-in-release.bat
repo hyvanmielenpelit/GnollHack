@@ -1,4 +1,4 @@
-echo Start executing update-wsl-in.bat
+echo Start executing update-wsl-in-debug.bat
 
 if not exist c:\wsl-in mkdir c:\wsl-in
 

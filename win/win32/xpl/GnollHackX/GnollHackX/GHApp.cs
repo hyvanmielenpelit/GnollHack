@@ -2129,7 +2129,7 @@ namespace GnollHackX
                 {
                     archive.CreateEntryFromFile(fPath, Path.GetFileName(fPath));
                 }
-                string[] ghsubdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory, GHConstants.ReplayDirectory, GHConstants.UserDataDirectory };
+                string[] ghsubdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory, GHConstants.UserDataDirectory }; //These may be too large: GHConstants.ReplayDirectory, GHConstants.ReplayDownloadFromCloudDirectory, 
                 foreach (string ghsubdir in ghsubdirlist)
                 {
                     string subdirpath = Path.Combine(ghdir, ghsubdir);
@@ -4387,6 +4387,9 @@ namespace GnollHackX
             bool contnextfile = false;
             string rawFileName = replayFileName;
             bool restartReplay = false;
+            string replayPath = Path.GetDirectoryName(replayFileName);
+            if (string.IsNullOrEmpty(replayPath))
+                replayPath = Path.Combine(GHPath, GHConstants.ReplayDirectory);
             do
             {
                 if(restartReplay)
@@ -4464,11 +4467,10 @@ namespace GnollHackX
                 }
 
                 contnextfile = false;
-                _soundSourceIdDictionary.Clear();
-
                 byte prevcmd_byte = 0;
                 try
                 {
+                    _soundSourceIdDictionary.Clear();
                     using (FileStream fs = File.OpenRead(usedReplayFileName))
                     {
                         if (fs != null)
@@ -4540,14 +4542,14 @@ namespace GnollHackX
                                                     long nextfile_timestamp = br.ReadInt64();
                                                     string nextfile_config_string = br.ReadInt32() == 0 ? null : br.ReadString(); /* unused */
                                                     int nextfile_replay_continuation = br.ReadInt32();
-                                                    rawFileName = Path.Combine(GHPath, GHConstants.ReplayDirectory, GetReplayFileName(nextfile_versionnumber, nextfile_timestamp, nextfile_replay_continuation, knownPlayerName, knownFirstTurn, true));
+                                                    rawFileName = Path.Combine(replayPath, GetReplayFileName(nextfile_versionnumber, nextfile_timestamp, nextfile_replay_continuation, knownPlayerName, knownFirstTurn, true));
                                                     if (isZip)
                                                         rawFileName += usedZipSuffix;
                                                     for(int i = 0; i < 8; i++) /* Support for various other name formats */
                                                     {
                                                         if (File.Exists(rawFileName))
                                                             break;
-                                                        rawFileName = Path.Combine(GHPath, GHConstants.ReplayDirectory, GetReplayFileName(nextfile_versionnumber, nextfile_timestamp, nextfile_replay_continuation, (i & 1) != 0 ? null : knownPlayerName, (i & 2) != 0 ? -1 : knownFirstTurn, (i & 4) == 0));
+                                                        rawFileName = Path.Combine(replayPath, GetReplayFileName(nextfile_versionnumber, nextfile_timestamp, nextfile_replay_continuation, (i & 1) != 0 ? null : knownPlayerName, (i & 2) != 0 ? -1 : knownFirstTurn, (i & 4) == 0));
                                                         if (isZip)
                                                             rawFileName += usedZipSuffix;
                                                     }
@@ -5401,7 +5403,7 @@ namespace GnollHackX
                                             case (int)RecordedFunctionID.ExitHack:
                                                 {
                                                     int status = br.ReadInt32();
-                                                    game.ClientCallback_ExitHack(status);
+                                                    game.ClientCallback_ExitHack(0); //status  We do not restart the game upon ExitHack even if the player so does, so status is unused
                                                     exitHackCalled = true;
                                                 }
                                                 break;
@@ -5437,10 +5439,17 @@ namespace GnollHackX
                     }
                     return PlayReplayResult.Error;
                 }
-                _soundSourceIdDictionary.Clear();
-                if (isZip && File.Exists(origRawFileName) && File.Exists(usedReplayFileName) && origRawFileName != usedReplayFileName)
+                try
                 {
-                    File.Delete(usedReplayFileName);
+                    _soundSourceIdDictionary.Clear();
+                    if (isZip && File.Exists(origRawFileName) && File.Exists(usedReplayFileName) && origRawFileName != usedReplayFileName)
+                    {
+                        File.Delete(usedReplayFileName);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MaybeWriteGHLog(ex.Message);
                 }
             }
             while (contnextfile || restartReplay);

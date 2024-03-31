@@ -499,8 +499,8 @@
       <AndroidAsset Include="Platforms\Android\banks\Master.strings.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
       <AndroidAsset Include="Platforms\Android\banks\Music.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
       <AndroidAsset Include="Platforms\Android\banks\Preliminary.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
-      <AndroidAppBundleModules Include="Platforms\Android\assetpacks\ondemandassetpack.zip" />
-	  <AndroidAppBundleModules Include="Platforms\Android\assetpacks\installtimeassetpack.zip" />
+      <AndroidAppBundleModules Include="Platforms\Android\assetpacks\ondemandassetpack.zip" Condition=" '$(AndroidPackageFormat)' != 'apk' " />
+	  <AndroidAppBundleModules Include="Platforms\Android\assetpacks\installtimeassetpack.zip" Condition=" '$(AndroidPackageFormat)' != 'apk' " />
 	  <Compile Include="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
 	</ItemGroup>
 

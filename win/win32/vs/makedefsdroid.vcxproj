@@ -91,7 +91,22 @@
   <Target Name="BeforeRebuild">
     <CallTarget Targets="Sub" />
   </Target>
-  <ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(IncDir);$(LibDroidDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(TargetPath)</OutputFile>
+    </Link>
+    <RemotePostBuildEvent>
+      <Command>cd ../../../tools;dos2unix ../dat/*.txt;dos2unix ../dat/*.des;dos2unix ../dat/*.def;dos2unix ../dat/rumors.*;dos2unix ../dat/*help*;dos2unix ../dat/credits;dos2unix ../dat/xcredits;dos2unix ../dat/history;dos2unix ../dat/hh;dos2unix ../dat/symbols;dos2unix ../win/win32/xpl/libshare/defaults.gnh;dos2unix ../win/win32/xpl/libshare/sysconf;dos2unix ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/InstallTime/createassetpack.sh;dos2unix ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/OnDemand/createassetpack.sh;dos2unix ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/InstallTime/AndroidManifest.xml;dos2unix ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/OnDemand/AndroidManifest.xml;dos2unix ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/InstallTime-Maui/createassetpack.sh;dos2unix ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/OnDemand-Maui/createassetpack.sh;dos2unix ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/InstallTime-Maui/AndroidManifest.xml;dos2unix ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/OnDemand-Maui/AndroidManifest.xml;./makedefsdroid.out -v;./makedefsdroid.out -o;./makedefsdroid.out -p;./makedefsdroid.out -z;cd ../dat;../tools/makedefsdroid.out -d;../tools/makedefsdroid.out -r;../tools/makedefsdroid.out -q;../tools/makedefsdroid.out -h;../tools/makedefsdroid.out -s;../tools/makedefsdroid.out -a;../tools/makedefsdroid.out -e</Command>
+    </RemotePostBuildEvent>
+    <PreBuildEvent>
+      <Command>..\xpl\GnollHackX\GnollHackX.Android.GooglePlay\update-wsl-in-debug.bat</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(IncDir);$(LibDroidDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -103,7 +118,7 @@
       <Command>cd ../../../tools;dos2unix ../dat/*.txt;dos2unix ../dat/*.des;dos2unix ../dat/*.def;dos2unix ../dat/rumors.*;dos2unix ../dat/*help*;dos2unix ../dat/credits;dos2unix ../dat/xcredits;dos2unix ../dat/history;dos2unix ../dat/hh;dos2unix ../dat/symbols;dos2unix ../win/win32/xpl/libshare/defaults.gnh;dos2unix ../win/win32/xpl/libshare/sysconf;dos2unix ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/InstallTime/createassetpack.sh;dos2unix ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/OnDemand/createassetpack.sh;dos2unix ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/InstallTime/AndroidManifest.xml;dos2unix ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/OnDemand/AndroidManifest.xml;dos2unix ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/InstallTime-Maui/createassetpack.sh;dos2unix ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/OnDemand-Maui/createassetpack.sh;dos2unix ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/InstallTime-Maui/AndroidManifest.xml;dos2unix ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/OnDemand-Maui/AndroidManifest.xml;./makedefsdroid.out -v;./makedefsdroid.out -o;./makedefsdroid.out -p;./makedefsdroid.out -z;cd ../dat;../tools/makedefsdroid.out -d;../tools/makedefsdroid.out -r;../tools/makedefsdroid.out -q;../tools/makedefsdroid.out -h;../tools/makedefsdroid.out -s;../tools/makedefsdroid.out -a;../tools/makedefsdroid.out -e;cp ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/InstallTime/createassetpack.sh /mnt/c/wsl-in/assetpack/;cp ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/OnDemand/createassetpack.sh /mnt/c/wsl-in/assetpack2/;cp ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/InstallTime/AndroidManifest.xml /mnt/c/wsl-in/assetpack/;cp ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/OnDemand/AndroidManifest.xml /mnt/c/wsl-in/assetpack2/;cp ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/InstallTime-Maui/createassetpack.sh /mnt/c/wsl-in/assetpack-maui/;cp ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/OnDemand-Maui/createassetpack.sh /mnt/c/wsl-in/assetpack-maui2/;cp ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/InstallTime-Maui/AndroidManifest.xml /mnt/c/wsl-in/assetpack-maui/;cp ../win/win32/xpl/GnollHackX/GnollHackX.Android.GooglePlay/OnDemand-Maui/AndroidManifest.xml /mnt/c/wsl-in/assetpack-maui2/;cd /mnt/c/wsl-in/assetpack;./createassetpack.sh installtimeassetpack.zip com.soundmindentertainment.gnollhack androidpackageformat.txt;cd /mnt/c/wsl-in/assetpack2;./createassetpack.sh ondemandassetpack.zip com.soundmindentertainment.gnollhack androidpackageformat.txt;cd /mnt/c/wsl-in/assetpack-maui;./createassetpack.sh installtimeassetpack.zip com.soundmindgames.gnollhackm androidpackageformat.txt;cd /mnt/c/wsl-in/assetpack-maui2;./createassetpack.sh ondemandassetpack.zip com.soundmindgames.gnollhackm androidpackageformat.txt</Command>
     </RemotePostBuildEvent>
     <PreBuildEvent>
-      <Command>..\xpl\GnollHackX\GnollHackX.Android.GooglePlay\update-wsl-in.bat</Command>
+      <Command>..\xpl\GnollHackX\GnollHackX.Android.GooglePlay\update-wsl-in-release.bat</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
