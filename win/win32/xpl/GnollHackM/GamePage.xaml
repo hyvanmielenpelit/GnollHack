@@ -399,7 +399,7 @@
                             <Label x:Name="GotoTurnCaption" Text="Go to Turn" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
                             <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
                                 <Entry x:Name="GotoTurnEntryText" Keyboard="Numeric" MaximumWidthRequest="360" HorizontalOptions="Center" Placeholder="Enter the turn here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
-                                       HorizontalTextAlignment="Center" FontSize="20" />
+                                       HorizontalTextAlignment="Center" FontSize="20" FontFamily="Underwood" />
                             </StackLayout>
                             <Grid ColumnSpacing="6" MaximumWidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                                 <Grid.RowDefinitions>
