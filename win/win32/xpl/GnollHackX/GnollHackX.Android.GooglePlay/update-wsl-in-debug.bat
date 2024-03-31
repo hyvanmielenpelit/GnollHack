@@ -15,8 +15,8 @@ if not exist ..\xpl\GnollHackM\Platforms\Android\banks mkdir ..\xpl\GnollHackM\P
 if not exist ..\xpl\GnollHackM\Platforms\iOS\banks mkdir ..\xpl\GnollHackM\Platforms\iOS\banks
 del /Q ..\xpl\GnollHackM\Platforms\Android\banks\*.*
 del /Q ..\xpl\GnollHackM\Platforms\iOS\banks\*.*
-echo Copying banks to X Android banks
+echo Copying banks to M Android banks
 copy ..\bank\Mobile\*.* ..\xpl\GnollHackM\Platforms\Android\banks
-echo Copying banks to X iOS banks
+echo Copying banks to M iOS banks
 copy ..\bank\Mobile\*.* ..\xpl\GnollHackM\Platforms\iOS\banks
 
