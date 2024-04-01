@@ -783,12 +783,6 @@ namespace GnollHackX
                 return; /* No clip mode ignores cliparound commands */
 
             _gamePage.SetTargetClip(x, y, force == 1);
-
-            //lock (_gamePage.ClipLock)
-            //{
-            //    _gamePage.ClipX = x;
-            //    _gamePage.ClipY = y;
-            //}
         }
 
         public void ClientCallback_RawPrint(string str)

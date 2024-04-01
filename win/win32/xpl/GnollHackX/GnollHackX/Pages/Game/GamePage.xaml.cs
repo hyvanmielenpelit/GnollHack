@@ -702,18 +702,16 @@ namespace GnollHackX.Pages.Game
         private bool _youRectDrawn = false;
         public bool YouRectDrawn { get { lock (_youRectDrawnLock) { return _youRectDrawn; } } set { lock (_youRectDrawnLock) { _youRectDrawn = value; } } }
 
-        public readonly object TargetClipLock = new object();
-        public float _originMapOffsetWithNewClipX;
-        public float _originMapOffsetWithNewClipY;
-        public bool _targetClipOn;
-        public long _targetClipStartCounterValue;
-        public long _targetClipPanTime;
+        private readonly object _targetClipLock = new object();
+        private float _originMapOffsetWithNewClipX;
+        private float _originMapOffsetWithNewClipY;
+        private bool _targetClipOn;
+        private long _targetClipStartCounterValue;
+        private long _targetClipPanTime;
 
         private int _clipX;
         private int _clipY;
-        public readonly object ClipLock = new object();
-        public int ClipX { get { return _clipX; } set { _clipX = value; lock (_mapOffsetLock) { _mapOffsetX = 0; } } }
-        public int ClipY { get { return _clipY; } set { _clipY = value; lock (_mapOffsetLock) { _mapOffsetY = 0; } } }
+        private readonly object _clipLock = new object();
         
         private readonly object _mapNoClipModeLock = new object();
         private bool _mapNoClipMode = false;
@@ -730,9 +728,14 @@ namespace GnollHackX.Pages.Game
         public bool MapTravelMode { get { lock (_mapTravelModeLock) { return _mapTravelMode; } } set { lock (_mapTravelModeLock) { _mapTravelMode = value; } } }
 
         public bool MapWalkMode { get { return (!MapTravelMode && !MapLookMode); } }
-        public bool ZoomMiniMode { get; set; }
-        public bool ZoomAlternateMode { get; set; }
 
+        private readonly object _mapMiniModeLock = new object();
+        private bool _mapMiniMode = false;
+        public bool ZoomMiniMode { get { lock (_mapMiniModeLock) { return _mapMiniMode; } } set { lock (_mapMiniModeLock) { _mapMiniMode = value; } } }
+
+        private readonly object _mapAlternateModeLock = new object();
+        private bool _mapAlternateMode = false;
+        public bool ZoomAlternateMode { get { lock (_mapAlternateModeLock) { return _mapAlternateMode; } } set { lock (_mapAlternateModeLock) { _mapAlternateMode = value; } } }
 
         private float _mapFontSize = GHConstants.MapFontDefaultSize;
         private float _mapFontAlternateSize = GHConstants.MapFontDefaultSize * GHConstants.MapFontRelativeAlternateSize;
@@ -1749,7 +1752,7 @@ namespace GnollHackX.Pages.Game
                     _screenText = null;
             }
 
-            lock (TargetClipLock)
+            lock (_targetClipLock)
             {
                 if (maincountervalue < _targetClipStartCounterValue
                     || maincountervalue > _targetClipStartCounterValue + _targetClipPanTime)
@@ -5808,12 +5811,12 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
-                lock (ClipLock)
+                lock (_clipLock)
                 {
-                    if (ClipX > 0 && (mapwidth > canvaswidth || mapheight > canvasheight))
+                    if (_clipX > 0 && (mapwidth > canvaswidth || mapheight > canvasheight))
                     {
-                        offsetX -= (ClipX - (GHConstants.MapCols - 1) / 2) * width;
-                        offsetY -= (ClipY - GHConstants.MapRows / 2) * height;
+                        offsetX -= (_clipX - (GHConstants.MapCols - 1) / 2) * width;
+                        offsetY -= (_clipY - GHConstants.MapRows / 2) * height;
                     }
                 }
             }
@@ -11942,7 +11945,7 @@ namespace GnollHackX.Pages.Game
         {
             if (_currentGame != null)
             {
-                lock (TargetClipLock)
+                lock (_targetClipLock)
                 {
                     _targetClipOn = false;
                 }
@@ -12559,12 +12562,12 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
-                lock (ClipLock)
+                lock (_clipLock)
                 {
-                    if (ClipX > 0 && (_mapWidth > canvaswidth || _mapHeight > canvasheight))
+                    if (_clipX > 0 && (_mapWidth > canvaswidth || _mapHeight > canvasheight))
                     {
-                        offsetX -= (ClipX - (GHConstants.MapCols - 1) / 2) * UsedTileWidth;
-                        offsetY -= (ClipY - GHConstants.MapRows / 2) * UsedTileHeight;
+                        offsetX -= (_clipX - (GHConstants.MapCols - 1) / 2) * UsedTileWidth;
+                        offsetY -= (_clipY - GHConstants.MapRows / 2) * UsedTileHeight;
                     }
                 }
             }
@@ -12838,7 +12841,7 @@ namespace GnollHackX.Pages.Game
                 curtimervalue = _mainCounterValue;
             }
 
-            lock (TargetClipLock)
+            lock (_targetClipLock)
             {
                 if (immediate_pan || GraphicsStyle == GHGraphicsStyle.ASCII || ForceAscii)
                 {
@@ -12851,14 +12854,17 @@ namespace GnollHackX.Pages.Game
                     _targetClipOn = true;
                     lock (_mapOffsetLock)
                     {
-                        _originMapOffsetWithNewClipX = _mapOffsetX + (float)(x - ClipX) * UsedTileWidth;
-                        _originMapOffsetWithNewClipY = _mapOffsetY + (float)(y - ClipY) * UsedTileHeight;
+                        lock (_clipLock)
+                        {
+                            _originMapOffsetWithNewClipX = _mapOffsetX + (float)(x - _clipX) * UsedTileWidth;
+                            _originMapOffsetWithNewClipY = _mapOffsetY + (float)(y - _clipY) * UsedTileHeight;
+                        }
                     }
                     _targetClipStartCounterValue = curtimervalue;
                     _targetClipPanTime = pantime; // GHConstants.DefaultPanTime;
                 }
             }
-            lock (ClipLock)
+            lock (_clipLock)
             {
                 _clipX = x;
                 _clipY = y;
