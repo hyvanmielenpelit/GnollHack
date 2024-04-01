@@ -49,9 +49,20 @@ namespace GnollHackX
             _lastWriteTime = lastWriteTime;
         }
 
+        private long CalculateTotalFileSize()
+        {
+            long totalSize = _fileSize;
+            foreach(ContinuationFile continuationFile in _continuationFiles)
+            {
+                totalSize += continuationFile.FileSize;
+            }
+            return totalSize;
+        }
+
         private string GetSizeString()
         {
-            return _fileSize < 1024 * 1024 ? string.Format("{0} kB", _fileSize / 1024) : string.Format("{0:0.0} MB", (double)_fileSize / (1024 * 1024));
+            long totalSize = CalculateTotalFileSize();
+            return totalSize < 1024 * 1024 ? string.Format("{0} kB", totalSize / 1024) : string.Format("{0:0.0} MB", (double)totalSize / (1024 * 1024));
         }
 
         public override string ToString()
@@ -63,7 +74,7 @@ namespace GnollHackX
         public string FilePath { get { return _filePath; } }
         public string FileName { get { return _fileName; } }
         public string Extension { get { return _extension; } }
-        public long FileSize { get { return _fileSize; } }
+        public long FileSize { get { return CalculateTotalFileSize(); } }
         public DateTime CreationTime { get { return _creationTime; } }
         public DateTime LastWriteTime { get { return _lastWriteTime; } }
 
