@@ -4120,15 +4120,15 @@ namespace GnollHackX
         {
             try
             {
+                Debug.WriteLine(loggedtext);
+                string logdir = Path.Combine(GHPath, GHConstants.AppLogDirectory);
+                string logfullpath = Path.Combine(logdir, GHConstants.AppLogFileName);
+                if (!Directory.Exists(logdir))
+                {
+                    CheckCreateDirectory(logdir);
+                }
                 lock (_ghlogLock)
                 {
-                    Debug.WriteLine(loggedtext);
-                    string logdir = Path.Combine(GHPath, GHConstants.AppLogDirectory);
-                    string logfullpath = Path.Combine(logdir, GHConstants.AppLogFileName);
-                    if (!Directory.Exists(logdir))
-                    {
-                        CheckCreateDirectory(logdir);
-                    }
                     if (Directory.Exists(logdir))
                     {
                         if (File.Exists(logfullpath))
