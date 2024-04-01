@@ -88,11 +88,21 @@ namespace GnollHackX.Controls
             Touch?.Invoke(sender, e);
         }
 
+        private bool _firstDraw = true;
+
         private void internalGLView_PaintSurface(object sender, SKPaintGLSurfaceEventArgs e)
         {
             if (!UseGL)
                 return; /* Insurance in the case both canvases mistakenly are updated */
 
+            if(_firstDraw)
+            {
+                _firstDraw = false;
+                if (e.BackendRenderTarget != null)
+                    GHApp.MaybeWriteGHLog("Using is Skia GPU Rendering: GRContext Backend is " + e.BackendRenderTarget.Backend.ToString());
+                else
+                    GHApp.MaybeWriteGHLog("Using Skia GPU Rendering: BackendRenderTarget is null");
+            }
             SKImageInfo info = new SKImageInfo();
             info.ColorType = e.ColorType;
             SKPaintSurfaceEventArgs convargs = new SKPaintSurfaceEventArgs(e.Surface, info);
