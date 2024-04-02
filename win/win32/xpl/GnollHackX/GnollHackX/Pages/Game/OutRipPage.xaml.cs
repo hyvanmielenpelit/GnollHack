@@ -52,7 +52,10 @@ namespace GnollHackX.Pages.Game
         private async void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
             if(!_playingReplay)
+            {
+                OutRipGrid.IsEnabled = false;
                 await App.Current.MainPage.Navigation.PopModalAsync();
+            }
         }
 
         private GlyphImageSource _glyphImageSource = new GlyphImageSource();

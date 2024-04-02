@@ -111,6 +111,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void LibraryButton_Clicked(object sender, EventArgs e)
         {
+            LibraryLayout.IsEnabled = false;
             RowImageButton ghbutton = sender as RowImageButton;
             if (ghbutton != null)
             {
@@ -128,6 +129,7 @@ namespace GnollHackX.Pages.MainScreen
                         await DisplayAlert("Error Reading Manual", "Reading the manual entitled " + sm.Name + " failed: " + errormsg, "OK");
                 }
             }
+            LibraryLayout.IsEnabled = true;
         }
 
         private double _currentPageWidth = 0;

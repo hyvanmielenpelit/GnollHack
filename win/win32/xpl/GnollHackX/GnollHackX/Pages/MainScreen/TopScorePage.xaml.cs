@@ -299,13 +299,14 @@ namespace GnollHackX.Pages.MainScreen
         private async void Button_Clicked(object sender, EventArgs e)
         {
             GHApp.PlayButtonClickedSound();
+            ScoresView.IsEnabled = false;
 
             Label btn = sender as Label;
             GHTopScoreItem tsi = null;
             if (btn != null)
                 tsi = btn.BindingContext as GHTopScoreItem;
 
-            if(tsi != null)
+            if (tsi != null)
             {
                 string fulltargetpath = Path.Combine(GHApp.GHPath, GHConstants.DumplogDirectory, tsi.GetDumplogFileName());
                 string fullhtmltargetpath = Path.Combine(GHApp.GHPath, GHConstants.DumplogDirectory, tsi.GetHTMLDumplogFileName());
@@ -374,6 +375,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 await DisplayAlert("Top Score Info Missing", "Selected top score information does not exist.", "OK");
             }
+            ScoresView.IsEnabled = true;
         }
 
         private async void ServerButton_Clicked(object sender, EventArgs e)

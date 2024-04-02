@@ -73,14 +73,6 @@ namespace GnollHackX.Pages.Game
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
-        private async void DoQuit()
-        {
-            MainLayout.IsEnabled = false;
-            //GHApp.FmodService.StopTestSound();
-            await App.Current.MainPage.Navigation.PopModalAsync(); // Game Menu
-            await App.Current.MainPage.Navigation.PopModalAsync(); // Game
-        }
-
         private async void btnOptions_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;
