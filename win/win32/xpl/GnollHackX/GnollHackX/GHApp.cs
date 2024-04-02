@@ -1920,7 +1920,7 @@ namespace GnollHackX
             new SelectableShortcutButton("Unwield Weapon", "Unwield", '\0', false, false, GHUtils.Meta(5), AppResourceName + ".Assets.UI.unwield.png"),
             new SelectableShortcutButton("Wait", "Wait", '.', false, false, 0, AppResourceName + ".Assets.UI.wait.png"),
             new SelectableShortcutButton("Wield Weapon", "Wield", 'w', false, false, 0, AppResourceName + ".Assets.UI.wield.png"),
-            new SelectableShortcutButton("Yell for Companions", "Yell", 'y', false, false, 0, AppResourceName + ".Assets.UI.yell.png"),
+            new SelectableShortcutButton("Yell for Companions", "Yell", 'y', true, false, 0, AppResourceName + ".Assets.UI.yell.png"),
             new SelectableShortcutButton("Zap Wand", "Zap", 'z', false, false, 0, AppResourceName + ".Assets.UI.zap.png"),
         };
 
