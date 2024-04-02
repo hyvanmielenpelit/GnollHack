@@ -2925,8 +2925,8 @@ xchar x, y;
         source = &br->end1;
     }
 
-    /* Already set or 2/3 chance of deferring until a later level. */
-    if (source->dnum < n_dgns || (u_depth > 18 || rn2(3)))
+    /* Already set or 1/2 chance of deferring until a later level if the level is 14 or above (levels 11-14). */
+    if (source->dnum < n_dgns || (u_depth <= 14 && rn2(2)))
         return;
 
     if (!(u.uz.dnum == oracle_level.dnum      /* in main dungeon */
