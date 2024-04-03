@@ -646,7 +646,7 @@ int dieroll;
         long oldweaphit = u.uconduct.weaphit;
 
         /* KMH, conduct */
-        if (weapon && is_weapon(weapon))
+        if (weapon && is_wieldable_weapon(weapon))
             u.uconduct.weaphit++; /* Livelog is below */
 
         /* we hit the monster; be careful: it might die or
