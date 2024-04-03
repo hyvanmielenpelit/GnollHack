@@ -572,7 +572,7 @@ learn(VOID_ARGS)
         else 
         {
             spl_book[i].sp_id = (short)booktype;
-            spl_book[i].sp_lev = (xchar)objects[booktype].oc_spell_level;
+            spl_book[i].sp_lev = (schar)objects[booktype].oc_spell_level;
             spl_book[i].sp_matcomp = objects[booktype].oc_material_components;
             if(spl_book[i].sp_matcomp)
                 spl_book[i].sp_amount = 0; //How many times material components have been mixed
@@ -3446,7 +3446,7 @@ int what;
             save_tport.savespell = spl_book[i];
             save_tport.tport_indx = i;
             spl_book[i].sp_id = SPE_TELEPORT_MONSTER;
-            spl_book[i].sp_lev = (xchar)objects[SPE_TELEPORT_MONSTER].oc_spell_level;
+            spl_book[i].sp_lev = (schar)objects[SPE_TELEPORT_MONSTER].oc_spell_level;
             spl_book[i].sp_matcomp = objects[SPE_TELEPORT_MONSTER].oc_material_components;
             spl_book[i].sp_cooldownlength = (int)objects[SPE_TELEPORT_MONSTER].oc_spell_cooldown;
             spl_book[i].sp_cooldownleft = 0;
@@ -5003,7 +5003,7 @@ struct obj *obj;
         impossible("Spell %s already known.", OBJ_NAME(objects[otyp]));
     } else {
         spl_book[i].sp_id = (short)otyp;
-        spl_book[i].sp_lev = (xchar)objects[otyp].oc_spell_level;
+        spl_book[i].sp_lev = (schar)objects[otyp].oc_spell_level;
         spl_book[i].sp_matcomp = objects[otyp].oc_material_components;
         if(spl_book[i].sp_matcomp)
             spl_book[i].sp_amount = matlists[spl_book[i].sp_matcomp].spellsgained; /* Some amount in the beginning */

@@ -11012,7 +11012,7 @@ struct monst* mtmp;
     else
     { 
         spl_book[i].sp_id = (short)booktype;
-        spl_book[i].sp_lev = (xchar)objects[booktype].oc_spell_level;
+        spl_book[i].sp_lev = (schar)objects[booktype].oc_spell_level;
         spl_book[i].sp_matcomp = objects[booktype].oc_material_components;
         if (spl_book[i].sp_matcomp)
             spl_book[i].sp_amount = 0; //How many times material components have been mixed

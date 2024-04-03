@@ -856,11 +856,11 @@ STATIC_VAR const struct def_skill Skill_W_Init[] = {
 
 
 STATIC_OVL void
-knows_object(obj)
-register int obj;
+knows_object(otyp)
+register int otyp;
 {
-    discover_object(obj, TRUE, FALSE);
-    objects[obj].oc_pre_discovered = 1; /* not a "discovery" */
+    discover_object(otyp, TRUE, FALSE);
+    objects[otyp].oc_pre_discovered = 1; /* not a "discovery" */
 }
 
 #if 0
@@ -1488,8 +1488,7 @@ add_school_specific_spellbooks(VOID_ARGS)
 
                 obj = addinv(obj);
                 if (OBJ_DESCR(objects[otyp]))
-                    discover_object(otyp, TRUE, FALSE);
-
+                    knows_object(otyp);
                 initialspell(obj);
                 useup(obj);
             }
@@ -1982,9 +1981,9 @@ register const struct trobj * trop;
 
             /* Make the type known if necessary */
             if (OBJ_DESCR(objects[otyp]))
-                discover_object(otyp, TRUE, FALSE);
+                knows_object(otyp);
             if (otyp == OIL_LAMP)
-                discover_object(POT_OIL, TRUE, FALSE);
+                knows_object(POT_OIL);
 
             if (obj->oclass == ARMOR_CLASS)
             {

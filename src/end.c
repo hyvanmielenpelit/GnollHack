@@ -3137,7 +3137,6 @@ get_current_game_score()
     long Achievements_Score = (long)(u.uachieve.amulet + u.uachieve.ascended + u.uachieve.bell + u.uachieve.book + u.uachieve.enter_gehennom + u.uachieve.finish_sokoban +
         u.uachieve.killed_medusa + u.uachieve.killed_yacc + u.uachieve.killed_demogorgon + u.uachieve.menorah + u.uachieve.prime_codex + u.uachieve.mines_luckstone +
         !!In_endgame(&u.uz) + !!Is_astralevel(&u.uz) + u.uevent.invoked 
-        + u.uachieve.role_achievement /* Special role-specific achievement */
         + u.uachieve.crowned
         );
 
@@ -3148,9 +3147,14 @@ get_current_game_score()
         + u.uachieve.entered_astral_plane + u.uachieve.entered_elemental_planes
         );
 
-    /* Monk gets special score from easy achievements */
 
+    /* Monk gets special score from easy achievements */
+    long Role_Achievement_Score = 0L;  /* Special role-specific achievement */
     long Rogue_Loot_Score = 0L;
+    long Tourist_Selfie_Score = 0L;
+    long Wizard_Spell_Score = 0L;
+    long Priest_Spell_Score = 0L;
+    long Healer_Spell_Score = 0L;
     if (Role_if(PM_ROGUE))
     {
         long lootvalue = 0L;
@@ -3158,10 +3162,9 @@ get_current_game_score()
         lootvalue += hidden_gold(); /* accumulate gold from containers */
         lootvalue += carried_gem_value();
         Rogue_Loot_Score = lootvalue;
+        Role_Achievement_Score += 5000L * (long)u.uachieve.role_achievement; /* Small extra bonus from defeating Croesus only, since rogue gets score from his gold */
     }
-
-    long Tourist_Selfie_Score = 0L;
-    if (Role_if(PM_TOURIST))
+    else if (Role_if(PM_TOURIST))
     {
         int i;
         for (i = LOW_PM; i < NUM_MONSTERS; i++)
@@ -3171,6 +3174,47 @@ get_current_game_score()
                 Tourist_Selfie_Score += 35L * (mons[i].difficulty + 1);
             }
         }
+        Role_Achievement_Score += 5000L * (long)u.uachieve.role_achievement; /* Small extra bonus from taking selfie with Demogorgon, since tourist gets score from Demogorgon's level, too */
+    }
+    else if (Role_if(PM_WIZARD))
+    {
+        int i;
+        for (i = 0; i < MAXSPELL; i++)
+        {
+            if (spl_book[i].sp_id == NO_SPELL)
+                break;
+            if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
+                Wizard_Spell_Score += 200L * (long)(spl_book[i].sp_lev + 2);
+        }
+        Role_Achievement_Score += 20000L * (long)u.uachieve.role_achievement;
+    }
+    else if (Role_if(PM_PRIEST))
+    {
+        int i;
+        for (i = 0; i < MAXSPELL; i++)
+        {
+            if (spl_book[i].sp_id == NO_SPELL)
+                break;
+            if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
+                Priest_Spell_Score += 300L * (long)(spl_book[i].sp_lev + 2); /* Priest has the fewer spell than wizard */
+        }
+        Role_Achievement_Score += 20000L * (long)u.uachieve.role_achievement;
+    }
+    else if (Role_if(PM_HEALER))
+    {
+        int i;
+        for (i = 0; i < MAXSPELL; i++)
+        {
+            if (spl_book[i].sp_id == NO_SPELL)
+                break;
+            if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
+                Healer_Spell_Score += 400L * (long)(spl_book[i].sp_lev + 2); /* Healer has the fewest spells */
+        }
+        Role_Achievement_Score += 20000L * (long)u.uachieve.role_achievement;
+    }
+    else
+    {
+        Role_Achievement_Score += 50000L * (long)u.uachieve.role_achievement;
     }
 
     int ngenocided = num_genocides();
@@ -3193,7 +3237,7 @@ get_current_game_score()
         );
 
     long Base_Score = (long)(Deepest_Dungeon_Level - 1) * 1000L + Small_Achievements_Score * 5000L + Achievements_Score * 10000L + Conduct_Score * 5000L 
-        + Rogue_Loot_Score + Tourist_Selfie_Score;
+        + Role_Achievement_Score + Healer_Spell_Score + Priest_Spell_Score + Rogue_Loot_Score + Tourist_Selfie_Score + Wizard_Spell_Score;
 
     double Turn_Count_Multiplier = sqrt(50000.0) / sqrt((double)max(1L, moves));
     double Ascension_Multiplier = u.uachieve.ascended ? min(16.0, max(2.0, 4.0 * Turn_Count_Multiplier)) : 1.0;
