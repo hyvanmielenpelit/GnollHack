@@ -669,6 +669,10 @@ struct obj *instr;
                     //incr_itimeout(&u.uprops[CRAZED].intrinsic, (dur_dice > 0 && dur_diesize > 0 ? d(dur_dice, dur_diesize) : 0) + dur_plus);
                     affected_cnt++;
                 }
+                else
+                {
+                    pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s is unaffected due to a successful saving throw.", Monnam(mtmp));
+                }
             }
         }
         if (affected_cnt)

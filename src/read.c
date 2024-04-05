@@ -1591,7 +1591,7 @@ struct monst* origmonst;
         {
             play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);
             m_shieldeff(mtmp);
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists the effect due to a successful saving throw!", Monnam(mtmp));
         }
         if ((!was_peaceful && is_peaceful(mtmp)) || (!was_tame && is_tame(mtmp)))
             return 1;
@@ -1647,7 +1647,7 @@ struct monst* origmonst;
         {
             play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);
             m_shieldeff(mtmp);
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists the effect due to a successful saving throw!", Monnam(mtmp));
         }
         if ((!was_peaceful && is_peaceful(mtmp)) || (!was_tame && is_tame(mtmp)))
             return 1;

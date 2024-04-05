@@ -2352,7 +2352,7 @@ int amt, saving_throw_adjustment, tellstyle;
         if (tellstyle != NOTELL)
         {
             play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mon->mx, mon->my);
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is unaffected!", Monnam(mon));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is unaffected due to a successful saving throw!", Monnam(mon));
         }
 
         m_shieldeff(mon);

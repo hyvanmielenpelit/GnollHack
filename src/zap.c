@@ -692,6 +692,10 @@ struct monst* origmonst;
                 killed(mtmp);
             }
         }
+        else
+        {
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists the spell due to a successful saving throw!", Monnam(mtmp));
+        }
         break;
     case SPE_POWER_WORD_STUN:
         res = 1;
@@ -713,6 +717,10 @@ struct monst* origmonst;
             play_sfx_sound_at_location(SFX_ACQUIRE_STUN, mtmp->mx, mtmp->my);
             increase_mon_property_verbosely(mtmp, STUNNED, 10 + rnd(10));
             special_effect_wait_until_end(0);
+        }
+        else
+        {
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists the spell due to a successful saving throw!", Monnam(mtmp));
         }
         break;
     case SPE_POWER_WORD_BLIND:
@@ -737,6 +745,10 @@ struct monst* origmonst;
             play_sfx_sound_at_location(SFX_ACQUIRE_BLINDNESS, mtmp->mx, mtmp->my);
             increase_mon_property_verbosely(mtmp, BLINDED, duration);
             special_effect_wait_until_end(0);
+        }
+        else
+        {
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists the spell due to a successful saving throw!", Monnam(mtmp));
         }
         break;
     case WAN_SLOW_MONSTER:
@@ -768,6 +780,10 @@ struct monst* origmonst;
                 special_effect_wait_until_action(0);
                 special_effect_wait_until_end(0);
             }
+        }
+        else
+        {
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists the %s due to a successful saving throw.", Monnam(mtmp), objects[otyp].oc_class == SPBOOK_CLASS ? "spell" : "effect");
         }
         if (gainwandskill)
             wandskilladded = 3;
@@ -812,7 +828,7 @@ struct monst* origmonst;
         {
             play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);
             m_shieldeff(mtmp);
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists the spell due to a successful saving throw!", Monnam(mtmp));
         }
         break;
     case SPE_HOLD_UNDEAD:
@@ -852,7 +868,7 @@ struct monst* origmonst;
         {
             play_sfx_sound_at_location(SFX_GENERAL_RESISTS, mtmp->mx, mtmp->my);
             m_shieldeff(mtmp);
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists!", Monnam(mtmp));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists the spell due to a successful saving throw!", Monnam(mtmp));
         }
         break;
     case WAN_SPEED_MONSTER:
@@ -882,6 +898,10 @@ struct monst* origmonst;
             special_effect_wait_until_action(0);
             increase_mon_property_verbosely(mtmp, SILENCED, duration);
             special_effect_wait_until_end(0);
+        }
+        else
+        {
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists the spell due to a successful saving throw!", Monnam(mtmp));
         }
         break;
     case WAN_UNDEAD_TURNING:
@@ -913,12 +933,23 @@ struct monst* origmonst;
             if (skill_level > P_UNSKILLED)
                 save_adj -= 2 * (skill_level - P_UNSKILLED);
         }
-        if (!DEADMONSTER(mtmp) && !resists_fear(mtmp) && !check_ability_resistance_success(mtmp, A_WIS, save_adj))
+        if (!DEADMONSTER(mtmp))
         {
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
-            special_effect_wait_until_action(0);
-            make_mon_fearful(mtmp, duration);
-            special_effect_wait_until_end(0);
+            if(resists_fear(mtmp))
+            {
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s is unaffected!", Monnam(mtmp));
+            }
+            else if (check_ability_resistance_success(mtmp, A_WIS, save_adj))
+            {
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s resists the spell due to a successful saving throw!", Monnam(mtmp));
+            }
+            else
+            {
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
+                special_effect_wait_until_action(0);
+                make_mon_fearful(mtmp, duration);
+                special_effect_wait_until_end(0);
+            }
         }
         break;
     case WAN_RESURRECTION:
@@ -1664,7 +1695,8 @@ struct permonst* ptr;
     boolean is_you = (mtmp == &youmonst);
     char buf[BUFSZ];
 
-    Sprintf(buf, "%s abilities:", !mtmp || is_you ? "Innate" : "Current"); // , s_suffix(noit_Monnam(mtmp)));
+    /* Abilities */
+    Sprintf(buf, "%s abilities:", !mtmp || is_you ? "Innate" : "Current");
     putstr(datawin, ATR_HEADING, buf);
 
     int abilcnt = 0;
@@ -1762,7 +1794,8 @@ struct permonst* ptr;
         putstr(datawin, 0, buf);
     }
 
-    Sprintf(buf, "Classifications:");// , noit_mon_nam(mtmp));    
+    /* Classifications */
+    Strcpy(buf, "Classifications:");
     putstr(datawin, ATR_HEADING, buf);
 
     abilcnt = 0;
@@ -1843,8 +1876,132 @@ struct permonst* ptr;
         putstr(datawin, 0, buf);
     }
 
+    /* Resistances implied by abilities and classifications */
+    Strcpy(buf, "Implied resistances:");
+    putstr(datawin, ATR_HEADING, buf);
 
-    Sprintf(buf, "Notable:");// , noit_mon_nam(mtmp));    
+    abilcnt = 0;
+
+    if (mtmp && resists_bisection(mtmp))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Resists bisection");
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+    }
+
+    if (mtmp ? resists_charm(mtmp) : pm_resists_charm(ptr))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Resists charm");
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+    }
+
+    if (mtmp ? resists_death(mtmp) : pm_resists_death(ptr))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Resists death effects");
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+    }
+
+    if (mtmp ? resists_disint(mtmp) : pm_resists_disint(ptr))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Resists disintegration");
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+    }
+
+    if (mtmp ? resists_fear(mtmp) : pm_resists_fear(ptr))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Resists fear");
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+    }
+
+    if (mtmp ? resists_drain(mtmp) : pm_resists_drain(ptr))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Resists level drain");
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+    }
+
+    if (mtmp ? resists_lycanthropy(mtmp) : pm_resists_lycanthropy(ptr))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Resists lycanthropy");
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+    }
+
+    if (mtmp ? resists_magic(mtmp) : pm_resists_magic(ptr))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Resists magic");
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+    }
+
+    if (mtmp ? resists_paralysis(mtmp) : pm_resists_paralysis(ptr))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Resists paralysis");
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+    }
+
+    if (mtmp ? resists_ston(mtmp) : pm_resists_ston(ptr))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Resists petrification");
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+    }
+
+    if (mtmp ? resists_poison(mtmp) : pm_resists_poison(ptr))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Resists poison");
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+    }
+
+    if (mtmp ? resists_sickness(mtmp) : pm_resists_sickness(ptr))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Resists sickness");
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+    }
+
+    if (mtmp ? resists_sleep(mtmp) : pm_resists_sleep(ptr))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Resists sleep");
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+    }
+
+    if (mtmp ? resists_slime(mtmp) : slimeproof(ptr))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Resists sliming");
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+    }
+
+    if (mtmp ? resists_stun(mtmp) : pm_resists_stun(ptr))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Resists stun");
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+    }
+
+    if (mtmp ? resists_wounding(mtmp) : pm_resists_wounding(ptr))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Resists wounding");
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+    }
+
+    if (!abilcnt)
+    {
+        Strcpy(buf, " (None)");
+        putstr(datawin, 0, buf);
+    }
+
+    /* Other notable */
+    Strcpy(buf, "Notable:");
     putstr(datawin, ATR_HEADING, buf);
 
     abilcnt = 0;
@@ -1916,7 +2073,6 @@ struct permonst* ptr;
         putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
     }
 
-
     int zombietype = mon_to_zombie((int)(ptr - &mons[0]));
     int mummytype = mon_to_mummy((int)(ptr - &mons[0]));
 
@@ -1930,11 +2086,13 @@ struct permonst* ptr;
         putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
     }
 
+
     if (!abilcnt)
     {
         Strcpy(buf, " (None)");        
         putstr(datawin, 0, buf);
     }
+
 }
 
 void print_monster_wearables(datawin, mtmp, ptr)

@@ -1226,7 +1226,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
     struct permonst *old_uasmon;
     const char *verb, *fakename;
     boolean youattack = (magr == &youmonst), youdefend = (mdef == &youmonst),
-            resisted = FALSE, do_stun, do_confuse, result;
+            resisted = FALSE, due_to_saving_throw = FALSE, do_stun, do_confuse, result;
     int attack_indx, scare_dieroll = MB_MAX_DIEROLL / 2;
 
     result = FALSE; /* no message given yet */
@@ -1333,7 +1333,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
             }
         } else {
             if (rn2(2) && check_ability_resistance_success(mdef, A_WIS, objects[mb->otyp].oc_mc_adjustment))
-                resisted = TRUE;
+                resisted = TRUE, due_to_saving_throw = TRUE;
             else
                 make_mon_fearful(mdef, 3); // monflee(mdef, 3, FALSE, (mdef->mhp > * dmgptr));
         }
@@ -1395,7 +1395,7 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
     if (youattack || youdefend || vis) {
         (void) upstart(hittee); /* capitalize */
         if (resisted) {
-            pline_ex(ATR_NONE, youdefend ? CLR_MSG_SUCCESS : CLR_MSG_ATTENTION, "%s %s!", hittee, vtense(fakename, "resist"));
+            pline_ex(ATR_NONE, youdefend ? CLR_MSG_SUCCESS : CLR_MSG_ATTENTION, "%s %s%s!", hittee, vtense(fakename, "resist"), due_to_saving_throw ? " the effect due to a successful saving throw" : "");
             if (youdefend)
                 u_shieldeff();
             else

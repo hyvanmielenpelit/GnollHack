@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:gnh="clr-namespace:GnollHackX" xmlns:controls="clr-namespace:GnollHackX.Controls"
+             xmlns:gnh="clr-namespace:GnollHackX" 
+             xmlns:controls="clr-namespace:GnollHackX.Controls"
+             xmlns:mainscreen="clr-namespace:GnollHackX.Pages.MainScreen"
              BackgroundColor="Black"
              x:Class="GnollHackX.Pages.MainScreen.TopScorePage">
     <ContentPage.Content>
@@ -20,7 +22,7 @@
                 <Label Grid.Row="1" x:Name="NoScoresLabel" IsVisible="false" Text="No top scores available" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="18" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
                 <CollectionView Grid.Row="1" Margin="15,0" x:Name="ScoresView" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand">
                     <CollectionView.Header>
-                        <StackLayout Orientation="Horizontal" Spacing="0" Padding="0" Margin="0,5" x:DataType="gnh:GHTopScoreItem">
+                        <StackLayout Orientation="Horizontal" Spacing="0" Padding="0" Margin="0,5" x:DataType="mainscreen:TopScorePage">
                             <Label WidthRequest="35" Text="#" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
                             <Label WidthRequest="155" Text="Name" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
                             <Label WidthRequest="80" Text="Points" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>

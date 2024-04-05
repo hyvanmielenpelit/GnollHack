@@ -719,6 +719,34 @@
 
 #define pm_resists_wounding(ptr) \
     (has_innate2(ptr, MR2_WOUNDING_RESISTANCE))
+#define pm_resists_sleep(ptr) \
+    (has_innate(ptr, MR_SLEEP) || is_undead(ptr))
+#define pm_resists_death(ptr) \
+    (has_innate(ptr, MR_DEATH) || is_not_living(ptr) || is_demon(ptr))
+#define pm_resists_fear(ptr) \
+    (has_innate(ptr, MR_FEAR) || is_undead(ptr) || mindless(ptr))
+#define pm_resists_lycanthropy(ptr) \
+    (has_innate(ptr, MR_LYCANTHROPY) || is_not_living(ptr) || is_demon(ptr) || is_elemental(ptr) || is_incorporeal(ptr) || unsolid(ptr))
+#define pm_resists_poison(ptr) \
+    (has_innate(ptr, MR_POISON) || is_not_living(ptr) || is_elemental(ptr) || is_incorporeal(ptr) || unsolid(ptr))
+#define pm_resists_ston(ptr) \
+    (has_innate(ptr, MR_STONE) || is_incorporeal(ptr))
+#define pm_resists_magic(ptr) \
+    (has_innate(ptr, MR_MAGIC))
+#define pm_resists_charm(ptr) \
+    (has_innate(ptr, MR_CHARM) || is_undead(ptr) || mindless(ptr))
+#define pm_resists_drain(ptr) \
+    (has_innate(ptr, MR_DRAIN) || is_not_living(ptr) || is_were(ptr) || is_demon(ptr))
+#define pm_resists_flash(ptr) \
+    (has_innate(ptr, MR_FLASH) || !haseyes(ptr))
+#define pm_resists_sickness(ptr) \
+    (has_innate(ptr, MR_SICK) || is_not_living(ptr) || is_demon(ptr) || is_elemental(ptr) || is_incorporeal(ptr) || unsolid(ptr))
+#define pm_resists_paralysis(ptr) \
+    (has_innate(ptr, MR_FREE_ACTION) || is_not_living(ptr))
+#define pm_resists_stun(ptr) \
+    (has_innate(ptr, MR_STUN) || mindless(ptr) || is_not_living(ptr))
+#define pm_resists_bisection(ptr) \
+    (is_incorporeal(ptr) || amorphous(ptr))
 
 /* resistances at the time of acquisition */
 #define is_mon_immune_to_fire(mon) \
@@ -757,46 +785,42 @@
 
 #define resists_disint(mon) \
     (pm_resists_disint((mon)->data) || has_property(mon, DISINTEGRATION_RESISTANCE))
-
+#define resists_sleep(mon) \
+    (pm_resists_sleep((mon)->data) || has_property(mon, SLEEP_RESISTANCE) || is_vampshifter(mon))
+#define resists_death(mon) \
+    (pm_resists_death((mon)->data) || has_property(mon, DEATH_RESISTANCE) || is_vampshifter(mon))
+#define resists_lycanthropy(mon) \
+    (pm_resists_lycanthropy((mon)->data) || has_property(mon, LYCANTHROPY_RESISTANCE) || is_vampshifter(mon))
+#define resists_poison(mon) \
+    (pm_resists_poison((mon)->data) || has_property(mon, POISON_RESISTANCE) || is_vampshifter(mon))
+#define resists_ston(mon) \
+    (pm_resists_ston((mon)->data) || has_property(mon, STONE_RESISTANCE))
+#define resists_magic(mon) \
+    (pm_resists_magic((mon)->data) || has_property(mon, ANTIMAGIC))
+#define resists_charm(mon) \
+    (pm_resists_charm((mon)->data) || has_property(mon, CHARM_RESISTANCE) || mon_has_no_apparent_mind(mon) || is_vampshifter(mon))
+#define resists_fear(mon) \
+    (pm_resists_fear((mon)->data) || has_property(mon, FEAR_RESISTANCE) || mon_has_no_apparent_mind(mon) || is_vampshifter(mon))
+#define resists_drain(mon) \
+    (pm_resists_drain((mon)->data) || has_property(mon, DRAIN_RESISTANCE) || is_vampshifter(mon) || ((mon) == &youmonst && u.ulycn >= LOW_PM))
+#define resists_flash(mon) \
+    (pm_resists_flash((mon)->data) || has_property(mon, FLASH_RESISTANCE) || is_blinded(mon))
+#define resists_sickness(mon) \
+    (pm_resists_sickness((mon)->data) || has_property(mon, SICK_RESISTANCE) || is_vampshifter(mon))
+#define resists_paralysis(mon) \
+    (pm_resists_paralysis((mon)->data) || has_property(mon, FREE_ACTION) || is_vampshifter(mon))
+#define resists_stun(mon) \
+    (pm_resists_stun((mon)->data) || has_property(mon, STUN_RESISTANCE) || is_vampshifter(mon))
 #define resists_wounding(mon) \
     (pm_resists_wounding((mon)->data) || has_wounding_resistance(mon))
-
-#define resists_sleep(mon) \
-    (has_innate((mon)->data, MR_SLEEP) || has_property(mon, SLEEP_RESISTANCE) || is_undead((mon)->data) || is_vampshifter(mon))
-#define resists_death(mon) \
-    (has_innate((mon)->data, MR_DEATH) || has_property(mon, DEATH_RESISTANCE) || is_not_living((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon))
-#define resists_lycanthropy(mon) \
-    (has_innate((mon)->data, MR_LYCANTHROPY) || has_property(mon, LYCANTHROPY_RESISTANCE) || is_not_living((mon)->data) || is_demon((mon)->data) || is_elemental((mon)->data) || is_incorporeal((mon)->data) || unsolid((mon)->data) || is_vampshifter(mon))
-#define resists_poison(mon) \
-    (has_innate((mon)->data, MR_POISON) || has_property(mon, POISON_RESISTANCE) || is_not_living((mon)->data) || is_elemental((mon)->data) || is_incorporeal((mon)->data) || unsolid((mon)->data) || is_vampshifter(mon))
-#define resists_ston(mon) \
-    (has_innate((mon)->data, MR_STONE) || has_property(mon, STONE_RESISTANCE) || is_incorporeal((mon)->data))
-#define resists_magic(mon) \
-    (has_innate((mon)->data, MR_MAGIC) || has_property(mon, ANTIMAGIC))
-#define resists_charm(mon) \
-    (has_innate((mon)->data, MR_CHARM) || has_property(mon, CHARM_RESISTANCE) || is_undead((mon)->data) || mon_has_no_apparent_mind(mon) || is_vampshifter(mon))
-#define resists_fear(mon) \
-    (has_innate((mon)->data, MR_FEAR) || has_property(mon, FEAR_RESISTANCE) || is_undead((mon)->data) || mon_has_no_apparent_mind(mon) || is_vampshifter(mon))
-#define is_reflecting(mon) \
-    (has_innate((mon)->data, MR_REFLECTING) || has_property(mon, REFLECTING))
-#define resists_drain(mon) \
-    (has_innate((mon)->data, MR_DRAIN) || has_property(mon, DRAIN_RESISTANCE) ||  is_not_living((mon)->data) || is_were((mon)->data) || \
-     is_demon((mon)->data) || is_vampshifter(mon) || ((mon) == &youmonst && u.ulycn >= LOW_PM))
-#define resists_flash(mon) \
-    (has_innate((mon)->data, MR_FLASH) || has_property(mon, FLASH_RESISTANCE) || is_blinded(mon) || !haseyes((mon)->data) )
-#define resists_sickness(mon) \
-    (has_innate((mon)->data, MR_SICK) || has_property(mon, SICK_RESISTANCE) || is_not_living((mon)->data) || is_demon((mon)->data) || is_elemental((mon)->data) || is_incorporeal((mon)->data) || unsolid((mon)->data) || is_vampshifter(mon) )
-#define resists_paralysis(mon) \
-    (has_innate((mon)->data, MR_FREE_ACTION) || has_property(mon, FREE_ACTION) || is_not_living((mon)->data) || is_vampshifter(mon))
-#define resists_stun(mon) \
-    (has_innate((mon)->data, MR_STUN) || has_property(mon, STUN_RESISTANCE) || mindless((mon)->data) || is_not_living((mon)->data) || is_vampshifter(mon))
-
-/* other "resists" definitions */
 #define resists_bisection(mon) \
-    (has_bisection_resistance(mon) || is_incorporeal((mon)->data) || amorphous((mon)->data))
-
+    (pm_resists_bisection((mon)->data) || has_bisection_resistance(mon))
 #define resists_slime(mon) \
     (slimeproof((mon)->data) || has_slime_resistance(mon))
+
+/* other similar definitions */
+#define is_reflecting(mon) \
+    (has_innate((mon)->data, MR_REFLECTING) || has_property(mon, REFLECTING))
 
 /* more on paralysis */
 #define is_paralyzed(mon) \
