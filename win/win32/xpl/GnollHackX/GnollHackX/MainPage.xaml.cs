@@ -98,16 +98,27 @@ namespace GnollHackX
                 StopGeneralTimer = false;
                 return false;
             }
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                GeneralTimerTasks();
-            });
+            GeneralTimerTasks();
             return true;
         }
 
         private async void GeneralTimerTasks()
         {
             await GeneralTimerTasksAsync();
+        }
+
+        private readonly object _pendingGeneralTimerTasksLock = new object();
+        private int _pendingGeneralTimerTasks = 0;
+        private int PendingGeneralTimerTasks 
+        { 
+            get 
+            { 
+                lock (_pendingGeneralTimerTasksLock) { return _pendingGeneralTimerTasks; }
+            } 
+            set 
+            { 
+                lock (_pendingGeneralTimerTasksLock) { _pendingGeneralTimerTasks = value; }
+            }  
         }
 
         private async Task GeneralTimerTasksAsync()
@@ -129,6 +140,10 @@ namespace GnollHackX
                 bool incorrectcredentials = GHApp.XlogCredentialsIncorrect;
                 bool missingorincorrectcredentials = missingcredentials || incorrectcredentials;
                 bool postingqueueempty = _postingQueue.Count == 0;
+
+                PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
+                UpdateGeneralTimerTasksLabel(false);
+
                 if (postingqueueempty
                     && (GHApp.XlogUserNameVerified || missingorincorrectcredentials || (!GHApp.PostingXlogEntries && !dopostbones && !dopostreplays))
                     && (!has_files || !GHApp.PostingGameStatus) 
@@ -145,17 +160,64 @@ namespace GnollHackX
                         ProcessPostingQueue(); //Saves now posts first to disk in the case app is switched off very quickly before sending is finished
                     if (hasinternet && !GHApp.XlogUserNameVerified && (GHApp.PostingXlogEntries || dopostbones || dopostreplays) && !missingorincorrectcredentials)
                         await GHApp.TryVerifyXlogUserNameAsync();
+
+                    PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
+                    UpdateGeneralTimerTasksLabel(false);
+
                     if (hasinternet && has_files && GHApp.PostingGameStatus)
                         await ProcessSavedPosts(0, directory, GHConstants.ForumPostFileNamePrefix);
+
+                    PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
+                    UpdateGeneralTimerTasksLabel(false);
+
                     if (hasinternet && has_files2 && GHApp.PostingXlogEntries && !missingorincorrectcredentials)
                         await ProcessSavedPosts(1, directory2, GHConstants.XlogPostFileNamePrefix);
+
+                    PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
+                    UpdateGeneralTimerTasksLabel(false);
+
                     if (hasinternet && has_files3 && dopostbones && !GameStarted && !missingorincorrectcredentials) // Do not fetch bones files while the game is on
                         await ProcessSavedPosts(2, directory3, GHConstants.BonesPostFileNamePrefix);
+
+                    PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
+                    UpdateGeneralTimerTasksLabel(false);
+
                     if (hasinternet && has_files4 && dopostreplays && !incorrectcredentials)
                         await ProcessSavedPosts(3, directory4, GHConstants.ReplayPostFileNamePrefix);
+
+                    PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
+                    UpdateGeneralTimerTasksLabel(false);
                 }
                 GeneralTimerWorkOnTasks = false;
             }
+        }
+
+        private int CalculatePendingGeneralTimerTasks()
+        {
+            bool hasinternet = GHApp.HasInternetAccess;
+            bool dopostbones = GHApp.PostingBonesFiles && GHApp.AllowBones;
+            bool dopostreplays = GHApp.AutoUploadReplays;
+            string directory = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
+            string directory2 = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
+            string directory3 = Path.Combine(GHApp.GHPath, GHConstants.BonesPostQueueDirectory);
+            string directory4 = Path.Combine(GHApp.GHPath, GHConstants.ReplayPostQueueDirectory);
+            bool has_files = Directory.Exists(directory) && Directory.GetFiles(directory)?.Length > 0;
+            bool has_files2 = Directory.Exists(directory2) && Directory.GetFiles(directory2)?.Length > 0;
+            bool has_files3 = Directory.Exists(directory3) && Directory.GetFiles(directory3)?.Length > 0;
+            bool has_files4 = Directory.Exists(directory4) && Directory.GetFiles(directory4)?.Length > 0;
+            bool missingcredentials = string.IsNullOrEmpty(GHApp.XlogUserName);
+            bool incorrectcredentials = GHApp.XlogCredentialsIncorrect;
+            bool missingorincorrectcredentials = missingcredentials || incorrectcredentials;
+            bool postingqueueempty = _postingQueue.Count == 0;
+
+            int tasks1 = _postingQueue.Count;
+            int tasks2 = hasinternet && !GHApp.XlogUserNameVerified && (GHApp.PostingXlogEntries || dopostbones || dopostreplays) && !missingorincorrectcredentials ? 1 : 0;
+            int tasks3 = hasinternet && has_files && GHApp.PostingGameStatus ? Directory.GetFiles(directory).Length : 0;
+            int tasks4 = hasinternet && has_files2 && GHApp.PostingXlogEntries && !missingorincorrectcredentials ? Directory.GetFiles(directory2).Length : 0;
+            int tasks5 = hasinternet && has_files3 && dopostbones && !GameStarted && !missingorincorrectcredentials ? Directory.GetFiles(directory3).Length : 0;
+            int tasks6 = hasinternet && has_files4 && dopostreplays && !incorrectcredentials ? Directory.GetFiles(directory4).Length : 0;
+
+            return tasks1 + tasks2 + tasks3 + tasks4 + tasks5 + tasks6;
         }
 
         private async Task ProcessSavedPosts(int post_type, string dir, string fileprefix)
@@ -198,6 +260,8 @@ namespace GnollHackX
                                     GHApp.MaybeWriteGHLog("Exception occurred while reading " + filepath + ": " + ex.Message);
                                     File.Delete(filepath); // Assume corrupted
                                     post = null;
+                                    PendingGeneralTimerTasks--;
+                                    UpdateGeneralTimerTasksLabel(false);
                                 }
 
                                 if (post != null)
@@ -231,6 +295,8 @@ namespace GnollHackX
                                         {
                                             GHApp.MaybeWriteGHLog(typestr + " was sent successfully: " + filepath);
                                             File.Delete(filepath);
+                                            PendingGeneralTimerTasks--;
+                                            UpdateGeneralTimerTasksLabel(false);
                                         }
                                         else
                                         {
@@ -248,6 +314,30 @@ namespace GnollHackX
                         }
                     }
                 }
+            }
+        }
+
+        private void UpdateGeneralTimerTasksLabel(bool force)
+        {
+            if(force || PendingTasksGrid.IsVisible)
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    int tasks = PendingGeneralTimerTasks;
+                    PendingTasksLabel.Text = "There are " + tasks + " task" + (tasks == 1 ? "" : "s") + " pending.";
+                    if (tasks <= 0)
+                    {
+                        PendingTasksGrid.IsEnabled = false;
+                        PendingTasksGrid.IsVisible = false;
+                    }
+                });
+                MainThread.BeginInvokeOnMainThread(async() =>
+                {
+                    if (PendingGeneralTimerTasks <= 0)
+                    {
+                        await CloseApp();
+                    }
+                });
             }
         }
 
@@ -311,6 +401,7 @@ namespace GnollHackX
                         }
                         break;
                 }
+                UpdateGeneralTimerTasksLabel(false);
             }
         }
 
@@ -865,6 +956,9 @@ namespace GnollHackX
         {
             UpperButtonGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
+            ExitButton.IsEnabled = false;
+            ExitButton.TextColor = GHColors.Red;
+
             bool hideautoupdatealert = Preferences.Get("HideAutoUpdateAlert", false);
             bool isfromgoogleplay = true;
             if(!hideautoupdatealert)
@@ -883,17 +977,38 @@ namespace GnollHackX
             }
             else
             {
-                ExitButton.IsEnabled = false;
-                ExitButton.TextColor = GHColors.Red;
-                await CloseApp();
-                /* Should not come here */
-                ExitButton.TextColor = GHColors.White;
-                ExitButton.IsEnabled = true;
+                await CheckPendingTasksAndExit();
             }
         }
 
+        private async Task CheckPendingTasksAndExit()
+        {
+            PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
+            if(PendingGeneralTimerTasks > 0)
+            {
+                StartGeneralTimer();
+                UpdateGeneralTimerTasksLabel(true);
+                PendingTasksGrid.IsEnabled = true;
+                PendingTasksGrid.IsVisible = true;
+            }
+            else
+            {
+                await CloseApp();
+                ExitButton.TextColor = GHColors.White;
+                ExitButton.IsEnabled = true;
+                UpperButtonGrid.IsEnabled = true;
+            }
+        }
+
+        private readonly object _closingAppLock = new object();
+        private bool _closingApp = false;
+        private bool CheckCloseAndSetTrue { get { lock (_closingAppLock) { bool oldvalue = _closingApp;  _closingApp = true; return oldvalue; } } }
+
         private async Task CloseApp()
         {
+            if (CheckCloseAndSetTrue)
+                return;
+
             StopGeneralTimer = true; /* Stop timer */
             Task t1 = GeneralTimerTasksAsync(); /* Make sure outstanding queues are processed before closing application */
             Task t2 = Task.Delay(1000); /* Give 1 second to close at maximum */
@@ -1077,7 +1192,8 @@ namespace GnollHackX
         {
             PopupOkButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            if(_popupStyle == popup_style.DisableAutoUpdate)
+            PopupGrid.IsVisible = false;
+            if (_popupStyle == popup_style.DisableAutoUpdate)
             {
                 if (PopupNoAgainCheckBox.IsChecked)
                 {
@@ -1085,9 +1201,8 @@ namespace GnollHackX
                     await Task.Delay(50);
                 }
 
-                await CloseApp();
+                await CheckPendingTasksAndExit();
             }
-            PopupGrid.IsVisible = false;
             PopupOkButton.IsEnabled = true;
         }
 
@@ -1145,6 +1260,25 @@ namespace GnollHackX
             }
             StopGeneralTimer = false;
             StartGeneralTimer();
+        }
+
+        private async void PendingTasksOkButton_Clicked(object sender, EventArgs e)
+        {
+            PendingTasksGrid.IsEnabled = false;
+            await CloseApp();
+            PendingTasksGrid.IsVisible = false; /* Insurance */
+            ExitButton.TextColor = GHColors.White;
+            ExitButton.IsEnabled = true;
+            UpperButtonGrid.IsEnabled = true;
+        }
+
+        private void PendingTasksCancelButton_Clicked(object sender, EventArgs e)
+        {
+            PendingTasksGrid.IsEnabled = false;
+            PendingTasksGrid.IsVisible = false;
+            ExitButton.TextColor = GHColors.White;
+            ExitButton.IsEnabled = true;
+            UpperButtonGrid.IsEnabled = true;
         }
     }
 
