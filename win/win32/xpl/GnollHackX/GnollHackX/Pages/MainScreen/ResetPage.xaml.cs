@@ -521,9 +521,11 @@ namespace GnollHackX.Pages.MainScreen
             string directory1 = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
             string directory2 = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
             string directory3 = Path.Combine(GHApp.GHPath, GHConstants.BonesPostQueueDirectory);
+            string directory4 = Path.Combine(GHApp.GHPath, GHConstants.ReplayPostQueueDirectory);
             int nofiles1 = 0;
             int nofiles2 = 0;
             int nofiles3 = 0;
+            int nofiles4 = 0;
             if (Directory.Exists(directory1))
             {
                 string[] files1 = Directory.GetFiles(directory1);
@@ -548,12 +550,21 @@ namespace GnollHackX.Pages.MainScreen
                     nofiles3 = files3.Length;
                 }
             }
+            if (Directory.Exists(directory4))
+            {
+                string[] files4 = Directory.GetFiles(directory4);
+                if (files4 != null)
+                {
+                    nofiles4 = files4.Length;
+                }
+            }
 
             bool answer = await DisplayAlert("Clear All Post Queues?", 
                 "Are you sure to delete all files in the " + 
-                GHConstants.ForumPostQueueDirectory + " (" + nofiles1 + " file" + (nofiles1 == 1 ? "" : "s" ) + "), " + 
-                GHConstants.XlogPostQueueDirectory + " (" + nofiles2 +  " file" + (nofiles2 == 1 ? "" : "s" ) + ") and " +
-                GHConstants.BonesPostQueueDirectory + " (" + nofiles3 + " file" + (nofiles3 == 1 ? "" : "s") + ") directories?",
+                GHConstants.ForumPostQueueDirectory + " (" + nofiles1 + " file" + (nofiles1 == 1 ? "" : "s" ) + "), " +
+                GHConstants.XlogPostQueueDirectory + " (" + nofiles2 + " file" + (nofiles2 == 1 ? "" : "s") + "), " +
+                GHConstants.BonesPostQueueDirectory + " (" + nofiles3 +  " file" + (nofiles3 == 1 ? "" : "s" ) + ") and " +
+                GHConstants.ReplayPostQueueDirectory + " (" + nofiles4 + " file" + (nofiles4 == 1 ? "" : "s") + ") directories?",
                 "Yes", "No");
 
             if (answer)
@@ -568,6 +579,9 @@ namespace GnollHackX.Pages.MainScreen
 
                     if (Directory.Exists(directory3))
                         Directory.Delete(directory3, true);
+
+                    if (Directory.Exists(directory4))
+                        Directory.Delete(directory4, true);
 
                     btnDeletePostQueues.Text = "Done";
                     btnDeletePostQueues.TextColor = GHColors.Red;

@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO.Compression;
 using System.IO;
+using static System.Net.WebRequestMethods;
+
 
 
 #if GNH_MAUI
@@ -549,6 +551,82 @@ namespace GnollHackX.Pages.MainScreen
                 GHApp.GnollHackService.ClearDumplogs();
                 btnDeleteDumplogs.Text = "Done";
                 btnDeleteDumplogs.TextColor = GHColors.Red;
+            }
+            ImportExportGrid.IsEnabled = true;
+        }
+
+        private async void btnClearPendingTasks_Clicked(object sender, EventArgs e)
+        {
+            ImportExportGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+
+            string directory1 = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
+            string directory2 = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
+            string directory3 = Path.Combine(GHApp.GHPath, GHConstants.BonesPostQueueDirectory);
+            string directory4 = Path.Combine(GHApp.GHPath, GHConstants.ReplayPostQueueDirectory);
+            int nofiles1 = 0;
+            int nofiles2 = 0;
+            int nofiles3 = 0;
+            int nofiles4 = 0;
+            if (Directory.Exists(directory1))
+            {
+                string[] files1 = Directory.GetFiles(directory1);
+                if (files1 != null)
+                {
+                    nofiles1 = files1.Length;
+                }
+            }
+            if (Directory.Exists(directory2))
+            {
+                string[] files2 = Directory.GetFiles(directory2);
+                if (files2 != null)
+                {
+                    nofiles2 = files2.Length;
+                }
+            }
+            if (Directory.Exists(directory3))
+            {
+                string[] files3 = Directory.GetFiles(directory3);
+                if (files3 != null)
+                {
+                    nofiles3 = files3.Length;
+                }
+            }
+            if (Directory.Exists(directory4))
+            {
+                string[] files4 = Directory.GetFiles(directory4);
+                if (files4 != null)
+                {
+                    nofiles4 = files4.Length;
+                }
+            }
+            int totalfiles = nofiles1 + nofiles2 + nofiles3 + nofiles4;
+
+            bool answer = await DisplayAlert("Clear Pending Tasks?", "Are you sure to delete all pending tasks on disk (" + totalfiles + " file" + (totalfiles == 1 ? "" : "s") + ")?", "Yes", "No");
+            if (answer)
+            {
+                try
+                {
+                    if (Directory.Exists(directory1))
+                        Directory.Delete(directory1, true);
+
+                    if (Directory.Exists(directory2))
+                        Directory.Delete(directory2, true);
+
+                    if (Directory.Exists(directory3))
+                        Directory.Delete(directory3, true);
+
+                    if (Directory.Exists(directory4))
+                        Directory.Delete(directory4, true);
+
+                    btnClearPendingTasks.Text = "Done";
+                    btnClearPendingTasks.TextColor = GHColors.Red;
+                }
+                catch
+                {
+                    btnClearPendingTasks.Text = "Failed";
+                    btnClearPendingTasks.TextColor = GHColors.Red;
+                }                
             }
             ImportExportGrid.IsEnabled = true;
         }
