@@ -208,16 +208,15 @@ namespace GnollHackX
             bool missingcredentials = string.IsNullOrEmpty(GHApp.XlogUserName);
             bool incorrectcredentials = GHApp.XlogCredentialsIncorrect;
             bool missingorincorrectcredentials = missingcredentials || incorrectcredentials;
-            bool postingqueueempty = _postingQueue.Count == 0;
 
             int tasks1 = _postingQueue.Count;
-            int tasks2 = hasinternet && !GHApp.XlogUserNameVerified && (GHApp.PostingXlogEntries || dopostbones || dopostreplays) && !missingorincorrectcredentials ? 1 : 0;
+            //int tasks2 = hasinternet && !GHApp.XlogUserNameVerified && (GHApp.PostingXlogEntries || dopostbones || dopostreplays) && !missingorincorrectcredentials ? 1 : 0;
             int tasks3 = hasinternet && has_files && GHApp.PostingGameStatus ? Directory.GetFiles(directory).Length : 0;
             int tasks4 = hasinternet && has_files2 && GHApp.PostingXlogEntries && !missingorincorrectcredentials ? Directory.GetFiles(directory2).Length : 0;
             int tasks5 = hasinternet && has_files3 && dopostbones && !GameStarted && !missingorincorrectcredentials ? Directory.GetFiles(directory3).Length : 0;
             int tasks6 = hasinternet && has_files4 && dopostreplays && !incorrectcredentials ? Directory.GetFiles(directory4).Length : 0;
 
-            return tasks1 + tasks2 + tasks3 + tasks4 + tasks5 + tasks6;
+            return tasks1 + /* tasks2 + */ tasks3 + tasks4 + tasks5 + tasks6;
         }
 
         private async Task ProcessSavedPosts(int post_type, string dir, string fileprefix)
