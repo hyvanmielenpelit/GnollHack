@@ -1303,19 +1303,19 @@ winid endwin;
 #endif
 
 long
-count_artifact_value(list)
+count_artifacts(list)
 struct obj* list;
 {
     struct obj* otmp;
-    long value = 0L;
+    long cnt = 0L;
     for (otmp = list; otmp; otmp = otmp->nobj) 
     {
         if (otmp->oartifact && (program_state.gameover || otmp->nknown || otmp->aknown))
-            value += arti_cost(otmp); /* gold value */
+            cnt++; // += arti_cost(otmp);
         if (Has_contents(otmp))
-            value += count_artifact_value(otmp->cobj);
+            cnt += count_artifacts(otmp->cobj);
     }
-    return value;
+    return cnt;
 }
 
 long
@@ -1367,7 +1367,7 @@ struct obj* list;
     for (otmp = list; otmp; otmp = otmp->nobj)
     {
         if (((otmp->oartifact && (program_state.gameover || otmp->nknown || otmp->aknown)) && (artilist[otmp->oartifact].aflags2 & AF2_JAPANESE) != 0)
-            || ((otmp->mythic_prefix || otmp->mythic_suffix || otmp->exceptionality >= EXCEPTIONALITY_ELITE) && ((objects[otmp->otyp].oc_flags6 & O6_JAPANESE_ITEM) != 0 || Japanese_item_name(otmp->otyp) != 0))
+            || ((otmp->mythic_prefix || otmp->mythic_suffix || otmp->exceptionality >= EXCEPTIONALITY_EXCEPTIONAL) && ((objects[otmp->otyp].oc_flags6 & O6_JAPANESE_ITEM) != 0 || Japanese_item_name(otmp->otyp) != 0))
            )
         {
             value += getprice(otmp, FALSE) * otmp->quan;
@@ -1386,7 +1386,7 @@ struct obj* list;
     long value = 0L;
     for (otmp = list; otmp; otmp = otmp->nobj)
     {
-        if (otmp->exceptionality == EXCEPTIONALITY_CELESTIAL || otmp->exceptionality == EXCEPTIONALITY_PRIMORDIAL)
+        if (u.ualign.type == A_CHAOTIC ? otmp->exceptionality == EXCEPTIONALITY_INFERNAL : u.ualign.type == A_LAWFUL ? otmp->exceptionality == EXCEPTIONALITY_CELESTIAL : otmp->exceptionality == EXCEPTIONALITY_PRIMORDIAL)
         {
             value += getprice(otmp, FALSE) * otmp->quan;
         }
@@ -3366,7 +3366,7 @@ get_current_game_score()
     }
     else if (Role_if(PM_ARCHAEOLOGIST))
     {
-        Archaeologist_Artifact_Score += count_artifact_value(invent);
+        Archaeologist_Artifact_Score += 25000L * count_artifacts(invent);
         Role_Achievement_Score += 40000L * (long)u.uachieve.role_achievement; /* Large extra bonus from finding and defeating Amonket */
     }
     else if (Role_if(PM_BARBARIAN))
@@ -3376,7 +3376,7 @@ get_current_game_score()
     }
     else if (Role_if(PM_CAVEMAN))
     {
-        Caveman_Amulet_Score += 20000L * count_amulets_of_life_saving(invent);
+        Caveman_Amulet_Score += 25000L * count_amulets_of_life_saving(invent);
         Role_Achievement_Score += 10000L * (long)u.uachieve.role_achievement; /* Small extra bonus from getting maximum level in bludgeoning weapons */
     }
     else if (Role_if(PM_RANGER))
@@ -3419,7 +3419,7 @@ get_current_game_score()
                 }
                 else
                 {
-                    Knight_Slaying_Score += (long)mvitals[i].died * 4L * (mons[i].difficulty + 1);
+                    Knight_Slaying_Score += (long)mvitals[i].died * 5L * (mons[i].difficulty + 1);
                     if (mvitals[i].mvflags & MV_EXTINCT)
                     {
                         Knight_Slaying_Score += 50L * (mons[i].difficulty + 1);

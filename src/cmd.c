@@ -5883,9 +5883,9 @@ int final;
     if (Role_if(PM_ARCHAEOLOGIST))
     {
         char mbuf[BUFSZ];
-        long valuableworth = count_artifact_value(invent);
+        long artifacts = count_artifacts(invent);
         putstr(dumpwin, ATR_NONE, "");
-        Sprintf(mbuf, "You %s %ld %s worth of %sartifacts with you.", final ? "had" : "have", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
+        Sprintf(mbuf, "You %s %ld %sartifact%s with you.", final ? "had" : "have", artifacts, program_state.gameover ? "" : "known ", plur(artifacts));
         putstr(en_win, ATR_TITLE, mbuf);
     }
     else if (Role_if(PM_BARBARIAN))
@@ -5901,7 +5901,7 @@ int final;
         char mbuf[BUFSZ];
         long valuableworth = count_powerful_ranged_weapon_value(invent);
         putstr(dumpwin, ATR_NONE, "");
-        Sprintf(mbuf, "You %s %ld %s worth of %sranged weapons of artifact, at least elite, or mythic quality with you.", final ? "had" : "have", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
+        Sprintf(mbuf, "You %s %ld %s worth of %sranged weapons of at least artifact, elite, or mythic quality with you.", final ? "had" : "have", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
         putstr(en_win, ATR_TITLE, mbuf);
     }
     else if (Role_if(PM_SAMURAI))
@@ -5909,7 +5909,7 @@ int final;
         char mbuf[BUFSZ];
         long valuableworth = count_powerful_Japanese_item_value(invent);
         putstr(dumpwin, ATR_NONE, "");
-        Sprintf(mbuf, "You %s %ld %s worth of %sJapanese items of artifact, at least elite, or mythic quality with you.", final ? "had" : "have", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
+        Sprintf(mbuf, "You %s %ld %s worth of %sJapanese items of at least artifact, exceptional, or mythic quality with you.", final ? "had" : "have", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
         putstr(en_win, ATR_TITLE, mbuf);
     }
     else if (Role_if(PM_VALKYRIE))
@@ -5917,7 +5917,7 @@ int final;
         char mbuf[BUFSZ];
         long valuableworth = count_powerful_valkyrie_item_value(invent);
         putstr(dumpwin, ATR_NONE, "");
-        Sprintf(mbuf, "You %s %ld %s worth of %sitems of celestial or primordial quality with you.", final ? "had" : "have", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
+        Sprintf(mbuf, "You %s %ld %s worth of %sitems of %s quality with you.", final ? "had" : "have", valuableworth, currency(valuableworth), u.ualign.type == A_CHAOTIC ? "infernal": u.ualign.type == A_LAWFUL ? "celestial" : "primordial", program_state.gameover ? "" : "known ");
         putstr(en_win, ATR_TITLE, mbuf);
     }
     else if (Role_if(PM_CAVEMAN))

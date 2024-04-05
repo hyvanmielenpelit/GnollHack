@@ -922,7 +922,7 @@ const struct Role roles[] = {
       "the Shrine of Destiny",
       "the cave of Surtur",
       ROLE_VALKYRIE,
-      { "Extra score from items of celestial and primordial quality", "", "", "", ""},
+      { "Extra score from items of celestial, primordial, or infernal quality based on alignment", "", "", "", ""},
       PM_VALKYRIE,
       PM_DIREWOLF_CUB,
       PM_NORN,

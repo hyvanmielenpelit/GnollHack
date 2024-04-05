@@ -1123,12 +1123,12 @@ E void FDECL(print_knight_slayings, (winid));
 E void NDECL(reset_game);
 E void NDECL(reset_gamestate_ex);
 E void NDECL(tally_realtime);
-E long FDECL(count_artifact_value, (struct obj*));
 E long FDECL(count_powerful_melee_weapon_value, (struct obj*));
 E long FDECL(count_powerful_ranged_weapon_value, (struct obj*));
 E long FDECL(count_powerful_Japanese_item_value, (struct obj*));
 E long FDECL(count_powerful_valkyrie_item_value, (struct obj*));
 E long FDECL(count_amulets_of_life_saving, (struct obj*));
+E long FDECL(count_artifacts, (struct obj*));
 
 /* ### engrave.c ### */
 
