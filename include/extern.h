@@ -1119,10 +1119,16 @@ void and_you_die();
 E long NDECL(get_current_game_score);
 E int NDECL(wiz_dumplog);
 E void FDECL(print_selfies, (winid));
+E void FDECL(print_knight_slayings, (winid));
 E void NDECL(reset_game);
 E void NDECL(reset_gamestate_ex);
 E void NDECL(tally_realtime);
-
+E long FDECL(count_artifact_value, (struct obj*));
+E long FDECL(count_powerful_melee_weapon_value, (struct obj*));
+E long FDECL(count_powerful_ranged_weapon_value, (struct obj*));
+E long FDECL(count_powerful_Japanese_item_value, (struct obj*));
+E long FDECL(count_powerful_valkyrie_item_value, (struct obj*));
+E long FDECL(count_amulets_of_life_saving, (struct obj*));
 
 /* ### engrave.c ### */
 
@@ -2542,6 +2548,7 @@ E char* NDECL(nextobuf);
 E char* FDECL(str_upper_start, (const char*));
 E void FDECL(print_comparison_stats, (struct obj*, char*, winid, int, int, UCHAR_P, BOOLEAN_P, char*, char*, char*));
 E void FDECL(concatenate_colored_text, (const char*, const char*, int, int, char*, char*, char*));
+E const char* FDECL(Japanese_item_name, (int i));
 
 /* ### options.c ### */
 
@@ -3301,6 +3308,7 @@ E long FDECL(set_cost, (struct obj*, struct monst*));
 E boolean FDECL(is_obj_on_shk_bill, (struct obj*, struct monst*));
 E void FDECL(add_one_tobill, (struct obj*, BOOLEAN_P, struct monst*));
 E void NDECL(reset_shk);
+E long FDECL(getprice, (struct obj*, BOOLEAN_P));
 
 /* ### shknam.c ### */
 

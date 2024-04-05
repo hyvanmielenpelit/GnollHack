@@ -1013,6 +1013,7 @@ u_init()
     case PM_CAVEMAN:
         ini_inv(Cave_man);
         skill_init(Skill_C_Init, Skill_C_Max);
+        knows_object(AMULET_OF_LIFE_SAVING);
         break;
     case PM_HEALER:
         u.umoney0 = rn1(1000, 1001);

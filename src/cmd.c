@@ -5880,13 +5880,84 @@ int final;
                     " for any artifacts", "");
     }
 
-    if (Role_if(PM_ROGUE))
+    if (Role_if(PM_ARCHAEOLOGIST))
+    {
+        char mbuf[BUFSZ];
+        long valuableworth = count_artifact_value(invent);
+        putstr(dumpwin, ATR_NONE, "");
+        Sprintf(mbuf, "You %s %ld %s worth of %sartifacts with you.", final ? "had" : "have", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
+        putstr(en_win, ATR_TITLE, mbuf);
+    }
+    else if (Role_if(PM_BARBARIAN))
+    {
+        char mbuf[BUFSZ];
+        long valuableworth = count_powerful_melee_weapon_value(invent);
+        putstr(dumpwin, ATR_NONE, "");
+        Sprintf(mbuf, "You %s %ld %s worth of %smelee weapons of artifact or legendary quality with you.", final ? "had" : "have", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
+        putstr(en_win, ATR_TITLE, mbuf);
+    }
+    else if (Role_if(PM_RANGER))
+    {
+        char mbuf[BUFSZ];
+        long valuableworth = count_powerful_ranged_weapon_value(invent);
+        putstr(dumpwin, ATR_NONE, "");
+        Sprintf(mbuf, "You %s %ld %s worth of %sranged weapons of artifact, at least elite, or mythic quality with you.", final ? "had" : "have", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
+        putstr(en_win, ATR_TITLE, mbuf);
+    }
+    else if (Role_if(PM_SAMURAI))
+    {
+        char mbuf[BUFSZ];
+        long valuableworth = count_powerful_Japanese_item_value(invent);
+        putstr(dumpwin, ATR_NONE, "");
+        Sprintf(mbuf, "You %s %ld %s worth of %sJapanese items of artifact, at least elite, or mythic quality with you.", final ? "had" : "have", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
+        putstr(en_win, ATR_TITLE, mbuf);
+    }
+    else if (Role_if(PM_VALKYRIE))
+    {
+        char mbuf[BUFSZ];
+        long valuableworth = count_powerful_valkyrie_item_value(invent);
+        putstr(dumpwin, ATR_NONE, "");
+        Sprintf(mbuf, "You %s %ld %s worth of %sitems of celestial or primordial quality with you.", final ? "had" : "have", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
+        putstr(en_win, ATR_TITLE, mbuf);
+    }
+    else if (Role_if(PM_CAVEMAN))
+    {
+        char mbuf[BUFSZ];
+        long amulets = count_amulets_of_life_saving(invent);
+        putstr(dumpwin, ATR_NONE, "");
+        Sprintf(mbuf, "You %s %ld amulet%s of life saving with you.", final ? "had" : "have", amulets, plur(amulets));
+        putstr(en_win, ATR_TITLE, mbuf);
+    }
+    else if (Role_if(PM_HEALER) || Role_if(PM_PRIEST) || Role_if(PM_WIZARD))
+    {
+        char mbuf[BUFSZ];
+        long newspells = 0;
+        int i;
+        for (i = 0; i < MAXSPELL && spl_book[i].sp_id != NO_SPELL; i++)
+        {
+            if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
+                newspells++;
+        }
+        putstr(dumpwin, ATR_NONE, "");
+        Sprintf(mbuf, "You %s learnt %ld new spell%s in unrestricted schools.", final ? "had" : "have", newspells, plur(newspells));
+        putstr(en_win, ATR_TITLE, mbuf);
+    }
+    else if (Role_if(PM_ROGUE))
     {
         char mbuf[BUFSZ];
         long valuableworth = money_cnt(invent) + hidden_gold() + carried_gem_value();
         putstr(dumpwin, ATR_NONE, "");
         Sprintf(mbuf, "You %s %ld %s worth of %svaluables with you.", final ? "had" : "have", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
         putstr(en_win, ATR_TITLE, mbuf);
+    }
+    else if (Role_if(PM_KNIGHT))
+    {
+        putstr(dumpwin, ATR_NONE, "");
+        putstr(en_win, ATR_TITLE, "Demons, devils, and chaotic dragons slain:");
+        if (!final)
+            putstr(en_win, ATR_HALF_SIZE, " ");
+
+        print_knight_slayings(en_win);
     }
     else if (Role_if(PM_TOURIST))
     {

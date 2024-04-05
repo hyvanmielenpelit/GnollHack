@@ -528,7 +528,7 @@ WEAPON("katana", "samurai sword",
     AD_PHYS, 1, 10, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, S, WEP_KATANA, P_SWORD, MATINIT_BASE_MATERIAL, MAT_STEEL, HI_METAL, 16, OBJECT_SOUNDSET_SWORD,
-    O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_NONE,
+    O1_NONE, O2_NONE, O3_NONE, O4_FLOOR_TILE, O5_NONE, O6_JAPANESE_ITEM,
     PERMITTED_ALL, ALL_TARGETS),
 /* special swords set up for artifacts */
 WEAPON("tsurugi", "long samurai sword", /* Base item for Tsurugi of Muramasa */
@@ -536,7 +536,7 @@ WEAPON("tsurugi", "long samurai sword", /* Base item for Tsurugi of Muramasa */
     AD_PHYS, 2, 8, 0, 3, 8, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, S, WEP_TSURUGI, P_SWORD,
     MATINIT_BASE_MATERIAL, MAT_STEEL, HI_METAL, 16, OBJECT_SOUNDSET_SWORD, O1_NONE, O2_NONE, O3_NO_WISH | O3_NO_GENERATION,
-    O4_FLOOR_TILE, O5_NONE, O6_NONE,
+    O4_FLOOR_TILE, O5_NONE, O6_JAPANESE_ITEM,
     PERMITTED_ALL, ALL_TARGETS),
 WEAPON("runesword", "runed broadsword", /* Base item for Stormbringer */
     0, 0, 0, 0, 0, MULTIGEN_SINGLE, ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON, 55, 300,

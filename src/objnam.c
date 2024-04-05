@@ -102,8 +102,6 @@ STATIC_OVL struct Jitem Japanese_items[] = { { SHORT_SWORD, "wakizashi" },
                                              { FOOD_RATION, "gunyoki" },
                                              { 0, "" } };
 
-STATIC_DCL const char *FDECL(Japanese_item_name, (int i));
-
 STATIC_OVL char *
 strprepend(s, pref)
 register char *s;
@@ -5755,7 +5753,7 @@ int first, last;
     return 0;
 }
 
-STATIC_OVL const char *
+const char *
 Japanese_item_name(i)
 int i;
 {

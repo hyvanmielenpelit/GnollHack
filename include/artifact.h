@@ -71,6 +71,7 @@
 #define AF2_NO_MATERIAL_NAME                   0x00002000UL  
 #define AF2_SHOW_BASE_MATERIAL_NAME            0x00004000UL  
 #define AF2_RARE                               0x00008000UL  
+#define AF2_JAPANESE                           0x00010000UL  
 
 #define ARTIFACT_NORMAL_CHANCE 100
 #define ARTIFACT_RARE_CHANCE 25

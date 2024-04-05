@@ -44,7 +44,6 @@ STATIC_DCL int FDECL(dopayobj, (struct monst *, struct bill_x *,
                                 struct obj **, int, BOOLEAN_P));
 STATIC_DCL long FDECL(stolen_container, (struct obj *, struct monst *,
                                          long, BOOLEAN_P));
-STATIC_DCL long FDECL(getprice, (struct obj *, BOOLEAN_P));
 STATIC_DCL void FDECL(shk_names_obj, (struct monst *, struct obj *,
                                       const char *, long, const char *));
 STATIC_DCL struct obj *FDECL(bp_to_obj, (struct bill_x *));
@@ -3696,7 +3695,7 @@ struct obj* obj;
     return tmp;
 }
 
-STATIC_OVL long
+long
 getprice(obj, shk_buying)
 register struct obj *obj;
 boolean shk_buying;
