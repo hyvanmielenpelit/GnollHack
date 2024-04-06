@@ -188,6 +188,10 @@ namespace GnollHackX
 
         public static bool BatterySavingMode { get; set; }
 
+        private static readonly object _gPUBackendLock = new object();
+        private static string _gPUBackend = null;
+        public static string GPUBackend { get { lock (_gPUBackendLock) { return _gPUBackend; } } set { lock (_gPUBackendLock) { _gPUBackend = value; } } }
+
         private static double _batteryChargeLevel = -1;
         private static double _previousBatteryChargeLevel = -1;
         private static double _previousBatteryCheckPointChargeLevel = 2; /* Dummy initial value of 200% */

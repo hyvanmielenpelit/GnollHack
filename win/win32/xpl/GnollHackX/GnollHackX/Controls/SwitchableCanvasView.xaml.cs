@@ -99,9 +99,12 @@ namespace GnollHackX.Controls
             {
                 _firstDraw = false;
                 if (e.BackendRenderTarget != null)
-                    GHApp.MaybeWriteGHLog("Using is Skia GPU Rendering: GRContext Backend is " + e.BackendRenderTarget.Backend.ToString());
+                {
+                    GHApp.GPUBackend = e.BackendRenderTarget.Backend.ToString();
+                    System.Diagnostics.Debug.WriteLine("Using is Skia GPU Rendering: GRContext Backend is " + e.BackendRenderTarget.Backend.ToString());
+                }
                 else
-                    GHApp.MaybeWriteGHLog("Using Skia GPU Rendering: BackendRenderTarget is null");
+                    System.Diagnostics.Debug.WriteLine("Using Skia GPU Rendering: BackendRenderTarget is null");
             }
             SKImageInfo info = new SKImageInfo();
             info.ColorType = e.ColorType;
