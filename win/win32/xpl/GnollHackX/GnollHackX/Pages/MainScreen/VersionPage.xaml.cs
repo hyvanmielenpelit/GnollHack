@@ -136,7 +136,13 @@ namespace GnollHackX.Pages.MainScreen
 
                 double bordermargin = UIUtils.GetBorderWidth(bkgView.BorderStyle, width, height);
                 MainGrid.Margin = new Thickness(bordermargin, 0, bordermargin, 0);
-                double target_width = (Math.Min(width, MainGrid.WidthRequest) - MainGrid.Margin.Left - MainGrid.Margin.Right
+                double target_width = (Math.Min(width,
+#if GNH_MAUI
+                        MainGrid.MaximumWidthRequest
+#else
+                        MainGrid.WidthRequest
+#endif
+                    ) - MainGrid.Margin.Left - MainGrid.Margin.Right
                     - MainGrid.Padding.Left - MainGrid.Padding.Right - margins.Left - margins.Right);
                 double newsize = 15 * target_width / 400;
 

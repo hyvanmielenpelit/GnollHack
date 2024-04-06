@@ -160,7 +160,13 @@ namespace GnollHackX.Pages.MainScreen
                     Thickness usedpadding = usingsafe ? safearea : MainGrid.Padding;
                     double bordermargin = UIUtils.GetBorderWidth(bkgView.BorderStyle, width, height);
                     MainGrid.Margin = new Thickness(bordermargin, 0, bordermargin, 0);
-                    double limited_width = Math.Min(Math.Min(width, MainGrid.WidthRequest), DeviceDisplay.MainDisplayInfo.Width);
+                    double limited_width = Math.Min(Math.Min(width,
+#if GNH_MAUI
+                        MainGrid.MaximumWidthRequest
+#else
+                        MainGrid.WidthRequest
+#endif
+                        ), DeviceDisplay.MainDisplayInfo.Width);
                     double target_width = limited_width - MainGrid.Margin.Left - MainGrid.Margin.Right
                         - usedpadding.Left - usedpadding.Right - margins.Left - margins.Right;
                     double testsize = 12.5;
