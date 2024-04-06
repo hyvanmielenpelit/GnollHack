@@ -106,7 +106,7 @@
                     </StackLayout>
                     <StackLayout Grid.Row="2" x:Name="ButtonRowStack" IsVisible="True" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" Orientation="Vertical" Spacing="6"
                         BackgroundColor="#66000000">
-                        <Grid x:Name="UpperCmdGrid" HeightRequest="60" HorizontalOptions="CenterAndExpand" >
+                        <Grid x:Name="UpperCmdGrid" ColumnSpacing="6" HeightRequest="60" HorizontalOptions="CenterAndExpand" >
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
@@ -127,7 +127,7 @@
                             <controls:LabeledImageButton Grid.Column="5" x:Name="lKickButton" LblText="Kick" BtnLetter="k" ImgSourcePath="resource://GnollHackX.Assets.UI.kick.png" BtnClicked="GHButton_Clicked" />
                             <controls:LabeledImageButton Grid.Column="6" x:Name="lRepeatButton" LblText="Repeat" BtnLetter="A" BtnCtrl="True" ImgSourcePath="resource://GnollHackX.Assets.UI.repeat.png" BtnClicked="GHButton_Clicked" />
                         </Grid>
-                        <Grid x:Name="LowerCmdGrid" HeightRequest="60" HorizontalOptions="CenterAndExpand">
+                        <Grid x:Name="LowerCmdGrid" ColumnSpacing="6" HeightRequest="60" HorizontalOptions="CenterAndExpand">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
@@ -151,7 +151,7 @@
                     </StackLayout>
                     <StackLayout Grid.Row="2" x:Name="SimpleButtonRowStack" IsVisible="True" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" Orientation="Vertical" Spacing="6"
                         BackgroundColor="#66000000">
-                        <Grid x:Name="SimpleCmdGrid" HeightRequest="60" HorizontalOptions="CenterAndExpand" >
+                        <Grid x:Name="SimpleCmdGrid" ColumnSpacing="6" HeightRequest="60" HorizontalOptions="CenterAndExpand" >
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
@@ -401,7 +401,7 @@
                         </Grid.ColumnDefinitions>
                         <Label Grid.Row="0" x:Name="ReplayHeaderLabel" Text="" TextColor="White" HorizontalOptions="Center" VerticalOptions="End" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontFamily="Immortal" FontSize="14" Margin="0" />
                         <Label Grid.Row="0" x:Name="ReplayRealTimeLabel" Text="" TextColor="White" HorizontalOptions="End" VerticalOptions="End" HorizontalTextAlignment="End" VerticalTextAlignment="Center" FontFamily="Lato-Regular" FontSize="13" Margin="0" />
-                        <StackLayout Grid.Row="1" Margin="0" BackgroundColor="Transparent" Orientation="Horizontal" HeightRequest="40">
+                        <StackLayout Grid.Row="1" Spacing="3" Margin="0" BackgroundColor="Transparent" Orientation="Horizontal" HeightRequest="40">
                             <controls:CustomImageButton x:Name="ReplayPauseButton" Text="Pause" Clicked="ReplayPauseButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="White"/>
                             <controls:CustomImageButton x:Name="ReplaySlowerButton" Text="0.50x" Clicked="ReplaySlowerButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="White"/>
                             <controls:CustomImageButton x:Name="ReplayFasterButton" Text="2.00x" Clicked="ReplayFasterButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="White"/>

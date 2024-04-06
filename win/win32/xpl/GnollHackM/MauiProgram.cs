@@ -25,10 +25,10 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 fonts.AddFont("archristy.ttf", "ARChristy");
-                fonts.AddFont("DejaVuSansMono.woff", "DejaVuSansMono");
-                fonts.AddFont("DejaVuSansMono-Bold.woff", "DejaVuSansMono-Bold");
-                fonts.AddFont("DejaVuSansMono-BoldOblique.woff", "DejaVuSansMono-BoldOblique");
-                fonts.AddFont("DejaVuSansMono-Oblique.woff", "DejaVuSansMono-Oblique");
+                fonts.AddFont("DejaVuSansMono.ttf", "DejaVuSansMono");
+                fonts.AddFont("DejaVuSansMono-Bold.ttf", "DejaVuSansMono-Bold");
+                fonts.AddFont("DejaVuSansMono-BoldOblique.ttf", "DejaVuSansMono-BoldOblique");
+                fonts.AddFont("DejaVuSansMono-Oblique.ttf", "DejaVuSansMono-Oblique");
                 fonts.AddFont("diablo_h.ttf", "Diablo");
                 fonts.AddFont("endr.ttf", "Endor");
                 fonts.AddFont("Immortal-Regular.ttf", "Immortal");

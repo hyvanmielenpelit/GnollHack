@@ -9,7 +9,7 @@
     <ContentPage.Content>
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-            <Grid x:Name="MainGrid" WidthRequest  ="1100" HorizontalOptions="Center" VerticalOptions="FillAndExpand" >
+            <Grid x:Name="MainGrid" WidthRequest  ="1100" RowSpacing="6" HorizontalOptions="Center" VerticalOptions="FillAndExpand" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
@@ -70,7 +70,7 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
                 <controls:CustomImageButton Grid.Row="2" Text="Close" x:Name="CloseButton" Margin="10,20" WidthRequest="250" HeightRequest="60" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent"  HorizontalOptions="Center" VerticalOptions="End"  />
-                <Grid x:Name="CloseGrid" Grid.Row="2" BackgroundColor="Transparent" Margin="10,20" IsVisible="False" >
+                <Grid x:Name="CloseGrid" Grid.Row="2" ColumnSpacing="6" BackgroundColor="Transparent" Margin="10,20" IsVisible="False" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>

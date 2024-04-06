@@ -10,7 +10,7 @@
     <ContentPage.Content>
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-            <Grid BackgroundColor="Transparent" MaximumWidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
+            <Grid BackgroundColor="Transparent" MaximumWidthRequest="400" RowSpacing="6" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
