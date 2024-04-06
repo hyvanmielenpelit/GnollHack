@@ -24,7 +24,6 @@ public class MainApplication : MauiApplication
         System.Diagnostics.Debug.WriteLine(res);
         MainActivity.StaticAssets = Assets;
         StaticAssets = Assets;
-        MainActivity.CurrentMainActivity = Platform.CurrentActivity;
         FmodService.AndroidInit(this);
     }
 

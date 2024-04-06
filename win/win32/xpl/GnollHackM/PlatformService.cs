@@ -125,6 +125,14 @@ namespace GnollHackM
         {
             throw new NotImplementedException();
         }    
+        public void HideOsNavigationBar()
+        {
+            throw new NotImplementedException();
+        }
+        public void ShowOsNavigationBar()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 #endif

@@ -654,11 +654,21 @@ namespace GnollHackX
                 _hideNavBar = value;
                 if (_hideNavBar)
                 {
+#if GNH_MAUI
+                    if(PlatformService != null)
+                        PlatformService.HideOsNavigationBar();
+#else
                     MessagingCenter.Send<Object>(new object(), "HideOsNavigationBar");
+#endif
                 }
                 else
                 {
+#if GNH_MAUI
+                    if(PlatformService != null)
+                        PlatformService.ShowOsNavigationBar();
+#else
                     MessagingCenter.Send<Object>(new object(), "ShowOsNavigationBar");
+#endif
                 }
             }
         }

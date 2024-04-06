@@ -209,10 +209,18 @@ namespace GnollHackX.iOS
 
         }
 
-
         public void HideKeyboard()
         {
             UIApplication.SharedApplication.KeyWindow.EndEditing(true);
+        }
+
+        public void HideOsNavigationBar()
+        {
+
+        }
+        public void ShowOsNavigationBar()
+        {
+
         }
     }
 }

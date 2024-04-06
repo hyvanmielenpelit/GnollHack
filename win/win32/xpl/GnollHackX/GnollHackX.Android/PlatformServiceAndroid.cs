@@ -426,6 +426,28 @@ namespace GnollHackX.Droid
                 }
             }
         }
+
+        public void HideOsNavigationBar()
+        {
+#if GNH_MAUI
+            Activity activity = MainActivity.CurrentMainActivity;
+            if (activity == null)
+                MainActivity.DefaultShowNavigationBar = false;
+            else
+                MainActivity.HideOsNavigationBar();
+#endif
+        }
+
+        public void ShowOsNavigationBar()
+        {
+#if GNH_MAUI
+            Activity activity = MainActivity.CurrentMainActivity;
+            if (activity == null)
+                MainActivity.DefaultShowNavigationBar = true;
+            else
+                MainActivity.ShowOsNavigationBar();
+#endif
+        }
     }
 
     public interface INotification

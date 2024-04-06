@@ -20,6 +20,9 @@ namespace GnollHackX
         ulong GetDeviceTotalDiskSpaceInBytes();
         void SetStatusBarHidden(bool ishidden);
         bool GetStatusBarHidden();
+        void HideOsNavigationBar();
+        void ShowOsNavigationBar();
+
         float GetAnimatorDurationScaleSetting();
         float GetTransitionAnimationScaleSetting();
         float GetWindowAnimationScaleSetting();
