@@ -789,6 +789,22 @@ namespace GnollHackX.Pages.Game
         private readonly object _mapBitmapLock = new object();
         private SKBitmap _mapBitmap = null;
 
+        public void SetPrimaryCanvasResourceCacheLimit(long cacheLimit)
+        {
+            Debug.WriteLine("Primary: ResourceCacheSize was " + canvasView.ResourceCacheLimit);
+            canvasView.ResourceCacheLimit = cacheLimit;
+            Debug.WriteLine("Primary: ResourceCacheSize is " + canvasView.ResourceCacheLimit);
+        }
+
+        public void SetSecondaryCanvasResourceCacheLimit(long cacheLimit)
+        {
+            Debug.WriteLine("Secondary: ResourceCacheSize was " + MenuCanvas.ResourceCacheLimit);
+            MenuCanvas.ResourceCacheLimit = cacheLimit;
+            TextCanvas.ResourceCacheLimit = cacheLimit;
+            CommandCanvas.ResourceCacheLimit = cacheLimit;
+            Debug.WriteLine("Secondary: ResourceCacheSize is " + MenuCanvas.ResourceCacheLimit);
+        }
+
         public GamePage(MainPage mainPage)
         {
             InitializeComponent();

@@ -98,6 +98,9 @@ namespace GnollHackX.Controls
             if(_firstDraw)
             {
                 _firstDraw = false;
+                if (CanvasType == CanvasTypes.MainCanvas)
+                    GHApp.DefaultGPUCacheSize = ResourceCacheLimit;
+
                 if (e.BackendRenderTarget != null)
                 {
                     if(CanvasType == CanvasTypes.MainCanvas)
@@ -110,16 +113,42 @@ namespace GnollHackX.Controls
 
                 System.Diagnostics.Debug.WriteLine("CanvasType is " + CanvasType.ToString());
                 System.Diagnostics.Debug.WriteLine("ResourceCacheSize is " + ResourceCacheLimit);
-                if(_delayedResourceCacheLimit > 0 && internalGLView.GRContext != null)
+                if(internalGLView.GRContext != null)
                 {
-                    System.Diagnostics.Debug.WriteLine("_delayedResourceCacheLimit is " + _delayedResourceCacheLimit);
-                    internalGLView.GRContext.SetResourceCacheLimit(_delayedResourceCacheLimit);
-                    _delayedResourceCacheLimit = -1;
-                    System.Diagnostics.Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
+                    if (_delayedResourceCacheLimit > 0)
+                    {
+                        System.Diagnostics.Debug.WriteLine("_delayedResourceCacheLimit is " + _delayedResourceCacheLimit);
+                        internalGLView.GRContext.SetResourceCacheLimit(_delayedResourceCacheLimit);
+                        _delayedResourceCacheLimit = -1;
+                        System.Diagnostics.Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
+                    }
+                    else if( _delayedResourceCacheLimit == -2)
+                    {
+                        long defaultSize = GHApp.DefaultGPUCacheSize;
+                        System.Diagnostics.Debug.WriteLine("_delayedResourceCacheLimit is " + _delayedResourceCacheLimit);
+                        System.Diagnostics.Debug.WriteLine("DefaultGPUCacheSize is " + defaultSize);
+                        if (defaultSize > 0)
+                        {
+                            internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
+                        }
+                        _delayedResourceCacheLimit = -1;
+                        System.Diagnostics.Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
+                    }
+                    else if (CanvasType == CanvasTypes.MainCanvas && GHApp.PrimaryGPUCacheLimit > 0)
+                    {
+                        System.Diagnostics.Debug.WriteLine("PrimaryGPUCacheLimit is " + GHApp.PrimaryGPUCacheLimit);
+                        internalGLView.GRContext.SetResourceCacheLimit(GHApp.PrimaryGPUCacheLimit);
+                        System.Diagnostics.Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
+                    }
+                    else if (CanvasType != CanvasTypes.MainCanvas && GHApp.SecondaryGPUCacheLimit > 0)
+                    {
+                        System.Diagnostics.Debug.WriteLine("SecondaryGPUCacheLimit is " + GHApp.SecondaryGPUCacheLimit);
+                        internalGLView.GRContext.SetResourceCacheLimit(GHApp.SecondaryGPUCacheLimit);
+                        System.Diagnostics.Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
+                    }
                 }
-
                 if (CanvasType == CanvasTypes.MainCanvas)
-                    GHApp.GPUCacheSize = ResourceCacheLimit;
+                    GHApp.CurrentGPUCacheSize = ResourceCacheLimit;
             }
             SKImageInfo info = new SKImageInfo();
             info.ColorType = e.ColorType;
@@ -169,7 +198,14 @@ namespace GnollHackX.Controls
             {
                 if(internalGLView.GRContext != null)
                 {
-                    internalGLView.GRContext.SetResourceCacheLimit(value);
+                    if (value == -2)
+                    {
+                        long defaultSize = GHApp.DefaultGPUCacheSize;
+                        if (defaultSize > 0)
+                            internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
+                    }
+                    else if (value > 0)
+                        internalGLView.GRContext.SetResourceCacheLimit(value);
                 }
                 else
                 {

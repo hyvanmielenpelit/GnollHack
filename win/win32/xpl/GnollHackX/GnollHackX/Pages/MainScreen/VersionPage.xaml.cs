@@ -105,9 +105,9 @@ namespace GnollHackX.Pages.MainScreen
                 GPUBackendRowDefinition.Height = 0;
             }
 
-            if (GHApp.GPUCacheSize >= 0)
+            if (GHApp.CurrentGPUCacheSize >= 0)
             {
-                long TotalGPUCacheInBytes = GHApp.GPUCacheSize;
+                long TotalGPUCacheInBytes = GHApp.CurrentGPUCacheSize;
                 long TotalGPUCacheInMB = (TotalGPUCacheInBytes / 1024) / 1024;
                 GPUCacheSizeLabel.Text = TotalGPUCacheInMB + " MB";
             }

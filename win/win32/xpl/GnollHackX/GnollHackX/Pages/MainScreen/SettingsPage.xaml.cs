@@ -32,6 +32,23 @@ using GnollHackX.Controls;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
+    public struct CacheSizeItem
+    {
+        public string Description;
+        public long Size;
+
+        public CacheSizeItem(string Description, long Size)
+        {
+            this.Description = Description;
+            this.Size = Size;
+        }
+
+        public override string ToString()
+        {
+            return Description != null ? Description : "";
+        }
+    };
+
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SettingsPage : ContentPage
     {
@@ -69,6 +86,21 @@ namespace GnollHackX.Pages.MainScreen
             if (GHApp.DisplayRefreshRate >= 120.0f)
                 list.Add("120 fps");
             RefreshRatePicker.ItemsSource = list;
+
+            List<CacheSizeItem> cacheDictionary = new List<CacheSizeItem>()
+            { 
+                new CacheSizeItem(GHApp.DefaultGPUCacheSize > 0 ? "Default (" + (GHApp.DefaultGPUCacheSize / (1024 * 1024)) + " MB)" : "Default", -2L ),
+                new CacheSizeItem("8 MB", 8L * 1024 * 1204 ),
+                new CacheSizeItem("16 MB", 16L * 1024 * 1204 ),
+                new CacheSizeItem("32 MB", 32L * 1024 * 1204 ),
+                new CacheSizeItem("64 MB", 64L * 1024 * 1204 ),
+                new CacheSizeItem("128 MB", 128L * 1024 * 1204 ),
+                new CacheSizeItem("256 MB", 256L * 1024 * 1204 ),
+                new CacheSizeItem("512 MB", 512L * 1024 * 1204 ),
+                new CacheSizeItem("1024 MB", 1024L * 1024 * 1204 ),
+            };
+            PrimaryGPUCachePicker.ItemsSource = cacheDictionary;
+            SecondaryGPUCachePicker.ItemsSource = cacheDictionary;
 
             SimpleCommandBarButton1Picker.ItemsSource = GHApp.SelectableShortcutButtons;
             SimpleCommandBarButton2Picker.ItemsSource = GHApp.SelectableShortcutButtons;
@@ -131,6 +163,24 @@ namespace GnollHackX.Pages.MainScreen
                 if (_gamePage != null)
                     _gamePage.MapRefreshRate = (MapRefreshRateStyle)RefreshRatePicker.SelectedIndex;
                 Preferences.Set("MapRefreshRate", RefreshRatePicker.SelectedIndex);
+            }
+
+            if (PrimaryGPUCachePicker.SelectedIndex > -1 && PrimaryGPUCachePicker.SelectedItem != null && PrimaryGPUCachePicker.SelectedItem is CacheSizeItem)
+            {
+                long size = ((CacheSizeItem)PrimaryGPUCachePicker.SelectedItem).Size;
+                if (_gamePage != null)
+                    _gamePage.SetPrimaryCanvasResourceCacheLimit(size);
+                Preferences.Set("PrimaryGPUCacheLimit", size);
+                GHApp.PrimaryGPUCacheLimit = size;
+            }
+
+            if (SecondaryGPUCachePicker.SelectedIndex > -1 && SecondaryGPUCachePicker.SelectedItem != null && SecondaryGPUCachePicker.SelectedItem is CacheSizeItem)
+            {
+                long size = ((CacheSizeItem)SecondaryGPUCachePicker.SelectedItem).Size;
+                if (_gamePage != null)
+                    _gamePage.SetSecondaryCanvasResourceCacheLimit(size);
+                Preferences.Set("SecondaryGPUCacheLimit", size);
+                GHApp.SecondaryGPUCacheLimit = size;
             }
 
             if (_gamePage != null)
@@ -490,6 +540,7 @@ namespace GnollHackX.Pages.MainScreen
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false;
             bool longermsghistory = false, xlog_release_account = false, forcepostbones = false;
+            long primarygpucache = -2, secondarygpucache = -2;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             string customlink = "";
             string customxlogaccountlink = "";
@@ -546,6 +597,8 @@ namespace GnollHackX.Pages.MainScreen
             gzip = Preferences.Get("UseGZipForReplays", GHConstants.GZipIsDefaultReplayCompression);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
             savestyle = Preferences.Get("AppSwitchSaveStyle", 0);
+            primarygpucache = Preferences.Get("PrimaryGPUCacheLimit", -2L);
+            secondarygpucache = Preferences.Get("SecondaryGPUCacheLimit", -2L);
             if (_gamePage == null)
             {
                 cursor = Preferences.Get("CursorStyle", 1);
@@ -743,6 +796,36 @@ namespace GnollHackX.Pages.MainScreen
             SimpleCommandBarButton5Label.TextColor = simplecmdlayout ? GHColors.Black : GHColors.Gray;
             SimpleCommandBarButton6Label.TextColor = simplecmdlayout ? GHColors.Black : GHColors.Gray;
 
+            if (PrimaryGPUCachePicker.ItemsSource != null)
+            {
+                foreach (object item in PrimaryGPUCachePicker.ItemsSource)
+                {
+                    if (item is CacheSizeItem)
+                    {
+                        CacheSizeItem c = (CacheSizeItem)item;
+                        if (c.Size == primarygpucache)
+                        {
+                            PrimaryGPUCachePicker.SelectedItem = c;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (SecondaryGPUCachePicker.ItemsSource != null)
+            {
+                foreach (object item in SecondaryGPUCachePicker.ItemsSource)
+                {
+                    if (item is CacheSizeItem)
+                    {
+                        CacheSizeItem c = (CacheSizeItem)item;
+                        if (c.Size == secondarygpucache)
+                        {
+                            SecondaryGPUCachePicker.SelectedItem = c;
+                            break;
+                        }
+                    }
+                }
+            }
             GeneralVolumeSlider.Value = (double)generalVolume;
             MusicVolumeSlider.Value = (double)musicVolume;
             AmbientVolumeSlider.Value = (double)ambientVolume;
@@ -1370,4 +1453,5 @@ namespace GnollHackX.Pages.MainScreen
             TextGrid.IsVisible = true;
         }
     }
+
 }

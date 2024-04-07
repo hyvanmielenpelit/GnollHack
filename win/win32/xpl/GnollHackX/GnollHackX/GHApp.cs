@@ -106,6 +106,8 @@ namespace GnollHackX
             RecordGame = Preferences.Get("RecordGame", false);
             AutoUploadReplays = Preferences.Get("AutoUploadReplays", false);
             UseGZipForReplays = Preferences.Get("UseGZipForReplays", GHConstants.GZipIsDefaultReplayCompression);
+            PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
+            SecondaryGPUCacheLimit = Preferences.Get("SecondaryGPUCacheLimit", -2L);
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if(FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
             {
@@ -191,8 +193,14 @@ namespace GnollHackX
         private static readonly object _gPUBackendLock = new object();
         private static string _gPUBackend = null;
         public static string GPUBackend { get { lock (_gPUBackendLock) { return _gPUBackend; } } set { lock (_gPUBackendLock) { _gPUBackend = value; } } }
-        private static long _gPUCacheSize = -1;
-        public static long GPUCacheSize { get { lock (_gPUBackendLock) { return _gPUCacheSize; } } set { lock (_gPUBackendLock) { _gPUCacheSize = value; } } }
+        private static long _defaultGPUCacheSize = -1; /* Null */
+        public static long DefaultGPUCacheSize { get { lock (_gPUBackendLock) { return _defaultGPUCacheSize; } } set { lock (_gPUBackendLock) { _defaultGPUCacheSize = value; } } }
+        private static long _primaryGPUCacheSize = -1; /* Null */
+        public static long PrimaryGPUCacheLimit { get { lock (_gPUBackendLock) { return _primaryGPUCacheSize; } } set { lock (_gPUBackendLock) { _primaryGPUCacheSize = value; } } }
+        private static long _secondaryGPUCacheSize = -2; /* Default */
+        public static long SecondaryGPUCacheLimit { get { lock (_gPUBackendLock) { return _secondaryGPUCacheSize; } } set { lock (_gPUBackendLock) { _secondaryGPUCacheSize = value; } } }
+        private static long _currentGPUCacheSize = -2; /* Default */
+        public static long CurrentGPUCacheSize { get { lock (_gPUBackendLock) { return _currentGPUCacheSize; } } set { lock (_gPUBackendLock) { _currentGPUCacheSize = value; } } }
 
         private static double _batteryChargeLevel = -1;
         private static double _previousBatteryChargeLevel = -1;

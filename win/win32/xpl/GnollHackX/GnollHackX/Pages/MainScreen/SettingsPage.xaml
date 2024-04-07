@@ -881,6 +881,44 @@
                                 </Picker.ItemsSource>
                             </Picker>
                         </StackLayout>
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Label Text="Map GPU Cache"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center" 
+                                            HorizontalOptions="Start" />
+                            <Picker x:Name="PrimaryGPUCachePicker"
+                                            Title="Select cache size"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            WidthRequest="200"
+                                            BackgroundColor="Transparent"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="EndAndExpand" >
+                            </Picker>
+                        </StackLayout>
+                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Label Text="Menu GPU Cache"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center" 
+                                            HorizontalOptions="Start" />
+                            <Picker x:Name="SecondaryGPUCachePicker"
+                                            Title="Select cache size"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            WidthRequest="200"
+                                            BackgroundColor="Transparent"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="EndAndExpand" >
+                            </Picker>
+                        </StackLayout>
                     </StackLayout>
                 </ScrollView>
                 <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Margin="0,10,0,10" Text="Close" WidthRequest="250" HeightRequest="60" FontFamily="Diablo" FontSize="19" HorizontalOptions="Center" VerticalOptions="EndAndExpand" BackgroundColor="Transparent" TextColor="White"
