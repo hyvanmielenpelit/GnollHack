@@ -1666,7 +1666,7 @@ namespace GnollHackX
         public const int ReplayGetLineDelay1 = 512; /* Milliseconds */
         public const int ReplayGetLineDelay2 = 1024; /* Milliseconds */
         public const int ReplayDisplayWindowDelay = 512; /* Milliseconds */
-        public const long GPUResourceCacheSize = 800000000L;
+        //public const long GPUResourceCacheSize = 800000000L;
 #if GNH_MAUI
         public const string PortName = "GnollHackM";
 #else

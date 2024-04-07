@@ -19,7 +19,6 @@
                 <AbsoluteLayout Grid.Row="0" x:Name="GameLayout" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
                     <controls:SwitchableCanvasView x:Name="canvasView"
                                                   UseGL="False"
-                                                  ResourceCacheLimit="{x:Static gnh:GHConstants.GPUResourceCacheSize}"
                                                   CanvasType="MainCanvas"
                                                   EnableTouchEvents="True"
                                                   PaintSurface="canvasView_PaintSurface" 
@@ -27,6 +26,7 @@
                                                   AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 1.0"
                                                   AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional">
                     </controls:SwitchableCanvasView>
+                    <!--ResourceCacheLimit="{x:Static gnh:GHConstants.GPUResourceCacheSize}"-->
 
                     <StackLayout x:Name="WornItemsLayout" Padding="0,2" Spacing="6"
                         HorizontalOptions="End"
@@ -197,7 +197,8 @@
                     </gnh:CustomLabel>
                     <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                         <gnh:GHCachedImage x:Name="MenuWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15,15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
-                        <controls:SwitchableCanvasView x:Name="MenuCanvas" UseGL="False" CanvasType="MenuCanvas" ResourceCacheLimit="{x:Static gnh:GHConstants.GPUResourceCacheSize}" RevertBlackAndWhite="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" EnableTouchEvents="True" />
+                        <controls:SwitchableCanvasView x:Name="MenuCanvas" UseGL="False" CanvasType="MenuCanvas" RevertBlackAndWhite="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" EnableTouchEvents="True" />
+                        <!--ResourceCacheLimit="{x:Static gnh:GHConstants.GPUResourceCacheSize}"-->
                     </Grid>
                     <Grid x:Name="MenuCloseGrid" ColumnSpacing="6" BackgroundColor="Transparent" >
                         <Grid.RowDefinitions>
@@ -275,7 +276,8 @@
                 <gnh:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Small" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
                 <Grid x:Name="TextStack" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                     <gnh:GHCachedImage x:Name="TextWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
-                    <controls:SwitchableCanvasView x:Name="TextCanvas" UseGL="False" CanvasType="TextCanvas" ResourceCacheLimit="{x:Static gnh:GHConstants.GPUResourceCacheSize}" RevertBlackAndWhite="True" UseTextOutline="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="TextCanvas_PaintSurface" Touch="TextCanvas_Touch" EnableTouchEvents="True" />
+                    <controls:SwitchableCanvasView x:Name="TextCanvas" UseGL="False" CanvasType="TextCanvas" RevertBlackAndWhite="True" UseTextOutline="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="TextCanvas_PaintSurface" Touch="TextCanvas_Touch" EnableTouchEvents="True" />
+                    <!--ResourceCacheLimit="{x:Static gnh:GHConstants.GPUResourceCacheSize}"-->
                 </Grid>
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer />
