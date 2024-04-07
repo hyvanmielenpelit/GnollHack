@@ -21,21 +21,21 @@
                 <ScrollView x:Name="MainScrollView" Grid.Row="1" MaximumWidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="Fill" BackgroundColor="Transparent" Margin="18,0">
                     <StackLayout Spacing="6">
                         <Label Text="General" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="GPU Acceleration"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="GPUSwitch" Toggled="GPUSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="GPUSwitch" Toggled="GPUSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Graphics"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                            <Picker x:Name="GraphicsPicker"
+                            <Picker Grid.Column="1" x:Name="GraphicsPicker"
                                             Title="Select a graphics style"
                                             FontFamily="Underwood" 
                                             FontSize="17"
@@ -53,14 +53,14 @@
                                     </x:Array>
                                 </Picker.ItemsSource>
                             </Picker>
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Cursor Style"
                                             FontFamily="Underwood" TextColor="Black"
                                             FontSize="15"
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
-                            <Picker x:Name="CursorPicker"
+                            <Picker Grid.Column="1" x:Name="CursorPicker"
                                             Title="Select a cursor style"
                                             FontFamily="Underwood" 
                                             FontSize="17"
@@ -78,14 +78,14 @@
                                     </x:Array>
                                 </Picker.ItemsSource>
                             </Picker>
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Map FPS"
                                             FontFamily="Underwood" TextColor="Black"
                                             FontSize="15"
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
-                            <Picker x:Name="RefreshRatePicker"
+                            <Picker Grid.Column="1" x:Name="RefreshRatePicker"
                                             Title="Select a map refresh rate"
                                             FontFamily="Underwood" 
                                             FontSize="17"
@@ -97,74 +97,74 @@
                                             VerticalOptions="Center"
                                             HorizontalOptions="EndAndExpand" >
                             </Picker>
-                        </StackLayout>
-                        <StackLayout x:Name="NavBarStackLayout" Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        </Grid>
+                        <Grid x:Name="NavBarStackLayout" RowSpacing="6" HeightRequest="40">
                             <Label Text="Hide Navigation"
                                            x:Name="NavBarLabel"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="NavBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout x:Name="StatusBarStackLayout" Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="NavBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid x:Name="StatusBarStackLayout" RowSpacing="6" HeightRequest="40">
                             <Label Text="Hide Status Bar"
                                            x:Name="StatusBarLabel"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="StatusBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="StatusBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Silent Mode"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="SilentModeSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="SilentModeSwitch_Toggled" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="SilentModeSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="SilentModeSwitch_Toggled" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Allow Ghost Levels"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="BonesSwitch" Toggled="BonesSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="BonesSwitch" Toggled="BonesSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Show Battery"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="BatterySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="BatterySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Show FPS"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="FPSSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
+                            <Switch Grid.Column="1" x:Name="FPSSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
 
                         <Label Text="Interface" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Simple Command Layout"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="SimpleCmdLayoutSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="SimpleCmdLayoutSwitch_Toggled" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="SimpleCmdLayoutSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="SimpleCmdLayoutSwitch_Toggled" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Messages"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                            <Picker x:Name="MessageLengthPicker"
+                            <Picker Grid.Column="1" x:Name="MessageLengthPicker"
                                             Title="Select the number of messages"
                                             FontFamily="Underwood" 
                                             FontSize="17"
@@ -194,65 +194,65 @@
                                     </x:Array>
                                 </Picker.ItemsSource>
                             </Picker>
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label x:Name="ForceMaxMessageLabel"
                                            Text=" Show All"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="ForceMaxMessageSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="ForceMaxMessageSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Grid"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="GridSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="GridSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Hit Point Bars"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="HitPointBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="HitPointBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Classic Status Bar"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="ClassicStatusBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center"  
+                            <Switch Grid.Column="1" x:Name="ClassicStatusBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center"  
                                             Toggled="ClassicStatusBarSwitch_Toggled" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label x:Name="ShowExtendedStatusBarLabel"
                                            Text="Show Status Screen"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="ShowExtendedStatusBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="ShowExtendedStatusBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Show Pets" x:Name="PetsLabel"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="PetSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="PetSwitch_Toggled" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="PetSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="PetSwitch_Toggled" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Pet Rows" x:Name="PetRowsLabel"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                            <Picker x:Name="PetRowPicker"
+                            <Picker Grid.Column="1" x:Name="PetRowPicker"
                                             Title="Select the number of pet rows"
                                             FontFamily="Underwood" 
                                             FontSize="17"
@@ -273,109 +273,109 @@
                                     </x:Array>
                                 </Picker.ItemsSource>
                             </Picker>
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Orbs" x:Name="OrbsLabel"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="OrbSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center"
+                            <Switch Grid.Column="1" x:Name="OrbSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center"
                                             Toggled="OrbSwitch_Toggled"/>
-                        </StackLayout>
+                        </Grid>
 
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Show Max Hit Points" x:Name="MaxHealthInOrbLabel"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="MaxHealthInOrbSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="MaxHealthInOrbSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Show Max Mana" x:Name="MaxManaInOrbLabel"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="MaxManaInOrbSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
+                            <Switch Grid.Column="1" x:Name="MaxManaInOrbSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
 
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Player Mark"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="PlayerMarkSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="PlayerMarkSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Targeting"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="MonsterTargetingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="MonsterTargetingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Walk Arrows"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="WalkArrowSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="WalkArrowSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Lighter Unlit Areas"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="LighterDarkeningSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="LighterDarkeningSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Draw Wall Ends"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="WallEndSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="WallEndSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Breathing Animations"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="BreatheAnimationSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="BreatheAnimationSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Default Auto-Center"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center"
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="YesClipNormalSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
+                            <Switch Grid.Column="1" x:Name="YesClipNormalSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
 
                         <Label Text="Behavior" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Empty Wish is Nothing"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="EmptyWishIsNothingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
+                            <Switch Grid.Column="1" x:Name="EmptyWishIsNothingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
 
                         <Label Text="Bar Commands" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Bar Command 1" x:Name="SimpleCommandBarButton1Label"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                            <Picker x:Name="SimpleCommandBarButton1Picker"
+                            <Picker Grid.Column="1" x:Name="SimpleCommandBarButton1Picker"
                                             Title="Select command"
                                             FontFamily="Underwood" 
                                             FontSize="17"
@@ -387,14 +387,14 @@
                                             VerticalOptions="Center"
                                             HorizontalOptions="EndAndExpand" >
                             </Picker>
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Bar Command 2" x:Name="SimpleCommandBarButton2Label"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                            <Picker x:Name="SimpleCommandBarButton2Picker"
+                            <Picker Grid.Column="1" x:Name="SimpleCommandBarButton2Picker"
                                             Title="Select command"
                                             FontFamily="Underwood" 
                                             FontSize="17"
@@ -406,15 +406,15 @@
                                             VerticalOptions="Center"
                                             HorizontalOptions="EndAndExpand" >
                             </Picker>
-                        </StackLayout>
+                        </Grid>
 
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Bar Command 3" x:Name="SimpleCommandBarButton3Label"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Picker x:Name="SimpleCommandBarButton3Picker"
+                            <Picker Grid.Column="1" x:Name="SimpleCommandBarButton3Picker"
                                     Title="Select command"
                                     FontFamily="Underwood" 
                                     FontSize="17"
@@ -426,14 +426,14 @@
                                     VerticalOptions="Center"
                                     HorizontalOptions="EndAndExpand" >
                             </Picker>
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Bar Command 4" x:Name="SimpleCommandBarButton4Label"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Picker x:Name="SimpleCommandBarButton4Picker"
+                            <Picker Grid.Column="1" x:Name="SimpleCommandBarButton4Picker"
                                     Title="Select command"
                                     FontFamily="Underwood" 
                                     FontSize="17"
@@ -445,14 +445,14 @@
                                     VerticalOptions="Center"
                                     HorizontalOptions="EndAndExpand" >
                             </Picker>
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Bar Command 5" x:Name="SimpleCommandBarButton5Label"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Picker x:Name="SimpleCommandBarButton5Picker"
+                            <Picker Grid.Column="1" x:Name="SimpleCommandBarButton5Picker"
                                     Title="Select command"
                                     FontFamily="Underwood" 
                                     FontSize="17"
@@ -464,14 +464,14 @@
                                     VerticalOptions="Center"
                                     HorizontalOptions="EndAndExpand" >
                             </Picker>
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Bar Command 6" x:Name="SimpleCommandBarButton6Label"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Picker x:Name="SimpleCommandBarButton6Picker"
+                            <Picker Grid.Column="1" x:Name="SimpleCommandBarButton6Picker"
                                     Title="Select command"
                                     FontFamily="Underwood" 
                                     FontSize="17"
@@ -483,72 +483,72 @@
                                     VerticalOptions="Center"
                                     HorizontalOptions="EndAndExpand" >
                             </Picker>
-                        </StackLayout>
+                        </Grid>
                         <Label Text="Volume" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Master"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                            <Slider x:Name="GeneralVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                            <Slider Grid.Column="1" x:Name="GeneralVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Music"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                            <Slider x:Name="MusicVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                            <Slider Grid.Column="1" x:Name="MusicVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Ambient"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                            <Slider x:Name="AmbientVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                            <Slider Grid.Column="1" x:Name="AmbientVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Dialogue"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                            <Slider x:Name="DialogueVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                            <Slider Grid.Column="1" x:Name="DialogueVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
-                        </StackLayout>
-                        <StackLayout Orientation="Horizontal" HeightRequest="40">
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Effects"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                            <Slider x:Name="EffectsVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                            <Slider Grid.Column="1" x:Name="EffectsVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Interface"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                            <Slider x:Name="UIVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                            <Slider Grid.Column="1" x:Name="UIVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
-                        </StackLayout>
+                        </Grid>
 
                         <Label Text="Forum Posting" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Post Game Progress"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="PostGameStatusSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
+                            <Switch Grid.Column="1" x:Name="PostGameStatusSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
                         <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="  Webhook Link"
                                         FontFamily="Underwood" TextColor="Black"
@@ -561,20 +561,20 @@
                                         FontSize="14"
                                         VerticalOptions="CenterAndExpand" 
                                         HorizontalOptions="EndAndExpand" />
-                            <controls:CustomImageButton x:Name="CustomLinkButton" Text="Edit" FontSize="13" WidthRequest="80" HeightRequest="35" FontFamily="Diablo"
+                            <controls:CustomImageButton Grid.Column="1" x:Name="CustomLinkButton" Text="Edit" FontSize="13" WidthRequest="80" HeightRequest="35" FontFamily="Diablo"
                                         BackgroundColor="Transparent" TextColor="White"
                                         Clicked="CustomLinkButton_Clicked"
                                         VerticalOptions="CenterAndExpand" 
                                         HorizontalOptions="End" />
                         </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Post Diagnostic Data"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="PostDiagnosticDataSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
+                            <Switch Grid.Column="1" x:Name="PostDiagnosticDataSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
 
                         <Label Text="Server Posting" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                         <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
@@ -623,68 +623,68 @@
                                         VerticalOptions="CenterAndExpand" 
                                         HorizontalOptions="End" />
                         </StackLayout>
-                        <StackLayout x:Name="PostXlogUserNameStackLayout" Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        <Grid x:Name="PostXlogUserNameStackLayout" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="User Name"
                                     x:Name="PostXlogUserNameLabel" 
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Entry x:Name="PostXlogUserNameEntry" MaxLength="31" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="Enter user name" PlaceholderColor="Gray"
+                            <Entry Grid.Column="1" x:Name="PostXlogUserNameEntry" MaxLength="31" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="Enter user name" PlaceholderColor="Gray"
                                     TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Password"
                                     x:Name="PostXlogPasswordLabel" 
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Entry x:Name="PostXlogPasswordEntry" IsPassword="True" MaxLength="63" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="Enter password" PlaceholderColor="Gray"
+                            <Entry Grid.Column="1" x:Name="PostXlogPasswordEntry" IsPassword="True" MaxLength="63" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="Enter password" PlaceholderColor="Gray"
                                     TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
-                        </StackLayout>
-                        <StackLayout x:Name="XlogReleaseAccountStackLayout" Spacing="6" Orientation="Horizontal" HeightRequest="40" IsVisible="False">
+                        </Grid>
+                        <Grid x:Name="XlogReleaseAccountStackLayout" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40" IsVisible="False">
                             <Label Text="Use Release Account"
                                     x:Name="XlogReleaseAccountLabel"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="XlogReleaseAccountSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="XlogReleaseAccountSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Post Top Scores"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="PostXlogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40" IsVisible="False">
+                            <Switch Grid.Column="1" x:Name="PostXlogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40" IsVisible="False">
                             <Label Text="Upload Replays"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="PostReplaysSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="PostReplaysSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Share Bones Files" x:Name="PostBonesLabel"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="PostBonesSwitch" Toggled="PostBonesSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="PostBonesSwitch" Toggled="PostBonesSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="  Use Blacklist" x:Name="BonesListLabel"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="BonesListSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="BonesListSwitch_Toggled" />
-                        </StackLayout>
-                        <StackLayout x:Name="BonesAllowedUsersStackLayout" Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="BonesListSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="BonesListSwitch_Toggled" />
+                        </Grid>
+                        <Grid x:Name="BonesAllowedUsersStackLayout" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="  Whitelist"
                                     x:Name="BonesAllowedUsersLabel" 
                                     FontFamily="Underwood" TextColor="Black"
@@ -695,21 +695,21 @@
                                     <TapGestureRecognizer Tapped="BonesAllowedUsersLabel_TapGestureRecognizer_Tapped" />
                                 </Label.GestureRecognizers>
                             </Label>
-                            <Entry x:Name="BonesAllowedUsersEntry" MaxLength="2047" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="All users" PlaceholderColor="Gray"
+                            <Entry Grid.Column="1" x:Name="BonesAllowedUsersEntry" MaxLength="2047" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="All users" PlaceholderColor="Gray"
                                     TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
-                        </StackLayout>
-                        <StackLayout x:Name="ForcePostBonesStackLayout" Spacing="6" Orientation="Horizontal" HeightRequest="40" IsVisible="False">
+                        </Grid>
+                        <Grid x:Name="ForcePostBonesStackLayout" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40" IsVisible="False">
                             <Label Text="  Force Post Bones"
                                     x:Name="ForcePostBonesLabel"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="ForcePostBonesSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
+                            <Switch Grid.Column="1" x:Name="ForcePostBonesSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
 
                         <Label Text="Replays" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Record Game"
                                     x:Name="RecordLabel"
                                     FontFamily="Underwood" TextColor="Black"
@@ -720,25 +720,25 @@
                                     <TapGestureRecognizer Tapped="RecordLabel_TapGestureRecognizer_Tapped" />
                                 </Label.GestureRecognizers>
                             </Label>
-                            <Switch x:Name="RecordSwitch" Toggled="RecordSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="RecordSwitch" Toggled="RecordSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Show Recording"
                                            FontFamily="Underwood" TextColor="Black"
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="ShowRecordingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="ShowRecordingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Auto-Upload to Cloud"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start">
                             </Label>
-                            <Switch x:Name="AutoUploadReplaysSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
+                            <Switch Grid.Column="1" x:Name="AutoUploadReplaysSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
                         <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Cloud Storage"
                                         FontFamily="Underwood" TextColor="Black"
@@ -759,91 +759,91 @@
                         </StackLayout>
 
                         <Label Text="System" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Developer Mode"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="DeveloperSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="DeveloperSwitch_Toggled" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="DeveloperSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="DeveloperSwitch_Toggled" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Debug Logging"
                                     x:Name="LogMessageLabel"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="LogMessageSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="LogMessageSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Show Memory"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="MemorySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout x:Name="AlternativeDrawingStackLayout" Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="MemorySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid x:Name="AlternativeDrawingStackLayout" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Alternative Layer Drawing"
                                     x:Name="AlternativeDrawingLabel"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="AlternativeLayerDrawingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="AlternativeLayerDrawingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Load Sound Banks"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="SoundBankSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="SoundBankSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Streaming Banks to Memory"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="StreamingBankToMemorySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="StreamingBankToMemorySwitch_Toggled" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="StreamingBankToMemorySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="StreamingBankToMemorySwitch_Toggled" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Streaming Banks to Disk"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="StreamingBankToDiskSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="StreamingBankToDiskSwitch_Toggled" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="StreamingBankToDiskSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="StreamingBankToDiskSwitch_Toggled" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label x:Name="LongerMessageHistoryLabel"
                                     Text="Longer Message History"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="LongerMessageHistorySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="LongerMessageHistorySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Use Single Dumplog"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="SingleDumpLogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="SingleDumpLogSwitch_Toggled" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="SingleDumpLogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="SingleDumpLogSwitch_Toggled" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Use HTML Dumplog"
                                     x:Name="HTMLDumpLogLabel"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                            <Switch x:Name="HTMLDumpLogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="HTMLDumpLogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="GZip Replay Compression"
                                     x:Name="GZipLabel"
                                     FontFamily="Underwood" TextColor="Black"
@@ -854,15 +854,15 @@
                                     <TapGestureRecognizer Tapped="GZipLabel_TapGestureRecognizer_Tapped" />
                                 </Label.GestureRecognizers>
                             </Label>
-                            <Switch x:Name="GZipSwitch" Toggled="GZipSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                            <Switch Grid.Column="1" x:Name="GZipSwitch" Toggled="GZipSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Save on Switching Apps"
                                         FontFamily="Underwood" TextColor="Black"
                                         FontSize="15"
                                         VerticalOptions="Center" 
                                         HorizontalOptions="Start" />
-                            <Picker x:Name="SaveStylePicker"
+                            <Picker Grid.Column="1" x:Name="SaveStylePicker"
                                         Title="Select a save style"
                                         FontFamily="Underwood" 
                                         FontSize="17"
@@ -880,14 +880,14 @@
                                     </x:Array>
                                 </Picker.ItemsSource>
                             </Picker>
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Map GPU Cache"
                                             FontFamily="Underwood" TextColor="Black"
                                             FontSize="15"
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
-                            <Picker x:Name="PrimaryGPUCachePicker"
+                            <Picker Grid.Column="1" x:Name="PrimaryGPUCachePicker"
                                             Title="Select cache size"
                                             FontFamily="Underwood" 
                                             FontSize="17"
@@ -899,14 +899,14 @@
                                             VerticalOptions="Center"
                                             HorizontalOptions="EndAndExpand" >
                             </Picker>
-                        </StackLayout>
-                        <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
+                        </Grid>
+                        <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                             <Label Text="Menu GPU Cache"
                                             FontFamily="Underwood" TextColor="Black"
                                             FontSize="15"
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
-                            <Picker x:Name="SecondaryGPUCachePicker"
+                            <Picker Grid.Column="1" x:Name="SecondaryGPUCachePicker"
                                             Title="Select cache size"
                                             FontFamily="Underwood" 
                                             FontSize="17"
@@ -918,7 +918,7 @@
                                             VerticalOptions="Center"
                                             HorizontalOptions="EndAndExpand" >
                             </Picker>
-                        </StackLayout>
+                        </Grid>
                     </StackLayout>
                 </ScrollView>
                 <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Margin="0,10,0,10" Text="Close" WidthRequest="250" HeightRequest="60" FontFamily="Diablo" FontSize="19" HorizontalOptions="Center" VerticalOptions="EndAndExpand" BackgroundColor="Transparent" TextColor="White"
