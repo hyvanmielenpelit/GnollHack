@@ -3760,8 +3760,10 @@ namespace GnollHackX.Pages.Game
 
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
-            PaintMainGamePage(sender, e);
+            if (MenuGrid.IsVisible || TextGrid.IsVisible || MoreCommandsGrid.IsVisible)
+                return;
 
+            PaintMainGamePage(sender, e);
 
             /* General stuff */
             SKImageInfo info = e.Info;
@@ -13410,6 +13412,9 @@ namespace GnollHackX.Pages.Game
 
         private void MenuCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
+            if (!MenuGrid.IsVisible)
+                return;
+
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
             SwitchableCanvasView referenceCanvasView = MenuCanvas;
@@ -14929,6 +14934,9 @@ namespace GnollHackX.Pages.Game
 
         private void TextCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
+            if (!TextGrid.IsVisible)
+                return;
+
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
@@ -15381,6 +15389,9 @@ namespace GnollHackX.Pages.Game
 
         private void CommandCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
+            if (!MoreCommandsGrid.IsVisible)
+                return;
+
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
