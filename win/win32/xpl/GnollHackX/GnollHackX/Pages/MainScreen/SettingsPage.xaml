@@ -27,7 +27,7 @@
                                            FontSize="15"
                                            VerticalOptions="Center" 
                                            HorizontalOptions="Start" />
-                            <Switch x:Name="GPUSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                            <Switch x:Name="GPUSwitch" Toggled="GPUSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                         </StackLayout>
                         <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                             <Label Text="Graphics"

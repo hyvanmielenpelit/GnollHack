@@ -137,6 +137,8 @@ namespace GnollHackX.Pages.MainScreen
                     PopupGrid.IsVisible = true;
                 }
             }
+
+            _isManualTogglingEnabled = true;
         }
 
         private async void ContentPage_Disappearing(object sender, EventArgs e)
@@ -1451,6 +1453,20 @@ namespace GnollHackX.Pages.MainScreen
             TextOkButton.IsEnabled = true;
             TextCancelButton.IsEnabled = true;
             TextGrid.IsVisible = true;
+        }
+
+        private bool _isManualTogglingEnabled = false;
+
+        private void GPUSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if(_isManualTogglingEnabled && e.Value && !GHApp.IsGPUDefault)
+            {
+                PopupTitleLabel.TextColor = GHColors.Orange;
+                PopupTitleLabel.Text = "Unstable GPU Acceleration";
+                PopupLabel.Text = "Your device has been detected as potentially causing crashes when GPU acceleration is switched on. Proceed with care.";
+                PopupOkButton.IsEnabled = true;
+                PopupGrid.IsVisible = true;
+            }
         }
     }
 
