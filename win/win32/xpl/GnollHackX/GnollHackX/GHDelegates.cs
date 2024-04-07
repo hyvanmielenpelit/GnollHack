@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
+#if GNH_MAUI
+using GnollHackM;
+#endif
 
 namespace GnollHackX
 {

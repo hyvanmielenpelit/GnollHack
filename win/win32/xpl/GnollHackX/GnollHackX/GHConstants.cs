@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
+#if GNH_MAUI
+namespace GnollHackM
+#else
 namespace GnollHackX
+#endif
 {
     /* Colors */
     public enum NhColor
@@ -1662,7 +1666,7 @@ namespace GnollHackX
         public const int ReplayGetLineDelay1 = 512; /* Milliseconds */
         public const int ReplayGetLineDelay2 = 1024; /* Milliseconds */
         public const int ReplayDisplayWindowDelay = 512; /* Milliseconds */
-
+        public const long GPUResourceCacheSize = 800000000L;
 #if GNH_MAUI
         public const string PortName = "GnollHackM";
 #else

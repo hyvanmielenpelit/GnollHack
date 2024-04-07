@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 #if GNH_MAUI
+using GnollHackM;
 #else
 using Xamarin.Forms;
 #endif

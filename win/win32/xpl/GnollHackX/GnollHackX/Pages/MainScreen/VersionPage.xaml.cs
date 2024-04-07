@@ -78,17 +78,19 @@ namespace GnollHackX.Pages.MainScreen
                 GameDurationTitleLabel.IsVisible = false;
                 VersionInfoGrid.Children.Remove(GameDurationLabel);
                 VersionInfoGrid.Children.Remove(GameDurationTitleLabel);
-                VersionInfoGrid.RowDefinitions.Remove(GameDurationRowDefinition);
+                //VersionInfoGrid.RowDefinitions.Remove(GameDurationRowDefinition);
+                GameDurationRowDefinition.Height = 0;
 
                 SessionTimeLabel.Text = "";
                 SessionTimeLabel.IsVisible = false;
                 SessionTitleLabel.IsVisible = false;
                 VersionInfoGrid.Children.Remove(SessionTimeLabel);
                 VersionInfoGrid.Children.Remove(SessionTitleLabel);
-                VersionInfoGrid.RowDefinitions.Remove(SessionPlayTimeRowDefinition);
+                //VersionInfoGrid.RowDefinitions.Remove(SessionPlayTimeRowDefinition);
+                SessionPlayTimeRowDefinition.Height = 0;
             }
 
-            if(GHApp.GPUBackend != null)
+            if (GHApp.GPUBackend != null)
             {
                 GPUBackendLabel.Text = GHApp.GPUBackend;
             }
@@ -99,7 +101,8 @@ namespace GnollHackX.Pages.MainScreen
                 GPUBackendTitleLabel.IsVisible = false;
                 VersionInfoGrid.Children.Remove(GPUBackendLabel);
                 VersionInfoGrid.Children.Remove(GPUBackendTitleLabel);
-                VersionInfoGrid.RowDefinitions.Remove(GPUBackendRowDefinition);
+                //VersionInfoGrid.RowDefinitions.Remove(GPUBackendRowDefinition);
+                GPUBackendRowDefinition.Height = 0;
             }
 
             if (GHApp.GPUCacheSize >= 0)
@@ -115,7 +118,8 @@ namespace GnollHackX.Pages.MainScreen
                 GPUCacheSizeTitleLabel.IsVisible = false;
                 VersionInfoGrid.Children.Remove(GPUCacheSizeLabel);
                 VersionInfoGrid.Children.Remove(GPUCacheSizeTitleLabel);
-                VersionInfoGrid.RowDefinitions.Remove(GPUCacheSizeRowDefinition);
+                //VersionInfoGrid.RowDefinitions.Remove(GPUCacheSizeRowDefinition);
+                GPUCacheSizeRowDefinition.Height = 0;
             }
 
             PortVersionTitleLabel.Text = GHApp.RuntimePlatform + " Port Version:";

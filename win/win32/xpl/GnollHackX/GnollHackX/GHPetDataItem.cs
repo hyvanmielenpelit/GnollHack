@@ -1,4 +1,7 @@
 ﻿using SkiaSharp;
+#if GNH_MAUI
+using GnollHackM;
+#endif
 
 namespace GnollHackX
 {

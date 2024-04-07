@@ -5,6 +5,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+#if GNH_MAUI
+using GnollHackM;
+#endif
 
 namespace GnollHackX
 {

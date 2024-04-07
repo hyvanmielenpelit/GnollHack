@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
+#if GNH_MAUI
+using GnollHackM;
+#endif
 
 namespace GnollHackX
 {
