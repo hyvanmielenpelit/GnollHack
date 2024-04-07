@@ -88,6 +88,36 @@ namespace GnollHackX.Pages.MainScreen
                 VersionInfoGrid.RowDefinitions.Remove(SessionPlayTimeRowDefinition);
             }
 
+            if(GHApp.GPUBackend != null)
+            {
+                GPUBackendLabel.Text = GHApp.GPUBackend;
+            }
+            else
+            {
+                GPUBackendLabel.Text = "";
+                GPUBackendLabel.IsVisible = false;
+                GPUBackendTitleLabel.IsVisible = false;
+                VersionInfoGrid.Children.Remove(GPUBackendLabel);
+                VersionInfoGrid.Children.Remove(GPUBackendTitleLabel);
+                VersionInfoGrid.RowDefinitions.Remove(GPUBackendRowDefinition);
+            }
+
+            if (GHApp.GPUCacheSize >= 0)
+            {
+                long TotalGPUCacheInBytes = GHApp.GPUCacheSize;
+                long TotalGPUCacheInMB = (TotalGPUCacheInBytes / 1024) / 1024;
+                GPUCacheSizeLabel.Text = TotalGPUCacheInMB + " MB";
+            }
+            else
+            {
+                GPUCacheSizeLabel.Text = "";
+                GPUCacheSizeLabel.IsVisible = false;
+                GPUCacheSizeTitleLabel.IsVisible = false;
+                VersionInfoGrid.Children.Remove(GPUCacheSizeLabel);
+                VersionInfoGrid.Children.Remove(GPUCacheSizeTitleLabel);
+                VersionInfoGrid.RowDefinitions.Remove(GPUCacheSizeRowDefinition);
+            }
+
             PortVersionTitleLabel.Text = GHApp.RuntimePlatform + " Port Version:";
             PortBuildTitleLabel.Text = GHApp.RuntimePlatform + " Port Build:";
             PortConfigurationTitleLabel.Text ="Port Configuration:";

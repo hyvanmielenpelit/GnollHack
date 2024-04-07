@@ -35,7 +35,9 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
-                                
+
+                                <RowDefinition Height="Auto" x:Name="GPUBackendRowDefinition" />
+                                <RowDefinition Height="Auto" x:Name="GPUCacheSizeRowDefinition" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" x:Name="GameDurationRowDefinition" />
@@ -70,13 +72,17 @@
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
                             <Label Grid.Row="11" Text="Disk Space:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
-                            <Label Grid.Row="12" Text="Total Play Time:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                            <Label Grid.Row="12" Text="GPU Backend:" x:Name="GPUBackendTitleLabel" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
-                            <Label Grid.Row="13" Text="Current Play Time:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                            <Label Grid.Row="13" Text="GPU Cache Size:" x:Name="GPUCacheSizeTitleLabel" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
-                            <Label Grid.Row="14" Text="Session Play Time:" x:Name="SessionTitleLabel" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                            <Label Grid.Row="14" Text="Total Play Time:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
-                            <Label Grid.Row="15" Text="Game Duration:" x:Name="GameDurationTitleLabel" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                            <Label Grid.Row="15" Text="Current Play Time:" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="16" Text="Session Play Time:" x:Name="SessionTitleLabel" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="17" Text="Game Duration:" x:Name="GameDurationTitleLabel" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
 
                             <Label Grid.Row="0" Grid.Column="1" x:Name="GnollHackVersionLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
@@ -103,13 +109,17 @@
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
                             <Label Grid.Row="11" Grid.Column="1" x:Name="DiskSpaceLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
-                            <Label Grid.Row="12" Grid.Column="1" x:Name="TotalPlayTimeLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                            <Label Grid.Row="12" Grid.Column="1" x:Name="GPUBackendLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
-                            <Label Grid.Row="13" Grid.Column="1" x:Name="CurrentPlayTimeLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                            <Label Grid.Row="13" Grid.Column="1" x:Name="GPUCacheSizeLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
-                            <Label Grid.Row="14" Grid.Column="1" x:Name="SessionTimeLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                            <Label Grid.Row="14" Grid.Column="1" x:Name="TotalPlayTimeLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
-                            <Label Grid.Row="15" Grid.Column="1" x:Name="GameDurationLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                            <Label Grid.Row="15" Grid.Column="1" x:Name="CurrentPlayTimeLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="16" Grid.Column="1" x:Name="SessionTimeLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
+                               TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
+                            <Label Grid.Row="17" Grid.Column="1" x:Name="GameDurationLabel" Text="" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start"
                                TextColor="Black" BackgroundColor="Transparent" FontFamily="DejaVuSansMono" FontSize="13" />
                         </Grid>
                         <Grid x:Name="LongVersionGrid" RowSpacing="4">

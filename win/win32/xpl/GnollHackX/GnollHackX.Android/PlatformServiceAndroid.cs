@@ -44,7 +44,9 @@ namespace GnollHackX.Droid
             var context = Android.App.Application.Context;
             if (Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Tiramisu)
             {
+#pragma warning disable CA1416 // Supported on: 'android' 33.0 and later
                 return context.PackageManager.GetPackageInfo(context.PackageName, PackageManager.PackageInfoFlags.Of(0L)).VersionName;
+#pragma warning restore CA1416 // Supported on: 'android' 33.0 and later
             }
             else
             {

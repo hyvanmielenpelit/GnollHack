@@ -34,8 +34,10 @@ public class MainActivity : MauiAppCompatActivity
             return;
         if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
         {
+#pragma warning disable CA1416 // Supported on: 'android' 30.0 and later
             activity.Window.SetDecorFitsSystemWindows(false);
             activity.Window.InsetsController?.Hide(WindowInsets.Type.NavigationBars());
+#pragma warning restore CA1416 // Supported on: 'android' 30.0 and later
         }
         else
         {
@@ -54,8 +56,10 @@ public class MainActivity : MauiAppCompatActivity
             return;
         if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
         {
+#pragma warning disable CA1416 // Supported on: 'android' 30.0 and later
             activity.Window.SetDecorFitsSystemWindows(true);
             activity.Window.InsetsController?.Show(WindowInsets.Type.NavigationBars());
+#pragma warning restore CA1416 // Supported on: 'android' 30.0 and later
         }
         else
         {

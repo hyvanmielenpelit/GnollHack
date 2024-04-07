@@ -100,11 +100,26 @@ namespace GnollHackX.Controls
                 _firstDraw = false;
                 if (e.BackendRenderTarget != null)
                 {
-                    GHApp.GPUBackend = e.BackendRenderTarget.Backend.ToString();
+                    if(CanvasType == CanvasTypes.MainCanvas)
+                        GHApp.GPUBackend = e.BackendRenderTarget.Backend.ToString();
+
                     System.Diagnostics.Debug.WriteLine("Using is Skia GPU Rendering: GRContext Backend is " + e.BackendRenderTarget.Backend.ToString());
                 }
                 else
                     System.Diagnostics.Debug.WriteLine("Using Skia GPU Rendering: BackendRenderTarget is null");
+
+                System.Diagnostics.Debug.WriteLine("CanvasType is " + CanvasType.ToString());
+                System.Diagnostics.Debug.WriteLine("ResourceCacheSize is " + ResourceCacheLimit);
+                if(_delayedResourceCacheLimit > 0 && internalGLView.GRContext != null)
+                {
+                    System.Diagnostics.Debug.WriteLine("_delayedResourceCacheLimit is " + _delayedResourceCacheLimit);
+                    internalGLView.GRContext.SetResourceCacheLimit(_delayedResourceCacheLimit);
+                    _delayedResourceCacheLimit = -1;
+                    System.Diagnostics.Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
+                }
+
+                if (CanvasType == CanvasTypes.MainCanvas)
+                    GHApp.GPUCacheSize = ResourceCacheLimit;
             }
             SKImageInfo info = new SKImageInfo();
             info.ColorType = e.ColorType;
@@ -116,9 +131,6 @@ namespace GnollHackX.Controls
         {
             Touch?.Invoke(sender, e);
         }
-
-
-
 
         public GamePage _gamePage;
         public Grid _parentGrid;
@@ -145,6 +157,26 @@ namespace GnollHackX.Controls
         public bool MenuGlyphAtBottom { get; set; }
         public bool AllowLongTap { get; set; } = true;
         public bool AllowHighlight { get; set; }
+
+        private long _delayedResourceCacheLimit = -1L;
+        public long ResourceCacheLimit
+        {
+            get 
+            {
+                return internalGLView.GRContext != null ? internalGLView.GRContext.GetResourceCacheLimit() : -1; 
+            }
+            set
+            {
+                if(internalGLView.GRContext != null)
+                {
+                    internalGLView.GRContext.SetResourceCacheLimit(value);
+                }
+                else
+                {
+                    _delayedResourceCacheLimit = value;
+                }
+            }
+        }
 
         public CanvasTypes CanvasType { get; set; }
 
