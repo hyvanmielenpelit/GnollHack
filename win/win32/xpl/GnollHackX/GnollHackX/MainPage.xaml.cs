@@ -165,28 +165,32 @@ namespace GnollHackX
                     UpdateGeneralTimerTasksLabel(false);
 
                     if (hasinternet && has_files && GHApp.PostingGameStatus)
+                    {
                         await ProcessSavedPosts(0, directory, GHConstants.ForumPostFileNamePrefix);
-
-                    PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
-                    UpdateGeneralTimerTasksLabel(false);
+                        PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
+                        UpdateGeneralTimerTasksLabel(false);
+                    }
 
                     if (hasinternet && has_files2 && GHApp.PostingXlogEntries && !missingorincorrectcredentials)
+                    {
                         await ProcessSavedPosts(1, directory2, GHConstants.XlogPostFileNamePrefix);
-
-                    PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
-                    UpdateGeneralTimerTasksLabel(false);
+                        PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
+                        UpdateGeneralTimerTasksLabel(false);
+                    }
 
                     if (hasinternet && has_files3 && dopostbones && !GameStarted && !missingorincorrectcredentials) // Do not fetch bones files while the game is on
+                    {
                         await ProcessSavedPosts(2, directory3, GHConstants.BonesPostFileNamePrefix);
-
-                    PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
-                    UpdateGeneralTimerTasksLabel(false);
+                        PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
+                        UpdateGeneralTimerTasksLabel(false);
+                    }
 
                     if (hasinternet && has_files4 && dopostreplays && !incorrectcredentials)
+                    {
                         await ProcessSavedPosts(3, directory4, GHConstants.ReplayPostFileNamePrefix);
-
-                    PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
-                    UpdateGeneralTimerTasksLabel(false);
+                        PendingGeneralTimerTasks = CalculatePendingGeneralTimerTasks();
+                        UpdateGeneralTimerTasksLabel(false);
+                    }
                 }
                 GeneralTimerWorkOnTasks = false;
             }
@@ -323,7 +327,7 @@ namespace GnollHackX
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     int tasks = PendingGeneralTimerTasks;
-                    PendingTasksLabel.Text = "There are " + tasks + " task" + (tasks == 1 ? "" : "s") + " pending.";
+                    PendingTasksLabel.Text = "There " + (tasks == 1 ? "is" : "are") + " " + tasks + " task" + (tasks == 1 ? "" : "s") + " pending.";
                     if (tasks <= 0)
                     {
                         PendingTasksGrid.IsEnabled = false;
