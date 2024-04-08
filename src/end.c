@@ -2926,13 +2926,15 @@ winid enwin;
     int ntypes = 0;
     int i;
     int pfx;
-    for (i = LOW_PM; i < NUM_MONSTERS; i++)
+    for (i = PM_COUATL; i <= PM_DEMOGORGON; i++)
     {
-        if ((is_demon(&mons[i]) || (is_dragon(&mons[i]) && mons[i].maligntyp < 0)) && mvitals[i].died > 0) /* Demons and chaotic dragons */
+        if ((u.ualign.type == A_LAWFUL ? is_demon(&mons[i]) : u.ualign.type == A_CHAOTIC ? is_angel(&mons[i]) : FALSE) || (is_dragon(&mons[i]) && u.ualign.type * mons[i].maligntyp < 0)) /* Demons/angels and chaotic/lawful dragons */
         {
             mindx[ntypes] = i;
             ntypes++;
         }
+        if (i == PM_BAHAMUT) /* Optimization so we go through just angels, dragons, and demons */
+            i = PM_INCUBUS - 1;
     }
 
     if (!ntypes)
@@ -3410,7 +3412,7 @@ get_current_game_score()
         {
             if (mvitals[i].mvflags & MV_SELFIE_TAKEN)
             {
-                Tourist_Selfie_Score += 50L * (mons[i].difficulty + 1);
+                Tourist_Selfie_Score += 75L * (mons[i].difficulty + 1);
             }
         }
         Role_Achievement_Score += TOURIST_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Small extra bonus from taking selfie with Demogorgon, since tourist gets score from Demogorgon's level, too */
@@ -3418,9 +3420,9 @@ get_current_game_score()
     else if (Role_if(PM_KNIGHT))
     {
         int i;
-        for (i = LOW_PM; i < NUM_MONSTERS; i++)
+        for (i = PM_COUATL; i <= PM_DEMOGORGON; i++)
         {
-            if (is_demon(&mons[i]) || (is_dragon(&mons[i]) && mons[i].maligntyp < 0)) /* Demons and chaotic dragons */
+            if ((u.ualign.type == A_LAWFUL ? is_demon(&mons[i]) : u.ualign.type == A_CHAOTIC ? is_angel(&mons[i]) : FALSE) || (is_dragon(&mons[i]) && u.ualign.type * mons[i].maligntyp < 0)) /* Demons/angels and chaotic/lawful dragons */
             {
                 if (UniqCritterIndx(i) && mvitals[i].died > 0)
                 {
@@ -3435,6 +3437,8 @@ get_current_game_score()
                     }
                 }
             }
+            if (i == PM_BAHAMUT) /* Optimization so we go through just angels, dragons, and demons */
+                i = PM_INCUBUS - 1;
         }
         Role_Achievement_Score += KNIGHT_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Small extra bonus from defeating Asmodeus */
     }
