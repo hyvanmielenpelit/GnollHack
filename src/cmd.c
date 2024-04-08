@@ -5885,39 +5885,39 @@ int final;
         char mbuf[BUFSZ];
         long artifacts = count_artifacts(invent);
         putstr(dumpwin, ATR_NONE, "");
-        Sprintf(mbuf, "You %s %ld %sartifact%s with you.", final ? "had" : "have", artifacts, program_state.gameover ? "" : "known ", plur(artifacts));
+        Sprintf(mbuf, "You %s %ld %sartifact%s with you, each worth %ld points.", final ? "had" : "have", artifacts, program_state.gameover ? "" : "known ", plur(artifacts), ARCHAEOLOGIST_PER_ARTIFACT_SCORE);
         putstr(en_win, ATR_TITLE, mbuf);
     }
     else if (Role_if(PM_BARBARIAN))
     {
         char mbuf[BUFSZ];
-        long valuableworth = count_powerful_melee_weapon_value(invent);
+        long valuableworth = count_powerful_melee_weapon_score(invent);
         putstr(dumpwin, ATR_NONE, "");
-        Sprintf(mbuf, "You %s %ld %s worth of %smelee weapons of artifact or legendary quality with you.", final ? "had" : "have", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
+        Sprintf(mbuf, "You %s %ld %s worth of %smelee weapons of artifact or legendary quality with you.", final ? "had" : "have", valuableworth, "points", program_state.gameover ? "" : "known ");
         putstr(en_win, ATR_TITLE, mbuf);
     }
     else if (Role_if(PM_RANGER))
     {
         char mbuf[BUFSZ];
-        long valuableworth = count_powerful_ranged_weapon_value(invent);
+        long valuableworth = count_powerful_ranged_weapon_score(invent);
         putstr(dumpwin, ATR_NONE, "");
-        Sprintf(mbuf, "You %s %ld %s worth of %sranged weapons of at least artifact, elite, or mythic quality with you.", final ? "had" : "have", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
+        Sprintf(mbuf, "You %s %ld %s worth of %sranged weapons of at least artifact, elite, or mythic quality with you.", final ? "had" : "have", valuableworth, "points", program_state.gameover ? "" : "known ");
         putstr(en_win, ATR_TITLE, mbuf);
     }
     else if (Role_if(PM_SAMURAI))
     {
         char mbuf[BUFSZ];
-        long valuableworth = count_powerful_Japanese_item_value(invent);
+        long valuableworth = count_powerful_Japanese_item_score(invent);
         putstr(dumpwin, ATR_NONE, "");
-        Sprintf(mbuf, "You %s %ld %s worth of %sJapanese items of at least artifact, exceptional, or mythic quality with you.", final ? "had" : "have", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
+        Sprintf(mbuf, "You %s %ld %s worth of %sJapanese items of at least artifact, exceptional, or mythic quality with you.", final ? "had" : "have", valuableworth, "points", program_state.gameover ? "" : "known ");
         putstr(en_win, ATR_TITLE, mbuf);
     }
     else if (Role_if(PM_VALKYRIE))
     {
         char mbuf[BUFSZ];
-        long valuableworth = count_powerful_valkyrie_item_value(invent);
+        long valuableworth = count_powerful_valkyrie_item_score(invent);
         putstr(dumpwin, ATR_NONE, "");
-        Sprintf(mbuf, "You %s %ld %s worth of %sitems of %s quality with you.", final ? "had" : "have", valuableworth, currency(valuableworth), u.ualign.type == A_CHAOTIC ? "infernal": u.ualign.type == A_LAWFUL ? "celestial" : "primordial", program_state.gameover ? "" : "known ");
+        Sprintf(mbuf, "You %s %ld %s worth of %sitems of %s quality with you.", final ? "had" : "have", valuableworth, "points", u.ualign.type == A_CHAOTIC ? "infernal": u.ualign.type == A_LAWFUL ? "celestial" : "primordial", program_state.gameover ? "" : "known ");
         putstr(en_win, ATR_TITLE, mbuf);
     }
     else if (Role_if(PM_CAVEMAN))
@@ -5925,7 +5925,7 @@ int final;
         char mbuf[BUFSZ];
         long amulets = count_amulets_of_life_saving(invent);
         putstr(dumpwin, ATR_NONE, "");
-        Sprintf(mbuf, "You %s %ld amulet%s of life saving with you.", final ? "had" : "have", amulets, plur(amulets));
+        Sprintf(mbuf, "You %s %ld amulet%s of life saving with you, each worth %ld points.", final ? "had" : "have", amulets, plur(amulets), CAVEMAN_PER_AMULET_SCORE);
         putstr(en_win, ATR_TITLE, mbuf);
     }
     else if (Role_if(PM_HEALER) || Role_if(PM_PRIEST) || Role_if(PM_WIZARD))

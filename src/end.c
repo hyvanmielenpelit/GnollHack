@@ -1319,7 +1319,7 @@ struct obj* list;
 }
 
 long
-count_powerful_melee_weapon_value(list)
+count_powerful_melee_weapon_score(list)
 struct obj* list;
 {
     struct obj* otmp;
@@ -1330,16 +1330,16 @@ struct obj* list;
             && !(is_launcher(otmp) || is_ammo(otmp) || is_missile(otmp))
             && ((otmp->oartifact && (program_state.gameover || otmp->nknown || otmp->aknown)) || (otmp->mythic_prefix && otmp->mythic_suffix)))
         {
-            value += getprice(otmp, FALSE) * otmp->quan;
+            value += BARBARIAN_PER_WEAPON_SCORE * otmp->quan;
         }
         if (Has_contents(otmp))
-            value += count_powerful_melee_weapon_value(otmp->cobj);
+            value += count_powerful_melee_weapon_score(otmp->cobj);
     }
     return value;
 }
 
 long
-count_powerful_ranged_weapon_value(list)
+count_powerful_ranged_weapon_score(list)
 struct obj* list;
 {
     struct obj* otmp;
@@ -1350,16 +1350,19 @@ struct obj* list;
             && (is_launcher(otmp) || is_ammo(otmp) || is_missile(otmp))
             && ((otmp->oartifact && (program_state.gameover || otmp->nknown || otmp->aknown)) || (otmp->mythic_prefix || otmp->mythic_suffix || otmp->exceptionality >= EXCEPTIONALITY_ELITE)))
         {
-            value += getprice(otmp, FALSE) * otmp->quan;
+            if(is_launcher(otmp))
+                value += RANGER_PER_LAUNCHER_SCORE * otmp->quan;
+            else
+                value += RANGER_PER_AMMO_SCORE * otmp->quan;
         }
         if (Has_contents(otmp))
-            value += count_powerful_ranged_weapon_value(otmp->cobj);
+            value += count_powerful_ranged_weapon_score(otmp->cobj);
     }
     return value;
 }
 
 long
-count_powerful_Japanese_item_value(list)
+count_powerful_Japanese_item_score(list)
 struct obj* list;
 {
     struct obj* otmp;
@@ -1370,16 +1373,19 @@ struct obj* list;
             || ((otmp->mythic_prefix || otmp->mythic_suffix || otmp->exceptionality >= EXCEPTIONALITY_EXCEPTIONAL) && ((objects[otmp->otyp].oc_flags6 & O6_JAPANESE_ITEM) != 0 || Japanese_item_name(otmp->otyp) != 0))
            )
         {
-            value += getprice(otmp, FALSE) * otmp->quan;
+            if (is_ammo(otmp) || is_missile(otmp))
+                value += SAMURAI_PER_AMMO_SCORE * otmp->quan;
+            else
+                value += SAMURAI_PER_ITEM_SCORE * otmp->quan;
         }
         if (Has_contents(otmp))
-            value += count_powerful_Japanese_item_value(otmp->cobj);
+            value += count_powerful_Japanese_item_score(otmp->cobj);
     }
     return value;
 }
 
 long
-count_powerful_valkyrie_item_value(list)
+count_powerful_valkyrie_item_score(list)
 struct obj* list;
 {
     struct obj* otmp;
@@ -1388,10 +1394,13 @@ struct obj* list;
     {
         if (u.ualign.type == A_CHAOTIC ? otmp->exceptionality == EXCEPTIONALITY_INFERNAL : u.ualign.type == A_LAWFUL ? otmp->exceptionality == EXCEPTIONALITY_CELESTIAL : otmp->exceptionality == EXCEPTIONALITY_PRIMORDIAL)
         {
-            value += getprice(otmp, FALSE) * otmp->quan;
+            if(is_ammo(otmp) || is_missile(otmp))
+                value += VALKYRIE_PER_AMMO_SCORE * otmp->quan;
+            else
+                value += VALKYRIE_PER_ITEM_SCORE * otmp->quan;
         }
         if (Has_contents(otmp))
-            value += count_powerful_melee_weapon_value(otmp->cobj);
+            value += count_powerful_melee_weapon_score(otmp->cobj);
     }
     return value;
 }
@@ -3362,37 +3371,37 @@ get_current_game_score()
         lootvalue += hidden_gold(); /* accumulate gold from containers */
         lootvalue += carried_gem_value();
         Rogue_Loot_Score = lootvalue;
-        Role_Achievement_Score += 10000L * (long)u.uachieve.role_achievement; /* Small extra bonus from defeating Croesus only, since rogue gets score from his gold */
+        Role_Achievement_Score += ROGUE_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Small extra bonus from defeating Croesus only, since rogue gets score from his gold */
     }
     else if (Role_if(PM_ARCHAEOLOGIST))
     {
-        Archaeologist_Artifact_Score += 25000L * count_artifacts(invent);
-        Role_Achievement_Score += 40000L * (long)u.uachieve.role_achievement; /* Large extra bonus from finding and defeating Amonket */
+        Archaeologist_Artifact_Score += ARCHAEOLOGIST_PER_ARTIFACT_SCORE * count_artifacts(invent);
+        Role_Achievement_Score += ARCHAEOLOGIST_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Large extra bonus from finding and defeating Amonket */
     }
     else if (Role_if(PM_BARBARIAN))
     {
-        Barbarian_Melee_Weapon_Score += count_powerful_melee_weapon_value(invent);
-        Role_Achievement_Score += 20000L * (long)u.uachieve.role_achievement; /* Extra bonus from finding two dedicated artifact weapons only */
+        Barbarian_Melee_Weapon_Score += count_powerful_melee_weapon_score(invent);
+        Role_Achievement_Score += BARBARIAN_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Extra bonus from finding two dedicated artifact weapons only */
     }
     else if (Role_if(PM_CAVEMAN))
     {
-        Caveman_Amulet_Score += 25000L * count_amulets_of_life_saving(invent);
-        Role_Achievement_Score += 10000L * (long)u.uachieve.role_achievement; /* Small extra bonus from getting maximum level in bludgeoning weapons */
+        Caveman_Amulet_Score += CAVEMAN_PER_AMULET_SCORE * count_amulets_of_life_saving(invent);
+        Role_Achievement_Score += CAVEMAN_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Small extra bonus from getting maximum level in bludgeoning weapons */
     }
     else if (Role_if(PM_RANGER))
     {
-        Ranger_Ranged_Weapon_Score += count_powerful_ranged_weapon_value(invent);
-        Role_Achievement_Score += 10000L * (long)u.uachieve.role_achievement; /* Small extra bonus from getting maximum level in bow or crossbow */
+        Ranger_Ranged_Weapon_Score += count_powerful_ranged_weapon_score(invent);
+        Role_Achievement_Score += RANGER_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Small extra bonus from getting maximum level in bow or crossbow */
     }
     else if (Role_if(PM_SAMURAI))
     {
-        Samurai_Japanese_Item_Score += count_powerful_Japanese_item_value(invent);
-        Role_Achievement_Score += 40000L * (long)u.uachieve.role_achievement; /* Large extra bonus from finding two dedicated artifact weapons only  */
+        Samurai_Japanese_Item_Score += count_powerful_Japanese_item_score(invent);
+        Role_Achievement_Score += SAMURAI_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Large extra bonus from finding two dedicated artifact weapons only  */
     }
     else if (Role_if(PM_VALKYRIE))
     {
-        Valkyrie_Item_Score += count_powerful_valkyrie_item_value(invent);
-        Role_Achievement_Score += 10000L * (long)u.uachieve.role_achievement; /* Extra bonus from achieving maximum level in dual wielding */
+        Valkyrie_Item_Score += count_powerful_valkyrie_item_score(invent);
+        Role_Achievement_Score += VALKYRIE_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Extra bonus from achieving maximum level in dual wielding */
     }
     else if (Role_if(PM_TOURIST))
     {
@@ -3404,7 +3413,7 @@ get_current_game_score()
                 Tourist_Selfie_Score += 50L * (mons[i].difficulty + 1);
             }
         }
-        Role_Achievement_Score += 10000L * (long)u.uachieve.role_achievement; /* Small extra bonus from taking selfie with Demogorgon, since tourist gets score from Demogorgon's level, too */
+        Role_Achievement_Score += TOURIST_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Small extra bonus from taking selfie with Demogorgon, since tourist gets score from Demogorgon's level, too */
     }
     else if (Role_if(PM_KNIGHT))
     {
@@ -3427,7 +3436,7 @@ get_current_game_score()
                 }
             }
         }
-        Role_Achievement_Score += 10000L * (long)u.uachieve.role_achievement; /* Small extra bonus from defeating Asmodeus */
+        Role_Achievement_Score += KNIGHT_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Small extra bonus from defeating Asmodeus */
     }
     else if (Role_if(PM_WIZARD))
     {
@@ -3439,7 +3448,7 @@ get_current_game_score()
             if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
                 Wizard_Spell_Score += 300L * (long)(spl_book[i].sp_lev + 2);
         }
-        Role_Achievement_Score += 30000L * (long)u.uachieve.role_achievement;
+        Role_Achievement_Score += WIZARD_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
     }
     else if (Role_if(PM_PRIEST))
     {
@@ -3451,7 +3460,7 @@ get_current_game_score()
             if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
                 Priest_Spell_Score += 450L * (long)(spl_book[i].sp_lev + 2); /* Priest has the fewer spell than wizard */
         }
-        Role_Achievement_Score += 30000L * (long)u.uachieve.role_achievement;
+        Role_Achievement_Score += PRIEST_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
     }
     else if (Role_if(PM_HEALER))
     {
@@ -3463,12 +3472,12 @@ get_current_game_score()
             if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
                 Healer_Spell_Score += 600L * (long)(spl_book[i].sp_lev + 2); /* Healer has the fewest spells */
         }
-        Role_Achievement_Score += 30000L * (long)u.uachieve.role_achievement;
+        Role_Achievement_Score += HEALER_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
     }
     else
     {
         /* Monk */
-        Role_Achievement_Score += 60000L * (long)u.uachieve.role_achievement;
+        Role_Achievement_Score += MONK_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
     }
 
     int ngenocided = num_genocides();
