@@ -509,7 +509,7 @@ namespace GnollHackX
             {
                 if (_ghWindows[winHandle] != null)
                 {
-                    _ghWindows[winHandle].PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, layers);
+                    _ghWindows[winHandle].PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
                 }
             }
 

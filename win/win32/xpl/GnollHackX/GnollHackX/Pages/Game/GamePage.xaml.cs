@@ -4558,7 +4558,7 @@ namespace GnollHackX.Pages.Game
                 float tr_y = ty + (vflip_glyph ? height * dscaley : 0);
                 float sc_x = hflip_glyph ? -1 : 1;
                 float sc_y = vflip_glyph ? -1 : 1;
-                TranslateAndScaleCanvas(canvas, tr_x, tr_y, sc_x, sc_y, is_monster_like_layer, _mapData[mapx, mapy].Layers,
+                TranslateAndScaleCanvas(canvas, tr_x, tr_y, sc_x, sc_y, is_monster_like_layer, ref _mapData[mapx, mapy].Layers,
                     dx2, dy2, dscalex, dscaley, width, height, generalcounterdiff);
                 //SKAutoCanvasRestore enlRestore = null;
                 //if (enlCanvas != canvas)
@@ -4585,7 +4585,7 @@ namespace GnollHackX.Pages.Game
                 paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
                 if (is_monster_like_layer && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0)
                 {
-                    DrawTileWithRadialTransparency(canvas, delayedDraw, TileMap[sheet_idx], sourcerect, targetrect, _mapData[mapx, mapy].Layers, splitY, opaqueness, paint, mapx, mapy);
+                    DrawTileWithRadialTransparency(canvas, delayedDraw, TileMap[sheet_idx], sourcerect, targetrect, ref _mapData[mapx, mapy].Layers, splitY, opaqueness, paint, mapx, mapy);
                         //, ref baseUpdateRect, ref enlUpdateRect);
                 }
                 else
@@ -4643,7 +4643,7 @@ namespace GnollHackX.Pages.Game
 
         private readonly object _saveRectLock = new object();
         ConcurrentDictionary<SavedRect, SKBitmap> _savedRects = new ConcurrentDictionary<SavedRect, SKBitmap>();
-        public void DrawTileWithRadialTransparency(SKCanvas canvas, bool delayedDraw, SKBitmap tileSheet, SKRect sourcerect, SKRect targetrect, LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint, int mapX, int mapY)
+        public void DrawTileWithRadialTransparency(SKCanvas canvas, bool delayedDraw, SKBitmap tileSheet, SKRect sourcerect, SKRect targetrect, ref LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint, int mapX, int mapY)
             //, ref SKRect baseUpdateRect, ref SKRect enlUpdateRect)
         {
             bool cache = false;
@@ -4796,7 +4796,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        public void TranslateAndScaleCanvas(SKCanvas canvas, float tr_x, float tr_y, float sc_x, float sc_y, bool is_monster_like_layer, LayerInfo layers,
+        public void TranslateAndScaleCanvas(SKCanvas canvas, float tr_x, float tr_y, float sc_x, float sc_y, bool is_monster_like_layer, ref LayerInfo layers,
                     float dx2, float dy2, float dscalex, float dscaley, float width, float height, long generalcounterdiff)
         {
             canvas.Translate(tr_x, tr_y);
@@ -12698,7 +12698,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        bool DetermineHasEnlargementOrAnimationOrSpecialHeight(LayerInfo layers)
+        bool DetermineHasEnlargementOrAnimationOrSpecialHeight(ref LayerInfo layers)
         {
             int gui_glyph, ntile;
             for (int i = 0; i < (int)layer_types.MAX_LAYERS; i++)
@@ -12716,7 +12716,7 @@ namespace GnollHackX.Pages.Game
             return false;
         }
 
-        public void SetMapSymbol(int x, int y, int glyph, int bkglyph, int c, int color, uint special, LayerInfo layers)
+        public void SetMapSymbol(int x, int y, int glyph, int bkglyph, int c, int color, uint special, ref LayerInfo layers)
         {
             lock (_mapDataLock)
             {
@@ -12783,7 +12783,7 @@ namespace GnollHackX.Pages.Game
                 _mapData[x, y].Layers = layers;
 
                 _mapData[x, y].NeedsUpdate = true;
-                _mapData[x, y].HasEnlargementOrAnimationOrSpecialHeight = AlternativeLayerDrawing ? DetermineHasEnlargementOrAnimationOrSpecialHeight(layers) : false;
+                _mapData[x, y].HasEnlargementOrAnimationOrSpecialHeight = AlternativeLayerDrawing ? DetermineHasEnlargementOrAnimationOrSpecialHeight(ref layers) : false;
             }
         }
         public void SetMapCursor(int x, int y)

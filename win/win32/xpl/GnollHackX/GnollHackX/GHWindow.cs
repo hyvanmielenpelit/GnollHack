@@ -371,9 +371,9 @@ namespace GnollHackX
             if(WindowType == GHWinType.Map)
                 ActiveGamePage.SetMapCursor(x, y);
         }
-        public void PrintGlyph(int x, int y, int glyph, int bkglyph, int symbol, int color, uint special, LayerInfo layers)
+        public void PrintGlyph(int x, int y, int glyph, int bkglyph, int symbol, int color, uint special, ref LayerInfo layers)
         {
-            ActiveGamePage.SetMapSymbol(x, y, glyph, bkglyph, symbol, color, special, layers);
+            ActiveGamePage.SetMapSymbol(x, y, glyph, bkglyph, symbol, color, special, ref layers);
         }
 
         public void PutStrEx(int attributes, string str, int append, int color)
