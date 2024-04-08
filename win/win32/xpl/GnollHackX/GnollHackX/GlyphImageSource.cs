@@ -422,7 +422,7 @@ namespace GnollHackX
                             scale = tileWidth / GHConstants.TileWidth;
                         }
 
-                        canvas.DrawBitmap(ReferenceGamePage.TileMap[sheet_idx], sourcerect, targetrect, paint);
+                        canvas.DrawImage(ReferenceGamePage.TileMap[sheet_idx], sourcerect, targetrect, paint);
                         ReferenceGamePage.DrawAutoDraw(autodraw, canvas, false, paint, ObjData,
                             (int)layer_types.LAYER_OBJECT, 0, 0,
                             tileflag_halfsize, false, tileflag_fullsizeditem,
@@ -459,7 +459,7 @@ namespace GnollHackX
                             canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
                             SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                             SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
-                            canvas.DrawBitmap(ReferenceGamePage.TileMap[sheet_idx], sourcerect, targetrect, paint);
+                            canvas.DrawImage(ReferenceGamePage.TileMap[sheet_idx], sourcerect, targetrect, paint);
                             ReferenceGamePage.DrawAutoDraw(autodraw, canvas, false, paint, ObjData,
                                 (int)layer_types.LAYER_OBJECT, 0, 0,
                                 tileflag_halfsize, false, true,
@@ -528,7 +528,7 @@ namespace GnollHackX
                                     canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
                                     SKRect sourcerect = new SKRect(etile_x, etile_y, etile_x + GHConstants.TileWidth, etile_y + GHConstants.TileHeight);
                                     SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
-                                    canvas.DrawBitmap(ReferenceGamePage.TileMap[e_sheet_idx], sourcerect, targetrect, paint);
+                                    canvas.DrawImage(ReferenceGamePage.TileMap[e_sheet_idx], sourcerect, targetrect, paint);
                                     ReferenceGamePage.DrawAutoDraw(autodraw, canvas, false, paint, ObjData,
                                         (int)layer_types.LAYER_OBJECT, 0, 0,
                                         tileflag_halfsize, false, true,

@@ -203,7 +203,7 @@ namespace GnollHackX
         }
 
         private readonly object _sourceBitmapLock = new object();
-        private SKBitmap _sourceBitmap = null;
+        private SKImage _sourceBitmap = null;
 
         private void CustomCanvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -223,7 +223,7 @@ namespace GnollHackX
             }
             else
             {
-                SKBitmap targetBitmap = null;
+                SKImage targetBitmap = null;
                 lock (_sourceBitmapLock)
                 {
                     targetBitmap = _sourceBitmap;
@@ -263,7 +263,7 @@ namespace GnollHackX
                         targetrect = new SKRect(0, 0, canvaswidth, canvasheight);
                         break;
                 }
-                canvas.DrawBitmap(targetBitmap, sourcerect, targetrect);
+                canvas.DrawImage(targetBitmap, sourcerect, targetrect);
             }
         }
     }

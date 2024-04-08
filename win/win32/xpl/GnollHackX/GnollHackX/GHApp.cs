@@ -31,6 +31,7 @@ using Azure.Identity;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure;
+//using AndroidX.AppCompat.View.Menu;
 
 namespace GnollHackX
 {
@@ -1132,25 +1133,25 @@ namespace GnollHackX
             }
         }
 
-        private static SKBitmap _successBitmap;
-        private static SKBitmap _manaBitmap;
-        private static SKBitmap _cooldownBitmap;
-        private static SKBitmap _castsBitmap;
-        private static SKBitmap _addsBitmap;
-        private static SKBitmap _foodBitmap;
+        private static SKImage _successBitmap;
+        private static SKImage _manaBitmap;
+        private static SKImage _cooldownBitmap;
+        private static SKImage _castsBitmap;
+        private static SKImage _addsBitmap;
+        private static SKImage _foodBitmap;
 
-        private static SKBitmap _spellAbjurationBitmap;
-        private static SKBitmap _spellArcaneBitmap;
-        private static SKBitmap _spellCelestialBitmap;
-        private static SKBitmap _spellClericalBitmap;
-        private static SKBitmap _spellConjurationBitmap;
-        private static SKBitmap _spellDivinationBitmap;
-        private static SKBitmap _spellEnchantmentBitmap;
-        private static SKBitmap _spellHealingBitmap;
-        private static SKBitmap _spellMovementBitmap;
-        private static SKBitmap _spellNatureBitmap;
-        private static SKBitmap _spellNecromancyBitmap;
-        private static SKBitmap _spellTransmutationBitmap;
+        private static SKImage _spellAbjurationBitmap;
+        private static SKImage _spellArcaneBitmap;
+        private static SKImage _spellCelestialBitmap;
+        private static SKImage _spellClericalBitmap;
+        private static SKImage _spellConjurationBitmap;
+        private static SKImage _spellDivinationBitmap;
+        private static SKImage _spellEnchantmentBitmap;
+        private static SKImage _spellHealingBitmap;
+        private static SKImage _spellMovementBitmap;
+        private static SKImage _spellNatureBitmap;
+        private static SKImage _spellNecromancyBitmap;
+        private static SKImage _spellTransmutationBitmap;
 
         public static void InitSymbolBitmaps(Assembly assembly)
         {
@@ -1159,94 +1160,112 @@ namespace GnollHackX
                 /* Replaceable menu symbols */
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-success.png"))
                 {
-                    _successBitmap = SKBitmap.Decode(stream);
-                    _successBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    _successBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-mana.png"))
                 {
-                    _manaBitmap = SKBitmap.Decode(stream);
-                    _manaBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    _manaBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-cooldown.png"))
                 {
-                    _cooldownBitmap = SKBitmap.Decode(stream);
-                    _cooldownBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    _cooldownBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-casts.png"))
                 {
-                    _castsBitmap = SKBitmap.Decode(stream);
-                    _castsBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    _castsBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-adds.png"))
                 {
-                    _addsBitmap = SKBitmap.Decode(stream);
-                    _addsBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    _addsBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-food.png"))
                 {
-                    _foodBitmap = SKBitmap.Decode(stream);
-                    _foodBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    _foodBitmap = SKImage.FromBitmap(bmp);
                 }
 
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-spell-abjuration.png"))
                 {
-                    _spellAbjurationBitmap = SKBitmap.Decode(stream);
-                    _spellAbjurationBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    _spellAbjurationBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-spell-arcane.png"))
                 {
-                    _spellArcaneBitmap = SKBitmap.Decode(stream);
-                    _spellArcaneBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    _spellArcaneBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-spell-celestial.png"))
                 {
-                    _spellCelestialBitmap = SKBitmap.Decode(stream);
-                    _spellCelestialBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    _spellCelestialBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-spell-clerical.png"))
                 {
-                    _spellClericalBitmap = SKBitmap.Decode(stream);
-                    _spellClericalBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    _spellClericalBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-spell-conjuration.png"))
                 {
-                    _spellConjurationBitmap = SKBitmap.Decode(stream);
-                    _spellConjurationBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    _spellConjurationBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-spell-divination.png"))
                 {
-                    _spellDivinationBitmap = SKBitmap.Decode(stream);
-                    _spellDivinationBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    _spellDivinationBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-spell-enchantment.png"))
                 {
-                    _spellEnchantmentBitmap = SKBitmap.Decode(stream);
-                    _spellEnchantmentBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    _spellEnchantmentBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-spell-healing.png"))
                 {
-                    _spellHealingBitmap = SKBitmap.Decode(stream);
-                    _spellHealingBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    _spellHealingBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-spell-movement.png"))
                 {
-                    _spellMovementBitmap = SKBitmap.Decode(stream);
-                    _spellMovementBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    _spellMovementBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-spell-nature.png"))
                 {
-                    _spellNatureBitmap = SKBitmap.Decode(stream);
-                    _spellNatureBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    _spellNatureBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-spell-necromancy.png"))
                 {
-                    _spellNecromancyBitmap = SKBitmap.Decode(stream);
-                    _spellNecromancyBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    _spellNecromancyBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-spell-transmutation.png"))
                 {
-                    _spellTransmutationBitmap = SKBitmap.Decode(stream);
-                    _spellTransmutationBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    _spellTransmutationBitmap = SKImage.FromBitmap(bmp);
                 }
 
             }
@@ -1258,52 +1277,52 @@ namespace GnollHackX
 
 
 
-        public static SKBitmap _logoBitmap;
-        public static SKBitmap _skillBitmap;
-        public static SKBitmap _prevWepBitmap;
-        public static SKBitmap _prevUnwieldBitmap;
-        public static SKBitmap[] _arrowBitmap = new SKBitmap[9];
-        public static SKBitmap _orbBorderBitmap;
-        public static SKBitmap _orbFillBitmap;
-        public static SKBitmap _orbFillBitmapRed;
-        public static SKBitmap _orbFillBitmapBlue;
-        public static SKBitmap _orbGlassBitmap;
+        public static SKImage _logoBitmap;
+        public static SKImage _skillBitmap;
+        public static SKImage _prevWepBitmap;
+        public static SKImage _prevUnwieldBitmap;
+        public static SKImage[] _arrowBitmap = new SKImage[9];
+        public static SKImage _orbBorderBitmap;
+        public static SKImage _orbFillBitmap;
+        public static SKImage _orbFillBitmapRed;
+        public static SKImage _orbFillBitmapBlue;
+        public static SKImage _orbGlassBitmap;
 
-        public static SKBitmap _batteryFrameBitmap;
-        public static SKBitmap _batteryRedFrameBitmap;
-        public static SKBitmap _fpsBitmap;
+        public static SKImage _batteryFrameBitmap;
+        public static SKImage _batteryRedFrameBitmap;
+        public static SKImage _fpsBitmap;
 
-        public static SKBitmap _statusWizardBitmap;
-        public static SKBitmap _statusCasualBitmap;
-        public static SKBitmap _statusCasualClassicBitmap;
-        public static SKBitmap _statusModernBitmap;
+        public static SKImage _statusWizardBitmap;
+        public static SKImage _statusCasualBitmap;
+        public static SKImage _statusCasualClassicBitmap;
+        public static SKImage _statusModernBitmap;
 
-        public static SKBitmap _statusDifficultyBitmap;
-        public static SKBitmap _statusDifficultyVeryEasyBitmap;
-        public static SKBitmap _statusDifficultyEasyBitmap;
-        public static SKBitmap _statusDifficultyAverageBitmap;
-        public static SKBitmap _statusDifficultyHardBitmap;
-        public static SKBitmap _statusDifficultyExpertBitmap;
-        public static SKBitmap _statusDifficultyMasterBitmap;
-        public static SKBitmap _statusDifficultyGrandMasterBitmap;
+        public static SKImage _statusDifficultyBitmap;
+        public static SKImage _statusDifficultyVeryEasyBitmap;
+        public static SKImage _statusDifficultyEasyBitmap;
+        public static SKImage _statusDifficultyAverageBitmap;
+        public static SKImage _statusDifficultyHardBitmap;
+        public static SKImage _statusDifficultyExpertBitmap;
+        public static SKImage _statusDifficultyMasterBitmap;
+        public static SKImage _statusDifficultyGrandMasterBitmap;
 
-        public static SKBitmap _statusXPLevelBitmap;
-        public static SKBitmap _statusHDBitmap;
-        public static SKBitmap _statusACBitmap;
-        public static SKBitmap _statusMCBitmap;
-        public static SKBitmap _statusMoveBitmap;
-        public static SKBitmap _statusWeaponStyleBitmap;
-        public static SKBitmap _statusQuiveredWeaponStyleBitmap;
-        public static SKBitmap _statusEmptyHandedBitmap;
+        public static SKImage _statusXPLevelBitmap;
+        public static SKImage _statusHDBitmap;
+        public static SKImage _statusACBitmap;
+        public static SKImage _statusMCBitmap;
+        public static SKImage _statusMoveBitmap;
+        public static SKImage _statusWeaponStyleBitmap;
+        public static SKImage _statusQuiveredWeaponStyleBitmap;
+        public static SKImage _statusEmptyHandedBitmap;
 
-        public static SKBitmap _statusGoldBitmap;
-        public static SKBitmap _statusTurnsBitmap;
+        public static SKImage _statusGoldBitmap;
+        public static SKImage _statusTurnsBitmap;
 
-        public static SKBitmap _statusDungeonLevelBitmap;
+        public static SKImage _statusDungeonLevelBitmap;
 
-        public static SKBitmap _searchBitmap;
-        public static SKBitmap _waitBitmap;
-        public static SKBitmap _damageBitmap;
+        public static SKImage _searchBitmap;
+        public static SKImage _waitBitmap;
+        public static SKImage _damageBitmap;
 
 
         public static bool StartGameDataSet = false;
@@ -1317,7 +1336,7 @@ namespace GnollHackX
         public static int[] EnlargementOffsets { get; set; }
         public static int[] ReplacementOffsets { get; set; }
         public static int Glyph2TileSize { get; set; }
-        public static SKBitmap[] _tileMap = new SKBitmap[GHConstants.MaxTileSheets];
+        public static SKImage[] _tileMap = new SKImage[GHConstants.MaxTileSheets];
         public static int UsedTileSheets { get; set; }
         public static int TotalTiles { get; set; }
         public static int UnexploredGlyph { get; set; }
@@ -1350,7 +1369,7 @@ namespace GnollHackX
 
         public static readonly object _moreBtnLock = new object();
         public static GHCommandButtonItem[,,] _moreBtnMatrix = new GHCommandButtonItem[GHConstants.MoreButtonPages, GHConstants.MoreButtonsPerRow, GHConstants.MoreButtonsPerColumn];
-        public static SKBitmap[,,] _moreBtnBitmaps = new SKBitmap[GHConstants.MoreButtonPages, GHConstants.MoreButtonsPerRow, GHConstants.MoreButtonsPerColumn];
+        public static SKImage[,,] _moreBtnBitmaps = new SKImage[GHConstants.MoreButtonPages, GHConstants.MoreButtonsPerRow, GHConstants.MoreButtonsPerColumn];
         public static readonly string[] _moreButtonPageTitle = new string[GHConstants.MoreButtonPages] { "Wizard Mode Commands", "Common Commands", "Additional Commands", "Context and More Commands" };
 
         public static int TileSheetIdx(int ntile)
@@ -1657,43 +1676,58 @@ namespace GnollHackX
         {
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.arrow_left.png"))
             {
-                _arrowBitmap[0] = SKBitmap.Decode(stream);
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _arrowBitmap[0] = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.arrow_up.png"))
             {
-                _arrowBitmap[1] = SKBitmap.Decode(stream);
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _arrowBitmap[1] = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.arrow_right.png"))
             {
-                _arrowBitmap[2] = SKBitmap.Decode(stream);
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _arrowBitmap[2] = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.arrow_down.png"))
             {
-                _arrowBitmap[3] = SKBitmap.Decode(stream);
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _arrowBitmap[3] = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.arrow_upleft.png"))
             {
-                _arrowBitmap[4] = SKBitmap.Decode(stream);
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _arrowBitmap[4] = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.no.png"))
             {
-                _arrowBitmap[5] = SKBitmap.Decode(stream);
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _arrowBitmap[5] = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.arrow_upright.png"))
             {
-                _arrowBitmap[6] = SKBitmap.Decode(stream);
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _arrowBitmap[6] = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.arrow_downright.png"))
             {
-                _arrowBitmap[7] = SKBitmap.Decode(stream);
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _arrowBitmap[7] = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.arrow_downleft.png"))
             {
-                _arrowBitmap[8] = SKBitmap.Decode(stream);
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _arrowBitmap[8] = SKImage.FromBitmap(bmp);
             }
-
-            for(int i = 0; i < 9; i++)
-                _arrowBitmap[i].SetImmutable();
 
         }
 
@@ -1701,13 +1735,15 @@ namespace GnollHackX
         {
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.orb_border.png"))
             {
-                _orbBorderBitmap = SKBitmap.Decode(stream);
-                _orbBorderBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _orbBorderBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.orb_fill.png"))
             {
-                _orbFillBitmap = SKBitmap.Decode(stream);
-                _orbFillBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _orbFillBitmap = SKImage.FromBitmap(bmp);
             }
 
             using (SKPaint bmpPaint = new SKPaint())
@@ -1724,9 +1760,9 @@ namespace GnollHackX
                     0,     0,     1.0f, 0, 0,
                     0,     0,     0,    1, 0
                     });
-                redcanvas.DrawBitmap(_orbFillBitmap, 0, 0, bmpPaint);
-                _orbFillBitmapRed = redbitmap;
-                _orbFillBitmapRed.SetImmutable();
+                redcanvas.DrawImage(_orbFillBitmap, 0, 0, bmpPaint);
+                redbitmap.SetImmutable();
+                _orbFillBitmapRed = SKImage.FromBitmap(redbitmap);
 
                 var bluebitmap = new SKBitmap(_orbFillBitmap.Width, _orbFillBitmap.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
                 var bluecanvas = new SKCanvas(bluebitmap);
@@ -1739,27 +1775,30 @@ namespace GnollHackX
                     0,     0,     0,     1,   0
                     });
 
-                bluecanvas.DrawBitmap(_orbFillBitmap, 0, 0, bmpPaint);
-                _orbFillBitmapBlue = bluebitmap;
-                _orbFillBitmapBlue.SetImmutable();
+                bluecanvas.DrawImage(_orbFillBitmap, 0, 0, bmpPaint);
+                bluebitmap.SetImmutable();
+                _orbFillBitmapBlue = SKImage.FromBitmap(bluebitmap);
             }
 
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.orb_glass.png"))
             {
-                _orbGlassBitmap = SKBitmap.Decode(stream);
-                _orbGlassBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _orbGlassBitmap = SKImage.FromBitmap(bmp);
             }
 
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.battery-frame.png"))
             {
-                _batteryFrameBitmap = SKBitmap.Decode(stream);
-                _batteryFrameBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _batteryFrameBitmap = SKImage.FromBitmap(bmp);
             }
 
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.fps.png"))
             {
-                _fpsBitmap = SKBitmap.Decode(stream);
-                _fpsBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _fpsBitmap = SKImage.FromBitmap(bmp);
             }
 
             using (SKPaint bmpPaint = new SKPaint())
@@ -1775,143 +1814,170 @@ namespace GnollHackX
                     0,     0,     0.0f, 0, 0,
                     0,     0,     0,    1, 0
                     });
-                redcanvas.DrawBitmap(_batteryFrameBitmap, 0, 0, bmpPaint);
-                _batteryRedFrameBitmap = redbitmap;
-                _batteryRedFrameBitmap.SetImmutable();
+                redcanvas.DrawImage(_batteryFrameBitmap, 0, 0, bmpPaint);
+                redbitmap.SetImmutable();
+                _batteryRedFrameBitmap = SKImage.FromBitmap(redbitmap);
             }
 
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-wizard-mode.png"))
             {
-                _statusWizardBitmap = SKBitmap.Decode(stream);
-                _statusWizardBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusWizardBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-casual-mode.png"))
             {
-                _statusCasualBitmap = SKBitmap.Decode(stream);
-                _statusCasualBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusCasualBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-casual-classic-mode.png"))
             {
-                _statusCasualClassicBitmap = SKBitmap.Decode(stream);
-                _statusCasualClassicBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusCasualClassicBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-modern-mode.png"))
             {
-                _statusModernBitmap = SKBitmap.Decode(stream);
-                _statusModernBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusModernBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-difficulty.png"))
             {
-                _statusDifficultyBitmap = SKBitmap.Decode(stream);
-                _statusDifficultyBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusDifficultyBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-difficulty-very-easy.png"))
             {
-                _statusDifficultyVeryEasyBitmap = SKBitmap.Decode(stream);
-                _statusDifficultyVeryEasyBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusDifficultyVeryEasyBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-difficulty-easy.png"))
             {
-                _statusDifficultyEasyBitmap = SKBitmap.Decode(stream);
-                _statusDifficultyEasyBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusDifficultyEasyBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-difficulty-average.png"))
             {
-                _statusDifficultyAverageBitmap = SKBitmap.Decode(stream);
-                _statusDifficultyAverageBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusDifficultyAverageBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-difficulty-hard.png"))
             {
-                _statusDifficultyHardBitmap = SKBitmap.Decode(stream);
-                _statusDifficultyHardBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusDifficultyHardBitmap = SKImage.FromBitmap(bmp);
+
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-difficulty-expert.png"))
             {
-                _statusDifficultyExpertBitmap = SKBitmap.Decode(stream);
-                _statusDifficultyExpertBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusDifficultyExpertBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-difficulty-master.png"))
             {
-                _statusDifficultyMasterBitmap = SKBitmap.Decode(stream);
-                _statusDifficultyMasterBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusDifficultyMasterBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-difficulty-grand-master.png"))
             {
-                _statusDifficultyGrandMasterBitmap = SKBitmap.Decode(stream);
-                _statusDifficultyGrandMasterBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusDifficultyGrandMasterBitmap = SKImage.FromBitmap(bmp);
             }
 
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-xp-level.png"))
             {
-                _statusXPLevelBitmap = SKBitmap.Decode(stream);
-                _statusXPLevelBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusXPLevelBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-hd.png"))
             {
-                _statusHDBitmap = SKBitmap.Decode(stream);
-                _statusHDBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusHDBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-ac.png"))
             {
-                _statusACBitmap = SKBitmap.Decode(stream);
-                _statusACBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusACBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-mc.png"))
             {
-                _statusMCBitmap = SKBitmap.Decode(stream);
-                _statusMCBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusMCBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-move.png"))
             {
-                _statusMoveBitmap = SKBitmap.Decode(stream);
-                _statusMoveBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusMoveBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-weapon-style.png"))
             {
-                _statusWeaponStyleBitmap = SKBitmap.Decode(stream);
-                _statusWeaponStyleBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusWeaponStyleBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-quivered-weapon-style.png"))
             {
-                _statusQuiveredWeaponStyleBitmap = SKBitmap.Decode(stream);
-                _statusQuiveredWeaponStyleBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusQuiveredWeaponStyleBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-empty-handed.png"))
             {
-                _statusEmptyHandedBitmap = SKBitmap.Decode(stream);
-                _statusEmptyHandedBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusEmptyHandedBitmap = SKImage.FromBitmap(bmp);
             }
 
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-gold.png"))
             {
-                _statusGoldBitmap = SKBitmap.Decode(stream);
-                _statusGoldBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusGoldBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-turns.png"))
             {
-                _statusTurnsBitmap = SKBitmap.Decode(stream);
-                _statusTurnsBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusTurnsBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-dungeon-level.png"))
             {
-                _statusDungeonLevelBitmap = SKBitmap.Decode(stream);
-                _statusDungeonLevelBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusDungeonLevelBitmap = SKImage.FromBitmap(bmp);
             }
 
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.search.png"))
             {
-                _searchBitmap = SKBitmap.Decode(stream);
-                _searchBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _searchBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.wait.png"))
             {
-                _waitBitmap = SKBitmap.Decode(stream);
-                _waitBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _waitBitmap = SKImage.FromBitmap(bmp);
             }
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.symbol-damage.png"))
             {
-                _damageBitmap = SKBitmap.Decode(stream);
-                _damageBitmap.SetImmutable();
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _damageBitmap = SKImage.FromBitmap(bmp);
             }
         }
 
@@ -2354,13 +2420,13 @@ namespace GnollHackX
             }
         }
 
-        public static SKBitmap GetSpecialSymbol(string str, out SKRect source_rect)
+        public static SKImage GetSpecialSymbol(string str, out SKRect source_rect)
         {
             source_rect = new SKRect();
             if (str == null || !str.StartsWith("&"))
                 return null;
 
-            SKBitmap bitmap = null;
+            SKImage bitmap = null;
             string trimmed_str = str.Trim();
             if (trimmed_str == "&success;")
             {
@@ -2456,7 +2522,7 @@ namespace GnollHackX
         }
 
         static readonly object _cachedBitmapsLock = new object();
-        static readonly ConcurrentDictionary<string, SKBitmap> _cachedBitmaps = new ConcurrentDictionary<string, SKBitmap>();
+        static readonly ConcurrentDictionary<string, SKImage> _cachedBitmaps = new ConcurrentDictionary<string, SKImage>();
 
         public static void InitBaseCachedBitmaps(Assembly assembly)
         {
@@ -2479,7 +2545,7 @@ namespace GnollHackX
                             if (newBitmap != null)
                             {
                                 newBitmap.SetImmutable();
-                                _cachedBitmaps.TryAdd("resource://" + imagePath, newBitmap);
+                                _cachedBitmaps.TryAdd("resource://" + imagePath, SKImage.FromBitmap(newBitmap));
                             }
                         }
                     }
@@ -2538,7 +2604,7 @@ namespace GnollHackX
                             if (newBitmap != null)
                             {
                                 newBitmap.SetImmutable();
-                                _cachedBitmaps.TryAdd("resource://" + imagePath, newBitmap);
+                                _cachedBitmaps.TryAdd("resource://" + imagePath, SKImage.FromBitmap(newBitmap));
                             }
                         }
                     }
@@ -2549,7 +2615,7 @@ namespace GnollHackX
                 }
             }
         }
-        public static SKBitmap GetCachedImageSourceBitmap(string sourcePath, bool addToCache)
+        public static SKImage GetCachedImageSourceBitmap(string sourcePath, bool addToCache)
         {
             if (sourcePath == null || sourcePath == "")
                 return null;
@@ -2558,7 +2624,7 @@ namespace GnollHackX
             {
                 try
                 {
-                    SKBitmap bitmap;
+                    SKImage bitmap;
                     if (!_cachedBitmaps.TryGetValue(sourcePath, out bitmap))
                     {
                         string imagePath = sourcePath.Length > 11 && sourcePath.Substring(0, 11) == "resource://" ? sourcePath.Substring(11) : sourcePath;
@@ -2569,10 +2635,11 @@ namespace GnollHackX
                             if (newBitmap != null)
                             {
                                 newBitmap.SetImmutable();
+                                SKImage newImage = SKImage.FromBitmap(newBitmap);
                                 if (addToCache)
-                                    _cachedBitmaps.TryAdd(sourcePath, newBitmap);
+                                    _cachedBitmaps.TryAdd(sourcePath, newImage);
 
-                                return newBitmap;
+                                return newImage;
                             }
                         }
                     }

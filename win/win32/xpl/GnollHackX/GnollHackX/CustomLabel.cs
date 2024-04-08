@@ -261,7 +261,7 @@ namespace GnollHackX
             if(textPart == null || textPart == "")
                 return 0;
 
-            SKBitmap symbolbitmap;
+            SKImage symbolbitmap;
             SKRect source_rect = new SKRect();
             if (UseSpecialSymbols && (symbolbitmap = GHApp.GetSpecialSymbol(textPart, out source_rect)) != null)
             {
@@ -409,7 +409,7 @@ namespace GnollHackX
                     float totalwidth = 0;
                     foreach (string textPart in textParts)
                     {
-                        SKBitmap symbolbitmap;
+                        SKImage symbolbitmap;
                         SKRect source_rect = new SKRect();
                         if (UseSpecialSymbols && (symbolbitmap = GHApp.GetSpecialSymbol(textPart, out source_rect)) != null)
                         {
@@ -626,7 +626,7 @@ namespace GnollHackX
                             int cnt = 0;
                             foreach (string textPart in textParts)
                             {
-                                SKBitmap symbolbitmap;
+                                SKImage symbolbitmap;
                                 SKRect source_rect = new SKRect();
                                 if (UseSpecialSymbols && (symbolbitmap = GHApp.GetSpecialSymbol(textPart, out source_rect)) != null)
                                 {
@@ -637,7 +637,7 @@ namespace GnollHackX
                                     float bmpx = x;
                                     float bmpy = y + textPaint.FontMetrics.Ascent;
                                     SKRect bmptargetrect = new SKRect(bmpx, bmpy, bmpx + bmpwidth, bmpy + bmpheight);
-                                    canvas.DrawBitmap(symbolbitmap, source_rect, bmptargetrect, textPaint.Paint); 
+                                    canvas.DrawImage(symbolbitmap, source_rect, bmptargetrect, textPaint.Paint); 
                                     x += bmpwidth + bmpmargin;
                                 }
                                 else
