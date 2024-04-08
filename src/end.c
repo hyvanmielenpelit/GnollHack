@@ -3412,7 +3412,7 @@ get_current_game_score()
         {
             if (mvitals[i].mvflags & MV_SELFIE_TAKEN)
             {
-                Tourist_Selfie_Score += 75L * (mons[i].difficulty + 1);
+                Tourist_Selfie_Score += 80L * (mons[i].difficulty + 1);
             }
         }
         Role_Achievement_Score += TOURIST_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Small extra bonus from taking selfie with Demogorgon, since tourist gets score from Demogorgon's level, too */
@@ -3450,7 +3450,7 @@ get_current_game_score()
             if (spl_book[i].sp_id == NO_SPELL)
                 break;
             if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
-                Wizard_Spell_Score += 300L * (long)(spl_book[i].sp_lev + 2);
+                Wizard_Spell_Score += 1000L * (long)(spl_book[i].sp_lev + 2);
         }
         Role_Achievement_Score += WIZARD_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
     }
@@ -3462,7 +3462,7 @@ get_current_game_score()
             if (spl_book[i].sp_id == NO_SPELL)
                 break;
             if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
-                Priest_Spell_Score += 450L * (long)(spl_book[i].sp_lev + 2); /* Priest has the fewer spell than wizard */
+                Priest_Spell_Score += 1500L * (long)(spl_book[i].sp_lev + 2); /* Priest has the fewer spell than wizard */
         }
         Role_Achievement_Score += PRIEST_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
     }
@@ -3474,7 +3474,7 @@ get_current_game_score()
             if (spl_book[i].sp_id == NO_SPELL)
                 break;
             if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
-                Healer_Spell_Score += 600L * (long)(spl_book[i].sp_lev + 2); /* Healer has the fewest spells */
+                Healer_Spell_Score += 2000L * (long)(spl_book[i].sp_lev + 2); /* Healer has the fewest spells */
         }
         Role_Achievement_Score += HEALER_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
     }
@@ -3501,13 +3501,17 @@ get_current_game_score()
         + 80 * (u.uroleplay.blind)
         + 60 * (u.uroleplay.nudist)
         + 10 * (ngenocided == 0)
+        - 40 * (u.ualign.type != u.ualignbase[A_ORIGINAL])
+        - 40 * (u.ualignbase[A_CURRENT] != u.ualignbase[A_ORIGINAL])
         );
 
-    long Base_Score = (long)(Deepest_Dungeon_Level - 1) * 1000L + Small_Achievements_Score * 5000L + Achievements_Score * 10000L + Conduct_Score * (Role_if(PM_MONK) ? 7500L : 5000L)
-        + Role_Achievement_Score 
-        + Archaeologist_Artifact_Score + Barbarian_Melee_Weapon_Score + Caveman_Amulet_Score + Healer_Spell_Score
-        + Knight_Slaying_Score + Priest_Spell_Score + Ranger_Ranged_Weapon_Score + Rogue_Loot_Score
-        + Samurai_Japanese_Item_Score + Valkyrie_Item_Score + Tourist_Selfie_Score + Wizard_Spell_Score; /* Monk gets extra score from conducts */
+    long Monk_Extra_Conduct_Score = Conduct_Score * 2500L;
+    long Role_Specific_Score = Archaeologist_Artifact_Score + Barbarian_Melee_Weapon_Score + Caveman_Amulet_Score + Healer_Spell_Score
+        + Knight_Slaying_Score + Monk_Extra_Conduct_Score + Priest_Spell_Score + Ranger_Ranged_Weapon_Score + Rogue_Loot_Score
+        + Samurai_Japanese_Item_Score + Valkyrie_Item_Score + Tourist_Selfie_Score + Wizard_Spell_Score;
+    long Base_Score = (long)(Deepest_Dungeon_Level - 1) * 1000L + Small_Achievements_Score * 5000L + Achievements_Score * 10000L + Conduct_Score * 5000L
+        + min(Role_Specific_Score + Role_Achievement_Score, MAXIMUM_ROLE_SCORE);
+    Base_Score = max(0L, Base_Score);
 
     double Turn_Count_Multiplier = sqrt(50000.0) / sqrt((double)max(1L, moves));
     double Ascension_Multiplier = u.uachieve.ascended ? min(16.0, max(2.0, 4.0 * Turn_Count_Multiplier)) : 1.0;
