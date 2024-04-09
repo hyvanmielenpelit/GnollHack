@@ -415,6 +415,7 @@ STATIC_VAR const struct def_skill Skill_A_Max[] = {
     { P_TRANSMUTATION_SPELL, P_MASTER },
     { P_NECROMANCY_SPELL, P_MASTER },
     { P_DUAL_WEAPON_COMBAT, P_MASTER },
+    { P_TWO_HANDED_WEAPON, P_MASTER },
     { P_BARE_HANDED_COMBAT, P_MASTER },
     { P_DODGE, P_EXPERT },
     { P_WAND, P_MASTER },
