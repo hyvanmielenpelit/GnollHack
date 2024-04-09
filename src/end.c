@@ -3499,15 +3499,15 @@ get_current_game_score()
         + 80 * (u.uroleplay.blind)
         + 60 * (u.uroleplay.nudist)
         + 10 * (ngenocided == 0)
-        - 40 * (u.ualign.type != u.ualignbase[A_ORIGINAL])
-        - 40 * (u.ualignbase[A_CURRENT] != u.ualignbase[A_ORIGINAL])
+        - 20 * (u.ualign.type != u.ualignbase[A_ORIGINAL])
+        - 20 * (u.ualignbase[A_CURRENT] != u.ualignbase[A_ORIGINAL])
         );
 
-    long Monk_Extra_Conduct_Score = Conduct_Score * 2500L;
+    long Monk_Extra_Conduct_Score = Conduct_Score * 5000L;
     long Role_Specific_Score = Archaeologist_Artifact_Score + Barbarian_Melee_Weapon_Score + Caveman_Amulet_Score + Healer_Spell_Score
         + Knight_Slaying_Score + Monk_Extra_Conduct_Score + Priest_Spell_Score + Ranger_Ranged_Weapon_Score + Rogue_Loot_Score
         + Samurai_Japanese_Item_Score + Valkyrie_Item_Score + Tourist_Selfie_Score + Wizard_Spell_Score;
-    long Base_Score = (long)(Deepest_Dungeon_Level - 1) * 1000L + Small_Achievements_Score * 5000L + Achievements_Score * 50000L + Conduct_Score * 5000L
+    long Base_Score = (long)(Deepest_Dungeon_Level - 1) * 1000L + Small_Achievements_Score * 5000L + Achievements_Score * 50000L + Conduct_Score * 10000L
         + min(Role_Specific_Score + Role_Achievement_Score, MAXIMUM_ROLE_SCORE);
     Base_Score = max(0L, Base_Score);
 
