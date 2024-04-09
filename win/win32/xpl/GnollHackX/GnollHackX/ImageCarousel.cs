@@ -22,7 +22,7 @@ namespace GnollHackX
     public struct CarouselBitmap
     {
         public string ResourcePath;
-        public SKBitmap Bitmap;
+        public SKImage Bitmap;
         public TextAlignment HorizontalFitAlignment;
         public TextAlignment VerticalFitAlignment;
 
@@ -64,7 +64,7 @@ namespace GnollHackX
                     {
                         SKBitmap res = SKBitmap.Decode(stream);
                         res.SetImmutable();
-                        _caruselBitmaps[i].Bitmap = res;
+                        _caruselBitmaps[i].Bitmap = SKImage.FromBitmap(res);
                     }
                 }
             }
@@ -216,7 +216,7 @@ namespace GnollHackX
                                 break;
                         }
                         targetRect = new SKRect(target_x, target_y, target_x + target_width, target_y + target_height);
-                        canvas.DrawBitmap(_caruselBitmaps[idx].Bitmap, sourceRect, targetRect, bmpPaint);
+                        canvas.DrawImage(_caruselBitmaps[idx].Bitmap, sourceRect, targetRect, bmpPaint);
 
                         if (cnt > 1)
                         {
@@ -266,7 +266,7 @@ namespace GnollHackX
 
                                     byte oldalpha = bmpPaint.Color.Alpha;
                                     bmpPaint.Color = bmpPaint.Color.WithAlpha(alpha);
-                                    canvas.DrawBitmap(_caruselBitmaps[idx2].Bitmap, sourceRect, targetRect, bmpPaint);
+                                    canvas.DrawImage(_caruselBitmaps[idx2].Bitmap, sourceRect, targetRect, bmpPaint);
                                     bmpPaint.Color = bmpPaint.Color.WithAlpha(oldalpha);
                                 }
                             }

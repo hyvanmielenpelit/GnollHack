@@ -917,7 +917,7 @@ namespace GnollHackX
             double bordermarginx = (width / GHConstants.BackgroundBorderDivisor);
             double bordermarginy = (height / GHConstants.BackgroundBorderDivisor);
             double bordermargin = Math.Min(bordermarginx, bordermarginy);
-            SKBitmap cornerbitmap;
+            SKImage cornerbitmap;
             switch(borderstyle)
             {
                 case BorderStyles.Simple:

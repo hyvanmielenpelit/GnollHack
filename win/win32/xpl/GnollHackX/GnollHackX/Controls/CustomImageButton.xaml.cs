@@ -146,13 +146,13 @@ namespace GnollHackX.Controls
             SKCanvas canvas = surface.Canvas;
             float canvaswidth = customCanvasView.CanvasSize.Width;
             float canvasheight = customCanvasView.CanvasSize.Height;
-            SKBitmap targetBitmap = !UseVaryingBackgroundImages ? GHApp.ButtonNormalBitmap : !IsEnabled ? GHApp.ButtonDisabledBitmap : _isPressed ? GHApp.ButtonSelectedBitmap : GHApp.ButtonNormalBitmap;
+            SKImage targetBitmap = !UseVaryingBackgroundImages ? GHApp.ButtonNormalBitmap : !IsEnabled ? GHApp.ButtonDisabledBitmap : _isPressed ? GHApp.ButtonSelectedBitmap : GHApp.ButtonNormalBitmap;
             if (targetBitmap == null)
                 return;
             canvas.Clear();
             SKRect sourcerect = new SKRect(0, 0, targetBitmap.Width, targetBitmap.Height);
             SKRect targetrect = new SKRect(0, 0, canvaswidth, canvasheight);
-            canvas.DrawBitmap(targetBitmap, sourcerect, targetrect);
+            canvas.DrawImage(targetBitmap, sourcerect, targetrect);
         }
 
         public void Redraw()
