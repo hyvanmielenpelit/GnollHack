@@ -34,10 +34,10 @@ namespace GnollHackX
         {
             PaintSurface += Base_PaintSurface;
         }
-        public SKBitmap CustomBackgroundBitmap { get; set; }
-        public SKBitmap CustomBorderTopLeftCorner { get; set; }
-        public SKBitmap CustomBorderTopHorizontal { get; set; }
-        public SKBitmap CustomBorderLeftVertical { get; set; }
+        public SKImage CustomBackgroundBitmap { get; set; }
+        public SKImage CustomBorderTopLeftCorner { get; set; }
+        public SKImage CustomBorderTopHorizontal { get; set; }
+        public SKImage CustomBorderLeftVertical { get; set; }
 
         public static readonly BindableProperty BackgroundStyleProperty = BindableProperty.Create(
             "BackgroundStyle", typeof(BackgroundStyles), typeof(BackgroundView), BackgroundStyles.SeamlessBitmap);
@@ -77,7 +77,7 @@ namespace GnollHackX
 
             canvas.Clear();
 
-            SKBitmap bmp = null;
+            SKImage bmp = null;
             switch (BackgroundBitmap)
             {
                 case BackgroundBitmaps.OldPaper:
@@ -94,9 +94,9 @@ namespace GnollHackX
                     break;
             }
 
-            SKBitmap bordertl = null;
-            SKBitmap borderhorizontal = null;
-            SKBitmap bordervertical = null;
+            SKImage bordertl = null;
+            SKImage borderhorizontal = null;
+            SKImage bordervertical = null;
             switch (BorderStyle)
             {
                 case BorderStyles.None:
@@ -154,7 +154,7 @@ namespace GnollHackX
                                     source_rect.Top = 0;
                                     source_rect.Right = target_rect.Width;
                                     source_rect.Bottom = target_rect.Height;
-                                    canvas.DrawBitmap(bmp, source_rect, target_rect);
+                                    canvas.DrawImage(bmp, source_rect, target_rect);
                                 }
                             }
                         }
@@ -168,7 +168,7 @@ namespace GnollHackX
                         target_rect.Top = 0;
                         target_rect.Right = canvaswidth;
                         target_rect.Bottom = canvasheight;
-                        canvas.DrawBitmap(bmp, target_rect);
+                        canvas.DrawImage(bmp, target_rect);
                     }
                     break;
                 case BackgroundStyles.FitToScreen:
@@ -206,7 +206,7 @@ namespace GnollHackX
                                 target_rect.Top = padding;
                                 target_rect.Bottom = target_rect.Top + target_bmpheight;
                             }
-                            canvas.DrawBitmap(bmp, target_rect);
+                            canvas.DrawImage(bmp, target_rect);
                         }
                     }
                     break;
@@ -255,7 +255,7 @@ namespace GnollHackX
                         target_rect.Bottom = bordertl.Height * borderscale;
                         canvas.Translate(tx + (hflip ? target_rect.Width : 0), ty + (vflip ? target_rect.Height : 0));
                         canvas.Scale(hflip ? -1 : 1, vflip ? -1 : 1, 0, 0);
-                        canvas.DrawBitmap(bordertl, target_rect);
+                        canvas.DrawImage(bordertl, target_rect);
                     }
                 }
 
@@ -277,7 +277,7 @@ namespace GnollHackX
                         target_rect.Bottom = borderhorizontal.Height * borderscale;
                         canvas.Translate(tx + (hflip ? target_rect.Width : 0), ty + (vflip ? target_rect.Height : 0));
                         canvas.Scale(hflip ? -1 : 1, vflip ? -1 : 1, 0, 0);
-                        canvas.DrawBitmap(borderhorizontal, target_rect);
+                        canvas.DrawImage(borderhorizontal, target_rect);
                     }
                 }
 
@@ -299,7 +299,7 @@ namespace GnollHackX
                         target_rect.Bottom = canvasheight - bordertl.Height * borderscale - ty;
                         canvas.Translate(tx + (hflip ? target_rect.Width : 0), ty + (vflip ? target_rect.Height : 0));
                         canvas.Scale(hflip ? -1 : 1, vflip ? -1 : 1, 0, 0);
-                        canvas.DrawBitmap(bordervertical, target_rect);
+                        canvas.DrawImage(bordervertical, target_rect);
                     }
                 }
             }

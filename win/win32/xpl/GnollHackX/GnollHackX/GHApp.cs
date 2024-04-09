@@ -1018,25 +1018,25 @@ namespace GnollHackX
         //    }
         //}
 
-        public static SKBitmap MenuBackgroundBitmap { get; set; }
-        public static SKBitmap OldPaperBackgroundBitmap { get; set; }
-        public static SKBitmap LoadingScreenBackgroundBitmap { get; set; }
-        public static SKBitmap ButtonNormalBitmap { get; set; }
-        public static SKBitmap ButtonSelectedBitmap { get; set; }
-        public static SKBitmap ButtonDisabledBitmap { get; set; }
+        public static SKImage MenuBackgroundBitmap { get; set; }
+        public static SKImage OldPaperBackgroundBitmap { get; set; }
+        public static SKImage LoadingScreenBackgroundBitmap { get; set; }
+        public static SKImage ButtonNormalBitmap { get; set; }
+        public static SKImage ButtonSelectedBitmap { get; set; }
+        public static SKImage ButtonDisabledBitmap { get; set; }
 
-        public static SKBitmap SimpleFrameTopLeftCornerBitmap { get; set; }
-        public static SKBitmap SimpleFrameSmallTopLeftCornerBitmap { get; set; }
-        public static SKBitmap SimpleFrameTopHorizontalBitmap { get; set; }
-        public static SKBitmap SimpleFrameLeftVerticalBitmap { get; set; }
+        public static SKImage SimpleFrameTopLeftCornerBitmap { get; set; }
+        public static SKImage SimpleFrameSmallTopLeftCornerBitmap { get; set; }
+        public static SKImage SimpleFrameTopHorizontalBitmap { get; set; }
+        public static SKImage SimpleFrameLeftVerticalBitmap { get; set; }
 
-        public static SKBitmap SimpleFrame2TopLeftCornerBitmap { get; set; }
-        public static SKBitmap SimpleFrame2SmallTopLeftCornerBitmap { get; set; }
-        public static SKBitmap SimpleFrame2TopHorizontalBitmap { get; set; }
-        public static SKBitmap SimpleFrame2LeftVerticalBitmap { get; set; }
+        public static SKImage SimpleFrame2TopLeftCornerBitmap { get; set; }
+        public static SKImage SimpleFrame2SmallTopLeftCornerBitmap { get; set; }
+        public static SKImage SimpleFrame2TopHorizontalBitmap { get; set; }
+        public static SKImage SimpleFrame2LeftVerticalBitmap { get; set; }
 
-        public static SKBitmap ScrollBitmap { get; set; }
-        public static SKBitmap YouBitmap { get; set; }
+        public static SKImage ScrollBitmap { get; set; }
+        public static SKImage YouBitmap { get; set; }
 
         public static ImageSource ButtonNormalImageSource { get; set; }
         public static ImageSource ButtonSelectedImageSource { get; set; }
@@ -1048,83 +1048,99 @@ namespace GnollHackX
             {
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.menubackground.png"))
                 {
-                    MenuBackgroundBitmap = SKBitmap.Decode(stream);
-                    MenuBackgroundBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    MenuBackgroundBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.background-oldpaper.png"))
                 {
-                    OldPaperBackgroundBitmap = SKBitmap.Decode(stream);
-                    OldPaperBackgroundBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    OldPaperBackgroundBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.background-loading-screen.png"))
                 {
-                    LoadingScreenBackgroundBitmap = SKBitmap.Decode(stream);
-                    LoadingScreenBackgroundBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    LoadingScreenBackgroundBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.button_normal.png"))
                 {
-                    ButtonNormalBitmap = SKBitmap.Decode(stream);
-                    ButtonNormalBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    ButtonNormalBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.button_selected.png"))
                 {
-                    ButtonSelectedBitmap = SKBitmap.Decode(stream);
-                    ButtonSelectedBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    ButtonSelectedBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.button_disabled.png"))
                 {
-                    ButtonDisabledBitmap = SKBitmap.Decode(stream);
-                    ButtonDisabledBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    ButtonDisabledBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame-topleft.png"))
                 {
-                    SimpleFrameTopLeftCornerBitmap = SKBitmap.Decode(stream);
-                    SimpleFrameTopLeftCornerBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    SimpleFrameTopLeftCornerBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame-topleft-small.png"))
                 {
-                    SimpleFrameSmallTopLeftCornerBitmap = SKBitmap.Decode(stream);
-                    SimpleFrameSmallTopLeftCornerBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    SimpleFrameSmallTopLeftCornerBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame-horizontal.png"))
                 {
-                    SimpleFrameTopHorizontalBitmap = SKBitmap.Decode(stream);
-                    SimpleFrameTopHorizontalBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    SimpleFrameTopHorizontalBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame-vertical.png"))
                 {
-                    SimpleFrameLeftVerticalBitmap = SKBitmap.Decode(stream);
-                    SimpleFrameLeftVerticalBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    SimpleFrameLeftVerticalBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame2-topleft.png"))
                 {
-                    SimpleFrame2TopLeftCornerBitmap = SKBitmap.Decode(stream);
-                    SimpleFrame2TopLeftCornerBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    SimpleFrame2TopLeftCornerBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame2-topleft-small.png"))
                 {
-                    SimpleFrame2SmallTopLeftCornerBitmap = SKBitmap.Decode(stream);
-                    SimpleFrame2SmallTopLeftCornerBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    SimpleFrame2SmallTopLeftCornerBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame2-horizontal.png"))
                 {
-                    SimpleFrame2TopHorizontalBitmap = SKBitmap.Decode(stream);
-                    SimpleFrame2TopHorizontalBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    SimpleFrame2TopHorizontalBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame2-vertical.png"))
                 {
-                    SimpleFrame2LeftVerticalBitmap = SKBitmap.Decode(stream);
-                    SimpleFrame2LeftVerticalBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    SimpleFrame2LeftVerticalBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.scroll.png"))
                 {
-                    ScrollBitmap = SKBitmap.Decode(stream);
-                    ScrollBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    ScrollBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.you.png"))
                 {
-                    YouBitmap = SKBitmap.Decode(stream);
-                    YouBitmap.SetImmutable();
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    YouBitmap = SKImage.FromBitmap(bmp);
                 }
             }
             catch (Exception ex)
