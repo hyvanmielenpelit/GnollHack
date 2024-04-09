@@ -3338,15 +3338,13 @@ get_current_game_score()
     long Deepest_Dungeon_Level = deepest_lev_reached(FALSE);
     long Achievements_Score = (long)(u.uachieve.amulet + u.uachieve.ascended + u.uachieve.bell + u.uachieve.book + u.uachieve.enter_gehennom + u.uachieve.finish_sokoban +
         u.uachieve.killed_medusa + u.uachieve.killed_yacc + u.uachieve.killed_demogorgon + u.uachieve.menorah + u.uachieve.prime_codex + u.uachieve.mines_luckstone +
-        !!In_endgame(&u.uz) + !!Is_astralevel(&u.uz) + u.uevent.invoked 
-        + u.uachieve.crowned
+        + u.uachieve.entered_astral_plane + u.uachieve.entered_elemental_planes + u.uevent.invoked + u.uachieve.crowned
         );
 
     long Small_Achievements_Score = (long)(u.uachieve.consulted_oracle + u.uachieve.read_discworld_novel
         + u.uachieve.entered_gnomish_mines + u.uachieve.entered_mine_town + u.uachieve.entered_shop + u.uachieve.entered_temple
         + u.uachieve.entered_sokoban + u.uachieve.entered_bigroom + u.uachieve.learned_castle_tune 
         + u.uachieve.entered_large_circular_dungeon + u.uachieve.entered_plane_of_modron + u.uachieve.entered_hellish_pastures
-        + u.uachieve.entered_astral_plane + u.uachieve.entered_elemental_planes
         );
 
 
@@ -3412,7 +3410,7 @@ get_current_game_score()
         {
             if (mvitals[i].mvflags & MV_SELFIE_TAKEN)
             {
-                Tourist_Selfie_Score += 80L * (mons[i].difficulty + 1);
+                Tourist_Selfie_Score += TOURIST_SELFIE_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
             }
         }
         Role_Achievement_Score += TOURIST_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Small extra bonus from taking selfie with Demogorgon, since tourist gets score from Demogorgon's level, too */
@@ -3426,14 +3424,14 @@ get_current_game_score()
             {
                 if (UniqCritterIndx(i) && mvitals[i].died > 0)
                 {
-                    Knight_Slaying_Score += 100L * (mons[i].difficulty + 1);
+                    Knight_Slaying_Score += KNIGHT_UNIQUE_MONSTER_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
                 }
                 else
                 {
-                    Knight_Slaying_Score += (long)mvitals[i].died * 5L * (mons[i].difficulty + 1);
+                    Knight_Slaying_Score += (long)mvitals[i].died * KNIGHT_NORMAL_MONSTER_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
                     if (mvitals[i].mvflags & MV_EXTINCT)
                     {
-                        Knight_Slaying_Score += 50L * (mons[i].difficulty + 1);
+                        Knight_Slaying_Score += KNIGHT_NORMAL_MONSTER_EXTINCT_SCORE * (mons[i].difficulty + 1);
                     }
                 }
             }
@@ -3450,7 +3448,7 @@ get_current_game_score()
             if (spl_book[i].sp_id == NO_SPELL)
                 break;
             if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
-                Wizard_Spell_Score += 1000L * (long)(spl_book[i].sp_lev + 2);
+                Wizard_Spell_Score += WIZARD_PER_SPELL_LEVEL_SCORE * (long)(spl_book[i].sp_lev + 2);
         }
         Role_Achievement_Score += WIZARD_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
     }
@@ -3462,7 +3460,7 @@ get_current_game_score()
             if (spl_book[i].sp_id == NO_SPELL)
                 break;
             if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
-                Priest_Spell_Score += 1500L * (long)(spl_book[i].sp_lev + 2); /* Priest has the fewer spell than wizard */
+                Priest_Spell_Score += PRIEST_PER_SPELL_LEVEL_SCORE * (long)(spl_book[i].sp_lev + 2); /* Priest has the fewer spell than wizard */
         }
         Role_Achievement_Score += PRIEST_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
     }
@@ -3474,7 +3472,7 @@ get_current_game_score()
             if (spl_book[i].sp_id == NO_SPELL)
                 break;
             if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
-                Healer_Spell_Score += 2000L * (long)(spl_book[i].sp_lev + 2); /* Healer has the fewest spells */
+                Healer_Spell_Score += HEALER_PER_SPELL_LEVEL_SCORE * (long)(spl_book[i].sp_lev + 2); /* Healer has the fewest spells */
         }
         Role_Achievement_Score += HEALER_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
     }
@@ -3509,7 +3507,7 @@ get_current_game_score()
     long Role_Specific_Score = Archaeologist_Artifact_Score + Barbarian_Melee_Weapon_Score + Caveman_Amulet_Score + Healer_Spell_Score
         + Knight_Slaying_Score + Monk_Extra_Conduct_Score + Priest_Spell_Score + Ranger_Ranged_Weapon_Score + Rogue_Loot_Score
         + Samurai_Japanese_Item_Score + Valkyrie_Item_Score + Tourist_Selfie_Score + Wizard_Spell_Score;
-    long Base_Score = (long)(Deepest_Dungeon_Level - 1) * 1000L + Small_Achievements_Score * 5000L + Achievements_Score * 10000L + Conduct_Score * 5000L
+    long Base_Score = (long)(Deepest_Dungeon_Level - 1) * 1000L + Small_Achievements_Score * 5000L + Achievements_Score * 50000L + Conduct_Score * 5000L
         + min(Role_Specific_Score + Role_Achievement_Score, MAXIMUM_ROLE_SCORE);
     Base_Score = max(0L, Base_Score);
 
