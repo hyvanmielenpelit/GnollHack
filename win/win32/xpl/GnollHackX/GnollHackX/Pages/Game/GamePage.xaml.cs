@@ -6060,7 +6060,7 @@ namespace GnollHackX.Pages.Game
                                         {
                                             //paint.FilterQuality = SKFilterQuality.None;
 
-                                            Array.Clear(_draw_shadow);
+                                            Array.Clear(_draw_shadow, 0, _draw_shadow.Length);
                                             float pit_border = (float)GHConstants.PIT_BOTTOM_BORDER * height / (float)GHConstants.TileHeight;
                                             long currentcountervalue = generalcountervalue;
                                             float altStartX = -(offsetX + usedOffsetX) / width - 1;
