@@ -4280,19 +4280,18 @@ namespace GnollHackX.Pages.Game
             bool is_monster_like_layer, bool is_object_like_layer, bool obj_in_pit, int obj_height, bool is_missile_layer, int missile_height,
             bool loc_is_you, bool canspotself, bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem, bool tileflag_floortile, bool tileflag_height_is_clipping,
             bool hflip_glyph, bool vflip_glyph,
-            ObjectDataItem otmp_round, int autodraw, bool drawwallends, bool breatheanimations, long generalcounterdiff, float canvaswidth, float canvasheight, int enlargement,
-            ref short[,] draw_shadow) //, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY,
+            ObjectDataItem otmp_round, int autodraw, bool drawwallends, bool breatheanimations, long generalcounterdiff, float canvaswidth, float canvasheight, int enlargement) //, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY,
             //ref float enlMinDrawX, ref float enlMaxDrawX, ref float enlMinDrawY, ref float enlMaxDrawY)
         {
             if (!GHUtils.isok(draw_map_x, draw_map_y))
                 return;
 
             float tx = 0, ty = 0;
-            if(draw_shadow != null)
+            if(_draw_shadow != null)
             {
                 if (dx != 0 || dy != 0)
                 {
-                    draw_shadow[draw_map_x, draw_map_y] |= 1;
+                    _draw_shadow[draw_map_x, draw_map_y] |= 1;
                 }
             }
 
@@ -4417,14 +4416,14 @@ namespace GnollHackX.Pages.Game
                 move_offset_y = base_move_offset_y;
                 if (layer_idx == (int)layer_types.MAX_LAYERS)
                 {
-                    if((draw_shadow[mapx, mapy] & 2) != 0)
+                    if((_draw_shadow[mapx, mapy] & 2) != 0)
                         opaqueness = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0 ? 1.0f : (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY) != 0 ? 0.65f : 0.5f;
                     else
                         opaqueness = 0.5f;
                 }
                 else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)(LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT | LayerMonsterFlags.LMFLAGS_SEMI_TRANSPARENT | LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY)) != 0)
                 {
-                    draw_shadow[mapx, mapy] |= 2;
+                    _draw_shadow[mapx, mapy] |= 2;
                     return; /* Draw only the transparent shadow in the max_layers shadow layer; otherwise, if drawn twice, the result will be nontransparent */
                 }
 
@@ -5862,6 +5861,7 @@ namespace GnollHackX.Pages.Game
 #endif
         StringBuilder _lineBuilder = new StringBuilder(GHConstants.LineBuilderInitialCapacity);
         string[] _attributeStrings = new string[6] { "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma" };
+        short[,] _draw_shadow = new short[GHConstants.MapCols, GHConstants.MapRows];
 
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -6060,7 +6060,7 @@ namespace GnollHackX.Pages.Game
                                         {
                                             //paint.FilterQuality = SKFilterQuality.None;
 
-                                            short[,] draw_shadow = new short[GHConstants.MapCols, GHConstants.MapRows];
+                                            Array.Clear(_draw_shadow);
                                             float pit_border = (float)GHConstants.PIT_BOTTOM_BORDER * height / (float)GHConstants.TileHeight;
                                             long currentcountervalue = generalcountervalue;
                                             float altStartX = -(offsetX + usedOffsetX) / width - 1;
@@ -6096,7 +6096,7 @@ namespace GnollHackX.Pages.Game
                                                                 bool is_object_like_layer = (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT);
                                                                 bool is_missile_layer = (layer_idx == (int)layer_types.LAYER_MISSILE);
 
-                                                                if (layer_idx == (int)layer_types.MAX_LAYERS && (draw_shadow[mapx, mapy] == 0 || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph))
+                                                                if (layer_idx == (int)layer_types.MAX_LAYERS && (_draw_shadow[mapx, mapy] == 0 || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph))
                                                                     continue;
 
                                                                 int source_x = mapx, source_y = mapy;
@@ -6231,8 +6231,7 @@ namespace GnollHackX.Pages.Game
                                                                                 scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
                                                                                 monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                 loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
-                                                                                hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement,
-                                                                                ref draw_shadow); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
+                                                                                hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
                                                                         }
                                                                     }
                                                                 }
@@ -6260,7 +6259,7 @@ namespace GnollHackX.Pages.Game
                                                                 continue;
 
                                                             if (layer_idx == (int)layer_types.MAX_LAYERS
-                                                                && (draw_shadow[mapx, mapy] == 0 || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph)
+                                                                && (_draw_shadow[mapx, mapy] == 0 || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph)
                                                                 )
                                                                 continue;
 
@@ -6369,8 +6368,7 @@ namespace GnollHackX.Pages.Game
                                                                                     scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
                                                                                     monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                     loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
-                                                                                    hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement,
-                                                                                    ref draw_shadow); //, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
+                                                                                    hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement); //, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
                                                                             }
                                                                             else
                                                                             {
@@ -6380,8 +6378,7 @@ namespace GnollHackX.Pages.Game
                                                                                     scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
                                                                                     monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                                     loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
-                                                                                    hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement,
-                                                                                    ref draw_shadow); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
+                                                                                    hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
                                                                             }
                                                                         }
                                                                     }
@@ -13005,16 +13002,16 @@ namespace GnollHackX.Pages.Game
                                     if (is_memoryobj)
                                     {
                                         if (is_drawn_in_front)
-                                            _objectData[x, y].CoverMemoryObjectList = new List<ObjectDataItem>();
+                                            _objectData[x, y].CoverMemoryObjectList = new List<ObjectDataItem>(4);
                                         else
-                                            _objectData[x, y].MemoryObjectList = new List<ObjectDataItem>();
+                                            _objectData[x, y].MemoryObjectList = new List<ObjectDataItem>(16);
                                     }
                                     else
                                     {
                                         if (is_drawn_in_front)
-                                            _objectData[x, y].CoverFloorObjectList = new List<ObjectDataItem>();
+                                            _objectData[x, y].CoverFloorObjectList = new List<ObjectDataItem>(4);
                                         else
-                                            _objectData[x, y].FloorObjectList = new List<ObjectDataItem>();
+                                            _objectData[x, y].FloorObjectList = new List<ObjectDataItem>(16);
                                     }
 
                                     objectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList);
@@ -13026,7 +13023,7 @@ namespace GnollHackX.Pages.Game
                                 if (objectList == null || objectList.Count == 0)
                                     break;
                                 if (objectList[objectList.Count - 1].ContainedObjs == null)
-                                    objectList[objectList.Count - 1].ContainedObjs = new List<ObjectDataItem>();
+                                    objectList[objectList.Count - 1].ContainedObjs = new List<ObjectDataItem>(16);
                                 objectList[objectList.Count - 1].ContainedObjs.Add(new ObjectDataItem(otmp, otypdata, hallucinated));
                                 break;
                             case 4: /* Clear uchain and uball */
@@ -13801,10 +13798,13 @@ namespace GnollHackX.Pages.Game
 
         private int CountTextSplitRows(string[] textsplit, float x_start, float canvaswidth, float rightmenupadding, GHSkiaFontPaint textPaint, bool usespecialsymbols, out List<float> rowWidths)
         {
-            rowWidths = new List<float>();
             if (textsplit == null)
+            {
+                rowWidths = new List<float>(1);
                 return 0;
+            }
 
+            rowWidths = new List<float>();
             int rows = 1;
             float calc_x_start = x_start;
             int rowidx = -1;
@@ -14677,7 +14677,7 @@ namespace GnollHackX.Pages.Game
             ConcurrentQueue<GHResponse> queue;
             if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(), true));
+                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(1), true));
             }
 
             if (!UIUtils.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
