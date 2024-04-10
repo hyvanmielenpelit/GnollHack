@@ -34,8 +34,6 @@
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
 	  <!--<AotAssemblies>true</AotAssemblies>
 	  <RunAOTCompilation>true</RunAOTCompilation>-->
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
 	  <!-- Optional -->
 	  <!--<EnableLLVM>true</EnableLLVM>-->
 	</PropertyGroup>
