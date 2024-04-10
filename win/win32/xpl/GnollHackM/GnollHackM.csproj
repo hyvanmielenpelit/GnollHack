@@ -31,6 +31,15 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+	  <!--<AotAssemblies>true</AotAssemblies>
+	  <RunAOTCompilation>true</RunAOTCompilation>-->
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+	  <!-- Optional -->
+	  <!--<EnableLLVM>true</EnableLLVM>-->
+	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-ios'">
 		<ProvisioningType>manual</ProvisioningType>
 		<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
