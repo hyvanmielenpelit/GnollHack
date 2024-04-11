@@ -785,10 +785,6 @@ namespace GnollHackX.Pages.Game
 
         private List<AddContextMenuData> _contextMenuData = new List<AddContextMenuData>();
 
-        private bool _useMapBitmap = false;
-        private readonly object _mapBitmapLock = new object();
-        private SKBitmap _mapBitmap = null;
-
         public void SetPrimaryCanvasResourceCacheLimit(long cacheLimit)
         {
             Debug.WriteLine("Primary: ResourceCacheSize was " + canvasView.ResourceCacheLimit);
@@ -1106,14 +1102,7 @@ namespace GnollHackX.Pages.Game
             _gnhthread.Start();
 
             _stopWatch.Start();
-            //lock (AnimationTimerLock)
-            //{
-            //    _previousCounterValue = AnimationTimers.general_animation_counter;
-            //}
-            //lock(_mapBitmapLock)
-            //{
-            //    _mapBitmap = new SKBitmap(GHConstants.MapCols * GHConstants.TileWidth, GHConstants.MapRows * GHConstants.TileHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
-            //}
+
             await LoadingProgressBar.ProgressTo(0.99, 40, Easing.Linear);
 
             _animationStopwatch.Reset();
@@ -5983,305 +5972,155 @@ namespace GnollHackX.Pages.Game
 
                 if (!ForceAllMessages || HasAllMessagesTransparentBackground)
                 {
-                    if (_useMapBitmap)
+                    lock (GHApp.Glyph2TileLock)
                     {
-                        lock (_mapBitmapLock)
+                        lock (_mapDataLock)
                         {
-                            if (_mapBitmap != null)
+                            int u_x;
+                            int u_y;
+                            lock (_uLock)
                             {
-                                float sourcewidth = (float)(GHConstants.MapCols * GHConstants.TileWidth);
-                                float sourceheight = (float)(GHConstants.MapRows * GHConstants.TileHeight);
-                                SKRect sourcerect = new SKRect(0, 0, sourcewidth, sourceheight);
-                                tx = offsetX + usedOffsetX;
-                                ty = offsetY + usedOffsetY + mapFontAscent;
-                                SKRect targetrect = new SKRect(tx, ty, tx + sourcewidth * width / (float)GHConstants.TileWidth, ty + sourceheight * height / GHConstants.TileHeight);
-                                canvas.DrawBitmap(_mapBitmap, sourcerect, targetrect);
+                                u_x = _ux;
+                                u_y = _uy;
                             }
-                        }
-                    }
-                    else
-                    {
-                        lock (GHApp.Glyph2TileLock)
-                        {
-                            lock (_mapDataLock)
+                            if (GraphicsStyle == GHGraphicsStyle.ASCII || ForceAscii)
                             {
-                                int u_x;
-                                int u_y;
-                                lock (_uLock)
+                                for (int mapx = startX; mapx <= endX; mapx++)
                                 {
-                                    u_x = _ux;
-                                    u_y = _uy;
-                                }
-                                if (GraphicsStyle == GHGraphicsStyle.ASCII || ForceAscii)
-                                {
-                                    for (int mapx = startX; mapx <= endX; mapx++)
+                                    for (int mapy = startY; mapy <= endY; mapy++)
                                     {
-                                        for (int mapy = startY; mapy <= endY; mapy++)
+                                        if (_mapData[mapx, mapy].Symbol != null && _mapData[mapx, mapy].Symbol != "")
                                         {
-                                            if (_mapData[mapx, mapy].Symbol != null && _mapData[mapx, mapy].Symbol != "")
+                                            str = _mapData[mapx, mapy].Symbol;
+                                            textPaint.Color = _mapData[mapx, mapy].Color;
+                                            tx = (offsetX + usedOffsetX + width * (float)mapx);
+                                            ty = (offsetY + usedOffsetY + height * (float)mapy);
+                                            if (CursorStyle == TTYCursorStyle.GreenBlock && _mapCursorX == mapx && _mapCursorY == mapy)
                                             {
-                                                str = _mapData[mapx, mapy].Symbol;
-                                                textPaint.Color = _mapData[mapx, mapy].Color;
-                                                tx = (offsetX + usedOffsetX + width * (float)mapx);
-                                                ty = (offsetY + usedOffsetY + height * (float)mapy);
-                                                if (CursorStyle == TTYCursorStyle.GreenBlock && _mapCursorX == mapx && _mapCursorY == mapy)
-                                                {
-                                                    textPaint.Style = SKPaintStyle.Fill;
-                                                    textPaint.Color = _cursorDefaultGreen;
-                                                    SKRect winRect = new SKRect(tx, ty + textPaint.FontMetrics.Ascent, tx + width, ty + textPaint.FontMetrics.Ascent + height);
-                                                    canvas.DrawRect(winRect, textPaint.Paint);
-                                                    textPaint.Color = SKColors.Black;
-                                                }
-                                                else if ((_mapData[mapx, mapy].Special & (uint)MapSpecial.Pet) != 0)
-                                                {
-                                                    textPaint.Style = SKPaintStyle.Fill;
-                                                    SKRect winRect = new SKRect(tx, ty + textPaint.FontMetrics.Ascent, tx + width, ty + textPaint.FontMetrics.Ascent + height);
-                                                    canvas.DrawRect(winRect, textPaint.Paint);
-                                                    textPaint.Color = SKColors.Black;
-                                                }
+                                                textPaint.Style = SKPaintStyle.Fill;
+                                                textPaint.Color = _cursorDefaultGreen;
+                                                SKRect winRect = new SKRect(tx, ty + textPaint.FontMetrics.Ascent, tx + width, ty + textPaint.FontMetrics.Ascent + height);
+                                                canvas.DrawRect(winRect, textPaint.Paint);
+                                                textPaint.Color = SKColors.Black;
+                                            }
+                                            else if ((_mapData[mapx, mapy].Special & (uint)MapSpecial.Pet) != 0)
+                                            {
+                                                textPaint.Style = SKPaintStyle.Fill;
+                                                SKRect winRect = new SKRect(tx, ty + textPaint.FontMetrics.Ascent, tx + width, ty + textPaint.FontMetrics.Ascent + height);
+                                                canvas.DrawRect(winRect, textPaint.Paint);
+                                                textPaint.Color = SKColors.Black;
+                                            }
 
-                                                //canvas.DrawText(str, tx, ty, textPaint);
-                                                textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
+                                            //canvas.DrawText(str, tx, ty, textPaint);
+                                            textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
 
-                                                if ((_mapData[mapx, mapy].Special & (uint)MapSpecial.Peaceful) != 0)
-                                                {
-                                                    //canvas.DrawText("_", tx, ty, textPaint);
-                                                    textPaint.DrawTextOnCanvas(canvas, "_", tx, ty);
-                                                }
+                                            if ((_mapData[mapx, mapy].Special & (uint)MapSpecial.Peaceful) != 0)
+                                            {
+                                                //canvas.DrawText("_", tx, ty, textPaint);
+                                                textPaint.DrawTextOnCanvas(canvas, "_", tx, ty);
                                             }
                                         }
                                     }
                                 }
-                                else
+                            }
+                            else
+                            {
+                                if (GHApp.Glyph2Tile != null && GHApp._tilesPerRow[0] > 0 && GHApp.UsedTileSheets > 0)
                                 {
-                                    if (GHApp.Glyph2Tile != null && GHApp._tilesPerRow[0] > 0 && GHApp.UsedTileSheets > 0)
+                                    using (SKPaint paint = new SKPaint())
                                     {
-                                        using (SKPaint paint = new SKPaint())
+                                        //paint.FilterQuality = SKFilterQuality.None;
+
+                                        Array.Clear(_draw_shadow, 0, _draw_shadow.Length);
+                                        float pit_border = (float)GHConstants.PIT_BOTTOM_BORDER * height / (float)GHConstants.TileHeight;
+                                        long currentcountervalue = generalcountervalue;
+                                        float altStartX = -(offsetX + usedOffsetX) / width - 1;
+                                        float altEndX = (canvaswidth - (offsetX + usedOffsetX)) / width;
+                                        float altStartY = -(offsetY + usedOffsetY) / height - 1;
+                                        float altEndY = (canvasheight - (offsetY + usedOffsetY)) / height;
+                                        altStartX -= 3;
+                                        altEndX += 3;
+                                        altStartY -= 1;
+                                        altEndY += 3;
+                                        startX = Math.Max(startX, (int)(Math.Sign(altStartX) * Math.Floor(Math.Abs(altStartX))));
+                                        endX = Math.Min(endX, (int)Math.Ceiling(altEndX));
+                                        startY = Math.Max(startY, (int)(Math.Sign(altStartY) * Math.Floor(Math.Abs(altStartY))));
+                                        endY = Math.Min(endY, (int)Math.Ceiling(altEndY));
+
+                                        if (AlternativeLayerDrawing)
                                         {
-                                            //paint.FilterQuality = SKFilterQuality.None;
-
-                                            Array.Clear(_draw_shadow, 0, _draw_shadow.Length);
-                                            float pit_border = (float)GHConstants.PIT_BOTTOM_BORDER * height / (float)GHConstants.TileHeight;
-                                            long currentcountervalue = generalcountervalue;
-                                            float altStartX = -(offsetX + usedOffsetX) / width - 1;
-                                            float altEndX = (canvaswidth - (offsetX + usedOffsetX)) / width;
-                                            float altStartY = -(offsetY + usedOffsetY) / height - 1;
-                                            float altEndY = (canvasheight - (offsetY + usedOffsetY)) / height;
-                                            altStartX -= 3;
-                                            altEndX += 3;
-                                            altStartY -= 1;
-                                            altEndY += 3;
-                                            startX = Math.Max(startX, (int)(Math.Sign(altStartX) * Math.Floor(Math.Abs(altStartX))));
-                                            endX = Math.Min(endX, (int)Math.Ceiling(altEndX));
-                                            startY = Math.Max(startY, (int)(Math.Sign(altStartY) * Math.Floor(Math.Abs(altStartY))));
-                                            endY = Math.Min(endY, (int)Math.Ceiling(altEndY));
-
-                                            if (AlternativeLayerDrawing)
+                                            lock (_drawOrderLock)
                                             {
-                                                lock (_drawOrderLock)
+                                                for (int mapy = startY; mapy <= endY; mapy++)
                                                 {
-                                                    for (int mapy = startY; mapy <= endY; mapy++)
+                                                    for (int mapx = startX; mapx <= endX; mapx++)
                                                     {
-                                                        for (int mapx = startX; mapx <= endX; mapx++)
+                                                        if (_mapData[mapx, mapy].Layers.layer_glyphs == null || _mapData[mapx, mapy].Layers.layer_gui_glyphs == null)
+                                                            continue;
+                                                        int draw_cnt = _draw_order.Count;
+                                                        for (int draw_idx = 0; draw_idx < draw_cnt; draw_idx++)
                                                         {
-                                                            if (_mapData[mapx, mapy].Layers.layer_glyphs == null || _mapData[mapx, mapy].Layers.layer_gui_glyphs == null)
+                                                            int enl_idx = _draw_order[draw_idx].enlargement_position;
+                                                            int layer_idx = _draw_order[draw_idx].layer;
+                                                            bool is_monster_or_shadow_layer = (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.MAX_LAYERS);
+                                                            bool is_monster_like_layer = (is_monster_or_shadow_layer || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT);
+                                                            bool is_object_like_layer = (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT);
+                                                            bool is_missile_layer = (layer_idx == (int)layer_types.LAYER_MISSILE);
+
+                                                            if (layer_idx == (int)layer_types.MAX_LAYERS && (_draw_shadow[mapx, mapy] == 0 || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph))
                                                                 continue;
-                                                            int draw_cnt = _draw_order.Count;
-                                                            for (int draw_idx = 0; draw_idx < draw_cnt; draw_idx++)
+
+                                                            int source_x = mapx, source_y = mapy;
+                                                            switch(enl_idx)
                                                             {
-                                                                int enl_idx = _draw_order[draw_idx].enlargement_position;
-                                                                int layer_idx = _draw_order[draw_idx].layer;
-                                                                bool is_monster_or_shadow_layer = (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.MAX_LAYERS);
-                                                                bool is_monster_like_layer = (is_monster_or_shadow_layer || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT);
-                                                                bool is_object_like_layer = (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT);
-                                                                bool is_missile_layer = (layer_idx == (int)layer_types.LAYER_MISSILE);
-
-                                                                if (layer_idx == (int)layer_types.MAX_LAYERS && (_draw_shadow[mapx, mapy] == 0 || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph))
-                                                                    continue;
-
-                                                                int source_x = mapx, source_y = mapy;
-                                                                switch(enl_idx)
-                                                                {
-                                                                    default:
-                                                                    case -1:
-                                                                        break;
-                                                                    case 0:
-                                                                        source_x = mapx + 1;
-                                                                        source_y = mapy + 1;
-                                                                        break;
-                                                                    case 1:
-                                                                        source_y = mapy + 1;
-                                                                        break;
-                                                                    case 2:
-                                                                        source_x = mapx - 1;
-                                                                        source_y = mapy + 1;
-                                                                        break;
-                                                                    case 3:
-                                                                        source_x = mapx + 1;
-                                                                        break;
-                                                                    case 4:
-                                                                        source_x = mapx - 1;
-                                                                        break;
-                                                                }
-                                                                if (!GHUtils.isok(source_x, source_y))
-                                                                    continue;
-
-                                                                if (enl_idx >= 0 && !_mapData[source_x, source_y].HasEnlargementOrAnimationOrSpecialHeight)
-                                                                    continue;
-
-                                                                bool loc_is_you = (_mapData[source_x, source_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0;
-                                                                bool showing_detection = (_mapData[source_x, source_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
-                                                                bool canspotself = (_mapData[source_x, source_y].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_CAN_SPOT_SELF) != 0;
-                                                                sbyte monster_height = _mapData[source_x, source_y].Layers.special_monster_layer_height;
-                                                                sbyte feature_doodad_height = _mapData[source_x, source_y].Layers.special_feature_doodad_layer_height;
-                                                                short missile_special_quality = _mapData[source_x, source_y].Layers.missile_special_quality;
-                                                                sbyte monster_origin_x = _mapData[source_x, source_y].Layers.monster_origin_x;
-                                                                sbyte monster_origin_y = _mapData[source_x, source_y].Layers.monster_origin_y;
-                                                                long glyphprintmaincountervalue = _mapData[source_x, source_y].GlyphPrintMainCounterValue;
-                                                                int movediffx = (int)monster_origin_x - source_x;
-                                                                int movediffy = (int)monster_origin_y - source_y;
-                                                                long maincounterdiff = maincountervalue - glyphprintmaincountervalue;
-                                                                long glyphobjectprintmaincountervalue = _mapData[source_x, source_y].GlyphObjectPrintMainCounterValue;
-                                                                long objectcounterdiff = maincountervalue - glyphobjectprintmaincountervalue;
-                                                                long glyphgeneralprintmaincountervalue = _mapData[source_x, source_y].GlyphGeneralPrintMainCounterValue;
-                                                                long generalcounterdiff = maincountervalue - glyphgeneralprintmaincountervalue;
-                                                                short missile_height = _mapData[source_x, source_y].Layers.missile_height;
-                                                                bool obj_in_pit = (_mapData[source_x, source_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
-
-                                                                float base_move_offset_x = 0, base_move_offset_y = 0;
-                                                                //GetBaseMoveOffsets(source_x, source_y, monster_origin_x, monster_origin_y, width, height, maincounterdiff, moveIntervals, ref base_move_offset_x, ref base_move_offset_y);
-
-                                                                lock (_objectDataLock)
-                                                                {
-                                                                    if (layer_idx == (int)layer_types.MAX_LAYERS + 1)
-                                                                    {
-                                                                        PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, monster_height, loc_is_you, canspotself);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        bool is_source_dir;
-                                                                        int sub_layer_cnt = GetSubLayerCount(source_x, source_y, layer_idx, out is_source_dir);
-                                                                        for (int sub_layer_idx = sub_layer_cnt - 1; sub_layer_idx >= 0; sub_layer_idx--)
-                                                                        {
-                                                                            int signed_glyph = GHApp.NoGlyph; //Default
-                                                                            short obj_height = _mapData[source_x, source_y].Layers.object_height; //Default
-                                                                            sbyte object_origin_x = 0; //Default
-                                                                            sbyte object_origin_y = 0; //Default
-                                                                            ObjectDataItem otmp_round = null;
-
-                                                                            int source_dir_main_idx = sub_layer_idx;
-                                                                            int source_dir_idx = is_source_dir ? GetSourceDirIndex(layer_idx, source_dir_main_idx) : 0;
-
-                                                                            bool manual_hflip = false;
-                                                                            bool manual_vflip = false;
-                                                                            int adj_x = source_x;
-                                                                            int adj_y = source_y;
-                                                                            bool foundthisturn = false;
-
-                                                                            if (!GetLayerGlyph(source_x, source_y, layer_idx, sub_layer_idx, source_dir_idx, ref signed_glyph,
-                                                                                ref adj_x, ref adj_y, ref manual_hflip, ref manual_vflip, ref otmp_round, ref obj_height,
-                                                                                ref object_origin_x, ref object_origin_y, ref foundthisturn))
-                                                                                continue;
-
-                                                                            int glyph = Math.Abs(signed_glyph);
-                                                                            if (glyph == 0 || glyph >= GHApp.Glyph2Tile.Length)
-                                                                                continue;
-
-                                                                            float object_move_offset_x = 0, object_move_offset_y = 0;
-                                                                            //GetObjectMoveOffsets(source_x, source_y, object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, ref object_move_offset_x, ref object_move_offset_y);
-
-                                                                            bool vflip_glyph = false;
-                                                                            bool hflip_glyph = false;
-                                                                            GetFlips(signed_glyph, manual_hflip, manual_vflip, ref hflip_glyph, ref vflip_glyph);
-
-                                                                            /* Tile flags */
-                                                                            bool tileflag_halfsize = (GHApp.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
-                                                                            bool tileflag_floortile = (GHApp.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HAS_FLOOR_TILE) != 0;
-                                                                            bool tileflag_normalobjmissile = (GHApp.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) != 0 && layer_idx == (int)layer_types.LAYER_MISSILE;
-                                                                            bool tileflag_fullsizeditem = (GHApp.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
-                                                                            bool tileflag_height_is_clipping = (GHApp.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING) != 0;
-
-                                                                            /* All items are big when showing detection */
-                                                                            CheckShowingDetection(showing_detection, ref obj_height, ref tileflag_floortile, ref tileflag_height_is_clipping);
-
-                                                                            /*Determine y move for tiles */
-                                                                            float scaled_y_height_change = GetScaledYHeightChange(layer_idx, sub_layer_idx, sub_layer_cnt, height, monster_height, feature_doodad_height, targetscale, is_monster_like_layer, tileflag_halfsize, otmp_round);
-
-                                                                            int ntile = GHApp.Glyph2Tile[glyph];
-                                                                            int autodraw = GHApp.Tile2Autodraw[ntile];
-
-                                                                            /* Determine animation tile here */
-                                                                            int anim_frame_idx = 0, main_tile_idx = 0;
-                                                                            ntile = GetTileFromAnimation(ntile, glyph, source_x, source_y, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
-
-                                                                            /* Draw enlargement tiles */
-                                                                            int enlargement = GHApp.Tile2Enlargement[ntile];
-                                                                            int dx = 0, dy = 0;
-                                                                            if (!GetEnlargementTileB(enlargement, enl_idx, hflip_glyph, vflip_glyph, main_tile_idx, anim_frame_idx, ref ntile, ref autodraw, ref dx, ref dy))
-                                                                                continue;
-
-                                                                            int draw_map_x = source_x + dx + (adj_x - source_x);
-                                                                            int draw_map_y = source_y + dy + (adj_y - source_y);
-
-                                                                            //float minDrawX = 0, maxDrawX = 0, minDrawY = 0, maxDrawY = 0;
-                                                                            //float enlMinDrawX = 0, enlMaxDrawX = 0, enlMinDrawY = 0, enlMaxDrawY = 0;
-
-                                                                            PaintMapTile(canvas, false, textPaint, paint, layer_idx, source_x, source_y, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
-                                                                                offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
-                                                                                scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
-                                                                                monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
-                                                                                loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
-                                                                                hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
-                                                                        }
-                                                                    }
-                                                                }
+                                                                default:
+                                                                case -1:
+                                                                    break;
+                                                                case 0:
+                                                                    source_x = mapx + 1;
+                                                                    source_y = mapy + 1;
+                                                                    break;
+                                                                case 1:
+                                                                    source_y = mapy + 1;
+                                                                    break;
+                                                                case 2:
+                                                                    source_x = mapx - 1;
+                                                                    source_y = mapy + 1;
+                                                                    break;
+                                                                case 3:
+                                                                    source_x = mapx + 1;
+                                                                    break;
+                                                                case 4:
+                                                                    source_x = mapx - 1;
+                                                                    break;
                                                             }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            else
-                                            {
-                                                for (int layer_idx = 0; layer_idx < (int)layer_types.MAX_LAYERS + 2; layer_idx++)
-                                                {
-                                                    bool is_monster_or_shadow_layer = (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.MAX_LAYERS);
-                                                    bool is_monster_like_layer = (is_monster_or_shadow_layer || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT);
-                                                    bool is_object_like_layer = (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT);
-                                                    bool is_missile_layer = (layer_idx == (int)layer_types.LAYER_MISSILE);
-                                                    for (int mapy = startY; mapy <= endY; mapy++)
-                                                    {
-                                                        for (int mapx = startX; mapx <= endX; mapx++)
-                                                        {
-                                                            if (layer_idx == (int)layer_types.LAYER_FEATURE_DOODAD && _mapData[mapx, mapy].Engraving.HasEngraving)
-                                                                DrawEngraving(canvas, textPaint, mapx, mapy, offsetX, offsetY, usedOffsetX, usedOffsetY, mapFontAscent, width, height, generalcountervalue);
-
-                                                            if (_mapData[mapx, mapy].Layers.layer_glyphs == null || _mapData[mapx, mapy].Layers.layer_gui_glyphs == null)
+                                                            if (!GHUtils.isok(source_x, source_y))
                                                                 continue;
 
-                                                            if (layer_idx == (int)layer_types.MAX_LAYERS
-                                                                && (_draw_shadow[mapx, mapy] == 0 || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph)
-                                                                )
+                                                            if (enl_idx >= 0 && !_mapData[source_x, source_y].HasEnlargementOrAnimationOrSpecialHeight)
                                                                 continue;
 
-                                                            bool loc_is_you = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0;
-                                                            bool showing_detection = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
-                                                            bool canspotself = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_CAN_SPOT_SELF) != 0;
-                                                            sbyte monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
-                                                            sbyte feature_doodad_height = _mapData[mapx, mapy].Layers.special_feature_doodad_layer_height;
-                                                            short missile_special_quality = _mapData[mapx, mapy].Layers.missile_special_quality;
-                                                            sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
-                                                            sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
-                                                            long glyphprintmaincountervalue = _mapData[mapx, mapy].GlyphPrintMainCounterValue;
+                                                            bool loc_is_you = (_mapData[source_x, source_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0;
+                                                            bool showing_detection = (_mapData[source_x, source_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
+                                                            bool canspotself = (_mapData[source_x, source_y].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_CAN_SPOT_SELF) != 0;
+                                                            sbyte monster_height = _mapData[source_x, source_y].Layers.special_monster_layer_height;
+                                                            sbyte feature_doodad_height = _mapData[source_x, source_y].Layers.special_feature_doodad_layer_height;
+                                                            short missile_special_quality = _mapData[source_x, source_y].Layers.missile_special_quality;
+                                                            sbyte monster_origin_x = _mapData[source_x, source_y].Layers.monster_origin_x;
+                                                            sbyte monster_origin_y = _mapData[source_x, source_y].Layers.monster_origin_y;
+                                                            long glyphprintmaincountervalue = _mapData[source_x, source_y].GlyphPrintMainCounterValue;
+                                                            int movediffx = (int)monster_origin_x - source_x;
+                                                            int movediffy = (int)monster_origin_y - source_y;
                                                             long maincounterdiff = maincountervalue - glyphprintmaincountervalue;
-                                                            long glyphobjectprintmaincountervalue = _mapData[mapx, mapy].GlyphObjectPrintMainCounterValue;
+                                                            long glyphobjectprintmaincountervalue = _mapData[source_x, source_y].GlyphObjectPrintMainCounterValue;
                                                             long objectcounterdiff = maincountervalue - glyphobjectprintmaincountervalue;
-                                                            long glyphgeneralprintmaincountervalue = _mapData[mapx, mapy].GlyphGeneralPrintMainCounterValue;
+                                                            long glyphgeneralprintmaincountervalue = _mapData[source_x, source_y].GlyphGeneralPrintMainCounterValue;
                                                             long generalcounterdiff = maincountervalue - glyphgeneralprintmaincountervalue;
-                                                            short missile_height = _mapData[mapx, mapy].Layers.missile_height;
-                                                            bool obj_in_pit = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
+                                                            short missile_height = _mapData[source_x, source_y].Layers.missile_height;
+                                                            bool obj_in_pit = (_mapData[source_x, source_y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
 
                                                             float base_move_offset_x = 0, base_move_offset_y = 0;
-                                                            GetBaseMoveOffsets(mapx, mapy, monster_origin_x, monster_origin_y, width, height, maincounterdiff, moveIntervals, ref base_move_offset_x, ref base_move_offset_y);
+                                                            //GetBaseMoveOffsets(source_x, source_y, monster_origin_x, monster_origin_y, width, height, maincounterdiff, moveIntervals, ref base_move_offset_x, ref base_move_offset_y);
 
                                                             lock (_objectDataLock)
                                                             {
@@ -6292,11 +6131,11 @@ namespace GnollHackX.Pages.Game
                                                                 else
                                                                 {
                                                                     bool is_source_dir;
-                                                                    int sub_layer_cnt = GetSubLayerCount(mapx, mapy, layer_idx, out is_source_dir);
+                                                                    int sub_layer_cnt = GetSubLayerCount(source_x, source_y, layer_idx, out is_source_dir);
                                                                     for (int sub_layer_idx = sub_layer_cnt - 1; sub_layer_idx >= 0; sub_layer_idx--)
                                                                     {
                                                                         int signed_glyph = GHApp.NoGlyph; //Default
-                                                                        short obj_height = _mapData[mapx, mapy].Layers.object_height; //Default
+                                                                        short obj_height = _mapData[source_x, source_y].Layers.object_height; //Default
                                                                         sbyte object_origin_x = 0; //Default
                                                                         sbyte object_origin_y = 0; //Default
                                                                         ObjectDataItem otmp_round = null;
@@ -6306,11 +6145,11 @@ namespace GnollHackX.Pages.Game
 
                                                                         bool manual_hflip = false;
                                                                         bool manual_vflip = false;
-                                                                        int adj_x = mapx;
-                                                                        int adj_y = mapy;
+                                                                        int adj_x = source_x;
+                                                                        int adj_y = source_y;
                                                                         bool foundthisturn = false;
 
-                                                                        if (!GetLayerGlyph(mapx, mapy, layer_idx, sub_layer_idx, source_dir_idx, ref signed_glyph,
+                                                                        if (!GetLayerGlyph(source_x, source_y, layer_idx, sub_layer_idx, source_dir_idx, ref signed_glyph,
                                                                             ref adj_x, ref adj_y, ref manual_hflip, ref manual_vflip, ref otmp_round, ref obj_height,
                                                                             ref object_origin_x, ref object_origin_y, ref foundthisturn))
                                                                             continue;
@@ -6320,8 +6159,7 @@ namespace GnollHackX.Pages.Game
                                                                             continue;
 
                                                                         float object_move_offset_x = 0, object_move_offset_y = 0;
-                                                                        GetObjectMoveOffsets(mapx, mapy, object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, generalcounterdiff,
-                                                                            foundthisturn, sub_layer_idx, sub_layer_cnt, targetscale, loc_is_you, obj_height, otmp_round, ref object_move_offset_x, ref object_move_offset_y);
+                                                                        //GetObjectMoveOffsets(source_x, source_y, object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, ref object_move_offset_x, ref object_move_offset_y);
 
                                                                         bool vflip_glyph = false;
                                                                         bool hflip_glyph = false;
@@ -6345,327 +6183,459 @@ namespace GnollHackX.Pages.Game
 
                                                                         /* Determine animation tile here */
                                                                         int anim_frame_idx = 0, main_tile_idx = 0;
-                                                                        ntile = GetTileFromAnimation(ntile, glyph, mapx, mapy, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
+                                                                        ntile = GetTileFromAnimation(ntile, glyph, source_x, source_y, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
 
                                                                         /* Draw enlargement tiles */
                                                                         int enlargement = GHApp.Tile2Enlargement[ntile];
-                                                                        for (int order_idx = -1; order_idx < 5; order_idx++)
+                                                                        int dx = 0, dy = 0;
+                                                                        if (!GetEnlargementTileB(enlargement, enl_idx, hflip_glyph, vflip_glyph, main_tile_idx, anim_frame_idx, ref ntile, ref autodraw, ref dx, ref dy))
+                                                                            continue;
+
+                                                                        int draw_map_x = source_x + dx + (adj_x - source_x);
+                                                                        int draw_map_y = source_y + dy + (adj_y - source_y);
+
+                                                                        //float minDrawX = 0, maxDrawX = 0, minDrawY = 0, maxDrawY = 0;
+                                                                        //float enlMinDrawX = 0, enlMaxDrawX = 0, enlMinDrawY = 0, enlMaxDrawY = 0;
+
+                                                                        PaintMapTile(canvas, false, textPaint, paint, layer_idx, source_x, source_y, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
+                                                                            offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
+                                                                            scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
+                                                                            monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
+                                                                            loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
+                                                                            hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            for (int layer_idx = 0; layer_idx < (int)layer_types.MAX_LAYERS + 2; layer_idx++)
+                                            {
+                                                bool is_monster_or_shadow_layer = (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.MAX_LAYERS);
+                                                bool is_monster_like_layer = (is_monster_or_shadow_layer || layer_idx == (int)layer_types.LAYER_MONSTER_EFFECT);
+                                                bool is_object_like_layer = (layer_idx == (int)layer_types.LAYER_OBJECT || layer_idx == (int)layer_types.LAYER_COVER_OBJECT);
+                                                bool is_missile_layer = (layer_idx == (int)layer_types.LAYER_MISSILE);
+                                                for (int mapy = startY; mapy <= endY; mapy++)
+                                                {
+                                                    for (int mapx = startX; mapx <= endX; mapx++)
+                                                    {
+                                                        if (layer_idx == (int)layer_types.LAYER_FEATURE_DOODAD && _mapData[mapx, mapy].Engraving.HasEngraving)
+                                                            DrawEngraving(canvas, textPaint, mapx, mapy, offsetX, offsetY, usedOffsetX, usedOffsetY, mapFontAscent, width, height, generalcountervalue);
+
+                                                        if (_mapData[mapx, mapy].Layers.layer_glyphs == null || _mapData[mapx, mapy].Layers.layer_gui_glyphs == null)
+                                                            continue;
+
+                                                        if (layer_idx == (int)layer_types.MAX_LAYERS
+                                                            && (_draw_shadow[mapx, mapy] == 0 || _mapData[mapx, mapy].Layers.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] == GHApp.NoGlyph)
+                                                            )
+                                                            continue;
+
+                                                        bool loc_is_you = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0;
+                                                        bool showing_detection = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_SHOWING_DETECTION) != 0;
+                                                        bool canspotself = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_CAN_SPOT_SELF) != 0;
+                                                        sbyte monster_height = _mapData[mapx, mapy].Layers.special_monster_layer_height;
+                                                        sbyte feature_doodad_height = _mapData[mapx, mapy].Layers.special_feature_doodad_layer_height;
+                                                        short missile_special_quality = _mapData[mapx, mapy].Layers.missile_special_quality;
+                                                        sbyte monster_origin_x = _mapData[mapx, mapy].Layers.monster_origin_x;
+                                                        sbyte monster_origin_y = _mapData[mapx, mapy].Layers.monster_origin_y;
+                                                        long glyphprintmaincountervalue = _mapData[mapx, mapy].GlyphPrintMainCounterValue;
+                                                        long maincounterdiff = maincountervalue - glyphprintmaincountervalue;
+                                                        long glyphobjectprintmaincountervalue = _mapData[mapx, mapy].GlyphObjectPrintMainCounterValue;
+                                                        long objectcounterdiff = maincountervalue - glyphobjectprintmaincountervalue;
+                                                        long glyphgeneralprintmaincountervalue = _mapData[mapx, mapy].GlyphGeneralPrintMainCounterValue;
+                                                        long generalcounterdiff = maincountervalue - glyphgeneralprintmaincountervalue;
+                                                        short missile_height = _mapData[mapx, mapy].Layers.missile_height;
+                                                        bool obj_in_pit = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_O_IN_PIT) != 0;
+
+                                                        float base_move_offset_x = 0, base_move_offset_y = 0;
+                                                        GetBaseMoveOffsets(mapx, mapy, monster_origin_x, monster_origin_y, width, height, maincounterdiff, moveIntervals, ref base_move_offset_x, ref base_move_offset_y);
+
+                                                        lock (_objectDataLock)
+                                                        {
+                                                            if (layer_idx == (int)layer_types.MAX_LAYERS + 1)
+                                                            {
+                                                                PaintMapUIElements(canvas, textPaint, paint, pathEffect, mapx, mapy, width, height, offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, targetscale, generalcountervalue, usedFontSize, monster_height, loc_is_you, canspotself);
+                                                            }
+                                                            else
+                                                            {
+                                                                bool is_source_dir;
+                                                                int sub_layer_cnt = GetSubLayerCount(mapx, mapy, layer_idx, out is_source_dir);
+                                                                for (int sub_layer_idx = sub_layer_cnt - 1; sub_layer_idx >= 0; sub_layer_idx--)
+                                                                {
+                                                                    int signed_glyph = GHApp.NoGlyph; //Default
+                                                                    short obj_height = _mapData[mapx, mapy].Layers.object_height; //Default
+                                                                    sbyte object_origin_x = 0; //Default
+                                                                    sbyte object_origin_y = 0; //Default
+                                                                    ObjectDataItem otmp_round = null;
+
+                                                                    int source_dir_main_idx = sub_layer_idx;
+                                                                    int source_dir_idx = is_source_dir ? GetSourceDirIndex(layer_idx, source_dir_main_idx) : 0;
+
+                                                                    bool manual_hflip = false;
+                                                                    bool manual_vflip = false;
+                                                                    int adj_x = mapx;
+                                                                    int adj_y = mapy;
+                                                                    bool foundthisturn = false;
+
+                                                                    if (!GetLayerGlyph(mapx, mapy, layer_idx, sub_layer_idx, source_dir_idx, ref signed_glyph,
+                                                                        ref adj_x, ref adj_y, ref manual_hflip, ref manual_vflip, ref otmp_round, ref obj_height,
+                                                                        ref object_origin_x, ref object_origin_y, ref foundthisturn))
+                                                                        continue;
+
+                                                                    int glyph = Math.Abs(signed_glyph);
+                                                                    if (glyph == 0 || glyph >= GHApp.Glyph2Tile.Length)
+                                                                        continue;
+
+                                                                    float object_move_offset_x = 0, object_move_offset_y = 0;
+                                                                    GetObjectMoveOffsets(mapx, mapy, object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, generalcounterdiff,
+                                                                        foundthisturn, sub_layer_idx, sub_layer_cnt, targetscale, loc_is_you, obj_height, otmp_round, ref object_move_offset_x, ref object_move_offset_y);
+
+                                                                    bool vflip_glyph = false;
+                                                                    bool hflip_glyph = false;
+                                                                    GetFlips(signed_glyph, manual_hflip, manual_vflip, ref hflip_glyph, ref vflip_glyph);
+
+                                                                    /* Tile flags */
+                                                                    bool tileflag_halfsize = (GHApp.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
+                                                                    bool tileflag_floortile = (GHApp.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HAS_FLOOR_TILE) != 0;
+                                                                    bool tileflag_normalobjmissile = (GHApp.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) != 0 && layer_idx == (int)layer_types.LAYER_MISSILE;
+                                                                    bool tileflag_fullsizeditem = (GHApp.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;
+                                                                    bool tileflag_height_is_clipping = (GHApp.GlyphTileFlags[glyph] & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HEIGHT_IS_CLIPPING) != 0;
+
+                                                                    /* All items are big when showing detection */
+                                                                    CheckShowingDetection(showing_detection, ref obj_height, ref tileflag_floortile, ref tileflag_height_is_clipping);
+
+                                                                    /*Determine y move for tiles */
+                                                                    float scaled_y_height_change = GetScaledYHeightChange(layer_idx, sub_layer_idx, sub_layer_cnt, height, monster_height, feature_doodad_height, targetscale, is_monster_like_layer, tileflag_halfsize, otmp_round);
+
+                                                                    int ntile = GHApp.Glyph2Tile[glyph];
+                                                                    int autodraw = GHApp.Tile2Autodraw[ntile];
+
+                                                                    /* Determine animation tile here */
+                                                                    int anim_frame_idx = 0, main_tile_idx = 0;
+                                                                    ntile = GetTileFromAnimation(ntile, glyph, mapx, mapy, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
+
+                                                                    /* Draw enlargement tiles */
+                                                                    int enlargement = GHApp.Tile2Enlargement[ntile];
+                                                                    for (int order_idx = -1; order_idx < 5; order_idx++)
+                                                                    {
+                                                                        if (enlargement == 0 && order_idx >= 0)
+                                                                            break;
+                                                                        int enl_idx = GetUsedEnlargementIndex(order_idx);
+                                                                        int dx = 0, dy = 0;
+                                                                        if (!GetEnlargementTileB(enlargement, enl_idx, hflip_glyph, vflip_glyph, main_tile_idx, anim_frame_idx, ref ntile, ref autodraw, ref dx, ref dy))
+                                                                            continue;
+
+                                                                        int draw_map_x = mapx + dx + (adj_x - mapx);
+                                                                        int draw_map_y = mapy + dy + (adj_y - mapy);
+
+                                                                        if ((enlargement > 0 && enl_idx >= 0 && enl_idx <= 2) || layer_idx == (int)layer_types.MAX_LAYERS)
                                                                         {
-                                                                            if (enlargement == 0 && order_idx >= 0)
-                                                                                break;
-                                                                            int enl_idx = GetUsedEnlargementIndex(order_idx);
-                                                                            int dx = 0, dy = 0;
-                                                                            if (!GetEnlargementTileB(enlargement, enl_idx, hflip_glyph, vflip_glyph, main_tile_idx, anim_frame_idx, ref ntile, ref autodraw, ref dx, ref dy))
-                                                                                continue;
-
-                                                                            int draw_map_x = mapx + dx + (adj_x - mapx);
-                                                                            int draw_map_y = mapy + dy + (adj_y - mapy);
-
-                                                                            if ((enlargement > 0 && enl_idx >= 0 && enl_idx <= 2) || layer_idx == (int)layer_types.MAX_LAYERS)
-                                                                            {
-                                                                                PaintMapTile(canvas, true, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
-                                                                                    offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
-                                                                                    scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
-                                                                                    monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
-                                                                                    loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
-                                                                                    hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement); //, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                //float minDrawX = 0, maxDrawX = 0, minDrawY = 0, maxDrawY = 0;
-                                                                                PaintMapTile(canvas, false, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
-                                                                                    offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
-                                                                                    scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
-                                                                                    monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
-                                                                                    loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
-                                                                                    hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
-                                                                            }
+                                                                            PaintMapTile(canvas, true, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
+                                                                                offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
+                                                                                scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
+                                                                                monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
+                                                                                loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
+                                                                                hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement); //, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            //float minDrawX = 0, maxDrawX = 0, minDrawY = 0, maxDrawY = 0;
+                                                                            PaintMapTile(canvas, false, textPaint, paint, layer_idx, mapx, mapy, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
+                                                                                offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
+                                                                                scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize,
+                                                                                monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
+                                                                                loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
+                                                                                hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
                                                                         }
                                                                     }
                                                                 }
                                                             }
                                                         }
                                                     }
+                                                }
 
-                                                    switch (layer_idx)
+                                                switch (layer_idx)
+                                                {
+                                                    /* Darkening at the end of layers */
+                                                    case (int)layer_types.LAYER_OBJECT:
                                                     {
-                                                        /* Darkening at the end of layers */
-                                                        case (int)layer_types.LAYER_OBJECT:
+                                                        _drawCommandList.Add(new GHDrawCommand(true));
+                                                        for (int mapx = startX; mapx <= endX; mapx++)
                                                         {
-                                                            _drawCommandList.Add(new GHDrawCommand(true));
-                                                            for (int mapx = startX; mapx <= endX; mapx++)
+                                                            for (int mapy = startY; mapy <= endY; mapy++)
                                                             {
-                                                                for (int mapy = startY; mapy <= endY; mapy++)
-                                                                {
-                                                                    bool darken = DarkenedPos(mapx, mapy);
-                                                                    bool validpos = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_L_LEGAL) != 0 && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
-                                                                    bool invalidpos = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_L_ILLEGAL) != 0 && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
+                                                                bool darken = DarkenedPos(mapx, mapy);
+                                                                bool validpos = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_L_LEGAL) != 0 && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
+                                                                bool invalidpos = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_L_ILLEGAL) != 0 && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
 
-                                                                    // Draw rectangle with blend mode in bottom half
-                                                                    if (darken)
-                                                                    {
-                                                                        tx = (offsetX + usedOffsetX + width * (float)mapx);
-                                                                        ty = (offsetY + usedOffsetY + mapFontAscent + height * (float)mapy);
-                                                                        DoDarkening(canvas, paint, tx, ty, width, height, GetDarkenPercentage(mapx, mapy, lighter_darkening));
-                                                                    }
-                                                                    if (validpos)
-                                                                    {
-                                                                        paint.Color = new SKColor((byte)0, (byte)255, (byte)0, (byte)72);
-                                                                        SKBlendMode old_bm = paint.BlendMode;
-                                                                        paint.BlendMode = SKBlendMode.SrcOver;
-                                                                        tx = (offsetX + usedOffsetX + width * (float)mapx);
-                                                                        ty = (offsetY + usedOffsetY + mapFontAscent + height * (float)mapy);
-                                                                        SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
+                                                                // Draw rectangle with blend mode in bottom half
+                                                                if (darken)
+                                                                {
+                                                                    tx = (offsetX + usedOffsetX + width * (float)mapx);
+                                                                    ty = (offsetY + usedOffsetY + mapFontAscent + height * (float)mapy);
+                                                                    DoDarkening(canvas, paint, tx, ty, width, height, GetDarkenPercentage(mapx, mapy, lighter_darkening));
+                                                                }
+                                                                if (validpos)
+                                                                {
+                                                                    paint.Color = new SKColor((byte)0, (byte)255, (byte)0, (byte)72);
+                                                                    SKBlendMode old_bm = paint.BlendMode;
+                                                                    paint.BlendMode = SKBlendMode.SrcOver;
+                                                                    tx = (offsetX + usedOffsetX + width * (float)mapx);
+                                                                    ty = (offsetY + usedOffsetY + mapFontAscent + height * (float)mapy);
+                                                                    SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
 #if GNH_MAP_PROFILING && DEBUG
-                                                                        StartProfiling(GHProfilingStyle.Rect);
+                                                                    StartProfiling(GHProfilingStyle.Rect);
 #endif
-                                                                        canvas.DrawRect(targetrect, paint);
-                                                                        //enlCanvas.DrawRect(targetrect, paint);
+                                                                    canvas.DrawRect(targetrect, paint);
+                                                                    //enlCanvas.DrawRect(targetrect, paint);
 #if GNH_MAP_PROFILING && DEBUG
-                                                                        StopProfiling(GHProfilingStyle.Rect);
+                                                                    StopProfiling(GHProfilingStyle.Rect);
 #endif
-                                                                        paint.BlendMode = old_bm;
-                                                                    }
-                                                                    if (invalidpos)
-                                                                    {
-                                                                        paint.Color = new SKColor((byte)255, (byte)0, (byte)0, (byte)72);
-                                                                        SKBlendMode old_bm = paint.BlendMode;
-                                                                        paint.BlendMode = SKBlendMode.SrcOver;
-                                                                        tx = (offsetX + usedOffsetX + width * (float)mapx);
-                                                                        ty = (offsetY + usedOffsetY + mapFontAscent + height * (float)mapy);
-                                                                        SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
+                                                                    paint.BlendMode = old_bm;
+                                                                }
+                                                                if (invalidpos)
+                                                                {
+                                                                    paint.Color = new SKColor((byte)255, (byte)0, (byte)0, (byte)72);
+                                                                    SKBlendMode old_bm = paint.BlendMode;
+                                                                    paint.BlendMode = SKBlendMode.SrcOver;
+                                                                    tx = (offsetX + usedOffsetX + width * (float)mapx);
+                                                                    ty = (offsetY + usedOffsetY + mapFontAscent + height * (float)mapy);
+                                                                    SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
 #if GNH_MAP_PROFILING && DEBUG
-                                                                        StartProfiling(GHProfilingStyle.Rect);
+                                                                    StartProfiling(GHProfilingStyle.Rect);
 #endif
-                                                                        canvas.DrawRect(targetrect, paint);
-                                                                        //enlCanvas.DrawRect(targetrect, paint);
+                                                                    canvas.DrawRect(targetrect, paint);
+                                                                    //enlCanvas.DrawRect(targetrect, paint);
 #if GNH_MAP_PROFILING && DEBUG
-                                                                        StopProfiling(GHProfilingStyle.Rect);
+                                                                    StopProfiling(GHProfilingStyle.Rect);
 #endif
-                                                                        paint.BlendMode = old_bm;
-                                                                    }
+                                                                    paint.BlendMode = old_bm;
                                                                 }
                                                             }
-                                                            break;
                                                         }
-                                                        /* Enlargement bitmaps */
-                                                        case (int)layer_types.MAX_LAYERS:
-                                                        using (new SKAutoCanvasRestore(canvas))
+                                                        break;
+                                                    }
+                                                    /* Enlargement bitmaps */
+                                                    case (int)layer_types.MAX_LAYERS:
+                                                    using (new SKAutoCanvasRestore(canvas))
+                                                    {
+                                                        bool dodarkening = true;
+                                                        using (SKCanvas darkeningCanvas = new SKCanvas(_paintBitmap))
                                                         {
-                                                            bool dodarkening = true;
-                                                            using (SKCanvas darkeningCanvas = new SKCanvas(_paintBitmap))
+                                                            foreach (GHDrawCommand dc in _drawCommandList)
                                                             {
-                                                                foreach (GHDrawCommand dc in _drawCommandList)
+                                                                if (dc.EndDarkening)
                                                                 {
-                                                                    if (dc.EndDarkening)
+                                                                    dodarkening = false;
+                                                                    continue;
+                                                                }
+                                                                if (dodarkening && DarkenedPos(dc.MapX, dc.MapY))
+                                                                {
+                                                                    darkeningCanvas.Clear(SKColors.Transparent);
+                                                                    lock (_lighterDarkeningLock)
                                                                     {
-                                                                        dodarkening = false;
-                                                                        continue;
-                                                                    }
-                                                                    if (dodarkening && DarkenedPos(dc.MapX, dc.MapY))
-                                                                    {
-                                                                        darkeningCanvas.Clear(SKColors.Transparent);
-                                                                        lock (_lighterDarkeningLock)
+                                                                        if (dc.IsAutoDraw)
                                                                         {
-                                                                            if (dc.IsAutoDraw)
+                                                                            SKImage usedDarkenedBitmap = null;
+                                                                            int darken_percentage = GetDarkenPercentage(dc.MapX, dc.MapY, lighter_darkening);
+                                                                            AutoDrawParameterDefinition modadparams = dc.AutoDrawParameters;
+                                                                            modadparams.tx = 0;
+                                                                            modadparams.ty = 0;
+                                                                            modadparams.scaled_x_padding = 0;
+                                                                            modadparams.scaled_y_padding = 0;
+                                                                            modadparams.scale = 1;
+                                                                            modadparams.targetscale = 1;
+                                                                            SavedDarkenedAutodrawBitmap cachekey = new SavedDarkenedAutodrawBitmap(modadparams, darken_percentage);
+                                                                            SKRect sourceRect = new SKRect(0, 0, dc.AutoDrawParameters.width, dc.AutoDrawParameters.height);
+                                                                            SKRect destRect = new SKRect(dc.AutoDrawParameters.tx + dc.AutoDrawParameters.scaled_x_padding,
+                                                                                dc.AutoDrawParameters.ty + dc.AutoDrawParameters.scaled_y_padding,
+                                                                                dc.AutoDrawParameters.tx + dc.AutoDrawParameters.scaled_x_padding + dc.AutoDrawParameters.width * dc.AutoDrawParameters.scale * dc.AutoDrawParameters.targetscale,
+                                                                                dc.AutoDrawParameters.ty + dc.AutoDrawParameters.scaled_y_padding + dc.AutoDrawParameters.height * dc.AutoDrawParameters.scale * dc.AutoDrawParameters.targetscale);
+
+                                                                            bool getsuccessful;
+                                                                            lock(_darkenedAutoDrawBitmapLock)
                                                                             {
-                                                                                SKImage usedDarkenedBitmap = null;
-                                                                                int darken_percentage = GetDarkenPercentage(dc.MapX, dc.MapY, lighter_darkening);
-                                                                                AutoDrawParameterDefinition modadparams = dc.AutoDrawParameters;
-                                                                                modadparams.tx = 0;
-                                                                                modadparams.ty = 0;
-                                                                                modadparams.scaled_x_padding = 0;
-                                                                                modadparams.scaled_y_padding = 0;
-                                                                                modadparams.scale = 1;
-                                                                                modadparams.targetscale = 1;
-                                                                                SavedDarkenedAutodrawBitmap cachekey = new SavedDarkenedAutodrawBitmap(modadparams, darken_percentage);
-                                                                                SKRect sourceRect = new SKRect(0, 0, dc.AutoDrawParameters.width, dc.AutoDrawParameters.height);
-                                                                                SKRect destRect = new SKRect(dc.AutoDrawParameters.tx + dc.AutoDrawParameters.scaled_x_padding,
-                                                                                    dc.AutoDrawParameters.ty + dc.AutoDrawParameters.scaled_y_padding,
-                                                                                    dc.AutoDrawParameters.tx + dc.AutoDrawParameters.scaled_x_padding + dc.AutoDrawParameters.width * dc.AutoDrawParameters.scale * dc.AutoDrawParameters.targetscale,
-                                                                                    dc.AutoDrawParameters.ty + dc.AutoDrawParameters.scaled_y_padding + dc.AutoDrawParameters.height * dc.AutoDrawParameters.scale * dc.AutoDrawParameters.targetscale);
-
-                                                                                bool getsuccessful;
-                                                                                lock(_darkenedAutoDrawBitmapLock)
-                                                                                {
-                                                                                    getsuccessful = _darkenedAutodrawBitmaps.ContainsKey(cachekey) && _darkenedAutodrawBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap);
-                                                                                }
-                                                                                if (getsuccessful && usedDarkenedBitmap != null)
-                                                                                {
-                                                                                    paint.Color = dc.PaintColor;
-                                                                                    canvas.SetMatrix(dc.Matrix);
-                                                                                    canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect, paint);
-                                                                                }
-                                                                                else
-                                                                                {
-
-                                                                                    paint.Color = dc.PaintColor;
-                                                                                    canvas.SetMatrix(dc.Matrix);
-                                                                                    DrawAutoDraw(dc.AutoDrawParameters.autodraw, darkeningCanvas, false, paint, dc.AutoDrawParameters.otmp_round,
-                                                                                        dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
-                                                                                        dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, 0, 0,
-                                                                                        dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, 1, 1,
-                                                                                        0, 0, height, dc.AutoDrawParameters.is_inventory,
-                                                                                        dc.AutoDrawParameters.drawwallends);
-                                                                                    DoDarkening(darkeningCanvas, paint, 0, 0, dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, darken_percentage);
-
-                                                                                    /* Save to cache as immutable */
-                                                                                    bool doDisposeImage = false;
-                                                                                    try
-                                                                                    {
-                                                                                        SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
-                                                                                        _paintBitmap.CopyTo(newbmp);
-                                                                                        newbmp.SetImmutable();
-                                                                                        SKImage newImage = SKImage.FromBitmap(newbmp);
-                                                                                        usedDarkenedBitmap = newImage;
-                                                                                        lock(_darkenedAutoDrawBitmapLock)
-                                                                                        {
-                                                                                            if (_darkenedAutodrawBitmaps.Count >= GHConstants.MaxDarkenedAutodrawBitmapCacheSize)
-                                                                                            {
-                                                                                                foreach (SKImage bmp in _darkenedAutodrawBitmaps.Values)
-                                                                                                    bmp.Dispose();
-                                                                                                _darkenedAutodrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
-                                                                                            }
-                                                                                            _darkenedAutodrawBitmaps.TryAdd(cachekey, newImage);
-                                                                                        }
-                                                                                    }
-                                                                                    catch (Exception ex)
-                                                                                    {
-                                                                                        Debug.WriteLine(ex.Message);
-                                                                                        usedDarkenedBitmap = SKImage.FromBitmap(_paintBitmap);
-                                                                                        doDisposeImage = true;
-                                                                                    }
-
-                                                                                    canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect, paint);
-                                                                                    if (doDisposeImage)
-                                                                                        usedDarkenedBitmap.Dispose();
-                                                                                }
+                                                                                getsuccessful = _darkenedAutodrawBitmaps.ContainsKey(cachekey) && _darkenedAutodrawBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap);
+                                                                            }
+                                                                            if (getsuccessful && usedDarkenedBitmap != null)
+                                                                            {
+                                                                                paint.Color = dc.PaintColor;
+                                                                                canvas.SetMatrix(dc.Matrix);
+                                                                                canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect, paint);
                                                                             }
                                                                             else
                                                                             {
-                                                                                SKImage usedDarkenedBitmap = null;
-                                                                                int darken_percentage = GetDarkenPercentage(dc.MapX, dc.MapY, lighter_darkening);
-                                                                                SavedDarkenedBitmap cachekey = new SavedDarkenedBitmap(dc.SourceBitmap, dc.SourceRect, darken_percentage);
-                                                                                SKRect cacheRect = new SKRect(0, 0, dc.SourceRect.Width, dc.SourceRect.Height);
-                                                                                bool getsuccessful;
-                                                                                lock(_darkenedBitmapLock)
-                                                                                {
-                                                                                    getsuccessful = _darkenedBitmaps.ContainsKey(cachekey) && _darkenedBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap);
-                                                                                }
-                                                                                if (getsuccessful && usedDarkenedBitmap != null)
-                                                                                {
-                                                                                    paint.Color = dc.PaintColor;
-                                                                                    canvas.SetMatrix(dc.Matrix);
-                                                                                    canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect, paint);
-                                                                                }
-                                                                                else
-                                                                                {
-                                                                                    /* Copy source bitmap to _paintCanvas and darken it */
-                                                                                    paint.Color = SKColors.Black;
-                                                                                    darkeningCanvas.DrawImage(dc.SourceBitmap, dc.SourceRect, cacheRect, paint);
-                                                                                    DoDarkening(darkeningCanvas, paint, cacheRect.Left, cacheRect.Top, cacheRect.Width, cacheRect.Height, darken_percentage);
 
-                                                                                    /* Save to cache as immutable */
-                                                                                    bool doDisposeImage = false;
-                                                                                    try
+                                                                                paint.Color = dc.PaintColor;
+                                                                                canvas.SetMatrix(dc.Matrix);
+                                                                                DrawAutoDraw(dc.AutoDrawParameters.autodraw, darkeningCanvas, false, paint, dc.AutoDrawParameters.otmp_round,
+                                                                                    dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
+                                                                                    dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, 0, 0,
+                                                                                    dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, 1, 1,
+                                                                                    0, 0, height, dc.AutoDrawParameters.is_inventory,
+                                                                                    dc.AutoDrawParameters.drawwallends);
+                                                                                DoDarkening(darkeningCanvas, paint, 0, 0, dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, darken_percentage);
+
+                                                                                /* Save to cache as immutable */
+                                                                                bool doDisposeImage = false;
+                                                                                try
+                                                                                {
+                                                                                    SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
+                                                                                    _paintBitmap.CopyTo(newbmp);
+                                                                                    newbmp.SetImmutable();
+                                                                                    SKImage newImage = SKImage.FromBitmap(newbmp);
+                                                                                    usedDarkenedBitmap = newImage;
+                                                                                    lock(_darkenedAutoDrawBitmapLock)
                                                                                     {
-                                                                                        SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
-                                                                                        _paintBitmap.CopyTo(newbmp);
-                                                                                        newbmp.SetImmutable();
-                                                                                        SKImage newImage = SKImage.FromBitmap(newbmp);
-                                                                                        usedDarkenedBitmap = newImage;
-                                                                                        lock(_darkenedBitmapLock)
+                                                                                        if (_darkenedAutodrawBitmaps.Count >= GHConstants.MaxDarkenedAutodrawBitmapCacheSize)
                                                                                         {
-                                                                                            if (_darkenedBitmaps.Count >= GHConstants.MaxDarkenedBitmapCacheSize)
-                                                                                            {
-                                                                                                foreach (SKImage bmp in _darkenedBitmaps.Values)
-                                                                                                    bmp.Dispose();
-                                                                                                _darkenedBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
-                                                                                            }
-                                                                                            _darkenedBitmaps.TryAdd(cachekey, newImage);
+                                                                                            foreach (SKImage bmp in _darkenedAutodrawBitmaps.Values)
+                                                                                                bmp.Dispose();
+                                                                                            _darkenedAutodrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
                                                                                         }
+                                                                                        _darkenedAutodrawBitmaps.TryAdd(cachekey, newImage);
                                                                                     }
-                                                                                    catch (Exception ex)
-                                                                                    {
-                                                                                        Debug.WriteLine(ex.Message);
-                                                                                        usedDarkenedBitmap = SKImage.FromBitmap(_paintBitmap);
-                                                                                        doDisposeImage = true;
-                                                                                    }
-
-                                                                                    paint.Color = dc.PaintColor;
-                                                                                    canvas.SetMatrix(dc.Matrix);
-                                                                                    canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect, paint);
-                                                                                    if (doDisposeImage)
-                                                                                        usedDarkenedBitmap.Dispose();
                                                                                 }
+                                                                                catch (Exception ex)
+                                                                                {
+                                                                                    Debug.WriteLine(ex.Message);
+                                                                                    usedDarkenedBitmap = SKImage.FromBitmap(_paintBitmap);
+                                                                                    doDisposeImage = true;
+                                                                                }
+
+                                                                                canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect, paint);
+                                                                                if (doDisposeImage)
+                                                                                    usedDarkenedBitmap.Dispose();
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            SKImage usedDarkenedBitmap = null;
+                                                                            int darken_percentage = GetDarkenPercentage(dc.MapX, dc.MapY, lighter_darkening);
+                                                                            SavedDarkenedBitmap cachekey = new SavedDarkenedBitmap(dc.SourceBitmap, dc.SourceRect, darken_percentage);
+                                                                            SKRect cacheRect = new SKRect(0, 0, dc.SourceRect.Width, dc.SourceRect.Height);
+                                                                            bool getsuccessful;
+                                                                            lock(_darkenedBitmapLock)
+                                                                            {
+                                                                                getsuccessful = _darkenedBitmaps.ContainsKey(cachekey) && _darkenedBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap);
+                                                                            }
+                                                                            if (getsuccessful && usedDarkenedBitmap != null)
+                                                                            {
+                                                                                paint.Color = dc.PaintColor;
+                                                                                canvas.SetMatrix(dc.Matrix);
+                                                                                canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect, paint);
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                /* Copy source bitmap to _paintCanvas and darken it */
+                                                                                paint.Color = SKColors.Black;
+                                                                                darkeningCanvas.DrawImage(dc.SourceBitmap, dc.SourceRect, cacheRect, paint);
+                                                                                DoDarkening(darkeningCanvas, paint, cacheRect.Left, cacheRect.Top, cacheRect.Width, cacheRect.Height, darken_percentage);
+
+                                                                                /* Save to cache as immutable */
+                                                                                bool doDisposeImage = false;
+                                                                                try
+                                                                                {
+                                                                                    SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
+                                                                                    _paintBitmap.CopyTo(newbmp);
+                                                                                    newbmp.SetImmutable();
+                                                                                    SKImage newImage = SKImage.FromBitmap(newbmp);
+                                                                                    usedDarkenedBitmap = newImage;
+                                                                                    lock(_darkenedBitmapLock)
+                                                                                    {
+                                                                                        if (_darkenedBitmaps.Count >= GHConstants.MaxDarkenedBitmapCacheSize)
+                                                                                        {
+                                                                                            foreach (SKImage bmp in _darkenedBitmaps.Values)
+                                                                                                bmp.Dispose();
+                                                                                            _darkenedBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
+                                                                                        }
+                                                                                        _darkenedBitmaps.TryAdd(cachekey, newImage);
+                                                                                    }
+                                                                                }
+                                                                                catch (Exception ex)
+                                                                                {
+                                                                                    Debug.WriteLine(ex.Message);
+                                                                                    usedDarkenedBitmap = SKImage.FromBitmap(_paintBitmap);
+                                                                                    doDisposeImage = true;
+                                                                                }
+
+                                                                                paint.Color = dc.PaintColor;
+                                                                                canvas.SetMatrix(dc.Matrix);
+                                                                                canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect, paint);
+                                                                                if (doDisposeImage)
+                                                                                    usedDarkenedBitmap.Dispose();
                                                                             }
                                                                         }
                                                                     }
-                                                                    else
-                                                                    {
-                                                                        paint.Color = dc.PaintColor;
-                                                                        canvas.SetMatrix(dc.Matrix);
-                                                                        if(dc.IsAutoDraw)
-                                                                        {
-                                                                                DrawAutoDraw(dc.AutoDrawParameters.autodraw, canvas, false, paint, dc.AutoDrawParameters.otmp_round,
-                                                                                    dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
-                                                                                    dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, dc.AutoDrawParameters.tx, dc.AutoDrawParameters.ty,
-                                                                                    dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, dc.AutoDrawParameters.scale, dc.AutoDrawParameters.targetscale,
-                                                                                    dc.AutoDrawParameters.scaled_x_padding, dc.AutoDrawParameters.scaled_y_padding, dc.AutoDrawParameters.scaled_tile_height, dc.AutoDrawParameters.is_inventory,
-                                                                                    dc.AutoDrawParameters.drawwallends);
-                                                                        }
-                                                                        else
-                                                                            canvas.DrawImage(dc.SourceBitmap, dc.SourceRect, dc.DestinationRect, paint);
-                                                                    }
                                                                 }
-                                                            }
-                                                            _drawCommandList.Clear();
-
-                                                            paint.Color = SKColors.Black;
-                                                            for (int mapx = startX; mapx <= endX; mapx++)
-                                                            {
-                                                                for (int mapy = startY; mapy <= endY; mapy++)
+                                                                else
                                                                 {
-                                                                    bool ascension_radiance = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_ASCENSION_RADIANCE) != 0
-                                                                        && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
-                                                                    if (ascension_radiance)
+                                                                    paint.Color = dc.PaintColor;
+                                                                    canvas.SetMatrix(dc.Matrix);
+                                                                    if(dc.IsAutoDraw)
                                                                     {
-                                                                        float multiplier = 1.0f - Math.Min(1.0f, 0.3f + (float)Math.Sqrt(Math.Pow(mapx - u_x, 2) + Math.Pow(mapy - u_y, 2)) / 6.0f);
-                                                                        int val = (int)(multiplier * 255);
-                                                                        SKColor color = new SKColor((byte)val, (byte)val, (byte)val);
+                                                                            DrawAutoDraw(dc.AutoDrawParameters.autodraw, canvas, false, paint, dc.AutoDrawParameters.otmp_round,
+                                                                                dc.AutoDrawParameters.layer_idx, dc.MapX, dc.MapY, dc.AutoDrawParameters.tileflag_halfsize,
+                                                                                dc.AutoDrawParameters.tileflag_normalobjmissile, dc.AutoDrawParameters.tileflag_fullsizeditem, dc.AutoDrawParameters.tx, dc.AutoDrawParameters.ty,
+                                                                                dc.AutoDrawParameters.width, dc.AutoDrawParameters.height, dc.AutoDrawParameters.scale, dc.AutoDrawParameters.targetscale,
+                                                                                dc.AutoDrawParameters.scaled_x_padding, dc.AutoDrawParameters.scaled_y_padding, dc.AutoDrawParameters.scaled_tile_height, dc.AutoDrawParameters.is_inventory,
+                                                                                dc.AutoDrawParameters.drawwallends);
+                                                                    }
+                                                                    else
+                                                                        canvas.DrawImage(dc.SourceBitmap, dc.SourceRect, dc.DestinationRect, paint);
+                                                                }
+                                                            }
+                                                        }
+                                                        _drawCommandList.Clear();
 
-                                                                        paint.Color = color;
-                                                                        SKBlendMode old_bm = paint.BlendMode;
-                                                                        paint.BlendMode = SKBlendMode.Screen;
-                                                                        tx = (offsetX + usedOffsetX + width * (float)mapx);
-                                                                        ty = (offsetY + usedOffsetY + mapFontAscent + height * (float)mapy);
-                                                                        SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
+                                                        paint.Color = SKColors.Black;
+                                                        for (int mapx = startX; mapx <= endX; mapx++)
+                                                        {
+                                                            for (int mapy = startY; mapy <= endY; mapy++)
+                                                            {
+                                                                bool ascension_radiance = (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_ASCENSION_RADIANCE) != 0
+                                                                    && (_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_CAN_SEE) != 0;
+                                                                if (ascension_radiance)
+                                                                {
+                                                                    float multiplier = 1.0f - Math.Min(1.0f, 0.3f + (float)Math.Sqrt(Math.Pow(mapx - u_x, 2) + Math.Pow(mapy - u_y, 2)) / 6.0f);
+                                                                    int val = (int)(multiplier * 255);
+                                                                    SKColor color = new SKColor((byte)val, (byte)val, (byte)val);
+
+                                                                    paint.Color = color;
+                                                                    SKBlendMode old_bm = paint.BlendMode;
+                                                                    paint.BlendMode = SKBlendMode.Screen;
+                                                                    tx = (offsetX + usedOffsetX + width * (float)mapx);
+                                                                    ty = (offsetY + usedOffsetY + mapFontAscent + height * (float)mapy);
+                                                                    SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
 #if GNH_MAP_PROFILING && DEBUG
-                                                                            StartProfiling(GHProfilingStyle.Rect);
+                                                                        StartProfiling(GHProfilingStyle.Rect);
 #endif
-                                                                        canvas.DrawRect(targetrect, paint);
-                                                                        //enlCanvas.DrawRect(targetrect, paint);
+                                                                    canvas.DrawRect(targetrect, paint);
+                                                                    //enlCanvas.DrawRect(targetrect, paint);
 #if GNH_MAP_PROFILING && DEBUG
-                                                                            StopProfiling(GHProfilingStyle.Rect);
+                                                                        StopProfiling(GHProfilingStyle.Rect);
 #endif
-                                                                        paint.BlendMode = old_bm;
-                                                                        if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
-                                                                        {
-                                                                            UIUtils.DrawSparkle(canvas, paint, tx + 0.5f * width, ty + 0.5f * height, 15f * targetscale, generalcountervalue, true);
-                                                                            UIUtils.DrawSparkle(canvas, paint, tx + 0.25f * width, ty + 0.25f * height, 10f * targetscale, generalcountervalue - 10, true);
-                                                                            UIUtils.DrawSparkle(canvas, paint, tx + 0.75f * width, ty + 0.25f * height, 10f * targetscale, generalcountervalue - 20, true);
-                                                                            UIUtils.DrawSparkle(canvas, paint, tx + 0.25f * width, ty + 0.75f * height, 10f * targetscale, generalcountervalue - 30, true);
-                                                                            UIUtils.DrawSparkle(canvas, paint, tx + 0.75f * width, ty + 0.75f * height, 10f * targetscale, generalcountervalue - 40, true);
-                                                                            UIUtils.DrawSparkle(canvas, paint, tx + 0.5f * width, ty, 7f * targetscale, generalcountervalue - 50, true);
-                                                                            UIUtils.DrawSparkle(canvas, paint, tx + 0.5f * width, ty + height, 7f * targetscale, generalcountervalue - 60, true);
-                                                                            UIUtils.DrawSparkle(canvas, paint, tx, ty + 0.5f * height, 7f * targetscale, generalcountervalue - 70, true);
-                                                                            UIUtils.DrawSparkle(canvas, paint, tx + width, ty + 0.5f * height, 7f * targetscale, generalcountervalue - 80, true);
-                                                                        }
+                                                                    paint.BlendMode = old_bm;
+                                                                    if ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
+                                                                    {
+                                                                        UIUtils.DrawSparkle(canvas, paint, tx + 0.5f * width, ty + 0.5f * height, 15f * targetscale, generalcountervalue, true);
+                                                                        UIUtils.DrawSparkle(canvas, paint, tx + 0.25f * width, ty + 0.25f * height, 10f * targetscale, generalcountervalue - 10, true);
+                                                                        UIUtils.DrawSparkle(canvas, paint, tx + 0.75f * width, ty + 0.25f * height, 10f * targetscale, generalcountervalue - 20, true);
+                                                                        UIUtils.DrawSparkle(canvas, paint, tx + 0.25f * width, ty + 0.75f * height, 10f * targetscale, generalcountervalue - 30, true);
+                                                                        UIUtils.DrawSparkle(canvas, paint, tx + 0.75f * width, ty + 0.75f * height, 10f * targetscale, generalcountervalue - 40, true);
+                                                                        UIUtils.DrawSparkle(canvas, paint, tx + 0.5f * width, ty, 7f * targetscale, generalcountervalue - 50, true);
+                                                                        UIUtils.DrawSparkle(canvas, paint, tx + 0.5f * width, ty + height, 7f * targetscale, generalcountervalue - 60, true);
+                                                                        UIUtils.DrawSparkle(canvas, paint, tx, ty + 0.5f * height, 7f * targetscale, generalcountervalue - 70, true);
+                                                                        UIUtils.DrawSparkle(canvas, paint, tx + width, ty + 0.5f * height, 7f * targetscale, generalcountervalue - 80, true);
                                                                     }
                                                                 }
                                                             }
-                                                            break;
                                                         }
+                                                        break;
                                                     }
                                                 }
                                             }
@@ -6673,20 +6643,21 @@ namespace GnollHackX.Pages.Game
                                     }
                                 }
                             }
+                        }
 
-                            /* Cursor */
-                            if ((GraphicsStyle == GHGraphicsStyle.ASCII || ForceAscii) && CursorStyle == TTYCursorStyle.BlinkingUnderline && CursorIsOn && _mapCursorX >= 1 && _mapCursorY >= 0)
-                            {
-                                int cx = _mapCursorX, cy = _mapCursorY;
-                                str = "_";
-                                textPaint.Color = SKColors.White;
-                                tx = (offsetX + usedOffsetX + width * (float)cx);
-                                ty = (offsetY + usedOffsetY + height * (float)cy);
-                                //canvas.DrawText(str, tx, ty, textPaint);
-                                textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
-                            }
+                        /* Cursor */
+                        if ((GraphicsStyle == GHGraphicsStyle.ASCII || ForceAscii) && CursorStyle == TTYCursorStyle.BlinkingUnderline && CursorIsOn && _mapCursorX >= 1 && _mapCursorY >= 0)
+                        {
+                            int cx = _mapCursorX, cy = _mapCursorY;
+                            str = "_";
+                            textPaint.Color = SKColors.White;
+                            tx = (offsetX + usedOffsetX + width * (float)cx);
+                            ty = (offsetY + usedOffsetY + height * (float)cy);
+                            //canvas.DrawText(str, tx, ty, textPaint);
+                            textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
                         }
                     }
+                    
 
                     /* Screen Filter */
                     lock (_screenFilterLock)
