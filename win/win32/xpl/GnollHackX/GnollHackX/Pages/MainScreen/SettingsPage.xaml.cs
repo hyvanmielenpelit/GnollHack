@@ -32,23 +32,6 @@ using GnollHackX.Controls;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    public struct CacheSizeItem
-    {
-        public string Description;
-        public long Size;
-
-        public CacheSizeItem(string Description, long Size)
-        {
-            this.Description = Description;
-            this.Size = Size;
-        }
-
-        public override string ToString()
-        {
-            return Description != null ? Description : "";
-        }
-    };
-
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SettingsPage : ContentPage
     {
@@ -87,24 +70,10 @@ namespace GnollHackX.Pages.MainScreen
                 list.Add("120 fps");
             RefreshRatePicker.ItemsSource = list;
 
-            List<CacheSizeItem> cacheSizeList = new List<CacheSizeItem>()
-            { 
-                new CacheSizeItem(GHApp.DefaultGPUCacheSize > 0 ? "Default (" + (GHApp.DefaultGPUCacheSize / (1024 * 1024)) + " MB)" : "Default", -2L ),
-                new CacheSizeItem("8 MB", 8L * 1024 * 1204 ),
-                new CacheSizeItem("16 MB", 16L * 1024 * 1204 ),
-                new CacheSizeItem("32 MB", 32L * 1024 * 1204 ),
-                new CacheSizeItem("64 MB", 64L * 1024 * 1204 ),
-                new CacheSizeItem("128 MB", 128L * 1024 * 1204 ),
-                new CacheSizeItem("256 MB", 256L * 1024 * 1204 ),
-                new CacheSizeItem("512 MB", 512L * 1024 * 1204 ),
-                new CacheSizeItem("1024 MB", 1024L * 1024 * 1204 ),
-                new CacheSizeItem("1536 MB", 1536L * 1024 * 1204 ),
-                new CacheSizeItem("2048 MB", 2048L * 1024 * 1204 ),
-                new CacheSizeItem("3072 MB", 3072L * 1024 * 1204 ),
-                new CacheSizeItem("4096 MB", 4096L * 1024 * 1204 ),
-            };
-            PrimaryGPUCachePicker.ItemsSource = cacheSizeList;
-            SecondaryGPUCachePicker.ItemsSource = cacheSizeList;
+
+            PrimaryGPUCachePicker.ItemsSource = GHApp.GetGPUCacheSizeList(false);
+            SecondaryGPUCachePicker.ItemsSource = GHApp.GetGPUCacheSizeList(true);
+
 
             SimpleCommandBarButton1Picker.ItemsSource = GHApp.SelectableShortcutButtons;
             SimpleCommandBarButton2Picker.ItemsSource = GHApp.SelectableShortcutButtons;

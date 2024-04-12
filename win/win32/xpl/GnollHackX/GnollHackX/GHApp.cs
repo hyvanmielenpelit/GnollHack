@@ -31,7 +31,6 @@ using Azure.Identity;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure;
-//using AndroidX.AppCompat.View.Menu;
 
 namespace GnollHackX
 {
@@ -43,6 +42,24 @@ namespace GnollHackX
         public HttpStatusCode StatusCode;
         public string Message;
     }
+
+    public class CacheSizeItem
+    {
+        public string Description;
+        public long Size;
+
+        public CacheSizeItem(string Description, long Size)
+        {
+            this.Description = Description;
+            this.Size = Size;
+        }
+
+        public override string ToString()
+        {
+            return Description != null ? Description : "";
+        }
+    };
+
 
 
     public static class GHApp
@@ -107,6 +124,7 @@ namespace GnollHackX
             RecordGame = Preferences.Get("RecordGame", false);
             AutoUploadReplays = Preferences.Get("AutoUploadReplays", false);
             UseGZipForReplays = Preferences.Get("UseGZipForReplays", GHConstants.GZipIsDefaultReplayCompression);
+            SetAvailableGPUCacheLimits(TotalMemory);
             PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
             SecondaryGPUCacheLimit = Preferences.Get("SecondaryGPUCacheLimit", -2L);
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
@@ -126,6 +144,95 @@ namespace GnollHackX
             }
 
             BackButtonPressed += EmptyBackButtonPressed;
+        }
+
+        private static long GetDefaultPrimaryGPUCacheSize(ulong memory)
+        {
+            long TotalMemInBytes = (long)memory;
+            long def = Math.Max(256L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024) / 2);
+            foreach(CacheSizeItem item in _cacheSizeList)
+            {
+                if (item.Size >= def)
+                    return item.Size;
+            }
+            return -3L;
+        }
+
+        private static long GetDefaultSecondaryGPUCacheSize(ulong memory)
+        {
+            long TotalMemInBytes = (long)memory;
+            long def = Math.Max(256L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024) / 4);
+            foreach (CacheSizeItem item in _cacheSizeList)
+            {
+                if (item.Size >= def)
+                    return item.Size;
+            }
+            return -3L;
+        }
+
+        private static List<CacheSizeItem> _cacheSizeList = new List<CacheSizeItem>()
+            {
+                new CacheSizeItem("Default", -3L ),
+                new CacheSizeItem("Recommended", -2L ),
+                new CacheSizeItem("8 MB", 8L * 1024 * 1024 ),
+                new CacheSizeItem("16 MB", 16L * 1024 * 1024 ),
+                new CacheSizeItem("32 MB", 32L * 1024 * 1024 ),
+                new CacheSizeItem("64 MB", 64L * 1024 * 1024 ),
+                new CacheSizeItem("128 MB", 128L * 1024 * 1024 ),
+                new CacheSizeItem("256 MB", 256L * 1024 * 1024 ),
+                new CacheSizeItem("384 MB", 384L * 1024 * 1024 ),
+                new CacheSizeItem("512 MB", 512L * 1024 * 1024 ),
+                new CacheSizeItem("768 MB", 768L * 1024 * 1024 ),
+                new CacheSizeItem("1024 MB", 1024L * 1024 * 1024 ),
+                new CacheSizeItem("1280 MB", 1280L * 1024 * 1024 ),
+                new CacheSizeItem("1536 MB", 1536L * 1024 * 1024 ),
+                new CacheSizeItem("2048 MB", 2048L * 1024 * 1024 ),
+                new CacheSizeItem("2560 MB", 2560L * 1024 * 1024 ),
+                new CacheSizeItem("3072 MB", 3072L * 1024 * 1024 ),
+                new CacheSizeItem("4096 MB", 4096L * 1024 * 1024 ),
+                new CacheSizeItem("5120 MB", 5120L * 1024 * 1024 ),
+                new CacheSizeItem("6144 MB", 6144L * 1024 * 1024 ),
+                new CacheSizeItem("7168 MB", 7168L * 1024 * 1024 ),
+                new CacheSizeItem("8192 MB", 8192L * 1024 * 1024 ),
+            };
+
+        private static List<CacheSizeItem> _cacheSizeList2 = new List<CacheSizeItem>();
+
+        public static long RecommendedPrimaryGPUCacheSize { get; private set; }
+        public static long RecommendedSecondaryGPUCacheSize { get; private set; }
+
+        private static void SetAvailableGPUCacheLimits(ulong memory)
+        {
+            long TotalMemInBytes = (long)memory;
+            for (int i = _cacheSizeList.Count - 1; i >= 1; i--)
+            {
+                CacheSizeItem item = _cacheSizeList[i];
+                if (item.Size >= TotalMemInBytes)
+                    _cacheSizeList.RemoveAt(i);
+            }
+            foreach(CacheSizeItem item in _cacheSizeList)
+            {
+                _cacheSizeList2.Add(new CacheSizeItem(item.Description, item.Size));
+            }
+            RecommendedPrimaryGPUCacheSize = GetDefaultPrimaryGPUCacheSize(memory);
+            RecommendedSecondaryGPUCacheSize = GetDefaultSecondaryGPUCacheSize(memory);
+        }
+
+        public static List<CacheSizeItem> GetGPUCacheSizeList(bool isSecondary)
+        {
+            List<CacheSizeItem> list = isSecondary ? _cacheSizeList2 : _cacheSizeList;
+            long recommended = isSecondary ? GetDefaultSecondaryGPUCacheSize(TotalMemory) : GetDefaultPrimaryGPUCacheSize(TotalMemory);
+            if (DefaultGPUCacheSize > 0 && list.Count > 0 && list[0].Description == "Default")
+            {
+                CacheSizeItem item = list[0];
+                item.Description = "Default (" + (DefaultGPUCacheSize / (1024 * 1024)) + " MB)";
+            }
+            if (recommended > 0 && list.Count > 0 && list[0].Description == "Recommended")
+            {
+                CacheSizeItem item = list[0];
+                item.Description = "Recommended (" + (recommended / (1024 * 1024)) + " MB)";
+            }
+            return _cacheSizeList;
         }
 
         public static bool RecommendedSettingsChecked { get; set; }
@@ -167,7 +274,7 @@ namespace GnollHackX
             }
         }
 
-        public static ulong TotalMemory { get; set; }
+        public static ulong TotalMemory { get; private set; }
         public static bool DefaultStreamingBankToMemory 
         { 
             get 
@@ -4183,7 +4290,7 @@ namespace GnollHackX
             string device_model = manufacturer + " " + DeviceInfo.Model;
             string platform_with_version = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
 
-            ulong TotalMemInBytes = GHApp.PlatformService.GetDeviceMemoryInBytes();
+            ulong TotalMemInBytes = TotalMemory;
             ulong TotalMemInMB = (TotalMemInBytes / 1024) / 1024;
             ulong FreeDiskSpaceInBytes = GHApp.PlatformService.GetDeviceFreeDiskSpaceInBytes();
             ulong FreeDiskSpaceInGB = ((FreeDiskSpaceInBytes / 1024) / 1024) / 1024;
