@@ -149,7 +149,10 @@ namespace GnollHackX
         private static long GetDefaultPrimaryGPUCacheSize(ulong memory)
         {
             long TotalMemInBytes = (long)memory;
-            long def = Math.Max(256L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024) / 2);
+            long def = Math.Min(4096L * 1024 * 1024, Math.Max(256L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024) / 2));
+            if (_cacheSizeList.Count > 2 && _cacheSizeList[_cacheSizeList.Count - 1].Size >= 256L * 1024 * 1024 && def > _cacheSizeList[_cacheSizeList.Count - 1].Size)
+                return _cacheSizeList[_cacheSizeList.Count - 1].Size;
+
             for (int i = 2; i < _cacheSizeList.Count; i++)
             {
                 CacheSizeItem item = _cacheSizeList[i];
@@ -162,7 +165,9 @@ namespace GnollHackX
         private static long GetDefaultSecondaryGPUCacheSize(ulong memory)
         {
             long TotalMemInBytes = (long)memory;
-            long def = Math.Max(256L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024) / 8);
+            long def = Math.Min(4096L * 1024 * 1024, Math.Max(256L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024) / 8));
+            if (_cacheSizeList2.Count > 2 && _cacheSizeList2[_cacheSizeList2.Count - 1].Size >= 256L * 1024 * 1024 && def > _cacheSizeList2[_cacheSizeList2.Count - 1].Size)
+                return _cacheSizeList2[_cacheSizeList2.Count - 1].Size;
             for (int i = 2; i < _cacheSizeList2.Count; i++)
             {
                 CacheSizeItem item = _cacheSizeList2[i];

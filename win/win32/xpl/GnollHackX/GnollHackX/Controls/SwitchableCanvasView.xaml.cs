@@ -111,54 +111,72 @@ namespace GnollHackX.Controls
                 else
                     System.Diagnostics.Debug.WriteLine("Using Skia GPU Rendering: BackendRenderTarget is null");
 
+                /* Set to requested PrimaryCache limits */
+                long defaultSize = GHApp.DefaultGPUCacheSize;
+                if (CanvasType == CanvasTypes.MainCanvas)
+                {
+                    long limit = GHApp.PrimaryGPUCacheLimit;
+                    System.Diagnostics.Debug.WriteLine("PrimaryGPUCacheLimit is " + limit);
+                    if (limit > 0)
+                        internalGLView.GRContext.SetResourceCacheLimit(limit);
+                    else if (limit == -2 && GHApp.RecommendedPrimaryGPUCacheSize > 0)
+                        internalGLView.GRContext.SetResourceCacheLimit(GHApp.RecommendedPrimaryGPUCacheSize);
+                    else if (limit == -3 && defaultSize > 0)
+                        internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
+
+                    long newLimit = ResourceCacheLimit;
+                    System.Diagnostics.Debug.WriteLine("ResourceCacheSize is now " + newLimit);
+                    GHApp.CurrentGPUCacheSize = newLimit;
+                }
+                else
+                {
+                    long limit = GHApp.SecondaryGPUCacheLimit;
+                    System.Diagnostics.Debug.WriteLine("SecondaryGPUCacheLimit is " + limit);
+                    if (limit > 0)
+                        internalGLView.GRContext.SetResourceCacheLimit(limit);
+                    else if (limit == -2 && GHApp.RecommendedSecondaryGPUCacheSize > 0)
+                        internalGLView.GRContext.SetResourceCacheLimit(GHApp.RecommendedSecondaryGPUCacheSize);
+                    else if (limit == -3 && defaultSize > 0)
+                        internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
+                    System.Diagnostics.Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
+                }
+            }
+
+            /* Note: this case most likely will never happen, but is here still as a backup */
+            if (_delayedResourceCacheLimit != -1 && internalGLView.GRContext != null)
+            {
                 System.Diagnostics.Debug.WriteLine("CanvasType is " + CanvasType.ToString());
                 System.Diagnostics.Debug.WriteLine("ResourceCacheSize is " + ResourceCacheLimit);
-                if(internalGLView.GRContext != null)
+
+                if (_delayedResourceCacheLimit > 0)
                 {
-                    if (_delayedResourceCacheLimit > 0)
-                    {
-                        System.Diagnostics.Debug.WriteLine("_delayedResourceCacheLimit is " + _delayedResourceCacheLimit);
-                        internalGLView.GRContext.SetResourceCacheLimit(_delayedResourceCacheLimit);
-                        _delayedResourceCacheLimit = -1;
-                        System.Diagnostics.Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
-                    }
-                    else if (_delayedResourceCacheLimit == -2) /* Recommended */
-                    {
-                        long defaultSize = CanvasType == CanvasTypes.MainCanvas ? GHApp.RecommendedPrimaryGPUCacheSize : GHApp.RecommendedSecondaryGPUCacheSize;
-                        System.Diagnostics.Debug.WriteLine("_delayedResourceCacheLimit is " + _delayedResourceCacheLimit);
-                        System.Diagnostics.Debug.WriteLine("RecommendedGPUCacheSize is " + defaultSize);
-                        if (defaultSize > 0)
-                        {
-                            internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
-                        }
-                        _delayedResourceCacheLimit = -1;
-                        System.Diagnostics.Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
-                    }
-                    else if ( _delayedResourceCacheLimit == -3) /* Skia Default */
-                    {
-                        long defaultSize = GHApp.DefaultGPUCacheSize;
-                        System.Diagnostics.Debug.WriteLine("_delayedResourceCacheLimit is " + _delayedResourceCacheLimit);
-                        System.Diagnostics.Debug.WriteLine("DefaultGPUCacheSize is " + defaultSize);
-                        if (defaultSize > 0)
-                        {
-                            internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
-                        }
-                        _delayedResourceCacheLimit = -1;
-                        System.Diagnostics.Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
-                    }
-                    else if (CanvasType == CanvasTypes.MainCanvas && GHApp.PrimaryGPUCacheLimit > 0)
-                    {
-                        System.Diagnostics.Debug.WriteLine("PrimaryGPUCacheLimit is " + GHApp.PrimaryGPUCacheLimit);
-                        internalGLView.GRContext.SetResourceCacheLimit(GHApp.PrimaryGPUCacheLimit);
-                        System.Diagnostics.Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
-                    }
-                    else if (CanvasType != CanvasTypes.MainCanvas && GHApp.SecondaryGPUCacheLimit > 0)
-                    {
-                        System.Diagnostics.Debug.WriteLine("SecondaryGPUCacheLimit is " + GHApp.SecondaryGPUCacheLimit);
-                        internalGLView.GRContext.SetResourceCacheLimit(GHApp.SecondaryGPUCacheLimit);
-                        System.Diagnostics.Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
-                    }
+                    System.Diagnostics.Debug.WriteLine("_delayedResourceCacheLimit is " + _delayedResourceCacheLimit);
+                    internalGLView.GRContext.SetResourceCacheLimit(_delayedResourceCacheLimit);
+                    System.Diagnostics.Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
                 }
+                else if (_delayedResourceCacheLimit == -2) /* Recommended */
+                {
+                    long defaultSize = CanvasType == CanvasTypes.MainCanvas ? GHApp.RecommendedPrimaryGPUCacheSize : GHApp.RecommendedSecondaryGPUCacheSize;
+                    System.Diagnostics.Debug.WriteLine("_delayedResourceCacheLimit is " + _delayedResourceCacheLimit);
+                    System.Diagnostics.Debug.WriteLine("RecommendedGPUCacheSize is " + defaultSize);
+                    if (defaultSize > 0)
+                    {
+                        internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
+                    }
+                    System.Diagnostics.Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
+                }
+                else if (_delayedResourceCacheLimit == -3) /* Skia Default */
+                {
+                    long defaultSize = GHApp.DefaultGPUCacheSize;
+                    System.Diagnostics.Debug.WriteLine("_delayedResourceCacheLimit is " + _delayedResourceCacheLimit);
+                    System.Diagnostics.Debug.WriteLine("DefaultGPUCacheSize is " + defaultSize);
+                    if (defaultSize > 0)
+                    {
+                        internalGLView.GRContext.SetResourceCacheLimit(defaultSize);
+                    }
+                    System.Diagnostics.Debug.WriteLine("ResourceCacheSize is now " + ResourceCacheLimit);
+                }
+                _delayedResourceCacheLimit = -1;
                 if (CanvasType == CanvasTypes.MainCanvas)
                     GHApp.CurrentGPUCacheSize = ResourceCacheLimit;
             }

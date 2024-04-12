@@ -865,7 +865,7 @@
                             <Picker Grid.Column="1" x:Name="SaveStylePicker"
                                         Title="Select a save style"
                                         FontFamily="Underwood" 
-                                        FontSize="16"
+                                        FontSize="15.4"
                                         TextColor="Black"
                                         TitleColor="Black"
                                         HorizontalTextAlignment="End"
@@ -882,38 +882,38 @@
                             </Picker>
                         </Grid>
                         <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                            <Label Text="Map GPU MB"
+                            <Label Text="Map GPU Cache"
                                             FontFamily="Underwood" TextColor="Black"
-                                            FontSize="15"
+                                            FontSize="14.5"
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
                             <Picker Grid.Column="1" x:Name="PrimaryGPUCachePicker"
                                             Title="Select cache size"
                                             FontFamily="Underwood" 
-                                            FontSize="16"
+                                            FontSize="15.4"
                                             TextColor="Black"
                                             TitleColor="Black"
                                             HorizontalTextAlignment="End"
-                                            WidthRequest="210"
+                                            WidthRequest="196"
                                             BackgroundColor="Transparent"
                                             VerticalOptions="Center"
                                             HorizontalOptions="EndAndExpand" >
                             </Picker>
                         </Grid>
                         <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                            <Label Text="Menu GPU MB"
+                            <Label Text="Menu GPU Cache"
                                             FontFamily="Underwood" TextColor="Black"
-                                            FontSize="15"
+                                            FontSize="14.5"
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
                             <Picker Grid.Column="1" x:Name="SecondaryGPUCachePicker"
                                             Title="Select cache size"
                                             FontFamily="Underwood" 
-                                            FontSize="16"
+                                            FontSize="15.4"
                                             TextColor="Black"
                                             TitleColor="Black"
                                             HorizontalTextAlignment="End"
-                                            WidthRequest="210"
+                                            WidthRequest="196"
                                             BackgroundColor="Transparent"
                                             VerticalOptions="Center"
                                             HorizontalOptions="EndAndExpand" >
