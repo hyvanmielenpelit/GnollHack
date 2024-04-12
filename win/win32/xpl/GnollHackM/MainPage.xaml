@@ -29,7 +29,7 @@
         <Grid x:Name="LogoGrid" RowSpacing="0" IsVisible="false" Opacity="0" AbsoluteLayout.LayoutBounds="60, 35, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="None" >
             <StackLayout Spacing="6">
-                <local:GHCachedImage Grid.Row="0" x:Name="MainLogoImage" Source="resource://GnollHackM.Assets.gnollhack-logo-test-2.png" HeightRequest="100" WidthRequest="100"
+                <local:GHCachedImage Grid.Row="0" x:Name="MainLogoImage" Source="resource://GnollHackM.Assets.gnollhack-logo-test-2.png" HeightRequest="100" WidthRequest="100" Aspect="AspectFill"
                    HorizontalOptions="Center" VerticalOptions="End"/>
                 <Label x:Name="GnollHackLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start" 
                    TextColor="White"

@@ -150,8 +150,9 @@ namespace GnollHackX
         {
             long TotalMemInBytes = (long)memory;
             long def = Math.Max(256L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024) / 2);
-            foreach(CacheSizeItem item in _cacheSizeList)
+            for (int i = 2; i < _cacheSizeList.Count; i++)
             {
+                CacheSizeItem item = _cacheSizeList[i];
                 if (item.Size >= def)
                     return item.Size;
             }
@@ -161,9 +162,10 @@ namespace GnollHackX
         private static long GetDefaultSecondaryGPUCacheSize(ulong memory)
         {
             long TotalMemInBytes = (long)memory;
-            long def = Math.Max(256L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024) / 4);
-            foreach (CacheSizeItem item in _cacheSizeList)
+            long def = Math.Max(256L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024) / 8);
+            for (int i = 2; i < _cacheSizeList2.Count; i++)
             {
+                CacheSizeItem item = _cacheSizeList2[i];
                 if (item.Size >= def)
                     return item.Size;
             }
@@ -204,7 +206,7 @@ namespace GnollHackX
         private static void SetAvailableGPUCacheLimits(ulong memory)
         {
             long TotalMemInBytes = (long)memory;
-            for (int i = _cacheSizeList.Count - 1; i >= 1; i--)
+            for (int i = _cacheSizeList.Count - 2; i >= 1; i--)
             {
                 CacheSizeItem item = _cacheSizeList[i];
                 if (item.Size >= TotalMemInBytes)
@@ -221,18 +223,18 @@ namespace GnollHackX
         public static List<CacheSizeItem> GetGPUCacheSizeList(bool isSecondary)
         {
             List<CacheSizeItem> list = isSecondary ? _cacheSizeList2 : _cacheSizeList;
-            long recommended = isSecondary ? GetDefaultSecondaryGPUCacheSize(TotalMemory) : GetDefaultPrimaryGPUCacheSize(TotalMemory);
+            long recommended = isSecondary ? RecommendedSecondaryGPUCacheSize : RecommendedPrimaryGPUCacheSize;
             if (DefaultGPUCacheSize > 0 && list.Count > 0 && list[0].Description == "Default")
             {
                 CacheSizeItem item = list[0];
                 item.Description = "Default (" + (DefaultGPUCacheSize / (1024 * 1024)) + " MB)";
             }
-            if (recommended > 0 && list.Count > 0 && list[0].Description == "Recommended")
+            if (recommended > 0 && list.Count > 0 && list[1].Description == "Recommended")
             {
-                CacheSizeItem item = list[0];
+                CacheSizeItem item = list[1];
                 item.Description = "Recommended (" + (recommended / (1024 * 1024)) + " MB)";
             }
-            return _cacheSizeList;
+            return list;
         }
 
         public static bool RecommendedSettingsChecked { get; set; }
