@@ -17,7 +17,7 @@
                AbsoluteLayout.LayoutFlags="None" Aspect="AspectFit"/>
 
         <local:GHCachedImage x:Name="StartLogoImage" Source="resource://GnollHackX.Assets.gnollhack-logo-test-2.png" Opacity="0" IsVisible="true" HeightRequest="180" WidthRequest="180"
-               HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Aspect="AspectFill"
+               HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"
                AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="PositionProportional" />
 
