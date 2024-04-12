@@ -266,5 +266,19 @@ namespace GnollHackX
                 canvas.DrawImage(targetBitmap, sourcerect, targetrect);
             }
         }
+
+        private double _currentWidth = 0;
+        private double _currentHeight = 0;
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            if (width != _currentWidth || height != _currentHeight)
+            {
+                _currentWidth = width;
+                _currentHeight = height;
+                InvalidateSurface();
+            }
+        }
+
     }
 }
