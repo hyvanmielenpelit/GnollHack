@@ -957,7 +957,7 @@ namespace GnollHackX.Pages.Game
                 tasks.Add(LoadingProgressBar.ProgressTo(0.5, 100, Easing.Linear));
                 tasks.Add(Task.Run(() =>
                 {
-                    using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack-logo-test-2.png"))
+                    using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack-icon-v2-512.png"))
                     {
                         SKBitmap bmp = SKBitmap.Decode(stream);
                         bmp.SetImmutable();
@@ -10183,14 +10183,6 @@ namespace GnollHackX.Pages.Game
                     if(!YouRectDrawn)
                         YouRect = new SKRect();
                 }
-
-                //if (ShowWaitIcon)
-                //{
-                //    SKRect targetrect;
-                //    float size = canvaswidth / 5.0f;
-                //    targetrect = new SKRect(canvaswidth / 2 - size / 2, canvasheight / 2 - size / 2, canvaswidth / 2 + size / 2, canvasheight / 2 + size / 2);
-                //    canvas.DrawImage(GHApp._logoBitmap, targetrect);
-                //}
             }
 
 #if GNH_MAP_PROFILING && DEBUG

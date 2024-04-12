@@ -170,6 +170,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\VersionPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\Game\GameMenuPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\MainPage.xaml.cs" />
+		<None Remove="Assets\gnollhack-icon-v2-512.png" />
 		<None Remove="Assets\UI\autostash.png" />
 		<None Remove="Assets\UI\battery-frame.png" />
 		<None Remove="Assets\UI\fps.png" />
@@ -591,6 +592,7 @@
 	  <EmbeddedResource Include="Assets\FMOD-Logo-192-White.png" />
 	  <EmbeddedResource Include="Assets\ghsecrets.sjson" />
 	  <EmbeddedResource Include="Assets\ghsettings.json" />
+	  <EmbeddedResource Include="Assets\gnollhack-icon-v2-512.png" />
 	  <EmbeddedResource Include="Assets\gnollhack-logo-test-2.png" />
 	  <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-2.png" />
 	  <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits.png" />

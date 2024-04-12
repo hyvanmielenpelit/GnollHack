@@ -2669,6 +2669,7 @@ namespace GnollHackX
                     AppResourceName + ".Assets.UI.missing_icon.png",
                     AppResourceName + ".Assets.FMOD-Logo-192-White.png",
                     AppResourceName + ".Assets.gnollhack-logo-test-2.png",
+                    AppResourceName + ".Assets.gnollhack-icon-v2-512.png",
                     };
                     foreach (string imagePath in cachedBitmaps)
                     {

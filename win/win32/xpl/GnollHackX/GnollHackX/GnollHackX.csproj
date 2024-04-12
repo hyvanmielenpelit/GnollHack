@@ -51,6 +51,7 @@
     <None Remove="Assets\FMOD-Logo-192-White.png" />
     <None Remove="Assets\ghsecrets.sjson" />
     <None Remove="Assets\ghsettings.json" />
+    <None Remove="Assets\gnollhack-icon-v2-512.png" />
     <None Remove="Assets\gnollhack-logo-test-2.png" />
     <None Remove="Assets\gnollhack_64x96_transparent_32bits-2.png" />
     <None Remove="Assets\gnollhack_64x96_transparent_32bits.png" />
@@ -280,6 +281,7 @@
     <EmbeddedResource Include="Assets\FMOD-Logo-192-White.png" />
     <EmbeddedResource Include="Assets\ghsecrets.sjson" />
     <EmbeddedResource Include="Assets\ghsettings.json" />
+    <EmbeddedResource Include="Assets\gnollhack-icon-v2-512.png" />
     <EmbeddedResource Include="Assets\gnollhack-logo-test-2.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-2.png" />
     <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits.png" />
