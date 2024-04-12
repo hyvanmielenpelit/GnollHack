@@ -49,12 +49,15 @@ namespace GnollHackX.Pages.Game
             _playingReplay = gamePage.PlayingReplay;
         }
 
+        private bool _tapHide = false;
         private async void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
             if(!_playingReplay)
             {
+                _tapHide = true;
                 OutRipGrid.IsEnabled = false;
                 await App.Current.MainPage.Navigation.PopModalAsync();
+                _gamePage.GenericButton_Clicked(sender, e, 27);
             }
         }
 
@@ -78,7 +81,7 @@ namespace GnollHackX.Pages.Game
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
-            if (!_playingReplay)
+            if (!_playingReplay && !_tapHide)
                 _gamePage.GenericButton_Clicked(sender, e, 27);
         }
     }

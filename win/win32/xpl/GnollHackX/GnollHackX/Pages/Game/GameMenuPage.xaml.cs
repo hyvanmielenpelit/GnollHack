@@ -78,8 +78,8 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             GHApp.DebugWriteRestart("ProfilingStopwatch.Restart: Options");
-            _gamePage.GenericButton_Clicked(sender, e, 'O');
             await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, 'O');
         }
 
         private async void btnSettings_Clicked(object sender, EventArgs e)

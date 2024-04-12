@@ -101,8 +101,8 @@ namespace GnollHackX.Pages.Game
             ConcurrentQueue<GHResponse> queue;
             if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.AskName, usedName));
                 await _gamePage.Navigation.PopModalAsync();
+                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.AskName, usedName));
             }
             btnOK.IsEnabled = true;
             btnCancel.IsEnabled = true;
@@ -190,8 +190,8 @@ namespace GnollHackX.Pages.Game
             ConcurrentQueue<GHResponse> queue;
             if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.AskName, ""));
                 await _gamePage.Navigation.PopModalAsync();
+                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.AskName, ""));
             }
             btnOK.IsEnabled = true;
             btnCancel.IsEnabled = true;
