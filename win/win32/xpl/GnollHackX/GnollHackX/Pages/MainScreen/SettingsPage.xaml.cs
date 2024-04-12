@@ -87,7 +87,7 @@ namespace GnollHackX.Pages.MainScreen
                 list.Add("120 fps");
             RefreshRatePicker.ItemsSource = list;
 
-            List<CacheSizeItem> cacheDictionary = new List<CacheSizeItem>()
+            List<CacheSizeItem> cacheSizeList = new List<CacheSizeItem>()
             { 
                 new CacheSizeItem(GHApp.DefaultGPUCacheSize > 0 ? "Default (" + (GHApp.DefaultGPUCacheSize / (1024 * 1024)) + " MB)" : "Default", -2L ),
                 new CacheSizeItem("8 MB", 8L * 1024 * 1204 ),
@@ -98,9 +98,13 @@ namespace GnollHackX.Pages.MainScreen
                 new CacheSizeItem("256 MB", 256L * 1024 * 1204 ),
                 new CacheSizeItem("512 MB", 512L * 1024 * 1204 ),
                 new CacheSizeItem("1024 MB", 1024L * 1024 * 1204 ),
+                new CacheSizeItem("1536 MB", 1536L * 1024 * 1204 ),
+                new CacheSizeItem("2048 MB", 2048L * 1024 * 1204 ),
+                new CacheSizeItem("3072 MB", 3072L * 1024 * 1204 ),
+                new CacheSizeItem("4096 MB", 4096L * 1024 * 1204 ),
             };
-            PrimaryGPUCachePicker.ItemsSource = cacheDictionary;
-            SecondaryGPUCachePicker.ItemsSource = cacheDictionary;
+            PrimaryGPUCachePicker.ItemsSource = cacheSizeList;
+            SecondaryGPUCachePicker.ItemsSource = cacheSizeList;
 
             SimpleCommandBarButton1Picker.ItemsSource = GHApp.SelectableShortcutButtons;
             SimpleCommandBarButton2Picker.ItemsSource = GHApp.SelectableShortcutButtons;
