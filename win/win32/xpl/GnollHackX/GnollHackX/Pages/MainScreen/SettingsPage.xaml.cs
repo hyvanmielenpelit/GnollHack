@@ -56,12 +56,13 @@ namespace GnollHackX.Pages.MainScreen
             else
                 _gamePage = null;
             _mainPage = mainPage;
-            List<string> list = new List<string>();
-            list.Add("20 fps");
-            list.Add("30 fps");
-            list.Add("40 fps");
-            if (GHApp.DisplayRefreshRate >= 60.0f)
-                list.Add("60 fps");
+            List<string> list = new List<string>
+            {
+                "20 fps",
+                "30 fps",
+                "40 fps",
+                "60 fps"
+            };
             if (GHApp.DisplayRefreshRate >= 80.0f)
                 list.Add("80 fps");
             if (GHApp.DisplayRefreshRate >= 90.0f)
