@@ -1123,28 +1123,36 @@ register struct monst *mtmp;
             break;
         case PM_PIT_FIEND:
             otmp = mksobj_with_flags(ANCUS, TRUE, FALSE, MKOBJ_TYPE_NORMAL, mtmp, MAT_NONE, 0L, 0L, 0UL);
-            curse(otmp);
-            spe2 = 0 + rnd(3);
-            otmp->enchantment = max(otmp->enchantment, spe2);
-            otmp->exceptionality = !rn2(3) ? EXCEPTIONALITY_INFERNAL : EXCEPTIONALITY_ELITE;
-            (void)mpickobj(mtmp, otmp);
-
-            otmp = mksobj_with_flags(JAGGED_TOOTHED_CLUB, TRUE, FALSE, MKOBJ_TYPE_NORMAL, mtmp, MAT_NONE, 0L, 0L, 0UL);
-            curse(otmp);
-            spe2 = 0 + rnd(3);
-            otmp->enchantment = max(otmp->enchantment, spe2);
-            otmp->exceptionality = !rn2(3) ? EXCEPTIONALITY_INFERNAL : EXCEPTIONALITY_ELITE;
-            (void)mpickobj(mtmp, otmp);
+            if (otmp)
+            {
+                curse(otmp);
+                spe2 = rn2(4);
+                otmp->enchantment = max(otmp->enchantment, spe2);
+                otmp->exceptionality = !rn2(3) ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_ELITE : EXCEPTIONALITY_EXCEPTIONAL;
+                (void)mpickobj(mtmp, otmp);
+            }
+            otmp = mksobj_with_flags(TWO_HANDED_CLUB, TRUE, FALSE, MKOBJ_TYPE_NORMAL, mtmp, MAT_NONE, 0L, 0L, 0UL);
+            if (otmp)
+            {
+                curse(otmp);
+                spe2 = rn2(4);
+                otmp->enchantment = max(otmp->enchantment, spe2);
+                otmp->exceptionality = !rn2(3) ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_ELITE : EXCEPTIONALITY_EXCEPTIONAL;
+                (void)mpickobj(mtmp, otmp);
+            }
             break;
         case PM_BAPHOMET:
             /* Baphomet's bardiche */
             otmp = mksobj_with_flags(BARDICHE, TRUE, FALSE, MKOBJ_TYPE_NORMAL, mtmp, MAT_NONE, 0L, 0L, 0UL);
-            curse(otmp);
-            otmp->oerodeproof = TRUE;
-            spe2 = 3 + rnd(7);
-            otmp->enchantment = max(otmp->enchantment, spe2);
-            otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
-            (void)mpickobj(mtmp, otmp);
+            if (otmp)
+            {
+                curse(otmp);
+                otmp->oerodeproof = TRUE;
+                spe2 = 3 + rnd(7);
+                otmp->enchantment = max(otmp->enchantment, spe2);
+                otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
+                (void)mpickobj(mtmp, otmp);
+            }
 
             /* And his nose ring, of course */
             (void)mongets(mtmp, !rn2(2) ? NOSE_RING_OF_BULL_STRENGTH : NOSE_RING_OF_BULLHEADEDNESS);
