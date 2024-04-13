@@ -150,14 +150,14 @@ namespace GnollHackX
         {
             long TotalMemInBytes = (long)memory;
             long def = Math.Min(4096L * 1024 * 1024, Math.Max(256L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024) / 2));
-            if (_cacheSizeList.Count > 2 && _cacheSizeList[_cacheSizeList.Count - 1].Size >= 256L * 1024 * 1024 && def > _cacheSizeList[_cacheSizeList.Count - 1].Size)
+            if (_cacheSizeList.Count > 2 && _cacheSizeList[_cacheSizeList.Count - 1].Size >= 256L * 1024 * 1024 && def >= _cacheSizeList[_cacheSizeList.Count - 1].Size)
                 return _cacheSizeList[_cacheSizeList.Count - 1].Size;
 
-            for (int i = 2; i < _cacheSizeList.Count; i++)
+            for (int i = 3; i < _cacheSizeList.Count; i++)
             {
                 CacheSizeItem item = _cacheSizeList[i];
-                if (item.Size >= def)
-                    return item.Size;
+                if (item.Size > def)
+                    return _cacheSizeList[i - 1].Size;
             }
             return -3L;
         }
@@ -189,13 +189,18 @@ namespace GnollHackX
                 new CacheSizeItem("256 MB", 256L * 1024 * 1024 ),
                 new CacheSizeItem("384 MB", 384L * 1024 * 1024 ),
                 new CacheSizeItem("512 MB", 512L * 1024 * 1024 ),
+                new CacheSizeItem("640 MB", 640L * 1024 * 1024 ),
                 new CacheSizeItem("768 MB", 768L * 1024 * 1024 ),
+                new CacheSizeItem("896 MB", 896L * 1024 * 1024 ),
                 new CacheSizeItem("1024 MB", 1024L * 1024 * 1024 ),
                 new CacheSizeItem("1280 MB", 1280L * 1024 * 1024 ),
                 new CacheSizeItem("1536 MB", 1536L * 1024 * 1024 ),
+                new CacheSizeItem("1792 MB", 1792L * 1024 * 1024 ),
                 new CacheSizeItem("2048 MB", 2048L * 1024 * 1024 ),
+                new CacheSizeItem("2304 MB", 2304L * 1024 * 1024 ),
                 new CacheSizeItem("2560 MB", 2560L * 1024 * 1024 ),
                 new CacheSizeItem("3072 MB", 3072L * 1024 * 1024 ),
+                new CacheSizeItem("3584 MB", 3584L * 1024 * 1024 ),
                 new CacheSizeItem("4096 MB", 4096L * 1024 * 1024 ),
                 new CacheSizeItem("5120 MB", 5120L * 1024 * 1024 ),
                 new CacheSizeItem("6144 MB", 6144L * 1024 * 1024 ),
