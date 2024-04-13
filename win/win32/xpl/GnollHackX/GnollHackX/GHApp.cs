@@ -211,7 +211,7 @@ namespace GnollHackX
         private static void SetAvailableGPUCacheLimits(ulong memory)
         {
             long TotalMemInBytes = (long)memory;
-            for (int i = _cacheSizeList.Count - 2; i >= 1; i--)
+            for (int i = _cacheSizeList.Count - 1; i >= 2; i--)
             {
                 CacheSizeItem item = _cacheSizeList[i];
                 if (item.Size >= TotalMemInBytes)
