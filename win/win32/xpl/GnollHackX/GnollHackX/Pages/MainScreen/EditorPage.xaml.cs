@@ -13,6 +13,7 @@ using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 namespace GnollHackM
 #else
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 
@@ -27,11 +28,7 @@ namespace GnollHackX.Pages.MainScreen
         public EditorPage(string fileName, string header)
         {
             InitializeComponent();
-#if GNH_MAUI
             On<iOS>().SetUseSafeArea(true);
-#else
-            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
-#endif
 
             _fileName = fileName;
             HeaderLabel.Text = header;

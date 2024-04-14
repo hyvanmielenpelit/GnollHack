@@ -30,6 +30,7 @@ namespace GnollHackM
 using GnollHackX.Pages.Game;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 
@@ -52,11 +53,7 @@ namespace GnollHackX.Pages.MainScreen
         public ReplayPage(MainPage mainPage)
 		{
 			InitializeComponent();
-#if GNH_MAUI
             On<iOS>().SetUseSafeArea(true);
-#else
-            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
-#endif
 
             _mainPage = mainPage;
             MoreButton.IsEnabled = false;

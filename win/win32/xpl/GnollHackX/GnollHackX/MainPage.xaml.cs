@@ -31,6 +31,7 @@ using SkiaSharp.Views.Forms;
 using GnollHackX.Pages.Game;
 using GnollHackX.Pages.MainScreen;
 using Xamarin.Essentials;
+using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 
 namespace GnollHackX
@@ -62,15 +63,13 @@ namespace GnollHackX
         public MainPage()
         {
             InitializeComponent();
-#if GNH_MAUI
             On<iOS>().SetUseSafeArea(true);
+#if GNH_MAUI
             Shell.SetNavBarIsVisible(this, false);
             _generalTimer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
             _generalTimer.Interval = TimeSpan.FromSeconds(GHConstants.MainScreenGeneralCounterIntervalInSeconds);
             _generalTimer.IsRepeating = true;
             _generalTimer.Tick += (s, e) => { if(!DoGeneralTimerTick()) _generalTimer.Stop(); };
-#else
-            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
 #endif
         }
 

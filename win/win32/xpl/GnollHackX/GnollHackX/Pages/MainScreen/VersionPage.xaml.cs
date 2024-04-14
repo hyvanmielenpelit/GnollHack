@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using GnollHackX.Controls;
 
 #if GNH_MAUI
 using GnollHackX;
@@ -15,9 +14,11 @@ namespace GnollHackM
 #else
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 using GnollHackX.Pages.Game;
+using GnollHackX.Controls;
 
 namespace GnollHackX.Pages.MainScreen
 #endif
@@ -29,11 +30,7 @@ namespace GnollHackX.Pages.MainScreen
         public VersionPage(GamePage gamePage)
         {
             InitializeComponent();
-#if GNH_MAUI
-            On<iOS>().SetUseSafeArea(false);
-#else
-            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
-#endif
+            On<iOS>().SetUseSafeArea(true);
 
             _gamePage = gamePage;
 

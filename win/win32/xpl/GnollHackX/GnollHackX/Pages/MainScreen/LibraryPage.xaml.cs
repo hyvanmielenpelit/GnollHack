@@ -14,6 +14,7 @@ using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 namespace GnollHackM
 #else
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 using GnollHackX.Controls;
@@ -27,11 +28,7 @@ namespace GnollHackX.Pages.MainScreen
 		public LibraryPage ()
 		{
 			InitializeComponent ();
-#if GNH_MAUI
-            On<iOS>().SetUseSafeArea(false);
-#else
-            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
-#endif
+            On<iOS>().SetUseSafeArea(true);
         }
 
         private async void Button_Clicked(object sender, EventArgs e)

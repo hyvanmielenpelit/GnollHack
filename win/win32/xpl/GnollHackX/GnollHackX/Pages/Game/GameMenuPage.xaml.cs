@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO.Compression;
-
 using System.IO;
 
 #if GNH_MAUI
@@ -16,6 +15,7 @@ using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 namespace GnollHackM
 #else
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 using GnollHackX.Pages.MainScreen;
@@ -31,11 +31,7 @@ namespace GnollHackX.Pages.Game
         public GameMenuPage(GamePage gamePage)
         {
             InitializeComponent();
-#if GNH_MAUI
             On<iOS>().SetUseSafeArea(false);
-#else
-            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
-#endif
 
             _gamePage = gamePage;
 

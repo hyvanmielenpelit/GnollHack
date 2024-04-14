@@ -16,6 +16,7 @@ namespace GnollHackM
 #else
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 
@@ -28,11 +29,7 @@ namespace GnollHackX.Pages.MainScreen
         public ResetPage()
         {
             InitializeComponent();
-#if GNH_MAUI
             On<iOS>().SetUseSafeArea(true);
-#else
-            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
-#endif
 #if !DEBUG
             btnDownloadTestFiles.IsVisible = false;
             btnImportTestFiles.IsVisible = false;

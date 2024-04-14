@@ -809,12 +809,8 @@ namespace GnollHackX.Pages.Game
         public GamePage(MainPage mainPage)
         {
             InitializeComponent();
-            //On<iOS>().SetUseSafeArea(true);
-#if GNH_MAUI
             On<iOS>().SetUseSafeArea(true);
-#else
-            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
-#endif
+
             _mainPage = mainPage;
 
             for (int i = 0; i < GHConstants.MapCols; i++)

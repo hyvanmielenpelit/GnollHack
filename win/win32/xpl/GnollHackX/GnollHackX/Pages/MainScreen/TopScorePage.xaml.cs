@@ -15,6 +15,7 @@ namespace GnollHackM
 #else
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 
@@ -30,11 +31,8 @@ namespace GnollHackX.Pages.MainScreen
         public TopScorePage(string fileName)
         {
             InitializeComponent();
-#if GNH_MAUI
             On<iOS>().SetUseSafeArea(true);
-#else
-            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
-#endif
+
             _fileName = fileName;
             ScoresView.BindingContext = this;
             MainGrid.BindingContext = this;
@@ -48,11 +46,8 @@ namespace GnollHackX.Pages.MainScreen
         public TopScorePage()
         {
             InitializeComponent();
-#if GNH_MAUI
             On<iOS>().SetUseSafeArea(true);
-#else
-            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
-#endif
+
             _fileName = "";
             NoScoresLabel.IsVisible = true;
             ScoresView.IsVisible = false;

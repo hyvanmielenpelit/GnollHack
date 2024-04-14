@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
@@ -14,6 +15,7 @@ using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 namespace GnollHackM
 #else
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
@@ -32,11 +34,10 @@ namespace GnollHackX.Pages.Game
         public NamePage(GamePage gamePage, string modeName, string modeDescription, string replayEnteredPlayerName)
         {
             InitializeComponent();
-#if GNH_MAUI
             On<iOS>().SetUseSafeArea(true);
+#if GNH_MAUI
             Loaded += ContentPage_Loaded;
 #else
-            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
             Appearing += ContentPage_Loaded;
 #endif
             ValidationExpression = new Regex(@"^[A-Za-z0-9_]{1,31}$");
