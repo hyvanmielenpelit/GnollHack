@@ -91,14 +91,6 @@ struct layer_info {
     xchar leash_mon_y[MAXLEASHED + 1]; /* the last coordinate is the other end of the leash, i.e., u.uy at the time */
 };
 
-struct simple_layer_info {
-    int glyph; /* For ascii compatibility */
-    int bkglyph; /* For ascii compatibility */
-    unsigned long layer_flags;
-    unsigned m_id;  /* check that the monster found at the square is the one that is supposed to be drawn by comparing their m_ids */
-    unsigned o_id;  /* this is the o_id of the possibly moving boulder */
-};
-
 /* Location */
 #define LFLAGS_L_LEGAL                  0x00000001UL
 #define LFLAGS_L_ILLEGAL                0x00000002UL
