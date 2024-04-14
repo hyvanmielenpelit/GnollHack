@@ -822,7 +822,7 @@ long num;
 
     if (obj->cobj || num <= 0L || obj->quan <= num)
     {
-        panic("splitobj"); /* can't split containers */
+        panic("splitobj: num=%ld, quan=%ld", num, obj->quan); /* can't split containers */
         return (struct obj*)0;
     }
     otmp = newobj();
