@@ -1442,6 +1442,46 @@ namespace GnollHackX.Pages.MainScreen
                 PopupGrid.IsVisible = true;
             }
         }
+
+        private void PrimaryGPUCachePicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isManualTogglingEnabled && PrimaryGPUCachePicker.SelectedIndex > 1 && PrimaryGPUCachePicker.ItemsSource != null && PrimaryGPUCachePicker.SelectedIndex < PrimaryGPUCachePicker.ItemsSource.Count)
+            {
+                object item = PrimaryGPUCachePicker.ItemsSource[PrimaryGPUCachePicker.SelectedIndex];
+                if (item != null && item is CacheSizeItem)
+                {
+                    CacheSizeItem c = (CacheSizeItem)item;
+                    if (c.Size >= (long)(GHApp.TotalMemory / 2))
+                    {
+                        PopupTitleLabel.TextColor = GHColors.Orange;
+                        PopupTitleLabel.Text = "High GPU Cache";
+                        PopupLabel.Text = "Setting primary GPU cache to a high level may potentially crash the game.";
+                        PopupOkButton.IsEnabled = true;
+                        PopupGrid.IsVisible = true;
+                    }
+                }
+            }
+        }
+
+        private void SecondaryGPUCachePicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isManualTogglingEnabled && SecondaryGPUCachePicker.SelectedIndex > 1 && SecondaryGPUCachePicker.ItemsSource != null && SecondaryGPUCachePicker.SelectedIndex < SecondaryGPUCachePicker.ItemsSource.Count)
+            {
+                object item = SecondaryGPUCachePicker.ItemsSource[SecondaryGPUCachePicker.SelectedIndex];
+                if (item != null && item is CacheSizeItem)
+                {
+                    CacheSizeItem c = (CacheSizeItem)item;
+                    if (c.Size >= (long)(GHApp.TotalMemory / 2))
+                    {
+                        PopupTitleLabel.TextColor = GHColors.Orange;
+                        PopupTitleLabel.Text = "High GPU Cache";
+                        PopupLabel.Text = "Setting secondary GPU cache to a high level may potentially crash the game.";
+                        PopupOkButton.IsEnabled = true;
+                        PopupGrid.IsVisible = true;
+                    }
+                }
+            }
+        }
     }
 
 }
