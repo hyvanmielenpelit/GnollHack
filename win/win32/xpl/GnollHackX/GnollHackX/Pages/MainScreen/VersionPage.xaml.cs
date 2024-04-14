@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using GnollHackX.Controls;
+
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
@@ -90,9 +92,16 @@ namespace GnollHackX.Pages.MainScreen
                 SessionPlayTimeRowDefinition.Height = 0;
             }
 
-            if (GHApp.GPUBackend != null)
+            /* Update GPU resource usage to latest value */
+            if(_gamePage != null)
             {
-                GPUBackendLabel.Text = GHApp.GPUBackend;
+                GHApp.CurrentGPUCacheUsage = _gamePage.GetPrimaryCanvasResourceCacheUsage();
+            }
+
+            string backend = GHApp.GPUBackend;
+            if (backend != null)
+            {
+                GPUBackendLabel.Text = backend;
             }
             else
             {
@@ -105,9 +114,10 @@ namespace GnollHackX.Pages.MainScreen
                 GPUBackendRowDefinition.Height = 0;
             }
 
-            if (GHApp.CurrentGPUCacheSize >= 0)
+            long cacheSize = GHApp.CurrentGPUCacheSize;
+            if (cacheSize >= 0)
             {
-                long TotalGPUCacheInBytes = GHApp.CurrentGPUCacheSize;
+                long TotalGPUCacheInBytes = cacheSize;
                 long TotalGPUCacheInMB = (TotalGPUCacheInBytes / 1024) / 1024;
                 GPUCacheSizeLabel.Text = TotalGPUCacheInMB + " MB";
             }
@@ -120,6 +130,37 @@ namespace GnollHackX.Pages.MainScreen
                 VersionInfoGrid.Children.Remove(GPUCacheSizeTitleLabel);
                 //VersionInfoGrid.RowDefinitions.Remove(GPUCacheSizeRowDefinition);
                 GPUCacheSizeRowDefinition.Height = 0;
+            }
+
+            CacheUsageInfo cacheUsage = GHApp.CurrentGPUCacheUsage;
+            int cacheUsageResources = cacheUsage.MaxResources;
+            long cacheUsageBytes = cacheUsage.MaxResourceBytes;
+            if (cacheUsageBytes >= 0 || cacheUsageResources >= 0)
+            {
+                string str = "";
+                if(cacheUsageBytes >= 0)
+                {
+                    long TotalCacheUsageInBytes = cacheUsageBytes;
+                    long TotalCacheUsageInMB = (TotalCacheUsageInBytes / 1024) / 1024;
+                    str += TotalCacheUsageInMB + " MB";
+                }
+                if (cacheUsageResources >= 0)
+                {
+                    if (str != "")
+                        str += " / ";
+                    str += cacheUsageResources + " #";
+                }
+                GPUCacheUsageLabel.Text = str;
+            }
+            else
+            {
+                GPUCacheUsageLabel.Text = "";
+                GPUCacheUsageLabel.IsVisible = false;
+                GPUCacheUsageTitleLabel.IsVisible = false;
+                VersionInfoGrid.Children.Remove(GPUCacheUsageLabel);
+                VersionInfoGrid.Children.Remove(GPUCacheUsageTitleLabel);
+                //VersionInfoGrid.RowDefinitions.Remove(GPUCacheUsageRowDefinition);
+                GPUCacheUsageRowDefinition.Height = 0;
             }
 
             PortVersionTitleLabel.Text = GHApp.RuntimePlatform + " Port Version:";

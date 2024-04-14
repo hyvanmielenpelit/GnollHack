@@ -43,6 +43,18 @@ namespace GnollHackX
         public string Message;
     }
 
+    public struct CacheUsageInfo
+    {
+        public int MaxResources;
+        public long MaxResourceBytes;
+
+        public CacheUsageInfo(int maxResources, long maxResourceBytes)
+        {
+            MaxResources = maxResources;
+            MaxResourceBytes = maxResourceBytes;
+        }
+    }
+
     public class CacheSizeItem
     {
         public string Description;
@@ -315,12 +327,14 @@ namespace GnollHackX
         public static string GPUBackend { get { lock (_gPUBackendLock) { return _gPUBackend; } } set { lock (_gPUBackendLock) { _gPUBackend = value; } } }
         private static long _defaultGPUCacheSize = -1; /* Null */
         public static long DefaultGPUCacheSize { get { lock (_gPUBackendLock) { return _defaultGPUCacheSize; } } set { lock (_gPUBackendLock) { _defaultGPUCacheSize = value; } } }
-        private static long _primaryGPUCacheSize = -1; /* Null */
+        private static long _primaryGPUCacheSize = -2; /* Recommended */
         public static long PrimaryGPUCacheLimit { get { lock (_gPUBackendLock) { return _primaryGPUCacheSize; } } set { lock (_gPUBackendLock) { _primaryGPUCacheSize = value; } } }
-        private static long _secondaryGPUCacheSize = -2; /* Default */
+        private static long _secondaryGPUCacheSize = -2; /* Recommended */
         public static long SecondaryGPUCacheLimit { get { lock (_gPUBackendLock) { return _secondaryGPUCacheSize; } } set { lock (_gPUBackendLock) { _secondaryGPUCacheSize = value; } } }
-        private static long _currentGPUCacheSize = -2; /* Default */
+        private static long _currentGPUCacheSize = -1; /* Null */
         public static long CurrentGPUCacheSize { get { lock (_gPUBackendLock) { return _currentGPUCacheSize; } } set { lock (_gPUBackendLock) { _currentGPUCacheSize = value; } } }
+        private static CacheUsageInfo _currentGPUCacheUsage = new CacheUsageInfo(-1, -1); /* Null */
+        public static CacheUsageInfo CurrentGPUCacheUsage { get { lock (_gPUBackendLock) { return _currentGPUCacheUsage; } } set { lock (_gPUBackendLock) { _currentGPUCacheUsage = value; } } }
 
         private static double _batteryChargeLevel = -1;
         private static double _previousBatteryChargeLevel = -1;

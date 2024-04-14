@@ -10,22 +10,22 @@ namespace GnollHackX
 {
     public struct MapData
     {
-        public int Glyph { get; set; }
-        public int BkGlyph { get; set; }
-        public string Symbol { get; set; }
-        public SKColor Color { get; set; }
-        public uint Special { get; set; }
+        public int Glyph;
+        public int BkGlyph;
+        public string Symbol;
+        public SKColor Color;
+        public uint Special;
         public LayerInfo Layers;
-        public long GlyphPrintAnimationCounterValue { get; set; }
-        public long GlyphPrintMainCounterValue { get; set; }
-        public long GlyphObjectPrintAnimationCounterValue { get; set; }
-        public long GlyphObjectPrintMainCounterValue { get; set; }
-        public long GlyphGeneralPrintAnimationCounterValue { get; set; }
-        public long GlyphGeneralPrintMainCounterValue { get; set; }
-        public bool NeedsUpdate { get; set; }
-        public bool MapAnimated { get; set; }
-        public bool RedrawTile { get; set; }
-        public bool HasEnlargementOrAnimationOrSpecialHeight { get; set; }
+        public long GlyphPrintAnimationCounterValue;
+        public long GlyphPrintMainCounterValue;
+        public long GlyphObjectPrintAnimationCounterValue;
+        public long GlyphObjectPrintMainCounterValue;
+        public long GlyphGeneralPrintAnimationCounterValue;
+        public long GlyphGeneralPrintMainCounterValue;
+        public bool NeedsUpdate;
+        public bool MapAnimated;
+        public bool RedrawTile;
+        public bool HasEnlargementOrAnimationOrSpecialHeight;
         public EngravingInfo Engraving;
     }
 

@@ -801,6 +801,11 @@ namespace GnollHackX.Pages.Game
             Debug.WriteLine("Secondary: ResourceCacheSize is " + MenuCanvas.ResourceCacheLimit);
         }
 
+        public CacheUsageInfo GetPrimaryCanvasResourceCacheUsage()
+        {
+            return canvasView.ResourceCacheUsage;
+        }
+
         public GamePage(MainPage mainPage)
         {
             InitializeComponent();
@@ -811,6 +816,20 @@ namespace GnollHackX.Pages.Game
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
 #endif
             _mainPage = mainPage;
+
+            for (int i = 0; i < GHConstants.MapCols; i++)
+            {
+                for (int j = 0; j < GHConstants.MapRows; j++)
+                {
+                    _mapData[i, j] = new MapData();
+                    _mapData[i, j].Glyph = GHApp.UnexploredGlyph;
+                    _mapData[i, j].BkGlyph = GHApp.NoGlyph;
+                    _mapData[i, j].NeedsUpdate = true;
+
+                    _objectData[i, j] = new ObjectData();
+                }
+            }
+            SetLayerDrawOrder();
 
             CursorStyle = (TTYCursorStyle)Preferences.Get("CursorStyle", 1);
             GraphicsStyle = (GHGraphicsStyle)Preferences.Get("GraphicsStyle", 1);
@@ -1039,20 +1058,6 @@ namespace GnollHackX.Pages.Game
             tasks.Add(Task.Run(() =>
             {
                 ExtendedCommands = _gnollHackService.GetExtendedCommands();
-                SetLayerDrawOrder();
-
-                for (int i = 0; i < GHConstants.MapCols; i++)
-                {
-                    for (int j = 0; j < GHConstants.MapRows; j++)
-                    {
-                        _mapData[i, j] = new MapData();
-                        _mapData[i, j].Glyph = GHApp.UnexploredGlyph;
-                        _mapData[i, j].BkGlyph = GHApp.NoGlyph;
-                        _mapData[i, j].NeedsUpdate = true;
-
-                        _objectData[i, j] = new ObjectData();
-                    }
-                }
             }));
             await Task.WhenAll(tasks);
             tasks.Clear();
