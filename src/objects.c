@@ -2474,7 +2474,7 @@ CONTAINER("bag of holding", "ornamental bag", "Reduces the weight of contents by
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, 
     O1_NONE, O2_CONTAINER_MAGIC_BAG | O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG, O3_NONE, 
     O4_NONE, O5_NONE, O6_NONE, PERMITTED_ALL), //STARTMARKER 2
-CONTAINER("bag of wizardry", "antiquated bag", "Reduces the weight of spellbooks, scrolls, reagents, and wands to 1/8", 
+CONTAINER("bag of wizardry", "antiquated bag", "Reduces the weight of spellbooks, scrolls, reagents, wands, artifacts, and mythic items to 1/8", 
     TOOLTYPE_BAG, OD_NONE, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
     0, 1, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 15, 15, 100, 0, 0, 0, 0, 0, 
     NO_POWER, NO_POWER, NO_POWER, P1_NONE, 0, MAT_CLOTH, HI_CLOTH, 0, OBJECT_SOUNDSET_GENERIC, 

@@ -774,6 +774,9 @@ enum elemental_enchantments {
 #define is_obj_weight_reduced_by_wizardry(o) \
     ((o)->oclass == REAGENT_CLASS || (o)->oclass == SPBOOK_CLASS \
     || (o)->oclass == WAND_CLASS || (o)->oclass == SCROLL_CLASS \
+    || (o)->oartifact > 0 \
+    || (o)->mythic_prefix > 0 \
+    || (o)->mythic_suffix > 0 \
     )
 
 #define is_obj_weight_reduced_by_treasure_hauling(o) \
