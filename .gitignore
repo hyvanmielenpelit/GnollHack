@@ -83,7 +83,8 @@ dat/dlb.lst
 win/win32/xpl/gnollhackdroid/date*.h
 win/win32/xpl/gnollhackios/date*.h
 win/win32/xpl/gnollhackios/download*.bat
-win/win32/xpl/GnollHackM/.maui/*.*
+win/win32/xpl/GnollHackM/.maui/*
+win/win32/xpl/GnollHackM/.meteor/*
 *.lastbuildstate
 *.csv
 *.wav
