@@ -66,6 +66,8 @@
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
 		<_MauiForceXamlCForDebug>true</_MauiForceXamlCForDebug>
+		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-android'">
