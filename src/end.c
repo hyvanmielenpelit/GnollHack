@@ -3347,8 +3347,6 @@ get_current_game_score()
         + u.uachieve.entered_large_circular_dungeon + u.uachieve.entered_plane_of_modron + u.uachieve.entered_hellish_pastures
         );
 
-
-    /* Monk gets special score from easy achievements */
     long Role_Achievement_Score = 0L;  /* Special role-specific achievement */
 
     long Archaeologist_Artifact_Score = 0L;
@@ -3364,63 +3362,45 @@ get_current_game_score()
     long Valkyrie_Item_Score = 0L;
     long Wizard_Spell_Score = 0L;
 
-    if (Role_if(PM_ROGUE))
+    switch (urole.monsternum) /* Role_if(X) */
     {
-        long lootvalue = 0L;
-        lootvalue += money_cnt(invent);
-        lootvalue += hidden_gold(); /* accumulate gold from containers */
-        lootvalue += carried_gem_value();
-        Rogue_Loot_Score = lootvalue;
-        Role_Achievement_Score += ROGUE_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Small extra bonus from defeating Croesus only, since rogue gets score from his gold */
-    }
-    else if (Role_if(PM_ARCHAEOLOGIST))
+    case PM_ARCHAEOLOGIST:
     {
-        Archaeologist_Artifact_Score += ARCHAEOLOGIST_PER_ARTIFACT_SCORE * count_artifacts(invent);
-        Role_Achievement_Score += ARCHAEOLOGIST_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Large extra bonus from finding and defeating Amonket */
+        Archaeologist_Artifact_Score = ARCHAEOLOGIST_PER_ARTIFACT_SCORE * count_artifacts(invent);
+        Role_Achievement_Score = ARCHAEOLOGIST_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
+        break;
     }
-    else if (Role_if(PM_BARBARIAN))
+    case PM_BARBARIAN:
     {
-        Barbarian_Melee_Weapon_Score += count_powerful_melee_weapon_score(invent);
-        Role_Achievement_Score += BARBARIAN_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Extra bonus from finding two dedicated artifact weapons only */
+        Barbarian_Melee_Weapon_Score = count_powerful_melee_weapon_score(invent);
+        Role_Achievement_Score = BARBARIAN_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
+        break;
     }
-    else if (Role_if(PM_CAVEMAN))
+    case PM_CAVEMAN:
     {
-        Caveman_Amulet_Score += CAVEMAN_PER_AMULET_SCORE * count_amulets_of_life_saving(invent);
-        Role_Achievement_Score += CAVEMAN_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Small extra bonus from getting maximum level in bludgeoning weapons */
+        Caveman_Amulet_Score = CAVEMAN_PER_AMULET_SCORE * count_amulets_of_life_saving(invent);
+        Role_Achievement_Score = CAVEMAN_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
+        break;
     }
-    else if (Role_if(PM_RANGER))
-    {
-        Ranger_Ranged_Weapon_Score += count_powerful_ranged_weapon_score(invent);
-        Role_Achievement_Score += RANGER_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Small extra bonus from getting maximum level in bow or crossbow */
-    }
-    else if (Role_if(PM_SAMURAI))
-    {
-        Samurai_Japanese_Item_Score += count_powerful_Japanese_item_score(invent);
-        Role_Achievement_Score += SAMURAI_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Large extra bonus from finding two dedicated artifact weapons only  */
-    }
-    else if (Role_if(PM_VALKYRIE))
-    {
-        Valkyrie_Item_Score += count_powerful_valkyrie_item_score(invent);
-        Role_Achievement_Score += VALKYRIE_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Extra bonus from achieving maximum level in dual wielding */
-    }
-    else if (Role_if(PM_TOURIST))
+    case PM_HEALER:
     {
         int i;
-        for (i = LOW_PM; i < NUM_MONSTERS; i++)
+        for (i = 0; i < MAXSPELL; i++)
         {
-            if (mvitals[i].mvflags & MV_SELFIE_TAKEN)
-            {
-                Tourist_Selfie_Score += TOURIST_SELFIE_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
-            }
+            if (spl_book[i].sp_id == NO_SPELL)
+                break;
+            if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
+                Healer_Spell_Score += HEALER_PER_SPELL_LEVEL_SCORE * (long)(spl_book[i].sp_lev + 2); /* Healer has the fewest spells */
         }
-        Role_Achievement_Score += TOURIST_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Small extra bonus from taking selfie with Demogorgon, since tourist gets score from Demogorgon's level, too */
+        Role_Achievement_Score = HEALER_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
+        break;
     }
-    else if (Role_if(PM_KNIGHT))
+    case PM_KNIGHT:
     {
         int i;
         for (i = PM_COUATL; i <= PM_DEMOGORGON; i++)
         {
-            if ((u.ualign.type == A_LAWFUL ? is_demon(&mons[i]) : u.ualign.type == A_CHAOTIC ? is_angel(&mons[i]) : FALSE) || (is_dragon(&mons[i]) && u.ualign.type * mons[i].maligntyp < 0)) /* Demons/angels and chaotic/lawful dragons */
+            if ((u.ualign.type == A_LAWFUL ? is_demon(&mons[i]) : u.ualign.type == A_CHAOTIC ? is_angel(&mons[i]) : FALSE) || (is_dragon(&mons[i]) && u.ualign.type * mons[i].maligntyp < 0))
             {
                 if (UniqCritterIndx(i) && mvitals[i].died > 0)
                 {
@@ -3438,21 +3418,15 @@ get_current_game_score()
             if (i == PM_BAHAMUT) /* Optimization so we go through just angels, dragons, and demons */
                 i = PM_INCUBUS - 1;
         }
-        Role_Achievement_Score += KNIGHT_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement; /* Small extra bonus from defeating Asmodeus */
+        Role_Achievement_Score = KNIGHT_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
+        break;
     }
-    else if (Role_if(PM_WIZARD))
+    case PM_MONK:
     {
-        int i;
-        for (i = 0; i < MAXSPELL; i++)
-        {
-            if (spl_book[i].sp_id == NO_SPELL)
-                break;
-            if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
-                Wizard_Spell_Score += WIZARD_PER_SPELL_LEVEL_SCORE * (long)(spl_book[i].sp_lev + 2);
-        }
-        Role_Achievement_Score += WIZARD_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
+        Role_Achievement_Score = MONK_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
+        break;
     }
-    else if (Role_if(PM_PRIEST))
+    case PM_PRIEST:
     {
         int i;
         for (i = 0; i < MAXSPELL; i++)
@@ -3462,9 +3436,51 @@ get_current_game_score()
             if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
                 Priest_Spell_Score += PRIEST_PER_SPELL_LEVEL_SCORE * (long)(spl_book[i].sp_lev + 2); /* Priest has the fewer spell than wizard */
         }
-        Role_Achievement_Score += PRIEST_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
+        Role_Achievement_Score = PRIEST_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
+        break;
     }
-    else if (Role_if(PM_HEALER))
+    case PM_RANGER:
+    {
+        Ranger_Ranged_Weapon_Score = count_powerful_ranged_weapon_score(invent);
+        Role_Achievement_Score = RANGER_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
+        break;
+    }
+    case PM_ROGUE:
+    {
+        long lootvalue = 0L;
+        lootvalue += money_cnt(invent);
+        lootvalue += hidden_gold(); /* accumulate gold from containers */
+        lootvalue += carried_gem_value();
+        Rogue_Loot_Score = lootvalue;
+        Role_Achievement_Score = ROGUE_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
+        break;
+    }
+    case PM_SAMURAI:
+    {
+        Samurai_Japanese_Item_Score = count_powerful_Japanese_item_score(invent);
+        Role_Achievement_Score = SAMURAI_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
+        break;
+    }
+    case PM_TOURIST:
+    {
+        int i;
+        for (i = LOW_PM; i < NUM_MONSTERS; i++)
+        {
+            if (mvitals[i].mvflags & MV_SELFIE_TAKEN)
+            {
+                Tourist_Selfie_Score = TOURIST_SELFIE_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
+            }
+        }
+        Role_Achievement_Score = TOURIST_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
+        break;
+    }
+    case PM_VALKYRIE:
+    {
+        Valkyrie_Item_Score = count_powerful_valkyrie_item_score(invent);
+        Role_Achievement_Score = VALKYRIE_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
+        break;
+    }
+    case PM_WIZARD:
     {
         int i;
         for (i = 0; i < MAXSPELL; i++)
@@ -3472,14 +3488,13 @@ get_current_game_score()
             if (spl_book[i].sp_id == NO_SPELL)
                 break;
             if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
-                Healer_Spell_Score += HEALER_PER_SPELL_LEVEL_SCORE * (long)(spl_book[i].sp_lev + 2); /* Healer has the fewest spells */
+                Wizard_Spell_Score += WIZARD_PER_SPELL_LEVEL_SCORE * (long)(spl_book[i].sp_lev + 2);
         }
-        Role_Achievement_Score += HEALER_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
+        Role_Achievement_Score = WIZARD_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
+        break;
     }
-    else
-    {
-        /* Monk */
-        Role_Achievement_Score += MONK_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
+    default:
+        break;
     }
 
     int ngenocided = num_genocides();
