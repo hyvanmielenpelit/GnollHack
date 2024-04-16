@@ -39,7 +39,7 @@
     <BundleAssemblies>false</BundleAssemblies>
     <AndroidSupportedAbis>arm64-v8a</AndroidSupportedAbis>
     <Debugger>Xamarin</Debugger>
-    <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
     <MandroidI18n />
     <AndroidPackageFormat>apk</AndroidPackageFormat>
