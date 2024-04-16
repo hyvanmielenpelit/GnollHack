@@ -16,29 +16,29 @@
                 <ScrollView x:Name="GameMenuScrollView" MaximumWidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
                     <StackLayout HorizontalOptions="FillAndExpand" Orientation="Vertical" Spacing="2">
                         <controls:CustomImageButton x:Name="btnSave" Text="Save &amp; Exit Game" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="#FFDDFFDD"
-                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnSave_Clicked" UseVaryingBackgroundImages ="False" />
+                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnSave_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnQuit" Margin="0,0,0,20" Text="Quit Without Saving" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="#FFFFBBBB"
-                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnQuit_Clicked" UseVaryingBackgroundImages ="False" />
+                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnQuit_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnSettings" Text="Settings" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnSettings_Clicked" UseVaryingBackgroundImages ="False" />
+                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnSettings_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnOptions" Text="Options" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnOptions_Clicked" UseVaryingBackgroundImages ="False" />
+                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnOptions_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnMessages" Text="Export Messages" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnMessages_Clicked" UseVaryingBackgroundImages ="False" />
+                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnMessages_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnGC" Text="Collect Garbage" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnGC_Clicked" UseVaryingBackgroundImages ="False" />
+                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnGC_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnDebug" Text="Debug Information" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnDebug_Clicked" UseVaryingBackgroundImages ="False" />
+                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnDebug_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnRunTests" Text="Run Tests" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnRunTests_Clicked" UseVaryingBackgroundImages ="False" />
+                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnRunTests_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnVersion" Margin="0,0,0,20" Text="Version" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnVersion_Clicked" UseVaryingBackgroundImages ="False" />
+                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnVersion_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnTips" Text="User Interface Guide" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnTips_Clicked" UseVaryingBackgroundImages ="False" />
+                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnTips_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnLibrary" Margin="0,0,0,20" Text="Library" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnLibrary_Clicked" UseVaryingBackgroundImages ="False" />
+                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnLibrary_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnBackToGame" Text="Return to Game" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="#FFDDDDFF"
-                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnBackToGame_Clicked" UseVaryingBackgroundImages ="False" />
+                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnBackToGame_Clicked" UseVaryingBackgroundImages ="True" />
                     </StackLayout>
                 </ScrollView>
             </StackLayout>
