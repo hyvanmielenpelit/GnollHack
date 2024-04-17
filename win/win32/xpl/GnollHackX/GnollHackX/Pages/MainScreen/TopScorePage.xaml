@@ -78,8 +78,8 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <controls:CustomImageButton Grid.Column="0" Text="Server" x:Name="ServerButton" Clicked="ServerButton_Clicked" WidthRequest="150" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="Fill" VerticalOptions="End" />
-                    <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CloseButton2" Clicked="CloseButton_Clicked" WidthRequest="150" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="Fill" VerticalOptions="End"   />
+                    <controls:CustomImageButton Grid.Column="0" Text="Server" x:Name="ServerButton" Clicked="ServerButton_Clicked" WidthRequest="150" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="End" VerticalOptions="End" />
+                    <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CloseButton2" Clicked="CloseButton_Clicked" WidthRequest="150" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="Start" VerticalOptions="End"   />
                 </Grid>
             </Grid>
         </Grid>

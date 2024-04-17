@@ -28,8 +28,8 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <controls:CustomImageButton Grid.Column="0" Text="Share" x:Name="ShareButton" WidthRequest="170" Clicked="ShareButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="FillAndExpand" />
-                    <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CloseButton2" WidthRequest="170" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="FillAndExpand" />
+                    <controls:CustomImageButton Grid.Column="0" Text="Share" x:Name="ShareButton" WidthRequest="170" Clicked="ShareButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="End" VerticalOptions="FillAndExpand" />
+                    <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CloseButton2" WidthRequest="170" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="Start" VerticalOptions="FillAndExpand" />
                 </Grid>
             </Grid>
         </Grid>    

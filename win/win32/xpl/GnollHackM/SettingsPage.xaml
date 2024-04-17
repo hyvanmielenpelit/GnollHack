@@ -942,10 +942,10 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <controls:CustomImageButton Grid.Column="0" x:Name="TextOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                <controls:CustomImageButton Grid.Column="0" x:Name="TextOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="End" VerticalOptions="Center" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="TextOkButton_Clicked" />
-                                <controls:CustomImageButton Grid.Column="1" x:Name="TextCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                <controls:CustomImageButton Grid.Column="1" x:Name="TextCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Start" VerticalOptions="Center" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="TextCancelButton_Clicked" />
                             </Grid>

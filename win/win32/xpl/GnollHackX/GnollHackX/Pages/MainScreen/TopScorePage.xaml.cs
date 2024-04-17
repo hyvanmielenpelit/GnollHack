@@ -36,7 +36,7 @@ namespace GnollHackX.Pages.MainScreen
             _fileName = fileName;
             ScoresView.BindingContext = this;
             MainGrid.BindingContext = this;
-            if(GHApp.PostingXlogEntries)
+            if(GHApp.HasInternetAccess)
             {
                 CloseButton.IsVisible = false;
                 CloseGrid.IsVisible = true;

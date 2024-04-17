@@ -31,9 +31,9 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <controls:CustomImageButton Grid.Column="0" Text="Save" x:Name="OKButton" Clicked="OKButton_Clicked" WidthRequest="100" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="Fill" VerticalOptions="Fill" />
-                    <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CancelButton" Clicked="CancelButton_Clicked" WidthRequest="100" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="Fill" VerticalOptions="Fill" />
-                    <controls:CustomImageButton Grid.Column="2" Text="Reset" x:Name="ResetButton" Clicked="ResetButton_Clicked" WidthRequest="100" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="Fill" VerticalOptions="Fill" />
+                    <controls:CustomImageButton Grid.Column="0" Text="Save" x:Name="OKButton" Clicked="OKButton_Clicked" WidthRequest="100" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="End" VerticalOptions="Center" />
+                    <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CancelButton" Clicked="CancelButton_Clicked" WidthRequest="100" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="Center" VerticalOptions="Center" />
+                    <controls:CustomImageButton Grid.Column="2" Text="Reset" x:Name="ResetButton" Clicked="ResetButton_Clicked" WidthRequest="100" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="Start" VerticalOptions="Center" />
                 </Grid>
             </Grid>
         </Grid>
