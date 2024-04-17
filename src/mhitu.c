@@ -2959,7 +2959,7 @@ register struct obj* omonwep;
         default: /* case 16: ... case 5: */
             permdmg = 1; /* actual damage done below */
             display_u_being_hit(HIT_GENERAL, damagedealt, 0UL);
-            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "your life force draining away... You lose %d hit points, some of them permanently.", damagedealt);
+            You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "your life force draining away... You lose %d hit point%s, some of them permanently.", damagedealt, plur(damagedealt));
             break;
         case 4:
         case 3:
@@ -2976,14 +2976,14 @@ register struct obj* omonwep;
         break;
     }
     case AD_PEST:
-        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s reaches out, and you feel fever and chills. You lose %d hit points.", Monnam(mtmp), damagedealt);
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s reaches out, and you feel fever and chills. You lose %d hit point%s.", Monnam(mtmp), damagedealt, plur(damagedealt));
         if(diseasemu(mtmp)) /* plus the normal damage */
             display_u_being_hit(HIT_SICK, damagedealt, 0UL);
         else
             display_u_being_hit(HIT_GENERAL, damagedealt, 0UL);
         break;
     case AD_FAMN:
-        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s reaches out, and your body shrivels. You lose %d hit points.", Monnam(mtmp), damagedealt);
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%s reaches out, and your body shrivels. You lose %d hit point%s.", Monnam(mtmp), damagedealt, plur(damagedealt));
         exercise(A_CON, FALSE);
         if (!is_fainted())
         {
