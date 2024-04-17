@@ -8,8 +8,9 @@
 #include <math.h>
 
 STATIC_DCL boolean FDECL(mon_is_gecko, (struct monst *));
-STATIC_DCL int FDECL(domonnoise, (struct monst *, BOOLEAN_P, BOOLEAN_P));
+STATIC_DCL int FDECL(domonnoise, (struct monst *, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL int FDECL(domonnoise_with_popup, (struct monst*));
+STATIC_DCL int FDECL(domonnoise_with_popup_nonpc, (struct monst*));
 STATIC_DCL boolean NDECL(speak_check);
 STATIC_DCL boolean NDECL(yell_check);
 STATIC_DCL boolean FDECL(m_speak_check, (struct monst*));
@@ -975,7 +976,7 @@ register struct monst *mtmp;
 
     /* presumably nearness and soundok checks have already been made */
     if (!is_silent(mtmp->data) && mtmp->data->msound <= MS_ANIMAL)
-        (void) domonnoise(mtmp, FALSE, FALSE);
+        (void) domonnoise(mtmp, FALSE, FALSE, FALSE);
     else if (mtmp->data->msound >= MS_HUMANOID) {
         if (!canspotmon(mtmp))
             map_invisible(mtmp->mx, mtmp->my);
@@ -1007,13 +1008,20 @@ STATIC_OVL int
 domonnoise_with_popup(mtmp)
 register struct monst* mtmp;
 {
-    return domonnoise(mtmp, TRUE, TRUE);
+    return domonnoise(mtmp, TRUE, TRUE, FALSE);
 }
 
 STATIC_OVL int
-domonnoise(mtmp, dopopup, fromchatmenu)
+domonnoise_with_popup_nonpc(mtmp)
+register struct monst* mtmp;
+{
+    return domonnoise(mtmp, TRUE, TRUE, TRUE);
+}
+
+STATIC_OVL int
+domonnoise(mtmp, dopopup, fromchatmenu, disallow_npcnoise)
 struct monst *mtmp;
-boolean dopopup, fromchatmenu;
+boolean dopopup, fromchatmenu, disallow_npcnoise;
 {
     char verbuf[BUFSZ];
     register const char *pline_msg = 0, /* Monnam(mtmp) will be prepended */
@@ -1057,16 +1065,8 @@ boolean dopopup, fromchatmenu;
         msound = MS_SELL;
     else if (mtmp->issmith)
         msound = MS_SMITH;
-    else if (mtmp->isnpc)
-    {
-        if (has_enpc(mtmp) && npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_MAJORITY_NORMAL_HELLO)
-        {
-            if(!rn2(3))
-                msound = MS_NPC;
-        }
-        else
-            msound = MS_NPC;
-    }
+    else if (mtmp->isnpc && !disallow_npcnoise)
+        msound = MS_NPC;
     else if (mtmp->ispriest)
         msound = MS_PRIEST;
 
@@ -2424,6 +2424,23 @@ struct monst* mtmp;
             chatnum++;
         }
 
+        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && mtmp->isnpc && has_enpc(mtmp) && npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_ALSO_NORMAL_HELLO)
+        {
+            /* Hello! This is the old chat, i.e., domonnoise function */
+            Strcpy(available_chat_list[chatnum].name, "\"How is it going?\"");
+            available_chat_list[chatnum].function_ptr = &domonnoise_with_popup_nonpc;
+            available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+            any = zeroany;
+            any.a_char = available_chat_list[chatnum].charnum;
+
+            add_menu(win, NO_GLYPH, &any,
+                any.a_char, 0, ATR_NONE, NO_COLOR,
+                available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+            chatnum++;
+        }
+
         boolean non_advicing_npc = has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_NO_ADVICE) != 0;
 
         if(is_speaking(mtmp->data) && is_peaceful(mtmp) && !non_advicing_npc)
@@ -2449,7 +2466,7 @@ struct monst* mtmp;
             }
         }
 
-        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_QUANTUM_QUESTS) != 0)
+        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && mtmp->isnpc && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_QUANTUM_QUESTS) != 0)
         {
             /* Endicott - Quantum Quests */
             if (mtmp->u_know_mname)
@@ -2534,7 +2551,7 @@ struct monst* mtmp;
             }
         }
 
-        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_STARTING_QUESTS) != 0)
+        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && mtmp->isnpc && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_STARTING_QUESTS) != 0)
         {
             /* Hermit - Starting Quests */
             Strcpy(available_chat_list[chatnum].name, "Ask about the Dungeons of Doom");
@@ -2651,7 +2668,7 @@ struct monst* mtmp;
             }
         }
 
-        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_ADVANCED_QUESTS) != 0)
+        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && mtmp->isnpc && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_ADVANCED_QUESTS) != 0)
         {
             /* Hermit - Advanced Quests */
             Strcpy(available_chat_list[chatnum].name, "Ask about the Castle");
@@ -2775,7 +2792,7 @@ struct monst* mtmp;
 
         }
 
-        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_GNOMISH_QUESTS) != 0)
+        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && mtmp->isnpc && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_GNOMISH_QUESTS) != 0)
         {
             /* Hermit - Gnomish Quests */
             Strcpy(available_chat_list[chatnum].name, "Ask about the Gnomish Mines");
@@ -2809,7 +2826,7 @@ struct monst* mtmp;
 
         }
 
-        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_ORCISH_QUESTS) != 0)
+        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && mtmp->isnpc && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_GIVE_ORCISH_QUESTS) != 0)
         {
             /* Hermit - Orcish Quests */
             Strcpy(available_chat_list[chatnum].name, "Ask about the Gnomish Mines");
@@ -2843,7 +2860,7 @@ struct monst* mtmp;
         }
 
 
-        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && has_enpc(mtmp))
+        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && mtmp->isnpc && has_enpc(mtmp))
         {
             if ((npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_SING_SONGS) != 0)
             {
@@ -4941,7 +4958,7 @@ struct monst* mtmp;
         popup_talk_line_ex(mtmp, pbuf, ATR_NONE, tamenessadded || becamefaithful ? CLR_MSG_POSITIVE : CLR_MSG_SUCCESS, TRUE, FALSE);
     }
     else if(rn2(4) && mon_can_move(mtmp))
-        domonnoise(mtmp, FALSE, TRUE);
+        domonnoise(mtmp, FALSE, TRUE, FALSE);
     else
     {
         Sprintf(pbuf, "%s does not seem to react to your words.", noittame_Monnam(mtmp));
@@ -5053,7 +5070,7 @@ struct monst* mtmp;
         popup_talk_line_ex(mtmp, pbuf, ATR_NONE, tamenessadded || becamefaithful ? CLR_MSG_POSITIVE : CLR_MSG_SUCCESS, TRUE, FALSE);
     }
     else if(rn2(4) && mon_can_move(mtmp))
-        domonnoise(mtmp, FALSE, TRUE);
+        domonnoise(mtmp, FALSE, TRUE, FALSE);
     else
     {
         Sprintf(pbuf, "%s does not seem to react to your gesture.", noittame_Monnam(mtmp));
