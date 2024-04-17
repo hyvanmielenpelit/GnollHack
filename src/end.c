@@ -3468,7 +3468,7 @@ get_current_game_score()
         {
             if (mvitals[i].mvflags & MV_SELFIE_TAKEN)
             {
-                Tourist_Selfie_Score = TOURIST_SELFIE_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
+                Tourist_Selfie_Score += TOURIST_SELFIE_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
             }
         }
         Role_Achievement_Score = TOURIST_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
