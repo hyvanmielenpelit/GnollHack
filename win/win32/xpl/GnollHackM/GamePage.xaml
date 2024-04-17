@@ -200,7 +200,7 @@
                         <controls:SwitchableCanvasView x:Name="MenuCanvas" UseGL="False" CanvasType="MenuCanvas" RevertBlackAndWhite="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" EnableTouchEvents="True" />
                         <!--ResourceCacheLimit="{x:Static gnh:GHConstants.GPUResourceCacheSize}"-->
                     </Grid>
-                    <Grid x:Name="MenuCloseGrid" ColumnSpacing="6" BackgroundColor="Transparent" >
+                    <Grid x:Name="MenuCloseGrid" ColumnSpacing="6" BackgroundColor="Transparent" HorizontalOptions="Fill" MaximumWidthRequest="500" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
@@ -208,13 +208,13 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <controls:CustomImageButton HorizontalOptions="End" WidthRequest="160" HeightRequest="60" Grid.Column="0"  UseVaryingTextColors="True"  Text="OK" x:Name="MenuOKButton" Clicked="MenuOKButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" />
-                        <controls:CustomImageButton HorizontalOptions="Start" WidthRequest="160" HeightRequest="60" Grid.Column="1"  UseVaryingTextColors="True" Text="Cancel" x:Name="MenuCancelButton" Clicked="MenuCancelButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" />
+                        <controls:CustomImageButton Grid.Column="0" HorizontalOptions="Fill" HeightRequest="60" UseVaryingTextColors="True" Text="OK" x:Name="MenuOKButton" Clicked="MenuOKButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" />
+                        <controls:CustomImageButton Grid.Column="1" HorizontalOptions="Fill" HeightRequest="60" UseVaryingTextColors="True" Text="Cancel" x:Name="MenuCancelButton" Clicked="MenuCancelButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" />
                     </Grid>
                 </StackLayout>
                 <Grid x:Name="MenuCountBackgroundGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
                          BackgroundColor="#66000000" IsVisible="False">
-                    <Grid x:Name="MenuCountForegroundGrid" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Grid x:Name="MenuCountForegroundGrid" MaximumWidthRequest="360" HorizontalOptions="Fill" VerticalOptions="Center">
                         <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
                             <StackLayout Spacing="6" x:Name="MenuCountLayout" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
                                 <Label x:Name="MenuCountCaption" Text="Select Count" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
@@ -246,7 +246,7 @@
                                     WidthRequest="180"
                                     Completed="MenuEntry_Completed"
                                     />
-                                <Grid ColumnSpacing="6" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                                <Grid ColumnSpacing="6" HorizontalOptions="Fill" VerticalOptions="CenterAndExpand" MaximumWidthRequest="360">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="65" />
                                     </Grid.RowDefinitions>
@@ -254,10 +254,10 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <controls:CustomImageButton Grid.Column="0" x:Name="MenuCountOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                    <controls:CustomImageButton Grid.Column="0" x:Name="MenuCountOkButton" Text="OK" FontSize="19" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Fill" VerticalOptions="CenterAndExpand" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="MenuCountOkButton_Clicked" />
-                                    <controls:CustomImageButton Grid.Column="1" x:Name="MenuCountCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                    <controls:CustomImageButton Grid.Column="1" x:Name="MenuCountCancelButton" Text="Cancel" FontSize="19" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Fill" VerticalOptions="CenterAndExpand" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="MenuCountCancelButton_Clicked" />
                                 </Grid>
@@ -301,7 +301,7 @@
                                     <TapGestureRecognizer Tapped="GetLineAutoCompleteTapGestureRecognizer_Tapped" />
                                 </Label.GestureRecognizers>
                             </Label>
-                            <Grid ColumnSpacing="6" MaximumWidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                            <Grid ColumnSpacing="6" MaximumWidthRequest="360" HorizontalOptions="Fill" VerticalOptions="CenterAndExpand">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="65" />
                                 </Grid.RowDefinitions>
@@ -309,10 +309,10 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <controls:CustomImageButton Grid.Column="0" x:Name="GetLineOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                <controls:CustomImageButton Grid.Column="0" x:Name="GetLineOkButton" Text="OK" FontSize="19" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Fill" VerticalOptions="CenterAndExpand" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="GetLineOkButton_Clicked" />
-                                <controls:CustomImageButton Grid.Column="1" x:Name="GetLineCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                <controls:CustomImageButton Grid.Column="1" x:Name="GetLineCancelButton" Text="Cancel" FontSize="19" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Fill" VerticalOptions="CenterAndExpand" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="GetLineCancelButton_Clicked" />
                             </Grid>
@@ -424,7 +424,7 @@
                                 <Entry x:Name="GotoTurnEntryText" Keyboard="Numeric" MaximumWidthRequest="360" HorizontalOptions="Center" Placeholder="Enter the turn here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
                                        HorizontalTextAlignment="Center" FontSize="20" FontFamily="Underwood" />
                             </StackLayout>
-                            <Grid ColumnSpacing="6" MaximumWidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                            <Grid ColumnSpacing="6" MaximumWidthRequest="360" HorizontalOptions="Fill" VerticalOptions="CenterAndExpand">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="65" />
                                 </Grid.RowDefinitions>
@@ -432,10 +432,10 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <controls:CustomImageButton Grid.Column="0" x:Name="GotoTurnOkButton" Text="OK" FontSize="19" WidthRequest="160" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                <controls:CustomImageButton Grid.Column="0" x:Name="GotoTurnOkButton" Text="OK" FontSize="19" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Fill" VerticalOptions="CenterAndExpand" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="GotoTurnOkButton_Clicked" />
-                                <controls:CustomImageButton Grid.Column="1" x:Name="GotoTurnCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                <controls:CustomImageButton Grid.Column="1" x:Name="GotoTurnCancelButton" Text="Cancel" FontSize="19" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Fill" VerticalOptions="CenterAndExpand" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="GotoTurnCancelButton_Clicked" />
                             </Grid>

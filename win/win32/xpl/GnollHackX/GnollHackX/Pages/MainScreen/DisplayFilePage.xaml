@@ -23,13 +23,13 @@
                         FontFamily="DejaVuSansMono" FontSize="13" IsScrollable="True" />
                 <WebView Grid.Row="1" x:Name="DisplayWebView" IsVisible="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" />
                 <controls:CustomImageButton Grid.Row="2" Text="Close" x:Name="CloseButton" IsVisible="True" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="60" HorizontalOptions="Center" />
-                <Grid x:Name="BottomLayout" IsVisible="False" Grid.Row="2" HeightRequest="60" HorizontalOptions="Center">
+                <Grid x:Name="BottomLayout" IsVisible="False" Grid.Row="2" ColumnSpacing="6" HeightRequest="60" HorizontalOptions="Fill" WidthRequest  ="500" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <controls:CustomImageButton Grid.Column="0" Text="Share" x:Name="ShareButton" Clicked="ShareButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" WidthRequest="170" HorizontalOptions="End" VerticalOptions="FillAndExpand" />
-                    <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CloseButton2" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" WidthRequest="170" HorizontalOptions="Start" VerticalOptions="FillAndExpand" />
+                    <controls:CustomImageButton Grid.Column="0" Text="Share" x:Name="ShareButton" Clicked="ShareButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="FillAndExpand" />
+                    <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CloseButton2" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="FillAndExpand" />
                 </Grid>
             </Grid>
         </Grid>    

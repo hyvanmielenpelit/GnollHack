@@ -24,7 +24,7 @@
                         <Label x:Name="EmptyLabel" IsVisible="False" Text="Your library is empty" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="18" TextColor="Black" FontFamily="Immortal"/>
                     </StackLayout>
                 </ScrollView>
-                <controls:CustomImageButton Grid.Row="3" x:Name="CloseButton" Text="Close" Margin="0,10,0,10" WidthRequest="250" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand" BackgroundColor="Transparent" TextColor="White"
+                <controls:CustomImageButton Grid.Row="3" x:Name="CloseButton" Text="Close" Margin="0,10,0,10" MaximumWidthRequest="250" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="Fill" VerticalOptions="EndAndExpand" BackgroundColor="Transparent" TextColor="White"
                         Clicked="Button_Clicked" />
             </Grid>
         </Grid>    
