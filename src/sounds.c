@@ -2424,9 +2424,8 @@ struct monst* mtmp;
             chatnum++;
         }
 
-        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && mtmp->isnpc && has_enpc(mtmp) && npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_ALSO_NORMAL_HELLO)
+        if (is_speaking(mtmp->data) && is_peaceful(mtmp) && mtmp->isnpc && has_enpc(mtmp) && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_ALSO_NORMAL_HELLO) !=0)
         {
-            /* Hello! This is the old chat, i.e., domonnoise function */
             Strcpy(available_chat_list[chatnum].name, "\"How is it going?\"");
             available_chat_list[chatnum].function_ptr = &domonnoise_with_popup_nonpc;
             available_chat_list[chatnum].charnum = 'a' + chatnum;
