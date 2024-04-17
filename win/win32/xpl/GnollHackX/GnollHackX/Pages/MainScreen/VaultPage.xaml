@@ -22,7 +22,7 @@
                     <StackLayout x:Name="VaultLayout" Spacing="6" HorizontalOptions="FillAndExpand" Orientation="Vertical" >
                     </StackLayout>
                 </ScrollView>
-                <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Text="Close" Margin="0,10,0,10" WidthRequest  ="320" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="Fill" VerticalOptions="EndAndExpand" BackgroundColor="Transparent" TextColor="White"
+                <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Text="Close" Margin="0,10,0,10" WidthRequest  ="320" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions  ="Center" VerticalOptions="EndAndExpand" BackgroundColor="Transparent" TextColor="White"
                         Clicked="Button_Clicked" />
             </Grid>
         </Grid>

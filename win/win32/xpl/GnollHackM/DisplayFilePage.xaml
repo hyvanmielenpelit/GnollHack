@@ -22,7 +22,7 @@
                 <gnollhackclient:CustomLabel Grid.Row="1" x:Name="TextLabel" IsVisible="False" VerticalTextAlignment="Start" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
                         FontFamily="DejaVuSansMono" FontSize="13" IsScrollable="True" />
                 <WebView Grid.Row="1" x:Name="DisplayWebView" IsVisible="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" />
-                <controls:CustomImageButton Grid.Row="2" Text="Close" x:Name="CloseButton" IsVisible="True" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" WidthRequest="250" HeightRequest="60" HorizontalOptions="Center" />
+                <controls:CustomImageButton Grid.Row="2" Text="Close" x:Name="CloseButton" IsVisible="True" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" MaximumWidthRequest="250" HeightRequest="60" HorizontalOptions="Fill" />
                 <Grid x:Name="BottomLayout" IsVisible="False" Grid.Row="2" ColumnSpacing="6" HeightRequest="60" HorizontalOptions="Fill" MaximumWidthRequest="500" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />

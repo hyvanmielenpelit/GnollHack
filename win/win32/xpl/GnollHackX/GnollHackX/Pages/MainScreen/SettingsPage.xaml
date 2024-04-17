@@ -923,7 +923,7 @@
                         </Grid>
                     </StackLayout>
                 </ScrollView>
-                <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Margin="0,10,0,10" Text="Close" WidthRequest  ="320" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="Fill" VerticalOptions="EndAndExpand" BackgroundColor="Transparent" TextColor="White"
+                <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Margin="0,10,0,10" Text="Close" WidthRequest  ="320" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions  ="Center" VerticalOptions="EndAndExpand" BackgroundColor="Transparent" TextColor="White"
                         Clicked="CloseButton_Clicked" />
             </Grid>
             <Grid x:Name="TextGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 

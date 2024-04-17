@@ -17,7 +17,7 @@
                        HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" TextColor="Gray" />
 
                 <Label x:Name="lblError" HorizontalOptions="CenterAndExpand" Text="" />
-                <Grid x:Name="MenuCloseGrid" BackgroundColor="Transparent" HorizontalOptions="Fill" ColumnSpacing="6" WidthRequest  ="500" >
+                <Grid x:Name="MenuCloseGrid" BackgroundColor="Transparent" HorizontalOptions  ="Center" ColumnSpacing="6" WidthRequest  ="500" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>

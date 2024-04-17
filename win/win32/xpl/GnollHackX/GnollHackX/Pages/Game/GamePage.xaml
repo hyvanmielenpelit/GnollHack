@@ -200,7 +200,7 @@
                         <controls:SwitchableCanvasView x:Name="MenuCanvas" UseGL="False" CanvasType="MenuCanvas" RevertBlackAndWhite="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" EnableTouchEvents="True" />
                         <!--ResourceCacheLimit="{x:Static gnh:GHConstants.GPUResourceCacheSize}"-->
                     </Grid>
-                    <Grid x:Name="MenuCloseGrid" ColumnSpacing="6" BackgroundColor="Transparent" HorizontalOptions="Fill" WidthRequest  ="500" >
+                    <Grid x:Name="MenuCloseGrid" ColumnSpacing="6" BackgroundColor="Transparent" HorizontalOptions  ="Center" WidthRequest  ="500" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
@@ -246,7 +246,7 @@
                                     WidthRequest="180"
                                     Completed="MenuEntry_Completed"
                                     />
-                                <Grid ColumnSpacing="6" HorizontalOptions="Fill" VerticalOptions="CenterAndExpand" WidthRequest  ="360">
+                                <Grid ColumnSpacing="6" HorizontalOptions  ="Center" VerticalOptions="CenterAndExpand" WidthRequest  ="360">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="65" />
                                     </Grid.RowDefinitions>
@@ -301,7 +301,7 @@
                                     <TapGestureRecognizer Tapped="GetLineAutoCompleteTapGestureRecognizer_Tapped" />
                                 </Label.GestureRecognizers>
                             </Label>
-                            <Grid ColumnSpacing="6" WidthRequest  ="360" HorizontalOptions="Fill" VerticalOptions="CenterAndExpand">
+                            <Grid ColumnSpacing="6" WidthRequest  ="360" HorizontalOptions  ="Center" VerticalOptions="CenterAndExpand">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="65" />
                                 </Grid.RowDefinitions>
@@ -424,7 +424,7 @@
                                 <Entry x:Name="GotoTurnEntryText" Keyboard="Numeric" WidthRequest  ="360" HorizontalOptions="Center" Placeholder="Enter the turn here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
                                        HorizontalTextAlignment="Center" FontSize="20" FontFamily="Underwood" />
                             </StackLayout>
-                            <Grid ColumnSpacing="6" WidthRequest  ="360" HorizontalOptions="Fill" VerticalOptions="CenterAndExpand">
+                            <Grid ColumnSpacing="6" WidthRequest  ="360" HorizontalOptions  ="Center" VerticalOptions="CenterAndExpand">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="65" />
                                 </Grid.RowDefinitions>

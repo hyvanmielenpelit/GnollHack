@@ -70,7 +70,7 @@
                     </CollectionView.ItemTemplate>
                 </CollectionView>
                 <controls:CustomImageButton Grid.Row="2" Text="Close" x:Name="CloseButton" Margin="10,20" WidthRequest  ="320" HeightRequest="60" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent"  HorizontalOptions="Fill" VerticalOptions="End"  />
-                <Grid x:Name="CloseGrid" Grid.Row="2" ColumnSpacing="6" BackgroundColor="Transparent" Margin="10,20" HorizontalOptions="Fill" WidthRequest  ="500" IsVisible="False" >
+                <Grid x:Name="CloseGrid" Grid.Row="2" ColumnSpacing="6" BackgroundColor="Transparent" Margin="10,20" HorizontalOptions  ="Center" WidthRequest  ="500" IsVisible="False" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
