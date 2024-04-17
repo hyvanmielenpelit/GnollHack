@@ -11,7 +11,8 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-
+		<InvariantGlobalization>true</InvariantGlobalization>
+		
 		<!-- Display name -->
 		<ApplicationTitle>GnollHack</ApplicationTitle>
 
@@ -52,6 +53,11 @@
 		<CodesignProvision>Apple Dev M Distribution March 2024</CodesignProvision>-->
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-android'">
+		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
 	    <UseInterpreter>false</UseInterpreter>
 		<!--<AndroidEnableProfiler>true</AndroidEnableProfiler> 
@@ -66,8 +72,6 @@
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
 		<_MauiForceXamlCForDebug>true</_MauiForceXamlCForDebug>
-		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
-		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-android'">
