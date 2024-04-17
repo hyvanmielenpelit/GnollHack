@@ -22,7 +22,7 @@
                 <gnollhackclient:GHEditor x:Name="TextEditor" TextChanged="TextEditor_TextChanged" HorizontalOptions="Fill" VerticalOptions="Fill" Grid.Row="2" Text="" PlaceholderColor="Gray" TextColor="Black" BackgroundColor="Transparent"
                         FontFamily="Lato-Regular" FontSize="16" IsSpellCheckEnabled="false" IsTextPredictionEnabled = "false" >
                 </gnollhackclient:GHEditor>
-                <Grid x:Name="CloseGrid" Grid.Row="3" ColumnSpacing="6" BackgroundColor="Transparent" HorizontalOptions="Fill" MaximumWidthRequest="600" >
+                <Grid x:Name="CloseGrid" Grid.Row="3" ColumnSpacing="6" BackgroundColor="Transparent" HorizontalOptions="Center" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
@@ -31,9 +31,9 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <controls:CustomImageButton Grid.Column="0" Text="Save" x:Name="OKButton" Clicked="OKButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="Fill" VerticalOptions="Fill" />
-                    <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CancelButton" Clicked="CancelButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="Fill" VerticalOptions="Fill" />
-                    <controls:CustomImageButton Grid.Column="2" Text="Reset" x:Name="ResetButton" Clicked="ResetButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="Fill" VerticalOptions="Fill" />
+                    <controls:CustomImageButton Grid.Column="0" Text="Save" x:Name="OKButton" Clicked="OKButton_Clicked" WidthRequest="100" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="Fill" VerticalOptions="Fill" />
+                    <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CancelButton" Clicked="CancelButton_Clicked" WidthRequest="100" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="Fill" VerticalOptions="Fill" />
+                    <controls:CustomImageButton Grid.Column="2" Text="Reset" x:Name="ResetButton" Clicked="ResetButton_Clicked" WidthRequest="100" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="Fill" VerticalOptions="Fill" />
                 </Grid>
             </Grid>
         </Grid>

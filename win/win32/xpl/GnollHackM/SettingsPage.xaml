@@ -923,7 +923,7 @@
                         </Grid>
                     </StackLayout>
                 </ScrollView>
-                <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Margin="0,10,0,10" Text="Close" MaximumWidthRequest="320" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="Fill" VerticalOptions="EndAndExpand" BackgroundColor="Transparent" TextColor="White"
+                <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Margin="0,10,0,10" Text="Close" WidthRequest="320" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="Center" VerticalOptions="EndAndExpand" BackgroundColor="Transparent" TextColor="White"
                         Clicked="CloseButton_Clicked" />
             </Grid>
             <Grid x:Name="TextGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
@@ -934,7 +934,7 @@
                             <Label x:Name="TextCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
                             <Entry x:Name="TextEntry" WidthRequest="320" HorizontalOptions="Center" Placeholder="Enter the link here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
                                        HorizontalTextAlignment="Center" FontSize="20" FontFamily="LatoRegular" />
-                            <Grid ColumnSpacing="6" MaximumWidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                            <Grid ColumnSpacing="6" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="65" />
                                 </Grid.RowDefinitions>
@@ -942,7 +942,7 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <controls:CustomImageButton Grid.Column="0" x:Name="TextOkButton" Text="OK" FontSize="19" WidthRequest="160" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
+                                <controls:CustomImageButton Grid.Column="0" x:Name="TextOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="TextOkButton_Clicked" />
                                 <controls:CustomImageButton Grid.Column="1" x:Name="TextCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" 
