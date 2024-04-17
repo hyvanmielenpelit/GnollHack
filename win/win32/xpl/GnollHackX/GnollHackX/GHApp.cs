@@ -3156,13 +3156,13 @@ namespace GnollHackX
                     else //In assets directory
                     {
                         /* Assetpacks in .NET MAUI Android Release configuration work as in Xamarin */
-#if GNH_MAUI && !(ANDROID && !DEBUG)
-                        string sdir = Path.Combine(PlatformService.GetAssetsPath(), "Platforms", GHApp.IsAndroid ? "Android" : GHApp.IsiOS ? "iOS" : "Unknown", sf.source_directory);
-                        string rfile = Path.Combine("Platforms", GHApp.IsAndroid ? "Android" : GHApp.IsiOS ? "iOS" : "Unknown", sf.source_directory, sf.name);
-#else
+//#if GNH_MAUI && !(ANDROID && !DEBUG)
+//                        string sdir = Path.Combine(PlatformService.GetAssetsPath(), "Platforms", GHApp.IsAndroid ? "Android" : GHApp.IsiOS ? "iOS" : "Unknown", sf.source_directory);
+//                        string rfile = Path.Combine("Platforms", GHApp.IsAndroid ? "Android" : GHApp.IsiOS ? "iOS" : "Unknown", sf.source_directory, sf.name);
+//#else
                         string sdir = Path.Combine(PlatformService.GetAssetsPath(), sf.source_directory);
                         string rfile = Path.Combine(sf.source_directory, sf.name);
-#endif
+//#endif
                         string sfile = Path.Combine(sdir, sf.name);
 
                         if (IsReadToMemoryBank(sf))  //Read to memory first and use from there

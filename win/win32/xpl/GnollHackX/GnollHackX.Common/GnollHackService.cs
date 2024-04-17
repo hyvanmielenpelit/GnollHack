@@ -516,15 +516,15 @@ namespace GnollHackX.Unknown
             /* Copy missing files from resources */
             string content;
             string assetsourcedir = "gnh";
-#if GNH_MAUI
-#if __ANDROID__
-            assetsourcedir = Path.Combine("Platforms", "Android", assetsourcedir);
-#elif __IOS__
-            assetsourcedir = Path.Combine("Platforms", "iOS", assetsourcedir);
-#else                
-            assetsourcedir = Path.Combine("Platforms", "Unknown", assetsourcedir);
-#endif
-#endif
+//#if GNH_MAUI
+//#if __ANDROID__
+//            assetsourcedir = Path.Combine("Platforms", "Android", assetsourcedir);
+//#elif __IOS__
+//            assetsourcedir = Path.Combine("Platforms", "iOS", assetsourcedir);
+//#else                
+//            assetsourcedir = Path.Combine("Platforms", "Unknown", assetsourcedir);
+//#endif
+//#endif
 #if __ANDROID__
             AssetManager assets = MainActivity.StaticAssets;
 #endif
@@ -624,15 +624,15 @@ namespace GnollHackX.Unknown
             {
                 string assetfile = sfile.name;
                 string sfiledir = sfile.source_directory;
-#if GNH_MAUI
-#if __IOS__
-                sfiledir = Path.Combine("Platforms", "iOS", sfiledir);
-#elif __ANDROID__
-                sfiledir = Path.Combine("Platforms", "Android", sfiledir);
-#else
-                sfiledir = Path.Combine("Platforms", "Unknown", sfiledir);
-#endif
-#endif
+//#if GNH_MAUI
+//#if __IOS__
+//                sfiledir = Path.Combine("Platforms", "iOS", sfiledir);
+//#elif __ANDROID__
+//                sfiledir = Path.Combine("Platforms", "Android", sfiledir);
+//#else
+//                sfiledir = Path.Combine("Platforms", "Unknown", sfiledir);
+//#endif
+//#endif
 #if __IOS__
                 string extension = Path.GetExtension(assetfile);
                 if (extension != null && extension.Length > 0)

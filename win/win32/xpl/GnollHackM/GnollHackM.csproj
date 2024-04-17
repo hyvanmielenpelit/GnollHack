@@ -500,26 +500,32 @@
   	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libfmodstudio.so" />
 	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libgnollhackdroid.so" />
 	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libc++_shared.so" />
-      <AndroidAsset Include="Platforms\Android\gnh\credits" />
-      <AndroidAsset Include="Platforms\Android\gnh\license" />
-      <AndroidAsset Include="Platforms\Android\gnh\logfile" />
-      <AndroidAsset Include="Platforms\Android\gnh\nhdat" />
-      <AndroidAsset Include="Platforms\Android\gnh\record" />
-      <AndroidAsset Include="Platforms\Android\gnh\symbols" />
-      <AndroidAsset Include="Platforms\Android\gnh\sysconf" />
-      <AndroidAsset Include="Platforms\Android\gnh\perm" />
-      <AndroidAsset Include="Platforms\Android\gnh\recover" />
-      <AndroidAsset Include="Platforms\Android\gnh\xlogfile" />
-      <AndroidAsset Include="Platforms\Android\gnh\defaults.gnh" />
-      <AndroidAsset Include="Platforms\Android\gnh\xcredits" />
-      <AndroidAsset Include="Platforms\Android\banks\Master.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
-      <AndroidAsset Include="Platforms\Android\banks\Auxiliary.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
-      <AndroidAsset Include="Platforms\Android\banks\Intro.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
-      <AndroidAsset Include="Platforms\Android\banks\Master.strings.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
-      <AndroidAsset Include="Platforms\Android\banks\Music.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
-      <AndroidAsset Include="Platforms\Android\banks\Preliminary.bank" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
-      <AndroidAppBundleModules Include="Platforms\Android\assetpacks\ondemandassetpack.zip" Condition=" '$(AndroidPackageFormat)' != 'apk' " />
-	  <AndroidAppBundleModules Include="Platforms\Android\assetpacks\installtimeassetpack.zip" Condition=" '$(AndroidPackageFormat)' != 'apk' " />
+      <AndroidAsset Include="Platforms\Android\gnh\credits" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+      <AndroidAsset Include="Platforms\Android\gnh\license" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+      <AndroidAsset Include="Platforms\Android\gnh\logfile" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+      <AndroidAsset Include="Platforms\Android\gnh\nhdat" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+      <AndroidAsset Include="Platforms\Android\gnh\record" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+      <AndroidAsset Include="Platforms\Android\gnh\symbols" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+      <AndroidAsset Include="Platforms\Android\gnh\sysconf" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+      <AndroidAsset Include="Platforms\Android\gnh\perm" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+      <AndroidAsset Include="Platforms\Android\gnh\recover" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+      <AndroidAsset Include="Platforms\Android\gnh\xlogfile" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+      <AndroidAsset Include="Platforms\Android\gnh\defaults.gnh" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+      <AndroidAsset Include="Platforms\Android\gnh\xcredits" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+      <AndroidAsset Include="Platforms\Android\banks\Master.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
+      <AndroidAsset Include="Platforms\Android\banks\Auxiliary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
+      <AndroidAsset Include="Platforms\Android\banks\Intro.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
+      <AndroidAsset Include="Platforms\Android\banks\Master.strings.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
+      <AndroidAsset Include="Platforms\Android\banks\Music.bank" LogicalName="%(RecursiveDir)%(Filename)banks\%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
+      <AndroidAsset Include="Platforms\Android\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
+      <AndroidAsset Include="Platforms\Android\banks\Master.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
+      <AndroidAsset Include="Platforms\Android\banks\Auxiliary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
+      <AndroidAsset Include="Platforms\Android\banks\Intro.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
+      <AndroidAsset Include="Platforms\Android\banks\Master.strings.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
+      <AndroidAsset Include="Platforms\Android\banks\Music.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
+	  <AndroidAsset Include="Platforms\Android\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
+      <!--<AndroidAppBundleModules Include="Platforms\Android\assetpacks\ondemandassetpack.zip" Condition=" '$(AndroidPackageFormat)' != 'apk' " />-->
+      <!--<AndroidAppBundleModules Include="Platforms\Android\assetpacks\installtimeassetpack.zip" Condition=" '$(AndroidPackageFormat)' != 'apk' " />-->
 	  <Compile Include="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
 	</ItemGroup>
 
@@ -542,24 +548,24 @@
 			<IsCxx>True</IsCxx>
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</NativeReference>
-		<BundleResource Include="Platforms\iOS\gnh\credits" />
-		<BundleResource Include="Platforms\iOS\gnh\defaults.gnh" />
-		<BundleResource Include="Platforms\iOS\gnh\license" />
-		<BundleResource Include="Platforms\iOS\gnh\logfile" />
-		<BundleResource Include="Platforms\iOS\gnh\nhdat" />
-		<BundleResource Include="Platforms\iOS\gnh\perm" />
-		<BundleResource Include="Platforms\iOS\gnh\record" />
-		<BundleResource Include="Platforms\iOS\gnh\recover" />
-		<BundleResource Include="Platforms\iOS\gnh\symbols" />
-		<BundleResource Include="Platforms\iOS\gnh\sysconf" />
-		<BundleResource Include="Platforms\iOS\gnh\xcredits" />
-		<BundleResource Include="Platforms\iOS\gnh\xlogfile" />
-		<BundleResource Include="Platforms\iOS\banks\Auxiliary.bank" />
-		<BundleResource Include="Platforms\iOS\banks\Intro.bank" />
-		<BundleResource Include="Platforms\iOS\banks\Master.bank" />
-		<BundleResource Include="Platforms\iOS\banks\Master.strings.bank" />
-		<BundleResource Include="Platforms\iOS\banks\Music.bank" />
-		<BundleResource Include="Platforms\iOS\banks\Preliminary.bank" />
+		<BundleResource Include="Platforms\iOS\gnh\credits" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\gnh\defaults.gnh" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\gnh\license" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\gnh\logfile" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\gnh\nhdat" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\gnh\perm" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\gnh\record" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\gnh\recover" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\gnh\symbols" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\gnh\sysconf" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\gnh\xcredits" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\gnh\xlogfile" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\banks\Auxiliary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\banks\Intro.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\banks\Master.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\banks\Master.strings.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\banks\Music.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
+		<BundleResource Include="Platforms\iOS\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
 		<Compile Include="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
 	</ItemGroup>
 
@@ -831,3 +837,4 @@
 		<BundleResource Include="Platforms\iOS\PrivacyInfo.xcprivacy" LogicalName="PrivacyInfo.xcprivacy" />
 	</ItemGroup>
 </Project>
+ 
