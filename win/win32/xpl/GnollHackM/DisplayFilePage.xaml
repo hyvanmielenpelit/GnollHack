@@ -6,7 +6,7 @@
              BackgroundColor="Black"
              x:Class="GnollHackM.DisplayFilePage"
              Appearing="ContentPage_Appearing">
-    <ContentPage.Content>
+    
         <Grid>
             <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
             <Grid x:Name="MainGrid" MaximumWidthRequest="900" RowSpacing="6" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
@@ -33,5 +33,5 @@
                 </Grid>
             </Grid>
         </Grid>    
-    </ContentPage.Content>
+    
 </ContentPage>

@@ -7,7 +7,7 @@
              x:DataType="gamepages:OutRipPage"
              BackgroundColor="Black"
              Disappearing="ContentPage_Disappearing">
-    <ContentPage.Content>
+    
         <AbsoluteLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black" >
             <Grid x:Name="OutRipGrid" HorizontalOptions="Center" VerticalOptions="Center" 
                   AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
@@ -33,5 +33,5 @@
                 </Grid>
             </Grid>
         </AbsoluteLayout>
-    </ContentPage.Content>
+    
 </ContentPage>

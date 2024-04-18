@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:skia="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
              x:Class="GnollHackM.CustomImageButton">
-  <ContentView.Content>
-        <Grid x:Name="customGrid">
+  
+        <Grid x:Name="customGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <skia:SKCanvasView x:Name="customCanvasView" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" EnableTouchEvents="false" PaintSurface="CustomCanvasView_PaintSurface" />
             <Button Text="" x:Name="customButton" Clicked="CustomButton_Clicked" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
         </Grid>
-    </ContentView.Content>
+    
 </ContentView>

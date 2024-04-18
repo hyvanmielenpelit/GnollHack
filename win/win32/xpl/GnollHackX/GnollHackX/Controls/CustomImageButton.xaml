@@ -4,7 +4,7 @@
              xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
              x:Class="GnollHackX.Controls.CustomImageButton">
   <ContentView.Content>
-        <Grid x:Name="customGrid">
+        <Grid x:Name="customGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <skia:SKCanvasView x:Name="customCanvasView" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" EnableTouchEvents="false" PaintSurface="CustomCanvasView_PaintSurface" />
             <Button Text="" x:Name="customButton" Clicked="CustomButton_Clicked" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
         </Grid>

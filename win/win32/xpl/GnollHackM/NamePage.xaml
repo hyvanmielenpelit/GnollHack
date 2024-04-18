@@ -6,7 +6,7 @@
              Disappearing="ContentPage_Disappearing"
              BackgroundColor="Black"
              x:Class="GnollHackM.NamePage">
-    <ContentPage.Content>
+    
         <Grid>
             <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
             <StackLayout x:Name="mainStack" Spacing="6" Padding="10">
@@ -35,5 +35,5 @@
                 <Label x:Name="lblModeDescription" FontFamily="Immortal" FontSize="10" Margin="0" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" TextColor="Gray" Text="" />
             </StackLayout>
         </Grid>
-    </ContentPage.Content>
+    
 </ContentPage>

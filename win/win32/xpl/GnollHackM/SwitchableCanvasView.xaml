@@ -4,10 +4,10 @@
              x:Name="this"
              xmlns:skia="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
              x:Class="GnollHackM.SwitchableCanvasView">
-  <ContentView.Content>
+  
       <Grid>
           <skia:SKCanvasView x:Name="internalCanvasView" IsVisible="true" PaintSurface="internalCanvasView_PaintSurface" Touch="internalCanvasView_Touch" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
           <skia:SKGLView x:Name="internalGLView" IsVisible="false" PaintSurface="internalGLView_PaintSurface" Touch="internalGLView_Touch" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
       </Grid>
-  </ContentView.Content>
+  
 </ContentView>

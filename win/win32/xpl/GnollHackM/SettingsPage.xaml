@@ -7,7 +7,7 @@
              BackgroundColor="Black"
              Appearing="ContentPage_Appearing"
              Disappearing="ContentPage_Disappearing">
-    <ContentPage.Content>
+    
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
             <Grid BackgroundColor="Transparent" MaximumWidthRequest="400" RowSpacing="6" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
@@ -983,5 +983,5 @@
                                        VerticalTextAlignment="Center" HorizontalOptions="Center" AbsoluteLayout.LayoutBounds="0.5, 0.5, 1, 1" AbsoluteLayout.LayoutFlags="All" />
             </AbsoluteLayout>
         </Grid>
-    </ContentPage.Content>
+    
 </ContentPage>

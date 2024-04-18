@@ -5,7 +5,7 @@
              xmlns:controls="clr-namespace:GnollHackM"
              BackgroundColor="Black"
              x:Class="GnollHackM.VersionPage">
-    <ContentPage.Content>
+    
         <Grid>
             <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
             <Grid x:Name="MainGrid" RowSpacing="6" MaximumWidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
@@ -145,5 +145,5 @@
                 <controls:CustomImageButton Grid.Row="2" Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="Center" WidthRequest="320" HeightRequest="60" />
             </Grid>
         </Grid>
-    </ContentPage.Content>
+    
 </ContentPage>

@@ -5,7 +5,7 @@
              xmlns:controls="clr-namespace:GnollHackM"
              BackgroundColor="Black"
              x:Class="GnollHackM.ReplayPage">
-    <ContentPage.Content>
+    
         <Grid>
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
             <Grid x:Name="MainGrid" MaximumWidthRequest="900" RowSpacing="6" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
@@ -122,5 +122,5 @@
                 </Grid.GestureRecognizers>
             </Grid>
         </Grid>
-    </ContentPage.Content>
+    
 </ContentPage>

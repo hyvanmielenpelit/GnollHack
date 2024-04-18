@@ -7,7 +7,7 @@
              xmlns:controls="clr-namespace:GnollHackM"
              BackgroundColor="Black"
              >
-    <ContentPage.Content>
+    
         <Grid x:Name="RootGrid" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="Black">
             <Grid x:Name="MainGrid" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" IsVisible="false" >
                 <Grid.RowDefinitions>
@@ -455,5 +455,5 @@
                 </StackLayout>
             </Grid>
         </Grid>
-    </ContentPage.Content>
+    
 </ContentPage>

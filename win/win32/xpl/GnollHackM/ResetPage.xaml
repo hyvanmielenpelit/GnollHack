@@ -5,7 +5,7 @@
              xmlns:controls="clr-namespace:GnollHackM"
              BackgroundColor="Black"
              x:Class="GnollHackM.ResetPage">
-    <ContentPage.Content>
+    
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
             <Grid x:Name="ResetGrid" RowSpacing="6" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
@@ -49,5 +49,5 @@
                         Clicked="Button_Clicked" />
             </Grid>
         </Grid>
-    </ContentPage.Content>
+    
 </ContentPage>

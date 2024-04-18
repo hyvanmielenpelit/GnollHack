@@ -6,7 +6,7 @@
              x:Name="this"
              x:Class="GnollHackM.RowImageButton"
              x:DataType="controls:RowImageButton">
-  <ContentView.Content>
+  
         <Grid x:Name="ViewGrid" BindingContext="{x:Reference this}" Margin="{Binding GridMargin}" WidthRequest="{Binding GridWidth, FallbackValue='80'}" HeightRequest="{Binding GridHeight, FallbackValue='320'}" >
             <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
                 <Grid.ColumnDefinitions>
@@ -22,5 +22,5 @@
             </Grid>
             <Button x:Name="ViewButton" Text="" BackgroundColor="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
         </Grid>
-    </ContentView.Content>
+    
 </ContentView>

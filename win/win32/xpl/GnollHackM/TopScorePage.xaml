@@ -6,7 +6,7 @@
              xmlns:mainscreen="clr-namespace:GnollHackM"
              BackgroundColor="Black"
              x:Class="GnollHackM.TopScorePage">
-    <ContentPage.Content>
+    
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
             <Grid x:Name="MainGrid" MaximumWidthRequest="1100" RowSpacing="6" HorizontalOptions="Center" VerticalOptions="FillAndExpand" >
@@ -83,5 +83,5 @@
                 </Grid>
             </Grid>
         </Grid>
-    </ContentPage.Content>
+    
 </ContentPage>

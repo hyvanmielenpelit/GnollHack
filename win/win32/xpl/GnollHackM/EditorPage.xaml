@@ -4,7 +4,7 @@
              xmlns:gnollhackclient="clr-namespace:GnollHackM" xmlns:controls="clr-namespace:GnollHackM"
              BackgroundColor="Black"
              x:Class="GnollHackM.EditorPage">
-    <ContentPage.Content>
+    
         <Grid>
             <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
             <Grid MaximumWidthRequest="1024" RowSpacing="6" HorizontalOptions="Fill" VerticalOptions="Fill" >
@@ -37,5 +37,5 @@
                 </Grid>
             </Grid>
         </Grid>
-    </ContentPage.Content>
+    
 </ContentPage>

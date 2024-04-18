@@ -7,7 +7,7 @@
              BackgroundColor="Black"
              Appearing="ContentPage_Appearing" 
              Disappearing="ContentPage_Disappearing">
-    <ContentPage.Content>
+    
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
             <Grid x:Name="ImportExportGrid" RowSpacing="6" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
@@ -47,5 +47,5 @@
                         Clicked="CloseButton_Clicked" />
             </Grid>
         </Grid>
-    </ContentPage.Content>
+    
 </ContentPage>

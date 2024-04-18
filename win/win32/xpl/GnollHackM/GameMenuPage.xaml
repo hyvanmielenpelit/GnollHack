@@ -7,7 +7,7 @@
              Appearing="ContentPage_Appearing"
              Disappearing="ContentPage_Disappearing"
              x:Class="GnollHackM.GameMenuPage">
-    <ContentPage.Content>
+    
         <Grid>
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
             <StackLayout x:Name="MainLayout" Spacing="6" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
@@ -43,5 +43,5 @@
                 </ScrollView>
             </StackLayout>
         </Grid>
-    </ContentPage.Content>
+    
 </ContentPage>

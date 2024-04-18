@@ -7,7 +7,7 @@
              x:Class="GnollHackM.VaultPage" 
              Appearing="ContentPage_Appearing" 
              Disappearing="ContentPage_Disappearing">
-    <ContentPage.Content>
+    
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
             <Grid BackgroundColor="Transparent" RowSpacing="6" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
@@ -26,5 +26,5 @@
                         Clicked="Button_Clicked" />
             </Grid>
         </Grid>
-    </ContentPage.Content>
+    
 </ContentPage>
