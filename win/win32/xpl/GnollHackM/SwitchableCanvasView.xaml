@@ -6,8 +6,8 @@
              x:Class="GnollHackM.SwitchableCanvasView">
   
       <Grid>
-          <skia:SKCanvasView x:Name="internalCanvasView" IsVisible="true" PaintSurface="internalCanvasView_PaintSurface" Touch="internalCanvasView_Touch" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
-          <skia:SKGLView x:Name="internalGLView" IsVisible="false" PaintSurface="internalGLView_PaintSurface" Touch="internalGLView_Touch" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+          <skia:SKCanvasView x:Name="internalCanvasView" IsVisible="true" PaintSurface="internalCanvasView_PaintSurface" Touch="internalCanvasView_Touch" HorizontalOptions="Fill" VerticalOptions="Fill" />
+          <skia:SKGLView x:Name="internalGLView" IsVisible="false" PaintSurface="internalGLView_PaintSurface" Touch="internalGLView_Touch" HorizontalOptions="Fill" VerticalOptions="Fill" />
       </Grid>
   
 </ContentView>

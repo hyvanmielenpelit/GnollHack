@@ -208,8 +208,8 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <controls:CustomImageButton Grid.Column="0" HorizontalOptions="End" WidthRequest="170" HeightRequest="60" UseVaryingTextColors="True" Text="OK" x:Name="MenuOKButton" Clicked="MenuOKButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" />
-                        <controls:CustomImageButton Grid.Column="1" HorizontalOptions="Start" WidthRequest="170"  HeightRequest="60" UseVaryingTextColors="True" Text="Cancel" x:Name="MenuCancelButton" Clicked="MenuCancelButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" />
+                        <controls:CustomImageButton Grid.Column="0" HorizontalOptions="End" WidthRequest="135" HeightRequest="60" UseVaryingTextColors="True" Text="OK" x:Name="MenuOKButton" Clicked="MenuOKButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" />
+                        <controls:CustomImageButton Grid.Column="1" HorizontalOptions="Start" WidthRequest="135"  HeightRequest="60" UseVaryingTextColors="True" Text="Cancel" x:Name="MenuCancelButton" Clicked="MenuCancelButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" />
                     </Grid>
                 </StackLayout>
                 <Grid x:Name="MenuCountBackgroundGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
@@ -254,10 +254,10 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <controls:CustomImageButton Grid.Column="0" x:Name="MenuCountOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="End" VerticalOptions="CenterAndExpand" 
+                                    <controls:CustomImageButton Grid.Column="0" x:Name="MenuCountOkButton" Text="OK" FontSize="19" WidthRequest="135" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="End" VerticalOptions="CenterAndExpand" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="MenuCountOkButton_Clicked" />
-                                    <controls:CustomImageButton Grid.Column="1" x:Name="MenuCountCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" 
+                                    <controls:CustomImageButton Grid.Column="1" x:Name="MenuCountCancelButton" Text="Cancel" FontSize="19" WidthRequest="135" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="MenuCountCancelButton_Clicked" />
                                 </Grid>
@@ -309,10 +309,10 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <controls:CustomImageButton Grid.Column="0" x:Name="GetLineOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="End" VerticalOptions="Center" 
+                                <controls:CustomImageButton Grid.Column="0" x:Name="GetLineOkButton" Text="OK" FontSize="19" WidthRequest="135" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="End" VerticalOptions="Center" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="GetLineOkButton_Clicked" />
-                                <controls:CustomImageButton Grid.Column="1" x:Name="GetLineCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Start" VerticalOptions="Center" 
+                                <controls:CustomImageButton Grid.Column="1" x:Name="GetLineCancelButton" Text="Cancel" FontSize="19" WidthRequest="135" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Start" VerticalOptions="Center" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="GetLineCancelButton_Clicked" />
                             </Grid>
@@ -432,10 +432,10 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <controls:CustomImageButton Grid.Column="0" x:Name="GotoTurnOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="End" VerticalOptions="CenterAndExpand" 
+                                <controls:CustomImageButton Grid.Column="0" x:Name="GotoTurnOkButton" Text="OK" FontSize="19" WidthRequest="135" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="End" VerticalOptions="CenterAndExpand" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="GotoTurnOkButton_Clicked" />
-                                <controls:CustomImageButton Grid.Column="1" x:Name="GotoTurnCancelButton" Text="Cancel" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" 
+                                <controls:CustomImageButton Grid.Column="1" x:Name="GotoTurnCancelButton" Text="Cancel" FontSize="19" WidthRequest="135" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Start" VerticalOptions="CenterAndExpand" 
                                             BackgroundColor="Transparent" TextColor="White"
                                             Clicked="GotoTurnCancelButton_Clicked" />
                             </Grid>

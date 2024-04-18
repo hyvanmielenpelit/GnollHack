@@ -4,9 +4,9 @@
              xmlns:skia="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
              x:Class="GnollHackM.CustomImageButton">
   
-        <Grid x:Name="customGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-            <skia:SKCanvasView x:Name="customCanvasView" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" EnableTouchEvents="false" PaintSurface="CustomCanvasView_PaintSurface" />
-            <Button Text="" x:Name="customButton" Clicked="CustomButton_Clicked" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+        <Grid x:Name="customGrid" HorizontalOptions="Fill" VerticalOptions="Fill">
+            <skia:SKCanvasView x:Name="customCanvasView" HorizontalOptions="Fill" VerticalOptions="Fill" EnableTouchEvents="false" PaintSurface="CustomCanvasView_PaintSurface" />
+            <Button Text="" x:Name="customButton" Clicked="CustomButton_Clicked" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill" />
         </Grid>
     
 </ContentView>

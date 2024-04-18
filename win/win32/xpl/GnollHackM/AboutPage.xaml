@@ -8,18 +8,18 @@
              Appearing="ContentPage_Appearing" 
              Disappearing="ContentPage_Disappearing">
     
-        <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-            <Grid x:Name="AboutGrid" RowSpacing="6" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill">
+            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+            <Grid x:Name="AboutGrid" RowSpacing="6" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" x:Name="lblHeader" Text="About" HorizontalTextAlignment="Center" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
-                    HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" Margin="0,10,0,30" />
-                <ScrollView Grid.Row="1" x:Name="AboutScrollView" MaximumWidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
-                    <StackLayout x:Name="AboutLayout" HorizontalOptions="FillAndExpand" Orientation="Vertical" Spacing="1">
+                    HorizontalOptions="CenterAndExpand" VerticalOptions="Fill" Margin="0,10,0,30" />
+                <ScrollView Grid.Row="1" x:Name="AboutScrollView" MaximumWidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="Fill" BackgroundColor="Transparent">
+                    <StackLayout x:Name="AboutLayout" HorizontalOptions="Fill" Orientation="Vertical" Spacing="1">
                         <controls:CustomImageButton x:Name="btnVersion" Text="Version" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         Margin="0,0,0,16" HorizontalOptions="Center" VerticalOptions="Center" Clicked="btnVersion_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnCreditsW" Text="Credits" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
@@ -38,8 +38,6 @@
                                         Margin="0,0,0,16" HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnSponsor_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnImportExport" Text="Manage Files" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnImportExport_Clicked" UseVaryingBackgroundImages ="True" />
-                        <!--<controls:CustomImageButton x:Name="btnReplays" Text="View Replays" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnReplays_Clicked" UseVaryingBackgroundImages ="True" />-->
                         <controls:CustomImageButton x:Name="btnCrashReport" Text="Crash Report" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnCrashReport_Clicked" UseVaryingBackgroundImages ="True" />
                         <!--<controls:CustomImageButton x:Name="btnDowngrade" Text="Downgrade" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
@@ -50,7 +48,7 @@
                                     HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnViewPanicLog_Clicked" UseVaryingBackgroundImages ="True" />
                     </StackLayout>
                 </ScrollView>
-                <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Text="Close" Margin="0,10,0,10" WidthRequest="320" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="Center" VerticalOptions="EndAndExpand" BackgroundColor="Transparent" TextColor="White"
+                <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Text="Close" Margin="0,10,0,10" WidthRequest="280" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="Center" VerticalOptions="EndAndExpand" BackgroundColor="Transparent" TextColor="White"
                         Clicked="Button_Clicked" />
             </Grid>
         </Grid>

@@ -69,7 +69,7 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-                <controls:CustomImageButton Grid.Row="2" Text="Close" x:Name="CloseButton" Margin="10,20" WidthRequest="320" HeightRequest="60" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="End"  />
+                <controls:CustomImageButton Grid.Row="2" Text="Close" x:Name="CloseButton" Margin="10,20" WidthRequest="280" HeightRequest="60" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="End"  />
                 <Grid x:Name="CloseGrid" Grid.Row="2" ColumnSpacing="6" BackgroundColor="Transparent" Margin="10,20" HorizontalOptions="Center" IsVisible="False" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -78,8 +78,8 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <controls:CustomImageButton Grid.Column="0" Text="Server" x:Name="ServerButton" Clicked="ServerButton_Clicked" WidthRequest="150" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="End" VerticalOptions="End" />
-                    <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CloseButton2" Clicked="CloseButton_Clicked" WidthRequest="150" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="Start" VerticalOptions="End"   />
+                    <controls:CustomImageButton Grid.Column="0" Text="Server" x:Name="ServerButton" Clicked="ServerButton_Clicked" WidthRequest="135" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="End" VerticalOptions="End" />
+                    <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CloseButton2" Clicked="CloseButton_Clicked" WidthRequest="135" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="Start" VerticalOptions="End"   />
                 </Grid>
             </Grid>
         </Grid>

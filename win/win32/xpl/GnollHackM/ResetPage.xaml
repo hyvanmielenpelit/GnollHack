@@ -45,7 +45,7 @@
                                         HorizontalOptions="Center" Clicked="btnImportTestFiles_Clicked" UseVaryingBackgroundImages ="True" />
                     </StackLayout>
                 </ScrollView>
-                <controls:CustomImageButton Grid.Row="2" Margin="0,10,0,10" x:Name="CloseButton" Text="Close" WidthRequest="320" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="Center" VerticalOptions="End" BackgroundColor="Transparent" TextColor="White"
+                <controls:CustomImageButton Grid.Row="2" Margin="0,10,0,10" x:Name="CloseButton" Text="Close" WidthRequest="280" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="Center" VerticalOptions="End" BackgroundColor="Transparent" TextColor="White"
                         Clicked="Button_Clicked" />
             </Grid>
         </Grid>

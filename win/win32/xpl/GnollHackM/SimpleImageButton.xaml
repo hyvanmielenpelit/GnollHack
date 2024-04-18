@@ -9,9 +9,9 @@
     
         <Grid x:Name="ViewGrid" BindingContext="{x:Reference this}" WidthRequest="{Binding GridWidth, FallbackValue='45'}" HeightRequest="{Binding GridHeight, FallbackValue='45'}" >
             <gnh:GHCachedImage x:Name="ViewImage" Source="{Binding ImgSourcePath}"
-                            BackgroundColor="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" InputTransparent="True" />
+                            BackgroundColor="Transparent" VerticalOptions="Fill" HorizontalOptions="Fill" InputTransparent="True" />
             <Button x:Name="ViewButton" Text="" 
-                             BackgroundColor="Transparent" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" />
+                             BackgroundColor="Transparent" VerticalOptions="Fill" HorizontalOptions="Fill" />
         </Grid>
     
 </ContentView>
