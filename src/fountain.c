@@ -799,6 +799,7 @@ register struct obj *obj;
             case POT_HEALING:
             case POT_LESSER_REGENERATION:
             case POT_LESSER_REJUVENATION:
+            case POT_SPEED:
             case POT_EXTRA_ENERGY:
                 obj->otyp = POT_EXTRA_ENERGY;
                 break;
