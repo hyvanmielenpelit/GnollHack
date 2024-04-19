@@ -21,26 +21,26 @@
                 <Grid Grid.Row="1" MaximumWidthRequest="400" HorizontalOptions="Fill" VerticalOptions="Fill">
                     <ScrollView x:Name="ImportExportScrollView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
                         <StackLayout x:Name="ImportExportLayout" HorizontalOptions="Fill" Orientation="Vertical" Spacing="1">
-                            <controls:CustomImageButton x:Name="btnExportSavedGames" Text="Export Saved Games" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="btnExportSavedGames" Text="Export Saved Games" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnExportSavedGames_Clicked" UseVaryingBackgroundImages ="True" />
-                            <controls:CustomImageButton x:Name="btnImportSavedGames" Text="Import Saved Games" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="btnImportSavedGames" Text="Import Saved Games" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnImportSavedGames_Clicked" UseVaryingBackgroundImages ="True" />
                             <controls:CustomImageButton x:Name="btnDeleteSavedGames" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Saved Games" BackgroundColor="Transparent" TextColor="White"
                                         Margin="0,0,0,16" HorizontalOptions="Center" Clicked="btnDeleteSavedGames_Clicked" UseVaryingBackgroundImages ="True" />
 
-                            <controls:CustomImageButton x:Name="btnExportReplays" Text="Export Replays" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="btnExportReplays" Text="Export Replays" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnExportReplays_Clicked" UseVaryingBackgroundImages ="True" />
-                            <controls:CustomImageButton x:Name="btnImportReplays" Text="Import Replays" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="btnImportReplays" Text="Import Replays" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnImportReplays_Clicked" UseVaryingBackgroundImages ="True" />
                             <controls:CustomImageButton x:Name="btnDeleteReplays" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Replays" BackgroundColor="Transparent" TextColor="White"
                                         Margin="0,0,0,16" HorizontalOptions="Center" Clicked="btnDeleteReplays_Clicked" UseVaryingBackgroundImages ="True" />
 
-                            <controls:CustomImageButton x:Name="btnExportDumplogs" Text="Export Dumplogs" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="btnExportDumplogs" Text="Export Dumplogs" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnExportDumplogs_Clicked" UseVaryingBackgroundImages ="True" />
                             <controls:CustomImageButton x:Name="btnDeleteDumplogs" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Dumplogs" BackgroundColor="Transparent" TextColor="White"
                                         Margin="0,0,0,16" HorizontalOptions="Center" Clicked="btnDeleteDumplogs_Clicked" UseVaryingBackgroundImages ="True" />
 
-                            <controls:CustomImageButton x:Name="btnClearPendingTasks" Text="Clear Pending Tasks" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="btnClearPendingTasks" Text="Clear Pending Tasks" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnClearPendingTasks_Clicked" UseVaryingBackgroundImages ="True" />
                         </StackLayout>
                     </ScrollView>
