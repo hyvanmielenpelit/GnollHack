@@ -8,21 +8,21 @@
              BackgroundColor="Black"
              Appearing="ContentPage_Appearing" Disappearing ="ContentPage_Disappearing" >
 
-    <AbsoluteLayout VerticalOptions="FillAndExpand"
-                    HorizontalOptions="FillAndExpand" BackgroundColor="Black">
+    <AbsoluteLayout VerticalOptions="Fill"
+                    HorizontalOptions="Fill" BackgroundColor="Black">
 
         <local:GHCachedImage x:Name="FmodLogoImage" Source="resource://GnollHackM.Assets.FMOD-Logo-192-White.png" Opacity="0" IsVisible="true" WidthRequest="121" HeightRequest="32"
-               HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"
+               HorizontalOptions="Center" VerticalOptions="Center"
                AbsoluteLayout.LayoutBounds="20, 20, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="None" Aspect="AspectFit"/>
 
         <local:GHCachedImage x:Name="StartLogoImage" Source="resource://GnollHackM.Assets.gnollhack-logo-test-2.png" Opacity="0" IsVisible="true" HeightRequest="180" WidthRequest="180"
-               HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"
+               HorizontalOptions="Center" VerticalOptions="Center"
                AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="PositionProportional" />
 
         <local:ImageCarousel x:Name="carouselView" IsVisible="false"
-               HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
+               HorizontalOptions="Fill" VerticalOptions="Fill"
                AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
                AbsoluteLayout.LayoutFlags="All" />
 
@@ -111,11 +111,11 @@
                         HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
             </Grid>
         </StackLayout>
-        
-        <Grid x:Name="PopupGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
+
+        <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
               BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
-            <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+            <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
                 <Frame x:Name="PopupFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                     <StackLayout x:Name="PopupLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
@@ -140,10 +140,10 @@
                 <TapGestureRecognizer />
             </Grid.GestureRecognizers>
         </Grid>
-        <Grid x:Name="PendingTasksGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
+        <Grid x:Name="PendingTasksGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
               BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
-            <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+            <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
                 <Frame x:Name="PendingTasksFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                     <StackLayout x:Name="PendingTasksLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">

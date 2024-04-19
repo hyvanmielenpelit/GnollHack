@@ -210,9 +210,9 @@ namespace GnollHackX.Pages.MainScreen
                 MainGrid.Margin = new Thickness(bordermargin, 0, bordermargin, 0);
                 double target_width = (Math.Min(width,
 #if GNH_MAUI
-                        MainGrid.MaximumWidthRequest
+                        TextScrollGrid.MaximumWidthRequest
 #else
-                        MainGrid.WidthRequest
+                        TextScrollGrid.WidthRequest
 #endif
                     ) - MainGrid.Margin.Left - MainGrid.Margin.Right
                     - MainGrid.Padding.Left - MainGrid.Padding.Right - margins.Left - margins.Right);

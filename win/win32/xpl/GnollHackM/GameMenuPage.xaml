@@ -8,12 +8,12 @@
              Disappearing="ContentPage_Disappearing"
              x:Class="GnollHackM.GameMenuPage">
     
-        <Grid>
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill">
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
-            <StackLayout x:Name="MainLayout" Spacing="6" HorizontalOptions="Fill" VerticalOptions="Fill" >
+            <StackLayout x:Name="MainLayout" Spacing="6" MaximumWidthRequest="400" HorizontalOptions="Fill" VerticalOptions="Fill">
                 <Label x:Name="lblHeader" Text="Menu" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="CenterAndExpand" Margin="0,10,0,20" />
-                <ScrollView x:Name="GameMenuScrollView" MaximumWidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
+                <ScrollView x:Name="GameMenuScrollView" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
                     <StackLayout HorizontalOptions="Fill" Orientation="Vertical" Spacing="2">
                         <controls:CustomImageButton x:Name="btnSave" Text="Save &amp; Exit Game" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="#FFDDFFDD"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnSave_Clicked" UseVaryingBackgroundImages ="True" />

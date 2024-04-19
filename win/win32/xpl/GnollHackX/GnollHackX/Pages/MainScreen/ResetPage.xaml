@@ -8,7 +8,7 @@
     <ContentPage.Content>
         <Grid HorizontalOptions="Fill" VerticalOptions="Fill">
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
-            <Grid x:Name="ResetGrid" RowSpacing="6" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill" >
+            <Grid x:Name="ResetGrid" RowSpacing="6" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
@@ -16,34 +16,36 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" x:Name="lblHeader" Text="Reset Menu" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="CenterAndExpand" VerticalOptions="Fill" Margin="0,10,0,30" />
-                <ScrollView Grid.Row="1" x:Name="ResetScrollView" WidthRequest  ="400" HorizontalOptions  ="Center" VerticalOptions="Fill" BackgroundColor="Transparent">
-                    <StackLayout x:Name="ResetLayout" HorizontalOptions="Fill" Orientation="Vertical" Spacing="2">
-                        <controls:CustomImageButton x:Name="btnDeleteFiles" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Reset Core Files" BackgroundColor="Transparent" TextColor="White"
+                <Grid Grid.Row="1" WidthRequest  ="400" HorizontalOptions  ="Center" VerticalOptions="Fill">
+                    <ScrollView x:Name="ResetScrollView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+                        <StackLayout x:Name="ResetLayout" HorizontalOptions="Fill" Orientation="Vertical" Spacing="2">
+                            <controls:CustomImageButton x:Name="btnDeleteFiles" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Reset Core Files" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" Clicked="btnDeleteFiles_Clicked" UseVaryingBackgroundImages ="False" />
-                        <controls:CustomImageButton x:Name="btnDeleteAllMainFiles" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete All Main Files" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="btnDeleteAllMainFiles" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete All Main Files" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" Clicked="btnDeleteAllMainFiles_Clicked" UseVaryingBackgroundImages ="False" />
-                        <controls:CustomImageButton x:Name="btnDeleteSavedGames" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Saved Games" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="btnDeleteSavedGames" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Saved Games" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" Clicked="btnDeleteSavedGames_Clicked" UseVaryingBackgroundImages ="False" />
-                        <controls:CustomImageButton x:Name="btnDeleteDumplogs" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Top Scores" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="btnDeleteDumplogs" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Top Scores" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" Clicked="btnDeleteDumplogs_Clicked" UseVaryingBackgroundImages ="False" />
-                        <controls:CustomImageButton x:Name="btnDeleteBones" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Bones Files" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="btnDeleteBones" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Bones Files" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" Clicked="btnDeleteBones_Clicked" UseVaryingBackgroundImages ="False" />
-                        <controls:CustomImageButton x:Name="btnDeleteDownloads" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Downloads" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="btnDeleteDownloads" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Downloads" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" Clicked="btnDeleteDownloads_Clicked" UseVaryingBackgroundImages ="False" />
-                        <controls:CustomImageButton x:Name="btnDeletePreferences" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Preferences" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="btnDeletePreferences" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Preferences" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" Clicked="btnDeletePreferences_Clicked" UseVaryingBackgroundImages ="False" />
-                        <controls:CustomImageButton x:Name="btnDeleteUserData" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete User Data" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="btnDeleteUserData" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete User Data" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" Clicked="btnDeleteUserData_Clicked" UseVaryingBackgroundImages ="False" />
-                        <controls:CustomImageButton x:Name="btnDeletePostQueues" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Post Queues" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="btnDeletePostQueues" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Post Queues" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" Clicked="btnDeletePostQueues_Clicked" UseVaryingBackgroundImages ="False" />
-                        <controls:CustomImageButton x:Name="btnDeleteAppLog" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete App Log" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="btnDeleteAppLog" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete App Log" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" Clicked="btnDeleteAppLog_Clicked" UseVaryingBackgroundImages ="False" />
-                        <controls:CustomImageButton x:Name="btnDownloadTestFiles" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Test Files" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="btnDownloadTestFiles" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Test Files" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" Clicked="btnDownloadTestFiles_Clicked" UseVaryingBackgroundImages ="False" />
-                        <controls:CustomImageButton x:Name="btnImportTestFiles" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Import Test Files" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="btnImportTestFiles" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Import Test Files" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" Clicked="btnImportTestFiles_Clicked" UseVaryingBackgroundImages ="False" />
-                    </StackLayout>
-                </ScrollView>
+                        </StackLayout>
+                    </ScrollView>
+                </Grid>
                 <controls:CustomImageButton Grid.Row="2" Margin="0,10,0,10" x:Name="CloseButton" Text="Close" WidthRequest="280" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="Center" VerticalOptions="End" BackgroundColor="Transparent" TextColor="White"
                         Clicked="Button_Clicked" />
             </Grid>

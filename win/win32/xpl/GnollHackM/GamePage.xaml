@@ -285,7 +285,7 @@
             </Grid>
             <Grid x:Name="GetLineGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
-                <Grid MaximumWidthRequest="440" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,50,0,10" >
+                <Grid MaximumWidthRequest="440" HorizontalOptions="Fill" VerticalOptions="Start" Margin="0,50,0,10" >
                     <Frame x:Name="GetLineFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout x:Name="GetLineLayout" Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center">
                             <Label x:Name="GetLineCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
@@ -325,7 +325,7 @@
             </Grid>
             <Grid x:Name="YnGrid" HorizontalOptions="Fill" VerticalOptions="Fill" InputTransparent="false" 
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
-                <Grid MaximumWidthRequest="600" HorizontalOptions="Center" VerticalOptions="Center">
+                <Grid MaximumWidthRequest="600" HorizontalOptions="Fill" VerticalOptions="Center">
                     <Frame x:Name="YnFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="YnLayout" Padding="5" Spacing="6" HorizontalOptions="Center" VerticalOptions="Center" >
                             <StackLayout x:Name="YnTitleLayout" Orientation="Horizontal" Spacing="6"
@@ -420,7 +420,7 @@
                         <StackLayout x:Name="GotoTurnLayout" HorizontalOptions="Fill" VerticalOptions="Center">
                             <Label x:Name="GotoTurnCaption" Text="Go to Turn" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
                             <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
-                                <Entry x:Name="GotoTurnEntryText" Keyboard="Numeric" MaximumWidthRequest="360" HorizontalOptions="Center" Placeholder="Enter the turn here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
+                                <Entry x:Name="GotoTurnEntryText" Keyboard="Numeric" MaximumWidthRequest="360" HorizontalOptions="Fill" Placeholder="Enter the turn here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
                                        HorizontalTextAlignment="Center" FontSize="20" FontFamily="Underwood" />
                             </StackLayout>
                             <Grid ColumnSpacing="6" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
