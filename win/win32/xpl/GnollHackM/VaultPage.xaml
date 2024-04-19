@@ -8,18 +8,18 @@
              Appearing="ContentPage_Appearing" 
              Disappearing="ContentPage_Disappearing">
     
-        <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-            <Grid BackgroundColor="Transparent" RowSpacing="6" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill">
+            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+            <Grid BackgroundColor="Transparent" RowSpacing="6" HorizontalOptions="Fill" VerticalOptions="Fill" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" x:Name="lblHeader" Text="Vault" HorizontalTextAlignment="Center" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
-                    HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" Margin="0,10,0,30" />
-                <ScrollView Grid.Row="1" x:Name="VaultScrollView" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" MaximumWidthRequest="400" BackgroundColor="Transparent">
-                    <StackLayout x:Name="VaultLayout" Spacing="6" HorizontalOptions="FillAndExpand" Orientation="Vertical" >
+                    HorizontalOptions="Center" VerticalOptions="Fill" Margin="0,10,0,30" />
+                <ScrollView Grid.Row="1" x:Name="VaultScrollView" HorizontalOptions="Fill" VerticalOptions="Fill" MaximumWidthRequest="400" BackgroundColor="Transparent">
+                    <StackLayout x:Name="VaultLayout" Spacing="6" HorizontalOptions="Fill" Orientation="Vertical" >
                     </StackLayout>
                 </ScrollView>
                 <controls:CustomImageButton Grid.Row="2" x:Name="CloseButton" Text="Close" Margin="0,10,0,10" WidthRequest="280" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="Center" VerticalOptions="End" BackgroundColor="Transparent" TextColor="White"

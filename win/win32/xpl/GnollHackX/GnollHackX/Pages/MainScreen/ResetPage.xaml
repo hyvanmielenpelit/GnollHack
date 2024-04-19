@@ -6,19 +6,18 @@
              BackgroundColor="Black"
              x:Class="GnollHackX.Pages.MainScreen.ResetPage">
     <ContentPage.Content>
-        <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-            <Grid x:Name="ResetGrid" RowSpacing="6" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill">
+            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+            <Grid x:Name="ResetGrid" RowSpacing="6" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" x:Name="lblHeader" Text="Reset Menu" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
-                    HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" Margin="0,10,0,30" />
-                <ScrollView Grid.Row="1" x:Name="ResetScrollView" WidthRequest  ="400"
-                            HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
-                    <StackLayout x:Name="ResetLayout" HorizontalOptions="FillAndExpand" Orientation="Vertical" Spacing="2">
+                    HorizontalOptions="CenterAndExpand" VerticalOptions="Fill" Margin="0,10,0,30" />
+                <ScrollView Grid.Row="1" x:Name="ResetScrollView" WidthRequest  ="400" HorizontalOptions  ="Center" VerticalOptions="Fill" BackgroundColor="Transparent">
+                    <StackLayout x:Name="ResetLayout" HorizontalOptions="Fill" Orientation="Vertical" Spacing="2">
                         <controls:CustomImageButton x:Name="btnDeleteFiles" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Reset Core Files" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" Clicked="btnDeleteFiles_Clicked" UseVaryingBackgroundImages ="False" />
                         <controls:CustomImageButton x:Name="btnDeleteAllMainFiles" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete All Main Files" BackgroundColor="Transparent" TextColor="White"

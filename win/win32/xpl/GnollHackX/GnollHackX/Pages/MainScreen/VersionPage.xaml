@@ -7,8 +7,8 @@
              x:Class="GnollHackX.Pages.MainScreen.VersionPage">
     <ContentPage.Content>
         <Grid>
-            <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-            <Grid x:Name="MainGrid" RowSpacing="6" WidthRequest  ="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
+            <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+            <Grid x:Name="MainGrid" RowSpacing="6" HorizontalOptions="Fill" VerticalOptions="Fill" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
@@ -18,7 +18,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Label x:Name="HeaderLabel" Text="Version" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="Black" FontFamily="Immortal"/>
-                <ScrollView x:Name="TextScrollView" Grid.Row="1" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
+                <ScrollView x:Name="TextScrollView" Grid.Row="1" WidthRequest  ="400" HorizontalOptions  ="Center" VerticalOptions="Fill" BackgroundColor="Transparent">
                     <StackLayout Spacing="6">
                         <Grid x:Name="VersionInfoGrid" RowSpacing="0" ColumnSpacing="1">
                             <Grid.RowDefinitions>
@@ -135,9 +135,9 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Label Grid.Row="0" x:Name="LongTitleLabel" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
+                            <Label Grid.Row="0" x:Name="LongTitleLabel" HorizontalOptions="Fill" VerticalOptions="Fill" Text="" TextColor="Black" BackgroundColor="Transparent"
                                 FontFamily="DejaVuSansMono" FontSize="13" />
-                            <Label Grid.Row="1" x:Name="LongLabel" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
+                            <Label Grid.Row="1" x:Name="LongLabel" HorizontalOptions="Fill" VerticalOptions="Fill" Text="" TextColor="Black" BackgroundColor="Transparent"
                                 FontFamily="DejaVuSansMono" FontSize="13" />
                         </Grid>
                     </StackLayout>

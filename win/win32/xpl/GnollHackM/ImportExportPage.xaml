@@ -8,18 +8,18 @@
              Appearing="ContentPage_Appearing" 
              Disappearing="ContentPage_Disappearing">
     
-        <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-            <Grid x:Name="ImportExportGrid" RowSpacing="6" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill">
+            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+            <Grid x:Name="ImportExportGrid" RowSpacing="6" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" x:Name="lblHeader" Text="Manage Files" HorizontalTextAlignment="Center" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
-                    HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" Margin="0,10,0,30" />
-                <ScrollView Grid.Row="1" x:Name="ImportExportScrollView" MaximumWidthRequest="400" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
-                    <StackLayout x:Name="ImportExportLayout" HorizontalOptions="FillAndExpand" Orientation="Vertical" Spacing="1">
+                    HorizontalOptions="CenterAndExpand" VerticalOptions="Fill" Margin="0,10,0,30" />
+                <ScrollView Grid.Row="1" x:Name="ImportExportScrollView" MaximumWidthRequest="400" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
+                    <StackLayout x:Name="ImportExportLayout" HorizontalOptions="Fill" Orientation="Vertical" Spacing="1">
                         <controls:CustomImageButton x:Name="btnExportSavedGames" Text="Export Saved Games" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnExportSavedGames_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnImportSavedGames" Text="Import Saved Games" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"

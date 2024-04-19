@@ -8,15 +8,15 @@
              BackgroundColor="Black"
              >
     <ContentPage.Content>
-        <Grid x:Name="RootGrid" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="Black">
-            <Grid x:Name="MainGrid" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" IsVisible="false" >
+        <Grid x:Name="RootGrid" VerticalOptions="Fill" HorizontalOptions="Fill" BackgroundColor="Black">
+            <Grid x:Name="MainGrid" VerticalOptions="Fill" HorizontalOptions="Fill" IsVisible="false" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <AbsoluteLayout Grid.Row="0" x:Name="GameLayout" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                <AbsoluteLayout Grid.Row="0" x:Name="GameLayout" VerticalOptions="Fill" HorizontalOptions="Fill">
                     <controls:SwitchableCanvasView x:Name="canvasView"
                                                   UseGL="False"
                                                   CanvasType="MainCanvas"
@@ -52,7 +52,7 @@
                 </AbsoluteLayout>
 
                 <Grid x:Name="UIGrid" Grid.Row="0" RowSpacing="0" ColumnSpacing="0" InputTransparent="True" CascadeInputTransparent="False"
-                      HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                      HorizontalOptions="Fill" VerticalOptions="Fill">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -107,7 +107,7 @@
                         HorizontalOptions="Start" VerticalOptions="End">
                         <Button x:Name="ToggleMessageNumberButton" Text="" Clicked="ToggleMessageNumberButton_Clicked" HeightRequest="80" WidthRequest="80" BackgroundColor="Transparent" />
                     </StackLayout>
-                    <StackLayout Grid.Row="2" x:Name="ButtonRowStack" IsVisible="True" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" Orientation="Vertical" Spacing="6"
+                    <StackLayout Grid.Row="2" x:Name="ButtonRowStack" IsVisible="True" HorizontalOptions="Fill" VerticalOptions="End" Orientation="Vertical" Spacing="6"
                         BackgroundColor="#66000000">
                         <Grid x:Name="UpperCmdGrid" ColumnSpacing="6" HeightRequest="60" HorizontalOptions="CenterAndExpand" >
                             <Grid.RowDefinitions>
@@ -130,7 +130,7 @@
                             <controls:LabeledImageButton Grid.Column="5" x:Name="lKickButton" LblText="Kick" BtnLetter="k" ImgSourcePath="resource://GnollHackX.Assets.UI.kick.png" BtnClicked="GHButton_Clicked" />
                             <controls:LabeledImageButton Grid.Column="6" x:Name="lRepeatButton" LblText="Repeat" BtnLetter="A" BtnCtrl="True" ImgSourcePath="resource://GnollHackX.Assets.UI.repeat.png" BtnClicked="GHButton_Clicked" />
                         </Grid>
-                        <Grid x:Name="LowerCmdGrid" ColumnSpacing="6" HeightRequest="60" HorizontalOptions="CenterAndExpand">
+                        <Grid x:Name="LowerCmdGrid" ColumnSpacing="6" HeightRequest="60" HorizontalOptions="Center">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
@@ -152,7 +152,7 @@
                             <controls:LabeledImageButton Grid.Column="6" x:Name="lMoreButton" LblText="More" ImgSourcePath="resource://GnollHackX.Assets.UI.more.png" BtnClicked="MoreButton_Clicked" />
                         </Grid>
                     </StackLayout>
-                    <StackLayout Grid.Row="2" x:Name="SimpleButtonRowStack" IsVisible="True" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" Orientation="Vertical" Spacing="6"
+                    <StackLayout Grid.Row="2" x:Name="SimpleButtonRowStack" IsVisible="True" HorizontalOptions="Fill" VerticalOptions="End" Orientation="Vertical" Spacing="6"
                         BackgroundColor="#66000000">
                         <Grid x:Name="SimpleCmdGrid" ColumnSpacing="6" HeightRequest="60" HorizontalOptions="CenterAndExpand" >
                             <Grid.RowDefinitions>
@@ -178,9 +178,9 @@
                     </StackLayout>
                 </Grid>
             </Grid>
-            <Grid x:Name="MenuGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000" IsVisible="False">
-                <gnh:BackgroundView x:Name="MenuBackground" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-                <StackLayout x:Name="MenuStack" Spacing="6" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Orientation="Vertical"  BackgroundColor="Transparent">
+            <Grid x:Name="MenuGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#AA000000" IsVisible="False">
+                <gnh:BackgroundView x:Name="MenuBackground" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+                <StackLayout x:Name="MenuStack" Spacing="6" VerticalOptions="Fill" HorizontalOptions="Fill" Orientation="Vertical"  BackgroundColor="Transparent">
                     <gnh:CustomLabel x:Name="MenuHeaderLabel"
                        TextColor="Black" FontAttributes="Bold" BackgroundColor="Transparent"
                        HorizontalOptions="FillAndExpand" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
@@ -212,11 +212,11 @@
                         <controls:CustomImageButton Grid.Column="1" HorizontalOptions="Start" WidthRequest="135"  HeightRequest="60" UseVaryingTextColors="True" Text="Cancel" x:Name="MenuCancelButton" Clicked="MenuCancelButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" />
                     </Grid>
                 </StackLayout>
-                <Grid x:Name="MenuCountBackgroundGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
+                <Grid x:Name="MenuCountBackgroundGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
                          BackgroundColor="#66000000" IsVisible="False">
                     <Grid x:Name="MenuCountForegroundGrid" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="Center">
-                        <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
-                            <StackLayout Spacing="6" x:Name="MenuCountLayout" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                        <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                            <StackLayout Spacing="6" x:Name="MenuCountLayout" HorizontalOptions="Fill" VerticalOptions="Center">
                                 <Label x:Name="MenuCountCaption" Text="Select Count" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
                                 <Picker x:Name="CountPicker"
                                         VerticalOptions="Center"
@@ -272,22 +272,22 @@
                     <TapGestureRecognizer />
                 </Grid.GestureRecognizers>
             </Grid>
-            <Grid x:Name="TextGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#AA000000" IsVisible="False">
-                <gnh:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Small" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-                <Grid x:Name="TextStack" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <Grid x:Name="TextGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#AA000000" IsVisible="False">
+                <gnh:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Small" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+                <Grid x:Name="TextStack" HorizontalOptions="Fill" VerticalOptions="Fill">
                     <gnh:GHCachedImage x:Name="TextWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
-                    <controls:SwitchableCanvasView x:Name="TextCanvas" UseGL="False" CanvasType="TextCanvas" RevertBlackAndWhite="True" UseTextOutline="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="TextCanvas_PaintSurface" Touch="TextCanvas_Touch" EnableTouchEvents="True" />
+                    <controls:SwitchableCanvasView x:Name="TextCanvas" UseGL="False" CanvasType="TextCanvas" RevertBlackAndWhite="True" UseTextOutline="False" HorizontalOptions="Fill" VerticalOptions="Fill" PaintSurface="TextCanvas_PaintSurface" Touch="TextCanvas_Touch" EnableTouchEvents="True" />
                     <!--ResourceCacheLimit="{x:Static gnh:GHConstants.GPUResourceCacheSize}"-->
                 </Grid>
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer />
                 </Grid.GestureRecognizers>
             </Grid>
-            <Grid x:Name="GetLineGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
+            <Grid x:Name="GetLineGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
-                <Grid WidthRequest  ="440" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" Margin="0,50,0,10" >
-                    <Frame x:Name="GetLineFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
-                        <StackLayout x:Name="GetLineLayout" Spacing="6" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                <Grid WidthRequest  ="440" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,50,0,10" >
+                    <Frame x:Name="GetLineFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                        <StackLayout x:Name="GetLineLayout" Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center">
                             <Label x:Name="GetLineCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
                             <StackLayout Spacing="6" Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
                                 <Entry x:Name="GetLineEntryText" WidthRequest="320" HorizontalOptions="Center" Placeholder="Enter the text here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
@@ -323,12 +323,11 @@
                     <TapGestureRecognizer />
                 </Grid.GestureRecognizers>
             </Grid>
-            <Grid x:Name="YnGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" InputTransparent="false" 
+            <Grid x:Name="YnGrid" HorizontalOptions="Fill" VerticalOptions="Fill" InputTransparent="false" 
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
-                <Grid WidthRequest  ="600" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-                    <Frame x:Name="YnFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
-                        <StackLayout x:Name="YnLayout" Padding="5" Spacing="6"
-                          HorizontalOptions="Center" VerticalOptions="CenterAndExpand" >
+                <Grid WidthRequest  ="600" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Frame x:Name="YnFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                        <StackLayout x:Name="YnLayout" Padding="5" Spacing="6" HorizontalOptions="Center" VerticalOptions="Center" >
                             <StackLayout x:Name="YnTitleLayout" Orientation="Horizontal" Spacing="6"
                                      HorizontalOptions="CenterAndExpand" VerticalOptions="Center">
                                 <gnh:GHCachedImage x:Name="YnImage" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Center"
@@ -352,9 +351,9 @@
                     <TapGestureRecognizer />
                 </Grid.GestureRecognizers>
             </Grid>
-            <Grid x:Name="PopupGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
+            <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
                          BackgroundColor="#66000000" IsVisible="False">
-                <Grid WidthRequest  ="600" Margin="5" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                <Grid WidthRequest  ="600" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
                     <Frame x:Name="PopupFrame"  BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="PopupLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
@@ -376,8 +375,8 @@
                     <TapGestureRecognizer />
                 </Grid.GestureRecognizers>
             </Grid>
-            <Grid x:Name="MoreCommandsGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#FF000000" IsVisible="False">
-                <controls:SwitchableCanvasView x:Name="CommandCanvas" UseGL="False" CanvasType="CommandCanvas" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="CommandCanvas_PaintSurface" Touch="CommandCanvas_Touch" EnableTouchEvents="True" />
+            <Grid x:Name="MoreCommandsGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#FF000000" IsVisible="False">
+                <controls:SwitchableCanvasView x:Name="CommandCanvas" UseGL="False" CanvasType="CommandCanvas" HorizontalOptions="Fill" VerticalOptions="Fill" PaintSurface="CommandCanvas_PaintSurface" Touch="CommandCanvas_Touch" EnableTouchEvents="True" />
             </Grid>
             <controls:SwitchableCanvasView x:Name="TipView" 
                                            IsVisible="False"
@@ -388,14 +387,14 @@
                                           Touch="TipView_Touch"
                                           AbsoluteLayout.LayoutBounds="0.0, 0, 1.0, 1.0"
                                           AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional"/>
-            <Grid x:Name="ReplayGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" InputTransparent="True" CascadeInputTransparent="False" IsVisible="False">
+            <Grid x:Name="ReplayGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent" InputTransparent="True" CascadeInputTransparent="False" IsVisible="False">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Frame x:Name="ReplayFrame" HorizontalOptions="CenterAndExpand" VerticalOptions="End" HeightRequest="65" BackgroundColor="#88000000" BorderColor="Black" CornerRadius="10" Padding="4" Margin="1">
+                <Frame x:Name="ReplayFrame" HorizontalOptions="Center" VerticalOptions="End" HeightRequest="65" BackgroundColor="#88000000" BorderColor="Black" CornerRadius="10" Padding="4" Margin="1">
                     <Grid Margin="0" BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="60" Padding="0" RowSpacing="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -416,9 +415,9 @@
                         </StackLayout>
                     </Grid>
                 </Frame>
-                <Grid x:Name="GotoTurnGrid" IsVisible="False"  BackgroundColor="#66000000" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
-                    <Frame x:Name="GotoTurnFrame" Margin="0,50,0,10" WidthRequest  ="440" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand">
-                        <StackLayout x:Name="GotoTurnLayout" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                <Grid x:Name="GotoTurnGrid" IsVisible="False"  BackgroundColor="#66000000" HorizontalOptions="Fill" VerticalOptions="Fill" >
+                    <Frame x:Name="GotoTurnFrame" Margin="0,50,0,10" WidthRequest  ="440" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Start">
+                        <StackLayout x:Name="GotoTurnLayout" HorizontalOptions="Fill" VerticalOptions="Center">
                             <Label x:Name="GotoTurnCaption" Text="Go to Turn" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
                             <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
                                 <Entry x:Name="GotoTurnEntryText" Keyboard="Numeric" WidthRequest  ="360" HorizontalOptions="Center" Placeholder="Enter the turn here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
@@ -443,8 +442,8 @@
                     </Frame>
                 </Grid>
             </Grid>
-            <Grid x:Name="LoadingGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" >
-                <gnh:GHCachedImage Source="resource://GnollHackX.Assets.dgn_entrance.jpg" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
+            <Grid x:Name="LoadingGrid" HorizontalOptions="Fill" VerticalOptions="Fill" >
+                <gnh:GHCachedImage Source="resource://GnollHackX.Assets.dgn_entrance.jpg" HorizontalOptions="Fill" VerticalOptions="Fill" 
                                 Aspect="AspectFill" CacheImage="False" />
                 <StackLayout Spacing="6" HeightRequest="150" WidthRequest="250" HorizontalOptions="Center" VerticalOptions="Center">
                     <Label x:Name="LoadingLabel" Text="Loading..." FontFamily="Diablo" TextColor="White" FontSize="36"

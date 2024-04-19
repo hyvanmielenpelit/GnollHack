@@ -8,14 +8,14 @@
              BackgroundColor="Black"
              Disappearing="ContentPage_Disappearing">
     <ContentPage.Content>
-        <AbsoluteLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Black" >
+        <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Black" >
             <Grid x:Name="OutRipGrid" HorizontalOptions="Center" VerticalOptions="Center" 
                   AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                 </Grid.GestureRecognizers>
                 <gnh:GHCachedImage HeightRequest="350" WidthRequest="350" Source="resource://GnollHackX.Assets.tombstone.png" />
-                <Grid HorizontalOptions="CenterAndExpand" RowSpacing="6" VerticalOptions="CenterAndExpand" Margin="20,0,0,0" WidthRequest="180" >
+                <Grid HorizontalOptions="Center" RowSpacing="6" VerticalOptions="Center" Margin="20,0,0,0" WidthRequest="180" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height ="Auto"/>
                         <RowDefinition Height ="Auto"/>

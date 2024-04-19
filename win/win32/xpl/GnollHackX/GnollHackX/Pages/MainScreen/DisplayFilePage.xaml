@@ -8,8 +8,8 @@
              Appearing="ContentPage_Appearing">
     <ContentPage.Content>
         <Grid>
-            <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-            <Grid x:Name="MainGrid" WidthRequest  ="900" RowSpacing="6" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
+            <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+            <Grid x:Name="MainGrid" WidthRequest  ="900" RowSpacing="6" HorizontalOptions="Center" VerticalOptions="Fill" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
@@ -19,17 +19,17 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Label x:Name="HeaderLabel" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="Black" FontFamily="Immortal"/>
-                <gnollhackclient:CustomLabel Grid.Row="1" x:Name="TextLabel" IsVisible="False" VerticalTextAlignment="Start" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Text="" TextColor="Black" BackgroundColor="Transparent"
+                <gnollhackclient:CustomLabel Grid.Row="1" x:Name="TextLabel" IsVisible="False" VerticalTextAlignment="Start" HorizontalOptions="Center" VerticalOptions="Fill" Text="" TextColor="Black" BackgroundColor="Transparent"
                         FontFamily="DejaVuSansMono" FontSize="13" IsScrollable="True" />
-                <WebView Grid.Row="1" x:Name="DisplayWebView" IsVisible="False" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent" />
+                <WebView Grid.Row="1" x:Name="DisplayWebView" IsVisible="False" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent" />
                 <controls:CustomImageButton Grid.Row="2" Text="Close" x:Name="CloseButton" IsVisible="True" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" WidthRequest="280" HeightRequest="60" HorizontalOptions="Center" />
                 <Grid x:Name="BottomLayout" IsVisible="False" Grid.Row="2" ColumnSpacing="6" HeightRequest="60" HorizontalOptions="Center" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <controls:CustomImageButton Grid.Column="0" Text="Share" x:Name="ShareButton" WidthRequest="135" Clicked="ShareButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="End" VerticalOptions="FillAndExpand" />
-                    <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CloseButton2" WidthRequest="135" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="Start" VerticalOptions="FillAndExpand" />
+                    <controls:CustomImageButton Grid.Column="0" Text="Share" x:Name="ShareButton" WidthRequest="135" Clicked="ShareButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="End" VerticalOptions="Fill" />
+                    <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CloseButton2" WidthRequest="135" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="Start" VerticalOptions="Fill" />
                 </Grid>
             </Grid>
         </Grid>    

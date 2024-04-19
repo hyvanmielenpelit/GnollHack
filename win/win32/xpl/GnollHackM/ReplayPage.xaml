@@ -7,8 +7,8 @@
              x:Class="GnollHackM.ReplayPage">
     
         <Grid>
-            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-            <Grid x:Name="MainGrid" MaximumWidthRequest="900" RowSpacing="6" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" >
+            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+            <Grid x:Name="MainGrid" MaximumWidthRequest="900" RowSpacing="6" HorizontalOptions="Center" VerticalOptions="Fill" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -21,10 +21,10 @@
                 </Grid.ColumnDefinitions>
                 <Label x:Name="HeaderLabel" Grid.Row="0" Text="Select Recorded Game" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="Black" FontFamily="Immortal"/>
                 <Label Grid.Row="1" x:Name="RecordingsLabel" Text="0 replays available" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="16" TextColor="Black" FontFamily="Immortal"/>
-                <CollectionView x:Name="ReplayCollectionView" Grid.Row="2" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand" SelectionMode="Single"  BackgroundColor="Transparent" SelectionChanged="MainListView_SelectionChanged" >
+                <CollectionView x:Name="ReplayCollectionView" Grid.Row="2" HorizontalOptions="Fill" VerticalOptions="Start" SelectionMode="Single"  BackgroundColor="Transparent" SelectionChanged="MainListView_SelectionChanged" >
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="gnh:GHRecordedGameFile">
-                            <Grid ColumnSpacing="6" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Margin="0,8">
+                            <Grid ColumnSpacing="6" HorizontalOptions="Fill" VerticalOptions="Fill" Margin="0,8">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
@@ -43,16 +43,16 @@
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                                 <Label Text="{Binding FormattedIndex}" Grid.Column="0" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="15" HeightRequest="35" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
-                                <StackLayout Grid.Column="1" Spacing="6" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" >
-                                    <Label Text="{Binding FormattedName}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="{Binding FormattedNameFontSize}" HorizontalOptions="StartAndExpand" VerticalOptions="EndAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="End" />
-                                    <Label Text="{Binding FormattedInformation}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="{Binding FormattedInfoFontSize}" IsVisible="{Binding FormattedInfoVisible}" HorizontalOptions="StartAndExpand" VerticalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalTextAlignment="Start" />
+                                <StackLayout Grid.Column="1" Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center" >
+                                    <Label Text="{Binding FormattedName}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="{Binding FormattedNameFontSize}" HorizontalOptions="Start" VerticalOptions="End" HorizontalTextAlignment="Start" VerticalTextAlignment="End" />
+                                    <Label Text="{Binding FormattedInformation}" FontFamily="Underwood" TextColor="{Binding TextColor}" FontSize="{Binding FormattedInfoFontSize}" IsVisible="{Binding FormattedInfoVisible}" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start" />
                                 </StackLayout>
                             </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-                <Grid x:Name="BottomLayout" Grid.Row="3" HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand">
-                    <StackLayout x:Name="OuterButtonMainStack" Spacing="6" Orientation="Vertical"  HorizontalOptions="CenterAndExpand">
+                <Grid x:Name="BottomLayout" Grid.Row="3" HorizontalOptions="Fill" VerticalOptions="End">
+                    <StackLayout x:Name="OuterButtonMainStack" Spacing="6" Orientation="Vertical"  HorizontalOptions="Center">
                         <StackLayout x:Name="ServerStack" Grid.Row="3" Spacing="6" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
                             <Picker x:Name="FolderPicker"
                                             Title="Select a folder"
@@ -77,28 +77,28 @@
                             <!--<Label x:Name="ServerLabel" Text="Cloud" HorizontalOptions="End" VerticalOptions="Center" HorizontalTextAlignment="End" TextColor="Black" FontFamily="Diablo" FontSize="16" />
                             <Switch x:Name="ServerSwitch" HorizontalOptions="Start" VerticalOptions="Center" IsToggled="False" Toggled="ServerSwitch_Toggled" />-->
                         </StackLayout>
-                        <StackLayout x:Name="ButtonMainStack" Spacing="6" Orientation="Vertical"  HorizontalOptions="CenterAndExpand">
+                        <StackLayout x:Name="ButtonMainStack" Spacing="6" Orientation="Vertical" HorizontalOptions="Center">
                             <StackLayout Orientation="Horizontal" Spacing="6">
-                                <controls:CustomImageButton Text="More" x:Name="MoreButton" Clicked="MoreButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                                <controls:CustomImageButton Text="Play" x:Name="SelectButton" Clicked="SelectButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="StartAndExpand" VerticalOptions="Center" />
+                                <controls:CustomImageButton Text="More" x:Name="MoreButton" Clicked="MoreButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="End" VerticalOptions="Center" />
+                                <controls:CustomImageButton Text="Play" x:Name="SelectButton" Clicked="SelectButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="Start" VerticalOptions="Center" />
                             </StackLayout>
                             <StackLayout Orientation="Horizontal" Spacing="6">
-                                <controls:CustomImageButton Text="Multiple" x:Name="MultiButton" Clicked="MultiButton_Clicked" FontFamily="Diablo" FontSize="14" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                                <controls:CustomImageButton Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="StartAndExpand" VerticalOptions="Center" />
+                                <controls:CustomImageButton Text="Multiple" x:Name="MultiButton" Clicked="MultiButton_Clicked" FontFamily="Diablo" FontSize="14" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="End" VerticalOptions="Center" />
+                                <controls:CustomImageButton Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" HorizontalOptions="Start" VerticalOptions="Center" />
                             </StackLayout>
                         </StackLayout>
                     </StackLayout>
                 </Grid>
             </Grid>
-            <Grid x:Name="PopupGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#66000000" IsVisible="False">
-                <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+            <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
+                <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
                     <Frame x:Name="PopupFrame" BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout Spacing="6">
                             <Label Text="Actions" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" VerticalTextAlignment="Center" HorizontalOptions="Center"  />
-                            <controls:CustomImageButton Text="Upload" x:Name="UploadButton" Clicked="UploadButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                            <controls:CustomImageButton Text="Share" x:Name="ShareButton" Clicked="ShareButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                            <controls:CustomImageButton Text="Delete" x:Name="DeleteButton" Clicked="DeleteButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="Red" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
-                            <controls:CustomImageButton Text="Cancel" x:Name="PopupCancelButton" Clicked="PopupCancelButton_Clicked" Margin="0,10,0,0" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                            <controls:CustomImageButton Text="Upload" x:Name="UploadButton" Clicked="UploadButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="End" VerticalOptions="Center" />
+                            <controls:CustomImageButton Text="Share" x:Name="ShareButton" Clicked="ShareButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="End" VerticalOptions="Center" />
+                            <controls:CustomImageButton Text="Delete" x:Name="DeleteButton" Clicked="DeleteButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="Red" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="End" VerticalOptions="Center" />
+                            <controls:CustomImageButton Text="Cancel" x:Name="PopupCancelButton" Clicked="PopupCancelButton_Clicked" Margin="0,10,0,0" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="End" VerticalOptions="Center" />
                         </StackLayout>
                     </Frame>
                 </Grid>
@@ -106,8 +106,8 @@
                     <TapGestureRecognizer />
                 </Grid.GestureRecognizers>
             </Grid>
-            <Grid x:Name="UploadDownloadGrid" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="#66000000" IsVisible="False">
-                <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+            <Grid x:Name="UploadDownloadGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
+                <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
                     <Frame x:Name="UploadDownloadFrame" BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout Spacing="6">
                             <Label Text="Uploading..." x:Name="UploadDownloadTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" VerticalTextAlignment="Center" HorizontalOptions="Center"  />
