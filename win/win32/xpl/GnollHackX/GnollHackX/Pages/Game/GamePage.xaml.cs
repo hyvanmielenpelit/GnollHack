@@ -2294,9 +2294,12 @@ namespace GnollHackX.Pages.Game
                 RefreshScreen = true;
             }
 
-            GameMenuButton.IsEnabled = true;
-            SimpleGameMenuButton.IsEnabled = true;
-            lMoreButton.IsEnabled = true;
+            if(!PlayingReplay)
+            {
+                GameMenuButton.IsEnabled = true;
+                SimpleGameMenuButton.IsEnabled = true;
+                lMoreButton.IsEnabled = true;
+            }
 
             if (_isFirstAppearance)
             {
