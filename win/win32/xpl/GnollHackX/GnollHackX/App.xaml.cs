@@ -20,6 +20,7 @@ namespace GnollHackX
             InitializeComponent();
             GHApp.Initialize();
             var mainPage = new MainPage();
+            GHApp.CurrentMainPage = mainPage;
             var navPage = new NavigationPage(mainPage);
             navPage.BarTextColor = GHColors.White;
             navPage.BarBackgroundColor = GHColors.Black;

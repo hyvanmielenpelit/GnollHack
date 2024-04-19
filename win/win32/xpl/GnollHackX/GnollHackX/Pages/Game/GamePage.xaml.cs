@@ -1073,10 +1073,19 @@ namespace GnollHackX.Pages.Game
                 ToggleTravelModeButton.IsEnabled = false;
                 ButtonRowStack.IsEnabled = false;
 
+                GameMenuButton.Opacity = 0.5;
+                ESCButton.Opacity = 0.5;
+                LookModeButton.Opacity = 0.5;
+                ToggleTravelModeButton.Opacity = 0.5;
+
                 SimpleGameMenuButton.IsEnabled = false;
                 SimpleESCButton.IsEnabled = false;
                 SimpleLookModeButton.IsEnabled = false;
                 SimpleButtonRowStack.IsEnabled = false;
+
+                SimpleGameMenuButton.Opacity = 0.5;
+                SimpleESCButton.Opacity = 0.5;
+                SimpleLookModeButton.Opacity = 0.5;
 
                 MenuGrid.IsEnabled = false;
                 TextGrid.IsEnabled = false;
