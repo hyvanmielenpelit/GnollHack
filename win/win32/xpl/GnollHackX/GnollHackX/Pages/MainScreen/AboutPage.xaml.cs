@@ -148,6 +148,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
+            GHApp.CurrentMainPage?.InvalidateCarousel();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
@@ -158,6 +159,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 _backPressed = true;
                 AboutGrid.IsEnabled = false;
+                GHApp.CurrentMainPage?.InvalidateCarousel();
                 await App.Current.MainPage.Navigation.PopModalAsync();
             }
             return false;

@@ -76,6 +76,7 @@ namespace GnollHackX.Pages.MainScreen
                         return;
                     }
                     ErrorLabel.Text = "";
+                    GHApp.CurrentMainPage?.InvalidateCarousel();
                     await App.Current.MainPage.Navigation.PopModalAsync();
                 }
                 else
@@ -86,6 +87,7 @@ namespace GnollHackX.Pages.MainScreen
             else
             {
                 ErrorLabel.Text = "";
+                GHApp.CurrentMainPage?.InvalidateCarousel();
                 await App.Current.MainPage.Navigation.PopModalAsync();
             }
         }
@@ -100,6 +102,7 @@ namespace GnollHackX.Pages.MainScreen
                 if (answer)
                 {
                     ErrorLabel.Text = "";
+                    GHApp.CurrentMainPage?.InvalidateCarousel();
                     await App.Current.MainPage.Navigation.PopModalAsync();
                 }
                 else 
@@ -110,6 +113,7 @@ namespace GnollHackX.Pages.MainScreen
             else
             {
                 ErrorLabel.Text = "";
+                GHApp.CurrentMainPage?.InvalidateCarousel();
                 await App.Current.MainPage.Navigation.PopModalAsync();
             }
         }
@@ -123,6 +127,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 ErrorLabel.Text = "";
                 GHApp.GnollHackService.ResetDefaultsFile();
+                GHApp.CurrentMainPage?.InvalidateCarousel();
                 await App.Current.MainPage.Navigation.PopModalAsync();
             }
             else

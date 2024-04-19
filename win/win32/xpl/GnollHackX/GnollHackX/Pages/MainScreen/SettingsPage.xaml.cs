@@ -1021,6 +1021,7 @@ namespace GnollHackX.Pages.MainScreen
                 }
             }
             await MaybeShowPleaseWait();
+            GHApp.CurrentMainPage?.InvalidateCarousel();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
@@ -1153,6 +1154,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 _backPressed = true;
                 await MaybeShowPleaseWait();
+                GHApp.CurrentMainPage?.InvalidateCarousel();
                 await App.Current.MainPage.Navigation.PopModalAsync();
             }
             return false;

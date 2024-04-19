@@ -1282,6 +1282,11 @@ namespace GnollHackX
             ExitButton.IsEnabled = true;
             UpperButtonGrid.IsEnabled = true;
         }
+
+        public void InvalidateCarousel()
+        {
+            carouselView.InvalidateSurface();
+        }
     }
 
 }

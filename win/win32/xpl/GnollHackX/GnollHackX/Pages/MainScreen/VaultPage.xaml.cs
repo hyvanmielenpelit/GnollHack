@@ -81,6 +81,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
+            GHApp.CurrentMainPage?.InvalidateCarousel();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
 
@@ -90,6 +91,7 @@ namespace GnollHackX.Pages.MainScreen
             if (!_backPressed)
             {
                 _backPressed = true;
+                GHApp.CurrentMainPage?.InvalidateCarousel();
                 await App.Current.MainPage.Navigation.PopModalAsync();
             }
             return false;
