@@ -80,7 +80,7 @@ namespace GnollHackX.Pages.MainScreen
                     htmlSource.BaseUrl = GHApp.PlatformService.GetBaseUrl();
                     DisplayWebView.Source = htmlSource;
                     if(GHApp.IsiOS)
-                        DisplayWebView.Opacity = 0;
+                        DisplayWebView.Opacity = 0.0;
                     DisplayWebView.IsVisible = true;
                 }
                 else
@@ -209,7 +209,7 @@ namespace GnollHackX.Pages.MainScreen
             {
 #if GNH_MAUI
                 var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
-                timer.Interval = TimeSpan.FromSeconds(1.0 / 20);
+                timer.Interval = TimeSpan.FromSeconds(1.0 / 2);
                 timer.IsRepeating = false;
                 timer.Tick += (s, e) => { DoiOSShowGrid(); };
                 timer.Start();
@@ -227,8 +227,8 @@ namespace GnollHackX.Pages.MainScreen
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                Animation displayFileAnimation = new Animation(v => DisplayWebView.Opacity = (double)v, 0.0, 1.0);
-                displayFileAnimation.Commit(MainGrid, "DisplayFileShowAnimation", length: 256, rate: 16, repeat: () => false);
+                Animation displayFileAnimation = new Animation(v => DisplayWebView.Opacity = (double)v, 0.01, 1.00);
+                displayFileAnimation.Commit(MainGrid, "DisplayFileShowAnimation", length: 512, rate: 16, repeat: () => false);
             });
         }
     }
