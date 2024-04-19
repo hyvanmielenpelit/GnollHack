@@ -31,7 +31,7 @@ namespace GnollHackX.Pages.Game
         public GameMenuPage(GamePage gamePage)
         {
             InitializeComponent();
-            On<iOS>().SetUseSafeArea(false);
+            On<iOS>().SetUseSafeArea(true);
 
             _gamePage = gamePage;
 
