@@ -1127,7 +1127,7 @@ E long FDECL(count_powerful_melee_weapon_score, (struct obj*));
 E long FDECL(count_powerful_ranged_weapon_score, (struct obj*));
 E long FDECL(count_powerful_Japanese_item_score, (struct obj*));
 E long FDECL(count_powerful_valkyrie_item_score, (struct obj*));
-E long FDECL(count_amulets_of_life_saving, (struct obj*));
+E struct amulet_count_result FDECL(count_amulets, (struct obj*));
 E long FDECL(count_artifacts, (struct obj*));
 
 /* ### engrave.c ### */

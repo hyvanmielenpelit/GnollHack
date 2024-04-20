@@ -1405,21 +1405,27 @@ struct obj* list;
     return value;
 }
 
-long
-count_amulets_of_life_saving(list)
+struct amulet_count_result
+count_amulets(list)
 struct obj* list;
 {
     struct obj* otmp;
-    long cnt = 0L;
+    struct amulet_count_result res = { 0, 0 };
     for (otmp = list; otmp; otmp = otmp->nobj)
     {
         if (otmp->otyp == AMULET_OF_LIFE_SAVING)
-            cnt++;
+            res.amulets_of_life_saving++;
+        else if(otmp->oclass == AMULET_CLASS)
+            res.other_amulets++;
 
         if (Has_contents(otmp))
-            cnt += count_amulets_of_life_saving(otmp->cobj);
+        {
+            struct amulet_count_result cnt_res = count_amulets(otmp->cobj);
+            res.amulets_of_life_saving += cnt_res.amulets_of_life_saving;
+            res.other_amulets += cnt_res.other_amulets;
+        }
     }
-    return cnt;
+    return res;
 }
 
 
@@ -3378,7 +3384,8 @@ get_current_game_score()
     }
     case PM_CAVEMAN:
     {
-        Caveman_Amulet_Score = CAVEMAN_PER_AMULET_SCORE * count_amulets_of_life_saving(invent);
+        struct amulet_count_result cnt = count_amulets(invent);
+        Caveman_Amulet_Score = CAVEMAN_PER_AMULET_OF_LIFE_SAVING_SCORE * cnt.amulets_of_life_saving + CAVEMAN_PER_OTHER_AMULET_SCORE * cnt.other_amulets;
         Role_Achievement_Score = CAVEMAN_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
         break;
     }

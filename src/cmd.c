@@ -5923,9 +5923,9 @@ int final;
     else if (Role_if(PM_CAVEMAN))
     {
         char mbuf[BUFSZ];
-        long amulets = count_amulets_of_life_saving(invent);
+        struct amulet_count_result amulets = count_amulets(invent);
         putstr(dumpwin, ATR_NONE, "");
-        Sprintf(mbuf, "You %s %ld amulet%s of life saving with you, each worth %ld points.", final ? "had" : "have", amulets, plur(amulets), CAVEMAN_PER_AMULET_SCORE);
+        Sprintf(mbuf, "You %s %ld amulet%s of life saving and %ld other amulet%s with you.", final ? "had" : "have", amulets.amulets_of_life_saving, plur(amulets.amulets_of_life_saving), amulets.other_amulets, plur(amulets.other_amulets));
         putstr(en_win, ATR_TITLE, mbuf);
     }
     else if (Role_if(PM_HEALER) || Role_if(PM_PRIEST) || Role_if(PM_WIZARD))
