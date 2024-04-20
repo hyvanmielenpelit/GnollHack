@@ -58,6 +58,8 @@ namespace GnollHackX.Pages.MainScreen
             CloseButton.IsVisible = !displayshare;
             _isHtml = isHtml;
             TextLabel.InitiallyRolledDown = isScrolledDown;
+            if (GHApp.IsiOS && _isHtml)
+                DisplayWebView.Opacity = 0.0;
         }
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
@@ -79,8 +81,6 @@ namespace GnollHackX.Pages.MainScreen
                     htmlSource.Html = text;
                     htmlSource.BaseUrl = GHApp.PlatformService.GetBaseUrl();
                     DisplayWebView.Source = htmlSource;
-                    if(GHApp.IsiOS)
-                        DisplayWebView.Opacity = 0.0;
                     DisplayWebView.IsVisible = true;
                 }
                 else
@@ -225,10 +225,11 @@ namespace GnollHackX.Pages.MainScreen
 
         private void DoiOSShowGrid()
         {
-            MainThread.BeginInvokeOnMainThread(() =>
+            MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                Animation displayFileAnimation = new Animation(v => DisplayWebView.Opacity = (double)v, 0.01, 1.00);
-                displayFileAnimation.Commit(MainGrid, "DisplayFileShowAnimation", length: 512, rate: 16, repeat: () => false);
+                await DisplayWebView.FadeTo(1.0, 512);
+                //Animation displayFileAnimation = new Animation(v => DisplayWebView.Opacity = (double)v, 0.01, 1.00);
+                //displayFileAnimation.Commit(MainGrid, "DisplayFileShowAnimation", length: 512, rate: 16, repeat: () => false);
             });
         }
     }

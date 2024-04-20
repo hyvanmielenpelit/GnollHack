@@ -2711,12 +2711,12 @@ namespace GnollHackX.Pages.Game
                 var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
                 timer.Interval = TimeSpan.FromSeconds(1.0 / 20);
                 timer.IsRepeating = false;
-                timer.Tick += (s, e) => { DoiOSTextStackHide(dohidemenu); };
+                timer.Tick += (s, e) => { DoiOSShowTextStack(dohidemenu); };
                 timer.Start();
 #else
                 Device.StartTimer(TimeSpan.FromSeconds(1.0 / 20), () =>
                 {
-                    DoiOSTextStackHide(dohidemenu);
+                    DoiOSShowTextStack(dohidemenu);
                     return false;
                 });
 #endif
@@ -2737,17 +2737,18 @@ namespace GnollHackX.Pages.Game
             StartTextCanvasAnimation();
         }
 
-        private void DoiOSTextStackHide(bool dohidemenu)
+        private void DoiOSShowTextStack(bool dohidemenu)
         {
-            MainThread.BeginInvokeOnMainThread(() =>
+            MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                if (TextStack.AnimationIsRunning("TextHideAnimation"))
-                    TextStack.AbortAnimation("TextHideAnimation");
+                //if (TextStack.AnimationIsRunning("TextHideAnimation"))
+                //    TextStack.AbortAnimation("TextHideAnimation");
+                TextStack.CancelAnimations();
                 TextStack.Opacity = 0.0;
                 TextStack.IsVisible = true;
-                Animation textAnimation = new Animation(v => TextStack.Opacity = (double)v, 0.0, 1.0);
-                textAnimation.Commit(TextStack, "TextShowAnimation", length: 256,
-                    rate: 16, repeat: () => false);
+                //Animation textAnimation = new Animation(v => TextStack.Opacity = (double)v, 0.0, 1.0);
+                //textAnimation.Commit(TextStack, "TextShowAnimation", length: 256,
+                //    rate: 16, repeat: () => false);
 
                 TextGrid.IsVisible = true;
                 MainGrid.IsVisible = false;
@@ -2758,6 +2759,7 @@ namespace GnollHackX.Pages.Game
 #if !GNH_MAUI
                 TextStack.ForceLayout();
 #endif
+                await TextStack.FadeTo(1.0, 256);
             });
         }
 
@@ -3563,15 +3565,16 @@ namespace GnollHackX.Pages.Game
 
         private void DoiOSShowMenuCanvas(bool dohidetext)
         {
-            MainThread.BeginInvokeOnMainThread(() =>
+            MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                if (MenuStack.AnimationIsRunning("MenuHideAnimation"))
-                    MenuStack.AbortAnimation("MenuHideAnimation");
+                MenuStack.CancelAnimations();
+                //if (MenuStack.AnimationIsRunning("MenuHideAnimation"))
+                //    MenuStack.AbortAnimation("MenuHideAnimation");
                 MenuStack.Opacity = 0.0;
                 MenuStack.IsVisible = true;
-                Animation menuAnimation = new Animation(v => MenuStack.Opacity = (double)v, 0.0, 1.0);
-                menuAnimation.Commit(MenuStack, "MenuShowAnimation", length: 256,
-                    rate: 16, repeat: () => false);
+                //Animation menuAnimation = new Animation(v => MenuStack.Opacity = (double)v, 0.0, 1.0);
+                //menuAnimation.Commit(MenuStack, "MenuShowAnimation", length: 256,
+                //    rate: 16, repeat: () => false);
 
                 MenuGrid.IsVisible = true;
                 MainGrid.IsVisible = false;
@@ -3580,8 +3583,9 @@ namespace GnollHackX.Pages.Game
                     TextGrid.IsVisible = false;
                 }
 #if !GNH_MAUI
-                        MenuStack.ForceLayout();
+                MenuStack.ForceLayout();
 #endif
+                await MenuStack.FadeTo(1.0, 256);
             });
         }
 
@@ -13083,17 +13087,21 @@ namespace GnollHackX.Pages.Game
         public void FadeToBlack(uint milliseconds)
         {
             MainGrid.IsEnabled = false;
-            uint timeToAnimate = milliseconds;
-            Animation animation = new Animation(v => canvasView.Opacity = v, 1.0, 0.0);
-            animation.Commit(canvasView, "Opacity", length: timeToAnimate, rate: 25, repeat: () => false);
+            canvasView.Opacity = 1.0;
+            canvasView.FadeTo(0.0, milliseconds);
+            //uint timeToAnimate = milliseconds;
+            //Animation animation = new Animation(v => canvasView.Opacity = v, 1.0, 0.0);
+            //animation.Commit(canvasView, "Opacity", length: timeToAnimate, rate: 25, repeat: () => false);
         }
 
         public void FadeFromBlack(uint milliseconds)
         {
             MainGrid.IsEnabled = true;
-            uint timeToAnimate = milliseconds;
-            Animation animation = new Animation(v => canvasView.Opacity = v, 0.0, 1.0);
-            animation.Commit(canvasView, "Opacity", length: timeToAnimate, rate: 25, repeat: () => false);
+            canvasView.Opacity = 0.0;
+            canvasView.FadeTo(1.0, milliseconds);
+            //uint timeToAnimate = milliseconds;
+            //Animation animation = new Animation(v => canvasView.Opacity = v, 0.0, 1.0);
+            //animation.Commit(canvasView, "Opacity", length: timeToAnimate, rate: 25, repeat: () => false);
         }
 
         private void PickupButton_Clicked(object sender, EventArgs e)
@@ -14670,12 +14678,14 @@ namespace GnollHackX.Pages.Game
 
             if(GHApp.IsiOS)
             {
-                if (MenuStack.AnimationIsRunning("MenuShowAnimation"))
-                    MenuStack.AbortAnimation("MenuShowAnimation");
-                double currentOpacity = MenuStack.Opacity;
-                Animation menuAnimation = new Animation(v => MenuStack.Opacity = (double)v, currentOpacity, 0.0);
-                menuAnimation.Commit(MenuStack, "MenuHideAnimation", length: 64,
-                    rate: 16, repeat: () => false);
+                MenuStack.CancelAnimations();
+                //if (MenuStack.AnimationIsRunning("MenuShowAnimation"))
+                //    MenuStack.AbortAnimation("MenuShowAnimation");
+                //double currentOpacity = MenuStack.Opacity;
+                //Animation menuAnimation = new Animation(v => MenuStack.Opacity = (double)v, currentOpacity, 0.0);
+                //menuAnimation.Commit(MenuStack, "MenuHideAnimation", length: 64,
+                //    rate: 16, repeat: () => false);
+                MenuStack.FadeTo(0.0, 64);
                 //MenuStack.IsVisible = false;
             }
 
@@ -14733,12 +14743,14 @@ namespace GnollHackX.Pages.Game
             }
             if (GHApp.IsiOS)
             {
-                if (TextStack.AnimationIsRunning("TextShowAnimation"))
-                    TextStack.AbortAnimation("TextShowAnimation");
-                double currentOpacity = TextStack.Opacity;
-                Animation textAnimation = new Animation(v => TextStack.Opacity = (double)v, currentOpacity, 0.0);
-                textAnimation.Commit(TextStack, "TextHideAnimation", length: 64,
-                    rate: 16, repeat: () => false);
+                TextStack.CancelAnimations();
+                //if (TextStack.AnimationIsRunning("TextShowAnimation"))
+                //    TextStack.AbortAnimation("TextShowAnimation");
+                //double currentOpacity = TextStack.Opacity;
+                //Animation textAnimation = new Animation(v => TextStack.Opacity = (double)v, currentOpacity, 0.0);
+                //textAnimation.Commit(TextStack, "TextHideAnimation", length: 64,
+                //    rate: 16, repeat: () => false);
+                TextStack.FadeTo(0.0, 64);
                 //TextStack.IsVisible = false;
             }
 #if GNH_MAUI
@@ -15256,7 +15268,8 @@ namespace GnollHackX.Pages.Game
                                 {
                                     /* Normal click -- Hide the canvas */
                                     GenericButton_Clicked(sender, e, 27);
-                                    DelayedTextHide();
+                                    MainThread.BeginInvokeOnMainThread(() =>
+                                    { DelayedTextHide(); });                                    
                                 }
                                 if (TextTouchDictionary.ContainsKey(e.Id))
                                 {
