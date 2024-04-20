@@ -139,8 +139,10 @@ struct flag {
     boolean show_decorations;/* show decorations on the walls etc. in ASCII */
     boolean fullstatuslineorder;
 
+    boolean tournament_mode;
+#define TournamentMode flags.tournament_mode
+
     /* Emergency reserved booleans to make non-save-game-breaking changes */
-    boolean reserved_bool1;
     boolean reserved_bool2;
     boolean reserved_bool3;
 

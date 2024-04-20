@@ -761,6 +761,13 @@ int RunGnollHack(
         Strcat(cmdbuf, "-b");
     }
 
+    if (runflags & GHRUNFLAGS_TOURNAMENT_MODE)
+    {
+        if (*cmdbuf)
+            Strcat(cmdbuf, " ");
+        Strcat(cmdbuf, "-T");
+    }
+
     /* Set directly, as other parts of GnollHack do not purposedly set this */
     if (last_used_player_name && strcmp(last_used_player_name, ""))
     {

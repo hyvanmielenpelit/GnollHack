@@ -93,12 +93,16 @@ struct save_game_stats {
     boolean explore_mode;
     boolean modern_mode;
     boolean casual_mode;
-    boolean non_scoring;
+    uchar save_flags;
     time_t time_stamp;
 
     /* Other information */
     unsigned long num_recoveries;
 };
+
+#define SAVEFLAGS_NONE              0x00
+#define SAVEFLAGS_NON_SCORING       0x01
+#define SAVEFLAGS_TOURNAMENT_MODE   0x02
 
 struct save_game_data {
     char* playername;

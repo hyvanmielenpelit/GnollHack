@@ -401,6 +401,15 @@ char *argv[];
         case 'C':
             CasualMode = TRUE;
             break;
+        case 'b':
+            flags.bones = FALSE;
+            break;
+        case 'B':
+            flags.bones = TRUE;
+            break;
+        case 'T':
+            TournamentMode = TRUE;
+            break;
 #ifdef NEWS
         case 'n':
             iflags.news = FALSE;

@@ -2279,10 +2279,13 @@ get_saved_games()
                 ++n2;
             } while (findnext());
         }
-        if (findfirst(fq_save_ibuf)) {
-            do {
-                ++n3;
-            } while (findnext());
+        if (!TournamentMode)
+        {
+            if (findfirst(fq_save_ibuf)) {
+                do {
+                    ++n3;
+                } while (findnext());
+            }
         }
 #endif
         if (n > 0 || n2 > 0 || n3 > 0) {
@@ -2399,7 +2402,8 @@ get_saved_games()
             if (uid == myuid) {
                 boolean isbackupfile = !!filter_backup(namelist[i]);
                 boolean isimportedbackupfile = !!filter_imported_backup(namelist[i]);
-                if (isbackupfile || isimportedbackupfile)
+                boolean isimportedfile = !!filter_imported(namelist[i]);
+                if (isbackupfile || isimportedbackupfile || (TournamentMode && isimportedfile))
                     continue;
                 char filename[BUFSZ];
                 char* r;
@@ -2407,7 +2411,10 @@ get_saved_games()
                 r = plname_from_file(filename, &gamestats);
                 if (r)
                 {
-                    boolean isimportedfile = !!filter_imported(namelist[i]);
+                    if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
+                        continue;
+                    if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
+                        continue;
                     boolean iserrorfile = filter_error(namelist[i]) || filter_imported_error(namelist[i]);
                     result[j++] = newsavegamedata(r, filename, gamestats, FALSE, iserrorfile, isimportedfile);
                 }

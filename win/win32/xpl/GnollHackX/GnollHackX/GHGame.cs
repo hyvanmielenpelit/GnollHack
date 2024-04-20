@@ -1525,7 +1525,12 @@ namespace GnollHackX
             RecordFunctionCall(RecordedFunctionID.ReportPlayerName, used_player_name);
             _knownPlayerName = used_player_name;
             if (used_player_name != null && used_player_name != "")
-                Preferences.Set("LastUsedPlayerName", used_player_name);
+            {
+                if(GHApp.TournamentMode && !PlayingReplay)
+                    Preferences.Set("LastUsedTournamentPlayerName", used_player_name);
+                else
+                    Preferences.Set("LastUsedPlayerName", used_player_name);
+            }
         }
 
         private readonly object _gamePlayTimeLock = new object();

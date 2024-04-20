@@ -1583,7 +1583,11 @@ enter_explore_mode(VOID_ARGS)
     {
         You("are already in explore mode.");
     } 
-    else 
+    else if (TournamentMode)
+    {
+        You("cannot access explore mode in tournament mode.");
+    }
+    else
     {
 #if defined(GNH_MOBILE)
         You("cannot access explore mode.");

@@ -513,6 +513,7 @@ int how;
     Sprintf(eos(buffer), "%cdifficulty=%d", XLOG_SEP, (int)context.game_difficulty);
     Sprintf(eos(buffer), "%cmode=%s", XLOG_SEP, wizard ? "debug" : discover ? "explore" : CasualMode ? (ModernMode ? "casual" : "reloadable") : ModernMode ? "modern" : "normal");
     Sprintf(eos(buffer), "%cscoring=%s", XLOG_SEP, discover || CasualMode || flags.non_scoring ? "no" : "yes");
+    Sprintf(eos(buffer), "%ctournament=%s", XLOG_SEP, TournamentMode ? "yes" : "no");
     Sprintf(eos(buffer), "%ccollapse=%lu", XLOG_SEP, n_game_recoveries);
     Strcat(buffer, "\n");
 #undef XLOG_SEP
@@ -609,6 +610,8 @@ encodexlogflags()
         e |= 1L << 4;
     if (flags.non_scoring)
         e |= 1L << 5;
+    if (TournamentMode)
+        e |= 1L << 6;
 
     return e;
 }

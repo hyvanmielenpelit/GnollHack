@@ -1182,12 +1182,12 @@ const char*
 get_game_mode_text(display_nonscoring)
 boolean display_nonscoring;
 {
-    return get_game_mode_text_core(wizard, discover, ModernMode, CasualMode, flags.non_scoring, display_nonscoring);
+    return get_game_mode_text_core(wizard, discover, ModernMode, CasualMode, flags.non_scoring, TournamentMode, display_nonscoring);
 }
 
 const char*
-get_game_mode_text_core(iswizardmode, isexporemode, ismodernmode, iscasualmode, isnonscoring, display_nonscoring)
-boolean display_nonscoring, iswizardmode, isexporemode, ismodernmode, iscasualmode, isnonscoring;
+get_game_mode_text_core(iswizardmode, isexporemode, ismodernmode, iscasualmode, isnonscoring, istournamentmode, display_nonscoring)
+boolean display_nonscoring, iswizardmode, isexporemode, ismodernmode, iscasualmode, isnonscoring, istournamentmode;
 {
     if (iswizardmode)
     {
@@ -1250,7 +1250,7 @@ boolean display_nonscoring, iswizardmode, isexporemode, ismodernmode, iscasualmo
     else if (ismodernmode)
         return display_nonscoring && isnonscoring ? "non-scoring modern" : "modern";
     else
-        return display_nonscoring && isnonscoring ? "non-scoring classic" : "classic";
+        return display_nonscoring && isnonscoring ? "non-scoring classic" : istournamentmode ? "tournament" : "classic";
 }
 
 const char*
@@ -1285,16 +1285,18 @@ boolean iswizardmode, isexporemode, ismodernmode, iscasualmode;
 void 
 choose_game_difficulty()
 {
-    if (sysopt.min_difficulty > sysopt.max_difficulty)
+    int mindifficulty = TournamentMode ? max(0, sysopt.min_difficulty) : sysopt.min_difficulty;
+    int maxdifficulty = sysopt.max_difficulty;
+    if (mindifficulty > maxdifficulty)
     {
         /* Assume difficulty levels are disabled; perhaps should throw an error */
         context.game_difficulty = 0;
         return;
     }
-    else if (sysopt.min_difficulty == sysopt.max_difficulty)
+    else if (mindifficulty == maxdifficulty)
     {
         /* No need to choose if only one choice */
-        context.game_difficulty = sysopt.min_difficulty;
+        context.game_difficulty = mindifficulty;
         return;
     }
 
@@ -1307,7 +1309,7 @@ choose_game_difficulty()
     anything any = zeroany;
 
     int i;
-    for(i = sysopt.min_difficulty; i <= sysopt.max_difficulty; i++)
+    for(i = mindifficulty; i <= maxdifficulty; i++)
     {
         any = zeroany;
         any.a_int = i - MIN_DIFFICULTY_LEVEL + 1;

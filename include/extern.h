@@ -37,7 +37,7 @@ E void NDECL(choose_game_difficulty);
 E const char* FDECL(get_game_difficulty_text, (int));
 E const char* FDECL(get_game_difficulty_symbol, (int));
 E const char* FDECL(get_game_mode_text, (BOOLEAN_P));
-E const char* FDECL(get_game_mode_text_core, (BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
+E const char* FDECL(get_game_mode_text_core, (BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 E const char* NDECL(get_game_mode_description);
 E const char* FDECL(get_game_mode_description_core, (BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 E void NDECL(show_gui_tips);

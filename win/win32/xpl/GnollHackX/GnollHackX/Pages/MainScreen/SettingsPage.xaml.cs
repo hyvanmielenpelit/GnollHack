@@ -111,9 +111,13 @@ namespace GnollHackX.Pages.MainScreen
             _isManualTogglingEnabled = true;
         }
 
-        private async void ContentPage_Disappearing(object sender, EventArgs e)
+        private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
+        }
+
+        private async Task SetSettingValues()
+        {
             _doChangeVolume = false;
 
             if (CursorPicker.SelectedIndex > -1)
@@ -310,6 +314,8 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("DeveloperMode", GHApp.DeveloperMode);
             GHApp.DebugLogMessages = LogMessageSwitch.IsToggled;
             Preferences.Set("DebugLogMessages", GHApp.DebugLogMessages);
+            GHApp.TournamentMode = TournamentSwitch.IsToggled;
+            Preferences.Set("TournamentMode", GHApp.TournamentMode);
 
             Preferences.Set("DefaultMapNoClipMode", !YesClipNormalSwitch.IsToggled);
 
@@ -508,7 +514,7 @@ namespace GnollHackX.Pages.MainScreen
             bool mem = false, fps = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, simplecmdlayout = true, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, emptywishisnothing = true, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
-            bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
+            bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false;
             bool longermsghistory = false, xlog_release_account = false, forcepostbones = false;
@@ -543,6 +549,7 @@ namespace GnollHackX.Pages.MainScreen
             statusbar = GHApp.HideiOSStatusBar;
             devmode = GHApp.DeveloperMode;
             logmessages = GHApp.DebugLogMessages;
+            tournament = GHApp.TournamentMode;
             bank = Preferences.Get("LoadSoundBanks", true);
             html = Preferences.Get("UseHTMLDumpLogs", GHConstants.DefaultHTMLDumpLogs);
             singledumplog = Preferences.Get("UseSingleDumpLog", GHConstants.DefaultUseSingleDumpLog);
@@ -646,6 +653,7 @@ namespace GnollHackX.Pages.MainScreen
                 //prevwep = _gamePage.ShowPrevWepContextCommand;
                 longermsghistory = _gamePage.LongerMessageHistory;
             }
+
             CursorPicker.SelectedIndex = cursor;
             GraphicsPicker.SelectedIndex = graphics;
             RefreshRatePicker.SelectedIndex = Math.Min(RefreshRatePicker.Items.Count - 1, maprefresh);
@@ -693,6 +701,7 @@ namespace GnollHackX.Pages.MainScreen
                 LogMessageLabel.IsEnabled = false;
                 LogMessageLabel.TextColor = GHColors.Gray;
             }
+            TournamentSwitch.IsToggled = tournament;
             SoundBankSwitch.IsToggled = bank;
             SingleDumpLogSwitch.IsToggled = singledumplog;
             HTMLDumpLogSwitch.IsToggled = html;
@@ -1020,7 +1029,22 @@ namespace GnollHackX.Pages.MainScreen
                     return;
                 }
             }
+            if(TournamentSwitch.IsToggled)
+            {
+                if(!GHApp.XlogUserNameVerified)
+                {
+                    PopupTitleLabel.TextColor = GHColors.Orange;
+                    PopupTitleLabel.Text = "Tournament Verification";
+                    PopupLabel.Text = "Server Posting user name and password must be verified for the tournament mode.";
+                    PopupOkButton.IsEnabled = true;
+                    PopupGrid.IsVisible = true;
+                    CloseButton.IsEnabled = true;
+                    await MainScrollView.ScrollToAsync(0, PostXlogUserNameStackLayout.Y, true);
+                    return;
+                }
+            }
             await MaybeShowPleaseWait();
+            await SetSettingValues();
             GHApp.CurrentMainPage?.InvalidateCarousel();
             await App.Current.MainPage.Navigation.PopModalAsync();
         }
@@ -1154,6 +1178,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 _backPressed = true;
                 await MaybeShowPleaseWait();
+                await SetSettingValues();
                 GHApp.CurrentMainPage?.InvalidateCarousel();
                 await App.Current.MainPage.Navigation.PopModalAsync();
             }
@@ -1480,6 +1505,17 @@ namespace GnollHackX.Pages.MainScreen
                 }
             }
         }
-    }
 
+        private void TournamentSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if(e.Value && !GHApp.TournamentMode)
+            {
+                PopupTitleLabel.TextColor = GHColors.Orange;
+                PopupTitleLabel.Text = "Tournament Mode";
+                PopupLabel.Text = "Tournament Mode will force on Post Game Progress, Post Top Scores, Allow Ghost Levels, Bones Sharing, Record Game, and Auto-Upload to Cloud settings. It will disable all special modes, custom links and webhooks." + Environment.NewLine + Environment.NewLine + "Please make sure that your Server Posting user name and password are verified before proceeding.";
+                PopupOkButton.IsEnabled = true;
+                PopupGrid.IsVisible = true;
+            }
+        }
+    }
 }

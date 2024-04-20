@@ -194,7 +194,7 @@ int val;
 void
 reset_global_variables(VOID_ARGS)
 {
-    wizard = discover = ModernMode = CasualMode = FALSE;
+    wizard = discover = ModernMode = CasualMode = TournamentMode = FALSE;
     save_initial_objects_values();
     save_initial_urolerace_values();
     save_initial_artifact_values();

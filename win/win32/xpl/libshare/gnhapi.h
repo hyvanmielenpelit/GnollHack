@@ -19,6 +19,8 @@ int FDECL(GnollHackStart, (char*));
 #define GHRUNFLAGS_CASUAL_MODE              0x00000010UL
 #define GHRUNFLAGS_DISABLE_BONES            0x00000020UL
 #define GHRUNFLAGS_FORCE_LAST_PLAYER_NAME   0x00000040UL
+#define GHRUNFLAGS_PLAYING_REPLAY           0x00000080UL
+#define GHRUNFLAGS_TOURNAMENT_MODE          0x00000100UL
 
 /* Main GnollHack routine with all the necessary callback functions */
 int RunGnollHack(

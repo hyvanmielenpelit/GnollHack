@@ -105,6 +105,14 @@
                 </local:CustomLabel>
                 <Switch x:Name="wizardModeSwitch" IsToggled="false" Grid.Column="1" HeightRequest="25" HorizontalOptions="Start" VerticalOptions="Center" Toggled="wizardModeSwitch_Toggled" />
             </Grid>
+            <Grid x:Name="tournamentModeGrid" ColumnSpacing="6" Margin="0,0,0,15" HorizontalOptions="Center" VerticalOptions="Center">
+                <local:CustomLabel x:Name="tournamentModeLabel" Text="Tournament" TextColor="LightGreen" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
+                                   WidthRequest="280" HeightRequest="25" HorizontalTextAlignment="Center" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
+                    <local:CustomLabel.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="WizTapGestureRecognizer_Tapped"/>
+                    </local:CustomLabel.GestureRecognizers>
+                </local:CustomLabel>
+            </Grid>
             <Grid x:Name="StartLocalGrid" WidthRequest="300" HeightRequest="70" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
                 <controls:CustomImageButton Text="Play Game" x:Name="StartLocalGameButton" Clicked="StartLocalGameButton_Clicked" 
                         FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent"  

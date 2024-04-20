@@ -217,6 +217,9 @@ char *argv[];
         case 'B':
             flags.bones = TRUE;
             break;
+        case 'T':
+            TournamentMode = TRUE;
+            break;
 #ifdef NEWS
             case 'n':
             iflags.news = FALSE;

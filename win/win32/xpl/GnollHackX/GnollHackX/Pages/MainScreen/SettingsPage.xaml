@@ -759,9 +759,20 @@
                                         HorizontalOptions="End" />
                             </StackLayout>
 
+                            <Label Text="Tournament" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Tournament Mode"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="TournamentSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="TournamentSwitch_Toggled" />
+                            </Grid>
+
                             <Label Text="System" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Developer Mode"
+                                    x:Name="DeveloperLabel"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 

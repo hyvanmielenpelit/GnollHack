@@ -487,6 +487,33 @@ namespace GnollHackX
         {
             StartLocalGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
+
+            if(GHApp.TournamentMode)
+            {
+                if(!GHApp.XlogUserNameVerified)
+                {
+                    _popupStyle = popup_style.GeneralDialog;
+                    PopupCheckBoxLayout.IsVisible = false;
+                    PopupTitleLabel.TextColor = GHColors.Orange;
+                    PopupTitleLabel.Text = "Tournament Verification Failed";
+                    PopupLabel.Text = "User name and password for Server Posting have not been verified. Please set and verify these in Settings in the Server Posting section.";
+                    PopupGrid.IsVisible = true;
+                    StartLocalGrid.IsEnabled = true;
+                    return;
+                }
+                else if (!GHApp.HasInternetAccess)
+                {
+                    _popupStyle = popup_style.GeneralDialog;
+                    PopupCheckBoxLayout.IsVisible = false;
+                    PopupTitleLabel.TextColor = GHColors.Orange;
+                    PopupTitleLabel.Text = "No Internet";
+                    PopupLabel.Text = "You must be connected to internet to start a Tournament game. Please make sure you have an internet connection.";
+                    PopupGrid.IsVisible = true;
+                    StartLocalGrid.IsEnabled = true;
+                    return;
+                }
+            }
+
             StartLocalGameButton.TextColor = GHColors.Gray;
             carouselView.Stop();
 
@@ -507,13 +534,19 @@ namespace GnollHackX
 
         public void UpdateLayout()
         {
-            wizardModeGrid.IsVisible = GHApp.DeveloperMode;
-            if (!GHApp.DeveloperMode)
+            wizardModeGrid.IsVisible = GHApp.DeveloperMode && !GHApp.TournamentMode;
+            if (!GHApp.DeveloperMode || GHApp.TournamentMode)
                 wizardModeSwitch.IsToggled = false;
+
+            tournamentModeGrid.IsVisible = GHApp.TournamentMode;
+
+            classicModeGrid.IsVisible = !GHApp.TournamentMode;
+            classicModeSwitch.IsToggled = GHApp.ClassicMode || GHApp.TournamentMode;
+            casualModeGrid.IsVisible = !GHApp.TournamentMode;
+            casualModeSwitch.IsToggled = GHApp.CasualMode && !GHApp.TournamentMode;
+
             ResetButton.IsVisible = GHApp.DeveloperMode;
             OptionsButton.IsVisible = GHApp.DeveloperMode;
-            classicModeSwitch.IsToggled = GHApp.ClassicMode;
-            casualModeSwitch.IsToggled = GHApp.CasualMode;
 
             UpdateMobileVersionLabel();
         }

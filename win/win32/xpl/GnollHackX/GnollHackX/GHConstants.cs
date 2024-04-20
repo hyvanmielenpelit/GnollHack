@@ -219,6 +219,7 @@ namespace GnollHackX
         DisableBones =          0x00000020, /* Force flags.bones to off */
         ForceLastPlayerName =   0x00000040, /* Use LastUsedPlayerName as preset player name */
         PlayingReplay =         0x00000080, /* Game is a replay */
+        TournamentMode =        0x00000100, /* Playing with server-like settings */
     }
 
     [Flags]

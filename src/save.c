@@ -1473,7 +1473,7 @@ int fd;
     gamestats.explore_mode = discover;
     gamestats.modern_mode = ModernMode;
     gamestats.casual_mode = CasualMode;
-    gamestats.non_scoring = flags.non_scoring;
+    gamestats.save_flags = (flags.non_scoring ? SAVEFLAGS_NON_SCORING : 0) | (TournamentMode ? SAVEFLAGS_TOURNAMENT_MODE : 0);
     gamestats.time_stamp = getnow();
     gamestats.num_recoveries = n_game_recoveries;
 

@@ -101,6 +101,7 @@ namespace GnollHackX
             HideiOSStatusBar = Preferences.Get("HideiOSStatusBar", GHConstants.DefaultHideStatusBar);
             DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
             DebugLogMessages = Preferences.Get("DebugLogMessages", GHConstants.DefaultLogMessages);
+            TournamentMode = Preferences.Get("TournamentMode", false);
             FullVersionMode = true; // Preferences.Get("FullVersion", true);
             ClassicMode = Preferences.Get("ClassicMode", false);
             CasualMode = Preferences.Get("CasualMode", false);
@@ -262,13 +263,12 @@ namespace GnollHackX
         }
 
         public static bool RecommendedSettingsChecked { get; set; }
-
         
         private static readonly object _recordGameLock = new object();
         private static bool _recordGame = false;
-        public static bool RecordGame { get { lock (_recordGameLock) { return _recordGame; } } set { lock (_recordGameLock) { _recordGame = value; } } }
+        public static bool RecordGame { get { bool t = TournamentMode; lock (_recordGameLock) { return _recordGame || t; } } set { lock (_recordGameLock) { _recordGame = value; } } }
         private static bool _autoUploadReplays = false;
-        public static bool AutoUploadReplays { get { lock (_recordGameLock) { return _autoUploadReplays; } } set { lock (_recordGameLock) { _autoUploadReplays = value; } } }
+        public static bool AutoUploadReplays { get { bool t = TournamentMode; lock (_recordGameLock) { return _autoUploadReplays || t; } } set { lock (_recordGameLock) { _autoUploadReplays = value; } } }
 
         private static object _networkAccessLock = new object();
 #if GNH_MAUI
@@ -831,9 +831,13 @@ namespace GnollHackX
             get { return PlatformService.GetStatusBarHidden(); }
             set { PlatformService.SetStatusBarHidden(value); }
         }
-
         public static bool DeveloperMode { get; set; }
         public static bool DebugLogMessages { get; set; }
+
+        private static readonly object _tournamentLock = new object();
+        private static bool _tournamentMode = false;
+        public static bool TournamentMode { get { lock (_tournamentLock) { return _tournamentMode; } } set { lock (_tournamentLock) { _tournamentMode = value; } } }
+
         public static bool FullVersionMode { get; set; }
         public static bool ClassicMode { get; set; }
         public static bool CasualMode { get; set; }
@@ -2811,7 +2815,7 @@ namespace GnollHackX
 
         private static readonly object _postingGameStatusLock = new object();
         private static bool _postingGameStatus;
-        public static bool PostingGameStatus { get { lock (_postingGameStatusLock) { return _postingGameStatus; } } set { lock (_postingGameStatusLock) { _postingGameStatus = value; } } }
+        public static bool PostingGameStatus { get { bool t = TournamentMode; lock (_postingGameStatusLock) { return _postingGameStatus || t; } } set { lock (_postingGameStatusLock) { _postingGameStatus = value; } } }
 
         private static readonly object _postingDiagnosticDataLock = new object();
         private static bool _postingDiagnosticData;
@@ -2819,15 +2823,15 @@ namespace GnollHackX
 
         private static readonly object _postingXlogEntriesLock = new object();
         private static bool _postingXlogEntries;
-        public static bool PostingXlogEntries { get { lock (_postingXlogEntriesLock) { return _postingXlogEntries; } } set { lock (_postingXlogEntriesLock) { _postingXlogEntries = value; } } }
+        public static bool PostingXlogEntries { get { bool t = TournamentMode; lock (_postingXlogEntriesLock) { return _postingXlogEntries || t; } } set { lock (_postingXlogEntriesLock) { _postingXlogEntries = value; } } }
 
         private static readonly object _postingReplaysLock = new object();
         private static bool _postingReplays;
-        public static bool PostingReplays { get { lock (_postingReplaysLock) { return _postingReplays; } } set { lock (_postingReplaysLock) { _postingReplays = value; } } }
+        public static bool PostingReplays { get { bool t = TournamentMode; lock (_postingReplaysLock) { return _postingReplays || t; } } set { lock (_postingReplaysLock) { _postingReplays = value; } } }
 
         private static readonly object _postingBonesFilesLock = new object();
         private static bool _postingBonesFiles;
-        public static bool PostingBonesFiles { get { lock (_postingBonesFilesLock) { return _postingBonesFiles; } } set { lock (_postingBonesFilesLock) { _postingBonesFiles = value; } } }
+        public static bool PostingBonesFiles { get { bool t = TournamentMode; lock (_postingBonesFilesLock) { return _postingBonesFiles || t; } } set { lock (_postingBonesFilesLock) { _postingBonesFiles = value; } } }
 
         private static readonly object _bonesUserListIsBlackLock = new object();
         private static bool _bonesUserListIsBlack;
@@ -2835,7 +2839,7 @@ namespace GnollHackX
 
         private static readonly object _allowBonesLock = new object();
         private static bool _allowBones;
-        public static bool AllowBones { get { lock (_allowBonesLock) { return _allowBones; } } set { lock (_allowBonesLock) { _allowBones = value; } } }
+        public static bool AllowBones { get { bool t = TournamentMode; lock (_allowBonesLock) { return _allowBones || t; } } set { lock (_allowBonesLock) { _allowBones = value; } } }
 
         private static readonly object _emptyWishIsNothingLock = new object();
         private static bool _emptyWishIsNothing;
@@ -2850,7 +2854,7 @@ namespace GnollHackX
         {
             get
             {
-                if (CustomGameStatusLink != null && CustomGameStatusLink != "")
+                if (CustomGameStatusLink != null && CustomGameStatusLink != "" && !TournamentMode)
                 {
                     return CustomGameStatusLink;
                 }
@@ -2879,7 +2883,7 @@ namespace GnollHackX
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(CustomCloudStorageConnectionString))
+                if (!string.IsNullOrWhiteSpace(CustomCloudStorageConnectionString) && !TournamentMode)
                 {
                     return CustomCloudStorageConnectionString;
                 }
@@ -2895,7 +2899,7 @@ namespace GnollHackX
             get
             {
                 string address;
-                if (!string.IsNullOrWhiteSpace(CustomXlogPostLink))
+                if (!string.IsNullOrWhiteSpace(CustomXlogPostLink) && !TournamentMode)
                 {
                     address = CustomXlogPostLink;
                 }
@@ -2921,7 +2925,7 @@ namespace GnollHackX
             get
             {
                 string address;
-                if (CustomXlogAccountLink != null && CustomXlogAccountLink != "")
+                if (CustomXlogAccountLink != null && CustomXlogAccountLink != "" && !TournamentMode)
                 {
                     address = CustomXlogAccountLink;
                 }
@@ -4287,7 +4291,7 @@ namespace GnollHackX
             if (message == null)
                 message = "";
 
-            bool isCustomXlogServerLink = !string.IsNullOrWhiteSpace(CustomXlogPostLink);
+            bool isCustomXlogServerLink = !string.IsNullOrWhiteSpace(CustomXlogPostLink) && !TournamentMode;
             string username = XlogUserName;
             if (PostingXlogEntries && !string.IsNullOrWhiteSpace(username) && XlogUserNameVerified)
                 message = message + (isCustomXlogServerLink ? " {" : " [") + username + (isCustomXlogServerLink ? "}" : "]");
@@ -4329,7 +4333,7 @@ namespace GnollHackX
             string totmem = TotalMemInMB + " MB";
             string diskspace = FreeDiskSpaceInGB + " GB" + " / " + TotalDiskSpaceInGB + " GB";
 
-            string player_name = Preferences.Get("LastUsedPlayerName", "Unknown Player");
+            string player_name = GHApp.TournamentMode ? Preferences.Get("LastUsedTournamentPlayerName", "Unknown Player") : Preferences.Get("LastUsedPlayerName", "Unknown Player");
             string info = ver + ", " + platform_with_version + ", " + device_model + ", " + totmem + ", " + diskspace;
 
             switch (status_type)
