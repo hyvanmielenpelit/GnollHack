@@ -1035,7 +1035,7 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     PopupTitleLabel.TextColor = GHColors.Orange;
                     PopupTitleLabel.Text = "Tournament Verification";
-                    PopupLabel.Text = "Server Posting user name and password must be verified for the tournament mode.";
+                    PopupLabel.Text = "User name and password in the Server Posting section must be verified for the Tournament Mode.";
                     PopupOkButton.IsEnabled = true;
                     PopupGrid.IsVisible = true;
                     CloseButton.IsEnabled = true;
@@ -1512,7 +1512,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 PopupTitleLabel.TextColor = GHColors.Orange;
                 PopupTitleLabel.Text = "Tournament Mode";
-                PopupLabel.Text = "Tournament Mode will force on Post Game Progress, Post Top Scores, Allow Ghost Levels, Bones Sharing, Record Game, and Auto-Upload to Cloud settings. It will disable all special modes, custom links and webhooks." + Environment.NewLine + Environment.NewLine + "Please make sure that your Server Posting user name and password are verified before proceeding.";
+                PopupLabel.Text = "Tournament Mode will force on Post Game Progress, Post Top Scores, Allow Ghost Levels, Share Bones Files, Record Game, and Auto-Upload to Cloud settings. The mode will also disable all special game play modes, custom links, and custom webhooks." + (GHApp.XlogUserNameVerified ? "" : Environment.NewLine + Environment.NewLine + "Please make sure that your user name and password for Server Posting are verified before proceeding.");
                 PopupOkButton.IsEnabled = true;
                 PopupGrid.IsVisible = true;
             }
