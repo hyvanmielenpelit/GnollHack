@@ -109,7 +109,7 @@
                 <local:CustomLabel x:Name="tournamentModeLabel" Text="Tournament" TextColor="LightGreen" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
                                    WidthRequest="280" HeightRequest="25" HorizontalTextAlignment="Center" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
                     <local:CustomLabel.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="WizTapGestureRecognizer_Tapped"/>
+                        <TapGestureRecognizer Tapped="TournamentTapGestureRecognizer_Tapped"/>
                     </local:CustomLabel.GestureRecognizers>
                 </local:CustomLabel>
             </Grid>

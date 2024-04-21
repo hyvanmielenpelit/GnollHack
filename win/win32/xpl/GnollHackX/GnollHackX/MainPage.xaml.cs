@@ -1320,6 +1320,16 @@ namespace GnollHackX
         {
             carouselView.InvalidateSurface();
         }
+
+        private void TournamentTapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            _popupStyle = popup_style.GeneralDialog;
+            PopupCheckBoxLayout.IsVisible = false;
+            PopupTitleLabel.TextColor = GHColors.LightGreen;
+            PopupTitleLabel.Text = "Tournament Mode";
+            PopupLabel.Text = "Tournament Mode is Classic Mode with minimum difficulty at Expert. It also forces on game progress and top score reporting, bones sharing, and game recording.";
+            PopupGrid.IsVisible = true;
+        }
     }
 
 }
