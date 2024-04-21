@@ -1028,9 +1028,20 @@ enum cat_breeds {
 
 struct amulet_count_result
 {
+    long score;
+    long quantity;
     long amulets_of_life_saving;
     long other_amulets;
 };
+
+struct item_score_count_result
+{
+    long score;
+    long quantity;
+    long quantity_nonammo;
+    long quantity_ammo;
+};
+
 
 #endif /* GENERAL_H */
 

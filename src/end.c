@@ -1302,107 +1302,158 @@ winid endwin;
 }
 #endif
 
-long
+struct item_score_count_result
 count_artifacts(list)
 struct obj* list;
 {
     struct obj* otmp;
-    long cnt = 0L;
+    struct item_score_count_result cnt = { 0 };
     for (otmp = list; otmp; otmp = otmp->nobj) 
     {
         if (otmp->oartifact && (program_state.gameover || otmp->nknown || otmp->aknown))
-            cnt++; // += arti_cost(otmp);
+        {
+            cnt.quantity += otmp->quan;
+            cnt.score += ARCHAEOLOGIST_PER_ARTIFACT_SCORE * otmp->quan;
+        }
         if (Has_contents(otmp))
-            cnt += count_artifacts(otmp->cobj);
+        {
+            struct item_score_count_result cont_cnt = count_artifacts(otmp->cobj);
+            cnt.quantity += cont_cnt.quantity;
+            cnt.score += cont_cnt.score;
+        }
     }
     return cnt;
 }
 
-long
+struct item_score_count_result
 count_powerful_melee_weapon_score(list)
 struct obj* list;
 {
     struct obj* otmp;
-    long value = 0L;
+    struct item_score_count_result cnt = { 0 };
     for (otmp = list; otmp; otmp = otmp->nobj)
     {
         if (is_wieldable_weapon(otmp) && !is_appliable_pole_type_weapon(otmp)
             && !(is_launcher(otmp) || is_ammo(otmp) || is_missile(otmp))
             && ((otmp->oartifact && (program_state.gameover || otmp->nknown || otmp->aknown)) || (otmp->mythic_prefix && otmp->mythic_suffix)))
         {
-            value += BARBARIAN_PER_WEAPON_SCORE * otmp->quan;
+            cnt.quantity += otmp->quan;
+            cnt.score += BARBARIAN_PER_WEAPON_SCORE * otmp->quan;
         }
         if (Has_contents(otmp))
-            value += count_powerful_melee_weapon_score(otmp->cobj);
+        {
+            struct item_score_count_result cont_cnt = count_powerful_melee_weapon_score(otmp->cobj);
+            cnt.quantity += cont_cnt.quantity;
+            cnt.score += cont_cnt.score;
+        }
     }
-    return value;
+    return cnt;
 }
 
-long
+struct item_score_count_result
 count_powerful_ranged_weapon_score(list)
 struct obj* list;
 {
     struct obj* otmp;
-    long value = 0L;
+    struct item_score_count_result cnt = { 0 };
     for (otmp = list; otmp; otmp = otmp->nobj)
     {
         if (is_wieldable_weapon(otmp)
             && (is_launcher(otmp) || is_ammo(otmp) || is_missile(otmp))
             && ((otmp->oartifact && (program_state.gameover || otmp->nknown || otmp->aknown)) || (otmp->mythic_prefix || otmp->mythic_suffix || otmp->exceptionality >= EXCEPTIONALITY_ELITE)))
         {
-            if(is_launcher(otmp))
-                value += RANGER_PER_LAUNCHER_SCORE * otmp->quan;
+            cnt.quantity += otmp->quan;
+            if (is_launcher(otmp))
+            {
+                cnt.quantity_nonammo += otmp->quan;
+                cnt.score += RANGER_PER_LAUNCHER_SCORE * otmp->quan;
+            }
             else
-                value += RANGER_PER_AMMO_SCORE * otmp->quan;
+            {
+                cnt.quantity_ammo += otmp->quan;
+                cnt.score += RANGER_PER_AMMO_SCORE * otmp->quan;
+            }
         }
         if (Has_contents(otmp))
-            value += count_powerful_ranged_weapon_score(otmp->cobj);
+        {
+            struct item_score_count_result cont_cnt = count_powerful_ranged_weapon_score(otmp->cobj);
+            cnt.quantity += cont_cnt.quantity;
+            cnt.quantity_nonammo += cont_cnt.quantity_nonammo;
+            cnt.quantity_ammo += cont_cnt.quantity_ammo;
+            cnt.score += cont_cnt.score;
+        }
     }
-    return value;
+    return cnt;
 }
 
-long
+struct item_score_count_result
 count_powerful_Japanese_item_score(list)
 struct obj* list;
 {
     struct obj* otmp;
-    long value = 0L;
+    struct item_score_count_result cnt = { 0 };
     for (otmp = list; otmp; otmp = otmp->nobj)
     {
         if (((otmp->oartifact && (program_state.gameover || otmp->nknown || otmp->aknown)) && (artilist[otmp->oartifact].aflags2 & AF2_JAPANESE) != 0)
             || ((otmp->mythic_prefix || otmp->mythic_suffix || otmp->exceptionality >= EXCEPTIONALITY_EXCEPTIONAL) && ((objects[otmp->otyp].oc_flags6 & O6_JAPANESE_ITEM) != 0 || Japanese_item_name(otmp->otyp) != 0))
            )
         {
+            cnt.quantity += otmp->quan;
             if (is_ammo(otmp) || is_missile(otmp))
-                value += SAMURAI_PER_AMMO_SCORE * otmp->quan;
+            {
+                cnt.quantity_nonammo += otmp->quan;
+                cnt.score += SAMURAI_PER_AMMO_SCORE * otmp->quan;
+            }
             else
-                value += SAMURAI_PER_ITEM_SCORE * otmp->quan;
+            {
+                cnt.quantity_ammo += otmp->quan;
+                cnt.score += SAMURAI_PER_ITEM_SCORE * otmp->quan;
+            }
         }
         if (Has_contents(otmp))
-            value += count_powerful_Japanese_item_score(otmp->cobj);
+        {
+            struct item_score_count_result cont_cnt = count_powerful_Japanese_item_score(otmp->cobj);
+            cnt.quantity += cont_cnt.quantity;
+            cnt.quantity_nonammo += cont_cnt.quantity_nonammo;
+            cnt.quantity_ammo += cont_cnt.quantity_ammo;
+            cnt.score += cont_cnt.score;
+        }
     }
-    return value;
+    return cnt;
 }
 
-long
+struct item_score_count_result
 count_powerful_valkyrie_item_score(list)
 struct obj* list;
 {
     struct obj* otmp;
-    long value = 0L;
+    struct item_score_count_result cnt = { 0 };
     for (otmp = list; otmp; otmp = otmp->nobj)
     {
         if (u.ualign.type == A_CHAOTIC ? otmp->exceptionality == EXCEPTIONALITY_INFERNAL : u.ualign.type == A_LAWFUL ? otmp->exceptionality == EXCEPTIONALITY_CELESTIAL : otmp->exceptionality == EXCEPTIONALITY_PRIMORDIAL)
         {
-            if(is_ammo(otmp) || is_missile(otmp))
-                value += VALKYRIE_PER_AMMO_SCORE * otmp->quan;
+            cnt.quantity += otmp->quan;
+            if (is_ammo(otmp) || is_missile(otmp))
+            {
+                cnt.quantity_nonammo += otmp->quan;
+                cnt.score += VALKYRIE_PER_AMMO_SCORE * otmp->quan;
+            }
             else
-                value += VALKYRIE_PER_ITEM_SCORE * otmp->quan;
+            {
+                cnt.quantity_nonammo += otmp->quan;
+                cnt.score += VALKYRIE_PER_ITEM_SCORE * otmp->quan;
+            }
         }
         if (Has_contents(otmp))
-            value += count_powerful_melee_weapon_score(otmp->cobj);
+        {
+            struct item_score_count_result cont_cnt = count_powerful_melee_weapon_score(otmp->cobj);
+            cnt.quantity += cont_cnt.quantity;
+            cnt.quantity_nonammo += cont_cnt.quantity_nonammo;
+            cnt.quantity_ammo += cont_cnt.quantity_ammo;
+            cnt.score += cont_cnt.score;
+        }
     }
-    return value;
+    return cnt;
 }
 
 struct amulet_count_result
@@ -1410,22 +1461,32 @@ count_amulets(list)
 struct obj* list;
 {
     struct obj* otmp;
-    struct amulet_count_result res = { 0, 0 };
+    struct amulet_count_result cnt = { 0, 0 };
     for (otmp = list; otmp; otmp = otmp->nobj)
     {
         if (otmp->otyp == AMULET_OF_LIFE_SAVING)
-            res.amulets_of_life_saving++;
-        else if(otmp->oclass == AMULET_CLASS && otmp->otyp != AMULET_OF_YENDOR && otmp->otyp != FAKE_AMULET_OF_YENDOR)
-            res.other_amulets++;
+        {
+            cnt.quantity += otmp->quan;
+            cnt.amulets_of_life_saving += otmp->quan;
+            cnt.score += CAVEMAN_PER_AMULET_OF_LIFE_SAVING_SCORE * otmp->quan;
+        }
+        else if (otmp->oclass == AMULET_CLASS && otmp->otyp != AMULET_OF_YENDOR && otmp->otyp != FAKE_AMULET_OF_YENDOR)
+        {
+            cnt.quantity += otmp->quan;
+            cnt.other_amulets += otmp->quan;
+            cnt.score += CAVEMAN_PER_OTHER_AMULET_SCORE * otmp->quan;
+        }
 
         if (Has_contents(otmp))
         {
-            struct amulet_count_result cnt_res = count_amulets(otmp->cobj);
-            res.amulets_of_life_saving += cnt_res.amulets_of_life_saving;
-            res.other_amulets += cnt_res.other_amulets;
+            struct amulet_count_result cont_cnt = count_amulets(otmp->cobj);
+            cnt.score += cont_cnt.score;
+            cnt.quantity += cont_cnt.quantity;
+            cnt.amulets_of_life_saving += cont_cnt.amulets_of_life_saving;
+            cnt.other_amulets += cont_cnt.other_amulets;
         }
     }
-    return res;
+    return cnt;
 }
 
 
@@ -2898,6 +2959,7 @@ winid enwin;
 
         char buf[BUFSZ], buftoo[BUFSZ];
         int ni;
+        long selfiescore = 0L;
         for (ni = 0; ni < ntypes; ni++)
         {
             i = mindx[ni];
@@ -2911,6 +2973,7 @@ winid enwin;
             {
                 Strcpy(buf, an(pm_common_name(&mons[i])));
             }
+            selfiescore += TOURIST_SELFIE_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
 
             /* number of leading spaces to match 3 digit prefix */
             pfx = !strncmpi(buf, "the ", 4) ? 0
@@ -2921,6 +2984,10 @@ winid enwin;
             Sprintf(buftoo, "%*s%s", pfx, "", buf);
             putstr(enwin, 0, buftoo);
         }
+        long score_percentage = ((selfiescore + (long)u.uachieve.role_achievement * TOURIST_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        score_percentage = min(100, score_percentage);
+        Sprintf(buf, "You have gained %ld%% of your maximum role score.", score_percentage);
+        putstr(enwin, ATR_NONE, buf);
     }
 }
 
@@ -2955,6 +3022,7 @@ winid enwin;
         int ni;
         boolean no_female, all_female;
         uchar nkilled, fkilled;
+        long killscore = 0L;
         for (ni = 0; ni < ntypes; ni++)
         {
             i = mindx[ni];
@@ -2964,6 +3032,7 @@ winid enwin;
             all_female = (fkilled == nkilled);
             if (UniqCritterIndx(i))
             {
+                killscore += KNIGHT_UNIQUE_MONSTER_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
                 Sprintf(buf, "%s%s",
                     !is_mname_proper_name(&mons[i]) ? "the " : "",
                     pm_common_name(&mons[i]));
@@ -2985,6 +3054,9 @@ winid enwin;
             }
             else
             {
+                killscore += KNIGHT_NORMAL_MONSTER_PER_LEVEL_SCORE * (mons[i].difficulty + 1) * nkilled;
+                if(mvitals[i].mvflags & MV_EXTINCT)
+                    killscore += KNIGHT_NORMAL_MONSTER_EXTINCT_SCORE * (mons[i].difficulty + 1);
                 /* trolls or undead might have come back,
                    but we don't keep track of that */
                 if (nkilled == 1)
@@ -3002,7 +3074,12 @@ winid enwin;
                 : !digit(buf[2]) ? 4 : 0;
             Sprintf(buftoo, "%*s%s", pfx, "", buf);
             putstr(enwin, ATR_NONE, buftoo);
+
         }
+        long score_percentage = ((killscore + (long)u.uachieve.role_achievement * KNIGHT_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        score_percentage = min(100, score_percentage);
+        Sprintf(buf, "You have gained %ld%% of your maximum role score.", score_percentage);
+        putstr(enwin, ATR_NONE, buf);
     }
 }
 
@@ -3381,13 +3458,15 @@ get_current_game_score()
     {
     case PM_ARCHAEOLOGIST:
     {
-        Role_Specific_Score = ARCHAEOLOGIST_PER_ARTIFACT_SCORE * count_artifacts(invent);
+        struct item_score_count_result cnt = count_artifacts(invent);
+        Role_Specific_Score = cnt.score;
         Role_Achievement_Score = ARCHAEOLOGIST_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
         break;
     }
     case PM_BARBARIAN:
     {
-        Role_Specific_Score = count_powerful_melee_weapon_score(invent);
+        struct item_score_count_result cnt = count_powerful_melee_weapon_score(invent);
+        Role_Specific_Score = cnt.score;
         Role_Achievement_Score = BARBARIAN_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
         break;
     }
@@ -3458,7 +3537,8 @@ get_current_game_score()
     }
     case PM_RANGER:
     {
-        Role_Specific_Score = count_powerful_ranged_weapon_score(invent);
+        struct item_score_count_result cnt = count_powerful_ranged_weapon_score(invent);
+        Role_Specific_Score = cnt.score;
         Role_Achievement_Score = RANGER_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
         break;
     }
@@ -3474,7 +3554,8 @@ get_current_game_score()
     }
     case PM_SAMURAI:
     {
-        Role_Specific_Score = count_powerful_Japanese_item_score(invent);
+        struct item_score_count_result cnt = count_powerful_Japanese_item_score(invent);
+        Role_Specific_Score = cnt.score;
         Role_Achievement_Score = SAMURAI_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
         break;
     }
@@ -3493,7 +3574,8 @@ get_current_game_score()
     }
     case PM_VALKYRIE:
     {
-        Role_Specific_Score = count_powerful_valkyrie_item_score(invent);
+        struct item_score_count_result cnt = count_powerful_valkyrie_item_score(invent);
+        Role_Specific_Score = cnt.score;
         Role_Achievement_Score = VALKYRIE_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
         break;
     }
