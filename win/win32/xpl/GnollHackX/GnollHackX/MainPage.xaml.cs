@@ -765,6 +765,8 @@ namespace GnollHackX
             string fmodverstr = "?";
             string skiaverstr = "?";
             string skiasharpverstr = "?";
+            string frameworkverstr = "?";
+            string runtimeverstr = "?";
             ulong vernum = 0UL;
             ulong vercompat = 0UL;
             bool isdebug = false;
@@ -777,6 +779,18 @@ namespace GnollHackX
                 isdebug = GHApp.GnollHackService.IsDebug();
                 fmodverstr = GHApp.FmodService.GetVersionString();
                 skiaverstr = SkiaSharpVersion.Native.ToString();
+                frameworkverstr = RuntimeInformation.FrameworkDescription ?? "?";
+                int pidx = frameworkverstr.IndexOf(" (");
+                if (pidx > 0)
+                {
+                    frameworkverstr = frameworkverstr.Substring(0, pidx);
+                }
+                runtimeverstr = Environment.Version.ToString() ?? "?";
+                pidx = runtimeverstr.IndexOf(" (");
+                if (pidx > 0)
+                {
+                    runtimeverstr = runtimeverstr.Substring(0, pidx);
+                }
                 Assembly skiaSharpAssem = typeof(SkiaSharpVersion).Assembly;
                 AssemblyName skiaSharpAssemName = skiaSharpAssem.GetName();
                 Version ver = skiaSharpAssemName.Version;
@@ -809,6 +823,8 @@ namespace GnollHackX
             GHApp.FMODVersionString = fmodverstr;
             GHApp.SkiaVersionString = skiaverstr;
             GHApp.SkiaSharpVersionString = skiasharpverstr;
+            GHApp.FrameworkVersionString = frameworkverstr;
+            GHApp.RuntimeVersionString = runtimeverstr;
 
             VersionLabel.Text = verid;
             GnollHackLabel.Text = "GnollHack";

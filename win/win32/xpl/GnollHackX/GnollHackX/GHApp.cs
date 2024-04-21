@@ -857,6 +857,9 @@ namespace GnollHackX
         public static string SkiaVersionString { get; set; }
         public static string SkiaSharpVersionString { get; set; }
         public static string FMODVersionString { get; set; }
+        public static string FrameworkVersionString { get; set; }
+        public static string RuntimeVersionString { get; set; }
+        
         public static string GHPath { get; private set; } = ".";
         public static bool LoadBanks { get; set; }
 
