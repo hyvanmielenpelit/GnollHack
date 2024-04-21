@@ -1470,7 +1470,7 @@ struct obj* list;
             cnt.amulets_of_life_saving += otmp->quan;
             cnt.score += CAVEMAN_PER_AMULET_OF_LIFE_SAVING_SCORE * otmp->quan;
         }
-        else if (otmp->oclass == AMULET_CLASS && otmp->otyp != AMULET_OF_YENDOR && otmp->otyp != FAKE_AMULET_OF_YENDOR)
+        else if (otmp->oclass == AMULET_CLASS && !objects[otmp->otyp].oc_pre_discovered && otmp->otyp != AMULET_OF_YENDOR && otmp->otyp != FAKE_AMULET_OF_YENDOR)
         {
             cnt.quantity += otmp->quan;
             cnt.other_amulets += otmp->quan;
