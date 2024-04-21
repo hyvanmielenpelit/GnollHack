@@ -2989,7 +2989,7 @@ int final;
             putstr(enwin, ATR_HALF_SIZE, " ");
         long score_percentage = ((selfiescore + (long)u.uachieve.role_achievement * TOURIST_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
-        Sprintf(buf, "You have gained %ld%% of your maximum role score.", score_percentage);
+        Sprintf(buf, "You %s gained %ld%% of your maximum role score.", final ? "had" : "have", score_percentage);
         putstr(enwin, ATR_NONE, buf);
     }
 }
@@ -3084,7 +3084,7 @@ int final;
             putstr(enwin, ATR_HALF_SIZE, " ");
         long score_percentage = ((killscore + (long)u.uachieve.role_achievement * KNIGHT_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
-        Sprintf(buf, "You have gained %ld%% of your maximum role score.", score_percentage);
+        Sprintf(buf, "You %s gained %ld%% of your maximum role score.", final ? "had" : "have", score_percentage);
         putstr(enwin, ATR_NONE, buf);
     }
 }
