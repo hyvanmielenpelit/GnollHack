@@ -5891,6 +5891,11 @@ int final;
         if (!final)
             putstr(en_win, ATR_HALF_SIZE, " ");
 
+        if (u.uachieve.role_achievement)
+        {
+            you_have("completed your role's optional quest", "");
+        }
+
         if (Role_if(PM_ARCHAEOLOGIST))
         {
             struct item_score_count_result artifacts = count_artifacts(invent);
