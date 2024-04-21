@@ -3236,11 +3236,11 @@ namespace GnollHackX.Pages.Game
             }
             _mainPage.ActivateLocalGameButton();
             _mainPage.PlayMainScreenVideoAndMusic(); /* Just to be doubly sure */
-            _mainPage.StartGeneralTimer(); /* Just to be doubly sure */
             if (GHApp.GameMuteMode)
                 GHApp.GameMuteMode = false;
             GHApp.CurrentGamePage = null;
             await App.Current.MainPage.Navigation.PopModalAsync();
+            _mainPage.StartGeneralTimer(); /* Just to be doubly sure */
         }
 
         private readonly object _menuDrawOnlyLock = new object();
