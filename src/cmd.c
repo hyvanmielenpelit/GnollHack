@@ -5891,7 +5891,7 @@ int final;
         long score_percentage = ((artifacts.score + (long)u.uachieve.role_achievement * ARCHAEOLOGIST_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         putstr(dumpwin, ATR_NONE, "");
-        Sprintf(mbuf, "You %s %ld %sartifact%s with you (%ld%% role score).", final ? "had" : "have", artifacts.quantity, program_state.gameover ? "" : "known ", plur(artifacts.quantity), score_percentage);
+        Sprintf(mbuf, "You %s %ld %sartifact%s (%ld%% role score).", final ? "had" : "have", artifacts.quantity, program_state.gameover ? "" : "known ", plur(artifacts.quantity), score_percentage);
         putstr(en_win, ATR_TITLE, mbuf);
     }
     else if (Role_if(PM_BARBARIAN))
@@ -5901,7 +5901,7 @@ int final;
         long score_percentage = ((valuables.score + (long)u.uachieve.role_achievement * BARBARIAN_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         putstr(dumpwin, ATR_NONE, "");
-        Sprintf(mbuf, "You %s %ld %smelee weapon%s of artifact or legendary quality with you (%ld%% role score).", final ? "had" : "have", valuables.quantity, program_state.gameover ? "" : "known ", plur(valuables.quantity), score_percentage);
+        Sprintf(mbuf, "You %s %ld %smelee weapon%s of artifact or legendary quality (%ld%% role score).", final ? "had" : "have", valuables.quantity, program_state.gameover ? "" : "known ", plur(valuables.quantity), score_percentage);
         putstr(en_win, ATR_TITLE, mbuf);
     }
     else if (Role_if(PM_CAVEMAN))
@@ -5911,17 +5911,17 @@ int final;
         long score_percentage = ((amulets.score + (long)u.uachieve.role_achievement * CAVEMAN_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         putstr(dumpwin, ATR_NONE, "");
-        Sprintf(mbuf, "You %s %ld amulet%s of life saving and %ld non-prediscovered amulet%s with you (%ld%% role score).", final ? "had" : "have", amulets.amulets_of_life_saving, plur(amulets.amulets_of_life_saving), amulets.other_amulets, plur(amulets.other_amulets), score_percentage);
+        Sprintf(mbuf, "You %s %ld amulet%s of life saving and %ld non-prediscovered amulet%s (%ld%% role score).", final ? "had" : "have", amulets.amulets_of_life_saving, plur(amulets.amulets_of_life_saving), amulets.other_amulets, plur(amulets.other_amulets), score_percentage);
         putstr(en_win, ATR_TITLE, mbuf);
     }
-    else if (Role_if(PM_KNIGHT))
+    else if (Role_if(PM_KNIGHT) && u.ualign.type != A_NEUTRAL)
     {
         putstr(dumpwin, ATR_NONE, "");
-        putstr(en_win, ATR_TITLE, "Demons, devils, and chaotic dragons slain:");
+        putstr(en_win, ATR_TITLE, u.ualign.type == A_LAWFUL ? "Demons, devils, and chaotic dragons slain:" : "Angels and lawful dragons slain:");
         if (!final)
             putstr(en_win, ATR_HALF_SIZE, " ");
 
-        print_knight_slayings(en_win);
+        print_knight_slayings(en_win, final);
     }
     else if (Role_if(PM_RANGER))
     {
@@ -5930,7 +5930,7 @@ int final;
         long score_percentage = ((valuables.score + (long)u.uachieve.role_achievement * RANGER_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         putstr(dumpwin, ATR_NONE, "");
-        Sprintf(mbuf, "You %s %ld %sranged weapon%s and %ld ammo of at least artifact, elite, or mythic quality with you (%ld%% role score).", final ? "had" : "have", valuables.quantity_nonammo, program_state.gameover ? "" : "known ", plur(valuables.quantity_nonammo), valuables.quantity_ammo, score_percentage);
+        Sprintf(mbuf, "You %s %ld %sranged weapon%s and %ld ammo of at least artifact, elite, or mythic quality (%ld%% role score).", final ? "had" : "have", valuables.quantity_nonammo, program_state.gameover ? "" : "known ", plur(valuables.quantity_nonammo), valuables.quantity_ammo, score_percentage);
         putstr(en_win, ATR_TITLE, mbuf);
     }
     else if (Role_if(PM_ROGUE))
@@ -5940,7 +5940,7 @@ int final;
         long score_percentage = ((valuableworth + (long)u.uachieve.role_achievement * ROGUE_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         putstr(dumpwin, ATR_NONE, "");
-        Sprintf(mbuf, "You %s %ld %s worth of %svaluables with you (%ld%% role score).", final ? "had" : "have", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ", score_percentage);
+        Sprintf(mbuf, "You %s %ld %s worth of %svaluables (%ld%% role score).", final ? "had" : "have", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ", score_percentage);
         putstr(en_win, ATR_TITLE, mbuf);
     }
     else if (Role_if(PM_SAMURAI))
@@ -5950,7 +5950,7 @@ int final;
         long score_percentage = ((valuables.score + (long)u.uachieve.role_achievement * SAMURAI_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         putstr(dumpwin, ATR_NONE, "");
-        Sprintf(mbuf, "You %s %ld Japanese item%s and %ld ammo of at least artifact, exceptional, or mythic quality with you (%ld%% role score).", final ? "had" : "have", valuables.quantity_nonammo, plur(valuables.quantity_nonammo), valuables.quantity_ammo, score_percentage);
+        Sprintf(mbuf, "You %s %ld Japanese item%s and %ld ammo of at least artifact, exceptional, or mythic quality (%ld%% role score).", final ? "had" : "have", valuables.quantity_nonammo, plur(valuables.quantity_nonammo), valuables.quantity_ammo, score_percentage);
         putstr(en_win, ATR_TITLE, mbuf);
     }
     else if (Role_if(PM_TOURIST))
@@ -5960,7 +5960,7 @@ int final;
         if (!final)
             putstr(en_win, ATR_HALF_SIZE, " ");
 
-        print_selfies(en_win);
+        print_selfies(en_win, final);
     }
     else if (Role_if(PM_VALKYRIE))
     {
@@ -5969,7 +5969,7 @@ int final;
         long score_percentage = ((valuables.score + (long)u.uachieve.role_achievement * VALKYRIE_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         putstr(dumpwin, ATR_NONE, "");
-        Sprintf(mbuf, "You %s %ld item%s and %ld ammo of %s quality with you (%ld%% role score).", final ? "had" : "have", valuables.quantity_nonammo, plur(valuables.quantity_nonammo), valuables.quantity_ammo, u.ualign.type == A_CHAOTIC ? "infernal": u.ualign.type == A_LAWFUL ? "celestial" : "primordial", score_percentage);
+        Sprintf(mbuf, "You %s %ld item%s and %ld ammo of %s quality (%ld%% role score).", final ? "had" : "have", valuables.quantity_nonammo, plur(valuables.quantity_nonammo), valuables.quantity_ammo, u.ualign.type == A_CHAOTIC ? "infernal": u.ualign.type == A_LAWFUL ? "celestial" : "primordial", score_percentage);
         putstr(en_win, ATR_TITLE, mbuf);
     }
     else if (Role_if(PM_HEALER) || Role_if(PM_PRIEST) || Role_if(PM_WIZARD))

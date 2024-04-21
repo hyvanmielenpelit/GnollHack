@@ -1118,8 +1118,8 @@ void and_you_die();
 #endif
 E long NDECL(get_current_game_score);
 E int NDECL(wiz_dumplog);
-E void FDECL(print_selfies, (winid));
-E void FDECL(print_knight_slayings, (winid));
+E void FDECL(print_selfies, (winid, int));
+E void FDECL(print_knight_slayings, (winid, int));
 E void NDECL(reset_game);
 E void NDECL(reset_gamestate_ex);
 E void NDECL(tally_realtime);

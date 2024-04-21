@@ -1401,12 +1401,12 @@ struct obj* list;
             cnt.quantity += otmp->quan;
             if (is_ammo(otmp) || is_missile(otmp))
             {
-                cnt.quantity_nonammo += otmp->quan;
+                cnt.quantity_ammo += otmp->quan;
                 cnt.score += SAMURAI_PER_AMMO_SCORE * otmp->quan;
             }
             else
             {
-                cnt.quantity_ammo += otmp->quan;
+                cnt.quantity_nonammo += otmp->quan;
                 cnt.score += SAMURAI_PER_ITEM_SCORE * otmp->quan;
             }
         }
@@ -1435,7 +1435,7 @@ struct obj* list;
             cnt.quantity += otmp->quan;
             if (is_ammo(otmp) || is_missile(otmp))
             {
-                cnt.quantity_nonammo += otmp->quan;
+                cnt.quantity_ammo += otmp->quan;
                 cnt.score += VALKYRIE_PER_AMMO_SCORE * otmp->quan;
             }
             else
@@ -2933,8 +2933,9 @@ boolean ask, isend;
 }
 
 void
-print_selfies(enwin)
+print_selfies(enwin, final)
 winid enwin;
+int final;
 {
     short mindx[NUM_MONSTERS] = { 0 };
     int ntypes = 0;
@@ -2984,6 +2985,8 @@ winid enwin;
             Sprintf(buftoo, "%*s%s", pfx, "", buf);
             putstr(enwin, 0, buftoo);
         }
+        if (!final)
+            putstr(enwin, ATR_HALF_SIZE, " ");
         long score_percentage = ((selfiescore + (long)u.uachieve.role_achievement * TOURIST_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(buf, "You have gained %ld%% of your maximum role score.", score_percentage);
@@ -2992,8 +2995,9 @@ winid enwin;
 }
 
 void
-print_knight_slayings(enwin)
+print_knight_slayings(enwin, final)
 winid enwin;
+int final;
 {
     short mindx[NUM_MONSTERS] = { 0 };
     int ntypes = 0;
@@ -3001,7 +3005,7 @@ winid enwin;
     int pfx;
     for (i = PM_COUATL; i <= PM_DEMOGORGON; i++)
     {
-        if ((u.ualign.type == A_LAWFUL ? is_demon(&mons[i]) : u.ualign.type == A_CHAOTIC ? is_angel(&mons[i]) : FALSE) || (is_dragon(&mons[i]) && u.ualign.type * mons[i].maligntyp < 0)) /* Demons/angels and chaotic/lawful dragons */
+        if (mvitals[i].died > 0 && ((u.ualign.type == A_LAWFUL ? is_demon(&mons[i]) : u.ualign.type == A_CHAOTIC ? is_angel(&mons[i]) : FALSE) || (is_dragon(&mons[i]) && u.ualign.type * mons[i].maligntyp < 0))) /* Demons/angels and chaotic/lawful dragons */
         {
             mindx[ntypes] = i;
             ntypes++;
@@ -3012,7 +3016,7 @@ winid enwin;
 
     if (!ntypes)
     {
-        putstr(enwin, 0, " (None)");
+        putstr(enwin, 0, " (No creatures slain)");
     }
     else
     {
@@ -3076,6 +3080,8 @@ winid enwin;
             putstr(enwin, ATR_NONE, buftoo);
 
         }
+        if (!final)
+            putstr(enwin, ATR_HALF_SIZE, " ");
         long score_percentage = ((killscore + (long)u.uachieve.role_achievement * KNIGHT_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(buf, "You have gained %ld%% of your maximum role score.", score_percentage);
