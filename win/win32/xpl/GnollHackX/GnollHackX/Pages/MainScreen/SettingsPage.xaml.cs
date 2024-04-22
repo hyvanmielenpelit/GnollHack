@@ -702,6 +702,11 @@ namespace GnollHackX.Pages.MainScreen
                 LogMessageLabel.TextColor = GHColors.Gray;
             }
             TournamentSwitch.IsToggled = tournament;
+            if (_gamePage != null) /* Cannot turn on or off in the middle of the game */
+            {
+                TournamentSwitch.IsEnabled = false;
+                TournamentLabel.TextColor = GHColors.Gray;
+            }
             SoundBankSwitch.IsToggled = bank;
             SingleDumpLogSwitch.IsToggled = singledumplog;
             HTMLDumpLogSwitch.IsToggled = html;
