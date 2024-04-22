@@ -2106,6 +2106,12 @@ namespace GnollHackX
                         _gamePage.ExtendedCommands = _gamePage.GnollHackService.GetExtendedCommands();
                     }
                     break;
+                case (int)gui_command_types.GUI_CMD_ENABLE_TOURNAMENT_MODE:
+                    GHApp.TournamentMode = true;
+                    break;
+                case (int)gui_command_types.GUI_CMD_DISABLE_TOURNAMENT_MODE:
+                    GHApp.TournamentMode = false;
+                    break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_PET_DATA:
                     _gamePage.ClearPetData();
                     break;

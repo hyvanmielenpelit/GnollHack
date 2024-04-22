@@ -732,6 +732,8 @@ enum gui_command_types {
     GUI_CMD_DEBUGLOG,
     GUI_CMD_GAME_START,
     GUI_CMD_GAME_ENDED,
+    GUI_CMD_ENABLE_TOURNAMENT_MODE,
+    GUI_CMD_DISABLE_TOURNAMENT_MODE,
 };
 
 enum game_status_types
