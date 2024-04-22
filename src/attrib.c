@@ -2687,7 +2687,7 @@ int reason; /* 0==conversion, 1==helm-of-OA on, 2==helm-of-OA off */
             u.ualign.type = u.ualignbase[A_CURRENT];
 
         play_sfx_sound((u.ualign.type != oldalign) ? SFX_ALIGNMENT_CHANGE_CONVERSION : SFX_BLOCKED_ALIGNMENT_CHANGE);
-        You("have a %ssense of a new direction.",
+        You_ex(ATR_NONE, (u.ualign.type != oldalign) ? CLR_MSG_WARNING : CLR_MSG_ATTENTION, "have a %ssense of a new direction.",
             (u.ualign.type != oldalign) ? "sudden " : "");
     } else {
         /* putting on or taking off a helm of opposite alignment */
@@ -2697,12 +2697,12 @@ int reason; /* 0==conversion, 1==helm-of-OA on, 2==helm-of-OA off */
             livelog_printf(LL_ALIGNMENT, "used a helm to turn %s",
                 aligns[1 - newalign].adj);
             play_sfx_sound(SFX_ALIGNMENT_CHANGE_HELM_ON);
-            Your("mind oscillates %s.", Hallucination ? "wildly" : "briefly");
+            Your_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_WARNING, "mind oscillates %s.", Hallucination ? "wildly" : "briefly");
         }
         else if (reason == 2)
         {
             play_sfx_sound(SFX_ALIGNMENT_CHANGE_HELM_OFF);
-            Your("mind is %s.", Hallucination
+            Your_ex(ATR_NONE, Hallucination ? CLR_MSG_HALLUCINATED : CLR_MSG_POSITIVE, "mind is %s.", Hallucination
                 ? "much of a muchness"
                 : "back in sync with your body");
         }
