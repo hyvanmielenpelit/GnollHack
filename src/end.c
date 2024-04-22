@@ -2952,7 +2952,7 @@ int final;
 
     if (!ntypes)
     {
-        putstr(enwin, 0, " (No selfies taken with monsters)");
+        putstr(enwin, 0, "  (No selfies taken with monsters)");
     }
     else
     {
@@ -2982,14 +2982,14 @@ int final;
                 : !strncmpi(buf, "a ", 2) ? 2
                 : !digit(buf[2]) ? 4 : 0;
 
-            Sprintf(buftoo, "%*s%s", pfx, "", buf);
+            Sprintf(buftoo, " %*s%s", pfx, "", buf);
             putstr(enwin, 0, buftoo);
         }
         if (!final)
             putstr(enwin, ATR_HALF_SIZE, " ");
         long score_percentage = ((selfiescore + (long)u.uachieve.role_achievement * TOURIST_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
-        Sprintf(buf, "You %s gained %ld%% of your maximum role score.", final ? "had" : "have", score_percentage);
+        Sprintf(buf, " You %s gained %ld%% of your maximum role score.", final ? "had" : "have", score_percentage);
         putstr(enwin, ATR_NONE, buf);
     }
 }
@@ -3014,7 +3014,7 @@ int final;
 
     if (!ntypes)
     {
-        putstr(enwin, 0, " (No creatures slain)");
+        putstr(enwin, 0, "  (No creatures slain)");
     }
     else
     {
@@ -3074,7 +3074,7 @@ int final;
                     : !strncmpi(buf, "an ", 3) ? 1
                     : !strncmpi(buf, "a ", 2) ? 2
                     : !digit(buf[2]) ? 4 : 0;
-                Sprintf(buftoo, "%*s%s", pfx, "", buf);
+                Sprintf(buftoo, " %*s%s", pfx, "", buf);
                 putstr(enwin, ATR_NONE, buftoo);
             }
         }
@@ -3082,7 +3082,7 @@ int final;
             putstr(enwin, ATR_HALF_SIZE, " ");
         long score_percentage = ((killscore + (long)u.uachieve.role_achievement * KNIGHT_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
-        Sprintf(buf, "You %s gained %ld%% of your maximum role score.", final ? "had" : "have", score_percentage);
+        Sprintf(buf, " You %s gained %ld%% of your maximum role score.", final ? "had" : "have", score_percentage);
         putstr(enwin, ATR_NONE, buf);
     }
 }

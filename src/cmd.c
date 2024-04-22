@@ -5894,6 +5894,8 @@ int final;
         if (u.uachieve.role_achievement)
         {
             you_have("completed your role's optional quest", "");
+            if (Role_if(PM_KNIGHT) || Role_if(PM_TOURIST))
+                putstr(en_win, ATR_HALF_SIZE, " ");
         }
 
         if (Role_if(PM_ARCHAEOLOGIST))
@@ -5929,8 +5931,8 @@ int final;
             you_have(goalbuf, "");
         }
         else if (Role_if(PM_KNIGHT) && u.ualign.type != A_NEUTRAL)
-        {
-            putstr(en_win, ATR_SUBTITLE, u.ualign.type == A_LAWFUL ? "Demons, devils, and chaotic dragons slain:" : "Angels and lawful dragons slain:");
+        { 
+            putstr(en_win, ATR_SUBTITLE, u.ualign.type == A_LAWFUL ? " Demons, devils, and chaotic dragons slain:" : " Angels and lawful dragons slain:");
             if (!final)
                 putstr(en_win, ATR_HALF_SIZE, " ");
 
@@ -5972,7 +5974,7 @@ int final;
         }
         else if (Role_if(PM_TOURIST))
         {
-            putstr(en_win, ATR_SUBTITLE, "Selfies taken with:");
+            putstr(en_win, ATR_SUBTITLE, " Selfies taken with:");
             if (!final)
                 putstr(en_win, ATR_HALF_SIZE, " ");
 
