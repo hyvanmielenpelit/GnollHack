@@ -162,7 +162,7 @@ namespace GnollHackX
         private static long GetDefaultPrimaryGPUCacheSize(ulong memory)
         {
             long TotalMemInBytes = (long)memory;
-            long max = Math.Min(1280L * 1024 * 1024, Math.Max(256L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024) / 2));
+            long max = Math.Min(1280L * 1024 * 1024, Math.Max(256L * 1024 * 1024, (TotalMemInBytes - 2560L * 1024 * 1024)));
             long min = Math.Max(768L * 1024 * 1024, (TotalMemInBytes - 3072L * 1024 * 1024) / 8);
             long def = Math.Min(max, min);
             if (_cacheSizeList.Count > 2 && _cacheSizeList[_cacheSizeList.Count - 1].Size >= 256L * 1024 * 1024 && def >= _cacheSizeList[_cacheSizeList.Count - 1].Size)
