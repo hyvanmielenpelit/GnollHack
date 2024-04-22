@@ -3073,15 +3073,14 @@ int final;
                         Sprintf(buf, "%3d %s", nkilled, plural_name);
                     }
                 }
+                /* number of leading spaces to match 3 digit prefix */
+                pfx = !strncmpi(buf, "the ", 4) ? 0
+                    : !strncmpi(buf, "an ", 3) ? 1
+                    : !strncmpi(buf, "a ", 2) ? 2
+                    : !digit(buf[2]) ? 4 : 0;
+                Sprintf(buftoo, "%*s%s", pfx, "", buf);
+                putstr(enwin, ATR_NONE, buftoo);
             }
-            /* number of leading spaces to match 3 digit prefix */
-            pfx = !strncmpi(buf, "the ", 4) ? 0
-                : !strncmpi(buf, "an ", 3) ? 1
-                : !strncmpi(buf, "a ", 2) ? 2
-                : !digit(buf[2]) ? 4 : 0;
-            Sprintf(buftoo, "%*s%s", pfx, "", buf);
-            putstr(enwin, ATR_NONE, buftoo);
-
         }
         if (!final)
             putstr(enwin, ATR_HALF_SIZE, " ");
