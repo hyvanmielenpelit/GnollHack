@@ -2303,7 +2303,13 @@ get_saved_games()
                         char* r;
                         r = plname_from_file(foundfile, &gamestats);
                         if (r)
+                        {
+                            if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
+                                continue;
+                            if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
+                                continue;
                             result[j++] = newsavegamedata(r, foundfile, gamestats, FALSE, FALSE, FALSE);
+                        }
                         ++n;
                     } while (findnext());
                 }
@@ -2318,7 +2324,13 @@ get_saved_games()
                         char* r;
                         r = plname_from_file(foundfile, &gamestats);
                         if (r)
+                        {
+                            if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
+                                continue;
+                            if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
+                                continue;
                             result[j++] = newsavegamedata(r, foundfile, gamestats, FALSE, TRUE, FALSE);
+                        }
                         ++n2;
                     } while (findnext());
                 }
@@ -2332,6 +2344,10 @@ get_saved_games()
                         r = plname_from_file(foundfile, &gamestats);
                         if (r)
                         {
+                            if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
+                                continue;
+                            if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
+                                continue;
                             boolean isimportederror = is_imported_error_savefile_name(foundfile);
                             result[j++] = newsavegamedata(r, foundfile, gamestats, FALSE, isimportederror, TRUE);
                         }
@@ -2375,7 +2391,13 @@ get_saved_games()
                         Sprintf(filename, "save/%d%s", uid, name);
                         r = plname_from_file(filename, &gamestats);
                         if (r)
+                        {
+                            if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
+                                continue;
+                            if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
+                                continue;
                             result[j++] = newsavegamedata(r, filename, gamestats, FALSE, FALSE, FALSE);
+                        }
                     }
                 }
             }
@@ -2427,7 +2449,13 @@ get_saved_games()
                 char* r;
                 r = plname_from_running(namelist2[i]->d_name, &gamestats);
                 if (r)
+                {
+                    if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
+                        continue;
+                    if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
+                        continue;
                     result[j++] = newsavegamedata(r, namelist2[i]->d_name, gamestats, TRUE, FALSE, FALSE);
+                }
             }
         }
     }
