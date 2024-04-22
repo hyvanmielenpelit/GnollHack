@@ -3504,7 +3504,7 @@ get_current_game_score()
         int i;
         for (i = PM_MANES; i <= PM_DEMOGORGON; i++)
         {
-            if (mvitals[i].died > 0 && (u.ualign.type == A_LAWFUL ? is_demon(&mons[i]) || mons[i].mlet == S_IMP : u.ualign.type == A_CHAOTIC ? is_angel(&mons[i]) : FALSE) || (is_dragon(&mons[i]) && u.ualign.type * mons[i].maligntyp < 0))
+            if (mvitals[i].died > 0 && ((u.ualign.type == A_LAWFUL ? is_demon(&mons[i]) || mons[i].mlet == S_IMP : u.ualign.type == A_CHAOTIC ? is_angel(&mons[i]) : FALSE) || (is_dragon(&mons[i]) && u.ualign.type * mons[i].maligntyp < 0)))
             {
                 if (UniqCritterIndx(i))
                 {
