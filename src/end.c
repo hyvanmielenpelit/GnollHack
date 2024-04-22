@@ -3003,14 +3003,16 @@ int final;
     int ntypes = 0;
     int i;
     int pfx;
-    for (i = PM_COUATL; i <= PM_DEMOGORGON; i++)
+    for (i = PM_MANES; i <= PM_DEMOGORGON; i++)
     {
-        if (mvitals[i].died > 0 && ((u.ualign.type == A_LAWFUL ? is_demon(&mons[i]) : u.ualign.type == A_CHAOTIC ? is_angel(&mons[i]) : FALSE) || (is_dragon(&mons[i]) && u.ualign.type * mons[i].maligntyp < 0))) /* Demons/angels and chaotic/lawful dragons */
+        if (mvitals[i].died > 0 && ((u.ualign.type == A_LAWFUL ? is_demon(&mons[i]) || mons[i].mlet == S_IMP : u.ualign.type == A_CHAOTIC ? is_angel(&mons[i]) : FALSE) || (is_dragon(&mons[i]) && u.ualign.type * mons[i].maligntyp < 0))) /* Demons/angels and chaotic/lawful dragons */
         {
             mindx[ntypes] = i;
             ntypes++;
         }
-        if (i == PM_BAHAMUT) /* Optimization so we go through just angels, dragons, and demons */
+        if (i == PM_TENGU) /* Optimization so we go through just angels, dragons, and demons */
+            i = PM_COUATL - 1;
+        else if (i == PM_BAHAMUT) /* Optimization so we go through just angels, dragons, and demons */
             i = PM_INCUBUS - 1;
     }
 
@@ -3034,41 +3036,42 @@ int final;
             fkilled = mvitals[i].died_female;
             no_female = (fkilled == 0);
             all_female = (fkilled == nkilled);
-            if (UniqCritterIndx(i))
+            if (nkilled > 0)
             {
-                killscore += KNIGHT_UNIQUE_MONSTER_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
-                Sprintf(buf, "%s%s",
-                    !is_mname_proper_name(&mons[i]) ? "the " : "",
-                    pm_common_name(&mons[i]));
-                if (nkilled > 1)
+                if (UniqCritterIndx(i))
                 {
-                    switch (nkilled)
+                    killscore += KNIGHT_UNIQUE_MONSTER_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
+                    Sprintf(buf, "%s%s",
+                        !is_mname_proper_name(&mons[i]) ? "the " : "",
+                        pm_common_name(&mons[i]));
+                    if (nkilled > 1)
                     {
-                    case 2:
-                        Sprintf(eos(buf), " (twice)");
-                        break;
-                    case 3:
-                        Sprintf(eos(buf), " (thrice)");
-                        break;
-                    default:
-                        Sprintf(eos(buf), " (%d times)", nkilled);
-                        break;
+                        switch (nkilled)
+                        {
+                        case 2:
+                            Sprintf(eos(buf), " (twice)");
+                            break;
+                        case 3:
+                            Sprintf(eos(buf), " (thrice)");
+                            break;
+                        default:
+                            Sprintf(eos(buf), " (%d times)", nkilled);
+                            break;
+                        }
                     }
                 }
-            }
-            else
-            {
-                killscore += KNIGHT_NORMAL_MONSTER_PER_LEVEL_SCORE * (mons[i].difficulty + 1) * nkilled;
-                if(mvitals[i].mvflags & MV_EXTINCT)
-                    killscore += KNIGHT_NORMAL_MONSTER_EXTINCT_SCORE * (mons[i].difficulty + 1);
-                /* trolls or undead might have come back,
-                   but we don't keep track of that */
-                if (nkilled == 1)
-                    Strcpy(buf, an(all_female ? pm_female_name(&mons[i]) : no_female ? mons[i].mname : pm_common_name(&mons[i])));
                 else
                 {
-                    const char* plural_name = all_female ? makeplural(pm_female_name(&mons[i])) : no_female ? makeplural(mons[i].mname) : pm_plural_name(&mons[i], 3);
-                    Sprintf(buf, "%3d %s", nkilled, plural_name);
+                    killscore += KNIGHT_NORMAL_MONSTER_PER_LEVEL_SCORE * (mons[i].difficulty + 1) * nkilled;
+                    /* trolls or undead might have come back,
+                       but we don't keep track of that */
+                    if (nkilled == 1)
+                        Strcpy(buf, an(all_female ? pm_female_name(&mons[i]) : no_female ? mons[i].mname : pm_common_name(&mons[i])));
+                    else
+                    {
+                        const char* plural_name = all_female ? makeplural(pm_female_name(&mons[i])) : no_female ? makeplural(mons[i].mname) : pm_plural_name(&mons[i], 3);
+                        Sprintf(buf, "%3d %s", nkilled, plural_name);
+                    }
                 }
             }
             /* number of leading spaces to match 3 digit prefix */
@@ -3499,24 +3502,22 @@ get_current_game_score()
     case PM_KNIGHT:
     {
         int i;
-        for (i = PM_COUATL; i <= PM_DEMOGORGON; i++)
+        for (i = PM_MANES; i <= PM_DEMOGORGON; i++)
         {
-            if ((u.ualign.type == A_LAWFUL ? is_demon(&mons[i]) : u.ualign.type == A_CHAOTIC ? is_angel(&mons[i]) : FALSE) || (is_dragon(&mons[i]) && u.ualign.type * mons[i].maligntyp < 0))
+            if (mvitals[i].died > 0 && (u.ualign.type == A_LAWFUL ? is_demon(&mons[i]) || mons[i].mlet == S_IMP : u.ualign.type == A_CHAOTIC ? is_angel(&mons[i]) : FALSE) || (is_dragon(&mons[i]) && u.ualign.type * mons[i].maligntyp < 0))
             {
-                if (UniqCritterIndx(i) && mvitals[i].died > 0)
+                if (UniqCritterIndx(i))
                 {
                     Role_Specific_Score += KNIGHT_UNIQUE_MONSTER_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
                 }
                 else
                 {
                     Role_Specific_Score += (long)mvitals[i].died * KNIGHT_NORMAL_MONSTER_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
-                    if (mvitals[i].mvflags & MV_EXTINCT)
-                    {
-                        Role_Specific_Score += KNIGHT_NORMAL_MONSTER_EXTINCT_SCORE * (mons[i].difficulty + 1);
-                    }
                 }
             }
-            if (i == PM_BAHAMUT) /* Optimization so we go through just angels, dragons, and demons */
+            if (i == PM_TENGU) /* Optimization so we go through just angels, dragons, and demons */
+                i = PM_COUATL - 1;
+            else if (i == PM_BAHAMUT) /* Optimization so we go through just angels, dragons, and demons */
                 i = PM_INCUBUS - 1;
         }
         Role_Achievement_Score = KNIGHT_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
