@@ -119,6 +119,12 @@ namespace GnollHackX
         Female =            0x00000400,
         HorizontalFlip =    0x00000800,
         StoneInverse =      0x00001000,
+        AltColors =         0x00002000,
+        Decoration =        0x00004000,
+        Carpet =            0x00008000,
+
+        Inverse =           0x10000000,
+        Underline =         0x20000000,
     }
 
     [Flags]

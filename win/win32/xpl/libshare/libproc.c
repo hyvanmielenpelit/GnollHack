@@ -470,6 +470,20 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
     (void)mapglyph(layers, &sym, &ocolor, &special, x, y);
     symbol = SYMHANDLING(H_IBM) && sym >= 0 && sym < 256 ? (long)cp437toUnicode[sym] : (long)sym;
 
+    if (((special & MG_PET) && iflags.hilite_pet)
+        || ((special & MG_OBJPILE) && iflags.hilite_pile)
+        || ((special & MG_DETECT) && iflags.use_inverse)
+        || ((special & MG_BW_LAVA) && iflags.use_inverse)
+        || ((special & MG_STONE_INVERSE) && iflags.use_inverse))
+    {
+        special |= MG_INVERSE;
+    }
+
+    if ((special & MG_PEACEFUL) && flags.underline_peaceful)
+    {
+        special |= MG_UNDERLINE;
+    }
+
     lib_callbacks.callback_print_glyph(wid, x, y, layers.glyph, layers.bkglyph, symbol, ocolor, special, &layers);
 
     if (program_state.in_bones || program_state.in_tricked)

@@ -159,6 +159,10 @@ enum dismount_types {
 #define MG_DECORATION       0x00004000UL
 #define MG_CARPET           0x00008000UL
 
+/* Helper flags for mobile to indicate if the other flags mean inverse, underline, etc. for ASCII */
+#define MG_INVERSE          0x10000000UL
+#define MG_UNDERLINE        0x20000000UL
+
 
 /* sellobj_state() states */
 #define SELL_NORMAL (0)
