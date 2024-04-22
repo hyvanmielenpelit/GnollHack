@@ -3003,17 +3003,13 @@ int final;
     int ntypes = 0;
     int i;
     int pfx;
-    for (i = PM_MANES; i <= PM_DEMOGORGON; i++)
+    for (i = LOW_PM; i < NUM_MONSTERS; i++)
     {
         if (mvitals[i].died > 0 && ((u.ualign.type == A_LAWFUL ? is_demon(&mons[i]) || mons[i].mlet == S_IMP : u.ualign.type == A_CHAOTIC ? is_angel(&mons[i]) : FALSE) || (is_dragon(&mons[i]) && u.ualign.type * mons[i].maligntyp < 0))) /* Demons/angels and chaotic/lawful dragons */
         {
             mindx[ntypes] = i;
             ntypes++;
         }
-        if (i == PM_TENGU) /* Optimization so we go through just angels, dragons, and demons */
-            i = PM_COUATL - 1;
-        else if (i == PM_BAHAMUT) /* Optimization so we go through just angels, dragons, and demons */
-            i = PM_INCUBUS - 1;
     }
 
     if (!ntypes)
@@ -3501,7 +3497,7 @@ get_current_game_score()
     case PM_KNIGHT:
     {
         int i;
-        for (i = PM_MANES; i <= PM_DEMOGORGON; i++)
+        for (i = LOW_PM; i < NUM_MONSTERS; i++)
         {
             if (mvitals[i].died > 0 && ((u.ualign.type == A_LAWFUL ? is_demon(&mons[i]) || mons[i].mlet == S_IMP : u.ualign.type == A_CHAOTIC ? is_angel(&mons[i]) : FALSE) || (is_dragon(&mons[i]) && u.ualign.type * mons[i].maligntyp < 0)))
             {
@@ -3514,10 +3510,6 @@ get_current_game_score()
                     Role_Specific_Score += (long)mvitals[i].died * KNIGHT_NORMAL_MONSTER_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
                 }
             }
-            if (i == PM_TENGU) /* Optimization so we go through just angels, dragons, and demons */
-                i = PM_COUATL - 1;
-            else if (i == PM_BAHAMUT) /* Optimization so we go through just angels, dragons, and demons */
-                i = PM_INCUBUS - 1;
         }
         Role_Achievement_Score = KNIGHT_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
         break;
