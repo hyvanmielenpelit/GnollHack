@@ -1129,6 +1129,7 @@ E struct item_score_count_result FDECL(count_powerful_Japanese_item_score, (stru
 E struct item_score_count_result FDECL(count_powerful_valkyrie_item_score, (struct obj*));
 E struct amulet_count_result FDECL(count_amulets, (struct obj*));
 E struct item_score_count_result FDECL(count_artifacts, (struct obj*));
+E void NDECL(recalculate_knight_slaying_score);
 
 /* ### engrave.c ### */
 

@@ -799,6 +799,10 @@ extern struct objclass saved_objects[NUM_OBJECTS];
 
 #define Closed_for_inventory "Closed for inventory"
 
+/* high priests aren't unique but are flagged as such to simplify something */
+#define UniqCritterIndx(mndx) ((mons[mndx].geno & G_UNIQ) \
+                               && mndx != PM_HIGH_PRIEST)
+
 #if defined(BSD) || defined(ULTRIX)
 #define readLenType int
 #else /* e.g. SYSV, __TURBOC__ */

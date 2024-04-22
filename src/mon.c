@@ -31,6 +31,7 @@ STATIC_DCL struct obj *FDECL(make_corpse, (struct monst *, unsigned, BOOLEAN_P))
 STATIC_DCL void FDECL(lifesaved_monster, (struct monst *));
 STATIC_DCL void FDECL(save_traits_mon, (struct monst*, BOOLEAN_P));
 STATIC_DCL struct monst* FDECL(get_saved_traits_mon, (struct monst*, BOOLEAN_P));
+STATIC_DCL void FDECL(add_knight_slaying_score, (struct monst*));
 
 /* note: duplicated in dog.c */
 #define LEVEL_SPECIFIC_NOCORPSE(mdat) \
@@ -3436,6 +3437,8 @@ unsigned long mondeadflags;
     tmp = mtmp->mnum;
     if (mvitals[tmp].died < 255)
     {
+        /* This needs to be here, so that role_score corresponds to mvitals[].died */
+        add_knight_slaying_score(mtmp);
         mvitals[tmp].died++;
         if(mtmp->female)
             mvitals[tmp].died_female++;
@@ -3579,6 +3582,30 @@ unsigned long mondeadflags;
     mtmp->action = ACTION_TILE_NO_ACTION;
 
     m_detach(mtmp, mptr, TRUE);
+}
+
+STATIC_OVL void
+add_knight_slaying_score(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp)
+        return;
+
+    if (Role_if(PM_KNIGHT))
+    {
+        if ((u.ualign.type == A_LAWFUL ? is_demon(mtmp->data) || mtmp->data->mlet == S_IMP : u.ualign.type == A_CHAOTIC ? is_angel(mtmp->data) : FALSE) || (is_dragon(mtmp->data) && u.ualign.type * mtmp->data->maligntyp < 0))
+        {
+            if (UniqCritterIndx(mtmp->mnum))
+            {
+                if (mvitals[mtmp->mnum].died == 0)
+                    context.role_score += KNIGHT_UNIQUE_MONSTER_PER_LEVEL_SCORE * (mtmp->data->difficulty + 1);
+            }
+            else
+            {
+                context.role_score += KNIGHT_NORMAL_MONSTER_PER_LEVEL_SCORE * (mtmp->data->difficulty + 1);
+            }
+        }
+    }
 }
 
 /* TRUE if corpse might be dropped, magr may die if mon was swallowed */

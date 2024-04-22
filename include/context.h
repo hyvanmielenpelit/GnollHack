@@ -253,6 +253,7 @@ struct context_info
     boolean amonket_generated;
     uchar town_portal_return_flags;
     unsigned long quest_flags;
+    long role_score;
 
     /* Emergency reserved booleans to make non-save-game-breaking changes */
     boolean reserved_bool3;
@@ -264,8 +265,6 @@ struct context_info
     short reserved_short2;
     int reserved_int1;
     int reserved_int2;
-    unsigned long reserved_ulong2;
-
 };
 
 extern NEARDATA struct context_info context;

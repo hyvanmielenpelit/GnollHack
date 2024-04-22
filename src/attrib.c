@@ -2711,6 +2711,7 @@ int reason; /* 0==conversion, 1==helm-of-OA on, 2==helm-of-OA off */
         u.ualign.record = 0; /* slate is wiped clean */
         retouch_equipment(0);
     }
+    recalculate_knight_slaying_score();
     newsym(u.ux, u.uy);
 }
 

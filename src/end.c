@@ -2769,10 +2769,6 @@ dogenocidedmonsters()
     return 0;
 }
 
-/* high priests aren't unique but are flagged as such to simplify something */
-#define UniqCritterIndx(mndx) ((mons[mndx].geno & G_UNIQ) \
-                               && mndx != PM_HIGH_PRIEST)
-
 STATIC_OVL void
 list_vanquished(defquery, ask, isend)
 char defquery;
@@ -2987,6 +2983,13 @@ int final;
         }
         if (!final)
             putstr(enwin, ATR_HALF_SIZE, " ");
+        if (selfiescore != context.role_score)
+        {
+            char dbuf[BUFSZ];
+            Sprintf(dbuf, "print_selfies: selfiescore of %ld does not match context.role_score of %ld.", selfiescore, context.role_score);
+            issue_debuglog(DEBUGLOG_GENERAL, dbuf);
+            context.role_score = selfiescore;
+        }
         long score_percentage = ((selfiescore + (long)u.uachieve.role_achievement * TOURIST_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(buf, " You %s gained %ld%% of your maximum role score.", final ? "had" : "have", score_percentage);
@@ -3080,11 +3083,40 @@ int final;
         }
         if (!final)
             putstr(enwin, ATR_HALF_SIZE, " ");
+        if (killscore != context.role_score)
+        {
+            char dbuf[BUFSZ];
+            Sprintf(dbuf, "print_knight_slayings: killscore of %ld does not match context.role_score of %ld.", killscore, context.role_score);
+            issue_debuglog(DEBUGLOG_GENERAL, dbuf);
+            context.role_score = killscore;
+        }
         long score_percentage = ((killscore + (long)u.uachieve.role_achievement * KNIGHT_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(buf, " You %s gained %ld%% of your maximum role score.", final ? "had" : "have", score_percentage);
         putstr(enwin, ATR_NONE, buf);
     }
+}
+
+void
+recalculate_knight_slaying_score(VOID_ARGS)
+{
+    int i;
+    long score = 0L;
+    for (i = LOW_PM; i < NUM_MONSTERS; i++)
+    {
+        if (mvitals[i].died > 0 && ((u.ualign.type == A_LAWFUL ? is_demon(&mons[i]) || mons[i].mlet == S_IMP : u.ualign.type == A_CHAOTIC ? is_angel(&mons[i]) : FALSE) || (is_dragon(&mons[i]) && u.ualign.type * mons[i].maligntyp < 0)))
+        {
+            if (UniqCritterIndx(i))
+            {
+                score += KNIGHT_UNIQUE_MONSTER_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
+            }
+            else
+            {
+                score += (long)mvitals[i].died * KNIGHT_NORMAL_MONSTER_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
+            }
+        }
+    }
+    context.role_score = score;
 }
 
 /* number of monster species which have been genocided */
@@ -3496,21 +3528,22 @@ get_current_game_score()
     }
     case PM_KNIGHT:
     {
-        int i;
-        for (i = LOW_PM; i < NUM_MONSTERS; i++)
-        {
-            if (mvitals[i].died > 0 && ((u.ualign.type == A_LAWFUL ? is_demon(&mons[i]) || mons[i].mlet == S_IMP : u.ualign.type == A_CHAOTIC ? is_angel(&mons[i]) : FALSE) || (is_dragon(&mons[i]) && u.ualign.type * mons[i].maligntyp < 0)))
-            {
-                if (UniqCritterIndx(i))
-                {
-                    Role_Specific_Score += KNIGHT_UNIQUE_MONSTER_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
-                }
-                else
-                {
-                    Role_Specific_Score += (long)mvitals[i].died * KNIGHT_NORMAL_MONSTER_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
-                }
-            }
-        }
+        //int i;
+        //for (i = LOW_PM; i < NUM_MONSTERS; i++)
+        //{
+        //    if (mvitals[i].died > 0 && ((u.ualign.type == A_LAWFUL ? is_demon(&mons[i]) || mons[i].mlet == S_IMP : u.ualign.type == A_CHAOTIC ? is_angel(&mons[i]) : FALSE) || (is_dragon(&mons[i]) && u.ualign.type * mons[i].maligntyp < 0)))
+        //    {
+        //        if (UniqCritterIndx(i))
+        //        {
+        //            Role_Specific_Score += KNIGHT_UNIQUE_MONSTER_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
+        //        }
+        //        else
+        //        {
+        //            Role_Specific_Score += (long)mvitals[i].died * KNIGHT_NORMAL_MONSTER_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
+        //        }
+        //    }
+        //}
+        Role_Specific_Score = context.role_score;
         Role_Achievement_Score = KNIGHT_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
         break;
     }
@@ -3559,14 +3592,15 @@ get_current_game_score()
     }
     case PM_TOURIST:
     {
-        int i;
-        for (i = LOW_PM; i < NUM_MONSTERS; i++)
-        {
-            if (mvitals[i].mvflags & MV_SELFIE_TAKEN)
-            {
-                Role_Specific_Score += TOURIST_SELFIE_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
-            }
-        }
+        //int i;
+        //for (i = LOW_PM; i < NUM_MONSTERS; i++)
+        //{
+        //    if (mvitals[i].mvflags & MV_SELFIE_TAKEN)
+        //    {
+        //        Role_Specific_Score += TOURIST_SELFIE_PER_LEVEL_SCORE * (mons[i].difficulty + 1);
+        //    }
+        //}
+        Role_Specific_Score = context.role_score;
         Role_Achievement_Score = TOURIST_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
         break;
     }
