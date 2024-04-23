@@ -1933,7 +1933,8 @@ struct save_game_data* saved;
     #endif
 
         int n = select_menu(tmpwin, PICK_ONE, &chosen_game);
-        boolean shoulddelete = FALSE;;
+        boolean shoulddelete = FALSE;
+        boolean is_running = FALSE;
         if (n > 0)
         {
             ch = chosen_game->item.a_int;
@@ -1942,6 +1943,7 @@ struct save_game_data* saved;
                 Strcpy(plname, saved[ch - 1].playername);
                 plname_from_error_savefile = saved[ch - 1].is_error_save_file;
                 plname_from_imported_savefile = saved[ch - 1].is_imported_save_file;
+                is_running = saved[ch - 1].is_running;
                 if (style == 1)
                 {
                     shoulddelete = TRUE;
@@ -1961,17 +1963,55 @@ struct save_game_data* saved;
         {
             if (bannerwin != WIN_ERR)
                 clear_nhwindow(bannerwin);
-            char qbuf[BUFSZ], tbuf[BUFSZ];
-            Sprintf(qbuf, "Are you sure to delete the saved game for \'%s\'?", plname);
-            Strcpy(tbuf, "Delete Saved Game?");
+            char qbuf[QBUFSZ], tbuf[BUFSZ];
+            if (is_running)
+            {
+                Sprintf(qbuf, "Are you sure to delete the crashed game files for \'%s\'?", plname);
+                Strcpy(tbuf, "Delete Crashed Game?");
+            }
+            else
+            {
+                Sprintf(qbuf, "Are you sure to delete the saved game for \'%s\'?", plname);
+                Strcpy(tbuf, "Delete Saved Game?");
+            }
             int ans = yn_query_ex(ATR_NONE, CLR_RED, tbuf, qbuf);
             if (ans == 'y')
             {
                 set_savefile_name(TRUE);
-                delete_tmp_backup_savefile();
-                delete_backup_savefile();
-                delete_error_savefile();
-                delete_savefile();
+                if (is_running)
+                {
+                    delete_running_files();
+                    /* Save file exists */
+                    boolean save_exists = check_existing_save_file();
+                    if (!save_exists) /* Saved game can be deleted separately from the menu */
+                    {
+                        boolean backup_save_exists = check_has_backup_savefile();
+                        if (backup_save_exists)
+                        {
+                            Strcpy(tbuf, "Delete or Restore Backup?");
+                            Sprintf(qbuf, "Are you sure to delete also the backup saved game for \'%s\'? Answering \'No\' will restore the saved game from backup.", plname);
+                            ans = yn_query_ex(ATR_NONE, CLR_RED, tbuf, qbuf);
+                            switch (ans)
+                            {
+                            default:
+                            case 'n':
+                                restore_backup_savefile(TRUE);
+                                break;
+                            case 'y':
+                                delete_tmp_backup_savefile();
+                                delete_backup_savefile();
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    delete_tmp_backup_savefile();
+                    delete_backup_savefile();
+                    delete_error_savefile();
+                    delete_savefile();
+                }
             }
             else
                 repeat = TRUE;

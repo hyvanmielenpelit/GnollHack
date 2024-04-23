@@ -33,7 +33,7 @@ eraseoldlocks()
      * before starting everything (including the dungeon initialization
      * that sets astral_level, needed for maxledgerno()) up
      */
-    for(i = 1; i <= MAXDUNGEON*MAXLEVEL + 1; i++) {
+    for(i = 1; i <= MAXDUNGEON * MAXLEVEL + 1; i++) {
         /* try to remove all */
         set_levelfile_name(lock, i);
         (void) unlink(fqname(lock, LEVELPREFIX, 0));

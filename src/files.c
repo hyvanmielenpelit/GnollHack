@@ -1718,6 +1718,38 @@ delete_error_savefile(VOID_ARGS)
     return -1;
 }
 
+int
+delete_running_files(VOID_ARGS)
+{
+    int lev, fd;
+    char errbuf[BUFSZ];
+#if defined(UNIX)
+    Sprintf(lock, "%d%s", (int)getuid(), plname);
+#elif defined(WIN32)
+    char fnamebuf[BUFSZ], encodedfnamebuf[BUFSZ];
+    Sprintf(fnamebuf, "%s-%s", get_username(0), plname);
+    (void)fname_encode(
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_-.", '%',
+        fnamebuf, encodedfnamebuf, BUFSZ);
+    Sprintf(lock, "%s", encodedfnamebuf);
+#else
+    Sprintf(lock, "%s", plname);
+#endif
+    for (lev = 0; lev < 256; lev++)
+    {
+        fd = open_levelfile(lev, errbuf);
+        if (fd >= 0) /* exists */
+        {
+            (void)nhclose(fd);
+            const char* fq_lock;
+            set_levelfile_name(lock, lev);
+            fq_lock = fqname(lock, LEVELPREFIX, 3);
+            (void)unlink(fq_lock);
+        }
+    }
+    return 0;
+}
+
 boolean check_has_backup_savefile(VOID_ARGS)
 {
     if (sysopt.make_backup_savefiles && *SAVEF)
