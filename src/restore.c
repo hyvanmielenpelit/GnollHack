@@ -1983,21 +1983,22 @@ struct save_game_data* saved;
                     delete_running_files();
                     /* Save file exists */
                     boolean save_exists = check_existing_save_file();
-                    if (!save_exists) /* Saved game can be deleted separately from the menu */
+                    boolean error_save_exists = check_existing_error_save_file();
+                    if (!save_exists && !error_save_exists) /* Saved game can be deleted separately from the menu */
                     {
                         boolean backup_save_exists = check_has_backup_savefile();
                         if (backup_save_exists)
                         {
-                            Strcpy(tbuf, "Delete or Restore Backup?");
-                            Sprintf(qbuf, "Are you sure to delete also the backup saved game for \'%s\'? Answering \'No\' will restore the saved game from backup.", plname);
-                            ans = yn_query_ex(ATR_NONE, CLR_RED, tbuf, qbuf);
+                            Strcpy(tbuf, "Restore Backup?");
+                            Sprintf(qbuf, "Do you want to restore the backup saved game for \'%s\'? Answering \'No\' will delete the backup.", plname);
+                            ans = yn_query_ex(ATR_NONE, CLR_GREEN, tbuf, qbuf);
                             switch (ans)
                             {
                             default:
-                            case 'n':
+                            case 'y':
                                 restore_backup_savefile(TRUE);
                                 break;
-                            case 'y':
+                            case 'n':
                                 delete_tmp_backup_savefile();
                                 delete_backup_savefile();
                                 break;

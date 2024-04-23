@@ -1794,6 +1794,55 @@ delete_savefile_if_exists(VOID_ARGS)
     return -1; /* SAVEF is empty */
 }
 
+/* returns 1 if save file exists, otherwise 0 */
+boolean
+check_existing_save_file()
+{
+    const char* fq_save;
+    register int fd;
+    fq_save = fqname(SAVEF, SAVEPREFIX, 1); /* level files take 0 */
+
+#if defined(MICRO) && defined(MFLOPPY)
+    if (!saveDiskPrompt(0))
+        return 0;
+#endif
+
+    nh_uncompress(fq_save);
+    fd = open_savefile();
+    if (fd >= 0) {
+        (void)nhclose(fd);
+        /* There is an old save file, let's compress it back */
+        nh_compress(fq_save);
+        return 1;
+    }
+    return 0;
+}
+
+/* returns 1 if save file exists, otherwise 0 */
+boolean
+check_existing_error_save_file()
+{
+    const char* fq_save;
+    char fq_error[4096];
+    fq_save = fqname(SAVEF, SAVEPREFIX, 1); /* level files take 0 */
+    Strcpy(fq_error, fq_save);
+    print_error_savefile_extension(fq_error);
+
+#if defined(MICRO) && defined(MFLOPPY)
+    if (!saveDiskPrompt(0))
+        return 0;
+#endif
+
+    nh_uncompress(fq_error);
+    if (access(fq_error, F_OK) == 0)
+    {
+        nh_compress(fq_error);
+        return 1;
+    }
+    else
+        return 0;
+}
+
 /* try to open up a save file and prepare to restore it */
 int
 open_and_validate_saved_game(allow_replace_backup, is_backup_ptr)

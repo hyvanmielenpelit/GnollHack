@@ -1267,6 +1267,8 @@ E boolean NDECL(check_has_backup_savefile);
 E int NDECL(delete_savefile_if_exists);
 E int NDECL(delete_error_savefile);
 E int NDECL(delete_running_files);
+E boolean NDECL(check_existing_save_file);
+E boolean NDECL(check_existing_error_save_file);
 
 #ifdef SELF_RECOVER
 E boolean NDECL(recover_savefile);
@@ -3200,7 +3202,6 @@ E void NDECL(rumor_check);
 
 E int NDECL(dosave);
 E int FDECL(dosave0, (BOOLEAN_P));
-E boolean NDECL(check_existing_save_file);
 E boolean FDECL(tricked_fileremoved, (int, char *));
 #ifdef INSURANCE
 E void NDECL(savestateinlock);
