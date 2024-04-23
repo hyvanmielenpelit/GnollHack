@@ -3229,11 +3229,13 @@ namespace GnollHackX.Pages.Game
 
         private async void ReturnToMainMenu()
         {
-            if(MainPageBackgroundNeedsUpdate)
+            GHApp.TournamentMode = Preferences.Get("TournamentMode", false); /* In the case it was changed by loading a Tournament Mode game while not in tournament mode */
+            if (MainPageBackgroundNeedsUpdate)
             {
                 _mainPage.UpdateMainScreenBackgroundStyle();
                 MainPageBackgroundNeedsUpdate = false;
             }
+            _mainPage.UpdateLayout();
             _mainPage.ActivateLocalGameButton();
             _mainPage.PlayMainScreenVideoAndMusic(); /* Just to be doubly sure */
             if (GHApp.GameMuteMode)
