@@ -579,7 +579,9 @@ namespace GnollHackX
         private static bool _savingGame = false;
         public static bool SavingGame { get { lock (_savingGameLock) { return _savingGame; } } set { lock (_savingGameLock) { _savingGame = value; } } }
 
-        public static int AppSwitchSaveStyle { get; set; }
+        private static readonly object _appSwitchLock = new object();
+        private static int _appSwitchSaveStyle = 0;
+        public static int AppSwitchSaveStyle { get { bool t = TournamentMode; lock (_appSwitchLock) { return t ? 0 : _appSwitchSaveStyle; } } set { lock (_appSwitchLock) { _appSwitchSaveStyle = value; } } }
 
         private static readonly object _gameSavedLock = new object();
         private static bool _gameSaved = false;
