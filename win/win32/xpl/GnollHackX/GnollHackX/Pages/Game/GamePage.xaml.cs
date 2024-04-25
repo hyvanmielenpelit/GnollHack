@@ -5873,7 +5873,7 @@ namespace GnollHackX.Pages.Game
 
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
         {
-            if (!MainGrid.IsVisible || GHApp.GoToTurn >= 0)
+            if (!MainGrid.IsVisible || GHApp.IsReplaySearching)
                 return;
 
             SKImageInfo info = e.Info;
@@ -16694,6 +16694,8 @@ namespace GnollHackX.Pages.Game
             GotoTurnFrame.BorderColor = GHColors.Black;
             GotoTurnOkButton.IsEnabled = true;
             GotoTurnCancelButton.IsEnabled = true;
+            if (GotoStylePicker.SelectedIndex < 0)
+                GotoStylePicker.SelectedIndex = 0;
             GotoTurnGrid.IsVisible = true;
         }
 
@@ -16713,25 +16715,54 @@ namespace GnollHackX.Pages.Game
             GotoTurnOkButton.IsEnabled = false;
             GotoTurnCancelButton.IsEnabled = false;
 
-            if (string.IsNullOrWhiteSpace(GotoTurnEntryText.Text))
+            switch(GotoStylePicker.SelectedIndex)
             {
-                GHApp.GoToTurn = -1;
-            }
-            else
-            {
-                string txt = GotoTurnEntryText.Text.Trim();
-                if (int.TryParse(txt, out int turn))
-                {
-                    GHApp.GoToTurn = turn;
-                }
-                else
-                {
-                    GotoTurnFrame.BorderColor = GHColors.Red;
-                    GotoTurnEntryText.Focus();
-                    GotoTurnOkButton.IsEnabled = true;
-                    GotoTurnCancelButton.IsEnabled = true;
-                    return;
-                }
+                default:
+                    break;
+                case 0:
+                    if (string.IsNullOrWhiteSpace(GotoTurnEntryText.Text))
+                    {
+                        GHApp.GoToTurn = -1;
+                    }
+                    else
+                    {
+                        string txt = GotoTurnEntryText.Text.Trim();
+                        if (int.TryParse(txt, out int turn))
+                        {
+                            GHApp.GoToTurn = turn;
+                        }
+                        else
+                        {
+                            GotoTurnFrame.BorderColor = GHColors.Red;
+                            GotoTurnEntryText.Focus();
+                            GotoTurnOkButton.IsEnabled = true;
+                            GotoTurnCancelButton.IsEnabled = true;
+                            return;
+                        }
+                    }
+                    break;
+                case 1:
+                    if (!GHUtils.IsValidRegex(GotoTurnEntryText.Text))
+                    {
+                        GHApp.ReplaySearchRegexString = null;
+                    }
+                    else
+                    {
+                        string pattern = GotoTurnEntryText.Text.Trim();
+                        if (GHUtils.IsValidRegex(pattern))
+                        {
+                            GHApp.ReplaySearchRegexString = pattern;
+                        }
+                        else
+                        {
+                            GotoTurnFrame.BorderColor = GHColors.Red;
+                            GotoTurnEntryText.Focus();
+                            GotoTurnOkButton.IsEnabled = true;
+                            GotoTurnCancelButton.IsEnabled = true;
+                            return;
+                        }
+                    }
+                    break;
             }
             UpdateReplayHeaderLabel();
             GotoTurnGrid.IsVisible = false;
@@ -16750,6 +16781,24 @@ namespace GnollHackX.Pages.Game
             GotoTurnGrid.IsVisible = false;
             GotoTurnEntryText.Unfocus();
             GotoTurnEntryText.IsEnabled = false;
+        }
+
+        private void GotoStylePicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            GotoTurnEntryText.Text = "";
+            switch (GotoStylePicker.SelectedIndex)
+            {
+                default:
+                    break;
+                case 0:
+                    GotoTurnEntryText.Keyboard = Keyboard.Numeric;
+                    GotoTurnEntryText.Placeholder = "Enter the turn here";
+                    break;
+                case 1:
+                    GotoTurnEntryText.Keyboard = Keyboard.Default;
+                    GotoTurnEntryText.Placeholder = "Enter regular expression";
+                    break;
+            }
         }
     }
 }

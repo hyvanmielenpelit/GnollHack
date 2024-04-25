@@ -418,10 +418,30 @@
                 <Grid x:Name="GotoTurnGrid" IsVisible="False"  BackgroundColor="#66000000" HorizontalOptions="Fill" VerticalOptions="Fill" >
                     <Frame x:Name="GotoTurnFrame" Margin="0,50,0,10" WidthRequest  ="440" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Start">
                         <StackLayout x:Name="GotoTurnLayout" HorizontalOptions="Fill" VerticalOptions="Center">
-                            <Label x:Name="GotoTurnCaption" Text="Go to Turn" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
+                            <Picker x:Name="GotoStylePicker"
+                                        Title="Select functionality"
+                                        FontFamily="Immortal" 
+                                        FontSize="22"
+                                        TextColor="White"
+                                        TitleColor="White"
+                                        HorizontalTextAlignment="Center"
+                                        BackgroundColor="Transparent"
+                                        WidthRequest="240"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="Center"
+                                        SelectedIndexChanged="GotoStylePicker_SelectedIndexChanged">
+                                <Picker.ItemsSource>
+                                    <x:Array Type="{x:Type x:String}">
+                                        <x:String>Go to Turn</x:String>
+                                        <x:String>Search Message</x:String>
+                                    </x:Array>
+                                </Picker.ItemsSource>
+                            </Picker>
+
+                            <!--<Label x:Name="GotoTurnCaption" Text="Go to Turn" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />-->
                             <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
                                 <Entry x:Name="GotoTurnEntryText" Keyboard="Numeric" WidthRequest  ="360" HorizontalOptions  ="Center" Placeholder="Enter the turn here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
-                                       HorizontalTextAlignment="Center" FontSize="20" FontFamily="Underwood" />
+                                       HorizontalTextAlignment="Center" FontSize="20" FontFamily="Underwood" MaxLength="255" />
                             </StackLayout>
                             <Grid ColumnSpacing="6" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                                 <Grid.RowDefinitions>

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 #if GNH_MAUI
 using GnollHackM;
 #endif
@@ -227,5 +228,23 @@ namespace GnollHackX
             }
             return "";
         }
+
+        public static bool IsValidRegex(string pattern)
+        {
+            if (string.IsNullOrWhiteSpace(pattern)) return false;
+
+            try
+            {
+                Regex.Match("", pattern);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+
     }
 }
