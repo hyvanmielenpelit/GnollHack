@@ -16632,6 +16632,7 @@ namespace GnollHackX.Pages.Game
         {
             int currentTurn = GHApp.ReplayTurn;
             int gotoTurn = GHApp.GoToTurn;
+            string searchPattern = GHApp.ReplaySearchRegexString;
             int originalTurn = GHApp.OriginalReplayTurn;
             if (GHApp.StopReplay)
             {
@@ -16646,6 +16647,11 @@ namespace GnollHackX.Pages.Game
                 else
                     ReplayHeaderLabel.Text = string.Format("Rewinding to T:{0}...", gotoTurn);
 
+                ReplayHeaderLabel.TextColor = GHColors.LightBlue;
+            }
+            else if (searchPattern != null)
+            {
+                ReplayHeaderLabel.Text = string.Format("Searching for \'{0}\' (T:{1})", searchPattern, GHApp.ReplayTurn);
                 ReplayHeaderLabel.TextColor = GHColors.LightBlue;
             }
             else
@@ -16689,7 +16695,8 @@ namespace GnollHackX.Pages.Game
 
         private void ReplayGotoButton_Clicked(object sender, EventArgs e)
         {
-            GotoTurnEntryText.Text = "";
+            if (GotoStylePicker.SelectedIndex < 1)
+                GotoTurnEntryText.Text = "";
             GotoTurnEntryText.IsEnabled = true;
             GotoTurnFrame.BorderColor = GHColors.Black;
             GotoTurnOkButton.IsEnabled = true;
@@ -16775,7 +16782,17 @@ namespace GnollHackX.Pages.Game
             GotoTurnOkButton.IsEnabled = false;
             GotoTurnCancelButton.IsEnabled = false;
 
-            GHApp.GoToTurn = -1;
+            switch (GotoStylePicker.SelectedIndex)
+            {
+                default:
+                    break;
+                case 0:
+                    GHApp.GoToTurn = -1;
+                    break;
+                case 1:
+                    GHApp.ReplaySearchRegexString = null;
+                    break;
+            }
             UpdateReplayHeaderLabel();
 
             GotoTurnGrid.IsVisible = false;

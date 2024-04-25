@@ -4601,6 +4601,8 @@ namespace GnollHackX
         private static string _replayRealTime = null;
         private static string _replaySearchRegexString = null;
         private static Regex _replayRegex = null;
+        private static int _currentReplayContinuation = -1;
+        private static int _expectedNumberOfReplayContinuations = -1;
 
         public static bool StopReplay { get { lock (_replayLock) { return _stopReplay; } } set { lock (_replayLock) { _stopReplay = value; } } }
         public static bool PauseReplay { get { lock (_replayLock) { return _pauseReplay; } } set { lock (_replayLock) { _pauseReplay = value; } } }
@@ -4658,9 +4660,10 @@ namespace GnollHackX
             string replayPath = Path.GetDirectoryName(replayFileName);
             if (string.IsNullOrEmpty(replayPath))
                 replayPath = Path.Combine(GHPath, GHConstants.ReplayDirectory);
+
             do
             {
-                if(restartReplay)
+                if (restartReplay)
                 {
                     restartReplay = false;
                     rawFileName = replayFileName;
