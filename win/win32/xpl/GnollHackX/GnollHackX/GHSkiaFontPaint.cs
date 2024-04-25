@@ -20,7 +20,11 @@ namespace GnollHackX
 
         public GHSkiaFontPaint()
         {
+#if GNH_MAUI
+            _font.Edging = SKFontEdging.Antialias;
+#else
             _paint.IsAntialias = true;
+#endif
         }
 
         public void Dispose()
