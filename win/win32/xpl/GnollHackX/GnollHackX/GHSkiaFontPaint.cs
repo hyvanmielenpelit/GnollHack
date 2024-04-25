@@ -20,7 +20,7 @@ namespace GnollHackX
 
         public GHSkiaFontPaint()
         {
-
+            _paint.IsAntialias = true;
         }
 
         public void Dispose()
