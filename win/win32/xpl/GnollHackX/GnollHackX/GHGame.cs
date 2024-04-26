@@ -424,8 +424,10 @@ namespace GnollHackX
             {
                 if (_ghWindows[winHandle] != null)
                 {
-                    //if(!PlayingReplay || !GHApp.IsReplaySearching)
-                    _ghWindows[winHandle].Display(blocking != 0);
+                    if(!PlayingReplay || !GHApp.IsReplaySearching)
+                        _ghWindows[winHandle].Display(blocking != 0);
+                    else
+                        _ghWindows[winHandle].Visible = true;
                     ismenu = (_ghWindows[winHandle].WindowType == GHWinType.Menu);
                     istext = (_ghWindows[winHandle].WindowType == GHWinType.Text);
                     ismap = (_ghWindows[winHandle].WindowType == GHWinType.Map);

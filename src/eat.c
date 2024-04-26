@@ -866,8 +866,8 @@ boolean allowmsg;
             || (u.ulycn >= LOW_PM && were_beastie(pm) == u.ulycn))) {
         if (allowmsg) {
             if (Upolyd && your_race(fptr))
-                You("have a bad feeling deep inside.");
-            You("cannibal!  You will regret this!");
+                You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "have a bad feeling deep inside.");
+            You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "cannibal!  You will regret this!");
         }
         HAggravate_monster |= FROM_ACQUIRED;
         change_luck(-rn1(4, 2), TRUE); /* -5..-2 */
