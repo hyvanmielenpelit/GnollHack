@@ -5052,9 +5052,9 @@ namespace GnollHackX
                                                     string introline = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     ulong ynflags = br.ReadUInt64();
                                                     int res = br.ReadInt32();
+                                                    CheckReplaySearchMatch(question);
                                                     if (!IsReplaySearching || (GoToTurn >= 0 && ReplayTurn >= GoToTurn - 1))
                                                         game.ClientCallback_YnFunction(style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags);
-                                                    CheckReplaySearchMatch(question);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.ClipAround:
@@ -5068,15 +5068,15 @@ namespace GnollHackX
                                             case (int)RecordedFunctionID.RawPrint:
                                                 {
                                                     string str = br.ReadInt32() == 0 ? null : br.ReadString();
-                                                    game.ClientCallback_RawPrint(str);
                                                     CheckReplaySearchMatch(str);
+                                                    game.ClientCallback_RawPrint(str);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.RawPrintBold:
                                                 {
                                                     string str = br.ReadInt32() == 0 ? null : br.ReadString();
-                                                    game.ClientCallback_RawPrintBold(str);
                                                     CheckReplaySearchMatch(str);
+                                                    game.ClientCallback_RawPrintBold(str);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.PutStrEx:
@@ -5086,8 +5086,8 @@ namespace GnollHackX
                                                     int attributes = br.ReadInt32();
                                                     int color = br.ReadInt32();
                                                     int append = br.ReadInt32();
-                                                    game.ClientCallback_PutStrEx(win_id, str, attributes, color, append);
                                                     CheckReplaySearchMatch(str);
+                                                    game.ClientCallback_PutStrEx(win_id, str, attributes, color, append);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.PutStrEx2:
@@ -5102,6 +5102,7 @@ namespace GnollHackX
                                                     int attributes = br.ReadInt32();
                                                     int color = br.ReadInt32();
                                                     int append = br.ReadInt32();
+                                                    CheckReplaySearchMatch(str);
                                                     unsafe
                                                     {
                                                         fixed (byte* attributes_byte_ptr = attributes_bytes)
@@ -5114,7 +5115,6 @@ namespace GnollHackX
                                                             }
                                                         }
                                                     }
-                                                    CheckReplaySearchMatch(str);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.DelayOutput:
@@ -5401,11 +5401,10 @@ namespace GnollHackX
                                                     string linesuffix = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     string introline = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     string line = br.ReadInt32() == 0 ? null : br.ReadString();
-                                                    if (!IsReplaySearching || (GoToTurn >= 0 && ReplayTurn >= GoToTurn - 1))
-                                                        game.Replay_GetLine(style, attr, color, query, placeholder, linesuffix, introline, IntPtr.Zero, line);
-
                                                     CheckReplaySearchMatch(query);
                                                     CheckReplaySearchMatch(line);
+                                                    if (!IsReplaySearching || (GoToTurn >= 0 && ReplayTurn >= GoToTurn - 1))
+                                                        game.Replay_GetLine(style, attr, color, query, placeholder, linesuffix, introline, IntPtr.Zero, line);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.ClearContextMenu:
