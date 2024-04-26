@@ -5054,6 +5054,7 @@ namespace GnollHackX
                                                     int res = br.ReadInt32();
                                                     if (!IsReplaySearching || (GoToTurn >= 0 && ReplayTurn >= GoToTurn - 1))
                                                         game.ClientCallback_YnFunction(style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags);
+                                                    CheckReplaySearchMatch(question);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.ClipAround:
@@ -5068,12 +5069,14 @@ namespace GnollHackX
                                                 {
                                                     string str = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     game.ClientCallback_RawPrint(str);
+                                                    CheckReplaySearchMatch(str);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.RawPrintBold:
                                                 {
                                                     string str = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     game.ClientCallback_RawPrintBold(str);
+                                                    CheckReplaySearchMatch(str);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.PutStrEx:
@@ -5084,28 +5087,7 @@ namespace GnollHackX
                                                     int color = br.ReadInt32();
                                                     int append = br.ReadInt32();
                                                     game.ClientCallback_PutStrEx(win_id, str, attributes, color, append);
-                                                    lock (_replayLock)
-                                                    {
-                                                        if (_replayRegex != null)
-                                                        {
-                                                            try
-                                                            {
-                                                                if (_replayRegex.IsMatch(str))
-                                                                {
-                                                                    _replayRegex = null;
-                                                                    _replaySearchRegexString = null;
-                                                                    _startSearchReplayTurn = -1;
-                                                                    _replayRestarted = false;
-                                                                }
-                                                            }
-                                                            catch (Exception ex)
-                                                            {
-                                                                Debug.WriteLine(ex.Message);
-                                                                _replayRegex = null;
-                                                                _replaySearchRegexString = null;
-                                                            }
-                                                        }
-                                                    }
+                                                    CheckReplaySearchMatch(str);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.PutStrEx2:
@@ -5120,28 +5102,6 @@ namespace GnollHackX
                                                     int attributes = br.ReadInt32();
                                                     int color = br.ReadInt32();
                                                     int append = br.ReadInt32();
-                                                    lock (_replayLock)
-                                                    {
-                                                        if (_replayRegex != null)
-                                                        {
-                                                            try
-                                                            {
-                                                                if (_replayRegex.IsMatch(str))
-                                                                {
-                                                                    _replayRegex = null;
-                                                                    _replaySearchRegexString = null;
-                                                                    _startSearchReplayTurn = -1;
-                                                                    _replayRestarted = false;
-                                                                }
-                                                            }
-                                                            catch (Exception ex)
-                                                            {
-                                                                Debug.WriteLine(ex.Message);
-                                                                _replayRegex = null;
-                                                                _replaySearchRegexString = null;
-                                                            }
-                                                        }
-                                                    }
                                                     unsafe
                                                     {
                                                         fixed (byte* attributes_byte_ptr = attributes_bytes)
@@ -5154,6 +5114,7 @@ namespace GnollHackX
                                                             }
                                                         }
                                                     }
+                                                    CheckReplaySearchMatch(str);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.DelayOutput:
@@ -5442,6 +5403,9 @@ namespace GnollHackX
                                                     string line = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     if (!IsReplaySearching || (GoToTurn >= 0 && ReplayTurn >= GoToTurn - 1))
                                                         game.Replay_GetLine(style, attr, color, query, placeholder, linesuffix, introline, IntPtr.Zero, line);
+
+                                                    CheckReplaySearchMatch(query);
+                                                    CheckReplaySearchMatch(line);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.ClearContextMenu:
@@ -5793,6 +5757,36 @@ namespace GnollHackX
                 game.ClientCallback_ExitHack(0);
             return PlayReplayResult.Success;
         }
+
+        private static void CheckReplaySearchMatch(string str)
+        {
+            if (string.IsNullOrEmpty(str))
+                return;
+
+            lock (_replayLock)
+            {
+                if (_replayRegex != null)
+                {
+                    try
+                    {
+                        if (_replayRegex.IsMatch(str))
+                        {
+                            _replayRegex = null;
+                            _replaySearchRegexString = null;
+                            _startSearchReplayTurn = -1;
+                            _replayRestarted = false;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                        _replayRegex = null;
+                        _replaySearchRegexString = null;
+                    }
+                }
+            }
+        }
+
 
         private static BlobServiceClient _blobServiceClient = null;
 
