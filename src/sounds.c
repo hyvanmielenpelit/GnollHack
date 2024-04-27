@@ -5276,7 +5276,7 @@ struct monst* mtmp;
         for (i = 0; obj && i < 20; i++, obj = level.objects[omx][omy])
         {
             int carryamt = can_carry(mtmp, obj);
-            if (carryamt > 0 && !obj->cursed && !mtmp->issummoned && !mtmp->ispartymember
+            if (carryamt > 0 && !obj->cursed && !mtmp->issummoned && !mtmp->ispartymember && !m_unpaid_item_no_pickup(mtmp, obj)
                 && could_reach_item(mtmp, obj->ox, obj->oy))
             {
                 shkpreaction = shk_chastise_pet(mtmp, obj, FALSE);

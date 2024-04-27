@@ -2416,7 +2416,7 @@ boolean ghostly;
     result = (((int) mvitals[mndx].born < lim) && !gone) ? TRUE : FALSE;
 
     /* if it's unique, don't ever make it again; except for revivers */
-    if ((mons[mndx].geno & G_UNIQ) && mndx != PM_HIGH_PRIEST)
+    if (UniqCritterIndx(mndx))
         mvitals[mndx].mvflags |= (uchar)MV_EXTINCT;
 
     if (mvitals[mndx].born < 255 && tally

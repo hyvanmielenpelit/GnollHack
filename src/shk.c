@@ -4739,6 +4739,9 @@ boolean
 costly_spot(x, y)
 register xchar x, y;
 {
+    if (!isok(x, y))
+        return FALSE;
+
     struct monst *shkp;
     struct eshk *eshkp;
 
@@ -5519,7 +5522,7 @@ boolean eating;
     struct monst* shkp = (struct monst*)0;
     int omx = obj->ox, omy = obj->oy;
 
-    if (obj && (obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge && costly_spot(omx, omy))))
+    if (is_unpaid_shop_item(obj, omx, omy))
     {
         shkp = shop_keeper(inside_shop(omx, omy));
         char shopkeeper_name[BUFSZ] = "";

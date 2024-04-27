@@ -2233,7 +2233,7 @@ struct obj **optr;
     else if (!otmp->lamplit && obj->lamplit)
         pline("%s out.", (obj->quan > 1L) ? "They go" : "It goes");
 
-    if ((obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge)) && costly_spot(u.ux, u.uy))
+    if (is_unpaid_shop_item(obj, u.ux, u.uy))
     {
         char* o_shop = in_rooms(u.ux, u.uy, SHOPBASE);
         struct monst* shkp = shop_keeper(*o_shop);
@@ -2519,7 +2519,7 @@ struct obj *obj;
         { /* candle(s) */
             pline("%s flame%s %s%s", s_suffix(Yname2(obj)), plur(obj->quan),
                   otense(obj, "burn"), Blind ? "." : " brightly!");
-            if ((obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge)) && costly_spot(u.ux, u.uy)
+            if (is_unpaid_shop_item(obj, u.ux, u.uy)
                 && (obj->age == 30L * (long) objects[obj->otyp].oc_cost || obj->otyp == MAGIC_CANDLE)) 
             {
                 const char *ithem = (obj->quan > 1L) ? "them" : "it";
@@ -2657,7 +2657,7 @@ struct obj **optr;
     You("light %spotion.%s", shk_your(buf, obj),
         Blind ? "" : "  It gives off a dim light.");
 
-    if ((obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge)) && costly_spot(u.ux, u.uy)) {
+    if (is_unpaid_shop_item(obj, u.ux, u.uy)) {
         /* Normally, we shouldn't both partially and fully charge
          * for an item, but (Yendorian Fuel) Taxes are inevitable...
          */

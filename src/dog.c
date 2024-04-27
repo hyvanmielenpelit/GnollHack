@@ -1584,6 +1584,9 @@ register struct obj *obj;
     if (is_obj_no_pickup(obj))
         return TABU;
 
+    if (m_unpaid_item_no_pickup(mon, obj))
+        return TABU;
+
     switch (obj->oclass)
     {
     case FOOD_CLASS:

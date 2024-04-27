@@ -14,9 +14,9 @@
 STATIC_DCL boolean FDECL(is_swallow_sym, (nhsym));
 STATIC_DCL int FDECL(append_str, (char *, const char *));
 STATIC_DCL void FDECL(look_at_object, (char *, int, int, int));
-STATIC_DCL void FDECL(look_at_monster, (char *, char *,
+STATIC_DCL void FDECL(look_at_monster, (char *, char *, char*,
                                         struct monst *, int, int));
-STATIC_DCL struct permonst *FDECL(lookat, (int, int, char *, char *));
+STATIC_DCL struct permonst *FDECL(lookat, (int, int, char *, char*, char *));
 STATIC_DCL void FDECL(checkfile, (char *, struct permonst *,
                                   BOOLEAN_P, BOOLEAN_P, char *));
 STATIC_DCL void FDECL(look_all, (BOOLEAN_P,BOOLEAN_P));
@@ -284,8 +284,8 @@ int x, y, glyph;
 }
 
 STATIC_OVL void
-look_at_monster(buf, monbuf, mtmp, x, y)
-char *buf, *monbuf; /* buf: output, monbuf: optional output */
+look_at_monster(buf, simplebuf, extrabuf, mtmp, x, y)
+char *buf, *simplebuf, *extrabuf; /* buf: output, simplebuf: for searching encyclopedia, extrabuf: optional output */
 struct monst *mtmp;
 int x, y;
 {
@@ -296,6 +296,14 @@ int x, y;
     name = (mtmp->data == &mons[PM_COYOTE] && accurate)
               ? coyotename(mtmp, monnambuf)
               : distant_monnam(mtmp, ARTICLE_NONE, monnambuf);
+
+    if (simplebuf)
+    {
+        if (show_monster_type)
+            Strcpy(simplebuf, pm_monster_name(mtmp->data, mtmp->female));
+        else
+            Strcpy(simplebuf, name);
+    }
 
     Strcpy(headbuf, "");
 
@@ -358,52 +366,52 @@ int x, y;
                     Sprintf(eos(buf), ", hungry");
         }
     }
-    if (monbuf) {
+    if (extrabuf) {
         unsigned how_seen = howmonseen(mtmp);
 
-        monbuf[0] = '\0';
+        extrabuf[0] = '\0';
         if (how_seen != 0 && how_seen != MONSEEN_NORMAL) {
             if (how_seen & MONSEEN_NORMAL) {
-                Strcat(monbuf, "normal vision");
+                Strcat(extrabuf, "normal vision");
                 how_seen &= ~MONSEEN_NORMAL;
                 /* how_seen can't be 0 yet... */
                 if (how_seen)
-                    Strcat(monbuf, ", ");
+                    Strcat(extrabuf, ", ");
             }
             if (how_seen & MONSEEN_SEEINVIS) {
-                Strcat(monbuf, "see invisible");
+                Strcat(extrabuf, "see invisible");
                 how_seen &= ~MONSEEN_SEEINVIS;
                 if (how_seen)
-                    Strcat(monbuf, ", ");
+                    Strcat(extrabuf, ", ");
             }
             if (how_seen & MONSEEN_INFRAVIS) {
-                Strcat(monbuf, "infravision");
+                Strcat(extrabuf, "infravision");
                 how_seen &= ~MONSEEN_INFRAVIS;
                 if (how_seen)
-                    Strcat(monbuf, ", ");
+                    Strcat(extrabuf, ", ");
             }
             if (how_seen & MONSEEN_TELEPAT) {
-                Strcat(monbuf, "telepathy");
+                Strcat(extrabuf, "telepathy");
                 how_seen &= ~MONSEEN_TELEPAT;
                 if (how_seen)
-                    Strcat(monbuf, ", ");
+                    Strcat(extrabuf, ", ");
             }
             if (how_seen & MONSEEN_XRAYVIS) {
                 /* Eyes of the Overworld */
-                Strcat(monbuf, "astral vision");
+                Strcat(extrabuf, "astral vision");
                 how_seen &= ~MONSEEN_XRAYVIS;
                 if (how_seen)
-                    Strcat(monbuf, ", ");
+                    Strcat(extrabuf, ", ");
             }
             if (how_seen & MONSEEN_DETECT) {
-                Strcat(monbuf, "monster detection");
+                Strcat(extrabuf, "monster detection");
                 how_seen &= ~MONSEEN_DETECT;
                 if (how_seen)
-                    Strcat(monbuf, ", ");
+                    Strcat(extrabuf, ", ");
             }
             if (how_seen & MONSEEN_WARNMON) {
                 if (Hallucination) {
-                    Strcat(monbuf, "paranoid delusion");
+                    Strcat(extrabuf, "paranoid delusion");
                 } else {
                     unsigned long mW = (context.warntype.obj
                                         | context.warntype.polyd),
@@ -415,19 +423,19 @@ int x, y;
                                             : (mW & M2_DEMON & m2) ? "demons"
                                               : mon_common_name(mtmp));
 
-                    Sprintf(eos(monbuf), "warned of %s", makeplural(whom));
+                    Sprintf(eos(extrabuf), "warned of %s", makeplural(whom));
                 }
                 how_seen &= ~MONSEEN_WARNMON;
                 if (how_seen)
-                    Strcat(monbuf, ", ");
+                    Strcat(extrabuf, ", ");
             }
             /* should have used up all the how_seen bits by now */
             if (how_seen) {
                 impossible("lookat: unknown method of seeing monster");
-                Sprintf(eos(monbuf), "(%u)", how_seen);
+                Sprintf(eos(extrabuf), "(%u)", how_seen);
             }
         } /* seen by something other than normal vision */
-    } /* monbuf is non-null */
+    } /* extrabuf is non-null */
 }
 
 STATIC_OVL
@@ -468,16 +476,16 @@ int x, y;
  * If not hallucinating and the glyph is a monster, also monster data.
  */
 STATIC_OVL struct permonst *
-lookat(x, y, buf, monbuf)
+lookat(x, y, buf, simplebuf, extrabuf)
 int x, y;
-char *buf, *monbuf;
+char *buf, *simplebuf, *extrabuf;
 {
     struct monst* mtmp = (struct monst*)0;
     struct permonst* pm = (struct permonst*)0;
     int glyph;
     boolean noarticle = FALSE;
 
-    buf[0] = monbuf[0] = '\0';
+    buf[0] = simplebuf[0] = extrabuf[0] = '\0';
     glyph = glyph_at(x, y);
     if (u.ux == x && u.uy == y && canspotself()
         && !(iflags.save_uswallow &&
@@ -534,9 +542,14 @@ char *buf, *monbuf;
         if ((mtmp = m_at(x, y)) != 0)
         {
             if (is_tame(mtmp))
+            {
                 print_mstatusline(buf, mtmp, ARTICLE_NONE, TRUE);
+                Strcpy(simplebuf, pm_monster_name(mtmp->data, mtmp->female));
+            }
             else
-                look_at_monster(buf, monbuf, mtmp, x, y);
+            {
+                look_at_monster(buf, simplebuf, extrabuf, mtmp, x, y);
+            }
             pm = mtmp->data;
             if(has_umname(mtmp) || (has_mname(mtmp) && mtmp->u_know_mname))
                 noarticle = TRUE;
@@ -726,6 +739,8 @@ char *buf, *monbuf;
     Strcpy(buf, article == 2 ? the(exbuf)
         : article == 1 ? an(exbuf) : exbuf);
     
+    if (!*simplebuf)
+        Strcpy(simplebuf, buf);
     return (pm && !Hallucination) ? pm : (struct permonst *) 0;
 }
 
@@ -1028,6 +1043,7 @@ struct permonst **for_supplement;
     static const char mon_interior[] = "the interior of a monster",
                       unreconnoitered[] = "unreconnoitered";
     static char look_buf[BUFSZ];
+    static char simple_buf[BUFSZ];
     static char x_buf[BUFSZ] = "";
     char prefix[BUFSZ];
     int i, alt_i, glyph = NO_GLYPH,
@@ -1134,7 +1150,7 @@ struct permonst **for_supplement;
                 {
                     Sprintf(out_str, "%s%s",
                             prefix, an(def_monsyms[i].explain));
-                    *firstmatch = an(def_monsyms[i].explain);
+                    *firstmatch = def_monsyms[i].explain;
                     found++;
                 }
                 else 
@@ -1173,7 +1189,7 @@ struct permonst **for_supplement;
                 {
                     Sprintf(out_str, "%s%s",
                             prefix, an(def_oc_syms[i].explain));
-                    *firstmatch = an(def_oc_syms[i].explain);
+                    *firstmatch = def_oc_syms[i].explain;
                     found++;
                 } 
                 else 
@@ -1194,7 +1210,7 @@ struct permonst **for_supplement;
         if (!found) 
         {
             Sprintf(out_str, "%s%s", prefix, an(unseen_explain));
-            *firstmatch = an(unseen_explain);
+            *firstmatch = unseen_explain;
             found++;
         }
         else 
@@ -1347,7 +1363,7 @@ struct permonst **for_supplement;
         if (!found)
         {
             Sprintf(out_str, "%s%s", prefix, an(x_str));
-            *firstmatch = an(x_str);
+            *firstmatch = x_str;
             found++;
         }
         else 
@@ -1386,15 +1402,15 @@ struct permonst **for_supplement;
 
         if (found > 1 || need_to_look)
         {
-            char monbuf[BUFSZ];
             char temp_buf[BUFSZ];
+            char extrabuf[BUFSZ];
 
-            pm = lookat(cc.x, cc.y, look_buf, monbuf);
+            pm = lookat(cc.x, cc.y, look_buf, simple_buf, extrabuf);
             if (pm && for_supplement)
                 *for_supplement = pm;
-            *firstmatch = look_buf;
+            *firstmatch = simple_buf;
 
-            if (*(*firstmatch))
+            if (*look_buf)
             {
                 char mdescbuf[BUFSZ];
                 Strcpy(mdescbuf, "");
@@ -1408,12 +1424,12 @@ struct permonst **for_supplement;
 
                 if (iflags.using_gui_tiles)
                 {
-                    Sprintf(temp_buf, "%s%s", *firstmatch, mdescbuf);
+                    Sprintf(temp_buf, "%s%s", look_buf, mdescbuf);
                     Strcpy(out_str, temp_buf);
                 }
                 else
                 {
-                    Sprintf(temp_buf, " (%s%s)", *firstmatch, mdescbuf);
+                    Sprintf(temp_buf, " (%s%s)", look_buf, mdescbuf);
 
                     (void)strncat(out_str, temp_buf,
                         BUFSZ - strlen(out_str) - 1);
@@ -1421,9 +1437,9 @@ struct permonst **for_supplement;
                 found = 1; /* we have something to look up */
             }
 
-            if (monbuf[0]) 
+            if (extrabuf[0])
             {
-                Sprintf(temp_buf, " [seen: %s]", monbuf);
+                Sprintf(temp_buf, " [seen: %s]", extrabuf);
                 (void) strncat(out_str, temp_buf,
                                BUFSZ - strlen(out_str) - 1);
             }
@@ -1686,7 +1702,7 @@ boolean do_mons; /* True => monsters, False => objects */
                         (void) self_lookat(lookbuf);
                         ++count;
                     } else if ((mtmp = m_at(x, y)) != 0) {
-                        look_at_monster(lookbuf, (char *) 0, mtmp, x, y);
+                        look_at_monster(lookbuf, (char*)0, (char *)0, mtmp, x, y);
                         ++count;
                     }
                 } else if (glyph_is_invisible(glyph)) {

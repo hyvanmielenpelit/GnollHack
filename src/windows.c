@@ -2960,8 +2960,8 @@ int x, y, sym, color;
 nhsym ch;
 unsigned long special;
 {
-    char buf[BUFSZ] = ""; /* do_screen_description requires this :( */
-    const char* firstmatch = "unknown"; /* and this */
+    char descbuf[BUFSZ] = "";
+    const char* firstmatch = 0;
     coord cc;
     int desc_found = 0;
     unsigned attr;
@@ -2972,7 +2972,7 @@ unsigned long special;
         fprintf(dumphtml_file, "<div class=\"nh_screen\">  "); /* 2 space left margin */
     cc.x = x;
     cc.y = y;
-    desc_found = do_screen_description(cc, TRUE, ch, buf, &firstmatch, (struct permonst**)0);
+    desc_found = do_screen_description(cc, TRUE, ch, descbuf, &firstmatch, (struct permonst**)0);
     if (desc_found)
         fprintf(dumphtml_file, "<div class=\"tooltip\">");
     attr = mg_hl_attr(special);
@@ -2983,7 +2983,7 @@ unsigned long special;
         html_dump_char(dumphtml_file, ch, TRUE);
     dump_set_color_attr(color, attr, FALSE, TRUE);
     if (desc_found)
-        fprintf(dumphtml_file, "<div class=\"tooltiptext\">%s</div></div>", firstmatch);
+        fprintf(dumphtml_file, "<div class=\"tooltiptext\">%s</div></div>", descbuf);
     if (x == COLNO - 1)
         fprintf(dumphtml_file, "  </div>\n"); /* 2 trailing spaces and newline */
 }

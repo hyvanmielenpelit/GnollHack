@@ -1779,6 +1779,9 @@ register struct monst *mtmp;
         if (is_obj_no_pickup(otmp))
             continue;
 
+        if (m_unpaid_item_no_pickup(mtmp, otmp))
+            continue;
+
         /* Don't eat indigestible/choking/inappropriate objects */
         if ((rust_causing_and_ironvorous(mtmp->data) && is_rustprone(otmp))
             || (otmp->otyp == AMULET_OF_STRANGULATION)

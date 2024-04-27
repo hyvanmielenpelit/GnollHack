@@ -600,11 +600,12 @@ int cx, cy;
     coord cc;
     nhsym sym = 0;
     char tmpbuf[BUFSZ];
+    char descbuf[BUFSZ];
     const char *firstmatch = "unknown";
 
     cc.x = cx;
     cc.y = cy;
-    if (do_screen_description(cc, TRUE, sym, tmpbuf, &firstmatch, (struct permonst **) 0)) 
+    if (do_screen_description(cc, TRUE, sym, descbuf, &firstmatch, (struct permonst **) 0))
     {
         (void) coord_desc(cx, cy, tmpbuf, iflags.getpos_coords);
         boolean is_illegal = (iflags.autodescribe && getpos_getinvalid && (*getpos_getinvalid)(cx, cy));
@@ -612,7 +613,7 @@ int cx, cy;
         int multicolors[5] = { NO_COLOR, NO_COLOR, NO_COLOR, CLR_RED, CLR_ORANGE };
         pline_multi_ex_flags(ATR_NONE, NO_COLOR, no_multiattrs, multicolors, SUPPRESS_HISTORY | STAY_ON_LINE,
                     "%s%s%s%s%s", 
-                    firstmatch,
+                    descbuf,
                     *tmpbuf ? " " : "", 
                     tmpbuf,
                     is_illegal ? " (illegal)" : "",
@@ -633,6 +634,7 @@ int gloc;
     anything any;
     int i, pick_cnt;
     menu_item *picks = (menu_item *) 0;
+    char descbuf[BUFSZ];
     char tmpbuf[BUFSZ];
 
     gather_locs(&garr, &gcount, gloc);
@@ -660,11 +662,11 @@ int gloc;
         any.a_int = i + 1;
         tmpcc.x = garr[i].x;
         tmpcc.y = garr[i].y;
-        if (do_screen_description(tmpcc, TRUE, sym, tmpbuf,
+        if (do_screen_description(tmpcc, TRUE, sym, descbuf,
                               &firstmatch, (struct permonst **)0)) {
             (void) coord_desc(garr[i].x, garr[i].y, tmpbuf,
                               iflags.getpos_coords);
-            Sprintf(fullbuf, "%s%s%s", firstmatch,
+            Sprintf(fullbuf, "%s%s%s", descbuf,
                     (*tmpbuf ? " " : ""), tmpbuf);
             add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, fullbuf,
                      MENU_UNSELECTED);
