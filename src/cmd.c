@@ -8829,8 +8829,8 @@ int x, y, mod;
                 boolean has_fitting_key = FALSE;
                 if (flags.autounlock)
                 {
-                    struct obj* carried_key = 0;
-                    if ((carried_key = carrying_fitting_unlocking_tool_for_door(door)) != 0)
+                    struct obj* carried_key = carrying_fitting_unlocking_tool_for_door(door);
+                    if (carried_key)
                     {
                         has_fitting_key = TRUE;
                     }

@@ -1086,17 +1086,14 @@ int x, y;
             update_u_action_revert(ACTION_TILE_NO_ACTION);
             if (flags.autounlock)
             {
-                struct obj* carried_key = 0;
-                if ((carried_key = carrying_fitting_unlocking_tool_for_door(door)) != 0)
+                struct obj* carried_key = carrying_fitting_unlocking_tool_for_door(door);
+                if (carried_key)
                 {
-                    if (carried_key)
-                    {
-                        int pick_res = pick_lock_core(carried_key, cc.x, cc.y, TRUE);
-                        if (pick_res == PICKLOCK_DID_SOMETHING)
-                            res = 2, unlocked = TRUE;
-                        else if(pick_res == PICKLOCK_LEARNED_SOMETHING)
-                            res = 1;
-                    }
+                    int pick_res = pick_lock_core(carried_key, cc.x, cc.y, TRUE);
+                    if (pick_res == PICKLOCK_DID_SOMETHING)
+                        res = 2, unlocked = TRUE;
+                    else if (pick_res == PICKLOCK_LEARNED_SOMETHING)
+                        res = 1;
                 }
             }
 

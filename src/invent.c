@@ -2263,9 +2263,23 @@ struct obj* box;
 
     register struct obj *otmp;
 
+    /* is_unlocking_tool in order of preference */
+
+    /* Prefer keys */
     for (otmp = invent; otmp; otmp = otmp->nobj)
-        if (is_unlocking_tool(otmp) && key_fits_the_box_lock(otmp, box))
+        if (is_key(otmp) && key_fits_the_box_lock(otmp, box))
             return  otmp;
+
+    /* Then lock picks */
+    for (otmp = invent; otmp; otmp = otmp->nobj)
+        if (otmp->otyp == LOCK_PICK && key_fits_the_box_lock(otmp, box))
+            return  otmp;
+
+    /* Then credit cards */
+    for (otmp = invent; otmp; otmp = otmp->nobj)
+        if (otmp->otyp == CREDIT_CARD && key_fits_the_box_lock(otmp, box))
+            return  otmp;
+
     return (struct obj *) 0;
 }
 
@@ -2278,9 +2292,23 @@ struct rm* door;
 
     register struct obj* otmp;
 
+    /* is_unlocking_tool in order of preference */
+
+    /* Prefer keys */
     for (otmp = invent; otmp; otmp = otmp->nobj)
-        if (is_unlocking_tool(otmp) && key_fits_the_door_lock(otmp, door))
+        if (is_key(otmp) && key_fits_the_door_lock(otmp, door))
             return  otmp;
+
+    /* Then lock picks */
+    for (otmp = invent; otmp; otmp = otmp->nobj)
+        if (otmp->otyp == LOCK_PICK && key_fits_the_door_lock(otmp, door))
+            return  otmp;
+
+    /* Then credit cards */
+    for (otmp = invent; otmp; otmp = otmp->nobj)
+        if (otmp->otyp == CREDIT_CARD && key_fits_the_door_lock(otmp, door))
+            return  otmp;
+
     return (struct obj*)0;
 }
 
