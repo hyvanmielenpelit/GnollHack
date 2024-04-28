@@ -111,7 +111,7 @@ int roomtype;
             return mkzoo(LIBRARY);
             break;
         case DRAGONLAIR:
-            mkdragonlair();
+            return mkdragonlair();
             break;
         case MORGUE:
             return mkzoo(MORGUE);
@@ -182,7 +182,6 @@ mkshop()
             }
             if (*ep == 'd' || *ep == 'D') {
                 return mkdragonlair();
-                return 1;
             }
             if (*ep == 't' || *ep == 'T' || *ep == '\\') {
                 return mkzoo(COURT);
