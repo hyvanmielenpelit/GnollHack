@@ -4635,7 +4635,7 @@ namespace GnollHackX
         private static readonly object _gzipLock = new object();
         private static bool _useGZipForReplays = GHConstants.GZipIsDefaultReplayCompression;
 
-        public static bool UseGZipForReplays { get { lock (_gzipLock) { return _useGZipForReplays; } } set { lock (_gzipLock) { _useGZipForReplays = value; } } }
+        public static bool UseGZipForReplays { get { bool t = TournamentMode; lock (_gzipLock) { return t || _useGZipForReplays; } } set { lock (_gzipLock) { _useGZipForReplays = value; } } }
 
         /* Called from GHGame thread! */
         public static PlayReplayResult PlayReplay(GHGame game, string replayFileName)
