@@ -3922,6 +3922,7 @@ reset_game(VOID_ARGS)
     dmonsfree();
     *plname = 0;
     *recovery_plname = 0;
+    is_gui_in_debug_mode = FALSE;
     plname_from_error_savefile = FALSE;
     plname_from_imported_savefile = FALSE;
     reset_gamestate_ex();

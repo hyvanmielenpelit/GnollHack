@@ -261,7 +261,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             ResetGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-
+#if DEBUG
             string url = "https://download.gnollhack.com/test-files/test-files2.zip";
             string target_path = GHApp.GHPath;
             string target_file = Path.Combine(target_path, "test-files2.zip");
@@ -323,6 +323,7 @@ namespace GnollHackX.Pages.MainScreen
                     btnDownloadTestFiles.TextColor = GHColors.Red;
                 }
             }
+#endif
             ResetGrid.IsEnabled = true;
         }
 
@@ -379,8 +380,8 @@ namespace GnollHackX.Pages.MainScreen
         private async void btnImportTestFiles_Clicked(object sender, EventArgs e)
         {
             ResetGrid.IsEnabled = false;
-
             GHApp.PlayButtonClickedSound();
+#if DEBUG
             await CheckAndRequestWritePermission();
             await CheckAndRequestReadPermission();
             try
@@ -479,28 +480,15 @@ namespace GnollHackX.Pages.MainScreen
                             }
                             else
                             {
-                                string out_str = "";
-                                if (GHApp.GnollHackService.ValidateSaveFile(file.FullPath, out out_str))
+                                string targetfilename = file.FileName;
+                                string fulltargetpath = Path.Combine(gnhpath, targetfilename);
+                                if (System.IO.File.Exists(fulltargetpath))
+                                    System.IO.File.Delete(fulltargetpath);
+                                using (Stream t = System.IO.File.Open(fulltargetpath, FileMode.Create))
                                 {
-                                    string targetfilename = file.FileName + ".i";
-                                    string savedirpath = Path.Combine(gnhpath, GHConstants.SaveDirectory);
-                                    GHApp.CheckCreateDirectory(savedirpath);
-
-                                    string fulltargetpath = Path.Combine(savedirpath, targetfilename);
-                                    if (System.IO.File.Exists(fulltargetpath))
-                                        System.IO.File.Delete(fulltargetpath);
-                                    using (Stream t = System.IO.File.Open(fulltargetpath, FileMode.Create))
-                                    {
-                                        s.CopyTo(t);
-                                    }
-                                    await DisplayAlert("Game Saved", "Saved game \'" + file.FileName + "\' has been saved to the save directory as a non-scoring imported saved game.", "OK");
-                                    if (!string.IsNullOrWhiteSpace(out_str) && GHApp.DebugLogMessages)
-                                        await DisplayAlert("ValidateSaveFile Message", out_str, "OK");
+                                    s.CopyTo(t);
                                 }
-                                else
-                                {
-                                    await DisplayAlert("Invalid Saved Game", "Saved game \'" + file.FullPath + "\' is invalid: " + out_str, "OK");
-                                }
+                                await DisplayAlert("File Saved", "File \'" + file.FileName + "\' has been saved to the GnollHack directory.", "OK");
                             }
                         }
                     }
@@ -510,6 +498,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 await DisplayAlert("Error", "An error occurred while trying to import files: " + ex.Message, "OK");
             }
+#endif
             ResetGrid.IsEnabled = true;
         }
 

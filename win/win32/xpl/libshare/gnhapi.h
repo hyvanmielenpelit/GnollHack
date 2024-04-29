@@ -21,6 +21,7 @@ int FDECL(GnollHackStart, (char*));
 #define GHRUNFLAGS_FORCE_LAST_PLAYER_NAME   0x00000040UL
 #define GHRUNFLAGS_PLAYING_REPLAY           0x00000080UL
 #define GHRUNFLAGS_TOURNAMENT_MODE          0x00000100UL
+#define GHRUNFLAGS_GUI_DEBUG_MODE           0x00000200UL
 
 /* Main GnollHack routine with all the necessary callback functions */
 int RunGnollHack(

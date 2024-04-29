@@ -775,6 +775,8 @@ int RunGnollHack(
         recovery_plname[PL_NSIZ - 1] = '\0';
     }
 
+    is_gui_in_debug_mode = (runflags & GHRUNFLAGS_GUI_DEBUG_MODE) != 0;
+
     /* Set callback function pointers here */
     lib_callbacks.callback_init_nhwindows = callback_init_nhwindows;
     lib_callbacks.callback_player_selection = callback_player_selection;

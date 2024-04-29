@@ -292,6 +292,8 @@ E NEARDATA const char getobj_tippables[];
 E NEARDATA const char getobj_zap_syms[];
 E NEARDATA const char getobj_favorites[];
 
+E NEARDATA boolean is_gui_in_debug_mode;
+
 E long done_money;
 E NEARDATA char plname[PL_NSIZ];
 E NEARDATA char recovery_plname[PL_NSIZ];

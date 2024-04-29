@@ -226,6 +226,7 @@ namespace GnollHackX
         ForceLastPlayerName =   0x00000040, /* Use LastUsedPlayerName as preset player name */
         PlayingReplay =         0x00000080, /* Game is a replay */
         TournamentMode =        0x00000100, /* Playing with server-like settings */
+        GUIDebugMode =          0x00000200, /* GUI has been built in debug mode (not a release mode game?) */
     }
 
     [Flags]

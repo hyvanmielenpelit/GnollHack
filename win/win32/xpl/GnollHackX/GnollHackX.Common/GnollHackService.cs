@@ -1012,6 +1012,7 @@ namespace GnollHackX.Unknown
                 (ulong)(ghGame.CasualMode ? RunGnollHackFlags.CasualMode : 0) |
                 (ulong)(allowbones ? 0 : RunGnollHackFlags.DisableBones) |
                 (ulong)(GHApp.TournamentMode ? RunGnollHackFlags.TournamentMode : 0) |
+                (ulong)(GHApp.IsDebug ? RunGnollHackFlags.GUIDebugMode : 0) |
                 (ulong)ghGame.StartFlags;
             string lastusedplname = GHApp.TournamentMode && !ghGame.PlayingReplay ? Preferences.Get("LastUsedTournamentPlayerName", "") : Preferences.Get("LastUsedPlayerName", "");
 

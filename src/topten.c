@@ -612,6 +612,11 @@ encodexlogflags()
         e |= 1L << 5;
     if (TournamentMode)
         e |= 1L << 6;
+#ifdef DEBUG
+    e |= 1L << 7;
+#endif
+    if (is_gui_in_debug_mode)
+        e |= 1L << 8;
 
     return e;
 }

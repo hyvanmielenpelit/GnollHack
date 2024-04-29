@@ -49,6 +49,8 @@ struct dgn_topology dungeon_topology = { DUMMY };
 
 struct q_score quest_status = DUMMY;
 
+NEARDATA boolean is_gui_in_debug_mode = FALSE;
+
 //NEARDATA int warn_obj_cnt = 0;
 NEARDATA int smeq[MAXNROFROOMS + 1] = DUMMY;
 NEARDATA int doorindex = 0;
