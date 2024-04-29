@@ -938,7 +938,7 @@ struct objclass {
 #define O2_GNOLLISH_ITEM          0x00000008UL
 #define O2_DRAGON_ITEM            0x00000010UL
 #define O2_DEMON_ITEM             0x00000020UL
-#define O2_ANGELIC_ITEM           0x00000040UL
+#define O2_ANGEL_ITEM             0x00000040UL
 #define O2_MODRON_ITEM            0x00000080UL
 #define O2_GNOMISH_ITEM           0x00000100UL
 #define O2_UNDEAD_ITEM            0x00000200UL

@@ -589,11 +589,11 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
         if (otmp->cursed && mon_hates_cursed(mon))
             bonus += rnd(4);
         if ((is_axe(otmp) || is_saw(otmp)) && is_wooden(ptr))
-            bonus += rnd(4);
+            bonus += rnd(8);
         if (obj_counts_as_silver(otmp) && mon_hates_silver(mon))
             bonus += rnd(20);
         if ((artifact_light(otmp) || obj_shines_magical_light(otmp) || has_obj_mythic_magical_light(otmp)) && otmp->lamplit && mon_hates_light(mon))
-            bonus += rnd(8);
+            bonus += rnd(20);
 
         /* if the weapon is going to get a double damage bonus, adjust
            this bonus so that effectively it's added after the doubling */

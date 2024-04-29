@@ -870,7 +870,7 @@ struct obj* obj;
     long maxburntime = 0; //Normal lamps
     if (objects[obj->otyp].oc_flags5 & O5_BURNS_INFINITELY)
         maxburntime = -1;
-    else if (artifact_light(obj) || (obj_shines_magical_light(obj) || has_obj_mythic_magical_light(obj)))
+    else if (artifact_light(obj) || obj_shines_magical_light(obj) || has_obj_mythic_magical_light(obj))
         maxburntime = -1;
     else if (is_candle(obj))
         maxburntime = candle_maximum_burn_time(obj);
