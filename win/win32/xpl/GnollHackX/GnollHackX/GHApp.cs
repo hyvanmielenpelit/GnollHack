@@ -2819,6 +2819,8 @@ namespace GnollHackX
             }
         }
 
+        public static bool IsSendingDataToDevelopers { get { return _platformService?.GetSendingDataToDevelopers() ?? true; } set { _platformService?.SetSendingDataToDevelopers(value); } }
+
         private static readonly object _postingGameStatusLock = new object();
         private static bool _postingGameStatus;
         public static bool PostingGameStatus { get { bool t = TournamentMode; lock (_postingGameStatusLock) { return _postingGameStatus || t; } } set { lock (_postingGameStatusLock) { _postingGameStatus = value; } } }

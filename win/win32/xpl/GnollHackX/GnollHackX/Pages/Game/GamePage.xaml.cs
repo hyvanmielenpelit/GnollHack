@@ -16348,7 +16348,28 @@ namespace GnollHackX.Pages.Game
         {
             if(GHApp.InformAboutCrashReport && !PlayingReplay)
             {
-                bool answer = await DisplayAlert("Crash Detected", "A crashed game has been detected. GnollHack will attempt to restore this game. Also, do you want to create a crash report? This will create a zip archive of the files in your game directory and ask it to be shared further." + (UseMainGLCanvas ? " If the problem persists, try switching GPU Acceleration off in Settings." : ""), "Yes", "No");
+                bool introDisplayed = false;
+                string intro = "A crashed game has been detected. GnollHack will attempt to restore this game." + Environment.NewLine + Environment.NewLine;
+                bool answer;
+                bool sendToDev = GHApp.IsSendingDataToDevelopers;
+                if (!GHApp.PostingDiagnosticData || !sendToDev)
+                {
+                    introDisplayed = true;
+                    answer = await DisplayAlert("Crash Detected", intro + "Do you want to switch sending diagnostic data on?" + (GHApp.IsAndroid && UseMainGLCanvas ? Environment.NewLine + Environment.NewLine + "If the problem persists, try switching GPU Acceleration off in Settings." : ""), "Yes", "No");
+                    if (answer)
+                    {
+                        if(!GHApp.PostingDiagnosticData)
+                        {
+                            GHApp.PostingDiagnosticData = true;
+                            Preferences.Set("PostingDiagnosticData", true);
+                        }
+                        if(!sendToDev)
+                        {
+                            GHApp.IsSendingDataToDevelopers = true;
+                        }
+                    }
+                }
+                answer = await DisplayAlert(introDisplayed ? "Send Crash Report?" : "Crash Detected", (!introDisplayed ? intro : "")+ "Do you want to create a crash report? This will create a zip archive of the files in your game directory and ask it to be shared further.", "Yes", "No");
                 if (answer)
                 {
                     await GHApp.CreateCrashReport(this);

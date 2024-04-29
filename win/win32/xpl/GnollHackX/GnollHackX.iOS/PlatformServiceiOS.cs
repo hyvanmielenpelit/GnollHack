@@ -222,5 +222,15 @@ namespace GnollHackX.iOS
         {
 
         }
+
+        public bool GetSendingDataToDevelopers()
+        {
+            return true;
+        }
+
+        public void SetSendingDataToDevelopers(bool sendData)
+        {
+            //Possibly open settings app if cannot set directly
+        }
     }
 }

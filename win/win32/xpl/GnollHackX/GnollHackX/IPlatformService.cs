@@ -39,6 +39,7 @@ namespace GnollHackX
         int FetchOnDemandPack(string pack);
         event EventHandler<AssetPackStatusEventArgs> OnDemandPackStatusNotification;
 
-        //void SaveFileToDownloads(byte[] data, string name);
+        bool GetSendingDataToDevelopers();
+        void SetSendingDataToDevelopers(bool sendData);
     }
 }
