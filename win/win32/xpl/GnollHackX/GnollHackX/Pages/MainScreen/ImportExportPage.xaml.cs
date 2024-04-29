@@ -625,5 +625,123 @@ namespace GnollHackX.Pages.MainScreen
             }
             ImportExportGrid.IsEnabled = true;
         }
+
+        private async void btnConvertSavedGames_Clicked(object sender, EventArgs e)
+        {
+            ImportExportGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            int conversionsFound = 0;
+            int conversionsRequested = 0;
+            int conversionsDone = 0;
+            string saveDir = Path.Combine(GHApp.GHPath, GHConstants.SaveDirectory);
+            if (Directory.Exists(saveDir))
+            {
+                string[] files = Directory.GetFiles(saveDir);
+                if(files != null && files.Length > 0)
+                {
+                    foreach (string file in files)
+                    {
+                        FileInfo fileInfo = new FileInfo(file);
+                        if (!fileInfo.Exists)
+                            continue;
+                        if(fileInfo.Extension != ".bup")
+                            continue;
+                        
+                        string fileNameWithoutExtension = fileInfo.Name.Substring(0, fileInfo.Name.Length - fileInfo.Extension?.Length ?? 0);
+                        /* file is an existing backup file */
+                        bool importedFound = false;
+                        bool errorFound = false;
+                        bool saveFound = false;
+                        foreach(string file2 in files)
+                        {
+                            FileInfo fileInfo2 = new FileInfo(file2);
+                            if (!fileInfo2.Exists) 
+                                continue;
+                            if (fileInfo2.Extension == ".bup")
+                                continue;
+
+                            string fileName2WithoutExtension = fileInfo2.Name.Substring(0, fileInfo2.Name.Length - fileInfo2.Extension?.Length ?? 0);
+                            if (fileName2WithoutExtension != fileNameWithoutExtension)
+                                continue;
+
+                            if (fileInfo2.Extension == ".i")
+                                importedFound = true;
+                            else if (fileInfo2.Extension == ".e")
+                                errorFound = true;
+                            else if (string.IsNullOrEmpty(fileInfo2.Extension))
+                                saveFound = true;
+                        }
+
+                        if (importedFound || saveFound)
+                            continue;
+                        else
+                        {
+                            conversionsFound++;
+                            bool answer = await DisplayAlert("Convert Backup into Imported?", "A backup for saved game \'" + fileNameWithoutExtension + "' has been found. Convert it into a non-scoring imported saved game?" 
+                                + (errorFound ? " This will delete the existing error save file." : ""), "Yes", "No");
+                            if(answer)
+                            {
+                                conversionsRequested++;
+                                bool conversionSuccessful = false;
+                                try
+                                {
+                                    string backuppath = fileInfo.FullName;
+                                    string savepath = Path.Combine(saveDir, fileNameWithoutExtension) + ".i";
+                                    if(System.IO.File.Exists(savepath))
+                                    {
+                                        /* Should not happen */
+                                        System.IO.File.Delete(savepath);
+                                    }
+                                    System.IO.File.Move(backuppath, savepath);
+                                    conversionsDone++;
+                                    conversionSuccessful = true;
+                                }
+                                catch (Exception ex)
+                                {
+                                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                                }
+
+                                if(conversionSuccessful)
+                                {
+                                    try
+                                    {
+                                        if (errorFound)
+                                        {
+                                            string errorpath = Path.Combine(saveDir, fileNameWithoutExtension + ".e");
+                                            if (System.IO.File.Exists(errorpath))
+                                                System.IO.File.Delete(errorpath);
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        System.Diagnostics.Debug.WriteLine(ex.Message);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if(conversionsFound == 0)
+            {
+                await DisplayAlert("No Convertible Backups", "No backup saved games that are convertible to imported saved games were found.", "OK");
+            }
+            else
+            {
+                if(conversionsRequested > 0)
+                {
+                    if(conversionsDone == 0)
+                    {
+                        if(conversionsRequested == 1)
+                            await DisplayAlert("No Backups Converted", "The requested backup saved game was not converted to an imported saved game.", "OK");
+                        else
+                            await DisplayAlert("No Backups Converted", "None of the requested " + conversionsRequested + " backup saved games were converted to imported saved games.", "OK");
+                    }
+                    else
+                        await DisplayAlert("Backups Converted", (conversionsDone == conversionsRequested ? "The requested " :  conversionsDone + " of the requested ") + conversionsRequested + " backup saved game" + (conversionsRequested == 1 ? " was" : "s were") + " converted to " + (conversionsRequested == 1 ? "an imported saved game" : "imported saved games") + ".", "OK");
+                }
+            }
+            ImportExportGrid.IsEnabled = true;
+        }
     }
 }

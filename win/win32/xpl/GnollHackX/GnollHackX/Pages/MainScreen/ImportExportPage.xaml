@@ -26,7 +26,9 @@
                             <controls:CustomImageButton x:Name="btnImportSavedGames" Text="Import Saved Games" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnImportSavedGames_Clicked" UseVaryingBackgroundImages ="False" />
                             <controls:CustomImageButton x:Name="btnDeleteSavedGames" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Saved Games" BackgroundColor="Transparent" TextColor="White"
-                                        Margin="0,0,0,16" HorizontalOptions="Center" Clicked="btnDeleteSavedGames_Clicked" UseVaryingBackgroundImages ="False" />
+                                        HorizontalOptions="Center" Clicked="btnDeleteSavedGames_Clicked" UseVaryingBackgroundImages ="False" />
+                            <controls:CustomImageButton x:Name="btnConvertSavedGames" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Convert Backups" BackgroundColor="Transparent" TextColor="White"
+                                        Margin="0,0,0,16" HorizontalOptions="Center" Clicked="btnConvertSavedGames_Clicked" UseVaryingBackgroundImages ="False" />
 
                             <controls:CustomImageButton x:Name="btnExportReplays" Text="Export Replays" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnExportReplays_Clicked" UseVaryingBackgroundImages ="False" />
