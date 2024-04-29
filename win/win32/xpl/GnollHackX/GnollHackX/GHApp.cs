@@ -2819,7 +2819,6 @@ namespace GnollHackX
             }
         }
 
-        public static bool IsSendingDataToDevelopers { get { return _platformService?.GetSendingDataToDevelopers() ?? true; } set { _platformService?.SetSendingDataToDevelopers(value); } }
 
         private static readonly object _postingGameStatusLock = new object();
         private static bool _postingGameStatus;

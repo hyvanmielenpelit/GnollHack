@@ -1522,5 +1522,17 @@ namespace GnollHackX.Pages.MainScreen
                 PopupGrid.IsVisible = true;
             }
         }
+
+        private void PostDiagnosticDataSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if (e.Value && !GHApp.PostingDiagnosticData && GHApp.IsiOS)
+            {
+                PopupTitleLabel.TextColor = GHColors.Orange;
+                PopupTitleLabel.Text = "Share With App Developers";
+                PopupLabel.Text = "To enable us to get information on app crashes, please make sure that also Share With App Developers is on in the Setting app under Privacy -> Analytics.";
+                PopupOkButton.IsEnabled = true;
+                PopupGrid.IsVisible = true;
+            }
+        }
     }
 }

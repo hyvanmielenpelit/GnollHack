@@ -16351,22 +16351,16 @@ namespace GnollHackX.Pages.Game
                 bool introDisplayed = false;
                 string intro = "A crashed game has been detected. GnollHack will attempt to restore this game." + Environment.NewLine + Environment.NewLine;
                 bool answer;
-                bool sendToDev = GHApp.IsSendingDataToDevelopers;
-                if (!GHApp.PostingDiagnosticData || !sendToDev)
+                if (!GHApp.PostingDiagnosticData)
                 {
                     introDisplayed = true;
-                    answer = await DisplayAlert("Crash Detected", intro + "Do you want to switch sending diagnostic data on?" + (GHApp.IsAndroid && UseMainGLCanvas ? Environment.NewLine + Environment.NewLine + "If the problem persists, try switching GPU Acceleration off in Settings." : ""), "Yes", "No");
+                    answer = await DisplayAlert("Crash Detected", intro + "Do you want to switch sending diagnostic data on? This will report any panic to the development team and send basic data on your the state of your device upon each such panic." 
+                        + (GHApp.IsiOS ? Environment.NewLine + Environment.NewLine + "To enable us to get information on crashes, please make sure that Share With App Developers is switched on in the Settings app under Privacy -> Analytics." : "") 
+                        + (UseMainGLCanvas ? Environment.NewLine + Environment.NewLine + "If the problem persists, try switching GPU Acceleration off in Settings." : ""), "Yes", "No");
                     if (answer)
                     {
-                        if(!GHApp.PostingDiagnosticData)
-                        {
-                            GHApp.PostingDiagnosticData = true;
-                            Preferences.Set("PostingDiagnosticData", true);
-                        }
-                        if(!sendToDev)
-                        {
-                            GHApp.IsSendingDataToDevelopers = true;
-                        }
+                        GHApp.PostingDiagnosticData = true;
+                        Preferences.Set("PostingDiagnosticData", true);
                     }
                 }
                 answer = await DisplayAlert(introDisplayed ? "Send Crash Report?" : "Crash Detected", (!introDisplayed ? intro : "")+ "Do you want to create a crash report? This will create a zip archive of the files in your game directory and ask it to be shared further.", "Yes", "No");

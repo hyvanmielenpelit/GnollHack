@@ -29,6 +29,7 @@ using Android.Util;
 using AndroidX.Core.App;
 using Android.Content.PM;
 using Android.Views.InputMethods;
+using Android.Provider;
 
 #if GNH_MAUI
 namespace GnollHackM
@@ -449,15 +450,6 @@ namespace GnollHackX.Droid
             else
                 MainActivity.ShowOsNavigationBar();
 #endif
-        }
-
-        public bool GetSendingDataToDevelopers()
-        {
-            return true;
-        }
-        public void SetSendingDataToDevelopers(bool sendData)
-        {
-            //Possibly open settings app if cannot set directly
         }
     }
 
