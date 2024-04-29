@@ -677,7 +677,7 @@ namespace GnollHackX
                     Thread.Sleep(GHConstants.PollingInterval);
                     pollResponseQueue();
                 }
-                int res = 0;
+                int res = 27;
                 if (_inputBufferLocation >= 0)
                 {
                     res = _inputBuffer[0];
@@ -750,7 +750,15 @@ namespace GnollHackX
                             val = 27;
                         }
 
-                        string res = Char.ConvertFromUtf32(val);
+                        string res = "n";
+                        try
+                        {
+                            res = Char.ConvertFromUtf32(val);
+                        }
+                        catch(Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                        }
                         if (desc == "")
                             desc = res;
 

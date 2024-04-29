@@ -3020,6 +3020,10 @@ boolean (*validitemfunc)(struct obj*);
         for (otmp = invent; otmp; otmp = otmp->nobj)
             if (otmp->invlet == ilet)
                 break;
+
+        if (!otmp) /* Check for spurious ilet */
+            return (struct obj*)0;
+
         /* some items have restrictions */
         if (ilet == def_oc_syms[COIN_CLASS].sym
             /* guard against the [hypothetical] chace of having more
@@ -3073,7 +3077,7 @@ boolean (*validitemfunc)(struct obj*);
         }
         break;
     }
-    if (!allowall && let && !index(let, otmp->oclass)
+    if (!allowall && let && otmp && !index(let, otmp->oclass)
         && !(usegold && otmp->oclass == COIN_CLASS)
         && !(!strcmp(word, "read") && (objects[otmp->otyp].oc_flags3 & O3_READABLE))
         ) {
@@ -3083,7 +3087,7 @@ boolean (*validitemfunc)(struct obj*);
     if (cntgiven) {
         if (cnt == 0)
             return (struct obj *) 0;
-        if (cnt != otmp->quan) {
+        if (otmp && cnt != otmp->quan) {
             /* don't split a stack of cursed loadstones */
             if (splittable(otmp))
                 otmp = splitobj(otmp, cnt);
