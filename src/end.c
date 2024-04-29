@@ -3008,7 +3008,7 @@ int final;
     int pfx;
     for (i = LOW_PM; i < NUM_MONSTERS; i++)
     {
-        if (mvitals[i].died > 0 && ((u.ualign.type == A_LAWFUL ? is_demon(&mons[i]) || mons[i].mlet == S_IMP : u.ualign.type == A_CHAOTIC ? is_angel(&mons[i]) : FALSE) || (is_dragon(&mons[i]) && u.ualign.type * mons[i].maligntyp < 0))) /* Demons/angels and chaotic/lawful dragons */
+        if (mvitals[i].died > 0 && is_knight_bounty(&mons[i]))
         {
             mindx[ntypes] = i;
             ntypes++;
@@ -3104,7 +3104,7 @@ recalculate_knight_slaying_score(VOID_ARGS)
     long score = 0L;
     for (i = LOW_PM; i < NUM_MONSTERS; i++)
     {
-        if (mvitals[i].died > 0 && ((u.ualign.type == A_LAWFUL ? is_demon(&mons[i]) || mons[i].mlet == S_IMP : u.ualign.type == A_CHAOTIC ? is_angel(&mons[i]) : FALSE) || (is_dragon(&mons[i]) && u.ualign.type * mons[i].maligntyp < 0)))
+        if (mvitals[i].died > 0 && is_knight_bounty(&mons[i]))
         {
             if (UniqCritterIndx(i))
             {
@@ -3117,6 +3117,15 @@ recalculate_knight_slaying_score(VOID_ARGS)
         }
     }
     context.role_score = score;
+
+    struct monst* mtmp;
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+    {
+        if (!DEADMONSTER(mtmp) && isok(mtmp->mx, mtmp->my) && canspotmon(mtmp))
+        {
+            refresh_m_tile_gui_info(mtmp, FALSE);
+        }
+    }
 }
 
 /* number of monster species which have been genocided */

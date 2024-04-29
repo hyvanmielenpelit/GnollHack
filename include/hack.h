@@ -807,6 +807,8 @@ extern struct objclass saved_objects[NUM_OBJECTS];
 #define m_unpaid_item_no_pickup_at_location(m, o, x, y) (is_unpaid_shop_item(o, x, y) && mon_does_not_pick_up_shop_items(m))
 #define m_unpaid_item_no_pickup(m, o) m_unpaid_item_no_pickup_at_location(m, o, (o)->ox, (o)->oy)
 
+#define is_knight_bounty(ptr) ((u.ualign.type == A_LAWFUL ? is_demon(ptr) || (ptr)->mlet == S_IMP : u.ualign.type == A_CHAOTIC ? is_angel(ptr) : is_undead(ptr)) || (is_dragon(ptr) && u.ualign.type * (ptr)->maligntyp < 0))
+
 #if defined(BSD) || defined(ULTRIX)
 #define readLenType int
 #else /* e.g. SYSV, __TURBOC__ */

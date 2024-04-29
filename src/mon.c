@@ -3596,16 +3596,17 @@ struct monst* mtmp;
 
     if (Role_if(PM_KNIGHT))
     {
-        if ((u.ualign.type == A_LAWFUL ? is_demon(mtmp->data) || mtmp->data->mlet == S_IMP : u.ualign.type == A_CHAOTIC ? is_angel(mtmp->data) : FALSE) || (is_dragon(mtmp->data) && u.ualign.type * mtmp->data->maligntyp < 0))
+        int mnum = mtmp->cham >= LOW_PM ? mtmp->cham : mtmp->mnum;
+        if (is_knight_bounty(&mons[mnum]))
         {
-            if (UniqCritterIndx(mtmp->mnum))
+            if (UniqCritterIndx(mnum))
             {
-                if (mvitals[mtmp->mnum].died == 0)
-                    context.role_score += KNIGHT_UNIQUE_MONSTER_PER_LEVEL_SCORE * (mtmp->data->difficulty + 1);
+                if (mvitals[mnum].died == 0)
+                    context.role_score += KNIGHT_UNIQUE_MONSTER_PER_LEVEL_SCORE * (mons[mnum].difficulty + 1);
             }
             else
             {
-                context.role_score += KNIGHT_NORMAL_MONSTER_PER_LEVEL_SCORE * (mtmp->data->difficulty + 1);
+                context.role_score += KNIGHT_NORMAL_MONSTER_PER_LEVEL_SCORE * (mons[mnum].difficulty + 1);
             }
         }
     }

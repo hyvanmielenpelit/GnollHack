@@ -1393,9 +1393,9 @@ boolean loc_is_you, ispeaceful, ispet, isdetected;
             if (!loc_is_you && isdetected)
                 display_this_status_mark = TRUE;
             break;
-        case STATUS_MARK_PILE:
-            //if (!loc_is_you && data->map[i][j].layer_flags & LFLAGS_O_PILE)
-            //    display_this_status_mark = TRUE;
+        case STATUS_MARK_BOUNTY:
+            if (!loc_is_you && Role_if(PM_KNIGHT) && !ispeaceful && is_knight_bounty(mtmp->data))
+                display_this_status_mark = TRUE;
             break;
         case STATUS_MARK_SATIATED:
             if (loc_is_you && u.uhs == SATIATED)

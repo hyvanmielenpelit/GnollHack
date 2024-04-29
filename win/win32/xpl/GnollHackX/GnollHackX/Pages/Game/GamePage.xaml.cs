@@ -123,7 +123,7 @@ namespace GnollHackX.Pages.Game
             "Pet",
             "Peaceful",
             "Detected",
-            "Object pile",
+            "Bounty",
             "Satiated",
             "Hungry",
             "Weak",

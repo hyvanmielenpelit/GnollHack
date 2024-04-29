@@ -393,7 +393,7 @@ const char* status_names[MAX_STATUS_MARKS] = {
     "Tame",
     "Peaceful",
     "Detected",
-    "Object pile",
+    "Bounty",
     "Satiated",
     "Hungry",
     "Weak",

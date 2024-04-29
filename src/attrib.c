@@ -2713,6 +2713,7 @@ int reason; /* 0==conversion, 1==helm-of-OA on, 2==helm-of-OA off */
     }
     recalculate_knight_slaying_score();
     newsym(u.ux, u.uy);
+    flush_screen(1);
 }
 
 /*attrib.c*/
