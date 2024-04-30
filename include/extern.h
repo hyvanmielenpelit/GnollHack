@@ -1117,6 +1117,7 @@ E void FDECL(panictrace_setsignals, (BOOLEAN_P));
 void and_you_die();
 #endif
 E long NDECL(get_current_game_score);
+E long NDECL(get_conduct_score_upon_ascension);
 E int NDECL(wiz_dumplog);
 E void FDECL(print_selfies, (winid, int));
 E void FDECL(print_knight_slayings, (winid, int));

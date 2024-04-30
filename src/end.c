@@ -3441,9 +3441,32 @@ char *in;
     return out;
 }
 
+long
+get_conduct_score_upon_ascension(VOID_ARGS)
+{
+    int ngenocided = num_genocides();
+    return (long)(
+        50 * (u.uconduct.food == 0)
+        + 15 * (u.uconduct.gnostic == 0)
+        + 60 * (u.uconduct.killer == 0)
+        + 30 * (u.uconduct.literate == 0)
+        + 2 * (u.uconduct.polypiles == 0)
+        + 2 * (u.uconduct.polyselfs == 0)
+        + 10 * (u.uconduct.unvegan == 0)
+        + 10 * (u.uconduct.unvegetarian == 0)
+        + 5 * (u.uconduct.weaphit == 0)
+        + 5 * (u.uconduct.wisharti == 0)
+        + 15 * (u.uconduct.wishes == 0)
+        + 80 * (u.uroleplay.blind)
+        + 60 * (u.uroleplay.nudist)
+        + 15 * (ngenocided == 0)
+        - 20 * (u.ualign.type != u.ualignbase[A_ORIGINAL])
+        - 20 * (u.ualignbase[A_CURRENT] != u.ualignbase[A_ORIGINAL])
+        );
+}
 
 long
-get_current_game_score()
+get_current_game_score(VOID_ARGS)
 {
 #if 0
     /* Old NetHack score */
@@ -3475,26 +3498,7 @@ get_current_game_score()
         + u.uachieve.entered_large_circular_dungeon + u.uachieve.entered_plane_of_modron + u.uachieve.entered_hellish_pastures
         );
 
-    int ngenocided = num_genocides();
-
-    long Conduct_Score = (long)(u.uachieve.ascended) * (long)(
-        50 * (u.uconduct.food == 0)
-        + 15 * (u.uconduct.gnostic == 0)
-        + 60 * (u.uconduct.killer == 0)
-        + 30 * (u.uconduct.literate == 0)
-        + 2 * (u.uconduct.polypiles == 0)
-        + 2 * (u.uconduct.polyselfs == 0)
-        + 10 * (u.uconduct.unvegan == 0)
-        + 10 * (u.uconduct.unvegetarian == 0)
-        + 5 * (u.uconduct.weaphit == 0)
-        + 5 * (u.uconduct.wisharti == 0)
-        + 15 * (u.uconduct.wishes == 0)
-        + 80 * (u.uroleplay.blind)
-        + 60 * (u.uroleplay.nudist)
-        + 15 * (ngenocided == 0)
-        - 20 * (u.ualign.type != u.ualignbase[A_ORIGINAL])
-        - 20 * (u.ualignbase[A_CURRENT] != u.ualignbase[A_ORIGINAL])
-        );
+    long Conduct_Score = (long)(u.uachieve.ascended) * get_conduct_score_upon_ascension();
 
     long Role_Specific_Score = 0L;
     long Role_Achievement_Score = 0L;  /* Special role-specific achievement */
@@ -3558,7 +3562,7 @@ get_current_game_score()
     }
     case PM_MONK:
     {
-        Role_Specific_Score = Conduct_Score * 5000L;
+        Role_Specific_Score = Conduct_Score * MONK_EXTRA_CONDUCT_SCORE_MULTIPLIER;
         Role_Achievement_Score = MONK_ROLE_ACHIEVEMENT_SCORE * (long)u.uachieve.role_achievement;
         break;
     }
@@ -3638,7 +3642,8 @@ get_current_game_score()
     }
 
     long Total_Role_Score = Role_Specific_Score + Role_Achievement_Score;
-    long Base_Score = (long)(Deepest_Dungeon_Level - 1) * 1000L + Small_Achievements_Score * 5000L + Achievements_Score * 50000L + Conduct_Score * 10000L + min(Total_Role_Score, MAXIMUM_ROLE_SCORE);
+    long Base_Score = (long)(Deepest_Dungeon_Level - 1) * SCORE_PER_DUNGEON_LEVEL + Small_Achievements_Score * SCORE_PER_MINOR_ACHIEVEMENT + Achievements_Score * SCORE_PER_MAJOR_ACHIEVEMENT 
+        + Conduct_Score * CONDUCT_SCORE_MULTIPLIER + min(Total_Role_Score, MAXIMUM_ROLE_SCORE);
     
     Base_Score = max(0L, Base_Score);
 
