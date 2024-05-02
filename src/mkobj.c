@@ -1590,9 +1590,9 @@ unsigned long mkflags;
 
             if (mkobj_type <= MKOBJ_RANDOM_PROPERTY_MAX_TYPE && is_poisonable(otmp) && !rn2(100) && !(objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED))
                 otmp->opoisoned = 1;
-            else if (is_elemental_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (mkobj_type <= MKOBJ_RANDOM_PROPERTY_MAX_TYPE && (is_multigen(otmp) ? !rn2(40) : !rn2(160)))))
+            else if (is_elemental_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (mkobj_type <= MKOBJ_RANDOM_PROPERTY_MAX_TYPE && leveldiff > 4 && (is_multigen(otmp) ? !rn2(40) : !rn2(160)))))
             {
-                if (is_death_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (mkobj_type <= MKOBJ_RANDOM_PROPERTY_MAX_TYPE && !rn2(10) && leveldiff > 11)))
+                if (is_death_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (mkobj_type <= MKOBJ_RANDOM_PROPERTY_MAX_TYPE && leveldiff > 16 && !rn2(10))))
                 {
                     otmp->elemental_enchantment = DEATH_ENCHANTMENT;
                     if (is_multigen(otmp))
@@ -1603,8 +1603,8 @@ unsigned long mkflags;
                 else
                 {
                     otmp->elemental_enchantment = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) ? COLD_ENCHANTMENT :
-                        leveldiff > 11 ? (!rn2(7) ? COLD_ENCHANTMENT : !rn2(3) ? LIGHTNING_ENCHANTMENT  : FIRE_ENCHANTMENT) :
-                        (!rn2(3) && leveldiff > 4 ? LIGHTNING_ENCHANTMENT : FIRE_ENCHANTMENT);
+                        leveldiff > 12 ? (!rn2(7) ? COLD_ENCHANTMENT : !rn2(3) ? LIGHTNING_ENCHANTMENT  : FIRE_ENCHANTMENT) :
+                        (!rn2(3) && leveldiff > 8 ? LIGHTNING_ENCHANTMENT : FIRE_ENCHANTMENT);
 
                     if (is_multigen(otmp))
                     {
