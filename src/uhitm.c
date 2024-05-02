@@ -4987,32 +4987,32 @@ schar difficulty_level;
     switch (difficulty_level)
     {
     case -4:
-        *monster_damage_multiplier_ptr = 0.3150;
-        *monster_hp_multiplier_ptr = 0.3150;
+        *monster_damage_multiplier_ptr = 0.3501;
+        *monster_hp_multiplier_ptr = 0.2856;
         break;
     case -3:
-        *monster_damage_multiplier_ptr = 0.4204;
-        *monster_hp_multiplier_ptr = 0.4204;
+        *monster_damage_multiplier_ptr = 0.4552;
+        *monster_hp_multiplier_ptr = 0.3907;
         break;
     case -2:
-        *monster_damage_multiplier_ptr = 0.5612;
-        *monster_hp_multiplier_ptr = 0.5612;
+        *monster_damage_multiplier_ptr = 0.5917;
+        *monster_hp_multiplier_ptr = 0.5344;
         break;
     case -1:
-        *monster_damage_multiplier_ptr = 0.7492;
-        *monster_hp_multiplier_ptr = 0.7492;
+        *monster_damage_multiplier_ptr = 0.7692;
+        *monster_hp_multiplier_ptr = 0.7310;
         break;
     case 0:
         *monster_damage_multiplier_ptr = 1.0;
         *monster_hp_multiplier_ptr = 1.0;
         break;
     case 1:
-        *monster_damage_multiplier_ptr = 1.3348;
-        *monster_hp_multiplier_ptr = 1.3348;
+        *monster_damage_multiplier_ptr = 1.3;
+        *monster_hp_multiplier_ptr = 1.3679;
         break;
     case 2:
-        *monster_damage_multiplier_ptr = 1.7818;
-        *monster_hp_multiplier_ptr = 1.7818;
+        *monster_damage_multiplier_ptr = 1.69;
+        *monster_hp_multiplier_ptr = 1.8712;
         break;
     default:
         break;
