@@ -1763,7 +1763,6 @@ unsigned long mkflags;
             case SARCOPHAGUS:
             case COFFIN:
             {
-
                 if (!(mkflags & MKOBJ_FLAGS_OPEN_COFFIN) && !(mkflags & MKOBJ_FLAGS_MONSTER_SPECIFIED))
                 {
                     int cnm = NON_PM;
@@ -1771,12 +1770,14 @@ unsigned long mkflags;
 
                     if (otmp->otyp == SARCOPHAGUS)
                     {
-                        if (!rn2(2))
-                            cnm = NON_PM;
-                        else if (Inhell && !context.amonket_generated && (Is_sanctum(&u.uz) || rn2(100) < leveldiff * 2 - 23))
+                        if (Inhell && !context.amonket_generated && (Is_sanctum(&u.uz) || rn2(100) < leveldiff * 2 - 23))
                         {
                             context.amonket_generated = TRUE;
                             cnm = PM_AMONKET;
+                        }
+                        else if (!rn2(2))
+                        {
+                            cnm = NON_PM;
                         }
                         else
                         {

@@ -1292,6 +1292,7 @@ OBJECT: ('(', "large five-branched candelabrum"), (15,07), special_quality:5, ag
 OBJECT: ('(', "large five-branched candelabrum"), (21,07), special_quality:5, age:99000, lit
 OBJECT: ('(', "large five-branched candelabrum"), (15,10), special_quality:5, age:99000, lit
 OBJECT: ('(', "large five-branched candelabrum"), (21,10), special_quality:5, age:99000, lit
+OBJECT:('(',"sarcophagus"),(66,07)
 REGION:(41,06,48,11),unlit,"morgue",filled,irregular
 # Non diggable walls
 NON_DIGGABLE:(00,00,75,19)
