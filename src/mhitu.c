@@ -3047,7 +3047,7 @@ register struct obj* omonwep;
                 }
             }
             if (drain_item(obj, FALSE)) {
-                pline("%s less effective.", Yobjnam2(obj, "seem"));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s less effective.", Yobjnam2(obj, "seem"));
             }
         }
         break;

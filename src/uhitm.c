@@ -4633,7 +4633,7 @@ struct attack *mattk;     /* null means we find one internally */
         if (!is_cancelled(mon)) {
             if (drain_item(obj, TRUE) && carried(obj)
                 && (obj->known || obj->oclass == ARMOR_CLASS)) {
-                pline("%s less effective.", Yobjnam2(obj, "seem"));
+                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s less effective.", Yobjnam2(obj, "seem"));
             }
             break;
         }
