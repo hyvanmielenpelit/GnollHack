@@ -402,7 +402,7 @@ VA_DECL(const char *, line)
             goto pline_done;
     }
 
-    if (!saving && !restoring && !reseting && !check_pointing && !program_state.in_tricked && iflags.window_inited && WIN_MAP != WIN_ERR)
+    if (!saving && !restoring && !reseting && !check_pointing && !program_state.in_tricked && !program_state.in_impossible && iflags.window_inited && WIN_MAP != WIN_ERR)
     {
         if (vision_full_recalc)
             vision_recalc(0);
@@ -518,7 +518,7 @@ int attr, color;
     if (program_state.wizkit_wishing)
         return;
 
-    if (!saving && !restoring && !reseting && !check_pointing && !program_state.in_tricked && iflags.window_inited && WIN_MAP != WIN_ERR)
+    if (!saving && !restoring && !reseting && !check_pointing && !program_state.in_tricked && !program_state.in_impossible && iflags.window_inited && WIN_MAP != WIN_ERR)
     {
         if (vision_full_recalc)
             vision_recalc(0);
