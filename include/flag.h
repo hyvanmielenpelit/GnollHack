@@ -245,9 +245,9 @@ struct flag {
     schar max_hint_difficulty; /* Maximum difficulty level where hints are shown */
     boolean non_scoring; /* The game has been, for example, loaded from an imported save file and has thereby become non-scoring */
     uchar auto_bag_in_style;
-    short wielded_weapon_paranoid_style; /* 0 = default (on for Monk only), 1 = off, 2 = on */
 
     /* Emergency reserved variables to make non-save-game-breaking changes */
+    short reserved_short1;
     short reserved_short2;
     int reserved_int1;
     int reserved_int2;
