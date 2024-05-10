@@ -850,7 +850,7 @@ init_options()
     flags.end_own = FALSE;
     flags.end_top = 3;
     flags.end_around = 2;
-    flags.paranoia_bits = PARANOID_PRAY | PARANOID_AUTOALL | PARANOID_MONK_WEAPON; /* old prayconfirm=TRUE */
+    flags.paranoia_bits = PARANOID_PRAY | PARANOID_AUTOALL; /* old prayconfirm=TRUE */
     flags.runmode = RUN_LEAP;
     iflags.msg_history = 20;
     /* msg_window has conflicting defaults for multi-interface binary */
@@ -1500,7 +1500,7 @@ STATIC_VAR const struct paranoia_opts {
       "yes vs y to attack a peaceful monster" },
     { PARANOID_BREAK, "Break", 2, (const char*)0, 0,
       "yes vs y to break an item" },
-    { PARANOID_WERECHANGE, "Were-change", 2, (const char *) 0, 0,
+    { PARANOID_WERECHANGE, "lycanthropy-change", 2, "were-change", 2,
       "yes vs y to change form when lycanthropy is controllable" },
     { PARANOID_PRAY, "pray", 1, 0, 0,
       "y to pray (supersedes old \"prayconfirm\" option)" },
@@ -1512,10 +1512,10 @@ STATIC_VAR const struct paranoia_opts {
       "yes vs y to enter into a trap" },
     { PARANOID_AUTOALL, "Autoall", 1, (const char*)0, 0,
       "y to select all items" },
-    { PARANOID_TIP, "tip", 2, (const char*)0, 0,
+    { PARANOID_TIP, "Tip", 2, (const char*)0, 0,
       "yes vs y to tip a container" },
-    { PARANOID_MONK_WEAPON, "monk-weapon", 1, (const char*)0, 0,
-      "y to attack with a weapon as a monk" },
+    { PARANOID_WIELDED_WEAPON, "Wielded-weapon", 1, (const char*)0, 0,
+      "y to attack with a weapon" },
       /* for config file parsing; interactive menu skips these */
     { 0, "none", 4, 0, 0, 0 }, /* require full word match */
     { ~0, "all", 3, 0, 0, 0 }, /* ditto */

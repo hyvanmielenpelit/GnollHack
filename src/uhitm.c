@@ -561,7 +561,7 @@ register struct monst *mtmp;
 
     boolean has_right_weapon = (uwep && is_weapon(uwep));
     boolean has_left_weapon = (u.twoweap && uwep2 && is_weapon(uwep2));
-    if (/* !do_bash_prompt && */ ParanoidMonkWeapon && Role_if(PM_MONK) && u.uconduct.weaphit == 0 && (has_right_weapon || has_left_weapon))
+    if (/* !do_bash_prompt && */ ParanoidWieldedWeapon && u.uconduct.weaphit == 0 && (has_right_weapon || has_left_weapon))
     {
         if(has_right_weapon && !has_left_weapon)
             Sprintf(qbuf, "You begin attacking with %s. Continue?", yname(uwep));

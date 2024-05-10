@@ -185,7 +185,7 @@ struct flag {
 #define PARANOID_TRAP           0x0400
 #define PARANOID_AUTOALL        0x0800
 #define PARANOID_TIP            0x1000
-#define PARANOID_MONK_WEAPON    0x2000
+#define PARANOID_WIELDED_WEAPON 0x2000
     int pickup_burden; /* maximum burden before prompt */
     int pile_limit;    /* controls feedback when walking over objects */
     char inv_order[MAX_OBJECT_CLASSES];
@@ -245,9 +245,9 @@ struct flag {
     schar max_hint_difficulty; /* Maximum difficulty level where hints are shown */
     boolean non_scoring; /* The game has been, for example, loaded from an imported save file and has thereby become non-scoring */
     uchar auto_bag_in_style;
+    short wielded_weapon_paranoid_style; /* 0 = default (on for Monk only), 1 = off, 2 = on */
 
     /* Emergency reserved variables to make non-save-game-breaking changes */
-    short reserved_short1;
     short reserved_short2;
     int reserved_int1;
     int reserved_int2;
@@ -646,7 +646,7 @@ enum runmode_types {
 /* tip: accepting tipping a container */
 #define ParanoidTip ((flags.paranoia_bits & PARANOID_TIP) != 0)
 /* tip: accepting attacking with a weapon as a monk */
-#define ParanoidMonkWeapon ((flags.paranoia_bits & PARANOID_MONK_WEAPON) != 0)
+#define ParanoidWieldedWeapon ((flags.paranoia_bits & PARANOID_WIELDED_WEAPON) != 0)
 
 /* command parsing, mainly dealing with number_pad handling;
    not saved and restored */

@@ -3503,7 +3503,7 @@ get_current_game_score(VOID_ARGS)
     long Role_Specific_Score = 0L;
     long Role_Achievement_Score = 0L;  /* Special role-specific achievement */
 
-    switch (urole.monsternum) /* Role_if(X) */
+    switch (Role_switch)
     {
     case PM_ARCHAEOLOGIST:
     {
