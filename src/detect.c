@@ -2340,7 +2340,7 @@ dump_map()
                 write_nhsym_utf8(&bp, ch, FALSE);
             }
 
-#ifdef DUMPHTML
+#if defined (DUMPHTML)
             /* HTML map prints in a defined rectangle, so
                just render every glyph - no skipping. */
             html_dump_glyph(x, y, sym, ch, color, special);

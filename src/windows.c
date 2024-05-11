@@ -97,7 +97,7 @@ STATIC_DCL void NDECL(dump_headers);
 STATIC_DCL void NDECL(dump_footers);
 STATIC_DCL void FDECL(dump_status_update, (int, genericptr_t, int, int, int, unsigned long*));
 STATIC_DCL void NDECL(dump_render_status);
-#ifdef DUMPHTML
+#if defined (DUMPHTML)
 STATIC_DCL void FDECL(dump_set_color_attr, (int, int, BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL void NDECL(html_init_sym);
 STATIC_DCL void NDECL(dump_css);
@@ -107,10 +107,10 @@ STATIC_DCL void FDECL(html_dump_str, (FILE*, const char*, const char*, const cha
 STATIC_DCL void FDECL(html_dump_line, (FILE*, winid, const char*, const char*, int, int, int, const char*));
 STATIC_DCL void FDECL(html_write_tags, (FILE*, winid, int, int, int, BOOLEAN_P, struct extended_menu_info, BOOLEAN_P)); /* Tags before/after string */
 #endif
-#ifdef DUMPLOG
+#if defined (DUMPLOG)
 STATIC_VAR FILE* dumplog_file;
 #endif
-#ifdef DUMPHTML
+#if defined (DUMPHTML)
 STATIC_VAR FILE* dumphtml_file;
 #endif
 #endif /* DUMPLOG */
@@ -1709,7 +1709,7 @@ dump_render_status(VOID_ARGS)
                     if (bits & mask) {
                         putstr_ex(NHW_STATUS, " ", ATR_NONE, NO_COLOR, 1);
                         pad--;
-#ifdef STATUS_HILITES
+#if defined (STATUS_HILITES)
                         if (iflags.hilite_delta) {
                             attrmask = condattr(mask, dump_colormasks);
                             coloridx = condcolor(mask, dump_colormasks);
@@ -1720,11 +1720,9 @@ dump_render_status(VOID_ARGS)
 #endif
                         putstr_ex(NHW_STATUS, condition_definitions[c].text[0], ATR_NONE, NO_COLOR, 1);
                         pad -= strlen(condition_definitions[c].text[0]);
-#ifdef STATUS_HILITES
+#if defined (STATUS_HILITES) && defined(DUMPHTML)
                         if (iflags.hilite_delta) {
-#if defined(DUMPHTML)
                             dump_set_color_attr(coloridx, attrmask, FALSE, FALSE);
-#endif
                         }
 #endif
                         bits &= ~mask;
@@ -1780,7 +1778,7 @@ dump_render_status(VOID_ARGS)
             }
             else {
                 /* | Everything else not in a special case above | */
-#ifdef STATUS_HILITES
+#if defined (STATUS_HILITES)
                 if (iflags.hilite_delta) {
                     while (*text == ' ') {
                         putstr(NHW_STATUS, 0, " ");
@@ -1801,11 +1799,9 @@ dump_render_status(VOID_ARGS)
 #endif
                 putstr_ex(NHW_STATUS, text, ATR_NONE, NO_COLOR, 1);
                 pad -= strlen(text);
-#ifdef STATUS_HILITES
+#if defined (STATUS_HILITES) && defined(DUMPHTML)
                 if (iflags.hilite_delta) {
-#if defined(DUMPHTML)
                     dump_set_color_attr(coloridx, attrmask, FALSE, FALSE);
-#endif
                 }
 #endif
             }

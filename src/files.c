@@ -3828,49 +3828,49 @@ char *origbuf;
 #endif
     }
     else if (src == SET_IN_SYS && match_varname(buf, "DUMPHTMLFILE", 12)) {
-#ifdef DUMPHTML
+#if defined (DUMPHTML)
         if (sysopt.dumphtmlfile)
             free((genericptr_t)sysopt.dumphtmlfile);
         sysopt.dumphtmlfile = dupstr(bufp);
 #endif
     }
     else if (src == SET_IN_SYS && match_varname(buf, "DUMPHTMLFONTNAME", 16)) {
-#ifdef DUMPHTML
+#if defined (DUMPHTML)
         if (sysopt.dumphtmlfontname)
             free((genericptr_t)sysopt.dumphtmlfontname);
         sysopt.dumphtmlfontname = dupstr(bufp);
 #endif
     }
     else if (src == SET_IN_SYS && match_varname(buf, "DUMPHTMLFONTLINK", 16)) {
-#if defined(DUMPHTML) && defined (DUMPHTML_WEBFONT_LINK)
+#if defined (DUMPHTML) && defined (DUMPHTML_WEBFONT_LINK)
         if (sysopt.dumphtmlfile)
             free((genericptr_t)sysopt.dumphtmlfontlink);
         sysopt.dumphtmlfontlink = dupstr(bufp);
 #endif
     }
     else if (src == SET_IN_SYS && match_varname(buf, "DUMPHTML_CSS_FONTFACE_NORMAL", 28)) {
-#ifdef DUMPHTML
+#if defined (DUMPHTML)
         if (sysopt.dumphtml_css_fontface_normal)
             free((genericptr_t)sysopt.dumphtml_css_fontface_normal);
         sysopt.dumphtml_css_fontface_normal = dupstr(bufp);
 #endif
     }
     else if (src == SET_IN_SYS && match_varname(buf, "DUMPHTML_CSS_FONTFACE_BOLD", 26)) {
-#ifdef DUMPHTML
+#if defined (DUMPHTML)
         if (sysopt.dumphtml_css_fontface_bold)
             free((genericptr_t)sysopt.dumphtml_css_fontface_bold);
         sysopt.dumphtml_css_fontface_bold = dupstr(bufp);
 #endif
     }
     else if (src == SET_IN_SYS && match_varname(buf, "DUMPHTML_CSS_FONTFACE_ITALIC", 28)) {
-#ifdef DUMPHTML
+#if defined (DUMPHTML)
         if (sysopt.dumphtml_css_fontface_italic)
             free((genericptr_t)sysopt.dumphtml_css_fontface_italic);
         sysopt.dumphtml_css_fontface_italic = dupstr(bufp);
 #endif
     }
     else if (src == SET_IN_SYS && match_varname(buf, "DUMPHTML_CSS_FONTFACE_BOLD_ITALIC", 33)) {
-#ifdef DUMPHTML
+#if defined (DUMPHTML)
         if (sysopt.dumphtml_css_fontface_bolditalic)
             free((genericptr_t)sysopt.dumphtml_css_fontface_bolditalic);
         sysopt.dumphtml_css_fontface_bolditalic = dupstr(bufp);
