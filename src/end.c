@@ -1913,7 +1913,7 @@ int how;
         force_launch_placement();
 
     /* maintain ugrave_arise even for !bones_ok */
-    if (how == PANICKED)
+    if (how == PANICKED || how == TRICKED)
         u.ugrave_arise = (NON_PM - 3); /* no corpse, no grave */
     else if (how == BURNING || how == DISSOLVED || how == DISINTEGRATION) /* corpse burns up too */
         u.ugrave_arise = (NON_PM - 2); /* leave no corpse */
@@ -1948,7 +1948,7 @@ int how;
     if (how == ESCAPED || how == PANICKED)
         killer.format = NO_KILLER_PREFIX;
 
-    if (how != PANICKED) 
+    if (how != PANICKED && how != TRICKED)
     {
         boolean silently = done_stopprint ? TRUE : FALSE;
 
@@ -1968,7 +1968,7 @@ int how;
     if (have_windows)
         display_nhwindow(WIN_MESSAGE, FALSE);
 
-    if (how != PANICKED && disclose_and_dumplog_ok)
+    if (how != PANICKED && how != TRICKED && disclose_and_dumplog_ok)
     {
         struct obj *obj;
 
