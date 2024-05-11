@@ -1689,8 +1689,10 @@ dump_render_status(VOID_ARGS)
             break;
 
         int pad = COLNO + 1;
+#if defined(DUMPHTML)
         if (dumphtml_file)
             fprintf(dumphtml_file, "<div class=\"nh_screen\">  "); /* 2 space left margin */
+#endif
         for (i = 0; (idx = fieldorder[row][i]) != BL_FLUSH; ++i) {
             boolean hitpointbar = (idx == BL_TITLE
                 && iflags.wc2_hitpointbar);
@@ -1711,14 +1713,18 @@ dump_render_status(VOID_ARGS)
                         if (iflags.hilite_delta) {
                             attrmask = condattr(mask, dump_colormasks);
                             coloridx = condcolor(mask, dump_colormasks);
+#if defined(DUMPHTML)
                             dump_set_color_attr(coloridx, attrmask, TRUE, FALSE);
+#endif
                         }
 #endif
                         putstr_ex(NHW_STATUS, condition_definitions[c].text[0], ATR_NONE, NO_COLOR, 1);
                         pad -= strlen(condition_definitions[c].text[0]);
 #ifdef STATUS_HILITES
                         if (iflags.hilite_delta) {
+#if defined(DUMPHTML)
                             dump_set_color_attr(coloridx, attrmask, FALSE, FALSE);
+#endif
                         }
 #endif
                         bits &= ~mask;
@@ -1757,9 +1763,13 @@ dump_render_status(VOID_ARGS)
                 }
                 putstr_ex(NHW_STATUS,  "[", ATR_NONE, NO_COLOR, 1);
                 if (*bar) { /* always True, unless twoparts+dead (0 HP) */
+#if defined(DUMPHTML)
                     dump_set_color_attr(hpbar_color, HL_INVERSE, TRUE, FALSE);
+#endif
                     putstr_ex(NHW_STATUS, bar, ATR_NONE, NO_COLOR, 0);
+#if defined(DUMPHTML)
                     dump_set_color_attr(hpbar_color, HL_INVERSE, FALSE, FALSE);
+#endif
                 }
                 if (twoparts) { /* no highlighting for second part */
                     *bar2 = savedch;
@@ -1784,20 +1794,26 @@ dump_render_status(VOID_ARGS)
                     }
                     attrmask = dump_status[idx].attr;
                     coloridx = dump_status[idx].color;
+#if defined(DUMPHTML)
                     dump_set_color_attr(coloridx, attrmask, TRUE, FALSE);
+#endif
                 }
 #endif
                 putstr_ex(NHW_STATUS, text, ATR_NONE, NO_COLOR, 1);
                 pad -= strlen(text);
 #ifdef STATUS_HILITES
                 if (iflags.hilite_delta) {
+#if defined(DUMPHTML)
                     dump_set_color_attr(coloridx, attrmask, FALSE, FALSE);
+#endif
                 }
 #endif
             }
         }
+#if defined(DUMPHTML)
         if (dumphtml_file)
             fprintf(dumphtml_file, "%*s</div>\n", pad, " ");
+#endif
     }
     return;
 }
@@ -3200,8 +3216,10 @@ void
 reset_windows(VOID_ARGS)
 {
     prev_app = 0;
+#ifdef DUMPHTML
     in_list = 0;
     //in_preform = 0;
+#endif
 }
 
 /*windows.c*/

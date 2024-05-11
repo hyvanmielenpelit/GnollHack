@@ -48,14 +48,14 @@ sys_early_init()
 #if defined (DUMPHTML)
     sysopt.dumphtmlfile = (char*)0;
     sysopt.dumphtmlfontname = (char*)0;
-#if defined (DUMPHTML_WEBFONT_LINK)
-    sysopt.dumphtmlfontlink = (char*)0;
-#endif
-#endif
     sysopt.dumphtml_css_fontface_normal = (char*)0;
     sysopt.dumphtml_css_fontface_bold = (char*)0;
     sysopt.dumphtml_css_fontface_italic = (char*)0;
     sysopt.dumphtml_css_fontface_bolditalic = (char*)0;
+#if defined (DUMPHTML_WEBFONT_LINK)
+    sysopt.dumphtmlfontlink = (char*)0;
+#endif
+#endif
     sysopt.env_dbgfl = 0; /* haven't checked getenv("DEBUGFILES") yet */
     sysopt.shellers = (char *) 0;
     sysopt.explorers = (char *) 0;
