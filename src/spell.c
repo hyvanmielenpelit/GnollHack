@@ -544,7 +544,7 @@ learn(VOID_ARGS)
             book->spestudied++;
             exercise(A_WIS, TRUE); /* extra study */
 
-            if (spl_book[i].sp_matcomp > 0)
+            if (spl_book[i].sp_matcomp > 0 && learning_spellbook_yields_castings(spellid(i)))
             {
                 addedamount = matlists[spl_book[i].sp_matcomp].spellsgained;
                 spl_book[i].sp_amount += addedamount;
@@ -585,7 +585,7 @@ learn(VOID_ARGS)
             incr_spell_nknow(i, 1);
             book->spestudied++;
 
-            if (spl_book[i].sp_matcomp > 0)
+            if (spl_book[i].sp_matcomp > 0 && learning_spellbook_yields_castings(spellid(i)))
             {
                 addedamount = matlists[spl_book[i].sp_matcomp].spellsgained;
                 spl_book[i].sp_amount += addedamount;
@@ -2182,6 +2182,11 @@ int spell, booktype;
         else
             Sprintf(buf, "Other:            %s", "Bypasses magic resistance for non-unique monsters");
         
+        putstr(datawin, ATR_INDENT_AT_COLON, buf);
+    }
+    if (objects[booktype].oc_spell_flags & S1_FLAGS_SPELLBOOK_DOES_NOT_YIELD_CASTINGS)
+    {
+        Sprintf(buf, "Other:            %s", "Learning does not yield castings");
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
@@ -5006,7 +5011,7 @@ struct obj *obj;
         spl_book[i].sp_lev = (schar)objects[otyp].oc_spell_level;
         spl_book[i].sp_matcomp = objects[otyp].oc_material_components;
         if(spl_book[i].sp_matcomp)
-            spl_book[i].sp_amount = matlists[spl_book[i].sp_matcomp].spellsgained; /* Some amount in the beginning */
+            spl_book[i].sp_amount = learning_spellbook_yields_castings(spellid(i)) ? matlists[spl_book[i].sp_matcomp].spellsgained : 0; /* Some amount in the beginning */
         else
             spl_book[i].sp_amount = -1;
         spl_book[i].sp_cooldownlength = (int)objects[otyp].oc_spell_cooldown;

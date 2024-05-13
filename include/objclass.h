@@ -631,6 +631,8 @@ struct objclass {
 
 #define S1_FLAGS_EFFECT_USES_SAVING_THROW_MASK        0x000FF000UL
 
+#define S1_FLAGS_SPELLBOOK_DOES_NOT_YIELD_CASTINGS    0x00100000UL
+
 #define S2_NONE                                       0x00000000UL
 #define POTFLAGS_NONE                                 0x00000000UL
 #define POTFLAGS_CURSED_CURE_SICKNESS                 0x00000001UL
@@ -1270,5 +1272,8 @@ struct fruit {
 
 #define has_spell_otyp_per_level_bonus(otyp) \
     ((objects[otyp].oc_spell_flags & S1_LDMG_IS_PER_LEVEL_DMG_INCREASE) != 0 && objects[otyp].oc_spell_per_level_step > 0)
+
+#define learning_spellbook_yields_castings(otyp) \
+    ((objects[otyp].oc_spell_flags & S1_FLAGS_SPELLBOOK_DOES_NOT_YIELD_CASTINGS) == 0)
 
 #endif /* OBJCLASS_H */

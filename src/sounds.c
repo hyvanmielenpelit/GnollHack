@@ -11018,7 +11018,7 @@ struct monst* mtmp;
             Your_multi_ex(ATR_NONE, CLR_MSG_POSITIVE, no_multiattrs, multicolors, "knowledge of \'%s\' is %s.", splname, spellknow(i) ? "keener" : "restored");
             display_popup_text(learnbuf, "Knowledge Keener", POPUP_TEXT_GENERAL, ATR_NONE, CLR_MSG_POSITIVE, NO_GLYPH, POPUP_FLAGS_NONE);
 
-            if (spl_book[i].sp_matcomp > 0)
+            if (spl_book[i].sp_matcomp > 0 && learning_spellbook_yields_castings(spellid(i)))
             {
                 addedamount = matlists[spl_book[i].sp_matcomp].spellsgained;
                 spl_book[i].sp_amount += addedamount;
@@ -11040,7 +11040,7 @@ struct monst* mtmp;
 
         incr_spell_nknow(i, 1);
 
-        if (spl_book[i].sp_matcomp > 0)
+        if (spl_book[i].sp_matcomp > 0 && learning_spellbook_yields_castings(spellid(i)))
         {
             addedamount = matlists[spl_book[i].sp_matcomp].spellsgained;
             spl_book[i].sp_amount += addedamount;

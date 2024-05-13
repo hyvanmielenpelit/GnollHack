@@ -2023,6 +2023,15 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             }
         }
 
+        if (objects[otyp].oc_class == SPBOOK_CLASS)
+        {
+            if (objects[otyp].oc_spell_flags & S1_FLAGS_SPELLBOOK_DOES_NOT_YIELD_CASTINGS)
+            {
+                Sprintf(buf, "Other:                  %s", "Learning does not yield castings");
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+            }
+        }
+
         if (objects[otyp].oc_class == POTION_CLASS)
         {
             if (objects[otyp].oc_potion_normal_dice > 0 || objects[otyp].oc_potion_normal_diesize > 0 || objects[otyp].oc_potion_normal_plus != 0)
