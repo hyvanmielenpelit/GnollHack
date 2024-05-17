@@ -4740,7 +4740,7 @@ SPELL("power word kill",   "preposterous", None, "ancient necromantic magic", "K
     12, 300, A_MAX_WIS_CHA, 6, 0, 10, -12, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 0, 0, 0,
     S1_NO_SOMATIC_COMPONENT | S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY | S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_CON, S2_NONE, ALL_TARGETS, AD_DRAY, CLR_MAGENTA, OBJECT_SOUNDSET_SPELLBOOK,
     O1_NONE, O2_NONE, O3_NONE, O4_VERY_RARE, O5_NONE, O6_NONE),
-SPELL("armageddon",     "pitch black", None, "long-forgotten necromantic magic", "Kills all creatures on the level.\nThe spell has to be worded carefully or else it also kills the caster.",
+SPELL("armageddon",     "pitch black", None, "long-forgotten necromantic magic", "Kills all creatures on the level.\nMust be worded carefully or else it also kills the caster.",
     P_NECROMANCY_SPELL,2, 14,50,
     12, 600, A_MAX_WIS_CHA, 0, 255, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0,
     S1_NO_SOMATIC_COMPONENT | S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY | S1_FLAGS_SPELLBOOK_DOES_NOT_YIELD_CASTINGS, S2_NONE, ALL_TARGETS, AD_DETH, CLR_BLACK, OBJECT_SOUNDSET_SPELLBOOK,
