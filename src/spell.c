@@ -1196,7 +1196,7 @@ int* spell_no;
 {
     winid tmpwin;
     int i, n, how, splnum;
-    char buf[BUFSIZ], descbuf[BUFSZ];
+    char buf[BUFSZ * 10], descbuf[BUFSZ * 8];
     menu_item* selected;
     anything any;
     const char* nodesc = "(No short description)";
@@ -1220,6 +1220,12 @@ int* spell_no;
                 if (OBJ_ITEM_DESC(spellid(splnum)))
                 {
                     Strcpy(descbuf, OBJ_ITEM_DESC(spellid(splnum)));
+                    char* p;
+                    for (p = descbuf; *p; p++)
+                    {
+                        if (*p == '\n')
+                            *p = ' ';
+                    }
                 }
                 else
                     Strcpy(descbuf, nodesc);
@@ -3884,12 +3890,17 @@ int *spell_no;
 
 
             //Shorten description, if needed
-            char shorteneddesc[BUFSZ] = "";
-            char fulldesc[BUFSZ];
-
             if(OBJ_ITEM_DESC(spellid(splnum)))
             {
+                char shorteneddesc[BUFSZ] = "";
+                char fulldesc[BUFSZ * 8];
                 Strcpy(fulldesc, OBJ_ITEM_DESC(spellid(splnum)));
+                char* p;
+                for (p = fulldesc; *p; p++)
+                {
+                    if (*p == '\n')
+                        *p = ' ';
+                }
 
                 if (strlen(fulldesc) > 57)
                     Strncpy(shorteneddesc, fulldesc, 57);
@@ -4275,7 +4286,15 @@ int splaction;
     print_spell_level_symbol(levelbuf, spellid(splnum));
     if (OBJ_ITEM_DESC(spellid(splnum)))
     {
-        Sprintf(descbuf, " (%s)", OBJ_ITEM_DESC(spellid(splnum)));
+        char fulldescbuf[BUFSZ];
+        Strcpy(fulldescbuf, OBJ_ITEM_DESC(spellid(splnum)));
+        char* p;
+        for (p = fulldescbuf; *p; p++)
+        {
+            if (*p == '\n')
+                *p = ' ';
+        }
+        Sprintf(descbuf, " (%s)", fulldescbuf);
     }
     else
         Strcpy(descbuf, "");
