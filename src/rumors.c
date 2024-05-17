@@ -377,7 +377,7 @@ int mechanism;
                            : (!rn2(3) ? "casually "
                                       : (rn2(2) ? "nonchalantly " : ""))));
         //verbalize1(line);
-        popup_talk_line(mtmp, line);
+        popup_talk_line_ex(mtmp, line, ATR_NONE, CLR_MSG_HINT, TRUE, TRUE);
         /* [WIS exercized by getrumor()] */
         return;
     case BY_COOKIE:
@@ -401,8 +401,8 @@ int mechanism;
     else if(title)
         Strcpy(titlebuf, title);
 
-    pline1(line);
-    display_popup_text(line, titlebuf, POPUP_TEXT_MESSAGE, ATR_NONE, NO_COLOR, NO_GLYPH, POPUP_FLAGS_ADD_QUOTES);
+    pline_ex1(ATR_NONE, CLR_MSG_HINT, line);
+    display_popup_text(line, titlebuf, POPUP_TEXT_MESSAGE, ATR_NONE, CLR_MSG_HINT, NO_GLYPH, POPUP_FLAGS_ADD_QUOTES);
 
 }
 
@@ -598,22 +598,25 @@ struct monst *oracl;
 
     if (!oracl)
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         There("is no one here to consult.");
         return 0;
     }
     else if (!is_peaceful(oracl)) 
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("%s is in no mood for consultations.", Monnam(oracl));
         return 0;
     }
     else if (!umoney) 
     {
-        You("have no money.");
+        play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+        You_ex1_popup("have no money.", "No Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
         return 0;
     }
-
-    if (Deaf)
+    else if (Deaf)
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s says something but you cannot hear anything.", Monnam(oracl));
         return 1;
     }
@@ -629,7 +632,8 @@ struct monst *oracl;
     case 'y':
         if (umoney < minor_cost) 
         {
-            You_ex(ATR_NONE, CLR_MSG_FAIL, "don't even have enough money for that!");
+            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
+            You_ex1_popup("don't even have enough money for that!", "Not Enough Money", ATR_NONE, CLR_MSG_FAIL, NO_GLYPH, POPUP_FLAGS_NONE);
             return 0;
         }
 

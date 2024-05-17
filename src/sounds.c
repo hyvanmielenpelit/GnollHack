@@ -4826,9 +4826,9 @@ struct monst* mtmp;
             popup_talk_line_ex(mtmp, rumorbuf, ATR_NONE, CLR_MSG_GOD, TRUE, FALSE);
         }
         else
-            verbalize_ex(ATR_NONE, CLR_MSG_TALK_NORMAL, "%s", rumorbuf);
+            verbalize_ex(ATR_NONE, CLR_MSG_HINT, "%s", rumorbuf);
 
-        display_popup_text(rumorbuf, "Advice", POPUP_TEXT_ADVICE, ATR_NONE, is_death ? CLR_MSG_GOD : NO_COLOR, NO_GLYPH, POPUP_FLAGS_ADD_QUOTES);
+        display_popup_text(rumorbuf, "Advice", POPUP_TEXT_ADVICE, ATR_NONE, is_death ? CLR_MSG_GOD : CLR_MSG_HINT, NO_GLYPH, POPUP_FLAGS_ADD_QUOTES);
 
         mtmp->told_rumor = TRUE;
     }
