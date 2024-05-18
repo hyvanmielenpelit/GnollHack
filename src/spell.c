@@ -4286,7 +4286,7 @@ int splaction;
     print_spell_level_symbol(levelbuf, spellid(splnum));
     if (OBJ_ITEM_DESC(spellid(splnum)))
     {
-        char fulldescbuf[BUFSZ];
+        char fulldescbuf[BUFSZ * 8];
         Strcpy(fulldescbuf, OBJ_ITEM_DESC(spellid(splnum)));
         char* p;
         for (p = fulldescbuf; *p; p++)
