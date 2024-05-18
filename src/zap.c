@@ -11926,7 +11926,6 @@ unsigned long scflags;
     return mon;
 }
 
-
 void
 summondemon(spl_otyp)
 int spl_otyp;
@@ -12062,18 +12061,24 @@ int spl_otyp UNUSED;
 
 }
 
-
-
-
 void
-armageddon()
+armageddon(VOID_ARGS)
 {
     struct monst* mon;
-    int killstyle = rn2(3); //0 = all monsters, but not pets or you, 1 = all monsters and pets, but not you, 2 = also you
+    int killstyle = 2; //0 or less = all monsters, but not pets or you, 1 = all monsters and pets, but not you, 2 or higher = also you
+    if (Luck >= 0)
+    {
+        int stylemax = 3;
+        if (Luck <= LUCKMAX / 2)
+            stylemax++;
+        if (P_SKILL_LEVEL(P_NECROMANCY_SPELL) == P_GRAND_MASTER)
+            stylemax--;
+        killstyle = rn2(stylemax);
+    }
 
     for (mon = fmon; mon; mon = mon->nmon)
     {
-        if (is_tame(mon) && killstyle == 0)
+        if (is_tame(mon) && killstyle <= 0)
             continue;
 
         if(!DEADMONSTER(mon))
@@ -12083,15 +12088,14 @@ armageddon()
         }
     }
 
-    if (killstyle == 2)
+    if (killstyle >= 2)
     {
-        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Finally, the spell catches up on you... You die.");
+        pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Finally, the deadly spell catches up on you... You die.");
         Strcpy(killer.name, "armageddon");
         killer.format = KILLED_BY_AN;
         done(DIED);
     }
 }
-
 
 void
 timestop(duration)
@@ -12100,9 +12104,7 @@ int duration;
     pline_ex(ATR_NONE, CLR_MSG_SPELL, "The flow of time seems to slow down!");
     context.time_stopped = TRUE;
     begin_timestoptimer((long)duration);
-
 }
-
 
 int
 mon_to_zombie(montype)
@@ -12205,7 +12207,6 @@ int otyp;
         break;
     }
     return NON_PM;
-
 }
 
 void
