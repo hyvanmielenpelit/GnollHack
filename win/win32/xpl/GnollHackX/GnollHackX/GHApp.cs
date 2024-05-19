@@ -422,8 +422,6 @@ namespace GnollHackX
         {
             get
             {
-                return true; //SkiaSharp 2.88.8 should support Mali GPUs
-#if false
 #if GNH_MAUI
                 return true;
 #else
@@ -479,7 +477,6 @@ namespace GnollHackX
                         isDoogee = true;
                 }
                 return isGoogleMali || isSamsungMali || isVivo || isAlldocube || isDoogee ? false : GHConstants.IsGPUDefault;
-#endif
 #endif
             }
         }
