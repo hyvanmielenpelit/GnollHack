@@ -5075,7 +5075,7 @@ nextclass:
        nothing has been listed (because there isn't anyhing to list;
        recognized via any.a_char still being zero; the n==0 case above
        gets skipped for perm_invent), put something into the menu */
-    if (iflags.perm_invent && !lets && !any.a_char) 
+    if (iflags.perm_invent && !lets && !invent) /* Changed any.a_char to invent, since the previous didn't seem to work anymore */
     {
         any = zeroany;
         add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
