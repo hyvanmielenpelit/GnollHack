@@ -173,6 +173,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\EditorPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\VersionPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\Game\GameMenuPage.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Pages\Game\WikiPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\MainPage.xaml.cs" />
 		<None Remove="Assets\gnollhack-icon-v2-512.png" />
 		<None Remove="Assets\UI\autostash.png" />
@@ -274,6 +275,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\Game\GamePage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\Game\NamePage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\Game\OutRipPage.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Pages\Game\WikiPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\MainPage.xaml.cs" />
 	</ItemGroup>
 	

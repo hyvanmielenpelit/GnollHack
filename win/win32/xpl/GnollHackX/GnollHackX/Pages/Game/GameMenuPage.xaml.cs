@@ -42,8 +42,24 @@ namespace GnollHackX.Pages.Game
             }
 
             btnOptions.IsVisible = btnMessages.IsVisible = GHApp.DeveloperMode;
-            btnGC.IsVisible = btnDebug.IsVisible = btnRunTests.IsVisible =
+            btnGC.IsVisible = btnDebug.IsVisible = 
                 GHApp.DeveloperMode && GHApp.DebugLogMessages;
+        }
+
+        public GameMenuPage(GamePage gamePage, bool isLimited) : this(gamePage)
+        {
+            if(isLimited)
+            {
+                btnSave.IsVisible = false;
+                btnQuit.IsVisible = false;
+                btnSettings.IsVisible = false;
+                btnOptions.IsVisible = false;
+                btnMessages.IsVisible = false;
+                btnGC.IsVisible = false;
+                btnDebug.IsVisible = false;
+                btnVersion.IsVisible = false;
+                btnTips.IsVisible = false;
+            }
         }
 
         private async void btnSave_Clicked(object sender, EventArgs e)
@@ -106,7 +122,7 @@ namespace GnollHackX.Pages.Game
         {
             MainLayout.IsEnabled = true;
             btnOptions.IsVisible = btnMessages.IsVisible = GHApp.DeveloperMode;
-            btnGC.IsVisible = btnDebug.IsVisible = btnRunTests.IsVisible =
+            btnGC.IsVisible = btnDebug.IsVisible = 
                 GHApp.DeveloperMode && GHApp.DebugLogMessages;
         }
 
@@ -241,6 +257,15 @@ namespace GnollHackX.Pages.Game
                 await DisplayAlert("Error Creating Message File", "An error occurred while creating the message file: " + ex.Message, "OK");
             }
 
+            MainLayout.IsEnabled = true;
+        }
+
+        private async void btnWiki_Clicked(object sender, EventArgs e)
+        {
+            MainLayout.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            var wikiPage = new WikiPage("Wiki", GHConstants.GnollHackWikiPage);
+            await App.Current.MainPage.Navigation.PushModalAsync(wikiPage);
             MainLayout.IsEnabled = true;
         }
     }

@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:gnollhackclient="clr-namespace:GnollHackM" 
+             xmlns:gnh="clr-namespace:GnollHackM" 
              xmlns:controls="clr-namespace:GnollHackM"
              BackgroundColor="Black"
              x:Class="GnollHackM.DisplayFilePage"
              Appearing="ContentPage_Appearing">
     
         <Grid>
-            <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
             <Grid x:Name="MainGrid" MaximumWidthRequest="900" RowSpacing="6" HorizontalOptions="Center" VerticalOptions="Fill" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -19,7 +19,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Label x:Name="HeaderLabel" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="Black" FontFamily="Immortal"/>
-                <gnollhackclient:CustomLabel Grid.Row="1" x:Name="TextLabel" IsVisible="False" VerticalTextAlignment="Start" HorizontalOptions="Center" VerticalOptions="Fill" Text="" TextColor="Black" BackgroundColor="Transparent"
+                <gnh:CustomLabel Grid.Row="1" x:Name="TextLabel" IsVisible="False" VerticalTextAlignment="Start" HorizontalOptions="Center" VerticalOptions="Fill" Text="" TextColor="Black" BackgroundColor="Transparent"
                         FontFamily="DejaVuSansMono" FontSize="13" IsScrollable="True" />
                 <WebView Grid.Row="1" x:Name="DisplayWebView" IsVisible="False" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent" />
                 <controls:CustomImageButton Grid.Row="2" Text="Close" x:Name="CloseButton" IsVisible="True" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" WidthRequest="280" HeightRequest="60" HorizontalOptions="Center" />

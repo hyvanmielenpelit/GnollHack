@@ -3016,6 +3016,7 @@ namespace GnollHackX.Pages.Game
                 GetLineCaption.Text += " " + linesuffix;
 
             GetLineCaption.TextColor = clr;
+
             GetLineEntryText.Text = "";
             GetLineEntryText.MaxLength = GHConstants.BUFSZ - 1;
             GetLineQuestionMarkButton.IsVisible = false;
@@ -16830,6 +16831,28 @@ namespace GnollHackX.Pages.Game
                     GotoTurnEntryText.Keyboard = Keyboard.Default;
                     GotoTurnEntryText.Placeholder = "Enter regular expression";
                     break;
+            }
+        }
+
+        private async void GetLineCaptionTapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            switch (_getLineStyle)
+            {
+                case (int)getline_types.GETLINE_WISHING:
+                case (int)getline_types.GETLINE_GENESIS:
+                case (int)getline_types.GETLINE_POLYMORPH:
+                case (int)getline_types.GETLINE_GENOCIDE:
+                case (int)getline_types.GETLINE_MONSTER:
+                case (int)getline_types.GETLINE_MONSTER_CLASS:
+                    GetLineCaption.IsEnabled = false;
+                    GHApp.PlayButtonClickedSound();
+                    var menuPage = new GameMenuPage(this, true);
+                    await App.Current.MainPage.Navigation.PushModalAsync(menuPage);
+                    GetLineCaption.IsEnabled = true;
+                    break;
+                default:
+                    break;
+
             }
         }
     }

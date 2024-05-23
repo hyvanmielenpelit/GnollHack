@@ -288,7 +288,11 @@
                 <Grid WidthRequest  ="440" HorizontalOptions  ="Center" VerticalOptions="Start" Margin="0,50,0,10" >
                     <Frame x:Name="GetLineFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout x:Name="GetLineLayout" Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center">
-                            <Label x:Name="GetLineCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
+                            <Label x:Name="GetLineCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="GetLineCaptionTapGestureRecognizer_Tapped" />
+                                </Label.GestureRecognizers>
+                            </Label>
                             <StackLayout Spacing="6" Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
                                 <Entry x:Name="GetLineEntryText" WidthRequest="320" HorizontalOptions="Center" Placeholder="Enter the text here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
                                        HorizontalTextAlignment="Center" FontSize="20" TextChanged="GetLineEntryText_TextChanged" />

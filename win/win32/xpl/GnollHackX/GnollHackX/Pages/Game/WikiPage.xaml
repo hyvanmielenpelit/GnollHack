@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:gnh="clr-namespace:GnollHackX" 
+             xmlns:controls="clr-namespace:GnollHackX.Controls"
+             BackgroundColor="Black"
+             x:Class="GnollHackX.Pages.Game.WikiPage">
+    <ContentPage.Content>
+        <Grid>
+            <WebView x:Name="DisplayWebView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent" />
+            <controls:CustomImageButton Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" 
+                                        WidthRequest="280" HeightRequest="60" HorizontalOptions="Center" VerticalOptions="End" Margin="0,10" />
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
