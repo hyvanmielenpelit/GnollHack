@@ -1754,9 +1754,9 @@ struct monst* origmonst;
 
 int
 uthitt(t, otmp, origmonst)
-struct trap* t;
-struct obj* otmp;
-struct monst* origmonst;
+struct trap* t UNUSED;
+struct obj* otmp UNUSED;
+struct monst* origmonst UNUSED;
 {
     return 0;
 }
