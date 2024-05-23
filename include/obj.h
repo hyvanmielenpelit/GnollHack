@@ -431,30 +431,6 @@ enum elemental_enchantments {
 #define is_obj_generated_blessed(o)                                            \
     ((objects[(o)->otyp].oc_flags2 & O2_GENERATED_BLESSED) != 0)
 
-#define oresist_disintegration(o)                                       \
-    ((get_obj_oc_flags(o) & O1_DISINTEGRATION_RESISTANT) != 0 || is_obj_indestructible(o) \
-     || ((o)->otyp == CORPSE && pm_resists_disint(&mons[(o)->corpsenm])) \
-     || obj_resists(o, 2, 50) \
-     || is_quest_artifact(o) )
-
-#define oresist_fire(o)                                       \
-    ((get_obj_oc_flags(o) & O1_FIRE_RESISTANT) != 0 || is_obj_indestructible(o) \
-     || ((o)->otyp == CORPSE && pm_resists_fire(&mons[(o)->corpsenm])) \
-     || obj_resists(o, 0, 0) \
-     || is_quest_artifact(o) )
-
-#define oresist_cold(o)                                       \
-    ((get_obj_oc_flags(o) & O1_COLD_RESISTANT) != 0 || is_obj_indestructible(o) \
-     || ((o)->otyp == CORPSE && pm_resists_cold(&mons[(o)->corpsenm])) \
-     || obj_resists(o, 0, 0) \
-     || is_quest_artifact(o) )
-
-#define oresist_elec(o)                                       \
-    ((get_obj_oc_flags(o) & O1_LIGHTNING_RESISTANT) != 0 || is_obj_indestructible(o) \
-     || ((o)->otyp == CORPSE && pm_resists_elec(&mons[(o)->corpsenm])) \
-     || obj_resists(o, 0, 0) \
-     || is_quest_artifact(o) )
-
 /* Armor */
 #define is_otyp_shield(otyp)          \
     (objects[otyp].oc_class == ARMOR_CLASS \
@@ -956,7 +932,6 @@ enum mythic_power_types {
 #define MYTHIC_POWER_FLAG_NO_THROWN_OR_AMMO     0x00000040 /* No thrown weapons or ammo for this power */
 #define MYTHIC_POWER_FLAG_THROWN_WEAPONS_ONLY   0x00000080 /* Works only for thrown weapons */
 
-
 enum mythic_prefix_power_types {
     MYTHIC_PREFIX_POWER_INDEX_LEVEL_DRAIN = 0,
     MYTHIC_PREFIX_POWER_INDEX_ARMOR_MANA_GAIN,
@@ -1134,6 +1109,9 @@ extern NEARDATA const struct mythic_power_definition mythic_suffix_powers[MAX_MY
 #define has_obj_mythic_spell_casting(o)         has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_SPELL_CASTING)
 #define has_obj_mythic_great_accuracy(o)        has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_GREAT_ACCURACY)
 #define has_obj_mythic_great_damage(o)          has_obj_mythic_prefix_power(o, MYTHIC_PREFIX_POWER_INDEX_GREAT_DAMAGE)
+#define has_obj_mythic_fire_resistance(o)       has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_FIRE_RESISTANCE)
+#define has_obj_mythic_cold_resistance(o)       has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_COLD_RESISTANCE)
+#define has_obj_mythic_shock_resistance(o)      has_obj_mythic_suffix_power(o, MYTHIC_SUFFIX_POWER_INDEX_SHOCK_RESISTANCE)
 
 #define obj_counts_as_silver(o) ((o)->material == MAT_SILVER || has_obj_mythic_silver_damage(o))
 
@@ -1158,6 +1136,33 @@ extern NEARDATA const struct mythic_power_definition mythic_suffix_powers[MAX_MY
 #define is_light_source_empty(o) \
         (((o)->oclass == TOOL_CLASS && (objects[(o)->otyp].oc_subtyp == TOOLTYPE_LANTERN || objects[(o)->otyp].oc_subtyp == TOOLTYPE_LAMP) && (o)->otyp != MAGIC_LAMP && (o)->age == 0L && !((o)->lamplit) && ((o)->speflags & SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO) != 0) \
         || ((o)->otyp == MAGIC_LAMP && (o)->special_quality == 0 && ((o)->speflags & SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO) != 0))
+
+#define oresist_disintegration(o)                                       \
+    ((get_obj_oc_flags(o) & O1_DISINTEGRATION_RESISTANT) != 0 || is_obj_indestructible(o) \
+     || ((o)->otyp == CORPSE && pm_resists_disint(&mons[(o)->corpsenm])) \
+     || obj_resists(o, 2, 50) \
+     || is_quest_artifact(o) )
+
+#define oresist_fire(o)                                       \
+    ((get_obj_oc_flags(o) & O1_FIRE_RESISTANT) != 0 || is_obj_indestructible(o) \
+     || has_obj_mythic_fire_resistance(o) \
+     || ((o)->otyp == CORPSE && pm_resists_fire(&mons[(o)->corpsenm])) \
+     || obj_resists(o, 0, 0) \
+     || is_quest_artifact(o) )
+
+#define oresist_cold(o)                                       \
+    ((get_obj_oc_flags(o) & O1_COLD_RESISTANT) != 0 || is_obj_indestructible(o) \
+     || has_obj_mythic_cold_resistance(o) \
+     || ((o)->otyp == CORPSE && pm_resists_cold(&mons[(o)->corpsenm])) \
+     || obj_resists(o, 0, 0) \
+     || is_quest_artifact(o) )
+
+#define oresist_elec(o)                                       \
+    ((get_obj_oc_flags(o) & O1_LIGHTNING_RESISTANT) != 0 || is_obj_indestructible(o) \
+     || has_obj_mythic_shock_resistance(o) \
+     || ((o)->otyp == CORPSE && pm_resists_elec(&mons[(o)->corpsenm])) \
+     || obj_resists(o, 0, 0) \
+     || is_quest_artifact(o) )
 
 /* Manuals */
 enum manual_types

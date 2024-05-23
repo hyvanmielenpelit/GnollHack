@@ -3470,6 +3470,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             | O1_SPELLTOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD) 
             || (ocflags5 & (O5_MBAG_DESTROYING_ITEM | O5_CANCELLATION_NO_EXPLOSION_BUT_DRAIN | O5_PERMANENTLY_GREASED))
             || otyp_shines_magical_light(otyp)
+            || (obj && has_obj_mythic_fire_resistance(obj)) || (obj && has_obj_mythic_cold_resistance(obj)) || (obj && has_obj_mythic_shock_resistance(obj))
             || is_otyp_special_praying_item(otyp) || otyp_consumes_nutrition_every_20_rounds(otyp)
             || (obj ? is_death_enchantable(obj) : is_otyp_death_enchantable(otyp)) //|| is_otyp_elemental_enchantable(otyp) 
             )
@@ -3480,6 +3481,74 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             putstr(datawin, ATR_HEADING, buf);
 
             /* Flags here */
+            if (ocflags & O1_INDESTRUCTIBLE)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Indestructible", powercnt);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (ocflags & O1_DISINTEGRATION_RESISTANT)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Disintegration resistant", powercnt);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if ((ocflags & O1_FIRE_RESISTANT) != 0 || (obj && has_obj_mythic_fire_resistance(obj)))
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Fire resistant", powercnt);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if ((ocflags & O1_COLD_RESISTANT) != 0 || (obj && has_obj_mythic_cold_resistance(obj)))
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Cold resistant", powercnt);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if ((ocflags & O1_LIGHTNING_RESISTANT) != 0 || (obj && has_obj_mythic_shock_resistance(obj)))
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Lightning resistant", powercnt);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (ocflags & O1_CORROSION_RESISTANT)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Corrosion resistant", powercnt);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (ocflags & O1_RUST_RESISTANT)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Rust-proof", powercnt);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (ocflags & O1_ROT_RESISTANT)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Rot-resistant", powercnt);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (ocflags & O1_POLYMORPH_RESISTANT)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Polymorph resistant", powercnt);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+
+            if (obj ? is_death_enchantable(obj) : is_otyp_death_enchantable(otyp))
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Death-magically enchantable", powercnt);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+
+            if (ocflags & O1_NOT_CURSEABLE)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Cannot be cursed", powercnt);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
             if (ocflags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED)
             {
                 powercnt++;
@@ -3498,66 +3567,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 Sprintf(buf, " %2d - Undroppable when cursed", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
             }
-            if (ocflags & O1_COLD_RESISTANT)
-            {
-                powercnt++;
-                Sprintf(buf, " %2d - Cold resistant", powercnt);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
-            if (ocflags & O1_CORROSION_RESISTANT)
-            {
-                powercnt++;
-                Sprintf(buf, " %2d - Corrosion resistant", powercnt);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
-            if (ocflags & O1_DISINTEGRATION_RESISTANT)
-            {
-                powercnt++;
-                Sprintf(buf, " %2d - Disintegration resistant", powercnt);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
-            if (ocflags & O1_FIRE_RESISTANT)
-            {
-                powercnt++;
-                Sprintf(buf, " %2d - Fire resistant", powercnt);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
-            if (ocflags & O1_INDESTRUCTIBLE)
-            {
-                powercnt++;
-                Sprintf(buf, " %2d - Indestructible", powercnt);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
-            if (ocflags & O1_LIGHTNING_RESISTANT)
-            {
-                powercnt++;
-                Sprintf(buf, " %2d - Lightning resistant", powercnt);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
-            if (ocflags & O1_NOT_CURSEABLE)
-            {
-                powercnt++;
-                Sprintf(buf, " %2d - Cannot be cursed", powercnt);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
-            if (ocflags & O1_POLYMORPH_RESISTANT)
-            {
-                powercnt++;
-                Sprintf(buf, " %2d - Polymorph resistant", powercnt);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
-            if (ocflags & O1_RUST_RESISTANT)
-            {
-                powercnt++;
-                Sprintf(buf, " %2d - Rust-proof", powercnt);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
-            if (ocflags & O1_ROT_RESISTANT)
-            {
-                powercnt++;
-                Sprintf(buf, " %2d - Rot-resistant", powercnt);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
+
             if (ocflags & O1_IS_ARMOR_WHEN_WIELDED)
             {
                 powercnt++;
@@ -3576,6 +3586,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 Sprintf(buf, " %2d - Is weapon when worn", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
             }
+
             if (otyp_shines_magical_light(otyp))
             {
                 powercnt++;
@@ -3592,12 +3603,6 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Consumes nutrition every 20 rounds when worn", powercnt);
-                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-            }
-            if (obj ? is_death_enchantable(obj) : is_otyp_death_enchantable(otyp))
-            {
-                powercnt++;
-                Sprintf(buf, " %2d - Death-magically enchantable", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
             }
             if (ocflags5 & O5_MBAG_DESTROYING_ITEM)
