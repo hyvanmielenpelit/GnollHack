@@ -4722,6 +4722,104 @@ boolean stop_at_first_hit_object;
     return hitanything;
 }
 
+
+/*
+ * Trap t was hit by the effect of the wand/spell otmp.  Return
+ * non-zero if the wand/spell had any effect.
+ */
+int
+bhitt(t, otmp, origmonst)
+struct trap* t;
+struct obj* otmp;
+struct monst* origmonst;
+{
+    if (!otmp || !t)
+        return 0;
+
+    int res = 0;
+    boolean learn_it = FALSE;
+    int otyp = otmp->otyp;
+    int ttyp = t->ttyp;
+    boolean iswand = objects[otyp].oc_class == WAND_CLASS;
+    boolean zapped_by_u = origmonst == &youmonst;
+    boolean gainwandskill = iswand && zapped_by_u && (otmp->speflags & SPEFLAGS_BEING_BROKEN) == 0;
+    int wandskilladded = 0;
+    int tx = t->tx, ty = t->ty;
+
+    switch (otyp) 
+    {
+    case WAN_CANCELLATION:
+        switch (ttyp)
+        {
+        case TELEP_TRAP:
+        case LEVEL_TELEP:
+        case MAGIC_TRAP:
+        case ANTI_MAGIC_TRAP:
+        case POLY_TRAP:
+            if (cansee(tx, ty))
+            {
+                play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, 0, tx, ty, FALSE);
+                play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, tx, ty);
+                special_effect_wait_until_action(0);
+                if (t->tseen)
+                {
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The %s vanishes in a puff of smoke!", trap_type_definitions[ttyp].name);
+                    learn_it = TRUE;
+                }
+                else
+                    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "see a puff of smoke!");
+            }
+            deltrap(t);
+            res = 1;
+            if (cansee(tx, ty))
+            {
+                special_effect_wait_until_end(0);
+                newsym(tx, ty);
+            }
+            break;
+        case MAGIC_PORTAL:
+        case MODRON_PORTAL:
+            if (cansee(tx, ty))
+            {
+                play_sfx_sound_at_location(SFX_ITEM_APPEARS, tx, ty);
+                learn_it = TRUE;
+                if (t->tseen)
+                {
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "The %s scintillates for a moment, but the effect then subsides.", trap_type_definitions[ttyp].name);
+                }
+                else
+                {
+                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "A scintillating %s suddenly appears.  The scintillation then stops.", trap_type_definitions[ttyp].name);
+                }
+            }
+            t->tseen = 1;
+            res = 1;
+            newsym(tx, ty);
+            break;
+        default:
+            break;
+        }
+
+        if (res)
+        {
+            if (gainwandskill)
+                wandskilladded = 1;
+            learn_it = TRUE;
+        }
+        break;
+    default:
+        break;
+    }
+
+    if (wandskilladded > 0)
+        use_skill(P_WAND, wandskilladded);
+    /* if effect was observable then discover the wand type provided
+       that the wand itself has been seen */
+    if (learn_it)
+        learnwand(otmp);
+    return res;
+}
+
 /*
  * zappable - returns 1 if zap is available, 0 otherwise.
  *            it removes a charge from the wand if zappable.
@@ -7823,7 +7921,7 @@ struct obj *obj;
             else if (objects[otyp].oc_dir == IMMEDIATE_TWO_TO_SIX_TARGETS)
                 hit_only_one = 4; /* 2- 6 targets based on BUC status */
 
-            (void) bhit(u.dx, u.dy, range, radius, ZAPPED_WAND, bhitm, bhito, &obj, &youmonst, hit_only_one, !!(objects[otyp].oc_spell_flags & S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
+            (void) bhit(u.dx, u.dy, range, radius, ZAPPED_WAND, bhitm, bhito, bhitt, &obj, &youmonst, hit_only_one, !!(objects[otyp].oc_spell_flags & S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
         }
         zapwrapup(); /* give feedback for obj_zapped */
 
@@ -8117,11 +8215,12 @@ int range, *skipstart, *skipend;
  *  one is revealed for a weapon, but if not a weapon is left up to fhitm().
  */
 struct monst *
-bhit(ddx, ddy, range, radius, weapon, fhitm, fhito, pobj, origmonst, hit_only_one, stop_at_first_hit_object)
+bhit(ddx, ddy, range, radius, weapon, fhitm, fhito, fhitt, pobj, origmonst, hit_only_one, stop_at_first_hit_object)
 register int ddx, ddy, range, radius;          /* direction, range, and effect radius */
 enum bhit_call_types weapon;           /* defined in hack.h */
 int FDECL((*fhitm), (MONST_P, OBJ_P, MONST_P)), /* fns called when mon/obj hit */
-    FDECL((*fhito), (OBJ_P, OBJ_P, MONST_P));
+    FDECL((*fhito), (OBJ_P, OBJ_P, MONST_P)),
+    FDECL((*fhitt), (TRAP_P, OBJ_P, MONST_P));
 struct obj **pobj; /* object tossed/used, set to NULL
                     * if object is destroyed */
 struct monst* origmonst;
@@ -8273,6 +8372,7 @@ boolean stop_at_first_hit_object;
             break;
         }
 
+        /* Drawbridges */
         if (weapon == ZAPPED_WAND && !drawbridge_hit && find_drawbridge(&x, &y))
         {
             boolean learn_it = FALSE;
@@ -8314,6 +8414,7 @@ boolean stop_at_first_hit_object;
 
         }
 
+        /* Trees */
         if (weapon == ZAPPED_WAND && !tree_hit && IS_TREE(typ))
         {
             boolean learn_it = FALSE;
@@ -8333,6 +8434,7 @@ boolean stop_at_first_hit_object;
                 learnwand(obj);
         }
 
+        /* Monsters */
         mtmp = m_at(bhitpos.x, bhitpos.y);
 
         /*
@@ -8506,6 +8608,8 @@ boolean stop_at_first_hit_object;
                 newsym(x, y);
             }
         }
+
+        /* Objects */
         if (fhito)
         {
             if (bhitpile(obj, origmonst, fhito, bhitpos.x, bhitpos.y, 0, hit_only_one, stop_at_first_hit_object))
@@ -8534,6 +8638,25 @@ boolean stop_at_first_hit_object;
                 return (struct monst *) 0;
             }
         }
+
+        /* Traps */
+        if (fhitt)
+        {
+            struct trap* t = t_at(bhitpos.x, bhitpos.y);
+            if (t)
+            {
+                int had_effect = (*fhitt)(t, obj, origmonst);
+                if (had_effect)
+                {
+                    if (obj && (weapon == ZAPPED_WAND || weapon == FLASHED_LIGHT || weapon == INVIS_BEAM))
+                        play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_HIT_OBJECT, bhitpos.x, bhitpos.y);
+
+                    range--;
+                }
+            }
+        }
+
+        /* Doors */
         if (weapon == ZAPPED_WAND && (IS_DOOR(typ) || typ == SDOOR))
         {
             switch (obj->otyp) 

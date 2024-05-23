@@ -107,6 +107,7 @@ E void FDECL(fig_transform, (ANY_P *, long));
 E int FDECL(unfixable_trouble_count, (BOOLEAN_P));
 E int FDECL(uthitm, (struct monst*, struct obj*, struct monst*));
 E int FDECL(uthito, (struct obj*, struct obj*, struct monst*));
+E int FDECL(uthitt, (struct trap*, struct obj*, struct monst*));
 E int FDECL(endlessarrows, (struct obj*, int, int));
 E struct obj* FDECL(elemental_enchant_quan, (struct obj*, int, UCHAR_P));
 E void FDECL(use_magic_whistle, (struct obj*));
@@ -4427,6 +4428,7 @@ E boolean FDECL(obj_shudders, (struct obj *));
 E void FDECL(do_osshock, (struct obj *));
 E int FDECL(bhito, (struct obj *, struct obj *, struct monst*));
 E int FDECL(bhitpile, (struct obj *, struct monst*, int (*)(OBJ_P, OBJ_P, MONST_P), int, int, SCHAR_P, UCHAR_P, BOOLEAN_P));
+E int FDECL(bhitt, (struct trap*, struct obj*, struct monst*));
 E int FDECL(zappable, (struct obj *));
 E void FDECL(zapnodir, (struct obj *));
 E int NDECL(dozap);
@@ -4447,7 +4449,9 @@ E void FDECL(hit_with_hit_tile, (const char*, struct monst*, const char*, int, c
 E void FDECL(miss, (const char *, struct monst *));
 E struct monst *FDECL(bhit, (int, int, int, int, enum bhit_call_types,
                              int (*)(MONST_P, OBJ_P, MONST_P),
-                             int (*)(OBJ_P, OBJ_P, MONST_P), struct obj **, struct monst*, UCHAR_P, BOOLEAN_P));
+                             int (*)(OBJ_P, OBJ_P, MONST_P), 
+                             int (*)(TRAP_P, OBJ_P, MONST_P), 
+                             struct obj **, struct monst*, UCHAR_P, BOOLEAN_P));
 E struct monst *FDECL(boomhit, (struct obj *, int, int));
 E double FDECL(zhitm, (struct monst *, int, struct obj*, struct monst*, int, int, int, struct obj **, uchar*));
 E int FDECL(burn_floor_objects, (int, int, BOOLEAN_P, BOOLEAN_P));

@@ -388,7 +388,9 @@ struct obj *obj;
         {
             if ((mtmp = bhit(u.dx, u.dy, COLNO, 0, FLASHED_LIGHT,
                 (int FDECL((*), (MONST_P, OBJ_P, MONST_P))) 0,
-                (int FDECL((*), (OBJ_P, OBJ_P, MONST_P))) 0, &obj, &youmonst, TRUE, FALSE)) != 0)
+                (int FDECL((*), (OBJ_P, OBJ_P, MONST_P))) 0, 
+                (int FDECL((*), (TRAP_P, OBJ_P, MONST_P))) 0, 
+                &obj, &youmonst, TRUE, FALSE)) != 0)
             {
                 obj->ox = u.ux, obj->oy = u.uy;
                     (void)flash_hits_mon(mtmp, obj);
@@ -1392,7 +1394,9 @@ struct obj *obj;
     }
     mtmp = bhit(u.dx, u.dy, COLNO, 0, INVIS_BEAM,
                 (int FDECL((*), (MONST_P, OBJ_P, MONST_P))) 0,
-                (int FDECL((*), (OBJ_P, OBJ_P, MONST_P))) 0, &obj, &youmonst, TRUE, FALSE);
+                (int FDECL((*), (OBJ_P, OBJ_P, MONST_P))) 0, 
+                (int FDECL((*), (TRAP_P, OBJ_P, MONST_P))) 0, 
+                &obj, &youmonst, TRUE, FALSE);
     if (!mtmp || !haseyes(mtmp->data) || notonhead)
         return 1;
 
@@ -1559,7 +1563,7 @@ struct obj* obj;
     play_simple_player_sound(MONSTER_SOUND_TYPE_CAST);
     You_ex(ATR_NONE, CLR_MSG_HINT, "raise %s high.", yname(obj));
     exercise(A_WIS, TRUE);
-    (void)bhit(u.dx, u.dy, obj->blessed ? 4 : 3, 0, ZAPPED_WAND, uthitm, uthito,
+    (void)bhit(u.dx, u.dy, obj->blessed ? 4 : 3, 0, ZAPPED_WAND, uthitm, uthito, uthitt,
         &obj, &youmonst, TRUE, FALSE);
 
     return 1;
@@ -1748,6 +1752,14 @@ struct monst* origmonst;
     return res;
 }
 
+int
+uthitt(t, otmp, origmonst)
+struct trap* t;
+struct obj* otmp;
+struct monst* origmonst;
+{
+    return 0;
+}
 
 STATIC_OVL void
 use_bell(optr)

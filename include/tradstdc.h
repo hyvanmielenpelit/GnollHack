@@ -403,9 +403,11 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
  */
 #define OBJ_P void *
 #define MONST_P void *
+#define TRAP_P void *
 #else
 #define OBJ_P struct obj *
 #define MONST_P struct monst *
+#define TRAP_P struct trap *
 #endif
 
 #if 0

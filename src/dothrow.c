@@ -1527,7 +1527,9 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
         mon = bhit(u.dx, u.dy, range, 0,
                    tethered_weapon ? THROWN_TETHERED_WEAPON : THROWN_WEAPON,
                    (int FDECL((*), (MONST_P, OBJ_P, MONST_P))) 0,
-                   (int FDECL((*), (OBJ_P, OBJ_P, MONST_P))) 0, &obj, &youmonst, TRUE, FALSE);
+                   (int FDECL((*), (OBJ_P, OBJ_P, MONST_P))) 0, 
+                   (int FDECL((*), (TRAP_P, OBJ_P, MONST_P))) 0, 
+                   &obj, &youmonst, TRUE, FALSE);
         thrownobj = obj; /* obj may be null now */
 
         /* have to do this after bhit() so u.ux & u.uy are correct */
@@ -2657,7 +2659,9 @@ struct obj *obj;
         } else {
             mon = bhit(u.dx, u.dy, range, 0, THROWN_WEAPON,
                        (int FDECL((*), (MONST_P, OBJ_P, MONST_P))) 0,
-                       (int FDECL((*), (OBJ_P, OBJ_P, MONST_P))) 0, &obj, &youmonst, TRUE, FALSE);
+                       (int FDECL((*), (OBJ_P, OBJ_P, MONST_P))) 0, 
+                       (int FDECL((*), (TRAP_P, OBJ_P, MONST_P))) 0, 
+                       &obj, &youmonst, TRUE, FALSE);
             if (!obj)
                 return 1; /* object is gone */
             if (mon) {
