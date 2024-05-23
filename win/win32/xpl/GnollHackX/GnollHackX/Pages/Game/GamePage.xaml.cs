@@ -3818,10 +3818,10 @@ namespace GnollHackX.Pages.Game
                     if (_mainFPSCounterValue < 0)
                         _mainFPSCounterValue = 0;
                 }
-
-                /* Finally, flush */
-                canvas.Flush();
             }
+
+            /* Finally, flush */
+            canvas.Flush();
         }
 
         private float[] _gridIntervals = { 2.0f, 2.0f };
@@ -13779,6 +13779,7 @@ namespace GnollHackX.Pages.Game
                     TotalMenuHeight = y - curmenuoffset;
                 }
             }
+            canvas.Flush();
         }
         private readonly SKColor _numItemsBackgroundColor = new SKColor(228, 203, 158);
 
@@ -15104,6 +15105,7 @@ namespace GnollHackX.Pages.Game
                     TotalTextHeight = y - curmenuoffset;
                 }
             }
+            canvas.Flush();
         }
 
         private void TextCanvas_Touch(object sender, SKTouchEventArgs e)
@@ -15554,6 +15556,7 @@ namespace GnollHackX.Pages.Game
                 if (_commandFPSCounterValue < 0)
                     _commandFPSCounterValue = 0;
             }
+            canvas.Flush();
         }
 
         private void CommandCanvas_Touch(object sender, SKTouchEventArgs e)
@@ -16019,6 +16022,7 @@ namespace GnollHackX.Pages.Game
                         break;
                 }
             }
+            canvas.Flush();
         }
 
         private void TipView_Touch(object sender, SKTouchEventArgs e)
