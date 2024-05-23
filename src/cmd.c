@@ -4881,28 +4881,28 @@ int final;
     if (Super_fast)
     {
         if (Lightning_fast)
-            you_have("latent super-fastness", from_what(SUPER_FAST));
+            you_are("latently super fast", from_what(SUPER_FAST));
         else
             you_are("super fast", from_what(SUPER_FAST));
     }
     if (Ultra_fast)
     {
         if (Super_fast || Lightning_fast)
-            you_have("latent ultra-fastness", from_what(ULTRA_FAST));
+            you_are("latently ultra fast", from_what(ULTRA_FAST));
         else
             you_are("ultra fast", from_what(ULTRA_FAST));
     }
     if (Very_fast)
     {
         if (Ultra_fast || Super_fast || Lightning_fast)
-            you_have("latent very-fastness", from_what(VERY_FAST));
+            you_are("latently very fast", from_what(VERY_FAST));
         else
             you_are("very fast", from_what(VERY_FAST));
     }
     if (Fast)
     {
         if (Very_fast || Ultra_fast || Super_fast || Lightning_fast)
-            you_have("latent fastness", from_what(FAST));
+            you_are("latently fast", from_what(FAST));
         else
             you_are("fast", from_what(FAST));
     }
