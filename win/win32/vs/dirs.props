@@ -25,6 +25,7 @@
     <GnollHackDllOutputDir>$(RootDir)bin\$(Configuration)\dll\</GnollHackDllOutputDir>
     <LibDroidDir>$(RootDir)win\win32\xpl\gnollhackdroid\</LibDroidDir>
     <LibiOSDir>$(RootDir)win\win32\xpl\gnollhackios\</LibiOSDir>
+    <LibWinDir>$(RootDir)win\win32\xpl\gnollhackwin\</LibWinDir>
     <GooglePlayDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX.Android.GooglePlay\</GooglePlayDir>
     <GooglePlayInstallTimeDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX.Android.GooglePlay\InstallTime\</GooglePlayInstallTimeDir>
     <GooglePlayOnDemandDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX.Android.GooglePlay\OnDemand\</GooglePlayOnDemandDir>
@@ -36,12 +37,14 @@
     <iOSNativeReferencesDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX.iOS\Native References\</iOSNativeReferencesDir>
     <MauiAndroidLibsDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\Android\libs\</MauiAndroidLibsDir>
     <MauiiOSNativeReferencesDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\iOS\libs\</MauiiOSNativeReferencesDir>
+    <MauiWindowsLibsDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\Windows\libs\</MauiWindowsLibsDir>
     <XamarinAssetsDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX\Assets\</XamarinAssetsDir>
     <MauiAssetsDir>$(RootDir)win\win32\xpl\GnollHackM\Assets\</MauiAssetsDir>
     <AndroidGnhDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX.Android\gnh\</AndroidGnhDir>
     <iOSGnhDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX.iOS\gnh\</iOSGnhDir>
     <MauiAndroidGnhDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\Android\gnh\</MauiAndroidGnhDir>
     <MauiiOSGnhDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\iOS\gnh\</MauiiOSGnhDir>
+    <MauiWindowsGnhDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\Windows\gnh\</MauiWindowsGnhDir>
     <BankDesktopDir>$(WinWin32Dir)bank\Desktop\</BankDesktopDir>
     <BankMobileDir>$(WinWin32Dir)bank\Mobile\</BankMobileDir>
     <XamarinMainDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX\</XamarinMainDir>

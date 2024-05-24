@@ -10,8 +10,10 @@
 	<Exec Command="$(ToolsDir)dlb.exe cIf $(DatDir)dlb.lst $(BinDir)nhdat" WorkingDirectory="$(DatDir)"/>
 	<Delete Files="$(DatDir)porthelp"/>
 
-	</Target>
+ 	<Copy SourceFiles="$(BinDir)nhdat" DestinationFolder="$(MauiWindowsGnhDir)"/>
+  </Target>
   <Target Name="Clean">
 	<Delete Files="$(BinDir)nhdat"/>
+	<Delete Files="$(MauiWindowsGnhDir)nhdat"/>
   </Target>
 </Project>

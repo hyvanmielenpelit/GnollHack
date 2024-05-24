@@ -13,10 +13,13 @@ copy ..\bank\Mobile\*.* ..\xpl\GnollHackX\GnollHackX.iOS\banks
 echo Start copying GnollHackM banks
 if not exist ..\xpl\GnollHackM\Platforms\Android\banks mkdir ..\xpl\GnollHackM\Platforms\Android\banks
 if not exist ..\xpl\GnollHackM\Platforms\iOS\banks mkdir ..\xpl\GnollHackM\Platforms\iOS\banks
+if not exist ..\xpl\GnollHackM\Platforms\Windows\banks mkdir ..\xpl\GnollHackM\Platforms\Windows\banks
 del /Q ..\xpl\GnollHackM\Platforms\Android\banks\*.*
 del /Q ..\xpl\GnollHackM\Platforms\iOS\banks\*.*
+del /Q ..\xpl\GnollHackM\Platforms\Windows\banks\*.*
 echo Copying banks to M Android banks
 copy ..\bank\Mobile\*.* ..\xpl\GnollHackM\Platforms\Android\banks
 echo Copying banks to M iOS banks
 copy ..\bank\Mobile\*.* ..\xpl\GnollHackM\Platforms\iOS\banks
-
+echo Copying banks to M Windows banks
+copy ..\bank\Desktop\*.* ..\xpl\GnollHackM\Platforms\Windows\banks
