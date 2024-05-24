@@ -52,18 +52,19 @@ STATIC_PTR int NDECL(take_off);
 STATIC_DCL int FDECL(menu_remarm, (int));
 STATIC_DCL int FDECL(menu_wearmany, (int));
 STATIC_DCL void FDECL(count_worn_stuff, (struct obj **, BOOLEAN_P));
-STATIC_PTR int FDECL(accessory_or_armor_on, (struct obj *, BOOLEAN_P));
+STATIC_PTR int FDECL(accessory_or_armor_on, (struct obj *, BOOLEAN_P, long, int*));
 STATIC_DCL void FDECL(already_wearing, (const char *));
 STATIC_DCL void FDECL(item_change_sex_and_useup, (struct obj*));
 STATIC_DCL int FDECL(already_wearing_with_exchange_prompt, (const char*, struct obj*, struct obj*));
-STATIC_DCL int FDECL(exchange_worn_item, (struct obj*, struct obj*, long));
-STATIC_DCL int FDECL(take_off_covering_and_wear, (struct obj*, long));
+STATIC_DCL int FDECL(exchange_worn_item, (struct obj*, struct obj*, long, int*));
+STATIC_DCL int FDECL(take_off_covering_and_wear, (struct obj*, long, int*));
 STATIC_DCL int FDECL(add_wear_oid, (struct obj*, long));
 STATIC_DCL void NDECL(activate_take_off);
 STATIC_DCL void NDECL(activate_wear);
 STATIC_DCL void FDECL(print_covering_items, (struct obj*, char*));
 STATIC_DCL boolean FDECL(is_armor_covered, (struct obj*));
 STATIC_DCL boolean NDECL(wear_precheck);
+STATIC_DCL int FDECL(wear_oid_bit_to_index, (long));
 
 void
 off_msg(otmp)
@@ -1602,7 +1603,7 @@ struct obj* obj, *curobj;
         Sprintf(qbuf, "You are currently wearing %s. Exchange it for %s?", acxname(curobj), the(cxname(obj)));
         char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n', yndescs, (const char*)0);
         if (ans == 'y')
-            return exchange_worn_item(obj, curobj, curobj->owornmask);
+            return exchange_worn_item(obj, curobj, curobj->owornmask, (int*)0);
     }
     else
     {
@@ -1651,9 +1652,10 @@ activate_wear(VOID_ARGS)
 
 
 STATIC_OVL int
-exchange_worn_item(obj, curobj, mask)
+exchange_worn_item(obj, curobj, mask, result_style_ptr)
 struct obj* obj, *curobj;
 long mask;
+int* result_style_ptr;
 {
     if (!obj)
         return 0;
@@ -1661,85 +1663,118 @@ long mask;
     if (curobj)
         mask = curobj->owornmask; /* Override */
 
-    int takeoffcmd = curobj ? TAKEOFF_WEAR_CMD_EXCHANGE : TAKEOFF_WEAR_CMD_TAKEOFF_AND_WEAR;
-    boolean contoccupation = FALSE;
-    if (context.takeoff.command == takeoffcmd && (context.wear.what || context.wear.mask))
+    if (context.takeoff.command != TAKEOFF_WEAR_CMD_WEAR) /* Exchange prompt while wearing should be incremental and not trigger reset óf the command */
     {
-        long combinedmask = context.wear.what | context.wear.mask;
-        if (combinedmask & mask) /* Some object is being worn in the same slot */
+        int takeoffcmd = curobj ? TAKEOFF_WEAR_CMD_EXCHANGE : TAKEOFF_WEAR_CMD_TAKEOFF_AND_WEAR;
+        boolean contoccupation = FALSE;
+        if (context.takeoff.command == takeoffcmd && (context.wear.what || context.wear.mask))
         {
-            int idx = -1, i;
-            for (i = 0; i < WEAR_OID_BITS; i++)
-                if ((mask & (1L << i)) != 0)
-                {
-                    idx = i;
-                    break;
-                }
+            long combinedmask = context.wear.what | context.wear.mask;
+            if (combinedmask & mask) /* Some object is being worn in the same slot */
+            {
+                int idx = wear_oid_bit_to_index(mask);
+                if (idx >= 0 && context.wear.oid[idx] == obj->o_id) /* It is the same object */
+                    contoccupation = TRUE;
+            }
+        }
 
-            if (idx >= 0 && context.wear.oid[idx] == obj->o_id) /* It is the same object */
-                contoccupation = TRUE;
+        if (contoccupation)
+        {
+            You("continue %s.", context.takeoff.disrobing);
+            set_occupation(take_off, context.takeoff.disrobing, occsoundset, occtyp, OCCUPATION_SOUND_TYPE_RESUME, 0);
+            return 0;
+        }
+        else
+        {
+            reset_remarm();
+        }
+
+        if (curobj && !curobj->owornmask)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s not worn.", Tobjnam(curobj, "are"));
+            return 0;
+        }
+        else if (obj->owornmask & W_ARMOR) {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s already worn.", Tobjnam(obj, "are"));
+            return 0;
+        }
+
+        if (curobj)
+        {
+            (void)select_off(curobj);
+            if (context.takeoff.mask == 0L)
+                return 0;
+
+            context.takeoff.command = TAKEOFF_WEAR_CMD_EXCHANGE;
+            context.wear.mask = context.takeoff.mask;
+            (void)add_wear_oid(obj, context.wear.mask);
+        }
+        else
+        {
+            context.takeoff.command = TAKEOFF_WEAR_CMD_TAKEOFF_AND_WEAR;
+            context.wear.mask = mask;
+            (void)add_wear_oid(obj, mask);
+        }
+    }
+    else
+    {
+        if (curobj)
+        {
+            (void)select_off(curobj);
+            context.wear.mask |= mask;
+            (void)add_wear_oid(obj, mask);
+        }
+        else
+        {
+            context.wear.mask |= mask;
+            (void)add_wear_oid(obj, mask);
         }
     }
 
+    //(void)add_wear_oid(obj, context.wear.mask);
+    if (result_style_ptr)
+        *result_style_ptr = 2;
 
-    if (contoccupation)
-    {
-        You("continue %s.", context.takeoff.disrobing);
-        set_occupation(take_off, context.takeoff.disrobing, occsoundset, occtyp, OCCUPATION_SOUND_TYPE_RESUME, 0);
-        return 0;
-    }
-    else
-    {
-        reset_remarm();
-    }
-
-    if (curobj && !curobj->owornmask) 
-    {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s not worn.", Tobjnam(curobj, "are"));
-        return 0;
-    }
-    else if (obj->owornmask & W_ARMOR) {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
-        pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s already worn.", Tobjnam(obj, "are"));
-        return 0;
-    }
-
-    if (curobj)
-    {
-        (void)select_off(curobj);
-        if (context.takeoff.mask == 0L)
-            return 0;
-
-        context.takeoff.command = TAKEOFF_WEAR_CMD_EXCHANGE;
-        context.wear.mask = context.takeoff.mask;
-        (void)add_wear_oid(obj, context.wear.mask);
-    }
-    else
-    {
-        context.takeoff.command = TAKEOFF_WEAR_CMD_TAKEOFF_AND_WEAR;
-        context.wear.mask = mask;
-        (void)add_wear_oid(obj, mask);
-    }
-
-    (void)add_wear_oid(obj, context.wear.mask);
     if ((mask & (W_ARMU | W_ARM | W_ARMO)) && uarmc)
     {
-        select_off(uarmc);
-        context.wear.mask |= W_ARMC;
-        (void)add_wear_oid(uarmc, W_ARMC);
+        if (select_off(uarmc))
+        {
+            context.wear.mask |= W_ARMC;
+            (void)add_wear_oid(uarmc, W_ARMC);
+        }
+        else
+        {
+            if (result_style_ptr)
+                *result_style_ptr = 1;
+        }
     }
     if ((mask & (W_ARMU | W_ARM)) && uarmo)
     {
-        select_off(uarmo);
-        context.wear.mask |= W_ARMO;
-        (void)add_wear_oid(uarmo, W_ARMO);
+        if (select_off(uarmo))
+        {
+            context.wear.mask |= W_ARMO;
+            (void)add_wear_oid(uarmo, W_ARMO);
+        }
+        else
+        {
+            if (result_style_ptr)
+                *result_style_ptr = 1;
+        }
     }
     if ((mask & (W_ARMU)) && uarm)
     {
-        select_off(uarm);
-        context.wear.mask |= W_ARM;
-        (void)add_wear_oid(uarm, W_ARM);
+        if (select_off(uarm))
+        {
+            context.wear.mask |= W_ARM;
+            (void)add_wear_oid(uarm, W_ARM);
+        }
+        else
+        {
+            if (result_style_ptr)
+                *result_style_ptr = 1;
+        }
     }
 
     if (context.takeoff.mask && context.wear.mask) {
@@ -1760,11 +1795,12 @@ long mask;
 }
 
 STATIC_OVL int
-take_off_covering_and_wear(obj, mask)
+take_off_covering_and_wear(obj, mask, result_style_ptr)
 struct obj* obj;
 long mask;
+int* result_style_ptr;
 {
-    return exchange_worn_item(obj, (struct obj*)0, mask);
+    return exchange_worn_item(obj, (struct obj*)0, mask, result_style_ptr);
 }
 
 STATIC_OVL
@@ -1773,22 +1809,27 @@ add_wear_oid(obj, bit)
 struct obj* obj;
 long bit;
 {
-    int idx = -1, i;
-    for (i = 0; i < WEAR_OID_BITS; i++)
-        if ((bit & (1L << i)) != 0) /* Take the first bit; there should be only one */
-        {
-            idx = i;
-            break;
-        }
-
+    int idx = wear_oid_bit_to_index(bit);
     if (idx < 0)
         return 0;
 
     context.wear.oid[idx] = obj->o_id;
-
     return 1;
 }
 
+STATIC_OVL
+int wear_oid_bit_to_index(bit)
+long bit;
+{
+    int idx = -1, i;
+    for (i = 0; i < WEAR_OID_BITS; i++)
+        if ((bit & (1L << i)) != 0)
+        {
+            idx = i;
+            break;
+        }
+    return idx;
+}
 
 /*
  * canwearobj checks to see whether the player can wear a piece of armor
@@ -1798,11 +1839,12 @@ long bit;
  * output: mask (otmp's armor type)
  */
 int
-canwearobj(otmp, mask, noisy, constructing_letters)
+canwearobj(otmp, mask, noisy, constructing_letters, result_style_ptr)
 struct obj *otmp;
 long *mask;
 boolean noisy;
 boolean constructing_letters;
+int* result_style_ptr;
 {
     int err = 0;
     const char *which;
@@ -2092,7 +2134,7 @@ boolean constructing_letters;
 
                         if (ans == 'y')
                         {
-                            (void)take_off_covering_and_wear(otmp, W_ARMU);
+                            (void)take_off_covering_and_wear(otmp, W_ARMU, result_style_ptr);
                         }
                     }
                     else
@@ -2134,7 +2176,7 @@ boolean constructing_letters;
                         char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n', yndescs, (const char*)0);
                         if (ans == 'y')
                         {
-                            (void)take_off_covering_and_wear(otmp, W_ARMO);
+                            (void)take_off_covering_and_wear(otmp, W_ARMO, result_style_ptr);
                         }
                     }
                     else
@@ -2196,7 +2238,7 @@ boolean constructing_letters;
                     char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n', yndescs, (const char*)0);
                     if (ans == 'y')
                     {
-                        (void)take_off_covering_and_wear(otmp, W_ARM);
+                        (void)take_off_covering_and_wear(otmp, W_ARM, result_style_ptr);
                     }
                 }
                 else if (uarmo)
@@ -2236,9 +2278,11 @@ boolean constructing_letters;
 }
 
 STATIC_OVL int
-accessory_or_armor_on(obj, in_takeoff_wear)
+accessory_or_armor_on(obj, in_takeoff_wear, set_mask, result_style_ptr)
 struct obj *obj;
 boolean in_takeoff_wear;
+long set_mask;
+int* result_style_ptr;
 {
     long mask = 0L;
     boolean armor, ring, eyewear;
@@ -2257,7 +2301,7 @@ boolean in_takeoff_wear;
     /* checks which are performed prior to actually touching the item */
     if (armor) 
     {
-        if (!canwearobj(obj, &mask, TRUE, FALSE))
+        if (!canwearobj(obj, &mask, TRUE, FALSE, result_style_ptr))
             return 0;
 
         if (obj->otyp == HELM_OF_OPPOSITE_ALIGNMENT
@@ -2339,26 +2383,33 @@ boolean in_takeoff_wear;
             }
             else 
             {
-                do 
+                if ((set_mask & W_RING) != 0)
                 {
-                    Sprintf(qbuf, "Which %s%s, Left or Right?",
+                    mask = set_mask; /* Assume there is only one bit */
+                }
+                else
+                {
+                    do
+                    {
+                        Sprintf(qbuf, "Which %s%s, Left or Right?",
                             humanoid(youmonst.data) ? "ring-" : "",
                             body_part(FINGER));
-                    answer = yn_function(qbuf, "lr", '\0', "Left\nRight");
-                    switch (answer) 
-                    {
-                    case '\0':
-                        return 0;
-                    case 'l':
-                    case 'L':
-                        mask = LEFT_RING;
-                        break;
-                    case 'r':
-                    case 'R':
-                        mask = RIGHT_RING;
-                        break;
-                    }
-                } while (!mask);
+                        answer = yn_function(qbuf, "lr", '\0', "Left\nRight");
+                        switch (answer)
+                        {
+                        case '\0':
+                            return 0;
+                        case 'l':
+                        case 'L':
+                            mask = LEFT_RING;
+                            break;
+                        case 'r':
+                        case 'R':
+                            mask = RIGHT_RING;
+                            break;
+                        }
+                    } while (!mask);
+                }
             }
             if (uarmg && uarmg->cursed) 
             {
@@ -2635,7 +2686,7 @@ dowear()
     if (!wear_precheck())
         return 0;
     struct obj* otmp = getobj(clothes, "wear", 0, "");
-    return otmp ? accessory_or_armor_on(otmp, FALSE) : 0;
+    return otmp ? accessory_or_armor_on(otmp, FALSE, 0L, (int*)0) : 0;
 }
 
 /* the 'P' command */
@@ -2656,7 +2707,7 @@ doputon()
     }
     otmp = getobj(accessories, "put on", 0, "");
 
-    return otmp ? accessory_or_armor_on(otmp, FALSE) : 0;
+    return otmp ? accessory_or_armor_on(otmp, FALSE, 0L, (int*)0) : 0;
 }
 
 
@@ -3232,7 +3283,8 @@ register struct obj* otmp;
     }
     else if (otmp->oclass == RING_CLASS && otmp != uright && otmp != uleft)
     {
-        if(!uleft)
+        int leftidx = wear_oid_bit_to_index(W_RINGL);
+        if(!uleft && (leftidx < 0 || !context.wear.oid[leftidx]))
             bit = W_RINGL;
         else
         {
@@ -3247,13 +3299,14 @@ register struct obj* otmp;
     }
     else if (otmp->oclass == MISCELLANEOUS_CLASS && otmp != umisc && otmp != umisc2 && otmp != umisc3 && otmp != umisc4 && otmp != umisc5)
     {
-        if(!umisc)
+        int miscidx = wear_oid_bit_to_index(W_MISC);
+        if(!umisc && (miscidx < 0 || !context.wear.oid[miscidx]))
             bit = W_MISC;
-        else if (!umisc2)
+        else if (!umisc2 && (miscidx < 0 || !context.wear.oid[miscidx + 1]))
             bit = W_MISC2;
-        else if (!umisc3)
+        else if (!umisc3 && (miscidx < 0 || !context.wear.oid[miscidx + 2]))
             bit = W_MISC3;
-        else if (!umisc4)
+        else if (!umisc4 && (miscidx < 0 || !context.wear.oid[miscidx + 3]))
             bit = W_MISC4;
         else
         {
@@ -3452,14 +3505,7 @@ take_off(VOID_ARGS)
     {
         if (don->what)
         {
-            int idx = -1;
-            for(i = 0; i < WEAR_OID_BITS; i++)
-                if ((don->what & (1L << i)) != 0) /* Take the first bit; there should be only one */
-                {
-                    idx = i;
-                    break;
-                }
-
+            int idx = wear_oid_bit_to_index(don->what);
             if (idx < 0)
             {
                 don->what = 0L;
@@ -3479,18 +3525,20 @@ take_off(VOID_ARGS)
                 return 1; /* still busy */
             }
 
+            int result_style = 0;
             if (don->what & (W_WEAPON & ~W_ARMS))
             {
                 /* Wield a weapon */
             }
             else
             {
-                if (accessory_or_armor_on(otmp, TRUE) == 0)
-                    return 0;
+                (void)accessory_or_armor_on(otmp, TRUE, don->what, &result_style);
             }
-
-            don->mask &= ~don->what;
-            don->what = 0L;
+            if (result_style != 2) /* Continue wearing */
+            {
+                don->mask &= ~don->what;
+                don->what = 0L;
+            }
         }
 
         for (i = 0; wear_order[i]; i++)
