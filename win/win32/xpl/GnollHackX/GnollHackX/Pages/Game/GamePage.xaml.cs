@@ -2998,6 +2998,7 @@ namespace GnollHackX.Pages.Game
             GetLineOkButton.IsEnabled = true;
             GetLineCancelButton.IsEnabled = true;
             GetLineQuestionMarkButton.IsEnabled = true;
+            GetLineMenuButton.IsEnabled = true;
 
             Color clr = UIUtils.NHColor2XColor(color, attr, false, false); /* Non-title / white coloring works better here */
             string PlaceHolderText = null;
@@ -3020,6 +3021,7 @@ namespace GnollHackX.Pages.Game
             GetLineEntryText.Text = "";
             GetLineEntryText.MaxLength = GHConstants.BUFSZ - 1;
             GetLineQuestionMarkButton.IsVisible = false;
+            GetLineMenuButton.IsVisible = false;
             GetLineEntryText.IsEnabled = true;
             GetLineEntryText.IsVisible = true;
             GetLineEntryText.Keyboard = Keyboard.Default;
@@ -3067,6 +3069,7 @@ namespace GnollHackX.Pages.Game
                     GetLineEntryText.Placeholder = "Type your wish here";
                     _getLineRegex = new Regex(@"^[A-Za-z0-9_ \(\:\)\+\-\'\’]{0,128}$");
                     GetLineCancelButton.Text = "Random";
+                    GetLineMenuButton.IsVisible = true;
                     break;
                 case (int)getline_types.GETLINE_GENESIS:
                 case (int)getline_types.GETLINE_POLYMORPH:
@@ -3074,6 +3077,7 @@ namespace GnollHackX.Pages.Game
                 case (int)getline_types.GETLINE_MONSTER:
                     GetLineEntryText.Placeholder = "Type the monster here";
                     _getLineRegex = new Regex(@"^[A-Za-z0-9_ ]{0,64}$");
+                    GetLineMenuButton.IsVisible = true;
                     break;
                 case (int)getline_types.GETLINE_MONSTER_CLASS:
                     GetLineEntryText.WidthRequest = 230;
@@ -3081,6 +3085,7 @@ namespace GnollHackX.Pages.Game
                     GetLineQuestionMarkButton.IsVisible = true;
                     GetLineEntryText.Placeholder = "Type the monster class";
                     _getLineRegex = new Regex(@"^[A-Za-z0-9_ \'\&\#\:\;]{0,64}$");
+                    GetLineMenuButton.IsVisible = true;
                     break;
                 case (int)getline_types.GETLINE_TUNE:
                     GetLineEntryText.WidthRequest = 240;
@@ -3109,6 +3114,7 @@ namespace GnollHackX.Pages.Game
                 GetLineOkButton.IsEnabled = false;
                 GetLineCancelButton.IsEnabled = false;
                 GetLineQuestionMarkButton.IsEnabled = false;
+                GetLineMenuButton.IsEnabled = false;
                 //GetLineEntryText.IsEnabled = false;
             }
             GetLineGrid.IsVisible = true;
@@ -16858,6 +16864,15 @@ namespace GnollHackX.Pages.Game
                     break;
 
             }
+        }
+
+        private async void GetLineMenuButton_BtnClicked(object sender, EventArgs e)
+        {
+            GetLineMenuButton.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            var menuPage = new GameMenuPage(this, true);
+            await App.Current.MainPage.Navigation.PushModalAsync(menuPage);
+            GetLineMenuButton.IsEnabled = true;
         }
     }
 }

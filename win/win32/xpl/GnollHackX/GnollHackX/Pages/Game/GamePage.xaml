@@ -285,6 +285,8 @@
             </Grid>
             <Grid x:Name="GetLineGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
+                <controls:SimpleImageButton x:Name="GetLineMenuButton" IsVisible="False" ImgSourcePath="resource://GnollHackX.Assets.UI.vitruvian-gnoll.png" WidthRequest="50" HeightRequest="50" 
+                                                   BtnClicked="GetLineMenuButton_BtnClicked" HorizontalOptions="End" VerticalOptions="Start" />
                 <Grid WidthRequest  ="440" HorizontalOptions  ="Center" VerticalOptions="Start" Margin="0,50,0,10" >
                     <Frame x:Name="GetLineFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout x:Name="GetLineLayout" Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center">
