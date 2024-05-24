@@ -2542,13 +2542,13 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private readonly object _menuPositionLoc = new object();
+        private readonly object _menuPositionLock = new object();
         private bool[] _menuPositionSavingOn = new bool[(int)ghmenu_styles.MAX_GHMENU_STYLES];
         private float[] _savedMenuScrollOffset = new float[(int)ghmenu_styles.MAX_GHMENU_STYLES];
 
         private void ToggleMenuPositionSaving(int menuStyle, int toggleValue)
         {
-            lock (_menuPositionLoc)
+            lock (_menuPositionLock)
             {
                 _menuPositionSavingOn[menuStyle] = toggleValue != 0;
                 _savedMenuScrollOffset[menuStyle] = 0.0f;
@@ -3544,7 +3544,7 @@ namespace GnollHackX.Pages.Game
                 _menuRefresh = true;
             }
 
-            lock (_menuPositionLoc)
+            lock (_menuPositionLock)
             {
                 if (_menuPositionSavingOn[(int)MenuCanvas.MenuStyle])
                 {
@@ -14632,7 +14632,7 @@ namespace GnollHackX.Pages.Game
 
             lock (_menuScrollLock)
             {
-                lock (_menuPositionLoc)
+                lock (_menuPositionLock)
                 {
                     if (_menuPositionSavingOn[(int)MenuCanvas.MenuStyle])
                     {
@@ -14695,7 +14695,7 @@ namespace GnollHackX.Pages.Game
 
             lock (_menuScrollLock)
             {
-                lock (_menuPositionLoc)
+                lock (_menuPositionLock)
                 {
                     if (_menuPositionSavingOn[(int)MenuCanvas.MenuStyle])
                     {
