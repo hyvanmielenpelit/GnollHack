@@ -5863,7 +5863,7 @@ doapply()
         case BLINDFOLD:
             if (obj == ublindf)
             {
-                if (!cursed(obj))
+                if (!cursed(obj, FALSE))
                     Blindf_off(obj);
             }
             else if (!ublindf)

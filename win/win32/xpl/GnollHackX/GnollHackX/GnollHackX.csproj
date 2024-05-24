@@ -254,6 +254,7 @@
     <None Remove="Assets\UI\vitruvian-gnoll.png" />
     <None Remove="Assets\UI\wait.png" />
     <None Remove="Assets\UI\wear.png" />
+    <None Remove="Assets\UI\wearmany.png" />
     <None Remove="Assets\UI\whatis.png" />
     <None Remove="Assets\UI\wield.png" />
     <None Remove="Assets\UI\wipe.png" />
@@ -473,6 +474,7 @@
     <EmbeddedResource Include="Assets\UI\vitruvian-gnoll.png" />
     <EmbeddedResource Include="Assets\UI\wait.png" />
     <EmbeddedResource Include="Assets\UI\wear.png" />
+    <EmbeddedResource Include="Assets\UI\wearmany.png" />
     <EmbeddedResource Include="Assets\UI\whatis.png" />
     <EmbeddedResource Include="Assets\UI\wield.png" />
     <EmbeddedResource Include="Assets\UI\wipe.png" />

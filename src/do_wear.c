@@ -1454,8 +1454,9 @@ doremring()
 
 /* Check if something worn is cursed _and_ unremovable. */
 int
-cursed(otmp)
+cursed(otmp, verbose)
 register struct obj *otmp;
+boolean verbose;
 {
     if (!otmp) {
         impossible("cursed without otmp");
@@ -1468,7 +1469,10 @@ register struct obj *otmp;
                                || otmp->quan > 1L);
 
         play_sfx_sound(SFX_GENERAL_WELDED);
-        You_ex(ATR_NONE, CLR_MSG_WARNING, "can't.  %s cursed.", use_plural ? "They are" : "It is");
+        if(verbose)
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "can't remove %s.  %s cursed.", thecxname(otmp), use_plural ? "They are" : "It is");
+        else
+            You_ex(ATR_NONE, CLR_MSG_WARNING, "can't.  %s cursed.", use_plural ? "They are" : "It is");
         if (!otmp->bknown)
         {
             otmp->bknown = TRUE;
@@ -1485,7 +1489,7 @@ register struct obj *otmp;
 {
     register int delay = -objects[otmp->otyp].oc_delay;
 
-    if (cursed(otmp))
+    if (cursed(otmp, TRUE))
         return 0;
     if (delay) {
         nomul(delay);
@@ -3105,7 +3109,7 @@ register struct obj *otmp;
         ; /* some items can be removed even when cursed */
     } else {
         /* otherwise, this is fundamental */
-        if (cursed(otmp))
+        if (cursed(otmp, TRUE))
             return 0;
     }
 
@@ -3337,7 +3341,7 @@ do_takeoff()
     context.takeoff.mask |= I_SPECIAL; /* set flag for cancel_doff() */
     if (doff->what == W_WEP)
     {
-        if (!cursed(uwep)) {
+        if (!cursed(uwep, TRUE)) {
             setuwep((struct obj *) 0, W_WEP);
             if(u.twoweap)
                 Your("right %s is now empty.", body_part(HAND));
@@ -3348,7 +3352,7 @@ do_takeoff()
     }
     else if (doff->what == W_WEP2)
     {
-        if (!cursed(uarms)) {
+        if (!cursed(uarms, TRUE)) {
             setuwep((struct obj*) 0, W_WEP2);
             Your("left %s is now empty.", body_part(HAND));
             //u.twoweap = FALSE;
@@ -3371,80 +3375,80 @@ do_takeoff()
         You("no longer have ammunition readied.");
     } else if (doff->what == WORN_ARMOR) {
         otmp = uarm;
-        if (!cursed(otmp))
+        if (!cursed(otmp, TRUE))
             (void) Armor_off();
     } else if (doff->what == WORN_CLOAK) {
         otmp = uarmc;
-        if (!cursed(otmp))
+        if (!cursed(otmp, TRUE))
             (void) Cloak_off();
     }
     else if (doff->what == WORN_ROBE) {
         otmp = uarmo;
-        if (!cursed(otmp))
+        if (!cursed(otmp, TRUE))
             (void)Robe_off();
     } else if (doff->what == WORN_BOOTS) {
         otmp = uarmf;
-        if (!cursed(otmp))
+        if (!cursed(otmp, TRUE))
             (void) Boots_off();
     }
     else if (doff->what == WORN_BRACERS) {
         otmp = uarmb;
-        if (!cursed(otmp))
+        if (!cursed(otmp, TRUE))
             (void)Bracers_off();
     } else if (doff->what == WORN_MISCELLANEOUS) {
         otmp = umisc;
-        if (!cursed(otmp))
+        if (!cursed(otmp, TRUE))
             (void)MiscellaneousItem_off(otmp);
     }
     else if (doff->what == WORN_MISCELLANEOUS2) {
         otmp = umisc2;
-        if (!cursed(otmp))
+        if (!cursed(otmp, TRUE))
             (void)MiscellaneousItem_off(otmp);
     }
     else if (doff->what == WORN_MISCELLANEOUS3) {
         otmp = umisc3;
-        if (!cursed(otmp))
+        if (!cursed(otmp, TRUE))
             (void)MiscellaneousItem_off(otmp);
     }
     else if (doff->what == WORN_MISCELLANEOUS4) {
         otmp = umisc4;
-        if (!cursed(otmp))
+        if (!cursed(otmp, TRUE))
             (void)MiscellaneousItem_off(otmp);
     }
     else if (doff->what == WORN_MISCELLANEOUS5) {
         otmp = umisc5;
-        if (!cursed(otmp))
+        if (!cursed(otmp, TRUE))
             (void)MiscellaneousItem_off(otmp);
     } else if (doff->what == WORN_GLOVES) {
         otmp = uarmg;
-        if (!cursed(otmp))
+        if (!cursed(otmp, TRUE))
             (void) Gloves_off();
     } else if (doff->what == WORN_HELMET) {
         otmp = uarmh;
-        if (!cursed(otmp))
+        if (!cursed(otmp, TRUE))
             (void) Helmet_off();
     } else if (doff->what == WORN_SHIELD) {
         otmp = uarms;
-        if (!cursed(otmp) && is_shield(otmp))
+        if (!cursed(otmp, TRUE) && is_shield(otmp))
             (void) Shield_off();
     } else if (doff->what == WORN_SHIRT) {
         otmp = uarmu;
-        if (!cursed(otmp))
+        if (!cursed(otmp, TRUE))
             (void) Shirt_off();
     } else if (doff->what == WORN_AMUL) {
         otmp = uamul;
-        if (!cursed(otmp))
+        if (!cursed(otmp, TRUE))
             Amulet_off();
     } else if (doff->what == LEFT_RING) {
         otmp = uleft;
-        if (!cursed(otmp))
+        if (!cursed(otmp, TRUE))
             Ring_off(uleft);
     } else if (doff->what == RIGHT_RING) {
         otmp = uright;
-        if (!cursed(otmp))
+        if (!cursed(otmp, TRUE))
             Ring_off(uright);
     } else if (doff->what == WORN_BLINDF) {
-        if (!cursed(ublindf))
+        if (!cursed(ublindf, TRUE))
             Blindf_off(ublindf);
     } else {
         impossible("do_takeoff: taking off %lx", doff->what);

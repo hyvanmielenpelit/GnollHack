@@ -828,7 +828,7 @@ E void FDECL(Blindf_on, (struct obj *));
 E void FDECL(Blindf_off, (struct obj *));
 E int NDECL(dotakeoff);
 E int NDECL(doremring);
-E int FDECL(cursed, (struct obj *));
+E int FDECL(cursed, (struct obj *, BOOLEAN_P));
 E int FDECL(armoroff, (struct obj *));
 E int FDECL(canwearobj, (struct obj *, long *, BOOLEAN_P, BOOLEAN_P, int*));
 E int NDECL(dowear);
