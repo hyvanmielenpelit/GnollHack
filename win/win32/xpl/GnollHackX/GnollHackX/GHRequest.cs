@@ -71,6 +71,7 @@ namespace GnollHackX
         EndReplayFile,
         InformRecordingWentOff,
         RestartReplay,
+        ToggleMenuPositionSaving,
     }
 
     public struct AddContextMenuData

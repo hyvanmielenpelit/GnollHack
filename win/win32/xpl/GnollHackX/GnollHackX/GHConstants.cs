@@ -1291,6 +1291,7 @@ namespace GnollHackX
         GUI_CMD_GAME_ENDED,
         GUI_CMD_ENABLE_TOURNAMENT_MODE,
         GUI_CMD_DISABLE_TOURNAMENT_MODE,
+        GUI_CMD_TOGGLE_MENU_POSITION_SAVING,
     }
 
     public enum game_status_types

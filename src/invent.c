@@ -4329,20 +4329,26 @@ ddoinv()
     char invlet;
     long pickcnt;
     boolean return_to_inv;
-
+    issue_gui_command(GUI_CMD_TOGGLE_MENU_POSITION_SAVING, GHMENU_STYLE_INVENTORY, 1, (char*)0);
     do
     {
         pickcnt = 0;
         return_to_inv = FALSE;
         invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, 1, FALSE);
         if (invlet == '\033' || invlet == '\0')
+        {
+            issue_gui_command(GUI_CMD_TOGGLE_MENU_POSITION_SAVING, GHMENU_STYLE_INVENTORY, 0, (char*)0);
             return 0;
+        }
 
         if (flags.inventory_obj_cmd)
         {
             int res = display_item_command_menu_by_invlet(invlet, pickcnt, &return_to_inv);
             if (res || !return_to_inv)
+            {
+                issue_gui_command(GUI_CMD_TOGGLE_MENU_POSITION_SAVING, GHMENU_STYLE_INVENTORY, 0, (char*)0);
                 return res;
+            }
         }
         else
         {
@@ -4356,6 +4362,7 @@ ddoinv()
                 }
         }
     } while (return_to_inv);
+    issue_gui_command(GUI_CMD_TOGGLE_MENU_POSITION_SAVING, GHMENU_STYLE_INVENTORY, 0, (char*)0);
     return 0;
 }
 

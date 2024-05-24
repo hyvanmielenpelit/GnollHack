@@ -2372,6 +2372,12 @@ namespace GnollHackX
                         break;
                     GHApp.TryVerifyXlogUserName(); /* In case not verified yet; in advance of possibly posting files to the server and forums */
                     break;
+                case (int)gui_command_types.GUI_CMD_TOGGLE_MENU_POSITION_SAVING:
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.ToggleMenuPositionSaving, cmd_param, cmd_param2));
+                    }
+                    break;
                 default:
                     break;
             }

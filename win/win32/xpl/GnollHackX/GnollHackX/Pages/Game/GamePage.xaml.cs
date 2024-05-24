@@ -2533,9 +2533,25 @@ namespace GnollHackX.Pages.Game
                                 Preferences.Set("RecordGame", false);
                                 InformRecordingWentOff();
                                 break;
+                            case GHRequestType.ToggleMenuPositionSaving:
+                                ToggleMenuPositionSaving(req.RequestInt, req.RequestInt2);
+                                break;
                         }
                     }
                 }
+            }
+        }
+
+        private readonly object _menuPositionLoc = new object();
+        private bool[] _menuPositionSavingOn = new bool[(int)ghmenu_styles.MAX_GHMENU_STYLES];
+        private float[] _savedMenuScrollOffset = new float[(int)ghmenu_styles.MAX_GHMENU_STYLES];
+
+        private void ToggleMenuPositionSaving(int menuStyle, int toggleValue)
+        {
+            lock (_menuPositionLoc)
+            {
+                _menuPositionSavingOn[menuStyle] = toggleValue != 0;
+                _savedMenuScrollOffset[menuStyle] = 0.0f;
             }
         }
 
@@ -3528,7 +3544,15 @@ namespace GnollHackX.Pages.Game
                 _menuRefresh = true;
             }
 
-            if(PlayingReplay)
+            lock (_menuPositionLoc)
+            {
+                if (_menuPositionSavingOn[(int)MenuCanvas.MenuStyle])
+                {
+                    _menuScrollOffset = _savedMenuScrollOffset[(int)MenuCanvas.MenuStyle];
+                }
+            }
+
+            if (PlayingReplay)
             {
                 MenuOKButton.IsEnabled = false;
                 MenuCancelButton.IsEnabled = false;
@@ -14605,6 +14629,13 @@ namespace GnollHackX.Pages.Game
 
             lock (_menuScrollLock)
             {
+                lock(_menuPositionLoc)
+                {
+                    if (_menuPositionSavingOn[(int)MenuCanvas.MenuStyle])
+                    {
+                        _savedMenuScrollOffset[(int)MenuCanvas.MenuStyle] = _menuScrollOffset;
+                    }
+                }
                 _menuScrollOffset = 0;
                 _menuScrollSpeed = 0;
                 _menuScrollSpeedOn = false;
@@ -14661,6 +14692,13 @@ namespace GnollHackX.Pages.Game
 
             lock (_menuScrollLock)
             {
+                lock (_menuPositionLoc)
+                {
+                    if (_menuPositionSavingOn[(int)MenuCanvas.MenuStyle])
+                    {
+                        _savedMenuScrollOffset[(int)MenuCanvas.MenuStyle] = _menuScrollOffset;
+                    }
+                }
                 _menuScrollOffset = 0;
                 _menuScrollSpeed = 0;
                 _menuScrollSpeedOn = false;
