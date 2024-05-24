@@ -128,7 +128,7 @@ namespace GnollHackX.Pages.Game
             "Hungry",
             "Weak",
             "Fainting",
-            "Burdended",
+            "Burdened",
             "Stressed",
             "Strained",
             "Overtaxed",
