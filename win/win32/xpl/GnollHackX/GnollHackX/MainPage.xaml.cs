@@ -988,6 +988,9 @@ namespace GnollHackX
                 SettingsButton.Redraw();
                 AboutButton.Redraw();
                 ExitButton.Redraw();
+                PopupOkButton.Redraw();
+                PendingTasksOkButton.Redraw();
+                PendingTasksCancelButton.Redraw();
             }
 
             await UpperButtonGrid.FadeTo(1, 250);
