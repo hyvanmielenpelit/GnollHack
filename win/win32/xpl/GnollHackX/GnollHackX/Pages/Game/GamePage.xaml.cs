@@ -3548,7 +3548,10 @@ namespace GnollHackX.Pages.Game
             {
                 if (_menuPositionSavingOn[(int)MenuCanvas.MenuStyle])
                 {
-                    _menuScrollOffset = _savedMenuScrollOffset[(int)MenuCanvas.MenuStyle];
+                    lock(_menuScrollLock)
+                    {
+                        _menuScrollOffset = _savedMenuScrollOffset[(int)MenuCanvas.MenuStyle];
+                    }
                 }
             }
 
@@ -14629,7 +14632,7 @@ namespace GnollHackX.Pages.Game
 
             lock (_menuScrollLock)
             {
-                lock(_menuPositionLoc)
+                lock (_menuPositionLoc)
                 {
                     if (_menuPositionSavingOn[(int)MenuCanvas.MenuStyle])
                     {
