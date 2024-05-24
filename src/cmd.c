@@ -77,6 +77,7 @@ extern int NDECL(doremring);          /**/
 extern int NDECL(dowear);             /**/
 extern int NDECL(doputon);            /**/
 extern int NDECL(doddoremarm);        /**/
+extern int NDECL(ddowear);            /**/
 extern int NDECL(dokick);             /**/
 extern int NDECL(dofire);             /**/
 extern int NDECL(dothrow);            /**/
@@ -6250,11 +6251,12 @@ struct ext_func_tab extcmdlist[] = {
     { '.', "wait", "rest one move while doing nothing",
             donull, IFBURIED, "waiting" },
     { 'W', "wear", "wear a piece of armor", dowear, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_clothes, "wear" },
+    { M('w'), "wearall", "wear many pieces of armor", ddowear, AUTOCOMPLETE },
     { '&', "whatdoes", "tell what a command does", dowhatdoes, IFBURIED },
     { '/', "whatis", "show what type of thing a symbol corresponds to",
             dowhatis, IFBURIED | GENERALCMD },
     { 'w', "wield", "wield (put in use) a weapon", dowield, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_wield_objs, "wield" },
-    { M('w'), "wipe", "wipe off your face", dowipe, AUTOCOMPLETE | INCMDMENU },
+    { M('e'), "wipe", "wipe off your face", dowipe, AUTOCOMPLETE | INCMDMENU },
     { 'x', "swap", "swap wielded and secondary weapons", doswapweapon_right_or_both, INCMDMENU },
     { M('x'), "examine", "describe an item", doitemdescriptions, IFBURIED | AUTOCOMPLETE | SINGLE_OBJ_CMD_INFO | ALLOW_RETURN_TO_INVENTORY | ALLOW_RETURN_TO_CMD_MENU | CMD_MENU_AUTO_CLICK_OK, 0, getobj_allobj, "examine" },
     { M(5), "unwield", "unwield a weapon", dounwield, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_unwield_objs, "unwield"},

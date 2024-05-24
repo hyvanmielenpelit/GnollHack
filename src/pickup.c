@@ -555,6 +555,13 @@ register struct obj *otmp;
     return (is_worn(otmp) && allow_category(otmp)) ? TRUE : FALSE;
 }
 
+boolean
+is_wearable_by_type(otmp)
+register struct obj* otmp;
+{
+    return (is_wearable(otmp) && allow_category(otmp)) ? TRUE : FALSE;
+}
+
 /*
  * Have the hero pick things from the ground
  * or a monster's inventory if swallowed.
@@ -1301,6 +1308,8 @@ int how;               /* type of query */
 
     if (qflags & WORN_TYPES)
         ofilter = is_worn;
+    else if (qflags & WEARABLE_TYPES)
+        ofilter = is_wearable;
 
     int objcnt = count_objects(olist, ofilter, (qflags & BY_NEXTHERE) != 0);
     if (!objcnt)
@@ -1371,8 +1380,9 @@ int how;               /* type of query */
         info.num_items = objcnt;
         info.menu_flags |= MENU_FLAGS_AUTO_CLICK_OK;
         add_extended_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
-                 (qflags & WORN_TYPES) ? "Auto-select every item being worn"
-                                       : "Auto-select every item",
+                 (qflags & WORN_TYPES) ? "Auto-select every item being worn" :
+                 (qflags & WEARABLE_TYPES) ? "Auto-select every wearable item" :
+                 "Auto-select every item",
                  MENU_UNSELECTED, info);
 
         any = zeroany;
@@ -1386,7 +1396,7 @@ int how;               /* type of query */
         info.num_items = objcnt;
         info.menu_flags |= MENU_FLAGS_AUTO_CLICK_OK;
         add_extended_menu(win, NO_GLYPH, &any, invlet, 0, ATR_NONE, NO_COLOR,
-                 (qflags & WORN_TYPES) ? "All worn types" : "All types",
+                 (qflags & WORN_TYPES) ? "All worn types" : (qflags & WEARABLE_TYPES) ? "All wearable types" : "All types",
                  MENU_UNSELECTED, info);
         invlet = 'b';
     } else
@@ -1527,6 +1537,9 @@ int qflags;
             if (curr->oclass == *pack) {
                 if ((qflags & WORN_TYPES)
                     && !(curr->owornmask & (W_ARMOR | W_ACCESSORY | W_WEAPON)))
+                    continue;
+                if ((qflags & WEARABLE_TYPES)
+                    && (!(curr->oclass == ARMOR_CLASS || curr->oclass == AMULET_CLASS || curr->oclass == RING_CLASS || curr->oclass == MISCELLANEOUS_CLASS)))
                     continue;
                 if (!counted_category) {
                     ccount++;

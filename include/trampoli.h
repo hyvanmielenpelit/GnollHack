@@ -68,7 +68,9 @@
 #define doremring() doremring_()
 #define dotakeoff() dotakeoff_()
 #define dowear() dowear_()
+#define ddowear() ddowear_()
 #define select_off(x) select_off_(x)
+#define select_on(x) select_on_(x)
 #define take_off() take_off_()
 
 /* ### dogmove.c ### */

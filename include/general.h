@@ -781,6 +781,7 @@ enum takeoff_wear_commands {
     TAKEOFF_WEAR_CMD_TAKEOFF = 0,
     TAKEOFF_WEAR_CMD_TAKEOFF_AND_WEAR,
     TAKEOFF_WEAR_CMD_EXCHANGE,
+    TAKEOFF_WEAR_CMD_WEAR,
 };
 
 enum yn_function_styles {

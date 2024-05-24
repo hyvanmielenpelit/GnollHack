@@ -3537,6 +3537,12 @@ struct obj* otmp;
     return FALSE;
 }
 
+boolean
+is_wearable(otmp)
+struct obj* otmp;
+{
+    return (otmp->oclass == ARMOR_CLASS || otmp->oclass == AMULET_CLASS || otmp->oclass == RING_CLASS || otmp->oclass == MISCELLANEOUS_CLASS);
+}
 
 /* extra xprname() input that askchain() can't pass through safe_qbuf() */
 STATIC_VAR struct xprnctx {
