@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace GnollHackX
 {
@@ -9,7 +10,7 @@ namespace GnollHackX
         void InitializeFmod();
         void ReleaseAllSoundInstances();
         void ClearLoadableSoundBanks();
-        void AddLoadableSoundBank(string fullFilePath, int subType, bool isResource, bool readToMemory);
+        Task AddLoadableSoundBank(string fullFilePath, int subType, bool isResource, bool readToMemory);
         void LoadBanks(int subType);
         void UnloadBanks(int subType);
         void LoadIntroSoundBank();

@@ -876,11 +876,13 @@ namespace GnollHackX
 #if GNH_MAUI
         public static readonly bool IsAndroid = (DeviceInfo.Platform == DevicePlatform.Android);
         public static readonly bool IsiOS = (DeviceInfo.Platform == DevicePlatform.iOS);
+        public static readonly bool IsWindows = (DeviceInfo.Platform == DevicePlatform.WinUI);
         public static readonly bool IsMaui = true;
         public static readonly string RuntimePlatform = DeviceInfo.Platform.ToString();
 #else
         public static readonly bool IsAndroid = (Device.RuntimePlatform == Device.Android);
         public static readonly bool IsiOS = (Device.RuntimePlatform == Device.iOS);
+        public static readonly bool IsWindows = false;
         public static readonly bool IsMaui = false;
         public static readonly string RuntimePlatform = Device.RuntimePlatform;
 #endif
@@ -3103,6 +3105,7 @@ namespace GnollHackX
             if (sf == null) return false;
             if (ForceCopyAllBanksToDisk) return true;
             if (IsiOS) return false;
+            if (IsWindows) return false;
             if (IsAndroid)
             {
                 if (IsReadToMemoryBank(sf)) return false;
@@ -3135,14 +3138,14 @@ namespace GnollHackX
             return cnt;
         }
 
-        public static void SetSoundBanksUpForLoading()
+        public static async Task SetSoundBanksUpForLoading()
         {
             FmodService.ClearLoadableSoundBanks();
-            AddLoadableSoundBanks();
+            await AddLoadableSoundBanks();
             DeleteBanksFromDisk();
         }
 
-        public static void AddLoadableSoundBanks()
+        public static async Task AddLoadableSoundBanks()
         {
             foreach (SecretsFile sf in CurrentSecrets.files)
             {
@@ -3152,14 +3155,14 @@ namespace GnollHackX
                     {
                         string rfile = Path.Combine(sf.source_directory, sf.name);
                         string afile = PlatformService.GetAbsoluteOnDemandAssetPath(GHConstants.OnDemandPackName, rfile);
-                        FmodService.AddLoadableSoundBank(afile, sf.subtype_id, false, false);
+                        await FmodService.AddLoadableSoundBank(afile, sf.subtype_id, false, false);
                     }
                     else if (IsSecretsFileSavedToDisk(sf)) //In gnollhack directory's bank subdirectory
                     {
                         string ghdir = GnollHackService.GetGnollHackPath();
                         string sdir = string.IsNullOrWhiteSpace(sf.target_directory) ? ghdir : Path.Combine(ghdir, sf.target_directory); ;
                         string sfile = Path.Combine(sdir, sf.name);
-                        FmodService.AddLoadableSoundBank(sfile, sf.subtype_id, false, false);
+                        await FmodService.AddLoadableSoundBank(sfile, sf.subtype_id, false, false);
                     }
                     else //In assets directory
                     {
@@ -3174,9 +3177,9 @@ namespace GnollHackX
                         string sfile = Path.Combine(sdir, sf.name);
 
                         if (IsReadToMemoryBank(sf))  //Read to memory first and use from there
-                            FmodService.AddLoadableSoundBank(rfile, sf.subtype_id, true, true);
+                            await FmodService.AddLoadableSoundBank(rfile, sf.subtype_id, true, true);
                         else
-                            FmodService.AddLoadableSoundBank(sfile, sf.subtype_id, true, false);
+                            await FmodService.AddLoadableSoundBank(sfile, sf.subtype_id, true, false);
                     }
                 }
             }

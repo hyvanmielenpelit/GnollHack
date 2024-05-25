@@ -6,13 +6,15 @@ using FMOD;
 using FMOD.Studio;
 using System.Reflection;
 using System.IO;
+using System.Threading.Tasks;
+
 #if GNH_MAUI
 using GnollHackX;
 using GnollHackM;
+using Microsoft.Maui.Graphics;
 #else
 using Xamarin.Forms;
 #endif
-using System.Threading.Tasks;
 
 #if __IOS__
 using Foundation;
@@ -250,7 +252,7 @@ namespace GnollHackX.Unknown
         }
 
 
-        public void AddLoadableSoundBank(string fullfilepath, int subType, bool isResource, bool readToMemory)
+        public async Task AddLoadableSoundBank(string fullfilepath, int subType, bool isResource, bool readToMemory)
         {
             byte[] data = null;
             if (readToMemory)
@@ -264,6 +266,8 @@ namespace GnollHackX.Unknown
 #elif __ANDROID__
                         AssetManager assets = MainActivity.StaticAssets;
                         using (Stream fs = assets.Open(fullfilepath))
+#elif WINDOWS
+                        using Stream fs = await FileSystem.Current.OpenAppPackageFileAsync(fullfilepath);
 #else
                         using (FileStream fs = File.OpenRead(fullfilepath))
 #endif
@@ -272,7 +276,7 @@ namespace GnollHackX.Unknown
                             {
                                 try
                                 {
-                                    fs.CopyTo(ms);
+                                    await fs.CopyToAsync(ms);
                                     data = ms.ToArray();
                                 }
                                 catch (Exception ex)

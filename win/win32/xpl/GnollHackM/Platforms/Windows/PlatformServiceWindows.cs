@@ -14,7 +14,7 @@ namespace GnollHackM
         public string GetVersionString()
         {
 
-            return "10.0?";
+            return DeviceInfo.Current.VersionString;
         }
 
         public ulong GetDeviceMemoryInBytes()
@@ -34,6 +34,11 @@ namespace GnollHackM
             try
             {
                 ulong freesize = 0UL;
+                DriveInfo[] drives = DriveInfo.GetDrives();
+                foreach (DriveInfo drive in drives)
+                {
+                    freesize += (ulong)drive.AvailableFreeSpace;
+                }
                 return freesize;
             }
             catch
@@ -47,6 +52,11 @@ namespace GnollHackM
             try
             {
                 ulong totalsize = 0UL;
+                DriveInfo[] drives = DriveInfo.GetDrives();
+                foreach (DriveInfo drive in drives)
+                {
+                    totalsize += (ulong)drive.TotalSize;
+                }
                 return totalsize;
             }
             catch
@@ -120,20 +130,34 @@ namespace GnollHackM
             await System.Threading.Tasks.Task.Delay(50);
         }
 
+        private string GetAssemblyDirectory()
+        {
+            try
+            {
+                string assemblyFullPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                string assemblyDirectory = Path.GetDirectoryName(assemblyFullPath);
+                return assemblyDirectory;
+            }
+            catch (Exception)
+            {
+                return ".";
+            }
+        }
+
         public string GetBaseUrl()
         {
-            return FileSystem.Current.AppDataDirectory;
+            return Path.Combine(GetAssemblyDirectory(), "Assets");
         }
         public string GetAssetsPath()
         {
-            return Path.Combine(FileSystem.Current.AppDataDirectory, "Assets");
+            return GetAssemblyDirectory();
         }
 
         public string GetCanonicalPath(string fileName)
         {
             try
             {
-                return Path.Combine(FileSystem.Current.AppDataDirectory, "Assets", fileName);
+                return Path.Combine(GetAssemblyDirectory(), fileName);
             }
             catch (Exception)
             {

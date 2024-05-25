@@ -860,7 +860,7 @@ namespace GnollHackX
             GHApp.PlatformService.OnDemandPackStatusNotification += OnDemandPackEventHandler;
             StartFetchOnDemandFiles();
 
-            GHApp.SetSoundBanksUpForLoading();
+            await GHApp.SetSoundBanksUpForLoading();
             if (GHApp.LoadBanks)
             {
                 await TryLoadBanks(0);

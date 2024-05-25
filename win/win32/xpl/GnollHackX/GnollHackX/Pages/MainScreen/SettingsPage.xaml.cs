@@ -453,7 +453,7 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     await DisplayAlert("Secrets Initialization Failed", "Initializing secrets failed: " + ex.Message, "OK");
                 }
-                GHApp.SetSoundBanksUpForLoading();
+                await GHApp.SetSoundBanksUpForLoading();
             }
 
             if (loadbanks)
