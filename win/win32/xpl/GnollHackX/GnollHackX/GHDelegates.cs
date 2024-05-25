@@ -51,7 +51,6 @@ namespace GnollHackX
     public delegate byte BooleanVoidPtrCallback(IntPtr value1);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    [return: MarshalAs(UnmanagedType.LPStr)]
     public delegate int GetMsgHistoryCallback(IntPtr text_ptr, IntPtr attributes_ptr, IntPtr colors_ptr, byte value1);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -157,7 +156,6 @@ namespace GnollHackX
     public delegate byte AdjustGeneralVolumesCallback(double value1, double value2, double value3, double value4, double value5, double value6);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    [return: MarshalAs(UnmanagedType.LPStr)]
     public delegate int AskNameCallback([MarshalAs(UnmanagedType.LPStr)] string modeName, [MarshalAs(UnmanagedType.LPStr)] string modeDescription, IntPtr out_string_ptr);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -170,7 +168,6 @@ namespace GnollHackX
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int YnFunctionCallback(int style, int attr, int color, int glyph, [MarshalAs(UnmanagedType.LPStr)] string title, [MarshalAs(UnmanagedType.LPStr)] string query, [MarshalAs(UnmanagedType.LPStr)] string responses, [MarshalAs(UnmanagedType.LPStr)] string default_answer, [MarshalAs(UnmanagedType.LPStr)] string response_descriptions, [MarshalAs(UnmanagedType.LPStr)] string introline, ulong ynflags);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    [return: MarshalAs(UnmanagedType.LPStr)]
     public delegate int GetLineCallback(int style, int attr, int color, [MarshalAs(UnmanagedType.LPStr)] string value1, [MarshalAs(UnmanagedType.LPStr)] string value2, [MarshalAs(UnmanagedType.LPStr)] string value3, [MarshalAs(UnmanagedType.LPStr)] string value4, IntPtr out_string_ptr);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
