@@ -1,5 +1,5 @@
 /* 
- * gnhunix.c
+ * gnhwin.c
  * based on unixunix.c
  */
 
@@ -7,27 +7,12 @@
 
 #include "hack.h"    /* mainly for index() which depends on BSD */
 
-#include <pthread.h>
-#include <errno.h>
-#include <sys/stat.h>
-#if defined(NO_FILE_LINKS) || defined(SUNOS4) || defined(POSIX_TYPES) || defined(O_RDONLY)
-#include <fcntl.h>
-#endif
-#include <pwd.h>
-#include <sys/types.h>
-#include <dirent.h>
-extern struct passwd* FDECL(getpwuid, (uid_t));
-extern struct passwd* FDECL(getpwnam, (const char*));
-
-void
-regularize(s)    /* normalize file name - we don't like .'s, /'s, spaces */
-char *s;
-{
-    register char *lp;
-
-    while((lp=index(s, '.')) || (lp=index(s, '/')) || (lp=index(s,' ')) || (lp=index(s,':')))
-        *lp = '_';
-}
+//#include <errno.h>
+//#include <sys/stat.h>
+//#if defined(NO_FILE_LINKS) || defined(SUNOS4) || defined(POSIX_TYPES)
+//#include <fcntl.h>
+//#endif
+//#include <pthread.h>
 
 static int
 eraseoldlocks()
@@ -163,42 +148,42 @@ nofilefound:
 }
 
 int lock_init_result = -1;
-pthread_mutex_t threadlock = { 0 };
+//pthread_mutex_t threadlock = { 0 };
 
 void
 thread_lock_init(VOID_ARGS)
 {
-    if (!lock_init_result)
-        thread_lock_destroy();
-    lock_init_result = pthread_mutex_init(&threadlock, NULL);
+    //if (!lock_init_result)
+    //    thread_lock_destroy();
+    //lock_init_result = pthread_mutex_init(&threadlock, NULL);
 }
 
 void
 thread_lock_destroy(VOID_ARGS)
 {
-    if (!lock_init_result)
-    {
-        (void)pthread_mutex_destroy(&threadlock);
-        lock_init_result = -1;
-    }
+    //if (!lock_init_result)
+    //{
+    //    (void)pthread_mutex_destroy(&threadlock);
+    //    lock_init_result = -1;
+    //}
 }
 
 void
 thread_lock_lock(VOID_ARGS)
 {
-    if (!lock_init_result)
-    {
-        (void)pthread_mutex_lock(&threadlock);
-    }
+    //if (!lock_init_result)
+    //{
+    //    (void)pthread_mutex_lock(&threadlock);
+    //}
 }
 
 void
 thread_lock_unlock(VOID_ARGS)
 {
-    if (!lock_init_result)
-    {
-        (void)pthread_mutex_unlock(&threadlock);
-    }
+    //if (!lock_init_result)
+    //{
+    //    (void)pthread_mutex_unlock(&threadlock);
+    //}
 }
 
 void
@@ -215,80 +200,14 @@ make_dumplog_dir(VOID_ARGS)
 }
 
 void
-gnollhack_exit(code)
-int code;
+exit_thread(retbuf)
+char* retbuf;
 {
-    if (exit_hack)
-        exit_hack(exit_hack_code);
-
-#if defined(EXIT_THREAD_ON_EXIT)
-    char retbuf[BUFSZ];
-    Sprintf(retbuf, "GnollHack thread exit with value %d", code);
-
-    pthread_exit(retbuf);
-#else
-    exit(code);
-#endif
+    exit(0);
 }
-
-#if defined (NOCWD_ASSUMPTIONS)
-/*
- * Add a slash to any name not ending in /. There must
- * be room for the /
- */
-void
-append_slash(name)
-char* name;
-{
-    char* ptr;
-
-    if (!*name)
-        return;
-    ptr = name + (strlen(name) - 1);
-    if (*ptr != '/')
-    {
-        *++ptr = '/';
-        *++ptr = '\0';
-    }
-    return;
-}
-#endif
 
 void
 gnh_umask(VOID_ARGS)
 {
     (void)umask(0777 & ~FCMASK);
-}
-
-unsigned long
-sys_random_seed()
-{
-    unsigned long seed = 0L;
-    unsigned long pid = (unsigned long)getpid();
-    boolean no_seed = TRUE;
-#ifdef DEV_RANDOM
-    FILE* fptr;
-
-    fptr = fopen(DEV_RANDOM, "r");
-    if (fptr) {
-        fread(&seed, sizeof(long), 1, fptr);
-        has_strong_rngseed = TRUE;  /* decl.c */
-        no_seed = FALSE;
-        (void)fclose(fptr);
-    }
-    else {
-        /* leaves clue, doesn't exit */
-        paniclog("sys_random_seed", "falling back to weak seed");
-    }
-#endif
-    if (no_seed) {
-        seed = (unsigned long)getnow(); /* time((TIME_type) 0) */
-        /* Quick dirty band-aid to prevent PRNG prediction */
-        if (pid) {
-            if (!(pid & 3L))
-                pid -= 1L;
-            seed *= pid;
-        }
-    }
-    return seed;
 }

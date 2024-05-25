@@ -4,26 +4,11 @@
 
 #include "hack.h"
 #include "libproc.h"
-
 #include "dlb.h"
-#include <sys/stat.h>
-#include <pwd.h>
-#include <sys/types.h>
-#include <dirent.h>
-#ifndef O_RDONLY
-#include <fcntl.h>
-#endif
+extern void NDECL(make_dumplog_dir);
+extern void NDECL(gnh_umask);
 
-#include <pthread.h>
-
-extern struct passwd *FDECL( getpwuid, ( uid_t));
-extern struct passwd *FDECL( getpwnam, (const char *));
-
-#if 0
-STATIC_DCL boolean NDECL( whoami);
-#endif
 STATIC_DCL void FDECL( process_command_line_arguments, (int, char **));
-STATIC_DCL void NDECL(make_dumplog_dir);
 
 STATIC_OVL char*
 make_lockname(filename, lockname)
@@ -52,23 +37,6 @@ const char* filename;
     unlink(lockname);
 }
 
-void
-gnollhack_exit(code)
-int code;
-{
-    if (exit_hack)
-        exit_hack(exit_hack_code);
-
-#if defined(EXIT_THREAD_ON_EXIT)
-    char retbuf[BUFSZ];
-    Sprintf(retbuf, "GnollHack thread exit with value %d", code);
-
-    pthread_exit(retbuf);
-#else
-    exit(code);
-#endif
-}
-
 int
 GnollHackMain(argc, argv)
 int argc;
@@ -83,7 +51,8 @@ char** argv;
 
     hname = argv[0];
     hackpid = getpid();
-    (void)umask(0777 & ~FCMASK);
+
+    gnh_umask();
 
     // hack
     // remove dangling locks
@@ -322,71 +291,3 @@ port_help()
     display_file(PORT_HELP, TRUE);
 }
 #endif
-
-#ifdef NOCWD_ASSUMPTIONS
-/*
- * Add a slash to any name not ending in /. There must
- * be room for the /
- */
-void 
-append_slash(name)
-char *name;
-{
-    char *ptr;
-
-    if(!*name)
-        return;
-    ptr = name + (strlen(name) - 1);
-    if(*ptr != '/')
-    {
-        *++ptr = '/';
-        *++ptr = '\0';
-    }
-    return;
-}
-#endif
-
-unsigned long
-sys_random_seed()
-{
-    unsigned long seed = 0L;
-    unsigned long pid = (unsigned long) getpid();
-    boolean no_seed = TRUE;
-#ifdef DEV_RANDOM
-    FILE *fptr;
-
-    fptr = fopen(DEV_RANDOM, "r");
-    if (fptr) {
-        fread(&seed, sizeof (long), 1, fptr);
-        has_strong_rngseed = TRUE;  /* decl.c */
-        no_seed = FALSE;
-        (void) fclose(fptr);
-    } else {
-        /* leaves clue, doesn't exit */
-        paniclog("sys_random_seed", "falling back to weak seed");
-    }
-#endif
-    if (no_seed) {
-        seed = (unsigned long) getnow(); /* time((TIME_type) 0) */
-        /* Quick dirty band-aid to prevent PRNG prediction */
-        if (pid) {
-            if (!(pid & 3L))
-                pid -= 1L;
-            seed *= pid;
-        }
-    }
-    return seed;
-}
-
-STATIC_OVL void
-make_dumplog_dir(VOID_ARGS)
-{
-#if (defined(DUMPLOG) || defined(DUMPHTML)) && defined(DUMPLOG_DIR)
-    /* Make DUMPLOG_DIR if defined */
-    struct stat st = { 0 };
-
-    if (stat(DUMPLOG_DIR, &st) == -1) {
-        (void)mkdir(DUMPLOG_DIR, 0700);
-    }
-#endif
-}

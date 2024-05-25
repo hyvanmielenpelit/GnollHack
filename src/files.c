@@ -2196,7 +2196,7 @@ struct save_game_stats* stats_ptr;
 #endif /* 0 - WAS STORE_PLNAME_IN_FILE*/
 }
 
-#if defined(ANDROID) || defined(GNH_MOBILE)
+#if defined(UNIX) && (defined(ANDROID) || defined(GNH_MOBILE))
 int is_error_savefile_name(savefilename)
 const char* savefilename;
 {
@@ -2485,7 +2485,7 @@ get_saved_games()
             closedir(dir);
         }
     }
-#elif defined(ANDROID) || defined(GNH_MOBILE)
+#elif defined(UNIX) && (defined(ANDROID) || defined(GNH_MOBILE))
     int myuid = getuid();
     struct dirent** namelist;
     struct dirent** namelist2;

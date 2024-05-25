@@ -7,8 +7,12 @@
 #include "func_tab.h"
 #include "libproc.h"
 #include "callback.h"
+#ifndef WIN32
 #include "date_unix.h"
 #include <sys/stat.h>
+#else
+#include "date.h"
+#endif
 
 extern int FDECL(GnollHackMain, (int, char**));
 extern void FDECL(set_wincaps, (unsigned long, unsigned long));
@@ -360,7 +364,11 @@ int LibZapGlyphToCornerGlyph(int adjglyph, unsigned long adjflags, int source_di
 int
 LibChmod(const char* filename, unsigned int mode)
 {
+#ifdef WIN32
+    return 0;
+#else
     return chmod(filename, (mode_t)mode);
+#endif
 }
 
 void
@@ -528,13 +536,21 @@ LibReportFileDescriptors()
 int
 LibIncreaseFileDescriptorLimitToAtLeast(int min_cur)
 {
+#if defined(UNIX) && defined (GNH_MOBILE)
     return increase_file_descriptor_limit_to_at_least((unsigned long)min_cur);
+#else
+    return 0;
+#endif
 }
 
 int
 LibGetFileDescriptorLimit(int is_max_limit)
 {
+#if defined(UNIX) && defined (GNH_MOBILE)
     return get_file_descriptor_limit((boolean)is_max_limit);
+#else
+    return 0;
+#endif
 }
 
 int GnollHackStart(cmdlineargs)

@@ -1,639 +1,648 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Common Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Windows Header Files">
+      <UniqueIdentifier>{1dc39707-d6ac-4d0d-988a-49b73a8431ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Windows Source Files">
+      <UniqueIdentifier>{c2c43ab6-c77c-443e-a849-fb801b6a8c03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(LibWinDir)dllhack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(LibWinDir)dllproc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\resource.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\soundfx.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\winMS.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(LibWinDir)resource.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(WinFmodDir)core\inc\fmod.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(WinFmodDir)fsbank\inc\fsbank.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(WinFmodDir)fsbank\inc\fsbank_errors.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(WinFmodDir)studio\inc\fmod_studio.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)action.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)align.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)animation.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)animoff.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)animtotals.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)artifact.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)artilist.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)attrib.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)botl.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)color.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)config.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)context.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)coord.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)date.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)decl.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)display.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)dlb.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)dungeon.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)encounter.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)engrave.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)extern.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)flag.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)general.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)global.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)hack.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)integer.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)isaac64.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)layer.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)lev.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)matcomps.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)mextra.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)mfndpos.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)mkroom.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)mondata.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)monflag.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)monst.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)monsym.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)npc.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)obj.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)objclass.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)onames.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)permonst.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)pm.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)prop.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)quest.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)rect.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)region.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)rm.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)skills.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)soundset.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)spell.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)sp_lev.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)sys.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)system.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)tcap.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)tiledata.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)timeout.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)trap.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)vision.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)winprocs.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)wintty.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)wintype.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)you.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(IncDir)youprop.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(LibShareDir)callback.h">
-      <Filter>Header Files</Filter>
+      <Filter>Common Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibShareDir)gnhapi.h">
+      <Filter>Windows Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibWinDir)gnollhackwin.h">
+      <Filter>Windows Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibShareDir)libproc.h">
+      <Filter>Windows Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibWinDir)winconf.h">
+      <Filter>Windows Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(LibWinDir)dllmain.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(LibWinDir)dllhack.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(LibWinDir)dllproc.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="$(SrcDir)allmain.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)alloc.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)animation.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)animdef.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)apply.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)artifact.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)attrib.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)ball.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)bones.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)botl.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)cmd.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)dbridge.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)decl.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)detect.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)dig.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)display.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)dlb.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)do.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)dog.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)dogmove.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)dokick.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)dothrow.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)do_name.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)do_wear.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)drawing.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)dungeon.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)eat.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)encounter.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)end.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)engrave.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)exper.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)explode.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)extralev.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)files.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)fountain.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)hack.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)hacklib.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)invent.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)isaac64.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)light.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)lock.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)mail.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)makemon.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)mapglyph.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)matcomps.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)mcastu.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)mhitm.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)mhitu.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)minion.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)mklev.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)mkmap.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)mkmaze.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)mkobj.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)mkroom.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)mon.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)mondata.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)monmove.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)monst.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)mplayer.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)mthrowu.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)muse.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)music.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)npc.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)objects.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)objnam.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)options.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)o_init.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)pager.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)pickup.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)pline.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)polyself.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)potion.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)pray.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)priest.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)prop.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)quest.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)questpgr.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)read.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)rect.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)region.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)restore.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)rip.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)rm.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)rnd.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)role.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)rumors.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)save.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)shk.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)shknam.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)sit.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)sounds.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)soundset.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)spell.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)sp_lev.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)steal.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)steed.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)sys.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)teleport.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)tiledata.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)timeout.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)topten.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)track.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)trap.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)uhitm.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)u_init.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)vault.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)version.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)vision.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)vis_tab.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)weapon.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)were.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)wield.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)windows.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)wizard.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)worm.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)worn.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)write.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)zap.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SysShareDir)cppregex.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SysShareDir)nhlan.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SysShareDir)random.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SysWinntDir)ntsound.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SysWinntDir)stubs.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SysWinntDir)win10.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SysWinntDir)windmain.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SysWinntDir)winnt.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(WinShareDir)safeproc.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(LibShareDir)callback.c">
-      <Filter>Source Files</Filter>
+      <Filter>Common Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibShareDir)gnhapi.c">
+      <Filter>Windows Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibShareDir)libproc.c">
+      <Filter>Windows Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibShareDir)gnhmain.c">
+      <Filter>Windows Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibWinDir)gnhwin.c">
+      <Filter>Windows Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SysWinntDir)winnt.c">
+      <Filter>Windows Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibWinDir)gnollhackwin.c">
+      <Filter>Windows Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

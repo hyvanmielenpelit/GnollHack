@@ -156,9 +156,10 @@ typedef xchar boolean; /* 0 or 1 */
 #endif
 
 #ifdef WIN32
-#ifdef WIN_CE
+#if defined(WIN_CE)
 #include "wceconf.h"
-#else
+#endif
+#if !defined(GNH_WIN)
 #include "ntconf.h"
 #endif
 #endif
@@ -173,6 +174,10 @@ typedef xchar boolean; /* 0 or 1 */
 
 #ifdef GNH_IOS
 #include "iosconf.h"
+#endif
+
+#ifdef GNH_WIN
+#include "winconf.h"
 #endif
 
 /* Displayable name of this port; don't redefine if defined in *conf.h */

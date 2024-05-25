@@ -187,6 +187,8 @@
 		<None Remove="Assets\UI\status-quivered-weapon-style.png" />
 		<None Remove="Assets\UI\symbol-damage.png" />
 		<None Remove="Platforms\Android\Environment.txt" />
+		<None Remove="Platforms\Windows\gnh\credits" />
+		<None Remove="Platforms\Windows\gnh\defaults.gnh" />
 		<None Remove="Resources\AppIcon\appicon.svg" />
 		<None Remove="Resources\AppIcon\appiconfg.svg" />
 	</ItemGroup>
@@ -570,6 +572,69 @@
 		<Compile Include="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'">
+		<MauiAsset Include="Platforms\Windows\libs\fmod.dll" LogicalName="%(RecursiveDir)%(Filename)%(Extension)">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+		<MauiAsset Include="Platforms\Windows\libs\fmodstudio.dll" LogicalName="%(RecursiveDir)%(Filename)%(Extension)">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+		<MauiAsset Include="Platforms\Windows\libs\fsbank.dll" LogicalName="%(RecursiveDir)%(Filename)%(Extension)">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+		<MauiAsset Include="Platforms\Windows\libs\gnollhackwin.dll" LogicalName="%(RecursiveDir)%(Filename)%(Extension)">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+		<MauiAsset Include="Platforms\Windows\libs\libfsbvorbis64.dll" LogicalName="%(RecursiveDir)%(Filename)%(Extension)">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+		<MauiAsset Include="Platforms\Windows\gnh\credits" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" >
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+		<MauiAsset Include="Platforms\Windows\gnh\defaults.gnh" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)"  >
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+		<MauiAsset Include="Platforms\Windows\gnh\logfile" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)"  >
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+		<MauiAsset Include="Platforms\Windows\gnh\nhdat" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)"  >
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+		<MauiAsset Include="Platforms\Windows\gnh\record" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)"  >
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+		<MauiAsset Include="Platforms\Windows\gnh\symbols" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)"  >
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+		<MauiAsset Include="Platforms\Windows\gnh\sysconf" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)"  >
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+		<MauiAsset Include="Platforms\Windows\gnh\xcredits" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" >
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+		<MauiAsset Include="Platforms\Windows\gnh\xlogfile" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" >
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+		<MauiAsset Include="Platforms\Windows\banks\Auxiliary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" >
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+		<MauiAsset Include="Platforms\Windows\banks\Intro.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" >
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+		<MauiAsset Include="Platforms\Windows\banks\Master.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" >
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+		<MauiAsset Include="Platforms\Windows\banks\Master.strings.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" >
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+		<MauiAsset Include="Platforms\Windows\banks\Music.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" >
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+		<MauiAsset Include="Platforms\Windows\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" >
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</MauiAsset>
+	</ItemGroup>
+	
 	<PropertyGroup>
 		<DefineConstants>$(DefineConstants);GNH_MAUI</DefineConstants>
 	</PropertyGroup>

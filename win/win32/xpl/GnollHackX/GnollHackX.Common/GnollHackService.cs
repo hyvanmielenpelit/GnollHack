@@ -56,7 +56,7 @@ namespace GnollHackX.Unknown
         public const string dll     = @"libgnollhackdroid.so";
         public const string library = "gnollhackdroid";
 #elif GNH_MAUI && WINDOWS
-        public const string dll = @"libgnollhackwin.dll";
+        public const string dll = @"gnollhackwin.dll";
         public const string library = "gnollhackwin";
 #else
         public const string dll     = @"libgnollhackunknown.so";

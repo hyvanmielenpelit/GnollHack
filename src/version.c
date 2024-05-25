@@ -7,7 +7,7 @@
 
 #include "hack.h"
 #include "dlb.h"
-#if defined(GNH_MOBILE)
+#if defined(GNH_MOBILE) && !defined(GNH_WIN)
 #include "date_unix.h"
 #else
 #include "date.h"

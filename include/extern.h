@@ -1335,23 +1335,23 @@ E void NDECL(init_fountains);
 
 /* ### gnhmain.c ### */
 
-#if defined(UNIX) && defined(GNH_MOBILE)
+#if defined(GNH_MOBILE)
 #ifdef PORT_HELP
 E void NDECL(port_help);
 #endif
 E boolean NDECL(authorize_wizard_mode);
-#endif /* UNIX && GNH_MOBILE */
+#endif /* GNH_MOBILE */
 
-/* ### gnhunix.c ### */
+/* ### gnhunix.c and gnhwin.c ### */
 
-#if defined(UNIX) && defined(GNH_MOBILE)
+#if defined(GNH_MOBILE)
 E void NDECL(getlock);
 E void NDECL(check_crash);
 E void NDECL(thread_lock_init);
 E void NDECL(thread_lock_destroy);
 E void NDECL(thread_lock_lock);
 E void NDECL(thread_lock_unlock);
-#endif /* UNIX && GNH_MOBILE */
+#endif /* GNH_MOBILE */
 
 /* ### hack.c ### */
 
