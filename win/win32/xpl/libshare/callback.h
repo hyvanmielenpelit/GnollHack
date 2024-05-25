@@ -11,11 +11,11 @@
 
 #ifdef WIN32
 #define __callconv __stdcall
-#define DLL __declspec(dllexport)
+#define DLLEXPORT __declspec(dllexport)
 #define OSAPI WINAPI
 #else
 #define __callconv 
-#define DLL
+#define DLLEXPORT
 #define OSAPI
 #endif
 

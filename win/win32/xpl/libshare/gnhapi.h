@@ -9,7 +9,7 @@
 #include "callback.h"
 #include "tradstdc.h"
 
-int FDECL(GnollHackStart, (char*));
+DLLEXPORT int FDECL(GnollHackStart, (char*));
 
 #define GHRUNFLAGS_NONE                     0x00000000UL
 #define GHRUNFLAGS_SET_WINCAPS              0x00000001UL
@@ -24,7 +24,7 @@ int FDECL(GnollHackStart, (char*));
 #define GHRUNFLAGS_GUI_DEBUG_MODE           0x00000200UL
 
 /* Main GnollHack routine with all the necessary callback functions */
-int RunGnollHack(
+DLLEXPORT int RunGnollHack(
     char* gnhdir,
     char* cmdlineargs,
     char* preset_player_name,

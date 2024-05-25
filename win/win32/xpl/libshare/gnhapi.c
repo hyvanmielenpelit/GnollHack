@@ -17,7 +17,7 @@
 extern int FDECL(GnollHackMain, (int, char**));
 extern void FDECL(set_wincaps, (unsigned long, unsigned long));
 
-void GetGlyph2Tile(int** gl2ti_ptr, int* size_ptr)
+DLLEXPORT void GetGlyph2Tile(int** gl2ti_ptr, int* size_ptr)
 {
     if (!gl2ti_ptr || !size_ptr)
         return;
@@ -30,7 +30,7 @@ void GetGlyph2Tile(int** gl2ti_ptr, int* size_ptr)
 #endif
 }
 
-void GetGlyphTileFlags(uchar** gltifl_ptr, int* size_ptr)
+DLLEXPORT void GetGlyphTileFlags(uchar** gltifl_ptr, int* size_ptr)
 {
     if (!gltifl_ptr || !size_ptr)
         return;
@@ -43,7 +43,7 @@ void GetGlyphTileFlags(uchar** gltifl_ptr, int* size_ptr)
 #endif
 }
 
-void GetTile2Animation(short** ti2an_ptr, int* size_ptr)
+DLLEXPORT void GetTile2Animation(short** ti2an_ptr, int* size_ptr)
 {
     if (!ti2an_ptr || !size_ptr)
         return;
@@ -56,7 +56,7 @@ void GetTile2Animation(short** ti2an_ptr, int* size_ptr)
 #endif
 }
 
-void GetTile2Enlargement(short** ti2en_ptr, int* size_ptr)
+DLLEXPORT void GetTile2Enlargement(short** ti2en_ptr, int* size_ptr)
 {
     if (!ti2en_ptr || !size_ptr)
         return;
@@ -69,7 +69,7 @@ void GetTile2Enlargement(short** ti2en_ptr, int* size_ptr)
 #endif
 }
 
-void GetTile2Autodraw(short** ti2ad_ptr, int* size_ptr)
+DLLEXPORT void GetTile2Autodraw(short** ti2ad_ptr, int* size_ptr)
 {
     if (!ti2ad_ptr || !size_ptr)
         return;
@@ -82,7 +82,7 @@ void GetTile2Autodraw(short** ti2ad_ptr, int* size_ptr)
 #endif
 }
 
-void GetAnimationOffsets(int** anoff_ptr, int* size_ptr)
+DLLEXPORT void GetAnimationOffsets(int** anoff_ptr, int* size_ptr)
 {
     if (!anoff_ptr || !size_ptr)
         return;
@@ -95,7 +95,7 @@ void GetAnimationOffsets(int** anoff_ptr, int* size_ptr)
 #endif
 }
 
-void GetEnlargementOffsets(int** enoff_ptr, int* size_ptr)
+DLLEXPORT void GetEnlargementOffsets(int** enoff_ptr, int* size_ptr)
 {
     if (!enoff_ptr || !size_ptr)
         return;
@@ -108,7 +108,7 @@ void GetEnlargementOffsets(int** enoff_ptr, int* size_ptr)
 #endif
 }
 
-void GetReplacementOffsets(int** reoff_ptr, int* size_ptr)
+DLLEXPORT void GetReplacementOffsets(int** reoff_ptr, int* size_ptr)
 {
     if (!reoff_ptr || !size_ptr)
         return;
@@ -121,12 +121,12 @@ void GetReplacementOffsets(int** reoff_ptr, int* size_ptr)
 #endif
 }
 
-int CountTotalTiles()
+DLLEXPORT int CountTotalTiles(VOID_ARGS)
 {
     return process_tiledata(2, (const char*)0, (int*)0, (uchar*)0);
 }
 
-void LibSetArrays(int* gl2ti, int size_gl2ti, uchar* gltifl, int size_gltifl, short* ti2an, int size_ti2an)
+DLLEXPORT void LibSetArrays(int* gl2ti, int size_gl2ti, uchar* gltifl, int size_gltifl, short* ti2an, int size_ti2an)
 {
 #ifdef USE_TILES
     int i;
@@ -157,98 +157,99 @@ void LibSetArrays(int* gl2ti, int size_gl2ti, uchar* gltifl, int size_gltifl, sh
 #endif
 }
 
-int LibGetUnexploredGlyph()
+DLLEXPORT int LibGetUnexploredGlyph(VOID_ARGS)
 {
     return base_cmap_to_glyph(S_unexplored);
 }
 
-int LibGetNoGlyph()
+DLLEXPORT int LibGetNoGlyph(VOID_ARGS)
 {
     return NO_GLYPH;
 }
 
-int LibGetAnimationOff()
+DLLEXPORT int LibGetAnimationOff(VOID_ARGS)
 {
     return GLYPH_ANIMATION_OFF;
 }
 
-int LibGetEnlargementOff()
+DLLEXPORT int LibGetEnlargementOff(VOID_ARGS)
 {
     return GLYPH_ENLARGEMENT_OFF;
 }
 
-int LibGetReplacementOff()
+DLLEXPORT int LibGetReplacementOff(VOID_ARGS)
 {
     return GLYPH_ANIMATION_OFF;
 }
 
-int LibGetGeneralTileOff()
+DLLEXPORT int LibGetGeneralTileOff(VOID_ARGS)
 {
     return GLYPH_GENERAL_TILE_OFF;
 }
 
-int LibGetHitTileOff()
+DLLEXPORT int LibGetHitTileOff(VOID_ARGS)
 {
     return GLYPH_HIT_TILE_OFF;
 }
 
-int LibGetUITileOff()
+DLLEXPORT int LibGetUITileOff(VOID_ARGS)
 {
     return GLYPH_UI_TILE_OFF;
 }
 
-int LibGetSpellTileOff()
+DLLEXPORT int LibGetSpellTileOff(VOID_ARGS)
 {
     return GLYPH_SPELL_TILE_OFF;
 }
 
-int LibGetSkillTileOff()
+DLLEXPORT int LibGetSkillTileOff(VOID_ARGS)
 {
     return GLYPH_SKILL_TILE_OFF;
 }
 
-int LibGetCommandTileOff()
+DLLEXPORT int LibGetCommandTileOff(VOID_ARGS)
 {
     return GLYPH_COMMAND_TILE_OFF;
 }
 
-int LibGetBuffTileOff()
+DLLEXPORT int LibGetBuffTileOff(VOID_ARGS)
 {
     return GLYPH_BUFF_OFF;
 }
 
-int LibGetCursorOff()
+DLLEXPORT int LibGetCursorOff(VOID_ARGS)
 {
     return GLYPH_CURSOR_OFF;
 }
 
-int LibTest()
+DLLEXPORT int LibTest(VOID_ARGS)
 {
     return 5;
 }
 
-const char* LibGetVersionString()
+DLLEXPORT const char* LibGetVersionString(VOID_ARGS)
 {
     return VERSION_STRING;
 }
 
-const char* LibGetVersionId()
+DLLEXPORT const char* LibGetVersionId(VOID_ARGS)
 {
     return VERSION_ID;
 }
 
-unsigned long LibGetVersionNumber()
+DLLEXPORT unsigned long LibGetVersionNumber(VOID_ARGS)
 {
     return VERSION_NUMBER;
 }
 
-unsigned long LibGetVersionCompatibility()
+DLLEXPORT unsigned long LibGetVersionCompatibility(VOID_ARGS)
 {
     return EARLIEST_COMPATIBLE_VERSION_NUMBER;
 }
 
 static const char* extcmdnames[256] = { 0 };
-const char** LibGetExtendedCommands()
+
+DLLEXPORT const char** LibGetExtendedCommands(VOID_ARGS)
 {
     int i = 0, j = 0;
     for (i = 0; i < 256; i++)
@@ -271,13 +272,13 @@ const char** LibGetExtendedCommands()
     return extcmdnames;
 }
 
-
-void LibSetPetMID(unsigned int m_id)
+DLLEXPORT void LibSetPetMID(m_id)
+unsigned int m_id;
 {
     context.view_pet_mid = m_id;
 }
 
-const char* LibGetPropertyName(prop_index)
+DLLEXPORT const char* LibGetPropertyName(prop_index)
 int prop_index;
 {
     return get_property_name(prop_index);
@@ -285,7 +286,7 @@ int prop_index;
 
 char _dumplogbuf[BUFSZ];
 
-char* LibDumplogDateString(startdate)
+DLLEXPORT char* LibDumplogDateString(startdate)
 long startdate;
 {
     Sprintf(_dumplogbuf, "%08ld%06ld",
@@ -294,75 +295,79 @@ long startdate;
     return _dumplogbuf;
 }
 
-
-int LibGetAnimationArraySize()
+DLLEXPORT int LibGetAnimationArraySize(VOID_ARGS)
 {
     return MAX_ANIMATIONS;
 }
 
-struct animation_definition LibGetAnimationArrayElement(idx)
+DLLEXPORT struct animation_definition LibGetAnimationArrayElement(idx)
 int idx;
 {
     return animations[idx];
 }
 
-int LibGetEnlargementArraySize()
+DLLEXPORT int LibGetEnlargementArraySize(VOID_ARGS)
 {
     return MAX_ENLARGEMENTS;
 }
 
-struct enlargement_definition LibGetEnlargementArrayElement(idx)
+DLLEXPORT struct enlargement_definition LibGetEnlargementArrayElement(idx)
 int idx;
 {
     return enlargements[idx];
 }
 
-int LibGetReplacementArraySize()
+DLLEXPORT int LibGetReplacementArraySize(VOID_ARGS)
 {
     return MAX_REPLACEMENTS;
 }
 
-struct replacement_definition LibGetReplacementArrayElement(idx)
+DLLEXPORT struct replacement_definition LibGetReplacementArrayElement(idx)
 int idx;
 {
     return replacements[idx];
 }
 
-int LibGetAutoDrawArraySize()
+DLLEXPORT int LibGetAutoDrawArraySize(VOID_ARGS)
 {
     return MAX_AUTODRAWS;
 }
 
-struct autodraw_definition LibGetAutoDrawArrayElement(idx)
+DLLEXPORT struct autodraw_definition LibGetAutoDrawArrayElement(idx)
 int idx;
 {
     return autodraws[idx];
 }
 
-boolean LibGlyphIsExplosion(glyph)
+DLLEXPORT boolean LibGlyphIsExplosion(glyph)
 int glyph;
 {
     return glyph_is_explosion(glyph);
 }
 
-boolean LibGlyphIsZap(glyph)
+DLLEXPORT boolean LibGlyphIsZap(glyph)
 int glyph;
 {
     return glyph_is_zap(glyph);
 }
 
-boolean LibGlyphIsAnyDying(int glyph)
+DLLEXPORT boolean LibGlyphIsAnyDying(glyph)
+int glyph;
 {
     return glyph_is_dying_monster(glyph) || glyph_is_female_dying_monster(glyph) || glyph_is_dying_player(glyph);
 }
 
-int LibZapGlyphToCornerGlyph(int adjglyph, unsigned long adjflags, int source_dir)
+DLLEXPORT int LibZapGlyphToCornerGlyph(adjglyph, adjflags, source_dir)
+int adjglyph;
+unsigned long adjflags;
+int source_dir;
 {
     return zap_glyph_to_corner_glyph(adjglyph, adjflags, source_dir);
 }
 
-int
-LibChmod(const char* filename, unsigned int mode)
+DLLEXPORT int LibChmod(filename, mode)
+const char* filename;
+unsigned int mode;
 {
 #ifdef WIN32
     return 0;
@@ -371,8 +376,8 @@ LibChmod(const char* filename, unsigned int mode)
 #endif
 }
 
-void
-LibSaveAndRestoreSavedGame(int save_style)
+DLLEXPORT void LibSaveAndRestoreSavedGame(save_style)
+int save_style;
 {
     if (program_state.something_worth_saving 
         && !program_state.gameover && !program_state.panicking && !program_state.in_tricked
@@ -421,20 +426,20 @@ LibSaveAndRestoreSavedGame(int save_style)
     }
 }
 
-void
-LibTallyRealTime()
+DLLEXPORT void
+LibTallyRealTime(VOID_ARGS)
 {
     tally_realtime();
 }
 
-int
-LibGetMaxManuals()
+DLLEXPORT int
+LibGetMaxManuals(VOID_ARGS)
 {
     return MAX_MANUAL_TYPES;
 }
 
-int
-LibIsDebug()
+DLLEXPORT int
+LibIsDebug(VOID_ARGS)
 {
 #ifdef DEBUG
     return 1;
@@ -444,7 +449,8 @@ LibIsDebug()
 }
 
 char gnhapi_putstr_buffer[BUFSZ * 4];
-void gnhapi_raw_print(const char* text)
+
+DLLEXPORT void gnhapi_raw_print(const char* text)
 {
     char buf[UTF8BUFSZ] = "";
     if (text)
@@ -456,17 +462,17 @@ void gnhapi_raw_print(const char* text)
     }
 }
 
-void gnhapi_putstr_ex(winid wid, const char* text, int attr, int color, int append)
+DLLEXPORT void gnhapi_putstr_ex(winid wid, const char* text, int attr, int color, int append)
 {
     gnhapi_raw_print(text);
 }
 
-void gnhapi_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int append)
+DLLEXPORT void gnhapi_putstr_ex2(winid wid, const char* text, const char* attrs, const char* colors, int attr, int color, int append)
 {
     gnhapi_raw_print(text);
 }
 
-void
+DLLEXPORT void
 gnhapi_issue_gui_command(cmd_id, cmd_param, cmd_param2, cmd_str)
 int cmd_id, cmd_param, cmd_param2;
 const char* cmd_str;
@@ -479,7 +485,7 @@ const char* cmd_str;
     }
 }
 
-int
+DLLEXPORT int
 LibValidateSaveFile(const char* filename, char* output_str)
 {
     int fd;
@@ -518,7 +524,7 @@ LibValidateSaveFile(const char* filename, char* output_str)
     return res;
 }
 
-int
+DLLEXPORT int
 LibCheckCurrentFileDescriptor(const char* dir)
 {
     if (!chdir(dir))
@@ -527,13 +533,13 @@ LibCheckCurrentFileDescriptor(const char* dir)
         return -4;
 }
 
-void
-LibReportFileDescriptors()
+DLLEXPORT void
+LibReportFileDescriptors(VOID_ARGS)
 {
     maybe_report_file_descriptors("File Descriptor Report Requested", 24);
 }
 
-int
+DLLEXPORT int
 LibIncreaseFileDescriptorLimitToAtLeast(int min_cur)
 {
 #if defined(UNIX) && defined (GNH_MOBILE)
@@ -543,7 +549,7 @@ LibIncreaseFileDescriptorLimitToAtLeast(int min_cur)
 #endif
 }
 
-int
+DLLEXPORT int
 LibGetFileDescriptorLimit(int is_max_limit)
 {
 #if defined(UNIX) && defined (GNH_MOBILE)
@@ -553,7 +559,7 @@ LibGetFileDescriptorLimit(int is_max_limit)
 #endif
 }
 
-int GnollHackStart(cmdlineargs)
+DLLEXPORT int GnollHackStart(cmdlineargs)
 char* cmdlineargs;
 {
 #define MAX_CMD_PARAMS 16
@@ -609,7 +615,7 @@ char* cmdlineargs;
 
 extern struct callback_procs lib_callbacks;
 
-int RunGnollHack(
+DLLEXPORT int RunGnollHack(
     char* gnhdir,
     char* cmdlineargs,
     char* preset_player_name,
