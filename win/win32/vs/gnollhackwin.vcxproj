@@ -76,19 +76,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(GnollHackDllOutputDir)</OutDir>
+    <OutDir>$(MauiWindowsLibsDir)</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(GnollHackDllOutputDir)</OutDir>
+    <OutDir>$(MauiWindowsLibsDir)</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(GnollHackDllOutputDir)</OutDir>
+    <OutDir>$(MauiWindowsLibsDir)</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(GnollHackDllOutputDir)</OutDir>
+    <OutDir>$(MauiWindowsLibsDir)</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -97,7 +97,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;LIBGNOLLHACK_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>$(DllDir)pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>$(LibWinDir)pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -114,7 +114,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;LIBGNOLLHACK_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>$(DllDir)pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>$(LibWinDir)pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -151,7 +151,7 @@
       <PreprocessorDefinitions>NDEBUG;LIBGNOLLHACK_EXPORTS;_WINDOWS;_USRDLL;DLB;DLL_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;EXIT_THREAD_ON_EXIT;GNOLLHACK_MAIN_PROGRAM;GNOLLHACK_SERVER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>$(DllDir)pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>$(LibWinDir)pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(LibShareDir);$(WinFmodDir)core\inc\;$(WinFmodDir)fsbank\inc\;$(WinFmodDir)studio\inc\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -233,9 +233,9 @@
     <ClInclude Include="$(IncDir)you.h" />
     <ClInclude Include="$(IncDir)youprop.h" />
     <ClInclude Include="$(LibShareDir)callback.h" />
-    <ClInclude Include="$(DllDir)dllhack.h" />
-    <ClInclude Include="$(DllDir)dllproc.h" />
-    <ClInclude Include="$(DllDir)resource.h" />
+    <ClInclude Include="$(LibWinDir)dllhack.h" />
+    <ClInclude Include="$(LibWinDir)dllproc.h" />
+    <ClInclude Include="$(LibWinDir)resource.h" />
     <ClInclude Include="..\resource.h" />
     <ClInclude Include="..\soundfx.h" />
     <ClInclude Include="..\winMS.h" />
@@ -373,16 +373,16 @@
     <ClCompile Include="$(SysWinntDir)windmain.c" />
     <ClCompile Include="$(SysWinntDir)winnt.c" />
     <ClCompile Include="$(WinShareDir)safeproc.c" />
-    <ClCompile Include="$(DllDir)dllhack.c" />
-    <ClCompile Include="$(DllDir)dllmain.c" />
-    <ClCompile Include="$(DllDir)dllproc.c" />
+    <ClCompile Include="$(LibWinDir)dllhack.c" />
+    <ClCompile Include="$(LibWinDir)dllmain.c" />
+    <ClCompile Include="$(LibWinDir)dllproc.c" />
     <ClCompile Include="$(LibShareDir)callback.c" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\GnollHackNew.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="$(DllDir)dllhack.rc" />
+    <ResourceCompile Include="$(LibWinDir)dllhack.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -3,15 +3,16 @@
   <Import Project="files.props"/>
   <!-- TODO not copying record-->
   <Target Name="Build"
-    Inputs="$(SysWinntDir)defaults.gnh;$(DocDir)Guidebook.txt;$(DatDir)license;$(DatDir)credits;$(SysWinntDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols;$(WinWin32Dir)record;$(DatDir)opthelp"
-    Outputs="$(GnollHackDllOutputDir)defaults.gnh;$(GnollHackDllOutputDir)Guidebook.txt;$(GnollHackDllOutputDir)license;$(GnollHackDllOutputDir)credits;$(GnollHackDllOutputDir)sysconf;$(GnollHackDllOutputDir)symbols;$(GnollHackDllOutputDir)record;$(GnollHackDllOutputDir)opthelp">
+    Inputs="$(LibShareDir)defaults.gnh;$(DocDir)Guidebook.txt;$(DatDir)license;$(DatDir)credits;$(LibShareDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols;$(WinWin32Dir)record;$(DatDir)opthelp"
+    Outputs="$(MauiWindowsGnhDir)defaults.gnh;$(MauiWindowsGnhDir)license;$(MauiWindowsGnhDir)credits;$(MauiWindowsGnhDir)xcredits;$(MauiWindowsGnhDir)sysconf;$(MauiWindowsGnhDir)symbols;$(MauiWindowsGnhDir)record;$(MauiWindowsGnhDir)opthelp">
 
-    <Copy SourceFiles="$(SysWinntDir)defaults.gnh;$(DocDir)Guidebook.txt;$(DatDir)license;$(DatDir)credits;$(SysWinntDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols;$(WinWin32Dir)record;$(DatDir)opthelp" DestinationFolder="$(GnollHackDllOutputDir)"/>
-    <Copy SourceFiles="$(BinDir)nhdat;$(BinDir)nh340key.dll;$(BinDir)nhdefkey.dll;$(BinDir)nhraykey.dll;$(BinDir)recover.exe" DestinationFolder="$(GnollHackDllOutputDir)"/>
-	<Message Text="Copied GnollHack files from $(BinDir) to $(GnollHackDllOutputDir)" Importance="High" />
+  	<Copy SourceFiles="$(LibShareDir)defaults.gnh;$(DatDir)license;$(DatDir)credits;$(DatDir)xcredits;$(LibShareDir)sysconf;$(DatDir)symbols;$(WinWin32Dir)record;$(DatDir)opthelp" DestinationFolder="$(MauiWindowsGnhDir)"/>
+	  <Message Text="Copied GnollHack files from $(LibShareDir) to $(MauiWindowsGnhDir)" Importance="High" />
+  	<Copy SourceFiles="$(WinFmodDir)core\lib\winnt-x64\fmod.dll;$(WinFmodDir)fsbank\lib\winnt-x64\fsbank.dll;$(WinFmodDir)fsbank\lib\winnt-x64\libfsbvorbis64.dll;$(WinFmodDir)studio\lib\winnt-x64\fmodstudio.dll;" DestinationFolder="$(MauiWindowsLibsDir)"/>
+	  <Message Text="Copied FMOD files from $(WinFmodDir) to $(MauiWindowsLibsDir)" Importance="High" />
   </Target>
   <Target Name="Clean">
-    <Delete Files="$(GnollHackDllOutputDir)defaults.gnh;$(GnollHackDllOutputDir)Guidebook.txt;$(GnollHackDllOutputDir)license;$(GnollHackDllOutputDir)credits;$(GnollHackDllOutputDir)sysconf;$(GnollHackDllOutputDir)nethack.txt;$(GnollHackDllOutputDir)symbols;$(GnollHackDllOutputDir)record;$(GnollHackDllOutputDir)opthelp"/>
-	<Message Text="Deleted GnollHack files from $(GnollHackDllOutputDir)" Importance="High" />
+    <Delete Files="$(MauiWindowsGnhDir)defaults.gnh;$(MauiWindowsGnhDir)license;$(MauiWindowsGnhDir)credits;$(MauiWindowsGnhDir)xcredits;$(MauiWindowsGnhDir)sysconf;$(MauiWindowsGnhDir)symbols;$(MauiWindowsGnhDir)record;$(MauiWindowsGnhDir)opthelp"/>
+	<Message Text="Deleted GnollHack files from $(MauiWindowsGnhDir)" Importance="High" />
   </Target>
 </Project>

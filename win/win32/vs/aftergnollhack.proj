@@ -11,17 +11,9 @@
   	<Copy SourceFiles="$(WinFmodDir)core\lib\winnt-x86\fmod.dll;$(WinFmodDir)fsbank\lib\winnt-x86\fsbank.dll;$(WinFmodDir)fsbank\lib\winnt-x86\libfsbvorbis.dll;$(WinFmodDir)studio\lib\winnt-x86\fmodstudio.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
   	<Copy SourceFiles="$(WinFmodDir)core\lib\winnt-x64\fmod.dll;$(WinFmodDir)fsbank\lib\winnt-x64\fsbank.dll;$(WinFmodDir)fsbank\lib\winnt-x64\libfsbvorbis64.dll;$(WinFmodDir)studio\lib\winnt-x64\fmodstudio.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
 	<Message Text="Copied FMOD files from $(WinFmodDir) to $(BinDir) using platform $(Platform)" Importance="High" />
-
-  	<Copy SourceFiles="$(LibShareDir)defaults.gnh;$(DatDir)license;$(DatDir)credits;$(DatDir)xcredits;$(LibShareDir)sysconf;$(DatDir)symbols;$(WinWin32Dir)record" DestinationFolder="$(MauiWindowsGnhDir)"/>
-	<Message Text="Copied GnollHack files from $(LibShareDir) to $(MauiWindowsGnhDir)" Importance="High" />
-  	<Copy SourceFiles="$(WinFmodDir)core\lib\winnt-x64\fmod.dll;$(WinFmodDir)fsbank\lib\winnt-x64\fsbank.dll;$(WinFmodDir)fsbank\lib\winnt-x64\libfsbvorbis64.dll;$(WinFmodDir)studio\lib\winnt-x64\fmodstudio.dll;" DestinationFolder="$(MauiWindowsLibsDir)"/>
-	<Message Text="Copied FMOD files from $(WinFmodDir) to $(MauiWindowsLibsDir)" Importance="High" />
-	  
   </Target>
   <Target Name="Clean">
 	<Delete Files="$(BinDir)defaults.gnh;$(BinDir)Guidebook.txt;$(BinDir)license;$(BinDir)credits;$(BinDir)sysconf;$(BinDir)nethack.txt;$(BinDir)symbols;$(BinDir)record;$(BinDir)opthelp"/>
 	<Message Text="Deleted GnollHack files from $(BinDir)" Importance="High" />
-	<Delete Files="$(MauiWindowsGnhDir)defaults.gnh;$(MauiWindowsGnhDir)license;$(MauiWindowsGnhDir)credits;$(MauiWindowsGnhDir)xcredits;$(MauiWindowsGnhDir)sysconf;$(MauiWindowsGnhDir)symbols;$(MauiWindowsGnhDir)record"/>
-	<Message Text="Deleted GnollHack files from $(MauiWindowsGnhDir)" Importance="High" />
   </Target>
 </Project>

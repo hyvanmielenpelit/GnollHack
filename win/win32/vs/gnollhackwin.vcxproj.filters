@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(DllDir)dllhack.h">
+    <ClInclude Include="$(LibWinDir)dllhack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(DllDir)dllproc.h">
+    <ClInclude Include="$(LibWinDir)dllproc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\resource.h">
@@ -30,7 +30,7 @@
     <ClInclude Include="..\winMS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(DllDir)resource.h">
+    <ClInclude Include="$(LibWinDir)resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(WinFmodDir)core\inc\fmod.hpp">
@@ -242,13 +242,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(DllDir)dllmain.c">
+    <ClCompile Include="$(LibWinDir)dllmain.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(DllDir)dllhack.c">
+    <ClCompile Include="$(LibWinDir)dllhack.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(DllDir)dllproc.c">
+    <ClCompile Include="$(LibWinDir)dllproc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)allmain.c">
@@ -642,7 +642,7 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="$(DllDir)dllhack.rc">
+    <ResourceCompile Include="$(LibWinDir)dllhack.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

@@ -51,6 +51,9 @@ win/win32/vs/dumplog/*.*
 *assetpack.zip
 libgnollhackdroid.so*
 libgnollhackios.a
+gnollhackwin.dll
+gnollhackwin.lib
+gnollhackwin.exp
 win/win32/xpl/GnollHackX/GnollHackX.Android/gnh/credits
 win/win32/xpl/GnollHackX/GnollHackX.Android/gnh/xcredits
 win/win32/xpl/GnollHackX/GnollHackX.Android/gnh/symbols
