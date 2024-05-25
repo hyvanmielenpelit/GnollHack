@@ -938,7 +938,7 @@ namespace GnollHackX.Pages.Game
 
             var tasks = new List<Task>();
             _gnollHackService = GHApp.GnollHackService;
-            _gnollHackService.InitializeGnollHack();
+            await _gnollHackService.InitializeGnollHack();
 
             if (!GHApp.StartGameDataSet)
             {

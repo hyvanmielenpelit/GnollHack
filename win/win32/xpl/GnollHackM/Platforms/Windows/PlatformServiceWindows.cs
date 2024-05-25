@@ -122,18 +122,18 @@ namespace GnollHackM
 
         public string GetBaseUrl()
         {
-            return "";
+            return FileSystem.Current.AppDataDirectory;
         }
         public string GetAssetsPath()
         {
-            return "";
+            return Path.Combine(FileSystem.Current.AppDataDirectory, "Assets");
         }
 
         public string GetCanonicalPath(string fileName)
         {
             try
             {
-                return fileName;
+                return Path.Combine(FileSystem.Current.AppDataDirectory, "Assets", fileName);
             }
             catch (Exception)
             {

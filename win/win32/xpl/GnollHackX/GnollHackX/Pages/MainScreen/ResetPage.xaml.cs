@@ -44,7 +44,7 @@ namespace GnollHackX.Pages.MainScreen
             if (answer)
             {
                 GHApp.GnollHackService.ClearCoreFiles();
-                GHApp.GnollHackService.InitializeGnollHack();
+                await GHApp.GnollHackService.InitializeGnollHack();
                 btnDeleteFiles.Text = "Done";
                 btnDeleteFiles.TextColor = GHColors.Red;
             }

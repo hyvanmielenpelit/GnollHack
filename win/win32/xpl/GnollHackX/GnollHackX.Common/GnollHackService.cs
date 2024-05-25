@@ -11,6 +11,7 @@ using Xamarin.Forms;
 using Xamarin.Essentials;
 #endif
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using GnollHackX;
 
 #if __IOS__
@@ -421,7 +422,7 @@ namespace GnollHackX.Unknown
             }
         }
 
-        public void ResetDefaultsFile()
+        public async Task ResetDefaultsFile()
         {
             string content;
             string filesdir = GetGnollHackPath();
@@ -433,7 +434,12 @@ namespace GnollHackX.Unknown
 #elif __ANDROID__
             string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
             AssetManager assets = MainActivity.StaticAssets;
-            using (StreamReader sr = new StreamReader(assets.Open(fullsourcepath)))
+            using Stream assetsStream = assets.Open(fullsourcepath);
+            using (StreamReader sr = new StreamReader(assetsStream))
+#elif WINDOWS
+            string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
+            using Stream fileStream = await FileSystem.Current.OpenAppPackageFileAsync(fullsourcepath);
+            using (StreamReader sr = new StreamReader(fullsourcepath))
 #else
             string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
             using (StreamReader sr = new StreamReader(fullsourcepath))
@@ -481,16 +487,18 @@ namespace GnollHackX.Unknown
             {
                 return ".";
             }
+#elif WINDOWS
+            return FileSystem.Current.AppDataDirectory;
 #else
             return ".";
 #endif
         }
 
 
-        private string[] _txtfileslist = { "credits", "xcredits", "license", "logfile", "perm", "record", "recover", "symbols", "sysconf", "xlogfile", "defaults.gnh" };
+        private string[] _txtfileslist = { "credits", "xcredits", "license", "logfile", "perm", "record", "symbols", "sysconf", "xlogfile", "defaults.gnh" };
         private string[] _binfileslist = { "nhdat" };
 
-        public void InitializeGnollHack()
+        public async Task InitializeGnollHack()
         {
             /* Unpack GnollHack files */
             /* Add a check whether to unpack if there are existing files or not */
@@ -540,9 +548,14 @@ namespace GnollHackX.Unknown
                 using (StreamReader sr = new StreamReader(fullsourcepath))
 #elif __ANDROID__
                 string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
-                using (StreamReader sr = new StreamReader(assets.Open(fullsourcepath)))
-#else
+                using Stream assetsStream = assets.Open(fullsourcepath);
+                using (StreamReader sr = new StreamReader(assetsStream))
+#elif WINDOWS
                 string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
+                using Stream fileStream = await FileSystem.Current.OpenAppPackageFileAsync(fullsourcepath);
+                using (StreamReader sr = new StreamReader(fileStream))
+#else
+                string fullsourcepath = Path.Combine(filesdir, assetsourcedir, txtfile);
                 using (StreamReader sr = new StreamReader(fullsourcepath))
 #endif
                 {
@@ -575,6 +588,10 @@ namespace GnollHackX.Unknown
 #elif __ANDROID__
                 string fullsourcepath = Path.Combine(assetsourcedir, binfile);
                 using (BinaryReader br = new BinaryReader(assets.Open(fullsourcepath)))
+#elif WINDOWS
+                string fullsourcepath = Path.Combine(assetsourcedir, binfile);
+                using Stream fileStream = await FileSystem.Current.OpenAppPackageFileAsync(fullsourcepath);
+                using (BinaryReader br = new BinaryReader(fileStream))
 #else
                 string fullsourcepath = Path.Combine(assetsourcedir, binfile);
                 using (BinaryReader br = new BinaryReader(File.OpenRead(fullsourcepath)))
@@ -598,7 +615,7 @@ namespace GnollHackX.Unknown
             }
         }
 
-        public void InitializeSecrets(Secrets secrets)
+        public async Task InitializeSecrets(Secrets secrets)
         {
             if (secrets == null)
                 return;
@@ -624,15 +641,15 @@ namespace GnollHackX.Unknown
             {
                 string assetfile = sfile.name;
                 string sfiledir = sfile.source_directory;
-//#if GNH_MAUI
-//#if __IOS__
-//                sfiledir = Path.Combine("Platforms", "iOS", sfiledir);
-//#elif __ANDROID__
-//                sfiledir = Path.Combine("Platforms", "Android", sfiledir);
-//#else
-//                sfiledir = Path.Combine("Platforms", "Unknown", sfiledir);
-//#endif
-//#endif
+                //#if GNH_MAUI
+                //#if __IOS__
+                //                sfiledir = Path.Combine("Platforms", "iOS", sfiledir);
+                //#elif __ANDROID__
+                //                sfiledir = Path.Combine("Platforms", "Android", sfiledir);
+                //#else
+                //                sfiledir = Path.Combine("Platforms", "Unknown", sfiledir);
+                //#endif
+                //#endif
 #if __IOS__
                 string extension = Path.GetExtension(assetfile);
                 if (extension != null && extension.Length > 0)
@@ -640,6 +657,8 @@ namespace GnollHackX.Unknown
                 string fname = Path.GetFileNameWithoutExtension(assetfile);
                 string fullsourcepath = NSBundle.MainBundle.PathForResource(fname, extension, sfiledir);
 #elif __ANDROID__
+                string fullsourcepath = Path.Combine(sfiledir, assetfile);
+#elif WINDOWS
                 string fullsourcepath = Path.Combine(sfiledir, assetfile);
 #else
                 string fullsourcepath = Path.Combine(sfiledir, assetfile);
@@ -674,6 +693,8 @@ namespace GnollHackX.Unknown
                     using (Stream s = assets.Open(fullsourcepath))
 #elif __IOS__
                     using (Stream s = File.OpenRead(fullsourcepath))
+#elif WINDOWS
+                    using (Stream s = await FileSystem.Current.OpenAppPackageFileAsync(fullsourcepath))
 #else
                     using (Stream s = File.OpenRead(fullsourcepath))
 #endif

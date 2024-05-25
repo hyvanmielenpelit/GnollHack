@@ -691,7 +691,7 @@ namespace GnollHackX
         {
             try
             {
-                GHApp.GnollHackService.InitializeGnollHack();
+                await GHApp.GnollHackService.InitializeGnollHack();
             }
             catch (Exception ex)
             {
@@ -702,7 +702,7 @@ namespace GnollHackX
         {
             try
             {
-                GHApp.GnollHackService.InitializeSecrets(GHApp.CurrentSecrets);
+                await GHApp.GnollHackService.InitializeSecrets(GHApp.CurrentSecrets);
             }
             catch (Exception ex)
             {

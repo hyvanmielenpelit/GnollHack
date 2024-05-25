@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 #if GNH_MAUI
 using GnollHackM;
 #endif
@@ -11,8 +12,8 @@ namespace GnollHackX
     {
         void LoadLibrary();
         void UnloadLibrary();
-        void InitializeGnollHack();
-        void InitializeSecrets(Secrets secrets);
+        Task InitializeGnollHack();
+        Task InitializeSecrets(Secrets secrets);
         string GetGnollHackPath();
         void ClearFiles();
         void ClearCoreFiles();
@@ -21,7 +22,7 @@ namespace GnollHackX
         void ClearDumplogs();
         void ClearBones();
         void ClearAllFilesInMainDirectory();
-        void ResetDefaultsFile();
+        Task ResetDefaultsFile();
         void GetGlyphArrays(out IntPtr gl2ti, out int size1, out IntPtr gltifl, out int gltifl_size);
         void GetTileArrays(out IntPtr ti2an, out int size2, out IntPtr ti2en, out int size3, out IntPtr ti2ad, out int size4, out IntPtr anoff_ptr, out int anoff_size, out IntPtr enoff_ptr, out int enoff_size, out IntPtr reoff_ptr, out int reoff_size);
         int GetTotalTiles();

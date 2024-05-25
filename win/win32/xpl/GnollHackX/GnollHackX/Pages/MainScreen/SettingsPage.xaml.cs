@@ -447,7 +447,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 try
                 {
-                    GHApp.GnollHackService.InitializeSecrets(GHApp.CurrentSecrets);
+                    await GHApp.GnollHackService.InitializeSecrets(GHApp.CurrentSecrets);
                 }
                 catch (Exception ex)
                 {
