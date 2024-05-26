@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
+
 
 #if GNH_MAUI
 using GnollHackX;
@@ -33,6 +35,50 @@ namespace GnollHackX.Pages.Game
                 Url = wikiUrl,
             };
             DisplayWebView.Source = Source;
+            UpdateNavigationButtons();
+        }
+
+        private void DisplayWebView_Navigating(object sender, WebNavigatingEventArgs e)
+        {
+            NavigationLabel.Text = "Loading...";
+            UpdateNavigationButtons();
+        }
+
+        private void DisplayWebView_Navigated(object sender, WebNavigatedEventArgs e)
+        {
+            NavigationLabel.Text = "";
+            UpdateNavigationButtons();
+#if GNH_MAUI
+            var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+            timer.Interval = TimeSpan.FromSeconds(0.5);
+            timer.IsRepeating = false;
+            timer.Tick += (s, e) => 
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    UpdateNavigationButtons();
+                });
+            };
+            timer.Start();
+#else
+            Device.StartTimer(TimeSpan.FromSeconds(0.5), () =>
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    UpdateNavigationButtons();
+                });
+                return false;
+            });
+#endif
+        }
+
+        private void UpdateNavigationButtons()
+        {
+            BackButton.IsEnabled = DisplayWebView.CanGoBack;
+            BackButton.TextColor = BackButton.IsEnabled ? Color.White : Color.Gray;
+
+            ForwardButton.IsEnabled = DisplayWebView.CanGoForward;
+            ForwardButton.TextColor = ForwardButton.IsEnabled ? Color.White : Color.Gray;
         }
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
@@ -40,6 +86,30 @@ namespace GnollHackX.Pages.Game
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
+        }
+
+        private void BackButton_Clicked(object sender, EventArgs e)
+        {
+            if (DisplayWebView.CanGoBack)
+            {
+                BackButton.IsEnabled = false;
+                ForwardButton.IsEnabled = false;
+                GHApp.PlayButtonClickedSound();
+                DisplayWebView.GoBack();
+                UpdateNavigationButtons();
+            }
+        }
+
+        private void ForwardButton_Clicked(object sender, EventArgs e)
+        {
+            if (DisplayWebView.CanGoForward)
+            {
+                BackButton.IsEnabled = false;
+                ForwardButton.IsEnabled = false;
+                GHApp.PlayButtonClickedSound();
+                DisplayWebView.GoForward();
+                UpdateNavigationButtons();
+            }
         }
     }
 }

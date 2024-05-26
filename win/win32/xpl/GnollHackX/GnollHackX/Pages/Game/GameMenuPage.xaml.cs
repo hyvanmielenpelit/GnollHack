@@ -264,9 +264,17 @@ namespace GnollHackX.Pages.Game
         {
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await GHApp.OpenBrowser(this, new Uri(GHConstants.GnollHackWikiPage));
-            //var wikiPage = new WikiPage("Wiki", GHConstants.GnollHackWikiPage);
-            //await App.Current.MainPage.Navigation.PushModalAsync(wikiPage);
+            if (GHApp.IsiOS)
+            {
+                /* Navigated event does not trigger with WebView on iOS, making navigation buttons inactivate all the time; use OpenBrowser instead (does not trigger OnSleep / OnResume on iOS) */
+                await GHApp.OpenBrowser(this, new Uri(GHConstants.GnollHackWikiPage));
+            }
+            else
+            {
+                /* Android seems to trigger app switching (OnSleep / OnResume) using OpenBrowser; use WebView instead */
+                var wikiPage = new WikiPage("Wiki", GHConstants.GnollHackWikiPage);
+                await App.Current.MainPage.Navigation.PushModalAsync(wikiPage);
+            }
             MainLayout.IsEnabled = true;
         }
     }
