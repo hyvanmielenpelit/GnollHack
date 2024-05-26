@@ -16,13 +16,10 @@ using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
 namespace GnollHackM
 #else
-using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
-using GnollHackX.Pages.Game;
-using static Xamarin.Essentials.AppleSignInAuthenticator;
 
 namespace GnollHackX.Pages.MainScreen
 #endif
@@ -96,27 +93,15 @@ namespace GnollHackX.Pages.MainScreen
         {
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await OpenBrowser(new Uri(GHConstants.GnollHackGitHubPage));
+            await GHApp.OpenBrowser(this, new Uri(GHConstants.GnollHackGitHubPage));
             AboutGrid.IsEnabled = true;
-        }
-
-        public async Task OpenBrowser(Uri uri)
-        {
-            try
-            {
-                await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Cannot Open Web Page", "GnollHack cannot open the webpage at " + uri.OriginalString + ". Error: " + ex.Message, "OK");
-            }
         }
 
         private async void btnWebPage_Clicked(object sender, EventArgs e)
         {
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await OpenBrowser(new Uri(GHConstants.GnollHackWebPage));
+            await GHApp.OpenBrowser(this, new Uri(GHConstants.GnollHackWebPage));
             AboutGrid.IsEnabled = true;
         }
 
@@ -124,7 +109,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await OpenBrowser(new Uri(GHConstants.GnollHackWikiPage));
+            await GHApp.OpenBrowser(this, new Uri(GHConstants.GnollHackWikiPage));
             AboutGrid.IsEnabled = true;
         }
 
@@ -132,7 +117,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await OpenBrowser(new Uri(GHApp.IsAndroid ? GHConstants.GnollHackAndroidDowngradePage : GHApp.IsiOS ? GHConstants.GnollHackiOSDowngradePage :  GHConstants.GnollHackGeneralDowngradePage));
+            await GHApp.OpenBrowser(this, new Uri(GHApp.IsAndroid ? GHConstants.GnollHackAndroidDowngradePage : GHApp.IsiOS ? GHConstants.GnollHackiOSDowngradePage :  GHConstants.GnollHackGeneralDowngradePage));
             AboutGrid.IsEnabled = true;
         }
 
@@ -140,7 +125,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await OpenBrowser(new Uri(GHConstants.GnollHackSponsorPage));
+            await GHApp.OpenBrowser(this, new Uri(GHConstants.GnollHackSponsorPage));
             AboutGrid.IsEnabled = true;
         }
 

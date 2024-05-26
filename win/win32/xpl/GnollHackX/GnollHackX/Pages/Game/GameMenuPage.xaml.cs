@@ -264,8 +264,9 @@ namespace GnollHackX.Pages.Game
         {
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            var wikiPage = new WikiPage("Wiki", GHConstants.GnollHackWikiPage);
-            await App.Current.MainPage.Navigation.PushModalAsync(wikiPage);
+            await GHApp.OpenBrowser(this, new Uri(GHConstants.GnollHackWikiPage));
+            //var wikiPage = new WikiPage("Wiki", GHConstants.GnollHackWikiPage);
+            //await App.Current.MainPage.Navigation.PushModalAsync(wikiPage);
             MainLayout.IsEnabled = true;
         }
     }

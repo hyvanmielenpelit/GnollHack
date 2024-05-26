@@ -1232,7 +1232,7 @@ namespace GnollHackX.Pages.MainScreen
             XlogAccountButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             GHApp.XlogReleaseAccount = XlogReleaseAccountSwitch.IsToggled;
-            await OpenBrowser(new Uri(GHApp.XlogAccountAddress));
+            await GHApp.OpenBrowser(this, new Uri(GHApp.XlogAccountAddress));
             XlogAccountButton.IsEnabled = true;
         }
 
@@ -1268,18 +1268,6 @@ namespace GnollHackX.Pages.MainScreen
             TextOkButton.IsEnabled = true;
             TextCancelButton.IsEnabled = true;
             TextGrid.IsVisible = true;
-        }
-
-        public async Task OpenBrowser(Uri uri)
-        {
-            try
-            {
-                await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Cannot Open Web Page", "GnollHack cannot open the webpage at " + uri.OriginalString + ". Error: " + ex.Message, "OK");
-            }
         }
 
         private async void XlogTestButton_Clicked(object sender, EventArgs e)

@@ -5994,6 +5994,19 @@ namespace GnollHackX
             }
             await blobClient.DownloadToAsync(targetPath, cancellationToken);
         }
+
+        public static async Task OpenBrowser(ContentPage page, Uri uri)
+        {
+            try
+            {
+                await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+            }
+            catch (Exception ex)
+            {
+                await page.DisplayAlert("Cannot Open Web Page", "GnollHack cannot open the webpage at " + uri.OriginalString + ". Error: " + ex.Message, "OK");
+            }
+        }
+
     }
 
     class SecretsFileSizeComparer : IComparer<SecretsFile>

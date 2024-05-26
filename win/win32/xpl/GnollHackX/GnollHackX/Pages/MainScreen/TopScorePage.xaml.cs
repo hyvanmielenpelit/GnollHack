@@ -260,19 +260,6 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
-        public async Task<bool> OpenBrowser(Uri uri)
-        {
-            try
-            {
-                await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Cannot Open Web Page", "GnollHack cannot open the webpage at " + uri.OriginalString + ". Error: " + ex.Message, "OK");
-                return false;
-            }
-        }
         public async Task<bool> OpenFileInLauncher(string fullPath)
         {
             try
@@ -377,7 +364,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             ServerButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await OpenBrowser(new Uri(GHApp.XlogTopScoreAddress));
+            await GHApp.OpenBrowser(this, new Uri(GHApp.XlogTopScoreAddress));
             ServerButton.IsEnabled = true;
         }
     }
