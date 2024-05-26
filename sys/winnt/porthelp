@@ -52,23 +52,23 @@ The available commands are:
     Alt-a    #adjust         - adjust inventory letters.
     Alt-c    #chat           - talk to someone or something.
     Alt-d    #dip            - dip an object into something.
-    Alt-e    #enhance        - enhance your skill with a weapon.
+    Alt-e    #wipe           - wipe off your face.
     Alt-f    #force          - force a lock.
+    Alt-g    #dig            - dig the ground.
     Alt-i    #invoke         - invoke an object's powers.
     Alt-j    #jump           - jump to a location.
     Alt-l    #loot           - loot a box on the floor.
-    Alt-m    #monster        - use a monster's special ability. 
     Alt-n    #name           - name an item or type of object.
     Alt-o    #offer          - offer a sacrifice to the gods.
     Alt-p    #pray           - pray to the gods for help.
     Alt-q    #quit           - quit the game. (Same as #quit)
     Alt-r    #rub            - rub a lamp.
     Alt-s    #sit            - sit down.
-    Alt-t    #turn           - turn undead.
+    Alt-t    #tip            - tip a container.
     Alt-u    #untrap         - untrap something.
     Alt-v    #version        - list compile time options for this version of
                                GnollHack.
-    Alt-w    #wipe           - wipe off your face.
+    Alt-w    #wearall        - wear many pieces of armor.
     Alt-?    #?              - display list of extended menu commands
 
 2. Boolean Options (Options that can be toggled on or off)

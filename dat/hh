@@ -106,13 +106,12 @@ M-A     annotate add a one-line note to the current dungeon level (see M-O)
 M-c     commands command menu 
 M-C     conduct view optional challenges
 M-d     dip     dip an object into something
-M-e     enhance advance or check weapon and spell skills
+M-e     wipe    wipe off your face
 M-f     force   force a lock
 M-g     dig     dig the ground
 M-i     invoke  invoke an object's special powers
 M-j     jump    jump to another location
 M-l     loot    loot a box on the floor
-M-m     monster use a monster's special ability
 M-n     name    name a monster, an individual object, or a type of object
 M-N     name    synonym for M-n
 M-o     offer   offer a sacrifice to the gods
@@ -122,11 +121,10 @@ M-q     quit    stop playing
 M-r     rub     rub a lamp or a stone
 M-R     ride    mount or dismount saddled steed
 M-s     save    save the game and exit
-M-t     turn    turn undead
-M-T     tip     upend a container to dump out its contents
+M-t     tip     upend a container to dump out its contents
 M-u     untrap  untrap something
 M-v     version print compile time options for this version
-M-w     wipe    wipe off your face
+M-w     wearall put on many pieces of armor
 M-x     examine show item statistics
 M-y     you     show your character statistics
 M-z     viewspell view or manage a spell

@@ -206,7 +206,7 @@ M-A	Annotate: supply a name for the current dungeon level
 M-c	Command menu
 M-C	Conduct: list voluntary challenges you have maintained
 M-d	Dip an object into something
-M-e	Skill menu
+M-e	Wipe off your face
 M-f	Force a lock
 M-i	Invoke an object's special powers
 M-j	Jump to a nearby location
@@ -221,11 +221,10 @@ M-q	Quit (exit without saving)
 M-r	Rub a lamp or a touchstone
 M-R	Ride: mount or dismount a saddled steed
 M-s	Save the game (and exit; there is no "save and keep going")
-M-t	Turn undead
-M-T	Tip: empty a container
+M-t	Tip: empty a container
 M-u	Untrap something (trap, door, or chest)
 M-v	Print compile time options for this version of NetHack
-M-w	Wipe off your face
+M-w	Wear many pieces of armor
 M-x	Show item statistics
 M-y	Show your character statistics
 M-z	View or manage a spell
