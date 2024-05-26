@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Common Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
@@ -623,9 +619,6 @@
     <ClCompile Include="$(WinShareDir)safeproc.c">
       <Filter>Common Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(LibShareDir)callback.c">
-      <Filter>Common Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="$(LibShareDir)gnhapi.c">
       <Filter>Windows Source Files</Filter>
     </ClCompile>
@@ -644,15 +637,8 @@
     <ClCompile Include="$(LibWinDir)gnollhackwin.c">
       <Filter>Windows Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\GnollHackNew.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="$(LibWinDir)dllhack.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
+    <ClCompile Include="$(LibShareDir)callback.c">
+      <Filter>Windows Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

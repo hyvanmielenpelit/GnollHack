@@ -11890,7 +11890,18 @@ namespace GnollHackX.Pages.Game
                 {
                     _messageScrollOffset = 0;
                 }
-                
+                lock (_menuScrollLock)
+                {
+                    _menuScrollOffset = 0;
+                }
+                lock(_menuPositionLock)
+                {
+                    Array.Clear(_savedMenuScrollOffset, 0, _savedMenuScrollOffset.Length);
+                }
+                lock (_textScrollLock)
+                {
+                    _textScrollOffset = 0;
+                }
 
                 if (width > height)
                 {
