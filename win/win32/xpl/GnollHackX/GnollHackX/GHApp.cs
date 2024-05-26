@@ -1751,8 +1751,8 @@ namespace GnollHackX
 
                     _moreBtnMatrix[2, 0, 1] = new GHCommandButtonItem("Wear", AppResourceName + ".Assets.UI.wear.png", (int)'W');
                     _moreBtnMatrix[2, 1, 1] = new GHCommandButtonItem("Put On", AppResourceName + ".Assets.UI.puton.png", (int)'P');
-                    _moreBtnMatrix[2, 0, 1] = new GHCommandButtonItem("Wear Many", AppResourceName + ".Assets.UI.wearmany.png", GHUtils.Meta((int)'w'));
-                    _moreBtnMatrix[2, 2, 1] = new GHCommandButtonItem("Quiver", AppResourceName + ".Assets.UI.quiver.png", (int)'Q');
+                    _moreBtnMatrix[2, 2, 1] = new GHCommandButtonItem("Wear Many", AppResourceName + ".Assets.UI.wearmany.png", GHUtils.Meta((int)'w'));
+                    _moreBtnMatrix[2, 3, 1] = new GHCommandButtonItem("Quiver", AppResourceName + ".Assets.UI.quiver.png", (int)'Q');
 
                     _moreBtnMatrix[2, 0, 2] = new GHCommandButtonItem("Take Off", AppResourceName + ".Assets.UI.takeoff.png", (int)'T');
                     _moreBtnMatrix[2, 1, 2] = new GHCommandButtonItem("Remove", AppResourceName + ".Assets.UI.remove.png", (int)'R');
