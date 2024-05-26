@@ -1507,17 +1507,20 @@ register struct obj *obj;
     //char *bufp, buf[BUFSZ] = DUMMY, bufcpy[BUFSZ], qbuf[QBUFSZ];
     //short objtyp;
 
-    /* Do this now because there's no point in even asking for a name */
-    if (obj->oclass == SPBOOK_CLASS && (objects[obj->otyp].oc_subtyp == BOOKTYPE_NOVEL || objects[obj->otyp].oc_subtyp == BOOKTYPE_MANUAL))
-    {
-        pline("%s already has a published name.", Ysimple_name2(obj));
-        return;
-    }
+    ///* Do this now because there's no point in even asking for a name */
+    //if (obj->oclass == SPBOOK_CLASS && (objects[obj->otyp].oc_subtyp == BOOKTYPE_NOVEL || objects[obj->otyp].oc_subtyp == BOOKTYPE_MANUAL))
+    //{
+    //    play_sfx_sound(SFX_GENERAL_CANNOT);
+    //    pline_ex(AT_NONE,CLR_MSG_FAIL, "%s already has a published name.", Ysimple_name2(obj));
+    //    return;
+    //}
 
-    if (has_oname(obj) && obj->nknown) {
-        pline("%s already has a true name.", Yname2(obj));
-        return;
-    }
+    //if (has_oname(obj) && obj->nknown) 
+    //{
+    //    play_sfx_sound(SFX_GENERAL_CANNOT);
+    //    pline_ex(AT_NONE, CLR_MSG_FAIL, "%s already has a true name.", Yname2(obj));
+    //    return;
+    //}
 
     Sprintf(qbuf, "What do you want to name %s ",
             is_plural(obj) ? "these" : "this");

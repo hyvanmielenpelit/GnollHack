@@ -479,7 +479,9 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     const char *un = ocl->oc_uname;
     boolean pluralize = (obj->quan != 1L) && !(cxn_flags & CXN_SINGULAR);
     boolean known, dknown, bknown, nknown, aknown, mknown, tknown;
+    char anamebuf[OBUFSZ] = "";
     boolean makeThelower = FALSE;
+    boolean hasnamed = FALSE;
 
     buf = nextobuf() + PREFIXBUFSZ; /* leave room for "17 -3 " */
 
@@ -1024,12 +1026,13 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         Sprintf(eos(buf), " with text \"%s\"", tshirt_text(obj, tmpbuf));
     }
 
-    char anamebuf[OBUFSZ] = "";
-    if (has_oname(obj) && nknown && dknown) {
+    if (has_oname(obj) && nknown && dknown) 
+    {
         if(obj->oclass == SPBOOK_CLASS)
             Strcat(buf, " entitled ");
         else
             Strcat(buf, " named ");
+        hasnamed = TRUE;
         makeThelower = TRUE;
     nameit:
         Strcpy(anamebuf, ONAME(obj));
@@ -1037,11 +1040,15 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             *anamebuf = lowc(*anamebuf);
         Strcat(buf, anamebuf);
     }
-    else if (has_uoname(obj))
+
+    if (has_uoname(obj))
     {
+        if(hasnamed)
+            Strcat(buf, " and");
         Strcat(buf, " labeled ");
         Strcat(buf, UONAME(obj));
     }
+
     if (!strncmpi(buf, "the ", 4))
         buf += 4;
 
