@@ -1179,8 +1179,17 @@ int show_weights;
 
                 char applied_invlet = (qflags & USE_INVLET) ? curr->invlet
                     : (first && curr->oclass == COIN_CLASS) ? GOLD_SYM : 0;
-                
+
                 char applied_group_accelerator = def_oc_syms[(int)objects[curr->otyp].oc_class].sym;
+
+                int used_color = NO_COLOR;
+                if ((qflags & WORN_UNSELECTABLE) && is_worn(curr))
+                {
+                    applied_invlet = 0;
+                    applied_group_accelerator = 0;
+                    any = zeroany;
+                    used_color = CLR_GRAY;
+                }
 
                 xchar x = 0, y = 0;
                 get_obj_location(curr, &x, &y, CONTAINED_TOO | BURIED_TOO);
@@ -1206,7 +1215,7 @@ int show_weights;
                 }
 
                 add_extended_menu(win, gui_glyph, &any,
-                    applied_invlet, applied_group_accelerator, ATR_NONE, NO_COLOR, 
+                    applied_invlet, applied_group_accelerator, ATR_NONE, used_color,
                     objbuf,
                     MENU_UNSELECTED, eminfo);
                 first = FALSE;

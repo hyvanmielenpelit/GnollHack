@@ -3901,7 +3901,7 @@ int retry;
         all_wearable_categories = FALSE;
 
     n = query_objlist("What do you want to wear?", &invent,
-        (SIGNAL_NOMENU | USE_INVLET | INVORDER_SORT),
+        (SIGNAL_NOMENU | USE_INVLET | INVORDER_SORT | WORN_UNSELECTABLE),
         &pick_list, PICK_ANY,
         all_wearable_categories ? is_wearable : is_wearable_by_type, 0);
     if (n > 0) {
