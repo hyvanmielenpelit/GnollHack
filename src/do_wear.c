@@ -3265,16 +3265,6 @@ register struct obj* otmp;
         else
             bit = W_ARMS;
     }
-    else if (is_wieldable_weapon(otmp) && otmp != uwep)
-    {
-        //if (uwep)
-        //{
-        //    if (select_off(uwep))
-        //        bit = W_WEP;
-        //}
-        //else
-        //    bit = W_WEP;
-    }
     else if (otmp->oclass == AMULET_CLASS && otmp != uamul)
     {
         if (uamul)
@@ -3338,6 +3328,16 @@ register struct obj* otmp;
             else
                 bit = W_MISC5;
         }
+    }
+    else if (is_wieldable_weapon(otmp) && otmp != uwep)
+    {
+        if (uwep)
+        {
+            if (select_off(uwep))
+                bit = W_WEP;
+        }
+        else
+            bit = W_WEP;
     }
 
     if (bit != 0L)
@@ -3548,7 +3548,7 @@ take_off(VOID_ARGS)
             int result_style = 0;
             if (don->what & (W_WEAPON & ~W_ARMS))
             {
-                /* Wield a weapon */
+                (void)wield_weapon(otmp);
             }
             else
             {

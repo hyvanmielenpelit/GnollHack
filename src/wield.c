@@ -56,7 +56,6 @@
 
 STATIC_DCL boolean FDECL(cant_wield_corpse, (struct obj *));
 STATIC_DCL int FDECL(ready_weapon, (struct obj *, long));
-STATIC_DCL int FDECL(wield_weapon, (struct obj*));
 
 /* used by will_weld() */
 /* probably should be renamed */
@@ -452,7 +451,6 @@ dowieldprevwep()
     }
 }
 
-STATIC_OVL
 int
 wield_weapon(wep)
 struct obj* wep;
