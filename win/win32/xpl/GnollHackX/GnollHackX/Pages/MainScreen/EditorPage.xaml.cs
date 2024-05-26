@@ -126,7 +126,11 @@ namespace GnollHackX.Pages.MainScreen
             if(answer)
             {
                 ErrorLabel.Text = "";
+#if WINDOWS
                 await GHApp.GnollHackService.ResetDefaultsFile();
+#else
+                GHApp.GnollHackService.ResetDefaultsFile();
+#endif
                 GHApp.CurrentMainPage?.InvalidateCarousel();
                 await App.Current.MainPage.Navigation.PopModalAsync();
             }

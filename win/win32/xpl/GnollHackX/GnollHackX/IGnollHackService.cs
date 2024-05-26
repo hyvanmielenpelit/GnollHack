@@ -10,10 +10,12 @@ namespace GnollHackX
 {
     public interface IGnollHackService
     {
-        void LoadLibrary();
-        void UnloadLibrary();
         Task InitializeGnollHack();
         Task InitializeSecrets(Secrets secrets);
+        Task ResetDefaultsFile();
+
+        void LoadLibrary();
+        void UnloadLibrary();
         string GetGnollHackPath();
         void ClearFiles();
         void ClearCoreFiles();
@@ -22,7 +24,6 @@ namespace GnollHackX
         void ClearDumplogs();
         void ClearBones();
         void ClearAllFilesInMainDirectory();
-        Task ResetDefaultsFile();
         void GetGlyphArrays(out IntPtr gl2ti, out int size1, out IntPtr gltifl, out int gltifl_size);
         void GetTileArrays(out IntPtr ti2an, out int size2, out IntPtr ti2en, out int size3, out IntPtr ti2ad, out int size4, out IntPtr anoff_ptr, out int anoff_size, out IntPtr enoff_ptr, out int enoff_size, out IntPtr reoff_ptr, out int reoff_size);
         int GetTotalTiles();

@@ -424,37 +424,44 @@ namespace GnollHackX.Unknown
 
         public async Task ResetDefaultsFile()
         {
-            string content;
-            string filesdir = GetGnollHackPath();
-            string assetsourcedir = "gnh";
-            string txtfile = "defaults.gnh";
+            try
+            {
+                string content;
+                string filesdir = GetGnollHackPath();
+                string assetsourcedir = "gnh";
+                string txtfile = "defaults.gnh";
 #if __IOS__
-            string fullsourcepath = NSBundle.MainBundle.PathForResource("defaults", "gnh", assetsourcedir);
-            using (StreamReader sr = new StreamReader(fullsourcepath))
+                string fullsourcepath = NSBundle.MainBundle.PathForResource("defaults", "gnh", assetsourcedir);
+                using (StreamReader sr = new StreamReader(fullsourcepath))
 #elif __ANDROID__
-            string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
-            AssetManager assets = MainActivity.StaticAssets;
-            using Stream assetsStream = assets.Open(fullsourcepath);
-            using (StreamReader sr = new StreamReader(assetsStream))
+                string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
+                AssetManager assets = MainActivity.StaticAssets;
+                using Stream assetsStream = assets.Open(fullsourcepath);
+                using (StreamReader sr = new StreamReader(assetsStream))
 #elif WINDOWS
-            string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
-            using Stream fileStream = await FileSystem.Current.OpenAppPackageFileAsync(fullsourcepath);
-            using (StreamReader sr = new StreamReader(fullsourcepath))
+                string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
+                using Stream fileStream = await FileSystem.Current.OpenAppPackageFileAsync(fullsourcepath);
+                using (StreamReader sr = new StreamReader(fullsourcepath))
 #else
-            string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
-            using (StreamReader sr = new StreamReader(fullsourcepath))
+                string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
+                using (StreamReader sr = new StreamReader(fullsourcepath))
 #endif
-            {
-                content = sr.ReadToEnd();
+                {
+                    content = sr.ReadToEnd();
+                }
+                string fulltargetpath = Path.Combine(filesdir, txtfile);
+                if (File.Exists(fulltargetpath))
+                {
+                    File.Delete(fulltargetpath);
+                }
+                using (StreamWriter sw = new StreamWriter(fulltargetpath))
+                {
+                    sw.Write(content);
+                }
             }
-            string fulltargetpath = Path.Combine(filesdir, txtfile);
-            if (File.Exists(fulltargetpath))
+            catch (Exception)
             {
-                File.Delete(fulltargetpath);
-            }
-            using (StreamWriter sw = new StreamWriter(fulltargetpath))
-            {
-                sw.Write(content);
+                await Task.Delay(5);
             }
         }
 
@@ -502,43 +509,44 @@ namespace GnollHackX.Unknown
         {
             /* Unpack GnollHack files */
             /* Add a check whether to unpack if there are existing files or not */
-
-            string filesdir = GetGnollHackPath();
-
-            /* For debugging purposes now, delete all existing files in filesdir first */
-            //System.IO.DirectoryInfo di = new DirectoryInfo(filesdir);
-
-            //foreach (FileInfo file in di.GetFiles())
-            //{
-            //    file.Delete();
-            //}
-
-            /* Make relevant directories */
-            string[] ghdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory };
-            foreach (string ghdir in ghdirlist)
+            try
             {
-                string fulldirepath = Path.Combine(filesdir, ghdir);
-                GHApp.CheckCreateDirectory(fulldirepath);
-            }
+                string filesdir = GetGnollHackPath();
 
-            /* Copy missing files from resources */
-            string content;
-            string assetsourcedir = "gnh";
-//#if GNH_MAUI
-//#if __ANDROID__
-//            assetsourcedir = Path.Combine("Platforms", "Android", assetsourcedir);
-//#elif __IOS__
-//            assetsourcedir = Path.Combine("Platforms", "iOS", assetsourcedir);
-//#else                
-//            assetsourcedir = Path.Combine("Platforms", "Unknown", assetsourcedir);
-//#endif
-//#endif
+                /* For debugging purposes now, delete all existing files in filesdir first */
+                //System.IO.DirectoryInfo di = new DirectoryInfo(filesdir);
+
+                //foreach (FileInfo file in di.GetFiles())
+                //{
+                //    file.Delete();
+                //}
+
+                /* Make relevant directories */
+                string[] ghdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory };
+                foreach (string ghdir in ghdirlist)
+                {
+                    string fulldirepath = Path.Combine(filesdir, ghdir);
+                    GHApp.CheckCreateDirectory(fulldirepath);
+                }
+
+                /* Copy missing files from resources */
+                string content;
+                string assetsourcedir = "gnh";
+                //#if GNH_MAUI
+                //#if __ANDROID__
+                //            assetsourcedir = Path.Combine("Platforms", "Android", assetsourcedir);
+                //#elif __IOS__
+                //            assetsourcedir = Path.Combine("Platforms", "iOS", assetsourcedir);
+                //#else                
+                //            assetsourcedir = Path.Combine("Platforms", "Unknown", assetsourcedir);
+                //#endif
+                //#endif
 #if __ANDROID__
-            AssetManager assets = MainActivity.StaticAssets;
+                AssetManager assets = MainActivity.StaticAssets;
 #endif
 
-            foreach (string txtfile in _txtfileslist)
-            {
+                foreach (string txtfile in _txtfileslist)
+                {
 #if __IOS__
                 string extension = Path.GetExtension(txtfile);
                 if (extension != null && extension.Length > 0)
@@ -547,9 +555,9 @@ namespace GnollHackX.Unknown
                 string fullsourcepath = NSBundle.MainBundle.PathForResource(fname, extension, assetsourcedir);
                 using (StreamReader sr = new StreamReader(fullsourcepath))
 #elif __ANDROID__
-                string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
-                using Stream assetsStream = assets.Open(fullsourcepath);
-                using (StreamReader sr = new StreamReader(assetsStream))
+                    string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
+                    using Stream assetsStream = assets.Open(fullsourcepath);
+                    using (StreamReader sr = new StreamReader(assetsStream))
 #elif WINDOWS
                 string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
                 using Stream fileStream = await FileSystem.Current.OpenAppPackageFileAsync(fullsourcepath);
@@ -558,26 +566,26 @@ namespace GnollHackX.Unknown
                 string fullsourcepath = Path.Combine(filesdir, assetsourcedir, txtfile);
                 using (StreamReader sr = new StreamReader(fullsourcepath))
 #endif
-                {
-                    content = sr.ReadToEnd();
-                }
-                string fulltargetpath = Path.Combine(filesdir, txtfile);
-                if (File.Exists(fulltargetpath))
-                {
-                    continue;
-                    //File.Delete(fulltargetpath);
+                    {
+                        content = sr.ReadToEnd();
+                    }
+                    string fulltargetpath = Path.Combine(filesdir, txtfile);
+                    if (File.Exists(fulltargetpath))
+                    {
+                        continue;
+                        //File.Delete(fulltargetpath);
+                    }
+
+                    using (StreamWriter sw = new StreamWriter(fulltargetpath))
+                    {
+                        sw.Write(content);
+                    }
                 }
 
-                using (StreamWriter sw = new StreamWriter(fulltargetpath))
+                byte[] data;
+                int maxsize = 2048 * 1024;
+                foreach (string binfile in _binfileslist)
                 {
-                    sw.Write(content);
-                }
-            }
-
-            byte[] data;
-            int maxsize = 2048 * 1024;
-            foreach (string binfile in _binfileslist)
-            {
 #if __IOS__
                 string extension = Path.GetExtension(binfile);
                 if (extension != null && extension.Length > 0)
@@ -586,8 +594,8 @@ namespace GnollHackX.Unknown
                 string fullsourcepath = NSBundle.MainBundle.PathForResource(fname, extension, assetsourcedir);
                 using (BinaryReader br = new BinaryReader(File.OpenRead(fullsourcepath)))
 #elif __ANDROID__
-                string fullsourcepath = Path.Combine(assetsourcedir, binfile);
-                using (BinaryReader br = new BinaryReader(assets.Open(fullsourcepath)))
+                    string fullsourcepath = Path.Combine(assetsourcedir, binfile);
+                    using (BinaryReader br = new BinaryReader(assets.Open(fullsourcepath)))
 #elif WINDOWS
                 string fullsourcepath = Path.Combine(assetsourcedir, binfile);
                 using Stream fileStream = await FileSystem.Current.OpenAppPackageFileAsync(fullsourcepath);
@@ -596,22 +604,27 @@ namespace GnollHackX.Unknown
                 string fullsourcepath = Path.Combine(assetsourcedir, binfile);
                 using (BinaryReader br = new BinaryReader(File.OpenRead(fullsourcepath)))
 #endif
-                {
-                    data = br.ReadBytes(maxsize);
-                }
+                    {
+                        data = br.ReadBytes(maxsize);
+                    }
 
-                string fulltargetpath = Path.Combine(filesdir, binfile);
-                if (File.Exists(fulltargetpath))
-                {
-                    /* Should check whether the current one is an up-to-date version; assume for now that it is not */
-                    File.Delete(fulltargetpath);
-                    //continue;
-                }
+                    string fulltargetpath = Path.Combine(filesdir, binfile);
+                    if (File.Exists(fulltargetpath))
+                    {
+                        /* Should check whether the current one is an up-to-date version; assume for now that it is not */
+                        File.Delete(fulltargetpath);
+                        //continue;
+                    }
 
-                using (BinaryWriter sw = new BinaryWriter(File.Open(fulltargetpath, FileMode.Create)))
-                {
-                    sw.Write(data);
+                    using (BinaryWriter sw = new BinaryWriter(File.Open(fulltargetpath, FileMode.Create)))
+                    {
+                        sw.Write(data);
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                await Task.Delay(5);
             }
         }
 
@@ -783,10 +796,9 @@ namespace GnollHackX.Unknown
                     //    sw.Write(data);
                     //}
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    string str1 = ex.Message;
-                    /* Likely asset at fullsourcepath did not exist */
+                    await Task.Delay(5);
                 }
             }            
         }

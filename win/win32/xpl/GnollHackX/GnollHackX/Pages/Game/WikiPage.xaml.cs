@@ -74,10 +74,10 @@ namespace GnollHackX.Pages.Game
         private void UpdateNavigationButtons()
         {
             BackButton.IsEnabled = DisplayWebView.CanGoBack;
-            BackButton.TextColor = BackButton.IsEnabled ? Color.White : Color.Gray;
+            BackButton.TextColor = BackButton.IsEnabled ? GHColors.White : GHColors.Gray;
 
             ForwardButton.IsEnabled = DisplayWebView.CanGoForward;
-            ForwardButton.TextColor = ForwardButton.IsEnabled ? Color.White : Color.Gray;
+            ForwardButton.TextColor = ForwardButton.IsEnabled ? GHColors.White : GHColors.Gray;
         }
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
