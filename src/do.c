@@ -2931,7 +2931,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                                 powercnt++;
 
                                 Sprintf(buf2, "%s %s%d %s to magic cancellation", grantbuf, stat >= 0 ? "+" : "", stat, bonusbuf);
-                                knownacbonus += stat;
+                                knownmcbonus += stat;
                             }
                             if (k == 10 && (prop & BONUS_TO_UNRESTRICTED_SPELL_CASTING))
                             {
