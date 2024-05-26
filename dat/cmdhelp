@@ -138,7 +138,8 @@ _	Travel via a shortest-path algorithm to a point on the map
  	Rest one move while doing nothing
 &.
 :	Look at what is on the floor
-;	Show what type of thing a map symbol on the level corresponds to
+;	Pick up things and put them into the best containers for them.
+'	Show what type of thing a map symbol on the level corresponds to
 ,	Pick up things at the current location
 @	Toggle the pickup option on/off
 )	Show the weapon(s) currently wielded or readied
@@ -211,12 +212,13 @@ M-f	Force a lock
 M-i	Invoke an object's special powers
 M-j	Jump to a nearby location
 M-l	Loot a box on the floor
-M-m	When polymorphed, use a monster's special ability
+M-M	When polymorphed, use the monster's special ability or skill
 M-n	Name a monster, an individual object, or a type of object
 M-N	Name a monster, an individual object, or a type of object
 M-o	Offer a sacrifice to the gods
 M-O	Overview: show a summary of the explored dungeon
 M-p	Pray to the gods for help
+M-P	Wield a previously wielded weapon
 M-q	Quit (exit without saving)
 M-r	Rub a lamp or a touchstone
 M-R	Ride: mount or dismount a saddled steed

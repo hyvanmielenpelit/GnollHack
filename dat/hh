@@ -92,6 +92,7 @@ _       travel  move via a shortest-path algorithm to a point on the map
 @               toggle "pickup" (auto pickup) option on and off
 :       look    look at what is here
 /       whatis  show what type of thing a symbol corresponds to
+'       glance  show what type of thing a map symbol corresponds to
 
 Commands with no default key binding:
         farlook look at what is somewhere else by selecting a map symbol
@@ -112,11 +113,13 @@ M-g     dig     dig the ground
 M-i     invoke  invoke an object's special powers
 M-j     jump    jump to another location
 M-l     loot    loot a box on the floor
+M-M     monster when polymorphed, use the monster's special ability or skill
 M-n     name    name a monster, an individual object, or a type of object
 M-N     name    synonym for M-n
 M-o     offer   offer a sacrifice to the gods
 M-O     overview display information about visited levels and annotations
 M-p     pray    pray to the gods for help
+M-P     prevwep wield a previously wielded weapon
 M-q     quit    stop playing
 M-r     rub     rub a lamp or a stone
 M-R     ride    mount or dismount saddled steed

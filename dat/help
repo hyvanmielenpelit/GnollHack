@@ -168,7 +168,8 @@ Commands:
         M-z     View or manage a spell.
         :       Look at what is here.
         ,       Pick up some things.
-        ;       Pick up objects and put them into the best containers for them.
+        ;       Pick up things and put them into the best containers for them.
+        '       Show what type of thing a map symbol on the level corresponds to.
         @       Toggle the pickup option.
         ^       Ask for the type of a trap you found earlier.
         )       Tell what weapon you are wielding.

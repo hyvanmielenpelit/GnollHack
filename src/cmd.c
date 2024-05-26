@@ -6129,7 +6129,7 @@ struct ext_func_tab extcmdlist[] = {
     { '\0', "migratemons", "migrate N random monsters",
             wiz_migrate_mons, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 #endif
-    { M(4), "monster", "use monster ability or skill",
+    { M('M'), "monster", "use monster ability or skill",
             domonsterability, IFBURIED | AUTOCOMPLETE },
     { 'N', "name", "name a monster or an object",
             docallcmd, IFBURIED | AUTOCOMPLETE },
@@ -6157,7 +6157,7 @@ struct ext_func_tab extcmdlist[] = {
             dopray, IFBURIED | AUTOCOMPLETE | INCMDMENU },
     { C('p'), "prevmsg", "view recent game messages",
             doprev_message, IFBURIED | GENERALCMD },
-    { M(16), "prevwep", "wield a previously wielded weapon", dowieldprevwep }, /* For wielding back weapons that were wielded before wielding a pick-axe or a saw */
+    { M('P'), "prevwep", "wield a previously wielded weapon", dowieldprevwep}, /* For wielding back weapons that were wielded before wielding a pick-axe or a saw */
     { 'P', "puton", "put on an accessory (ring, amulet, etc)", doputon, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_accessories, "put on", "put on" },
     { 'q', "quaff", "quaff (drink) something", dodrink, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_beverages, "drink", "drink" },
     { M('q'), "quit", "exit without saving current game",
@@ -6230,7 +6230,7 @@ struct ext_func_tab extcmdlist[] = {
     { 't', "throw", "throw something", dothrow, SINGLE_OBJ_CMD_GENERAL, 0, getobj_toss_objs, "throw" },
     { '\0', "timeout", "look at timeout queue and hero's timed intrinsics",
             wiz_timeout_queue, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
-    { M('T'), "tip", "empty a container", dotip, AUTOCOMPLETE | INCMDMENU | SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_tippables, "tip" },
+    { M('t'), "tip", "empty a container", dotip, AUTOCOMPLETE | INCMDMENU | SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_tippables, "tip" },
     { '_', "travel", "travel to a specific location on the map", dotravel },
  //   { M('t'), "turn", "turn undead away", doturn, IFBURIED | AUTOCOMPLETE }, //Replaced by holy symbol
     { C('x'), "twoweapon", "toggle two-weapon combat",
