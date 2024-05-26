@@ -473,9 +473,7 @@ DLLEXPORT void gnhapi_putstr_ex2(winid wid, const char* text, const char* attrs,
 }
 
 DLLEXPORT void
-gnhapi_issue_gui_command(cmd_id, cmd_param, cmd_param2, cmd_str)
-int cmd_id, cmd_param, cmd_param2;
-const char* cmd_str;
+gnhapi_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char* cmd_str)
 {
     if (cmd_id == GUI_CMD_DEBUGLOG)
     {

@@ -193,8 +193,13 @@ make_dumplog_dir(VOID_ARGS)
     /* Make DUMPLOG_DIR if defined */
     struct stat st = { 0 };
 
-    if (stat(DUMPLOG_DIR, &st) == -1) {
+    if (stat(DUMPLOG_DIR, &st) == -1) 
+    {
+#if WIN32
+        (void)mkdir(DUMPLOG_DIR);
+#else
         (void)mkdir(DUMPLOG_DIR, 0700);
+#endif
     }
 #endif
 }

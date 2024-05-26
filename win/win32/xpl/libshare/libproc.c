@@ -429,7 +429,7 @@ int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected)
         for (i = 0; i < cnt; i++)
         {
             (*selected)[i].item.a_longlong = *picklist++;;
-            (*selected)[i].count = *picklist++;
+            (*selected)[i].count = (long)*picklist++;
         }
     }
 
