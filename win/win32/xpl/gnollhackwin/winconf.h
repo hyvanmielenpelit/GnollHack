@@ -303,6 +303,7 @@ extern void FDECL(nhassert_failed, (const char* exp, const char* file,
 #define DUMPLOG_DIR        "dumplog" /* Note: this is just used to create a directory, DUMPLOG_FILE still needs to have the full path */
 #endif
 
+#define error debuglog
 #define CONTINUE_PLAYING_AFTER_SAVING
 
 #endif /* WINCONF_H */

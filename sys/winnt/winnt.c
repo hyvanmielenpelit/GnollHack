@@ -215,6 +215,7 @@ return &szFullPath[0];
 }
 #endif
 
+#ifndef GNH_WIN
 /* fatal error */
 /*VARARGS1*/
 void error
@@ -239,6 +240,7 @@ VA_DECL(const char *, s)
     VA_END();
     gnollhack_exit(EXIT_FAILURE);
 }
+#endif
 
 void
 Delay(int ms)
@@ -515,7 +517,7 @@ int code;
      * GUILaunched is defined and set in nttty.c.
      */
     if (exit_hack)
-        exit_hack(code);
+        exit_hack(exit_hack_code);
 
     if (!GUILaunched) {
         windowprocs = *get_safe_procs(1);
