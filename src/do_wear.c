@@ -3288,8 +3288,22 @@ register struct obj* otmp;
     else if (otmp->oclass == RING_CLASS && otmp != uright && otmp != uleft)
     {
         int leftidx = wear_oid_bit_to_index(W_RINGL);
-        if(!uleft && (leftidx < 0 || !context.wear.oid[leftidx]))
-            bit = W_RINGL;
+        int rightidx = wear_oid_bit_to_index(W_RINGR);
+        boolean leftbeingworn = (leftidx >= 0 && context.wear.oid[leftidx]);
+        boolean rightbeingworn = (rightidx >= 0 && context.wear.oid[rightidx]);
+        boolean useleft = (!leftbeingworn && (!uleft || rightbeingworn));
+        if (useleft)
+        {
+            if (uleft)
+            {
+                if (select_off(uleft))
+                    bit = W_RINGL;
+            }
+            else
+            {
+                bit = W_RINGL;
+            }
+        }
         else
         {
             if (uright)
@@ -3298,7 +3312,9 @@ register struct obj* otmp;
                     bit = W_RINGR;
             }
             else
+            {
                 bit = W_RINGR;
+            }
         }
     }
     else if (otmp->oclass == MISCELLANEOUS_CLASS && otmp != umisc && otmp != umisc2 && otmp != umisc3 && otmp != umisc4 && otmp != umisc5)
