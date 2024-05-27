@@ -122,8 +122,12 @@ boolean verbose;
      */
     setworncore(obj, mask, verbose);
 
+    boolean invneedsupdate = FALSE;
     if (obj && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED))
+    {
+        invneedsupdate = verbose && obj->known != 1;
         obj->known = 1;
+    }
 
     if (uwep == obj && olduwep && (artifact_light(olduwep) || has_obj_mythic_magical_light(olduwep) || obj_shines_magical_light(olduwep)) && olduwep->lamplit) {
         end_burn(olduwep, FALSE);
@@ -138,6 +142,9 @@ boolean verbose;
      * 3.2.2:  Wielding arbitrary objects will give bashing message too.
      */
     update_unweapon();
+
+    if (invneedsupdate)
+        update_inventory();
 }
 
 void
