@@ -6187,13 +6187,18 @@ boolean use_symbols;
         (is_wieldable_weapon(obj) && uwep && is_launcher(obj) == is_launcher(uwep)) ? uwep :
         (is_wieldable_weapon(obj) && uswapwep && is_launcher(obj) == is_launcher(uswapwep)) ? uswapwep : 0;
 
+    struct obj* cwep2 = u.twoweap && uwep2 && is_wieldable_weapon(uwep2) ? uwep2 : 0;
+
     int dmgpos = -1;
+    int dmg2pos = -1;
     int acpos = -1;
     int mcpos = -1;
     size_t dmglen = 0;
+    size_t dmg2len = 0;
     size_t aclen = 0;
     size_t mclen = 0;
     char dmgcolor = NO_COLOR;
+    char dmg2color = NO_COLOR;
     char accolor = NO_COLOR;
     char mccolor = NO_COLOR;
 
@@ -6201,9 +6206,12 @@ boolean use_symbols;
     if (obj_stats.weapon_stats_printed)
     {
         double dmgdiff = obj_stats.avg_damage;
+        double dmgdiff2 = obj_stats.avg_damage;
         boolean isdmgdiff = FALSE;
-        boolean skip_weapon_print = FALSE;
-        if (cwep && cwep != obj && uwep2 != obj && uswapwep2 != obj)
+        boolean isdmgdiff2 = FALSE;
+        boolean skip_weapon_print1 = FALSE;
+        boolean skip_weapon_print2 = FALSE;
+        if (cwep && cwep != obj && uwep != obj && uwep2 != obj && uswapwep2 != obj)
         {
             struct item_description_stats cwep_stats = { 0 };
             (void)itemdescription_core(cwep, cwep->otyp, &cwep_stats);
@@ -6214,9 +6222,22 @@ boolean use_symbols;
             }
         }
         else
-            skip_weapon_print = TRUE;
+            skip_weapon_print1 = TRUE;
 
-        if (!skip_weapon_print)
+        if (cwep2 && cwep2 != obj && uwep != obj && uwep2 != obj && uswapwep != obj && !is_ammo(obj) && !is_launcher(obj) && !is_thrown_weapon_only(obj))
+        {
+            struct item_description_stats cwep2_stats = { 0 };
+            (void)itemdescription_core(cwep2, cwep2->otyp, &cwep2_stats);
+            if (cwep2_stats.stats_set && cwep2_stats.weapon_stats_printed)
+            {
+                isdmgdiff2 = TRUE;
+                dmgdiff2 = obj_stats.avg_damage - cwep2_stats.avg_damage;
+            }
+        }
+        else
+            skip_weapon_print2 = TRUE;
+
+        if (!skip_weapon_print1 || !skip_weapon_print2)
         {
             if (*buf)
             {
@@ -6243,12 +6264,31 @@ boolean use_symbols;
                     putstr_ex(datawin, tmpbuf, attr, color, 1);
             }
             dmgpos = (int)strlen(buf);
-            Sprintf(tmpbuf, "%s%.1f", isdmgdiff && dmgdiff >= 0 ? "+" : "", dmgdiff);
+            if (skip_weapon_print1)
+                Strcpy(tmpbuf, "-");
+            else
+                Sprintf(tmpbuf, "%s%.1f", isdmgdiff && dmgdiff >= 0 ? "+" : "", dmgdiff);
             dmglen = strlen(tmpbuf);
-            dmgcolor = dmgdiff > 0 ? CLR_BRIGHT_GREEN : dmgdiff < 0 ? CLR_RED : CLR_GRAY;
+            dmgcolor = skip_weapon_print1 ? CLR_GRAY : dmgdiff > 0 ? CLR_BRIGHT_GREEN : dmgdiff < 0 ? CLR_RED : CLR_GRAY;
             Strcat(buf, tmpbuf);
             if (do_putstr)
                 putstr_ex(datawin, tmpbuf, attr, dmgcolor, 1);
+
+            if (!skip_weapon_print2)
+            {
+                Strcat(buf, "/");
+                if (do_putstr)
+                    putstr_ex(datawin, "/", attr, color, 1);
+
+                dmg2pos = dmgpos + dmglen + 1;
+                Sprintf(tmpbuf, "%s%.1f", isdmgdiff2 && dmgdiff2 >= 0 ? "+" : "", dmgdiff2);
+                dmg2len = strlen(tmpbuf);
+                dmg2color = dmgdiff2 > 0 ? CLR_BRIGHT_GREEN : dmgdiff2 < 0 ? CLR_RED : CLR_GRAY;
+                Strcat(buf, tmpbuf);
+                if (do_putstr)
+                    putstr_ex(datawin, tmpbuf, attr, dmg2color, 1);
+            }
+
             if (!do_special_symbols)
             {
                 Strcpy(tmpbuf, " damage");
@@ -6395,6 +6435,14 @@ boolean use_symbols;
             {
                 attrs[i] = ATR_NONE;
                 colors[i] = dmgcolor;
+            }
+        }
+        if (dmg2pos >= 0)
+        {
+            for (i = orig_objbuf_len + (size_t)dmg2pos; i < orig_objbuf_len + (size_t)dmg2pos + dmg2len; i++)
+            {
+                attrs[i] = ATR_NONE;
+                colors[i] = dmg2color;
             }
         }
         if (acpos >= 0)
