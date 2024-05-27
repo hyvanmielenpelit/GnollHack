@@ -9,6 +9,14 @@ namespace GnollHackM
 namespace GnollHackX
 #endif
 {
+#if WINDOWS
+    using GHlong = int;
+    using GHulong = uint;
+#else
+    using GHlong = long;
+    using GHulong = ulong;
+#endif
+
     /* Colors */
     public enum NhColor
     {
@@ -128,7 +136,7 @@ namespace GnollHackX
     }
 
     [Flags]
-    public enum MenuFlags : ulong
+    public enum MenuFlags : GHulong
     {
         MENU_FLAGS_NONE =                       0x00000000,
         MENU_FLAGS_IS_HEADING =                 0x00000001,
@@ -214,7 +222,7 @@ namespace GnollHackX
     }
 
     [Flags]
-    public enum RunGnollHackFlags: ulong
+    public enum RunGnollHackFlags: uint
     {
         None =                  0x00000000,
         SetWinCaps =            0x00000001,
@@ -230,7 +238,7 @@ namespace GnollHackX
     }
 
     [Flags]
-    public enum StopSoundFlags : ulong
+    public enum StopSoundFlags : uint
     {
         None =                  0x00000000,
         Music =                 0x00000001,
@@ -247,82 +255,82 @@ namespace GnollHackX
     }
 
     [Flags]
-    public enum LayerFlags : ulong
+    public enum LayerFlags : uint
     {
-         None =                     0x00000000UL,
-         LFLAGS_L_LEGAL =           0x00000001UL,
-         LFLAGS_L_ILLEGAL =         0x00000002UL,
-         LFLAGS_O_PILE =            0x00004000UL,
-         LFLAGS_O_IN_PIT =          0x00008000UL,
-         LFLAGS_O_CHAIN =           0x00010000UL,
-         LFLAGS_O_MASK =            0x0001C000UL,
-         LFLAGS_E_GEN_FADE_OUT =    0x00020000UL,
-         LFLAGS_E_BKG_FADE_IN =     0x00040000UL,
-         LFLAGS_E_BKG_FADE_OUT =    0x00080000UL,
-         LFLAGS_ZAP_LEADING_EDGE =  0x00100000UL, /* First (leading) tile in a zap */
-         LFLAGS_ZAP_TRAILING_EDGE = 0x00200000UL, /* Last (trailing) tile in a zap */
-         LFLAGS_ZAP_MASK = (0x00100000UL | 0x00200000UL),
-         LFLAGS_T_TRAPPED =         0x00400000UL,
-         LFLAGS_C_DECORATION =      0x00800000UL,
-         LFLAGS_C_CARPET =          0x01000000UL,
-         LFLAGS_SHOWING_MEMORY =    0x02000000UL, /* also implies that you cannot see the location (and hence showing memory) */
-         LFLAGS_SHOWING_DETECTION = 0x04000000UL, /* Do not darken */
-         LFLAGS_ASCENSION_RADIANCE =0x08000000UL, /* Lighten up */
-         LFLAGS_CAN_SEE =           0x10000000UL, /* cansee(x, y) is true (if not, then darken etc.) */
-         LFLAGS_UXUY =              0x20000000UL, /* x == u.ux && y == u.uy is true */
-         LFLAGS_APPEARS_UNLIT =     0x40000000UL, /* looks unlit */
-         LFLAGS_NO_WALL_END_AUTODRAW=0x80000000UL,/* NO_WALL_END_AUTODRAW(x, y) is true */
+         None =                     0x00000000U,
+         LFLAGS_L_LEGAL =           0x00000001U,
+         LFLAGS_L_ILLEGAL =         0x00000002U,
+         LFLAGS_O_PILE =            0x00004000U,
+         LFLAGS_O_IN_PIT =          0x00008000U,
+         LFLAGS_O_CHAIN =           0x00010000U,
+         LFLAGS_O_MASK =            0x0001C000U,
+         LFLAGS_E_GEN_FADE_OUT =    0x00020000U,
+         LFLAGS_E_BKG_FADE_IN =     0x00040000U,
+         LFLAGS_E_BKG_FADE_OUT =    0x00080000U,
+         LFLAGS_ZAP_LEADING_EDGE =  0x00100000U, /* First (leading) tile in a zap */
+         LFLAGS_ZAP_TRAILING_EDGE = 0x00200000U, /* Last (trailing) tile in a zap */
+         LFLAGS_ZAP_MASK = (0x00100000U | 0x00200000U),
+         LFLAGS_T_TRAPPED =         0x00400000U,
+         LFLAGS_C_DECORATION =      0x00800000U,
+         LFLAGS_C_CARPET =          0x01000000U,
+         LFLAGS_SHOWING_MEMORY =    0x02000000U, /* also implies that you cannot see the location (and hence showing memory) */
+         LFLAGS_SHOWING_DETECTION = 0x04000000U, /* Do not darken */
+         LFLAGS_ASCENSION_RADIANCE =0x08000000U, /* Lighten up */
+         LFLAGS_CAN_SEE =           0x10000000U, /* cansee(x, y) is true (if not, then darken etc.) */
+         LFLAGS_UXUY =              0x20000000U, /* x == u.ux && y == u.uy is true */
+         LFLAGS_APPEARS_UNLIT =     0x40000000U, /* looks unlit */
+         LFLAGS_NO_WALL_END_AUTODRAW=0x80000000U,/* NO_WALL_END_AUTODRAW(x, y) is true */
     }
 
     [Flags]
-    public enum LayerMonsterFlags : ulong
+    public enum LayerMonsterFlags : uint
     {
-        None =                              0x00000000UL,
-        LMFLAGS_PET =                       0x00000001UL,
-        LMFLAGS_PEACEFUL =                  0x00000002UL,
-        LMFLAGS_RIDDEN =                    0x00000004UL,
-        LMFLAGS_DETECTED =                  0x00000008UL,
-        LMFLAGS_CANSPOTMON =                0x00000010UL,
-        LMFLAGS_YOU =                       0x00000020UL,
-        LMFLAGS_BEING_HIT =                 0x00000040UL,
-        LMFLAGS_KILLED =                    0x00000080UL,
-        LMFLAGS_U_TETHERED =                0x00000100UL, /* You are tethered */
-        LMFLAGS_TETHERED =                  0x00000200UL, /* Monster is tethered */
-        LMFLAGS_DROPPING_PIERCER =          0x00000400UL,
-        LMFLAGS_WORM_TAIL =                 0x00000800UL,
-        LMFLAGS_WORM_SEEN =                 0x00001000UL,
-        LMFLAGS_WORM_HEAD =                 0x00002000UL,
-        LMFLAGS_WORM_TAILEND =              0x00004000UL,
-        LMFLAGS_INVISIBLE_TRANSPARENT =     0x00008000UL,
-        LMFLAGS_SEMI_TRANSPARENT =          0x00010000UL,
-        LMFLAGS_RADIAL_TRANSPARENCY =       0x00020000UL,
-        LMFLAGS_GLASS_TRANSPARENCY =        0x00040000UL,
-        LMFLAGS_CAN_SPOT_SELF =             0x00080000UL,
-        LMFLAGS_LONG_WORM_WITH_TAIL =       0x00100000UL,
-        LMFLAGS_LONG_WORM_TAIL =            0x00200000UL,
-        LMFLAGS_BOSS_MONSTER_FIGHT =        0x00400000UL,
-        LMFLAGS_FADES_UPON_DEATH =          0x00800000UL,
-        LMFLAGS_FLYING =                    0x01000000UL,
-        LMFLAGS_LEVITATING =                0x02000000UL,
-        LMFLAGS_BLOBBY_ANIMATION =          0x04000000UL,
-        LMFLAGS_SWIM_ANIMATION =            0x08000000UL,
-        LMFLAGS_SPECIAL_ANIMATION =         0x10000000UL,
-        LMFLAGS_HUMAN_BREATHE_ANIMATION =   0x20000000UL,
-        LMFLAGS_ANIMAL_BREATHE_ANIMATION =  0x40000000UL,
-        LMFLAGS_STONED =                    0x80000000UL,
+        None =                              0x00000000U,
+        LMFLAGS_PET =                       0x00000001U,
+        LMFLAGS_PEACEFUL =                  0x00000002U,
+        LMFLAGS_RIDDEN =                    0x00000004U,
+        LMFLAGS_DETECTED =                  0x00000008U,
+        LMFLAGS_CANSPOTMON =                0x00000010U,
+        LMFLAGS_YOU =                       0x00000020U,
+        LMFLAGS_BEING_HIT =                 0x00000040U,
+        LMFLAGS_KILLED =                    0x00000080U,
+        LMFLAGS_U_TETHERED =                0x00000100U, /* You are tethered */
+        LMFLAGS_TETHERED =                  0x00000200U, /* Monster is tethered */
+        LMFLAGS_DROPPING_PIERCER =          0x00000400U,
+        LMFLAGS_WORM_TAIL =                 0x00000800U,
+        LMFLAGS_WORM_SEEN =                 0x00001000U,
+        LMFLAGS_WORM_HEAD =                 0x00002000U,
+        LMFLAGS_WORM_TAILEND =              0x00004000U,
+        LMFLAGS_INVISIBLE_TRANSPARENT =     0x00008000U,
+        LMFLAGS_SEMI_TRANSPARENT =          0x00010000U,
+        LMFLAGS_RADIAL_TRANSPARENCY =       0x00020000U,
+        LMFLAGS_GLASS_TRANSPARENCY =        0x00040000U,
+        LMFLAGS_CAN_SPOT_SELF =             0x00080000U,
+        LMFLAGS_LONG_WORM_WITH_TAIL =       0x00100000U,
+        LMFLAGS_LONG_WORM_TAIL =            0x00200000U,
+        LMFLAGS_BOSS_MONSTER_FIGHT =        0x00400000U,
+        LMFLAGS_FADES_UPON_DEATH =          0x00800000U,
+        LMFLAGS_FLYING =                    0x01000000U,
+        LMFLAGS_LEVITATING =                0x02000000U,
+        LMFLAGS_BLOBBY_ANIMATION =          0x04000000U,
+        LMFLAGS_SWIM_ANIMATION =            0x08000000U,
+        LMFLAGS_SPECIAL_ANIMATION =         0x10000000U,
+        LMFLAGS_HUMAN_BREATHE_ANIMATION =   0x20000000U,
+        LMFLAGS_ANIMAL_BREATHE_ANIMATION =  0x40000000U,
+        LMFLAGS_STONED =                    0x80000000U,
     }
 
     [Flags]
-    public enum LayerMissileFlags : ulong
+    public enum LayerMissileFlags : uint
     {
-        MISSILE_FLAGS_CORRODEABLE =  0x00000001UL,
-        MISSILE_FLAGS_ROTTABLE =     0x00000002UL,
-        MISSILE_FLAGS_FLAMMABLE =    0x00000004UL,
-        MISSILE_FLAGS_RUSTPRONE =    0x00000008UL,
-        MISSILE_FLAGS_ERODEPROOF =   0x00000010UL,
-        MISSILE_FLAGS_POISONABLE =   0x00000020UL,
-        MISSILE_FLAGS_TETHERED =     0x00000040UL, /* Missile is tethered */
-        MISSILE_FLAGS_LIT =          0x00000080UL,
+        MISSILE_FLAGS_CORRODEABLE =  0x00000001U,
+        MISSILE_FLAGS_ROTTABLE =     0x00000002U,
+        MISSILE_FLAGS_FLAMMABLE =    0x00000004U,
+        MISSILE_FLAGS_RUSTPRONE =    0x00000008U,
+        MISSILE_FLAGS_ERODEPROOF =   0x00000010U,
+        MISSILE_FLAGS_POISONABLE =   0x00000020U,
+        MISSILE_FLAGS_TETHERED =     0x00000040U, /* Missile is tethered */
+        MISSILE_FLAGS_LIT =          0x00000080U,
     }
 
 
@@ -384,7 +392,7 @@ namespace GnollHackX
     {
         public IntPtr replacement_name;
         public sbyte number_of_tiles;
-        public ulong replacement_events;
+        public GHulong replacement_events;
         public int replacement_action; /* hard-coded - defines which tile to use and when */
         public int general_autodraw; /* For zero-tile replacements */
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.MaxTilesPerReplacement)]
@@ -396,7 +404,7 @@ namespace GnollHackX
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.MaxTilesPerReplacement)]
         public int[] tile_autodraw;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.MaxTilesPerReplacement)]
-        public ulong[] tile_flags;
+        public GHulong[] tile_flags;
 
     }
 
@@ -410,9 +418,9 @@ namespace GnollHackX
         public int source_glyph2;
         public int source_glyph3;
         public int source_glyph4;
-        public ulong parameter1;
-        public ulong parameter2;
-        public ulong parameter3;
+        public GHulong parameter1;
+        public GHulong parameter2;
+        public GHulong parameter3;
     }
 
     public enum layer_types
@@ -451,7 +459,7 @@ namespace GnollHackX
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = (int)layer_types.MAX_LAYERS)]
         public int[] layer_gui_glyphs;
 
-        public ulong layer_flags;
+        public GHulong layer_flags;
         public uint m_id;  /* check that the monster found at the square is the one that is supposed to be drawn by comparing their m_ids */
         public uint o_id;  /* this is the o_id of the possibly moving boulder */
 
@@ -468,15 +476,15 @@ namespace GnollHackX
         public int monster_maxhp;
         public int rider_glyph;
         public int rider_gui_glyph;
-        public ulong status_bits;
-        public ulong condition_bits;
+        public GHulong status_bits;
+        public GHulong condition_bits;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.NUM_BUFF_BIT_ULONGS)]
-        public ulong[] buff_bits;
+        public GHulong[] buff_bits;
 
         public sbyte wsegdir;
         public sbyte reverse_prev_wsegdir;
-        public ulong monster_flags;
+        public GHulong monster_flags;
 
         public short object_height;
 
@@ -489,7 +497,7 @@ namespace GnollHackX
         public byte missile_mythic_suffix;
         public byte missile_eroded;
         public byte missile_eroded2;
-        public ulong missile_flags;
+        public GHulong missile_flags;
         public short missile_height;
         public sbyte missile_origin_x;
         public sbyte missile_origin_y;
@@ -565,12 +573,12 @@ namespace GnollHackX
     }
 
     [Flags]
-    public enum window_create_flags : ulong
+    public enum window_create_flags : GHulong
     {
-        WINDOW_CREATE_FLAGS_NONE                    = 0x00000000UL,
-        WINDOW_CREATE_FLAGS_ACTIVE                  = 0x00000001UL,
-        WINDOW_CREATE_FLAGS_USE_SPECIAL_SYMBOLS     = 0x00000002UL, //For text window only; use menu flags for menu window
-        WINDOW_CREATE_FLAGS_ASCENDED                = 0x00000004UL
+        WINDOW_CREATE_FLAGS_NONE                    = 0x00000000U,
+        WINDOW_CREATE_FLAGS_ACTIVE                  = 0x00000001U,
+        WINDOW_CREATE_FLAGS_USE_SPECIAL_SYMBOLS     = 0x00000002U, //For text window only; use menu flags for menu window
+        WINDOW_CREATE_FLAGS_ASCENDED                = 0x00000004U
     }
 
     /* GHMenu styles */
@@ -747,7 +755,7 @@ namespace GnollHackX
         BL_COND_RIDE,
         BL_COND_SLOWED,
         BL_COND_PARALYZED,
-        BL_COND_FEARFUL,
+        BL_COND_FEARFU,
         BL_COND_SLEEPING,
         BL_COND_CANCELLED,
         BL_COND_SILENCED,
@@ -760,7 +768,7 @@ namespace GnollHackX
     public enum game_ui_status_mark_types
     {
         STATUS_MARK_PET = 0,
-        STATUS_MARK_PEACEFUL,
+        STATUS_MARK_PEACEFU,
         STATUS_MARK_DETECTED,
         STATUS_MARK_BOUNTY,
         STATUS_MARK_SATIATED,
@@ -843,12 +851,12 @@ namespace GnollHackX
         public sbyte ox0, oy0;
         public short otyp; /* object class number */
         public uint owt;
-        public long quan; /* number of items */
+        public GHlong quan; /* number of items */
 
         public short enchantment; /* Always set to zero by cancellation */
         public short charges; /* number of charges for wand or charged tool ( >= -1 ), always set to -1/0 by cancellation */
         public short special_quality; /* item-specific special quality, e.g., the amount of wetness of a towel, number of candles attached to candelabrum, not affected by cancellation */
-        public ulong speflags; /* anything else that might be going on with an item, not affected by cancellation */
+        public GHulong speflags; /* anything else that might be going on with an item, not affected by cancellation */
         public sbyte oclass;    /* object class */
         public sbyte invlet;    /* designation in inventory */
         public short oartifact; /* artifact array index */
@@ -1017,8 +1025,8 @@ namespace GnollHackX
         public int corpsenm;         /* type of corpse is mons[corpsenm] */
         public int usecount;           /* overloaded for various things that tally */
         public uint oeaten;        /* nutrition left in food, if partly eaten */
-        public long age;               /* creation date */
-        public long owornmask;
+        public GHlong age;               /* creation date */
+        public GHlong owornmask;
         public short cooldownleft;       /* item cooldown left before it can be used again*/
         public short repowerleft;       /* artifact cooldown left before its invoke ability can be used again*/
         public short detectioncount;    /* monsters detected for WARN_ORC and other similar properties */
@@ -1112,49 +1120,49 @@ namespace GnollHackX
         public int mhp;
         public int mhpmax;
         
-        public ulong status_bits;
-        public ulong condition_bits;
+        public GHulong status_bits;
+        public GHulong condition_bits;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.NUM_BUFF_BIT_ULONGS)]
-        public ulong[] buff_bits;
+        public GHulong[] buff_bits;
 
-        public ulong monster_flags;
+        public GHulong monster_flags;
     }
 
     [Flags]
-    public enum speflag_types : ulong
+    public enum speflag_types : GHulong
     {
-        SPEFLAGS_YOURS                         = 0x00000001UL,
-        SPEFLAGS_FEMALE                        = 0x00000002UL,
-        SPEFLAGS_MALE                          = 0x00000004UL,
-        SPEFLAGS_FACING_RIGHT                  = 0x00000008UL,
-        SPEFLAGS_SCHROEDINGERS_BOX             = 0x00000010UL,
-        SPEFLAGS_INTENDED_FOR_SALE             = 0x00000020UL,
-        SPEFLAGS_CORPSE_ON_ICE                 = 0x00000040UL,
-        SPEFLAGS_DETECTED                      = 0x00000080UL,
-        SPEFLAGS_SERVICED_SPELL                = 0x00000100UL,
-        SPEFLAGS_MINES_PRIZE                   = 0x00000200UL,
-        SPEFLAGS_SOKO_PRIZE1                   = 0x00000400UL,
-        SPEFLAGS_SOKO_PRIZE2                   = 0x00000800UL,
-        SPEFLAGS_FROM_SINK                     = 0x00001000UL,
-        SPEFLAGS_INDESTRUCTIBLE                = 0x00002000UL,
-        SPEFLAGS_USES_UP_KEY                   = 0x00004000UL,
-        SPEFLAGS_NO_PICKUP                     = 0x00008000UL,  /* Monsters will not pick up this item */
-        SPEFLAGS_ROYAL_COFFER                  = 0x00010000UL,
-        SPEFLAGS_LID_OPENED                    = 0x00020000UL,
-        SPEFLAGS_GRABBED_FROM_YOU              = 0x00040000UL,
-        SPEFLAGS_ADDED_TO_YOUR_BILL            = 0x00080000UL,
-        SPEFLAGS_CERTAIN_WISH                  = 0x00100000UL,
-        SPEFLAGS_CAUGHT_IN_LEAVES              = 0x00200000UL,
-        SPEFLAGS_CLONED_ITEM                   = 0x00400000UL,
-        SPEFLAGS_NO_PREVIOUS_WEAPON            = 0x00800000UL,
-        SPEFLAGS_ALTERNATIVE_APPEARANCE        = 0x01000000UL, /* Alternative glyph is used for the object */
-        SPEFLAGS_PREVIOUSLY_WIELDED            = 0x02000000UL,
-        SPEFLAGS_FAVORITE                      = 0x04000000UL,
-        SPEFLAGS_EMPTY_NOTICED                 = 0x08000000UL,
-        SPEFLAGS_BEING_BROKEN                  = 0x10000000UL,
-        SPEFLAGS_GIVEN_OUT_BLUE_SMOKE          = 0x20000000UL,
-        SPEFLAGS_FOUND_THIS_TURN               = 0x40000000UL,
-        SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO    = 0x80000000UL
+        SPEFLAGS_YOURS                         = 0x00000001U,
+        SPEFLAGS_FEMALE                        = 0x00000002U,
+        SPEFLAGS_MALE                          = 0x00000004U,
+        SPEFLAGS_FACING_RIGHT                  = 0x00000008U,
+        SPEFLAGS_SCHROEDINGERS_BOX             = 0x00000010U,
+        SPEFLAGS_INTENDED_FOR_SALE             = 0x00000020U,
+        SPEFLAGS_CORPSE_ON_ICE                 = 0x00000040U,
+        SPEFLAGS_DETECTED                      = 0x00000080U,
+        SPEFLAGS_SERVICED_SPELL                = 0x00000100U,
+        SPEFLAGS_MINES_PRIZE                   = 0x00000200U,
+        SPEFLAGS_SOKO_PRIZE1                   = 0x00000400U,
+        SPEFLAGS_SOKO_PRIZE2                   = 0x00000800U,
+        SPEFLAGS_FROM_SINK                     = 0x00001000U,
+        SPEFLAGS_INDESTRUCTIBLE                = 0x00002000U,
+        SPEFLAGS_USES_UP_KEY                   = 0x00004000U,
+        SPEFLAGS_NO_PICKUP                     = 0x00008000U,  /* Monsters will not pick up this item */
+        SPEFLAGS_ROYAL_COFFER                  = 0x00010000U,
+        SPEFLAGS_LID_OPENED                    = 0x00020000U,
+        SPEFLAGS_GRABBED_FROM_YOU              = 0x00040000U,
+        SPEFLAGS_ADDED_TO_YOUR_BILL            = 0x00080000U,
+        SPEFLAGS_CERTAIN_WISH                  = 0x00100000U,
+        SPEFLAGS_CAUGHT_IN_LEAVES              = 0x00200000U,
+        SPEFLAGS_CLONED_ITEM                   = 0x00400000U,
+        SPEFLAGS_NO_PREVIOUS_WEAPON            = 0x00800000U,
+        SPEFLAGS_ALTERNATIVE_APPEARANCE        = 0x01000000U, /* Alternative glyph is used for the object */
+        SPEFLAGS_PREVIOUSLY_WIELDED            = 0x02000000U,
+        SPEFLAGS_FAVORITE                      = 0x04000000U,
+        SPEFLAGS_EMPTY_NOTICED                 = 0x08000000U,
+        SPEFLAGS_BEING_BROKEN                  = 0x10000000U,
+        SPEFLAGS_GIVEN_OUT_BLUE_SMOKE          = 0x20000000U,
+        SPEFLAGS_FOUND_THIS_TURN               = 0x40000000U,
+        SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO    = 0x80000000U
     }
 
     [Flags]
@@ -1193,38 +1201,38 @@ namespace GnollHackX
     }
 
     [Flags]
-    public enum objdata_flags : ulong
+    public enum objdata_flags : GHulong
     {
-        None = 0x00000000UL,
-        OBJDATA_FLAGS_DRAWN_IN_FRONT =  0x00000001UL,
-        OBJDATA_FLAGS_HALLUCINATION =   0x00000002UL,
-        OBJDATA_FLAGS_UCHAIN =          0x00000004UL,
-        OBJDATA_FLAGS_UBALL =           0x00000008UL,
-        OBJDATA_FLAGS_UWEP =            0x00000010UL,
-        OBJDATA_FLAGS_UWEP2 =           0x00000020UL,
-        OBJDATA_FLAGS_UQUIVER =         0x00000040UL,
-        OBJDATA_FLAGS_OUT_OF_AMMO1 =    0x00000080UL,
-        OBJDATA_FLAGS_WRONG_AMMO_TYPE1 =0x00000100UL,
-        OBJDATA_FLAGS_NOT_BEING_USED1 = 0x00000200UL,
-        OBJDATA_FLAGS_NOT_WEAPON1 =     0x00000400UL,
-        OBJDATA_FLAGS_OUT_OF_AMMO2 =    0x00000800UL,
-        OBJDATA_FLAGS_WRONG_AMMO_TYPE2 =0x00001000UL,
-        OBJDATA_FLAGS_NOT_BEING_USED2 = 0x00002000UL,
-        OBJDATA_FLAGS_NOT_WEAPON2 =     0x00004000UL,
-        OBJDATA_FLAGS_FOUND_THIS_TURN = 0x00008000UL,
-        OBJDATA_FLAGS_IS_AMMO =         0x00010000UL, /* is_ammo is TRUE */
-        OBJDATA_FLAGS_THROWING_WEAPON = 0x00020000UL, /* throwing_weapon is TRUE */
-        OBJDATA_FLAGS_PREV_WEP_FOUND =  0x00040000UL,
-        OBJDATA_FLAGS_PREV_UNWIELD =    0x00080000UL,
+        None = 0x00000000U,
+        OBJDATA_FLAGS_DRAWN_IN_FRONT =  0x00000001U,
+        OBJDATA_FLAGS_HALLUCINATION =   0x00000002U,
+        OBJDATA_FLAGS_UCHAIN =          0x00000004U,
+        OBJDATA_FLAGS_UBALL =           0x00000008U,
+        OBJDATA_FLAGS_UWEP =            0x00000010U,
+        OBJDATA_FLAGS_UWEP2 =           0x00000020U,
+        OBJDATA_FLAGS_UQUIVER =         0x00000040U,
+        OBJDATA_FLAGS_OUT_OF_AMMO1 =    0x00000080U,
+        OBJDATA_FLAGS_WRONG_AMMO_TYPE1 =0x00000100U,
+        OBJDATA_FLAGS_NOT_BEING_USED1 = 0x00000200U,
+        OBJDATA_FLAGS_NOT_WEAPON1 =     0x00000400U,
+        OBJDATA_FLAGS_OUT_OF_AMMO2 =    0x00000800U,
+        OBJDATA_FLAGS_WRONG_AMMO_TYPE2 =0x00001000U,
+        OBJDATA_FLAGS_NOT_BEING_USED2 = 0x00002000U,
+        OBJDATA_FLAGS_NOT_WEAPON2 =     0x00004000U,
+        OBJDATA_FLAGS_FOUND_THIS_TURN = 0x00008000U,
+        OBJDATA_FLAGS_IS_AMMO =         0x00010000U, /* is_ammo is TRUE */
+        OBJDATA_FLAGS_THROWING_WEAPON = 0x00020000U, /* throwing_weapon is TRUE */
+        OBJDATA_FLAGS_PREV_WEP_FOUND =  0x00040000U,
+        OBJDATA_FLAGS_PREV_UNWIELD =    0x00080000U,
     }
 
     [Flags]
-    public enum sound_play_flags : ulong
+    public enum sound_play_flags : GHulong
     {
-        None = 0x00000000UL,
-        PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING = 0x00000001UL,
-        PLAY_FLAGS_NO_PLAY_IF_ALREADY_QUEUED =  0x00000002UL,
-        PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED = 0x00000003UL,
+        None = 0x00000000U,
+        PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING = 0x00000001U,
+        PLAY_FLAGS_NO_PLAY_IF_ALREADY_QUEUED =  0x00000002U,
+        PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED = 0x00000003U,
     }
 
     public enum elemental_enchantment_types
@@ -1347,12 +1355,12 @@ namespace GnollHackX
     }
 
     [Flags]
-    public enum popup_text_flags : ulong
+    public enum popup_text_flags : GHulong
     {
-        POPUP_FLAGS_NONE =          0x00000000UL,
-        POPUP_FLAGS_ADD_QUOTES =    0x00000001UL,
-        POPUP_FLAGS_COLOR_TEXT =    0x00000002UL,
-        POPUP_FLAGS_UPPER_SIDE =    0x00000004UL,
+        POPUP_FLAGS_NONE =          0x00000000U,
+        POPUP_FLAGS_ADD_QUOTES =    0x00000001U,
+        POPUP_FLAGS_COLOR_TEXT =    0x00000002U,
+        POPUP_FLAGS_UPPER_SIDE =    0x00000004U,
     }
 
     public enum gui_effect_types
@@ -1461,10 +1469,10 @@ namespace GnollHackX
         public const int MaxMessageHistoryLength = 256;
         public const int MaxLongerMessageHistoryLength = 16384;
         public const float MoveDistanceThreshold = 25.0f;
-        public const long MoveOrPressTimeThreshold = 200; /* Milliseconds */
-        public const long SwipeTimeThreshold = 300; /* Milliseconds */
-        public const long FreeScrollingTime = 200; /* Milliseconds */
-        public const long ScrollRecordThreshold = 200; /* Milliseconds */
+        public const GHlong MoveOrPressTimeThreshold = 200; /* Milliseconds */
+        public const GHlong SwipeTimeThreshold = 300; /* Milliseconds */
+        public const GHlong FreeScrollingTime = 200; /* Milliseconds */
+        public const GHlong ScrollRecordThreshold = 200; /* Milliseconds */
         public const float ScrollConstantDeceleration = 0.5f; /* pixels in % of screen height per second squared */
         public const float ScrollSpeedDeceleration = 2.0f; /* % of speed per second */
         public const float ScrollConstantDecelerationOverEdgeMultiplier = 10f; /* multiplier for ScrollSpeedDeceleration when over edge */
@@ -1584,11 +1592,11 @@ namespace GnollHackX
         public const bool DefaultHideNavigation = true;
         public const bool DefaultHideStatusBar = true;
 #if DEBUG
-        public const long StoreReviewRequestNumberOfGames = 0;
-        public const long StoreReviewRequestTotalPlayTime = 0;
+        public const GHlong StoreReviewRequestNumberOfGames = 0;
+        public const GHlong StoreReviewRequestTotalPlayTime = 0;
 #else
-        public const long StoreReviewRequestNumberOfGames = 4;
-        public const long StoreReviewRequestTotalPlayTime = 60 * 60 * 2;
+        public const GHlong StoreReviewRequestNumberOfGames = 4;
+        public const GHlong StoreReviewRequestTotalPlayTime = 60 * 60 * 2;
 #endif
         public const bool DefaultHTMLDumpLogs = true;
         public const bool DefaultUseSingleDumpLog = true;
@@ -1611,7 +1619,7 @@ namespace GnollHackX
         public const string SavedGameSharedZipFileNameSuffix = ".zip";
         public const string ManualFilePrefix = "manual_id_";
         public const bool DefaultReadStreamingBankToMemory = false;
-        public const ulong AndroidBanksToMemoryThreshold = 3500000000UL;
+        public const GHulong AndroidBanksToMemoryThreshold = 3500000000U;
         public const bool DefaultCopyStreamingBankToDisk = false;
         public const bool DefaultDrawWallEnds = true;
         public const bool DefaultBreatheAnimations = true;
@@ -1636,12 +1644,12 @@ namespace GnollHackX
         public const string ReplayPostFileNamePrefix = "queued_replay_post_";
         public const string ReplayPostFileNameSuffix = ".txt";
         public const double MainScreenGeneralCounterIntervalInSeconds = 2.0;
-        public const long MaxGHLogSize = 4194304;
+        public const GHlong MaxGHLogSize = 4194304;
         public const int LineBuilderInitialCapacity = 256;
-        public const ulong LowFreeDiskSpaceThresholdInBytes = 1024 * 1024 * 2024;
-        public const ulong VeryLowFreeDiskSpaceThresholdInBytes = 512 * 1024 * 2024;
-        public const ulong CritiallyLowFreeDiskSpaceThresholdInBytes = 64 * 1024 * 2024;
-        public const long MaxSingleReplayFileSizeInBytes = 8 * 1024 * 2024;
+        public const GHulong LowFreeDiskSpaceThresholdInBytes = 1024 * 1024 * 2024;
+        public const GHulong VeryLowFreeDiskSpaceThresholdInBytes = 512 * 1024 * 2024;
+        public const GHulong CritiallyLowFreeDiskSpaceThresholdInBytes = 64 * 1024 * 2024;
+        public const GHlong MaxSingleReplayFileSizeInBytes = 8 * 1024 * 2024;
         public const string ReplayFileNamePrefix = "replay-";
         public const string ReplayContinuationFileNamePrefix = "rpcont-";
         public const string ReplayFileNameMiddleDivisor = "-";
@@ -1667,7 +1675,7 @@ namespace GnollHackX
         public const int ReplayGetLineDelay1 = 512; /* Milliseconds */
         public const int ReplayGetLineDelay2 = 1024; /* Milliseconds */
         public const int ReplayDisplayWindowDelay = 512; /* Milliseconds */
-        //public const long GPUResourceCacheSize = 800000000L;
+        //public const GHlong GPUResourceCacheSize = 800000000L;
 #if GNH_MAUI
         public const string PortName = "GnollHackM";
 #else
