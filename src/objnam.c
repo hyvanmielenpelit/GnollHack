@@ -6280,7 +6280,7 @@ boolean use_symbols;
                 if (do_putstr)
                     putstr_ex(datawin, "/", attr, color, 1);
 
-                dmg2pos = dmgpos + dmglen + 1;
+                dmg2pos = dmgpos + (int)dmglen + 1;
                 Sprintf(tmpbuf, "%s%.1f", isdmgdiff2 && dmgdiff2 >= 0 ? "+" : "", dmgdiff2);
                 dmg2len = strlen(tmpbuf);
                 dmg2color = dmgdiff2 > 0 ? CLR_BRIGHT_GREEN : dmgdiff2 < 0 ? CLR_RED : CLR_GRAY;
