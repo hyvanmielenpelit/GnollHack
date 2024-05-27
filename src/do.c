@@ -4596,7 +4596,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     }
                 }
             }
-            if (u.twoweap && uwep2 && is_wieldable_weapon(uwep2) && !is_ammo(obj) && !is_launcher(obj) && !is_thrown_weapon_only(obj) && obj != uwep2 && obj != uwep)
+            if (u.twoweap && uwep2 && is_wieldable_weapon(uwep2) && !bimanual(obj) && !is_ammo(obj) && !is_launcher(obj) && !is_thrown_weapon_only(obj) && obj != uwep2 && obj != uwep)
             {
                 struct obj* cwep2 = uwep2;
                 struct item_description_stats cwep2_stats = { 0 };

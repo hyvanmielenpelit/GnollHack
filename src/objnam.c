@@ -6224,7 +6224,7 @@ boolean use_symbols;
         else
             skip_weapon_print1 = TRUE;
 
-        if (cwep2 && cwep2 != obj && uwep != obj && uwep2 != obj && uswapwep != obj && !is_ammo(obj) && !is_launcher(obj) && !is_thrown_weapon_only(obj))
+        if (cwep2 && cwep2 != obj && uwep != obj && uwep2 != obj && uswapwep != obj && !bimanual(obj) && !is_ammo(obj) && !is_launcher(obj) && !is_thrown_weapon_only(obj))
         {
             struct item_description_stats cwep2_stats = { 0 };
             (void)itemdescription_core(cwep2, cwep2->otyp, &cwep2_stats);
