@@ -448,6 +448,26 @@ LibIsDebug(VOID_ARGS)
 #endif
 }
 
+DLLEXPORT int
+LibGetTileAnimationIndexFromGlyph(int glyph)
+{
+    return get_tile_animation_index_from_glyph(glyph);
+}
+
+DLLEXPORT int
+LibMaybeGetAnimatedTile(ntile, tile_animation_idx, play_type, interval_counter, frame_idx_ptr, main_tile_idx_ptr, mapAnimated, autodraw_ptr)
+int ntile;
+int tile_animation_idx;
+enum animation_play_types play_type;
+long interval_counter;
+int* frame_idx_ptr, * main_tile_idx_ptr;
+char* mapAnimated;
+enum autodraw_types* autodraw_ptr; 
+{
+    return maybe_get_animated_tile(ntile, tile_animation_idx, play_type, interval_counter, frame_idx_ptr, main_tile_idx_ptr, mapAnimated, autodraw_ptr);
+}
+
+
 char gnhapi_putstr_buffer[BUFSZ * 4];
 
 DLLEXPORT void gnhapi_raw_print(const char* text)

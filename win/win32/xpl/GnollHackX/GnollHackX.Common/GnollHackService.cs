@@ -260,7 +260,7 @@ namespace GnollHackX.Unknown
         public static extern int LibGetAutoDrawArraySize(int glyph);
 
         [DllImport(PlatformConstants.dll)]
-        public static extern int get_tile_animation_index_from_glyph(int glyph);
+        public static extern int LibGetTileAnimationIndexFromGlyph(int glyph);
 
 
         [DllImport(PlatformConstants.dll)]
@@ -270,7 +270,7 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern byte LibGlyphIsAnyDying(int glyph);
         [DllImport(PlatformConstants.dll)]
-        public static extern int maybe_get_animated_tile(int ntile, int tile_animation_idx, int play_type, long interval_counter, 
+        public static extern int LibMaybeGetAnimatedTile(int ntile, int tile_animation_idx, int play_type, long interval_counter, 
             out int frame_idx_ptr, out int main_tile_idx_ptr, out sbyte mapAnimated, ref int autodraw_ptr);
         [DllImport(PlatformConstants.dll)]
         public static extern int LibZapGlyphToCornerGlyph(int adjglyph, ulong adjflags, int source_dir);
@@ -906,7 +906,7 @@ namespace GnollHackX.Unknown
         }
         public int GetTileAnimationIndexFromGlyph(int glyph)
         {
-            return get_tile_animation_index_from_glyph(glyph);
+            return LibGetTileAnimationIndexFromGlyph(glyph);
         }
         public bool GlyphIsExplosion(int glyph)
         {
@@ -927,7 +927,7 @@ namespace GnollHackX.Unknown
             //frame_idx_ptr = main_tile_idx_ptr = autodraw_ptr = 0;
             //mapAnimated = 0;
 
-            return maybe_get_animated_tile(ntile, tile_animation_idx, play_type, interval_counter,
+            return LibMaybeGetAnimatedTile(ntile, tile_animation_idx, play_type, interval_counter,
                 out frame_idx_ptr, out main_tile_idx_ptr, out mapAnimated, ref autodraw_ptr);
         }
 
