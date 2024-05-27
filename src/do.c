@@ -1186,38 +1186,41 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             *buf2 = highc(*buf2);
             Sprintf(buf, "Skill:                  %s", buf2);
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
-            if (obj)
+        }        
+        if (obj)
+        {
+            boolean bonusesprinted = FALSE;
+            if (objects[otyp].oc_skill == P_SHIELD && is_shield(obj))
             {
-                boolean bonusesprinted = FALSE;
-                if (objects[otyp].oc_skill == P_SHIELD && is_shield(obj))
-                {
-                    int shieldacbonus = shield_skill_ac_bonus(P_SKILL_LEVEL(P_SHIELD));
-                    int shieldmcbonus = shield_skill_mc_bonus(P_SKILL_LEVEL(P_SHIELD));
-                    if (-shieldacbonus == shieldmcbonus)
-                        Sprintf(buf, "Skill bonuses:          %s%d to AC and MC",
-                            shieldmcbonus >= 0 ? "+" : "",
-                            shieldmcbonus);
-                    else
-                        Sprintf(buf, "Skill bonuses:          %s%d to AC and %s%d to MC",
+                int shieldacbonus = shield_skill_ac_bonus(P_SKILL_LEVEL(P_SHIELD));
+                int shieldmcbonus = shield_skill_mc_bonus(P_SKILL_LEVEL(P_SHIELD));
+                if (-shieldacbonus == shieldmcbonus)
+                    Sprintf(buf, "Skill bonuses:          %s%d to AC and MC",
+                        shieldmcbonus >= 0 ? "+" : "",
+                        shieldmcbonus);
+                else
+                    Sprintf(buf, "Skill bonuses:          %s%d to AC and %s%d to MC",
                         shieldacbonus <= 0 ? "+" : "",
                         -shieldacbonus,
                         shieldmcbonus >= 0 ? "+" : "",
                         shieldmcbonus);
-                    putstr(datawin, ATR_INDENT_AT_COLON, buf);
-                    bonusesprinted = TRUE;
-                }
-                if (((objects[otyp].oc_skill >= P_FIRST_WEAPON && objects[otyp].oc_skill <= P_LAST_WEAPON) || objects[otyp].oc_skill == -P_THROWN_WEAPON || objects[otyp].oc_skill == P_SHIELD) && is_weapon(obj))
-                {
-                    int skilltohitbonus = weapon_skill_hit_bonus(obj, P_NONE, FALSE, FALSE, FALSE, 0, FALSE);
-                    int skilldmgbonus = weapon_skill_dmg_bonus(obj, P_NONE, FALSE, FALSE, FALSE, 0, FALSE);
-                    if (skilltohitbonus == skilldmgbonus)
-                        Sprintf(buf, "%s          %s%d to hit and damage", bonusesprinted ? "              " : "Skill bonuses:", skilltohitbonus >= 0 ? "+" : "", skilltohitbonus);
-                    else
-                        Sprintf(buf, "%s          %s%d to hit and %s%d to damage", bonusesprinted ? "              " : "Skill bonuses:", skilltohitbonus >= 0 ? "+" : "", skilltohitbonus, skilldmgbonus >= 0 ? "+" : "", skilldmgbonus);
-                    putstr(datawin, bonusesprinted ? ATR_INDENT_AT_DOUBLE_SPACE : ATR_INDENT_AT_COLON, buf);
-                }
+                putstr(datawin, ATR_INDENT_AT_COLON, buf);
+                bonusesprinted = TRUE;
             }
-        }        
+            if (((objects[otyp].oc_skill >= P_FIRST_WEAPON && objects[otyp].oc_skill <= P_LAST_WEAPON) || objects[otyp].oc_skill == -P_THROWN_WEAPON || objects[otyp].oc_skill == P_SHIELD) && is_weapon(obj))
+            {
+                int skilltohitbonus = weapon_skill_hit_bonus(obj, P_NONE, FALSE, FALSE, FALSE, 0, FALSE);
+                int skilldmgbonus = weapon_skill_dmg_bonus(obj, P_NONE, FALSE, FALSE, FALSE, 0, FALSE);
+                if (skilltohitbonus == skilldmgbonus)
+                    Sprintf(buf, "%s          %s%d to hit and damage", bonusesprinted ? "              " : "Skill bonuses:", skilltohitbonus >= 0 ? "+" : "", skilltohitbonus);
+                else
+                    Sprintf(buf, "%s          %s%d to hit and %s%d to damage", bonusesprinted ? "              " : "Skill bonuses:", skilltohitbonus >= 0 ? "+" : "", skilltohitbonus, skilldmgbonus >= 0 ? "+" : "", skilldmgbonus);
+                putstr(datawin, bonusesprinted ? ATR_INDENT_AT_DOUBLE_SPACE : ATR_INDENT_AT_COLON, buf);
+
+                wep_avg_dmg += skilldmgbonus;
+                wep_multipliable_avg_dmg += skilldmgbonus;
+            }
+        }
     }
 
     if (stats_known && objects[otyp].oc_class == SPBOOK_CLASS && !(objects[otyp].oc_flags & O1_NON_SPELL_SPELLBOOK))
@@ -1570,9 +1573,6 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             }
         }
 
-        if (wep_avg_dmg < 0)
-            wep_avg_dmg = 0;
-
         /* Damage type - Main */
         if (printmaindmgtype && objects[otyp].oc_damagetype != AD_PHYS)
         {
@@ -1667,9 +1667,6 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 wep_multipliable_avg_dmg += extra_avg_dmg;
             }
 
-            if (wep_avg_dmg < 0)
-                wep_avg_dmg = 0;
-
             /* Damage type - Extra */
             if (objects[otyp].oc_extra_damagetype != AD_PHYS)
             {
@@ -1696,7 +1693,6 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
             wep_avg_dmg += simple_dmg;
             wep_multipliable_avg_dmg += simple_dmg;
-
         }
 
         /* Damage - Silver*/
@@ -1710,6 +1706,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             wep_all_extra_avg_dmg += (1.0 + 20.0) / 2.0;
         }
 
+        /* Strength bonuses are not applied to ammo (just launchers) to avoid double-counting */
         /* Fixed damage bonus */
         if (is_otyp_launcher(otyp) && (objects[otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH)) 
         {
@@ -1721,26 +1718,26 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             double fixed_bonus = (double)objects[otyp].oc_fixed_damage_bonus;
             wep_avg_dmg += fixed_bonus;
             wep_multipliable_avg_dmg += fixed_bonus;
-            if (wep_avg_dmg < 0)
-                wep_avg_dmg = 0;
         }
-        else if (obj)
+        else if (obj && !is_ammo(obj))
         {
             double dmg_bonus = 0;
-            if (is_ammo(obj) && uwep && is_launcher(uwep) && (objects[uwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
-                dmg_bonus += (double)objects[uwep->otyp].oc_fixed_damage_bonus;
-            else if (is_ammo(obj) && uswapwep && is_launcher(uswapwep) && (objects[uswapwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
-                dmg_bonus += (double)objects[uswapwep->otyp].oc_fixed_damage_bonus;
-            else if(is_otyp_nonmelee_throwing_weapon(otyp) || objects[otyp].oc_skill == P_NONE)
+            //if (is_ammo(obj) && uwep && is_launcher(uwep) && (objects[uwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
+            //    dmg_bonus += (double)objects[uwep->otyp].oc_fixed_damage_bonus;
+            //else if (is_ammo(obj) && uswapwep && is_launcher(uswapwep) && (objects[uswapwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
+            //    dmg_bonus += (double)objects[uswapwep->otyp].oc_fixed_damage_bonus;
+            //else 
+            if(is_otyp_nonmelee_throwing_weapon(otyp) || objects[otyp].oc_skill == P_NONE)
                 dmg_bonus += strength_damage_bonus_core(ACURR(A_STR), TRUE) / 2;
             else
                 dmg_bonus += strength_damage_bonus_core(ACURR(A_STR), TRUE);
 
+            Sprintf(buf, "Strength damage bonus:  %s%.1f on average",
+                dmg_bonus >= 0 ? "+" : "", dmg_bonus);
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+
             wep_avg_dmg += dmg_bonus;
             wep_multipliable_avg_dmg += dmg_bonus;
-
-            if (wep_avg_dmg < 0)
-                wep_avg_dmg = 0;
         }
 
         if (objects[otyp].oc_hitbonus != 0)
@@ -1757,9 +1754,30 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
     {
         /* Otherwise get full melee strength damage bonus */
         double str_bonus = strength_damage_bonus_core(ACURR(A_STR), TRUE);
+        Sprintf(buf, "Strength damage bonus:  %s%.1f on average",
+            str_bonus >= 0 ? "+" : "", str_bonus);
+        putstr(datawin, ATR_INDENT_AT_COLON, buf);
+
         wep_avg_dmg += str_bonus;
         wep_multipliable_avg_dmg += str_bonus;
     }
+
+    /* Archery bonus, applied for launcher only to avoid double-counting */
+    if(obj && u.uarcherybonus != 0 && uarmb && object_stats_known(uarmb) && uarmb->otyp == BRACERS_OF_ARCHERY && /* Only if bracers of archery is known */
+        (is_launcher(obj) && uquiver && ammo_and_launcher(uquiver, obj))
+      )
+    {
+        Sprintf(buf, "Archery bonus:          %s%d to hit and damage", u.uarcherybonus >= 0 ? "+" : "", u.uarcherybonus);
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+
+        double archery_avg_dmg = (double)u.uarcherybonus;
+        wep_avg_dmg += archery_avg_dmg;
+        wep_multipliable_avg_dmg += archery_avg_dmg;
+
+    }
+
+    if (wep_avg_dmg < 0)
+        wep_avg_dmg = 0;
 
     short mcadj = objects[otyp].oc_mc_adjustment + (obj && (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT) ? -obj->enchantment : 0);
     if (objects[otyp].oc_mc_adjustment != 0 || mcadj != 0)
@@ -4365,11 +4383,6 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                                 }
 
                                 roll_to_hit += u.uarcherybonus;
-                                double archery_avg_dmg = (double)u.uarcherybonus;
-                                wep_avg_dmg += archery_avg_dmg;
-                                wep_multipliable_avg_dmg += archery_avg_dmg;
-                                if (wep_avg_dmg < 0)
-                                    wep_avg_dmg = 0;
                             }
                         }
                         else
@@ -4430,11 +4443,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
                 putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
 
-                double skill_dmg_bonus = (double)weapon_skill_dmg_bonus(obj, P_NONE, FALSE, FALSE, TRUE, 0, TRUE);
-                wep_avg_dmg += skill_dmg_bonus;
-                wep_multipliable_avg_dmg += skill_dmg_bonus;
-                if (wep_avg_dmg < 0)
-                    wep_avg_dmg = 0;
+                //double skill_dmg_bonus = (double)weapon_skill_dmg_bonus(obj, P_NONE, FALSE, FALSE, TRUE, 0, TRUE);
 
                 wep_avg_dmg *= average_multi_shot_times;
                 wep_multipliable_avg_dmg *= average_multi_shot_times;
@@ -5513,7 +5522,7 @@ register struct obj *obj;
         trycall(obj);
         return;
     case RIN_LEVITATION:
-        pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "sink quivers upward for a moment.");
+        pline_The_ex1(ATR_NONE, CLR_MSG_ATTENTION, "sink quivers upward for a moment.");
         break;
     case RIN_POISON_RESISTANCE:
         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "smell rotten %s.", makeplural(fruitname(FALSE)));
@@ -5632,7 +5641,7 @@ register struct obj *obj;
                     Hallucination ? "oxygen molecules" : "air");
             break;
         case RIN_STEALTH:
-            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "sink seems to blend into the floor for a moment.");
+            pline_The_ex1(ATR_NONE, CLR_MSG_ATTENTION, "sink seems to blend into the floor for a moment.");
             break;
         case RIN_FIRE_RESISTANCE:
             pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "hot %s faucet flashes brightly for a moment.",
@@ -5643,7 +5652,7 @@ register struct obj *obj;
                       hliquid("water"));
             break;
         case RIN_PROTECTION_FROM_SHAPE_CHANGERS:
-            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "sink looks nothing like a fountain.");
+            pline_The_ex1(ATR_NONE, CLR_MSG_ATTENTION, "sink looks nothing like a fountain.");
             break;
         case RIN_PROTECTION:
         {
@@ -5657,10 +5666,10 @@ register struct obj *obj;
             pline_The_multi_ex(ATR_NONE, CLR_MSG_ATTENTION, no_multiattrs, multicolor_buffer, "sink glows %s for a moment.", hcolor_multi_buf0(NH_WHITE));
             break;
         case RIN_TELEPORT_CONTROL:
-            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "sink looks like it is being beamed aboard somewhere.");
+            pline_The_ex1(ATR_NONE, CLR_MSG_ATTENTION, "sink looks like it is being beamed aboard somewhere.");
             break;
         case RIN_POLYMORPH_CONTROL:
-            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION,
+            pline_The_ex1(ATR_NONE, CLR_MSG_ATTENTION,
                   "sink momentarily looks like a regularly erupting geyser.");
             break;
         default:
@@ -7253,7 +7262,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         if (Is_valley(&u.uz))
         {
             You_ex(ATR_NONE, CLR_MSG_WARNING, "arrive at the Valley of the Dead...");
-            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "odor of burnt flesh and decay pervades the air.");
+            pline_The_ex1(ATR_NONE, CLR_MSG_WARNING, "odor of burnt flesh and decay pervades the air.");
 #ifdef MICRO
             display_nhwindow(WIN_MESSAGE, FALSE);
 #endif
@@ -7424,7 +7433,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
     else if (In_V_tower(&u.uz))
     {
         if (newdungeon && In_hell(&u.uz0))
-            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "heat and smoke are gone.");
+            pline_The_ex1(ATR_NONE, CLR_MSG_ATTENTION, "heat and smoke are gone.");
     } 
     else if (Is_knox(&u.uz))
     {
