@@ -4843,6 +4843,7 @@ boolean addinventoryheader, wornonly;
     int wtcount = 0;
     boolean comparison_stats = !wornonly && iflags.show_comparison_stats && !iflags.in_dumplog && !program_state.gameover;
     boolean loadstonecorrectly = FALSE;
+    boolean listedsomething = FALSE;
 
     if(show_weights == 1) // Inventory
         loadstonecorrectly = TRUE;
@@ -4945,6 +4946,7 @@ boolean addinventoryheader, wornonly;
         int unid_cnt;
         char prompt[QBUFSZ];
 
+        listedsomething = TRUE;
         unid_cnt = count_unidentified(invent, 0, FALSE);
         Sprintf(prompt, "Debug Identify"); /* 'title' rather than 'prompt' */
         if (unid_cnt)
@@ -4977,6 +4979,7 @@ boolean addinventoryheader, wornonly;
     } 
     else if (xtra_choice) 
     {
+        listedsomething = TRUE;
         /* wizard override ID and xtra_choice are mutually exclusive */
         if (flags.sortpack)
             add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
@@ -5008,6 +5011,7 @@ boolean addinventoryheader, wornonly;
            continue;
        if (wizid && !not_fully_identified(otmp))
            continue;
+       listedsomething = TRUE;
        any = zeroany; /* all bits zero */
        ilet = otmp->invlet;
        if (!classcount)
@@ -5038,9 +5042,10 @@ nextclass:
         {
             if (wizid && !not_fully_identified(otmp))
                 continue;
+            listedsomething = TRUE;
             any = zeroany; /* all bits zero */
             ilet = otmp->invlet;
-            if (flags.sortpack && !classcount) 
+            if (flags.sortpack && !classcount)
             {
                 add_extended_menu(win, NO_GLYPH, &any,
                     0, 0, iflags.menu_headings, NO_COLOR,
@@ -5074,6 +5079,7 @@ nextclass:
     }
     if (iflags.force_invmenu && lets && want_reply) 
     {
+        listedsomething = TRUE;
         any = zeroany;
         add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
                  "Special", MENU_UNSELECTED, menu_heading_info());
@@ -5088,7 +5094,7 @@ nextclass:
        nothing has been listed (because there isn't anyhing to list;
        recognized via any.a_char still being zero; the n==0 case above
        gets skipped for perm_invent), put something into the menu */
-    if (iflags.perm_invent && !lets && !invent) /* Changed any.a_char to invent, since the previous didn't seem to work anymore */
+    if (iflags.perm_invent && !lets && !listedsomething) /* Changed any.a_char to listedsomething, since the previous does not work anymore after using add_inventory_menu_item function calls --JG */
     {
         any = zeroany;
         add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
