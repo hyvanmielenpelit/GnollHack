@@ -4576,7 +4576,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 if (cwep_stats.stats_set && cwep_stats.weapon_stats_printed)
                 {
                     int powercnt = 0;
-                    Sprintf(buf, "Comparison to current %s:", cwep == uwep ? "weapon" : cwep == uswapwep ? "alternative weapon" : 
+                    Sprintf(buf, "Comparison to current %s%s:", u.twoweap ? "right-hand " : "", cwep == uwep ? "weapon" : cwep == uswapwep ? "alternative weapon" :
                         cwep == uquiver ? (is_ammo(obj) ? "quivered ammo" : "readied thrown weapon") : "readied item");
                     putstr(datawin, ATR_HEADING, buf);
                     powercnt++;
@@ -4596,6 +4596,34 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     }
                 }
             }
+            if (u.twoweap && uwep2 && is_wieldable_weapon(uwep2) && !is_ammo(obj) && !is_launcher(obj) && !is_thrown_weapon_only(obj) && obj != uwep2 && obj != uwep)
+            {
+                struct obj* cwep2 = uwep2;
+                struct item_description_stats cwep2_stats = { 0 };
+                (void)itemdescription_core(cwep2, cwep2->otyp, &cwep2_stats);
+                if (cwep2_stats.stats_set && cwep2_stats.weapon_stats_printed)
+                {
+                    int powercnt = 0;
+                    Strcpy(buf, "Comparison to current left-hand weapon:");
+                    putstr(datawin, ATR_HEADING, buf);
+                    powercnt++;
+                    Sprintf(buf, " %2d - Change in average damage is ", powercnt);
+                    putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, NO_COLOR, 1);
+                    double dmgdiff = wep_avg_dmg - cwep2_stats.avg_damage;
+                    Sprintf(buf, "%s%.1f", dmgdiff >= 0 ? "+" : "", dmgdiff);
+                    putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, dmgdiff > 0 ? CLR_BRIGHT_GREEN : dmgdiff < 0 ? CLR_RED : NO_COLOR, 0);
+                    if (wep_ac50pct_stat_set && cwep2_stats.wep_ac50pct_set)
+                    {
+                        powercnt++;
+                        Sprintf(buf, " %2d - Change in AC hit at 50%% chance is ", powercnt);
+                        putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, NO_COLOR, 1);
+                        int ac50pcthitdiff = wep_ac50pct_stat - cwep2_stats.ac50pct;
+                        Sprintf(buf, "%s%d", ac50pcthitdiff >= 0 ? "+" : "", ac50pcthitdiff);
+                        putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, ac50pcthitdiff < 0 ? CLR_BRIGHT_GREEN : ac50pcthitdiff > 0 ? CLR_RED : NO_COLOR, 0);
+                    }
+                }
+            }
+
             if (is_armor(obj) && armor_stats_printed)
             {
                 struct obj* current_armor = 0;
