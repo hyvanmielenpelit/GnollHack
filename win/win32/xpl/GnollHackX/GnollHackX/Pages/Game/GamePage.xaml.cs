@@ -14077,21 +14077,56 @@ namespace GnollHackX.Pages.Game
                         }
                         if (special_coloring != 0)
                         {
-                            double res;
-                            if(double.TryParse(split_str, NumberStyles.Any, CultureInfo.InvariantCulture, out res))
+                            string[] subsplit = split_str.Split('/');
+                            if(subsplit.Length > 1)
                             {
-                                res = res * special_coloring;
-                                if (res > 0)
-                                    textPaint.Color = UIUtils.NHColor2SKColorCore((int)NhColor.CLR_BRIGHT_GREEN, (int)MenuItemAttributes.None, revertblackandwhite, false);
-                                else if (res < 0)
-                                    textPaint.Color = UIUtils.NHColor2SKColorCore((int)NhColor.CLR_RED, (int)MenuItemAttributes.None, revertblackandwhite, false);
-                                else
-                                    textPaint.Color = orig_color;
+                                float xdelta = 0;
+                                int subidx = 0;
+                                foreach(string substr in subsplit)
+                                {
+                                    subidx++;
+                                    double res;
+                                    if (double.TryParse(substr, NumberStyles.Any, CultureInfo.InvariantCulture, out res))
+                                    {
+                                        res = res * special_coloring;
+                                        if (res > 0)
+                                            textPaint.Color = UIUtils.NHColor2SKColorCore((int)NhColor.CLR_BRIGHT_GREEN, (int)MenuItemAttributes.None, revertblackandwhite, false);
+                                        else if (res < 0)
+                                            textPaint.Color = UIUtils.NHColor2SKColorCore((int)NhColor.CLR_RED, (int)MenuItemAttributes.None, revertblackandwhite, false);
+                                        else
+                                            textPaint.Color = orig_color;
+                                    }
+                                    else
+                                        textPaint.Color = orig_color;
+
+                                    textPaint.DrawTextOnCanvas(canvas, substr, x + xdelta, y);
+                                    xdelta += textPaint.MeasureText(substr);
+                                    if(subidx < subsplit.Length)
+                                    {
+                                        textPaint.Color = orig_color;
+                                        textPaint.DrawTextOnCanvas(canvas, "/", x + xdelta, y);
+                                        xdelta += textPaint.MeasureText("/");
+                                    }
+                                }
                             }
                             else
-                                textPaint.Color = orig_color;
+                            {
+                                double res;
+                                if (double.TryParse(split_str, NumberStyles.Any, CultureInfo.InvariantCulture, out res))
+                                {
+                                    res = res * special_coloring;
+                                    if (res > 0)
+                                        textPaint.Color = UIUtils.NHColor2SKColorCore((int)NhColor.CLR_BRIGHT_GREEN, (int)MenuItemAttributes.None, revertblackandwhite, false);
+                                    else if (res < 0)
+                                        textPaint.Color = UIUtils.NHColor2SKColorCore((int)NhColor.CLR_RED, (int)MenuItemAttributes.None, revertblackandwhite, false);
+                                    else
+                                        textPaint.Color = orig_color;
+                                }
+                                textPaint.DrawTextOnCanvas(canvas, split_str, x, y);
+                            }
                         }
-                        textPaint.DrawTextOnCanvas(canvas, split_str, x, y);
+                        else
+                            textPaint.DrawTextOnCanvas(canvas, split_str, x, y);
                     }
 
                     if(special_coloring != 0)
