@@ -2331,7 +2331,9 @@ get_saved_games()
         const char *fq_save;
         char fq_save_ebuf[BUFSZ];
         char fq_save_ibuf[BUFSZ];
+        char saved_plname[PL_NSIZ];
 
+        Strcpy(saved_plname, plname);
         Strcpy(plname, "*");
         set_savefile_name(FALSE);
 #if defined(ZLIB_COMP)
@@ -2437,6 +2439,7 @@ get_saved_games()
                 }
             }
         }
+        Strcpy(plname, saved_plname);
     }
 #elif defined(UNIX) && defined(QT_GRAPHICS)
     /* posixly correct version */
