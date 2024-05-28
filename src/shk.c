@@ -3732,6 +3732,12 @@ boolean shk_buying;
                 add_cost += (mythic_suffix_qualities[obj->mythic_suffix].price_addition > 0L ? mythic_suffix_qualities[obj->mythic_suffix].price_addition / 4L : mythic_suffix_qualities[obj->mythic_suffix].price_addition * 2L);
             }
 
+            if (is_ammo(obj) || is_missile(obj)) /* There are many of them; avoid making them too expensive relative to base item price */
+            {
+                mult *= 1.5;
+                add_cost /= 3;
+            }
+
             tmp = max(0L, (long)((double)tmp * mult) + add_cost);
         }
         else
@@ -3748,6 +3754,12 @@ boolean shk_buying;
 
             if (obj->mythic_suffix)
                 mult += (mythic_suffix_qualities[obj->mythic_suffix].price_multiplier - 1.0), add_cost += mythic_suffix_qualities[obj->mythic_suffix].price_addition;
+
+            if (is_ammo(obj) || is_missile(obj)) /* There are many of them; avoid making them too expensive relative to base item price */
+            {
+                mult *= 1.5;
+                add_cost /= 3;
+            }
 
             tmp = max(0L, (long)((double)tmp * mult) + add_cost);
         }
