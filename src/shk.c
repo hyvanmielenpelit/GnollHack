@@ -3689,6 +3689,10 @@ struct obj* obj;
             matmult = curmult / basemult;
             matadd += material_definitions[obj->material].cost_addition - material_definitions[objects[obj->otyp].oc_material].cost_addition;
         }
+        if (is_ammo(obj) || is_missile(obj)) /* There are many of them; avoid making them too expensive relative to base item price */
+        {
+            matadd /= 3;
+        }
         tmp = max(0L, (long)((double)tmp * matmult + matadd));
     }
 
