@@ -11,13 +11,23 @@
 #ifdef DLB
 
 /* implementations */
-#ifdef MAC
+#if defined (MAC)
 #define DLBRSRC /* use Mac resources */
+#elif defined (GNH_WIN)
+#define DLBMEM
 #else
 #define DLBLIB /* use a set of external files */
 #endif
 
-#ifdef DLBLIB
+#if defined (DLBLIB) || defined (DLBMEM)
+#if defined(DLBMEM)
+typedef struct memory_block {
+    char* bytes;
+    size_t length;
+    size_t pos;
+} memory_block;
+#endif
+
 /* directory structure in memory */
 typedef struct dlb_directory {
     char *fname;   /* file name as seen from calling code */
@@ -28,7 +38,11 @@ typedef struct dlb_directory {
 
 /* information about each open library */
 typedef struct dlb_library {
+#if defined (DLBMEM)
+    memory_block* mdata;
+#else
     FILE *fdata;   /* opened data file */
+#endif
     long fmark;    /* current file mark */
     libdir *dir;   /* directory of library file */
     char *sspace;  /* pointer to string space */
@@ -48,8 +62,12 @@ typedef struct dlb_library {
 #endif /* DLBLIB */
 
 typedef struct dlb_handle {
+#if defined (DLBMEM)
+    memory_block* mp; /* pointer to memory */
+#else
     FILE *fp; /* pointer to an external file, use if non-null */
-#ifdef DLBLIB
+#endif
+#if defined (DLBLIB) || defined (DLBMEM)
     library *lib; /* pointer to library structure */
     long start;   /* offset of start of file */
     long size;    /* size of file */
