@@ -8,33 +8,36 @@
 #ifndef WINCONF_H
 #define WINCONF_H
 
-/* #define SHELL */    /* nt use of pcsys routines caused a hang */
+#define error debuglog
 
 #define TEXTCOLOR /* Color text */
-
-#define EXEPATH              /* Allow .exe location to be used as HACKDIR */
-#define TRADITIONAL_GLYPHMAP /* Store glyph mappings at level change time */
-
-#define LAN_FEATURES /* Include code for lan-aware features. Untested in \
-                        3.4.0*/
-
-#define PC_LOCKING /* Prevent overwrites of aborted or in-progress games */
-/* without first receiving confirmation. */
-
+#define CHANGE_COLOR
 #define HOLD_LOCKFILE_OPEN /* Keep an exclusive lock on the .0 file */
-
-#define SELF_RECOVER /* Allow the game itself to recover from an aborted \
-                        game */
-
-#define SYSCF                /* Use a global configuration */
-#define SYSCF_FILE "sysconf" /* Use a file to hold the SYSCF configuration */
-
-#define DUMPLOG_MSG_COUNT 50
-
+#define SELF_RECOVER /* Allow the game itself to recover from an aborted game */
 #define USER_SOUNDS
-
-/*#define CHANGE_COLOR*/ /* allow palette changes */
 #define SELECTSAVED /* Provide menu of saved games to choose from at start */
+#define NO_FILE_LINKS /* if no hard links */
+#define LOCKDIR "." /* where to put locks */ 
+#define ASCIIGRAPH
+#define NO_SIGNAL
+#define CONTINUE_PLAYING_AFTER_SAVING
+#define ALTMETA /* support altmeta run-time option */
+#define SAFERHANGUP
+
+#ifdef getchar
+#undef getchar
+#endif
+#define getchar nhgetch
+#undef tgetch
+#define tgetch nhgetch
+#define getuid() 1
+
+#if defined (DUMPLOG) || defined (DUMPHTML)
+#undef DUMPLOG_FILE
+#define DUMPLOG_FILE        "dumplog/gnollhack.%n.%d.txt" /* Note: Actually the one in sysconf is used, not this one */
+#undef DUMPLOG_DIR
+#define DUMPLOG_DIR        "dumplog" /* Note: this is just used to create a directory, DUMPLOG_FILE still needs to have the full path */
+#endif
 
 /*
  * -----------------------------------------------------------------
@@ -43,41 +46,6 @@
  */
  /* #define SHORT_FILENAMES */ /* All NT filesystems support long names now
   */
-
-#ifdef MICRO
-#undef MICRO /* never define this! */
-#endif
-
-#define NOCWD_ASSUMPTIONS /* Always define this. There are assumptions that \
-                             it is defined for WIN32.                       \
-                             Allow paths to be specified for HACKDIR,       \
-                             LEVELDIR, SAVEDIR, BONESDIR, DATADIR,          \
-                             SCOREDIR, LOCKDIR, CONFIGDIR, and TROUBLEDIR */
-#define NO_TERMS
-#define ASCIIGRAPH
-
-#ifdef OPTIONS_USED
-#undef OPTIONS_USED
-#endif
-#define OPTIONS_USED "options"
-#define OPTIONS_FILE OPTIONS_USED
-
-#define PORT_HELP "porthelp"
-
-#define PORT_DEBUG /* include ability to debug international keyboard issues \
-                      */
-
-#define RUNTIME_PORT_ID /* trigger run-time port identification for \
-                         * identification of exe CPU architecture   \
-                         */
-#define RUNTIME_PASTEBUF_SUPPORT
-
-
-#define SAFERHANGUP /* Define SAFERHANGUP to delay hangup processing   \
-                     * until the main command loop. 'safer' because it \
-                     * avoids certain cheats and also avoids losing    \
-                     * objects being thrown when the hangup occurs.    \
-                     */
 
   /* Stuff to help the user with some common, yet significant errors */
 #define INTERJECT_PANIC 0
@@ -91,16 +59,6 @@ extern void FDECL(interject, (int));
  * Compiler-specific adjustments
  *===============================================
  */
-
-#ifdef __MINGW32__
-#ifdef strncasecmp
-#undef strncasecmp
-#endif
-#ifdef strcasecmp
-#undef strcasecmp
-#endif
-extern void NDECL(getlock);
-#endif
 
 #ifdef _MSC_VER
 #if (_MSC_VER > 1000)
@@ -174,7 +132,6 @@ extern void NDECL(getlock);
 #endif
 #endif
 
-#define NO_SIGNAL
 #define index strchr
 #define rindex strrchr
 
@@ -201,6 +158,10 @@ extern void NDECL(getlock);
 #define regularize nt_regularize
 #define HLOCK "NHPERM"
 
+#if defined(DLB)
+#define FILENAME_CMP stricmp /* case insensitive */
+#endif
+
 #ifndef M
 #define M(c) ((char) (0x80 | (c)))
 /* #define M(c)        ((c) - 128) */
@@ -210,66 +171,19 @@ extern void NDECL(getlock);
 #define C(c) (0x40 & (c) ? 0x1f & (c) : (0x80 | (0x1f & (c))))
 #endif
 
-#if defined(DLB)
-#define FILENAME_CMP stricmp /* case insensitive */
-#endif
-
-/* this was part of the MICRO stuff in the past */
-extern const char* alllevels, * allbones;
-extern char hackdir[];
 #define ABORT C('a')
 #define getuid() 1
 #define getlogin() ((char *) 0)
 extern void NDECL(win32_abort);
-extern void FDECL(nttty_preference_update, (const char*));
-extern void NDECL(toggle_mouse_support);
-extern void FDECL(map_subkeyvalue, (char*));
-#if defined(WIN32CON)
-extern void FDECL(set_altkeyhandler, (const char*));
-#endif
-extern void NDECL(raw_clear_screen);
 
 #include <fcntl.h>
-#ifndef __BORLANDC__
 #include <io.h>
 #include <direct.h>
-#else
-int _RTLENTRY _EXPFUNC access(const char _FAR* __path, int __amode);
-int _RTLENTRY _EXPFUNC _chdrive(int __drive);
-int _RTLENTRYF _EXPFUNC32 chdir(const char _FAR* __path);
-char _FAR* _RTLENTRY _EXPFUNC getcwd(char _FAR* __buf, int __buflen);
-int _RTLENTRY _EXPFUNC
-write(int __handle, const void _FAR* __buf, unsigned __len);
-int _RTLENTRY _EXPFUNC creat(const char _FAR* __path, int __amode);
-int _RTLENTRY _EXPFUNC close(int __handle);
-int _RTLENTRY _EXPFUNC _close(int __handle);
-int _RTLENTRY _EXPFUNC
-open(const char _FAR* __path, int __access, ... /*unsigned mode*/);
-long _RTLENTRY _EXPFUNC lseek(int __handle, long __offset, int __fromwhere);
-int _RTLENTRY _EXPFUNC read(int __handle, void _FAR* __buf, unsigned __len);
-#endif
 #ifndef CURSES_GRAPHICS
 #include <conio.h>      /* conflicting definitions with curses.h */
 #endif
 #undef kbhit /* Use our special NT kbhit */
 #define kbhit (*nt_kbhit)
-
-#ifdef LAN_FEATURES
-#define MAX_LAN_USERNAME 20
-#endif
-
-#ifndef alloca
-#define ALLOCA_HACK /* used in util/panic.c */
-#endif
-
-extern int FDECL(set_win32_option, (const char*, const char*));
-#define LEFTBUTTON FROM_LEFT_1ST_BUTTON_PRESSED
-#define RIGHTBUTTON RIGHTMOST_BUTTON_PRESSED
-#define MIDBUTTON FROM_LEFT_2ND_BUTTON_PRESSED
-#define MOUSEMASK (LEFTBUTTON | RIGHTBUTTON | MIDBUTTON)
-#ifdef CHANGE_COLOR
-extern int FDECL(alternative_palette, (char*));
-#endif
 
 #ifdef NDEBUG
 #define nhassert(expression) ((void)0)
@@ -280,31 +194,6 @@ extern void FDECL(nhassert_failed, (const char* exp, const char* file,
 #define nhassert(expression) (void)((!!(expression)) || \
         (nhassert_failed(#expression, __FILE__, __LINE__), 0))
 #endif
-
-#define GnollHack_enter(argc, argv) GnollHack_enter_winnt()
-//extern void FDECL(gnollhack_exit, (int)) NORETURN;
-
-
-#define NO_FILE_LINKS /* if no hard links */
-#define LOCKDIR "." /* where to put locks */ 
-
-#ifdef getchar
-#undef getchar
-#endif
-#define getchar nhgetch
-#undef tgetch
-#define tgetch nhgetch
-#define getuid() 1
-
-#if defined (DUMPLOG) || defined (DUMPHTML)
-#undef DUMPLOG_FILE
-#define DUMPLOG_FILE        "dumplog/gnollhack.%n.%d.txt" /* Note: Actually the one in sysconf is used, not this one */
-#undef DUMPLOG_DIR
-#define DUMPLOG_DIR        "dumplog" /* Note: this is just used to create a directory, DUMPLOG_FILE still needs to have the full path */
-#endif
-
-#define error debuglog
-#define CONTINUE_PLAYING_AFTER_SAVING
 
 #endif /* WINCONF_H */
 #endif /* GNH_WIN */

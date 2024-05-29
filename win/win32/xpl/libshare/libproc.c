@@ -428,7 +428,7 @@ int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected)
         *selected = (MENU_ITEM_P*)malloc(sizeof(MENU_ITEM_P) * cnt);
         for (i = 0; i < cnt; i++)
         {
-            (*selected)[i].item.a_longlong = *picklist++;;
+            (*selected)[i].item.a_longlong = *picklist++;
             (*selected)[i].count = (long)*picklist++;
         }
     }
@@ -650,7 +650,7 @@ void lib_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char
             set_obj_glyph(uball);
 
             struct objclassdata ocdata = get_objclassdata(uball);
-            lib_callbacks.callback_send_object_data(uball->ox, uchain->oy, uball, 5, uball->where, &ocdata, oflags);
+            lib_callbacks.callback_send_object_data(uball->ox, uball->oy, uball, 5, uball->where, &ocdata, oflags);
         }
         break;
     }

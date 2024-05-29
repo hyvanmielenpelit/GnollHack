@@ -316,8 +316,9 @@ dlb *dp;
 
     pos = dp->start + dp->mark;
     if (dp->lib->fmark != pos) {
-        fseek(dp->lib->fdata, pos, SEEK_SET); /* check for error??? */
-        dp->lib->fmark = pos;
+        int seek_error = fseek(dp->lib->fdata, pos, SEEK_SET); /* check for error??? */
+        if(!seek_error)
+            dp->lib->fmark = pos;
     }
 
     nread = (long)fread(buf, (size_t)size, (size_t)quan, dp->lib->fdata);

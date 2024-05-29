@@ -3107,7 +3107,7 @@ boolean tinitial, tfrom_file;
         ) {
         int color_number, color_incr;
 
-#ifndef WIN32
+#if !(defined(WIN32) && !defined(GNH_WIN))
         if (duplicate)
             complain_about_duplicate(opts, 1);
 #endif
@@ -3129,7 +3129,7 @@ boolean tinitial, tfrom_file;
             color_number = 0;
             color_incr = 1;
         }
-#ifdef WIN32
+#if defined(WIN32) && !defined(GNH_WIN)
         op = string_for_opt(opts, TRUE);
         if (!alternative_palette(op)) {
             config_error_add("Error in palette parameter '%s'", op);

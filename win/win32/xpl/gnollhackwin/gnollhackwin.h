@@ -6,6 +6,4 @@
 #ifndef GNOLLHACKWIN_H
 #define GNOLLHACKWIN_H
 
-extern void gnollhackwin(void);
-
 #endif
