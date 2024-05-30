@@ -12,7 +12,6 @@
 
 #define TEXTCOLOR /* Color text */
 #define CHANGE_COLOR
-#define HOLD_LOCKFILE_OPEN /* Keep an exclusive lock on the .0 file */
 #define SELF_RECOVER /* Allow the game itself to recover from an aborted game */
 #define USER_SOUNDS
 #define SELECTSAVED /* Provide menu of saved games to choose from at start */
@@ -23,6 +22,15 @@
 #define CONTINUE_PLAYING_AFTER_SAVING
 #define ALTMETA /* support altmeta run-time option */
 #define SAFERHANGUP
+#define PC_LOCKING /* Prevent overwrites of aborted or in-progress games */
+/* without first receiving confirmation. */
+#define HOLD_LOCKFILE_OPEN /* Keep an exclusive lock on the .0 file */
+
+#define NOCWD_ASSUMPTIONS /* Always define this. There are assumptions that \
+                             it is defined for WIN32.                       \
+                             Allow paths to be specified for HACKDIR,       \
+                             LEVELDIR, SAVEDIR, BONESDIR, DATADIR,          \
+                             SCOREDIR, LOCKDIR, CONFIGDIR, and TROUBLEDIR */
 
 #ifdef getchar
 #undef getchar
