@@ -24,8 +24,6 @@
 #define SAFERHANGUP
 #define PC_LOCKING /* Prevent overwrites of aborted or in-progress games */
 /* without first receiving confirmation. */
-#define HOLD_LOCKFILE_OPEN /* Keep an exclusive lock on the .0 file */
-
 #define NOCWD_ASSUMPTIONS /* Always define this. There are assumptions that \
                              it is defined for WIN32.                       \
                              Allow paths to be specified for HACKDIR,       \
