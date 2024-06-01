@@ -6230,7 +6230,7 @@ struct ext_func_tab extcmdlist[] = {
     { 't', "throw", "throw something", dothrow, SINGLE_OBJ_CMD_GENERAL, 0, getobj_toss_objs, "throw" },
     { '\0', "timeout", "look at timeout queue and hero's timed intrinsics",
             wiz_timeout_queue, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
-    { M('t'), "tip", "empty a container", dotip, AUTOCOMPLETE | INCMDMENU | SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_tippables, "tip" },
+    { M('T'), "tip", "empty a container", dotip, AUTOCOMPLETE | INCMDMENU | SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_tippables, "tip" },
     { '_', "travel", "travel to a specific location on the map", dotravel },
  //   { M('t'), "turn", "turn undead away", doturn, IFBURIED | AUTOCOMPLETE }, //Replaced by holy symbol
     { C('x'), "twoweapon", "toggle two-weapon combat",
