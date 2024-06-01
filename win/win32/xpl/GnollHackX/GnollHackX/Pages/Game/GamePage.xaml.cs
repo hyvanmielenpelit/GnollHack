@@ -28,6 +28,10 @@ using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
 using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
+#if WINDOWS
+using Windows.UI.Core;
+using Windows.System;
+#endif
 
 namespace GnollHackM
 #else
@@ -1163,6 +1167,7 @@ namespace GnollHackX.Pages.Game
 #endif
 
             await LoadingProgressBar.ProgressTo(1.0, 20, Easing.Linear);
+            SetupKeyListening();
             GHApp.DebugCheckCurrentFileDescriptor("StartGameFinished");
         }
 
@@ -16961,5 +16966,98 @@ namespace GnollHackX.Pages.Game
             await App.Current.MainPage.Navigation.PushModalAsync(menuPage);
             GetLineMenuButton.IsEnabled = true;
         }
+
+        private void SetupKeyListening()
+        {
+#if WINDOWS
+            var window = this.Window;
+            var handler = window.Handler;
+            var platformView = handler.PlatformView;
+            Microsoft.UI.Xaml.Window xamlWindow = platformView as Microsoft.UI.Xaml.Window;
+            if (xamlWindow != null)
+            {
+                xamlWindow.Content.KeyDown += UiElement_KeyDown;
+                xamlWindow.Content.KeyUp += UiElement_KeyUp;
+            }
+#endif
+        }
+
+
+#if WINDOWS
+
+        bool _ctrlDown = false;
+        bool _altDown = false;
+        bool _shiftDown = false;
+        private bool IsCtrlKeyPressed()
+        {
+            return _ctrlDown;
+        }
+        private bool IsMetaKeyPressed()
+        {
+            return _altDown;
+        }
+        private bool IsShiftKeyPressed()
+        {
+            return _shiftDown;
+        }
+        private void UiElement_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.LeftControl || e.Key == VirtualKey.RightControl || e.Key == VirtualKey.Control)
+                _ctrlDown = true;
+            else if (e.Key == VirtualKey.LeftMenu || e.Key == VirtualKey.RightMenu || e.Key == VirtualKey.Menu)
+                _altDown = true;
+            else if (e.Key == VirtualKey.LeftShift || e.Key == VirtualKey.RightShift || e.Key == VirtualKey.Shift)
+                _shiftDown = true;
+            else if (!MenuGrid.IsVisible && !TextGrid.IsVisible && !MoreCommandsGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !LoadingGrid.IsVisible)
+            {
+                int resp = 0;
+                if (e.Key == Windows.System.VirtualKey.Left)
+                    resp = -14;
+                else if (e.Key == Windows.System.VirtualKey.Right)
+                    resp = -16;
+                else if (e.Key == Windows.System.VirtualKey.Up)
+                    resp = -18;
+                else if (e.Key == Windows.System.VirtualKey.Down)
+                    resp = -12;
+                else if (e.Key >= Windows.System.VirtualKey.NumberPad1 && e.Key <= Windows.System.VirtualKey.NumberPad9)
+                    resp = -11 - (e.Key - Windows.System.VirtualKey.NumberPad1);
+                else if (e.Key >= Windows.System.VirtualKey.A && e.Key <= Windows.System.VirtualKey.Z)
+                {
+                    bool shift = IsShiftKeyPressed();
+                    if(IsMetaKeyPressed())
+                        GenericButton_Clicked(sender, new EventArgs(), GHUtils.Meta((int)'A' + (shift ? 0 : 32) + (int)e.Key - (int)Windows.System.VirtualKey.A));
+                    else if (IsCtrlKeyPressed())
+                        GenericButton_Clicked(sender, new EventArgs(), GHUtils.Ctrl((int)'A' + (shift ? 0 : 32) + (int)e.Key - (int)Windows.System.VirtualKey.A));
+                    else
+                        GenericButton_Clicked(sender, new EventArgs(), (int)'A' + (shift ? 0 : 32) + (int)e.Key - (int)Windows.System.VirtualKey.A);
+                }
+                else
+                {
+                    switch(e.KeyStatus.ScanCode)
+                    {
+                        default:
+                            break;
+                    }
+                }
+
+                if (resp != 0)
+                {
+                    GenericButton_Clicked(sender, new EventArgs(), resp);
+                    e.Handled = true;
+                }
+            }
+        }
+
+        private void UiElement_KeyUp(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.LeftControl || e.Key == VirtualKey.RightControl || e.Key == VirtualKey.Control)
+                _ctrlDown = false;
+            else if (e.Key == VirtualKey.LeftMenu || e.Key == VirtualKey.RightMenu || e.Key == VirtualKey.Menu)
+                _altDown = false;
+            else if (e.Key == VirtualKey.LeftShift || e.Key == VirtualKey.RightShift || e.Key == VirtualKey.Shift)
+                _shiftDown = false;
+        }
+
+#endif
     }
 }
