@@ -16976,14 +16976,35 @@ namespace GnollHackX.Pages.Game
             Microsoft.UI.Xaml.Window xamlWindow = platformView as Microsoft.UI.Xaml.Window;
             if (xamlWindow != null)
             {
-                xamlWindow.Content.KeyDown += UiElement_KeyDown;
-                xamlWindow.Content.KeyUp += UiElement_KeyUp;
+                xamlWindow.Content.KeyDown += PageContent_KeyDown;
+                xamlWindow.Content.KeyUp += PageContent_KeyUp;
+                xamlWindow.Content.CharacterReceived += PageContent_CharacterReceived;
             }
 #endif
         }
 
-
 #if WINDOWS
+
+        private void PageContent_CharacterReceived(Microsoft.UI.Xaml.UIElement sender, Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs args)
+        {
+            
+            if (!MenuGrid.IsVisible && !TextGrid.IsVisible && !MoreCommandsGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !LoadingGrid.IsVisible && GHApp.IsPageOnTopOfModalNavigationStack(this))
+            {
+                char c = args.Character;
+                if(c != 0)
+                {
+                    if (IsMetaKeyPressed())
+                        GenericButton_Clicked(sender, new EventArgs(), GHUtils.Meta((int)c));
+                    if (IsCtrlKeyPressed())
+                        GenericButton_Clicked(sender, new EventArgs(), GHUtils.Ctrl((int)c));
+                    else
+                        GenericButton_Clicked(sender, new EventArgs(), (int)c);
+
+                    args.Handled = true;
+                }
+            }
+        }
+
 
         bool _ctrlDown = false;
         bool _altDown = false;
@@ -17000,15 +17021,24 @@ namespace GnollHackX.Pages.Game
         {
             return _shiftDown;
         }
-        private void UiElement_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+        private void PageContent_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
             if (e.Key == VirtualKey.LeftControl || e.Key == VirtualKey.RightControl || e.Key == VirtualKey.Control)
+            {
                 _ctrlDown = true;
+                e.Handled = true;
+            }
             else if (e.Key == VirtualKey.LeftMenu || e.Key == VirtualKey.RightMenu || e.Key == VirtualKey.Menu)
+            {
                 _altDown = true;
+                e.Handled = true;
+            }
             else if (e.Key == VirtualKey.LeftShift || e.Key == VirtualKey.RightShift || e.Key == VirtualKey.Shift)
+            {
                 _shiftDown = true;
-            else if (!MenuGrid.IsVisible && !TextGrid.IsVisible && !MoreCommandsGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !LoadingGrid.IsVisible)
+                e.Handled = true;
+            }
+            else if (!MenuGrid.IsVisible && !TextGrid.IsVisible && !MoreCommandsGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !LoadingGrid.IsVisible && GHApp.IsPageOnTopOfModalNavigationStack(this))
             {
                 int resp = 0;
                 if (e.Key == Windows.System.VirtualKey.Left)
@@ -17021,24 +17051,6 @@ namespace GnollHackX.Pages.Game
                     resp = -12;
                 else if (e.Key >= Windows.System.VirtualKey.NumberPad1 && e.Key <= Windows.System.VirtualKey.NumberPad9)
                     resp = -11 - (e.Key - Windows.System.VirtualKey.NumberPad1);
-                else if (e.Key >= Windows.System.VirtualKey.A && e.Key <= Windows.System.VirtualKey.Z)
-                {
-                    bool shift = IsShiftKeyPressed();
-                    if(IsMetaKeyPressed())
-                        GenericButton_Clicked(sender, new EventArgs(), GHUtils.Meta((int)'A' + (shift ? 0 : 32) + (int)e.Key - (int)Windows.System.VirtualKey.A));
-                    else if (IsCtrlKeyPressed())
-                        GenericButton_Clicked(sender, new EventArgs(), GHUtils.Ctrl((int)'A' + (shift ? 0 : 32) + (int)e.Key - (int)Windows.System.VirtualKey.A));
-                    else
-                        GenericButton_Clicked(sender, new EventArgs(), (int)'A' + (shift ? 0 : 32) + (int)e.Key - (int)Windows.System.VirtualKey.A);
-                }
-                else
-                {
-                    switch(e.KeyStatus.ScanCode)
-                    {
-                        default:
-                            break;
-                    }
-                }
 
                 if (resp != 0)
                 {
@@ -17048,14 +17060,23 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private void UiElement_KeyUp(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+        private void PageContent_KeyUp(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
             if (e.Key == VirtualKey.LeftControl || e.Key == VirtualKey.RightControl || e.Key == VirtualKey.Control)
+            {
                 _ctrlDown = false;
+                e.Handled = true;
+            }
             else if (e.Key == VirtualKey.LeftMenu || e.Key == VirtualKey.RightMenu || e.Key == VirtualKey.Menu)
+            {
                 _altDown = false;
+                e.Handled = true;
+            }
             else if (e.Key == VirtualKey.LeftShift || e.Key == VirtualKey.RightShift || e.Key == VirtualKey.Shift)
+            {
                 _shiftDown = false;
+                e.Handled = true;
+            }
         }
 
 #endif

@@ -6007,6 +6007,19 @@ namespace GnollHackX
             }
         }
 
+        public static bool IsPageOnTopOfModalNavigationStack(Page page)
+        {
+            if(page == null) 
+                return false;
+            int cnt = App.Current.MainPage.Navigation.NavigationStack.Count;
+            if (cnt == 0)
+                return false;
+            Page topPage = App.Current?.MainPage?.Navigation?.ModalStack[cnt - 1];
+            if (topPage == null) 
+                return false;
+            return topPage == page;
+        }
+
     }
 
     class SecretsFileSizeComparer : IComparer<SecretsFile>
