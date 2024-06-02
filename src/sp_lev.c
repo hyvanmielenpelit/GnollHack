@@ -2196,8 +2196,11 @@ struct mkroom *croom;
                 otmp = mksobj_at(!rn2(2) ? STAFF_OF_FROST : STAFF_OF_THE_MAGI, x, y, TRUE, !named);
             }
             otmp->enchantment += 2;
-            if (can_have_exceptionality(otmp) && otmp->exceptionality < EXCEPTIONALITY_EXCEPTIONAL)
-                otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+            if (can_have_exceptionality(otmp))
+            {
+                if(otmp->exceptionality < EXCEPTIONALITY_EXCEPTIONAL)
+                    otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+            }
         }
         else if (Role_if(PM_MONK))
             otmp = mksobj_at(!rn2(3) ? BELT_OF_FIRE_GIANT_STRENGTH : !rn2(2) ? GAUNTLETS_OF_OGRE_POWER : GLOVES_OF_HASTE, x, y, TRUE, !named);
@@ -2253,7 +2256,7 @@ struct mkroom *croom;
             otmp = mksobj_at(treasuretyp, x, y, TRUE, !named);
             if (!otmp->oartifact)
             {
-                if (can_obj_have_mythic(otmp))
+                if (can_obj_have_mythic(otmp) && (!Role_if(PM_VALKYRIE) || !rn2(4)))
                 {
                     if (!otmp->mythic_prefix && (!rn2(2) || otmp->mythic_suffix))
                     {
@@ -2270,9 +2273,29 @@ struct mkroom *croom;
                             otmp->mythic_suffix = MYTHIC_SUFFIX_SPEED;
                     }
                 }
+                else
+                {
+                    otmp->enchantment += rnd(3);
+                }
                 otmp->enchantment += 2;
-                if (can_have_exceptionality(otmp) && otmp->exceptionality < EXCEPTIONALITY_EXCEPTIONAL)
-                    otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+                if (can_have_exceptionality(otmp))
+                {
+                    if (Role_if(PM_VALKYRIE))
+                    {
+                        if (u.ualignbase[A_ORIGINAL] == A_LAWFUL)
+                            otmp->exceptionality = EXCEPTIONALITY_CELESTIAL;
+                        else if (u.ualignbase[A_ORIGINAL] == A_CHAOTIC)
+                            otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
+                        if (u.ualignbase[A_ORIGINAL] == A_NEUTRAL)
+                            otmp->exceptionality = EXCEPTIONALITY_PRIMORDIAL;
+                    }
+                    else if (otmp->exceptionality < EXCEPTIONALITY_EXCEPTIONAL)
+                        otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+                }
+                else
+                {
+                    otmp->enchantment += rnd(3);
+                }
             }
         }
     }
@@ -2447,11 +2470,22 @@ struct mkroom *croom;
         otmp->otrapped = o->trapped;
     if (o->material > 0)
         otmp->material = (uchar)o->material;
-    if (o->elemental_enchantment >= 0)
+    if (o->elemental_enchantment >= 0 && is_elemental_enchantable(otmp))
         otmp->elemental_enchantment = (uchar)o->elemental_enchantment;
-    if (o->exceptionality >= 0)
-        otmp->exceptionality = (uchar)o->exceptionality;
-
+    if (o->exceptionality >= 0 && can_have_exceptionality(otmp) && otmp->oartifact == 0)
+    {
+        if(o->exceptionality < MAX_EXCEPTIONALITY_TYPES)
+            otmp->exceptionality = (uchar)o->exceptionality;
+        else if (o->exceptionality == EXCEPTIONALITY_PLANAR_BY_ORIGINAL_ALIGNMENT)
+        {
+            if(u.ualignbase[A_ORIGINAL] == A_LAWFUL)
+                otmp->exceptionality = EXCEPTIONALITY_CELESTIAL;
+            else if (u.ualignbase[A_ORIGINAL] == A_CHAOTIC)
+                otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
+            if (u.ualignbase[A_ORIGINAL] == A_NEUTRAL)
+                otmp->exceptionality = EXCEPTIONALITY_PRIMORDIAL;
+        }
+    }
     if (o->mythic_type >= 0 && can_obj_have_mythic(otmp) && otmp->oartifact == 0)
     {
         randomize_mythic_quality(otmp, o->mythic_type, &otmp->mythic_prefix, &otmp->mythic_suffix);

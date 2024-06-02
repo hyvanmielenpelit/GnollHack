@@ -493,6 +493,7 @@ elite { savetoken(yytext); yylval.i=EXCEPTIONALITY_ELITE; return EXCEPTIONALITY_
 celestial { savetoken(yytext); yylval.i=EXCEPTIONALITY_CELESTIAL; return EXCEPTIONALITY_TYPE; }
 primordial { savetoken(yytext); yylval.i=EXCEPTIONALITY_PRIMORDIAL; return EXCEPTIONALITY_TYPE; }
 infernal { savetoken(yytext); yylval.i=EXCEPTIONALITY_INFERNAL; return EXCEPTIONALITY_TYPE; }
+planar_by_original_alignment { savetoken(yytext); yylval.i=EXCEPTIONALITY_PLANAR_BY_ORIGINAL_ALIGNMENT; return EXCEPTIONALITY_TYPE; }
 no_mythic_prefix { savetoken(yytext); yylval.i=MYTHIC_PREFIX_NONE; return MYTHIC_PREFIX_TYPE; }
 no_mythic_suffix { savetoken(yytext); yylval.i=MYTHIC_SUFFIX_NONE; return MYTHIC_SUFFIX_TYPE; }
 material_none { savetoken(yytext); yylval.i=MAT_NONE; return MATERIAL_TYPE; }

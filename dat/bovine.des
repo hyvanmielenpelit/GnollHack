@@ -60,6 +60,7 @@ CONTAINER:('(',"chest"),not_trapped,(06,08) {
     [50%]:OBJECT:('!',"full healing")
     [50%]:OBJECT:('!',"gain level")
     [50%]:OBJECT:('!',"gain ability")
+    OBJECT:class_treasure_weapon, notcursed
 }
 # Decorations
 OBJECT: ('`', "statue"), (21,08), no_pickup, montype:"bison", 1

@@ -176,7 +176,7 @@ DOOR:closed,(55,13)
 # The drawbridge
 DRAWBRIDGE:(05,08),east,closed
 # Storeroom number 1
-OBJECT:$object[0],(39,05)
+OBJECT:$object[0],(39,05),exceptionality:planar_by_original_alignment, notcursed
 OBJECT:$object[0],(40,05)
 OBJECT:$object[0],(41,05)
 OBJECT:$object[0],(42,05)
@@ -204,7 +204,7 @@ OBJECT:$object[1],(51,06)
 OBJECT:$object[1],(52,06)
 OBJECT:$object[1],(53,06)
 OBJECT:$object[1],(54,06)
-OBJECT:$object[1],(55,06)
+OBJECT:$object[1],(55,06),exceptionality:planar_by_original_alignment, notcursed
 
 # Storeroom number 3
 LOOP [1d6] {

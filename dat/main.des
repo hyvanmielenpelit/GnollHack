@@ -128,16 +128,9 @@ CONTAINER:('(',"chest"),buried,(09,08) {
   [50%]:OBJECT:'*'
   [50%]:OBJECT:'*'
   OBJECT:class_artifact, notcursed
-  IF [50%] {
-    IF [50%] {
-      OBJECT:')', exceptionality:elite, enchantment:5, elemental_enchantment:freezing, notcursed
-    } ELSE {
-      OBJECT:class_treasure_weapon, notcursed
-    }
-  } ELSE {
-    OBJECT:(')',"glass sword"), notcursed
-  }
-  OBJECT:class_treasure_armor, notcursed
+  OBJECT:class_treasure_weapon, notcursed
+  [50%]:OBJECT:class_treasure_armor, notcursed
+  [50%]:OBJECT:(')',"glass sword"), notcursed
   OBJECT:('/',"cold")
   OBJECT:('?',"retraining")
 }
