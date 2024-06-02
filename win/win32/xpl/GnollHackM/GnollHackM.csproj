@@ -189,8 +189,6 @@
 		<None Remove="Assets\UI\status-quivered-weapon-style.png" />
 		<None Remove="Assets\UI\symbol-damage.png" />
 		<None Remove="Platforms\Android\Environment.txt" />
-		<None Remove="Platforms\Windows\gnh\credits" />
-		<None Remove="Platforms\Windows\gnh\defaults.gnh" />
 		<None Remove="Resources\AppIcon\appicon.svg" />
 		<None Remove="Resources\AppIcon\appiconfg.svg" />
 	</ItemGroup>
@@ -505,7 +503,6 @@
   	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libfmodstudio.so" />
 	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libgnollhackdroid.so" />
 	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libc++_shared.so" />
-      <AndroidAsset Include="Platforms\Android\gnh\credits" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
       <AndroidAsset Include="Platforms\Android\gnh\license" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
       <AndroidAsset Include="Platforms\Android\gnh\logfile" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
       <AndroidAsset Include="Platforms\Android\gnh\nhdat" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
@@ -553,7 +550,6 @@
 			<IsCxx>True</IsCxx>
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</NativeReference>
-		<BundleResource Include="Platforms\iOS\gnh\credits" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
 		<BundleResource Include="Platforms\iOS\gnh\defaults.gnh" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
 		<BundleResource Include="Platforms\iOS\gnh\license" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
 		<BundleResource Include="Platforms\iOS\gnh\logfile" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
@@ -588,9 +584,6 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
 		<MauiAsset Include="Platforms\Windows\libs\libfsbvorbis64.dll" LogicalName="%(RecursiveDir)%(Filename)%(Extension)">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\gnh\credits" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" >
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
 		<MauiAsset Include="Platforms\Windows\gnh\defaults.gnh" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)"  >

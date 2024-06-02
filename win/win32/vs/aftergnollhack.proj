@@ -3,17 +3,17 @@
   <Import Project="files.props"/>
   <!-- TODO not copying record -->
   <Target Name="Build"
-	Inputs="$(SysWinntDir)defaults.gnh;$(DocDir)Guidebook.txt;$(DatDir)license;$(DatDir)credits;$(SysWinntDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols;$(WinWin32Dir)record;$(DatDir)opthelp"
-	Outputs="$(BinDir)defaults.gnh;$(BinDir)Guidebook.txt;$(BinDir)license;$(BinDir)credits;$(BinDir)sysconf;$(BinDir)symbols;$(BinDir)record;$(BinDir)opthelp">
+	Inputs="$(SysWinntDir)defaults.gnh;$(DocDir)Guidebook.txt;$(DatDir)license;$(SysWinntDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols;$(WinWin32Dir)record"
+	Outputs="$(BinDir)defaults.gnh;$(BinDir)Guidebook.txt;$(BinDir)license;$(BinDir)sysconf;$(BinDir)symbols;$(BinDir)record">
 
-  	<Copy SourceFiles="$(SysWinntDir)defaults.gnh;$(DocDir)Guidebook.txt;$(DatDir)license;$(DatDir)credits;$(SysWinntDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols;$(WinWin32Dir)record;$(DatDir)opthelp" DestinationFolder="$(BinDir)"/>
+  	<Copy SourceFiles="$(SysWinntDir)defaults.gnh;$(DocDir)Guidebook.txt;$(DatDir)license;$(SysWinntDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols;$(WinWin32Dir)record" DestinationFolder="$(BinDir)"/>
 	<Message Text="Copied GnollHack files from $(BankDesktopDir) to $(BinDir)" Importance="High" />
   	<Copy SourceFiles="$(WinFmodDir)core\lib\winnt-x86\fmod.dll;$(WinFmodDir)fsbank\lib\winnt-x86\fsbank.dll;$(WinFmodDir)fsbank\lib\winnt-x86\libfsbvorbis.dll;$(WinFmodDir)studio\lib\winnt-x86\fmodstudio.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
   	<Copy SourceFiles="$(WinFmodDir)core\lib\winnt-x64\fmod.dll;$(WinFmodDir)fsbank\lib\winnt-x64\fsbank.dll;$(WinFmodDir)fsbank\lib\winnt-x64\libfsbvorbis64.dll;$(WinFmodDir)studio\lib\winnt-x64\fmodstudio.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
 	<Message Text="Copied FMOD files from $(WinFmodDir) to $(BinDir) using platform $(Platform)" Importance="High" />
   </Target>
   <Target Name="Clean">
-	<Delete Files="$(BinDir)defaults.gnh;$(BinDir)Guidebook.txt;$(BinDir)license;$(BinDir)credits;$(BinDir)sysconf;$(BinDir)nethack.txt;$(BinDir)symbols;$(BinDir)record;$(BinDir)opthelp"/>
+	<Delete Files="$(BinDir)defaults.gnh;$(BinDir)Guidebook.txt;$(BinDir)license;$(BinDir)sysconf;$(BinDir)nethack.txt;$(BinDir)symbols;$(BinDir)record"/>
 	<Message Text="Deleted GnollHack files from $(BinDir)" Importance="High" />
   </Target>
 </Project>

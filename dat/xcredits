@@ -1,9 +1,40 @@
-                   CROSS-PLATFORM GRAPHICAL USER INTERFACE
+              GNOLLHACK CROSS-PLATFORM GRAPHICAL USER INTERFACE
                  (Copyright 2020-2024 Hyvän mielen pelit ry)
 
+Game Design:     Tommi Gustafsson, Janne Gustafsson
 UI Design:       Tommi Gustafsson, Janne Gustafsson
-Programming:     Janne Gustafsson
+Programming:     Janne Gustafsson (GnollHack, Cross-Platform GUI)
+                 Tommi Gustafsson (Tileset Compiler, Dgamelaunch mod)
 Game UI icons:   valerie_pl
+Tile Graphics:   Riikka Laakkonen (Players, monsters, various graphics)
+                 Markus Turunen (Animations, traps, various graphics)
+                 Janne Rajamäki (Dungeon tilesets, various graphics)
+                 Anu Kogger (Dungeon tilesets, various graphics)
+                 Milla Hautapaakkanen (Spells, items, various graphics)
+                 Heta Kohonen (Additional monster and item graphics)
+                 Gribby Bullock (Doodad, monster and item graphics)
+                 Alex Sundell (Additional graphics)
+                 Jenni Berg (Additional monster graphics)
+                 Pinja Mansikkaviita (Additional graphics)
+                 Benjamin Tuppurainen (Additional graphics)
+                 Kim Tuppurainen (Additional graphics)
+                 Marianne Bekker (Monster and environment graphics)
+                 Laura Hölttä (Additional monster graphics)
+                 Joona Korhonen (Additional monster graphics)
+                 Miro Pääkkönen (Additional monster graphics)
+                 Milo Uusitalo (Additional monster and item graphics)
+                 Robert Santala (Additional item graphics)
+                 Anna-Marija Sabo (Additional item graphics)
+                 Janne Gustafsson (Additional graphics)
+                 Mikko Kangas (Project management)
+Voicing:         Tommi Gustafsson (Project management)
+                 Mikko Lahti (Voice file editing)
+                 Viivi Nytorp (Voice file editing)
+                 Krista Rusanen (Voice file editing)
+                 Jessika Suvanto (Voice file editing)
+Playtesting:     Tommi Gustafsson
+                 Robert Santala
+                 Janne Rajamäki
 
 
                                 SPECIAL THANKS
@@ -14,3 +45,129 @@ Martin Gurr for his Android port of NetHack
                               EXTERNAL SOFTWARE
 
 Sound middleware:  FMOD Studio by Firelight Technologies Pty Ltd.
+
+
+                                    MUSIC
+Eric Matyas (soundimage.org)
+Avalkis (jukkaeronen.com)
+Yolanda Mott (www.yolandamott.com): A Elbereth Gilthoniel
+
+
+                                SOUND EFFECTS
+
+Zapsplat
+
+
+                                VOICE ACTORS
+
+Yolanda Mott                  Lindisse, Elven Bard
+James Takahashi               Wizard of Yendor
+Callum Garner                 Sandestin
+Carrick Inabnett              Imp, Male
+Veronica Laux                 Imp, Female
+Eric Navarro                  Angel, Male
+Joanna Christina Tenderro     Narrator
+                              Angel, Female
+Natalia Makarski              Marilith
+Paul Warren                   Shopkeeper, Male
+Isabella Tugman               Shopkeeper, Female
+Kevin Urban                   Shopkeeper, Undead
+Dean T. Moody                 Lord Carnarvon (Archaeologist Quest)
+Ryan Chamberlain              Minion of Huhetotl (Archaelogist Quest)
+Hussein "HSE" Mohammed        Student, Male (Archaologist Quest)
+Kaylie Horowitz               Student, Female (Archaologist Quest)
+                              Warrior, Female (Valkyrie Quest)
+Andrew J. Pond                Pelias (Barbarian Quest)
+Edwyn Tiong                   Thoth Amon (Barbarian Quest)
+Carl Bonebright               Chieftain, Male (Barbarian Quest)
+Katte Noel                    Chieftain, Female (Barbarian Quest)
+Eric Umstott                  Priest
+Lissa G. Comess               Priestess
+Brian Anderson                High Priest of Moloch
+Nina Nikolic                  High Priestess of Moloch
+                              Elder Quantum Mechanic, Female
+                              Goddess, Alternate Voice
+Cory Koehler                  God
+Leader Looi                   Goddess
+Kat Peterson                  Oracle
+Drew Veurink                  Smith, Male
+Rin Araneta                   Smith, Female
+Tom Laflin                    Smith, Undead
+                              Artificer, Undead
+Ryan Haugen                   Smith, Flind
+                              Keystone Kop
+Sean Siegler                  Artificer, Male
+                              Elder Quantum Mechanic, Male
+                              Endicott Whateley
+Sonja Palmu                   Artificer, Female
+Henry Martin                  Dwarven Geologist, Male
+Kayla Kelly                   Dwarven Geologist, Female
+Jacob McClendon               Dwarven Geologist, Undead
+                              Throne Room Announcer
+Austin Stamper                Watchman
+Whitney Kraatz                Watchwoman
+Scott J. Zim                  Vault Guard, Male
+Megan Youmans                 Vault Guard, Female
+Jorge Livingston              Djinn
+Sarah Glyszon                 The Norn (Valkyrie Quest)
+Matt Surges                   Lord Surtur (Valkyrie Quest)
+Jerron Bacat                  Warrior, Male (Valkyrie Quest)
+Sharon Grünwald               Neferet the Green (Wizard Quest)
+Colin Peter                   Dark One (Wizard Quest)
+Robert Bilodeau               Apprentice, Male (Wizard Quest)
+Courtney Steele               Apprentice, Female (Wizard Quest)
+Anthony Rodriguez             Neanderthal, Male (Caveman Quest)
+Zaida-Joy Davis               Neanderthal, Female (Caveman Quest)
+                              Attendant, Female (Healer Quest)
+Harry Frost                   Hippocrates (Healer Quest)
+AveryLuna                     Cyclops (Healer Quest)
+Alex Lafnitzegger             Attendant, Male (Healer Quest)
+Stephen Carlock               King Arthur (Knight Quest)
+Austin Adam                   Ixoth (Knight Quest)
+                              Yeenaghu
+Jason Hall                    Page, Male (Knight Quest)
+Roanna Cruz                   Page, Female (Knight Quest)
+Oliver Smith                  Grand Master (Monk Quest)
+                              Haiuun, Orc Hermit
+                              Dwarf, Male
+MushyTales                    Master Kane (Monk Quest)
+Branden Worton                Abbot (Monk Quest)
+JokoVoices                    Abbess (Monk Quest)
+DaRoninEnigma                 Orion (Ranger Quest)
+Incognitocas                  Scorpius (Ranger Quest)
+Robert Bilodeau               Hunter, Male (Ranger Quest)
+Angela McCarthy               Hunter, Female (Ranger Quest)
+Hutygags                      Lord Sato (Samurai Quest)
+Xieken                        Ashikaga Takauji (Samurai Quest)
+Daniel Doan                   Roshi, Male (Samurai Quest)
+Anna Faye                     Roshi, Female (Samurai Quest)
+Larry Womac                   Master of Thieves (Rogue and Tourist Quests)
+Nelson Abrego                 Master Assassin (Rogue Quest)
+Alex Daniels                  Thug, Male (Rogue Quest)
+Gina Moravec                  Thug, Female (Rogue Quest)
+Ray O'Hare                    Twoflower (Tourist Quest)
+Jon Kava                      Guide, Male (Tourist Quest)
+Vera Tan                      Guide, Female (Tourist Quest)
+Jordan Semrow                 Arch Priest (Priest Quest)
+Mark W. Coulter               Nalzok (Priest Quest)
+Danny Spiller                 Acolyte, Male (Priest Quest)
+                              Halfling / Gnome, Male
+Sam Slade                     Acolyte, Female (Priest Quest)
+Nick Alfano                   Moloch (Priest Quest)
+Alex Lamoureux                Dunward Cos, Hermit
+Nate Barham                   Eduard Dunley, Hermit
+Stan Morris                   Herbert Reed, Hermit
+Ross Camsell                  Quantum Mechanic, Male
+Jva25                         Quantum Mechanic, Female
+Roma Garustovich              Human / Elf, Male
+Vivian Reed                   Human / Elf, Female
+Heather Nichols               Dwarf, Female
+Darius Jackson                Orc / Ogre, Male
+Gwyneth Evans                 Orc / Ogre, Female
+Richard Gibson                Gnoll, Male
+Lilly Aly                     Gnoll, Female
+A. Andres Echeverry           Goblin / Kobold, Male
+Allie Goodell                 Goblin / Kobold, Female
+Eden Solomon                  Halfling / Gnome, Female
+Justice Margowski             Undead, Male
+Melissa Bowens                Undead, Female

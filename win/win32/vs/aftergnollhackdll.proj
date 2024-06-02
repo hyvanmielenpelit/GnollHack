@@ -3,16 +3,16 @@
   <Import Project="files.props"/>
   <!-- TODO not copying record-->
   <Target Name="Build"
-    Inputs="$(LibShareDir)defaults.gnh;$(DocDir)Guidebook.txt;$(DatDir)license;$(DatDir)credits;$(LibShareDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols;$(WinWin32Dir)record;$(DatDir)opthelp"
-    Outputs="$(MauiWindowsGnhDir)defaults.gnh;$(MauiWindowsGnhDir)license;$(MauiWindowsGnhDir)credits;$(MauiWindowsGnhDir)xcredits;$(MauiWindowsGnhDir)sysconf;$(MauiWindowsGnhDir)symbols;$(MauiWindowsGnhDir)record;$(MauiWindowsGnhDir)opthelp">
+    Inputs="$(LibShareDir)defaults.gnh;$(DocDir)Guidebook.txt;$(DatDir)license;$(DatDir)xcredits;$(LibShareDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols"
+    Outputs="$(MauiWindowsGnhDir)defaults.gnh;$(MauiWindowsGnhDir)license;$(MauiWindowsGnhDir)credits;$(MauiWindowsGnhDir)xcredits;$(MauiWindowsGnhDir)sysconf;$(MauiWindowsGnhDir)symbols;$(MauiWindowsGnhDir)record">
 
-  	<Copy SourceFiles="$(LibShareDir)defaults.gnh;$(DatDir)license;$(DatDir)credits;$(DatDir)xcredits;$(LibShareDir)sysconf;$(DatDir)symbols;$(WinWin32Dir)record;$(DatDir)opthelp" DestinationFolder="$(MauiWindowsGnhDir)"/>
+  	<Copy SourceFiles="$(LibShareDir)defaults.gnh;$(DatDir)license;$(DatDir)xcredits;$(LibShareDir)sysconf;$(DatDir)symbols;$(WinWin32Dir)record" DestinationFolder="$(MauiWindowsGnhDir)"/>
 	  <Message Text="Copied GnollHack files from $(LibShareDir) to $(MauiWindowsGnhDir)" Importance="High" />
   	<Copy SourceFiles="$(WinFmodDir)core\lib\winnt-x64\fmod.dll;$(WinFmodDir)fsbank\lib\winnt-x64\fsbank.dll;$(WinFmodDir)fsbank\lib\winnt-x64\libfsbvorbis64.dll;$(WinFmodDir)studio\lib\winnt-x64\fmodstudio.dll;" DestinationFolder="$(MauiWindowsLibsDir)"/>
 	  <Message Text="Copied FMOD files from $(WinFmodDir) to $(MauiWindowsLibsDir)" Importance="High" />
   </Target>
   <Target Name="Clean">
-    <Delete Files="$(MauiWindowsGnhDir)defaults.gnh;$(MauiWindowsGnhDir)license;$(MauiWindowsGnhDir)credits;$(MauiWindowsGnhDir)xcredits;$(MauiWindowsGnhDir)sysconf;$(MauiWindowsGnhDir)symbols;$(MauiWindowsGnhDir)record;$(MauiWindowsGnhDir)opthelp"/>
+    <Delete Files="$(MauiWindowsGnhDir)defaults.gnh;$(MauiWindowsGnhDir)license;$(MauiWindowsGnhDir)xcredits;$(MauiWindowsGnhDir)sysconf;$(MauiWindowsGnhDir)symbols;$(MauiWindowsGnhDir)record"/>
 	<Message Text="Deleted GnollHack files from $(MauiWindowsGnhDir)" Importance="High" />
   </Target>
 </Project>

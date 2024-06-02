@@ -41,7 +41,7 @@ namespace GnollHackX.Pages.MainScreen
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             string fulltargetpath = Path.Combine(GHApp.GHPath, "xcredits");
-            var displFilePage = new DisplayFilePage(fulltargetpath, "Cross-Platform Credits", 80);
+            var displFilePage = new DisplayFilePage(fulltargetpath, "Credits", 77);
             string errormsg = "";
             if (!displFilePage.ReadFile(out errormsg))
             {
@@ -54,23 +54,23 @@ namespace GnollHackX.Pages.MainScreen
             AboutGrid.IsEnabled = true;
         }
 
-        private async void btnCreditsW_Clicked(object sender, EventArgs e)
-        {
-            AboutGrid.IsEnabled = false;
-            GHApp.PlayButtonClickedSound();
-            string fulltargetpath = Path.Combine(GHApp.GHPath, "credits");
-            var displFilePage = new DisplayFilePage(fulltargetpath, "Credits", 77);
-            string errormsg = "";
-            if (!displFilePage.ReadFile(out errormsg))
-            {
-                await DisplayAlert("Error Opening File", "GnollHack cannot open the credits file.", "OK");
-            }
-            else
-            {
-                await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
-            }
-            AboutGrid.IsEnabled = true;
-        }
+        //private async void btnCreditsW_Clicked(object sender, EventArgs e)
+        //{
+        //    AboutGrid.IsEnabled = false;
+        //    GHApp.PlayButtonClickedSound();
+        //    string fulltargetpath = Path.Combine(GHApp.GHPath, "credits");
+        //    var displFilePage = new DisplayFilePage(fulltargetpath, "Credits", 77);
+        //    string errormsg = "";
+        //    if (!displFilePage.ReadFile(out errormsg))
+        //    {
+        //        await DisplayAlert("Error Opening File", "GnollHack cannot open the credits file.", "OK");
+        //    }
+        //    else
+        //    {
+        //        await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
+        //    }
+        //    AboutGrid.IsEnabled = true;
+        //}
 
         private async void btnLicense_Clicked(object sender, EventArgs e)
         {

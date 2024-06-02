@@ -127,7 +127,6 @@
     <AndroidNativeLibrary Include="libs\arm64-v8a\libfmod.so" />
     <AndroidNativeLibrary Include="libs\arm64-v8a\libfmodstudio.so" />
     <AndroidNativeLibrary Include="libs\arm64-v8a\libgnollhackdroid.so" />
-    <AndroidAsset Include="gnh\credits" />
     <AndroidAsset Include="gnh\license" />
     <AndroidAsset Include="gnh\logfile" />
     <AndroidAsset Include="gnh\nhdat" />

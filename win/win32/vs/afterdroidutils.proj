@@ -3,13 +3,12 @@
   <Import Project="files.props"/>
   <!-- TODO not copying record-->
   <Target Name="Build"
-    Inputs="$(WslOutDir)include\date.h;$(WslOutDir)bin\nhdat;$(WslOutDir)dat\credits;$(WslOutDir)dat\xcredits;$(WslOutDir)dat\license;$(WslOutDir)rc\defaults.gnh;$(WslOutDir)rc\sysconf"
-    Outputs="$(LibDroidDir)include\date_unix.h;$(LibiOSDir)include\date_unix.h;$(AndroidGnhDir)nhdat;$(AndroidGnhDir)credits;$(AndroidGnhDir)xcredits;$(AndroidGnhDir)license;$(AndroidGnhDir)symbols;$(AndroidGnhDir)defaults.gnh;$(AndroidGnhDir)sysconf;$(iOSGnhDir)nhdat;$(iOSGnhDir)credits;$(iOSGnhDir)xcredits;$(iOSGnhDir)license;$(iOSGnhDir)symbols;$(iOSGnhDir)defaults.gnh;$(iOSGnhDir)sysconf;$(MauiAndroidGnhDir)nhdat;$(MauiAndroidGnhDir)credits;$(MauiAndroidGnhDir)xcredits;$(AndroidGnhDir)license;$(MauiAndroidGnhDir)symbols;$(MauiAndroidGnhDir)defaults.gnh;$(AMauindroidGnhDir)sysconf;$(MauiiOSGnhDir)nhdat;$(MauiiOSGnhDir)credits;$(MauiiOSGnhDir)xcredits;$(MauiiOSGnhDir)license;$(MauiiOSGnhDir)symbols;$(MauiiOSGnhDir)defaults.gnh;$(MauiiOSGnhDir)sysconf">
+    Inputs="$(WslOutDir)include\date.h;$(WslOutDir)bin\nhdat;$(WslOutDir)dat\xcredits;$(WslOutDir)dat\license;$(WslOutDir)rc\defaults.gnh;$(WslOutDir)rc\sysconf"
+    Outputs="$(LibDroidDir)include\date_unix.h;$(LibiOSDir)include\date_unix.h;$(AndroidGnhDir)nhdat;$(AndroidGnhDir)xcredits;$(AndroidGnhDir)license;$(AndroidGnhDir)symbols;$(AndroidGnhDir)defaults.gnh;$(AndroidGnhDir)sysconf;$(iOSGnhDir)nhdat;$(iOSGnhDir)credits;$(iOSGnhDir)xcredits;$(iOSGnhDir)license;$(iOSGnhDir)symbols;$(iOSGnhDir)defaults.gnh;$(iOSGnhDir)sysconf;$(MauiAndroidGnhDir)nhdat;$(MauiAndroidGnhDir)credits;$(MauiAndroidGnhDir)xcredits;$(AndroidGnhDir)license;$(MauiAndroidGnhDir)symbols;$(MauiAndroidGnhDir)defaults.gnh;$(AMauindroidGnhDir)sysconf;$(MauiiOSGnhDir)nhdat;$(MauiiOSGnhDir)credits;$(MauiiOSGnhDir)xcredits;$(MauiiOSGnhDir)license;$(MauiiOSGnhDir)symbols;$(MauiiOSGnhDir)defaults.gnh;$(MauiiOSGnhDir)sysconf">
     <Copy SourceFiles="$(WslOutDir)include\date_unix.h" DestinationFolder="$(LibDroidDir)"/>
 	<Copy SourceFiles="$(WslOutDir)include\date_unix.h" DestinationFolder="$(LibiOSDir)"/>
 
 	<Copy SourceFiles="$(WslOutDir)bin\nhdat" DestinationFolder="$(AndroidGnhDir)"/>
-    <Copy SourceFiles="$(WslOutDir)dat\credits" DestinationFolder="$(AndroidGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)dat\xcredits" DestinationFolder="$(AndroidGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)dat\license" DestinationFolder="$(AndroidGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)dat\symbols" DestinationFolder="$(AndroidGnhDir)"/>
@@ -18,7 +17,6 @@
 	<Message Text="Copied gnh files from $(WslOutDir) to $(AndroidGnhDir)" Importance="High" />
 
     <Copy SourceFiles="$(WslOutDir)bin\nhdat" DestinationFolder="$(iOSGnhDir)"/>
-    <Copy SourceFiles="$(WslOutDir)dat\credits" DestinationFolder="$(iOSGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)dat\xcredits" DestinationFolder="$(iOSGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)dat\license" DestinationFolder="$(iOSGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)dat\symbols" DestinationFolder="$(iOSGnhDir)"/>
@@ -27,7 +25,6 @@
 	<Message Text="Copied gnh files from $(WslOutDir) to $(iOSGnhDir)" Importance="High" />
 
  	<Copy SourceFiles="$(WslOutDir)bin\nhdat" DestinationFolder="$(MauiAndroidGnhDir)"/>
-    <Copy SourceFiles="$(WslOutDir)dat\credits" DestinationFolder="$(MauiAndroidGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)dat\xcredits" DestinationFolder="$(MauiAndroidGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)dat\license" DestinationFolder="$(MauiAndroidGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)dat\symbols" DestinationFolder="$(MauiAndroidGnhDir)"/>
@@ -36,7 +33,6 @@
 	<Message Text="Copied gnh files from $(WslOutDir) to $(MauiAndroidGnhDir)" Importance="High" />
 
     <Copy SourceFiles="$(WslOutDir)bin\nhdat" DestinationFolder="$(MauiiOSGnhDir)"/>
-    <Copy SourceFiles="$(WslOutDir)dat\credits" DestinationFolder="$(MauiiOSGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)dat\xcredits" DestinationFolder="$(MauiiOSGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)dat\license" DestinationFolder="$(MauiiOSGnhDir)"/>
     <Copy SourceFiles="$(WslOutDir)dat\symbols" DestinationFolder="$(MauiiOSGnhDir)"/>
@@ -49,31 +45,30 @@
     <Delete Files="$(LibiOSDir)date.h"/>
 
 	<Delete Files="$(AndroidGnhDir)nhdat"/>
-    <Delete Files="$(AndroidGnhDir)credits"/>
     <Delete Files="$(AndroidGnhDir)xcredits"/>
     <Delete Files="$(AndroidGnhDir)license"/>
     <Delete Files="$(AndroidGnhDir)symbols"/>
     <Delete Files="$(AndroidGnhDir)defaults.gnh"/>
 	<Delete Files="$(AndroidGnhDir)sysconf"/>
 	<Message Text="Deleted gnh files from $(AndroidGnhDir)" Importance="High" />
+	  
     <Delete Files="$(iOSGnhDir)nhdat"/>
-    <Delete Files="$(iOSGnhDir)credits"/>
     <Delete Files="$(iOSGnhDir)xcredits"/>
     <Delete Files="$(iOSGnhDir)license"/>
     <Delete Files="$(iOSGnhDir)symbols"/>
     <Delete Files="$(iOSGnhDir)defaults.gnh"/>
 	<Delete Files="$(iOSGnhDir)sysconf"/>
 	<Message Text="Deleted gnh files from $(iOSGnhDir)" Importance="High" />
+	  
 	<Delete Files="$(MauiAndroidGnhDir)nhdat"/>
-    <Delete Files="$(MauiAndroidGnhDir)credits"/>
     <Delete Files="$(MauiAndroidGnhDir)xcredits"/>
     <Delete Files="$(MauiAndroidGnhDir)license"/>
     <Delete Files="$(MauiAndroidGnhDir)symbols"/>
     <Delete Files="$(MauiAndroidGnhDir)defaults.gnh"/>
 	<Delete Files="$(MauiAndroidGnhDir)sysconf"/>
 	<Message Text="Deleted gnh files from $(MauiAndroidGnhDir)" Importance="High" />
+	  
     <Delete Files="$(MauiiOSGnhDir)nhdat"/>
-    <Delete Files="$(MauiiOSGnhDir)credits"/>
     <Delete Files="$(MauiiOSGnhDir)xcredits"/>
     <Delete Files="$(MauiiOSGnhDir)license"/>
     <Delete Files="$(MauiiOSGnhDir)symbols"/>

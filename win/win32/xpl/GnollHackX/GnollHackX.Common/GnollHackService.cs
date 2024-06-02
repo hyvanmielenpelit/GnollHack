@@ -502,7 +502,7 @@ namespace GnollHackX.Unknown
         }
 
 
-        private string[] _txtfileslist = { "credits", "xcredits", "license", "logfile", "perm", "record", "symbols", "sysconf", "xlogfile", "defaults.gnh" };
+        private string[] _txtfileslist = { "xcredits", "license", "logfile", "perm", "record", "symbols", "sysconf", "xlogfile", "defaults.gnh" };
         private string[] _binfileslist = { "nhdat" };
 
         public async Task InitializeGnollHack()
