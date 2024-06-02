@@ -514,6 +514,7 @@ int how;
     Sprintf(eos(buffer), "%cmode=%s", XLOG_SEP, wizard ? "debug" : discover ? "explore" : CasualMode ? (ModernMode ? "casual" : "reloadable") : ModernMode ? "modern" : "normal");
     Sprintf(eos(buffer), "%cscoring=%s", XLOG_SEP, discover || CasualMode || flags.non_scoring ? "no" : "yes");
     Sprintf(eos(buffer), "%ctournament=%s", XLOG_SEP, TournamentMode ? "yes" : "no");
+#if 0
     Sprintf(eos(buffer), "%cservergame=%s", XLOG_SEP, 
 #ifdef DGAMELAUNCH
         "yes"
@@ -521,6 +522,7 @@ int how;
         "no"
 #endif
     );
+#endif
     Sprintf(eos(buffer), "%ccollapse=%lu", XLOG_SEP, n_game_recoveries);
     Strcat(buffer, "\n");
 #undef XLOG_SEP
