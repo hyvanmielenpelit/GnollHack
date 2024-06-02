@@ -16987,7 +16987,6 @@ namespace GnollHackX.Pages.Game
 
         private void PageContent_CharacterReceived(Microsoft.UI.Xaml.UIElement sender, Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs args)
         {
-            
             if (!MenuGrid.IsVisible && !TextGrid.IsVisible && !MoreCommandsGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !LoadingGrid.IsVisible && GHApp.IsPageOnTopOfModalNavigationStack(this))
             {
                 char c = args.Character;
@@ -17051,6 +17050,8 @@ namespace GnollHackX.Pages.Game
                     resp = -12;
                 else if (e.Key >= Windows.System.VirtualKey.NumberPad1 && e.Key <= Windows.System.VirtualKey.NumberPad9)
                     resp = -11 - (e.Key - Windows.System.VirtualKey.NumberPad1);
+                else if (IsMetaKeyPressed() && e.Key >= Windows.System.VirtualKey.A && e.Key <= Windows.System.VirtualKey.Z)
+                    resp = GHUtils.Meta((IsShiftKeyPressed() ? (int)'A' : (int)'a') + (int)e.Key - (int)Windows.System.VirtualKey.A);
 
                 if (resp != 0)
                 {
