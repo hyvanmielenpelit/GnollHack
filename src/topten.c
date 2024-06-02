@@ -516,7 +516,7 @@ int how;
     Sprintf(eos(buffer), "%ctournament=%s", XLOG_SEP, TournamentMode ? "yes" : "no");
     Sprintf(eos(buffer), "%cservergame=%s", XLOG_SEP, 
 #ifdef DGAMELAUNCH
-        "yes" : 
+        "yes"
 #else
         "no"
 #endif
