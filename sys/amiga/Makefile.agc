@@ -308,15 +308,15 @@ INSTDUNGEONFILES= $(NETHACK)GnollHack.cnf $(INSTDUNGEONFILES1)
 
 
 INSTDATAFILES= \
-	$(NETHACK)license	$(NETHACK)credits	$(NETHACK)logfile	$(NETHACK)record \
+	$(NETHACK)license	(NETHACK)logfile	$(NETHACK)record \
 	$(NETHACK)tomb.iff	$(NETHACK)amii.hlp 	$(NETHACK)Recover.txt \
 	$(NETHACK)GuideBook.txt	$(NETHACK)NetHack.txt	$(NETHACK)Install.ami \
 #	$(NETHACK)HackWB.hlp	$(NETHACK)WBDefaults.def
 
 LIBFILES= \
 	$(INSTDUNGEONFILES1) \
-	$(SLIB)cmdhelp	 	$(SLIB)data		$(SLIB)dungeon \
-	$(SLIB)help		$(SLIB)hh		$(SLIB)history \
+	$(SLIB)cmdhelp	 	$(SLIB)credits		$(SLIB)data		$(SLIB)dungeon \
+	$(SLIB)help			$(SLIB)hh			$(SLIB)history \
 	$(SLIB)opthelp		$(SLIB)oracles		$(SLIB)rumors \
 	$(SLIB)quest.dat	$(SLIB)wizhelp
 
@@ -382,7 +382,7 @@ spotless:  clean
 	-delete $(SLIB)data $(SLIB)rumors
 	-delete $(SLIB)\#?.lev
 	-delete $(SLIB)dungeon
-	-delete $(SLIB)cmdhelp $(SLIB)help $(SLIB)hh $(SLIB)history
+	-delete $(SLIB)cmdhelp $(SLIB)credits $(SLIB)help $(SLIB)hh $(SLIB)history
 	-delete $(SLIB)opthelp $(SLIB)options $(SLIB)oracles
 	-delete $(SLIB)quest.dat $(SLIB)wizhelp
 #	-delete $(SLIB)earth.lev $(SLIB)air.lev $(SLIB)fire.lev

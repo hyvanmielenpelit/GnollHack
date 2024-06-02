@@ -86,8 +86,8 @@ SPEC_LEVS = dispater.lev baalz.lev bigrm-*.lev bovine?.lev quantum?.lev castle.l
 	astral.lev air.lev earth.lev fire.lev water.lev
 QUEST_LEVS = ???-goal.lev ???-fil?.lev ???-loca.lev ???-strt.lev
 
-DATNODLB = $(VARDATND) license credits
-DATDLB = $(DATHELP) dungeon tribute $(SPEC_LEVS) $(QUEST_LEVS) $(VARDATD)
+DATNODLB = $(VARDATND) license
+DATDLB = $(DATHELP) credits dungeon tribute $(SPEC_LEVS) $(QUEST_LEVS) $(VARDATD)
 DAT = $(DATNODLB) $(DATDLB)
 
 $(GAME):
