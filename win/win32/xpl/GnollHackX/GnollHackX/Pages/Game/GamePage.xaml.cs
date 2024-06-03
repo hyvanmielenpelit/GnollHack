@@ -939,6 +939,7 @@ namespace GnollHackX.Pages.Game
             ReplayFileName = replayFileName;
             _mainPage.GameStarted = true;
             LoadingProgressBar.Progress = 0.0;
+            canvasView.Focus();
 
             var tasks = new List<Task>();
             _gnollHackService = GHApp.GnollHackService;
@@ -2809,6 +2810,7 @@ namespace GnollHackX.Pages.Game
         }
 
         private GlyphImageSource _ynImageSource = new GlyphImageSource();
+        private string _ynResponses = null;
         private void ShowYnResponses(int style, int attr, int color, int glyph, string title, string question, string responses, string descriptions, string introline, ulong ynflags)
         {
             string[] descr_list = null;
@@ -2900,6 +2902,7 @@ namespace GnollHackX.Pages.Game
                         btnList[i].IsEnabled = false;
                 }
             }
+            _ynResponses = responses;
 
             for (int i = 0; i < 5; i++)
                 btnList[i].SetSideSize(_currentPageWidth, _currentPageHeight);
@@ -13233,7 +13236,11 @@ namespace GnollHackX.Pages.Game
         private void YnButton_Clicked(object sender, EventArgs e)
         {
             LabeledImageButton ghb = (LabeledImageButton)sender;
+            YnButton_Pressed(sender, e, ghb.GHCommand);
+        }
 
+        private void YnButton_Pressed(object sender, EventArgs e, int resp)
+        {
             /* This is slightly slower and flickers less with two consecutive yn questions than a direct call to HideYnResponses() */
             ConcurrentQueue<GHRequest> queue;
             if (GHGame.RequestDictionary.TryGetValue(CurrentGame, out queue))
@@ -13241,7 +13248,7 @@ namespace GnollHackX.Pages.Game
                 queue.Enqueue(new GHRequest(CurrentGame, GHRequestType.HideYnResponses));
             }
 
-            GenericButton_Clicked(sender, e, ghb.GHCommand);
+            GenericButton_Clicked(sender, e, resp);
         }
 
         private void RepeatButton_Clicked(object sender, EventArgs e)
@@ -15369,9 +15376,7 @@ namespace GnollHackX.Pages.Game
                                 if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_textTouchMoved)
                                 {
                                     /* Normal click -- Hide the canvas */
-                                    GenericButton_Clicked(sender, e, 27);
-                                    MainThread.BeginInvokeOnMainThread(() =>
-                                    { DelayedTextHide(); });                                    
+                                    TextCanvas_Pressed(sender, e);
                                 }
                                 if (TextTouchDictionary.ContainsKey(e.Id))
                                 {
@@ -15465,6 +15470,15 @@ namespace GnollHackX.Pages.Game
                         break;
                 }
             }
+        }
+
+        private void TextCanvas_Pressed(object sender, EventArgs e)
+        {
+            GenericButton_Clicked(sender, e, 27);
+            MainThread.BeginInvokeOnMainThread(() =>
+            { 
+                DelayedTextHide(); 
+            });
         }
 
 
@@ -15832,15 +15846,7 @@ namespace GnollHackX.Pages.Game
                                             }
 
                                             /* Hide the canvas */
-                                            MoreCommandsGrid.IsVisible = false;
-                                            MainGrid.IsVisible = true;
-                                            if (CommandCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                                                CommandCanvas.AbortAnimation("GeneralAnimationCounter");
-                                            lock (RefreshScreenLock)
-                                            {
-                                                RefreshScreen = true;
-                                            }
-                                            StartMainCanvasAnimation();
+                                            CommandCanvas_Pressed(sender, e);
                                         }
 
                                     }
@@ -15925,6 +15931,19 @@ namespace GnollHackX.Pages.Game
                         break;
                 }
             }
+        }
+
+        private void CommandCanvas_Pressed(object sender, EventArgs e)
+        {
+            MoreCommandsGrid.IsVisible = false;
+            MainGrid.IsVisible = true;
+            if (CommandCanvas.AnimationIsRunning("GeneralAnimationCounter"))
+                CommandCanvas.AbortAnimation("GeneralAnimationCounter");
+            lock (RefreshScreenLock)
+            {
+                RefreshScreen = true;
+            }
+            StartMainCanvasAnimation();
         }
 
         private void ToggleMessageNumberButton_Clicked(object sender, EventArgs e)
@@ -16984,11 +17003,54 @@ namespace GnollHackX.Pages.Game
         }
 
 #if WINDOWS
-
         private void PageContent_CharacterReceived(Microsoft.UI.Xaml.UIElement sender, Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs args)
         {
-            if (!MenuGrid.IsVisible && !TextGrid.IsVisible && !MoreCommandsGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !LoadingGrid.IsVisible && GHApp.IsPageOnTopOfModalNavigationStack(this))
+            if (LoadingGrid.IsVisible || !GHApp.IsPageOnTopOfModalNavigationStack(this))
             {
+                /* Nothing */
+            }
+            else if(YnGrid.IsVisible && !string.IsNullOrWhiteSpace(_ynResponses) && _ynResponses.Contains(args.Character))
+            {
+                char c = args.Character;
+                YnButton_Pressed(sender, new EventArgs(), (int)c);
+                args.Handled = true;
+            }
+            else if (MenuGrid.IsVisible)
+            {
+                char c = args.Character;
+                SKPoint location = new SKPoint();
+                lock (MenuCanvas.MenuItemLock)
+                {
+                    if (MenuCanvas.MenuItems == null)
+                        return;
+
+                    for (int idx = _firstDrawnMenuItemIdx; idx >= 0 && idx <= _lastDrawnMenuItemIdx; idx++)
+                    {
+                        if (idx >= MenuCanvas.MenuItems.Count)
+                            break;
+                        if (MenuCanvas.MenuItems[idx].Accelerator == c)
+                        {
+                            location = new SKPoint(MenuCanvas.MenuItems[idx].DrawBounds.MidX, MenuCanvas.MenuItems[idx].DrawBounds.MidY);
+                            break;
+                        }
+                    }
+                }
+                if(location.X > 0 && location.Y > 0)
+                {
+                    SKTouchEventArgs e = new SKTouchEventArgs(-1, SKTouchAction.Released, location, false);
+                    MenuCanvas_NormalClickRelease(sender, e);
+                    if (MenuCanvas.SelectionHow == SelectionMode.Single)
+                        MenuOKButton_Clicked(sender, new EventArgs());
+                    args.Handled = true;
+                }
+            }
+            else if (!MenuGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible)
+            {
+                if (MoreCommandsGrid.IsVisible)
+                {
+                    CommandCanvas_Pressed(sender, new EventArgs());
+                }
+
                 char c = args.Character;
                 if(c != 0)
                 {
@@ -17037,8 +17099,47 @@ namespace GnollHackX.Pages.Game
                 _shiftDown = true;
                 e.Handled = true;
             }
-            else if (!MenuGrid.IsVisible && !TextGrid.IsVisible && !MoreCommandsGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !LoadingGrid.IsVisible && GHApp.IsPageOnTopOfModalNavigationStack(this))
+            else if(LoadingGrid.IsVisible || !GHApp.IsPageOnTopOfModalNavigationStack(this))
             {
+                /* Nothing */
+            }
+            else if(TextGrid.IsVisible && (e.Key == Windows.System.VirtualKey.Escape))
+            {
+                TextCanvas_Pressed(sender, new EventArgs());
+                e.Handled = true;
+            }
+            else if (MoreCommandsGrid.IsVisible && (e.Key == Windows.System.VirtualKey.Escape))
+            {
+                CommandCanvas_Pressed(sender, new EventArgs());
+                e.Handled = true;
+            }
+            else if (PopupGrid.IsVisible && (e.Key == Windows.System.VirtualKey.Escape))
+            {
+                PopupOkButton_Clicked(sender, new EventArgs());
+                e.Handled = true;
+            }
+            else if (GetLineGrid.IsVisible && (e.Key == Windows.System.VirtualKey.Escape))
+            {
+                GetLineCancelButton_Clicked(sender, new EventArgs());
+                e.Handled = true;
+            }
+            else if (MenuGrid.IsVisible && (e.Key == Windows.System.VirtualKey.Escape))
+            {
+                MenuCancelButton_Clicked(sender, new EventArgs());
+                e.Handled = true;
+            }
+            else if (MenuGrid.IsVisible && MenuOKButton.IsEnabled && (e.Key == Windows.System.VirtualKey.Enter))
+            {
+                MenuOKButton_Clicked(sender, new EventArgs());
+                e.Handled = true;
+            }
+            else if (!MenuGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible)
+            {
+                if (MoreCommandsGrid.IsVisible)
+                {
+                    CommandCanvas_Pressed(sender, new EventArgs());
+                }
+
                 int resp = 0;
                 if (e.Key == Windows.System.VirtualKey.Left)
                     resp = -14;
@@ -17079,7 +17180,6 @@ namespace GnollHackX.Pages.Game
                 e.Handled = true;
             }
         }
-
 #endif
     }
 }
