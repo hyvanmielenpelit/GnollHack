@@ -142,6 +142,20 @@ namespace GnollHackX.Pages.MainScreen
                 if(darkmode ? l.TextColor == GHColors.Black : l.TextColor == GHColors.White)
                     l.TextColor = darkmode ? GHColors.White : GHColors.Black;
             }
+#if GNH_MAUI
+            else if (view is Microsoft.Maui.Controls.Entry)
+            {
+                Microsoft.Maui.Controls.Entry l = (Microsoft.Maui.Controls.Entry)view;
+                if (darkmode ? l.TextColor == GHColors.Black : l.TextColor == GHColors.White)
+                    l.TextColor = darkmode ? GHColors.White : GHColors.Black;
+            }
+            else if (view is Microsoft.Maui.Controls.Picker)
+            {
+                Microsoft.Maui.Controls.Picker l = (Microsoft.Maui.Controls.Picker)view;
+                l.TextColor = darkmode ? GHColors.White : GHColors.Black;
+                l.TitleColor = darkmode ? GHColors.White : GHColors.Black;
+            }
+#else
             else if (view is Xamarin.Forms.Entry)
             {
                 Xamarin.Forms.Entry l = (Xamarin.Forms.Entry)view;
@@ -154,6 +168,7 @@ namespace GnollHackX.Pages.MainScreen
                 l.TextColor = darkmode ? GHColors.White : GHColors.Black;
                 l.TitleColor = darkmode ? GHColors.White : GHColors.Black;
             }
+#endif
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
