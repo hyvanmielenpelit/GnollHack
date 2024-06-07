@@ -22,6 +22,7 @@ DLLEXPORT int FDECL(GnollHackStart, (char*));
 #define GHRUNFLAGS_PLAYING_REPLAY           0x00000080UL
 #define GHRUNFLAGS_TOURNAMENT_MODE          0x00000100UL
 #define GHRUNFLAGS_GUI_DEBUG_MODE           0x00000200UL
+#define GHRUNFLAGS_CHARACTER_CLICK_ACTION   0x00000400UL
 
 /* Main GnollHack routine with all the necessary callback functions */
 DLLEXPORT int RunGnollHack(

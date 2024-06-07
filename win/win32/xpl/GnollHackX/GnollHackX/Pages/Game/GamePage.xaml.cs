@@ -915,6 +915,19 @@ namespace GnollHackX.Pages.Game
             return GHConstants.MapFontDefaultSize * (density * c_numerator) / c_denominator;
         }
 
+        public void SetCharacterClickAction(bool newValue)
+        {
+            if (_currentGame != null)
+            {
+                ConcurrentQueue<GHResponse> queue;
+                if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                {
+                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.SetCharacterClickAction, newValue));
+                }
+            }
+        }
+
+
         public async void StartNewGame()
         {
             await StartGame(null, -1);

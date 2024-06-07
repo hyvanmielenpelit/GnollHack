@@ -260,6 +260,11 @@ namespace GnollHackX.Pages.MainScreen
 
             GHApp.EmptyWishIsNothing = EmptyWishIsNothingSwitch.IsToggled;
             Preferences.Set("EmptyWishIsNothing", EmptyWishIsNothingSwitch.IsToggled);
+            GHApp.CharacterClickAction = CharacterClickActionSwitch.IsToggled;
+            if (_gamePage != null) /* During game only doubles as the option; outside of game sets the default */
+                _gamePage.SetCharacterClickAction(CharacterClickActionSwitch.IsToggled);
+            else
+                Preferences.Set("CharacterClickAction", CharacterClickActionSwitch.IsToggled);
 
             GHApp.PostingGameStatus = PostGameStatusSwitch.IsToggled;
             Preferences.Set("PostingGameStatus", PostGameStatusSwitch.IsToggled);
@@ -578,7 +583,7 @@ namespace GnollHackX.Pages.MainScreen
             bool allowbones = true, emptywishisnothing = true, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
-            bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false;
+            bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false;
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false;
             bool longermsghistory = false, xlog_release_account = false, forcepostbones = false;
             long primarygpucache = -2, secondarygpucache = -2;
@@ -679,6 +684,7 @@ namespace GnollHackX.Pages.MainScreen
                 //put2bag = Preferences.Get("ShowPut2BagContextCommand", GHConstants.DefaultShowPickNStashContextCommand);
                 //prevwep = Preferences.Get("ShowPrevWepContextCommand", GHConstants.DefaultShowPrevWepContextCommand);
                 longermsghistory = GHApp.SavedLongerMessageHistory; // Preferences.Get("LongerMessageHistory", false);
+                characterclickaction = Preferences.Get("CharacterClickAction", false); /* Default value */
             }
             else
             {
@@ -716,6 +722,7 @@ namespace GnollHackX.Pages.MainScreen
                 //put2bag = _gamePage.ShowPut2BagContextCommand;
                 //prevwep = _gamePage.ShowPrevWepContextCommand;
                 longermsghistory = _gamePage.LongerMessageHistory;
+                characterclickaction = GHApp.CharacterClickAction; /* Value of the option in the (saved) game */
             }
 
             CursorPicker.SelectedIndex = cursor;
@@ -797,6 +804,7 @@ namespace GnollHackX.Pages.MainScreen
                 GZipLabel.TextColor = GHColors.Gray;
             }
             EmptyWishIsNothingSwitch.IsToggled = emptywishisnothing;
+            CharacterClickActionSwitch.IsToggled = characterclickaction;
 
             PostGameStatusSwitch.IsToggled = postgamestatus;
             PostDiagnosticDataSwitch.IsToggled = postdiagnostics;

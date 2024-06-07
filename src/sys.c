@@ -18,6 +18,8 @@
 #endif
 
 struct sysopt sysopt;
+struct startup_flags initial_flags = DUMMY; /* flags.h */
+
 
 void
 sys_early_init()
@@ -297,6 +299,9 @@ reset_global_variables(VOID_ARGS)
         objects[i].oc_name_idx = objects[i].oc_descr_idx = i;
     }
 
+    /* Set initial flags */
+    if (initial_flags.click_action_set)
+        flags.self_click_action = initial_flags.click_action_value;
 }
 
 void

@@ -296,6 +296,10 @@ namespace GnollHackX.Unknown
         public static extern int LibIncreaseFileDescriptorLimitToAtLeast(int min_cur);
         [DllImport(PlatformConstants.dll)]
         public static extern int LibGetFileDescriptorLimit(int is_max_limit);
+        [DllImport(PlatformConstants.dll)]
+        public static extern int LibGetCharacterClickAction();
+        [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetCharacterClickAction(int new_value);
 
         private void LoadNativeLibrary(string libName)
         {
@@ -1035,6 +1039,16 @@ namespace GnollHackX.Unknown
             return LibGetFileDescriptorLimit(is_max_limit ? 1 : 0);
         }
 
+        public bool GetCharacterClickAction()
+        {
+            return LibGetCharacterClickAction() != 0;
+        }
+
+        public void SetCharacterClickAction(bool newValue)
+        {
+            LibSetCharacterClickAction(newValue ? 1 : 0);
+        }
+
         public int StartGnollHack(GHGame ghGame)
         {
             string filesdir = GetGnollHackPath();
@@ -1046,6 +1060,7 @@ namespace GnollHackX.Unknown
                 (ulong)(allowbones ? 0 : RunGnollHackFlags.DisableBones) |
                 (ulong)(GHApp.TournamentMode ? RunGnollHackFlags.TournamentMode : 0) |
                 (ulong)(GHApp.IsDebug ? RunGnollHackFlags.GUIDebugMode : 0) |
+                (ulong)(Preferences.Get("CharacterClickAction", false) ? RunGnollHackFlags.CharacterClickAction : 0) | /* Use the default; GHApp.CharacterClickAction may contain the option value from the last game */
                 (ulong)ghGame.StartFlags;
             string lastusedplname = GHApp.TournamentMode && !ghGame.PlayingReplay ? Preferences.Get("LastUsedTournamentPlayerName", "") : Preferences.Get("LastUsedPlayerName", "");
 

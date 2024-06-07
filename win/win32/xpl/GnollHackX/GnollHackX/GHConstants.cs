@@ -236,6 +236,7 @@ namespace GnollHackX
         PlayingReplay =         0x00000080, /* Game is a replay */
         TournamentMode =        0x00000100, /* Playing with server-like settings */
         GUIDebugMode =          0x00000200, /* GUI has been built in debug mode (not a release mode game?) */
+        CharacterClickAction =  0x00000400, /* Set character-click action to true by default */
     }
 
     [Flags]
@@ -1402,6 +1403,8 @@ namespace GnollHackX
         GUI_CMD_ENABLE_TOURNAMENT_MODE,
         GUI_CMD_DISABLE_TOURNAMENT_MODE,
         GUI_CMD_TOGGLE_MENU_POSITION_SAVING,
+        GUI_CMD_ENABLE_CHARACTER_CLICK_ACTION,
+        GUI_CMD_DISABLE_CHARACTER_CLICK_ACTION,
     }
 
     public enum game_status_types

@@ -206,6 +206,9 @@ namespace GnollHackX
                         case GHRequestType.EndReplayFile:
                             EndReplayFile();
                             break;
+                        case GHRequestType.SetCharacterClickAction:
+                            GHApp.GnollHackService.SetCharacterClickAction(response.ResponseBoolValue);
+                            break;
                         default:
                             break;
                     }
@@ -2377,6 +2380,12 @@ namespace GnollHackX
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.ToggleMenuPositionSaving, cmd_param, cmd_param2));
                     }
+                    break;
+                case (int)gui_command_types.GUI_CMD_ENABLE_CHARACTER_CLICK_ACTION:
+                    GHApp.CharacterClickAction = true;
+                    break;
+                case (int)gui_command_types.GUI_CMD_DISABLE_CHARACTER_CLICK_ACTION:
+                    GHApp.CharacterClickAction = false;
                     break;
                 default:
                     break;

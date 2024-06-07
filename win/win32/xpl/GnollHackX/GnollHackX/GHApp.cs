@@ -94,11 +94,12 @@ namespace GnollHackX
             InitBaseTypefaces(assembly);
             InitBaseCachedBitmaps(assembly);
 
-            ButtonNormalImageSource = ImageSource.FromResource(AppResourceName + ".Assets.button_normal.png", assembly);
-            ButtonSelectedImageSource = ImageSource.FromResource(AppResourceName + ".Assets.button_selected.png", assembly);
-            ButtonDisabledImageSource = ImageSource.FromResource(AppResourceName + ".Assets.button_disabled.png", assembly);
+            //ButtonNormalImageSource = ImageSource.FromResource(AppResourceName + ".Assets.button_normal.png", assembly);
+            //ButtonSelectedImageSource = ImageSource.FromResource(AppResourceName + ".Assets.button_selected.png", assembly);
+            //ButtonDisabledImageSource = ImageSource.FromResource(AppResourceName + ".Assets.button_disabled.png", assembly);
 
             DarkMode = Preferences.Get("DarkMode", false);
+            CharacterClickAction = Preferences.Get("CharacterClickAction", false);
             HideAndroidNavigationBar = Preferences.Get("HideAndroidNavigationBar", GHConstants.DefaultHideNavigation);
             HideiOSStatusBar = Preferences.Get("HideiOSStatusBar", GHConstants.DefaultHideStatusBar);
             DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
@@ -1201,9 +1202,9 @@ namespace GnollHackX
         public static SKImage ScrollBitmap { get; set; }
         public static SKImage YouBitmap { get; set; }
 
-        public static ImageSource ButtonNormalImageSource { get; set; }
-        public static ImageSource ButtonSelectedImageSource { get; set; }
-        public static ImageSource ButtonDisabledImageSource { get; set; }
+        //public static ImageSource ButtonNormalImageSource { get; set; }
+        //public static ImageSource ButtonSelectedImageSource { get; set; }
+        //public static ImageSource ButtonDisabledImageSource { get; set; }
 
         public static void InitGameBitmaps(Assembly assembly)
         {
@@ -2925,6 +2926,10 @@ namespace GnollHackX
         private static readonly object _emptyWishIsNothingLock = new object();
         private static bool _emptyWishIsNothing;
         public static bool EmptyWishIsNothing { get { lock (_emptyWishIsNothingLock) { return _emptyWishIsNothing; } } set { lock (_emptyWishIsNothingLock) { _emptyWishIsNothing = value; } } }
+
+        private static readonly object _characterClickActionLock = new object();
+        private static bool _characterClickAction;
+        public static bool CharacterClickAction { get { lock (_characterClickActionLock) { return _characterClickAction; } } set { lock (_characterClickActionLock) { _characterClickAction = value; } } }
 
         public static string CustomGameStatusLink { get; set; }
         public static string CustomXlogAccountLink { get; set; }

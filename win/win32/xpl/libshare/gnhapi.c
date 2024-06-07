@@ -577,6 +577,19 @@ LibGetFileDescriptorLimit(int is_max_limit)
 #endif
 }
 
+DLLEXPORT void
+LibSetCharacterClickAction(int new_value)
+{
+    flags.self_click_action = new_value != 0;
+}
+
+DLLEXPORT int
+LibGetCharacterClickAction(VOID_ARGS)
+{
+    return (int)flags.self_click_action;
+}
+
+
 DLLEXPORT int GnollHackStart(cmdlineargs)
 char* cmdlineargs;
 {
@@ -806,6 +819,14 @@ DLLEXPORT int RunGnollHack(
         if (*cmdbuf)
             Strcat(cmdbuf, " ");
         Strcat(cmdbuf, "-T");
+    }
+
+    /* The following does the same as the default options file, but accessible easier from the GUI settings */
+    memset(&initial_flags, 0, sizeof(initial_flags));
+    if (runflags & GHRUNFLAGS_CHARACTER_CLICK_ACTION)
+    {
+        initial_flags.click_action_set = TRUE;
+        initial_flags.click_action_value = TRUE;
     }
 
     /* Set directly, as other parts of GnollHack do not purposedly set this */

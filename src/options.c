@@ -586,6 +586,7 @@ static boolean need_set_animation_timer_interval;
 static boolean need_update_space_binding;
 static boolean need_status_initialize;
 static boolean need_issue_gui_command;
+static boolean need_notify_gui;
 static boolean need_stretch_map;
 static boolean need_here_window;
 
@@ -5268,6 +5269,10 @@ boolean tinitial, tfrom_file;
                     need_redraw = TRUE;
                     need_issue_gui_command = TRUE;
             }
+            else if (boolopt[i].addr == &flags.self_click_action)
+            {
+                need_notify_gui = TRUE;
+            }
             else if (boolopt[i].addr == &flags.classic_statue_symbol || boolopt[i].addr == &flags.classic_colors || boolopt[i].addr == &flags.show_decorations)
             {
                 need_redraw = TRUE;
@@ -5977,6 +5982,11 @@ doset() /* changing options via menu by Per Liboriussen */
     if (need_issue_gui_command)
     {
         issue_simple_gui_command(GUI_CMD_PREFERENCE_SET);
+    }
+
+    if (need_notify_gui)
+    {
+        issue_simple_gui_command(flags.self_click_action ? GUI_CMD_ENABLE_CHARACTER_CLICK_ACTION : GUI_CMD_DISABLE_CHARACTER_CLICK_ACTION);
     }
 
     if (need_stretch_map)

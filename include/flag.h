@@ -753,4 +753,11 @@ struct cmd {
 
 extern NEARDATA struct cmd Cmd;
 
+struct startup_flags {
+    boolean click_action_set;
+    boolean click_action_value;
+};
+
+extern NEARDATA struct startup_flags initial_flags;
+
 #endif /* FLAG_H */

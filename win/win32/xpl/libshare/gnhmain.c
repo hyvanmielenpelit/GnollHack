@@ -8,7 +8,8 @@
 extern void NDECL(make_dumplog_dir);
 extern void NDECL(gnh_umask);
 
-STATIC_DCL void FDECL( process_command_line_arguments, (int, char **));
+STATIC_DCL void FDECL(process_command_line_arguments, (int, char **));
+STATIC_DCL void NDECL(notify_gui_pregame);
 
 STATIC_OVL char*
 make_lockname(filename, lockname)
@@ -129,25 +130,19 @@ char** argv;
     {
         resuming = exit_hack_code_at_start == 1 ? 2 : TRUE;
     }
-
-    if(wizard)
-        issue_simple_gui_command(GUI_CMD_ENABLE_WIZARD_MODE); /* Notification may be needed if loaded a wizard mode saved game */
-    else
-        issue_simple_gui_command(GUI_CMD_DISABLE_WIZARD_MODE); /* Notification may be needed */
-
-    if (CasualMode)
-        issue_simple_gui_command(GUI_CMD_ENABLE_CASUAL_MODE); /* Notification may be needed if loaded a casual mode saved game */
-    else
-        issue_simple_gui_command(GUI_CMD_DISABLE_CASUAL_MODE); /* Notification may be needed */
-
-    if (TournamentMode)
-        issue_simple_gui_command(GUI_CMD_ENABLE_TOURNAMENT_MODE); /* Notification may be needed if loaded a tournament mode saved game */
-    else
-        issue_simple_gui_command(GUI_CMD_DISABLE_TOURNAMENT_MODE); /* Notification may be needed */
-
+    notify_gui_pregame();
     moveloop(resuming);
     gnollhack_exit(EXIT_SUCCESS);
     return (0);
+}
+
+STATIC_OVL void
+notify_gui_pregame(VOID_ARGS)
+{
+    issue_simple_gui_command(wizard ? GUI_CMD_ENABLE_WIZARD_MODE : GUI_CMD_DISABLE_WIZARD_MODE); /* Notification may be needed if loaded a wizard mode saved game */
+    issue_simple_gui_command(CasualMode ? GUI_CMD_ENABLE_CASUAL_MODE : GUI_CMD_DISABLE_CASUAL_MODE); /* Notification may be needed if loaded a casual mode saved game */
+    issue_simple_gui_command(TournamentMode ? GUI_CMD_ENABLE_TOURNAMENT_MODE : GUI_CMD_DISABLE_TOURNAMENT_MODE); /* Notification may be needed if loaded a tournament mode saved game */
+    issue_simple_gui_command(flags.self_click_action ? GUI_CMD_ENABLE_CHARACTER_CLICK_ACTION : GUI_CMD_DISABLE_CHARACTER_CLICK_ACTION); /* Notification is needed */
 }
 
 boolean 

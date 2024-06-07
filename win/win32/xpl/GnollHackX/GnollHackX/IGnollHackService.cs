@@ -66,5 +66,8 @@ namespace GnollHackX
         int GetFileDescriptorLimit(bool is_max_limit);
         int GetMaxManuals();
         bool IsDebug();
+
+        bool GetCharacterClickAction();
+        void SetCharacterClickAction(bool newValue);
     }
 }
