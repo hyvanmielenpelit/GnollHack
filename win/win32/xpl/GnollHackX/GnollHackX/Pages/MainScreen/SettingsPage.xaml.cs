@@ -586,7 +586,7 @@ namespace GnollHackX.Pages.MainScreen
                 cmdidxs[i] = listselidx;
             }
 
-            darkmode = Preferences.Get("DarkMode", false);
+            darkmode = GHApp.DarkMode; // Preferences.Get("DarkMode", false);
             silentmode = Preferences.Get("SilentMode", false);
             generalVolume = Preferences.Get("GeneralVolume", GHConstants.DefaultGeneralVolume);
             musicVolume = Preferences.Get("MusicVolume", GHConstants.DefaultMusicVolume);
@@ -673,10 +673,10 @@ namespace GnollHackX.Pages.MainScreen
                 mapgrid = _gamePage.MapGrid;
                 forcemaxmsg = _gamePage.ForceAllMessages;
                 ForceMaxMessageSwitch.IsEnabled = true;
-                ForceMaxMessageLabel.TextColor = GHColors.Black;
+                ForceMaxMessageLabel.TextColor = darkmode ? GHColors.White : GHColors.Black;
                 showexstatus = _gamePage.ShowExtendedStatusBar;
                 ShowExtendedStatusBarSwitch.IsEnabled = true;
-                ShowExtendedStatusBarLabel.TextColor = GHColors.Black;
+                ShowExtendedStatusBarLabel.TextColor = darkmode ? GHColors.White : GHColors.Black;
                 nhstatusbarclassic = _gamePage.ClassicStatusBar;
                 hpbars = _gamePage.HitPointBars;
                 pets = _gamePage.ShowPets;
@@ -825,12 +825,12 @@ namespace GnollHackX.Pages.MainScreen
             SimpleCommandBarButton4Picker.IsEnabled = simplecmdlayout;
             SimpleCommandBarButton5Picker.IsEnabled = simplecmdlayout;
             SimpleCommandBarButton6Picker.IsEnabled = simplecmdlayout;
-            SimpleCommandBarButton1Label.TextColor = simplecmdlayout ? GHColors.Black : GHColors.Gray;
-            SimpleCommandBarButton2Label.TextColor = simplecmdlayout ? GHColors.Black : GHColors.Gray;
-            SimpleCommandBarButton3Label.TextColor = simplecmdlayout ? GHColors.Black : GHColors.Gray;
-            SimpleCommandBarButton4Label.TextColor = simplecmdlayout ? GHColors.Black : GHColors.Gray;
-            SimpleCommandBarButton5Label.TextColor = simplecmdlayout ? GHColors.Black : GHColors.Gray;
-            SimpleCommandBarButton6Label.TextColor = simplecmdlayout ? GHColors.Black : GHColors.Gray;
+            SimpleCommandBarButton1Label.TextColor = simplecmdlayout ? (darkmode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            SimpleCommandBarButton2Label.TextColor = simplecmdlayout ? (darkmode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            SimpleCommandBarButton3Label.TextColor = simplecmdlayout ? (darkmode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            SimpleCommandBarButton4Label.TextColor = simplecmdlayout ? (darkmode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            SimpleCommandBarButton5Label.TextColor = simplecmdlayout ? (darkmode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            SimpleCommandBarButton6Label.TextColor = simplecmdlayout ? (darkmode ? GHColors.White : GHColors.Black) : GHColors.Gray;
 
             if (PrimaryGPUCachePicker.ItemsSource != null)
             {
@@ -917,7 +917,7 @@ namespace GnollHackX.Pages.MainScreen
             if (ClassicStatusBarSwitch.IsToggled)
             {
                 OrbSwitch.IsEnabled = true;
-                OrbsLabel.TextColor = GHColors.Black;
+                OrbsLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
                 PetSwitch.IsEnabled = false;
                 PetsLabel.TextColor = GHColors.Gray;
             }
@@ -926,7 +926,7 @@ namespace GnollHackX.Pages.MainScreen
                 OrbSwitch.IsEnabled = false;
                 OrbsLabel.TextColor = GHColors.Gray;
                 PetSwitch.IsEnabled = true;
-                PetsLabel.TextColor = GHColors.Black;
+                PetsLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             }
             OrbSwitch_Toggled(sender, new ToggledEventArgs(OrbSwitch.IsToggled));
             PetSwitch_Toggled(sender, new ToggledEventArgs(PetSwitch.IsToggled));
@@ -937,9 +937,9 @@ namespace GnollHackX.Pages.MainScreen
             if (!ClassicStatusBarSwitch.IsToggled || OrbSwitch.IsToggled)
             {
                 MaxHealthInOrbSwitch.IsEnabled = true;
-                MaxHealthInOrbLabel.TextColor = GHColors.Black;
+                MaxHealthInOrbLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
                 MaxManaInOrbSwitch.IsEnabled = true;
-                MaxManaInOrbLabel.TextColor = GHColors.Black;
+                MaxManaInOrbLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             }
             else
             {
@@ -955,7 +955,7 @@ namespace GnollHackX.Pages.MainScreen
             if (!ClassicStatusBarSwitch.IsToggled && PetSwitch.IsToggled)
             {
                 PetRowPicker.IsEnabled = true;
-                PetRowsLabel.TextColor = GHColors.Black;
+                PetRowsLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             }
             else
             {
@@ -988,7 +988,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 LogMessageSwitch.IsEnabled = true;
                 LogMessageLabel.IsEnabled = true;
-                LogMessageLabel.TextColor = GHColors.Black;
+                LogMessageLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             }
             else
             {
@@ -1005,7 +1005,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 HTMLDumpLogSwitch.IsEnabled = true;
                 HTMLDumpLogLabel.IsEnabled = true;
-                HTMLDumpLogLabel.TextColor = GHColors.Black;
+                HTMLDumpLogLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             }
             else
             {
@@ -1060,8 +1060,8 @@ namespace GnollHackX.Pages.MainScreen
         {
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            PostXlogUserNameLabel.TextColor = GHColors.Black;
-            BonesAllowedUsersLabel.TextColor = GHColors.Black;
+            PostXlogUserNameLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            BonesAllowedUsersLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             if (PostXlogUserNameEntry.Text != null && PostXlogUserNameEntry.Text != "")
             {
                 if (!XlogUserNameValidationExpression.IsMatch(PostXlogUserNameEntry.Text))
@@ -1269,12 +1269,12 @@ namespace GnollHackX.Pages.MainScreen
             SimpleCommandBarButton4Picker.IsEnabled = e.Value;
             SimpleCommandBarButton5Picker.IsEnabled = e.Value;
             SimpleCommandBarButton6Picker.IsEnabled = e.Value;
-            SimpleCommandBarButton1Label.TextColor = e.Value ? GHColors.Black : GHColors.Gray;
-            SimpleCommandBarButton2Label.TextColor = e.Value ? GHColors.Black : GHColors.Gray;
-            SimpleCommandBarButton3Label.TextColor = e.Value ? GHColors.Black : GHColors.Gray;
-            SimpleCommandBarButton4Label.TextColor = e.Value ? GHColors.Black : GHColors.Gray;
-            SimpleCommandBarButton5Label.TextColor = e.Value ? GHColors.Black : GHColors.Gray;
-            SimpleCommandBarButton6Label.TextColor = e.Value ? GHColors.Black : GHColors.Gray;
+            SimpleCommandBarButton1Label.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            SimpleCommandBarButton2Label.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            SimpleCommandBarButton3Label.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            SimpleCommandBarButton4Label.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            SimpleCommandBarButton5Label.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            SimpleCommandBarButton6Label.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
         }
 
         private async void XlogAccountButton_Clicked(object sender, EventArgs e)
@@ -1362,7 +1362,7 @@ namespace GnollHackX.Pages.MainScreen
             PostBonesSwitch.IsEnabled = e.Value;
             if (e.Value)
             {
-                PostBonesLabel.TextColor = GHColors.Black;
+                PostBonesLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             }
             else
             {
@@ -1409,8 +1409,8 @@ namespace GnollHackX.Pages.MainScreen
             BonesAllowedUsersEntry.IsEnabled = val;
             if (val)
             {
-                BonesListLabel.TextColor = GHColors.Black;
-                BonesAllowedUsersLabel.TextColor = GHColors.Black;
+                BonesListLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                BonesAllowedUsersLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             }
             else
             {
@@ -1581,6 +1581,10 @@ namespace GnollHackX.Pages.MainScreen
                 bkgView.InvalidateSurface();
                 lblHeader.TextColor = e.Value ? GHColors.White : GHColors.Black;
                 SetChildrenDarkModeTextColor(RootLayout, e.Value);
+                if (_gameMenuPage != null)
+                {
+                    _gameMenuPage.UpdateDarknessMode();
+                }
             }
         }
     }

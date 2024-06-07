@@ -34,14 +34,6 @@ namespace GnollHackX.Pages.Game
             On<iOS>().SetUseSafeArea(true);
 
             _gamePage = gamePage;
-
-            if(GHApp.DarkMode)
-            {
-                lblHeader.TextColor = GHColors.White;
-                bkgView.BackgroundBitmap = BackgroundBitmaps.DarkMarble;
-                bkgView.BackgroundStyle = BackgroundStyles.SeamlessBitmap;
-            }
-
             if (gamePage.EnableCasualMode)
             {
                 btnSave.Text = "Save Game";
@@ -51,6 +43,7 @@ namespace GnollHackX.Pages.Game
             btnOptions.IsVisible = btnMessages.IsVisible = GHApp.DeveloperMode;
             btnGC.IsVisible = btnDebug.IsVisible = 
                 GHApp.DeveloperMode && GHApp.DebugLogMessages;
+            UpdateDarknessMode();
         }
 
         public GameMenuPage(GamePage gamePage, bool isLimited) : this(gamePage)
@@ -67,6 +60,12 @@ namespace GnollHackX.Pages.Game
                 btnVersion.IsVisible = false;
                 btnTips.IsVisible = false;
             }
+        }
+
+        public void UpdateDarknessMode()
+        {
+            lblHeader.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            bkgView.InvalidateSurface();
         }
 
         private async void btnSave_Clicked(object sender, EventArgs e)
