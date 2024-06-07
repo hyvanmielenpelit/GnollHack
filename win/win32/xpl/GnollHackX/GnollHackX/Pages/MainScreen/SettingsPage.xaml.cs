@@ -53,11 +53,8 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage = null;
             _mainPage = mainPage;
 
-            if (GHApp.DarkMode)
-            {
-                lblHeader.TextColor = GHColors.White;
-                SetChildrenDarkModeTextColor(RootLayout);
-            }
+            lblHeader.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            SetChildrenDarkModeTextColor(RootLayout, GHApp.DarkMode);
 
             List<string> list = new List<string>
             {
@@ -118,7 +115,7 @@ namespace GnollHackX.Pages.MainScreen
             _isManualTogglingEnabled = true;
         }
 
-        private void SetChildrenDarkModeTextColor(View view)
+        private void SetChildrenDarkModeTextColor(View view, bool darkmode)
         {
             if (view == null) 
                 return; 
@@ -128,7 +125,7 @@ namespace GnollHackX.Pages.MainScreen
                 Grid grid = (Grid)view;
                 foreach(View child in grid.Children)
                 {
-                    SetChildrenDarkModeTextColor(child);
+                    SetChildrenDarkModeTextColor(child, darkmode);
                 }
             }
             else if (view is StackLayout)
@@ -136,26 +133,26 @@ namespace GnollHackX.Pages.MainScreen
                 StackLayout layout = (StackLayout)view;
                 foreach (View child in layout.Children)
                 {
-                    SetChildrenDarkModeTextColor(child);
+                    SetChildrenDarkModeTextColor(child, darkmode);
                 }
             }
             else if (view is Label)
             {
                 Label l = (Label)view;
-                if(l.TextColor == GHColors.Black)
-                    l.TextColor = GHColors.White;
+                if(darkmode ? l.TextColor == GHColors.Black : l.TextColor == GHColors.White)
+                    l.TextColor = darkmode ? GHColors.White : GHColors.Black;
             }
             else if (view is Xamarin.Forms.Entry)
             {
                 Xamarin.Forms.Entry l = (Xamarin.Forms.Entry)view;
-                if (l.TextColor == GHColors.Black)
-                    l.TextColor = GHColors.White;
+                if (darkmode ? l.TextColor == GHColors.Black : l.TextColor == GHColors.White)
+                    l.TextColor = darkmode ? GHColors.White : GHColors.Black;
             }
             else if (view is Xamarin.Forms.Picker)
             {
                 Xamarin.Forms.Picker l = (Xamarin.Forms.Picker)view;
-                l.TextColor = GHColors.White;
-                l.TitleColor = GHColors.White;
+                l.TextColor = darkmode ? GHColors.White : GHColors.Black;
+                l.TitleColor = darkmode ? GHColors.White : GHColors.Black;
             }
         }
 
@@ -1578,7 +1575,13 @@ namespace GnollHackX.Pages.MainScreen
 
         private void DarkModeSwitch_Toggled(object sender, ToggledEventArgs e)
         {
-
+            if (_isManualTogglingEnabled)
+            {
+                GHApp.DarkMode = e.Value;
+                bkgView.InvalidateSurface();
+                lblHeader.TextColor = e.Value ? GHColors.White : GHColors.Black;
+                SetChildrenDarkModeTextColor(RootLayout, e.Value);
+            }
         }
     }
 }
