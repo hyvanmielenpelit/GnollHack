@@ -8,6 +8,7 @@ using GnollHackX;
 namespace GnollHackM
 #else
 using GnollHackX.Pages.MainScreen;
+using Xamarin.Forms;
 namespace GnollHackX
 #endif
 {
@@ -339,6 +340,14 @@ namespace GnollHackX
                     OnPropertyChanged("IsOutcomeVisible");
                 }
                 return _outcomeVisible;
+            }
+        }
+
+        public Color ItemTextColor
+        {
+            get
+            {
+                return GHApp.DarkMode ? GHColors.White : GHColors.Black;
             }
         }
 

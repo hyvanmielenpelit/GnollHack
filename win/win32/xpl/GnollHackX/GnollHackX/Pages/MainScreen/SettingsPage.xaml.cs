@@ -52,6 +52,13 @@ namespace GnollHackX.Pages.MainScreen
             else
                 _gamePage = null;
             _mainPage = mainPage;
+
+            if (GHApp.DarkMode)
+            {
+                lblHeader.TextColor = GHColors.White;
+                SetChildrenDarkModeTextColor(RootLayout);
+            }
+
             List<string> list = new List<string>
             {
                 "20 fps",
@@ -109,6 +116,47 @@ namespace GnollHackX.Pages.MainScreen
             }
 
             _isManualTogglingEnabled = true;
+        }
+
+        private void SetChildrenDarkModeTextColor(View view)
+        {
+            if (view == null) 
+                return; 
+
+            if(view is Grid)
+            {
+                Grid grid = (Grid)view;
+                foreach(View child in grid.Children)
+                {
+                    SetChildrenDarkModeTextColor(child);
+                }
+            }
+            else if (view is StackLayout)
+            {
+                StackLayout layout = (StackLayout)view;
+                foreach (View child in layout.Children)
+                {
+                    SetChildrenDarkModeTextColor(child);
+                }
+            }
+            else if (view is Label)
+            {
+                Label l = (Label)view;
+                if(l.TextColor == GHColors.Black)
+                    l.TextColor = GHColors.White;
+            }
+            else if (view is Xamarin.Forms.Entry)
+            {
+                Xamarin.Forms.Entry l = (Xamarin.Forms.Entry)view;
+                if (l.TextColor == GHColors.Black)
+                    l.TextColor = GHColors.White;
+            }
+            else if (view is Xamarin.Forms.Picker)
+            {
+                Xamarin.Forms.Picker l = (Xamarin.Forms.Picker)view;
+                l.TextColor = GHColors.White;
+                l.TitleColor = GHColors.White;
+            }
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
@@ -362,6 +410,9 @@ namespace GnollHackX.Pages.MainScreen
             }
             Preferences.Set("UseSimpleCmdLayout", SimpleCmdLayoutSwitch.IsToggled);
 
+            GHApp.DarkMode = DarkModeSwitch.IsToggled;
+            Preferences.Set("DarkMode", GHApp.DarkMode);
+
             GHApp.SilentMode = SilentModeSwitch.IsToggled;
             Preferences.Set("SilentMode", GHApp.SilentMode);
 
@@ -511,7 +562,7 @@ namespace GnollHackX.Pages.MainScreen
         private void SetInitialValues()
         {
             int cursor = 0, graphics = 0, savestyle = 0, maprefresh = (int)UIUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
-            bool mem = false, fps = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, simplecmdlayout = true, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
+            bool mem = false, fps = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, simplecmdlayout = true, darkmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, emptywishisnothing = true, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
@@ -538,6 +589,7 @@ namespace GnollHackX.Pages.MainScreen
                 cmdidxs[i] = listselidx;
             }
 
+            darkmode = Preferences.Get("DarkMode", false);
             silentmode = Preferences.Get("SilentMode", false);
             generalVolume = Preferences.Get("GeneralVolume", GHConstants.DefaultGeneralVolume);
             musicVolume = Preferences.Get("MusicVolume", GHConstants.DefaultMusicVolume);
@@ -677,6 +729,7 @@ namespace GnollHackX.Pages.MainScreen
             AutoUploadReplaysSwitch.IsToggled = autoupload;
             GPUSwitch.IsToggled = gpu;
             SimpleCmdLayoutSwitch.IsToggled = simplecmdlayout;
+            DarkModeSwitch.IsToggled = darkmode;
             NavBarSwitch.IsToggled = navbar;
             if (!GHApp.IsAndroid)
             {
@@ -1521,6 +1574,11 @@ namespace GnollHackX.Pages.MainScreen
                 PopupOkButton.IsEnabled = true;
                 PopupGrid.IsVisible = true;
             }
+        }
+
+        private void DarkModeSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+
         }
     }
 }

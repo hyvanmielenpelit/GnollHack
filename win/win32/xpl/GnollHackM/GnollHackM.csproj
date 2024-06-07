@@ -179,8 +179,17 @@
 		<None Remove="..\GnollHackX\GnollHackX\MainPage.xaml.cs" />
 		<None Remove="Assets\gnollhack-icon-v2-512.png" />
 		<None Remove="Assets\UI\autostash.png" />
+		<None Remove="Assets\UI\background-darkmarble.png" />
 		<None Remove="Assets\UI\battery-frame.png" />
 		<None Remove="Assets\UI\fps.png" />
+		<None Remove="Assets\UI\frame-darkmode-horizontal.png" />
+		<None Remove="Assets\UI\frame-darkmode-topleft-small.png" />
+		<None Remove="Assets\UI\frame-darkmode-topleft.png" />
+		<None Remove="Assets\UI\frame-darkmode-vertical.png" />
+		<None Remove="Assets\UI\frame2-darkmode-horizontal.png" />
+		<None Remove="Assets\UI\frame2-darkmode-topleft-small.png" />
+		<None Remove="Assets\UI\frame2-darkmode-topleft.png" />
+		<None Remove="Assets\UI\frame2-darkmode-vertical.png" />
 		<None Remove="Assets\UI\frame2-horizontal.png" />
 		<None Remove="Assets\UI\frame2-topleft-small.png" />
 		<None Remove="Assets\UI\frame2-topleft.png" />
@@ -586,52 +595,52 @@
 		<MauiAsset Include="Platforms\Windows\libs\libfsbvorbis64.dll" LogicalName="%(RecursiveDir)%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\gnh\defaults.gnh" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)"  >
+		<MauiAsset Include="Platforms\Windows\gnh\defaults.gnh" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\gnh\license" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" >
+		<MauiAsset Include="Platforms\Windows\gnh\license" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\gnh\logfile" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)"  >
+		<MauiAsset Include="Platforms\Windows\gnh\logfile" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\gnh\nhdat" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)"  >
+		<MauiAsset Include="Platforms\Windows\gnh\nhdat" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\gnh\perm" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)"  >
+		<MauiAsset Include="Platforms\Windows\gnh\perm" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\gnh\record" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)"  >
+		<MauiAsset Include="Platforms\Windows\gnh\record" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\gnh\symbols" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)"  >
+		<MauiAsset Include="Platforms\Windows\gnh\symbols" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\gnh\sysconf" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)"  >
+		<MauiAsset Include="Platforms\Windows\gnh\sysconf" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\gnh\xcredits" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" >
+		<MauiAsset Include="Platforms\Windows\gnh\xcredits" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\gnh\xlogfile" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" >
+		<MauiAsset Include="Platforms\Windows\gnh\xlogfile" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\banks\Auxiliary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" >
+		<MauiAsset Include="Platforms\Windows\banks\Auxiliary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\banks\Intro.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" >
+		<MauiAsset Include="Platforms\Windows\banks\Intro.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\banks\Master.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" >
+		<MauiAsset Include="Platforms\Windows\banks\Master.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\banks\Master.strings.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" >
+		<MauiAsset Include="Platforms\Windows\banks\Master.strings.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\banks\Music.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" >
+		<MauiAsset Include="Platforms\Windows\banks\Music.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-		<MauiAsset Include="Platforms\Windows\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" >
+		<MauiAsset Include="Platforms\Windows\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
 	</ItemGroup>
@@ -696,6 +705,7 @@
 	  <EmbeddedResource Include="Assets\UI\attributes.png" />
 	  <EmbeddedResource Include="Assets\UI\autopickup.png" />
 	  <EmbeddedResource Include="Assets\UI\autostash.png" />
+	  <EmbeddedResource Include="Assets\UI\background-darkmarble.png" />
 	  <EmbeddedResource Include="Assets\UI\background-loading-screen.png" />
 	  <EmbeddedResource Include="Assets\UI\background-oldpaper.png" />
 	  <EmbeddedResource Include="Assets\UI\battery-frame.png" />
@@ -723,10 +733,18 @@
 	  <EmbeddedResource Include="Assets\UI\fire.png" />
 	  <EmbeddedResource Include="Assets\UI\forcelock.png" />
 	  <EmbeddedResource Include="Assets\UI\fps.png" />
+	  <EmbeddedResource Include="Assets\UI\frame-darkmode-horizontal.png" />
+	  <EmbeddedResource Include="Assets\UI\frame-darkmode-topleft-small.png" />
+	  <EmbeddedResource Include="Assets\UI\frame-darkmode-topleft.png" />
+	  <EmbeddedResource Include="Assets\UI\frame-darkmode-vertical.png" />
 	  <EmbeddedResource Include="Assets\UI\frame-horizontal.png" />
 	  <EmbeddedResource Include="Assets\UI\frame-topleft-small.png" />
 	  <EmbeddedResource Include="Assets\UI\frame-topleft.png" />
 	  <EmbeddedResource Include="Assets\UI\frame-vertical.png" />
+	  <EmbeddedResource Include="Assets\UI\frame2-darkmode-horizontal.png" />
+	  <EmbeddedResource Include="Assets\UI\frame2-darkmode-topleft-small.png" />
+	  <EmbeddedResource Include="Assets\UI\frame2-darkmode-topleft.png" />
+	  <EmbeddedResource Include="Assets\UI\frame2-darkmode-vertical.png" />
 	  <EmbeddedResource Include="Assets\UI\frame2-horizontal.png" />
 	  <EmbeddedResource Include="Assets\UI\frame2-topleft-small.png" />
 	  <EmbeddedResource Include="Assets\UI\frame2-topleft.png" />

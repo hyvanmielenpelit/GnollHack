@@ -36,6 +36,19 @@ namespace GnollHackX.Pages.MainScreen
             _fileName = fileName;
             ScoresView.BindingContext = this;
             MainGrid.BindingContext = this;
+            if(GHApp.DarkMode)
+            {
+                HeaderLabel.TextColor = GHColors.White;
+                NoScoresLabel.TextColor = GHColors.White;
+                foreach(View view in HeaderStack.Children)
+                {
+                    if(view is Label)
+                    {
+                        Label l = (Label)view;
+                        l.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                    }
+                }
+            }
             if(GHApp.HasInternetAccess)
             {
                 CloseButton.IsVisible = false;

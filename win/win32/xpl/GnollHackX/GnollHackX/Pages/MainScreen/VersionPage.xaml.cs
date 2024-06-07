@@ -34,6 +34,22 @@ namespace GnollHackX.Pages.MainScreen
 
             _gamePage = gamePage;
 
+            if (GHApp.DarkMode)
+            {
+                HeaderLabel.TextColor = GHColors.White;
+                LongTitleLabel.TextColor = GHColors.White;
+                LongLabel.TextColor = GHColors.White;
+                foreach (View child in VersionInfoGrid.Children)
+                {
+                    if (child != null && child is Label)
+                    {
+                        Label label = (Label)child;
+                        label.TextColor = GHColors.White;
+                    }
+                }
+            }
+
+
             string compatstr = GHApp.GHVersionCompatibilityString;
             string manufacturer = DeviceInfo.Manufacturer;
             if (manufacturer.Length > 0)

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Text;
 #if GNH_MAUI
 using GnollHackX;
@@ -108,9 +107,9 @@ namespace GnollHackX
 #if GNH_MAUI
             Microsoft.Maui.Graphics.Color
 #else
-            Color 
+            Xamarin.Forms.Color 
 #endif            
-            TextColor { get { return _downloaded && _uploaded ? GHColors.Magenta : _downloaded ? GHColors.Blue : _uploaded ? GHColors.Green : GHColors.Black; } }
+            TextColor { get { return _downloaded && _uploaded ? GHColors.Magenta : _downloaded ? GHColors.Blue : _uploaded ? GHColors.Green : GHApp.DarkMode ? GHColors.White : GHColors.Black; } }
 
         public int Index { get { return _index; } set { _index = value; } }
     }

@@ -2690,6 +2690,8 @@ namespace GnollHackX.Pages.Game
                 _textScrollSpeedRecords.Clear();
             }
 
+            TextCanvas.RevertBlackAndWhite = !GHApp.DarkMode;
+
             TextWindowGlyphImage.Source = null;
 
             _textGlyphImageSource.ReferenceGamePage = this;
@@ -3261,6 +3263,7 @@ namespace GnollHackX.Pages.Game
         private async void ReturnToMainMenu()
         {
             GHApp.TournamentMode = Preferences.Get("TournamentMode", false); /* In the case it was changed by loading a Tournament Mode game while not in tournament mode */
+            StopKeyListening();
             if (MainPageBackgroundNeedsUpdate)
             {
                 _mainPage.UpdateMainScreenBackgroundStyle();
@@ -3415,10 +3418,10 @@ namespace GnollHackX.Pages.Game
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
                 case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
-                    MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
-                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;
+                    MenuBackground.BackgroundStyle = BackgroundStyles.Automatic;
+                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.AutoMenuBackground;
                     MenuBackground.BorderStyle = BorderStyles.SimpleAlternative;
-                    MenuCanvas.RevertBlackAndWhite = true;
+                    MenuCanvas.RevertBlackAndWhite = !GHApp.DarkMode;
                     MenuCanvas.UseTextOutline = false;
                     MenuCanvas.HideMenuLetters = true;
                     MenuCanvas.MenuButtonStyle = true;
@@ -3436,9 +3439,9 @@ namespace GnollHackX.Pages.Game
                 case ghmenu_styles.GHMENU_STYLE_CHAT:
                 case ghmenu_styles.GHMENU_STYLE_SKILLS:
                 case ghmenu_styles.GHMENU_STYLE_SKILLS_ALTERNATE:
-                    MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
-                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;
-                    MenuCanvas.RevertBlackAndWhite = true;
+                    MenuBackground.BackgroundStyle = BackgroundStyles.Automatic;
+                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.AutoMenuBackground;
+                    MenuCanvas.RevertBlackAndWhite = !GHApp.DarkMode;
                     MenuCanvas.UseTextOutline = false;
                     MenuCanvas.HideMenuLetters = false;
                     MenuCanvas.MenuButtonStyle = false;
@@ -3449,10 +3452,10 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.AllowHighlight = true;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
-                    MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
-                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;
+                    MenuBackground.BackgroundStyle = BackgroundStyles.Automatic;
+                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.AutoMenuBackground;
                     MenuBackground.BorderStyle = BorderStyles.Simple;
-                    MenuCanvas.RevertBlackAndWhite = true;
+                    MenuCanvas.RevertBlackAndWhite = !GHApp.DarkMode;
                     MenuCanvas.UseTextOutline = false;
                     MenuCanvas.HideMenuLetters = false;
                     MenuCanvas.MenuButtonStyle = false;
@@ -3462,10 +3465,10 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.AllowHighlight = true;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST_AUTO_OK:
-                    MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
-                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;
+                    MenuBackground.BackgroundStyle = BackgroundStyles.Automatic;
+                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.AutoMenuBackground;
                     MenuBackground.BorderStyle = BorderStyles.SimpleAlternative;
-                    MenuCanvas.RevertBlackAndWhite = true;
+                    MenuCanvas.RevertBlackAndWhite = !GHApp.DarkMode;
                     MenuCanvas.UseTextOutline = false;
                     MenuCanvas.HideMenuLetters = false;
                     MenuCanvas.MenuButtonStyle = false;
@@ -3476,10 +3479,10 @@ namespace GnollHackX.Pages.Game
                     break;
                 case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
                 case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST:
-                    MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
-                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;
+                    MenuBackground.BackgroundStyle = BackgroundStyles.Automatic;
+                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.AutoMenuBackground;
                     MenuBackground.BorderStyle = BorderStyles.Simple;
-                    MenuCanvas.RevertBlackAndWhite = true;
+                    MenuCanvas.RevertBlackAndWhite = !GHApp.DarkMode;
                     MenuCanvas.UseTextOutline = false;
                     MenuCanvas.HideMenuLetters = false;
                     MenuCanvas.MenuButtonStyle = false;
@@ -3489,10 +3492,10 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.AllowHighlight = true;
                     break;
                 default:
-                    MenuBackground.BackgroundStyle = BackgroundStyles.StretchedBitmap;
-                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.OldPaper;
+                    MenuBackground.BackgroundStyle = BackgroundStyles.Automatic;
+                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.AutoMenuBackground;
                     MenuBackground.BorderStyle = BorderStyles.Simple;
-                    MenuCanvas.RevertBlackAndWhite = true;
+                    MenuCanvas.RevertBlackAndWhite = !GHApp.DarkMode;
                     MenuCanvas.UseTextOutline = false;
                     MenuCanvas.HideMenuLetters = false;
                     MenuCanvas.MenuButtonStyle = false;
@@ -16989,15 +16992,45 @@ namespace GnollHackX.Pages.Game
         private void SetupKeyListening()
         {
 #if WINDOWS
-            var window = this.Window;
-            var handler = window.Handler;
-            var platformView = handler.PlatformView;
-            Microsoft.UI.Xaml.Window xamlWindow = platformView as Microsoft.UI.Xaml.Window;
-            if (xamlWindow != null)
+            try
             {
-                xamlWindow.Content.KeyDown += PageContent_KeyDown;
-                xamlWindow.Content.KeyUp += PageContent_KeyUp;
-                xamlWindow.Content.CharacterReceived += PageContent_CharacterReceived;
+                var window = this.Window;
+                var handler = window.Handler;
+                var platformView = handler.PlatformView;
+                Microsoft.UI.Xaml.Window xamlWindow = platformView as Microsoft.UI.Xaml.Window;
+                if (xamlWindow != null)
+                {
+                    xamlWindow.Content.KeyDown += PageContent_KeyDown;
+                    xamlWindow.Content.KeyUp += PageContent_KeyUp;
+                    xamlWindow.Content.CharacterReceived += PageContent_CharacterReceived;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+#endif
+        }
+
+        private void StopKeyListening()
+        {
+#if WINDOWS
+            try
+            {
+                var window = this.Window;
+                var handler = window.Handler;
+                var platformView = handler.PlatformView;
+                Microsoft.UI.Xaml.Window xamlWindow = platformView as Microsoft.UI.Xaml.Window;
+                if (xamlWindow != null)
+                {
+                    xamlWindow.Content.KeyDown -= PageContent_KeyDown;
+                    xamlWindow.Content.KeyUp -= PageContent_KeyUp;
+                    xamlWindow.Content.CharacterReceived -= PageContent_CharacterReceived;
+                }
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
             }
 #endif
         }

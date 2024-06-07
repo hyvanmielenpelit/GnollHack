@@ -19,14 +19,16 @@ namespace GnollHackX
     {
         SeamlessBitmap = 0,
         StretchedBitmap,
-        FitToScreen
+        FitToScreen,
+        Automatic
     }
     public enum BackgroundBitmaps
     {
         OldPaper = 0,
         LoadingScreen,
-        SmallDarkMenu,
-        Custom
+        DarkMarble,
+        Custom,
+        AutoMenuBackground,
     }
     class BackgroundView : SKCanvasView
     {
@@ -78,7 +80,8 @@ namespace GnollHackX
             canvas.Clear();
 
             SKImage bmp = null;
-            switch (BackgroundBitmap)
+            BackgroundBitmaps bitmapStyle = BackgroundBitmap;
+            switch (bitmapStyle)
             {
                 case BackgroundBitmaps.OldPaper:
                     bmp = GHApp.OldPaperBackgroundBitmap;
@@ -86,50 +89,97 @@ namespace GnollHackX
                 case BackgroundBitmaps.LoadingScreen:
                     bmp = GHApp.LoadingScreenBackgroundBitmap;
                     break;
-                case BackgroundBitmaps.SmallDarkMenu:
-                    bmp = GHApp.MenuBackgroundBitmap;
+                case BackgroundBitmaps.DarkMarble:
+                    bmp = GHApp.DarkMarbleBackgroundBitmap;
                     break;
                 case BackgroundBitmaps.Custom:
-                    bmp = CustomBackgroundBitmap != null ? CustomBackgroundBitmap : GHApp.OldPaperBackgroundBitmap;
+                    bmp = CustomBackgroundBitmap != null ? CustomBackgroundBitmap :  GHApp.OldPaperBackgroundBitmap;
+                    break;
+                case BackgroundBitmaps.AutoMenuBackground:
+                    bmp = GHApp.DarkMode ? GHApp.DarkMarbleBackgroundBitmap : GHApp.OldPaperBackgroundBitmap;
                     break;
             }
 
             SKImage bordertl = null;
             SKImage borderhorizontal = null;
             SKImage bordervertical = null;
-            switch (BorderStyle)
+            if(GHApp.DarkMode)
             {
-                case BorderStyles.None:
-                    break;
-                case BorderStyles.Simple:
-                    bordertl = GHApp.SimpleFrameTopLeftCornerBitmap; ;
-                    borderhorizontal = GHApp.SimpleFrameTopHorizontalBitmap;
-                    bordervertical = GHApp.SimpleFrameLeftVerticalBitmap; ;
-                    break;
-                case BorderStyles.Small:
-                    bordertl = GHApp.SimpleFrameSmallTopLeftCornerBitmap; ;
-                    borderhorizontal = GHApp.SimpleFrameTopHorizontalBitmap;
-                    bordervertical = GHApp.SimpleFrameLeftVerticalBitmap; ;
-                    break;
-                case BorderStyles.SimpleAlternative:
-                    bordertl = GHApp.SimpleFrame2TopLeftCornerBitmap; ;
-                    borderhorizontal = GHApp.SimpleFrame2TopHorizontalBitmap;
-                    bordervertical = GHApp.SimpleFrame2LeftVerticalBitmap; ;
-                    break;
-                case BorderStyles.SmallAlternative:
-                    bordertl = GHApp.SimpleFrame2SmallTopLeftCornerBitmap; ;
-                    borderhorizontal = GHApp.SimpleFrame2TopHorizontalBitmap;
-                    bordervertical = GHApp.SimpleFrame2LeftVerticalBitmap; ;
-                    break;
-                case BorderStyles.Custom:
-                    bordertl = CustomBorderTopLeftCorner;
-                    borderhorizontal = CustomBorderTopHorizontal;
-                    bordervertical = CustomBorderLeftVertical;
-                    break;
+                switch (BorderStyle)
+                {
+                    case BorderStyles.None:
+                        break;
+                    case BorderStyles.Simple:
+                        bordertl = GHApp.DarkModeSimpleFrameTopLeftCornerBitmap; ;
+                        borderhorizontal = GHApp.DarkModeSimpleFrameTopHorizontalBitmap;
+                        bordervertical = GHApp.DarkModeSimpleFrameLeftVerticalBitmap; ;
+                        break;
+                    case BorderStyles.Small:
+                        bordertl = GHApp.DarkModeSimpleFrameSmallTopLeftCornerBitmap; ;
+                        borderhorizontal = GHApp.DarkModeSimpleFrameTopHorizontalBitmap;
+                        bordervertical = GHApp.DarkModeSimpleFrameLeftVerticalBitmap; ;
+                        break;
+                    case BorderStyles.SimpleAlternative:
+                        bordertl = GHApp.DarkModeSimpleFrame2TopLeftCornerBitmap; ;
+                        borderhorizontal = GHApp.DarkModeSimpleFrame2TopHorizontalBitmap;
+                        bordervertical = GHApp.DarkModeSimpleFrame2LeftVerticalBitmap; ;
+                        break;
+                    case BorderStyles.SmallAlternative:
+                        bordertl = GHApp.DarkModeSimpleFrame2SmallTopLeftCornerBitmap; ;
+                        borderhorizontal = GHApp.DarkModeSimpleFrame2TopHorizontalBitmap;
+                        bordervertical = GHApp.DarkModeSimpleFrame2LeftVerticalBitmap; ;
+                        break;
+                    case BorderStyles.Custom:
+                        bordertl = CustomBorderTopLeftCorner;
+                        borderhorizontal = CustomBorderTopHorizontal;
+                        bordervertical = CustomBorderLeftVertical;
+                        break;
+                }
+            }
+            else
+            {
+                switch (BorderStyle)
+                {
+                    case BorderStyles.None:
+                        break;
+                    case BorderStyles.Simple:
+                        bordertl = GHApp.SimpleFrameTopLeftCornerBitmap; ;
+                        borderhorizontal = GHApp.SimpleFrameTopHorizontalBitmap;
+                        bordervertical = GHApp.SimpleFrameLeftVerticalBitmap; ;
+                        break;
+                    case BorderStyles.Small:
+                        bordertl = GHApp.SimpleFrameSmallTopLeftCornerBitmap; ;
+                        borderhorizontal = GHApp.SimpleFrameTopHorizontalBitmap;
+                        bordervertical = GHApp.SimpleFrameLeftVerticalBitmap; ;
+                        break;
+                    case BorderStyles.SimpleAlternative:
+                        bordertl = GHApp.SimpleFrame2TopLeftCornerBitmap; ;
+                        borderhorizontal = GHApp.SimpleFrame2TopHorizontalBitmap;
+                        bordervertical = GHApp.SimpleFrame2LeftVerticalBitmap; ;
+                        break;
+                    case BorderStyles.SmallAlternative:
+                        bordertl = GHApp.SimpleFrame2SmallTopLeftCornerBitmap; ;
+                        borderhorizontal = GHApp.SimpleFrame2TopHorizontalBitmap;
+                        bordervertical = GHApp.SimpleFrame2LeftVerticalBitmap; ;
+                        break;
+                    case BorderStyles.Custom:
+                        bordertl = CustomBorderTopLeftCorner;
+                        borderhorizontal = CustomBorderTopHorizontal;
+                        bordervertical = CustomBorderLeftVertical;
+                        break;
+                }
             }
 
+            BackgroundStyles bkgStyle = BackgroundStyle;
+            if(bkgStyle == BackgroundStyles.Automatic)
+            {
+                if (bitmapStyle == BackgroundBitmaps.AutoMenuBackground)
+                    bkgStyle = GHApp.DarkMode ? BackgroundStyles.SeamlessBitmap : BackgroundStyles.StretchedBitmap;
+                else
+                    bkgStyle = BackgroundStyles.StretchedBitmap;
+            }
 
-            switch (BackgroundStyle)
+            switch (bkgStyle)
             {
                 case BackgroundStyles.SeamlessBitmap:
                     if (bmp != null)
@@ -171,6 +221,7 @@ namespace GnollHackX
                         canvas.DrawImage(bmp, target_rect);
                     }
                     break;
+                default:
                 case BackgroundStyles.FitToScreen:
                     if (bmp != null)
                     {

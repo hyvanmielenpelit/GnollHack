@@ -29,6 +29,11 @@ namespace GnollHackX.Pages.MainScreen
 		{
 			InitializeComponent ();
             On<iOS>().SetUseSafeArea(true);
+            if (GHApp.DarkMode)
+            {
+                lblHeader.TextColor = GHColors.White;
+                EmptyLabel.TextColor = GHColors.White;
+            }
         }
 
         private async void Button_Clicked(object sender, EventArgs e)

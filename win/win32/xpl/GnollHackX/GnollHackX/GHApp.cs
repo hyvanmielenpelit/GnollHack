@@ -98,6 +98,7 @@ namespace GnollHackX
             ButtonSelectedImageSource = ImageSource.FromResource(AppResourceName + ".Assets.button_selected.png", assembly);
             ButtonDisabledImageSource = ImageSource.FromResource(AppResourceName + ".Assets.button_disabled.png", assembly);
 
+            DarkMode = Preferences.Get("DarkMode", false);
             HideAndroidNavigationBar = Preferences.Get("HideAndroidNavigationBar", GHConstants.DefaultHideNavigation);
             HideiOSStatusBar = Preferences.Get("HideiOSStatusBar", GHConstants.DefaultHideStatusBar);
             DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
@@ -686,6 +687,10 @@ namespace GnollHackX
             }
         }
 
+        private readonly static object _darkModeLock = new object();
+        private static bool _darkMode = false;
+        public static bool DarkMode { get { lock (_darkModeLock) { return _darkMode; } } set { lock (_darkModeLock) { _darkMode = value; } } } 
+
         public static bool IsMuted { get { return SilentMode || SleepMuteMode || GameMuteMode; } }
 
         private readonly static object _silentModeLock = new object();
@@ -1167,6 +1172,7 @@ namespace GnollHackX
 
         public static SKImage MenuBackgroundBitmap { get; set; }
         public static SKImage OldPaperBackgroundBitmap { get; set; }
+        public static SKImage DarkMarbleBackgroundBitmap { get; set; }
         public static SKImage LoadingScreenBackgroundBitmap { get; set; }
         public static SKImage ButtonNormalBitmap { get; set; }
         public static SKImage ButtonSelectedBitmap { get; set; }
@@ -1181,6 +1187,16 @@ namespace GnollHackX
         public static SKImage SimpleFrame2SmallTopLeftCornerBitmap { get; set; }
         public static SKImage SimpleFrame2TopHorizontalBitmap { get; set; }
         public static SKImage SimpleFrame2LeftVerticalBitmap { get; set; }
+
+        public static SKImage DarkModeSimpleFrameTopLeftCornerBitmap { get; set; }
+        public static SKImage DarkModeSimpleFrameSmallTopLeftCornerBitmap { get; set; }
+        public static SKImage DarkModeSimpleFrameTopHorizontalBitmap { get; set; }
+        public static SKImage DarkModeSimpleFrameLeftVerticalBitmap { get; set; }
+
+        public static SKImage DarkModeSimpleFrame2TopLeftCornerBitmap { get; set; }
+        public static SKImage DarkModeSimpleFrame2SmallTopLeftCornerBitmap { get; set; }
+        public static SKImage DarkModeSimpleFrame2TopHorizontalBitmap { get; set; }
+        public static SKImage DarkModeSimpleFrame2LeftVerticalBitmap { get; set; }
 
         public static SKImage ScrollBitmap { get; set; }
         public static SKImage YouBitmap { get; set; }
@@ -1204,6 +1220,12 @@ namespace GnollHackX
                     SKBitmap bmp = SKBitmap.Decode(stream);
                     bmp.SetImmutable();
                     OldPaperBackgroundBitmap = SKImage.FromBitmap(bmp);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.background-darkmarble.png"))
+                {
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    DarkMarbleBackgroundBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.background-loading-screen.png"))
                 {
@@ -1277,6 +1299,56 @@ namespace GnollHackX
                     bmp.SetImmutable();
                     SimpleFrame2LeftVerticalBitmap = SKImage.FromBitmap(bmp);
                 }
+
+                using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame-darkmode-topleft.png"))
+                {
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    DarkModeSimpleFrameTopLeftCornerBitmap = SKImage.FromBitmap(bmp);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame-darkmode-topleft-small.png"))
+                {
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    DarkModeSimpleFrameSmallTopLeftCornerBitmap = SKImage.FromBitmap(bmp);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame-darkmode-horizontal.png"))
+                {
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    DarkModeSimpleFrameTopHorizontalBitmap = SKImage.FromBitmap(bmp);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame-darkmode-vertical.png"))
+                {
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    DarkModeSimpleFrameLeftVerticalBitmap = SKImage.FromBitmap(bmp);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame2-darkmode-topleft.png"))
+                {
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    DarkModeSimpleFrame2TopLeftCornerBitmap = SKImage.FromBitmap(bmp);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame2-darkmode-topleft-small.png"))
+                {
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    DarkModeSimpleFrame2SmallTopLeftCornerBitmap = SKImage.FromBitmap(bmp);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame2-darkmode-horizontal.png"))
+                {
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    DarkModeSimpleFrame2TopHorizontalBitmap = SKImage.FromBitmap(bmp);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame2-darkmode-vertical.png"))
+                {
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    DarkModeSimpleFrame2LeftVerticalBitmap = SKImage.FromBitmap(bmp);
+                }
+
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.scroll.png"))
                 {
                     SKBitmap bmp = SKBitmap.Decode(stream);
@@ -2700,6 +2772,9 @@ namespace GnollHackX
                     AppResourceName + ".Assets.FMOD-Logo-192-White.png",
                     AppResourceName + ".Assets.gnollhack-logo-test-2.png",
                     AppResourceName + ".Assets.gnollhack-icon-v2-512.png",
+                    AppResourceName + ".Assets.button_normal.png",
+                    AppResourceName + ".Assets.button_disabled.png",
+                    AppResourceName + ".Assets.button_selected.png",
                     };
                     foreach (string imagePath in cachedBitmaps)
                     {

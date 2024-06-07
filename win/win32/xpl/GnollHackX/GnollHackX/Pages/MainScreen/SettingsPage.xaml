@@ -8,8 +8,8 @@
              Appearing="ContentPage_Appearing"
              Disappearing="ContentPage_Disappearing">
     <ContentPage.Content>
-        <Grid HorizontalOptions="Fill" VerticalOptions="Fill">
-            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+        <Grid x:Name="RootGrid" HorizontalOptions="Fill" VerticalOptions="Fill">
+            <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
             <Grid BackgroundColor="Transparent" RowSpacing="6" HorizontalOptions="Fill" VerticalOptions="Fill">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -20,7 +20,7 @@
                     HorizontalOptions="Center" VerticalOptions="Center" Margin="0,10,0,0" />
                 <Grid Grid.Row="1" WidthRequest  ="440" HorizontalOptions  ="Center" VerticalOptions="Fill">
                     <ScrollView x:Name="MainScrollView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
-                        <StackLayout Spacing="6" Margin="18,0">
+                        <StackLayout x:Name="RootLayout" Spacing="6" Margin="18,0">
                             <Label Text="General" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="GPU Acceleration"
@@ -167,6 +167,14 @@
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="SimpleCmdLayoutSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="SimpleCmdLayoutSwitch_Toggled" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Dark Mode"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center" 
+                                            HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="DarkModeSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="DarkModeSwitch_Toggled" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Messages"

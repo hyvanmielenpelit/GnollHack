@@ -453,7 +453,7 @@ namespace GnollHackX
 
         public static Color MenuHeaderTextColor(ghmenu_styles style)
         {
-            Color res = GHColors.Black;
+            Color res = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
@@ -481,10 +481,11 @@ namespace GnollHackX
 
         public static Color MenuHeaderOutlineColor(ghmenu_styles style)
         {
-            Color res = GHColors.Black;
+            Color res = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
+                    res = GHColors.Black;
                     break;
                 default:
                     break;
@@ -673,7 +674,7 @@ namespace GnollHackX
 
         public static Color MenuSubtitleTextColor(ghmenu_styles style)
         {
-            Color res = GHColors.Black;
+            Color res = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
@@ -700,7 +701,7 @@ namespace GnollHackX
 
         public static Color MenuSubtitleOutlineColor(ghmenu_styles style)
         {
-            Color res = GHColors.Black;
+            Color res = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:

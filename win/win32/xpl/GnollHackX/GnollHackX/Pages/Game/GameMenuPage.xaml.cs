@@ -35,6 +35,13 @@ namespace GnollHackX.Pages.Game
 
             _gamePage = gamePage;
 
+            if(GHApp.DarkMode)
+            {
+                lblHeader.TextColor = GHColors.White;
+                bkgView.BackgroundBitmap = BackgroundBitmaps.DarkMarble;
+                bkgView.BackgroundStyle = BackgroundStyles.SeamlessBitmap;
+            }
+
             if (gamePage.EnableCasualMode)
             {
                 btnSave.Text = "Save Game";

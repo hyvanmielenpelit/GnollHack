@@ -179,7 +179,7 @@
                 </Grid>
             </Grid>
             <Grid x:Name="MenuGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#AA000000" IsVisible="False">
-                <gnh:BackgroundView x:Name="MenuBackground" BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+                <gnh:BackgroundView x:Name="MenuBackground" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
                 <StackLayout x:Name="MenuStack" Spacing="6" VerticalOptions="Fill" HorizontalOptions="Fill" Orientation="Vertical"  BackgroundColor="Transparent">
                     <gnh:CustomLabel x:Name="MenuHeaderLabel"
                        TextColor="Black" FontAttributes="Bold" BackgroundColor="Transparent"
@@ -273,7 +273,7 @@
                 </Grid.GestureRecognizers>
             </Grid>
             <Grid x:Name="TextGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#AA000000" IsVisible="False">
-                <gnh:BackgroundView BackgroundStyle="StretchedBitmap" BackgroundBitmap="OldPaper" BorderStyle="Small" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+                <gnh:BackgroundView x:Name="TextBackground"  BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Small" HorizontalOptions="Fill" VerticalOptions="Fill"/>
                 <Grid x:Name="TextStack" HorizontalOptions="Fill" VerticalOptions="Fill">
                     <gnh:GHCachedImage x:Name="TextWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
                     <controls:SwitchableCanvasView x:Name="TextCanvas" UseGL="False" CanvasType="TextCanvas" RevertBlackAndWhite="True" UseTextOutline="False" HorizontalOptions="Fill" VerticalOptions="Fill" PaintSurface="TextCanvas_PaintSurface" Touch="TextCanvas_Touch" EnableTouchEvents="True" />

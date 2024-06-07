@@ -33,12 +33,16 @@ namespace GnollHackX.Pages.MainScreen
 
             InitializeComponent();
             On<iOS>().SetUseSafeArea(true);
+            if (GHApp.DarkMode)
+            {
+                lblHeader.TextColor = GHColors.White;
+            }
 
             LabeledImageButton rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.conduct.png";
             rib.LblText = "Top Scores";
             rib.LblFontSize = 20;
-            rib.LblFontColor = GHColors.Black;
+            rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             rib.LblFontFamily = "Immortal";
             rib.ImgWidth = 120;
             rib.ImgHeight = 120;
@@ -52,7 +56,7 @@ namespace GnollHackX.Pages.MainScreen
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.examine.png";
             rib.LblText = "Library";
             rib.LblFontSize = 20;
-            rib.LblFontColor = GHColors.Black;
+            rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             rib.LblFontFamily = "Immortal";
             rib.ImgWidth = 120;
             rib.ImgHeight = 120;
@@ -66,7 +70,7 @@ namespace GnollHackX.Pages.MainScreen
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.chronicle.png";
             rib.LblText = "Replays";
             rib.LblFontSize = 20;
-            rib.LblFontColor = GHColors.Black;
+            rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             rib.LblFontFamily = "Immortal";
             rib.ImgWidth = 120;
             rib.ImgHeight = 120;

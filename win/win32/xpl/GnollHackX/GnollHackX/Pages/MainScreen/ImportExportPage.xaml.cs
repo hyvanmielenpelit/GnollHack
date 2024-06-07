@@ -32,6 +32,10 @@ namespace GnollHackX.Pages.MainScreen
 		{
 			InitializeComponent ();
             On<iOS>().SetUseSafeArea(true);
+            if(GHApp.DarkMode)
+            {
+                lblHeader.TextColor = GHColors.White;
+            }
         }
 
         private async void btnExportSavedGames_Clicked(object sender, EventArgs e)

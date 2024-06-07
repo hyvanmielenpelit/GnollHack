@@ -58,6 +58,11 @@ namespace GnollHackX.Pages.MainScreen
             CloseButton.IsVisible = !displayshare;
             _isHtml = isHtml;
             TextLabel.InitiallyRolledDown = isScrolledDown;
+            if(GHApp.DarkMode)
+            {
+                HeaderLabel.TextColor = GHColors.White;
+                TextLabel.TextColor = GHColors.White;
+            }
             if (GHApp.IsiOS && _isHtml)
                 DisplayWebView.Opacity = 0.0;
         }

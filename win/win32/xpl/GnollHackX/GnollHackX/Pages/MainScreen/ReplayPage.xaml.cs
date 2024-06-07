@@ -54,6 +54,13 @@ namespace GnollHackX.Pages.MainScreen
 		{
 			InitializeComponent();
             On<iOS>().SetUseSafeArea(true);
+            if (GHApp.DarkMode)
+            {
+                HeaderLabel.TextColor = GHColors.White;
+                RecordingsLabel.TextColor = GHColors.White;
+                FolderPicker.TextColor = GHColors.White;
+                FolderPicker.TitleColor = GHColors.White;
+            }
 
             _mainPage = mainPage;
             MoreButton.IsEnabled = false;
