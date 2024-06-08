@@ -4,6 +4,9 @@ using SkiaSharp.Views.Maui.Controls.Hosting;
 #if IOS
 using GnollHackM.Platforms.iOS;
 #endif
+#if WINDOWS
+using GnollHackM.Platforms.Windows;
+#endif
 
 namespace GnollHackM;
 
@@ -19,6 +22,9 @@ public static class MauiProgram
                 handlers.AddHandler(typeof(CustomLabel), typeof(AutoSizeSKCanvasViewHandler));
 #if IOS
                 handlers.AddHandler(typeof(Shell), typeof(CustomShellRenderer));  
+#endif
+#if WINDOWS
+                handlers.AddHandler(typeof(Button), typeof(CustomButtonHandler));
 #endif
             })
 #if WINDOWS
