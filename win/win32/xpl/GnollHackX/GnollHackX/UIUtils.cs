@@ -453,13 +453,14 @@ namespace GnollHackX
 
         public static Color MenuHeaderTextColor(ghmenu_styles style)
         {
-            Color res = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            Color res;
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
                     res = GHColors.Beige;
                     break;
                 default:
+                    res = GHApp.DarkMode ? GHColors.White : GHColors.Black;
                     break;
             }
             return res;
@@ -481,13 +482,14 @@ namespace GnollHackX
 
         public static Color MenuHeaderOutlineColor(ghmenu_styles style)
         {
-            Color res = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            Color res;
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
                     res = GHColors.Black;
                     break;
                 default:
+                    res = GHApp.DarkMode ? GHColors.White : GHColors.Black;
                     break;
             }
             return res;
@@ -674,13 +676,14 @@ namespace GnollHackX
 
         public static Color MenuSubtitleTextColor(ghmenu_styles style)
         {
-            Color res = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            Color res;
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
-                    res = GHColors.DarkGreen;
+                    res = GHApp.DarkMode ? GHColors.LightGreen : GHColors.DarkGreen;
                     break;
                 default:
+                    res = GHApp.DarkMode ? GHColors.White : GHColors.Black;
                     break;
             }
             return res;
@@ -701,12 +704,12 @@ namespace GnollHackX
 
         public static Color MenuSubtitleOutlineColor(ghmenu_styles style)
         {
-            Color res = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            Color res;
             switch (style)
             {
                 case ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER:
-                    break;
                 default:
+                    res = GHApp.DarkMode ? GHColors.White : GHColors.Black;
                     break;
             }
             return res;

@@ -45,6 +45,12 @@ namespace GnollHackX.Pages.Game
             _gamePage = gamePage;
             _replayEnteredName = replayEnteredPlayerName;
 
+            if(GHApp.DarkMode)
+            {
+                WhatNameLabel.TextColor = GHColors.White;
+                eName.TextColor = GHColors.White;
+            }
+
             if (!string.IsNullOrWhiteSpace(modeName))
             {
                 lblModeName.Text = "Game is in " + modeName;
