@@ -2196,6 +2196,46 @@ struct save_game_stats* stats_ptr;
 #endif /* 0 - WAS STORE_PLNAME_IN_FILE*/
 }
 
+char*
+plname_from_running(filename, stats_ptr)
+const char* filename;
+struct save_game_stats* stats_ptr;
+{
+    int fd;
+    char* result = 0;
+    int savelev, hpid, pltmpsiz;
+    struct version_info version_data;
+    char savename[SAVESIZE];
+    struct savefile_info sfi;
+    char tmpplbuf[PL_NSIZ];
+
+    /* level 0 file contains:
+     *  pid of creating process (ignored here)
+     *  level number for current level of save file
+     *  name of save file nethack would have created
+     *  savefile info
+     *  player name
+     *  and game state
+     */
+    if ((fd = open(filename, O_RDONLY | O_BINARY, 0)) >= 0) {
+        if (read(fd, (genericptr_t)&hpid, sizeof hpid) == sizeof hpid
+            && read(fd, (genericptr_t)&savelev, sizeof(savelev)) == sizeof savelev
+            && read(fd, (genericptr_t)savename, sizeof savename) == sizeof savename
+            && read(fd, (genericptr_t)&version_data, sizeof version_data) == sizeof version_data
+            && read(fd, (genericptr_t)&sfi, sizeof sfi) == sizeof sfi
+            && read(fd, (genericptr_t)&pltmpsiz, sizeof pltmpsiz) == sizeof pltmpsiz
+            && pltmpsiz > 0 && pltmpsiz <= PL_NSIZ
+            && read(fd, (genericptr_t)&tmpplbuf, pltmpsiz) == pltmpsiz
+            && read(fd, (genericptr_t)stats_ptr, sizeof * stats_ptr) == sizeof * stats_ptr
+            ) {
+            result = dupstr(tmpplbuf);
+        }
+        close(fd);
+    }
+
+    return result;
+}
+
 #if defined(UNIX) && (defined(ANDROID) || defined(GNH_MOBILE))
 int is_error_savefile_name(savefilename)
 const char* savefilename;
@@ -2275,46 +2315,6 @@ const struct dirent* entry;
     return is_imported_backup_savefile_name(entry->d_name);
 }
 
-
-char*
-plname_from_running(filename, stats_ptr)
-const char* filename;
-struct save_game_stats* stats_ptr;
-{
-    int fd;
-    char* result = 0;
-    int savelev, hpid, pltmpsiz;
-    struct version_info version_data;
-    char savename[SAVESIZE];
-    struct savefile_info sfi;
-    char tmpplbuf[PL_NSIZ];
-
-    /* level 0 file contains:
-     *  pid of creating process (ignored here)
-     *  level number for current level of save file
-     *  name of save file nethack would have created
-     *  savefile info
-     *  player name
-     *  and game state
-     */
-    if ((fd = open(filename, O_RDONLY | O_BINARY, 0)) >= 0) {
-        if (read(fd, (genericptr_t)&hpid, sizeof hpid) == sizeof hpid
-            && read(fd, (genericptr_t)&savelev, sizeof(savelev)) == sizeof savelev
-            && read(fd, (genericptr_t)savename, sizeof savename) == sizeof savename
-            && read(fd, (genericptr_t)&version_data, sizeof version_data) == sizeof version_data
-            && read(fd, (genericptr_t)&sfi, sizeof sfi) == sizeof sfi
-            && read(fd, (genericptr_t)&pltmpsiz, sizeof pltmpsiz) == sizeof pltmpsiz
-            && pltmpsiz > 0 && pltmpsiz <= PL_NSIZ
-            && read(fd, (genericptr_t)&tmpplbuf, pltmpsiz) == pltmpsiz 
-            && read(fd, (genericptr_t)stats_ptr, sizeof *stats_ptr) == sizeof *stats_ptr
-            ) {
-            result = dupstr(tmpplbuf);
-        }
-        close(fd);
-    }
-
-    return result;
-}
 #endif
 #endif /* defined(SELECTSAVED) */
 
@@ -2331,11 +2331,17 @@ get_saved_games()
         const char *fq_save;
         char fq_save_ebuf[BUFSZ];
         char fq_save_ibuf[BUFSZ];
+        char fq_lock_rbuf[BUFSZ];
         char saved_plname[PL_NSIZ];
 
         Strcpy(saved_plname, plname);
         Strcpy(plname, "*");
         set_savefile_name(FALSE);
+#ifdef GNH_WIN
+        Sprintf(fq_lock_rbuf, "%d*.0", getuid());
+#else
+        Strcpy(fq_lock_rbuf, "*-*.0");
+#endif
 #if defined(ZLIB_COMP)
         Strcat(SAVEF, COMPRESS_EXTENSION);
 #endif
@@ -2350,6 +2356,7 @@ get_saved_games()
         int n = 0;
         int n2 = 0;
         int n3 = 0;
+        int n4 = 0;
         foundfile = foundfile_buffer();
         if (findfirst(fq_save)) {
             do {
@@ -2370,10 +2377,16 @@ get_saved_games()
                 } while (findnext());
             }
         }
+        if (findfirst(fq_lock_rbuf)) {
+            do {
+                ++n4;
+            } while (findnext());
+        }
 #endif
-        if (n > 0 || n2 > 0 || n3 > 0) {
-            result = (struct save_game_data*) alloc(((size_t)n + (size_t)n2 + (size_t)n3 + 1) * sizeof(struct save_game_data)); /* at most */
-            (void) memset((genericptr_t) result, 0, ((size_t)n + (size_t)n2 + (size_t)n3 + 1) * sizeof(struct save_game_data));
+        if (n > 0 || n2 > 0 || n3 > 0 || n4 > 0) 
+        {
+            result = (struct save_game_data*) alloc(((size_t)n + (size_t)n2 + (size_t)n3 + (size_t)n4 + 1) * sizeof(struct save_game_data)); /* at most */
+            (void) memset((genericptr_t) result, 0, ((size_t)n + (size_t)n2 + (size_t)n3 + (size_t)n4 + 1) * sizeof(struct save_game_data));
             if (n > 0)
             {
                 if (findfirst(fq_save)) {
@@ -2435,6 +2448,25 @@ get_saved_games()
                             result[j++] = newsavegamedata(r, foundfile, gamestats, FALSE, isimportederror, TRUE);
                         }
                         ++n3;
+                    } while (findnext());
+                }
+            }
+            if (n4 > 0)
+            {
+                if (findfirst(fq_lock_rbuf)) {
+                    n4 = 0;
+                    do {
+                        char* r;
+                        r = plname_from_running(foundfile, &gamestats);
+                        if (r)
+                        {
+                            if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
+                                continue;
+                            if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
+                                continue;
+                            result[j++] = newsavegamedata(r, foundfile, gamestats, TRUE, FALSE, FALSE);
+                        }
+                        ++n4;
                     } while (findnext());
                 }
             }
