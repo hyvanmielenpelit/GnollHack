@@ -142,7 +142,7 @@ notify_gui_pregame(VOID_ARGS)
     issue_simple_gui_command(wizard ? GUI_CMD_ENABLE_WIZARD_MODE : GUI_CMD_DISABLE_WIZARD_MODE); /* Notification may be needed if loaded a wizard mode saved game */
     issue_simple_gui_command(CasualMode ? GUI_CMD_ENABLE_CASUAL_MODE : GUI_CMD_DISABLE_CASUAL_MODE); /* Notification may be needed if loaded a casual mode saved game */
     issue_simple_gui_command(TournamentMode ? GUI_CMD_ENABLE_TOURNAMENT_MODE : GUI_CMD_DISABLE_TOURNAMENT_MODE); /* Notification may be needed if loaded a tournament mode saved game */
-    issue_simple_gui_command(flags.self_click_action ? GUI_CMD_ENABLE_CHARACTER_CLICK_ACTION : GUI_CMD_DISABLE_CHARACTER_CLICK_ACTION); /* Notification is needed */
+    issue_boolean_gui_command(GUI_CMD_TOGGLE_CHARACTER_CLICK_ACTION, flags.self_click_action); /* Notification is needed */
 }
 
 boolean 
