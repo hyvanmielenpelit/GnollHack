@@ -93,6 +93,7 @@ namespace GnollHackX
             Assembly assembly = typeof(App).GetTypeInfo().Assembly;
             InitBaseTypefaces(assembly);
             InitBaseCachedBitmaps(assembly);
+            InitBaseButtonBitmaps(assembly);
 
             //ButtonNormalImageSource = ImageSource.FromResource(AppResourceName + ".Assets.button_normal.png", assembly);
             //ButtonSelectedImageSource = ImageSource.FromResource(AppResourceName + ".Assets.button_selected.png", assembly);
@@ -1206,6 +1207,35 @@ namespace GnollHackX
         //public static ImageSource ButtonSelectedImageSource { get; set; }
         //public static ImageSource ButtonDisabledImageSource { get; set; }
 
+        public static void InitBaseButtonBitmaps(Assembly assembly)
+        {
+            try
+            {
+                using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.button_normal.png"))
+                {
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    ButtonNormalBitmap = SKImage.FromBitmap(bmp);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.button_selected.png"))
+                {
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    ButtonSelectedBitmap = SKImage.FromBitmap(bmp);
+                }
+                using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.button_disabled.png"))
+                {
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    ButtonDisabledBitmap = SKImage.FromBitmap(bmp);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+
         public static void InitGameBitmaps(Assembly assembly)
         {
             try
@@ -1233,24 +1263,6 @@ namespace GnollHackX
                     SKBitmap bmp = SKBitmap.Decode(stream);
                     bmp.SetImmutable();
                     LoadingScreenBackgroundBitmap = SKImage.FromBitmap(bmp);
-                }
-                using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.button_normal.png"))
-                {
-                    SKBitmap bmp = SKBitmap.Decode(stream);
-                    bmp.SetImmutable();
-                    ButtonNormalBitmap = SKImage.FromBitmap(bmp);
-                }
-                using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.button_selected.png"))
-                {
-                    SKBitmap bmp = SKBitmap.Decode(stream);
-                    bmp.SetImmutable();
-                    ButtonSelectedBitmap = SKImage.FromBitmap(bmp);
-                }
-                using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.button_disabled.png"))
-                {
-                    SKBitmap bmp = SKBitmap.Decode(stream);
-                    bmp.SetImmutable();
-                    ButtonDisabledBitmap = SKImage.FromBitmap(bmp);
                 }
                 using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.frame-topleft.png"))
                 {
