@@ -1785,6 +1785,11 @@ namespace GnollHackX
 #else
         public const string PortName = "GnollHackX";
 #endif
+#if WINDOWS
+        public const bool DefaultCharacterClickAction = true;
+#else
+        public const bool DefaultCharacterClickAction = false;
+#endif
     }
 
     [StructLayout(LayoutKind.Sequential)]

@@ -100,7 +100,7 @@ namespace GnollHackX
             //ButtonDisabledImageSource = ImageSource.FromResource(AppResourceName + ".Assets.button_disabled.png", assembly);
 
             DarkMode = Preferences.Get("DarkMode", false);
-            CharacterClickAction = Preferences.Get("CharacterClickAction", false);
+            CharacterClickAction = Preferences.Get("CharacterClickAction", GHConstants.DefaultCharacterClickAction);
             HideAndroidNavigationBar = Preferences.Get("HideAndroidNavigationBar", GHConstants.DefaultHideNavigation);
             HideiOSStatusBar = Preferences.Get("HideiOSStatusBar", GHConstants.DefaultHideStatusBar);
             DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
