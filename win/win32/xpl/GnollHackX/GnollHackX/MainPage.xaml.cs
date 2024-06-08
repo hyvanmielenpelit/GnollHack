@@ -979,19 +979,19 @@ namespace GnollHackX
 
             UpperButtonGrid.IsVisible = true;
 
-            if(GHApp.IsiOS && GHApp.IsMaui)
-            {
-                StartLocalGameButton.Redraw();
-                ResetButton.Redraw();
-                VaultButton.Redraw();
-                OptionsButton.Redraw();
-                SettingsButton.Redraw();
-                AboutButton.Redraw();
-                ExitButton.Redraw();
-                PopupOkButton.Redraw();
-                PendingTasksOkButton.Redraw();
-                PendingTasksCancelButton.Redraw();
-            }
+            //if(GHApp.IsiOS && GHApp.IsMaui)
+            //{
+            //    StartLocalGameButton.Redraw();
+            //    ResetButton.Redraw();
+            //    VaultButton.Redraw();
+            //    OptionsButton.Redraw();
+            //    SettingsButton.Redraw();
+            //    AboutButton.Redraw();
+            //    ExitButton.Redraw();
+            //    PopupOkButton.Redraw();
+            //    PendingTasksOkButton.Redraw();
+            //    PendingTasksCancelButton.Redraw();
+            //}
 
             await UpperButtonGrid.FadeTo(1, 250);
             UpperButtonGrid.Opacity = 1.0;  /* To make sure */
