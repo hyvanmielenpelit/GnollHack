@@ -21,7 +21,8 @@ namespace GnollHackM
         {
             try
             {
-                return 0;
+                var ci = new Microsoft.VisualBasic.Devices.ComputerInfo();
+                return ci.TotalPhysicalMemory;
             }
             catch
             {
@@ -33,13 +34,11 @@ namespace GnollHackM
         {
             try
             {
-                ulong freesize = 0UL;
-                DriveInfo[] drives = DriveInfo.GetDrives();
-                foreach (DriveInfo drive in drives)
-                {
-                    freesize += (ulong)drive.AvailableFreeSpace;
-                }
-                return freesize;
+                string curDir = Directory.GetCurrentDirectory();
+                DirectoryInfo di = new DirectoryInfo(curDir);
+                DriveInfo drive = new DriveInfo(di.Root.FullName);
+                ulong freeSize = (ulong)drive.AvailableFreeSpace;
+                return freeSize;
             }
             catch
             {
@@ -51,13 +50,11 @@ namespace GnollHackM
         {
             try
             {
-                ulong totalsize = 0UL;
-                DriveInfo[] drives = DriveInfo.GetDrives();
-                foreach (DriveInfo drive in drives)
-                {
-                    totalsize += (ulong)drive.TotalSize;
-                }
-                return totalsize;
+                string curDir = Directory.GetCurrentDirectory();
+                DirectoryInfo di = new DirectoryInfo(curDir);
+                DriveInfo drive = new DriveInfo(di.Root.FullName);
+                ulong totalSize = (ulong)drive.TotalSize;
+                return totalSize;
             }
             catch
             {
