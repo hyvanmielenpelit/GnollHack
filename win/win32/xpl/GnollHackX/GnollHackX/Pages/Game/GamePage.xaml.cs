@@ -15038,6 +15038,7 @@ namespace GnollHackX.Pages.Game
                     }
                     unselect_on_tap = !unselect_on_tap;
                 }
+                MenuCanvas.InvalidateSurface();
             }
         }
 
@@ -17232,9 +17233,9 @@ namespace GnollHackX.Pages.Game
                 char c = args.Character;
                 if(c != 0)
                 {
-                    if (IsMetaKeyPressed())
+                    if (GHApp.AltDown)
                         GenericButton_Clicked(sender, new EventArgs(), GHUtils.Meta((int)c));
-                    if (IsCtrlKeyPressed())
+                    if (GHApp.CtrlDown)
                         GenericButton_Clicked(sender, new EventArgs(), GHUtils.Ctrl((int)c));
                     else
                         GenericButton_Clicked(sender, new EventArgs(), (int)c);
@@ -17244,19 +17245,6 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-
-        private bool IsCtrlKeyPressed()
-        {
-            return GHApp.CtrlDown;
-        }
-        private bool IsMetaKeyPressed()
-        {
-            return GHApp.AltDown;
-        }
-        private bool IsShiftKeyPressed()
-        {
-            return GHApp.ShiftDown;
-        }
         private void PageContent_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
             if(HandleKeyDown(sender, e.Key))
@@ -17333,8 +17321,8 @@ namespace GnollHackX.Pages.Game
                     resp = -12;
                 else if (key >= Windows.System.VirtualKey.NumberPad1 && key <= Windows.System.VirtualKey.NumberPad9)
                     resp = -11 - (key - Windows.System.VirtualKey.NumberPad1);
-                else if (IsMetaKeyPressed() && key >= Windows.System.VirtualKey.A && key <= Windows.System.VirtualKey.Z)
-                    resp = GHUtils.Meta((IsShiftKeyPressed() ? (int)'A' : (int)'a') + (int)key - (int)Windows.System.VirtualKey.A);
+                else if (GHApp.AltDown && key >= Windows.System.VirtualKey.A && key <= Windows.System.VirtualKey.Z)
+                    resp = GHUtils.Meta((GHApp.ShiftDown ? (int)'A' : (int)'a') + (int)key - (int)Windows.System.VirtualKey.A);
 
                 if (resp != 0)
                 {
