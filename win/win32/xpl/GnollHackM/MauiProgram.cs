@@ -25,7 +25,7 @@ public static class MauiProgram
                 handlers.AddHandler(typeof(Shell), typeof(CustomShellRenderer));  
 #endif
 #if WINDOWS
-                handlers.AddHandler(typeof(Button), typeof(CustomButtonHandler));
+                handlers.AddHandler(typeof(NoTabStopButton), typeof(CustomButtonHandler));
 #endif
             })
 #if WINDOWS

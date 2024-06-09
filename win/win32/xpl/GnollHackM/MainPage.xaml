@@ -8,178 +8,179 @@
              BackgroundColor="Black"
              Appearing="ContentPage_Appearing" Disappearing ="ContentPage_Disappearing" >
 
-    <AbsoluteLayout VerticalOptions="Fill"
-                    HorizontalOptions="Fill" BackgroundColor="Black">
-
-        <local:GHCachedImage x:Name="FmodLogoImage" Source="resource://GnollHackM.Assets.FMOD-Logo-192-White.png" Opacity="0" IsVisible="true" WidthRequest="121" HeightRequest="32"
+    <Grid HorizontalOptions="Fill" VerticalOptions="Fill">
+        <Button x:Name="KeyboardFocusButton" Text="" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+        <AbsoluteLayout  HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Black">
+            <local:GHCachedImage x:Name="FmodLogoImage" Source="resource://GnollHackM.Assets.FMOD-Logo-192-White.png" Opacity="0" IsVisible="true" WidthRequest="121" HeightRequest="32"
                HorizontalOptions="Center" VerticalOptions="Center"
                AbsoluteLayout.LayoutBounds="20, 20, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="None" Aspect="AspectFit"/>
 
-        <local:GHCachedImage x:Name="StartLogoImage" Source="resource://GnollHackM.Assets.gnollhack-logo-test-2.png" Opacity="0" IsVisible="true" HeightRequest="180" WidthRequest="180"
+            <local:GHCachedImage x:Name="StartLogoImage" Source="resource://GnollHackM.Assets.gnollhack-logo-test-2.png" Opacity="0" IsVisible="true" HeightRequest="180" WidthRequest="180"
                HorizontalOptions="Center" VerticalOptions="Center"
                AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="PositionProportional" />
 
-        <local:ImageCarousel x:Name="carouselView" IsVisible="false"
+            <local:ImageCarousel x:Name="carouselView" IsVisible="false"
                HorizontalOptions="Fill" VerticalOptions="Fill"
                AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
                AbsoluteLayout.LayoutFlags="All" />
 
-        <Grid x:Name="LogoGrid" RowSpacing="0" IsVisible="false" Opacity="0" AbsoluteLayout.LayoutBounds="60, 35, AutoSize, AutoSize"
+            <Grid x:Name="LogoGrid" RowSpacing="0" IsVisible="false" Opacity="0" AbsoluteLayout.LayoutBounds="60, 35, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="None" >
-            <StackLayout Spacing="6">
-                <local:GHCachedImage Grid.Row="0" x:Name="MainLogoImage" Source="resource://GnollHackM.Assets.gnollhack-icon-v2-512.png" HeightRequest="100" WidthRequest="100"
+                <StackLayout Spacing="6">
+                    <local:GHCachedImage Grid.Row="0" x:Name="MainLogoImage" Source="resource://GnollHackM.Assets.gnollhack-icon-v2-512.png" HeightRequest="100" WidthRequest="100"
                    HorizontalOptions="Center" VerticalOptions="End"/>
-                <Label x:Name="GnollHackLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start" 
+                    <Label x:Name="GnollHackLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start" 
                    TextColor="White"
                    FontFamily="ARChristy" FontSize="27" />
-                <Label x:Name="MobileVersionLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start"  
+                    <Label x:Name="MobileVersionLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start"  
                    Text="Mobile Version" TextColor="White"
                    FontFamily="ARChristy" FontSize="18" />
-            </StackLayout>
-        </Grid>
+                </StackLayout>
+            </Grid>
 
-        <StackLayout Spacing="6" AbsoluteLayout.LayoutBounds="0.99, 0.99, AutoSize, AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
-            <Label x:Name="DownloadLabel" TextColor="White" FontSize="6" FontFamily="Lato" />
-            <Label x:Name="VersionLabel" TextColor="White" FontSize="6" FontFamily="Lato" />
-        </StackLayout>
-        <Grid x:Name="UpperButtonGrid" IsVisible="false" WidthRequest="130" Opacity="0" HorizontalOptions="End" VerticalOptions="Start" Margin="10,10,10,5" AbsoluteLayout.LayoutBounds="1,0,AutoSize,AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
-            <StackLayout Spacing="4">
-                <controls:CustomImageButton Text="Reset" x:Name="ResetButton" Clicked="ResetButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
-                <controls:CustomImageButton Text="Vault" x:Name="VaultButton" Clicked="VaultButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
-                <controls:CustomImageButton Text="Options" x:Name="OptionsButton" Clicked="OptionsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
-                <controls:CustomImageButton Text="Settings" x:Name="SettingsButton" Clicked="SettingsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
-                <controls:CustomImageButton Text="About" x:Name="AboutButton" Clicked="CreditsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
-                <controls:CustomImageButton Text="Exit" x:Name="ExitButton" Clicked="ExitAppButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
+            <StackLayout Spacing="6" AbsoluteLayout.LayoutBounds="0.99, 0.99, AutoSize, AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
+                <Label x:Name="DownloadLabel" TextColor="White" FontSize="6" FontFamily="Lato" />
+                <Label x:Name="VersionLabel" TextColor="White" FontSize="6" FontFamily="Lato" />
             </StackLayout>
-        </Grid>
-        <StackLayout x:Name="StartButtonLayout" Spacing="6" Opacity="0" IsVisible="false"
+            <Grid x:Name="UpperButtonGrid" IsVisible="false" WidthRequest="130" Opacity="0" HorizontalOptions="End" VerticalOptions="Start" Margin="10,10,10,5" AbsoluteLayout.LayoutBounds="1,0,AutoSize,AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
+                <StackLayout Spacing="4">
+                    <controls:CustomImageButton Text="Reset" x:Name="ResetButton" Clicked="ResetButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
+                    <controls:CustomImageButton Text="Vault" x:Name="VaultButton" Clicked="VaultButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
+                    <controls:CustomImageButton Text="Options" x:Name="OptionsButton" Clicked="OptionsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
+                    <controls:CustomImageButton Text="Settings" x:Name="SettingsButton" Clicked="SettingsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
+                    <controls:CustomImageButton Text="About" x:Name="AboutButton" Clicked="CreditsButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
+                    <controls:CustomImageButton Text="Exit" x:Name="ExitButton" Clicked="ExitAppButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="120" HeightRequest="50" />
+                </StackLayout>
+            </Grid>
+            <StackLayout x:Name="StartButtonLayout" Spacing="6" Opacity="0" IsVisible="false"
               HorizontalOptions="CenterAndExpand" VerticalOptions="Center" AbsoluteLayout.LayoutBounds="0.5, 0.90, AutoSize, AutoSize"
               AbsoluteLayout.LayoutFlags="PositionProportional" WidthRequest="300">
-            <Grid x:Name="classicModeGrid" ColumnSpacing="6" IsVisible="True" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="Center">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <local:CustomLabel x:Name="classicModeLabel" Text="Classic Mode" TextColor="White" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
+                <Grid x:Name="classicModeGrid" ColumnSpacing="6" IsVisible="True" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <local:CustomLabel x:Name="classicModeLabel" Text="Classic Mode" TextColor="White" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
                                    WidthRequest="180" HeightRequest="30" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
-                    <local:CustomLabel.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
-                    </local:CustomLabel.GestureRecognizers>
-                </local:CustomLabel>
-                <Switch x:Name="classicModeSwitch" IsToggled="false" Grid.Column="1" HeightRequest="30" HorizontalOptions="Start" VerticalOptions="Center" Toggled="ClassicModeSwitch_Toggled"  />
-            </Grid>
-            <Grid x:Name="casualModeGrid" ColumnSpacing="6" IsVisible="True" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="Center">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <local:CustomLabel x:Name="casualModeLabel" Text="Casual Mode" TextColor="White" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
+                        <local:CustomLabel.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                        </local:CustomLabel.GestureRecognizers>
+                    </local:CustomLabel>
+                    <Switch x:Name="classicModeSwitch" IsToggled="false" Grid.Column="1" HeightRequest="30" HorizontalOptions="Start" VerticalOptions="Center" Toggled="ClassicModeSwitch_Toggled"  />
+                </Grid>
+                <Grid x:Name="casualModeGrid" ColumnSpacing="6" IsVisible="True" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <local:CustomLabel x:Name="casualModeLabel" Text="Casual Mode" TextColor="White" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
                                    WidthRequest="180" HeightRequest="30" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
-                    <local:CustomLabel.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="CasualTapGestureRecognizer_Tapped"/>
-                    </local:CustomLabel.GestureRecognizers>
-                </local:CustomLabel>
-                <Switch x:Name="casualModeSwitch" IsToggled="false" Grid.Column="1" HeightRequest="30" HorizontalOptions="Start" VerticalOptions="Center" Toggled="CasualModeSwitch_Toggled"  />
-            </Grid>
-            <Grid x:Name="wizardModeGrid" ColumnSpacing="6" Margin="0,0,0,15" HorizontalOptions="Center" VerticalOptions="Center">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <local:CustomLabel x:Name="wizardModeLabel" Text="Wizard Mode" TextColor="LightBlue" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
+                        <local:CustomLabel.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="CasualTapGestureRecognizer_Tapped"/>
+                        </local:CustomLabel.GestureRecognizers>
+                    </local:CustomLabel>
+                    <Switch x:Name="casualModeSwitch" IsToggled="false" Grid.Column="1" HeightRequest="30" HorizontalOptions="Start" VerticalOptions="Center" Toggled="CasualModeSwitch_Toggled"  />
+                </Grid>
+                <Grid x:Name="wizardModeGrid" ColumnSpacing="6" Margin="0,0,0,15" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <local:CustomLabel x:Name="wizardModeLabel" Text="Wizard Mode" TextColor="LightBlue" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
                                    WidthRequest="180" HeightRequest="30" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
-                    <local:CustomLabel.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="WizTapGestureRecognizer_Tapped"/>
-                    </local:CustomLabel.GestureRecognizers>
-                </local:CustomLabel>
-                <Switch x:Name="wizardModeSwitch" IsToggled="false" Grid.Column="1" HeightRequest="30" HorizontalOptions="Start" VerticalOptions="Center" Toggled="wizardModeSwitch_Toggled" />
-            </Grid>
-            <Grid x:Name="tournamentModeGrid" ColumnSpacing="6" Margin="0,0,0,15" HorizontalOptions="Center" VerticalOptions="Center">
-                <local:CustomLabel x:Name="tournamentModeLabel" Text="Tournament" TextColor="LightGreen" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
+                        <local:CustomLabel.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="WizTapGestureRecognizer_Tapped"/>
+                        </local:CustomLabel.GestureRecognizers>
+                    </local:CustomLabel>
+                    <Switch x:Name="wizardModeSwitch" IsToggled="false" Grid.Column="1" HeightRequest="30" HorizontalOptions="Start" VerticalOptions="Center" Toggled="wizardModeSwitch_Toggled" />
+                </Grid>
+                <Grid x:Name="tournamentModeGrid" ColumnSpacing="6" Margin="0,0,0,15" HorizontalOptions="Center" VerticalOptions="Center">
+                    <local:CustomLabel x:Name="tournamentModeLabel" Text="Tournament" TextColor="LightGreen" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
                                    WidthRequest="280" HeightRequest="30" HorizontalTextAlignment="Center" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
-                    <local:CustomLabel.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="TournamentTapGestureRecognizer_Tapped"/>
-                    </local:CustomLabel.GestureRecognizers>
-                </local:CustomLabel>
-            </Grid>
-            <Grid x:Name="StartLocalGrid" WidthRequest="300" HeightRequest="70" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-                <controls:CustomImageButton Text="Play Game" x:Name="StartLocalGameButton" Clicked="StartLocalGameButton_Clicked" 
+                        <local:CustomLabel.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TournamentTapGestureRecognizer_Tapped"/>
+                        </local:CustomLabel.GestureRecognizers>
+                    </local:CustomLabel>
+                </Grid>
+                <Grid x:Name="StartLocalGrid" WidthRequest="300" HeightRequest="70" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                    <controls:CustomImageButton Text="Play Game" x:Name="StartLocalGameButton" Clicked="StartLocalGameButton_Clicked" 
                         FontFamily="Diablo" FontSize="24" TextColor="White" BackgroundColor="Transparent"  
                         HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
-            </Grid>
-        </StackLayout>
+                </Grid>
+            </StackLayout>
 
-        <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
+            <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
               BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
-            <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
-                <Frame x:Name="PopupFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
-                    <StackLayout x:Name="PopupLayout" Padding="5" Spacing="6"
+                <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Frame x:Name="PopupFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                        <StackLayout x:Name="PopupLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
-                        <Label Text="" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
+                            <Label Text="" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
                                        VerticalTextAlignment="Center" HorizontalOptions="Center"  />
-                        <Label Text="" x:Name="PopupLabel" FontFamily="Underwood" FontSize="16" TextColor="White"
+                            <Label Text="" x:Name="PopupLabel" FontFamily="Underwood" FontSize="16" TextColor="White"
                                        VerticalTextAlignment="Start" HorizontalOptions="Center"  />
-                        <StackLayout x:Name="PopupCheckBoxLayout" Spacing="6" IsVisible="false" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
-                            <CheckBox x:Name="PopupNoAgainCheckBox" IsChecked="False" VerticalOptions="Center" Color="Green" />
-                            <Label Text="Do not show again" FontFamily="Underwood" FontSize="16" TextColor="White" VerticalOptions="Center" VerticalTextAlignment="Center">
-                                <Label.GestureRecognizers>
-                                    <TapGestureRecognizer x:Name="PopupLabelTapGestureRecognizer" Tapped="PopupLabelTapGestureRecognizer_Tapped" />
-                                </Label.GestureRecognizers>
-                            </Label>
-                        </StackLayout>
-                        <controls:CustomImageButton x:Name="PopupOkButton" Text="OK" FontSize="19" WidthRequest="170" Margin="0,10,0,0" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
+                            <StackLayout x:Name="PopupCheckBoxLayout" Spacing="6" IsVisible="false" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
+                                <CheckBox x:Name="PopupNoAgainCheckBox" IsChecked="False" VerticalOptions="Center" Color="Green" />
+                                <Label Text="Do not show again" FontFamily="Underwood" FontSize="16" TextColor="White" VerticalOptions="Center" VerticalTextAlignment="Center">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer x:Name="PopupLabelTapGestureRecognizer" Tapped="PopupLabelTapGestureRecognizer_Tapped" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </StackLayout>
+                            <controls:CustomImageButton x:Name="PopupOkButton" Text="OK" FontSize="19" WidthRequest="170" Margin="0,10,0,0" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="PopupOkButton_Clicked" />
-                    </StackLayout>
-                </Frame>
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
             </Grid>
-            <Grid.GestureRecognizers>
-                <TapGestureRecognizer />
-            </Grid.GestureRecognizers>
-        </Grid>
-        <Grid x:Name="PendingTasksGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
+            <Grid x:Name="PendingTasksGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
               BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
-            <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
-                <Frame x:Name="PendingTasksFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
-                    <StackLayout x:Name="PendingTasksLayout" Padding="5" Spacing="6"
+                <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Frame x:Name="PendingTasksFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                        <StackLayout x:Name="PendingTasksLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
-                        <Label Text="Pending Tasks" x:Name="PendingTasksTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="Orange"
+                            <Label Text="Pending Tasks" x:Name="PendingTasksTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="Orange"
                                        VerticalTextAlignment="Center" HorizontalOptions="Center"  />
-                        <Label Text="" x:Name="PendingTasksLabel" FontFamily="Underwood" FontSize="16" TextColor="White"
+                            <Label Text="" x:Name="PendingTasksLabel" FontFamily="Underwood" FontSize="16" TextColor="White"
                                        VerticalTextAlignment="Start" HorizontalOptions="Center"  />
-                        <Label Text="Do you want to exit anyway?" x:Name="PendingTasksLabel2" FontFamily="Underwood" FontSize="16" TextColor="White"
+                            <Label Text="Do you want to exit anyway?" x:Name="PendingTasksLabel2" FontFamily="Underwood" FontSize="16" TextColor="White"
                                        VerticalTextAlignment="Start" HorizontalOptions="Center"  />
-                        <Grid ColumnSpacing="6" Margin="0,10,0,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <controls:CustomImageButton Grid.Column="0" x:Name="PendingTasksOkButton" Text="Yes" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="End" BackgroundColor="Transparent" TextColor="White"
+                            <Grid ColumnSpacing="6" Margin="0,10,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <controls:CustomImageButton Grid.Column="0" x:Name="PendingTasksOkButton" Text="Yes" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="End" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="PendingTasksOkButton_Clicked" />
-                            <controls:CustomImageButton Grid.Column="1" x:Name="PendingTasksCancelButton" Text="No" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="Start" BackgroundColor="Transparent" TextColor="White"
+                                <controls:CustomImageButton Grid.Column="1" x:Name="PendingTasksCancelButton" Text="No" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="Start" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="PendingTasksCancelButton_Clicked" />
-                        </Grid>
-                    </StackLayout>
-                </Frame>
+                            </Grid>
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
             </Grid>
-            <Grid.GestureRecognizers>
-                <TapGestureRecognizer />
-            </Grid.GestureRecognizers>
-        </Grid>
-    </AbsoluteLayout>    
+        </AbsoluteLayout>
+    </Grid>
 </ContentPage>

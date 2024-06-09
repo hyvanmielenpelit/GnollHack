@@ -35,6 +35,10 @@ namespace GnollHackX.Pages.MainScreen
             InitializeComponent();
             On<iOS>().SetUseSafeArea(true);
             UIUtils.AdjustRootLayout(RootGrid);
+            if (GHApp.DarkMode)
+            {
+                lblHeader.TextColor = GHColors.White;
+            }
         }
 
         private async void btnCreditsX_Clicked(object sender, EventArgs e)

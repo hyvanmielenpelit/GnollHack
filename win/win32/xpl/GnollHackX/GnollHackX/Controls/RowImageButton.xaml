@@ -20,7 +20,7 @@
                        BackgroundColor="Transparent" VerticalOptions="Center" VerticalTextAlignment="Center" HorizontalOptions="Start" HorizontalTextAlignment="Start" 
                        InputTransparent="True" />
             </Grid>
-            <Button x:Name="ViewButton" Text="" BackgroundColor="Transparent" VerticalOptions="Fill" HorizontalOptions="Fill" />
+            <gnh:NoTabStopButton x:Name="ViewButton" Text="" BackgroundColor="Transparent" VerticalOptions="Fill" HorizontalOptions="Fill" />
         </Grid>
     </ContentView.Content>
 </ContentView>

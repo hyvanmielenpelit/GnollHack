@@ -144,6 +144,11 @@ namespace GnollHackX.Controls
             //    ViewImage.Source = ImageSource.FromResource(ImgSourcePath);
         }
 
+        public void SetButtonFocus()
+        {
+            ViewButton.Focus();
+        }
+
         public LabeledImageButton()
         {
             InitializeComponent();

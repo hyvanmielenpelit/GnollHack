@@ -145,6 +145,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\IFMODService.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\ImageCarousel.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\MapData.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\NoTabStopButton.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\ObjectData.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\ObjectDataItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Secrets.cs" />
@@ -253,6 +254,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\IFMODService.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ImageCarousel.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\MapData.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\NoTabStopButton.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ObjectData.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\ObjectDataItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Secrets.cs" />
