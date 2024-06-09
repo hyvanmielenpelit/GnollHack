@@ -17123,36 +17123,33 @@ namespace GnollHackX.Pages.Game
         }
 
 
-        bool _ctrlDown = false;
-        bool _altDown = false;
-        bool _shiftDown = false;
         private bool IsCtrlKeyPressed()
         {
-            return _ctrlDown;
+            return GHApp.CtrlDown;
         }
         private bool IsMetaKeyPressed()
         {
-            return _altDown;
+            return GHApp.AltDown;
         }
         private bool IsShiftKeyPressed()
         {
-            return _shiftDown;
+            return GHApp.ShiftDown;
         }
         private void PageContent_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
             if (e.Key == VirtualKey.LeftControl || e.Key == VirtualKey.RightControl || e.Key == VirtualKey.Control)
             {
-                _ctrlDown = true;
+                GHApp.CtrlDown = true;
                 e.Handled = true;
             }
             else if (e.Key == VirtualKey.LeftMenu || e.Key == VirtualKey.RightMenu || e.Key == VirtualKey.Menu)
             {
-                _altDown = true;
+                GHApp.AltDown = true;
                 e.Handled = true;
             }
             else if (e.Key == VirtualKey.LeftShift || e.Key == VirtualKey.RightShift || e.Key == VirtualKey.Shift)
             {
-                _shiftDown = true;
+                GHApp.ShiftDown = true;
                 e.Handled = true;
             }
             else if(LoadingGrid.IsVisible || !GHApp.IsPageOnTopOfModalNavigationStack(this))
@@ -17222,17 +17219,17 @@ namespace GnollHackX.Pages.Game
         {
             if (e.Key == VirtualKey.LeftControl || e.Key == VirtualKey.RightControl || e.Key == VirtualKey.Control)
             {
-                _ctrlDown = false;
+                GHApp.CtrlDown = false;
                 e.Handled = true;
             }
             else if (e.Key == VirtualKey.LeftMenu || e.Key == VirtualKey.RightMenu || e.Key == VirtualKey.Menu)
             {
-                _altDown = false;
+                GHApp.AltDown = false;
                 e.Handled = true;
             }
             else if (e.Key == VirtualKey.LeftShift || e.Key == VirtualKey.RightShift || e.Key == VirtualKey.Shift)
             {
-                _shiftDown = false;
+                GHApp.ShiftDown = false;
                 e.Handled = true;
             }
         }

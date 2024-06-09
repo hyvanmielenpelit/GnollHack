@@ -603,6 +603,9 @@ namespace GnollHackX
             if (PlatformService != null)
                 PlatformService.OverrideAnimatorDuration();
 
+            CtrlDown = false;
+            AltDown = false;
+            ShiftDown = false;
             CancelSaveGame = true;
             SleepMuteMode = false;
             if (CurrentGHGame != null && !CurrentGHGame.CasualMode)
@@ -646,6 +649,10 @@ namespace GnollHackX
             if (PlatformService != null)
                 PlatformService.OverrideAnimatorDuration();
 
+            CtrlDown = false;
+            AltDown = false;
+            ShiftDown = false;
+
             /* Check current battery level, internet connection, and xlog user name when returning to app */
             try
             {
@@ -676,6 +683,15 @@ namespace GnollHackX
                 }
             }
         }
+
+        private static readonly object _keyboardLock = new object();
+        private static bool _ctrlDown = false;
+        private static bool _altDown = false;
+        private static bool _shiftDown = false;
+
+        public static bool CtrlDown { get { lock (_keyboardLock) { return _ctrlDown; } } set { lock (_keyboardLock) { _ctrlDown = value; } } }
+        public static bool AltDown { get { lock (_keyboardLock) { return _altDown; } } set { lock (_keyboardLock) { _altDown = value; } } }
+        public static bool ShiftDown { get { lock (_keyboardLock) { return _shiftDown; } } set { lock (_keyboardLock) { _shiftDown = value; } } }
 
         public static bool DownloadOnDemandPackage
         {
