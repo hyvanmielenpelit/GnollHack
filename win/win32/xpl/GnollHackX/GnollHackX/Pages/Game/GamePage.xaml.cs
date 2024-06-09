@@ -1797,9 +1797,16 @@ namespace GnollHackX.Pages.Game
 
             lock (_targetClipLock)
             {
-                if (maincountervalue < _targetClipStartCounterValue
-                    || maincountervalue > _targetClipStartCounterValue + _targetClipPanTime)
+                if (_targetClipOn && (maincountervalue < _targetClipStartCounterValue
+                    || maincountervalue > _targetClipStartCounterValue + _targetClipPanTime))
+                {
                     _targetClipOn = false;
+                    lock (_mapOffsetLock)
+                    {
+                        _mapOffsetX = 0;
+                        _mapOffsetY = 0;
+                    }
+                }
 
                 if (_targetClipOn)
                 {
@@ -12037,10 +12044,10 @@ namespace GnollHackX.Pages.Game
         {
             if (_currentGame != null)
             {
-                lock (_targetClipLock)
-                {
-                    _targetClipOn = false;
-                }
+                //lock (_targetClipLock)
+                //{
+                //    _targetClipOn = false;
+                //}
 
                 switch (e?.ActionType)
                 {

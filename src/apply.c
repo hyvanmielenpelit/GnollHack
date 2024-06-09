@@ -2296,7 +2296,7 @@ struct obj *otmp;
 
         (void) get_obj_location(otmp, &x, &y, 0);
         if (otmp->where == OBJ_MINVENT ? cansee(x, y) : !Blind)
-            pline("%s%scandle%s flame%s extinguished.", Shk_Your(buf, otmp),
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s%scandle%s flame%s extinguished.", Shk_Your(buf, otmp),
                   (candle ? "" : "candelabrum's "), (many ? "s'" : "'s"),
                   (many ? "s are" : " is"));
         end_burn(otmp, TRUE);
@@ -2378,7 +2378,7 @@ struct obj* otmp;
 
         (void)get_obj_location(otmp, &x, &y, 0);
         if (otmp->where == OBJ_MINVENT ? cansee(x, y) : !Blind)
-            pline("%storch%s flame%s extinguished.", Shk_Your(buf, otmp),
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%storch%s flame%s extinguished.", Shk_Your(buf, otmp),
                 (many ? "es'" : "'s"), (many ? "s are" : " is"));
         end_burn(otmp, TRUE);
         return TRUE;
@@ -2401,7 +2401,7 @@ struct obj *obj;
         {
             (void) get_obj_location(obj, &x, &y, 0);
             if (obj->where == OBJ_MINVENT ? cansee(x, y) : !Blind)
-                pline("%s %s out!", Yname2(obj), otense(obj, "go"));
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s out!", Yname2(obj), otense(obj, "go"));
             end_burn(obj, TRUE);
             return TRUE;
         }
@@ -2483,11 +2483,11 @@ struct obj *obj;
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY2);
         if (is_lamp(obj))
         {
-            pline("%slamp is now off.", Shk_Your(buf, obj));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%slamp is now off.", Shk_Your(buf, obj));
         }
         else
         {
-            You("snuff out %s.", yname(obj));
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "snuff out %s.", yname(obj));
         }
         end_burn(obj, TRUE);
         return;
@@ -2525,11 +2525,11 @@ struct obj *obj;
         if (is_lamp(obj))
         {
             check_unpaid(obj);
-            pline("%slamp is now on.", Shk_Your(buf, obj));
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%slamp is now on.", Shk_Your(buf, obj));
         } 
         else 
         { /* candle(s) */
-            pline("%s flame%s %s%s", s_suffix(Yname2(obj)), plur(obj->quan),
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s flame%s %s%s", s_suffix(Yname2(obj)), plur(obj->quan),
                   otense(obj, "burn"), Blind ? "." : " brightly!");
             if (is_unpaid_shop_item(obj, u.ux, u.uy)
                 && (obj->age == 30L * (long) objects[obj->otyp].oc_cost || obj->otyp == MAGIC_CANDLE)) 
@@ -2642,7 +2642,7 @@ struct obj **optr;
     if (obj->lamplit) 
     {        
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY2);
-        You("snuff the lit potion.");
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "snuff the lit potion.");
         end_burn(obj, TRUE);
         /*
          * Free & add to re-merge potion.  This will average the
@@ -2666,7 +2666,7 @@ struct obj **optr;
         obj = splitobj(obj, 1L);
 
     play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
-    You("light %spotion.%s", shk_your(buf, obj),
+    You_ex(ATR_NONE, CLR_MSG_ATTENTION, "light %spotion.%s", shk_your(buf, obj),
         Blind ? "" : "  It gives off a dim light.");
 
     if (is_unpaid_shop_item(obj, u.ux, u.uy)) {
