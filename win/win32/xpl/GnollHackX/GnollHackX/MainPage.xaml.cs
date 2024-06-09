@@ -19,10 +19,20 @@ using System.Net.Http.Headers;
 using System.Collections;
 using System.Collections.Concurrent;
 
+
+
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+using Newtonsoft.Json.Linq;
+
+
+#if WINDOWS
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
+#endif
 
 namespace GnollHackM
 #else
@@ -63,7 +73,9 @@ namespace GnollHackX
         public MainPage()
         {
             InitializeComponent();
+            GHApp.CurrentMainPage = this;
             On<iOS>().SetUseSafeArea(true);
+            GHApp.SetPageThemeOnHandler(this, GHApp.DarkMode);
 #if GNH_MAUI
             Shell.SetNavBarIsVisible(this, false);
             _generalTimer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();

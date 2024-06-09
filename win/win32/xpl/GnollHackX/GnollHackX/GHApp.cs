@@ -707,7 +707,54 @@ namespace GnollHackX
 
         private readonly static object _darkModeLock = new object();
         private static bool _darkMode = false;
-        public static bool DarkMode { get { lock (_darkModeLock) { return _darkMode; } } set { lock (_darkModeLock) { _darkMode = value; } } } 
+        public static bool DarkMode 
+        { 
+            get { lock (_darkModeLock) { return _darkMode; } } 
+            set { lock (_darkModeLock) { _darkMode = value; } UpdateTheme(value);
+            }
+        }
+
+        public static void UpdateTheme(bool isDarkTheme)
+        {
+            Microsoft.Maui.Controls.Application.Current.UserAppTheme = isDarkTheme ? AppTheme.Dark : AppTheme.Light;
+#if WINDOWS
+            SetPageTheme(CurrentMainPage, isDarkTheme);
+            if (CurrentMainPage != null && CurrentMainPage.Navigation.ModalStack.Count > 0)
+            {
+                foreach (Page page in CurrentMainPage.Navigation.ModalStack)
+                {
+                    SetPageTheme(page, isDarkTheme);
+                }
+            }
+#endif
+        }
+
+        public static void SetPageTheme(Page page, bool isDarkTheme)
+        {
+#if WINDOWS
+            if(page != null)
+            {
+                var handler = page.Handler;
+                if (handler != null && handler.PlatformView is Microsoft.UI.Xaml.FrameworkElement)
+                    ((Microsoft.UI.Xaml.FrameworkElement)handler.PlatformView).RequestedTheme = isDarkTheme ? Microsoft.UI.Xaml.ElementTheme.Dark : Microsoft.UI.Xaml.ElementTheme.Light;
+            }
+#endif
+        }
+        public static void SetPageThemeOnHandler(Page page, bool isDarkTheme)
+        {
+#if WINDOWS
+            if (page != null)
+            {
+                page.HandlerChanged += (sender, e) =>
+                {
+                    if (sender != null && sender is Page)
+                    {
+                        SetPageTheme((Page)sender, isDarkTheme);
+                    }
+                };
+            }
+#endif
+        }
 
         public static bool IsMuted { get { return SilentMode || SleepMuteMode || GameMuteMode; } }
 

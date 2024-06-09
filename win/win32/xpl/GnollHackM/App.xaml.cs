@@ -1,5 +1,7 @@
 ﻿using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
+using Newtonsoft.Json.Linq;
+
 #if WINDOWS10_0_19041_0_OR_GREATER
 using WindowsUI = Windows.UI;
 using XamlUI = Microsoft.UI.Xaml.Media;
@@ -28,9 +30,8 @@ public partial class App : Application
         });
 #endif
         GHApp.Initialize();
-
-		MainPage = new AppShell();      
-	}
+		MainPage = new AppShell();
+    }
 
     protected override void OnStart()
     {

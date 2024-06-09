@@ -46,6 +46,7 @@ namespace GnollHackX.Pages.MainScreen
             InitializeComponent();
             On<iOS>().SetUseSafeArea(true);
             UIUtils.AdjustRootLayout(RootGrid);
+            GHApp.SetPageThemeOnHandler(this, GHApp.DarkMode);
 
             _gameMenuPage = gameMenuPage;
             if (_gameMenuPage != null)
