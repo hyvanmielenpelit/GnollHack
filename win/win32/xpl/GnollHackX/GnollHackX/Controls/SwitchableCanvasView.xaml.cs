@@ -7,11 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 
-
 #if GNH_MAUI
 using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
 using GnollHackX;
+#if WINDOWS
+using Microsoft.UI.Xaml;
+#endif
+
 namespace GnollHackM
 #else
 using Xamarin.Forms;
@@ -65,6 +68,7 @@ namespace GnollHackX.Controls
         }
         public event EventHandler<SKPaintSurfaceEventArgs> PaintSurface;
         public event EventHandler<SKTouchEventArgs> Touch;
+        public event EventHandler<GHMouseWheelEventArgs> MouseWheel;
         public void InvalidateSurface()
         {
             if(UseGL)
@@ -374,5 +378,47 @@ namespace GnollHackX.Controls
                 }
             }
         }
+
+
+#if GNH_MAUI
+        protected override void OnHandlerChanged()
+        {
+            base.OnHandlerChanged();
+#if WINDOWS
+            SkiaSharp.Views.Windows.SKXamlCanvas view = internalCanvasView.Handler.PlatformView as SkiaSharp.Views.Windows.SKXamlCanvas;
+            if(view != null)
+                view.PointerWheelChanged += View_PointerWheelChanged;
+            SkiaSharp.Views.Windows.SKSwapChainPanel glView = internalGLView.Handler.PlatformView as SkiaSharp.Views.Windows.SKSwapChainPanel;
+            if (glView != null)
+                glView.PointerWheelChanged += View_PointerWheelChanged;
+#endif
+        }
+
+#if WINDOWS
+        private void View_PointerWheelChanged(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if(sender is UIElement)
+            {
+                var delta = e.GetCurrentPoint((UIElement)sender).Properties.MouseWheelDelta;
+                if (delta != 0)
+                {
+                    MouseWheel?.Invoke(sender, new GHMouseWheelEventArgs(delta));
+                }
+            }
+        }
+
+#endif
+#endif
+
+    }
+
+    public class GHMouseWheelEventArgs : EventArgs 
+    {
+        int _mouseWheelDelta = 0;
+        public GHMouseWheelEventArgs(int mouseWheelDelta) : base()
+        {
+            _mouseWheelDelta = mouseWheelDelta;
+        }
+        public int MouseWheelDelta { get { return _mouseWheelDelta; } }
     }
 }

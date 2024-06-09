@@ -28,6 +28,7 @@ using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
 using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
+
 #if WINDOWS
 using Windows.UI.Core;
 using Windows.System;
@@ -14766,6 +14767,28 @@ namespace GnollHackX.Pages.Game
             }
             
             return doclickok;
+        }
+
+        private void MenuCanvas_MouseWheel(object sender, GHMouseWheelEventArgs e)
+        {
+            if (e.MouseWheelDelta != 0)
+            {
+                float bottomScrollLimit = Math.Min(0, MenuCanvas.CanvasSize.Height - TotalMenuHeight);
+                float scrollAmount = (MenuCanvas.CanvasSize.Height * e.MouseWheelDelta) / (10 * 120);
+                lock (_menuScrollLock)
+                {
+                    _menuScrollOffset += scrollAmount;
+                    if (_menuScrollOffset < bottomScrollLimit)
+                        _menuScrollOffset = bottomScrollLimit;
+                    if (_menuScrollOffset > 0)
+                        _menuScrollOffset = 0;
+
+                    _menuScrollSpeedOn = false;
+                    _menuScrollSpeed = 0;
+                    _menuScrollSpeedRecordOn = false;
+                    _menuScrollSpeedRecords.Clear();
+                }
+            }
         }
 
 
