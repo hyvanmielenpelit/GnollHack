@@ -23,6 +23,7 @@
                                                   EnableTouchEvents="True"
                                                   PaintSurface="canvasView_PaintSurface" 
                                                   Touch="canvasView_Touch"
+                                                  MouseWheel="canvasView_MouseWheel"
                                                   AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 1.0"
                                                   AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional">
                     </controls:SwitchableCanvasView>
@@ -197,7 +198,7 @@
                     </gnh:CustomLabel>
                     <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                         <gnh:GHCachedImage x:Name="MenuWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15,15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
-                        <controls:SwitchableCanvasView x:Name="MenuCanvas" UseGL="False" CanvasType="MenuCanvas" RevertBlackAndWhite="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" EnableTouchEvents="True" />
+                        <controls:SwitchableCanvasView x:Name="MenuCanvas" UseGL="False" CanvasType="MenuCanvas" RevertBlackAndWhite="True" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" PaintSurface="MenuCanvas_PaintSurface" Touch="MenuCanvas_Touch" MouseWheel="MenuCanvas_MouseWheel" EnableTouchEvents="True" />
                         <!--ResourceCacheLimit="{x:Static gnh:GHConstants.GPUResourceCacheSize}"-->
                     </Grid>
                     <Grid x:Name="MenuCloseGrid" ColumnSpacing="6" BackgroundColor="Transparent" >
@@ -276,7 +277,7 @@
                 <gnh:BackgroundView x:Name="TextBackground"  BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Small" HorizontalOptions="Fill" VerticalOptions="Fill"/>
                 <Grid x:Name="TextStack" HorizontalOptions="Fill" VerticalOptions="Fill">
                     <gnh:GHCachedImage x:Name="TextWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
-                    <controls:SwitchableCanvasView x:Name="TextCanvas" UseGL="False" CanvasType="TextCanvas" RevertBlackAndWhite="True" UseTextOutline="False" HorizontalOptions="Fill" VerticalOptions="Fill" PaintSurface="TextCanvas_PaintSurface" Touch="TextCanvas_Touch" EnableTouchEvents="True" />
+                    <controls:SwitchableCanvasView x:Name="TextCanvas" UseGL="False" CanvasType="TextCanvas" RevertBlackAndWhite="True" UseTextOutline="False" HorizontalOptions="Fill" VerticalOptions="Fill" PaintSurface="TextCanvas_PaintSurface" Touch="TextCanvas_Touch" MouseWheel="TextCanvas_MouseWheel" EnableTouchEvents="True" />
                     <!--ResourceCacheLimit="{x:Static gnh:GHConstants.GPUResourceCacheSize}"-->
                 </Grid>
                 <Grid.GestureRecognizers>
@@ -382,17 +383,17 @@
                 </Grid.GestureRecognizers>
             </Grid>
             <Grid x:Name="MoreCommandsGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#FF000000" IsVisible="False">
-                <controls:SwitchableCanvasView x:Name="CommandCanvas" UseGL="False" CanvasType="CommandCanvas" HorizontalOptions="Fill" VerticalOptions="Fill" PaintSurface="CommandCanvas_PaintSurface" Touch="CommandCanvas_Touch" EnableTouchEvents="True" />
+                <controls:SwitchableCanvasView x:Name="CommandCanvas" UseGL="False" CanvasType="CommandCanvas" HorizontalOptions="Fill" VerticalOptions="Fill" PaintSurface="CommandCanvas_PaintSurface" Touch="CommandCanvas_Touch" MouseWheel="CommandCanvas_MouseWheel" EnableTouchEvents="True" />
             </Grid>
             <controls:SwitchableCanvasView x:Name="TipView" 
                                            IsVisible="False"
                                            UseGL="False"
-                                          CanvasType="TipCanvas"
-                                          EnableTouchEvents="True"
-                                          PaintSurface="TipView_PaintSurface" 
-                                          Touch="TipView_Touch"
-                                          AbsoluteLayout.LayoutBounds="0.0, 0, 1.0, 1.0"
-                                          AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional"/>
+                                           CanvasType="TipCanvas"
+                                           EnableTouchEvents="True"
+                                           PaintSurface="TipView_PaintSurface" 
+                                           Touch="TipView_Touch"
+                                           AbsoluteLayout.LayoutBounds="0.0, 0, 1.0, 1.0"
+                                           AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional"/>
             <Grid x:Name="ReplayGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent" InputTransparent="True" CascadeInputTransparent="False" IsVisible="False">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />

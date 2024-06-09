@@ -12354,86 +12354,8 @@ namespace GnollHackX.Pages.Game
                                         if (prevdist > 0 && curdist > 0)
                                         {
                                             float ratio = curdist / prevdist;
-                                            float curfontsize = ZoomMiniMode ? MapFontMiniRelativeSize : ZoomAlternateMode ? MapFontAlternateSize : MapFontSize;
-                                            float newfontsize = curfontsize * ratio;
-                                            if(ZoomMiniMode)
-                                            {
-                                                if (newfontsize > GHConstants.MaximumMapMiniRelativeFontSize)
-                                                    newfontsize = GHConstants.MaximumMapMiniRelativeFontSize;
-                                                if (newfontsize < GHConstants.MinimumMapMiniRelativeFontSize)
-                                                    newfontsize = GHConstants.MinimumMapMiniRelativeFontSize;
-                                            }
-                                            else
-                                            {
-                                                if (newfontsize > GHConstants.MaximumMapFontSize)
-                                                    newfontsize = GHConstants.MaximumMapFontSize;
-                                                if (newfontsize < GHConstants.MinimumMapFontSize)
-                                                    newfontsize = GHConstants.MinimumMapFontSize;
-                                            }
+                                            AdjustZoomByRatio(ratio, curloc, prevloc, otherloc);
 
-                                            float newratio = newfontsize / Math.Max(1, curfontsize);
-                                            float mapFontAscent = UsedMapFontAscent;
-                                            if (ZoomMiniMode)
-                                                MapFontMiniRelativeSize = newfontsize;
-                                            else if (ZoomAlternateMode)
-                                                MapFontAlternateSize = newfontsize;
-                                            else
-                                                MapFontSize = newfontsize;
-
-                                            if (ZoomMiniMode)
-                                            {
-                                                lock (_mapOffsetLock)
-                                                {
-                                                    _mapMiniOffsetX *= newratio;
-                                                    _mapMiniOffsetY *= newratio;
-                                                    if (_mapWidth > 0 && Math.Abs(_mapMiniOffsetX) > 1 * _mapWidth)
-                                                    {
-                                                        _mapMiniOffsetX = 1 * _mapWidth * Math.Sign(_mapMiniOffsetX);
-                                                    }
-                                                    if (_mapHeight > 0 && Math.Abs(_mapMiniOffsetY) > 1 * _mapHeight)
-                                                    {
-                                                        _mapMiniOffsetY = 1 * _mapHeight * Math.Sign(_mapMiniOffsetY);
-                                                    }
-                                                }
-                                            }
-                                            else
-                                            {
-                                                float width = UsedTileWidth;
-                                                float height = UsedTileHeight;
-                                                float mapwidth = width * (GHConstants.MapCols - 1);
-                                                float mapheight = height * (GHConstants.MapRows);
-                                                float canvaswidth = canvasView.CanvasSize.Width;
-                                                float canvasheight = canvasView.CanvasSize.Height;
-                                                float offsetX, offsetY, usedOffsetX, usedOffsetY;
-                                                GetMapOffsets(canvaswidth, canvasheight, mapwidth, mapheight, width, height, out offsetX, out offsetY, out usedOffsetX, out usedOffsetY);
-                                                float totalOffsetX = offsetX + usedOffsetX;
-                                                float totalOffsetY = offsetY + usedOffsetY + mapFontAscent;
-                                                SKPoint oldLoc = new SKPoint((prevloc.X + otherloc.X) / 2, (prevloc.Y + otherloc.Y) / 2);
-                                                SKPoint newLoc = new SKPoint((curloc.X + otherloc.X) / 2, (curloc.Y + otherloc.Y) / 2);
-                                                float newTotalOffsetX = newLoc.X - (oldLoc.X - totalOffsetX) * newratio;
-                                                float newTotalOffsetY = newLoc.Y - (oldLoc.Y - totalOffsetY) * newratio;
-                                                float newWidth = width * newratio;
-                                                float newHeight = height * newratio;
-                                                float newMapwidth = newWidth * (GHConstants.MapCols - 1);
-                                                float newMapheight = newHeight * (GHConstants.MapRows);
-                                                float newMapFontAscent = mapFontAscent * newratio;
-                                                float newOffsetX, newOffsetY, newUsedOffsetX, newUsedOffsetY;
-                                                GetMapOffsets(canvaswidth, canvasheight, newMapwidth, newMapheight, newWidth, newHeight, out newOffsetX, out newOffsetY, out newUsedOffsetX, out newUsedOffsetY);
-
-                                                lock (_mapOffsetLock)
-                                                {
-                                                    _mapOffsetX = newTotalOffsetX - newOffsetX;
-                                                    _mapOffsetY = newTotalOffsetY - newOffsetY - newMapFontAscent;
-                                                    if (_mapWidth > 0 && Math.Abs(_mapOffsetX) > 10 * _mapWidth)
-                                                    {
-                                                        _mapOffsetX = 10 * _mapWidth * Math.Sign(_mapOffsetX);
-                                                    }
-                                                    if (_mapHeight > 0 && Math.Abs(_mapOffsetY) > 10 * _mapHeight)
-                                                    {
-                                                        _mapOffsetY = 10 * _mapHeight * Math.Sign(_mapOffsetY);
-                                                    }
-                                                }
-                                            }
                                         }
                                     }
 
@@ -12617,6 +12539,102 @@ namespace GnollHackX.Pages.Game
                     default:
                         break;
                 }
+            }
+        }
+
+        private void AdjustZoomByRatio(float ratio, SKPoint curloc, SKPoint prevloc, SKPoint otherloc)
+        {
+            float curfontsize = ZoomMiniMode ? MapFontMiniRelativeSize : ZoomAlternateMode ? MapFontAlternateSize : MapFontSize;
+            float newfontsize = curfontsize * ratio;
+            if (ZoomMiniMode)
+            {
+                if (newfontsize > GHConstants.MaximumMapMiniRelativeFontSize)
+                    newfontsize = GHConstants.MaximumMapMiniRelativeFontSize;
+                if (newfontsize < GHConstants.MinimumMapMiniRelativeFontSize)
+                    newfontsize = GHConstants.MinimumMapMiniRelativeFontSize;
+            }
+            else
+            {
+                if (newfontsize > GHConstants.MaximumMapFontSize)
+                    newfontsize = GHConstants.MaximumMapFontSize;
+                if (newfontsize < GHConstants.MinimumMapFontSize)
+                    newfontsize = GHConstants.MinimumMapFontSize;
+            }
+
+            float newratio = newfontsize / Math.Max(1, curfontsize);
+            float mapFontAscent = UsedMapFontAscent;
+            if (ZoomMiniMode)
+                MapFontMiniRelativeSize = newfontsize;
+            else if (ZoomAlternateMode)
+                MapFontAlternateSize = newfontsize;
+            else
+                MapFontSize = newfontsize;
+
+            if (ZoomMiniMode)
+            {
+                lock (_mapOffsetLock)
+                {
+                    _mapMiniOffsetX *= newratio;
+                    _mapMiniOffsetY *= newratio;
+                    if (_mapWidth > 0 && Math.Abs(_mapMiniOffsetX) > 1 * _mapWidth)
+                    {
+                        _mapMiniOffsetX = 1 * _mapWidth * Math.Sign(_mapMiniOffsetX);
+                    }
+                    if (_mapHeight > 0 && Math.Abs(_mapMiniOffsetY) > 1 * _mapHeight)
+                    {
+                        _mapMiniOffsetY = 1 * _mapHeight * Math.Sign(_mapMiniOffsetY);
+                    }
+                }
+            }
+            else
+            {
+                float width = UsedTileWidth;
+                float height = UsedTileHeight;
+                float mapwidth = width * (GHConstants.MapCols - 1);
+                float mapheight = height * (GHConstants.MapRows);
+                float canvaswidth = canvasView.CanvasSize.Width;
+                float canvasheight = canvasView.CanvasSize.Height;
+                float offsetX, offsetY, usedOffsetX, usedOffsetY;
+                GetMapOffsets(canvaswidth, canvasheight, mapwidth, mapheight, width, height, out offsetX, out offsetY, out usedOffsetX, out usedOffsetY);
+                float totalOffsetX = offsetX + usedOffsetX;
+                float totalOffsetY = offsetY + usedOffsetY + mapFontAscent;
+                SKPoint oldLoc = new SKPoint((prevloc.X + otherloc.X) / 2, (prevloc.Y + otherloc.Y) / 2);
+                SKPoint newLoc = new SKPoint((curloc.X + otherloc.X) / 2, (curloc.Y + otherloc.Y) / 2);
+                float newTotalOffsetX = newLoc.X - (oldLoc.X - totalOffsetX) * newratio;
+                float newTotalOffsetY = newLoc.Y - (oldLoc.Y - totalOffsetY) * newratio;
+                float newWidth = width * newratio;
+                float newHeight = height * newratio;
+                float newMapwidth = newWidth * (GHConstants.MapCols - 1);
+                float newMapheight = newHeight * (GHConstants.MapRows);
+                float newMapFontAscent = mapFontAscent * newratio;
+                float newOffsetX, newOffsetY, newUsedOffsetX, newUsedOffsetY;
+                GetMapOffsets(canvaswidth, canvasheight, newMapwidth, newMapheight, newWidth, newHeight, out newOffsetX, out newOffsetY, out newUsedOffsetX, out newUsedOffsetY);
+
+                lock (_mapOffsetLock)
+                {
+                    _mapOffsetX = newTotalOffsetX - newOffsetX;
+                    _mapOffsetY = newTotalOffsetY - newOffsetY - newMapFontAscent;
+                    if (_mapWidth > 0 && Math.Abs(_mapOffsetX) > 10 * _mapWidth)
+                    {
+                        _mapOffsetX = 10 * _mapWidth * Math.Sign(_mapOffsetX);
+                    }
+                    if (_mapHeight > 0 && Math.Abs(_mapOffsetY) > 10 * _mapHeight)
+                    {
+                        _mapOffsetY = 10 * _mapHeight * Math.Sign(_mapOffsetY);
+                    }
+                }
+            }
+        }
+
+        private void canvasView_MouseWheel(object sender, GHMouseWheelEventArgs e)
+        {
+            if(e.MouseWheelDelta != 0)
+            {
+                float ratio = 1.1f * (float)Math.Abs(e.MouseWheelDelta) / 120;
+                float canvaswidth = canvasView.CanvasSize.Width;
+                float canvasheight = canvasView.CanvasSize.Height;
+                SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
+                AdjustZoomByRatio(e.MouseWheelDelta < 0 ? 1.0f / ratio : ratio, point, point, point);
             }
         }
 
@@ -15606,6 +15624,27 @@ namespace GnollHackX.Pages.Game
             });
         }
 
+        private void TextCanvas_MouseWheel(object sender, GHMouseWheelEventArgs e)
+        {
+            if (e.MouseWheelDelta != 0)
+            {
+                float bottomScrollLimit = Math.Min(0, TextCanvas.CanvasSize.Height - TotalTextHeight);
+                float scrollAmount = (TextCanvas.CanvasSize.Height * e.MouseWheelDelta) / (10 * 120);
+                lock (_textScrollLock)
+                {
+                    _textScrollOffset += scrollAmount;
+                    if (_textScrollOffset < bottomScrollLimit)
+                        _textScrollOffset = bottomScrollLimit;
+                    if (_textScrollOffset > 0)
+                        _textScrollOffset = 0;
+
+                    _textScrollSpeedOn = false;
+                    _textScrollSpeed = 0;
+                    _textScrollSpeedRecordOn = false;
+                    _textScrollSpeedRecords.Clear();
+                }
+            }
+        }
 
         private readonly object _moreCmdLock = new object();
         private int _moreCmdPage = 1;
@@ -16069,6 +16108,11 @@ namespace GnollHackX.Pages.Game
                 RefreshScreen = true;
             }
             StartMainCanvasAnimation();
+        }
+
+        private void CommandCanvas_MouseWheel(object sender, GHMouseWheelEventArgs e)
+        {
+
         }
 
         private void ToggleMessageNumberButton_Clicked(object sender, EventArgs e)
