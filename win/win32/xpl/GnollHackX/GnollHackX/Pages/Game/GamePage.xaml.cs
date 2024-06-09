@@ -14632,61 +14632,62 @@ namespace GnollHackX.Pages.Game
                     if (MenuCanvas.MenuItems[idx].DrawBounds.Contains(e.Location))
                     {
                         GHMenuItem mi = MenuCanvas.MenuItems[idx];
-                        if (mi.Identifier == 0)
-                        {
-                            if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (mi.Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0)
-                            {
-                                foreach (GHMenuItem o in MenuCanvas.MenuItems)
-                                {
-                                    if (o.GroupAccelerator == mi.HeadingGroupAccelerator)
-                                    {
-                                        if (!mi.HeadingUnselectGroup)
-                                        {
-                                            o.Selected = true;
-                                            o.Count = -1;
-                                        }
-                                        else
-                                        {
-                                            o.Selected = false;
-                                            o.Count = 0;
-                                        }
-                                    }
-                                }
-                                mi.HeadingUnselectGroup = !mi.HeadingUnselectGroup;
-                            }
-                        }
-                        else
-                        {
-                            if (MenuCanvas.SelectionHow == SelectionMode.Multiple)
-                            {
-                                MenuCanvas.MenuItems[idx].Selected = !MenuCanvas.MenuItems[idx].Selected;
-                                if (MenuCanvas.MenuItems[idx].Selected)
-                                {
-                                    MenuCanvas.MenuItems[idx].Count = -1;
-                                    if(MenuCanvas.MenuItems[idx].IsAutoClickOk)
-                                        doclickok = true;
-                                }
-                                else
-                                    MenuCanvas.MenuItems[idx].Count = 0;
-                            }
-                            else
-                            {
-                                if (idx != MenuCanvas.SelectionIndex && MenuCanvas.SelectionIndex >= 0 && MenuCanvas.SelectionIndex < MenuCanvas.MenuItems.Count)
-                                    MenuCanvas.MenuItems[MenuCanvas.SelectionIndex].Count = 0;
+                        doclickok = ClickMenuItem(mi);
+                        //if (mi.Identifier == 0)
+                        //{
+                        //    if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (mi.Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0)
+                        //    {
+                        //        foreach (GHMenuItem o in MenuCanvas.MenuItems)
+                        //        {
+                        //            if (o.GroupAccelerator == mi.HeadingGroupAccelerator)
+                        //            {
+                        //                if (!mi.HeadingUnselectGroup)
+                        //                {
+                        //                    o.Selected = true;
+                        //                    o.Count = -1;
+                        //                }
+                        //                else
+                        //                {
+                        //                    o.Selected = false;
+                        //                    o.Count = 0;
+                        //                }
+                        //            }
+                        //        }
+                        //        mi.HeadingUnselectGroup = !mi.HeadingUnselectGroup;
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    if (MenuCanvas.SelectionHow == SelectionMode.Multiple)
+                        //    {
+                        //        MenuCanvas.MenuItems[idx].Selected = !MenuCanvas.MenuItems[idx].Selected;
+                        //        if (MenuCanvas.MenuItems[idx].Selected)
+                        //        {
+                        //            MenuCanvas.MenuItems[idx].Count = -1;
+                        //            if(MenuCanvas.MenuItems[idx].IsAutoClickOk)
+                        //                doclickok = true;
+                        //        }
+                        //        else
+                        //            MenuCanvas.MenuItems[idx].Count = 0;
+                        //    }
+                        //    else
+                        //    {
+                        //        if (idx != MenuCanvas.SelectionIndex && MenuCanvas.SelectionIndex >= 0 && MenuCanvas.SelectionIndex < MenuCanvas.MenuItems.Count)
+                        //            MenuCanvas.MenuItems[MenuCanvas.SelectionIndex].Count = 0;
 
-                                int oldselidx = MenuCanvas.SelectionIndex;
-                                MenuCanvas.SelectionIndex = idx;
-                                if (MenuCanvas.MenuItems[idx].Count == 0)
-                                    MenuCanvas.MenuItems[idx].Count = -1;
+                        //        int oldselidx = MenuCanvas.SelectionIndex;
+                        //        MenuCanvas.SelectionIndex = idx;
+                        //        if (MenuCanvas.MenuItems[idx].Count == 0)
+                        //            MenuCanvas.MenuItems[idx].Count = -1;
 
-                                /* Else keep the current selection number */
-                                if(!MenuOKButton.IsEnabled)
-                                    MenuOKButton.IsEnabled = true;
+                        //        /* Else keep the current selection number */
+                        //        if(!MenuOKButton.IsEnabled)
+                        //            MenuOKButton.IsEnabled = true;
 
-                                if (MenuCanvas.MenuItems[idx].IsAutoClickOk || MenuCanvas.ClickOKOnSelection)
-                                    doclickok = true;
-                            }
-                        }
+                        //        if (MenuCanvas.MenuItems[idx].IsAutoClickOk || MenuCanvas.ClickOKOnSelection)
+                        //            doclickok = true;
+                        //    }
+                        //}
                         break;
                     }
                 }
@@ -14698,6 +14699,75 @@ namespace GnollHackX.Pages.Game
                 MenuOKButton_Clicked(sender, e);
             }
         }
+
+        private bool ClickMenuItem(GHMenuItem mi)
+        {
+            bool doclickok = false;
+            lock (MenuCanvas.MenuItemLock)
+            {
+                if (MenuCanvas.MenuItems == null)
+                    return false;
+               
+                if (mi.Identifier == 0)
+                {
+                    if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (mi.Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0)
+                    {
+                        foreach (GHMenuItem o in MenuCanvas.MenuItems)
+                        {
+                            if (o.GroupAccelerator == mi.HeadingGroupAccelerator)
+                            {
+                                if (!mi.HeadingUnselectGroup)
+                                {
+                                    o.Selected = true;
+                                    o.Count = -1;
+                                }
+                                else
+                                {
+                                    o.Selected = false;
+                                    o.Count = 0;
+                                }
+                            }
+                        }
+                        mi.HeadingUnselectGroup = !mi.HeadingUnselectGroup;
+                    }
+                }
+                else
+                {
+                    if (MenuCanvas.SelectionHow == SelectionMode.Multiple)
+                    {
+                        mi.Selected = !mi.Selected;
+                        if (mi.Selected)
+                        {
+                            mi.Count = -1;
+                            if (mi.IsAutoClickOk)
+                                doclickok = true;
+                        }
+                        else
+                            mi.Count = 0;
+                    }
+                    else
+                    {
+                        if (MenuCanvas.SelectionIndex >= 0 && MenuCanvas.SelectionIndex < MenuCanvas.MenuItems.Count && mi != MenuCanvas.MenuItems[MenuCanvas.SelectionIndex])
+                            MenuCanvas.MenuItems[MenuCanvas.SelectionIndex].Count = 0;
+
+                        int oldselidx = MenuCanvas.SelectionIndex;
+                        MenuCanvas.SelectionIndex = MenuCanvas.MenuItems.IndexOf(mi);
+                        if (mi.Count == 0)
+                            mi.Count = -1;
+
+                        /* Else keep the current selection number */
+                        if (!MenuOKButton.IsEnabled)
+                            MenuOKButton.IsEnabled = true;
+
+                        if (mi.IsAutoClickOk || MenuCanvas.ClickOKOnSelection)
+                            doclickok = true;
+                    }
+                }
+            }
+            
+            return doclickok;
+        }
+
 
         private readonly object _menuHideCancelledLock = new object();
         private bool _menuHideCancelled = false;
@@ -14936,7 +15006,12 @@ namespace GnollHackX.Pages.Game
         }
 
         private bool unselect_on_tap = false;
+
+#if GNH_MAUI
+        private void MenuTapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+#else
         private void MenuTapGestureRecognizer_Tapped(object sender, EventArgs e)
+#endif
         {
             if (PlayingReplay)
                 return;
@@ -16546,7 +16621,11 @@ namespace GnollHackX.Pages.Game
                 UpdateGetLineAutoComplete();
         }
 
+#if GNH_MAUI
+        private void GetLineAutoCompleteTapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+#else
         private void GetLineAutoCompleteTapGestureRecognizer_Tapped(object sender, EventArgs e)
+#endif
         {
             if(GetLineAutoComplete.Text != "")
             {
@@ -16981,7 +17060,11 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+#if GNH_MAUI
+        private async void GetLineCaptionTapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+#else
         private async void GetLineCaptionTapGestureRecognizer_Tapped(object sender, EventArgs e)
+#endif
         {
             switch (_getLineStyle)
             {
@@ -17010,6 +17093,13 @@ namespace GnollHackX.Pages.Game
             var menuPage = new GameMenuPage(this, true);
             await App.Current.MainPage.Navigation.PushModalAsync(menuPage);
             GetLineMenuButton.IsEnabled = true;
+        }
+
+        public void SendEnterPressed()
+        {
+#if WINDOWS
+            HandleKeyDown(this, VirtualKey.Enter);
+#endif
         }
 
         private void SetupKeyListening()
@@ -17074,30 +17164,62 @@ namespace GnollHackX.Pages.Game
             else if (MenuGrid.IsVisible)
             {
                 char c = args.Character;
-                SKPoint location = new SKPoint();
-                lock (MenuCanvas.MenuItemLock)
+                if(MenuCanvas.SelectionHow == SelectionMode.Multiple && c == '.')
                 {
-                    if (MenuCanvas.MenuItems == null)
-                        return;
-
-                    for (int idx = _firstDrawnMenuItemIdx; idx >= 0 && idx <= _lastDrawnMenuItemIdx; idx++)
+                    MenuTapGestureRecognizer_Tapped(sender, new TappedEventArgs(new object()));
+                    args.Handled = true;
+                }
+                else
+                {
+                    //SKPoint location = new SKPoint();
+                    bool doclickok = false;
+                    bool somethingFound = false;
+                    lock (MenuCanvas.MenuItemLock)
                     {
-                        if (idx >= MenuCanvas.MenuItems.Count)
-                            break;
-                        if (MenuCanvas.MenuItems[idx].Accelerator == c)
+                        if (MenuCanvas.MenuItems == null)
+                            return;
+
+                        for (int idx = 0; idx < MenuCanvas.MenuItems.Count; idx++)
                         {
-                            location = new SKPoint(MenuCanvas.MenuItems[idx].DrawBounds.MidX, MenuCanvas.MenuItems[idx].DrawBounds.MidY);
-                            break;
+                            if (MenuCanvas.MenuItems[idx].Accelerator == c)
+                            {
+                                somethingFound = true;
+                                doclickok = ClickMenuItem(MenuCanvas.MenuItems[idx]);
+                                //location = new SKPoint(MenuCanvas.MenuItems[idx].DrawBounds.MidX, MenuCanvas.MenuItems[idx].DrawBounds.MidY);
+                                break;
+                            }
+                            else if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (MenuCanvas.MenuItems[idx].Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0 && MenuCanvas.MenuItems[idx].HeadingGroupAccelerator == c)
+                            {
+                                somethingFound = true;
+                                doclickok = ClickMenuItem(MenuCanvas.MenuItems[idx]);
+                                //location = new SKPoint(MenuCanvas.MenuItems[idx].DrawBounds.MidX, MenuCanvas.MenuItems[idx].DrawBounds.MidY);
+                                break;
+                            }
                         }
                     }
-                }
-                if(location.X > 0 && location.Y > 0)
-                {
-                    SKTouchEventArgs e = new SKTouchEventArgs(-1, SKTouchAction.Released, location, false);
-                    MenuCanvas_NormalClickRelease(sender, e);
-                    if (MenuCanvas.SelectionHow == SelectionMode.Single)
-                        MenuOKButton_Clicked(sender, new EventArgs());
-                    args.Handled = true;
+                    if(somethingFound)
+                    {
+                        if (doclickok)
+                        {
+                            MenuCanvas.InvalidateSurface();
+                            MenuOKButton_Clicked(sender, new EventArgs());
+                        }
+                        else
+                        {
+                            if (MenuCanvas.SelectionHow == SelectionMode.Single)
+                                MenuOKButton_Clicked(sender, new EventArgs());
+                        }
+                        args.Handled = true;
+                    }
+
+                    //if (location.X > 0 && location.Y > 0)
+                    //{
+                    //    SKTouchEventArgs e = new SKTouchEventArgs(-1, SKTouchAction.Released, location, false);
+                    //    MenuCanvas_NormalClickRelease(sender, e);
+                    //    if (MenuCanvas.SelectionHow == SelectionMode.Single)
+                    //        MenuOKButton_Clicked(sender, new EventArgs());
+                    //    args.Handled = true;
+                    //}
                 }
             }
             else if (!MenuGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible)
@@ -17137,54 +17259,61 @@ namespace GnollHackX.Pages.Game
         }
         private void PageContent_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
-            if (e.Key == VirtualKey.LeftControl || e.Key == VirtualKey.RightControl || e.Key == VirtualKey.Control)
+            if(HandleKeyDown(sender, e.Key))
+                e.Handled = true;
+        }
+
+        private bool HandleKeyDown(object sender, VirtualKey key)
+        {
+            bool handled = false;
+            if (key == VirtualKey.LeftControl || key == VirtualKey.RightControl || key == VirtualKey.Control)
             {
                 GHApp.CtrlDown = true;
-                e.Handled = true;
+                handled = true;
             }
-            else if (e.Key == VirtualKey.LeftMenu || e.Key == VirtualKey.RightMenu || e.Key == VirtualKey.Menu)
+            else if (key == VirtualKey.LeftMenu || key == VirtualKey.RightMenu || key == VirtualKey.Menu)
             {
                 GHApp.AltDown = true;
-                e.Handled = true;
+                handled = true;
             }
-            else if (e.Key == VirtualKey.LeftShift || e.Key == VirtualKey.RightShift || e.Key == VirtualKey.Shift)
+            else if (key == VirtualKey.LeftShift || key == VirtualKey.RightShift || key == VirtualKey.Shift)
             {
                 GHApp.ShiftDown = true;
-                e.Handled = true;
+                handled = true;
             }
-            else if(LoadingGrid.IsVisible || !GHApp.IsPageOnTopOfModalNavigationStack(this))
+            else if (LoadingGrid.IsVisible || !GHApp.IsPageOnTopOfModalNavigationStack(this))
             {
                 /* Nothing */
             }
-            else if(TextGrid.IsVisible && (e.Key == Windows.System.VirtualKey.Escape))
+            else if (TextGrid.IsVisible && (key == Windows.System.VirtualKey.Escape))
             {
                 TextCanvas_Pressed(sender, new EventArgs());
-                e.Handled = true;
+                handled = true;
             }
-            else if (MoreCommandsGrid.IsVisible && (e.Key == Windows.System.VirtualKey.Escape))
+            else if (MoreCommandsGrid.IsVisible && (key == Windows.System.VirtualKey.Escape))
             {
                 CommandCanvas_Pressed(sender, new EventArgs());
-                e.Handled = true;
+                handled = true;
             }
-            else if (PopupGrid.IsVisible && (e.Key == Windows.System.VirtualKey.Escape))
+            else if (PopupGrid.IsVisible && (key == Windows.System.VirtualKey.Escape))
             {
                 PopupOkButton_Clicked(sender, new EventArgs());
-                e.Handled = true;
+                handled = true;
             }
-            else if (GetLineGrid.IsVisible && (e.Key == Windows.System.VirtualKey.Escape))
+            else if (GetLineGrid.IsVisible && (key == Windows.System.VirtualKey.Escape))
             {
                 GetLineCancelButton_Clicked(sender, new EventArgs());
-                e.Handled = true;
+                handled = true;
             }
-            else if (MenuGrid.IsVisible && (e.Key == Windows.System.VirtualKey.Escape))
+            else if (MenuGrid.IsVisible && (key == Windows.System.VirtualKey.Escape))
             {
                 MenuCancelButton_Clicked(sender, new EventArgs());
-                e.Handled = true;
+                handled = true;
             }
-            else if (MenuGrid.IsVisible && MenuOKButton.IsEnabled && (e.Key == Windows.System.VirtualKey.Enter))
+            else if (MenuGrid.IsVisible && MenuOKButton.IsEnabled && (key == Windows.System.VirtualKey.Enter))
             {
                 MenuOKButton_Clicked(sender, new EventArgs());
-                e.Handled = true;
+                handled = true;
             }
             else if (!MenuGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible)
             {
@@ -17194,25 +17323,26 @@ namespace GnollHackX.Pages.Game
                 }
 
                 int resp = 0;
-                if (e.Key == Windows.System.VirtualKey.Left)
+                if (key == Windows.System.VirtualKey.Left)
                     resp = -14;
-                else if (e.Key == Windows.System.VirtualKey.Right)
+                else if (key == Windows.System.VirtualKey.Right)
                     resp = -16;
-                else if (e.Key == Windows.System.VirtualKey.Up)
+                else if (key == Windows.System.VirtualKey.Up)
                     resp = -18;
-                else if (e.Key == Windows.System.VirtualKey.Down)
+                else if (key == Windows.System.VirtualKey.Down)
                     resp = -12;
-                else if (e.Key >= Windows.System.VirtualKey.NumberPad1 && e.Key <= Windows.System.VirtualKey.NumberPad9)
-                    resp = -11 - (e.Key - Windows.System.VirtualKey.NumberPad1);
-                else if (IsMetaKeyPressed() && e.Key >= Windows.System.VirtualKey.A && e.Key <= Windows.System.VirtualKey.Z)
-                    resp = GHUtils.Meta((IsShiftKeyPressed() ? (int)'A' : (int)'a') + (int)e.Key - (int)Windows.System.VirtualKey.A);
+                else if (key >= Windows.System.VirtualKey.NumberPad1 && key <= Windows.System.VirtualKey.NumberPad9)
+                    resp = -11 - (key - Windows.System.VirtualKey.NumberPad1);
+                else if (IsMetaKeyPressed() && key >= Windows.System.VirtualKey.A && key <= Windows.System.VirtualKey.Z)
+                    resp = GHUtils.Meta((IsShiftKeyPressed() ? (int)'A' : (int)'a') + (int)key - (int)Windows.System.VirtualKey.A);
 
                 if (resp != 0)
                 {
                     GenericButton_Clicked(sender, new EventArgs(), resp);
-                    e.Handled = true;
+                    handled = true;
                 }
             }
+            return handled;
         }
 
         private void PageContent_KeyUp(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)

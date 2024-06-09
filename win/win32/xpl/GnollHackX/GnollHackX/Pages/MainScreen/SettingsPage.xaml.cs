@@ -1395,7 +1395,11 @@ namespace GnollHackX.Pages.MainScreen
             PostBonesSwitch_Toggled(sender, new ToggledEventArgs(PostBonesSwitch.IsToggled));
         }
 
+#if GNH_MAUI
+        private void BonesAllowedUsersLabel_TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+#else
         private void BonesAllowedUsersLabel_TapGestureRecognizer_Tapped(object sender, EventArgs e)
+#endif
         {
             PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
             PopupTitleLabel.Text = BonesListSwitch.IsToggled ? "Disallowed Users for Received Bones" : "Allowed Users for Received Bones";
@@ -1448,7 +1452,11 @@ namespace GnollHackX.Pages.MainScreen
 
         }
 
+#if GNH_MAUI
+        private void RecordLabel_TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+#else
         private void RecordLabel_TapGestureRecognizer_Tapped(object sender, EventArgs e)
+#endif
         {
             if(RecordSwitch.IsEnabled)
             {
@@ -1475,7 +1483,11 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
+#if GNH_MAUI
+        private void GZipLabel_TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+#else
         private void GZipLabel_TapGestureRecognizer_Tapped(object sender, EventArgs e)
+#endif
         {
             if (GZipSwitch.IsEnabled)
             {

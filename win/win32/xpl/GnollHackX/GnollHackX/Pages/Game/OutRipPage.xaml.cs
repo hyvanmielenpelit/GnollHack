@@ -49,7 +49,11 @@ namespace GnollHackX.Pages.Game
         }
 
         private bool _tapHide = false;
+#if GNH_MAUI
+        private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+#else
         private async void TapGestureRecognizer_Tapped(object sender, EventArgs e)
+#endif
         {
             if(!_playingReplay)
             {

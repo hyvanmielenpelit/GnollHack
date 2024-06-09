@@ -1349,6 +1349,14 @@ namespace GnollHackX
             PopupLabel.Text = "Tournament Mode is Classic Mode with minimum difficulty at Expert. It also forces on game progress and top score reporting, bones sharing, and game recording.";
             PopupGrid.IsVisible = true;
         }
+
+        private void KeyboardFocusButton_Clicked(object sender, EventArgs e)
+        {
+            if(GHApp.CurrentGamePage != null)
+            {
+                GHApp.CurrentGamePage.SendEnterPressed();
+            }
+        }
     }
 
 }
