@@ -14789,10 +14789,15 @@ namespace GnollHackX.Pages.Game
 
         private void MenuCanvas_MouseWheel(object sender, GHMouseWheelEventArgs e)
         {
-            if (e.MouseWheelDelta != 0)
+            ScrollMenu(e.MouseWheelDelta);
+        }
+
+        private void ScrollMenu(int delta)
+        {
+            if (delta != 0)
             {
                 float bottomScrollLimit = Math.Min(0, MenuCanvas.CanvasSize.Height - TotalMenuHeight);
-                float scrollAmount = (MenuCanvas.CanvasSize.Height * e.MouseWheelDelta) / (10 * 120);
+                float scrollAmount = (MenuCanvas.CanvasSize.Height * delta) / (10 * 120);
                 lock (_menuScrollLock)
                 {
                     _menuScrollOffset += scrollAmount;
@@ -17360,14 +17365,16 @@ namespace GnollHackX.Pages.Game
                 GetLineCancelButton_Clicked(sender, new EventArgs());
                 handled = true;
             }
-            else if (MenuGrid.IsVisible && (key == Windows.System.VirtualKey.Escape))
+            else if (MenuGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Up || key == Windows.System.VirtualKey.Down))
             {
-                MenuCancelButton_Clicked(sender, new EventArgs());
-                handled = true;
-            }
-            else if (MenuGrid.IsVisible && MenuOKButton.IsEnabled && (key == Windows.System.VirtualKey.Enter))
-            {
-                MenuOKButton_Clicked(sender, new EventArgs());
+                if(key == Windows.System.VirtualKey.Escape)
+                    MenuCancelButton_Clicked(sender, new EventArgs());
+                else if (key == Windows.System.VirtualKey.Enter)
+                    MenuOKButton_Clicked(sender, new EventArgs());
+                else if (key == Windows.System.VirtualKey.Up)
+                    ScrollMenu(120);
+                else if (key == Windows.System.VirtualKey.Down)
+                    ScrollMenu(-120);
                 handled = true;
             }
             else if (!MenuGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible)
