@@ -8,7 +8,7 @@
              BackgroundColor="Black"
              Disappearing="ContentPage_Disappearing">
     
-        <AbsoluteLayout HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Black" >
+        <AbsoluteLayout x:Name="RootGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Black" >
             <Grid x:Name="OutRipGrid" HorizontalOptions="Center" VerticalOptions="Center" 
                   AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
                 <Grid.GestureRecognizers>

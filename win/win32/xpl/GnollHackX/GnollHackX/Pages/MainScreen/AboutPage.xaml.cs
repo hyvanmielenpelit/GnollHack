@@ -34,6 +34,7 @@ namespace GnollHackX.Pages.MainScreen
 
             InitializeComponent();
             On<iOS>().SetUseSafeArea(true);
+            UIUtils.AdjustRootLayout(RootGrid);
         }
 
         private async void btnCreditsX_Clicked(object sender, EventArgs e)

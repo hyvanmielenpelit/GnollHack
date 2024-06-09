@@ -29,6 +29,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             InitializeComponent();
             On<iOS>().SetUseSafeArea(true);
+            UIUtils.AdjustRootLayout(RootGrid);
 
             _fileName = fileName;
             HeaderLabel.Text = header;

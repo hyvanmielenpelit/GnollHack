@@ -5,7 +5,7 @@
              BackgroundColor="Black"
              x:Class="GnollHackX.Pages.MainScreen.EditorPage">
     <ContentPage.Content>
-        <Grid>
+        <Grid x:Name="RootGrid">
             <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
             <Grid WidthRequest  ="1024" RowSpacing="6" HorizontalOptions="Fill" VerticalOptions="Fill" >
                 <Grid.RowDefinitions>

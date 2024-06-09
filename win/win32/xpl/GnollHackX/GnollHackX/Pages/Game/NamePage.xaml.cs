@@ -35,6 +35,7 @@ namespace GnollHackX.Pages.Game
         {
             InitializeComponent();
             On<iOS>().SetUseSafeArea(true);
+            UIUtils.AdjustRootLayout(RootGrid);
 #if GNH_MAUI
             Loaded += ContentPage_Loaded;
 #else

@@ -29,6 +29,7 @@ namespace GnollHackX.Pages.Game
         {
             InitializeComponent();
             On<iOS>().SetUseSafeArea(true);
+            UIUtils.AdjustRootLayout(RootGrid);
             UrlWebViewSource Source = new UrlWebViewSource
             {
                 Url = wikiUrl,

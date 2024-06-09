@@ -30,6 +30,7 @@ namespace GnollHackX.Pages.Game
         {
             InitializeComponent();
             On<iOS>().SetUseSafeArea(true);
+            UIUtils.AdjustRootLayout(RootGrid);
 
             _gamePage = gamePage;
             _window = window;

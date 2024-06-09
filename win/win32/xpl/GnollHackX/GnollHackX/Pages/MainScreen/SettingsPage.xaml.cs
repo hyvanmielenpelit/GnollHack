@@ -45,6 +45,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             InitializeComponent();
             On<iOS>().SetUseSafeArea(true);
+            UIUtils.AdjustRootLayout(RootGrid);
 
             _gameMenuPage = gameMenuPage;
             if (_gameMenuPage != null)

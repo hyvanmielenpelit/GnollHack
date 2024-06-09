@@ -7,7 +7,7 @@
              BackgroundColor="Black"
              x:Class="GnollHackX.Pages.Game.NamePage">
     <ContentPage.Content>
-        <Grid>
+        <Grid x:Name="RootGrid">
             <gnollhackclient:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
             <StackLayout x:Name="mainStack" Spacing="6" Padding="10">
                 <Label x:Name="WhatNameLabel" Text="What is your name?" FontFamily="Diablo" FontSize="19" Margin="0,10,0,30" TextColor="Black" HorizontalTextAlignment="Center"

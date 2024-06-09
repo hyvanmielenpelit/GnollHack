@@ -814,6 +814,7 @@ namespace GnollHackX.Pages.Game
         {
             InitializeComponent();
             On<iOS>().SetUseSafeArea(true);
+            UIUtils.AdjustRootLayout(RootGrid);
 
             _mainPage = mainPage;
 

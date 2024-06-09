@@ -6,7 +6,7 @@
              BackgroundColor="Black"
              x:Class="GnollHackM.WikiPage">
     
-        <Grid>
+        <Grid x:Name="RootGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50" />
                 <RowDefinition Height="*" />

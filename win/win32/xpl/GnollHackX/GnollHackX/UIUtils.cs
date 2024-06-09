@@ -1134,6 +1134,14 @@ namespace GnollHackX
                 DrawSparkle(canvas, paint, padding + point.X * width, padding + point.Y * height,  ssize, generalcounter - (ctr_diff += df), true);
             }
         }
+
+        public static void AdjustRootLayout(Layout layout)
+        {
+            /* Hopefully a temporary workaround for Maui Windows modal bug */
+#if WINDOWS
+            layout.Margin = new(0, -32, 0, 0);
+#endif
+        }
     }
 
     public class TouchEntry

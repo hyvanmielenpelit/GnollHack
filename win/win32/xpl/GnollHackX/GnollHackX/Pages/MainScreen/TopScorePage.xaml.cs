@@ -32,6 +32,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             InitializeComponent();
             On<iOS>().SetUseSafeArea(true);
+            UIUtils.AdjustRootLayout(RootGrid);
 
             _fileName = fileName;
             ScoresView.BindingContext = this;
@@ -60,6 +61,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             InitializeComponent();
             On<iOS>().SetUseSafeArea(true);
+            UIUtils.AdjustRootLayout(RootGrid);
 
             _fileName = "";
             NoScoresLabel.IsVisible = true;

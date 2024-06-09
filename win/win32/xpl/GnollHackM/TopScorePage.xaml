@@ -7,7 +7,7 @@
              BackgroundColor="Black"
              x:Class="GnollHackM.TopScorePage">
     
-        <Grid HorizontalOptions="Fill" VerticalOptions="Fill">
+        <Grid x:Name="RootGrid" HorizontalOptions="Fill" VerticalOptions="Fill">
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
             <Grid x:Name="MainGrid" MaximumWidthRequest="1100" RowSpacing="6" HorizontalOptions="Center" VerticalOptions="Fill" >
                 <Grid.RowDefinitions>
