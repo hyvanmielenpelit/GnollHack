@@ -571,9 +571,11 @@ namespace GnollHackX.Pages.Game
             get { return canvasView.UseGL; }
             set {
                 canvasView.UseGL = value;
+                CommandCanvas.UseGL = value;
+#if !WINDOWS
                 MenuCanvas.UseGL = value;
                 TextCanvas.UseGL = value;
-                CommandCanvas.UseGL = value;
+#endif
             }
         }
         private bool _useSimpleCmdLayout = true;
@@ -15699,7 +15701,7 @@ namespace GnollHackX.Pages.Game
             float scale = canvaswidth / (float)CommandCanvas.Width;
             bool isLandscape = canvaswidth > canvasheight;
 
-            canvas.Clear();
+            canvas.Clear(SKColors.Black);
             if (canvaswidth <= 16 || canvasheight <= 16)
                 return;
 
