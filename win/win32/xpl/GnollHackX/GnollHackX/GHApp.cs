@@ -426,7 +426,11 @@ namespace GnollHackX
             get
             {
 #if GNH_MAUI
+#if WINDOWS
+                return false;
+#else
                 return true;
+#endif
 #else
                 if (IsiOS || !GHConstants.IsGPUDefault)
                     return GHConstants.IsGPUDefault; /* No need to check on Apple or if GHConstants.IsGPUDefault is set to false */
@@ -716,7 +720,9 @@ namespace GnollHackX
 
         public static void UpdateTheme(bool isDarkTheme)
         {
+#if GNH_MAUI
             Microsoft.Maui.Controls.Application.Current.UserAppTheme = isDarkTheme ? AppTheme.Dark : AppTheme.Light;
+#endif
 #if WINDOWS
             SetPageTheme(CurrentMainPage, isDarkTheme);
             if (CurrentMainPage != null && CurrentMainPage.Navigation.ModalStack.Count > 0)
