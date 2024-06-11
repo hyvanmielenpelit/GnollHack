@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
 using SkiaSharp.Views.Maui.Controls.Hosting;
+using System.Runtime.Intrinsics.Arm;
+using GnollHackX;
 
 #if IOS
 using GnollHackM.Platforms.iOS;
@@ -37,6 +39,7 @@ public static class MauiProgram
                     windowsLifecycleBuilder.OnWindowCreated(window =>
                     {
                         window.ExtendsContentIntoTitleBar = false;
+                        GHApp.WindowsXamlWindow = window;
                         var handle = WinRT.Interop.WindowNative.GetWindowHandle(window);
                         var id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
                         var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(id);

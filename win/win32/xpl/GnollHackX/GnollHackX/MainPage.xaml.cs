@@ -27,7 +27,6 @@ using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using Newtonsoft.Json.Linq;
 
-
 #if WINDOWS
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
@@ -82,6 +81,14 @@ namespace GnollHackX
             _generalTimer.Interval = TimeSpan.FromSeconds(GHConstants.MainScreenGeneralCounterIntervalInSeconds);
             _generalTimer.IsRepeating = true;
             _generalTimer.Tick += (s, e) => { if(!DoGeneralTimerTick()) _generalTimer.Stop(); };
+
+            Loaded += (s, e) => {
+#if WINDOWS
+                GHApp.ResolutionScale = GHApp.WindowsXamlWindow != null && GHApp.WindowsXamlWindow.Content != null && GHApp.WindowsXamlWindow.Content.XamlRoot != null ? (float)GHApp.WindowsXamlWindow.Content.XamlRoot.RasterizationScale : 1.0f;
+                if (GHApp.DisplayScale > 0 && GHApp.ResolutionScale > 0)
+                    GHApp.TotalDisplayScale = GHApp.DisplayScale * GHApp.ResolutionScale;
+#endif
+            };
 #endif
         }
 

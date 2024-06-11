@@ -77,6 +77,10 @@ namespace GnollHackX
 
     public static class GHApp
     {
+#if WINDOWS
+        public static Microsoft.UI.Xaml.Window WindowsXamlWindow = null;
+#endif
+
         public static void Initialize()
         {
             VersionTracking.Track();
@@ -89,6 +93,8 @@ namespace GnollHackX
             Battery.BatteryInfoChanged += Battery_BatteryInfoChanged;
 
             TotalMemory = GHApp.PlatformService.GetDeviceMemoryInBytes();
+            if (DisplayScale > 0 && ResolutionScale > 0)
+                TotalDisplayScale = DisplayScale * ResolutionScale;
 
             Assembly assembly = typeof(App).GetTypeInfo().Assembly;
             InitBaseTypefaces(assembly);
@@ -965,6 +971,8 @@ namespace GnollHackX
         public static readonly float DisplayScale = DeviceDisplay.MainDisplayInfo.Density <= 0 ? 1.0f : (float)DeviceDisplay.MainDisplayInfo.Density;
         public static readonly float DisplayWidth = (float)DeviceDisplay.MainDisplayInfo.Width * DisplayScale;
         public static readonly float DisplayHeight = (float)DeviceDisplay.MainDisplayInfo.Height * DisplayScale;
+        public static float ResolutionScale { get; set; } = 1.0f;
+        public static float TotalDisplayScale { get; set; } = 1.0f;
 
         public static GHPlatform PlatformId
         {

@@ -38,6 +38,5 @@ namespace GnollHackX
         void RequestAppReview(ContentPage page);
         int FetchOnDemandPack(string pack);
         event EventHandler<AssetPackStatusEventArgs> OnDemandPackStatusNotification;
-
     }
 }
