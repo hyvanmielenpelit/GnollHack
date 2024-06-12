@@ -15661,8 +15661,7 @@ namespace GnollHackX.Pages.Game
         public int MoreCmdPage { get { lock (_moreCmdLock) { return _moreCmdPage; } } set { lock (_moreCmdLock) { _moreCmdPage = value; } } }
         public float MoreCmdOffsetX { get { lock (_moreCmdLock) { return _moreCmdOffsetX; } } set { lock (_moreCmdLock) { _moreCmdOffsetX = value; } } }
         public float MoreCmdOffsetY { get { lock (_moreCmdLock) { return _moreCmdOffsetY; } } set { lock (_moreCmdLock) { _moreCmdOffsetY = value; } } }
-        private float _moreCmdOffsetAutoSpeed = 5.0f; /* Screen widths per second */
-
+        private readonly float _moreCmdOffsetAutoSpeed = 5.0f; /* Screen widths per second */
 
         public readonly object CommandButtonLock = new object();
         private ConcurrentDictionary<long, TouchEntry> CommandTouchDictionary = new ConcurrentDictionary<long, TouchEntry>();
@@ -17348,17 +17347,41 @@ namespace GnollHackX.Pages.Game
             {
                 /* Nothing */
             }
-            else if (TextGrid.IsVisible && (key == Windows.System.VirtualKey.Escape))
+            else if (TextGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space))
             {
                 TextCanvas_Pressed(sender, new EventArgs());
                 handled = true;
             }
-            else if (MoreCommandsGrid.IsVisible && (key == Windows.System.VirtualKey.Escape))
+            else if (MoreCommandsGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space))
             {
                 CommandCanvas_Pressed(sender, new EventArgs());
                 handled = true;
             }
-            else if (PopupGrid.IsVisible && (key == Windows.System.VirtualKey.Escape))
+            else if (MoreCommandsGrid.IsVisible && (key == Windows.System.VirtualKey.Left || key == Windows.System.VirtualKey.Right))
+            {
+                int cmdPage = MoreCmdPage;
+                if (key == Windows.System.VirtualKey.Left)
+                {
+                    if (cmdPage > (EnableWizardMode ? 0 : 1))
+                    {
+                        MoreCmdPage = cmdPage - 1;
+                        MoreCmdOffsetX = 0;
+                        CommandCanvas.InvalidateSurface();
+                    }
+                    handled = true;
+                }
+                else if (key == Windows.System.VirtualKey.Right)
+                {
+                    if (cmdPage < CurrentMoreButtonPageMaxNumber - 1)
+                    {
+                        MoreCmdPage = cmdPage + 1;
+                        MoreCmdOffsetX = 0;
+                        CommandCanvas.InvalidateSurface();
+                    }
+                    handled = true;
+                }
+            }
+            else if (PopupGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space))
             {
                 PopupOkButton_Clicked(sender, new EventArgs());
                 handled = true;
@@ -17368,11 +17391,11 @@ namespace GnollHackX.Pages.Game
                 GetLineCancelButton_Clicked(sender, new EventArgs());
                 handled = true;
             }
-            else if (MenuGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Up || key == Windows.System.VirtualKey.Down))
+            else if (MenuGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || (MenuOKButton.IsEnabled && (key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space)) || key == Windows.System.VirtualKey.Up || key == Windows.System.VirtualKey.Down))
             {
                 if(key == Windows.System.VirtualKey.Escape)
                     MenuCancelButton_Clicked(sender, new EventArgs());
-                else if (key == Windows.System.VirtualKey.Enter)
+                else if (MenuOKButton.IsEnabled && (key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space))
                     MenuOKButton_Clicked(sender, new EventArgs());
                 else if (key == Windows.System.VirtualKey.Up)
                     ScrollMenu(120);
