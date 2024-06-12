@@ -17347,11 +17347,6 @@ namespace GnollHackX.Pages.Game
             {
                 /* Nothing */
             }
-            else if (TextGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space))
-            {
-                TextCanvas_Pressed(sender, new EventArgs());
-                handled = true;
-            }
             else if (MoreCommandsGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space))
             {
                 CommandCanvas_Pressed(sender, new EventArgs());
@@ -17389,6 +17384,11 @@ namespace GnollHackX.Pages.Game
             else if (GetLineGrid.IsVisible && (key == Windows.System.VirtualKey.Escape))
             {
                 GetLineCancelButton_Clicked(sender, new EventArgs());
+                handled = true;
+            }
+            else if (TextGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space))
+            {
+                TextCanvas_Pressed(sender, new EventArgs());
                 handled = true;
             }
             else if (MenuGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || (MenuOKButton.IsEnabled && (key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space)) || key == Windows.System.VirtualKey.Up || key == Windows.System.VirtualKey.Down))
