@@ -42,7 +42,7 @@ namespace GnollHackX
         private bool _ynConfirmationResult = false;
         private bool _characternameSet = false;
         private string _characterName = "";
-        private object _characterNameLock = new object();
+        private readonly object _characterNameLock = new object();
         private bool _useLongerMessageHistory = false;
 
         private readonly GamePage _gamePage;
@@ -55,7 +55,7 @@ namespace GnollHackX
 
         private int _lastWindowHandle = 0;
         private GHWindow[] _ghWindows = new GHWindow[GHConstants.MaxGHWindows];
-        private object _ghWindowsLock = new object();
+        private readonly object _ghWindowsLock = new object();
         public GHWindow[] Windows { get { return _ghWindows; } }
         public object WindowsLock { get { return _ghWindowsLock; } }
         public int MapWindowId { get; set; }
