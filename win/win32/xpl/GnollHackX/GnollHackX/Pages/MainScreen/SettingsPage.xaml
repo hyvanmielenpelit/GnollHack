@@ -134,12 +134,13 @@
                                 <Switch Grid.Column="1" x:Name="FPSSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Allow Ghost Levels"
+                                <Label x:Name="AllowBonesLabel" 
+                                    Text="Allow Ghost Levels"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="BonesSwitch" Toggled="BonesSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="AllowBonesSwitch" Toggled="AllowBonesSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Silent Mode"
@@ -155,7 +156,11 @@
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
+                                    HorizontalOptions="Start" >
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="TournamentLabel_TapGestureRecognizer_Tapped" />
+                                    </Label.GestureRecognizers>
+                                </Label>
                                 <Switch Grid.Column="1" x:Name="TournamentSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="TournamentSwitch_Toggled" />
                             </Grid>
 
@@ -568,15 +573,17 @@
 
                             <Label Text="Forum Posting" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Post Game Progress"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
+                                <Label x:Name="PostGameStatusLabel"
+                                       Text="Post Game Progress"
+                                       FontFamily="Underwood" TextColor="Black"
+                                       FontSize="15"
+                                       VerticalOptions="Center" 
+                                       HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="PostGameStatusSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                             </Grid>
                             <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
-                                <Label Text="  Webhook Link"
+                                <Label x:Name="CustomWebHookLinkTitleLabel"
+                                        Text="  Webhook Link"
                                         FontFamily="Underwood" TextColor="Black"
                                         FontSize="15"
                                         VerticalOptions="CenterAndExpand" 
@@ -604,7 +611,8 @@
 
                             <Label Text="Server Posting" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                             <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
-                                <Label Text="Account"
+                                <Label x:Name="AccountTitleLabel"
+                                        Text="Account"
                                         FontFamily="Underwood" TextColor="Black"
                                         FontSize="15"
                                         VerticalOptions="CenterAndExpand" 
@@ -627,7 +635,8 @@
                                         HorizontalOptions="End" />
                             </StackLayout>
                             <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
-                                <Label Text="Posting"
+                                <Label x:Name="PostingTitleLabel"
+                                        Text="Posting"
                                         FontFamily="Underwood" TextColor="Black"
                                         FontSize="15"
                                         VerticalOptions="CenterAndExpand" 
@@ -679,27 +688,30 @@
                                 <Switch Grid.Column="1" x:Name="XlogReleaseAccountSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Post Top Scores"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
+                                <Label x:Name="PostXlogLabel" 
+                                       Text="Post Top Scores"
+                                       FontFamily="Underwood" TextColor="Black"
+                                       FontSize="15"
+                                       VerticalOptions="Center" 
+                                       HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="PostXlogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40" IsVisible="False">
-                                <Label Text="Upload Replays"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
+                                <Label x:Name="PostReplaysLabel"
+                                       Text="Upload Replays"
+                                       FontFamily="Underwood" TextColor="Black"
+                                       FontSize="15"
+                                       VerticalOptions="Center" 
+                                       HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="PostReplaysSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Share Bones Files" x:Name="PostBonesLabel"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
+                                <Label x:Name="PostBonesLabel"
+                                       Text="Share Bones Files" 
+                                       FontFamily="Underwood" TextColor="Black"
+                                       FontSize="15"
+                                       VerticalOptions="Center" 
+                                       HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="PostBonesSwitch" Toggled="PostBonesSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -757,16 +769,18 @@
                                 <Switch Grid.Column="1" x:Name="ShowRecordingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Auto-Upload to Cloud"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start">
+                                <Label x:Name="AutoUploadReplaysLabel"
+                                       Text="Auto-Upload to Cloud"
+                                        FontFamily="Underwood" TextColor="Black"
+                                        FontSize="15"
+                                        VerticalOptions="Center" 
+                                        HorizontalOptions="Start">
                                 </Label>
                                 <Switch Grid.Column="1" x:Name="AutoUploadReplaysSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                             </Grid>
                             <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
-                                <Label Text="Cloud Storage"
+                                <Label x:Name="CloudStorageTitleLabel"
+                                        Text="Cloud Storage"
                                         FontFamily="Underwood" TextColor="Black"
                                         FontSize="15"
                                         VerticalOptions="CenterAndExpand" 
@@ -884,7 +898,9 @@
                                 <Switch Grid.Column="1" x:Name="GZipSwitch" Toggled="GZipSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Save on Switching Apps"
+                                <Label 
+                                        x:Name="SaveStyleLabel"
+                                        Text="Save on Switching Apps"
                                         FontFamily="Underwood" TextColor="Black"
                                         FontSize="15"
                                         VerticalOptions="Center" 

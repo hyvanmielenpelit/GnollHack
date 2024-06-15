@@ -56,6 +56,7 @@ namespace GnollHackX.Pages.MainScreen
             _mainPage = mainPage;
 
             lblHeader.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            SetTournamentModeLabelColors(GHApp.TournamentMode);
             SetChildrenDarkModeTextColor(RootLayout, GHApp.DarkMode);
 
             List<string> list = new List<string>
@@ -97,7 +98,7 @@ namespace GnollHackX.Pages.MainScreen
             SetInitialValues();
 
             ClassicStatusBarSwitch_Toggled(null, new ToggledEventArgs(ClassicStatusBarSwitch.IsToggled));
-            BonesSwitch_Toggled(null, new ToggledEventArgs(BonesSwitch.IsToggled));
+            AllowBonesSwitch_Toggled(null, new ToggledEventArgs(AllowBonesSwitch.IsToggled));
             BonesListSwitch_Toggled(null, new ToggledEventArgs(BonesListSwitch.IsToggled));
 
             if(!GHApp.RecommendedSettingsChecked)
@@ -143,6 +144,8 @@ namespace GnollHackX.Pages.MainScreen
                 Label l = (Label)view;
                 if(darkmode ? l.TextColor == GHColors.Black : l.TextColor == GHColors.White)
                     l.TextColor = darkmode ? GHColors.White : GHColors.Black;
+                else if (darkmode ? l.TextColor == GHColors.Green : l.TextColor == GHColors.LightGreen)
+                    l.TextColor = darkmode ? GHColors.LightGreen : GHColors.Green;
             }
 #if GNH_MAUI
             else if (view is Microsoft.Maui.Controls.Entry)
@@ -171,6 +174,30 @@ namespace GnollHackX.Pages.MainScreen
                 l.TitleColor = darkmode ? GHColors.White : GHColors.Black;
             }
 #endif
+        }
+
+        private void SetTournamentModeLabelColors(bool isTournament)
+        {
+            Color offColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            Color onColor = GHApp.DarkMode ? GHColors.LightGreen : GHColors.Green;
+            Color usedColor = isTournament ? onColor : offColor;
+
+            RecordLabel.TextColor = RecordSwitch.IsEnabled ? usedColor : GHColors.Gray;
+            AutoUploadReplaysLabel.TextColor = AutoUploadReplaysSwitch.IsEnabled ? usedColor : GHColors.Gray;
+            SaveStyleLabel.TextColor = SaveStylePicker.IsEnabled ? usedColor : GHColors.Gray;
+            PostGameStatusLabel.TextColor = PostGameStatusSwitch.IsEnabled ? usedColor : GHColors.Gray;
+            PostXlogLabel.TextColor = PostXlogSwitch.IsEnabled ? usedColor : GHColors.Gray;
+            PostReplaysLabel.TextColor = PostReplaysSwitch.IsEnabled ? usedColor : GHColors.Gray;
+            PostBonesLabel.TextColor = PostBonesSwitch.IsEnabled ? usedColor : GHColors.Gray;
+            AllowBonesLabel.TextColor= AllowBonesSwitch.IsEnabled ? usedColor : GHColors.Gray;
+            GZipLabel.TextColor = GZipSwitch.IsEnabled ? usedColor : GHColors.Gray;
+
+            CustomWebHookLinkTitleLabel.TextColor = usedColor;
+            AccountTitleLabel.TextColor = usedColor;
+            PostingTitleLabel.TextColor = usedColor;
+            PostXlogUserNameLabel.TextColor = usedColor;
+            PostXlogPasswordLabel.TextColor = usedColor;
+            CloudStorageTitleLabel.TextColor = usedColor;
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
@@ -242,8 +269,8 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage.UseMainGLCanvas = GPUSwitch.IsToggled;
             Preferences.Set("UseMainGLCanvas", GPUSwitch.IsToggled);
 
-            GHApp.AllowBones = BonesSwitch.IsToggled;
-            Preferences.Set("AllowBones", BonesSwitch.IsToggled);
+            GHApp.AllowBones = AllowBonesSwitch.IsToggled;
+            Preferences.Set("AllowBones", AllowBonesSwitch.IsToggled);
 
             if (RecordSwitch.IsEnabled)
             {
@@ -792,7 +819,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             StreamingBankToMemorySwitch.IsToggled = streamingbanktomemory;
             StreamingBankToDiskSwitch.IsToggled = streamingbanktodisk;
-            BonesSwitch.IsToggled = allowbones;
+            AllowBonesSwitch.IsToggled = allowbones;
             RecordSwitch.IsToggled = recordgame;
             if (_gamePage != null || (!RecordSwitch.IsToggled && GHApp.PlatformService.GetDeviceFreeDiskSpaceInBytes() < GHConstants.LowFreeDiskSpaceThresholdInBytes)) /* Cannot turn on or off in the middle of the game; need to save and restart; otherwise either relevant commands are not recorded or things may get prone to bugs */
             {
@@ -1085,7 +1112,8 @@ namespace GnollHackX.Pages.MainScreen
         {
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            PostXlogUserNameLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            SetTournamentModeLabelColors(TournamentSwitch.IsToggled);
+            //PostXlogUserNameLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             BonesAllowedUsersLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             if (PostXlogUserNameEntry.Text != null && PostXlogUserNameEntry.Text != "")
             {
@@ -1382,18 +1410,19 @@ namespace GnollHackX.Pages.MainScreen
             XlogTestButton.IsEnabled = true;
         }
 
-        private void BonesSwitch_Toggled(object sender, ToggledEventArgs e)
+        private void AllowBonesSwitch_Toggled(object sender, ToggledEventArgs e)
         {
             PostBonesSwitch.IsEnabled = e.Value;
-            if (e.Value)
-            {
-                PostBonesLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
-            }
-            else
-            {
-                PostBonesLabel.TextColor = GHColors.Gray;
-            }
+            //if (e.Value)
+            //{
+            //    PostBonesLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            //}
+            //else
+            //{
+            //    PostBonesLabel.TextColor = GHColors.Gray;
+            //}
             PostBonesSwitch_Toggled(sender, new ToggledEventArgs(PostBonesSwitch.IsToggled));
+            SetTournamentModeLabelColors(TournamentSwitch.IsToggled);
         }
 
 #if GNH_MAUI
@@ -1586,16 +1615,22 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
+        private void ShowTournamentInfoPopup()
+        {
+            PopupTitleLabel.TextColor = GHColors.Orange;
+            PopupTitleLabel.Text = "Tournament Mode";
+            PopupLabel.Text = "Tournament Mode will force on Post Game Progress, Post Top Scores, Allow Ghost Levels, Share Bones Files, Record Game, and Auto-Upload to Cloud settings. The mode will also disable all special game play modes, custom links, and custom webhooks." + (GHApp.XlogUserNameVerified ? "" : Environment.NewLine + Environment.NewLine + "Please make sure that your user name and password for Server Posting are verified before proceeding.");
+            PopupOkButton.IsEnabled = true;
+            PopupGrid.IsVisible = true;
+        }
+
         private void TournamentSwitch_Toggled(object sender, ToggledEventArgs e)
         {
             if(e.Value && !GHApp.TournamentMode)
             {
-                PopupTitleLabel.TextColor = GHColors.Orange;
-                PopupTitleLabel.Text = "Tournament Mode";
-                PopupLabel.Text = "Tournament Mode will force on Post Game Progress, Post Top Scores, Allow Ghost Levels, Share Bones Files, Record Game, and Auto-Upload to Cloud settings. The mode will also disable all special game play modes, custom links, and custom webhooks." + (GHApp.XlogUserNameVerified ? "" : Environment.NewLine + Environment.NewLine + "Please make sure that your user name and password for Server Posting are verified before proceeding.");
-                PopupOkButton.IsEnabled = true;
-                PopupGrid.IsVisible = true;
+                ShowTournamentInfoPopup();
             }
+            SetTournamentModeLabelColors(e.Value);
         }
 
         private void PostDiagnosticDataSwitch_Toggled(object sender, ToggledEventArgs e)
@@ -1631,6 +1666,11 @@ namespace GnollHackX.Pages.MainScreen
             {
                 TextOkButton_Clicked(sender, e);
             }
+        }
+
+        private void TournamentLabel_TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            ShowTournamentInfoPopup();
         }
     }
 }
