@@ -673,7 +673,13 @@ namespace GnollHackX.Pages.Game
 
 
         /* Persistent temporary bitmap */
-        SKBitmap _tempBitmap = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+        SKBitmap _tempBitmap = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight,
+#if WINDOWS
+            SKColorType.Bgra8888,
+#else
+            SKColorType.Rgba8888,
+#endif
+            SKAlphaType.Unpremul);
 
         private readonly object _skillRectLock = new object(); 
         private SKRect _skillRect = new SKRect();
@@ -4815,7 +4821,7 @@ namespace GnollHackX.Pages.Game
                 {
                     try
                     {
-                        SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight, SKColorType.Rgba8888, SKAlphaType.Unpremul);
+                        SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight, pixmapTile.ColorType, pixmapTile.AlphaType);
                         _tempBitmap.CopyTo(newbmp);
                         newbmp.SetImmutable();
                         SKImage newimg = SKImage.FromBitmap(newbmp);
