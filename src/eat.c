@@ -1744,9 +1744,9 @@ char *buf;
                 Strcpy(eos(buf), " of ");
             }
             if (vegetarian(&mons[mnum]))
-                Sprintf(eos(buf), "%s", pm_common_name(&mons[mnum]));
+                Sprintf(eos(buf), "%s", pm_monster_name(&mons[mnum], (obj->speflags & SPEFLAGS_FEMALE) != 0));
             else
-                Sprintf(eos(buf), "%s meat", pm_common_name(&mons[mnum]));
+                Sprintf(eos(buf), "%s meat", pm_monster_name(&mons[mnum], (obj->speflags & SPEFLAGS_FEMALE) != 0));
         }
     }
 }
@@ -1848,7 +1848,7 @@ const char *mesg;
         } 
         else 
         {
-            what = pm_common_name(&mons[mnum]);
+            what = pm_monster_name(&mons[mnum], (tin->speflags & SPEFLAGS_FEMALE) != 0);
             if (the_unique_pm(&mons[mnum]))
                 which = 2;
             else if (is_mname_proper_name(&mons[mnum]))

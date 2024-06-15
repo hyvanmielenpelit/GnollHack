@@ -3248,6 +3248,7 @@ struct obj *obj;
         can->blessed = obj->blessed;
         can->owt = weight(can);
         can->known = 1;
+        can->speflags |= is_female_corpse_or_statue(corpse) ? SPEFLAGS_FEMALE : 0UL;
         /* Mark tinned tins. No spinach allowed... */
         set_tin_variety(can, HOMEMADE_TIN);
         if (carried(corpse)) 

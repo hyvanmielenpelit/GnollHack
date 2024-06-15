@@ -6148,7 +6148,8 @@ struct permonst *mdat;
     return msg_given ? TRUE : FALSE;
 }
 
-const char* pm_monster_name(ptr, isfemale)
+const char* 
+pm_monster_name(ptr, isfemale)
 struct permonst* ptr;
 uchar isfemale; /* 1 = female, 2 = neuter, transgender or the like */
 {
