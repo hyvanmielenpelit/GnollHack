@@ -1377,7 +1377,7 @@ struct obj *otmp;
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Ulch!  This potion was contaminated!");
         if (otmp->blessed)
         {
-            pline("(But in fact it was mildly stale %s.)", fruitname(TRUE));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "(But in fact it was mildly stale %s.)", fruitname(TRUE));
             if (!Role_if(PM_HEALER) && !Sick_resistance)
             {
                 losehp(adjust_damage(1, (struct monst*)0, &youmonst, AD_DISE, ADFLAGS_NONE), "mildly contaminated potion", KILLED_BY_AN);
@@ -1385,7 +1385,7 @@ struct obj *otmp;
         }
         else 
         {
-            pline("(But in fact it was biologically contaminated %s.)",  fruitname(TRUE));
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "(But in fact it was biologically contaminated %s.)",  fruitname(TRUE));
 
             if (Sick_resistance || Role_if(PM_HEALER))
             {

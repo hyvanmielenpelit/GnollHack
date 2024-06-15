@@ -2902,7 +2902,7 @@ boolean (*validitemfunc)(struct obj*);
         play_sfx_sound(SFX_GENERAL_CANNOT);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "don't have anything %sto %s%s", foox ? "else " : "", word, endbuf);
         if(writeendremark)
-            pline("(You cannot write on unidentified blank %s.)", unidbuf);
+            pline_ex(ATR_NONE, CLR_MSG_HINT, "(You cannot write on unidentified blank %s.)", unidbuf);
         return (struct obj *) 0;
     }
     

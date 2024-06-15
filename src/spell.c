@@ -4243,9 +4243,6 @@ boolean usehotkey;
 
 }
 
-
-
-
 STATIC_OVL
 void
 add_spell_cast_menu_heading(tmpwin, namelength, addemptyline)

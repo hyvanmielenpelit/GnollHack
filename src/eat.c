@@ -2235,7 +2235,7 @@ struct obj *otmp;
             make_food_poisoned(sick_time, corpse_xname(otmp, "rotted", CXN_NORMAL),
                       TRUE, HINT_KILLED_OLD_CORPSE);
 
-            pline("(It must have died too long ago to be safe to eat.)");
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "(It must have died too long ago to be safe to eat.)");
             standard_hint("Corpses rot and become dangerous to eat after a while. You can check their status out by using a wand of probing.", &u.uhint.ate_rotten_corpse);
         }
         if (carried(otmp))
