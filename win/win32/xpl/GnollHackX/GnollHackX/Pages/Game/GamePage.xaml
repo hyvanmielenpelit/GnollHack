@@ -16,7 +16,31 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <AbsoluteLayout Grid.Row="0" x:Name="GameLayout" VerticalOptions="Fill" HorizontalOptions="Fill">
+                <controls:SwitchableCanvasView x:Name="canvasView"
+                                                  UseGL="False"
+                                                  CanvasType="MainCanvas"
+                                                  EnableTouchEvents="True"
+                                                  PaintSurface="canvasView_PaintSurface" 
+                                                  Touch="canvasView_Touch"
+                                                  MouseWheel="canvasView_MouseWheel"
+                                                  HorizontalOptions="Fill" VerticalOptions="Fill" >
+                </controls:SwitchableCanvasView>
+
+                <StackLayout x:Name="WornItemsLayout" Padding="0,2" Spacing="6" HorizontalOptions="End" VerticalOptions="Start" BackgroundColor="Transparent" >
+                    <controls:LabeledImageButton x:Name="lWornItemsButton" LblText="" BtnLetter="]" LargerFont="True" BtnClicked="GHButton_Clicked" />
+                </StackLayout>
+
+                <StackLayout x:Name="AbilityLayout" Padding="0,2" Spacing="6" HorizontalOptions="Start" VerticalOptions="Start" BackgroundColor="Transparent" >
+                    <controls:LabeledImageButton x:Name="lAbilitiesButton" LblText="" BtnLetter="A" LargerFont="True" BtnClicked="GHButton_Clicked" />
+                </StackLayout>
+
+                <Frame x:Name="MessageFilterFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Start" >
+                    <StackLayout>
+                        <Entry x:Name="MessageFilterEntry" FontFamily="Underwood" FontSize="18" TextColor="White" BackgroundColor="#66000000" Placeholder="Search" PlaceholderColor="LightGray"
+                                   WidthRequest="200" Keyboard="Default" HorizontalTextAlignment="Center" TextChanged="MessageFilterEntry_TextChanged" />
+                    </StackLayout>
+                </Frame>
+                <!--<AbsoluteLayout Grid.Row="0" x:Name="GameLayout" VerticalOptions="Fill" HorizontalOptions="Fill">
                     <controls:SwitchableCanvasView x:Name="canvasView"
                                                   UseGL="False"
                                                   CanvasType="MainCanvas"
@@ -27,7 +51,6 @@
                                                   AbsoluteLayout.LayoutBounds="0.0, 0.0, 1.0, 1.0"
                                                   AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional">
                     </controls:SwitchableCanvasView>
-                    <!--ResourceCacheLimit="{x:Static gnh:GHConstants.GPUResourceCacheSize}"-->
 
                     <StackLayout x:Name="WornItemsLayout" Padding="0,2" Spacing="6"
                         HorizontalOptions="End"
@@ -50,7 +73,7 @@
                                    WidthRequest="200" Keyboard="Default" HorizontalTextAlignment="Center" TextChanged="MessageFilterEntry_TextChanged" />
                         </StackLayout>
                     </Frame>
-                </AbsoluteLayout>
+                </AbsoluteLayout>-->
 
                 <Grid x:Name="UIGrid" Grid.Row="0" RowSpacing="0" ColumnSpacing="0" InputTransparent="True" CascadeInputTransparent="False"
                       HorizontalOptions="Fill" VerticalOptions="Fill">
