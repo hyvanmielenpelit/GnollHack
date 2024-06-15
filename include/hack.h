@@ -668,7 +668,8 @@ enum bodypart_types {
 #define rn1(x, y) (rn2(x) + (y))
 
 /* negative armor class is randomly weakened to prevent invulnerability */
-#define AC_VALUE(AC) ((AC) >= 0 ? (AC) : (AC) >= -21 ? -rnd(-(AC)) : (AC) >= -41 ? -rnd(21 + (-(AC) - 21) / 2) : -rnd(31 + (-(AC) - 41) / 3))
+#define AC_VALUE(AC) ((AC) >= 0 ? (AC) : (AC) >= -21 ? -rnd(-(AC)) : (AC) >= -61 ? -rnd(21 + (-(AC) - 21) / 2) : -rnd(41 + (-(AC) - 61) / 3))
+#define AC_DAMAGE_REDUCTION_MAX(AC) ((AC) >= 0 ? 0 : (AC) >= -20 ? -(AC) : (AC) >= -60 ? (20 + (-(AC) - 20) / 2) : (40 + (-(AC) - 60) / 3)) 
 
 /* Object pile definition */
 #define is_objpile(x,y) (!Hallucination && level.objects[(x)][(y)] \
