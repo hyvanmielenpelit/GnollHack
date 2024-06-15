@@ -204,5 +204,13 @@ namespace GnollHackX.Pages.Game
             btnOK.IsEnabled = true;
             btnCancel.IsEnabled = true;
         }
+
+        private void eName_Completed(object sender, EventArgs e)
+        {
+            if (btnOK.IsEnabled)
+            {
+                btnOK_Clicked(sender, e);
+            }
+        }
     }
 }

@@ -12,7 +12,8 @@
             <StackLayout x:Name="mainStack" Spacing="6" Padding="10">
                 <Label x:Name="WhatNameLabel" Text="What is your name?" FontFamily="Diablo" FontSize="19" Margin="0,10,0,30" TextColor="Black" HorizontalTextAlignment="Center"
                     HorizontalOptions="CenterAndExpand" />
-                <Entry x:Name="eName" WidthRequest="320" HorizontalOptions="Center" HorizontalTextAlignment="Center" PlaceholderColor="Gray" Placeholder="Enter your name here" FontSize="20" FontFamily="Underwood" TextColor="Black" BackgroundColor="#20404040" />
+                <Entry x:Name="eName" WidthRequest="320" HorizontalOptions="Center" HorizontalTextAlignment="Center" PlaceholderColor="Gray" Placeholder="Enter your name here" FontSize="20" FontFamily="Underwood" TextColor="Black" BackgroundColor="#20404040"
+                       Completed="eName_Completed" />
                 <Label Text="Name can contain only letters, numbers, and underscores.&#x0a;Its length must be 1–31 characters." FontSize="Small" FontAttributes="Italic"
                        HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" TextColor="Gray" />
                 <Label x:Name="lblError" HorizontalOptions="CenterAndExpand" Text="" />

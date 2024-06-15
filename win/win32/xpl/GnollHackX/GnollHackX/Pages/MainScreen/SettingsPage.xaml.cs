@@ -1624,5 +1624,13 @@ namespace GnollHackX.Pages.MainScreen
                 }
             }
         }
+
+        private void TextEntry_Completed(object sender, EventArgs e)
+        {
+            if (TextOkButton.IsEnabled)
+            {
+                TextOkButton_Clicked(sender, e);
+            }
+        }
     }
 }

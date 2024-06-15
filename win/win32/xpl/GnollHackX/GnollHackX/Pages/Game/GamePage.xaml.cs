@@ -3176,7 +3176,15 @@ namespace GnollHackX.Pages.Game
                 GetLineMenuButton.IsEnabled = false;
                 //GetLineEntryText.IsEnabled = false;
             }
+
             GetLineGrid.IsVisible = true;
+
+            if(!PlayingReplay)
+            {
+#if WINDOWS
+                GetLineEntryText.Focus();
+#endif
+            }
         }
 
         private void HideGetLine()
@@ -14592,6 +14600,12 @@ namespace GnollHackX.Pages.Game
 
             MenuCountCaption.Text = (MenuCountEntry.IsVisible ? "Type" : "Select") + " Count for " + menuItemMainText;
             MenuCountBackgroundGrid.IsVisible = true;
+            if(MenuCountEntry.IsVisible)
+            {
+#if WINDOWS
+                MenuCountEntry.Focus();
+#endif
+            }
         }
 
         private void ClearHighlightMenuItems()
@@ -14734,8 +14748,11 @@ namespace GnollHackX.Pages.Game
             lock (MenuCanvas.MenuItemLock)
             {
                 if (MenuCanvas.MenuItems == null)
+                {
+                    _menuCountNumber = -1;
                     return false;
-               
+                }
+
                 if (mi.Identifier == 0)
                 {
                     if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (mi.Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0)
@@ -14766,7 +14783,7 @@ namespace GnollHackX.Pages.Game
                         mi.Selected = !mi.Selected;
                         if (mi.Selected)
                         {
-                            mi.Count = -1;
+                            mi.Count = _menuCountNumber > 0 && _menuCountNumber < mi.MaxCount ? _menuCountNumber : -1;
                             if (mi.IsAutoClickOk)
                                 doclickok = true;
                         }
@@ -14781,7 +14798,7 @@ namespace GnollHackX.Pages.Game
                         int oldselidx = MenuCanvas.SelectionIndex;
                         MenuCanvas.SelectionIndex = MenuCanvas.MenuItems.IndexOf(mi);
                         if (mi.Count == 0)
-                            mi.Count = -1;
+                            mi.Count = _menuCountNumber > 0 && _menuCountNumber < mi.MaxCount ? _menuCountNumber : -1;
 
                         /* Else keep the current selection number */
                         if (!MenuOKButton.IsEnabled)
@@ -14792,7 +14809,8 @@ namespace GnollHackX.Pages.Game
                     }
                 }
             }
-            
+
+            _menuCountNumber = -1;
             return doclickok;
         }
 
@@ -14832,6 +14850,7 @@ namespace GnollHackX.Pages.Game
             MenuOKButton.IsEnabled = false;
             MenuCancelButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
+            _menuCountNumber = -1;
 
             lock (_menuDrawOnlyLock)
             {
@@ -14895,6 +14914,7 @@ namespace GnollHackX.Pages.Game
             MenuOKButton.IsEnabled = false;
             MenuCancelButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
+            _menuCountNumber = -1;
 
             lock (_menuDrawOnlyLock)
             {
@@ -15154,19 +15174,23 @@ namespace GnollHackX.Pages.Game
 
         private void MenuEntry_Completed(object sender, EventArgs e)
         {
-            if (_countMenuItem != null)
+            //if (_countMenuItem != null)
+            //{
+            //    string str = MenuCountEntry.Text;
+            //    int value;
+            //    bool res = int.TryParse(str, out value);
+            //    if (res)
+            //    {
+            //        MenuCountEntry.TextColor = GHColors.Green;
+            //    }
+            //    else
+            //    {
+            //        MenuCountEntry.TextColor = GHColors.Red;
+            //    }
+            //}
+            if(MenuGrid.IsVisible && MenuOKButton.IsEnabled)
             {
-                string str = MenuCountEntry.Text;
-                int value;
-                bool res = int.TryParse(str, out value);
-                if (res)
-                {
-                    MenuCountEntry.TextColor = GHColors.Green;
-                }
-                else
-                {
-                    MenuCountEntry.TextColor = GHColors.Red;
-                }
+                MenuOKButton_Clicked(sender, e);
             }
         }
 
@@ -16702,6 +16726,15 @@ namespace GnollHackX.Pages.Game
                 UpdateGetLineAutoComplete();
         }
 
+        private void GetLineEntryText_Completed(object sender, EventArgs e)
+        {
+            if (GetLineGrid.IsVisible && GetLineOkButton.IsEnabled)
+            {
+                GetLineOkButton_Clicked(sender, e);
+            }
+        }
+
+
 #if GNH_MAUI
         private void GetLineAutoCompleteTapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
 #else
@@ -17229,6 +17262,16 @@ namespace GnollHackX.Pages.Game
 #endif
         }
 
+        private void GotoTurnEntryText_Completed(object sender, EventArgs e)
+        {
+            if(ReplayGrid.IsVisible && GotoTurnOkButton.IsEnabled)
+            {
+                GotoTurnOkButton_Clicked(sender, e);
+            }
+        }
+
+        private int _menuCountNumber = -1;
+
 #if WINDOWS
         private void PageContent_CharacterReceived(Microsoft.UI.Xaml.UIElement sender, Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs args)
         {
@@ -17269,7 +17312,8 @@ namespace GnollHackX.Pages.Game
                                 //location = new SKPoint(MenuCanvas.MenuItems[idx].DrawBounds.MidX, MenuCanvas.MenuItems[idx].DrawBounds.MidY);
                                 break;
                             }
-                            else if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (MenuCanvas.MenuItems[idx].Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0 && MenuCanvas.MenuItems[idx].HeadingGroupAccelerator == c)
+                            else if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (MenuCanvas.MenuItems[idx].Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0 && MenuCanvas.MenuItems[idx].HeadingGroupAccelerator == c
+                                && (_menuCountNumber < 0 || MenuCanvas.MenuItems[idx].HeadingGroupAccelerator < '0' || MenuCanvas.MenuItems[idx].HeadingGroupAccelerator > '9'))
                             {
                                 somethingFound = true;
                                 doclickok = ClickMenuItem(MenuCanvas.MenuItems[idx]);
@@ -17280,6 +17324,7 @@ namespace GnollHackX.Pages.Game
                     }
                     if(somethingFound)
                     {
+                        _menuCountNumber = -1;
                         if (doclickok)
                         {
                             MenuCanvas.InvalidateSurface();
@@ -17291,6 +17336,18 @@ namespace GnollHackX.Pages.Game
                                 MenuOKButton_Clicked(sender, new EventArgs());
                         }
                         args.Handled = true;
+                    }
+                    else if (c >= '0' && c <= '9' && _menuCountNumber < int.MaxValue / 10 - 10)
+                    {
+                        int res;
+                        if(int.TryParse(c.ToString(), out res))
+                        {
+                            if (_menuCountNumber >= 0)
+                                _menuCountNumber *= 10;
+                            else
+                                _menuCountNumber = 0;
+                            _menuCountNumber += res;
+                        }
                     }
 
                     //if (location.X > 0 && location.Y > 0)

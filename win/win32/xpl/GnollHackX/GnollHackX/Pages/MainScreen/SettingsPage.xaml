@@ -961,7 +961,7 @@
                         <StackLayout x:Name="TextLayout" Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center">
                             <Label x:Name="TextCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
                             <Entry x:Name="TextEntry" WidthRequest="320" HorizontalOptions="Center" Placeholder="Enter the link here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
-                                       HorizontalTextAlignment="Center" FontSize="20" FontFamily="LatoRegular" />
+                                       HorizontalTextAlignment="Center" FontSize="20" FontFamily="LatoRegular" Completed="TextEntry_Completed" />
                             <Grid ColumnSpacing="6" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="65" />
