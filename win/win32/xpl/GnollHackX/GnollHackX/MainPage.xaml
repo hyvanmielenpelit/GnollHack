@@ -55,15 +55,15 @@
                 </StackLayout>
             </Grid>
             <StackLayout x:Name="StartButtonLayout" Spacing="6" Opacity="0" IsVisible="false"
-              HorizontalOptions="CenterAndExpand" VerticalOptions="Center" AbsoluteLayout.LayoutBounds="0.5, 0.90, AutoSize, AutoSize"
-              AbsoluteLayout.LayoutFlags="PositionProportional" WidthRequest="300">
+              HorizontalOptions="Center" VerticalOptions="Center" AbsoluteLayout.LayoutBounds="0.5, 0.90, AutoSize, AutoSize"
+              AbsoluteLayout.LayoutFlags="PositionProportional" WidthRequest="300" >
                 <Grid x:Name="classicModeGrid" ColumnSpacing="6" IsVisible="True" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="Center">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="50" />
                     </Grid.ColumnDefinitions>
                     <local:CustomLabel x:Name="classicModeLabel" Text="Classic Mode" TextColor="White" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
                                    WidthRequest="180" HeightRequest="30" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
@@ -79,7 +79,7 @@
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="50" />
                     </Grid.ColumnDefinitions>
                     <local:CustomLabel x:Name="casualModeLabel" Text="Casual Mode" TextColor="White" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
                                    WidthRequest="180" HeightRequest="30" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
@@ -95,7 +95,7 @@
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="50" />
                     </Grid.ColumnDefinitions>
                     <local:CustomLabel x:Name="wizardModeLabel" Text="Wizard Mode" TextColor="LightBlue" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
                                    WidthRequest="180" HeightRequest="30" HorizontalTextAlignment="End" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
