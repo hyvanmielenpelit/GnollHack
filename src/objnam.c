@@ -3262,9 +3262,9 @@ char *str;
         {
           " of ",     " labeled ", " called ", " entitled ",
           " named ",  " above", /* lurkers above */
-          " versus ", " from ",    " in ",
-          " on ",     " a la ",    " with", /* " with "? */
-          " de ",     " d'",       " du ", " against ",
+          " versus ", " from ",    " in ",     " to ", /* altars to Tyr */
+          " on ",     " a la ",    " with ",
+          " de ",     " d'",       " du ",     " against ",
           "-in-",     "-at-",      0
         }, /* list of first characters for all compounds[] entries */
         compound_start[] = " -";
