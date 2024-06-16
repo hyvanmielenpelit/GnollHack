@@ -1446,7 +1446,7 @@ struct obj* list;
         }
         if (Has_contents(otmp))
         {
-            struct item_score_count_result cont_cnt = count_powerful_melee_weapon_score(otmp->cobj);
+            struct item_score_count_result cont_cnt = count_powerful_valkyrie_item_score(otmp->cobj);
             cnt.quantity += cont_cnt.quantity;
             cnt.quantity_nonammo += cont_cnt.quantity_nonammo;
             cnt.quantity_ammo += cont_cnt.quantity_ammo;

@@ -5620,7 +5620,7 @@ int final;
 
         if (!u.uachieve.role_achievement)
         {
-            Sprintf(goalbuf, "an optional quest to %s", get_role_achievement_description(FALSE));
+            Sprintf(goalbuf, "an optional quest to %s", get_role_achievement_description(0));
             you_have(goalbuf, "");
         }
     }
@@ -5656,7 +5656,8 @@ int final;
     }
     if (u.uachieve.role_achievement)
     {
-        you_have(get_role_achievement_description(TRUE), "");
+        Sprintf(goalbuf, "completed your optional quest by %s", get_role_achievement_description(2));
+        you_have(goalbuf, "");
         num_achievements++;
     }
     if (u.uachieve.bell)

@@ -3834,7 +3834,7 @@ E void NDECL(reset_traps);
 
 E void NDECL(u_init);
 E void NDECL(u_skills_init);
-E const char* FDECL(get_role_achievement_description, (BOOLEAN_P));
+E char* FDECL(get_role_achievement_description, (UCHAR_P));
 E unsigned long FDECL(mon_known_spell_schools, (struct monst*));
 E boolean FDECL(is_known_spell_school, (unsigned long, int));
 

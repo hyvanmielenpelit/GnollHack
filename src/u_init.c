@@ -2110,104 +2110,257 @@ int itemtype, material;
     return otmp;
 }
 
-
-const char*
-get_role_achievement_description(is_past_participle)
-boolean is_past_participle;
+char*
+get_role_achievement_description(tense)
+uchar tense; /* 0 = present tense, 1 = past tense,  2 = present participle (be -ing), 3 = past participle (have -ed etc.), */
 {
-    const char* res = "";
+    static char res[BUFSZ];
+    *res = 0;
+
     switch (urole.rolenum)
     {
     case ROLE_ARCHAEOLOGIST:
-        if(is_past_participle)
-            res = "defeated Amonket, Ruler of Greater Mummies";
-        else
-            res = "defeat Amonket, Ruler of Greater Mummies";
+        Strcpy(res, "defeat");
+        switch (tense)
+        {
+        default:
+        case 0:
+            break;
+        case 1:
+        case 3:
+            Strcpy(eos(res), "ed");
+            break;
+        case 2:
+            Strcpy(eos(res), "ing");
+            break;
+        }
+        Strcpy(eos(res), " Amonket, Ruler of Greater Mummies");
         break;
     case ROLE_BARBARIAN:
         if (u.ualignbase[A_ORIGINAL] == A_CHAOTIC)
         {
-            if (is_past_participle)
-                res = "found Stormbringer and Mournblade";
-            else
-                res = "find Stormbringer and Mournblade";
+            switch (tense)
+            {
+            default:
+            case 0:
+                Strcpy(res, "find");
+                break;
+            case 1:
+            case 3:
+                Strcpy(res, "found");
+                break;
+            case 2:
+                Strcpy(res, "finding");
+                break;
+            }
+            Strcpy(eos(res), " Stormbringer and Mournblade");
         }
         else
         {
-            if (is_past_participle)
-                res = "found the Vorpal Blade and Cleaver";
-            else
-                res = "find the Vorpal Blade and Cleaver";
+            switch (tense)
+            {
+            default:
+            case 0:
+                Strcpy(res, "find");
+                break;
+            case 1:
+            case 3:
+                Strcpy(res, "found");
+                break;
+            case 2:
+                Strcpy(res, "finding");
+                break;
+            }
+            Strcpy(eos(res), " Vorpal Blade and Cleaver");
         }
         break;
     case ROLE_CAVEMAN:
-        if (is_past_participle)
-            res = "attained the level of Grand Master in Bludgeoning Weapons";
-        else
-            res = "attain the level of Grand Master in Bludgeoning Weapons";
+        Strcpy(res, "attain");
+        switch (tense)
+        {
+        default:
+        case 0:
+            break;
+        case 1:
+        case 3:
+            Strcpy(eos(res), "ed");
+            break;
+        case 2:
+            Strcpy(eos(res), "ing");
+            break;
+        }
+        Strcpy(eos(res), " the level of Grand Master in Bludgeoning Weapons");
         break;
     case ROLE_HEALER:
-        if (is_past_participle)
-            res = "successfully cast a healing or abjuration spell of level 9 or higher";
-        else
-            res = "successfully cast a healing or abjuration spell of level 9 or higher";
+        Strcpy(res, "successfully cast");
+        switch (tense)
+        {
+        default:
+        case 0:
+            break;
+        case 1:
+        case 3:
+            break;
+        case 2:
+            Strcpy(eos(res), "ing");
+            break;
+        }
+        Strcpy(eos(res), " a healing or abjuration spell of level 9 or higher");
         break;
     case ROLE_KNIGHT:
-        if (is_past_participle)
-            res = "defeated Asmodeus, Ruler of Nine Hells";
-        else
-            res = "defeat Asmodeus, Ruler of Nine Hells";
+        Strcpy(res, "defeat");
+        switch (tense)
+        {
+        default:
+        case 0:
+            break;
+        case 1:
+        case 3:
+            Strcpy(eos(res), "ed");
+            break;
+        case 2:
+            Strcpy(eos(res), "ing");
+            break;
+        }
+        Strcpy(eos(res), " Asmodeus, Ruler of Nine Hells");
         break;
     case ROLE_MONK:
-        if (is_past_participle)
-            res = "attained the level of Grand Master in Martial Arts";
-        else
-            res = "attain the level of Grand Master in Martial Arts";
+        Strcpy(res, "attain");
+        switch (tense)
+        {
+        default:
+        case 0:
+            break;
+        case 1:
+        case 3:
+            Strcpy(eos(res), "ed");
+            break;
+        case 2:
+            Strcpy(eos(res), "ing");
+            break;
+        }
+        Strcpy(eos(res), " the level of Grand Master in Martial Arts");
         break;
     case ROLE_PRIEST:
-        if (is_past_participle)
-            res = "successfully cast a spell of level 10 or higher";
-        else
-            res = "successfully cast a spell of level 10 or higher";
+        Strcpy(res, "successfully cast");
+        switch (tense)
+        {
+        default:
+        case 0:
+            break;
+        case 1:
+        case 3:
+            break;
+        case 2:
+            Strcpy(eos(res), "ing");
+            break;
+        }
+        Strcpy(eos(res), " a spell of level 10 or higher");
         break;
     case ROLE_ROGUE:
-        if (is_past_participle)
-            res = "defeated Croesus";
-        else
-            res = "defeat Croesus";
+        Strcpy(res, "defeat");
+        switch (tense)
+        {
+        default:
+        case 0:
+            break;
+        case 1:
+        case 3:
+            Strcpy(eos(res), "ed");
+            break;
+        case 2:
+            Strcpy(eos(res), "ing");
+            break;
+        }
+        Strcpy(eos(res), " Croesus");
         break;
     case ROLE_RANGER:
-        if (is_past_participle)
-            res = "attained the level of Grand Master in Bow or Crossbow";
-        else
-            res = "attain the level of Grand Master in Bow or Crossbow";
+        Strcpy(res, "attain");
+        switch (tense)
+        {
+        default:
+        case 0:
+            break;
+        case 1:
+        case 3:
+            Strcpy(eos(res), "ed");
+            break;
+        case 2:
+            Strcpy(eos(res), "ing");
+            break;
+        }
+        Strcpy(eos(res), " the level of Grand Master in Bow or Crossbow");        
         break;
     case ROLE_SAMURAI:
-        if (is_past_participle)
-            res = "found the Kusanagi and the Katana of Masamune";
-        else
-            res = "find the Kusanagi and the Katana of Masamune";
+        switch (tense)
+        {
+        default:
+        case 0:
+            Strcpy(res, "find");
+            break;
+        case 1:
+        case 3:
+            Strcpy(res, "found");
+            break;
+        case 2:
+            Strcpy(res, "finding");
+            break;
+        }
+        Strcpy(eos(res), " the Kusanagi and the Katana of Masamune");
         break;
     case ROLE_TOURIST:
-        if (is_past_participle)
-            res = "taken a selfie with Demogorgon";
-        else
-            res = "take a selfie with Demogorgon";
+        switch (tense)
+        {
+        default:
+        case 0:
+            Strcpy(res, "take");
+            break;
+        case 1:
+            Strcpy(res, "took");
+            break;
+        case 2:
+            Strcpy(res, "taking");
+            break;
+        case 3:
+            Strcpy(res, "taken");
+            break;
+        }
+        Strcpy(eos(res), " a selfie with Demogorgon");
         break;
     case ROLE_VALKYRIE:
-        if (is_past_participle)
-            res = "attained the level of Grand Master in Dual Wielding";
-        else
-            res = "achieve the level of Grand Master in Dual Wielding";
+        Strcpy(res, "attain");
+        switch (tense)
+        {
+        default:
+        case 0:
+            break;
+        case 1:
+        case 3:
+            Strcpy(eos(res), "ed");
+            break;
+        case 2:
+            Strcpy(eos(res), "ing");
+            break;
+        }
+        Strcpy(eos(res), " the level of Grand Master in Dual Wielding");
         break;
     case ROLE_WIZARD:
-        if (is_past_participle)
-            res = "successfully cast a spell of level 10 or higher";
-        else
-            res = "successfully cast a spell of level 10 or higher";
+        Strcpy(res, "successfully cast");
+        switch (tense)
+        {
+        default:
+        case 0:
+            break;
+        case 1:
+        case 3:
+            break;
+        case 2:
+            Strcpy(eos(res), "ing");
+            break;
+        }
+        Strcpy(eos(res), " a spell of level 10 or higher");
         break;
     default:
-        res = "";
         break;
     }
 

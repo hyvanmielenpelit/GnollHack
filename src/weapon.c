@@ -2087,7 +2087,7 @@ int skill;
     {
         u.uachieve.role_achievement = 1;
         char abuf[BUFSZ];
-        const char* ra_desc = get_role_achievement_description(TRUE);
+        char* ra_desc = get_role_achievement_description(1);
         strcpy_capitalized_for_title(abuf, ra_desc);
         achievement_gained(abuf);
         livelog_printf(LL_ACHIEVE, "%s", ra_desc);

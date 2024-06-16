@@ -4871,8 +4871,8 @@ register struct obj *obj;
     case SPE_BLACK_BLADE_OF_DISASTER:
         known = TRUE;
         You_ex(ATR_NONE, CLR_MSG_SPELL, "chant an invocation:");
-        verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Sword of Cold and Darkness, free yourself from the heaven's bonds.");
-        verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Become one with my power, one with my body,");
+        verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Sword of Cold and Darkness, free thyself from the heaven's bonds.");
+        verbalize_ex(ATR_NONE, CLR_MSG_GOD, "Become one with my power, one with my body.");
         verbalize_ex(ATR_NONE, CLR_MSG_GOD, "And let us walk the path of destruction together!");
         play_sfx_sound(SFX_ITEM_APPEARS);
         pline_ex(ATR_NONE, CLR_MSG_SPELL, "A sword-shaped planar rift forms before you!");

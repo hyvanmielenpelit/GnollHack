@@ -974,7 +974,7 @@ struct obj *obj;
         if (check_achievement && u.uevent.role_achievement_1 && u.uevent.role_achievement_2 && !u.uachieve.role_achievement)
         {
             u.uachieve.role_achievement = 1;
-            const char* ra_desc = get_role_achievement_description(TRUE);
+            char* ra_desc = get_role_achievement_description(1);
             char abuf[BUFSZ];
             strcpy_capitalized_for_title(abuf, ra_desc);
             achievement_gained(abuf);

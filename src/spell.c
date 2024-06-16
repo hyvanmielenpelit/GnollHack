@@ -2311,7 +2311,7 @@ struct monst* targetmonst;
     boolean confused = (Confusion != 0);
     boolean stunned = (Stunned != 0);
     //struct obj *pseudo;
-    boolean effect_happened = 1;
+    boolean effect_happened = TRUE;
     //coord cc;
 
     /*
@@ -2548,18 +2548,7 @@ struct monst* targetmonst;
     skill = spell_skilltype(otyp);
     role_skill = P_SKILL_LEVEL(skill);
 
-    if (!u.uachieve.role_achievement && (
-        (Role_if(PM_WIZARD) && spellev(spell) >= 10)
-        || (Role_if(PM_PRIEST) && spellev(spell) >= 10)
-        || (Role_if(PM_HEALER) && (skill == P_HEALING_SPELL || skill == P_ABJURATION_SPELL) && spellev(spell) >= 9)))
-    {
-        u.uachieve.role_achievement = 1;
-        char abuf[BUFSZ];
-        const char* ra_desc = get_role_achievement_description(TRUE);
-        strcpy_capitalized_for_title(abuf, ra_desc);
-        achievement_gained(abuf);
-        livelog_printf(LL_ACHIEVE, "%s", ra_desc);
-    }
+    boolean spell_successful = TRUE;
 
     switch (otyp) {
     /*
@@ -2798,7 +2787,6 @@ struct monst* targetmonst;
                 play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
                 u_wait_until_action();
                 weffects(&pseudo);
-
             }
         } 
         else
@@ -2858,6 +2846,7 @@ struct monst* targetmonst;
         {
             play_sfx_sound(SFX_FAIL_TO_CAST_CORRECTLY);
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "The spell fails!");
+            spell_successful = FALSE;
         }
         break;
     }
@@ -3019,7 +3008,10 @@ struct monst* targetmonst;
         play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
         u_wait_until_action();
         if (!jump(max(role_skill, 1)))
+        {
             pline1(nothing_happens);
+            spell_successful = FALSE;
+        }
         break;
     case SPE_COLD_ENCHANT_ITEM:
     case SPE_FIRE_ENCHANT_ITEM:
@@ -3061,12 +3053,14 @@ struct monst* targetmonst;
                 else
                 {
                     pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in black energy for a moment.", Tobjnam(otmp, "flicker"));
+                    spell_successful = FALSE;
                 }
                 break;
             case SPE_COLD_ENCHANT_ITEM:
                 if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
                 {
                     pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
+                    spell_successful = FALSE;
                     break;
                 }
                 if (otmp->elemental_enchantment == FIRE_ENCHANTMENT)
@@ -3087,12 +3081,14 @@ struct monst* targetmonst;
                 else
                 {
                     pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in blue for a moment.", Tobjnam(otmp, "flicker"));
+                    spell_successful = FALSE;
                 }
                 break;
             case SPE_FIRE_ENCHANT_ITEM:
                 if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
                 {
                     pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in red for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
+                    spell_successful = FALSE;
                     break;
                 }
                 if (otmp->elemental_enchantment == COLD_ENCHANTMENT)
@@ -3113,12 +3109,14 @@ struct monst* targetmonst;
                 else
                 {
                     pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in red for a moment.", Tobjnam(otmp, "flicker"));
+                    spell_successful = FALSE;
                 }
                 break;
             case SPE_LIGHTNING_ENCHANT_ITEM:
                 if (otmp->elemental_enchantment == DEATH_ENCHANTMENT)
                 {
                     pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in blue for a moment, but then glows black.", Tobjnam(otmp, "flicker"));
+                    spell_successful = FALSE;
                     break;
                 }
                 if (is_elemental_enchantable(otmp))
@@ -3131,6 +3129,7 @@ struct monst* targetmonst;
                 else
                 {
                     pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s in blue for a moment.", Tobjnam(otmp, "flicker"));
+                    spell_successful = FALSE;
                 }
                 break;
             }
@@ -3161,6 +3160,19 @@ struct monst* targetmonst;
     //obfree(pseudo, (struct obj *) 0); /* now, get rid of it */
     u_wait_until_end();
     update_u_action_revert(ACTION_TILE_NO_ACTION);
+
+    if (!u.uachieve.role_achievement && spell_successful && effect_happened && (
+        (Role_if(PM_WIZARD) && spellev(spell) >= 10)
+        || (Role_if(PM_PRIEST) && spellev(spell) >= 10)
+        || (Role_if(PM_HEALER) && (skill == P_HEALING_SPELL || skill == P_ABJURATION_SPELL) && spellev(spell) >= 9)))
+    {
+        u.uachieve.role_achievement = 1;
+        char abuf[BUFSZ];
+        char* ra_desc = get_role_achievement_description(1);
+        strcpy_capitalized_for_title(abuf, ra_desc);
+        achievement_gained(abuf);
+        livelog_printf(LL_ACHIEVE, "%s", ra_desc);
+    }
 
     return result;
 }
