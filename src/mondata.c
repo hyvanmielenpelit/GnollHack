@@ -462,6 +462,7 @@ struct obj *obj; /* aatyp == AT_WEAP, AT_SPIT */
 
     case AT_TUCH:
     case AT_STNG:
+    case AT_TAIL:
         /* some physical, blind-inducing attacks can be cancelled */
         if (magr && is_cancelled(magr))
             return FALSE;
