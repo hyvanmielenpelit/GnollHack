@@ -1782,8 +1782,10 @@ namespace GnollHackX
         //public const GHlong GPUResourceCacheSize = 800000000L;
 #if GNH_MAUI
         public const string PortName = "GnollHackM";
+        public const UnmanagedType GHStringMarshallingType = UnmanagedType.LPUTF8Str;
 #else
         public const string PortName = "GnollHackX";
+        public const UnmanagedType GHStringMarshallingType = UnmanagedType.LPStr;
 #endif
 #if WINDOWS
         public const bool DefaultCharacterClickAction = true;
