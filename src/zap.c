@@ -1708,6 +1708,7 @@ struct permonst* ptr;
         boolean has_extrinsic = FALSE;
         boolean has_instrinsic_acquired = FALSE;
         boolean has_temporary = FALSE;
+        boolean has_recurring = FALSE;
         unsigned short temp_dur = 0;
 
         unsigned long ibit = prop_to_innate(i);
@@ -1727,9 +1728,13 @@ struct permonst* ptr;
         
         temp_dur = mtmp  ? (mtmp->mprops[i] & M_TIMEOUT) : 0;
         if (temp_dur)
-            has_temporary = TRUE;
-
-        boolean has_property = has_innate || has_innate2 || has_extrinsic || has_instrinsic_acquired || has_temporary;
+        {
+            if(property_definitions[i].recurring)
+                has_recurring = TRUE;
+            else
+                has_temporary = TRUE;
+        }
+        boolean has_property = has_innate || has_innate2 || has_extrinsic || has_instrinsic_acquired || has_temporary || has_recurring;
 
         if (has_property)
         {
