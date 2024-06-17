@@ -17469,20 +17469,22 @@ namespace GnollHackX.Pages.Game
 
                 int resp = 0;
                 if (key == Windows.System.VirtualKey.Left)
-                    resp = -14;
+                    resp = -4;
                 else if (key == Windows.System.VirtualKey.Right)
-                    resp = -16;
+                    resp = -6;
                 else if (key == Windows.System.VirtualKey.Up)
-                    resp = -18;
+                    resp = -8;
                 else if (key == Windows.System.VirtualKey.Down)
-                    resp = -12;
+                    resp = -2;
                 else if (key >= Windows.System.VirtualKey.NumberPad1 && key <= Windows.System.VirtualKey.NumberPad9)
-                    resp = -11 - (key - Windows.System.VirtualKey.NumberPad1);
+                    resp = -1 - (key - Windows.System.VirtualKey.NumberPad1);
                 else if (GHApp.AltDown && key >= Windows.System.VirtualKey.A && key <= Windows.System.VirtualKey.Z)
                     resp = GHUtils.Meta((GHApp.ShiftDown ? (int)'A' : (int)'a') + (int)key - (int)Windows.System.VirtualKey.A);
 
                 if (resp != 0)
                 {
+                    if(GHApp.ShiftDown && resp <= -1 && resp >= -9)
+                        GenericButton_Clicked(sender, new EventArgs(), -100 - (int)nh_keyfunc.NHKF_RUN);
                     GenericButton_Clicked(sender, new EventArgs(), resp);
                     handled = true;
                 }

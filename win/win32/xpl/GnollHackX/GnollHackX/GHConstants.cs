@@ -1537,8 +1537,6 @@ namespace GnollHackX
         GETLINE_QUESTION,
     }
 
-
-
     public enum downloaded_file_check_results
     {
         OK = 0,
@@ -1554,6 +1552,64 @@ namespace GnollHackX
     public enum secrets_flags : int
     {
         None = 0x00
+    }
+
+    /* special key functions */
+    public enum nh_keyfunc
+    {
+        NHKF_ESC = 0,
+        NHKF_DOAGAIN,
+        NHKF_DOAGAIN2,
+
+        NHKF_REQMENU,
+
+        /* run ... clicklook need to be in a continuous block */
+        NHKF_RUN,
+        NHKF_RUN2,
+        NHKF_RUSH,
+        NHKF_FIGHT,
+        NHKF_FIGHT2,
+        NHKF_NOPICKUP,
+        NHKF_RUN_NOPICKUP,
+        NHKF_DOINV,
+        NHKF_DOSEEWORN,
+        NHKF_TRAVEL,
+        NHKF_TRAVEL_ATTACK,
+        NHKF_TRAVEL_WALK,
+        NHKF_CLICKFIRE,
+        NHKF_CLICKLOOK,
+
+        NHKF_REDRAW,
+        NHKF_REDRAW2,
+        NHKF_GETDIR_SELF,
+        NHKF_GETDIR_SELF2,
+        NHKF_GETDIR_HELP,
+        NHKF_COUNT,
+        NHKF_GETPOS_SELF,
+        NHKF_GETPOS_PICK,
+        NHKF_GETPOS_PICK_Q,  /* quick */
+        NHKF_GETPOS_PICK_O,  /* once */
+        NHKF_GETPOS_PICK_V,  /* verbose */
+        NHKF_GETPOS_SHOWVALID,
+        NHKF_GETPOS_AUTODESC,
+        NHKF_GETPOS_MON_NEXT,
+        NHKF_GETPOS_MON_PREV,
+        NHKF_GETPOS_OBJ_NEXT,
+        NHKF_GETPOS_OBJ_PREV,
+        NHKF_GETPOS_DOOR_NEXT,
+        NHKF_GETPOS_DOOR_PREV,
+        NHKF_GETPOS_UNEX_NEXT,
+        NHKF_GETPOS_UNEX_PREV,
+        NHKF_GETPOS_INTERESTING_NEXT,
+        NHKF_GETPOS_INTERESTING_PREV,
+        NHKF_GETPOS_VALID_NEXT,
+        NHKF_GETPOS_VALID_PREV,
+        NHKF_GETPOS_HELP,
+        NHKF_GETPOS_MENU,
+        NHKF_GETPOS_LIMITVIEW,
+        NHKF_GETPOS_MOVESKIP,
+
+        NUM_NHKF
     }
 
     public static class GHConstants

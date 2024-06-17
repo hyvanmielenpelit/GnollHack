@@ -1693,6 +1693,8 @@ char convert_gnhch(int ch)
     default:
         if (ch >= -19 && ch <= -10)
             key = (char)(abs(ch) - 10 + '0');
+        else if (ch <= -100 && ch > -100 - NUM_NHKF)
+            key = Cmd.spkeys[-ch - 100];
         else
             key = (char)ch;
         break;
