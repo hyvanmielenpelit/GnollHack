@@ -1673,7 +1673,7 @@ char convert_gnhch(int ch)
         key = Cmd.move_W;
         break;
     case -5:
-        key = Cmd.spkeys[NHKF_GETDIR_SELF];
+        key = Cmd.spkeys[NHKF_RUN2];
         break;
     case -6:
         key = Cmd.move_E;
