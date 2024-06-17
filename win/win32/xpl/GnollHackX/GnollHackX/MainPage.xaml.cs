@@ -87,6 +87,8 @@ namespace GnollHackX
                 GHApp.ResolutionScale = GHApp.WindowsXamlWindow != null && GHApp.WindowsXamlWindow.Content != null && GHApp.WindowsXamlWindow.Content.XamlRoot != null ? (float)GHApp.WindowsXamlWindow.Content.XamlRoot.RasterizationScale : 1.0f;
                 if (GHApp.DisplayScale > 0 && GHApp.ResolutionScale > 0)
                     GHApp.TotalDisplayScale = GHApp.DisplayScale * GHApp.ResolutionScale;
+
+                GHApp.DisplayRefreshRate = Math.Max(60.0f, DeviceDisplay.Current.MainDisplayInfo.RefreshRate);
 #endif
             };
 #endif

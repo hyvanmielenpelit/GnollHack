@@ -66,6 +66,7 @@ namespace GnollHackX.Pages.MainScreen
                 "40 fps",
                 "60 fps"
             };
+
             if (GHApp.DisplayRefreshRate >= 80.0f)
                 list.Add("80 fps");
             if (GHApp.DisplayRefreshRate >= 90.0f)
