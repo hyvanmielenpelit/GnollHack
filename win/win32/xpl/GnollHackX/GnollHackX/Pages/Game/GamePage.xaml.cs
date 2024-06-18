@@ -15661,10 +15661,15 @@ namespace GnollHackX.Pages.Game
 
         private void TextCanvas_MouseWheel(object sender, GHMouseWheelEventArgs e)
         {
-            if (e.MouseWheelDelta != 0)
+            ScrollTextWindow(e.MouseWheelDelta);
+        }
+
+        private void ScrollTextWindow(int delta)
+        {
+            if (delta != 0)
             {
                 float bottomScrollLimit = Math.Min(0, TextCanvas.CanvasSize.Height - TotalTextHeight);
-                float scrollAmount = (TextCanvas.CanvasSize.Height * e.MouseWheelDelta) / (10 * 120);
+                float scrollAmount = (TextCanvas.CanvasSize.Height * delta) / (10 * 120);
                 lock (_textScrollLock)
                 {
                     _textScrollOffset += scrollAmount;
@@ -17446,21 +17451,30 @@ namespace GnollHackX.Pages.Game
                 GetLineCancelButton_Clicked(sender, new EventArgs());
                 handled = true;
             }
-            else if (TextGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space))
+            else if (TextGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space || key == Windows.System.VirtualKey.Up || key == Windows.System.VirtualKey.Down))
             {
-                TextCanvas_Pressed(sender, new EventArgs());
+                if (key == Windows.System.VirtualKey.Enter || TextGrid.IsVisible && key == Windows.System.VirtualKey.Escape)
+                    TextCanvas_Pressed(sender, new EventArgs());
+                else if (key == Windows.System.VirtualKey.Up)
+                    ScrollTextWindow(120);
+                else if (key == Windows.System.VirtualKey.Down)
+                    ScrollTextWindow(-120);
+                else if (key == Windows.System.VirtualKey.Space)
+                    ScrollTextWindow(-1200);
                 handled = true;
             }
-            else if (MenuGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || (MenuOKButton.IsEnabled && (key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space)) || key == Windows.System.VirtualKey.Up || key == Windows.System.VirtualKey.Down))
+            else if (MenuGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || (MenuOKButton.IsEnabled && (key == Windows.System.VirtualKey.Enter)) || key == Windows.System.VirtualKey.Up || key == Windows.System.VirtualKey.Down || key == Windows.System.VirtualKey.Space))
             {
                 if(key == Windows.System.VirtualKey.Escape)
                     MenuCancelButton_Clicked(sender, new EventArgs());
-                else if (MenuOKButton.IsEnabled && (key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space))
+                else if (MenuOKButton.IsEnabled && (key == Windows.System.VirtualKey.Enter))
                     MenuOKButton_Clicked(sender, new EventArgs());
                 else if (key == Windows.System.VirtualKey.Up)
                     ScrollMenu(120);
                 else if (key == Windows.System.VirtualKey.Down)
                     ScrollMenu(-120);
+                else if (key == Windows.System.VirtualKey.Space)
+                    ScrollMenu(-1200);
                 handled = true;
             }
             else if (!MenuGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible)
