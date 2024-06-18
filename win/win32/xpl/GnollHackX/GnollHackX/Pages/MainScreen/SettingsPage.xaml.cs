@@ -609,7 +609,7 @@ namespace GnollHackX.Pages.MainScreen
         private void SetInitialValues()
         {
             int cursor = 0, graphics = 0, savestyle = 0, maprefresh = (int)UIUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
-            bool mem = false, fps = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, simplecmdlayout = true, darkmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
+            bool mem = false, fps = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, darkmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, emptywishisnothing = true, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
@@ -704,7 +704,7 @@ namespace GnollHackX.Pages.MainScreen
                 showrecording = Preferences.Get("ShowRecording", true);
                 autoupload = Preferences.Get("AutoUploadReplays", false);
                 gpu = Preferences.Get("UseMainGLCanvas", GHApp.IsGPUDefault);
-                simplecmdlayout = Preferences.Get("UseSimpleCmdLayout", true);
+                simplecmdlayout = Preferences.Get("UseSimpleCmdLayout", GHConstants.DefaultSimpleCmdLayout);
                 msgnum = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
                 petrows = Preferences.Get("NumDisplayedPetRows", GHConstants.DefaultPetRows);
                 lighterdarkening = Preferences.Get("LighterDarkening", GHConstants.DefaultLighterDarkening);

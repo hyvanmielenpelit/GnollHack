@@ -578,7 +578,8 @@ namespace GnollHackX.Pages.Game
 #endif
             }
         }
-        private bool _useSimpleCmdLayout = true;
+
+        private bool _useSimpleCmdLayout = GHConstants.DefaultSimpleCmdLayout;
         public bool UseSimpleCmdLayout
         {
             get { return _useSimpleCmdLayout; }
@@ -843,7 +844,7 @@ namespace GnollHackX.Pages.Game
             ShowBattery = Preferences.Get("ShowBattery", false);
             ShowRecording = Preferences.Get("ShowRecording", true);
             UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", GHApp.IsGPUDefault);
-            UseSimpleCmdLayout = Preferences.Get("UseSimpleCmdLayout", true);
+            UseSimpleCmdLayout = Preferences.Get("UseSimpleCmdLayout", GHConstants.DefaultSimpleCmdLayout);
             ShowMemoryUsage = Preferences.Get("ShowMemoryUsage", false);
             MapGrid = Preferences.Get("MapGrid", false);
             HitPointBars = Preferences.Get("HitPointBars", false);
