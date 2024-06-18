@@ -2944,7 +2944,7 @@ struct monst* targetmonst;
         }
         else
         {
-            Sprintf(effbuf, "%s tingle.", makeplural(body_part(FINGER)));
+            Sprintf(effbuf, "Your %s tingle.", makeplural(body_part(FINGER)));
             pline_ex1_popup(ATR_NONE, CLR_MSG_ATTENTION, effbuf, "Tingling", is_serviced_spell);
         }
 
