@@ -21,6 +21,7 @@ using System.Collections;
 using System.Data;
 using System.Xml.Linq;
 
+
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
@@ -12645,13 +12646,44 @@ namespace GnollHackX.Pages.Game
         {
             if(e.MouseWheelDelta != 0)
             {
-                float ratio = 1.1f * (float)Math.Abs(e.MouseWheelDelta) / 120;
-                float canvaswidth = canvasView.CanvasSize.Width;
-                float canvasheight = canvasView.CanvasSize.Height;
-                SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
-                AdjustZoomByRatio(e.MouseWheelDelta < 0 ? 1.0f / ratio : ratio, point, point, point);
+                if (ForceAllMessages)
+                {
+                    ScrollMessages(e.MouseWheelDelta);
+                }
+                else
+                {
+                    float ratio = 1.1f * (float)Math.Abs(e.MouseWheelDelta) / 120;
+                    float canvaswidth = canvasView.CanvasSize.Width;
+                    float canvasheight = canvasView.CanvasSize.Height;
+                    SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
+                    AdjustZoomByRatio(e.MouseWheelDelta < 0 ? 1.0f / ratio : ratio, point, point, point);
+                }
             }
         }
+
+        private void ScrollMessages(int delta)
+        {
+            if (delta != 0)
+            {
+                lock (_menuScrollLock)
+                {
+                    float topScrollLimit = Math.Max(0, -_messageSmallestTop);
+                    float scrollAmount = (canvasView.CanvasSize.Height * delta) / (10 * 120);
+                    _messageScrollOffset += scrollAmount;
+
+                    if (_messageScrollOffset > topScrollLimit)
+                        _messageScrollOffset = topScrollLimit;
+                    else if (_messageScrollOffset < 0)
+                        _messageScrollOffset = 0;
+
+                    _messageScrollSpeedOn = false;
+                    _messageScrollSpeed = 0;
+                    _messageScrollSpeedRecordOn = false;
+                    _messageScrollSpeedRecords.Clear();
+                }
+            }
+        }
+
 
         private bool DoMoveByHoldingDown()
         {
@@ -17485,26 +17517,39 @@ namespace GnollHackX.Pages.Game
                     CommandCanvas_Pressed(sender, new EventArgs());
                 }
 
-                int resp = 0;
-                if (key == Windows.System.VirtualKey.Left)
-                    resp = -4;
-                else if (key == Windows.System.VirtualKey.Right)
-                    resp = -6;
-                else if (key == Windows.System.VirtualKey.Up)
-                    resp = -8;
-                else if (key == Windows.System.VirtualKey.Down)
-                    resp = -2;
-                else if (key >= Windows.System.VirtualKey.NumberPad1 && key <= Windows.System.VirtualKey.NumberPad9)
-                    resp = -1 - (key - Windows.System.VirtualKey.NumberPad1);
-                else if (GHApp.AltDown && key >= Windows.System.VirtualKey.A && key <= Windows.System.VirtualKey.Z)
-                    resp = GHUtils.Meta((GHApp.ShiftDown ? (int)'A' : (int)'a') + (int)key - (int)Windows.System.VirtualKey.A);
-
-                if (resp != 0)
+                if(ForceAllMessages)
                 {
-                    if(GHApp.ShiftDown && resp <= -1 && resp >= -9)
-                        GenericButton_Clicked(sender, new EventArgs(), -100 - (int)nh_keyfunc.NHKF_RUN);
-                    GenericButton_Clicked(sender, new EventArgs(), resp);
+                    if (key == Windows.System.VirtualKey.Up)
+                        ScrollMessages(120);
+                    else if (key == Windows.System.VirtualKey.Down)
+                        ScrollMessages(-120);
+                    else if (key == Windows.System.VirtualKey.Space)
+                        ScrollMessages(1200);
                     handled = true;
+                }
+                else
+                {
+                    int resp = 0;
+                    if (key == Windows.System.VirtualKey.Left)
+                        resp = -4;
+                    else if (key == Windows.System.VirtualKey.Right)
+                        resp = -6;
+                    else if (key == Windows.System.VirtualKey.Up)
+                        resp = -8;
+                    else if (key == Windows.System.VirtualKey.Down)
+                        resp = -2;
+                    else if (key >= Windows.System.VirtualKey.NumberPad1 && key <= Windows.System.VirtualKey.NumberPad9)
+                        resp = -1 - (key - Windows.System.VirtualKey.NumberPad1);
+                    else if (GHApp.AltDown && key >= Windows.System.VirtualKey.A && key <= Windows.System.VirtualKey.Z)
+                        resp = GHUtils.Meta((GHApp.ShiftDown ? (int)'A' : (int)'a') + (int)key - (int)Windows.System.VirtualKey.A);
+
+                    if (resp != 0)
+                    {
+                        if (GHApp.ShiftDown && resp <= -1 && resp >= -9)
+                            GenericButton_Clicked(sender, new EventArgs(), -100 - (int)nh_keyfunc.NHKF_RUN);
+                        GenericButton_Clicked(sender, new EventArgs(), resp);
+                        handled = true;
+                    }
                 }
             }
             return handled;
