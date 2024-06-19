@@ -325,11 +325,11 @@ namespace GnollHackX.Controls
         public BindableProperty GeneralAnimationCounterProperty =
             BindableProperty.Create(nameof(GeneralAnimationCounter), typeof(long), typeof(SwitchableCanvasView), 0L);
 
-        private readonly object _generalAnimationCounterLock = new object();
+        //private readonly object _generalAnimationCounterLock = new object();
         public long GeneralAnimationCounter
         {
-            get { lock (_generalAnimationCounterLock) { return (long)GetValue(GeneralAnimationCounterProperty); } }
-            set { lock (_generalAnimationCounterLock) { SetValue(GeneralAnimationCounterProperty, value); } }
+            get { return (long)GetValue(GeneralAnimationCounterProperty); }
+            set { SetValue(GeneralAnimationCounterProperty, value); }
         }
 
         private long _tickCounter = 0L;
