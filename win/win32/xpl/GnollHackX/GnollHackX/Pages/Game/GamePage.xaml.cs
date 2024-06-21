@@ -33,6 +33,7 @@ using SkiaSharp.Views.Maui.Controls;
 #if WINDOWS
 using Windows.UI.Core;
 using Windows.System;
+using GnollHackM.Platforms.Windows;
 #endif
 
 namespace GnollHackM
@@ -893,7 +894,66 @@ namespace GnollHackX.Pages.Game
             ToggleAutoCenterModeButton_Clicked(null, null);
 
             lAbilitiesButton.SetButtonFocus();
+
+#if WINDOWS
+            Loaded += (s, e) => 
+            {
+                var previousHandler = MorePreviousLabel.Handler;
+                if (previousHandler is PointableButtonHandler)
+                {
+                    var previousLabelHandler = previousHandler as PointableButtonHandler;
+                    if (previousLabelHandler != null)
+                    {
+                        previousLabelHandler.PointerEntered += PreviousLabelHandler_PointerEntered;
+                        previousLabelHandler.PointerExited += PreviousLabelHandler_PointerExited;
+                    }
+                }
+                var nextHandler = MoreNextLabel.Handler;
+                if (nextHandler is PointableButtonHandler)
+                {
+                    var nextLabelHandler = nextHandler as PointableButtonHandler;
+                    if (nextLabelHandler != null)
+                    {
+                        nextLabelHandler.PointerEntered += NextLabelHandler_PointerEntered; ;
+                        nextLabelHandler.PointerExited += NextLabelHandler_PointerExited; ;
+                    }
+                }
+                UpdateMoreNextPrevButtonVisibility();
+            };
+#endif
         }
+
+#if WINDOWS
+        private void NextLabelHandler_PointerExited(object sender, EventArgs e)
+        {
+            //MoreNextButton.IsVisible = false;
+        }
+
+        private void NextLabelHandler_PointerEntered(object sender, EventArgs e)
+        {
+            if(!MoreNextButton.IsVisible)
+            {
+                MoreNextButton.Opacity = 0;
+                MoreNextButton.IsVisible = true;
+                MoreNextButton.FadeTo(1.0);
+            }
+        }
+
+        private void PreviousLabelHandler_PointerExited(object sender, EventArgs e)
+        {
+            //MorePreviousButton.IsVisible = false;
+        }
+
+        private void PreviousLabelHandler_PointerEntered(object sender, EventArgs e)
+        {
+            if (!MorePreviousButton.IsVisible)
+            {
+                MorePreviousButton.Opacity = 0;
+                MorePreviousButton.IsVisible = true;
+                MorePreviousButton.FadeTo(1.0);
+            }
+        }
+#endif
 
         private float GetDefaultMapFontSize()
         {
@@ -3693,6 +3753,7 @@ namespace GnollHackX.Pages.Game
             {
                 MoreCommandsGrid.IsVisible = false;
                 MainGrid.IsVisible = true;
+                UpdateMoreNextPrevButtonVisibility();
                 if (CommandCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                     CommandCanvas.AbortAnimation("GeneralAnimationCounter");
                 lock (RefreshScreenLock)
@@ -13323,6 +13384,7 @@ namespace GnollHackX.Pages.Game
                 RefreshScreen = false;
             }
 
+            UpdateMoreNextPrevButtonVisibility();
             MoreCommandsGrid.IsVisible = true;
             MainGrid.IsVisible = false;
             if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
@@ -16102,6 +16164,7 @@ namespace GnollHackX.Pages.Game
                                         {
                                             MoreCmdPage = cmdPage - 1;
                                             MoreCmdOffsetX = cmdOffset - btnMatrixWidth;
+                                            UpdateMoreNextPrevButtonVisibility();
                                         }
 
                                         _commandChangedPage = true;
@@ -16112,6 +16175,7 @@ namespace GnollHackX.Pages.Game
                                         {
                                             MoreCmdPage = cmdPage + 1;
                                             MoreCmdOffsetX = cmdOffset + btnMatrixWidth;
+                                            UpdateMoreNextPrevButtonVisibility();
                                         }
 
                                         _commandChangedPage = true;
@@ -16125,6 +16189,7 @@ namespace GnollHackX.Pages.Game
                                         {
                                             MoreCmdPage = cmdPage - 1;
                                             MoreCmdOffsetX = cmdOffset - btnMatrixWidth;
+                                            UpdateMoreNextPrevButtonVisibility();
                                         }
 
                                         _commandChangedPage = true;
@@ -16135,6 +16200,7 @@ namespace GnollHackX.Pages.Game
                                         {
                                             MoreCmdPage = cmdPage + 1;
                                             MoreCmdOffsetX = cmdOffset + btnMatrixWidth;
+                                            UpdateMoreNextPrevButtonVisibility();
                                         }
 
                                         _commandChangedPage = true;
@@ -16179,6 +16245,7 @@ namespace GnollHackX.Pages.Game
         {
             MoreCommandsGrid.IsVisible = false;
             MainGrid.IsVisible = true;
+            UpdateMoreNextPrevButtonVisibility();
             if (CommandCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                 CommandCanvas.AbortAnimation("GeneralAnimationCounter");
             lock (RefreshScreenLock)
@@ -17313,6 +17380,40 @@ namespace GnollHackX.Pages.Game
 
         private int _menuCountNumber = -1;
 
+        private void MorePreviousButton_BtnClicked(object sender, EventArgs e)
+        {
+            int cmdPage = MoreCmdPage;
+            if (cmdPage > (EnableWizardMode ? 0 : 1))
+            {
+                MoreCmdPage = cmdPage - 1;
+            }
+            UpdateMoreNextPrevButtonVisibility();
+        }
+
+        private void MoreNextButton_BtnClicked(object sender, EventArgs e)
+        {
+            int cmdPage = MoreCmdPage;
+            if (cmdPage < CurrentMoreButtonPageMaxNumber - 1)
+            {
+                MoreCmdPage = cmdPage + 1;
+            }
+            UpdateMoreNextPrevButtonVisibility();
+        }
+
+        private void UpdateMoreNextPrevButtonVisibility()
+        {
+#if WINDOWS
+            int cmdPage = MoreCmdPage;
+            MorePreviousGrid.IsVisible = cmdPage > (EnableWizardMode ? 0 : 1);
+            MoreNextGrid.IsVisible = cmdPage < CurrentMoreButtonPageMaxNumber - 1;
+#else
+            MorePreviousGrid.IsVisible = false;
+            MoreNextGrid.IsVisible = false;
+#endif
+            MorePreviousButton.IsVisible = false;
+            MoreNextButton.IsVisible = false;
+        }
+
 #if WINDOWS
         private void PageContent_CharacterReceived(Microsoft.UI.Xaml.UIElement sender, Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs args)
         {
@@ -17466,6 +17567,7 @@ namespace GnollHackX.Pages.Game
                         MoreCmdPage = cmdPage - 1;
                         MoreCmdOffsetX = 0;
                         CommandCanvas.InvalidateSurface();
+                        UpdateMoreNextPrevButtonVisibility();
                     }
                     handled = true;
                 }
@@ -17476,6 +17578,7 @@ namespace GnollHackX.Pages.Game
                         MoreCmdPage = cmdPage + 1;
                         MoreCmdOffsetX = 0;
                         CommandCanvas.InvalidateSurface();
+                        UpdateMoreNextPrevButtonVisibility();
                     }
                     handled = true;
                 }

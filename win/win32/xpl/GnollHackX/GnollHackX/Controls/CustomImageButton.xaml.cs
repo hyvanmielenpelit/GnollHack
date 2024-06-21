@@ -155,10 +155,10 @@ namespace GnollHackX.Controls
             canvas.DrawImage(targetBitmap, sourcerect, targetrect);
         }
 
-        public void Redraw()
-        {
-            customCanvasView.InvalidateSurface();
-        }
+        //public void Redraw()
+        //{
+        //    customCanvasView.InvalidateSurface();
+        //}
 
     }
 }
