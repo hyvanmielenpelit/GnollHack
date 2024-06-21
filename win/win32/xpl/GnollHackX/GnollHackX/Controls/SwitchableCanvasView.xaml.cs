@@ -28,13 +28,13 @@ namespace GnollHackX.Controls
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SwitchableCanvasView : ContentView
     {
-        private object glLock = new object();
+        private object _glLock = new object();
         private bool _useGL = false;
         public bool UseGL 
-        {   get { lock (glLock) { return _useGL; } }
+        {   get { lock (_glLock) { return _useGL; } }
             set
             {
-                lock(glLock)
+                lock(_glLock)
                 {
                     _useGL = value;
                 }
@@ -43,6 +43,28 @@ namespace GnollHackX.Controls
             }
         }
 
+        private object _useRenderLoopLock = new object();
+        //private bool _useRenderLoop = false;
+        public bool UseRenderLoop
+        {
+            get { lock (_useRenderLoopLock) { return internalGLView.HasRenderLoop; } }
+            set {
+#if WINDOWS
+                lock (_useRenderLoopLock)
+                {
+                    internalGLView.HasRenderLoop = value;
+                }
+#endif
+            }
+        }
+
+        private object _renderingLock = new object();
+        private bool _rendering = false;
+        private bool Rendering
+        {
+            get { lock (_renderingLock) { return _rendering; } }
+            set { lock (_renderingLock) { _rendering = value; } }
+        }
         public SwitchableCanvasView()
         {
             InitializeComponent();
@@ -72,7 +94,10 @@ namespace GnollHackX.Controls
         public void InvalidateSurface()
         {
             if(UseGL)
-                internalGLView.InvalidateSurface();
+            {
+                if(!UseRenderLoop)
+                    internalGLView.InvalidateSurface();
+            }
             else
                 internalCanvasView.InvalidateSurface();
         }
@@ -81,12 +106,18 @@ namespace GnollHackX.Controls
             return new SizeRequest();
         }
 
+
         private void internalCanvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             if (UseGL)
                 return; /* Insurance in the case both canvases mistakenly are updated */
 
+            if (Rendering)
+                return;
+
+            Rendering = true;
             PaintSurface?.Invoke(sender, e);
+            Rendering = false;
         }
 
         private void internalCanvasView_Touch(object sender, SKTouchEventArgs e)
@@ -207,10 +238,16 @@ namespace GnollHackX.Controls
                 if (CanvasType == CanvasTypes.MainCanvas)
                     GHApp.CurrentGPUCacheSize = ResourceCacheLimit;
             }
+
+            if (Rendering)
+                return;
+
             SKImageInfo info = new SKImageInfo();
             info.ColorType = e.ColorType;
             SKPaintSurfaceEventArgs convargs = new SKPaintSurfaceEventArgs(e.Surface, info);
+            Rendering = true;
             PaintSurface?.Invoke(sender, convargs);
+            Rendering = false;
         }
 
         private void internalGLView_Touch(object sender, SKTouchEventArgs e)
