@@ -43,28 +43,29 @@ namespace GnollHackX.Controls
             }
         }
 
-        private object _useRenderLoopLock = new object();
-        //private bool _useRenderLoop = false;
-        public bool UseRenderLoop
-        {
-            get { lock (_useRenderLoopLock) { return internalGLView.HasRenderLoop; } }
-            set {
-#if WINDOWS
-                lock (_useRenderLoopLock)
-                {
-                    internalGLView.HasRenderLoop = value;
-                }
-#endif
-            }
-        }
+//        private object _useRenderLoopLock = new object();
+//        //private bool _useRenderLoop = false;
+//        public bool UseRenderLoop
+//        {
+//            get { lock (_useRenderLoopLock) { return internalGLView.HasRenderLoop; } }
+//            set {
+//#if false
+//                lock (_useRenderLoopLock)
+//                {
+//                    internalGLView.HasRenderLoop = value;
+//                }
+//#endif
+//            }
+//        }
 
-        private object _renderingLock = new object();
-        private bool _rendering = false;
-        private bool Rendering
-        {
-            get { lock (_renderingLock) { return _rendering; } }
-            set { lock (_renderingLock) { _rendering = value; } }
-        }
+        //private object _renderingLock = new object();
+        //private bool _rendering = false;
+        //private bool Rendering
+        //{
+        //    get { lock (_renderingLock) { return _rendering; } }
+        //    set { lock (_renderingLock) { _rendering = value; } }
+        //}
+
         public SwitchableCanvasView()
         {
             InitializeComponent();
@@ -93,14 +94,25 @@ namespace GnollHackX.Controls
         public event EventHandler<GHMouseWheelEventArgs> MouseWheel;
         public void InvalidateSurface()
         {
-            if(UseGL)
+#if WINDOWS
+            if(GHApp.WindowsXamlWindow != null)
             {
-                if(!UseRenderLoop)
-                    internalGLView.InvalidateSurface();
+                GHApp.WindowsXamlWindow.DispatcherQueue?.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () => 
+                {
+#endif
+                    if(UseGL)
+                    {
+                        //if(!UseRenderLoop)
+                        internalGLView.InvalidateSurface();
+                    }
+                    else
+                        internalCanvasView.InvalidateSurface();
+#if WINDOWS
+                });
             }
-            else
-                internalCanvasView.InvalidateSurface();
+#endif
         }
+
         protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
         {
             return new SizeRequest();
@@ -112,12 +124,12 @@ namespace GnollHackX.Controls
             if (UseGL)
                 return; /* Insurance in the case both canvases mistakenly are updated */
 
-            if (Rendering)
-                return;
+            //if (Rendering)
+            //    return;
 
-            Rendering = true;
+            //Rendering = true;
             PaintSurface?.Invoke(sender, e);
-            Rendering = false;
+            //Rendering = false;
         }
 
         private void internalCanvasView_Touch(object sender, SKTouchEventArgs e)
@@ -239,15 +251,15 @@ namespace GnollHackX.Controls
                     GHApp.CurrentGPUCacheSize = ResourceCacheLimit;
             }
 
-            if (Rendering)
-                return;
+            //if (Rendering)
+            //    return;
 
             SKImageInfo info = new SKImageInfo();
             info.ColorType = e.ColorType;
             SKPaintSurfaceEventArgs convargs = new SKPaintSurfaceEventArgs(e.Surface, info);
-            Rendering = true;
+            //Rendering = true;
             PaintSurface?.Invoke(sender, convargs);
-            Rendering = false;
+            //Rendering = false;
         }
 
         private void internalGLView_Touch(object sender, SKTouchEventArgs e)

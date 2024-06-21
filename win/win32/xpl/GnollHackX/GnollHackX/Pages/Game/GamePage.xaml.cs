@@ -560,7 +560,7 @@ namespace GnollHackX.Pages.Game
                 if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
                     canvasView.AbortAnimation("GeneralAnimationCounter");
                 _mapUpdateStopWatch.Stop();
-                canvasView.UseRenderLoop = false;
+                //canvasView.UseRenderLoop = false;
 
                 if (!LoadingGrid.IsVisible)
                     StartMainCanvasAnimation();
@@ -1615,7 +1615,7 @@ namespace GnollHackX.Pages.Game
             canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: GHConstants.MainCanvasAnimationTime, 
                 rate: UIUtils.GetMainCanvasAnimationInterval(MapRefreshRate), repeat: () => true /* MainGrid.IsVisible */);
             _mapUpdateStopWatch.Restart();
-            canvasView.UseRenderLoop = true;
+            //canvasView.UseRenderLoop = true;
         }
 
         private void StartCommandCanvasAnimation()
@@ -2430,7 +2430,7 @@ namespace GnollHackX.Pages.Game
                                 if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                                     TextCanvas.AbortAnimation("GeneralAnimationCounter");
                                 _mapUpdateStopWatch.Stop();
-                                canvasView.UseRenderLoop = false;
+                                //canvasView.UseRenderLoop = false;
                                 ReturnToMainMenu();
                                 break;
                             case GHRequestType.RestartGame:
@@ -2790,7 +2790,7 @@ namespace GnollHackX.Pages.Game
             if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
                 canvasView.AbortAnimation("GeneralAnimationCounter");
             _mapUpdateStopWatch.Stop();
-            canvasView.UseRenderLoop = false;
+            //canvasView.UseRenderLoop = false;
             StartTextCanvasAnimation();
         }
 
@@ -3646,7 +3646,7 @@ namespace GnollHackX.Pages.Game
 
             if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
                 canvasView.AbortAnimation("GeneralAnimationCounter");
-            canvasView.UseRenderLoop = false;
+            //canvasView.UseRenderLoop = false;
             _mapUpdateStopWatch.Stop();
             StartMenuCanvasAnimation();
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuCanvas End");
@@ -13326,7 +13326,7 @@ namespace GnollHackX.Pages.Game
             MainGrid.IsVisible = false;
             if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
                 canvasView.AbortAnimation("GeneralAnimationCounter");
-            canvasView.UseRenderLoop = false;
+            //canvasView.UseRenderLoop = false;
             _mapUpdateStopWatch.Stop();
             StartCommandCanvasAnimation();
         }
@@ -13502,7 +13502,7 @@ namespace GnollHackX.Pages.Game
 
             if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
                 canvasView.AbortAnimation("GeneralAnimationCounter");
-            canvasView.UseRenderLoop = false;
+            //canvasView.UseRenderLoop = false;
             _mapUpdateStopWatch.Stop();
             TouchDictionary.Clear();
 
@@ -16902,7 +16902,7 @@ namespace GnollHackX.Pages.Game
                 TextCanvas.AbortAnimation("GeneralAnimationCounter");
             TextWindowGlyphImage.StopAnimation();
             _mapUpdateStopWatch.Stop();
-            canvasView.UseRenderLoop = false;
+            //canvasView.UseRenderLoop = false;
         }
 
         public void Resume()
