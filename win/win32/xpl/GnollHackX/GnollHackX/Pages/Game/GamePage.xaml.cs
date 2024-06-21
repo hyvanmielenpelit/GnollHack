@@ -13233,21 +13233,27 @@ namespace GnollHackX.Pages.Game
         public void FadeToBlack(uint milliseconds)
         {
             MainGrid.IsEnabled = false;
+#if WINDOWS
+            FadeFrame.Opacity = 0.0;
+            FadeFrame.IsVisible = true;
+            FadeFrame.FadeTo(1.0, milliseconds);
+#else
             canvasView.Opacity = 1.0;
             canvasView.FadeTo(0.0, milliseconds);
-            //uint timeToAnimate = milliseconds;
-            //Animation animation = new Animation(v => canvasView.Opacity = v, 1.0, 0.0);
-            //animation.Commit(canvasView, "Opacity", length: timeToAnimate, rate: 25, repeat: () => false);
+#endif
         }
 
-        public void FadeFromBlack(uint milliseconds)
+        public async void FadeFromBlack(uint milliseconds)
         {
             MainGrid.IsEnabled = true;
+#if WINDOWS
+            FadeFrame.Opacity = 1.0;
+            await FadeFrame.FadeTo(0.0, milliseconds);
+            FadeFrame.IsVisible = false;
+#else
             canvasView.Opacity = 0.0;
-            canvasView.FadeTo(1.0, milliseconds);
-            //uint timeToAnimate = milliseconds;
-            //Animation animation = new Animation(v => canvasView.Opacity = v, 0.0, 1.0);
-            //animation.Commit(canvasView, "Opacity", length: timeToAnimate, rate: 25, repeat: () => false);
+            await canvasView.FadeTo(1.0, milliseconds);
+#endif
         }
 
         private void PickupButton_Clicked(object sender, EventArgs e)

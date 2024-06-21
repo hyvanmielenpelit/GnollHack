@@ -8,8 +8,8 @@
              BackgroundColor="Black"
              >
     
-        <Grid x:Name="RootGrid" VerticalOptions="Fill" HorizontalOptions="Fill" BackgroundColor="Black">
-            <Grid x:Name="MainGrid" VerticalOptions="Fill" HorizontalOptions="Fill" IsVisible="false" >
+        <Grid x:Name="RootGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Black">
+            <Grid x:Name="MainGrid" HorizontalOptions="Fill" VerticalOptions="Fill" IsVisible="false" >
                 <controls:SwitchableCanvasView x:Name="canvasView"
                                                   UseGL="False"
                                                   CanvasType="MainCanvas"
@@ -19,6 +19,7 @@
                                                   MouseWheel="canvasView_MouseWheel"
                                                   HorizontalOptions="Fill" VerticalOptions="Fill" >
                 </controls:SwitchableCanvasView>
+                <Frame x:Name="FadeFrame" IsVisible="False" BackgroundColor="Black" BorderColor="Black" CornerRadius="0" HorizontalOptions="Fill" VerticalOptions="Fill" />
 
                 <StackLayout x:Name="WornItemsLayout" Padding="0,2" Spacing="6" HorizontalOptions="End" VerticalOptions="Start" BackgroundColor="Transparent" >
                     <controls:LabeledImageButton x:Name="lWornItemsButton" LblText="" BtnLetter="]" LargerFont="True" BtnClicked="GHButton_Clicked" />
