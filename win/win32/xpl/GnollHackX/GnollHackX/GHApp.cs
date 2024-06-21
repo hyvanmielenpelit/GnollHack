@@ -432,11 +432,7 @@ namespace GnollHackX
             get
             {
 #if GNH_MAUI
-#if WINDOWS
-                return false;
-#else
                 return true;
-#endif
 #else
                 if (IsiOS || !GHConstants.IsGPUDefault)
                     return GHConstants.IsGPUDefault; /* No need to check on Apple or if GHConstants.IsGPUDefault is set to false */
