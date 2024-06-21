@@ -177,6 +177,48 @@ namespace GnollHackX.Pages.MainScreen
                 GPUCacheUsageRowDefinition.Height = 0;
             }
 
+#if WINDOWS
+            string winRTAssemblyVersion = typeof(WinRT.AgileReference)?.Assembly?.GetName()?.Version?.ToString();
+            WinRTLabel.Text = !string.IsNullOrEmpty(winRTAssemblyVersion) ? winRTAssemblyVersion : "?";
+
+            string winUIAssemblyVersion = typeof(Microsoft.UI.Xaml.Application)?.Assembly?.GetName()?.Version?.ToString();
+            WinUILabel.Text = !string.IsNullOrEmpty(winUIAssemblyVersion) ? winUIAssemblyVersion : "?";
+
+            string winSDKAssemblyVersion = typeof(Windows.UI.Color)?.Assembly?.GetName()?.Version?.ToString();
+            WinSDKLabel.Text = !string.IsNullOrEmpty(winSDKAssemblyVersion) ? winSDKAssemblyVersion : "?";
+
+            string winAppSDKAssemblyVersion = typeof(Microsoft.Windows.ApplicationModel.DynamicDependency.Bootstrap)?.Assembly?.GetName()?.Version?.ToString();
+            WinAppSDKLabel.Text = !string.IsNullOrEmpty(winAppSDKAssemblyVersion) ? winAppSDKAssemblyVersion : "?";
+#else
+            WinRTLabel.Text = "";
+            WinRTLabel.IsVisible = false;
+            WinRTTitleLabel.IsVisible = false;
+            VersionInfoGrid.Children.Remove(WinRTLabel);
+            VersionInfoGrid.Children.Remove(WinRTTitleLabel);
+            WinRTRowDefinition.Height = 0;
+
+            WinUILabel.Text = "";
+            WinUILabel.IsVisible = false;
+            WinUITitleLabel.IsVisible = false;
+            VersionInfoGrid.Children.Remove(WinUILabel);
+            VersionInfoGrid.Children.Remove(WinUITitleLabel);
+            WinUIRowDefinition.Height = 0;
+
+            WinSDKLabel.Text = "";
+            WinSDKLabel.IsVisible = false;
+            WinSDKTitleLabel.IsVisible = false;
+            VersionInfoGrid.Children.Remove(WinSDKLabel);
+            VersionInfoGrid.Children.Remove(WinSDKTitleLabel);
+            WinSDKRowDefinition.Height = 0;
+
+            WinAppSDKLabel.Text = "";
+            WinAppSDKLabel.IsVisible = false;
+            WinAppSDKTitleLabel.IsVisible = false;
+            VersionInfoGrid.Children.Remove(WinAppSDKLabel);
+            VersionInfoGrid.Children.Remove(WinAppSDKTitleLabel);
+            WinAppSDKRowDefinition.Height = 0;
+#endif
+
             PortVersionTitleLabel.Text = GHApp.RuntimePlatform + " Port Version:";
             PortBuildTitleLabel.Text = GHApp.RuntimePlatform + " Port Build:";
             PortConfigurationTitleLabel.Text ="Port Configuration:";

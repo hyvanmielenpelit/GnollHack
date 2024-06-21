@@ -195,6 +195,8 @@
 		<None Remove="Assets\UI\frame2-topleft-small.png" />
 		<None Remove="Assets\UI\frame2-topleft.png" />
 		<None Remove="Assets\UI\frame2-vertical.png" />
+		<None Remove="Assets\UI\page-next.png" />
+		<None Remove="Assets\UI\page-previous.png" />
 		<None Remove="Assets\UI\picktobag.png" />
 		<None Remove="Assets\UI\status-quivered-weapon-style.png" />
 		<None Remove="Assets\UI\symbol-damage.png" />
@@ -785,6 +787,8 @@
 	  <EmbeddedResource Include="Assets\UI\orb_fill.png" />
 	  <EmbeddedResource Include="Assets\UI\orb_glass.png" />
 	  <EmbeddedResource Include="Assets\UI\overview.png" />
+	  <EmbeddedResource Include="Assets\UI\page-next.png" />
+	  <EmbeddedResource Include="Assets\UI\page-previous.png" />
 	  <EmbeddedResource Include="Assets\UI\pay.png" />
 	  <EmbeddedResource Include="Assets\UI\picktobag.png" />
 	  <EmbeddedResource Include="Assets\UI\pickup.png" />

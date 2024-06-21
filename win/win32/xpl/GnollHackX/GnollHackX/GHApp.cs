@@ -2902,6 +2902,8 @@ namespace GnollHackX
                     AppResourceName + ".Assets.UI.load.png",
                     AppResourceName + ".Assets.UI.name.png",
                     AppResourceName + ".Assets.UI.dropmany.png",
+                    AppResourceName + ".Assets.UI.page-previous.png",
+                    AppResourceName + ".Assets.UI.page-next.png",
                     AppResourceName + ".Assets.UI.stone-look-off.png",
                     AppResourceName + ".Assets.UI.stone-look-on.png",
                     AppResourceName + ".Assets.UI.stone-autocenter-off.png",

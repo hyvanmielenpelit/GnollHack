@@ -165,6 +165,8 @@
     <None Remove="Assets\UI\orb_fill.png" />
     <None Remove="Assets\UI\orb_glass.png" />
     <None Remove="Assets\UI\overview.png" />
+    <None Remove="Assets\UI\page-next.png" />
+    <None Remove="Assets\UI\page-previous.png" />
     <None Remove="Assets\UI\pay.png" />
     <None Remove="Assets\UI\picktobag.png" />
     <None Remove="Assets\UI\pickup.png" />
@@ -323,6 +325,8 @@
     <EmbeddedResource Include="Assets\UI\chronicle.png" />
     <EmbeddedResource Include="Assets\UI\droptypes.png" />
     <EmbeddedResource Include="Assets\UI\load.png" />
+    <EmbeddedResource Include="Assets\UI\page-next.png" />
+    <EmbeddedResource Include="Assets\UI\page-previous.png" />
     <EmbeddedResource Include="Assets\UI\picktobag.png" />
     <EmbeddedResource Include="Assets\UI\rest.png" />
     <EmbeddedResource Include="Assets\UI\save.png" />
