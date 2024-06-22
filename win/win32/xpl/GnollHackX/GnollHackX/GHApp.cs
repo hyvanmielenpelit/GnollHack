@@ -955,6 +955,8 @@ namespace GnollHackX
         public static readonly bool IsAndroid = (DeviceInfo.Platform == DevicePlatform.Android);
         public static readonly bool IsiOS = (DeviceInfo.Platform == DevicePlatform.iOS);
         public static readonly bool IsWindows = (DeviceInfo.Platform == DevicePlatform.WinUI);
+        public static readonly bool IsMacCatalyst = (DeviceInfo.Platform == DevicePlatform.MacCatalyst);
+        public static readonly bool IsDesktop = DeviceInfo.Idiom == DeviceIdiom.Desktop;
         public static readonly bool IsMaui = true;
         public static readonly string RuntimePlatform = DeviceInfo.Platform.ToString();
 #else
@@ -962,7 +964,9 @@ namespace GnollHackX
         public static readonly bool IsAndroid = (Device.RuntimePlatform == Device.Android);
         public static readonly bool IsiOS = (Device.RuntimePlatform == Device.iOS);
         public static readonly bool IsWindows = false;
+        public static readonly bool IsMacCatalyst = false;
         public static readonly bool IsMaui = false;
+        public static readonly bool IsDesktop = Device.Idiom == TargetIdiom.Desktop;
         public static readonly string RuntimePlatform = Device.RuntimePlatform;
 #endif
         public static readonly float DisplayScale = DeviceDisplay.MainDisplayInfo.Density <= 0 ? 1.0f : (float)DeviceDisplay.MainDisplayInfo.Density;

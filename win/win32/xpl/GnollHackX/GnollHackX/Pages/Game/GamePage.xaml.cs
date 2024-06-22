@@ -17402,15 +17402,19 @@ namespace GnollHackX.Pages.Game
 
         private void UpdateMoreNextPrevButtonVisibility(bool resetPrevButton, bool resetNextButton)
         {
-#if WINDOWS
-            int cmdPage = MoreCmdPage;
-            MorePreviousGrid.IsVisible = cmdPage > (EnableWizardMode ? 0 : 1);
-            MoreNextGrid.IsVisible = cmdPage < CurrentMoreButtonPageMaxNumber - 1;
-#else
-            MorePreviousGrid.IsVisible = false;
-            MoreNextGrid.IsVisible = false;
-#endif
-            if(resetPrevButton || !MorePreviousGrid.IsVisible)
+            if(GHApp.IsDesktop)
+            {
+                int cmdPage = MoreCmdPage;
+                MorePreviousGrid.IsVisible = cmdPage > (EnableWizardMode ? 0 : 1);
+                MoreNextGrid.IsVisible = cmdPage < CurrentMoreButtonPageMaxNumber - 1;
+            }
+            else
+            {
+                MorePreviousGrid.IsVisible = false;
+                MoreNextGrid.IsVisible = false;
+            }
+
+            if (resetPrevButton || !MorePreviousGrid.IsVisible)
                 MorePreviousButton.IsVisible = false;
             if(resetNextButton || !MoreNextGrid.IsVisible)
                 MoreNextButton.IsVisible = false;
