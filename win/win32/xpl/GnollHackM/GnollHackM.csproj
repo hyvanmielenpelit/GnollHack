@@ -205,6 +205,7 @@
 		<None Remove="Assets\UI\status-align-unknown.png" />
 		<None Remove="Assets\UI\status-quivered-weapon-style.png" />
 		<None Remove="Assets\UI\status-score.png" />
+		<None Remove="Assets\UI\status-separator.png" />
 		<None Remove="Assets\UI\status-stats-cha.png" />
 		<None Remove="Assets\UI\status-stats-con.png" />
 		<None Remove="Assets\UI\status-stats-dex.png" />
@@ -855,6 +856,7 @@
 	  <EmbeddedResource Include="Assets\UI\status-move.png" />
 	  <EmbeddedResource Include="Assets\UI\status-quivered-weapon-style.png" />
 	  <EmbeddedResource Include="Assets\UI\status-score.png" />
+	  <EmbeddedResource Include="Assets\UI\status-separator.png" />
 	  <EmbeddedResource Include="Assets\UI\status-stats-cha.png" />
 	  <EmbeddedResource Include="Assets\UI\status-stats-con.png" />
 	  <EmbeddedResource Include="Assets\UI\status-stats-dex.png" />

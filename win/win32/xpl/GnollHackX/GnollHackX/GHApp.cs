@@ -1665,6 +1665,7 @@ namespace GnollHackX
         public static SKImage _statusTurnsBitmap;
 
         public static SKImage _statusDungeonLevelBitmap;
+        public static SKImage _statusSeparatorBitmap;
 
         public static SKImage _searchBitmap;
         public static SKImage _waitBitmap;
@@ -2391,6 +2392,14 @@ namespace GnollHackX
                 bmp.SetImmutable();
                 _statusDungeonLevelBitmap = SKImage.FromBitmap(bmp);
             }
+
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-separator.png"))
+            {
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusSeparatorBitmap = SKImage.FromBitmap(bmp);
+            }
+
 
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.search.png"))
             {

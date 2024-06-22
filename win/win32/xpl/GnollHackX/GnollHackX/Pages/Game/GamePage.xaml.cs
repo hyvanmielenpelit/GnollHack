@@ -8148,12 +8148,16 @@ namespace GnollHackX.Pages.Game
                             }
 
 
-
-
                             /* STATS on Desktop */
                             if (GHApp.IsDesktop)
                             {
-                                curx += stdspacing;
+                                curx += stdspacing * 2;
+                                //target_width = target_scale * GHApp._statusSeparatorBitmap.Width;
+                                //target_height = target_scale * GHApp._statusSeparatorBitmap.Height;
+                                //statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                //canvas.DrawImage(GHApp._statusSeparatorBitmap, statusDest);
+                                //curx += target_width;
+                                //curx += stdspacing;
 
                                 for (int i = 0; i < 6; i++)
                                 {
@@ -8208,10 +8212,14 @@ namespace GnollHackX.Pages.Game
                                     //curx += print_width + stdspacing;
 
                                     curx += stdspacing;
-                                    curx += innerspacing;
                                 }
 
-                                curx += stdspacing;
+                                //target_width = target_scale * GHApp._statusSeparatorBitmap.Width;
+                                //target_height = target_scale * GHApp._statusSeparatorBitmap.Height;
+                                //statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                //canvas.DrawImage(GHApp._statusSeparatorBitmap, statusDest);
+                                //curx += target_width;
+                                curx += stdspacing * 3;
                             }
 
 
@@ -16479,7 +16487,14 @@ namespace GnollHackX.Pages.Game
 
         private void CommandCanvas_MouseWheel(object sender, GHMouseWheelEventArgs e)
         {
-
+            if (e.MouseWheelDelta > 0)
+            {
+                MorePreviousButton_BtnClicked(sender, new EventArgs());
+            }
+            else if (e.MouseWheelDelta < 0)
+            {
+                MoreNextButton_BtnClicked(sender, new EventArgs());
+            }
         }
 
         private void ToggleMessageNumberButton_Clicked(object sender, EventArgs e)
