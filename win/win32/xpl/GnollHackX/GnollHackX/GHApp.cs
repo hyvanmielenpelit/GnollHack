@@ -600,8 +600,10 @@ namespace GnollHackX
         public static void CollectGarbage()
         {
             GC.Collect();
+#if !WINDOWS
             GC.WaitForPendingFinalizers();
             GC.Collect();
+#endif
         }
 
        public static void OnStart()

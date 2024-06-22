@@ -8198,7 +8198,7 @@ namespace GnollHackX.Pages.Game
                                 }
                                 if (valtext != "")
                                 {
-                                    curx += innerspacing;
+                                    curx += stdspacing / 2;
 
                                     SKImage statIcon = GetAlignmentIcon(valtext);
                                     target_width = target_scale * statIcon.Width;
@@ -8206,12 +8206,16 @@ namespace GnollHackX.Pages.Game
                                     statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
                                     canvas.DrawImage(statIcon, statusDest);
                                     curx += target_width;
-                                    //curx += innerspacing;
-                                    //float print_width = textPaint.MeasureText(valtext);
-                                    //textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
-                                    //curx += print_width + stdspacing;
+                                    if(valtext.Length >= 3)
+                                    {
+                                        curx += innerspacing;
+                                        string print_text = valtext.Substring(0, 3);
+                                        float print_width = textPaint.MeasureText(print_text);
+                                        textPaint.DrawTextOnCanvas(canvas, print_text, curx, cury - textPaint.FontMetrics.Ascent);
+                                        curx += print_width;
+                                    }
 
-                                    curx += innerspacing;
+                                    curx += stdspacing / 2;
                                     curx += stdspacing;
                                 }
 
@@ -12297,20 +12301,21 @@ namespace GnollHackX.Pages.Game
 
         private SKImage GetAlignmentIcon(string alignment)
         {
-            if (alignment == null || alignment.Length < 3)
-                return GHApp._statusAlignmentUnknownBitmap;
-            else
-            {
-                string lcAlign = alignment.Substring(0, 3).ToLower();
-                if (lcAlign == "law")
-                    return GHApp._statusAlignmentLawfulBitmap;
-                else if (lcAlign == "neu")
-                    return GHApp._statusAlignmentNeutralBitmap;
-                else if (lcAlign == "cha")
-                    return GHApp._statusAlignmentChaoticBitmap;
-                else
-                    return GHApp._statusAlignmentUnknownBitmap;
-            }
+            return GHApp._statusAlignmentLawfulBitmap;
+            //if (alignment == null || alignment.Length < 3)
+            //    return GHApp._statusAlignmentUnknownBitmap;
+            //else
+            //{
+            //    string lcAlign = alignment.Substring(0, 3).ToLower();
+            //    if (lcAlign == "law")
+            //        return GHApp._statusAlignmentLawfulBitmap;
+            //    else if (lcAlign == "neu")
+            //        return GHApp._statusAlignmentNeutralBitmap;
+            //    else if (lcAlign == "cha")
+            //        return GHApp._statusAlignmentChaoticBitmap;
+            //    else
+            //        return GHApp._statusAlignmentUnknownBitmap;
+            //}
         }
 
         private ConcurrentDictionary<long, TouchEntry> TouchDictionary = new ConcurrentDictionary<long, TouchEntry>();
