@@ -8743,6 +8743,64 @@ namespace GnollHackX.Pages.Game
                                 curx += stdspacing;
                             }
 
+                            /* Desktop */
+                            if (GHApp.IsDesktop)
+                            {
+                                curx += stdspacing;
+
+                                for(int i = 0; i < 6; i++)
+                                {
+                                    valtext = "";
+                                    lock (StatusFieldLock)
+                                    {
+                                        if (StatusFields[(int)NhStatusFields.BL_STR + i] != null && StatusFields[(int)NhStatusFields.BL_STR + i].IsEnabled && StatusFields[(int)NhStatusFields.BL_STR + i].Text != null)
+                                        {
+                                            valtext = StatusFields[(int)NhStatusFields.BL_STR + i].Text;
+                                        }
+                                    }
+                                    if (valtext != "")
+                                    {
+                                        SKImage statIcon = GetStatIcon(i);
+                                        target_width = target_scale * statIcon.Width;
+                                        target_height = target_scale * statIcon.Height;
+                                        statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                        canvas.DrawImage(statIcon, statusDest);
+                                        curx += target_width;
+                                        curx += innerspacing;
+                                        float print_width = textPaint.MeasureText(valtext);
+                                        textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                        curx += print_width + stdspacing;
+                                    }
+                                }
+
+                                valtext = "";
+                                lock (StatusFieldLock)
+                                {
+                                    if (StatusFields[(int)NhStatusFields.BL_ALIGN] != null && StatusFields[(int)NhStatusFields.BL_ALIGN].IsEnabled && StatusFields[(int)NhStatusFields.BL_ALIGN].Text != null)
+                                    {
+                                        valtext = StatusFields[(int)NhStatusFields.BL_ALIGN].Text;
+                                    }
+                                }
+                                if (valtext != "")
+                                {
+                                    curx += innerspacing;
+
+                                    SKImage statIcon = GetAlignmentIcon(valtext);
+                                    target_width = target_scale * statIcon.Width;
+                                    target_height = target_scale * statIcon.Height;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                    canvas.DrawImage(statIcon, statusDest);
+                                    curx += target_width;
+                                    //curx += innerspacing;
+                                    //float print_width = textPaint.MeasureText(valtext);
+                                    //textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                    //curx += print_width + stdspacing;
+
+                                    curx += stdspacing;
+                                    curx += innerspacing;
+                                }
+                            }
+
                             /* Right aligned */
                             bool turnsprinted = false;
                             float finalleftcurx = curx;
@@ -8791,6 +8849,8 @@ namespace GnollHackX.Pages.Game
                             }
 
                             /* Gold */
+                            bool goldprinted = false;
+                            float goldleft = curx;
                             valtext = "";
                             lock (StatusFieldLock)
                             {
@@ -8813,7 +8873,9 @@ namespace GnollHackX.Pages.Game
                                 float newcurx = turnsleft - (turnsprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
                                 if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
                                 {
+                                    goldprinted = true;
                                     curx = newcurx;
+                                    goldleft = curx;
                                     statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
 #if GNH_MAP_PROFILING && DEBUG
                                     StartProfiling(GHProfilingStyle.Bitmap);
@@ -8834,6 +8896,89 @@ namespace GnollHackX.Pages.Game
                                     curx += print_width;
                                 }
                             }
+
+                            /* Score */
+                            bool scoreprinted = false;
+                            float scoreleft = curx;
+                            valtext = "";
+                            lock (StatusFieldLock)
+                            {
+                                if (StatusFields[(int)NhStatusFields.BL_SCORE] != null && StatusFields[(int)NhStatusFields.BL_GOLD].IsEnabled && StatusFields[(int)NhStatusFields.BL_SCORE].Text != null)
+                                {
+                                    valtext = StatusFields[(int)NhStatusFields.BL_SCORE].Text;
+                                }
+                            }
+                            if (valtext != "")
+                            {
+                                target_width = target_scale * GHApp._statusScoreBitmap.Width;
+                                target_height = target_scale * GHApp._statusScoreBitmap.Height;
+                                float print_width = textPaint.MeasureText(valtext);
+                                float newcurx = goldleft - (goldprinted || turnsprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
+                                if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
+                                {
+                                    scoreprinted = true;
+                                    curx = newcurx;
+                                    scoreleft = curx;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                    canvas.DrawImage(GHApp._statusScoreBitmap, statusDest);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                    curx += target_width;
+                                    curx += innerspacing;
+#if GNH_MAP_PROFILING && DEBUG
+                                    StartProfiling(GHProfilingStyle.Text);
+#endif
+                                    textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StopProfiling(GHProfilingStyle.Text);
+#endif
+                                    curx += print_width;
+                                }
+                            }
+
+                            /* XP Points */
+                            valtext = "";
+                            lock (StatusFieldLock)
+                            {
+                                if (StatusFields[(int)NhStatusFields.BL_EXP] != null && StatusFields[(int)NhStatusFields.BL_GOLD].IsEnabled && StatusFields[(int)NhStatusFields.BL_EXP].Text != null)
+                                {
+                                    valtext = StatusFields[(int)NhStatusFields.BL_EXP].Text;
+                                }
+                            }
+                            if (valtext != "")
+                            {
+                                target_width = target_scale * GHApp._statusXPPointsBitmap.Width;
+                                target_height = target_scale * GHApp._statusXPPointsBitmap.Height;
+                                float print_width = textPaint.MeasureText(valtext);
+                                float newcurx = scoreleft - (goldprinted || turnsprinted || scoreprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
+                                if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
+                                {
+                                    curx = newcurx;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                    canvas.DrawImage(GHApp._statusXPPointsBitmap, statusDest);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                    curx += target_width;
+                                    curx += innerspacing;
+#if GNH_MAP_PROFILING && DEBUG
+                                    StartProfiling(GHProfilingStyle.Text);
+#endif
+                                    textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StopProfiling(GHProfilingStyle.Text);
+#endif
+                                    curx += print_width;
+                                }
+                            }
+
 
 
                             /* Second row */
@@ -9914,6 +10059,12 @@ namespace GnollHackX.Pages.Game
                                 textPaint.Color = UIUtils.NHColor2SKColorCore(valcolor, 0, true, false);
                                 textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
                                 textPaint.Color = SKColors.Black;
+                                SKImage statIcon = GetStatIcon(i);
+                                icon_width = icon_height * (float)statIcon.Width / (float)statIcon.Height;
+                                icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                                icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                                icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                                canvas.DrawImage(statIcon, icon_rect);
                                 ty += textPaint.FontSpacing;
                             }
                         }
@@ -9951,6 +10102,10 @@ namespace GnollHackX.Pages.Game
                         {
                             textPaint.DrawTextOnCanvas(canvas, "Experience:", tx, ty);
                             textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                            canvas.DrawImage(GHApp._statusXPPointsBitmap, icon_rect);
                             ty += textPaint.FontSpacing;
                         }
 
@@ -9986,6 +10141,10 @@ namespace GnollHackX.Pages.Game
                         {
                             textPaint.DrawTextOnCanvas(canvas, "Alignment:", tx, ty);
                             textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                            canvas.DrawImage(GetAlignmentIcon(valtext), icon_rect);
                             ty += textPaint.FontSpacing;
                         }
 
@@ -10001,6 +10160,10 @@ namespace GnollHackX.Pages.Game
                         {
                             textPaint.DrawTextOnCanvas(canvas, "Score:", tx, ty);
                             textPaint.DrawTextOnCanvas(canvas, valtext, tx + indentation, ty);
+                            icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
+                            icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
+                            icon_rect = new SKRect(icon_tx, icon_ty, icon_tx + icon_width, icon_ty + icon_height);
+                            canvas.DrawImage(GHApp._statusScoreBitmap, icon_rect);
                             ty += textPaint.FontSpacing;
                         }
 
@@ -12080,6 +12243,52 @@ namespace GnollHackX.Pages.Game
             double scale = GetCanvasScale();
             sb_xheight = scale * (double)statusbarheight;
             return sb_xheight;
+        }
+
+        private SKImage GetStatIcon(int i)
+        {
+            SKImage statIcon;
+            switch (i)
+            {
+                default:
+                case 0:
+                    statIcon = GHApp._statusStrBitmap;
+                    break;
+                case 1:
+                    statIcon = GHApp._statusDexBitmap;
+                    break;
+                case 2:
+                    statIcon = GHApp._statusConBitmap;
+                    break;
+                case 3:
+                    statIcon = GHApp._statusIntBitmap;
+                    break;
+                case 4:
+                    statIcon = GHApp._statusWisBitmap;
+                    break;
+                case 5:
+                    statIcon = GHApp._statusChaBitmap;
+                    break;
+            }
+            return statIcon;
+        }
+
+        private SKImage GetAlignmentIcon(string alignment)
+        {
+            if (alignment == null || alignment.Length < 3)
+                return GHApp._statusAlignmentUnknownBitmap;
+            else
+            {
+                string lcAlign = alignment.Substring(0, 3).ToLower();
+                if (lcAlign == "law")
+                    return GHApp._statusAlignmentLawfulBitmap;
+                else if (lcAlign == "neu")
+                    return GHApp._statusAlignmentNeutralBitmap;
+                else if (lcAlign == "cha")
+                    return GHApp._statusAlignmentChaoticBitmap;
+                else
+                    return GHApp._statusAlignmentUnknownBitmap;
+            }
         }
 
         private ConcurrentDictionary<long, TouchEntry> TouchDictionary = new ConcurrentDictionary<long, TouchEntry>();

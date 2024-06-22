@@ -1641,6 +1641,21 @@ namespace GnollHackX
         public static SKImage _statusQuiveredWeaponStyleBitmap;
         public static SKImage _statusEmptyHandedBitmap;
 
+        public static SKImage _statusStrBitmap;
+        public static SKImage _statusDexBitmap;
+        public static SKImage _statusConBitmap;
+        public static SKImage _statusIntBitmap;
+        public static SKImage _statusWisBitmap;
+        public static SKImage _statusChaBitmap;
+
+        public static SKImage _statusAlignmentLawfulBitmap;
+        public static SKImage _statusAlignmentNeutralBitmap;
+        public static SKImage _statusAlignmentChaoticBitmap;
+        public static SKImage _statusAlignmentUnknownBitmap;
+
+        public static SKImage _statusScoreBitmap;
+        public static SKImage _statusXPPointsBitmap;
+
         public static SKImage _statusGoldBitmap;
         public static SKImage _statusTurnsBitmap;
 
@@ -2267,6 +2282,90 @@ namespace GnollHackX
                 SKBitmap bmp = SKBitmap.Decode(stream);
                 bmp.SetImmutable();
                 _statusEmptyHandedBitmap = SKImage.FromBitmap(bmp);
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-stats-str.png"))
+            {
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusStrBitmap = SKImage.FromBitmap(bmp);
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-stats-dex.png"))
+            {
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusDexBitmap = SKImage.FromBitmap(bmp);
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-stats-con.png"))
+            {
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusConBitmap = SKImage.FromBitmap(bmp);
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-stats-int.png"))
+            {
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusIntBitmap = SKImage.FromBitmap(bmp);
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-stats-wis.png"))
+            {
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusWisBitmap = SKImage.FromBitmap(bmp);
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-stats-cha.png"))
+            {
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusChaBitmap = SKImage.FromBitmap(bmp);
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-align-lawful.png"))
+            {
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusAlignmentLawfulBitmap = SKImage.FromBitmap(bmp);
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-align-neutral.png"))
+            {
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusAlignmentNeutralBitmap = SKImage.FromBitmap(bmp);
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-align-chaotic.png"))
+            {
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusAlignmentChaoticBitmap = SKImage.FromBitmap(bmp);
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-align-unknown.png"))
+            {
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusAlignmentUnknownBitmap = SKImage.FromBitmap(bmp);
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-xp-points.png"))
+            {
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusXPPointsBitmap = SKImage.FromBitmap(bmp);
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-score.png"))
+            {
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusScoreBitmap = SKImage.FromBitmap(bmp);
             }
 
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-gold.png"))
