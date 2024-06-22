@@ -8001,12 +8001,11 @@ namespace GnollHackX.Pages.Game
                             textPaint.Typeface = GHApp.LatoRegular;
                             float target_scale = rowheight / GHApp._statusWizardBitmap.Height; // All are 64px high
 
-                            string valtext;
+                            string valtext = "";
+                            int valcolor = (int)NhColor.CLR_WHITE;
                             SKRect statusDest;
                             SKRect bounds = new SKRect();
 
-
-                            valtext = "";
                             lock (StatusFieldLock)
                             {
                                 if (StatusFields[(int)NhStatusFields.BL_MODE] != null && StatusFields[(int)NhStatusFields.BL_MODE].IsEnabled && StatusFields[(int)NhStatusFields.BL_MODE].Text != null)
@@ -8756,6 +8755,7 @@ namespace GnollHackX.Pages.Game
                                         if (StatusFields[(int)NhStatusFields.BL_STR + i] != null && StatusFields[(int)NhStatusFields.BL_STR + i].IsEnabled && StatusFields[(int)NhStatusFields.BL_STR + i].Text != null)
                                         {
                                             valtext = StatusFields[(int)NhStatusFields.BL_STR + i].Text;
+                                            valcolor = StatusFields[(int)NhStatusFields.BL_STR + i].Color;
                                         }
                                     }
                                     if (valtext != "")
@@ -8768,7 +8768,10 @@ namespace GnollHackX.Pages.Game
                                         curx += target_width;
                                         curx += innerspacing;
                                         float print_width = textPaint.MeasureText(valtext);
+                                        SKColor oldColor = textPaint.Color;
+                                        textPaint.Color = UIUtils.NHColor2SKColorCore(valcolor, 0, false, false);
                                         textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                        textPaint.Color = oldColor;
                                         curx += print_width + stdspacing;
                                     }
                                 }
