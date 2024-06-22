@@ -186,6 +186,7 @@ StyleCopReport.xml
 *.tli
 *.tlh
 *.tmp
+*.TMP
 *.tmp_proj
 *.log
 *.vspscc
@@ -441,4 +442,3 @@ ASALocalRun/
 
 !win/win32/xpl/GnollHackX/GnollHackX.Android/libs/*
 !*.json
-/win/win32/xpl/GnollHackX/GnollHackX/Pages/Game/GamePage.xaml.cs~RF1ebfc3b1.TMP
