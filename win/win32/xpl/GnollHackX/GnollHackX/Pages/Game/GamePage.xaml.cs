@@ -8147,6 +8147,75 @@ namespace GnollHackX.Pages.Game
                                 textPaint.TextSize = basefontsize;
                             }
 
+
+
+
+                            /* STATS on Desktop */
+                            if (GHApp.IsDesktop)
+                            {
+                                curx += stdspacing;
+
+                                for (int i = 0; i < 6; i++)
+                                {
+                                    valtext = "";
+                                    lock (StatusFieldLock)
+                                    {
+                                        if (StatusFields[(int)NhStatusFields.BL_STR + i] != null && StatusFields[(int)NhStatusFields.BL_STR + i].IsEnabled && StatusFields[(int)NhStatusFields.BL_STR + i].Text != null)
+                                        {
+                                            valtext = StatusFields[(int)NhStatusFields.BL_STR + i].Text;
+                                            valcolor = StatusFields[(int)NhStatusFields.BL_STR + i].Color;
+                                        }
+                                    }
+                                    if (valtext != "")
+                                    {
+                                        SKImage statIcon = GetStatIcon(i);
+                                        target_width = target_scale * statIcon.Width;
+                                        target_height = target_scale * statIcon.Height;
+                                        statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                        canvas.DrawImage(statIcon, statusDest);
+                                        curx += target_width;
+                                        curx += innerspacing;
+                                        float print_width = textPaint.MeasureText(valtext);
+                                        SKColor oldColor = textPaint.Color;
+                                        textPaint.Color = UIUtils.NHColor2SKColorCore(valcolor, 0, false, false);
+                                        textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                        textPaint.Color = oldColor;
+                                        curx += print_width + stdspacing;
+                                    }
+                                }
+
+                                valtext = "";
+                                lock (StatusFieldLock)
+                                {
+                                    if (StatusFields[(int)NhStatusFields.BL_ALIGN] != null && StatusFields[(int)NhStatusFields.BL_ALIGN].IsEnabled && StatusFields[(int)NhStatusFields.BL_ALIGN].Text != null)
+                                    {
+                                        valtext = StatusFields[(int)NhStatusFields.BL_ALIGN].Text;
+                                    }
+                                }
+                                if (valtext != "")
+                                {
+                                    curx += innerspacing;
+
+                                    SKImage statIcon = GetAlignmentIcon(valtext);
+                                    target_width = target_scale * statIcon.Width;
+                                    target_height = target_scale * statIcon.Height;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                    canvas.DrawImage(statIcon, statusDest);
+                                    curx += target_width;
+                                    //curx += innerspacing;
+                                    //float print_width = textPaint.MeasureText(valtext);
+                                    //textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                    //curx += print_width + stdspacing;
+
+                                    curx += stdspacing;
+                                    curx += innerspacing;
+                                }
+
+                                curx += stdspacing;
+                            }
+
+
+                            /* Normal non-desktop stats */
                             valtext = "";
                             lock (StatusFieldLock)
                             {
@@ -8740,68 +8809,6 @@ namespace GnollHackX.Pages.Game
 #endif
                                 }
                                 curx += stdspacing;
-                            }
-
-                            /* Desktop */
-                            if (GHApp.IsDesktop)
-                            {
-                                curx += stdspacing;
-
-                                for(int i = 0; i < 6; i++)
-                                {
-                                    valtext = "";
-                                    lock (StatusFieldLock)
-                                    {
-                                        if (StatusFields[(int)NhStatusFields.BL_STR + i] != null && StatusFields[(int)NhStatusFields.BL_STR + i].IsEnabled && StatusFields[(int)NhStatusFields.BL_STR + i].Text != null)
-                                        {
-                                            valtext = StatusFields[(int)NhStatusFields.BL_STR + i].Text;
-                                            valcolor = StatusFields[(int)NhStatusFields.BL_STR + i].Color;
-                                        }
-                                    }
-                                    if (valtext != "")
-                                    {
-                                        SKImage statIcon = GetStatIcon(i);
-                                        target_width = target_scale * statIcon.Width;
-                                        target_height = target_scale * statIcon.Height;
-                                        statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                        canvas.DrawImage(statIcon, statusDest);
-                                        curx += target_width;
-                                        curx += innerspacing;
-                                        float print_width = textPaint.MeasureText(valtext);
-                                        SKColor oldColor = textPaint.Color;
-                                        textPaint.Color = UIUtils.NHColor2SKColorCore(valcolor, 0, false, false);
-                                        textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
-                                        textPaint.Color = oldColor;
-                                        curx += print_width + stdspacing;
-                                    }
-                                }
-
-                                valtext = "";
-                                lock (StatusFieldLock)
-                                {
-                                    if (StatusFields[(int)NhStatusFields.BL_ALIGN] != null && StatusFields[(int)NhStatusFields.BL_ALIGN].IsEnabled && StatusFields[(int)NhStatusFields.BL_ALIGN].Text != null)
-                                    {
-                                        valtext = StatusFields[(int)NhStatusFields.BL_ALIGN].Text;
-                                    }
-                                }
-                                if (valtext != "")
-                                {
-                                    curx += innerspacing;
-
-                                    SKImage statIcon = GetAlignmentIcon(valtext);
-                                    target_width = target_scale * statIcon.Width;
-                                    target_height = target_scale * statIcon.Height;
-                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawImage(statIcon, statusDest);
-                                    curx += target_width;
-                                    //curx += innerspacing;
-                                    //float print_width = textPaint.MeasureText(valtext);
-                                    //textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
-                                    //curx += print_width + stdspacing;
-
-                                    curx += stdspacing;
-                                    curx += innerspacing;
-                                }
                             }
 
                             /* Right aligned */
