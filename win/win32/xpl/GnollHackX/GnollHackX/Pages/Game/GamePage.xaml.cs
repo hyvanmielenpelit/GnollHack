@@ -8211,6 +8211,7 @@ namespace GnollHackX.Pages.Game
                                     //textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
                                     //curx += print_width + stdspacing;
 
+                                    curx += innerspacing;
                                     curx += stdspacing;
                                 }
 
@@ -8219,7 +8220,7 @@ namespace GnollHackX.Pages.Game
                                 //statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
                                 //canvas.DrawImage(GHApp._statusSeparatorBitmap, statusDest);
                                 //curx += target_width;
-                                curx += stdspacing * 3;
+                                curx += stdspacing * 2;
                             }
 
 
