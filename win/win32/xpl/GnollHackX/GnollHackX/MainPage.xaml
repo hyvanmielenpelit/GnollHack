@@ -8,7 +8,7 @@
              BackgroundColor="Black"
              Appearing="ContentPage_Appearing" Disappearing ="ContentPage_Disappearing" >
 
-    <Grid HorizontalOptions="Fill" VerticalOptions="Fill">
+    <Grid x:Name="RootGrid" HorizontalOptions="Fill" VerticalOptions="Fill">
         <Button x:Name="KeyboardFocusButton" Clicked="KeyboardFocusButton_Clicked" Text="" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill"/>
         <AbsoluteLayout  HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Black">
             <local:GHCachedImage x:Name="FmodLogoImage" Source="resource://GnollHackX.Assets.FMOD-Logo-192-White.png" Opacity="0" IsVisible="true" WidthRequest="121" HeightRequest="32"

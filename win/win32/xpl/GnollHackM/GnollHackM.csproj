@@ -179,6 +179,9 @@
 		<None Remove="..\GnollHackX\GnollHackX\Pages\Game\GameMenuPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\Game\WikiPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\MainPage.xaml.cs" />
+		<None Remove="Assets\Cursor\custom-cursor-32.cur" />
+		<None Remove="Assets\Cursor\custom-cursor-32in64.cur" />
+		<None Remove="Assets\Cursor\custom-cursor-64.cur" />
 		<None Remove="Assets\gnollhack-icon-v2-512.png" />
 		<None Remove="Assets\UI\autostash.png" />
 		<None Remove="Assets\UI\background-darkmarble.png" />
@@ -689,6 +692,8 @@
 	  <EmbeddedResource Include="Assets\button_disabled.png" />
 	  <EmbeddedResource Include="Assets\button_normal.png" />
 	  <EmbeddedResource Include="Assets\button_selected.png" />
+	  <EmbeddedResource Include="Assets\Cursor\custom-cursor-32.cur" />
+	  <EmbeddedResource Include="Assets\Cursor\custom-cursor-64.cur" />
 	  <EmbeddedResource Include="Assets\DejaVuSansMono-Bold.ttf" />
 	  <EmbeddedResource Include="Assets\DejaVuSansMono-BoldOblique.ttf" />
 	  <EmbeddedResource Include="Assets\DejaVuSansMono-Oblique.ttf" />

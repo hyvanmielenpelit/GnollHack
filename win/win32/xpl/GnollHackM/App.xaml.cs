@@ -15,7 +15,7 @@ public partial class App : Application
 	{
 		InitializeComponent();
 
-#if WINDOWS10_0_19041_0_OR_GREATER
+#if WINDOWS
         Microsoft.Maui.Handlers.PickerHandler.Mapper.AppendToMapping(nameof(IPicker.Title), (handler, view) =>
         {
             if (handler.PlatformView is not null && view is Picker pick && !String.IsNullOrWhiteSpace(pick.Title))

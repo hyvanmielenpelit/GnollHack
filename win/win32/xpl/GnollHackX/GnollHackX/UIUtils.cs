@@ -2,8 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using SkiaSharp;
+using System.Diagnostics;
+
 #if GNH_MAUI
 using GnollHackM;
+
+#if WINDOWS
+using GnollHackM.Platforms.Windows;
+#endif
 using Microsoft.Maui.Controls;
 #else
 using Xamarin.Forms;
@@ -1140,6 +1146,27 @@ namespace GnollHackX
             /* Hopefully a temporary workaround for Maui Windows modal bug */
 #if WINDOWS
             layout.Margin = new(0, -32, 0, 0);
+#endif
+        }
+
+        public static void ChangeLayoutCursor(Layout layout)
+        {
+#if WINDOWS
+            if (GHApp.WindowsCursor == null || layout == null || layout.Handler == null)
+                return;
+
+            if (layout.Handler.PlatformView is Microsoft.UI.Xaml.UIElement)
+            {
+                try
+                {
+                    Microsoft.UI.Xaml.UIElement element = (Microsoft.UI.Xaml.UIElement)layout.Handler.PlatformView;
+                    element.ChangeCursor(GHApp.WindowsCursor);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
 #endif
         }
     }

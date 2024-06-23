@@ -822,6 +822,7 @@ namespace GnollHackX.Pages.Game
             On<iOS>().SetUseSafeArea(true);
             UIUtils.AdjustRootLayout(RootGrid);
             GHApp.SetPageThemeOnHandler(this, GHApp.DarkMode);
+            GHApp.SetPageLayoutCursorOnHandler(this, RootGrid);
 
             _mainPage = mainPage;
 

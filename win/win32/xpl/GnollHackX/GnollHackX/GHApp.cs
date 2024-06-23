@@ -1,6 +1,9 @@
 ﻿using SkiaSharp;
 #if GNH_MAUI
 using GnollHackM;
+#if WINDOWS
+using GnollHackM.Platforms.Windows;
+#endif
 #else
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -79,6 +82,7 @@ namespace GnollHackX
     {
 #if WINDOWS
         public static Microsoft.UI.Xaml.Window WindowsXamlWindow = null;
+        public static Microsoft.UI.Input.InputCursor WindowsCursor = null;
 #endif
 
         public static void Initialize()
@@ -167,6 +171,33 @@ namespace GnollHackX
             }
 
             BackButtonPressed += EmptyBackButtonPressed;
+            LoadCustomCursor(assembly);
+        }
+
+        private static void LoadCustomCursor(Assembly assembly)
+        {
+#if WINDOWS
+            try
+            {
+                string target_cur_path = Path.Combine(GHApp.GHPath, "custom-cursor-64.cur");
+                using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.Cursor.custom-cursor-64.cur"))
+                {
+                    if (File.Exists(target_cur_path))
+                        File.Delete(target_cur_path);
+                    using (FileStream fileStream = File.OpenWrite(target_cur_path))
+                    {
+                        stream.CopyTo(fileStream);
+                    }
+                }
+
+                var cursor = CursorUtilities.LoadCursor(target_cur_path);
+                WindowsCursor = cursor;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+#endif
         }
 
         private static long GetDefaultPrimaryGPUCacheSize(ulong memory)
@@ -761,6 +792,19 @@ namespace GnollHackX
                     {
                         SetPageTheme((Page)sender, isDarkTheme);
                     }
+                };
+            }
+#endif
+        }
+
+        public static void SetPageLayoutCursorOnHandler(Page page, Layout layout)
+        {
+#if WINDOWS
+            if (page != null && layout != null)
+            {
+                page.HandlerChanged += (sender, e) =>
+                {
+                    UIUtils.ChangeLayoutCursor(layout);
                 };
             }
 #endif

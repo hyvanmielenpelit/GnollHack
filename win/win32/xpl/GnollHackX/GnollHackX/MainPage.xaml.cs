@@ -19,8 +19,6 @@ using System.Net.Http.Headers;
 using System.Collections;
 using System.Collections.Concurrent;
 
-
-
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
@@ -31,6 +29,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using GnollHackM.Platforms.Windows;
 #endif
 
 namespace GnollHackM
@@ -82,15 +81,17 @@ namespace GnollHackX
             _generalTimer.IsRepeating = true;
             _generalTimer.Tick += (s, e) => { if(!DoGeneralTimerTick()) _generalTimer.Stop(); };
 
-            Loaded += (s, e) => {
 #if WINDOWS
+            Loaded += (s, e) => {
                 GHApp.ResolutionScale = GHApp.WindowsXamlWindow != null && GHApp.WindowsXamlWindow.Content != null && GHApp.WindowsXamlWindow.Content.XamlRoot != null ? (float)GHApp.WindowsXamlWindow.Content.XamlRoot.RasterizationScale : 1.0f;
                 if (GHApp.DisplayScale > 0 && GHApp.ResolutionScale > 0)
                     GHApp.TotalDisplayScale = GHApp.DisplayScale * GHApp.ResolutionScale;
 
                 GHApp.DisplayRefreshRate = Math.Max(60.0f, DeviceDisplay.Current.MainDisplayInfo.RefreshRate);
-#endif
+
+                UIUtils.ChangeLayoutCursor(RootGrid);
             };
+#endif
 #endif
         }
 
