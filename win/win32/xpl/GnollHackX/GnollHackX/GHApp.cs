@@ -97,17 +97,11 @@ namespace GnollHackX
             Battery.BatteryInfoChanged += Battery_BatteryInfoChanged;
 
             TotalMemory = GHApp.PlatformService.GetDeviceMemoryInBytes();
-            if (DisplayScale > 0 && ResolutionScale > 0)
-                TotalDisplayScale = DisplayScale * ResolutionScale;
 
             Assembly assembly = typeof(App).GetTypeInfo().Assembly;
             InitBaseTypefaces(assembly);
             InitBaseCachedBitmaps(assembly);
             InitBaseButtonBitmaps(assembly);
-
-            //ButtonNormalImageSource = ImageSource.FromResource(AppResourceName + ".Assets.button_normal.png", assembly);
-            //ButtonSelectedImageSource = ImageSource.FromResource(AppResourceName + ".Assets.button_selected.png", assembly);
-            //ButtonDisabledImageSource = ImageSource.FromResource(AppResourceName + ".Assets.button_disabled.png", assembly);
 
             DarkMode = Preferences.Get("DarkMode", false);
             CharacterClickAction = Preferences.Get("CharacterClickAction", GHConstants.DefaultCharacterClickAction);
@@ -171,19 +165,26 @@ namespace GnollHackX
             }
 
             BackButtonPressed += EmptyBackButtonPressed;
-            LoadCustomCursor(assembly);
         }
 
-        private static void LoadCustomCursor(Assembly assembly)
+        public static void LoadCustomCursor()
         {
 #if WINDOWS
             try
             {
-                string target_cur_path = Path.Combine(GHApp.GHPath, "custom-cursor-64.cur");
-                using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.Cursor.custom-cursor-64.cur"))
+                Assembly assembly = typeof(App).GetTypeInfo().Assembly;
+                string target_dir = Path.Combine(GHApp.GHPath, "windows_resources");
+                CheckCreateDirectory(target_dir);
+
+                bool useCursor64 = DisplayDensity >= 2.0;
+                string source_cursor_name = useCursor64 ? "custom-cursor-64.cur" : "custom-cursor-32.cur";
+                string target_cursor_name = "used-cursor.cur";
+                string target_cur_path = Path.Combine(target_dir, target_cursor_name);
+                if (File.Exists(target_cur_path))
+                    File.Delete(target_cur_path);
+
+                using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.Cursor." + source_cursor_name))
                 {
-                    if (File.Exists(target_cur_path))
-                        File.Delete(target_cur_path);
                     using (FileStream fileStream = File.OpenWrite(target_cur_path))
                     {
                         stream.CopyTo(fileStream);
@@ -192,6 +193,11 @@ namespace GnollHackX
 
                 var cursor = CursorUtilities.LoadCursor(target_cur_path);
                 WindowsCursor = cursor;
+
+                if (File.Exists(target_cur_path))
+                    File.Delete(target_cur_path);
+                if (Directory.Exists(target_dir))
+                    Directory.Delete(target_dir);
             }
             catch (Exception ex)
             {
@@ -998,6 +1004,7 @@ namespace GnollHackX
 
 #if GNH_MAUI
         public static float DisplayRefreshRate = Math.Max(60.0f, DeviceDisplay.Current.MainDisplayInfo.RefreshRate);
+        public static double DisplayDensity = DeviceDisplay.Current.MainDisplayInfo.Density;
         public static readonly bool IsAndroid = (DeviceInfo.Platform == DevicePlatform.Android);
         public static readonly bool IsiOS = (DeviceInfo.Platform == DevicePlatform.iOS);
         public static readonly bool IsWindows = (DeviceInfo.Platform == DevicePlatform.WinUI);
@@ -1012,6 +1019,7 @@ namespace GnollHackX
         public static readonly string RuntimePlatform = DeviceInfo.Platform.ToString();
 #else
         public static float DisplayRefreshRate = Math.Max(60.0f, DeviceDisplay.MainDisplayInfo.RefreshRate);
+        public static double DisplayDensity = DeviceDisplay.MainDisplayInfo.Density;
         public static readonly bool IsAndroid = (Device.RuntimePlatform == Device.Android);
         public static readonly bool IsiOS = (Device.RuntimePlatform == Device.iOS);
         public static readonly bool IsWindows = false;
@@ -1020,11 +1028,6 @@ namespace GnollHackX
         public static readonly bool IsDesktop = false;
         public static readonly string RuntimePlatform = Device.RuntimePlatform;
 #endif
-        public static readonly float DisplayScale = DeviceDisplay.MainDisplayInfo.Density <= 0 ? 1.0f : (float)DeviceDisplay.MainDisplayInfo.Density;
-        public static readonly float DisplayWidth = (float)DeviceDisplay.MainDisplayInfo.Width * DisplayScale;
-        public static readonly float DisplayHeight = (float)DeviceDisplay.MainDisplayInfo.Height * DisplayScale;
-        public static float ResolutionScale { get; set; } = 1.0f;
-        public static float TotalDisplayScale { get; set; } = 1.0f;
 
         public static GHPlatform PlatformId
         {

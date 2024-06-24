@@ -82,13 +82,10 @@ namespace GnollHackX
             _generalTimer.Tick += (s, e) => { if(!DoGeneralTimerTick()) _generalTimer.Stop(); };
 
 #if WINDOWS
-            Loaded += (s, e) => {
-                GHApp.ResolutionScale = GHApp.WindowsXamlWindow != null && GHApp.WindowsXamlWindow.Content != null && GHApp.WindowsXamlWindow.Content.XamlRoot != null ? (float)GHApp.WindowsXamlWindow.Content.XamlRoot.RasterizationScale : 1.0f;
-                if (GHApp.DisplayScale > 0 && GHApp.ResolutionScale > 0)
-                    GHApp.TotalDisplayScale = GHApp.DisplayScale * GHApp.ResolutionScale;
-
+            HandlerChanged += (s, e) => {
                 GHApp.DisplayRefreshRate = Math.Max(60.0f, DeviceDisplay.Current.MainDisplayInfo.RefreshRate);
-
+                GHApp.DisplayDensity = DeviceDisplay.Current.MainDisplayInfo.Density;
+                GHApp.LoadCustomCursor();
                 UIUtils.ChangeLayoutCursor(RootGrid);
             };
 #endif

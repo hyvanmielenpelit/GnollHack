@@ -208,7 +208,7 @@ namespace GnollHackX
         {
             using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
-                float scale = GHApp.TotalDisplayScale;
+                float scale = (float)GHApp.DisplayDensity;
                 textPaint.TextSize = (float)FontSize * scale;
                 textPaint.Typeface = GetFontTypeface();
                 lock (_textRowLock)
@@ -384,7 +384,7 @@ namespace GnollHackX
             List<float> rowWidths = new List<float>();
             using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
-                float scale = GHApp.TotalDisplayScale;
+                float scale = (float)GHApp.DisplayDensity;
                 textPaint.TextSize = (float)FontSize * scale;
                 textPaint.Typeface = GetFontTypeface();
                 if (OutlineWidth > 0)
@@ -450,7 +450,7 @@ namespace GnollHackX
             }
             else
             {
-                float scale = GHApp.TotalDisplayScale;
+                float scale = (float)GHApp.DisplayDensity;
                 float scaledwidthconstraint = scale * (float)(WidthRequest > 0 ? Math.Min(adjWidthConstraint, WidthRequest) : adjWidthConstraint);
 
                 TextAreaSize textAreaSize = CalculateTextAreaSize(scaledwidthconstraint);
@@ -537,7 +537,7 @@ namespace GnollHackX
             SKCanvas canvas = surface.Canvas;
             float canvaswidth = this.CanvasSize.Width;
             float canvasheight = this.CanvasSize.Height;
-            float scale = GHApp.TotalDisplayScale;
+            float scale = (float)GHApp.DisplayDensity;
             float scale2 = this.Width == 0 ? 1.0f : canvaswidth / (float)this.Width;
 
             canvas.Clear();
@@ -683,7 +683,7 @@ namespace GnollHackX
 
         public double MeasureWidth(string str)
         {
-            float scale = GHApp.TotalDisplayScale;
+            float scale = (float)GHApp.DisplayDensity;
             if (scale == 0)
                 return 0;
             float skwidth = 0;
