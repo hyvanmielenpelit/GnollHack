@@ -176,7 +176,7 @@ namespace GnollHackX
                 string target_dir = Path.Combine(GHApp.GHPath, "windows_resources");
                 CheckCreateDirectory(target_dir);
 
-                bool useCursor64 = DisplayDensity >= 2.0;
+                bool useCursor64 = DisplayDensity >= 2.0f;
                 string source_cursor_name = useCursor64 ? "custom-cursor-64.cur" : "custom-cursor-32.cur";
                 string target_cursor_name = "used-cursor.cur";
                 string target_cur_path = Path.Combine(target_dir, target_cursor_name);
@@ -1004,7 +1004,7 @@ namespace GnollHackX
 
 #if GNH_MAUI
         public static float DisplayRefreshRate = Math.Max(60.0f, DeviceDisplay.Current.MainDisplayInfo.RefreshRate);
-        public static double DisplayDensity = DeviceDisplay.Current.MainDisplayInfo.Density;
+        public static float DisplayDensity = DeviceDisplay.Current.MainDisplayInfo.Density <= 0.0 ? 1.0f : (float)DeviceDisplay.Current.MainDisplayInfo.Density;
         public static readonly bool IsAndroid = (DeviceInfo.Platform == DevicePlatform.Android);
         public static readonly bool IsiOS = (DeviceInfo.Platform == DevicePlatform.iOS);
         public static readonly bool IsWindows = (DeviceInfo.Platform == DevicePlatform.WinUI);
@@ -1019,7 +1019,7 @@ namespace GnollHackX
         public static readonly string RuntimePlatform = DeviceInfo.Platform.ToString();
 #else
         public static float DisplayRefreshRate = Math.Max(60.0f, DeviceDisplay.MainDisplayInfo.RefreshRate);
-        public static double DisplayDensity = DeviceDisplay.MainDisplayInfo.Density;
+        public static float DisplayDensity = DeviceDisplay.MainDisplayInfo.Density <= 0.0 ? 1.0f : (float)DeviceDisplay.MainDisplayInfo.Density;
         public static readonly bool IsAndroid = (Device.RuntimePlatform == Device.Android);
         public static readonly bool IsiOS = (Device.RuntimePlatform == Device.iOS);
         public static readonly bool IsWindows = false;
