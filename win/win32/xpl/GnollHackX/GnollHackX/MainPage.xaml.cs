@@ -81,14 +81,12 @@ namespace GnollHackX
             _generalTimer.IsRepeating = true;
             _generalTimer.Tick += (s, e) => { if(!DoGeneralTimerTick()) _generalTimer.Stop(); };
 
-#if WINDOWS
             HandlerChanged += (s, e) => {
                 GHApp.DisplayRefreshRate = Math.Max(60.0f, DeviceDisplay.Current.MainDisplayInfo.RefreshRate);
                 GHApp.DisplayDensity = DeviceDisplay.Current.MainDisplayInfo.Density <= 0.0 ? 1.0f : (float)DeviceDisplay.Current.MainDisplayInfo.Density;
                 GHApp.LoadCustomCursor();
                 UIUtils.ChangeLayoutCursor(RootGrid);
             };
-#endif
 #endif
         }
 
