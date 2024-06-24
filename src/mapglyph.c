@@ -590,7 +590,7 @@ int glyph;
 {
     static char encbuf[20]; /* 10+1 would suffice */
 
-    Sprintf(encbuf, "\\G%04X%04X", context.rndencode, glyph);
+    Sprintf(encbuf, "\\G%04X%04X", context.rndencode, abs(glyph));
     return encbuf;
 }
 
