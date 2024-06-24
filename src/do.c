@@ -7342,7 +7342,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         u.uachieve.entered_mine_town = 1;
     }
 
-    if (In_sokoban(&u.uz) && u.uachieve.entered_sokoban)
+    if (In_sokoban(&u.uz) && !u.uachieve.entered_sokoban)
     {
         //    achievement_gained("Entered Sokoban");
         livelog_printf(LL_ACHIEVE, "%s", "entered Sokoban");
