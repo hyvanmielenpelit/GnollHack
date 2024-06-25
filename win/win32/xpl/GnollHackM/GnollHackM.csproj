@@ -73,9 +73,8 @@
 		<DebugType>full</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
-
 	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-android'">
-		<MauiIcon Include="Resources\AppIcon\appicon.png" Color="#FFFFFF" ForegroundScale="0.60" />
+		<MauiIcon Include="Resources\AppIcon\appicon.png" Color="#FFFFFF" ForegroundScale="0.6" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'">
 		<MauiIcon Include="Resources\AppIcon\appicon.png" ForegroundScale="1.0" />
@@ -967,5 +966,8 @@
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
 		<BundleResource Include="Platforms\iOS\PrivacyInfo.xcprivacy" LogicalName="PrivacyInfo.xcprivacy" />
 	</ItemGroup>
+
+	<Import Project="AppxIcons.targets" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
+
 </Project>
  
