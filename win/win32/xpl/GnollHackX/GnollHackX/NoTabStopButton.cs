@@ -13,6 +13,16 @@ namespace GnollHackX
     {
         public NoTabStopButton() : base()
         {
+#if WINDOWS
+            HandlerChanged += (s, e) =>
+            {
+                if (Handler?.PlatformView is Microsoft.UI.Xaml.Controls.Button)
+                {
+                    var platformView = Handler?.PlatformView as Microsoft.UI.Xaml.Controls.Button;
+                    platformView.IsTabStop = false;
+                }
+            };
+#endif
 
         }
     }

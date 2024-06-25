@@ -53,9 +53,45 @@ namespace GnollHackX.Controls
             {
                 customCanvasView.InvalidateSurface();
             };
+#if WINDOWS
+            customCanvasView.HandlerChanged += (object sender, EventArgs args) =>
+            {
+                if(customCanvasView.Handler?.PlatformView is SkiaSharp.Views.Windows.SKXamlCanvas)
+                {
+                    var canvas = customCanvasView.Handler?.PlatformView as SkiaSharp.Views.Windows.SKXamlCanvas;
+                    canvas.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush();
+                    canvas.PointerEntered += Canvas_PointerEntered;
+                    canvas.PointerExited += Canvas_PointerExited;
+                }
+            };
+            customButton.HandlerChanged += (object sender, EventArgs args) =>
+            {
+                if (customButton.Handler?.PlatformView is Microsoft.UI.Xaml.Controls.Button)
+                {
+                    var button = customButton.Handler?.PlatformView as Microsoft.UI.Xaml.Controls.Button;
+                    button.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush();
+                    button.PointerEntered += Canvas_PointerEntered;
+                    button.PointerExited += Canvas_PointerExited;
+                }
+            };
+#endif
         }
 
+
+#if WINDOWS
+        private void Canvas_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            _isHovering = true;
+            customCanvasView.InvalidateSurface();
+        }
+        private void Canvas_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            _isHovering = false;
+            customCanvasView.InvalidateSurface();
+        }
+#endif
         private bool _isPressed = false;
+        private bool _isHovering = false;
 
         public event EventHandler Clicked;
 
@@ -146,7 +182,11 @@ namespace GnollHackX.Controls
             SKCanvas canvas = surface.Canvas;
             float canvaswidth = customCanvasView.CanvasSize.Width;
             float canvasheight = customCanvasView.CanvasSize.Height;
+#if WINDOWS
+            SKImage targetBitmap = !UseVaryingBackgroundImages ? GHApp.ButtonNormalBitmap : _isPressed && IsEnabled ? GHApp.ButtonSelectedBitmap : _isHovering && IsEnabled ? GHApp.ButtonNormalBitmap : GHApp.ButtonDisabledBitmap;
+#else
             SKImage targetBitmap = !UseVaryingBackgroundImages ? GHApp.ButtonNormalBitmap : !IsEnabled ? GHApp.ButtonDisabledBitmap : _isPressed ? GHApp.ButtonSelectedBitmap : GHApp.ButtonNormalBitmap;
+#endif
             if (targetBitmap == null)
                 return;
             canvas.Clear();
