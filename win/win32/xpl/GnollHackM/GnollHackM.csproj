@@ -127,6 +127,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\GHGUIEffect.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHMenuInfo.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHMenuItem.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHMouseWheelEventArgs.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHMsgHistoryItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHNumberPickItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHOutRipInfo.cs" />
@@ -255,6 +256,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\GHNumberPickItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHMenuInfo.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHMenuItem.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHMouseWheelEventArgs.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHMsgHistoryItem.cs" />		
 		<Compile Include="..\GnollHackX\GnollHackX\GHOutRipInfo.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHPetDataItem.cs" />

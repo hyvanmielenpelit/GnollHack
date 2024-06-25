@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using GnollHackX;
 
 #if GNH_MAUI
 using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
-using GnollHackX;
 #if WINDOWS
 using Microsoft.UI.Xaml;
 #endif
@@ -426,13 +426,4 @@ namespace GnollHackX.Controls
 
     }
 
-    public class GHMouseWheelEventArgs : EventArgs 
-    {
-        int _mouseWheelDelta = 0;
-        public GHMouseWheelEventArgs(int mouseWheelDelta) : base()
-        {
-            _mouseWheelDelta = mouseWheelDelta;
-        }
-        public int MouseWheelDelta { get { return _mouseWheelDelta; } }
-    }
 }
