@@ -364,7 +364,7 @@ void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,
     if(iflags.use_menu_color && menu_style_allows_menu_coloring(last_menu_style))
         get_menu_coloring(str, &color, &attr);
 #endif
-    lib_callbacks.callback_add_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, color, str ? buf : 0, presel);
+    lib_callbacks.callback_add_menu(wid, glyph, (int64_t)identifier->a_longlong, accelerator, group_accel, attr, color, str ? buf : 0, presel);
 }
 
 void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
@@ -386,12 +386,12 @@ void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
         set_obj_glyph(info.object);
 
     struct objclassdata ocdata = get_objclassdata(info.object);
-    lib_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_longlong, accelerator, group_accel, attr, color, str ? buf : 0, presel, 
+    lib_callbacks.callback_add_extended_menu(wid, glyph, (int64_t)identifier->a_longlong, accelerator, group_accel, attr, color, str ? buf : 0, presel,
         (info.object ? (!(info.menu_flags & MENU_FLAGS_COUNT_DISALLOWED) ? (int)info.object->quan : 0) : ((info.menu_flags & MENU_FLAGS_USE_NUM_ITEMS) ? info.num_items : 0)),
-        (unsigned long long)(info.object ? info.object->o_id : 0), 
-        (unsigned long long)(info.monster ? info.monster->m_id : 0), 
+        (uint64_t)(info.object ? info.object->o_id : 0), 
+        (uint64_t)(info.monster ? info.monster->m_id : 0),
         info.heading_for_group_accelerator, info.special_mark,
-        info.menu_flags,
+        (uint64_t)info.menu_flags,
         (info.object ? MENU_DATAFLAGS_HAS_OBJECT_DATA : 0) | (info.monster ? MENU_DATAFLAGS_HAS_MONSTER_DATA : 0) | (Hallucination ? MENU_DATAFLAGS_HALLUCINATED : 0) | (info.monster && info.monster->female ? MENU_DATAFLAGS_FEMALE : 0),
         info.style, info.object, &ocdata);
 }
@@ -410,7 +410,7 @@ void lib_end_menu_ex(winid wid, const char* prompt, const char* subtitle)
 
 int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected)
 {
-    long long* picklist = 0;
+    int64_t* picklist = 0;
     int picklistsize = 0;
     int cnt = lib_callbacks.callback_select_menu(wid, how, &picklist, &picklistsize);
     int i;
@@ -484,7 +484,7 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
         special |= MG_UNDERLINE;
     }
 
-    lib_callbacks.callback_print_glyph(wid, x, y, layers.glyph, layers.bkglyph, symbol, ocolor, special, &layers);
+    lib_callbacks.callback_print_glyph(wid, x, y, layers.glyph, layers.bkglyph, (int32_t)symbol, ocolor, (uint32_t)special, &layers);
 
     if (program_state.in_bones || program_state.in_tricked)
         return;
@@ -588,7 +588,7 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
                     set_obj_glyph(cotmp);
 
                     struct objclassdata cocdata = get_objclassdata(cotmp);
-                    lib_callbacks.callback_send_object_data(x, y, cotmp, 3, basewhere, &cocdata, coflags);
+                    lib_callbacks.callback_send_object_data(x, y, cotmp, 3, basewhere, &cocdata, (uint64_t)coflags);
                 }
             }
         }
@@ -602,7 +602,7 @@ void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
         unsigned long gflags = 0UL;
         if (((!strcmp(en->engr_txt, Elbereth_word) || !strcmp(en->engr_txt, Gilthoniel_word)) && !Inhell) || (!strcmp(en->engr_txt, Morgoth_word) && Inhell))
             gflags |= 1;
-        lib_callbacks.callback_send_engraving_data(0, x, y, en->engr_txt, (int)en->engr_type, (unsigned long)en->engr_flags, gflags);
+        lib_callbacks.callback_send_engraving_data(0, x, y, en->engr_txt, (int)en->engr_type, (uint64_t)en->engr_flags, (uint64_t)gflags);
     }
 }
 
@@ -639,7 +639,7 @@ void lib_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char
             set_obj_glyph(uchain);
 
             struct objclassdata ocdata = get_objclassdata(uchain);
-            lib_callbacks.callback_send_object_data(uchain->ox, uchain->oy, uchain, 5, uchain->where, &ocdata, oflags);
+            lib_callbacks.callback_send_object_data(uchain->ox, uchain->oy, uchain, 5, uchain->where, &ocdata, (uint64_t)oflags);
         }
         if (uball)
         {
@@ -650,7 +650,7 @@ void lib_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char
             set_obj_glyph(uball);
 
             struct objclassdata ocdata = get_objclassdata(uball);
-            lib_callbacks.callback_send_object_data(uball->ox, uball->oy, uball, 5, uball->where, &ocdata, oflags);
+            lib_callbacks.callback_send_object_data(uball->ox, uball->oy, uball, 5, uball->where, &ocdata, (uint64_t)oflags);
         }
         break;
     }
@@ -1003,7 +1003,7 @@ void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int colo
     if (txt)
         write_text2buf_utf8(utf8buf, sizeof(utf8buf), txt);
 
-    lib_callbacks.callback_status_update(idx, txt ? utf8buf : 0, condbits, chg, percent, color, !colormasks ? NULL : condcolors);
+    lib_callbacks.callback_status_update(idx, txt ? utf8buf : 0, (int64_t)condbits, chg, percent, color, !colormasks ? NULL : condcolors);
 
     if (idx == BL_UWEP || idx == BL_UWEP2 || idx == BL_UQUIVER)
     {
@@ -1069,7 +1069,7 @@ void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int colo
             set_obj_glyph(wep);
 
         struct objclassdata ocdata = get_objclassdata(wep);
-        lib_callbacks.callback_send_object_data(0, 0, wep, wep ? 2 : 1, wep ? wep->where : 0, &ocdata, oflags | owepflags);
+        lib_callbacks.callback_send_object_data(0, 0, wep, wep ? 2 : 1, wep ? wep->where : 0, &ocdata, (uint64_t)(oflags | owepflags));
     }
 }
 
@@ -1461,7 +1461,7 @@ void lib_add_ambient_ghsound(struct soundsource_t* soundsource)
     int eventBank = ghsound2event[ghsound].bank_id;
     double eventVolume = (double)ghsound2event[ghsound].volume;
     double soundVolume = (double)soundsource->heard_volume;
-    unsigned long long idptr = 0;
+    uint64_t idptr = 0;
 
     if (lib_callbacks.callback_add_ambient_ghsound(ghsound, eventPath, eventBank, eventVolume, (double)soundVolume, &idptr))
     {
