@@ -300,6 +300,7 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
+#if WINDOWS
         private string? GetAssemblyInformationalVersion(Type type)
         {
             return GetAssemblyInformationalVersion(type?.Assembly);
@@ -330,5 +331,6 @@ namespace GnollHackX.Pages.MainScreen
 
             return version;
         }
+#endif
     }
 }
