@@ -180,13 +180,13 @@ namespace GnollHackX.Pages.MainScreen
             }
 
 #if WINDOWS
-            string winRTAssemblyVersion = typeof(WinRT.AgileReference)?.Assembly?.GetName()?.Version?.ToString();
+            string winRTAssemblyVersion = GetAssemblyInformationalVersion(typeof(WinRT.AgileReference));
             WinRTLabel.Text = !string.IsNullOrEmpty(winRTAssemblyVersion) ? winRTAssemblyVersion : "?";
 
-            string winUIAssemblyVersion = typeof(Microsoft.UI.Xaml.Application)?.Assembly?.GetName()?.Version?.ToString();
+            string winUIAssemblyVersion = GetAssemblyInformationalVersion(typeof(Microsoft.UI.Xaml.Application));
             WinUILabel.Text = !string.IsNullOrEmpty(winUIAssemblyVersion) ? winUIAssemblyVersion : "?";
 
-            string winSDKAssemblyVersion = typeof(Windows.UI.Color)?.Assembly?.GetName()?.Version?.ToString();
+            string winSDKAssemblyVersion = GetAssemblyInformationalVersion(typeof(Windows.UI.Color));
             WinSDKLabel.Text = !string.IsNullOrEmpty(winSDKAssemblyVersion) ? winSDKAssemblyVersion : "?";
 
             string winAppSDKAssemblyVersion = typeof(Microsoft.Windows.ApplicationModel.DynamicDependency.Bootstrap)?.Assembly?.GetName()?.Version?.ToString();
@@ -296,5 +296,30 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
+        private string? GetAssemblyInformationalVersion(Type type)
+        {
+            if(type == null)
+            {
+                return null;
+            }
+
+            return TrimVersion(type.Assembly?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion);
+        }
+
+        private string? TrimVersion(string? version)
+        {
+            if (string.IsNullOrEmpty(version))
+            {
+                return version;
+            }
+
+            var plusIndex = version.IndexOf('+');
+            if (plusIndex > 0)
+            {
+                return version.Substring(0, plusIndex);
+            }
+
+            return version;
+        }
     }
 }
