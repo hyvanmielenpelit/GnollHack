@@ -191,6 +191,9 @@ namespace GnollHackX.Pages.MainScreen
 
             string winAppSDKAssemblyVersion = typeof(Microsoft.Windows.ApplicationModel.DynamicDependency.Bootstrap)?.Assembly?.GetName()?.Version?.ToString();
             WinAppSDKLabel.Text = !string.IsNullOrEmpty(winAppSDKAssemblyVersion) ? winAppSDKAssemblyVersion : "?";
+
+            PortVersionLabel.Text = GetAssemblyInformationalVersion(Assembly.GetEntryAssembly()); //This can also be AppInfo.Current.VersionString, but it is longer and the build number
+            PortBuildLabel.Text = AppInfo.Current.BuildString;
 #else
             WinRTLabel.Text = "";
             WinRTLabel.IsVisible = false;
@@ -219,6 +222,9 @@ namespace GnollHackX.Pages.MainScreen
             VersionInfoGrid.Children.Remove(WinAppSDKLabel);
             VersionInfoGrid.Children.Remove(WinAppSDKTitleLabel);
             WinAppSDKRowDefinition.Height = 0;
+
+            PortVersionLabel.Text = VersionTracking.CurrentVersion;
+            PortBuildLabel.Text = VersionTracking.CurrentBuild;
 #endif
 
             PortVersionTitleLabel.Text = GHApp.RuntimePlatform + " Port Version:";
@@ -227,8 +233,6 @@ namespace GnollHackX.Pages.MainScreen
 
             GnollHackVersionLabel.Text = GHApp.GHVersionString;
             GnollHackConfigurationLabel.Text = GHApp.GHDebug ? "Debug" : "Release";
-            PortVersionLabel.Text = VersionTracking.CurrentVersion;
-            PortBuildLabel.Text = VersionTracking.CurrentBuild;
             PortConfigurationLabel.Text =
 #if DEBUG
                 "Debug";
@@ -298,12 +302,17 @@ namespace GnollHackX.Pages.MainScreen
 
         private string? GetAssemblyInformationalVersion(Type type)
         {
-            if(type == null)
+            return GetAssemblyInformationalVersion(type?.Assembly);
+        }
+
+        private string? GetAssemblyInformationalVersion(Assembly assembly)
+        {
+            if (assembly == null)
             {
                 return null;
             }
 
-            return TrimVersion(type.Assembly?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion);
+            return TrimVersion(assembly?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion);
         }
 
         private string? TrimVersion(string? version)
