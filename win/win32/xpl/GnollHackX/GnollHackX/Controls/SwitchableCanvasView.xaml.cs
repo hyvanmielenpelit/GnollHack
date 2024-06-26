@@ -11,8 +11,14 @@ using GnollHackX;
 #if GNH_MAUI
 using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
+using Microsoft.Maui.Controls;
+using static System.Collections.Specialized.BitVector32;
+
+
+
 #if WINDOWS
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Input;
 #endif
 
 namespace GnollHackM
@@ -69,6 +75,8 @@ namespace GnollHackX.Controls
         public event EventHandler<SKPaintSurfaceEventArgs> PaintSurface;
         public event EventHandler<SKTouchEventArgs> Touch;
         public event EventHandler<GHMouseWheelEventArgs> MouseWheel;
+        public event EventHandler<SKTouchEventArgs> MousePointer;
+
         public void InvalidateSurface()
         {
 #if WINDOWS
@@ -401,12 +409,25 @@ namespace GnollHackX.Controls
 #if WINDOWS
             SkiaSharp.Views.Windows.SKXamlCanvas view = internalCanvasView.Handler.PlatformView as SkiaSharp.Views.Windows.SKXamlCanvas;
             if(view != null)
+            {
                 view.PointerWheelChanged += View_PointerWheelChanged;
+                view.PointerEntered += View_PointerEntered;
+                view.PointerExited += View_PointerExited;
+                view.PointerMoved += View_PointerMoved;
+                view.PointerCanceled += View_PointerCanceled;
+            }
             SkiaSharp.Views.Windows.SKSwapChainPanel glView = internalGLView.Handler.PlatformView as SkiaSharp.Views.Windows.SKSwapChainPanel;
             if (glView != null)
+            {
                 glView.PointerWheelChanged += View_PointerWheelChanged;
+                glView.PointerEntered += View_PointerEntered;
+                glView.PointerExited += View_PointerExited;
+                glView.PointerMoved += View_PointerMoved;
+                glView.PointerCanceled += View_PointerCanceled;
+            }
 #endif
         }
+
 
 #if WINDOWS
         private void View_PointerWheelChanged(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
@@ -421,6 +442,43 @@ namespace GnollHackX.Controls
             }
         }
 
+        private void View_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            PointerEvent(sender, e, SKTouchAction.Exited);
+        }
+
+        private void View_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            PointerEvent(sender, e, SKTouchAction.Entered);
+        }
+
+        private void View_PointerMoved(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            PointerEvent(sender, e, SKTouchAction.Moved);
+        }
+
+        private void View_PointerCanceled(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            PointerEvent(sender, e, SKTouchAction.Cancelled);
+        }
+
+        private void PointerEvent(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e, SKTouchAction action)
+        {
+            Microsoft.UI.Xaml.UIElement element = sender as Microsoft.UI.Xaml.UIElement;
+            if (element != null)
+            {
+                PointerPoint point = e.GetCurrentPoint(element);
+                float canvasWidth = CanvasSize.Width;
+                float scale = canvasWidth / Math.Max(1.0f, (float)Width);
+                SKPoint pointerPosition = point == null ? new SKPoint() : new SKPoint((float)point.Position.X * scale, (float)point.Position.Y * scale);
+                SKTouchEventArgs args = new SKTouchEventArgs(-1, action, pointerPosition, false);
+                if(MousePointer != null)
+                {
+                    e.Handled = true;
+                    MousePointer?.Invoke(sender, args);
+                }
+            }
+        }
 #endif
 #endif
 

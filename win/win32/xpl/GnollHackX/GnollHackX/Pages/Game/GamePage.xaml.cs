@@ -14032,7 +14032,16 @@ namespace GnollHackX.Pages.Game
                                 SKRect selectionrect = new SKRect(x, y, x + totalRowWidth, y + totalRowHeight);
                                 if (IsMiButton)
                                 {
+#if WINDOWS
+                                    bool isHover = false;
+                                    lock(_menuHoverLock)
+                                    {
+                                        isHover = _menuIsHovering && selectionrect.Contains(_menuHoverPoint);
+                                    }
+                                    canvas.DrawImage(isselected || mi.Highlighted ? GHApp.ButtonSelectedBitmap : isHover ? GHApp.ButtonNormalBitmap : GHApp.ButtonDisabledBitmap, selectionrect);
+#else
                                     canvas.DrawImage(isselected || mi.Highlighted ? GHApp.ButtonSelectedBitmap : GHApp.ButtonNormalBitmap, selectionrect);
+#endif
                                 }
                                 else
                                 {
@@ -15150,6 +15159,37 @@ namespace GnollHackX.Pages.Game
                     _menuScrollSpeed = 0;
                     _menuScrollSpeedRecordOn = false;
                     _menuScrollSpeedRecords.Clear();
+                }
+            }
+        }
+
+        private readonly object _menuHoverLock = new object();
+        private bool _menuIsHovering = false;
+        private SKPoint _menuHoverPoint = new SKPoint();
+
+        private void MenuCanvas_MousePointer(object sender, SKTouchEventArgs e)
+        {
+            lock (_menuDrawOnlyLock)
+            {
+                if (_menuDrawOnlyClear)
+                    return;
+            }
+
+            lock(_menuHoverLock)
+            {
+                _menuHoverPoint = e.Location;
+                switch (e?.ActionType)
+                {
+                    case SKTouchAction.Entered:
+                        _menuIsHovering = true;
+                        break;
+                    case SKTouchAction.Cancelled:
+                    case SKTouchAction.Exited:
+                        _menuIsHovering = false;
+                        break;
+                    case SKTouchAction.Moved:
+                        break;
+
                 }
             }
         }
