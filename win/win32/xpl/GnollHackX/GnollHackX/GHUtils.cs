@@ -173,7 +173,7 @@ namespace GnollHackX
             if (string.IsNullOrWhiteSpace(str))
                 return "";
             else
-                str.Replace("M", "X");
+                str = str.Replace("M", "X").Replace("2", "1");
 
             string key = "";
             int cnt = 0;
