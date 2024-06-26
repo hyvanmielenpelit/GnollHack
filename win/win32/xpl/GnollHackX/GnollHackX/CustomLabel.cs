@@ -54,10 +54,13 @@ namespace GnollHackX
     }
     public class CustomLabel : SKCanvasView
     {
+        public event EventHandler<GHMouseWheelEventArgs> MouseWheel;
+
         public CustomLabel() : base()
         {
             PaintSurface += Base_PaintSurface;
             Touch += Base_Touch;
+            MouseWheel += Base_MouseWheel;
         }
 
         public static readonly BindableProperty TextProperty = BindableProperty.Create(
@@ -1106,6 +1109,57 @@ namespace GnollHackX
                 UpdateScrollable(IsScrollable, true);
             }
         }
+
+        private void Base_MouseWheel(object sender, GHMouseWheelEventArgs e)
+        {
+            if (IsScrollable && e.MouseWheelDelta != 0)
+            {
+                lock (_textScrollLock)
+                {
+                    float bottomScrollLimit =  Math.Min(0, CanvasSize.Height - TextHeight);
+                    _textScrollOffset += (CanvasSize.Height * e.MouseWheelDelta) / (10 * 120);
+                    if (_textScrollOffset > 0)
+                    {
+                        _textScrollOffset = 0;
+                        _textScrollSpeed = 0;
+                        TextScrollSpeedOn = false;
+                    }
+                    else if (_textScrollOffset < bottomScrollLimit)
+                    {
+                        _textScrollOffset = bottomScrollLimit;
+                        _textScrollSpeed = 0;
+                        TextScrollSpeedOn = false;
+                    }
+                }
+                InvalidateSurface();
+            }
+        }
+#if GNH_MAUI
+        protected override void OnHandlerChanged()
+        {
+            base.OnHandlerChanged();
+#if WINDOWS
+            SkiaSharp.Views.Windows.SKXamlCanvas view = Handler.PlatformView as SkiaSharp.Views.Windows.SKXamlCanvas;
+            if(view != null)
+                view.PointerWheelChanged += View_PointerWheelChanged;
+#endif
+        }
+
+#if WINDOWS
+        private void View_PointerWheelChanged(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (sender is Microsoft.UI.Xaml.UIElement)
+            {
+                var delta = e.GetCurrentPoint((Microsoft.UI.Xaml.UIElement)sender).Properties.MouseWheelDelta;
+                if (delta != 0)
+                {
+                    MouseWheel?.Invoke(sender, new GHMouseWheelEventArgs(delta));
+                }
+            }
+        }
+
+#endif
+#endif
     }
 
 #if GNH_MAUI

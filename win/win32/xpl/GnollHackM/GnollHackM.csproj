@@ -104,6 +104,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\BackgroundView.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHGame.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\UIUtils.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\CustomCanvasView.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\CustomLabel.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\DiscordWebHookAttachedFile.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\DiscordWebHookPost.cs" />
@@ -127,6 +128,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\GHGUIEffect.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHMenuInfo.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHMenuItem.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\GHMouseWheelEventArgs.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHMsgHistoryItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHNumberPickItem.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHOutRipInfo.cs" />
@@ -231,6 +233,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\BackgroundView.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHGame.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\UIUtils.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\CustomCanvasView.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\CustomLabel.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookAttachedFile.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\DiscordWebHookPost.cs" />
@@ -255,6 +258,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\GHNumberPickItem.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHMenuInfo.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHMenuItem.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\GHMouseWheelEventArgs.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHMsgHistoryItem.cs" />		
 		<Compile Include="..\GnollHackX\GnollHackX\GHOutRipInfo.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHPetDataItem.cs" />

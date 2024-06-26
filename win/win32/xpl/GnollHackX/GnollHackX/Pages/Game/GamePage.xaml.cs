@@ -899,32 +899,11 @@ namespace GnollHackX.Pages.Game
 #if WINDOWS
             Loaded += (s, e) => 
             {
-                var previousHandler = MorePreviousLabel.Handler;
-                if (previousHandler is PointableButtonHandler)
-                {
-                    var previousLabelHandler = previousHandler as PointableButtonHandler;
-                    if (previousLabelHandler != null)
-                    {
-                        previousLabelHandler.PointerEntered += PreviousLabelHandler_PointerEntered;
-                        previousLabelHandler.PointerExited += PreviousLabelHandler_PointerExited;
-                    }
-                }
-                var nextHandler = MoreNextLabel.Handler;
-                if (nextHandler is PointableButtonHandler)
-                {
-                    var nextLabelHandler = nextHandler as PointableButtonHandler;
-                    if (nextLabelHandler != null)
-                    {
-                        nextLabelHandler.PointerEntered += NextLabelHandler_PointerEntered; ;
-                        nextLabelHandler.PointerExited += NextLabelHandler_PointerExited; ;
-                    }
-                }
                 UpdateMoreNextPrevButtonVisibility(true, true);
             };
 #endif
         }
 
-#if WINDOWS
         private void NextLabelHandler_PointerExited(object sender, EventArgs e)
         {
             //MoreNextButton.IsVisible = false;
@@ -954,7 +933,6 @@ namespace GnollHackX.Pages.Game
                 MorePreviousButton.FadeTo(1.0);
             }
         }
-#endif
 
         private float GetDefaultMapFontSize()
         {
