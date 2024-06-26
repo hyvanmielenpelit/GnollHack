@@ -13838,6 +13838,9 @@ namespace GnollHackX.Pages.Game
         private readonly SKColor _suffixTextColorReverted = new SKColor(35, 35, 35);
         private readonly SKColor _menuHighlightColor = new SKColor(0xFF, 0x88, 0x00, 0x88);
         private readonly SKColor _menuHighlight2Color = new SKColor(0xFF, 0xAA, 0x00, 0xAA);
+        private readonly SKColor _menuHighlight3Color = new SKColor(0xFF, 0x88, 0x00, 0x44);
+        private readonly SKColor _menuHighlight4Color = new SKColor(0xFF, 0x88, 0x00, 0xAA);
+        private readonly SKColor _menuHighlight5Color = new SKColor(0xFF, 0xAA, 0x00, 0xCC);
         private int _firstDrawnMenuItemIdx = -1;
         private int _lastDrawnMenuItemIdx = -1;
         private readonly object _totalMenuHeightLock = new object();
@@ -14029,31 +14032,38 @@ namespace GnollHackX.Pages.Game
                             else
                             {
                                 /* Selection rectangle */
+                                bool isSelectable = referenceCanvasView.SelectionHow != SelectionMode.None && mi.Identifier != 0;
                                 SKRect selectionrect = new SKRect(x, y, x + totalRowWidth, y + totalRowHeight);
+#if WINDOWS
+                                bool isHover = false;
+                                lock (_menuHoverLock)
+                                {
+                                    isHover = _menuIsHovering && selectionrect.Contains(_menuHoverPoint);
+                                }
+#else
+                                bool isHover = true; /* On mobile, all buttons are normal / hover color automatically */
+#endif
                                 if (IsMiButton)
                                 {
-#if WINDOWS
-                                    bool isHover = false;
-                                    lock(_menuHoverLock)
-                                    {
-                                        isHover = _menuIsHovering && selectionrect.Contains(_menuHoverPoint);
-                                    }
                                     canvas.DrawImage(isselected || mi.Highlighted ? GHApp.ButtonSelectedBitmap : isHover ? GHApp.ButtonNormalBitmap : GHApp.ButtonDisabledBitmap, selectionrect);
-#else
-                                    canvas.DrawImage(isselected || mi.Highlighted ? GHApp.ButtonSelectedBitmap : GHApp.ButtonNormalBitmap, selectionrect);
-#endif
                                 }
                                 else
                                 {
                                     if (isselected)
                                     {
-                                        textPaint.Color = _menuHighlightColor;
+                                        textPaint.Color = isHover ? _menuHighlight4Color : _menuHighlightColor;
                                         textPaint.Style = SKPaintStyle.Fill;
                                         canvas.DrawRect(selectionrect, textPaint.Paint);
                                     }
                                     else if (mi.Highlighted)
                                     {
-                                        textPaint.Color = _menuHighlight2Color;
+                                        textPaint.Color = isHover ? _menuHighlight5Color : _menuHighlight2Color;
+                                        textPaint.Style = SKPaintStyle.Fill;
+                                        canvas.DrawRect(selectionrect, textPaint.Paint);
+                                    }
+                                    else if (isHover && isSelectable)
+                                    {
+                                        textPaint.Color = _menuHighlight3Color;
                                         textPaint.Style = SKPaintStyle.Fill;
                                         canvas.DrawRect(selectionrect, textPaint.Paint);
                                     }
