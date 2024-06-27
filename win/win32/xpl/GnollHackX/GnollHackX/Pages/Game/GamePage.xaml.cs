@@ -913,6 +913,9 @@ namespace GnollHackX.Pages.Game
             Loaded += (s, e) => 
             {
                 UpdateMoreNextPrevButtonVisibility(true, true);
+                CommandCanvas.InvalidateSurface();
+                MenuCanvas.InvalidateSurface();
+                TextCanvas.InvalidateSurface();
             };
 #endif
         }

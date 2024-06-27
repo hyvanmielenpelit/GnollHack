@@ -365,7 +365,9 @@
                 </Grid.GestureRecognizers>
             </Grid>
             <Grid x:Name="MoreCommandsGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#FF000000" IsVisible="False">
-                <controls:SwitchableCanvasView x:Name="CommandCanvas" UseGL="False" CanvasType="CommandCanvas" HorizontalOptions="Fill" VerticalOptions="Fill" PaintSurface="CommandCanvas_PaintSurface" Touch="CommandCanvas_Touch" MouseWheel="CommandCanvas_MouseWheel" MousePointer="CommandCanvas_MousePointer" EnableTouchEvents="True" />
+                <controls:SwitchableCanvasView x:Name="CommandCanvas" UseGL="False" CanvasType="CommandCanvas" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#FF000000"
+                                               PaintSurface="CommandCanvas_PaintSurface" Touch="CommandCanvas_Touch" MouseWheel="CommandCanvas_MouseWheel" MousePointer="CommandCanvas_MousePointer"
+                                               EnableTouchEvents="True" />
                 <Grid x:Name="MorePreviousGrid" IsVisible="False" WidthRequest="50" HorizontalOptions="Start" VerticalOptions="Fill">
                     <gnh:PointableButton x:Name="MorePreviousLabel" Background="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill" PointerEntered="PreviousLabelHandler_PointerEntered" PointerExited="PreviousLabelHandler_PointerExited"/>
                     <controls:SimpleImageButton x:Name="MorePreviousButton" IsVisible="False" ImgSourcePath="resource://GnollHackM.Assets.UI.page-previous.png" BtnClicked="MorePreviousButton_BtnClicked" HorizontalOptions="Start" VerticalOptions="Center" />

@@ -102,12 +102,20 @@ namespace GnollHackX.Controls
             return new SizeRequest();
         }
 
+        private bool _firstCanvasDraw = true;
 
         private void internalCanvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             if (UseGL)
                 return; /* Insurance in the case both canvases mistakenly are updated */
 
+            if(_firstCanvasDraw)
+            {
+                _firstCanvasDraw = false;
+                SKCanvas canvas = e?.Surface?.Canvas;
+                if (canvas != null)
+                    canvas.Clear(CanvasType == CanvasTypes.CommandCanvas || CanvasType == CanvasTypes.MainCanvas ? SKColors.Black : SKColors.Transparent);
+            }
             PaintSurface?.Invoke(sender, e);
         }
 
@@ -128,6 +136,10 @@ namespace GnollHackX.Controls
                 _firstDraw = false;
                 if (CanvasType == CanvasTypes.MainCanvas)
                     GHApp.DefaultGPUCacheSize = ResourceCacheLimit;
+
+                SKCanvas canvas = e?.Surface?.Canvas;
+                if (canvas != null)
+                    canvas.Clear(CanvasType == CanvasTypes.CommandCanvas || CanvasType == CanvasTypes.MainCanvas ? SKColors.Black : SKColors.Transparent);
 
                 if (e.BackendRenderTarget != null)
                 {
