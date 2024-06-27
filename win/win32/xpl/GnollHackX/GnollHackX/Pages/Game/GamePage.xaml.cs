@@ -9816,17 +9816,6 @@ namespace GnollHackX.Pages.Game
                     if (!_prevWepRectDrawn)
                         PrevWepRect = new SKRect();
 
-#if WINDOWS
-                    lock(_canvasPointerLock)
-                    {
-                        GameCursorType usedCursor = _isCanvasHovering && StatusBarRect.Contains(_canvasHoverLocation) ? GameCursorType.Info : GameCursorType.Normal;
-                        if(usedCursor != _currentCursorType)
-                        {
-                            UIUtils.ChangeElementCursor(RootGrid, usedCursor);
-                            _currentCursorType = usedCursor;
-                        }
-                    }
-#endif
                     /* Number Pad and Direction Arrows */
                     _canvasButtonRect.Right = canvaswidth * (float)(0.8);
                     _canvasButtonRect.Left = canvaswidth * (float)(0.2);
@@ -10563,6 +10552,21 @@ namespace GnollHackX.Pages.Game
                     if(!YouRectDrawn)
                         YouRect = new SKRect();
                 }
+#if WINDOWS
+                GameCursorType newCursor = GameCursorType.Normal;
+                bool doChangeCursor = false;
+                lock (_canvasPointerLock)
+                {
+                    GameCursorType usedCursor = _isCanvasHovering && (StatusBarRect.Contains(_canvasHoverLocation) || YouRect.Contains(_canvasHoverLocation)) ? GameCursorType.Info : GameCursorType.Normal;
+                    if (usedCursor != _currentCursorType)
+                    {
+                        doChangeCursor = true;
+                        _currentCursorType = newCursor = usedCursor;
+                    }
+                }
+                if (doChangeCursor)
+                    UIUtils.ChangeElementCursor(RootGrid, newCursor);
+#endif
             }
 
 #if GNH_MAP_PROFILING && DEBUG
