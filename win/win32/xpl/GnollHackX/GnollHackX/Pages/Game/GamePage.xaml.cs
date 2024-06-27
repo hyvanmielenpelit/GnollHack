@@ -907,7 +907,20 @@ namespace GnollHackX.Pages.Game
             MapNoClipMode = !MapNoClipMode;
             ToggleAutoCenterModeButton_Clicked(null, null);
 
-            lAbilitiesButton.SetButtonFocus();
+            if(GHApp.IsDesktop)
+            {
+                lAbilitiesButton.IsEnabled = false;
+                lAbilitiesButton.InputTransparent = true;
+                lWornItemsButton.IsEnabled = false;
+                lWornItemsButton.InputTransparent = true;
+                lRowAbilitiesButton.IsVisible = true;
+                lRowWornItemsButton.IsVisible = true;
+                lRowAbilitiesButton.SetButtonFocus();
+            }
+            else
+            {
+                lAbilitiesButton.SetButtonFocus();
+            }
 
 #if WINDOWS
             Loaded += (s, e) => 
@@ -1147,6 +1160,8 @@ namespace GnollHackX.Pages.Game
                 //MainGrid.IsEnabled = false;
                 lWornItemsButton.IsEnabled = false;
                 lAbilitiesButton.IsEnabled = false;
+                lRowWornItemsButton.IsEnabled = false;
+                lRowAbilitiesButton.IsEnabled = false;
                 ContextLayout.IsEnabled = false;
 
                 GameMenuButton.IsEnabled = false;
@@ -12172,6 +12187,8 @@ namespace GnollHackX.Pages.Game
 
                 lAbilitiesButton.SetSideSize(width, height);
                 lWornItemsButton.SetSideSize(width, height);
+                lRowAbilitiesButton.SetSideSize(width, height);
+                lRowWornItemsButton.SetSideSize(width, height);
                 double statusbarheight = GetStatusBarHeight();
                 lAbilitiesButton.HeightRequest = statusbarheight;
                 lWornItemsButton.HeightRequest = statusbarheight;
@@ -16772,10 +16789,10 @@ namespace GnollHackX.Pages.Game
                         PaintTipButtonByRect(canvas, textPaint, statusBarCenterRect, "You can tap the status bar.", "Open status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f);
                         break;
                     case 9:
-                        PaintTipButton(canvas, textPaint, lAbilitiesButton, "Some commands do not have buttons.", "Character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, 1.0f);
+                        PaintTipButton(canvas, textPaint, GHApp.IsDesktop ? lRowAbilitiesButton : lAbilitiesButton, GHApp.IsDesktop ? "Some commands are specially located." : "Some commands do not have buttons.", "Character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, GHApp.IsDesktop ? -1.0f : 1.0f);
                         break;
                     case 10:
-                        PaintTipButton(canvas, textPaint, lWornItemsButton, "", "Tap here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, 2.0f);
+                        PaintTipButton(canvas, textPaint, GHApp.IsDesktop ? lRowWornItemsButton : lWornItemsButton, "", "Tap here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, GHApp.IsDesktop ? -2.0f : 2.0f);
                         break;
                     case 11:
                         PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "", "Tap here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f);

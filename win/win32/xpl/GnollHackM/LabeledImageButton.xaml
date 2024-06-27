@@ -7,7 +7,7 @@
              x:Class="GnollHackM.LabeledImageButton"
              x:DataType="controls:LabeledImageButton">
     
-        <Grid x:Name="ViewGrid" BindingContext="{x:Reference this}" Margin="{Binding GridMargin}" WidthRequest="{Binding GridWidth, FallbackValue='50'}" HeightRequest="{Binding GridHeight, FallbackValue='60'}" >
+        <Grid x:Name="ViewGrid" CascadeInputTransparent="True" BindingContext="{x:Reference this}" Margin="{Binding GridMargin}" WidthRequest="{Binding GridWidth, FallbackValue='50'}" HeightRequest="{Binding GridHeight, FallbackValue='60'}" >
             <gnh:GHCachedImage x:Name="ViewImage" BindingContext="{x:Reference this}" Source="{Binding ImgSourcePath}"
                             WidthRequest="{Binding ImgWidth, FallbackValue='50'}" HeightRequest="{Binding ImgHeight, FallbackValue='50'}" 
                             BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />

@@ -136,6 +136,7 @@
     <None Remove="Assets\UI\genocided.png" />
     <None Remove="Assets\UI\handedness.png" />
     <None Remove="Assets\UI\help.png" />
+    <None Remove="Assets\UI\home.png" />
     <None Remove="Assets\UI\identify.png" />
     <None Remove="Assets\UI\inventory.png" />
     <None Remove="Assets\UI\invoke.png" />
@@ -152,6 +153,7 @@
     <None Remove="Assets\UI\lookhere.png" />
     <None Remove="Assets\UI\loot.png" />
     <None Remove="Assets\UI\menubackground.png" />
+    <None Remove="Assets\UI\messages.png" />
     <None Remove="Assets\UI\missing_icon.png" />
     <None Remove="Assets\UI\mix.png" />
     <None Remove="Assets\UI\monster.png" />
@@ -282,8 +284,10 @@
     <None Remove="Assets\UI\wearmany.png" />
     <None Remove="Assets\UI\whatis.png" />
     <None Remove="Assets\UI\wield.png" />
+    <None Remove="Assets\UI\wiki.png" />
     <None Remove="Assets\UI\wipe.png" />
     <None Remove="Assets\UI\wish.png" />
+    <None Remove="Assets\UI\worn.png" />
     <None Remove="Assets\UI\yell.png" />
     <None Remove="Assets\UI\yes.png" />
     <None Remove="Assets\UI\yestoall.png" />
@@ -327,6 +331,8 @@
     <EmbeddedResource Include="Assets\UI\frame2-topleft-small.png" />
     <EmbeddedResource Include="Assets\UI\frame2-topleft.png" />
     <EmbeddedResource Include="Assets\UI\frame2-vertical.png" />
+    <EmbeddedResource Include="Assets\UI\home.png" />
+    <EmbeddedResource Include="Assets\UI\messages.png" />
     <EmbeddedResource Include="Assets\UI\missing_icon.png" />
     <EmbeddedResource Include="Assets\Immortal-Regular.ttf" />
     <EmbeddedResource Include="Assets\main-menu-dwarf.jpg" />
@@ -526,8 +532,10 @@
     <EmbeddedResource Include="Assets\UI\wearmany.png" />
     <EmbeddedResource Include="Assets\UI\whatis.png" />
     <EmbeddedResource Include="Assets\UI\wield.png" />
+    <EmbeddedResource Include="Assets\UI\wiki.png" />
     <EmbeddedResource Include="Assets\UI\wipe.png" />
     <EmbeddedResource Include="Assets\UI\wish.png" />
+    <EmbeddedResource Include="Assets\UI\worn.png" />
     <EmbeddedResource Include="Assets\UI\yell.png" />
     <EmbeddedResource Include="Assets\UI\yes.png" />
     <EmbeddedResource Include="Assets\UI\yestoall.png" />
