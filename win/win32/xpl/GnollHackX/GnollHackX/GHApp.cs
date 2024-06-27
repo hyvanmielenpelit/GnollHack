@@ -1782,7 +1782,7 @@ namespace GnollHackX
             return (((ntile % GHConstants.NumberOfTilesPerSheet) / _tilesPerRow[TileSheetIdx(ntile)]) * GHConstants.TileHeight);
         }
 
-        public static List<SelectableShortcutButton> GetShortcutButtonsToAllocate()
+        public static List<SelectableShortcutButton> GetSimpleShortcutButtonsToAllocate()
         {
             List<SelectableShortcutButton> barlist = GetSimpleBarButtons();
             List<SelectableShortcutButton> list = new List<SelectableShortcutButton>();
@@ -1809,6 +1809,38 @@ namespace GnollHackX
                 int savedCmd = Preferences.Get(keystr, defCmd);
                 int listselidx = GHApp.SelectableShortcutButtonIndexInList(savedCmd, defCmd);
                 if(listselidx >= 0 && listselidx < SelectableShortcutButtons.Count)
+                    list.Add(SelectableShortcutButtons[listselidx]);
+            }
+            return list;
+        }
+
+        public static List<SelectableShortcutButton> GetFullShortcutButtonsToAllocate()
+        {
+            List<SelectableShortcutButton> barlist = GetFullBarButtons();
+            List<SelectableShortcutButton> list = new List<SelectableShortcutButton>();
+            for (int i = 0; i < 13; i++)
+            {
+                int defCmd = GHApp.DefaultShortcutButton(0, i, false).GetCommand();
+                int listselidx = GHApp.SelectableShortcutButtonIndexInList(defCmd, defCmd);
+                if (listselidx >= 0 && listselidx < SelectableShortcutButtons.Count)
+                {
+                    if (!barlist.Contains(SelectableShortcutButtons[listselidx]))
+                        list.Add(SelectableShortcutButtons[listselidx]);
+                }
+            }
+            return list;
+        }
+
+        public static List<SelectableShortcutButton> GetFullBarButtons()
+        {
+            List<SelectableShortcutButton> list = new List<SelectableShortcutButton>();
+            for (int i = 0; i < 13; i++)
+            {
+                string keystr = "FullUILayoutCommandButton" + (i + 1);
+                int defCmd = GHApp.DefaultShortcutButton(0, i, false).GetCommand();
+                int savedCmd = Preferences.Get(keystr, defCmd);
+                int listselidx = GHApp.SelectableShortcutButtonIndexInList(savedCmd, defCmd);
+                if (listselidx >= 0 && listselidx < SelectableShortcutButtons.Count)
                     list.Add(SelectableShortcutButtons[listselidx]);
             }
             return list;
@@ -1898,7 +1930,7 @@ namespace GnollHackX
                     _moreBtnMatrix[2, 2, 5] = new GHCommandButtonItem("Extended", AppResourceName + ".Assets.UI.extended.png", (int)'#');
                     _moreBtnMatrix[2, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -101);
 
-                    List<SelectableShortcutButton> buttonsToAllocate = GetShortcutButtonsToAllocate();
+                    List<SelectableShortcutButton> buttonsToAllocate = GetSimpleShortcutButtonsToAllocate();
                     List<SelectableShortcutButton> buttonsOnBar = GetSimpleBarButtons();
                     foreach (SelectableShortcutButton button in buttonsToAllocate)
                     {
@@ -2036,6 +2068,41 @@ namespace GnollHackX
                     _moreBtnMatrix[3, 1, 5] = new GHCommandButtonItem("Commands", AppResourceName + ".Assets.UI.commands.png", GHUtils.Meta((int)'c'));
                     _moreBtnMatrix[3, 2, 5] = new GHCommandButtonItem("Extended", AppResourceName + ".Assets.UI.extended.png", (int)'#');
                     _moreBtnMatrix[3, 3, 5] = new GHCommandButtonItem("Back to Game", AppResourceName + ".Assets.UI.more.png", -101);
+
+                    List<SelectableShortcutButton> buttonsToAllocate = GetFullShortcutButtonsToAllocate();
+                    List<SelectableShortcutButton> buttonsOnBar = GetFullBarButtons();
+                    foreach (SelectableShortcutButton button in buttonsToAllocate)
+                    {
+                        bool foundloc = false;
+                        for (int p = 1; p <= 3; p++)
+                        {
+                            for (int i = 0; i < GHConstants.MoreButtonsPerRow; i++)
+                            {
+                                for (int j = 0; j < GHConstants.MoreButtonsPerColumn; j++)
+                                {
+                                    for (int bidx = 0; bidx < buttonsOnBar.Count; bidx++)
+                                    {
+                                        if (_moreBtnMatrix[p, i, j] != null && _moreBtnMatrix[p, i, j].Command == buttonsOnBar[bidx].GetCommand())
+                                        {
+                                            foundloc = true;
+                                            _moreBtnMatrix[p, i, j].Text = button.Label;
+                                            _moreBtnMatrix[p, i, j].ImageSourcePath = button.ImageSourcePath;
+                                            _moreBtnMatrix[p, i, j].Command = button.GetCommand();
+                                            break;
+                                        }
+                                    }
+                                    if (foundloc)
+                                        break;
+                                }
+                                if (foundloc)
+                                    break;
+                            }
+                            if (foundloc)
+                                break;
+                        }
+                        if (!foundloc)
+                            break; /* No spaces found */
+                    }
                 }
 
                 for (int k = 0; k < GHConstants.MoreButtonPages; k++)
@@ -2509,23 +2576,68 @@ namespace GnollHackX
         private static readonly SelectableShortcutButton _defKick = new SelectableShortcutButton("Kick", "Kick", 'k', false, false, 0, AppResourceName + ".Assets.UI.kick.png");
         private static readonly SelectableShortcutButton _defCast = new SelectableShortcutButton("Cast Spell", "Cast", 'Z', false, false, 0, AppResourceName + ".Assets.UI.cast.png");
         private static readonly SelectableShortcutButton _defRepeat = new SelectableShortcutButton("Repeat", "Repeat", 'A', true, false, 0, AppResourceName + ".Assets.UI.repeat.png");
+
+        private static readonly SelectableShortcutButton _defApply = new SelectableShortcutButton("Apply Item", "Apply", 'a', false, false, 0, AppResourceName + ".Assets.UI.apply.png");
+        private static readonly SelectableShortcutButton _defChat = new SelectableShortcutButton("Chat", "Chat", 'C', false, false, 0, AppResourceName + ".Assets.UI.chat.png");
+        private static readonly SelectableShortcutButton _defDrop = new SelectableShortcutButton("Drop Items", "Drop Items", '%', false, false, 0, AppResourceName + ".Assets.UI.dropmany.png");
+        private static readonly SelectableShortcutButton _defFire = new SelectableShortcutButton("Fire Weapon", "Fire", 'f', false, false, 0, AppResourceName + ".Assets.UI.fire.png");
+        private static readonly SelectableShortcutButton _defThrow = new SelectableShortcutButton("Throw", "Throw", 't', false, false, 0, AppResourceName + ".Assets.UI.throw.png");
+        private static readonly SelectableShortcutButton _defWait = new SelectableShortcutButton("Wait", "Wait", '.', false, false, 0, AppResourceName + ".Assets.UI.wait.png");
+        private static readonly SelectableShortcutButton _defZap = new SelectableShortcutButton("Zap Wand", "Zap", 'z', false, false, 0, AppResourceName + ".Assets.UI.zap.png");
+
         public static SelectableShortcutButton DefaultShortcutButton(int row, int column, bool issimple)
         {
-            switch(column)
+            if(issimple)
             {
-                default:
-                case 0:
-                    return _defInventory;
-                case 1:
-                    return _defSearch;
-                case 2:
-                    return _defSwap;
-                case 3:
-                    return _defKick;
-                case 4:
-                    return _defCast;
-                case 5:
-                    return _defRepeat;
+                switch (column)
+                {
+                    default:
+                    case 0:
+                        return _defInventory;
+                    case 1:
+                        return _defSearch;
+                    case 2:
+                        return _defSwap;
+                    case 3:
+                        return _defKick;
+                    case 4:
+                        return _defCast;
+                    case 5:
+                        return _defRepeat;
+                }
+            }
+            else
+            {
+                switch (column)
+                {
+                    default:
+                    case 0:
+                        return _defInventory;
+                    case 1:
+                        return _defSearch;
+                    case 2:
+                        return _defWait;
+                    case 3:
+                        return _defDrop;
+                    case 4:
+                        return _defChat;
+                    case 5:
+                        return _defKick;
+                    case 6:
+                        return _defRepeat;
+                    case 7:
+                        return _defSwap;
+                    case 8:
+                        return _defFire;
+                    case 9:
+                        return _defThrow;
+                    case 10:
+                        return _defCast;
+                    case 11:
+                        return _defZap;
+                    case 12:
+                        return _defApply;
+                }
             }
         }
 

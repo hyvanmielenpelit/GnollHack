@@ -400,121 +400,374 @@
                             </Grid>
 
                             <Label Text="Bar Commands" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Bar Command 1" x:Name="SimpleCommandBarButton1Label"
-                                            FontFamily="Underwood" TextColor="Black"
-                                            FontSize="15"
-                                            VerticalOptions="Center" 
-                                            HorizontalOptions="Start" />
-                                <Picker Grid.Column="1" x:Name="SimpleCommandBarButton1Picker"
-                                            Title="Select command"
-                                            FontFamily="Underwood" 
-                                            FontSize="17"
-                                            TextColor="Black"
-                                            TitleColor="Black"
-                                            HorizontalTextAlignment="End"
-                                            BackgroundColor="Transparent"
-                                            WidthRequest="200"
-                                            VerticalOptions="Center"
-                                            HorizontalOptions="EndAndExpand" >
-                                </Picker>
-                            </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Bar Command 2" x:Name="SimpleCommandBarButton2Label"
-                                            FontFamily="Underwood" TextColor="Black"
-                                            FontSize="15"
-                                            VerticalOptions="Center" 
-                                            HorizontalOptions="Start" />
-                                <Picker Grid.Column="1" x:Name="SimpleCommandBarButton2Picker"
-                                            Title="Select command"
-                                            FontFamily="Underwood" 
-                                            FontSize="17"
-                                            TextColor="Black"
-                                            TitleColor="Black"
-                                            HorizontalTextAlignment="End"
-                                            BackgroundColor="Transparent"
-                                            WidthRequest="200"
-                                            VerticalOptions="Center"
-                                            HorizontalOptions="EndAndExpand" >
-                                </Picker>
-                            </Grid>
+                            <StackLayout x:Name="SimpleCommandBarButtonsLayout" Spacing="6" >
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Bar Command 1" x:Name="SimpleCommandBarButton1Label"
+                                                FontFamily="Underwood" TextColor="Black"
+                                                FontSize="15"
+                                                VerticalOptions="Center" 
+                                                HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="SimpleCommandBarButton1Picker"
+                                                Title="Select command"
+                                                FontFamily="Underwood" 
+                                                FontSize="17"
+                                                TextColor="Black"
+                                                TitleColor="Black"
+                                                HorizontalTextAlignment="End"
+                                                BackgroundColor="Transparent"
+                                                WidthRequest="200"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Bar Command 2" x:Name="SimpleCommandBarButton2Label"
+                                                FontFamily="Underwood" TextColor="Black"
+                                                FontSize="15"
+                                                VerticalOptions="Center" 
+                                                HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="SimpleCommandBarButton2Picker"
+                                                Title="Select command"
+                                                FontFamily="Underwood" 
+                                                FontSize="17"
+                                                TextColor="Black"
+                                                TitleColor="Black"
+                                                HorizontalTextAlignment="End"
+                                                BackgroundColor="Transparent"
+                                                WidthRequest="200"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </Grid>
 
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Bar Command 3" x:Name="SimpleCommandBarButton3Label"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
-                                <Picker Grid.Column="1" x:Name="SimpleCommandBarButton3Picker"
-                                    Title="Select command"
-                                    FontFamily="Underwood" 
-                                    FontSize="17"
-                                    TextColor="Black"
-                                    TitleColor="Black"
-                                    HorizontalTextAlignment="End"
-                                    BackgroundColor="Transparent"
-                                    WidthRequest="200"
-                                    VerticalOptions="Center"
-                                    HorizontalOptions="EndAndExpand" >
-                                </Picker>
-                            </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Bar Command 4" x:Name="SimpleCommandBarButton4Label"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
-                                <Picker Grid.Column="1" x:Name="SimpleCommandBarButton4Picker"
-                                    Title="Select command"
-                                    FontFamily="Underwood" 
-                                    FontSize="17"
-                                    TextColor="Black"
-                                    TitleColor="Black"
-                                    HorizontalTextAlignment="End"
-                                    BackgroundColor="Transparent"
-                                    WidthRequest="200"
-                                    VerticalOptions="Center"
-                                    HorizontalOptions="EndAndExpand" >
-                                </Picker>
-                            </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Bar Command 5" x:Name="SimpleCommandBarButton5Label"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
-                                <Picker Grid.Column="1" x:Name="SimpleCommandBarButton5Picker"
-                                    Title="Select command"
-                                    FontFamily="Underwood" 
-                                    FontSize="17"
-                                    TextColor="Black"
-                                    TitleColor="Black"
-                                    HorizontalTextAlignment="End"
-                                    BackgroundColor="Transparent"
-                                    WidthRequest="200"
-                                    VerticalOptions="Center"
-                                    HorizontalOptions="EndAndExpand" >
-                                </Picker>
-                            </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Bar Command 6" x:Name="SimpleCommandBarButton6Label"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
-                                <Picker Grid.Column="1" x:Name="SimpleCommandBarButton6Picker"
-                                    Title="Select command"
-                                    FontFamily="Underwood" 
-                                    FontSize="17"
-                                    TextColor="Black"
-                                    TitleColor="Black"
-                                    HorizontalTextAlignment="End"
-                                    BackgroundColor="Transparent"
-                                    WidthRequest="200"
-                                    VerticalOptions="Center"
-                                    HorizontalOptions="EndAndExpand" >
-                                </Picker>
-                            </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Bar Command 3" x:Name="SimpleCommandBarButton3Label"
+                                        FontFamily="Underwood" TextColor="Black"
+                                        FontSize="15"
+                                        VerticalOptions="Center" 
+                                        HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="SimpleCommandBarButton3Picker"
+                                        Title="Select command"
+                                        FontFamily="Underwood" 
+                                        FontSize="17"
+                                        TextColor="Black"
+                                        TitleColor="Black"
+                                        HorizontalTextAlignment="End"
+                                        BackgroundColor="Transparent"
+                                        WidthRequest="200"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Bar Command 4" x:Name="SimpleCommandBarButton4Label"
+                                        FontFamily="Underwood" TextColor="Black"
+                                        FontSize="15"
+                                        VerticalOptions="Center" 
+                                        HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="SimpleCommandBarButton4Picker"
+                                        Title="Select command"
+                                        FontFamily="Underwood" 
+                                        FontSize="17"
+                                        TextColor="Black"
+                                        TitleColor="Black"
+                                        HorizontalTextAlignment="End"
+                                        BackgroundColor="Transparent"
+                                        WidthRequest="200"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Bar Command 5" x:Name="SimpleCommandBarButton5Label"
+                                        FontFamily="Underwood" TextColor="Black"
+                                        FontSize="15"
+                                        VerticalOptions="Center" 
+                                        HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="SimpleCommandBarButton5Picker"
+                                        Title="Select command"
+                                        FontFamily="Underwood" 
+                                        FontSize="17"
+                                        TextColor="Black"
+                                        TitleColor="Black"
+                                        HorizontalTextAlignment="End"
+                                        BackgroundColor="Transparent"
+                                        WidthRequest="200"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Bar Command 6" x:Name="SimpleCommandBarButton6Label"
+                                        FontFamily="Underwood" TextColor="Black"
+                                        FontSize="15"
+                                        VerticalOptions="Center" 
+                                        HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="SimpleCommandBarButton6Picker"
+                                        Title="Select command"
+                                        FontFamily="Underwood" 
+                                        FontSize="17"
+                                        TextColor="Black"
+                                        TitleColor="Black"
+                                        HorizontalTextAlignment="End"
+                                        BackgroundColor="Transparent"
+                                        WidthRequest="200"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </Grid>
+                            </StackLayout>
+                            <StackLayout x:Name="FullCommandBarButtonsLayout" IsVisible="False" Spacing="6">
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Bar Command 1" x:Name="FullCommandBarButton1Label"
+                                                FontFamily="Underwood" TextColor="Black"
+                                                FontSize="15"
+                                                VerticalOptions="Center" 
+                                                HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="FullCommandBarButton1Picker"
+                                                Title="Select command"
+                                                FontFamily="Underwood" 
+                                                FontSize="17"
+                                                TextColor="Black"
+                                                TitleColor="Black"
+                                                HorizontalTextAlignment="End"
+                                                BackgroundColor="Transparent"
+                                                WidthRequest="200"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Bar Command 2" x:Name="FullCommandBarButton2Label"
+                                                FontFamily="Underwood" TextColor="Black"
+                                                FontSize="15"
+                                                VerticalOptions="Center" 
+                                                HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="FullCommandBarButton2Picker"
+                                                Title="Select command"
+                                                FontFamily="Underwood" 
+                                                FontSize="17"
+                                                TextColor="Black"
+                                                TitleColor="Black"
+                                                HorizontalTextAlignment="End"
+                                                BackgroundColor="Transparent"
+                                                WidthRequest="200"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </Grid>
+
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Bar Command 3" x:Name="FullCommandBarButton3Label"
+                                        FontFamily="Underwood" TextColor="Black"
+                                        FontSize="15"
+                                        VerticalOptions="Center" 
+                                        HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="FullCommandBarButton3Picker"
+                                        Title="Select command"
+                                        FontFamily="Underwood" 
+                                        FontSize="17"
+                                        TextColor="Black"
+                                        TitleColor="Black"
+                                        HorizontalTextAlignment="End"
+                                        BackgroundColor="Transparent"
+                                        WidthRequest="200"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Bar Command 4" x:Name="FullCommandBarButton4Label"
+                                        FontFamily="Underwood" TextColor="Black"
+                                        FontSize="15"
+                                        VerticalOptions="Center" 
+                                        HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="FullCommandBarButton4Picker"
+                                        Title="Select command"
+                                        FontFamily="Underwood" 
+                                        FontSize="17"
+                                        TextColor="Black"
+                                        TitleColor="Black"
+                                        HorizontalTextAlignment="End"
+                                        BackgroundColor="Transparent"
+                                        WidthRequest="200"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Bar Command 5" x:Name="FullCommandBarButton5Label"
+                                        FontFamily="Underwood" TextColor="Black"
+                                        FontSize="15"
+                                        VerticalOptions="Center" 
+                                        HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="FullCommandBarButton5Picker"
+                                        Title="Select command"
+                                        FontFamily="Underwood" 
+                                        FontSize="17"
+                                        TextColor="Black"
+                                        TitleColor="Black"
+                                        HorizontalTextAlignment="End"
+                                        BackgroundColor="Transparent"
+                                        WidthRequest="200"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Bar Command 6" x:Name="FullCommandBarButton6Label"
+                                        FontFamily="Underwood" TextColor="Black"
+                                        FontSize="15"
+                                        VerticalOptions="Center" 
+                                        HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="FullCommandBarButton6Picker"
+                                        Title="Select command"
+                                        FontFamily="Underwood" 
+                                        FontSize="17"
+                                        TextColor="Black"
+                                        TitleColor="Black"
+                                        HorizontalTextAlignment="End"
+                                        BackgroundColor="Transparent"
+                                        WidthRequest="200"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Bar Command 7" x:Name="FullCommandBarButton7Label"
+                                        FontFamily="Underwood" TextColor="Black"
+                                        FontSize="15"
+                                        VerticalOptions="Center" 
+                                        HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="FullCommandBarButton7Picker"
+                                        Title="Select command"
+                                        FontFamily="Underwood" 
+                                        FontSize="17"
+                                        TextColor="Black"
+                                        TitleColor="Black"
+                                        HorizontalTextAlignment="End"
+                                        BackgroundColor="Transparent"
+                                        WidthRequest="200"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Bar Command 8" x:Name="FullCommandBarButton8Label"
+                                        FontFamily="Underwood" TextColor="Black"
+                                        FontSize="15"
+                                        VerticalOptions="Center" 
+                                        HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="FullCommandBarButton8Picker"
+                                        Title="Select command"
+                                        FontFamily="Underwood" 
+                                        FontSize="17"
+                                        TextColor="Black"
+                                        TitleColor="Black"
+                                        HorizontalTextAlignment="End"
+                                        BackgroundColor="Transparent"
+                                        WidthRequest="200"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Bar Command 9" x:Name="FullCommandBarButton9Label"
+                                        FontFamily="Underwood" TextColor="Black"
+                                        FontSize="15"
+                                        VerticalOptions="Center" 
+                                        HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="FullCommandBarButton9Picker"
+                                        Title="Select command"
+                                        FontFamily="Underwood" 
+                                        FontSize="17"
+                                        TextColor="Black"
+                                        TitleColor="Black"
+                                        HorizontalTextAlignment="End"
+                                        BackgroundColor="Transparent"
+                                        WidthRequest="200"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Bar Command 10" x:Name="FullCommandBarButton10Label"
+                                        FontFamily="Underwood" TextColor="Black"
+                                        FontSize="15"
+                                        VerticalOptions="Center" 
+                                        HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="FullCommandBarButton10Picker"
+                                        Title="Select command"
+                                        FontFamily="Underwood" 
+                                        FontSize="17"
+                                        TextColor="Black"
+                                        TitleColor="Black"
+                                        HorizontalTextAlignment="End"
+                                        BackgroundColor="Transparent"
+                                        WidthRequest="200"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Bar Command 11" x:Name="FullCommandBarButton11Label"
+                                        FontFamily="Underwood" TextColor="Black"
+                                        FontSize="15"
+                                        VerticalOptions="Center" 
+                                        HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="FullCommandBarButton11Picker"
+                                        Title="Select command"
+                                        FontFamily="Underwood" 
+                                        FontSize="17"
+                                        TextColor="Black"
+                                        TitleColor="Black"
+                                        HorizontalTextAlignment="End"
+                                        BackgroundColor="Transparent"
+                                        WidthRequest="200"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Bar Command 12" x:Name="FullCommandBarButton12Label"
+                                        FontFamily="Underwood" TextColor="Black"
+                                        FontSize="15"
+                                        VerticalOptions="Center" 
+                                        HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="FullCommandBarButton12Picker"
+                                        Title="Select command"
+                                        FontFamily="Underwood" 
+                                        FontSize="17"
+                                        TextColor="Black"
+                                        TitleColor="Black"
+                                        HorizontalTextAlignment="End"
+                                        BackgroundColor="Transparent"
+                                        WidthRequest="200"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Bar Command 13" x:Name="FullCommandBarButton13Label"
+                                        FontFamily="Underwood" TextColor="Black"
+                                        FontSize="15"
+                                        VerticalOptions="Center" 
+                                        HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="FullCommandBarButton13Picker"
+                                        Title="Select command"
+                                        FontFamily="Underwood" 
+                                        FontSize="17"
+                                        TextColor="Black"
+                                        TitleColor="Black"
+                                        HorizontalTextAlignment="End"
+                                        BackgroundColor="Transparent"
+                                        WidthRequest="200"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="EndAndExpand" >
+                                    </Picker>
+                                </Grid>
+                            </StackLayout>
+                            
                             <Label Text="Volume" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Master"

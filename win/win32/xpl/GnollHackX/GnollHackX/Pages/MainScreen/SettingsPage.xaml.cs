@@ -94,6 +94,33 @@ namespace GnollHackX.Pages.MainScreen
             SimpleCommandBarButton5Picker.ItemDisplayBinding = new Binding("Name");
             SimpleCommandBarButton6Picker.ItemDisplayBinding = new Binding("Name");
 
+            FullCommandBarButton1Picker.ItemsSource = GHApp.SelectableShortcutButtons;
+            FullCommandBarButton2Picker.ItemsSource = GHApp.SelectableShortcutButtons;
+            FullCommandBarButton3Picker.ItemsSource = GHApp.SelectableShortcutButtons;
+            FullCommandBarButton4Picker.ItemsSource = GHApp.SelectableShortcutButtons;
+            FullCommandBarButton5Picker.ItemsSource = GHApp.SelectableShortcutButtons;
+            FullCommandBarButton6Picker.ItemsSource = GHApp.SelectableShortcutButtons;
+            FullCommandBarButton7Picker.ItemsSource = GHApp.SelectableShortcutButtons;
+            FullCommandBarButton8Picker.ItemsSource = GHApp.SelectableShortcutButtons;
+            FullCommandBarButton9Picker.ItemsSource = GHApp.SelectableShortcutButtons;
+            FullCommandBarButton10Picker.ItemsSource = GHApp.SelectableShortcutButtons;
+            FullCommandBarButton11Picker.ItemsSource = GHApp.SelectableShortcutButtons;
+            FullCommandBarButton12Picker.ItemsSource = GHApp.SelectableShortcutButtons;
+            FullCommandBarButton13Picker.ItemsSource = GHApp.SelectableShortcutButtons;
+            FullCommandBarButton1Picker.ItemDisplayBinding = new Binding("Name");
+            FullCommandBarButton2Picker.ItemDisplayBinding = new Binding("Name");
+            FullCommandBarButton3Picker.ItemDisplayBinding = new Binding("Name");
+            FullCommandBarButton4Picker.ItemDisplayBinding = new Binding("Name");
+            FullCommandBarButton5Picker.ItemDisplayBinding = new Binding("Name");
+            FullCommandBarButton6Picker.ItemDisplayBinding = new Binding("Name");
+            FullCommandBarButton7Picker.ItemDisplayBinding = new Binding("Name");
+            FullCommandBarButton8Picker.ItemDisplayBinding = new Binding("Name");
+            FullCommandBarButton9Picker.ItemDisplayBinding = new Binding("Name");
+            FullCommandBarButton10Picker.ItemDisplayBinding = new Binding("Name");
+            FullCommandBarButton11Picker.ItemDisplayBinding = new Binding("Name");
+            FullCommandBarButton12Picker.ItemDisplayBinding = new Binding("Name");
+            FullCommandBarButton13Picker.ItemDisplayBinding = new Binding("Name");
+
             XlogUserNameValidationExpression = new Regex(@"^[A-Za-z0-9_]{1,31}$");
             BonesAllowedUsersValidationExpression = new Regex(@"^([A-Za-z0-9_]*[ \,]+)*([A-Za-z0-9_]*)?$");
 
@@ -415,21 +442,41 @@ namespace GnollHackX.Pages.MainScreen
 
             Preferences.Set("DefaultMapNoClipMode", !YesClipNormalSwitch.IsToggled);
 
-            for(int i = 0; i < 6; i++)
-            {
 #if GNH_MAUI
-                Microsoft.Maui.Controls.Picker[] pickers = new Microsoft.Maui.Controls.Picker[6] 
+            Microsoft.Maui.Controls.Picker[] pickers = new Microsoft.Maui.Controls.Picker[6] 
 #else
-                Xamarin.Forms.Picker[] pickers = new Xamarin.Forms.Picker[6] 
+            Xamarin.Forms.Picker[] pickers = new Xamarin.Forms.Picker[6]
 #endif
-                {
+            {
                     SimpleCommandBarButton1Picker,
                     SimpleCommandBarButton2Picker,
                     SimpleCommandBarButton3Picker,
                     SimpleCommandBarButton4Picker,
                     SimpleCommandBarButton5Picker,
                     SimpleCommandBarButton6Picker,
-                };
+            };
+#if GNH_MAUI
+            Microsoft.Maui.Controls.Picker[] fullPickers = new Microsoft.Maui.Controls.Picker[13] 
+#else
+            Xamarin.Forms.Picker[] fullPickers = new Xamarin.Forms.Picker[13]
+#endif
+            {
+                    FullCommandBarButton1Picker,
+                    FullCommandBarButton2Picker,
+                    FullCommandBarButton3Picker,
+                    FullCommandBarButton4Picker,
+                    FullCommandBarButton5Picker,
+                    FullCommandBarButton6Picker,
+                    FullCommandBarButton7Picker,
+                    FullCommandBarButton8Picker,
+                    FullCommandBarButton9Picker,
+                    FullCommandBarButton10Picker,
+                    FullCommandBarButton11Picker,
+                    FullCommandBarButton12Picker,
+                    FullCommandBarButton13Picker,
+            };
+            for (int i = 0; i < 6; i++)
+            {
 #if GNH_MAUI
                 Microsoft.Maui.Controls.Picker targetPicker = pickers[i]; 
 #else
@@ -446,6 +493,26 @@ namespace GnollHackX.Pages.MainScreen
                     Preferences.Set(keystr, GHApp.SelectableShortcutButtons[targetPicker.SelectedIndex].GetCommand());
                     if (_gamePage != null)
                         _gamePage.SetSimpleLayoutCommandButton(i, targetPicker.SelectedIndex);
+                }
+            }
+            for (int i = 0; i < 13; i++)
+            {
+#if GNH_MAUI
+                Microsoft.Maui.Controls.Picker targetPicker = fullPickers[i]; 
+#else
+                Xamarin.Forms.Picker targetPicker = fullPickers[i];
+#endif
+                string keystr = "FullUILayoutCommandButton" + (i + 1);
+                if (targetPicker.SelectedIndex < 0 || targetPicker.SelectedIndex >= GHApp.SelectableShortcutButtons.Count)
+                {
+                    if (Preferences.ContainsKey(keystr))
+                        Preferences.Remove(keystr);
+                }
+                else
+                {
+                    Preferences.Set(keystr, GHApp.SelectableShortcutButtons[targetPicker.SelectedIndex].GetCommand());
+                    if (_gamePage != null)
+                        _gamePage.SetFullLayoutCommandButton(i, targetPicker.SelectedIndex);
                 }
             }
 
@@ -636,6 +703,17 @@ namespace GnollHackX.Pages.MainScreen
                 int listselidx = GHApp.SelectableShortcutButtonIndexInList(savedCmd, defCmd);
                 cmdidxs[i] = listselidx;
             }
+
+            int[] fullCmdIdxs = new int[13];
+            for (int i = 0; i < 13; i++)
+            {
+                string keystr = "FullUILayoutCommandButton" + (i + 1);
+                int defCmd = GHApp.DefaultShortcutButton(0, i, false).GetCommand();
+                int savedCmd = Preferences.Get(keystr, defCmd);
+                int listselidx = GHApp.SelectableShortcutButtonIndexInList(savedCmd, defCmd);
+                fullCmdIdxs[i] = listselidx;
+            }
+
 
             darkmode = GHApp.DarkMode; // Preferences.Get("DarkMode", false);
             silentmode = Preferences.Get("SilentMode", false);
@@ -867,24 +945,40 @@ namespace GnollHackX.Pages.MainScreen
             CustomCloudStorageLabel.Text = customcloudstorage == "" ? "Default" : "Custom";
             CustomCloudStorageButton.Text = customcloudstorage == "" ? "Add" : "Edit";
 
+            SimpleCommandBarButtonsLayout.IsVisible = simplecmdlayout;
             SimpleCommandBarButton1Picker.SelectedIndex = cmdidxs[0];
             SimpleCommandBarButton2Picker.SelectedIndex = cmdidxs[1];
             SimpleCommandBarButton3Picker.SelectedIndex = cmdidxs[2];
             SimpleCommandBarButton4Picker.SelectedIndex = cmdidxs[3];
             SimpleCommandBarButton5Picker.SelectedIndex = cmdidxs[4];
             SimpleCommandBarButton6Picker.SelectedIndex = cmdidxs[5];
-            SimpleCommandBarButton1Picker.IsEnabled = simplecmdlayout;
-            SimpleCommandBarButton2Picker.IsEnabled = simplecmdlayout;
-            SimpleCommandBarButton3Picker.IsEnabled = simplecmdlayout;
-            SimpleCommandBarButton4Picker.IsEnabled = simplecmdlayout;
-            SimpleCommandBarButton5Picker.IsEnabled = simplecmdlayout;
-            SimpleCommandBarButton6Picker.IsEnabled = simplecmdlayout;
-            SimpleCommandBarButton1Label.TextColor = simplecmdlayout ? (darkmode ? GHColors.White : GHColors.Black) : GHColors.Gray;
-            SimpleCommandBarButton2Label.TextColor = simplecmdlayout ? (darkmode ? GHColors.White : GHColors.Black) : GHColors.Gray;
-            SimpleCommandBarButton3Label.TextColor = simplecmdlayout ? (darkmode ? GHColors.White : GHColors.Black) : GHColors.Gray;
-            SimpleCommandBarButton4Label.TextColor = simplecmdlayout ? (darkmode ? GHColors.White : GHColors.Black) : GHColors.Gray;
-            SimpleCommandBarButton5Label.TextColor = simplecmdlayout ? (darkmode ? GHColors.White : GHColors.Black) : GHColors.Gray;
-            SimpleCommandBarButton6Label.TextColor = simplecmdlayout ? (darkmode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            //SimpleCommandBarButton1Picker.IsEnabled = simplecmdlayout;
+            //SimpleCommandBarButton2Picker.IsEnabled = simplecmdlayout;
+            //SimpleCommandBarButton3Picker.IsEnabled = simplecmdlayout;
+            //SimpleCommandBarButton4Picker.IsEnabled = simplecmdlayout;
+            //SimpleCommandBarButton5Picker.IsEnabled = simplecmdlayout;
+            //SimpleCommandBarButton6Picker.IsEnabled = simplecmdlayout;
+            //SimpleCommandBarButton1Label.TextColor = simplecmdlayout ? (darkmode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            //SimpleCommandBarButton2Label.TextColor = simplecmdlayout ? (darkmode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            //SimpleCommandBarButton3Label.TextColor = simplecmdlayout ? (darkmode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            //SimpleCommandBarButton4Label.TextColor = simplecmdlayout ? (darkmode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            //SimpleCommandBarButton5Label.TextColor = simplecmdlayout ? (darkmode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            //SimpleCommandBarButton6Label.TextColor = simplecmdlayout ? (darkmode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+
+            FullCommandBarButtonsLayout.IsVisible = !simplecmdlayout;
+            FullCommandBarButton1Picker.SelectedIndex = fullCmdIdxs[0];
+            FullCommandBarButton2Picker.SelectedIndex = fullCmdIdxs[1];
+            FullCommandBarButton3Picker.SelectedIndex = fullCmdIdxs[2];
+            FullCommandBarButton4Picker.SelectedIndex = fullCmdIdxs[3];
+            FullCommandBarButton5Picker.SelectedIndex = fullCmdIdxs[4];
+            FullCommandBarButton6Picker.SelectedIndex = fullCmdIdxs[5];
+            FullCommandBarButton7Picker.SelectedIndex = fullCmdIdxs[6];
+            FullCommandBarButton8Picker.SelectedIndex = fullCmdIdxs[7];
+            FullCommandBarButton9Picker.SelectedIndex = fullCmdIdxs[8];
+            FullCommandBarButton10Picker.SelectedIndex = fullCmdIdxs[9];
+            FullCommandBarButton11Picker.SelectedIndex = fullCmdIdxs[10];
+            FullCommandBarButton12Picker.SelectedIndex = fullCmdIdxs[11];
+            FullCommandBarButton13Picker.SelectedIndex = fullCmdIdxs[12];
 
             if (PrimaryGPUCachePicker.ItemsSource != null)
             {
@@ -1318,18 +1412,21 @@ namespace GnollHackX.Pages.MainScreen
 
         private void SimpleCmdLayoutSwitch_Toggled(object sender, ToggledEventArgs e)
         {
-            SimpleCommandBarButton1Picker.IsEnabled = e.Value;
-            SimpleCommandBarButton2Picker.IsEnabled = e.Value;
-            SimpleCommandBarButton3Picker.IsEnabled = e.Value;
-            SimpleCommandBarButton4Picker.IsEnabled = e.Value;
-            SimpleCommandBarButton5Picker.IsEnabled = e.Value;
-            SimpleCommandBarButton6Picker.IsEnabled = e.Value;
-            SimpleCommandBarButton1Label.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
-            SimpleCommandBarButton2Label.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
-            SimpleCommandBarButton3Label.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
-            SimpleCommandBarButton4Label.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
-            SimpleCommandBarButton5Label.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
-            SimpleCommandBarButton6Label.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            SimpleCommandBarButtonsLayout.IsVisible = e.Value;
+            FullCommandBarButtonsLayout.IsVisible = !e.Value;
+
+            //SimpleCommandBarButton1Picker.IsEnabled = e.Value;
+            //SimpleCommandBarButton2Picker.IsEnabled = e.Value;
+            //SimpleCommandBarButton3Picker.IsEnabled = e.Value;
+            //SimpleCommandBarButton4Picker.IsEnabled = e.Value;
+            //SimpleCommandBarButton5Picker.IsEnabled = e.Value;
+            //SimpleCommandBarButton6Picker.IsEnabled = e.Value;
+            //SimpleCommandBarButton1Label.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            //SimpleCommandBarButton2Label.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            //SimpleCommandBarButton3Label.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            //SimpleCommandBarButton4Label.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            //SimpleCommandBarButton5Label.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            //SimpleCommandBarButton6Label.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
         }
 
         private async void XlogAccountButton_Clicked(object sender, EventArgs e)

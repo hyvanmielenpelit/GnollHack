@@ -1739,6 +1739,17 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             wep_avg_dmg += dmg_bonus;
             wep_multipliable_avg_dmg += dmg_bonus;
         }
+        else
+        {
+            /* Otherwise get full melee strength damage bonus */
+            double str_bonus = strength_damage_bonus_core(ACURR(A_STR), TRUE);
+            Sprintf(buf, "Strength damage bonus:  %s%.1f on average",
+                str_bonus >= 0 ? "+" : "", str_bonus);
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+
+            wep_avg_dmg += str_bonus;
+            wep_multipliable_avg_dmg += str_bonus;
+        }
 
         if (objects[otyp].oc_hitbonus != 0)
         {
@@ -1749,17 +1760,6 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
-    }
-    else
-    {
-        /* Otherwise get full melee strength damage bonus */
-        double str_bonus = strength_damage_bonus_core(ACURR(A_STR), TRUE);
-        Sprintf(buf, "Strength damage bonus:  %s%.1f on average",
-            str_bonus >= 0 ? "+" : "", str_bonus);
-        putstr(datawin, ATR_INDENT_AT_COLON, buf);
-
-        wep_avg_dmg += str_bonus;
-        wep_multipliable_avg_dmg += str_bonus;
     }
 
     /* Archery bonus, applied for launcher only to avoid double-counting */

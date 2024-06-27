@@ -887,6 +887,16 @@ namespace GnollHackX.Pages.Game
                     SetSimpleLayoutCommandButton(i, listselidx);
             }
 
+            for (int i = 0; i < 13; i++)
+            {
+                string keystr = "FullUILayoutCommandButton" + (i + 1);
+                int defCmd = GHApp.DefaultShortcutButton(0, i, false).GetCommand();
+                int savedCmd = Preferences.Get(keystr, defCmd);
+                int listselidx = GHApp.SelectableShortcutButtonIndexInList(savedCmd, defCmd);
+                if (listselidx >= 0)
+                    SetFullLayoutCommandButton(i, listselidx);
+            }
+
             ToggleTravelModeButton_Clicked(null, null);
             ZoomMiniMode = true;
             ZoomAlternateMode = true;
@@ -17238,6 +17248,25 @@ namespace GnollHackX.Pages.Game
             LabeledImageButton[] _simpleButtions = new LabeledImageButton[6] 
             { lSimpleInventoryButton, lSimpleSearchButton, lSimpleSwapWeaponButton, lSimpleKickButton, lSimpleCastButton, lSimpleRepeatButton };
             if (btnCol < 0 || btnCol >= _simpleButtions.Length) 
+                return;
+            LabeledImageButton targetButton = _simpleButtions[btnCol];
+            if (btnSelectionIndex < 0 || btnSelectionIndex >= GHApp.SelectableShortcutButtons.Count)
+                return;
+            SelectableShortcutButton sourceButton = GHApp.SelectableShortcutButtons[btnSelectionIndex];
+            targetButton.LblText = sourceButton.Label;
+            targetButton.BtnCommand = sourceButton.RawCommand;
+            targetButton.BtnLetter = sourceButton.Letter;
+            targetButton.BtnCtrl = sourceButton.Ctrl;
+            targetButton.BtnMeta = sourceButton.Meta;
+            targetButton.ImgSourcePath = sourceButton.ImageSourcePath;
+        }
+
+        public void SetFullLayoutCommandButton(int btnCol, int btnSelectionIndex)
+        {
+            LabeledImageButton[] _simpleButtions = new LabeledImageButton[13]
+            { lInventoryButton, lSearchButton, lWaitButton, lDropManyButton, lChatButton, lKickButton, lRepeatButton,
+                lSwapWeaponButton,lFireButton, lThrowButton, lCastButton, lZapButton, lApplyButton  };
+            if (btnCol < 0 || btnCol >= _simpleButtions.Length)
                 return;
             LabeledImageButton targetButton = _simpleButtions[btnCol];
             if (btnSelectionIndex < 0 || btnSelectionIndex >= GHApp.SelectableShortcutButtons.Count)
