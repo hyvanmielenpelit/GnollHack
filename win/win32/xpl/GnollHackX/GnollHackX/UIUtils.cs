@@ -20,23 +20,25 @@ namespace GnollHackX
 {
     public static class UIUtils
     {
-        private static SKColor GHDarkGray = new SKColor(96, 96, 96);
-        private static SKColor GHVeryDarkGray = new SKColor(64, 64, 64);
-        private static SKColor GHTitleGold = new SKColor(0xD4, 0xA0, 0x17);
-        private static SKColor GHRed = new SKColor(255, 32, 32);
-        private static SKColor GHDarkRed = new SKColor(224, 0, 0);
-        private static SKColor GHGreen = new SKColor(0, 255, 0);
-        private static SKColor GHRevertedBrightGreen = new SKColor(0, 160, 0);
-        private static SKColor GHDarkGreen = new SKColor(0, 192, 0);
-        private static SKColor GHBlue = new SKColor(112, 112, 255);
-        private static SKColor GHDarkBlue = new SKColor(64, 64, 255);
-        private static SKColor GHBrown = new SKColor(210, 128, 32);
-        private static SKColor GHDarkBrown = new SKColor(180, 92, 0);
-        private static SKColor GHBrightBlue = new SKColor(180, 200, 255);
-        private static SKColor GHCyan = new SKColor(133, 224, 224);
-        private static SKColor GHBrightCyan = new SKColor(165, 255, 255);
-        private static SKColor GHBrightCyanReverted = new SKColor(190, 255, 255);
-        private static SKColor GHDarkYellow = new SKColor(192, 192, 0);
+        private static readonly SKColor GHDarkGray = new SKColor(96, 96, 96);
+        private static readonly SKColor GHVeryDarkGray = new SKColor(64, 64, 64);
+        private static readonly SKColor GHTitleGold = new SKColor(0xD4, 0xA0, 0x17);
+        private static readonly SKColor GHRed = new SKColor(255, 32, 32);
+        private static readonly SKColor GHDarkRed = new SKColor(224, 0, 0);
+        private static readonly SKColor GHGreen = new SKColor(0, 255, 0);
+        private static readonly SKColor GHRevertedBrightGreen = new SKColor(0, 160, 0);
+        private static readonly SKColor GHDarkGreen = new SKColor(0, 192, 0);
+        private static readonly SKColor GHBlue = new SKColor(112, 112, 255);
+        private static readonly SKColor GHDarkBlue = new SKColor(64, 64, 255);
+        private static readonly SKColor GHBrown = new SKColor(210, 128, 32);
+        private static readonly SKColor GHDarkBrown = new SKColor(180, 92, 0);
+        private static readonly SKColor GHBrightBlue = new SKColor(180, 200, 255);
+        private static readonly SKColor GHCyan = new SKColor(133, 224, 224);
+        private static readonly SKColor GHBrightCyan = new SKColor(165, 255, 255);
+        private static readonly SKColor GHBrightCyanReverted = new SKColor(190, 255, 255);
+        private static readonly SKColor GHDarkYellow = new SKColor(192, 192, 0);
+
+        public static readonly SKColorFilter HighlightColorFilter = SKColorFilter.CreateLighting(new SKColor(255, 255, 255), new SKColor(20, 20, 20));
 
         public static SKColor NHColor2SKColor(int nhclr, int attr)
         {

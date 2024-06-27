@@ -80,7 +80,34 @@ namespace GnollHackX.Controls
         {
             InitializeComponent();
             ViewButton.Clicked += ViewButton_Clicked;
+#if WINDOWS
+            ViewButton.HandlerChanged += (s, e) =>
+            {
+                if (ViewButton.Handler?.PlatformView is Microsoft.UI.Xaml.Controls.Button)
+                {
+                    var platformView = ViewButton.Handler?.PlatformView as Microsoft.UI.Xaml.Controls.Button;
+                    platformView.PointerEntered += PlatformView_PointerEntered;
+                    platformView.PointerExited += PlatformView_PointerExited;
+                    platformView.PointerCanceled += PlatformView_PointerExited;
+                    platformView.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush();
+                }
+            };
+#endif
         }
+
+#if WINDOWS
+        private void PlatformView_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            e.Handled = true;
+            ViewImage.IsHighlighted = true;
+        }
+
+        private void PlatformView_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            e.Handled = true;
+            ViewImage.IsHighlighted = false;
+        }
+#endif
 
         private void ViewButton_Clicked(object sender, EventArgs e)
         {

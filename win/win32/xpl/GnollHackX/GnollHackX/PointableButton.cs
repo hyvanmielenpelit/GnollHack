@@ -21,6 +21,7 @@ namespace GnollHackX
                     var platformView = Handler?.PlatformView as Microsoft.UI.Xaml.Controls.Button;
                     platformView.PointerEntered += PlatformView_PointerEntered;
                     platformView.PointerExited += PlatformView_PointerExited;
+                    platformView.PointerCanceled += PlatformView_PointerExited;
                     platformView.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush();
                 }
             };

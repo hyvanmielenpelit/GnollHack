@@ -47,6 +47,7 @@ using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 using SkiaSharp.Views.Forms;
 using static Xamarin.Essentials.Permissions;
+using Xamarin.Forms.PlatformConfiguration.TizenSpecific;
 
 namespace GnollHackX.Pages.Game
 #endif
@@ -9722,7 +9723,19 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                             StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                            canvas.DrawImage(GHApp._skillBitmap, skillDest);
+                            using(SKPaint btnPaint = new SKPaint())
+                            {
+#if WINDOWS
+                                lock(_canvasPointerLock)
+                                {
+                                    if (_isCanvasHovering && skillDest.Contains(_canvasHoverLocation))
+                                    {
+                                        btnPaint.ColorFilter = UIUtils.HighlightColorFilter;
+                                    }
+                                }
+#endif
+                                canvas.DrawImage(GHApp._skillBitmap, skillDest, btnPaint);
+                            }
 #if GNH_MAP_PROFILING && DEBUG
                             StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -9751,7 +9764,19 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                             StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                            canvas.DrawImage(isunwield ? GHApp._prevUnwieldBitmap : GHApp._prevWepBitmap, prevWepDest);
+                            using (SKPaint btnPaint = new SKPaint())
+                            {
+#if WINDOWS
+                                lock (_canvasPointerLock)
+                                {
+                                    if (_isCanvasHovering && prevWepDest.Contains(_canvasHoverLocation))
+                                    {
+                                        btnPaint.ColorFilter = UIUtils.HighlightColorFilter;
+                                    }
+                                }
+#endif
+                                canvas.DrawImage(isunwield ? GHApp._prevUnwieldBitmap : GHApp._prevWepBitmap, prevWepDest, btnPaint);
+                            }
 #if GNH_MAP_PROFILING && DEBUG
                             StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -12933,6 +12958,29 @@ namespace GnollHackX.Pages.Game
                     float canvasheight = canvasView.CanvasSize.Height;
                     SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
                     AdjustZoomByRatio(e.MouseWheelDelta < 0 ? 1.0f / ratio : ratio, point, point, point);
+                }
+            }
+        }
+
+        private readonly object _canvasPointerLock = new object();
+        private bool _isCanvasHovering = false;
+        private SKPoint _canvasHoverLocation = new SKPoint();
+
+        private void canvasView_MousePointer(object sender, SKTouchEventArgs e)
+        {
+            lock (_canvasPointerLock)
+            {
+                _canvasHoverLocation = e.Location;
+                switch (e.ActionType)
+                {
+                    case SKTouchAction.Entered:
+                    case SKTouchAction.Moved:
+                        _isCanvasHovering = true;
+                        break;
+                    case SKTouchAction.Exited:
+                    case SKTouchAction.Cancelled:
+                        _isCanvasHovering = false;
+                        break;
                 }
             }
         }
@@ -16175,27 +16223,33 @@ namespace GnollHackX.Pages.Game
 
                     lock (GHApp._moreBtnLock)
                     {
-                        for (int i = 0; i < GHConstants.MoreButtonsPerRow; i++)
+                        using(SKPaint paint = new SKPaint())
                         {
-                            int pos_j = 0;
-                            for (int j = 0; j < GHConstants.MoreButtonsPerColumn; j++)
+                            for (int i = 0; i < GHConstants.MoreButtonsPerRow; i++)
                             {
-                                if (GHApp._moreBtnMatrix[page, i, j] != null && GHApp._moreBtnBitmaps[page, i, j] != null)
+                                int pos_j = 0;
+                                for (int j = 0; j < GHConstants.MoreButtonsPerColumn; j++)
                                 {
-                                    SKRect targetrect = new SKRect();
-                                    int x = isLandscape ? pos_j : i;
-                                    int y = isLandscape ? i : pos_j;
-                                    targetrect.Left = btnOffsetX + x * btnAreaWidth + Math.Max(0, (btnAreaWidth - btnImgWidth) / 2);
-                                    targetrect.Top = btnMatrixStart + y * btnAreaHeight + Math.Max(0, (btnAreaHeight - btnImgHeight - textPaint.FontSpacing) / 2);
-                                    targetrect.Right = targetrect.Left + btnImgWidth;
-                                    targetrect.Bottom = targetrect.Top + btnImgHeight;
-                                    float text_x = (targetrect.Left + targetrect.Right) / 2;
-                                    float text_y = targetrect.Bottom - textPaint.FontMetrics.Ascent;
-
-                                    canvas.DrawImage(GHApp._moreBtnBitmaps[page, i, j], targetrect);
-                                    textPaint.DrawTextOnCanvas(canvas, GHApp._moreBtnMatrix[page, i, j].Text, text_x, text_y, SKTextAlign.Center);
+                                    if (GHApp._moreBtnMatrix[page, i, j] != null && GHApp._moreBtnBitmaps[page, i, j] != null)
+                                    {
+                                        SKRect targetrect = new SKRect();
+                                        int x = isLandscape ? pos_j : i;
+                                        int y = isLandscape ? i : pos_j;
+                                        targetrect.Left = btnOffsetX + x * btnAreaWidth + Math.Max(0, (btnAreaWidth - btnImgWidth) / 2);
+                                        targetrect.Top = btnMatrixStart + y * btnAreaHeight + Math.Max(0, (btnAreaHeight - btnImgHeight - textPaint.FontSpacing) / 2);
+                                        targetrect.Right = targetrect.Left + btnImgWidth;
+                                        targetrect.Bottom = targetrect.Top + btnImgHeight;
+                                        float text_x = (targetrect.Left + targetrect.Right) / 2;
+                                        float text_y = targetrect.Bottom - textPaint.FontMetrics.Ascent;
+                                        if (_isCommandHovering && targetrect.Contains(_commandHoverLocation))
+                                            paint.ColorFilter = UIUtils.HighlightColorFilter;
+                                        else
+                                            paint.ColorFilter = null;
+                                        canvas.DrawImage(GHApp._moreBtnBitmaps[page, i, j], targetrect, paint);
+                                        textPaint.DrawTextOnCanvas(canvas, GHApp._moreBtnMatrix[page, i, j].Text, text_x, text_y, SKTextAlign.Center);
+                                    }
+                                    pos_j++;
                                 }
-                                pos_j++;
                             }
                         }
                     }
@@ -16530,6 +16584,29 @@ namespace GnollHackX.Pages.Game
             else if (e.MouseWheelDelta < 0)
             {
                 MoreNextButton_BtnClicked(sender, new EventArgs());
+            }
+        }
+
+        private readonly object _commandHighlightLock = new object();
+        private bool _isCommandHovering = false;
+        private SKPoint _commandHoverLocation = new SKPoint();
+
+        private void CommandCanvas_MousePointer(object sender, SKTouchEventArgs e)
+        {
+            lock(_commandHighlightLock)
+            {
+                _commandHoverLocation = e.Location;
+                switch (e.ActionType)
+                {
+                    case SKTouchAction.Entered:
+                    case SKTouchAction.Moved:
+                        _isCommandHovering = true;
+                        break;
+                    case SKTouchAction.Exited:
+                    case SKTouchAction.Cancelled:
+                        _isCommandHovering = false;
+                        break;
+                }
             }
         }
 

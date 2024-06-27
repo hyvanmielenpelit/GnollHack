@@ -283,7 +283,7 @@ namespace GnollHackX
                 using(SKPaint paint = new SKPaint())
                 {
                     if (IsHighlighted)
-                        paint.ColorFilter = SKColorFilter.CreateLighting(new SKColor(255, 255, 255), new SKColor(20, 20, 20));
+                        paint.ColorFilter = UIUtils.HighlightColorFilter;
                     canvas.DrawImage(targetBitmap, sourcerect, targetrect, paint);
                 }
             }
