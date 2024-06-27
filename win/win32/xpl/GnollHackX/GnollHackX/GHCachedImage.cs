@@ -202,6 +202,23 @@ namespace GnollHackX
             }
         }
 
+        public static readonly BindableProperty IsHighlightedProperty = BindableProperty.Create(nameof(IsHighlighted), typeof(bool), typeof(GHCachedImage), false, propertyChanged: OnIsHighlightedChanged);
+
+        public bool IsHighlighted
+        {
+            get => (bool)GetValue(IsHighlightedProperty);
+            set => SetValue(IsHighlightedProperty, value);
+        }
+
+        private static void OnIsHighlightedChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            GHCachedImage img = bindable as GHCachedImage;
+            if (img != null)
+                img.InvalidateSurface();
+        }
+
+
+
         private readonly object _sourceBitmapLock = new object();
         private SKImage _sourceBitmap = null;
 
@@ -263,7 +280,12 @@ namespace GnollHackX
                         targetrect = new SKRect(0, 0, canvaswidth, canvasheight);
                         break;
                 }
-                canvas.DrawImage(targetBitmap, sourcerect, targetrect);
+                using(SKPaint paint = new SKPaint())
+                {
+                    if (IsHighlighted)
+                        paint.ColorFilter = SKColorFilter.CreateLighting(new SKColor(255, 255, 255), new SKColor(20, 20, 20));
+                    canvas.DrawImage(targetBitmap, sourcerect, targetrect, paint);
+                }
             }
         }
 
