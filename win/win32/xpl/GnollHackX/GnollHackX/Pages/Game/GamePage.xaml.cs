@@ -14041,7 +14041,7 @@ namespace GnollHackX.Pages.Game
                                     isHover = _menuIsHovering && selectionrect.Contains(_menuHoverPoint);
                                 }
 #else
-                                bool isHover = true; /* On mobile, all buttons are normal / hover color automatically */
+                                bool isHover = IsMiButton; /* On mobile, all buttons are normal / hover color automatically */
 #endif
                                 if (IsMiButton)
                                 {
