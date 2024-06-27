@@ -54,7 +54,9 @@ namespace GnollHackX
     }
     public class CustomLabel : SKCanvasView
     {
+#pragma warning disable 67
         public event EventHandler<GHMouseWheelEventArgs> MouseWheel;
+#pragma warning restore 67
 
         public CustomLabel() : base()
         {

@@ -199,10 +199,10 @@ namespace GnollHackX.iOS
 
         public event EventHandler<AssetPackStatusEventArgs> OnDemandPackStatusNotification;
 
-        //private void OnDemandPackStatusNotified(object sender, AssetPackStatusEventArgs e)
-        //{
-        //    OnDemandPackStatusNotification?.Invoke(this, e);
-        //}
+        private void OnDemandPackStatusNotified(object sender, AssetPackStatusEventArgs e)
+        {
+            OnDemandPackStatusNotification?.Invoke(this, e);
+        }
 
         public void InitializePlatform()
         {

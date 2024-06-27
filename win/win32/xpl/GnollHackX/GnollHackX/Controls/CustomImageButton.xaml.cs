@@ -79,6 +79,7 @@ namespace GnollHackX.Controls
 
 
 #if WINDOWS
+        private bool _isHovering = false;
         private void Canvas_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             _isHovering = true;
@@ -91,7 +92,6 @@ namespace GnollHackX.Controls
         }
 #endif
         private bool _isPressed = false;
-        private bool _isHovering = false;
 
         public event EventHandler Clicked;
 

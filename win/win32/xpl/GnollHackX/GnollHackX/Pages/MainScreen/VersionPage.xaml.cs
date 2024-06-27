@@ -301,12 +301,12 @@ namespace GnollHackX.Pages.MainScreen
         }
 
 #if WINDOWS
-        private string? GetAssemblyInformationalVersion(Type type)
+        private string GetAssemblyInformationalVersion(Type type)
         {
             return GetAssemblyInformationalVersion(type?.Assembly);
         }
 
-        private string? GetAssemblyInformationalVersion(Assembly assembly)
+        private string GetAssemblyInformationalVersion(Assembly assembly)
         {
             if (assembly == null)
             {
@@ -316,7 +316,7 @@ namespace GnollHackX.Pages.MainScreen
             return TrimVersion(assembly?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion);
         }
 
-        private string? TrimVersion(string? version)
+        private string TrimVersion(string version)
         {
             if (string.IsNullOrEmpty(version))
             {

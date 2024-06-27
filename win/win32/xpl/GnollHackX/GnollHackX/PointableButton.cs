@@ -27,8 +27,10 @@ namespace GnollHackX
 #endif
         }
 
+#pragma warning disable 67
         public event EventHandler PointerEntered;
         public event EventHandler PointerExited;
+#pragma warning restore 67
 
 #if WINDOWS
 

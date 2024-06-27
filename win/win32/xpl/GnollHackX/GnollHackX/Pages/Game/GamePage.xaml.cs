@@ -15173,6 +15173,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+#pragma warning disable 414
         private readonly object _menuHoverLock = new object();
         private bool _menuIsHovering = false;
         private SKPoint _menuHoverPoint = new SKPoint();
@@ -15191,18 +15192,18 @@ namespace GnollHackX.Pages.Game
                 switch (e?.ActionType)
                 {
                     case SKTouchAction.Entered:
+                    case SKTouchAction.Moved:
                         _menuIsHovering = true;
                         break;
                     case SKTouchAction.Cancelled:
                     case SKTouchAction.Exited:
                         _menuIsHovering = false;
                         break;
-                    case SKTouchAction.Moved:
-                        break;
 
                 }
             }
         }
+#pragma warning restore 414
 
 
         private readonly object _menuHideCancelledLock = new object();

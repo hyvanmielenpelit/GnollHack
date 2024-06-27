@@ -74,8 +74,10 @@ namespace GnollHackX.Controls
         }
         public event EventHandler<SKPaintSurfaceEventArgs> PaintSurface;
         public event EventHandler<SKTouchEventArgs> Touch;
+#pragma warning disable 67
         public event EventHandler<GHMouseWheelEventArgs> MouseWheel;
         public event EventHandler<SKTouchEventArgs> MousePointer;
+#pragma warning restore 67
 
         public void InvalidateSurface()
         {
