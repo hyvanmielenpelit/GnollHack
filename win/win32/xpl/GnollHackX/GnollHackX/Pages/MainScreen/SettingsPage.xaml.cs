@@ -443,9 +443,9 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("DefaultMapNoClipMode", !YesClipNormalSwitch.IsToggled);
 
 #if GNH_MAUI
-            Microsoft.Maui.Controls.Picker[] pickers = new Microsoft.Maui.Controls.Picker[6] 
+            Microsoft.Maui.Controls.Picker[] simplePickers = new Microsoft.Maui.Controls.Picker[6] 
 #else
-            Xamarin.Forms.Picker[] pickers = new Xamarin.Forms.Picker[6]
+            Xamarin.Forms.Picker[] simplePickers = new Xamarin.Forms.Picker[6]
 #endif
             {
                     SimpleCommandBarButton1Picker,
@@ -478,9 +478,9 @@ namespace GnollHackX.Pages.MainScreen
             for (int i = 0; i < 6; i++)
             {
 #if GNH_MAUI
-                Microsoft.Maui.Controls.Picker targetPicker = pickers[i]; 
+                Microsoft.Maui.Controls.Picker targetPicker = simplePickers[i];
 #else
-                Xamarin.Forms.Picker targetPicker = pickers[i];
+                Xamarin.Forms.Picker targetPicker = simplePickers[i];
 #endif
                 string keystr = "SimpleUILayoutCommandButton" + (i + 1);
                 if (targetPicker.SelectedIndex < 0 || targetPicker.SelectedIndex >= GHApp.SelectableShortcutButtons.Count)
