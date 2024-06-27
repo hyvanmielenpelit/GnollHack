@@ -796,6 +796,7 @@ namespace GnollHackX.Pages.Game
 
         private List<AddContextMenuData> _contextMenuData = new List<AddContextMenuData>();
 
+
         public void SetPrimaryCanvasResourceCacheLimit(long cacheLimit)
         {
             Debug.WriteLine("Primary: ResourceCacheSize was " + canvasView.ResourceCacheLimit);
@@ -823,7 +824,8 @@ namespace GnollHackX.Pages.Game
             On<iOS>().SetUseSafeArea(true);
             UIUtils.AdjustRootLayout(RootGrid);
             GHApp.SetPageThemeOnHandler(this, GHApp.DarkMode);
-            GHApp.SetPageLayoutCursorOnHandler(this, RootGrid);
+            GHApp.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
+            GHApp.SetViewCursorOnHandler(ToggleMessageNumberButton, GameCursorType.Info);
 
             _mainPage = mainPage;
 
@@ -9814,6 +9816,17 @@ namespace GnollHackX.Pages.Game
                     if (!_prevWepRectDrawn)
                         PrevWepRect = new SKRect();
 
+#if WINDOWS
+                    lock(_canvasPointerLock)
+                    {
+                        GameCursorType usedCursor = _isCanvasHovering && StatusBarRect.Contains(_canvasHoverLocation) ? GameCursorType.Info : GameCursorType.Normal;
+                        if(usedCursor != _currentCursorType)
+                        {
+                            UIUtils.ChangeElementCursor(RootGrid, usedCursor);
+                            _currentCursorType = usedCursor;
+                        }
+                    }
+#endif
                     /* Number Pad and Direction Arrows */
                     _canvasButtonRect.Right = canvaswidth * (float)(0.8);
                     _canvasButtonRect.Left = canvaswidth * (float)(0.2);
@@ -12975,6 +12988,7 @@ namespace GnollHackX.Pages.Game
         private readonly object _canvasPointerLock = new object();
         private bool _isCanvasHovering = false;
         private SKPoint _canvasHoverLocation = new SKPoint();
+        GameCursorType _currentCursorType = GameCursorType.Normal;
 
         private void canvasView_MousePointer(object sender, SKTouchEventArgs e)
         {

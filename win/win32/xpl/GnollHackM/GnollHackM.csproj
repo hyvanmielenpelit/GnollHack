@@ -189,6 +189,8 @@
 		<None Remove="Assets\Cursor\custom-cursor-32.cur" />
 		<None Remove="Assets\Cursor\custom-cursor-32in64.cur" />
 		<None Remove="Assets\Cursor\custom-cursor-64.cur" />
+		<None Remove="Assets\Cursor\info-cursor-32.cur" />
+		<None Remove="Assets\Cursor\info-cursor-64.cur" />
 		<None Remove="Assets\gnollhack-icon-v2-512.png" />
 		<None Remove="Assets\UI\autostash.png" />
 		<None Remove="Assets\UI\background-darkmarble.png" />
@@ -703,6 +705,8 @@
 	  <EmbeddedResource Include="Assets\button_selected.png" />
 	  <EmbeddedResource Include="Assets\Cursor\custom-cursor-32.cur" />
 	  <EmbeddedResource Include="Assets\Cursor\custom-cursor-64.cur" />
+	  <EmbeddedResource Include="Assets\Cursor\info-cursor-32.cur" />
+	  <EmbeddedResource Include="Assets\Cursor\info-cursor-64.cur" />
 	  <EmbeddedResource Include="Assets\DejaVuSansMono-Bold.ttf" />
 	  <EmbeddedResource Include="Assets\DejaVuSansMono-BoldOblique.ttf" />
 	  <EmbeddedResource Include="Assets\DejaVuSansMono-Oblique.ttf" />

@@ -83,6 +83,7 @@ namespace GnollHackX
 #if WINDOWS
         public static Microsoft.UI.Xaml.Window WindowsXamlWindow = null;
         public static Microsoft.UI.Input.InputCursor WindowsCursor = null;
+        public static Microsoft.UI.Input.InputCursor WindowsInfoCursor = null;
 #endif
 
         public static void Initialize()
@@ -196,6 +197,28 @@ namespace GnollHackX
 
                 if (File.Exists(target_cur_path))
                     File.Delete(target_cur_path);
+
+                /* Info Cursor */
+                source_cursor_name = useCursor64 ? "info-cursor-64.cur" : "info-cursor-32.cur";
+                target_cursor_name = "used-info-cursor.cur";
+                target_cur_path = Path.Combine(target_dir, target_cursor_name);
+                if (File.Exists(target_cur_path))
+                    File.Delete(target_cur_path);
+
+                using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.Cursor." + source_cursor_name))
+                {
+                    using (FileStream fileStream = File.OpenWrite(target_cur_path))
+                    {
+                        stream.CopyTo(fileStream);
+                    }
+                }
+
+                cursor = CursorUtilities.LoadCursor(target_cur_path);
+                WindowsInfoCursor = cursor;
+
+                if (File.Exists(target_cur_path))
+                    File.Delete(target_cur_path);
+
                 if (Directory.Exists(target_dir))
                     Directory.Delete(target_dir);
             }
@@ -803,14 +826,14 @@ namespace GnollHackX
 #endif
         }
 
-        public static void SetPageLayoutCursorOnHandler(Page page, Layout layout)
+        public static void SetViewCursorOnHandler(View layout, GameCursorType cursorType)
         {
 #if WINDOWS
-            if (page != null && layout != null)
+            if (layout != null)
             {
-                page.HandlerChanged += (sender, e) =>
+                layout.HandlerChanged += (sender, e) =>
                 {
-                    UIUtils.ChangeLayoutCursor(layout);
+                    UIUtils.ChangeElementCursor(layout, cursorType);
                 };
             }
 #endif

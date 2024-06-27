@@ -2073,4 +2073,9 @@ namespace GnollHackX
         Restarting = 6,
     }
 
+    public enum GameCursorType
+    {
+        Normal = 0,
+        Info = 1
+    }
 }

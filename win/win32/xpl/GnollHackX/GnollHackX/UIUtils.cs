@@ -1151,10 +1151,11 @@ namespace GnollHackX
 #endif
         }
 
-        public static void ChangeLayoutCursor(Layout layout)
+        public static void ChangeElementCursor(View layout, GameCursorType cursorType)
         {
 #if WINDOWS
-            if (GHApp.WindowsCursor == null || layout == null || layout.Handler == null)
+            Microsoft.UI.Input.InputCursor usedCursor = cursorType == GameCursorType.Normal ? GHApp.WindowsCursor : GHApp.WindowsInfoCursor;
+            if (usedCursor == null || layout == null || layout.Handler == null)
                 return;
 
             if (layout.Handler.PlatformView is Microsoft.UI.Xaml.UIElement)
@@ -1162,7 +1163,7 @@ namespace GnollHackX
                 try
                 {
                     Microsoft.UI.Xaml.UIElement element = (Microsoft.UI.Xaml.UIElement)layout.Handler.PlatformView;
-                    element.ChangeCursor(GHApp.WindowsCursor);
+                    element.ChangeCursor(usedCursor);
                 }
                 catch (Exception ex)
                 {

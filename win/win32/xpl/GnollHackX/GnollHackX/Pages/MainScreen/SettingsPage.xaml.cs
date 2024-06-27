@@ -47,7 +47,11 @@ namespace GnollHackX.Pages.MainScreen
             On<iOS>().SetUseSafeArea(true);
             UIUtils.AdjustRootLayout(RootGrid);
             GHApp.SetPageThemeOnHandler(this, GHApp.DarkMode);
-            GHApp.SetPageLayoutCursorOnHandler(this, RootGrid);
+            GHApp.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
+            GHApp.SetViewCursorOnHandler(TournamentLabel, GameCursorType.Info);
+            GHApp.SetViewCursorOnHandler(BonesAllowedUsersLabel, GameCursorType.Info);
+            GHApp.SetViewCursorOnHandler(RecordLabel, GameCursorType.Info);
+            GHApp.SetViewCursorOnHandler(GZipLabel, GameCursorType.Info);
 
             _gameMenuPage = gameMenuPage;
             if (_gameMenuPage != null)
