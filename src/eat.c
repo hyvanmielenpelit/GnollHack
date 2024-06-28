@@ -161,8 +161,8 @@ init_uhunger()
 STATIC_VAR const struct {
     const char *txt;                      /* description */
     int nut;                              /* nutrition */
-    Bitfield(fodder, 1);                  /* stocked by health food shops */
-    Bitfield(greasy, 1);                  /* causes slippery fingers */
+    boolean fodder;                  /* stocked by health food shops */
+    boolean greasy;                  /* causes slippery fingers */
 } tintxts[] = { { "rotten", -50, 0, 0 },  /* ROTTEN_TIN = 0 */
                 { "homemade", 50, 1, 0 }, /* HOMEMADE_TIN = 1 */
                 { "soup made from", 20, 1, 0 },

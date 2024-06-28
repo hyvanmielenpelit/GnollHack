@@ -1053,10 +1053,9 @@ struct symsetentry {
     char *desc;               /* ptr to description                   */
     int idx;                  /* an index value                       */
     int handling;             /* known handlers value                 */
-    Bitfield(nocolor, 1);     /* don't use color if set               */
-    Bitfield(primary, 1);     /* restricted for use as primary set    */
-    Bitfield(rogue, 1);       /* restricted for use as rogue lev set  */
-                              /* 5 free bits */
+    boolean nocolor;          /* don't use color if set               */
+    boolean primary;          /* restricted for use as primary set    */
+    boolean rogue;            /* restricted for use as rogue lev set  */
 };
 
 /*
@@ -1424,8 +1423,8 @@ struct levelflags {
     schar boundary_type; /* floor style to replace boundary tiles */
 
     uchar tileset;
-    uchar nfountains; /* number of fountains on level */
-    uchar nsinks;     /* number of sinks on the level */
+    unsigned nfountains; /* number of fountains on level */
+    unsigned nsinks;     /* number of sinks on the level */
     /* Several flags that give hints about what's on the level */
     Bitfield(has_tileset, 1);
 

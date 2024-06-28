@@ -110,7 +110,7 @@ struct u_event {
     Bitfield(invocation_ritual_known, 1); /* has learned how to conduct the invocation ritual from the Oracle */
     Bitfield(heard_of_invocation_ritual, 1); /* has heard of the invocation ritual and the items necessary for it; enables the quest update */
 
-    unsigned short ranks_attained;
+    unsigned int ranks_attained;
 };
 
 struct u_achieve {
@@ -527,14 +527,13 @@ struct you {
     unsigned uswldtim;          /* time you have been swallowed */
     boolean mfemale;            /* saved human value of flags.female (your true gender before polymorph) */
 
-    Bitfield(uswallow, 1);      /* true if swallowed */
-    Bitfield(uinwater, 1);      /* if you're currently in water (only
+    boolean uswallow;      /* true if swallowed */
+    boolean uinwater;      /* if you're currently in water (only
                                    underwater possible currently) */
-    Bitfield(uundetected, 1);   /* if you're a hiding monster/piercer */
-    Bitfield(uinvulnerable, 1); /* you're invulnerable (praying) */
-    Bitfield(uburied, 1);       /* you're buried */
-    Bitfield(uedibility, 1);    /* blessed food detect; sense unsafe food */
-    /* 1 free bit! */
+    boolean uundetected;   /* if you're a hiding monster/piercer */
+    boolean uinvulnerable; /* you're invulnerable (praying) */
+    boolean uburied;       /* you're buried */
+    boolean uedibility;    /* blessed food detect; sense unsafe food */
 
     unsigned uintervene_timer;  /* how timer until next intervention by Wizard of Yendor */
     struct u_achieve uachieve;  /* achievements */

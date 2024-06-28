@@ -11,9 +11,9 @@ struct trobj {
     short trotyp;
     schar trspe;
     char trclass;
-    Bitfield(trquan, 6);
-    Bitfield(trquan_rnd, 6);
-    Bitfield(trbless, 2);
+    uchar trquan;
+    uchar trquan_rnd;
+    uchar trbless;
     uchar elemental_enchantment;
     uchar exceptionality;
     uchar material;

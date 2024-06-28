@@ -415,27 +415,27 @@ struct objclass {
     short oc_name_idx;              /* index of actual name */
     short oc_descr_idx;             /* description when name unknown */
     char *oc_uname;                 /* called by user */
-    Bitfield(oc_name_known, 1);     /* discovered */
-    Bitfield(oc_merge, 1);          /* merge otherwise equal objects */
-    Bitfield(oc_uses_known, 1);     /* obj->known affects full description;
+    boolean oc_name_known;     /* discovered */
+    boolean oc_merge;          /* merge otherwise equal objects */
+    boolean oc_uses_known;     /* obj->known affects full description;
                                        otherwise, obj->dknown and obj->bknown
                                        tell all, and obj->known should always
                                        be set for proper merging behavior. */
-    Bitfield(oc_pre_discovered, 1); /* Already known at start of game;
+    boolean oc_pre_discovered; /* Already known at start of game;
                                        won't be listed as a discovery. */
-    Bitfield(oc_magic, 1);          /* inherently magical object */
+    boolean oc_magic;          /* inherently magical object */
     uchar oc_enchantable;           /* Uses +X statistic (enchantment) */
     uchar oc_charged;               /* may have +n or (n) charges */
     uchar oc_recharging;            /* recharging type */
-    Bitfield(oc_unique, 1);         /* special one-of-a-kind object */
-    Bitfield(oc_nowish, 1);         /* cannot wish for this object */
+    boolean oc_unique;         /* special one-of-a-kind object */
+    boolean oc_nowish;         /* cannot wish for this object */
 
-    Bitfield(oc_big, 1);
+    boolean oc_big;
 #define oc_bimanual oc_big /* for weapons & tools used as weapons */
 #define oc_bulky oc_big    /* for armor */
-    Bitfield(oc_tough, 1); /* hard gems/rings */
+    boolean oc_tough; /* hard gems/rings */
 
-    Bitfield(oc_dir, 4);
+    uchar oc_dir;
 #define DIR_NOTDEF 0     /* for wands/spells:      not defined */
 #define NODIR 1     /* for wands/spells:      non-directional */
 #define IMMEDIATE 2 /*                        directional at one target */

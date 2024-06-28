@@ -280,9 +280,9 @@ struct prop_color {
 struct prop_info {
     const char* prop_tile_name;
 
-    Bitfield(show_buff, 1);
-    Bitfield(buff_text_needs_background, 1);
-    Bitfield(recurring, 1);            /* Is property recurring? EProperty causes timeout in HProperty to increase by recurring_constant + rnd(recurring_random) */
+    boolean show_buff;
+    boolean buff_text_needs_background;
+    boolean recurring;            /* Is property recurring? EProperty causes timeout in HProperty to increase by recurring_constant + rnd(recurring_random) */
 
     short recurring_constant;
     short recurring_random;

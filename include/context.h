@@ -82,12 +82,12 @@ struct victual_info {
         reqtime;           /* turns required to eat */
     int nmod;              /* coded nutrition per turn */
     int total_nutrition;   /* total nutrition of the piece when start_eating was called */
-    Bitfield(canchoke, 1); /* was satiated at beginning */
+    boolean canchoke; /* was satiated at beginning */
 
     /* start_eating() initializes these */
-    Bitfield(fullwarn, 1); /* have warned about being full */
-    Bitfield(eating, 1);   /* victual currently being eaten */
-    Bitfield(doreset, 1);  /* stop eating at end of turn */
+    boolean fullwarn; /* have warned about being full */
+    boolean eating;   /* victual currently being eaten */
+    boolean doreset;  /* stop eating at end of turn */
 };
 
 struct warntype_info {
@@ -110,10 +110,8 @@ struct obj_split {
 struct tribute_info {
     size_t tributesz;       /* make it possible to skip this in future */
     boolean enabled;        /* Do we have tributes turned on? */
-    Bitfield(bookstock, 1); /* Have we stocked the book? */
-    Bitfield(Deathnotice,1);    /* Did Death notice the book? */
-    /* Markers for other tributes can go here */
-    /* 30 free bits */
+    boolean bookstock; /* Have we stocked the book? */
+    boolean Deathnotice;    /* Did Death notice the book? */
 };
 
 struct novel_tracking { /* for choosing random passage when reading novel */
@@ -163,7 +161,7 @@ struct context_info
     int made_shop_count;
     int made_temple_count;
     int made_armory_box_count;
-    char used_names[BUFSIZ * 32];
+    char used_names[8192 * 32];
     boolean encounter_appeared[256];
     int shop_identify_type;
     int npc_identify_type;

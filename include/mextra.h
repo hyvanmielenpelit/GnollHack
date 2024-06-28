@@ -78,9 +78,9 @@ struct egd {
     xchar ogx, ogy;       /* guard's last position */
     d_level gdlevel;      /* level (& dungeon) guard was created in */
     xchar warncnt;        /* number of warnings to follow */
-    Bitfield(gddone, 1);  /* true iff guard has released player */
-    Bitfield(witness, 2); /* the guard saw you do something */
-    Bitfield(unused, 5);
+    boolean gddone;       /* true iff guard has released player */
+    uchar witness;        /* the guard saw you do something */
+    uchar unused;
     struct fakecorridor fakecorr[FCSIZ];
 };
 
@@ -195,7 +195,7 @@ struct edog {
     int revivals;             /* count pet deaths */
     int mhpmax_penalty;       /* while starving, points reduced */
     int chastised;              /* has a shopkeeper told the dog off; this is duration while the pet remembers being chastised */
-    Bitfield(killed_by_u, 1); /* you attempted to kill him */
+    boolean killed_by_u;        /* you attempted to kill him */
 };
 
 /***

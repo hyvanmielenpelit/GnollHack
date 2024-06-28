@@ -12,13 +12,13 @@
 
 typedef struct d_flags {     /* dungeon/level type flags */
     uchar tileset;
-    Bitfield(has_tileset, 1); 
-    Bitfield(town, 1);       /* is this a town? (levels only) */
-    Bitfield(hellish, 1);    /* is this part of hell? */
-    Bitfield(maze_like, 1);  /* is this a maze? */
-    Bitfield(rogue_like, 1); /* is this an old-fashioned presentation? */
-    Bitfield(align, 3);      /* dungeon alignment. */
-    Bitfield(unused, 1);     /* etc... */
+    boolean has_tileset; 
+    boolean town;       /* is this a town? (levels only) */
+    boolean hellish;    /* is this part of hell? */
+    boolean maze_like;  /* is this a maze? */
+    boolean rogue_like; /* is this an old-fashioned presentation? */
+    uchar align;      /* dungeon alignment. */
+    uchar unused;     /* etc... */
 } d_flags;
 
 typedef struct d_level { /* basic dungeon level element */
@@ -250,8 +250,8 @@ typedef struct mapseen {
         Bitfield(msalign, 2);
 
         Bitfield(shoptype, 5);
-        uchar npcroomtype;
-        uchar fountaintype;
+        unsigned npcroomtype;
+        unsigned fountaintype;
     } feat;
     struct mapseen_flags {
         char special_description[BUFSZ];
@@ -285,8 +285,8 @@ typedef struct mapseen {
     char *custom;
     size_t custom_lth;
     struct mapseen_rooms {
-        Bitfield(seen, 1);
-        Bitfield(untended, 1);         /* flag for shop without shk */
+        boolean seen;
+        boolean untended;         /* flag for shop without shk */
     } msrooms[(MAXNROFROOMS + 1) * 2]; /* same size as rooms[] */
     /* dead heroes; might not have graves or ghosts */
     struct cemetery *final_resting_place; /* same as level.bonesinfo */
