@@ -429,7 +429,7 @@ int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected)
         for (i = 0; i < cnt; i++)
         {
             (*selected)[i].item.a_int64 = *picklist++;
-            (*selected)[i].count = (long)*picklist++;
+            (*selected)[i].count = (int64_t)*picklist++;
         }
     }
 
@@ -462,13 +462,13 @@ extern const nhsym cp437toUnicode[256];
 
 void lib_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 {
-    long symbol;
+    int64_t symbol;
     nhsym sym = 0;
     int ocolor = 0;
     uint64_t special = 0UL;
 
     (void)mapglyph(layers, &sym, &ocolor, &special, x, y);
-    symbol = SYMHANDLING(H_IBM) && sym >= 0 && sym < 256 ? (long)cp437toUnicode[sym] : (long)sym;
+    symbol = SYMHANDLING(H_IBM) && sym >= 0 && sym < 256 ? (int64_t)cp437toUnicode[sym] : (int64_t)sym;
 
     if (((special & MG_PET) && iflags.hilite_pet)
         || ((special & MG_OBJPILE) && iflags.hilite_pile)
@@ -671,8 +671,8 @@ void lib_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char
     case GUI_CMD_REPORT_PLAY_TIME:
     {
         lock_thread_lock();
-        long timePassed = (long)(urealtime.finish_time - urealtime.start_timing);
-        long realtime = urealtime.realtime;
+        int64_t timePassed = (int64_t)(urealtime.finish_time - urealtime.start_timing);
+        int64_t realtime = urealtime.realtime;
         unlock_thread_lock();
         lib_callbacks.callback_report_play_time(timePassed, realtime);
         break;
@@ -820,7 +820,7 @@ void lib_delay_output_intervals(int intervals)
 }
 
 #ifdef CHANGE_COLOR
-void lib_change_color(int param1, long param2, int param3)
+void lib_change_color(int param1, int64_t param2, int param3)
 {
     return;
 }
@@ -866,8 +866,8 @@ void lib_outrip(winid wid, int how, time_t when)
     formatkiller(kbuf, sizeof kbuf, how, FALSE);
 
     char tbuf[BUFSZ];
-    long year = yyyymmdd(when) / 10000L;
-    Sprintf(tbuf, "%4ld", year);
+    int64_t year = yyyymmdd(when) / 10000L;
+    Sprintf(tbuf, "%4lld", (long long)year);
 
     int points = (int)u.u_gamescore;
 
@@ -975,7 +975,7 @@ void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int colo
 
     char* txt = (char*)0;
     char utf8buf[UTF8BUFSZ] = "";
-    long condbits = 0L;
+    int64_t condbits = 0L;
     if (ptr)
     {
         if (idx != BL_CONDITION)
@@ -984,7 +984,7 @@ void lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int colo
         }
         else
         {
-            long* bits_ptr = (long*)ptr;
+            int64_t* bits_ptr = (int64_t*)ptr;
             condbits = *bits_ptr;
         }
     }
@@ -1275,7 +1275,7 @@ void lib_status_flush(void)
 
 void __lib_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, uint64_t* colormasks)
 {
-    long *condptr = (long*)ptr;
+    int64_t *condptr = (int64_t*)ptr;
     char *text = (char*)ptr;
 
     if (idx == BL_FLUSH || idx == BL_RESET)

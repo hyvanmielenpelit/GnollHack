@@ -111,7 +111,7 @@ enum bl_conditions {
 /* clang-format on */
 
 struct condition_t {
-    long mask;
+    int64_t mask;
     const char* text[3]; /* 3: potential display vals, progressively shorter */
 };
 extern const struct condition_t condition_definitions[NUM_BL_CONDITIONS];

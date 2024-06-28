@@ -88,7 +88,7 @@ struct save_game_stats {
     xchar dlevel;
     schar depth;
     schar game_difficulty;
-    long umoves;
+    int64_t umoves;
     boolean debug_mode;
     boolean explore_mode;
     boolean modern_mode;

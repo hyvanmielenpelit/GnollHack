@@ -15,14 +15,14 @@ STATIC_VAR NEARDATA const char c_armor[] = "armor", c_suit[] = "suit",
                            c_weapon[] = "weapon", c_sword[] = "sword", c_belt[] = "belt",
                            c_axe[] = "axe", c_that_[] = "that";
 
-STATIC_VAR NEARDATA const long takeoff_order[] = {
+STATIC_VAR NEARDATA const int64_t takeoff_order[] = {
     WORN_BLINDF,  W_WEP,      WORN_SHIELD, WORN_GLOVES, LEFT_RING,
     RIGHT_RING,   W_MISC,     W_MISC2,     W_MISC3,     W_MISC4,      W_MISC5,  
     WORN_BRACERS, WORN_CLOAK, WORN_HELMET, WORN_AMUL,   WORN_ROBE,   WORN_ARMOR,
     WORN_SHIRT,   WORN_BOOTS, W_SWAPWEP,   W_SWAPWEP2,   W_QUIVER,    0L
 };
 
-STATIC_VAR NEARDATA const long wear_order[] = {
+STATIC_VAR NEARDATA const int64_t wear_order[] = {
     WORN_SHIRT,   WORN_ARMOR,  WORN_ROBE,    WORN_SHIELD,  WORN_CLOAK,
     WORN_HELMET,  WORN_BOOTS,  WORN_GLOVES,  WORN_BRACERS, LEFT_RING,
     RIGHT_RING,   W_MISC,      W_MISC2,      W_MISC3,      W_MISC4,      W_MISC5,
@@ -30,8 +30,8 @@ STATIC_VAR NEARDATA const long wear_order[] = {
 };
 
 STATIC_DCL void FDECL(on_msg, (struct obj *));
-STATIC_DCL void FDECL(toggle_stealth, (struct obj *, long, BOOLEAN_P));
-STATIC_DCL void FDECL(toggle_displacement, (struct obj *, long, BOOLEAN_P));
+STATIC_DCL void FDECL(toggle_stealth, (struct obj *, int64_t, BOOLEAN_P));
+STATIC_DCL void FDECL(toggle_displacement, (struct obj *, int64_t, BOOLEAN_P));
 STATIC_PTR int NDECL(Armor_on);
 /* int NDECL(Boots_on); -- moved to extern.h */
 STATIC_PTR int NDECL(Cloak_on);
@@ -42,7 +42,7 @@ STATIC_PTR int NDECL(Shield_on);
 STATIC_PTR int NDECL(Shirt_on);
 STATIC_PTR int NDECL(Robe_on);
 STATIC_PTR int NDECL(Bracers_on);
-STATIC_PTR int FDECL(MiscellaneousItem_on, (struct obj*, long));
+STATIC_PTR int FDECL(MiscellaneousItem_on, (struct obj*, int64_t));
 STATIC_DCL void NDECL(Amulet_on);
 STATIC_DCL void FDECL(Ring_off_or_gone, (struct obj *, BOOLEAN_P));
 STATIC_PTR int FDECL(select_off, (struct obj *));
@@ -52,19 +52,19 @@ STATIC_PTR int NDECL(take_off);
 STATIC_DCL int FDECL(menu_remarm, (int));
 STATIC_DCL int FDECL(menu_wearmany, (int));
 STATIC_DCL void FDECL(count_worn_stuff, (struct obj **, BOOLEAN_P));
-STATIC_PTR int FDECL(accessory_or_armor_on, (struct obj *, BOOLEAN_P, long, int*));
+STATIC_PTR int FDECL(accessory_or_armor_on, (struct obj *, BOOLEAN_P, int64_t, int*));
 STATIC_DCL void FDECL(already_wearing, (const char *));
 STATIC_DCL void FDECL(item_change_sex_and_useup, (struct obj*));
 STATIC_DCL int FDECL(already_wearing_with_exchange_prompt, (const char*, struct obj*, struct obj*));
-STATIC_DCL int FDECL(exchange_worn_item, (struct obj*, struct obj*, long, int*));
-STATIC_DCL int FDECL(take_off_covering_and_wear, (struct obj*, long, int*));
-STATIC_DCL int FDECL(add_wear_oid, (struct obj*, long));
+STATIC_DCL int FDECL(exchange_worn_item, (struct obj*, struct obj*, int64_t, int*));
+STATIC_DCL int FDECL(take_off_covering_and_wear, (struct obj*, int64_t, int*));
+STATIC_DCL int FDECL(add_wear_oid, (struct obj*, int64_t));
 STATIC_DCL void NDECL(activate_take_off);
 STATIC_DCL void NDECL(activate_wear);
 STATIC_DCL void FDECL(print_covering_items, (struct obj*, char*));
 STATIC_DCL boolean FDECL(is_armor_covered, (struct obj*));
 STATIC_DCL boolean NDECL(wear_precheck);
-STATIC_DCL int FDECL(wear_oid_bit_to_index, (long));
+STATIC_DCL int FDECL(wear_oid_bit_to_index, (int64_t));
 
 void
 off_msg(otmp)
@@ -177,7 +177,7 @@ STATIC_OVL
 void
 toggle_stealth(obj, oldprop, on)
 struct obj *obj;
-long oldprop; /* prop[].extrinsic, with obj->owornmask stripped by caller */
+int64_t oldprop; /* prop[].extrinsic, with obj->owornmask stripped by caller */
 boolean on;
 {
     if (on ? initial_don : context.takeoff.cancelled_don)
@@ -210,7 +210,7 @@ STATIC_OVL
 void
 toggle_displacement(obj, oldprop, on)
 struct obj *obj;
-long oldprop; /* prop[].extrinsic, with obj->owornmask stripped by caller */
+int64_t oldprop; /* prop[].extrinsic, with obj->owornmask stripped by caller */
 boolean on;
 {
     if (on ? initial_don : context.takeoff.cancelled_don)
@@ -252,7 +252,7 @@ Boots_on(VOID_ARGS)
     if (flags.verbose)
         play_simple_object_sound(uarmf, OBJECT_SOUND_TYPE_WEAR);
 
-    long oldprop =
+    int64_t oldprop =
         u.uprops[objects[uarmf->otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
 
     switch (uarmf->otyp) {
@@ -281,7 +281,7 @@ Boots_off(VOID_ARGS)
 
     struct obj *otmp = uarmf;
     int otyp = otmp->otyp;
-    long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
+    int64_t oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_BOOTS;
 
     if (flags.verbose && otmp)
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TAKE_OFF);
@@ -322,7 +322,7 @@ Cloak_on(VOID_ARGS)
     if (flags.verbose && uarmc)
         play_simple_object_sound(uarmc, OBJECT_SOUND_TYPE_WEAR);
 
-    long oldprop =
+    int64_t oldprop =
         u.uprops[objects[uarmc->otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
 
     //boolean wasinvisble = Invis;
@@ -347,7 +347,7 @@ Cloak_off(VOID_ARGS)
 {
     struct obj *otmp = uarmc;
     int otyp = otmp->otyp;
-    long oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
+    int64_t oldprop = u.uprops[objects[otyp].oc_oprop].extrinsic & ~WORN_CLOAK;
 
     if (flags.verbose && otmp)
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TAKE_OFF);
@@ -637,7 +637,7 @@ Bracers_off(VOID_ARGS)
 STATIC_PTR int
 MiscellaneousItem_on(ud, wearslotmask)
 struct obj* ud;
-long wearslotmask;
+int64_t wearslotmask;
 {
     /* Wear slot mask added to find out the situation before wearing */
     if (!ud)
@@ -681,7 +681,7 @@ struct obj* ud;
     if (flags.verbose && ud)
         play_simple_object_sound(ud, OBJECT_SOUND_TYPE_TAKE_OFF);
 
-    long bit = ud->owornmask & W_MISCITEMS;
+    int64_t bit = ud->owornmask & W_MISCITEMS;
 
     context.takeoff.mask &= ~bit;
     setworn((struct obj*) 0, bit);
@@ -896,7 +896,7 @@ register struct obj *obj;
     if(flags.verbose && obj)
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_WEAR);
 
-    long oldprop = u.uprops[objects[obj->otyp].oc_oprop].extrinsic;
+    int64_t oldprop = u.uprops[objects[obj->otyp].oc_oprop].extrinsic;
 
     /* make sure ring isn't wielded; can't use remove_worn_item()
        here because it has already been set worn in a ring slot */
@@ -940,7 +940,7 @@ boolean gone;
     if (flags.verbose && obj && !gone)
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_TAKE_OFF);
 
-    long mask = (obj->owornmask & W_RING);
+    int64_t mask = (obj->owornmask & W_RING);
     context.takeoff.mask &= ~mask;
     //if (!(u.uprops[objects[obj->otyp].oc_oprop].extrinsic & mask))
     //   impossible("Strange... I didn't know you had that ring.");
@@ -1101,7 +1101,7 @@ boolean
 doffing(otmp)
 struct obj *otmp;
 {
-    long what = context.takeoff.what;
+    int64_t what = context.takeoff.what;
     boolean result = FALSE;
 
     /* 'T' (or 'R' used for armor) sets afternmv, 'A' sets takeoff.what */
@@ -1161,7 +1161,7 @@ struct obj *otmp;
 void
 cancel_doff(obj, slotmask)
 struct obj *obj;
-long slotmask;
+int64_t slotmask;
 {
     /* Called by setworn() for old item in specified slot or by setnotworn()
      * for specified item.  We don't want to call cancel_don() if we got
@@ -1658,7 +1658,7 @@ activate_wear(VOID_ARGS)
 STATIC_OVL int
 exchange_worn_item(obj, curobj, mask, result_style_ptr)
 struct obj* obj, *curobj;
-long mask;
+int64_t mask;
 int* result_style_ptr;
 {
     if (!obj)
@@ -1673,7 +1673,7 @@ int* result_style_ptr;
         boolean contoccupation = FALSE;
         if (context.takeoff.command == takeoffcmd && (context.wear.what || context.wear.mask))
         {
-            long combinedmask = context.wear.what | context.wear.mask;
+            int64_t combinedmask = context.wear.what | context.wear.mask;
             if (combinedmask & mask) /* Some object is being worn in the same slot */
             {
                 int idx = wear_oid_bit_to_index(mask);
@@ -1801,7 +1801,7 @@ int* result_style_ptr;
 STATIC_OVL int
 take_off_covering_and_wear(obj, mask, result_style_ptr)
 struct obj* obj;
-long mask;
+int64_t mask;
 int* result_style_ptr;
 {
     return exchange_worn_item(obj, (struct obj*)0, mask, result_style_ptr);
@@ -1811,7 +1811,7 @@ STATIC_OVL
 int
 add_wear_oid(obj, bit)
 struct obj* obj;
-long bit;
+int64_t bit;
 {
     int idx = wear_oid_bit_to_index(bit);
     if (idx < 0)
@@ -1823,11 +1823,11 @@ long bit;
 
 STATIC_OVL
 int wear_oid_bit_to_index(bit)
-long bit;
+int64_t bit;
 {
     int idx = -1, i;
     for (i = 0; i < WEAR_OID_BITS; i++)
-        if ((bit & (1L << i)) != 0)
+        if ((bit & ((int64_t)1 << i)) != 0)
         {
             idx = i;
             break;
@@ -1845,7 +1845,7 @@ long bit;
 int
 canwearobj(otmp, mask, noisy, constructing_letters, result_style_ptr)
 struct obj *otmp;
-long *mask;
+int64_t *mask;
 boolean noisy;
 boolean constructing_letters;
 int* result_style_ptr;
@@ -2285,10 +2285,10 @@ STATIC_OVL int
 accessory_or_armor_on(obj, in_takeoff_wear, set_mask, result_style_ptr)
 struct obj *obj;
 boolean in_takeoff_wear;
-long set_mask;
+int64_t set_mask;
 int* result_style_ptr;
 {
-    long mask = 0L;
+    int64_t mask = 0L;
     boolean armor, ring, eyewear;
     int added_time = 0;
     int delay = 0;
@@ -2899,7 +2899,7 @@ glibr()
     }
     otmp = uwep;
     if (otmp && !welded(otmp, &youmonst)) {
-        long savequan = otmp->quan;
+        int64_t savequan = otmp->quan;
 
         /* nice wording if both weapons are the same type */
         thiswep = is_sword(otmp) ? c_sword : weapon_descr(otmp);
@@ -3174,7 +3174,7 @@ register struct obj* otmp;
     if (otmp->owornmask)
         return 0;
 
-    long bit = 0L;
+    int64_t bit = 0L;
     if (is_cloak(otmp) && otmp != uarmc)
     {
         if (uarmc)
@@ -3494,7 +3494,7 @@ take_off(VOID_ARGS)
         if ((otmp = do_takeoff()) != 0)
             off_msg(otmp);
 
-        long oldwhat = doff->what;
+        int64_t oldwhat = doff->what;
         doff->mask &= ~doff->what;
         doff->what = 0L;
         if (!otmp)

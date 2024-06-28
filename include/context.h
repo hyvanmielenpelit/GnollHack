@@ -31,7 +31,7 @@ struct dig_info { /* apply.c, hack.c */
     int effort;
     d_level level;
     coord pos;
-    long lastdigtime;
+    int64_t lastdigtime;
     boolean down, chew, warned, quiet;
     int skill;
 };
@@ -54,8 +54,8 @@ struct book_info {
 #define READING_RESULT_CONFUSED 2
 
 struct takeoff_info {
-    long mask;
-    long what;
+    int64_t mask;
+    int64_t what;
     int delay;
     boolean cancelled_don;
     char disrobing[CONTEXTVERBSZ + 1];
@@ -64,9 +64,9 @@ struct takeoff_info {
 
 #define WEAR_OID_BITS 32
 struct wear_info {
-    long mask;
+    int64_t mask;
     unsigned oid[WEAR_OID_BITS]; /* oid of the item intended to be worn */
-    long what;
+    int64_t what;
     int delay;
 };
 
@@ -144,8 +144,8 @@ struct context_info
     int current_fruit; /* fruit->fid corresponding to pl_fruit[] */
     int warnlevel;
     int rndencode;          /* randomized escape sequence introducer */
-    long next_attrib_check; /* next attribute check */
-    long stethoscope_move;
+    int64_t next_attrib_check; /* next attribute check */
+    int64_t stethoscope_move;
     short stethoscope_movement;
     boolean travel;  /* find way automatically to u.tx,u.ty */
     boolean travel1; /* first travel step */
@@ -239,7 +239,7 @@ struct context_info
     int tether_y;
     boolean town_portal_return_level_set;
     d_level town_portal_return_level;
-    long last_turn_when_took_damage;
+    int64_t last_turn_when_took_damage;
 
     boolean reviving;
     boolean quit_pressed;
@@ -253,7 +253,7 @@ struct context_info
     boolean amonket_generated;
     uchar town_portal_return_flags;
     uint64_t quest_flags;
-    long role_score;
+    int64_t role_score;
 
     /* Emergency reserved booleans to make non-save-game-breaking changes */
     boolean reserved_bool3;

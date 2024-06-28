@@ -17,7 +17,7 @@ STATIC_DCL int FDECL(dog_goal, (struct monst *, struct edog *, int, int, int));
 STATIC_DCL struct monst *FDECL(find_targ, (struct monst *, int, int, int));
 STATIC_OVL int FDECL(find_friends, (struct monst *, struct monst *, int));
 STATIC_DCL struct monst *FDECL(best_target, (struct monst *));
-STATIC_DCL long FDECL(score_targ, (struct monst *, struct monst *));
+STATIC_DCL int64_t FDECL(score_targ, (struct monst *, struct monst *));
 STATIC_DCL boolean FDECL(can_reach_location, (struct monst *, XCHAR_P,
                                               XCHAR_P, XCHAR_P, XCHAR_P));
 STATIC_DCL void FDECL(quickmimic, (struct monst *));
@@ -294,7 +294,7 @@ boolean devour;
     register struct edog* edog = EDOG(mtmp);
     boolean poly, grow, heal, eyes, slimer, deadmimic, catavenged, curepetrification;
     int nutrit;
-    long oprice;
+    int64_t oprice;
     char objnambuf[BUFSZ];
 
     objnambuf[0] = '\0';
@@ -401,7 +401,7 @@ boolean devour;
 #ifdef LINT
         edog->apport = 0;
 #else
-        edog->apport += (int) (200L / ((long) edog->dropdist + monstermoves
+        edog->apport += (int) (200L / ((int64_t) edog->dropdist + monstermoves
                                        - edog->droptime));
 #endif
 
@@ -1660,11 +1660,11 @@ int    maxdist;
     return 0;
 }
 
-STATIC_OVL long
+STATIC_OVL int64_t
 score_targ(mtmp, mtarg)
 struct monst *mtmp, *mtarg;
 {
-    long score = 0L;
+    int64_t score = 0L;
 
     /* If the monster is confused, normal scoring is disrupted -
      * anything may happen
@@ -1767,7 +1767,7 @@ best_target(mtmp)
 struct monst *mtmp;   /* Pet */
 {
     int dx, dy;
-    long bestscore = -40000L, currscore;
+    int64_t bestscore = -40000L, currscore;
     struct monst *best_targ = 0, *temp_targ = 0;
 
     /* Help! */
@@ -1832,7 +1832,7 @@ int after; /* this is extra fast monster movement */
     xchar cnt, uncursedcnt, chcnt;
     int chi = -1, nidist, ndist;
     coord poss[9];
-    long info[9], allowflags;
+    int64_t info[9], allowflags;
     struct obj* cursedobj[9] = { 0 };
 #define GDIST(x, y) (dist2(x, y, gx, gy))
 

@@ -2509,7 +2509,7 @@ maybe_get_animated_tile(ntile, tile_animation_idx, play_type, interval_counter, 
 int ntile;
 int tile_animation_idx;
 enum animation_play_types play_type;
-long interval_counter;
+int64_t interval_counter;
 int *frame_idx_ptr, *main_tile_idx_ptr;
 char* mapAnimated;
 enum autodraw_types* autodraw_ptr;
@@ -2550,7 +2550,7 @@ enum autodraw_types* autodraw_ptr;
         schar additional_tile_num = (main_tile_frame_position > -1 ? 1 : 0);
         schar animation_tile_offset = (main_tile_frame_position == 0 ? 1 : 0);
         schar numframes = animations[animation_idx].number_of_frames + additional_tile_num; /* add original tile as the first tile and frame */
-        schar current_animation_frame = (char)((interval_counter / (long)animations[animation_idx].intervals_between_frames) % (long)numframes);
+        schar current_animation_frame = (char)((interval_counter / (int64_t)animations[animation_idx].intervals_between_frames) % (int64_t)numframes);
         if (current_animation_frame < 0)
             current_animation_frame += numframes;
 
@@ -2559,7 +2559,7 @@ enum autodraw_types* autodraw_ptr;
         
         /* Separately played animations are played only once, and once the numframes is exceeded, the animation stops */
         if (play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY
-            && (interval_counter / (long)animations[animation_idx].intervals_between_frames) >= (long)numframes)
+            && (interval_counter / (int64_t)animations[animation_idx].intervals_between_frames) >= (int64_t)numframes)
         {
             if (animations[animation_idx].main_tile_use_style == ANIMATION_MAIN_TILE_IGNORE)
             {

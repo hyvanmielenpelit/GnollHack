@@ -289,8 +289,8 @@ char _dumplogbuf[BUFSZ];
 DLLEXPORT char* LibDumplogDateString(startdate)
 long startdate;
 {
-    Sprintf(_dumplogbuf, "%08ld%06ld",
-        yyyymmdd(startdate), hhmmss(startdate));
+    Sprintf(_dumplogbuf, "%08lld%06lld",
+        (long long)yyyymmdd(startdate), (long long)hhmmss(startdate));
 
     return _dumplogbuf;
 }

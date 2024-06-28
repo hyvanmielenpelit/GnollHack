@@ -303,7 +303,7 @@ typedef xchar boolean; /* 0 or 1 */
 
 /* primitive memory leak debugging; see alloc.c */
 #ifdef MONITOR_HEAP
-extern long *FDECL(nhalloc, (size_t, const char *, int));
+extern int64_t *FDECL(nhalloc, (size_t, const char *, int));
 extern void FDECL(nhfree, (genericptr_t, const char *, int));
 extern char *FDECL(nhdupstr, (const char *, const char *, int));
 #ifndef __FILE__

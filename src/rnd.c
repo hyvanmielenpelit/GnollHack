@@ -80,12 +80,12 @@ register int x;
 #else   /* USE_ISAAC64 */
 
 /* "Rand()"s definition is determined by [OS]conf.h */
-#if defined(LINT) && defined(UNIX) /* rand() is long... */
+#if defined(LINT) && defined(UNIX) /* rand() is int64_t... */
 extern int NDECL(rand);
 #define RND(x) (rand() % x)
 #else /* LINT */
 #if defined(UNIX) || defined(RANDOM)
-#define RND(x) ((int) (Rand() % (long) (x)))
+#define RND(x) ((int) (Rand() % (int64_t) (x)))
 #else
 /* Good luck: the bottom order bits are cyclic. */
 #define RND(x) ((int) ((Rand() >> 3) % (x)))
@@ -248,8 +248,8 @@ int i;
     int x = i;
     int tmp = 1000;
 #else
-    register long x = (long) i;
-    register long tmp = 1000L;
+    register int64_t x = (int64_t) i;
+    register int64_t tmp = 1000L;
 #endif
 
     tmp += rn2(1000);

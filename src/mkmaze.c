@@ -630,7 +630,7 @@ fixup_special()
         /* stock the main vault */
         for (x = croom->lx; x <= croom->hx; x++)
             for (y = croom->ly; y <= croom->hy; y++) {
-                (void) mkgold((long) rn1(120, 240), x, y);
+                (void) mkgold((int64_t) rn1(120, 240), x, y);
                 if (!rn2(3) && !is_pool(x, y))
                     (void) maketrap(x, y, rn2(3) ? LANDMINE : SPIKED_PIT, NON_PM, MKTRAP_NO_FLAGS);
             }
@@ -747,7 +747,7 @@ const char *gang;
             if (otyp == SLIME_MOLD)
                 otmp->special_quality = fruitadd((char *) orcfruit[rn2(SIZE(orcfruit))],
                                      (struct fruit *) 0);
-            otmp->quan += (long) rn2(3);
+            otmp->quan += (int64_t) rn2(3);
             otmp->owt = weight(otmp);
         }
     }

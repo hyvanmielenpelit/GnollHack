@@ -86,7 +86,7 @@ boolean restoring = FALSE;
 boolean reseting = FALSE;
 
 STATIC_VAR NEARDATA struct fruit *oldfruit;
-STATIC_VAR NEARDATA long omoves;
+STATIC_VAR NEARDATA int64_t omoves;
 
 #define Is_IceBox(o) ((o)->otyp == ICE_BOX ? TRUE : FALSE)
 
@@ -1219,7 +1219,7 @@ boolean ghostly;
 {
     register struct trap *trap;
     register struct monst *mtmp;
-    long elapsed;
+    int64_t elapsed;
     branch *br;
     int hpid;
     xchar dlvl;
@@ -1344,7 +1344,7 @@ boolean ghostly;
            them is different now than when the level was saved */
         restore_cham(mtmp);
         /* give hiders a chance to hide before their next move */
-        if (ghostly || elapsed > (long) rnd(10))
+        if (ghostly || elapsed > (int64_t) rnd(10))
             hide_monst(mtmp);
     }
 
@@ -1882,9 +1882,9 @@ struct save_game_data* saved;
             Sprintf(namebuf, "%s%s%s%s", saved[k].playername, saved[k].is_running ? " [Crashed]" : "", saved[k].is_error_save_file ? " [Saved upon Error]" : "", saved[k].is_imported_save_file ? " [Imported]" : "");
             Sprintf(characterbuf, "%sLevel %d %s %s%s %s", prefix, saved[k].gamestats.ulevel, alignbuf, genderwithspacebuf, racebuf, rolebuf);
             Sprintf(adventuringbuf, "%sAdventuring %s%s%s", prefix, lvlbuf, dgnbuf, totallevelbuf);
-            Sprintf(playingbuf, "%sPlaying at %s difficulty in %s mode for %ld turns", prefix, get_game_difficulty_text(saved[k].gamestats.game_difficulty),
+            Sprintf(playingbuf, "%sPlaying at %s difficulty in %s mode for %lld turns", prefix, get_game_difficulty_text(saved[k].gamestats.game_difficulty),
                 get_game_mode_text_core(saved[k].gamestats.debug_mode, saved[k].gamestats.explore_mode, saved[k].gamestats.modern_mode, saved[k].gamestats.casual_mode, (boolean)((saved[k].gamestats.save_flags & SAVEFLAGS_NON_SCORING) != 0), (boolean)((saved[k].gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0), TRUE),
-                saved[k].gamestats.umoves);
+                (long long)saved[k].gamestats.umoves);
             char* timestr = ctime(&saved[k].gamestats.time_stamp);
             if (timestr && *timestr)
             {

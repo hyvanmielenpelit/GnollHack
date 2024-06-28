@@ -75,7 +75,7 @@ switchar()
 }
 
 
-long
+int64_t
 freediskspace(path)
 char *path;
 {
@@ -91,7 +91,7 @@ char *path;
     tmppath[3] = '\0';
     GetDiskFreeSpace(tmppath, &SectorsPerCluster, &BytesPerSector,
                      &FreeClusters, &TotalClusters);
-    return (long) (SectorsPerCluster * BytesPerSector * FreeClusters);
+    return (int64_t) (SectorsPerCluster * BytesPerSector * FreeClusters);
 }
 
 /*
@@ -121,12 +121,12 @@ foundfile_buffer()
     return &ffd.cFileName[0];
 }
 
-long
+int64_t
 filesize(file)
 const char *file;
 {
     if (findfirst(file)) {
-        return ((long) ffd.nFileSizeLow);
+        return ((int64_t) ffd.nFileSizeLow);
     } else
         return -1L;
 }

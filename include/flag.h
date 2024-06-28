@@ -403,8 +403,8 @@ struct instance_flags {
     boolean use_background_glyph; /* use background glyph when appropriate */
     boolean use_menu_color;   /* use color in menus; only if wc_color */
 #ifdef STATUS_HILITES
-    long hilite_delta;     /* number of moves to leave a temp hilite lit */
-    long unhilite_deadline; /* time when oldest temp hilite should be unlit */
+    int64_t hilite_delta;     /* number of moves to leave a temp hilite lit */
+    int64_t unhilite_deadline; /* time when oldest temp hilite should be unlit */
 #endif
     boolean zerocomp;         /* write zero-compressed save files */
     boolean rlecomp;          /* alternative to zerocomp; run-length encoding

@@ -906,16 +906,16 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
     case MSNH_MSG_GETTEXT: {
         PMSNHMsgGetText msg_data = (PMSNHMsgGetText) lParam;
-        size_t index;
+        size_t idx;
         int col, row;
         int color;
         uint64_t special;
-        int mgch;
+        nhsym mgch;
 
-        index = 0;
+        idx = 0;
         for (row = 0; row < ROWNO; row++) {
             for (col = 1; col < COLNO; col++) {
-                if (index >= msg_data->max_size)
+                if (idx >= msg_data->max_size)
                     break;
                 if (data->map[col][row].glyph == NO_GLYPH) {
                     mgch = ' ';
@@ -923,15 +923,15 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     (void) mapglyph(data->map[col][row], &mgch, &color,
                                     &special, col, row);
                 }
-                msg_data->buffer[index] = mgch;
-                msg_data->attrs[index] = 0; /* special handling here */
-                msg_data->colors[index] = (char)color;
-                index++;
+                msg_data->buffer[idx] = (char)mgch;
+                msg_data->attrs[idx] = 0; /* special handling here */
+                msg_data->colors[idx] = (char)color;
+                idx++;
             }
-            if (index >= msg_data->max_size - 1)
+            if (idx >= msg_data->max_size - 1)
                 break;
-            msg_data->buffer[index++] = '\r';
-            msg_data->buffer[index++] = '\n';
+            msg_data->buffer[idx++] = '\r';
+            msg_data->buffer[idx++] = '\n';
         }
     } break;
 
@@ -4491,7 +4491,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         WCHAR wch;
                         int color;
                         uint64_t special;
-                        int mgch;
+                        nhsym mgch;
                         COLORREF OldFg;
                         COLORREF OldBg;
 

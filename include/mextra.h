@@ -92,7 +92,7 @@ struct epri {
     schar shroom;      /* index in rooms */
     coord shrpos;      /* position of shrine */
     d_level shrlevel;  /* level (& dungeon) of shrine */
-    long intone_time,  /* used to limit verbosity  +*/
+    int64_t intone_time,  /* used to limit verbosity  +*/
         enter_time,    /*+ of temple entry messages */
         hostile_time,  /* forbidding feeling */
         peaceful_time; /* sense of peace */
@@ -106,7 +106,7 @@ struct esmi {
     schar smithy_room;  /* index in rooms */
     coord anvil_pos;   /* position of anvil */
     d_level smithy_level;  /* level (& dungeon) of smithy */
-    long intone_time,  /* used to limit verbosity  +*/
+    int64_t intone_time,  /* used to limit verbosity  +*/
         enter_time,    /*+ of smithy entry messages */
         hostile_time,  /* forbidding feeling */
         peaceful_time; /* sense of peace */
@@ -119,7 +119,7 @@ struct enpc {
     schar npc_room;  /* index in rooms */
     d_level npc_room_level;  /* level (& dungeon) of NPC's room */
     short special_teach_spells[MAX_SPECIAL_TEACH_SPELLS];
-    long intone_time,  /* used to limit verbosity  +*/
+    int64_t intone_time,  /* used to limit verbosity  +*/
         enter_time,    /*+ of smithy entry messages */
         hostile_time,  /* forbidding feeling */
         peaceful_time; /* sense of peace */
@@ -135,15 +135,15 @@ struct enpc {
 struct bill_x {
     unsigned bo_id;
     boolean useup;
-    long price; /* price per unit */
-    long bquan; /* amount used up */
+    int64_t price; /* price per unit */
+    int64_t bquan; /* amount used up */
 };
 
 struct eshk {
-    long robbed;          /* amount stolen by most recent customer */
-    long credit;          /* amount credited to customer */
-    long debit;           /* amount of debt for using unpaid items */
-    long loan;            /* shop-gold picked (part of debit) */
+    int64_t robbed;          /* amount stolen by most recent customer */
+    int64_t credit;          /* amount credited to customer */
+    int64_t debit;           /* amount of debt for using unpaid items */
+    int64_t loan;            /* shop-gold picked (part of debit) */
     int shoptype;         /* the value of rooms[shoproom].rtype */
     schar shoproom;       /* index in rooms; set by inshop() */
     schar unused;         /* to force alignment for stupid compilers */
@@ -185,11 +185,11 @@ enum dogfood_types {
 };
 
 struct edog {
-    long droptime;            /* moment dog dropped object */
+    int64_t droptime;            /* moment dog dropped object */
     unsigned dropdist;        /* dist of dropped obj from @ */
     int apport;               /* amount of training */
-    long whistletime;         /* last time he whistled */
-    long hungrytime;          /* will get hungry at this time */
+    int64_t whistletime;         /* last time he whistled */
+    int64_t hungrytime;          /* will get hungry at this time */
     coord ogoal;              /* previous goal location */
     int abuse;                /* track abuses to this pet */
     int revivals;             /* count pet deaths */

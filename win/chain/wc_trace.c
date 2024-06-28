@@ -780,7 +780,7 @@ void *vp;
 int style, attr, color, glyph;
 const char *title, *query, *resp, *resp_desc, *introline;
 char def;
-unsigned long ynflags;
+uint64_t ynflags;
 {
     struct trace_data *tdp = vp;
     char rv;
@@ -938,7 +938,7 @@ void
 trace_change_color(vp, color, value, reverse)
 void *vp;
 int color;
-long value;
+int64_t value;
 int reverse;
 {
     struct trace_data *tdp = vp;
@@ -1188,7 +1188,7 @@ trace_status_update(vp, idx, ptr, chg, percent, color, colormasks)
 void *vp;
 int idx, chg, percent, color;
 genericptr_t ptr;
-unsigned long *colormasks;
+uint64_t *colormasks;
 {
     struct trace_data *tdp = vp;
 

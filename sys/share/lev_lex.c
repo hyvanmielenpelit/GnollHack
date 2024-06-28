@@ -2510,7 +2510,7 @@ extern struct lc_vardefs *FDECL(vardef_defined,(struct lc_vardefs *,char *, int)
 
 extern struct lc_vardefs *vardefs;
 
-extern long FDECL(method_defined, (char *, long, long *));
+extern int64_t FDECL(method_defined, (char *, int64_t, int64_t *));
 
 void FDECL(savetoken, (char *));
 void NDECL(newline);
@@ -6233,7 +6233,7 @@ handle_varstring_check()
 
     yylval.map = dupstr(yytext);
     if ((vd = vardef_defined(vardefs, yytext, 1)) != 0) {
-        long l = vd->var_type;
+        int64_t l = vd->var_type;
         int a = ((l & SPOVAR_ARRAY) == SPOVAR_ARRAY);
 
         l &= ~SPOVAR_ARRAY;

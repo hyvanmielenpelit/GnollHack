@@ -262,7 +262,7 @@ struct u_hint {
 };
 
 struct u_realtime {
-    long   realtime;     /* accumulated playing time in seconds */
+    int64_t   realtime;     /* accumulated playing time in seconds */
     time_t start_timing; /* time game was started or restored or 'realtime'
                             was last updated (savegamestate for checkpoint) */
     time_t finish_time;  /* end of 'realtime' interval: time of save or
@@ -274,24 +274,24 @@ struct u_realtime {
  * times a challenge has been violated.
  */
 struct u_conduct {     /* number of times... */
-    long unvegetarian; /* eaten any animal */
-    long unvegan;      /* ... or any animal byproduct */
-    long food;         /* ... or any comestible */
-    long gnostic;      /* used prayer, priest, or altar */
-    long weaphit;      /* hit a monster with a weapon */
-    long killer;       /* killed a monster yourself */
-    long literate;     /* read something (other than BotD) */
-    long polypiles;    /* polymorphed an object */
-    long polyselfs;    /* transformed yourself */
-    long wishes;       /* used a wish */
-    long wisharti;     /* wished for an artifact */
+    int64_t unvegetarian; /* eaten any animal */
+    int64_t unvegan;      /* ... or any animal byproduct */
+    int64_t food;         /* ... or any comestible */
+    int64_t gnostic;      /* used prayer, priest, or altar */
+    int64_t weaphit;      /* hit a monster with a weapon */
+    int64_t killer;       /* killed a monster yourself */
+    int64_t literate;     /* read something (other than BotD) */
+    int64_t polypiles;    /* polymorphed an object */
+    int64_t polyselfs;    /* transformed yourself */
+    int64_t wishes;       /* used a wish */
+    int64_t wisharti;     /* wished for an artifact */
     /* genocides already listed at end of game */
 };
 
 struct u_roleplay {
     boolean blind;  /* permanently blind */
     boolean nudist; /* has not worn any armor, ever */
-    long numbones;  /* # of bones files loaded  */
+    int64_t numbones;  /* # of bones files loaded  */
 };
 
 #define MAX_TRAIT_DESCRIPTIONS 5
@@ -558,7 +558,7 @@ struct you {
 #define A_CURRENT  0
     aligntyp ualignbase[CONVERT]; /* for ualign conversion record */
     schar uluck;
-    long moreluck;    /* luck and luck bonus */
+    int64_t moreluck;    /* luck and luck bonus */
     boolean luck_does_not_timeout, unluck_does_not_timeout;
 #define LUCKADD    3  /* value of u.moreluck when carrying luck stone;
                          + when blessed or uncursed, - when cursed */
@@ -587,15 +587,15 @@ struct you {
     int ugifts;              /* number of artifacts bestowed */
     int ublessed;            /* amount of permanent divine protection bestowed upon you */
     int uprayer_timeout;     /* duration from #pray */
-    long umoney0;
-    long uspare1;
-    long uexp, u_gamescore;
-    long ucleansed;          /* to record moves when player was cleansed */
-    long usleep;             /* sleeping; monstermove you last started */
+    int64_t umoney0;
+    int64_t uspare1;
+    int64_t uexp, u_gamescore;
+    int64_t ucleansed;          /* to record moves when player was cleansed */
+    int64_t usleep;             /* sleeping; monstermove you last started */
     int uinvault;
     struct monst *ustuck;    /* engulfer or grabber, maybe grabbee if Upolyd */
     struct monst *usteed;    /* mount when riding */
-    long ugallop;            /* turns steed will run after being kicked */
+    int64_t ugallop;            /* turns steed will run after being kicked */
     int urideturns;          /* time spent riding, for skill advancement */
     int umortality;          /* how many times you died */
     int utruemortality;      /* how many times you truly died without counting life saving, just revives due to wizard, explore, and modern mode */

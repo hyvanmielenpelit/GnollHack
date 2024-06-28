@@ -19104,7 +19104,7 @@ void
 sound_stats(hdrfmt, hdrbuf, count, size)
 const char* hdrfmt;
 char* hdrbuf;
-long* count;
+int64_t* count;
 size_t* size;
 {
     sound_source* ss;
@@ -19500,7 +19500,7 @@ begin_sound(obj, already_making_noise)
 struct obj* obj;
 boolean already_making_noise;
 {
-    long turns = 0;
+    int64_t turns = 0;
     boolean do_timer = TRUE;
 
     obj->makingsound = 1;
@@ -21304,7 +21304,7 @@ void
 play_voice_shopkeeper_for_you(shkp, honorific_idx, base_line_idx, quan)
 struct monst* shkp;
 int honorific_idx, base_line_idx;
-long quan;
+int64_t quan;
 {
     if (!iflags.using_gui_sounds || !shkp || !has_eshk(shkp) || Deaf)
         return;
@@ -21357,7 +21357,7 @@ long quan;
 void
 play_voice_shopkeeper_pay_before_buying(shkp, obj_quan, save_quan)
 struct monst* shkp;
-long obj_quan, save_quan;
+int64_t obj_quan, save_quan;
 {
     if (!iflags.using_gui_sounds || !shkp || !has_eshk(shkp) || Deaf)
         return;

@@ -236,18 +236,18 @@ struct monst {
 #define STRAT_GOALX(s) ((xchar) ((s & STRAT_XMASK) >> 16))
 #define STRAT_GOALY(s) ((xchar) ((s & STRAT_YMASK) >> 8))
 
-    long mtrapseen;        /* bitmap of traps we've been trapped in */
-    long mlstmv;           /* for catching up with lost time */
-    long mspare1;
+    int64_t mtrapseen;        /* bitmap of traps we've been trapped in */
+    int64_t mlstmv;           /* for catching up with lost time */
+    int64_t mspare1;
     struct obj *minvent;   /* mon's inventory */
 
     struct obj *mw;        /* mon's weapon */
-    long worn_item_flags;  /* mon's wornmask */
+    int64_t worn_item_flags;  /* mon's wornmask */
     xchar weapon_strategy; /* flag for whether to try switching weapons */
 
     int meating;           /* monster is eating timeout */
-    long summonduration;   /* duration for summoned units */
-    long extra_encounter_xp; /* extra experience yielded by this monster due to encounter difficulty */
+    int64_t summonduration;   /* duration for summoned units */
+    int64_t extra_encounter_xp; /* extra experience yielded by this monster due to encounter difficulty */
     int glyph;
     int gui_glyph;
 

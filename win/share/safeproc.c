@@ -709,7 +709,7 @@ int intervals;
 void
 safe_change_color(color, rgb, reverse)
 int color, reverse;
-long rgb;
+int64_t rgb;
 {
     return;
 }

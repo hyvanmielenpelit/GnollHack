@@ -198,7 +198,7 @@ enum prop_types {
 /* Definitions were moved here from obj.h and you.h */
 struct prop {
     /*** Properties conveyed by objects ***/
-    long extrinsic;
+    int64_t extrinsic;
 /* Armor */
 #define W_ARM  0x00000001L  /* Body armor */
 #define W_ARMC 0x00000002L  /* Cloak */
@@ -260,7 +260,7 @@ struct prop {
 #define W_CARRIED 0x80000000L              /* Carried */
 
     /*** Timeouts, permanent properties, and other flags ***/
-    long intrinsic;
+    int64_t intrinsic;
 
 /* Timed properties */
 #define TIMEOUT 0x00ffffffL       /* Up to 16 million turns */

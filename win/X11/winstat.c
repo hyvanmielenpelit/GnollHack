@@ -107,7 +107,7 @@ static void FDECL(adjust_status_tty, (struct xwindow *, const char *));
 extern const char *status_fieldfmt[MAXBLSTATS];
 extern char *status_vals[MAXBLSTATS];
 extern boolean status_activefields[MAXBLSTATS];
-static long X11_condition_bits;
+static int64_t X11_condition_bits;
 static int X11_status_colors[MAXBLSTATS];
 static int hpbar_percent, hpbar_color;
 
@@ -133,8 +133,8 @@ static Pixel X11_status_widget_fg, X11_status_widget_bg;
 
 int
 condcolor(bm, bmarray)
-long bm;
-unsigned long *bmarray;
+int64_t bm;
+uint64_t *bmarray;
 {
     int i;
 
@@ -148,8 +148,8 @@ unsigned long *bmarray;
 
 int
 condattr(bm, bmarray)
-long bm;
-unsigned long *bmarray;
+int64_t bm;
+uint64_t *bmarray;
 {
     int attr = 0;
     int i;
@@ -215,7 +215,7 @@ boolean enable;
 
 int
 cond_bm2idx(bm)
-unsigned long bm;
+uint64_t bm;
 {
     int i;
     for (i = 0; i < 32; i++)
@@ -226,8 +226,8 @@ unsigned long bm;
 
 void
 MaybeDisplayCond(bm, colormasks, text)
-unsigned long bm;
-unsigned long *colormasks;
+uint64_t bm;
+uint64_t *colormasks;
 const char *text;
 {
     int idx = cond_bm2idx(bm);
@@ -320,10 +320,10 @@ void
 X11_status_update_tty(fld, ptr, chg, percent, color, colormasks)
 int fld, chg UNUSED, percent, color;
 genericptr_t ptr;
-unsigned long *colormasks;
+uint64_t *colormasks;
 {
     static boolean oncearound = FALSE; /* prevent premature partial display */
-    long *condptr = (long *) ptr;
+    int64_t *condptr = (int64_t *) ptr;
     int coloridx = NO_COLOR;
     const char *text = (char *) ptr;
     char tmpbuf[BUFSZ];
@@ -532,7 +532,7 @@ void
 X11_status_update_fancy(fld, ptr, chg, percent, color, colormasks)
 int fld, chg UNUSED, percent UNUSED, color UNUSED;
 genericptr_t ptr;
-unsigned long *colormasks UNUSED;
+uint64_t *colormasks UNUSED;
 {
     static const struct {
         int bl, ff;
@@ -567,7 +567,7 @@ unsigned long *colormasks UNUSED;
         { BL_EXP, F_EXP }
     };
     static const struct {
-        unsigned long mask;
+        uint64_t mask;
         int ff;
     } mask_to_fancyfield[] = {
         { BL_MASK_STONE, F_STONE },
@@ -598,7 +598,7 @@ unsigned long *colormasks UNUSED;
     }
 
     if (fld == BL_CONDITION) {
-        unsigned long mask = (unsigned long) ptr;
+        uint64_t mask = (uint64_t) ptr;
 
         for (i = 0; i < SIZE(mask_to_fancyfield); i++)
             if (mask_to_fancyfield[i].mask == mask)
@@ -614,7 +614,7 @@ void
 X11_status_update(fld, ptr, chg, percent, color, colormasks)
 int fld, chg UNUSED, percent UNUSED, color;
 genericptr_t ptr;
-unsigned long *colormasks;
+uint64_t *colormasks;
 {
     if (appResources.fancy_status)
         X11_status_update_fancy(fld, ptr, chg, percent, color, colormasks);
@@ -973,7 +973,7 @@ struct X_status_value {
 #define SV_NAME 2  /* displays an unchangeable name */
 
 static void FDECL(hilight_label, (Widget));
-static void FDECL(update_val, (struct X_status_value *, long));
+static void FDECL(update_val, (struct X_status_value *, int64_t));
 static const char *FDECL(width_string, (int));
 static void FDECL(create_widget, (Widget, struct X_status_value *, int));
 static void FDECL(get_widths, (struct X_status_value *, int *, int *));
@@ -1083,7 +1083,7 @@ Widget w; /* label widget */
 static void
 update_val(attr_rec, new_value)
 struct X_status_value *attr_rec;
-long new_value;
+int64_t new_value;
 {
     char buf[BUFSZ];
     Arg args[4];
@@ -1298,29 +1298,29 @@ update_fancy_status_field(i)
 int i;
 {
     struct X_status_value *sv = &shown_stats[i];
-    long val;
+    int64_t val;
 
     switch (i) {
         case F_DUMMY:
             val = 0L;
             break;
         case F_STR:
-            val = (long) ACURR(A_STR);
+            val = (int64_t) ACURR(A_STR);
             break;
         case F_DEX:
-            val = (long) ACURR(A_DEX);
+            val = (int64_t) ACURR(A_DEX);
             break;
         case F_CON:
-            val = (long) ACURR(A_CON);
+            val = (int64_t) ACURR(A_CON);
             break;
         case F_INT:
-            val = (long) ACURR(A_INT);
+            val = (int64_t) ACURR(A_INT);
             break;
         case F_WIS:
-            val = (long) ACURR(A_WIS);
+            val = (int64_t) ACURR(A_WIS);
             break;
         case F_CHA:
-            val = (long) ACURR(A_CHA);
+            val = (int64_t) ACURR(A_CHA);
             break;
         /*
          * Label stats.  With the exceptions of hunger, encumbrance, sick
@@ -1328,10 +1328,10 @@ int i;
          * the way they are.  I want to specify 0 or 1, not a boolean.
          */
         case F_HUNGER:
-            val = (long) u.uhs;
+            val = (int64_t) u.uhs;
             break;
         case F_ENCUMBER:
-            val = (long) near_capacity();
+            val = (int64_t) near_capacity();
             break;
         case F_LEV:
             val = Levitation ? 1L : 0L;
@@ -1379,10 +1379,10 @@ int i;
             break;
 
         case F_NAME:
-            val = (long) 0L;
+            val = (int64_t) 0L;
             break; /* special */
         case F_DLEVEL:
-            val = (long) 0L;
+            val = (int64_t) 0L;
             break; /* special */
         case F_GOLD:
             val = money_cnt(invent);
@@ -1390,32 +1390,32 @@ int i;
                 val = 0L; /* ought to issue impossible() and discard gold */
             break;
         case F_HP:
-            val = (long) (Upolyd ? (u.mh > 0 ? u.mh : 0)
+            val = (int64_t) (Upolyd ? (u.mh > 0 ? u.mh : 0)
                                  : (u.uhp > 0 ? u.uhp : 0));
             break;
         case F_MAXHP:
-            val = (long) (Upolyd ? u.mhmax : u.uhpmax);
+            val = (int64_t) (Upolyd ? u.mhmax : u.uhpmax);
             break;
         case F_POWER:
-            val = (long) u.uen;
+            val = (int64_t) u.uen;
             break;
         case F_MAXPOWER:
-            val = (long) u.uenmax;
+            val = (int64_t) u.uenmax;
             break;
         case F_AC:
-            val = (long) u.uac;
+            val = (int64_t) u.uac;
             break;
         case F_LEVEL:
-            val = (long) (Upolyd ? mons[u.umonnum].mlevel : u.ulevel);
+            val = (int64_t) (Upolyd ? mons[u.umonnum].mlevel : u.ulevel);
             break;
         case F_EXP:
             val = flags.showexp ? u.uexp : 0L;
             break;
         case F_ALIGN:
-            val = (long) u.ualign.type;
+            val = (int64_t) u.ualign.type;
             break;
         case F_TIME:
-            val = flags.time ? (long) moves : 0L;
+            val = flags.time ? (int64_t) moves : 0L;
             break;
         case F_SCORE:
             val = flags.showscore ? botl_score() : 0L;

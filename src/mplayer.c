@@ -282,7 +282,7 @@ register boolean special;
             /* usually increase stack size if stackable weapon */
             if (objects[otmp->otyp].oc_merge && !otmp->oartifact
                 && monmightthrowwep(otmp))
-                otmp->quan += (long) rn2(is_spear(otmp) ? 4 : 8);
+                otmp->quan += (int64_t) rn2(is_spear(otmp) ? 4 : 8);
             /* mplayers knew better than to overenchant Magicbane */
             if (otmp->oartifact && artifact_has_flag(otmp, AF_MAGIC_ABSORBING))
                 otmp->enchantment = rnd(4);

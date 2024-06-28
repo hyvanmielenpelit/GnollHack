@@ -2140,7 +2140,7 @@ void
 mswin_outrip(winid wid, int how, time_t when)
 {
     char buf[BUFSZ];
-    long year;
+    int64_t year;
 
     logDebug("mswin_outrip(%d, %d, %ld)\n", wid, how, (long) when);
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
@@ -2156,7 +2156,7 @@ mswin_outrip(winid wid, int how, time_t when)
     putstr(wid, 0, buf);
 
     /* Put $ on stone */
-    Sprintf(buf, "%ld Au", done_money);
+    Sprintf(buf, "%lld Au", (long long)done_money);
     buf[STONE_LINE_LEN] = 0; /* It could be a *lot* of gold :-) */
     putstr(wid, 0, buf);
 
@@ -2168,7 +2168,7 @@ mswin_outrip(winid wid, int how, time_t when)
 
     /* Put year on stone */
     year = yyyymmdd(when) / 10000L;
-    Sprintf(buf, "%4ld", year);
+    Sprintf(buf, "%4lld", (long long)year);
     putstr(wid, 0, buf);
     mswin_finish_rip_text(wid);
 }
@@ -2522,8 +2522,8 @@ mswin_wait_loop_intervals(int intervals)
         return;
 
     MSG msg;
-    int counter_before = animation_timers.general_animation_counter;
-    int counter_after = animation_timers.general_animation_counter;
+    int64_t counter_before = animation_timers.general_animation_counter;
+    int64_t counter_after = animation_timers.general_animation_counter;
 
     disallow_keyboard_commands_in_wait_loop = FALSE; //TRUE
 
@@ -2547,7 +2547,7 @@ mswin_wait_loop_intervals(int intervals)
         program_state.animation_hangup = 0;
         if (mswin_have_input())
             break;
-    } while (counter_after - counter_before < intervals && counter_after >= counter_before);
+    } while (counter_after - counter_before < (int64_t)intervals && counter_after >= counter_before);
 
     disallow_keyboard_commands_in_wait_loop = FALSE;
 }
@@ -3525,7 +3525,8 @@ mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, 
     long cond, *condptr = (long *) ptr;
     char *text = (char *) ptr;
     MSNHMsgUpdateStatus update_cmd_data;
-    int ocolor, ochar;
+    int ocolor;
+    nhsym ochar;
     uint64_t ospecial;
 
     logDebug("mswin_status_update(%d, %p, %d, %d, %x, %p)\n", idx, ptr, chg, percent, color, condmasks);
@@ -3584,7 +3585,7 @@ mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, 
                     &ochar, &ocolor, &ospecial, 0, 0);
 
             }
-            buf[0] = ochar;
+            buf[0] = (char)ochar;
             p = strchr(text, ':');
             if (p) {
                 (void)strncpy(buf + 1, p, sizeof(buf) - 2);

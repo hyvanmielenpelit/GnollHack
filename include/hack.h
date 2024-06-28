@@ -222,8 +222,8 @@ enum game_end_types {
 
 /* game events log */
 struct gamelog_line {
-    long turn; /* turn when this happened */
-    long flags; /* LL_foo flags */
+    int64_t turn; /* turn when this happened */
+    int64_t flags; /* LL_foo flags */
     char* text;
     struct gamelog_line* next;
 };

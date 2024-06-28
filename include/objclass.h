@@ -532,7 +532,7 @@ struct objclass {
     unsigned int oc_weight;    /* encumbrance (1 oz = 1/16 lb.) previously (1 cn = 0.1 lb.) */
     unsigned int oc_nutrition; /* food value */
 
-    long oc_cost;              /* base cost in shops */
+    int64_t oc_cost;              /* base cost in shops */
     
     /* Check the AD&D rules!  The FIRST is small monster damage. */
     /* for weapons, and tools, rocks, and gems useful as weapons */
@@ -667,14 +667,14 @@ struct objclass {
     short oc_range;                            /* launchers: range for ammo, others throw range: >0 Fixed range, <0 Percentage of STR */
 
     /* general purpose */
-    long oc_oc1;        /* Used for spell cooldown; weapons and armors: ac bonus */
-    long oc_oc2;        /* Used for spell level; weapons and armors: mc bonus */
-    long oc_oc3;        /* Used for spell mana cost; other items: mana pool bonus */
-    long oc_oc4;        /* Used for spell attributes; other items: hit point bonus */
-    long oc_oc5;        /* Used for spell range; non-spellbooks: specification of attributes or other properties item gives bonuses to using otmp->enchantment */
-    long oc_oc6;        /* Used for spell radius; non-spellbooks: 0 => enchantment is used, otherise fixed bonus */
-    long oc_oc7;        /* Used for spell casting penalty */
-    long oc_oc8;        /* Used for multishot count */
+    int64_t oc_oc1;        /* Used for spell cooldown; weapons and armors: ac bonus */
+    int64_t oc_oc2;        /* Used for spell level; weapons and armors: mc bonus */
+    int64_t oc_oc3;        /* Used for spell mana cost; other items: mana pool bonus */
+    int64_t oc_oc4;        /* Used for spell attributes; other items: hit point bonus */
+    int64_t oc_oc5;        /* Used for spell range; non-spellbooks: specification of attributes or other properties item gives bonuses to using otmp->enchantment */
+    int64_t oc_oc6;        /* Used for spell radius; non-spellbooks: 0 => enchantment is used, otherise fixed bonus */
+    int64_t oc_oc7;        /* Used for spell casting penalty */
+    int64_t oc_oc8;        /* Used for multishot count */
 
 /* general*/
 #define oc_armor_class oc_oc1                        /* weapons and armor: AC used in ARM_AC_BONUS in do.c */

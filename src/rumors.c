@@ -57,7 +57,7 @@ STATIC_VAR long true_rumor_end, false_rumor_end;
 /* oracles are handled differently from rumors... */
 STATIC_VAR int oracle_flg = 0; /* -1=>don't use, 0=>need init, 1=>init done */
 STATIC_VAR size_t oracle_cnt = 0;
-STATIC_VAR long *oracle_loc = 0;
+STATIC_VAR int64_t *oracle_loc = 0;
 
 STATIC_OVL void
 init_rumors(fp)
@@ -128,7 +128,7 @@ boolean exclude_cookie;
             case 2: /*(might let a bogus input arg sneak thru)*/
             case 1:
                 beginning = (long) true_rumor_start;
-                tidbit = (long)rn2((int)true_rumor_size);
+                tidbit = (int64_t)rn2((int)true_rumor_size);
                 break;
             case 0: /* once here, 0 => false rather than "either"*/
             case -1:
@@ -139,12 +139,12 @@ boolean exclude_cookie;
                 impossible("strange truth value for rumor");
                 return strcpy(rumor_buf, "Oops...");
             }
-            (void) dlb_fseek(rumors, beginning + tidbit, SEEK_SET);
+            (void) dlb_fseek(rumors, (long)(beginning + tidbit), SEEK_SET);
             (void) dlb_fgets(line, sizeof line, rumors);
             if (!dlb_fgets(line, sizeof line, rumors)
                 || (adjtruth > 0 && dlb_ftell(rumors) > true_rumor_end)) {
                 /* reached end of rumors -- go back to beginning */
-                (void) dlb_fseek(rumors, beginning, SEEK_SET);
+                (void) dlb_fseek(rumors, (long)beginning, SEEK_SET);
                 (void) dlb_fgets(line, sizeof line, rumors);
             }
             if ((endp = index(line, '\n')) != 0)
@@ -222,17 +222,17 @@ rumor_check()
         Sprintf(
             rumor_buf,
             "T start=%06ld (%06lx), end=%06ld (%06lx), size=%06ld (%06lx)",
-            (long) true_rumor_start, (long)true_rumor_start, true_rumor_end,
-            true_rumor_end, true_rumor_size,
-            true_rumor_size);
+            (long) true_rumor_start, (long)true_rumor_start, (long)true_rumor_end,
+            (long)true_rumor_end, (long)true_rumor_size,
+            (long)true_rumor_size);
         putstr(tmpwin, 0, rumor_buf);
 
         Sprintf(
             rumor_buf,
             "F start=%06ld (%06lx), end=%06ld (%06lx), size=%06ld (%06lx)",
-            (long) false_rumor_start, (long)false_rumor_start, false_rumor_end,
-            false_rumor_end, false_rumor_size,
-            false_rumor_size);
+            (long) false_rumor_start, (long)false_rumor_start, (long)false_rumor_end,
+            (long)false_rumor_end, (long)false_rumor_size,
+            (long)false_rumor_size);
         putstr(tmpwin, 0, rumor_buf);
 
         /*
@@ -243,7 +243,7 @@ rumor_check()
          * the value read in rumors, and display it.
          */
         rumor_buf[0] = '\0';
-        (void) dlb_fseek(rumors, (long) true_rumor_start, SEEK_SET);
+        (void) dlb_fseek(rumors, (long)true_rumor_start, SEEK_SET);
         ftell_rumor_start = dlb_ftell(rumors);
         (void) dlb_fgets(line, sizeof line, rumors);
         if ((endp = index(line, '\n')) != 0)
@@ -261,7 +261,7 @@ rumor_check()
         putstr(tmpwin, 0, rumor_buf);
 
         rumor_buf[0] = '\0';
-        (void) dlb_fseek(rumors, (long) false_rumor_start, SEEK_SET);
+        (void) dlb_fseek(rumors, (long)false_rumor_start, SEEK_SET);
         ftell_rumor_start = dlb_ftell(rumors);
         (void) dlb_fgets(line, sizeof line, rumors);
         if ((endp = index(line, '\n')) != 0)
@@ -419,10 +419,12 @@ dlb *fp;
     (void) dlb_fgets(line, sizeof line, fp);
     if (sscanf(line, "%5d\n", &cnt) == 1 && cnt > 0) {
         oracle_cnt = (size_t) cnt;
-        oracle_loc = (long *) alloc((size_t)cnt * sizeof(long));
+        oracle_loc = (int64_t *) alloc((size_t)cnt * sizeof(int64_t));
+        long long read_oracle_loc = 0;
         for (i = 0; i < cnt; i++) {
             (void) dlb_fgets(line, sizeof line, fp);
-            (void) sscanf(line, "%5lx\n", &oracle_loc[i]);
+            (void) sscanf(line, "%5llx\n", &read_oracle_loc);
+            oracle_loc[i] = (int64_t)read_oracle_loc;
         }
     }
     return;
@@ -448,7 +450,7 @@ int fd, mode;
     if (perform_bwrite(mode)) {
         bwrite(fd, (genericptr_t) &oracle_cnt, sizeof oracle_cnt);
         if (oracle_cnt)
-            bwrite(fd, (genericptr_t) oracle_loc, oracle_cnt * sizeof(long));
+            bwrite(fd, (genericptr_t) oracle_loc, oracle_cnt * sizeof(int64_t));
     }
     if (release_data(mode)) {
         if (oracle_cnt) {
@@ -470,8 +472,8 @@ int fd;
     Strcpy(debug_buf_4, "restore_oracles");
     mread(fd, (genericptr_t) &oracle_cnt, sizeof oracle_cnt);
     if (oracle_cnt) {
-        oracle_loc = (long *) alloc(oracle_cnt * sizeof(long));
-        mread(fd, (genericptr_t) oracle_loc, oracle_cnt * sizeof(long));
+        oracle_loc = (int64_t *) alloc(oracle_cnt * sizeof(int64_t));
+        mread(fd, (genericptr_t) oracle_loc, oracle_cnt * sizeof(int64_t));
         oracle_flg = 1; /* no need to call init_oracles() */
     }
 }
@@ -532,7 +534,7 @@ int oraclesstyle; /* 0 = cookie, 1 = oracle, 2 = spell */
         if (used_oracle_idx >= oracle_cnt || oracle_loc[used_oracle_idx] < 0)
             goto close_oracles;
 
-        (void) dlb_fseek(oracles, oracle_loc[used_oracle_idx], SEEK_SET);
+        (void) dlb_fseek(oracles, (long)oracle_loc[used_oracle_idx], SEEK_SET);
         if (!special) /* move offset of very last one into this slot */
             oracle_loc[used_oracle_idx] = -1; // oracle_loc[oracle_idx] = oracle_loc[--oracle_cnt];
 
@@ -586,8 +588,8 @@ int
 doconsult(oracl)
 struct monst *oracl;
 {
-    long umoney;
-    long u_pay, minor_cost = max(1L, (long)(25.0 * service_cost_charisma_adjustment(ACURR(A_CHA)))), major_cost = max(1, (int)((double)(250 + 25 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t umoney;
+    int64_t u_pay, minor_cost = max(1L, (int64_t)(25.0 * service_cost_charisma_adjustment(ACURR(A_CHA)))), major_cost = max(1, (int)((double)(250 + 25 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     //int unid_cnt = count_unidentified(invent, 0, FALSE);
     int oracleaction = 0;
     int add_xpts;
@@ -622,8 +624,8 @@ struct monst *oracl;
     }
 
     play_monster_special_dialogue_line(oracl, ORACLE_LINE_WILT_THOU_SETTLE_FOR_A_MINOR_CONSULTATION);
-    Sprintf(qbuf, "\"Wilt thou settle for a minor consultation?\" (%ld %s)",
-        minor_cost, currency(minor_cost));
+    Sprintf(qbuf, "\"Wilt thou settle for a minor consultation?\" (%lld %s)",
+        (long long)minor_cost, currency(minor_cost));
     switch (ynq_mon(oracl, qbuf)) 
     {
     default:
@@ -646,8 +648,8 @@ struct monst *oracl;
             return 0;
 
         play_monster_special_dialogue_line(oracl, ORACLE_LINE_THEN_DOST_THOU_DESIRE_A_MAJOR_ONE);
-        Sprintf(qbuf, "\"Then dost thou desire a major one?\" (%ld %s)",
-            major_cost, currency(major_cost));
+        Sprintf(qbuf, "\"Then dost thou desire a major one?\" (%lld %s)",
+            (long long)major_cost, currency(major_cost));
         if (ynq_mon(oracl, qbuf) != 'y')
             return 0;
         u_pay = (umoney < major_cost) ? umoney : major_cost;
@@ -704,8 +706,8 @@ int
 do_oracle_identify(oracl)
 struct monst* oracl;
 {
-    long umoney;
-    long minor_id_cost = max(1L, (long)((double)(150 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))) ; // 175 + 15 * u.ulevel;
+    int64_t umoney;
+    int64_t minor_id_cost = max(1L, (int64_t)((double)(150 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))) ; // 175 + 15 * u.ulevel;
     char qbuf[QBUFSZ];
 
     multi = 0;
@@ -739,8 +741,8 @@ struct monst* oracl;
     int res = 0;
 
     play_monster_special_dialogue_line(oracl, ORACLE_LINE_DOST_THOU_DESIRE_AN_IDENTIFICATION);
-    Sprintf(qbuf, "\"Dost thou desire an identification?\" (%ld %s)",
-        minor_id_cost, currency(minor_id_cost));
+    Sprintf(qbuf, "\"Dost thou desire an identification?\" (%lld %s)",
+        (long long)minor_id_cost, currency(minor_id_cost));
 
     switch (ynq_mon(oracl, qbuf))
     {
@@ -768,13 +770,13 @@ struct monst* oracl;
     //    {
     //        play_monster_special_dialogue_line(oracl, ORACLE_LINE_DOST_THOU_DESIRE_AN_IDENTIFICATION);
     //        Sprintf(qbuf, "\"Dost thou desire an identification?\" (%d %s)",
-    //            minor_id_cost, currency((long)minor_id_cost));
+    //            minor_id_cost, currency((int64_t)minor_id_cost));
     //    }
     //    else
     //    {
     //        play_monster_special_dialogue_line(oracl, ORACLE_LINE_WOULDST_THOU_DESIRE_A_FURTHER_IDENTIFICATION);
     //        Sprintf(qbuf, "\"Wouldst thou desire a further identification?\" (%d %s)",
-    //            minor_id_cost, currency((long)minor_id_cost));
+    //            minor_id_cost, currency((int64_t)minor_id_cost));
     //    }
 
     //    switch (ynq_mon(oracl, qbuf))
@@ -784,7 +786,7 @@ struct monst* oracl;
     //    case 'q':
     //        return 0;
     //    case 'y':
-    //        if (umoney < (long)minor_id_cost)
+    //        if (umoney < (int64_t)minor_id_cost)
     //        {
     //            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
     //            You("don't have enough money for that!");
@@ -798,12 +800,12 @@ struct monst* oracl;
 
     //    if (res)
     //    {
-    //        money2mon(oracl, (long)u_pay);
+    //        money2mon(oracl, (int64_t)u_pay);
     //        context.botl = 1;
     //        umoney = money_cnt(invent);
     //        cnt += res;
     //    }
-    //} while (res > 0 && count_unidentified(invent, 0, FALSE) > 0 && umoney >= (long)minor_id_cost && cnt < 100); /* Paranoid limit */
+    //} while (res > 0 && count_unidentified(invent, 0, FALSE) > 0 && umoney >= (int64_t)minor_id_cost && cnt < 100); /* Paranoid limit */
 
     return (res > 0);
 }
@@ -812,8 +814,8 @@ int
 do_oracle_enlightenment(oracl)
 struct monst* oracl;
 {
-    long umoney, u_pay;
-    long enl_cost = max(1, (int)((double)(objects[POT_ENLIGHTENMENT].oc_cost + 5L * (long)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t umoney, u_pay;
+    int64_t enl_cost = max(1, (int)((double)(objects[POT_ENLIGHTENMENT].oc_cost + 5L * (int64_t)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     multi = 0;
@@ -837,8 +839,8 @@ struct monst* oracl;
     }
 
     play_monster_special_dialogue_line(oracl, ORACLE_LINE_DOST_THOU_DESIRE_TO_ENLIGHTEN_YOURSELF);
-    Sprintf(qbuf, "\"Dost thou desire to enlighten yourself?\" (%ld %s)",
-        enl_cost, currency(enl_cost));
+    Sprintf(qbuf, "\"Dost thou desire to enlighten yourself?\" (%lld %s)",
+        (long long)enl_cost, currency(enl_cost));
     if (yn_query(qbuf) != 'y')
         return 0;
 

@@ -760,15 +760,15 @@ struct monst* mattacker;
 int
 special_dmgval(magr, mdef, armask, silverhit_p)
 struct monst *magr, *mdef;
-long armask; /* armor mask, multiple bits accepted for W_ARMC|W_ARM|W_ARMU
+int64_t armask; /* armor mask, multiple bits accepted for W_ARMC|W_ARM|W_ARMU
               * or W_ARMG|W_RINGL|W_RINGR only */
-long *silverhit_p; /* output flag mask for silver bonus */
+int64_t *silverhit_p; /* output flag mask for silver bonus */
 {
     struct obj *obj;
     struct permonst *ptr = mdef->data;
     boolean left_ring = !!(armask & W_RINGL),
             right_ring = !!(armask & W_RINGR);
-    long silverhit = 0L;
+    int64_t silverhit = 0L;
     int bonus = 0;
 
     armask = armask & ~W_RING;
@@ -853,7 +853,7 @@ void
 silver_sears(magr, mdef, silverhit)
 struct monst *magr UNUSED;
 struct monst *mdef;
-long silverhit;
+int64_t silverhit;
 {
     char rings[20]; /* plenty of room for "rings" */
     int ltyp = ((uleft && (silverhit & W_RINGL) != 0L)

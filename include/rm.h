@@ -474,7 +474,7 @@ enum banner_types {
 struct banner_definition {
     const char* name;
     const char* description;
-    long cost;
+    int64_t cost;
 };
 extern NEARDATA struct banner_definition banner_definitions[MAX_BANNERS];
 
@@ -517,7 +517,7 @@ struct painting_definition {
     const char* artist;  /* a painting of description by artist */
     const char* paint_date; /* known painting date */
     const char* provenance; /* list of notable previous owners */
-    long cost;
+    int64_t cost;
 };
 extern NEARDATA struct painting_definition painting_definitions[MAX_PAINTINGS];
 
@@ -1383,7 +1383,7 @@ struct rm {
 
 struct damage {
     struct damage *next;
-    long when, cost;
+    int64_t when, cost;
     coord place;
     schar typ;
 };

@@ -903,7 +903,7 @@ int fd, mode;
         bwrite(fd, (genericptr_t) objects,
                sizeof(struct objclass) * NUM_OBJECTS);
     }
-    /* as long as we use only one version of Hack we
+    /* as int64_t as we use only one version of Hack we
        need not save oc_name and oc_descr, but we must save
        oc_uname for all objects */
     for (i = 0; i < NUM_OBJECTS; i++)

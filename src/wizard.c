@@ -418,7 +418,7 @@ register struct monst *mtmp;
 
     default: /* kill, maim, pillage! */
     {
-        long where = (strat & STRAT_STRATMASK);
+        int64_t where = (strat & STRAT_STRATMASK);
         xchar tx = STRAT_GOALX(strat), ty = STRAT_GOALY(strat);
         uint64_t targ = (strat & STRAT_GOAL);
         struct obj *otmp;
@@ -785,7 +785,7 @@ void
 resurrect()
 {
     struct monst *mtmp, **mmtmp;
-    long elapsed;
+    int64_t elapsed;
     const char *verb;
 
     if (!context.no_of_wizards) {

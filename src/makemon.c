@@ -172,7 +172,7 @@ int elemental_enchantment, exceptionality, material;
 
     otmp = mksobj_with_flags(otyp, TRUE, FALSE, MKOBJ_TYPE_NORMAL, mtmp, material, 0L, 0L, 0UL);
     if(!(oquan_const == 0 && oquan_rnd == 0))
-        otmp->quan = (long) rn1(oquan_rnd, oquan_const);
+        otmp->quan = (int64_t) rn1(oquan_rnd, oquan_const);
     otmp->owt = weight(otmp);
     if (is_poisonable(otmp) && poisoned)
         otmp->opoisoned = TRUE;
@@ -183,10 +183,10 @@ int elemental_enchantment, exceptionality, material;
     (void) mpickobj(mtmp, otmp);
 }
 
-long
+int64_t
 mongetsgold(mon, amount)
 struct monst* mon;
-long amount;
+int64_t amount;
 {
     if (amount <= 0)
         return 0;
@@ -1267,7 +1267,7 @@ default_equipment_here:
 void
 mkmonmoney(mtmp, amount)
 struct monst *mtmp;
-long amount;
+int64_t amount;
 {
     struct obj *gold = mksobj(GOLD_PIECE, FALSE, FALSE, FALSE);
 
@@ -1510,7 +1510,7 @@ register struct monst *mtmp;
                     : rn2(3) ? CLOAK_OF_PROTECTION
                     : CLOAK_OF_MAGIC_RESISTANCE);
                 (void)mongets(mtmp, SMALL_SHIELD);
-                mkmonmoney(mtmp, (long)rn1(10, 20));
+                mkmonmoney(mtmp, (int64_t)rn1(10, 20));
             }
         }
         else if (quest_mon_represents_role(ptr, PM_MONK)) {
@@ -1580,7 +1580,7 @@ register struct monst *mtmp;
             for (cnt = rn2((int)(mtmp->m_lev / 2)); cnt; cnt--) {
                 otmp = mksobj(rnd_class(DILITHIUM_CRYSTAL, LUCKSTONE - 1),
                     FALSE, FALSE, FALSE);
-                otmp->quan = (long)rn1(2, 3);
+                otmp->quan = (int64_t)rn1(2, 3);
                 otmp->owt = weight(otmp);
                 (void)mpickobj(mtmp, otmp);
             }
@@ -1943,7 +1943,7 @@ register struct monst *mtmp;
         }
         break;
     case S_LEPRECHAUN:
-        mkmonmoney(mtmp, (long)d(level_difficulty(), 30));
+        mkmonmoney(mtmp, (int64_t)d(level_difficulty(), 30));
         break;
     case S_UNICORN:
         break;
@@ -2227,7 +2227,7 @@ register struct monst *mtmp;
         (void) mongets(mtmp, rnd_misc_item(mtmp));
     if (likes_gold(ptr) && !findgold(mtmp->minvent) && !rn2(5))
         mkmonmoney(mtmp,
-                   (long) d(level_difficulty(), mtmp->minvent ? 5 : 10));
+                   (int64_t) d(level_difficulty(), mtmp->minvent ? 5 : 10));
 }
 
 /* Note: for long worms, always call cutworm (cutworm calls clone_mon) */
@@ -3407,7 +3407,7 @@ int mndx;
  *      comparing the dungeon alignment and monster alignment.
  *      return an integer in the range of 0-5.
  */
-STATIC_VAR NEARDATA long oldmoves = 0L; /* != 1, starting value of moves */
+STATIC_VAR NEARDATA int64_t oldmoves = 0L; /* != 1, starting value of moves */
 STATIC_VAR NEARDATA s_level* align_lev;
 
 STATIC_OVL int

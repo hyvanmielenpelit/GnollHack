@@ -71,7 +71,7 @@ STATIC_DCL struct wseg *FDECL(create_worm_tail, (int));
  */
 
 struct wseg *wheads[MAX_NUM_WORMS] = DUMMY, *wtails[MAX_NUM_WORMS] = DUMMY;
-long wgrowtime[MAX_NUM_WORMS] = DUMMY;
+int64_t wgrowtime[MAX_NUM_WORMS] = DUMMY;
 
 /*
  *  get_wormno()

@@ -196,16 +196,16 @@ STATIC_PTR int NDECL(wiz_migrate_mons);
 #endif
 STATIC_DCL size_t FDECL(size_monst, (struct monst *, BOOLEAN_P));
 STATIC_DCL size_t FDECL(size_obj, (struct obj *));
-STATIC_DCL void FDECL(count_obj, (struct obj *, long *, size_t *,
+STATIC_DCL void FDECL(count_obj, (struct obj *, int64_t *, size_t *,
                                   BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL void FDECL(obj_chain, (winid, const char *, struct obj *,
-                                  BOOLEAN_P, long *, size_t *));
+                                  BOOLEAN_P, int64_t *, size_t *));
 STATIC_DCL void FDECL(mon_invent_chain, (winid, const char *, struct monst *,
-                                         long *, size_t *));
+                                         int64_t *, size_t *));
 STATIC_DCL void FDECL(mon_chain, (winid, const char *, struct monst *,
-                                  BOOLEAN_P, long *, size_t *));
-STATIC_DCL void FDECL(contained_stats, (winid, const char *, long *, size_t *));
-STATIC_DCL void FDECL(misc_stats, (winid, long *, size_t *));
+                                  BOOLEAN_P, int64_t *, size_t *));
+STATIC_DCL void FDECL(contained_stats, (winid, const char *, int64_t *, size_t *));
+STATIC_DCL void FDECL(misc_stats, (winid, int64_t *, size_t *));
 STATIC_PTR int NDECL(wiz_show_stats);
 STATIC_DCL boolean FDECL(accept_menu_prefix, (int NDECL((*))));
 STATIC_PTR int NDECL(wiz_rumor_check);
@@ -1762,7 +1762,7 @@ wiz_map(VOID_ARGS)
 {
     if (wizard) {
         struct trap *t;
-        long save_Hconf = HConfusion, save_Hhallu = HHallucination;
+        int64_t save_Hconf = HConfusion, save_Hhallu = HHallucination;
 
         HConfusion = HHallucination = 0L;
         for (t = ftrap; t != 0; t = t->ntrap) {
@@ -2860,7 +2860,7 @@ wiz_intrinsic(VOID_ARGS)
         anything any;
         char buf[BUFSZ];
         int i, j, n, p, amt;
-        long oldtimeout, newtimeout;
+        int64_t oldtimeout, newtimeout;
         const char *propname;
         menu_item *pick_list = (menu_item *) 0;
 
@@ -2886,7 +2886,7 @@ wiz_intrinsic(VOID_ARGS)
             any.a_int = i + 1; /* +1: avoid 0 */
             oldtimeout = u.uprops[p].intrinsic & TIMEOUT;
             if (oldtimeout)
-                Sprintf(buf, "%-27s [%li]", propname, oldtimeout);
+                Sprintf(buf, "%-27s [%lli]", propname, (long long)oldtimeout);
             else
                 Sprintf(buf, "%s", propname);
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, buf, FALSE);
@@ -2901,7 +2901,7 @@ wiz_intrinsic(VOID_ARGS)
             i = pick_list[j].item.a_int - 1; /* -1: reverse +1 above */
             p = propertynames[i].prop_num;
             oldtimeout = u.uprops[p].intrinsic & TIMEOUT;
-            newtimeout = oldtimeout + (long) amt;
+            newtimeout = oldtimeout + (int64_t) amt;
             switch (p) 
             {
             case SICK:
@@ -3518,22 +3518,22 @@ int final;
         you_have("just started your adventure", "");
     } else {
         /* 'turns' grates on the nerves in this context... */
-        Sprintf(buf, "the dungeon %ld turn%s ago", moves, plur(moves));
+        Sprintf(buf, "the dungeon %lld turn%s ago", (long long)moves, plur(moves));
         /* same phrasing for current and final: "entered" is unconditional */
         enlght_line(You_, "entered ", buf, "", FALSE);
     }
     if (!Upolyd) {
         /* flags.showexp does not matter */
         /* experience level is already shown above */
-        Sprintf(buf, "%-1ld experience point%s", u.uexp, plur(u.uexp));
+        Sprintf(buf, "%-1lld experience point%s", (long long)u.uexp, plur(u.uexp));
         if (wizard) {
             if (u.ulevel < 30) {
                 int ulvl = (int) u.ulevel;
-                long nxtlvl = newuexp(ulvl);
-                /* long oldlvl = (ulvl > 1) ? newuexp(ulvl - 1) : 0; */
+                int64_t nxtlvl = newuexp(ulvl);
+                /* int64_t oldlvl = (ulvl > 1) ? newuexp(ulvl - 1) : 0; */
 
-                Sprintf(eos(buf), ", %ld %s%sneeded to attain level %d",
-                        (nxtlvl - u.uexp), (u.uexp > 0) ? "more " : "",
+                Sprintf(eos(buf), ", %lld %s%sneeded to attain level %d",
+                    (long long)(nxtlvl - u.uexp), (u.uexp > 0) ? "more " : "",
                         !final ? "" : "were ", (ulvl + 1));
             }
         }
@@ -3601,12 +3601,12 @@ int final;
        same amount as shown on status line which ignores container contents */
     {
         static const char Your_wallet[] = "Your wallet ";
-        long umoney = money_cnt(invent);
+        int64_t umoney = money_cnt(invent);
 
         if (!umoney) {
             enl_msg(Your_wallet, "is ", "was ", "empty", "");
         } else {
-            Sprintf(buf, "%ld %s", umoney, currency(umoney));
+            Sprintf(buf, "%lld %s", (long long)umoney, currency(umoney));
             enl_msg(Your_wallet, "contains ", "contained ", buf, "");
         }
     }
@@ -3647,7 +3647,7 @@ int final;
     Sprintf(modebuf, " mode (%s)", get_game_mode_description());
     enl_msg("You ", "are playing in ", "were playing in ", get_game_mode_text(TRUE), modebuf);
 
-    Sprintf(buf, "%ld", get_current_game_score());
+    Sprintf(buf, "%lld", (long long)get_current_game_score());
     enl_msg("Your game score ", "is ", "was ", buf, "");
 
     print_realtime(modebuf, get_current_game_duration());
@@ -3884,7 +3884,7 @@ int final;
     if (Strangled) {
         Strcpy(buf, "being strangled");
         if (wizard)
-            Sprintf(eos(buf), " (%ld)", (Strangled & TIMEOUT));
+            Sprintf(eos(buf), " (%lld)", (long long)(Strangled & TIMEOUT));
         you_are(buf, !(magic || cause_known(STRANGLED)) ? "" : from_what(STRANGLED));
     }
 
@@ -3896,7 +3896,7 @@ int final;
     {
         Strcpy(buf, "in an airless environment");
             if (wizard)
-                Sprintf(eos(buf), " (%ld)", (HAirless_environment & TIMEOUT));
+                Sprintf(eos(buf), " (%lld)", (long long)(HAirless_environment & TIMEOUT));
             you_are(buf, from_what(AIRLESS_ENVIRONMENT));
     }
 
@@ -4023,7 +4023,7 @@ int final;
         if (magic || cause_known(SLEEPY)) {
             Strcpy(buf, from_what(SLEEPY));
             if (wizard)
-                Sprintf(eos(buf), " (%ld)", (HSleepy & TIMEOUT));
+                Sprintf(eos(buf), " (%lld)", (long long)(HSleepy & TIMEOUT));
             enl_msg("You ", "fall", "fell", " asleep uncontrollably", buf);
         }
     }
@@ -5814,7 +5814,7 @@ int final;
     if (!u.uconduct.weaphit) {
         you_have_never("hit with a wielded weapon");
     } else if (wizard) {
-        Sprintf(buf, "used a wielded weapon %ld time%s", u.uconduct.weaphit,
+        Sprintf(buf, "used a wielded weapon %lld time%s", (long long)u.uconduct.weaphit,
                 plur(u.uconduct.weaphit));
         you_have_X(buf);
     }
@@ -5824,7 +5824,7 @@ int final;
     if (!u.uconduct.literate) {
         you_have_been("illiterate");
     } else if (wizard) {
-        Sprintf(buf, "read items or engraved %ld time%s", u.uconduct.literate,
+        Sprintf(buf, "read items or engraved %lld time%s", (long long)u.uconduct.literate,
                 plur(u.uconduct.literate));
         you_have_X(buf);
     }
@@ -5841,7 +5841,7 @@ int final;
     if (!u.uconduct.polypiles) {
         you_have_never("polymorphed an object");
     } else if (wizard) {
-        Sprintf(buf, "polymorphed %ld item%s", u.uconduct.polypiles,
+        Sprintf(buf, "polymorphed %lld item%s", (long long)u.uconduct.polypiles,
                 plur(u.uconduct.polypiles));
         you_have_X(buf);
     }
@@ -5849,7 +5849,7 @@ int final;
     if (!u.uconduct.polyselfs) {
         you_have_never("changed form");
     } else if (wizard) {
-        Sprintf(buf, "changed form %ld time%s", u.uconduct.polyselfs,
+        Sprintf(buf, "changed form %lld time%s", (long long)u.uconduct.polyselfs,
                 plur(u.uconduct.polyselfs));
         you_have_X(buf);
     }
@@ -5857,7 +5857,7 @@ int final;
     if (!u.uconduct.wishes) {
         you_have_X("used no wishes");
     } else {
-        Sprintf(buf, "used %ld wish%s", u.uconduct.wishes,
+        Sprintf(buf, "used %lld wish%s", (long long)u.uconduct.wishes,
                 (u.uconduct.wishes > 1L) ? "es" : "");
         if (u.uconduct.wisharti) {
             /* if wisharti == wishes
@@ -5873,7 +5873,7 @@ int final;
                         (u.uconduct.wisharti > 2L) ? "all "
                           : (u.uconduct.wisharti == 2L) ? "both " : "");
             else
-                Sprintf(eos(buf), " (%ld ", u.uconduct.wisharti);
+                Sprintf(eos(buf), " (%lld ", (long long)u.uconduct.wisharti);
 
             Sprintf(eos(buf), "for %s)",
                     (u.uconduct.wisharti == 1L) ? "an artifact"
@@ -5901,33 +5901,33 @@ int final;
     if (Role_if(PM_ARCHAEOLOGIST))
     {
         struct item_score_count_result artifacts = count_artifacts(invent);
-        long score_percentage = ((artifacts.score + (long)u.uachieve.role_achievement * ARCHAEOLOGIST_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((artifacts.score + (int64_t)u.uachieve.role_achievement * ARCHAEOLOGIST_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
-        Sprintf(goalbuf, "%ld %sartifact%s with you",artifacts.quantity, program_state.gameover ? "" : "known ", plur(artifacts.quantity));
+        Sprintf(goalbuf, "%lld %sartifact%s with you", (long long)artifacts.quantity, program_state.gameover ? "" : "known ", plur(artifacts.quantity));
         you_have(goalbuf, "");
-        Sprintf(goalbuf, "gained %ld%% of your maximum role score", score_percentage);
+        Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
     else if (Role_if(PM_BARBARIAN))
     {
         struct item_score_count_result valuables = count_powerful_melee_weapon_score(invent);
-        long score_percentage = ((valuables.score + (long)u.uachieve.role_achievement * BARBARIAN_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((valuables.score + (int64_t)u.uachieve.role_achievement * BARBARIAN_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
-        Sprintf(goalbuf, "%ld %smelee weapon%s of artifact or legendary quality with you", valuables.quantity, program_state.gameover ? "" : "known ", plur(valuables.quantity));
+        Sprintf(goalbuf, "%lld %smelee weapon%s of artifact or legendary quality with you", (long long)valuables.quantity, program_state.gameover ? "" : "known ", plur(valuables.quantity));
         you_have(goalbuf, "");
-        Sprintf(goalbuf, "gained %ld%% of your maximum role score", score_percentage);
+        Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
     else if (Role_if(PM_CAVEMAN))
     {
         struct amulet_count_result amulets = count_amulets(invent);
-        long score_percentage = ((amulets.score + (long)u.uachieve.role_achievement * CAVEMAN_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((amulets.score + (int64_t)u.uachieve.role_achievement * CAVEMAN_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
-        Sprintf(goalbuf, "%ld amulet%s of life saving with you", amulets.amulets_of_life_saving, plur(amulets.amulets_of_life_saving));
+        Sprintf(goalbuf, "%lld amulet%s of life saving with you", (long long)amulets.amulets_of_life_saving, plur(amulets.amulets_of_life_saving));
         you_have(goalbuf, "");
-        Sprintf(goalbuf, "%ld non-prediscovered amulet%s with you", amulets.other_amulets, plur(amulets.other_amulets));
+        Sprintf(goalbuf, "%lld non-prediscovered amulet%s with you", (long long)amulets.other_amulets, plur(amulets.other_amulets));
         you_have(goalbuf, "");
-        Sprintf(goalbuf, "gained %ld%% of your maximum role score", score_percentage);
+        Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
     else if (Role_if(PM_KNIGHT) && u.ualign.type != A_NEUTRAL)
@@ -5941,35 +5941,35 @@ int final;
     else if (Role_if(PM_RANGER))
     {
         struct item_score_count_result valuables = count_powerful_ranged_weapon_score(invent);
-        long score_percentage = ((valuables.score + (long)u.uachieve.role_achievement * RANGER_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((valuables.score + (int64_t)u.uachieve.role_achievement * RANGER_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
-        Sprintf(goalbuf, "%ld %sranged weapon%s of at least artifact, elite, or mythic quality with you", valuables.quantity_nonammo, program_state.gameover ? "" : "known ", plur(valuables.quantity_nonammo));
+        Sprintf(goalbuf, "%lld %sranged weapon%s of at least artifact, elite, or mythic quality with you", (long long)valuables.quantity_nonammo, program_state.gameover ? "" : "known ", plur(valuables.quantity_nonammo));
         you_have(goalbuf, "");
-        Sprintf(goalbuf, "%ld %sammo of at least artifact, elite, or mythic quality with you", valuables.quantity_ammo, program_state.gameover ? "" : "known ");
+        Sprintf(goalbuf, "%lld %sammo of at least artifact, elite, or mythic quality with you", (long long)valuables.quantity_ammo, program_state.gameover ? "" : "known ");
         you_have(goalbuf, "");
-        Sprintf(goalbuf, "gained %ld%% of your maximum role score", score_percentage);
+        Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
     else if (Role_if(PM_ROGUE))
     {
-        long valuableworth = money_cnt(invent) + hidden_gold() + carried_gem_value();
-        long score_percentage = ((valuableworth + (long)u.uachieve.role_achievement * ROGUE_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t valuableworth = money_cnt(invent) + hidden_gold() + carried_gem_value();
+        int64_t score_percentage = ((valuableworth + (int64_t)u.uachieve.role_achievement * ROGUE_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
-        Sprintf(goalbuf, "%ld %s worth of %svaluables with you", valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
+        Sprintf(goalbuf, "%lld %s worth of %svaluables with you", (long long)valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
         you_have(goalbuf, "");
-        Sprintf(goalbuf, "gained %ld%% of your maximum role score", score_percentage);
+        Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
     else if (Role_if(PM_SAMURAI))
     {
         struct item_score_count_result valuables = count_powerful_Japanese_item_score(invent);
-        long score_percentage = ((valuables.score + (long)u.uachieve.role_achievement * SAMURAI_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((valuables.score + (int64_t)u.uachieve.role_achievement * SAMURAI_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
-        Sprintf(goalbuf, "%ld Japanese non-ammo item%s of at least artifact, exceptional, or mythic quality with you", valuables.quantity_nonammo, plur(valuables.quantity_nonammo));
+        Sprintf(goalbuf, "%lld Japanese non-ammo item%s of at least artifact, exceptional, or mythic quality with you", (long long)valuables.quantity_nonammo, plur(valuables.quantity_nonammo));
         you_have(goalbuf, "");
-        Sprintf(goalbuf, "%ld Japanese ammo of at least artifact, exceptional, or mythic quality with you", valuables.quantity_ammo);
+        Sprintf(goalbuf, "%lld Japanese ammo of at least artifact, exceptional, or mythic quality with you", (long long)valuables.quantity_ammo);
         you_have(goalbuf, "");
-        Sprintf(goalbuf, "gained %ld%% of your maximum role score", score_percentage);
+        Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
     else if (Role_if(PM_TOURIST))
@@ -5983,50 +5983,50 @@ int final;
     else if (Role_if(PM_VALKYRIE))
     {
         struct item_score_count_result valuables = count_powerful_valkyrie_item_score(invent);
-        long score_percentage = ((valuables.score + (long)u.uachieve.role_achievement * VALKYRIE_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((valuables.score + (int64_t)u.uachieve.role_achievement * VALKYRIE_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
-        Sprintf(goalbuf, "%ld non-ammo item%s of %s quality with you", valuables.quantity_nonammo, plur(valuables.quantity_nonammo), u.ualign.type == A_CHAOTIC ? "infernal" : u.ualign.type == A_LAWFUL ? "celestial" : "primordial");
+        Sprintf(goalbuf, "%lld non-ammo item%s of %s quality with you", (long long)valuables.quantity_nonammo, plur(valuables.quantity_nonammo), u.ualign.type == A_CHAOTIC ? "infernal" : u.ualign.type == A_LAWFUL ? "celestial" : "primordial");
         you_have(goalbuf, "");
-        Sprintf(goalbuf, "%ld ammo of %s quality with you", valuables.quantity_ammo, u.ualign.type == A_CHAOTIC ? "infernal" : u.ualign.type == A_LAWFUL ? "celestial" : "primordial");
+        Sprintf(goalbuf, "%lld ammo of %s quality with you", (long long)valuables.quantity_ammo, u.ualign.type == A_CHAOTIC ? "infernal" : u.ualign.type == A_LAWFUL ? "celestial" : "primordial");
         you_have(goalbuf, "");
-        Sprintf(goalbuf, "gained %ld%% of your maximum role score", score_percentage);
+        Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
     else if (Role_if(PM_HEALER) || Role_if(PM_PRIEST) || Role_if(PM_WIZARD))
     {
-        long newspells = 0L;
-        long score_gained = 0L;
+        int64_t newspells = 0L;
+        int64_t score_gained = 0L;
         int i;
         for (i = 0; i < MAXSPELL && spl_book[i].sp_id != NO_SPELL; i++)
         {
             if (!P_RESTRICTED(objects[spl_book[i].sp_id].oc_skill) && !objects[spl_book[i].sp_id].oc_pre_discovered)
             {
                 newspells++;
-                score_gained += (Role_if(PM_HEALER) ? HEALER_PER_SPELL_LEVEL_SCORE : Role_if(PM_PRIEST) ? PRIEST_PER_SPELL_LEVEL_SCORE : WIZARD_PER_SPELL_LEVEL_SCORE) * (long)(spl_book[i].sp_lev + 2);
+                score_gained += (Role_if(PM_HEALER) ? HEALER_PER_SPELL_LEVEL_SCORE : Role_if(PM_PRIEST) ? PRIEST_PER_SPELL_LEVEL_SCORE : WIZARD_PER_SPELL_LEVEL_SCORE) * (int64_t)(spl_book[i].sp_lev + 2);
             }
         }
-        long score_percentage = ((score_gained + (long)u.uachieve.role_achievement * (Role_if(PM_HEALER) ? HEALER_ROLE_ACHIEVEMENT_SCORE : Role_if(PM_PRIEST) ? PRIEST_ROLE_ACHIEVEMENT_SCORE : WIZARD_ROLE_ACHIEVEMENT_SCORE)) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((score_gained + (int64_t)u.uachieve.role_achievement * (Role_if(PM_HEALER) ? HEALER_ROLE_ACHIEVEMENT_SCORE : Role_if(PM_PRIEST) ? PRIEST_ROLE_ACHIEVEMENT_SCORE : WIZARD_ROLE_ACHIEVEMENT_SCORE)) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
-        Sprintf(goalbuf, "learnt %ld new spell%s in unrestricted schools", newspells, plur(newspells));
+        Sprintf(goalbuf, "learnt %lld new spell%s in unrestricted schools", (long long)newspells, plur(newspells));
         you_have(goalbuf, "");
-        Sprintf(goalbuf, "gained %ld%% of your maximum role score", score_percentage);
+        Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
     else if (Role_if(PM_MONK))
     {
-        long score_upon_ascension = get_conduct_score_upon_ascension() * MONK_EXTRA_CONDUCT_SCORE_MULTIPLIER;
-        long score_percentage = ((0L + (long)u.uachieve.role_achievement * MONK_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
-        long score_percentage_upon_ascension = ((score_upon_ascension + (long)u.uachieve.role_achievement * MONK_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_upon_ascension = get_conduct_score_upon_ascension() * MONK_EXTRA_CONDUCT_SCORE_MULTIPLIER;
+        int64_t score_percentage = ((0L + (int64_t)u.uachieve.role_achievement * MONK_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage_upon_ascension = ((score_upon_ascension + (int64_t)u.uachieve.role_achievement * MONK_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = max(0, min(100, score_percentage));
         score_percentage_upon_ascension = max(0, min(100, score_percentage_upon_ascension));
         if(u.uachieve.ascended)
-            Sprintf(goalbuf, "gained %ld%% of your maximum role score", score_percentage_upon_ascension);
+            Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage_upon_ascension);
         else
-            Sprintf(goalbuf, "gained %ld%% of your maximum role score", score_percentage);
+            Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
         if (!u.uachieve.ascended)
         {
-            Sprintf(goalbuf, "%ld%% of your maximum role score upon ascension with current conducts intact", score_percentage_upon_ascension);
+            Sprintf(goalbuf, "%lld%% of your maximum role score upon ascension with current conducts intact", (long long)score_percentage_upon_ascension);
             enl_msg(You_, "will gain ", "would have gained ", goalbuf, "");
         }
     }
@@ -6681,7 +6681,7 @@ struct obj *otmp;
         if (OMID(otmp))
             sz += sizeof (unsigned);
         if (OLONG(otmp))
-            sz += sizeof (long);
+            sz += sizeof (int64_t);
         if (OMAILCMD(otmp))
             sz += strlen(OMAILCMD(otmp)) + 1;
     }
@@ -6691,12 +6691,12 @@ struct obj *otmp;
 STATIC_OVL void
 count_obj(chain, total_count, total_size, top, recurse)
 struct obj *chain;
-long *total_count;
+int64_t *total_count;
 size_t *total_size;
 boolean top;
 boolean recurse;
 {
-    long count;
+    int64_t count;
     size_t size;
     struct obj *obj;
 
@@ -6718,11 +6718,11 @@ winid win;
 const char *src;
 struct obj *chain;
 boolean force;
-long *total_count;
+int64_t *total_count;
 size_t *total_size;
 {
     char buf[BUFSZ];
-    long count = 0L;
+    int64_t count = 0L;
     size_t size = 0;
 
     count_obj(chain, &count, &size, TRUE, FALSE);
@@ -6740,11 +6740,11 @@ mon_invent_chain(win, src, chain, total_count, total_size)
 winid win;
 const char *src;
 struct monst *chain;
-long *total_count;
+int64_t *total_count;
 size_t *total_size;
 {
     char buf[BUFSZ];
-    long count = 0;
+    int64_t count = 0;
     size_t size = 0;
     struct monst *mon;
 
@@ -6763,11 +6763,11 @@ STATIC_OVL void
 contained_stats(win, src, total_count, total_size)
 winid win;
 const char *src;
-long *total_count;
+int64_t *total_count;
 size_t *total_size;
 {
     char buf[BUFSZ];
-    long count = 0;
+    int64_t count = 0;
     size_t size = 0;
     struct monst *mon;
 
@@ -6835,11 +6835,11 @@ winid win;
 const char *src;
 struct monst *chain;
 boolean force;
-long *total_count;
+int64_t *total_count;
 size_t *total_size;
 {
     char buf[BUFSZ];
-    long count = 0L;
+    int64_t count = 0L;
     size_t size = 0;
     struct monst *mon;
     /* mon->wormno means something different for migrating_mons and mydogs */
@@ -6860,11 +6860,11 @@ size_t *total_size;
 STATIC_OVL void
 misc_stats(win, total_count, total_size)
 winid win;
-long *total_count;
+int64_t *total_count;
 size_t *total_size;
 {
     char buf[BUFSZ], hdrbuf[QBUFSZ];
-    long count = 0L;
+    int64_t count = 0L;
     size_t size = 0;
     int idx;
     struct trap *tt;
@@ -6967,7 +6967,7 @@ size_t *total_size;
     size = 0;
     for (bi = level.bonesinfo; bi; bi = bi->next) {
         ++count;
-        size += (long) sizeof *bi;
+        size += sizeof *bi;
     }
     if (count || size) {
         *total_count += count;
@@ -7002,7 +7002,7 @@ wiz_show_stats(VOID_ARGS)
 {
     char buf[BUFSZ];
     winid win;
-    long total_obj_count, total_mon_count, total_ovr_count, total_misc_count;
+    int64_t total_obj_count, total_mon_count, total_ovr_count, total_misc_count;
     size_t total_obj_size, total_mon_size, total_ovr_size, total_misc_size;
     
     win = create_nhwindow(NHW_TEXT);
@@ -8926,13 +8926,13 @@ char
 get_count(allowchars, inkey, maxcount, count, historical)
 char *allowchars;
 char inkey;
-long maxcount;
-long *count;
+int64_t maxcount;
+int64_t *count;
 boolean historical; /* whether to include in message history: True => yes */
 {
     char qbuf[QBUFSZ];
     int key;
-    long cnt = 0L;
+    int64_t cnt = 0L;
     boolean backspaced = FALSE;
     /* this should be done in port code so that we have erase_char
        and kill_char available; we can at least fake erase_char */
@@ -8946,7 +8946,7 @@ boolean historical; /* whether to include in message history: True => yes */
             key = readchar();
 
         if (digit(key)) {
-            cnt = 10L * cnt + (long) (key - '0');
+            cnt = 10L * cnt + (int64_t) (key - '0');
             if (cnt < 0)
                 cnt = 0;
             else if (maxcount > 0 && cnt > maxcount)
@@ -8966,7 +8966,7 @@ boolean historical; /* whether to include in message history: True => yes */
             if (backspaced && !cnt) {
                 Sprintf(qbuf, "Count: ");
             } else {
-                Sprintf(qbuf, "Count: %ld", cnt);
+                Sprintf(qbuf, "Count: %lld", (long long)cnt);
                 backspaced = FALSE;
             }
             custompline(SUPPRESS_HISTORY, "%s", qbuf);
@@ -8975,7 +8975,7 @@ boolean historical; /* whether to include in message history: True => yes */
     }
 
     if (historical) {
-        Sprintf(qbuf, "Count: %ld ", *count);
+        Sprintf(qbuf, "Count: %lld ", (long long)*count);
         (void) key2txt((uchar) key, eos(qbuf));
         putmsghistory(qbuf, FALSE);
     }
@@ -9005,7 +9005,7 @@ parse(VOID_ARGS)
     escape_sequence_key_start_allowed = 1;
 
     if ((!Cmd.num_pad && !Cmd.gnh_layout) || ((foo = readchar()) == Cmd.spkeys[NHKF_COUNT])) {
-        long tmpmulti = (long)multi;
+        int64_t tmpmulti = (int64_t)multi;
 
         foo = get_count((char *) 0, '\0', LARGEST_INT, &tmpmulti, FALSE);
         last_multi = multi = (int)tmpmulti;

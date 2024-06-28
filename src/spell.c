@@ -661,7 +661,7 @@ uchar capitalize_style;
         else if (objects[booktype].oc_spell_level == 0)
             Sprintf(lvlbuf, "major %s cantrip", spelltypemnemonic(objects[booktype].oc_skill));
         else if (objects[booktype].oc_spell_level > 0)
-            Sprintf(lvlbuf, "level %ld %s spell", objects[booktype].oc_spell_level, spelltypemnemonic(objects[booktype].oc_skill));
+            Sprintf(lvlbuf, "level %lld %s spell", (long long)objects[booktype].oc_spell_level, spelltypemnemonic(objects[booktype].oc_skill));
         else
             Strcpy(lvlbuf, "spell of inappropriate level");
     }
@@ -672,7 +672,7 @@ uchar capitalize_style;
         else if (objects[booktype].oc_spell_level == 0)
             Strcpy(lvlbuf, "major cantrip");
         else if (objects[booktype].oc_spell_level > 0)
-            Sprintf(lvlbuf, "%s%ld", include_level ? "level " : "", objects[booktype].oc_spell_level);
+            Sprintf(lvlbuf, "%s%lld", include_level ? "level " : "", (long long)objects[booktype].oc_spell_level);
         else
             Sprintf(lvlbuf, "inappropriate%s", include_level ? " level" : "");
     }
@@ -707,7 +707,7 @@ int booktype;
     else if (objects[booktype].oc_spell_level == 0)
         Strcpy(lvlbuf, "C");
     else if (objects[booktype].oc_spell_level > 0)
-        Sprintf(lvlbuf, "%ld", objects[booktype].oc_spell_level);
+        Sprintf(lvlbuf, "%lld", (long long)objects[booktype].oc_spell_level);
     else
         Strcpy(lvlbuf, "*");
 
@@ -1570,7 +1570,7 @@ STATIC_OVL void
 spell_backfire(spell)
 int spell;
 {
-    long duration = (long) ((spellev(spell) + 1) * 3), /* 6..24 */
+    int64_t duration = (int64_t) ((spellev(spell) + 1) * 3), /* 6..24 */
          old_stun = (HStun & TIMEOUT), old_conf = (HConfusion & TIMEOUT);
 
     /* Prior to 3.4.1, only effect was confusion; it still predominates.
@@ -1710,7 +1710,7 @@ STATIC_OVL const char*
 get_spell_attribute_description(booktype)
 int booktype;
 {
-    long attrno = objects[booktype].oc_spell_attribute;
+    int64_t attrno = objects[booktype].oc_spell_attribute;
     if (attrno >= 0)
     {
         switch (attrno)
@@ -1876,7 +1876,7 @@ int spell, booktype;
     /* Cooldown */
     if (objects[booktype].oc_spell_cooldown > 0)
     {
-        Sprintf(buf2, "%ld round%s", objects[booktype].oc_spell_cooldown, objects[booktype].oc_spell_cooldown == 1 ? "" : "s");
+        Sprintf(buf2, "%lld round%s", (long long)objects[booktype].oc_spell_cooldown, objects[booktype].oc_spell_cooldown == 1 ? "" : "s");
     }
     else
     {
@@ -1897,14 +1897,14 @@ int spell, booktype;
     /* Range */
     if (objects[booktype].oc_spell_range > 0)
     {
-        Sprintf(buf, "Range:            %ld'", objects[booktype].oc_spell_range * 5L);        
+        Sprintf(buf, "Range:            %lld'", (long long)objects[booktype].oc_spell_range * 5L);
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
     /* Radius */
     if (objects[booktype].oc_spell_radius > 0)
     {
-        Sprintf(buf, "Radius:           %ld'", objects[booktype].oc_spell_radius * 5L);        
+        Sprintf(buf, "Radius:           %lld'", (long long)objects[booktype].oc_spell_radius * 5L);
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
@@ -1977,7 +1977,7 @@ int spell, booktype;
             if(objects[booktype].oc_spell_per_level_step == 1)
                 Sprintf(eos(buf), " per caster level");
             else
-                Sprintf(eos(buf), " per %ld caster levels", objects[booktype].oc_spell_per_level_step);
+                Sprintf(eos(buf), " per %lld caster levels", (long long)objects[booktype].oc_spell_per_level_step);
             
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
@@ -1985,7 +1985,7 @@ int spell, booktype;
             {
                 int max_level = get_maximum_applicable_spell_damage_level(booktype, &youmonst);
                 used_level = min(max_level, u.ulevel);
-                used_bonuses = used_level / (max(1, objects[booktype].oc_spell_per_level_step));
+                used_bonuses = used_level / (max(1, (int)objects[booktype].oc_spell_per_level_step));
                 if (max_level < MAXULEV)
                 {
                     Sprintf(buf, "Level limit:      %d", max_level);
@@ -2177,7 +2177,7 @@ int spell, booktype;
     }
 
     /* Skill chance */
-    Sprintf(buf, "Train chance:     %ld%%", objects[booktype].oc_spell_skill_chance);    
+    Sprintf(buf, "Train chance:     %lld%%", (long long)objects[booktype].oc_spell_skill_chance);
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
     /* Flags */
@@ -3188,9 +3188,9 @@ int otyp;
         return;
 
     boolean hadbefore = u.uprops[objects[otyp].oc_dir_subtype].intrinsic || u.uprops[objects[otyp].oc_dir_subtype].extrinsic;
-    long duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
-    long oldtimeout = u.uprops[objects[otyp].oc_dir_subtype].intrinsic & TIMEOUT;
-    long oldprop = u.uprops[objects[otyp].oc_dir_subtype].intrinsic & ~TIMEOUT;
+    int64_t duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
+    int64_t oldtimeout = u.uprops[objects[otyp].oc_dir_subtype].intrinsic & TIMEOUT;
+    int64_t oldprop = u.uprops[objects[otyp].oc_dir_subtype].intrinsic & ~TIMEOUT;
 
     if (oldtimeout > duration || duration <= 0)
         return;
@@ -4806,7 +4806,7 @@ int spell;
 }
 
 /* Now a percentage */
-long
+int64_t
 get_object_spell_casting_penalty(obj)
 struct obj* obj;
 {
@@ -4826,7 +4826,7 @@ struct obj* obj;
     if (res < 0)
         res = 0;
 
-    return (long)(res * (double)ARMOR_SPELL_CASTING_PENALTY_MULTIPLIER);
+    return (int64_t)(res * (double)ARMOR_SPELL_CASTING_PENALTY_MULTIPLIER);
 }
 
 STATIC_OVL int
@@ -4838,7 +4838,7 @@ boolean limited;
      * the probability of player's success at cast a given spell.
      */
     int chance, statused = A_INT;
-    long armor_penalty_percentage;
+    int64_t armor_penalty_percentage;
     int skill;
 
     statused = attribute_value_for_spellbook(spellid(spell));
@@ -4891,12 +4891,12 @@ boolean limited;
 
     skill = P_SKILL_LEVEL(spell_skilltype(spellid(spell)));
 
-    long bonus = 0L;
-    bonus += 15L * (long)statused;
-    bonus += (long)spell_skill_base_success_bonus(skill);
-    bonus += (long)spell_skill_ulevel_success_bonus(skill);
-    bonus += (skill == P_ISRESTRICTED ? 0L : 5L * (long)u.uspellcastingbonus_unrestricted); /* items */
-    bonus += 5L * (long)u.uspellcastingbonus_all; /* items */
+    int64_t bonus = 0L;
+    bonus += 15L * (int64_t)statused;
+    bonus += (int64_t)spell_skill_base_success_bonus(skill);
+    bonus += (int64_t)spell_skill_ulevel_success_bonus(skill);
+    bonus += (skill == P_ISRESTRICTED ? 0L : 5L * (int64_t)u.uspellcastingbonus_unrestricted); /* items */
+    bonus += 5L * (int64_t)u.uspellcastingbonus_all; /* items */
 
     chance += (int)bonus;
     chance -= (int)armor_penalty_percentage;
@@ -4968,7 +4968,7 @@ spellretention(idx, outbuf)
 int idx;
 char *outbuf;
 {
-    long turnsleft, percent, accuracy;
+    int64_t turnsleft, percent, accuracy;
     int skill;
 
     skill = P_SKILL_LEVEL(spell_skilltype(spellid(idx)));
@@ -4979,7 +4979,7 @@ char *outbuf;
     if (turnsleft < 1L) {
         /* spell has expired; hero can't successfully cast it anymore */
         Strcpy(outbuf, "(gone)");
-    } else if (turnsleft >= (long) SPELL_IS_KEEN) {
+    } else if (turnsleft >= (int64_t) SPELL_IS_KEEN) {
         /* full retention, first turn or immediately after reading book */
         Strcpy(outbuf, "100%");
     } else {
@@ -4997,7 +4997,7 @@ char *outbuf;
          * (N-1)%+1 through N%; so 1% is "greater than 0, at most 200".
          * SPELL_IS_KEEN is a multiple of 100; SPELL_IS_KEEN/100 loses no precision.
          */
-        percent = (turnsleft - 1L) / ((long) SPELL_IS_KEEN / 100L) + 1L;
+        percent = (turnsleft - 1L) / ((int64_t) SPELL_IS_KEEN / 100L) + 1L;
         accuracy =
             (skill >= P_EXPERT) ? 2L : (skill == P_SKILLED)
                                            ? 5L

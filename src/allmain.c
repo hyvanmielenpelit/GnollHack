@@ -26,7 +26,7 @@ STATIC_DCL int NDECL(select_rwraith);
 STATIC_DCL boolean NDECL(maybe_create_rwraith);
 
 #ifdef EXTRAINFO_FN
-static long prev_dgl_extrainfo = 0;
+static int64_t prev_dgl_extrainfo = 0;
 #endif
 
 void
@@ -997,7 +997,7 @@ regenerate_hp(VOID_ARGS)
                     }
                 }
             } else { /* u.ulevel <= 9 */
-                if (!(moves % (long) ((MAXULEV + 12) / (u.ulevel + 2) + 1)))
+                if (!(moves % (int64_t) ((MAXULEV + 12) / (u.ulevel + 2) + 1)))
                     heal = 1;
             }
             if (Regeneration && !heal)

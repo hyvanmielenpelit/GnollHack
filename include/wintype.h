@@ -71,7 +71,7 @@ enum any_types {
 /* menu return list */
 typedef struct mi {
     anything item; /* identifier */
-    long count;    /* count */
+    int64_t count;    /* count */
 } menu_item;
 #define MENU_ITEM_P struct mi
 

@@ -14,7 +14,7 @@
 struct qtmsg {
     int msgnum;
     char delivery;
-    long offset, size, summary_size;
+    int64_t offset, size, summary_size;
 };
 
 #ifdef MAKEDEFS_C /***** MAKEDEFS *****/
@@ -29,7 +29,7 @@ struct msghdr {
 struct qthdr {
     int n_hdr;
     char id[N_HDR][LEN_HDR];
-    long offset[N_HDR];
+    int64_t offset[N_HDR];
 };
 
 /* Error message macros */

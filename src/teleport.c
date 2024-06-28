@@ -817,7 +817,7 @@ struct monst* mtmp;
 int
 dotelecmd()
 {
-    long save_HTele, save_ETele;
+    int64_t save_HTele, save_ETele;
     int res, added, hidden;
     boolean ignore_restrictions = FALSE;
 /* also defined in spell.c */

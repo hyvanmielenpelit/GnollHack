@@ -136,14 +136,14 @@ docharacterstatistics(VOID_ARGS)
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
     /* Experience */
-    Sprintf(buf, "Experience:        %ld", u.uexp);
+    Sprintf(buf, "Experience:        %lld", (long long)u.uexp);
 
     if (u.ulevel < MAXULEV)
     {
         int ulvl = (int)u.ulevel;
-        long exp_for_nxt_lvl = newuexp(ulvl);
+        int64_t exp_for_nxt_lvl = newuexp(ulvl);
 
-        Sprintf(eos(buf), " / %ld", exp_for_nxt_lvl);
+        Sprintf(eos(buf), " / %lld", (long long)exp_for_nxt_lvl);
     }
     
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
@@ -250,9 +250,9 @@ docharacterstatistics(VOID_ARGS)
     for (i = 1; i <= LAST_PROP; i++)
     {
         struct obj* obj = 0;
-        long innate_intrinsic = u.uprops[i].intrinsic & (INTRINSIC | FROM_FORM);
-        long temporary_intrinsic = u.uprops[i].intrinsic & TIMEOUT;
-        long extrinsic = u.uprops[i].extrinsic;
+        int64_t innate_intrinsic = u.uprops[i].intrinsic & (INTRINSIC | FROM_FORM);
+        int64_t temporary_intrinsic = u.uprops[i].intrinsic & TIMEOUT;
+        int64_t extrinsic = u.uprops[i].extrinsic;
         boolean is_recurring = property_definitions[i].recurring;
         boolean o_stats_known = FALSE;
         if (extrinsic)
@@ -982,11 +982,11 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
     {
         /* Gold value */
         if (!obj)
-            Sprintf(buf2, "%ld gold", objects[otyp].oc_cost);
+            Sprintf(buf2, "%lld gold", (long long)objects[otyp].oc_cost);
         else if(obj->oartifact)
-            Sprintf(buf2, "%ld gold", artilist[obj->oartifact].cost);
+            Sprintf(buf2, "%lld gold", (long long)artilist[obj->oartifact].cost);
         else
-            Sprintf(buf2, "%ld gold", get_object_base_value(obj));
+            Sprintf(buf2, "%lld gold", (long long)get_object_base_value(obj));
 
         Sprintf(buf, "Base value:             %s", buf2);
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
@@ -1110,7 +1110,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 int mnum = obj->corpsenm;
                 if (is_obj_rotting_corpse(obj) && mnum > NON_PM && obj->rotknown)
                 {
-                    long rotted = get_rotted_status(obj);
+                    int64_t rotted = get_rotted_status(obj);
                     if (rotted > 5L)
                     {
                         Strcpy(buf2, "Tainted");
@@ -2001,12 +2001,12 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             }
             if (objects[otyp].oc_spell_range > 0)
             {
-                Sprintf(buf, "%s effect range:    %s%ld'", itemname_hc, itempadding, objects[otyp].oc_spell_range * 5L);
+                Sprintf(buf, "%s effect range:    %s%lld'", itemname_hc, itempadding, (long long)objects[otyp].oc_spell_range * 5L);
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
             if (objects[otyp].oc_spell_radius > 0)
             {
-                Sprintf(buf, "%s effect radius:   %s%ld'", itemname_hc, itempadding, objects[otyp].oc_spell_radius * 5L);
+                Sprintf(buf, "%s effect radius:   %s%lld'", itemname_hc, itempadding, (long long)objects[otyp].oc_spell_radius * 5L);
                 putstr(datawin, ATR_INDENT_AT_COLON, buf);
             }
 
@@ -2349,11 +2349,11 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             }
         }
 
-        long splpenalty = obj ? get_object_spell_casting_penalty(obj) : objects[otyp].oc_spell_casting_penalty * ARMOR_SPELL_CASTING_PENALTY_MULTIPLIER;
+        int64_t splpenalty = obj ? get_object_spell_casting_penalty(obj) : objects[otyp].oc_spell_casting_penalty * ARMOR_SPELL_CASTING_PENALTY_MULTIPLIER;
         if (objects[otyp].oc_class != SPBOOK_CLASS && objects[otyp].oc_class != WAND_CLASS &&
             (objects[otyp].oc_class == ARMOR_CLASS || (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || splpenalty != 0))
         {
-            Sprintf(buf2, "%s%ld%%", splpenalty <= 0 ? "+" : "", -splpenalty);
+            Sprintf(buf2, "%s%lld%%", splpenalty <= 0 ? "+" : "", (long long)-splpenalty);
             if (splpenalty < 0)
                 Sprintf(buf, "Spell casting bonus:    %s (somatic spells only)", buf2);
             else
@@ -2572,7 +2572,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
             if (stats_known)
             {
-                long maxburn = obj_light_maximum_burn_time(obj);
+                int64_t maxburn = obj_light_maximum_burn_time(obj);
                 if (obj_burns_infinitely(obj) || maxburn < 0)
                 {
                     Strcpy(buf, "Burning time left:      Infinite");
@@ -2582,10 +2582,10 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 }
                 else if ((obj->speflags & SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO) != 0) /* Need to weigh the item */
                 {
-                    long burnleft = obj_light_burn_time_left(obj);
-                    Sprintf(buf, "Burning time left:      %ld turn%s", burnleft, plur(burnleft));
+                    int64_t burnleft = obj_light_burn_time_left(obj);
+                    Sprintf(buf, "Burning time left:      %lld turn%s", (long long)burnleft, plur(burnleft));
                     putstr(datawin, ATR_INDENT_AT_COLON, buf);
-                    Sprintf(buf, "Maximum burning time:   %ld turn%s", maxburn, plur(maxburn));
+                    Sprintf(buf, "Maximum burning time:   %lld turn%s", (long long)maxburn, plur(maxburn));
                     putstr(datawin, ATR_INDENT_AT_COLON, buf);
                 }
             }
@@ -6071,7 +6071,7 @@ dodropmany()
         sellobj_state(SELL_DELIBERATE);
 
     int n, n_dropped = 0, i;
-    long cnt;
+    int64_t cnt;
     struct obj* otmp, * otmp2;
     menu_item* pick_list = (menu_item*)0;
 
@@ -6165,7 +6165,7 @@ menu_drop(retry)
 int retry;
 {
     int n, i, n_dropped = 0;
-    long cnt;
+    int64_t cnt;
     struct obj *otmp, *otmp2;
     menu_item* pick_list = (menu_item*)0;
     boolean all_categories = TRUE;
@@ -6336,7 +6336,7 @@ menu_autostash(retry)
 int retry;
 {
     int n, i, n_autobagged = 0;
-    long cnt;
+    int64_t cnt;
     struct obj* otmp, * otmp2;
     menu_item* pick_list = (menu_item*)0;
     boolean all_categories = TRUE;
@@ -7681,7 +7681,7 @@ schedule_goto(tolev, at_location, falling, teleport, inside_tower, portal_flag, 
 d_level *tolev;
 uchar at_location; /* 1 = at stairs, 2 = at altar */
 boolean falling, teleport, inside_tower;
-long portal_flag;
+int64_t portal_flag;
 const char *pre_msg, *post_msg;
 {
     short typmask = UTOFLAGS_DEFERRED_GOTO; /* non-zero triggers `deferred_goto' */
@@ -7977,7 +7977,7 @@ int animateintomon; // monstid to be animated into
 void
 revive_mon(arg, timeout)
 anything *arg;
-long timeout UNUSED;
+int64_t timeout UNUSED;
 {
     struct obj *body = arg->a_obj;
     struct permonst *mptr = &mons[body->corpsenm];
@@ -8003,7 +8003,7 @@ long timeout UNUSED;
 
     /* if we succeed, the corpse is gone */
     if (!revive_corpse(body)) {
-        long when;
+        int64_t when;
         int action;
 
         if (is_rider_or_tarrasque(mptr) && rn2(99)) { /* Rider usually tries again */
@@ -8085,7 +8085,7 @@ dowipe()
 
 void
 set_wounded_legs(side, timex)
-register long side;
+register int64_t side;
 register int timex;
 {
     /* KMH -- STEED
@@ -9112,8 +9112,8 @@ const genericptr q;
     const char* skl_name1 = spelltypemnemonic(skl1);
     const char* skl_name2 = spelltypemnemonic(skl2);
 
-    long lvl1 = objects[idx1].oc_spell_level;
-    long lvl2 = objects[idx2].oc_spell_level;
+    int64_t lvl1 = objects[idx1].oc_spell_level;
+    int64_t lvl2 = objects[idx2].oc_spell_level;
 
     int skill_res = 0;
     if (skl_name1 && skl_name2)

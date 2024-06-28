@@ -40,10 +40,10 @@ struct trap {
     uchar ttyp;
     uchar tsubtyp;
     enum lever_effect_types lever_effect;
-    long effect_param1;
-    long effect_param2;
-    long effect_param3;
-    long effect_param4;
+    int64_t effect_param1;
+    int64_t effect_param2;
+    int64_t effect_param3;
+    int64_t effect_param4;
     uint64_t effect_flags;
     uint64_t tflags;
     uint64_t activation_count;

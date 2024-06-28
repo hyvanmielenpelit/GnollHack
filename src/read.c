@@ -311,7 +311,7 @@ doread()
         pline_ex(ATR_NONE, CLR_MSG_TEXT, "\"%d0%d %ld%d1 0%d%d0\"%s",
               (((int) scroll->o_id % 89) + 10),
               ((int) scroll->o_id % 4),
-              ((((long) scroll->o_id * 499L) % 899999L) + 100000L),
+              ((((int64_t) scroll->o_id * 499L) % 899999L) + 100000L),
               ((int) scroll->o_id % 10),
               (!((int) scroll->o_id % 3)),
               (((int) scroll->o_id * 7) % 10),
@@ -1270,7 +1270,7 @@ boolean dopopup;
         }
         else
         {
-            //long mask = is_on ? (obj == uleft ? LEFT_RING : RIGHT_RING) : 0L;
+            //int64_t mask = is_on ? (obj == uleft ? LEFT_RING : RIGHT_RING) : 0L;
 
             if (s == 0)
                 play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
@@ -2025,7 +2025,7 @@ struct monst* targetmonst;
                     updatemaxen();
                     updatemaxhp();
                 }
-                make_stunned((HStun & TIMEOUT) + (long)rn1(10, 10), TRUE);
+                make_stunned((HStun & TIMEOUT) + (int64_t)rn1(10, 10), TRUE);
             }
         }
     }   break;
@@ -4695,7 +4695,7 @@ boolean confused; /* Is caster confused */
         special_effect_wait_until_end(0);
         for (obj = objchn; obj; obj = obj->nobj)
         {
-            long wornmask;
+            int64_t wornmask;
 
             /* gold isn't subject to cursing and blessing */
             if (obj->oclass == COIN_CLASS)

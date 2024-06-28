@@ -718,9 +718,9 @@ struct obj *otmp;
 void
 set_artifact_intrinsic(otmp, wp_mask)
 struct obj *otmp;
-long wp_mask;
+int64_t wp_mask;
 {
-    long *propptr = 0;
+    int64_t *propptr = 0;
     register const struct artifact *oart = get_artifact(otmp);
     register uchar proptyp;
     register uint64_t spfx;
@@ -2662,7 +2662,7 @@ struct obj *obj;
         case ARTINVOKE_HEALING:
         {
             int healamt = (u.uhpmax + 1 - u.uhp) / 2;
-            long creamed = (long) u.ucreamed;
+            int64_t creamed = (int64_t) u.ucreamed;
             play_sfx_sound(SFX_HEALING);
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
             special_effect_wait_until_action(0);
@@ -3280,7 +3280,7 @@ uchar inv_prop;
 }
 
 /* Return the price sold to the hero of a given artifact or unique item */
-long
+int64_t
 arti_cost(otmp)
 struct obj *otmp;
 {
@@ -3421,7 +3421,7 @@ what_gives(prop_index)
 int prop_index;
 {
     struct obj *obj;
-    long wornbits;
+    int64_t wornbits;
     uint64_t spfx = prop_to_spfx(prop_index);
 
     wornbits = u.uprops[prop_index].extrinsic;
@@ -3791,7 +3791,7 @@ boolean drop_untouchable;
 {
     struct artifact *art;
     boolean beingworn, carryeffect, invoked;
-    long wearmask = ~(W_QUIVER | W_SWAP_WEAPON | W_BALL);
+    int64_t wearmask = ~(W_QUIVER | W_SWAP_WEAPON | W_BALL);
 
     beingworn = ((obj->owornmask & wearmask) != 0L
                  /* some items in use don't have any wornmask setting */

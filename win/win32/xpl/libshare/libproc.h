@@ -52,7 +52,7 @@ void lib_delay_output(void);
 void lib_delay_output_milliseconds(int interval);
 void lib_delay_output_intervals(int intervals);
 #ifdef CHANGE_COLOR
-void lib_change_color(int, long, int);
+void lib_change_color(int, int64_t, int);
 #ifdef MAC
 void FDECL(lib_change_background, (int));
 short FDECL(lib_set_font_name, (winid, char*));

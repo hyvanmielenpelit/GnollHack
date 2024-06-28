@@ -357,12 +357,12 @@ struct splev_var {
         struct opvar *value;
         struct opvar **arrayvalues;
     } data;
-    long array_len;
+    int64_t array_len;
 };
 
 struct splevstack {
-    long depth;
-    long depth_alloc;
+    int64_t depth;
+    int64_t depth_alloc;
     struct opvar **stackdata;
 };
 
@@ -370,7 +370,7 @@ struct sp_frame {
     struct sp_frame *next;
     struct splevstack *stack;
     struct splev_var *variables;
-    long n_opcode;
+    int64_t n_opcode;
 };
 
 struct sp_coder {
@@ -405,10 +405,10 @@ struct sp_coder {
  * Structures manipulated by the special levels loader & compiler
  */
 
-#define packed_coord long
+#define packed_coord int64_t
 typedef struct {
     xchar is_random;
-    long getloc_flags;
+    int64_t getloc_flags;
     int x, y;
 } unpacked_coord;
 
@@ -418,7 +418,7 @@ typedef struct {
 } opcmp;
 
 typedef struct {
-    long jmp_target;
+    int64_t jmp_target;
 } opjmp;
 
 typedef union str_or_len {
@@ -428,7 +428,7 @@ typedef union str_or_len {
 
 typedef struct {
     xchar init_style; /* one of LVLINIT_foo */
-    long flags;
+    int64_t flags;
     schar filling;
     boolean init_present, padding;
     char fg, bg;
@@ -457,12 +457,12 @@ typedef struct {
     packed_coord coord;
     packed_coord target_coord;
     int lever_effect;
-    long effect_parameter1;
-    long effect_parameter2;
-    long effect_parameter3;
-    long effect_parameter4;
-    long effect_subtype;
-    long effect_subtype2;
+    int64_t effect_parameter1;
+    int64_t effect_parameter2;
+    int64_t effect_parameter3;
+    int64_t effect_parameter4;
+    int64_t effect_subtype;
+    int64_t effect_subtype2;
     uint64_t effect_flags;
     uint64_t lever_flags;
 } spllever;
@@ -474,11 +474,11 @@ typedef struct {
     packed_coord coord;
     xchar x, y, class, appear;
     schar peaceful, asleep;
-    long female, invis, cancelled, revived, avenge, fleeing, blinded,
+    int64_t female, invis, cancelled, revived, avenge, fleeing, blinded,
         paralyzed, stunned, confused, waitforu, protector, maxhp, level_adjustment, keep_original_invent,
         level_boss, use_boss_hostility;
-    long seentraps;
-    long has_invent;
+    int64_t seentraps;
+    int64_t has_invent;
 } monster;
 
 typedef struct {
@@ -607,7 +607,7 @@ typedef struct {
 
 typedef struct {
     _opcode *opcodes;
-    long n_opcodes;
+    int64_t n_opcodes;
 } sp_lev;
 
 typedef struct {
@@ -625,18 +625,18 @@ struct lc_funcdefs_parm {
 struct lc_funcdefs {
     struct lc_funcdefs *next;
     char *name;
-    long addr;
+    int64_t addr;
     sp_lev code;
-    long n_called;
+    int64_t n_called;
     struct lc_funcdefs_parm *params;
-    long n_params;
+    int64_t n_params;
 };
 
 struct lc_vardefs {
     struct lc_vardefs *next;
     char *name;
-    long var_type; /* SPOVAR_foo */
-    long n_used;
+    int64_t var_type; /* SPOVAR_foo */
+    int64_t n_used;
 };
 
 struct lc_breakdef {
@@ -686,7 +686,7 @@ typedef const char *vA;
 #endif
 /* hack to avoid "warning: cast to 'vA' (aka 'const char *') from smaller
    integer type 'int' [-Wint-to-pointer-cast]" */
-#define vA_(a) ((vA) (long) a)
+#define vA_(a) ((vA) (int64_t) a)
 #undef VA_ARGS  /* redefine with the maximum number actually used */
 #undef VA_SHIFT /* ditto */
 #undef VA_PASS1

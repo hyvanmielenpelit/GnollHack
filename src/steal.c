@@ -35,14 +35,14 @@ register struct obj *otmp;
 }
 
 /* proportional subset of gold; return value actually fits in an int */
-long
+int64_t
 somegold(lmoney)
-long lmoney;
+int64_t lmoney;
 {
-#ifdef LINT /* long conv. ok */
+#ifdef LINT /* int64_t conv. ok */
     int igold = 0;
 #else
-    int igold = (lmoney >= (long) LARGEST_INT) ? LARGEST_INT : (int) lmoney;
+    int igold = (lmoney >= (int64_t) LARGEST_INT) ? LARGEST_INT : (int) lmoney;
 #endif
 
     if (igold < 50)
@@ -60,7 +60,7 @@ long lmoney;
     else
         igold = rn1(igold - 5000 + 1, 5000);
 
-    return (long) igold;
+    return (int64_t) igold;
 }
 
 /*
@@ -99,7 +99,7 @@ register struct monst *mtmp;
 {
     register struct obj *fgold = g_at(u.ux, u.uy);
     register struct obj *ygold;
-    register long tmp;
+    register int64_t tmp;
     struct monst *who;
     const char *whose, *what;
 
@@ -140,7 +140,7 @@ register struct monst *mtmp;
             monflee(mtmp, 0, FALSE, FALSE);
         }
     } else if (ygold) {
-        const long gold_price = objects[GOLD_PIECE].oc_cost;
+        const int64_t gold_price = objects[GOLD_PIECE].oc_cost;
 
         tmp = (somegold(money_cnt(invent)) + gold_price - 1) / gold_price;
         tmp = min(tmp, ygold->quan);
@@ -154,7 +154,7 @@ register struct monst *mtmp;
         if (isok(u.ux, u.uy))
         {
             char ftbuf[BUFSZ];
-            Sprintf(ftbuf, "-%ld gold", tmp);
+            Sprintf(ftbuf, "-%lld gold", (long long)tmp);
             display_floating_text(u.ux, u.uy, ftbuf, FLOATING_TEXT_GOLD_REDUCED, ATR_NONE, NO_COLOR, 0UL);
         }
 
@@ -421,7 +421,7 @@ gotobj:
     /* you're going to notice the theft... */
     stop_occupation();
 
-    long wmask = W_WORN_NOT_WIELDED;
+    int64_t wmask = W_WORN_NOT_WIELDED;
     if (uarms && is_shield(uarms))
         wmask |= W_ARMS;
 

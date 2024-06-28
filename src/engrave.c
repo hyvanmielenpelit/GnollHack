@@ -418,7 +418,7 @@ void
 make_engr_at(x, y, s, e_time, e_type, e_flags)
 int x, y;
 const char *s;
-long e_time;
+int64_t e_time;
 xchar e_type;
 unsigned short e_flags;
 {
@@ -1335,7 +1335,7 @@ doengrave()
     if (doblind && !resists_blnd(&youmonst) && !Flash_resistance) {
         play_sfx_sound(SFX_BLINDING_FLASH);
         You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "are blinded by the flash!");
-        make_blinded((long) rnd(50), FALSE);
+        make_blinded((int64_t) rnd(50), FALSE);
         if (!Blind)
             Your1(vision_clears);
     }
@@ -1418,7 +1418,7 @@ void
 engr_stats(hdrfmt, hdrbuf, count, size)
 const char *hdrfmt;
 char *hdrbuf;
-long* count;
+int64_t* count;
 size_t* size;
 {
     struct engr *ep;

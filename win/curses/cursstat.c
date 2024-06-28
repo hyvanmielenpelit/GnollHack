@@ -26,8 +26,8 @@ extern boolean status_activefields[MAXBLSTATS];
 /* Long format fields for vertical window */
 static char *status_vals_long[MAXBLSTATS];
 
-static unsigned long *curses_colormasks;
-static long curses_condition_bits;
+static uint64_t *curses_colormasks;
+static int64_t curses_condition_bits;
 static int curses_status_colors[MAXBLSTATS];
 static int hpbar_percent, hpbar_color;
 static int vert_status_dirty;
@@ -40,9 +40,9 @@ static void curs_stat_conds(int, int *, int *, char *, boolean *, boolean);
 static void curs_vert_status_vals(int);
 #ifdef STATUS_HILITES
 #ifdef TEXTCOLOR
-static int FDECL(condcolor, (long, unsigned long *));
+static int FDECL(condcolor, (int64_t, uint64_t *));
 #endif
-static int FDECL(condattr, (long, unsigned long *));
+static int FDECL(condattr, (int64_t, uint64_t *));
 static int FDECL(nhattr2curses, (int));
 static void FDECL(curses_print_rest_partyline, (WINDOW*, boolean, char*, int*, int*));
 #endif /* STATUS_HILITES */
@@ -147,9 +147,9 @@ curses_status_update(fldidx, ptr, chg, percent, color_and_attr, colormasks)
 int fldidx, chg UNUSED,
     percent, color_and_attr;
 genericptr_t ptr;
-unsigned long *colormasks;
+uint64_t *colormasks;
 {
-    long *condptr = (long *) ptr;
+    int64_t *condptr = (int64_t *) ptr;
     char *text = (char *) ptr;
 
     if (fldidx != BL_FLUSH) {
@@ -1300,7 +1300,7 @@ curs_stat_conds(int vert_cond, /* 0 => horizontal, 1 => vertical */
 {                                  /*+ condbuf[] could be used as-is      */
     char condnam[20];
     int i;
-    long bitmsk;
+    int64_t bitmsk;
 
     if (condbuf) {
         /* construct string " cond1 cond2 cond3" of all active conditions;
@@ -1325,7 +1325,7 @@ curs_stat_conds(int vert_cond, /* 0 => horizontal, 1 => vertical */
             }
         }
     } else if (curses_condition_bits) {
-        unsigned long cond_bits;
+        uint64_t cond_bits;
         int height = 0, width, cx, cy, cy0, cndlen;
 #ifdef STATUS_HILITES
         int attrmask = 0, color = NO_COLOR;
@@ -1555,8 +1555,8 @@ curs_vert_status_vals(int win_width)
  */
 static int
 condcolor(bm, bmarray)
-long bm;
-unsigned long *bmarray;
+int64_t bm;
+uint64_t *bmarray;
 {
     int i;
 
@@ -1571,8 +1571,8 @@ unsigned long *bmarray;
 
 static int
 condattr(bm, bmarray)
-long bm;
-unsigned long *bmarray;
+int64_t bm;
+uint64_t *bmarray;
 {
     int i, attr = 0;
 
@@ -1634,14 +1634,14 @@ int attrmask;
 
 /* Used to track previous value of things, to highlight changes. */
 typedef struct nhs {
-    long value;
+    int64_t value;
     int highlight_turns;
     int highlight_color;
 } nhstat;
 
 static attr_t get_trouble_color(const char *);
 static void draw_trouble_str(const char *);
-static void print_statdiff(const char *append, nhstat *, long, int);
+static void print_statdiff(const char *append, nhstat *, int64_t, int);
 static void get_playerrank(char *);
 static int hpen_color(boolean, int, int);
 static void draw_bar(boolean, int, int, const char *);
@@ -1779,7 +1779,7 @@ get_playerrank(char *rank)
    type is generally STAT_OTHER (generic "do nothing special"),
    but is used if the stat needs to be handled in a special way. */
 static void
-print_statdiff(const char *append, nhstat *stat, long new, int type)
+print_statdiff(const char *append, nhstat *stat, int64_t new, int type)
 {
     char buf[BUFSZ];
     WINDOW *win = curses_get_nhwin(STATUS_WIN);

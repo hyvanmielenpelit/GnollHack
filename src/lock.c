@@ -337,7 +337,7 @@ boolean destroyit;
                                  : 0;
         boolean costly = (boolean) (shkp != 0),
                 peaceful_shk = costly && is_peaceful(shkp);
-        long loss = 0L;
+        int64_t loss = 0L;
 
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "In fact, you've totally destroyed %s.", the(xname(box)));
         /* Put the contents on ground at the hero's feet. */
@@ -1654,7 +1654,7 @@ int x, y;
 
     const char *disposition;
     const char *thing;
-    long save_Blinded;
+    int64_t save_Blinded;
 
     play_simple_object_sound_at_location(otmp, x, y, OBJECT_SOUND_TYPE_BREAK);
     if (otmp->oclass == POTION_CLASS) {

@@ -422,7 +422,7 @@ struct obj *obj;
     } 
     else if (obj->cursed) 
     {
-        long old;
+        int64_t old;
 
         switch (rn2(3)) 
         {
@@ -443,7 +443,7 @@ struct obj *obj;
                 u.ucreamed += rn1(10, 3);
                 pline("Yecch!  Your %s %s gunk on it!", body_part(FACE),
                       (old ? "has more" : "now has"));
-                make_blinded(Blinded + (long) u.ucreamed - old, TRUE);
+                make_blinded(Blinded + (int64_t) u.ucreamed - old, TRUE);
             } 
             else
             {
@@ -1225,7 +1225,7 @@ register xchar x, y;
                 if (um_dist(mtmp->mx, mtmp->my, 5)
                     || deduct_monster_hp(mtmp, rnd(2)) <= 0) 
                 {
-                    long save_pacifism = u.uconduct.killer;
+                    int64_t save_pacifism = u.uconduct.killer;
 
                     Your("leash chokes %s to death!", mon_nam(mtmp));
                     /* hero might not have intended to kill pet, but
@@ -2213,7 +2213,7 @@ struct obj **optr;
         return 1;
     }
 
-    long max_candles = (long)objects[otmp->otyp].oc_special_quality;
+    int64_t max_candles = (int64_t)objects[otmp->otyp].oc_special_quality;
     if (otmp->special_quality >= max_candles)
     {
         play_sfx_sound(SFX_GENERAL_CANNOT);
@@ -2221,9 +2221,9 @@ struct obj **optr;
         return 1;
     }
 
-    if ((long) otmp->special_quality + obj->quan > max_candles)
+    if ((int64_t) otmp->special_quality + obj->quan > max_candles)
     {
-        obj = splitobj(obj, max_candles - (long) otmp->special_quality);
+        obj = splitobj(obj, max_candles - (int64_t) otmp->special_quality);
         /* avoid a grammatical error if obj->quan gets
             reduced to 1 candle from more than one */
         s = (obj->quan != 1) ? "candles" : "candle";
@@ -2532,7 +2532,7 @@ struct obj *obj;
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s flame%s %s%s", s_suffix(Yname2(obj)), plur(obj->quan),
                   otense(obj, "burn"), Blind ? "." : " brightly!");
             if (is_unpaid_shop_item(obj, u.ux, u.uy)
-                && (obj->age == 30L * (long) objects[obj->otyp].oc_cost || obj->otyp == MAGIC_CANDLE)) 
+                && (obj->age == 30L * (int64_t) objects[obj->otyp].oc_cost || obj->otyp == MAGIC_CANDLE)) 
             {
                 const char *ithem = (obj->quan > 1L) ? "them" : "it";
 
@@ -3031,7 +3031,7 @@ int magic; /* 0=Physical, otherwise skill level */
     }
     else if (!magic && Wounded_legs) 
     {
-        long wl = (Wounded_legs & BOTH_SIDES);
+        int64_t wl = (Wounded_legs & BOTH_SIDES);
         const char *bp = body_part(LEG);
 
         if (wl == BOTH_SIDES)
@@ -3077,7 +3077,7 @@ int magic; /* 0=Physical, otherwise skill level */
             {
             case TT_BEARTRAP:
             {
-                long side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
+                int64_t side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
 
                 play_player_ouch_sound(MONSTER_OUCH_SOUND_OUCH);
                 You("rip yourself free of the bear trap!  Ouch!");
@@ -3298,14 +3298,14 @@ struct obj *obj;
 
     if (obj->cursed)
     {
-        long lcount = (long) rn1(90, 10);
+        int64_t lcount = (int64_t) rn1(90, 10);
 
         switch (rn2(13) / 2) { /* case 6 is half as likely as the others */
         case 0:
             if(!Sick)
                 play_sfx_sound(SFX_CATCH_TERMINAL_ILLNESS);
             make_sick((Sick & TIMEOUT) ? (Sick & TIMEOUT) / 3L + 1L
-                                       : (long) rn1(ACURR(A_CON), 20),
+                                       : (int64_t) rn1(ACURR(A_CON), 20),
                       xname(obj), TRUE, HINT_KILLED_ILLNESS_FROM_CURSED_UNICORN_HORN);
             break;
         case 1:
@@ -3364,7 +3364,7 @@ struct obj *obj;
         prop_trouble(FOOD_POISONED);
     if (MummyRot)
         prop_trouble(MUMMY_ROT);
-    if (TimedTrouble(Blinded) > (long) u.ucreamed
+    if (TimedTrouble(Blinded) > (int64_t) u.ucreamed
         && !(u.uswallow
              && attacktype_fordmg(u.ustuck->data, AT_ENGL, AD_BLND)))
         prop_trouble(BLINDED);
@@ -3455,7 +3455,7 @@ struct obj *obj;
             break;
         case prop2trbl(BLINDED):
             play_sfx_sound(SFX_CURE_AILMENT);
-            make_blinded((long) u.ucreamed, TRUE);
+            make_blinded((int64_t) u.ucreamed, TRUE);
             did_prop++;
             break;
         case prop2trbl(HALLUC):
@@ -3525,7 +3525,7 @@ struct obj *obj;
 void
 fig_transform(arg, timeout)
 anything *arg;
-long timeout;
+int64_t timeout;
 {
     struct obj *figurine = arg->a_obj;
     struct monst *mtmp;
@@ -3545,7 +3545,7 @@ long timeout;
         okay_spot = enexto(&cc, cc.x, cc.y, &mons[figurine->corpsenm]);
     if (!okay_spot || !figurine_location_checks(figurine, &cc, TRUE)) {
         /* reset the timer to try again later */
-        (void) start_timer((long) rnd(5000), TIMER_OBJECT, FIG_TRANSFORM,
+        (void) start_timer((int64_t) rnd(5000), TIMER_OBJECT, FIG_TRANSFORM,
                            obj_to_any(figurine));
         return;
     }
@@ -5238,7 +5238,7 @@ struct obj *obj;
     if (can_blnd((struct monst *) 0, &youmonst, AT_WEAP, obj)) {
         int blindinc = rnd(25);
         u.ucreamed += blindinc;
-        make_blinded((Blinded& TIMEOUT) + (long) blindinc, FALSE);
+        make_blinded((Blinded& TIMEOUT) + (int64_t) blindinc, FALSE);
         if (!Blind || (Blind && wasblind))
             pline("There's %ssticky goop all over your %s.",
                   wascreamed ? "more " : "", body_part(FACE));

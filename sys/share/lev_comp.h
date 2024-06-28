@@ -325,38 +325,38 @@ typedef union YYSTYPE
 /* Line 1676 of yacc.c  */
 #line 153 "lev_comp.y"
 
-    long    i;
+    int64_t    i;
     char    *map;
     struct {
-        long room;
-        long wall;
-        long door;
+        int64_t room;
+        int64_t wall;
+        int64_t door;
     } corpos;
     struct {
-        long area;
-        long x1;
-        long y1;
-        long x2;
-        long y2;
+        int64_t area;
+        int64_t x1;
+        int64_t y1;
+        int64_t x2;
+        int64_t y2;
     } lregn;
     struct {
-        long x;
-        long y;
+        int64_t x;
+        int64_t y;
     } crd;
     struct {
-        long ter;
-        long lit;
+        int64_t ter;
+        int64_t lit;
     } terr;
     struct {
-        long height;
-        long width;
+        int64_t height;
+        int64_t width;
     } sze;
     struct {
-        long die;
-        long num;
+        int64_t die;
+        int64_t num;
     } dice;
     struct {
-        long cfunc;
+        int64_t cfunc;
         char *varstr;
     } meth;
 

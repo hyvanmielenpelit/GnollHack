@@ -162,7 +162,7 @@ struct artifact {
     aligntyp alignment; /* alignment of bequeathing gods */
     short role;         /* character role associated with */
     short race;         /* character race associated with */
-    long cost; /* price when sold to hero (default 100 x base cost) */
+    int64_t cost; /* price when sold to hero (default 100 x base cost) */
     char acolor;        /* color to use if artifact 'glows' */
     char ocolor;        /* color used for object instead of its normal color */
     int tile_floor_height;

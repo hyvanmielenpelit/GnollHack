@@ -47,7 +47,7 @@
  *  The remaining code shouldn't need modification.
  * -----------------------------------------------------------------
  */
-/* #define SHORT_FILENAMES */ /* All NT filesystems support long names now
+/* #define SHORT_FILENAMES */ /* All NT filesystems support int64_t names now
  */
 
 #ifdef MICRO
@@ -251,7 +251,7 @@ int _RTLENTRY _EXPFUNC close(int __handle);
 int _RTLENTRY _EXPFUNC _close(int __handle);
 int _RTLENTRY _EXPFUNC
 open(const char _FAR *__path, int __access, ... /*unsigned mode*/);
-long _RTLENTRY _EXPFUNC lseek(int __handle, long __offset, int __fromwhere);
+int64_t _RTLENTRY _EXPFUNC lseek(int __handle, int64_t __offset, int __fromwhere);
 int _RTLENTRY _EXPFUNC read(int __handle, void _FAR *__buf, unsigned __len);
 #endif
 #ifndef CURSES_GRAPHICS

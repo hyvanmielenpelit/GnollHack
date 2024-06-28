@@ -55,7 +55,7 @@ int mustgetmail = -1;
 /* DON'T trust all Unices to declare getpwuid() in <pwd.h> */
 #if !defined(_BULL_SOURCE) && !defined(__sgi) && !defined(_M_UNIX)
 #if !defined(SUNOS4) && !(defined(ULTRIX) && defined(__GNUC__))
-/* DO trust all SVR4 to typedef uid_t in <sys/types.h> (probably to a long) */
+/* DO trust all SVR4 to typedef uid_t in <sys/types.h> (probably to a int64_t) */
 #if defined(POSIX_TYPES) || defined(SVR4) || defined(HPUX)
 extern struct passwd *FDECL(getpwuid, (uid_t));
 #else
@@ -65,7 +65,7 @@ extern struct passwd *FDECL(getpwuid, (int));
 #endif
 STATIC_VAR struct stat omstat, nmstat;
 STATIC_VAR char *mailbox = (char *) 0;
-STATIC_VAR long laststattime;
+STATIC_VAR int64_t laststattime;
 
 #if !defined(MAILPATH) && defined(AMS) /* Just a placeholder for AMS */
 #define MAILPATH "/dev/null"
@@ -625,7 +625,7 @@ ck_server_admin_msg()
 {
 #ifdef SERVER_ADMIN_MSG
     static struct stat ost,nst;
-    static long lastchk = 0;
+    static int64_t lastchk = 0;
 
     if (moves < lastchk + SERVER_ADMIN_MSG_CKFREQ) return;
     lastchk = moves;

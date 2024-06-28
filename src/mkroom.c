@@ -838,7 +838,7 @@ place_main_monst_here:
                 if (i >= goldlim)
                     i = 5 * level_difficulty();
                 goldlim -= i;
-                (void) mkgold((long) rn1(i, 10), sx, sy);
+                (void) mkgold((int64_t) rn1(i, 10), sx, sy);
                 break;
             case MORGUE:
             {
@@ -1018,7 +1018,7 @@ place_main_monst_here:
         create_initial_location_with_current_floor(tx, ty, THRONE, 0UL, 0, FALSE);
         (void) somexy(sroom, &mm);
         gold = mksobj(GOLD_PIECE, TRUE, FALSE, FALSE);
-        gold->quan = (long) rn1(50 * level_difficulty(), 10);
+        gold->quan = (int64_t) rn1(50 * level_difficulty(), 10);
         gold->owt = weight(gold);
         /* the royal coffers */
         chest = mksobj_at(CHEST, mm.x, mm.y, TRUE, FALSE);
@@ -1301,7 +1301,7 @@ antholemon()
     int mtyp, indx, trycnt = 0;
 
     /* casts are for dealing with time_t */
-    indx = (int) ((long) ubirthday % 3L);
+    indx = (int) ((int64_t) ubirthday % 3L);
     indx += level_difficulty();
     /* Same monsters within a level, different ones between levels */
     do 

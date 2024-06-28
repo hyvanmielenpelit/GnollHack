@@ -29,7 +29,7 @@ struct oextra {
     char* uoname;          /* ptr to name of object */
     struct monst *omonst; /* ptr to attached monst struct */
     unsigned *omid;       /* ptr to m_id */
-    long *olong;          /* ptr to misc long (temporary gold object) */
+    int64_t *olong;          /* ptr to misc int64_t (temporary gold object) */
     char *omailcmd;       /* response_cmd for mail deliver */
 };
 
@@ -46,7 +46,7 @@ struct obj {
     xchar ox0, oy0;
     short otyp; /* object class number */
     unsigned owt;
-    long quan; /* number of items */
+    int64_t quan; /* number of items */
 
     short enchantment; /* Always set to zero by cancellation
                   quality of weapon, weptool, armor or ring (+ or -);
@@ -185,8 +185,8 @@ struct obj {
 #define spestudied usecount /* # of times a spellbook has been studied */
 #define ring_text_appeared usecount /* the round the text of Ruling Ring of Yendor appeared */
     unsigned oeaten;        /* nutrition left in food, if partly eaten */
-    long age;               /* creation date */
-    long owornmask;
+    int64_t age;               /* creation date */
+    int64_t owornmask;
     short cooldownleft;       /* item cooldown left before it can be used again*/
     short repowerleft;       /* artifact cooldown left before its invoke ability can be used again*/
     short detectioncount;    /* monsters detected for WARN_ORC and other similar properties */
@@ -816,7 +816,7 @@ struct mythic_definition {
     const char* description;
     short probability;
     double price_multiplier;
-    long price_addition;
+    int64_t price_addition;
     uint64_t mythic_powers;
     uint64_t mythic_flags;
 };
@@ -911,7 +911,7 @@ struct mythic_power_definition {
     const char* name;
     const char* description;
     uchar power_type;
-    long parameter1;                /* E.g., damage multiplier */
+    int64_t parameter1;                /* E.g., damage multiplier */
     double parameter2;              /* E.g., damage multiplier */
     char parameter3;                /* E.g., monster or item class */
     uint64_t parameter4;       /* E.g., M2_ flag */
@@ -1130,7 +1130,7 @@ extern NEARDATA const struct mythic_power_definition mythic_suffix_powers[MAX_MY
 #define candlelabrum_maximum_burn_time(o) candlelabrum_starting_burn_time(o)
 #define torch_starting_burn_time(o) (500)
 #define torch_maximum_burn_time(o) torch_starting_burn_time(o)
-#define lamp_starting_burn_time(o) ((long)rn1(500, 1000))
+#define lamp_starting_burn_time(o) ((int64_t)rn1(500, 1000))
 #define lamp_maximum_burn_time(o) MAX_OIL_IN_LAMP
 #define potion_starting_burn_time(o) MAX_OIL_IN_FLASK
 #define potion_maximum_burn_time(o) potion_starting_burn_time(o)

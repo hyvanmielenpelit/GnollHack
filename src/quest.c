@@ -195,7 +195,7 @@ boolean seal;
     branch *br;
     d_level *dest;
     struct trap *t;
-    long portal_flag;
+    int64_t portal_flag;
 
     br = dungeon_branch("The Quest");
     dest = (br->end1.dnum == u.uz.dnum) ? &br->end2 : &br->end1;

@@ -856,7 +856,7 @@ enum yn_function_styles {
 /*
  * type nhsym: loadable symbols go into this type
  */
-typedef long nhsym;
+typedef int64_t nhsym;
 
 #define DEF_HERE_WINDOW_MAX_SIZE 10
 
@@ -1040,18 +1040,18 @@ enum cat_breeds {
 
 struct amulet_count_result
 {
-    long score;
-    long quantity;
-    long amulets_of_life_saving;
-    long other_amulets;
+    int64_t score;
+    int64_t quantity;
+    int64_t amulets_of_life_saving;
+    int64_t other_amulets;
 };
 
 struct item_score_count_result
 {
-    long score;
-    long quantity;
-    long quantity_nonammo;
-    long quantity_ammo;
+    int64_t score;
+    int64_t quantity;
+    int64_t quantity_nonammo;
+    int64_t quantity_ammo;
 };
 
 

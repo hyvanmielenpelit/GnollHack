@@ -82,8 +82,8 @@ register xchar omx, omy, gx, gy;
     register schar i;
     schar chcnt, cnt;
     coord poss[9];
-    long info[9];
-    long allowflags;
+    int64_t info[9];
+    int64_t allowflags;
 #if 0 /* dead code; see below */
     struct obj *ib = (struct obj *) 0;
 #endif
@@ -562,7 +562,7 @@ int mtype;
         smith->msleeping = 0;
         set_mhostility(smith); /* mpeaceful may have changed */
 
-        (void)mongetsgold(smith, 3000L + (long)rn2(6) * 500L);
+        (void)mongetsgold(smith, 3000L + (int64_t)rn2(6) * 500L);
         struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, smith, MAT_NONE, MANUAL_GUIDE_TO_DRAGON_SCALE_MAILS, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
         if (otmp)
             (void)mpickobj(smith, otmp);
@@ -753,7 +753,7 @@ int roomno;
     struct monst *priest, *mtmp;
     struct epri *epri_p;
     boolean shrined, sanctum, can_speak;
-    long *this_time, *other_time;
+    int64_t *this_time, *other_time;
     const char *msg1, *msg2;
     int msg1color = NO_COLOR, msg2color = NO_COLOR;
     char buf[BUFSZ];
@@ -791,7 +791,7 @@ int roomno;
             pline("%s intones:",
                   canseemon(priest) ? Monnam(priest) : "A nearby voice");
             priest->ispriest = save_priest;
-            epri_p->intone_time = moves + (long) d(10, 500); /* ~2505 */
+            epri_p->intone_time = moves + (int64_t) d(10, 500); /* ~2505 */
             /* make sure that we don't suppress entry message when
                we've just given its "priest intones" introduction */
             epri_p->enter_time = 0L;
@@ -839,7 +839,7 @@ int roomno;
                 play_monster_special_dialogue_line(priest, spdl_id2);
                 verbalize_ex1(ATR_NONE, msg2color, msg2);
             }
-            epri_p->enter_time = moves + (long) d(10, 100); /* ~505 */
+            epri_p->enter_time = moves + (int64_t) d(10, 100); /* ~505 */
             context.global_minimum_volume = 0.0;
         }
 
@@ -869,7 +869,7 @@ int roomno;
             if (moves >= *this_time || *other_time >= *this_time) 
             {
                 You_ex(ATR_NONE, msg1color, msg1, msg2);
-                *this_time = moves + (long) d(10, 20); /* ~55 */
+                *this_time = moves + (int64_t) d(10, 20); /* ~55 */
                 /* avoid being tricked by the RNG:  switch might have just
                    happened and previous random threshold could be larger */
                 if (*this_time <= *other_time)
@@ -985,7 +985,7 @@ int roomno;
         {
             pline("%s says:",
                 canseemon(smith) ? Monnam(smith) : "A nearby voice");
-            esmi_p->intone_time = moves + (long)d(10, 500); /* ~2505 */
+            esmi_p->intone_time = moves + (int64_t)d(10, 500); /* ~2505 */
             esmi_p->enter_time = 0L;
         }
         msg1 = msg2 = 0;
@@ -1006,7 +1006,7 @@ int roomno;
             verbalize_talk1(msg1);
             if (msg2)
                 verbalize_talk1(msg2);
-            esmi_p->enter_time = moves + (long)d(10, 100); /* ~505 */
+            esmi_p->enter_time = moves + (int64_t)d(10, 100); /* ~505 */
         }
     }
     else 
@@ -1091,7 +1091,7 @@ register struct monst *priest;
     {
         if (coaligned && !strayed) 
         {
-            long pmoney = money_cnt(priest->minvent);
+            int64_t pmoney = money_cnt(priest->minvent);
             if (pmoney > 0L) 
             {
                 play_monster_special_dialogue_line(priest, (pmoney == 1L) ? PRIEST_SPECIAL_DIALOGUE_TAKE_THIS_HAVE_ALE : PRIEST_SPECIAL_DIALOGUE_TAKE_THESE_HAVE_ALE);
@@ -1116,7 +1116,7 @@ register struct monst *priest;
     } 
     else 
     {
-        long offer;
+        int64_t offer;
 
         play_monster_special_dialogue_line(priest, PRIEST_SPECIAL_DIALOGUE_CONSIDER_CONTRIBUTION);
         pline("%s asks you for a contribution for the temple.",
@@ -1607,8 +1607,8 @@ boolean showheads;
         {
             Sprintf(eos(info), " (%d", is_tame(mtmp));
             if (!mtmp->isminion)
-                Sprintf(eos(info), "; hungry %ld; apport %d",
-                    EDOG(mtmp)->hungrytime, EDOG(mtmp)->apport);
+                Sprintf(eos(info), "; hungry %lld; apport %d",
+                    (long long)EDOG(mtmp)->hungrytime, EDOG(mtmp)->apport);
             Strcat(info, ")");
         }
     }
@@ -1752,7 +1752,7 @@ ustatusline()
         Strcat(info, ", blind");
         if (u.ucreamed) 
         {
-            if ((long) u.ucreamed < Blinded || Blindfolded
+            if ((int64_t) u.ucreamed < Blinded || Blindfolded
                 || !haseyes(youmonst.data))
                 Strcat(info, ", cover");
             Strcat(info, "ed by sticky goop");

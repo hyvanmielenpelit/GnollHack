@@ -191,8 +191,8 @@ struct linfo {
 #define ACTIVE 1
 #define SWAPPED 2
     int where;
-    long time;
-    long size;
+    int64_t time;
+    int64_t size;
 #endif /* MFLOPPY */
 };
 

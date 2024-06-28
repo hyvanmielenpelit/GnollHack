@@ -4,12 +4,13 @@
 /* Copyright (c) David Cohrs, 1991,1992                  */
 /* GnollHack may be freely redistributed.  See license for details. */
 
+#ifndef WINTTY_H
+#define WINTTY_H
+
 #include "layer.h"
 #include "obj.h"
 #include "general.h"
-
-#ifndef WINTTY_H
-#define WINTTY_H
+#include "wintype.h"
 
 #define E extern
 
@@ -20,7 +21,7 @@
 typedef struct tty_mi {
     struct tty_mi *next;
     anything identifier; /* user identifier */
-    long count;          /* user count */
+    int64_t count;          /* user count */
     char *str;           /* description string (including accelerator) */
     int attr;            /* string attribute */
     int color;           /* string color */
@@ -38,9 +39,9 @@ struct WinDesc {
     int window_style;
     int menu_style;
     short offx, offy;    /* offset from topleft of display */
-    long rows, cols;     /* dimensions */
-    long curx, cury;     /* current cursor position */
-    long maxrow, maxcol; /* the maximum size used -- for MENU wins */
+    int64_t rows, cols;     /* dimensions */
+    int64_t curx, cury;     /* current cursor position */
+    int64_t maxrow, maxcol; /* the maximum size used -- for MENU wins */
     /* maxcol is also used by WIN_MESSAGE for */
     /* tracking the ^P command */
     short *datlen;         /* allocation size for *data */
@@ -50,9 +51,9 @@ struct WinDesc {
     char *morestr;         /* string to display instead of default */
     tty_menu_item *mlist;  /* menu information (MENU) */
     tty_menu_item **plist; /* menu page pointers (MENU) */
-    long plist_size;       /* size of allocated plist (MENU) */
-    long npages;           /* number of pages in menu (MENU) */
-    long nitems;           /* total number of items (MENU) */
+    int64_t plist_size;       /* size of allocated plist (MENU) */
+    int64_t npages;           /* number of pages in menu (MENU) */
+    int64_t nitems;           /* total number of items (MENU) */
     short how;             /* menu mode - pick 1 or N (MENU) */
     char menu_ch;          /* menu char (MENU) */
 };
@@ -236,7 +237,7 @@ E void NDECL(tty_delay_output);
 E void FDECL(tty_delay_output_milliseconds, (int));
 E void FDECL(tty_delay_output_intervals, (int));
 #ifdef CHANGE_COLOR
-E void FDECL(tty_change_color, (int color, long rgb, int reverse));
+E void FDECL(tty_change_color, (int color, int64_t rgb, int reverse));
 #ifdef MAC
 E void FDECL(tty_change_background, (int white_or_black));
 E short FDECL(set_tty_font_name, (winid, char *));

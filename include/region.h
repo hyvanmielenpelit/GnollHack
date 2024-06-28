@@ -99,7 +99,7 @@ typedef struct nhregion {
     boolean enter_proc_is_on;
     boolean can_leave_proc_is_on;
     boolean leave_proc_is_on;
-    long time_to_live;          /* Time to live. -1 is forever */
+    int64_t time_to_live;          /* Time to live. -1 is forever */
     unsigned int player_flags; /* (see above) */
     unsigned int *monsters;    /* Monsters currently inside this region */
     short n_monst;             /* Number of monsters inside this region */

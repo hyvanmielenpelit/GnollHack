@@ -49,7 +49,7 @@ init_fill(init_lev)
 lev_init* init_lev;
 {
     register int i, j;
-    long limit, count;
+    int64_t limit, count;
     schar bg_typ = init_lev->bg, fg_typ = init_lev->fg;
 
     limit = (WIDTH * HEIGHT * 2) / 5;

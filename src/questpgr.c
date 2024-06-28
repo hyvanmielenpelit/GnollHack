@@ -23,7 +23,7 @@ extern struct lev_msg *lev_message;
 
 STATIC_DCL void NDECL(dump_qtlist);
 STATIC_DCL void FDECL(Fread, (genericptr_t, long, long, dlb *));
-STATIC_DCL struct qtmsg *FDECL(construct_qtlist, (long));
+STATIC_DCL struct qtmsg *FDECL(construct_qtlist, (int64_t));
 STATIC_DCL const char *NDECL(intermed);
 STATIC_DCL struct obj *FDECL(find_qarti, (struct obj *));
 STATIC_DCL const char *NDECL(guardname);
@@ -59,7 +59,7 @@ dump_qtlist()
         return;
 
     for (msg = qt_list.chrole; msg->msgnum > 0; msg++) {
-        (void) dlb_fseek(msg_file, msg->offset, SEEK_SET);
+        (void) dlb_fseek(msg_file, (long)msg->offset, SEEK_SET);
         deliver_by_window(msg, ATR_NONE, NO_COLOR, NHW_MAP);
     }
 #endif /* DEBUG */
@@ -82,12 +82,12 @@ dlb *stream;
 
 STATIC_OVL struct qtmsg *
 construct_qtlist(hdr_offset)
-long hdr_offset;
+int64_t hdr_offset;
 {
     struct qtmsg *msg_list;
     int n_msgs;
 
-    (void) dlb_fseek(msg_file, hdr_offset, SEEK_SET);
+    (void) dlb_fseek(msg_file, (long)hdr_offset, SEEK_SET);
     Fread(&n_msgs, sizeof(int), 1, msg_file);
     msg_list = (struct qtmsg *) alloc(((size_t)n_msgs + 1) * sizeof (struct qtmsg));
 
@@ -106,7 +106,7 @@ load_qtlist()
 {
     int n_classes, i;
     char qt_classes[N_HDR][LEN_HDR];
-    long qt_offsets[N_HDR];
+    int64_t qt_offsets[N_HDR];
 
     msg_file = dlb_fopen(QTEXT_FILE, RDBMODE);
     if (!msg_file)
@@ -122,7 +122,7 @@ load_qtlist()
 
     Fread(&n_classes, sizeof (int), 1, msg_file);
     Fread(&qt_classes[0][0], sizeof (char) * LEN_HDR, n_classes, msg_file);
-    Fread(qt_offsets, sizeof (long), n_classes, msg_file);
+    Fread(qt_offsets, sizeof (int64_t), n_classes, msg_file);
 
     /*
      * Now construct the message lists for quick reference later
@@ -562,13 +562,13 @@ int attr, color;
 struct monst* mtmp;
 boolean dopopup;
 {
-    long size;
+    int64_t size;
     char in_line[BUFSZ] = "", out_line[BUFSZ] = "";
 #define TOUTBUFSZ BUFSZ * 10
     char total_out_line[TOUTBUFSZ] = "";
 
     /* *in_line = '\0'; */
-    for (size = 0; size < qt_msg->size; size += (long) strlen(in_line)) 
+    for (size = 0; size < qt_msg->size; size += (int64_t) strlen(in_line)) 
     {
         (void) dlb_fgets(in_line, sizeof in_line, msg_file);
         convert_line(in_line, out_line);
@@ -598,7 +598,7 @@ deliver_by_window(qt_msg, attr, color, how)
 struct qtmsg *qt_msg;
 int attr, color, how;
 {
-    long size;
+    int64_t size;
     char in_line[BUFSZ], out_line[BUFSZ], attrs[BUFSZ], colors[BUFSZ];
     boolean qtdump = (how == NHW_MAP);
     winid datawin = create_nhwindow_ex(qtdump ? NHW_TEXT : how, GHWINDOW_STYLE_PAGER_GENERAL, NO_GLYPH, zerocreatewindowinfo);
@@ -617,7 +617,7 @@ int attr, color, how;
         putstr(datawin, 0, "");
     }
 #endif
-    for (size = 0; size < qt_msg->size; size += (long) strlen(in_line)) {
+    for (size = 0; size < qt_msg->size; size += (int64_t) strlen(in_line)) {
         (void) dlb_fgets(in_line, sizeof in_line, msg_file);
         convert_line(in_line, out_line);
         putstr(datawin, 0, out_line);
@@ -691,7 +691,7 @@ boolean dopopup;
         return;
     }
 
-    (void) dlb_fseek(msg_file, qt_msg->offset, SEEK_SET);
+    (void) dlb_fseek(msg_file, (long)qt_msg->offset, SEEK_SET);
     if (qt_msg->delivery == 'p')
     {
         play_voice_com_pager(mtmp, msgnum, TRUE);
@@ -750,7 +750,7 @@ boolean dopopup;
     }
 
     ignore_onsleep_autosave = TRUE;
-    (void) dlb_fseek(msg_file, qt_msg->offset, SEEK_SET);
+    (void) dlb_fseek(msg_file, (long)qt_msg->offset, SEEK_SET);
     if (qt_msg->delivery == 'p' && strcmp(windowprocs.name, "X11"))
     {
         play_voice_quest_pager(mtmp, qt_msg->msgnum, TRUE);
@@ -896,7 +896,7 @@ dlb* temp_msg_file;
 struct qtmsg* qt_msg;
 int fd, msgnum;
 {
-    long size;
+    int64_t size;
     char in_line[BUFSZ], out_line[BUFSZ];
     char cur_outline[BUFSIZ * 10];
     char prev_outline[BUFSIZ * 10];
@@ -924,11 +924,11 @@ int fd, msgnum;
             u.ualignbase[A_CURRENT] = u.ualignbase[A_ORIGINAL] = u.ualign.type =
                 aligns[flags.initalign].value;
 
-            (void)dlb_fseek(temp_msg_file, qt_msg->offset, SEEK_SET);
+            (void)dlb_fseek(temp_msg_file, (long)qt_msg->offset, SEEK_SET);
 
             *in_line = '\0';
             *cur_outline = '\0';
-            for (size = 0; size < qt_msg->size; size += (long)strlen(in_line))
+            for (size = 0; size < qt_msg->size; size += (int64_t)strlen(in_line))
             {
                 (void)dlb_fgets(in_line, sizeof in_line, temp_msg_file);
                 convert_line(in_line, out_line);
@@ -991,7 +991,7 @@ int fd;
 {
     int n_classes, i, j, k;
     char qt_classes[N_HDR][LEN_HDR];
-    long qt_offsets[N_HDR];
+    int64_t qt_offsets[N_HDR];
     
     struct qtlists temp_qt_list;
 
@@ -1009,7 +1009,7 @@ int fd;
 
     Fread(&n_classes, sizeof(int), 1, msg_file2);
     Fread(&qt_classes[0][0], sizeof(char) * LEN_HDR, n_classes, msg_file2);
-    Fread(qt_offsets, sizeof(long), n_classes, msg_file2);
+    Fread(qt_offsets, sizeof(int64_t), n_classes, msg_file2);
 
     /*
      * Now construct the message lists for quick reference later

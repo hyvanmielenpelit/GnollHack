@@ -491,7 +491,7 @@ ranged_attk(ptr)
 struct permonst *ptr;
 {
     register int i, atyp;
-    long atk_mask = (1L << AT_EYES) | (1L << AT_BREA) | (1L << AT_SPIT) | (1L << AT_GAZE);
+    int64_t atk_mask = ((int64_t)1 << AT_EYES) | ((int64_t)1 << AT_BREA) | ((int64_t)1 << AT_SPIT) | ((int64_t)1 << AT_GAZE);
 
     /* was: (attacktype(ptr, AT_BREA) || attacktype(ptr, AT_WEAP)
      *       || attacktype(ptr, AT_SPIT) || attacktype(ptr, AT_GAZE)
@@ -503,7 +503,7 @@ struct permonst *ptr;
         if (atyp >= AT_WEAP)
             return TRUE;
         /* assert(atyp < 32); */
-        if ((atk_mask & (1L << atyp)) != 0L)
+        if ((atk_mask & ((int64_t)1 << atyp)) != 0L)
             return TRUE;
     }
     return FALSE;

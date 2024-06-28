@@ -27,12 +27,12 @@ STATIC_DCL boolean FDECL(allow_cat_no_uchain, (struct obj *));
 STATIC_DCL int FDECL(autopick, (struct obj *, int, menu_item **));
 STATIC_DCL int FDECL(count_categories, (struct obj *, int));
 STATIC_DCL int FDECL(delta_cwt, (struct obj *, struct obj *));
-STATIC_DCL long FDECL(carry_count, (struct obj *, struct obj *, long,
+STATIC_DCL int64_t FDECL(carry_count, (struct obj *, struct obj *, int64_t,
                                     BOOLEAN_P, int *, int *));
-STATIC_DCL int FDECL(lift_object, (struct obj *, struct obj *, long *,
+STATIC_DCL int FDECL(lift_object, (struct obj *, struct obj *, int64_t *,
                                    BOOLEAN_P));
 STATIC_DCL boolean FDECL(mbag_explodes, (struct obj *, struct obj*, int));
-STATIC_DCL long FDECL(boh_loss, (struct obj *container, int));
+STATIC_DCL int64_t FDECL(boh_loss, (struct obj *container, int));
 STATIC_PTR int FDECL(in_container_core, (struct obj*, BOOLEAN_P));
 STATIC_PTR int FDECL(out_container_core, (struct obj*, BOOLEAN_P, BOOLEAN_P, uchar*));
 STATIC_PTR int FDECL(move_container_core, (struct obj*, BOOLEAN_P));
@@ -51,7 +51,7 @@ STATIC_PTR int FDECL(move_container_nobot, (struct obj*));
 STATIC_PTR int FDECL(out_container_and_drop_nobot, (struct obj*));
 STATIC_PTR int FDECL(pickup_and_in_container_nobot, (struct obj*));
 STATIC_DCL void FDECL(removed_from_icebox, (struct obj *));
-STATIC_DCL long FDECL(mbag_item_gone, (int, struct obj *));
+STATIC_DCL int64_t FDECL(mbag_item_gone, (int, struct obj *));
 STATIC_DCL void FDECL(explain_container_prompt, (BOOLEAN_P));
 STATIC_DCL int FDECL(traditional_loot, (int, struct obj*, struct obj*));
 STATIC_DCL int FDECL(menu_loot, (int, int, struct obj*, struct obj*));
@@ -362,7 +362,7 @@ boolean picked_some;
 }
 
 /* Value set by query_objlist() for n_or_more(). */
-STATIC_VAR long val_for_n_or_more;
+STATIC_VAR int64_t val_for_n_or_more;
 
 /* query_objlist callback: return TRUE if obj's count is >= reference value */
 STATIC_OVL boolean
@@ -576,7 +576,7 @@ register struct obj* otmp;
  */
 int
 pickup(what, do_auto_in_bag)
-int what; /* should be a long */
+int what; /* should be a int64_t */
 boolean do_auto_in_bag;
 {
     int i, n, res = 0, count, n_tried = 0, n_picked = 0;
@@ -712,7 +712,7 @@ boolean do_auto_in_bag;
     {
         /* old style interface */
         int ct = 0;
-        long lcount;
+        int64_t lcount;
         boolean all_of_a_type, selective, bycat;
         char oclasses[MAX_OBJECT_CLASSES + 10]; /* +10: room for B,U,C,X plus slop */
         struct obj *obj, *obj2;
@@ -729,7 +729,7 @@ boolean do_auto_in_bag;
         {
             /* if only one thing, then pick it */
             obj = *objchain_p;
-            lcount = min(obj->quan, (long) count);
+            lcount = min(obj->quan, (int64_t) count);
             n_tried++;
             if (pickup_object(obj, lcount, FALSE, do_auto_in_bag, (uchar*)0) > 0)
                 n_picked++; /* picked something */
@@ -792,7 +792,7 @@ boolean do_auto_in_bag;
                 case '#': /* count was entered */
                     if (!yn_number)
                         continue; /* 0 count => No */
-                    lcount = (long) yn_number;
+                    lcount = (int64_t) yn_number;
                     if (lcount > obj->quan)
                         lcount = obj->quan;
                     /*FALLTHRU*/
@@ -1594,17 +1594,17 @@ struct obj *container, *obj;
 }
 
 /* could we carry `obj'? if not, could we carry some of it/them? */
-STATIC_OVL long
+STATIC_OVL int64_t
 carry_count(obj, container, count, telekinesis, wt_before, wt_after)
 struct obj *obj, *container; /* object to pick up, bag it's coming out of */
-long count;
+int64_t count;
 boolean telekinesis;
 int *wt_before, *wt_after;
 {
     boolean adjust_wt = container && carried(container),
             is_gold = obj->oclass == COIN_CLASS;
     int wt, iw, ow, oow;
-    long qq, savequan, umoney;
+    int64_t qq, savequan, umoney;
     unsigned saveowt;
     const char *verb, *prefx1, *prefx2, *suffx;
     char obj_nambuf[BUFSZ], where[BUFSZ];
@@ -1623,7 +1623,7 @@ int *wt_before, *wt_after;
         wt -= delta_cwt(container, obj);
     /* This will go with silver+copper & new gold weight */
     if (is_gold) /* merged gold might affect cumulative weight */
-        wt -= (GOLD_WT(umoney) + GOLD_WT(count) - GOLD_WT(umoney + count));
+        wt -= (int)(GOLD_WT(umoney) + GOLD_WT(count) - GOLD_WT(umoney + count));
     if (count != savequan) {
         obj->quan = savequan;
         obj->owt = saveowt;
@@ -1638,7 +1638,7 @@ int *wt_before, *wt_after;
     if (is_gold) {
         iw -= (int) GOLD_WT(umoney);
         if (!adjust_wt) {
-            qq = GOLD_CAPACITY((long) iw, umoney);
+            qq = GOLD_CAPACITY((int64_t) iw, umoney);
         } else {
             oow = 0;
             qq = 50L - (umoney % 100L) - 1L;
@@ -1735,7 +1735,7 @@ STATIC_OVL
 int
 lift_object(obj, container, cnt_p, telekinesis)
 struct obj *obj, *container; /* object to pick up, bag it's coming out of */
-long *cnt_p;
+int64_t *cnt_p;
 boolean telekinesis;
 {
     int result, old_wt, new_wt, prev_encumbr, next_encumbr;
@@ -1790,7 +1790,7 @@ boolean telekinesis;
                 result = 0; /* don't lift */
             } else {
                 char qbuf[BUFSZ];
-                long savequan = obj->quan;
+                int64_t savequan = obj->quan;
 
                 obj->quan = *cnt_p;
                 Strcpy(qbuf, (next_encumbr > HVY_ENCUMBER)
@@ -1833,7 +1833,7 @@ boolean telekinesis;
 int
 pickup_object(obj, count, telekinesis, do_auto_in_bag, obj_gone_ptr)
 struct obj *obj;
-long count;
+int64_t count;
 boolean telekinesis, do_auto_in_bag; /* not picking it up directly by hand */
 uchar* obj_gone_ptr; /* 1 = merged, 2 = put in bag, 3 = gone */
 {
@@ -2455,7 +2455,7 @@ boolean* got_something_ptr;
             boolean subtyp_is_item_special_quality = (decoration_type_definitions[levl[x][y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_SUBTYP_IS_OBJ_SPECIAL_QUALITY) != 0;
             boolean item_is_statue = decoration_type_definitions[levl[x][y].decoration_typ].lootable_item == STATUE;
             int mnum = decoration_type_definitions[levl[x][y].decoration_typ].mnum;
-            struct obj* newobj = mksobj_with_flags(decoration_type_definitions[levl[x][y].decoration_typ].lootable_item, TRUE, FALSE, MKOBJ_TYPE_GENERATED, (struct monst*)0, MAT_NONE, item_is_statue ? mnum : subtyp_is_item_special_quality ? (long)levl[x][y].decoration_subtyp : 0L, 0L, item_is_statue ? MKOBJ_FLAGS_PARAM_IS_MNUM : subtyp_is_item_special_quality ? MKOBJ_FLAGS_PARAM_IS_SPECIAL_QUALITY : 0UL);
+            struct obj* newobj = mksobj_with_flags(decoration_type_definitions[levl[x][y].decoration_typ].lootable_item, TRUE, FALSE, MKOBJ_TYPE_GENERATED, (struct monst*)0, MAT_NONE, item_is_statue ? mnum : subtyp_is_item_special_quality ? (int64_t)levl[x][y].decoration_subtyp : 0L, 0L, item_is_statue ? MKOBJ_FLAGS_PARAM_IS_MNUM : subtyp_is_item_special_quality ? MKOBJ_FLAGS_PARAM_IS_SPECIAL_QUALITY : 0UL);
             if (newobj)
             {
                 *got_something_ptr = TRUE;
@@ -2887,7 +2887,7 @@ reverse_loot()
 {
     struct obj *goldob = 0, *coffers, *otmp, boxdummy;
     struct monst *mon;
-    long contribution;
+    int64_t contribution;
     int n, x = u.ux, y = u.uy;
 
     if (!rn2(3)) {
@@ -2904,7 +2904,7 @@ reverse_loot()
     /* find a money object to mess with */
     for (goldob = invent; goldob; goldob = goldob->nobj)
         if (goldob->oclass == COIN_CLASS) {
-            contribution = ((long) rnd(5) * goldob->quan + 4L) / 5L;
+            contribution = ((int64_t) rnd(5) * goldob->quan + 4L) / 5L;
             if (contribution < goldob->quan)
                 goldob = splitobj(goldob, contribution);
             break;
@@ -2979,7 +2979,7 @@ boolean do_auto_in_bag;
      */
     if (mtmp && mtmp != u.usteed && (otmp = which_armor(mtmp, W_SADDLE)))
     {
-        long unwornmask;
+        int64_t unwornmask;
 
         if (passed_info)
             *passed_info = 1;
@@ -3079,7 +3079,7 @@ int depthin;
     return FALSE;
 }
 
-STATIC_OVL long
+STATIC_OVL int64_t
 boh_loss(container, held)
 struct obj *container;
 int held;
@@ -3087,7 +3087,7 @@ int held;
     /* sometimes toss objects if a cursed magic bag */
     if (Is_mbag(container) && container->cursed && Has_contents(container))
     {
-        long loss = 0L;
+        int64_t loss = 0L;
         struct obj *curr, *otmp;
 
         for (curr = container->cobj; curr; curr = otmp) 
@@ -3322,7 +3322,7 @@ boolean dobot;
         /* stop any corpse timeouts when frozen */
         if (obj->otyp == CORPSE && obj->timed) 
         {
-            long rot_alarm = stop_timer(ROT_CORPSE, obj_to_any(obj));
+            int64_t rot_alarm = stop_timer(ROT_CORPSE, obj_to_any(obj));
 
             (void) stop_timer(REVIVE_MON, obj_to_any(obj));
             /* mark a non-reviving corpse as such */
@@ -3619,7 +3619,7 @@ uchar* obj_gone_ptr;
     register struct obj *otmp;
     boolean is_gold = (obj->oclass == COIN_CLASS);
     int res = 0, loadlev;
-    long count;
+    int64_t count;
     if (!dobot)
         context.skip_botl = TRUE;
 
@@ -3712,13 +3712,13 @@ struct obj *obj;
 }
 
 /* an object inside a cursed bag of holding is being destroyed */
-STATIC_OVL long
+STATIC_OVL int64_t
 mbag_item_gone(held, item)
 int held;
 struct obj *item;
 {
     struct monst *shkp;
-    long loss = 0L;
+    int64_t loss = 0L;
 
     if (item->dknown)
         pline("%s %s vanished!", Doname2(item), otense(item, "have"));
@@ -3882,7 +3882,7 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
         pickup_and_loot_in, inokay, outokay, outmaybe;
     char c, emptymsg[BUFSZ], qbuf[QBUFSZ], pbuf[QBUFSZ], xbuf[QBUFSZ];
     int used = 0;
-    long loss;
+    int64_t loss;
 
     abort_looting = FALSE;
     emptymsg[0] = '\0';
@@ -4336,7 +4336,7 @@ struct obj* other_container UNUSED;
     struct obj* otmp, * otmp2;
     menu_item *pick_list;
     int mflags, res = 0;
-    long count;
+    int64_t count;
     int more_action = 0;
 
     const char* action = "";
@@ -5063,7 +5063,7 @@ struct obj *box; /* or bag */
                 altarizing = IS_ALTAR(levl[ox][oy].typ),
                 cursed_mbag = (Is_mbag(box) && box->cursed);
         int held = carried(box);
-        long loss = 0L;
+        int64_t loss = 0L;
 
         if (u.uswallow)
             highdrop = altarizing = FALSE;

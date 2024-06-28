@@ -2875,12 +2875,12 @@ struct animation_timer_list {
     boolean zap_animation_counter_on[MAX_PLAYED_ZAP_ANIMATIONS];
     boolean special_effect_animation_counter_on[MAX_PLAYED_SPECIAL_EFFECTS];
 
-    long general_animation_counter;
-    long u_action_animation_counter;
-    long m_action_animation_counter;
-    long explosion_animation_counter;
-    long zap_animation_counter[MAX_PLAYED_ZAP_ANIMATIONS];
-    long special_effect_animation_counter[MAX_PLAYED_SPECIAL_EFFECTS];
+    int64_t general_animation_counter;
+    int64_t u_action_animation_counter;
+    int64_t m_action_animation_counter;
+    int64_t explosion_animation_counter;
+    int64_t zap_animation_counter[MAX_PLAYED_ZAP_ANIMATIONS];
+    int64_t special_effect_animation_counter[MAX_PLAYED_SPECIAL_EFFECTS];
 
     uchar m_action_animation_x;
     uchar m_action_animation_y;

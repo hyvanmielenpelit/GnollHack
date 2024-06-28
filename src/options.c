@@ -1106,7 +1106,7 @@ boolean tp_is_nhsym;
     static NEARDATA const char oct[] = "01234567", dec[] = "0123456789",
                                hex[] = "00112233445566778899aAbBcCdDeEfF";
     const char *dp;
-    long cval, dcount;
+    int64_t cval, dcount;
     int meta;
     nhsym* tp_nhsym = (nhsym*)tp;
     char* tp_char = (char*)tp;
@@ -3139,7 +3139,7 @@ boolean tinitial, tfrom_file;
         if ((op = string_for_opt(opts, FALSE)) != (char *) 0) {
             char *pt = op;
             int cnt, tmp, reverse;
-            long rgb;
+            int64_t rgb;
 
             while (*pt && color_number >= 0) {
                 cnt = 3;
@@ -4298,7 +4298,7 @@ boolean tinitial, tfrom_file;
         || match_optname(opts, "term_columns", 9, TRUE)
         /* different option but identical handlng */
         || (fullname = "term_rows", match_optname(opts, fullname, 8, TRUE))) {
-        long ltmp;
+        int64_t ltmp;
 
         op = string_for_opt(opts, negated);
         ltmp = atol(op);
@@ -4307,7 +4307,7 @@ boolean tinitial, tfrom_file;
             retval = FALSE;
 
         /* this just checks atol() sanity, not logical window size sanity */
-        } else if (ltmp <= 0L || ltmp >= (long) LARGEST_INT) {
+        } else if (ltmp <= 0L || ltmp >= (int64_t) LARGEST_INT) {
             config_error_add("Invalid %s: %ld", fullname, ltmp);
             retval = FALSE;
 
@@ -7270,8 +7270,8 @@ char *buf;
         if (!iflags.hilite_delta)
             Strcpy(buf, "0 (off: don't highlight status fields)");
         else
-            Sprintf(buf, "%ld (on: highlight status for %ld turns)",
-                    iflags.hilite_delta, iflags.hilite_delta);
+            Sprintf(buf, "%lld (on: highlight status for %lld turns)",
+                (long long)iflags.hilite_delta, (long long)iflags.hilite_delta);
 #endif
     } 
     else if (!strcmp(optname,"statuslines"))

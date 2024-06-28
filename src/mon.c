@@ -19,8 +19,8 @@ STATIC_VAR boolean vamp_rise_msg;
 STATIC_DCL void FDECL(sanity_check_single_mon, (struct monst *, BOOLEAN_P,
                                                 const char *));
 STATIC_DCL boolean FDECL(restrap, (struct monst *));
-STATIC_DCL long FDECL(mm_aggression, (struct monst *, struct monst *));
-STATIC_DCL long FDECL(mm_displacement, (struct monst *, struct monst *));
+STATIC_DCL int64_t FDECL(mm_aggression, (struct monst *, struct monst *));
+STATIC_DCL int64_t FDECL(mm_displacement, (struct monst *, struct monst *));
 //STATIC_DCL int NDECL(pick_animal);
 STATIC_DCL void FDECL(kill_eggs, (struct obj *));
 STATIC_DCL int FDECL(pickvampshape, (struct monst *));
@@ -621,7 +621,7 @@ boolean createcorpse;
             if (!rn2(2))
             {
                 obj = mksobj_found_at(NUGGET_OF_IRON_ORE, x, y, FALSE, FALSE);
-                obj->quan = (long)(rnd(2));
+                obj->quan = (int64_t)(rnd(2));
                 obj->owt = weight(obj);
             }
             if (!rn2(4))
@@ -667,7 +667,7 @@ boolean createcorpse;
             if (!rn2(2))
             {
                 obj = mksobj_found_at(BONE, x, y, FALSE, FALSE);
-                obj->quan = (long)(rnd(4));
+                obj->quan = (int64_t)(rnd(4));
                 obj->owt = weight(obj);
             }
         }
@@ -680,7 +680,7 @@ boolean createcorpse;
             if (!rn2(2))
             {
                 obj = mksobj_found_at(NUGGET_OF_SILVER_ORE, x, y, FALSE, FALSE);
-                obj->quan = (long)(rnd(2));
+                obj->quan = (int64_t)(rnd(2));
                 obj->owt = weight(obj);
             }
         }
@@ -693,7 +693,7 @@ boolean createcorpse;
             if (!rn2(2))
             {
                 obj = mksobj_found_at(CLAY_PEBBLE, x, y, FALSE, FALSE);
-                obj->quan = (long)(d(2, 6));
+                obj->quan = (int64_t)(d(2, 6));
                 obj->owt = weight(obj);
             }
         }
@@ -711,7 +711,7 @@ boolean createcorpse;
             if (!rn2(2))
             {
                 obj = mksobj_found_at(STONE_PEBBLE, x, y, FALSE, FALSE);
-                obj->quan = (long)(rnd(5));
+                obj->quan = (int64_t)(rnd(5));
                 obj->owt = weight(obj);
             }
         }
@@ -724,7 +724,7 @@ boolean createcorpse;
             if (!rn2(2))
             {
                 obj = mksobj_found_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
-                obj->quan = (long)(rnd(2));
+                obj->quan = (int64_t)(rnd(2));
                 obj->owt = weight(obj);
             }
         }
@@ -782,7 +782,7 @@ boolean createcorpse;
         {
             if (!rn2(2))
             {
-                obj = mkgold((long)(195 - rnl(101)), x, y);
+                obj = mkgold((int64_t)(195 - rnl(101)), x, y);
             }
         }
         free_mname(mtmp);
@@ -1675,7 +1675,7 @@ movemon()
         /* after losing equipment, try to put on replacement */
         if (mtmp->worn_item_flags & I_SPECIAL) 
         {
-            long oldworn;
+            int64_t oldworn;
 
             mtmp->worn_item_flags &= ~I_SPECIAL;
             oldworn = mtmp->worn_item_flags;
@@ -2288,7 +2288,7 @@ int
 max_mon_load(mtmp)
 struct monst *mtmp;
 {
-    long carrcap = 0;
+    int64_t carrcap = 0;
 
     /* Base monster carrying capacity is equal to human maximum
      * carrying capacity, or half human maximum if not strong.
@@ -2323,7 +2323,7 @@ struct monst *mtmp;
  * this will probably cause very amusing behavior with pets and gold coins.
  *
  * TODO: allow picking up 2-N objects from a pile of N based on weight.
- *       Change from 'int' to 'long' to accomate big stacks of gold.
+ *       Change from 'int' to 'int64_t' to accomate big stacks of gold.
  *       Right now we fake it by reporting a partial quantity, but the
  *       likesgold handling m_move results in picking up the whole stack.
  */
@@ -2359,7 +2359,7 @@ boolean steed_ok;
 
     /* hostile monsters who like gold will pick up the whole stack;
        tame mosnters with hands will pick up the partial stack */
-    iquan = (otmp->quan > (long) LARGEST_INT)
+    iquan = (otmp->quan > (int64_t) LARGEST_INT)
                ? 20000 + rn2(LARGEST_INT - 20000 + 1)
                : (int) otmp->quan;
 
@@ -2418,8 +2418,8 @@ int
 mfndpos(mon, poss, info, flag)
 struct monst* mon;
 coord* poss; /* coord poss[9] */
-long* info;  /* long info[9] */
-long flag;
+int64_t* info;  /* int64_t info[9] */
+int64_t flag;
 {
     xchar x = mon->mx;
     xchar y = mon->my;
@@ -2433,8 +2433,8 @@ mfndpos_xy(mon, x, y, poss, info, flag)
 struct monst *mon;
 xchar x, y;
 coord *poss; /* coord poss[9] */
-long *info;  /* long info[9] */
-long flag;
+int64_t *info;  /* int64_t info[9] */
+int64_t flag;
 {
     struct permonst *mdat = mon->data;
     register struct trap *ttmp;
@@ -2550,7 +2550,7 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                     || (IS_DOOR(ntyp) && (levl[nx][ny].doormask & ~D_BROKEN))
                     || ((IS_DOOR(nowtyp) || IS_DOOR(ntyp))
                         && Is_really_rogue_level(&u.uz))
-                    /* mustn't pass between adjacent long worm segments,
+                    /* mustn't pass between adjacent int64_t worm segments,
                        but can attack that way */
                     || (m_at(x, ny) && m_at(nx, y) && worm_cross(x, y, nx, ny)
                         && !m_at(nx, ny) && (nx != u.ux || ny != u.uy))))
@@ -2564,7 +2564,7 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                 boolean checkobj = OBJ_AT(nx, ny);
 
                 /* Displacement also displaces the Elbereth/scare monster,
-                 * as long as you are visible.
+                 * as int64_t as you are visible.
                  */
                 if (Displaced && monseeu && mon->mux == nx && mon->muy == ny) 
                 {
@@ -2607,9 +2607,9 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                     if (MON_AT(nx, ny))
                     {
                         struct monst *mtmp2 = m_at(nx, ny);
-                        long mmagr = mm_aggression(mon, mtmp2);
-                        long mmflag = flag | mmagr;
-                        long mmdispl = mm_displacement(mon, mtmp2);
+                        int64_t mmagr = mm_aggression(mon, mtmp2);
+                        int64_t mmflag = flag | mmagr;
+                        int64_t mmdispl = mm_displacement(mon, mtmp2);
                         mmflag |= mmdispl;
 
                         if (mtmp2)
@@ -2712,7 +2712,7 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                             info[cnt] |= ALLOW_PITS;
                         else
                         {
-                            if (mon->mtrapseen & (1L << (ttmp->ttyp - 1)))
+                            if (mon->mtrapseen & ((int64_t)1 << (ttmp->ttyp - 1)))
                                 continue; /* No movement to the trap */
                             else
                                 info[cnt] |= (flag & (ALLOW_TRAPS | ALLOW_PITS)); /* The mon does not know the trap is there */
@@ -2737,7 +2737,7 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
    in the absence of Conflict.  There is no provision for targetting
    other monsters; just hand to hand fighting when they happen to be
    next to each other. */
-STATIC_OVL long
+STATIC_OVL int64_t
 mm_aggression(magr, mdef)
 struct monst *magr, /* monster that is currently deciding where to move */
              *mdef; /* another monster which is next to it */
@@ -2777,7 +2777,7 @@ struct monst *magr, /* monster that is currently deciding where to move */
 }
 
 /* Monster displacing another monster out of the way */
-STATIC_OVL long
+STATIC_OVL int64_t
 mm_displacement(magr, mdef)
 struct monst *magr, /* monster that is currently deciding where to move */
              *mdef; /* another monster which is next to it */
@@ -3209,7 +3209,7 @@ struct monst *mtmp;
     if (lifesave) 
     {
         /* not canseemon; amulets are on the head, so you don't want
-         * to show this for a long worm with only a tail visible.
+         * to show this for a int64_t worm with only a tail visible.
          * Nor do you check invisibility, because glowing and
          * disintegrating amulets are always visible. */
         if (cansee(mtmp->mx, mtmp->my)) 
@@ -4020,7 +4020,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
         EDOG(mtmp)->killed_by_u = 1;
 
     /* shopkeeper adds lost money in debit bill */
-    long shkmoney = 0;
+    int64_t shkmoney = 0;
     if (mtmp->isshk && has_eshk(mtmp))
     {
         shkmoney += money_cnt(mtmp->minvent);
@@ -5591,7 +5591,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
     newmonhp(mtmp, newtype, 0, 0UL);
     /* new hp: same fraction of max as before */
 #ifndef LINT
-    mtmp->mhp = (int)(((long)hpn * (long)mtmp->mhp) / (long)hpd);
+    mtmp->mhp = (int)(((int64_t)hpn * (int64_t)mtmp->mhp) / (int64_t)hpd);
 #endif
 
     /* sanity check (potential overflow) */
@@ -6605,8 +6605,8 @@ boolean override_mextra, polyspot, msg;
             //struct obj* mw = mtmp->mw;
             //xchar mx = mtmp->mx, my = mtmp->my;
             //int meating = mtmp->meating;
-            //long mtrapseen = mtmp->mtrapseen;
-            //long worn_item_flags = mtmp->worn_item_flags;
+            //int64_t mtrapseen = mtmp->mtrapseen;
+            //int64_t worn_item_flags = mtmp->worn_item_flags;
             //xchar weapon_strategy = mtmp->weapon_strategy;
             //short mprops[MAX_PROPS] = { 0 };
             //int i;

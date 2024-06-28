@@ -39,7 +39,7 @@ STATIC_DCL struct opvar *FDECL(splev_stack_pop, (struct splevstack *));
 STATIC_DCL struct splevstack *FDECL(splev_stack_reverse,
                                     (struct splevstack *));
 STATIC_DCL struct opvar *FDECL(opvar_new_str, (char *));
-STATIC_DCL struct opvar *FDECL(opvar_new_int, (long));
+STATIC_DCL struct opvar *FDECL(opvar_new_int, (int64_t));
 STATIC_DCL struct opvar *FDECL(opvar_new_coord, (int, int));
 #if 0
 STATIC_DCL struct opvar * FDECL(opvar_new_region, (int,int, int,int));
@@ -68,9 +68,9 @@ STATIC_DCL int NDECL(rnddoor);
 STATIC_DCL int NDECL(rndtrap);
 STATIC_DCL void FDECL(get_location, (schar *, schar *, int, struct mkroom *));
 STATIC_DCL boolean FDECL(is_ok_location, (SCHAR_P, SCHAR_P, int));
-STATIC_DCL unpacked_coord FDECL(get_unpacked_coord, (long, int));
+STATIC_DCL unpacked_coord FDECL(get_unpacked_coord, (int64_t, int));
 STATIC_DCL void FDECL(get_location_coord, (schar *, schar *, int,
-                                           struct mkroom *, long));
+                                           struct mkroom *, int64_t));
 STATIC_DCL void FDECL(get_room_loc, (schar *, schar *, struct mkroom *));
 STATIC_DCL void FDECL(get_free_room_loc, (schar *, schar *,
                                           struct mkroom *, packed_coord));
@@ -102,11 +102,11 @@ STATIC_DCL void NDECL(fill_empty_maze);
 STATIC_DCL boolean FDECL(sp_level_loader, (dlb *, sp_lev *));
 STATIC_DCL boolean FDECL(sp_level_free, (sp_lev *));
 STATIC_DCL void FDECL(splev_initlev, (lev_init *));
-STATIC_DCL struct sp_frame *FDECL(frame_new, (long));
+STATIC_DCL struct sp_frame *FDECL(frame_new, (int64_t));
 STATIC_DCL void FDECL(frame_del, (struct sp_frame *));
 STATIC_DCL void FDECL(spo_frame_push, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_frame_pop, (struct sp_coder *));
-STATIC_DCL long FDECL(sp_code_jmpaddr, (long, long));
+STATIC_DCL int64_t FDECL(sp_code_jmpaddr, (int64_t, int64_t));
 STATIC_DCL void FDECL(spo_call, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_return, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_end_moninvent, (struct sp_coder *));
@@ -153,9 +153,9 @@ STATIC_DCL boolean FDECL(sel_flood_havepoint, (int, int,
                                                xchar *, xchar *, int));
 STATIC_DCL void FDECL(selection_do_ellipse, (struct opvar *, int, int,
                                              int, int, int));
-STATIC_DCL long FDECL(line_dist_coord, (long, long, long, long, long, long));
-STATIC_DCL void FDECL(selection_do_gradient, (struct opvar *, long, long, long,
-                                              long, long, long, long, long));
+STATIC_DCL int64_t FDECL(line_dist_coord, (int64_t, int64_t, int64_t, int64_t, int64_t, int64_t));
+STATIC_DCL void FDECL(selection_do_gradient, (struct opvar *, int64_t, int64_t, int64_t,
+                                              int64_t, int64_t, int64_t, int64_t, int64_t));
 STATIC_DCL void FDECL(selection_do_line, (SCHAR_P, SCHAR_P, SCHAR_P, SCHAR_P,
                                           struct opvar *));
 STATIC_DCL void FDECL(selection_do_randline, (SCHAR_P, SCHAR_P, SCHAR_P,
@@ -210,7 +210,7 @@ STATIC_DCL void FDECL(spo_jmp, (struct sp_coder *, sp_lev *));
 STATIC_DCL void FDECL(spo_conditional_jump, (struct sp_coder *, sp_lev *));
 STATIC_DCL void FDECL(spo_var_init, (struct sp_coder *));
 #if 0
-STATIC_DCL long FDECL(opvar_array_length, (struct sp_coder *));
+STATIC_DCL int64_t FDECL(opvar_array_length, (struct sp_coder *));
 #endif /*0*/
 STATIC_DCL void FDECL(spo_shuffle_array, (struct sp_coder *));
 STATIC_DCL boolean FDECL(sp_level_coder, (sp_lev *));
@@ -381,7 +381,7 @@ struct splevstack *
 splev_stack_reverse(st)
 struct splevstack *st;
 {
-    long i;
+    int64_t i;
     struct opvar *tmp;
 
     if (!st)
@@ -433,7 +433,7 @@ char *s;
 
 struct opvar *
 opvar_new_int(i)
-long i;
+int64_t i;
 {
     struct opvar *tmpov = (struct opvar *) alloc(sizeof (struct opvar));
 
@@ -662,7 +662,7 @@ struct splev_var *varlist;
     while (tmp) {
         Free(tmp->name);
         if ((tmp->svtyp & SPOVAR_ARRAY)) {
-            long idx = tmp->array_len;
+            int64_t idx = tmp->array_len;
 
             while (idx-- > 0) {
                 opvar_free(tmp->data.arrayvalues[idx]);
@@ -1056,7 +1056,7 @@ register int humidity;
 
 unpacked_coord
 get_unpacked_coord(loc, defhumidity)
-long loc;
+int64_t loc;
 int defhumidity;
 {
     static unpacked_coord c;
@@ -1081,7 +1081,7 @@ get_location_coord(x, y, humidity, croom, crd)
 schar *x, *y;
 int humidity;
 struct mkroom *croom;
-long crd;
+int64_t crd;
 {
     unpacked_coord c;
 
@@ -2498,7 +2498,7 @@ struct mkroom *croom;
     if (is_obj_uncurseable(otmp) && otmp->cursed)
         uncurse(otmp);
     if (o->age >= 0)
-        otmp->age = (long)o->age;
+        otmp->age = (int64_t)o->age;
     if (o->special_quality != -127)
     {
         otmp->special_quality = o->special_quality;
@@ -3433,7 +3433,7 @@ boolean prefilled;
         case VAULT:
             for (x = croom->lx; x <= croom->hx; x++)
                 for (y = croom->ly; y <= croom->hy; y++)
-                    (void) mkgold((long) rn1(abs(depth(&u.uz)) * 100, 51),
+                    (void) mkgold((int64_t) rn1(abs(depth(&u.uz)) * 100, 51),
                                   x, y);
             break;
         case COURT:
@@ -3682,7 +3682,7 @@ sp_level_loader(fd, lvl)
 dlb *fd;
 sp_lev *lvl;
 {
-    long n_opcode = 0;
+    int64_t n_opcode = 0;
     struct opvar *opdat;
     int opcode;
 
@@ -3757,7 +3757,7 @@ sp_level_free(lvl)
 sp_lev *lvl;
 {
     static const char nhFunc[] = "sp_level_free";
-    long n_opcode = 0;
+    int64_t n_opcode = 0;
 
     while (n_opcode < lvl->n_opcodes) {
         int opcode = lvl->opcodes[n_opcode].opcode;
@@ -3809,7 +3809,7 @@ lev_init *linit;
 
 struct sp_frame *
 frame_new(execptr)
-long execptr;
+int64_t execptr;
 {
     struct sp_frame *frame =
         (struct sp_frame *) alloc(sizeof(struct sp_frame));
@@ -3862,9 +3862,9 @@ struct sp_coder *coder;
     }
 }
 
-long
+int64_t
 sp_code_jmpaddr(curpos, jmpaddr)
-long curpos, jmpaddr;
+int64_t curpos, jmpaddr;
 {
     return (curpos + jmpaddr);
 }
@@ -4214,7 +4214,7 @@ struct sp_coder *coder;
 {
     static const char nhFunc[] = "spo_object";
     int nparams = 0;
-    long quancnt;
+    int64_t quancnt;
     struct opvar *varparam;
     struct opvar *id, *containment;
     object tmpobj = emptyobject;
@@ -4599,7 +4599,7 @@ struct sp_coder *coder;
 {
     static const char nhFunc[] = "spo_level_flags";
     struct opvar *flagdata;
-    long lflags;
+    int64_t lflags;
 
     if (!OV_pop_i(flagdata))
         return;
@@ -4677,7 +4677,7 @@ struct sp_coder* coder;
 {
     static const char nhFunc[] = "spo_tileset";
     struct opvar* tilesetdata;
-    long tilesetid = 0;
+    int64_t tilesetid = 0;
 
     if (!OV_pop_i(tilesetdata))
         return;
@@ -5212,7 +5212,7 @@ struct sp_coder* coder;
         }
 
         levl[x][y].typ = BRAZIER;
-        long stval = OV_i(subtyp);
+        int64_t stval = OV_i(subtyp);
         if (stval >= 0)
             levl[x][y].subtyp = (schar)stval;
         else
@@ -5221,7 +5221,7 @@ struct sp_coder* coder;
         levl[x][y].vartyp = get_initial_location_vartype(levl[x][y].typ, levl[x][y].subtyp);
         levl[x][y].special_quality = 0;
 
-        long val = OV_i(lamplit);
+        int64_t val = OV_i(lamplit);
         if (val >= 0)
             levl[x][y].lamplit = (unsigned int)val;
         else
@@ -5266,7 +5266,7 @@ struct sp_coder* coder;
 
         levl[x][y].typ = TREE;
         int forest_id = (int)OV_i(foresttyp);
-        long val = OV_i(subtyp);
+        int64_t val = OV_i(subtyp);
         if (val >= 0)
             levl[x][y].subtyp = (schar)val;
         else
@@ -5348,7 +5348,7 @@ struct sp_coder *coder;
     static const char nhFunc[] = "spo_gold";
     struct opvar *gcoord, *amt;
     schar x, y;
-    long amount;
+    int64_t amount;
 
     if (!OV_pop_c(gcoord) || !OV_pop_i(amt))
         return;
@@ -5723,13 +5723,13 @@ struct opvar *ov;
 int xc, yc, a, b, filled;
 { /* e(x,y) = b^2*x^2 + a^2*y^2 - a^2*b^2 */
     int x = 0, y = b;
-    long a2 = (long) a * a, b2 = (long) b * b;
-    long crit1 = -(a2 / 4 + a % 2 + b2);
-    long crit2 = -(b2 / 4 + b % 2 + a2);
-    long crit3 = -(b2 / 4 + b % 2);
-    long t = -a2 * y; /* e(x+1/2,y-1/2) - (a^2+b^2)/4 */
-    long dxt = 2 * b2 * x, dyt = -2 * a2 * y;
-    long d2xt = 2 * b2, d2yt = 2 * a2;
+    int64_t a2 = (int64_t) a * a, b2 = (int64_t) b * b;
+    int64_t crit1 = -(a2 / 4 + a % 2 + b2);
+    int64_t crit2 = -(b2 / 4 + b % 2 + a2);
+    int64_t crit3 = -(b2 / 4 + b % 2);
+    int64_t t = -a2 * y; /* e(x+1/2,y-1/2) - (a^2+b^2)/4 */
+    int64_t dxt = 2 * b2 * x, dyt = -2 * a2 * y;
+    int64_t d2xt = 2 * b2, d2yt = 2 * a2;
     int width = 1;
     int i;
 
@@ -5801,18 +5801,18 @@ int xc, yc, a, b, filled;
 }
 
 /* distance from line segment (x1,y1, x2,y2) to point (x3,y3) */
-long
+int64_t
 line_dist_coord(x1, y1, x2, y2, x3, y3)
-long x1, y1, x2, y2, x3, y3;
+int64_t x1, y1, x2, y2, x3, y3;
 {
-    long px = x2 - x1;
-    long py = y2 - y1;
-    long s = px * px + py * py;
-    long x, y, dx, dy, dist = 0;
+    int64_t px = x2 - x1;
+    int64_t py = y2 - y1;
+    int64_t s = px * px + py * py;
+    int64_t x, y, dx, dy, dist = 0;
     float lu = 0;
 
     if (x1 == x2 && y1 == y2)
-        return (long)isqrt(dist2((int)x1, (int)y1, (int)x3, (int)y3));
+        return (int64_t)isqrt(dist2((int)x1, (int)y1, (int)x3, (int)y3));
 
     lu = ((x3 - x1) * px + (y3 - y1) * py) / (float) s;
     if (lu > 1)
@@ -5824,7 +5824,7 @@ long x1, y1, x2, y2, x3, y3;
     y = y1 + lu * py;
     dx = x - x3;
     dy = y - y3;
-    dist = (long)isqrt((int)(dx * dx + dy * dy));
+    dist = (int64_t)isqrt((int)(dx * dx + dy * dy));
 
     return dist;
 }
@@ -5832,12 +5832,12 @@ long x1, y1, x2, y2, x3, y3;
 void
 selection_do_gradient(ov, x, y, x2, y2, gtyp, mind, maxd, limit)
 struct opvar *ov;
-long x, y, x2, y2, gtyp, mind, maxd, limit;
+int64_t x, y, x2, y2, gtyp, mind, maxd, limit;
 {
-    long dx, dy, dofs;
+    int64_t dx, dy, dofs;
 
     if (mind > maxd) {
-        long tmp = mind;
+        int64_t tmp = mind;
         mind = maxd;
         maxd = tmp;
     }
@@ -5851,9 +5851,9 @@ long x, y, x2, y2, gtyp, mind, maxd, limit;
     case SEL_GRADIENT_RADIAL: {
         for (dx = 0; dx < COLNO; dx++)
             for (dy = 0; dy < ROWNO; dy++) {
-                long d0 = line_dist_coord(x, y, x2, y2, dx, dy);
+                int64_t d0 = line_dist_coord(x, y, x2, y2, dx, dy);
                 if (d0 >= mind && (!limit || d0 <= maxd)) {
-                    if (d0 - mind > (long)rn2((int)dofs))
+                    if (d0 - mind > (int64_t)rn2((int)dofs))
                         selection_setpoint((int)dx, (int)dy, ov, 1);
                 }
             }
@@ -5862,15 +5862,15 @@ long x, y, x2, y2, gtyp, mind, maxd, limit;
     case SEL_GRADIENT_SQUARE: {
         for (dx = 0; dx < COLNO; dx++)
             for (dy = 0; dy < ROWNO; dy++) {
-                long d1 = line_dist_coord(x, y, x2, y2, x, dy);
-                long d2 = line_dist_coord(x, y, x2, y2, dx, y);
-                long d3 = line_dist_coord(x, y, x2, y2, x2, dy);
-                long d4 = line_dist_coord(x, y, x2, y2, dx, y2);
-                long d5 = line_dist_coord(x, y, x2, y2, dx, dy);
-                long d0 = min(d5, min(max(d1, d2), max(d3, d4)));
+                int64_t d1 = line_dist_coord(x, y, x2, y2, x, dy);
+                int64_t d2 = line_dist_coord(x, y, x2, y2, dx, y);
+                int64_t d3 = line_dist_coord(x, y, x2, y2, x2, dy);
+                int64_t d4 = line_dist_coord(x, y, x2, y2, dx, y2);
+                int64_t d5 = line_dist_coord(x, y, x2, y2, dx, dy);
+                int64_t d0 = min(d5, min(max(d1, d2), max(d3, d4)));
 
                 if (d0 >= mind && (!limit || d0 <= maxd)) {
-                    if (d0 - mind > (long)rn2((int)dofs))
+                    if (d0 - mind > (int64_t)rn2((int)dofs))
                         selection_setpoint((int)dx, (int)dy, ov, 1);
                 }
             }
@@ -6214,8 +6214,8 @@ genericptr_t arg, arg2, arg3, arg4, arg5;
 {
     unsigned short dmask = *(unsigned short*) arg;
     int subtyp = *(int*)arg2;
-    long key_otyp = *(long*)arg3;
-    long key_spe_quality = *(long*)arg4;
+    int64_t key_otyp = *(int64_t*)arg3;
+    int64_t key_spe_quality = *(int64_t*)arg4;
     unsigned short dflags = *(unsigned short*)arg5;
 
     xchar x = dx, y = dy;
@@ -6281,7 +6281,7 @@ struct sp_coder *coder;
     int subtyp = 0;
     unsigned short dflags = 0;
     xchar secret = 0;
-    long kotyp = 0, kspeq = 0;
+    int64_t kotyp = 0, kspeq = 0;
     int nparams = 0;
 
     if (!OV_pop_i(msk))
@@ -7247,7 +7247,7 @@ struct sp_coder *coder;
     static const char nhFunc[] = "spo_mazewalk";
     xchar x, y;
     struct opvar *ftyp, *fstocked, *fdir, *mcoord;
-    long dir;
+    int64_t dir;
 
     if (!OV_pop_i(ftyp) || !OV_pop_i(fstocked) || !OV_pop_i(fdir)
         || !OV_pop_c(mcoord))
@@ -7664,7 +7664,7 @@ sp_lev *lvl;
 {
     static const char nhFunc[] = "spo_jmp";
     struct opvar *tmpa;
-    long a;
+    int64_t a;
 
     if (!OV_pop_i(tmpa))
         return;
@@ -7681,8 +7681,8 @@ sp_lev *lvl;
 {
     static const char nhFunc[] = "spo_conditional_jump";
     struct opvar *oa, *oc;
-    long a, c;
-    long test = 0;
+    int64_t a, c;
+    int64_t test = 0;
 
     if (!OV_pop_i(oa) || !OV_pop_i(oc))
         return;
@@ -7732,7 +7732,7 @@ struct sp_coder *coder;
     struct opvar *vvalue;
     struct splev_var *tmpvar;
     struct splev_var *tmp2;
-    long idx;
+    int64_t idx;
 
     OV_pop_s(vname);
     OV_pop_i(arraylen);
@@ -7849,14 +7849,14 @@ struct sp_coder *coder;
 }
 
 #if 0
-STATIC_OVL long
+STATIC_OVL int64_t
 opvar_array_length(coder)
 struct sp_coder *coder;
 {
     static const char nhFunc[] = "opvar_array_length";
     struct opvar *vname;
     struct splev_var *tmp;
-    long len = 0;
+    int64_t len = 0;
 
     if (!coder)
         return 0;
@@ -7894,7 +7894,7 @@ struct sp_coder *coder;
     struct opvar *vname;
     struct splev_var *tmp;
     struct opvar *tmp2;
-    long i, j;
+    int64_t i, j;
 
     if (!OV_pop_s(vname))
         return;
@@ -7905,7 +7905,7 @@ struct sp_coder *coder;
         return;
     }
     for (i = tmp->array_len - 1; i > 0; i--) {
-        if ((j = (long)rn2((int)i + 1)) == i)
+        if ((j = (int64_t)rn2((int)i + 1)) == i)
             continue;
         tmp2 = tmp->data.arrayvalues[j];
         tmp->data.arrayvalues[j] = tmp->data.arrayvalues[i];
@@ -7925,7 +7925,7 @@ sp_lev *lvl;
     static const char nhFunc[] = "sp_level_coder";
     uint64_t exec_opcodes = 0;
     int tmpi;
-    long room_stack = 0;
+    int64_t room_stack = 0;
     uint64_t max_execution = SPCODER_MAX_RUNTIME;
     struct sp_coder *coder =
         (struct sp_coder *) alloc(sizeof (struct sp_coder));
@@ -8310,7 +8310,7 @@ sp_lev *lvl;
             struct opvar *a;
             struct opvar *b;
             struct opvar *c;
-            long val = 0;
+            int64_t val = 0;
 
             OV_pop(b);
             OV_pop(a);

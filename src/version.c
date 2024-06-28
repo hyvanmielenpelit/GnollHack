@@ -40,7 +40,7 @@ char *buf;
     return strcpy(buf, VERSION_STRING);
 }
 
-/* fill and return the given buffer with the long GnollHack version string */
+/* fill and return the given buffer with the int64_t GnollHack version string */
 char *
 getversionstring(buf)
 char *buf;
@@ -252,7 +252,7 @@ char *buf;
 #ifdef MICRO
 boolean
 comp_times(filetime)
-long filetime;
+int64_t filetime;
 {
     /* BUILD_TIME is constant but might have L suffix rather than UL;
        'filetime' is historically signed but ought to have been unsigned */

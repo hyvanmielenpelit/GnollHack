@@ -774,7 +774,7 @@ STATIC_DCL void FDECL(hup_display_file, (const char *, BOOLEAN_P));
 STATIC_DCL void FDECL(hup_cliparound, (int, int, BOOLEAN_P));
 #endif
 #ifdef CHANGE_COLOR
-STATIC_DCL void FDECL(hup_change_color, (int, long, int));
+STATIC_DCL void FDECL(hup_change_color, (int, int64_t, int));
 #ifdef MAC
 STATIC_DCL short FDECL(hup_set_font_name, (winid, char *));
 #endif
@@ -1093,7 +1093,7 @@ boolean force UNUSED;
 STATIC_OVL void
 hup_change_color(color, rgb, reverse)
 int color, reverse;
-long rgb;
+int64_t rgb;
 {
     return;
 }
@@ -1235,7 +1235,7 @@ int chg UNUSED, percent UNUSED, color UNUSED;
 uint64_t *colormasks UNUSED;
 {
     char newbot1[MAXCO], newbot2[MAXCO];
-    long cond, *condptr = (long *) ptr;
+    int64_t cond, *condptr = (int64_t *) ptr;
     register int i;
     unsigned pass, lndelta;
     enum statusfields idx1, idx2, *fieldlist;
@@ -1523,11 +1523,11 @@ char *buf;
     size_t slen, len = 0;
     char tmpbuf[BUFSZ];
     char verbuf[BUFSZ];
-    long uid;
+    int64_t uid;
     time_t now;
 
     now = dumplog_now;
-    uid = (long) getuid();
+    uid = (int64_t) getuid();
 
     /*
      * Note: %t and %T assume that time_t is a 'long int' number of
@@ -1550,23 +1550,23 @@ char *buf;
                 Sprintf(tmpbuf, "%%");
                 break;
             case 't': /* game start, timestamp */
-                Sprintf(tmpbuf, "%lu", (unsigned long) ubirthday);
+                Sprintf(tmpbuf, "%llu", (unsigned long long) ubirthday);
                 break;
             case 'T': /* current time, timestamp */
-                Sprintf(tmpbuf, "%lu", (unsigned long) now);
+                Sprintf(tmpbuf, "%llu", (unsigned long long) now);
                 break;
             case 'd': /* game start, YYYYMMDDhhmmss */
-                Sprintf(tmpbuf, "%08ld%06ld",
-                        yyyymmdd(ubirthday), hhmmss(ubirthday));
+                Sprintf(tmpbuf, "%08lld%06lld",
+                    (unsigned long long)yyyymmdd(ubirthday), (unsigned long long)hhmmss(ubirthday));
                 break;
             case 'D': /* current time, YYYYMMDDhhmmss */
-                Sprintf(tmpbuf, "%08ld%06ld", yyyymmdd(now), hhmmss(now));
+                Sprintf(tmpbuf, "%08lld%06lld", (unsigned long long)yyyymmdd(now), (unsigned long long)hhmmss(now));
                 break;
             case 'v': /* version, eg. "3.6.2-0" */
                 Sprintf(tmpbuf, "%s", version_string(verbuf));
                 break;
             case 'u': /* UID */
-                Sprintf(tmpbuf, "%ld", uid);
+                Sprintf(tmpbuf, "%lld", (long long)uid);
                 break;
             case 'n': /* player name */
                 Sprintf(tmpbuf, "%s", *plname ? plname : "unknown");
@@ -1608,7 +1608,7 @@ struct dump_status_fields {
 
 static const enum statusfields** fieldorder;
 static uint64_t* dump_colormasks;
-static long dump_condition_bits;
+static int64_t dump_condition_bits;
 static struct dump_status_fields dump_status[MAXBLSTATS];
 static int hpbar_percent, hpbar_color;
 
@@ -1621,7 +1621,7 @@ static int hpbar_percent, hpbar_color;
 
 static int
 condcolor(bm, bmarray)
-long bm;
+int64_t bm;
 uint64_t* bmarray;
 {
 #if defined(STATUS_HILITES) && defined(TEXTCOLOR)
@@ -1638,7 +1638,7 @@ uint64_t* bmarray;
 
 STATIC_OVL int
 condattr(bm, bmarray)
-long bm;
+int64_t bm;
 uint64_t* bmarray;
 {
     int attr = 0;
@@ -1679,7 +1679,7 @@ uint64_t* bmarray;
 STATIC_OVL void
 dump_render_status(VOID_ARGS)
 {
-    long mask, bits;
+    int64_t mask, bits;
     int i, idx, c, row, num_rows, coloridx = 0, attrmask = 0;
     char* text;
 
@@ -1822,7 +1822,7 @@ genericptr_t ptr;
 uint64_t* colormasks;
 {
     int attrmask;
-    long* condptr = (long*)ptr;
+    int64_t* condptr = (int64_t*)ptr;
     char* text = (char*)ptr;
     char* lastchar, * p;
     char goldbuf[40] = "";
@@ -2762,14 +2762,14 @@ time_t when;
         fprintf(dumphtml_file, "<div class=\"ts_row ts_name\">");
         html_dump_str(dumphtml_file, plname, 0, 0, ATR_NONE, NO_COLOR);
         fprintf(dumphtml_file, "</div><br />\n");
-        fprintf(dumphtml_file, "<div class=\"ts_row ts_points\">%ld points</div><br />\n", u.u_gamescore);
+        fprintf(dumphtml_file, "<div class=\"ts_row ts_points\">%lld points</div><br />\n", (long long)u.u_gamescore);
         fprintf(dumphtml_file, "<div class=\"ts_row ts_killer\">");
         char kbuf[BUFSZ * 2];
         formatkiller(kbuf, sizeof kbuf, how, FALSE);
         html_dump_str(dumphtml_file, kbuf, 0, 0, ATR_NONE, NO_COLOR);
         fprintf(dumphtml_file, "</div><br />\n");
-        long year = yyyymmdd(when) / 10000L;
-        fprintf(dumphtml_file, "<div class=\"ts_row ts_year\">%4ld</div>\n", year);
+        int64_t year = yyyymmdd(when) / 10000L;
+        fprintf(dumphtml_file, "<div class=\"ts_row ts_year\">%4lld</div>\n", (long long)year);
         fprintf(dumphtml_file, "%s\n", DIV_E);
         fprintf(dumphtml_file, "%s\n", DIV_E);
     }

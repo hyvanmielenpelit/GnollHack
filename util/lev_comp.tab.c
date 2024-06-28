@@ -134,43 +134,43 @@ extern genericptr_t FDECL(get_last_opcode_data1, (sp_lev *, int));
 extern genericptr_t FDECL(get_last_opcode_data2, (sp_lev *, int, int));
 extern boolean FDECL(check_subrooms, (sp_lev *));
 extern boolean FDECL(write_level_file, (char *,sp_lev *));
-extern struct opvar *FDECL(set_opvar_int, (struct opvar *, long));
+extern struct opvar *FDECL(set_opvar_int, (struct opvar *, int64_t));
 extern void VDECL(add_opvars, (sp_lev *, const char *, ...));
 extern void FDECL(start_level_def, (sp_lev * *, char *));
 
-extern struct lc_funcdefs *FDECL(funcdef_new, (long,char *));
+extern struct lc_funcdefs *FDECL(funcdef_new, (int64_t,char *));
 extern void FDECL(funcdef_free_all, (struct lc_funcdefs *));
 extern struct lc_funcdefs *FDECL(funcdef_defined, (struct lc_funcdefs *,
                                                    char *, int));
 extern char *FDECL(funcdef_paramtypes, (struct lc_funcdefs *));
 extern char *FDECL(decode_parm_str, (char *));
 
-extern struct lc_vardefs *FDECL(vardef_new, (long,char *));
+extern struct lc_vardefs *FDECL(vardef_new, (int64_t,char *));
 extern void FDECL(vardef_free_all, (struct lc_vardefs *));
 extern struct lc_vardefs *FDECL(vardef_defined, (struct lc_vardefs *,
                                                  char *, int));
 
 extern void NDECL(break_stmt_start);
 extern void FDECL(break_stmt_end, (sp_lev *));
-extern void FDECL(break_stmt_new, (sp_lev *, long));
+extern void FDECL(break_stmt_new, (sp_lev *, int64_t));
 
 extern void FDECL(splev_add_from, (sp_lev *, sp_lev *));
 
-extern void FDECL(check_vardef_type, (struct lc_vardefs *, char *, long));
+extern void FDECL(check_vardef_type, (struct lc_vardefs *, char *, int64_t));
 extern void FDECL(vardef_used, (struct lc_vardefs *, char *));
 extern struct lc_vardefs *FDECL(add_vardef_type, (struct lc_vardefs *,
-                                                  char *, long));
+                                                  char *, int64_t));
 
-extern int FDECL(reverse_jmp_opcode, (long));
+extern int FDECL(reverse_jmp_opcode, (int64_t));
 
 struct coord {
-    long x;
-    long y;
+    int64_t x;
+    int64_t y;
 };
 
 struct forloopdef {
     char *varname;
-    long jmp_point;
+    int64_t jmp_point;
 };
 static struct forloopdef forloop_list[MAX_NESTED_IFS];
 static short n_forloops = 0;
@@ -195,7 +195,7 @@ int in_switch_statement = 0;
 static struct opvar *switch_check_jump = NULL;
 static struct opvar *switch_default_case = NULL;
 static struct opvar *switch_case_list[MAX_SWITCH_CASES];
-static long switch_case_value[MAX_SWITCH_CASES];
+static int64_t switch_case_value[MAX_SWITCH_CASES];
 int n_switch_case_list = 0;
 
 int allow_break_statements = 0;
@@ -534,38 +534,38 @@ typedef union YYSTYPE
 /* Line 214 of yacc.c  */
 #line 153 "lev_comp.y"
 
-    long    i;
+    int64_t    i;
     char    *map;
     struct {
-        long room;
-        long wall;
-        long door;
+        int64_t room;
+        int64_t wall;
+        int64_t door;
     } corpos;
     struct {
-        long area;
-        long x1;
-        long y1;
-        long x2;
-        long y2;
+        int64_t area;
+        int64_t x1;
+        int64_t y1;
+        int64_t x2;
+        int64_t y2;
     } lregn;
     struct {
-        long x;
-        long y;
+        int64_t x;
+        int64_t y;
     } crd;
     struct {
-        long ter;
-        long lit;
+        int64_t ter;
+        int64_t lit;
     } terr;
     struct {
-        long height;
-        long width;
+        int64_t height;
+        int64_t width;
     } sze;
     struct {
-        long die;
-        long num;
+        int64_t die;
+        int64_t num;
     } dice;
     struct {
-        long cfunc;
+        int64_t cfunc;
         char *varstr;
     } meth;
 
@@ -4322,7 +4322,7 @@ yyreduce:
     {
 		      add_opvars(splev, "iiiiiio",
 				 VA_PASS7((yyvsp[(3) - (5)].corpos).room, (yyvsp[(3) - (5)].corpos).door, (yyvsp[(3) - (5)].corpos).wall,
-					  -1, -1, (long)(yyvsp[(5) - (5)].i),
+					  -1, -1, (int64_t)(yyvsp[(5) - (5)].i),
 					  SPO_CORRIDOR));
 		  ;}
     break;
@@ -4347,7 +4347,7 @@ yyreduce:
 			  lc_error("Only typed rooms can have a chance.");
 		      else {
 			  add_opvars(splev, "iii",
-				     VA_PASS3((long)(yyvsp[(1) - (4)].i), (long)(yyvsp[(2) - (4)].i), (long)(yyvsp[(4) - (4)].i)));
+				     VA_PASS3((int64_t)(yyvsp[(1) - (4)].i), (int64_t)(yyvsp[(2) - (4)].i), (int64_t)(yyvsp[(4) - (4)].i)));
 		      }
                   ;}
     break;
@@ -4357,13 +4357,13 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 1344 "lev_comp.y"
     {
-		      long rflags = (yyvsp[(8) - (13)].i);
-		      long flmt = (long)(yyvsp[(9) - (13)].i);
-		      long flt = (long)(yyvsp[(10) - (13)].i);
-		      long tlset = (long)(yyvsp[(11) - (13)].i);
-		      long decotyp = (long)(yyvsp[(12) - (13)].i);
+		      int64_t rflags = (yyvsp[(8) - (13)].i);
+		      int64_t flmt = (int64_t)(yyvsp[(9) - (13)].i);
+		      int64_t flt = (int64_t)(yyvsp[(10) - (13)].i);
+		      int64_t tlset = (int64_t)(yyvsp[(11) - (13)].i);
+		      int64_t decotyp = (int64_t)(yyvsp[(12) - (13)].i);
 
-		      if (rflags == -1) rflags = (1 << 0);
+		      if (rflags == -1) rflags = ((int64_t)1 << 0);
 		      //if (flmt == -1) flmt = ROOM;
 		      //if (flt == -1) flt = 0;
 
@@ -4390,13 +4390,13 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 1369 "lev_comp.y"
     {
-		      long rflags = (yyvsp[(10) - (15)].i);
-		      long flmt = (long)(yyvsp[(11) - (15)].i);
-		      long flt = (long)(yyvsp[(12) - (15)].i);
-		      long tlset = (long)(yyvsp[(13) - (15)].i);
-		      long decotyp = (long)(yyvsp[(14) - (15)].i);
+		      int64_t rflags = (yyvsp[(10) - (15)].i);
+		      int64_t flmt = (int64_t)(yyvsp[(11) - (15)].i);
+		      int64_t flt = (int64_t)(yyvsp[(12) - (15)].i);
+		      int64_t tlset = (int64_t)(yyvsp[(13) - (15)].i);
+		      int64_t decotyp = (int64_t)(yyvsp[(14) - (15)].i);
 
-		      if (rflags == -1) rflags = (1 << 0);
+		      if (rflags == -1) rflags = ((int64_t)1 << 0);
 		      //if (flmt == -1) flmt = ROOM;
 		      //if (flt == -1) flt = 0;
 
@@ -4531,8 +4531,8 @@ yyreduce:
 			    lc_error("If the door wall is random, so must be its pos!");
 			} else {
 			    add_opvars(splev, "iiiio",
-				       VA_PASS5((long)(yyvsp[(9) - (10)].i), (long)(yyvsp[(5) - (10)].i), (long)(yyvsp[(3) - (10)].i),
-						(long)(yyvsp[(7) - (10)].i), SPO_ROOM_DOOR));
+				       VA_PASS5((int64_t)(yyvsp[(9) - (10)].i), (int64_t)(yyvsp[(5) - (10)].i), (int64_t)(yyvsp[(3) - (10)].i),
+						(int64_t)(yyvsp[(7) - (10)].i), SPO_ROOM_DOOR));
 			}
 		  ;}
     break;
@@ -4542,7 +4542,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 1468 "lev_comp.y"
     {
-		      add_opvars(splev, "io", VA_PASS2((long)(yyvsp[(3) - (6)].i), SPO_DOOR));
+		      add_opvars(splev, "io", VA_PASS2((int64_t)(yyvsp[(3) - (6)].i), SPO_DOOR));
 		  ;}
     break;
 
@@ -5033,7 +5033,7 @@ yyreduce:
 		      if (token == ERR || token == 0)
 			  lc_error("Unknown trap type '%s'!", (yyvsp[(1) - (1)].map));
                       Free((yyvsp[(1) - (1)].map));
-		      (yyval.i) = (1L << (token - 1));
+		      (yyval.i) = ((int64_t)1 << (token - 1));
 		  ;}
     break;
 
@@ -5042,7 +5042,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 1767 "lev_comp.y"
     {
-		      (yyval.i) = (long) ~0;
+		      (yyval.i) = (int64_t) ~0;
 		  ;}
     break;
 
@@ -5055,10 +5055,10 @@ yyreduce:
 		      if (token == ERR || token == 0)
 			  lc_error("Unknown trap type '%s'!", (yyvsp[(1) - (3)].map));
 
-		      if ((1L << (token - 1)) & (yyvsp[(3) - (3)].i))
+		      if (((int64_t)1 << (token - 1)) & (int64_t)((yyvsp[(3) - (3)].i)))
 			  lc_error("Monster seen_traps, trap '%s' listed twice.", (yyvsp[(1) - (3)].map));
                       Free((yyvsp[(1) - (3)].map));
-		      (yyval.i) = ((1L << (token - 1)) | (yyvsp[(3) - (3)].i));
+		      (yyval.i) = (((int64_t)1 << (token - 1)) | (int64_t)((yyvsp[(3) - (3)].i)));
 		  ;}
     break;
 
@@ -5472,7 +5472,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 2009 "lev_comp.y"
     {
-		       long dir, state = 0;
+		       int64_t dir, state = 0;
 
 		       /* convert dir from a DIRECTION to a DB_DIR */
 		       dir = (yyvsp[(5) - (7)].i);
@@ -5579,7 +5579,7 @@ yyreduce:
 		      add_opvars(splev, "iiiii iiiii iiso",
 				 VA_PASS14((yyvsp[(3) - (7)].lregn).x1, (yyvsp[(3) - (7)].lregn).y1, (yyvsp[(3) - (7)].lregn).x2, (yyvsp[(3) - (7)].lregn).y2, (yyvsp[(3) - (7)].lregn).area,
 					   (yyvsp[(5) - (7)].lregn).x1, (yyvsp[(5) - (7)].lregn).y1, (yyvsp[(5) - (7)].lregn).x2, (yyvsp[(5) - (7)].lregn).y2, (yyvsp[(5) - (7)].lregn).area,
-				     (long) (((yyvsp[(7) - (7)].i)) ? LR_UPSTAIR : LR_DOWNSTAIR),
+				     (int64_t) (((yyvsp[(7) - (7)].i)) ? LR_UPSTAIR : LR_DOWNSTAIR),
 					   0, (char *) 0, SPO_LEVREGION));
 		  ;}
     break;
@@ -5602,7 +5602,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 2103 "lev_comp.y"
     {
-		      long rtyp = 0;
+		      int64_t rtyp = 0;
 		      switch((yyvsp[(6) - (6)].i)) {
 		      case -1: rtyp = LR_TELE; break;
 		      case  0: rtyp = LR_DOWNTELE; break;
@@ -5624,7 +5624,7 @@ yyreduce:
 		      add_opvars(splev, "iiiii iiiii iiso",
 				 VA_PASS14((yyvsp[(3) - (5)].lregn).x1, (yyvsp[(3) - (5)].lregn).y1, (yyvsp[(3) - (5)].lregn).x2, (yyvsp[(3) - (5)].lregn).y2, (yyvsp[(3) - (5)].lregn).area,
 					   (yyvsp[(5) - (5)].lregn).x1, (yyvsp[(5) - (5)].lregn).y1, (yyvsp[(5) - (5)].lregn).x2, (yyvsp[(5) - (5)].lregn).y2, (yyvsp[(5) - (5)].lregn).area,
-					   (long) LR_BRANCH, 0,
+					   (int64_t) LR_BRANCH, 0,
 					   (char *) 0, SPO_LEVREGION));
 		  ;}
     break;
@@ -5969,7 +5969,7 @@ yyreduce:
 		      add_opvars(splev, "iiiii iiiii iiso",
 				 VA_PASS14((yyvsp[(3) - (5)].lregn).x1, (yyvsp[(3) - (5)].lregn).y1, (yyvsp[(3) - (5)].lregn).x2, (yyvsp[(3) - (5)].lregn).y2, (yyvsp[(3) - (5)].lregn).area,
 					   0, 0, 0, 0, 1,
-					   (yyvsp[(5) - (5)].i) == REGION_SPECIAL_LEVEL_SEEN ? (long) LR_SPECIAL_MAP_SEEN : (long) LR_SPECIAL_MAP_NAME_REVEALED, 0,
+					   (yyvsp[(5) - (5)].i) == REGION_SPECIAL_LEVEL_SEEN ? (int64_t) LR_SPECIAL_MAP_SEEN : (int64_t) LR_SPECIAL_MAP_NAME_REVEALED, 0,
 					   (char *) 0, SPO_LEVREGION));
 		  ;}
     break;
@@ -5988,22 +5988,22 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 2342 "lev_comp.y"
     {
-		      long irr;
-		      long rt = (yyvsp[(7) - (13)].i);
-		      long rflags = (yyvsp[(8) - (13)].i);
-		      long flmt = (long)(yyvsp[(9) - (13)].i);
-		      long flt = (long)(yyvsp[(10) - (13)].i);
-		      long tlset = (long)(yyvsp[(11) - (13)].i);
-		      long decotyp = (long)(yyvsp[(12) - (13)].i);
+		      int64_t irr;
+		      int64_t rt = (yyvsp[(7) - (13)].i);
+		      int64_t rflags = (yyvsp[(8) - (13)].i);
+		      int64_t flmt = (int64_t)(yyvsp[(9) - (13)].i);
+		      int64_t flt = (int64_t)(yyvsp[(10) - (13)].i);
+		      int64_t tlset = (int64_t)(yyvsp[(11) - (13)].i);
+		      int64_t decotyp = (int64_t)(yyvsp[(12) - (13)].i);
 
-		      if (rflags == -1) rflags = (1 << 0);
+		      if (rflags == -1) rflags = ((int64_t)1 << 0);
 		      //if (flmt == -1) flmt = 0;
 		      //if (flt == -1) flt = 0;
 
 		      if (!(rflags & 1)) rt += MAXRTYPE+1;
 		      irr = ((rflags & 2) != 0);
 		      add_opvars(splev, "iiiiiiio",
-				 VA_PASS8((long)(yyvsp[(5) - (13)].i), rt, rflags, flmt, flt, tlset, decotyp, SPO_REGION));
+				 VA_PASS8((int64_t)(yyvsp[(5) - (13)].i), rt, rflags, flmt, flt, tlset, decotyp, SPO_REGION));
 		      (yyval.i) = (irr || (rflags & 1) || rt != OROOM);
 		      break_stmt_start();
 		  ;}
@@ -6048,7 +6048,7 @@ yyreduce:
 #line 2385 "lev_comp.y"
     {
 		      add_opvars(splev, "Miiio",
-				 VA_PASS5(-1, 0, (long)(yyvsp[(7) - (7)].i), (long)(yyvsp[(5) - (7)].i), SPO_ALTAR));
+				 VA_PASS5(-1, 0, (int64_t)(yyvsp[(7) - (7)].i), (int64_t)(yyvsp[(5) - (7)].i), SPO_ALTAR));
 		  ;}
     break;
 
@@ -6058,7 +6058,7 @@ yyreduce:
 #line 2390 "lev_comp.y"
     {
 		      add_opvars(splev, "iiio",
-				 VA_PASS4(0, (long)(yyvsp[(7) - (11)].i), (long)(yyvsp[(5) - (11)].i), SPO_ALTAR));
+				 VA_PASS4(0, (int64_t)(yyvsp[(7) - (11)].i), (int64_t)(yyvsp[(5) - (11)].i), SPO_ALTAR));
 		  ;}
     break;
 
@@ -6068,7 +6068,7 @@ yyreduce:
 #line 2395 "lev_comp.y"
     {
 		      add_opvars(splev, "Miiio",
-				 VA_PASS5(-1, (long)(yyvsp[(9) - (9)].i), (long)(yyvsp[(7) - (9)].i), (long)(yyvsp[(5) - (9)].i), SPO_ALTAR));
+				 VA_PASS5(-1, (int64_t)(yyvsp[(9) - (9)].i), (int64_t)(yyvsp[(7) - (9)].i), (int64_t)(yyvsp[(5) - (9)].i), SPO_ALTAR));
 		  ;}
     break;
 
@@ -6078,7 +6078,7 @@ yyreduce:
 #line 2400 "lev_comp.y"
     {
 		      add_opvars(splev, "iiio",
-				 VA_PASS4((long)(yyvsp[(9) - (13)].i), (long)(yyvsp[(7) - (13)].i), (long)(yyvsp[(5) - (13)].i), SPO_ALTAR));
+				 VA_PASS4((int64_t)(yyvsp[(9) - (13)].i), (int64_t)(yyvsp[(7) - (13)].i), (int64_t)(yyvsp[(5) - (13)].i), SPO_ALTAR));
 		  ;}
     break;
 
@@ -6347,7 +6347,7 @@ yyreduce:
 #line 2550 "lev_comp.y"
     {
 		      add_opvars(splev, "io",
-				 VA_PASS2((long)(yyvsp[(5) - (7)].i), SPO_ENGRAVING));
+				 VA_PASS2((int64_t)(yyvsp[(5) - (7)].i), SPO_ENGRAVING));
 		  ;}
     break;
 
@@ -6439,7 +6439,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 2613 "lev_comp.y"
     {
-		      (yyval.i) = ((yyvsp[(1) - (1)].i) << 0);
+		      (yyval.i) = ((int64_t)((yyvsp[(1) - (1)].i)) << 0);
 		  ;}
     break;
 
@@ -6448,7 +6448,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 2617 "lev_comp.y"
     {
-		      (yyval.i) = ((yyvsp[(1) - (1)].i) << 1);
+		      (yyval.i) = ((int64_t)((yyvsp[(1) - (1)].i)) << 1);
 		  ;}
     break;
 
@@ -6457,7 +6457,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 2621 "lev_comp.y"
     {
-		      (yyval.i) = ((yyvsp[(1) - (1)].i) << 2);
+		      (yyval.i) = ((int64_t)((yyvsp[(1) - (1)].i)) << 2);
 		  ;}
     break;
 
@@ -6776,7 +6776,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 2831 "lev_comp.y"
     {
-		      long r = SP_REGION_PACK((yyvsp[(2) - (9)].i), (yyvsp[(4) - (9)].i), (yyvsp[(6) - (9)].i), (yyvsp[(8) - (9)].i));
+		      int64_t r = SP_REGION_PACK((yyvsp[(2) - (9)].i), (yyvsp[(4) - (9)].i), (yyvsp[(6) - (9)].i), (yyvsp[(8) - (9)].i));
 
 		      if ((yyvsp[(2) - (9)].i) > (yyvsp[(6) - (9)].i) || (yyvsp[(4) - (9)].i) > (yyvsp[(8) - (9)].i))
 			  lc_error("Region start > end: (%ld,%ld,%ld,%ld)!",
@@ -6888,7 +6888,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 2906 "lev_comp.y"
     {
-                      long m = get_monster_id((yyvsp[(1) - (1)].map), (char)0);
+                      int64_t m = get_monster_id((yyvsp[(1) - (1)].map), (char)0);
                       if (m == ERR) {
                           lc_error("Unknown monster \"%s\"!", (yyvsp[(1) - (1)].map));
                           (yyval.i) = -1;
@@ -6918,7 +6918,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 2926 "lev_comp.y"
     {
-                      long m = get_monster_id((yyvsp[(4) - (5)].map), (char) (yyvsp[(2) - (5)].i));
+                      int64_t m = get_monster_id((yyvsp[(4) - (5)].map), (char) (yyvsp[(2) - (5)].i));
                       if (m == ERR) {
                           lc_error("Unknown monster ('%c', \"%s\")!", (yyvsp[(2) - (5)].i), (yyvsp[(4) - (5)].map));
                           (yyval.i) = -1;
@@ -6976,7 +6976,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 2963 "lev_comp.y"
     {
-		      long m = get_object_id((yyvsp[(1) - (1)].map), (char)0);
+		      int64_t m = get_object_id((yyvsp[(1) - (1)].map), (char)0);
 		      if (m == ERR) {
 			  lc_error("Unknown object \"%s\"!", (yyvsp[(1) - (1)].map));
 			  (yyval.i) = -1;
@@ -7006,7 +7006,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 2983 "lev_comp.y"
     {
-		      long m = get_object_id((yyvsp[(4) - (5)].map), (char) (yyvsp[(2) - (5)].i));
+		      int64_t m = get_object_id((yyvsp[(4) - (5)].map), (char) (yyvsp[(2) - (5)].i));
 		      if (m == ERR) {
 			  lc_error("Unknown object ('%c', \"%s\")!", (yyvsp[(2) - (5)].i), (yyvsp[(4) - (5)].map));
 			  (yyval.i) = -1;
@@ -7192,7 +7192,7 @@ yyreduce:
 		      } else if (!tmp) {
 			  lc_error("Could not alloc function params.");
 		      } else {
-			  long vt = SPOVAR_NULL;
+			  int64_t vt = SPOVAR_NULL;
 
 			  tmp->name = strdup((yyvsp[(1) - (3)].map));
 			  tmp->parmtype = (char) (yyvsp[(3) - (3)].i);

@@ -974,7 +974,7 @@ u_init()
         aligns[flags.initalign].value;
 
 #if defined(BSD) && !defined(POSIX_TYPES)
-    (void) time((long *) &ubirthday);
+    (void) time((int64_t *) &ubirthday);
 #else
     (void) time(&ubirthday);
 #endif
@@ -1568,11 +1568,11 @@ register const struct trobj * trop;
 
     struct obj *obj;
     int otyp;
-    long quan;
+    int64_t quan;
 
     while (trop->trclass) 
     {
-        quan = (long)trop->trquan + (long)(trop->trquan_rnd > 0 ? rn2((int)trop->trquan_rnd + 1) : 0);
+        quan = (int64_t)trop->trquan + (int64_t)(trop->trquan_rnd > 0 ? rn2((int)trop->trquan_rnd + 1) : 0);
         while (quan > 0)
         {
             otyp = (int)trop->trotyp;

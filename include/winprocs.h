@@ -70,7 +70,7 @@ struct window_procs {
     void FDECL((*win_delay_output_milliseconds), (int));
     void FDECL((*win_delay_output_intervals), (int));
 #ifdef CHANGE_COLOR
-    void FDECL((*win_change_color), (int, long, int));
+    void FDECL((*win_change_color), (int, int64_t, int));
 #ifdef MAC
     void FDECL((*win_change_background), (int));
     short FDECL((*win_set_font_name), (winid, char *));
@@ -460,7 +460,7 @@ struct chain_procs {
     void FDECL((*win_delay_output_milliseconds), (CARGS, int));
     void FDECL((*win_delay_output_intervals), (CARGS, int));
 #ifdef CHANGE_COLOR
-    void FDECL((*win_change_color), (CARGS, int, long, int));
+    void FDECL((*win_change_color), (CARGS, int, int64_t, int));
 #ifdef MAC
     void FDECL((*win_change_background), (CARGS, int));
     short FDECL((*win_set_font_name), (CARGS, winid, char *));
@@ -565,7 +565,7 @@ extern void NDECL(safe_delay_output);
 extern void FDECL(safe_delay_output_milliseconds, (int));
 extern void FDECL(safe_delay_output_intervals, (int));
 #ifdef CHANGE_COLOR
-extern void FDECL(safe_change_color, (int, long, int));
+extern void FDECL(safe_change_color, (int, int64_t, int));
 #ifdef MAC
 extern void FDECL(safe_change_background, (int));
 extern short FDECL(safe_set_font_name, (winid, char *));

@@ -177,8 +177,8 @@ struct obj *otmp;
     if (!otmp->oextra)
         otmp->oextra = newoextra();
     if (!OLONG(otmp)) {
-        OLONG(otmp) = (long *) alloc(sizeof (long));
-        (void) memset((genericptr_t) OLONG(otmp), 0, sizeof (long));
+        OLONG(otmp) = (int64_t *) alloc(sizeof (int64_t));
+        (void) memset((genericptr_t) OLONG(otmp), 0, sizeof (int64_t));
     }
 }
 
@@ -188,7 +188,7 @@ struct obj *otmp;
 {
     if (otmp->oextra && OLONG(otmp)) {
         free((genericptr_t) OLONG(otmp));
-        OLONG(otmp) = (long *) 0;
+        OLONG(otmp) = (int64_t *) 0;
     }
 }
 
@@ -220,7 +220,7 @@ char let;
 int x, y;
 boolean artif;
 uchar material;
-long param1, param2;
+int64_t param1, param2;
 uint64_t mkflags;
 {
     if (!isok(x, y))
@@ -272,7 +272,7 @@ int otyp, x, y, mkobj_type;
 boolean init, artif;
 struct monst* mowner;
 uchar material;
-long param, param2;
+int64_t param, param2;
 uint64_t mkflags;
 {
     if (!isok(x, y))
@@ -304,7 +304,7 @@ boolean init, artif;
     otmp = mksobj(otyp, init, artif, FALSE);
     if (otmp) {
         add_to_migration(otmp);
-        otmp->owornmask = (long) MIGR_TO_SPECIES;
+        otmp->owornmask = (int64_t) MIGR_TO_SPECIES;
         otmp->corpsenm = mflags2;
     }
     return otmp;
@@ -329,7 +329,7 @@ boolean artif;
 int mkobj_type;
 struct monst* mowner;
 uchar material;
-long param1, param2;
+int64_t param1, param2;
 uint64_t mkflags;
 {
     int tprob;
@@ -660,7 +660,7 @@ struct obj *box;
             if (otmp->oclass == COIN_CLASS)
             {
                 /* 2.5 x level's usual amount; weight adjusted below */
-                otmp->quan = (long)(rnd(level_difficulty() + 2) * rnd(75));
+                otmp->quan = (int64_t)(rnd(level_difficulty() + 2) * rnd(75));
                 otmp->owt = weight(otmp);
             }
         }
@@ -678,7 +678,7 @@ struct obj *box;
             if (otmp->oclass == COIN_CLASS)
             {
                 /* 2.5 x level's usual amount; weight adjusted below */
-                otmp->quan = (long) (rnd(level_difficulty() + 2) * rnd(75));
+                otmp->quan = (int64_t) (rnd(level_difficulty() + 2) * rnd(75));
                 otmp->owt = weight(otmp);
             }
             else
@@ -800,7 +800,7 @@ struct obj *obj2, *obj1;
             newolong(obj2);
         if(OLONG(obj2))
             (void) memcpy((genericptr_t) OLONG(obj2), (genericptr_t) OLONG(obj1),
-                      sizeof (long));
+                      sizeof (int64_t));
     }
     if (has_omailcmd(obj1)) {
         new_omailcmd(obj2, OMAILCMD(obj1));
@@ -816,7 +816,7 @@ struct obj *obj2, *obj1;
 struct obj *
 splitobj(obj, num)
 struct obj *obj;
-long num;
+int64_t num;
 {
     struct obj *otmp;
 
@@ -1062,7 +1062,7 @@ bill_dummy_object(otmp)
 register struct obj *otmp;
 {
     register struct obj *dummy;
-    long cost = 0L;
+    int64_t cost = 0L;
 
     if (otmp->unpaid) {
         cost = unpaid_cost(otmp, FALSE);
@@ -1449,7 +1449,7 @@ boolean artif;
 int mkobj_type; /* Note: mkobj_type >= 2 does not randomly generate unrequested special characteristics */
 struct monst* mowner;
 uchar material;
-long param, param2;
+int64_t param, param2;
 uint64_t mkflags;
 {
     int mndx, tryct;
@@ -1574,7 +1574,7 @@ uint64_t mkflags;
 
         switch (let) {
         case WEAPON_CLASS:
-            otmp->quan = get_multigen_quan(objects[otmp->otyp].oc_multigen_type);// is_multigen(otmp) ? (long) rn1(6, 6) : 1L;
+            otmp->quan = get_multigen_quan(objects[otmp->otyp].oc_multigen_type);// is_multigen(otmp) ? (int64_t) rn1(6, 6) : 1L;
             if (!rn2(11) && !is_cursed_magic_item(otmp))
             {
                 otmp->enchantment = rne(3);
@@ -1674,7 +1674,7 @@ uint64_t mkflags;
                 flags.made_fruit = TRUE;
                 break;
             case KELP_FROND:
-                otmp->quan = (long) rnd(2);
+                otmp->quan = (int64_t) rnd(2);
                 break;
             }
             if (Is_pudding(otmp)) 
@@ -1696,11 +1696,11 @@ uint64_t mkflags;
         case GEM_CLASS:
             otmp->corpsenm = 0; /* LOADSTONE hack */
             if (is_rock(otmp))
-                otmp->quan = (long) rn1(6, 6);
+                otmp->quan = (int64_t) rn1(6, 6);
             else if (otmp->otyp == FLINT)
-                otmp->quan = (long)rnd(30);
+                otmp->quan = (int64_t)rnd(30);
             else if (is_ore(otmp) && Inhell)
-                otmp->quan = (long)rnd(6);
+                otmp->quan = (int64_t)rnd(6);
             else if (otmp->otyp != LUCKSTONE && !rn2(6))
                 otmp->quan = 2L;
             else
@@ -1715,7 +1715,7 @@ uint64_t mkflags;
                 otmp->special_quality = SPEQUAL_LIGHT_SOURCE_FUNCTIONAL;
                 otmp->age = candle_starting_burn_time(otmp);
                 otmp->lamplit = 0;
-                otmp->quan = 1L + (long) (rn2(2) ? rn2(7) : 0);
+                otmp->quan = 1L + (int64_t) (rn2(2) ? rn2(7) : 0);
                 blessorcurse(otmp, 5);
                 break;
             case TORCH:
@@ -2773,7 +2773,7 @@ int spe_type_index;
     return maxspe;
 }
 
-long 
+int64_t 
 get_multigen_quan(multigen_index)
 uchar multigen_index;
 {
@@ -2883,7 +2883,7 @@ uchar multigen_index;
     default:
         break;
     }
-    return (long)quan;
+    return (int64_t)quan;
 }
 /*
  * Several areas of the code made direct reassignments
@@ -2910,7 +2910,7 @@ set_corpsenm(obj, id)
 struct obj *obj;
 int id;
 {
-    long when = 0L;
+    int64_t when = 0L;
 
     if (obj->timed) 
     {
@@ -2957,8 +2957,8 @@ void
 start_corpse_timeout(body)
 struct obj *body;
 {
-    long when = 0;       /* rot away when this old */
-    long corpse_age = 0; /* age of corpse          */
+    int64_t when = 0;       /* rot away when this old */
+    int64_t corpse_age = 0; /* age of corpse          */
     int rot_adjust= 0;
     short action = -1;
     short revivals = has_omonst(body) ? OMONST(body)->mrevived : 0;
@@ -2980,7 +2980,7 @@ struct obj *body;
             when = rot_adjust;
         else
             when = ROT_AGE - corpse_age;
-        when += (long)(rnz(rot_adjust) - rot_adjust);
+        when += (int64_t)(rnz(rot_adjust) - rot_adjust);
     }
 
     if (is_reviver(&mons[body->corpsenm]))
@@ -3027,7 +3027,7 @@ struct obj *body;
         }
         else if (mons[body->corpsenm].mlet == S_TROLL)
         {
-            long age;
+            int64_t age;
             for (age = 2; age <= TAINT_AGE; age++)
                 if (!rn2(TROLL_REVIVE_CHANCE)) 
                 { /* troll revives */
@@ -3039,7 +3039,7 @@ struct obj *body;
         else if(!body->norevive)
         {
             /* Base case here for all other monsters */
-            long age;
+            int64_t age;
             for (age = 2; age <= TAINT_AGE; age++)
                 if (!rn2(GENERAL_REVIVE_CHANCE))
                 { /* monster revives */
@@ -3399,7 +3399,7 @@ register struct obj *obj;
         return wt + cwt;
     }
     if (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM) {
-        long long_wt = obj->quan * (long) mons[obj->corpsenm].cwt;
+        int64_t long_wt = obj->quan * (int64_t) mons[obj->corpsenm].cwt;
 
         wt = (long_wt > LARGEST_INT) ? LARGEST_INT : (int) long_wt;
         if (obj->oeaten)
@@ -3426,11 +3426,11 @@ int x, y;
     return mksobj_at(treefruits[rn2(SIZE(treefruits))], x, y, TRUE, FALSE);
 }
 
-long
+int64_t
 get_random_gold_amount(VOID_ARGS)
 {
-    long mul = rnd(30 / max(12 - depth(&u.uz), 2));
-    long amount = (long)(1 + rnd(level_difficulty() + 2) * mul);
+    int64_t mul = rnd(30 / max(12 - depth(&u.uz), 2));
+    int64_t amount = (int64_t)(1 + rnd(level_difficulty() + 2) * mul);
     return amount;
 }
 
@@ -3441,7 +3441,7 @@ struct obj* otmp;
     if (!otmp || otmp->otyp != GOLD_PIECE)
         return;
 
-    long amount = get_random_gold_amount();
+    int64_t amount = get_random_gold_amount();
     otmp->quan = amount;
     otmp->owt = weight(otmp);
 }
@@ -3449,7 +3449,7 @@ struct obj* otmp;
 
 struct obj *
 mkgold(amount, x, y)
-long amount;
+int64_t amount;
 int x, y;
 {
     register struct obj *gold = g_at(x, y);
@@ -3875,11 +3875,11 @@ boolean do_buried;
  * rot timers pertaining to the object don't have to be stopped and
  * restarted etc.
  */
-long
+int64_t
 peek_at_iced_corpse_age(otmp)
 struct obj *otmp;
 {
-    long age, retval = otmp->age;
+    int64_t age, retval = otmp->age;
 
     if (otmp->otyp == CORPSE && (otmp->speflags & SPEFLAGS_CORPSE_ON_ICE)) {
         /* Adjust the age; must be same as obj_timer_checks() for off ice*/
@@ -3899,7 +3899,7 @@ struct obj *otmp;
 xchar x, y;
 int force; /* 0 = no force so do checks, <0 = force off, >0 force on */
 {
-    long tleft = 0L;
+    int64_t tleft = 0L;
     short action = ROT_CORPSE;
     boolean restart_timer = FALSE;
     boolean on_floor = (otmp->where == OBJ_FLOOR);
@@ -3913,7 +3913,7 @@ int force; /* 0 = no force so do checks, <0 = force off, >0 force on */
             tleft = stop_timer(action, obj_to_any(otmp));
         }
         if (tleft != 0L) {
-            long age;
+            int64_t age;
 
             /* mark the corpse as being on ice */
             otmp->speflags |= SPEFLAGS_CORPSE_ON_ICE;
@@ -3940,7 +3940,7 @@ int force; /* 0 = no force so do checks, <0 = force off, >0 force on */
             tleft = stop_timer(action, obj_to_any(otmp));
         }
         if (tleft != 0L) {
-            long age;
+            int64_t age;
 
             otmp->speflags &= ~SPEFLAGS_CORPSE_ON_ICE;
             debugpline3("%s is no longer on ice at <%d,%d>.",
@@ -4489,7 +4489,7 @@ const char *mesg;
                 if ((obj != uchain && obj != uball) || !bc_ok) {
                     /* discovered an object not in inventory which
                        erroneously has worn mask set */
-                    Sprintf(maskbuf, "worn mask 0x%08lx", obj->owornmask);
+                    Sprintf(maskbuf, "worn mask 0x%08llx", (long long)obj->owornmask);
                     insane_object(obj, ofmt0, maskbuf, (struct monst *) 0);
                 }
                 break;
@@ -4678,13 +4678,13 @@ struct obj *obj;
     }
     if (n > 1) {
         /* multiple bits set */
-        Sprintf(maskbuf, "worn mask (multiple) 0x%08lx", obj->owornmask);
+        Sprintf(maskbuf, "worn mask (multiple) 0x%08llx", (long long)obj->owornmask);
         insane_object(obj, ofmt0, maskbuf, (struct monst *) 0);
     }
     if ((owornmask & ~allmask) != 0L
         || (carried(obj) && (owornmask & W_SADDLE) != 0L)) {
         /* non-wearable bit(s) set */
-        Sprintf(maskbuf, "worn mask (bogus)) 0x%08lx", obj->owornmask);
+        Sprintf(maskbuf, "worn mask (bogus)) 0x%08llx", (long long)obj->owornmask);
         insane_object(obj, ofmt0, maskbuf, (struct monst *) 0);
     }
     if (n == 1 && (carried(obj) || (owornmask & (W_BALL | W_CHAIN)) != 0L)) {
@@ -4798,7 +4798,7 @@ struct obj *obj;
             break;
         }
         if (what) {
-            Sprintf(maskbuf, "worn mask 0x%08lx != %s", obj->owornmask, what);
+            Sprintf(maskbuf, "worn mask 0x%08llx != %s", (long long)obj->owornmask, what);
             insane_object(obj, ofmt0, maskbuf, (struct monst *) 0);
         }
     }
@@ -4938,7 +4938,7 @@ struct obj **obj1, **obj2;
 {
     struct obj *otmp1, *otmp2;
     int o1wt, o2wt;
-    long agetmp;
+    int64_t agetmp;
 
     /* don't let people dumb it up */
     if (obj1 && obj2) {

@@ -1174,7 +1174,7 @@ boolean
 should_displace(mtmp, poss, info, cnt, gx, gy)
 struct monst *mtmp;
 coord *poss; /* coord poss[9] */
-long *info;  /* long info[9] */
+int64_t *info;  /* int64_t info[9] */
 int cnt;
 xchar gx, gy;
 {
@@ -1264,8 +1264,8 @@ register int after;
     struct permonst *ptr;
     struct monst *mtoo;
     schar mmoved = 0; /* not strictly nec.: chi >= 0 will do */
-    long info[9];
-    long flag;
+    int64_t info[9];
+    int64_t flag;
     int omx = mtmp->mx, omy = mtmp->my;
 
     if (mtmp->mtrapped)
@@ -2204,7 +2204,7 @@ register struct monst *mtmp;
 {
     boolean notseen, gotu;
     register int disp, mx = mtmp->mux, my = mtmp->muy;
-    long umoney = money_cnt(invent);
+    int64_t umoney = money_cnt(invent);
 
     /*
      * do cheapest and/or most likely tests first
@@ -2294,7 +2294,7 @@ xchar x, y;
 
     /* Monsters avoid a trap if they've seen that type before */
     } else if (trap && rn2(40)
-               && (mtmp->mtrapseen & (1 << (trap->ttyp - 1))) != 0) {
+               && (mtmp->mtrapseen & ((int64_t)1 << (trap->ttyp - 1))) != 0) {
         return TRUE;
     }
 
@@ -2410,7 +2410,7 @@ struct monst* mon;
 int mode;
 xchar* mon_dx_ptr;
 xchar* mon_dy_ptr;
-long allowflags;
+int64_t allowflags;
 {
     if (!mon || !mon_dx_ptr || !mon_dy_ptr)
         return FALSE;
@@ -2685,10 +2685,10 @@ m_test_move(mon, mx, my, dx, dy, mode, allowflags)
 struct monst* mon;
 xchar mx, my, dx, dy;
 int mode;
-long allowflags;
+int64_t allowflags;
 {
     coord poss[9];
-    long info[9];
+    int64_t info[9];
     xchar test_x = mx + dx;
     xchar test_y = my + dy;
 

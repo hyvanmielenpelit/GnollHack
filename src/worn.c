@@ -9,13 +9,13 @@
 
 STATIC_DCL void FDECL(m_lose_armor, (struct monst *, struct obj *));
 STATIC_DCL boolean FDECL(m_dowear_type,
-                      (struct monst *, long, BOOLEAN_P, BOOLEAN_P));
+                      (struct monst *, int64_t, BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL int FDECL(extra_pref, (struct monst *, struct obj *));
 STATIC_DCL void FDECL(set_mon_temporary_property, (struct monst*, int, UNSIGNED_SHORT_P));
 
 
 const struct worn {
-    long w_mask;
+    int64_t w_mask;
     struct obj **w_obj;
 } worn[] = { { W_ARM, &uarm },
              { W_ARMC, &uarmc },
@@ -47,7 +47,7 @@ const struct worn {
 void
 setworn(obj, mask)
 register struct obj* obj;
-long mask;
+int64_t mask;
 {
     setworncore(obj, mask, TRUE);
 }
@@ -56,7 +56,7 @@ long mask;
 void
 setwornquietly(obj, mask)
 register struct obj* obj;
-long mask;
+int64_t mask;
 {
     setworncore(obj, mask, FALSE);
 }
@@ -69,7 +69,7 @@ long mask;
 void
 setworncore(obj, mask, verbose_and_update_stats)
 register struct obj *obj;
-long mask;
+int64_t mask;
 boolean verbose_and_update_stats;
 {
     register const struct worn *wp;
@@ -376,7 +376,7 @@ boolean verbose;
 /* return item worn in slot indiciated by wornmask; needed by poly_obj() */
 struct obj *
 wearmask_to_obj(wornmask)
-long wornmask;
+int64_t wornmask;
 {
     const struct worn *wp;
 
@@ -387,14 +387,14 @@ long wornmask;
 }
 
 /* return a bitmask of the equipment slot(s) a given item might be worn in */
-long
+int64_t
 wearslot(obj)
 struct obj *obj;
 {
     int otyp = obj->otyp;
     /* practically any item can be wielded or quivered; it's up to
        our caller to handle such things--we assume "normal" usage */
-    long res = 0L; /* default: can't be worn anywhere */
+    int64_t res = 0L; /* default: can't be worn anywhere */
 
     switch (obj->oclass) {
     case AMULET_CLASS:
@@ -1319,7 +1319,7 @@ register struct monst *mon;
     int armor_bonus = 0;
     int armor_ac = 10;
     int mac = 0;
-    long mwflags = mon->worn_item_flags;
+    int64_t mwflags = mon->worn_item_flags;
 
     for (obj = mon->minvent; obj; obj = obj->nobj) {
         if (obj->owornmask & mwflags)
@@ -1541,7 +1541,7 @@ boolean creation, commanded;
 STATIC_OVL boolean
 m_dowear_type(mon, flag, creation, racialexception)
 struct monst *mon;
-long flag;
+int64_t flag;
 boolean creation;
 boolean racialexception;
 {
@@ -1719,7 +1719,7 @@ outer_break:
 struct obj *
 which_armor(mon, flag)
 struct monst *mon;
-long flag;
+int64_t flag;
 {
     if (mon == &youmonst) {
         switch (flag) {

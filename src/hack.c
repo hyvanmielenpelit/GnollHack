@@ -140,8 +140,8 @@ const char *msg;
     return revived;
 }
 
-#ifndef LINT /* static long lastmovetime; */
-STATIC_VAR NEARDATA long lastmovetime;
+#ifndef LINT /* static int64_t lastmovetime; */
+STATIC_VAR NEARDATA int64_t lastmovetime;
 #endif
 
 STATIC_OVL int
@@ -353,7 +353,7 @@ moverock()
                         get_level(&dest, newlev);
                         otmp->ox = dest.dnum;
                         otmp->oy = dest.dlevel;
-                        otmp->owornmask = (long) MIGR_RANDOM;
+                        otmp->owornmask = (int64_t) MIGR_RANDOM;
                     }
                     seetrap(ttmp);
                     return sobj_at(BOULDER, sx, sy) ? -1 : 0;
@@ -378,8 +378,8 @@ moverock()
             }
 
             {
-#ifdef LINT /* static long lastmovetime; */
-                long lastmovetime;
+#ifdef LINT /* static int64_t lastmovetime; */
+                int64_t lastmovetime;
                 lastmovetime = 0;
 #endif
  dopush:
@@ -790,7 +790,7 @@ dosinkfall()
         You((innate_lev || blockd_lev) ? "wobble unsteadily for a moment."
                                        : "gain control of your flight.");
     } else {
-        long save_ELev = ELevitation, save_HLev = HLevitation;
+        int64_t save_ELev = ELevitation, save_HLev = HLevitation;
 
         /* fake removal of levitation in advance so that final
            disclosure will be right in case this turns out to
@@ -2809,7 +2809,7 @@ boolean pick;
             "You feel the ice shift beneath you!",
             "The ice, is gonna BREAK!", /* The Dead Zone */
         };
-        long time_left = spot_time_left(u.ux, u.uy, MELT_ICE_AWAY);
+        int64_t time_left = spot_time_left(u.ux, u.uy, MELT_ICE_AWAY);
 
         if (time_left && time_left < 15L)
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s", icewarnings[(time_left < 5L) ? 2
@@ -3837,7 +3837,7 @@ int k_format;
 int
 weight_cap()
 {
-    long carrcap, save_ELev = ELevitation, save_BLev = HBlocks_Levitation;
+    int64_t carrcap, save_ELev = ELevitation, save_BLev = HBlocks_Levitation;
 
     /* boots take multiple turns to wear but any properties they
        confer are enabled at the start rather than the end; that
@@ -3852,20 +3852,20 @@ weight_cap()
     HBlocks_Levitation &= ~I_SPECIAL;
 
     //3.5 lbs for each point of STR and CON + 3 lbs
-    carrcap = ((long)(3.5 * 16)) * (ACURRSTR + ACURR(A_CON)) + 48;
+    carrcap = ((int64_t)(3.5 * 16)) * (ACURRSTR + ACURR(A_CON)) + 48;
 
     //Add more carrying capacity for strong heroes
     if (ACURR(A_STR) >= STR18(1))
     {
         //Bonus 4 ounces per percentile strength
-        carrcap += (long)(4 * (min(ACURR(A_STR), STR18(100)) - 18));
+        carrcap += (int64_t)(4 * (min(ACURR(A_STR), STR18(100)) - 18));
     }
 
     if (ACURR(A_STR) >= STR18(100)) //Used to be STR18(1), but anything below 18/00 is now random
     {
         //7 lbs per bonus since CON cannot increase in the same way
-        carrcap += (long)((7.0 * 16.0) * (strength_damage_bonus_core(ACURR(A_STR), TRUE) - strength_damage_bonus_core(18, TRUE)));
-        carrcap += (long)((7.0 * 16.0) * (strength_tohit_bonus_core(ACURR(A_STR), TRUE) - strength_tohit_bonus_core(18, TRUE)));
+        carrcap += (int64_t)((7.0 * 16.0) * (strength_damage_bonus_core(ACURR(A_STR), TRUE) - strength_damage_bonus_core(18, TRUE)));
+        carrcap += (int64_t)((7.0 * 16.0) * (strength_tohit_bonus_core(ACURR(A_STR), TRUE) - strength_tohit_bonus_core(18, TRUE)));
     }
 
 //    if (Upolyd) {
@@ -3877,18 +3877,18 @@ weight_cap()
         else if (youmonst.data->msize == MZ_SMALL)
             carrcap = carrcap / 2;
         else if (youmonst.data->msize == MZ_LARGE)
-            carrcap = (long)(carrcap * 2);
+            carrcap = (int64_t)(carrcap * 2);
         else if (youmonst.data->msize == MZ_HUGE)
-            carrcap = (long)(carrcap * 5);
+            carrcap = (int64_t)(carrcap * 5);
         else if (youmonst.data->msize == MZ_GIGANTIC)
-            carrcap = (long)(carrcap * 10);
+            carrcap = (int64_t)(carrcap * 10);
 
 /*        else if (!youmonst.data->cwt)
-            carrcap = (carrcap * (long) youmonst.data->msize) / MZ_HUMAN;
+            carrcap = (carrcap * (int64_t) youmonst.data->msize) / MZ_HUMAN;
         else if (!strongmonst(youmonst.data)
                  || (strongmonst(youmonst.data)
                      && (youmonst.data->cwt > WT_HUMAN)))
-            carrcap = (carrcap * (long) youmonst.data->cwt / WT_HUMAN);*/
+            carrcap = (carrcap * (int64_t) youmonst.data->cwt / WT_HUMAN);*/
   //  }
 
     if (Levitation || Is_airlevel(&u.uz) /* pugh@cornell */
@@ -3933,7 +3933,7 @@ inv_weight()
 
     while (otmp) {
         if (otmp->oclass == COIN_CLASS)
-            wt += (int) (((long) otmp->quan) / 10L) + 1; // + 50L) / 100L);
+            wt += (int) (((int64_t) otmp->quan) / 10L) + 1; // + 50L) / 100L);
         else //if (otmp->otyp != BOULDER || !throws_rocks(youmonst.data))
             wt += otmp->owt;
         otmp = otmp->nobj;
@@ -4015,7 +4015,7 @@ boolean incl_gold, worn_only;
 /* Intended use is for your or some monster's inventory, */
 /* now that u.gold/m.gold is gone.*/
 /* Counting money in a container might be possible too. */
-long
+int64_t
 money_cnt(otmp)
 struct obj *otmp;
 {
@@ -4143,7 +4143,7 @@ reset_hack(VOID_ARGS)
     spottrap = (struct trap*)0;
     spottraptyp = NO_TRAP;
     wc = 0;
-#ifndef LINT /* static long lastmovetime; */
+#ifndef LINT /* static int64_t lastmovetime; */
     lastmovetime = 0;
 #endif
 }
