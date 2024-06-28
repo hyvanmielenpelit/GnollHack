@@ -542,6 +542,7 @@ namespace GnollHackX.Pages.Game
         private int _shownPetRows = GHConstants.DefaultPetRows;
         public int NumDisplayedPetRows { get { return _shownPetRows; } set { _shownPetRows = value; } }
         public SimpleImageButton StandardMeasurementButton { get { return UseSimpleCmdLayout ? SimpleESCButton : ESCButton; } }
+        public LabeledImageButton StandardReferenceButton { get { return GHApp.IsDesktop ? lRowAbilitiesButton : lAbilitiesButton; } }
 
         public TTYCursorStyle CursorStyle { get; set; }
         public GHGraphicsStyle GraphicsStyle { get; set; }
@@ -910,9 +911,7 @@ namespace GnollHackX.Pages.Game
             if(GHApp.IsDesktop)
             {
                 lAbilitiesButton.IsEnabled = false;
-                lAbilitiesButton.InputTransparent = true;
                 lWornItemsButton.IsEnabled = false;
-                lWornItemsButton.InputTransparent = true;
                 lRowAbilitiesButton.IsVisible = true;
                 lRowWornItemsButton.IsVisible = true;
                 lRowAbilitiesButton.SetButtonFocus();
@@ -1268,7 +1267,7 @@ namespace GnollHackX.Pages.Game
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                if (!StartingPositionsSet && !canvasView.CanvasSize.IsEmpty && IsSizeAllocatedProcessed && lAbilitiesButton.Width > 0)
+                if (!StartingPositionsSet && !canvasView.CanvasSize.IsEmpty && IsSizeAllocatedProcessed && StandardReferenceButton.Width > 0)
                 {
                     double statusBarHeight = GetStatusBarHeight();
                     lAbilitiesButton.HeightRequest = statusBarHeight;
@@ -7973,7 +7972,7 @@ namespace GnollHackX.Pages.Game
                     _skillRectDrawn = false;
                     _prevWepRectDrawn = false;
                     float orbleft = 5.0f;
-                    float orbbordersize = (float)(lAbilitiesButton.Width / canvasView.Width) * canvaswidth;
+                    float orbbordersize = (float)(StandardReferenceButton.Width / canvasView.Width) * canvaswidth;
 
                     if (statusfieldsok && !ForceAllMessages)
                     {
@@ -9390,7 +9389,7 @@ namespace GnollHackX.Pages.Game
                                     textPaint.Color = SKColors.White;
                                     textPaint.Typeface = GHApp.LatoRegular;
                                     textPaint.TextSize = 36;
-                                    float pet_target_height = inverse_canvas_scale * (float)(StandardMeasurementButton.Height + lAbilitiesButton.Width) / 2;
+                                    float pet_target_height = inverse_canvas_scale * (float)(StandardMeasurementButton.Height + StandardReferenceButton.Width) / 2;
                                     //float pet_name_target_height = pet_target_height * 0.4f;
                                     float pet_picture_target_height = pet_target_height * 0.56f;
                                     float pet_hp_target_height = pet_target_height * 0.24f;
