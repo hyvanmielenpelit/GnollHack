@@ -2282,9 +2282,9 @@ struct istat_s *bl, *maxbl;
     int result = 0;
     int anytype;
     int ival;
-    long lval;
     unsigned uval;
-    unsigned long uval;
+    long lval;
+    unsigned long ulval;
     int64_t int64val;
     uint64_t uint64val;
 
@@ -2294,7 +2294,7 @@ struct istat_s *bl, *maxbl;
         return 0;
     }
 
-    ival = 0, lval = 0L, uval = 0U, ulval = 0UL;
+    ival = 0, lval = 0L, uval = 0U, ulval = 0UL, int64val = (int64_t)0, uint64val = (uint64_t)0;
     anytype = bl->anytype;
     if (maxbl->a.a_void) {
         switch (anytype) {
@@ -2344,7 +2344,7 @@ struct istat_s *bl, *maxbl;
        from a non-zero input; note: if we ever change to something like
        ((((1000 * val) / max) + 5) / 10) for a rounded result, we'll
        also need to check for and convert false 100 to 99 */
-    if (result == 0 && (ival != 0 || lval != 0L || uval != 0U || ulval != 0UL))
+    if (result == 0 && (ival != 0 || lval != 0L || uval != 0U || ulval != 0UL || int64val != (int64_t)0 || uint64val != (uint64_t)0))
         result = 1;
 
     return result;
