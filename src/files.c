@@ -5966,7 +5966,7 @@ const char* buffer;
                 if (*c1 == LLOG_SEP) *c1 = '_';
                 c1++;
             }
-            snprintf(tmpbuf, 1024, "lltype=%d%cplayer=%s%crole=%s%crace=%s%cgender=%s%calign=%s%cturns=%ld%crealtime=%lld%cstarttime=%lld%ccurtime=%lld%cmessage=%s\n",
+            snprintf(tmpbuf, 1024, "lltype=%d%cplayer=%s%crole=%s%crace=%s%cgender=%s%calign=%s%cturns=%lld%crealtime=%lld%cstarttime=%lld%ccurtime=%lld%cmessage=%s\n",
                 (ll_type & sysopt.livelog),
                 LLOG_SEP,
                 plname,
@@ -5979,9 +5979,9 @@ const char* buffer;
                 LLOG_SEP,
                 aligns[u.ualign.type == A_NONE ? 3 : 1 - u.ualign.type].filecode,
                 LLOG_SEP,
-                moves,
+                (long long)moves,
                 LLOG_SEP,
-                urealtime.realtime + (getnow() - urealtime.start_timing), LLOG_SEP,
+                (long long)(urealtime.realtime + ((int64_t)getnow() - (int64_t)urealtime.start_timing)), LLOG_SEP,
                 (long long)ubirthday,
                 LLOG_SEP,
                 (long long)time(NULL),

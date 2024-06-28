@@ -2010,7 +2010,7 @@ struct WinDesc *cw;
             /* new page to be displayed */
             if (curr_page < 0 || (cw->npages > 0 && curr_page >= cw->npages))
             {
-                panic("bad menu screen page #%d", curr_page);
+                panic("bad menu screen page #%lld", (long long)curr_page);
                 return;
             }
             /* clear screen */
