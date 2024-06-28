@@ -28,6 +28,7 @@ namespace GnollHackX.Controls
         {
             InitializeComponent();
             customCanvasView.InvalidateSurface();
+            TextColor = TextColor;
             customButton.Pressed += (object sender, EventArgs args) =>
             {
                 _isPressed = true;
@@ -79,17 +80,23 @@ namespace GnollHackX.Controls
 
 
 #if WINDOWS
+        private bool _isHoveringEnabled = true;
         private bool _isHovering = false;
         private void Canvas_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             _isHovering = true;
             customCanvasView.InvalidateSurface();
+            TextColor = TextColor;
         }
         private void Canvas_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             _isHovering = false;
             customCanvasView.InvalidateSurface();
+            TextColor = TextColor;
         }
+#else
+        private bool _isHoveringEnabled = false;
+        private bool _isHovering = false;
 #endif
         private bool _isPressed = false;
 
@@ -99,6 +106,7 @@ namespace GnollHackX.Controls
         public static readonly BindableProperty NormalTextColorProperty = BindableProperty.Create(nameof(NormalTextColorProperty), typeof(Color), typeof(CustomImageButton), GHColors.White);
         public static readonly BindableProperty SelectedTextColorProperty = BindableProperty.Create(nameof(SelectedTextColorProperty), typeof(Color), typeof(CustomImageButton), GHColors.White);
         public static readonly BindableProperty DisabledTextColorProperty = BindableProperty.Create(nameof(DisabledTextColorProperty), typeof(Color), typeof(CustomImageButton), GHColors.Gray);
+        public static readonly BindableProperty TextColorProperty = BindableProperty.Create(nameof(TextColorProperty), typeof(Color), typeof(CustomImageButton), GHColors.White);
         public static readonly BindableProperty UseVaryingTextColorsProperty = BindableProperty.Create(nameof(UseVaryingTextColorsProperty), typeof(bool), typeof(CustomImageButton), false);
         public static readonly BindableProperty UseVaryingBackgroundImagesProperty = BindableProperty.Create(nameof(UseVaryingBackgroundImages), typeof(bool), typeof(CustomImageButton), true);
 
@@ -109,8 +117,12 @@ namespace GnollHackX.Controls
         }
         public Color TextColor
         {
-            get { return (Color)customButton.GetValue(Button.TextColorProperty); }
-            set { customButton.SetValue(Button.TextColorProperty, value); }
+            get { return (Color)GetValue(TextColorProperty); }
+            set 
+            { 
+                SetValue(TextColorProperty, value);
+                customButton.TextColor = _isHoveringEnabled && !_isHovering ? NonHoveringColorAdjustment(value) : value;
+            }
         }
         public Color NormalTextColor
         {
@@ -193,6 +205,15 @@ namespace GnollHackX.Controls
             SKRect sourcerect = new SKRect(0, 0, targetBitmap.Width, targetBitmap.Height);
             SKRect targetrect = new SKRect(0, 0, canvaswidth, canvasheight);
             canvas.DrawImage(targetBitmap, sourcerect, targetrect);
+        }
+
+        private Color NonHoveringColorAdjustment(Color rawColor)
+        {
+#if GNH_MAUI
+            return new Color(rawColor.Red * 0.85f, rawColor.Green * 0.85f, rawColor.Blue * 0.85f, rawColor.Alpha);
+#else
+            return new Color(rawColor.R * 0.85, rawColor.G * 0.85, rawColor.B * 0.85, rawColor.A);
+#endif
         }
 
         //public void Redraw()
