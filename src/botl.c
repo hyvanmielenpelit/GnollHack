@@ -2205,7 +2205,7 @@ int anytype;
         Sprintf(buf, "%ld", *a->a_lptr);
         break;
     case ANY_ULPTR:
-        Sprintf(buf, "%llu", (unsigned long long)*a->a_ulptr);
+        Sprintf(buf, "%lu", *a->a_ulptr);
         break;
     case ANY_UPTR:
         Sprintf(buf, "%u", *a->a_uptr);
@@ -2246,7 +2246,7 @@ int anytype;
         a->a_ulong = (unsigned long) atol(buf);
         break;
     case ANY_UINT64:
-        a->a_uint64 = (unsigned long long)atol(buf);
+        a->a_uint64 = (uint64_t)atol(buf);
         break;
     case ANY_IPTR:
         if (a->a_iptr)
@@ -2262,7 +2262,7 @@ int anytype;
         break;
     case ANY_ULPTR:
         if (a->a_ulptr)
-            *a->a_ulptr = (uint64_t) atol(buf);
+            *a->a_ulptr = (unsigned long) atol(buf);
         break;
     case ANY_MASK64:
         a->a_mask64 = (uint64_t) atol(buf);
@@ -2282,9 +2282,11 @@ struct istat_s *bl, *maxbl;
     int result = 0;
     int anytype;
     int ival;
-    int64_t lval;
+    long lval;
     unsigned uval;
-    uint64_t ulval;
+    unsigned long uval;
+    int64_t int64val;
+    uint64_t uint64val;
 
     if (!bl || !maxbl) {
         impossible("percentage: bad istat pointer %s, %s",
@@ -2305,8 +2307,8 @@ struct istat_s *bl, *maxbl;
             result = (int) ((100L * lval) / maxbl->a.a_long);
             break;
         case ANY_INT64:
-            lval = bl->a.a_int64;
-            result = (int)((100L * lval) / maxbl->a.a_int64);
+            int64val = bl->a.a_int64;
+            result = (int)(((int64_t)100 * int64val) / maxbl->a.a_int64);
             break;
         case ANY_UINT:
             uval = bl->a.a_uint;
@@ -2317,8 +2319,8 @@ struct istat_s *bl, *maxbl;
             result = (int) ((100UL * ulval) / maxbl->a.a_ulong);
             break;
         case ANY_UINT64:
-            ulval = bl->a.a_uint64;
-            result = (int)((100UL * ulval) / maxbl->a.a_uint64);
+            uint64val = bl->a.a_uint64;
+            result = (int)(((uint64_t)100 * uint64val) / maxbl->a.a_uint64);
             break;
         case ANY_IPTR:
             ival = *bl->a.a_iptr;

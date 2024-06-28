@@ -29,7 +29,7 @@ typedef union any {
     uint64_t a_uint64;
     int *a_iptr;
     long *a_lptr;
-    uint64_t *a_ulptr;
+    unsigned long *a_ulptr;
     unsigned *a_uptr;
     const char *a_string;
     int NDECL((*a_nfunc));
