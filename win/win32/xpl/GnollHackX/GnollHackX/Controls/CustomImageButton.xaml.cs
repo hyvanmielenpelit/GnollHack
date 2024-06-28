@@ -121,7 +121,7 @@ namespace GnollHackX.Controls
             set 
             { 
                 SetValue(TextColorProperty, value);
-                customButton.TextColor = _isHoveringEnabled && !_isHovering ? NonHoveringColorAdjustment(value) : value;
+                customButton.TextColor = _isHoveringEnabled && (!_isHovering || !IsEnabled) ? NonHoveringColorAdjustment(value) : value;
             }
         }
         public Color NormalTextColor
@@ -168,12 +168,12 @@ namespace GnollHackX.Controls
         public new bool IsEnabled
         {
             get { return (bool)GetValue(CustomImageButton.IsEnabledProperty); }
-            set { SetValue(CustomImageButton.IsEnabledProperty, value); customGrid.IsEnabled = value; if (UseVaryingTextColors) { customButton.TextColor = !value ? DisabledTextColor : _isPressed ? SelectedTextColor : NormalTextColor; } customCanvasView.InvalidateSurface(); }
+            set { SetValue(CustomImageButton.IsEnabledProperty, value); customGrid.IsEnabled = value; if (UseVaryingTextColors) { TextColor = !value ? DisabledTextColor : _isPressed ? SelectedTextColor : NormalTextColor; } customCanvasView.InvalidateSurface(); }
         }
         public bool UseVaryingTextColors
         {
             get { return (bool)GetValue(CustomImageButton.UseVaryingTextColorsProperty); }
-            set { SetValue(CustomImageButton.UseVaryingTextColorsProperty, value); customButton.TextColor = value ? (!IsEnabled ? DisabledTextColor : _isPressed ? SelectedTextColor : NormalTextColor) : NormalTextColor; }
+            set { SetValue(CustomImageButton.UseVaryingTextColorsProperty, value); TextColor = value ? (!IsEnabled ? DisabledTextColor : _isPressed ? SelectedTextColor : NormalTextColor) : NormalTextColor; }
         }
         public bool UseVaryingBackgroundImages
         {
@@ -210,9 +210,9 @@ namespace GnollHackX.Controls
         private Color NonHoveringColorAdjustment(Color rawColor)
         {
 #if GNH_MAUI
-            return new Color(rawColor.Red * 0.85f, rawColor.Green * 0.85f, rawColor.Blue * 0.85f, rawColor.Alpha);
+            return new Color(rawColor.Red * GHConstants.NonHoveringColorMultiplier, rawColor.Green * GHConstants.NonHoveringColorMultiplier, rawColor.Blue * GHConstants.NonHoveringColorMultiplier, rawColor.Alpha);
 #else
-            return new Color(rawColor.R * 0.85, rawColor.G * 0.85, rawColor.B * 0.85, rawColor.A);
+            return new Color(rawColor.R * GHConstants.NonHoveringColorMultiplier, rawColor.G * GHConstants.NonHoveringColorMultiplier, rawColor.B * GHConstants.NonHoveringColorMultiplier, rawColor.A);
 #endif
         }
 

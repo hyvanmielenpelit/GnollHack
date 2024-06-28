@@ -14217,7 +14217,7 @@ namespace GnollHackX.Pages.Game
 
                                 /* Main text */
                                 SKColor maincolor = UIUtils.NHColor2SKColorCore(mi.NHColor, mi.Attributes, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton && isselected);
-                                textPaint.Color = maincolor;
+                                textPaint.Color = !IsMiButton || isHover ? maincolor : UIUtils.NonHoveringSKColorAdjustment(maincolor);
 
                                 //int split_idx_on_row = -1;
                                 bool firstprintonrow = true;
@@ -14238,7 +14238,8 @@ namespace GnollHackX.Pages.Game
                                 /* Suffix text */
                                 if (mi.IsSuffixTextVisible)
                                 {
-                                    textPaint.Color = mi.UseColorForSuffixes ? maincolor : MenuCanvas.RevertBlackAndWhite && !IsMiButton ? _suffixTextColorReverted : _suffixTextColor;
+                                    SKColor suffixcolor = mi.UseColorForSuffixes ? maincolor : MenuCanvas.RevertBlackAndWhite && !IsMiButton ? _suffixTextColorReverted : _suffixTextColor;
+                                    textPaint.Color = !IsMiButton || isHover ? suffixcolor : UIUtils.NonHoveringSKColorAdjustment(suffixcolor);
                                     textPaint.TextSize = suffixfontsize;
                                     y += fontspacingpadding;
                                     y -= textPaint.FontMetrics.Ascent;
@@ -14252,7 +14253,8 @@ namespace GnollHackX.Pages.Game
                                 /* Suffix 2 text */
                                 if (mi.IsSuffix2TextVisible)
                                 {
-                                    textPaint.Color = mi.UseColorForSuffixes ? maincolor : MenuCanvas.RevertBlackAndWhite && !IsMiButton ? _suffixTextColorReverted : _suffixTextColor;
+                                    SKColor suffix2color = mi.UseColorForSuffixes ? maincolor : MenuCanvas.RevertBlackAndWhite && !IsMiButton ? _suffixTextColorReverted : _suffixTextColor;
+                                    textPaint.Color = !IsMiButton || isHover ? suffix2color : UIUtils.NonHoveringSKColorAdjustment(suffix2color);
                                     textPaint.TextSize = suffixfontsize;
                                     fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                                     y += fontspacingpadding;

@@ -1840,9 +1840,11 @@ namespace GnollHackX
 #if GNH_MAUI
         public const string PortName = "GnollHackM";
         public const UnmanagedType GHStringMarshallingType = UnmanagedType.LPUTF8Str;
+        public const float NonHoveringColorMultiplier = 0.88f;
 #else
         public const string PortName = "GnollHackX";
         public const UnmanagedType GHStringMarshallingType = UnmanagedType.LPStr;
+        public const double NonHoveringColorMultiplier = 0.88;
 #endif
 #if WINDOWS
         public const bool DefaultCharacterClickAction = true;

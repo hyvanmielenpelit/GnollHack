@@ -1172,6 +1172,12 @@ namespace GnollHackX
             }
 #endif
         }
+
+        public static SKColor NonHoveringSKColorAdjustment(SKColor rawColor)
+        {
+            return new SKColor((byte)(rawColor.Red * GHConstants.NonHoveringColorMultiplier), (byte)(rawColor.Green * GHConstants.NonHoveringColorMultiplier), (byte)(rawColor.Blue * GHConstants.NonHoveringColorMultiplier), rawColor.Alpha);
+        }
+
     }
 
     public class TouchEntry
