@@ -228,7 +228,7 @@ E int NDECL(tty_nhgetch);
 E int FDECL(tty_nh_poskey, (int *, int *, int *));
 E void NDECL(tty_nhbell);
 E int NDECL(tty_doprev_message);
-E char FDECL(tty_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, const char*, unsigned long));
+E char FDECL(tty_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, const char*, uint64_t));
 E void FDECL(tty_getlin_ex, (int, int, int, const char *, char *, const char*, const char*, const char*));
 E int NDECL(tty_get_ext_cmd);
 E void FDECL(tty_number_pad, (int));
@@ -246,7 +246,7 @@ E char *NDECL(tty_get_color_string);
 E void FDECL(tty_status_enablefield,
              (int, const char *, const char *, BOOLEAN_P));
 E void FDECL(tty_status_init, (int));
-E void FDECL(tty_status_update, (int, genericptr_t, int, int, int, unsigned long *));
+E void FDECL(tty_status_update, (int, genericptr_t, int, int, int, uint64_t *));
 
 /* other defs that really should go away (they're tty specific) */
 E void NDECL(tty_start_screen);

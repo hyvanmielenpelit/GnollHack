@@ -390,13 +390,13 @@ STATIC_OVL void
 savegamestate(fd, mode)
 register int fd, mode;
 {
-    unsigned long uid;
+    uint64_t uid;
 
 #ifdef MFLOPPY
     count_only = (mode & COUNT_SAVE);
 #endif
     lock_thread_lock();
-    uid = (unsigned long) getuid();
+    uid = (uint64_t) getuid();
     bwrite(fd, (genericptr_t) &uid, sizeof uid);
     bwrite(fd, (genericptr_t) &context, sizeof(struct context_info));
     bwrite(fd, (genericptr_t) &flags, sizeof(struct flag));

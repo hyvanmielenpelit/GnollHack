@@ -1207,7 +1207,7 @@ boolean silently;
                         if (!mythic_powers[k].name)
                             break;
 
-                        unsigned long mythic_power_bit = 1UL << ((unsigned long)k);
+                        uint64_t mythic_power_bit = (uint64_t)1 << ((uint64_t)k);
 
                         if ((mythic_definitions[mythic_quality].mythic_powers & mythic_power_bit) && mythic_power_applies_to_obj(otmp, mythic_powers[k].power_flags))
                         {
@@ -1252,7 +1252,7 @@ boolean silently;
                     {
                         for (k = 0; k < 32; k++)
                         {
-                            unsigned long bit = 1UL << k;
+                            uint64_t bit = (uint64_t)1 << k;
                             int propnum = spfx_to_prop(bit);
                             if (artilist[otmp->oartifact].spfx & bit)
                                 mon->mprops[propnum] |= M_EXTRINSIC;
@@ -1261,7 +1261,7 @@ boolean silently;
 
                     for (k = 0; k < 32; k++)
                     {
-                        unsigned long bit = 1UL << k;
+                        uint64_t bit = (uint64_t)1 << k;
                         int propnum = spfx_to_prop(bit);
                         if (artilist[otmp->oartifact].cspfx & bit)
                             mon->mprops[propnum] |= M_EXTRINSIC;

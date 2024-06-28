@@ -322,7 +322,7 @@ VA_DECL(const char *, line)
                         if(ep > p && *(ep - 1) == 'h')
                             Sprintf(cbuf, sbuf, va_arg(the_args, UNSIGNED_SHORT_P));
                         else if (ep > p && *(ep - 1) == 'l')
-                            Sprintf(cbuf, sbuf, va_arg(the_args, unsigned long));
+                            Sprintf(cbuf, sbuf, va_arg(the_args, uint64_t));
                         else
                             Sprintf(cbuf, sbuf, va_arg(the_args, unsigned int));
                         break;

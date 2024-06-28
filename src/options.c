@@ -1362,7 +1362,7 @@ char *op;
 const char *optn;
 {
     char buf[BUFSZ];
-    unsigned long fnv = get_feature_notice_ver(op); /* version.c */
+    uint64_t fnv = get_feature_notice_ver(op); /* version.c */
 
     if (fnv == 0L)
         return 0;
@@ -1379,8 +1379,8 @@ const char *optn;
 
     flags.suppress_alert = fnv;
     if (!initial) {
-        Sprintf(buf, "%lu.%lu.%lu", FEATURE_NOTICE_VER_MAJ,
-                FEATURE_NOTICE_VER_MIN, FEATURE_NOTICE_VER_PATCH);
+        Sprintf(buf, "%llu.%llu.%llu", (unsigned long long)FEATURE_NOTICE_VER_MAJ,
+            (unsigned long long)FEATURE_NOTICE_VER_MIN, (unsigned long long)FEATURE_NOTICE_VER_PATCH);
         pline(
           "Feature change alerts disabled for GnollHack %s features and prior.",
               buf);
@@ -7356,8 +7356,8 @@ char *buf;
         if (flags.suppress_alert == 0L)
             Strcpy(buf, none);
         else
-            Sprintf(buf, "%lu.%lu.%lu", FEATURE_NOTICE_VER_MAJ,
-                    FEATURE_NOTICE_VER_MIN, FEATURE_NOTICE_VER_PATCH);
+            Sprintf(buf, "%llu.%llu.%llu", (unsigned long long)FEATURE_NOTICE_VER_MAJ,
+                (unsigned long long)FEATURE_NOTICE_VER_MIN, (unsigned long long)FEATURE_NOTICE_VER_PATCH);
     } else if (!strcmp(optname, "symset")) {
         Sprintf(buf, "%s",
                 symset[PRIMARY].name ? symset[PRIMARY].name : "default");
@@ -8229,7 +8229,7 @@ int status;
  */
 void
 set_wc_option_mod_status(optmask, status)
-unsigned long optmask;
+uint64_t optmask;
 int status;
 {
     int k = 0;
@@ -8287,7 +8287,7 @@ const char *optnam;
 
 void
 set_wc2_option_mod_status(optmask, status)
-unsigned long optmask;
+uint64_t optmask;
 int status;
 {
     int k = 0;

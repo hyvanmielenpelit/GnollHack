@@ -40,7 +40,7 @@ int FDECL((*fn), (int));
 
 void
 init_isaac64(seed, fn)
-unsigned long seed;
+uint64_t seed;
 int FDECL((*fn), (int));
 {
     unsigned char new_rng_state[sizeof seed];

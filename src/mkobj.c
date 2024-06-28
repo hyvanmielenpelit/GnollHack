@@ -23,7 +23,7 @@ STATIC_DCL void FDECL(insane_object, (struct obj *, const char *,
 STATIC_DCL void FDECL(check_contained, (struct obj *, const char *));
 STATIC_DCL void FDECL(sanity_check_worn, (struct obj *));
 STATIC_DCL uchar FDECL(get_otyp_initial_material, (int));
-STATIC_DCL unsigned long FDECL(mkobj_ownerflags, (struct monst*));
+STATIC_DCL uint64_t FDECL(mkobj_ownerflags, (struct monst*));
 
 struct icp {
     int iprob;   /* probability of an item type */
@@ -221,7 +221,7 @@ int x, y;
 boolean artif;
 uchar material;
 long param1, param2;
-unsigned long mkflags;
+uint64_t mkflags;
 {
     if (!isok(x, y))
         return (struct obj*)0;
@@ -273,7 +273,7 @@ boolean init, artif;
 struct monst* mowner;
 uchar material;
 long param, param2;
-unsigned long mkflags;
+uint64_t mkflags;
 {
     if (!isok(x, y))
         return (struct obj*)0;
@@ -330,7 +330,7 @@ int mkobj_type;
 struct monst* mowner;
 uchar material;
 long param1, param2;
-unsigned long mkflags;
+uint64_t mkflags;
 {
     int tprob;
     int i = 0;
@@ -364,7 +364,7 @@ int
 random_objectid_from_class(oclass, mowner, rndflags)
 char oclass;
 struct monst* mowner;
-unsigned long rndflags;
+uint64_t rndflags;
 {
     if (oclass < 0 || oclass >= MAX_OBJECT_CLASSES)
     {
@@ -439,7 +439,7 @@ unsigned long rndflags;
 int
 random_spellbook_objectid(mowner, rndflags)
 struct monst* mowner;
-unsigned long rndflags;
+uint64_t rndflags;
 {
     int leveldif = level_difficulty();
     int used_dif = mowner ? mowner->m_lev : leveldif;
@@ -454,7 +454,7 @@ unsigned long rndflags;
             nonrestrschools++;;
     }
 
-    unsigned long knownspellschools = mowner ? mon_known_spell_schools(mowner) : 0UL;
+    uint64_t knownspellschools = mowner ? mon_known_spell_schools(mowner) : 0UL;
     if (!nonrestrschools || (!mowner && !rn2(2)))
         knownspellschools = 0xFFFFFFFFUL;
 
@@ -723,8 +723,8 @@ rndmonnum()
 {
     register struct permonst *ptr;
     register int i;
-    unsigned long excludeflags;
-    unsigned long requiredflags;
+    uint64_t excludeflags;
+    uint64_t requiredflags;
     int trycnt = 0;
 
     /* Plan A: get a level-appropriate common monster */
@@ -1392,14 +1392,14 @@ int alter_type;
 }
 
 STATIC_OVL
-unsigned long mkobj_ownerflags(mtmp)
+uint64_t mkobj_ownerflags(mtmp)
 struct monst* mtmp;
 {
     if (!mtmp)
         return 0UL;
 
     aligntyp alignment = mon_aligntyp(mtmp);
-    unsigned long mkflags = 0UL;
+    uint64_t mkflags = 0UL;
     if (alignment == A_NONE || is_mercenary(mtmp->data) || mtmp->isgd)
         mkflags |= MKOBJ_FLAGS_OWNER_IS_NONALIGNED;
     else if (alignment == A_LAWFUL)
@@ -1450,7 +1450,7 @@ int mkobj_type; /* Note: mkobj_type >= 2 does not randomly generate unrequested 
 struct monst* mowner;
 uchar material;
 long param, param2;
-unsigned long mkflags;
+uint64_t mkflags;
 {
     int mndx, tryct;
     struct obj *otmp;
@@ -1461,11 +1461,11 @@ unsigned long mkflags;
     boolean param_is_spquality = (mkflags & MKOBJ_FLAGS_PARAM_IS_SPECIAL_QUALITY) != 0;
     boolean param_is_mnum = (mkflags & MKOBJ_FLAGS_PARAM_IS_MNUM) != 0;
     boolean foundthisturn = (mkflags & MKOBJ_FLAGS_FOUND_THIS_TURN) != 0;
-    unsigned long excludedtitles = 0UL, excludedtitles2 = 0UL;
+    uint64_t excludedtitles = 0UL, excludedtitles2 = 0UL;
     if (mkflags & MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS)
     {
-        excludedtitles = (unsigned long)param;
-        excludedtitles2 = (unsigned long)param2;
+        excludedtitles = (uint64_t)param;
+        excludedtitles2 = (uint64_t)param2;
     }
     if (mowner)
     {
@@ -4635,7 +4635,7 @@ sanity_check_worn(obj)
 struct obj *obj;
 {
 #if defined(BETA) || defined(DEBUG)
-    static const unsigned long wearbits[] = {
+    static const uint64_t wearbits[] = {
         W_ARM,    W_ARMC,   W_ARMH,    W_ARMS,     W_ARMG, W_ARMF,  W_ARMU,  W_ARMO,      W_ARMB,
         W_WEP,    W_QUIVER, W_SWAPWEP, W_SWAPWEP2, W_AMUL, W_RINGL, W_RINGR, W_BLINDFOLD,
         W_MISC,   W_MISC2,  W_MISC3,   W_MISC4,    W_MISC5,
@@ -4644,7 +4644,7 @@ struct obj *obj;
     };
     char maskbuf[60];
     const char *what;
-    unsigned long owornmask, allmask = 0L;
+    uint64_t owornmask, allmask = 0L;
     boolean embedded = FALSE;
     int i, n = 0;
 

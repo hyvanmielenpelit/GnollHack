@@ -395,12 +395,12 @@ struct material_definition {
     short added_enchantability_multiplier;
     short added_enchantability_divisor;
     short digging_speed_bonus;
-    unsigned long extra_oflags1;
-    unsigned long extra_oflags2;
-    unsigned long extra_oflags3;
-    unsigned long extra_oflags4;
-    unsigned long extra_oflags5;
-    unsigned long extra_oflags6;
+    uint64_t extra_oflags1;
+    uint64_t extra_oflags2;
+    uint64_t extra_oflags3;
+    uint64_t extra_oflags4;
+    uint64_t extra_oflags5;
+    uint64_t extra_oflags6;
 };
 extern const struct material_definition material_definitions[MAX_MATERIAL_TYPES]; /* in o_init.c */
 
@@ -487,7 +487,7 @@ struct objclass {
     schar oc_subtyp;             /* armors: armor category, weapons: weapon category, miscellaneous magic items: subclass, etc.*/
     schar oc_skill;              /* Skills of weapons, spellbooks, tools, gems */
     uchar oc_oprop, oc_oprop2, oc_oprop3; /* properties (invis, &c.) conveyed */
-    unsigned long oc_pflags;     /* Power and property flags */
+    uint64_t oc_pflags;     /* Power and property flags */
 
 #define P1_NONE                                                    0x00000000UL
 #define P1_POWER_1_APPLIES_TO_ALL_CHARACTERS                       0x00000001UL  
@@ -541,7 +541,7 @@ struct objclass {
     short oc_wldice, oc_wldam, oc_wldmgplus;    /* large monster damage, also used for duration for spells */
     short oc_extra_damagetype;                  /* Type of extra damage caused by the (magic) weapon */
     short oc_wedice, oc_wedam, oc_wedmgplus;    /* extra damage used as a special effect influenced by target permissions mask */
-    unsigned long oc_aflags, oc_aflags2;        /* attack related flags, e.g. whether the attack is vorpal */
+    uint64_t oc_aflags, oc_aflags2;        /* attack related flags, e.g. whether the attack is vorpal */
 
 /* Attack flags for weapons, armor, weapon-like tools, and miscellaneous items */
 #define A1_NONE                                                      0x00000000UL
@@ -825,15 +825,15 @@ struct objclass {
     short oc_item_cooldown;             /* cooldown before the item can be used / applied / zapped / read etc. again */
     short oc_special_quality;         /* special quality, e.g. maximum number of candles in the candelabrum */
 
-    unsigned long oc_flags;         /* E.g. if indestructible or disintegration resistant */
-    unsigned long oc_flags2;        /* More flags */
-    unsigned long oc_flags3;        /* Even more flags */
-    unsigned long oc_flags4;        /* Even more flags */
-    unsigned long oc_flags5;        /* Even more flags */
-    unsigned long oc_flags6;        /* Even more flags */
+    uint64_t oc_flags;         /* E.g. if indestructible or disintegration resistant */
+    uint64_t oc_flags2;        /* More flags */
+    uint64_t oc_flags3;        /* Even more flags */
+    uint64_t oc_flags4;        /* Even more flags */
+    uint64_t oc_flags5;        /* Even more flags */
+    uint64_t oc_flags6;        /* Even more flags */
 
-    unsigned long oc_power_permissions;   /* roles, races, genders, and alignments that the item's powers are conferred to */
-    unsigned long oc_target_permissions;  /* symbol, M1 flag, M2 flag, M3 flag, etc. for which extra damage is deal to */
+    uint64_t oc_power_permissions;   /* roles, races, genders, and alignments that the item's powers are conferred to */
+    uint64_t oc_target_permissions;  /* symbol, M1 flag, M2 flag, M3 flag, etc. for which extra damage is deal to */
     int oc_critical_strike_percentage;    /* percentage to be used with A1_CRITICAL_STRIKE; can be used for other purposes for a S1_ flag, too */
 #define oc_effect_probability oc_critical_strike_percentage /* comestibles: probability of edible effect taking place */
     uchar oc_multigen_type;                 /* class number multi multigen_type */
@@ -1171,7 +1171,7 @@ struct objdescr {
     const char* oc_content_description; /* unknown description of contents (spellbooks, jars) */
     const char* oc_item_description;    /* description of the item */
     int oc_tile_floor_height;           /* (scaled) height of the item tile in pixels when it appears on the floor */
-    unsigned long oc_descr_flags;
+    uint64_t oc_descr_flags;
     short stand_animation;
     short enlargement;
     short replacement;

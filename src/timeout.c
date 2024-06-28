@@ -2802,7 +2802,7 @@ STATIC_DCL int FDECL(maybe_write_timer, (int, int, BOOLEAN_P));
 
 /* ordered timer list */
 STATIC_VAR timer_element *timer_base; /* "active" */
-STATIC_VAR unsigned long timer_id = 1;
+STATIC_VAR uint64_t timer_id = 1;
 
 /* If defined, then include names when printing out the timer queue */
 #define VERBOSE_TIMER
@@ -2870,8 +2870,8 @@ timer_element *base;
         putstr(win, 0, "timeout  id   kind   call");
         for (curr = base; curr; curr = curr->next) {
 #ifdef VERBOSE_TIMER
-            Sprintf(buf, " %4ld   %4ld  %-6s %s(%s)", curr->timeout,
-                    curr->tid, kind_name(curr->kind),
+            Sprintf(buf, " %4ld   %4lld  %-6s %s(%s)", curr->timeout,
+                    (unsigned long long)curr->tid, kind_name(curr->kind),
                     timeout_funcs[curr->func_index].name,
                     fmt_ptr((genericptr_t) curr->arg.a_void));
 #else

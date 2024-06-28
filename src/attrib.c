@@ -846,7 +846,7 @@ update_extrinsics()
                         if (!mythic_powers[i].name)
                             break;
 
-                        unsigned long mythic_power_bit = 1UL << ((unsigned long)i);
+                        uint64_t mythic_power_bit = (uint64_t)1 << ((uint64_t)i);
 
                         if ((mythic_definitions[mythic_quality].mythic_powers & mythic_power_bit) && mythic_power_applies_to_obj(uitem, mythic_powers[i].power_flags))
                         {

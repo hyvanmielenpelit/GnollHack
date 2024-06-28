@@ -722,7 +722,7 @@ int mode;
         bwrite(fd, (genericptr_t) &regions[i]->dmg_diesize, sizeof(int));
         bwrite(fd, (genericptr_t) &regions[i]->dmg_plus, sizeof(int));
         bwrite(fd, (genericptr_t) &regions[i]->dmg_adjustment, sizeof(double));
-        bwrite(fd, (genericptr_t) &regions[i]->region_flags, sizeof(unsigned long));
+        bwrite(fd, (genericptr_t) &regions[i]->region_flags, sizeof(uint64_t));
         bwrite(fd, (genericptr_t) &regions[i]->lamplit, sizeof(boolean));
         bwrite(fd, (genericptr_t) &regions[i]->makingsound, sizeof(boolean));
     }
@@ -822,7 +822,7 @@ boolean ghostly; /* If a bones file restore */
         mread(fd, (genericptr_t) &regions[i]->dmg_diesize, sizeof(int));
         mread(fd, (genericptr_t) &regions[i]->dmg_plus, sizeof(int));
         mread(fd, (genericptr_t) &regions[i]->dmg_adjustment, sizeof(double));
-        mread(fd, (genericptr_t) &regions[i]->region_flags, sizeof(unsigned long));
+        mread(fd, (genericptr_t) &regions[i]->region_flags, sizeof(uint64_t));
         mread(fd, (genericptr_t) &regions[i]->lamplit, sizeof(boolean));
         mread(fd, (genericptr_t) &regions[i]->makingsound, sizeof(boolean));
     }

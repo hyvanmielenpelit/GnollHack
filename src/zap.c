@@ -1711,8 +1711,8 @@ struct permonst* ptr;
         boolean has_recurring = FALSE;
         unsigned short temp_dur = 0;
 
-        unsigned long ibit = prop_to_innate(i);
-        unsigned long ibit2 = prop_to_innate2(i);
+        uint64_t ibit = prop_to_innate(i);
+        uint64_t ibit2 = prop_to_innate2(i);
 
         if (ptr->mresists & ibit)
             has_innate = TRUE;
@@ -1809,11 +1809,11 @@ struct permonst* ptr;
     {
         for (int i = 0; i < NUM_UNSIGNED_LONG_BITS; i++)
         {
-            unsigned long bit = 0x00000001UL;
+            uint64_t bit = 0x00000001UL;
             if (i > 0)
                 bit = bit << i;
 
-            unsigned long mflags = 
+            uint64_t mflags = 
                 j == 1 ? ptr->mflags1 : j == 2 ? ptr->mflags2 : j == 3 ? ptr->mflags3 : j == 4 ? ptr->mflags4 :
                 j == 5 ? ptr->mflags5 : j == 6 ? ptr->mflags6 : j == 7 ? ptr->mflags7 : j == 8 ? ptr->mflags8 :
                 ptr->mflags1; /* Fall back case*/
@@ -2253,8 +2253,8 @@ struct monst* mtmp;
     xchar sx = mtmp == &youmonst ? u.ux : mtmp->mx;
     xchar sy = mtmp == &youmonst ? u.uy : mtmp->my;
     struct layer_info li = isok(sx, sy) ? layers_at(sx, sy) : zerolayerinfo;
-    //unsigned long layerflags = li.layer_flags;
-    unsigned long layermflags = li.monster_flags;
+    //uint64_t layerflags = li.layer_flags;
+    uint64_t layermflags = li.monster_flags;
     boolean loc_is_you = mtmp == &youmonst; // (layerflags & LFLAGS_UXUY) != 0; //So you can separately see your steed stats properly
     boolean ispeaceful = is_peaceful(mtmp) && !is_tame(mtmp);
     boolean ispet = is_tame(mtmp);
@@ -2267,14 +2267,14 @@ struct monst* mtmp;
     putstr(datawin, ATR_HEADING, buf);
     
     /* Petmark and other status marks */
-    unsigned long m_status_bits = get_m_status_bits(mtmp, loc_is_you, ispeaceful, ispet, isdetected);
+    uint64_t m_status_bits = get_m_status_bits(mtmp, loc_is_you, ispeaceful, ispet, isdetected);
     for (int statusorder_idx = 0; statusorder_idx < SIZE(statusmarkorder); statusorder_idx++)
     {
         int status_mark = (int)statusmarkorder[statusorder_idx];
         const char* statusname = 0;
         if (status_mark < MAX_STATUS_MARKS && (statusname = get_status_name(mtmp, status_mark)) != 0)
         {
-            unsigned long status_bit = 1UL << status_mark;
+            uint64_t status_bit = (uint64_t)1 << status_mark;
             if(m_status_bits & status_bit)
             {
                 condition_count++;
@@ -2290,7 +2290,7 @@ struct monst* mtmp;
     }
 
     /* Conditions */
-    unsigned long m_conditions = get_m_condition_bits(mtmp);
+    uint64_t m_conditions = get_m_condition_bits(mtmp);
     for (int cond = 0; cond < ui_tile_component_array[CONDITION_MARKS].number; cond++)
     {
         int condition_bit = 1 << cond;
@@ -2566,7 +2566,7 @@ struct obj *obj;
 coord *cc;
 boolean adjacentok; /* False: at obj's spot only, True: nearby is allowed */
 int mnum_override, mnum_replaceundead; /* Use this mnum instead */
-unsigned long mmflags;
+uint64_t mmflags;
 {
     struct monst *mtmp = (struct monst *) 0;
     struct monst *mtmp2 = (struct monst *) 0;
@@ -3074,12 +3074,12 @@ int montype;
             }
             else if (artifact_has_flag(uitem, AF_DMONS))
             {
-                if ((unsigned long)montype == artilist[uitem->oartifact].mtype)
+                if ((uint64_t)montype == artilist[uitem->oartifact].mtype)
                     return TRUE;
             }
             else if (artifact_has_flag(uitem, AF_DCLAS))
             {
-                if ((unsigned long)mons[montype].mlet == artilist[uitem->oartifact].mtype)
+                if ((uint64_t)mons[montype].mlet == artilist[uitem->oartifact].mtype)
                     return TRUE;
             }
             else if (artifact_has_flag(uitem, AF_DALIGN))
@@ -3089,7 +3089,7 @@ int montype;
             }
             else
             {
-                if ((unsigned long)montype == artilist[uitem->oartifact].mtype)
+                if ((uint64_t)montype == artilist[uitem->oartifact].mtype)
                     return TRUE;
             }
         }
@@ -3139,7 +3139,7 @@ int montype;
                     }
                     else
                     {
-                        if ((unsigned long)mons[montype].mlet == objects[otyp].oc_target_permissions)
+                        if ((uint64_t)mons[montype].mlet == objects[otyp].oc_target_permissions)
                             return TRUE;
                     }
                 }
@@ -3163,7 +3163,7 @@ int montype;
                 if (!mythic_powers[i].name)
                     break;
 
-                unsigned long mythic_power_bit = 1UL << ((unsigned long)i);
+                uint64_t mythic_power_bit = (uint64_t)1 << ((uint64_t)i);
 
                 if ((mythic_definitions[mythic_quality].mythic_powers & mythic_power_bit) && mythic_power_applies_to_obj(uitem, mythic_powers[i].power_flags))
                 {
@@ -3203,12 +3203,12 @@ int montype;
             }
             else if (artifact_has_flag(uitem, AF_DMONS))
             {
-                if ((unsigned long)montype == artilist[uitem->oartifact].mtype)
+                if ((uint64_t)montype == artilist[uitem->oartifact].mtype)
                     return TRUE;
             }
             else if (artifact_has_flag(uitem, AF_DCLAS))
             {
-                if ((unsigned long)mons[montype].mlet == artilist[uitem->oartifact].mtype)
+                if ((uint64_t)mons[montype].mlet == artilist[uitem->oartifact].mtype)
                     return TRUE;
             }
             else if (artifact_has_flag(uitem, AF_DALIGN))
@@ -3218,7 +3218,7 @@ int montype;
             }
             else
             {
-                if ((unsigned long)montype == artilist[uitem->oartifact].mtype)
+                if ((uint64_t)montype == artilist[uitem->oartifact].mtype)
                     return TRUE;
             }
         }
@@ -3269,7 +3269,7 @@ int montype;
                     }
                     else
                     {
-                        if ((unsigned long)mons[montype].mlet == objects[otyp].oc_target_permissions)
+                        if ((uint64_t)mons[montype].mlet == objects[otyp].oc_target_permissions)
                             return TRUE;
                     }
                 }
@@ -9902,7 +9902,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                             }
                         }
 #endif
-                        context.zap_aggregate_intervals_to_wait_until_action = (unsigned long)intervals_to_execution;
+                        context.zap_aggregate_intervals_to_wait_until_action = (uint64_t)intervals_to_execution;
                     }
 
                     //prev_anim_counter_idx = idx;
@@ -9945,7 +9945,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                         }
                     }
 #endif
-                    context.zap_aggregate_intervals_to_wait_until_action = (unsigned long)intervals_to_execution;
+                    context.zap_aggregate_intervals_to_wait_until_action = (uint64_t)intervals_to_execution;
                 }
                 if (animations[anim].sound_play_frame > 0)
                 {
@@ -12009,8 +12009,8 @@ struct monst*
 summoncreature(spl_otyp, monst_id, message_fmt, mmflags, scflags) // capitalize, markassummoned, disregardstrength, disregardhealth, bloodlust, pacifist, faithful
 int spl_otyp, monst_id;
 const char* message_fmt; //input the summoning message with one %s, which is for the monster name
-unsigned long mmflags;
-unsigned long scflags;
+uint64_t mmflags;
+uint64_t scflags;
 {
     if (monst_id < LOW_PM)
         return (struct monst*)0;

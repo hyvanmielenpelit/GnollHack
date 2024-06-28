@@ -73,7 +73,7 @@ struct obj {
 #define SPEQUAL_UBALL_SPECIAL                  1
 #define SPEQUAL_WILL_TURN_TO_DUST_ON_PICKUP    1
 
-    unsigned long speflags; /* anything else that might be going on with an item, not affected by cancellation */
+    uint64_t speflags; /* anything else that might be going on with an item, not affected by cancellation */
 
 #define SPEFLAGS_YOURS                         0x00000001UL
 #define SPEFLAGS_FEMALE                        0x00000002UL
@@ -817,8 +817,8 @@ struct mythic_definition {
     short probability;
     double price_multiplier;
     long price_addition;
-    unsigned long mythic_powers;
-    unsigned long mythic_flags;
+    uint64_t mythic_powers;
+    uint64_t mythic_flags;
 };
 
 #define MYTHIC_FLAG_NONE                        0x00000000UL
@@ -914,8 +914,8 @@ struct mythic_power_definition {
     long parameter1;                /* E.g., damage multiplier */
     double parameter2;              /* E.g., damage multiplier */
     char parameter3;                /* E.g., monster or item class */
-    unsigned long parameter4;       /* E.g., M2_ flag */
-    unsigned long power_flags;
+    uint64_t parameter4;       /* E.g., M2_ flag */
+    uint64_t power_flags;
 };
 
 enum mythic_power_types {

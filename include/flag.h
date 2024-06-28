@@ -168,7 +168,7 @@ struct flag {
 
     int end_top, end_around; /* describe desired score list */
     unsigned moonphase;
-    unsigned long suppress_alert;
+    uint64_t suppress_alert;
 #define NEW_MOON 0
 #define FULL_MOON 4
     unsigned paranoia_bits; /* alternate confirmation prompting */
@@ -251,8 +251,8 @@ struct flag {
     short reserved_short2;
     int reserved_int1;
     int reserved_int2;
-    unsigned long reserved_ulong1;
-    unsigned long reserved_ulong2;
+    uint64_t reserved_ulong1;
+    uint64_t reserved_ulong2;
 };
 
 /*

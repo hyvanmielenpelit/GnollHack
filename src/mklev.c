@@ -1339,7 +1339,7 @@ makelevel()
             && nroom >= room_threshold && shopok)  // rn2(u_depth) < 3))
             res = make_room(SHOPBASE);
 
-        if (!res && u_depth > 1 && u_depth < depth(&medusa_level) && !(context.npc_made & (1UL << NPC_ELVEN_BARD))
+        if (!res && u_depth > 1 && u_depth < depth(&medusa_level) && !(context.npc_made & ((uint64_t)1 << NPC_ELVEN_BARD))
             && (context.game_difficulty == MIN_DIFFICULTY_LEVEL 
                 || (context.game_difficulty < 0 && !rn2(max(2, 2 * (context.game_difficulty - MIN_DIFFICULTY_LEVEL) + 1)))
                 || (context.game_difficulty >= 0 && !rn2(100 * context.game_difficulty + 20))))
@@ -2430,7 +2430,7 @@ mkmodronportal(subtyp, tm, portal_tm, portal_flags)
 int subtyp;
 coord* tm;
 coord* portal_tm;
-unsigned long portal_flags;
+uint64_t portal_flags;
 {
     struct trap* t;
 

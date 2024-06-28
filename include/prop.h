@@ -290,7 +290,7 @@ struct prop_info {
     struct prop_color buff_text_color;
     struct prop_color buff_bk_color;
 
-    unsigned long pflags;
+    uint64_t pflags;
 };
 
 #define PROPFLAGS_NONE                  0x00000000UL

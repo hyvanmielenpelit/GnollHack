@@ -1007,7 +1007,7 @@ intrinsic_possible(type, ptr)
 int type;
 register struct permonst *ptr;
 {
-    unsigned long conveyed = prop_to_conveyed(type);
+    uint64_t conveyed = prop_to_conveyed(type);
     return !!(ptr->mconveys & conveyed);
 }
 

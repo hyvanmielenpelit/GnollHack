@@ -4355,7 +4355,7 @@ struct _create_particular_data *d;
             whichpm = rndmonst();
 
         /* 'is_FOO()' ought to be called 'always_FOO()' */
-        unsigned long genderflag = 0UL;
+        uint64_t genderflag = 0UL;
         if (d->fem != -1 && !is_male(whichpm) && !is_female(whichpm) && !is_neuter(whichpm))
         {
             if(d->fem == 0)

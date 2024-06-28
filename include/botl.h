@@ -31,7 +31,7 @@ Astral Plane \GXXXXNNNN:123456 HP:1234(1234) Pw:1234(1234) AC:-127
 
 struct condmap {
     const char *id;
-    unsigned long bitmask;
+    uint64_t bitmask;
 };
 
 enum statusfields {

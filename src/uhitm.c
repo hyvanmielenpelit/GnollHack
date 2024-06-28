@@ -4800,7 +4800,7 @@ int basedamage;
 struct monst* magr;
 struct monst* mdef;
 short adtyp;
-unsigned long ad_flags;
+uint64_t ad_flags;
 {
     double base_dmg_d = (double)basedamage;
     boolean you_attack = (magr && magr == &youmonst);
@@ -5279,8 +5279,8 @@ enum action_tile_types action;
 void
 update_u_action_core(action, simple_wait_multiplier, additional_newsym_flags)
 enum action_tile_types action;
-unsigned long simple_wait_multiplier;
-unsigned long additional_newsym_flags;
+uint64_t simple_wait_multiplier;
+uint64_t additional_newsym_flags;
 {
     enum action_tile_types action_before = u.action;
     if (iflags.using_gui_tiles && action == ACTION_TILE_NO_ACTION)
@@ -5393,8 +5393,8 @@ void
 update_m_action_core(mtmp, action, simple_wait_multiplier, additional_newsym_flags)
 struct monst* mtmp;
 enum action_tile_types action;
-unsigned long simple_wait_multiplier;
-unsigned long additional_newsym_flags;
+uint64_t simple_wait_multiplier;
+uint64_t additional_newsym_flags;
 {
     if (!mtmp)
         return;
@@ -5527,12 +5527,12 @@ struct monst* mon;
 int x, y;
 enum hit_tile_types hit_symbol_shown;
 int damage_shown;
-unsigned long extra_mflags;
+uint64_t extra_mflags;
 {
     if (!iflags.using_gui_tiles || hit_symbol_shown >= MAX_HIT_TILES || hit_symbol_shown < 0)
         return;
 
-    unsigned long mhflags = (LMFLAGS_BEING_HIT | extra_mflags);
+    uint64_t mhflags = (LMFLAGS_BEING_HIT | extra_mflags);
     show_extra_info(x, y, 0UL, mhflags, (short)(hit_symbol_shown - HIT_GENERAL), damage_shown);
     if(mon == &youmonst)
         u_wait_until_action();
@@ -5549,7 +5549,7 @@ void
 display_u_being_hit(hit_symbol_shown, damage_shown, extra_mflags)
 enum hit_tile_types hit_symbol_shown;
 int damage_shown;
-unsigned long extra_mflags;
+uint64_t extra_mflags;
 {
     display_being_hit(&youmonst, u.ux, u.uy, hit_symbol_shown, damage_shown, extra_mflags);
 }
@@ -5559,7 +5559,7 @@ display_m_being_hit(mon, hit_symbol_shown, damage_shown, extra_mflags, use_bhitp
 struct monst* mon;
 enum hit_tile_types hit_symbol_shown;
 int damage_shown;
-unsigned long extra_mflags;
+uint64_t extra_mflags;
 boolean use_bhitpos;
 {
     if (!mon)

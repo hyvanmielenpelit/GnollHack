@@ -44,9 +44,9 @@ struct trap {
     long effect_param2;
     long effect_param3;
     long effect_param4;
-    unsigned long effect_flags;
-    unsigned long tflags;
-    unsigned long activation_count;
+    uint64_t effect_flags;
+    uint64_t tflags;
+    uint64_t activation_count;
     Bitfield(tseen, 1);
     Bitfield(once, 1);
     Bitfield(madeby_u, 1); /* So monsters may take offence when you trap
@@ -141,7 +141,7 @@ struct trap_type_definition {
     enum trap_difficulty_types tdifficulty;
     enum trap_difficulty_types thelpdifficulty;
     int training;
-    unsigned long tdflags;
+    uint64_t tdflags;
 };
 
 #define TRAPDEF_FLAGS_NONE                      0x00000000UL

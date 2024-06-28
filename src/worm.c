@@ -475,7 +475,7 @@ boolean use_detection_glyph;
 
     while (curr != wheads[worm->wormno]) {
         num = monnum_to_glyph(what_tail);
-        unsigned long extra_mflags = (LMFLAGS_WORM_SEEN | LMFLAGS_WORM_TAIL | ((use_detection_glyph ? LMFLAGS_DETECTED : 0UL) | (is_tame(worm) ? LMFLAGS_PET : 0UL)));
+        uint64_t extra_mflags = (LMFLAGS_WORM_SEEN | LMFLAGS_WORM_TAIL | ((use_detection_glyph ? LMFLAGS_DETECTED : 0UL) | (is_tame(worm) ? LMFLAGS_PET : 0UL)));
         show_monster_glyph_with_extra_info(curr->wx, curr->wy, num, worm, 0UL, extra_mflags, 0, 0);
         curr = curr->nseg;
     }

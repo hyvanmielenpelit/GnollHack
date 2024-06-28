@@ -1496,7 +1496,7 @@ register int x, y;
      * opposite to how normal vision behaves.
      */
     oldglyph = glyph_at(x, y);
-    //unsigned long oldlayerflags = lev->hero_memory_layers.layer_flags;
+    //uint64_t oldlayerflags = lev->hero_memory_layers.layer_flags;
 
     if (level.flags.hero_memory)
     {
@@ -2320,7 +2320,7 @@ dump_map()
         {
             nhsym ch;
             int color, sym;
-            unsigned long special;
+            uint64_t special;
 
             glyph = reveal_terrain_getglyph(x, y, FALSE, u.uswallow,
                                             default_glyph, subset);

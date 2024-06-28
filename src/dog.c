@@ -778,7 +778,7 @@ makedog()
             ismale = TRUE;
     }
 
-    unsigned long extrammflags = 0UL;
+    uint64_t extrammflags = 0UL;
     if (isfemale && !isneuter)
     {
         petname_female = petname;

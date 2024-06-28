@@ -2295,11 +2295,11 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 
         for (i = LOW_PM; i < NUM_MONSTERS; i++)
         {
-            Sprintf(buf, "%s,%d,%d,%d,%d,%d,%d,%lu,",
+            Sprintf(buf, "%s,%d,%d,%d,%d,%d,%d,%llu,",
                 mons[i].mname, 
                 (int)mons[i].mlevel, (int)mons[i].mmove, 
                 (int)mons[i].ac, (int)mons[i].mc, (int)mons[i].mr, 
-                (int)mons[i].maligntyp, mons[i].geno);
+                (int)mons[i].maligntyp, (unsigned long long)mons[i].geno);
             (void)write(fd, buf, strlen(buf));
             for (j = 0; j < NATTK; j++)
             {
@@ -2319,35 +2319,35 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
             (void)write(fd, buf, strlen(buf));
             for (j = 0; j < 32; j++)
             {
-                Sprintf(buf, "%d,", (mons[i].mresists & (1L << j)) ? 1 : 0);
+                Sprintf(buf, "%d,", (mons[i].mresists & ((uint64_t)1 << j)) ? 1 : 0);
                 (void)write(fd, buf, strlen(buf));
             }
             Sprintf(buf, ",");
             (void)write(fd, buf, strlen(buf));
             for (j = 0; j < 32; j++)
             {
-                Sprintf(buf, "%d,", (mons[i].mconveys & (1L << j)) ? 1 : 0);
+                Sprintf(buf, "%d,", (mons[i].mconveys & ((uint64_t)1 << j)) ? 1 : 0);
                 (void)write(fd, buf, strlen(buf));
             }
             Sprintf(buf, ",");
             (void)write(fd, buf, strlen(buf));
             for (j = 0; j < 32; j++)
             {
-                Sprintf(buf, "%d,", (mons[i].mflags1 & (1L << j)) ? 1 : 0);
+                Sprintf(buf, "%d,", (mons[i].mflags1 & ((uint64_t)1 << j)) ? 1 : 0);
                 (void)write(fd, buf, strlen(buf));
             }
             Sprintf(buf, ",");
             (void)write(fd, buf, strlen(buf));
             for (j = 0; j < 32; j++)
             {
-                Sprintf(buf, "%d,", (mons[i].mflags2 & (1L << j)) ? 1 : 0);
+                Sprintf(buf, "%d,", (mons[i].mflags2 & ((uint64_t)1 << j)) ? 1 : 0);
                 (void)write(fd, buf, strlen(buf));
             }
             Sprintf(buf, ",");
             (void)write(fd, buf, strlen(buf));
             for (j = 0; j < 32; j++)
             {
-                Sprintf(buf, "%d,", (mons[i].mflags3 & (1L << j)) ? 1 : 0);
+                Sprintf(buf, "%d,", (mons[i].mflags3 & ((uint64_t)1 << j)) ? 1 : 0);
                 (void)write(fd, buf, strlen(buf));
             }
             Sprintf(buf, ",%d,%d,",
@@ -9290,7 +9290,7 @@ yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc, in
 int style, attr, color, glyph;
 const char *title, *query, *resp, *resp_desc, * introline;
 char def;
-unsigned long ynflags; /* 1 means use upper side for half-sized tile */
+uint64_t ynflags; /* 1 means use upper side for half-sized tile */
 {
     char res, qbuf[QBUFSZ];
 #if defined(DUMPLOG) || defined(DUMPHTML)

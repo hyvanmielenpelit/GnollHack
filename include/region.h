@@ -69,7 +69,7 @@ struct region_type_definition {
     boolean blocks_vision;
     xchar is_light_source;
     enum region_soundset_types soundset;
-    unsigned long rt_flags;
+    uint64_t rt_flags;
 };
 
 extern struct region_type_definition region_type_definitions[MAX_REGION_TYPES];
@@ -118,7 +118,7 @@ typedef struct nhregion {
     int dmg_diesize;
     int dmg_plus;
     double dmg_adjustment;
-    unsigned long region_flags; /* No teleport region etc. */
+    uint64_t region_flags; /* No teleport region etc. */
 
     boolean lamplit;        /* region is attached to a light source, which temp-lights the region */
     boolean makingsound;    /* region is attached to a sound source, which may cause ambient sounds outside and inside the region */

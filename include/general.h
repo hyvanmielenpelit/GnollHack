@@ -6,6 +6,8 @@
 #ifndef GENERAL_H
 #define GENERAL_H
 
+#include "integer.h"
+
 /*
  * This is a general header file for enums and structs used in arguments of global functions and
  * for general constants, enums, and structs with no better place
@@ -131,9 +133,9 @@ struct replacement_info {
     int layer;
     struct obj* object;
     struct monst* monster;
-    unsigned long layer_flags;
-    unsigned long monster_flags;
-    unsigned long missile_flags;
+    uint64_t layer_flags;
+    uint64_t monster_flags;
+    uint64_t missile_flags;
     unsigned char missile_material;
     short missile_special_quality;
 };
@@ -147,13 +149,13 @@ struct extended_menu_info {
     int style; /* Generic style or subtype; used in menu data */
     char special_mark;
     int num_items; /* Number of items in e.g. category */
-    unsigned long menu_flags;
+    uint64_t menu_flags;
 };
 
 struct extended_create_window_info {
     struct obj* object;
     struct monst* monster;
-    unsigned long create_flags;
+    uint64_t create_flags;
 };
 
 #define WINDOW_CREATE_FLAGS_NONE                0x00000000

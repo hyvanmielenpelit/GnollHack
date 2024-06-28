@@ -201,7 +201,7 @@ extern const struct shclass shtypes[]; /* defined in shknam.c */
 void You_ex1_popup(txt, title, attr, color, glyph, pflags)
 const char* txt, *title;
 int attr, color, glyph;
-unsigned long pflags;
+uint64_t pflags;
 {
     if (!txt)
         return;

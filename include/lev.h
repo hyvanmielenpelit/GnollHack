@@ -97,7 +97,7 @@ struct save_game_stats {
     time_t time_stamp;
 
     /* Other information */
-    unsigned long num_recoveries;
+    uint64_t num_recoveries;
 };
 
 #define SAVEFLAGS_NONE              0x00

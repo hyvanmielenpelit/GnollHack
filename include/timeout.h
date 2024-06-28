@@ -46,7 +46,7 @@ enum timeout_types {
 typedef struct fe {
     struct fe *next;          /* next item in chain */
     long timeout;             /* when we time out */
-    unsigned long tid;        /* timer ID */
+    uint64_t tid;        /* timer ID */
     short kind;               /* kind of use */
     short func_index;         /* what to call when we time out */
     anything arg;             /* pointer to timeout argument */

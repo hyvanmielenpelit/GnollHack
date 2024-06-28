@@ -1288,7 +1288,7 @@ const struct Align aligns[] = {
 /* Filters */
 STATIC_VAR struct {
     boolean roles[SIZE(roles)];
-    unsigned long mask;
+    uint64_t mask;
 } rfilter;
 
 STATIC_DCL int NDECL(randrole_filtered);
@@ -1575,7 +1575,7 @@ ok_role(rolenum, racenum, gendnum, alignnum)
 int rolenum, racenum, gendnum, alignnum;
 {
     int i;
-    unsigned long allow;
+    uint64_t allow;
 
     if (rolenum >= 0 && rolenum < SIZE(roles) - 1) {
         if (rfilter.roles[rolenum])
@@ -1643,7 +1643,7 @@ ok_race(rolenum, racenum, gendnum, alignnum)
 int rolenum, racenum, gendnum, alignnum;
 {
     int i;
-    unsigned long allow;
+    uint64_t allow;
 
     if (racenum >= 0 && racenum < SIZE(races) - 1) {
         if (rfilter.mask & races[racenum].selfmask)
@@ -1716,7 +1716,7 @@ int rolenum, racenum, gendnum;
 int alignnum UNUSED;
 {
     int i;
-    unsigned long allow;
+    uint64_t allow;
 
     if (gendnum >= 0 && gendnum < ROLE_GENDERS) {
         if (rfilter.mask & genders[gendnum].allow)
@@ -1785,7 +1785,7 @@ int gendnum UNUSED;
 int alignnum;
 {
     int i;
-    unsigned long allow;
+    uint64_t allow;
 
     if (alignnum >= 0 && alignnum < ROLE_ALIGNS) {
         if (rfilter.mask & aligns[alignnum].allow)
@@ -2307,7 +2307,7 @@ winid where;
                                rand_choice[] = " random";
     char buf[BUFSZ];
     int r, c, g, a;
-    unsigned long allowmask;
+    uint64_t allowmask;
 
     r = flags.initrole;
     c = flags.initrace;
@@ -2404,7 +2404,7 @@ boolean preselect;
     char buf[BUFSZ];
     const char *what = 0, *constrainer = 0, *forcedvalue = 0;
     int f = 0, r, c, g, a, i;
-    unsigned long allowmask;
+    uint64_t allowmask;
 
     r = flags.initrole;
     c = flags.initrace;
@@ -2955,7 +2955,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     return FALSE;
 }
 
-unsigned long
+uint64_t
 get_player_action_flags(action, roleidx, raceidx, genderidx, alignmentidx, levelidx)
 enum action_tile_types action;
 int roleidx, raceidx, genderidx UNUSED, alignmentidx UNUSED, levelidx;
@@ -3015,7 +3015,7 @@ int roleidx, raceidx, genderidx UNUSED, alignmentidx UNUSED, levelidx;
     return ACTION_ITEM_USE_FLAGS_NONE;
 }
 
-unsigned long
+uint64_t
 u_action_flags(action)
 enum action_tile_types action; 
 {
@@ -3023,7 +3023,7 @@ enum action_tile_types action;
         get_player_action_flags(action, urole.rolenum, urace.racenum, flags.female, u.ualign.type + 1, 0);
 }
 
-unsigned long 
+uint64_t 
 u_item_use_flags(VOID_ARGS)
 {
     return u_action_flags(ACTION_TILE_ITEM_USE);

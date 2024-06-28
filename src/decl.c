@@ -74,7 +74,7 @@ NEARDATA struct fruit *ffruit = (struct fruit *) 0;
 NEARDATA char tune[6] = DUMMY;
 NEARDATA boolean ransacked = 0;
 
-NEARDATA unsigned long n_game_recoveries = 0;
+NEARDATA uint64_t n_game_recoveries = 0;
 
 const char *occtxt = DUMMY;
 enum object_soundset_types occsoundset = OBJECT_SOUNDSET_NONE; /* defined when occupation != NULL */
@@ -553,7 +553,7 @@ const char *ARGV0;
 
 /* support for lint.h */
 unsigned nhUse_dummy = 0;
-unsigned long file_end_marker = 0xF23EE6D8;
+uint64_t file_end_marker = 0xF23EE6D8;
 
 const int no_multiattrs[32] = { 0 };
 const int multicolor_red1[1] = { CLR_RED };

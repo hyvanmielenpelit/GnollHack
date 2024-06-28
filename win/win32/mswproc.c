@@ -1713,7 +1713,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, unsigned long ynflags)
+mswin_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags)
 {
     char ch;
     char yn_esc_map = '\033';
@@ -3314,7 +3314,7 @@ mswin_status_init(int reassessment)
 
     for (int i = 0; i < SIZE(_condition_fields); i++) {
         mswin_condition_field * condition_field = &_condition_fields[i];
-        nhassert(condition_field->mask == (1 << i));
+        nhassert(condition_field->mask == ((uint64_t)1 << i));
         condition_field->bit_position = i;
     }
 
@@ -3446,7 +3446,7 @@ mswin_status_enablefield(int fieldidx, const char *nm, const char *fmt,
 static int
 mswin_condcolor(bm, bmarray)
 long bm;
-unsigned long *bmarray;
+uint64_t *bmarray;
 {
     int i;
 
@@ -3461,7 +3461,7 @@ unsigned long *bmarray;
 static int
 mswin_condattr(bm, bmarray)
 long bm;
-unsigned long *bmarray;
+uint64_t *bmarray;
 {
     if (bm && bmarray) {
         if (bm & bmarray[HL_ATTCLR_DIM]) return HL_DIM;
@@ -3476,7 +3476,7 @@ unsigned long *bmarray;
 
 /*
 
-status_update(int fldindex, genericptr_t ptr, int chg, int percent, int color, unsigned long *colormasks)
+status_update(int fldindex, genericptr_t ptr, int chg, int percent, int color, uint64_t *colormasks)
                 -- update the value of a status field.
                 -- the fldindex identifies which field is changing and
                    is an integer index value from botl.h
@@ -3520,13 +3520,13 @@ status_update(int fldindex, genericptr_t ptr, int chg, int percent, int color, u
                    color and attriubte.
 */
 void
-mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long *condmasks)
+mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, uint64_t *condmasks)
 {
     long cond, *condptr = (long *) ptr;
     char *text = (char *) ptr;
     MSNHMsgUpdateStatus update_cmd_data;
     int ocolor, ochar;
-    unsigned long ospecial;
+    uint64_t ospecial;
 
     logDebug("mswin_status_update(%d, %p, %d, %d, %x, %p)\n", idx, ptr, chg, percent, color, condmasks);
 
@@ -3861,13 +3861,13 @@ mswin_add_context_menu(int cmd_def_char, int cmd_cur_char, int style, int glyph,
 }
 
 void
-mswin_update_status_button(int cmd, int btn, int val, unsigned long bflags)
+mswin_update_status_button(int cmd, int btn, int val, uint64_t bflags)
 {
     return;
 }
 
 void
-mswin_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, int layer, unsigned long tflags)
+mswin_toggle_animation_timer(int timertype, int timerid, int state, int x, int y, int layer, uint64_t tflags)
 {
     enum animation_timer_types att = (enum animation_timer_types)timertype;
 
@@ -3910,25 +3910,25 @@ mswin_toggle_animation_timer(int timertype, int timerid, int state, int x, int y
 }
 
 void
-mswin_display_floating_text(int x, int y, const char* text, int style, int attr, int color, unsigned long tflags)
+mswin_display_floating_text(int x, int y, const char* text, int style, int attr, int color, uint64_t tflags)
 {
 
 }
 
 void
-mswin_display_screen_text(const char* text, const char* supertext, const char* subtext, int style, int attr, int color, unsigned long tflags)
+mswin_display_screen_text(const char* text, const char* supertext, const char* subtext, int style, int attr, int color, uint64_t tflags)
 {
 
 }
 
 void
-mswin_display_popup_text(const char* text, const char* title, int style, int attr, int color, int glyph, unsigned long tflags)
+mswin_display_popup_text(const char* text, const char* title, int style, int attr, int color, int glyph, uint64_t tflags)
 {
 
 }
 
 void
-mswin_display_gui_effect(int style, int subtype, int x, int y, int x2, int y2, unsigned long tflags)
+mswin_display_gui_effect(int style, int subtype, int x, int y, int x2, int y2, uint64_t tflags)
 {
 
 }

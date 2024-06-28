@@ -3276,7 +3276,7 @@ register struct monst* mtmp;
 void
 mondead_with_flags(mtmp, mondeadflags)
 register struct monst *mtmp;
-unsigned long mondeadflags;
+uint64_t mondeadflags;
 {
     struct permonst *mptr;
     int tmp;

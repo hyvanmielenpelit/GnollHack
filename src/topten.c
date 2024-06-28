@@ -523,7 +523,7 @@ int how;
 #endif
     );
 #endif
-    Sprintf(eos(buffer), "%ccollapse=%lu", XLOG_SEP, n_game_recoveries);
+    Sprintf(eos(buffer), "%ccollapse=%llu", XLOG_SEP, (unsigned long long)n_game_recoveries);
     Strcat(buffer, "\n");
 #undef XLOG_SEP
 }

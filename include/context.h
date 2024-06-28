@@ -91,8 +91,8 @@ struct victual_info {
 };
 
 struct warntype_info {
-    unsigned long obj;        /* object warn_of_mon monster type M2 */
-    unsigned long polyd;      /* warn_of_mon monster type M2 due to poly */
+    uint64_t obj;        /* object warn_of_mon monster type M2 */
+    uint64_t polyd;      /* warn_of_mon monster type M2 due to poly */
     struct permonst *species; /* particular species due to poly */
     short speciesidx; /* index of above in mons[] (for save/restore) */
 };
@@ -220,20 +220,20 @@ struct context_info
     uchar spef_action_animation_y[MAX_PLAYED_SPECIAL_EFFECTS];
     enum layer_types spef_action_animation_layer[MAX_PLAYED_SPECIAL_EFFECTS];
 
-    unsigned long u_intervals_to_wait_until_action;
-    unsigned long u_intervals_to_wait_until_end;
-    unsigned long m_intervals_to_wait_until_action;
-    unsigned long m_intervals_to_wait_until_end;
-    unsigned long zap_aggregate_intervals_to_wait_until_action;
-    unsigned long zap_aggregate_intervals_to_wait_until_end;
-    unsigned long spef_intervals_to_wait_until_action[MAX_PLAYED_SPECIAL_EFFECTS];
-    unsigned long spef_intervals_to_wait_until_end[MAX_PLAYED_SPECIAL_EFFECTS];
-    unsigned long expl_intervals_to_wait_until_action;
-    unsigned long expl_intervals_to_wait_until_end;
+    uint64_t u_intervals_to_wait_until_action;
+    uint64_t u_intervals_to_wait_until_end;
+    uint64_t m_intervals_to_wait_until_action;
+    uint64_t m_intervals_to_wait_until_end;
+    uint64_t zap_aggregate_intervals_to_wait_until_action;
+    uint64_t zap_aggregate_intervals_to_wait_until_end;
+    uint64_t spef_intervals_to_wait_until_action[MAX_PLAYED_SPECIAL_EFFECTS];
+    uint64_t spef_intervals_to_wait_until_end[MAX_PLAYED_SPECIAL_EFFECTS];
+    uint64_t expl_intervals_to_wait_until_action;
+    uint64_t expl_intervals_to_wait_until_end;
 
     boolean force_allow_keyboard_commands;
     int makemon_spef_idx;
-    unsigned long global_newsym_flags;
+    uint64_t global_newsym_flags;
     float global_minimum_volume;
     int tether_x;
     int tether_y;
@@ -244,7 +244,7 @@ struct context_info
     boolean reviving;
     boolean quit_pressed;
 
-    unsigned long npc_made;
+    uint64_t npc_made;
     unsigned int view_pet_mid;
     boolean first_time_cmd;
     boolean starting_prayer_timeout_expired;
@@ -252,7 +252,7 @@ struct context_info
     boolean skip_botl;
     boolean amonket_generated;
     uchar town_portal_return_flags;
-    unsigned long quest_flags;
+    uint64_t quest_flags;
     long role_score;
 
     /* Emergency reserved booleans to make non-save-game-breaking changes */

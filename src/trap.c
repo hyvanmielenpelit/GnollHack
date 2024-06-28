@@ -395,7 +395,7 @@ struct monst *victim;
 struct trap *
 maketrap(x, y, typ, permonstid, mkflags)
 int x, y, typ, permonstid;
-unsigned long mkflags;
+uint64_t mkflags;
 {
     static union vlaunchinfo zero_vl;
     boolean oldplace;
@@ -731,7 +731,7 @@ int *fail_reason;
             boolean isfemale = !!(statue->speflags & SPEFLAGS_FEMALE);
             boolean ismale = !!(statue->speflags & SPEFLAGS_FEMALE);
 
-            unsigned long mkflags = MM_NO_MONSTER_INVENTORY;
+            uint64_t mkflags = MM_NO_MONSTER_INVENTORY;
             if (isfemale)
                 mkflags |= MM_FEMALE;
             else if (ismale)
@@ -1027,7 +1027,7 @@ struct trap *trap;
 
 void
 set_utrap(tim, typ)
-unsigned long tim;
+uint64_t tim;
 uchar typ;
 {
     u.utrap = tim;

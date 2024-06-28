@@ -463,8 +463,8 @@ typedef struct {
     long effect_parameter4;
     long effect_subtype;
     long effect_subtype2;
-    unsigned long effect_flags;
-    unsigned long lever_flags;
+    uint64_t effect_flags;
+    uint64_t lever_flags;
 } spllever;
 
 typedef struct {
@@ -487,7 +487,7 @@ typedef struct {
     short id, enchantment;
     short charges;
     int special_quality;
-    unsigned long speflags;
+    uint64_t speflags;
     packed_coord coord;
     xchar x, y, class, containment;
     schar curse_state;
@@ -654,7 +654,7 @@ struct lev_msg {
     int sound_type;
     int sound_id;
     int sound_param;
-    unsigned long msgflags;
+    uint64_t msgflags;
 };
 
 enum splev_message_types {

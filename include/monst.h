@@ -201,7 +201,7 @@ struct monst {
     Bitfield(special_talk_flag8, 1); /* general purpose flag NPC talk */
     /* 10 free bits to 32-bit integer */
 
-    unsigned long mon_flags; /* General easy-to-add flags for monsters for things not covered by the above bitfields */
+    uint64_t mon_flags; /* General easy-to-add flags for monsters for things not covered by the above bitfields */
 #define MON_FLAGS_NONE                          0x00000000UL
 #define MON_FLAGS_RWRAITH                       0x00000001UL
 #define MON_FLAGS_CHAINED                       0x00000002UL
@@ -213,7 +213,7 @@ struct monst {
 #define MON_FLAGS_LEVEL_BOSS                    0x00000080UL
 #define MON_FLAGS_BOSS_HOSTILITY                0x00000100UL
 
-    unsigned long mstrategy; /* for monsters with mflag3: current strategy */
+    uint64_t mstrategy; /* for monsters with mflag3: current strategy */
 
 #ifdef NHSTDC
 #define STRAT_APPEARMSG 0x80000000UL

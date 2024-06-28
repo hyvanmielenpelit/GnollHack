@@ -1623,7 +1623,7 @@ mkgarden()
                 {
                     // Garden gnome as statue (with a conical hat)
                     int monster_type = statue_base_type;
-                    unsigned long statueflags = 0UL;
+                    uint64_t statueflags = 0UL;
                     switch (statue_base_type)
                     {
                     case PM_GNOME:
@@ -2180,7 +2180,7 @@ int npctyp;
 
     npcini(&u.uz, sroom, somex(sroom), somey(sroom), npctype, NON_PM);
     level.flags.has_npc_room = 1;
-    context.npc_made |= (1UL << (unsigned long)npctype);
+    context.npc_made |= ((uint64_t)1 << (uint64_t)npctype);
 
     int x, y;
     if (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_LIGHTS_ON)

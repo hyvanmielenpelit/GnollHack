@@ -59,7 +59,7 @@ struct monst *mon;
     int dtype = NON_PM, cnt = 0, result = 0, census;
     aligntyp atyp;
     struct monst *mtmp;
-    unsigned long mmanimtype = 0UL;
+    uint64_t mmanimtype = 0UL;
 
     if (mon) 
     {

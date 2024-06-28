@@ -2315,7 +2315,7 @@ int how;
         if (!n_game_recoveries)
             Strcpy(pbuf, "The dungeon never collapsed on you.");
         else
-            Sprintf(pbuf, "The dungeon collapsed on you %lu time%s.", n_game_recoveries, plur(n_game_recoveries));
+            Sprintf(pbuf, "The dungeon collapsed on you %llu time%s.", (unsigned long long)n_game_recoveries, plur(n_game_recoveries));
         dump_forward_putstr(endwin, ATR_NONE, pbuf, done_stopprint, 0);
         Sprintf(pbuf,
             "You were level %d with a maximum of %d hit point%s when you %s.",

@@ -1164,7 +1164,7 @@ boolean verbose;
     int old_move = get_u_move_speed(TRUE);
     boolean check_bosses = FALSE;
 
-    unsigned long previous_warntype_obj = context.warntype.obj;
+    uint64_t previous_warntype_obj = context.warntype.obj;
     int oldstr = ACURR(A_STR);
     int olddex = ACURR(A_DEX);
     int oldcon = ACURR(A_CON);
@@ -2094,7 +2094,7 @@ register struct obj* obj;
 void
 delobj_with_flags(obj, newsym_flags)
 register struct obj *obj;
-unsigned long newsym_flags;
+uint64_t newsym_flags;
 {
     boolean update_map;
 
@@ -4452,7 +4452,7 @@ boolean* return_to_inv_ptr;
         start_menu_ex(win, GHMENU_STYLE_ITEM_COMMAND);
 
         const char* headings[NUM_CMD_SECTIONS] = { "Information", "General Commands", "Item-Specific Commands" };
-        unsigned long section_flags[NUM_CMD_SECTIONS] = { SINGLE_OBJ_CMD_INFO, SINGLE_OBJ_CMD_GENERAL, SINGLE_OBJ_CMD_SPECIFIC };
+        uint64_t section_flags[NUM_CMD_SECTIONS] = { SINGLE_OBJ_CMD_INFO, SINGLE_OBJ_CMD_GENERAL, SINGLE_OBJ_CMD_SPECIFIC };
         char buf[BUFSIZ] = "";
         char cmdbuf[BUFSZ] = "";
         char shortcutbuf[BUFSZ] = "";
@@ -4463,7 +4463,7 @@ boolean* return_to_inv_ptr;
         int longest_len = 0;
         int longest_len_header = 0;
         int slen = 0;
-        unsigned long allflags = 0UL;
+        uint64_t allflags = 0UL;
         int i, j;
         for (j = 0; j < NUM_CMD_SECTIONS; j++)
         {
@@ -6616,7 +6616,7 @@ print_things_here_to_window(VOID_ARGS)
             char sym = 0;
             nhsym ch = 0;
             int color;
-            unsigned long special;
+            uint64_t special;
             int glyph = back_to_glyph(u.ux, u.uy);
             layers.glyph = glyph;
             (void)mapglyph(layers, &ch, &color, &special, u.ux, u.uy);
@@ -6692,7 +6692,7 @@ print_things_here_to_window(VOID_ARGS)
             char sym = 0;
             nhsym ch = 0;
             int color;
-            unsigned long special;
+            uint64_t special;
             int glyph = otmp->glyph;
             layers.glyph = glyph;
             (void)mapglyph(layers, &ch, &color, &special, u.ux, u.uy);
@@ -7154,7 +7154,7 @@ void
 useupf_with_flags(obj, numused, newsym_flags)
 register struct obj *obj;
 long numused;
-unsigned long newsym_flags;
+uint64_t newsym_flags;
 {
     register struct obj *otmp;
     boolean at_u = (obj->ox == u.ux && obj->oy == u.uy);

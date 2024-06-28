@@ -256,7 +256,7 @@ long filetime;
 {
     /* BUILD_TIME is constant but might have L suffix rather than UL;
        'filetime' is historically signed but ought to have been unsigned */
-    return (boolean) ((unsigned long) filetime < (unsigned long) BUILD_TIME);
+    return (boolean) ((uint64_t) filetime < (uint64_t) BUILD_TIME);
 }
 #endif
 
@@ -266,16 +266,16 @@ struct version_info *version_data;
 const char *filename;
 boolean complain;
 {
-    unsigned long vsan1 = VERSION_SANITY1;
-    unsigned long vsan2 = VERSION_SANITY2;
-    unsigned long vsan3 = VERSION_SANITY3;
+    uint64_t vsan1 = VERSION_SANITY1;
+    uint64_t vsan2 = VERSION_SANITY2;
+    uint64_t vsan3 = VERSION_SANITY3;
 
     unsigned char shortsize = VERSION_SHORTSIZE;
     unsigned char intsize = VERSION_INTSIZE;
     unsigned char longsize = VERSION_LONGSIZE;
     unsigned char ptrsize = VERSION_PTRSIZE;
 
-    unsigned long versioncompat = EARLIEST_COMPATIBLE_VERSION_NUMBER;
+    uint64_t versioncompat = EARLIEST_COMPATIBLE_VERSION_NUMBER;
 
     boolean incompatibleversioninfo = FALSE;
 
@@ -362,7 +362,7 @@ int fd;
 const char amiga_version_string[] = AMIGA_VERSION_STRING;
 #endif
 
-unsigned long
+uint64_t
 get_feature_notice_ver(str)
 char *str;
 {
@@ -396,7 +396,7 @@ char *str;
     /* macro from hack.h */
 }
 
-unsigned long
+uint64_t
 get_current_feature_ver()
 {
     return FEATURE_NOTICE_VER(VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL);

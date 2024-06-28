@@ -2370,7 +2370,7 @@ void
 deliver_obj_to_mon(mtmp, cnt, deliverflags)
 int cnt;
 struct monst *mtmp;
-unsigned long deliverflags;
+uint64_t deliverflags;
 {
     struct obj *otmp, *otmp2;
     int where, maxobj = 1;

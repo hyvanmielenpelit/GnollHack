@@ -656,7 +656,7 @@ char errbuf[];
 /* This changes the soft limit */
 boolean
 increase_file_descriptor_limit_to_at_least(new_cur_minimum)
-unsigned long new_cur_minimum;
+uint64_t new_cur_minimum;
 {
     struct rlimit rlim;
     if (getrlimit(RLIMIT_NOFILE, &rlim) == 0) 
@@ -665,7 +665,7 @@ unsigned long new_cur_minimum;
         {
             /* Limit the file descriptor number to lower of 32768 and current hard limit */
             rlim_t maxlimit = min((rlim_t)32768, rlim.rlim_max);
-            new_cur_minimum = min(new_cur_minimum, (unsigned long)maxlimit);
+            new_cur_minimum = min(new_cur_minimum, (uint64_t)maxlimit);
         }
         if (rlim.rlim_cur != RLIM_INFINITY && rlim.rlim_cur < (rlim_t)new_cur_minimum)
             rlim.rlim_cur = (rlim_t)new_cur_minimum;

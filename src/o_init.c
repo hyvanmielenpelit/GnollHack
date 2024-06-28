@@ -1579,7 +1579,7 @@ struct monst* mattacker UNUSED;
             if (!mythic_powers[i].name)
                 break;
 
-            unsigned long mythic_power_bit = 1UL << ((unsigned long)i);
+            uint64_t mythic_power_bit = (uint64_t)1 << ((uint64_t)i);
 
             if ((mythic_definitions[mythic_quality].mythic_powers & mythic_power_bit) && mythic_power_applies_to_obj(otmp, mythic_powers[i].power_flags))
             {
@@ -1696,14 +1696,14 @@ struct obj* obj;
     return res;
 }
 
-unsigned long
+uint64_t
 get_obj_oc_flags(obj)
 struct obj* obj;
 {
     if (!obj)
         return 0UL;
 
-    unsigned long ocflags = objects[obj->otyp].oc_flags;
+    uint64_t ocflags = objects[obj->otyp].oc_flags;
     if (obj->material != objects[obj->otyp].oc_material)
     {
         ocflags |= material_definitions[obj->material].extra_oflags1;
@@ -1711,14 +1711,14 @@ struct obj* obj;
     return ocflags;
 }
 
-unsigned long
+uint64_t
 get_obj_oc_flags2(obj)
 struct obj* obj;
 {
     if (!obj)
         return 0UL;
 
-    unsigned long ocflags = objects[obj->otyp].oc_flags2;
+    uint64_t ocflags = objects[obj->otyp].oc_flags2;
     if (obj->material != objects[obj->otyp].oc_material)
     {
         ocflags |= material_definitions[obj->material].extra_oflags2;
@@ -1726,14 +1726,14 @@ struct obj* obj;
     return ocflags;
 }
 
-unsigned long
+uint64_t
 get_obj_oc_flags3(obj)
 struct obj* obj;
 {
     if (!obj)
         return 0UL;
 
-    unsigned long ocflags = objects[obj->otyp].oc_flags3;
+    uint64_t ocflags = objects[obj->otyp].oc_flags3;
     if (obj->material != objects[obj->otyp].oc_material)
     {
         ocflags |= material_definitions[obj->material].extra_oflags3;
@@ -1741,14 +1741,14 @@ struct obj* obj;
     return ocflags;
 }
 
-unsigned long
+uint64_t
 get_obj_oc_flags4(obj)
 struct obj* obj;
 {
     if (!obj)
         return 0UL;
 
-    unsigned long ocflags = objects[obj->otyp].oc_flags4;
+    uint64_t ocflags = objects[obj->otyp].oc_flags4;
     if (obj->material != objects[obj->otyp].oc_material)
     {
         ocflags |= material_definitions[obj->material].extra_oflags4;
@@ -1756,14 +1756,14 @@ struct obj* obj;
     return ocflags;
 }
 
-unsigned long
+uint64_t
 get_obj_oc_flags5(obj)
 struct obj* obj;
 {
     if (!obj)
         return 0UL;
 
-    unsigned long ocflags = objects[obj->otyp].oc_flags5;
+    uint64_t ocflags = objects[obj->otyp].oc_flags5;
     if (obj->material != objects[obj->otyp].oc_material)
     {
         ocflags |= material_definitions[obj->material].extra_oflags5;
@@ -1771,14 +1771,14 @@ struct obj* obj;
     return ocflags;
 }
 
-unsigned long
+uint64_t
 get_obj_oc_flags6(obj)
 struct obj* obj;
 {
     if (!obj)
         return 0UL;
 
-    unsigned long ocflags = objects[obj->otyp].oc_flags6;
+    uint64_t ocflags = objects[obj->otyp].oc_flags6;
     if (obj->material != objects[obj->otyp].oc_material)
     {
         ocflags |= material_definitions[obj->material].extra_oflags6;

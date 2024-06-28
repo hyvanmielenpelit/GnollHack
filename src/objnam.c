@@ -5270,7 +5270,7 @@ retry:
     /*
      * Create the object, then fine-tune it.
      */
-    unsigned long mkflags = 0UL;
+    uint64_t mkflags = 0UL;
     if (open && typ > 0 && Is_otyp_container_with_lid(typ))
         mkflags |= MKOBJ_FLAGS_OPEN_COFFIN;
 

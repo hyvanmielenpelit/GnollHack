@@ -161,7 +161,7 @@ init_tiledata()
     int i;
     for (i = 0; i < BL_MASK_BITS; i++)
     {
-        unsigned long bit = 1UL << i;
+        uint64_t bit = (uint64_t)1 << i;
         const char* cond_name = get_condition_name(bit);
         ui_tile_component_array[CONDITION_MARKS].component_names[min(i, MAX_UI_TILE_COMPONENTS)] = cond_name;
     }
@@ -277,7 +277,7 @@ uchar* tilemapflags;
 
                 if (spset > ACTION_TILE_NO_ACTION && spset < MAX_ACTION_TILES)
                 {
-                    unsigned long m5_action_flag = M5_ATTACK_TILE << (spset - 1);
+                    uint64_t m5_action_flag = (uint64_t)M5_ATTACK_TILE << (spset - 1);
                     if (tsd->action_tile_style[spset] == 2 && !(mons[i].mflags5 & m5_action_flag))
                         continue;
                 }
@@ -2408,7 +2408,7 @@ uchar* tilemapflags;
             enum action_tile_types action;
             for (action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
             {
-                unsigned long m5_action_flag = action == ACTION_TILE_NO_ACTION ? 0UL : M5_ATTACK_TILE << (action - 1);
+                uint64_t m5_action_flag = action == ACTION_TILE_NO_ACTION ? 0UL : M5_ATTACK_TILE << (action - 1);
                 boolean has_this_action = action == ACTION_TILE_NO_ACTION ? TRUE : (mons[i].mflags5 & m5_action_flag) != 0;
                 int repl;
                 if (!has_this_action)
@@ -2485,7 +2485,7 @@ uchar* tilemapflags;
 
             for (action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
             {
-                unsigned long m5_action_flag = action == ACTION_TILE_NO_ACTION ? 0UL : M5_ATTACK_TILE << (action - 1);
+                uint64_t m5_action_flag = action == ACTION_TILE_NO_ACTION ? 0UL : M5_ATTACK_TILE << (action - 1);
                 boolean has_this_action = action == ACTION_TILE_NO_ACTION ? TRUE : (mons[i].mflags5 & m5_action_flag) != 0;
                 int repl;
                 if (!has_female_tile)

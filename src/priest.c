@@ -543,7 +543,7 @@ int mtype;
         /* Nothing here */
     }
 
-    unsigned long extraflags = Inhell ? MM_MALE : 0UL; /* Since there is only one soundset for unusual creature types */
+    uint64_t extraflags = Inhell ? MM_MALE : 0UL; /* Since there is only one soundset for unusual creature types */
 
     smith = makemon(&mons[smith_montype], smith_loc_x, smith_loc_y, MM_ESMI | extraflags);
     if(!smith)

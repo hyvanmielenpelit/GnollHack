@@ -17,7 +17,7 @@
 
 STATIC_DCL boolean FDECL(ungeneratable_monster_type, (int));
 STATIC_DCL int FDECL(align_shift, (struct permonst *));
-STATIC_DCL boolean FDECL(mk_gen_ok, (int, UCHAR_P, unsigned long, BOOLEAN_P, BOOLEAN_P));
+STATIC_DCL boolean FDECL(mk_gen_ok, (int, UCHAR_P, uint64_t, BOOLEAN_P, BOOLEAN_P));
 #if 0
 STATIC_DCL void FDECL(m_initgrp, (struct monst *, int, int, int, int));
 #endif
@@ -26,7 +26,7 @@ STATIC_DCL void FDECL(m_initinv, (struct monst *));
 STATIC_DCL void FDECL(m_init_background, (struct monst*));
 STATIC_DCL struct obj* FDECL(m_inityour, (struct monst*, struct obj*)); 
 STATIC_DCL boolean FDECL(makemon_rnd_goodpos, (struct monst *,
-                                               unsigned long, coord *));
+                                               uint64_t, coord *));
 
 #if 0
 #define m_initsgrp(mtmp, x, y, mmf) m_initgrp(mtmp, x, y, 3, mmf)
@@ -693,7 +693,7 @@ register struct monst *mtmp;
                 aligntyp alignment = mon_aligntyp(mtmp);
                 int aligntyp_major_weapon = LONG_SWORD;
                 int aligntyp_minor_weapon = LONG_SWORD;
-                unsigned long weapon_flags = MKOBJ_FLAGS_FORCE_BASE_MATERIAL;
+                uint64_t weapon_flags = MKOBJ_FLAGS_FORCE_BASE_MATERIAL;
                 uchar material = MAT_NONE;
                 boolean is_major_weapon = !rn2(3) || is_lord(ptr) || is_prince(ptr);
                 switch (alignment)
@@ -2497,7 +2497,7 @@ void
 newmonhp(mon, mndx, level_adjustment, mmflags)
 struct monst *mon;
 int mndx, level_adjustment;
-unsigned long mmflags;
+uint64_t mmflags;
 {
     struct permonst *ptr = &mons[mndx];
     boolean use_maxhp = !!(mmflags & MM_MAX_HP);
@@ -2587,7 +2587,7 @@ newmextra()
 boolean
 makemon_rnd_goodpos(mon, gpflags, cc)
 struct monst *mon;
-unsigned long gpflags;
+uint64_t gpflags;
 coord *cc;
 {
     int tryct = 0;
@@ -2659,7 +2659,7 @@ struct monst*
 makemon(ptr, x, y, mmflags)
 register struct permonst* ptr;
 register int x, y;
-unsigned long mmflags;
+uint64_t mmflags;
 {
     return makemon_limited(ptr, x, y, mmflags, 0UL, 0, 0, 0, 0, 0, 0);
 }
@@ -2668,7 +2668,7 @@ struct monst*
 makemon2(ptr, x, y, mmflags, mmflags2)
 register struct permonst* ptr;
 register int x, y;
-unsigned long mmflags, mmflags2;
+uint64_t mmflags, mmflags2;
 {
     return makemon_limited(ptr, x, y, mmflags, mmflags2, 0, 0, 0, 0, 0, 0);
 }
@@ -2677,7 +2677,7 @@ struct monst*
 makemon_ex(ptr, x, y, mmflags, mmflags2, subtype, npcsubtype, level_adjustment)
 register struct permonst* ptr;
 register int x, y;
-unsigned long mmflags, mmflags2;
+uint64_t mmflags, mmflags2;
 unsigned short subtype;
 int npcsubtype, level_adjustment;
 {
@@ -2695,7 +2695,7 @@ struct monst *
 makemon_limited(ptr, x, y, mmflags, mmflags2, subtype, subtype_female, npcsubtype, level_limit, level_adjustment, alignment)
 register struct permonst *ptr;
 register int x, y;
-unsigned long mmflags, mmflags2;
+uint64_t mmflags, mmflags2;
 unsigned short subtype, subtype_female;
 int npcsubtype;
 int level_limit, level_adjustment;
@@ -2713,7 +2713,7 @@ aligntyp alignment;
     boolean reviving = ((mmflags2 & MM2_REVIVING) != 0);
     boolean randomize_subtype = ((mmflags2 & MM2_RANDOMIZE_SUBTYPE) != 0);
     
-    unsigned long gpflags = (mmflags & MM_IGNOREWATER) ? MM_IGNOREWATER : 0;
+    uint64_t gpflags = (mmflags & MM_IGNOREWATER) ? MM_IGNOREWATER : 0;
     int origin_x = x, origin_y = y;
     
     /* if caller wants random location, do it here */
@@ -2813,7 +2813,7 @@ aligntyp alignment;
     enum special_effect_types spef_type = SPECIAL_EFFECT_SUMMON_MONSTER;
     if (!in_mklev && (mmflags & MM_PLAY_SUMMON_ANIMATION))
     {
-        unsigned long atype = (mmflags & MM_SUMMON_ANIMATION_TYPE_MASK);
+        uint64_t atype = (mmflags & MM_SUMMON_ANIMATION_TYPE_MASK);
         enum sfx_sound_types startsound = SFX_GENERAL_SUMMON_START;
         enum sfx_sound_types sfxsound = SFX_SUMMON_MONSTER;
         if (atype == MM_CHAOTIC_SUMMON_ANIMATION)
@@ -3299,7 +3299,7 @@ struct permonst* ptr;
     else if (is_neuter(ptr))
         return FALSE;
 
-    unsigned long genderfrequence = (ptr->geno & G_GENDER_GEN_MASK);
+    uint64_t genderfrequence = (ptr->geno & G_GENDER_GEN_MASK);
     boolean malerare = ((ptr->geno & G_GENDER_MALE_RARE) != 0);
     int chancepower = genderfrequence != 0UL ? (int)(genderfrequence - G_GENDER_ONE_FOURTH + 1UL) : 0;
     int oneinchance = 2 << chancepower; /* 2 to the power of chancepower */
@@ -3682,7 +3682,7 @@ STATIC_OVL boolean
 mk_gen_ok(mndx, excluded_mvflags, genomask, ispoly, issummon)
 int mndx;
 uchar excluded_mvflags;
-unsigned long genomask;
+uint64_t genomask;
 boolean ispoly, issummon;
 {
     struct permonst *ptr = &mons[mndx];
@@ -3750,7 +3750,7 @@ mkclass_aligned(mclass, spc, atyp, mflags)
 char mclass;
 int spc;
 aligntyp atyp;
-unsigned long mflags;
+uint64_t mflags;
 {
     return mkclass_core(mclass, spc, atyp, 0, mflags);
 }
@@ -3761,7 +3761,7 @@ char mclass;
 int spc;
 aligntyp atyp;
 int difficulty_adj;
-unsigned long mflags;
+uint64_t mflags;
 {
     register int first = 0, last = 0, num = 0;
     int k, nums[SPECIAL_PM + 1]; /* +1: insurance for final return value */
@@ -4755,7 +4755,7 @@ int *seencount;  /* secondary output */
 struct monst*
 make_level_monster(x, y, mmflags, mmflags2)
 register int x, y;
-unsigned long mmflags, mmflags2; 
+uint64_t mmflags, mmflags2; 
 {
     if (level.flags.nmgeninfos <= 0)
     {

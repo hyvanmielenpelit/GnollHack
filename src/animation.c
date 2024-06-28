@@ -1429,7 +1429,7 @@ data_to_replacement_info(signed_glyph, layer, otmp, mtmp, layer_flags, monster_f
 int signed_glyph, layer;
 struct obj* otmp;
 struct monst* mtmp;
-unsigned long layer_flags, monster_flags, missile_flags;
+uint64_t layer_flags, monster_flags, missile_flags;
 uchar missile_material;
 short missile_special_quality;
 {
@@ -1458,8 +1458,8 @@ struct replacement_info info;
     int absglyph = abs(glyph);
     struct obj* otmp = info.object;
     struct monst* mtmp = info.monster;
-    unsigned long layer_flags = info.layer_flags;
-    unsigned long monster_flags = info.monster_flags;
+    uint64_t layer_flags = info.layer_flags;
+    uint64_t monster_flags = info.monster_flags;
     uchar missile_material = info.missile_material;
     short missile_special_quality = info.missile_special_quality;
     boolean is_lit_missile = info.layer == LAYER_MISSILE && (info.missile_flags & MISSILE_FLAGS_LIT) != 0;
@@ -1620,7 +1620,7 @@ struct replacement_info info;
         case REPLACEMENT_ACTION_LEVER_STATE:
         {
             struct trap* ttmp = 0;
-            unsigned long leverstate = 0UL;
+            uint64_t leverstate = 0UL;
             if (isok(x, y) && (ttmp = t_at(x, y)) != 0 && ttmp->ttyp == LEVER && (leverstate = ttmp->tflags & TRAPFLAGS_STATE_MASK) > 0)
             {
                 int glyph_idx = max(0, min((int)replacements[replacement_idx].number_of_tiles, (int)leverstate) - 1);
@@ -3273,7 +3273,7 @@ boolean force_visibility;
         show_glyph_on_layer(x, y, glyph, layer);
         if (anim < 0)
         {
-            unsigned long blflag = 0UL;
+            uint64_t blflag = 0UL;
             switch (layer)
             {
             case LAYER_BACKGROUND_EFFECT:
@@ -3307,7 +3307,7 @@ boolean force_visibility;
             int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
             if (animations[anim].sound_play_frame <= -1)
             {
-                context.spef_intervals_to_wait_until_action[spef_number] = (unsigned long)((int)animations[anim].intervals_between_frames * framenum);
+                context.spef_intervals_to_wait_until_action[spef_number] = (uint64_t)((int)animations[anim].intervals_between_frames * framenum);
             }
             else
             {
@@ -3318,13 +3318,13 @@ boolean force_visibility;
 
                 if (animations[anim].action_execution_frame > animations[anim].sound_play_frame)
                 {
-                    context.spef_intervals_to_wait_until_action[spef_number] = (unsigned long)((int)animations[anim].intervals_between_frames * (int)(animations[anim].action_execution_frame - animations[anim].sound_play_frame));
+                    context.spef_intervals_to_wait_until_action[spef_number] = (uint64_t)((int)animations[anim].intervals_between_frames * (int)(animations[anim].action_execution_frame - animations[anim].sound_play_frame));
                     if (animations[anim].action_execution_frame < framenum)
-                        context.spef_intervals_to_wait_until_end[spef_number] = (unsigned long)((int)animations[anim].intervals_between_frames * (int)(framenum - animations[anim].action_execution_frame));
+                        context.spef_intervals_to_wait_until_end[spef_number] = (uint64_t)((int)animations[anim].intervals_between_frames * (int)(framenum - animations[anim].action_execution_frame));
                 }
                 else
                 {
-                    context.spef_intervals_to_wait_until_action[spef_number] = (unsigned long)((int)animations[anim].intervals_between_frames * (int)(framenum - animations[anim].sound_play_frame));
+                    context.spef_intervals_to_wait_until_action[spef_number] = (uint64_t)((int)animations[anim].intervals_between_frames * (int)(framenum - animations[anim].sound_play_frame));
                     context.spef_intervals_to_wait_until_end[spef_number] = 0UL;
                 }
             }
@@ -3399,53 +3399,53 @@ int intervals;
     /* Reduce animation ending counters */
     if (context.u_action_animation_counter_on && context.u_intervals_to_wait_until_action == 0UL && context.u_intervals_to_wait_until_end > 0UL)
     {
-        if (context.u_intervals_to_wait_until_end <= (unsigned long)intervals)
+        if (context.u_intervals_to_wait_until_end <= (uint64_t)intervals)
             context.u_intervals_to_wait_until_end = 0UL;
         else
-            context.u_intervals_to_wait_until_end -= (unsigned long)intervals;
+            context.u_intervals_to_wait_until_end -= (uint64_t)intervals;
     }
 
     if (context.m_action_animation_counter_on && context.m_intervals_to_wait_until_action == 0UL && context.m_intervals_to_wait_until_end > 0UL)
     {
-        if (context.m_intervals_to_wait_until_end <= (unsigned long)intervals)
+        if (context.m_intervals_to_wait_until_end <= (uint64_t)intervals)
             context.m_intervals_to_wait_until_end = 0UL;
         else
-            context.m_intervals_to_wait_until_end -= (unsigned long)intervals;
+            context.m_intervals_to_wait_until_end -= (uint64_t)intervals;
     }
 
     if (context.explosion_animation_counter_on && context.expl_intervals_to_wait_until_action == 0UL && context.expl_intervals_to_wait_until_end > 0UL)
     {
-        if (context.expl_intervals_to_wait_until_end <= (unsigned long)intervals)
+        if (context.expl_intervals_to_wait_until_end <= (uint64_t)intervals)
             context.expl_intervals_to_wait_until_end = 0UL;
         else
-            context.expl_intervals_to_wait_until_end -= (unsigned long)intervals;
+            context.expl_intervals_to_wait_until_end -= (uint64_t)intervals;
     }
 
     for (i = 0; i < MAX_PLAYED_SPECIAL_EFFECTS; i++)
     {
         if (context.special_effect_animation_counter_on[i] && context.spef_intervals_to_wait_until_action[i] == 0UL && context.spef_intervals_to_wait_until_end[i] > 0UL)
         {
-            if (context.spef_intervals_to_wait_until_end[i] <= (unsigned long)intervals)
+            if (context.spef_intervals_to_wait_until_end[i] <= (uint64_t)intervals)
                 context.spef_intervals_to_wait_until_end[i] = 0UL;
             else
-                context.spef_intervals_to_wait_until_end[i] -= (unsigned long)intervals;
+                context.spef_intervals_to_wait_until_end[i] -= (uint64_t)intervals;
         }
     }
 
     if (context.zap_aggregate_intervals_to_wait_until_action > 0UL)
     {
-        if (context.zap_aggregate_intervals_to_wait_until_action <= (unsigned long)intervals)
+        if (context.zap_aggregate_intervals_to_wait_until_action <= (uint64_t)intervals)
             context.zap_aggregate_intervals_to_wait_until_action = 0UL;
         else
-            context.zap_aggregate_intervals_to_wait_until_action -= (unsigned long)intervals;
+            context.zap_aggregate_intervals_to_wait_until_action -= (uint64_t)intervals;
     }
 
     if (context.zap_aggregate_intervals_to_wait_until_end > 0UL)
     {
-        if (context.zap_aggregate_intervals_to_wait_until_end <= (unsigned long)intervals)
+        if (context.zap_aggregate_intervals_to_wait_until_end <= (uint64_t)intervals)
             context.zap_aggregate_intervals_to_wait_until_end = 0UL;
         else
-            context.zap_aggregate_intervals_to_wait_until_end -= (unsigned long)intervals;
+            context.zap_aggregate_intervals_to_wait_until_end -= (uint64_t)intervals;
     }
 }
 

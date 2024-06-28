@@ -29,11 +29,11 @@ typedef union any {
     uint64_t a_uint64;
     int *a_iptr;
     long *a_lptr;
-    unsigned long *a_ulptr;
+    uint64_t *a_ulptr;
     unsigned *a_uptr;
     const char *a_string;
     int NDECL((*a_nfunc));
-    unsigned long a_mask32; /* used by status highlighting */
+    uint64_t a_mask64; /* used by status highlighting */
     coord a_coord;
     struct nhregion *a_nhregion;
     float a_float;
@@ -57,13 +57,15 @@ enum any_types {
     ANY_UINT,        /* unsigned int */
     ANY_LONG,        /* long */
     ANY_ULONG,       /* unsigned long */
+    ANY_INT64,       /* int64_t */
+    ANY_UINT64,      /* uint64_t */
     ANY_IPTR,        /* pointer to int */
     ANY_UPTR,        /* pointer to unsigned int */
     ANY_LPTR,        /* pointer to long */
     ANY_ULPTR,       /* pointer to unsigned long */
     ANY_STR,         /* pointer to null-terminated char string */
     ANY_NFUNC,       /* pointer to function taking no args, returning int */
-    ANY_MASK32       /* 32-bit mask (stored as unsigned long) */
+    ANY_MASK64       /* 64-bit mask (stored as uint64_t) */
 };
 
 /* menu return list */

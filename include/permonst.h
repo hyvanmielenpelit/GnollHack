@@ -30,7 +30,7 @@ struct attack {
     short mcadj; /* MC and saving throw adjustment*/
     short mlevel; /* level at which the attack is used */
     short range; /* range of ranged attacks */
-    unsigned long aflags; /* any relevant attack flags */
+    uint64_t aflags; /* any relevant attack flags */
     uchar action_tile; /* Action tile used for the attack */
 };
 
@@ -72,7 +72,7 @@ struct permonst {
         mc,                     /* (base) magic cancellation (against magical and supernatural touch attacks) */
         mr;                     /* (base) magic resistance (against all other magic) */
     aligntyp maligntyp;         /* basic monster alignment */
-    unsigned long geno;         /* creation/geno mask value */
+    uint64_t geno;         /* creation/geno mask value */
     struct attack mattk[NATTK]; /* attacks matrix */
     unsigned short cwt,         /* weight of corpse */
         cnutrit;                /* its nutritional value */
@@ -87,10 +87,10 @@ struct permonst {
         intl,                   /* intelligence */
         wis,                    /* wisdom */
         cha;                    /* charisma */
-    unsigned long mresists;     /* resistances */
-    unsigned long mresists2;    /* more resistances */
-    unsigned long mconveys;     /* conveyed by eating */
-    unsigned long mflags1,      /* boolean bitflags */
+    uint64_t mresists;     /* resistances */
+    uint64_t mresists2;    /* more resistances */
+    uint64_t mconveys;     /* conveyed by eating */
+    uint64_t mflags1,      /* boolean bitflags */
         mflags2, mflags3, mflags4, mflags5, mflags6, mflags7, mflags8;       /* more boolean bitflags, if added, remember to update NUM_MFLAGS above */
     int difficulty;        /* toughness (formerly from  makedefs -m) */
 #ifdef TEXTCOLOR

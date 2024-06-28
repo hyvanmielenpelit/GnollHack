@@ -928,7 +928,7 @@ STATIC_DCL struct tm *NDECL(getlt);
 
 STATIC_OVL void
 set_random(seed, fn)
-unsigned long seed;
+uint64_t seed;
 int FDECL((*fn), (int));
 {
     init_isaac64(seed, fn);
@@ -939,7 +939,7 @@ int FDECL((*fn), (int));
 /*ARGSUSED*/
 STATIC_OVL void
 set_random(seed, fn)
-unsigned long seed;
+uint64_t seed;
 int FDECL((*fn), (int)) UNUSED;
 {
     /* the types are different enough here that sweeping the different
@@ -969,7 +969,7 @@ int FDECL((*fn), (int)) UNUSED;
 /* An appropriate version of this must always be provided in
    port-specific code somewhere. It returns a number suitable
    as seed for the random number generator */
-extern unsigned long NDECL(sys_random_seed);
+extern uint64_t NDECL(sys_random_seed);
 
 /*
  * Initializes the random number generator.

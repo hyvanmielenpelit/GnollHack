@@ -51,7 +51,7 @@ STATIC_DCL int NDECL(count_remaining_major_consultations);
 /* rumor size variables are signed so that value -1 can be used as a flag */
 STATIC_VAR long true_rumor_size = 0L, false_rumor_size;
 /* rumor start offsets are unsigned because they're handled via %lx format */
-STATIC_VAR unsigned long true_rumor_start, false_rumor_start;
+STATIC_VAR uint64_t true_rumor_start, false_rumor_start;
 /* rumor end offsets are signed because they're compared with [dlb_]ftell() */
 STATIC_VAR long true_rumor_end, false_rumor_end;
 /* oracles are handled differently from rumors... */
@@ -65,7 +65,7 @@ dlb *fp;
 {
     static const char rumors_header[] = "%d,%ld,%lx;%d,%ld,%lx;0,0,%lx\n";
     int true_count, false_count; /* in file but not used here */
-    unsigned long eof_offset;
+    uint64_t eof_offset;
     char line[BUFSZ];
 
     (void) dlb_fgets(line, sizeof line, fp); /* skip "don't edit" comment */
@@ -222,17 +222,17 @@ rumor_check()
         Sprintf(
             rumor_buf,
             "T start=%06ld (%06lx), end=%06ld (%06lx), size=%06ld (%06lx)",
-            (long) true_rumor_start, true_rumor_start, true_rumor_end,
-            (unsigned long) true_rumor_end, true_rumor_size,
-            (unsigned long) true_rumor_size);
+            (long) true_rumor_start, (long)true_rumor_start, true_rumor_end,
+            true_rumor_end, true_rumor_size,
+            true_rumor_size);
         putstr(tmpwin, 0, rumor_buf);
 
         Sprintf(
             rumor_buf,
             "F start=%06ld (%06lx), end=%06ld (%06lx), size=%06ld (%06lx)",
-            (long) false_rumor_start, false_rumor_start, false_rumor_end,
-            (unsigned long) false_rumor_end, false_rumor_size,
-            (unsigned long) false_rumor_size);
+            (long) false_rumor_start, (long)false_rumor_start, false_rumor_end,
+            false_rumor_end, false_rumor_size,
+            false_rumor_size);
         putstr(tmpwin, 0, rumor_buf);
 
         /*

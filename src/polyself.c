@@ -53,7 +53,7 @@ set_uasmon(VOID_ARGS)
         u.uprops[i].intrinsic &= ~FROM_FORM;
     }
 
-    unsigned long bit = 1UL;
+    uint64_t bit = 1UL;
     for (i = 1; i <= 32; i++)
     {
         int prop = 0;

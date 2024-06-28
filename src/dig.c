@@ -2207,7 +2207,7 @@ struct obj* origobj;
                 }
 #endif
 
-                context.zap_aggregate_intervals_to_wait_until_action = (unsigned long)intervals_to_execution;
+                context.zap_aggregate_intervals_to_wait_until_action = (uint64_t)intervals_to_execution;
             }
 
             //prev_anim_counter_idx = idx;
@@ -2613,7 +2613,7 @@ struct obj* origobj;
                     }
                 }
 #endif
-                context.zap_aggregate_intervals_to_wait_until_action = (unsigned long)intervals_to_execution;
+                context.zap_aggregate_intervals_to_wait_until_action = (uint64_t)intervals_to_execution;
             }
 
             //prev_anim_counter_idx = idx;

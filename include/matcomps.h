@@ -14,7 +14,7 @@ struct materialcomponent {
     int monsterid[MAX_MATCOMP_MONSTER_ALTERNATIVES]; //Used for corpses and tins, -1 if none
     const char* description;
     int amount;
-    unsigned long flags;
+    uint64_t flags;
 };
 
 #define MATCOMP_NO_FLAGS 0x00000000UL

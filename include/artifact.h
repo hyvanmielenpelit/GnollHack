@@ -142,11 +142,11 @@ struct artifact {
     uchar exceptionality;
     uchar mythic_prefix;
     uchar mythic_suffix;
-    unsigned long aflags;  /* artifact flags */
-    unsigned long aflags2; /* artifact flags2 */
-    unsigned long spfx;    /* special effect from wielding/wearing */
-    unsigned long cspfx;   /* special effect just from carrying obj */
-    unsigned long mtype;   /* monster type, symbol, or flag */
+    uint64_t aflags;  /* artifact flags */
+    uint64_t aflags2; /* artifact flags2 */
+    uint64_t spfx;    /* special effect from wielding/wearing */
+    uint64_t cspfx;   /* special effect just from carrying obj */
+    uint64_t mtype;   /* monster type, symbol, or flag */
     int tohit_dice;
     int tohit_diesize;
     int tohit_plus;

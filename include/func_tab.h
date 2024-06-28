@@ -28,7 +28,7 @@ struct ext_func_tab {
     uchar key;
     const char *ef_txt, *ef_desc;
     int NDECL((*ef_funct));
-    unsigned long flags;
+    uint64_t flags;
     const char *f_text;
     const char* getobj_classes;
     const char* getobj_word;

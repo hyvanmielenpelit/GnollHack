@@ -597,7 +597,7 @@ register struct monst *mtmp;
                 if (obj || u.umonnum == PM_TRAPPER
                     || (youmonst.data->mlet == S_EEL
                         && is_pool(u.ux, u.uy))) {
-                    unsigned long save_speflags = 0; /* suppress warning */
+                    uint64_t save_speflags = 0; /* suppress warning */
 
                     if (obj) {
                         save_speflags = obj->speflags;
@@ -5004,7 +5004,7 @@ enum action_tile_types action;
     if (action == ACTION_TILE_NO_ACTION || action == ACTION_TILE_DEATH)
         return TRUE;
 
-    unsigned long tile_mflag = (1UL << ((unsigned long)action - 1UL));
+    uint64_t tile_mflag = ((uint64_t)1 << ((uint64_t)action - 1UL));
     boolean has_action_tile = (mtmp->data->mflags5 & tile_mflag) != 0UL;
     return has_action_tile;
 }

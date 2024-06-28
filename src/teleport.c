@@ -28,7 +28,7 @@ boolean
 goodpos(x, y, mtmp, gpflags)
 int x, y;
 struct monst *mtmp;
-unsigned long gpflags;
+uint64_t gpflags;
 {
     struct permonst *mdat = (struct permonst *) 0;
     boolean ignorewater = ((gpflags & MM_IGNOREWATER) != 0);
@@ -133,7 +133,7 @@ enexto_core(cc, xx, yy, mdat, entflags)
 coord *cc;
 register xchar xx, yy;
 struct permonst *mdat;
-unsigned long entflags;
+uint64_t entflags;
 {
 #define MAX_GOOD 15
     coord good[MAX_GOOD], *good_ptr;

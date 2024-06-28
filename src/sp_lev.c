@@ -1829,7 +1829,7 @@ struct mkroom *croom;
     if (MON_AT(x, y) && enexto(&cc, x, y, pm))
         x = cc.x, y = cc.y;
 
-    unsigned long mmflags = 0UL;
+    uint64_t mmflags = 0UL;
     if (m->maxhp)
         mmflags |= MM_MAX_HP;
     if (m->use_boss_hostility)
@@ -2354,7 +2354,7 @@ struct mkroom *croom;
         otmp = mkobj_at(RANDOM_CLASS, x, y, !named);
     else if (o->id != -1)
     {
-        unsigned long mkflags = o->open ? MKOBJ_FLAGS_OPEN_COFFIN : 0UL;
+        uint64_t mkflags = o->open ? MKOBJ_FLAGS_OPEN_COFFIN : 0UL;
         mkflags |= o->corpsenm > NON_PM ? MKOBJ_FLAGS_MONSTER_SPECIFIED : 0UL;
         
         otmp = mksobj_at_with_flags(o->id, x, y, TRUE, !named, -1, mowner, MAT_NONE, 0L, 0L, mkflags);
@@ -3037,7 +3037,7 @@ struct mkroom* croom;
     schar x = -1, y = -1;
     schar t_x = -1, t_y = -1;
     coord tm, portal_tm;
-    unsigned long pflags = a->activated ? TRAPFLAGS_ACTIVATED : TRAPFLAGS_NONE;
+    uint64_t pflags = a->activated ? TRAPFLAGS_ACTIVATED : TRAPFLAGS_NONE;
     if (a->level_teleporter)
     {
         pflags |= TRAPFLAGS_LEVEL_TELEPORTER;
@@ -3980,7 +3980,7 @@ struct sp_coder *coder;
     int soundtyp = (int)OV_i(soundtyp_opvar);
     int soundid = (int)OV_i(soundid_opvar);
     int soundparam = (int)OV_i(soundparam_opvar);
-    unsigned long msgflags = (unsigned long)OV_i(msgflags_opvar);
+    uint64_t msgflags = (uint64_t)OV_i(msgflags_opvar);
 
     levmsg = (struct lev_msg*)alloc(sizeof(struct lev_msg));
     if (levmsg)
@@ -4369,7 +4369,7 @@ struct sp_coder *coder;
             break;
         case SP_O_V_SPEFLAGS:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpobj.speflags = (unsigned long)OV_i(parm);
+                tmpobj.speflags = (uint64_t)OV_i(parm);
             break;
         case SP_O_V_MATERIAL:
             if (OV_typ(parm) == SPOVAR_INT)
@@ -4557,7 +4557,7 @@ struct sp_coder* coder;
 
         case SP_L_V_EFFECT_FLAG:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmplever.effect_flags = (unsigned long)OV_i(parm);
+                tmplever.effect_flags = (uint64_t)OV_i(parm);
             break;
 
         case SP_L_V_COORD:
@@ -7923,10 +7923,10 @@ sp_level_coder(lvl)
 sp_lev *lvl;
 {
     static const char nhFunc[] = "sp_level_coder";
-    unsigned long exec_opcodes = 0;
+    uint64_t exec_opcodes = 0;
     int tmpi;
     long room_stack = 0;
-    unsigned long max_execution = SPCODER_MAX_RUNTIME;
+    uint64_t max_execution = SPCODER_MAX_RUNTIME;
     struct sp_coder *coder =
         (struct sp_coder *) alloc(sizeof (struct sp_coder));
 

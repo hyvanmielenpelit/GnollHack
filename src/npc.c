@@ -476,7 +476,7 @@ int mtype;
         }
     }
 
-    unsigned long extraflags = (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_FEMALE) != 0  ? MM_FEMALE : Inhell || (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_MALE) != 0 ? MM_MALE : 0UL; /* Since there is only one soundset for unusual creature types */
+    uint64_t extraflags = (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_FEMALE) != 0  ? MM_FEMALE : Inhell || (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_MALE) != 0 ? MM_MALE : 0UL; /* Since there is only one soundset for unusual creature types */
 
     npc = makemon_ex(&mons[npc_montype], npc_loc_x, npc_loc_y, MM_ENPC | extraflags, 0UL, 0, npctype, 0);
     if(!npc)

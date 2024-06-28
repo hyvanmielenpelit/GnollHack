@@ -188,7 +188,7 @@ enum kill_hints
 
 #define NUM_KILL_HINT_ULONGS 2
 struct u_hint {
-    unsigned long kill_hints_given[NUM_KILL_HINT_ULONGS]; //One bit per kill hint enum
+    uint64_t kill_hints_given[NUM_KILL_HINT_ULONGS]; //One bit per kill hint enum
 
     boolean ate_rotten_corpse; 
     boolean ate_tainted_corpse;
@@ -324,7 +324,7 @@ struct Role {
     short questarti; /* index (ART_) of quest artifact (questpgr.c) */
 
     /*** Bitmasks ***/
-    unsigned long allow;                  /* bit mask of allowed variations */
+    uint64_t allow;                  /* bit mask of allowed variations */
 #define ROLE_ALIGNMENT_TILES  0x80000000UL     /* has alignment-specific tiles */
 #define ROLE_GENDMASK         0x70000000UL     /* allowable genders */
 #define ROLE_MALE             0x10000000UL
@@ -390,8 +390,8 @@ struct Race {
         zombienum; /* PM_ as a zombie */
 
     /*** Bitmasks ***/
-    unsigned long allow;    /* bit mask of allowed variations */
-    unsigned long selfmask, /* your own race's bit mask */
+    uint64_t allow;    /* bit mask of allowed variations */
+    uint64_t selfmask, /* your own race's bit mask */
         lovemask,   /* bit mask of always peaceful */
         hatemask;   /* bit mask of always hostile */
 
@@ -427,7 +427,7 @@ struct Gender {
     const char *him;      /* him/her/it */
     const char *his;      /* his/her/its */
     const char *filecode; /* file code */
-    unsigned long allow;  /* equivalent ROLE_ mask */
+    uint64_t allow;  /* equivalent ROLE_ mask */
 };
 #define ROLE_GENDERS 2    /* number of permitted player genders
                              increment to 3 if you allow neuter roles */
@@ -451,7 +451,7 @@ struct Align {
     const char *noun;     /* law/balance/chaos */
     const char *adj;      /* lawful/neutral/chaotic */
     const char *filecode; /* file code */
-    unsigned long allow;  /* equivalent ROLE_ mask */
+    uint64_t allow;  /* equivalent ROLE_ mask */
     aligntyp value;       /* equivalent A_ value */
 };
 #define ROLE_ALIGNS 3     /* number of permitted player alignments */
@@ -483,7 +483,7 @@ struct you {
                            +: turn right, -: turn left */
     int ulevel;         /* 1 to MAXULEV */
     int ulevelmax;
-    unsigned long utrap;    /* trap timeout */
+    uint64_t utrap;    /* trap timeout */
     uchar utraptype; /* defined if utrap nonzero. one of utraptypes */
     char urooms[5];         /* rooms (roomno + 3) occupied now */
     char urooms0[5];        /* ditto, for previous position */

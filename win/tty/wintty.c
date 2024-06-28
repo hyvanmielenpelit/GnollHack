@@ -3794,7 +3794,7 @@ struct layer_info layers;
     boolean reverse_on = FALSE;
     boolean underline_on = FALSE;
     int color;
-    unsigned long special;
+    uint64_t special;
 
     int signed_glyph = layers.glyph;
     int glyph = abs(signed_glyph);
@@ -4118,10 +4118,10 @@ extern winid WIN_STATUS;
 
 #ifdef STATUS_HILITES
 #ifdef TEXTCOLOR
-STATIC_DCL int FDECL(condcolor, (long, unsigned long *));
+STATIC_DCL int FDECL(condcolor, (long, uint64_t *));
 #endif
-STATIC_DCL int FDECL(condattr, (long, unsigned long *));
-static unsigned long *tty_colormasks;
+STATIC_DCL int FDECL(condattr, (long, uint64_t *));
+static uint64_t *tty_colormasks;
 static long tty_condition_bits;
 static struct tty_status_fields tty_status[2][MAXBLSTATS]; /* 2: NOW,BEFORE */
 static int hpbar_percent, hpbar_color;
@@ -4267,7 +4267,7 @@ void
 tty_status_update(fldidx, ptr, chg, percent, color, colormasks)
 int fldidx, chg UNUSED, percent, color;
 genericptr_t ptr;
-unsigned long *colormasks;
+uint64_t *colormasks;
 {
     int attrmask;
     long *condptr = (long *) ptr;
@@ -4684,7 +4684,7 @@ check_windowdata(VOID_ARGS)
 STATIC_OVL int
 condcolor(bm, bmarray)
 long bm;
-unsigned long *bmarray;
+uint64_t *bmarray;
 {
     int i;
 
@@ -4706,7 +4706,7 @@ unsigned long *bmarray;
 STATIC_OVL int
 condattr(bm, bmarray)
 long bm;
-unsigned long *bmarray;
+uint64_t *bmarray;
 {
     int attr = 0;
     int i;

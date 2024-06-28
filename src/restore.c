@@ -645,7 +645,7 @@ unsigned int *stuckid, *steedid;
     struct context_info *newgamecontext = (struct context_info*)malloc(sizeof(struct context_info));; /* all 0, but has some pointers */
     struct obj *otmp, *tmp_bc;
     char timebuf[15];
-    unsigned long uid;
+    uint64_t uid;
     boolean defer_perm_invent;
     Strcpy(debug_buf_2, "restgamestate");
     Strcpy(debug_buf_3, "restgamestate");
@@ -653,7 +653,7 @@ unsigned int *stuckid, *steedid;
 
     mread(fd, (genericptr_t) &uid, sizeof uid);
     if (SYSOPT_CHECK_SAVE_UID
-        && uid != (unsigned long) getuid()) { /* strange ... */
+        && uid != (uint64_t) getuid()) { /* strange ... */
         /* for wizard mode, issue a reminder; for others, treat it
            as an attempt to cheat and refuse to restore this file */
         pline("Saved game was not yours.");
@@ -2094,7 +2094,7 @@ const char *name;
 {
     int rlen;
     struct savefile_info sfi;
-    unsigned long compatible;
+    uint64_t compatible;
     boolean verbose = name ? TRUE : FALSE, reslt = FALSE;
 
     if (!(reslt = uptodate(fd, name)))

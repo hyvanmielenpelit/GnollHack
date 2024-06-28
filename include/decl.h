@@ -321,7 +321,7 @@ struct breed_definition {
     const char* breed_name;
     const char* short_coat_color;
     const char* long_coat_color;
-    unsigned long breed_flags;
+    uint64_t breed_flags;
 };
 
 E const struct breed_definition dog_breed_definitions[NUM_DOG_BREEDS];
@@ -329,7 +329,7 @@ E const struct breed_definition cat_breed_definitions[NUM_CAT_BREEDS];
 
 E char preferred_pet;
 
-E NEARDATA unsigned long n_game_recoveries;
+E NEARDATA uint64_t n_game_recoveries;
 
 E const char *occtxt; /* defined when occupation != NULL */
 E enum object_soundset_types occsoundset; /* defined when occupation != NULL */
@@ -670,7 +670,7 @@ E const char cmdnotavail[];
 
 E const char* const hofe_titles[3];
 
-E unsigned long file_end_marker;
+E uint64_t file_end_marker;
 
 E char debug_buf_1[BUFSIZ];
 E char debug_buf_2[BUFSIZ];

@@ -743,7 +743,7 @@ struct monst* mattacker;
                 || ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG) && (ptr->mflags3 & objects[otyp].oc_target_permissions))
                 || ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M4_FLAG) && (ptr->mflags4 & objects[otyp].oc_target_permissions))
                 || ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M5_FLAG) && (ptr->mflags5 & objects[otyp].oc_target_permissions))
-                || (((objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M1_FLAG | O3_TARGET_PERMISSION_IS_M2_FLAG | O3_TARGET_PERMISSION_IS_M3_FLAG | O3_TARGET_PERMISSION_IS_M4_FLAG)) == 0) && ((unsigned long)ptr->mlet == objects[otyp].oc_target_permissions))
+                || (((objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M1_FLAG | O3_TARGET_PERMISSION_IS_M2_FLAG | O3_TARGET_PERMISSION_IS_M3_FLAG | O3_TARGET_PERMISSION_IS_M4_FLAG)) == 0) && ((uint64_t)ptr->mlet == objects[otyp].oc_target_permissions))
                 || ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_CHAOTIC) && mon->data->maligntyp < 0)
                 || ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_NEUTRAL) && mon->data->maligntyp == 0)
                 || ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_LAWFUL) && mon->data->maligntyp > 0)

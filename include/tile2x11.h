@@ -11,12 +11,12 @@
  * Header for the x11 tile map.
  */
 typedef struct {
-    unsigned long version;
-    unsigned long ncolors;
-    unsigned long tile_width;
-    unsigned long tile_height;
-    unsigned long ntiles;
-    unsigned long per_row;
+    uint64_t version;
+    uint64_t ncolors;
+    uint64_t tile_width;
+    uint64_t tile_height;
+    uint64_t ntiles;
+    uint64_t per_row;
 } x11_header;
 
 /* how wide each row in the tile file is, in tiles */

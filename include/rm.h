@@ -429,7 +429,7 @@ struct decoration_type_definition {
     schar color;
     schar color_filled;
     enum location_soundset_types soundset;
-    unsigned long dflags;
+    uint64_t dflags;
 };
 
 extern NEARDATA const struct decoration_type_definition decoration_type_definitions[MAX_DECORATIONS];
@@ -726,7 +726,7 @@ struct door_subtype_definition {
     const char* short_description;
     enum obj_material_types material;
     enum location_soundset_types soundset;
-    unsigned long flags;
+    uint64_t flags;
 };
 
 #define DSTFLAGS_NONE                                       0x00000000
@@ -813,7 +813,7 @@ struct tree_subtype_definition {
     short fruit_drop_p;
     short burning_subtype;
     short burnt_subtype;
-    unsigned long tree_flags;
+    uint64_t tree_flags;
 };
 
 #define TREE_FLAGS_NONE                     0x00000000

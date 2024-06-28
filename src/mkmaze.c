@@ -29,7 +29,7 @@ STATIC_DCL void NDECL(setup_waterlevel);
 STATIC_DCL void NDECL(unsetup_waterlevel);
 STATIC_DCL void FDECL(check_ransacked, (char *));
 STATIC_DCL void FDECL(migr_booty_item, (int, const char *));
-STATIC_DCL void FDECL(migrate_orc, (struct monst *, unsigned long));
+STATIC_DCL void FDECL(migrate_orc, (struct monst *, uint64_t));
 STATIC_DCL void NDECL(stolen_booty);
 
 /* adjust a coordinate one step in the specified direction */
@@ -670,7 +670,7 @@ STATIC_VAR const char *orcfruit[] = { "paddle cactus", "dwarven root" };
 void
 migrate_orc(mtmp, mflags)
 struct monst *mtmp;
-unsigned long mflags;
+uint64_t mflags;
 {
     int nlev, max_depth, cur_depth;
     d_level dest;
@@ -739,7 +739,7 @@ const char *gang;
 {
     struct obj *otmp;
 
-    otmp = mksobj_migr_to_species(otyp, (unsigned long) M2_ORC, FALSE, FALSE);
+    otmp = mksobj_migr_to_species(otyp, (uint64_t) M2_ORC, FALSE, FALSE);
     if (otmp && gang) {
         new_uoname(otmp, strlen(gang) + 1); /* removes old name if present */
         Strcpy(UONAME(otmp), gang);
