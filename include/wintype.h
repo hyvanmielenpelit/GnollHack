@@ -7,6 +7,8 @@
 #ifndef WINTYPE_H
 #define WINTYPE_H
 
+#include "integer.h"
+
 typedef int winid; /* a window identifier */
 
 /* generic parameter - must not be any larger than a pointer */
@@ -22,6 +24,9 @@ typedef union any {
     long a_long;
     unsigned long a_ulong;
     long long a_longlong;
+    unsigned long long a_ulonglong;
+    int64_t a_int64;
+    uint64_t a_uint64;
     int *a_iptr;
     long *a_lptr;
     unsigned long *a_ulptr;

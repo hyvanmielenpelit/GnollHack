@@ -364,7 +364,7 @@ void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,
     if(iflags.use_menu_color && menu_style_allows_menu_coloring(last_menu_style))
         get_menu_coloring(str, &color, &attr);
 #endif
-    lib_callbacks.callback_add_menu(wid, glyph, (int64_t)identifier->a_longlong, accelerator, group_accel, attr, color, str ? buf : 0, presel);
+    lib_callbacks.callback_add_menu(wid, glyph, identifier->a_int64, accelerator, group_accel, attr, color, str ? buf : 0, presel);
 }
 
 void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
@@ -386,7 +386,7 @@ void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
         set_obj_glyph(info.object);
 
     struct objclassdata ocdata = get_objclassdata(info.object);
-    lib_callbacks.callback_add_extended_menu(wid, glyph, (int64_t)identifier->a_longlong, accelerator, group_accel, attr, color, str ? buf : 0, presel,
+    lib_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_int64, accelerator, group_accel, attr, color, str ? buf : 0, presel,
         (info.object ? (!(info.menu_flags & MENU_FLAGS_COUNT_DISALLOWED) ? (int)info.object->quan : 0) : ((info.menu_flags & MENU_FLAGS_USE_NUM_ITEMS) ? info.num_items : 0)),
         (uint64_t)(info.object ? info.object->o_id : 0), 
         (uint64_t)(info.monster ? info.monster->m_id : 0),
@@ -428,7 +428,7 @@ int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected)
         *selected = (MENU_ITEM_P*)malloc(sizeof(MENU_ITEM_P) * cnt);
         for (i = 0; i < cnt; i++)
         {
-            (*selected)[i].item.a_longlong = *picklist++;
+            (*selected)[i].item.a_int64 = *picklist++;
             (*selected)[i].count = (long)*picklist++;
         }
     }
@@ -1476,7 +1476,7 @@ void lib_delete_ambient_ghsound(struct soundsource_t* soundsource)
     if (!soundsource)
         return;
 
-    lib_callbacks.callback_delete_ambient_ghsound((unsigned long long)soundsource->ambient_ghsound_ptr);
+    lib_callbacks.callback_delete_ambient_ghsound((uint64_t)soundsource->ambient_ghsound_ptr);
 
 }
 
@@ -1484,7 +1484,7 @@ void lib_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
 {
     if (!soundsource)
         return;
-    lib_callbacks.callback_set_ambient_ghsound_volume((unsigned long long)soundsource->ambient_ghsound_ptr, (double)soundsource->heard_volume);
+    lib_callbacks.callback_set_ambient_ghsound_volume((uint64_t)soundsource->ambient_ghsound_ptr, (double)soundsource->heard_volume);
 
     return;
 }
