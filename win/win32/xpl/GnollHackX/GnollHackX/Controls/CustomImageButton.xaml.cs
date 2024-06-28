@@ -63,6 +63,7 @@ namespace GnollHackX.Controls
                     canvas.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush();
                     canvas.PointerEntered += Canvas_PointerEntered;
                     canvas.PointerExited += Canvas_PointerExited;
+                    canvas.PointerCanceled += Canvas_PointerExited;
                 }
             };
             customButton.HandlerChanged += (object sender, EventArgs args) =>
@@ -73,6 +74,7 @@ namespace GnollHackX.Controls
                     button.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush();
                     button.PointerEntered += Canvas_PointerEntered;
                     button.PointerExited += Canvas_PointerExited;
+                    button.PointerCanceled += Canvas_PointerExited;
                 }
             };
 #endif
@@ -225,11 +227,5 @@ namespace GnollHackX.Controls
             return new Color(rawColor.R * GHConstants.NonHoveringColorMultiplier, rawColor.G * GHConstants.NonHoveringColorMultiplier, rawColor.B * GHConstants.NonHoveringColorMultiplier, rawColor.A);
 #endif
         }
-
-        //public void Redraw()
-        //{
-        //    customCanvasView.InvalidateSurface();
-        //}
-
     }
 }

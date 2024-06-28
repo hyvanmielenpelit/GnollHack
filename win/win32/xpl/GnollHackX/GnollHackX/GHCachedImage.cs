@@ -157,21 +157,6 @@ namespace GnollHackX
             return anim > 0;
         }
 
-        //private GHAspect _aspect = GHAspect.AspectFit;
-        //public GHAspect Aspect
-        //{
-        //    get { return _aspect;  }
-        //    set 
-        //    { 
-        //        if (_aspect != value) 
-        //        { 
-        //            _aspect = value; 
-        //            InvalidateSurface(); 
-        //        } 
-        //    }
-        //}
-
-
         public static readonly BindableProperty AspectProperty = BindableProperty.Create(nameof(Aspect), typeof(GHAspect), typeof(GHCachedImage), GHAspect.AspectFit, propertyChanged: OnAspectChanged);
         public GHAspect Aspect
         {
