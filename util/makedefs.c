@@ -1111,10 +1111,10 @@ rumors_failure:
  *
  */
 #define IGNORED_FEATURES                 \
-    (0L | (1L << 6)  /* MAIL */          \
-     | (1L << 19)    /* TRUE, previously SCORE_ON_BOTL */ \
-     | (1L << 27)    /* ZEROCOMP */      \
-     | (1L << 28)    /* RLECOMP */       \
+    ((uint64_t)0 | ((uint64_t)1 << 6)  /* MAIL */          \
+     | ((uint64_t)1 << 19)    /* TRUE, previously SCORE_ON_BOTL */ \
+     | ((uint64_t)1 << 27)    /* ZEROCOMP */      \
+     | ((uint64_t)1 << 28)    /* RLECOMP */       \
      )
 
 static void
@@ -1411,30 +1411,30 @@ do_date()
     ul_sfx = "L";
 #endif
     if (date_via_env)
-        Fprintf(ofp, "#define SOURCE_DATE_EPOCH (%lu%s) /* via getenv() */\n",
-                (unsigned long) clocktim, ul_sfx);
+        Fprintf(ofp, "#define SOURCE_DATE_EPOCH (%llu%s) /* via getenv() */\n",
+                (unsigned long long) clocktim, ul_sfx);
     Fprintf(ofp, "#define BUILD_DATE \"%s\"\n", cbuf);
     if (date_via_env)
         Fprintf(ofp, "#define BUILD_TIME SOURCE_DATE_EPOCH\n");
     else
-        Fprintf(ofp, "#define BUILD_TIME (%lu%s)\n",
-                (unsigned long) clocktim, ul_sfx);
+        Fprintf(ofp, "#define BUILD_TIME (%llu%s)\n",
+                (unsigned long long) clocktim, ul_sfx);
     Fprintf(ofp, "\n");
-    Fprintf(ofp, "#define VERSION_NUMBER 0x%08lx%s\n", (unsigned long)version.incarnation,
+    Fprintf(ofp, "#define VERSION_NUMBER 0x%08llx%s\n", (unsigned long long)version.incarnation,
             ul_sfx);
-    Fprintf(ofp, "#define EARLIEST_COMPATIBLE_VERSION_NUMBER 0x%08lx%s\n", (unsigned long)version.version_compatibility,
+    Fprintf(ofp, "#define EARLIEST_COMPATIBLE_VERSION_NUMBER 0x%08llx%s\n", (unsigned long long)version.version_compatibility,
         ul_sfx);
-    Fprintf(ofp, "#define VERSION_FEATURES 0x%08lx%s\n", (unsigned long)version.feature_set,
+    Fprintf(ofp, "#define VERSION_FEATURES 0x%08llx%s\n", (unsigned long long)version.feature_set,
             ul_sfx);
 #ifdef IGNORED_FEATURES
-    Fprintf(ofp, "#define IGNORED_FEATURES 0x%08lx%s\n",
-            (unsigned long) IGNORED_FEATURES, ul_sfx);
+    Fprintf(ofp, "#define IGNORED_FEATURES 0x%08llx%s\n",
+            (unsigned long long) IGNORED_FEATURES, ul_sfx);
 #endif
-    Fprintf(ofp, "#define VERSION_SANITY1 0x%08lx%s\n", (unsigned long)version.entity_count,
+    Fprintf(ofp, "#define VERSION_SANITY1 0x%08llx%s\n", (unsigned long long)version.entity_count,
             ul_sfx);
-    Fprintf(ofp, "#define VERSION_SANITY2 0x%08lx%s\n", (unsigned long)version.struct_sizes1,
+    Fprintf(ofp, "#define VERSION_SANITY2 0x%08llx%s\n", (unsigned long long)version.struct_sizes1,
             ul_sfx);
-    Fprintf(ofp, "#define VERSION_SANITY3 0x%08lx%s\n", (unsigned long)version.struct_sizes2,
+    Fprintf(ofp, "#define VERSION_SANITY3 0x%08llx%s\n", (unsigned long long)version.struct_sizes2,
             ul_sfx);
     Fprintf(ofp, "#define VERSION_SHORTSIZE %u\n", version.short_size);
     Fprintf(ofp, "#define VERSION_INTSIZE %u\n", version.int_size);
