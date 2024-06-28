@@ -32,7 +32,7 @@ namespace GnollHackX.Controls
             customButton.Pressed += (object sender, EventArgs args) =>
             {
                 _isPressed = true;
-                if(UseVaryingTextColors)
+                if (UseVaryingTextColors)
                     customButton.TextColor = !IsEnabled ? DisabledTextColor : _isPressed ? SelectedTextColor : NormalTextColor;
                 customCanvasView.InvalidateSurface();
             };
@@ -106,9 +106,19 @@ namespace GnollHackX.Controls
         public static readonly BindableProperty NormalTextColorProperty = BindableProperty.Create(nameof(NormalTextColorProperty), typeof(Color), typeof(CustomImageButton), GHColors.White);
         public static readonly BindableProperty SelectedTextColorProperty = BindableProperty.Create(nameof(SelectedTextColorProperty), typeof(Color), typeof(CustomImageButton), GHColors.White);
         public static readonly BindableProperty DisabledTextColorProperty = BindableProperty.Create(nameof(DisabledTextColorProperty), typeof(Color), typeof(CustomImageButton), GHColors.Gray);
-        public static readonly BindableProperty TextColorProperty = BindableProperty.Create(nameof(TextColorProperty), typeof(Color), typeof(CustomImageButton), GHColors.White);
+        public static readonly BindableProperty TextColorProperty = BindableProperty.Create(nameof(TextColorProperty), typeof(Color), typeof(CustomImageButton), GHColors.White, propertyChanged: OnTextColorChanged);
         public static readonly BindableProperty UseVaryingTextColorsProperty = BindableProperty.Create(nameof(UseVaryingTextColorsProperty), typeof(bool), typeof(CustomImageButton), false);
         public static readonly BindableProperty UseVaryingBackgroundImagesProperty = BindableProperty.Create(nameof(UseVaryingBackgroundImages), typeof(bool), typeof(CustomImageButton), true);
+
+        private static void OnTextColorChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            CustomImageButton cib = bindable as CustomImageButton;
+            if (cib != null && newValue is Color)
+            {
+                Color newColor = (Color)newValue;
+                cib.customButton.TextColor = cib._isHoveringEnabled && (!cib._isHovering || !cib.IsEnabled) ? cib.NonHoveringColorAdjustment(newColor) : newColor;
+            }
+        }
 
         public double ButtonRelativeWidth
         {
@@ -173,7 +183,7 @@ namespace GnollHackX.Controls
         public bool UseVaryingTextColors
         {
             get { return (bool)GetValue(CustomImageButton.UseVaryingTextColorsProperty); }
-            set { SetValue(CustomImageButton.UseVaryingTextColorsProperty, value); TextColor = value ? (!IsEnabled ? DisabledTextColor : _isPressed ? SelectedTextColor : NormalTextColor) : NormalTextColor; }
+            set { SetValue(CustomImageButton.UseVaryingTextColorsProperty, value); if (value) { TextColor = !IsEnabled ? DisabledTextColor : _isPressed ? SelectedTextColor : NormalTextColor; } }
         }
         public bool UseVaryingBackgroundImages
         {
