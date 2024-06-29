@@ -194,6 +194,21 @@ namespace GnollHackX.Pages.MainScreen
 
             PortVersionLabel.Text = GetAssemblyInformationalVersion(Assembly.GetEntryAssembly()); //This can also be AppInfo.Current.VersionString, but it is longer and the build number
             PortBuildLabel.Text = AppInfo.Current.BuildString;
+
+            if(GHApp.DeviceGPUs.Count > 1)
+            {
+                string activeGPU = GHApp.GetActiveGPU();
+                ActiveGPULabel.Text = activeGPU + " (" + GHApp.DeviceGPUs.Count + " GPUs)";
+            }
+            else
+            {
+                ActiveGPULabel.Text = "";
+                ActiveGPULabel.IsVisible = false;
+                ActiveGPUTitleLabel.IsVisible = false;
+                VersionInfoGrid.Children.Remove(ActiveGPULabel);
+                VersionInfoGrid.Children.Remove(ActiveGPUTitleLabel);
+                ActiveGPURowDefinition.Height = 0;
+            }
 #else
             WinRTLabel.Text = "";
             WinRTLabel.IsVisible = false;
@@ -222,6 +237,13 @@ namespace GnollHackX.Pages.MainScreen
             VersionInfoGrid.Children.Remove(WinAppSDKLabel);
             VersionInfoGrid.Children.Remove(WinAppSDKTitleLabel);
             WinAppSDKRowDefinition.Height = 0;
+
+            ActiveGPULabel.Text = "";
+            ActiveGPULabel.IsVisible = false;
+            ActiveGPUTitleLabel.IsVisible = false;
+            VersionInfoGrid.Children.Remove(ActiveGPULabel);
+            VersionInfoGrid.Children.Remove(ActiveGPUTitleLabel);
+            ActiveGPURowDefinition.Height = 0;
 
             PortVersionLabel.Text = VersionTracking.CurrentVersion;
             PortBuildLabel.Text = VersionTracking.CurrentBuild;

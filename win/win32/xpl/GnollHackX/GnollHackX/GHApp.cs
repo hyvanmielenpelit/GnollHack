@@ -3,6 +3,7 @@
 using GnollHackM;
 #if WINDOWS
 using GnollHackM.Platforms.Windows;
+using System.Management;
 #endif
 #else
 using Xamarin.Essentials;
@@ -6490,6 +6491,114 @@ namespace GnollHackX
             return topPage == page;
         }
 
+        public static readonly List<DeviceGPU> DeviceGPUs = new List<DeviceGPU>();
+        public static void ListGPUs()
+        {
+#if WINDOWS && GNH_MAUI
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
+            var mos = searcher.Get();
+            foreach (ManagementObject mo in mos)
+            {
+                string? minRefreshRate = mo.Properties["MinRefreshRate"]?.Value?.ToString();
+                string? maxRefreshRate = mo.Properties["MaxRefreshRate"]?.Value?.ToString();
+                int minRefreshInt = -1;
+                if (string.IsNullOrWhiteSpace(minRefreshRate))
+                    minRefreshInt = -2;
+                else if (!int.TryParse(minRefreshRate, out minRefreshInt))
+                    minRefreshInt = -3;
+                int maxRefreshInt = -1;
+                if (string.IsNullOrWhiteSpace(maxRefreshRate))
+                    maxRefreshInt = -2;
+                else if (!int.TryParse(maxRefreshRate, out maxRefreshInt))
+                    maxRefreshInt = -3;
+                string? description = mo.Properties["Description"]?.Value?.ToString();
+                string? adapterDACType = mo.Properties["AdapterDACType"]?.Value?.ToString();
+                bool isCurrent = !string.IsNullOrWhiteSpace(minRefreshRate);
+                bool isIntegratedGraphics = adapterDACType == "Internal";
+                DeviceGPUs.Add(new DeviceGPU(description ?? "", isCurrent, isIntegratedGraphics, minRefreshInt, maxRefreshInt));
+            }
+#endif
+        }
+
+#if WINDOWS
+        public static string GetActiveGPU()
+        {
+            string res = "";
+            var t2 = Windows.ApplicationModel.Package.Current.Id.FamilyName + "!App";
+
+            var gpuPref = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\DirectX\UserGpuPreferences");
+            if (gpuPref != null)
+            {
+                var gnollHackGpuPref = gpuPref.GetValue(t2)?.ToString();
+                if (!string.IsNullOrEmpty(gnollHackGpuPref))
+                {
+                    var gnollHackGpuPrefSplit = gnollHackGpuPref.Trim(';').Split('=', StringSplitOptions.RemoveEmptyEntries);
+                    if (gnollHackGpuPrefSplit.Length == 2)
+                    {
+                        int gnollHackGpuPrefInt = 0;
+                        bool ok = int.TryParse(gnollHackGpuPrefSplit[1], out gnollHackGpuPrefInt);
+                        if (ok)
+                        {
+                            if (gnollHackGpuPrefInt == 0)
+                            {
+                                res = "Auto";
+                            }
+                            else if (gnollHackGpuPrefInt == 1)
+                            {
+                                res = "Integrated";
+                            }
+                            else if (gnollHackGpuPrefInt == 2)
+                            {
+                                res = "Dedicated";
+                            }
+                            else
+                            {
+                                res = "Unknown";
+                            }
+                        }
+                        else
+                        {
+                            res = "[Choice error]";
+                        }
+                    }
+                    else
+                    {
+                        res = "[Preference error]";
+                    }
+                }
+                else
+                {
+                    res = "[Preference empty]";
+                }
+            }
+            else
+            {
+                res = "Not set";
+            }
+            return res;
+        }
+#endif
+
+    }
+
+    public class DeviceGPU
+    {
+        public string Description { get; set; } = "";
+        public bool IsCurrent { get; set; } = false;
+        public bool IsIntegratedGraphics { get; set; } = false;
+        public int MinRefreshRate { get; set; } = -1;
+        public int MaxRefreshRate { get; set; } = -1;
+
+        public DeviceGPU() 
+        {
+
+        }
+        public DeviceGPU(string description, bool isCurrent, bool isIntegratedGraphics, int minRefreshRate, int maxRefreshRate)
+        {
+            Description = description;
+            IsCurrent = isCurrent;
+            IsIntegratedGraphics = isIntegratedGraphics;
+        }
     }
 
     class SecretsFileSizeComparer : IComparer<SecretsFile>

@@ -827,6 +827,7 @@ namespace GnollHackX
                             skiasharpverstr = fullverid;
                     }
                 }
+                GHApp.ListGPUs();
             }
             catch (Exception ex)
             {

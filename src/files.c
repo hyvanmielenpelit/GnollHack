@@ -103,7 +103,7 @@ char lock[PL_NSIZ + 27]; /* long enough for username+-+name+.99 */
 #endif
 #endif
 
-#if defined(UNIX) || defined(__BEOS__)
+#if defined(UNIX) || defined(__BEOS__) || defined(GNH_MOBILE)
 #define SAVESIZE (PL_NSIZ + 13) /* save/99999player.e */
 #else
 #ifdef VMS
@@ -121,7 +121,7 @@ char lock[PL_NSIZ + 27]; /* long enough for username+-+name+.99 */
 #ifdef MICRO
 #define SAVE_EXTENSION ".sav"
 #endif
-#ifdef WIN32
+#if defined (WIN32) && !defined(GNH_MOBILE)
 #define SAVE_EXTENSION ".GnollHack-saved-game"
 #endif
 #endif
@@ -1336,7 +1336,7 @@ boolean regularize_it;
     }
     Strcat(SAVEF, SAVE_EXTENSION);
 #else
-#if defined(WIN32)
+#if defined(WIN32) && !defined(GNH_MOBILE)
     {
         static const char okchars[] =
             "*ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_-.";
@@ -1352,7 +1352,12 @@ boolean regularize_it;
         Sprintf(SAVEF, "%s%s", encodedfnamebuf, SAVE_EXTENSION);
     }
 #else  /* not VMS or MICRO or WIN32 */
-    Sprintf(SAVEF, "save/%d%s", (int) getuid(), plname);
+
+    char dir_separator = '/';
+#ifdef GNH_WIN
+    dir_separator = '\\';
+#endif
+    Sprintf(SAVEF, "save%c%d%s", dir_separator, (int)getuid(), plname);
     if (regularize_it)
         regularize(SAVEF + 5); /* avoid . or / in name */
 #endif /* WIN32 */
@@ -1723,7 +1728,7 @@ delete_running_files(VOID_ARGS)
 {
     int lev, fd;
     char errbuf[BUFSZ];
-#if defined(UNIX)
+#if defined(UNIX) || defined(GNH_MOBILE)
     Sprintf(lock, "%d%s", (int)getuid(), plname);
 #elif defined(WIN32)
     char fnamebuf[BUFSZ], encodedfnamebuf[BUFSZ];
@@ -2328,6 +2333,9 @@ get_saved_games()
 #ifdef WIN32
     {
         char *foundfile;
+        char  usedfoundfile[4096];
+        char  foundfileprefix[32];
+
         const char *fq_save;
         char fq_save_ebuf[BUFSZ];
         char fq_save_ibuf[BUFSZ];
@@ -2339,8 +2347,10 @@ get_saved_games()
         set_savefile_name(FALSE);
 #ifdef GNH_WIN
         Sprintf(fq_lock_rbuf, "%d*.0", getuid());
+        Strcpy(foundfileprefix, "save\\");
 #else
         Strcpy(fq_lock_rbuf, "*-*.0");
+        Strcpy(foundfileprefix, "");
 #endif
 #if defined(ZLIB_COMP)
         Strcat(SAVEF, COMPRESS_EXTENSION);
@@ -2392,19 +2402,20 @@ get_saved_games()
                 if (findfirst(fq_save)) {
                     j = n = 0;
                     do {
-                        if (is_backup_savefile_name(foundfile))
+                        Sprintf(usedfoundfile, "%s%s", foundfileprefix, foundfile);
+                        if (is_backup_savefile_name(usedfoundfile))
                             continue;
-                        if (is_imported_backup_savefile_name(foundfile))
+                        if (is_imported_backup_savefile_name(usedfoundfile))
                             continue;
                         char* r;
-                        r = plname_from_file(foundfile, &gamestats);
+                        r = plname_from_file(usedfoundfile, &gamestats);
                         if (r)
                         {
                             if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
                                 continue;
                             if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
                                 continue;
-                            result[j++] = newsavegamedata(r, foundfile, gamestats, FALSE, FALSE, FALSE);
+                            result[j++] = newsavegamedata(r, usedfoundfile, gamestats, FALSE, FALSE, FALSE);
                         }
                         ++n;
                     } while (findnext());
@@ -2415,17 +2426,18 @@ get_saved_games()
                 if (findfirst(fq_save_ebuf)) {
                     n2 = 0;
                     do {
-                        if (is_imported_backup_savefile_name(foundfile))
+                        Sprintf(usedfoundfile, "%s%s", foundfileprefix, foundfile);
+                        if (is_imported_backup_savefile_name(usedfoundfile))
                             continue;
                         char* r;
-                        r = plname_from_file(foundfile, &gamestats);
+                        r = plname_from_file(usedfoundfile, &gamestats);
                         if (r)
                         {
                             if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
                                 continue;
                             if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
                                 continue;
-                            result[j++] = newsavegamedata(r, foundfile, gamestats, FALSE, TRUE, FALSE);
+                            result[j++] = newsavegamedata(r, usedfoundfile, gamestats, FALSE, TRUE, FALSE);
                         }
                         ++n2;
                     } while (findnext());
@@ -2437,15 +2449,16 @@ get_saved_games()
                     n3 = 0;
                     do {
                         char* r;
-                        r = plname_from_file(foundfile, &gamestats);
+                        Sprintf(usedfoundfile, "%s%s", foundfileprefix, foundfile);
+                        r = plname_from_file(usedfoundfile, &gamestats);
                         if (r)
                         {
                             if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
                                 continue;
                             if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
                                 continue;
-                            boolean isimportederror = is_imported_error_savefile_name(foundfile);
-                            result[j++] = newsavegamedata(r, foundfile, gamestats, FALSE, isimportederror, TRUE);
+                            boolean isimportederror = is_imported_error_savefile_name(usedfoundfile);
+                            result[j++] = newsavegamedata(r, usedfoundfile, gamestats, FALSE, isimportederror, TRUE);
                         }
                         ++n3;
                     } while (findnext());
@@ -2457,14 +2470,15 @@ get_saved_games()
                     n4 = 0;
                     do {
                         char* r;
-                        r = plname_from_running(foundfile, &gamestats);
+                        Sprintf(usedfoundfile, "%s%s", foundfileprefix, foundfile);
+                        r = plname_from_running(usedfoundfile, &gamestats);
                         if (r)
                         {
                             if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
                                 continue;
                             if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
                                 continue;
-                            result[j++] = newsavegamedata(r, foundfile, gamestats, TRUE, FALSE, FALSE);
+                            result[j++] = newsavegamedata(r, usedfoundfile, gamestats, TRUE, FALSE, FALSE);
                         }
                         ++n4;
                     } while (findnext());
