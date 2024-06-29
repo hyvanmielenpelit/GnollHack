@@ -1227,7 +1227,8 @@ struct rm {
     short special_quality;   /* For doors, the special quality of the key that unlocks the door */
 
     uchar seenv;             /* seen vector */
-    unsigned short flags;    /* extra information for typ */
+    /* unsigned int to make sure bitfields are aligned properly across platforms */
+    unsigned flags;          /* extra information for typ */
     Bitfield(horizontal, 1); /* wall/door/etc is horiz. (more typ info) */
     Bitfield(lit, 1);        /* speed hack for lit rooms */
     Bitfield(waslit, 1);     /* remember if a location was lit */

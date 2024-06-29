@@ -10,15 +10,6 @@ namespace GnollHackM
 namespace GnollHackX
 #endif
 {
-#if GNH_MAUI
-//#if WINDOWS
-//    using GHlong = int;
-//    using GHulong = uint;
-//#else
-    using GHlong = long;
-    using GHulong = ulong;
-//#endif
-#endif
     /* Colors */
     public enum NhColor
     {
@@ -395,13 +386,7 @@ namespace GnollHackX
     {
         public IntPtr replacement_name;
         public sbyte number_of_tiles;
-        public
-#if GNH_MAUI
-            GHulong 
-#else
-            ulong
-#endif
-            replacement_events;
+        public ulong replacement_events;
         public int replacement_action; /* hard-coded - defines which tile to use and when */
         public int general_autodraw; /* For zero-tile replacements */
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.MaxTilesPerReplacement)]
@@ -413,13 +398,7 @@ namespace GnollHackX
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.MaxTilesPerReplacement)]
         public int[] tile_autodraw;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.MaxTilesPerReplacement)]
-        public
-#if GNH_MAUI
-            GHulong[] 
-#else
-            ulong[]
-#endif
-            tile_flags;
+        public ulong[] tile_flags;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -432,15 +411,9 @@ namespace GnollHackX
         public int source_glyph2;
         public int source_glyph3;
         public int source_glyph4;
-#if GNH_MAUI
-        public GHulong parameter1;
-        public GHulong parameter2;
-        public GHulong parameter3;
-#else
         public ulong parameter1;
         public ulong parameter2;
         public ulong parameter3;
-#endif
     }
 
     public enum layer_types
@@ -479,13 +452,7 @@ namespace GnollHackX
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = (int)layer_types.MAX_LAYERS)]
         public int[] layer_gui_glyphs;
 
-        public
-#if GNH_MAUI
-            GHulong
-#else
-            ulong
-#endif
-            layer_flags;
+        public ulong layer_flags;
         public uint m_id;  /* check that the monster found at the square is the one that is supposed to be drawn by comparing their m_ids */
         public uint o_id;  /* this is the o_id of the possibly moving boulder */
 
@@ -502,39 +469,15 @@ namespace GnollHackX
         public int monster_maxhp;
         public int rider_glyph;
         public int rider_gui_glyph;
-        public
-#if GNH_MAUI
-            GHulong
-#else
-            ulong
-#endif
-            status_bits;
-        public
-#if GNH_MAUI
-            GHulong
-#else
-            ulong
-#endif
-            condition_bits;
+        public ulong status_bits;
+        public ulong condition_bits;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.NUM_BUFF_BIT_ULONGS)]
-        public
-#if GNH_MAUI
-            GHulong[]
-#else
-            ulong[]
-#endif 
-            buff_bits;
+        public ulong[] buff_bits;
 
         public sbyte wsegdir;
         public sbyte reverse_prev_wsegdir;
-        public
-#if GNH_MAUI
-            GHulong
-#else
-            ulong
-#endif 
-            monster_flags;
+        public ulong monster_flags;
 
         public short object_height;
 
@@ -547,13 +490,7 @@ namespace GnollHackX
         public byte missile_mythic_suffix;
         public byte missile_eroded;
         public byte missile_eroded2;
-        public
-#if GNH_MAUI
-            GHulong
-#else
-            ulong
-#endif
-            missile_flags;
+        public ulong missile_flags;
         public short missile_height;
         public sbyte missile_origin_x;
         public sbyte missile_origin_y;
@@ -907,24 +844,12 @@ namespace GnollHackX
         public sbyte ox0, oy0;
         public short otyp; /* object class number */
         public uint owt;
-        public
-#if GNH_MAUI
-            GHlong
-#else
-            long
-#endif
-            quan; /* number of items */
+        public long quan; /* number of items */
 
         public short enchantment; /* Always set to zero by cancellation */
         public short charges; /* number of charges for wand or charged tool ( >= -1 ), always set to -1/0 by cancellation */
         public short special_quality; /* item-specific special quality, e.g., the amount of wetness of a towel, number of candles attached to candelabrum, not affected by cancellation */
-        public
-#if GNH_MAUI
-            GHulong
-#else
-            ulong
-#endif
-            speflags; /* anything else that might be going on with an item, not affected by cancellation */
+        public ulong speflags; /* anything else that might be going on with an item, not affected by cancellation */
         public sbyte oclass;    /* object class */
         public sbyte invlet;    /* designation in inventory */
         public short oartifact; /* artifact array index */
@@ -1126,20 +1051,8 @@ namespace GnollHackX
         public int corpsenm;         /* type of corpse is mons[corpsenm] */
         public int usecount;           /* overloaded for various things that tally */
         public uint oeaten;        /* nutrition left in food, if partly eaten */
-        public
-#if GNH_MAUI
-            GHlong
-#else
-            long
-#endif
-            age;               /* creation date */
-        public
-#if GNH_MAUI
-            GHlong
-#else
-            long
-#endif
-            owornmask;
+        public long age;               /* creation date */
+        public long owornmask;
         public short cooldownleft;       /* item cooldown left before it can be used again*/
         public short repowerleft;       /* artifact cooldown left before its invoke ability can be used again*/
         public short detectioncount;    /* monsters detected for WARN_ORC and other similar properties */
@@ -1233,36 +1146,12 @@ namespace GnollHackX
         public int mhp;
         public int mhpmax;
 
-        public
-#if GNH_MAUI
-            GHulong
-#else
-            ulong
-#endif
-            status_bits;
-        public
-#if GNH_MAUI
-            GHulong
-#else
-            ulong
-#endif
-            condition_bits;
+        public ulong status_bits;
+        public ulong condition_bits;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.NUM_BUFF_BIT_ULONGS)]
-        public
-#if GNH_MAUI
-            GHulong[] 
-#else
-            ulong[]
-#endif
-            buff_bits;
+        public ulong[] buff_bits;
 
-        public
-#if GNH_MAUI
-            GHulong
-#else
-            ulong
-#endif
-            monster_flags;
+        public ulong monster_flags;
     }
 
     [Flags]
