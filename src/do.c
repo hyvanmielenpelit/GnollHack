@@ -8853,8 +8853,8 @@ death_hint(VOID_ARGS)
 {
     if ((flags.force_hint || context.game_difficulty <= flags.max_hint_difficulty) && killer.name[0] && killer.hint_idx > 0)
     {
-        uint64_t kbit = (uint64_t)1 << (killer.hint_idx % 32);
-        uint64_t* hints_given = &u.uhint.kill_hints_given[min(NUM_KILL_HINT_ULONGS - 1, killer.hint_idx / 32)];
+        uint64_t kbit = (uint64_t)1 << (killer.hint_idx % 64);
+        uint64_t* hints_given = &u.uhint.kill_hints_given[min(NUM_KILL_HINT_ULONGS - 1, killer.hint_idx / 64)];
         if (((*hints_given) & kbit) == 0)
         {
             *hints_given |= kbit;

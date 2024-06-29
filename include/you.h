@@ -96,21 +96,28 @@ struct u_event {
     Bitfield(bovine_portal_hint, 1); /* bovine portal hint given */
     Bitfield(hellish_pastures_entered, 1); /* entered the Hellish Pastures */
     Bitfield(quantum_portal_hint, 1); /* quantum portal hint given */
+
     Bitfield(large_circular_dgn_entered, 1); /* entered the Large Circular Dungeon */
     Bitfield(polymorph_trap_warning, 1); /* polymorph trap warning given */
     Bitfield(uhand_of_elbereth, 2); /* became Hand of Elbereth */
     Bitfield(ukilled_wizard, 1);    /* killed the wiz */
     Bitfield(uvibrated, 1);         /* stepped on "vibrating square" */
     Bitfield(ascended, 1);          /* has offered the Amulet */
-
     Bitfield(role_achievement_1, 1);  /* passed the first requirement of the role achievement */
-    Bitfield(role_achievement_2, 1);  /* passed the second requirement of the role achievement */
 
+    Bitfield(role_achievement_2, 1);  /* passed the second requirement of the role achievement */
     Bitfield(elbereth_known, 1);      /* has learned of Elbereth */
     Bitfield(invocation_ritual_known, 1); /* has learned how to conduct the invocation ritual from the Oracle */
     Bitfield(heard_of_invocation_ritual, 1); /* has heard of the invocation ritual and the items necessary for it; enables the quest update */
-
-    unsigned int ranks_attained;
+#ifdef BITFIELDS
+    unsigned reserved;
+#else
+    uchar reserved1;
+    uchar reserved2;
+    uchar reserved3;
+    uchar reserved4;
+#endif
+    unsigned ranks_attained;
 };
 
 struct u_achieve {
@@ -123,16 +130,17 @@ struct u_achieve {
     Bitfield(enter_gehennom, 1); /* entered Gehennom (or Valley) by any means */
     Bitfield(ascended, 1); /* not quite the same as u.uevent.ascended */
     Bitfield(mines_luckstone, 1); /* got a luckstone at end of mines */
+
     Bitfield(finish_sokoban, 1);  /* obtained the sokoban prize */
     Bitfield(killed_medusa, 1);
     Bitfield(killed_yacc, 1);
-
     /* Minor Achievements */
     Bitfield(consulted_oracle, 1);
     Bitfield(read_discworld_novel, 1);
     Bitfield(entered_gnomish_mines, 1);
     Bitfield(entered_mine_town, 1);
     Bitfield(entered_shop, 1);
+
     Bitfield(entered_temple, 1);
     Bitfield(entered_sokoban, 1);
     Bitfield(entered_bigroom, 1);
@@ -147,6 +155,15 @@ struct u_achieve {
     Bitfield(role_achievement, 1); /* Special achievement for the role */
     Bitfield(crowned, 1); /* Became Hand of Elbereth, Envoy of Balance, or Glory of Arioch */
     Bitfield(killed_demogorgon, 1);
+
+#ifdef BITFIELDS
+    unsigned reserved;
+#else
+    uchar reserved1;
+    uchar reserved2;
+    uchar reserved3;
+    uchar reserved4;
+#endif
 };
 
 enum kill_hints
@@ -188,7 +205,7 @@ enum kill_hints
 
 #define NUM_KILL_HINT_ULONGS 2
 struct u_hint {
-    uint64_t kill_hints_given[NUM_KILL_HINT_ULONGS]; //One bit per kill hint enum
+    uint64_t kill_hints_given[NUM_KILL_HINT_ULONGS]; //One bit per kill hint enum, now up to 128
 
     boolean ate_rotten_corpse; 
     boolean ate_tainted_corpse;
@@ -203,7 +220,6 @@ struct u_hint {
     boolean ate_poisonous_food;
     boolean ate_sickening_food;
     boolean ate_hallucinating_food;
-
     boolean poisoned_by_fountain;
     boolean drank_potion_of_sickness;
     boolean drank_potion_of_poison;
@@ -214,7 +230,6 @@ struct u_hint {
     boolean being_drowned;
     boolean being_strangled_by_item;
     boolean being_strangled_by_monster;
-
     boolean paralyzed_by_thrown_potion;
     boolean fell_asleep_by_thrown_potion;
     boolean fell_asleep_by_trap;
@@ -224,41 +239,45 @@ struct u_hint {
     boolean damaged_by_passive_electricity;
     boolean monster_revived;
     boolean got_grabbed;
-
     boolean stuff_got_stolen;
     boolean stuff_got_stolen_by_harpy;
     boolean paralyzed_by_floating_eye; //Passive defense
+
     boolean paralyzed_by_cube; //Passive defense
     boolean paralyzed_by_monster;
     boolean got_hungry;
     boolean got_weak;
     boolean got_fainting;
-
     boolean low_hit_points;
     boolean got_mobbed;
     boolean got_digested;
-    boolean brain_got_eaten;
 
+    boolean brain_got_eaten;
     boolean items_destroyed_by_shock;
     boolean items_destroyed_by_fire;
     boolean items_destroyed_by_cold;
-
     boolean bag_destroyed_by_cancellation;
     boolean got_burdened;
-
     boolean got_food_poisoning;
     boolean got_mummy_rot;
+
     boolean got_sliming;
     boolean got_stoning;
-
     boolean got_stunned;
     boolean got_terminal_illness;
     boolean pet_got_mummy_rot;
-
     boolean elbereth;
     boolean secret_doors_and_corridors;
     boolean closed_for_inventory;
+
+    boolean reserved1;
+    boolean reserved2;
+    boolean reserved3;
     boolean reserved4;
+    boolean reserved5;
+    boolean reserved6;
+    boolean reserved7;
+    boolean reserved8;
 };
 
 struct u_realtime {
@@ -285,7 +304,21 @@ struct u_conduct {     /* number of times... */
     int64_t polyselfs;    /* transformed yourself */
     int64_t wishes;       /* used a wish */
     int64_t wisharti;     /* wished for an artifact */
-    /* genocides already listed at end of game */
+
+    /* New conducts */
+    int64_t genocides;     /* genocided a monster */
+    int64_t elbereths;     /* wrote Elbereth */
+    int64_t conflicts;     /* caused conflict */
+
+    /* Reserved */
+    int64_t reserved1;    /* reserved for new conducts */
+    int64_t reserved2;    /* reserved for new conducts */
+    int64_t reserved3;    /* reserved for new conducts */
+    int64_t reserved4;    /* reserved for new conducts */
+    int64_t reserved5;    /* reserved for new conducts */
+    int64_t reserved6;    /* reserved for new conducts */
+    int64_t reserved7;    /* reserved for new conducts */
+    int64_t reserved8;    /* reserved for new conducts */
 };
 
 struct u_roleplay {

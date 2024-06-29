@@ -4984,7 +4984,7 @@ struct monst *mtmp;
     if (is_u)
         u.uundetected = undetected;
     else
-        mtmp->mundetected = undetected;
+        mtmp->mundetected = undetected ? TRUE : FALSE; /* Since mundetected is not a boolean (either a bitfield / unsigned int or uchar) */
 
     newsym(x, y);
 

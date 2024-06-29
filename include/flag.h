@@ -142,10 +142,6 @@ struct flag {
     boolean tournament_mode;
 #define TournamentMode flags.tournament_mode
 
-    /* Emergency reserved booleans to make non-save-game-breaking changes */
-    boolean reserved_bool2;
-    boolean reserved_bool3;
-
     int animation_frame_interval_in_milliseconds; /* custom animation frame interval in milliseconds. If 0, then the default at 25 milliseconds is used. Delay output is twice this amount, defaulting at 50 milliseconds */
     int move_interval_in_milliseconds; /* custom move step interval in milliseconds. If 0, then the default at 50 milliseconds is used. Delay output is twice this amount, defaulting at 50 milliseconds */
     int crawl_interval_in_milliseconds; /* custom crawl step interval in milliseconds. If 0, then the default at 250 milliseconds is used. Delay output is twice this amount, defaulting at 50 milliseconds */
@@ -246,7 +242,15 @@ struct flag {
     boolean non_scoring; /* The game has been, for example, loaded from an imported save file and has thereby become non-scoring */
     uchar auto_bag_in_style;
 
+    /* Emergency reserved booleans to make non-save-game-breaking changes */
+    boolean reserved_bool1;
+    boolean reserved_bool2;
+    boolean reserved_bool3;
+    boolean reserved_bool4;
+
     /* Emergency reserved variables to make non-save-game-breaking changes */
+    char reserved_char1;
+    char reserved_char2;
     short reserved_short1;
     short reserved_short2;
     int reserved_int1;

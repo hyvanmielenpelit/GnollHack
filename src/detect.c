@@ -28,7 +28,7 @@ STATIC_PTR void FDECL(findone, (int, int, genericptr_t));
 STATIC_PTR void FDECL(openone, (int, int, genericptr_t));
 STATIC_DCL int FDECL(mfind0, (struct monst *, BOOLEAN_P));
 STATIC_DCL int FDECL(reveal_terrain_getglyph, (int, int, int,
-                                               unsigned, int, int));
+                                               BOOLEAN_P, int, int));
 
 /* bring hero out from underwater or underground or being engulfed;
    return True iff any change occurred */
@@ -2199,7 +2199,7 @@ sokoban_detect()
 STATIC_DCL int
 reveal_terrain_getglyph(x, y, full, swallowed, default_glyph, which_subset)
 int x, y, full;
-unsigned swallowed;
+boolean swallowed;
 int default_glyph, which_subset;
 {
     int glyph, levl_glyph;
@@ -2402,7 +2402,7 @@ int which_subset; /* when not full, whether to suppress objs and/or traps */
         boolean keep_traps = (which_subset & TER_TRP) !=0,
                 keep_objs = (which_subset & TER_OBJ) != 0,
                 keep_mons = (which_subset & TER_MON) != 0; /* not used */
-        unsigned swallowed = u.uswallow; /* before unconstrain_map() */
+        boolean swallowed = u.uswallow; /* before unconstrain_map() */
 
         if (unconstrain_map())
             docrt();
