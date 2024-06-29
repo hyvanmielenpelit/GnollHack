@@ -2566,8 +2566,8 @@ recalc_mapseen()
     mapseen *mptr;
     struct monst *mtmp = (struct monst*)0;
     struct cemetery *bp, **bonesaddr;
-    unsigned i, ridx;
-    int x, y, ltyp, count, atmp;
+    unsigned i, ridx, count;
+    int x, y, ltyp, atmp;
 
     /* Should not happen in general, but possible if in the process
      * of being booted from the quest.  The mapseen object gets

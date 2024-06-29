@@ -234,6 +234,7 @@ typedef struct mapseen {
         Bitfield(nbrazier, 2);
         Bitfield(nsignpost, 2);
         Bitfield(ntree, 2);
+
         Bitfield(nmagicportal, 2);
         Bitfield(nvibratingsquare, 2);
         Bitfield(water, 2);
@@ -244,12 +245,13 @@ typedef struct mapseen {
         Bitfield(nshop, 2);
         Bitfield(ntemple, 2);
         Bitfield(nsmithy, 2);
+
         Bitfield(nnpcroom, 2);
         /* altar alignment; MSA_NONE if there is more than one and
            they aren't all the same */
         Bitfield(msalign, 2);
-
         Bitfield(shoptype, 5);
+
         unsigned npcroomtype;
         unsigned fountaintype;
     } feat;
