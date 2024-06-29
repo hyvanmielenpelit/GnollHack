@@ -5,12 +5,14 @@
 /*-Copyright (c) Pasi Kallinen, 2018. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
-#include "general.h"
-#include "action.h"
-#include "soundset.h"
-
 #ifndef OBJCLASS_H
 #define OBJCLASS_H
+
+#include "action.h"
+#include "config.h"
+#include "general.h"
+#include "integer.h"
+#include "soundset.h"
 
 enum multigen_types {
     MULTIGEN_SINGLE     = 0,
@@ -415,25 +417,25 @@ struct objclass {
     short oc_name_idx;              /* index of actual name */
     short oc_descr_idx;             /* description when name unknown */
     char *oc_uname;                 /* called by user */
-    boolean oc_name_known;     /* discovered */
-    boolean oc_merge;          /* merge otherwise equal objects */
-    boolean oc_uses_known;     /* obj->known affects full description;
+    uchar oc_name_known;     /* discovered */
+    uchar oc_merge;          /* merge otherwise equal objects */
+    uchar oc_uses_known;     /* obj->known affects full description;
                                        otherwise, obj->dknown and obj->bknown
                                        tell all, and obj->known should always
                                        be set for proper merging behavior. */
-    boolean oc_pre_discovered; /* Already known at start of game;
+    uchar oc_pre_discovered; /* Already known at start of game;
                                        won't be listed as a discovery. */
-    boolean oc_magic;          /* inherently magical object */
+    uchar oc_magic;          /* inherently magical object */
     uchar oc_enchantable;           /* Uses +X statistic (enchantment) */
     uchar oc_charged;               /* may have +n or (n) charges */
     uchar oc_recharging;            /* recharging type */
-    boolean oc_unique;         /* special one-of-a-kind object */
-    boolean oc_nowish;         /* cannot wish for this object */
+    uchar oc_unique;         /* special one-of-a-kind object */
+    uchar oc_nowish;         /* cannot wish for this object */
 
-    boolean oc_big;
+    uchar oc_big;
 #define oc_bimanual oc_big /* for weapons & tools used as weapons */
 #define oc_bulky oc_big    /* for armor */
-    boolean oc_tough; /* hard gems/rings */
+    uchar oc_tough; /* hard gems/rings */
 
     uchar oc_dir;
 #define DIR_NOTDEF 0     /* for wands/spells:      not defined */
@@ -481,8 +483,6 @@ struct objclass {
 #define is_damageable(otmp)                                        \
     (is_rustprone(otmp) || is_flammable(otmp) || is_rottable(otmp) \
      || is_corrodeable(otmp))
-
-    /* 3 free bits */
 
     schar oc_subtyp;             /* armors: armor category, weapons: weapon category, miscellaneous magic items: subclass, etc.*/
     schar oc_skill;              /* Skills of weapons, spellbooks, tools, gems */

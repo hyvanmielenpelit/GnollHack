@@ -474,11 +474,11 @@ typedef struct {
     packed_coord coord;
     xchar x, y, class, appear;
     schar peaceful, asleep;
-    int64_t female, invis, cancelled, revived, avenge, fleeing, blinded,
+    schar female, invis, cancelled, revived, avenge, fleeing, blinded,
         paralyzed, stunned, confused, waitforu, protector, maxhp, level_adjustment, keep_original_invent,
         level_boss, use_boss_hostility;
     int64_t seentraps;
-    int64_t has_invent;
+    schar has_invent;
 } monster;
 
 typedef struct {

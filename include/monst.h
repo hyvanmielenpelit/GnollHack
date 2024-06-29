@@ -138,7 +138,8 @@ struct monst {
     short mstaying;         /* commanded to stay in place, similar to frozen, but commanded */
     short mcarrying;
 
-    short mrevived;         /* Number of times revived */
+    /* unsigned int to align the following bitfields reliably across platforms */
+    unsigned mrevived;         /* Number of times revived */
 
     /* Bitfield flags -- Keep all bitfields in a row */
     Bitfield(mflee, 1);     /* fleeing */
@@ -155,7 +156,6 @@ struct monst {
                                   * trapper, piercer, eel)
                                   */
     Bitfield(mcloned, 1);   /* has been cloned from another */
-
     Bitfield(mavenge, 1);   /* did something to deserve retaliation */
     Bitfield(mpeaceful, 1); /* does not attack unprovoked */
     Bitfield(mtrapped, 1);  /* trapped in a pit, web or bear trap */
@@ -166,7 +166,6 @@ struct monst {
     Bitfield(ispriest, 1);  /* is an aligned priest or high priest */
     Bitfield(issmith, 1);   /* is a smith */
     Bitfield(isnpc, 1);     /* is a non-player character */
-
     Bitfield(issummoned, 1);                       /* is a summoned monster */
     Bitfield(disregards_enemy_strength, 1);        /* the monster attacks too strong enemies */
     Bitfield(disregards_own_health, 1);            /* the monster attacks even when its health is low */
@@ -175,20 +174,14 @@ struct monst {
     Bitfield(isfaithful, 1);                       /* being separate from the owner does not reduce tameness */
     Bitfield(isprotector, 1);                      /* attacks hostiles if itself is being peaceful */
     Bitfield(ispartymember, 1);                    /* a peaceful monster that has joined your party (e.g., does not give you the money or items back from its inventory) */
-    /* 4 free bits to 32 bit integer */
-    /* The following splits bitfields so they fit in one int both in 32 bit and 64 bit systems */
-    uchar  talkstate_item_trading;                 /* 1 = has said introduction, 2 = has said non-repeatable secondary question, 3 = has said first repeatable confirmatory question,  4 = has said second repeatable confirmatory question */
-    uchar  talkstate_special;                      /* Special index, e.g., for Aleax */
-    short  general_special_index;                  /* Special general purpose index */
     Bitfield(leaves_no_corpse, 1);                 /* this particular monster does not leave a corpse */
     Bitfield(delayed_killer_by_you, 1);            /* is petrification or other delayed killer initiated by you */
     Bitfield(u_know_mname, 1);                     /* you know the monster's name */
     Bitfield(told_rumor, 1);                       /* the monster had told the player at least one rumor */
     Bitfield(facing_right, 1);                     /* the monster is facing right */
-
-    Bitfield(iswiz, 1);     /* is the Wizard of Yendor */
-    Bitfield(wormno, 5);    /* at most 31 worms on any level */
-#define MAX_NUM_WORMS 32    /* should be 2^(wormno bitfield size) */
+    Bitfield(iswiz, 1);                             /* is the Wizard of Yendor */
+    Bitfield(wormno, 5);                            /* at most 31 worms on any level */
+#define MAX_NUM_WORMS 32                            /* should be 2^(wormno bitfield size) */
     Bitfield(heads_tamed, 2); /* How many Cerberos's heads have been tamed; anything else for other monsters */
     Bitfield(boss_fight_started, 1); /* boss fight has already been announced */
     Bitfield(special_talk_flag1, 1); /* general purpose flag NPC talk */
@@ -199,7 +192,10 @@ struct monst {
     Bitfield(special_talk_flag6, 1); /* general purpose flag NPC talk */
     Bitfield(special_talk_flag7, 1); /* general purpose flag NPC talk */
     Bitfield(special_talk_flag8, 1); /* general purpose flag NPC talk */
-    /* 10 free bits to 32-bit integer */
+
+    short  general_special_index;                  /* Special general purpose index */
+    uchar  talkstate_item_trading;                 /* 1 = has said introduction, 2 = has said non-repeatable secondary question, 3 = has said first repeatable confirmatory question,  4 = has said second repeatable confirmatory question */
+    uchar  talkstate_special;                      /* Special index, e.g., for Aleax */
 
     uint64_t mon_flags; /* General easy-to-add flags for monsters for things not covered by the above bitfields */
 #define MON_FLAGS_NONE                          0x00000000UL

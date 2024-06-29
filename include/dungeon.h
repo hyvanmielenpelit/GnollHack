@@ -12,11 +12,11 @@
 
 typedef struct d_flags {     /* dungeon/level type flags */
     uchar tileset;
-    boolean has_tileset; 
-    boolean town;       /* is this a town? (levels only) */
-    boolean hellish;    /* is this part of hell? */
-    boolean maze_like;  /* is this a maze? */
-    boolean rogue_like; /* is this an old-fashioned presentation? */
+    uchar has_tileset;
+    uchar town;       /* is this a town? (levels only) */
+    uchar hellish;    /* is this part of hell? */
+    uchar maze_like;  /* is this a maze? */
+    uchar rogue_like; /* is this an old-fashioned presentation? */
     uchar align;      /* dungeon alignment. */
     uchar unused;     /* etc... */
 } d_flags;

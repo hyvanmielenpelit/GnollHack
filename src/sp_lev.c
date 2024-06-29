@@ -2089,7 +2089,7 @@ struct mkroom *croom;
             mtmp->mprops[CANCELLED] = m->cancelled;
         }
         if (m->revived)
-            mtmp->mrevived = (short)m->revived;
+            mtmp->mrevived = (unsigned)m->revived;
         if (m->avenge)
             mtmp->mavenge = 1;
         if (m->stunned)
@@ -4096,71 +4096,71 @@ struct sp_coder *coder;
             break;
         case SP_M_V_FEMALE:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpmons.female = OV_i(parm);
+                tmpmons.female = (schar)OV_i(parm);
             break;
         case SP_M_V_WAITFORU:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpmons.waitforu = OV_i(parm);
+                tmpmons.waitforu = (schar)OV_i(parm);
             break;
         case SP_M_V_KEEP_ORIGINAL_INVENTORY:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpmons.keep_original_invent = OV_i(parm);
+                tmpmons.keep_original_invent = (schar)OV_i(parm);
             break;
         case SP_M_V_LEVEL_BOSS:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpmons.level_boss = OV_i(parm);
+                tmpmons.level_boss = (schar)OV_i(parm);
             break;
         case SP_M_V_BOSS_HOSTILITY:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpmons.use_boss_hostility = OV_i(parm);
+                tmpmons.use_boss_hostility = (schar)OV_i(parm);
             break;
         case SP_M_V_PROTECTOR:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpmons.protector = OV_i(parm);
+                tmpmons.protector = (schar)OV_i(parm);
             break;
         case SP_M_V_MAXHP:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpmons.maxhp = OV_i(parm);
+                tmpmons.maxhp = (schar)OV_i(parm);
             break;
         case SP_M_V_LEVEL_ADJUSTMENT:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpmons.level_adjustment = OV_i(parm);
+                tmpmons.level_adjustment = (schar)OV_i(parm);
             break;
         case SP_M_V_INVIS:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpmons.invis = OV_i(parm);
+                tmpmons.invis = (schar)OV_i(parm);
             break;
         case SP_M_V_CANCELLED:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpmons.cancelled = OV_i(parm);
+                tmpmons.cancelled = (schar)OV_i(parm);
             break;
         case SP_M_V_REVIVED:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpmons.revived = OV_i(parm);
+                tmpmons.revived = (schar)OV_i(parm);
             break;
         case SP_M_V_AVENGE:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpmons.avenge = OV_i(parm);
+                tmpmons.avenge = (schar)OV_i(parm);
             break;
         case SP_M_V_FLEEING:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpmons.fleeing = OV_i(parm);
+                tmpmons.fleeing = (schar)OV_i(parm);
             break;
         case SP_M_V_BLINDED:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpmons.blinded = OV_i(parm);
+                tmpmons.blinded = (schar)OV_i(parm);
             break;
         case SP_M_V_PARALYZED:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpmons.paralyzed = OV_i(parm);
+                tmpmons.paralyzed = (schar)OV_i(parm);
             break;
         case SP_M_V_STUNNED:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpmons.stunned = OV_i(parm);
+                tmpmons.stunned = (schar)OV_i(parm);
             break;
         case SP_M_V_CONFUSED:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpmons.confused = OV_i(parm);
+                tmpmons.confused = (schar)OV_i(parm);
             break;
         case SP_M_V_SEENTRAPS:
             if (OV_typ(parm) == SPOVAR_INT)
@@ -4193,7 +4193,7 @@ struct sp_coder *coder;
     tmpmons.id = SP_MONST_PM(OV_i(id));
     tmpmons.class = SP_MONST_CLASS(OV_i(id));
     tmpmons.coord = OV_i(mcoord);
-    tmpmons.has_invent = OV_i(has_inv);
+    tmpmons.has_invent = (schar)OV_i(has_inv);
 
     create_monster(&tmpmons, coder->croom);
 
@@ -4677,11 +4677,11 @@ struct sp_coder* coder;
 {
     static const char nhFunc[] = "spo_tileset";
     struct opvar* tilesetdata;
-    int64_t tilesetid = 0;
+    uchar tilesetid = 0;
 
     if (!OV_pop_i(tilesetdata))
         return;
-    tilesetid = OV_i(tilesetdata);
+    tilesetid = (uchar)OV_i(tilesetdata);
 
     if (tilesetid < 0 || tilesetid >= MAX_CMAP_TYPES)
     {

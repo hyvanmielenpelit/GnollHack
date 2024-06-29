@@ -23,7 +23,7 @@ struct tmpdungeon {
     int flags, chance, levels, branches,
         entry_lev; /* entry level for this dungeon */
     char boneschar;
-    boolean has_tileset;
+    uchar has_tileset;
     uchar tileset;
 };
 

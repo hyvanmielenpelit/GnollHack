@@ -11,13 +11,13 @@ namespace GnollHackX
 #endif
 {
 #if GNH_MAUI
-#if WINDOWS
-    using GHlong = int;
-    using GHulong = uint;
-#else
+//#if WINDOWS
+//    using GHlong = int;
+//    using GHulong = uint;
+//#else
     using GHlong = long;
     using GHulong = ulong;
-#endif
+//#endif
 #endif
     /* Colors */
     public enum NhColor
@@ -937,6 +937,7 @@ namespace GnollHackX
         public sbyte where;        /* where the object thinks it is */
         public sbyte timed; /* # of fuses (timers) attached to this Obj */
 
+#if BITFIELDS
         internal uint bitfields;
 
         public uint cursed 
@@ -1089,6 +1090,38 @@ namespace GnollHackX
             get { return (bitfields >> 31) & 0x00000001U; }
             set { bitfields = (bitfields & ~(0x00000001U << 31)) | ((value & 0x00000001U) << 31); }
         }
+#else
+        public byte cursed;
+        public byte blessed;
+        public byte unpaid;    /* on some bill */
+        public byte no_charge; /* if shk shouldn't charge for this */
+        public byte known;     /* exact nature & enchantment & charges known */
+        public byte dknown;    /* description = color or text known */
+        public byte bknown;    /* blessing or curse known */
+        public byte rknown;    /* rustproof or not known */
+        public byte oeroded;  /* rusted/burnt weapon/armor */
+        public byte oeroded2; /* corroded/rotted weapon/armor */
+        public byte oerodeproof; /* erodeproof weapon/armor */
+        public byte olocked;     /* object is locked */
+        public byte obroken;     /* lock has been broken */
+        public byte otrapped;    /* container is trapped */
+        public byte lamplit;   /* a light-source -- can be lit */
+        public byte makingsound;   /* a sound-source -- can be turned on to make noise */
+        public byte globby;    /* combines with like types on adjacent squares */
+        public byte greased;    /* covered with grease */
+        public byte nomerge;    /* set temporarily to prevent merging */
+        public byte was_thrown; /* thrown by hero since last picked up */
+        public byte has_special_tileset; /* thrown by hero since last picked up */
+        public byte in_use; /* for magic items before useup items */
+        public byte bypass; /* mark this as an object to be skipped by bhito() */
+        public byte cknown; /* contents of container assumed to be known */
+        public byte lknown; /* locked/unlocked status is known */
+        public byte tknown; /* trapped status of a container is known */
+        public byte nknown; /* artifact's true name is known */
+        public byte aknown; /* artifact status is known; if set, the artifact will be termed "the Artifact" instead of "item named Artifact" */
+        public byte mknown; /* mythic quality is known */
+        public byte rotknown; /* rotting status is known */
+#endif
 
         public int corpsenm;         /* type of corpse is mons[corpsenm] */
         public int usecount;           /* overloaded for various things that tally */
@@ -1098,14 +1131,14 @@ namespace GnollHackX
             GHlong
 #else
             long
-#endif 
+#endif
             age;               /* creation date */
         public
 #if GNH_MAUI
             GHlong
 #else
             long
-#endif 
+#endif
             owornmask;
         public short cooldownleft;       /* item cooldown left before it can be used again*/
         public short repowerleft;       /* artifact cooldown left before its invoke ability can be used again*/

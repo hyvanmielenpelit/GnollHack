@@ -82,12 +82,12 @@ struct victual_info {
         reqtime;           /* turns required to eat */
     int nmod;              /* coded nutrition per turn */
     int total_nutrition;   /* total nutrition of the piece when start_eating was called */
-    boolean canchoke; /* was satiated at beginning */
+    uchar canchoke; /* was satiated at beginning */
 
     /* start_eating() initializes these */
-    boolean fullwarn; /* have warned about being full */
-    boolean eating;   /* victual currently being eaten */
-    boolean doreset;  /* stop eating at end of turn */
+    uchar fullwarn; /* have warned about being full */
+    uchar eating;   /* victual currently being eaten */
+    uchar doreset;  /* stop eating at end of turn */
 };
 
 struct warntype_info {
@@ -109,9 +109,9 @@ struct obj_split {
 
 struct tribute_info {
     size_t tributesz;       /* make it possible to skip this in future */
-    boolean enabled;        /* Do we have tributes turned on? */
-    boolean bookstock; /* Have we stocked the book? */
-    boolean Deathnotice;    /* Did Death notice the book? */
+    uchar enabled;        /* Do we have tributes turned on? */
+    uchar bookstock; /* Have we stocked the book? */
+    uchar Deathnotice;    /* Did Death notice the book? */
 };
 
 struct novel_tracking { /* for choosing random passage when reading novel */

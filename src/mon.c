@@ -5950,7 +5950,8 @@ boolean silent;
                     sct++;
             }
             if (!mon_can_move(mtmp)) {
-                mtmp->msleeping = mtmp->mfrozen = 0;
+                mtmp->msleeping = 0;
+                mtmp->mfrozen = 0;
                 mtmp->mcanmove = 1;
                 if(mon_can_move(mtmp))
                     slct++;

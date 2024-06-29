@@ -12,7 +12,8 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<InvariantGlobalization>true</InvariantGlobalization>
-		
+		<DefineConstants>$(DefineConstants);GNH_MAUI;BITFIELDS</DefineConstants>
+
 		<!-- Display name -->
 		<ApplicationTitle>GnollHack</ApplicationTitle>
 
@@ -682,9 +683,6 @@
 		</MauiAsset>
 	</ItemGroup>
 	
-	<PropertyGroup>
-		<DefineConstants>$(DefineConstants);GNH_MAUI</DefineConstants>
-	</PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
 		<DefineConstants>$(DefineConstants);UNITY_IPHONE</DefineConstants>
 	</PropertyGroup>

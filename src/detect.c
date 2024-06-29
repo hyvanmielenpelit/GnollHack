@@ -890,7 +890,8 @@ int mclass;                /* monster class, 0 for all */
             if (otmp && otmp->cursed
                 && !mon_can_move(mtmp))
             {
-                mtmp->msleeping = mtmp->mfrozen = mtmp->mstaying = 0;
+                mtmp->msleeping = 0;
+                mtmp->mfrozen = mtmp->mstaying = 0;
                 mtmp->mcanmove = 1;
                 mtmp->mwantstomove = 1;
                 mtmp->mprops[SLEEPING] = 0;
