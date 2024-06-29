@@ -252,11 +252,14 @@ typedef struct mapseen {
         Bitfield(msalign, 2);
         Bitfield(shoptype, 5);
 
-        unsigned npcroomtype;
-        unsigned fountaintype;
+        unsigned reserved;
+
+        uchar npcroomtype;
+        schar fountaintype;
     } feat;
     struct mapseen_flags {
         char special_description[BUFSZ];
+
         Bitfield(unreachable, 1); /* can't get back to this level */
         Bitfield(forgot, 1);      /* player has forgotten about this level */
         Bitfield(knownbones, 1);  /* player aware of bones */
@@ -282,6 +285,8 @@ typedef struct mapseen {
         Bitfield(yacc_hint_shown, 1); /* received hint for the Hellish Pastures level */
         Bitfield(quantum_hint_shown, 1); /* received hint for the Large Circular Dungeon level */
         Bitfield(lost_world_hint_shown, 1); /* reserved -- received hint for the Lost World level */
+
+        unsigned reserved;
     } flags;
     /* custom naming */
     char *custom;
