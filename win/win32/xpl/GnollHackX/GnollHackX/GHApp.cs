@@ -6519,6 +6519,66 @@ namespace GnollHackX
             }
 #endif
         }
+
+#if WINDOWS
+        public static string GetActiveGPU()
+        {
+            string res = "";
+            var t2 = Windows.ApplicationModel.Package.Current.Id.FamilyName + "!App";
+
+            var gpuPref = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\DirectX\UserGpuPreferences");
+            if (gpuPref != null)
+            {
+                var gnollHackGpuPref = gpuPref.GetValue(t2)?.ToString();
+                if (!string.IsNullOrEmpty(gnollHackGpuPref))
+                {
+                    var gnollHackGpuPrefSplit = gnollHackGpuPref.Trim(';').Split('=', StringSplitOptions.RemoveEmptyEntries);
+                    if (gnollHackGpuPrefSplit.Length == 2)
+                    {
+                        int gnollHackGpuPrefInt = 0;
+                        bool ok = int.TryParse(gnollHackGpuPrefSplit[1], out gnollHackGpuPrefInt);
+                        if (ok)
+                        {
+                            if (gnollHackGpuPrefInt == 0)
+                            {
+                                res = "Auto";
+                            }
+                            else if (gnollHackGpuPrefInt == 1)
+                            {
+                                res = "Integrated";
+                            }
+                            else if (gnollHackGpuPrefInt == 2)
+                            {
+                                res = "Dedicated";
+                            }
+                            else
+                            {
+                                res = "Unknown";
+                            }
+                        }
+                        else
+                        {
+                            res = "[Choice error]";
+                        }
+                    }
+                    else
+                    {
+                        res = "[Preference error]";
+                    }
+                }
+                else
+                {
+                    res = "[Preference empty]";
+                }
+            }
+            else
+            {
+                res = "Not set";
+            }
+            return res;
+        }
+#endif
+
     }
 
     public class DeviceGPU
