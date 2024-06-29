@@ -101,7 +101,9 @@ struct monst {
     int men_fraction;
 
     uchar heads_left;
-    
+    xchar yell_x, yell_y;   /* location where the pet heard you yelling from */
+    uchar action;           /* the monster is currently in the midst of one of its attacks or actions */
+
     unsigned mappearance; /* for undetected mimics and the wiz */
     uchar m_ap_type;      /* what mappearance is describing, m_ap_types */
 
@@ -125,14 +127,11 @@ struct monst {
     unsigned short mspecialsummon2_used;   /* another special (nondemon) summon timeout */
 
     short mcomingtou;
-    xchar yell_x, yell_y;   /* location where the pet heard you yelling from */
     short notalktimer;
     short notraveltimer;
     short reserved_short1;  
     short reserved_short2;
     short rumorsleft;       /* how many rumors the monster still knows, -1 means that the monster has already told the player that it does not know any more rumors */
-    uchar action;           /* the monster is currently in the midst of one of its attacks or actions */
-
     short mflee_timer;      /* timeout for mflee */
     short mfrozen;
     short mstaying;         /* commanded to stay in place, similar to frozen, but commanded */
@@ -193,9 +192,14 @@ struct monst {
     Bitfield(special_talk_flag7, 1); /* general purpose flag NPC talk */
     Bitfield(special_talk_flag8, 1); /* general purpose flag NPC talk */
 
-    short  general_special_index;                  /* Special general purpose index */
-    uchar  talkstate_item_trading;                 /* 1 = has said introduction, 2 = has said non-repeatable secondary question, 3 = has said first repeatable confirmatory question,  4 = has said second repeatable confirmatory question */
-    uchar  talkstate_special;                      /* Special index, e.g., for Aleax */
+    unsigned reserved;               /* reserved for, e.g., more bitfields */
+    int reserved_index;                  /* Special general purpose index */
+    int meating;           /* monster is eating timeout */
+
+    uchar talkstate_item_trading;                 /* 1 = has said introduction, 2 = has said non-repeatable secondary question, 3 = has said first repeatable confirmatory question,  4 = has said second repeatable confirmatory question */
+    uchar talkstate_special;                      /* Special index, e.g., for Aleax */
+    xchar timed;           /* # of fuses (timers) attached to this monst */
+    xchar weapon_strategy; /* flag for whether to try switching weapons */
 
     uint64_t mon_flags; /* General easy-to-add flags for monsters for things not covered by the above bitfields */
 #define MON_FLAGS_NONE                          0x00000000UL
@@ -235,19 +239,15 @@ struct monst {
     int64_t mtrapseen;        /* bitmap of traps we've been trapped in */
     int64_t mlstmv;           /* for catching up with lost time */
     int64_t mspare1;
-    struct obj *minvent;   /* mon's inventory */
-
-    struct obj *mw;        /* mon's weapon */
     int64_t worn_item_flags;  /* mon's wornmask */
-    xchar weapon_strategy; /* flag for whether to try switching weapons */
-
-    int meating;           /* monster is eating timeout */
     int64_t summonduration;   /* duration for summoned units */
     int64_t extra_encounter_xp; /* extra experience yielded by this monster due to encounter difficulty */
+
     int glyph;
     int gui_glyph;
 
-    xchar timed;           /* # of fuses (timers) attached to this monst */
+    struct obj* minvent;   /* mon's inventory */
+    struct obj* mw;        /* mon's weapon */
     struct mextra *mextra; /* point to mextra struct */
 };
 
