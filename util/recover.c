@@ -40,7 +40,7 @@ static void nhce_message(FILE *, const char *, ...);
 
 #define Close (void) close
 
-#ifdef UNIX
+#if defined (UNIX) || defined (GNH_MOBILE)
 #define SAVESIZE (PL_NSIZ + 13) /* save/99999player.e */
 #else
 #ifdef VMS
