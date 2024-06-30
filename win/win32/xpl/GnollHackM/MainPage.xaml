@@ -71,7 +71,7 @@
                             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
                         </local:CustomLabel.GestureRecognizers>
                     </local:CustomLabel>
-                    <Switch x:Name="classicModeSwitch" IsToggled="false" Grid.Column="1" HeightRequest="30" HorizontalOptions="Start" VerticalOptions="Center" Toggled="ClassicModeSwitch_Toggled"  />
+                    <Switch x:Name="classicModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="ClassicModeSwitch_Toggled"  />
                 </Grid>
                 <Grid x:Name="casualModeGrid" ColumnSpacing="6" IsVisible="True" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="Center">
                     <Grid.RowDefinitions>
@@ -87,7 +87,7 @@
                             <TapGestureRecognizer Tapped="CasualTapGestureRecognizer_Tapped"/>
                         </local:CustomLabel.GestureRecognizers>
                     </local:CustomLabel>
-                    <Switch x:Name="casualModeSwitch" IsToggled="false" Grid.Column="1" HeightRequest="30" HorizontalOptions="Start" VerticalOptions="Center" Toggled="CasualModeSwitch_Toggled"  />
+                    <Switch x:Name="casualModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="CasualModeSwitch_Toggled"  />
                 </Grid>
                 <Grid x:Name="wizardModeGrid" ColumnSpacing="6" Margin="0,0,0,15" HorizontalOptions="Center" VerticalOptions="Center">
                     <Grid.RowDefinitions>
@@ -103,7 +103,7 @@
                             <TapGestureRecognizer Tapped="WizTapGestureRecognizer_Tapped"/>
                         </local:CustomLabel.GestureRecognizers>
                     </local:CustomLabel>
-                    <Switch x:Name="wizardModeSwitch" IsToggled="false" Grid.Column="1" HeightRequest="30" HorizontalOptions="Start" VerticalOptions="Center" Toggled="wizardModeSwitch_Toggled" />
+                    <Switch x:Name="wizardModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="wizardModeSwitch_Toggled" />
                 </Grid>
                 <Grid x:Name="tournamentModeGrid" ColumnSpacing="6" Margin="0,0,0,15" HorizontalOptions="Center" VerticalOptions="Center">
                     <local:CustomLabel x:Name="tournamentModeLabel" Text="Tournament" TextColor="LightGreen" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
