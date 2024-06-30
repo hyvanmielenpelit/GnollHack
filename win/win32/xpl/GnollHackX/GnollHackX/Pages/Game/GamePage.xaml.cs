@@ -913,7 +913,7 @@ namespace GnollHackX.Pages.Game
             MapNoClipMode = !MapNoClipMode;
             ToggleAutoCenterModeButton_Clicked(null, null);
 
-            if(DesktopStatusBar)
+            if(GHApp.IsDesktop)
             {
                 lAbilitiesButton.IsEnabled = false;
                 lWornItemsButton.IsEnabled = false;
@@ -17219,21 +17219,6 @@ namespace GnollHackX.Pages.Game
             {
                 queue.Enqueue(new GHResponse(_currentGame, GHRequestType.CrashReport));
             }
-        }
-
-        public async Task RunPerformanceTests()
-        {
-            Debug.WriteLine("Starting Performance Tests");
-            await Task.Delay(1000);
-            Debug.WriteLine("Hide all Xamarin components");
-            WornItemsLayout.IsVisible = false;
-            AbilityLayout.IsVisible = false;
-            UIGrid.IsVisible = false;
-            await Task.Delay(5000);
-            WornItemsLayout.IsVisible = true;
-            AbilityLayout.IsVisible = true;
-            UIGrid.IsVisible = true;
-            Debug.WriteLine("Finished Performance Tests");
         }
 
         private void GetLineEntryText_TextChanged(object sender, TextChangedEventArgs e)
