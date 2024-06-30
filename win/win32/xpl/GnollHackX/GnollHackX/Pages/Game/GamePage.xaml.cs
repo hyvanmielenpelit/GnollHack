@@ -13013,13 +13013,16 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+#if WINDOWS
         private readonly object _canvasPointerLock = new object();
         private bool _isCanvasHovering = false;
         private SKPoint _canvasHoverLocation = new SKPoint();
         GameCursorType _currentCursorType = GameCursorType.Normal;
+#endif
 
         private void canvasView_MousePointer(object sender, SKTouchEventArgs e)
         {
+#if WINDOWS
             lock (_canvasPointerLock)
             {
                 _canvasHoverLocation = e.Location;
@@ -13035,6 +13038,7 @@ namespace GnollHackX.Pages.Game
                         break;
                 }
             }
+#endif
         }
 
         private void ScrollMessages(int delta)
