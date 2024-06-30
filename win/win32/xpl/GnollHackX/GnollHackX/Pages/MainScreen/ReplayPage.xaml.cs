@@ -1004,7 +1004,7 @@ namespace GnollHackX.Pages.MainScreen
             BlobServiceClient client = GHApp.GetBlobServiceClient();
             if (client == null)
                 return;
-            BlobContainerClient containerClient = client.GetBlobContainerClient(GHConstants.AzureBlobStorageReplayContainerName);
+            BlobContainerClient containerClient = client.GetBlobContainerClient(GHApp.GetAzureBlobStorageReplayContainerName());
             if (containerClient == null)
                 return;
 
@@ -1245,7 +1245,7 @@ namespace GnollHackX.Pages.MainScreen
                 _uploadDownloadCts = new CancellationTokenSource();
 
             BlobServiceClient blobServiceClient = GHApp.GetBlobServiceClient();
-            BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(GHConstants.AzureBlobStorageReplayContainerName);
+            BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(GHApp.GetAzureBlobStorageReplayContainerName());
             string prefix = GHApp.XlogUserNameVerified ? GHApp.XlogUserName : GHConstants.AzureBlobStorageGeneralDirectoryName;
 
             if (IsMultiSelect && ReplayCollectionView.SelectedItems != null && ReplayCollectionView.SelectedItems.Count != 1)
@@ -1500,7 +1500,7 @@ namespace GnollHackX.Pages.MainScreen
                 _uploadDownloadCts = new CancellationTokenSource();
 
             BlobServiceClient blobServiceClient = GHApp.GetBlobServiceClient();
-            BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(GHConstants.AzureBlobStorageReplayContainerName);
+            BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(GHApp.GetAzureBlobStorageReplayContainerName());
             string prefix = _subDirectoryServer;
 
             if (IsMultiSelect && ReplayCollectionView.SelectedItems != null && ReplayCollectionView.SelectedItems.Count != 1)
@@ -1682,7 +1682,7 @@ namespace GnollHackX.Pages.MainScreen
             BlobServiceClient client = GHApp.GetBlobServiceClient();
             if (client == null)
                 return;
-            BlobContainerClient containerClient = client.GetBlobContainerClient(GHConstants.AzureBlobStorageReplayContainerName);
+            BlobContainerClient containerClient = client.GetBlobContainerClient(GHApp.GetAzureBlobStorageReplayContainerName());
             if (containerClient == null)
                 return;
             await GHApp.ListBlobsHierarchicalListing(containerClient, null, null);

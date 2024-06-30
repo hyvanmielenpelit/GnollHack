@@ -1751,7 +1751,7 @@ namespace GnollHackX
         public const string ReplaySharedZipFileNamePrefix = "shared-replay-";
         public const string ReplaySharedZipFileNameSuffix = ".zip";
         public const string ReplayAllSharedZipFileNamePrefix = "shared-replays-";
-        public const string AzureBlobStorageReplayContainerName = "replays";
+        public const string AzureBlobStorageReplayContainerNamePrefix = "replays";
         public const string AzureBlobStorageDelimiter = "/";
         public const string AzureBlobStorageGeneralDirectoryName = "_Anonymous";
         public const bool GZipIsDefaultReplayCompression = true;

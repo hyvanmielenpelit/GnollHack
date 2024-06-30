@@ -1323,6 +1323,8 @@ namespace GnollHackX
             int attrs_colors_size = text?.Length + 1 ?? 0;
             if (attrs_ptr != IntPtr.Zero && colors_ptr != IntPtr.Zero && attrs_colors_size > 0)
             {
+                attrs = new byte[attrs_colors_size];
+                colors = new byte[attrs_colors_size];
                 Marshal.Copy(attrs_ptr, attrs, 0, attrs_colors_size);
                 Marshal.Copy(colors_ptr, colors, 0, attrs_colors_size);
             }
