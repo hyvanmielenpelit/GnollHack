@@ -542,7 +542,8 @@ namespace GnollHackX.Pages.Game
         private int _shownPetRows = GHConstants.DefaultPetRows;
         public int NumDisplayedPetRows { get { return _shownPetRows; } set { _shownPetRows = value; } }
         public SimpleImageButton StandardMeasurementButton { get { return UseSimpleCmdLayout ? SimpleESCButton : ESCButton; } }
-        public LabeledImageButton StandardReferenceButton { get { return GHApp.IsDesktop ? lRowAbilitiesButton : lAbilitiesButton; } }
+        public StackLayout StandardMeasurementCmdLayout { get { return UseSimpleCmdLayout ? SimpleUpperCmdLayout : UpperCmdLayout; } }
+        public LabeledImageButton StandardReferenceButton { get { return UseSimpleCmdLayout ? lSimpleInventoryButton : lInventoryButton; } } // { get { return DesktopButtons ? lRowAbilitiesButton : lAbilitiesButton; } }
 
         public TTYCursorStyle CursorStyle { get; set; }
         public GHGraphicsStyle GraphicsStyle { get; set; }
@@ -931,8 +932,8 @@ namespace GnollHackX.Pages.Game
 
         private void UpdateAbilityButtonVisibility(bool isDesktop)
         {
-            lAbilitiesButton.IsEnabled = !isDesktop;
-            lWornItemsButton.IsEnabled = !isDesktop;
+            lAbilitiesButton.IsVisible = !isDesktop;
+            lWornItemsButton.IsVisible = !isDesktop;
             lRowAbilitiesButton.IsVisible = isDesktop;
             lRowWornItemsButton.IsVisible = isDesktop;
             if (isDesktop)
@@ -3992,7 +3993,7 @@ namespace GnollHackX.Pages.Game
 
         public float GetTextScale()
         {
-            return (float)((lWornItemsButton.Width <= 0 ? lWornItemsButton.WidthRequest : lWornItemsButton.Width) / 50.0f) / (float)GetCanvasScale();
+            return (float)((StandardReferenceButton.Width <= 0 ? StandardReferenceButton.WidthRequest : StandardReferenceButton.Width) / 50.0f) / (float)GetCanvasScale();
         }
 
 #if GNH_MAP_PROFILING && DEBUG
@@ -7966,7 +7967,7 @@ namespace GnollHackX.Pages.Game
                         }
                     }
 
-                    float abilitybuttonbottom = (float)((lAbilitiesButton.Y + lAbilitiesButton.Height) / canvasView.Height) * canvasheight;
+                    float abilitybuttonbottom = (float)(StandardMeasurementCmdLayout.Margin.Top / canvasView.Height) * canvasheight; ; // (float)((lAbilitiesButton.Y + lAbilitiesButton.Height) / canvasView.Height) * canvasheight;
                     float escbuttonbottom = (float)((StandardMeasurementButton.Y + StandardMeasurementButton.Height) / canvasView.Height) * canvasheight;
                     if (_canvasButtonRect.Top < escbuttonbottom)
                         _canvasButtonRect.Top = escbuttonbottom;
@@ -12197,18 +12198,6 @@ namespace GnollHackX.Pages.Game
                 ThirdButton.SetSideSize(width, height);
                 FourthButton.SetSideSize(width, height);
 
-                lAbilitiesButton.SetSideSize(width, height);
-                lWornItemsButton.SetSideSize(width, height);
-                lRowAbilitiesButton.SetSideSize(width, height);
-                lRowWornItemsButton.SetSideSize(width, height);
-                double statusbarheight = GetStatusBarHeight();
-                lAbilitiesButton.HeightRequest = statusbarheight;
-                lWornItemsButton.HeightRequest = statusbarheight;
-                //lSkillButton.SetSideSize(width, height);
-
-                UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
-                SimpleUpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
-
                 foreach (View v in UpperCmdGrid.Children)
                 {
                     LabeledImageButton lib = (LabeledImageButton)v;
@@ -12231,6 +12220,16 @@ namespace GnollHackX.Pages.Game
 
                 LabeledImageButton simplefirstchild = (LabeledImageButton)SimpleCmdGrid.Children[0];
                 SimpleCmdGrid.HeightRequest = simplefirstchild.GridHeight;
+
+                lAbilitiesButton.SetSideSize(width, height);
+                lWornItemsButton.SetSideSize(width, height);
+                lRowAbilitiesButton.SetSideSize(width, height);
+                lRowWornItemsButton.SetSideSize(width, height);
+                double statusbarheight = GetStatusBarHeight(); /* Requires lInventoryButton size having set to determine scaling */
+                lAbilitiesButton.HeightRequest = statusbarheight;
+                lWornItemsButton.HeightRequest = statusbarheight;
+                UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
+                SimpleUpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
 
                 MenuHeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(MenuBackground.BorderStyle, width, height);
                 MenuCloseGrid.Margin = UIUtils.GetFooterMarginWithBorder(MenuBackground.BorderStyle, width, height);
@@ -16807,10 +16806,10 @@ namespace GnollHackX.Pages.Game
                         PaintTipButtonByRect(canvas, textPaint, statusBarCenterRect, "You can tap the status bar.", "Open status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f);
                         break;
                     case 9:
-                        PaintTipButton(canvas, textPaint, GHApp.IsDesktop ? lRowAbilitiesButton : lAbilitiesButton, GHApp.IsDesktop ? "Some commands are specially located." : "Some commands do not have buttons.", "Character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, GHApp.IsDesktop ? -1.0f : 1.0f);
+                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowAbilitiesButton : lAbilitiesButton, DesktopButtons ? "Some commands are specially located." : "Some commands do not have buttons.", "Character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, DesktopButtons ? -1.0f : 1.0f);
                         break;
                     case 10:
-                        PaintTipButton(canvas, textPaint, GHApp.IsDesktop ? lRowWornItemsButton : lWornItemsButton, "", "Tap here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, GHApp.IsDesktop ? -2.0f : 2.0f);
+                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowWornItemsButton : lWornItemsButton, "", "Tap here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, DesktopButtons ? -2.0f : 2.0f);
                         break;
                     case 11:
                         PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "", "Tap here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f);
@@ -17822,7 +17821,7 @@ namespace GnollHackX.Pages.Game
 
         private void UpdateMoreNextPrevButtonVisibility(bool resetPrevButton, bool resetNextButton)
         {
-            if(GHApp.IsDesktop)
+            if(GHApp.IsDesktop) /* Assuming mouse pointer usage */
             {
                 int cmdPage = MoreCmdPage;
                 MorePreviousGrid.IsVisible = cmdPage > (EnableWizardMode ? 0 : 1);
