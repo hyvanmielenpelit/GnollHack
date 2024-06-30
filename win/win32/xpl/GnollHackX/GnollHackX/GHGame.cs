@@ -1344,7 +1344,12 @@ namespace GnollHackX
                         mi.Accelerator = accel;
                     mi.GroupAccelerator = groupaccel;
                     mi.SpecialMark = special_mark;
-                    mi.Attributes = attr;
+
+                    mi.NHAttribute = attr;
+                    mi.NHColor = color;
+                    mi.NHAttributes = attrs;
+                    mi.NHColors = colors;
+
                     mi.Glyph = glyph;
                     mi.UseUpperSide = (menuflags & (ulong)MenuFlags.MENU_FLAGS_ACTIVE) != 0;
                     mi.UseColorForSuffixes = (menuflags & (ulong)MenuFlags.MENU_FLAGS_USE_COLOR_FOR_SUFFIXES) != 0;
@@ -1362,7 +1367,6 @@ namespace GnollHackX
                     mi.IsAutoClickOk = (menuflags & (ulong)MenuFlags.MENU_FLAGS_AUTO_CLICK_OK) != 0;
                     mi.Selected = (presel != 0);
                     mi.MaxCount = maxcount;
-                    mi.NHColor = color;
                     mi.Oid = oid;
                     mi.Mid = mid;
                     mi.HeadingGroupAccelerator = headingaccel;
