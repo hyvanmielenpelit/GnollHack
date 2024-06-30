@@ -86,8 +86,8 @@
                         <Button x:Name="ToggleMessageNumberButton" Text="" Clicked="ToggleMessageNumberButton_Clicked" HeightRequest="80" WidthRequest="80" BackgroundColor="Transparent" />
                     </StackLayout>
                     <Grid Grid.Row="2" x:Name="ButtonRowGrid" HorizontalOptions="Fill" VerticalOptions="End" BackgroundColor="#66000000">
-                        <controls:LabeledImageButton x:Name="lRowAbilitiesButton" IsVisible="False" LblText="Stats" BtnLetter="A" ImgSourcePath="resource://GnollHackX.Assets.UI.home.png" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="Start" />
-                        <controls:LabeledImageButton x:Name="lRowWornItemsButton" IsVisible="False" LblText="Equipment" BtnLetter="]" ImgSourcePath="resource://GnollHackX.Assets.UI.worn.png" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="End" />
+                        <controls:LabeledImageButton x:Name="lRowAbilitiesButton" IsVisible="False" LblText="Stats" BtnLetter="A" ImgSourcePath="resource://GnollHackX.Assets.UI.home.png" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="Start" VerticalOptions="End" />
+                        <controls:LabeledImageButton x:Name="lRowWornItemsButton" IsVisible="False" LblText="Equipment" BtnLetter="]" ImgSourcePath="resource://GnollHackX.Assets.UI.worn.png" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="End" VerticalOptions="End" />
                         <StackLayout x:Name="ButtonRowStack" IsVisible="True" HorizontalOptions="Center" VerticalOptions="Center" Orientation="Vertical" Spacing="6">
                             <Grid x:Name="UpperCmdGrid" ColumnSpacing="6" HeightRequest="60" HorizontalOptions="End" >
                                 <Grid.RowDefinitions>
