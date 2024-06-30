@@ -387,6 +387,10 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("DesktopStatusBar", DesktopStatusBarSwitch.IsToggled);
 
             if (_gamePage != null)
+                _gamePage.DesktopButtons = DesktopButtonsSwitch.IsToggled;
+            Preferences.Set("DesktopButtons", DesktopButtonsSwitch.IsToggled);
+
+            if (_gamePage != null)
                 _gamePage.ShowPets = PetSwitch.IsToggled;
             Preferences.Set("ShowPets", PetSwitch.IsToggled);
 
@@ -688,7 +692,7 @@ namespace GnollHackX.Pages.MainScreen
             bool mem = false, fps = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, darkmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, emptywishisnothing = true, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
-            bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, nhstatusbardesktop = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
+            bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, desktopbuttons = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false;
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false;
             bool longermsghistory = false, xlog_release_account = false, forcepostbones = false;
@@ -778,7 +782,8 @@ namespace GnollHackX.Pages.MainScreen
                 ShowExtendedStatusBarLabel.TextColor = GHColors.Gray;
                 hpbars = Preferences.Get("HitPointBars", false);
                 nhstatusbarclassic = Preferences.Get("ClassicStatusBar", GHConstants.IsDefaultStatusBarClassic);
-                nhstatusbardesktop = Preferences.Get("DesktopStatusBar", GHApp.IsDesktop);
+                desktopstatusbar = Preferences.Get("DesktopStatusBar", GHApp.IsDesktop);
+                desktopbuttons = Preferences.Get("DesktopButtons", GHApp.IsDesktop);
                 pets = Preferences.Get("ShowPets", true);
                 orbs = Preferences.Get("ShowOrbs", true);
                 orbmaxhp = Preferences.Get("ShowMaxHealthInOrb", false);
@@ -817,7 +822,8 @@ namespace GnollHackX.Pages.MainScreen
                 ShowExtendedStatusBarSwitch.IsEnabled = true;
                 ShowExtendedStatusBarLabel.TextColor = darkmode ? GHColors.White : GHColors.Black;
                 nhstatusbarclassic = _gamePage.ClassicStatusBar;
-                nhstatusbardesktop = _gamePage.DesktopStatusBar;
+                desktopstatusbar = _gamePage.DesktopStatusBar;
+                desktopbuttons = _gamePage.DesktopButtons;
                 hpbars = _gamePage.HitPointBars;
                 pets = _gamePage.ShowPets;
                 orbs = _gamePage.ShowOrbs;
@@ -851,7 +857,8 @@ namespace GnollHackX.Pages.MainScreen
             GridSwitch.IsToggled = mapgrid;
             HitPointBarSwitch.IsToggled = hpbars;
             ClassicStatusBarSwitch.IsToggled = nhstatusbarclassic;
-            DesktopStatusBarSwitch.IsToggled = nhstatusbardesktop;
+            DesktopStatusBarSwitch.IsToggled = desktopstatusbar;
+            DesktopButtonsSwitch.IsToggled = desktopbuttons;
             PetSwitch.IsToggled = pets;
             OrbSwitch.IsToggled = orbs;
             MaxHealthInOrbSwitch.IsToggled = orbmaxhp;

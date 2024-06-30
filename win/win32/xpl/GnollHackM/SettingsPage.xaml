@@ -182,6 +182,15 @@
                                 <Switch Grid.Column="1" x:Name="DarkModeSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="DarkModeSwitch_Toggled" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label x:Name="DesktopButtonsLabel"
+                                            Text="Desktop Buttons"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="DesktopButtonsSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Messages"
                                             FontFamily="Underwood" TextColor="Black"
                                             FontSize="15"

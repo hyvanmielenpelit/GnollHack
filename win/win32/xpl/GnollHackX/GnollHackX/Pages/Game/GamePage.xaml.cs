@@ -653,9 +653,11 @@ namespace GnollHackX.Pages.Game
         private bool _classicStatusBar = true;
         public bool ClassicStatusBar { get { lock (_classicStatusBarLock) { return _classicStatusBar; } } set { lock (_classicStatusBarLock) { _classicStatusBar = value; } } }
 
-        private readonly object _desktopStatusBarLock = new object();
+        private readonly object _desktopLock = new object();
         private bool _desktopStatusBar = true;
-        public bool DesktopStatusBar { get { lock (_desktopStatusBarLock) { return _desktopStatusBar; } } set { lock (_desktopStatusBarLock) { _desktopStatusBar = value; } } }
+        private bool _desktopButtons = true;
+        public bool DesktopStatusBar { get { lock (_desktopLock) { return _desktopStatusBar; } } set { lock (_desktopLock) { _desktopStatusBar = value; } } }
+        public bool DesktopButtons { get { lock (_desktopLock) { return _desktopButtons; } } set { lock (_desktopLock) { _desktopButtons = value; } UpdateAbilityButtonVisibility(value); } }
 
         private readonly object _showPetsLock = new object();
         private bool _showPets = false;
@@ -913,18 +915,8 @@ namespace GnollHackX.Pages.Game
             MapNoClipMode = !MapNoClipMode;
             ToggleAutoCenterModeButton_Clicked(null, null);
 
-            if(GHApp.IsDesktop)
-            {
-                lAbilitiesButton.IsEnabled = false;
-                lWornItemsButton.IsEnabled = false;
-                lRowAbilitiesButton.IsVisible = true;
-                lRowWornItemsButton.IsVisible = true;
-                lRowAbilitiesButton.SetButtonFocus();
-            }
-            else
-            {
-                lAbilitiesButton.SetButtonFocus();
-            }
+            /* Do this last just in case */
+            DesktopButtons = Preferences.Get("DesktopButtons", GHApp.IsDesktop);
 
 #if WINDOWS
             Loaded += (s, e) => 
@@ -935,6 +927,22 @@ namespace GnollHackX.Pages.Game
                 TextCanvas.InvalidateSurface();
             };
 #endif
+        }
+
+        private void UpdateAbilityButtonVisibility(bool isDesktop)
+        {
+            lAbilitiesButton.IsEnabled = !isDesktop;
+            lWornItemsButton.IsEnabled = !isDesktop;
+            lRowAbilitiesButton.IsVisible = isDesktop;
+            lRowWornItemsButton.IsVisible = isDesktop;
+            if (isDesktop)
+            {
+                lRowAbilitiesButton.SetButtonFocus();
+            }
+            else
+            {
+                lAbilitiesButton.SetButtonFocus();
+            }
         }
 
         private void NextLabelHandler_PointerExited(object sender, EventArgs e)
