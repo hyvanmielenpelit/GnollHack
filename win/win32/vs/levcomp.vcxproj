@@ -28,6 +28,8 @@
     <ClCompile>
       <AdditionalIncludeDirectories>$(IncDir);$(SysWinntDir);$(SysShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32CON;DLB;MSWIN_GRAPHICS;YY_NO_UNISTD_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -86,12 +88,12 @@
     <Copy SourceFiles="$(SysShareDir)lev_lex.c" DestinationFiles="$(UtilDir)lev_lex.c" />
   </Target>
   <Target Name="AfterBuild">
-	  <Message Text="Start building afterlevcomp.proj" Importance="High" />
-	  <MSBuild Projects="afterlevcomp.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+    <Message Text="Start building afterlevcomp.proj" Importance="High" />
+    <MSBuild Projects="afterlevcomp.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
   <Target Name="AfterClean">
-	  <Message Text="Start cleaning afterlevcomp.proj" Importance="High" />
-	  <MSBuild Projects="afterlevcomp.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
+    <Message Text="Start cleaning afterlevcomp.proj" Importance="High" />
+    <MSBuild Projects="afterlevcomp.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
     <Delete Files="$(UtilDir)lev_yacc.c;$(IncDir)lev_comp.h;$(UtilDir)lev_lex.c" />
   </Target>
   <!--<Target Name="AfterRebuild">

@@ -28,6 +28,8 @@
     <ClCompile>
       <AdditionalIncludeDirectories>$(IncDir);$(SysWinntDir);$(SysShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32CON;DLB;MSWIN_GRAPHICS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level2</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level2</WarningLevel>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -123,12 +125,12 @@
     <Copy SourceFiles="$(SysShareDir)dgn_lex.c" DestinationFiles="$(UtilDir)dgn_lex.c" />
   </Target>
   <Target Name="AfterBuild">
-	  <Message Text="Start building afterdgncomp.proj" Importance="High" />
-	  <MSBuild Projects="afterdgncomp.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+    <Message Text="Start building afterdgncomp.proj" Importance="High" />
+    <MSBuild Projects="afterdgncomp.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
   </Target>
   <Target Name="AfterClean">
-	  <Message Text="Start cleaning afterdgncomp.proj" Importance="High" />
-	  <MSBuild Projects="afterdgncomp.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
+    <Message Text="Start cleaning afterdgncomp.proj" Importance="High" />
+    <MSBuild Projects="afterdgncomp.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
     <Delete Files="$(UtilDir)dgn_yacc.c;$(IncDir)dgn_comp.h;$(UtilDir)dgn_lex.c" />
   </Target>
   <!--<Target Name="AfterRebuild">
