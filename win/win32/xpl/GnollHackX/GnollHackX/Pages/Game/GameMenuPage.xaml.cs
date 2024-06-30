@@ -175,15 +175,6 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = true;
         }
 
-        private async void btnRunTests_Clicked(object sender, EventArgs e)
-        {
-            MainLayout.IsEnabled = false;
-            GHApp.PlayButtonClickedSound();
-            await App.Current.MainPage.Navigation.PopModalAsync();
-            await _gamePage.RunPerformanceTests();
-            MainLayout.IsEnabled = true;
-        }
-
         private async void btnTips_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;

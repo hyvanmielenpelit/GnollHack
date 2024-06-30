@@ -488,6 +488,30 @@ namespace GnollHackX
             }
         }
 
+        public static bool HasInformedAboutGPU 
+        { 
+            get
+            {
+                return Preferences.Get("HasInformedAboutGPU", false);
+            }
+            set
+            { 
+                Preferences.Set("HasInformedAboutGPU", value);
+            } 
+        }
+
+        public static bool InformAboutGPU
+        {
+            get
+            {
+#if WINDOWS
+                return !HasInformedAboutGPU && DeviceGPUs.Count > 1 && GetActiveGPU() != "Dedicated";
+#else
+                return false;
+#endif
+            }
+        }
+
         public static bool IsGPUDefault
         {
             get
