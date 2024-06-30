@@ -71,7 +71,7 @@ namespace GnollHackX
     public delegate void AddMenuCallback(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, int color, [MarshalAs(GHConstants.GHStringMarshallingType)]  string text, byte presel);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void AddExtendedMenuCallback(int winid, int glyph, Int64 identifier, char accel, char groupaccel, int attributes, int color, [MarshalAs(GHConstants.GHStringMarshallingType)] string text, byte presel, int maxcount,
-        UInt64 oid, UInt64 mid, char heading_groupaccel, char special_mark, ulong menuflags, byte dataflags, int style, IntPtr otmpdata_ptr, IntPtr otypdata_ptr);
+        UInt64 oid, UInt64 mid, char heading_groupaccel, char special_mark, ulong menuflags, byte dataflags, int style, IntPtr otmpdata_ptr, IntPtr otypdata_ptr, IntPtr attrs_ptr, IntPtr colors_ptr);
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void EndMenuCallback(int value1, [MarshalAs(GHConstants.GHStringMarshallingType)] string value2, [MarshalAs(GHConstants.GHStringMarshallingType)] string value3);
 

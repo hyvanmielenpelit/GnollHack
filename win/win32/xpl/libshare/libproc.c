@@ -393,7 +393,7 @@ void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
         info.heading_for_group_accelerator, info.special_mark,
         (uint64_t)info.menu_flags,
         (info.object ? MENU_DATAFLAGS_HAS_OBJECT_DATA : 0) | (info.monster ? MENU_DATAFLAGS_HAS_MONSTER_DATA : 0) | (Hallucination ? MENU_DATAFLAGS_HALLUCINATED : 0) | (info.monster && info.monster->female ? MENU_DATAFLAGS_FEMALE : 0),
-        info.style, info.object, &ocdata);
+        info.style, info.object, &ocdata, info.attrs, info.colors);
 }
 
 void lib_end_menu_ex(winid wid, const char* prompt, const char* subtitle)

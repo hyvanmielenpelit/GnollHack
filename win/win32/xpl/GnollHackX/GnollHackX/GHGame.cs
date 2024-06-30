@@ -1309,17 +1309,26 @@ namespace GnollHackX
         public void ClientCallback_AddMenu(int winid, int glyph, long identifier, char accel, char groupaccel, int attr, int color, string text, byte presel)
         {
             ClientCallback_AddExtendedMenu(winid, glyph, identifier, accel, groupaccel, attr, color, text, presel,
-                0, 0UL, 0UL, '\0', '\0', 0UL, 0, 0, IntPtr.Zero, IntPtr.Zero);
+                0, 0UL, 0UL, '\0', '\0', 0UL, 0, 0, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
         }
         public void ClientCallback_AddExtendedMenu(int winid, int glyph, long identifier, char accel, char groupaccel, int attr, int color, string text, byte presel, 
-            int maxcount, ulong oid, ulong mid, char headingaccel, char special_mark, ulong menuflags, byte dataflags, int style, IntPtr otmpdata_ptr, IntPtr otypdata_ptr)
+            int maxcount, ulong oid, ulong mid, char headingaccel, char special_mark, ulong menuflags, byte dataflags, int style, 
+            IntPtr otmpdata_ptr, IntPtr otypdata_ptr, IntPtr attrs_ptr, IntPtr colors_ptr)
         {
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("AddExtendedMenu");
             Obj otmpdata = otmpdata_ptr == IntPtr.Zero ? new Obj() : (Obj)Marshal.PtrToStructure(otmpdata_ptr, typeof(Obj));
             ObjClassData otypdata = otypdata_ptr == IntPtr.Zero ? new ObjClassData() : (ObjClassData)Marshal.PtrToStructure(otypdata_ptr, typeof(ObjClassData));
+            byte[] attrs = null;
+            byte[] colors = null;
+            int attrs_colors_size = text?.Length + 1 ?? 0;
+            if (attrs_ptr != IntPtr.Zero && colors_ptr != IntPtr.Zero && attrs_colors_size > 0)
+            {
+                Marshal.Copy(attrs_ptr, attrs, 0, attrs_colors_size);
+                Marshal.Copy(colors_ptr, colors, 0, attrs_colors_size);
+            }
 
             RecordFunctionCall(RecordedFunctionID.AddExtendedMenu, winid, glyph, identifier, accel, groupaccel, attr, color, text, presel,
-                maxcount, oid, mid, headingaccel, special_mark, menuflags, dataflags, style, otmpdata, otypdata);
+                maxcount, oid, mid, headingaccel, special_mark, menuflags, dataflags, style, otmpdata, otypdata, attrs, colors);
 
             lock (_ghWindowsLock)
             {
