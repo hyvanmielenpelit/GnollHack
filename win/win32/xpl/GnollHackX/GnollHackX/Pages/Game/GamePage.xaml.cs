@@ -653,6 +653,10 @@ namespace GnollHackX.Pages.Game
         private bool _classicStatusBar = true;
         public bool ClassicStatusBar { get { lock (_classicStatusBarLock) { return _classicStatusBar; } } set { lock (_classicStatusBarLock) { _classicStatusBar = value; } } }
 
+        private readonly object _desktopStatusBarLock = new object();
+        private bool _desktopStatusBar = true;
+        public bool DesktopStatusBar { get { lock (_desktopStatusBarLock) { return _desktopStatusBar; } } set { lock (_desktopStatusBarLock) { _desktopStatusBar = value; } } }
+
         private readonly object _showPetsLock = new object();
         private bool _showPets = false;
         public bool ShowPets { get { lock (_showPetsLock) { return _showPets; } } set { lock (_showPetsLock) { _showPets = value; } } }
@@ -856,6 +860,7 @@ namespace GnollHackX.Pages.Game
             MapGrid = Preferences.Get("MapGrid", false);
             HitPointBars = Preferences.Get("HitPointBars", false);
             ClassicStatusBar = Preferences.Get("ClassicStatusBar", GHConstants.IsDefaultStatusBarClassic);
+            DesktopStatusBar = Preferences.Get("DesktopStatusBar", GHApp.IsDesktop);
             ShowOrbs = Preferences.Get("ShowOrbs", true);
             ShowPets = Preferences.Get("ShowPets", true);
             PlayerMark = Preferences.Get("PlayerMark", false);
@@ -908,7 +913,7 @@ namespace GnollHackX.Pages.Game
             MapNoClipMode = !MapNoClipMode;
             ToggleAutoCenterModeButton_Clicked(null, null);
 
-            if(GHApp.IsDesktop)
+            if(DesktopStatusBar)
             {
                 lAbilitiesButton.IsEnabled = false;
                 lWornItemsButton.IsEnabled = false;
@@ -8158,7 +8163,7 @@ namespace GnollHackX.Pages.Game
 
 
                             /* STATS on Desktop */
-                            if (GHApp.IsDesktop)
+                            if (DesktopStatusBar)
                             {
                                 curx += stdspacing * 2;
                                 //target_width = target_scale * GHApp._statusSeparatorBitmap.Width;
@@ -8929,7 +8934,7 @@ namespace GnollHackX.Pages.Game
                                 }
                             }
 
-                            if(GHApp.IsDesktop)
+                            if(DesktopStatusBar)
                             {
                                 /* Score */
                                 bool scoreprinted = false;
