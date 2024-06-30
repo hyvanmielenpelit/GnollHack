@@ -22,29 +22,22 @@
                 </controls:SwitchableCanvasView>
                 <Frame x:Name="FadeFrame" IsVisible="False" BackgroundColor="Black" BorderColor="Black" CornerRadius="0" HorizontalOptions="Fill" VerticalOptions="Fill" />
 
-                <StackLayout x:Name="WornItemsLayout" Padding="0,2" Spacing="6" HorizontalOptions="End" VerticalOptions="Start" BackgroundColor="Transparent" >
-                    <controls:LabeledImageButton x:Name="lWornItemsButton" LblText="" BtnLetter="]" LargerFont="True" BtnClicked="GHButton_Clicked" />
-                </StackLayout>
-
-                <StackLayout x:Name="AbilityLayout" Padding="0,2" Spacing="6" HorizontalOptions="Start" VerticalOptions="Start" BackgroundColor="Transparent" >
-                    <controls:LabeledImageButton x:Name="lAbilitiesButton" LblText="" BtnLetter="A" LargerFont="True" BtnClicked="GHButton_Clicked" />
-                </StackLayout>
+                <controls:LabeledImageButton x:Name="lWornItemsButton" LblText="" BtnLetter="]" LargerFont="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="End" VerticalOptions="Start" />
+                <controls:LabeledImageButton x:Name="lAbilitiesButton" LblText="" BtnLetter="A" LargerFont="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="Start" VerticalOptions="Start" />
 
                 <Frame x:Name="MessageFilterFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Start" >
-                    <StackLayout>
+                    <StackLayout> <!-- Some versions of MAUI do not support placing Entrys in Frames -->
                         <Entry x:Name="MessageFilterEntry" FontFamily="Underwood" FontSize="18" TextColor="White" BackgroundColor="#66000000" Placeholder="Search" PlaceholderColor="LightGray"
                                    WidthRequest="200" Keyboard="Default" HorizontalTextAlignment="Center" TextChanged="MessageFilterEntry_TextChanged" />
                     </StackLayout>
                 </Frame>
-                <Grid x:Name="UIGrid" Grid.Row="0" RowSpacing="0" ColumnSpacing="0" InputTransparent="True" CascadeInputTransparent="False"
-                      HorizontalOptions="Fill" VerticalOptions="Fill">
+                <Grid x:Name="UIGrid" Grid.Row="0" RowSpacing="0" ColumnSpacing="0" InputTransparent="True" CascadeInputTransparent="False" HorizontalOptions="Fill" VerticalOptions="Fill">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <StackLayout Grid.Row="0" x:Name="UpperCmdLayout" IsVisible="True" Orientation="Vertical" InputTransparent="true" CascadeInputTransparent="false" Spacing="6"
-                        HorizontalOptions="End">
+                    <StackLayout Grid.Row="0" x:Name="UpperCmdLayout" IsVisible="True" Orientation="Vertical" InputTransparent="true" CascadeInputTransparent="false" Spacing="6" HorizontalOptions="End">
                         <StackLayout x:Name="GameMenuLayout" Padding="0" Orientation="Horizontal" Spacing="6"
                             HorizontalOptions="End" VerticalOptions="Start" BackgroundColor="Transparent" >
                             <controls:SimpleImageButton x:Name="GameMenuButton" ImgSourcePath="resource://GnollHackX.Assets.UI.stone-menu.png" BtnClicked="GameMenuButton_Clicked"/>
@@ -93,8 +86,8 @@
                         <Button x:Name="ToggleMessageNumberButton" Text="" Clicked="ToggleMessageNumberButton_Clicked" HeightRequest="80" WidthRequest="80" BackgroundColor="Transparent" />
                     </StackLayout>
                     <Grid Grid.Row="2" x:Name="ButtonRowGrid" HorizontalOptions="Fill" VerticalOptions="End" BackgroundColor="#66000000">
-                        <controls:LabeledImageButton x:Name="lRowAbilitiesButton" IsVisible="False" LblText="Info" BtnLetter="A" ImgSourcePath="resource://GnollHackX.Assets.UI.home.png" BtnClicked="GHButton_Clicked" HorizontalOptions="Start" />
-                        <controls:LabeledImageButton x:Name="lRowWornItemsButton" IsVisible="False" LblText="Equipment" BtnLetter="]" ImgSourcePath="resource://GnollHackX.Assets.UI.worn.png" BtnClicked="GHButton_Clicked" HorizontalOptions="End" />
+                        <controls:LabeledImageButton x:Name="lRowAbilitiesButton" IsVisible="False" LblText="Stats" BtnLetter="A" ImgSourcePath="resource://GnollHackX.Assets.UI.home.png" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="Start" VerticalOptions="End" />
+                        <controls:LabeledImageButton x:Name="lRowWornItemsButton" IsVisible="False" LblText="Equipment" BtnLetter="]" ImgSourcePath="resource://GnollHackX.Assets.UI.worn.png" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="End" VerticalOptions="End" />
                         <StackLayout x:Name="ButtonRowStack" IsVisible="True" HorizontalOptions="Center" VerticalOptions="Center" Orientation="Vertical" Spacing="6">
                             <Grid x:Name="UpperCmdGrid" ColumnSpacing="6" HeightRequest="60" HorizontalOptions="End" >
                                 <Grid.RowDefinitions>
