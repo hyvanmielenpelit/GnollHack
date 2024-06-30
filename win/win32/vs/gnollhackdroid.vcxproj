@@ -185,7 +185,8 @@
       <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;DUMPHTML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UndefinePreprocessorDefinitions>WIN32;SUSPEND</UndefinePreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(LibDroidDir);$(IncDir);$(LibShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>-target arm64v8a-none-eabi</AdditionalOptions>
+      <AdditionalOptions>
+      </AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
@@ -199,6 +200,8 @@
       <PreprocessorDefinitions>__ANDROID_API__=$(AndroidAPILevelNumber);GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;GNOLLHACK_MAIN_PROGRAM;EXIT_THREAD_ON_EXIT;DUMPLOG;DUMPHTML;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CppLanguageStandard>Default</CppLanguageStandard>
       <PrecompiledHeaderCompileAs>CompileAsC</PrecompiledHeaderCompileAs>
+      <AdditionalOptions>
+      </AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
@@ -466,11 +469,11 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
   <Target Name="AfterBuild">
-	<Message Text="Start building aftergnollhackdroid.proj" Importance="High" />
+    <Message Text="Start building aftergnollhackdroid.proj" Importance="High" />
     <MSBuild Projects="aftergnollhackdroid.proj" Targets="Build" Properties="Configuration=$(Configuration);TargetArchAbi=$(TargetArchAbi)" />
   </Target>
   <Target Name="AfterClean">
-	  <Message Text="Start cleaning aftergnollhackdroid.proj" Importance="High" />
-	  <MSBuild Projects="aftergnollhackdroid.proj" Targets="Clean" Properties="Configuration=$(Configuration);TargetArchAbi=$(TargetArchAbi)" />
+    <Message Text="Start cleaning aftergnollhackdroid.proj" Importance="High" />
+    <MSBuild Projects="aftergnollhackdroid.proj" Targets="Clean" Properties="Configuration=$(Configuration);TargetArchAbi=$(TargetArchAbi)" />
   </Target>
 </Project>
