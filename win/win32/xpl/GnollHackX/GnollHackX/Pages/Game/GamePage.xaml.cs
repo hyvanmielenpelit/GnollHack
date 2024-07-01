@@ -576,8 +576,8 @@ namespace GnollHackX.Pages.Game
             get { return canvasView.UseGL; }
             set {
                 canvasView.UseGL = value;
-                CommandCanvas.UseGL = value;
 #if !WINDOWS
+                CommandCanvas.UseGL = value;
                 MenuCanvas.UseGL = value;
                 TextCanvas.UseGL = value;
 #endif
