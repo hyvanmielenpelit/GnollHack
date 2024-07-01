@@ -486,13 +486,13 @@ wd_message()
         You("are in non-scoring explore/discovery mode.");
 }
 
-unsigned long
+uint64_t
 sys_random_seed()
 {
-    unsigned long seed;
-    unsigned long pid = (unsigned long) getpid();
+    uint64_t seed;
+    uint64_t pid = (uint64_t) getpid();
 
-    seed = (unsigned long) getnow(); /* time((TIME_type) 0) */
+    seed = (uint64_t) getnow(); /* time((TIME_type) 0) */
     /* Quick dirty band-aid to prevent PRNG prediction */
     if (pid) {
         if (!(pid & 3L))

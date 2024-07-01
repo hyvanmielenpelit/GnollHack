@@ -41,7 +41,7 @@ typedef struct mswin_menu_item {
     int count;
     BOOL has_focus;
     boolean is_animated;
-    unsigned long miflags;
+    uint64_t miflags;
 } NHMenuItem, *PNHMenuItem;
 
 typedef struct mswin_gnollhack_menu_window {
@@ -1702,7 +1702,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                                 tileDC[a_sheet_idx], source_rt.left, source_rt.top, width, height, SRCCOPY);
 
                             /* Color */
-                            unsigned long draw_color = autodraws[autodraw].parameter1;
+                            uint64_t draw_color = autodraws[autodraw].parameter1;
                             unsigned char blue = (&((unsigned char)draw_color))[0];
                             unsigned char green = (&((unsigned char)draw_color))[1];
                             unsigned char red = (&((unsigned char)draw_color))[2];

@@ -54,7 +54,7 @@ typedef struct mswin_status_field {
 } mswin_status_field;
 
 typedef struct mswin_condition_field {
-    unsigned long mask;
+    uint64_t mask;
     const char * name;
     int bit_position;
 } mswin_condition_field;

@@ -5,12 +5,14 @@
 /*-Copyright (c) Pasi Kallinen, 2018. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
-#include "general.h"
-#include "action.h"
-#include "soundset.h"
-
 #ifndef OBJCLASS_H
 #define OBJCLASS_H
+
+#include "action.h"
+#include "config.h"
+#include "general.h"
+#include "integer.h"
+#include "soundset.h"
 
 enum multigen_types {
     MULTIGEN_SINGLE     = 0,
@@ -395,12 +397,12 @@ struct material_definition {
     short added_enchantability_multiplier;
     short added_enchantability_divisor;
     short digging_speed_bonus;
-    unsigned long extra_oflags1;
-    unsigned long extra_oflags2;
-    unsigned long extra_oflags3;
-    unsigned long extra_oflags4;
-    unsigned long extra_oflags5;
-    unsigned long extra_oflags6;
+    uint64_t extra_oflags1;
+    uint64_t extra_oflags2;
+    uint64_t extra_oflags3;
+    uint64_t extra_oflags4;
+    uint64_t extra_oflags5;
+    uint64_t extra_oflags6;
 };
 extern const struct material_definition material_definitions[MAX_MATERIAL_TYPES]; /* in o_init.c */
 
@@ -415,27 +417,27 @@ struct objclass {
     short oc_name_idx;              /* index of actual name */
     short oc_descr_idx;             /* description when name unknown */
     char *oc_uname;                 /* called by user */
-    Bitfield(oc_name_known, 1);     /* discovered */
-    Bitfield(oc_merge, 1);          /* merge otherwise equal objects */
-    Bitfield(oc_uses_known, 1);     /* obj->known affects full description;
+    uchar oc_name_known;     /* discovered */
+    uchar oc_merge;          /* merge otherwise equal objects */
+    uchar oc_uses_known;     /* obj->known affects full description;
                                        otherwise, obj->dknown and obj->bknown
                                        tell all, and obj->known should always
                                        be set for proper merging behavior. */
-    Bitfield(oc_pre_discovered, 1); /* Already known at start of game;
+    uchar oc_pre_discovered; /* Already known at start of game;
                                        won't be listed as a discovery. */
-    Bitfield(oc_magic, 1);          /* inherently magical object */
+    uchar oc_magic;          /* inherently magical object */
     uchar oc_enchantable;           /* Uses +X statistic (enchantment) */
     uchar oc_charged;               /* may have +n or (n) charges */
     uchar oc_recharging;            /* recharging type */
-    Bitfield(oc_unique, 1);         /* special one-of-a-kind object */
-    Bitfield(oc_nowish, 1);         /* cannot wish for this object */
+    uchar oc_unique;         /* special one-of-a-kind object */
+    uchar oc_nowish;         /* cannot wish for this object */
 
-    Bitfield(oc_big, 1);
+    uchar oc_big;
 #define oc_bimanual oc_big /* for weapons & tools used as weapons */
 #define oc_bulky oc_big    /* for armor */
-    Bitfield(oc_tough, 1); /* hard gems/rings */
+    uchar oc_tough; /* hard gems/rings */
 
-    Bitfield(oc_dir, 4);
+    uchar oc_dir;
 #define DIR_NOTDEF 0     /* for wands/spells:      not defined */
 #define NODIR 1     /* for wands/spells:      non-directional */
 #define IMMEDIATE 2 /*                        directional at one target */
@@ -482,12 +484,10 @@ struct objclass {
     (is_rustprone(otmp) || is_flammable(otmp) || is_rottable(otmp) \
      || is_corrodeable(otmp))
 
-    /* 3 free bits */
-
     schar oc_subtyp;             /* armors: armor category, weapons: weapon category, miscellaneous magic items: subclass, etc.*/
     schar oc_skill;              /* Skills of weapons, spellbooks, tools, gems */
     uchar oc_oprop, oc_oprop2, oc_oprop3; /* properties (invis, &c.) conveyed */
-    unsigned long oc_pflags;     /* Power and property flags */
+    uint64_t oc_pflags;     /* Power and property flags */
 
 #define P1_NONE                                                    0x00000000UL
 #define P1_POWER_1_APPLIES_TO_ALL_CHARACTERS                       0x00000001UL  
@@ -532,7 +532,7 @@ struct objclass {
     unsigned int oc_weight;    /* encumbrance (1 oz = 1/16 lb.) previously (1 cn = 0.1 lb.) */
     unsigned int oc_nutrition; /* food value */
 
-    long oc_cost;              /* base cost in shops */
+    int64_t oc_cost;              /* base cost in shops */
     
     /* Check the AD&D rules!  The FIRST is small monster damage. */
     /* for weapons, and tools, rocks, and gems useful as weapons */
@@ -541,7 +541,7 @@ struct objclass {
     short oc_wldice, oc_wldam, oc_wldmgplus;    /* large monster damage, also used for duration for spells */
     short oc_extra_damagetype;                  /* Type of extra damage caused by the (magic) weapon */
     short oc_wedice, oc_wedam, oc_wedmgplus;    /* extra damage used as a special effect influenced by target permissions mask */
-    unsigned long oc_aflags, oc_aflags2;        /* attack related flags, e.g. whether the attack is vorpal */
+    uint64_t oc_aflags, oc_aflags2;        /* attack related flags, e.g. whether the attack is vorpal */
 
 /* Attack flags for weapons, armor, weapon-like tools, and miscellaneous items */
 #define A1_NONE                                                      0x00000000UL
@@ -667,14 +667,14 @@ struct objclass {
     short oc_range;                            /* launchers: range for ammo, others throw range: >0 Fixed range, <0 Percentage of STR */
 
     /* general purpose */
-    long oc_oc1;        /* Used for spell cooldown; weapons and armors: ac bonus */
-    long oc_oc2;        /* Used for spell level; weapons and armors: mc bonus */
-    long oc_oc3;        /* Used for spell mana cost; other items: mana pool bonus */
-    long oc_oc4;        /* Used for spell attributes; other items: hit point bonus */
-    long oc_oc5;        /* Used for spell range; non-spellbooks: specification of attributes or other properties item gives bonuses to using otmp->enchantment */
-    long oc_oc6;        /* Used for spell radius; non-spellbooks: 0 => enchantment is used, otherise fixed bonus */
-    long oc_oc7;        /* Used for spell casting penalty */
-    long oc_oc8;        /* Used for multishot count */
+    int64_t oc_oc1;        /* Used for spell cooldown; weapons and armors: ac bonus */
+    int64_t oc_oc2;        /* Used for spell level; weapons and armors: mc bonus */
+    int64_t oc_oc3;        /* Used for spell mana cost; other items: mana pool bonus */
+    int64_t oc_oc4;        /* Used for spell attributes; other items: hit point bonus */
+    int64_t oc_oc5;        /* Used for spell range; non-spellbooks: specification of attributes or other properties item gives bonuses to using otmp->enchantment */
+    int64_t oc_oc6;        /* Used for spell radius; non-spellbooks: 0 => enchantment is used, otherise fixed bonus */
+    int64_t oc_oc7;        /* Used for spell casting penalty */
+    int64_t oc_oc8;        /* Used for multishot count */
 
 /* general*/
 #define oc_armor_class oc_oc1                        /* weapons and armor: AC used in ARM_AC_BONUS in do.c */
@@ -825,15 +825,15 @@ struct objclass {
     short oc_item_cooldown;             /* cooldown before the item can be used / applied / zapped / read etc. again */
     short oc_special_quality;         /* special quality, e.g. maximum number of candles in the candelabrum */
 
-    unsigned long oc_flags;         /* E.g. if indestructible or disintegration resistant */
-    unsigned long oc_flags2;        /* More flags */
-    unsigned long oc_flags3;        /* Even more flags */
-    unsigned long oc_flags4;        /* Even more flags */
-    unsigned long oc_flags5;        /* Even more flags */
-    unsigned long oc_flags6;        /* Even more flags */
+    uint64_t oc_flags;         /* E.g. if indestructible or disintegration resistant */
+    uint64_t oc_flags2;        /* More flags */
+    uint64_t oc_flags3;        /* Even more flags */
+    uint64_t oc_flags4;        /* Even more flags */
+    uint64_t oc_flags5;        /* Even more flags */
+    uint64_t oc_flags6;        /* Even more flags */
 
-    unsigned long oc_power_permissions;   /* roles, races, genders, and alignments that the item's powers are conferred to */
-    unsigned long oc_target_permissions;  /* symbol, M1 flag, M2 flag, M3 flag, etc. for which extra damage is deal to */
+    uint64_t oc_power_permissions;   /* roles, races, genders, and alignments that the item's powers are conferred to */
+    uint64_t oc_target_permissions;  /* symbol, M1 flag, M2 flag, M3 flag, etc. for which extra damage is deal to */
     int oc_critical_strike_percentage;    /* percentage to be used with A1_CRITICAL_STRIKE; can be used for other purposes for a S1_ flag, too */
 #define oc_effect_probability oc_critical_strike_percentage /* comestibles: probability of edible effect taking place */
     uchar oc_multigen_type;                 /* class number multi multigen_type */
@@ -1171,7 +1171,7 @@ struct objdescr {
     const char* oc_content_description; /* unknown description of contents (spellbooks, jars) */
     const char* oc_item_description;    /* description of the item */
     int oc_tile_floor_height;           /* (scaled) height of the item tile in pixels when it appears on the floor */
-    unsigned long oc_descr_flags;
+    uint64_t oc_descr_flags;
     short stand_animation;
     short enlargement;
     short replacement;

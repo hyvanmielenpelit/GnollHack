@@ -10,15 +10,6 @@ namespace GnollHackM
 namespace GnollHackX
 #endif
 {
-#if GNH_MAUI
-#if WINDOWS
-    using GHlong = int;
-    using GHulong = uint;
-#else
-    using GHlong = long;
-    using GHulong = ulong;
-#endif
-#endif
     /* Colors */
     public enum NhColor
     {
@@ -395,13 +386,7 @@ namespace GnollHackX
     {
         public IntPtr replacement_name;
         public sbyte number_of_tiles;
-        public
-#if GNH_MAUI
-            GHulong 
-#else
-            ulong
-#endif
-            replacement_events;
+        public ulong replacement_events;
         public int replacement_action; /* hard-coded - defines which tile to use and when */
         public int general_autodraw; /* For zero-tile replacements */
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.MaxTilesPerReplacement)]
@@ -413,13 +398,7 @@ namespace GnollHackX
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.MaxTilesPerReplacement)]
         public int[] tile_autodraw;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.MaxTilesPerReplacement)]
-        public
-#if GNH_MAUI
-            GHulong[] 
-#else
-            ulong[]
-#endif
-            tile_flags;
+        public ulong[] tile_flags;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -432,15 +411,9 @@ namespace GnollHackX
         public int source_glyph2;
         public int source_glyph3;
         public int source_glyph4;
-#if GNH_MAUI
-        public GHulong parameter1;
-        public GHulong parameter2;
-        public GHulong parameter3;
-#else
         public ulong parameter1;
         public ulong parameter2;
         public ulong parameter3;
-#endif
     }
 
     public enum layer_types
@@ -479,13 +452,7 @@ namespace GnollHackX
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = (int)layer_types.MAX_LAYERS)]
         public int[] layer_gui_glyphs;
 
-        public
-#if GNH_MAUI
-            GHulong
-#else
-            ulong
-#endif
-            layer_flags;
+        public ulong layer_flags;
         public uint m_id;  /* check that the monster found at the square is the one that is supposed to be drawn by comparing their m_ids */
         public uint o_id;  /* this is the o_id of the possibly moving boulder */
 
@@ -502,39 +469,15 @@ namespace GnollHackX
         public int monster_maxhp;
         public int rider_glyph;
         public int rider_gui_glyph;
-        public
-#if GNH_MAUI
-            GHulong
-#else
-            ulong
-#endif
-            status_bits;
-        public
-#if GNH_MAUI
-            GHulong
-#else
-            ulong
-#endif
-            condition_bits;
+        public ulong status_bits;
+        public ulong condition_bits;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.NUM_BUFF_BIT_ULONGS)]
-        public
-#if GNH_MAUI
-            GHulong[]
-#else
-            ulong[]
-#endif 
-            buff_bits;
+        public ulong[] buff_bits;
 
         public sbyte wsegdir;
         public sbyte reverse_prev_wsegdir;
-        public
-#if GNH_MAUI
-            GHulong
-#else
-            ulong
-#endif 
-            monster_flags;
+        public ulong monster_flags;
 
         public short object_height;
 
@@ -547,13 +490,7 @@ namespace GnollHackX
         public byte missile_mythic_suffix;
         public byte missile_eroded;
         public byte missile_eroded2;
-        public
-#if GNH_MAUI
-            GHulong
-#else
-            ulong
-#endif
-            missile_flags;
+        public ulong missile_flags;
         public short missile_height;
         public sbyte missile_origin_x;
         public sbyte missile_origin_y;
@@ -903,40 +840,38 @@ namespace GnollHackX
         public IntPtr v;
         public IntPtr cobj; /* contents list for containers */
         public uint o_id;
+        public uint owt;
+        public short otyp; /* object class number */
         public sbyte ox, oy;
         public sbyte ox0, oy0;
-        public short otyp; /* object class number */
-        public uint owt;
-        public
-#if GNH_MAUI
-            GHlong
-#else
-            long
-#endif
-            quan; /* number of items */
+
+        public long quan;         /* number of items */
+        public long age;          /* creation date */
+        public long owornmask;
+        public ulong item_flags;  /* general purpose object flags, like speflags */
+        public ulong speflags;    /* anything else that might be going on with an item, not affected by cancellation */
 
         public short enchantment; /* Always set to zero by cancellation */
         public short charges; /* number of charges for wand or charged tool ( >= -1 ), always set to -1/0 by cancellation */
         public short special_quality; /* item-specific special quality, e.g., the amount of wetness of a towel, number of candles attached to candelabrum, not affected by cancellation */
-        public
-#if GNH_MAUI
-            GHulong
-#else
-            ulong
-#endif
-            speflags; /* anything else that might be going on with an item, not affected by cancellation */
+        public short oartifact; /* artifact array index */
         public sbyte oclass;    /* object class */
         public sbyte invlet;    /* designation in inventory */
-        public short oartifact; /* artifact array index */
         public byte mythic_prefix; /* magical quality for a weapon or armor giving additional powers */
         public byte mythic_suffix;  /* magical quality for a weapon or armor giving additional powers */
         public byte exceptionality; /* exceptional, elite, etc. weapon, multiplies base damage */
         public byte elemental_enchantment; /* cold, fire, lightning, or deathly */
+        public byte material; /*  specific material of this object */
 
         public sbyte recharged; /* number of times it's been recharged */
         public sbyte where;        /* where the object thinks it is */
         public sbyte timed; /* # of fuses (timers) attached to this Obj */
 
+        public int corpsenm;         /* type of corpse is mons[corpsenm] */
+        public int usecount;           /* overloaded for various things that tally */
+        public uint oeaten;        /* nutrition left in food, if partly eaten */
+
+#if BITFIELDS
         internal uint bitfields;
 
         public uint cursed 
@@ -1089,35 +1024,54 @@ namespace GnollHackX
             get { return (bitfields >> 31) & 0x00000001U; }
             set { bitfields = (bitfields & ~(0x00000001U << 31)) | ((value & 0x00000001U) << 31); }
         }
+#else
+        public byte cursed;
+        public byte blessed;
+        public byte unpaid;    /* on some bill */
+        public byte no_charge; /* if shk shouldn't charge for this */
+        public byte known;     /* exact nature & enchantment & charges known */
+        public byte dknown;    /* description = color or text known */
+        public byte bknown;    /* blessing or curse known */
+        public byte rknown;    /* rustproof or not known */
+        public byte oeroded;  /* rusted/burnt weapon/armor */
+        public byte oeroded2; /* corroded/rotted weapon/armor */
+        public byte oerodeproof; /* erodeproof weapon/armor */
+        public byte olocked;     /* object is locked */
+        public byte obroken;     /* lock has been broken */
+        public byte otrapped;    /* container is trapped */
+        public byte lamplit;   /* a light-source -- can be lit */
+        public byte makingsound;   /* a sound-source -- can be turned on to make noise */
+        public byte globby;    /* combines with like types on adjacent squares */
+        public byte greased;    /* covered with grease */
+        public byte nomerge;    /* set temporarily to prevent merging */
+        public byte was_thrown; /* thrown by hero since last picked up */
+        public byte has_special_tileset; /* thrown by hero since last picked up */
+        public byte in_use; /* for magic items before useup items */
+        public byte bypass; /* mark this as an object to be skipped by bhito() */
+        public byte cknown; /* contents of container assumed to be known */
+        public byte lknown; /* locked/unlocked status is known */
+        public byte tknown; /* trapped status of a container is known */
+        public byte nknown; /* artifact's true name is known */
+        public byte aknown; /* artifact status is known; if set, the artifact will be termed "the Artifact" instead of "item named Artifact" */
+        public byte mknown; /* mythic quality is known */
+        public byte rotknown; /* rotting status is known */
+#endif
 
-        public int corpsenm;         /* type of corpse is mons[corpsenm] */
-        public int usecount;           /* overloaded for various things that tally */
-        public uint oeaten;        /* nutrition left in food, if partly eaten */
-        public
-#if GNH_MAUI
-            GHlong
-#else
-            long
-#endif 
-            age;               /* creation date */
-        public
-#if GNH_MAUI
-            GHlong
-#else
-            long
-#endif 
-            owornmask;
+        public uint reserved;  /* reserved for, e.g., more bitfields */
+
+        public uint o_id_memory;  /* This is a memory object of this o_id */
+        public uint m_id_memory;  /* This is a memory object of this mimic m_id */
+
         public short cooldownleft;       /* item cooldown left before it can be used again*/
         public short repowerleft;       /* artifact cooldown left before its invoke ability can be used again*/
         public short detectioncount;    /* monsters detected for WARN_ORC and other similar properties */
-        public byte invokeon;      /* the object's / artifact's invoked ability is on */
         public short invokeleft;       /* counter for an artifact's item-specific invoke ability */
-        public uint o_id_memory;  /* This is a memory object of this o_id */
-        public uint m_id_memory;  /* This is a memory object of this mimic m_id */
+        public byte invokeon;      /* the object's / artifact's invoked ability is on */
 
         public byte special_tileset;
         public int glyph;
         public int gui_glyph;
+
         public IntPtr oextra; /* pointer to oextra struct */
     }
 
@@ -1200,36 +1154,12 @@ namespace GnollHackX
         public int mhp;
         public int mhpmax;
 
-        public
-#if GNH_MAUI
-            GHulong
-#else
-            ulong
-#endif
-            status_bits;
-        public
-#if GNH_MAUI
-            GHulong
-#else
-            ulong
-#endif
-            condition_bits;
+        public ulong status_bits;
+        public ulong condition_bits;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = GHConstants.NUM_BUFF_BIT_ULONGS)]
-        public
-#if GNH_MAUI
-            GHulong[] 
-#else
-            ulong[]
-#endif
-            buff_bits;
+        public ulong[] buff_bits;
 
-        public
-#if GNH_MAUI
-            GHulong
-#else
-            ulong
-#endif
-            monster_flags;
+        public ulong monster_flags;
     }
 
     [Flags]
@@ -1821,7 +1751,7 @@ namespace GnollHackX
         public const string ReplaySharedZipFileNamePrefix = "shared-replay-";
         public const string ReplaySharedZipFileNameSuffix = ".zip";
         public const string ReplayAllSharedZipFileNamePrefix = "shared-replays-";
-        public const string AzureBlobStorageReplayContainerName = "replays";
+        public const string AzureBlobStorageReplayContainerNamePrefix = "replays";
         public const string AzureBlobStorageDelimiter = "/";
         public const string AzureBlobStorageGeneralDirectoryName = "_Anonymous";
         public const bool GZipIsDefaultReplayCompression = true;

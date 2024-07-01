@@ -69,7 +69,7 @@ struct region_type_definition {
     boolean blocks_vision;
     xchar is_light_source;
     enum region_soundset_types soundset;
-    unsigned long rt_flags;
+    uint64_t rt_flags;
 };
 
 extern struct region_type_definition region_type_definitions[MAX_REGION_TYPES];
@@ -99,7 +99,7 @@ typedef struct nhregion {
     boolean enter_proc_is_on;
     boolean can_leave_proc_is_on;
     boolean leave_proc_is_on;
-    long time_to_live;          /* Time to live. -1 is forever */
+    int64_t time_to_live;          /* Time to live. -1 is forever */
     unsigned int player_flags; /* (see above) */
     unsigned int *monsters;    /* Monsters currently inside this region */
     short n_monst;             /* Number of monsters inside this region */
@@ -118,7 +118,7 @@ typedef struct nhregion {
     int dmg_diesize;
     int dmg_plus;
     double dmg_adjustment;
-    unsigned long region_flags; /* No teleport region etc. */
+    uint64_t region_flags; /* No teleport region etc. */
 
     boolean lamplit;        /* region is attached to a light source, which temp-lights the region */
     boolean makingsound;    /* region is attached to a sound source, which may cause ambient sounds outside and inside the region */

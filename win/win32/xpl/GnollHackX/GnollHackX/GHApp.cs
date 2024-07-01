@@ -4720,12 +4720,20 @@ namespace GnollHackX
             }
         }
 
+        public static string GetAzureBlobStorageReplayContainerName()
+        {
+            ulong verCompat = GHVersionCompatibility;
+            if (verCompat == 0)
+                return GHConstants.AzureBlobStorageReplayContainerNamePrefix;
+            return GHConstants.AzureBlobStorageReplayContainerNamePrefix + "-" + verCompat.ToString();
+        }
+
         private static CancellationTokenSource _uploadCts = null;
         public static async Task<SendResult> SendReplayFile(string replay_filename, int status_type, int status_datatype, bool is_from_queue)
         {
             SendResult res = new SendResult();
             BlobServiceClient blobServiceClient = GetBlobServiceClient();
-            BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(GHConstants.AzureBlobStorageReplayContainerName);
+            BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(GetAzureBlobStorageReplayContainerName());
             string prefix = XlogUserNameVerified ? XlogUserName : GHConstants.AzureBlobStorageGeneralDirectoryName;
             string full_filepath = replay_filename;
             bool fileexists = File.Exists(full_filepath);
@@ -5773,8 +5781,22 @@ namespace GnollHackX
                                                             fixed (byte* otypdata_byte_ptr = otypdata_bytes)
                                                             {
                                                                 IntPtr otypdata_ptr = (IntPtr)otypdata_byte_ptr;
-                                                                game.ClientCallback_AddExtendedMenu(winid, glyph, identifier, accel, groupaccel, attr, color, text, presel,
-                                                                    maxcount, oid, mid, headingaccel, special_mark, menuflags, dataflags, style, otmpdata_ptr, otypdata_ptr);
+
+                                                                int attrs_size = br.ReadInt32();
+                                                                byte[] attrs_bytes = attrs_size > 0 ? br.ReadBytes(attrs_size) : null;
+                                                                fixed (byte* attrs_byte_ptr = attrs_bytes)
+                                                                {
+                                                                    IntPtr attrs_ptr = attrs_bytes == null ? IntPtr.Zero : (IntPtr)otypdata_byte_ptr;
+
+                                                                    int colors_size = br.ReadInt32();
+                                                                    byte[] colors_bytes = colors_size > 0 ? br.ReadBytes(colors_size) : null;
+                                                                    fixed (byte* colors_byte_ptr = colors_bytes)
+                                                                    {
+                                                                        IntPtr colors_ptr = colors_bytes == null ? IntPtr.Zero : (IntPtr)otypdata_byte_ptr;
+                                                                        game.ClientCallback_AddExtendedMenu(winid, glyph, identifier, accel, groupaccel, attr, color, text, presel,
+                                                                            maxcount, oid, mid, headingaccel, special_mark, menuflags, dataflags, style, otmpdata_ptr, otypdata_ptr, attrs_ptr, colors_ptr);
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -6523,8 +6545,8 @@ namespace GnollHackX
             var mos = searcher.Get();
             foreach (ManagementObject mo in mos)
             {
-                string? minRefreshRate = mo.Properties["MinRefreshRate"]?.Value?.ToString();
-                string? maxRefreshRate = mo.Properties["MaxRefreshRate"]?.Value?.ToString();
+                string minRefreshRate = mo.Properties["MinRefreshRate"]?.Value?.ToString();
+                string maxRefreshRate = mo.Properties["MaxRefreshRate"]?.Value?.ToString();
                 int minRefreshInt = -1;
                 if (string.IsNullOrWhiteSpace(minRefreshRate))
                     minRefreshInt = -2;
@@ -6535,8 +6557,8 @@ namespace GnollHackX
                     maxRefreshInt = -2;
                 else if (!int.TryParse(maxRefreshRate, out maxRefreshInt))
                     maxRefreshInt = -3;
-                string? description = mo.Properties["Description"]?.Value?.ToString();
-                string? adapterDACType = mo.Properties["AdapterDACType"]?.Value?.ToString();
+                string description = mo.Properties["Description"]?.Value?.ToString();
+                string adapterDACType = mo.Properties["AdapterDACType"]?.Value?.ToString();
                 bool isCurrent = !string.IsNullOrWhiteSpace(minRefreshRate);
                 bool isIntegratedGraphics = adapterDACType == "Internal";
                 DeviceGPUs.Add(new DeviceGPU(description ?? "", isCurrent, isIntegratedGraphics, minRefreshInt, maxRefreshInt));

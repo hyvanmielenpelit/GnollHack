@@ -501,7 +501,7 @@ int trouble;
                Without something like this, fix_all_troubles can get
                stuck in an infinite loop trying to fix STUCK_IN_WALL
                and repeatedly failing. */
-            set_itimeout(&HPasses_walls, (long) (d(4, 4) + 4)); /* 8..20 */
+            set_itimeout(&HPasses_walls, (int64_t) (d(4, 4) + 4)); /* 8..20 */
             refresh_u_tile_gui_info(TRUE);
             /* how else could you move between packed rocks or among
                lattice forming "solid" rock? */
@@ -2107,7 +2107,7 @@ water_prayer(bless_water)
 boolean bless_water;
 {
     register struct obj *otmp;
-    register long changed = 0;
+    register int64_t changed = 0;
     boolean other = FALSE, bc_known = !(Blind || Hallucination);
 
     for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere) 
@@ -2147,7 +2147,7 @@ symbol_prayer(bless_stuff)
 boolean bless_stuff;
 {
     register struct obj* otmp;
-    register long changed = 0;
+    register int64_t changed = 0;
     boolean other = FALSE, bc_known = !(Blind || Hallucination);
     char buf[BUFSZ];
     Strcpy(buf, "");
@@ -3708,7 +3708,7 @@ int dx, dy;
 {
     register struct obj *otmp;
     int nx, ny;
-    long count = 0L;
+    int64_t count = 0L;
 
     for (otmp = level.objects[u.ux + dx][u.uy + dy]; otmp;
          otmp = otmp->nexthere) {

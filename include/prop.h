@@ -198,7 +198,7 @@ enum prop_types {
 /* Definitions were moved here from obj.h and you.h */
 struct prop {
     /*** Properties conveyed by objects ***/
-    long extrinsic;
+    int64_t extrinsic;
 /* Armor */
 #define W_ARM  0x00000001L  /* Body armor */
 #define W_ARMC 0x00000002L  /* Cloak */
@@ -260,7 +260,7 @@ struct prop {
 #define W_CARRIED 0x80000000L              /* Carried */
 
     /*** Timeouts, permanent properties, and other flags ***/
-    long intrinsic;
+    int64_t intrinsic;
 
 /* Timed properties */
 #define TIMEOUT 0x00ffffffL       /* Up to 16 million turns */
@@ -280,9 +280,9 @@ struct prop_color {
 struct prop_info {
     const char* prop_tile_name;
 
-    Bitfield(show_buff, 1);
-    Bitfield(buff_text_needs_background, 1);
-    Bitfield(recurring, 1);            /* Is property recurring? EProperty causes timeout in HProperty to increase by recurring_constant + rnd(recurring_random) */
+    boolean show_buff;
+    boolean buff_text_needs_background;
+    boolean recurring;            /* Is property recurring? EProperty causes timeout in HProperty to increase by recurring_constant + rnd(recurring_random) */
 
     short recurring_constant;
     short recurring_random;
@@ -290,7 +290,7 @@ struct prop_info {
     struct prop_color buff_text_color;
     struct prop_color buff_bk_color;
 
-    unsigned long pflags;
+    uint64_t pflags;
 };
 
 #define PROPFLAGS_NONE                  0x00000000UL

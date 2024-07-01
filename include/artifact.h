@@ -142,11 +142,11 @@ struct artifact {
     uchar exceptionality;
     uchar mythic_prefix;
     uchar mythic_suffix;
-    unsigned long aflags;  /* artifact flags */
-    unsigned long aflags2; /* artifact flags2 */
-    unsigned long spfx;    /* special effect from wielding/wearing */
-    unsigned long cspfx;   /* special effect just from carrying obj */
-    unsigned long mtype;   /* monster type, symbol, or flag */
+    uint64_t aflags;  /* artifact flags */
+    uint64_t aflags2; /* artifact flags2 */
+    uint64_t spfx;    /* special effect from wielding/wearing */
+    uint64_t cspfx;   /* special effect just from carrying obj */
+    uint64_t mtype;   /* monster type, symbol, or flag */
     int tohit_dice;
     int tohit_diesize;
     int tohit_plus;
@@ -162,7 +162,7 @@ struct artifact {
     aligntyp alignment; /* alignment of bequeathing gods */
     short role;         /* character role associated with */
     short race;         /* character race associated with */
-    long cost; /* price when sold to hero (default 100 x base cost) */
+    int64_t cost; /* price when sold to hero (default 100 x base cost) */
     char acolor;        /* color to use if artifact 'glows' */
     char ocolor;        /* color used for object instead of its normal color */
     int tile_floor_height;

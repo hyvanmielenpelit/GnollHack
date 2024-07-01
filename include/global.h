@@ -9,6 +9,7 @@
 #define GLOBAL_H
 
 #include <stdio.h>
+#include "integer.h"
 
 /* #define BETA */  /* development or beta testing [MRS] */
 
@@ -302,7 +303,7 @@ typedef xchar boolean; /* 0 or 1 */
 
 /* primitive memory leak debugging; see alloc.c */
 #ifdef MONITOR_HEAP
-extern long *FDECL(nhalloc, (size_t, const char *, int));
+extern int64_t *FDECL(nhalloc, (size_t, const char *, int));
 extern void FDECL(nhfree, (genericptr_t, const char *, int));
 extern char *FDECL(nhdupstr, (const char *, const char *, int));
 #ifndef __FILE__
@@ -324,22 +325,22 @@ extern char* FDECL(cpystr, (const char*, const char*)); /* ditto */
 /* Used for consistency checks of various data files; declare it here so
    that utility programs which include config.h but not hack.h can see it. */
 struct version_info {
-    unsigned long incarnation;   /* actual version number */
-    unsigned long feature_set;   /* bitmask of config settings */
-    unsigned long entity_count;  /* # of monsters and objects */
-    unsigned long struct_sizes1; /* size of key structs */
-    unsigned long struct_sizes2; /* size of more key structs */
+    uint64_t incarnation;   /* actual version number */
+    uint64_t feature_set;   /* bitmask of config settings */
+    uint64_t entity_count;  /* # of monsters and objects */
+    uint64_t struct_sizes1; /* size of key structs */
+    uint64_t struct_sizes2; /* size of more key structs */
     unsigned char short_size;
     unsigned char int_size;
     unsigned char long_size;
     unsigned char ptr_size;
-    unsigned long version_compatibility; /* used in cases where an older version of GnollHack tries to load a compatible but newer saved game; tells what is the oldest compatible version */
+    uint64_t version_compatibility; /* used in cases where an older version of GnollHack tries to load a compatible but newer saved game; tells what is the oldest compatible version */
 };
 
 struct savefile_info {
-    unsigned long sfi1; /* compression etc. */
-    unsigned long sfi2; /* miscellaneous */
-    unsigned long sfi3; /* thirdparty */
+    uint64_t sfi1; /* compression etc. */
+    uint64_t sfi2; /* miscellaneous */
+    uint64_t sfi3; /* thirdparty */
 };
 
 #ifdef NHSTDC

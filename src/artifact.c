@@ -421,7 +421,7 @@ nartifact_exist()
 boolean
 artifact_has_flag(otmp, abil)
 struct obj *otmp;
-unsigned long abil;
+uint64_t abil;
 {
     const struct artifact *arti = get_artifact(otmp);
 
@@ -461,7 +461,7 @@ int prop_index;
         return TRUE;
 
     /* Properties from spfx and cspx flags */
-    unsigned long abil = prop_to_spfx(prop_index);
+    uint64_t abil = prop_to_spfx(prop_index);
     boolean worn_mask_ok = FALSE;
     if (is_wielded_item(otmp))
         worn_mask_ok = !!(otmp->owornmask & W_WIELDED_WEAPON);
@@ -718,12 +718,12 @@ struct obj *otmp;
 void
 set_artifact_intrinsic(otmp, wp_mask)
 struct obj *otmp;
-long wp_mask;
+int64_t wp_mask;
 {
-    long *propptr = 0;
+    int64_t *propptr = 0;
     register const struct artifact *oart = get_artifact(otmp);
     register uchar proptyp;
-    register unsigned long spfx;
+    register uint64_t spfx;
 
     if (!oart)
         return;
@@ -740,7 +740,7 @@ long wp_mask;
     /* intrinsics from the spfx and cspfx fields; there could be more than one */
     spfx = (wp_mask != W_ARTIFACT_CARRIED) ? oart->spfx : oart->cspfx;
 
-    unsigned long bit = 0x00000001UL;
+    uint64_t bit = 0x00000001UL;
     for (int i = 0; i < 32; i++)
     {
         if (i > 0)
@@ -931,7 +931,7 @@ struct monst *mtmp;
     } 
     else if (weap->aflags & AF_DCLAS) 
     {
-        return (weap->mtype == (unsigned long) ptr->mlet);
+        return (weap->mtype == (uint64_t) ptr->mlet);
     } 
     else if (weap->aflags & AF_DFLAG1) 
     {
@@ -1045,7 +1045,7 @@ int dmgtype;
 }
 /* return the M2 flags of monster that an artifact's special attacks apply
  * against */
-long
+uint64
 spec_m2(otmp)
 struct obj *otmp;
 {
@@ -1053,7 +1053,7 @@ struct obj *otmp;
 
     if (artifact)
         return artifact->mtype;
-    return 0L;
+    return 0UL;
 }
 
 /* special attack bonus */
@@ -2662,7 +2662,7 @@ struct obj *obj;
         case ARTINVOKE_HEALING:
         {
             int healamt = (u.uhpmax + 1 - u.uhp) / 2;
-            long creamed = (long) u.ucreamed;
+            int64_t creamed = (int64_t) u.ucreamed;
             play_sfx_sound(SFX_HEALING);
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
             special_effect_wait_until_action(0);
@@ -3280,7 +3280,7 @@ uchar inv_prop;
 }
 
 /* Return the price sold to the hero of a given artifact or unique item */
-long
+int64_t
 arti_cost(otmp)
 struct obj *otmp;
 {
@@ -3349,7 +3349,7 @@ uchar adtyp_index;
 
 STATIC_VAR const struct abil2spfx_tag {
     int prop;
-    unsigned long spfx;
+    uint64_t spfx;
 } abil2spfx[] = {
     { DEATH_RESISTANCE, SPFX_DEATH_RES },
     { DRAIN_RESISTANCE, SPFX_DRAIN_RES },
@@ -3385,7 +3385,7 @@ STATIC_VAR const struct abil2spfx_tag {
     { DIVINE_CHARISMA, SPFX_CHA_25 },
 };
 
-unsigned long
+uint64_t
 prop_to_spfx(prop_index)
 int prop_index;
 {
@@ -3401,7 +3401,7 @@ int prop_index;
 
 int
 spfx_to_prop(spfx_bit)
-unsigned long spfx_bit;
+uint64_t spfx_bit;
 {
 
     int k;
@@ -3421,8 +3421,8 @@ what_gives(prop_index)
 int prop_index;
 {
     struct obj *obj;
-    long wornbits;
-    long spfx = prop_to_spfx(prop_index);
+    int64_t wornbits;
+    uint64_t spfx = prop_to_spfx(prop_index);
 
     wornbits = u.uprops[prop_index].extrinsic;
 
@@ -3498,7 +3498,7 @@ int prop_index;
         /* Do nothing, since mon is not being used */
     }
 
-    long spfx = prop_to_spfx(prop_index);
+    uint64_t spfx = prop_to_spfx(prop_index);
 
     return (obj && obj->oartifact && (artilist[obj->oartifact].carried_prop == prop_index || (artilist[obj->oartifact].cspfx & spfx)));
 }
@@ -3791,7 +3791,7 @@ boolean drop_untouchable;
 {
     struct artifact *art;
     boolean beingworn, carryeffect, invoked;
-    long wearmask = ~(W_QUIVER | W_SWAP_WEAPON | W_BALL);
+    int64_t wearmask = ~(W_QUIVER | W_SWAP_WEAPON | W_BALL);
 
     beingworn = ((obj->owornmask & wearmask) != 0L
                  /* some items in use don't have any wornmask setting */

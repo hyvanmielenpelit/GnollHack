@@ -126,9 +126,9 @@ struct autodraw_definition {
     int source_glyph2;
     int source_glyph3;
     int source_glyph4;
-    unsigned long parameter1;
-    unsigned long parameter2;
-    unsigned long parameter3;
+    uint64_t parameter1;
+    uint64_t parameter2;
+    uint64_t parameter3;
     /* and other useful stuff if need be */
 };
 
@@ -2441,7 +2441,7 @@ enum replacement_action_types
 struct replacement_definition {
     const char* replacement_name;
     schar number_of_tiles;
-    unsigned long replacement_events;
+    uint64_t replacement_events;
     enum replacement_action_types replacement_action; /* hard-coded - defines which tile to use and when */
     enum autodraw_types general_autodraw; /* For zero-tile replacements */
     schar missile_dir;
@@ -2449,7 +2449,7 @@ struct replacement_definition {
     short tile_animation[MAX_TILES_PER_REPLACEMENT];
     short tile_enlargement[MAX_TILES_PER_REPLACEMENT];
     enum autodraw_types tile_autodraw[MAX_TILES_PER_REPLACEMENT];
-    unsigned long tile_flags[MAX_TILES_PER_REPLACEMENT];
+    uint64_t tile_flags[MAX_TILES_PER_REPLACEMENT];
 };
 
 #define REPLACEMENT_EVENT_NO_EVENT              0x00000000UL
@@ -2875,12 +2875,12 @@ struct animation_timer_list {
     boolean zap_animation_counter_on[MAX_PLAYED_ZAP_ANIMATIONS];
     boolean special_effect_animation_counter_on[MAX_PLAYED_SPECIAL_EFFECTS];
 
-    long general_animation_counter;
-    long u_action_animation_counter;
-    long m_action_animation_counter;
-    long explosion_animation_counter;
-    long zap_animation_counter[MAX_PLAYED_ZAP_ANIMATIONS];
-    long special_effect_animation_counter[MAX_PLAYED_SPECIAL_EFFECTS];
+    int64_t general_animation_counter;
+    int64_t u_action_animation_counter;
+    int64_t m_action_animation_counter;
+    int64_t explosion_animation_counter;
+    int64_t zap_animation_counter[MAX_PLAYED_ZAP_ANIMATIONS];
+    int64_t special_effect_animation_counter[MAX_PLAYED_SPECIAL_EFFECTS];
 
     uchar m_action_animation_x;
     uchar m_action_animation_y;

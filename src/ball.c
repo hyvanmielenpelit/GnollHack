@@ -778,7 +778,7 @@ xchar x, y;
     if (x != u.ux || y != u.uy) {
         STATIC_VAR const char *pullmsg = "The ball pulls you out of the %s!";
         struct trap *t;
-        long side;
+        int64_t side;
 
         if (u.utrap
             && u.utraptype != TT_INFLOOR && u.utraptype != TT_BURIEDBALL) {

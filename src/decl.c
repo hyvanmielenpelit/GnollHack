@@ -57,7 +57,7 @@ NEARDATA int doorindex = 0;
 NEARDATA char *save_cm = 0;
 
 NEARDATA struct kinfo killer = DUMMY;
-NEARDATA long done_money = 0;
+NEARDATA int64_t done_money = 0;
 const char *nomovemsg = 0;
 int nomovemsg_attr = ATR_NONE;
 int nomovemsg_color = NO_COLOR;
@@ -74,7 +74,7 @@ NEARDATA struct fruit *ffruit = (struct fruit *) 0;
 NEARDATA char tune[6] = DUMMY;
 NEARDATA boolean ransacked = 0;
 
-NEARDATA unsigned long n_game_recoveries = 0;
+NEARDATA uint64_t n_game_recoveries = 0;
 
 const char *occtxt = DUMMY;
 enum object_soundset_types occsoundset = OBJECT_SOUNDSET_NONE; /* defined when occupation != NULL */
@@ -101,7 +101,7 @@ const char dnqdescs[] = "Disarm\nNeglect\nCancel";
 const char sdqdescs[] = "Stash\nDrop\nNothing";
 const char sadqdescs[] = "Stash\nAuto\nDrop\nNothing";
 
-NEARDATA long yn_number = 0L;
+NEARDATA int64_t yn_number = 0L;
 
 const char disclosure_options[] = "iavgco";
 
@@ -265,9 +265,9 @@ const int shield_static[SHIELD_COUNT] = {
 
 NEARDATA struct spell spl_book[MAXSPELL + 1] = { DUMMY };
 
-NEARDATA long moves = 1L, monstermoves = 1L;
+NEARDATA int64_t moves = 1L, monstermoves = 1L;
 /* These diverge when player is Fast */
-NEARDATA long wailmsg = 0L;
+NEARDATA int64_t wailmsg = 0L;
 
 /* objects that are moving to another dungeon level */
 NEARDATA struct obj *migrating_objs = (struct obj *) 0;
@@ -425,8 +425,8 @@ NEARDATA struct monst *mydogs = (struct monst *) 0;
 NEARDATA struct monst *migrating_mons = (struct monst *) 0;
 
 NEARDATA struct mvitals mvitals[NUM_MONSTERS];
-NEARDATA long domove_attempting = 0L;
-NEARDATA long domove_succeeded = 0L;
+NEARDATA int64_t domove_attempting = 0L;
+NEARDATA int64_t domove_succeeded = 0L;
 
 NEARDATA struct c_color_names c_color_names = {
     "black",  "amber", "golden", "light blue", "red",   "green",
@@ -553,7 +553,7 @@ const char *ARGV0;
 
 /* support for lint.h */
 unsigned nhUse_dummy = 0;
-unsigned long file_end_marker = 0xF23EE6D8;
+uint64_t file_end_marker = 0xF23EE6D8;
 
 const int no_multiattrs[32] = { 0 };
 const int multicolor_red1[1] = { CLR_RED };

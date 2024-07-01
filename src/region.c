@@ -42,7 +42,7 @@ void FDECL(remove_mon_from_regions, (struct monst *));
 NhRegion *FDECL(create_msg_region, (XCHAR_P,XCHAR_P,XCHAR_P,XCHAR_P,
                                     const char *,const char *));
 boolean FDECL(enter_force_field, (genericptr,genericptr));
-NhRegion *FDECL(create_force_field, (XCHAR_P,XCHAR_P,int,long));
+NhRegion *FDECL(create_force_field, (XCHAR_P,XCHAR_P,int,int64_t));
 #endif
 
 STATIC_DCL void FDECL(reset_region_mids, (NhRegion *));
@@ -707,7 +707,7 @@ int mode;
         bwrite(fd, (genericptr_t)&regions[i]->enter_proc_is_on, sizeof(boolean));
         bwrite(fd, (genericptr_t)&regions[i]->can_leave_proc_is_on, sizeof(boolean));
         bwrite(fd, (genericptr_t)&regions[i]->leave_proc_is_on, sizeof(boolean));
-        bwrite(fd, (genericptr_t) &regions[i]->time_to_live, sizeof(long));
+        bwrite(fd, (genericptr_t) &regions[i]->time_to_live, sizeof(int64_t));
         bwrite(fd, (genericptr_t) &regions[i]->player_flags,
                sizeof(unsigned int));
         bwrite(fd, (genericptr_t) &regions[i]->n_monst, sizeof(short));
@@ -722,7 +722,7 @@ int mode;
         bwrite(fd, (genericptr_t) &regions[i]->dmg_diesize, sizeof(int));
         bwrite(fd, (genericptr_t) &regions[i]->dmg_plus, sizeof(int));
         bwrite(fd, (genericptr_t) &regions[i]->dmg_adjustment, sizeof(double));
-        bwrite(fd, (genericptr_t) &regions[i]->region_flags, sizeof(unsigned long));
+        bwrite(fd, (genericptr_t) &regions[i]->region_flags, sizeof(uint64_t));
         bwrite(fd, (genericptr_t) &regions[i]->lamplit, sizeof(boolean));
         bwrite(fd, (genericptr_t) &regions[i]->makingsound, sizeof(boolean));
     }
@@ -739,7 +739,7 @@ boolean ghostly; /* If a bones file restore */
 {
     int i, j;
     size_t n;
-    long tmstamp;
+    int64_t tmstamp;
     char *msg_buf;
     Strcpy(debug_buf_4, "rest_regions");
 
@@ -793,7 +793,7 @@ boolean ghostly; /* If a bones file restore */
         mread(fd, (genericptr_t)&regions[i]->can_leave_proc_is_on, sizeof(boolean));
         mread(fd, (genericptr_t)&regions[i]->leave_proc_is_on, sizeof(boolean));
 
-        mread(fd, (genericptr_t) &regions[i]->time_to_live, sizeof(long));
+        mread(fd, (genericptr_t) &regions[i]->time_to_live, sizeof(int64_t));
         /* check for expired region */
         if (regions[i]->time_to_live >= 0L)
             regions[i]->time_to_live =
@@ -822,7 +822,7 @@ boolean ghostly; /* If a bones file restore */
         mread(fd, (genericptr_t) &regions[i]->dmg_diesize, sizeof(int));
         mread(fd, (genericptr_t) &regions[i]->dmg_plus, sizeof(int));
         mread(fd, (genericptr_t) &regions[i]->dmg_adjustment, sizeof(double));
-        mread(fd, (genericptr_t) &regions[i]->region_flags, sizeof(unsigned long));
+        mread(fd, (genericptr_t) &regions[i]->region_flags, sizeof(uint64_t));
         mread(fd, (genericptr_t) &regions[i]->lamplit, sizeof(boolean));
         mread(fd, (genericptr_t) &regions[i]->makingsound, sizeof(boolean));
     }
@@ -848,15 +848,15 @@ void
 region_stats(hdrfmt, hdrbuf, count, size)
 const char *hdrfmt;
 char *hdrbuf;
-long* count;
+int64_t* count;
 size_t *size;
 {
     NhRegion *rg;
     int i;
 
     /* other stats formats take one parameter; this takes two */
-    Sprintf(hdrbuf, hdrfmt, (long) sizeof (NhRegion), sizeof (NhRect));
-    *count = (long) n_regions; /* might be 0 even though max_regions isn't */
+    Sprintf(hdrbuf, hdrfmt, (int64_t) sizeof (NhRegion), sizeof (NhRect));
+    *count = (int64_t) n_regions; /* might be 0 even though max_regions isn't */
     *size = (size_t) max_regions * sizeof (NhRegion);
     for (i = 0; i < n_regions; ++i) {
         rg = regions[i];
@@ -965,7 +965,7 @@ NhRegion *
 create_force_field(x, y, radius, time_to_live)
 xchar x, y;
 int radius;
-long time_to_live;
+int64_t time_to_live;
 {
     int i;
     NhRegion *ff;

@@ -17,7 +17,7 @@ struct monsteritemdef {
     short oartifact;
     int spe_constant;
     int spe_random;
-    long iflags;
+    int64_t iflags;
     int probability;
 };
 
@@ -39,7 +39,7 @@ struct encountermonsterdef {
     int generatednumber_constant;
     int generatednumber_random;
     int namelistid;
-    long mflags;
+    int64_t mflags;
     double probability;
     struct monsterrandomizeditem monster_items[MAX_MONSTER_ITEMS];
 };
@@ -59,7 +59,7 @@ struct randomizedencountermonsterdef {
 struct encounterdef {
     struct randomizedencountermonsterdef encounter_monster_types[MAX_ENCOUNTER_MONSTER_TYPES];
     double probability;
-    long eflags;
+    int64_t eflags;
 };
 
 #define ED_NOHELL 0x00000001L
@@ -75,7 +75,7 @@ struct encounter_monster {
     int permonstid;
     struct monsterrandomizeditem monster_items[MAX_MONSTER_ITEMS];
     int namelistid;
-    long mflags;
+    int64_t mflags;
 };
 
 #define MAX_ENCOUNTER_ATTACKING_MONSTERS 8
@@ -87,7 +87,7 @@ struct encounter {
     double probability;
     boolean insearch;
     int encounterdefid;
-    long eflags;
+    int64_t eflags;
 };
 
 #endif /* ENCOUNTER_H */

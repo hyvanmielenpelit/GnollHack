@@ -45,7 +45,7 @@ int NDECL(windows_nhgetch);
 void NDECL(windows_nhbell);
 int FDECL(windows_nh_poskey, (int *, int *, int *));
 void FDECL(windows_raw_print, (const char *));
-char FDECL(windows_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, const char*, unsigned long));
+char FDECL(windows_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, const char*, uint64_t));
 static void FDECL(windows_getlin_ex, (int, int, int, const char *, char *, const char*, const char*, const char*));
 extern int NDECL(windows_console_custom_nhgetch);
 void NDECL(safe_routines);
@@ -848,7 +848,7 @@ const char *resp;
 const char* resp_desc;
 const char* introline;
 char def;
-unsigned long ynflags;
+uint64_t ynflags;
 {
     return '\033';
 }

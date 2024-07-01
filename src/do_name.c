@@ -20,11 +20,11 @@ STATIC_DCL void FDECL(do_uoname, (struct obj *));
 STATIC_PTR char *FDECL(docall_xname, (struct obj *));
 STATIC_DCL void NDECL(namefloorobj);
 STATIC_DCL char *FDECL(bogusmon, (char *,char *));
-STATIC_DCL void FDECL(print_catalogue, (winid, struct obj*, int, unsigned long));
+STATIC_DCL void FDECL(print_catalogue, (winid, struct obj*, int, uint64_t));
 STATIC_DCL void FDECL(print_artifact_catalogue, (winid, struct obj*));
 STATIC_DCL int FDECL(CFDECLSPEC citemsortcmp, (const void*, const void*));
 STATIC_DCL int FDECL(CFDECLSPEC artilistsortcmp, (const void*, const void*));
-STATIC_DCL const char* FDECL(gettitle, (short*, const char* const*, int, int, unsigned long, unsigned long));
+STATIC_DCL const char* FDECL(gettitle, (short*, const char* const*, int, int, uint64_t, uint64_t));
 STATIC_DCL void NDECL(set_valid_pos_flags);
 STATIC_DCL void NDECL(clear_valid_pos_flags);
 
@@ -2038,7 +2038,7 @@ boolean called;
     if (mtmp->ispriest || mtmp->isminion) {
         char priestnambuf[BUFSZ];
         char *name;
-        long save_prop = EHalluc_resistance;
+        int64_t save_prop = EHalluc_resistance;
         unsigned short save_invis = mtmp->mprops[INVISIBILITY];
 
         /* when true name is wanted, explicitly block Hallucination */
@@ -3952,7 +3952,7 @@ short* titleidx;
 const char* const* titlearray;
 int arraysize;
 int numrandomized; /* Only this first elements are included in randomization */
-unsigned long excludedtitles, excludedtitles2; /* Requires a 64-bit long to work for more than 32 novels */
+uint64_t excludedtitles, excludedtitles2; /* Requires a 64-bit long to work for more than 32 novels */
 {
     short num = (short)min(arraysize, numrandomized); /* num is the titles randomized before exclusions */
     short j, k = num; /* k is the titles randomized after exclusions */
@@ -3961,7 +3961,7 @@ unsigned long excludedtitles, excludedtitles2; /* Requires a 64-bit long to work
         int i;
         for (i = 0; i < 32 && i < num; i++)
         {
-            unsigned long bit = 1UL << i;
+            uint64_t bit = (uint64_t)1 << i;
             if (excludedtitles & bit)
             {
                 k--;
@@ -3973,7 +3973,7 @@ unsigned long excludedtitles, excludedtitles2; /* Requires a 64-bit long to work
         int i;
         for (i = 32; i < 64 && i < num; i++)
         {
-            unsigned long bit = 1UL << (i - 32);
+            uint64_t bit = (uint64_t)1 << (i - 32);
             if (excludedtitles2 & bit)
             {
                 k--;
@@ -3990,16 +3990,16 @@ unsigned long excludedtitles, excludedtitles2; /* Requires a 64-bit long to work
         {
             for (j = 0; j < num; j++)
             {
-                unsigned long bit = 0UL;
+                uint64_t bit = 0UL;
                 if (j < 32)
                 {
-                    bit = 1UL << j;
+                    bit = (uint64_t)1 << j;
                     if (excludedtitles & bit)
                         continue;
                 }
                 else if (j < 64)
                 {
-                    bit = 1UL << (j - 32);
+                    bit = (uint64_t)1 << (j - 32);
                     if (excludedtitles2 & bit)
                         continue;
                 }
@@ -4025,7 +4025,7 @@ unsigned long excludedtitles, excludedtitles2; /* Requires a 64-bit long to work
 const char *
 noveltitle(novidx, excludedtitles, excludedtitles2)
 short* novidx;
-unsigned long excludedtitles, excludedtitles2;
+uint64_t excludedtitles, excludedtitles2;
 {
     return gettitle(novidx, sir_Terry_novels, SIZE(sir_Terry_novels), SIZE(sir_Terry_novels), excludedtitles, excludedtitles2);
 }
@@ -4052,7 +4052,7 @@ STATIC_VAR const char* const manual_names[MAX_MANUAL_TYPES] = {
 const char*
 manualtitle(mnlidx, excludedtitles, excludedtitles2)
 short* mnlidx;
-unsigned long excludedtitles, excludedtitles2;
+uint64_t excludedtitles, excludedtitles2;
 {
     return gettitle(mnlidx, manual_names, SIZE(manual_names), NUM_RANDOM_MANUALS, excludedtitles, excludedtitles2);
 }
@@ -4110,7 +4110,7 @@ print_catalogue(datawin, obj, objectclass, cflags)
 winid datawin;
 struct obj* obj;
 int objectclass;
-unsigned long cflags;
+uint64_t cflags;
 {
     short i, cnt = 0;
     char buf[BUFSZ];
@@ -4295,7 +4295,7 @@ struct obj* obj;
         else
         {
             int itemclass = ILLOBJ_CLASS;
-            unsigned long cflags = 0UL;
+            uint64_t cflags = 0UL;
             switch (mnlidx)
             {
             case MANUAL_CATALOGUE_OF_WEAPONS:

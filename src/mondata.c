@@ -13,9 +13,9 @@
 
 struct ability_conversion_table {
     int prop;
-    unsigned long innate;
-    unsigned long innate2;
-    unsigned long conveyed;
+    uint64_t innate;
+    uint64_t innate2;
+    uint64_t conveyed;
     int adtype;
 };
 
@@ -69,7 +69,7 @@ STATIC_VAR const NEARDATA struct ability_conversion_table prop2innate[] = {
 };
 
 struct mflag_description {
-    unsigned long mflag_bit;
+    uint64_t mflag_bit;
     const char* singular_adjective;
     const char* plural_noun;
 };
@@ -195,7 +195,7 @@ STATIC_VAR const NEARDATA struct mflag_description m8flag_descriptions[] = {
 
 const char*
 get_mflag_description(mflag_bit, plural, mindex)
-unsigned long mflag_bit;
+uint64_t mflag_bit;
 boolean plural;
 uchar mindex;
 {
@@ -226,7 +226,7 @@ uchar mindex;
 }
 
 
-unsigned long
+uint64_t
 prop_to_conveyed(prop_index)
 int prop_index;
 {
@@ -240,7 +240,7 @@ int prop_index;
 
 int
 conveyed_to_prop(conveyed_bit)
-unsigned long conveyed_bit;
+uint64_t conveyed_bit;
 {
     for (int i = 0; i < SIZE(prop2innate); i++)
     {
@@ -252,7 +252,7 @@ unsigned long conveyed_bit;
 
 
 
-unsigned long
+uint64_t
 prop_to_innate(prop_index)
 int prop_index;
 {
@@ -264,7 +264,7 @@ int prop_index;
     return 0;
 }
 
-unsigned long
+uint64_t
 prop_to_innate2(prop_index)
 int prop_index;
 {
@@ -279,7 +279,7 @@ int prop_index;
 
 int
 innate_to_prop(innate_bit)
-unsigned long innate_bit;
+uint64_t innate_bit;
 {
     for (int i = 0; i < SIZE(prop2innate); i++)
     {
@@ -291,7 +291,7 @@ unsigned long innate_bit;
 
 int
 innate2_to_prop(innate2_bit)
-unsigned long innate2_bit;
+uint64_t innate2_bit;
 {
     for (int i = 0; i < SIZE(prop2innate); i++)
     {
@@ -491,7 +491,7 @@ ranged_attk(ptr)
 struct permonst *ptr;
 {
     register int i, atyp;
-    long atk_mask = (1L << AT_EYES) | (1L << AT_BREA) | (1L << AT_SPIT) | (1L << AT_GAZE);
+    int64_t atk_mask = ((int64_t)1 << AT_EYES) | ((int64_t)1 << AT_BREA) | ((int64_t)1 << AT_SPIT) | ((int64_t)1 << AT_GAZE);
 
     /* was: (attacktype(ptr, AT_BREA) || attacktype(ptr, AT_WEAP)
      *       || attacktype(ptr, AT_SPIT) || attacktype(ptr, AT_GAZE)
@@ -503,7 +503,7 @@ struct permonst *ptr;
         if (atyp >= AT_WEAP)
             return TRUE;
         /* assert(atyp < 32); */
-        if ((atk_mask & (1L << atyp)) != 0L)
+        if ((atk_mask & ((int64_t)1 << atyp)) != 0L)
             return TRUE;
     }
     return FALSE;

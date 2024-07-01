@@ -1333,7 +1333,7 @@ char** attrs_ptr, ** colors_ptr;
 
     if (obj->quan != 1L) {
         if (dknown || !vague_quan)
-            Sprintf(prefix, "%ld ", obj->quan);
+            Sprintf(prefix, "%lld ", (long long)obj->quan);
         else
             Strcpy(prefix, "some ");
     } else if (obj->otyp == CORPSE) {
@@ -1450,9 +1450,9 @@ char** attrs_ptr, ** colors_ptr;
         /* we count the number of separate stacks, which corresponds
            to the number of inventory slots needed to be able to take
            everything out if no merges occur */
-        long itemcount = count_contents(obj, FALSE, FALSE, TRUE);
+        int64_t itemcount = count_contents(obj, FALSE, FALSE, TRUE);
 
-        Sprintf(eos(bp), " containing %ld item%s", itemcount,
+        Sprintf(eos(bp), " containing %lld item%s", (long long)itemcount,
                 plur(itemcount));
     }
 
@@ -1467,7 +1467,7 @@ char** attrs_ptr, ** colors_ptr;
             Sprintf(eos(bp), " (%d:%d)", (int)obj->recharged, (int)obj->charges);
     }
 
-    long burnleft = 0;
+    int64_t burnleft = 0;
     boolean burnleftset = FALSE;
     char burnbuf[BUFSZ] = "";
 
@@ -1651,7 +1651,7 @@ weapon_here:
             && is_obj_light_source(obj) && object_stats_known(obj)
             && (obj->speflags & SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO) != 0)
         {
-            long maxburn = obj_light_maximum_burn_time(obj);
+            int64_t maxburn = obj_light_maximum_burn_time(obj);
             if (maxburn >= 0 && !obj_burns_infinitely(obj))
             {
                 burnleft = obj_light_burn_time_left(obj);
@@ -1673,14 +1673,14 @@ weapon_here:
                     Strcat(prefix, "lit ");
 
                 if (burnleftset)
-                    Sprintf(burnbuf, " (%ld turn%s left)", burnleft, plur(burnleft));
+                    Sprintf(burnbuf, " (%lld turn%s left)", (long long)burnleft, plur(burnleft));
                 Sprintf(eos(bp), " with %s candle%s%s%s", tmpbuf, plur(obj->special_quality),
                     " attached", burnbuf);
             }
             else
             {
                 if (burnleftset)
-                    Sprintf(burnbuf, ", %ld turn%s left", burnleft, plur(burnleft));
+                    Sprintf(burnbuf, ", %lld turn%s left", (long long)burnleft, plur(burnleft));
                 Sprintf(eos(bp), " (%s candle%s%s%s)", tmpbuf, plur(obj->special_quality),
                     !obj->lamplit ? " attached" : ", lit", burnbuf);
             }
@@ -1701,19 +1701,19 @@ weapon_here:
                 {
                     Strcat(prefix, "lit ");
                     if (burnleftset)
-                        Sprintf(eos(bp), " (%ld turn%s left)", burnleft, plur(burnleft));
+                        Sprintf(eos(bp), " (%lld turn%s left)", (long long)burnleft, plur(burnleft));
                 }
                 else
                 {
                     if (burnleftset)
-                        Sprintf(burnbuf, ", %ld turn%s left", burnleft, plur(burnleft));
+                        Sprintf(burnbuf, ", %lld turn%s left", (long long)burnleft, plur(burnleft));
                     Sprintf(eos(bp), " (lit%s)", burnbuf);
                 }
             }
             else
             {
                 if (burnleftset)
-                    Sprintf(eos(bp), " (%ld turn%s left)", burnleft, plur(burnleft));
+                    Sprintf(eos(bp), " (%lld turn%s left)", (long long)burnleft, plur(burnleft));
             }
             break;
         }
@@ -1730,19 +1730,19 @@ weapon_here:
                 {
                     Strcat(prefix, "lit ");
                     if (burnleftset)
-                        Sprintf(eos(bp), " (%ld turn%s left)", burnleft, plur(burnleft));
+                        Sprintf(eos(bp), " (%lld turn%s left)", (long long)burnleft, plur(burnleft));
                 }
                 else
                 {
                     if (burnleftset)
-                        Sprintf(burnbuf, ", %ld turn%s left", burnleft, plur(burnleft));
+                        Sprintf(burnbuf, ", %lld turn%s left", (long long)burnleft, plur(burnleft));
                     Sprintf(eos(bp), " (lit%s)", burnbuf);
                 }
             }
             else
             {
                 if (burnleftset)
-                    Sprintf(eos(bp), " (%ld turn%s left)", burnleft, plur(burnleft));
+                    Sprintf(eos(bp), " (%lld turn%s left)", (long long)burnleft, plur(burnleft));
             }
         }
         break;
@@ -1767,7 +1767,7 @@ weapon_here:
         
         if (is_obj_rotting_corpse(obj) && obj->rotknown)
         {
-            long rotted = get_rotted_status(obj);
+            int64_t rotted = get_rotted_status(obj);
             if (obj->orotten || rotted > 3L)
                 Strcat(prefix, rotted > 5L ? "tainted " : "rotten ");
             else
@@ -1912,19 +1912,19 @@ weapon_here:
     if (iflags.suppress_price || restoring || saving) {
         ; /* don't attempt to obtain any stop pricing, even if 'with_price' */
     } else if (is_unpaid(obj)) { /* in inventory or in container in invent */
-        long quotedprice = unpaid_cost(obj, TRUE);
+        int64_t quotedprice = unpaid_cost(obj, TRUE);
 
-        Sprintf(eos(bp), " (%s, %ld %s)",
+        Sprintf(eos(bp), " (%s, %lld %s)",
                 obj->unpaid ? "unpaid" : "contents",
-                quotedprice, currency(quotedprice));
+                (long long)quotedprice, currency(quotedprice));
     } else if (with_price) { /* on floor or in container on floor */
         int nochrg = 0;
-        long price = get_cost_of_shop_item(obj, &nochrg);
+        int64_t price = get_cost_of_shop_item(obj, &nochrg);
 
         if (price > 0L)
-            Sprintf(eos(bp), " (%s, %ld %s)",
+            Sprintf(eos(bp), " (%s, %lld %s)",
                     nochrg ? "contents" : "for sale",
-                    price, currency(price));
+                    (long long)price, currency(price));
         else if (nochrg > 0)
             Strcat(bp, " (no charge)");
     }
@@ -2387,11 +2387,11 @@ struct obj* obj;
 
 char*
 prepend_quan(quan, name)
-long quan;
+int64_t quan;
 const char* name; /* Should be already in plural */
 {
     char* buf = nextobuf(); /* no prefix size addition needed here */
-    Sprintf(buf, "%ld %s", quan, name);
+    Sprintf(buf, "%lld %s", (long long)quan, name);
     return buf;
 }
 
@@ -2602,7 +2602,7 @@ singular(otmp, func)
 register struct obj *otmp;
 char *FDECL((*func), (OBJ_P));
 {
-    long savequan;
+    int64_t savequan;
     char *nam;
 
     /* using xname for corpses does not give the monster type */
@@ -2777,7 +2777,7 @@ const char *verb;
     char *bp = cxname(otmp);
 
     if (otmp->quan != 1L) {
-        Sprintf(prefix, "%ld ", otmp->quan);
+        Sprintf(prefix, "%lld ", (long long)otmp->quan);
         bp = strprepend(bp, prefix);
     }
     if (verb) {
@@ -4652,7 +4652,7 @@ boolean* removed_from_game_ptr;
         else if (cnt < 1)
             cnt = 1;
         otmp = mksobj(GOLD_PIECE, FALSE, FALSE, 2);
-        otmp->quan = (long) cnt;
+        otmp->quan = (int64_t) cnt;
         otmp->owt = weight(otmp);
         context.botl = 1;
         return otmp;
@@ -5270,7 +5270,7 @@ retry:
     /*
      * Create the object, then fine-tune it.
      */
-    unsigned long mkflags = 0UL;
+    uint64_t mkflags = 0UL;
     if (open && typ > 0 && Is_otyp_container_with_lid(typ))
         mkflags |= MKOBJ_FLAGS_OPEN_COFFIN;
 
@@ -5290,7 +5290,7 @@ retry:
         && (wiz_wishing || cnt < rnd(6) || (cnt <= 7 && is_candle(otmp))
             || (cnt <= 20 && ((oclass == WEAPON_CLASS && is_ammo(otmp))
                               || is_rock(otmp) || is_missile(otmp)))))
-        otmp->quan = (long) cnt;
+        otmp->quan = (int64_t) cnt;
 
     if (oclass == GEM_CLASS && !wiz_wishing)
         otmp->quan = 1;

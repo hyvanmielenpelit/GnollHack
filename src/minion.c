@@ -59,7 +59,7 @@ struct monst *mon;
     int dtype = NON_PM, cnt = 0, result = 0, census;
     aligntyp atyp;
     struct monst *mtmp;
-    unsigned long mmanimtype = 0UL;
+    uint64_t mmanimtype = 0UL;
 
     if (mon) 
     {
@@ -745,7 +745,7 @@ demon_talk(mtmp, stop_chat_ptr)
 struct monst *mtmp;
 boolean* stop_chat_ptr;
 {
-    long cash, demand, offer;
+    int64_t cash, demand, offer;
 
     if (stop_chat_ptr)
         *stop_chat_ptr = FALSE;
@@ -894,7 +894,7 @@ boolean* stop_chat_ptr;
                has the Amulet, preventing monster from being satisfied
                and removed from the game (along with said Amulet...) */
             if (mon_has_amulet(mtmp))
-                demand = cash + (long) rn1(1000, 40);
+                demand = cash + (int64_t) rn1(1000, 40);
 
             if (canspotmon(mtmp))
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s stands towering before you.", Amonnam(mtmp));
@@ -911,7 +911,7 @@ boolean* stop_chat_ptr;
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s vanishes, laughing about cowardly mortals.", Amonnam(mtmp));
             }
             else if (offer > 0L
-                       && (long) rnd(5 * ACURR(A_CHA)) > (demand - offer)) 
+                       && (int64_t) rnd(5 * ACURR(A_CHA)) > (demand - offer)) 
             {
                 play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s scowls at you menacingly, then vanishes.", Amonnam(mtmp));
@@ -936,17 +936,20 @@ boolean* stop_chat_ptr;
     return 1;
 }
 
-long
+int64_t
 bribe(mtmp)
 struct monst *mtmp;
 {
     char buf[BUFSZ] = DUMMY;
-    long offer;
-    long umoney = money_cnt(invent);
+    long long_offer;
+    int64_t offer;
+    int64_t umoney = money_cnt(invent);
 
     getlin_ex(GETLINE_NUMBERS_ONLY, ATR_NONE, NO_COLOR, "How much will you offer?", buf, (char*)0, (char*)0, (char*)0);
-    if (sscanf(buf, "%ld", &offer) != 1)
+    if (sscanf(buf, "%ld", &long_offer) != 1)
         offer = 0L;
+    else
+        offer = (int64_t)long_offer;
 
     /*Michael Paddon -- fix for negative offer to monster*/
     /*JAR880815 - */

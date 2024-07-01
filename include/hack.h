@@ -222,8 +222,8 @@ enum game_end_types {
 
 /* game events log */
 struct gamelog_line {
-    long turn; /* turn when this happened */
-    long flags; /* LL_foo flags */
+    int64_t turn; /* turn when this happened */
+    int64_t flags; /* LL_foo flags */
     char* text;
     struct gamelog_line* next;
 };
@@ -634,14 +634,14 @@ enum bodypart_types {
 #define SET__IS_VALUE_VALID(s) ((s < SET_IN_SYS) || (s > SET_IN_WIZGAME))
 
 #define FEATURE_NOTICE_VER(major, minor, patch)                    \
-    (((unsigned long) major << 24) | ((unsigned long) minor << 16) \
-     | ((unsigned long) patch << 8) | ((unsigned long) 0))
+    (((uint64_t) major << 24) | ((uint64_t) minor << 16) \
+     | ((uint64_t) patch << 8) | ((uint64_t) 0))
 
 #define FEATURE_NOTICE_VER_MAJ (flags.suppress_alert >> 24)
 #define FEATURE_NOTICE_VER_MIN \
-    (((unsigned long) (0x0000000000FF0000L & flags.suppress_alert)) >> 16)
+    (((uint64_t) (0x0000000000FF0000L & flags.suppress_alert)) >> 16)
 #define FEATURE_NOTICE_VER_PATCH \
-    (((unsigned long) (0x000000000000FF00L & flags.suppress_alert)) >> 8)
+    (((uint64_t) (0x000000000000FF00L & flags.suppress_alert)) >> 8)
 
 #ifndef max
 #define max(a, b) ((a) > (b) ? (a) : (b))

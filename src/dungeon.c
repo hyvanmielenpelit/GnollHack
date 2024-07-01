@@ -481,7 +481,7 @@ branch *new_branch;
 boolean extract_first;
 {
     branch *curr, *prev;
-    long new_val, curr_val, prev_val;
+    int64_t new_val, curr_val, prev_val;
 
     if (extract_first) {
         for (prev = 0, curr = branches; curr; prev = curr, curr = curr->next)
@@ -503,9 +503,9 @@ boolean extract_first;
 
 /* Convert the branch into a unique number so we can sort them. */
 #define branch_val(bp)                                                     \
-    ((((long) (bp)->end1.dnum * (MAXLEVEL + 1) + (long) (bp)->end1.dlevel) \
+    ((((int64_t) (bp)->end1.dnum * (MAXLEVEL + 1) + (int64_t) (bp)->end1.dlevel) \
       * (MAXDUNGEON + 1) * (MAXLEVEL + 1))                                 \
-     + ((long) (bp)->end2.dnum * (MAXLEVEL + 1) + (long) (bp)->end2.dlevel))
+     + ((int64_t) (bp)->end2.dnum * (MAXLEVEL + 1) + (int64_t) (bp)->end2.dlevel))
 
     /*
      * Insert the new branch into the correct place in the branch list.
@@ -2403,11 +2403,11 @@ void
 overview_stats(win, statsfmt, total_count, total_size)
 winid win;
 const char *statsfmt;
-long* total_count;
+int64_t* total_count;
 size_t* total_size;
 {
     char buf[BUFSZ], hdrbuf[QBUFSZ];
-    long ocount, bcount, acount;
+    int64_t ocount, bcount, acount;
     size_t osize, bsize, asize;
     struct cemetery *ce;
     mapseen *mptr = find_mapseen(&u.uz);
@@ -2566,8 +2566,8 @@ recalc_mapseen()
     mapseen *mptr;
     struct monst *mtmp = (struct monst*)0;
     struct cemetery *bp, **bonesaddr;
-    unsigned i, ridx;
-    int x, y, ltyp, count, atmp;
+    unsigned i, ridx, count;
+    int x, y, ltyp, atmp;
 
     /* Should not happen in general, but possible if in the process
      * of being booted from the quest.  The mapseen object gets

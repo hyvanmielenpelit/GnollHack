@@ -559,7 +559,7 @@ tty_player_selection()
     /* Should we randomly pick for the player? */
     if (ROLE == ROLE_NONE || RACE == ROLE_NONE || GEND == ROLE_NONE
         || ALGN == ROLE_NONE) {
-        int echoline;
+        int64_t echoline;
         char *prompt = build_plselection_prompt(pbuf, QBUFSZ,
                                                 ROLE, RACE, GEND, ALGN, TRUE);
 
@@ -579,7 +579,7 @@ tty_player_selection()
         } while (!index(ynaqchars, pick4u));
         if ((int) strlen(prompt) + 1 < CO) {
             /* Echo choice and move back down line */
-            tty_putsym(BASE_WINDOW, (int) strlen(prompt) + 1, echoline,
+            tty_putsym(BASE_WINDOW, (int) strlen(prompt) + 1, (int)echoline,
                        (nhsym)pick4u);
             tty_putstr(BASE_WINDOW, 0, "");
         } else
@@ -1295,14 +1295,14 @@ tty_askname()
         if (++tryct > 1) {
             if (tryct > 10)
                 bail("Giving up after 10 tries.\n");
-            tty_curs(BASE_WINDOW, 1, wins[BASE_WINDOW]->cury - 1);
+            tty_curs(BASE_WINDOW, 1, (int)wins[BASE_WINDOW]->cury - 1);
             tty_putstr(BASE_WINDOW, 0, "Enter a name for your character...");
             /* erase previous prompt (in case of ESC after partial response) */
-            tty_curs(BASE_WINDOW, 1, wins[BASE_WINDOW]->cury), cl_end();
+            tty_curs(BASE_WINDOW, 1, (int)wins[BASE_WINDOW]->cury), cl_end();
         }
         tty_putstr(BASE_WINDOW, 0, who_are_you);
         tty_curs(BASE_WINDOW, (int) (sizeof who_are_you),
-                 wins[BASE_WINDOW]->cury - 1);
+                 (int)wins[BASE_WINDOW]->cury - 1);
         ct = 0;
         while ((c = tty_nhgetch()) != '\n') {
             if (c == EOF)
@@ -1399,7 +1399,7 @@ tty_askname()
     } while (ct == 0);
 
     /* move to next line to simulate echo of user's <return> */
-    tty_curs(BASE_WINDOW, 1, wins[BASE_WINDOW]->cury + 1);
+    tty_curs(BASE_WINDOW, 1, (int)wins[BASE_WINDOW]->cury + 1);
 
     /* since we let user pick an arbitrary name now, he/she can pick
        another one during role selection */
@@ -1631,7 +1631,7 @@ boolean clear;
             docrt();
         }
     } else {
-        docorner((int) cw->offx, cw->maxrow + 1);
+        docorner((int) cw->offx, (int)cw->maxrow + 1);
     }
 }
 
@@ -1705,7 +1705,7 @@ void
 tty_clear_nhwindow(window)
 winid window;
 {
-    int i, j, m, n;
+    int64_t i, j, m, n;
     register struct WinDesc *cw = 0;
 
     HUPSKIP();
@@ -1725,7 +1725,7 @@ winid window;
             home();
             cl_end();
             if (cw->cury)
-                docorner(1, cw->cury + 1);
+                docorner(1, (int)cw->cury + 1);
             ttyDisplay->toplin = 0;
         }
         break;
@@ -1733,7 +1733,7 @@ winid window;
         m = cw->maxrow;
         n = cw->cols;
         for (i = 0; i < m; ++i) {
-            tty_curs(window, 1, i);
+            tty_curs(window, 1, (int)i);
             cl_end();
 
             for (j = 0; j < n - 1; ++j)
@@ -1768,7 +1768,7 @@ winid window;
 tty_menu_item *curr;
 int lineno;
 boolean in_view, counting;
-long count;
+int64_t count;
 {
     if (curr->selected) {
         if (counting && count > 0) {
@@ -1953,8 +1953,8 @@ winid window;
 struct WinDesc *cw;
 {
     tty_menu_item *page_start, *page_end, *curr;
-    long count;
-    int n, attr_n, curr_page, page_lines, resp_len;
+    int64_t count;
+    int64_t n, attr_n, curr_page, page_lines, resp_len;
     boolean finished, counting, reset_count;
     char *cp, *rp, resp[QBUFSZ], gacc[QBUFSZ], *msave, *morestr, really_morc;
     const char* cptr, *aptr;
@@ -2010,7 +2010,7 @@ struct WinDesc *cw;
             /* new page to be displayed */
             if (curr_page < 0 || (cw->npages > 0 && curr_page >= cw->npages))
             {
-                panic("bad menu screen page #%d", curr_page);
+                panic("bad menu screen page #%lld", (long long)curr_page);
                 return;
             }
             /* clear screen */
@@ -2034,7 +2034,7 @@ struct WinDesc *cw;
                     if (curr->selector)
                         *rp++ = curr->selector;
 
-                    tty_curs(window, 1, page_lines);
+                    tty_curs(window, 1, (int)page_lines);
                     if (cw->offx)
                         cl_end();
 
@@ -2128,7 +2128,7 @@ struct WinDesc *cw;
             /* corner window - clear extra lines from last page */
             if (cw->offx) {
                 for (n = page_lines + 1; n < cw->maxrow; n++) {
-                    tty_curs(window, 1, n);
+                    tty_curs(window, 1, (int)n);
                     cl_end();
                 }
             }
@@ -2145,19 +2145,19 @@ struct WinDesc *cw;
             Strcat(resp, mapped_menu_cmds);
 
             if (cw->npages > 1)
-                Sprintf(cw->morestr, "(%d of %d)", curr_page + 1,
-                        (int) cw->npages);
+                Sprintf(cw->morestr, "(%lld of %lld)", (long long)curr_page + 1,
+                    (long long)cw->npages);
             else if (msave)
                 Strcpy(cw->morestr, msave);
             else
                 Strcpy(cw->morestr, defmorestr);
 
-            tty_curs(window, 1, page_lines);
+            tty_curs(window, 1, (int)page_lines);
             cl_end();
             dmore(cw, resp);
         } else {
             /* just put the cursor back... */
-            tty_curs(window, (int) strlen(cw->morestr) + 2, page_lines);
+            tty_curs(window, (int) strlen(cw->morestr) + 2, (int)page_lines);
             xwaitforspace(resp);
         }
 
@@ -2190,7 +2190,7 @@ struct WinDesc *cw;
         case '4':
         case '5':
         case '6':
-            count = (count * 10L) + (long) (morc - '0');
+            count = (count * 10L) + (int64_t) (morc - '0');
             /*
              * It is debatable whether we should allow 0 to
              * start a count.  There is no difference if the
@@ -2846,10 +2846,10 @@ const char *str, *attrs, *colors;
 {
     register struct WinDesc *cw = 0;
     register char *ob;
-    register long i, n0;
+    register int64_t i, n0;
 #ifndef STATUS_HILITES
     register const char *nb;
-    register long j;
+    register int64_t j;
 #endif
 
     HUPSKIP();
@@ -2931,7 +2931,7 @@ const char *str, *attrs, *colors;
         break;
 #endif /* STATUS_HILITES */
     case NHW_MAP:
-        tty_curs(window, cw->curx + 1, cw->cury);
+        tty_curs(window, (int)cw->curx + 1, (int)cw->cury);
         term_start_attr(used_attr);
         while (*str && (int) ttyDisplay->curx < (int) ttyDisplay->cols - 1) {
             (void) doputchar((nhsym)*str, TRUE);
@@ -2943,13 +2943,13 @@ const char *str, *attrs, *colors;
         term_end_attr(used_attr);
         break;
     case NHW_BASE:
-        tty_curs(window, cw->curx + 1, cw->cury);
+        tty_curs(window, (int)cw->curx + 1, (int)cw->cury);
         term_start_attr(used_attr);
         while (*str) {
             if ((int) ttyDisplay->curx >= (int) ttyDisplay->cols - 1) {
                 cw->curx = 0;
                 cw->cury++;
-                tty_curs(window, cw->curx + 1, cw->cury);
+                tty_curs(window, (int)cw->curx + 1, (int)cw->cury);
             }
             (void) doputchar((nhsym)*str, TRUE);
             str++;
@@ -2991,7 +2991,7 @@ const char *str, *attrs, *colors;
         /* always grows one at a time, but alloc 12 at a time */
         if (cw->cury >= cw->rows) {
             char **tmp, ** tmp2, ** tmp3;
-            long oldrows = cw->rows;
+            int64_t oldrows = cw->rows;
             cw->rows += 12;
             tmp = (char **) alloc(sizeof(char *) * (size_t)cw->rows);
             tmp2 = (char**) alloc(sizeof(char *) * (size_t)cw->rows);
@@ -3022,8 +3022,8 @@ const char *str, *attrs, *colors;
         size_t appoffset = 0;
         if (cw->data[cw->cury])
         {
-            size_t e0 = (long)strlen(cw->data[cw->cury] + 1);
-            n0 = (long)strlen(str) + e0 + 1L;
+            size_t e0 = strlen(cw->data[cw->cury] + 1);
+            n0 = (int64_t)strlen(str) + e0 + 1L;
             ob = cw->data[cw->cury] = (char*)realloc(cw->data[cw->cury], (size_t)n0 + 1);
             cw->datattrs[cw->cury] = (char*)realloc(cw->datattrs[cw->cury], (size_t)n0 + 1);
             cw->datcolors[cw->cury] = (char*)realloc(cw->datcolors[cw->cury], (size_t)n0 + 1);
@@ -3039,7 +3039,7 @@ const char *str, *attrs, *colors;
                 free((genericptr_t)cw->datattrs[cw->cury]);
             if (cw->datcolors[cw->cury])
                 free((genericptr_t)cw->datcolors[cw->cury]);
-            n0 = (long)strlen(str) + 1L;
+            n0 = (int64_t)strlen(str) + 1L;
             ob = cw->data[cw->cury] = (char*)alloc((size_t)n0 + 1);
             cw->datattrs[cw->cury] = (char*)alloc((size_t)n0 + 1);
             cw->datcolors[cw->cury] = (char*)alloc((size_t)n0 + 1);
@@ -3369,8 +3369,8 @@ const char *prompt, *subtitle; /* prompt to for menu */
             curr->str[ttyDisplay->cols - 2] = 0;
             len = (size_t)ttyDisplay->cols;
         }
-        if ((long)len > cw->cols)
-            cw->cols = (long)len;
+        if ((int64_t)len > cw->cols)
+            cw->cols = (int64_t)len;
     }
     cw->plist[cw->npages] = 0; /* plist terminator */
 
@@ -3380,7 +3380,7 @@ const char *prompt, *subtitle; /* prompt to for menu */
     if (cw->npages > 1) {
         char buf[QBUFSZ];
         /* produce the largest demo string */
-        Sprintf(buf, "(%ld of %ld) ", cw->npages, cw->npages);
+        Sprintf(buf, "(%lld of %lld) ", (long long)cw->npages, (long long)cw->npages);
         len = strlen(buf);
         cw->morestr = dupstr("");
     } else {
@@ -3395,7 +3395,7 @@ const char *prompt, *subtitle; /* prompt to for menu */
         len = (size_t)ttyDisplay->cols;
     }
     if (len > (size_t)cw->cols)
-        cw->cols = (long)len;
+        cw->cols = (int64_t)len;
 
     cw->maxcol = cw->cols;
 
@@ -3651,7 +3651,7 @@ boolean is_CP437;
     }
     else
     {
-        (void)putchar(ch);
+        (void)putchar((int)ch);
         return 0;
     }
 }
@@ -3794,7 +3794,7 @@ struct layer_info layers;
     boolean reverse_on = FALSE;
     boolean underline_on = FALSE;
     int color;
-    unsigned long special;
+    uint64_t special;
 
     int signed_glyph = layers.glyph;
     int glyph = abs(signed_glyph);
@@ -4118,11 +4118,11 @@ extern winid WIN_STATUS;
 
 #ifdef STATUS_HILITES
 #ifdef TEXTCOLOR
-STATIC_DCL int FDECL(condcolor, (long, unsigned long *));
+STATIC_DCL int FDECL(condcolor, (int64_t, uint64_t *));
 #endif
-STATIC_DCL int FDECL(condattr, (long, unsigned long *));
-static unsigned long *tty_colormasks;
-static long tty_condition_bits;
+STATIC_DCL int FDECL(condattr, (int64_t, uint64_t *));
+static uint64_t *tty_colormasks;
+static int64_t tty_condition_bits;
 static struct tty_status_fields tty_status[2][MAXBLSTATS]; /* 2: NOW,BEFORE */
 static int hpbar_percent, hpbar_color;
 
@@ -4267,10 +4267,10 @@ void
 tty_status_update(fldidx, ptr, chg, percent, color, colormasks)
 int fldidx, chg UNUSED, percent, color;
 genericptr_t ptr;
-unsigned long *colormasks;
+uint64_t *colormasks;
 {
     int attrmask;
-    long *condptr = (long *) ptr;
+    int64_t *condptr = (int64_t *) ptr;
     char *text = (char *) ptr;
     char *lastchar, *p;  
     char goldbuf[40] = "";
@@ -4571,7 +4571,7 @@ tty_putstatusfield(text, x, y)
 const char *text;
 int x, y;
 {
-    int i, n, ncols, nrows, lth = 0;
+    int64_t i, n, ncols, nrows, lth = 0;
     struct WinDesc *cw = 0;
 
     if (WIN_STATUS == WIN_ERR
@@ -4583,7 +4583,7 @@ int x, y;
 
     ncols = cw->cols;
     nrows = cw->maxrow;
-    lth = (int) strlen(text);
+    lth = (int64_t) strlen(text);
 
     print_vt_code2(AVTC_SELECT_WINDOW, NHW_STATUS);
 
@@ -4614,7 +4614,7 @@ int x, y;
 STATIC_OVL int
 condition_size()
 {
-    long mask;
+    int64_t mask;
     int c, lth;
 
     lth = 0;
@@ -4683,8 +4683,8 @@ check_windowdata(VOID_ARGS)
  */
 STATIC_OVL int
 condcolor(bm, bmarray)
-long bm;
-unsigned long *bmarray;
+int64_t bm;
+uint64_t *bmarray;
 {
     int i;
 
@@ -4705,8 +4705,8 @@ unsigned long *bmarray;
 
 STATIC_OVL int
 condattr(bm, bmarray)
-long bm;
-unsigned long *bmarray;
+int64_t bm;
+uint64_t *bmarray;
 {
     int attr = 0;
     int i;
@@ -4772,7 +4772,7 @@ unsigned long *bmarray;
 STATIC_OVL void
 render_status(VOID_ARGS)
 {
-    long mask, bits;
+    int64_t mask, bits;
     int i, x, y, idx, c, row, tlth, num_rows, coloridx = 0, attrmask = 0;
     char *text;
     struct WinDesc *cw = 0;
@@ -4897,7 +4897,7 @@ render_status(VOID_ARGS)
                         if (!truncation_expected && !once_only++)
                             paniclog("render_status()",
                                      " unexpected truncation.");
-                        x = cw->cols;
+                        x = (int)cw->cols;
                     }
                     tty_status[NOW][BL_CONDITION].lth = max(0, x - x_start);
                 }

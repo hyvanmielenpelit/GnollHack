@@ -19,8 +19,8 @@ STATIC_DCL void NDECL(laugh_uncontrollably);
 STATIC_DCL void NDECL(get_odd_idea);
 STATIC_DCL void FDECL(see_lamp_flicker, (struct obj *, const char *));
 STATIC_DCL void FDECL(lantern_message, (struct obj *));
-STATIC_DCL void FDECL(cleanup_burn, (ANY_P *, long));
-STATIC_DCL void FDECL(cleanup_sound, (ANY_P*, long));
+STATIC_DCL void FDECL(cleanup_burn, (ANY_P *, int64_t));
+STATIC_DCL void FDECL(cleanup_sound, (ANY_P*, int64_t));
 STATIC_DCL void NDECL(sick_dialogue);
 STATIC_DCL void NDECL(food_poisoned_dialogue);
 STATIC_DCL void NDECL(mummy_rot_dialogue);
@@ -44,7 +44,7 @@ sick_dialogue()
     if (!is_living(youmonst.data))
         return;
 
-    register long i = (Sick & TIMEOUT);
+    register int64_t i = (Sick & TIMEOUT);
 
     if (i > 0L && i <= SIZE(sick_texts)) {
         char buf[BUFSZ];
@@ -102,7 +102,7 @@ food_poisoned_dialogue()
     if (!is_living(youmonst.data))
         return;
 
-    register long i = (FoodPoisoned & TIMEOUT);
+    register int64_t i = (FoodPoisoned & TIMEOUT);
 
     if (i > 0L && i <= SIZE(food_poisoned_texts)) {
         char buf[BUFSZ];
@@ -240,7 +240,7 @@ STATIC_VAR NEARDATA const char *const stoned_texts[] = {
 STATIC_OVL void
 stoned_dialogue()
 {
-    register long i = (Stoned & TIMEOUT);
+    register int64_t i = (Stoned & TIMEOUT);
 
     if (i > 0L && i <= SIZE(stoned_texts)) {
         char buf[BUFSZ];
@@ -305,7 +305,7 @@ STATIC_OVL void
 vomiting_dialogue()
 {
     const char *txt = 0;
-    long v = (Vomiting & TIMEOUT);
+    int64_t v = (Vomiting & TIMEOUT);
 
     /* note: nhtimeout() hasn't decremented timed properties for the
        current turn yet, so we use Vomiting-1 here */
@@ -385,7 +385,7 @@ STATIC_VAR NEARDATA const char *const choke_texts2[] = {
 STATIC_OVL void
 choke_dialogue()
 {
-    register long i = (Strangled & TIMEOUT);
+    register int64_t i = (Strangled & TIMEOUT);
 
     if (i > 0 && i <= SIZE(choke_texts)) {
         if (Breathless || !rn2(50))
@@ -411,7 +411,7 @@ STATIC_OVL void
 levitation_dialogue()
 {
     /* -1 because the last message comes via float_down() */
-    long i = (((HLevitation & TIMEOUT) - 1L) / 2L);
+    int64_t i = (((HLevitation & TIMEOUT) - 1L) / 2L);
 
     if (ELevitation)
         return;
@@ -445,7 +445,7 @@ STATIC_VAR NEARDATA const char *const slime_texts[] = {
 STATIC_OVL void
 slime_dialogue()
 {
-    register long i = (Slimed & TIMEOUT) / 2L;
+    register int64_t i = (Slimed & TIMEOUT) / 2L;
 
     if (i == 1L) {
         /* display as green slime during "You have become green slime."
@@ -579,7 +579,7 @@ STATIC_VAR NEARDATA const char *const phaze_texts[] = {
 STATIC_OVL void
 phaze_dialogue()
 {
-    long i = ((HPasses_walls & TIMEOUT) / 2L);
+    int64_t i = ((HPasses_walls & TIMEOUT) / 2L);
 
     if (EPasses_walls || (HPasses_walls & ~TIMEOUT))
         return;
@@ -1385,7 +1385,7 @@ boolean wakeup_msg;
 void
 attach_egg_hatch_timeout(egg, when)
 struct obj *egg;
-long when;
+int64_t when;
 {
     int i;
 
@@ -1402,7 +1402,7 @@ long when;
         for (i = (MAX_EGG_HATCH_TIME - 50) + 1; i <= MAX_EGG_HATCH_TIME; i++)
             if (rnd(i) > 150) {
                 /* egg will hatch */
-                when = (long) i;
+                when = (int64_t) i;
                 break;
             }
     }
@@ -1424,7 +1424,7 @@ struct obj *egg;
 void
 hatch_egg(arg, timeout)
 anything *arg;
-long timeout;
+int64_t timeout;
 {
     struct obj *egg;
     struct monst *mon, *mon2;
@@ -1479,7 +1479,7 @@ long timeout;
             if (!mon)
                 mon = mon2;
             hatchcount -= i;
-            egg->quan -= (long) hatchcount;
+            egg->quan -= (int64_t) hatchcount;
             play_sfx_sound_at_location(SFX_EGG_HATCH, x, y);
         }
 #if 0
@@ -1583,7 +1583,7 @@ long timeout;
         if (egg->quan > 0) {
             /* still some eggs left */
             /* Instead of ordinary egg timeout use a short one */
-            attach_egg_hatch_timeout(egg, (long) rnd(12));
+            attach_egg_hatch_timeout(egg, (int64_t) rnd(12));
         } else if (carried(egg)) {
             useup(egg);
         } else {
@@ -1668,7 +1668,7 @@ struct obj *figurine;
      */
     i = rnd(9000) + 200;
     /* figurine will transform */
-    (void) start_timer((long) i, TIMER_OBJECT, FIG_TRANSFORM,
+    (void) start_timer((int64_t) i, TIMER_OBJECT, FIG_TRANSFORM,
                        obj_to_any(figurine));
 }
 
@@ -1875,7 +1875,7 @@ struct obj *obj;
 void
 burn_object(arg, timeout)
 anything *arg;
-long timeout;
+int64_t timeout;
 {
     struct obj *obj = arg->a_obj;
     boolean canseeit, many, is_candelabrum, need_newsym, need_invupdate;
@@ -1887,7 +1887,7 @@ long timeout;
 
     /* timeout while away */
     if (timeout != monstermoves) {
-        long how_long = monstermoves - timeout;
+        int64_t how_long = monstermoves - timeout;
 
         if (how_long >= obj->age) {
             obj->age = 0;
@@ -2315,7 +2315,7 @@ boolean already_lit;
         return;
 
     int radius = obj_light_radius(obj);
-    long turns = 0;
+    int64_t turns = 0;
     boolean do_timer = TRUE;
     if (obj_burns_infinitely(obj))
     {
@@ -2453,7 +2453,7 @@ boolean timer_attached;
 STATIC_OVL void
 cleanup_burn(arg, expire_time)
 anything *arg;
-long expire_time;
+int64_t expire_time;
 {
     struct obj *obj = arg->a_obj;
     if (!obj->lamplit) {
@@ -2479,7 +2479,7 @@ long expire_time;
 void
 unsummon_item(arg, timeout)
 anything* arg;
-long timeout;
+int64_t timeout;
 {
     xchar x = 0, y = 0;
     struct obj* obj = arg->a_obj;
@@ -2610,7 +2610,7 @@ struct obj* obj;
 void
 unsummon_monster(arg, timeout)
 anything* arg;
-long timeout;
+int64_t timeout;
 {
     struct monst* mon = arg->a_monst;
 
@@ -2659,7 +2659,7 @@ struct monst* mon;
  */
 void
 begin_timestoptimer(duration)
-long duration;
+int64_t duration;
 {
     anything any = zeroany;
     if (start_timer(duration, TIMER_GLOBAL, TIME_RESTART, &any))
@@ -2672,7 +2672,7 @@ long duration;
 void
 restart_time(arg, timeout)
 anything* arg;
-long timeout;
+int64_t timeout;
 {
     if (!arg && timeout)
     {
@@ -2739,7 +2739,7 @@ do_storms()
  * Interface:
  *
  * General:
- *  boolean start_timer(long timeout,short kind,short func_index,
+ *  boolean start_timer(int64_t timeout,short kind,short func_index,
  *                      anything *arg)
  *      Start a timer of kind 'kind' that will expire at time
  *      monstermoves+'timeout'.  Call the function at 'func_index'
@@ -2748,13 +2748,13 @@ do_storms()
  *      "sooner" to "later".  If an object, increment the object's
  *      timer count.
  *
- *  long stop_timer(short func_index, anything *arg)
+ *  int64_t stop_timer(short func_index, anything *arg)
  *      Stop a timer specified by the (func_index, arg) pair.  This
  *      assumes that such a pair is unique.  Return the time the
  *      timer would have gone off.  If no timer is found, return 0.
  *      If an object, decrement the object's timer count.
  *
- *  long peek_timer(short func_index, anything *arg)
+ *  int64_t peek_timer(short func_index, anything *arg)
  *      Return time specified timer will go off (0 if no such timer).
  *
  *  void run_timers(void)
@@ -2767,7 +2767,7 @@ do_storms()
  *      are saved with a level.  Object and monster timers are
  *      saved using their respective id's instead of pointers.
  *
- *  void restore_timers(int fd, int range, boolean ghostly, long adjust)
+ *  void restore_timers(int fd, int range, boolean ghostly, int64_t adjust)
  *      Restore timers of range 'range'.  If from a ghost pile,
  *      adjust the timeout by 'adjust'.  The object and monster
  *      ids are not restored until later.
@@ -2802,7 +2802,7 @@ STATIC_DCL int FDECL(maybe_write_timer, (int, int, BOOLEAN_P));
 
 /* ordered timer list */
 STATIC_VAR timer_element *timer_base; /* "active" */
-STATIC_VAR unsigned long timer_id = 1;
+STATIC_VAR uint64_t timer_id = 1;
 
 /* If defined, then include names when printing out the timer queue */
 #define VERBOSE_TIMER
@@ -2870,8 +2870,8 @@ timer_element *base;
         putstr(win, 0, "timeout  id   kind   call");
         for (curr = base; curr; curr = curr->next) {
 #ifdef VERBOSE_TIMER
-            Sprintf(buf, " %4ld   %4ld  %-6s %s(%s)", curr->timeout,
-                    curr->tid, kind_name(curr->kind),
+            Sprintf(buf, " %4lld   %4lld  %-6s %s(%s)", (long long)curr->timeout,
+                    (long long)curr->tid, kind_name(curr->kind),
                     timeout_funcs[curr->func_index].name,
                     fmt_ptr((genericptr_t) curr->arg.a_void));
 #else
@@ -2890,14 +2890,14 @@ wiz_timeout_queue()
     winid win;
     char buf[BUFSZ];
     const char *propname;
-    long intrinsic;
+    int64_t intrinsic;
     int i, p, count, longestlen, ln, specindx = 0;
 
     win = create_nhwindow(NHW_MENU); /* corner text window */
     if (win == WIN_ERR)
         return 0;
 
-    Sprintf(buf, "Current time = %ld.", monstermoves);
+    Sprintf(buf, "Current time = %lld.", (long long)monstermoves);
     putstr(win, 0, buf);
     putstr(win, 0, "");
     putstr(win, 0, "Active timeout queue:");
@@ -2938,8 +2938,8 @@ wiz_timeout_queue()
                    width of 4 digits should result in values lining up
                    almost all the time (if/when they don't, it won't
                    look nice but the information will still be accurate) */
-                Sprintf(buf, " %*s %4ld", -longestlen, propname,
-                        (intrinsic & TIMEOUT));
+                Sprintf(buf, " %*s %4lld", -longestlen, propname,
+                    (long long)(intrinsic & TIMEOUT));
                 putstr(win, 0, buf);
             }
         }
@@ -3014,7 +3014,7 @@ run_timers()
  */
 boolean
 start_timer(when, kind, func_index, arg)
-long when;
+int64_t when;
 short kind;
 short func_index;
 anything *arg;
@@ -3054,13 +3054,13 @@ anything *arg;
  * Remove the timer from the current list and free it up.  Return the time
  * remaining until it would have gone off, 0 if not found.
  */
-long
+int64_t
 stop_timer(func_index, arg)
 short func_index;
 anything *arg;
 {
     timer_element *doomed;
-    long timeout;
+    int64_t timeout;
 
     doomed = remove_timer(&timer_base, func_index, arg);
 
@@ -3083,7 +3083,7 @@ anything *arg;
 /*
  * Find the timeout of specified timer; return 0 if none.
  */
-long
+int64_t
 peek_timer(type, arg)
 short type;
 anything *arg;
@@ -3243,7 +3243,7 @@ obj_has_timer(object, timer_type)
 struct obj *object;
 short timer_type;
 {
-    long timeout = peek_timer(timer_type, obj_to_any(object));
+    int64_t timeout = peek_timer(timer_type, obj_to_any(object));
 
     return (boolean) (timeout != 0L);
 }
@@ -3256,7 +3256,7 @@ mon_has_timer(mon, timer_type)
 struct monst* mon;
 short timer_type;
 {
-    long timeout = peek_timer(timer_type, monst_to_any(mon));
+    int64_t timeout = peek_timer(timer_type, monst_to_any(mon));
 
     return (boolean)(timeout != 0L);
 }
@@ -3271,7 +3271,7 @@ xchar x, y;
 short func_index;
 {
     timer_element *curr, *prev, *next_timer = 0;
-    long where = (((long) x << 16) | ((long) y));
+    int64_t where = (((int64_t) x << 16) | ((int64_t) y));
 
     for (prev = 0, curr = timer_base; curr; curr = next_timer) {
         next_timer = curr->next;
@@ -3295,13 +3295,13 @@ short func_index;
  * When is the spot timer of type func_index going to expire?
  * Returns 0L if no such timer.
  */
-long
+int64_t
 spot_time_expires(x, y, func_index)
 xchar x, y;
 short func_index;
 {
     timer_element *curr;
-    long where = (((long) x << 16) | ((long) y));
+    int64_t where = (((int64_t) x << 16) | ((int64_t) y));
 
     for (curr = timer_base; curr; curr = curr->next) {
         if (curr->kind == TIMER_LEVEL && curr->func_index == func_index
@@ -3311,12 +3311,12 @@ short func_index;
     return 0L;
 }
 
-long
+int64_t
 spot_time_left(x, y, func_index)
 xchar x, y;
 short func_index;
 {
-    long expires = spot_time_expires(x, y, func_index);
+    int64_t expires = spot_time_expires(x, y, func_index);
     return (expires > 0L) ? expires - monstermoves : 0L;
 }
 
@@ -3568,7 +3568,7 @@ void
 restore_timers(fd, range, ghostly, adjust)
 int fd, range;
 boolean ghostly; /* restoring from a ghost level */
-long adjust;     /* how much to adjust timeout */
+int64_t adjust;     /* how much to adjust timeout */
 {
     int count;
     timer_element *curr;
@@ -3608,12 +3608,12 @@ void
 timer_stats(hdrfmt, hdrbuf, count, size)
 const char *hdrfmt;
 char *hdrbuf;
-long* count;
+int64_t* count;
 size_t *size;
 {
     timer_element *te;
 
-    Sprintf(hdrbuf, hdrfmt, (long) sizeof (timer_element));
+    Sprintf(hdrbuf, hdrfmt, (int64_t) sizeof (timer_element));
     *count = *size = 0L;
     for (te = timer_base; te; te = te->next) {
         ++*count;
@@ -3681,7 +3681,7 @@ boolean ghostly;
 void
 make_sound_object(arg, timeout)
 anything* arg;
-long timeout;
+int64_t timeout;
 {
     if (!arg && timeout)
     {
@@ -3697,7 +3697,7 @@ long timeout;
 STATIC_OVL void
 cleanup_sound(arg, expire_time)
 anything* arg;
-long expire_time;
+int64_t expire_time;
 {
     struct obj* obj = arg->a_obj;
     if (!obj->makingsound)

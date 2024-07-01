@@ -95,7 +95,7 @@ STATIC_DCL void FDECL(dump_putstr_ex, (winid, const char *, int, int, int));
 STATIC_DCL void FDECL(dump_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
 STATIC_DCL void NDECL(dump_headers);
 STATIC_DCL void NDECL(dump_footers);
-STATIC_DCL void FDECL(dump_status_update, (int, genericptr_t, int, int, int, unsigned long*));
+STATIC_DCL void FDECL(dump_status_update, (int, genericptr_t, int, int, int, uint64_t*));
 STATIC_DCL void NDECL(dump_render_status);
 #if defined (DUMPHTML)
 STATIC_DCL void FDECL(dump_set_color_attr, (int, int, BOOLEAN_P, BOOLEAN_P));
@@ -378,37 +378,37 @@ genl_add_context_menu(int cmd_def_char UNUSED, int cmd_cur_char UNUSED, int styl
 }
 
 void
-genl_update_status_button(int cmd UNUSED, int btn UNUSED, int val UNUSED, unsigned long bflags UNUSED)
+genl_update_status_button(int cmd UNUSED, int btn UNUSED, int val UNUSED, uint64_t bflags UNUSED)
 {
     return;
 }
 
 void
-genl_toggle_animation_timer(int type UNUSED, int id UNUSED, int state UNUSED, int x UNUSED, int y UNUSED, int layer UNUSED, unsigned long tflags UNUSED)
+genl_toggle_animation_timer(int type UNUSED, int id UNUSED, int state UNUSED, int x UNUSED, int y UNUSED, int layer UNUSED, uint64_t tflags UNUSED)
 {
     return;
 }
 
 void
-genl_display_floating_text(int x UNUSED, int y UNUSED, const char* text UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, unsigned long tflags UNUSED)
+genl_display_floating_text(int x UNUSED, int y UNUSED, const char* text UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, uint64_t tflags UNUSED)
 {
     return;
 }
 
 void
-genl_display_screen_text(const char* text UNUSED, const char* supertext UNUSED, const char* subtext UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, unsigned long tflags UNUSED)
+genl_display_screen_text(const char* text UNUSED, const char* supertext UNUSED, const char* subtext UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, uint64_t tflags UNUSED)
 {
     return;
 }
 
 void
-genl_display_popup_text(const char* text UNUSED, const char* title UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, int glyph UNUSED, unsigned long tflags UNUSED)
+genl_display_popup_text(const char* text UNUSED, const char* title UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, int glyph UNUSED, uint64_t tflags UNUSED)
 {
     return;
 }
 
 void
-genl_display_gui_effect(int style UNUSED, int subtype UNUSED, int x UNUSED, int y UNUSED, int x2 UNUSED, int y2 UNUSED, unsigned long tflags UNUSED)
+genl_display_gui_effect(int style UNUSED, int subtype UNUSED, int x UNUSED, int y UNUSED, int x2 UNUSED, int y2 UNUSED, uint64_t tflags UNUSED)
 {
     return;
 }
@@ -749,7 +749,7 @@ boolean is_restoring;
  */
 
 STATIC_DCL int NDECL(hup_nhgetch);
-STATIC_DCL char FDECL(hup_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, const char*, unsigned long));
+STATIC_DCL char FDECL(hup_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, const char*, uint64_t));
 STATIC_DCL int FDECL(hup_nh_poskey, (int *, int *, int *));
 STATIC_DCL void FDECL(hup_getlin_ex, (int, int, int, const char *, char *, const char*, const char*, const char*));
 STATIC_DCL void FDECL(hup_init_nhwindows, (int *, char **));
@@ -774,14 +774,14 @@ STATIC_DCL void FDECL(hup_display_file, (const char *, BOOLEAN_P));
 STATIC_DCL void FDECL(hup_cliparound, (int, int, BOOLEAN_P));
 #endif
 #ifdef CHANGE_COLOR
-STATIC_DCL void FDECL(hup_change_color, (int, long, int));
+STATIC_DCL void FDECL(hup_change_color, (int, int64_t, int));
 #ifdef MAC
 STATIC_DCL short FDECL(hup_set_font_name, (winid, char *));
 #endif
 STATIC_DCL char *NDECL(hup_get_color_string);
 #endif /* CHANGE_COLOR */
 STATIC_DCL void FDECL(hup_status_update, (int, genericptr_t, int, int, int,
-                                      unsigned long *));
+                                      uint64_t *));
 
 STATIC_DCL int NDECL(hup_int_ndecl);
 STATIC_DCL void NDECL(hup_void_ndecl);
@@ -898,7 +898,7 @@ hup_yn_function_ex(style, attr, color, glyph, title, prompt, resp, deflt, resp_d
 int style UNUSED, attr UNUSED, color UNUSED, glyph UNUSED;
 const char *title UNUSED, *prompt UNUSED, *resp UNUSED, *resp_desc UNUSED, *introline UNUSED;
 char deflt;
-unsigned long ynflags UNUSED;
+uint64_t ynflags UNUSED;
 {
     if (!deflt)
         deflt = '\033';
@@ -1093,7 +1093,7 @@ boolean force UNUSED;
 STATIC_OVL void
 hup_change_color(color, rgb, reverse)
 int color, reverse;
-long rgb;
+int64_t rgb;
 {
     return;
 }
@@ -1122,7 +1122,7 @@ hup_status_update(idx, ptr, chg, pc, color, colormasks)
 int idx UNUSED;
 genericptr_t ptr UNUSED;
 int chg UNUSED, pc UNUSED, color UNUSED;
-unsigned long *colormasks UNUSED;
+uint64_t *colormasks UNUSED;
 
 {
     return;
@@ -1232,10 +1232,10 @@ genl_status_update(idx, ptr, chg, percent, color, colormasks)
 int idx;
 genericptr_t ptr;
 int chg UNUSED, percent UNUSED, color UNUSED;
-unsigned long *colormasks UNUSED;
+uint64_t *colormasks UNUSED;
 {
     char newbot1[MAXCO], newbot2[MAXCO];
-    long cond, *condptr = (long *) ptr;
+    int64_t cond, *condptr = (int64_t *) ptr;
     register int i;
     unsigned pass, lndelta;
     enum statusfields idx1, idx2, *fieldlist;
@@ -1523,11 +1523,11 @@ char *buf;
     size_t slen, len = 0;
     char tmpbuf[BUFSZ];
     char verbuf[BUFSZ];
-    long uid;
+    int64_t uid;
     time_t now;
 
     now = dumplog_now;
-    uid = (long) getuid();
+    uid = (int64_t) getuid();
 
     /*
      * Note: %t and %T assume that time_t is a 'long int' number of
@@ -1550,23 +1550,23 @@ char *buf;
                 Sprintf(tmpbuf, "%%");
                 break;
             case 't': /* game start, timestamp */
-                Sprintf(tmpbuf, "%lu", (unsigned long) ubirthday);
+                Sprintf(tmpbuf, "%llu", (unsigned long long) ubirthday);
                 break;
             case 'T': /* current time, timestamp */
-                Sprintf(tmpbuf, "%lu", (unsigned long) now);
+                Sprintf(tmpbuf, "%llu", (unsigned long long) now);
                 break;
             case 'd': /* game start, YYYYMMDDhhmmss */
-                Sprintf(tmpbuf, "%08ld%06ld",
-                        yyyymmdd(ubirthday), hhmmss(ubirthday));
+                Sprintf(tmpbuf, "%08lld%06lld",
+                    (unsigned long long)yyyymmdd(ubirthday), (unsigned long long)hhmmss(ubirthday));
                 break;
             case 'D': /* current time, YYYYMMDDhhmmss */
-                Sprintf(tmpbuf, "%08ld%06ld", yyyymmdd(now), hhmmss(now));
+                Sprintf(tmpbuf, "%08lld%06lld", (unsigned long long)yyyymmdd(now), (unsigned long long)hhmmss(now));
                 break;
             case 'v': /* version, eg. "3.6.2-0" */
                 Sprintf(tmpbuf, "%s", version_string(verbuf));
                 break;
             case 'u': /* UID */
-                Sprintf(tmpbuf, "%ld", uid);
+                Sprintf(tmpbuf, "%lld", (long long)uid);
                 break;
             case 'n': /* player name */
                 Sprintf(tmpbuf, "%s", *plname ? plname : "unknown");
@@ -1607,8 +1607,8 @@ struct dump_status_fields {
 };
 
 static const enum statusfields** fieldorder;
-static unsigned long* dump_colormasks;
-static long dump_condition_bits;
+static uint64_t* dump_colormasks;
+static int64_t dump_condition_bits;
 static struct dump_status_fields dump_status[MAXBLSTATS];
 static int hpbar_percent, hpbar_color;
 
@@ -1621,8 +1621,8 @@ static int hpbar_percent, hpbar_color;
 
 static int
 condcolor(bm, bmarray)
-long bm;
-unsigned long* bmarray;
+int64_t bm;
+uint64_t* bmarray;
 {
 #if defined(STATUS_HILITES) && defined(TEXTCOLOR)
     int i;
@@ -1638,8 +1638,8 @@ unsigned long* bmarray;
 
 STATIC_OVL int
 condattr(bm, bmarray)
-long bm;
-unsigned long* bmarray;
+int64_t bm;
+uint64_t* bmarray;
 {
     int attr = 0;
 #ifdef STATUS_HILITES
@@ -1679,7 +1679,7 @@ unsigned long* bmarray;
 STATIC_OVL void
 dump_render_status(VOID_ARGS)
 {
-    long mask, bits;
+    int64_t mask, bits;
     int i, idx, c, row, num_rows, coloridx = 0, attrmask = 0;
     char* text;
 
@@ -1819,10 +1819,10 @@ STATIC_OVL void
 dump_status_update(fldidx, ptr, chg, percent, color, colormasks)
 int fldidx, chg UNUSED, percent, color;
 genericptr_t ptr;
-unsigned long* colormasks;
+uint64_t* colormasks;
 {
     int attrmask;
-    long* condptr = (long*)ptr;
+    int64_t* condptr = (int64_t*)ptr;
     char* text = (char*)ptr;
     char* lastchar, * p;
     char goldbuf[40] = "";
@@ -2762,14 +2762,14 @@ time_t when;
         fprintf(dumphtml_file, "<div class=\"ts_row ts_name\">");
         html_dump_str(dumphtml_file, plname, 0, 0, ATR_NONE, NO_COLOR);
         fprintf(dumphtml_file, "</div><br />\n");
-        fprintf(dumphtml_file, "<div class=\"ts_row ts_points\">%ld points</div><br />\n", u.u_gamescore);
+        fprintf(dumphtml_file, "<div class=\"ts_row ts_points\">%lld points</div><br />\n", (long long)u.u_gamescore);
         fprintf(dumphtml_file, "<div class=\"ts_row ts_killer\">");
         char kbuf[BUFSZ * 2];
         formatkiller(kbuf, sizeof kbuf, how, FALSE);
         html_dump_str(dumphtml_file, kbuf, 0, 0, ATR_NONE, NO_COLOR);
         fprintf(dumphtml_file, "</div><br />\n");
-        long year = yyyymmdd(when) / 10000L;
-        fprintf(dumphtml_file, "<div class=\"ts_row ts_year\">%4ld</div>\n", year);
+        int64_t year = yyyymmdd(when) / 10000L;
+        fprintf(dumphtml_file, "<div class=\"ts_row ts_year\">%4lld</div>\n", (long long)year);
         fprintf(dumphtml_file, "%s\n", DIV_E);
         fprintf(dumphtml_file, "%s\n", DIV_E);
     }
@@ -2952,7 +2952,7 @@ html_init_sym()
   highlight attrs (currently just inverse) */
 STATIC_OVL unsigned
 mg_hl_attr(special)
-unsigned long special;
+uint64_t special;
 {
     unsigned hl = 0;
     if ((special & MG_PET) && iflags.hilite_pet)
@@ -2970,7 +2970,7 @@ void
 html_dump_glyph(x, y, sym, ch, color, special)
 int x, y, sym, color;
 nhsym ch;
-unsigned long special;
+uint64_t special;
 {
     char descbuf[BUFSZ] = "";
     const char* firstmatch = 0;

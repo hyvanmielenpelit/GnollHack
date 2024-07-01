@@ -53,7 +53,7 @@ set_uasmon(VOID_ARGS)
         u.uprops[i].intrinsic &= ~FROM_FORM;
     }
 
-    unsigned long bit = 1UL;
+    uint64_t bit = 1UL;
     for (i = 1; i <= 32; i++)
     {
         int prop = 0;
@@ -791,7 +791,7 @@ int mntmp;
     u.umonnum = mntmp;
     set_uasmon();
 
-    /* New stats for monster, to last only as long as polymorphed.
+    /* New stats for monster, to last only as int64_t as polymorphed.
      * Currently only strength gets changed.
      */
     //if (strongmonst(&mons[mntmp]))
@@ -873,7 +873,7 @@ int mntmp;
     updatemaxhp();
 
     if (u.ulevel < mlvl) {
-        /* Low level characters can't become high level monsters for long */
+        /* Low level characters can't become high level monsters for int64_t */
 #ifdef DUMB
         /* DRS/NS 2.2.6 messes up -- Peter Kendell */
         int mtd = u.mtimedone, ulv = u.ulevel;

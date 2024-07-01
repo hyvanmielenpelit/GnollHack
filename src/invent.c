@@ -36,7 +36,7 @@ STATIC_PTR int FDECL(ckvalidcat, (struct obj *));
 STATIC_PTR int FDECL(ckunpaid, (struct obj *));
 STATIC_PTR char *FDECL(safeq_xprname, (struct obj *));
 STATIC_PTR char *FDECL(safeq_shortxprname, (struct obj *));
-STATIC_DCL char FDECL(display_pickinv, (const char *, char *, char *, BOOLEAN_P, long *, int, const char*, BOOLEAN_P, BOOLEAN_P));
+STATIC_DCL char FDECL(display_pickinv, (const char *, char *, char *, BOOLEAN_P, int64_t *, int, const char*, BOOLEAN_P, BOOLEAN_P));
 STATIC_DCL char FDECL(display_used_invlets, (CHAR_P));
 STATIC_DCL boolean FDECL(this_type_only, (struct obj *));
 STATIC_DCL void NDECL(dounpaid);
@@ -477,7 +477,7 @@ const genericptr vptr2;
  *      object at a time to the routine which populates it, traverse
  *      the objects via stepping through the array, then free the
  *      array.  The ordering process used a basic insertion sort which
- *      is fine for short lists but inefficient for long ones.
+ *      is fine for short lists but inefficient for int64_t ones.
  *
  *      3.6.0 (and continuing with 3.6.1) changed all that so that
  *      sortloot was self-contained as far as callers were concerned.
@@ -779,7 +779,7 @@ struct obj **potmp, **pobj;
 
         /* fixup for `#adjust' merging wielded darts, daggers, &c */
         if (obj->owornmask && carried(otmp)) {
-            long wmask = otmp->owornmask | obj->owornmask;
+            int64_t wmask = otmp->owornmask | obj->owornmask;
 
             /* Both the items might be worn in competing slots;
                merger preference (regardless of which is which):
@@ -1164,7 +1164,7 @@ boolean verbose;
     int old_move = get_u_move_speed(TRUE);
     boolean check_bosses = FALSE;
 
-    unsigned long previous_warntype_obj = context.warntype.obj;
+    uint64_t previous_warntype_obj = context.warntype.obj;
     int oldstr = ACURR(A_STR);
     int olddex = ACURR(A_DEX);
     int oldcon = ACURR(A_CON);
@@ -1690,7 +1690,7 @@ struct obj *obj;
     struct obj *otmp, *prev;
     int saved_otyp = (int) obj->otyp; /* for panic */
     boolean obj_was_thrown;
-    long quan = obj->quan;
+    int64_t quan = obj->quan;
 
     int oldmanamax = u.uenmax;
     int oldhpmax = u.uhpmax;
@@ -1777,7 +1777,7 @@ struct obj *obj;
             if (quan > 0 && isok(u.ux, u.uy))
             {
                 char cbuf[BUFSZ];
-                Sprintf(cbuf, "+%ld %s", quan, "gold" /*currency(quan)*/);
+                Sprintf(cbuf, "+%lld %s", (long long)quan, "gold" /*currency(quan)*/);
                 display_floating_text(u.ux, u.uy, cbuf, FLOATING_TEXT_GOLD_ACQUIRED, ATR_NONE, NO_COLOR, 0UL);
 
             }
@@ -1899,7 +1899,7 @@ const char *drop_fmt, *drop_arg, *hold_msg;
         obj = addinv(obj); /* dropping expects obj to be in invent */
         goto drop_it;
     } else {
-        long oquan = obj->quan;
+        int64_t oquan = obj->quan;
         int prev_encumbr = near_capacity(); /* before addinv() */
 
         /* encumbrance only matters if it would now become worse
@@ -2094,7 +2094,7 @@ register struct obj* obj;
 void
 delobj_with_flags(obj, newsym_flags)
 register struct obj *obj;
-unsigned long newsym_flags;
+uint64_t newsym_flags;
 {
     boolean update_map;
 
@@ -2341,7 +2341,7 @@ static const char *const currencies[] = {
 
 const char *
 currency(amount)
-long amount;
+int64_t amount;
 {
     const char *res;
 
@@ -2601,11 +2601,11 @@ boolean (*validitemfunc)(struct obj*);
     boolean allownone = FALSE;
     boolean useboulder = FALSE;
     xchar foox = 0;
-    long cnt;
+    int64_t cnt;
     boolean cntgiven = FALSE;
     boolean msggiven = FALSE;
     boolean oneloop = FALSE;
-    //long dummymask;
+    //int64_t dummymask;
     //Loot *sortedinvent, *srtinv;
 
     construct_getobj_letters(let, word, validitemfunc, lets, altlets, buf, sizeof lets, sizeof altlets, sizeof buf, &foo, &foox, &bp, &allowcnt, &usegold, &allowall, &allownone, &useboulder, getobj_autoselect_obj);
@@ -2933,7 +2933,7 @@ boolean (*validitemfunc)(struct obj*);
             ilet = yn_function(qbuf, (char *)0, '\0', (char *)0);
         }
         if (digit(ilet)) {
-            long tmpcnt = 0;
+            int64_t tmpcnt = 0;
 
             if (!allowcnt) {
                 play_sfx_sound(SFX_GENERAL_CANNOT);
@@ -2976,7 +2976,7 @@ boolean (*validitemfunc)(struct obj*);
            select-from-invent before checking whether gold has been picked */
         if (ilet == '?' || ilet == '*') {
             char *allowed_choices = (ilet == '?') ? lets : (char *) 0;
-            long ctmp = 0;
+            int64_t ctmp = 0;
             char menuquery[QBUFSZ];
 
             menuquery[0] = qbuf[0] = '\0';
@@ -2998,7 +2998,7 @@ boolean (*validitemfunc)(struct obj*);
                 allowed_choices = altlets;
             ilet = display_pickinv(allowed_choices, *qbuf ? qbuf : (char *) 0,
                                    menuquery,
-                                   TRUE, allowcnt ? &ctmp : (long *) 0, show_weights, headertext, FALSE, FALSE);
+                                   TRUE, allowcnt ? &ctmp : (int64_t *) 0, show_weights, headertext, FALSE, FALSE);
             if (!ilet)
                 continue;
             if (ilet == HANDS_SYM)
@@ -3123,7 +3123,7 @@ struct obj* otmp_only;
     boolean allownone = FALSE;
     boolean useboulder = FALSE;
     xchar foox = 0;
-    long dummymask;
+    int64_t dummymask;
     Loot* sortedinvent, * srtinv;
 
     if (*let == ALLOW_COUNT)
@@ -4190,7 +4190,7 @@ void
 prinv(prefix, obj, quan)
 const char *prefix;
 struct obj *obj;
-long quan;
+int64_t quan;
 {
     //if (!prefix)
     //    prefix = "";
@@ -4203,7 +4203,7 @@ void
 prinv_ex(prefix, obj, quan, prefix_attr, prefix_color, attr, color, apply_menucolor, apply_to_separator)
 const char* prefix;
 struct obj* obj;
-long quan;
+int64_t quan;
 int prefix_attr, prefix_color, attr, color;
 boolean apply_menucolor, apply_to_separator;
 {
@@ -4211,7 +4211,7 @@ boolean apply_menucolor, apply_to_separator;
         prefix = "";
     //char* text = xprname(obj, (char*)0, obj_to_let(obj), TRUE, 0L, quan);
     char let = obj_to_let(obj);
-    long cost = 0;
+    int64_t cost = 0;
     boolean dot = TRUE;
 #ifdef LINT /* handle static char li[BUFSZ]; */
     char li[BUFSZ];
@@ -4222,7 +4222,7 @@ boolean apply_menucolor, apply_to_separator;
 #endif
     boolean use_invlet = (flags.invlet_constant
         && let != CONTAINED_SYM && let != HANDS_SYM);
-    long savequan = 0;
+    int64_t savequan = 0;
 
     if (quan && obj) {
         savequan = obj->quan;
@@ -4274,8 +4274,8 @@ struct obj *obj;
 const char *txt; /* text to print instead of obj */
 char let;        /* inventory letter */
 boolean dot;     /* append period; (dot && cost => Iu) */
-long cost;       /* cost (for inventory of unpaid or expended items) */
-long quan;       /* if non-0, print this quantity, not obj->quan */
+int64_t cost;       /* cost (for inventory of unpaid or expended items) */
+int64_t quan;       /* if non-0, print this quantity, not obj->quan */
 {
 #ifdef LINT /* handle static char li[BUFSZ]; */
     char li[BUFSZ];
@@ -4284,7 +4284,7 @@ long quan;       /* if non-0, print this quantity, not obj->quan */
 #endif
     boolean use_invlet = (flags.invlet_constant
                           && let != CONTAINED_SYM && let != HANDS_SYM);
-    long savequan = 0;
+    int64_t savequan = 0;
 
     if (quan && obj) {
         savequan = obj->quan;
@@ -4327,7 +4327,7 @@ ddoinv()
     //(void) display_inventory((char *) 0, FALSE, 1);
 
     char invlet;
-    long pickcnt;
+    int64_t pickcnt;
     boolean return_to_inv;
     issue_gui_command(GUI_CMD_TOGGLE_MENU_POSITION_SAVING, GHMENU_STYLE_INVENTORY, 1, (char*)0);
     do
@@ -4371,7 +4371,7 @@ int
 doseeworn()
 {
     char invlet;
-    long pickcnt;
+    int64_t pickcnt;
     boolean return_to_inv;
 
     do
@@ -4407,7 +4407,7 @@ doseeworn()
 int
 display_item_command_menu_by_invlet(invlet, pickcnt, return_to_inv_ptr)
 char invlet;
-long pickcnt;
+int64_t pickcnt;
 boolean* return_to_inv_ptr;
 {
     struct obj* otmp = 0;
@@ -4427,7 +4427,7 @@ boolean* return_to_inv_ptr;
 int
 display_item_command_menu(otmp, pickcnt, return_to_inv_ptr)
 struct obj* otmp;
-long pickcnt;
+int64_t pickcnt;
 boolean* return_to_inv_ptr; 
 {
     if (!otmp)
@@ -4452,7 +4452,7 @@ boolean* return_to_inv_ptr;
         start_menu_ex(win, GHMENU_STYLE_ITEM_COMMAND);
 
         const char* headings[NUM_CMD_SECTIONS] = { "Information", "General Commands", "Item-Specific Commands" };
-        unsigned long section_flags[NUM_CMD_SECTIONS] = { SINGLE_OBJ_CMD_INFO, SINGLE_OBJ_CMD_GENERAL, SINGLE_OBJ_CMD_SPECIFIC };
+        uint64_t section_flags[NUM_CMD_SECTIONS] = { SINGLE_OBJ_CMD_INFO, SINGLE_OBJ_CMD_GENERAL, SINGLE_OBJ_CMD_SPECIFIC };
         char buf[BUFSIZ] = "";
         char cmdbuf[BUFSZ] = "";
         char shortcutbuf[BUFSZ] = "";
@@ -4463,7 +4463,7 @@ boolean* return_to_inv_ptr;
         int longest_len = 0;
         int longest_len_header = 0;
         int slen = 0;
-        unsigned long allflags = 0UL;
+        uint64_t allflags = 0UL;
         int i, j;
         for (j = 0; j < NUM_CMD_SECTIONS; j++)
         {
@@ -4824,7 +4824,7 @@ const char *lets;
 char *xtra_choice; /* "fingers", pick hands rather than an object */
 char *query;
 boolean want_reply;
-long *out_cnt;
+int64_t *out_cnt;
 int show_weights;
 const char* headertext;
 boolean addinventoryheader, wornonly;
@@ -5417,14 +5417,14 @@ boolean want_reply;
 int show_weights;
 {
     return display_pickinv(lets, (char *) 0, (char *) 0,
-                           want_reply, (long *) 0, show_weights, "", FALSE, FALSE);
+                           want_reply, (int64_t *) 0, show_weights, "", FALSE, FALSE);
 }
 
 char
 display_inventory_with_header(lets, want_reply, out_cnt, show_weights, wornonly)
 const char* lets;
 boolean want_reply, wornonly;
-long* out_cnt;
+int64_t* out_cnt;
 int show_weights;
 {
     return display_pickinv(lets, (char*)0, (char*)0,
@@ -5617,7 +5617,7 @@ int *bcp, *ucp, *ccp, *xcp, *ocp, *tcp;
 }
 
 /* count everything inside a container, or just shop-owned items inside */
-long
+int64_t
 count_contents(container, nested, quantity, everything)
 struct obj *container;
 boolean nested, /* include contents of any nested containers */
@@ -5626,7 +5626,7 @@ boolean nested, /* include contents of any nested containers */
 {
     struct obj *otmp, *topc;
     boolean shoppy = FALSE;
-    long count = 0L;
+    int64_t count = 0L;
 
     if (!everything) {
         for (topc = container; topc->where == OBJ_CONTAINED;
@@ -5656,7 +5656,7 @@ dounpaid()
     register char ilet;
     char *classlet = flags.inv_order;
     int classcount, count, num_so_far;
-    long cost, totcost;
+    int64_t cost, totcost;
 
     count = count_unpaid(invent, 0, FALSE);
     otmp = marker = contnr = (struct obj *) 0;
@@ -5715,7 +5715,7 @@ dounpaid()
          */
         for (otmp = invent; otmp; otmp = otmp->nobj) {
             if (Has_contents(otmp)) {
-                long contcost = 0L;
+                int64_t contcost = 0L;
 
                 marker = (struct obj *) 0; /* haven't found any */
                 while (find_unpaid(otmp->cobj, &marker)) {
@@ -6616,7 +6616,7 @@ print_things_here_to_window(VOID_ARGS)
             char sym = 0;
             nhsym ch = 0;
             int color;
-            unsigned long special;
+            uint64_t special;
             int glyph = back_to_glyph(u.ux, u.uy);
             layers.glyph = glyph;
             (void)mapglyph(layers, &ch, &color, &special, u.ux, u.uy);
@@ -6692,7 +6692,7 @@ print_things_here_to_window(VOID_ARGS)
             char sym = 0;
             nhsym ch = 0;
             int color;
-            unsigned long special;
+            uint64_t special;
             int glyph = otmp->glyph;
             layers.glyph = glyph;
             (void)mapglyph(layers, &ch, &color, &special, u.ux, u.uy);
@@ -6935,7 +6935,7 @@ doprgold()
 {
     /* the messages used to refer to "carrying gold", but that didn't
        take containers into account */
-    long umoney = money_cnt(invent);
+    int64_t umoney = money_cnt(invent);
 
     if (!umoney)
         Your("wallet is empty.");
@@ -7107,7 +7107,7 @@ doprinuse()
     {
         //(void)display_inventory(lets, FALSE, 0);
         char invlet;
-        long pickcnt;
+        int64_t pickcnt;
         boolean return_to_inv;
         do
         {
@@ -7145,7 +7145,7 @@ doprinuse()
 void
 useupf(obj, numused)
 register struct obj* obj;
-long numused;
+int64_t numused;
 {
     useupf_with_flags(obj, numused, 0UL);
 }
@@ -7153,8 +7153,8 @@ long numused;
 void
 useupf_with_flags(obj, numused, newsym_flags)
 register struct obj *obj;
-long numused;
-unsigned long newsym_flags;
+int64_t numused;
+uint64_t newsym_flags;
 {
     register struct obj *otmp;
     boolean at_u = (obj->ox == u.ux && obj->oy == u.uy);
@@ -7245,7 +7245,7 @@ boolean showsym;
 
     if ((oclass != 0) && showsym) {
         char *bp = eos(invbuf);
-        long mlen = (long)invbuf_sympadding - (long)strlen(class_name);
+        int64_t mlen = (int64_t)invbuf_sympadding - (int64_t)strlen(class_name);
         while (--mlen > 0) {
             *bp = ' ';
             bp++;

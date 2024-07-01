@@ -162,7 +162,7 @@
  * almost certainly break this, as would any integer type bigger than
  * sizeof (char *).
  * GnollHack avoids floating point, and any configuration able to use
- * 'long long int' or I64P32 or the like should be using USE_STDARG.
+ * 'int64_t int64_t int' or I64P32 or the like should be using USE_STDARG.
  */
 #ifndef VA_TYPE
 typedef const char *vA;
@@ -298,7 +298,7 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
  * Due to the presence of things like gcc, NHSTDC is not a good test.
  * So we assume microcomputers have all converted to ANSI and bigger
  * computers which may have older libraries give reasonable results with
- * casting pointers to unsigned long int (fmt_ptr() in alloc.c).
+ * casting pointers to uint64_t int (fmt_ptr() in alloc.c).
  */
 #define HAS_PTR_FMT
 #endif

@@ -193,8 +193,8 @@ static char *FDECL(version_string, (char *, const char *));
 static char *FDECL(version_id_string, (char *, const char *));
 static char *FDECL(bannerc_string, (char *, const char *));
 static char *FDECL(xcrypt, (const char *));
-static unsigned long FDECL(read_rumors_file,
-                           (const char *, int *, long *, unsigned long));
+static uint64_t FDECL(read_rumors_file,
+                           (const char *, int *, int64_t *, uint64_t));
 static boolean FDECL(get_gitinfo, (char *, char *));
 static void FDECL(do_rnd_access_file, (const char *));
 static boolean FDECL(d_filter, (char *));
@@ -901,16 +901,16 @@ const char *str;
 
 #define PAD_RUMORS_TO 60
 /* common code for do_rumors().  Return 0 on error. */
-static unsigned long
+static uint64_t
 read_rumors_file(file_ext, rumor_count, rumor_size, old_rumor_offset)
 const char *file_ext;
 int *rumor_count;
-long *rumor_size;
-unsigned long old_rumor_offset;
+int64_t *rumor_size;
+uint64_t old_rumor_offset;
 {
     char infile[MAXFNAMELEN];
     char *line;
-    unsigned long rumor_offset;
+    uint64_t rumor_offset;
 
     Sprintf(infile, DATA_IN_TEMPLATE, RUMOR_FILE);
     Strcat(infile, file_ext);
@@ -950,7 +950,7 @@ unsigned long old_rumor_offset;
         free(line);
     }
     /* record the current position; next rumors section will start here */
-    rumor_offset = (unsigned long) ftell(tfp);
+    rumor_offset = (uint64_t) ftell(tfp);
     Fclose(ifp); /* all done with rumors.file_ext */
 
     /* the calculated value for *_rumor_count assumes that
@@ -958,7 +958,7 @@ unsigned long old_rumor_offset;
        which use two byte CR+LF, we need to override that value
        [it's much simpler to do so unconditionally, rendering
        the loop's accumulation above obsolete] */
-    *rumor_size = (long) (rumor_offset - old_rumor_offset);
+    *rumor_size = (int64_t) (rumor_offset - old_rumor_offset);
     return rumor_offset;
 }
 
@@ -1009,8 +1009,8 @@ do_rumors()
         "%s%04d,%06ld,%06lx;%04d,%06ld,%06lx;0,0,%06lx\n";
     char tempfile[MAXFNAMELEN];
     int true_rumor_count, false_rumor_count;
-    long true_rumor_size, false_rumor_size;
-    unsigned long true_rumor_offset, false_rumor_offset, eof_offset;
+    int64_t true_rumor_size, false_rumor_size;
+    uint64_t true_rumor_offset, false_rumor_offset, eof_offset;
 
     Sprintf(tempfile, DATA_TEMPLATE, "rumors.tmp");
     filename[0] = '\0';
@@ -1037,7 +1037,7 @@ do_rumors()
             true_rumor_size, true_rumor_offset, false_rumor_count,
             false_rumor_size, false_rumor_offset, eof_offset);
     /* record the current position; true rumors will start here */
-    true_rumor_offset = (unsigned long)ftell(tfp);
+    true_rumor_offset = (uint64_t)ftell(tfp);
 
     false_rumor_offset = read_rumors_file(
         ".tru", &true_rumor_count, &true_rumor_size, true_rumor_offset);
@@ -1111,10 +1111,10 @@ rumors_failure:
  *
  */
 #define IGNORED_FEATURES                 \
-    (0L | (1L << 6)  /* MAIL */          \
-     | (1L << 19)    /* TRUE, previously SCORE_ON_BOTL */ \
-     | (1L << 27)    /* ZEROCOMP */      \
-     | (1L << 28)    /* RLECOMP */       \
+    ((uint64_t)0 | ((uint64_t)1 << 6)  /* MAIL */          \
+     | ((uint64_t)1 << 19)    /* TRUE, previously SCORE_ON_BOTL */ \
+     | ((uint64_t)1 << 27)    /* ZEROCOMP */      \
+     | ((uint64_t)1 << 28)    /* RLECOMP */       \
      )
 
 static void
@@ -1125,10 +1125,10 @@ make_version()
     /*
      * integer version number
      */
-    version.incarnation = ((unsigned long) VERSION_MAJOR << 24)
-                          | ((unsigned long) VERSION_MINOR << 16)
-                          | ((unsigned long) PATCHLEVEL << 8)
-                          | ((unsigned long) EDITLEVEL);
+    version.incarnation = ((uint64_t) VERSION_MAJOR << 24)
+                          | ((uint64_t) VERSION_MINOR << 16)
+                          | ((uint64_t) PATCHLEVEL << 8)
+                          | ((uint64_t) EDITLEVEL);
     /*
      * encoded feature list
      * Note:  if any of these magic numbers are changed or reassigned,
@@ -1136,7 +1136,7 @@ make_version()
      * The actual values have no special meaning, and the category
      * groupings are just for convenience.
      */
-    version.feature_set = (unsigned long) (0L
+    version.feature_set = (uint64_t) (0L
 /* levels and/or topology (0..4) */
 /* monsters (5..9) */
 #ifdef MAIL
@@ -1169,28 +1169,28 @@ make_version()
      */
     for (i = 1; artifact_names[i]; i++)
         continue;
-    version.entity_count = (unsigned long) (i - 1);
+    version.entity_count = (uint64_t) (i - 1);
     for (i = 1; objects[i].oc_class != ILLOBJ_CLASS; i++)
         continue;
-    version.entity_count = (version.entity_count << 12) | (unsigned long) i;
+    version.entity_count = (version.entity_count << 12) | (uint64_t) i;
     for (i = 0; mons[i].mlet; i++)
         continue;
-    version.entity_count = (version.entity_count << 12) | (unsigned long) i;
+    version.entity_count = (version.entity_count << 12) | (uint64_t) i;
     /*
      * Value used for compiler (word size/field alignment/padding) check.
      */
     version.struct_sizes1 =
-        (((unsigned long) sizeof(struct obj) << 22)
-         | ((unsigned long) sizeof(struct monst) << 12)
-         | ((unsigned long) sizeof(struct you)));
+        (((uint64_t) sizeof(struct obj) << 22)
+         | ((uint64_t) sizeof(struct monst) << 12)
+         | ((uint64_t) sizeof(struct you)));
     version.struct_sizes2 = (
 #ifdef SYSFLAGS
-        ((unsigned long)sizeof(struct sysflag) << 24)
+        ((uint64_t)sizeof(struct sysflag) << 24)
 #else
-        ((unsigned long)0L)
+        ((uint64_t)0L)
 #endif
-        | ((unsigned long)sizeof(struct flag) << 14)
-        | ((unsigned long)sizeof(struct context_info)));
+        | ((uint64_t)sizeof(struct flag) << 14)
+        | ((uint64_t)sizeof(struct context_info)));
 
     version.short_size = (unsigned char)sizeof(short);
     version.int_size = (unsigned char)sizeof(int);
@@ -1303,7 +1303,7 @@ void
 do_date()
 {
 #ifdef KR1ED
-    long clocktim = 0;
+    int64_t clocktim = 0;
 #else
     time_t clocktim = 0;
 #endif
@@ -1354,7 +1354,7 @@ do_date()
          * is probably preferrable to hacking this code....
          */
         static struct tm nh360; /* static init should yield UTC timezone */
-        unsigned long sd_num, sd_earliest, sd_latest;
+        uint64_t sd_num, sd_earliest, sd_latest;
         const char *sd_str = getenv("SOURCE_DATE_EPOCH");
 
         if (sd_str) {
@@ -1369,9 +1369,9 @@ do_date()
             nh360.tm_mday = 7;
             nh360.tm_mon  = 12 - 1;
             nh360.tm_year = 2015 - 1900;
-            sd_earliest = (unsigned long) mktime(&nh360);
+            sd_earliest = (uint64_t) mktime(&nh360);
             /* 'youngest' date we'll accept: 24 hours in the future */
-            sd_latest = (unsigned long) clocktim + 24L * 60L * 60L;
+            sd_latest = (uint64_t) clocktim + 24L * 60L * 60L;
 
             if (sd_num >= sd_earliest && sd_num <= sd_latest) {
                 /* use SOURCE_DATE_EPOCH value */
@@ -1386,14 +1386,14 @@ do_date()
                     Fprintf(stderr, ", newer than %lu", sd_latest);
                 Fprintf(stderr, ".\n");
                 Fprintf(stderr, ": Reverting to current date+time (%lu).\n",
-                        (unsigned long) clocktim);
+                        (uint64_t) clocktim);
                 (void) fflush(stderr);
             }
         } else {
             /* REPRODUCIBLE_BUILD enabled but SOURCE_DATE_EPOCH is missing */
             Fprintf(stderr, "? No value for SOURCE_DATE_EPOCH.\n");
             Fprintf(stderr, ": Using current date+time (%lu).\n",
-                    (unsigned long) clocktim);
+                    (uint64_t) clocktim);
             (void) fflush(stderr);
         }
         Strcpy(cbuf, asctime(gmtime(&clocktim)));
@@ -1411,30 +1411,30 @@ do_date()
     ul_sfx = "L";
 #endif
     if (date_via_env)
-        Fprintf(ofp, "#define SOURCE_DATE_EPOCH (%lu%s) /* via getenv() */\n",
-                (unsigned long) clocktim, ul_sfx);
+        Fprintf(ofp, "#define SOURCE_DATE_EPOCH (%llu%s) /* via getenv() */\n",
+                (unsigned long long) clocktim, ul_sfx);
     Fprintf(ofp, "#define BUILD_DATE \"%s\"\n", cbuf);
     if (date_via_env)
         Fprintf(ofp, "#define BUILD_TIME SOURCE_DATE_EPOCH\n");
     else
-        Fprintf(ofp, "#define BUILD_TIME (%lu%s)\n",
-                (unsigned long) clocktim, ul_sfx);
+        Fprintf(ofp, "#define BUILD_TIME (%llu%s)\n",
+                (unsigned long long) clocktim, ul_sfx);
     Fprintf(ofp, "\n");
-    Fprintf(ofp, "#define VERSION_NUMBER 0x%08lx%s\n", version.incarnation,
+    Fprintf(ofp, "#define VERSION_NUMBER 0x%08llx%s\n", (unsigned long long)version.incarnation,
             ul_sfx);
-    Fprintf(ofp, "#define EARLIEST_COMPATIBLE_VERSION_NUMBER 0x%08lx%s\n", version.version_compatibility,
+    Fprintf(ofp, "#define EARLIEST_COMPATIBLE_VERSION_NUMBER 0x%08llx%s\n", (unsigned long long)version.version_compatibility,
         ul_sfx);
-    Fprintf(ofp, "#define VERSION_FEATURES 0x%08lx%s\n", version.feature_set,
+    Fprintf(ofp, "#define VERSION_FEATURES 0x%08llx%s\n", (unsigned long long)version.feature_set,
             ul_sfx);
 #ifdef IGNORED_FEATURES
-    Fprintf(ofp, "#define IGNORED_FEATURES 0x%08lx%s\n",
-            (unsigned long) IGNORED_FEATURES, ul_sfx);
+    Fprintf(ofp, "#define IGNORED_FEATURES 0x%08llx%s\n",
+            (unsigned long long) IGNORED_FEATURES, ul_sfx);
 #endif
-    Fprintf(ofp, "#define VERSION_SANITY1 0x%08lx%s\n", version.entity_count,
+    Fprintf(ofp, "#define VERSION_SANITY1 0x%08llx%s\n", (unsigned long long)version.entity_count,
             ul_sfx);
-    Fprintf(ofp, "#define VERSION_SANITY2 0x%08lx%s\n", version.struct_sizes1,
+    Fprintf(ofp, "#define VERSION_SANITY2 0x%08llx%s\n", (unsigned long long)version.struct_sizes1,
             ul_sfx);
-    Fprintf(ofp, "#define VERSION_SANITY3 0x%08lx%s\n", version.struct_sizes2,
+    Fprintf(ofp, "#define VERSION_SANITY3 0x%08llx%s\n", (unsigned long long)version.struct_sizes2,
             ul_sfx);
     Fprintf(ofp, "#define VERSION_SHORTSIZE %u\n", version.short_size);
     Fprintf(ofp, "#define VERSION_INTSIZE %u\n", version.int_size);
@@ -2649,7 +2649,7 @@ boolean parsing; /* curr_msg is valid iff this is True */
             if (curr_msg->delivery == 'p')
                 Fprintf(stderr, DUMB_SUM, qt_line);
             /* +1 is for terminating newline */
-            curr_msg->summary_size = (long) (p - summary) + 1L;
+            curr_msg->summary_size = (int64_t) (p - summary) + 1L;
         } else {
             /* caller is writing rather than just parsing;
                force newline after the closing bracket */
@@ -2718,7 +2718,7 @@ char *s;
         Fprintf(stderr, TEXT_TRUNC, qt_line);
     }
 
-    curr_msg->size += (long)strlen(s);
+    curr_msg->size += (int64_t)strlen(s);
     return;
 }
 
@@ -2726,13 +2726,13 @@ static void
 adjust_qt_hdrs()
 {
     int i, j;
-    long count = 0L, hdr_offset = ((long)sizeof(int)
-                                  + ((long)sizeof(char) * LEN_HDR + (long)sizeof(long))
-                                        * (long)qt_hdr.n_hdr);
+    int64_t count = 0L, hdr_offset = ((int64_t)sizeof(int)
+                                  + ((int64_t)sizeof(char) * LEN_HDR + (int64_t)sizeof(int64_t))
+                                        * (int64_t)qt_hdr.n_hdr);
 
     for (i = 0; i < qt_hdr.n_hdr; i++) {
         qt_hdr.offset[i] = hdr_offset;
-        hdr_offset += ((long)sizeof(int) + (long)sizeof(struct qtmsg) * (long)msg_hdr[i].n_msg);
+        hdr_offset += ((int64_t)sizeof(int) + (int64_t)sizeof(struct qtmsg) * (int64_t)msg_hdr[i].n_msg);
     }
 
     for (i = 0; i < qt_hdr.n_hdr; i++)
@@ -2757,11 +2757,11 @@ put_qt_hdrs()
     (void) fwrite((genericptr_t) & (qt_hdr.n_hdr), sizeof(int), 1, ofp);
     (void) fwrite((genericptr_t) & (qt_hdr.id[0][0]), sizeof(char) * LEN_HDR,
                   (size_t)qt_hdr.n_hdr, ofp);
-    (void) fwrite((genericptr_t) & (qt_hdr.offset[0]), sizeof(long),
+    (void) fwrite((genericptr_t) & (qt_hdr.offset[0]), sizeof(int64_t),
                   (size_t)qt_hdr.n_hdr, ofp);
     if (debug) {
         for (i = 0; i < qt_hdr.n_hdr; i++)
-            Fprintf(stderr, "%s @ %ld, ", qt_hdr.id[i], qt_hdr.offset[i]);
+            Fprintf(stderr, "%s @ %lld, ", qt_hdr.id[i], (long long)qt_hdr.offset[i]);
         Fprintf(stderr, "\n");
     }
 
@@ -2780,13 +2780,13 @@ put_qt_hdrs()
             int j;
 
             for (j = 0; j < msg_hdr[i].n_msg; j++) {
-                Fprintf(stderr, "msg %d @ %ld (%ld)",
+                Fprintf(stderr, "msg %d @ %lld (%lld)",
                         msg_hdr[i].qt_msg[j].msgnum,
-                        msg_hdr[i].qt_msg[j].offset,
-                        msg_hdr[i].qt_msg[j].size);
+                        (long long)msg_hdr[i].qt_msg[j].offset,
+                        (long long)msg_hdr[i].qt_msg[j].size);
                 if (msg_hdr[i].qt_msg[j].summary_size)
-                    Fprintf(stderr, " [%ld]",
-                            msg_hdr[i].qt_msg[j].summary_size);
+                    Fprintf(stderr, " [%lld]",
+                        (long long)msg_hdr[i].qt_msg[j].summary_size);
                 Fprintf(stderr, "\n");
             }
         }

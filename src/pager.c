@@ -413,7 +413,7 @@ int x, y;
                 if (Hallucination) {
                     Strcat(extrabuf, "paranoid delusion");
                 } else {
-                    unsigned long mW = (context.warntype.obj
+                    uint64_t mW = (context.warntype.obj
                                         | context.warntype.polyd),
                                   m2 = mtmp->data->mflags2;
                     const char *whom = ((mW & M2_HUMAN & m2) ? "humans"
@@ -764,7 +764,7 @@ char *supplemental_name;
     dlb *fp;
     char buf[BUFSZ], newstr[BUFSZ], givenname[BUFSZ];
     char *ep, *dbase_str;
-    unsigned long txt_offset = 0L;
+    long txt_offset = 0L;
     winid datawin = WIN_ERR;
 
     fp = dlb_fopen(DATAFILE, "r");
@@ -978,7 +978,7 @@ char *supplemental_name;
                 } while (!digit(*buf));
                 if (sscanf(buf, "%ld,%d\n", &entry_offset, &entry_count) < 2)
                     goto bad_data_file;
-                fseekoffset = (long) txt_offset + entry_offset;
+                fseekoffset = txt_offset + entry_offset;
                 if (pass == 1)
                     pass1offset = fseekoffset;
                 else if (fseekoffset == pass1offset)
@@ -1061,7 +1061,7 @@ struct permonst **for_supplement;
         if (looked)
         {
             int oc;
-            unsigned long os;
+            uint64_t os;
 
             struct layer_info layers = layers_at(cc.x, cc.y);
             glyph = abs(layers.glyph);

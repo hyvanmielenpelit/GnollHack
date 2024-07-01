@@ -28,7 +28,7 @@ STATIC_PTR void FDECL(findone, (int, int, genericptr_t));
 STATIC_PTR void FDECL(openone, (int, int, genericptr_t));
 STATIC_DCL int FDECL(mfind0, (struct monst *, BOOLEAN_P));
 STATIC_DCL int FDECL(reveal_terrain_getglyph, (int, int, int,
-                                               unsigned, int, int));
+                                               BOOLEAN_P, int, int));
 
 /* bring hero out from underwater or underground or being engulfed;
    return True iff any change occurred */
@@ -434,7 +434,7 @@ outgoldmap:
         {
             gold = zeroobj; /* ensure oextra is cleared too */
             gold.otyp = GOLD_PIECE;
-            gold.quan = (long) rnd(10); /* usually more than 1 */
+            gold.quan = (int64_t) rnd(10); /* usually more than 1 */
             gold.ox = mtmp->mx;
             gold.oy = mtmp->my;
             map_object_for_detection(&gold, 1);
@@ -802,7 +802,7 @@ int class;            /* an object class, 0 for all */
 
             gold = zeroobj; /* ensure oextra is cleared too */
             gold.otyp = GOLD_PIECE;
-            gold.quan = (long) rnd(10); /* usually more than 1 */
+            gold.quan = (int64_t) rnd(10); /* usually more than 1 */
             gold.ox = mtmp->mx;
             gold.oy = mtmp->my;
             map_object_for_detection(&gold, 1);
@@ -890,7 +890,8 @@ int mclass;                /* monster class, 0 for all */
             if (otmp && otmp->cursed
                 && !mon_can_move(mtmp))
             {
-                mtmp->msleeping = mtmp->mfrozen = mtmp->mstaying = 0;
+                mtmp->msleeping = 0;
+                mtmp->mfrozen = mtmp->mstaying = 0;
                 mtmp->mcanmove = 1;
                 mtmp->mwantstomove = 1;
                 mtmp->mprops[SLEEPING] = 0;
@@ -951,7 +952,7 @@ int src_cursed;
             obj.oy = y;
         }
         obj.otyp = !Hallucination ? GOLD_PIECE : random_object(rn2);
-        obj.quan = (long) ((obj.otyp == GOLD_PIECE) ? rnd(10)
+        obj.quan = (int64_t) ((obj.otyp == GOLD_PIECE) ? rnd(10)
                            : objects[obj.otyp].oc_merge ? rnd(2) : 1);
         obj.corpsenm = random_monster(rn2); /* if otyp == CORPSE */
         map_object_for_detection(&obj, 1);
@@ -1236,7 +1237,7 @@ struct obj **optr;
                 if(!Blinded)
                     play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
 
-                make_blinded((Blinded & TIMEOUT) + (long) rnd(100), FALSE);
+                make_blinded((Blinded & TIMEOUT) + (int64_t) rnd(100), FALSE);
                 if (!Blind)
                     Your1(vision_clears);
             }
@@ -1252,7 +1253,7 @@ struct obj **optr;
                 play_sfx_sound(SFX_ACQUIRE_HALLUCINATION);
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s your mind!", Tobjnam(obj, "zap"));
             (void) make_hallucinated(
-                (HHallucination & TIMEOUT) + (long) rnd(100), FALSE, 0L);
+                (HHallucination & TIMEOUT) + (int64_t) rnd(100), FALSE, 0L);
             break;
         case 5:
             play_sfx_sound(SFX_EXPLOSION_FIERY);
@@ -1496,7 +1497,7 @@ register int x, y;
      * opposite to how normal vision behaves.
      */
     oldglyph = glyph_at(x, y);
-    //unsigned long oldlayerflags = lev->hero_memory_layers.layer_flags;
+    //uint64_t oldlayerflags = lev->hero_memory_layers.layer_flags;
 
     if (level.flags.hero_memory)
     {
@@ -1570,7 +1571,7 @@ struct obj *sobj; /* scroll--actually fake spellbook--object */
     register int zx, zy;
     struct monst *mtmp;
     struct obj *otmp;
-    long save_EDetect_mons;
+    int64_t save_EDetect_mons;
     char save_viz_uyux;
     boolean unconstrained, refresh = FALSE,
             mdetected = FALSE, odetected = FALSE,
@@ -2198,7 +2199,7 @@ sokoban_detect()
 STATIC_DCL int
 reveal_terrain_getglyph(x, y, full, swallowed, default_glyph, which_subset)
 int x, y, full;
-unsigned swallowed;
+boolean swallowed;
 int default_glyph, which_subset;
 {
     int glyph, levl_glyph;
@@ -2320,7 +2321,7 @@ dump_map()
         {
             nhsym ch;
             int color, sym;
-            unsigned long special;
+            uint64_t special;
 
             glyph = reveal_terrain_getglyph(x, y, FALSE, u.uswallow,
                                             default_glyph, subset);
@@ -2346,7 +2347,7 @@ dump_map()
             html_dump_glyph(x, y, sym, ch, color, special);
 #endif
 
-            /* UTF-8 must be handled here, because you cannot write nhsym (long) to the buf (char) and convert it later */
+            /* UTF-8 must be handled here, because you cannot write nhsym (int64_t) to the buf (char) and convert it later */
             /* Note: write_nhsym_utf8 moves bp forward the right amount (1-4 bytes) */
 
             if (ch != ' ') 
@@ -2401,7 +2402,7 @@ int which_subset; /* when not full, whether to suppress objs and/or traps */
         boolean keep_traps = (which_subset & TER_TRP) !=0,
                 keep_objs = (which_subset & TER_OBJ) != 0,
                 keep_mons = (which_subset & TER_MON) != 0; /* not used */
-        unsigned swallowed = u.uswallow; /* before unconstrain_map() */
+        boolean swallowed = u.uswallow; /* before unconstrain_map() */
 
         if (unconstrain_map())
             docrt();

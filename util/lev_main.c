@@ -76,10 +76,10 @@
         free((genericptr_t)(ptr))
 /* write() returns a signed value but its size argument is unsigned;
    types might be int and unsigned or ssize_t and size_t; casting
-   to long should be safe for all permutations (even if size_t is
-   bigger, since the values involved won't be too big for long) */
+   to int64_t should be safe for all permutations (even if size_t is
+   bigger, since the values involved won't be too big for int64_t) */
 #define Write(fd, item, size)                                          \
-    if ((long) write(fd, (genericptr_t)(item), size) != (long) (size)) \
+    if ((int64_t) write(fd, (genericptr_t)(item), size) != (int64_t) (size)) \
         return FALSE;
 
 #if defined(__BORLANDC__) && !defined(_WIN32)
@@ -107,12 +107,12 @@ void FDECL(scan_map, (char *, sp_lev *));
 boolean NDECL(check_subrooms);
 boolean FDECL(write_level_file, (char *, sp_lev *));
 
-struct lc_funcdefs *FDECL(funcdef_new, (long, char *));
+struct lc_funcdefs *FDECL(funcdef_new, (int64_t, char *));
 void FDECL(funcdef_free_all, (struct lc_funcdefs *));
 struct lc_funcdefs *FDECL(funcdef_defined,
                           (struct lc_funcdefs *, char *, int));
 
-struct lc_vardefs *FDECL(vardef_new, (long, char *));
+struct lc_vardefs *FDECL(vardef_new, (int64_t, char *));
 void FDECL(vardef_free_all, (struct lc_vardefs *));
 struct lc_vardefs *FDECL(vardef_defined, (struct lc_vardefs *, char *, int));
 
@@ -134,25 +134,25 @@ void VDECL(lc_error, (const char *, ...));
 void VDECL(lc_warning, (const char *, ...));
 char *FDECL(decode_parm_chr, (CHAR_P));
 char *FDECL(decode_parm_str, (char *));
-struct opvar *FDECL(set_opvar_int, (struct opvar *, long));
-struct opvar *FDECL(set_opvar_coord, (struct opvar *, long));
-struct opvar *FDECL(set_opvar_region, (struct opvar *, long));
-struct opvar *FDECL(set_opvar_mapchar, (struct opvar *, long));
-struct opvar *FDECL(set_opvar_monst, (struct opvar *, long));
-struct opvar *FDECL(set_opvar_obj, (struct opvar *, long));
+struct opvar *FDECL(set_opvar_int, (struct opvar *, int64_t));
+struct opvar *FDECL(set_opvar_coord, (struct opvar *, int64_t));
+struct opvar *FDECL(set_opvar_region, (struct opvar *, int64_t));
+struct opvar *FDECL(set_opvar_mapchar, (struct opvar *, int64_t));
+struct opvar *FDECL(set_opvar_monst, (struct opvar *, int64_t));
+struct opvar *FDECL(set_opvar_obj, (struct opvar *, int64_t));
 struct opvar *FDECL(set_opvar_str, (struct opvar *, const char *));
 struct opvar *FDECL(set_opvar_var, (struct opvar *, const char *));
 void VDECL(add_opvars, (sp_lev *, const char *, ...));
 void NDECL(break_stmt_start);
 void FDECL(break_stmt_end, (sp_lev *));
-void FDECL(break_stmt_new, (sp_lev *, long));
+void FDECL(break_stmt_new, (sp_lev *, int64_t));
 char *FDECL(funcdef_paramtypes, (struct lc_funcdefs *));
-const char *FDECL(spovar2str, (long));
+const char *FDECL(spovar2str, (int64_t));
 void FDECL(vardef_used, (struct lc_vardefs *, char *));
-void FDECL(check_vardef_type, (struct lc_vardefs *, char *, long));
+void FDECL(check_vardef_type, (struct lc_vardefs *, char *, int64_t));
 struct lc_vardefs *FDECL(add_vardef_type,
-                         (struct lc_vardefs *, char *, long));
-int FDECL(reverse_jmp_opcode, (long));
+                         (struct lc_vardefs *, char *, int64_t));
+int FDECL(reverse_jmp_opcode, (int64_t));
 struct opvar *FDECL(opvar_clone, (struct opvar *));
 void FDECL(start_level_def, (sp_lev **, char *));
 
@@ -457,7 +457,7 @@ VA_DECL(const char *, line)
         line = nomsg; /* shouldn't happen */
     if (index(line, '%')) {
         Vsprintf(pbuf, line, VA_ARGS);
-        pbuf[BUFSZ - 1] = '\0'; /* truncate if long */
+        pbuf[BUFSZ - 1] = '\0'; /* truncate if int64_t */
         line = pbuf;
     }
     switch (lc_pline_mode) {
@@ -562,7 +562,7 @@ char *str;
 struct opvar *
 set_opvar_int(ov, val)
 struct opvar *ov;
-long val;
+int64_t val;
 {
     if (ov) {
         ov->spovartyp = SPOVAR_INT;
@@ -574,7 +574,7 @@ long val;
 struct opvar *
 set_opvar_coord(ov, val)
 struct opvar *ov;
-long val;
+int64_t val;
 {
     if (ov) {
         ov->spovartyp = SPOVAR_COORD;
@@ -586,7 +586,7 @@ long val;
 struct opvar *
 set_opvar_region(ov, val)
 struct opvar *ov;
-long val;
+int64_t val;
 {
     if (ov) {
         ov->spovartyp = SPOVAR_REGION;
@@ -598,7 +598,7 @@ long val;
 struct opvar *
 set_opvar_mapchar(ov, val)
 struct opvar *ov;
-long val;
+int64_t val;
 {
     if (ov) {
         ov->spovartyp = SPOVAR_MAPCHAR;
@@ -610,7 +610,7 @@ long val;
 struct opvar *
 set_opvar_monst(ov, val)
 struct opvar *ov;
-long val;
+int64_t val;
 {
     if (ov) {
         ov->spovartyp = SPOVAR_MONST;
@@ -622,7 +622,7 @@ long val;
 struct opvar *
 set_opvar_obj(ov, val)
 struct opvar *ov;
-long val;
+int64_t val;
 {
     if (ov) {
         ov->spovartyp = SPOVAR_OBJ;
@@ -692,7 +692,7 @@ VA_DECL2(sp_lev *, sp, const char *, fmt)
 #endif /* USE_STDARG | USE_VARARG */
 {
     const char *p, *lp;
-    long la;
+    int64_t la;
     /* Do NOT use VA_START and VA_END in here... see above */
 
     for (p = fmt; *p != '\0'; p++) {
@@ -703,50 +703,50 @@ VA_DECL2(sp_lev *, sp, const char *, fmt)
         {
             struct opvar *ov = New(struct opvar);
 
-            set_opvar_int(ov, (long) VA_NEXT(la, int));
+            set_opvar_int(ov, (int64_t) VA_NEXT(la, int));
             add_opcode(sp, SPO_PUSH, ov);
             break;
         }
-        case 'l': /* integer (via 'long int') */
+        case 'l': /* integer (via 'int64_t int') */
         {
             struct opvar *ov = New(struct opvar);
 
-            set_opvar_int(ov, VA_NEXT(la, long));
+            set_opvar_int(ov, VA_NEXT(la, int64_t));
             add_opcode(sp, SPO_PUSH, ov);
             break;
         }
         case 'c': /* coordinate */
         {
             struct opvar *ov = New(struct opvar);
-            set_opvar_coord(ov, VA_NEXT(la, long));
+            set_opvar_coord(ov, VA_NEXT(la, int64_t));
             add_opcode(sp, SPO_PUSH, ov);
             break;
         }
         case 'r': /* region */
         {
             struct opvar *ov = New(struct opvar);
-            set_opvar_region(ov, VA_NEXT(la, long));
+            set_opvar_region(ov, VA_NEXT(la, int64_t));
             add_opcode(sp, SPO_PUSH, ov);
             break;
         }
         case 'm': /* mapchar */
         {
             struct opvar *ov = New(struct opvar);
-            set_opvar_mapchar(ov, VA_NEXT(la, long));
+            set_opvar_mapchar(ov, VA_NEXT(la, int64_t));
             add_opcode(sp, SPO_PUSH, ov);
             break;
         }
         case 'M': /* monster */
         {
             struct opvar *ov = New(struct opvar);
-            set_opvar_monst(ov, VA_NEXT(la, long));
+            set_opvar_monst(ov, VA_NEXT(la, int64_t));
             add_opcode(sp, SPO_PUSH, ov);
             break;
         }
         case 'O': /* object */
         {
             struct opvar *ov = New(struct opvar);
-            set_opvar_obj(ov, VA_NEXT(la, long));
+            set_opvar_obj(ov, VA_NEXT(la, int64_t));
             add_opcode(sp, SPO_PUSH, ov);
             break;
         }
@@ -774,7 +774,7 @@ VA_DECL2(sp_lev *, sp, const char *, fmt)
         }
         default:
             lc_pline("add_opvars: illegal format character '%ld'.",
-                     VA_PASS1((long) *p));
+                     VA_PASS1((int64_t) *p));
             break;
         }
     }
@@ -821,7 +821,7 @@ sp_lev *splev;
 void
 break_stmt_new(splev, i)
 sp_lev *splev;
-long i;
+int64_t i;
 {
     struct lc_breakdef *tmp = New(struct lc_breakdef);
 
@@ -836,7 +836,7 @@ long i;
 
 struct lc_funcdefs *
 funcdef_new(addr, name)
-long addr;
+int64_t addr;
 char *name;
 {
     struct lc_funcdefs *f = New(struct lc_funcdefs);
@@ -918,7 +918,7 @@ int casesense;
 
 struct lc_vardefs *
 vardef_new(typ, name)
-long typ;
+int64_t typ;
 char *name;
 {
     struct lc_vardefs *f = New(struct lc_vardefs);
@@ -973,7 +973,7 @@ int casesense;
 
 const char *
 spovar2str(spovar)
-long spovar;
+int64_t spovar;
 {
     static int togl = 0;
     static char buf[2][128];
@@ -1032,7 +1032,7 @@ void
 check_vardef_type(vd, varname, vartype)
 struct lc_vardefs *vd;
 char *varname;
-long vartype;
+int64_t vartype;
 {
     struct lc_vardefs *tmp;
 
@@ -1050,7 +1050,7 @@ struct lc_vardefs *
 add_vardef_type(vd, varname, vartype)
 struct lc_vardefs *vd;
 char *varname;
-long vartype;
+int64_t vartype;
 {
     struct lc_vardefs *tmp;
 
@@ -1070,7 +1070,7 @@ long vartype;
 
 int
 reverse_jmp_opcode(opcode)
-long opcode;
+int64_t opcode;
 {
     switch (opcode) {
     case SPO_JE:
@@ -1130,7 +1130,7 @@ struct opvar *ov;
         } break;
         default: {
             lc_error("Unknown opvar_clone value type (%ld)!",
-                     VA_PASS1((long) ov->spovartyp));
+                     VA_PASS1((int64_t) ov->spovartyp));
         } /* default */
         } /* switch */
         return tmpov;
@@ -1397,11 +1397,11 @@ sp_lev *sp;
 int opc;
 genericptr_t dat;
 {
-    long nop = sp->n_opcodes;
+    int64_t nop = sp->n_opcodes;
     _opcode *tmp;
 
     if ((opc < 0) || (opc >= MAX_SP_OPCODES))
-        lc_error("Unknown opcode '%ld'", VA_PASS1((long) opc));
+        lc_error("Unknown opcode '%ld'", VA_PASS1((int64_t) opc));
 
     tmp = (_opcode *) alloc(sizeof(_opcode) * ((size_t)nop + 1));
     if (!tmp) { /* lint suppression */
@@ -1482,7 +1482,7 @@ sp_lev *sp;
             {
                 lc_warning(
                 "Invalid character '%ld' @ (%ld, %ld) - replacing with stone",
-                           VA_PASS3((long) map[i], (long) max_hig, (long) i));
+                           VA_PASS3((int64_t) map[i], (int64_t) max_hig, (int64_t) i));
                 tmpmap[max_hig][i] = STONE;
             }
         while (i < max_len)
@@ -1498,8 +1498,8 @@ sp_lev *sp;
 
     if (max_len > MAP_X_LIM || max_hig > MAP_Y_LIM) {
         lc_error("Map too large at (%ld x %ld), max is (%ld x %ld)",
-                 VA_PASS4((long) max_len, (long) max_hig,
-                          (long) MAP_X_LIM, (long) MAP_Y_LIM));
+                 VA_PASS4((int64_t) max_len, (int64_t) max_hig,
+                          (int64_t) MAP_X_LIM, (int64_t) MAP_Y_LIM));
     }
 
     mbuf = (char *) alloc(((max_hig - 1) * max_len) + (max_len - 1) + 2);
@@ -1509,7 +1509,7 @@ sp_lev *sp;
 
     mbuf[((max_hig - 1) * max_len) + (max_len - 1) + 1] = '\0';
 
-    add_opvars(sp, "sllo", VA_PASS4(mbuf, (long) max_hig, (long) max_len,
+    add_opvars(sp, "sllo", VA_PASS4(mbuf, (int64_t) max_hig, (int64_t) max_len,
                                     SPO_MAP));
 
     for (dy = 0; dy < max_hig; dy++)
@@ -1656,7 +1656,7 @@ sp_lev *lvl;
     }
 
     if (be_verbose)
-        fprintf(stdout, "File: '%s', opcodes: %ld\n", lbuf, lvl->n_opcodes);
+        fprintf(stdout, "File: '%s', opcodes: %lld\n", lbuf, (long long)lvl->n_opcodes);
 
     if (!write_maze(fout, lvl))
         return FALSE;

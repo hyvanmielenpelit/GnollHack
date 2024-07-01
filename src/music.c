@@ -200,7 +200,8 @@ boolean isscary;
         if (DEADMONSTER(mtmp))
             continue;
         if (is_mercenary(mtmp->data) && mtmp->data != &mons[PM_GUARD]) {
-            mtmp->mpeaceful = mtmp->msleeping = mtmp->mfrozen = 0;
+            mtmp->mpeaceful = mtmp->mfrozen = 0;
+            mtmp->msleeping = 0;
             mtmp->mcanmove = 1;
             mtmp->mstrategy &= ~STRAT_WAITMASK;
             newsym(mtmp->mx, mtmp->my);

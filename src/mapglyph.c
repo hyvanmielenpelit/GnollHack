@@ -57,7 +57,7 @@ mapglyph(layers, ochar, ocolor, ospecial, x, y)
 struct layer_info layers;
 int *ocolor, x, y;
 nhsym *ochar;
-unsigned long *ospecial;
+uint64_t *ospecial;
 {
     int signed_glyph = layers.glyph;
     register int offset, idx;
@@ -522,7 +522,7 @@ normal_monster_here:
             boolean ispeaceful = (layers.monster_flags & LMFLAGS_PEACEFUL) != 0;
             boolean isdetected = ((layers.monster_flags & LMFLAGS_DETECTED) != 0 || (def_monsyms[(int)mons[offset].mlet].sym == ' ' && (layers.layer_flags & LFLAGS_SHOWING_DETECTION) != 0));
             boolean isridden = (layers.monster_flags & LMFLAGS_RIDDEN) != 0;
-            boolean issaddled = (layers.status_bits & (1UL << STATUS_MARK_SADDLED)) != 0;
+            boolean issaddled = (layers.status_bits & ((uint64_t)1 << STATUS_MARK_SADDLED)) != 0;
 
             /* set special flags */
             if(ispet)
@@ -609,7 +609,7 @@ const char *str;
         if (*str == '\\') {
             int rndchk, dcount, so, gv, oc = 0;
             nhsym ch = 0;
-            unsigned long os = 0;
+            uint64_t os = 0;
             const char *dp, *save_str;
 
             save_str = str++;

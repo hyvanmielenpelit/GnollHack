@@ -1711,8 +1711,8 @@ struct permonst* ptr;
         boolean has_recurring = FALSE;
         unsigned short temp_dur = 0;
 
-        unsigned long ibit = prop_to_innate(i);
-        unsigned long ibit2 = prop_to_innate2(i);
+        uint64_t ibit = prop_to_innate(i);
+        uint64_t ibit2 = prop_to_innate2(i);
 
         if (ptr->mresists & ibit)
             has_innate = TRUE;
@@ -1809,11 +1809,11 @@ struct permonst* ptr;
     {
         for (int i = 0; i < NUM_UNSIGNED_LONG_BITS; i++)
         {
-            unsigned long bit = 0x00000001UL;
+            uint64_t bit = 0x00000001UL;
             if (i > 0)
                 bit = bit << i;
 
-            unsigned long mflags = 
+            uint64_t mflags = 
                 j == 1 ? ptr->mflags1 : j == 2 ? ptr->mflags2 : j == 3 ? ptr->mflags3 : j == 4 ? ptr->mflags4 :
                 j == 5 ? ptr->mflags5 : j == 6 ? ptr->mflags6 : j == 7 ? ptr->mflags7 : j == 8 ? ptr->mflags8 :
                 ptr->mflags1; /* Fall back case*/
@@ -2253,8 +2253,8 @@ struct monst* mtmp;
     xchar sx = mtmp == &youmonst ? u.ux : mtmp->mx;
     xchar sy = mtmp == &youmonst ? u.uy : mtmp->my;
     struct layer_info li = isok(sx, sy) ? layers_at(sx, sy) : zerolayerinfo;
-    //unsigned long layerflags = li.layer_flags;
-    unsigned long layermflags = li.monster_flags;
+    //uint64_t layerflags = li.layer_flags;
+    uint64_t layermflags = li.monster_flags;
     boolean loc_is_you = mtmp == &youmonst; // (layerflags & LFLAGS_UXUY) != 0; //So you can separately see your steed stats properly
     boolean ispeaceful = is_peaceful(mtmp) && !is_tame(mtmp);
     boolean ispet = is_tame(mtmp);
@@ -2267,14 +2267,14 @@ struct monst* mtmp;
     putstr(datawin, ATR_HEADING, buf);
     
     /* Petmark and other status marks */
-    unsigned long m_status_bits = get_m_status_bits(mtmp, loc_is_you, ispeaceful, ispet, isdetected);
+    uint64_t m_status_bits = get_m_status_bits(mtmp, loc_is_you, ispeaceful, ispet, isdetected);
     for (int statusorder_idx = 0; statusorder_idx < SIZE(statusmarkorder); statusorder_idx++)
     {
         int status_mark = (int)statusmarkorder[statusorder_idx];
         const char* statusname = 0;
         if (status_mark < MAX_STATUS_MARKS && (statusname = get_status_name(mtmp, status_mark)) != 0)
         {
-            unsigned long status_bit = 1UL << status_mark;
+            uint64_t status_bit = (uint64_t)1 << status_mark;
             if(m_status_bits & status_bit)
             {
                 condition_count++;
@@ -2290,7 +2290,7 @@ struct monst* mtmp;
     }
 
     /* Conditions */
-    unsigned long m_conditions = get_m_condition_bits(mtmp);
+    uint64_t m_conditions = get_m_condition_bits(mtmp);
     for (int cond = 0; cond < ui_tile_component_array[CONDITION_MARKS].number; cond++)
     {
         int condition_bit = 1 << cond;
@@ -2315,7 +2315,7 @@ struct monst* mtmp;
         if (!property_definitions[propidx].show_buff)
             continue;
 
-        long duration = loc_is_you ? (u.uprops[propidx].intrinsic & TIMEOUT) : (long)(mtmp->mprops[propidx] & M_TIMEOUT);
+        int64_t duration = loc_is_you ? (u.uprops[propidx].intrinsic & TIMEOUT) : (int64_t)(mtmp->mprops[propidx] & M_TIMEOUT);
         if (duration == 0L)
             continue;
 
@@ -2566,7 +2566,7 @@ struct obj *obj;
 coord *cc;
 boolean adjacentok; /* False: at obj's spot only, True: nearby is allowed */
 int mnum_override, mnum_replaceundead; /* Use this mnum instead */
-unsigned long mmflags;
+uint64_t mmflags;
 {
     struct monst *mtmp = (struct monst *) 0;
     struct monst *mtmp2 = (struct monst *) 0;
@@ -3074,12 +3074,12 @@ int montype;
             }
             else if (artifact_has_flag(uitem, AF_DMONS))
             {
-                if ((unsigned long)montype == artilist[uitem->oartifact].mtype)
+                if ((uint64_t)montype == artilist[uitem->oartifact].mtype)
                     return TRUE;
             }
             else if (artifact_has_flag(uitem, AF_DCLAS))
             {
-                if ((unsigned long)mons[montype].mlet == artilist[uitem->oartifact].mtype)
+                if ((uint64_t)mons[montype].mlet == artilist[uitem->oartifact].mtype)
                     return TRUE;
             }
             else if (artifact_has_flag(uitem, AF_DALIGN))
@@ -3089,7 +3089,7 @@ int montype;
             }
             else
             {
-                if ((unsigned long)montype == artilist[uitem->oartifact].mtype)
+                if ((uint64_t)montype == artilist[uitem->oartifact].mtype)
                     return TRUE;
             }
         }
@@ -3139,7 +3139,7 @@ int montype;
                     }
                     else
                     {
-                        if ((unsigned long)mons[montype].mlet == objects[otyp].oc_target_permissions)
+                        if ((uint64_t)mons[montype].mlet == objects[otyp].oc_target_permissions)
                             return TRUE;
                     }
                 }
@@ -3163,7 +3163,7 @@ int montype;
                 if (!mythic_powers[i].name)
                     break;
 
-                unsigned long mythic_power_bit = 1UL << ((unsigned long)i);
+                uint64_t mythic_power_bit = (uint64_t)1 << ((uint64_t)i);
 
                 if ((mythic_definitions[mythic_quality].mythic_powers & mythic_power_bit) && mythic_power_applies_to_obj(uitem, mythic_powers[i].power_flags))
                 {
@@ -3203,12 +3203,12 @@ int montype;
             }
             else if (artifact_has_flag(uitem, AF_DMONS))
             {
-                if ((unsigned long)montype == artilist[uitem->oartifact].mtype)
+                if ((uint64_t)montype == artilist[uitem->oartifact].mtype)
                     return TRUE;
             }
             else if (artifact_has_flag(uitem, AF_DCLAS))
             {
-                if ((unsigned long)mons[montype].mlet == artilist[uitem->oartifact].mtype)
+                if ((uint64_t)mons[montype].mlet == artilist[uitem->oartifact].mtype)
                     return TRUE;
             }
             else if (artifact_has_flag(uitem, AF_DALIGN))
@@ -3218,7 +3218,7 @@ int montype;
             }
             else
             {
-                if ((unsigned long)montype == artilist[uitem->oartifact].mtype)
+                if ((uint64_t)montype == artilist[uitem->oartifact].mtype)
                     return TRUE;
             }
         }
@@ -3269,7 +3269,7 @@ int montype;
                     }
                     else
                     {
-                        if ((unsigned long)mons[montype].mlet == objects[otyp].oc_target_permissions)
+                        if ((uint64_t)mons[montype].mlet == objects[otyp].oc_target_permissions)
                             return TRUE;
                     }
                 }
@@ -3668,7 +3668,7 @@ void
 do_osshock(obj)
 struct obj *obj;
 {
-    long i;
+    int64_t i;
 
     if (obj->otyp == SCR_MAIL)
         return;
@@ -3687,9 +3687,9 @@ struct obj *obj;
     /* if quan > 1 then some will survive intact */
     if (obj->quan > 1L) {
         if (obj->quan > LARGEST_INT)
-            obj = splitobj(obj, (long) rnd(30000));
+            obj = splitobj(obj, (int64_t) rnd(30000));
         else
-            obj = splitobj(obj, (long) rnd((int) obj->quan - 1));
+            obj = splitobj(obj, (int64_t) rnd((int) obj->quan - 1));
     }
 
     /* appropriately add damage to bill */
@@ -3722,7 +3722,7 @@ int id;
 {
     struct obj *otmp;
     xchar ox = 0, oy = 0;
-    long old_wornmask, new_wornmask = 0L;
+    int64_t old_wornmask, new_wornmask = 0L;
     boolean can_merge = (id == STRANGE_OBJECT);
     int obj_location = obj->where;
 
@@ -3882,7 +3882,7 @@ int id;
 
     /* 'n' merged objects may be fused into 1 object */
     if (otmp->quan > 1L && (!objects[otmp->otyp].oc_merge
-                            || (can_merge && otmp->quan > (long) rn2(1000))))
+                            || (can_merge && otmp->quan > (int64_t) rn2(1000))))
         otmp->quan = 1L;
 
     switch (otmp->oclass) 
@@ -3939,7 +3939,7 @@ int id;
         break;
 
     case GEM_CLASS:
-        if (otmp->quan > (long) rnd(4)
+        if (otmp->quan > (int64_t) rnd(4)
             && obj->material == MAT_MINERAL
             && otmp->material != MAT_MINERAL)
         {
@@ -6497,7 +6497,7 @@ boolean ordinary;
         }
         destroy_item(WAND_CLASS, AD_ELEC);
         destroy_item(RING_CLASS, AD_ELEC);
-        (void) flashburn((long) rnd(100));
+        (void) flashburn((int64_t) rnd(100));
         item_destruction_hint(AD_ELEC, TRUE);
         break;
     case SPE_FIREBALL:
@@ -6927,7 +6927,7 @@ boolean ordinary;
         if (is_undead(youmonst.data)) {
             You_feel("frightened and %sstunned.",
                      Stunned ? "even more " : "");
-            make_stunned((HStun & TIMEOUT) + (long) rnd(30), FALSE); //Not strictly the same effect, so keep hard coding for the time being
+            make_stunned((HStun & TIMEOUT) + (int64_t) rnd(30), FALSE); //Not strictly the same effect, so keep hard coding for the time being
         } else
             You("don't feel much different than you did before.");
         break;
@@ -7098,7 +7098,7 @@ boolean ordinary;
             basedmg = 5;
         damage = lightdamage(obj, ordinary, basedmg);
         damage += adjust_damage(rnd(25), &youmonst, &youmonst, AD_PHYS, ADFLAGS_NONE);
-        if (flashburn((long)ceil(damage)))
+        if (flashburn((int64_t)ceil(damage)))
             learn_it = TRUE;
         damage = 0; /* reset */
         break;
@@ -7312,7 +7312,7 @@ int amt;          /* pseudo-damage used to determine blindness duration */
 /* light[ning] causes blindness */
 boolean
 flashburn(duration)
-long duration;
+int64_t duration;
 {
     if (!resists_blnd(&youmonst) && !Flash_resistance) {
         if (!Blinded)
@@ -9486,9 +9486,9 @@ boolean give_feedback; /* caller needs to decide about visibility checks */
 boolean u_caused;
 {
     struct obj *obj, *obj2;
-    long i, scrquan, delquan;
+    int64_t i, scrquan, delquan;
     char buf1[BUFSZ], buf2[BUFSZ];
-    int cnt = 0;
+    int64_t cnt = 0;
 
     for (obj = level.objects[x][y]; obj; obj = obj2) 
     {
@@ -9531,14 +9531,14 @@ boolean u_caused;
                 if (give_feedback)
                 {
                     if (delquan > 1L)
-                        pline("%ld %s burn.", delquan, buf2);
+                        pline("%lld %s burn.", (long long)delquan, buf2);
                     else
                         pline("%s burns.", An(buf1));
                 }
             }
         }
     }
-    return cnt;
+    return (int)cnt;
 }
 
 /* will zap/spell/breath attack score a hit against armor class `ac'? */
@@ -9891,18 +9891,18 @@ boolean say; /* Announce out of sight hit/miss events if true */
 
                     if (animations[anim].action_execution_frame > 0)
                     {
-                        long intervals_to_execution = (long)(animations[anim].action_execution_frame * animations[anim].intervals_between_frames);
+                        int64_t intervals_to_execution = (int64_t)(animations[anim].action_execution_frame * animations[anim].intervals_between_frames);
 #if 0
                         if (prev_anim_counter_idx > -1 && context.zap_animation_counter_on[prev_anim_counter_idx])
                         {
-                            long diff = context.zap_animation_counter[prev_anim_counter_idx] - intervals_to_execution -1; // -1;
+                            int64_t diff = context.zap_animation_counter[prev_anim_counter_idx] - intervals_to_execution -1; // -1;
                             if (abs((int)diff) <= 3) /* Extra check that something else is not going on */
                             {
                                 context.zap_animation_counter[prev_anim_counter_idx] -= diff;
                             }
                         }
 #endif
-                        context.zap_aggregate_intervals_to_wait_until_action = (unsigned long)intervals_to_execution;
+                        context.zap_aggregate_intervals_to_wait_until_action = (uint64_t)intervals_to_execution;
                     }
 
                     //prev_anim_counter_idx = idx;
@@ -9934,18 +9934,18 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 /* Wait as though the zap would be going forward */
                 if (animations[anim].action_execution_frame > 0)
                 {
-                    long intervals_to_execution = (long)(animations[anim].action_execution_frame * animations[anim].intervals_between_frames);
+                    int64_t intervals_to_execution = (int64_t)(animations[anim].action_execution_frame * animations[anim].intervals_between_frames);
 #if 0
                     if (prev_anim_counter_idx > -1 && context.zap_animation_counter_on[prev_anim_counter_idx])
                     {
-                        long diff = context.zap_animation_counter[prev_anim_counter_idx] - intervals_to_execution - 1;
+                        int64_t diff = context.zap_animation_counter[prev_anim_counter_idx] - intervals_to_execution - 1;
                         if (abs((int)diff) <= 3) /* Extra check that something else is not going on */
                         {
                             context.zap_animation_counter[prev_anim_counter_idx] -= diff;
                         }
                     }
 #endif
-                    context.zap_aggregate_intervals_to_wait_until_action = (unsigned long)intervals_to_execution;
+                    context.zap_aggregate_intervals_to_wait_until_action = (uint64_t)intervals_to_execution;
                 }
                 if (animations[anim].sound_play_frame > 0)
                 {
@@ -10160,11 +10160,11 @@ boolean say; /* Announce out of sight hit/miss events if true */
             {
                 if (origobj)
                 {
-                    long dam = (long)get_spell_damage(origobj_copy.otyp, origobj_copy.exceptionality, origmonst, &youmonst);
+                    int64_t dam = (int64_t)get_spell_damage(origobj_copy.otyp, origobj_copy.exceptionality, origmonst, &youmonst);
                     (void)flashburn(dam);
                 }
                 else
-                    (void)flashburn((long)d(dmgdice, dicesize) + dmgplus);
+                    (void)flashburn((int64_t)d(dmgdice, dicesize) + dmgplus);
             }
 
             stop_occupation();
@@ -10417,7 +10417,7 @@ const char *msg;
 void
 start_melt_ice_timeout(x, y, min_time)
 xchar x, y;
-long min_time; /* <x,y>'s old melt timeout (deleted by time we get here) */
+int64_t min_time; /* <x,y>'s old melt timeout (deleted by time we get here) */
 {
     int when;
     long where;
@@ -10436,7 +10436,7 @@ long min_time; /* <x,y>'s old melt timeout (deleted by time we get here) */
     if (when <= MAX_ICE_TIME) 
     {
         where = ((long) x << 16) | (long) y;
-        (void) start_timer((long) when, TIMER_LEVEL, MELT_ICE_AWAY,
+        (void) start_timer((int64_t) when, TIMER_LEVEL, MELT_ICE_AWAY,
                            long_to_any(where));
     }
 }
@@ -10449,7 +10449,7 @@ long min_time; /* <x,y>'s old melt timeout (deleted by time we get here) */
 void
 melt_ice_away(arg, timeout)
 anything *arg;
-long timeout UNUSED;
+int64_t timeout UNUSED;
 {
     xchar x, y;
     long where = arg->a_long;
@@ -10633,7 +10633,7 @@ short exploding_wand_typ;
         }
         else if (is_ice(x, y))
         {
-            long melt_time;
+            int64_t melt_time;
 
             /* Already ice here, so just firm it up. */
             /* Now ensure that only ice that is already timed is affected */
@@ -10982,7 +10982,7 @@ boolean verbose;
     obj->otyp = ROCK;
     obj->material = objects[obj->otyp].oc_material;
     obj->oclass = GEM_CLASS;
-    obj->quan = (long) rn1(60, 7);
+    obj->quan = (int64_t) rn1(60, 7);
     obj->owt = weight(obj);
     obj->dknown = obj->bknown = obj->rknown = obj->nknown = 0;
     obj->known = objects[obj->otyp].oc_uses_known ? 0 : 1;
@@ -11076,7 +11076,7 @@ struct obj *obj;
 int osym, dmgtyp;
 boolean forcedestroy;
 {
-    long i, cnt, quan;
+    int64_t i, cnt, quan;
     int dmg, xresist, skip, dindx;
     const char *mult;
     boolean physical_damage;
@@ -11347,7 +11347,7 @@ int osym, dmgtyp;
 {
     struct obj *obj;
     int skip, tmp = 0;
-    long i, cnt, quan;
+    int64_t i, cnt, quan;
     int dindx;
     boolean vis;
     int obj_sound_type = OBJECT_SOUND_TYPE_BREAK;
@@ -11850,7 +11850,7 @@ boolean is_wiz_wish, play_sound;
     char promptbuf[BUFSZ];
     struct obj *otmp, nothing;
     int tries = 0;
-    long prev_artwish = u.uconduct.wisharti;
+    int64_t prev_artwish = u.uconduct.wisharti;
 
     promptbuf[0] = '\0';
     nothing = zeroobj; /* lint suppression; only its address matters */
@@ -12009,8 +12009,8 @@ struct monst*
 summoncreature(spl_otyp, monst_id, message_fmt, mmflags, scflags) // capitalize, markassummoned, disregardstrength, disregardhealth, bloodlust, pacifist, faithful
 int spl_otyp, monst_id;
 const char* message_fmt; //input the summoning message with one %s, which is for the monster name
-unsigned long mmflags;
-unsigned long scflags;
+uint64_t mmflags;
+uint64_t scflags;
 {
     if (monst_id < LOW_PM)
         return (struct monst*)0;
@@ -12231,7 +12231,7 @@ int duration;
 {
     pline_ex(ATR_NONE, CLR_MSG_SPELL, "The flow of time seems to slow down!");
     context.time_stopped = TRUE;
-    begin_timestoptimer((long)duration);
+    begin_timestoptimer((int64_t)duration);
 }
 
 int

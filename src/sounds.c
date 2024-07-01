@@ -137,7 +137,7 @@ STATIC_DCL int FDECL(do_chat_npc_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_and_stones, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_accessories_and_charged_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_stones_and_charged_items, (struct monst*));
-STATIC_DCL int FDECL(do_chat_npc_general_identify, (struct monst*, const char*, int, long, int, int));
+STATIC_DCL int FDECL(do_chat_npc_general_identify, (struct monst*, const char*, int, int64_t, int, int));
 STATIC_DCL int FDECL(do_chat_npc_sell_gems_and_stones, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_forge_sling_bullets, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_sell_dilithium_crystals, (struct monst*));
@@ -154,10 +154,10 @@ STATIC_DCL int FDECL(do_chat_npc_teach_spells, (struct monst*));
 STATIC_DCL int FDECL(do_chat_watchman_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quest_chat, (struct monst*));
 STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
-STATIC_DCL int FDECL(spell_service_query, (struct monst*, int, int, const char*, long, const char*, int));
-STATIC_DCL int FDECL(general_service_query, (struct monst*, int (*)(struct monst*), const char*, long, const char*, int));
-STATIC_DCL int FDECL(general_service_query_with_extra, (struct monst*, int (*)(struct monst*), const char*, long, const char*, int, const char*, int));
-STATIC_DCL int FDECL(general_service_query_with_item_cost_adjustment_and_extra, (struct monst*, int (*)(struct monst*, struct obj*), const char*, const char*, long, long, long, const char*, int, const char*, int));
+STATIC_DCL int FDECL(spell_service_query, (struct monst*, int, int, const char*, int64_t, const char*, int));
+STATIC_DCL int FDECL(general_service_query, (struct monst*, int (*)(struct monst*), const char*, int64_t, const char*, int));
+STATIC_DCL int FDECL(general_service_query_with_extra, (struct monst*, int (*)(struct monst*), const char*, int64_t, const char*, int, const char*, int));
+STATIC_DCL int FDECL(general_service_query_with_item_cost_adjustment_and_extra, (struct monst*, int (*)(struct monst*, struct obj*), const char*, const char*, int64_t, int64_t, int64_t, const char*, int, const char*, int));
 STATIC_DCL int FDECL(recharge_item_func, (struct monst*, struct obj*));
 STATIC_DCL int FDECL(blessed_recharge_item_func, (struct monst*, struct obj*));
 STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
@@ -201,7 +201,7 @@ extern const struct shclass shtypes[]; /* defined in shknam.c */
 void You_ex1_popup(txt, title, attr, color, glyph, pflags)
 const char* txt, *title;
 int attr, color, glyph;
-unsigned long pflags;
+uint64_t pflags;
 {
     if (!txt)
         return;
@@ -994,8 +994,8 @@ struct monst *mon;
     /* return True if it is actually a gecko */
     if (mon->data == &mons[PM_GECKO])
         return TRUE;
-    /* return False if it is a long worm; we might be chatting to its tail
-       (not strictly needed; long worms are MS_SILENT so won't get here) */
+    /* return False if it is a int64_t worm; we might be chatting to its tail
+       (not strictly needed; int64_t worms are MS_SILENT so won't get here) */
     if (is_long_worm_with_tail(mon->data))
         return FALSE;
     /* result depends upon whether map spot shows a gecko, which will
@@ -5326,7 +5326,7 @@ struct monst* mtmp;
         return 0;
 
     int n, i, n_given = 0;
-    long cnt;
+    int64_t cnt;
     struct obj* otmp, * otmp2;
     menu_item* pick_list;
 
@@ -5447,7 +5447,7 @@ struct monst* mtmp;
         return 0;
 
     int n, i, n_given = 0;
-    long cnt;
+    int64_t cnt;
     struct obj* otmp, * otmp2;
     menu_item* pick_list;
 
@@ -5564,7 +5564,7 @@ struct monst* mtmp;
                             {
                                 /* edible item owned by shop has been thrown or kicked
                                    by hero and caught by tame or food-tameable monst */
-                                long oprice = unpaid_cost(otmp, TRUE);
+                                int64_t oprice = unpaid_cost(otmp, TRUE);
                                 pline("That %s will cost you %ld %s.", cxname_singular(otmp), oprice,
                                     currency(oprice));
                                 /* delobj->obfree will handle actual shop billing update */
@@ -5808,7 +5808,7 @@ struct monst* mtmp;
         return 0;
 
     int n, i, n_given = 0;
-    long cnt;
+    int64_t cnt;
     struct obj* otmp, * otmp2;
     menu_item* pick_list;
 
@@ -6177,11 +6177,11 @@ struct monst* mtmp;
     if (!mtmp)
         return 0;
 
-    long umoney;
-    long u_pay;
-    long base_join_cost = 20 + 5 * mtmp->data->difficulty * mtmp->data->difficulty;
+    int64_t umoney;
+    int64_t u_pay;
+    int64_t base_join_cost = 20 + 5 * mtmp->data->difficulty * mtmp->data->difficulty;
     int ucha = ACURR(A_CHA);
-    long join_cost = (base_join_cost * max(10, (100 - (ucha - 8) * 5))) / 100;
+    int64_t join_cost = (base_join_cost * max(10, (100 - (ucha - 8) * 5))) / 100;
     char qbuf[QBUFSZ];
 
     if((mtmp->data->mflags6 & M6_PEACEFUL_AUTO_JOIN) != 0 && is_peaceful(mtmp))
@@ -6226,13 +6226,13 @@ struct monst* mtmp;
     {
         pline("%s first %s, but then says:", noittame_Monnam(mtmp), mtmp->data->msound == MS_MUMBLE ? "mumbles incomprehensibly" : "chuckles");
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_I_CAN_JOIN_YOU_AGGRESSIVE);
-        Sprintf(qbuf, "\"You shall pay me a tribute of %ld %s.\" Do you yield to this demand?", join_cost, currency(join_cost));
+        Sprintf(qbuf, "\"You shall pay me a tribute of %lld %s.\" Do you yield to this demand?", (long long)join_cost, currency(join_cost));
     }
     else
     {
         pline("%s looks at you and replies:", noittame_Monnam(mtmp));
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_I_CAN_JOIN_YOU);
-        Sprintf(qbuf, "\"I can join you for a fee of %ld %s. Is this acceptable?\"", join_cost, currency(join_cost));
+        Sprintf(qbuf, "\"I can join you for a fee of %lld %s. Is this acceptable?\"", (long long)join_cost, currency(join_cost));
     }
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
@@ -6283,11 +6283,11 @@ struct monst* mtmp;
     if (!mtmp)
         return 0;
 
-    long umoney;
-    long u_pay;
-    long base_explain_cost = 5 + 1 * mtmp->data->difficulty;
+    int64_t umoney;
+    int64_t u_pay;
+    int64_t base_explain_cost = 5 + 1 * mtmp->data->difficulty;
     int ucha = ACURR(A_CHA);
-    long explain_cost = (base_explain_cost * max(10, (100 - (ucha - 8) * 5))) / 100;
+    int64_t explain_cost = (base_explain_cost * max(10, (100 - (ucha - 8) * 5))) / 100;
     char qbuf[QBUFSZ];
 
     multi = 0;
@@ -6315,13 +6315,13 @@ struct monst* mtmp;
     {
         pline("%s first %s, but then says:", noittame_Monnam(mtmp), mtmp->data->msound == MS_MUMBLE ? "mumbles incomprehensibly" : "chuckles");
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_I_CAN_EXPLAIN_MY_STATISTICS_AGGRESSIVE);
-        Sprintf(qbuf, "\"You shall pay me %ld %s for learning my statistics.\" Do you accept?", explain_cost, currency(explain_cost));
+        Sprintf(qbuf, "\"You shall pay me %lld %s for learning my statistics.\" Do you accept?", (long long)explain_cost, currency(explain_cost));
     }
     else
     {
         pline("%s looks at you and then says:", noittame_Monnam(mtmp));
         play_monster_standard_dialogue_line(mtmp, MONSTER_STANDARD_DIALOGUE_LINE_I_CAN_EXPLAIN_MY_STATISTICS);
-        Sprintf(qbuf, "\"I can explain my statistics to you for a fee of %ld %s.\" Do you accept?", explain_cost, currency(explain_cost));
+        Sprintf(qbuf, "\"I can explain my statistics to you for a fee of %lld %s.\" Do you accept?", (long long)explain_cost, currency(explain_cost));
     }
     switch (yn_query_mon(mtmp, qbuf))
     {
@@ -6406,9 +6406,9 @@ struct monst* mtmp;
                 char itembuf[BUFSIZ] = "";
                 Sprintf(itembuf, "%s", doname(otmp));
 
-                long price = get_cost_of_monster_item(otmp, mtmp);
+                int64_t price = get_cost_of_monster_item(otmp, mtmp);
                 if (price > 0L)
-                    Sprintf(eos(itembuf), " (%s, %ld %s%s)", "for sale", price, currency(price), otmp->quan > 1 ? " each" : "");
+                    Sprintf(eos(itembuf), " (%s, %lld %s%s)", "for sale", (long long)price, currency(price), otmp->quan > 1 ? " each" : "");
                 else
                     Strcat(itembuf, " (no charge)");
 
@@ -6432,8 +6432,8 @@ struct monst* mtmp;
 
     /* Finish the menu */
     char moneybuf[BUFSZ];
-    long umoney = money_cnt(invent);
-    Sprintf(moneybuf, "You have %ld %s.", umoney, currency(umoney));
+    int64_t umoney = money_cnt(invent);
+    Sprintf(moneybuf, "You have %lld %s.", (long long)umoney, currency(umoney));
     char* txt = 0;
 #ifdef GNH_MOBILE
     txt = moneybuf;
@@ -6486,24 +6486,24 @@ struct monst* mtmp;
         for (i = 0; i < pick_count; i++)
         {
             struct obj* item_to_buy = pick_list[i].item.a_obj;
-            long quan = pick_list[i].count == -1 ? item_to_buy->quan : min(item_to_buy->quan, pick_list[i].count);
+            int64_t quan = pick_list[i].count == -1 ? item_to_buy->quan : min(item_to_buy->quan, pick_list[i].count);
             if (item_to_buy && quan > 0)
             {
-                long item_cost = quan * get_cost_of_monster_item(item_to_buy, mtmp);
+                int64_t item_cost = quan * get_cost_of_monster_item(item_to_buy, mtmp);
                 char qbuf[QBUFSZ];
                 boolean bought = FALSE;
                 char ibuf[QBUFSZ];
                 if(quan == 1)
                     Sprintf(ibuf, "%s", an(cxname_singular(item_to_buy)));
                 else
-                    Sprintf(ibuf, "%ld %s", quan, cxname(item_to_buy));
+                    Sprintf(ibuf, "%lld %s", (long long)quan, cxname(item_to_buy));
 
                 if(itemized)
                 {
                     boolean doforbreak = FALSE;
                     if (item_cost)
                     {
-                        Sprintf(qbuf, "Buy %s for %ld %s?", ibuf, item_cost, currency(item_cost));
+                        Sprintf(qbuf, "Buy %s for %lld %s?", ibuf, (long long)item_cost, currency(item_cost));
                     }
                     else
                         Sprintf(qbuf, "Take %s for no charge?", ibuf);
@@ -6542,7 +6542,7 @@ struct monst* mtmp;
                 {
                     play_sfx_sound(SFX_TRANSACT_SINGLE_ITEM);
                     if (item_cost)
-                        Sprintf(qbuf, "bought %s for %ld %s.", ibuf, item_cost, currency(item_cost));
+                        Sprintf(qbuf, "bought %s for %lld %s.", ibuf, (long long)item_cost, currency(item_cost));
                     else
                         Sprintf(qbuf, "took %s for no charge.", ibuf);
 
@@ -6737,13 +6737,13 @@ struct monst* mtmp;
 }
 
 /* Returns the price of an arbitrary item per one item */
-long
+int64_t
 get_cost_of_monster_item(obj, mtmp)
 register struct obj* obj;
 register struct monst* mtmp;
 {            
     struct obj* top;
-    long cost = 0L;
+    int64_t cost = 0L;
 
     for (top = obj; top->where == OBJ_CONTAINED; top = top->ocontainer)
         continue;
@@ -6757,12 +6757,12 @@ register struct monst* mtmp;
 }
 
 
-long
+int64_t
 m_contained_cost(obj, mtmp)
 struct obj* obj;
 struct monst* mtmp;
 {
-    long price = 0;
+    int64_t price = 0;
     register struct obj* otmp, * top;
 
     for (top = obj; top->where == OBJ_CONTAINED; top = top->ocontainer)
@@ -6889,10 +6889,10 @@ do_chat_priest_blesscurse(mtmp)
 struct monst* mtmp;
 {
 
-    long umoney = money_cnt(invent);
-    long u_pay, 
-        bless_cost = max(1L, (long)((300 + 15 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
-        curse_cost = max(1L, (long)((300 + 15 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t umoney = money_cnt(invent);
+    int64_t u_pay, 
+        bless_cost = max(1L, (int64_t)((300 + 15 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
+        curse_cost = max(1L, (int64_t)((300 + 15 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     int priest_action = 0;
     char qbuf[QBUFSZ];
 
@@ -6910,7 +6910,7 @@ struct monst* mtmp;
         return 0;
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_BLESS_AN_ITEM);
-    Sprintf(qbuf, "Would you like to bless an item? (%ld %s)", bless_cost, currency(bless_cost));
+    Sprintf(qbuf, "Would you like to bless an item? (%lld %s)", (long long)bless_cost, currency(bless_cost));
     switch (ynq_mon(mtmp, qbuf)) {
     default:
     case 'q':
@@ -6927,8 +6927,8 @@ struct monst* mtmp;
         break;
     case 'n':
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_CURSE_AN_ITEM);
-        Sprintf(qbuf, "Then would you like to curse one? (%ld %s)",
-            curse_cost, currency(curse_cost));
+        Sprintf(qbuf, "Then would you like to curse one? (%lld %s)",
+            (long long)curse_cost, currency(curse_cost));
         if (yn_query_mon(mtmp, qbuf) != 'y')
             return 0;
         if (umoney < curse_cost)
@@ -6981,8 +6981,8 @@ do_chat_priest_normal_healing(mtmp)
 struct monst* mtmp;
 {
 
-    long umoney = money_cnt(invent);
-    long u_pay, extrahealing_cost = max(1L, (long)(50 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t umoney = money_cnt(invent);
+    int64_t u_pay, extrahealing_cost = max(1L, (int64_t)(50 * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
@@ -6999,7 +6999,7 @@ struct monst* mtmp;
         return 0;
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_STANDARD_HEALING);
-    Sprintf(qbuf, "Would you like to have a standard healing? (%ld %s)", extrahealing_cost, currency(extrahealing_cost));
+    Sprintf(qbuf, "Would you like to have a standard healing? (%lld %s)", (long long)extrahealing_cost, currency(extrahealing_cost));
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
         return 0;
@@ -7035,8 +7035,8 @@ do_chat_priest_full_healing(mtmp)
 struct monst* mtmp;
 {
 
-    long umoney = money_cnt(invent);
-    long u_pay, fullhealing_cost = max(1L, (long)((250 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t umoney = money_cnt(invent);
+    int64_t u_pay, fullhealing_cost = max(1L, (int64_t)((250 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
@@ -7053,7 +7053,7 @@ struct monst* mtmp;
         return 0;
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_FULL_HEALING);
-    Sprintf(qbuf, "Would you like to have a full healing? (%ld %s)", fullhealing_cost, currency(fullhealing_cost));
+    Sprintf(qbuf, "Would you like to have a full healing? (%lld %s)", (long long)fullhealing_cost, currency(fullhealing_cost));
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
         return 0;
@@ -7089,8 +7089,8 @@ do_chat_priest_cure_sickness(mtmp)
 struct monst* mtmp;
 {
 
-    long umoney = money_cnt(invent);
-    long u_pay, cure_sickness_cost = max(1L, (long)(100 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t umoney = money_cnt(invent);
+    int64_t u_pay, cure_sickness_cost = max(1L, (int64_t)(100 * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
@@ -7107,7 +7107,7 @@ struct monst* mtmp;
         return 0;
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_SICKNESS_CURED);
-    Sprintf(qbuf, "Would you like to have your sickness cured? (%ld %s)", cure_sickness_cost, currency(cure_sickness_cost));
+    Sprintf(qbuf, "Would you like to have your sickness cured? (%lld %s)", (long long)cure_sickness_cost, currency(cure_sickness_cost));
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
         return 0;
@@ -7147,10 +7147,10 @@ struct monst* mtmp;
 
     //priest_talk(mtmp);
 
-    long umoney = money_cnt(invent);
-    long u_pay,
-        major_cost = max(1L, (long)((2500 + 150 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
-        minor_cost = max(1L, (long)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t umoney = money_cnt(invent);
+    int64_t u_pay,
+        major_cost = max(1L, (int64_t)((2500 + 150 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
+        minor_cost = max(1L, (int64_t)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     int priest_action = 0;
     char qbuf[QBUFSZ];
 
@@ -7164,7 +7164,7 @@ struct monst* mtmp;
     }
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_MAJOR_CONTRIBUTION);
-    Sprintf(qbuf, "Would you like to make a major contribution for the temple? (%ld %s)", major_cost, currency(major_cost));
+    Sprintf(qbuf, "Would you like to make a major contribution for the temple? (%lld %s)", (long long)major_cost, currency(major_cost));
     switch (ynq_mon(mtmp, qbuf)) {
     default:
     case 'q':
@@ -7181,8 +7181,8 @@ struct monst* mtmp;
         break;
     case 'n':
         play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_MINOR_DONATION);
-        Sprintf(qbuf, "Then would you like to make a minor donation instead? (%ld %s)",
-            minor_cost, currency(minor_cost));
+        Sprintf(qbuf, "Then would you like to make a minor donation instead? (%lld %s)",
+            (long long)minor_cost, currency(minor_cost));
         if (yn_query_mon(mtmp, qbuf) != 'y')
             return 0;
         if (umoney < minor_cost)
@@ -7265,8 +7265,8 @@ STATIC_OVL int
 do_chat_priest_divination(mtmp)
 struct monst* mtmp;
 {
-    long umoney = money_cnt(invent);
-    long u_pay, divination_cost = max(1L, (long)(25 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t umoney = money_cnt(invent);
+    int64_t u_pay, divination_cost = max(1L, (int64_t)(25 * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
@@ -7279,7 +7279,7 @@ struct monst* mtmp;
     }
 
     play_monster_special_dialogue_line(mtmp, PRIEST_SPECIAL_DIALOGUE_WOULD_YOU_LIKE_TO_SEE_YOUR_FORTUNE);
-    Sprintf(qbuf, "Would you like to see your fortune? (%ld %s)", divination_cost, currency(divination_cost));
+    Sprintf(qbuf, "Would you like to see your fortune? (%lld %s)", (long long)divination_cost, currency(divination_cost));
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
         return 0;
@@ -7345,7 +7345,7 @@ struct monst* mtmp;
 
             Sprintf(talkbuf, "Thus, %s wait %sbefore bothering %s again.",
                 u.uprayer_timeout >= 50 ? "it would be wise to" : "you must",
-                u.uprayer_timeout < 50 ? "a little longer " : u.uprayer_timeout > 200 ? "a long time " : "",
+                u.uprayer_timeout < 50 ? "a little longer " : u.uprayer_timeout > 200 ? "a int64_t time " : "",
                 iflags.using_gui_sounds ? "your god" : u_gname());
             popup_talk_line(mtmp, talkbuf);
         }
@@ -7440,8 +7440,8 @@ struct monst* mtmp;
     if (!mtmp || !has_eshk(mtmp))
         return 0;
 
-    long umoney;
-    long minor_id_cost = max(1L, (long)((ESHK(mtmp)->shoptype == SHOPBASE ? 150 + 10 * (double)u.ulevel : 75 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t umoney;
+    int64_t minor_id_cost = max(1L, (int64_t)((ESHK(mtmp)->shoptype == SHOPBASE ? 150 + 10 * (double)u.ulevel : 75 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     multi = 0;
@@ -7468,7 +7468,7 @@ struct monst* mtmp;
     }
     context.shop_identify_type = 0;
 
-    Sprintf(qbuf, "Would you like to identify %s? (%ld %s)", an(shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description), minor_id_cost, currency(minor_id_cost));
+    Sprintf(qbuf, "Would you like to identify %s? (%lld %s)", an(shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description), (long long)minor_id_cost, currency(minor_id_cost));
     switch (yn_query_mon(mtmp, qbuf)) 
     {
     default:
@@ -7491,15 +7491,15 @@ struct monst* mtmp;
     //do
     //{
     //    if(!cnt)
-    //        Sprintf(qbuf, "Would you like to identify %s? (%d %s)", an(shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description), minor_id_cost, currency((long)minor_id_cost));
+    //        Sprintf(qbuf, "Would you like to identify %s? (%d %s)", an(shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description), minor_id_cost, currency((int64_t)minor_id_cost));
     //    else
-    //        Sprintf(qbuf, "Would you like to identify one more %s? (%d %s)", shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description, minor_id_cost, currency((long)minor_id_cost));
+    //        Sprintf(qbuf, "Would you like to identify one more %s? (%d %s)", shtypes[ESHK(mtmp)->shoptype - SHOPBASE].identified_item_description, minor_id_cost, currency((int64_t)minor_id_cost));
 
     //    switch (yn_query_mon(mtmp, qbuf)) {
     //    default:
     //        return 0;
     //    case 'y':
-    //        if (umoney < (long)minor_id_cost) {
+    //        if (umoney < (int64_t)minor_id_cost) {
     //            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
     //            You("don't have enough money for that!");
     //            return 0;
@@ -7517,12 +7517,12 @@ struct monst* mtmp;
 
     //    if (res)
     //    {
-    //        money2mon(mtmp, (long)u_pay);
+    //        money2mon(mtmp, (int64_t)u_pay);
     //        context.botl = 1;
     //        umoney = money_cnt(invent);
     //        cnt += res;
     //    }
-    //} while (res > 0 && unided > 0 && umoney >= (long)minor_id_cost && cnt < 100); /* Paranoid limit */
+    //} while (res > 0 && unided > 0 && umoney >= (int64_t)minor_id_cost && cnt < 100); /* Paranoid limit */
 
     return (res > 0);
 }
@@ -7572,9 +7572,9 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->isshk || !has_eshk(mtmp))
         return 0;
 
-    long umoney;
-    long u_pay;
-    long reconcile_cost = max(1L, (long)((1000 + u.ulevel * 100 + (mtmp->mrevived ? u.ulevel * 100 : 0) + max(0, ESHK(mtmp)->robbed + ESHK(mtmp)->debit - ESHK(mtmp)->credit)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t umoney;
+    int64_t u_pay;
+    int64_t reconcile_cost = max(1L, (int64_t)((1000 + u.ulevel * 100 + (mtmp->mrevived ? u.ulevel * 100 : 0) + max(0, ESHK(mtmp)->robbed + ESHK(mtmp)->debit - ESHK(mtmp)->credit)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
     
     multi = 0;
@@ -7590,9 +7590,9 @@ struct monst* mtmp;
 
     play_voice_shopkeeper_simple_line(mtmp, SHOPKEEPER_LINE_YOU_NEED_TO_PAY_LOT_OF_GOLD);
     if(iflags.using_gui_sounds)
-        Sprintf(qbuf, "\"You need to pay a lot of gold in compensation.\" (%ld %s in fact!)  Agree?", reconcile_cost, currency(reconcile_cost));
+        Sprintf(qbuf, "\"You need to pay a lot of gold in compensation.\" (%lld %s in fact!)  Agree?", (long long)reconcile_cost, currency(reconcile_cost));
     else
-        Sprintf(qbuf, "\"You need to pay %ld %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
+        Sprintf(qbuf, "\"You need to pay %lld %s in compensation. Agree?\"", (long long)reconcile_cost, currency(reconcile_cost));
 
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
@@ -7611,7 +7611,7 @@ struct monst* mtmp;
     bot();
 
     make_happy_shk(mtmp, FALSE);
-    long costapplyingtodebit = max(0, min(reconcile_cost - 1000, ESHK(mtmp)->debit));
+    int64_t costapplyingtodebit = max(0, min(reconcile_cost - 1000, ESHK(mtmp)->debit));
     ESHK(mtmp)->debit -= costapplyingtodebit;
 
     if (is_peaceful(mtmp))
@@ -7636,9 +7636,9 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
 
-    long umoney;
-    long u_pay;
-    long reconcile_cost = max(1L, (long)((1000 + u.ulevel * 100 + (mtmp->mrevived ? u.ulevel * 100 : 0)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t umoney;
+    int64_t u_pay;
+    int64_t reconcile_cost = max(1L, (int64_t)((1000 + u.ulevel * 100 + (mtmp->mrevived ? u.ulevel * 100 : 0)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     multi = 0;
@@ -7654,9 +7654,9 @@ struct monst* mtmp;
 
     play_monster_special_dialogue_line(mtmp, SMITH_LINE_YOU_NEED_TO_PAY_A_LOT_OF_GOLD_IN_COMPENSATION);
     if (iflags.using_gui_sounds)
-        Sprintf(qbuf, "\"You need to pay a lot of gold in compensation.\" (%ld %s in fact!)  Agree?", reconcile_cost, currency(reconcile_cost));
+        Sprintf(qbuf, "\"You need to pay a lot of gold in compensation.\" (%lld %s in fact!)  Agree?", (long long)reconcile_cost, currency(reconcile_cost));
     else
-        Sprintf(qbuf, "\"You need to pay %ld %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
+        Sprintf(qbuf, "\"You need to pay %lld %s in compensation. Agree?\"", (long long)reconcile_cost, currency(reconcile_cost));
 
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
@@ -7698,7 +7698,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
 
-    long cost = max(1L, (long)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t cost = max(1L, (int64_t)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return spell_service_query(mtmp, SPE_ENCHANT_ARMOR, 0, "enchant an armor", cost, "enchanting an armor", SMITH_LINE_WOULD_YOU_LIKE_TO_ENCHANT_AN_ARMOR);
 }
 
@@ -7709,7 +7709,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
 
-    long cost = max(1L, (long)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t cost = max(1L, (int64_t)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return spell_service_query(mtmp, SPE_ENCHANT_WEAPON, 0, "enchant a weapon", cost, "enchanting a weapon", SMITH_LINE_WOULD_YOU_LIKE_TO_ENCHANT_A_WEAPON);
 }
 
@@ -7720,7 +7720,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
 
-    long cost = max(1L, (long)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t cost = max(1L, (int64_t)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return general_service_query(mtmp, repair_armor_func, "repair an armor", cost, "repairing an armor", SMITH_LINE_WOULD_YOU_LIKE_TO_REPAIR_AN_ARMOR);
 }
 
@@ -7731,7 +7731,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
 
-    long cost = max(1L, (long)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t cost = max(1L, (int64_t)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return general_service_query(mtmp, repair_weapon_func, "repair a weapon", cost, "repairing a weapon", SMITH_LINE_WOULD_YOU_LIKE_TO_REPAIR_A_WEAPON);
 }
 
@@ -7743,7 +7743,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
 
-    long cost = max(1L, (long)((2000 + 100 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t cost = max(1L, (int64_t)((2000 + 100 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return spell_service_query(mtmp, SPE_PROTECT_ARMOR, 0, "protect an armor", cost, "protecting an armor", SMITH_LINE_WOULD_YOU_LIKE_TO_PROTECT_AN_ARMOR);
 }
 
@@ -7754,7 +7754,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
 
-    long cost = max(1L, (long)((2000 + 100 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t cost = max(1L, (int64_t)((2000 + 100 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return spell_service_query(mtmp, SPE_PROTECT_WEAPON, 0, "protect a weapon", cost, "protecting a weapon", SMITH_LINE_WOULD_YOU_LIKE_TO_PROTECT_A_WEAPON);
 }
 
@@ -7765,7 +7765,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
         return 0;
 
-    long cost = max(5L, (long)((max(objects[BRASS_LANTERN].oc_cost, objects[POT_OIL].oc_cost)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t cost = max(5L, (int64_t)((max(objects[BRASS_LANTERN].oc_cost, objects[POT_OIL].oc_cost)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return general_service_query(mtmp, refill_lantern_func, "refill a lamp or lantern", cost, "refilling a lamp or lantern", SMITH_LINE_WOULD_YOU_LIKE_TO_REFILL_A_LAMP_OR_LANTERN);
 }
 
@@ -7841,32 +7841,32 @@ struct monst* mtmp;
     if (i < 1)
         return 0;
 
-    long cost = 0;
+    int64_t cost = 0;
 
     switch(i)
     {
     case 1:
-        cost = max(1L, (long)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (int64_t)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query(mtmp, forge_dragon_scale_mail_func, "forge a dragon scale mail", cost, "forging a dragon scale mail", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_DRAGON_SCALE_MAIL);
         break;
     case 2:
-        cost = max(1L, (long)((800 + 80 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (int64_t)((800 + 80 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_shield_of_reflection_func, "forge a shield of reflection", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "8 nuggets of silver ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_SHIELD_OF_REFLECTION);
         break;
     case 3:
-        cost = max(1L, (long)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_crystal_plate_mail_func, "forge a crystal plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "2 dilithium crystals", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_CRYSTAL_PLATE_MAIL);
         break;
     case 4:
-        cost = max(1L, (long)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_adamantium_full_plate_mail_func, "forge an adamantium full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "4 nuggets of adamantium ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ADAMANTIUM_FULL_PLATE_MAIL);
         break;
     case 5:
-        cost = max(1L, (long)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_mithril_full_plate_mail_func, "forge a mithril full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "4 nuggets of mithril ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_MITHRIL_FULL_PLATE_MAIL);
         break;
     case 6:
-        cost = max(1L, (long)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (int64_t)((600 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_orichalcum_full_plate_mail_func, "forge an orichalcum full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "4 nuggets of orichalcum ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_AN_ORICHALCUM_FULL_PLATE_MAIL);
         break;
     default:
@@ -7936,24 +7936,24 @@ struct monst* mtmp;
     if (i < 1)
         return 0;
 
-    long cost = 0;
+    int64_t cost = 0;
 
     switch (i)
     {
     case 1:
-        cost = max(1L, (long)((100 + 10 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (int64_t)((100 + 10 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_plate_mail_func, "forge a plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "4 nuggets of iron ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_PLATE_MAIL);
         break;
     case 2:
-        cost = max(1L, (long)((50 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (int64_t)((50 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_bronze_plate_mail_func, "forge a bronze plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "4 nuggets of copper ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_BRONZE_PLATE_MAIL);
         break;
     case 3:
-        cost = max(1L, (long)((200 + 20 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (int64_t)((200 + 20 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_field_plate_mail_func, "forge a field plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "6 nuggets of iron ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_FIELD_PLATE_MAIL);
         break;
     case 4:
-        cost = max(1L, (long)((400 + 40 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (int64_t)((400 + 40 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_full_plate_mail_func, "forge a full plate mail", cost, "forging any armor", QUERY_STYLE_COMPONENTS, "8 nuggets of iron ore", SMITH_LINE_WOULD_YOU_LIKE_TO_FORGE_A_FULL_PLATE_MAIL);
         break;
     default:
@@ -7968,7 +7968,7 @@ STATIC_OVL int
 do_chat_smith_identify(mtmp)
 struct monst* mtmp;
 {
-    return do_chat_npc_general_identify(mtmp, "weapon or armor", -1, max(1L, (long)((double)(75 + 5 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))), SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_WEAPON_OR_ARMOR, SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_ONE_MORE_WEAPON_OR_ARMOR);
+    return do_chat_npc_general_identify(mtmp, "weapon or armor", -1, max(1L, (int64_t)((double)(75 + 5 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))), SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_WEAPON_OR_ARMOR, SMITH_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_ONE_MORE_WEAPON_OR_ARMOR);
 }
 
 
@@ -8045,32 +8045,32 @@ struct monst* mtmp;
     if (i < 1)
         return 0;
 
-    long cost = 0;
+    int64_t cost = 0;
 
     switch (i)
     {
     case 1:
-        cost = max(1L, (long)((double)(objects[SLING_BULLET].oc_cost) * 3 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (int64_t)((double)(objects[SLING_BULLET].oc_cost) * 3 * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_iron_sling_bullets_func, "forge 10 iron sling-bullets", cost, "forging any sling-bullets", QUERY_STYLE_COMPONENTS, "2 nuggets of iron ore", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_IRON_SLING_BULLETS);
         break;
     case 2:
-        cost = max(1L, (long)((double)(objects[SLING_BULLET].oc_cost) * 12 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (int64_t)((double)(objects[SLING_BULLET].oc_cost) * 12 * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_ex_iron_sling_bullets_func, "forge 10 exceptional iron sling-bullets", cost, "forging any sling-bullets", QUERY_STYLE_COMPONENTS, "3 nuggets of iron ore", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_EXCEPTIONAL_IRON_SLING_BULLETS);
         break;
     case 3:
-        cost = max(1L, (long)((double)(objects[SLING_BULLET].oc_cost) * 48 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (int64_t)((double)(objects[SLING_BULLET].oc_cost) * 48 * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_el_iron_sling_bullets_func, "forge 10 elite iron sling-bullets", cost, "forging any sling-bullets", QUERY_STYLE_COMPONENTS, "4 nuggets of iron ore", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_ELITE_IRON_SLING_BULLETS);
         break;
     case 4:
-        cost = max(1L, (long)(((double)objects[SLING_BULLET].oc_cost * material_definitions[MAT_SILVER].cost_multiplier) * 3 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (int64_t)(((double)objects[SLING_BULLET].oc_cost * material_definitions[MAT_SILVER].cost_multiplier) * 3 * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_silver_sling_bullets_func, "forge 10 silver sling-bullets", cost, "forging any sling-bullets", QUERY_STYLE_COMPONENTS, "2 nuggets of silver ore", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_SILVER_SLING_BULLETS);
         break;
     case 5:
-        cost = max(1L, (long)(((double)objects[SLING_BULLET].oc_cost * material_definitions[MAT_SILVER].cost_multiplier) * 12 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (int64_t)(((double)objects[SLING_BULLET].oc_cost * material_definitions[MAT_SILVER].cost_multiplier) * 12 * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_ex_silver_sling_bullets_func, "forge 10 exceptional silver sling-bullets", cost, "forging any sling-bullets", QUERY_STYLE_COMPONENTS, "3 nuggets of silver ore", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_EXCEPTIONAL_SILVER_SLING_BULLETS);
         break;
     case 6:
-        cost = max(1L, (long)(((double)objects[SLING_BULLET].oc_cost * material_definitions[MAT_SILVER].cost_multiplier) * 48 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+        cost = max(1L, (int64_t)(((double)objects[SLING_BULLET].oc_cost * material_definitions[MAT_SILVER].cost_multiplier) * 48 * service_cost_charisma_adjustment(ACURR(A_CHA))));
         return general_service_query_with_extra(mtmp, forge_el_silver_sling_bullets_func, "forge 10 elite silver sling-bullets", cost, "forging any sling-bullets", QUERY_STYLE_COMPONENTS, "4 nuggets of silver ore", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_10_ELITE_SILVER_SLING_BULLETS);
         break;
     default:
@@ -8088,7 +8088,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
 
-    long cost = max(1L, (long)((50 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t cost = max(1L, (int64_t)((50 + 5 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return general_service_query_with_extra(mtmp, forge_cubic_gate_func, "forge a cubic gate", cost, "forging any cubic gates", QUERY_STYLE_COMPONENTS, "a dilithium crystal", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_A_CUBIC_GATE);
 }
 
@@ -8099,7 +8099,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
 
-    long cost = max(1L, (long)((500 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t cost = max(1L, (int64_t)((500 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return general_service_query_with_extra(mtmp, forge_artificial_wings_func, "forge a pair of artificial wings", cost, "forging any artificial wings", QUERY_STYLE_COMPONENTS, "12 feathers", NPC_LINE_WOULD_YOU_LIKE_TO_FORGE_A_PAIR_OF_ARTIFICIAL_WINGS);
 }
 
@@ -8170,7 +8170,7 @@ struct monst* mtmp;
 boolean FDECL((*allow), (OBJ_P)); /* allow function */
 {
     int n, n_sold = 0, i;
-    long cnt;
+    int64_t cnt;
     struct obj* otmp, * otmp2;
     menu_item* pick_list = (menu_item*)0;
     boolean all_pressed = FALSE;
@@ -8259,10 +8259,10 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
 
-    long service_cost = max(1L, (long)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t service_cost = max(1L, (int64_t)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 
-    long umoney = money_cnt(invent);
-    long u_pay;
+    int64_t umoney = money_cnt(invent);
+    int64_t u_pay;
     char qbuf[QBUFSZ];
 
     if (!m_general_talk_check(mtmp, "opening a branch portal") || !m_speak_check(mtmp))
@@ -8275,7 +8275,7 @@ struct monst* mtmp;
     }
 
     play_monster_special_dialogue_line(mtmp, NPC_LINE_WOULD_YOU_LIKE_TO_OPEN_A_BRANCH_PORTAL);
-    Sprintf(qbuf, "Would you like to %s? (%ld %s)", "open a branch portal", service_cost, currency(service_cost));
+    Sprintf(qbuf, "Would you like to %s? (%lld %s)", "open a branch portal", (long long)service_cost, currency(service_cost));
     switch (yn_query_mon(mtmp, qbuf))
     {
     default:
@@ -8475,9 +8475,9 @@ struct monst* mtmp;
     if (!mtmp)
         return 0;
 
-    long umoney;
-    long u_pay;
-    long reconcile_cost = max(1L, (long)((mtmp->m_lev * 5 + u.ulevel * 5) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t umoney;
+    int64_t u_pay;
+    int64_t reconcile_cost = max(1L, (int64_t)((mtmp->m_lev * 5 + u.ulevel * 5) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     multi = 0;
@@ -8492,7 +8492,7 @@ struct monst* mtmp;
         return 0;
 
     play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_RESEARCH_SUPPORT);
-    Sprintf(qbuf, "%s asks for a research support of %ld %s.  Agree?", noittame_Monnam(mtmp), reconcile_cost, currency(reconcile_cost));
+    Sprintf(qbuf, "%s asks for a research support of %lld %s.  Agree?", noittame_Monnam(mtmp), (long long)reconcile_cost, currency(reconcile_cost));
 
     switch (yn_query(qbuf)) {
     default:
@@ -8536,9 +8536,9 @@ struct monst* mtmp;
     if (!mtmp)
         return 0;
 
-    long umoney;
-    long u_pay;
-    long observe_cost = max(1L, (long)((20 + u.ulevel * 5) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t umoney;
+    int64_t u_pay;
+    int64_t observe_cost = max(1L, (int64_t)((20 + u.ulevel * 5) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     multi = 0;
@@ -8565,7 +8565,7 @@ struct monst* mtmp;
     if (!is_tame(mtmp))
     {
         play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_OBSERVE_POSITION);
-        Sprintf(qbuf, "%s asks for %ld %s to observe your exact position.  Agree?", noittame_Monnam(mtmp), observe_cost, currency(observe_cost));
+        Sprintf(qbuf, "%s asks for %lld %s to observe your exact position.  Agree?", noittame_Monnam(mtmp), (long long)observe_cost, currency(observe_cost));
 
         switch (yn_query(qbuf)) {
         default:
@@ -8620,9 +8620,9 @@ struct monst* mtmp;
     if (!mtmp)
         return 0;
 
-    long umoney;
-    long u_pay;
-    long observe_cost = max(1L, (long)((20 + u.ulevel * 5) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t umoney;
+    int64_t u_pay;
+    int64_t observe_cost = max(1L, (int64_t)((20 + u.ulevel * 5) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     multi = 0;
@@ -8648,7 +8648,7 @@ struct monst* mtmp;
     if (!is_tame(mtmp))
     {
         play_monster_special_dialogue_line(mtmp, QUANTUM_MECHANIC_LINE_OBSERVE_SPEED);
-        Sprintf(qbuf, "%s asks for %ld %s to observe your exact speed.  Agree?", noittame_Monnam(mtmp), observe_cost, currency(observe_cost));
+        Sprintf(qbuf, "%s asks for %lld %s to observe your exact speed.  Agree?", noittame_Monnam(mtmp), (long long)observe_cost, currency(observe_cost));
 
         switch (yn_query(qbuf)) {
         default:
@@ -8695,9 +8695,9 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
 
-    long umoney;
-    long u_pay;
-    long reconcile_cost = max(1L, (long)((1000 + u.ulevel * 100 + (mtmp->mrevived ? u.ulevel * 100 : 0)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t umoney;
+    int64_t u_pay;
+    int64_t reconcile_cost = max(1L, (int64_t)((1000 + u.ulevel * 100 + (mtmp->mrevived ? u.ulevel * 100 : 0)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     multi = 0;
@@ -8714,11 +8714,11 @@ struct monst* mtmp;
     if (iflags.using_gui_sounds)
     {
         play_monster_special_dialogue_line(mtmp, NPC_LINE_YOU_NEED_TO_PAY_A_LOT_OF_GOLD_IN_COMPENSATION);
-        Sprintf(qbuf, "\"You need to pay a lot of gold in compensation.\" (%ld %s in fact!)  Agree?", reconcile_cost, currency(reconcile_cost));
+        Sprintf(qbuf, "\"You need to pay a lot of gold in compensation.\" (%lld %s in fact!)  Agree?", (long long)reconcile_cost, currency(reconcile_cost));
     }
     else
     {
-        Sprintf(qbuf, "\"You need to pay %ld %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
+        Sprintf(qbuf, "\"You need to pay %lld %s in compensation. Agree?\"", (long long)reconcile_cost, currency(reconcile_cost));
     }
 
     switch (yn_query_mon(mtmp, qbuf)) {
@@ -8763,7 +8763,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
 
-    long cost = max(1L, (long)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t cost = max(1L, (int64_t)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     return spell_service_query(mtmp, SCR_ENCHANT_ACCESSORY, 0, "enchant an accessory", cost, "enchanting an accessory", NPC_LINE_WOULD_YOU_LIKE_TO_ENCHANT_AN_ACCESSORY);
 }
 
@@ -8774,7 +8774,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
 
-    long cost = max(1L, (long)((1200 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t cost = max(1L, (int64_t)((1200 + 60 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     //return spell_service_query(mtmp, SCR_CHARGING, 0, "recharge an item", cost, "recharging an item", NPC_LINE_WOULD_YOU_LIKE_TO_RECHARGE_AN_ITEM);
     return general_service_query_with_item_cost_adjustment_and_extra(mtmp, recharge_item_func, "charge", "recharging", cost, objects[WAN_WISHING].oc_cost, 50L, "recharging an item", QUERY_STYLE_COMPONENTS, (char*)0, NPC_LINE_WHAT_WOULD_YOU_LIKE_TO_CHARGE);
 }
@@ -8786,7 +8786,7 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
         return 0;
 
-    long cost = max(1L, (long)((4000 + 200 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t cost = max(1L, (int64_t)((4000 + 200 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
     //return spell_service_query(mtmp, SCR_CHARGING, 1, "fully recharge an item", cost, "fully recharging an item", NPC_LINE_WOULD_YOU_LIKE_TO_FULLY_RECHARGE_AN_ITEM);
     return general_service_query_with_item_cost_adjustment_and_extra(mtmp, blessed_recharge_item_func, "charge", "fully recharging", cost, objects[WAN_WISHING].oc_cost, 50L, "recharging an item", QUERY_STYLE_COMPONENTS, (char*)0, NPC_LINE_WHAT_WOULD_YOU_LIKE_TO_CHARGE);
 }
@@ -8901,9 +8901,9 @@ struct monst* mtmp;
     if (!mtmp)
         return 0;
 
-    long umoney;
-    long u_pay;
-    long reconcile_cost = max(1L, (long)(500 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+    int64_t umoney;
+    int64_t u_pay;
+    int64_t reconcile_cost = max(1L, (int64_t)(500 * service_cost_charisma_adjustment(ACURR(A_CHA))));
     char qbuf[QBUFSZ];
 
     multi = 0;
@@ -8929,11 +8929,11 @@ struct monst* mtmp;
     if (iflags.using_gui_sounds)
     {
         play_monster_special_dialogue_line(mtmp, WATCHMAN_LINE_WE_CAN_DROP_THE_CASE_FOR_THIS_AMOUNT_OF_GOLD);
-        Sprintf(qbuf, "\"We can drop the case for this amount of gold.\" (%ld %s in fact!) Agree?", reconcile_cost, currency(reconcile_cost));
+        Sprintf(qbuf, "\"We can drop the case for this amount of gold.\" (%lld %s in fact!) Agree?", (long long)reconcile_cost, currency(reconcile_cost));
     }
     else
     {
-        Sprintf(qbuf, "\"We can drop the case for %ld %s. Agree?\"", reconcile_cost, currency(reconcile_cost));
+        Sprintf(qbuf, "\"We can drop the case for %lld %s. Agree?\"", (long long)reconcile_cost, currency(reconcile_cost));
     }
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
@@ -8973,7 +8973,7 @@ do_chat_npc_identify_gems_and_stones(mtmp)
 struct monst* mtmp;
 {
     return do_chat_npc_general_identify(mtmp, "gem or stone", 1, 
-        max(1L, (long)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
+        max(1L, (int64_t)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
         NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_GEM_OR_STONE, NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_ONE_MORE_GEM_OR_STONE);
 }
 
@@ -9040,7 +9040,7 @@ do_chat_npc_identify_accessories_and_charged_items(mtmp)
 struct monst* mtmp;
 {
     return do_chat_npc_general_identify(mtmp, "accessory or charged item", 2,
-        max(1L, (long)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
+        max(1L, (int64_t)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
         NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_AN_ACCESSORY_OR_CHARGED_ITEM, NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_ONE_MORE_ACCESSORY_OR_CHARGED_ITEM);
 }
 
@@ -9050,7 +9050,7 @@ struct monst* mtmp;
 {
 
     return do_chat_npc_general_identify(mtmp, "gem, stone or a charged item", 3,
-        max(1L, (long)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
+        max(1L, (int64_t)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
         NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_A_GEM_STONE_OR_CHARGED_ITEM, NPC_LINE_WOULD_YOU_LIKE_TO_IDENTIFY_ONE_MORE_GEM_STONE_OR_CHARGED_ITEM);
 }
 
@@ -9059,12 +9059,12 @@ do_chat_npc_general_identify(mtmp, identify_item_str, id_idx, minor_id_cost, spd
 struct monst* mtmp;
 const char* identify_item_str;
 int id_idx, spdialogue1, spdialogue2 UNUSED;
-long minor_id_cost;
+int64_t minor_id_cost;
 {
     if (!mtmp)
         return 0;
 
-    long umoney = money_cnt(invent);
+    int64_t umoney = money_cnt(invent);
 
     if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
         return 0;
@@ -9088,7 +9088,7 @@ long minor_id_cost;
     char qbuf[QBUFSZ];
     int res = 0;
     play_monster_special_dialogue_line(mtmp, spdialogue1);
-    Sprintf(qbuf, "Would you like to identify %s? (%ld %s)", an(identify_item_str), minor_id_cost, currency(minor_id_cost));
+    Sprintf(qbuf, "Would you like to identify %s? (%lld %s)", an(identify_item_str), (long long)minor_id_cost, currency(minor_id_cost));
 
     switch (yn_query_mon(mtmp, qbuf)) {
     default:
@@ -9113,17 +9113,17 @@ long minor_id_cost;
 int
 service_identify(mtmp, id_cost)
 struct monst* mtmp;
-long id_cost;
+int64_t id_cost;
 {
     menu_item* pick_list;
     int n, i;
     char buf[BUFSZ];
     int res = 0, id_res = 0;
-    long uinvgold = money_cnt(invent);
-    long shkcredit = 0L;
+    int64_t uinvgold = money_cnt(invent);
+    int64_t shkcredit = 0L;
     if (mtmp->isshk && has_eshk(mtmp))
         shkcredit += ESHK(mtmp)->credit - ESHK(mtmp)->debit;
-    long umoney = uinvgold + shkcredit;
+    int64_t umoney = uinvgold + shkcredit;
 
     Strcpy(buf, "What would you like to identify?");
 
@@ -9155,7 +9155,7 @@ long id_cost;
             struct obj* otmp = pick_list[i].item.a_obj;
             if (itemize)
             {
-                Sprintf(qendbuf, " for %ld %s?", id_cost, currency(id_cost));
+                Sprintf(qendbuf, " for %lld %s?", (long long)id_cost, currency(id_cost));
                 (void)safe_qbuf(qbuf, "Identify ", qendbuf, otmp,
                     doname, thesimpleoname,
                     (otmp->quan == 1L) ? "that" : "those");
@@ -9188,11 +9188,11 @@ long id_cost;
             play_sfx_sound(SFX_IDENTIFY_SUCCESS);
 
             boolean skipmoney = FALSE;
-            long charged_id_cost = id_cost;
-            long deducted_credit_amount = 0L;
+            int64_t charged_id_cost = id_cost;
+            int64_t deducted_credit_amount = 0L;
             if (shkcredit > 0L && mtmp->isshk && has_eshk(mtmp))
             {
-                long oldshkcredit = shkcredit;
+                int64_t oldshkcredit = shkcredit;
                 ESHK(mtmp)->credit -= charged_id_cost;
                 if (ESHK(mtmp)->credit < 0)
                 {
@@ -9280,7 +9280,7 @@ boolean auto_yes;
 
     /* Now check if you want to sell it */
 
-    long ltmp = 0L, offer, shkmoney;
+    int64_t ltmp = 0L, offer, shkmoney;
     boolean saleitem = FALSE, container = Has_contents(obj);
     boolean isgold = (obj->oclass == COIN_CLASS);
     boolean inroom = is_smith ? inhissmithy(mtmp) : in_his_npc_room(mtmp);
@@ -9355,8 +9355,8 @@ boolean auto_yes;
         if (short_funds)
             offer = shkmoney;
 
-        Sprintf(qbuf, "%s offers%s %ld gold piece%s for %s ",
-            noittame_Monnam(mtmp), short_funds ? " only" : "", offer,
+        Sprintf(qbuf, "%s offers%s %lld gold piece%s for %s ",
+            noittame_Monnam(mtmp), short_funds ? " only" : "", (long long)offer,
             plur(offer),
             "your");
         one = (obj->quan == 1L);
@@ -9710,7 +9710,7 @@ struct monst* mtmp;
         return 0;
 
     const char* linearray[3] = {
-        "These mines have been inhabited by the Gnomes of Yendor as long as I can remember.",
+        "These mines have been inhabited by the Gnomes of Yendor as int64_t as I can remember.",
         "Their most precious treasures, including the famed Gladstone, are located on the bottom level of the complex, a few levels down from here.",
         0 };
     hermit_talk(mtmp, linearray, GHSOUND_HERMIT3_GNOMISH_MINES);
@@ -9729,7 +9729,7 @@ struct monst* mtmp;
     const char* linearray[5] = {
         "The Gladstone is a magnificent magical stone that is known to bestow unparalleled good luck on the wearer.",
         "They also say that it can grant protection from poison and heal the bearer upon invocation.",
-        "It has been worshipped by the gnomes as long as anyone can remember, and they will jealously guard it from anyone attempting to take it from them.",
+        "It has been worshipped by the gnomes as int64_t as anyone can remember, and they will jealously guard it from anyone attempting to take it from them.",
         "However, such a powerful artifact can greatly help you in your quest for the Amulet of Yendor.",
         0 };
     hermit_talk(mtmp, linearray, GHSOUND_HERMIT3_LUCKSTONE);
@@ -10050,7 +10050,7 @@ const char *mapping;
         filename[255] = '\0';
 
         if (strlen(sounddir) + strlen(filename) > 254) {
-            raw_print("sound file name too long");
+            raw_print("sound file name too int64_t");
             return 0;
         }
         Sprintf(filespec, "%s/%s", sounddir, filename);
@@ -10111,14 +10111,14 @@ STATIC_OVL int
 spell_service_query(mtmp, service_spell_id, buc, service_verb, service_cost, no_mood_string, special_dialogue_sound_id)
 struct monst* mtmp;
 int service_spell_id, buc;
-long service_cost;
+int64_t service_cost;
 const char* service_verb;
 const char* no_mood_string;
 int special_dialogue_sound_id;
 {
 
-    long umoney = money_cnt(invent);
-    long  u_pay;
+    int64_t umoney = money_cnt(invent);
+    int64_t  u_pay;
     char qbuf[QBUFSZ];
 
     if (!m_general_talk_check(mtmp, no_mood_string) || !m_speak_check(mtmp))
@@ -10133,7 +10133,7 @@ int special_dialogue_sound_id;
     if (special_dialogue_sound_id > 0)
         play_monster_special_dialogue_line(mtmp, special_dialogue_sound_id);
 
-    Sprintf(qbuf, "Would you like to %s? (%ld %s)", service_verb, service_cost, currency(service_cost));
+    Sprintf(qbuf, "Would you like to %s? (%lld %s)", service_verb, (long long)service_cost, currency(service_cost));
     switch (yn_query_mon(mtmp, qbuf))
     {
     default:
@@ -10178,7 +10178,7 @@ general_service_query(mtmp, service_func, service_verb, service_cost, no_mood_st
 struct monst* mtmp;
 int (*service_func)(struct monst*);
 const char* service_verb;
-long service_cost;
+int64_t service_cost;
 const char* no_mood_string;
 int special_dialogue_sound_id;
 {
@@ -10191,15 +10191,15 @@ general_service_query_with_extra(mtmp, service_func, service_verb, service_cost,
 struct monst* mtmp;
 int (*service_func)(struct monst*);
 const char* service_verb;
-long service_cost;
+int64_t service_cost;
 const char* no_mood_string;
 int query_style;
 const char* extra_string;
 int special_dialogue_sound_id;
 {
 
-    long umoney = money_cnt(invent);
-    long u_pay;
+    int64_t umoney = money_cnt(invent);
+    int64_t u_pay;
     char qbuf[QBUFSZ];
 
     if (!m_general_talk_check(mtmp, no_mood_string) || !m_speak_check(mtmp))
@@ -10222,12 +10222,12 @@ int special_dialogue_sound_id;
     if (extra_string)
     {
         if(query_style == QUERY_STYLE_COMPONENTS)
-            Sprintf(qbuf, "Would you like to %s? (%ld %s, %s)", service_verb, service_cost, currency(service_cost), extra_string);
+            Sprintf(qbuf, "Would you like to %s? (%lld %s, %s)", service_verb, (long long)service_cost, currency(service_cost), extra_string);
         else
-            Sprintf(qbuf, "Would you like to %s? (%s for %ld %s)", service_verb, extra_string, service_cost, currency(service_cost));
+            Sprintf(qbuf, "Would you like to %s? (%s for %lld %s)", service_verb, extra_string, (long long)service_cost, currency(service_cost));
     }
     else
-        Sprintf(qbuf, "Would you like to %s? (%ld %s)", service_verb, service_cost, currency(service_cost));
+        Sprintf(qbuf, "Would you like to %s? (%lld %s)", service_verb, (long long)service_cost, currency(service_cost));
 
     switch (yn_query_mon(mtmp, qbuf))
     {
@@ -10259,15 +10259,15 @@ general_service_query_with_item_cost_adjustment_and_extra(mtmp, service_item_fun
 struct monst* mtmp;
 int (*service_item_func)(struct monst*, struct obj*);
 const char* service_verb, *service_verb_ing;
-long service_base_cost, item_cost_at_base, minimum_cost;
+int64_t service_base_cost, item_cost_at_base, minimum_cost;
 const char* no_mood_string;
 int query_style;
 const char* extra_string;
 int special_dialogue_sound_id;
 {
 
-    long umoney = money_cnt(invent);
-    long u_pay;
+    int64_t umoney = money_cnt(invent);
+    int64_t u_pay;
     char qbuf[QBUFSZ];
 
     if (!m_general_talk_check(mtmp, no_mood_string) || !m_speak_check(mtmp))
@@ -10289,15 +10289,15 @@ int special_dialogue_sound_id;
     if (!otmp)
         return 0;
 
-    long service_cost = !item_cost_at_base ? service_base_cost : max(minimum_cost, (service_base_cost * get_object_base_value(otmp)) / max(1L, item_cost_at_base));
+    int64_t service_cost = !item_cost_at_base ? service_base_cost : max(minimum_cost, (service_base_cost * get_object_base_value(otmp)) / max(1L, item_cost_at_base));
     char ingbuf[BUFSZ] = "";
     Strcpy(ingbuf, service_verb_ing);
     *ingbuf = highc(*ingbuf);
 
     if (extra_string)
-        Sprintf(qbuf, "%s %s costs %ld %s and %s. Proceed?", ingbuf, the(cxname(otmp)), service_cost, currency(service_cost), extra_string);
+        Sprintf(qbuf, "%s %s costs %lld %s and %s. Proceed?", ingbuf, the(cxname(otmp)), (long long)service_cost, currency(service_cost), extra_string);
     else
-        Sprintf(qbuf, "%s %s costs %ld %s. Proceed?", ingbuf, the(cxname(otmp)), service_cost, currency(service_cost));
+        Sprintf(qbuf, "%s %s costs %lld %s. Proceed?", ingbuf, the(cxname(otmp)), (long long)service_cost, currency(service_cost));
 
     switch (yn_query_mon(mtmp, qbuf))
     {
@@ -10895,8 +10895,8 @@ int* spell_otyps;
         struct obj pseudo = zeroobj;
         pseudo.otyp = i;
         pseudo.blessed = 1;
-        long cost = get_cost(&pseudo, mtmp);
-        Sprintf(spellbuf, "%s (%ld %s)", OBJ_NAME(objects[i]), cost, currency(cost));
+        int64_t cost = get_cost(&pseudo, mtmp);
+        Sprintf(spellbuf, "%s (%lld %s)", OBJ_NAME(objects[i]), (long long)cost, currency(cost));
         *spellbuf = highc(*spellbuf);
 
         any.a_int = i;
@@ -10935,7 +10935,7 @@ int* spell_otyps;
             struct obj pseudo = zeroobj;
             pseudo.otyp = spell_to_learn;
             pseudo.blessed = 1;
-            long cost = get_cost(&pseudo, mtmp);
+            int64_t cost = get_cost(&pseudo, mtmp);
             char buf[BUFSIZ] = "";
             char buf2[BUFSIZ] = "";
             char bufc[BUFSIZ] = "";

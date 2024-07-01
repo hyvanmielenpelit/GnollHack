@@ -2195,11 +2195,11 @@ struct obj* origobj;
 
             if (animations[anim].action_execution_frame > 0)
             {
-                long intervals_to_execution = (long)(animations[anim].action_execution_frame * animations[anim].intervals_between_frames);
+                int64_t intervals_to_execution = (int64_t)(animations[anim].action_execution_frame * animations[anim].intervals_between_frames);
 #if 0
                 if (prev_anim_counter_idx > -1 && context.zap_animation_counter_on[prev_anim_counter_idx])
                 {
-                    long diff = context.zap_animation_counter[prev_anim_counter_idx] - intervals_to_execution /* - 1*/;
+                    int64_t diff = context.zap_animation_counter[prev_anim_counter_idx] - intervals_to_execution /* - 1*/;
                     if (abs((int)diff) <= 3) /* Extra check that something else is not going on */
                     {
                         context.zap_animation_counter[prev_anim_counter_idx] -= diff;
@@ -2207,7 +2207,7 @@ struct obj* origobj;
                 }
 #endif
 
-                context.zap_aggregate_intervals_to_wait_until_action = (unsigned long)intervals_to_execution;
+                context.zap_aggregate_intervals_to_wait_until_action = (uint64_t)intervals_to_execution;
             }
 
             //prev_anim_counter_idx = idx;
@@ -2602,18 +2602,18 @@ struct obj* origobj;
 
             if (animations[anim].action_execution_frame > 0)
             {
-                long intervals_to_execution = (long)(animations[anim].action_execution_frame * animations[anim].intervals_between_frames);
+                int64_t intervals_to_execution = (int64_t)(animations[anim].action_execution_frame * animations[anim].intervals_between_frames);
 #if 0
                 if (prev_anim_counter_idx > -1 && context.zap_animation_counter_on[prev_anim_counter_idx])
                 {
-                    long diff = context.zap_animation_counter[prev_anim_counter_idx] - intervals_to_execution /* - 1*/;
+                    int64_t diff = context.zap_animation_counter[prev_anim_counter_idx] - intervals_to_execution /* - 1*/;
                     if (abs((int)diff) <= 3) /* Extra check that something else is not going on */
                     {
                         context.zap_animation_counter[prev_anim_counter_idx] -= diff;
                     }
                 }
 #endif
-                context.zap_aggregate_intervals_to_wait_until_action = (unsigned long)intervals_to_execution;
+                context.zap_aggregate_intervals_to_wait_until_action = (uint64_t)intervals_to_execution;
             }
 
             //prev_anim_counter_idx = idx;
@@ -3052,12 +3052,12 @@ boolean *dealloced;
         ; /* should cancel timer if under_ice */
     } else if ((under_ice ? otmp->oclass == POTION_CLASS : is_rottable(otmp))
                && !obj_resists(otmp, 5, 95)) {
-        (void) start_timer((under_ice ? 0L : 250L) + (long) rnd(250),
+        (void) start_timer((under_ice ? 0L : 250L) + (int64_t) rnd(250),
                            TIMER_OBJECT, ROT_ORGANIC, obj_to_any(otmp));
 #if 0
     /* rusting of buried metal not yet implemented */
     } else if (is_rustprone(otmp)) {
-        (void) start_timer((long) rnd((otmp->otyp == HEAVY_IRON_BALL)
+        (void) start_timer((int64_t) rnd((otmp->otyp == HEAVY_IRON_BALL)
                                          ? 1500
                                          : 250),
                            TIMER_OBJECT, RUST_METAL, obj_to_any(otmp));
@@ -3073,7 +3073,7 @@ int x, y;
 {
     struct obj *otmp, *otmp2;
     struct monst *shkp;
-    long loss = 0L;
+    int64_t loss = 0L;
     boolean costly;
 
     costly = ((shkp = shop_keeper(*in_rooms(x, y, SHOPBASE)))
@@ -3165,7 +3165,7 @@ boolean verbose, buriedsearchableonly;
 void
 rot_organic(arg, timeout)
 anything *arg;
-long timeout UNUSED;
+int64_t timeout UNUSED;
 {
     struct obj *obj = arg->a_obj;
 
@@ -3194,7 +3194,7 @@ long timeout UNUSED;
 void
 rot_corpse(arg, timeout)
 anything *arg;
-long timeout;
+int64_t timeout;
 {
     xchar x = 0, y = 0;
     struct obj *obj = arg->a_obj;

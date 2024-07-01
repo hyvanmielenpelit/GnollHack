@@ -43,7 +43,7 @@ boolean firing;
     struct obj *otmp;
     int multishot;
     //schar skill;
-    long wep_mask;
+    int64_t wep_mask;
     //boolean weakmultishot;
 
     /* ask "in what direction?" */
@@ -126,7 +126,7 @@ boolean firing;
     {
         struct multishot_result msres = get_multishot_stats(&youmonst, obj, uwep, TRUE);     
         multishot = msres.wielder_attacks * msres.weapon_attacks;
-        if ((long) multishot > obj->quan)
+        if ((int64_t) multishot > obj->quan)
             multishot = (int) obj->quan;
         if (shotlimit > 0 && multishot > shotlimit)
             multishot = shotlimit;
@@ -739,7 +739,7 @@ genericptr_t arg;
 int x, y;
 {
     boolean res;
-    long save_EWwalking = EWwalking;
+    int64_t save_EWwalking = EWwalking;
 
     /* prevent jumping over water from being placed in that water */
     EWwalking |= I_SPECIAL;
@@ -1267,7 +1267,7 @@ boolean hitsroof;
                 u.ucreamed += blindinc;
                 if (!Blinded)
                     play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
-                make_blinded(Blinded + (long) blindinc, FALSE);
+                make_blinded(Blinded + (int64_t) blindinc, FALSE);
                 if (!Blind)
                     Your1(vision_clears);
             }
@@ -1373,7 +1373,7 @@ struct obj *obj;
 void
 throwit(obj, wep_mask)
 struct obj *obj;
-long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Javelin of Returning */
+int64_t wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Javelin of Returning */
 {
     register struct monst *mon;
     register int range, urange;
@@ -2441,7 +2441,7 @@ xchar x, y;
     }
 }
 
-STATIC_VAR NEARDATA long lastmovetime = 0L;
+STATIC_VAR NEARDATA int64_t lastmovetime = 0L;
 STATIC_VAR NEARDATA boolean peaceful_shk = FALSE;
 
 /*

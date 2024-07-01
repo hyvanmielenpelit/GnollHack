@@ -906,16 +906,16 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
     case MSNH_MSG_GETTEXT: {
         PMSNHMsgGetText msg_data = (PMSNHMsgGetText) lParam;
-        size_t index;
+        size_t idx;
         int col, row;
         int color;
-        unsigned long special;
-        int mgch;
+        uint64_t special;
+        nhsym mgch;
 
-        index = 0;
+        idx = 0;
         for (row = 0; row < ROWNO; row++) {
             for (col = 1; col < COLNO; col++) {
-                if (index >= msg_data->max_size)
+                if (idx >= msg_data->max_size)
                     break;
                 if (data->map[col][row].glyph == NO_GLYPH) {
                     mgch = ' ';
@@ -923,15 +923,15 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     (void) mapglyph(data->map[col][row], &mgch, &color,
                                     &special, col, row);
                 }
-                msg_data->buffer[index] = mgch;
-                msg_data->attrs[index] = 0; /* special handling here */
-                msg_data->colors[index] = (char)color;
-                index++;
+                msg_data->buffer[idx] = (char)mgch;
+                msg_data->attrs[idx] = 0; /* special handling here */
+                msg_data->colors[idx] = (char)color;
+                idx++;
             }
-            if (index >= msg_data->max_size - 1)
+            if (idx >= msg_data->max_size - 1)
                 break;
-            msg_data->buffer[index++] = '\r';
-            msg_data->buffer[index++] = '\n';
+            msg_data->buffer[idx++] = '\r';
+            msg_data->buffer[idx++] = '\n';
         }
     } break;
 
@@ -1324,7 +1324,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 if (source_dir_idx > 0 && enlarg_idx == -1 && tile_move_idx == 0)
                 {
                     int adjacent_zap_glyph = NO_GLYPH;
-                    unsigned long adjacent_layer_flags = 0UL;
+                    uint64_t adjacent_layer_flags = 0UL;
                     switch ((source_dir_idx - 1) % NUM_ZAP_SOURCE_BASE_DIRS + 1)
                     {
                     case 1:
@@ -3298,7 +3298,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                             data->tileDC[a_sheet_idx], source_rt.left, source_rt.top, width, height, SRCCOPY);
 
                                         /* Color */
-                                        unsigned long draw_color = autodraws[autodraw].parameter1;
+                                        uint64_t draw_color = autodraws[autodraw].parameter1;
                                         unsigned char blue = (&((unsigned char)draw_color))[0];
                                         unsigned char green = (&((unsigned char)draw_color))[1];
                                         unsigned char red = (&((unsigned char)draw_color))[2];
@@ -4490,8 +4490,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         char ch;
                         WCHAR wch;
                         int color;
-                        unsigned long special;
-                        int mgch;
+                        uint64_t special;
+                        nhsym mgch;
                         COLORREF OldFg;
                         COLORREF OldBg;
 
@@ -4719,7 +4719,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             max_fitted_rows = (tileHeight - 4) / (ui_tile_component_array[CONDITION_MARKS].height + 2);
 
                             /* Number is the same as condition bits */
-                            unsigned long m_conditions = get_m_condition_bits(mtmp);
+                            uint64_t m_conditions = get_m_condition_bits(mtmp);
                             for (int cond = 0; cond < ui_tile_component_array[CONDITION_MARKS].number; cond++)
                             {
                                 if (condition_count >= max_fitted_rows)
@@ -5068,7 +5068,7 @@ paintGlyph(PNHMapWindow data, int i, int j, RECT * rect)
         char ch;
         WCHAR wch;
         int color;
-        unsigned long special;
+        uint64_t special;
         nhsym mgch;
         HBRUSH back_brush;
         COLORREF OldFg;
@@ -5424,7 +5424,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
     {
         int rx = 0;
         int ry = 0;
-        unsigned long dir_bit = 0;
+        uint64_t dir_bit = 0;
         switch (dir)
         {
         case 0:

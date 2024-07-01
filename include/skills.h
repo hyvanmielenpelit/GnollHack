@@ -93,7 +93,7 @@ enum p_skills {
 enum skill_levels {
     P_ISRESTRICTED = 0, /* unskilled and can't be advanced */
     P_UNSKILLED    = 1, /* unskilled so far but can be advanced */
-    /* Skill levels Basic/Advanced/Expert had long been used by
+    /* Skill levels Basic/Advanced/Expert had int64_t been used by
        Heroes of Might and Magic (tm) and its sequels... */
     P_BASIC        = 2,
     P_SKILLED      = 3,

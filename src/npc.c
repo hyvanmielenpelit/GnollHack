@@ -325,7 +325,7 @@ boolean ignore_already_there;
             {
                 pline("%s says:",
                     canseemon(npc) ? Monnam(npc) : "A nearby voice");
-                enpc_p->intone_time = moves + (long)d(10, 500); /* ~2505 */
+                enpc_p->intone_time = moves + (int64_t)d(10, 500); /* ~2505 */
                 enpc_p->enter_time = 0L;
             }
 
@@ -358,7 +358,7 @@ boolean ignore_already_there;
                     Sprintf(buf, "Adventurer, welcome!");
 
                 verbalize_talk1(buf);
-                enpc_p->enter_time = moves + (long)d(5, 50); /* ~125 */
+                enpc_p->enter_time = moves + (int64_t)d(5, 50); /* ~125 */
             }
         }
 
@@ -476,7 +476,7 @@ int mtype;
         }
     }
 
-    unsigned long extraflags = (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_FEMALE) != 0  ? MM_FEMALE : Inhell || (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_MALE) != 0 ? MM_MALE : 0UL; /* Since there is only one soundset for unusual creature types */
+    uint64_t extraflags = (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_FEMALE) != 0  ? MM_FEMALE : Inhell || (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_MALE) != 0 ? MM_MALE : 0UL; /* Since there is only one soundset for unusual creature types */
 
     npc = makemon_ex(&mons[npc_montype], npc_loc_x, npc_loc_y, MM_ENPC | extraflags, 0UL, 0, npctype, 0);
     if(!npc)
@@ -495,7 +495,7 @@ int mtype;
 
         if ((npc_subtype_definitions[npctype].start_money_d > 0 && npc_subtype_definitions[npctype].start_money_n > 0) || npc_subtype_definitions[npctype].start_money_p > 0)
         {
-            long npcmoney = d(npc_subtype_definitions[npctype].start_money_d, npc_subtype_definitions[npctype].start_money_n) + npc_subtype_definitions[npctype].start_money_p;
+            int64_t npcmoney = d(npc_subtype_definitions[npctype].start_money_d, npc_subtype_definitions[npctype].start_money_n) + npc_subtype_definitions[npctype].start_money_p;
             
             if (Inhell && (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_DOUBLE_MONEY_IN_HELL))
                 npcmoney *= 2;
@@ -612,16 +612,16 @@ int mtype;
         case NPC_HERMIT:
         {
             int cnt = 1 + rnd(2);
-            long exclusionbits = 0L, exclusionbits2 = 0L;
+            int64_t exclusionbits = 0L, exclusionbits2 = 0L;
             for (i = 0; i < cnt; i++)
             {
                 struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, exclusionbits, exclusionbits2, MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS);
                 if (otmp)
                 {
                     if (otmp->manualidx < 32)
-                        exclusionbits |= 1L << otmp->manualidx;
+                        exclusionbits |= (int64_t)1 << otmp->manualidx;
                     else if (otmp->manualidx < 64)
-                        exclusionbits2 |= 1L << (otmp->manualidx - 32);
+                        exclusionbits2 |= (int64_t)1 << (otmp->manualidx - 32);
                     (void)mpickobj(npc, otmp);
                 }
             }
@@ -676,16 +676,16 @@ int mtype;
                 (void)mpickobj(npc, otmp);
 
             int cnt = 1 + rnd(2);
-            long exclusionbits = 0L, exclusionbits2 = 0L;
+            int64_t exclusionbits = 0L, exclusionbits2 = 0L;
             for (i = 0; i < cnt; i++)
             {
                 otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, exclusionbits, exclusionbits2, MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS);
                 if (otmp)
                 {
                     if(otmp->manualidx < 32)
-                        exclusionbits |= 1L << otmp->manualidx;
+                        exclusionbits |= (int64_t)1 << otmp->manualidx;
                     else if (otmp->manualidx < 64)
-                        exclusionbits2 |= 1L << (otmp->manualidx - 32);
+                        exclusionbits2 |= (int64_t)1 << (otmp->manualidx - 32);
                     (void)mpickobj(npc, otmp);
                 }
             }

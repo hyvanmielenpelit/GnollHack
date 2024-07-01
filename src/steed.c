@@ -659,7 +659,7 @@ int reason; /* Player was thrown off etc. */
     coord cc, steedcc;
     const char *verb = "fall";
     boolean repair_leg_damage = (Wounded_legs != 0L);
-    unsigned long save_utrap = u.utrap;
+    uint64_t save_utrap = u.utrap;
     boolean have_spot = landing_spot(&cc, reason, 0);
 
     reset_monster_origin_coordinates(&youmonst);

@@ -119,7 +119,7 @@ extern int curses_nh_poskey(int *x, int *y, int *mod);
 extern void curses_nhbell(void);
 extern int curses_doprev_message(void);
 extern char curses_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices,
-                               CHAR_P def, const char* resp_desc, const char* introline, unsigned long ynflags);
+                               CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags);
 extern void curses_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* linesuffix, const char* introline);
 extern int curses_get_ext_cmd(void);
 extern void curses_number_pad(int state);
@@ -215,7 +215,7 @@ extern void curses_del_menu(winid, boolean);
 extern void curses_status_init(int);
 extern void curses_status_finish(void);
 extern void curses_status_update(int, genericptr_t, int, int, int,
-                                 unsigned long *);
+                                 uint64_t *);
 
 /* cursinvt.c */
 

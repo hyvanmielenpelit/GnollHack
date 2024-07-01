@@ -1339,7 +1339,7 @@ makelevel()
             && nroom >= room_threshold && shopok)  // rn2(u_depth) < 3))
             res = make_room(SHOPBASE);
 
-        if (!res && u_depth > 1 && u_depth < depth(&medusa_level) && !(context.npc_made & (1UL << NPC_ELVEN_BARD))
+        if (!res && u_depth > 1 && u_depth < depth(&medusa_level) && !(context.npc_made & ((uint64_t)1 << NPC_ELVEN_BARD))
             && (context.game_difficulty == MIN_DIFFICULTY_LEVEL 
                 || (context.game_difficulty < 0 && !rn2(max(2, 2 * (context.game_difficulty - MIN_DIFFICULTY_LEVEL) + 1)))
                 || (context.game_difficulty >= 0 && !rn2(100 * context.game_difficulty + 20))))
@@ -1548,16 +1548,16 @@ makelevel()
 
                 if (context.game_difficulty < 0)
                 {
-                    long bits = 0L, bits2 = 0L;
+                    int64_t bits = 0L, bits2 = 0L;
                     otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NORMAL, (struct monst*)0, MAT_NONE, !rn2(4) ? MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_II : MANUAL_GUIDE_TO_ESSENTIAL_RESISTANCES_VOL_I, 0L, MKOBJ_FLAGS_PARAM_IS_TITLE);
                     if (otmp)
                     {
                         otmp->bknown = 1;
                         (void)add_to_container(stash, otmp);
                         if(otmp->manualidx < 32)
-                            bits |= 1L << otmp->special_quality;
+                            bits |= (int64_t)1 << otmp->special_quality;
                         else if (otmp->manualidx < 64)
-                            bits2 |= 1L << (otmp->special_quality - 32);
+                            bits2 |= (int64_t)1 << (otmp->special_quality - 32);
                     }
 
                     otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NORMAL, (struct monst*)0, MAT_NONE, bits, bits2, MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS);
@@ -2430,7 +2430,7 @@ mkmodronportal(subtyp, tm, portal_tm, portal_flags)
 int subtyp;
 coord* tm;
 coord* portal_tm;
-unsigned long portal_flags;
+uint64_t portal_flags;
 {
     struct trap* t;
 
@@ -2711,7 +2711,7 @@ struct mkroom *croom;
            replicate mkgold()'s level-based formula for the amount */
         struct obj *gold = mksobj(GOLD_PIECE, TRUE, FALSE, FALSE);
 
-        gold->quan = (long) (rnd(20) + level_difficulty() * rnd(5));
+        gold->quan = (int64_t) (rnd(20) + level_difficulty() * rnd(5));
         gold->owt = weight(gold);
         gold->ox = m.x, gold->oy = m.y;
         add_to_buried(gold);

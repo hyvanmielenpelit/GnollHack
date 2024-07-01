@@ -582,38 +582,38 @@ safe_add_context_menu(int cmd_def_char UNUSED, int cmd_cur_char UNUSED, int styl
 }
 
 void
-safe_update_status_button(int cmd UNUSED, int btn UNUSED, int val UNUSED, unsigned long bflags UNUSED)
+safe_update_status_button(int cmd UNUSED, int btn UNUSED, int val UNUSED, uint64_t bflags UNUSED)
 {
     return;
 }
 
 
 void
-safe_toggle_animation_timer(int type UNUSED, int id UNUSED, int state UNUSED, int x UNUSED, int y UNUSED, int layer UNUSED, unsigned long tflags UNUSED)
+safe_toggle_animation_timer(int type UNUSED, int id UNUSED, int state UNUSED, int x UNUSED, int y UNUSED, int layer UNUSED, uint64_t tflags UNUSED)
 {
     return;
 }
 
 void
-safe_display_floating_text(int x UNUSED, int y UNUSED, const char* text UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, unsigned long tflags UNUSED)
+safe_display_floating_text(int x UNUSED, int y UNUSED, const char* text UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, uint64_t tflags UNUSED)
 {
     return;
 }
 
 void
-safe_display_screen_text(const char* text UNUSED, const char* supertext UNUSED, const char* subtext UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, unsigned long tflags UNUSED)
+safe_display_screen_text(const char* text UNUSED, const char* supertext UNUSED, const char* subtext UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, uint64_t tflags UNUSED)
 {
     return;
 }
 
 void
-safe_display_popup_text(const char* text UNUSED, const char* title UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, int glyph UNUSED, unsigned long tflags UNUSED)
+safe_display_popup_text(const char* text UNUSED, const char* title UNUSED, int style UNUSED, int attr UNUSED, int color UNUSED, int glyph UNUSED, uint64_t tflags UNUSED)
 {
     return;
 }
 
 void
-safe_display_gui_effect(int style UNUSED, int subtype UNUSED, int x UNUSED, int y UNUSED, int x2 UNUSED, int y2 UNUSED, unsigned long tflags UNUSED)
+safe_display_gui_effect(int style UNUSED, int subtype UNUSED, int x UNUSED, int y UNUSED, int x2 UNUSED, int y2 UNUSED, uint64_t tflags UNUSED)
 {
     return;
 }
@@ -653,7 +653,7 @@ const char *resp;
 const char* resp_desc;
 const char* introline;
 char def;
-unsigned long ynflags;
+uint64_t ynflags;
 {
     return '\033';
 }
@@ -709,7 +709,7 @@ int intervals;
 void
 safe_change_color(color, rgb, reverse)
 int color, reverse;
-long rgb;
+int64_t rgb;
 {
     return;
 }
@@ -811,7 +811,7 @@ safe_status_update(idx, ptr, chg, percent, color, colormasks)
 int idx;
 genericptr_t ptr;
 int chg UNUSED, percent UNUSED, color UNUSED;
-unsigned long *colormasks UNUSED;
+uint64_t *colormasks UNUSED;
 {
 }
 #endif /* STATUS_HILITES */

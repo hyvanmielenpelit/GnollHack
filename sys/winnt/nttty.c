@@ -1186,7 +1186,7 @@ synch_cursor()
 void
 tty_change_color(color_number, rgb, reverse)
 int color_number, reverse;
-long rgb;
+int64_t rgb;
 {
     /* Map GnollHack color index to NT Console palette index */
     int idx, win32_color_number[] = {

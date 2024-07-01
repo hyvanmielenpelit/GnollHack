@@ -142,10 +142,6 @@ struct flag {
     boolean tournament_mode;
 #define TournamentMode flags.tournament_mode
 
-    /* Emergency reserved booleans to make non-save-game-breaking changes */
-    boolean reserved_bool2;
-    boolean reserved_bool3;
-
     int animation_frame_interval_in_milliseconds; /* custom animation frame interval in milliseconds. If 0, then the default at 25 milliseconds is used. Delay output is twice this amount, defaulting at 50 milliseconds */
     int move_interval_in_milliseconds; /* custom move step interval in milliseconds. If 0, then the default at 50 milliseconds is used. Delay output is twice this amount, defaulting at 50 milliseconds */
     int crawl_interval_in_milliseconds; /* custom crawl step interval in milliseconds. If 0, then the default at 250 milliseconds is used. Delay output is twice this amount, defaulting at 50 milliseconds */
@@ -168,7 +164,7 @@ struct flag {
 
     int end_top, end_around; /* describe desired score list */
     unsigned moonphase;
-    unsigned long suppress_alert;
+    uint64_t suppress_alert;
 #define NEW_MOON 0
 #define FULL_MOON 4
     unsigned paranoia_bits; /* alternate confirmation prompting */
@@ -246,13 +242,21 @@ struct flag {
     boolean non_scoring; /* The game has been, for example, loaded from an imported save file and has thereby become non-scoring */
     uchar auto_bag_in_style;
 
+    /* Emergency reserved booleans to make non-save-game-breaking changes */
+    boolean reserved_bool1;
+    boolean reserved_bool2;
+    boolean reserved_bool3;
+    boolean reserved_bool4;
+
     /* Emergency reserved variables to make non-save-game-breaking changes */
+    char reserved_char1;
+    char reserved_char2;
     short reserved_short1;
     short reserved_short2;
     int reserved_int1;
     int reserved_int2;
-    unsigned long reserved_ulong1;
-    unsigned long reserved_ulong2;
+    uint64_t reserved_ulong1;
+    uint64_t reserved_ulong2;
 };
 
 /*
@@ -403,8 +407,8 @@ struct instance_flags {
     boolean use_background_glyph; /* use background glyph when appropriate */
     boolean use_menu_color;   /* use color in menus; only if wc_color */
 #ifdef STATUS_HILITES
-    long hilite_delta;     /* number of moves to leave a temp hilite lit */
-    long unhilite_deadline; /* time when oldest temp hilite should be unlit */
+    int64_t hilite_delta;     /* number of moves to leave a temp hilite lit */
+    int64_t unhilite_deadline; /* time when oldest temp hilite should be unlit */
 #endif
     boolean zerocomp;         /* write zero-compressed save files */
     boolean rlecomp;          /* alternative to zerocomp; run-length encoding
@@ -545,9 +549,9 @@ struct instance_flags {
     /* copies of values in struct u, used during detection when the
        originals are temporarily cleared; kept here rather than
        locally so that they can be restored during a hangup save */
-    Bitfield(save_uswallow, 1);
-    Bitfield(save_uinwater, 1);
-    Bitfield(save_uburied, 1);
+    boolean save_uswallow;
+    boolean save_uinwater;
+    boolean save_uburied;
     /* item types used to acomplish "special achievements"; find the target
        object and you'll be flagged as having achieved something... */
     short mines_prize_type;     /* luckstone */

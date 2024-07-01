@@ -83,7 +83,7 @@ int gnome_nhgetch(void);
 int gnome_nh_poskey(int *x, int *y, int *mod);
 void gnome_nhbell(void);
 int gnome_doprev_message(void);
-char gnome_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, unsigned long ynflags);
+char gnome_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags);
 void gnome_getlin_ex(int style, int attr, int color, const char *question, char *input, const char* placeholder, const char* linesuffix, const char* introline);
 int gnome_get_ext_cmd(void);
 void gnome_number_pad(int state);

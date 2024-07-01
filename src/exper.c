@@ -10,14 +10,14 @@
 #include <limits.h>
 #endif
 
-long
+int64_t
 newuexp(lev)
 int lev;
 {
     if (lev <= 0)
         return 0;
 
-    long total_level_exp = 0L;
+    int64_t total_level_exp = 0L;
     double monsters_to_be_killed = 10.0;
     double base = 1.0525;
 
@@ -32,7 +32,7 @@ int lev;
             monsters_to_be_killed *= base;
 
         double exp_needed = avg_monst_exp * monsters_to_be_killed;
-        long exp_needed_long = ((long)(exp_needed / 10L) + 1L) * 10L; // Round up to the closest 10
+        int64_t exp_needed_long = ((int64_t)(exp_needed / 10L) + 1L) * 10L; // Round up to the closest 10
         total_level_exp += exp_needed_long;
     }
 
@@ -129,9 +129,9 @@ enmaxadjustment()
                     ((objects[otyp].oc_pflags & P1_MANA_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr) ? -1 : 1);
 
                 if (objects[otyp].oc_pflags & P1_MANA_PERCENTAGE_BONUS)
-                    adj += multiplier * (objects[otyp].oc_mana_bonus * (baseen + baseadj)) / 100;
+                    adj += multiplier * ((int)objects[otyp].oc_mana_bonus * (baseen + baseadj)) / 100;
                 else
-                    adj += multiplier * objects[otyp].oc_mana_bonus;
+                    adj += multiplier * (int)objects[otyp].oc_mana_bonus;
             }
         }
         
@@ -172,7 +172,7 @@ register int nk;
     int i, tmp, tmp2;
 
     tmp = 1 + ptr->difficulty * ptr->difficulty; //mtmp->m_lev * mtmp->m_lev;
-    tmp += mtmp->extra_encounter_xp;
+    tmp += (int)mtmp->extra_encounter_xp;
 
     if (ptr->difficulty >= 100)
         tmp = (tmp / 100) * 100;
@@ -214,11 +214,11 @@ register int nk;
     return (tmp);
 }
 
-long
+int64_t
 game_score_difficulty_adjustment(points_added)
-long points_added;
+int64_t points_added;
 {
-    long added_gamescore = points_added;
+    int64_t added_gamescore = points_added;
 
     /* game difficulty adjustment */
     switch (context.game_difficulty)
@@ -253,9 +253,9 @@ void
 more_experienced(exper, gamescore)
 register int exper, gamescore;
 {
-    long added_experience = exper == 0 ? 0 : max(1, exper + (exper * max(-9, u.uexperiencebonus)) / 10);
-    long added_gamescore = gamescore;
-    long oldexp = u.uexp,
+    int64_t added_experience = exper == 0 ? 0 : max(1, exper + (exper * max(-9, u.uexperiencebonus)) / 10);
+    int64_t added_gamescore = gamescore;
+    int64_t oldexp = u.uexp,
         oldscore = u.u_gamescore,
         newexp = oldexp + added_experience,
         scoreincr = game_score_difficulty_adjustment(4 * added_experience + added_gamescore),
@@ -413,7 +413,7 @@ boolean incr; /* true iff via incremental experience growth */
         int prevrank = xlev_to_rank(u.ulevel);
         /* increase experience points to reflect new level */
         if (incr) {
-            long tmp = newuexp(u.ulevel + 1);
+            int64_t tmp = newuexp(u.ulevel + 1);
             if (u.uexp >= tmp)
                 u.uexp = tmp - 1;
         } else {
@@ -462,19 +462,19 @@ boolean incr; /* true iff via incremental experience growth */
 /* compute a random amount of experience points suitable for the hero's
    experience level:  base number of points needed to reach the current
    level plus a random portion of what it takes to get to the next level */
-long
+int64_t
 rndexp(gaining)
 boolean gaining; /* gaining XP via potion vs setting XP for polyself */
 {
-    long minexp, maxexp, diff, factor, result;
+    int64_t minexp, maxexp, diff, factor, result;
 
     minexp = (u.ulevel == 1) ? 0L : newuexp(u.ulevel - 1);
     maxexp = newuexp(u.ulevel);
     diff = maxexp - minexp, factor = 1L;
     /* make sure that `diff' is an argument which rn2() can handle */
-    while (diff >= (long) LARGEST_INT)
+    while (diff >= (int64_t) LARGEST_INT)
         diff /= 2L, factor *= 2L;
-    result = minexp + factor * (long) rn2((int) diff);
+    result = minexp + factor * (int64_t) rn2((int) diff);
     /* 3.4.1:  if already at level 30, add to current experience
        points rather than to threshold needed to reach the current
        level; otherwise blessed potions of gain level can result

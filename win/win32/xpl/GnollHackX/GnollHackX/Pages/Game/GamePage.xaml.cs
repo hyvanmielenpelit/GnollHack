@@ -14052,7 +14052,7 @@ namespace GnollHackX.Pages.Game
                             topPadding = (mi.TopPadding + extra_vertical_padding) * scale;
 
                             /* Text Size and Minimum Row Height */
-                            if ((mi.Attributes & (int)MenuItemAttributes.HalfSize) != 0)
+                            if ((mi.NHAttribute & (int)MenuItemAttributes.HalfSize) != 0)
                                 textPaint.TextSize = (mi.MinimumTouchableTextSize / 2) * scale;
                             else
                                 textPaint.TextSize = mi.MinimumTouchableTextSize * scale;
@@ -14232,7 +14232,7 @@ namespace GnollHackX.Pages.Game
                                 }
 
                                 /* Main text */
-                                SKColor maincolor = UIUtils.NHColor2SKColorCore(mi.NHColor, mi.Attributes, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton && isselected);
+                                SKColor maincolor = UIUtils.NHColor2SKColorCore(mi.NHColor, mi.NHAttribute, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton && isselected);
                                 textPaint.Color = !IsMiButton || isHover ? maincolor : UIUtils.NonHoveringSKColorAdjustment(maincolor);
 
                                 //int split_idx_on_row = -1;
@@ -14240,7 +14240,7 @@ namespace GnollHackX.Pages.Game
                                 float start_x = x;
                                 float indent_start_x = start_x;
                                 string trimmed_maintext = mi.MainText.Trim();
-                                string indentstr = GHUtils.GetIndentationString(trimmed_maintext, mi.Attributes);
+                                string indentstr = GHUtils.GetIndentationString(trimmed_maintext, mi.NHAttribute);
                                 if (indentstr != "")
                                 {
                                     indent_start_x += textPaint.MeasureText(indentstr);

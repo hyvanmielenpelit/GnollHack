@@ -3513,7 +3513,7 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
     int nutrit = food || dragonfruit ? dog_nutrition(mon, obj) : 0; /* also sets meating */
 
     if (vis) {
-        long save_quan = obj->quan;
+        int64_t save_quan = obj->quan;
 
         obj->quan = 1L;
         pline("%s %s %s.", Monnam(mon),

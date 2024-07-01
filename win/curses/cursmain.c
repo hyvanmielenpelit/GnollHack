@@ -734,7 +734,7 @@ curses_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
     nhsym ch;
     int cch;
     int color;
-    unsigned long special;
+    uint64_t special;
     int attr = -1;
 
     int glyph = layers.glyph;
@@ -899,7 +899,7 @@ char yn_function(const char *ques, const char *choices, char default)
                    ports might use a popup.
 */
 char
-curses_yn_function_ex(int style UNUSED, int attr, int color, int glyph UNUSED, const char* title UNUSED, const char *question, const char *choices, CHAR_P def, const char* resp_desc UNUSED, const char* introline UNUSED, unsigned long ynflags UNUSED)
+curses_yn_function_ex(int style UNUSED, int attr, int color, int glyph UNUSED, const char* title UNUSED, const char *question, const char *choices, CHAR_P def, const char* resp_desc UNUSED, const char* introline UNUSED, uint64_t ynflags UNUSED)
 {
     return (char) curses_character_input_dialog(attr, color, question, choices, def);
 }

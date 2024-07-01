@@ -10,7 +10,7 @@
 
 extern char bones[]; /* from files.c */
 #ifdef MFLOPPY
-extern long bytes_counted;
+extern int64_t bytes_counted;
 #endif
 
 STATIC_DCL boolean FDECL(no_bones_level, (d_level *));
@@ -264,7 +264,7 @@ boolean restore;
                 otmp->otyp = WAX_CANDLE;
                 otmp->age = 50L; /* assume used */
                 if (otmp->special_quality > 0)
-                    otmp->quan = (long) otmp->special_quality;
+                    otmp->quan = (int64_t) otmp->special_quality;
                 otmp->special_quality = 0;
                 otmp->material = objects[otmp->otyp].oc_material;
                 curse(otmp);

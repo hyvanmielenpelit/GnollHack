@@ -56,7 +56,7 @@ tty_doprev_message()
 {
     register struct WinDesc *cw = wins[WIN_MESSAGE];
     winid prevmsg_win;
-    int i;
+    int64_t i;
 
     if ((iflags.prevmsg_window != 's')
         && !ttyDisplay->inread) {           /* not single */
@@ -208,7 +208,7 @@ void
 remember_topl()
 {
     register struct WinDesc *cw = wins[WIN_MESSAGE];
-    int idx = cw->maxrow;
+    int64_t idx = cw->maxrow;
     size_t len = strlen(toplines) + 1;
 
     if ((cw->flags & WIN_LOCKHISTORY) || !*toplines)
@@ -252,7 +252,7 @@ int attr, color;
 {
     register struct WinDesc *cw = wins[WIN_MESSAGE];
 
-    tty_curs(BASE_WINDOW, cw->curx + 1, cw->cury);
+    tty_curs(BASE_WINDOW, (int)cw->curx + 1, (int)cw->cury);
 
     end_glyphout(); /* in case message printed during graphics output */
 
@@ -299,7 +299,7 @@ more()
         return;
 
     if (ttyDisplay->toplin) {
-        tty_curs(BASE_WINDOW, cw->curx + 1, cw->cury);
+        tty_curs(BASE_WINDOW, (int)cw->curx + 1, (int)cw->cury);
         if (cw->curx >= CO - 8)
             topl_putsym('\n');
     }
@@ -316,7 +316,7 @@ more()
         cw->flags |= WIN_STOP;
 
     if (ttyDisplay->toplin && cw->cury) {
-        docorner(1, cw->cury + 1);
+        docorner(1, (int)cw->cury + 1);
         cw->curx = cw->cury = 0;
         home();
     } else if (morc == '\033') {
@@ -389,7 +389,7 @@ int attr, color;
         if (ttyDisplay->toplin == 1) {
             more();
         } else if (cw->cury) { /* for when flags.toplin == 2 && cury > 1 */
-            docorner(1, cw->cury + 1); /* reset cury = 0 if redraw screen */
+            docorner(1, (int)cw->cury + 1); /* reset cury = 0 if redraw screen */
             cw->curx = cw->cury = 0;   /* from home--cls() & docorner(1,n) */
         }
     }
@@ -533,7 +533,7 @@ tty_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_desc
 int style UNUSED, attr UNUSED, color UNUSED, glyph UNUSED;
 const char *title UNUSED, *query, *resp, *resp_desc UNUSED, *introline UNUSED;
 char def;
-unsigned long ynflags UNUSED;
+uint64_t ynflags UNUSED;
 /*
  *   Generic yes/no function. 'def' is the default (returned by space or
  *   return; 'esc' returns 'q', or 'n', or the default, depending on
@@ -696,7 +696,7 @@ unsigned long ynflags UNUSED;
 
  clean_up:
     if (yn_number)
-        Sprintf(rtmp, "#%ld", yn_number);
+        Sprintf(rtmp, "#%lld", (long long)yn_number);
     else
         (void) key2txt(q, rtmp);
     /* addtopl(rtmp, attr, color); -- rewrite toplines instead */
@@ -730,7 +730,7 @@ msghistory_snapshot(purge)
 boolean purge; /* clear message history buffer as we copy it */
 {
     char *mesg, *mesg_color, * mesg_attr;
-    int i, inidx, outidx;
+    int64_t i, inidx, outidx;
     struct WinDesc *cw;
 
     /* paranoia (too early or too late panic save attempt?) */

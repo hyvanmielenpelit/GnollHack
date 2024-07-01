@@ -260,18 +260,18 @@ gnh_umask(VOID_ARGS)
     (void)umask(0777 & ~FCMASK);
 }
 
-unsigned long
+uint64_t
 sys_random_seed()
 {
-    unsigned long seed = 0L;
-    unsigned long pid = (unsigned long)getpid();
+    uint64_t seed = 0L;
+    uint64_t pid = (uint64_t)getpid();
     boolean no_seed = TRUE;
 #ifdef DEV_RANDOM
     FILE* fptr;
 
     fptr = fopen(DEV_RANDOM, "r");
     if (fptr) {
-        fread(&seed, sizeof(long), 1, fptr);
+        fread(&seed, sizeof(int64_t), 1, fptr);
         has_strong_rngseed = TRUE;  /* decl.c */
         no_seed = FALSE;
         (void)fclose(fptr);
@@ -282,7 +282,7 @@ sys_random_seed()
     }
 #endif
     if (no_seed) {
-        seed = (unsigned long)getnow(); /* time((TIME_type) 0) */
+        seed = (uint64_t)getnow(); /* time((TIME_type) 0) */
         /* Quick dirty band-aid to prevent PRNG prediction */
         if (pid) {
             if (!(pid & 3L))

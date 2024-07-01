@@ -31,7 +31,7 @@ struct dig_info { /* apply.c, hack.c */
     int effort;
     d_level level;
     coord pos;
-    long lastdigtime;
+    int64_t lastdigtime;
     boolean down, chew, warned, quiet;
     int skill;
 };
@@ -54,8 +54,8 @@ struct book_info {
 #define READING_RESULT_CONFUSED 2
 
 struct takeoff_info {
-    long mask;
-    long what;
+    int64_t mask;
+    int64_t what;
     int delay;
     boolean cancelled_don;
     char disrobing[CONTEXTVERBSZ + 1];
@@ -64,9 +64,9 @@ struct takeoff_info {
 
 #define WEAR_OID_BITS 32
 struct wear_info {
-    long mask;
+    int64_t mask;
     unsigned oid[WEAR_OID_BITS]; /* oid of the item intended to be worn */
-    long what;
+    int64_t what;
     int delay;
 };
 
@@ -82,17 +82,17 @@ struct victual_info {
         reqtime;           /* turns required to eat */
     int nmod;              /* coded nutrition per turn */
     int total_nutrition;   /* total nutrition of the piece when start_eating was called */
-    Bitfield(canchoke, 1); /* was satiated at beginning */
+    uchar canchoke; /* was satiated at beginning */
 
     /* start_eating() initializes these */
-    Bitfield(fullwarn, 1); /* have warned about being full */
-    Bitfield(eating, 1);   /* victual currently being eaten */
-    Bitfield(doreset, 1);  /* stop eating at end of turn */
+    uchar fullwarn; /* have warned about being full */
+    uchar eating;   /* victual currently being eaten */
+    uchar doreset;  /* stop eating at end of turn */
 };
 
 struct warntype_info {
-    unsigned long obj;        /* object warn_of_mon monster type M2 */
-    unsigned long polyd;      /* warn_of_mon monster type M2 due to poly */
+    uint64_t obj;        /* object warn_of_mon monster type M2 */
+    uint64_t polyd;      /* warn_of_mon monster type M2 due to poly */
     struct permonst *species; /* particular species due to poly */
     short speciesidx; /* index of above in mons[] (for save/restore) */
 };
@@ -109,11 +109,9 @@ struct obj_split {
 
 struct tribute_info {
     size_t tributesz;       /* make it possible to skip this in future */
-    boolean enabled;        /* Do we have tributes turned on? */
-    Bitfield(bookstock, 1); /* Have we stocked the book? */
-    Bitfield(Deathnotice,1);    /* Did Death notice the book? */
-    /* Markers for other tributes can go here */
-    /* 30 free bits */
+    uchar enabled;        /* Do we have tributes turned on? */
+    uchar bookstock; /* Have we stocked the book? */
+    uchar Deathnotice;    /* Did Death notice the book? */
 };
 
 struct novel_tracking { /* for choosing random passage when reading novel */
@@ -144,8 +142,8 @@ struct context_info
     int current_fruit; /* fruit->fid corresponding to pl_fruit[] */
     int warnlevel;
     int rndencode;          /* randomized escape sequence introducer */
-    long next_attrib_check; /* next attribute check */
-    long stethoscope_move;
+    int64_t next_attrib_check; /* next attribute check */
+    int64_t stethoscope_move;
     short stethoscope_movement;
     boolean travel;  /* find way automatically to u.tx,u.ty */
     boolean travel1; /* first travel step */
@@ -163,7 +161,7 @@ struct context_info
     int made_shop_count;
     int made_temple_count;
     int made_armory_box_count;
-    char used_names[BUFSIZ * 32];
+    char used_names[512 * 32];
     boolean encounter_appeared[256];
     int shop_identify_type;
     int npc_identify_type;
@@ -220,31 +218,31 @@ struct context_info
     uchar spef_action_animation_y[MAX_PLAYED_SPECIAL_EFFECTS];
     enum layer_types spef_action_animation_layer[MAX_PLAYED_SPECIAL_EFFECTS];
 
-    unsigned long u_intervals_to_wait_until_action;
-    unsigned long u_intervals_to_wait_until_end;
-    unsigned long m_intervals_to_wait_until_action;
-    unsigned long m_intervals_to_wait_until_end;
-    unsigned long zap_aggregate_intervals_to_wait_until_action;
-    unsigned long zap_aggregate_intervals_to_wait_until_end;
-    unsigned long spef_intervals_to_wait_until_action[MAX_PLAYED_SPECIAL_EFFECTS];
-    unsigned long spef_intervals_to_wait_until_end[MAX_PLAYED_SPECIAL_EFFECTS];
-    unsigned long expl_intervals_to_wait_until_action;
-    unsigned long expl_intervals_to_wait_until_end;
+    uint64_t u_intervals_to_wait_until_action;
+    uint64_t u_intervals_to_wait_until_end;
+    uint64_t m_intervals_to_wait_until_action;
+    uint64_t m_intervals_to_wait_until_end;
+    uint64_t zap_aggregate_intervals_to_wait_until_action;
+    uint64_t zap_aggregate_intervals_to_wait_until_end;
+    uint64_t spef_intervals_to_wait_until_action[MAX_PLAYED_SPECIAL_EFFECTS];
+    uint64_t spef_intervals_to_wait_until_end[MAX_PLAYED_SPECIAL_EFFECTS];
+    uint64_t expl_intervals_to_wait_until_action;
+    uint64_t expl_intervals_to_wait_until_end;
 
     boolean force_allow_keyboard_commands;
     int makemon_spef_idx;
-    unsigned long global_newsym_flags;
+    uint64_t global_newsym_flags;
     float global_minimum_volume;
     int tether_x;
     int tether_y;
     boolean town_portal_return_level_set;
     d_level town_portal_return_level;
-    long last_turn_when_took_damage;
+    int64_t last_turn_when_took_damage;
 
     boolean reviving;
     boolean quit_pressed;
 
-    unsigned long npc_made;
+    uint64_t npc_made;
     unsigned int view_pet_mid;
     boolean first_time_cmd;
     boolean starting_prayer_timeout_expired;
@@ -252,19 +250,37 @@ struct context_info
     boolean skip_botl;
     boolean amonket_generated;
     uchar town_portal_return_flags;
-    unsigned long quest_flags;
-    long role_score;
+    uint64_t quest_flags;
+    int64_t role_score;
 
     /* Emergency reserved booleans to make non-save-game-breaking changes */
+    boolean reserved_bool1;
+    boolean reserved_bool2;
     boolean reserved_bool3;
     boolean reserved_bool4;
+    boolean reserved_bool5;
+    boolean reserved_bool6;
+    boolean reserved_bool7;
+    boolean reserved_bool8;
 
     /* Emergency reserved variables to make non-save-game-breaking changes */
+    char reserved_char1;
     char reserved_char2;
+    char reserved_char3;
+    char reserved_char4;
     short reserved_short1;
     short reserved_short2;
+    short reserved_short3;
+    short reserved_short4;
     int reserved_int1;
     int reserved_int2;
+    int reserved_int3;
+    int reserved_int4;
+
+    int64_t reserved_int64_1;
+    int64_t reserved_int64_2;
+    int64_t reserved_int64_3;
+    int64_t reserved_int64_4;
 };
 
 extern NEARDATA struct context_info context;

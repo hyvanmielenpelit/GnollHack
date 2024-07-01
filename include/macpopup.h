@@ -11,7 +11,7 @@
 
 extern void FlashButton(DialogRef, short);
 extern char queued_resp(char *resp);
-extern char topl_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *query, const char *resp, char def, const char* resp_desc, const char* introline, unsigned long ynflags);
+extern char topl_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *query, const char *resp, char def, const char* resp_desc, const char* introline, uint64_t ynflags);
 extern int get_line_from_key_queue(char *bufp);
 
 #endif /* MACPOPUP_H */

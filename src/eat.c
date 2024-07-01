@@ -161,8 +161,8 @@ init_uhunger()
 STATIC_VAR const struct {
     const char *txt;                      /* description */
     int nut;                              /* nutrition */
-    Bitfield(fodder, 1);                  /* stocked by health food shops */
-    Bitfield(greasy, 1);                  /* causes slippery fingers */
+    boolean fodder;                  /* stocked by health food shops */
+    boolean greasy;                  /* causes slippery fingers */
 } tintxts[] = { { "rotten", -50, 0, 0 },  /* ROTTEN_TIN = 0 */
                 { "homemade", 50, 1, 0 }, /* HOMEMADE_TIN = 1 */
                 { "soup made from", 20, 1, 0 },
@@ -389,7 +389,7 @@ struct monst* mtmp;
 
     boolean isyou = mtmp == &youmonst;
     unsigned nut = (otmp->otyp == CORPSE) ? mons[otmp->corpsenm].cnutrit
-        : (otmp->otyp == STATUE) ? ((otmp->owt * objects[ROCK].oc_nutrition) / (max(1, otmp->quan * objects[ROCK].oc_weight)))
+        : (otmp->otyp == STATUE) ? (unsigned)((otmp->owt * objects[ROCK].oc_nutrition) / (max(1, otmp->quan * objects[ROCK].oc_weight)))
                       : otmp->globby ? otmp->owt
                          : objects[otmp->otyp].oc_nutrition;
 
@@ -839,7 +839,7 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
     return result;
 }
 
-STATIC_VAR NEARDATA long ate_brains = 0L;
+STATIC_VAR NEARDATA int64_t ate_brains = 0L;
 
 /* eating a corpse or egg of one's own species is usually naughty */
 STATIC_OVL boolean
@@ -1007,7 +1007,7 @@ intrinsic_possible(type, ptr)
 int type;
 register struct permonst *ptr;
 {
-    unsigned long conveyed = prop_to_conveyed(type);
+    uint64_t conveyed = prop_to_conveyed(type);
     return !!(ptr->mconveys & conveyed);
 }
 
@@ -1305,7 +1305,7 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
         if (!See_invisible)
         {
             //First temporary
-            set_itimeout(&HSee_invisible, (long)rn1(100, 50));
+            set_itimeout(&HSee_invisible, (int64_t)rn1(100, 50));
         }
         else
         {
@@ -1325,7 +1325,7 @@ uchar gender UNUSED; /* 0 = male, 1 = female, 2 = unknown */
         if (!Invis)
         {
             //First temporary
-            set_itimeout(&HInvis, (long)rn1(100, 50));
+            set_itimeout(&HInvis, (int64_t)rn1(100, 50));
             if (!Blind && !Blocks_Invisibility)
                 self_invis_message();
         }
@@ -1896,7 +1896,7 @@ const char *mesg;
         tin = costly_tin(COST_OPEN);
 
         if (tintxts[r].nut < 0) /* rotten */
-            make_vomiting((long) rn1(15, 10), FALSE);
+            make_vomiting((int64_t) rn1(15, 10), FALSE);
         else
         {
             lesshungry(tintxts[r].nut);
@@ -2130,7 +2130,7 @@ struct obj *obj;
            blindness is being overridden by the Eyes of the Overworld */
         if (!Blinded)
             play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
-        make_blinded((Blinded & TIMEOUT) + (long) d(2, 10), FALSE);
+        make_blinded((Blinded & TIMEOUT) + (int64_t) d(2, 10), FALSE);
         if (!Blind)
             Your1(vision_clears);
     }
@@ -2177,7 +2177,7 @@ struct obj *otmp;
                          && !slimeproof(youmonst.data)),
             glob = otmp->globby ? TRUE : FALSE;
 
-    long rotted = get_rotted_status(otmp);
+    int64_t rotted = get_rotted_status(otmp);
 
     /* KMH, conduct */
     if (!vegan(&mons[mnum])) {
@@ -2196,7 +2196,7 @@ struct obj *otmp;
     }
 
     //if (!nonrotting_corpse(mnum)) {
-    //    long age = peek_at_iced_corpse_age(otmp);
+    //    int64_t age = peek_at_iced_corpse_age(otmp);
 
     //    rotted = (monstermoves - age) / (CORPSE_ROTTING_SPEED + 0 /*rn2(CORPSE_ROTTING_SPEED_VARIATION)*/);
     //    if (otmp->cursed)
@@ -2221,9 +2221,9 @@ struct obj *otmp;
         }
         else
         {
-            long sick_time;
+            int64_t sick_time;
 
-            sick_time = (long) rn1(10, 10);
+            sick_time = (int64_t) rn1(10, 10);
             /* make sure new ill doesn't result in improvement */
             if (FoodPoisoned && (sick_time > FoodPoisoned))
                 sick_time = (FoodPoisoned > 1L) ? FoodPoisoned - 1L : 1L;
@@ -2254,9 +2254,9 @@ struct obj *otmp;
         }
         else
         {
-            long sick_time;
+            int64_t sick_time;
 
-            sick_time = (long)rn1(10, 10);
+            sick_time = (int64_t)rn1(10, 10);
             /* make sure new ill doesn't result in improvement */
             if (Sick && (sick_time > Sick))
                 sick_time = (Sick > 1L) ? Sick - 1L : 1L;
@@ -2485,7 +2485,7 @@ struct obj *otmp;
             /* not cannibalism, but we use similar criteria
                for deciding whether to be sickened by this meal */
             if (rn2(2) && !CANNIBAL_ALLOWED())
-                make_vomiting((long) rn1(context.victual.reqtime, 14), FALSE);
+                make_vomiting((int64_t) rn1(context.victual.reqtime, 14), FALSE);
         }
         break;
     case ELVEN_WAYBREAD:
@@ -2504,7 +2504,7 @@ struct obj *otmp;
         goto give_feedback;
     case CLOVE_OF_GARLIC:
         if (is_undead(youmonst.data)) {
-            make_vomiting((long) rn1(context.victual.reqtime, 5), FALSE);
+            make_vomiting((int64_t) rn1(context.victual.reqtime, 5), FALSE);
             break;
         }
         /*FALLTHRU*/
@@ -2548,7 +2548,7 @@ struct obj *otmp;
             /* increasing existing nausea means that it will take longer
                before eventual vomit, but also means that constitution
                will be abused more times before illness completes */
-            make_vomiting((Vomiting & TIMEOUT) + (long) d(10, 4), TRUE);
+            make_vomiting((Vomiting & TIMEOUT) + (int64_t) d(10, 4), TRUE);
         } else {
         give_feedback:
             pline("This %s is %s", singular(otmp, xname),
@@ -2617,7 +2617,7 @@ struct obj *otmp;
 {
     int typ = otmp->otyp;
     int usedprop = objects[typ].oc_oprop;
-    long oldprop;
+    int64_t oldprop;
 
     if (objects[typ].oc_oprop2 && objects[typ].oc_oprop3 && rn2(3))
         usedprop = rn2(2) ? objects[typ].oc_oprop2 : objects[typ].oc_oprop3;
@@ -2814,7 +2814,7 @@ struct obj *otmp;
             break;
         case AMULET_OF_RESTFUL_SLEEP: 
         { /* another bad idea! */
-            //long newnap = (long) rnd(100), oldnap = (HSleepy & TIMEOUT);
+            //int64_t newnap = (int64_t) rnd(100), oldnap = (HSleepy & TIMEOUT);
 
             if (!(HSleepy & FROM_ACQUIRED))
                 accessory_has_effect(otmp);
@@ -2992,7 +2992,7 @@ struct obj *otmp;
         {
             if (Blinded)
                 play_sfx_sound(SFX_CURE_AILMENT);
-            make_blinded((long)u.ucreamed, TRUE);
+            make_blinded((int64_t)u.ucreamed, TRUE);
         }
         break;
     case EDIBLEFX_READ_FORTUNE:
@@ -3187,18 +3187,18 @@ struct obj *otmp;
 }
 #endif
 
-long
+int64_t
 get_rotted_status(obj)
 struct obj* obj;
 {
     if (!obj || !is_obj_rotting_corpse(obj) || obj->corpsenm < LOW_PM || obj->corpsenm >= NUM_MONSTERS)
         return 0;
 
-    long rotted = 0L;
+    int64_t rotted = 0L;
     int mnum = obj->corpsenm;
     if (!nonrotting_corpse(mnum))
     {
-        long age = peek_at_iced_corpse_age(obj);
+        int64_t age = peek_at_iced_corpse_age(obj);
 
         /* worst case rather than random
             in this calculation to force prompt */
@@ -3229,7 +3229,7 @@ struct obj *otmp;
     boolean cadaver = is_obj_rotting_corpse(otmp), // (otmp->otyp == CORPSE || otmp->globby),
             stoneorslime = FALSE;
     int material = otmp->material, mnum = otmp->corpsenm;
-    long rotted = 0L;
+    int64_t rotted = 0L;
 
     Strcpy(foodsmell, Tobjnam(otmp, "smell"));
     Strcpy(it_or_they, (otmp->quan == 1L) ? "it" : "they");
@@ -3249,7 +3249,7 @@ struct obj *otmp;
         {
             rotted = get_rotted_status(otmp);
             otmp->rotknown = 1;
-            //long age = peek_at_iced_corpse_age(otmp);
+            //int64_t age = peek_at_iced_corpse_age(otmp);
 
             ///* worst case rather than random
             //   in this calculation to force prompt */
@@ -3516,7 +3516,7 @@ doeat()
         otmp->oerodeproof = 0;
         if (!Stunned)
             play_sfx_sound(SFX_ACQUIRE_STUN);
-        make_stunned((HStun & TIMEOUT) + (long) rn2(10), TRUE);
+        make_stunned((HStun & TIMEOUT) + (int64_t) rn2(10), TRUE);
         /*
          * We don't expect rust monsters to be wielding welded weapons
          * or wearing cursed rings which were rustproofed, but guard
@@ -3766,8 +3766,8 @@ doeat()
             else 
             {
                 identifycolor = CLR_MSG_NEGATIVE;
-                long sick_time;
-                sick_time = (long)rn1(10, 10);
+                int64_t sick_time;
+                sick_time = (int64_t)rn1(10, 10);
                 /* make sure new ill doesn't result in improvement */
                 if (FoodPoisoned && (sick_time > FoodPoisoned))
                     sick_time = (FoodPoisoned > 1L) ? FoodPoisoned - 1L : 1L;
@@ -3834,8 +3834,8 @@ doeat()
             You_feel_ex(ATR_NONE, CLR_MSG_NEGATIVE, "%ssick.", (FoodPoisoned) ? "very " : "");
             //losehp(adjust_damage(rnd(8), (struct monst*)0, &youmonst, AD_DISE, ADFLAGS_NONE), "sickening food", KILLED_BY_AN);
             identifycolor = CLR_MSG_NEGATIVE;
-            long sick_time;
-            sick_time = (long)rn1(10, 10);
+            int64_t sick_time;
+            sick_time = (int64_t)rn1(10, 10);
             /* make sure new ill doesn't result in improvement */
             if (Sick && (sick_time > Sick))
                 sick_time = (Sick > 1L) ? Sick - 1L : 1L;
@@ -4409,8 +4409,8 @@ int corpsecheck; /* 0, no check, 1, corpses, 2, tinnable corpses */
             if (gold->quan == 1L)
                 Sprintf(qbuf, "There is 1 gold piece here; eat it?");
             else
-                Sprintf(qbuf, "There are %ld gold pieces here; eat them?",
-                        gold->quan);
+                Sprintf(qbuf, "There are %lld gold pieces here; eat them?",
+                        (long long)gold->quan);
 
             if ((c = yn_function(qbuf, ynqchars, 'n', ynqdescs)) == 'y') 
             {
@@ -4518,11 +4518,11 @@ eaten_stat(base, obj)
 int base;
 struct obj *obj;
 {
-    long uneaten_amt, full_amount;
+    int64_t uneaten_amt, full_amount;
 
     /* get full_amount first; obj_nutrition() might modify obj->oeaten */
-    full_amount = (long) obj_nutrition(obj, &youmonst);
-    uneaten_amt = (long) obj->oeaten;
+    full_amount = (int64_t) obj_nutrition(obj, &youmonst);
+    uneaten_amt = (int64_t) obj->oeaten;
     if (uneaten_amt > full_amount) {
         impossible(
           "partly eaten food (%ld) more nutritious than untouched food (%ld)",
@@ -4530,7 +4530,7 @@ struct obj *obj;
         uneaten_amt = full_amount;
     }
 
-    base = (int) (full_amount ? (long) base * uneaten_amt / full_amount : 0L);
+    base = (int) (full_amount ? (int64_t) base * uneaten_amt / full_amount : 0L);
     return (base < 1) ? 1 : base;
 }
 

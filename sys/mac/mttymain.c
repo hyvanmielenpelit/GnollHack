@@ -71,7 +71,7 @@ static char _colors_inverse[CLR_MAX] = {
 #define SECONDARY_CHANNEL_LIMIT 12
 
 void
-tty_change_color(int color, long rgb, int reverse)
+tty_change_color(int color, int64_t rgb, int reverse)
 {
     long inverse, working_rgb = rgb;
     int total_power = 0, max_channel = 0;

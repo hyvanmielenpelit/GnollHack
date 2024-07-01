@@ -778,7 +778,7 @@ makedog()
             ismale = TRUE;
     }
 
-    unsigned long extrammflags = 0UL;
+    uint64_t extrammflags = 0UL;
     if (isfemale && !isneuter)
     {
         petname_female = petname;
@@ -983,7 +983,7 @@ boolean with_you;
      * specify its final destination.
      */
 
-    long nmv = monstermoves - 1L - mtmp->mlstmv;
+    int64_t nmv = monstermoves - 1L - mtmp->mlstmv;
     if (nmv > 0) 
     {
         /* mtmp->mlstmv < monstermoves - 1L */
@@ -1135,7 +1135,7 @@ boolean with_you;
 void
 mon_catchup_elapsed_time(mtmp, nmv)
 struct monst *mtmp;
-long nmv; /* number of moves */
+int64_t nmv; /* number of moves */
 {
     int imv = 0; /* avoid zillions of casts and lint warnings */
 

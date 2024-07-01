@@ -78,7 +78,7 @@ public:
 	static int qt_nh_poskey(int *x, int *y, int *mod);
 	static void qt_nhbell();
 	static int qt_doprev_message();
-	static char qt_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, unsigned long ynflags);
+	static char qt_yn_function_ex(int style, int attr, int color, int glyph, const char* title, const char *question, const char *choices, CHAR_P def, const char* resp_desc, const char* introline, uint64_t ynflags);
 	static void qt_getlin_ex(int style, int attr, int color, const char *prompt, char *line, const char* placeholder, const char* linesuffix, const char* introline);
 	static int qt_get_ext_cmd();
 	static void qt_number_pad(int);

@@ -376,7 +376,7 @@ chainin_yn_function_ex(style, attr, color, glyph, title, query, resp, def, resp_
 int style, attr, color, glyph;
 const char *title, * query, * resp, *resp_desc, *introline;
 char def;
-unsigned long ynflags;
+uint64_t ynflags;
 {
     int rv;
 
@@ -435,7 +435,7 @@ int intervals;
 void
 chainin_change_color(color, value, reverse)
 int color;
-long value;
+int64_t value;
 int reverse;
 {
     (*cibase->nprocs->win_change_color)(cibase->ndata, color, value, reverse);
@@ -552,7 +552,7 @@ void
 chainin_status_update(idx, ptr, chg, percent, color, colormasks)
 int idx, chg, percent, color;
 genericptr_t ptr;
-unsigned long *colormasks;
+uint64_t *colormasks;
 {
     (*cibase->nprocs->win_status_update)(cibase->ndata, idx, ptr, chg,
                                          percent, color, colormasks);

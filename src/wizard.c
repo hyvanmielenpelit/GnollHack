@@ -13,13 +13,13 @@
 #include "hack.h"
 #include "qtext.h"
 
-STATIC_DCL short FDECL(which_arti, (unsigned long));
+STATIC_DCL short FDECL(which_arti, (uint64_t));
 STATIC_DCL boolean FDECL(mon_has_arti, (struct monst *, SHORT_P));
 STATIC_DCL struct monst *FDECL(other_mon_has_arti, (struct monst *, SHORT_P));
 STATIC_DCL struct obj *FDECL(on_ground, (SHORT_P));
-STATIC_DCL boolean FDECL(you_have_item, (unsigned long));
-STATIC_DCL unsigned long FDECL(target_on, (unsigned long, struct monst *));
-STATIC_DCL unsigned long FDECL(strategy, (struct monst *));
+STATIC_DCL boolean FDECL(you_have_item, (uint64_t));
+STATIC_DCL uint64_t FDECL(target_on, (uint64_t, struct monst *));
+STATIC_DCL uint64_t FDECL(strategy, (struct monst *));
 
 /* adding more neutral creatures will tend to reduce the number of monsters
    summoned by summon_nasties(); adding more lawful creatures will reduce the number
@@ -143,14 +143,14 @@ register struct monst *mtmp;
  *      to attempt, the tactics section implements the decision.
  */
 #define STRAT(w, x, y, typ)                            \
-    ((unsigned long) (w) | ((unsigned long) (x) << 16) \
-     | ((unsigned long) (y) << 8) | (unsigned long) (typ))
+    ((uint64_t) (w) | ((uint64_t) (x) << 16) \
+     | ((uint64_t) (y) << 8) | (uint64_t) (typ))
 
 #define M_Wants(mask) (mtmp->data->mflags3 & (mask))
 
 STATIC_OVL short
 which_arti(mask)
-unsigned long mask;
+uint64_t mask;
 {
     switch (mask) {
     case M3_WANTSAMUL:
@@ -222,7 +222,7 @@ register short otyp;
 
 STATIC_OVL boolean
 you_have_item(mask)
-register unsigned long mask;
+register uint64_t mask;
 {
     switch (mask) {
     case M3_WANTSAMUL:
@@ -241,9 +241,9 @@ register unsigned long mask;
     return 0;
 }
 
-STATIC_OVL unsigned long
+STATIC_OVL uint64_t
 target_on(mask, mtmp)
-register unsigned long mask;
+register uint64_t mask;
 register struct monst *mtmp;
 {
     register short otyp;
@@ -251,7 +251,7 @@ register struct monst *mtmp;
     register struct monst *mtmp2;
 
     if (!M_Wants(mask))
-        return (unsigned long) STRAT_NONE;
+        return (uint64_t) STRAT_NONE;
 
     otyp = which_arti(mask);
     if (!mon_has_arti(mtmp, otyp)) {
@@ -266,14 +266,14 @@ register struct monst *mtmp;
                      || (!mtmp2->iswiz && !inhistemple(mtmp2))))
             return STRAT(STRAT_MONSTR, mtmp2->mx, mtmp2->my, mask);
     }
-    return (unsigned long) STRAT_NONE;
+    return (uint64_t) STRAT_NONE;
 }
 
-STATIC_OVL unsigned long
+STATIC_OVL uint64_t
 strategy(mtmp)
 register struct monst *mtmp;
 {
-    unsigned long strat, dstrat;
+    uint64_t strat, dstrat;
 
     /* Covetous has been deactivated -- JG */
     if (mtmp->mnum != PM_WIZARD_OF_YENDOR // !is_covetous(mtmp->data)
@@ -283,17 +283,17 @@ register struct monst *mtmp;
         || (mtmp->isshk && inhishop(mtmp))
         /* likewise for temple priests */
         || (mtmp->ispriest && inhistemple(mtmp)))
-        return (unsigned long) STRAT_NONE;
+        return (uint64_t) STRAT_NONE;
 
     switch ((mtmp->mhp * 3) / mtmp->mhpmax) { /* 0-3 */
 
     default:
     case 0: /* panic time - mtmp is almost snuffed */
-        return (unsigned long) STRAT_HEAL;
+        return (uint64_t) STRAT_HEAL;
 
     case 1: /* the wiz is less cautious */
         if (mtmp->data != &mons[PM_WIZARD_OF_YENDOR])
-            return (unsigned long) STRAT_HEAL;
+            return (uint64_t) STRAT_HEAL;
     /* else fall through */
 
     case 2:
@@ -372,7 +372,7 @@ int
 tactics(mtmp)
 register struct monst *mtmp;
 {
-    unsigned long strat = strategy(mtmp);
+    uint64_t strat = strategy(mtmp);
     xchar sx = 0, sy = 0;
 
     mtmp->mstrategy =
@@ -418,9 +418,9 @@ register struct monst *mtmp;
 
     default: /* kill, maim, pillage! */
     {
-        long where = (strat & STRAT_STRATMASK);
+        int64_t where = (strat & STRAT_STRATMASK);
         xchar tx = STRAT_GOALX(strat), ty = STRAT_GOALY(strat);
-        unsigned long targ = (strat & STRAT_GOAL);
+        uint64_t targ = (strat & STRAT_GOAL);
         struct obj *otmp;
 
         if (!targ) { /* simply wants you to close */
@@ -785,7 +785,7 @@ void
 resurrect()
 {
     struct monst *mtmp, **mmtmp;
-    long elapsed;
+    int64_t elapsed;
     const char *verb;
 
     if (!context.no_of_wizards) {

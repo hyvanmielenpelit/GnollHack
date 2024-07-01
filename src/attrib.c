@@ -120,8 +120,8 @@ STATIC_DCL void NDECL(exerper);
 STATIC_DCL void FDECL(postadjabil, (int));
 
 #if 0
-STATIC_DCL const struct innate *FDECL(check_innate_abil, (long *, long));
-STATIC_DCL int FDECL(innately, (long *));
+STATIC_DCL const struct innate *FDECL(check_innate_abil, (int64_t *, int64_t));
+STATIC_DCL int FDECL(innately, (int64_t *));
 #endif
 
 /* adjust an attribute; return TRUE if change is made, FALSE otherwise, +2 to the previous if a change would have reduced the attribute below its minimum (possibly implying character death in some cases) */
@@ -706,7 +706,7 @@ stone_luck(uncursed_confers_extra_luck)
 boolean uncursed_confers_extra_luck; /* So I can't think up of a good name.  So sue me. --KAA */
 {
     register struct obj *otmp;
-    register long bonchance = 0;
+    register int64_t bonchance = 0;
 
     for (otmp = invent; otmp; otmp = otmp->nobj)
     {
@@ -753,7 +753,7 @@ update_extrinsics()
     //Add then extrinsics from all carried items
     for (uitem = invent; uitem; uitem = uitem->nobj)
     {
-        long bit = 0;
+        int64_t bit = 0;
         if (uitem == uarm)
             bit = W_ARM;
         else if (uitem == uarmc)
@@ -846,7 +846,7 @@ update_extrinsics()
                         if (!mythic_powers[i].name)
                             break;
 
-                        unsigned long mythic_power_bit = 1UL << ((unsigned long)i);
+                        uint64_t mythic_power_bit = (uint64_t)1 << ((uint64_t)i);
 
                         if ((mythic_definitions[mythic_quality].mythic_powers & mythic_power_bit) && mythic_power_applies_to_obj(uitem, mythic_powers[i].power_flags))
                         {
@@ -1681,8 +1681,8 @@ int r;
 
 STATIC_OVL const struct innate *
 check_innate_abil(ability, frommask)
-long *ability;
-long frommask;
+int64_t *ability;
+int64_t frommask;
 {
     const struct innate *abil = 0;
 
@@ -1733,7 +1733,7 @@ long frommask;
 /* check whether particular ability has been obtained via innate attribute */
 STATIC_OVL int
 innately(ability)
-long *ability;
+int64_t *ability;
 {
     const struct innate *iptr;
 
@@ -1863,10 +1863,10 @@ int propidx; /* OBSOLETE: special cases can have negative values */
 
             if (u.uprops[propidx].intrinsic & TIMEOUT)
             {
-                long dur = u.uprops[propidx].intrinsic & TIMEOUT;
+                int64_t dur = u.uprops[propidx].intrinsic & TIMEOUT;
                 if (*buf)
                     Strcat(buf, " and");
-                Sprintf(eos(buf), " %s%s (%ld round%s left)", because_used ? "" : "because of ", "an effect", dur, plur(dur));
+                Sprintf(eos(buf), " %s%s (%lld round%s left)", because_used ? "" : "because of ", "an effect", (long long)dur, plur(dur));
             }
         }
         else { /* negative property index */
@@ -1902,7 +1902,7 @@ adjabil(oldlevel, newlevel)
 int oldlevel, newlevel;
 {
     register const struct innate *abil, *rabil;
-    long prevabil, mask = FROM_ROLE;
+    int64_t prevabil, mask = FROM_ROLE;
 
     abil = role_abil(Role_switch);
     rabil = race_abil(Race_switch);
@@ -2041,9 +2041,9 @@ boolean usemh;
                     ((objects[otyp].oc_pflags & P1_HP_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr) ? -1 : 1;
 
                 if (objects[otyp].oc_pflags & P1_HP_PERCENTAGE_BONUS)
-                    adj += multiplier * (objects[otyp].oc_hp_bonus * (basehp + baseadj)) / 100;
+                    adj += multiplier * ((int)objects[otyp].oc_hp_bonus * (basehp + baseadj)) / 100;
                 else
-                    adj += multiplier * objects[otyp].oc_hp_bonus;
+                    adj += multiplier * (int)objects[otyp].oc_hp_bonus;
             }
         }
 
@@ -2132,9 +2132,9 @@ struct monst* mon;
     int otyp = 0;
     struct obj* uitem;
 
-    int blessed_luck_count = 0;
+    int64_t blessed_luck_count = 0;
     //int uncursed_luck_count = 0;
-    int cursed_luck_count = 0;
+    int64_t cursed_luck_count = 0;
 
     schar* abon_ptr[A_MAX] = { 0 };
     schar* afixmin_ptr[A_MAX] = { 0 };
@@ -2246,7 +2246,7 @@ struct monst* mon;
     {
         otyp = uitem->otyp;
         boolean cursed_plus_cursed_good = uitem->cursed && cursed_are_good;
-        long applicable_enchantment = (long)(cursed_plus_cursed_good ? abs(uitem->enchantment) : uitem->enchantment);
+        int64_t applicable_enchantment = (int64_t)(cursed_plus_cursed_good ? abs(uitem->enchantment) : uitem->enchantment);
         boolean worn = is_you ? is_obj_worn(uitem) :
             ((!is_wielded_item(uitem) && (uitem->owornmask & W_WORN_NOT_WIELDED) != 0)
                 || ((is_wielded_item(uitem)) && (uitem->owornmask & W_WIELDED_WEAPON)));
@@ -2263,12 +2263,12 @@ struct monst* mon;
                     )
                 )
             {
-                long multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || 
+                int64_t multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || 
                     ((objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr) ? -1L : 1L;
 
                 for (int i = 0; i <= A_MAX + 7; i++)
                 {
-                    long bit = 0;
+                    int64_t bit = 0;
                     switch (i)
                     {
                     case A_STR:
@@ -2326,7 +2326,7 @@ struct monst* mon;
                             {
                                 if (objects[otyp].oc_bonus_attributes & FIXED_IS_MAXIMUM)
                                 {
-                                    long afixmaxcandidate = objects[otyp].oc_attribute_bonus;
+                                    int64_t afixmaxcandidate = objects[otyp].oc_attribute_bonus;
                                     if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
                                         afixmaxcandidate += applicable_enchantment;
 
@@ -2336,7 +2336,7 @@ struct monst* mon;
                                 }
                                 else
                                 {
-                                    long afixmincandidate = objects[otyp].oc_attribute_bonus;
+                                    int64_t afixmincandidate = objects[otyp].oc_attribute_bonus;
                                     if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
                                         afixmincandidate += applicable_enchantment;
 
@@ -2409,7 +2409,7 @@ struct monst* mon;
         /* Mythic */
         if (worn && has_obj_mythic_great_strength(uitem))
         {
-            long afixmincandidate = STR18(100);
+            int64_t afixmincandidate = STR18(100);
             afixmincandidate += applicable_enchantment;
 
             /* Take the highest minimum (most constraining) */
@@ -2418,7 +2418,7 @@ struct monst* mon;
         }
         if (worn && has_obj_mythic_great_constitution(uitem))
         {
-            long afixmincandidate = 18;
+            int64_t afixmincandidate = 18;
             afixmincandidate += applicable_enchantment;
 
             /* Take the highest minimum (most constraining) */

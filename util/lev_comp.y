@@ -63,43 +63,43 @@ extern genericptr_t FDECL(get_last_opcode_data1, (sp_lev *, int));
 extern genericptr_t FDECL(get_last_opcode_data2, (sp_lev *, int, int));
 extern boolean FDECL(check_subrooms, (sp_lev *));
 extern boolean FDECL(write_level_file, (char *,sp_lev *));
-extern struct opvar *FDECL(set_opvar_int, (struct opvar *, long));
+extern struct opvar *FDECL(set_opvar_int, (struct opvar *, int64_t));
 extern void VDECL(add_opvars, (sp_lev *, const char *, ...));
 extern void FDECL(start_level_def, (sp_lev * *, char *));
 
-extern struct lc_funcdefs *FDECL(funcdef_new, (long,char *));
+extern struct lc_funcdefs *FDECL(funcdef_new, (int64_t,char *));
 extern void FDECL(funcdef_free_all, (struct lc_funcdefs *));
 extern struct lc_funcdefs *FDECL(funcdef_defined, (struct lc_funcdefs *,
                                                    char *, int));
 extern char *FDECL(funcdef_paramtypes, (struct lc_funcdefs *));
 extern char *FDECL(decode_parm_str, (char *));
 
-extern struct lc_vardefs *FDECL(vardef_new, (long,char *));
+extern struct lc_vardefs *FDECL(vardef_new, (int64_t,char *));
 extern void FDECL(vardef_free_all, (struct lc_vardefs *));
 extern struct lc_vardefs *FDECL(vardef_defined, (struct lc_vardefs *,
                                                  char *, int));
 
 extern void NDECL(break_stmt_start);
 extern void FDECL(break_stmt_end, (sp_lev *));
-extern void FDECL(break_stmt_new, (sp_lev *, long));
+extern void FDECL(break_stmt_new, (sp_lev *, int64_t));
 
 extern void FDECL(splev_add_from, (sp_lev *, sp_lev *));
 
-extern void FDECL(check_vardef_type, (struct lc_vardefs *, char *, long));
+extern void FDECL(check_vardef_type, (struct lc_vardefs *, char *, int64_t));
 extern void FDECL(vardef_used, (struct lc_vardefs *, char *));
 extern struct lc_vardefs *FDECL(add_vardef_type, (struct lc_vardefs *,
-                                                  char *, long));
+                                                  char *, int64_t));
 
-extern int FDECL(reverse_jmp_opcode, (long));
+extern int FDECL(reverse_jmp_opcode, (int64_t));
 
 struct coord {
-    long x;
-    long y;
+    int64_t x;
+    int64_t y;
 };
 
 struct forloopdef {
     char *varname;
-    long jmp_point;
+    int64_t jmp_point;
 };
 static struct forloopdef forloop_list[MAX_NESTED_IFS];
 static short n_forloops = 0;
@@ -124,7 +124,7 @@ int in_switch_statement = 0;
 static struct opvar *switch_check_jump = NULL;
 static struct opvar *switch_default_case = NULL;
 static struct opvar *switch_case_list[MAX_SWITCH_CASES];
-static long switch_case_value[MAX_SWITCH_CASES];
+static int64_t switch_case_value[MAX_SWITCH_CASES];
 int n_switch_case_list = 0;
 
 int allow_break_statements = 0;
@@ -151,38 +151,38 @@ extern char curr_token[512];
 
 %union
 {
-    long    i;
+    int64_t    i;
     char    *map;
     struct {
-        long room;
-        long wall;
-        long door;
+        int64_t room;
+        int64_t wall;
+        int64_t door;
     } corpos;
     struct {
-        long area;
-        long x1;
-        long y1;
-        long x2;
-        long y2;
+        int64_t area;
+        int64_t x1;
+        int64_t y1;
+        int64_t x2;
+        int64_t y2;
     } lregn;
     struct {
-        long x;
-        long y;
+        int64_t x;
+        int64_t y;
     } crd;
     struct {
-        long ter;
-        long lit;
+        int64_t ter;
+        int64_t lit;
     } terr;
     struct {
-        long height;
-        long width;
+        int64_t height;
+        int64_t width;
     } sze;
     struct {
-        long die;
-        long num;
+        int64_t die;
+        int64_t num;
     } dice;
     struct {
-        long cfunc;
+        int64_t cfunc;
         char *varstr;
     } meth;
 }
@@ -1316,7 +1316,7 @@ corridor	: CORRIDOR_ID ':' corr_spec ',' corr_spec
 		  {
 		      add_opvars(splev, "iiiiiio",
 				 VA_PASS7($3.room, $3.door, $3.wall,
-					  -1, -1, (long)$5,
+					  -1, -1, (int64_t)$5,
 					  SPO_CORRIDOR));
 		  }
 		;
@@ -1335,20 +1335,20 @@ room_begin      : room_type opt_percent ',' light_state
 			  lc_error("Only typed rooms can have a chance.");
 		      else {
 			  add_opvars(splev, "iii",
-				     VA_PASS3((long)$1, (long)$2, (long)$4));
+				     VA_PASS3((int64_t)$1, (int64_t)$2, (int64_t)$4));
 		      }
                   }
                 ;
 
 subroom_def	: SUBROOM_ID ':' room_begin ',' subroom_pos ',' room_size optroomregionflags optfloortype optfloorsubtype opttileset optdecotyp optmontype
 		  {
-		      long rflags = $8;
-		      long flmt = (long)$<i>9;
-		      long flt = (long)$<i>10;
-		      long tlset = (long)$<i>11;
-		      long decotyp = (long)$<i>12;
+		      int64_t rflags = $8;
+		      int64_t flmt = (int64_t)$<i>9;
+		      int64_t flt = (int64_t)$<i>10;
+		      int64_t tlset = (int64_t)$<i>11;
+		      int64_t decotyp = (int64_t)$<i>12;
 
-		      if (rflags == -1) rflags = (1 << 0);
+		      if (rflags == -1) rflags = ((int64_t)1 << 0);
 		      //if (flmt == -1) flmt = ROOM;
 		      //if (flt == -1) flt = 0;
 
@@ -1367,13 +1367,13 @@ subroom_def	: SUBROOM_ID ':' room_begin ',' subroom_pos ',' room_size optroomreg
 
 room_def	: ROOM_ID ':' room_begin ',' room_pos ',' room_align ',' room_size optroomregionflags optfloortype optfloorsubtype opttileset optdecotyp optmontype
 		  {
-		      long rflags = $10;
-		      long flmt = (long)$<i>11;
-		      long flt = (long)$<i>12;
-		      long tlset = (long)$<i>13;
-		      long decotyp = (long)$<i>14;
+		      int64_t rflags = $10;
+		      int64_t flmt = (int64_t)$<i>11;
+		      int64_t flt = (int64_t)$<i>12;
+		      int64_t tlset = (int64_t)$<i>13;
+		      int64_t decotyp = (int64_t)$<i>14;
 
-		      if (rflags == -1) rflags = (1 << 0);
+		      if (rflags == -1) rflags = ((int64_t)1 << 0);
 		      //if (flmt == -1) flmt = ROOM;
 		      //if (flt == -1) flt = 0;
 
@@ -1460,13 +1460,13 @@ door_detail	: ROOMDOOR_ID ':' secret ',' door_state ',' door_wall ',' door_pos d
 			    lc_error("If the door wall is random, so must be its pos!");
 			} else {
 			    add_opvars(splev, "iiiio",
-				       VA_PASS5((long)$9, (long)$5, (long)$3,
-						(long)$7, SPO_ROOM_DOOR));
+				       VA_PASS5((int64_t)$9, (int64_t)$5, (int64_t)$3,
+						(int64_t)$7, SPO_ROOM_DOOR));
 			}
 		  }
 		| DOOR_ID ':' door_state ',' ter_selection door_infos
 		  {
-		      add_opvars(splev, "io", VA_PASS2((long)$3, SPO_DOOR));
+		      add_opvars(splev, "io", VA_PASS2((int64_t)$3, SPO_DOOR));
 		  }
 		;
 
@@ -1761,11 +1761,11 @@ seen_trap_mask	: STRING
 		      if (token == ERR || token == 0)
 			  lc_error("Unknown trap type '%s'!", $1);
                       Free($1);
-		      $$ = (1L << (token - 1));
+		      $$ = ((int64_t)1 << (token - 1));
 		  }
 		| ALL_ID
 		  {
-		      $$ = (long) ~0;
+		      $$ = (int64_t) ~0;
 		  }
 		| STRING '|' seen_trap_mask
 		  {
@@ -1773,10 +1773,10 @@ seen_trap_mask	: STRING
 		      if (token == ERR || token == 0)
 			  lc_error("Unknown trap type '%s'!", $1);
 
-		      if ((1L << (token - 1)) & $3)
+		      if (((int64_t)1 << (token - 1)) & (int64_t)($3))
 			  lc_error("Monster seen_traps, trap '%s' listed twice.", $1);
                       Free($1);
-		      $$ = ((1L << (token - 1)) | $3);
+		      $$ = (((int64_t)1 << (token - 1)) | (int64_t)($3));
 		  }
 		;
 
@@ -2007,7 +2007,7 @@ trap_detail	: TRAP_ID ':' trap_name ',' coord_or_var
 
 drawbridge_detail: DRAWBRIDGE_ID ':' coord_or_var ',' DIRECTION ',' door_state
 		   {
-		       long dir, state = 0;
+		       int64_t dir, state = 0;
 
 		       /* convert dir from a DIRECTION to a DB_DIR */
 		       dir = $5;
@@ -2084,7 +2084,7 @@ stair_region	: STAIR_ID ':' lev_region ',' lev_region ',' UP_OR_DOWN
 		      add_opvars(splev, "iiiii iiiii iiso",
 				 VA_PASS14($3.x1, $3.y1, $3.x2, $3.y2, $3.area,
 					   $5.x1, $5.y1, $5.x2, $5.y2, $5.area,
-				     (long) (($7) ? LR_UPSTAIR : LR_DOWNSTAIR),
+				     (int64_t) (($7) ? LR_UPSTAIR : LR_DOWNSTAIR),
 					   0, (char *) 0, SPO_LEVREGION));
 		  }
 		;
@@ -2101,7 +2101,7 @@ portal_region	: PORTAL_ID ':' lev_region ',' lev_region ',' STRING
 
 teleprt_region	: TELEPRT_ID ':' lev_region ',' lev_region teleprt_detail
 		  {
-		      long rtyp = 0;
+		      int64_t rtyp = 0;
 		      switch($6) {
 		      case -1: rtyp = LR_TELE; break;
 		      case  0: rtyp = LR_DOWNTELE; break;
@@ -2120,7 +2120,7 @@ branch_region	: BRANCH_ID ':' lev_region ',' lev_region
 		      add_opvars(splev, "iiiii iiiii iiso",
 				 VA_PASS14($3.x1, $3.y1, $3.x2, $3.y2, $3.area,
 					   $5.x1, $5.y1, $5.x2, $5.y2, $5.area,
-					   (long) LR_BRANCH, 0,
+					   (int64_t) LR_BRANCH, 0,
 					   (char *) 0, SPO_LEVREGION));
 		  }
 		;
@@ -2327,7 +2327,7 @@ special_levregion_detail : SPECIAL_LEVREGION_ID ':' lev_region ',' SPECIAL_REGIO
 		      add_opvars(splev, "iiiii iiiii iiso",
 				 VA_PASS14($3.x1, $3.y1, $3.x2, $3.y2, $3.area,
 					   0, 0, 0, 0, 1,
-					   $<i>5 == REGION_SPECIAL_LEVEL_SEEN ? (long) LR_SPECIAL_MAP_SEEN : (long) LR_SPECIAL_MAP_NAME_REVEALED, 0,
+					   $<i>5 == REGION_SPECIAL_LEVEL_SEEN ? (int64_t) LR_SPECIAL_MAP_SEEN : (int64_t) LR_SPECIAL_MAP_NAME_REVEALED, 0,
 					   (char *) 0, SPO_LEVREGION));
 		  }
 		;
@@ -2340,22 +2340,22 @@ special_tileset_detail : SPECIAL_TILESET_ID ':' ter_selection ',' CMAP_TYPE
 
 region_detail	: REGION_ID ':' region_or_var ',' light_state ',' room_type optroomregionflags optfloortype optfloorsubtype opttileset optdecotyp optmontype
 		  {
-		      long irr;
-		      long rt = $7;
-		      long rflags = $8;
-		      long flmt = (long)$<i>9;
-		      long flt = (long)$<i>10;
-		      long tlset = (long)$<i>11;
-		      long decotyp = (long)$<i>12;
+		      int64_t irr;
+		      int64_t rt = $7;
+		      int64_t rflags = $8;
+		      int64_t flmt = (int64_t)$<i>9;
+		      int64_t flt = (int64_t)$<i>10;
+		      int64_t tlset = (int64_t)$<i>11;
+		      int64_t decotyp = (int64_t)$<i>12;
 
-		      if (rflags == -1) rflags = (1 << 0);
+		      if (rflags == -1) rflags = ((int64_t)1 << 0);
 		      //if (flmt == -1) flmt = 0;
 		      //if (flt == -1) flt = 0;
 
 		      if (!(rflags & 1)) rt += MAXRTYPE+1;
 		      irr = ((rflags & 2) != 0);
 		      add_opvars(splev, "iiiiiiio",
-				 VA_PASS8((long)$5, rt, rflags, flmt, flt, tlset, decotyp, SPO_REGION));
+				 VA_PASS8((int64_t)$5, rt, rflags, flmt, flt, tlset, decotyp, SPO_REGION));
 		      $<i>$ = (irr || (rflags & 1) || rt != OROOM);
 		      break_stmt_start();
 		  }
@@ -2384,22 +2384,22 @@ region_detail_end : /* nothing */
 altar_detail	: ALTAR_ID ':' coord_or_var ',' alignment ',' altar_type
 		  {
 		      add_opvars(splev, "Miiio",
-				 VA_PASS5(-1, 0, (long)$7, (long)$5, SPO_ALTAR));
+				 VA_PASS5(-1, 0, (int64_t)$7, (int64_t)$5, SPO_ALTAR));
 		  }
 		| ALTAR_ID ':' coord_or_var ',' alignment ',' altar_type ',' MONTYPE_ID ':' monster_or_var
 		  {
 		      add_opvars(splev, "iiio",
-				 VA_PASS4(0, (long)$7, (long)$5, SPO_ALTAR));
+				 VA_PASS4(0, (int64_t)$7, (int64_t)$5, SPO_ALTAR));
 		  }
         | ALTAR_ID ':' coord_or_var ',' alignment ',' altar_type ',' ALTAR_SUBTYPE
 		  {
 		      add_opvars(splev, "Miiio",
-				 VA_PASS5(-1, (long)$9, (long)$7, (long)$5, SPO_ALTAR));
+				 VA_PASS5(-1, (int64_t)$9, (int64_t)$7, (int64_t)$5, SPO_ALTAR));
 		  }
 		| ALTAR_ID ':' coord_or_var ',' alignment ',' altar_type ',' ALTAR_SUBTYPE ',' MONTYPE_ID ':' monster_or_var
 		  {
 		      add_opvars(splev, "iiio",
-				 VA_PASS4((long)$9, (long)$7, (long)$5, SPO_ALTAR));
+				 VA_PASS4((int64_t)$9, (int64_t)$7, (int64_t)$5, SPO_ALTAR));
 		  }		;
 
 anvil_detail : ANVIL_ID ':' coord_or_var
@@ -2549,7 +2549,7 @@ gold_detail	: GOLD_ID ':' math_expr_var ',' coord_or_var
 engraving_detail: ENGRAVING_ID ':' coord_or_var ',' engraving_type ',' string_expr
 		  {
 		      add_opvars(splev, "io",
-				 VA_PASS2((long)$5, SPO_ENGRAVING));
+				 VA_PASS2((int64_t)$5, SPO_ENGRAVING));
 		  }
 		;
 
@@ -2611,15 +2611,15 @@ roomregionflags : roomregionflag
 /* 0 is the "default" here */
 roomregionflag : FILLING
 		  {
-		      $$ = ($1 << 0);
+		      $$ = ((int64_t)($1) << 0);
 		  }
 		| IRREGULAR
 		  {
-		      $$ = ($1 << 1);
+		      $$ = ((int64_t)($1) << 1);
 		  }
 		| JOINED
 		  {
-		      $$ = ($1 << 2);
+		      $$ = ((int64_t)($1) << 2);
 		  }
 		;
 
@@ -2829,7 +2829,7 @@ region_or_var	: encoderegion
 
 encoderegion	: '(' INTEGER ',' INTEGER ',' INTEGER ',' INTEGER ')'
 		  {
-		      long r = SP_REGION_PACK($2, $4, $6, $8);
+		      int64_t r = SP_REGION_PACK($2, $4, $6, $8);
 
 		      if ($2 > $6 || $4 > $8)
 			  lc_error("Region start > end: (%ld,%ld,%ld,%ld)!",
@@ -2904,7 +2904,7 @@ monster_or_var	: encodemonster
 
 encodemonster	: STRING
                   {
-                      long m = get_monster_id($1, (char)0);
+                      int64_t m = get_monster_id($1, (char)0);
                       if (m == ERR) {
                           lc_error("Unknown monster \"%s\"!", $1);
                           $$ = -1;
@@ -2924,7 +2924,7 @@ encodemonster	: STRING
                   }
                 | '(' CHAR ',' STRING ')'
                   {
-                      long m = get_monster_id($4, (char) $2);
+                      int64_t m = get_monster_id($4, (char) $2);
                       if (m == ERR) {
                           lc_error("Unknown monster ('%c', \"%s\")!", $2, $4);
                           $$ = -1;
@@ -2961,7 +2961,7 @@ object_or_var	: encodeobj
 
 encodeobj	: STRING
 		  {
-		      long m = get_object_id($1, (char)0);
+		      int64_t m = get_object_id($1, (char)0);
 		      if (m == ERR) {
 			  lc_error("Unknown object \"%s\"!", $1);
 			  $$ = -1;
@@ -2981,7 +2981,7 @@ encodeobj	: STRING
 		  }
 		| '(' CHAR ',' STRING ')'
 		  {
-		      long m = get_object_id($4, (char) $2);
+		      int64_t m = get_object_id($4, (char) $2);
 		      if (m == ERR) {
 			  lc_error("Unknown object ('%c', \"%s\")!", $2, $4);
 			  $$ = -1;
@@ -3084,7 +3084,7 @@ func_param_part	: any_var_or_arr ':' func_param_type
 		      } else if (!tmp) {
 			  lc_error("Could not alloc function params.");
 		      } else {
-			  long vt = SPOVAR_NULL;
+			  int64_t vt = SPOVAR_NULL;
 
 			  tmp->name = strdup($1);
 			  tmp->parmtype = (char) $3;

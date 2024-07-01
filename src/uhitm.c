@@ -643,7 +643,7 @@ int dieroll;
     else
     {
         int oldhp = mon->mhp;
-        long oldweaphit = u.uconduct.weaphit;
+        int64_t oldweaphit = u.uconduct.weaphit;
 
         /* KMH, conduct */
         if (weapon && is_wieldable_weapon(weapon))
@@ -1019,7 +1019,7 @@ boolean* obj_destroyed;
     int my = mon->my;
 
     int jousting = 0;
-    long silverhit = 0L;
+    int64_t silverhit = 0L;
     enum p_skills wtype;
     struct obj* monwep;
     char unconventional[BUFSZ]; /* substituted for word "attack" in msg */
@@ -1488,7 +1488,7 @@ boolean* obj_destroyed;
     } while (0) /* now gone */
                 case EGG: 
                 {
-                    long cnt = obj->quan;
+                    int64_t cnt = obj->quan;
                     int luck_change = 0;
 
                     damage = 1; /* nominal physical damage */
@@ -2698,7 +2698,7 @@ struct monst *mdef;
 struct attack *mattk;
 {
     struct obj *otmp, *stealoid, **minvent_ptr;
-    long unwornmask;
+    int64_t unwornmask;
 
     if (!mdef->minvent)
         return; /* nothing to take */
@@ -3980,7 +3980,7 @@ register struct monst *mon;
             dhit = (tmp > dieroll || u.uswallow);
             if (dhit) {
                 int compat, specialdmg;
-                long silverhit = 0L;
+                int64_t silverhit = 0L;
                 const char *verb = 0; /* verb or body part */
 
                 if (!u.uswallow
@@ -4090,7 +4090,7 @@ register struct monst *mon;
             play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
             u_wait_until_action();
             int specialdmg;
-            long silverhit = 0L;
+            int64_t silverhit = 0L;
             boolean byhand = hug_throttles(&mons[u.umonnum]), /* rope golem */
                     unconcerned = (byhand && !can_be_strangled(mon));
 
@@ -4371,7 +4371,7 @@ boolean wep_was_destroyed;
         break;
     case AD_STON:
         if (mhit) { /* successful attack */
-            long protector = attk_protection((int) aatyp);
+            int64_t protector = attk_protection((int) aatyp);
 
             /* hero using monsters' AT_MAGC attack is hitting hand to
                hand rather than casting a spell */
@@ -4521,7 +4521,7 @@ boolean wep_was_destroyed;
             if (!Stunned && !Stun_resistance)
             {
                 play_sfx_sound(SFX_ACQUIRE_STUN);
-                make_stunned((long)basedmg, TRUE);
+                make_stunned((int64_t)basedmg, TRUE);
             }
             break;
         case AD_FIRE:
@@ -4800,7 +4800,7 @@ int basedamage;
 struct monst* magr;
 struct monst* mdef;
 short adtyp;
-unsigned long ad_flags;
+uint64_t ad_flags;
 {
     double base_dmg_d = (double)basedamage;
     boolean you_attack = (magr && magr == &youmonst);
@@ -5279,8 +5279,8 @@ enum action_tile_types action;
 void
 update_u_action_core(action, simple_wait_multiplier, additional_newsym_flags)
 enum action_tile_types action;
-unsigned long simple_wait_multiplier;
-unsigned long additional_newsym_flags;
+uint64_t simple_wait_multiplier;
+uint64_t additional_newsym_flags;
 {
     enum action_tile_types action_before = u.action;
     if (iflags.using_gui_tiles && action == ACTION_TILE_NO_ACTION)
@@ -5393,8 +5393,8 @@ void
 update_m_action_core(mtmp, action, simple_wait_multiplier, additional_newsym_flags)
 struct monst* mtmp;
 enum action_tile_types action;
-unsigned long simple_wait_multiplier;
-unsigned long additional_newsym_flags;
+uint64_t simple_wait_multiplier;
+uint64_t additional_newsym_flags;
 {
     if (!mtmp)
         return;
@@ -5527,12 +5527,12 @@ struct monst* mon;
 int x, y;
 enum hit_tile_types hit_symbol_shown;
 int damage_shown;
-unsigned long extra_mflags;
+uint64_t extra_mflags;
 {
     if (!iflags.using_gui_tiles || hit_symbol_shown >= MAX_HIT_TILES || hit_symbol_shown < 0)
         return;
 
-    unsigned long mhflags = (LMFLAGS_BEING_HIT | extra_mflags);
+    uint64_t mhflags = (LMFLAGS_BEING_HIT | extra_mflags);
     show_extra_info(x, y, 0UL, mhflags, (short)(hit_symbol_shown - HIT_GENERAL), damage_shown);
     if(mon == &youmonst)
         u_wait_until_action();
@@ -5549,7 +5549,7 @@ void
 display_u_being_hit(hit_symbol_shown, damage_shown, extra_mflags)
 enum hit_tile_types hit_symbol_shown;
 int damage_shown;
-unsigned long extra_mflags;
+uint64_t extra_mflags;
 {
     display_being_hit(&youmonst, u.ux, u.uy, hit_symbol_shown, damage_shown, extra_mflags);
 }
@@ -5559,7 +5559,7 @@ display_m_being_hit(mon, hit_symbol_shown, damage_shown, extra_mflags, use_bhitp
 struct monst* mon;
 enum hit_tile_types hit_symbol_shown;
 int damage_shown;
-unsigned long extra_mflags;
+uint64_t extra_mflags;
 boolean use_bhitpos;
 {
     if (!mon)

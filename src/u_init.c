@@ -11,9 +11,9 @@ struct trobj {
     short trotyp;
     schar trspe;
     char trclass;
-    Bitfield(trquan, 6);
-    Bitfield(trquan_rnd, 6);
-    Bitfield(trbless, 2);
+    uchar trquan;
+    uchar trquan_rnd;
+    uchar trbless;
     uchar elemental_enchantment;
     uchar exceptionality;
     uchar material;
@@ -974,7 +974,7 @@ u_init()
         aligns[flags.initalign].value;
 
 #if defined(BSD) && !defined(POSIX_TYPES)
-    (void) time((long *) &ubirthday);
+    (void) time((int64_t *) &ubirthday);
 #else
     (void) time(&ubirthday);
 #endif
@@ -1568,11 +1568,11 @@ register const struct trobj * trop;
 
     struct obj *obj;
     int otyp;
-    long quan;
+    int64_t quan;
 
     while (trop->trclass) 
     {
-        quan = (long)trop->trquan + (long)(trop->trquan_rnd > 0 ? rn2((int)trop->trquan_rnd + 1) : 0);
+        quan = (int64_t)trop->trquan + (int64_t)(trop->trquan_rnd > 0 ? rn2((int)trop->trquan_rnd + 1) : 0);
         while (quan > 0)
         {
             otyp = (int)trop->trotyp;
@@ -2369,29 +2369,29 @@ uchar tense; /* 0 = present tense, 1 = past tense,  2 = present participle (be -
 
 boolean
 is_known_spell_school(knownspellschools, skill_id)
-unsigned long knownspellschools;
+uint64_t knownspellschools;
 int skill_id;
 {
     if (skill_id < P_FIRST_SPELL || skill_id > P_LAST_SPELL)
         return FALSE;
 
-    unsigned long knownspellbit = 1UL << (skill_id - P_FIRST_SPELL);
+    uint64_t knownspellbit = (uint64_t)1 << (skill_id - P_FIRST_SPELL);
     return (knownspellschools & knownspellbit) != 0;
 }
 
-unsigned long
+uint64_t
 mon_known_spell_schools(mon)
 struct monst* mon;
 {
     if (!mon)
         return FALSE;
-    unsigned long mflags = mons[mon->mnum].mflags7;
-    unsigned long knownspellschools = 0UL;
+    uint64_t mflags = mons[mon->mnum].mflags7;
+    uint64_t knownspellschools = 0UL;
 
     int i;
     for (i = 0; i < NUM_ROLES; i++)
     {
-        unsigned long bit = M7_ARCHAEOLOGIST << i; // Should be 1UL
+        uint64_t bit = (uint64_t)M7_ARCHAEOLOGIST << i;
         if (mflags & bit)
         {
             const struct def_skill* maxskills = 0;
@@ -2448,7 +2448,7 @@ struct monst* mon;
                 {
                     if (maxskills->skill >= P_FIRST_SPELL && maxskills->skill <= P_LAST_SPELL)
                     {
-                        unsigned long spbit = 1UL << (maxskills->skill - P_FIRST_SPELL);
+                        uint64_t spbit = (uint64_t)1 << (maxskills->skill - P_FIRST_SPELL);
                         knownspellschools |= spbit;
                     }
                     maxskills++;

@@ -49,8 +49,8 @@ struct npc_subtype_definition {
     int start_money_d, start_money_n, start_money_p;
     boolean has_special_tileset;
     uchar special_tileset;
-    unsigned long service_flags;
-    unsigned long general_flags;
+    uint64_t service_flags;
+    uint64_t general_flags;
 };
 
 extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];

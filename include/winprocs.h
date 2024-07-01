@@ -19,8 +19,8 @@ struct window_procs {
     const char *name;     /* Names should start with [a-z].  Names must
                            * not start with '-'.  Names starting with
                            * '+' are reserved for processors. */
-    unsigned long wincap; /* window port capability options supported */
-    unsigned long wincap2; /* additional window port capability options */
+    uint64_t wincap; /* window port capability options supported */
+    uint64_t wincap2; /* additional window port capability options */
     void FDECL((*win_init_nhwindows), (int *, char **));
     void NDECL((*win_player_selection));
     void NDECL((*win_askname));
@@ -62,7 +62,7 @@ struct window_procs {
     int FDECL((*win_nh_poskey), (int *, int *, int *));
     void NDECL((*win_nhbell));
     int NDECL((*win_doprev_message));
-    char FDECL((*win_yn_function_ex), (int, int, int, int, const char*, const char *, const char *, CHAR_P, const char*, const char*, unsigned long));
+    char FDECL((*win_yn_function_ex), (int, int, int, int, const char*, const char *, const char *, CHAR_P, const char*, const char*, uint64_t));
     void FDECL((*win_getlin_ex), (int, int, int, const char *, char *, const char*, const char*, const char*));
     int NDECL((*win_get_ext_cmd));
     void FDECL((*win_number_pad), (int));
@@ -70,7 +70,7 @@ struct window_procs {
     void FDECL((*win_delay_output_milliseconds), (int));
     void FDECL((*win_delay_output_intervals), (int));
 #ifdef CHANGE_COLOR
-    void FDECL((*win_change_color), (int, long, int));
+    void FDECL((*win_change_color), (int, int64_t, int));
 #ifdef MAC
     void FDECL((*win_change_background), (int));
     short FDECL((*win_set_font_name), (winid, char *));
@@ -90,7 +90,7 @@ struct window_procs {
     void NDECL((*win_status_finish));
     void FDECL((*win_status_enablefield),
                (int, const char *, const char *, BOOLEAN_P));
-    void FDECL((*win_status_update), (int, genericptr_t, int, int, int, unsigned long *));
+    void FDECL((*win_status_update), (int, genericptr_t, int, int, int, uint64_t *));
     boolean NDECL((*win_can_suspend));
     void NDECL((*win_stretch_window));
     void FDECL((*win_set_animation_timer_interval), (unsigned int));
@@ -109,12 +109,12 @@ struct window_procs {
     void FDECL((*win_set_ambient_ghsound_volume), (sound_source*));
     void NDECL((*win_clear_context_menu));
     void FDECL((*win_add_context_menu), (int, int, int, int, const char*, const char*, int, int));
-    void FDECL((*win_update_status_button), (int, int, int, unsigned long));
-    void FDECL((*win_toggle_animation_timer), (int, int, int, int, int, int, unsigned long)); /* timettype, id, state = on/off, x, y, flags */
-    void FDECL((*win_display_floating_text), (int, int, const char*, int, int, int, unsigned long));
-    void FDECL((*win_display_screen_text), (const char*, const char*, const char*, int, int, int, unsigned long));
-    void FDECL((*win_display_popup_text), (const char*, const char*, int, int, int, int, unsigned long));
-    void FDECL((*win_display_gui_effect), (int, int, int, int, int, int, unsigned long));
+    void FDECL((*win_update_status_button), (int, int, int, uint64_t));
+    void FDECL((*win_toggle_animation_timer), (int, int, int, int, int, int, uint64_t)); /* timettype, id, state = on/off, x, y, flags */
+    void FDECL((*win_display_floating_text), (int, int, const char*, int, int, int, uint64_t));
+    void FDECL((*win_display_screen_text), (const char*, const char*, const char*, int, int, int, uint64_t));
+    void FDECL((*win_display_popup_text), (const char*, const char*, int, int, int, int, uint64_t));
+    void FDECL((*win_display_gui_effect), (int, int, int, int, int, int, uint64_t));
     void FDECL((*win_update_cursor), (int, int, int));
     int NDECL((*win_ui_has_input));
     void FDECL((*win_exit_hack), (int));
@@ -361,7 +361,7 @@ extern
 
 struct wc_Opt {
     const char *wc_name;
-    unsigned long wc_bit;
+    uint64_t wc_bit;
 };
 
 /* Macro for the currently active Window Port whose function
@@ -408,8 +408,8 @@ struct chain_procs {
     const char *name;     /* Names should start with [a-z].  Names must
                            * not start with '-'.  Names starting with
                            * '+' are reserved for processors. */
-    unsigned long wincap; /* window port capability options supported */
-    unsigned long wincap2; /* additional window port capability options */
+    uint64_t wincap; /* window port capability options supported */
+    uint64_t wincap2; /* additional window port capability options */
     void FDECL((*win_init_nhwindows), (CARGS, int *, char **));
     void FDECL((*win_player_selection), (CARGS));
     void FDECL((*win_askname), (CARGS));
@@ -452,7 +452,7 @@ struct chain_procs {
     void FDECL((*win_nhbell), (CARGS));
     int FDECL((*win_doprev_message), (CARGS));
     char FDECL((*win_yn_function_ex),
-               (CARGS, int, int, int, int, const char *, const char *, CHAR_P, const char*, const char*, unsigned long));
+               (CARGS, int, int, int, int, const char *, const char *, CHAR_P, const char*, const char*, uint64_t));
     void FDECL((*win_getlin_ex), (CARGS, int, int, int, const char *, char *, const char*, const char*, const char*));
     int FDECL((*win_get_ext_cmd), (CARGS));
     void FDECL((*win_number_pad), (CARGS, int));
@@ -460,7 +460,7 @@ struct chain_procs {
     void FDECL((*win_delay_output_milliseconds), (CARGS, int));
     void FDECL((*win_delay_output_intervals), (CARGS, int));
 #ifdef CHANGE_COLOR
-    void FDECL((*win_change_color), (CARGS, int, long, int));
+    void FDECL((*win_change_color), (CARGS, int, int64_t, int));
 #ifdef MAC
     void FDECL((*win_change_background), (CARGS, int));
     short FDECL((*win_set_font_name), (CARGS, winid, char *));
@@ -480,7 +480,7 @@ struct chain_procs {
     void FDECL((*win_status_finish), (CARGS));
     void FDECL((*win_status_enablefield),
                (CARGS, int, const char *, const char *, BOOLEAN_P));
-    void FDECL((*win_status_update), (CARGS, int, genericptr_t, int, int, int, unsigned long *));
+    void FDECL((*win_status_update), (CARGS, int, genericptr_t, int, int, int, uint64_t *));
     boolean FDECL((*win_can_suspend), (CARGS));
     void FDECL((*win_stretch_window, (CARGS)));
     void FDECL((*win_set_animation_timer_interval), (CARGS, unsigned int));
@@ -499,12 +499,12 @@ struct chain_procs {
     void FDECL((*win_set_ambient_ghsound_volume), (CARGS, sound_source*));
     void FDECL((*win_clear_context_menu), (CARGS));
     void FDECL((*win_add_context_menu), (CARGS, int, int, int, int, const char*, const char*, int, int));
-    void FDECL((*win_update_status_button), (CARGS, int, int, int, unsigned long));
-    void FDECL((*win_toggle_animation_timer), (CARGS, int, int, int, int, int, int, unsigned long));
-    void FDECL((*win_display_floating_text), (CARGS, int, int, const char*, int, int, int, unsigned long));
-    void FDECL((*win_display_screen_text), (CARGS, const char*, const char*, const char*, int, int, int, unsigned long));
-    void FDECL((*win_display_popup_text), (CARGS, const char*, const char*, int, int, int, int, unsigned long));
-    void FDECL((*win_display_gui_effect), (CARGS, int, int, int, int, int, int, unsigned long));
+    void FDECL((*win_update_status_button), (CARGS, int, int, int, uint64_t));
+    void FDECL((*win_toggle_animation_timer), (CARGS, int, int, int, int, int, int, uint64_t));
+    void FDECL((*win_display_floating_text), (CARGS, int, int, const char*, int, int, int, uint64_t));
+    void FDECL((*win_display_screen_text), (CARGS, const char*, const char*, const char*, int, int, int, uint64_t));
+    void FDECL((*win_display_popup_text), (CARGS, const char*, const char*, int, int, int, int, uint64_t));
+    void FDECL((*win_display_gui_effect), (CARGS, int, int, int, int, int, int, uint64_t));
     void FDECL((*win_update_cursor), (CARGS, int, int, int));
     int FDECL((*win_ui_has_input), (CARGS));
     void FDECL((*win_exit_hack), (CARGS, int));
@@ -557,7 +557,7 @@ extern int NDECL(safe_nhgetch);
 extern int FDECL(safe_nh_poskey, (int *, int *, int *));
 extern void NDECL(safe_nhbell);
 extern int NDECL(safe_doprev_message);
-extern char FDECL(safe_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, const char*, unsigned long));
+extern char FDECL(safe_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, const char*, uint64_t));
 extern void FDECL(safe_getlin_ex, (int, int, int, const char *, char *, const char*, const char*, const char*));
 extern int NDECL(safe_get_ext_cmd);
 extern void FDECL(safe_number_pad, (int));
@@ -565,7 +565,7 @@ extern void NDECL(safe_delay_output);
 extern void FDECL(safe_delay_output_milliseconds, (int));
 extern void FDECL(safe_delay_output_intervals, (int));
 #ifdef CHANGE_COLOR
-extern void FDECL(safe_change_color, (int, long, int));
+extern void FDECL(safe_change_color, (int, int64_t, int));
 #ifdef MAC
 extern void FDECL(safe_change_background, (int));
 extern short FDECL(safe_set_font_name, (winid, char *));
@@ -582,7 +582,7 @@ extern void FDECL(safe_status_init, (int));
 extern void NDECL(safe_status_finish);
 extern void FDECL(safe_status_enablefield,
                     (int, const char *, const char *, BOOLEAN_P));
-extern void FDECL(safe_status_update, (int, genericptr_t, int, int, int, unsigned long *));
+extern void FDECL(safe_status_update, (int, genericptr_t, int, int, int, uint64_t *));
 extern boolean NDECL(safe_can_suspend);
 extern void NDECL(safe_stretch_window);
 extern void FDECL(safe_set_animation_timer_interval, (unsigned int));
@@ -601,12 +601,12 @@ extern void FDECL(safe_delete_ambient_ghsound, (struct soundsource_t*));
 extern void FDECL(safe_set_ambient_ghsound_volume, (struct soundsource_t*));
 extern void NDECL(safe_clear_context_menu);
 extern void FDECL(safe_add_context_menu, (int, int, int, int, const char*, const char*, int, int));
-extern void FDECL(safe_update_status_button, (int, int, int, unsigned long));
-extern void FDECL(safe_toggle_animation_timer, (int, int, int, int, int, int, unsigned long));
-extern void FDECL(safe_display_floating_text, (int, int, const char*, int, int, int, unsigned long));
-extern void FDECL(safe_display_screen_text, (const char*, const char*, const char*, int, int, int, unsigned long));
-extern void FDECL(safe_display_popup_text, (const char*, const char*, int, int, int, int, unsigned long));
-extern void FDECL(safe_display_gui_effect, (int, int, int, int, int, int, unsigned long));
+extern void FDECL(safe_update_status_button, (int, int, int, uint64_t));
+extern void FDECL(safe_toggle_animation_timer, (int, int, int, int, int, int, uint64_t));
+extern void FDECL(safe_display_floating_text, (int, int, const char*, int, int, int, uint64_t));
+extern void FDECL(safe_display_screen_text, (const char*, const char*, const char*, int, int, int, uint64_t));
+extern void FDECL(safe_display_popup_text, (const char*, const char*, int, int, int, int, uint64_t));
+extern void FDECL(safe_display_gui_effect, (int, int, int, int, int, int, uint64_t));
 extern void FDECL(safe_update_cursor, (int, int, int));
 extern int NDECL(safe_ui_has_input);
 extern void FDECL(safe_exit_hack, (int));

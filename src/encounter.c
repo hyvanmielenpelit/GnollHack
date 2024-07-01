@@ -1191,9 +1191,9 @@ int max_attk_monsters;
     if (max_attk_monsters < 0 || max_attk_monsters >= MAX_ENCOUNTER_ATTACKING_MONSTERS + 1 || encounter_index < 0 || encounter_index >= MAX_ENCOUNTERS)
         return;
 
-    long maxdifficulty = 0;
-    long mindifficulty = 0;
-    long pointdifficulty = 0;
+    int64_t maxdifficulty = 0;
+    int64_t mindifficulty = 0;
+    int64_t pointdifficulty = 0;
     double totalcubeddifficulty = 0;
     double totalthreehalvespowerdifficulty = 0;
     double totalpowdifficulty = 0;
@@ -1231,11 +1231,11 @@ int max_attk_monsters;
         totalpowdifficulty += pow(monster_difficulty, 1.0 / power);
     }
 
-    maxdifficulty = (long)round(pow(totalthreehalvespowerdifficulty, 1.0 / 1.5));
-    mindifficulty = (long)round(pow(totalcubeddifficulty, 1.0 / 3.0));
+    maxdifficulty = (int64_t)round(pow(totalthreehalvespowerdifficulty, 1.0 / 1.5));
+    mindifficulty = (int64_t)round(pow(totalcubeddifficulty, 1.0 / 3.0));
     if (maxdifficulty < mindifficulty)
         maxdifficulty = mindifficulty;
-    pointdifficulty = (long)round(pow(totalpowdifficulty, power));
+    pointdifficulty = (int64_t)round(pow(totalpowdifficulty, power));
     if (pointdifficulty < mindifficulty)
         pointdifficulty = mindifficulty;
     if (pointdifficulty > maxdifficulty)
@@ -1345,9 +1345,9 @@ int selected_encounter, x, y, max_attk_monsters;
     get_generated_monster_minmax_levels(2, &minlevel, &maxlevel, 1);
 
     /* Calculate experience first */
-    long encounter_experience = 1 + encounter_list[selected_encounter].difficulty_point_estimate[max_attk_monsters] * encounter_list[selected_encounter].difficulty_point_estimate[max_attk_monsters];
-    long total_monster_experience = 0;
-    long total_monster_difficulty = 0;
+    int64_t encounter_experience = 1 + encounter_list[selected_encounter].difficulty_point_estimate[max_attk_monsters] * encounter_list[selected_encounter].difficulty_point_estimate[max_attk_monsters];
+    int64_t total_monster_experience = 0;
+    int64_t total_monster_difficulty = 0;
     int mcnt = 0;
 
     boolean upper = Is_really_rogue_level(&u.uz);
@@ -1380,7 +1380,7 @@ int selected_encounter, x, y, max_attk_monsters;
         total_monster_difficulty += mons[pmid].difficulty;
     }
 
-    long xpdiff = encounter_experience - total_monster_experience;
+    int64_t xpdiff = encounter_experience - total_monster_experience;
     if (xpdiff < 0)
         xpdiff = 0;
 
@@ -1432,7 +1432,7 @@ int selected_encounter, x, y, max_attk_monsters;
             }
 
             int monster_difficulty = mons[pmid].difficulty;
-            //long monster_experience = 1 + monster_difficulty * monster_difficulty;
+            //int64_t monster_experience = 1 + monster_difficulty * monster_difficulty;
             
             if(xpdiff > 0 && total_monster_difficulty > 0)
                 mon->extra_encounter_xp = (xpdiff * monster_difficulty) / total_monster_difficulty;
@@ -1529,7 +1529,7 @@ int selected_encounter, x, y, max_attk_monsters;
                 {
                     int otyp = (int)encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].otyp;
                     short oartifact = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].oartifact;
-                    long itemflags = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].iflags;
+                    int64_t itemflags = encounter_list[selected_encounter].encounter_monsters[i].monster_items[j].random_monster_items[selected_item].iflags;
                     if (otyp > STRANGE_OBJECT)
                     {
                         struct obj* otmp = mksobj(otyp, !!(itemflags & MI_INITIALIZE), !!(itemflags & MI_ALLOW_ARTIFACTS), oartifact > 0 ? MKOBJ_TYPE_ARTIFACT_BASE : MKOBJ_TYPE_NORMAL);

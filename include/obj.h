@@ -29,7 +29,7 @@ struct oextra {
     char* uoname;          /* ptr to name of object */
     struct monst *omonst; /* ptr to attached monst struct */
     unsigned *omid;       /* ptr to m_id */
-    long *olong;          /* ptr to misc long (temporary gold object) */
+    int64_t *olong;          /* ptr to misc int64_t (temporary gold object) */
     char *omailcmd;       /* response_cmd for mail deliver */
 };
 
@@ -42,38 +42,16 @@ struct obj {
 
     struct obj *cobj; /* contents list for containers */
     unsigned o_id;
+    unsigned owt;
+    short otyp; /* object class number */
     xchar ox, oy;
     xchar ox0, oy0;
-    short otyp; /* object class number */
-    unsigned owt;
-    long quan; /* number of items */
 
-    short enchantment; /* Always set to zero by cancellation
-                  quality of weapon, weptool, armor or ring (+ or -);
-                  OBSOLETE (moved to charges): number of charges for wand or charged tool ( >= -1 );
-                  OBSOLETE (moved to special_quality): number of candles attached to candelabrum;
-                  OBSOLETE (moved to special_quality and speflags): marks your eggs, tin variety and spinach tins;
-                  OBSOLETE (moved to special_quality and speflags): Schroedinger's Box (1) or royal coffers for a court (2);
-                  OBSOLETE (moved to special_quality): tells which fruit a fruit is;
-                  OBSOLETE (moved to special_quality): special for uball and amulet;
-                  OBSOLETE (moved to special_quality): scroll of mail (normal==0, bones or wishing==1, written==2);
-                  OBSOLETE (moved to speflags): historic and gender for statues */
-    short charges; /* number of charges for wand or charged tool ( >= -1 ), always set to -1/0 by cancellation */
-    short special_quality; /* item-specific special quality, e.g., the amount of wetness of a towel, number of candles attached to candelabrum, not affected by cancellation */
-
-#define SPEQUAL_STATUE_HISTORIC                1
-#define SPEQUAL_RULING_RING_INSCRIPTION_READ   1
-#define SPEQUAL_MAIL_FROM_BONES_OR_WISHING     1
-#define SPEQUAL_MAIL_FROM_MAGIC_MARKER         2
-#define SPEQUAL_MAGIC_LAMP_CONTAINS_DJINN      1
-#define SPEQUAL_TIN_CONTAINS_SPINACH           1
-#define SPEQUAL_MAGIC_CANDLE_PARTLY_USED       1
-#define SPEQUAL_MAGIC_CANDLE_UNUSED            2
-#define SPEQUAL_LIGHT_SOURCE_FUNCTIONAL        1
-#define SPEQUAL_UBALL_SPECIAL                  1
-#define SPEQUAL_WILL_TURN_TO_DUST_ON_PICKUP    1
-
-    unsigned long speflags; /* anything else that might be going on with an item, not affected by cancellation */
+    int64_t quan; /* number of items */
+    int64_t age;               /* creation date */
+    int64_t owornmask;
+    uint64_t item_flags;  /* general purpose object flags, like speflags */
+    uint64_t speflags;    /* anything else that might be going on with an item, not affected by cancellation */
 
 #define SPEFLAGS_YOURS                         0x00000001UL
 #define SPEFLAGS_FEMALE                        0x00000002UL
@@ -108,9 +86,34 @@ struct obj {
 #define SPEFLAGS_FOUND_THIS_TURN               0x40000000UL
 #define SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO    0x80000000UL
 
+    short enchantment; /* Always set to zero by cancellation
+                  quality of weapon, weptool, armor or ring (+ or -);
+                  OBSOLETE (moved to charges): number of charges for wand or charged tool ( >= -1 );
+                  OBSOLETE (moved to special_quality): number of candles attached to candelabrum;
+                  OBSOLETE (moved to special_quality and speflags): marks your eggs, tin variety and spinach tins;
+                  OBSOLETE (moved to special_quality and speflags): Schroedinger's Box (1) or royal coffers for a court (2);
+                  OBSOLETE (moved to special_quality): tells which fruit a fruit is;
+                  OBSOLETE (moved to special_quality): special for uball and amulet;
+                  OBSOLETE (moved to special_quality): scroll of mail (normal==0, bones or wishing==1, written==2);
+                  OBSOLETE (moved to speflags): historic and gender for statues */
+    short charges; /* number of charges for wand or charged tool ( >= -1 ), always set to -1/0 by cancellation */
+    short special_quality; /* item-specific special quality, e.g., the amount of wetness of a towel, number of candles attached to candelabrum, not affected by cancellation */
+
+#define SPEQUAL_STATUE_HISTORIC                1
+#define SPEQUAL_RULING_RING_INSCRIPTION_READ   1
+#define SPEQUAL_MAIL_FROM_BONES_OR_WISHING     1
+#define SPEQUAL_MAIL_FROM_MAGIC_MARKER         2
+#define SPEQUAL_MAGIC_LAMP_CONTAINS_DJINN      1
+#define SPEQUAL_TIN_CONTAINS_SPINACH           1
+#define SPEQUAL_MAGIC_CANDLE_PARTLY_USED       1
+#define SPEQUAL_MAGIC_CANDLE_UNUSED            2
+#define SPEQUAL_LIGHT_SOURCE_FUNCTIONAL        1
+#define SPEQUAL_UBALL_SPECIAL                  1
+#define SPEQUAL_WILL_TURN_TO_DUST_ON_PICKUP    1
+
+    short oartifact; /* artifact array index */
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */
-    short oartifact; /* artifact array index */
     uchar mythic_prefix; /* magical quality for a weapon or armor giving additional powers */
     uchar mythic_suffix;  /* magical quality for a weapon or armor giving additional powers */
     uchar exceptionality; /* exceptional, elite, etc. weapon, multiplies base damage */
@@ -131,6 +134,17 @@ struct obj {
 #define OBJ_HEROMEMORY 8  /* object remembered by hero */
 #define NOBJ_STATES 9
     xchar timed; /* # of fuses (timers) attached to this obj */
+
+    int corpsenm;         /* type of corpse is mons[corpsenm] */
+#define leashmon corpsenm /* gets m_id of attached pet */
+#define appearanceidx corpsenm /* index for alternative appearance */
+#define novelidx special_quality /* 3.6 tribute - the index of the novel title */
+#define manualidx special_quality /* the index of the manual title */
+#define keyotyp corpsenm  /* otyp of the key capable of locking / unlocking the chest (0 = SKELETON_KEY). Special_quality additionally defines the type of the key (its matching special_quality) */
+    int usecount;           /* overloaded for various things that tally */
+#define spestudied usecount /* # of times a spellbook has been studied */
+#define ring_text_appeared usecount /* the round the text of Ruling Ring of Yendor appeared */
+    unsigned oeaten;        /* nutrition left in food, if partly eaten */
 
     Bitfield(cursed, 1);
     Bitfield(blessed, 1);
@@ -175,29 +189,21 @@ struct obj {
     Bitfield(mknown, 1); /* mythic quality is known */
     Bitfield(rotknown, 1); /* rotting status is known */
 
-    int corpsenm;         /* type of corpse is mons[corpsenm] */
-#define leashmon corpsenm /* gets m_id of attached pet */
-#define appearanceidx corpsenm /* index for alternative appearance */
-#define novelidx special_quality /* 3.6 tribute - the index of the novel title */
-#define manualidx special_quality /* the index of the manual title */
-#define keyotyp corpsenm  /* otyp of the key capable of locking / unlocking the chest (0 = SKELETON_KEY). Special_quality additionally defines the type of the key (its matching special_quality) */
-    int usecount;           /* overloaded for various things that tally */
-#define spestudied usecount /* # of times a spellbook has been studied */
-#define ring_text_appeared usecount /* the round the text of Ruling Ring of Yendor appeared */
-    unsigned oeaten;        /* nutrition left in food, if partly eaten */
-    long age;               /* creation date */
-    long owornmask;
+    unsigned reserved;  /* reserved for, e.g., more bitfields */
+
+    unsigned o_id_memory;  /* This is a memory object of this o_id */
+    unsigned m_id_memory;  /* This is a memory object of this mimic m_id */
+
     short cooldownleft;       /* item cooldown left before it can be used again*/
     short repowerleft;       /* artifact cooldown left before its invoke ability can be used again*/
     short detectioncount;    /* monsters detected for WARN_ORC and other similar properties */
-    boolean invokeon;      /* the object's / artifact's invoked ability is on */
     short invokeleft;      /* the counter for artifact's invoke ability remaining on */
-    unsigned o_id_memory;  /* This is a memory object of this o_id */
-    unsigned m_id_memory;  /* This is a memory object of this mimic m_id */
+    boolean invokeon;      /* the object's / artifact's invoked ability is on */
 
     uchar special_tileset;
     int glyph;
     int gui_glyph;
+
     struct oextra *oextra; /* pointer to oextra struct */
 };
 
@@ -816,9 +822,9 @@ struct mythic_definition {
     const char* description;
     short probability;
     double price_multiplier;
-    long price_addition;
-    unsigned long mythic_powers;
-    unsigned long mythic_flags;
+    int64_t price_addition;
+    uint64_t mythic_powers;
+    uint64_t mythic_flags;
 };
 
 #define MYTHIC_FLAG_NONE                        0x00000000UL
@@ -911,11 +917,11 @@ struct mythic_power_definition {
     const char* name;
     const char* description;
     uchar power_type;
-    long parameter1;                /* E.g., damage multiplier */
+    int64_t parameter1;                /* E.g., damage multiplier */
     double parameter2;              /* E.g., damage multiplier */
     char parameter3;                /* E.g., monster or item class */
-    unsigned long parameter4;       /* E.g., M2_ flag */
-    unsigned long power_flags;
+    uint64_t parameter4;       /* E.g., M2_ flag */
+    uint64_t power_flags;
 };
 
 enum mythic_power_types {
@@ -1130,7 +1136,7 @@ extern NEARDATA const struct mythic_power_definition mythic_suffix_powers[MAX_MY
 #define candlelabrum_maximum_burn_time(o) candlelabrum_starting_burn_time(o)
 #define torch_starting_burn_time(o) (500)
 #define torch_maximum_burn_time(o) torch_starting_burn_time(o)
-#define lamp_starting_burn_time(o) ((long)rn1(500, 1000))
+#define lamp_starting_burn_time(o) ((int64_t)rn1(500, 1000))
 #define lamp_maximum_burn_time(o) MAX_OIL_IN_LAMP
 #define potion_starting_burn_time(o) MAX_OIL_IN_FLASK
 #define potion_maximum_burn_time(o) potion_starting_burn_time(o)

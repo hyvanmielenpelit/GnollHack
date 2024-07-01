@@ -16,7 +16,7 @@
 #endif
 
 #ifdef MFLOPPY
-long bytes_counted;
+int64_t bytes_counted;
 STATIC_VAR int count_only;
 #endif
 
@@ -252,7 +252,7 @@ boolean quietly;
 #ifdef MFLOPPY
     /* make sure there is enough disk space */
     if (iflags.checkspace) {
-        long fds, needed;
+        int64_t fds, needed;
 
         savelev(fd, ledger_no(&u.uz), COUNT_SAVE);
         savegamestate(fd, COUNT_SAVE);
@@ -390,13 +390,13 @@ STATIC_OVL void
 savegamestate(fd, mode)
 register int fd, mode;
 {
-    unsigned long uid;
+    uint64_t uid;
 
 #ifdef MFLOPPY
     count_only = (mode & COUNT_SAVE);
 #endif
     lock_thread_lock();
-    uid = (unsigned long) getuid();
+    uid = (uint64_t) getuid();
     bwrite(fd, (genericptr_t) &uid, sizeof uid);
     bwrite(fd, (genericptr_t) &context, sizeof(struct context_info));
     bwrite(fd, (genericptr_t) &flags, sizeof(struct flag));
@@ -405,7 +405,7 @@ register int fd, mode;
 #endif
     bwrite(fd, (genericptr_t)&spl_orderindx, sizeof(spl_orderindx));
     urealtime.finish_time = getnow();
-    urealtime.realtime += (long) (urealtime.finish_time
+    urealtime.realtime += (int64_t) (urealtime.finish_time
                                   - urealtime.start_timing);
     bwrite(fd, (genericptr_t) &u, sizeof(struct you));
     bwrite(fd, yyyymmddhhmmss(ubirthday), 14);
@@ -853,9 +853,9 @@ register size_t num;
     {
         /* lint wants 3rd arg of write to be an int; lint -p an unsigned */
 #if defined(BSD) || defined(ULTRIX) || defined(WIN32) || defined(_MSC_VER)
-        failed = ((long) write(fd, loc, (int) num) != (long) num);
+        failed = ((int64_t) write(fd, loc, (int) num) != (int64_t) num);
 #else /* e.g. SYSV, __TURBOC__ */
-        failed = ((long) write(fd, loc, num) != (long) num);
+        failed = ((int64_t) write(fd, loc, num) != (int64_t) num);
 #endif
     }
 
@@ -1141,7 +1141,7 @@ struct obj *otmp;
             bwrite(fd, (genericptr_t) OMID(otmp), buflen);
 
         if (OLONG(otmp))
-            buflen = sizeof(long);
+            buflen = sizeof(int64_t);
         else
             buflen = 0;
         bwrite(fd, (genericptr_t) &buflen, sizeof buflen);
@@ -1717,7 +1717,7 @@ swapout_oldest()
 {
     char to[PATHLEN], from[PATHLEN];
     int i, oldest;
-    long oldtime;
+    int64_t oldtime;
 
     if (!ramdisk)
         return FALSE;

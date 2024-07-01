@@ -325,7 +325,7 @@ invault()
         char buf[BUFSZ];
         register int x, y, gx, gy;
         xchar rx, ry;
-        long umoney;
+        int64_t umoney;
 
         /* first find the goal for the guard */
         if (!find_guard_dest((struct monst *)0, &rx, &ry))
@@ -818,7 +818,7 @@ register struct monst *grd;
     struct rm *crm;
     struct fakecorridor *fcp;
     register struct egd *egrd = EGD(grd);
-    long umoney = 0L;
+    int64_t umoney = 0L;
     boolean goldincorridor = FALSE, u_in_vault = FALSE, grd_in_vault = FALSE,
             disappear_msg_seen = FALSE, semi_dead = DEADMONSTER(grd),
             u_carry_gold = FALSE, newspot = FALSE, see_guard;
@@ -1236,7 +1236,7 @@ paygd(silently)
 boolean silently;
 {
     register struct monst *grd = findgd();
-    long umoney = money_cnt(invent);
+    int64_t umoney = money_cnt(invent);
     struct obj *coins, *nextcoins;
     int gx, gy;
     char buf[BUFSZ];
@@ -1276,10 +1276,10 @@ boolean silently;
     return;
 }
 
-long
+int64_t
 hidden_gold()
 {
-    long value = 0L;
+    int64_t value = 0L;
     struct obj *obj;
 
     for (obj = invent; obj; obj = obj->nobj)
@@ -1290,12 +1290,12 @@ hidden_gold()
     return value;
 }
 
-long
+int64_t
 contained_gem_value(obj)
 struct obj* obj;
 {
     register struct obj* otmp;
-    register long value = 0L;
+    register int64_t value = 0L;
 
     /* accumulate contained gold */
     for (otmp = obj->cobj; otmp; otmp = otmp->nobj)
@@ -1307,10 +1307,10 @@ struct obj* obj;
     return value;
 }
 
-long
+int64_t
 carried_gem_value(VOID_ARGS)
 {
-    long value = 0L;
+    int64_t value = 0L;
     struct obj* obj;
 
     for (obj = invent; obj; obj = obj->nobj)

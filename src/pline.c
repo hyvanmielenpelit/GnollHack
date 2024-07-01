@@ -306,7 +306,12 @@ VA_DECL(const char *, line)
                         if (ep > p && *(ep - 1) == 'h')
                             Sprintf(cbuf, sbuf, va_arg(the_args, SHORT_P));
                         else if (ep > p && *(ep - 1) == 'l')
-                            Sprintf(cbuf, sbuf, va_arg(the_args, long));
+                        {
+                            if (ep > p + 1 && *(ep - 2) == 'l')
+                                Sprintf(cbuf, sbuf, va_arg(the_args, long long));
+                            else
+                                Sprintf(cbuf, sbuf, va_arg(the_args, long));
+                        }
                         else
                             Sprintf(cbuf, sbuf, va_arg(the_args, int));
                         break;
@@ -322,7 +327,12 @@ VA_DECL(const char *, line)
                         if(ep > p && *(ep - 1) == 'h')
                             Sprintf(cbuf, sbuf, va_arg(the_args, UNSIGNED_SHORT_P));
                         else if (ep > p && *(ep - 1) == 'l')
-                            Sprintf(cbuf, sbuf, va_arg(the_args, unsigned long));
+                        {
+                            if (ep > p + 1 && *(ep - 2) == 'l')
+                                Sprintf(cbuf, sbuf, va_arg(the_args, unsigned long long));
+                            else
+                                Sprintf(cbuf, sbuf, va_arg(the_args, unsigned long));
+                        }
                         else
                             Sprintf(cbuf, sbuf, va_arg(the_args, unsigned int));
                         break;

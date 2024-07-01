@@ -40,23 +40,23 @@ struct trap {
     uchar ttyp;
     uchar tsubtyp;
     enum lever_effect_types lever_effect;
-    long effect_param1;
-    long effect_param2;
-    long effect_param3;
-    long effect_param4;
-    unsigned long effect_flags;
-    unsigned long tflags;
-    unsigned long activation_count;
-    Bitfield(tseen, 1);
-    Bitfield(once, 1);
-    Bitfield(madeby_u, 1); /* So monsters may take offence when you trap
+    int64_t effect_param1;
+    int64_t effect_param2;
+    int64_t effect_param3;
+    int64_t effect_param4;
+    uint64_t effect_flags;
+    uint64_t tflags;
+    uint64_t activation_count;
+    boolean tseen;
+    boolean once;
+    boolean madeby_u; /* So monsters may take offence when you trap
                               them.  Recognizing who made the trap isn't
                               completely unreasonable, everybody has
                               their own style.  This flag is also needed
                               when you untrap a monster.  It would be too
                               easy to make a monster peaceful if you could
                               set a trap for it and then untrap it. */
-    Bitfield(madeby_mon, 1); /* To differentiate for originally generated traps, especially in Sokoban */
+    boolean madeby_mon; /* To differentiate for originally generated traps, especially in Sokoban */
     union vlaunchinfo vl;
 #define launch_otyp vl.v_launch_otyp
 #define launch2 vl.v_launch2
@@ -141,7 +141,7 @@ struct trap_type_definition {
     enum trap_difficulty_types tdifficulty;
     enum trap_difficulty_types thelpdifficulty;
     int training;
-    unsigned long tdflags;
+    uint64_t tdflags;
 };
 
 #define TRAPDEF_FLAGS_NONE                      0x00000000UL

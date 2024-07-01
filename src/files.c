@@ -656,7 +656,7 @@ char errbuf[];
 /* This changes the soft limit */
 boolean
 increase_file_descriptor_limit_to_at_least(new_cur_minimum)
-unsigned long new_cur_minimum;
+uint64_t new_cur_minimum;
 {
     struct rlimit rlim;
     if (getrlimit(RLIMIT_NOFILE, &rlim) == 0) 
@@ -665,7 +665,7 @@ unsigned long new_cur_minimum;
         {
             /* Limit the file descriptor number to lower of 32768 and current hard limit */
             rlim_t maxlimit = min((rlim_t)32768, rlim.rlim_max);
-            new_cur_minimum = min(new_cur_minimum, (unsigned long)maxlimit);
+            new_cur_minimum = min(new_cur_minimum, (uint64_t)maxlimit);
         }
         if (rlim.rlim_cur != RLIM_INFINITY && rlim.rlim_cur < (rlim_t)new_cur_minimum)
             rlim.rlim_cur = (rlim_t)new_cur_minimum;
@@ -4214,7 +4214,7 @@ char *origbuf;
     } 
     else if (match_varname(buf, "SCREENMODE", 10)) 
     {
-        extern long amii_scrnmode;
+        extern int64_t amii_scrnmode;
 
         if (!stricmp(bufp, "req"))
             amii_scrnmode = 0xffffffff; /* Requester */
@@ -4615,7 +4615,7 @@ struct obj *obj;
         obj->ox = 0; /* index of main dungeon */
         obj->oy = 1; /* starting level number */
         obj->owornmask =
-            (long) (MIGR_WITH_HERO | MIGR_NOBREAK | MIGR_NOSCATTER);
+            (int64_t) (MIGR_WITH_HERO | MIGR_NOBREAK | MIGR_NOSCATTER);
     } else {
         (void) addinv(obj);
     }
@@ -5272,8 +5272,8 @@ const char *reason; /* explanation */
             int uid = getuid();
             char playmode = wizard ? 'D' : discover ? 'X' : CasualMode ? (ModernMode ? 'C' : 'R') : ModernMode ? 'M' : '-';
 
-            (void) fprintf(lfile, "%s %08ld %06ld %d %c: %s %s\n",
-                           version_string(buf), yyyymmdd(now), hhmmss(now),
+            (void) fprintf(lfile, "%s %08lld %06lld %d %c: %s %s\n",
+                           version_string(buf), (long long)yyyymmdd(now), (long long)hhmmss(now),
                            uid, playmode, type, reason);
 #endif /* !PANICLOG_FMT2 */
             (void) fclose(lfile);
@@ -5980,7 +5980,7 @@ const char* buffer;
                 if (*c1 == LLOG_SEP) *c1 = '_';
                 c1++;
             }
-            snprintf(tmpbuf, 1024, "lltype=%d%cplayer=%s%crole=%s%crace=%s%cgender=%s%calign=%s%cturns=%ld%crealtime=%ld%cstarttime=%ld%ccurtime=%ld%cmessage=%s\n",
+            snprintf(tmpbuf, 1024, "lltype=%d%cplayer=%s%crole=%s%crace=%s%cgender=%s%calign=%s%cturns=%lld%crealtime=%lld%cstarttime=%lld%ccurtime=%lld%cmessage=%s\n",
                 (ll_type & sysopt.livelog),
                 LLOG_SEP,
                 plname,
@@ -5993,12 +5993,12 @@ const char* buffer;
                 LLOG_SEP,
                 aligns[u.ualign.type == A_NONE ? 3 : 1 - u.ualign.type].filecode,
                 LLOG_SEP,
-                moves,
+                (long long)moves,
                 LLOG_SEP,
-                urealtime.realtime + (getnow() - urealtime.start_timing), LLOG_SEP,
-                (long)ubirthday,
+                (long long)(urealtime.realtime + ((int64_t)getnow() - (int64_t)urealtime.start_timing)), LLOG_SEP,
+                (long long)ubirthday,
                 LLOG_SEP,
-                (long)time(NULL),
+                (long long)time(NULL),
                 LLOG_SEP,
                 msgbuf);
 
@@ -6022,7 +6022,7 @@ const char* buffer UNUSED;
 
 void
 gamelog_add(glflags, gltime, str)
-long glflags, gltime;
+int64_t glflags, gltime;
 const char* str;
 {
     struct gamelog_line* tmp;
@@ -6077,9 +6077,9 @@ const char* str;
             Sprintf(cbuf, "%.3s %.3s %.3s %.3s XL:%d", urole.filecode,
                 urace.filecode, genders[Ufemale].filecode,
                 aligns[1 - u.ualign.type].filecode, u.ulevel);
-            long currenttime = get_current_game_duration();
+            int64_t currenttime = get_current_game_duration();
             char* duration = format_duration_with_units(currenttime);
-            Sprintf(postbuf, "%s (%s) %s, on T:%ld (%s) [%s]", plname, cbuf, str, moves, duration, mbuf);
+            Sprintf(postbuf, "%s (%s) %s, on T:%lld (%s) [%s]", plname, cbuf, str, (long long)moves, duration, mbuf);
             issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_ACHIEVEMENT, (int)ll_type, postbuf);
         }
     }
@@ -6114,7 +6114,7 @@ int final;
             continue;
         if (!eventidx++)
             putstr(win, ATR_START_TABLE | ATR_TABLE_HEADER, " Turn  ");
-        Sprintf(buf, "%5ld: %s", llmsg->turn, llmsg->text);
+        Sprintf(buf, "%5lld: %s", (long long)llmsg->turn, llmsg->text);
         putstr(win, ATR_INDENT_AT_COLON | ATR_TABLE_ROW | (eventidx == 1 ? ATR_START_TABLE_BODY : 0) | (eventidx == eventcnt ? (ATR_END_TABLE_BODY | ATR_END_TABLE) : 0), buf);
     }
     /* since start of game is logged as a major event, 'eventcnt' should
@@ -6135,7 +6135,7 @@ VA_DECL2(unsigned int, ll_type, const char*, fmt)
     VA_START(fmt);
     VA_INIT(fmt, char*);
     vsnprintf(ll_msgbuf, 512, fmt, VA_ARGS);
-    gamelog_add((long)ll_type, moves, ll_msgbuf);
+    gamelog_add((int64_t)ll_type, moves, ll_msgbuf);
     livelog_write_string(ll_type, ll_msgbuf);
     livelog_post_to_forum(ll_type, ll_msgbuf);
     VA_END();
@@ -6156,10 +6156,10 @@ char* buf;
     size_t slen, len = 0;
     char tmpbuf[BUFSZ];
     char verbuf[BUFSZ];
-    long uid;
+    int64_t uid;
     time_t now = getnow();
 
-    uid = (long)getuid();
+    uid = (int64_t)getuid();
 
     /*
      * Note: %t and %T assume that time_t is a 'long int' number of
@@ -6182,17 +6182,17 @@ char* buf;
                 Sprintf(tmpbuf, "%%");
                 break;
             case 't': /* game start, timestamp */
-                Sprintf(tmpbuf, "%lu", (unsigned long)ubirthday);
+                Sprintf(tmpbuf, "%llu", (unsigned long long)ubirthday);
                 break;
             case 'T': /* current time, timestamp */
-                Sprintf(tmpbuf, "%lu", (unsigned long)now);
+                Sprintf(tmpbuf, "%llu", (unsigned long long)now);
                 break;
             case 'd': /* game start, YYYYMMDDhhmmss */
-                Sprintf(tmpbuf, "%08ld%06ld",
-                    yyyymmdd(ubirthday), hhmmss(ubirthday));
+                Sprintf(tmpbuf, "%08lld%06lld",
+                    (long long)yyyymmdd(ubirthday), (long long)hhmmss(ubirthday));
                 break;
             case 'D': /* current time, YYYYMMDDhhmmss */
-                Sprintf(tmpbuf, "%08ld%06ld", yyyymmdd(now), hhmmss(now));
+                Sprintf(tmpbuf, "%08lld%06lld", (long long)yyyymmdd(now), (long long)hhmmss(now));
                 break;
             case 'v': /* version, eg. "3.6.2-0" */
                 Sprintf(tmpbuf, "%s", version_string(verbuf));
@@ -6334,10 +6334,10 @@ char* wishstring;
 
     fp = fopen_datafile(wish_tracker_file, "a+", LEVELPREFIX);
     if (fp) {
-        Sprintf(bigbuf, "%s wished for %s (%ld%s wish, on T:%ld on %08ld at %06ld hrs)\n",
+        Sprintf(bigbuf, "%s wished for %s (%ld%s wish, on T:%lld on %08lld at %06lld hrs)\n",
             plname, wishstring, u.uconduct.wishes,
             u.uconduct.wishes == 1 ? "st" : u.uconduct.wishes == 2 ? "nd" :
-            u.uconduct.wishes == 3 ? "rd" : "th", moves, yyyymmdd(now), hhmmss(now));
+            u.uconduct.wishes == 3 ? "rd" : "th", (long long)moves, (long long)yyyymmdd(now), (long long)hhmmss(now));
         fwrite(bigbuf, strlen(bigbuf), 1, fp);
         fclose(fp);
     }

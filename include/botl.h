@@ -31,7 +31,7 @@ Astral Plane \GXXXXNNNN:123456 HP:1234(1234) Pw:1234(1234) AC:-127
 
 struct condmap {
     const char *id;
-    unsigned long bitmask;
+    uint64_t bitmask;
 };
 
 enum statusfields {
@@ -111,7 +111,7 @@ enum bl_conditions {
 /* clang-format on */
 
 struct condition_t {
-    long mask;
+    int64_t mask;
     const char* text[3]; /* 3: potential display vals, progressively shorter */
 };
 extern const struct condition_t condition_definitions[NUM_BL_CONDITIONS];

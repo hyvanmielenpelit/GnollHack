@@ -96,7 +96,7 @@ E int NDECL(Gem_nhgetch);
 E int FDECL(Gem_nh_poskey, (int *, int *, int *));
 E void NDECL(Gem_nhbell);
 E int NDECL(Gem_doprev_message);
-E char FDECL(Gem_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, const char*, unsigned long));
+E char FDECL(Gem_yn_function_ex, (int, int, int, int, const char *, const char *, const char *, CHAR_P, const char*, const char*, uint64_t));
 E void FDECL(Gem_getlin_ex, (int, int, int, const char *, char *, const char*, const char*, const char*));
 E int NDECL(Gem_get_ext_cmd);
 E void FDECL(Gem_number_pad, (int));
@@ -104,7 +104,7 @@ E void NDECL(Gem_delay_output);
 E void FDECL(Gem_delay_output_milliseconds, (int));
 E void FDECL(Gem_delay_output_intervals, (int));
 #ifdef CHANGE_COLOR
-E void FDECL(Gem_change_color, (int color, long rgb, int reverse));
+E void FDECL(Gem_change_color, (int color, int64_t rgb, int reverse));
 E char *NDECL(Gem_get_color_string);
 #endif
 

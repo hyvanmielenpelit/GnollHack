@@ -55,7 +55,7 @@
  */
 
 STATIC_DCL boolean FDECL(cant_wield_corpse, (struct obj *));
-STATIC_DCL int FDECL(ready_weapon, (struct obj *, long));
+STATIC_DCL int FDECL(ready_weapon, (struct obj *, int64_t));
 
 /* used by will_weld() */
 /* probably should be renamed */
@@ -86,7 +86,7 @@ STATIC_DCL int FDECL(ready_weapon, (struct obj *, long));
 void
 setuwep(obj, mask)
 register struct obj* obj;
-long mask;
+int64_t mask;
 {
     setuwepcore(obj, mask, TRUE);
 }
@@ -94,7 +94,7 @@ long mask;
 void
 setuwepquietly(obj, mask)
 register struct obj* obj;
-long mask;
+int64_t mask;
 {
     setuwepcore(obj, mask, FALSE);
 }
@@ -102,7 +102,7 @@ long mask;
 void
 setuwepcore(obj, mask, verbose)
 register struct obj *obj;
-long mask;
+int64_t mask;
 boolean verbose;
 {
     struct obj* olduwep = (struct obj*)0;
@@ -200,7 +200,7 @@ struct obj *obj;
 STATIC_OVL int
 ready_weapon(wep, mask)
 struct obj *wep;
-long mask;
+int64_t mask;
 {
     /* Separated function so swapping works easily */
     int res = 0;
@@ -288,7 +288,7 @@ long mask;
 
             //Kludge removed by Janne Gustafsson; items may now be identified by setuwep
             /*
-            long dummy = wep->owornmask;
+            int64_t dummy = wep->owornmask;
 
             wep->owornmask |= W_WEP;
             if (is_obj_tethered_weapon(wep, wep->owornmask))
@@ -339,7 +339,7 @@ register struct obj *obj;
 void
 setuswapwep(obj, mask)
 register struct obj *obj;
-long mask;
+int64_t mask;
 {
     setworncore(obj, mask, TRUE);
     return;
@@ -358,7 +358,7 @@ register struct obj* obj;
 void
 setuswapwepquietly(obj, mask)
 register struct obj* obj;
-long mask;
+int64_t mask;
 {
     setworncore(obj, mask, FALSE);
     return;
@@ -474,7 +474,7 @@ struct obj* wep;
             return 0;
         }
 
-        long mask = 0;
+        int64_t mask = 0;
         char qbuf[BUFSZ] = "";
         if (wep == &zeroobj)
         {
@@ -691,7 +691,7 @@ dounwield()
     if (!otmp || !(otmp->owornmask & W_WEAPON))
         return 0;
 
-    long mask = 0L;
+    int64_t mask = 0L;
     
     if (otmp == uwep)
         mask = W_WEP;
@@ -760,7 +760,7 @@ dounwield()
 
 int
 dosingleswapweapon(swap_wep_mask, swap_target_mask)
-long swap_wep_mask, swap_target_mask; // swap_wep_mask = mask of original weapon in swapwep, swap_target_mask is the mask it is going to swapped to
+int64_t swap_wep_mask, swap_target_mask; // swap_wep_mask = mask of original weapon in swapwep, swap_target_mask is the mask it is going to swapped to
 {
     register struct obj *oldwep, * oldswap;
     register struct obj *wep = (struct obj*)0, *altwep = (struct obj*)0, *swapwep = (struct obj*)0, *altswapwep = (struct obj*)0;
@@ -1249,8 +1249,8 @@ dowieldquiver()
         /* offer to split stack if wielding more than 1 */
         if (uwep->quan > 1L && inv_cnt(FALSE) < 52 && splittable(uwep))
         {
-            Sprintf(qbuf, "You are wielding %ld %s.  Ready %ld of them?",
-                    uwep->quan, simpleonames(uwep), uwep->quan - 1L);
+            Sprintf(qbuf, "You are wielding %lld %s.  Ready %lld of them?",
+                (long long)uwep->quan, simpleonames(uwep), (long long)uwep->quan - 1);
             switch (ynq(qbuf)) 
             {
             case 'q':
@@ -1301,8 +1301,8 @@ dowieldquiver()
         /* offer to split stack if wielding more than 1 */
         if (uarms->quan > 1L && inv_cnt(FALSE) < 52 && splittable(uarms))
         {
-            Sprintf(qbuf, "You are wielding %ld %s.  Ready %ld of them?",
-                uarms->quan, simpleonames(uarms), uarms->quan - 1L);
+            Sprintf(qbuf, "You are wielding %lld %s.  Ready %lld of them?",
+                (long long)uarms->quan, simpleonames(uarms), (long long)uarms->quan - 1);
             switch (ynq(qbuf))
             {
             case 'q':
@@ -1344,10 +1344,10 @@ dowieldquiver()
         if (uswapwep->quan > 1L && inv_cnt(FALSE) < 52
             && splittable(uswapwep)) 
         {
-            Sprintf(qbuf, "%s %ld %s.  Ready %ld of them?",
+            Sprintf(qbuf, "%s %lld %s.  Ready %lld of them?",
                     "Your alternate weapon is",
-                    uswapwep->quan, simpleonames(uswapwep),
-                    uswapwep->quan - 1L);
+                    (long long)uswapwep->quan, simpleonames(uswapwep),
+                    (long long)uswapwep->quan - 1);
             switch (ynq(qbuf)) 
             {
             case 'q':
@@ -1390,10 +1390,10 @@ dowieldquiver()
         if (uswapwep2->quan > 1L && inv_cnt(FALSE) < 52
             && splittable(uswapwep2)) 
         {
-            Sprintf(qbuf, "%s %ld %s.  Ready %ld of them?",
+            Sprintf(qbuf, "%s %lld %s.  Ready %lld of them?",
                 "Your alternate weapon is",
-                uswapwep2->quan, simpleonames(uswapwep2),
-                uswapwep2->quan - 1L);
+                (long long)uswapwep2->quan, simpleonames(uswapwep2),
+                (long long)uswapwep2->quan - 1);
             switch (ynq(qbuf))
             {
             case 'q':
@@ -1597,8 +1597,8 @@ const char *verb; /* "rub",&c */
     }
     else
     {
-        long wepslot = selected_hand_is_right ? W_WEP : W_WEP2;
-        long swapwepslot = selected_hand_is_right ? W_SWAPWEP : W_SWAPWEP2;
+        int64_t wepslot = selected_hand_is_right ? W_WEP : W_WEP2;
+        int64_t swapwepslot = selected_hand_is_right ? W_SWAPWEP : W_SWAPWEP2;
 
         /* if not two-weaponing, unwield first if the obj is uarms or swapweapon2, so that it can be wielded normally */
         if (!u.twoweap && uarms == obj)
@@ -2058,7 +2058,7 @@ void
 weldmsg(obj)
 register struct obj *obj;
 {
-    long savewornmask;
+    int64_t savewornmask;
 
     savewornmask = obj->owornmask;
     play_sfx_sound(SFX_GENERAL_WELDED);

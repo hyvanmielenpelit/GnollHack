@@ -743,7 +743,7 @@ struct monst* mattacker;
                 || ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG) && (ptr->mflags3 & objects[otyp].oc_target_permissions))
                 || ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M4_FLAG) && (ptr->mflags4 & objects[otyp].oc_target_permissions))
                 || ((objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M5_FLAG) && (ptr->mflags5 & objects[otyp].oc_target_permissions))
-                || (((objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M1_FLAG | O3_TARGET_PERMISSION_IS_M2_FLAG | O3_TARGET_PERMISSION_IS_M3_FLAG | O3_TARGET_PERMISSION_IS_M4_FLAG)) == 0) && ((unsigned long)ptr->mlet == objects[otyp].oc_target_permissions))
+                || (((objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M1_FLAG | O3_TARGET_PERMISSION_IS_M2_FLAG | O3_TARGET_PERMISSION_IS_M3_FLAG | O3_TARGET_PERMISSION_IS_M4_FLAG)) == 0) && ((uint64_t)ptr->mlet == objects[otyp].oc_target_permissions))
                 || ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_CHAOTIC) && mon->data->maligntyp < 0)
                 || ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_NEUTRAL) && mon->data->maligntyp == 0)
                 || ((objects[otyp].oc_flags3 & O3_PERMTTED_TARGET_LAWFUL) && mon->data->maligntyp > 0)
@@ -760,15 +760,15 @@ struct monst* mattacker;
 int
 special_dmgval(magr, mdef, armask, silverhit_p)
 struct monst *magr, *mdef;
-long armask; /* armor mask, multiple bits accepted for W_ARMC|W_ARM|W_ARMU
+int64_t armask; /* armor mask, multiple bits accepted for W_ARMC|W_ARM|W_ARMU
               * or W_ARMG|W_RINGL|W_RINGR only */
-long *silverhit_p; /* output flag mask for silver bonus */
+int64_t *silverhit_p; /* output flag mask for silver bonus */
 {
     struct obj *obj;
     struct permonst *ptr = mdef->data;
     boolean left_ring = !!(armask & W_RINGL),
             right_ring = !!(armask & W_RINGR);
-    long silverhit = 0L;
+    int64_t silverhit = 0L;
     int bonus = 0;
 
     armask = armask & ~W_RING;
@@ -853,7 +853,7 @@ void
 silver_sears(magr, mdef, silverhit)
 struct monst *magr UNUSED;
 struct monst *mdef;
-long silverhit;
+int64_t silverhit;
 {
     char rings[20]; /* plenty of room for "rings" */
     int ltyp = ((uleft && (silverhit & W_RINGL) != 0L)

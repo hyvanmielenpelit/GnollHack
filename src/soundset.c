@@ -17408,7 +17408,7 @@ enum monster_sound_types sound_type;
 void
 play_simple_player_sound_with_flags(sound_type, play_flags)
 enum monster_sound_types sound_type;
-unsigned long play_flags;
+uint64_t play_flags;
 {
     /* Do not use for hit sounds */
     if (!iflags.using_gui_sounds || Deaf)
@@ -17459,7 +17459,7 @@ enum monster_sound_types sound_type;
 int line_id;
 enum sound_play_groups play_group;
 enum immediate_sound_types sfx_sound_type;
-unsigned long pflags;
+uint64_t pflags;
 {
     /* Do not use for hit sounds */
     if (!iflags.using_gui_sounds || Deaf)
@@ -17568,7 +17568,7 @@ void
 play_simple_monster_sound_with_flags(mon, sound_type, play_flags)
 struct monst* mon;
 enum monster_sound_types sound_type;
-unsigned long play_flags;
+uint64_t play_flags;
 {
     /* Do not use for hit sounds */
     if (!iflags.using_gui_sounds || Deaf)
@@ -18106,7 +18106,7 @@ enum sfx_sound_types sfx_sound_id;
 void
 play_sfx_sound_with_flags(sfx_sound_id, play_flags)
 enum sfx_sound_types sfx_sound_id;
-unsigned long play_flags;
+uint64_t play_flags;
 {
     if (!iflags.using_gui_sounds)
         return;
@@ -19104,7 +19104,7 @@ void
 sound_stats(hdrfmt, hdrbuf, count, size)
 const char* hdrfmt;
 char* hdrbuf;
-long* count;
+int64_t* count;
 size_t* size;
 {
     sound_source* ss;
@@ -19500,7 +19500,7 @@ begin_sound(obj, already_making_noise)
 struct obj* obj;
 boolean already_making_noise;
 {
-    long turns = 0;
+    int64_t turns = 0;
     boolean do_timer = TRUE;
 
     obj->makingsound = 1;
@@ -21304,7 +21304,7 @@ void
 play_voice_shopkeeper_for_you(shkp, honorific_idx, base_line_idx, quan)
 struct monst* shkp;
 int honorific_idx, base_line_idx;
-long quan;
+int64_t quan;
 {
     if (!iflags.using_gui_sounds || !shkp || !has_eshk(shkp) || Deaf)
         return;
@@ -21357,7 +21357,7 @@ long quan;
 void
 play_voice_shopkeeper_pay_before_buying(shkp, obj_quan, save_quan)
 struct monst* shkp;
-long obj_quan, save_quan;
+int64_t obj_quan, save_quan;
 {
     if (!iflags.using_gui_sounds || !shkp || !has_eshk(shkp) || Deaf)
         return;
@@ -21881,7 +21881,7 @@ int line_id;
 enum sound_play_groups play_group;
 enum immediate_sound_types sfx_sound_type;
 double minimum_volume;
-unsigned long pflags;
+uint64_t pflags;
 {
     play_monster_simply_indexed_sound(mtmp, sound_id, line_id, play_group, sfx_sound_type, minimum_volume, "LineIndex", pflags);
 }
@@ -21894,7 +21894,7 @@ int line_id;
 enum sound_play_groups play_group;
 enum immediate_sound_types sfx_sound_type;
 double minimum_volume;
-unsigned long pflags;
+uint64_t pflags;
 {
     play_monster_simply_indexed_sound(mtmp, sound_id, line_id, play_group, sfx_sound_type, minimum_volume, "MsgIndex", pflags);
 }
@@ -21909,7 +21909,7 @@ enum sound_play_groups play_group;
 enum immediate_sound_types sfx_sound_type;
 double minimum_volume;
 const char* index_name;
-unsigned long pflags;
+uint64_t pflags;
 {
     if (!iflags.using_gui_sounds || !mtmp || Deaf)
         return;
@@ -21971,7 +21971,7 @@ void
 play_monster_special_dialogue_line_with_flags(mtmp, line_id, pflags)
 struct monst* mtmp;
 int line_id;
-unsigned long pflags;
+uint64_t pflags;
 {
     play_monster_msg_indexed_sound(mtmp, MONSTER_SOUND_TYPE_SPECIAL_DIALOGUE_LINE, line_id, SOUND_PLAY_GROUP_LONG, IMMEDIATE_SOUND_DIALOGUE, 0.15f, pflags);
 }
@@ -21996,7 +21996,7 @@ void
 play_monster_special_sound_with_flags(mtmp, line_id, pflags)
 struct monst* mtmp;
 int line_id;
-unsigned long pflags;
+uint64_t pflags;
 {
     play_monster_msg_indexed_sound(mtmp, MONSTER_SOUND_TYPE_SPECIAL_SOUND, line_id, SOUND_PLAY_GROUP_NORMAL, IMMEDIATE_SOUND_SFX, 0.0f, pflags);
 }

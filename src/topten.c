@@ -26,7 +26,7 @@
  * which reads the scores will ignore it.
  */
 #ifdef UPDATE_RECORD_IN_PLACE
-STATIC_VAR long final_fpos;
+STATIC_VAR int64_t final_fpos;
 #endif
 
 #define done_stopprint program_state.stopprint
@@ -43,13 +43,13 @@ STATIC_VAR long final_fpos;
 struct toptenentry {
     struct toptenentry *tt_next;
 #ifdef UPDATE_RECORD_IN_PLACE
-    long fpos;
+    int64_t fpos;
 #endif
-    long points;
+    int64_t points;
     int deathdnum, deathlev;
     int maxlvl, hp, maxhp, deaths;
     int ver_major, ver_minor, patchlevel;
-    long deathdate, birthdate;
+    int64_t deathdate, birthdate;
     int uid;
     char plrole[ROLESZ + 1];
     char plrace[ROLESZ + 1];
@@ -72,7 +72,7 @@ STATIC_DCL void FDECL(writeentry, (FILE *, struct toptenentry *));
 #ifdef XLOGFILE
 STATIC_DCL void FDECL(print_xlog_entry, (char*, struct toptenentry*, int));
 STATIC_DCL void FDECL(writexlentry, (FILE *, struct toptenentry *, int));
-STATIC_DCL long NDECL(encodexlogflags);
+STATIC_DCL int64_t NDECL(encodexlogflags);
 STATIC_DCL void FDECL(add_achieveX, (char*, const char*, BOOLEAN_P));
 STATIC_DCL char* NDECL(encode_extended_achievements);
 STATIC_DCL char* NDECL(encode_extended_conducts);
@@ -341,10 +341,10 @@ struct toptenentry *tt;
 #endif
 }
 
-long
+int64_t
 encodeconduct()
 {
-    long e = 0L;
+    int64_t e = 0L;
 
     if (!u.uconduct.food)
         e |= 1L << 0;
@@ -378,10 +378,10 @@ encodeconduct()
     return e;
 }
 
-long
+int64_t
 encodeachieve()
 {
-    long r = 0L;
+    int64_t r = 0L;
 
     if (u.uachieve.bell)
         r |= 1L << 0;
@@ -480,13 +480,13 @@ int how;
 //#else
 //    Sprintf(eos(buffer), "%cplatform=%s", XLOG_SEP, "unknown");
 //#endif
-    Sprintf(eos(buffer), "%cpoints=%ld%cdeathdnum=%d%cdeathlev=%d", XLOG_SEP,
-        tt->points, XLOG_SEP, tt->deathdnum, XLOG_SEP, tt->deathlev);
+    Sprintf(eos(buffer), "%cpoints=%lld%cdeathdnum=%d%cdeathlev=%d", XLOG_SEP,
+        (long long)tt->points, XLOG_SEP, tt->deathdnum, XLOG_SEP, tt->deathlev);
     Sprintf(eos(buffer), "%cmaxlvl=%d%chp=%d%cmaxhp=%d", XLOG_SEP, tt->maxlvl,
         XLOG_SEP, tt->hp, XLOG_SEP, tt->maxhp);
-    Sprintf(eos(buffer), "%cdeaths=%d%cdeathdate=%ld%cbirthdate=%ld%cuid=%d",
-        XLOG_SEP, tt->deaths, XLOG_SEP, tt->deathdate, XLOG_SEP,
-        tt->birthdate, XLOG_SEP, tt->uid);
+    Sprintf(eos(buffer), "%cdeaths=%d%cdeathdate=%lld%cbirthdate=%lld%cuid=%d",
+        XLOG_SEP, tt->deaths, XLOG_SEP, (long long)tt->deathdate, XLOG_SEP,
+        (long long)tt->birthdate, XLOG_SEP, tt->uid);
     Sprintf(eos(buffer), "%crole=%s%crace=%s%cgender=%s%calign=%s", XLOG_SEP,
         tt->plrole, XLOG_SEP, tt->plrace, XLOG_SEP, tt->plgend, XLOG_SEP,
         tt->plalign);
@@ -497,19 +497,19 @@ int how;
     if (multi)
         Sprintf(eos(buffer), "%cwhile=%s", XLOG_SEP,
             multi_reason ? multi_reason : "helpless");
-    Sprintf(eos(buffer), "%cconduct=0x%lx%cturns=%ld%cachieve=0x%lx", XLOG_SEP,
-        encodeconduct(), XLOG_SEP, moves, XLOG_SEP, encodeachieve());
+    Sprintf(eos(buffer), "%cconduct=0x%llx%cturns=%lld%cachieve=0x%llx", XLOG_SEP,
+        (long long)encodeconduct(), XLOG_SEP, (long long)moves, XLOG_SEP, (long long)encodeachieve());
     Sprintf(eos(buffer), "%cachieveX=%s", XLOG_SEP, encode_extended_achievements());
     Sprintf(eos(buffer), "%cconductX=%s", XLOG_SEP, encode_extended_conducts());
     lock_thread_lock();
-    Sprintf(eos(buffer), "%crealtime=%ld%cstarttime=%ld%cendtime=%ld%cstarttimeUTC=%ld%cendtimeUTC=%ld", XLOG_SEP,
-        (long)urealtime.realtime, XLOG_SEP,
-        (long)ubirthday, XLOG_SEP, (long)urealtime.finish_time, XLOG_SEP, (long)convert2UTC(ubirthday), XLOG_SEP, (long)convert2UTC(urealtime.finish_time));
+    Sprintf(eos(buffer), "%crealtime=%lld%cstarttime=%lld%cendtime=%lld%cstarttimeUTC=%lld%cendtimeUTC=%lld", XLOG_SEP,
+        (long long)urealtime.realtime, XLOG_SEP,
+        (long long)ubirthday, XLOG_SEP, (long long)urealtime.finish_time, XLOG_SEP, (long long)convert2UTC(ubirthday), XLOG_SEP, (long long)convert2UTC(urealtime.finish_time));
     unlock_thread_lock();
     Sprintf(eos(buffer), "%cgender0=%s%calign0=%s", XLOG_SEP,
         genders[flags.initgend].filecode, XLOG_SEP,
         aligns[1 - u.ualignbase[A_ORIGINAL]].filecode);
-    Sprintf(eos(buffer), "%cflags=0x%lx", XLOG_SEP, encodexlogflags());
+    Sprintf(eos(buffer), "%cflags=0x%llx", XLOG_SEP, (long long)encodexlogflags());
     Sprintf(eos(buffer), "%cdifficulty=%d", XLOG_SEP, (int)context.game_difficulty);
     Sprintf(eos(buffer), "%cmode=%s", XLOG_SEP, wizard ? "debug" : discover ? "explore" : CasualMode ? (ModernMode ? "casual" : "reloadable") : ModernMode ? "modern" : "normal");
     Sprintf(eos(buffer), "%cscoring=%s", XLOG_SEP, discover || CasualMode || flags.non_scoring ? "no" : "yes");
@@ -523,7 +523,7 @@ int how;
 #endif
     );
 #endif
-    Sprintf(eos(buffer), "%ccollapse=%lu", XLOG_SEP, n_game_recoveries);
+    Sprintf(eos(buffer), "%ccollapse=%llu", XLOG_SEP, (unsigned long long)n_game_recoveries);
     Strcat(buffer, "\n");
 #undef XLOG_SEP
 }
@@ -588,8 +588,8 @@ int how;
 //    Fprintf(rfile, "%cconductX=%s", XLOG_SEP, encode_extended_conducts());
 //    lock_thread_lock();
 //    Fprintf(rfile, "%crealtime=%ld%cstarttime=%ld%cendtime=%ld", XLOG_SEP,
-//            (long) urealtime.realtime, XLOG_SEP,
-//            (long) ubirthday, XLOG_SEP, (long) urealtime.finish_time);
+//            (int64_t) urealtime.realtime, XLOG_SEP,
+//            (int64_t) ubirthday, XLOG_SEP, (int64_t) urealtime.finish_time);
 //    unlock_thread_lock();
 //    Fprintf(rfile, "%cgender0=%s%calign0=%s", XLOG_SEP,
 //            genders[flags.initgend].filecode, XLOG_SEP,
@@ -602,10 +602,10 @@ int how;
 //#undef XLOG_SEP
 }
 
-STATIC_OVL long
+STATIC_OVL int64_t
 encodexlogflags()
 {
-    long e = 0L;
+    int64_t e = 0L;
 
     if (wizard)
         e |= 1L << 0;
@@ -918,9 +918,8 @@ time_t when;
                 HUP {
                     char pbuf[BUFSZ];
 
-                    Sprintf(pbuf,
-                        "You didn't beat your previous score of %ld points.",
-                            t1->points);
+                    Sprintf(pbuf, "You didn't beat your previous score of %lld points.",
+                        (long long)t1->points);
                     topten_print(pbuf);
                     topten_print("");
                 }
@@ -1079,7 +1078,7 @@ boolean so;
     else
         Strcat(linebuf, "   ");
 
-    Sprintf(eos(linebuf), " %10ld  %.10s", t1->points ? t1->points : u.u_gamescore,
+    Sprintf(eos(linebuf), " %10lld  %.10s", (long long)(t1->points ? t1->points : u.u_gamescore),
             t1->name);
     Sprintf(eos(linebuf), "-%s", t1->plrole);
     if (t1->plrace[0] != '?')

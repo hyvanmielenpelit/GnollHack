@@ -521,14 +521,14 @@ unsigned setvalue;
     return (regs.x.dx);
 }
 
-unsigned long
+uint64_t
 sys_random_seed(VOID_ARGS)
 {
-    unsigned long ourseed = 0UL;
+    uint64_t ourseed = 0UL;
     time_t datetime = 0;
 
     (void) time(&datetime);
-    ourseed = (unsigned long) datetime;
+    ourseed = (uint64_t) datetime;
     return ourseed;
 }
 

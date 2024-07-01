@@ -905,14 +905,14 @@ boolean caseblind;
 
 /* TIME_type: type of the argument to time(); we actually use &(time_t) */
 #if defined(BSD) && !defined(POSIX_TYPES)
-#define TIME_type long *
+#define TIME_type int64_t *
 #else
 #define TIME_type time_t *
 #endif
 /* LOCALTIME_type: type of the argument to localtime() */
 #if (defined(ULTRIX) && !(defined(ULTRIX_PROTO) || defined(NHSTDC))) \
     || (defined(BSD) && !defined(POSIX_TYPES))
-#define LOCALTIME_type long *
+#define LOCALTIME_type int64_t *
 #else
 #define LOCALTIME_type time_t *
 #endif
@@ -928,7 +928,7 @@ STATIC_DCL struct tm *NDECL(getlt);
 
 STATIC_OVL void
 set_random(seed, fn)
-unsigned long seed;
+uint64_t seed;
 int FDECL((*fn), (int));
 {
     init_isaac64(seed, fn);
@@ -939,7 +939,7 @@ int FDECL((*fn), (int));
 /*ARGSUSED*/
 STATIC_OVL void
 set_random(seed, fn)
-unsigned long seed;
+uint64_t seed;
 int FDECL((*fn), (int)) UNUSED;
 {
     /* the types are different enough here that sweeping the different
@@ -956,7 +956,7 @@ int FDECL((*fn), (int)) UNUSED;
         srandom((int) seed);
 #  else
 #   ifdef UNIX /* system srand48() */
-    srand48((long) seed);
+    srand48((int64_t) seed);
 #   else       /* poor quality system routine */
     srand((int) seed);
 #   endif
@@ -969,7 +969,7 @@ int FDECL((*fn), (int)) UNUSED;
 /* An appropriate version of this must always be provided in
    port-specific code somewhere. It returns a number suitable
    as seed for the random number generator */
-extern unsigned long NDECL(sys_random_seed);
+extern uint64_t NDECL(sys_random_seed);
 
 /*
  * Initializes the random number generator.
@@ -1049,11 +1049,11 @@ time_t date;
 }
 #endif
 
-long
+int64_t
 yyyymmdd(date)
 time_t date;
 {
-    long datenum;
+    int64_t datenum;
     struct tm *lt;
 
     if (date == 0)
@@ -1064,21 +1064,21 @@ time_t date;
     /* just in case somebody's localtime supplies (year % 100)
        rather than the expected (year - 1900) */
     if (lt->tm_year < 70)
-        datenum = (long) lt->tm_year + 2000L;
+        datenum = (int64_t) lt->tm_year + 2000L;
     else
-        datenum = (long) lt->tm_year + 1900L;
+        datenum = (int64_t) lt->tm_year + 1900L;
     /* yyyy --> yyyymm */
-    datenum = datenum * 100L + (long) (lt->tm_mon + 1);
+    datenum = datenum * 100L + (int64_t) (lt->tm_mon + 1);
     /* yyyymm --> yyyymmdd */
-    datenum = datenum * 100L + (long) lt->tm_mday;
+    datenum = datenum * 100L + (int64_t) lt->tm_mday;
     return datenum;
 }
 
-long
+int64_t
 hhmmss(date)
 time_t date;
 {
-    long timenum;
+    int64_t timenum;
     struct tm *lt;
 
     if (date == 0)
@@ -1094,7 +1094,7 @@ char *
 yyyymmddhhmmss(date)
 time_t date;
 {
-    long datenum;
+    int64_t datenum;
     static char datestr[15];
     struct tm *lt;
 
@@ -1103,17 +1103,17 @@ time_t date;
     else
 #if (defined(ULTRIX) && !(defined(ULTRIX_PROTO) || defined(NHSTDC))) \
     || defined(BSD)
-        lt = localtime((long *) (&date));
+        lt = localtime((int64_t *) (&date));
 #else
         lt = localtime(&date);
 #endif
     /* just in case somebody's localtime supplies (year % 100)
        rather than the expected (year - 1900) */
     if (lt->tm_year < 70)
-        datenum = (long) lt->tm_year + 2000L;
+        datenum = (int64_t) lt->tm_year + 2000L;
     else
-        datenum = (long) lt->tm_year + 1900L;
-    Sprintf(datestr, "%04ld%02d%02d%02d%02d%02d", datenum, lt->tm_mon + 1,
+        datenum = (int64_t) lt->tm_year + 1900L;
+    Sprintf(datestr, "%04lld%02d%02d%02d%02d%02d", (long long)datenum, lt->tm_mon + 1,
             lt->tm_mday, lt->tm_hour, lt->tm_min, lt->tm_sec);
     debugpline1("yyyymmddhhmmss() produced date string %s", datestr);
     return datestr;
@@ -1122,22 +1122,22 @@ time_t date;
 void
 print_realtime(buf, realtime)
 char* buf;
-long realtime;
+int64_t realtime;
 {
     if (!buf)
         return;
 
-    long hours = realtime / (60 * 60);
-    long minutes = (realtime % (60 * 60)) / 60;
-    long seconds = realtime - hours * 60 * 60 - minutes * 60;
+    int64_t hours = realtime / (60 * 60);
+    int64_t minutes = (realtime % (60 * 60)) / 60;
+    int64_t seconds = realtime - hours * 60 * 60 - minutes * 60;
 
     char hourbuf[BUFSZ] = "", minutebuf[BUFSZ] = "";
     if (hours > 0)
-        Sprintf(hourbuf, "%ld hour%s", hours, plur(hours));
+        Sprintf(hourbuf, "%lld hour%s", (long long)hours, plur(hours));
     if (minutes > 0)
-        Sprintf(minutebuf, "%s%ld minute%s", *hourbuf ? ", " : "", minutes, plur(minutes));
+        Sprintf(minutebuf, "%s%lld minute%s", *hourbuf ? ", " : "", (long long)minutes, plur(minutes));
 
-    Sprintf(buf, "%s%s%s%ld second%s", hourbuf, minutebuf, *hourbuf || *minutebuf ? " and " : "", seconds, plur(seconds));
+    Sprintf(buf, "%s%s%s%lld second%s", hourbuf, minutebuf, *hourbuf || *minutebuf ? " and " : "", (long long)seconds, plur(seconds));
 }
 
 time_t

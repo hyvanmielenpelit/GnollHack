@@ -88,7 +88,7 @@ struct save_game_stats {
     xchar dlevel;
     schar depth;
     schar game_difficulty;
-    long umoves;
+    int64_t umoves;
     boolean debug_mode;
     boolean explore_mode;
     boolean modern_mode;
@@ -97,7 +97,7 @@ struct save_game_stats {
     time_t time_stamp;
 
     /* Other information */
-    unsigned long num_recoveries;
+    uint64_t num_recoveries;
 };
 
 #define SAVEFLAGS_NONE              0x00

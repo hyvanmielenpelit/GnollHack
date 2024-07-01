@@ -15,7 +15,7 @@
 #endif
 
 extern int FDECL(GnollHackMain, (int, char**));
-extern void FDECL(set_wincaps, (unsigned long, unsigned long));
+extern void FDECL(set_wincaps, (uint64_t, uint64_t));
 
 DLLEXPORT void GetGlyph2Tile(int** gl2ti_ptr, int* size_ptr)
 {
@@ -237,12 +237,12 @@ DLLEXPORT const char* LibGetVersionId(VOID_ARGS)
     return VERSION_ID;
 }
 
-DLLEXPORT unsigned long LibGetVersionNumber(VOID_ARGS)
+DLLEXPORT uint64_t LibGetVersionNumber(VOID_ARGS)
 {
     return VERSION_NUMBER;
 }
 
-DLLEXPORT unsigned long LibGetVersionCompatibility(VOID_ARGS)
+DLLEXPORT uint64_t LibGetVersionCompatibility(VOID_ARGS)
 {
     return EARLIEST_COMPATIBLE_VERSION_NUMBER;
 }
@@ -289,8 +289,8 @@ char _dumplogbuf[BUFSZ];
 DLLEXPORT char* LibDumplogDateString(startdate)
 long startdate;
 {
-    Sprintf(_dumplogbuf, "%08ld%06ld",
-        yyyymmdd(startdate), hhmmss(startdate));
+    Sprintf(_dumplogbuf, "%08lld%06lld",
+        (long long)yyyymmdd(startdate), (long long)hhmmss(startdate));
 
     return _dumplogbuf;
 }
@@ -359,7 +359,7 @@ int glyph;
 
 DLLEXPORT int LibZapGlyphToCornerGlyph(adjglyph, adjflags, source_dir)
 int adjglyph;
-unsigned long adjflags;
+uint64_t adjflags;
 int source_dir;
 {
     return zap_glyph_to_corner_glyph(adjglyph, adjflags, source_dir);
@@ -561,7 +561,7 @@ DLLEXPORT int
 LibIncreaseFileDescriptorLimitToAtLeast(int min_cur)
 {
 #if defined(UNIX) && defined (GNH_MOBILE)
-    return increase_file_descriptor_limit_to_at_least((unsigned long)min_cur);
+    return increase_file_descriptor_limit_to_at_least((uint64_t)min_cur);
 #else
     return 0;
 #endif
@@ -651,9 +651,9 @@ DLLEXPORT int RunGnollHack(
     char* cmdlineargs,
     char* preset_player_name,
     char* last_used_player_name,
-    unsigned long runflags,
-    unsigned long wincap1,
-    unsigned long wincap2,
+    uint64_t runflags,
+    uint64_t wincap1,
+    uint64_t wincap2,
     InitWindowsCallback callback_init_nhwindows,
     PlayerSelectionCallback callback_player_selection,
     AskNameCallback callback_askname,

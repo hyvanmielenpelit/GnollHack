@@ -66,7 +66,7 @@ const struct condition_t condition_definitions[NUM_BL_CONDITIONS] = {
 STATIC_OVL NEARDATA size_t mrank_sz = 0; /* loaded by max_rank_sz (from u_init) */
 STATIC_DCL void NDECL(bot_via_windowport);
 STATIC_DCL void NDECL(stat_update_time);
-STATIC_DCL char* FDECL(conditionbitmask2str, (unsigned long));
+STATIC_DCL char* FDECL(conditionbitmask2str, (uint64_t));
 
 STATIC_VAR struct _status_hilite_line_str* status_hilite_str = 0;
 STATIC_VAR int status_hilite_str_id = 0;
@@ -155,13 +155,13 @@ do_statusline1()
     }
     else
     {
-        long money;
+        int64_t money;
         if ((money = money_cnt(invent)) < 0L)
             money = 0L;
-        Sprintf(nb = eos(nb), " %s:%-2ld",
+        Sprintf(nb = eos(nb), " %s:%-2lld",
             (iflags.in_dumplog || iflags.invis_goldsym) ? "$"
             : encglyph(objnum_to_glyph(GOLD_PIECE)),
-            min(money, 999999L));
+            (long long)min(money, 999999L));
     }
     return newbot1;
 }
@@ -292,7 +292,7 @@ do_statusline2()
     if (Upolyd)
         Sprintf(expr, "HD:%d", mons[u.umonnum].mlevel);
     else if (flags.showexp)
-        Sprintf(expr, "XL:%u/%-1ld", u.ulevel, u.uexp);
+        Sprintf(expr, "XL:%u/%-1lld", u.ulevel, (long long)u.uexp);
     else
         Sprintf(expr, "XL:%u", u.ulevel);
     xln = strlen(expr);
@@ -326,7 +326,7 @@ do_statusline2()
     if (!flags.fullstatuslineorder)
     {
         if (flags.time)
-            Sprintf(tmmv, "T:%ld", moves);
+            Sprintf(tmmv, "T:%lld", (long long)moves);
         else
             tmmv[0] = '\0';
         tln = strlen(tmmv);
@@ -518,10 +518,10 @@ do_statusline3()
     else
         cln = 0;
 
-    long money;
+    int64_t money;
     if ((money = money_cnt(invent)) < 0L)
         money = 0L;
-    Sprintf(moneybuf, "%s:%ld", (iflags.in_dumplog || iflags.invis_goldsym) ? "$" : encglyph(objnum_to_glyph(GOLD_PIECE)), money);
+    Sprintf(moneybuf, "%s:%lld", (iflags.in_dumplog || iflags.invis_goldsym) ? "$" : encglyph(objnum_to_glyph(GOLD_PIECE)), (long long)money);
 
     Strcpy(newbot3, "");
     if (flags.fullstatuslineorder)
@@ -540,7 +540,7 @@ do_statusline3()
             if (*newbot3)
                 Strcat(newbot3, " ");
 
-            Sprintf(eos(newbot3), "T:%ld", moves);
+            Sprintf(eos(newbot3), "T:%lld", (long long)moves);
         }
         if (flags.showrealtime)
         {
@@ -554,7 +554,7 @@ do_statusline3()
             if (*newbot3)
                 Strcat(newbot3, " ");
 
-            Sprintf(eos(newbot3), "S:%ld", botl_score());
+            Sprintf(eos(newbot3), "S:%lld", (long long)botl_score());
         }
 
         Sprintf(eos(newbot3), "%s%s", *newbot3 && u.canadvanceskill ? " " : "", u.canadvanceskill ? "Skill" : "");
@@ -733,7 +733,7 @@ max_rank_sz()
     return;
 }
 
-long
+int64_t
 botl_score()
 {
     return get_current_game_score();
@@ -742,35 +742,35 @@ botl_score()
 /* Returns a human readable formatted duration (e.g. 2h:03m:ss). */
 char*
 format_duration_with_units(seconds)
-long seconds;
+int64_t seconds;
 {
     static char buf_fmt_duration[BUFSZ];
-    long minutes = seconds / 60;
-    long hours = minutes / 60;
-    long days = hours / 24;
+    int64_t minutes = seconds / 60;
+    int64_t hours = minutes / 60;
+    int64_t days = hours / 24;
 
     seconds = seconds % 60;
     minutes = minutes % 60;
     hours = hours % 24;
 
     if (days > 0) {
-        Sprintf(buf_fmt_duration, "%ldd:%2.2ldh:%2.2ldm:%2.2lds", days, hours, minutes, seconds);
+        Sprintf(buf_fmt_duration, "%lldd:%2.2lldh:%2.2lldm:%2.2llds", (long long)days, (long long)hours, (long long)minutes, (long long)seconds);
     }
     else if (hours > 0) {
-        Sprintf(buf_fmt_duration, "%ldh:%2.2ldm:%2.2lds", hours, minutes, seconds);
+        Sprintf(buf_fmt_duration, "%lldh:%2.2lldm:%2.2llds", (long long)hours, (long long)minutes, (long long)seconds);
     }
     else {
-        Sprintf(buf_fmt_duration, "%ldm:%2.2lds", minutes, seconds);
+        Sprintf(buf_fmt_duration, "%lldm:%2.2llds", (long long)minutes, (long long)seconds);
     }
     return buf_fmt_duration;
 }
 
-long
+int64_t
 get_current_game_duration(VOID_ARGS)
 {
-    long res = 0L;
+    int64_t res = 0L;
     lock_thread_lock();
-    res = !context.game_started ? 0 : iflags.in_dumplog ? urealtime.realtime : urealtime.realtime + ((long)getnow() - (long)urealtime.start_timing);
+    res = !context.game_started ? 0 : iflags.in_dumplog ? urealtime.realtime : urealtime.realtime + ((int64_t)getnow() - (int64_t)urealtime.start_timing);
     unlock_thread_lock();
     return res;
 }
@@ -778,7 +778,7 @@ get_current_game_duration(VOID_ARGS)
 char*
 botl_realtime(VOID_ARGS)
 {
-    long currenttime = get_current_game_duration();
+    int64_t currenttime = get_current_game_duration();
     char* duration = format_duration_with_units(currenttime);
     /* only show 2 time units */
     char* p = strchr(duration, ':');
@@ -869,7 +869,7 @@ struct hilite_s {
 struct istat_s {
     const char *fldname;
     const char *fldfmt;
-    long time;  /* moves when this field hilite times out */
+    int64_t time;  /* moves when this field hilite times out */
     boolean chg; /* need to recalc time? */
     unsigned anytype;
     anything a;
@@ -895,7 +895,7 @@ STATIC_DCL int FDECL(percentage, (struct istat_s *, struct istat_s *));
 #ifdef STATUS_HILITES
 STATIC_DCL void FDECL(s_to_anything, (anything *, char *, int));
 STATIC_DCL enum statusfields FDECL(fldname_to_bl_indx, (const char *));
-STATIC_DCL boolean FDECL(hilite_reset_needed, (struct istat_s *, long));
+STATIC_DCL boolean FDECL(hilite_reset_needed, (struct istat_s *, int64_t));
 STATIC_DCL boolean FDECL(noneoftheabove, (const char *));
 STATIC_DCL struct hilite_s *FDECL(get_hilite, (int, int, genericptr_t,
                                                int, int, int *));
@@ -910,12 +910,12 @@ STATIC_DCL int FDECL(query_arrayvalue, (const char *, const char *const *,
                                         int, int));
 STATIC_DCL void FDECL(status_hilite_add_threshold, (int, struct hilite_s *));
 STATIC_DCL boolean FDECL(parse_status_hl2, (char (*)[QBUFSZ], BOOLEAN_P));
-STATIC_DCL unsigned long FDECL(match_str2conditionbitmask, (const char *));
-STATIC_DCL unsigned long FDECL(str2conditionbitmask, (char *));
+STATIC_DCL uint64_t FDECL(match_str2conditionbitmask, (const char *));
+STATIC_DCL uint64_t FDECL(str2conditionbitmask, (char *));
 STATIC_DCL boolean FDECL(parse_condition, (char (*)[QBUFSZ], int));
 STATIC_DCL char *FDECL(hlattr2attrname, (int, char *, size_t));
 STATIC_DCL void FDECL(status_hilite_linestr_add, (int, struct hilite_s *,
-                                                unsigned long, const char *));
+                                                uint64_t, const char *));
 STATIC_DCL void NDECL(status_hilite_linestr_done);
 STATIC_DCL int FDECL(status_hilite_linestr_countfield, (int));
 STATIC_DCL void NDECL(status_hilite_linestr_gather_conditions);
@@ -955,9 +955,9 @@ STATIC_VAR const struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTAT("intelligence", " In:%s", ANY_INT, 10, BL_IN),
     INIT_BLSTAT("wisdom", " Wi:%s", ANY_INT, 10, BL_WI),
     INIT_BLSTAT("charisma", " Ch:%s", ANY_INT, 10, BL_CH),
-    INIT_BLSTAT("gold", " %s", ANY_LONG, 30, BL_GOLD),
+    INIT_BLSTAT("gold", " %s", ANY_INT64, 30, BL_GOLD),
     INIT_BLSTAT("alignment", " %s", ANY_STR, 40, BL_ALIGN),
-    INIT_BLSTAT("score", " S:%s", ANY_LONG, 30, BL_SCORE),
+    INIT_BLSTAT("score", " S:%s", ANY_INT64, 30, BL_SCORE),
     INIT_BLSTAT("carrying-capacity", " %s", ANY_INT, 20, BL_CAP),
     INIT_BLSTATP("power", " MP:%s", ANY_INT, 10, BL_ENEMAX, BL_ENE),
     INIT_BLSTATM("power-max", "(%s)", ANY_INT, 10, BL_ENE, BL_ENEMAX),
@@ -967,12 +967,12 @@ STATIC_VAR const struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTAT("armor-class", " AC:%s", ANY_INT, 10, BL_AC),
     INIT_BLSTAT("magic-cancellation-level", " MC:%s", ANY_INT, 10, BL_MC_LVL),
     INIT_BLSTAT("magic-cancellation-percentage", "/%s%%", ANY_INT, 10, BL_MC_PCT),
-    INIT_BLSTAT("move", " MS:%s", ANY_LONG, 10, BL_MOVE),
+    INIT_BLSTAT("move", " MS:%s", ANY_INT64, 10, BL_MOVE),
     INIT_BLSTAT("primary-weapon", " W:%s", ANY_STR, 20, BL_UWEP),
     INIT_BLSTAT("secondary-weapon", "/%s", ANY_STR, 20, BL_UWEP2),
     INIT_BLSTAT("quivered-weapon", "|%s", ANY_STR, 20, BL_UQUIVER),
     INIT_BLSTAT("HD", " HD:%s", ANY_INT, 10, BL_HD),
-    INIT_BLSTAT("time", " T:%s", ANY_LONG, 20, BL_TIME),
+    INIT_BLSTAT("time", " T:%s", ANY_INT64, 20, BL_TIME),
     INIT_BLSTAT("realtime", " %s", ANY_STR, MAXVALWIDTH, BL_REALTIME),
     /* hunger used to be 'ANY_UINT'; see note below in bot_via_windowport() */
     INIT_BLSTAT("hunger", " %s", ANY_INT, 40, BL_HUNGER),
@@ -980,8 +980,8 @@ STATIC_VAR const struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTATM("hitpoints-max", "(%s)", ANY_INT, 10, BL_HP, BL_HPMAX),
     INIT_BLSTAT("game-mode", "%s", ANY_STR, 10, BL_MODE),
     INIT_BLSTAT("dungeon-level", " %s", ANY_STR, MAXVALWIDTH, BL_LEVELDESC),
-    INIT_BLSTAT("experience", "/%s", ANY_LONG, 20, BL_EXP),
-    INIT_BLSTAT("condition", "%s", ANY_MASK32, 0, BL_CONDITION),
+    INIT_BLSTAT("experience", "/%s", ANY_INT64, 20, BL_EXP),
+    INIT_BLSTAT("condition", "%s", ANY_MASK64, 0, BL_CONDITION),
     INIT_BLSTAT("partystats", "%s", ANY_STR, MAXVALWIDTH, BL_PARTYSTATS),
     INIT_BLSTAT("partystats2", "%s", ANY_STR, MAXVALWIDTH, BL_PARTYSTATS2),
     INIT_BLSTAT("partystats3", "%s", ANY_STR, MAXVALWIDTH, BL_PARTYSTATS3),
@@ -998,7 +998,7 @@ struct istat_s blstats[2][MAXBLSTATS];
 STATIC_VAR boolean blinit = FALSE, update_all = FALSE;
 STATIC_VAR boolean valset[MAXBLSTATS];
 #ifdef STATUS_HILITES
-STATIC_VAR long bl_hilite_moves = 0L;
+STATIC_VAR int64_t bl_hilite_moves = 0L;
 #endif
 
 /* we don't put this next declaration in #ifdef STATUS_HILITES.
@@ -1008,7 +1008,7 @@ STATIC_VAR long bl_hilite_moves = 0L;
  * the final argument of status_update, with or
  * without STATUS_HILITES.
  */
-STATIC_VAR unsigned long cond_hilites[BL_ATTCLR_MAX];
+STATIC_VAR uint64_t cond_hilites[BL_ATTCLR_MAX];
 STATIC_VAR int now_or_before_idx = 0; /* 0..1 for array[2][] first index */
 
 void
@@ -1018,7 +1018,7 @@ bot_via_windowport()
     const char *titl;
     register char *nb;
     int i, idx, cap;
-    long money;
+    int64_t money;
 
     if (!blinit)
     {
@@ -1082,7 +1082,7 @@ bot_via_windowport()
                                                ? "Neutral"
                                                : "Lawful");
     /* Score */
-    blstats[idx][BL_SCORE].a.a_long = flags.showscore ? botl_score() : 0L;
+    blstats[idx][BL_SCORE].a.a_int64 = flags.showscore ? botl_score() : 0L;
 
     /*  Hit points  */
     i = Upolyd ? u.mh : u.uhp;
@@ -1103,7 +1103,7 @@ bot_via_windowport()
     /* Gold */
     if ((money = money_cnt(invent)) < 0L)
         money = 0L; /* ought to issue impossible() and then discard gold */
-    blstats[idx][BL_GOLD].a.a_long = min(money, 999999L);
+    blstats[idx][BL_GOLD].a.a_int64 = min(money, 999999L);
     /*
      * The tty port needs to display the current symbol for gold
      * as a field header, so to accommodate that we pass gold with
@@ -1120,10 +1120,10 @@ bot_via_windowport()
      * sequence.
      */
     
-    Sprintf(blstats[idx][BL_GOLD].val, "%s:%ld",
+    Sprintf(blstats[idx][BL_GOLD].val, "%s:%lld",
             (iflags.in_dumplog || iflags.invis_goldsym) ? "$"
               : encglyph(objnum_to_glyph(GOLD_PIECE)),
-            blstats[idx][BL_GOLD].a.a_long);
+        (long long)blstats[idx][BL_GOLD].a.a_int64);
     valset[BL_GOLD] = TRUE; // indicate val already set
     
 
@@ -1143,7 +1143,7 @@ bot_via_windowport()
 
     /* Experience */
     blstats[idx][BL_XP].a.a_int = u.ulevel;
-    blstats[idx][BL_EXP].a.a_long = u.uexp;
+    blstats[idx][BL_EXP].a.a_int64 = u.uexp;
 
     /* Two-weapon indicator */
     blstats[idx][BL_2WEP].a.a_int = (int)u.twoweap;
@@ -1158,7 +1158,7 @@ bot_via_windowport()
     valset[BL_SKILL] = TRUE;
 
     /* Move speed */
-    blstats[idx][BL_MOVE].a.a_long = (long)get_u_move_speed(TRUE);
+    blstats[idx][BL_MOVE].a.a_int64 = (int64_t)get_u_move_speed(TRUE);
 
     /* Primary weapon style */
     print_weapon_style_string(blstats[idx][BL_UWEP].val, FALSE);
@@ -1173,7 +1173,7 @@ bot_via_windowport()
     valset[BL_UQUIVER] = TRUE;
 
     /* Time (moves) */
-    blstats[idx][BL_TIME].a.a_long = moves;
+    blstats[idx][BL_TIME].a.a_int64 = moves;
 
     /* Realtime */
     Strcpy(blstats[idx][BL_REALTIME].val, flags.showrealtime ? botl_realtime() : "");
@@ -1197,7 +1197,7 @@ bot_via_windowport()
     valset[BL_CAP] = TRUE;
 
     /* Conditions */
-    blstats[idx][BL_CONDITION].a.a_ulong = get_u_condition_bits();
+    blstats[idx][BL_CONDITION].a.a_uint64 = get_u_condition_bits();
     valset[BL_CONDITION] = TRUE;
 
     /* Partyline */
@@ -1227,10 +1227,10 @@ bot_via_windowport()
     evaluate_and_notify_windowport(valset, idx);
 }
 
-unsigned long
+uint64_t
 get_u_condition_bits()
 {
-    unsigned long conditions = 0UL;
+    uint64_t conditions = 0UL;
 
     if (u.ustuck && !u.uswallow)
         conditions |= BL_MASK_GRAB;
@@ -1287,7 +1287,7 @@ get_u_condition_bits()
     return conditions;
 }
 
-unsigned long
+uint64_t
 get_m_condition_bits(mon)
 struct monst* mon;
 {
@@ -1297,7 +1297,7 @@ struct monst* mon;
     if (mon == &youmonst)
         return get_u_condition_bits();
 
-    unsigned long conditions = 0UL;
+    uint64_t conditions = 0UL;
 
 #if 0
     if (0)
@@ -1353,7 +1353,7 @@ struct monst* mon;
     return conditions;
 }
 
-unsigned long
+uint64_t
 get_m_status_bits(mtmp, loc_is_you, ispeaceful, ispet, isdetected)
 struct monst* mtmp;
 boolean loc_is_you, ispeaceful, ispet, isdetected;
@@ -1361,7 +1361,7 @@ boolean loc_is_you, ispeaceful, ispet, isdetected;
     if (!mtmp)
         return 0UL;
 
-    unsigned long status_bits = 0UL;
+    uint64_t status_bits = 0UL;
 
     /* Status bits*/
     //boolean issteed = (mtmp == u.usteed);
@@ -1492,7 +1492,7 @@ boolean loc_is_you, ispeaceful, ispet, isdetected;
 
         if (display_this_status_mark)
         {
-            status_bits |= 1UL << status_mark;
+            status_bits |= (uint64_t)1 << status_mark;
 
         }
     }
@@ -1504,7 +1504,7 @@ boolean loc_is_you, ispeaceful, ispet, isdetected;
 void 
 get_m_buff_bits(mtmp, buff_bits, loc_is_you)
 struct monst* mtmp;
-unsigned long* buff_bits;
+uint64_t* buff_bits;
 boolean loc_is_you;
 {
     if (!mtmp || !buff_bits)
@@ -1515,14 +1515,14 @@ boolean loc_is_you;
        buff_bits[i] = 0UL;
 
     int ulongidx = 0;
-    unsigned long buffbit = 0UL;
+    uint64_t buffbit = 0UL;
     int propidx;
     for (propidx = 1; propidx <= LAST_PROP; propidx++)
     {
         if (!property_definitions[propidx].show_buff)
             continue;
 
-        long duration = loc_is_you ? (u.uprops[propidx].intrinsic & TIMEOUT) : (long)(mtmp->mprops[propidx] & M_TIMEOUT);
+        int64_t duration = loc_is_you ? (u.uprops[propidx].intrinsic & TIMEOUT) : (int64_t)(mtmp->mprops[propidx] & M_TIMEOUT);
         if (duration == 0L)
             continue;
 
@@ -1530,7 +1530,7 @@ boolean loc_is_you;
         if (ulongidx >= NUM_BUFF_BIT_ULONGS)
             break;
 
-        buffbit = 1UL << (propidx - ulongidx * 32);
+        buffbit = (uint64_t)1 << (propidx - ulongidx * 32);
         buff_bits[ulongidx] |= buffbit;
     }
 }
@@ -1697,7 +1697,7 @@ stat_update_time()
     int fld = BL_TIME;
 
     /* Time (moves) */
-    blstats[idx][fld].a.a_long = moves;
+    blstats[idx][fld].a.a_int64 = moves;
     valset[fld] = FALSE;
 
     eval_notify_windowport_field(fld, valset, idx);
@@ -1710,7 +1710,7 @@ stat_update_time()
 
     if ((windowprocs.wincap2 & WC2_FLUSH_STATUS) != 0L)
         status_update(BL_FLUSH, (genericptr_t) 0, 0, 0,
-                      NO_COLOR, (unsigned long *) 0);
+                      NO_COLOR, (uint64_t *) 0);
     return;
 }
 
@@ -1800,7 +1800,7 @@ boolean *valsetlist;
         if (!valsetlist[fld])
             (void) anything_to_s(curr->val, &curr->a, anytype);
 
-        if (anytype != ANY_MASK32) {
+        if (anytype != ANY_MASK64) {
 #ifdef STATUS_HILITES
              if (chg || chgmax || *curr->val) {
                 curr->hilite_rule = get_hilite(idx, fld,
@@ -1814,10 +1814,10 @@ boolean *valsetlist;
             }
 #endif /* STATUS_HILITES */
             status_update(fld, (genericptr_t) curr->val,
-                          chg, pc, color, (unsigned long *) 0);
+                          chg, pc, color, (uint64_t *) 0);
         } else {
             /* Color for conditions is done through cond_hilites[] */
-            status_update(fld, (genericptr_t) &curr->a.a_ulong,
+            status_update(fld, (genericptr_t) &curr->a.a_mask64,
                           chg, pc, color, cond_hilites);
         }
         curr->chg = prev->chg = TRUE;
@@ -1879,11 +1879,11 @@ boolean *valsetlist;
      */
     if (context.botlx && (windowprocs.wincap2 & WC2_RESET_STATUS) != 0L)
         status_update(BL_RESET, (genericptr_t) 0, 0, 0,
-                      NO_COLOR, (unsigned long *) 0);
+                      NO_COLOR, (uint64_t *) 0);
     else if ((updated || context.botlx)
              && (windowprocs.wincap2 & WC2_FLUSH_STATUS) != 0L)
         status_update(BL_FLUSH, (genericptr_t) 0, 0, 0,
-                      NO_COLOR, (unsigned long *) 0);
+                      NO_COLOR, (uint64_t *) 0);
 
     context.botl = context.botlx = iflags.time_botl = FALSE;
     update_all = FALSE;
@@ -2113,6 +2113,11 @@ struct istat_s *bl1, *bl2;
                      ? 1
                      : (bl1->a.a_long > bl2->a.a_long) ? -1 : 0;
         break;
+    case ANY_INT64:
+        result = (bl1->a.a_int64 < bl2->a.a_int64)
+            ? 1
+            : (bl1->a.a_int64 > bl2->a.a_int64) ? -1 : 0;
+        break;
     case ANY_LPTR:
         if (!bl1->a.a_lptr || !bl2->a.a_lptr)
             return 0;
@@ -2137,6 +2142,11 @@ struct istat_s *bl1, *bl2;
                      ? 1
                      : (bl1->a.a_ulong > bl2->a.a_ulong) ? -1 : 0;
         break;
+    case ANY_UINT64:
+        result = (bl1->a.a_uint64 < bl2->a.a_uint64)
+            ? 1
+            : (bl1->a.a_uint64 > bl2->a.a_uint64) ? -1 : 0;
+        break;
     case ANY_ULPTR:
         if (!bl1->a.a_ulptr || !bl2->a.a_ulptr)
             return 0;
@@ -2148,8 +2158,8 @@ struct istat_s *bl1, *bl2;
     case ANY_STR:
         result = sgn(strcmp(bl1->val, bl2->val));
         break;
-    case ANY_MASK32:
-        result = (bl1->a.a_ulong != bl2->a.a_ulong);
+    case ANY_MASK64:
+        result = (bl1->a.a_mask64 != bl2->a.a_mask64);
         break;
     default:
         result = 1;
@@ -2170,11 +2180,17 @@ int anytype;
     case ANY_ULONG:
         Sprintf(buf, "%lu", a->a_ulong);
         break;
-    case ANY_MASK32:
-        Sprintf(buf, "%lx", a->a_ulong);
+    case ANY_UINT64:
+        Sprintf(buf, "%llu", (unsigned long long)a->a_uint64);
+        break;
+    case ANY_MASK64:
+        Sprintf(buf, "%llx", (unsigned long long)a->a_mask64);
         break;
     case ANY_LONG:
         Sprintf(buf, "%ld", a->a_long);
+        break;
+    case ANY_INT64:
+        Sprintf(buf, "%lld", (long long)a->a_int64);
         break;
     case ANY_INT:
         Sprintf(buf, "%d", a->a_int);
@@ -2217,6 +2233,9 @@ int anytype;
     case ANY_LONG:
         a->a_long = atol(buf);
         break;
+    case ANY_INT64:
+        a->a_int64= (int64_t)atol(buf);
+        break;
     case ANY_INT:
         a->a_int = atoi(buf);
         break;
@@ -2225,6 +2244,9 @@ int anytype;
         break;
     case ANY_ULONG:
         a->a_ulong = (unsigned long) atol(buf);
+        break;
+    case ANY_UINT64:
+        a->a_uint64 = (uint64_t)atol(buf);
         break;
     case ANY_IPTR:
         if (a->a_iptr)
@@ -2242,8 +2264,8 @@ int anytype;
         if (a->a_ulptr)
             *a->a_ulptr = (unsigned long) atol(buf);
         break;
-    case ANY_MASK32:
-        a->a_ulong = (unsigned long) atol(buf);
+    case ANY_MASK64:
+        a->a_mask64 = (uint64_t) atol(buf);
         break;
     default:
         a->a_void = 0;
@@ -2260,9 +2282,11 @@ struct istat_s *bl, *maxbl;
     int result = 0;
     int anytype;
     int ival;
-    long lval;
     unsigned uval;
+    long lval;
     unsigned long ulval;
+    int64_t int64val;
+    uint64_t uint64val;
 
     if (!bl || !maxbl) {
         impossible("percentage: bad istat pointer %s, %s",
@@ -2270,7 +2294,7 @@ struct istat_s *bl, *maxbl;
         return 0;
     }
 
-    ival = 0, lval = 0L, uval = 0U, ulval = 0UL;
+    ival = 0, lval = 0L, uval = 0U, ulval = 0UL, int64val = (int64_t)0, uint64val = (uint64_t)0;
     anytype = bl->anytype;
     if (maxbl->a.a_void) {
         switch (anytype) {
@@ -2282,6 +2306,10 @@ struct istat_s *bl, *maxbl;
             lval  = bl->a.a_long;
             result = (int) ((100L * lval) / maxbl->a.a_long);
             break;
+        case ANY_INT64:
+            int64val = bl->a.a_int64;
+            result = (int)(((int64_t)100 * int64val) / maxbl->a.a_int64);
+            break;
         case ANY_UINT:
             uval = bl->a.a_uint;
             result = (int) ((100U * uval) / maxbl->a.a_uint);
@@ -2289,6 +2317,10 @@ struct istat_s *bl, *maxbl;
         case ANY_ULONG:
             ulval = bl->a.a_ulong;
             result = (int) ((100UL * ulval) / maxbl->a.a_ulong);
+            break;
+        case ANY_UINT64:
+            uint64val = bl->a.a_uint64;
+            result = (int)(((uint64_t)100 * uint64val) / maxbl->a.a_uint64);
             break;
         case ANY_IPTR:
             ival = *bl->a.a_iptr;
@@ -2312,7 +2344,7 @@ struct istat_s *bl, *maxbl;
        from a non-zero input; note: if we ever change to something like
        ((((1000 * val) / max) + 5) / 10) for a rounded result, we'll
        also need to check for and convert false 100 to 99 */
-    if (result == 0 && (ival != 0 || lval != 0L || uval != 0U || ulval != 0UL))
+    if (result == 0 && (ival != 0 || lval != 0L || uval != 0U || ulval != 0UL || int64val != (int64_t)0 || uint64val != (uint64_t)0))
         result = 1;
 
     return result;
@@ -2449,7 +2481,7 @@ const char *name;
 STATIC_OVL boolean
 hilite_reset_needed(bl_p, augmented_time)
 struct istat_s *bl_p;
-long augmented_time; /* no longer augmented; it once encoded fractional
+int64_t augmented_time; /* no longer augmented; it once encoded fractional
                       * amounts for multiple moves within same turn     */
 {
     /*
@@ -2473,7 +2505,7 @@ status_eval_next_unhilite()
 {
     int i;
     struct istat_s *curr;
-    long next_unhilite, this_unhilite;
+    int64_t next_unhilite, this_unhilite;
 
     bl_hilite_moves = moves; /* simpllfied; used to try to encode fractional
                               * amounts for multiple moves within same turn */
@@ -2575,7 +2607,7 @@ int *colorptr;
         int max_ival = -LARGEST_INT, min_ival = LARGEST_INT;
         /* LONG_MAX comes from <limits.h> which might not be available for
            ancient configurations; we don't need LONG_MIN */
-        long max_lval = -LONG_MAX, min_lval = LONG_MAX;
+        int64_t max_lval = -LONG_MAX, min_lval = LONG_MAX;
         boolean exactmatch = FALSE, updown = FALSE, changed = FALSE,
                 perc_or_abs = FALSE;
 
@@ -3145,6 +3177,11 @@ boolean from_configfile;
                 config_error_add("%s'%s%ld'%s", threshold_value,
                                  op, hilite.value.a_long, is_out_of_range);
                 return FALSE;
+            } else if (dt == ANY_INT64
+                && (hilite.value.a_longlong < (gt ? -1L : lt ? 1L : 0L))) {
+                config_error_add("%s'%s%lld'%s", threshold_value,
+                    op, hilite.value.a_longlong, is_out_of_range);
+                return FALSE;
             }
         } else if (initblstats[fld].anytype == ANY_STR) {
             txt = s[sidx];
@@ -3332,11 +3369,11 @@ const struct condmap condition_aliases[] = {
     { "movement",       BL_MASK_LEV | BL_MASK_FLY | BL_MASK_RIDE }
 };
 
-unsigned long
+uint64_t
 query_conditions()
 {
     int i,res;
-    unsigned long ret = 0UL;
+    uint64_t ret = 0UL;
     winid tmpwin;
     anything any;
     menu_item *picks = (menu_item *) 0;
@@ -3346,7 +3383,7 @@ query_conditions()
 
     for (i = 0; i < SIZE(valid_conditions); i++) {
         any = zeroany;
-        any.a_ulong = valid_conditions[i].bitmask;
+        any.a_uint64 = valid_conditions[i].bitmask;
         add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
                  valid_conditions[i].id, MENU_UNSELECTED);
     }
@@ -3357,7 +3394,7 @@ query_conditions()
     destroy_nhwindow(tmpwin);
     if (res > 0) {
         for (i = 0; i < res; i++)
-            ret |= picks[i].item.a_ulong;
+            ret |= picks[i].item.a_uint64;
         free((genericptr_t) picks);
     }
     return ret;
@@ -3366,7 +3403,7 @@ query_conditions()
 STATIC_OVL
 char *
 conditionbitmask2str(ul)
-unsigned long ul;
+uint64_t ul;
 {
     static char buf[BUFSZ];
     int i;
@@ -3397,7 +3434,7 @@ unsigned long ul;
 
 const char*
 get_condition_name(ul)
-unsigned long ul;
+uint64_t ul;
 {
     int i;
     for (i = 0; i < SIZE(valid_conditions); i++)
@@ -3408,12 +3445,12 @@ unsigned long ul;
 }
 
 
-STATIC_OVL unsigned long
+STATIC_OVL uint64_t
 match_str2conditionbitmask(str)
 const char *str;
 {
     int i, nmatches = 0;
-    unsigned long mask = 0UL;
+    uint64_t mask = 0UL;
 
     if (str && *str) {
         /* check matches to canonical names */
@@ -3447,11 +3484,11 @@ const char *str;
     return mask;
 }
 
-STATIC_OVL unsigned long
+STATIC_OVL uint64_t
 str2conditionbitmask(str)
 char *str;
 {
-    unsigned long conditions_bitmask = 0UL;
+    uint64_t conditions_bitmask = 0UL;
     char **subfields;
     int i, sf;
 
@@ -3461,7 +3498,7 @@ char *str;
         return 0UL;
 
     for (i = 0; i < sf; ++i) {
-        unsigned long bm = match_str2conditionbitmask(subfields[i]);
+        uint64_t bm = match_str2conditionbitmask(subfields[i]);
 
         if (!bm) {
             config_error_add("Unknown condition '%s'", subfields[i]);
@@ -3480,7 +3517,7 @@ int sidx;
     int i;
     int coloridx = NO_COLOR;
     char *tmp, *how;
-    unsigned long conditions_bitmask = 0UL;
+    uint64_t conditions_bitmask = 0UL;
     boolean success = FALSE;
 
     if (!s)
@@ -3654,7 +3691,7 @@ struct _status_hilite_line_str {
     int id;
     int fld;
     struct hilite_s *hl;
-    unsigned long mask;
+    uint64_t mask;
     char str[BUFSZ];
     struct _status_hilite_line_str *next;
 };
@@ -3663,7 +3700,7 @@ STATIC_OVL void
 status_hilite_linestr_add(fld, hl, mask, str)
 int fld;
 struct hilite_s *hl;
-unsigned long mask;
+uint64_t mask;
 const char *str;
 {
     struct _status_hilite_line_str *tmp, *nxt;
@@ -3737,8 +3774,8 @@ status_hilite_linestr_gather_conditions()
 {
     int i;
     struct _cond_map {
-        unsigned long bm;
-        unsigned long clratr;
+        uint64_t bm;
+        uint64_t clratr;
     } cond_maps[SIZE(valid_conditions)];
 
     (void) memset(cond_maps, 0,
@@ -3768,7 +3805,7 @@ status_hilite_linestr_gather_conditions()
             atr &= ~HL_NONE;
 
         if (clr != NO_COLOR || atr != HL_NONE) {
-            unsigned long ca = clr | (atr << 8);
+            uint64_t ca = clr | (atr << 8);
             boolean added_condmap = FALSE;
 
             for (j = 0; j < SIZE(valid_conditions); j++)
@@ -3887,7 +3924,7 @@ struct hilite_s *hl;
         break;
     case BL_TH_CONDITION:
         if (hl->rel == EQ_VALUE)
-            Sprintf(behavebuf, "%s", conditionbitmask2str(hl->value.a_ulong));
+            Sprintf(behavebuf, "%s", conditionbitmask2str(hl->value.a_uint64));
         else
             impossible("hl->behavior=condition, rel error");
         break;
@@ -3993,7 +4030,7 @@ int fld;
     }
 
     if (fld != BL_CAP && fld != BL_HUNGER && fld != BL_SKILL && fld != BL_2WEP
-        && (at == ANY_INT || at == ANY_LONG)) {
+        && (at == ANY_INT || at == ANY_LONG || at == ANY_INT64)) {
         any = zeroany;
         any.a_int = onlybeh = BL_TH_VAL_ABSOLUTE;
         add_menu(tmpwin, NO_GLYPH, &any, 'n', 0, ATR_NONE, NO_COLOR,
@@ -4125,7 +4162,7 @@ int origfld;
     int lt_gt_eq;
     int clr = NO_COLOR, atr = HL_UNDEF;
     struct hilite_s hilite;
-    unsigned long cond = 0UL;
+    uint64_t cond = 0UL;
     char colorqry[BUFSZ];
     char attrqry[BUFSZ];
 
@@ -4271,6 +4308,13 @@ choose_value:
                                       : (lt_gt_eq == LT_VALUE) ? 1L : 0L))) {
             pline("%s'%s%ld'%s", threshold_value,
                   op, aval.a_long, is_out_of_range);
+            goto choose_value;
+        }
+        else if (dt == ANY_INT64
+            && (aval.a_longlong < ((lt_gt_eq == GT_VALUE) ? -1L
+                : (lt_gt_eq == LT_VALUE) ? 1L : 0L))) {
+            pline("%s'%s%lld'%s", threshold_value,
+                op, aval.a_longlong, is_out_of_range);
             goto choose_value;
         }
 

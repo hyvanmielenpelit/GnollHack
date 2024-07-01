@@ -238,7 +238,7 @@ register int show;
     schar new_feature_doodad_height = 0;
     int new_feature_doodad_glyph = symbol_index <= S_stone ? NO_GLYPH : get_feature_doodad_layer_glyph(x, y, &new_feature_doodad_height);
     int new_feature_doodad_gui_glyph = maybe_get_replaced_glyph(new_feature_doodad_glyph, x, y, data_to_replacement_info(new_feature_doodad_glyph, LAYER_FEATURE_DOODAD, (struct obj*)0, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
-    unsigned long new_layer_flags = 0UL;
+    uint64_t new_layer_flags = 0UL;
     if (symbol_index > S_stone && levl[x][y].decoration_typ > 0)
         new_layer_flags |= LFLAGS_C_DECORATION;
     if (symbol_index > S_stone && levl[x][y].carpet_typ > 0)
@@ -312,7 +312,7 @@ register int show;
 
         int special_feature_doodad_layer_height_before = gbuf[y][x].layers.special_feature_doodad_layer_height;
 
-        //unsigned long flags_before = gbuf[y][x].layers.layer_flags;
+        //uint64_t flags_before = gbuf[y][x].layers.layer_flags;
         gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR] = new_floor_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_CARPET] = new_carpet_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR_DOODAD] = new_floor_doodad_glyph;
@@ -887,8 +887,8 @@ boolean dropping_piercer;
          * If both are being highlighted in the same way, it doesn't
          * matter, but if not, showing them as pets is preferrable.
          */
-        unsigned long extra_flags = 0UL;
-        unsigned long extra_mflags = 0UL;
+        uint64_t extra_flags = 0UL;
+        uint64_t extra_mflags = 0UL;
         if (mon->mleashed)
         {
             extra_mflags |= LMFLAGS_TETHERED;
@@ -1215,7 +1215,7 @@ register int x, y;
 void
 newsym_with_flags(x, y, newsym_flags)
 register int x, y;
-unsigned long newsym_flags;
+uint64_t newsym_flags;
 {
     newsym_with_extra_info_and_flags(x, y, 0UL, 0UL, 0, 0, newsym_flags);
 }
@@ -1223,14 +1223,14 @@ unsigned long newsym_flags;
 void
 newsym_with_extra_info_and_flags(x, y, disp_flags, disp_mflags, hit_tile_id, damage_shown, specific_newsym_flags)
 register int x, y;
-unsigned long disp_flags, disp_mflags, specific_newsym_flags;
+uint64_t disp_flags, disp_mflags, specific_newsym_flags;
 int hit_tile_id, damage_shown;
 {
     if (!isok(x, y))
         return;
 
     /* Add global flags */
-    unsigned long newsym_flags = (specific_newsym_flags | context.global_newsym_flags);
+    uint64_t newsym_flags = (specific_newsym_flags | context.global_newsym_flags);
 
     register struct monst *mon;
     register struct rm *lev = &(levl[x][y]);
@@ -1262,7 +1262,7 @@ int hit_tile_id, damage_shown;
     int missile_mythic_suffix = layers.missile_mythic_suffix;
     int missile_eroded = layers.missile_eroded;
     int missile_eroded2 = layers.missile_eroded2;
-    unsigned long missile_flags = layers.missile_flags;
+    uint64_t missile_flags = layers.missile_flags;
     short missile_height = layers.missile_height;
     xchar missile_origin_x = layers.missile_origin_x;
     xchar missile_origin_y = layers.missile_origin_y;
@@ -1301,8 +1301,8 @@ int hit_tile_id, damage_shown;
         monster_effect_gui_glyph = layers.layer_gui_glyphs[LAYER_MONSTER_EFFECT];
     }
 
-    unsigned long old_flags = layers.layer_flags;
-    unsigned long old_mflags = layers.monster_flags;
+    uint64_t old_flags = layers.layer_flags;
+    uint64_t old_mflags = layers.monster_flags;
 
     /* only permit updating the hero when swallowed */
     if (u.uswallow)
@@ -1364,8 +1364,8 @@ int hit_tile_id, damage_shown;
             map_location(x, y, !see_self);
 #endif
             boolean location_has_boulder = (sobj_at(BOULDER, x, y) != 0);
-            unsigned long extra_flags = 0UL;
-            unsigned long extra_mflags = 0UL;
+            uint64_t extra_flags = 0UL;
+            uint64_t extra_mflags = 0UL;
             if (carrying_leashed_leash())
             {
                 extra_mflags |= LMFLAGS_U_TETHERED;
@@ -1684,7 +1684,7 @@ int x, y;
 void
 tmp_at_with_missile_flags(x, y, missile_flags, missile_material, missile_special_quality)
 int x, y;
-unsigned long missile_flags;
+uint64_t missile_flags;
 uchar missile_material;
 short missile_special_quality;
 {
@@ -1695,7 +1695,7 @@ void
 tmp_at_with_obj(x, y, obj, missile_flags, missile_material, missile_special_quality)
 int x, y;
 struct obj* obj;
-unsigned long missile_flags;
+uint64_t missile_flags;
 uchar missile_material;
 short missile_special_quality;
 {
@@ -2606,7 +2606,7 @@ xchar ux, uy;
 void
 show_extra_info(x, y, disp_flags, disp_mflags, hit_tile_id, damage_displayed)
 int x, y;
-unsigned long disp_flags, disp_mflags;
+uint64_t disp_flags, disp_mflags;
 int hit_tile_id, damage_displayed;
 {
     if (isok(x, y))
@@ -2614,10 +2614,10 @@ int hit_tile_id, damage_displayed;
         change_layer_hit_tile(x, y, hit_tile_id);
         change_layer_damage_displayed(x, y, damage_displayed);
 
-        unsigned long old_flags = gbuf[y][x].layers.layer_flags;
+        uint64_t old_flags = gbuf[y][x].layers.layer_flags;
         gbuf[y][x].layers.layer_flags |= disp_flags;
 
-        unsigned long old_mflags = gbuf[y][x].layers.monster_flags;
+        uint64_t old_mflags = gbuf[y][x].layers.monster_flags;
         gbuf[y][x].layers.monster_flags |= disp_mflags;
 
         if (old_flags != gbuf[y][x].layers.layer_flags ||
@@ -2636,7 +2636,7 @@ void
 show_missile_info(x, y, poisoned, material, special_quality, elemental_enchantment, exceptionality, mythic_prefix, mythic_suffix, eroded, eroded2, missile_flags, missile_height, missile_origin_x, missile_origin_y)
 int x, y;
 uchar poisoned, material, elemental_enchantment, exceptionality, mythic_prefix, mythic_suffix, eroded, eroded2;
-unsigned long missile_flags;
+uint64_t missile_flags;
 short missile_height, special_quality;
 xchar missile_origin_x, missile_origin_y;
 {
@@ -2664,7 +2664,7 @@ xchar missile_origin_x, missile_origin_y;
     }
 }
 
-unsigned long
+uint64_t
 get_missile_flags(obj, tethered_weapon)
 struct obj* obj;
 boolean tethered_weapon;
@@ -2672,7 +2672,7 @@ boolean tethered_weapon;
     if (!obj)
         return 0UL;
 
-    unsigned long res = 0UL;
+    uint64_t res = 0UL;
     if (is_corrodeable(obj))
         res |= MISSILE_FLAGS_CORRODEABLE;
     if (is_rottable(obj))
@@ -2741,13 +2741,13 @@ int hit_tile_id;
 void
 add_glyph_buffer_layer_flags(x, y, added_flags, added_mflags)
 int x, y;
-unsigned long added_flags, added_mflags;
+uint64_t added_flags, added_mflags;
 {
     if (isok(x, y))
     {
-        unsigned long old_flags = gbuf[y][x].layers.layer_flags;
+        uint64_t old_flags = gbuf[y][x].layers.layer_flags;
         gbuf[y][x].layers.layer_flags |= added_flags;
-        unsigned long old_mflags = gbuf[y][x].layers.monster_flags;
+        uint64_t old_mflags = gbuf[y][x].layers.monster_flags;
         gbuf[y][x].layers.monster_flags |= added_mflags;
 
         if (old_flags != gbuf[y][x].layers.layer_flags ||
@@ -2765,13 +2765,13 @@ unsigned long added_flags, added_mflags;
 void
 remove_glyph_buffer_layer_flags(x, y, removed_flags, removed_mflags)
 int x, y;
-unsigned long removed_flags, removed_mflags;
+uint64_t removed_flags, removed_mflags;
 {
     if (isok(x, y))
     {
-        unsigned long old_flags = gbuf[y][x].layers.layer_flags;
+        uint64_t old_flags = gbuf[y][x].layers.layer_flags;
         gbuf[y][x].layers.layer_flags &= ~removed_flags;
-        unsigned long old_mflags = gbuf[y][x].layers.monster_flags;
+        uint64_t old_mflags = gbuf[y][x].layers.monster_flags;
         gbuf[y][x].layers.monster_flags &= ~removed_mflags;
 
         if (old_flags != gbuf[y][x].layers.layer_flags ||
@@ -2838,7 +2838,7 @@ int x, y;
         change_layer_damage_displayed(x, y, 0);
         change_layer_hit_tile(x, y, 0);
 
-        unsigned long old_mflags = gbuf[y][x].layers.monster_flags;
+        uint64_t old_mflags = gbuf[y][x].layers.monster_flags;
         gbuf[y][x].layers.monster_flags = 0UL;
         if (old_mflags != gbuf[y][x].layers.monster_flags)
         {
@@ -2865,7 +2865,7 @@ void
 show_monster_glyph_with_extra_info(x, y, glyph, mtmp, disp_flags, disp_mflags, hit_tile_id, damage_displayed)
 int x, y, glyph;
 struct monst* mtmp;
-unsigned long disp_flags, disp_mflags;
+uint64_t disp_flags, disp_mflags;
 int hit_tile_id, damage_displayed;
 {
     boolean isyou = (mtmp == &youmonst);
@@ -2876,7 +2876,7 @@ void
 show_monster_glyph_with_extra_info_choose_ascii(x, y, glyph,  mtmp, x0, y0, disp_flags, disp_mflags, hit_tile_id, damage_displayed, exclude_ascii)
 int x, y, glyph, x0, y0;
 struct monst* mtmp;
-unsigned long disp_flags, disp_mflags;
+uint64_t disp_flags, disp_mflags;
 int hit_tile_id, damage_displayed;
 boolean exclude_ascii;
 {
@@ -2921,8 +2921,8 @@ boolean exclude_ascii;
                 gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_LEVITATION;
         }
 
-        unsigned long extra_flags = 0UL;
-        unsigned long extra_mflags = 0UL;
+        uint64_t extra_flags = 0UL;
+        uint64_t extra_mflags = 0UL;
 
         /* Monster info flags; can be set only in this function */
         if (loc_is_you || mtmp)
@@ -3023,8 +3023,8 @@ boolean exclude_ascii;
 
         if(loc_is_you || mtmp)
         {
-            unsigned long layer_flags = disp_flags | extra_flags;
-            unsigned long monster_flags = disp_mflags | extra_mflags;
+            uint64_t layer_flags = disp_flags | extra_flags;
+            uint64_t monster_flags = disp_mflags | extra_mflags;
             update_tile_gui_info(loc_is_you, mtmp, x, y, layer_flags, monster_flags);
         }
     }
@@ -3035,7 +3035,7 @@ update_tile_gui_info(loc_is_you, mtmp, x, y, layer_flags, monster_flags)
 boolean loc_is_you;
 struct monst* mtmp;
 int x, y;
-unsigned long layer_flags UNUSED, monster_flags;
+uint64_t layer_flags UNUSED, monster_flags;
 {
     if (loc_is_you && !mtmp)
         mtmp = &youmonst;
@@ -3466,7 +3466,7 @@ int cursor_on_u;
                 {
                     int rx = 0;
                     int ry = 0;
-                    unsigned long dir_bit = 0;
+                    uint64_t dir_bit = 0;
                     switch (dir)
                     {
                     case 0:
@@ -4149,7 +4149,7 @@ int beam_type;
 int
 zap_glyph_to_corner_glyph(orig_glyph, layer_flags, zap_source_idx)
 int orig_glyph;
-unsigned long layer_flags;
+uint64_t layer_flags;
 int zap_source_idx;
 /* Orig_glyph is from a location relative to X:
    1 2 3 
@@ -5350,7 +5350,7 @@ int dx, dy;
 
 void
 display_self_with_extra_info_choose_ascii(displayed_flags, displayed_mflags, hit_tile_id, dmg_received, exclude_ascii)
-unsigned long displayed_flags, displayed_mflags;
+uint64_t displayed_flags, displayed_mflags;
 int hit_tile_id, dmg_received;
 boolean exclude_ascii;
 {
