@@ -621,7 +621,7 @@ namespace GnollHackX
                 if (GHApp.InformAboutIncompatibleSavedGames)
                 {
                     GHApp.InformAboutIncompatibleSavedGames = false;
-                    await DisplayAlert("Incompatible Saved Games", "GnollHack has been updated to a newer version, for which your existing saved games are incompatible. To downgrade back to the earlier version, back up first your save files using About -> Export Saved Games and then follow the instructions at About -> Downgrade.", "OK");
+                    await DisplayAlert("Incompatible Saved Games", "GnollHack has been updated to a newer version, for which your existing saved games are incompatible.", "OK"); // To downgrade back to the earlier version, back up first your save files using About -> Export Saved Games and then follow the instructions at About -> Downgrade.
                     previousInformationShown = true;
                 }
                 if (GHApp.InformAboutSlowSounds)
