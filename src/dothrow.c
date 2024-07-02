@@ -2032,6 +2032,7 @@ uchar* hitres_ptr;
     dieroll = rnd(20);
 
     boolean is_golf_swing_with_stone = (hmode == HMON_GOLF && (obj->oclass == GEM_CLASS || objects[obj->otyp].oc_skill == -P_SLING));
+    int tohit_skill_bonus = weapon_skill_hit_bonus((struct obj*)0, P_NONE, FALSE, FALSE, 2, 0, TRUE, TRUE);
 
     if (obj->oclass == WEAPON_CLASS || is_weptool(obj) || obj->oclass == GEM_CLASS) 
     {
@@ -2042,9 +2043,12 @@ uchar* hitres_ptr;
         } 
         else if (is_ammo(obj) || is_golf_swing_with_stone)
         {
-            if (!ammo_and_launcher(obj, uwep) && hmode == HMON_THROWN && !is_golf_swing_with_stone)
+            if (!ammo_and_launcher(obj, uwep) && !is_golf_swing_with_stone)
             {
-                tmp += weapon_skill_hit_bonus((struct obj*)0, P_NONE, FALSE, FALSE, 2, 0, TRUE, TRUE);
+                if (hmode == HMON_THROWN)
+                    tmp += tohit_skill_bonus;
+                else
+                    tmp -= 4;
             }
             else if (uwep)
             {
@@ -2160,6 +2164,7 @@ uchar* hitres_ptr;
     else if (otyp == HEAVY_IRON_BALL) 
     {
         exercise(A_STR, TRUE);
+        tmp += tohit_skill_bonus;
         if (tmp >= dieroll)
         {
             int was_swallowed = guaranteed_hit;
@@ -2189,7 +2194,8 @@ uchar* hitres_ptr;
     else if (otyp == BOULDER) 
     {
         exercise(A_STR, TRUE);
-        if (tmp >= dieroll) 
+        tmp += tohit_skill_bonus;
+        if (tmp >= dieroll)
         {
             if (hitres_ptr)
                 *hitres_ptr = 1;
@@ -2204,10 +2210,9 @@ uchar* hitres_ptr;
         {
             tmiss(obj, mon, TRUE);
         }
-
     } 
     else if ((otyp == EGG || otyp == CREAM_PIE || otyp == BLINDING_VENOM || otyp == ACID_VENOM)
-               && (guaranteed_hit || ACURR(A_DEX) > rnd(25)))
+               && (guaranteed_hit || ACURR(A_DEX) + tohit_skill_bonus > rnd(25)))
     {
         if (hitres_ptr)
             *hitres_ptr = 1;
@@ -2217,7 +2222,7 @@ uchar* hitres_ptr;
         return 1; /* hmon used it up */
 
     } 
-    else if (obj->oclass == POTION_CLASS && (guaranteed_hit || ACURR(A_DEX) > rnd(25))) 
+    else if (obj->oclass == POTION_CLASS && (guaranteed_hit || ACURR(A_DEX) + tohit_skill_bonus > rnd(25)))
     {
         if (hitres_ptr)
             *hitres_ptr = 1;
