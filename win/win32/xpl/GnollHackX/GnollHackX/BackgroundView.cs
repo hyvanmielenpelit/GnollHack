@@ -267,7 +267,7 @@ namespace GnollHackX
             {
                 float borderscalex = (canvaswidth / GHConstants.BackgroundBorderDivisor) / bordertl.Width;
                 float borderscaley = (canvasheight / GHConstants.BackgroundBorderDivisor) / bordertl.Height;
-                float borderscale = Math.Max(0.10f, Math.Min(1.0f, Math.Min(borderscalex, borderscaley)));
+                float borderscale = Math.Max(0.10f, Math.Min(10.0f, Math.Min(borderscalex, borderscaley)));
                 for (int i = 0; i < 4; i++)
                 {
                     float tx = 0, ty = 0;

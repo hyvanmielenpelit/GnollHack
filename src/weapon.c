@@ -3738,22 +3738,22 @@ uchar apply_extra_bonuses; /* 1 = normal bonus and extra bonuses, 2 = Just the e
             impossible(bad_skill, skill); /* fall through */
         case P_ISRESTRICTED:
         case P_UNSKILLED:
-            bonus += -2;
+            bonus += -4;
             break;
         case P_BASIC:
             bonus += 0;
             break;
         case P_SKILLED:
-            bonus += 2;
-            break;
-        case P_EXPERT:
             bonus += 4;
             break;
+        case P_EXPERT:
+            bonus += 8;
+            break;
         case P_MASTER:
-            bonus += 6;
+            bonus += 12;
             break;
         case P_GRAND_MASTER:
-            bonus += 8;
+            bonus += 16;
             break;
         }
     }

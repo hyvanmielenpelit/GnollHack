@@ -2042,10 +2042,10 @@ uchar* hitres_ptr;
         } 
         else if (is_ammo(obj) || is_golf_swing_with_stone)
         {
-            if (!ammo_and_launcher(obj, uwep) && !is_golf_swing_with_stone)
+            if (!ammo_and_launcher(obj, uwep) && hmode == HMON_THROWN && !is_golf_swing_with_stone)
             {
-                tmp -= 4;
-            } 
+                tmp += weapon_skill_hit_bonus((struct obj*)0, P_NONE, FALSE, FALSE, 2, 0, TRUE, TRUE);
+            }
             else if (uwep)
             {
                 tmp += weapon_to_hit_value(uwep, mon, &youmonst, 2);    //tmp += uwep->enchantment - greatest_erosion(uwep);
@@ -2185,7 +2185,8 @@ uchar* hitres_ptr;
             tmiss(obj, mon, TRUE);
         }
 
-    } else if (otyp == BOULDER) 
+    } 
+    else if (otyp == BOULDER) 
     {
         exercise(A_STR, TRUE);
         if (tmp >= dieroll) 

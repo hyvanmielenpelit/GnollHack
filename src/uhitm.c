@@ -1007,7 +1007,7 @@ boolean* obj_destroyed;
     boolean hand_to_hand = (thrown == HMON_MELEE
         /* not grapnels; applied implies uwep */
         || (thrown == HMON_APPLIED && is_appliable_pole_type_weapon(uwep)));
-    boolean ordinary_thrown = (thrown == HMON_THROWN && !ammo_and_launcher(obj, uwep) && obj && is_weapon(obj));
+    boolean ordinary_thrown = (thrown == HMON_THROWN && !ammo_and_launcher(obj, uwep));
     boolean hide_damage_amount = FALSE;
     boolean isinstakilled = FALSE;
     boolean isdisintegrated = FALSE;
@@ -1767,7 +1767,7 @@ boolean* obj_destroyed;
     {
         /* to be valid a projectile must have had the correct projector */
         damage += adjust_damage(
-            weapon_skill_dmg_bonus(wep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE, !is_golf_swing_with_stone, TRUE, 0, TRUE, thrown == HMON_THROWN && wep && !ammo_and_launcher(wep, uwep) && is_weapon(wep)),
+            weapon_skill_dmg_bonus(wep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE, !is_golf_swing_with_stone, TRUE, 0, TRUE, ordinary_thrown),
             &youmonst, mon, wep ? objects[wep->otyp].oc_damagetype : AD_PHYS, ADFLAGS_NONE);
         /* [this assumes that `!thrown' implies wielded...] */
         use_skill(wtype, 1);
@@ -1777,6 +1777,11 @@ boolean* obj_destroyed;
 
         if (thrown == HMON_MELEE && obj && uwep && obj == uwep && two_handed_bonus_applies(obj))
             use_skill(P_TWO_HANDED_WEAPON, 1);
+    }
+    else if (ordinary_thrown) //Thrown weapon skill bonus to thrown objects
+    {
+        damage += adjust_damage(weapon_skill_dmg_bonus((struct obj*)0, P_NONE, FALSE, FALSE, 2, 0, TRUE, TRUE),
+            &youmonst, mon, wep ? objects[wep->otyp].oc_damagetype : AD_PHYS, ADFLAGS_NONE);
     }
 
     if (ispoisoned && !isdisintegrated) 
