@@ -1007,6 +1007,7 @@ boolean* obj_destroyed;
     boolean hand_to_hand = (thrown == HMON_MELEE
         /* not grapnels; applied implies uwep */
         || (thrown == HMON_APPLIED && is_appliable_pole_type_weapon(uwep)));
+    boolean ordinary_thrown = (thrown == HMON_THROWN && !ammo_and_launcher(obj, uwep) && obj && is_weapon(obj));
     boolean hide_damage_amount = FALSE;
     boolean isinstakilled = FALSE;
     boolean isdisintegrated = FALSE;
@@ -1987,7 +1988,7 @@ boolean* obj_destroyed;
     boolean skill_critical_success = FALSE;
     if (damage > 0 && !incorrect_weapon_use)
     {
-        int skill_crit_chance = get_skill_critical_strike_chance(wtype, FALSE, TRUE, 0, TRUE);
+        int skill_crit_chance = get_skill_critical_strike_chance(wtype, FALSE, TRUE, 0, TRUE, ordinary_thrown);
         if (skill_crit_chance > 0 && rn2(100) < skill_crit_chance)
         {
             skill_critical_success = TRUE;
@@ -3305,7 +3306,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     boolean skill_critical_success = FALSE;
     if (damage > 0 && !incorrect_weapon_use)
     {
-        int skill_crit_chance = get_skill_critical_strike_chance(wtype, FALSE, TRUE, 0, TRUE);
+        int skill_crit_chance = get_skill_critical_strike_chance(wtype, FALSE, TRUE, 0, TRUE, FALSE);
         if (skill_crit_chance > 0 && rn2(100) < skill_crit_chance)
         {
             skill_critical_success = TRUE;

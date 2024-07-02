@@ -4168,7 +4168,7 @@ E int FDECL(riding_skill_mount_bonus, (int));
 E void FDECL(skill_init, (const struct def_skill*, const struct def_skill *));
 E int FDECL(martial_arts_multishot_percentage_chance, (int));
 E int FDECL(two_handed_weapon_multishot_percentage_chance, (int));
-E int FDECL(get_skill_critical_strike_chance, (enum p_skills, BOOLEAN_P, BOOLEAN_P, int, BOOLEAN_P));
+E int FDECL(get_skill_critical_strike_chance, (enum p_skills, BOOLEAN_P, BOOLEAN_P, int, BOOLEAN_P, BOOLEAN_P));
 E double FDECL(get_wand_skill_damage_multiplier, (int));
 E double FDECL(get_wand_exceptionality_damage_multiplier, (UCHAR_P));
 E int FDECL(get_exceptionality_multiplier, (UCHAR_P));
