@@ -3699,7 +3699,7 @@ uchar apply_extra_bonuses; /* 1 = normal bonus and extra bonuses, 2 = Just the e
     {
         bonus = 0;
     }
-    else if (type <= P_LAST_WEAPON || type == P_SHIELD || type == P_THROWN_WEAPON || type == P_DIGGING)
+    else if (type <= P_LAST_WEAPON || type == P_SHIELD || type == P_DIGGING)
     {
         int skill_level = use_this_level > 0 ? use_this_level : use_adjusted_sklvl ? adjusted_limited_skill_level(type, nextlevel, limit_by_twoweap) : limited_skill_level(type, nextlevel, limit_by_twoweap); //min(P_MAX_SKILL_LEVEL(type), P_SKILL_LEVEL(type) + (nextlevel ? 1 : 0));
         switch (skill_level)
@@ -3727,6 +3727,34 @@ uchar apply_extra_bonuses; /* 1 = normal bonus and extra bonuses, 2 = Just the e
             break;
         }
     } 
+    else if (type == P_THROWN_WEAPON)
+    {
+        int skill_level = use_this_level > 0 ? use_this_level : use_adjusted_sklvl ? adjusted_limited_skill_level(type, nextlevel, limit_by_twoweap) : limited_skill_level(type, nextlevel, limit_by_twoweap); //min(P_MAX_SKILL_LEVEL(type), P_SKILL_LEVEL(type) + (nextlevel ? 1 : 0));
+        switch (skill_level)
+        {
+        default:
+            impossible(bad_skill, skill_level); /* fall through */
+        case P_ISRESTRICTED:
+        case P_UNSKILLED:
+            bonus += 0;
+            break;
+        case P_BASIC:
+            bonus += 2;
+            break;
+        case P_SKILLED:
+            bonus += 4;
+            break;
+        case P_EXPERT:
+            bonus += 6;
+            break;
+        case P_MASTER:
+            bonus += 8;
+            break;
+        case P_GRAND_MASTER:
+            bonus += 10;
+            break;
+        }
+    }
 
     /* Thrown weapon */
     if ((type == P_THROWN_WEAPON && apply_thrown_weapon_bonus) || (!use_this_skill && apply_thrown_weapon_bonus))
@@ -3757,7 +3785,6 @@ uchar apply_extra_bonuses; /* 1 = normal bonus and extra bonuses, 2 = Just the e
             break;
         }
     }
-
 
     /* Two-handed weapon */
     if (type == P_TWO_HANDED_WEAPON || (!use_this_skill && apply_two_handed_weapon_bonus))
@@ -3890,7 +3917,7 @@ uchar apply_extra_bonuses; /* 1 = normal bonus and extra bonuses, 2 = Just the e
     {
         bonus += 0;
     } 
-    else if (type <= P_LAST_WEAPON || type == P_SHIELD || type == P_THROWN_WEAPON || type == P_DIGGING)
+    else if (type <= P_LAST_WEAPON || type == P_SHIELD || type == P_DIGGING)
     {
         int skill_level = use_this_level > 0 ? use_this_level : use_adjusted_sklvl ? adjusted_limited_skill_level(type, nextlevel, limit_by_twoweap) : limited_skill_level(type, nextlevel, limit_by_twoweap); //min(P_MAX_SKILL_LEVEL(type), P_SKILL_LEVEL(type) + (nextlevel ? 1 : 0));
         switch (skill_level)
@@ -3919,6 +3946,35 @@ uchar apply_extra_bonuses; /* 1 = normal bonus and extra bonuses, 2 = Just the e
             break;
         }
     } 
+    else if (type == P_THROWN_WEAPON)
+    {
+        int skill_level = use_this_level > 0 ? use_this_level : use_adjusted_sklvl ? adjusted_limited_skill_level(type, nextlevel, limit_by_twoweap) : limited_skill_level(type, nextlevel, limit_by_twoweap); //min(P_MAX_SKILL_LEVEL(type), P_SKILL_LEVEL(type) + (nextlevel ? 1 : 0));
+        switch (skill_level)
+        {
+        default:
+            impossible("weapon_skill_dmg_bonus: bad skill levle %d", skill_level);
+            /* fall through */
+        case P_ISRESTRICTED:
+        case P_UNSKILLED:
+            bonus += 0;
+            break;
+        case P_BASIC:
+            bonus += 1;
+            break;
+        case P_SKILLED:
+            bonus += 2;
+            break;
+        case P_EXPERT:
+            bonus += 3;
+            break;
+        case P_MASTER:
+            bonus += 4;
+            break;
+        case P_GRAND_MASTER:
+            bonus += 5;
+            break;
+        }
+    }
 
     /* Thrown weapon */
     if ((type == P_THROWN_WEAPON && apply_thrown_weapon_bonus) || (!use_this_skill && apply_thrown_weapon_bonus))
@@ -3929,22 +3985,22 @@ uchar apply_extra_bonuses; /* 1 = normal bonus and extra bonuses, 2 = Just the e
         default:
         case P_ISRESTRICTED:
         case P_UNSKILLED:
-            bonus += 0;
+            bonus += -2;
             break;
         case P_BASIC:
-            bonus += 2;
+            bonus += 0;
             break;
         case P_SKILLED:
-            bonus += 4;
+            bonus += 2;
             break;
         case P_EXPERT:
-            bonus += 6;
+            bonus += 4;
             break;
         case P_MASTER:
-            bonus += 8;
+            bonus += 6;
             break;
         case P_GRAND_MASTER:
-            bonus += 10;
+            bonus += 8;
             break;
         }
     }

@@ -73,8 +73,8 @@ namespace GnollHackX
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
-            float canvaswidth = this.CanvasSize.Width;
-            float canvasheight = this.CanvasSize.Height;
+            float canvaswidth = e.Info.Width;
+            float canvasheight = e.Info.Height;
             float scale = canvaswidth / (float)this.Width;
 
             canvas.Clear();
@@ -265,9 +265,9 @@ namespace GnollHackX
 
             if (BorderStyle > BorderStyles.None && bordertl != null && borderhorizontal != null && bordervertical != null)
             {
-                float borderscalex = (canvaswidth / GHConstants.BackgroundBorderDivisor) / bordertl.Width;
-                float borderscaley = (canvasheight / GHConstants.BackgroundBorderDivisor) / bordertl.Height;
-                float borderscale = Math.Max(0.10f, Math.Min(10.0f, Math.Min(borderscalex, borderscaley)));
+                float borderscalex = (canvaswidth / GHConstants.BackgroundBorderDivisor / 6) / bordervertical.Width;
+                float borderscaley = (canvasheight / GHConstants.BackgroundBorderDivisor / 6) / borderhorizontal.Height;
+                float borderscale = Math.Max(0.10f, Math.Min(10.0f, (float)Math.Sqrt(borderscalex * borderscaley)));
                 for (int i = 0; i < 4; i++)
                 {
                     float tx = 0, ty = 0;
