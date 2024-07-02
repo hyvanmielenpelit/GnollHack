@@ -1209,8 +1209,9 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             }
             if (((objects[otyp].oc_skill >= P_FIRST_WEAPON && objects[otyp].oc_skill <= P_LAST_WEAPON) || objects[otyp].oc_skill == -P_THROWN_WEAPON || objects[otyp].oc_skill == P_SHIELD) && is_weapon(obj))
             {
-                int skilltohitbonus = weapon_skill_hit_bonus(obj, P_NONE, FALSE, FALSE, FALSE, 0, FALSE);
-                int skilldmgbonus = weapon_skill_dmg_bonus(obj, P_NONE, FALSE, FALSE, FALSE, 0, FALSE);
+                
+                int skilltohitbonus = weapon_skill_hit_bonus(obj, P_NONE, FALSE, FALSE, objects[otyp].oc_skill == -P_THROWN_WEAPON || is_otyp_thrown_weapon_only(otyp), 0, FALSE, objects[otyp].oc_skill == -P_THROWN_WEAPON || is_otyp_thrown_weapon_only(otyp));
+                int skilldmgbonus = weapon_skill_dmg_bonus(obj, P_NONE, FALSE, FALSE, objects[otyp].oc_skill == -P_THROWN_WEAPON || is_otyp_thrown_weapon_only(otyp), 0, FALSE, objects[otyp].oc_skill == -P_THROWN_WEAPON || is_otyp_thrown_weapon_only(otyp));
                 if (skilltohitbonus == skilldmgbonus)
                     Sprintf(buf, "%s          %s%d to hit and damage", bonusesprinted ? "              " : "Skill bonuses:", skilltohitbonus >= 0 ? "+" : "", skilltohitbonus);
                 else
@@ -4369,7 +4370,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                             else if (applicable_launcher)
                             {
                                 roll_to_hit += weapon_to_hit_value(applicable_launcher, &youmonst, &youmonst, 2);
-                                roll_to_hit += weapon_skill_hit_bonus(applicable_launcher, P_NONE, FALSE, FALSE, TRUE, 0, TRUE);
+                                roll_to_hit += weapon_skill_hit_bonus(applicable_launcher, P_NONE, FALSE, FALSE, TRUE, 0, TRUE, FALSE);
 
                                 if ((Race_if(PM_ELF) || Role_if(PM_SAMURAI))
                                     && (!Upolyd || your_race(youmonst.data))
@@ -4390,7 +4391,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                             if (is_thrown_weapon_only(obj)) /* meant to be thrown */
                                 roll_to_hit += 2;
 
-                            roll_to_hit += weapon_skill_hit_bonus(obj, P_NONE, FALSE, FALSE, TRUE, 0, TRUE);
+                            roll_to_hit += weapon_skill_hit_bonus(obj, P_NONE, FALSE, FALSE, TRUE, 0, TRUE, TRUE);
                         }
                     }
                     else
@@ -4442,8 +4443,6 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     Sprintf(buf, " %2d - You %s an average of %.1f time%s per round", powercnt, applicable_verb, average_multi_shot_times, plur(average_multi_shot_times));
 
                 putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-
-                //double skill_dmg_bonus = (double)weapon_skill_dmg_bonus(obj, P_NONE, FALSE, FALSE, TRUE, 0, TRUE);
 
                 wep_avg_dmg *= average_multi_shot_times;
                 wep_multipliable_avg_dmg *= average_multi_shot_times;

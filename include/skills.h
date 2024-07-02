@@ -35,7 +35,6 @@ enum p_skills {
     P_BOW,                     /* launchers */
     P_SLING,
     P_CROSSBOW,
-    P_THROWN_WEAPON,           /* hand-thrown missiles */
     P_WHIP,                    /* flexible, one-handed */
 
     /* Spell Skills added by Larry Stewart-Zerba */
@@ -54,9 +53,10 @@ enum p_skills {
 
     /* Other types of combat */
     P_BARE_HANDED_COMBAT,      /* actually weaponless; gloves are ok */
-    P_MARTIAL_ARTS,            /* actually weaponless; gloves are ok */
+    P_MARTIAL_ARTS,            /* extra bare-handed, also kicking; boots are ok */
     P_DUAL_WEAPON_COMBAT,      /* pair of weapons, one in each hand */
     P_TWO_HANDED_WEAPON,       /* two-handed weapons */
+    P_THROWN_WEAPON,           /* hand-thrown missiles */
     P_DODGE,                   /* increases AC */
     P_SHIELD,                  /* increases AC and MC, and for figthing with weapon shields */
     P_WAND,                    /* shooting rays with wands */
@@ -77,8 +77,8 @@ enum p_skills {
 #define P_FIRST_SPELL P_ARCANE_SPELL
 #define P_LAST_SPELL P_NECROMANCY_SPELL
 
-#define P_FIRST_H_TO_H P_BARE_HANDED_COMBAT
-#define P_LAST_H_TO_H P_WAND
+#define P_FIRST_COMBAT P_BARE_HANDED_COMBAT
+#define P_LAST_COMBAT P_WAND
 
 #define P_FIRST_NONCOMBAT P_RIDING
 #define P_LAST_NONCOMBAT P_DISARM_TRAP

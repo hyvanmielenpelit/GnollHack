@@ -400,7 +400,6 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
             else
             {
                 tmp += weapon_to_hit_value(mon_launcher, mtmp, (struct monst*)0, 2);
-                //tmp += weapon_skill_hit_bonus(uwep);  //Monsters do not get skill-based to-hit bonuses
 
                 //Penalty for shooting short range
                 if (archer && distmin(archer->mx, archer->my, mtmp->mx, mtmp->my) <= 1) 
@@ -962,7 +961,6 @@ struct obj *obj;         /* missile (or stack providing it) */
                         //Fitting ammo gets launcher's weapon_to_hit_value and weapon_dmg_value and str damage bonus if bow, fixed for crossbows
                         //LAUNCHER HITVAL
                         hitv += weapon_to_hit_value(MON_WEP(mon), &youmonst, mon, 2); //MON_WEP(mon)->enchantment - greatest_erosion(MON_WEP(mon));
-                        //hitv += weapon_skill_hit_bonus(MON_WEP(mon)); //Monsters do not get skill bonuses
                         //LAUNCHER DMGVAL
                         dam += weapon_total_dmg_value(MON_WEP(mon), &youmonst, mon, 2);
 
