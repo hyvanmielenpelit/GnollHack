@@ -2619,8 +2619,8 @@ int skill_id;
                     {
                     case P_THROWN_WEAPON:
                     {
-                        tohitbonus = weapon_skill_hit_bonus((struct obj*)0, P_NONE, FALSE, FALSE, TRUE, lvl, FALSE, 2);
-                        dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, P_NONE, FALSE, FALSE, TRUE, lvl, FALSE, 2);
+                        tohitbonus = weapon_skill_hit_bonus((struct obj*)0, P_NONE, FALSE, FALSE, 2, lvl, FALSE, TRUE);
+                        dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, P_NONE, FALSE, FALSE, 2, lvl, FALSE, TRUE);
                         Sprintf(thbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
                         Sprintf(tdbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
                         break;
@@ -3653,8 +3653,8 @@ int
 weapon_skill_hit_bonus(weapon, use_this_skill, nextlevel, limit_by_twoweap, apply_extra_bonuses, use_this_level, use_adjusted_sklvl, being_thrown)
 struct obj *weapon;
 int use_this_skill, use_this_level;
-boolean nextlevel, limit_by_twoweap, apply_extra_bonuses, use_adjusted_sklvl;
-uchar being_thrown; /* 1 = both bonuses, 2 = Just the extra bonus */
+boolean nextlevel, limit_by_twoweap, use_adjusted_sklvl, being_thrown;
+uchar apply_extra_bonuses; /* 1 = normal bonus and extra bonuses, 2 = Just the extra bonus */
 {
     int bonus = 0;
     static const char bad_skill[] = "weapon_skill_hit_bonus: bad skill %d";
@@ -3663,7 +3663,7 @@ uchar being_thrown; /* 1 = both bonuses, 2 = Just the extra bonus */
     boolean apply_thrown_weapon_bonus = apply_extra_bonuses && being_thrown;
     boolean Is_worn_gauntlets = (weapon && is_gloves(weapon) && (weapon->owornmask & W_ARMG));
     int wep_type = weapon_skill_type(weapon);
-    int type = use_this_skill > P_NONE || being_thrown == 2 ? use_this_skill : wep_type;
+    int type = apply_extra_bonuses == 2 ? P_NONE : use_this_skill > P_NONE ? use_this_skill : wep_type;
     boolean apply_martial_arts_bonus = type == P_MARTIAL_ARTS && ((!weapon/* && (!uarmg || (uarmg && !is_metallic(uarmg)))*/) || (Is_worn_gauntlets/* && !is_metallic(weapon)*/));
 
     if (type == P_BARE_HANDED_COMBAT || type == P_MARTIAL_ARTS || Is_worn_gauntlets)
@@ -3846,8 +3846,8 @@ int
 weapon_skill_dmg_bonus(weapon, use_this_skill, nextlevel, limit_by_twoweap, apply_extra_bonuses, use_this_level, use_adjusted_sklvl, being_thrown)
 struct obj *weapon;
 int use_this_skill, use_this_level;
-boolean nextlevel, limit_by_twoweap, apply_extra_bonuses, use_adjusted_sklvl;
-uchar being_thrown;
+boolean nextlevel, limit_by_twoweap, use_adjusted_sklvl, being_thrown;
+uchar apply_extra_bonuses; /* 1 = normal bonus and extra bonuses, 2 = Just the extra bonus */
 {
     int bonus = 0;
     boolean apply_two_weapon_bonus = apply_extra_bonuses && (u.twoweap && (!weapon || (weapon && !bimanual(weapon) && (weapon == uwep || weapon == uarms))));
@@ -3855,7 +3855,7 @@ uchar being_thrown;
     boolean apply_thrown_weapon_bonus = apply_extra_bonuses && being_thrown;
     boolean Is_worn_gauntlets = (weapon && is_gloves(weapon) && (weapon->owornmask & W_ARMG));
     int wep_type = weapon_skill_type(weapon);
-    int type = use_this_skill > P_NONE || being_thrown == 2 ? use_this_skill : wep_type;
+    int type = apply_extra_bonuses == 2 ? P_NONE : use_this_skill > P_NONE ? use_this_skill : wep_type;
     boolean apply_martial_arts_bonus = type == P_MARTIAL_ARTS && ((!weapon/* && (!uarmg || (uarmg && !is_metallic(uarmg)))*/) || (Is_worn_gauntlets/* && !is_metallic(weapon)*/));
 
     if (type == P_BARE_HANDED_COMBAT || type == P_MARTIAL_ARTS || Is_worn_gauntlets)
