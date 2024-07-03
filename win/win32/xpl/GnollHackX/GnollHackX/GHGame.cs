@@ -498,11 +498,13 @@ namespace GnollHackX
         {
             RecordFunctionCall(RecordedFunctionID.Curs, winHandle, x, y);
 
+            GHWindow gHWindow = null;
             lock (_ghWindowsLock)
             {
-                if (_ghWindows[winHandle] != null)
-                    _ghWindows[winHandle].Curs(x, y);
+                gHWindow = _ghWindows[winHandle];
             }
+            if (gHWindow != null)
+                gHWindow.Curs(x, y);
         }
 
         public void ClientCallback_PrintGlyph(int winHandle, int x, int y, int glyph, int bkglyph, int symbol, int ocolor, uint special, IntPtr layers_ptr)
@@ -510,13 +512,13 @@ namespace GnollHackX
             LayerInfo layers = layers_ptr == IntPtr.Zero ? new LayerInfo() : (LayerInfo)Marshal.PtrToStructure(layers_ptr, typeof(LayerInfo));
             RecordFunctionCall(RecordedFunctionID.PrintGlyph, winHandle, x, y, glyph, bkglyph, symbol, ocolor, special, layers);
 
+            GHWindow gHWindow = null;
             lock (_ghWindowsLock)
             {
-                if (_ghWindows[winHandle] != null)
-                {
-                    _ghWindows[winHandle].PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
-                }
+                gHWindow = _ghWindows[winHandle];
             }
+            if (gHWindow != null)
+                gHWindow.PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
 
             _gamePage.ClearAllObjectData(x, y);
             _gamePage.ClearEngravingData(x, y);

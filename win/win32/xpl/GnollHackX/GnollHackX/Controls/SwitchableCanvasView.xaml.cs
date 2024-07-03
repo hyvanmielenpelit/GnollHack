@@ -84,7 +84,7 @@ namespace GnollHackX.Controls
 #if WINDOWS
             if(GHApp.WindowsXamlWindow != null)
             {
-                GHApp.WindowsXamlWindow.DispatcherQueue?.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () => 
+                GHApp.WindowsXamlWindow.DispatcherQueue?.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.High, () => 
                 {
 #endif
                     if(UseGL)
