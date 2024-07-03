@@ -3254,6 +3254,7 @@ namespace GnollHackX
             this.x = x;
             this.y = y;
             this.monster_data = monster_data;
+            this.oflags = oflags;
         }
     }
 
