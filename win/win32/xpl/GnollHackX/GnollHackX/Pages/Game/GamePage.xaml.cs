@@ -13831,9 +13831,15 @@ namespace GnollHackX.Pages.Game
             {
                 ToggleAutoCenterModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autocenter-on.png";
                 SimpleToggleAutoCenterModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-autocenter-on.png";
-                if (sender != null && GHUtils.isok(_ux, _uy))
+                int ux, uy;
+                lock (_uLock)
                 {
-                    SetTargetClip(_ux, _uy, false);
+                    ux = _ux;
+                    uy = _uy;
+                }
+                if (sender != null && GHUtils.isok(ux, uy))
+                {
+                    SetTargetClip(ux, uy, false);
                 }
             }
         }
@@ -13879,9 +13885,15 @@ namespace GnollHackX.Pages.Game
             {
                 ToggleZoomMiniButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-minimap-off.png";
                 SimpleToggleZoomMiniButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-minimap-off.png";
-                if (sender != null && GHUtils.isok(_ux, _uy) && !MapNoClipMode)
+                int ux, uy;
+                lock (_uLock)
                 {
-                    SetTargetClip(_ux, _uy, true);
+                    ux = _ux;
+                    uy = _uy;
+                }
+                if (sender != null && GHUtils.isok(ux, uy) && !MapNoClipMode)
+                {
+                    SetTargetClip(ux, uy, true);
                 }
             }
         }
@@ -13914,9 +13926,15 @@ namespace GnollHackX.Pages.Game
                     }
                 }
 
-                if (sender != null && GHUtils.isok(_ux, _uy) && !MapNoClipMode)
+                int ux, uy;
+                lock (_uLock)
                 {
-                    SetTargetClip(_ux, _uy, true);
+                    ux = _ux;
+                    uy = _uy;
+                }
+                if (sender != null && GHUtils.isok(ux, uy) && !MapNoClipMode)
+                {
+                    SetTargetClip(ux, uy, true);
                 }
             }
 
