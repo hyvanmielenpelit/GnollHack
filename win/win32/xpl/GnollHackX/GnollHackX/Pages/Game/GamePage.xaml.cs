@@ -13329,74 +13329,95 @@ namespace GnollHackX.Pages.Game
 
         public void SetMapSymbol(int x, int y, int glyph, int bkglyph, int c, int color, uint special, ref LayerInfo layers)
         {
+            long generalCounter;
+            long mainCounter;
+            lock (AnimationTimerLock)
+            {
+                generalCounter = AnimationTimers.general_animation_counter;
+            }
+            lock (_mainCounterLock)
+            {
+                mainCounter = _mainCounterValue;
+            }
             lock (_mapDataLock)
             {
-                if (((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0 && (_mapData[x, y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) == 0) ||
-                    (layers.m_id != 0 && layers.m_id != _mapData[x, y].Layers.m_id))
+                SetMapSymbolOnTimerUnlocked(x, y, glyph, bkglyph, c, color, special, ref layers, generalCounter, mainCounter);
+            }
+        }
+
+        private void SetMapSymbolOnTimerUnlocked(int x, int y, int glyph, int bkglyph, int c, int color, uint special, ref LayerInfo layers, long generalCounter, long mainCounter)
+        {
+            if (((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0 && (_mapData[x, y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) == 0) ||
+                (layers.m_id != 0 && layers.m_id != _mapData[x, y].Layers.m_id))
+            {
+                /* Update counter value only if the monster just moved here, not, e.g. if it changes action in the same square,
+                 * or is printed in the same square again with the same origin coordinates. This way, the movement action is played only once. 
+                 */
+                _mapData[x, y].GlyphPrintAnimationCounterValue = generalCounter;
+                _mapData[x, y].GlyphPrintMainCounterValue = mainCounter;
+            }
+            if ((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
+            {
+                lock (_uLock)
                 {
-                    /* Update counter value only if the monster just moved here, not, e.g. if it changes action in the same square,
-                     * or is printed in the same square again with the same origin coordinates. This way, the movement action is played only once. 
-                     */
-                    lock (AnimationTimerLock)
+                    _ux = x;
+                    _uy = y;
+                    _u_condition_bits = layers.condition_bits;
+                    _u_status_bits = layers.status_bits;
+                    if (layers.buff_bits != null)
                     {
-                        _mapData[x, y].GlyphPrintAnimationCounterValue = AnimationTimers.general_animation_counter;
-                    }
-                    lock (_mainCounterLock)
-                    {
-                        _mapData[x, y].GlyphPrintMainCounterValue = _mainCounterValue;
-                    }
-                }
-                if ((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
-                {
-                    lock (_uLock)
-                    {
-                        _ux = x;
-                        _uy = y;
-                        _u_condition_bits = layers.condition_bits;
-                        _u_status_bits = layers.status_bits;
-                        if(layers.buff_bits != null)
+                        for (int i = 0; i < GHConstants.NUM_BUFF_BIT_ULONGS; i++)
                         {
-                            for (int i = 0; i < GHConstants.NUM_BUFF_BIT_ULONGS; i++)
-                            {
-                                _u_buff_bits[i] = layers.buff_bits[i];
-                            }
+                            _u_buff_bits[i] = layers.buff_bits[i];
                         }
                     }
                 }
-                if (layers.o_id != 0 && layers.o_id != _mapData[x, y].Layers.o_id)
-                {
-                    /* Update counter value only if the object just moved here, not, e.g. if it changes action in the same square,
-                     * or is printed in the same square again with the same origin coordinates. This way, the movement action is played only once. 
-                     */
-                    lock (AnimationTimerLock)
-                    {
-                        _mapData[x, y].GlyphObjectPrintAnimationCounterValue = AnimationTimers.general_animation_counter;
-                    }
-                    lock (_mainCounterLock)
-                    {
-                        _mapData[x, y].GlyphObjectPrintMainCounterValue = _mainCounterValue;
-                    }
-                }
-                /* General counter that gets always set */
-                lock (AnimationTimerLock)
-                {
-                    _mapData[x, y].GlyphGeneralPrintAnimationCounterValue = AnimationTimers.general_animation_counter;
-                }
-                lock (_mainCounterLock)
-                {
-                    _mapData[x, y].GlyphGeneralPrintMainCounterValue = _mainCounterValue;
-                }
-                _mapData[x, y].Glyph = glyph;
-                _mapData[x, y].BkGlyph = bkglyph;
-                _mapData[x, y].Symbol = Char.ConvertFromUtf32(c);
-                _mapData[x, y].Color = UIUtils.NHColor2SKColor(color, (special & 0x00002000UL) != 0 ? (int)MenuItemAttributes.AltColors : 0);
-                _mapData[x, y].Special = special;
-                _mapData[x, y].Layers = layers;
+            }
+            if (layers.o_id != 0 && layers.o_id != _mapData[x, y].Layers.o_id)
+            {
+                /* Update counter value only if the object just moved here, not, e.g. if it changes action in the same square,
+                 * or is printed in the same square again with the same origin coordinates. This way, the movement action is played only once. 
+                 */
+                _mapData[x, y].GlyphObjectPrintAnimationCounterValue = generalCounter;
+                _mapData[x, y].GlyphObjectPrintMainCounterValue = mainCounter;
+            }
 
-                _mapData[x, y].NeedsUpdate = true;
-                _mapData[x, y].HasEnlargementOrAnimationOrSpecialHeight = AlternativeLayerDrawing ? DetermineHasEnlargementOrAnimationOrSpecialHeight(ref layers) : false;
+            /* General counter that gets always set */
+            _mapData[x, y].GlyphGeneralPrintAnimationCounterValue = generalCounter;
+            _mapData[x, y].GlyphGeneralPrintMainCounterValue = mainCounter;
+            _mapData[x, y].Glyph = glyph;
+            _mapData[x, y].BkGlyph = bkglyph;
+            _mapData[x, y].Symbol = Char.ConvertFromUtf32(c);
+            _mapData[x, y].Color = UIUtils.NHColor2SKColor(color, (special & 0x00002000UL) != 0 ? (int)MenuItemAttributes.AltColors : 0);
+            _mapData[x, y].Special = special;
+            _mapData[x, y].Layers = layers;
+
+            _mapData[x, y].NeedsUpdate = true;
+            _mapData[x, y].HasEnlargementOrAnimationOrSpecialHeight = AlternativeLayerDrawing ? DetermineHasEnlargementOrAnimationOrSpecialHeight(ref layers) : false;
+        }
+
+        public void ProcessPrintGlyphCallList(List<SavedPrintGlyphCall> list)
+        {
+            long generalCounter;
+            long mainCounter;
+            lock (AnimationTimerLock)
+            {
+                generalCounter = AnimationTimers.general_animation_counter;
+            }
+            lock (_mainCounterLock)
+            {
+                mainCounter = _mainCounterValue;
+            }
+            lock (_mapDataLock)
+            {
+                for (int i = 0; i < list.Count; i++)
+                {
+                    SavedPrintGlyphCall pg = list[i];
+                    SetMapSymbolOnTimerUnlocked(pg.X, pg.Y, pg.Glyph, pg.Bkglyph, pg.Symbol, pg.Ocolor, pg.Special, ref pg.Layers, generalCounter, mainCounter);
+                }
             }
         }
+
         public void SetMapCursor(int x, int y)
         {
             lock (_mapDataLock)

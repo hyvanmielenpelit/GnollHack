@@ -518,10 +518,10 @@ namespace GnollHackX
             {
                 gHWindow = _ghWindows[winHandle];
             }
-            //_savedPrintGlyphCalls.Add(new SavedPrintGlyphCall(gHWindow, x, y, glyph, bkglyph, symbol, ocolor, special, ref layers));
+            _savedPrintGlyphCalls.Add(new SavedPrintGlyphCall(gHWindow, x, y, glyph, bkglyph, symbol, ocolor, special, ref layers));
 
-            if (gHWindow != null)
-                gHWindow.PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
+            //if (gHWindow != null)
+            //    gHWindow.PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
 
             _gamePage.ClearAllObjectData(x, y);
             _gamePage.ClearEngravingData(x, y);
@@ -2409,6 +2409,12 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_CHARACTER_CLICK_ACTION:
                     GHApp.CharacterClickAction = cmd_param != 0;
+                    break;
+                case (int)gui_command_types.GUI_CMD_START_FLUSH:
+                    break;
+                case (int)gui_command_types.GUI_CMD_FINISH_FLUSH:
+                    _gamePage.ProcessPrintGlyphCallList(_savedPrintGlyphCalls);
+                    _savedPrintGlyphCalls.Clear();
                     break;
                 default:
                     break;
