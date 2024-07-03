@@ -79,6 +79,13 @@ namespace GnollHackX
         private string _mainText;
         private string _suffixText;
         private string _suffix2Text;
+        private List<byte[]> _mainSplitAttrs = new List<byte[]>(1);
+        private List<byte[]> _mainSplitColors = new List<byte[]>(1);
+        private List<byte[]> _suffixSplitAttrs = new List<byte[]>(1);
+        private List<byte[]> _suffixSplitColors = new List<byte[]>(1);
+        private List<byte[]> _suffix2SplitAttrs = new List<byte[]>(1);
+        private List<byte[]> _suffix2SplitColors = new List<byte[]>(1);
+
         public string Text
         {
             get { return _text; }
@@ -116,8 +123,73 @@ namespace GnollHackX
                 _suffixTextSplit = trimmed_suffixtext.Split(' ');
                 string trimmed_suffix2text = _suffix2Text.Trim();
                 _suffix2TextSplit = trimmed_suffix2text.Split(' ');
+
+                ProcessSplitAttrsColors();
             }
         }
+
+        public List<byte[]> MainSplitAttrs { get { return HasMultiColors ? _mainSplitAttrs : null; } }
+        public List<byte[]> MainSplitColors { get { return HasMultiColors ? _mainSplitColors : null; } }
+        public List<byte[]> SuffixSplitAttrs { get { return HasMultiColors ? _suffixSplitAttrs : null; } }
+        public List<byte[]> SuffixSplitColors { get { return HasMultiColors ? _suffixSplitColors : null; } }
+        public List<byte[]> Suffix2SplitAttrs { get { return HasMultiColors ? _suffix2SplitAttrs : null; } }
+        public List<byte[]> Suffix2SplitColors { get { return HasMultiColors ? _suffix2SplitColors : null; } }
+
+        public bool HasMultiColors
+        {
+            get { return NHAttributes != null && NHColors != null && _text != null; }
+        }
+
+        public void ProcessSplitAttrsColors()
+        {
+            if (!HasMultiColors)
+                return;
+
+            int idx = -1;
+            List<string[]> textSplits = new List<string[]>() { _mainTextSplit, _suffixTextSplit, _suffix2TextSplit };
+            List<List<byte[]>> attrSplits = new List<List<byte[]>>() { _mainSplitAttrs, _suffixSplitAttrs, _suffix2SplitAttrs };
+            List<List<byte[]>> colorSplits = new List<List<byte[]>>() { _mainSplitColors, _suffixSplitColors, _suffix2SplitColors };
+            for (int splitIdx = 0; splitIdx < 3; splitIdx++)
+            {
+                string[] usedTextSplit = textSplits[splitIdx];
+                List<byte[]> usedAttrSplit = attrSplits[splitIdx];
+                List<byte[]> usedColorSplit = colorSplits[splitIdx];
+                usedAttrSplit.Clear();
+                usedColorSplit.Clear();
+                if (usedTextSplit != null)
+                {
+                    for (int i = 0; i < usedTextSplit.Length; i++)
+                    {
+                        string splitText = usedTextSplit[i];
+                        int len = splitText.Length;
+                        byte[] splitAttrs = new byte[len + 1];
+                        byte[] splitColors = new byte[len + 1];
+                        for (int j = 0; j < len; j++)
+                        {
+                            splitAttrs[j] = 0;
+                            splitColors[j] = (int)NhColor.NO_COLOR;
+                        }
+                        if (idx + 1 < _text.Length)
+                        {
+                            int startIdx = idx = _text.IndexOf(splitText, idx + 1);
+                            if (idx >= 0)
+                            {
+                                for (; idx - startIdx < splitText.Length && idx < _text.Length; idx++)
+                                {
+                                    splitAttrs[idx - startIdx] = NHAttributes[idx];
+                                    splitColors[idx - startIdx] = NHColors[idx];
+                                }
+                            }
+                        }
+                        splitAttrs[len] = 0;
+                        splitColors[len] = 0;
+                        usedAttrSplit.Add(splitAttrs);
+                        usedColorSplit.Add(splitColors);
+                    }
+                }
+            }
+        }
+
         public int SuffixParseStyle
         {
             get

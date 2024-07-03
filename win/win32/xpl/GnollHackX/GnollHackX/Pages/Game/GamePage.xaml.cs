@@ -14262,6 +14262,12 @@ namespace GnollHackX.Pages.Game
                             string[] maintextsplit = mi.MainTextSplit;
                             string[] suffixtextsplit = mi.SuffixTextSplit;
                             string[] suffix2textsplit = mi.Suffix2TextSplit;
+                            List<byte[]> mainattrssplit = mi.MainSplitAttrs;
+                            List<byte[]> suffixattrssplit = mi.SuffixSplitAttrs;
+                            List<byte[]> suffix2attrssplit = mi.Suffix2SplitAttrs;
+                            List<byte[]> maincolorssplit = mi.MainSplitColors;
+                            List<byte[]> suffixcolorssplit = mi.SuffixSplitColors;
+                            List<byte[]> suffix2colorssplit = mi.Suffix2SplitColors;
 
                             List<float> mainrowwidths = null, suffixrowwidths = null, suffix2rowwidths = null;
 
@@ -14416,7 +14422,7 @@ namespace GnollHackX.Pages.Game
                                 {
                                     indent_start_x += textPaint.MeasureText(indentstr);
                                 }
-                                DrawTextSplit(canvas, maintextsplit, mainrowwidths, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
+                                DrawTextSplit(canvas, maintextsplit, mainattrssplit, maincolorssplit, mainrowwidths, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
                                 /* Rewind and next line */
                                 x = start_x;
                                 y += textPaint.FontMetrics.Descent + fontspacingpadding;
@@ -14430,7 +14436,7 @@ namespace GnollHackX.Pages.Game
                                     textPaint.TextSize = suffixfontsize;
                                     y += fontspacingpadding;
                                     y -= textPaint.FontMetrics.Ascent;
-                                    DrawTextSplit(canvas, suffixtextsplit, suffixrowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
+                                    DrawTextSplit(canvas, suffixtextsplit, suffixattrssplit, suffixcolorssplit, suffixrowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
                                     /* Rewind and next line */
                                     x = start_x;
                                     y += textPaint.FontMetrics.Descent + fontspacingpadding;
@@ -14446,7 +14452,7 @@ namespace GnollHackX.Pages.Game
                                     fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                                     y += fontspacingpadding;
                                     y -= textPaint.FontMetrics.Ascent;
-                                    DrawTextSplit(canvas, suffix2textsplit, suffix2rowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
+                                    DrawTextSplit(canvas, suffix2textsplit, suffix2attrssplit, suffix2colorssplit, suffix2rowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
                                     /* Rewind and next line */
                                     x = start_x;
                                     y += textPaint.FontMetrics.Descent + fontspacingpadding;
@@ -14666,7 +14672,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private void DrawTextSplit(SKCanvas canvas, string[] textsplit, List<float> rowwidths, ref float x, ref float y, ref bool isfirstprintonrow, float indent_start_x, float canvaswidth, float canvasheight, float rightmenupadding, GHSkiaFontPaint textPaint, bool usespecialsymbols, bool usetextoutline, bool revertblackandwhite, bool centertext, float totalrowwidth, float curmenuoffset, float glyphystart, float glyphyend, float glyphpadding)
+        private void DrawTextSplit(SKCanvas canvas, string[] textsplit, List<byte[]> attrs_list, List<byte[]> colors_list, List<float> rowwidths, ref float x, ref float y, ref bool isfirstprintonrow, float indent_start_x, float canvaswidth, float canvasheight, float rightmenupadding, GHSkiaFontPaint textPaint, bool usespecialsymbols, bool usetextoutline, bool revertblackandwhite, bool centertext, float totalrowwidth, float curmenuoffset, float glyphystart, float glyphyend, float glyphpadding)
         {
             if (textsplit == null)
                 return;
@@ -14674,10 +14680,13 @@ namespace GnollHackX.Pages.Game
             float spacelength = textPaint.MeasureText(" ");
             int idx = 0;
             int rowidx = 0;
-            int special_coloring = 0;
+            //int special_coloring = 0;
             SKColor orig_color = textPaint.Color;
             foreach (string split_str in textsplit)
             {
+                byte[] attrs = attrs_list != null && idx < attrs_list.Count ? attrs_list[idx] : null;
+                byte[] colors = colors_list != null && idx < colors_list.Count ? colors_list[idx] : null;
+
                 bool nowrap = false;
                 if (string.IsNullOrWhiteSpace(split_str))
                     nowrap = true;
@@ -14701,7 +14710,7 @@ namespace GnollHackX.Pages.Game
                 SKRect source_rect = new SKRect();
                 if(usespecialsymbols && (symbolbitmap = GetGameSpecialSymbol(split_str, out source_rect)) != null)
                 {
-                    special_coloring = 0;
+                    //special_coloring = 0;
                     textPaint.Color = orig_color;
                     float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
                     float bmpwidth = bmpheight * (float)symbolbitmap.Width / (float)Math.Max(1, symbolbitmap.Height);
@@ -14722,109 +14731,138 @@ namespace GnollHackX.Pages.Game
                         SKRect bmptargetrect = new SKRect(bmpx, bmpy, bmpx + bmpwidth, bmpy + bmpheight);
                         canvas.DrawImage(symbolbitmap, source_rect, bmptargetrect);
                     }
-                    if (split_str == "&damage;" || split_str == "&MC;")
-                        special_coloring = 1;
-                    else if (split_str == "&AC;")
-                        special_coloring = -1;
+                    //if (split_str == "&damage;" || split_str == "&MC;")
+                    //    special_coloring = 1;
+                    //else if (split_str == "&AC;")
+                    //    special_coloring = -1;
                     isfirstprintonrow = false;
                 }
                 else
                 {
-                    float printlength = textPaint.MeasureText(split_str);
-                    endposition = x + printlength;
-                    if (idx < textsplit.Length - 1)
-                        endposition += spacelength;
-                    bool pastend = x + printlength > canvaswidth - usedglyphpadding - rightmenupadding;
-                    if (pastend && !isfirstprintonrow && !nowrap)
+                    int char_idx = 0;
+                    while (char_idx < split_str.Length)
                     {
-                        rowidx++;
-                        isfirstprintonrow = true;
+                        int charidx_len = 0;
+                        int new_nhcolor = colors != null && colors.Length > 0 && char_idx < colors.Length ? colors[char_idx] : (int)NhColor.NO_COLOR;
+                        int new_nhattr = attrs != null && attrs.Length > 0 && char_idx < attrs.Length ? attrs[char_idx] : 0;
+                        int char_idx2 = char_idx;
+                        int new_nhcolor2 = new_nhcolor;
+                        int new_nhattr2 = new_nhattr;
 
-                        x = indent_start_x;
+                        while (char_idx2 < split_str.Length && new_nhcolor == new_nhcolor2 && new_nhattr == new_nhattr2)
+                        {
+                            char_idx2++;
+                            new_nhcolor2 = colors != null && colors.Length > 0 && char_idx < colors.Length ? colors[char_idx2] : (int)NhColor.NO_COLOR;
+                            new_nhattr2 = attrs != null && attrs.Length > 0 && char_idx < attrs.Length ? attrs[char_idx2] : 0;
+                            charidx_len = char_idx2 - char_idx;
+                        }
 
-                        if (centertext && rowwidths != null && rowidx < rowwidths.Count)
-                            centering_padding = (totalrowwidth - rowwidths[rowidx]) / 2;
-                        x += centering_padding;
+                        SKColor new_skcolor = UIUtils.NHColor2SKColorCore(new_nhcolor, new_nhattr, revertblackandwhite, false);
+                        string printedsubline = split_str.Substring(char_idx, charidx_len);
+                        if (new_nhcolor != (int)NhColor.NO_COLOR)
+                            textPaint.Color = new_skcolor;
 
-                        y += textPaint.FontSpacing;
+                        float printlength = textPaint.MeasureText(printedsubline);
                         endposition = x + printlength;
-                        if(idx < textsplit.Length - 1)
+                        if (idx < textsplit.Length - 1)
                             endposition += spacelength;
-                    }
-
-                    if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
-                    {
-                        if(usetextoutline)
+                        bool pastend = x + printlength > canvaswidth - usedglyphpadding - rightmenupadding;
+                        if (pastend && !isfirstprintonrow && !nowrap)
                         {
-                            SKColor oldcolor = textPaint.Color;
-                            textPaint.Color = revertblackandwhite ? SKColors.White : SKColors.Black;
-                            textPaint.StrokeWidth = textPaint.TextSize / 10;
-                            textPaint.Style = SKPaintStyle.Stroke;
-                            textPaint.DrawTextOnCanvas(canvas, split_str, x, y);
-                            textPaint.Color = oldcolor;
-                            textPaint.Style = SKPaintStyle.Fill;
-                            textPaint.StrokeWidth = 0;
+                            rowidx++;
+                            isfirstprintonrow = true;
+
+                            x = indent_start_x;
+
+                            if (centertext && rowwidths != null && rowidx < rowwidths.Count)
+                                centering_padding = (totalrowwidth - rowwidths[rowidx]) / 2;
+                            x += centering_padding;
+
+                            y += textPaint.FontSpacing;
+                            endposition = x + printlength;
+                            if (idx < textsplit.Length - 1)
+                                endposition += spacelength;
                         }
-                        if (special_coloring != 0)
+
+                        if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
                         {
-                            string[] subsplit = split_str.Split('/');
-                            if(subsplit.Length > 1)
+                            if (usetextoutline)
                             {
-                                float xdelta = 0;
-                                int subidx = 0;
-                                foreach(string substr in subsplit)
-                                {
-                                    subidx++;
-                                    double res;
-                                    if (double.TryParse(substr, NumberStyles.Any, CultureInfo.InvariantCulture, out res))
-                                    {
-                                        res = res * special_coloring;
-                                        if (res > 0)
-                                            textPaint.Color = UIUtils.NHColor2SKColorCore((int)NhColor.CLR_BRIGHT_GREEN, (int)MenuItemAttributes.None, revertblackandwhite, false);
-                                        else if (res < 0)
-                                            textPaint.Color = UIUtils.NHColor2SKColorCore((int)NhColor.CLR_RED, (int)MenuItemAttributes.None, revertblackandwhite, false);
-                                        else
-                                            textPaint.Color = orig_color;
-                                    }
-                                    else
-                                        textPaint.Color = orig_color;
+                                SKColor oldcolor = textPaint.Color;
+                                textPaint.Color = revertblackandwhite ? SKColors.White : SKColors.Black;
+                                textPaint.StrokeWidth = textPaint.TextSize / 10;
+                                textPaint.Style = SKPaintStyle.Stroke;
+                                textPaint.DrawTextOnCanvas(canvas, printedsubline, x, y);
+                                textPaint.Color = oldcolor;
+                                textPaint.Style = SKPaintStyle.Fill;
+                                textPaint.StrokeWidth = 0;
+                            }
+                            //if (special_coloring != 0)
+                            //{
+                            //    string[] subsplit = split_str.Split('/');
+                            //    if(subsplit.Length > 1)
+                            //    {
+                            //        float xdelta = 0;
+                            //        int subidx = 0;
+                            //        foreach(string substr in subsplit)
+                            //        {
+                            //            subidx++;
+                            //            double res;
+                            //            if (double.TryParse(substr, NumberStyles.Any, CultureInfo.InvariantCulture, out res))
+                            //            {
+                            //                res = res * special_coloring;
+                            //                if (res > 0)
+                            //                    textPaint.Color = UIUtils.NHColor2SKColorCore((int)NhColor.CLR_BRIGHT_GREEN, (int)MenuItemAttributes.None, revertblackandwhite, false);
+                            //                else if (res < 0)
+                            //                    textPaint.Color = UIUtils.NHColor2SKColorCore((int)NhColor.CLR_RED, (int)MenuItemAttributes.None, revertblackandwhite, false);
+                            //                else
+                            //                    textPaint.Color = orig_color;
+                            //            }
+                            //            else
+                            //                textPaint.Color = orig_color;
 
-                                    textPaint.DrawTextOnCanvas(canvas, substr, x + xdelta, y);
-                                    xdelta += textPaint.MeasureText(substr);
-                                    if(subidx < subsplit.Length)
-                                    {
-                                        textPaint.Color = orig_color;
-                                        textPaint.DrawTextOnCanvas(canvas, "/", x + xdelta, y);
-                                        xdelta += textPaint.MeasureText("/");
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                double res;
-                                if (double.TryParse(split_str, NumberStyles.Any, CultureInfo.InvariantCulture, out res))
-                                {
-                                    res = res * special_coloring;
-                                    if (res > 0)
-                                        textPaint.Color = UIUtils.NHColor2SKColorCore((int)NhColor.CLR_BRIGHT_GREEN, (int)MenuItemAttributes.None, revertblackandwhite, false);
-                                    else if (res < 0)
-                                        textPaint.Color = UIUtils.NHColor2SKColorCore((int)NhColor.CLR_RED, (int)MenuItemAttributes.None, revertblackandwhite, false);
-                                    else
-                                        textPaint.Color = orig_color;
-                                }
-                                textPaint.DrawTextOnCanvas(canvas, split_str, x, y);
-                            }
+                            //            textPaint.DrawTextOnCanvas(canvas, substr, x + xdelta, y);
+                            //            xdelta += textPaint.MeasureText(substr);
+                            //            if(subidx < subsplit.Length)
+                            //            {
+                            //                textPaint.Color = orig_color;
+                            //                textPaint.DrawTextOnCanvas(canvas, "/", x + xdelta, y);
+                            //                xdelta += textPaint.MeasureText("/");
+                            //            }
+                            //        }
+                            //    }
+                            //    else
+                            //    {
+                            //        double res;
+                            //        if (double.TryParse(split_str, NumberStyles.Any, CultureInfo.InvariantCulture, out res))
+                            //        {
+                            //            res = res * special_coloring;
+                            //            if (res > 0)
+                            //                textPaint.Color = UIUtils.NHColor2SKColorCore((int)NhColor.CLR_BRIGHT_GREEN, (int)MenuItemAttributes.None, revertblackandwhite, false);
+                            //            else if (res < 0)
+                            //                textPaint.Color = UIUtils.NHColor2SKColorCore((int)NhColor.CLR_RED, (int)MenuItemAttributes.None, revertblackandwhite, false);
+                            //            else
+                            //                textPaint.Color = orig_color;
+                            //        }
+                            //        textPaint.DrawTextOnCanvas(canvas, split_str, x, y);
+                            //    }
+                            //}
+                            //else
+                            textPaint.DrawTextOnCanvas(canvas, printedsubline, x, y);
+
                         }
-                        else
-                            textPaint.DrawTextOnCanvas(canvas, split_str, x, y);
-                    }
 
-                    if(special_coloring != 0)
-                    {
-                        special_coloring = 0;
-                        textPaint.Color = orig_color;
+                        if (new_nhcolor != (int)NhColor.NO_COLOR)
+                            textPaint.Color = orig_color;
+
+                        //if (special_coloring != 0)
+                        //{
+                        //    special_coloring = 0;
+                        //    textPaint.Color = orig_color;
+                        //}
+                        isfirstprintonrow = false;
+                        char_idx += charidx_len;
                     }
-                    isfirstprintonrow = false;
                 }
 
                 x = endposition;
@@ -16031,7 +16069,7 @@ namespace GnollHackX.Pages.Game
                                 TextCanvas.RevertBlackAndWhite, false);
 
                             string[] split = str.Split(' ');
-                            DrawTextSplit(canvas, split, null, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, TextCanvas.GHWindow.UseSpecialSymbols, TextCanvas.UseTextOutline, TextCanvas.RevertBlackAndWhite, false, 0, curmenuoffset, glyphystart, glyphyend, glyphpadding);
+                            DrawTextSplit(canvas, split, null, null, null, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, TextCanvas.GHWindow.UseSpecialSymbols, TextCanvas.UseTextOutline, TextCanvas.RevertBlackAndWhite, false, 0, curmenuoffset, glyphystart, glyphyend, glyphpadding);
                         }
                         j++;
                         y += textPaint.FontMetrics.Descent + fontspacingpadding;
