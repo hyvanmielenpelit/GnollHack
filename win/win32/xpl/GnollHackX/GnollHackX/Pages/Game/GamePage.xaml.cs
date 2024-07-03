@@ -764,14 +764,12 @@ namespace GnollHackX.Pages.Game
         public float MapFontAlternateSize { get { lock (_mapFontSizeLock) { return _mapFontAlternateSize; } } set { lock (_mapFontSizeLock) { _mapFontAlternateSize = value; } } }
         public float MapFontMiniRelativeSize { get { lock (_mapFontSizeLock) { return _mapFontMiniRelativeSize; } } set { lock (_mapFontSizeLock) { _mapFontMiniRelativeSize = value; } } }
 
-        private readonly object _tileWidthLock = new object();
-        private float _tileWidth;
-        private float UsedTileWidth { get { lock (_tileWidthLock) { return _tileWidth; } } set { lock (_tileWidthLock) { _tileWidth = value; } } }
-        private readonly object _tileHeightLock = new object();
-        private float _tileHeight;
-        private float UsedTileHeight { get { lock (_tileHeightLock) { return _tileHeight; } } set { lock (_tileHeightLock) { _tileHeight = value; } } }
+        private readonly object _tileSizeLock = new object();
+        private float _usedTileWidth;
+        private float _usedTileHeight;
         private float _mapWidth;
         private float _mapHeight;
+
         private readonly object _mapFontAscentLock = new object();
         private float _mapFontAscent;
         private float UsedMapFontAscent { get { lock (_mapFontAscentLock) { return _mapFontAscent; } } set { lock (_mapFontAscentLock) { _mapFontAscent = value; } } }
@@ -6144,10 +6142,13 @@ namespace GnollHackX.Pages.Game
                 float mapwidth = width * (GHConstants.MapCols - 1);
                 float mapheight = height * (GHConstants.MapRows);
 
-                UsedTileWidth = width;
-                UsedTileHeight = height;
-                _mapWidth = mapwidth;
-                _mapHeight = mapheight;
+                lock (_tileSizeLock)
+                {
+                    _usedTileWidth = width;
+                    _usedTileHeight = height;
+                    _mapWidth = mapwidth;
+                    _mapHeight = mapheight;
+                }
                 float mapFontAscent = textPaint.FontMetrics.Ascent;
                 UsedMapFontAscent = mapFontAscent;
                 float targetscale = height / (float)GHConstants.TileHeight;
@@ -12680,32 +12681,39 @@ namespace GnollHackX.Pages.Game
                                             }
                                             else
                                             {
+                                                float mapWidth;
+                                                float mapHeight;
+                                                lock (_tileSizeLock)
+                                                {
+                                                    mapWidth = _mapWidth;
+                                                    mapHeight = _mapHeight;
+                                                }
                                                 lock (_mapOffsetLock)
                                                 {
                                                     if (ZoomMiniMode)
                                                     {
                                                         _mapMiniOffsetX += diffX;
                                                         _mapMiniOffsetY += diffY;
-                                                        if (_mapWidth > 0 && Math.Abs(_mapMiniOffsetX) > 1 * _mapWidth)
+                                                        if (mapWidth > 0 && Math.Abs(_mapMiniOffsetX) > 1 * mapWidth)
                                                         {
-                                                            _mapMiniOffsetX = 1 * _mapWidth * Math.Sign(_mapMiniOffsetX);
+                                                            _mapMiniOffsetX = 1 * mapWidth * Math.Sign(_mapMiniOffsetX);
                                                         }
-                                                        if (_mapHeight > 0 && Math.Abs(_mapMiniOffsetY) > 1 * _mapHeight)
+                                                        if (mapHeight > 0 && Math.Abs(_mapMiniOffsetY) > 1 * mapHeight)
                                                         {
-                                                            _mapMiniOffsetY = 1 * _mapHeight * Math.Sign(_mapMiniOffsetY);
+                                                            _mapMiniOffsetY = 1 * mapHeight * Math.Sign(_mapMiniOffsetY);
                                                         }
                                                     }
                                                     else
                                                     {
                                                         _mapOffsetX += diffX;
                                                         _mapOffsetY += diffY;
-                                                        if (_mapWidth > 0 && Math.Abs(_mapOffsetX) > 10 * _mapWidth)
+                                                        if (mapWidth > 0 && Math.Abs(_mapOffsetX) > 10 * mapWidth)
                                                         {
-                                                            _mapOffsetX = 10 * _mapWidth * Math.Sign(_mapOffsetX);
+                                                            _mapOffsetX = 10 * mapWidth * Math.Sign(_mapOffsetX);
                                                         }
-                                                        if (_mapHeight > 0 && Math.Abs(_mapOffsetY) > 10 * _mapHeight)
+                                                        if (mapHeight > 0 && Math.Abs(_mapOffsetY) > 10 * mapHeight)
                                                         {
-                                                            _mapOffsetY = 10 * _mapHeight * Math.Sign(_mapOffsetY);
+                                                            _mapOffsetY = 10 * mapHeight * Math.Sign(_mapOffsetY);
                                                         }
                                                     }
                                                 }
@@ -12968,26 +12976,38 @@ namespace GnollHackX.Pages.Game
             else
                 MapFontSize = newfontsize;
 
+            float usedTileWidth;
+            float usedTileHeight;
+            float mapWidth;
+            float mapHeight;
+            lock (_tileSizeLock)
+            {
+                usedTileWidth = _usedTileWidth;
+                usedTileHeight = _usedTileHeight;
+                mapWidth = _mapWidth;
+                mapHeight = _mapHeight;
+            }
+
             if (ZoomMiniMode)
             {
                 lock (_mapOffsetLock)
                 {
                     _mapMiniOffsetX *= newratio;
                     _mapMiniOffsetY *= newratio;
-                    if (_mapWidth > 0 && Math.Abs(_mapMiniOffsetX) > 1 * _mapWidth)
+                    if (mapWidth > 0 && Math.Abs(_mapMiniOffsetX) > 1 * mapWidth)
                     {
-                        _mapMiniOffsetX = 1 * _mapWidth * Math.Sign(_mapMiniOffsetX);
+                        _mapMiniOffsetX = 1 * mapWidth * Math.Sign(_mapMiniOffsetX);
                     }
-                    if (_mapHeight > 0 && Math.Abs(_mapMiniOffsetY) > 1 * _mapHeight)
+                    if (mapHeight > 0 && Math.Abs(_mapMiniOffsetY) > 1 * mapHeight)
                     {
-                        _mapMiniOffsetY = 1 * _mapHeight * Math.Sign(_mapMiniOffsetY);
+                        _mapMiniOffsetY = 1 * mapHeight * Math.Sign(_mapMiniOffsetY);
                     }
                 }
             }
             else
             {
-                float width = UsedTileWidth;
-                float height = UsedTileHeight;
+                float width = usedTileWidth;
+                float height = usedTileHeight;
                 float mapwidth = width * (GHConstants.MapCols - 1);
                 float mapheight = height * (GHConstants.MapRows);
                 float canvaswidth = canvasView.CanvasSize.Width;
@@ -13012,13 +13032,13 @@ namespace GnollHackX.Pages.Game
                 {
                     _mapOffsetX = newTotalOffsetX - newOffsetX;
                     _mapOffsetY = newTotalOffsetY - newOffsetY - newMapFontAscent;
-                    if (_mapWidth > 0 && Math.Abs(_mapOffsetX) > 10 * _mapWidth)
+                    if (mapWidth > 0 && Math.Abs(_mapOffsetX) > 10 * mapWidth)
                     {
-                        _mapOffsetX = 10 * _mapWidth * Math.Sign(_mapOffsetX);
+                        _mapOffsetX = 10 * mapWidth * Math.Sign(_mapOffsetX);
                     }
-                    if (_mapHeight > 0 && Math.Abs(_mapOffsetY) > 10 * _mapHeight)
+                    if (mapHeight > 0 && Math.Abs(_mapOffsetY) > 10 * mapHeight)
                     {
-                        _mapOffsetY = 10 * _mapHeight * Math.Sign(_mapOffsetY);
+                        _mapOffsetY = 10 * mapHeight * Math.Sign(_mapOffsetY);
                     }
                 }
             }
@@ -13122,8 +13142,19 @@ namespace GnollHackX.Pages.Game
             int x = 0, y = 0, mod = 0;
             float canvaswidth = canvasView.CanvasSize.Width;
             float canvasheight = canvasView.CanvasSize.Height;
-            float offsetX = (canvaswidth - _mapWidth) / 2;
-            float offsetY = (canvasheight - _mapHeight) / 2;
+            float usedTileWidth;
+            float usedTileHeight;
+            float mapWidth;
+            float mapHeight;
+            lock (_tileSizeLock)
+            {
+                usedTileWidth = _usedTileWidth;
+                usedTileHeight = _usedTileHeight;
+                mapWidth = _mapWidth;
+                mapHeight = _mapHeight;
+            }
+            float offsetX = (canvaswidth - mapWidth) / 2;
+            float offsetY = (canvasheight - mapHeight) / 2;
 
             if (ZoomMiniMode)
             {
@@ -13139,10 +13170,10 @@ namespace GnollHackX.Pages.Game
             {
                 lock (_clipLock)
                 {
-                    if (_clipX > 0 && (_mapWidth > canvaswidth || _mapHeight > canvasheight))
+                    if (_clipX > 0 && (mapWidth > canvaswidth || mapHeight > canvasheight))
                     {
-                        offsetX -= (_clipX - (GHConstants.MapCols - 1) / 2) * UsedTileWidth;
-                        offsetY -= (_clipY - GHConstants.MapRows / 2) * UsedTileHeight;
+                        offsetX -= (_clipX - (GHConstants.MapCols - 1) / 2) * usedTileWidth;
+                        offsetY -= (_clipY - GHConstants.MapRows / 2) * usedTileHeight;
                     }
                 }
             }
@@ -13153,10 +13184,10 @@ namespace GnollHackX.Pages.Game
                 offsetY += _mapOffsetY + UsedMapFontAscent;
             }
 
-            if (UsedTileWidth > 0)
-                x = (int)((e.Location.X - offsetX) / UsedTileWidth);
-            if (UsedTileHeight > 0)
-                y = (int)((e.Location.Y - offsetY) / UsedTileHeight);
+            if (usedTileWidth > 0)
+                x = (int)((e.Location.X - offsetX) / usedTileWidth);
+            if (usedTileHeight > 0)
+                y = (int)((e.Location.Y - offsetY) / usedTileHeight);
 
             if (!ShowDirections && !ShowNumberPad && !(MapWalkMode && WalkArrows))
             {
@@ -13204,30 +13235,33 @@ namespace GnollHackX.Pages.Game
                             resp += -6; // ch = "l";
                         else
                         {
+                            int ux, uy;
                             lock (_uLock)
                             {
-                                if (ShowDirections && GHUtils.isok(_ux, _uy) && GHUtils.isok(x, y))
+                                ux = _ux;
+                                uy = _uy;
+                            }
+                            if (ShowDirections && GHUtils.isok(ux, uy) && GHUtils.isok(x, y))
+                            {
+                                int dx = x - ux;
+                                int dy = y - uy;
+                                if (Math.Abs(x - ux) <= 1 && Math.Abs(y - uy) <= 1)
                                 {
-                                    int dx = x - _ux;
-                                    int dy = y - _uy;
-                                    if (Math.Abs(x - _ux) <= 1 && Math.Abs(y - _uy) <= 1)
-                                    {
-                                        int dres = -1 * (5 + dx - 3 * dy);
-                                        if (dres == 5)
-                                            resp = 46; /* '.', or self */
-                                        else
-                                            resp += dres;
-                                    }
+                                    int dres = -1 * (5 + dx - 3 * dy);
+                                    if (dres == 5)
+                                        resp = 46; /* '.', or self */
                                     else
-                                        return;
+                                        resp += dres;
                                 }
                                 else
-                                {
-                                    if (ShowNumberPad)
-                                        resp += -5;
-                                    else
-                                        resp = 46; /* '.', or self */
-                                }
+                                    return;
+                            }
+                            else
+                            {
+                                if (ShowNumberPad)
+                                    resp += -5;
+                                else
+                                    resp = 46; /* '.', or self */
                             }
                         }
 
@@ -13294,7 +13328,7 @@ namespace GnollHackX.Pages.Game
                 }
                 if ((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
                 {
-                    lock(_uLock)
+                    lock (_uLock)
                     {
                         _ux = x;
                         _uy = y;
@@ -13417,46 +13451,55 @@ namespace GnollHackX.Pages.Game
             }
 
             /* Copy some values to local variables to avoid nested locks */
-            float mapOffsetX;
-            float mapOffsetY;
+            bool forceAscii = ForceAscii;
+            float usedTileWidth;
+            float usedTileHeight;
             int clipX;
             int clipY;
-            lock (_mapOffsetLock)
+            lock (_tileSizeLock)
             {
-                mapOffsetX = _mapOffsetX;
-                mapOffsetY = _mapOffsetY;
+                usedTileWidth = _usedTileWidth;
+                usedTileHeight = _usedTileHeight;
             }
             lock (_clipLock)
             {
                 clipX = _clipX;
                 clipY = _clipY;
-            }
-            lock (_targetClipLock)
-            {
-                if (immediate_pan || GraphicsStyle == GHGraphicsStyle.ASCII || ForceAscii)
-                {
-                    _targetClipOn = false;
-                    _originMapOffsetWithNewClipX = 0;
-                    _originMapOffsetWithNewClipY = 0;
-                }
-                else
-                {
-                    _targetClipOn = true;
-                    _originMapOffsetWithNewClipX = mapOffsetX + (float)(x - clipX) * UsedTileWidth;
-                    _originMapOffsetWithNewClipY = mapOffsetY + (float)(y - clipY) * UsedTileHeight;
-                    _targetClipStartCounterValue = curtimervalue;
-                    _targetClipPanTime = pantime; // GHConstants.DefaultPanTime;
-                }
-            }
-            lock (_clipLock)
-            {
+
+                /* Can set these here already a bit in advance */
                 _clipX = x;
                 _clipY = y;
             }
+            bool clipOn;
+            float newClipX;
+            float newClipY;
             lock (_mapOffsetLock)
             {
-                _mapOffsetX = _originMapOffsetWithNewClipX;
-                _mapOffsetY = _originMapOffsetWithNewClipY;
+                if (immediate_pan || GraphicsStyle == GHGraphicsStyle.ASCII || forceAscii)
+                {
+                    clipOn = false;
+                    newClipX = 0;
+                    newClipY = 0;
+                }
+                else
+                {
+                    clipOn = true;
+                    newClipX = _mapOffsetX + (float)(x - clipX) * usedTileWidth;
+                    newClipY = _mapOffsetY + (float)(y - clipY) * usedTileHeight;
+                }
+                _mapOffsetX = newClipX;
+                _mapOffsetY = newClipY;
+            }
+            lock (_targetClipLock)
+            {
+                _targetClipOn = clipOn;
+                _originMapOffsetWithNewClipX = newClipX;
+                _originMapOffsetWithNewClipY = newClipY;
+                if (clipOn)
+                {
+                    _targetClipStartCounterValue = curtimervalue;
+                    _targetClipPanTime = pantime; // GHConstants.DefaultPanTime;
+                }
             }
         }
 
