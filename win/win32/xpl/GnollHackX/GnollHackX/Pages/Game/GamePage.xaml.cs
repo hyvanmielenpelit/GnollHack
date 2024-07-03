@@ -721,7 +721,6 @@ namespace GnollHackX.Pages.Game
         private bool _youRectDrawn = false;
         public bool YouRectDrawn { get { lock (_youRectDrawnLock) { return _youRectDrawn; } } set { lock (_youRectDrawnLock) { _youRectDrawn = value; } } }
 
-        private readonly object _targetClipLock = new object();
         private float _originMapOffsetWithNewClipX;
         private float _originMapOffsetWithNewClipY;
         private bool _targetClipOn;
@@ -1888,40 +1887,20 @@ namespace GnollHackX.Pages.Game
                     _screenText = null;
             }
 
-            bool resetMapOffset = false;
-            bool setMapOffset = false;
-            float setMapOffsetValueX = 0f;
-            float setMapOffsetValueY = 0f;
-            lock (_targetClipLock)
+            lock (_mapOffsetLock)
             {
                 if (_targetClipOn && (maincountervalue < _targetClipStartCounterValue
                     || maincountervalue > _targetClipStartCounterValue + _targetClipPanTime))
                 {
                     _targetClipOn = false;
-                    resetMapOffset = true;
+                    _mapOffsetX = 0;
+                    _mapOffsetY = 0;
                 }
 
                 if (_targetClipOn)
                 {
-                    setMapOffset = true;
-                    setMapOffsetValueX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - (float)(maincountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
-                    setMapOffsetValueY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - (float)(maincountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
-                }
-            }
-            if(resetMapOffset)
-            {
-                lock (_mapOffsetLock)
-                {
-                    _mapOffsetX = 0;
-                    _mapOffsetY = 0;
-                }
-            }
-            else if (setMapOffset)
-            {
-                lock (_mapOffsetLock)
-                {
-                    _mapOffsetX = setMapOffsetValueX;
-                    _mapOffsetY = setMapOffsetValueY;
+                    _mapOffsetX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - (float)(maincountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
+                    _mapOffsetY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - (float)(maincountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
                 }
             }
         }
@@ -12444,11 +12423,6 @@ namespace GnollHackX.Pages.Game
         {
             if (_currentGame != null)
             {
-                //lock (_targetClipLock)
-                //{
-                //    _targetClipOn = false;
-                //}
-
                 switch (e?.ActionType)
                 {
                     case SKTouchAction.Entered:
@@ -13439,23 +13413,20 @@ namespace GnollHackX.Pages.Game
 
         public void SetTargetClip(int x, int y, bool immediate_pan)
         {
-            long curtimervalue = 0;
             long pantime = Math.Max(2, (long)Math.Ceiling((double)UIUtils.GetMainCanvasAnimationFrequency(MapRefreshRate) / 8.0));
-            //lock (AnimationTimerLock)
-            //{
-            //    curtimervalue = AnimationTimers.general_animation_counter;
-            //}
-            lock (_mainCounterLock)
-            {
-                curtimervalue = _mainCounterValue;
-            }
 
             /* Copy some values to local variables to avoid nested locks */
             bool forceAscii = ForceAscii;
+            long curtimervalue = 0;
             float usedTileWidth;
             float usedTileHeight;
             int clipX;
             int clipY;
+
+            lock (_mainCounterLock)
+            {
+                curtimervalue = _mainCounterValue;
+            }
             lock (_tileSizeLock)
             {
                 usedTileWidth = _usedTileWidth;
@@ -13470,36 +13441,30 @@ namespace GnollHackX.Pages.Game
                 _clipX = x;
                 _clipY = y;
             }
-            bool clipOn;
+
             float newClipX;
             float newClipY;
             lock (_mapOffsetLock)
             {
                 if (immediate_pan || GraphicsStyle == GHGraphicsStyle.ASCII || forceAscii)
                 {
-                    clipOn = false;
+                    _targetClipOn = false;
                     newClipX = 0;
                     newClipY = 0;
                 }
                 else
                 {
-                    clipOn = true;
+                    _targetClipOn = true;
                     newClipX = _mapOffsetX + (float)(x - clipX) * usedTileWidth;
                     newClipY = _mapOffsetY + (float)(y - clipY) * usedTileHeight;
-                }
-                _mapOffsetX = newClipX;
-                _mapOffsetY = newClipY;
-            }
-            lock (_targetClipLock)
-            {
-                _targetClipOn = clipOn;
-                _originMapOffsetWithNewClipX = newClipX;
-                _originMapOffsetWithNewClipY = newClipY;
-                if (clipOn)
-                {
                     _targetClipStartCounterValue = curtimervalue;
                     _targetClipPanTime = pantime; // GHConstants.DefaultPanTime;
                 }
+
+                _originMapOffsetWithNewClipX = newClipX;
+                _originMapOffsetWithNewClipY = newClipY;
+                _mapOffsetX = newClipX;
+                _mapOffsetY = newClipY;
             }
         }
 
