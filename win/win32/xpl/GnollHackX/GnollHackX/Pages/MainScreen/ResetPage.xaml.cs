@@ -330,6 +330,8 @@ namespace GnollHackX.Pages.MainScreen
                     btnDownloadTestFiles.TextColor = GHColors.Red;
                 }
             }
+#else
+            await DisplayAlert("Command Unavailable", "This command is unavailable in Release mode.", "OK");
 #endif
             ResetGrid.IsEnabled = true;
         }
@@ -505,6 +507,8 @@ namespace GnollHackX.Pages.MainScreen
             {
                 await DisplayAlert("Error", "An error occurred while trying to import files: " + ex.Message, "OK");
             }
+#else
+            await DisplayAlert("Command Unavailable", "This command is unavailable in Release mode.", "OK");
 #endif
             ResetGrid.IsEnabled = true;
         }
