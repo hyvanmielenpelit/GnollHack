@@ -1863,6 +1863,23 @@ namespace GnollHackX.Pages.Game
                 maincountervalue = _mainCounterValue;
             }
 
+            lock (_mapOffsetLock)
+            {
+                if (_targetClipOn && (maincountervalue < _targetClipStartCounterValue
+                    || maincountervalue > _targetClipStartCounterValue + _targetClipPanTime))
+                {
+                    _targetClipOn = false;
+                    _mapOffsetX = 0;
+                    _mapOffsetY = 0;
+                }
+
+                if (_targetClipOn)
+                {
+                    _mapOffsetX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - (float)(maincountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
+                    _mapOffsetY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - (float)(maincountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
+                }
+            }
+
             lock (_floatingTextLock)
             {
                 for (i = _floatingTexts.Count - 1; i >= 0; i--)
@@ -1903,23 +1920,6 @@ namespace GnollHackX.Pages.Game
             {
                 if (_screenText != null && _screenText.IsFinished(maincountervalue))
                     _screenText = null;
-            }
-
-            lock (_mapOffsetLock)
-            {
-                if (_targetClipOn && (maincountervalue < _targetClipStartCounterValue
-                    || maincountervalue > _targetClipStartCounterValue + _targetClipPanTime))
-                {
-                    _targetClipOn = false;
-                    _mapOffsetX = 0;
-                    _mapOffsetY = 0;
-                }
-
-                if (_targetClipOn)
-                {
-                    _mapOffsetX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - (float)(maincountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
-                    _mapOffsetY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - (float)(maincountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
-                }
             }
         }
 
