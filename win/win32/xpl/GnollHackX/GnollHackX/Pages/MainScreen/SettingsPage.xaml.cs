@@ -282,8 +282,8 @@ namespace GnollHackX.Pages.MainScreen
             }
 
             if (_gamePage != null)
-                _gamePage.ShowMemoryUsage = MemorySwitch.IsToggled;
-            Preferences.Set("ShowMemoryUsage", MemorySwitch.IsToggled);
+                _gamePage.ShowMemory = MemorySwitch.IsToggled;
+            Preferences.Set("ShowMemory", MemorySwitch.IsToggled);
 
             if (_gamePage != null)
                 _gamePage.ShowFPS = FPSSwitch.IsToggled;
@@ -795,7 +795,7 @@ namespace GnollHackX.Pages.MainScreen
                 playermark = Preferences.Get("PlayerMark", false);
                 monstertargeting = Preferences.Get("MonsterTargeting", false);
                 walkarrows = Preferences.Get("WalkArrows", true);
-                mem = Preferences.Get("ShowMemoryUsage", false);
+                mem = Preferences.Get("ShowMemory", false);
                 fps = Preferences.Get("ShowFPS", false);
                 zoom = Preferences.Get("ShowZoom", false);
                 battery = Preferences.Get("ShowBattery", false);
@@ -837,7 +837,7 @@ namespace GnollHackX.Pages.MainScreen
                 playermark = _gamePage.PlayerMark;
                 monstertargeting = _gamePage.MonsterTargeting;
                 walkarrows = _gamePage.WalkArrows;
-                mem = _gamePage.ShowMemoryUsage;
+                mem = _gamePage.ShowMemory;
                 fps = _gamePage.ShowFPS;
                 zoom = _gamePage.ShowZoom;
                 battery = _gamePage.ShowBattery;

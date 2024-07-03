@@ -507,6 +507,7 @@ namespace GnollHackX
                 gHWindow.Curs(x, y);
         }
 
+        private List<SavedPrintGlyphCall> _savedPrintGlyphCalls = new List<SavedPrintGlyphCall>();
         public void ClientCallback_PrintGlyph(int winHandle, int x, int y, int glyph, int bkglyph, int symbol, int ocolor, uint special, IntPtr layers_ptr)
         {
             LayerInfo layers = layers_ptr == IntPtr.Zero ? new LayerInfo() : (LayerInfo)Marshal.PtrToStructure(layers_ptr, typeof(LayerInfo));
@@ -517,6 +518,8 @@ namespace GnollHackX
             {
                 gHWindow = _ghWindows[winHandle];
             }
+            //_savedPrintGlyphCalls.Add(new SavedPrintGlyphCall(gHWindow, x, y, glyph, bkglyph, symbol, ocolor, special, ref layers));
+
             if (gHWindow != null)
                 gHWindow.PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
 
@@ -797,7 +800,13 @@ namespace GnollHackX
             if (force == 0 && (_gamePage.MapNoClipMode || _gamePage.MapLookMode || _gamePage.ZoomMiniMode)) //|| (!_gamePage.ZoomAlternateMode && _gamePage.MapNoClipMode) || (_gamePage.ZoomAlternateMode && _gamePage.MapAlternateNoClipMode) 
                 return; /* No clip mode ignores cliparound commands */
 
-            _gamePage.SetTargetClip(x, y, force == 1);
+            ConcurrentQueue<GHRequest> queue;
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+            {
+                queue.Enqueue(new GHRequest(this, GHRequestType.ClipAround, x, y, force == 1));
+            }
+
+            //_gamePage.SetTargetClip(x, y, force == 1);
         }
 
         public void ClientCallback_RawPrint(string str)
@@ -3165,6 +3174,32 @@ namespace GnollHackX
                 }
                 while (GHApp.PauseReplay && !GHApp.IsReplaySearching);
             }
+        }
+    }
+
+    public struct SavedPrintGlyphCall
+    {
+        public GHWindow ReferenceGHWindow;
+        public int X;
+        public int Y;
+        public int Glyph;
+        public int Bkglyph;
+        public int Symbol;
+        public int Ocolor;
+        public uint Special;
+        public LayerInfo Layers;
+
+        public SavedPrintGlyphCall(GHWindow gHWindow, int x, int y, int glyph, int bkglyph, int symbol, int ocolor, uint special, ref LayerInfo layers)
+        {
+            ReferenceGHWindow = gHWindow;
+            X = x;
+            Y = y;
+            Glyph = glyph;
+            Bkglyph = bkglyph;
+            Symbol = symbol;
+            Ocolor = ocolor; 
+            Special = special; 
+            Layers = layers;
         }
     }
 }

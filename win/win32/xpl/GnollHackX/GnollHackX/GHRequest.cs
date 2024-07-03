@@ -73,6 +73,7 @@ namespace GnollHackX
         RestartReplay,
         ToggleMenuPositionSaving,
         SetCharacterClickAction,
+        ClipAround,
     }
 
     public struct AddContextMenuData
@@ -200,6 +201,15 @@ namespace GnollHackX
             RequestType = requesttype;
             RequestInt = requestint;
             RequestInt2 = requestint2;
+        }
+
+        public GHRequest(GHGame ghGame, GHRequestType requesttype, int requestint, int requestint2, bool requestbool)
+        {
+            RequestingGame = ghGame;
+            RequestType = requesttype;
+            RequestInt = requestint;
+            RequestInt2 = requestint2;
+            RequestBool = requestbool;
         }
 
         public GHRequest(GHGame ghGame, GHRequestType requesttype, int requestint, string requeststring)

@@ -608,7 +608,8 @@ namespace GnollHackX.Pages.Game
 
         private readonly object _showMemoryLock = new object();
         private bool _showMemory;
-        public bool ShowMemoryUsage { get { lock (_showMemoryLock) { return _showMemory; } } set { lock (_showMemoryLock) { _showMemory = value; } } }
+        private long _memUsage = 0;
+        public bool ShowMemory { get { lock (_showMemoryLock) { return _showMemory; } } set { lock (_showMemoryLock) { _showMemory = value; } } }
 
         private readonly object _showZoomLock = new object();
         private bool _showZoom;
@@ -869,7 +870,7 @@ namespace GnollHackX.Pages.Game
             ShowRecording = Preferences.Get("ShowRecording", true);
             UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", GHApp.IsGPUDefault);
             UseSimpleCmdLayout = Preferences.Get("UseSimpleCmdLayout", GHConstants.DefaultSimpleCmdLayout);
-            ShowMemoryUsage = Preferences.Get("ShowMemoryUsage", false);
+            ShowMemory = Preferences.Get("ShowMemory", false);
             MapGrid = Preferences.Get("MapGrid", false);
             HitPointBars = Preferences.Get("HitPointBars", false);
             ClassicStatusBar = Preferences.Get("ClassicStatusBar", GHConstants.IsDefaultStatusBarClassic);
@@ -1315,8 +1316,14 @@ namespace GnollHackX.Pages.Game
             {
                 lock (_cursorIsOnLock)
                 {
-                    _cursorIsOn = !_cursorIsOn;
+                    _cursorIsOn = !_cursorIsOn;                    
                 }
+                lock (_showMemoryLock)
+                {
+                    if (_showMemory)
+                        _memUsage = GC.GetTotalMemory(false);
+                }
+
                 if (ShowFPS)
                 {
                     if (!_stopWatch.IsRunning)
@@ -2661,6 +2668,9 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.ToggleMenuPositionSaving:
                                 ToggleMenuPositionSaving(req.RequestInt, req.RequestInt2);
                                 break;
+                            case GHRequestType.ClipAround:
+                                SetTargetClip(req.RequestInt, req.RequestInt2, req.RequestBool);
+                                break;
                         }
                     }
                 }
@@ -3952,45 +3962,16 @@ namespace GnollHackX.Pages.Game
 
             PaintMainGamePage(sender, e);
 
-            /* General stuff */
+            lock (_mainFPSCounterLock)
+            {
+                _mainFPSCounterValue++;
+                if (_mainFPSCounterValue < 0)
+                    _mainFPSCounterValue = 0;
+            }
+
             SKImageInfo info = e.Info;
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
-            string str = "";
-            float textWidth = 0;
-            SKRect textBounds = new SKRect();
-            float xText = 0;
-            float yText = 0;
-            float canvasWidth = canvasView.CanvasSize.Width;
-            float canvasHeight = canvasView.CanvasSize.Height;
-
-            using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
-            {
-                //if (ShowMemoryUsage)
-                //{
-                //    long memUsage = GC.GetTotalMemory(false);
-                //    str = "Memory: " + memUsage / 1024 + " kB";
-                //    textPaint.Typeface = GHApp.LatoBold;
-                //    textPaint.TextSize = 26;
-                //    textWidth = textPaint.MeasureText(str, ref textBounds);
-                //    yText = -textPaint.FontMetrics.Ascent + 5; // + (ShowFPS ? textPaint.FontSpacing : 0);
-                //    xText = canvasWidth - textWidth - 5;
-                //    float textmargin = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
-                //    textPaint.Color = SKColors.Black.WithAlpha(128);
-                //    SKRect bkRect = new SKRect(xText - textmargin, yText + textPaint.FontMetrics.Ascent - textmargin, xText + textWidth + textmargin, yText + textPaint.FontMetrics.Ascent - textmargin + textPaint.FontSpacing);
-                //    canvas.DrawRect(bkRect, textPaint.Paint);
-                //    textPaint.Color = SKColors.Yellow;
-                //    textPaint.DrawTextOnCanvas(canvas, str, xText, yText);
-                //    //canvas.DrawText(str, xText, yText, textPaint);
-                //}
-
-                lock (_mainFPSCounterLock)
-                {
-                    _mainFPSCounterValue++;
-                    if (_mainFPSCounterValue < 0)
-                        _mainFPSCounterValue = 0;
-                }
-            }
 
             /* Finally, flush */
             canvas.Flush();
@@ -9394,7 +9375,7 @@ namespace GnollHackX.Pages.Game
                             }
 
                             float memoryleft = fpsleft;
-                            if (ShowMemoryUsage)
+                            if (ShowMemory)
                             {
                                 target_width = target_scale * GHApp._memoryBitmap.Width;
                                 target_height = target_scale * GHApp._memoryBitmap.Height;
@@ -9403,8 +9384,11 @@ namespace GnollHackX.Pages.Game
                                 canvas.DrawImage(GHApp._memoryBitmap, statusDest);
                                 memoryleft = curx;
 
-                                long memUsage = GC.GetTotalMemory(false);
-                                string drawtext = (memUsage / 1024).ToString();
+                                string drawtext;                                
+                                lock (_showMemoryLock)
+                                {
+                                    drawtext = (_memUsage / 1024).ToString();
+                                }
 
                                 const int topMargin = 7, bottomMargin = 20;
                                 textPaint.Color = SKColors.White;
