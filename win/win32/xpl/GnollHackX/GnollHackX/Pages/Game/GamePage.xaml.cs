@@ -1884,29 +1884,42 @@ namespace GnollHackX.Pages.Game
                     _screenText = null;
             }
 
+            bool resetMapOffset = false;
+            bool setMapOffset = false;
+            float setMapOffsetValueX = 0f;
+            float setMapOffsetValueY = 0f;
             lock (_targetClipLock)
             {
                 if (_targetClipOn && (maincountervalue < _targetClipStartCounterValue
                     || maincountervalue > _targetClipStartCounterValue + _targetClipPanTime))
                 {
                     _targetClipOn = false;
-                    lock (_mapOffsetLock)
-                    {
-                        _mapOffsetX = 0;
-                        _mapOffsetY = 0;
-                    }
+                    resetMapOffset = true;
                 }
 
                 if (_targetClipOn)
                 {
-                    lock (_mapOffsetLock)
-                    {
-                        _mapOffsetX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - (float)(maincountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
-                        _mapOffsetY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - (float)(maincountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
-                    }
+                    setMapOffset = true;
+                    setMapOffsetValueX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - (float)(maincountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
+                    setMapOffsetValueY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - (float)(maincountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
                 }
             }
-            
+            if(resetMapOffset)
+            {
+                lock (_mapOffsetLock)
+                {
+                    _mapOffsetX = 0;
+                    _mapOffsetY = 0;
+                }
+            }
+            else if (setMapOffset)
+            {
+                lock (_mapOffsetLock)
+                {
+                    _mapOffsetX = setMapOffsetValueX;
+                    _mapOffsetY = setMapOffsetValueY;
+                }
+            }
         }
 
         public void HideLoadingScreen()
@@ -13393,6 +13406,21 @@ namespace GnollHackX.Pages.Game
                 curtimervalue = _mainCounterValue;
             }
 
+            /* Copy some values to local variables to avoid nested locks */
+            float mapOffsetX;
+            float mapOffsetY;
+            int clipX;
+            int clipY;
+            lock (_mapOffsetLock)
+            {
+                mapOffsetX = _mapOffsetX;
+                mapOffsetY = _mapOffsetY;
+            }
+            lock (_clipLock)
+            {
+                clipX = _clipX;
+                clipY = _clipY;
+            }
             lock (_targetClipLock)
             {
                 if (immediate_pan || GraphicsStyle == GHGraphicsStyle.ASCII || ForceAscii)
@@ -13404,14 +13432,8 @@ namespace GnollHackX.Pages.Game
                 else
                 {
                     _targetClipOn = true;
-                    lock (_mapOffsetLock)
-                    {
-                        lock (_clipLock)
-                        {
-                            _originMapOffsetWithNewClipX = _mapOffsetX + (float)(x - _clipX) * UsedTileWidth;
-                            _originMapOffsetWithNewClipY = _mapOffsetY + (float)(y - _clipY) * UsedTileHeight;
-                        }
-                    }
+                    _originMapOffsetWithNewClipX = mapOffsetX + (float)(x - clipX) * UsedTileWidth;
+                    _originMapOffsetWithNewClipY = mapOffsetY + (float)(y - clipY) * UsedTileHeight;
                     _targetClipStartCounterValue = curtimervalue;
                     _targetClipPanTime = pantime; // GHConstants.DefaultPanTime;
                 }
