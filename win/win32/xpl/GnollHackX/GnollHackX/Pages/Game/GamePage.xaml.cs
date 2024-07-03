@@ -9427,24 +9427,7 @@ namespace GnollHackX.Pages.Game
                                 canvas.DrawImage(GHApp._zoomBitmap, statusDest);
                                 zoomleft = curx;
 
-                                float percentage = 1.0f;
-                                if (ZoomMiniMode)
-                                {
-                                    float defminisize = 1.0f;
-                                    percentage = MapFontMiniRelativeSize / defminisize;
-                                }
-                                else if (ZoomAlternateMode)
-                                {
-                                    float defsize = DefaultMapFontSize;
-                                    float defaltsize = defsize * GHConstants.MapFontRelativeAlternateSize;
-                                    percentage = MapFontAlternateSize / defaltsize;
-                                }
-                                else
-                                {
-                                    float defsize = DefaultMapFontSize;
-                                    percentage = MapFontSize / defsize;
-                                }
-
+                                float percentage = usedFontSize / DefaultMapFontSize;
                                 int percentage_int = (int)(percentage * 100);
                                 string drawtext = percentage_int.ToString();
 
