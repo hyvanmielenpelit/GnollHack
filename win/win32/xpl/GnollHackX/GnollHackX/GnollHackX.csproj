@@ -153,6 +153,7 @@
     <None Remove="Assets\UI\lookfar.png" />
     <None Remove="Assets\UI\lookhere.png" />
     <None Remove="Assets\UI\loot.png" />
+    <None Remove="Assets\UI\memory.png" />
     <None Remove="Assets\UI\menubackground.png" />
     <None Remove="Assets\UI\messages.png" />
     <None Remove="Assets\UI\missing_icon.png" />
@@ -294,6 +295,7 @@
     <None Remove="Assets\UI\yestoall.png" />
     <None Remove="Assets\UI\you.png" />
     <None Remove="Assets\UI\zap.png" />
+    <None Remove="Assets\UI\zoom.png" />
     <None Remove="Assets\uwch.ttf" />
   </ItemGroup>
 
@@ -333,6 +335,7 @@
     <EmbeddedResource Include="Assets\UI\frame2-topleft.png" />
     <EmbeddedResource Include="Assets\UI\frame2-vertical.png" />
     <EmbeddedResource Include="Assets\UI\home.png" />
+    <EmbeddedResource Include="Assets\UI\memory.png" />
     <EmbeddedResource Include="Assets\UI\messages.png" />
     <EmbeddedResource Include="Assets\UI\missing_icon.png" />
     <EmbeddedResource Include="Assets\Immortal-Regular.ttf" />
@@ -542,6 +545,7 @@
     <EmbeddedResource Include="Assets\UI\yestoall.png" />
     <EmbeddedResource Include="Assets\UI\you.png" />
     <EmbeddedResource Include="Assets\UI\zap.png" />
+    <EmbeddedResource Include="Assets\UI\zoom.png" />
     <EmbeddedResource Include="Assets\uwch.ttf" />
   </ItemGroup>
 

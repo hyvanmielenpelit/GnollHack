@@ -570,7 +570,6 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        public bool ShowMemoryUsage { get; set; }
         public bool UseMainGLCanvas
         {
             get { return canvasView.UseGL; }
@@ -606,6 +605,14 @@ namespace GnollHackX.Pages.Game
         private readonly object _showFPSLock = new object();
         private bool _showFPS;
         public bool ShowFPS { get { lock (_showFPSLock) { return _showFPS; } } set { lock (_showFPSLock) { _showFPS = value; } } }
+
+        private readonly object _showMemoryLock = new object();
+        private bool _showMemory;
+        public bool ShowMemoryUsage { get { lock (_showMemoryLock) { return _showMemory; } } set { lock (_showMemoryLock) { _showMemory = value; } } }
+
+        private readonly object _showZoomLock = new object();
+        private bool _showZoom;
+        public bool ShowZoom { get { lock (_showZoomLock) { return _showZoom; } } set { lock (_showZoomLock) { _showZoom = value; } } }
 
         private readonly object _showRecordingLock = new object();
         private bool _showRecording = true;
@@ -755,10 +762,12 @@ namespace GnollHackX.Pages.Game
         private bool _mapAlternateMode = false;
         public bool ZoomAlternateMode { get { lock (_mapAlternateModeLock) { return _mapAlternateMode; } } set { lock (_mapAlternateModeLock) { _mapAlternateMode = value; } } }
 
+        private float _defaultMapFontSize = GHConstants.MapFontDefaultSize;
         private float _mapFontSize = GHConstants.MapFontDefaultSize;
         private float _mapFontAlternateSize = GHConstants.MapFontDefaultSize * GHConstants.MapFontRelativeAlternateSize;
         private float _mapFontMiniRelativeSize = 1.0f;
         private readonly object _mapFontSizeLock = new object();
+        public float DefaultMapFontSize { get { lock (_mapFontSizeLock) { return _defaultMapFontSize; } } set { lock (_mapFontSizeLock) { _defaultMapFontSize = value; } } }
         public float MapFontSize { get { lock (_mapFontSizeLock) { return _mapFontSize; } } set { lock (_mapFontSizeLock) { _mapFontSize = value; } } }
         public float MapFontAlternateSize { get { lock (_mapFontSizeLock) { return _mapFontAlternateSize; } } set { lock (_mapFontSizeLock) { _mapFontAlternateSize = value; } } }
         public float MapFontMiniRelativeSize { get { lock (_mapFontSizeLock) { return _mapFontMiniRelativeSize; } } set { lock (_mapFontSizeLock) { _mapFontMiniRelativeSize = value; } } }
@@ -856,6 +865,7 @@ namespace GnollHackX.Pages.Game
             MapRefreshRate = (MapRefreshRateStyle)Preferences.Get("MapRefreshRate", (int)UIUtils.GetDefaultMapFPS());
             ShowFPS = Preferences.Get("ShowFPS", false);
             ShowBattery = Preferences.Get("ShowBattery", false);
+            ShowZoom = Preferences.Get("ShowZoom", false);
             ShowRecording = Preferences.Get("ShowRecording", true);
             UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", GHApp.IsGPUDefault);
             UseSimpleCmdLayout = Preferences.Get("UseSimpleCmdLayout", GHConstants.DefaultSimpleCmdLayout);
@@ -881,6 +891,7 @@ namespace GnollHackX.Pages.Game
             }
 
             float deffontsize = GetDefaultMapFontSize();
+            DefaultMapFontSize = deffontsize;
             MapFontSize = Preferences.Get("MapFontSize", deffontsize);
             MapFontAlternateSize = Preferences.Get("MapFontAlternateSize", deffontsize * GHConstants.MapFontRelativeAlternateSize);
             MapFontMiniRelativeSize = Preferences.Get("MapFontMiniRelativeSize", 1.0f);
@@ -3955,23 +3966,23 @@ namespace GnollHackX.Pages.Game
 
             using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
-                if (ShowMemoryUsage)
-                {
-                    long memUsage = GC.GetTotalMemory(false);
-                    str = "Memory: " + memUsage / 1024 + " kB";
-                    textPaint.Typeface = GHApp.LatoBold;
-                    textPaint.TextSize = 26;
-                    textWidth = textPaint.MeasureText(str, ref textBounds);
-                    yText = -textPaint.FontMetrics.Ascent + 5; // + (ShowFPS ? textPaint.FontSpacing : 0);
-                    xText = canvasWidth - textWidth - 5;
-                    float textmargin = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
-                    textPaint.Color = SKColors.Black.WithAlpha(128);
-                    SKRect bkRect = new SKRect(xText - textmargin, yText + textPaint.FontMetrics.Ascent - textmargin, xText + textWidth + textmargin, yText + textPaint.FontMetrics.Ascent - textmargin + textPaint.FontSpacing);
-                    canvas.DrawRect(bkRect, textPaint.Paint);
-                    textPaint.Color = SKColors.Yellow;
-                    textPaint.DrawTextOnCanvas(canvas, str, xText, yText);
-                    //canvas.DrawText(str, xText, yText, textPaint);
-                }
+                //if (ShowMemoryUsage)
+                //{
+                //    long memUsage = GC.GetTotalMemory(false);
+                //    str = "Memory: " + memUsage / 1024 + " kB";
+                //    textPaint.Typeface = GHApp.LatoBold;
+                //    textPaint.TextSize = 26;
+                //    textWidth = textPaint.MeasureText(str, ref textBounds);
+                //    yText = -textPaint.FontMetrics.Ascent + 5; // + (ShowFPS ? textPaint.FontSpacing : 0);
+                //    xText = canvasWidth - textWidth - 5;
+                //    float textmargin = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                //    textPaint.Color = SKColors.Black.WithAlpha(128);
+                //    SKRect bkRect = new SKRect(xText - textmargin, yText + textPaint.FontMetrics.Ascent - textmargin, xText + textWidth + textmargin, yText + textPaint.FontMetrics.Ascent - textmargin + textPaint.FontSpacing);
+                //    canvas.DrawRect(bkRect, textPaint.Paint);
+                //    textPaint.Color = SKColors.Yellow;
+                //    textPaint.DrawTextOnCanvas(canvas, str, xText, yText);
+                //    //canvas.DrawText(str, xText, yText, textPaint);
+                //}
 
                 lock (_mainFPSCounterLock)
                 {
@@ -9382,13 +9393,80 @@ namespace GnollHackX.Pages.Game
                                 textPaint.TextSize = basefontsize;
                             }
 
-                            if(ShowRecording)
+                            float memoryleft = fpsleft;
+                            if (ShowMemoryUsage)
+                            {
+                                target_width = target_scale * GHApp._memoryBitmap.Width;
+                                target_height = target_scale * GHApp._memoryBitmap.Height;
+                                curx = fpsleft - innerspacing * 5 - target_width;
+                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                canvas.DrawImage(GHApp._memoryBitmap, statusDest);
+                                memoryleft = curx;
+
+                                long memUsage = GC.GetTotalMemory(false);
+                                string drawtext = (memUsage / 1024).ToString();
+
+                                const int topMargin = 7, bottomMargin = 20;
+                                textPaint.Color = SKColors.White;
+                                textPaint.TextSize = diffontsize;
+                                float vsize = target_height - (topMargin + bottomMargin) * target_scale;
+                                float fsize = textPaint.FontSpacing;
+                                float vpadding = (vsize - fsize) / 2;
+                                SKPoint drawpoint = new SKPoint(curx + target_width / 2, cury + (topMargin * target_scale) + vpadding - textPaint.FontMetrics.Ascent);
+                                textPaint.DrawTextOnCanvas(canvas, drawtext, drawpoint, SKTextAlign.Center);
+                                textPaint.TextSize = basefontsize;
+                            }
+
+                            float zoomleft = memoryleft;
+                            if (ShowZoom)
+                            {
+                                target_width = target_scale * GHApp._zoomBitmap.Width;
+                                target_height = target_scale * GHApp._zoomBitmap.Height;
+                                curx = memoryleft - innerspacing * 5 - target_width;
+                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                canvas.DrawImage(GHApp._zoomBitmap, statusDest);
+                                zoomleft = curx;
+
+                                float percentage = 1.0f;
+                                if (ZoomMiniMode)
+                                {
+                                    float defminisize = 1.0f;
+                                    percentage = MapFontMiniRelativeSize / defminisize;
+                                }
+                                else if (ZoomAlternateMode)
+                                {
+                                    float defsize = DefaultMapFontSize;
+                                    float defaltsize = defsize * GHConstants.MapFontRelativeAlternateSize;
+                                    percentage = MapFontAlternateSize / defaltsize;
+                                }
+                                else
+                                {
+                                    float defsize = DefaultMapFontSize;
+                                    percentage = MapFontSize / defsize;
+                                }
+
+                                int percentage_int = (int)(percentage * 100);
+                                string drawtext = percentage_int.ToString();
+
+                                const int topMargin = 12, bottomMargin = 12;
+                                const int leftMargin = 5, rightMargin = 11;
+                                textPaint.Color = SKColors.White;
+                                textPaint.TextSize = diffontsize * 0.9f;
+                                float vsize = target_height - (topMargin + bottomMargin) * target_scale;
+                                float fsize = textPaint.FontSpacing;
+                                float vpadding = (vsize - fsize) / 2;
+                                SKPoint drawpoint = new SKPoint(curx + leftMargin + (target_width - leftMargin - rightMargin) / 2, cury + (topMargin * target_scale) + vpadding - textPaint.FontMetrics.Ascent);
+                                textPaint.DrawTextOnCanvas(canvas, drawtext, drawpoint, SKTextAlign.Center);
+                                textPaint.TextSize = basefontsize;
+                            }
+
+                            if (ShowRecording)
                             {
                                 if (GHApp.RecordGame && !PlayingReplay)
                                 {
                                     target_width = rowheight / 4;
                                     target_height = rowheight;
-                                    curx = fpsleft - innerspacing * 6 - target_width;
+                                    curx = zoomleft - innerspacing * 6 - target_width;
                                     SKPoint dotpoint = new SKPoint(curx + target_width / 2, cury + target_height / 2);
                                     float dotradius = target_width / 2;
                                     textPaint.Color = SKColors.Red;
@@ -18110,7 +18188,17 @@ namespace GnollHackX.Pages.Game
                     CommandCanvas_Pressed(sender, new EventArgs());
                 }
 
-                if(ForceAllMessages)
+                if (GHApp.CtrlDown && key == Windows.System.VirtualKey.Number0)
+                {
+                    if (ZoomAlternateMode)
+                        MapFontAlternateSize = DefaultMapFontSize * GHConstants.MapFontRelativeAlternateSize;
+                    else if (ZoomMiniMode)
+                        MapFontMiniRelativeSize = 1.0f;
+                    else
+                        MapFontSize = DefaultMapFontSize;
+                    handled = true;
+                }
+                else if (ForceAllMessages)
                 {
                     if (key == Windows.System.VirtualKey.Up)
                         ScrollMessages(120);

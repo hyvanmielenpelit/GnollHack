@@ -294,6 +294,10 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("ShowBattery", BatterySwitch.IsToggled);
 
             if (_gamePage != null)
+                _gamePage.ShowZoom = ZoomSwitch.IsToggled;
+            Preferences.Set("ShowZoom", ZoomSwitch.IsToggled);
+
+            if (_gamePage != null)
                 _gamePage.ShowRecording = ShowRecordingSwitch.IsToggled;
             Preferences.Set("ShowRecording", ShowRecordingSwitch.IsToggled);
 
@@ -689,7 +693,7 @@ namespace GnollHackX.Pages.MainScreen
         private void SetInitialValues()
         {
             int cursor = 0, graphics = 0, savestyle = 0, maprefresh = (int)UIUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
-            bool mem = false, fps = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, darkmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
+            bool mem = false, fps = false, zoom = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, darkmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, emptywishisnothing = true, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, desktopbuttons = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
@@ -793,6 +797,7 @@ namespace GnollHackX.Pages.MainScreen
                 walkarrows = Preferences.Get("WalkArrows", true);
                 mem = Preferences.Get("ShowMemoryUsage", false);
                 fps = Preferences.Get("ShowFPS", false);
+                zoom = Preferences.Get("ShowZoom", false);
                 battery = Preferences.Get("ShowBattery", false);
                 showrecording = Preferences.Get("ShowRecording", true);
                 autoupload = Preferences.Get("AutoUploadReplays", false);
@@ -834,6 +839,7 @@ namespace GnollHackX.Pages.MainScreen
                 walkarrows = _gamePage.WalkArrows;
                 mem = _gamePage.ShowMemoryUsage;
                 fps = _gamePage.ShowFPS;
+                zoom = _gamePage.ShowZoom;
                 battery = _gamePage.ShowBattery;
                 showrecording = _gamePage.ShowRecording;
                 gpu = _gamePage.UseMainGLCanvas;
@@ -870,6 +876,7 @@ namespace GnollHackX.Pages.MainScreen
             SilentModeSwitch.IsToggled = silentmode;
             MemorySwitch.IsToggled = mem;
             FPSSwitch.IsToggled = fps;
+            ZoomSwitch.IsToggled = zoom;
             BatterySwitch.IsToggled = battery;
             ShowRecordingSwitch.IsToggled = showrecording;
             AutoUploadReplaysSwitch.IsToggled = autoupload;

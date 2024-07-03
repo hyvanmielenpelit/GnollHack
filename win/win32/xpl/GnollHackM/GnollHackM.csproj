@@ -210,6 +210,7 @@
 		<None Remove="Assets\UI\frame2-topleft.png" />
 		<None Remove="Assets\UI\frame2-vertical.png" />
 		<None Remove="Assets\UI\home.png" />
+		<None Remove="Assets\UI\memory.png" />
 		<None Remove="Assets\UI\messages.png" />
 		<None Remove="Assets\UI\page-next.png" />
 		<None Remove="Assets\UI\page-previous.png" />
@@ -231,6 +232,7 @@
 		<None Remove="Assets\UI\symbol-damage.png" />
 		<None Remove="Assets\UI\wiki.png" />
 		<None Remove="Assets\UI\worn.png" />
+		<None Remove="Assets\UI\zoom.png" />
 		<None Remove="Platforms\Android\Environment.txt" />
 		<None Remove="Resources\AppIcon\appicon.svg" />
 		<None Remove="Resources\AppIcon\appiconfg.svg" />
@@ -809,6 +811,7 @@
 	  <EmbeddedResource Include="Assets\UI\lookfar.png" />
 	  <EmbeddedResource Include="Assets\UI\lookhere.png" />
 	  <EmbeddedResource Include="Assets\UI\loot.png" />
+	  <EmbeddedResource Include="Assets\UI\memory.png" />
 	  <EmbeddedResource Include="Assets\UI\menubackground.png" />
 	  <EmbeddedResource Include="Assets\UI\messages.png" />
 	  <EmbeddedResource Include="Assets\UI\missing_icon.png" />
@@ -950,6 +953,7 @@
 	  <EmbeddedResource Include="Assets\UI\yestoall.png" />
 	  <EmbeddedResource Include="Assets\UI\you.png" />
 	  <EmbeddedResource Include="Assets\UI\zap.png" />
+	  <EmbeddedResource Include="Assets\UI\zoom.png" />
 	  <EmbeddedResource Include="Assets\uwch.ttf" />
 	</ItemGroup>
 
