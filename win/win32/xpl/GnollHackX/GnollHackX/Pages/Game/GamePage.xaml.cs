@@ -884,7 +884,7 @@ namespace GnollHackX.Pages.Game
             MapFontSize = Preferences.Get("MapFontSize", deffontsize);
             MapFontAlternateSize = Preferences.Get("MapFontAlternateSize", deffontsize * GHConstants.MapFontRelativeAlternateSize);
             MapFontMiniRelativeSize = Preferences.Get("MapFontMiniRelativeSize", 1.0f);
-            lock(_mapOffsetLock)
+            lock (_mapOffsetLock)
             {
                 _mapMiniOffsetX = Preferences.Get("MapMiniOffsetX", 0.0f);
                 _mapMiniOffsetY = Preferences.Get("MapMiniOffsetY", 0.0f);
@@ -3861,7 +3861,7 @@ namespace GnollHackX.Pages.Game
             Preferences.Set("MapFontSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontSize));
             Preferences.Set("MapFontAlternateSize", Math.Max(GHConstants.MinimumMapFontSize, MapFontAlternateSize));
             Preferences.Set("MapFontMiniRelativeSize", Math.Min(GHConstants.MaximumMapMiniRelativeFontSize, Math.Max(GHConstants.MinimumMapMiniRelativeFontSize, MapFontMiniRelativeSize)));
-            lock(_mapOffsetLock)
+            lock (_mapOffsetLock)
             {
                 Preferences.Set("MapMiniOffsetX", _mapMiniOffsetX);
                 Preferences.Set("MapMiniOffsetY", _mapMiniOffsetY);
@@ -10110,13 +10110,13 @@ namespace GnollHackX.Pages.Game
                         SKRect cliprect = new SKRect(0, ty + textPaint.FontMetrics.Ascent, canvaswidth, bkgrect.Bottom - bkgrect.Height / 8.5f);
                         canvas.ClipRect(cliprect);
 
-                        ty += _statusOffsetY;
-                        base_ty = ty;
-
-                        lock (_mapOffsetLock)
+                        lock (_statusOffsetLock)
                         {
+                            ty += _statusOffsetY;
                             _statusClipBottom = cliprect.Bottom;
                         }
+                        base_ty = ty;
+
                         for (int i = 0; i < 6; i++)
                         {
                             valtext = "";
@@ -10255,7 +10255,7 @@ namespace GnollHackX.Pages.Game
                         }
                         if (valtext != "")
                         {
-                            lock (_mapOffsetLock)
+                            lock (_statusOffsetLock)
                             {
                                 _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
@@ -10284,7 +10284,7 @@ namespace GnollHackX.Pages.Game
                         }
                         if (valtext != "")
                         {
-                            lock (_mapOffsetLock)
+                            lock (_statusOffsetLock)
                             {
                                 _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
@@ -10309,7 +10309,7 @@ namespace GnollHackX.Pages.Game
                         }
                         if (valtext != "")
                         {
-                            lock (_mapOffsetLock)
+                            lock (_statusOffsetLock)
                             {
                                 _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
@@ -10343,7 +10343,7 @@ namespace GnollHackX.Pages.Game
                         }
                         if (valtext != "" || valtext2 != "" || valtext3 != "")
                         {
-                            lock (_mapOffsetLock)
+                            lock (_statusOffsetLock)
                             {
                                 _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
@@ -10374,7 +10374,7 @@ namespace GnollHackX.Pages.Game
                         }
                         if (valtext != "")
                         {
-                            lock (_mapOffsetLock)
+                            lock (_statusOffsetLock)
                             {
                                 _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
@@ -10404,7 +10404,7 @@ namespace GnollHackX.Pages.Game
                         }
                         if (valtext != "")
                         {
-                            lock (_mapOffsetLock)
+                            lock (_statusOffsetLock)
                             {
                                 _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
@@ -10467,7 +10467,7 @@ namespace GnollHackX.Pages.Game
 
                                     canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
                                     textPaint.DrawTextOnCanvas(canvas, statusname, tx + marksize + markpadding, ty);
-                                    lock (_mapOffsetLock)
+                                    lock (_statusOffsetLock)
                                     {
                                         _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                                     }
@@ -10514,7 +10514,7 @@ namespace GnollHackX.Pages.Game
 
                                     canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
                                     textPaint.DrawTextOnCanvas(canvas, conditionname, tx + marksize + markpadding, ty);
-                                    lock (_mapOffsetLock)
+                                    lock (_statusOffsetLock)
                                     {
                                         _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                                     }
@@ -10572,7 +10572,7 @@ namespace GnollHackX.Pages.Game
                                         canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
                                         if (propname != null)
                                             textPaint.DrawTextOnCanvas(canvas, propname, tx + marksize + markpadding, ty);
-                                        lock (_mapOffsetLock)
+                                        lock (_statusOffsetLock)
                                         {
                                             _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                                         }
@@ -12248,7 +12248,7 @@ namespace GnollHackX.Pages.Game
                 glyphthick.Bottom = MenuWindowGlyphImage.Margin.Bottom;
                 MenuWindowGlyphImage.Margin = glyphthick;
 
-                lock (_mapOffsetLock)
+                lock (_statusOffsetLock)
                 {
                     _statusOffsetY = 0;
                 }
@@ -12389,6 +12389,7 @@ namespace GnollHackX.Pages.Game
         public float _mapOffsetY = 0;
         public float _mapMiniOffsetX = 0;
         public float _mapMiniOffsetY = 0;
+        private readonly object _statusOffsetLock = new object();
         public float _statusOffsetY = 0;
         public float _statusLargestBottom = 0;
         public float _statusClipBottom = 0;
@@ -12542,7 +12543,7 @@ namespace GnollHackX.Pages.Game
                                         {
                                             if (ShowExtendedStatusBar)
                                             {
-                                                lock (_mapOffsetLock)
+                                                lock (_statusOffsetLock)
                                                 {
                                                     if (diffY < 0)
                                                     {
@@ -12823,7 +12824,7 @@ namespace GnollHackX.Pages.Game
                             else if (_touchWithinStatusBar)
                             {
                                 ShowExtendedStatusBar = !ShowExtendedStatusBar;
-                                lock (_mapOffsetLock)
+                                lock (_statusOffsetLock)
                                 {
                                     _statusOffsetY = 0.0f;
                                 }
@@ -12855,7 +12856,7 @@ namespace GnollHackX.Pages.Game
                                         if (ShowExtendedStatusBar)
                                         {
                                             ShowExtendedStatusBar = false;
-                                            lock (_mapOffsetLock)
+                                            lock (_statusOffsetLock)
                                             {
                                                 _statusOffsetY = 0.0f;
                                             }
