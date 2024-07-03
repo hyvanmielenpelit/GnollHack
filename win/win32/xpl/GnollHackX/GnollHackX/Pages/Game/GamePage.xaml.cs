@@ -13396,7 +13396,7 @@ namespace GnollHackX.Pages.Game
             _mapData[x, y].HasEnlargementOrAnimationOrSpecialHeight = AlternativeLayerDrawing ? DetermineHasEnlargementOrAnimationOrSpecialHeight(ref layers) : false;
         }
 
-        public void ProcessPrintGlyphCallList(List<SavedPrintGlyphCall> list)
+        public void ProcessPrintGlyphCallList(List<SavedPrintGlyphCall> list, List<SavedSendObjectDataCall> olist, List<SavedSendMonsterDataCall> mlist, List<SavedSendEngravingDataCall> elist)
         {
             long generalCounter;
             long mainCounter;
@@ -13414,6 +13414,52 @@ namespace GnollHackX.Pages.Game
                 {
                     SavedPrintGlyphCall pg = list[i];
                     SetMapSymbolOnTimerUnlocked(pg.X, pg.Y, pg.Glyph, pg.Bkglyph, pg.Symbol, pg.Ocolor, pg.Special, ref pg.Layers, generalCounter, mainCounter);
+                    if (GHUtils.isok(pg.X, pg.Y))
+                        _mapData[pg.X, pg.Y].Engraving = new EngravingInfo();
+                }
+                for (int i = 0; i < elist.Count; i++)
+                {
+                    SavedSendEngravingDataCall e = elist[i];
+                    if (e.cmdtype == 0)
+
+                        if (GHUtils.isok(e.x, e.y))
+                            _mapData[e.x, e.y].Engraving = new EngravingInfo(e.engraving_text, e.etype, e.eflags, e.gflags);
+                }
+            }
+
+            lock (_objectDataLock)
+            {
+                for (int i = 0; i < list.Count; i++)
+                {
+                    SavedPrintGlyphCall pg = list[i];
+                    int x = pg.X;
+                    int y = pg.Y;
+                    if (_objectData[x, y] != null)
+                    {
+                        if (_objectData[x, y].FloorObjectList != null)
+                            _objectData[x, y].FloorObjectList.Clear();
+                        if (_objectData[x, y].CoverFloorObjectList != null)
+                            _objectData[x, y].CoverFloorObjectList.Clear();
+                        if (_objectData[x, y].MemoryObjectList != null)
+                            _objectData[x, y].MemoryObjectList.Clear();
+                        if (_objectData[x, y].CoverMemoryObjectList != null)
+                            _objectData[x, y].CoverMemoryObjectList.Clear();
+                    }
+                }
+                for (int i = 0; i < olist.Count; i++)
+                {
+                    SavedSendObjectDataCall o = olist[i];
+                    AddObjectData(o.x, o.y, o.otmp, o.cmdtype, o.where, o.otypdata, o.oflags);
+                }
+            }
+
+            lock (_petDataLock)
+            {
+                for (int i = 0; i < mlist.Count; i++)
+                {
+                    SavedSendMonsterDataCall m = mlist[i];
+                    if(m.cmdtype == 0)
+                        _petData.Add(new GHPetDataItem(m.monster_data));
                 }
             }
         }

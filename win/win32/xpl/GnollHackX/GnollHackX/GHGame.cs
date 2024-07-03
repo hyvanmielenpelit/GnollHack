@@ -523,8 +523,8 @@ namespace GnollHackX
             //if (gHWindow != null)
             //    gHWindow.PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
 
-            _gamePage.ClearAllObjectData(x, y);
-            _gamePage.ClearEngravingData(x, y);
+            //_gamePage.ClearAllObjectData(x, y);
+            //_gamePage.ClearEngravingData(x, y);
         }
 
         public int Replay_AskName(string modeName, string modeDescription, string enteredPlayerName)
@@ -1599,36 +1599,42 @@ namespace GnollHackX
             GHApp.AddAggragateSessionPlayTime(timePassed);
         }
 
+        private List<SavedSendObjectDataCall> _savedSendObjectDataCalls = new List<SavedSendObjectDataCall>();
         public void ClientCallback_SendObjectData(int x, int y, IntPtr otmp_ptr, int cmdtype, int where, IntPtr otypdata_ptr, ulong oflags)
         {
             Obj otmp = otmp_ptr == IntPtr.Zero ? new Obj() : (Obj)Marshal.PtrToStructure(otmp_ptr, typeof(Obj));
             ObjClassData otypdata = otypdata_ptr == IntPtr.Zero ? new ObjClassData() : (ObjClassData)Marshal.PtrToStructure(otypdata_ptr, typeof(ObjClassData));
 
             RecordFunctionCall(RecordedFunctionID.SendObjectData, x, y, otmp, cmdtype, where, otypdata, oflags);
-            _gamePage.AddObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);
+            _savedSendObjectDataCalls.Add(new SavedSendObjectDataCall(x, y, ref otmp, cmdtype, where, ref otypdata, oflags));
+            //_gamePage.AddObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);
         }
 
+        private List<SavedSendMonsterDataCall> _savedSendMonsterDataCalls = new List<SavedSendMonsterDataCall>();
         public void ClientCallback_SendMonsterData(int cmdtype, int x, int y, IntPtr monster_data_ptr, ulong oflags)
         {
             monst_info monster_data = monster_data_ptr == IntPtr.Zero ? new monst_info() : (monst_info)Marshal.PtrToStructure(monster_data_ptr, typeof(monst_info));
             RecordFunctionCall(RecordedFunctionID.SendMonsterData, cmdtype, x, y, monster_data, oflags);
-            switch (cmdtype)
-            {
-                case 0: /* Add Pet */
-                    _gamePage.AddPetData(monster_data);
-                    break;
-            }
+            _savedSendMonsterDataCalls.Add(new SavedSendMonsterDataCall(cmdtype, x, y, ref monster_data, oflags));
+            //switch (cmdtype)
+            //{
+            //    case 0: /* Add Pet */
+            //        _gamePage.AddPetData(monster_data);
+            //        break;
+            //}
         }
 
+        private List<SavedSendEngravingDataCall> _savedSendEngravingDataCalls = new List<SavedSendEngravingDataCall>();
         public void ClientCallback_SendEngravingData(int cmdtype, int x, int y, string engraving_text, int etype, ulong eflags, ulong gflags)
         {
             RecordFunctionCall(RecordedFunctionID.SendEngravingData, cmdtype, x, y, engraving_text, etype, eflags, gflags);
-            switch (cmdtype)
-            {
-                case 0: /* Add engraving */
-                    _gamePage.AddEngravingData(x, y, engraving_text, etype, eflags, gflags);
-                    break;
-            }
+            _savedSendEngravingDataCalls.Add(new SavedSendEngravingDataCall(cmdtype, x, y, engraving_text, etype, eflags, gflags));
+            //switch (cmdtype)
+            //{
+            //    case 0: /* Add engraving */
+            //        _gamePage.AddEngravingData(x, y, engraving_text, etype, eflags, gflags);
+            //        break;
+            //}
         }
 
         public int Replay_GetLine(int style, int attr, int color, string query, string placeholder, string linesuffix, string introline, IntPtr out_string_ptr, string enteredLine)
@@ -2413,8 +2419,11 @@ namespace GnollHackX
                 case (int)gui_command_types.GUI_CMD_START_FLUSH:
                     break;
                 case (int)gui_command_types.GUI_CMD_FINISH_FLUSH:
-                    _gamePage.ProcessPrintGlyphCallList(_savedPrintGlyphCalls);
+                    _gamePage.ProcessPrintGlyphCallList(_savedPrintGlyphCalls, _savedSendObjectDataCalls, _savedSendMonsterDataCalls, _savedSendEngravingDataCalls);
                     _savedPrintGlyphCalls.Clear();
+                    _savedSendObjectDataCalls.Clear();
+                    _savedSendMonsterDataCalls.Clear();
+                    _savedSendEngravingDataCalls.Clear();
                     break;
                 default:
                     break;
@@ -3206,6 +3215,67 @@ namespace GnollHackX
             Ocolor = ocolor; 
             Special = special; 
             Layers = layers;
+        }
+    }
+
+    public struct SavedSendObjectDataCall
+    {
+        public int x;
+        public int y;
+        public Obj otmp;
+        public int cmdtype;
+        public int where;
+        public ObjClassData otypdata;
+        public ulong oflags;
+
+        public SavedSendObjectDataCall(int x, int y, ref Obj otmp, int cmdtype, int where, ref ObjClassData otypdata, ulong oflags)
+        {
+            this.x = x;
+            this.y = y;
+            this.cmdtype = cmdtype;
+            this.where = where;
+            this.otmp = otmp;
+            this.otypdata = otypdata;
+            this.oflags = oflags;
+        }
+    }
+
+    public struct SavedSendMonsterDataCall
+    {
+        public int cmdtype;
+        public int x;
+        public int y;
+        public monst_info monster_data;
+        public ulong oflags;
+
+        public SavedSendMonsterDataCall(int cmdtype, int x, int y, ref monst_info monster_data, ulong oflags)
+        {
+            this.cmdtype = cmdtype;
+            this.x = x;
+            this.y = y;
+            this.monster_data = monster_data;
+        }
+    }
+
+    public struct SavedSendEngravingDataCall
+    {
+        public int cmdtype;
+        public int x;
+        public int y;
+        public string engraving_text;
+        public int etype;
+        public ulong eflags;
+        public ulong gflags;
+
+        public SavedSendEngravingDataCall(int cmdtype, int x, int y, string engraving_text, int etype, ulong eflags, ulong gflags)
+        {
+            this.cmdtype = cmdtype;
+            this.x = x;
+            this.y = y;
+            this.engraving_text = engraving_text;
+            this.etype = etype;
+            this.eflags = eflags;
+            this.gflags = gflags;
         }
     }
 }
