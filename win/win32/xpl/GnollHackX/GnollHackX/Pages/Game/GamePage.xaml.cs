@@ -72,8 +72,8 @@ namespace GnollHackX.Pages.Game
 
         private readonly string _fontSizeString = "FontS";
         private bool _refreshMsgHistoryRowCounts = true;
-        private readonly object _refreshMsgHistoryRowCountLock = new object();
-        private bool RefreshMsgHistoryRowCounts { get { lock (_refreshMsgHistoryRowCountLock) { return _refreshMsgHistoryRowCounts; } } set { lock (_refreshMsgHistoryRowCountLock) { _refreshMsgHistoryRowCounts = value; } } }
+        //private readonly object _refreshMsgHistoryRowCountLock = new object();
+        private bool RefreshMsgHistoryRowCounts { get { lock (_msgHistoryLock) { return _refreshMsgHistoryRowCounts; } } set { lock (_msgHistoryLock) { _refreshMsgHistoryRowCounts = value; } } }
 
         public List<string> ExtendedCommands { get; set; }
 
@@ -471,17 +471,17 @@ namespace GnollHackX.Pages.Game
         private bool _breatheAnimations = false;
         public bool BreatheAnimations { get { lock (_breatheAnimationLock) { return _breatheAnimations; } } set { lock (_breatheAnimationLock) { _breatheAnimations = value; } } }
 
-        private readonly object _longerMessageHistoryLock = new object();
+        //private readonly object _longerMessageHistoryLock = new object();
         bool _longerMessageHistory = false;
         public bool LongerMessageHistory
         {
             get
             {
-                lock (_longerMessageHistoryLock) { return _longerMessageHistory; };
+                lock (_msgHistoryLock) { return _longerMessageHistory; };
             }
             set
             {
-                lock (_longerMessageHistoryLock)
+                lock (_msgHistoryLock)
                 {
                     _longerMessageHistory = value;
                 }
@@ -837,16 +837,19 @@ namespace GnollHackX.Pages.Game
 
             _mainPage = mainPage;
 
-            for (int i = 0; i < GHConstants.MapCols; i++)
+            lock (_mapDataLock)
             {
-                for (int j = 0; j < GHConstants.MapRows; j++)
+                for (int i = 0; i < GHConstants.MapCols; i++)
                 {
-                    _mapData[i, j] = new MapData();
-                    _mapData[i, j].Glyph = GHApp.UnexploredGlyph;
-                    _mapData[i, j].BkGlyph = GHApp.NoGlyph;
-                    _mapData[i, j].NeedsUpdate = true;
+                    for (int j = 0; j < GHConstants.MapRows; j++)
+                    {
+                        _mapData[i, j] = new MapData();
+                        _mapData[i, j].Glyph = GHApp.UnexploredGlyph;
+                        _mapData[i, j].BkGlyph = GHApp.NoGlyph;
+                        _mapData[i, j].NeedsUpdate = true;
 
-                    _objectData[i, j] = new ObjectData();
+                        _objectData[i, j] = new ObjectData();
+                    }
                 }
             }
             SetLayerDrawOrder();
@@ -875,7 +878,10 @@ namespace GnollHackX.Pages.Game
             DrawWallEnds = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
             BreatheAnimations = Preferences.Get("BreatheAnimations", GHConstants.DefaultBreatheAnimations);
             AlternativeLayerDrawing = Preferences.Get("AlternativeLayerDrawing", GHConstants.DefaultAlternativeLayerDrawing);
-            _longerMessageHistory = GHApp.SavedLongerMessageHistory; /* Cannot send response command yet, hence using private variable */
+            lock (_msgHistoryLock)
+            {
+                _longerMessageHistory = GHApp.SavedLongerMessageHistory; /* Cannot send response command yet, hence using private variable */
+            }
 
             float deffontsize = GetDefaultMapFontSize();
             MapFontSize = Preferences.Get("MapFontSize", deffontsize);
@@ -7614,363 +7620,366 @@ namespace GnollHackX.Pages.Game
                 {
                     _canvasButtonRect.Top = 0; /* Maybe overrwritten below */
                     _canvasButtonRect.Bottom = canvasheight; /* Maybe overrwritten below */
-                    if (_currentGame != null)
+                    GHWindow ghWindow = null;
+                    GHWindow messageWindow = null;
+                    for (int i = 0; i < GHConstants.MaxGHWindows; i++)
                     {
+                        if (_currentGame == null)
+                            break;
                         lock (_currentGame.WindowsLock)
                         {
-                            for (int i = 0; _currentGame.Windows[i] != null && i < GHConstants.MaxGHWindows; i++)
+                            ghWindow = _currentGame.Windows[i];
+                            messageWindow = _currentGame.Windows[_currentGame.MessageWindowId];
+                        }
+                        if (ghWindow == null || messageWindow == null)
+                            break;
+
+                        if (ghWindow.Visible && (
+                            ghWindow.WindowPrintStyle == GHWindowPrintLocations.PrintToMap
+                            || ghWindow.WindowPrintStyle == GHWindowPrintLocations.RawPrint))
+                        {
+                            if (ghWindow.WindowType == GHWinType.Status && !ClassicStatusBar)
+                                continue;
+
+                            textPaint.Typeface = ghWindow.Typeface;
+                            textPaint.TextSize = ghWindow.TextSize * textscale;
+                            textPaint.Color = ghWindow.TextColor;
+                            width = textPaint.MeasureText("A"); // textPaint.FontMetrics.AverageCharacterWidth;
+                            height = textPaint.FontSpacing; // textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
+
+                            if (ghWindow.AutoPlacement)
                             {
-                                if (_currentGame.Windows[i].Visible && (
-                                    _currentGame.Windows[i].WindowPrintStyle == GHWindowPrintLocations.PrintToMap
-                                    || _currentGame.Windows[i].WindowPrintStyle == GHWindowPrintLocations.RawPrint))
+                                if (ghWindow.WindowType == GHWinType.Message)
                                 {
-                                    if (_currentGame.Windows[i].WindowType == GHWinType.Status && !ClassicStatusBar)
-                                        continue;
+                                    float newleft = 0;
+                                    float newtop = canvasheight - height * ActualDisplayedMessages - canvasheight * (float)UsedButtonRowStack.Height / Math.Max(1.0f, (float)canvasView.Height) - 30;
+                                    ghWindow.Left = newleft;
+                                    ghWindow.Top = newtop;
+                                }
+                                else if (ghWindow.WindowType == GHWinType.Here)
+                                {
+                                    float newleft = 0;
+                                    float messagetop = messageWindow.Top;
+                                    float newtop = messagetop - ghWindow.Height - 10 * textscale;
+                                    ghWindow.Left = newleft;
+                                    ghWindow.Top = newtop;
+                                }
+                            }
 
-                                    textPaint.Typeface = _currentGame.Windows[i].Typeface;
-                                    textPaint.TextSize = _currentGame.Windows[i].TextSize * textscale;
-                                    textPaint.Color = _currentGame.Windows[i].TextColor;
-                                    width = textPaint.MeasureText("A"); // textPaint.FontMetrics.AverageCharacterWidth;
-                                    height = textPaint.FontSpacing; // textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
+                            SKRect winRect = new SKRect(ghWindow.Left, ghWindow.Top,
+                                ghWindow.Right,
+                                ghWindow.Bottom);
 
-                                    if (_currentGame.Windows[i].AutoPlacement)
-                                    {
-                                        if (_currentGame.Windows[i].WindowType == GHWinType.Message)
-                                        {
-                                            float newleft = 0;
-                                            float newtop = canvasheight - height * ActualDisplayedMessages - canvasheight * (float)UsedButtonRowStack.Height / Math.Max(1.0f, (float)canvasView.Height) - 30;
-                                            _currentGame.Windows[i].Left = newleft;
-                                            _currentGame.Windows[i].Top = newtop;
-                                        }
-                                        else if (_currentGame.Windows[i].WindowType == GHWinType.Here)
-                                        {
-                                            float newleft = 0;
-                                            float messagetop = _currentGame.Windows[_currentGame.MessageWindowId].Top;
-                                            float newtop = messagetop - _currentGame.Windows[i].Height - 10 * textscale;
-                                            _currentGame.Windows[i].Left = newleft;
-                                            _currentGame.Windows[i].Top = newtop;
-                                        }
-                                    }
+                            if (ghWindow.CenterHorizontally && winRect.Right - winRect.Left < canvaswidth)
+                            {
+                                float newleft = (canvaswidth - (winRect.Right - winRect.Left)) / 2;
+                                float addition = newleft - winRect.Left;
+                                winRect.Left += addition;
+                                winRect.Right += addition;
+                            }
 
-                                    SKRect winRect = new SKRect(_currentGame.Windows[i].Left, _currentGame.Windows[i].Top,
-                                        _currentGame.Windows[i].Right,
-                                        _currentGame.Windows[i].Bottom);
+                            switch (ghWindow.WindowType)
+                            {
+                                case GHWinType.Here:
+                                    herewindowtop = winRect.Top;
+                                    break;
+                                case GHWinType.Message:
+                                    messagewindowtop = winRect.Top;
+                                    break;
+                                default:
+                                    break;
+                            }
 
-                                    if (_currentGame.Windows[i].CenterHorizontally && winRect.Right - winRect.Left < canvaswidth)
-                                    {
-                                        float newleft = (canvaswidth - (winRect.Right - winRect.Left)) / 2;
-                                        float addition = newleft - winRect.Left;
-                                        winRect.Left += addition;
-                                        winRect.Right += addition;
-                                    }
+                            using (SKPaint winPaint = new SKPaint())
+                            {
+                                //winPaint.FilterQuality = SKFilterQuality.None;
 
-                                    switch (_currentGame.Windows[i].WindowType)
-                                    {
-                                        case GHWinType.Here:
-                                            herewindowtop = winRect.Top;
-                                            break;
-                                        case GHWinType.Message:
-                                            messagewindowtop = winRect.Top;
-                                            break;
-                                        default:
-                                            break;
-                                    }
+                                winPaint.Color = ghWindow.BackgroundColor;
+                                winPaint.Style = SKPaintStyle.Fill;
 
-                                    using (SKPaint winPaint = new SKPaint())
-                                    {
-                                        //winPaint.FilterQuality = SKFilterQuality.None;
-
-                                        winPaint.Color = _currentGame.Windows[i].BackgroundColor;
-                                        winPaint.Style = SKPaintStyle.Fill;
-
-                                        if (winPaint.Color != SKColors.Transparent)
-                                        {
+                                if (winPaint.Color != SKColors.Transparent)
+                                {
 #if GNH_MAP_PROFILING && DEBUG
-                                            StartProfiling(GHProfilingStyle.Rect);
+                                    StartProfiling(GHProfilingStyle.Rect);
 #endif
-                                            canvas.DrawRect(winRect, winPaint);
+                                    canvas.DrawRect(winRect, winPaint);
 #if GNH_MAP_PROFILING && DEBUG
-                                            StopProfiling(GHProfilingStyle.Rect);
+                                    StopProfiling(GHProfilingStyle.Rect);
 #endif
 
-                                        }
+                                }
 
-                                        if (i == _currentGame.StatusWindowId && ClassicStatusBar)
-                                            _canvasButtonRect.Top = winRect.Bottom;
-                                        else if (i == _currentGame.MessageWindowId)
-                                            _canvasButtonRect.Bottom = winRect.Top;
-                                    }
+                                if (i == _currentGame.StatusWindowId && ClassicStatusBar)
+                                    _canvasButtonRect.Top = winRect.Bottom;
+                                else if (i == _currentGame.MessageWindowId)
+                                    _canvasButtonRect.Bottom = winRect.Top;
+                            }
 
-                                    if (_currentGame.Windows[i].WindowType != GHWinType.Message && !ForceAllMessages)
+                            if (ghWindow.WindowType != GHWinType.Message && !ForceAllMessages)
+                            {
+                                lock (ghWindow.PutStrsLock)
+                                {
+                                    int j = 0;
+                                    foreach (GHPutStrItem putstritem in ghWindow.PutStrs)
                                     {
-                                        lock (_currentGame.Windows[i].PutStrsLock)
+                                        int pos = 0;
+                                        float xpos = 0;
+                                        float totwidth = 0;
+                                        foreach (GHPutStrInstructions instr in putstritem.InstructionList)
                                         {
-                                            int j = 0;
-                                            foreach (GHPutStrItem putstritem in _currentGame.Windows[i].PutStrs)
+                                            if (putstritem.Text == null)
+                                                str = "";
+                                            else if (pos + instr.PrintLength <= putstritem.Text.Length)
+                                                str = putstritem.Text.Substring(pos, instr.PrintLength);
+                                            else if (putstritem.Text.Length - pos > 0)
+                                                str = putstritem.Text.Substring(pos, putstritem.Text.Length - pos);
+                                            else
+                                                str = "";
+                                            pos += str.Length;
+                                            totwidth = textPaint.MeasureText(str, ref textBounds);
+
+                                            /* attributes */
+                                            tx = xpos + winRect.Left + ghWindow.Padding.Left;
+                                            ty = winRect.Top + ghWindow.Padding.Top - textPaint.FontMetrics.Ascent + j * height;
+
+#if GNH_MAP_PROFILING && DEBUG
+                                            StartProfiling(GHProfilingStyle.Text);
+#endif
+                                            if (ghWindow.HasShadow)
                                             {
-                                                int pos = 0;
-                                                float xpos = 0;
-                                                float totwidth = 0;
-                                                foreach (GHPutStrInstructions instr in putstritem.InstructionList)
+                                                textPaint.Style = SKPaintStyle.Fill;
+                                                textPaint.Color = SKColors.Black;
+                                                textPaint.MaskFilter = _blur;
+                                                float shadow_offset = 0.15f * textPaint.TextSize;
+                                                textPaint.DrawTextOnCanvas(canvas, str, tx + shadow_offset, ty + shadow_offset);
+                                                textPaint.MaskFilter = null;
+                                            }
+                                            if (ghWindow.StrokeWidth > 0)
+                                            {
+                                                textPaint.Style = SKPaintStyle.Stroke;
+                                                textPaint.StrokeWidth = ghWindow.StrokeWidth * textscale;
+                                                textPaint.Color = SKColors.Black;
+                                                //canvas.DrawText(str, tx, ty, textPaint);
+                                                textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
+                                            }
+                                            textPaint.Style = SKPaintStyle.Fill;
+                                            textPaint.Color = UIUtils.NHColor2SKColor(instr.Color < (int)NhColor.CLR_MAX ? instr.Color : (int)NhColor.CLR_WHITE, instr.Attributes);
+                                            //canvas.DrawText(str, tx, ty, textPaint);
+                                            textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
+                                            textPaint.Style = SKPaintStyle.Fill;
+                                            xpos += totwidth;
+#if GNH_MAP_PROFILING && DEBUG
+                                            StopProfiling(GHProfilingStyle.Text);
+#endif
+
+                                            if (ghWindow.WindowType == GHWinType.Status && lastStatusRowPrintY < ty + textPaint.FontMetrics.Descent)
+                                            {
+                                                lastStatusRowPrintY = ty + textPaint.FontMetrics.Descent;
+                                                lastStatusRowFontSpacing = textPaint.FontSpacing;
+                                            }
+                                        }
+                                        j++;
+                                    }
+                                }
+                            }
+
+                            if (ghWindow.WindowType == GHWinType.Message)
+                            {
+                                lock (_msgHistoryLock)
+                                {
+                                    if (_msgHistory != null)
+                                    {
+                                        int j = ActualDisplayedMessages - 1, idx;
+                                        float lineLengthLimit = 0.85f * canvaswidth;
+                                        float spaceLength = textPaint.MeasureText(" ");
+
+                                        bool refreshsmallesttop = false;
+                                        for (idx = _msgHistory.Length - 1; idx >= 0 && j >= 0; idx--)
+                                        {
+                                            GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
+                                            //longLine = msgHistoryItem.Text;
+                                            SKColor printColor = UIUtils.NHColor2SKColor(
+                                                msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 ? msgHistoryItem.Colors[0] : msgHistoryItem.NHColor < (int)NhColor.CLR_MAX ? msgHistoryItem.NHColor : (int)NhColor.CLR_WHITE, 
+                                                msgHistoryItem.Attributes != null && msgHistoryItem.Attributes.Length > 0 ? msgHistoryItem.Attributes[0] : msgHistoryItem.Attribute);
+
+                                            bool use_one_color = msgHistoryItem.Colors == null && msgHistoryItem.Attributes == null;
+                                            int char_idx = 0;
+
+                                            if (_refreshMsgHistoryRowCounts || msgHistoryItem.WrappedTextRows.Count == 0)
+                                            {
+                                                refreshsmallesttop = true;
+                                                msgHistoryItem.WrappedTextRows.Clear();
+                                                float lineLength = 0.0f;
+                                                //string line = "";
+                                                _lineBuilder.Clear();
+                                                string[] txtsplit = msgHistoryItem.TextSplit;
+                                                bool firstonline = true;
+                                                for (int widx = 0; widx < txtsplit.Length; widx++)
                                                 {
-                                                    if (putstritem.Text == null)
-                                                        str = "";
-                                                    else if (pos + instr.PrintLength <= putstritem.Text.Length)
-                                                        str = putstritem.Text.Substring(pos, instr.PrintLength);
-                                                    else if (putstritem.Text.Length - pos > 0)
-                                                        str = putstritem.Text.Substring(pos, putstritem.Text.Length - pos);
+                                                    string word = txtsplit[widx];
+                                                    //string wordWithSpace = word + " ";
+                                                    float wordLength = textPaint.MeasureText(word);
+                                                    float wordWithSpaceLength = wordLength + spaceLength;
+                                                    if (lineLength + wordLength > lineLengthLimit && !firstonline)
+                                                    {
+                                                        msgHistoryItem.WrappedTextRows.Add(_lineBuilder.ToString());
+                                                        //line = wordWithSpace;
+                                                        _lineBuilder.Clear();
+                                                        _lineBuilder.Append(word);
+                                                        _lineBuilder.Append(" ");
+                                                        lineLength = wordWithSpaceLength;
+                                                        firstonline = true;
+                                                    }
                                                     else
-                                                        str = "";
-                                                    pos += str.Length;
-                                                    totwidth = textPaint.MeasureText(str, ref textBounds);
+                                                    {
+                                                        //line += wordWithSpace;
+                                                        _lineBuilder.Append(word);
+                                                        _lineBuilder.Append(" ");
+                                                        lineLength += wordWithSpaceLength;
+                                                        firstonline = false;
+                                                    }
+                                                }
+                                                msgHistoryItem.WrappedTextRows.Add(_lineBuilder.ToString());
+                                            }
 
-                                                    /* attributes */
-                                                    tx = xpos + winRect.Left + _currentGame.Windows[i].Padding.Left;
-                                                    ty = winRect.Top + _currentGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + j * height;
+                                            if(!msgHistoryItem.MatchFilter)
+                                                continue;
 
+                                            int lineidx;
+                                            for (lineidx = 0; lineidx < msgHistoryItem.WrappedTextRows.Count; lineidx++)
+                                            {
+                                                string wrappedLine = msgHistoryItem.WrappedTextRows[lineidx];
+                                                int window_row_idx = j + lineidx - msgHistoryItem.WrappedTextRows.Count + 1;
+                                                if (window_row_idx < 0)
+                                                {
+                                                    char_idx += wrappedLine.Length;
+                                                    continue;
+                                                }
+                                                tx = winRect.Left + ghWindow.Padding.Left;
+                                                ty = winRect.Top + ghWindow.Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
+                                                if (ForceAllMessages)
+                                                {
+                                                    ty += _messageScrollOffset;
+                                                }
+                                                if (ty + textPaint.FontMetrics.Descent < 0)
+                                                {
+                                                    char_idx += wrappedLine.Length;
+                                                    continue;
+                                                }
+                                                if (ty - textPaint.FontMetrics.Ascent > canvasheight)
+                                                {
+                                                    char_idx += wrappedLine.Length;
+                                                    continue;
+                                                }
+
+                                                if (use_one_color)
+                                                {
 #if GNH_MAP_PROFILING && DEBUG
                                                     StartProfiling(GHProfilingStyle.Text);
 #endif
-                                                    if (_currentGame.Windows[i].HasShadow)
-                                                    {
-                                                        textPaint.Style = SKPaintStyle.Fill;
-                                                        textPaint.Color = SKColors.Black;
-                                                        textPaint.MaskFilter = _blur;
-                                                        float shadow_offset = 0.15f * textPaint.TextSize;
-                                                        textPaint.DrawTextOnCanvas(canvas, str, tx + shadow_offset, ty + shadow_offset);
-                                                        textPaint.MaskFilter = null;
-                                                    }
-                                                    if (_currentGame.Windows[i].StrokeWidth > 0)
-                                                    {
-                                                        textPaint.Style = SKPaintStyle.Stroke;
-                                                        textPaint.StrokeWidth = _currentGame.Windows[i].StrokeWidth * textscale;
-                                                        textPaint.Color = SKColors.Black;
-                                                        //canvas.DrawText(str, tx, ty, textPaint);
-                                                        textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
-                                                    }
+                                                    textPaint.Style = SKPaintStyle.Stroke;
+                                                    textPaint.StrokeWidth = ghWindow.StrokeWidth * textscale;
+                                                    textPaint.Color = SKColors.Black;
+                                                    //canvas.DrawText(wrappedLine, tx, ty, textPaint);
+                                                    textPaint.DrawTextOnCanvas(canvas, wrappedLine, tx, ty);
                                                     textPaint.Style = SKPaintStyle.Fill;
-                                                    textPaint.Color = UIUtils.NHColor2SKColor(instr.Color < (int)NhColor.CLR_MAX ? instr.Color : (int)NhColor.CLR_WHITE, instr.Attributes);
-                                                    //canvas.DrawText(str, tx, ty, textPaint);
-                                                    textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
+                                                    textPaint.StrokeWidth = 0;
+                                                    textPaint.Color = printColor;
+                                                    //canvas.DrawText(wrappedLine, tx, ty, textPaint);
+                                                    textPaint.DrawTextOnCanvas(canvas, wrappedLine, tx, ty);
                                                     textPaint.Style = SKPaintStyle.Fill;
-                                                    xpos += totwidth;
+                                                    textPaint.StrokeWidth = 0;
+                                                    textPaint.Color = SKColors.White;
+                                                    char_idx += wrappedLine.Length;
 #if GNH_MAP_PROFILING && DEBUG
                                                     StopProfiling(GHProfilingStyle.Text);
 #endif
-
-                                                    if (_currentGame.Windows[i].WindowType == GHWinType.Status && lastStatusRowPrintY < ty + textPaint.FontMetrics.Descent)
+                                                }
+                                                else
+                                                {
+                                                    int charidx_start = 0;
+                                                    while (char_idx < msgHistoryItem.Text.Length && charidx_start < wrappedLine.Length)
                                                     {
-                                                        lastStatusRowPrintY = ty + textPaint.FontMetrics.Descent;
-                                                        lastStatusRowFontSpacing = textPaint.FontSpacing;
+                                                        int charidx_len = 0;
+                                                        int new_nhcolor = msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 && char_idx < msgHistoryItem.Colors.Length ? msgHistoryItem.Colors[char_idx] : msgHistoryItem.NHColor < (int)NhColor.CLR_MAX ? msgHistoryItem.NHColor : (int)NhColor.CLR_WHITE;
+                                                        int new_nhattr = msgHistoryItem.Attributes != null && msgHistoryItem.Attributes.Length > 0 && char_idx < msgHistoryItem.Attributes.Length ? msgHistoryItem.Attributes[char_idx] : msgHistoryItem.Attribute;
+                                                        int char_idx2 = char_idx;
+                                                        int new_nhcolor2 = new_nhcolor;
+                                                        int new_nhattr2 = new_nhattr;
+
+                                                        while (char_idx2 < msgHistoryItem.Text.Length && charidx_start + charidx_len < wrappedLine.Length && new_nhcolor == new_nhcolor2 && new_nhattr == new_nhattr2)
+                                                        {
+                                                            char_idx2++;
+                                                            new_nhcolor2 = msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 && char_idx2 < msgHistoryItem.Colors.Length ? msgHistoryItem.Colors[char_idx2] : msgHistoryItem.NHColor < (int)NhColor.CLR_MAX ? msgHistoryItem.NHColor : (int)NhColor.CLR_WHITE;
+                                                            new_nhattr2 = msgHistoryItem.Attributes != null && msgHistoryItem.Attributes.Length > 0 && char_idx2 < msgHistoryItem.Attributes.Length ? msgHistoryItem.Attributes[char_idx2] : msgHistoryItem.Attribute;
+                                                            charidx_len = char_idx2 - char_idx;
+                                                        }
+
+#if GNH_MAP_PROFILING && DEBUG
+                                                        StartProfiling(GHProfilingStyle.Text);
+#endif
+                                                        SKColor new_skcolor = UIUtils.NHColor2SKColor(new_nhcolor, new_nhattr);
+                                                        string printedsubline = wrappedLine.Substring(charidx_start, charidx_len);
+                                                        textPaint.Style = SKPaintStyle.Stroke;
+                                                        textPaint.StrokeWidth = ghWindow.StrokeWidth * textscale;
+                                                        textPaint.Color = SKColors.Black;
+                                                        //canvas.DrawText(printedsubline, tx, ty, textPaint);
+                                                        textPaint.DrawTextOnCanvas(canvas, printedsubline, tx, ty);
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        textPaint.StrokeWidth = 0;
+                                                        textPaint.Color = new_skcolor;
+                                                        //canvas.DrawText(printedsubline, tx, ty, textPaint);
+                                                        textPaint.DrawTextOnCanvas(canvas, printedsubline, tx, ty);
+                                                        float twidth = textPaint.MeasureText(printedsubline);
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        textPaint.StrokeWidth = 0;
+                                                        textPaint.Color = SKColors.White;
+#if GNH_MAP_PROFILING && DEBUG
+                                                        StopProfiling(GHProfilingStyle.Text);
+#endif
+
+                                                        tx += twidth;
+                                                        char_idx += charidx_len;
+                                                        charidx_start += charidx_len;
                                                     }
                                                 }
-                                                j++;
                                             }
+                                            j -= msgHistoryItem.WrappedTextRows.Count;
                                         }
-                                    }
+                                        _refreshMsgHistoryRowCounts = false;
 
-                                    if (_currentGame.Windows[i].WindowType == GHWinType.Message)
-                                    {
-                                        lock (_msgHistoryLock)
+                                        /* Calculate smallest top */
+                                        if(refreshsmallesttop)
                                         {
-                                            if (_msgHistory != null)
+                                            lock (_messageScrollLock)
                                             {
-                                                int j = ActualDisplayedMessages - 1, idx;
-                                                float lineLengthLimit = 0.85f * canvaswidth;
-                                                float spaceLength = textPaint.MeasureText(" ");
-
-                                                lock (_refreshMsgHistoryRowCountLock)
+                                                _messageSmallestTop = canvasheight;
+                                                j = ActualDisplayedMessages - 1;
+                                                for (idx = _msgHistory.Length - 1; idx >= 0 && j >= 0; idx--)
                                                 {
-                                                    bool refreshsmallesttop = false;
-                                                    for (idx = _msgHistory.Length - 1; idx >= 0 && j >= 0; idx--)
+                                                    GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
+                                                    if (!msgHistoryItem.MatchFilter)
+                                                        continue;
+                                                    int lineidx;
+                                                    for (lineidx = 0; lineidx < msgHistoryItem.WrappedTextRows.Count; lineidx++)
                                                     {
-                                                        GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
-                                                        //longLine = msgHistoryItem.Text;
-                                                        SKColor printColor = UIUtils.NHColor2SKColor(
-                                                            msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 ? msgHistoryItem.Colors[0] : msgHistoryItem.NHColor < (int)NhColor.CLR_MAX ? msgHistoryItem.NHColor : (int)NhColor.CLR_WHITE, 
-                                                            msgHistoryItem.Attributes != null && msgHistoryItem.Attributes.Length > 0 ? msgHistoryItem.Attributes[0] : msgHistoryItem.Attribute);
-
-                                                        bool use_one_color = msgHistoryItem.Colors == null && msgHistoryItem.Attributes == null;
-                                                        int char_idx = 0;
-
-                                                        if (_refreshMsgHistoryRowCounts || msgHistoryItem.WrappedTextRows.Count == 0)
-                                                        {
-                                                            refreshsmallesttop = true;
-                                                            msgHistoryItem.WrappedTextRows.Clear();
-                                                            float lineLength = 0.0f;
-                                                            //string line = "";
-                                                            _lineBuilder.Clear();
-                                                            string[] txtsplit = msgHistoryItem.TextSplit;
-                                                            bool firstonline = true;
-                                                            for (int widx = 0; widx < txtsplit.Length; widx++)
-                                                            {
-                                                                string word = txtsplit[widx];
-                                                                //string wordWithSpace = word + " ";
-                                                                float wordLength = textPaint.MeasureText(word);
-                                                                float wordWithSpaceLength = wordLength + spaceLength;
-                                                                if (lineLength + wordLength > lineLengthLimit && !firstonline)
-                                                                {
-                                                                    msgHistoryItem.WrappedTextRows.Add(_lineBuilder.ToString());
-                                                                    //line = wordWithSpace;
-                                                                    _lineBuilder.Clear();
-                                                                    _lineBuilder.Append(word);
-                                                                    _lineBuilder.Append(" ");
-                                                                    lineLength = wordWithSpaceLength;
-                                                                    firstonline = true;
-                                                                }
-                                                                else
-                                                                {
-                                                                    //line += wordWithSpace;
-                                                                    _lineBuilder.Append(word);
-                                                                    _lineBuilder.Append(" ");
-                                                                    lineLength += wordWithSpaceLength;
-                                                                    firstonline = false;
-                                                                }
-                                                            }
-                                                            msgHistoryItem.WrappedTextRows.Add(_lineBuilder.ToString());
-                                                        }
-
-                                                        if(!msgHistoryItem.MatchFilter)
+                                                        string wrappedLine = msgHistoryItem.WrappedTextRows[lineidx];
+                                                        int window_row_idx = j + lineidx - msgHistoryItem.WrappedTextRows.Count + 1;
+                                                        if (window_row_idx < 0)
                                                             continue;
-
-                                                        int lineidx;
-                                                        for (lineidx = 0; lineidx < msgHistoryItem.WrappedTextRows.Count; lineidx++)
-                                                        {
-                                                            string wrappedLine = msgHistoryItem.WrappedTextRows[lineidx];
-                                                            int window_row_idx = j + lineidx - msgHistoryItem.WrappedTextRows.Count + 1;
-                                                            if (window_row_idx < 0)
-                                                            {
-                                                                char_idx += wrappedLine.Length;
-                                                                continue;
-                                                            }
-                                                            tx = winRect.Left + _currentGame.Windows[i].Padding.Left;
-                                                            ty = winRect.Top + _currentGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
-                                                            if (ForceAllMessages)
-                                                            {
-                                                                ty += _messageScrollOffset;
-                                                            }
-                                                            if (ty + textPaint.FontMetrics.Descent < 0)
-                                                            {
-                                                                char_idx += wrappedLine.Length;
-                                                                continue;
-                                                            }
-                                                            if (ty - textPaint.FontMetrics.Ascent > canvasheight)
-                                                            {
-                                                                char_idx += wrappedLine.Length;
-                                                                continue;
-                                                            }
-
-                                                            if (use_one_color)
-                                                            {
-#if GNH_MAP_PROFILING && DEBUG
-                                                                StartProfiling(GHProfilingStyle.Text);
-#endif
-                                                                textPaint.Style = SKPaintStyle.Stroke;
-                                                                textPaint.StrokeWidth = _currentGame.Windows[i].StrokeWidth * textscale;
-                                                                textPaint.Color = SKColors.Black;
-                                                                //canvas.DrawText(wrappedLine, tx, ty, textPaint);
-                                                                textPaint.DrawTextOnCanvas(canvas, wrappedLine, tx, ty);
-                                                                textPaint.Style = SKPaintStyle.Fill;
-                                                                textPaint.StrokeWidth = 0;
-                                                                textPaint.Color = printColor;
-                                                                //canvas.DrawText(wrappedLine, tx, ty, textPaint);
-                                                                textPaint.DrawTextOnCanvas(canvas, wrappedLine, tx, ty);
-                                                                textPaint.Style = SKPaintStyle.Fill;
-                                                                textPaint.StrokeWidth = 0;
-                                                                textPaint.Color = SKColors.White;
-                                                                char_idx += wrappedLine.Length;
-#if GNH_MAP_PROFILING && DEBUG
-                                                                StopProfiling(GHProfilingStyle.Text);
-#endif
-                                                            }
-                                                            else
-                                                            {
-                                                                int charidx_start = 0;
-                                                                while (char_idx < msgHistoryItem.Text.Length && charidx_start < wrappedLine.Length)
-                                                                {
-                                                                    int charidx_len = 0;
-                                                                    int new_nhcolor = msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 && char_idx < msgHistoryItem.Colors.Length ? msgHistoryItem.Colors[char_idx] : msgHistoryItem.NHColor < (int)NhColor.CLR_MAX ? msgHistoryItem.NHColor : (int)NhColor.CLR_WHITE;
-                                                                    int new_nhattr = msgHistoryItem.Attributes != null && msgHistoryItem.Attributes.Length > 0 && char_idx < msgHistoryItem.Attributes.Length ? msgHistoryItem.Attributes[char_idx] : msgHistoryItem.Attribute;
-                                                                    int char_idx2 = char_idx;
-                                                                    int new_nhcolor2 = new_nhcolor;
-                                                                    int new_nhattr2 = new_nhattr;
-
-                                                                    while (char_idx2 < msgHistoryItem.Text.Length && charidx_start + charidx_len < wrappedLine.Length && new_nhcolor == new_nhcolor2 && new_nhattr == new_nhattr2)
-                                                                    {
-                                                                        char_idx2++;
-                                                                        new_nhcolor2 = msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 && char_idx2 < msgHistoryItem.Colors.Length ? msgHistoryItem.Colors[char_idx2] : msgHistoryItem.NHColor < (int)NhColor.CLR_MAX ? msgHistoryItem.NHColor : (int)NhColor.CLR_WHITE;
-                                                                        new_nhattr2 = msgHistoryItem.Attributes != null && msgHistoryItem.Attributes.Length > 0 && char_idx2 < msgHistoryItem.Attributes.Length ? msgHistoryItem.Attributes[char_idx2] : msgHistoryItem.Attribute;
-                                                                        charidx_len = char_idx2 - char_idx;
-                                                                    }
-
-#if GNH_MAP_PROFILING && DEBUG
-                                                                    StartProfiling(GHProfilingStyle.Text);
-#endif
-                                                                    SKColor new_skcolor = UIUtils.NHColor2SKColor(new_nhcolor, new_nhattr);
-                                                                    string printedsubline = wrappedLine.Substring(charidx_start, charidx_len);
-                                                                    textPaint.Style = SKPaintStyle.Stroke;
-                                                                    textPaint.StrokeWidth = _currentGame.Windows[i].StrokeWidth * textscale;
-                                                                    textPaint.Color = SKColors.Black;
-                                                                    //canvas.DrawText(printedsubline, tx, ty, textPaint);
-                                                                    textPaint.DrawTextOnCanvas(canvas, printedsubline, tx, ty);
-                                                                    textPaint.Style = SKPaintStyle.Fill;
-                                                                    textPaint.StrokeWidth = 0;
-                                                                    textPaint.Color = new_skcolor;
-                                                                    //canvas.DrawText(printedsubline, tx, ty, textPaint);
-                                                                    textPaint.DrawTextOnCanvas(canvas, printedsubline, tx, ty);
-                                                                    float twidth = textPaint.MeasureText(printedsubline);
-                                                                    textPaint.Style = SKPaintStyle.Fill;
-                                                                    textPaint.StrokeWidth = 0;
-                                                                    textPaint.Color = SKColors.White;
-#if GNH_MAP_PROFILING && DEBUG
-                                                                    StopProfiling(GHProfilingStyle.Text);
-#endif
-
-                                                                    tx += twidth;
-                                                                    char_idx += charidx_len;
-                                                                    charidx_start += charidx_len;
-                                                                }
-                                                            }
-                                                        }
-                                                        j -= msgHistoryItem.WrappedTextRows.Count;
+                                                        ty = winRect.Top + ghWindow.Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
+                                                        if (ty + textPaint.FontMetrics.Ascent < _messageSmallestTop)
+                                                            _messageSmallestTop = ty + textPaint.FontMetrics.Ascent;
                                                     }
-                                                    _refreshMsgHistoryRowCounts = false;
-
-                                                    /* Calculate smallest top */
-                                                    if(refreshsmallesttop)
-                                                    {
-                                                        lock (_messageScrollLock)
-                                                        {
-                                                            _messageSmallestTop = canvasheight;
-                                                            j = ActualDisplayedMessages - 1;
-                                                            for (idx = _msgHistory.Length - 1; idx >= 0 && j >= 0; idx--)
-                                                            {
-                                                                GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
-                                                                if (!msgHistoryItem.MatchFilter)
-                                                                    continue;
-                                                                int lineidx;
-                                                                for (lineidx = 0; lineidx < msgHistoryItem.WrappedTextRows.Count; lineidx++)
-                                                                {
-                                                                    string wrappedLine = msgHistoryItem.WrappedTextRows[lineidx];
-                                                                    int window_row_idx = j + lineidx - msgHistoryItem.WrappedTextRows.Count + 1;
-                                                                    if (window_row_idx < 0)
-                                                                        continue;
-                                                                    ty = winRect.Top + _currentGame.Windows[i].Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
-                                                                    if (ty + textPaint.FontMetrics.Ascent < _messageSmallestTop)
-                                                                        _messageSmallestTop = ty + textPaint.FontMetrics.Ascent;
-                                                                }
-                                                                j -= msgHistoryItem.WrappedTextRows.Count;
-                                                            }
-                                                            float topScrollLimit = Math.Max(0, -_messageSmallestTop);
-                                                            if (_messageScrollOffset > topScrollLimit)
-                                                            {
-                                                                _messageScrollOffset = topScrollLimit;
-                                                                _messageScrollSpeed = 0;
-                                                                _messageScrollSpeedOn = false;
-                                                                _messageScrollSpeedRecords.Clear();
-                                                            }
-                                                        }
-                                                    }
+                                                    j -= msgHistoryItem.WrappedTextRows.Count;
+                                                }
+                                                float topScrollLimit = Math.Max(0, -_messageSmallestTop);
+                                                if (_messageScrollOffset > topScrollLimit)
+                                                {
+                                                    _messageScrollOffset = topScrollLimit;
+                                                    _messageScrollSpeed = 0;
+                                                    _messageScrollSpeedOn = false;
+                                                    _messageScrollSpeedRecords.Clear();
                                                 }
                                             }
                                         }
@@ -7979,6 +7988,7 @@ namespace GnollHackX.Pages.Game
                             }
                         }
                     }
+                    
 
                     float abilitybuttonbottom = (float)(StandardMeasurementCmdLayout.Margin.Top / canvasView.Height) * canvasheight; ; // (float)((lAbilitiesButton.Y + lAbilitiesButton.Height) / canvasView.Height) * canvasheight;
                     float escbuttonbottom = (float)((StandardMeasurementButton.Y + StandardMeasurementButton.Height) / canvasView.Height) * canvasheight;
@@ -17437,7 +17447,7 @@ namespace GnollHackX.Pages.Game
             {
                 if (_msgHistory != null)
                 {
-                    if(LongerMessageHistory)
+                    if(_longerMessageHistory)
                     {
                         foreach (GHMsgHistoryItem msg in _msgHistory)
                         {
@@ -17454,8 +17464,8 @@ namespace GnollHackX.Pages.Game
                         }
                     }
                 }
+                _refreshMsgHistoryRowCounts = true;
             }
-            RefreshMsgHistoryRowCounts = true;
         }
 
         private void MessageFilterEntry_TextChanged(object sender, TextChangedEventArgs e)

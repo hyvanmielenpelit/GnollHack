@@ -125,7 +125,7 @@ namespace GnollHackX
         public int WindowID { get { return _winId; } }
 
         private List<GHPutStrItem> _putStrs = new List<GHPutStrItem>();
-        public object PutStrsLock = new object();
+        public readonly object PutStrsLock = new object();
         public List<GHPutStrItem> PutStrs { get { return _putStrs; } }
 
         public bool Visible { get; set; }
