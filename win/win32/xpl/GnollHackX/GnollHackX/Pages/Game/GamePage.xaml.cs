@@ -34,6 +34,7 @@ using SkiaSharp.Views.Maui.Controls;
 using Windows.UI.Core;
 using Windows.System;
 using GnollHackM.Platforms.Windows;
+using GnollHackM.WinUI;
 #endif
 
 namespace GnollHackM
@@ -767,11 +768,13 @@ namespace GnollHackX.Pages.Game
         private float _mapFontSize = GHConstants.MapFontDefaultSize;
         private float _mapFontAlternateSize = GHConstants.MapFontDefaultSize * GHConstants.MapFontRelativeAlternateSize;
         private float _mapFontMiniRelativeSize = 1.0f;
+        private bool _mapFontShowPercentageDecimal = false;
         private readonly object _mapFontSizeLock = new object();
         public float DefaultMapFontSize { get { lock (_mapFontSizeLock) { return _defaultMapFontSize; } } set { lock (_mapFontSizeLock) { _defaultMapFontSize = value; } } }
         public float MapFontSize { get { lock (_mapFontSizeLock) { return _mapFontSize; } } set { lock (_mapFontSizeLock) { _mapFontSize = value; } } }
         public float MapFontAlternateSize { get { lock (_mapFontSizeLock) { return _mapFontAlternateSize; } } set { lock (_mapFontSizeLock) { _mapFontAlternateSize = value; } } }
         public float MapFontMiniRelativeSize { get { lock (_mapFontSizeLock) { return _mapFontMiniRelativeSize; } } set { lock (_mapFontSizeLock) { _mapFontMiniRelativeSize = value; } } }
+        public bool MapFontShowPercentageDecimal { get { lock (_mapFontSizeLock) { return _mapFontShowPercentageDecimal; } } set { lock (_mapFontSizeLock) { _mapFontShowPercentageDecimal = value; } } }
 
         private readonly object _tileSizeLock = new object();
         private float _usedTileWidth;
@@ -9424,6 +9427,20 @@ namespace GnollHackX.Pages.Game
                                 float vpadding = (vsize - fsize) / 2;
                                 SKPoint drawpoint = new SKPoint(curx + leftMargin + (target_width - leftMargin - rightMargin) / 2, cury + (topMargin * target_scale) + vpadding - textPaint.FontMetrics.Ascent);
                                 textPaint.DrawTextOnCanvas(canvas, drawtext, drawpoint, SKTextAlign.Center);
+
+                                if (MapFontShowPercentageDecimal)
+                                {
+                                    const int topFractionMargin = 46, bottomFractionMargin = 4;
+                                    int fraction_int = (int)((percentage * 100 - (float)Math.Floor(percentage * 100)) * 10);
+                                    string drawtext2 = fraction_int.ToString();
+                                    textPaint.TextSize = textPaint.TextSize * 0.7f;
+                                    float vsize2 = target_height - (topFractionMargin + bottomFractionMargin) * target_scale;
+                                    float fsize2 = textPaint.FontSpacing;
+                                    float vpadding2 = (vsize2 - fsize2) / 2;
+                                    SKPoint drawpoint2 = new SKPoint(curx + leftMargin + (target_width - leftMargin - rightMargin) / 2, cury + (topFractionMargin * target_scale) + vpadding2 - textPaint.FontMetrics.Ascent);
+                                    textPaint.DrawTextOnCanvas(canvas, drawtext2, drawpoint2, SKTextAlign.Center);
+                                }
+
                                 textPaint.TextSize = basefontsize;
                             }
 
@@ -12781,7 +12798,7 @@ namespace GnollHackX.Pages.Game
                                         {
                                             float ratio = curdist / prevdist;
                                             AdjustZoomByRatio(ratio, curloc, prevloc, otherloc);
-
+                                            MapFontShowPercentageDecimal = false;
                                         }
                                     }
 
@@ -12972,6 +12989,12 @@ namespace GnollHackX.Pages.Game
         {
             float curfontsize = ZoomMiniMode ? MapFontMiniRelativeSize : ZoomAlternateMode ? MapFontAlternateSize : MapFontSize;
             float newfontsize = curfontsize * ratio;
+            SetZoomFontSize(newfontsize, curloc, prevloc, otherloc);
+        }
+
+        private void SetZoomFontSize(float newfontsize, SKPoint curloc, SKPoint prevloc, SKPoint otherloc)
+        {
+            float curfontsize = ZoomMiniMode ? MapFontMiniRelativeSize : ZoomAlternateMode ? MapFontAlternateSize : MapFontSize;
             if (ZoomMiniMode)
             {
                 if (newfontsize > GHConstants.MaximumMapMiniRelativeFontSize)
@@ -13079,6 +13102,7 @@ namespace GnollHackX.Pages.Game
                     float canvasheight = canvasView.CanvasSize.Height;
                     SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
                     AdjustZoomByRatio(e.MouseWheelDelta < 0 ? 1.0f / ratio : ratio, point, point, point);
+                    MapFontShowPercentageDecimal = false;
                 }
             }
         }
@@ -13796,27 +13820,6 @@ namespace GnollHackX.Pages.Game
 #endif
         }
 
-        private void PickupButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, ',');
-        }
-        private void SearchButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, 's');
-        }
-        private void KickButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, 'k');
-        }
-        private void UpButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, '<');
-        }
-        private void DownButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, '>');
-        }
-
         public void GenericButton_Clicked(object sender, EventArgs e, int resp)
         {
             if (!((resp >= '0' && resp <= '9') || (resp <= -1 && resp >= -19)))
@@ -13830,24 +13833,6 @@ namespace GnollHackX.Pages.Game
                     queue.Enqueue(new GHResponse(_currentGame, GHRequestType.GetChar, resp));
                 }
             }
-        }
-
-        private void InventoryButton_Clicked(object sender, EventArgs e)
-        {
-            GHApp.DebugWriteRestart("Inventory");
-            GenericButton_Clicked(sender, e, 'i');
-        }
-        private void LookHereButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, ':');
-        }
-        private void WaitButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, '.');
-        }
-        private void FireButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, 'f');
         }
 
         private void MoreButton_Clicked(object sender, EventArgs e)
@@ -13890,42 +13875,13 @@ namespace GnollHackX.Pages.Game
             GenericButton_Clicked(sender, e, resp);
         }
 
-        private void RepeatButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, GHUtils.Ctrl('A'));
-        }
-
-        private void CastButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, 'Z');
-        }
-
-        private void LootButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, 'l');
-        }
-
-        private void EatButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, 'e');
-        }
-
-        private void CountButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, 'n');
-        }
-
-        private void RunButton_Clicked(object sender, EventArgs e)
-        {
-            GenericButton_Clicked(sender, e, 'G');
-        }
-
         private void ESCButton_Clicked(object sender, EventArgs e)
         {
             GHApp.PlayButtonClickedSound();
             TouchDictionary.Clear();
             GenericButton_Clicked(sender, e, 27);
         }
+
         public void ToggleAutoCenterMode()
         {
             ToggleAutoCenterModeButton_Clicked(ToggleAutoCenterModeButton, new EventArgs());
@@ -13956,6 +13912,7 @@ namespace GnollHackX.Pages.Game
                 }
             }
         }
+
         private void ToggleTravelModeButton_Clicked(object sender, EventArgs e)
         {
             GHApp.PlayMenuSelectSound();
@@ -13969,6 +13926,7 @@ namespace GnollHackX.Pages.Game
                 ToggleTravelModeButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-travel-off.png";
             }
         }
+
         private void LookModeButton_Clicked(object sender, EventArgs e)
         {
             GHApp.PlayMenuSelectSound();
@@ -18268,6 +18226,33 @@ namespace GnollHackX.Pages.Game
                         MapFontMiniRelativeSize = 1.0f;
                     else
                         MapFontSize = DefaultMapFontSize;
+                    handled = true;
+                }
+                else if (GHApp.CtrlDown &&  (key == Windows.System.VirtualKey.Add || key == Windows.System.VirtualKey.Subtract))
+                {
+                    if (ZoomMiniMode)
+                    {
+                        float canvaswidth = canvasView.CanvasSize.Width;
+                        float canvasheight = canvasView.CanvasSize.Height;
+                        SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
+                        float ratio = key == Windows.System.VirtualKey.Add ? (1 + (GHApp.AltDown ? 0.001f : 0.01f)) : 1 / (1 + (GHApp.AltDown ? 0.001f : 0.01f));
+                        AdjustZoomByRatio(ratio, point, point, point);
+                    }
+                    else
+                    {
+                        float multiplier = key == Windows.System.VirtualKey.Subtract ? -1.0f : 1.0f;
+                        float newfontsize;
+                        if (ZoomAlternateMode)
+                            newfontsize = MapFontAlternateSize + multiplier * (GHApp.AltDown ? 0.001f : 0.01f) * DefaultMapFontSize;
+                        else
+                            newfontsize = MapFontSize + multiplier * (GHApp.AltDown ? 0.001f : 0.01f) * DefaultMapFontSize;
+
+                        float canvaswidth = canvasView.CanvasSize.Width;
+                        float canvasheight = canvasView.CanvasSize.Height;
+                        SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
+                        SetZoomFontSize(newfontsize, point, point, point);
+                    }
+                    MapFontShowPercentageDecimal = GHApp.AltDown;
                     handled = true;
                 }
                 else if (ForceAllMessages)
