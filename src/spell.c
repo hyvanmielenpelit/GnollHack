@@ -2973,6 +2973,9 @@ struct monst* targetmonst;
     case SPE_WATER_BREATHING:
     case SPE_WATER_WALKING:
     case SPE_TELEPATHY:
+    case SPE_PASSWALL:
+    case SPE_WARNING:
+    case SPE_X_RAY_VISION:
     case SPE_MIRROR_IMAGE:
     case SPE_MASS_CONFLICT:
     case SPE_GLOBE_OF_INVULNERABILITY:
