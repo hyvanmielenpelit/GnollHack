@@ -5901,32 +5901,52 @@ int final;
     if (Role_if(PM_ARCHAEOLOGIST))
     {
         struct item_score_count_result artifacts = count_artifacts(invent);
+        struct item_score_count_result artifacts2 = count_artifacts(magic_objs);
         int64_t score_percentage = ((artifacts.score + (int64_t)u.uachieve.role_achievement * ARCHAEOLOGIST_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld %sartifact%s with you", (long long)artifacts.quantity, program_state.gameover ? "" : "known ", plur(artifacts.quantity));
         you_have(goalbuf, "");
+        if (artifacts2.score > 0)
+        {
+            Sprintf(goalbuf, "%lld %sartifact%s in your magic chest", (long long)artifacts2.quantity, program_state.gameover ? "" : "known ", plur(artifacts2.quantity));
+            you_have(goalbuf, "");
+        }
         Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
     else if (Role_if(PM_BARBARIAN))
     {
         struct item_score_count_result valuables = count_powerful_melee_weapon_score(invent);
+        struct item_score_count_result valuables2 = count_powerful_melee_weapon_score(magic_objs);
         int64_t score_percentage = ((valuables.score + (int64_t)u.uachieve.role_achievement * BARBARIAN_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld %smelee weapon%s of artifact or legendary quality with you", (long long)valuables.quantity, program_state.gameover ? "" : "known ", plur(valuables.quantity));
         you_have(goalbuf, "");
+        if (valuables2.score > 0)
+        {
+            Sprintf(goalbuf, "%lld %smelee weapon%s of artifact or legendary quality in your magic chest", (long long)valuables2.quantity, program_state.gameover ? "" : "known ", plur(valuables2.quantity));
+            you_have(goalbuf, "");
+        }
         Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
     else if (Role_if(PM_CAVEMAN))
     {
         struct amulet_count_result amulets = count_amulets(invent);
+        struct amulet_count_result amulets2 = count_amulets(magic_objs);
         int64_t score_percentage = ((amulets.score + (int64_t)u.uachieve.role_achievement * CAVEMAN_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld amulet%s of life saving with you", (long long)amulets.amulets_of_life_saving, plur(amulets.amulets_of_life_saving));
         you_have(goalbuf, "");
         Sprintf(goalbuf, "%lld non-prediscovered amulet%s with you", (long long)amulets.other_amulets, plur(amulets.other_amulets));
         you_have(goalbuf, "");
+        if (amulets2.score > 0)
+        {
+            Sprintf(goalbuf, "%lld amulet%s of life saving in your magic chest", (long long)amulets2.amulets_of_life_saving, plur(amulets2.amulets_of_life_saving));
+            you_have(goalbuf, "");
+            Sprintf(goalbuf, "%lld non-prediscovered amulet%s in your magic chest", (long long)amulets2.other_amulets, plur(amulets2.other_amulets));
+            you_have(goalbuf, "");
+        }
         Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
@@ -5941,34 +5961,56 @@ int final;
     else if (Role_if(PM_RANGER))
     {
         struct item_score_count_result valuables = count_powerful_ranged_weapon_score(invent);
+        struct item_score_count_result valuables2 = count_powerful_ranged_weapon_score(magic_objs);
         int64_t score_percentage = ((valuables.score + (int64_t)u.uachieve.role_achievement * RANGER_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld %sranged weapon%s of at least artifact, elite, or mythic quality with you", (long long)valuables.quantity_nonammo, program_state.gameover ? "" : "known ", plur(valuables.quantity_nonammo));
         you_have(goalbuf, "");
         Sprintf(goalbuf, "%lld %sammo of at least artifact, elite, or mythic quality with you", (long long)valuables.quantity_ammo, program_state.gameover ? "" : "known ");
         you_have(goalbuf, "");
+        if(valuables2.score > 0)
+        {
+            Sprintf(goalbuf, "%lld %sranged weapon%s of at least artifact, elite, or mythic quality in your magic chest", (long long)valuables2.quantity_nonammo, program_state.gameover ? "" : "known ", plur(valuables2.quantity_nonammo));
+            you_have(goalbuf, "");
+            Sprintf(goalbuf, "%lld %sammo of at least artifact, elite, or mythic quality in your magic chest", (long long)valuables2.quantity_ammo, program_state.gameover ? "" : "known ");
+            you_have(goalbuf, "");
+        }
         Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
     else if (Role_if(PM_ROGUE))
     {
         int64_t valuableworth = money_cnt(invent) + hidden_gold() + carried_gem_value();
+        int64_t valuableworth2 =  magic_gold() + magic_gem_value();
         int64_t score_percentage = ((valuableworth + (int64_t)u.uachieve.role_achievement * ROGUE_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld %s worth of %svaluables with you", (long long)valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
         you_have(goalbuf, "");
+        if (valuableworth2 > 0)
+        {
+            Sprintf(goalbuf, "%lld %s worth of %svaluables in your magic chest", (long long)valuableworth2, currency(valuableworth2), program_state.gameover ? "" : "known ");
+            you_have(goalbuf, "");
+        }
         Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
     else if (Role_if(PM_SAMURAI))
     {
         struct item_score_count_result valuables = count_powerful_Japanese_item_score(invent);
+        struct item_score_count_result valuables2 = count_powerful_Japanese_item_score(magic_objs);
         int64_t score_percentage = ((valuables.score + (int64_t)u.uachieve.role_achievement * SAMURAI_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld Japanese non-ammo item%s of at least artifact, exceptional, or mythic quality with you", (long long)valuables.quantity_nonammo, plur(valuables.quantity_nonammo));
         you_have(goalbuf, "");
         Sprintf(goalbuf, "%lld Japanese ammo of at least artifact, exceptional, or mythic quality with you", (long long)valuables.quantity_ammo);
         you_have(goalbuf, "");
+        if (valuables2.score > 0)
+        {
+            Sprintf(goalbuf, "%lld Japanese non-ammo item%s of at least artifact, exceptional, or mythic quality in your magic chest", (long long)valuables2.quantity_nonammo, plur(valuables2.quantity_nonammo));
+            you_have(goalbuf, "");
+            Sprintf(goalbuf, "%lld Japanese ammo of at least artifact, exceptional, or mythic quality in your magic chest", (long long)valuables2.quantity_ammo);
+            you_have(goalbuf, "");
+        }
         Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
@@ -5983,12 +6025,20 @@ int final;
     else if (Role_if(PM_VALKYRIE))
     {
         struct item_score_count_result valuables = count_powerful_valkyrie_item_score(invent);
+        struct item_score_count_result valuables2 = count_powerful_valkyrie_item_score(magic_objs);
         int64_t score_percentage = ((valuables.score + (int64_t)u.uachieve.role_achievement * VALKYRIE_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld non-ammo item%s of %s quality with you", (long long)valuables.quantity_nonammo, plur(valuables.quantity_nonammo), u.ualign.type == A_CHAOTIC ? "infernal" : u.ualign.type == A_LAWFUL ? "celestial" : "primordial");
         you_have(goalbuf, "");
         Sprintf(goalbuf, "%lld ammo of %s quality with you", (long long)valuables.quantity_ammo, u.ualign.type == A_CHAOTIC ? "infernal" : u.ualign.type == A_LAWFUL ? "celestial" : "primordial");
         you_have(goalbuf, "");
+        if (valuables2.score > 0)
+        {
+            Sprintf(goalbuf, "%lld non-ammo item%s of %s quality in your magic chest", (long long)valuables2.quantity_nonammo, plur(valuables2.quantity_nonammo), u.ualign.type == A_CHAOTIC ? "infernal" : u.ualign.type == A_LAWFUL ? "celestial" : "primordial");
+            you_have(goalbuf, "");
+            Sprintf(goalbuf, "%lld ammo of %s quality in your magic chest", (long long)valuables2.quantity_ammo, u.ualign.type == A_CHAOTIC ? "infernal" : u.ualign.type == A_LAWFUL ? "celestial" : "primordial");
+            you_have(goalbuf, "");
+        }
         Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
@@ -6774,6 +6824,7 @@ size_t *total_size;
     count_obj(invent, &count, &size, FALSE, TRUE);
     count_obj(fobj, &count, &size, FALSE, TRUE);
     count_obj(level.buriedobjlist, &count, &size, FALSE, TRUE);
+    count_obj(magic_objs, &count, &size, FALSE, TRUE);
     count_obj(migrating_objs, &count, &size, FALSE, TRUE);
     /* DEADMONSTER check not required in this loop since they have no
      * inventory */
@@ -7016,6 +7067,8 @@ wiz_show_stats(VOID_ARGS)
     obj_chain(win, "fobj", fobj, TRUE, &total_obj_count, &total_obj_size);
     obj_chain(win, "buried", level.buriedobjlist, FALSE,
               &total_obj_count, &total_obj_size);
+    obj_chain(win, "magic obj", magic_objs, FALSE,
+        &total_obj_count, &total_obj_size);
     obj_chain(win, "migrating obj", migrating_objs, FALSE,
               &total_obj_count, &total_obj_size);
     obj_chain(win, "billobjs", billobjs, FALSE,

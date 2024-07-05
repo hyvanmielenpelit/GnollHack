@@ -1362,7 +1362,7 @@ char** attrs_ptr, ** colors_ptr;
              ? (obj->charges == 0 && !known)
              /* not bag of tricks: empty if container which has no contents */
              : ((Is_container(obj) || obj->otyp == STATUE)
-                && !Has_contents(obj)))))
+                && !Has_contained_contents(obj)))))
         Strcat(prefix, "empty ");
 
     if (bknown && obj->oclass != COIN_CLASS
@@ -1446,11 +1446,11 @@ char** attrs_ptr, ** colors_ptr;
     }
 
 
-    if (cknown && Has_contents(obj)) {
+    if (cknown && Has_contained_contents(obj)) {
         /* we count the number of separate stacks, which corresponds
            to the number of inventory slots needed to be able to take
            everything out if no merges occur */
-        int64_t itemcount = count_contents(obj, FALSE, FALSE, TRUE);
+        int64_t itemcount = count_contained_contents(obj, FALSE, FALSE, TRUE);
 
         Sprintf(eos(bp), " containing %lld item%s", (long long)itemcount,
                 plur(itemcount));

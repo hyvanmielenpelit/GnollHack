@@ -914,6 +914,9 @@ struct obj *obj;
     case OBJ_CONTAINED:
         list = obj->ocontainer->cobj;
         break;
+    case OBJ_MAGIC:
+        list = magic_objs;
+        break;
     }
 
     /* first try the expected case; obj is split from another stack */
@@ -1020,6 +1023,11 @@ struct obj *otmp;
         obj->lamplit = 0;
         obj->makingsound = 0;
         break;
+    case OBJ_MAGIC:
+        otmp->nobj = obj->nobj;
+        obj->nobj = otmp;
+        extract_nobj(obj, &magic_objs);
+        break;
     default:
         panic("replace_object: obj position: otyp=%d, where=%d", obj->otyp, obj->where);
         break;
@@ -1088,7 +1096,7 @@ register struct obj *otmp;
         alter_cost(dummy, -cost);
     /* no_charge is only valid for some locations */
     otmp->no_charge =
-        (otmp->where == OBJ_FLOOR || otmp->where == OBJ_CONTAINED) ? 1 : 0;
+        (otmp->where == OBJ_FLOOR || otmp->where == OBJ_CONTAINED || otmp->where == OBJ_MAGIC) ? 1 : 0;
     otmp->unpaid = 0;
     return;
 }
@@ -1908,7 +1916,7 @@ uint64_t mkflags;
             }
 
             /* Make container contents */
-            if (Is_proper_container(otmp))
+            if (Is_proper_container(otmp) && !Is_magic_chest(otmp))
                 mkbox_cnts(otmp);
 
             break;
@@ -3364,7 +3372,7 @@ register struct obj *obj;
                 cwt += (int)obj->quan * ((int)mons[obj->corpsenm].cwt);
         }
 
-        for (contents = obj->cobj; contents; contents = contents->nobj)
+        for (contents = contained_object_chain(obj); contents; contents = contents->nobj)
         {
             if (obj->otyp == BAG_OF_WIZARDRY && is_obj_weight_reduced_by_wizardry(contents))
                 cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 15) / 16)
@@ -4070,6 +4078,9 @@ struct obj *obj;
     case OBJ_HEROMEMORY:
         remove_memory_object(obj);
         break;
+    case OBJ_MAGIC:
+        extract_nobj(obj, &magic_objs);
+        break;
     default:
         panic("obj_extract_self: otyp=%d, where=%d", obj->otyp, obj->where);
         break;
@@ -4208,6 +4219,32 @@ struct obj *obj;
     obj->where = OBJ_MIGRATING;
     obj->nobj = migrating_objs;
     migrating_objs = obj;
+}
+
+struct obj*
+add_to_magic_chest(obj)
+struct obj* obj;
+{
+    if (obj->where != OBJ_FREE)
+    {
+        panic("add_to_magic_chest: obj not free");
+        return (struct obj*)0;
+    }
+
+    /* lock picking context becomes stale if it's for this object */
+    if (Is_container(obj))
+        maybe_reset_pick(obj);
+
+    /* merge if possible */
+    struct obj* otmp;
+    for (otmp = magic_objs; otmp; otmp = otmp->nobj)
+        if (merged(&otmp, &obj))
+            return otmp;
+
+    obj->where = OBJ_MAGIC;
+    obj->nobj = magic_objs;
+    magic_objs = obj;
+    return obj;
 }
 
 void
@@ -4419,6 +4456,7 @@ obj_sanity_check()
             }
 
     objlist_sanity(invent, OBJ_INVENT, "invent sanity");
+    objlist_sanity(magic_objs, OBJ_MAGIC, "magic sanity");
     objlist_sanity(migrating_objs, OBJ_MIGRATING, "migrating sanity");
     objlist_sanity(level.buriedobjlist, OBJ_BURIED, "buried sanity");
     objlist_sanity(billobjs, OBJ_ONBILL, "bill sanity");
@@ -4531,7 +4569,7 @@ STATIC_VAR const char *obj_state_names[NOBJ_STATES] = { "free",      "floor",
                                                     "contained", "invent",
                                                     "minvent",   "migrating",
                                                     "buried",    "onbill",
-                                                    "heromemory" };
+                                                    "heromemory", "magic" };
 
 STATIC_OVL const char *
 where_name(obj)

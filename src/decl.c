@@ -270,6 +270,7 @@ NEARDATA int64_t moves = 1L, monstermoves = 1L;
 NEARDATA int64_t wailmsg = 0L;
 
 /* objects that are moving to another dungeon level */
+NEARDATA struct obj *magic_objs = (struct obj*)0;
 NEARDATA struct obj *migrating_objs = (struct obj *) 0;
 /* objects not yet paid for */
 NEARDATA struct obj *billobjs = (struct obj *) 0;

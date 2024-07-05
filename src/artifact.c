@@ -2852,7 +2852,7 @@ struct obj *obj;
         case ARTINVOKE_BLESS_CONTENTS:
         {
             int cnt = 0;
-            for (struct obj* otmp = obj->cobj; otmp; otmp = otmp->nobj)
+            for (struct obj* otmp = contained_object_chain(obj); otmp; otmp = otmp->nobj)
             {
                 cnt++;
             }
@@ -2869,7 +2869,7 @@ struct obj *obj;
                     selected_item = rn2(cnt);
                 int i = 0;
                 boolean blessed = FALSE;
-                for (struct obj* otmp = obj->cobj; otmp; otmp = otmp->nobj)
+                for (struct obj* otmp = contained_object_chain(obj); otmp; otmp = otmp->nobj)
                 {
                     if (i == selected_item)
                     {

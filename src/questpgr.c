@@ -231,6 +231,8 @@ unsigned whichchains;
 
     if ((whichchains & (1 << OBJ_INVENT)) != 0)
         qarti = find_qarti(invent);
+    if ((whichchains & (1 << OBJ_MAGIC)) != 0)
+        qarti = find_qarti(magic_objs);
     if (!qarti && (whichchains & (1 << OBJ_FLOOR)) != 0)
         qarti = find_qarti(fobj);
     if (!qarti && (whichchains & (1 << OBJ_MINVENT)) != 0)

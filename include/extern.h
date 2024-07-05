@@ -1609,6 +1609,7 @@ E int FDECL(count_buc, (struct obj *, int, boolean (*)(OBJ_P), BOOLEAN_P));
 E void FDECL(tally_BUCX, (struct obj *, BOOLEAN_P,
                           int *, int *, int *, int *, int *, int *));
 E int64_t FDECL(count_contents, (struct obj *, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
+E int64_t FDECL(count_contained_contents, (struct obj*, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 E void FDECL(carry_obj_effects, (struct obj *));
 E const char *FDECL(currency, (int64_t));
 E void FDECL(silly_thing, (const char *, struct obj *));
@@ -2033,6 +2034,7 @@ E void FDECL(extract_nobj, (struct obj *, struct obj **));
 E void FDECL(extract_nexthere, (struct obj *, struct obj **));
 E int FDECL(add_to_minv, (struct monst *, struct obj *));
 E struct obj *FDECL(add_to_container, (struct obj *, struct obj *));
+E struct obj* FDECL(add_to_magic_chest, (struct obj*));
 E void FDECL(add_to_migration, (struct obj *));
 E void FDECL(add_to_buried, (struct obj *));
 E void FDECL(dealloc_obj, (struct obj *));
@@ -3947,9 +3949,11 @@ E void NDECL(invault);
 E int FDECL(gd_move, (struct monst *));
 E void FDECL(paygd, (BOOLEAN_P));
 E int64_t NDECL(hidden_gold);
+E int64_t NDECL(magic_gold);
 E boolean NDECL(gd_sound);
 E void FDECL(vault_gd_watching, (unsigned int));
 E int64_t NDECL(carried_gem_value);
+E int64_t NDECL(magic_gem_value);
 E int64_t FDECL(contained_gem_value, (struct obj*));
 
 /* ### version.c ### */

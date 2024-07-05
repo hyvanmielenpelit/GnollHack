@@ -96,7 +96,7 @@ struct obj *objlist;
     for (otmp = objlist; otmp; otmp = otmp->nobj) {
         if (otmp->otyp == scrolltype && otmp->dknown)
             return TRUE;
-        if (Has_contents(otmp) && otmp->cknown
+        if (Has_contained_contents(otmp) && otmp->cknown
             && label_known(scrolltype, otmp->cobj))
             return TRUE;
     }

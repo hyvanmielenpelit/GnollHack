@@ -1291,6 +1291,23 @@ hidden_gold()
 }
 
 int64_t
+magic_gold()
+{
+    int64_t value = 0L;
+    struct obj* obj;
+
+    for (obj = magic_objs; obj; obj = obj->nobj)
+    {
+        if (obj->oclass == COIN_CLASS)
+            value += obj->quan;
+        else if (Has_contents(obj))
+            value += contained_gold(obj);
+    }
+
+    return value;
+}
+
+int64_t
 contained_gem_value(obj)
 struct obj* obj;
 {
@@ -1316,11 +1333,27 @@ carried_gem_value(VOID_ARGS)
     for (obj = invent; obj; obj = obj->nobj)
         if (Has_contents(obj))
             value += contained_gem_value(obj);
-        else if(obj->otyp >= FIRST_GEM && obj->otyp <= LAST_GEM && (program_state.gameover || objects[obj->otyp].oc_name_known))
+        else if (obj->otyp >= FIRST_GEM && obj->otyp <= LAST_GEM && (program_state.gameover || objects[obj->otyp].oc_name_known))
             value += objects[obj->otyp].oc_cost * obj->quan;
 
     return value;
 }
+
+int64_t
+magic_gem_value(VOID_ARGS)
+{
+    int64_t value = 0L;
+    struct obj* obj;
+
+    for (obj = magic_objs; obj; obj = obj->nobj)
+        if (Has_contents(obj))
+            value += contained_gem_value(obj);
+        else if (obj->otyp >= FIRST_GEM && obj->otyp <= LAST_GEM && (program_state.gameover || objects[obj->otyp].oc_name_known))
+            value += objects[obj->otyp].oc_cost * obj->quan;
+
+    return value;
+}
+
 
 /* prevent "You hear footsteps.." when inappropriate */
 boolean

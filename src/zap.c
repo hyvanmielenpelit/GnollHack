@@ -2475,6 +2475,31 @@ int locflags;
         if (locflags & CONTAINED_TOO)
             return get_obj_location(obj->ocontainer, xp, yp, locflags);
         break;
+    case OBJ_MAGIC:
+    {
+        struct obj* otmp;
+        for (otmp = invent; otmp; otmp = otmp->nobj)
+            if (Is_magic_chest(otmp))
+            {
+                *xp = u.ux;
+                *yp = u.uy;
+                return TRUE;
+            }
+
+        for (otmp = fobj; otmp; otmp = otmp->nobj)
+            if (Is_magic_chest(otmp))
+                return get_obj_location(otmp, xp, yp, locflags);
+
+        struct monst* mtmp;
+        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+            for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
+                if (Is_magic_chest(otmp))
+                {
+                    *xp = mtmp->mx;
+                    *yp = mtmp->my;
+                    return TRUE;
+                }
+    }
     }
     *xp = *yp = 0;
     return FALSE;
@@ -2775,6 +2800,7 @@ boolean replaceundead;
         case OBJ_INVENT:
             x = u.ux, y = u.uy;
             break;
+        case OBJ_MAGIC:
         case OBJ_FLOOR:
             (void) get_obj_location(corpse, &x, &y, CONTAINED_TOO);
             break;
@@ -3039,6 +3065,10 @@ boolean replaceundead;
         Strcpy(debug_buf_2, "revive2");
         obj_extract_self(corpse);
         obfree(corpse, (struct obj *) 0);
+        break;
+    case OBJ_MAGIC:
+        obj_extract_self(corpse);
+        obfree(corpse, (struct obj*)0);
         break;
     default:
         panic("revive");

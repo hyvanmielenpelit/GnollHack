@@ -2088,10 +2088,13 @@ register struct monst *mtmp;
             struct obj* sack = mksobj(!rn2(20) ? BAG_OF_TREASURE_HAULING : SACK, FALSE, FALSE, FALSE);
             (void)mpickobj(mtmp, sack);
             otmp = mksobj(GOLD_PIECE, FALSE, FALSE, FALSE);
-            otmp->quan =  ptr == &mons[PM_GNOME_KING] ? rn2(1501) + 1000 : ptr == &mons[PM_GNOME_LORD] ? rn2(751) + 500 : rn2(376) + 250;
-            otmp->owt = weight(otmp);
-            (void)add_to_container(sack, otmp);
-            sack->owt = weight(sack);
+            if (otmp)
+            {
+                otmp->quan = ptr == &mons[PM_GNOME_KING] ? rn2(1501) + 1000 : ptr == &mons[PM_GNOME_LORD] ? rn2(751) + 500 : rn2(376) + 250;
+                otmp->owt = weight(otmp);
+                (void)add_to_container(sack, otmp);
+                sack->owt = weight(sack);
+            }
             boolean gothat = FALSE;
             if (!rn2(2))
             {

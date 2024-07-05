@@ -2031,7 +2031,7 @@ int how;
     /* calculate score, before creating bones [container gold] */
     {
         umoney = money_cnt(invent);
-        umoney += hidden_gold(); /* accumulate gold from containers */
+        umoney += hidden_gold() + magic_gold(); /* accumulate gold from containers */
 #if 0
         int deepest = deepest_lev_reached(FALSE);
 
@@ -3590,8 +3590,8 @@ get_current_game_score(VOID_ARGS)
     {
         int64_t lootvalue = 0L;
         lootvalue += money_cnt(invent);
-        lootvalue += hidden_gold(); /* accumulate gold from containers */
-        lootvalue += carried_gem_value();
+        lootvalue += hidden_gold() + magic_gold(); /* accumulate gold from containers */
+        lootvalue += carried_gem_value() + magic_gem_value();;
         Role_Specific_Score = lootvalue;
         Role_Achievement_Score = ROGUE_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
         break;
@@ -3851,11 +3851,13 @@ reset_gamestate(VOID_ARGS)
         reset_objchn(uball);
     }
 
+    reset_objchn(magic_objs);
     reset_objchn(migrating_objs);
     reset_monchn(migrating_mons);
     reset_monchn(mydogs);
 
     invent = 0;
+    magic_objs = 0;
     migrating_objs = 0;
     migrating_mons = 0;
     mydogs = 0;

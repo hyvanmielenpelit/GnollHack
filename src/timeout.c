@@ -703,6 +703,7 @@ nh_timeout()
     reduce_item_cooldown(fobj);
     reduce_item_cooldown(level.buriedobjlist);
     reduce_item_cooldown(migrating_objs);
+    reduce_item_cooldown(magic_objs);
 
     /* second go through monster inventories */
     mmtmp[0] = fmon;
@@ -3422,6 +3423,7 @@ struct obj *obj;
     switch (obj->where) {
     case OBJ_INVENT:
     case OBJ_MIGRATING:
+    case OBJ_MAGIC:
         return FALSE;
     case OBJ_FLOOR:
     case OBJ_BURIED:

@@ -421,6 +421,7 @@ register int fd, mode;
     save_sound_sources(fd, mode, RANGE_GLOBAL);
 
     saveobjchn(fd, invent, mode);
+
     if (BALL_IN_MON) {
         /* prevent loss of ball & chain when swallowed */
         uball->nobj = uchain;
@@ -430,10 +431,12 @@ register int fd, mode;
         saveobjchn(fd, (struct obj *) 0, mode);
     }
 
+    saveobjchn(fd, magic_objs, mode);
     saveobjchn(fd, migrating_objs, mode);
     savemonchn(fd, migrating_mons, mode);
     if (release_data(mode)) {
         invent = 0;
+        magic_objs = 0;
         migrating_objs = 0;
         migrating_mons = 0;
     }
@@ -1666,6 +1669,7 @@ freedynamicdata(VOID_ARGS)
     free_light_sources(RANGE_GLOBAL);
     free_sound_sources(RANGE_GLOBAL);
     freeobjchn(invent);
+    freeobjchn(magic_objs);
     freeobjchn(migrating_objs);
     freemonchn(migrating_mons);
     freemonchn(mydogs); /* ascension or dungeon escape */

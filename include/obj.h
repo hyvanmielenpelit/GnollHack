@@ -132,7 +132,8 @@ struct obj {
 #define OBJ_BURIED 6    /* object buried */
 #define OBJ_ONBILL 7    /* object on shk bill */
 #define OBJ_HEROMEMORY 8  /* object remembered by hero */
-#define NOBJ_STATES 9
+#define OBJ_MAGIC 9     /* object is in a magic chest */
+#define NOBJ_STATES 10
     xchar timed; /* # of fuses (timers) attached to this obj */
 
     int corpsenm;         /* type of corpse is mons[corpsenm] */
@@ -502,9 +503,11 @@ enum elemental_enchantments {
 /* Containers */
 #define carried(o) ((o)->where == OBJ_INVENT)
 #define mcarried(o) ((o)->where == OBJ_MINVENT)
-#define Has_contents(o)                                \
-    (/* (Is_container(o) || (o)->otyp == STATUE) && */ \
-     (o)->cobj != (struct obj *) 0)
+#define Is_magic_chest(o) ((objects[(o)->otyp].oc_flags6 & O6_MAGIC_CHEST) != 0)
+#define contained_object_chain(o) (Is_magic_chest(o) && (o)->where != OBJ_CONTAINED ? magic_objs : (o)->cobj)
+#define contained_object_chain_ptr(o) (Is_magic_chest(o) && (o)->where != OBJ_CONTAINED ? &magic_objs : &((o)->cobj))
+#define Has_contained_contents(o) (contained_object_chain(o) != (struct obj *) 0)
+#define Has_contents(o) ((o)->cobj != (struct obj *) 0)
 #define Is_otyp_container(otyp) ((objects[(otyp)].oc_flags2 & O2_CONTAINER) != 0)
 #define Is_container(o) Is_otyp_container((o)->otyp)
 #define Has_otyp_lid(otyp) ((objects[(otyp)].oc_flags4 & O4_CONTAINER_HAS_LID) != 0)

@@ -5648,6 +5648,38 @@ boolean nested, /* include contents of any nested containers */
     return count;
 }
 
+/* count everything inside a container, or just shop-owned items inside */
+int64_t
+count_contained_contents(container, nested, quantity, everything)
+struct obj* container;
+boolean nested, /* include contents of any nested containers */
+quantity,   /* count all vs count separate stacks */
+everything; /* all objects vs only unpaid objects */
+{
+    struct obj* otmp, * topc;
+    boolean shoppy = FALSE;
+    int64_t count = 0L;
+
+    if (!everything) {
+        for (topc = container; topc->where == OBJ_CONTAINED;
+            topc = topc->ocontainer)
+            continue;
+        if (topc->where == OBJ_FLOOR) {
+            xchar x, y;
+
+            (void)get_obj_location(topc, &x, &y, CONTAINED_TOO);
+            shoppy = costly_spot(x, y);
+        }
+    }
+    for (otmp = contained_object_chain(container); otmp; otmp = otmp->nobj) {
+        if (nested && Has_contained_contents(otmp))
+            count += count_contained_contents(otmp, nested, quantity, everything);
+        if (everything || otmp->unpaid || (shoppy && !otmp->no_charge))
+            count += quantity ? otmp->quan : 1L;
+    }
+    return count;
+}
+
 STATIC_OVL void
 dounpaid()
 {

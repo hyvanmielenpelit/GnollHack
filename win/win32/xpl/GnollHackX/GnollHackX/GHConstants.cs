@@ -1161,7 +1161,8 @@ namespace GnollHackX
         OBJ_BURIED = 6,    /* object buried */
         OBJ_ONBILL = 7,    /* object on shk bill */
         OBJ_HEROMEMORY = 8,/* object remembered by hero */
-        NOBJ_STATES = 9
+        OBJ_MAGIC = 9,     /* object in a magic chest */
+        NOBJ_STATES = 10
     }
 
     [StructLayout(LayoutKind.Sequential)]

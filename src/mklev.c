@@ -972,7 +972,8 @@ int trap_type;
                             m_dowear(mon, TRUE, FALSE);
                             struct obj* box = mksobj_at(LARGE_BOX, xx, yy + dy, FALSE, FALSE);
                             struct obj* pie = mksobj(CREAM_PIE, FALSE, FALSE, FALSE);
-                            add_to_container(box, pie);
+                            if(box && pie)
+                                add_to_container(box, pie);
                         }
                     }
                     else if (u_depth >= 9 && u_depth <= 14 && !context.made_orc_and_a_pie2 && !rn2(5))
@@ -1002,14 +1003,23 @@ int trap_type;
                             m_dowear(mon, TRUE, FALSE);
                             mongets(mon, CREAM_PIE);
                             struct obj* box = mksobj_at(LARGE_BOX, xx, yy + dy, FALSE, FALSE);
-                            struct obj* pie = mksobj(CREAM_PIE, FALSE, FALSE, FALSE);
-                            pie->quan = 4 + rnd(8);
-                            pie->owt = weight(pie);
-                            add_to_container(box, pie);
-                            struct obj* pot = mksobj(POT_GAIN_ABILITY, FALSE, FALSE, FALSE);
-                            bless(pot);
-                            add_to_container(box, pot);
-                            box->owt = weight(box);
+                            if (box)
+                            {
+                                struct obj* pie = mksobj(CREAM_PIE, FALSE, FALSE, FALSE);
+                                if (pie)
+                                {
+                                    pie->quan = 4 + rnd(8);
+                                    pie->owt = weight(pie);
+                                    add_to_container(box, pie);
+                                }
+                                struct obj* pot = mksobj(POT_GAIN_ABILITY, FALSE, FALSE, FALSE);
+                                if (pot)
+                                {
+                                    bless(pot);
+                                    add_to_container(box, pot);
+                                }
+                                box->owt = weight(box);
+                            }
                         }
                     }
                     else
@@ -1520,7 +1530,7 @@ makelevel()
             //make_engr_at(x, y, Gilthoniel_word, 0L, ENGRAVE, ENGR_FLAGS_NONE);
 
             /* Stash has now some random contents */
-            struct obj* stash = mksobj_at(CHEST, x, y, FALSE, FALSE);
+            struct obj* stash = mksobj_at(MAGIC_CHEST, x, y, FALSE, FALSE);
             if (stash)
             {
                 stash->olocked = FALSE;
@@ -1542,7 +1552,7 @@ makelevel()
                     if (otmp)
                     {
                         otmp->bknown = 1;
-                        (void)add_to_container(stash, otmp);
+                        (void)add_to_magic_chest(otmp);
                     }
                 }
 
@@ -1553,7 +1563,7 @@ makelevel()
                     if (otmp)
                     {
                         otmp->bknown = 1;
-                        (void)add_to_container(stash, otmp);
+                        (void)add_to_magic_chest(otmp);
                         if(otmp->manualidx < 32)
                             bits |= (int64_t)1 << otmp->special_quality;
                         else if (otmp->manualidx < 64)
@@ -1564,7 +1574,7 @@ makelevel()
                     if (otmp)
                     {
                         otmp->bknown = 1;
-                        (void)add_to_container(stash, otmp);
+                        (void)add_to_magic_chest(otmp);
                     }
                 }
             }

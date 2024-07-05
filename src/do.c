@@ -23,6 +23,7 @@ STATIC_DCL int FDECL(menu_autostash, (int));
 STATIC_DCL int NDECL(currentlevel_rewrite);
 STATIC_DCL void NDECL(final_level);
 STATIC_DCL void FDECL(print_corpse_properties, (winid, int));
+STATIC_DCL void FDECL(revive_handle_magic_chest, (xchar*, struct obj**, int*, struct monst**));
 /* STATIC_DCL boolean FDECL(badspot, (XCHAR_P,XCHAR_P)); */
 
 extern int n_dgns; /* number of dungeons, from dungeon.c */
@@ -7764,6 +7765,69 @@ deferred_goto()
         free((genericptr_t) dfr_post_msg), dfr_post_msg = 0;
 }
 
+STATIC_OVL void
+revive_handle_magic_chest(where_ptr, container_ptr, container_where_ptr, mcarry_ptr)
+xchar* where_ptr;
+struct obj** container_ptr;
+int* container_where_ptr;
+struct monst** mcarry_ptr;
+{
+    if (!where_ptr || !container_where_ptr || !container_ptr || !mcarry_ptr)
+        return;
+
+    /* Magic chest handling for revival */
+    if (*where_ptr == OBJ_MAGIC)
+    {
+        boolean found = FALSE;
+        struct obj* otmp;
+        for (otmp = invent; otmp; otmp = otmp->nobj)
+            if (Is_magic_chest(otmp))
+            {
+                *container_ptr = otmp;
+                *container_where_ptr = OBJ_INVENT;
+                found = TRUE;
+                break;
+            }
+
+        if (!found)
+        {
+            for (otmp = fobj; otmp; otmp = otmp->nobj)
+                if (Is_magic_chest(otmp))
+                {
+                    *container_ptr = otmp;
+                    *container_where_ptr = OBJ_FLOOR;
+                    found = TRUE;
+                    break;
+                }
+        }
+
+        if (!found)
+        {
+            struct monst* mtmp;
+            for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+            {
+                for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
+                    if (Is_magic_chest(otmp))
+                    {
+                        *container_ptr = otmp;
+                        *container_where_ptr = OBJ_MINVENT;
+                        *mcarry_ptr = mtmp;
+                        found = TRUE;
+                        break;
+                    }
+
+                if (found)
+                    break;
+            }
+        }
+
+        if (found)
+        {
+            *where_ptr = OBJ_CONTAINED;
+        }
+    }
+}
+
 /*
  * Return TRUE if we created a monster for the corpse.  If successful, the
  * corpse is gone.
@@ -7802,6 +7866,7 @@ struct obj *corpse;
 
     if (mtmp) 
     {
+        revive_handle_magic_chest(&where, &container, &container_where, &mcarry);
         int clr = is_tame(mtmp) || is_peaceful(mtmp) ? CLR_MSG_ATTENTION : CLR_MSG_WARNING;
         switch (where) 
         {
@@ -7858,6 +7923,9 @@ struct obj *corpse;
             }
             break;
         }
+        case OBJ_MAGIC:
+            /* Should not happen */
+            break;
         default:
             /* we should be able to handle the other cases... */
             impossible("revive_corpse: lost corpse @ %d", where);
@@ -7910,6 +7978,7 @@ int animateintomon; // monstid to be animated into
 
     if (mtmp)
     {
+        revive_handle_magic_chest(&where, &container, &container_where, &mcarry);
         int clr = is_tame(mtmp) || is_peaceful(mtmp) ? CLR_MSG_ATTENTION : CLR_MSG_WARNING;
         switch (where)
         {

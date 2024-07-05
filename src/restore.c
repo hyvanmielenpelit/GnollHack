@@ -773,6 +773,7 @@ unsigned int *stuckid, *steedid;
             impossible("restgamestate: lost ball & chain");
     }
 
+    magic_objs = restobjchn(fd, FALSE, FALSE);
     migrating_objs = restobjchn(fd, FALSE, FALSE);
     migrating_mons = restmonchn(fd, FALSE);
     mread(fd, (genericptr_t) mvitals, sizeof(mvitals));

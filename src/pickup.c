@@ -1578,7 +1578,7 @@ struct obj *container, *obj;
 
     owt = nwt = container->owt;
     /* find the object so that we can remove it */
-    for (prev = &container->cobj; *prev; prev = &(*prev)->nobj)
+    for (prev = contained_object_chain_ptr(container); *prev; prev = &(*prev)->nobj)
         if (*prev == obj)
             break;
     if (!*prev) {
@@ -3410,7 +3410,10 @@ boolean dobot;
         /* gold in container always needs to be added to credit */
         if (floor_container && obj->oclass == COIN_CLASS)
             sellobj(obj, current_container->ox, current_container->oy);
-        (void) add_to_container(current_container, obj);
+        if (Is_magic_chest(current_container))
+            (void) add_to_magic_chest(obj);
+        else
+            (void) add_to_container(current_container, obj);
         current_container->owt = weight(current_container);
     }
     /* gold needs this, and freeinv() many lines above may cause
@@ -3892,7 +3895,16 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
         return 0;
 #endif
 
-    if (obj->olocked) 
+    boolean insider = (*u.ushops && inside_shop(u.ux, u.uy)
+        && *in_rooms(u.ux, u.uy, SHOPBASE) == *u.ushops);
+
+    if (Is_magic_chest(obj) && insider)
+    {
+        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "A mysterious force prevents you from opening %s.", thecxname(obj));
+        play_sfx_sound(SFX_MYSTERIOUS_FORCE_PREVENTS);
+        return 0;
+    }
+    else if (obj->olocked)
     {
         pline("%s locked.", Tobjnam(obj, "are"));
         if (held)
@@ -3950,7 +3962,7 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
 
     inokay = (invent != 0
               && !(invent == current_container && !current_container->nobj));
-    outokay = Has_contents(current_container);
+    outokay = Has_contained_contents(current_container);
 
     if (!outokay) /* preformat the empty-container message */
         Sprintf(emptymsg, "%s is %sempty.", Ysimple_name2(current_container),
@@ -4077,7 +4089,7 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
     /* out-only or out before in */
     if (move_to_another || move_to_another_on_floor || (loot_out && !loot_in_first) || loot_out_and_drop || loot_out_and_stash)
     {
-        if (!Has_contents(current_container)) 
+        if (!Has_contained_contents(current_container)) 
         {
             pline1(emptymsg); /* <whatever> is empty. */
             if (!current_container->cknown)
@@ -4160,7 +4172,7 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
     /* out after in */
     if (loot_out && loot_in_first) 
     {
-        if (!Has_contents(current_container)) 
+        if (!Has_contained_contents(current_container)) 
         {
             pline1(emptymsg); /* <whatever> is empty. */
             if (!current_container->cknown)
@@ -4226,7 +4238,7 @@ struct obj* other_container;
     default:
     case 0:
         action = "take out";
-        objlist = &(current_container->cobj);
+        objlist = contained_object_chain_ptr(current_container);
         actionfunc = out_container;
         checkfunc = (int FDECL((*), (OBJ_P))) 0;
         break;
@@ -4251,7 +4263,7 @@ struct obj* other_container;
         }
 
         action = "move to another container in inventory";
-        objlist = &(current_container->cobj);
+        objlist = contained_object_chain_ptr(current_container);
         actionfunc = move_container;
         checkfunc = (int FDECL((*), (OBJ_P))) 0;
         break;
@@ -4271,19 +4283,19 @@ struct obj* other_container;
         }
 
         action = "move to another container on floor";
-        objlist = &(current_container->cobj);
+        objlist = contained_object_chain_ptr(current_container);
         actionfunc = move_container;
         checkfunc = (int FDECL((*), (OBJ_P))) 0;
         break;
     case 4:
         action = "take out and drop";
-        objlist = &(current_container->cobj);
+        objlist = contained_object_chain_ptr(current_container);
         actionfunc = out_container_and_drop;
         checkfunc = (int FDECL((*), (OBJ_P))) 0;
         break;
     case 5:
         action = "take out and auto-stash";
-        objlist = &(current_container->cobj);
+        objlist = contained_object_chain_ptr(current_container);
         actionfunc = out_container_and_autostash;
         checkfunc = (int FDECL((*), (OBJ_P))) 0;
         break;
@@ -4412,7 +4424,7 @@ struct obj* other_container UNUSED;
         mflags = (ALL_TYPES | UNPAID_TYPES | BUCX_TYPES | UNIDENTIFIED_TYPES | UNKNOWN_TYPES | CHOOSE_ALL);
         if (command_id == 6)
             mflags |= BY_NEXTHERE;
-        n = query_category(buf, command_id == 1 ? invent : command_id == 6 ? level.objects[u.ux][u.uy] : current_container->cobj,
+        n = query_category(buf, command_id == 1 ? invent : command_id == 6 ? level.objects[u.ux][u.uy] : contained_object_chain(current_container),
                            mflags, &pick_list, PICK_ANY);
         if (!n)
             return 0;
@@ -4450,14 +4462,14 @@ struct obj* other_container UNUSED;
     if (loot_everything)
     {
         n = 0;
-        for (otmp = current_container->cobj; otmp; otmp = otmp->nobj)
+        for (otmp = contained_object_chain(current_container); otmp; otmp = otmp->nobj)
             n++;
         uchar obj_gone;
         switch (command_id)
         {
         case 0:
             current_container->cknown = 1;
-            for (otmp = current_container->cobj, i = 0; otmp; otmp = otmp2, i++)
+            for (otmp = contained_object_chain(current_container), i = 0; otmp; otmp = otmp2, i++)
             {
                 otmp2 = otmp->nobj;
                 obj_gone = FALSE;
@@ -4485,7 +4497,7 @@ struct obj* other_container UNUSED;
             break;
         case 2:
             current_container->cknown = 1;
-            for (otmp = current_container->cobj; otmp; otmp = otmp2)
+            for (otmp = contained_object_chain(current_container); otmp; otmp = otmp2)
             {
                 otmp2 = otmp->nobj;
                 res = move_container_nobot(otmp);
@@ -4497,7 +4509,7 @@ struct obj* other_container UNUSED;
             break;
         case 3:
             current_container->cknown = 1;
-            for (otmp = current_container->cobj; otmp; otmp = otmp2)
+            for (otmp = contained_object_chain(current_container); otmp; otmp = otmp2)
             {
                 otmp2 = otmp->nobj;
                 res = move_container_nobot(otmp);
@@ -4509,7 +4521,7 @@ struct obj* other_container UNUSED;
             break;
         case 4:
             current_container->cknown = 1;
-            for (otmp = current_container->cobj; otmp; otmp = otmp2)
+            for (otmp = contained_object_chain(current_container); otmp; otmp = otmp2)
             {
                 otmp2 = otmp->nobj;
                 res = out_container_and_drop_nobot(otmp);
@@ -4521,7 +4533,7 @@ struct obj* other_container UNUSED;
             break;
         case 5:
             current_container->cknown = 1;
-            for (otmp = current_container->cobj; otmp; otmp = otmp2)
+            for (otmp = contained_object_chain(current_container); otmp; otmp = otmp2)
             {
                 otmp2 = otmp->nobj;
                 res = out_container_and_autostash_nobot(otmp);
@@ -4563,7 +4575,7 @@ struct obj* other_container UNUSED;
             Sprintf(movebuf, " from %s to %s", cxname(current_container), cxname(move_target_container));
 
         Sprintf(buf, "%s what%s?", action, movebuf);
-        n = query_objlist(buf, command_id == 1 ? &invent : command_id == 6 ? &level.objects[u.ux][u.uy] : &(current_container->cobj),
+        n = query_objlist(buf, command_id == 1 ? &invent : command_id == 6 ? &level.objects[u.ux][u.uy] : contained_object_chain_ptr(current_container),
                           mflags, &pick_list, PICK_ANY,
                           all_categories ? allow_all : allow_category, 2);
         if (n)
@@ -5044,20 +5056,20 @@ struct obj *box; /* or bag */
         char yourbuf[BUFSZ];
 
         observe_quantum_cat(box, TRUE, TRUE);
-        if (!Has_contents(box)) /* evidently a live cat came out */
+        if (!Has_contained_contents(box)) /* evidently a live cat came out */
             /* container type of "large box" is inferred */
             pline("%sbox is now empty.", Shk_Your(yourbuf, box));
         else /* holds cat corpse */
             empty_it = TRUE;
         box->cknown = 1;
-    } else if (!Has_contents(box)) {
+    } else if (!Has_contained_contents(box)) {
         box->cknown = 1;
         pline("It's empty.");
     } else {
         empty_it = TRUE;
     }
 
-    if (empty_it) {
+    if (empty_it && contained_object_chain(box) != 0) {
         struct obj *otmp, *nobj;
         boolean terse, highdrop = !can_reach_floor(TRUE),
                 altarizing = IS_ALTAR(levl[ox][oy].typ),
@@ -5075,10 +5087,10 @@ struct obj *box; /* or bag */
          * "ObjK drops to the floor.", "ObjL drops to the floor.", &c.
          */
         pline("%s out%c",
-              box->cobj->nobj ? "Objects spill" : "An object spills",
+              contained_object_chain(box)->nobj ? "Objects spill" : "An object spills",
               terse ? ':' : '.');
         Strcpy(debug_buf_2, "tip_container");
-        for (otmp = box->cobj; otmp; otmp = nobj) {
+        for (otmp = contained_object_chain(box); otmp; otmp = nobj) {
             nobj = otmp->nobj;
             obj_extract_self(otmp);
             otmp->ox = box->ox, otmp->oy = box->oy;

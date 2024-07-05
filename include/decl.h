@@ -404,6 +404,7 @@ E NEARDATA const struct explosion_type_definition explosion_type_definitions[MAX
 
 E NEARDATA struct obj *uchain; /* defined only when punished */
 E NEARDATA struct obj *uball;
+E NEARDATA struct obj *magic_objs;
 E NEARDATA struct obj *migrating_objs;
 E NEARDATA struct obj *billobjs;
 E NEARDATA struct obj *memoryobjs;
