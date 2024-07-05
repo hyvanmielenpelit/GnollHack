@@ -567,7 +567,7 @@
       <AndroidAsset Include="Platforms\Android\banks\Auxiliary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
       <AndroidAsset Include="Platforms\Android\banks\Intro.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
       <AndroidAsset Include="Platforms\Android\banks\Master.strings.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
-      <AndroidAsset Include="Platforms\Android\banks\Music.bank" LogicalName="%(RecursiveDir)%(Filename)banks\%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
+      <AndroidAsset Include="Platforms\Android\banks\Music.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
       <AndroidAsset Include="Platforms\Android\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
       <AndroidAsset Include="Platforms\Android\banks\Master.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
       <AndroidAsset Include="Platforms\Android\banks\Auxiliary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
