@@ -150,6 +150,8 @@ namespace GnollHackX
             SetAvailableGPUCacheLimits(TotalMemory);
             PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
             SecondaryGPUCacheLimit = Preferences.Get("SecondaryGPUCacheLimit", -2L);
+            FixRects = Preferences.Get("FixRects", GHConstants.DefaultFixRects);
+
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if(FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
             {
@@ -392,6 +394,10 @@ namespace GnollHackX
 #endif
             }
         }
+
+        private static readonly object _fixRectLock = new object();
+        private static bool _fixRects = false;
+        public static bool FixRects { get { lock (_gPUBackendLock) { return _fixRects; } } set { lock (_fixRectLock) { _fixRects = value; } } }
 
         public static bool BatterySavingMode { get; set; }
 

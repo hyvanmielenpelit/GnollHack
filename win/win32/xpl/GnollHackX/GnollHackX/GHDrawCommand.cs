@@ -63,14 +63,14 @@ namespace GnollHackX
 
     public class GHDrawCommand
     {
-        public SKMatrix Matrix { get; set; }
-        public SKRect SourceRect { get; set; }
-        public SKRect DestinationRect { get; set; }
-        public SKImage SourceBitmap { get; set; }
-        public SKColor PaintColor { get; set; }
-        public bool EndDarkening { get; set; }
-        public int MapX { get; set; }
-        public int MapY { get; set; }
+        public SKMatrix Matrix;
+        public SKRect SourceRect;
+        public SKRect DestinationRect;
+        public SKImage SourceBitmap;
+        public SKColor PaintColor;
+        public bool EndDarkening;
+        public int MapX;
+        public int MapY;
         public bool IsAutoDraw { get; private set; }
         public AutoDrawParameterDefinition AutoDrawParameters { get; private set; }
 

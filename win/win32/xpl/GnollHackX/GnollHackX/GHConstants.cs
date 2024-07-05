@@ -1803,9 +1803,11 @@ namespace GnollHackX
 #if WINDOWS
         public const bool DefaultCharacterClickAction = true;
         public const bool DefaultSimpleCmdLayout = false;
+        public const bool DefaultFixRects = true;
 #else
         public const bool DefaultCharacterClickAction = false;
         public const bool DefaultSimpleCmdLayout = true;
+        public const bool DefaultFixRects = false;
 #endif
     }
 

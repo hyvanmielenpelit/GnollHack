@@ -323,6 +323,11 @@ namespace GnollHackX.Pages.MainScreen
                 GHApp.UseGZipForReplays = GZipSwitch.IsToggled;
                 Preferences.Set("UseGZipForReplays", GZipSwitch.IsToggled);
             }
+            if (FixRectsSwitch.IsEnabled)
+            {
+                GHApp.FixRects = FixRectsSwitch.IsToggled;
+                Preferences.Set("FixRects", FixRectsSwitch.IsToggled);
+            }
 
             GHApp.EmptyWishIsNothing = EmptyWishIsNothingSwitch.IsToggled;
             Preferences.Set("EmptyWishIsNothing", EmptyWishIsNothingSwitch.IsToggled);
@@ -699,7 +704,7 @@ namespace GnollHackX.Pages.MainScreen
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, desktopbuttons = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false;
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false;
-            bool longermsghistory = false, xlog_release_account = false, forcepostbones = false;
+            bool longermsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = GHConstants.DefaultFixRects;
             long primarygpucache = -2, secondarygpucache = -2;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             string customlink = "";
@@ -768,6 +773,7 @@ namespace GnollHackX.Pages.MainScreen
             emptywishisnothing = Preferences.Get("EmptyWishIsNothing", true);
             recordgame = Preferences.Get("RecordGame", false);
             gzip = Preferences.Get("UseGZipForReplays", GHConstants.GZipIsDefaultReplayCompression);
+            fixrects = Preferences.Get("FixRects", GHConstants.DefaultFixRects);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
             savestyle = Preferences.Get("AppSwitchSaveStyle", 0);
             primarygpucache = Preferences.Get("PrimaryGPUCacheLimit", -2L);
@@ -939,6 +945,9 @@ namespace GnollHackX.Pages.MainScreen
             }
             EmptyWishIsNothingSwitch.IsToggled = emptywishisnothing;
             CharacterClickActionSwitch.IsToggled = characterclickaction;
+            FixRectsSwitch.IsToggled = fixrects;
+            FixRectsSwitch.IsEnabled = gpu;
+            FixRectsLabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
 
             PostGameStatusSwitch.IsToggled = postgamestatus;
             PostDiagnosticDataSwitch.IsToggled = postdiagnostics;
@@ -1693,7 +1702,10 @@ namespace GnollHackX.Pages.MainScreen
 
         private void GPUSwitch_Toggled(object sender, ToggledEventArgs e)
         {
-            if(_isManualTogglingEnabled && e.Value && !GHApp.IsGPUDefault)
+            FixRectsSwitch.IsEnabled = e.Value;
+            FixRectsLabel.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+
+            if (_isManualTogglingEnabled && e.Value && !GHApp.IsGPUDefault)
             {
                 PopupTitleLabel.TextColor = GHColors.Orange;
                 PopupTitleLabel.Text = "Unstable GPU Acceleration";

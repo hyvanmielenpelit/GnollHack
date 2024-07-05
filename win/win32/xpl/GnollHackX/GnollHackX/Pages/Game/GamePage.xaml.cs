@@ -4944,10 +4944,13 @@ namespace GnollHackX.Pages.Game
 
             if (destSplitY <= dest.Top || delayedDraw)
             {
-                if(delayedDraw)
+                if (delayedDraw)
                     _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, source, dest, bitmap, paint.Color, mapX, mapY));
                 else
+                {
+                    MaybeFixRects(ref source, ref dest);
                     canvas.DrawImage(bitmap, source, dest, paint);
+                }
                 //baseUpdateRect = dest;
                 //enlUpdateRect = new SKRect();
             }
@@ -4969,11 +4972,23 @@ namespace GnollHackX.Pages.Game
                 float sourceSplitY = source.Top + (source.Bottom - source.Top) * topDestScale;
                 SKRect enlSource = new SKRect(source.Left, source.Top, source.Right, sourceSplitY);
                 SKRect baseSource = new SKRect(source.Left, sourceSplitY, source.Right, source.Bottom);
+                MaybeFixRects(ref baseSource, ref baseDest);
                 canvas.DrawImage(bitmap, baseSource, baseDest, paint);
                 //enlCanvas.DrawBitmap(bitmap, enlSource, enlDest, paint);
                 _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, enlSource, enlDest, bitmap, paint.Color, mapX, mapY));
                 //baseUpdateRect = baseDest;
                 //enlUpdateRect = enlDest;
+            }
+        }
+
+        private void MaybeFixRects(ref SKRect source, ref SKRect dest)
+        {
+            if(UseMainGLCanvas && GHApp.FixRects)
+            {
+                source.Left += 1.0f;
+                source.Top += 1.0f;
+                dest.Bottom += 1.0f;
+                dest.Right += 1.0f;
             }
         }
 
@@ -6647,6 +6662,7 @@ namespace GnollHackX.Pages.Game
                                                                             {
                                                                                 paint.Color = dc.PaintColor;
                                                                                 canvas.SetMatrix(dc.Matrix);
+                                                                                MaybeFixRects(ref sourceRect, ref destRect);
                                                                                 canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect, paint);
                                                                             }
                                                                             else
@@ -6689,6 +6705,7 @@ namespace GnollHackX.Pages.Game
                                                                                     doDisposeImage = true;
                                                                                 }
 
+                                                                                MaybeFixRects(ref sourceRect, ref destRect);
                                                                                 canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect, paint);
                                                                                 if (doDisposeImage)
                                                                                     usedDarkenedBitmap.Dispose();
@@ -6709,6 +6726,7 @@ namespace GnollHackX.Pages.Game
                                                                             {
                                                                                 paint.Color = dc.PaintColor;
                                                                                 canvas.SetMatrix(dc.Matrix);
+                                                                                MaybeFixRects(ref cacheRect, ref dc.DestinationRect);
                                                                                 canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect, paint);
                                                                             }
                                                                             else
@@ -6747,6 +6765,7 @@ namespace GnollHackX.Pages.Game
 
                                                                                 paint.Color = dc.PaintColor;
                                                                                 canvas.SetMatrix(dc.Matrix);
+                                                                                MaybeFixRects(ref cacheRect, ref dc.DestinationRect);
                                                                                 canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect, paint);
                                                                                 if (doDisposeImage)
                                                                                     usedDarkenedBitmap.Dispose();
@@ -6768,7 +6787,10 @@ namespace GnollHackX.Pages.Game
                                                                                 dc.AutoDrawParameters.drawwallends);
                                                                     }
                                                                     else
+                                                                    {
+                                                                        MaybeFixRects(ref dc.SourceRect, ref dc.DestinationRect);
                                                                         canvas.DrawImage(dc.SourceBitmap, dc.SourceRect, dc.DestinationRect, paint);
+                                                                    }
                                                                 }
                                                             }
                                                         }

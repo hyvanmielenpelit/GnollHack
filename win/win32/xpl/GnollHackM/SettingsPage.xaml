@@ -1177,6 +1177,15 @@
                                 <Switch Grid.Column="1" x:Name="GZipSwitch" Toggled="GZipSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Adjust GL Rectangles"
+                                    x:Name="FixRectsLabel"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="FixRectsSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label 
                                         x:Name="SaveStyleLabel"
                                         Text="Save on Switching Apps"
