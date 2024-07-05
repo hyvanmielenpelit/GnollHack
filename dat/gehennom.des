@@ -527,6 +527,7 @@ REGION:(32,09,37,12),lit,"shop"
 REGION:(12,00,15,04),lit,"shop"
 REGION:(03,14,05,16),lit,"npcroom"
 NPC:npc_artificer,(04,15)
+OBJECT:('(',"magic chest"),(02,16)
 DOOR:closed,(06,15)
 REGION:(12,09,15,10),lit,"npcroom"
 NPC:npc_geologist,(14,10)
@@ -1293,6 +1294,7 @@ OBJECT: ('(', "large five-branched candelabrum"), (21,07), special_quality:5, ag
 OBJECT: ('(', "large five-branched candelabrum"), (15,10), special_quality:5, age:99000, lit
 OBJECT: ('(', "large five-branched candelabrum"), (21,10), special_quality:5, age:99000, lit
 OBJECT:('(',"sarcophagus"),(66,07)
+OBJECT:('(',"magic chest"),(55,09)
 REGION:(41,06,48,11),unlit,"morgue",filled,irregular
 # Non diggable walls
 NON_DIGGABLE:(00,00,75,19)

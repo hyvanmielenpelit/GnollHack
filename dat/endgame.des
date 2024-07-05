@@ -600,6 +600,10 @@ DOOR:closed,(63,09)
 # Non diggable and phazeable everywhere
 NON_DIGGABLE:(00,00,74,19)
 NON_PASSWALL:(00,00,74,19)
+# Magic chest
+$chestplace = { (30,18),(44,18) }
+SHUFFLE: $chestplace
+OBJECT:('(',"magic chest"),$chestplace[0]
 # Moloch's horde
 # West round room
 MONSTER:('@',"aligned priest"),(18,09),noalign,hostile

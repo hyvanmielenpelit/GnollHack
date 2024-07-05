@@ -154,6 +154,7 @@ ANVIL:(13,13)
 # orc hermit
 REGION:(12,04,14,06),lit,"npcroom"
 NPC:npc_orc_hermit3, (13,05)
+OBJECT:('(',"magic chest"),(14,04)
 
 # set up the shop doors; could be broken down
 DOOR:random,(5,8)
@@ -310,6 +311,7 @@ SIGNPOST: (15, 6),signpost_normal,"Stay out of the fountains!"
 SUBROOM: "npcroom", lit, (5,0), (2,2) decoration_style:2 {
   ROOMDOOR: false, closed, south, random
   NPC: npc_hermit3, random
+  OBJECT:('(',"magic chest"),(0,0)
 }
 
 [75%]: SUBROOM: "ordinary", random, (8,0), (2,2) floorsubtype:floor_parquet decoration_style:2 {
@@ -497,6 +499,7 @@ SUBROOM:"food shop" [90%],lit,(26,8),(3,2) floorsubtype:floor_parquet {
 SUBROOM:"npcroom",random,(16,2),(2,2) decoration_style:2 {
   ROOMDOOR:false,closed,west,random
   NPC: npc_hermit3, random
+  OBJECT:('(',"magic chest"),(1,1)
 }
 
 SUBROOM:"npcroom",random,(19,2),(2,2) floorsubtype:floor_parquet decoration_style:2 {
@@ -590,6 +593,7 @@ SUBROOM:"candle shop",lit,(22,2),(3,3) {
 SUBROOM:"npcroom",lit,(26,2),(2,2) decoration_style:2 {
   ROOMDOOR:false,closed,east,random
   NPC: npc_hermit3, random
+  OBJECT:('(',"magic chest"),(0,0)
 }
 
 SUBROOM:"tool shop" [90%],lit,(4,10),(3,3) {
@@ -807,6 +811,7 @@ NPC:npc_geologist,(20,18)
 REGION:(38,05,39,07),lit,"npcroom" floorsubtype:floor_parquet
 DOOR:closed,(40,05)
 NPC:npc_hermit3,(38,06)
+OBJECT:('(',"magic chest"),(38,07)
 
 # Quantum Mechanic
 REGION:(66,14,68,15),lit,"npcroom" floorsubtype:floor_parquet
@@ -879,6 +884,7 @@ NPC:npc_geologist,(20,13)
 REGION:(34,01,36,02),lit,"npcroom" floorsubtype:floor_parquet
 DOOR:closed,(35,03)
 NPC:npc_hermit3,(35,01)
+OBJECT:('(',"magic chest"),(34,01)
 
 # Quantum Mechanic
 REGION:(09,03,11,05),lit,"npcroom" floorsubtype:floor_parquet
@@ -971,6 +977,7 @@ SUBROOM: "ordinary", random, (7,5), (2,2) decoration_style:2 {
 SUBROOM: "npcroom", random, (16,5), (2,2) decoration_style:2 {
   ROOMDOOR: false, closed, south, random
   NPC: npc_hermit3, random
+  OBJECT:('(',"magic chest"),(0,0)
 }
 
 [75%]: SUBROOM: "ordinary", unlit, (19,2), (2,2) decoration_style:2 {

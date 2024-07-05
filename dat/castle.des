@@ -63,6 +63,7 @@ ANVIL:(58,14)
 # Hermit
 REGION:(56,02,60,03),lit,"npcroom"
 NPC:npc_hermit2, (58,03)
+OBJECT:('(',"magic chest"),(60,02)
 
 # Artificer
 REGION:(02,02,06,03),lit,"npcroom"
