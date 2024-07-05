@@ -1689,7 +1689,6 @@ namespace GnollHackX
         public const int MaxRefreshRate = 120;
         public const int PollingFrequency = 60;
         public const int PollingInterval = 15;
-        public const bool IsGPUDefault = true;
         public const double DefaultTextWindowMaxWidth = 600.0;
         public const double WindowHideIntervals = 5.0;
         public const uint MainCanvasAnimationTime = 250;
@@ -1803,11 +1802,9 @@ namespace GnollHackX
 #if WINDOWS
         public const bool DefaultCharacterClickAction = true;
         public const bool DefaultSimpleCmdLayout = false;
-        public const bool DefaultFixRects = true;
 #else
         public const bool DefaultCharacterClickAction = false;
         public const bool DefaultSimpleCmdLayout = true;
-        public const bool DefaultFixRects = false;
 #endif
     }
 

@@ -150,7 +150,7 @@ namespace GnollHackX
             SetAvailableGPUCacheLimits(TotalMemory);
             PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
             SecondaryGPUCacheLimit = Preferences.Get("SecondaryGPUCacheLimit", -2L);
-            FixRects = Preferences.Get("FixRects", GHConstants.DefaultFixRects);
+            FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
 
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if(FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
@@ -397,7 +397,7 @@ namespace GnollHackX
 
         private static readonly object _fixRectLock = new object();
         private static bool _fixRects = false;
-        public static bool FixRects { get { lock (_gPUBackendLock) { return _fixRects; } } set { lock (_fixRectLock) { _fixRects = value; } } }
+        public static bool FixRects { get { lock (_fixRectLock) { return _fixRects; } } set { lock (_fixRectLock) { _fixRects = value; } } }
 
         public static bool BatterySavingMode { get; set; }
 
@@ -525,60 +525,77 @@ namespace GnollHackX
 #if GNH_MAUI
                 return true;
 #else
-                if (IsiOS || !GHConstants.IsGPUDefault)
-                    return GHConstants.IsGPUDefault; /* No need to check on Apple or if GHConstants.IsGPUDefault is set to false */
-
-                string manufacturer = DeviceInfo.Manufacturer;
-                string model = DeviceInfo.Model;
-                bool isGoogleMali = false;
-                bool isSamsungMali = false;
-                bool isVivo = false;
-                bool isAlldocube = false;
-                bool isDoogee= false;
-                if (!string.IsNullOrWhiteSpace(manufacturer) && !string.IsNullOrWhiteSpace(model))
-                {
-                    string manufacturer_lc = manufacturer.ToLower();
-                    if (manufacturer_lc == "google")
-                    {
-                        if (model.Length >= 7 && model.Substring(0, 6).ToLower() == "pixel ")
-                        {
-                            int pixelver;
-                            string endstr = model.Substring(6);
-                            int cnt = 0;
-                            foreach (char c in endstr)
-                            {
-                                if (c < '0' || c > '9')
-                                    break;
-                                cnt++;
-                            }
-                            isGoogleMali = cnt > 0 && int.TryParse(endstr.Substring(0, cnt), out pixelver) && pixelver >= 6;
-                        }
-                        else if (model.Length >= 7 && model.Substring(0, 7).ToLower() == "bluejay")
-                            isGoogleMali = true;
-                        else if (model.Length >= 6 && model.Substring(0, 6).ToLower() == "oriole")
-                            isGoogleMali = true;
-                        else if (model.Length >= 4 && model.Substring(0, 4).ToLower() == "lynx")
-                            isGoogleMali = true;
-                        else if (model.Length >= 5 && model.Substring(0, 5).ToLower() == "husky")
-                            isGoogleMali = true;
-                        else if (model.Length >= 5 && model.Substring(0, 5).ToLower() == "raven")
-                            isGoogleMali = true;
-                    }
-                    else if (manufacturer_lc == "samsung")
-                    {
-                        if (model.Length >= 5 && model.Substring(0, 5).ToLower() == "a03su")
-                            isSamsungMali = true;
-                    }
-                    else if (manufacturer_lc == "vivo")
-                        isVivo = true;
-                    else if (manufacturer_lc == "alldocube")
-                        isAlldocube = true;
-                    else if (manufacturer_lc == "doogee")
-                        isDoogee = true;
-                }
-                return isGoogleMali || isSamsungMali || isVivo || isAlldocube || isDoogee ? false : GHConstants.IsGPUDefault;
+                return !HasUnstableGPU();
 #endif
             }
+        }
+
+        public static bool IsFixRectsDefault
+        {
+            get
+            {
+#if WINDOWS
+                return true;
+#else
+                return !HasUnstableGPU();
+#endif
+            }
+        }
+
+        private static bool HasUnstableGPU()
+        {
+            if (IsiOS)
+                return false;
+
+            string manufacturer = DeviceInfo.Manufacturer;
+            string model = DeviceInfo.Model;
+            bool isGoogleMali = false;
+            bool isSamsungMali = false;
+            bool isVivo = false;
+            bool isAlldocube = false;
+            bool isDoogee = false;
+            if (!string.IsNullOrWhiteSpace(manufacturer) && !string.IsNullOrWhiteSpace(model))
+            {
+                string manufacturer_lc = manufacturer.ToLower();
+                if (manufacturer_lc == "google")
+                {
+                    if (model.Length >= 7 && model.Substring(0, 6).ToLower() == "pixel ")
+                    {
+                        int pixelver;
+                        string endstr = model.Substring(6);
+                        int cnt = 0;
+                        foreach (char c in endstr)
+                        {
+                            if (c < '0' || c > '9')
+                                break;
+                            cnt++;
+                        }
+                        isGoogleMali = cnt > 0 && int.TryParse(endstr.Substring(0, cnt), out pixelver) && pixelver >= 6;
+                    }
+                    else if (model.Length >= 7 && model.Substring(0, 7).ToLower() == "bluejay")
+                        isGoogleMali = true;
+                    else if (model.Length >= 6 && model.Substring(0, 6).ToLower() == "oriole")
+                        isGoogleMali = true;
+                    else if (model.Length >= 4 && model.Substring(0, 4).ToLower() == "lynx")
+                        isGoogleMali = true;
+                    else if (model.Length >= 5 && model.Substring(0, 5).ToLower() == "husky")
+                        isGoogleMali = true;
+                    else if (model.Length >= 5 && model.Substring(0, 5).ToLower() == "raven")
+                        isGoogleMali = true;
+                }
+                else if (manufacturer_lc == "samsung")
+                {
+                    if (model.Length >= 5 && model.Substring(0, 5).ToLower() == "a03su")
+                        isSamsungMali = true;
+                }
+                else if (manufacturer_lc == "vivo")
+                    isVivo = true;
+                else if (manufacturer_lc == "alldocube")
+                    isAlldocube = true;
+                else if (manufacturer_lc == "doogee")
+                    isDoogee = true;
+            }
+            return isGoogleMali || isSamsungMali || isVivo || isAlldocube || isDoogee ? true : false;
         }
 
         public static void InitFileDescriptors()

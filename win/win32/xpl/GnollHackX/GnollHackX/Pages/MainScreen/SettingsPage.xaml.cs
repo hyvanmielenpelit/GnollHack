@@ -704,7 +704,7 @@ namespace GnollHackX.Pages.MainScreen
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, desktopbuttons = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false;
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false;
-            bool longermsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = GHConstants.DefaultFixRects;
+            bool longermsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false;
             long primarygpucache = -2, secondarygpucache = -2;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             string customlink = "";
@@ -773,7 +773,7 @@ namespace GnollHackX.Pages.MainScreen
             emptywishisnothing = Preferences.Get("EmptyWishIsNothing", true);
             recordgame = Preferences.Get("RecordGame", false);
             gzip = Preferences.Get("UseGZipForReplays", GHConstants.GZipIsDefaultReplayCompression);
-            fixrects = Preferences.Get("FixRects", GHConstants.DefaultFixRects);
+            fixrects = Preferences.Get("FixRects", GHApp.IsFixRectsDefault);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
             savestyle = Preferences.Get("AppSwitchSaveStyle", 0);
             primarygpucache = Preferences.Get("PrimaryGPUCacheLimit", -2L);
