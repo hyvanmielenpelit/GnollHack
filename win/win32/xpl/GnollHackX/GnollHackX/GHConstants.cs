@@ -660,6 +660,11 @@ namespace GnollHackX
         CURSOR_STYLE_SPELL_CURSOR,
         CURSOR_STYLE_PAY_CURSOR,
         CURSOR_STYLE_INVISIBLE,
+        CURSOR_STYLE_RESERVED_1,
+        CURSOR_STYLE_RESERVED_2,
+        CURSOR_STYLE_RESERVED_3,
+        CURSOR_STYLE_RESERVED_4,
+        CURSOR_STYLE_RESERVED_5,
         MAX_CURSORS
     }
 
@@ -687,6 +692,16 @@ namespace GnollHackX
         HIT_DRAIN_LEVEL,
         HIT_SLOW,
         HIT_HALLUCINATED,
+        HIT_RESERVED_1,
+        HIT_RESERVED_2,
+        HIT_RESERVED_3,
+        HIT_RESERVED_4,
+        HIT_RESERVED_5,
+        HIT_RESERVED_6,
+        HIT_RESERVED_7,
+        HIT_RESERVED_8,
+        HIT_RESERVED_9,
+        HIT_RESERVED_10,
         MAX_HIT_TILES
     }
 
@@ -698,21 +713,29 @@ namespace GnollHackX
         GENERAL_TILE_CHAIN_IS_DOWN,
         GENERAL_TILE_CHAIN_IS_LEFT,
         GENERAL_TILE_CHAIN_MAIN,
+        GENERAL_TILE_RESERVED_1,
+        GENERAL_TILE_RESERVED_2,
         MAX_GENERAL_TILES
     }
 
     public enum game_ui_tile_types
     {
         GENERAL_UI_ELEMENTS = 0,        /* Check box etc. */
-        STATUS_MARKS,               /* Pet mark, detection mark, ridden mark, pile mark, etc. */
-        CONDITION_MARKS,            /* One tile for each specified condition (the same as on status line) */
+        STATUS_MARKS,                   /* Pet mark, detection mark, ridden mark, pile mark, etc. */
+        STATUS2_MARKS,                  /* More status marks */
+        CONDITION_MARKS,                /* One tile for each specified condition (the same as on status line) */
+        CONDITION2_MARKS,               /* More condition marks */
         MAIN_TILE_MARK,
         U_TILE_MARK,
         ITEM_AUTODRAW_GRAPHICS,
         ITEM2_AUTODRAW_GRAPHICS,
         ITEM_PROPERTY_MARKS,
+        ITEM2_PROPERTY_MARKS,
         JAR_GRAPHICS,
         JAR_FOREGROUND,
+        JAR2_GRAPHICS,
+        JAR3_GRAPHICS,
+        RESERVED_UI_TILE_1,
         MAX_UI_TILES
     }
 

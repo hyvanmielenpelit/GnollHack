@@ -14,6 +14,7 @@ using GnollHackM;
 using Microsoft.Maui.Graphics;
 #else
 using Xamarin.Forms;
+using GnollHackX;
 #endif
 
 #if __IOS__

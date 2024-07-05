@@ -361,6 +361,30 @@ NEARDATA struct prop_info property_definitions[MAX_PROPS] =
     { "laughing",                     0, 0, 1,  0, 20,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE},  /* LAUGHING = 167 */
     { "tottering",                    0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* TOTTERING = 168 */
     { "martial-prowess",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* MARTIAL_PROWESS = 169 */
+    { "reserved-prop-1",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_1 = 170 */
+    { "reserved-prop-2",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-3",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-4",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-5",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-6",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-7",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-8",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-9",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-10",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-11",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-12",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-13",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-14",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-15",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-16",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-17",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-18",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-19",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-20",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-21",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-22",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-23",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_X */
+    { "reserved-prop-24",              0, 0, 0,  0, 0,  PCLR_WHITE, PCLR_NONE, PROPFLAGS_NONE },  /* RESERVED_PROP_24 */
 };
 
 const char* condition_names[NUM_BL_CONDITIONS] = {

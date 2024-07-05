@@ -190,9 +190,11 @@ enum prop_types {
     LAUGHING          = 167,
     TOTTERING         = 168,
     MARTIAL_PROWESS   = 169,
-    MAX_PROPS         = 170
+    RESERVED_PROP_1   = 170,
+    RESERVED_PROP_24  = 193,  /* Keep this - 1 divisible by 24 so MAX_BUFF_TILES is exactly an integer */
+    MAX_PROPS         = 194   /* Keep this - 2 divisible by 24 so MAX_BUFF_TILES is exactly an integer */
 };
-#define LAST_PROP (MAX_PROPS - 1)
+#define LAST_PROP (MAX_PROPS - 1) /* Keep this - 1 divisible by 24 so MAX_BUFF_TILES is exactly an integer */
 
 /*** Where the properties come from ***/
 /* Definitions were moved here from obj.h and you.h */
