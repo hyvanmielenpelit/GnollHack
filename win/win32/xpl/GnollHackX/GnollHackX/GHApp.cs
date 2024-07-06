@@ -4845,7 +4845,12 @@ namespace GnollHackX
             if (PostingXlogEntries && !string.IsNullOrWhiteSpace(username) && XlogUserNameVerified)
                 message = message + (isCustomXlogServerLink ? " {" : " [") + username + (isCustomXlogServerLink ? "}" : "]");
 
+#if WINDOWS
+            Version ver = AppInfo.Current.Version;
+            string portver = (ver?.Major.ToString() ?? "?") + "." + (ver?.MajorRevision.ToString() ?? "?");
+#else
             string portver = VersionTracking.CurrentVersion;
+#endif
             DevicePlatform platform = DeviceInfo.Platform;
             string platstr = platform.ToString();
             if (platstr == null)

@@ -192,10 +192,12 @@ namespace GnollHackX.Pages.MainScreen
             string winAppSDKAssemblyVersion = typeof(Microsoft.Windows.ApplicationModel.DynamicDependency.Bootstrap)?.Assembly?.GetName()?.Version?.ToString();
             WinAppSDKLabel.Text = !string.IsNullOrEmpty(winAppSDKAssemblyVersion) ? winAppSDKAssemblyVersion : "?";
 
-            PortVersionLabel.Text = GetAssemblyInformationalVersion(Assembly.GetEntryAssembly()); //This can also be AppInfo.Current.VersionString, but it is longer and the build number
+            Version ver = AppInfo.Current.Version;
+            string portVersion = (ver?.Major.ToString() ?? "?") + "." + (ver?.MajorRevision.ToString() ?? "?");
+            PortVersionLabel.Text = portVersion; // GetAssemblyInformationalVersion(Assembly.GetEntryAssembly()); //This can also be AppInfo.Current.VersionString, but it is longer and the build number
             PortBuildLabel.Text = AppInfo.Current.BuildString;
 
-            if(GHApp.DeviceGPUs.Count > 1)
+            if (GHApp.DeviceGPUs.Count > 1)
             {
                 string activeGPU = GHApp.GetActiveGPU();
                 ActiveGPULabel.Text = activeGPU + " (" + GHApp.DeviceGPUs.Count + " GPUs)";
