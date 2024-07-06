@@ -537,7 +537,7 @@ namespace GnollHackX
 #if WINDOWS
                 return true;
 #else
-                return HasUnstableGPU();
+                return IsAndroid;
 #endif
             }
         }
