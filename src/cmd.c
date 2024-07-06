@@ -5832,7 +5832,7 @@ int final;
     if (!u.uconduct.genocides) {
         you_have_never("genocided any monsters");
     } else {
-        Sprintf(buf, "genocided %lld type%s of monster%s", u.uconduct.genocides,
+        Sprintf(buf, "genocided %lld type%s of monster%s", (long long)u.uconduct.genocides,
                 plur(u.uconduct.genocides), plur(u.uconduct.genocides));
         you_have_X(buf);
     }
