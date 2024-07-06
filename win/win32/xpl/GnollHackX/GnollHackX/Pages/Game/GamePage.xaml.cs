@@ -4985,10 +4985,10 @@ namespace GnollHackX.Pages.Game
         {
             if(UseMainGLCanvas && GHApp.FixRects)
             {
-                source.Left += 1.0f;
+                source.Left += 0.01f;
                 //source.Top += 1.0f;
                 dest.Bottom += 1.0f;
-                //dest.Right += 1.0f;
+                dest.Right += 1.0f;
             }
         }
 
