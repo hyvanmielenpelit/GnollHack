@@ -63,7 +63,7 @@ lock_action()
     if (xlock.door && !(xlock.door->doormask & D_LOCKED))
         return actions[0] + 2; /* "locking the door" */
     else if (xlock.box && !xlock.box->olocked)
-        return xlock.box->otyp == CHEST ? actions[1] + 2 : actions[2] + 2;
+        return is_chest(xlock.box) ? actions[1] + 2 : actions[2] + 2;
     /* otherwise we're trying to unlock it */
     else if (xlock.picktyp == LOCK_PICK)
         return actions[3]; /* "picking the lock" */
@@ -72,7 +72,7 @@ lock_action()
     else if (xlock.door)
         return actions[0]; /* "unlocking the door" */
     else if (xlock.box)
-        return xlock.box->otyp == CHEST ? actions[1] : actions[2];
+        return is_chest(xlock.box) ? actions[1] : actions[2];
     else
         return actions[3];
 }
@@ -189,7 +189,7 @@ picklock(VOID_ARGS)
                 alreadyunlocked = !(xlock.door->doormask & D_LOCKED);
             } else {
                 xlock.box->otrapped = 0;
-                what = (xlock.box->otyp == CHEST) ? "chest" : "box";
+                what = is_chest(xlock.box) ? "chest" : "box";
                 alreadyunlocked = !xlock.box->olocked;
             }
             You_ex(ATR_NONE, CLR_MSG_SUCCESS, "succeed in disarming the trap.  The %s is still %slocked.",

@@ -609,6 +609,10 @@ enum elemental_enchantments {
     (objects[otyp].oc_class == TOOL_CLASS \
      && objects[otyp].oc_subtyp == TOOLTYPE_SAW)
 #define is_saw(o) is_otyp_saw((o)->otyp) 
+#define is_otyp_chest(otyp) \
+    (objects[otyp].oc_class == TOOL_CLASS \
+     && objects[otyp].oc_subtyp == TOOLTYPE_CHEST)
+#define is_chest(o) is_otyp_chest((o)->otyp) 
 
 #define MAX_OIL_IN_FLASK 400 /* maximum amount of oil in a potion of oil */
 

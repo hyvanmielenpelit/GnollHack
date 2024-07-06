@@ -5890,25 +5890,6 @@ doapply()
         case GRAPPLING_HOOK:
             res = use_grapple(obj);
             break;
-#if 0
-        case LARGE_BOX:
-        case CHEST:
-        case ICE_BOX:
-        case BOOKSHELF:
-        case SACK:
-        case BACKPACK:
-        case LEATHER_BAG:
-        case ORIENTAL_SILK_SACK:
-        case EXPENSIVE_HANDBAG:
-        case GOLDEN_CHEST:
-        case BAG_OF_HOLDING:
-        case BAG_OF_WIZARDRY:
-        case BAG_OF_TREASURE_HAULING:
-        case BAG_OF_THE_GLUTTON:
-        case OILSKIN_SACK:
-            res = use_container(&obj, 1, FALSE);
-            break;
-#endif
         case BAG_OF_TRICKS:
             (void)bagotricks(obj, FALSE, (int*)0);
             break;
