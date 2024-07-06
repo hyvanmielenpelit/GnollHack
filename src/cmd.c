@@ -5458,7 +5458,6 @@ int final;
 {
     char buf[BUFSZ];
     char goalbuf[BUFSZ];
-    int ngenocided;
     int dumpwin;
 
     /* Create the conduct window */
