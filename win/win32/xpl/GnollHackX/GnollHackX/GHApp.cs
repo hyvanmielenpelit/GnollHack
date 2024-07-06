@@ -2854,7 +2854,7 @@ namespace GnollHackX
                     float[] parameterValues = new float[1];
 
                     _fmodService.PlayImmediateSound(GHConstants.ButtonClickGHSound, GHConstants.ButtonClickEventPath, GHConstants.ButtonClickBankId, GHConstants.ButtonClickVolume,
-                        1.0f, parameterNames, parameterValues, 0, 0, 0, 0, 0UL);
+                        1.0f, parameterNames, parameterValues, 0, 0, 0, 0, 0U);
                 }
                 catch
                 {
@@ -2884,7 +2884,7 @@ namespace GnollHackX
                 float[] parameterValues = new float[1];
 
                 _fmodService.PlayImmediateSound(GHConstants.MenuSelectGHSound, GHConstants.MenuSelectEventPath, GHConstants.MenuSelectBankId, GHConstants.MenuSelectVolume,
-                    1.0f, parameterNames, parameterValues, 0, 0, 0, 0, 0UL);
+                    1.0f, parameterNames, parameterValues, 0, 0, 0, 0, 0U);
             }
         }
         public static string CreateGameZipArchive()
@@ -6080,7 +6080,7 @@ namespace GnollHackX
                                                     int sound_type = br.ReadInt32();
                                                     int play_group = br.ReadInt32();
                                                     uint dialogue_mid = br.ReadUInt32();
-                                                    ulong play_flags = br.ReadUInt64();
+                                                    uint play_flags = br.ReadUInt32();
                                                     if (!IsReplaySearching || (GoToTurn >= 0 && ReplayTurn >= GoToTurn - 1))
                                                         game.ClientCallback_PlayImmediateSound(ghsound, eventPath, bankid, eventVolume, soundVolume, parameterNames, parameterValues,
                                                         arraysize, sound_type, play_group, dialogue_mid, play_flags);

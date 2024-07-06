@@ -8,10 +8,10 @@
 #define WINPROCS_H
 
 #include "botl.h"
-#include "layer.h"
-#include "obj.h"
-#include "lev.h"
 #include "general.h"
+#include "layer.h"
+#include "lev.h"
+#include "obj.h"
 #include "decl.h"
 
 /* NB: this MUST match chain_procs below */

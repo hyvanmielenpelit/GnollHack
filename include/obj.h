@@ -5,11 +5,11 @@
 /*-Copyright (c) Michael Allison, 2006. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
-#include "general.h"
-#include "objclass.h"
-
 #ifndef OBJ_H
 #define OBJ_H
+
+#include "general.h"
+#include "objclass.h"
 
 /* #define obj obj_nh */ /* uncomment for SCO UNIX, which has a conflicting
                           * typedef for "obj" in <sys/types.h> */

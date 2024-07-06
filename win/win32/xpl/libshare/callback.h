@@ -2,13 +2,11 @@
 /* Copyright (c) Janne Gustafsson, 2021. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
-#include "config.h"
-#include "layer.h"
-#include "general.h"
-#include "integer.h"
-
 #ifndef CALLBACK_H
 #define CALLBACK_H
+
+#include "general.h"
+#include "layer.h"
 
 #ifdef WIN32
 #define __callconv __stdcall
@@ -133,7 +131,7 @@ typedef VoidVoidCallback StretchWindowCallback;
 typedef void(__callconv* SetAnimationTimerCallback)(uint64_t);
 typedef int(__callconv* OpenSpecialViewCallback)(int, const char*, const char*, int, int);
 typedef int(__callconv* StopAllSoundsCallback)(unsigned int, unsigned int);
-typedef int(__callconv* PlayImmediateSoundCallback)(int, const char*, int, double, double, const char**, float*, int, int, int, uint32_t, uint64_t);
+typedef int(__callconv* PlayImmediateSoundCallback)(int, const char*, int, double, double, const char**, float*, int, int, int, uint32_t, uint32_t);
 typedef int(__callconv* PlayMusicCallback)(int, const char*, int, double, double);
 typedef PlayMusicCallback PlayOccupationAmbientCallback;
 typedef PlayMusicCallback PlayEffectAmbientCallback;

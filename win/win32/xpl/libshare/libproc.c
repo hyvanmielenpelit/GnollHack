@@ -1358,7 +1358,7 @@ void lib_play_immediate_ghsound(struct ghsound_immediate_info info)
     int sound_type = info.sound_type;
     int play_group = info.play_group;
     unsigned int dialogue_mid = info.dialogue_mid;
-    uint64_t play_flags = info.play_flags;
+    unsigned int play_flags = info.play_flags;
 
     (void)lib_callbacks.callback_play_immediate_ghsound(ghsound, eventPath, eventBank, eventVolume, soundVolume,
         parameter_names, parameter_values, parameterarraysize, sound_type, play_group, dialogue_mid, play_flags);

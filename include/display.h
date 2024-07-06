@@ -8,13 +8,13 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
-#include "vision.h"
-#include "mondata.h" /* for mindless() */
-#include "you.h"
-#include "layer.h"
-#include "general.h"
 #include "animtotals.h"
+#include "general.h"
+#include "layer.h"
+#include "mondata.h" /* for mindless() */
 #include "tiledata.h"
+#include "vision.h"
+#include "you.h"
 
 /* Flags for newsym */
 #define NEWSYM_FLAGS_NONE                               0x00000000UL

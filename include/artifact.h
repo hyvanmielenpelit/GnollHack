@@ -8,11 +8,11 @@
 #ifndef ARTIFACT_H
 #define ARTIFACT_H
 
+#include "config.h"
 #include "general.h"
 #include "soundset.h"
 #include "permonst.h"
 #include "prop.h"
-#include "config.h"
 
 /* general and attack-based flags */
 #define AF_NONE        0x00000000UL  /* no special effects, just a bonus */

@@ -7,9 +7,8 @@
 #ifndef LAYER_H
 #define LAYER_H
 
-#include "tradstdc.h"
 #include "config.h"
-#include "integer.h"
+#include "tradstdc.h"
 
 enum layer_types
 {
@@ -174,6 +173,35 @@ struct layer_info {
 #define MISSILE_FLAGS_TETHERED      0x00000040UL /* Missile is tethered */
 #define MISSILE_FLAGS_LIT           0x00000080UL
 
+struct replacement_info {
+    int signed_glyph;
+    int layer;
+    struct obj* object;
+    struct monst* monster;
+    uint64_t layer_flags;
+    uint64_t monster_flags;
+    uint64_t missile_flags;
+    unsigned char missile_material;
+    short missile_special_quality;
+};
+
+struct extended_menu_info {
+    struct obj* object;
+    struct monst* monster;
+    char heading_for_group_accelerator;
+    const char* attrs;
+    const char* colors;
+    int style; /* Generic style or subtype; used in menu data */
+    char special_mark;
+    int num_items; /* Number of items in e.g. category */
+    uint64_t menu_flags;
+};
+
+struct extended_create_window_info {
+    struct obj* object;
+    struct monst* monster;
+    uint64_t create_flags;
+};
 
 struct monst_info {
     int glyph;
@@ -191,5 +219,27 @@ struct monst_info {
 
     uint64_t monster_flags;
 };
+
+struct amulet_count_result
+{
+    int64_t score;
+    int64_t quantity;
+    int64_t amulets_of_life_saving;
+    int64_t other_amulets;
+};
+
+struct item_score_count_result
+{
+    int64_t score;
+    int64_t quantity;
+    int64_t quantity_nonammo;
+    int64_t quantity_ammo;
+};
+
+/*
+ * type nhsym: loadable symbols go into this type
+ */
+typedef int64_t nhsym;
+
 
 #endif /* LAYER_H */

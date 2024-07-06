@@ -7,7 +7,7 @@
 #ifndef TIMEOUT_H
 #define TIMEOUT_H
 
-#include "integer.h"
+#include "wintype.h"
 
 /* generic timeout function */
 typedef void FDECL((*timeout_proc), (ANY_P *, int64_t));

@@ -5,11 +5,6 @@
 /*-Copyright (c) Pasi Kallinen, 2017. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
-
-#ifndef CONFIG_H
-#include "config.h"
-#endif
-
 #if defined (DEBUG) && defined(GNH_CRTDBG)
 #if defined (_DEBUG) && defined(WIN32)
 #ifndef _CRTDBG_MAP_ALLOC
@@ -23,6 +18,7 @@
 #ifndef HACK_H
 #define HACK_H
 
+#include "config.h"
 #include "lint.h"
 
 #define TELL_LETHAL_STYLE 2
@@ -235,17 +231,17 @@ typedef struct strbuf {
 } strbuf_t;
 
 #include "align.h"
+#include "context.h"
 #include "dungeon.h"
+#include "general.h"
 #include "monsym.h"
 #include "mkroom.h"
 #include "npc.h"
 #include "objclass.h"
+#include "timeout.h"
 #include "youprop.h"
 #include "wintype.h"
-#include "context.h"
 #include "decl.h"
-#include "timeout.h"
-#include "general.h"
 
 
 /* attack mode for hmon() */

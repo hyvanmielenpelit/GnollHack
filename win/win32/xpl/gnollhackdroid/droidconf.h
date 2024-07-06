@@ -48,5 +48,9 @@
 
 #define CONTINUE_PLAYING_AFTER_SAVING
 
+#ifndef HAS_STDINT_H
+#define HAS_STDINT_H    /* force include of stdint.h in integer.h */
+#endif
+
 #endif /* DROIDCONF_H */
 #endif /* GNH_ANDROID */

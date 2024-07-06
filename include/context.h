@@ -11,10 +11,11 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
-#include "prop.h"
 #include "animation.h"
-#include "layer.h"
+#include "dungeon.h"
 #include "general.h"
+#include "layer.h"
+#include "prop.h"
 #include "quest.h"
 
 #define CONTEXTVERBSZ 30

@@ -8,11 +8,10 @@
 #ifndef RM_H
 #define RM_H
 
+#include "color.h"
+#include "general.h"
 #include "layer.h"
 #include "soundset.h"
-#include "general.h"
-#include "color.h"
-
 
  /*
  * The screen symbols may be the default or defined at game startup time.

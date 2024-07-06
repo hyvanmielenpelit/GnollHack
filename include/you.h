@@ -9,13 +9,13 @@
 #define YOU_H
 
 #include "config.h"
-#include "dungeon.h"
 #include "attrib.h"
+#include "dungeon.h"
+#include "flag.h"
+#include "general.h"
 #include "monst.h"
 #include "prop.h" /* (needed here for util/makedefs.c) */
 #include "skills.h"
-#include "general.h"
-#include "flag.h"
 #include <time.h>
 
 enum role_types

@@ -7,7 +7,7 @@
 #ifndef WINTYPE_H
 #define WINTYPE_H
 
-#include "integer.h"
+#include "config.h"
 
 typedef int winid; /* a window identifier */
 

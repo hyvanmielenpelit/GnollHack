@@ -9,8 +9,10 @@
 #define DECL_H
 
 #include "general.h"
-#include "soundset.h"
+#include "layer.h"
+#include "monsym.h"
 #include "objclass.h"
+#include "soundset.h"
 
 #define E extern
 

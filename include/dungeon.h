@@ -9,6 +9,7 @@
 #define DUNGEON_H
 
 #include "align.h"
+#include "config.h"
 
 typedef struct d_flags {     /* dungeon/level type flags */
     uchar tileset;

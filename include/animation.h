@@ -2,16 +2,15 @@
  * animation.h
  * Copyright (c) Janne Gustafsson, 2020
  */
-#include "general.h"
-#include "action.h"
-#include "layer.h"
-#include "config.h"
-#include "tiledata.h"
 
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
-
+#include "config.h"
+#include "action.h"
+#include "general.h"
+#include "layer.h"
+#include "tiledata.h"
 
 /* Autodraw */
 enum autodraw_types

@@ -6,8 +6,6 @@
 
 #include "hack.h"
 #include "tcap.h"
-#include "layer.h"
-#include "general.h"
 
 /* Relevant header information in rm.h, objclass.h, and monsym.h. */
 

@@ -2,12 +2,12 @@
 /* Copyright (c) Janne Gustafsson, 2021. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
+#include "config.h"
 #include "animation.h"
 #include "general.h"
+#include "obj.h"
 #include "rm.h"
 #include "tiledata.h"
-#include "config.h"
-#include "obj.h"
 
  /* Stuff used also in makedefs, not relying on pm.h or onames.h */
 

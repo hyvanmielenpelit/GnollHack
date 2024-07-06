@@ -7,9 +7,9 @@
 #ifndef WINTTY_H
 #define WINTTY_H
 
+#include "general.h"
 #include "layer.h"
 #include "obj.h"
-#include "general.h"
 #include "wintype.h"
 
 #define E extern

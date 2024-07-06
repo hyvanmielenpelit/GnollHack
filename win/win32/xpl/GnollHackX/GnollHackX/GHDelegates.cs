@@ -93,7 +93,7 @@ namespace GnollHackX
         int sound_type, 
         int play_group, 
         uint dialogue_mid,
-        ulong play_flags);
+        uint play_flags);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int PlayMusicCallback(

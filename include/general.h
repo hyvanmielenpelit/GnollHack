@@ -6,8 +6,6 @@
 #ifndef GENERAL_H
 #define GENERAL_H
 
-#include "integer.h"
-
 /*
  * This is a general header file for enums and structs used in arguments of global functions and
  * for general constants, enums, and structs with no better place
@@ -126,36 +124,6 @@ enum worm_tile_types
     WORM_TILE_WORM_HEAD_COMING_FROM_UP_LEFT,
     WORM_TILE_WORM_HEAD_COMING_FROM_DOWN_RIGHT,
     MAX_WORM_TILES
-};
-
-struct replacement_info {
-    int signed_glyph;
-    int layer;
-    struct obj* object;
-    struct monst* monster;
-    uint64_t layer_flags;
-    uint64_t monster_flags;
-    uint64_t missile_flags;
-    unsigned char missile_material;
-    short missile_special_quality;
-};
-
-struct extended_menu_info {
-    struct obj* object;
-    struct monst* monster;
-    char heading_for_group_accelerator;
-    const char* attrs;
-    const char* colors;
-    int style; /* Generic style or subtype; used in menu data */
-    char special_mark;
-    int num_items; /* Number of items in e.g. category */
-    uint64_t menu_flags;
-};
-
-struct extended_create_window_info {
-    struct obj* object;
-    struct monst* monster;
-    uint64_t create_flags;
 };
 
 #define WINDOW_CREATE_FLAGS_NONE                0x00000000
@@ -853,11 +821,6 @@ enum yn_function_styles {
 #define MINIMUM_DGN_LEVEL_WEB           7
 #define MINIMUM_DGN_LEVEL_POLY_TRAP     8
 
-/*
- * type nhsym: loadable symbols go into this type
- */
-typedef int64_t nhsym;
-
 #define DEF_HERE_WINDOW_MAX_SIZE 10
 
 #define MAX_QUEST_REQUIREMENTS 12
@@ -1037,22 +1000,6 @@ enum cat_breeds {
 #define VALKYRIE_ROLE_ACHIEVEMENT_SCORE 40000L
 #define TOURIST_ROLE_ACHIEVEMENT_SCORE 50000L
 #define WIZARD_ROLE_ACHIEVEMENT_SCORE 50000L
-
-struct amulet_count_result
-{
-    int64_t score;
-    int64_t quantity;
-    int64_t amulets_of_life_saving;
-    int64_t other_amulets;
-};
-
-struct item_score_count_result
-{
-    int64_t score;
-    int64_t quantity;
-    int64_t quantity_nonammo;
-    int64_t quantity_ammo;
-};
 
 
 #endif /* GENERAL_H */

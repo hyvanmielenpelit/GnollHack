@@ -484,17 +484,17 @@ namespace GnollHackX.Unknown
         }
 
 
-        public int PlayImmediateSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid, ulong play_flags)
+        public int PlayImmediateSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid, uint play_flags)
         {
             if (!FMODup())
                 return 1;
 
             /* Decline to play if no play play_flag is set and the sound is playing */
-            if ((play_flags & (ulong)sound_play_flags.PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED) != 0)
+            if ((play_flags & (uint)sound_play_flags.PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED) != 0)
             {
-                List<GHSoundInstance> soundlist = play_group == (int)sound_play_groups.SOUND_PLAY_GROUP_LONG ? longImmediateInstances : immediateInstances;
-                bool include_playing = (play_flags & (int)sound_play_flags.PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING) != 0;
-                bool include_queued = (play_flags & (int)sound_play_flags.PLAY_FLAGS_NO_PLAY_IF_ALREADY_QUEUED) != 0;
+                List<GHSoundInstance> soundlist = play_group == (uint)sound_play_groups.SOUND_PLAY_GROUP_LONG ? longImmediateInstances : immediateInstances;
+                bool include_playing = (play_flags & (uint)sound_play_flags.PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING) != 0;
+                bool include_queued = (play_flags & (uint)sound_play_flags.PLAY_FLAGS_NO_PLAY_IF_ALREADY_QUEUED) != 0;
                 foreach (GHSoundInstance ghsi in soundlist)
                 {
                     if (!ghsi.stopped && ghsi.normalSoundVolume > 0.0f && ghsi.ghsound == ghsound

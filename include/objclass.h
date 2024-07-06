@@ -8,10 +8,9 @@
 #ifndef OBJCLASS_H
 #define OBJCLASS_H
 
-#include "action.h"
 #include "config.h"
+#include "action.h"
 #include "general.h"
-#include "integer.h"
 #include "soundset.h"
 
 enum multigen_types {

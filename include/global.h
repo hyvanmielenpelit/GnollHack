@@ -9,7 +9,6 @@
 #define GLOBAL_H
 
 #include <stdio.h>
-#include "integer.h"
 
 /* #define BETA */  /* development or beta testing [MRS] */
 
@@ -321,6 +320,8 @@ extern char *FDECL(dupstr, (const char *)); /* ditto */
 #endif
 extern char* FDECL(setstr, (const char*, CHAR_P)); /* ditto */
 extern char* FDECL(cpystr, (const char*, const char*)); /* ditto */
+
+#include "integer.h"
 
 /* Used for consistency checks of various data files; declare it here so
    that utility programs which include config.h but not hack.h can see it. */
