@@ -5829,12 +5829,11 @@ int final;
         you_have_X(buf);
     }
 
-    ngenocided = num_genocides();
-    if (ngenocided == 0) {
+    if (!u.uconduct.genocides) {
         you_have_never("genocided any monsters");
     } else {
-        Sprintf(buf, "genocided %d type%s of monster%s", ngenocided,
-                plur(ngenocided), plur(ngenocided));
+        Sprintf(buf, "genocided %lld type%s of monster%s", u.uconduct.genocides,
+                plur(u.uconduct.genocides), plur(u.uconduct.genocides));
         you_have_X(buf);
     }
 
@@ -5884,6 +5883,27 @@ int final;
         if (!u.uconduct.wisharti)
             enl_msg(You_, "have not wished", "did not wish",
                     " for any artifacts", "");
+    }
+
+    if (u.uevent.elbereth_known)
+    {
+        if (!u.uconduct.elbereths) {
+            you_have_never("engraved Elbereth");
+        }
+        else if (wizard) {
+            Sprintf(buf, "engraved Elbereth %lld time%s", (long long)u.uconduct.elbereths,
+                plur(u.uconduct.elbereths));
+            you_have_X(buf);
+        }
+    }
+
+    if (!u.uconduct.conflicts) {
+        you_have_never("caused conflict");
+    }
+    else if (wizard) {
+        Sprintf(buf, "caused conflict %lld time%s", (long long)u.uconduct.conflicts,
+            plur(u.uconduct.conflicts));
+        you_have_X(buf);
     }
 
     putstr(dumpwin, ATR_NONE, "");

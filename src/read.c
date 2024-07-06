@@ -2334,6 +2334,8 @@ struct monst* targetmonst;
         if (!Conflict)
         {
             You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "like a rabble-rouser.");
+            if (!u.uconduct.conflicts++)
+                livelog_printf(LL_CONDUCT, "caused conflict for the first time");
             known = TRUE;
         }
         play_sfx_sound(SFX_CONFLICT);
@@ -3813,7 +3815,6 @@ do_class_genocide()
                     || ((mons[i].geno & G_GENO)
                         && !(mvitals[i].mvflags & MV_GENOCIDED))) 
                 {
-                    int prevnumgenocided = num_genocides();
                     /* This check must be first since player monsters might
                      * have MV_GENOCIDED or !G_GENO.
                      */
@@ -3830,7 +3831,7 @@ do_class_genocide()
 
                     if (!ll_done++) 
                     {
-                        if (!prevnumgenocided)
+                        if (!u.uconduct.genocides++)
                             livelog_printf(LL_CONDUCT | LL_GENOCIDE,
                                 "performed %s first genocide (monsters from class %c, %s)",
                                 uhis(), def_monsyms[class].sym, def_monsyms[class].name);
@@ -4048,7 +4049,6 @@ int how;
 
     if (how & REALLY) 
     {
-        int prevnumgenocided = num_genocides();
         play_sfx_sound(SFX_GENOCIDE);
 
         /* setting no-corpse affects wishing and random tin generation */
@@ -4056,7 +4056,7 @@ int how;
         pline("Wiped out %s%s.", which, pluralbuf);
               //(*which != 'a') ? buf : makeplural(buf));
 
-        if (!prevnumgenocided)
+        if (!u.uconduct.genocides++)
             livelog_printf(LL_CONDUCT | LL_GENOCIDE,
                 "performed %s first genocide (%s)", uhis(), pluralbuf);
         else

@@ -1328,7 +1328,11 @@ doengrave()
     newsym(u.ux, u.uy);
 
     if (!strcmp(buf, Elbereth_word))
+    {
         u.uevent.elbereth_known = 1;
+        if (!u.uconduct.elbereths++)
+            livelog_printf(LL_CONDUCT, "engraved Elbereth for the first time");
+    }
 
     if (post_engr_text[0])
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s", post_engr_text);

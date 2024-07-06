@@ -3055,6 +3055,8 @@ struct obj *obj;
             {
                 play_sfx_sound(SFX_CONFLICT);
                 You_feel_ex(ATR_NONE, CLR_MSG_WARNING, "like a rabble-rouser.");
+                if (!u.uconduct.conflicts++)
+                    livelog_printf(LL_CONDUCT, "caused conflict for the first time");
             }
             else
                 You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "the tension decrease around you.");

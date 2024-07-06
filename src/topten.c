@@ -368,12 +368,16 @@ encodeconduct()
         e |= 1L << 9;
     if (!u.uconduct.wisharti)
         e |= 1L << 10;
-    if (!num_genocides())
+    if (!u.uconduct.genocides)
         e |= 1L << 11;
     if (u.uroleplay.blind)
         e |= 1L << 12;
     if (u.uroleplay.nudist)
         e |= 1L << 13;
+    if (!u.uconduct.elbereths)
+        e |= 1L << 14;
+    if (!u.uconduct.conflicts)
+        e |= 1L << 15;
 
     return e;
 }
@@ -718,7 +722,9 @@ encode_extended_conducts()
     add_achieveX(buf, "polyselfless", !u.uconduct.polyselfs);
     add_achieveX(buf, "wishless", !u.uconduct.wishes);
     add_achieveX(buf, "artiwishless", !u.uconduct.wisharti);
-    add_achieveX(buf, "genocideless", !num_genocides());
+    add_achieveX(buf, "genocideless", !u.uconduct.genocides);
+    add_achieveX(buf, "elberethless", !u.uconduct.elbereths);
+    add_achieveX(buf, "conflictless", !u.uconduct.conflicts);
     add_achieveX(buf, "blind", u.uroleplay.blind);
     add_achieveX(buf, "nudist", u.uroleplay.nudist);
 

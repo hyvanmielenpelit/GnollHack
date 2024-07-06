@@ -3444,7 +3444,6 @@ char *in;
 int64_t
 get_conduct_score_upon_ascension(VOID_ARGS)
 {
-    int ngenocided = num_genocides();
     return (int64_t)(
         50 * (u.uconduct.food == 0)
         + 15 * (u.uconduct.gnostic == 0)
@@ -3457,9 +3456,11 @@ get_conduct_score_upon_ascension(VOID_ARGS)
         + 5 * (u.uconduct.weaphit == 0)
         + 5 * (u.uconduct.wisharti == 0)
         + 15 * (u.uconduct.wishes == 0)
+        + 15 * (u.uconduct.genocides == 0)
+        + 10 * (u.uconduct.elbereths == 0)
+        + 15 * (u.uconduct.conflicts == 0)
         + 80 * (u.uroleplay.blind)
         + 60 * (u.uroleplay.nudist)
-        + 15 * (ngenocided == 0)
         - 20 * (u.ualign.type != u.ualignbase[A_ORIGINAL])
         - 20 * (u.ualignbase[A_CURRENT] != u.ualignbase[A_ORIGINAL])
         );

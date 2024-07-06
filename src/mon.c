@@ -3451,7 +3451,10 @@ uint64_t mondeadflags;
         quest_status.leader_is_dead = TRUE;
     /* if the mail daemon dies, no more mail delivery.  -3. */
     if (tmp == PM_MAIL_DAEMON)
+    {
         mvitals[tmp].mvflags |= MV_GENOCIDED;
+        u.uconduct.genocides++;
+    }
 
     if (mtmp->data->mlet == S_KOP) 
     {
