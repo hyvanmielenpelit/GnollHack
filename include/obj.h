@@ -421,6 +421,9 @@ enum elemental_enchantments {
 #define can_have_exceptionality(o)     ((is_weapon(o) || is_otyp_specially_exceptional((o)->otyp)) && !is_otyp_non_exceptional((o)->otyp))
 #define is_otyp_nonexceptionality_armor(otyp) (is_otyp_armor(otyp) && !can_otyp_have_exceptionality(otyp))
 #define nonexceptionality_armor(o)     (is_armor(o) && !can_have_exceptionality(o))
+#define is_otyp_normally_non_exceptional(otyp)     \
+    ((objects[(otyp)].oc_flags6 & O6_NORMALLY_NON_EXCEPTIONAL) != 0)
+#define is_normally_non_exceptional(o) is_otyp_normally_non_exceptional((o)->otyp) 
 
 #define otyp_allows_specially_dipping_into(otyp) ((objects[(otyp)].oc_flags4 & O4_ALLOWS_DIPPING_INTO) != 0)
 #define otyp_allows_object_to_be_dipped_into_it(otyp) (objects[(otyp)].oc_class == POTION_CLASS || otyp_allows_specially_dipping_into(otyp))

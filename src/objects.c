@@ -758,6 +758,7 @@ WEAPON("rubber hose", None,
     O1_NONE, O2_FLIMSY, O3_NONE, O4_NON_MYTHIC | O4_NON_EXCEPTIONAL, O5_NONE, O6_NONE,
     PERMITTED_ALL, ALL_TARGETS),
     
+    
 /* staffs */
 WEAPON("flindbar", "iron staff",
     0, 0, 0, 1, 0, MULTIGEN_SINGLE, ENCHTYPE_TWO_HANDED_MELEE_WEAPON, 160, 800,
@@ -1196,7 +1197,7 @@ GENERAL_HELM("helm of telepathy", "visored helmet",
  */
 #define DRGN_ARMR(name,mgc,power,power2,power3,pflags,cost,ac,mc,manabon,hpbon,bonusattrs,attrbonus,splcastpen,color,soundset,flags,flags2,flags3,flags4,flags5,flags6,powconfermask)  \
     ARMOR(name, None, 1, mgc, 1, power, power2, power3, pflags, ENCHTYPE_GENERAL_ARMOR, 0, 5, 550,  \
-      cost, ac, mc, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SUIT, P_NONE, MATINIT_BASE_MATERIAL, MAT_DRAGON_HIDE, color, 0, soundset, flags, flags2, flags3, O4_NON_MYTHIC | flags4, O5_NO_CATALOGUE | flags5, flags6, powconfermask)
+      cost, ac, mc, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_SUIT, P_NONE, MATINIT_BASE_MATERIAL, MAT_DRAGON_HIDE, color, 0, soundset, flags, flags2, flags3, O4_NON_MYTHIC | O4_CAN_HAVE_EXCEPTIONALITY | flags4, O5_NO_CATALOGUE | flags5, O6_NORMALLY_NON_EXCEPTIONAL | flags6, powconfermask)
 /* 3.4.1: dragon scale mail reclassified as "magic" since magic is
    needed to create them */
 DRGN_ARMR("gray dragon scale mail",    

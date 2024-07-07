@@ -617,8 +617,14 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         }
     }
 
-    if (obj->oclass == ARMOR_CLASS && (is_boots(obj) || is_gloves(obj) || is_bracers(obj)))
-        Strcat(buf, "pair of ");
+    if (obj->oclass == ARMOR_CLASS)
+    {
+        if (is_boots(obj) || is_gloves(obj) || is_bracers(obj))
+            Strcat(buf, "pair of ");
+        else if (typ >= GRAY_DRAGON_SCALES && typ <= YELLOW_DRAGON_SCALES) {
+            Strcat(buf, "set of ");
+        }
+    }
     else if (obj->oclass == MISCELLANEOUS_CLASS && (
         objects[obj->otyp].oc_subtyp == MISC_EARRINGS
         || objects[obj->otyp].oc_subtyp == MISC_EYEGLASSES
@@ -769,7 +775,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     case ARMOR_CLASS:
         /* depends on order of the dragon scales objects -- Special case, ignores the modifiers above */
         if (typ >= GRAY_DRAGON_SCALES && typ <= YELLOW_DRAGON_SCALES) {
-            Sprintf(eos(buf), "set of %s", actualn_fullbuf);
+            Strcat(buf, actualn_fullbuf);
             break;
         }
 
@@ -5531,7 +5537,7 @@ retry:
         {
             if(wiz_wishing)
                 otmp->exceptionality = (uchar)exceptionality;
-            else
+            else if (!is_normally_non_exceptional(otmp))
             {
                 boolean halfchance = !!(objects[otmp->otyp].oc_flags5 & O5_HALF_EXCEPTIONALITY_CHANCE);
                 boolean doublechance = !!(objects[otmp->otyp].oc_flags5 & O5_DOUBLE_EXCEPTIONALITY_CHANCE);

@@ -2122,7 +2122,7 @@ uint64_t mkflags;
         {
             otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
         }
-        else
+        else if (!is_normally_non_exceptional(otmp))
         {
             boolean iswand = otmp->oclass == WAND_CLASS || (otmp->oclass == TOOL_CLASS && is_spelltool(otmp));
             boolean halfchance = !!(objects[otmp->otyp].oc_flags5 & O5_HALF_EXCEPTIONALITY_CHANCE);

@@ -434,6 +434,7 @@ boolean createcorpse;
            dragons is the same as the order of the scales. */
         if (!istame && !isquestmonster)
         {
+            boolean is_exceptional = FALSE;
             if (mndx >= PM_GRAY_DRAGON_HATCHLING && mndx <= PM_YELLOW_DRAGON_HATCHLING)
             {
                 oneinchance = mtmp->mrevived ? 50 : 5;
@@ -448,17 +449,32 @@ boolean createcorpse;
             {
                 oneinchance = mtmp->mrevived ? 10 : 1;
                 basemonsterindex = PM_ANCIENT_GRAY_DRAGON;
+                is_exceptional = TRUE;
             }
 
             if (oneinchance > 0 && basemonsterindex > 0 && (oneinchance == 1 || !rn2(oneinchance))) {
                 num = GRAY_DRAGON_SCALES + mndx - basemonsterindex;
                 obj = mksobj_found_at(num, x, y, FALSE, FALSE);
-                obj->enchantment = 0;
-                obj->cursed = obj->blessed = FALSE;
+                if (obj)
+                {
+                    obj->enchantment = 0;
+                    obj->cursed = obj->blessed = FALSE;
+                    if (is_exceptional)
+                        obj->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+                }
             }
-
         }
         goto default_1;
+    case PM_IXOTH:
+        num = RED_DRAGON_SCALES;
+        obj = mksobj_found_at(num, x, y, FALSE, FALSE);
+        if (obj)
+        {
+            obj->enchantment = 0;
+            obj->cursed = obj->blessed = FALSE;
+            obj->exceptionality = EXCEPTIONALITY_ELITE;
+        }
+        break;
     case PM_WHITE_UNICORN:
     case PM_GRAY_UNICORN:
     case PM_BLACK_UNICORN:
@@ -476,8 +492,14 @@ boolean createcorpse;
         goto default_1;
     case PM_LONG_WORM:
     case PM_ELDER_LONG_WORM:
-        if(!istame && !isquestmonster)
-            (void)mksobj_found_at(WORM_TOOTH, x, y, TRUE, FALSE);
+        if (!istame && !isquestmonster)
+        {
+            obj = mksobj_found_at(WORM_TOOTH, x, y, TRUE, FALSE);
+            if (obj && mndx == PM_ELDER_LONG_WORM && obj->exceptionality < EXCEPTIONALITY_EXCEPTIONAL)
+            {
+                obj->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+            }
+        }
         goto default_1;
     case PM_CAVE_SPIDER:
     case PM_GIANT_SPIDER:
