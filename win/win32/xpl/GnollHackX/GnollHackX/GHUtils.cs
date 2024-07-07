@@ -173,7 +173,30 @@ namespace GnollHackX
             if (string.IsNullOrWhiteSpace(str))
                 return "";
             else
-                str = str.Replace("M", "X").Replace("2", "1");
+            {
+                str = str.Replace("M", "X");
+                int idx = str.IndexOf('=');
+                if (idx >= 0)
+                {
+                    int idx2 = str.IndexOf(',', idx);
+                    if (idx2 >= 0)
+                    {
+                        int len = idx2 - idx - 1;
+                        if (len > 0 && idx + 1 + len < str.Length)
+                        {
+                            string strinb = str.Substring(idx + 1, len);
+                            string defstr = "";
+                            for (int i = 0; i < 4; i++)
+                            {
+                                if(defstr != "")
+                                    defstr += ((char)(47 + idx + len - idx2)).ToString();
+                                defstr += ((i == 0 ? 2 : 1) + idx + len - idx2).ToString();
+                            }
+                            str = str.Replace(strinb, defstr);
+                        }
+                    }
+                }
+            }
 
             string key = "";
             int cnt = 0;
