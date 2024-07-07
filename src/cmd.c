@@ -5922,15 +5922,12 @@ int final;
     {
         struct item_score_count_result artifacts = count_artifacts(invent);
         struct item_score_count_result artifacts2 = count_artifacts(magic_objs);
-        int64_t score_percentage = ((artifacts.score + (int64_t)u.uachieve.role_achievement * ARCHAEOLOGIST_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((artifacts.score + artifacts2.score + (int64_t)u.uachieve.role_achievement * ARCHAEOLOGIST_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld %sartifact%s with you", (long long)artifacts.quantity, program_state.gameover ? "" : "known ", plur(artifacts.quantity));
         you_have(goalbuf, "");
-        if (artifacts2.score > 0)
-        {
-            Sprintf(goalbuf, "%lld %sartifact%s in your %s", (long long)artifacts2.quantity, program_state.gameover ? "" : "known ", plur(artifacts2.quantity), chest_name);
-            you_have(goalbuf, "");
-        }
+        Sprintf(goalbuf, "%lld %sartifact%s in your %s", (long long)artifacts2.quantity, program_state.gameover ? "" : "known ", plur(artifacts2.quantity), chest_name);
+        you_have(goalbuf, "");
         Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
@@ -5938,15 +5935,12 @@ int final;
     {
         struct item_score_count_result valuables = count_powerful_melee_weapon_score(invent);
         struct item_score_count_result valuables2 = count_powerful_melee_weapon_score(magic_objs);
-        int64_t score_percentage = ((valuables.score + (int64_t)u.uachieve.role_achievement * BARBARIAN_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((valuables.score + valuables2.score + (int64_t)u.uachieve.role_achievement * BARBARIAN_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld %smelee weapon%s of artifact or legendary quality with you", (long long)valuables.quantity, program_state.gameover ? "" : "known ", plur(valuables.quantity));
         you_have(goalbuf, "");
-        if (valuables2.score > 0)
-        {
-            Sprintf(goalbuf, "%lld %smelee weapon%s of artifact or legendary quality in your %s", (long long)valuables2.quantity, program_state.gameover ? "" : "known ", plur(valuables2.quantity), chest_name);
-            you_have(goalbuf, "");
-        }
+        Sprintf(goalbuf, "%lld %smelee weapon%s of artifact or legendary quality in your %s", (long long)valuables2.quantity, program_state.gameover ? "" : "known ", plur(valuables2.quantity), chest_name);
+        you_have(goalbuf, "");
         Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
@@ -5954,19 +5948,16 @@ int final;
     {
         struct amulet_count_result amulets = count_amulets(invent);
         struct amulet_count_result amulets2 = count_amulets(magic_objs);
-        int64_t score_percentage = ((amulets.score + (int64_t)u.uachieve.role_achievement * CAVEMAN_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((amulets.score + amulets2.score + (int64_t)u.uachieve.role_achievement * CAVEMAN_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld amulet%s of life saving with you", (long long)amulets.amulets_of_life_saving, plur(amulets.amulets_of_life_saving));
         you_have(goalbuf, "");
         Sprintf(goalbuf, "%lld non-prediscovered amulet%s with you", (long long)amulets.other_amulets, plur(amulets.other_amulets));
         you_have(goalbuf, "");
-        if (amulets2.score > 0)
-        {
-            Sprintf(goalbuf, "%lld amulet%s of life saving in your %s", (long long)amulets2.amulets_of_life_saving, plur(amulets2.amulets_of_life_saving), chest_name);
-            you_have(goalbuf, "");
-            Sprintf(goalbuf, "%lld non-prediscovered amulet%s in your %s", (long long)amulets2.other_amulets, plur(amulets2.other_amulets), chest_name);
-            you_have(goalbuf, "");
-        }
+        Sprintf(goalbuf, "%lld amulet%s of life saving in your %s", (long long)amulets2.amulets_of_life_saving, plur(amulets2.amulets_of_life_saving), chest_name);
+        you_have(goalbuf, "");
+        Sprintf(goalbuf, "%lld non-prediscovered amulet%s in your %s", (long long)amulets2.other_amulets, plur(amulets2.other_amulets), chest_name);
+        you_have(goalbuf, "");
         Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
@@ -5982,19 +5973,16 @@ int final;
     {
         struct item_score_count_result valuables = count_powerful_ranged_weapon_score(invent);
         struct item_score_count_result valuables2 = count_powerful_ranged_weapon_score(magic_objs);
-        int64_t score_percentage = ((valuables.score + (int64_t)u.uachieve.role_achievement * RANGER_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((valuables.score + valuables2.score + (int64_t)u.uachieve.role_achievement * RANGER_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld %sranged weapon%s of at least artifact, elite, or mythic quality with you", (long long)valuables.quantity_nonammo, program_state.gameover ? "" : "known ", plur(valuables.quantity_nonammo));
         you_have(goalbuf, "");
         Sprintf(goalbuf, "%lld %sammo of at least artifact, elite, or mythic quality with you", (long long)valuables.quantity_ammo, program_state.gameover ? "" : "known ");
         you_have(goalbuf, "");
-        if(valuables2.score > 0)
-        {
-            Sprintf(goalbuf, "%lld %sranged weapon%s of at least artifact, elite, or mythic quality in your %s", (long long)valuables2.quantity_nonammo, program_state.gameover ? "" : "known ", plur(valuables2.quantity_nonammo), chest_name);
-            you_have(goalbuf, "");
-            Sprintf(goalbuf, "%lld %sammo of at least artifact, elite, or mythic quality in your %s", (long long)valuables2.quantity_ammo, program_state.gameover ? "" : "known ", chest_name);
-            you_have(goalbuf, "");
-        }
+        Sprintf(goalbuf, "%lld %sranged weapon%s of at least artifact, elite, or mythic quality in your %s", (long long)valuables2.quantity_nonammo, program_state.gameover ? "" : "known ", plur(valuables2.quantity_nonammo), chest_name);
+        you_have(goalbuf, "");
+        Sprintf(goalbuf, "%lld %sammo of at least artifact, elite, or mythic quality in your %s", (long long)valuables2.quantity_ammo, program_state.gameover ? "" : "known ", chest_name);
+        you_have(goalbuf, "");
         Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
@@ -6002,15 +5990,12 @@ int final;
     {
         int64_t valuableworth = money_cnt(invent) + hidden_gold() + carried_gem_value();
         int64_t valuableworth2 =  magic_gold() + magic_gem_value();
-        int64_t score_percentage = ((valuableworth + (int64_t)u.uachieve.role_achievement * ROGUE_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((valuableworth + valuableworth2 + (int64_t)u.uachieve.role_achievement * ROGUE_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld %s worth of %svaluables with you", (long long)valuableworth, currency(valuableworth), program_state.gameover ? "" : "known ");
         you_have(goalbuf, "");
-        if (valuableworth2 > 0)
-        {
-            Sprintf(goalbuf, "%lld %s worth of %svaluables in your %s", (long long)valuableworth2, currency(valuableworth2), program_state.gameover ? "" : "known ", chest_name);
-            you_have(goalbuf, "");
-        }
+        Sprintf(goalbuf, "%lld %s worth of %svaluables in your %s", (long long)valuableworth2, currency(valuableworth2), program_state.gameover ? "" : "known ", chest_name);
+        you_have(goalbuf, "");
         Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
@@ -6018,19 +6003,16 @@ int final;
     {
         struct item_score_count_result valuables = count_powerful_Japanese_item_score(invent);
         struct item_score_count_result valuables2 = count_powerful_Japanese_item_score(magic_objs);
-        int64_t score_percentage = ((valuables.score + (int64_t)u.uachieve.role_achievement * SAMURAI_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((valuables.score + valuables2.score + (int64_t)u.uachieve.role_achievement * SAMURAI_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld Japanese non-ammo item%s of at least artifact, exceptional, or mythic quality with you", (long long)valuables.quantity_nonammo, plur(valuables.quantity_nonammo));
         you_have(goalbuf, "");
         Sprintf(goalbuf, "%lld Japanese ammo of at least artifact, exceptional, or mythic quality with you", (long long)valuables.quantity_ammo);
         you_have(goalbuf, "");
-        if (valuables2.score > 0)
-        {
-            Sprintf(goalbuf, "%lld Japanese non-ammo item%s of at least artifact, exceptional, or mythic quality in your %s", (long long)valuables2.quantity_nonammo, plur(valuables2.quantity_nonammo), chest_name);
-            you_have(goalbuf, "");
-            Sprintf(goalbuf, "%lld Japanese ammo of at least artifact, exceptional, or mythic quality in your %s", (long long)valuables2.quantity_ammo, chest_name);
-            you_have(goalbuf, "");
-        }
+        Sprintf(goalbuf, "%lld Japanese non-ammo item%s of at least artifact, exceptional, or mythic quality in your %s", (long long)valuables2.quantity_nonammo, plur(valuables2.quantity_nonammo), chest_name);
+        you_have(goalbuf, "");
+        Sprintf(goalbuf, "%lld Japanese ammo of at least artifact, exceptional, or mythic quality in your %s", (long long)valuables2.quantity_ammo, chest_name);
+        you_have(goalbuf, "");
         Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }
@@ -6046,19 +6028,16 @@ int final;
     {
         struct item_score_count_result valuables = count_powerful_valkyrie_item_score(invent);
         struct item_score_count_result valuables2 = count_powerful_valkyrie_item_score(magic_objs);
-        int64_t score_percentage = ((valuables.score + (int64_t)u.uachieve.role_achievement * VALKYRIE_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
+        int64_t score_percentage = ((valuables.score + valuables2.score + (int64_t)u.uachieve.role_achievement * VALKYRIE_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
         score_percentage = min(100, score_percentage);
         Sprintf(goalbuf, "%lld non-ammo item%s of %s quality with you", (long long)valuables.quantity_nonammo, plur(valuables.quantity_nonammo), u.ualign.type == A_CHAOTIC ? "infernal" : u.ualign.type == A_LAWFUL ? "celestial" : "primordial");
         you_have(goalbuf, "");
         Sprintf(goalbuf, "%lld ammo of %s quality with you", (long long)valuables.quantity_ammo, u.ualign.type == A_CHAOTIC ? "infernal" : u.ualign.type == A_LAWFUL ? "celestial" : "primordial");
         you_have(goalbuf, "");
-        if (valuables2.score > 0)
-        {
-            Sprintf(goalbuf, "%lld non-ammo item%s of %s quality in your %s", (long long)valuables2.quantity_nonammo, plur(valuables2.quantity_nonammo), u.ualign.type == A_CHAOTIC ? "infernal" : u.ualign.type == A_LAWFUL ? "celestial" : "primordial", chest_name);
-            you_have(goalbuf, "");
-            Sprintf(goalbuf, "%lld ammo of %s quality in your %s", (long long)valuables2.quantity_ammo, u.ualign.type == A_CHAOTIC ? "infernal" : u.ualign.type == A_LAWFUL ? "celestial" : "primordial", chest_name);
-            you_have(goalbuf, "");
-        }
+        Sprintf(goalbuf, "%lld non-ammo item%s of %s quality in your %s", (long long)valuables2.quantity_nonammo, plur(valuables2.quantity_nonammo), u.ualign.type == A_CHAOTIC ? "infernal" : u.ualign.type == A_LAWFUL ? "celestial" : "primordial", chest_name);
+        you_have(goalbuf, "");
+        Sprintf(goalbuf, "%lld ammo of %s quality in your %s", (long long)valuables2.quantity_ammo, u.ualign.type == A_CHAOTIC ? "infernal" : u.ualign.type == A_LAWFUL ? "celestial" : "primordial", chest_name);
+        you_have(goalbuf, "");
         Sprintf(goalbuf, "gained %lld%% of your maximum role score", (long long)score_percentage);
         you_have(goalbuf, "");
     }

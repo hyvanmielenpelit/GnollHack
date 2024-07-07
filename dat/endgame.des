@@ -601,7 +601,7 @@ DOOR:closed,(63,09)
 NON_DIGGABLE:(00,00,74,19)
 NON_PASSWALL:(00,00,74,19)
 # Magic chest
-$chestplace = { (30,18),(44,18) }
+$chestplace = { (30,14),(44,14) }
 SHUFFLE: $chestplace
 OBJECT:('(',"magic chest"),$chestplace[0]
 # Moloch's horde
