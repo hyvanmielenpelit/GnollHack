@@ -174,8 +174,9 @@ struct artifact {
 };
 
 /* invoked properties with special powers */
+#define FIRST_ARTINVOKE (LAST_PROP + 1)
 enum invoke_prop_types {
-    ARTINVOKE_TAMING = (LAST_PROP + 1), /* Keep first */
+    ARTINVOKE_TAMING = FIRST_ARTINVOKE, /* Keep first */
     ARTINVOKE_HEALING,
     ARTINVOKE_ENERGY_BOOST,
     ARTINVOKE_UNTRAP,
@@ -194,10 +195,19 @@ enum invoke_prop_types {
     ARTINVOKE_INVOKE_WITH_TIMER,
     ARTINVOKE_TIME_STOP,
     ARTINVOKE_RUBY_ROD,
+    ARTINVOKE_EARTHQUAKE,
+    ARTINVOKE_RESERVED_1,
+    ARTINVOKE_RESERVED_2,
+    ARTINVOKE_RESERVED_3,
+    ARTINVOKE_RESERVED_4,
+    ARTINVOKE_RESERVED_5,
+    ARTINVOKE_RESERVED_6,
+    ARTINVOKE_RESERVED_7,
+    ARTINVOKE_RESERVED_8,
     MAX_ARTINVOKES /* this is NOT the number of artifact invokes*/
 };
 
-#define NUM_ARTINVOKES (MAX_ARTINVOKES - ARTINVOKE_TAMING)
+#define NUM_ARTINVOKES (MAX_ARTINVOKES - FIRST_ARTINVOKE)
 
 extern const char* artifact_invoke_names[NUM_ARTINVOKES];
 extern NEARDATA struct artifact artilist[];

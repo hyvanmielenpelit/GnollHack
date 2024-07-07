@@ -25,7 +25,8 @@ STATIC_VAR boolean touch_blasted; /* for retouch_object() */
 const char* artifact_invoke_names[NUM_ARTINVOKES] = {
     "taming", "healing", "mana replenishment", "untrapping", "charging",
     "level teleportation", "portal creation", "enlightenment", "arrow creation", "arrow of Diana", "death ray", "blessing of contents", "wishing",
-    "summon demon", "summon elder air elemental", "recharge itself", "activates the artifact", "time stop", "bolt of cold, lightning or fire"
+    "summon demon", "summon elder air elemental", "recharge itself", "activates the artifact", "time stop", "bolt of cold, lightning or fire",
+    "earthquake", "", "", "", "", "", "", "", ""
 };
 
 #define get_artifact(o) \
@@ -3008,11 +3009,20 @@ struct obj *obj;
             else
                 Strcpy(artifact_hit_desc, cxname(obj));
 
-            pline("As you invoke %s, a surge of power surronds %s." , the(cxname(obj)), the(artifact_hit_desc));
+            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "As you invoke %s, a surge of power surronds %s." , the(cxname(obj)), the(artifact_hit_desc));
             obj->invokeleft = duration;
             break;
         }
-
+        case ARTINVOKE_EARTHQUAKE:
+        {
+            play_sfx_sound(SFX_RUMBLING_EARTH);
+            You_feel_ex(ATR_NONE, CLR_MSG_MYSTICAL, "a surge of power from %s, and then a heavy, thunderous rolling fills the air!", yname(obj));
+            pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "entire %s is shaking around you!", generic_lvl_desc());
+            do_earthquake((u.ulevel - 1) / 3 + 1);
+            /* shake up monsters in a much larger radius... */
+            awaken_monsters(ROWNO * COLNO, TRUE);
+            break;
+        }
         } /* switch */
     } 
     else 
@@ -4001,10 +4011,10 @@ struct monst *mon; /* if null, hero assumed */
 const char* get_artifact_invoke_name(specialpropindex)
 int specialpropindex;
 {
-    if (specialpropindex < ARTINVOKE_TAMING || specialpropindex >= ARTINVOKE_TAMING + SIZE(artifact_invoke_names))
+    if (specialpropindex < FIRST_ARTINVOKE || specialpropindex >= FIRST_ARTINVOKE + SIZE(artifact_invoke_names))
         return empty_string;
 
-    return artifact_invoke_names[specialpropindex - ARTINVOKE_TAMING];
+    return artifact_invoke_names[specialpropindex - FIRST_ARTINVOKE];
 }
 
 boolean

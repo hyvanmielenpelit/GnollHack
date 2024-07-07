@@ -2382,8 +2382,11 @@ E void FDECL(mmake_wish, (struct monst*));
 
 /* ### music.c ### */
 
+E void FDECL(awaken_monsters, (int, BOOLEAN_P));
 E void FDECL(awaken_soldiers, (struct monst *, BOOLEAN_P));
+E void FDECL(do_earthquake, (int));
 E int FDECL(do_play_instrument, (struct obj *));
+E const char* NDECL(generic_lvl_desc);
 
 /* ### nhlan.c ### */
 #ifdef LAN_FEATURES
