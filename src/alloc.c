@@ -61,8 +61,8 @@ register size_t lth;
 #define PTR_FMT "%p"
 #define PTR_TYP genericptr_t
 #else
-#define PTR_FMT "%06lx"
-#define PTR_TYP uint64_t
+#define PTR_FMT "%06llx"
+#define PTR_TYP unsigned long long
 #endif
 
 /* A small pool of static formatting buffers.

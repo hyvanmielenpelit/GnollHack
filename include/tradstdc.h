@@ -298,7 +298,7 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
  * Due to the presence of things like gcc, NHSTDC is not a good test.
  * So we assume microcomputers have all converted to ANSI and bigger
  * computers which may have older libraries give reasonable results with
- * casting pointers to uint64_t int (fmt_ptr() in alloc.c).
+ * casting pointers to unsigned long long int (fmt_ptr() in alloc.c).
  */
 #define HAS_PTR_FMT
 #endif

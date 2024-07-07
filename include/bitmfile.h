@@ -13,7 +13,7 @@
 
 /*	#include <portab.h>	*/
 #define UWORD unsigned short
-#define ULONG uint64_t
+#define ULONG unsigned long
 #define UBYTE unsigned char
 
 #define XIMG_MAGIC 0x58494D47
