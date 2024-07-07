@@ -4845,9 +4845,9 @@ namespace GnollHackX
             if (PostingXlogEntries && !string.IsNullOrWhiteSpace(username) && XlogUserNameVerified)
                 message = message + (isCustomXlogServerLink ? " {" : " [") + username + (isCustomXlogServerLink ? "}" : "]");
 
-#if WINDOWS
+#if GNH_MAUI
             Version ver = AppInfo.Current.Version;
-            string portver = (ver?.Major.ToString() ?? "?") + "." + (ver?.MajorRevision.ToString() ?? "?");
+            string portver = (ver?.Major.ToString() ?? "?") + "." + (ver?.Minor.ToString() ?? "?");
 #else
             string portver = VersionTracking.CurrentVersion;
 #endif

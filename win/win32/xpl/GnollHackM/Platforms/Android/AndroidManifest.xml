@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="201" android:versionName="2.0" package="com.soundmindgames.gnollhackm">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="200" android:versionName="2.0" package="com.soundmindgames.gnollhackm">
 	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:supportsRtl="true" android:label="GnollHack"></application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.BATTERY_STATS" />

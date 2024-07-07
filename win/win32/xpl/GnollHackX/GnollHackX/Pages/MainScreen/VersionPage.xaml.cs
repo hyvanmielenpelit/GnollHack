@@ -192,11 +192,6 @@ namespace GnollHackX.Pages.MainScreen
             string winAppSDKAssemblyVersion = typeof(Microsoft.Windows.ApplicationModel.DynamicDependency.Bootstrap)?.Assembly?.GetName()?.Version?.ToString();
             WinAppSDKLabel.Text = !string.IsNullOrEmpty(winAppSDKAssemblyVersion) ? winAppSDKAssemblyVersion : "?";
 
-            Version ver = AppInfo.Current.Version;
-            string portVersion = (ver?.Major.ToString() ?? "?") + "." + (ver?.MajorRevision.ToString() ?? "?");
-            PortVersionLabel.Text = portVersion; // GetAssemblyInformationalVersion(Assembly.GetEntryAssembly()); //This can also be AppInfo.Current.VersionString, but it is longer and the build number
-            PortBuildLabel.Text = AppInfo.Current.BuildString;
-
             if (GHApp.DeviceGPUs.Count > 1)
             {
                 string activeGPU = GHApp.GetActiveGPU();
@@ -246,11 +241,17 @@ namespace GnollHackX.Pages.MainScreen
             VersionInfoGrid.Children.Remove(ActiveGPULabel);
             VersionInfoGrid.Children.Remove(ActiveGPUTitleLabel);
             ActiveGPURowDefinition.Height = 0;
+#endif
 
+#if GNH_MAUI
+            Version ver = AppInfo.Current.Version;
+            string portVersion = (ver?.Major.ToString() ?? "?") + "." + (ver?.Minor.ToString() ?? "?");
+            PortVersionLabel.Text = portVersion; // GetAssemblyInformationalVersion(Assembly.GetEntryAssembly()); //This can also be AppInfo.Current.VersionString, but it is longer and the build number
+            PortBuildLabel.Text = AppInfo.Current.BuildString;
+#else
             PortVersionLabel.Text = VersionTracking.CurrentVersion;
             PortBuildLabel.Text = VersionTracking.CurrentBuild;
 #endif
-
             PortVersionTitleLabel.Text = GHApp.RuntimePlatform + " Port Version:";
             PortBuildTitleLabel.Text = GHApp.RuntimePlatform + " Port Build:";
             PortConfigurationTitleLabel.Text ="Port Configuration:";
