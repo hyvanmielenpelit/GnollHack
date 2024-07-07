@@ -475,6 +475,16 @@ boolean createcorpse;
             obj->exceptionality = EXCEPTIONALITY_ELITE;
         }
         break;
+    case PM_TIAMAT:
+        num = GRAY_DRAGON_SCALES + rn2(YELLOW_DRAGON_SCALES - GRAY_DRAGON_SCALES + 1);
+        obj = mksobj_found_at(num, x, y, FALSE, FALSE);
+        if (obj)
+        {
+            obj->enchantment = 0;
+            obj->cursed = obj->blessed = FALSE;
+            obj->exceptionality = EXCEPTIONALITY_ELITE;
+        }
+        break;
     case PM_WHITE_UNICORN:
     case PM_GRAY_UNICORN:
     case PM_BLACK_UNICORN:

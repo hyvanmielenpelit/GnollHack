@@ -621,7 +621,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     {
         if (is_boots(obj) || is_gloves(obj) || is_bracers(obj))
             Strcat(buf, "pair of ");
-        else if (typ >= GRAY_DRAGON_SCALES && typ <= YELLOW_DRAGON_SCALES) {
+        else if (is_dragon_scales(obj)) {
             Strcat(buf, "set of ");
         }
     }
@@ -774,7 +774,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     }
     case ARMOR_CLASS:
         /* depends on order of the dragon scales objects -- Special case, ignores the modifiers above */
-        if (typ >= GRAY_DRAGON_SCALES && typ <= YELLOW_DRAGON_SCALES) {
+        if (is_dragon_scales(obj)) {
             Strcat(buf, actualn_fullbuf);
             break;
         }
