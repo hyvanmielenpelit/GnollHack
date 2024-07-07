@@ -28,7 +28,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="GPUSwitch" Toggled="GPUSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="GPUSwitch" Toggled="GPUSwitch_Toggled" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Graphics"
@@ -46,7 +46,7 @@
                                             BackgroundColor="Transparent"
                                             WidthRequest="200"
                                             VerticalOptions="Center"
-                                            HorizontalOptions="EndAndExpand" >
+                                            HorizontalOptions="End" >
                                     <Picker.ItemsSource>
                                         <x:Array Type="{x:Type x:String}">
                                             <x:String>ASCII</x:String>
@@ -71,7 +71,7 @@
                                             WidthRequest="200"
                                             BackgroundColor="Transparent"
                                             VerticalOptions="Center"
-                                            HorizontalOptions="EndAndExpand" >
+                                            HorizontalOptions="End" >
                                     <Picker.ItemsSource>
                                         <x:Array Type="{x:Type x:String}">
                                             <x:String>Blinking Underline</x:String>
@@ -96,7 +96,7 @@
                                             WidthRequest="200"
                                             BackgroundColor="Transparent"
                                             VerticalOptions="Center"
-                                            HorizontalOptions="EndAndExpand" >
+                                            HorizontalOptions="End" >
                                 </Picker>
                             </Grid>
                             <Grid x:Name="NavBarStackLayout" RowSpacing="6" HeightRequest="40">
@@ -106,7 +106,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="NavBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="NavBarSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid x:Name="StatusBarStackLayout" RowSpacing="6" HeightRequest="40">
                                 <Label Text="Hide Status Bar"
@@ -115,7 +115,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="StatusBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="StatusBarSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Show Battery"
@@ -123,7 +123,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="BatterySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="BatterySwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Show FPS"
@@ -131,7 +131,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="FPSSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="FPSSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Show Zoom"
@@ -139,7 +139,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="ZoomSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="ZoomSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label x:Name="AllowBonesLabel" 
@@ -148,7 +148,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="AllowBonesSwitch" Toggled="AllowBonesSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="AllowBonesSwitch" Toggled="AllowBonesSwitch_Toggled" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Silent Mode"
@@ -156,7 +156,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="SilentModeSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="SilentModeSwitch_Toggled" />
+                                <Switch Grid.Column="1" x:Name="SilentModeSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="SilentModeSwitch_Toggled" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Tournament Mode"
@@ -169,7 +169,7 @@
                                         <TapGestureRecognizer Tapped="TournamentLabel_TapGestureRecognizer_Tapped" />
                                     </Label.GestureRecognizers>
                                 </Label>
-                                <Switch Grid.Column="1" x:Name="TournamentSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="TournamentSwitch_Toggled" />
+                                <Switch Grid.Column="1" x:Name="TournamentSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="TournamentSwitch_Toggled" />
                             </Grid>
 
                             <Label Text="Interface" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
@@ -179,7 +179,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="SimpleCmdLayoutSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="SimpleCmdLayoutSwitch_Toggled" />
+                                <Switch Grid.Column="1" x:Name="SimpleCmdLayoutSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="SimpleCmdLayoutSwitch_Toggled" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Dark Mode"
@@ -187,7 +187,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="DarkModeSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="DarkModeSwitch_Toggled" />
+                                <Switch Grid.Column="1" x:Name="DarkModeSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="DarkModeSwitch_Toggled" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label x:Name="DesktopButtonsLabel"
@@ -196,7 +196,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="DesktopButtonsSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="DesktopButtonsSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Messages"
@@ -214,7 +214,7 @@
                                             BackgroundColor="Transparent"
                                             WidthRequest="200"
                                             VerticalOptions="Center"
-                                            HorizontalOptions="EndAndExpand" >
+                                            HorizontalOptions="End" >
                                     <Picker.ItemsSource>
                                         <x:Array Type="{x:Type x:String}">
                                             <x:String>1</x:String>
@@ -242,7 +242,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="ForceMaxMessageSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="ForceMaxMessageSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Grid"
@@ -250,7 +250,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="GridSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="GridSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Hit Point Bars"
@@ -258,7 +258,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="HitPointBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="HitPointBarSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Classic Status Bar"
@@ -266,7 +266,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="ClassicStatusBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center"  
+                                <Switch Grid.Column="1" x:Name="ClassicStatusBarSwitch" HorizontalOptions="End" VerticalOptions="Center"  
                                             Toggled="ClassicStatusBarSwitch_Toggled" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -276,7 +276,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="DesktopStatusBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="DesktopStatusBarSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label x:Name="ShowExtendedStatusBarLabel"
@@ -285,7 +285,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="ShowExtendedStatusBarSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="ShowExtendedStatusBarSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Show Pets" x:Name="PetsLabel"
@@ -293,7 +293,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="PetSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="PetSwitch_Toggled" />
+                                <Switch Grid.Column="1" x:Name="PetSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="PetSwitch_Toggled" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Pet Rows" x:Name="PetRowsLabel"
@@ -311,7 +311,7 @@
                                             BackgroundColor="Transparent"
                                             WidthRequest="200"
                                             VerticalOptions="Center"
-                                            HorizontalOptions="EndAndExpand" >
+                                            HorizontalOptions="End" >
                                     <Picker.ItemsSource>
                                         <x:Array Type="{x:Type x:String}">
                                             <x:String>1</x:String>
@@ -329,7 +329,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="OrbSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center"
+                                <Switch Grid.Column="1" x:Name="OrbSwitch" HorizontalOptions="End" VerticalOptions="Center"
                                             Toggled="OrbSwitch_Toggled"/>
                             </Grid>
 
@@ -339,7 +339,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="MaxHealthInOrbSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="MaxHealthInOrbSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Show Max Mana" x:Name="MaxManaInOrbLabel"
@@ -347,7 +347,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="MaxManaInOrbSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="MaxManaInOrbSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
 
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -356,7 +356,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="PlayerMarkSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="PlayerMarkSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Targeting"
@@ -364,7 +364,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="MonsterTargetingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="MonsterTargetingSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Walk Arrows"
@@ -372,7 +372,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="WalkArrowSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="WalkArrowSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Lighter Unlit Areas"
@@ -380,7 +380,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="LighterDarkeningSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="LighterDarkeningSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Draw Wall Ends"
@@ -388,7 +388,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="WallEndSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="WallEndSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Breathing Animations"
@@ -396,7 +396,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="BreatheAnimationSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="BreatheAnimationSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Default Auto-Center"
@@ -404,7 +404,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="YesClipNormalSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="YesClipNormalSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
 
                             <Label Text="Behavior" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
@@ -414,7 +414,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="EmptyWishIsNothingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="EmptyWishIsNothingSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Character Click Action"
@@ -422,7 +422,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="CharacterClickActionSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="CharacterClickActionSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
 
                             <Label Text="Bar Commands" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
@@ -443,7 +443,7 @@
                                                 BackgroundColor="Transparent"
                                                 WidthRequest="200"
                                                 VerticalOptions="Center"
-                                                HorizontalOptions="EndAndExpand" >
+                                                HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -462,7 +462,7 @@
                                                 BackgroundColor="Transparent"
                                                 WidthRequest="200"
                                                 VerticalOptions="Center"
-                                                HorizontalOptions="EndAndExpand" >
+                                                HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
 
@@ -482,7 +482,7 @@
                                         BackgroundColor="Transparent"
                                         WidthRequest="200"
                                         VerticalOptions="Center"
-                                        HorizontalOptions="EndAndExpand" >
+                                        HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -501,7 +501,7 @@
                                         BackgroundColor="Transparent"
                                         WidthRequest="200"
                                         VerticalOptions="Center"
-                                        HorizontalOptions="EndAndExpand" >
+                                        HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -520,7 +520,7 @@
                                         BackgroundColor="Transparent"
                                         WidthRequest="200"
                                         VerticalOptions="Center"
-                                        HorizontalOptions="EndAndExpand" >
+                                        HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -539,7 +539,7 @@
                                         BackgroundColor="Transparent"
                                         WidthRequest="200"
                                         VerticalOptions="Center"
-                                        HorizontalOptions="EndAndExpand" >
+                                        HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
                             </StackLayout>
@@ -560,7 +560,7 @@
                                                 BackgroundColor="Transparent"
                                                 WidthRequest="200"
                                                 VerticalOptions="Center"
-                                                HorizontalOptions="EndAndExpand" >
+                                                HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -579,7 +579,7 @@
                                                 BackgroundColor="Transparent"
                                                 WidthRequest="200"
                                                 VerticalOptions="Center"
-                                                HorizontalOptions="EndAndExpand" >
+                                                HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
 
@@ -599,7 +599,7 @@
                                         BackgroundColor="Transparent"
                                         WidthRequest="200"
                                         VerticalOptions="Center"
-                                        HorizontalOptions="EndAndExpand" >
+                                        HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -618,7 +618,7 @@
                                         BackgroundColor="Transparent"
                                         WidthRequest="200"
                                         VerticalOptions="Center"
-                                        HorizontalOptions="EndAndExpand" >
+                                        HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -637,7 +637,7 @@
                                         BackgroundColor="Transparent"
                                         WidthRequest="200"
                                         VerticalOptions="Center"
-                                        HorizontalOptions="EndAndExpand" >
+                                        HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -656,7 +656,7 @@
                                         BackgroundColor="Transparent"
                                         WidthRequest="200"
                                         VerticalOptions="Center"
-                                        HorizontalOptions="EndAndExpand" >
+                                        HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -675,7 +675,7 @@
                                         BackgroundColor="Transparent"
                                         WidthRequest="200"
                                         VerticalOptions="Center"
-                                        HorizontalOptions="EndAndExpand" >
+                                        HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -694,7 +694,7 @@
                                         BackgroundColor="Transparent"
                                         WidthRequest="200"
                                         VerticalOptions="Center"
-                                        HorizontalOptions="EndAndExpand" >
+                                        HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -713,7 +713,7 @@
                                         BackgroundColor="Transparent"
                                         WidthRequest="200"
                                         VerticalOptions="Center"
-                                        HorizontalOptions="EndAndExpand" >
+                                        HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -732,7 +732,7 @@
                                         BackgroundColor="Transparent"
                                         WidthRequest="200"
                                         VerticalOptions="Center"
-                                        HorizontalOptions="EndAndExpand" >
+                                        HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -751,7 +751,7 @@
                                         BackgroundColor="Transparent"
                                         WidthRequest="200"
                                         VerticalOptions="Center"
-                                        HorizontalOptions="EndAndExpand" >
+                                        HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -770,7 +770,7 @@
                                         BackgroundColor="Transparent"
                                         WidthRequest="200"
                                         VerticalOptions="Center"
-                                        HorizontalOptions="EndAndExpand" >
+                                        HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -789,7 +789,7 @@
                                         BackgroundColor="Transparent"
                                         WidthRequest="200"
                                         VerticalOptions="Center"
-                                        HorizontalOptions="EndAndExpand" >
+                                        HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
                             </StackLayout>
@@ -801,7 +801,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Slider Grid.Column="1" x:Name="GeneralVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                                <Slider Grid.Column="1" x:Name="GeneralVolumeSlider" HorizontalOptions="End" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -810,7 +810,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Slider Grid.Column="1" x:Name="MusicVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                                <Slider Grid.Column="1" x:Name="MusicVolumeSlider" HorizontalOptions="End" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -819,7 +819,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Slider Grid.Column="1" x:Name="AmbientVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                                <Slider Grid.Column="1" x:Name="AmbientVolumeSlider" HorizontalOptions="End" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -828,7 +828,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Slider Grid.Column="1" x:Name="DialogueVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                                <Slider Grid.Column="1" x:Name="DialogueVolumeSlider" HorizontalOptions="End" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -837,7 +837,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Slider Grid.Column="1" x:Name="EffectsVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                                <Slider Grid.Column="1" x:Name="EffectsVolumeSlider" HorizontalOptions="End" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -846,7 +846,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Slider Grid.Column="1" x:Name="UIVolumeSlider" HorizontalOptions="EndAndExpand" VerticalOptions="Center" 
+                                <Slider Grid.Column="1" x:Name="UIVolumeSlider" HorizontalOptions="End" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                             </Grid>
 
@@ -858,7 +858,7 @@
                                        FontSize="15"
                                        VerticalOptions="Center" 
                                        HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="PostGameStatusSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="PostGameStatusSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                                 <Label x:Name="CustomWebHookLinkTitleLabel"
@@ -872,7 +872,7 @@
                                         FontFamily="Underwood" TextColor="Blue"
                                         FontSize="14"
                                         VerticalOptions="CenterAndExpand" 
-                                        HorizontalOptions="EndAndExpand" />
+                                        HorizontalOptions="End" />
                                 <controls:CustomImageButton Grid.Column="1" x:Name="CustomLinkButton" Text="Edit" FontSize="13" WidthRequest="80" HeightRequest="35" FontFamily="Diablo"
                                         BackgroundColor="Transparent" TextColor="White"
                                         Clicked="CustomLinkButton_Clicked"
@@ -885,7 +885,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="PostDiagnosticDataSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="PostDiagnosticDataSwitch_Toggled" />
+                                <Switch Grid.Column="1" x:Name="PostDiagnosticDataSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="PostDiagnosticDataSwitch_Toggled" />
                             </Grid>
 
                             <Label Text="Server Posting" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
@@ -906,7 +906,7 @@
                                         FontFamily="Underwood" TextColor="Blue"
                                         FontSize="14"
                                         VerticalOptions="CenterAndExpand" 
-                                        HorizontalOptions="EndAndExpand" />
+                                        HorizontalOptions="End" />
                                 <controls:CustomImageButton x:Name="CustomXlogAccountButton" Text="Link" FontSize="13" WidthRequest="80" HeightRequest="35" FontFamily="Diablo"
                                         BackgroundColor="Transparent" TextColor="White"
                                         Clicked="CustomXlogAccountButton_Clicked"
@@ -930,7 +930,7 @@
                                         FontFamily="Underwood" TextColor="Blue"
                                         FontSize="14"
                                         VerticalOptions="CenterAndExpand" 
-                                        HorizontalOptions="EndAndExpand" />
+                                        HorizontalOptions="End" />
                                 <controls:CustomImageButton x:Name="CustomXlogPostButton" Text="Link" FontSize="13" WidthRequest="80" HeightRequest="35" FontFamily="Diablo"
                                         BackgroundColor="Transparent" TextColor="White"
                                         Clicked="CustomXlogPostButton_Clicked"
@@ -944,7 +944,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Entry Grid.Column="1" x:Name="PostXlogUserNameEntry" MaxLength="31" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="Enter user name" PlaceholderColor="Gray"
+                                <Entry Grid.Column="1" x:Name="PostXlogUserNameEntry" MaxLength="31" HorizontalOptions="End" VerticalOptions="Center" Placeholder="Enter user name" PlaceholderColor="Gray"
                                     TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -954,7 +954,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Entry Grid.Column="1" x:Name="PostXlogPasswordEntry" IsPassword="True" MaxLength="63" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="Enter password" PlaceholderColor="Gray"
+                                <Entry Grid.Column="1" x:Name="PostXlogPasswordEntry" IsPassword="True" MaxLength="63" HorizontalOptions="End" VerticalOptions="Center" Placeholder="Enter password" PlaceholderColor="Gray"
                                     TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                             </Grid>
                             <Grid x:Name="XlogReleaseAccountStackLayout" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40" IsVisible="False">
@@ -964,7 +964,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="XlogReleaseAccountSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="XlogReleaseAccountSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label x:Name="PostXlogLabel" 
@@ -973,7 +973,7 @@
                                        FontSize="15"
                                        VerticalOptions="Center" 
                                        HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="PostXlogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="PostXlogSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40" IsVisible="False">
                                 <Label x:Name="PostReplaysLabel"
@@ -982,7 +982,7 @@
                                        FontSize="15"
                                        VerticalOptions="Center" 
                                        HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="PostReplaysSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="PostReplaysSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label x:Name="PostBonesLabel"
@@ -991,7 +991,7 @@
                                        FontSize="15"
                                        VerticalOptions="Center" 
                                        HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="PostBonesSwitch" Toggled="PostBonesSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="PostBonesSwitch" Toggled="PostBonesSwitch_Toggled" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="  Use Blacklist" x:Name="BonesListLabel"
@@ -999,7 +999,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="BonesListSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="BonesListSwitch_Toggled" />
+                                <Switch Grid.Column="1" x:Name="BonesListSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="BonesListSwitch_Toggled" />
                             </Grid>
                             <Grid x:Name="BonesAllowedUsersStackLayout" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="  Whitelist"
@@ -1012,7 +1012,7 @@
                                         <TapGestureRecognizer Tapped="BonesAllowedUsersLabel_TapGestureRecognizer_Tapped" />
                                     </Label.GestureRecognizers>
                                 </Label>
-                                <Entry Grid.Column="1" x:Name="BonesAllowedUsersEntry" MaxLength="2047" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Placeholder="All users" PlaceholderColor="Gray"
+                                <Entry Grid.Column="1" x:Name="BonesAllowedUsersEntry" MaxLength="2047" HorizontalOptions="End" VerticalOptions="Center" Placeholder="All users" PlaceholderColor="Gray"
                                     TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                             </Grid>
                             <Grid x:Name="ForcePostBonesStackLayout" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40" IsVisible="False">
@@ -1022,7 +1022,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="ForcePostBonesSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="ForcePostBonesSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
 
                             <Label Text="Replays" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
@@ -1037,7 +1037,7 @@
                                         <TapGestureRecognizer Tapped="RecordLabel_TapGestureRecognizer_Tapped" />
                                     </Label.GestureRecognizers>
                                 </Label>
-                                <Switch Grid.Column="1" x:Name="RecordSwitch" Toggled="RecordSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="RecordSwitch" Toggled="RecordSwitch_Toggled" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Show Recording"
@@ -1045,7 +1045,7 @@
                                             FontSize="15"
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="ShowRecordingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="ShowRecordingSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label x:Name="AutoUploadReplaysLabel"
@@ -1055,7 +1055,7 @@
                                         VerticalOptions="Center" 
                                         HorizontalOptions="Start">
                                 </Label>
-                                <Switch Grid.Column="1" x:Name="AutoUploadReplaysSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="AutoUploadReplaysSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <StackLayout Spacing="6" Orientation="Horizontal" HeightRequest="40">
                                 <Label x:Name="CloudStorageTitleLabel"
@@ -1069,7 +1069,7 @@
                                         FontFamily="Underwood" TextColor="Blue"
                                         FontSize="14"
                                         VerticalOptions="CenterAndExpand" 
-                                        HorizontalOptions="EndAndExpand" />
+                                        HorizontalOptions="End" />
                                 <controls:CustomImageButton x:Name="CustomCloudStorageButton" Text="Edit" FontSize="13" WidthRequest="80" HeightRequest="35" FontFamily="Diablo"
                                         BackgroundColor="Transparent" TextColor="White"
                                         Clicked="CustomCloudStorageButton_Clicked"
@@ -1085,7 +1085,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="DeveloperSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="DeveloperSwitch_Toggled" />
+                                <Switch Grid.Column="1" x:Name="DeveloperSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="DeveloperSwitch_Toggled" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Debug Logging"
@@ -1094,7 +1094,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="LogMessageSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="LogMessageSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Show Memory"
@@ -1102,7 +1102,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="MemorySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="MemorySwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid x:Name="AlternativeDrawingStackLayout" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Alternative Layer Drawing"
@@ -1111,7 +1111,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="AlternativeLayerDrawingSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="AlternativeLayerDrawingSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Load Sound Banks"
@@ -1119,7 +1119,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="SoundBankSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="SoundBankSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Streaming Banks to Memory"
@@ -1127,7 +1127,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="StreamingBankToMemorySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="StreamingBankToMemorySwitch_Toggled" />
+                                <Switch Grid.Column="1" x:Name="StreamingBankToMemorySwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="StreamingBankToMemorySwitch_Toggled" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Streaming Banks to Disk"
@@ -1135,7 +1135,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="StreamingBankToDiskSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="StreamingBankToDiskSwitch_Toggled" />
+                                <Switch Grid.Column="1" x:Name="StreamingBankToDiskSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="StreamingBankToDiskSwitch_Toggled" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label x:Name="LongerMessageHistoryLabel"
@@ -1144,7 +1144,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="LongerMessageHistorySwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="LongerMessageHistorySwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Use Single Dumplog"
@@ -1152,7 +1152,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="SingleDumpLogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="SingleDumpLogSwitch_Toggled" />
+                                <Switch Grid.Column="1" x:Name="SingleDumpLogSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="SingleDumpLogSwitch_Toggled" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Use HTML Dumplog"
@@ -1161,7 +1161,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="HTMLDumpLogSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="HTMLDumpLogSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="GZip Replay Compression"
@@ -1174,7 +1174,7 @@
                                         <TapGestureRecognizer Tapped="GZipLabel_TapGestureRecognizer_Tapped" />
                                     </Label.GestureRecognizers>
                                 </Label>
-                                <Switch Grid.Column="1" x:Name="GZipSwitch" Toggled="GZipSwitch_Toggled" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="GZipSwitch" Toggled="GZipSwitch_Toggled" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Adjust GL Rectangles"
@@ -1183,27 +1183,27 @@
                                     FontSize="15"
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="FixRectsSwitch" HorizontalOptions="EndAndExpand" VerticalOptions="Center" />
+                                <Switch Grid.Column="1" x:Name="FixRectsSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label 
                                         x:Name="SaveStyleLabel"
                                         Text="Save on Switching Apps"
                                         FontFamily="Underwood" TextColor="Black"
-                                        FontSize="15"
+                                        FontSize="14"
                                         VerticalOptions="Center" 
                                         HorizontalOptions="Start" />
                                 <Picker Grid.Column="1" x:Name="SaveStylePicker"
                                         Title="Select a save style"
                                         FontFamily="Underwood" 
-                                        FontSize="16"
+                                        FontSize="13"
                                         TextColor="Black"
                                         TitleColor="Black"
                                         HorizontalTextAlignment="End"
                                         BackgroundColor="Transparent"
-                                        WidthRequest="120"
+                                        WidthRequest="140"
                                         VerticalOptions="Center"
-                                        HorizontalOptions="EndAndExpand" >
+                                        HorizontalOptions="End" >
                                     <Picker.ItemsSource>
                                         <x:Array Type="{x:Type x:String}">
                                             <x:String>Save Game</x:String>
@@ -1221,7 +1221,7 @@
                                 <Picker Grid.Column="1" x:Name="PrimaryGPUCachePicker"
                                             Title="Select cache size"
                                             FontFamily="Underwood" 
-                                            FontSize="15"
+                                            FontSize="13"
                                             TextColor="Black"
                                             TitleColor="Black"
                                             SelectedIndexChanged="PrimaryGPUCachePicker_SelectedIndexChanged"
@@ -1229,7 +1229,7 @@
                                             WidthRequest="195"
                                             BackgroundColor="Transparent"
                                             VerticalOptions="Center"
-                                            HorizontalOptions="EndAndExpand" >
+                                            HorizontalOptions="End" >
                                 </Picker>
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -1241,7 +1241,7 @@
                                 <Picker Grid.Column="1" x:Name="SecondaryGPUCachePicker"
                                             Title="Select cache size"
                                             FontFamily="Underwood" 
-                                            FontSize="15"
+                                            FontSize="13"
                                             TextColor="Black"
                                             TitleColor="Black"
                                             SelectedIndexChanged="SecondaryGPUCachePicker_SelectedIndexChanged"
@@ -1249,7 +1249,7 @@
                                             WidthRequest="195"
                                             BackgroundColor="Transparent"
                                             VerticalOptions="Center"
-                                            HorizontalOptions="EndAndExpand" >
+                                            HorizontalOptions="End" >
                                 </Picker>
                             </Grid>
                         </StackLayout>
