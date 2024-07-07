@@ -3510,21 +3510,25 @@ get_current_game_score(VOID_ARGS)
     case PM_ARCHAEOLOGIST:
     {
         struct item_score_count_result cnt = count_artifacts(invent);
-        Role_Specific_Score = cnt.score;
+        struct item_score_count_result cnt2 = count_artifacts(magic_objs);
+        Role_Specific_Score = cnt.score + cnt2.score;
         Role_Achievement_Score = ARCHAEOLOGIST_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
         break;
     }
     case PM_BARBARIAN:
     {
         struct item_score_count_result cnt = count_powerful_melee_weapon_score(invent);
-        Role_Specific_Score = cnt.score;
+        struct item_score_count_result cnt2 = count_powerful_melee_weapon_score(magic_objs);
+        Role_Specific_Score = cnt.score + cnt2.score;
         Role_Achievement_Score = BARBARIAN_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
         break;
     }
     case PM_CAVEMAN:
     {
         struct amulet_count_result cnt = count_amulets(invent);
+        struct amulet_count_result cnt2 = count_amulets(magic_objs);
         Role_Specific_Score = CAVEMAN_PER_AMULET_OF_LIFE_SAVING_SCORE * cnt.amulets_of_life_saving + CAVEMAN_PER_OTHER_AMULET_SCORE * cnt.other_amulets;
+        Role_Specific_Score += CAVEMAN_PER_AMULET_OF_LIFE_SAVING_SCORE * cnt2.amulets_of_life_saving + CAVEMAN_PER_OTHER_AMULET_SCORE * cnt2.other_amulets;
         Role_Achievement_Score = CAVEMAN_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
         break;
     }
@@ -3584,7 +3588,8 @@ get_current_game_score(VOID_ARGS)
     case PM_RANGER:
     {
         struct item_score_count_result cnt = count_powerful_ranged_weapon_score(invent);
-        Role_Specific_Score = cnt.score;
+        struct item_score_count_result cnt2 = count_powerful_ranged_weapon_score(magic_objs);
+        Role_Specific_Score = cnt.score + cnt2.score;
         Role_Achievement_Score = RANGER_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
         break;
     }
@@ -3593,7 +3598,7 @@ get_current_game_score(VOID_ARGS)
         int64_t lootvalue = 0L;
         lootvalue += money_cnt(invent);
         lootvalue += hidden_gold() + magic_gold(); /* accumulate gold from containers */
-        lootvalue += carried_gem_value() + magic_gem_value();;
+        lootvalue += carried_gem_value() + magic_gem_value();
         Role_Specific_Score = lootvalue;
         Role_Achievement_Score = ROGUE_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
         break;
@@ -3601,7 +3606,8 @@ get_current_game_score(VOID_ARGS)
     case PM_SAMURAI:
     {
         struct item_score_count_result cnt = count_powerful_Japanese_item_score(invent);
-        Role_Specific_Score = cnt.score;
+        struct item_score_count_result cnt2 = count_powerful_Japanese_item_score(magic_objs);
+        Role_Specific_Score = cnt.score + cnt2.score;
         Role_Achievement_Score = SAMURAI_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
         break;
     }
@@ -3622,7 +3628,8 @@ get_current_game_score(VOID_ARGS)
     case PM_VALKYRIE:
     {
         struct item_score_count_result cnt = count_powerful_valkyrie_item_score(invent);
-        Role_Specific_Score = cnt.score;
+        struct item_score_count_result cnt2 = count_powerful_valkyrie_item_score(magic_objs);
+        Role_Specific_Score = cnt.score + cnt2.score;
         Role_Achievement_Score = VALKYRIE_ROLE_ACHIEVEMENT_SCORE * (int64_t)u.uachieve.role_achievement;
         break;
     }
