@@ -89,6 +89,7 @@ win/win32/xpl/GnollHackM/Platforms/Windows/gnh/license
 win/win32/xpl/GnollHackM/Platforms/Windows/gnh/nhdat
 win/win32/xpl/GnollHackM/Platforms/Windows/gnh/sysconf
 win/win32/xpl/GnollHackM/Platforms/Windows/gnh/defaults.gnh
+win/win32/xpl/GnollHackM/Platforms/Windows/gnh/record
 dat/dlb.lst
 win/win32/xpl/gnollhackdroid/date*.h
 win/win32/xpl/gnollhackios/date*.h
