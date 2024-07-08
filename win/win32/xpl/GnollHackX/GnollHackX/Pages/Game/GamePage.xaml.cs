@@ -4998,8 +4998,8 @@ namespace GnollHackX.Pages.Game
                     source.Top += 0.01f;
                     source.Bottom -= 0.01f;
                 }
-                dest.Right += 1.5f * targetscale;
-                dest.Bottom += 1.5f * targetscale;
+                dest.Right += 1.0f;
+                dest.Bottom += 1.0f;
             }
         }
 
