@@ -15400,13 +15400,14 @@ namespace GnollHackX.Pages.Game
 
         private bool ClickMenuItem(int menuItemIdx)
         {
-            if (menuItemIdx < 0 || menuItemIdx >= MenuCanvas.MenuItems.Count)
-                return false;
-
-            GHMenuItem mi = MenuCanvas.MenuItems[menuItemIdx];
             bool doclickok = false;
             lock (MenuCanvas.MenuItemLock)
             {
+                if (menuItemIdx < 0 || menuItemIdx >= MenuCanvas.MenuItems.Count)
+                    return false;
+
+                GHMenuItem mi = MenuCanvas.MenuItems[menuItemIdx];
+
                 if (MenuCanvas.MenuItems == null)
                 {
                     _menuCountNumber = -1;
