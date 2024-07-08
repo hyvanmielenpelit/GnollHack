@@ -8864,31 +8864,39 @@ struct monst* mtmp;
     if (!mtmp || !mtmp->ispriest || !mtmp->mextra || !EPRI(mtmp))
         return 0;
 
-    int spell_otyps[10] = { SPE_MINOR_HEALING, SPE_HEALING, SPE_EXTRA_HEALING, SPE_GREATER_HEALING, 0, 0, 0, 0, 0, 0 };
+    int spell_otyps[MAX_SPECIAL_TEACH_SPELLS + 16 + 1] = { 0 };
+    spell_otyps[0] = SPE_CONGREGATE;
+    spell_otyps[1] = SPE_MINOR_HEALING;
+    spell_otyps[2] = SPE_HEALING;
+    spell_otyps[3] = SPE_EXTRA_HEALING;
     switch (EPRI(mtmp)->shralign)
     {
     case A_NONE:
-        spell_otyps[4] = SPE_RAISE_SKELETON_WARRIOR;
-        spell_otyps[5] = SPE_DRAIN_LEVEL;
-        spell_otyps[6] = SPE_SUMMON_DEMON;
+        spell_otyps[4] = SPE_DRAIN_LEVEL;
+        spell_otyps[5] = SPE_SUMMON_DEMON;
         break;
     case A_LAWFUL:
-        spell_otyps[4] = SPE_CURE_SICKNESS;
-        spell_otyps[5] = SPE_CURE_BLINDNESS;
-        spell_otyps[6] = SPE_SUMMON_CELESTIAL_DOVE;
+        spell_otyps[4] = SPE_CURE_BLINDNESS;
+        spell_otyps[5] = SPE_SUMMON_CELESTIAL_DOVE;
         break;
     case A_NEUTRAL:
         spell_otyps[4] = SPE_STICK_TO_SNAKE;
-        spell_otyps[5] = SPE_CREATE_FOOD;
-        spell_otyps[6] = SPE_CREATE_CLAY_GOLEM;
+        spell_otyps[5] = SPE_CREATE_CLAY_GOLEM;
         break;
     case A_CHAOTIC:
         spell_otyps[4] = SPE_RAISE_MINOR_ZOMBIE;
-        spell_otyps[5] = SPE_RAISE_SKELETON;
-        spell_otyps[6] = SPE_REPLENISH_UNDEATH;
+        spell_otyps[5] = SPE_REPLENISH_UNDEATH;
         break;
     default:
         break;
+    }
+
+    int teach_num = 6;
+    int i;
+    for (i = 0; i < MAX_SPECIAL_TEACH_SPELLS && EPRI(mtmp)->special_teach_spells[i] > STRANGE_OBJECT; i++)
+    {
+        spell_otyps[teach_num] = EPRI(mtmp)->special_teach_spells[i];
+        teach_num++;
     }
 
     return spell_teaching(mtmp, spell_otyps);

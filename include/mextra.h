@@ -8,9 +8,7 @@
 #ifndef MEXTRA_H
 #define MEXTRA_H
 
-#ifndef ALIGN_H
 #include "align.h"
-#endif
 
 /*
  *  Adding new mextra structures:
@@ -84,6 +82,8 @@ struct egd {
     struct fakecorridor fakecorr[FCSIZ];
 };
 
+#define MAX_SPECIAL_TEACH_SPELLS 32
+
 /***
  **     formerly epri.h -- temple priest extension
  */
@@ -92,6 +92,7 @@ struct epri {
     schar shroom;      /* index in rooms */
     coord shrpos;      /* position of shrine */
     d_level shrlevel;  /* level (& dungeon) of shrine */
+    short special_teach_spells[MAX_SPECIAL_TEACH_SPELLS];
     int64_t intone_time,  /* used to limit verbosity  +*/
         enter_time,    /*+ of temple entry messages */
         hostile_time,  /* forbidding feeling */
@@ -112,7 +113,6 @@ struct esmi {
         peaceful_time; /* sense of peace */
 };
 
-#define MAX_SPECIAL_TEACH_SPELLS 32
 /* Non-player character (NPC) extension */
 struct enpc {
     uchar npc_typ;     /* type of NPC */

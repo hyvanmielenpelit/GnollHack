@@ -345,8 +345,9 @@ int mtype;
 
     if (priest) 
     {
+        aligntyp priest_alignment = Amask2align(levl[sx][sy].altarmask);
         EPRI(priest)->shroom = (schar) ((sroom - rooms) + ROOMOFFSET);
-        EPRI(priest)->shralign = Amask2align(levl[sx][sy].altarmask);
+        EPRI(priest)->shralign = priest_alignment;
         EPRI(priest)->shrpos.x = sx;
         EPRI(priest)->shrpos.y = sy;
         assign_level(&(EPRI(priest)->shrlevel), lvl);
@@ -437,6 +438,192 @@ int mtype;
             else
                 curse(otmp);
         }
+
+        /* Spells taught */
+        int cnt = 0;
+        if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+        {
+            EPRI(priest)->special_teach_spells[cnt] = SPE_GREATER_HEALING;
+            cnt++;
+        }
+        if (!rn2(9) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+        {
+            EPRI(priest)->special_teach_spells[cnt] = SPE_PRODIGIOUS_HEALING;
+            cnt++;
+        }
+        if (!rn2(27) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+        {
+            EPRI(priest)->special_teach_spells[cnt] = SPE_FULL_HEALING;
+            cnt++;
+        }
+        if (!rn2(27) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+        {
+            EPRI(priest)->special_teach_spells[cnt] = SPE_RESTORE_ABILITY;
+            cnt++;
+        }
+
+        switch (priest_alignment)
+        {
+        case A_NONE:
+            break;
+        case A_LAWFUL:
+            if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_CURE_SICKNESS;
+                cnt++;
+            }
+            if (!rn2(27) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_BLESS;
+                cnt++;
+            }
+            if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_TURN_UNDEAD;
+                cnt++;
+            }
+            if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_HOLD_UNDEAD;
+                cnt++;
+            }
+            if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_SUMMON_CELESTIAL_EAGLE;
+                cnt++;
+            }
+            if (!rn2(6) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_HEAVENLY_SERPENT;
+                cnt++;
+            }
+            if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_SUNLIGHT_BEAM;
+                cnt++;
+            }
+            if (!rn2(4) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_RAY_OF_RADIANCE;
+                cnt++;
+            }
+            if (!rn2(4) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_NEGATE_UNDEATH;
+                cnt++;
+            }
+            if (!rn2(6) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_BANISH_DEMON;
+                cnt++;
+            }
+            break;
+        case A_NEUTRAL:
+            if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_CURE_PETRIFICATION;
+                cnt++;
+            }
+            if (rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_SUMMON_GRIZZLY_BEAR;
+                cnt++;
+            }
+            if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_SUMMON_DIREWOLF;
+                cnt++;
+            }
+            if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_SUMMON_GIANT_ANT;
+                cnt++;
+            }
+            if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_SUMMON_SOLDIER_ANT;
+                cnt++;
+            }
+            if (!rn2(4) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_SUMMON_BISON;
+                cnt++;
+            }
+            if (!rn2(4) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_SUMMON_COCKATRICE;
+                cnt++;
+            }
+            if (!rn2(8) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_SUMMON_GIANT_COCKATRICE;
+                cnt++;
+            }
+            if (!rn2(6) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_SUMMON_PEGASUS;
+                cnt++;
+            }
+            if (!rn2(8) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_SUMMON_ROC;
+                cnt++;
+            }
+            break;
+        case A_CHAOTIC:
+            if (!rn2(3) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_CURSE;
+                cnt++;
+            }
+            if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_RAISE_SKELETON;
+                cnt++;
+            }
+            if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_RAISE_GIANT_ZOMBIE;
+                cnt++;
+            }
+            if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_CREATE_MINOR_MUMMY;
+                cnt++;
+            }
+            if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_CREATE_GIANT_MUMMY;
+                cnt++;
+            }
+            if (!rn2(2) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_CALL_GHOUL;
+                cnt++;
+            }
+            if (!rn2(4) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_RAISE_SKELETON_WARRIOR;
+                cnt++;
+            }
+            if (!rn2(6) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_RAISE_SKELETON_LORD;
+                cnt++;
+            }
+            if (!rn2(9) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_RAISE_SKELETON_KING;
+                cnt++;
+            }
+            if (!rn2(12) && cnt < MAX_SPECIAL_TEACH_SPELLS)
+            {
+                EPRI(priest)->special_teach_spells[cnt] = SPE_CREATE_DRACOLICH;
+                cnt++;
+            }
+            break;
+        }
+
         newsym(priest->mx, priest->my);
     }
 }
