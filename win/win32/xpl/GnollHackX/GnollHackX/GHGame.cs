@@ -507,7 +507,7 @@ namespace GnollHackX
                 gHWindow.Curs(x, y);
         }
 
-        private List<SavedPrintGlyphCall> _savedPrintGlyphCalls = new List<SavedPrintGlyphCall>();
+        //private List<SavedPrintGlyphCall> _savedPrintGlyphCalls = new List<SavedPrintGlyphCall>();
         public void ClientCallback_PrintGlyph(int winHandle, int x, int y, int glyph, int bkglyph, int symbol, int ocolor, uint special, IntPtr layers_ptr)
         {
             LayerInfo layers = layers_ptr == IntPtr.Zero ? new LayerInfo() : (LayerInfo)Marshal.PtrToStructure(layers_ptr, typeof(LayerInfo));
@@ -518,13 +518,13 @@ namespace GnollHackX
             {
                 gHWindow = _ghWindows[winHandle];
             }
-            _savedPrintGlyphCalls.Add(new SavedPrintGlyphCall(gHWindow, x, y, glyph, bkglyph, symbol, ocolor, special, ref layers));
+            //_savedPrintGlyphCalls.Add(new SavedPrintGlyphCall(gHWindow, x, y, glyph, bkglyph, symbol, ocolor, special, ref layers));
 
-            //if (gHWindow != null)
-            //    gHWindow.PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
+            if (gHWindow != null)
+                gHWindow.PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
 
-            //_gamePage.ClearAllObjectData(x, y);
-            //_gamePage.ClearEngravingData(x, y);
+            _gamePage.ClearAllObjectData(x, y);
+            _gamePage.ClearEngravingData(x, y);
         }
 
         public int Replay_AskName(string modeName, string modeDescription, string enteredPlayerName)
@@ -800,13 +800,13 @@ namespace GnollHackX
             if (force == 0 && (_gamePage.MapNoClipMode || _gamePage.MapLookMode || _gamePage.ZoomMiniMode)) //|| (!_gamePage.ZoomAlternateMode && _gamePage.MapNoClipMode) || (_gamePage.ZoomAlternateMode && _gamePage.MapAlternateNoClipMode) 
                 return; /* No clip mode ignores cliparound commands */
 
-            ConcurrentQueue<GHRequest> queue;
-            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
-            {
-                queue.Enqueue(new GHRequest(this, GHRequestType.ClipAround, x, y, force == 1));
-            }
+            //ConcurrentQueue<GHRequest> queue;
+            //if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+            //{
+            //    queue.Enqueue(new GHRequest(this, GHRequestType.ClipAround, x, y, force == 1));
+            //}
 
-            //_gamePage.SetTargetClip(x, y, force == 1);
+            _gamePage.SetTargetClip(x, y, force == 1);
         }
 
         public void ClientCallback_RawPrint(string str)
@@ -1599,42 +1599,42 @@ namespace GnollHackX
             GHApp.AddAggragateSessionPlayTime(timePassed);
         }
 
-        private List<SavedSendObjectDataCall> _savedSendObjectDataCalls = new List<SavedSendObjectDataCall>();
+        //private List<SavedSendObjectDataCall> _savedSendObjectDataCalls = new List<SavedSendObjectDataCall>();
         public void ClientCallback_SendObjectData(int x, int y, IntPtr otmp_ptr, int cmdtype, int where, IntPtr otypdata_ptr, ulong oflags)
         {
             Obj otmp = otmp_ptr == IntPtr.Zero ? new Obj() : (Obj)Marshal.PtrToStructure(otmp_ptr, typeof(Obj));
             ObjClassData otypdata = otypdata_ptr == IntPtr.Zero ? new ObjClassData() : (ObjClassData)Marshal.PtrToStructure(otypdata_ptr, typeof(ObjClassData));
 
             RecordFunctionCall(RecordedFunctionID.SendObjectData, x, y, otmp, cmdtype, where, otypdata, oflags);
-            _savedSendObjectDataCalls.Add(new SavedSendObjectDataCall(x, y, ref otmp, cmdtype, where, ref otypdata, oflags));
-            //_gamePage.AddObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);
+            //_savedSendObjectDataCalls.Add(new SavedSendObjectDataCall(x, y, ref otmp, cmdtype, where, ref otypdata, oflags));
+            _gamePage.AddObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);
         }
 
-        private List<SavedSendMonsterDataCall> _savedSendMonsterDataCalls = new List<SavedSendMonsterDataCall>();
+        //private List<SavedSendMonsterDataCall> _savedSendMonsterDataCalls = new List<SavedSendMonsterDataCall>();
         public void ClientCallback_SendMonsterData(int cmdtype, int x, int y, IntPtr monster_data_ptr, ulong oflags)
         {
             monst_info monster_data = monster_data_ptr == IntPtr.Zero ? new monst_info() : (monst_info)Marshal.PtrToStructure(monster_data_ptr, typeof(monst_info));
             RecordFunctionCall(RecordedFunctionID.SendMonsterData, cmdtype, x, y, monster_data, oflags);
-            _savedSendMonsterDataCalls.Add(new SavedSendMonsterDataCall(cmdtype, x, y, ref monster_data, oflags));
-            //switch (cmdtype)
-            //{
-            //    case 0: /* Add Pet */
-            //        _gamePage.AddPetData(monster_data);
-            //        break;
-            //}
+            //_savedSendMonsterDataCalls.Add(new SavedSendMonsterDataCall(cmdtype, x, y, ref monster_data, oflags));
+            switch (cmdtype)
+            {
+                case 0: /* Add Pet */
+                    _gamePage.AddPetData(monster_data);
+                    break;
+            }
         }
 
-        private List<SavedSendEngravingDataCall> _savedSendEngravingDataCalls = new List<SavedSendEngravingDataCall>();
+        //private List<SavedSendEngravingDataCall> _savedSendEngravingDataCalls = new List<SavedSendEngravingDataCall>();
         public void ClientCallback_SendEngravingData(int cmdtype, int x, int y, string engraving_text, int etype, ulong eflags, ulong gflags)
         {
             RecordFunctionCall(RecordedFunctionID.SendEngravingData, cmdtype, x, y, engraving_text, etype, eflags, gflags);
-            _savedSendEngravingDataCalls.Add(new SavedSendEngravingDataCall(cmdtype, x, y, engraving_text, etype, eflags, gflags));
-            //switch (cmdtype)
-            //{
-            //    case 0: /* Add engraving */
-            //        _gamePage.AddEngravingData(x, y, engraving_text, etype, eflags, gflags);
-            //        break;
-            //}
+            //_savedSendEngravingDataCalls.Add(new SavedSendEngravingDataCall(cmdtype, x, y, engraving_text, etype, eflags, gflags));
+            switch (cmdtype)
+            {
+                case 0: /* Add engraving */
+                    _gamePage.AddEngravingData(x, y, engraving_text, etype, eflags, gflags);
+                    break;
+            }
         }
 
         public int Replay_GetLine(int style, int attr, int color, string query, string placeholder, string linesuffix, string introline, IntPtr out_string_ptr, string enteredLine)
@@ -2419,11 +2419,11 @@ namespace GnollHackX
                 case (int)gui_command_types.GUI_CMD_START_FLUSH:
                     break;
                 case (int)gui_command_types.GUI_CMD_FINISH_FLUSH:
-                    _gamePage.ProcessPrintGlyphCallList(_savedPrintGlyphCalls, _savedSendObjectDataCalls, _savedSendMonsterDataCalls, _savedSendEngravingDataCalls);
-                    _savedPrintGlyphCalls.Clear();
-                    _savedSendObjectDataCalls.Clear();
-                    _savedSendMonsterDataCalls.Clear();
-                    _savedSendEngravingDataCalls.Clear();
+                    //_gamePage.ProcessPrintGlyphCallList(_savedPrintGlyphCalls, _savedSendObjectDataCalls, _savedSendMonsterDataCalls, _savedSendEngravingDataCalls);
+                    //_savedPrintGlyphCalls.Clear();
+                    //_savedSendObjectDataCalls.Clear();
+                    //_savedSendMonsterDataCalls.Clear();
+                    //_savedSendEngravingDataCalls.Clear();
                     break;
                 default:
                     break;
