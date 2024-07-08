@@ -2402,26 +2402,6 @@ namespace GnollHackX.Pages.Game
             PopupGrid.IsVisible = true;
         }
 
-        private void ContextButton_Clicked(object sender, EventArgs e)
-        {
-            int idx = 0;
-#if GNH_MAUI
-            idx = ContextLayout.Children.IndexOf((Microsoft.Maui.Controls.View)sender);
-            if (idx < 0)
-                idx = ContextLayout.Children.IndexOf((Microsoft.Maui.Controls.View)((Microsoft.Maui.Controls.View)sender).Parent);
-#else
-            idx = ContextLayout.Children.IndexOf((Xamarin.Forms.View)sender);
-            if (idx < 0)
-                idx = ContextLayout.Children.IndexOf((Xamarin.Forms.View)((Xamarin.Forms.View)sender).Parent);
-#endif
-            if (idx >= 0 && idx < _contextMenuData.Count)
-            {
-                int resp = _contextMenuData[idx].cmd_cur_char;
-                GenericButton_Clicked(sender, e, resp);
-            }
-        }
-
-
         private /*async*/ void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
