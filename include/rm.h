@@ -1465,6 +1465,11 @@ struct levelflags {
                                   rather than ROOM */
     Bitfield(mapping_does_not_reveal_special, 1); /* Magic mapping does not reveal the special nature of the level */
     Bitfield(no_special_level_naming_checks, 1);
+
+    unsigned reserved;
+    unsigned reserved2;
+    unsigned reserved3;
+    unsigned reserved4;
 };
 
 typedef struct {

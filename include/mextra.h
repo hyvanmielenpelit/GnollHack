@@ -112,7 +112,7 @@ struct esmi {
         peaceful_time; /* sense of peace */
 };
 
-#define MAX_SPECIAL_TEACH_SPELLS 8
+#define MAX_SPECIAL_TEACH_SPELLS 32
 /* Non-player character (NPC) extension */
 struct enpc {
     uchar npc_typ;     /* type of NPC */

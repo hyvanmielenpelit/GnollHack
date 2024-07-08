@@ -1766,7 +1766,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
     /* Archery bonus, applied for launcher only to avoid double-counting */
     if(obj && u.uarcherybonus != 0 && uarmb && object_stats_known(uarmb) && uarmb->otyp == BRACERS_OF_ARCHERY && /* Only if bracers of archery is known */
-        (is_launcher(obj) && uquiver && ammo_and_launcher(uquiver, obj))
+        (is_launcher(obj) && ammo_and_launcher(uquiver, obj))
       )
     {
         Sprintf(buf, "Archery bonus:          %s%d to hit and damage", u.uarcherybonus >= 0 ? "+" : "", u.uarcherybonus);

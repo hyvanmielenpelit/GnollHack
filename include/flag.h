@@ -231,32 +231,38 @@ struct flag {
     int initalign; /* starting alignment (index into aligns[])  */
     int randomall; /* randomly assign everything not specified */
     int pantheon;  /* deity selection for priest character */
+
+    int runmode;       /* update screen display during run moves */
+    int64_t reserved_int64_special1; /* to have highest alignment before the following booleans */
+
     /* Items which were in iflags in 3.4.x to preserve savefile compatibility
      */
     boolean lootabc;   /* use "a/b/c" rather than "o/i/b" when looting */
     boolean showrace;  /* show hero glyph by race rather than by role */
     boolean travelcmd; /* allow travel command */
-    int runmode;       /* update screen display during run moves */
     uchar spellorder;
     schar max_hint_difficulty; /* Maximum difficulty level where hints are shown */
     boolean non_scoring; /* The game has been, for example, loaded from an imported save file and has thereby become non-scoring */
     uchar auto_bag_in_style;
+    boolean reserved_bool_special; /* to have 8 chars in a row */
+
+    int64_t reserved_int64_special2; /* to have highest alignment before the emergency variables */
+
+    /* Emergency reserved variables to make non-save-game-breaking changes */
+    uint64_t reserved_ulong1;
+    uint64_t reserved_ulong2;
+    int reserved_int1;
+    int reserved_int2;
+    short reserved_short1;
+    short reserved_short2;
+    char reserved_char1;
+    char reserved_char2;
 
     /* Emergency reserved booleans to make non-save-game-breaking changes */
     boolean reserved_bool1;
     boolean reserved_bool2;
     boolean reserved_bool3;
     boolean reserved_bool4;
-
-    /* Emergency reserved variables to make non-save-game-breaking changes */
-    char reserved_char1;
-    char reserved_char2;
-    short reserved_short1;
-    short reserved_short2;
-    int reserved_int1;
-    int reserved_int2;
-    uint64_t reserved_ulong1;
-    uint64_t reserved_ulong2;
 };
 
 /*

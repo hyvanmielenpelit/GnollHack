@@ -77,6 +77,8 @@ struct u_have {
     Bitfield(questart, 1); /* carrying the Quest Artifact */
     Bitfield(prime_codex, 1);  /* carrying Prime Codex */
     Bitfield(unused, 2);
+
+    unsigned reserved;
 };
 
 struct u_event {
@@ -109,14 +111,9 @@ struct u_event {
     Bitfield(elbereth_known, 1);      /* has learned of Elbereth */
     Bitfield(invocation_ritual_known, 1); /* has learned how to conduct the invocation ritual from the Oracle */
     Bitfield(heard_of_invocation_ritual, 1); /* has heard of the invocation ritual and the items necessary for it; enables the quest update */
-#ifdef BITFIELDS
+
     unsigned reserved;
-#else
-    uchar reserved1;
-    uchar reserved2;
-    uchar reserved3;
-    uchar reserved4;
-#endif
+
     unsigned ranks_attained;
 };
 
@@ -156,14 +153,7 @@ struct u_achieve {
     Bitfield(crowned, 1); /* Became Hand of Elbereth, Envoy of Balance, or Glory of Arioch */
     Bitfield(killed_demogorgon, 1);
 
-#ifdef BITFIELDS
     unsigned reserved;
-#else
-    uchar reserved1;
-    uchar reserved2;
-    uchar reserved3;
-    uchar reserved4;
-#endif
 };
 
 enum kill_hints
@@ -511,26 +501,14 @@ struct you {
     d_level uz, uz0;    /* your level on this and the previous turn */
     d_level utolev;     /* level monster teleported you to, or uz */
     short utotype;      /* bitmask of goto_level() flags for utolev */
-    boolean umoved;     /* changed map location (post-move) */
+    short ureserved_short;
+
     int last_str_turn;  /* 0: none, 1: half turn, 2: full turn
                            +: turn right, -: turn left */
     int ulevel;         /* 1 to MAXULEV */
     int ulevelmax;
-    uint64_t utrap;    /* trap timeout */
-    uchar utraptype; /* defined if utrap nonzero. one of utraptypes */
-    char urooms[5];         /* rooms (roomno + 3) occupied now */
-    char urooms0[5];        /* ditto, for previous position */
-    char uentered[5];       /* rooms (roomno + 3) entered this turn */
-    char ushops[5];         /* shop rooms (roomno + 3) occupied now */
-    char ushops0[5];        /* ditto, for previous position */
-    char ushops_entered[5]; /* ditto, shops entered this turn */
-    char ushops_left[5];    /* ditto, shops exited this turn */
-
     int uhunger;  /* refd only in eat.c and shk.c */
     unsigned uhs; /* hunger state - see eat.c */
-
-    struct prop uprops[LAST_PROP + 1];
-
     unsigned umconf;
 
     /* These ranges can never be more than MAX_RANGE (vision.h). */
@@ -551,15 +529,33 @@ struct you {
     int umonnum;                /* current monster number */
 
     int mh, mhmax, basemhmax, basemhdrain, mtimedone;   /* for polymorph-self */
-    struct attribs macurr,      /* for monster attribs */
-                   mamin,       /* for monster attribs */
-                   mamax;       /* for monster attribs */
     int ulycn;                  /* lycanthrope type */
 
     unsigned ucreamed;
     unsigned uswldtim;          /* time you have been swallowed */
-    boolean mfemale;            /* saved human value of flags.female (your true gender before polymorph) */
+    unsigned uintervene_timer;  /* how timer until next intervention by Wizard of Yendor */
 
+    align ualign;               /* character alignment */
+#define CONVERT    2
+#define A_ORIGINAL 1
+#define A_CURRENT  0
+    aligntyp ualignbase[CONVERT]; /* for ualign conversion record */
+
+    struct attribs macurr,      /* for monster attribs */
+        mamin,       /* for monster attribs */
+        mamax;       /* for monster attribs */
+
+    char urooms[5];         /* rooms (roomno + 3) occupied now */
+    char urooms0[5];        /* ditto, for previous position */
+    char uentered[5];       /* rooms (roomno + 3) entered this turn */
+    char ushops[5];         /* shop rooms (roomno + 3) occupied now */
+    char ushops0[5];        /* ditto, for previous position */
+    char ushops_entered[5]; /* ditto, shops entered this turn */
+    char ushops_left[5];    /* ditto, shops exited this turn */
+
+    boolean mfemale;       /* saved human value of flags.female (your true gender before polymorph) */
+
+    boolean umoved;        /* changed map location (post-move) */
     boolean uswallow;      /* true if swallowed */
     boolean uinwater;      /* if you're currently in water (only
                                    underwater possible currently) */
@@ -568,13 +564,6 @@ struct you {
     boolean uburied;       /* you're buried */
     boolean uedibility;    /* blessed food detect; sense unsafe food */
 
-    unsigned uintervene_timer;  /* how timer until next intervention by Wizard of Yendor */
-    struct u_achieve uachieve;  /* achievements */
-    struct u_event uevent;      /* certain events have happened */
-    struct u_hint uhint;        /* certain hints have been given */
-    struct u_have uhave;        /* you're carrying special objects */
-    struct u_conduct uconduct;  /* KMH, conduct */
-    struct u_roleplay uroleplay;
     struct attribs acurr,       /* your current attributes (eg. str)*/
                     aexe,       /* for gain/loss via "exercise" */
                     abonus,     /* your bonus attributes (eg. str) */
@@ -584,19 +573,15 @@ struct you {
                     amax,       /* your max attributes (eg. str) */
                    atemp,       /* used for temporary loss/gain */
                    atime;       /* used for loss/gain countdown */
-    align ualign;               /* character alignment */
-#define CONVERT    2
-#define A_ORIGINAL 1
-#define A_CURRENT  0
-    aligntyp ualignbase[CONVERT]; /* for ualign conversion record */
+
     schar uluck;
-    int64_t moreluck;    /* luck and luck bonus */
     boolean luck_does_not_timeout, unluck_does_not_timeout;
 #define LUCKADD    3  /* value of u.moreluck when carrying luck stone;
                          + when blessed or uncursed, - when cursed */
 #define Luck (u.uluck + (u.moreluck > 0 ? LUCKADD : u.moreluck < 0 ? -LUCKADD : 0))
 #define LUCKMAX   10  /* maximum value of u.uluck */
 #define LUCKMIN (-10) /* minimum value of u.uluck */
+
     schar ubasehitinc;        /* permanent intrinsic values not affected by items or anything else */
     schar ubasedaminc;
     schar ubaseacbonus;
@@ -608,43 +593,73 @@ struct you {
     schar uspellcastingbonus_all;
     schar uexperiencebonus;
     schar uarcherybonus;
-    short uac;                 /* current armor class */
-    schar umc;                 /* current magic cancellation */
+
+    uchar utraptype;         /* defined if utrap nonzero. one of utraptypes */
+
     int uhp, uhpmax, ubasehpmax, ubasehpdrain;         /* hit points, aka health */
     int uen, uenmax, ubaseenmax, ubaseendrain;         /* magical energy - M. Stephenson */
+    int uhp_fraction, uen_fraction, mh_fraction;
+    short uac;                 /* current armor class */
+    schar umc;                 /* current magic cancellation */
     xchar uhpinc[MAXULEV],   /* increases to uhpmax for each level gain */
           ueninc[MAXULEV];   /* increases to uenmax for each level gain */
-    int uhp_fraction, uen_fraction, mh_fraction;
+
     int ugangr;              /* if the gods are angry at you */
     int ugifts;              /* number of artifacts bestowed */
     int ublessed;            /* amount of permanent divine protection bestowed upon you */
     int uprayer_timeout;     /* duration from #pray */
+    int uinvault;
+    int ureserved_int;
+
+    /* Int64s */
     int64_t umoney0;
-    int64_t uspare1;
     int64_t uexp, u_gamescore;
     int64_t ucleansed;          /* to record moves when player was cleansed */
     int64_t usleep;             /* sleeping; monstermove you last started */
-    int uinvault;
-    struct monst *ustuck;    /* engulfer or grabber, maybe grabbee if Upolyd */
-    struct monst *usteed;    /* mount when riding */
     int64_t ugallop;            /* turns steed will run after being kicked */
+    int64_t moreluck;           /* luck and luck bonus */
+    int64_t uspare1;
+
+    /* Pointers */
+    struct monst* ustuck;    /* engulfer or grabber, maybe grabbee if Upolyd */
+    struct monst* usteed;    /* mount when riding */
+
+    /* Uint64s */
+    uint64_t utrap;             /* trap timeout */
+
+    /* Structs in the desceding order or alignment */
+    struct prop uprops[LAST_PROP + 1];
+
+    struct u_conduct uconduct;  /* KMH, conduct */
+    struct u_roleplay uroleplay;
+    struct u_hint uhint;        /* certain hints have been given */
+    struct u_achieve uachieve;  /* achievements */
+    struct u_event uevent;      /* certain events have happened */
+    struct u_have uhave;        /* you're carrying special objects */
+
     int urideturns;          /* time spent riding, for skill advancement */
     int umortality;          /* how many times you died */
     int utruemortality;      /* how many times you truly died without counting life saving, just revives due to wizard, explore, and modern mode */
     int ugrave_arise;        /* you die and become something aside from a ghost */
+    int carrying_capacity_level;
     int weapon_slots;        /* unused skill slots */
     int max_weapon_slots;    /* max skill slots */
     int skills_advanced;     /* # of advances made so far */
-    xchar skill_record[P_SKILL_LIMIT]; /* skill advancements */
     struct skills weapon_skills[P_NUM_SKILLS];
+    xchar skill_record[P_SKILL_LIMIT]; /* skill advancements */
     boolean twoweap;         /* KMH -- Using two-weapon combat */
     boolean canadvanceskill; /* Can advance skill */
-    int carrying_capacity_level;
 
     /* Data influencing what is shown in tiles */
     boolean facing_right;
     uchar action;
 
+    /* A few extra bools that do not take space because of alignment padding */
+    boolean ureserved_bool1;
+    boolean ureserved_bool2;
+    boolean ureserved_bool3;
+    boolean ureserved_bool4;
+    /* All padding taken */
 }; /* end of `struct you' */
 
 #define Upolyd (u.umonnum != u.umonster)
