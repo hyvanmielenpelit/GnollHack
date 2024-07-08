@@ -6614,8 +6614,11 @@ namespace GnollHackX
         public static string GetActiveGPU()
         {
             string res = "";
+#if WINDOWS10_0_19041_0_OR_GREATER
+            var t2 = Windows.ApplicationModel.AppInfo.Current.AppUserModelId;
+#else
             var t2 = Windows.ApplicationModel.Package.Current.Id.FamilyName + "!App";
-
+#endif
             var gpuPref = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\DirectX\UserGpuPreferences");
             if (gpuPref != null)
             {
@@ -6669,7 +6672,7 @@ namespace GnollHackX
         }
 #endif
 
-    }
+        }
 
     public class DeviceGPU
     {

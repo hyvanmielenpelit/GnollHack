@@ -1635,6 +1635,9 @@ namespace GnollHackX
         public const int MaxObjectsDrawn = 12;
         public const int OBJECT_PILE_START_HEIGHT = 2;
         public const int OBJECT_PILE_HEIGHT_DIFFERENCE = 2;
+        public const int MAX_UI_TILE_COMPONENTS = 32;
+        public const int MAX_UI_TILE_16_x_16_COMPONENTS = 24;
+        public const int MAX_UI_TILE_8_x_24_COMPONENTS = 32;
         public const float MinimumMapMiniRelativeFontSize = 0.5f;
         public const float MaximumMapMiniRelativeFontSize = 2.0f;
         public const float MinimumMapFontSize = 4.0f;

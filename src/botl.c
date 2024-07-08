@@ -1373,7 +1373,7 @@ boolean loc_is_you, ispeaceful, ispet, isdetected;
 
     status_bits = 0UL;
     int status_mark;
-    for (status_mark = STATUS_MARK_PET; status_mark < MAX_STATUS_MARKS; status_mark++)
+    for (status_mark = 0; status_mark < MAX_STATUS_MARKS; status_mark++)
     {
         boolean display_this_status_mark = FALSE;
         switch (status_mark)

@@ -1977,7 +1977,8 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                         if (cnt >= max_marks)
                             break;
 
-                        int src_x = (ipm_idx % marks_per_row) * mark_width, src_y = (ipm_idx / marks_per_row) * mark_height;
+                        int src_tile = ITEM_PROPERTY_MARKS + (ipm_idx / MAX_UI_TILE_8_x_24_COMPONENTS);
+                        int src_x = ((ipm_idx % MAX_UI_TILE_8_x_24_COMPONENTS) % marks_per_row) * mark_width, src_y = ((ipm_idx % MAX_UI_TILE_8_x_24_COMPONENTS) / marks_per_row) * mark_height;
                         int dest_x = 0, dest_y = 0;
 
                         switch (ipm_idx)
@@ -2089,7 +2090,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                         dest_y = y_start + (int)((double)(y_padding) * mark_scale_factor);
                         dest_x = x_start + (int)((double)item_xpos * scale_factor);
 
-                        int source_glyph = ITEM_PROPERTY_MARKS + GLYPH_UI_TILE_OFF;
+                        int source_glyph = src_tile + GLYPH_UI_TILE_OFF;
                         int atile = glyph2tile[source_glyph];
                         int a_sheet_idx = TILE_SHEET_IDX(atile);
                         int at_x = TILEBMP_X(atile);

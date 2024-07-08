@@ -2291,12 +2291,12 @@ struct monst* mtmp;
 
     /* Conditions */
     uint64_t m_conditions = get_m_condition_bits(mtmp);
-    for (int cond = 0; cond < ui_tile_component_array[CONDITION_MARKS].number; cond++)
+    for (int cond = 0; cond < NUM_BL_CONDITIONS; cond++)
     {
-        int condition_bit = 1 << cond;
+        uint64_t condition_bit = (uint64_t)1 << cond;
         if (m_conditions & condition_bit)
         {
-            if (cond < NUM_BL_CONDITIONS && condition_names[cond])
+            if (condition_names[cond])
             {
                 condition_count++;
                 if ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0)

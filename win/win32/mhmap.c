@@ -3952,7 +3952,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 if (cnt >= 8)
                                     break;
 
-                                int src_x = (ipm_idx % marks_per_row) * mark_width, src_y = (ipm_idx / marks_per_row) * mark_height;
+                                int src_tile = ITEM_PROPERTY_MARKS + (ipm_idx / MAX_UI_TILE_8_x_24_COMPONENTS);
+                                int src_x = ((ipm_idx % MAX_UI_TILE_8_x_24_COMPONENTS) % marks_per_row) * mark_width, src_y = ((ipm_idx % MAX_UI_TILE_8_x_24_COMPONENTS) / marks_per_row) * mark_height;
                                 int dest_x = 0, dest_y = 0;
 
                                 switch (ipm_idx)
@@ -4064,7 +4065,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 dest_y = y_start + (int)(obj_scaling_factor * (double)(tileHeight / 4 + mark_height / 2 - mark_height));
                                 dest_x = x_start + (int)(obj_scaling_factor * (double)item_xpos);
 
-                                int source_glyph = ITEM_PROPERTY_MARKS + GLYPH_UI_TILE_OFF;
+                                int source_glyph = src_tile + GLYPH_UI_TILE_OFF;
                                 int atile = glyph2tile[source_glyph];
                                 int a_sheet_idx = TILE_SHEET_IDX(atile);
                                 int at_x = TILEBMP_X(atile);
@@ -4536,21 +4537,22 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         if (!mtmp)
                             mtmp = &youmonst;
 
+                        int max_fitted_rows = (tileHeight - 4) / (ui_tile_component_array[STATUS_MARKS].height + 2);
+
                         //if (1) // Always true
                         {
                             /* Petmark and other status marks */
-                            int mglyph = STATUS_MARKS + GLYPH_UI_TILE_OFF;
-                            int mtile = glyph2tile[mglyph];
-                            int m_sheet_idx = TILE_SHEET_IDX(mtile);
-                            int ct_x = TILEBMP_X(mtile);
-                            int ct_y = TILEBMP_Y(mtile);
-                            int tiles_per_row = tileWidth / ui_tile_component_array[STATUS_MARKS].width;
-                            int max_fitted_rows = (tileHeight - 4) / (ui_tile_component_array[STATUS_MARKS].height + 2);
-
-                            for (int statusorder_idx = STATUS_MARK_PET; statusorder_idx < SIZE(statusmarkorder); statusorder_idx++)
+                            for (int statusorder_idx = 0; statusorder_idx < SIZE(statusmarkorder); statusorder_idx++)
                             {
                                 enum game_ui_status_mark_types status_mark = statusmarkorder[statusorder_idx];
                                 boolean display_this_status_mark = FALSE;
+                                int tile_idx = STATUS_MARKS + (int)status_mark / MAX_UI_TILE_16_x_16_COMPONENTS;
+                                int mglyph = tile_idx + GLYPH_UI_TILE_OFF;
+                                int mtile = glyph2tile[mglyph];
+                                int m_sheet_idx = TILE_SHEET_IDX(mtile);
+                                int ct_x = TILEBMP_X(mtile);
+                                int ct_y = TILEBMP_Y(mtile);
+                                int tiles_per_row = tileWidth / ui_tile_component_array[tile_idx].width;
 
                                 switch (status_mark)
                                 {
@@ -4673,22 +4675,22 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                 if (display_this_status_mark)
                                 {
-                                    int within_tile_x = status_mark % tiles_per_row;
-                                    int within_tile_y = status_mark / tiles_per_row;
-                                    int c_x = ct_x + within_tile_x * ui_tile_component_array[STATUS_MARKS].width;
-                                    int c_y = ct_y + within_tile_y * ui_tile_component_array[STATUS_MARKS].height;
+                                    int within_tile_x = (status_mark % MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
+                                    int within_tile_y = (status_mark % MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
+                                    int c_x = ct_x + within_tile_x * ui_tile_component_array[tile_idx].width;
+                                    int c_y = ct_y + within_tile_y * ui_tile_component_array[tile_idx].height;
 
                                     RECT source_rt = { 0 };
                                     source_rt.left = c_x;
-                                    source_rt.right = c_x + ui_tile_component_array[STATUS_MARKS].width;
+                                    source_rt.right = c_x + ui_tile_component_array[tile_idx].width;
                                     source_rt.top = c_y;
-                                    source_rt.bottom = c_y + ui_tile_component_array[STATUS_MARKS].height;
+                                    source_rt.bottom = c_y + ui_tile_component_array[tile_idx].height;
 
                                     /* Define draw location in target */
-                                    int unscaled_left = tileWidth - 2 - ui_tile_component_array[STATUS_MARKS].width;
-                                    int unscaled_right = unscaled_left + ui_tile_component_array[STATUS_MARKS].width;
-                                    int unscaled_top = 2 + (2 + ui_tile_component_array[STATUS_MARKS].width) * condition_count;
-                                    int unscaled_bottom = unscaled_top + ui_tile_component_array[STATUS_MARKS].height;
+                                    int unscaled_left = tileWidth - 2 - ui_tile_component_array[tile_idx].width;
+                                    int unscaled_right = unscaled_left + ui_tile_component_array[tile_idx].width;
+                                    int unscaled_top = 2 + (2 + ui_tile_component_array[tile_idx].width) * condition_count;
+                                    int unscaled_bottom = unscaled_top + ui_tile_component_array[tile_idx].height;
 
                                     RECT target_rt = { 0 };
                                     target_rt.left = rect->left + (int)(x_scaling_factor * (double)unscaled_left);
@@ -4710,17 +4712,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             }
 
                             /* Conditions */
-                            mglyph = CONDITION_MARKS + GLYPH_UI_TILE_OFF;
-                            mtile = glyph2tile[mglyph];
-                            m_sheet_idx = TILE_SHEET_IDX(mtile);
-                            ct_x = TILEBMP_X(mtile);
-                            ct_y = TILEBMP_Y(mtile);
-                            tiles_per_row = tileWidth / ui_tile_component_array[CONDITION_MARKS].width;
-                            max_fitted_rows = (tileHeight - 4) / (ui_tile_component_array[CONDITION_MARKS].height + 2);
-
                             /* Number is the same as condition bits */
                             uint64_t m_conditions = get_m_condition_bits(mtmp);
-                            for (int cond = 0; cond < ui_tile_component_array[CONDITION_MARKS].number; cond++)
+                            for (int cond = 0; cond < NUM_BL_CONDITIONS; cond++)
                             {
                                 if (condition_count >= max_fitted_rows)
                                     break;
@@ -4735,22 +4729,30 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                 if (m_conditions & condition_bit)
                                 {
-                                    int within_tile_x = cond % tiles_per_row;
-                                    int within_tile_y = cond / tiles_per_row;
-                                    int c_x = ct_x + within_tile_x * ui_tile_component_array[CONDITION_MARKS].width;
-                                    int c_y = ct_y + within_tile_y * ui_tile_component_array[CONDITION_MARKS].height;
+                                    int tile_idx = CONDITION_MARKS + cond / MAX_UI_TILE_16_x_16_COMPONENTS;
+                                    int mglyph = tile_idx + GLYPH_UI_TILE_OFF;
+                                    int mtile = glyph2tile[mglyph];
+                                    int m_sheet_idx = TILE_SHEET_IDX(mtile);
+                                    int ct_x = TILEBMP_X(mtile);
+                                    int ct_y = TILEBMP_Y(mtile);
+                                    int tiles_per_row = tileWidth / ui_tile_component_array[tile_idx].width;
+
+                                    int within_tile_x = (cond % MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
+                                    int within_tile_y = (cond % MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
+                                    int c_x = ct_x + within_tile_x * ui_tile_component_array[tile_idx].width;
+                                    int c_y = ct_y + within_tile_y * ui_tile_component_array[tile_idx].height;
 
                                     RECT source_rt = { 0 };
                                     source_rt.left = c_x;
-                                    source_rt.right = c_x + ui_tile_component_array[CONDITION_MARKS].width;
+                                    source_rt.right = c_x + ui_tile_component_array[tile_idx].width;
                                     source_rt.top = c_y;
-                                    source_rt.bottom = c_y + ui_tile_component_array[CONDITION_MARKS].height;
+                                    source_rt.bottom = c_y + ui_tile_component_array[tile_idx].height;
 
                                     /* Define draw location in target */
-                                    int unscaled_left = tileWidth - 2 - ui_tile_component_array[CONDITION_MARKS].width;
-                                    int unscaled_right = unscaled_left + ui_tile_component_array[CONDITION_MARKS].width;
-                                    int unscaled_top = 2 + (2 + ui_tile_component_array[CONDITION_MARKS].width) * condition_count;
-                                    int unscaled_bottom = unscaled_top + ui_tile_component_array[CONDITION_MARKS].height;
+                                    int unscaled_left = tileWidth - 2 - ui_tile_component_array[tile_idx].width;
+                                    int unscaled_right = unscaled_left + ui_tile_component_array[tile_idx].width;
+                                    int unscaled_top = 2 + (2 + ui_tile_component_array[tile_idx].width) * condition_count;
+                                    int unscaled_bottom = unscaled_top + ui_tile_component_array[tile_idx].height;
 
                                     RECT target_rt = { 0 };
                                     target_rt.left = rect->left + (int)(x_scaling_factor * (double)unscaled_left);
@@ -4786,12 +4788,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 if (duration == 0L)
                                     continue;
 
-                                mglyph = (propidx - 1) / BUFFS_PER_TILE + GLYPH_BUFF_OFF;
-                                mtile = glyph2tile[mglyph];
-                                m_sheet_idx = TILE_SHEET_IDX(mtile);
-                                ct_x = TILEBMP_X(mtile);
-                                ct_y = TILEBMP_Y(mtile);
-                                tiles_per_row = tileWidth / BUFF_WIDTH;
+                                int mglyph = (propidx - 1) / BUFFS_PER_TILE + GLYPH_BUFF_OFF;
+                                int mtile = glyph2tile[mglyph];
+                                int m_sheet_idx = TILE_SHEET_IDX(mtile);
+                                int ct_x = TILEBMP_X(mtile);
+                                int ct_y = TILEBMP_Y(mtile);
+                                int tiles_per_row = tileWidth / BUFF_WIDTH;
                                 max_fitted_rows = (tileHeight - 4) / (BUFF_HEIGHT + 2);
 
                                 if (condition_count >= max_fitted_rows)
@@ -4915,11 +4917,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 int signed_mglyph = u_to_glyph();
                                 signed_mglyph = maybe_get_replaced_glyph(signed_mglyph, i, j, data_to_replacement_info(signed_mglyph, base_layer, otmp_round, mtmp, data->map[enl_i][enl_j].layer_flags, data->map[enl_i][enl_j].monster_flags, data->map[enl_i][enl_j].missile_flags, data->map[enl_i][enl_j].missile_material, data->map[enl_i][enl_j].missile_special_quality));
                                 boolean flip_rider = (signed_mglyph < 0);
-                                mglyph = abs(signed_mglyph);
-                                mtile = glyph2tile[mglyph];
+                                int mglyph = abs(signed_mglyph);
+                                int mtile = glyph2tile[mglyph];
                                 int tile_animation_idx = get_tile_animation_index_from_glyph(mglyph);
                                 mtile = maybe_get_animated_tile(mtile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, animation_timers.general_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
-                                m_sheet_idx = TILE_SHEET_IDX(mtile);
+                                int m_sheet_idx = TILE_SHEET_IDX(mtile);
                                 int c_x = TILEBMP_X(mtile);
                                 int c_y = TILEBMP_Y(mtile);
                                 /* Define draw location in target */
