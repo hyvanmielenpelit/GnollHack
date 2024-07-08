@@ -13,7 +13,7 @@
 #define NAMELIST_ARCH_LICH 3
 #define NAMELIST_QUANTUM_MECHANIC 4
 
-STATIC_VAR const char namelists[][MAX_NAMELIST_NAMES][BUFSIZ] = 
+STATIC_VAR const char namelists[][MAX_NAMELIST_NAMES][BUFSZ * 2] =
 {
     {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
     {"Urok", "Golluk", "Grimsh", "Urum", "", "", "", "", "", "", "", "", "", "", "", "" },
@@ -1455,7 +1455,7 @@ int selected_encounter, x, y, max_attk_monsters;
                         break;
 
                     char* bp;
-                    char testbuf[BUFSIZ] = "";
+                    char testbuf[BUFSZ * 2] = "";
                     Sprintf(testbuf, "|%s|", namelists[nlid][j]);
                     if ((bp = strstri(context.used_names, testbuf)) != 0)
                         continue;
@@ -1469,7 +1469,7 @@ int selected_encounter, x, y, max_attk_monsters;
                     int selectedindex = -1;
                     char buf[BUFSZ] = "";
                     char* bp;
-                    char testbuf[BUFSIZ] = "";
+                    char testbuf[BUFSZ * 2] = "";
                     boolean allused = FALSE;
 
                     for(int k = 0; k <= roll; k++)
@@ -1590,7 +1590,7 @@ wiz_save_encounters(VOID_ARGS) /* Save a csv file for encounters */
         fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
 #endif
 
-        char buf[BUFSIZ] = "";
+        char buf[BUFSZ * 2] = "";
         int i, j;
 
         Sprintf(buf, "#,DifMin");

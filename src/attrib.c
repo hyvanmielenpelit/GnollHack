@@ -1824,7 +1824,7 @@ int propidx; /* OBSOLETE: special cases can have negative values */
                 Strcpy(buf, " due to your surroundings");
             else if (u.uprops[propidx].extrinsic & W_STUCK)
             {
-                char ustuckbuf[BUFSIZ];
+                char ustuckbuf[BUFSZ * 2];
                 if (u.ustuck)
                     Sprintf(ustuckbuf, "%s holding you", mon_nam(u.ustuck));
                 else

@@ -157,7 +157,7 @@ mswin_display_splash_window(BOOL show_ver)
     MoveWindow(hWnd, left, top, splashData.window_width, splashData.window_height, TRUE);
 
     /* Fill the text control */
-    strbuf_reserve(&strbuf, BUFSIZ);
+    strbuf_reserve(&strbuf, BUFSZ * 2);
     Sprintf(strbuf.str, "%s\n%s\n%s\n%s\n\n", COPYRIGHT_BANNER_A,
             COPYRIGHT_BANNER_B, COPYRIGHT_BANNER_C, COPYRIGHT_BANNER_D);
 

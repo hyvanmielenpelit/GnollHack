@@ -1442,7 +1442,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                   || (!youdefend && cansee(mdef->mx, mdef->my))
                   || (youattack && u.uswallow && mdef == u.ustuck && !Blind);
     boolean realizes_damage;
-    char wepdesc[BUFSIZ] ="";
+    char wepdesc[BUFSZ * 2] ="";
     static const char you[] = "you";
     char hittee[BUFSZ];
 

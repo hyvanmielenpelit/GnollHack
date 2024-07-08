@@ -268,8 +268,8 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         PMSNHMsgPutstr msg_data = (PMSNHMsgPutstr) lParam;
         TCHAR wbuf[BUFSZ];
         size_t text_size;
-        char msgbuf[BUFSIZ] = "";
-        write_CP437_to_buf_unicode(msgbuf, BUFSIZ, msg_data->text);
+        char msgbuf[BUFSZ * 4] = "";
+        write_CP437_to_buf_unicode(msgbuf, BUFSZ * 4, msg_data->text);
 
         if (!data->window_text) {
             text_size = strlen(msgbuf) + 4;

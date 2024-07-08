@@ -1340,7 +1340,7 @@ size_t bufsize;
         return;
 
     char* bp, * wp;
-    char copybuf[BUFSIZ] = "";
+    char copybuf[BUFSZ * 8] = "";
     wp = copybuf;
     uchar uc, uc2, uc3, uc4;
     unsigned long unicode = 0, byte2bits, byte1bits, byte3bits, byte4bits;

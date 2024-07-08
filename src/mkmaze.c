@@ -757,7 +757,7 @@ void
 stolen_booty(VOID_ARGS)
 {
     char *gang, gang_name[BUFSZ];
-    char lootlabel[BUFSIZ] = "";
+    char lootlabel[BUFSZ * 2] = "";
     struct monst *mtmp;
     int cnt, i, otyp;
 

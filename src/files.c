@@ -6080,7 +6080,23 @@ const char* str;
             int64_t currenttime = get_current_game_duration();
             char* duration = format_duration_with_units(currenttime);
             Sprintf(postbuf, "%s (%s) %s, on T:%lld (%s) [%s]", plname, cbuf, str, (long long)moves, duration, mbuf);
-            issue_gui_command(GUI_CMD_POST_GAME_STATUS, GAME_STATUS_ACHIEVEMENT, (int)ll_type, postbuf);
+
+            int post_type;
+            if (ll_type & (LL_GAME_START | LL_GAME_RESTORE | LL_GAME_SAVE))
+            {
+                post_type = GAME_STATUS_POST_IF_CLOUD_REPLAY_ON;
+                lock_thread_lock();
+                struct u_realtime used_realtime = urealtime;
+                unlock_thread_lock();
+                if (ll_type & (LL_GAME_RESTORE | LL_GAME_SAVE))
+                {
+                    Sprintf(eos(postbuf), " [%llx]", (unsigned long long)used_realtime.finish_time);
+                }
+            }
+            else
+                post_type = GAME_STATUS_GENERAL_POST;
+
+            issue_gui_command(GUI_CMD_POST_GAME_STATUS, post_type, (int)ll_type, postbuf);
         }
     }
 }
@@ -6137,6 +6153,18 @@ VA_DECL2(unsigned int, ll_type, const char*, fmt)
     vsnprintf(ll_msgbuf, 512, fmt, VA_ARGS);
     gamelog_add((int64_t)ll_type, moves, ll_msgbuf);
     livelog_write_string(ll_type, ll_msgbuf);
+    livelog_post_to_forum(ll_type, ll_msgbuf);
+    VA_END();
+}
+
+void
+post_to_forum_printf
+VA_DECL2(unsigned int, ll_type, const char*, fmt)
+{
+    char ll_msgbuf[512];
+    VA_START(fmt);
+    VA_INIT(fmt, char*);
+    vsnprintf(ll_msgbuf, 512, fmt, VA_ARGS);
     livelog_post_to_forum(ll_type, ll_msgbuf);
     VA_END();
 }

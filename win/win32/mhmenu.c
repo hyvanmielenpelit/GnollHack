@@ -627,8 +627,8 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         if (!data->text.text)
             break;
 
-        char msgbuf[BUFSIZ] = "";
-        write_CP437_to_buf_unicode(msgbuf, BUFSIZ, msg_data->text);
+        char msgbuf[BUFSZ * 4] = "";
+        write_CP437_to_buf_unicode(msgbuf, BUFSZ * 4, msg_data->text);
 
         _tcscat(data->text.text, NH_A2W(msgbuf /*msg_data->text*/, wbuf, BUFSZ));
         if(msg_data->attrs)

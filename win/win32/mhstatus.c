@@ -189,8 +189,8 @@ StatusWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         switch (wParam) {
         case MSNH_MSG_PUTSTR: {
             PMSNHMsgPutstr msg_data = (PMSNHMsgPutstr) lParam;
-            char msgbuf[BUFSIZ] = "";
-            write_CP437_to_buf_unicode(msgbuf, BUFSIZ, msg_data->text);
+            char msgbuf[BUFSZ * 4] = "";
+            write_CP437_to_buf_unicode(msgbuf, BUFSZ * 4, msg_data->text);
             (void)strncpy(data->window_text[data->index], msgbuf,
                     MAXWINDOWTEXT);
             data->index = (data->index + 1) % NHSW_LINES;
@@ -353,8 +353,8 @@ onWMPaint(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 atr = status_string->attribute;
 
                 const char *str = status_string->str;
-                char msgbuf[BUFSIZ] = "";
-                write_CP437_to_buf_unicode(msgbuf, BUFSIZ, str);
+                char msgbuf[BUFSZ * 4] = "";
+                write_CP437_to_buf_unicode(msgbuf, BUFSZ * 4, str);
 
                 vlen = strlen(msgbuf);
 

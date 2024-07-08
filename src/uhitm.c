@@ -497,7 +497,7 @@ register struct monst *mtmp;
         }
     }
 
-    char qbuf[BUFSIZ];
+    char qbuf[BUFSZ * 2];
     Strcpy(qbuf, "");
     if (unweapon1 && unweapon2)
     {
@@ -795,7 +795,7 @@ struct attack *uattk;
         boolean breakloop = FALSE;
         if (wielderstrikeindex > 0)
         {
-            char wielderstrikebuf[BUFSIZ] = "";
+            char wielderstrikebuf[BUFSZ * 2] = "";
             if (uwep)
                 Sprintf(wielderstrikebuf, "You strike with %s", yname(uwep));
             else if (u.twoweap)
@@ -888,7 +888,7 @@ struct attack *uattk;
             boolean breakloop = FALSE;
             if (wielderstrike2index > 0)
             {
-                char wielderstrikebuf[BUFSIZ] = "";
+                char wielderstrikebuf[BUFSZ * 2] = "";
                 if (uarms)
                     Sprintf(wielderstrikebuf, "You strike with %s", yname(uarms));
                 else

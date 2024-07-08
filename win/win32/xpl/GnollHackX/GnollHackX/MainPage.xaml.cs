@@ -173,7 +173,14 @@ namespace GnollHackX
                 else
                 {
                     if (_postingQueue.Count > 0)
+                    {
                         ProcessPostingQueue(); //Saves now posts first to disk in the case app is switched off very quickly before sending is finished
+                        has_files = Directory.Exists(directory) && Directory.GetFiles(directory)?.Length > 0;
+                        has_files2 = Directory.Exists(directory2) && Directory.GetFiles(directory2)?.Length > 0;
+                        has_files3 = Directory.Exists(directory3) && Directory.GetFiles(directory3)?.Length > 0;
+                        has_files4 = Directory.Exists(directory4) && Directory.GetFiles(directory4)?.Length > 0;
+                    }
+
                     if (hasinternet && !GHApp.XlogUserNameVerified && (GHApp.PostingXlogEntries || dopostbones || dopostreplays) && !missingorincorrectcredentials)
                         await GHApp.TryVerifyXlogUserNameAsync();
 

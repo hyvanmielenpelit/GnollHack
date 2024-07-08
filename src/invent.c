@@ -4453,7 +4453,7 @@ boolean* return_to_inv_ptr;
 
         const char* headings[NUM_CMD_SECTIONS] = { "Information", "General Commands", "Item-Specific Commands" };
         uint64_t section_flags[NUM_CMD_SECTIONS] = { SINGLE_OBJ_CMD_INFO, SINGLE_OBJ_CMD_GENERAL, SINGLE_OBJ_CMD_SPECIFIC };
-        char buf[BUFSIZ] = "";
+        char buf[BUFSZ * 2] = "";
         char cmdbuf[BUFSZ] = "";
         char shortcutbuf[BUFSZ] = "";
         char headerbuf[BUFSZ] = "";
@@ -5109,7 +5109,7 @@ nextclass:
 
     if (addinventoryheader)
     {
-        char qbuf[BUFSIZ], subtitlebuf[BUFSIZ];
+        char qbuf[BUFSZ * 2], subtitlebuf[BUFSZ * 2];
         int icnt = inv_cnt_ex(FALSE, wornonly);
         char weightbuf[BUFSZ];
         printweight(weightbuf, wtcount, FALSE, FALSE, TRUE);

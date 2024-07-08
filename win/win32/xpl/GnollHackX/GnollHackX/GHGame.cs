@@ -2253,6 +2253,10 @@ namespace GnollHackX
                     if (PlayingReplay)
                         break;
 
+                    if (cmd_param == (int)game_status_types.GAME_STATUS_POST_IF_CLOUD_REPLAY_ON
+                        && (!GHApp.RecordGame || !GHApp.AutoUploadReplays))
+                        break;
+
                     if (cmd_str != null)
                         status_str = cmd_str;
 

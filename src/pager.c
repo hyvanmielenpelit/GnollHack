@@ -718,7 +718,7 @@ char *buf, *simplebuf, *extrabuf;
                     )
                 ) && cansee(x, y))
             {
-                char buf2[BUFSIZ];
+                char buf2[BUFSZ * 2];
                 Sprintf(buf2, "%s%s", levl[x][y].lamplit ? "lit " : "unlit ", buf);
                 Strcpy(buf, buf2);
             }
@@ -727,7 +727,7 @@ char *buf, *simplebuf, *extrabuf;
         }
     }
 
-    char exbuf[BUFSIZ];
+    char exbuf[BUFSZ * 2];
     Strcpy(exbuf, buf);
     int article = strstri(exbuf, " of a room")? 2 :
         (!noarticle && pm && (pm->geno & G_UNIQ)) ? (is_mname_proper_name(pm) ? 0 : 2) : /* for unique monsters have no article if the name is a proper name, otherwise they have the */
@@ -1262,7 +1262,7 @@ struct permonst **for_supplement;
                             && ((decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].dflags & DECORATION_TYPE_FLAGS_LOOTABLE) == 0 || (levl[cc.x][cc.y].decoration_flags & DECORATION_FLAGS_ITEM_IN_HOLDER) != 0)
                             ) && cansee(cc.x, cc.y))
                         {
-                            char buf2[BUFSIZ];
+                            char buf2[BUFSZ * 2];
                             Sprintf(buf2, "%s%s", levl[cc.x][cc.y].lamplit ? "lit " : "unlit ", decoration_buf);
                             Strcpy(decoration_buf, buf2);
                         }

@@ -147,6 +147,8 @@ dosave()
     return 0;
 }
 
+char saved_dgnlvl_name_buf[BUFSZ * 2] = "";
+
 /* returns 1 if save successful */
 int
 dosave0(quietly)
@@ -161,6 +163,7 @@ boolean quietly;
     Strcpy(debug_buf_2, "dosave0");
     Strcpy(debug_buf_3, "dosave0");
     Strcpy(debug_buf_4, "dosave0");
+    Strcpy(saved_dgnlvl_name_buf, "");
 
 #ifdef WHEREIS_FILE
     delete_whereis();
@@ -231,6 +234,7 @@ boolean quietly;
     if(!quietly)
         display_screen_text("Saving...", (const char*)0, (const char*)0, SCREEN_TEXT_SAVING, ATR_NONE, NO_COLOR, 0UL);
 
+    print_current_dgnlvl(saved_dgnlvl_name_buf);
     vision_recalc(2); /* shut down vision to prevent problems
                          in the event of an impossible() call */
 
@@ -353,6 +357,9 @@ boolean quietly;
     /* this should probably come sooner... */
     program_state.something_worth_saving = 0;
     saving = FALSE;
+
+    post_to_forum_printf(LL_GAME_SAVE, "saved %s game %s", uhis(), saved_dgnlvl_name_buf);
+    Strcpy(saved_dgnlvl_name_buf, "");
     return 1;
 }
 
@@ -409,8 +416,8 @@ register int fd, mode;
                                   - urealtime.start_timing);
     bwrite(fd, (genericptr_t) &u, sizeof(struct you));
     bwrite(fd, yyyymmddhhmmss(ubirthday), 14);
-    bwrite(fd, (genericptr_t) &urealtime.realtime, sizeof urealtime.realtime);
-    bwrite(fd, yyyymmddhhmmss(urealtime.start_timing), 14);  /** Why? **/
+    bwrite(fd, (genericptr_t) &urealtime, sizeof urealtime);
+    //bwrite(fd, yyyymmddhhmmss(urealtime.start_timing), 14);  /** Why? **/
     unlock_thread_lock();
 
     save_killers(fd, mode);

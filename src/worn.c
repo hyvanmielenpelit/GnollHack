@@ -672,10 +672,10 @@ boolean silently;
     boolean res = FALSE;
 
     /* works for fast, very fast, and slowed */
-    char savedname[BUFSIZ] = "";
+    char savedname[BUFSZ * 2] = "";
     Strcpy(savedname, mon_nam(mtmp));
 
-    char SavedName[BUFSIZ] = "";
+    char SavedName[BUFSZ * 2] = "";
     Strcpy(SavedName, Monnam(mtmp));
 
     boolean could_spot_mon = canspotmon(mtmp);

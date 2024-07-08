@@ -2130,7 +2130,7 @@ struct monst* mtmp;
 {
     if (is_silenced(mtmp))
     {
-        char Mhis[BUFSIZ];
+        char Mhis[BUFSZ * 2];
         Strcpy(Mhis, mhis(mtmp));
         *Mhis = highc(*Mhis);
         pline("%s cannot answer you. %s voice is gone!", noittame_Monnam(mtmp), Mhis);
@@ -2169,7 +2169,7 @@ genl_chat_message(VOID_ARGS)
 {
     while (1)
     {
-        char buf[BUFSIZ] = "";
+        char buf[BUFSZ * 2] = "";
         getlin("Chat>", buf);
         if (!*buf || *buf == '\033')
             return;
@@ -3689,7 +3689,7 @@ struct monst* mtmp;
             {
                 shp_indx = ESHK(mtmp)->shoptype - SHOPBASE;
                 const struct shclass* shp = &shtypes[shp_indx];
-                char itembuf[BUFSIZ] = "";
+                char itembuf[BUFSZ * 2] = "";
                 Strcpy(itembuf, shp->identified_item_description_plural);
             
                 Sprintf(available_chat_list[chatnum].name, "Identify %s", itembuf);
@@ -3795,7 +3795,7 @@ struct monst* mtmp;
 
                 chatnum++;
 
-                char sbuf[BUFSIZ];
+                char sbuf[BUFSZ * 2];
                 Sprintf(sbuf, "Sell nuggets of armor ore to %s", noittame_mon_nam(mtmp));
                 Strcpy(available_chat_list[chatnum].name, sbuf);
                 available_chat_list[chatnum].function_ptr = &do_chat_smith_sell_ore;
@@ -4040,7 +4040,7 @@ struct monst* mtmp;
 
                 if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_IDENTIFY_GEMS_AND_STONES)
                 {
-                    char sbuf[BUFSIZ];
+                    char sbuf[BUFSZ * 2];
                     Sprintf(sbuf, "Identify gems and stones");
                     Strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_identify_gems_and_stones;
@@ -4059,7 +4059,7 @@ struct monst* mtmp;
 
                 if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_BUY_GEMS_AND_STONES)
                 {
-                    char sbuf[BUFSIZ];
+                    char sbuf[BUFSZ * 2];
                     Sprintf(sbuf, "Sell gems and stones to %s", noittame_mon_nam(mtmp));
                     Strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_sell_gems_and_stones;
@@ -4129,7 +4129,7 @@ struct monst* mtmp;
 
                 if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_BUY_DILITHIUM_CRYSTALS)
                 {
-                    char sbuf[BUFSIZ];
+                    char sbuf[BUFSZ * 2];
                     Sprintf(sbuf, "Sell dilithium crystals and other gems to %s", noittame_mon_nam(mtmp));
                     Strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_sell_dilithium_crystals;
@@ -4148,7 +4148,7 @@ struct monst* mtmp;
 
                 if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_BUY_SPELLBOOKS)
                 {
-                    char sbuf[BUFSIZ];
+                    char sbuf[BUFSZ * 2];
                     Sprintf(sbuf, "Sell spellbooks to %s", noittame_mon_nam(mtmp));
                     Strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_sell_spellbooks;
@@ -4167,7 +4167,7 @@ struct monst* mtmp;
 
                 if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_IDENTIFY_ACCESSORIES_AND_CHARGED_ITEMS)
                 {
-                    char sbuf[BUFSIZ];
+                    char sbuf[BUFSZ * 2];
                     Sprintf(sbuf, "Identify accessories and charged items");
                     Strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_identify_accessories_and_charged_items;
@@ -4186,7 +4186,7 @@ struct monst* mtmp;
 
                 if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_IDENTIFY_GEMS_STONES_AND_CHARGED_ITEMS)
                 {
-                    char sbuf[BUFSIZ];
+                    char sbuf[BUFSZ * 2];
                     Sprintf(sbuf, "Identify gems, stones and charged items");
                     Strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_identify_gems_stones_and_charged_items;
@@ -4222,7 +4222,7 @@ struct monst* mtmp;
 
                 if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_TEACH_SPELLS_MASK)
                 {
-                    char sbuf[BUFSIZ];
+                    char sbuf[BUFSZ * 2];
                     Sprintf(sbuf, "Teach spells");
                     Strcpy(available_chat_list[chatnum].name, sbuf);
                     available_chat_list[chatnum].function_ptr = &do_chat_npc_teach_spells;
@@ -4607,9 +4607,9 @@ struct monst* mtmp;
     }
     else if (msound == MS_GUARDIAN)
     {
-        char namebuf[BUFSIZ] = "";
-        char endbuf[BUFSIZ] = "";
-        char titlebuf[BUFSIZ] = "";
+        char namebuf[BUFSZ * 2] = "";
+        char endbuf[BUFSZ * 2] = "";
+        char titlebuf[BUFSZ * 2] = "";
         switch (mtmp->mnum)
         {
         case PM_STUDENT:
@@ -5330,8 +5330,8 @@ struct monst* mtmp;
     struct obj* otmp, * otmp2;
     menu_item* pick_list;
 
-    char qbuf[BUFSIZ] = "";
-    char pbuf[BUFSIZ] = "";
+    char qbuf[BUFSZ * 2] = "";
+    char pbuf[BUFSZ * 2] = "";
     Sprintf(qbuf, "What would you like to give to %s?", noittame_mon_nam(mtmp));
 
     /* should coordinate with perm invent, maybe not show worn items */
@@ -5469,7 +5469,7 @@ struct monst* mtmp;
         return 0;
     }
 
-    char qbuf[BUFSIZ] = "";
+    char qbuf[BUFSZ * 2] = "";
     Sprintf(qbuf, "What would you like to feed to %s?", noittame_mon_nam(mtmp));
 
     add_valid_menu_class(0); /* clear any classes already there */
@@ -5605,7 +5605,7 @@ struct monst* mtmp;
     if (!mtmp)
         return 0;
 
-    char nbuf[BUFSIZ];
+    char nbuf[BUFSZ * 2];
     menu_item* pick_list = (menu_item*)0;
     winid win;
     anything any;
@@ -5830,7 +5830,7 @@ struct monst* mtmp;
         return 0;
     }
 
-    char qbuf[BUFSIZ] = "";
+    char qbuf[BUFSZ * 2] = "";
     Sprintf(qbuf, "What would you like to give to %s to drink?", noittame_mon_nam(mtmp));
 
     add_valid_menu_class(0); /* clear any classes already there */
@@ -6403,7 +6403,7 @@ struct monst* mtmp;
                 }
 
                 any = zeroany;
-                char itembuf[BUFSIZ] = "";
+                char itembuf[BUFSZ * 2] = "";
                 Sprintf(itembuf, "%s", doname(otmp));
 
                 int64_t price = get_cost_of_monster_item(otmp, mtmp);
@@ -6660,7 +6660,7 @@ struct monst* mtmp;
                 }
 
                 any = zeroany;
-                char itembuf[BUFSIZ] = "";
+                char itembuf[BUFSZ * 2] = "";
                 Sprintf(itembuf, "%s", doname(otmp));
 
                 any.a_obj = otmp;
@@ -10899,7 +10899,7 @@ int* spell_otyps;
             continue;
 
         any = zeroany;
-        char spellbuf[BUFSIZ] = "";
+        char spellbuf[BUFSZ * 2] = "";
         struct obj pseudo = zeroobj;
         pseudo.otyp = i;
         pseudo.blessed = 1;
@@ -10944,10 +10944,10 @@ int* spell_otyps;
             pseudo.otyp = spell_to_learn;
             pseudo.blessed = 1;
             int64_t cost = get_cost(&pseudo, mtmp);
-            char buf[BUFSIZ] = "";
-            char buf2[BUFSIZ] = "";
-            char bufc[BUFSIZ] = "";
-            char lvlbuf[BUFSIZ] = "";
+            char buf[BUFSZ * 2] = "";
+            char buf2[BUFSZ * 2] = "";
+            char bufc[BUFSZ * 2] = "";
+            char lvlbuf[BUFSZ * 2] = "";
             print_spell_level_text(lvlbuf, spell_to_learn, TRUE, 0, FALSE);
             if (iflags.using_gui_sounds)
             {
@@ -11119,7 +11119,7 @@ struct monst* mtmp;
         menu_item* pick_list = (menu_item*)0;
         winid win;
         anything any;
-        char nbuf[BUFSIZ];
+        char nbuf[BUFSZ * 2];
 
         any = zeroany;
         win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHAT_MENU, get_seen_monster_glyph(mtmp), extended_create_window_info_from_mon(mtmp));

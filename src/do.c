@@ -192,7 +192,7 @@ docharacterstatistics(VOID_ARGS)
         {
             trait_count++;
 
-            char dbuf[BUFSIZ];
+            char dbuf[BUFSZ * 2];
             Strcpy(dbuf, urace.trait_descriptions[i]);
             *dbuf = highc(*dbuf);
 
@@ -210,7 +210,7 @@ docharacterstatistics(VOID_ARGS)
         {
             trait_count++;
 
-            char dbuf[BUFSIZ];
+            char dbuf[BUFSZ * 2];
             Strcpy(dbuf, urole.trait_descriptions[i]);
             *dbuf = highc(*dbuf);
 
@@ -346,7 +346,7 @@ docharacterstatistics(VOID_ARGS)
                 {
                     abil_count++;
 
-                    char dbuf2[BUFSIZ] = "";
+                    char dbuf2[BUFSZ * 2] = "";
                     struct propname pn = get_property_name_ex(intrinsic_ability[table_index].propid);
                     boolean haspdesc = pn.prop_desc != 0;
                     Sprintf(dbuf2, "%s%s%s%s", pn.prop_noun ? pn.prop_noun : "", haspdesc ? " (" : "", haspdesc ? pn.prop_desc : "", haspdesc ? ")" : "");
@@ -934,7 +934,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
     if (strcmp(buf2, "") != 0)
     {
-        char buf4[BUFSIZ] = "";
+        char buf4[BUFSZ * 2] = "";
         Strcpy(buf4, buf);
         //Sprintf(buf, "Category:               %s", buf2);
         if (hidemainclass)
@@ -9092,7 +9092,7 @@ const char* str;
     if (!str || !*str)
         return;
 
-    char buf[BUFSIZ];
+    char buf[BUFSZ * 4];
     *buf = 0;
     boolean removetrailingcolon = FALSE;
     if ((attr & (ATR_SUBTITLE)) == ATR_SUBTITLE || (attr & (ATR_HEADING)) != 0)
@@ -9116,7 +9116,7 @@ const char* str;
         char* p = strchr(buf, ':');
         if (p)
         {
-            char buf2[BUFSIZ];
+            char buf2[BUFSZ * 4];
             char* p2 = p + 1;
             while (*p2 && *p2 == ' ')
                 p2++;
@@ -9131,7 +9131,7 @@ const char* str;
         char* p = strchr(buf, '-');
         if (p)
         {
-            char buf2[BUFSIZ];
+            char buf2[BUFSZ * 4];
             char* p2 = p + 1;
             while (*p2 && *p2 == ' ')
                 p2++;
@@ -9224,7 +9224,7 @@ write_spells()
 #endif
     }
     char fq_save[BUFSIZ];
-    char name[BUFSIZ];
+    char name[BUFSZ * 2];
 
     struct window_procs saved_windowprocs = windowprocs;
     windowprocs.win_putstr_ex = write_putstr_ex;
@@ -9333,8 +9333,8 @@ write_spells()
 
         if (prev_spell_level != spell_level)
         {
-            char buf[BUFSIZ];
-            char buf2[BUFSIZ];
+            char buf[BUFSZ * 2];
+            char buf2[BUFSZ * 2];
             print_spell_level_text(buf2, spl_idx, FALSE, 2, TRUE);
             Strcpy(buf, "## ");
             Strcat(buf, buf2);
@@ -9342,8 +9342,8 @@ write_spells()
             (void)write(write_fd, buf, strlen(buf));
         }
 
-        char buf[BUFSIZ];
-        char buf2[BUFSIZ];
+        char buf[BUFSZ * 2];
+        char buf2[BUFSZ * 2];
         Strcpy(buf2, OBJ_NAME(objects[spl_idx]));
         *buf2 = highc(*buf2);
         Strcpy(buf, "- [[");
@@ -9396,9 +9396,9 @@ write_monsters()
 #endif
     }
     char fq_save[BUFSIZ];
-    char name[BUFSIZ];
-    char buf[BUFSIZ];
-    char buf2[BUFSIZ];
+    char name[BUFSZ * 2];
+    char buf[BUFSZ * 2];
+    char buf2[BUFSZ * 2];
 
     struct window_procs saved_windowprocs = windowprocs;
     windowprocs.win_putstr_ex = write_putstr_ex;
@@ -9612,9 +9612,9 @@ write_items()
 #endif
     }
     char fq_save[BUFSIZ];
-    char name[BUFSIZ];
-    char buf[BUFSIZ];
-    char buf2[BUFSIZ];
+    char name[BUFSZ * 2];
+    char buf[BUFSZ * 2];
+    char buf2[BUFSZ * 2];
 
     struct window_procs saved_windowprocs = windowprocs;
     windowprocs.win_putstr_ex = write_putstr_ex;

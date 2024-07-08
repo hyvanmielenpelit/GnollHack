@@ -1100,7 +1100,7 @@ int x, y;
             if(!unlocked && context.click_kick_query) /* Click */
             {
                 char ans = 'n';
-                char qbuf[BUFSIZ];
+                char qbuf[BUFSZ * 2];
                 context.click_kick_query = 0;
 
                 Sprintf(qbuf, "Do you want to start kicking this door?");

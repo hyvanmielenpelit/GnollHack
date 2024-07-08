@@ -2121,7 +2121,7 @@ struct obj **optr;
     ans = 'n';
     if (candelabrum_cnt > 0 && floor_cnt > 0)
     {
-        char attachbuf[BUFSIZ] = "";
+        char attachbuf[BUFSZ * 2] = "";
         Sprintf(attachbuf, "There is %s on the floor. Attach the candles to %s?", floor_cnt > 1 ? "candelabra" : "a candelabrum", floor_cnt > 1 ? "one of them" : "it");
         ans = yn_query(attachbuf);
     }
@@ -4139,7 +4139,7 @@ struct obj* obj;
                 freeinv(otmp);
                 obj_clear_found(otmp);
                 place_object(otmp, u.ux, u.uy);
-                char tbuf[BUFSIZ];
+                char tbuf[BUFSZ * 2];
                 Strcpy(tbuf, Tobjnam(otmp, "vanish"));
                 boolean stillexists = rloco(otmp);
                 play_sfx_sound(SFX_TELEPORT);

@@ -3323,7 +3323,7 @@ const char *prompt, *subtitle; /* prompt to for menu */
     /* Put the prompt at the beginning of the menu. */
     if (prompt || subtitle) 
     {
-        char buf[BUFSIZ] = "";
+        char buf[BUFSZ * 2] = "";
 
         Sprintf(buf, "%s%s%s", prompt ? prompt : "", prompt&& subtitle && strcmp(prompt, "") && strcmp(subtitle, "") ? " - " : "", subtitle ? subtitle : "");
 

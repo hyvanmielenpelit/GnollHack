@@ -719,8 +719,8 @@ unsigned int *stuckid, *steedid;
     foo = time_from_yyyymmddhhmmss(timebuf);
 
     ReadTimebuf(ubirthday);
-    mread(fd, &urealtime.realtime, sizeof urealtime.realtime);
-    ReadTimebuf(urealtime.start_timing); /** [not used] **/
+    mread(fd, &urealtime, sizeof urealtime);
+    //ReadTimebuf(urealtime.start_timing); /** [not used] **/
     /* current time is the time to use for next urealtime.realtime update */
     urealtime.start_timing = getnow();
     unlock_thread_lock();
@@ -831,6 +831,7 @@ unsigned int *stuckid, *steedid;
     relink_sound_sources(FALSE);
     /* inventory display is now viable */
     iflags.perm_invent = defer_perm_invent;
+
     issue_simple_gui_command(GUI_CMD_LOAD_GLYPHS);
 #ifdef WHEREIS_FILE
     touch_whereis();
@@ -993,6 +994,7 @@ register int fd;
         return 0;
     }
     restlevelstate(stuckid, steedid);
+    struct u_realtime restored_realtime = urealtime;
 #ifdef INSURANCE
     savestateinlock();
 #endif
@@ -1136,6 +1138,13 @@ register int fd;
         (void)move_tmp_backup_savefile_to_actual_backup_savefile(); /* Restore was successful, update backup savefile */
     else
         (void)delete_tmp_backup_savefile();
+
+    char dgnlvlbuf[BUFSZ * 2];
+    struct u_realtime saved_realtime = urealtime;
+    print_current_dgnlvl(dgnlvlbuf);
+    urealtime = restored_realtime;
+    post_to_forum_printf(LL_GAME_RESTORE, "resumed %s journey %s", uhis(), dgnlvlbuf);
+    urealtime = saved_realtime;
     return 1;
 }
 
@@ -1592,6 +1601,72 @@ boolean ghostly;
     }
 }
 
+void
+print_current_dgnlvl(buf)
+char* buf;
+{
+    if (!buf)
+        return;
+
+    const char* lvl_name = 0;
+    s_level* slev = Is_special(&u.uz);
+    mapseen* mptr = 0;
+    if (slev)
+        mptr = find_mapseen(&u.uz);
+
+    if (slev && mptr && mptr->flags.special_level_true_nature_known)
+        lvl_name = slev->name;
+
+    char lvlbuf[BUFSZ], dgnbuf[BUFSZ];
+    print_dgnlvl_buf(lvlbuf, dgnbuf, lvl_name, dungeons[u.uz.dnum].dname, u.uz.dlevel, (boolean*)0);
+    Sprintf(buf, "%s%s", lvlbuf, dgnbuf);
+}
+
+void
+print_dgnlvl_buf(lvlbuf, dgnbuf, lvl_name, dgn_name, dlevel, has_lvl_name_ptr)
+char* lvlbuf, * dgnbuf;
+const char* lvl_name, *dgn_name;
+int dlevel;
+boolean* has_lvl_name_ptr;
+{
+    if (!lvlbuf || !dgnbuf)
+        return;
+
+    Sprintf(dgnbuf, "%s", dgn_name && *dgn_name ? dgn_name : "Dungeon");
+    if (!strncmp(dgnbuf, "The ", 4))
+        *dgnbuf = lowc(*dgnbuf);
+
+    if(has_lvl_name_ptr)
+        *has_lvl_name_ptr = FALSE;
+    if (lvl_name && *lvl_name)
+    {
+        char namedlvlbuf[BUFSZ];
+        Strcpy(namedlvlbuf, lvl_name);
+
+        const char* lvlconjunction = "in";
+        const char* dgnconjunction = "in";
+        boolean lvl_has_level = strstr(lvl_name, "Level") != 0;
+        boolean lvl_has_plane = strstr(lvl_name, "Plane") != 0;
+        boolean lvl_has_island = strstr(lvl_name, "Island") != 0;
+        if (lvl_has_level)
+            dgnconjunction = "of";
+        if (lvl_has_level || lvl_has_plane || lvl_has_island)
+            lvlconjunction = "on";
+
+        const char* addedthe = "";
+        if (strncmpi(namedlvlbuf, "the ", 4) && lvl_has_plane)
+            addedthe = "the ";
+        if (!strncmp(namedlvlbuf, "The ", 4))
+            *namedlvlbuf = lowc(*namedlvlbuf);
+
+        Sprintf(lvlbuf, "%s %s%s %s ", lvlconjunction, addedthe, namedlvlbuf, dgnconjunction);
+        if(has_lvl_name_ptr)
+            *has_lvl_name_ptr = TRUE;
+    }
+    else
+        Sprintf(lvlbuf, "on level %d of ", dlevel);
+}
+
 #ifdef SELECTSAVED
 /* put up a menu listing each character from this player's saved games;
    returns 1: use plname[], 0: new game, -1: quit */
@@ -1837,38 +1912,9 @@ struct save_game_data* saved;
             }
 
             char adventuringbuf[BUFSZ], lvlbuf[BUFSZ], dgnbuf[BUFSZ], totallevelbuf[BUFSZ] = "";
-            const char* dname = saved[k].gamestats.dgn_name;
-            Sprintf(dgnbuf, "%s", dname && *dname ? dname : "Dungeon");
-            if (!strncmp(dgnbuf, "The ", 4))
-                *dgnbuf = lowc(*dgnbuf);
-
             boolean has_lvl_name = FALSE;
-            if (*saved[k].gamestats.level_name)
-            {
-                char namedlvlbuf[BUFSZ];
-                Strcpy(namedlvlbuf, saved[k].gamestats.level_name);
 
-                const char* lvlconjunction = "in";
-                const char* dgnconjunction = "in";
-                boolean lvl_has_level = strstr(saved[k].gamestats.level_name, "Level") != 0;
-                boolean lvl_has_plane = strstr(saved[k].gamestats.level_name, "Plane") != 0;
-                boolean lvl_has_island = strstr(saved[k].gamestats.level_name, "Island") != 0;
-                if (lvl_has_level)
-                    dgnconjunction = "of";
-                if (lvl_has_level || lvl_has_plane || lvl_has_island)
-                    lvlconjunction = "on";
-
-                const char* addedthe = "";
-                if (strncmpi(namedlvlbuf, "the ", 4) && lvl_has_plane)
-                    addedthe = "the ";
-                if (!strncmp(namedlvlbuf, "The ", 4))
-                    *namedlvlbuf = lowc(*namedlvlbuf);
-
-                Sprintf(lvlbuf, "%s %s%s %s ", lvlconjunction, addedthe, namedlvlbuf, dgnconjunction);
-                has_lvl_name = TRUE;
-            }
-            else
-                Sprintf(lvlbuf, "on level %d of ", saved[k].gamestats.dlevel);
+            print_dgnlvl_buf(lvlbuf, dgnbuf, saved[k].gamestats.level_name, saved[k].gamestats.dgn_name, (int)saved[k].gamestats.dlevel, &has_lvl_name);
 
             if (!has_lvl_name && saved[k].gamestats.depth != (schar)saved[k].gamestats.dlevel)
                 Sprintf(totallevelbuf, ", which is dungeon level %d", saved[k].gamestats.depth);

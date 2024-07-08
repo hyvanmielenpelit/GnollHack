@@ -675,10 +675,10 @@ E const char* const hofe_titles[3];
 
 E uint64_t file_end_marker;
 
-E char debug_buf_1[BUFSIZ];
-E char debug_buf_2[BUFSIZ];
-E char debug_buf_3[BUFSIZ];
-E char debug_buf_4[BUFSIZ];
+E char debug_buf_1[BUFSZ * 2];
+E char debug_buf_2[BUFSZ * 2];
+E char debug_buf_3[BUFSZ * 2];
+E char debug_buf_4[BUFSZ * 2];
 
 #undef E
 

@@ -412,7 +412,7 @@ xchar x, y;
         play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
         u_wait_until_action();
 
-        char strikebuf[BUFSIZ] = "";
+        char strikebuf[BUFSZ * 2] = "";
         Sprintf(strikebuf, "You attack");
 
         if (strikeindex > 0)

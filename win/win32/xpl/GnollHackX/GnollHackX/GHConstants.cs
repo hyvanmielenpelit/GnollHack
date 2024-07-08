@@ -1364,9 +1364,9 @@ namespace GnollHackX
 
     public enum game_status_types
     {
-        GAME_STATUS_START = 0,
-        GAME_STATUS_EVENT,
-        GAME_STATUS_ACHIEVEMENT,
+        GAME_STATUS_GENERAL_POST = 0,
+        GAME_STATUS_START,
+        GAME_STATUS_POST_IF_CLOUD_REPLAY_ON,
         GAME_STATUS_RESULT,
         GAME_STATUS_RESULT_ATTACHMENT,
     }

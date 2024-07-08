@@ -892,7 +892,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         if (typ == STATUE && omndx != NON_PM) 
         {
             char anbuf[10];
-            char monbuf[BUFSIZ] = "";
+            char monbuf[BUFSZ * 2] = "";
             struct monst* mtmp = get_mtraits(obj, FALSE);
             if (mtmp)
             {

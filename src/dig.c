@@ -3388,7 +3388,7 @@ dodig()
     }
 
 
-    char digbuf[BUFSIZ];
+    char digbuf[BUFSZ * 2];
     enum object_soundset_types oss = 0;
     if (uwep)
     {

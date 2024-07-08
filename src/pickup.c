@@ -2742,7 +2742,7 @@ doloot()
                         if (has_item1)
                         {
                             any.a_int = 1;
-                            char itembuf[BUFSIZ] = "";
+                            char itembuf[BUFSZ * 2] = "";
                             int item_otyp = decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item;
                             Sprintf(itembuf, "%s", an(OBJ_NAME(objects[item_otyp])));
 
@@ -2755,7 +2755,7 @@ doloot()
                         if (has_item2)
                         {
                             any.a_int = 2;
-                            char itembuf[BUFSIZ] = "";
+                            char itembuf[BUFSZ * 2] = "";
                             int item_otyp = decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item2;
                             Sprintf(itembuf, "%s", an(OBJ_NAME(objects[item_otyp])));
 
@@ -2768,7 +2768,7 @@ doloot()
                         if (has_item3)
                         {
                             any.a_int = 3;
-                            char itembuf[BUFSIZ] = "";
+                            char itembuf[BUFSZ * 2] = "";
                             int item_otyp = decoration_type_definitions[levl[cc.x][cc.y].decoration_typ].lootable_item3;
                             Sprintf(itembuf, "%s", an(OBJ_NAME(objects[item_otyp])));
 

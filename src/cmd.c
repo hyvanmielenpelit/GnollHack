@@ -1029,14 +1029,14 @@ doability(VOID_ARGS)
                     char namebuf[MAXNAMELENGTH];
                     if (UMNAME(mtmp))
                     {
-                        char umnbuf[BUFSIZ];
+                        char umnbuf[BUFSZ * 2];
                         Strcpy(umnbuf, UMNAME(mtmp));
                         umnbuf[min(MAXNAMELENGTH, PL_PSIZ) - 1] = '\0'; /* Limit the length of the name */
                         Strcpy(namebuf, umnbuf);
                     }
                     else if (MNAME(mtmp) && mtmp->u_know_mname)
                     {
-                        char mnbuf[BUFSIZ];
+                        char mnbuf[BUFSZ * 2];
                         Strcpy(mnbuf, MNAME(mtmp));
                         mnbuf[min(MAXNAMELENGTH, PL_PSIZ) - 1] = '\0'; /* Limit the length of the name */
                         Strcpy(namebuf, mnbuf);
@@ -1255,7 +1255,7 @@ int abilitynum;
                 const char* gazefmt = ((windowprocs.wincap2 & WC2_SPECIAL_SYMBOLS) != 0) ?
                     "Gaze%s (&mana; %d)" : "Gaze%s (%d mana)";
 
-                char gazebuf[BUFSIZ];
+                char gazebuf[BUFSZ * 2];
                 Sprintf(gazebuf, gazefmt, youmonst.data->mlet == S_EYE ? " with central eye" : "", gazemanacost);
                 Strcpy(available_ability_list[abilitynum].name, gazebuf);
                 available_ability_list[abilitynum].function_ptr = &dogaze;
@@ -2237,7 +2237,7 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 #else
         fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
 #endif
-        char buf[BUFSIZ];
+        char buf[BUFSZ * 2];
 
         Sprintf(buf, "Name,Level,Move,AC,MC,MR,Alignment,GenoFlags,");
         (void)write(fd, buf, strlen(buf));
@@ -3639,11 +3639,11 @@ int final;
     get_game_difficulty_multipliers(&monster_damage_mult, &monster_hp_mult);
     int pct_monster_dmg_mult = (int)(monster_damage_mult * 100);
     int pct_player_dmg_mult = (int)((1 / monster_hp_mult) * 100);
-    char difficultybuf[BUFSIZ];
+    char difficultybuf[BUFSZ * 2];
     Sprintf(difficultybuf, " (%d%% damage by monsters, %d%% by player)", pct_monster_dmg_mult, pct_player_dmg_mult);
     enl_msg("Your game difficulty ", "is ", "was ", buf, difficultybuf);
 
-    char modebuf[BUFSIZ];
+    char modebuf[BUFSZ * 2];
     Sprintf(modebuf, " mode (%s)", get_game_mode_description());
     enl_msg("You ", "are playing in ", "were playing in ", get_game_mode_text(TRUE), modebuf);
 
@@ -3759,8 +3759,8 @@ int mode, final, attrindx;
         int dmgbonus_constant = (currstr < STR18(100) ? (int)strength_damage_bonus_core(min(18, currstr), TRUE) : (int)strength_damage_bonus_core(currstr, TRUE));
         int dmgbonus_random = ((currstr > 18 && currstr < STR18(100)) ? 2 : 0);
         //int random_chance = ((currstr > 18 && currstr < STR18(100)) ? currstr - 18 : 0);
-        char tohitbuf[BUFSIZ];
-        char dmgbuf[BUFSIZ];
+        char tohitbuf[BUFSZ * 2];
+        char dmgbuf[BUFSZ * 2];
 
         Sprintf(tohitbuf, "-%d", tohitbonus_constant + tohitbonus_random);
         Sprintf(dmgbuf, "-%d", dmgbonus_constant + dmgbonus_random);

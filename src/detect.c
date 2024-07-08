@@ -2298,7 +2298,7 @@ dump_map()
     int x, y, glyph, skippedrows, lastnonblank;
     int subset = TER_MAP | TER_TRP | TER_OBJ | TER_MON;
     int default_glyph = base_cmap_to_glyph(level.flags.arboreal ? S_tree : S_unexplored);
-    char buf[BUFSIZ];
+    char buf[BUFSZ * 2];
     char* bp;
     boolean blankrow, toprow;
 

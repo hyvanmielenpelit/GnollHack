@@ -211,7 +211,7 @@ uchar* tilemapflags;
     const char* set_name;
     int fd, i, j, k, l;
     int tile_count = 0;
-    char buf[BUFSIZ];
+    char buf[BUFSZ * 2];
     Strcpy(buf, "");
     int glyph_offset = 0;
     int roleidx, raceidx, gender, alignment, glevel;
@@ -343,7 +343,7 @@ uchar* tilemapflags;
 
                 if (process_style == 0)
                 {
-                    char monnamebuf[BUFSIZ];
+                    char monnamebuf[BUFSZ * 2];
                     boolean is_human_were = (mons[i].mlet == S_HUMAN && !strncmp(mons[i].mname, "were", 4));
                     Sprintf(monnamebuf, "%s%s", is_human_were ? "human-" : "", mons[i].mname);
 
@@ -2356,12 +2356,12 @@ uchar* tilemapflags;
 
                 if (process_style == 0)
                 {
-                    char tilebuf[BUFSIZ];
+                    char tilebuf[BUFSZ * 2];
                     Strcpy(tilebuf, "");
 //                    if (enl_anim_tile_idx >= 0)
 //                        Sprintf(tilebuf, "_tile-%d", enl_anim_tile_idx);
 
-                    char enlbuf[BUFSIZ];
+                    char enlbuf[BUFSZ * 2];
                     Sprintf(enlbuf, "%s%s", enlargements[i].enlargement_name ? enlargements[i].enlargement_name : "unknown enlargement",
                         tilebuf);
 

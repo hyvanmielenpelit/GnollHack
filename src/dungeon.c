@@ -3172,7 +3172,7 @@ boolean printdun;
 
     if (printdun) 
     {
-        char dbuf[BUFSIZ];
+        char dbuf[BUFSZ * 2];
         if (dungeons[dnum].dunlev_ureached == dungeons[dnum].entry_lev
             /* suppress the negative numbers in the endgame */
             || In_endgame(&mptr->lev))

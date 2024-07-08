@@ -1603,7 +1603,7 @@ struct obj* obj, *curobj;
         char tbuf[BUFSZ] = "";
         Sprintf(tbuf, "Already Wearing %s", abuf);
 
-        char qbuf[BUFSIZ] = "";
+        char qbuf[BUFSZ * 2] = "";
         Sprintf(qbuf, "You are currently wearing %s. Exchange it for %s?", acxname(curobj), the(cxname(obj)));
         char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n', yndescs, (const char*)0);
         if (ans == 'y')
@@ -2132,7 +2132,7 @@ int* result_style_ptr;
                         char tbuf[BUFSZ];
                         Sprintf(tbuf, "Cannot Wear Shirt Over %s", many ? "Covering Armor" : uarm ? "Suit" : uarmo ? "Robe" : "Cloak");
 
-                        char qbuf[BUFSIZ];
+                        char qbuf[BUFSZ * 2];
                         Sprintf(qbuf, "You cannot wear %s over %s. Take %s off and then wear the shirt?", acxname(otmp), cbuf, many ? "them" : "it");
                         char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n', yndescs, (const char*)0);
 
@@ -2175,7 +2175,7 @@ int* result_style_ptr;
                         char tbuf[BUFSZ];
                         Sprintf(tbuf, "%s", "Cannot Wear Robe Over Cloak");
 
-                        char qbuf[BUFSIZ];
+                        char qbuf[BUFSZ * 2];
                         Sprintf(qbuf, "You cannot wear %s over %s. Take it off and then wear the robe?", acxname(otmp), cbuf);
                         char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n', yndescs, (const char*)0);
                         if (ans == 'y')
@@ -2237,7 +2237,7 @@ int* result_style_ptr;
                     char tbuf[BUFSZ];
                     Sprintf(tbuf, "Cannot Wear Suit Over %s", many ? "Robe and Cloak" : uarmo ? "Robe" : "Cloak");
 
-                    char qbuf[BUFSIZ];
+                    char qbuf[BUFSZ * 2];
                     Sprintf(qbuf, "You cannot wear %s over %s. Take %s off and then wear the armor?", acxname(otmp), cbuf, many ? "them" : "it");
                     char ans = yn_function_es(YN_STYLE_ITEM_EXCHANGE, ATR_NONE, CLR_MSG_ATTENTION, tbuf, qbuf, ynchars, 'n', yndescs, (const char*)0);
                     if (ans == 'y')

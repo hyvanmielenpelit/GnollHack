@@ -885,9 +885,9 @@ void lib_preference_update(const char* pref)
 
 char* lib_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
 {
-    static char buf[BUFSIZ * 2] = "";
-    static char attrs[BUFSIZ * 2] = "";
-    static char colors[BUFSIZ * 2] = "";
+    static char buf[BUFSZ * 4] = "";
+    static char attrs[BUFSZ * 4] = "";
+    static char colors[BUFSZ * 4] = "";
     char utf8buf[UTF8BUFSZ * 4] = "";
     int res = lib_callbacks.callback_getmsghistory(utf8buf, attrs, colors, (int)init);
     if (res)
@@ -1082,17 +1082,17 @@ void monst_to_info(struct monst* mtmp, struct monst_info* mi_ptr)
     mi_ptr->glyph = any_mon_to_glyph(mtmp, rn2_on_display_rng);
     mi_ptr->gui_glyph = maybe_get_replaced_glyph(mi_ptr->glyph, mtmp->mx, mtmp->my, data_to_replacement_info(mi_ptr->glyph, LAYER_MONSTER, (struct obj*)0, mtmp, 0UL, 0UL, 0UL, MAT_NONE, 0));
 
-    char tempbuf[BUFSIZ] = "";
+    char tempbuf[BUFSZ * 2] = "";
     if (has_umname(mtmp))
     {
-        char umnbuf[BUFSIZ];
+        char umnbuf[BUFSZ * 2];
         Strcpy(umnbuf, UMNAME(mtmp));
         umnbuf[16] = '\0'; /* Limit the length of the name */
         Strcat(tempbuf, umnbuf);
     }
     else if (has_mname(mtmp) && mtmp->u_know_mname)
     {
-        char mnbuf[BUFSIZ];
+        char mnbuf[BUFSZ * 2];
         Strcpy(mnbuf, MNAME(mtmp));
         mnbuf[16] = '\0'; /* Limit the length of the name */
         Strcat(tempbuf, mnbuf);

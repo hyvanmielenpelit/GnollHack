@@ -438,6 +438,10 @@ struct savefile_info {
 #define LL_DUMP       0x4000 /* none of the above but should be in dumplog */
 #define LL_DEBUG      0x8000 /* For debugging messages and other spam */
 
+#define LL_GAME_START   0x10000 /* Game start when uploading to cloud */
+#define LL_GAME_RESTORE 0x20000 /* Game restore when uploading to cloud */
+#define LL_GAME_SAVE    0x40000 /* Game save when uploading to cloud */
+
 /* #chronicle details */
 /* 'major' events for dumplog; inclusion or exclusion here may need tuning */
 #define LL_majors                                                        \
@@ -448,7 +452,7 @@ struct savefile_info {
 
 #define LL_postables                                                        \
     (LL_WISH | LL_ACHIEVE | LL_UMONST | LL_DIVINEGIFT | LL_LIFESAVE \
-     | LL_ARTIFACT | LL_GENOCIDE) /* explicitly for forum posting */
+     | LL_ARTIFACT | LL_GENOCIDE | LL_GAME_START | LL_GAME_RESTORE | LL_GAME_SAVE) /* explicitly for forum posting */
 
 
 /* Supply GnollHack_enter macro if not supplied by port */

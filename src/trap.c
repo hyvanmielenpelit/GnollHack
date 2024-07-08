@@ -6396,7 +6396,7 @@ boolean force;
     int boxcnt = 0;
     boolean deal_with_floor_trap = can_reach_floor(FALSE);
     boolean useplural = FALSE;
-    char the_trap[BUFSIZ], qbuf[BUFSIZ];
+    char the_trap[BUFSZ * 2], qbuf[BUFSZ * 2];
 
     for (otmp = level.objects[u.ux][u.uy]; otmp; otmp = otmp->nexthere)
         if (Is_box(otmp))

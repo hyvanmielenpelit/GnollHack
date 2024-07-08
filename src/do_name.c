@@ -2138,7 +2138,7 @@ boolean called;
         } 
         else 
         {
-            char tmpbuf[BUFSIZ];
+            char tmpbuf[BUFSZ * 2];
             Strcpy(tmpbuf, buf);
             boolean npc_with_name_only = has_enpc(mtmp) && mtmp->isnpc && (npc_subtype_definitions[ENPC(mtmp)->npc_typ].general_flags & NPC_FLAGS_DISPLAY_NAME_ONLY) != 0;
             if (!is_tame(mtmp) && !npc_with_name_only)
@@ -2864,7 +2864,7 @@ char* s;
     if (s)
     {
         Strcpy(s, "");
-        char ns[BUFSIZ];
+        char ns[BUFSZ * 2];
         (void)randomize_gnoll_name(ns);
         Sprintf(s, "yee%s", ns);
     }

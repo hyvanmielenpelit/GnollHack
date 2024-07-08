@@ -9194,7 +9194,7 @@ const char *fltxt;
 {
     int dam = 0, abstyp = abs(type);
     enum hit_tile_types hit_tile = HIT_GENERAL;
-    char killername[BUFSIZ] = "";
+    char killername[BUFSZ * 2] = "";
 
     //Base damage here, set to zero, if not needed
     if (origobj)

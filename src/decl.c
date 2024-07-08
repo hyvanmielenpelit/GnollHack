@@ -579,10 +579,10 @@ NEARDATA const char* const hofe_titles[3] = { "the Hand of Elbereth",
                                             "the Envoy of Balance",
                                             "the Glory of Arioch" };
 
-NEARDATA char debug_buf_1[BUFSIZ] = "";
-NEARDATA char debug_buf_2[BUFSIZ] = "";
-NEARDATA char debug_buf_3[BUFSIZ] = "";
-NEARDATA char debug_buf_4[BUFSIZ] = "";
+NEARDATA char debug_buf_1[BUFSZ * 2] = "";
+NEARDATA char debug_buf_2[BUFSZ * 2] = "";
+NEARDATA char debug_buf_3[BUFSZ * 2] = "";
+NEARDATA char debug_buf_4[BUFSZ * 2] = "";
 
 /* dummy routine used to force linkage */
 void

@@ -4301,7 +4301,7 @@ int i;
 int splaction;
 {
     int splnum = !flags.spellorder ? i : (int)spl_orderindx[i];
-    char buf[BUFSIZ], availablebuf[BUFSZ], descbuf[BUFSZ], levelbuf[BUFSZ] = "";
+    char buf[BUFSZ * 2], availablebuf[BUFSZ], descbuf[BUFSZ], levelbuf[BUFSZ] = "";
     char fullname[BUFSZ] = "";
     anything any = zeroany;
     Strcpy(fullname, spellname(splnum));
@@ -4379,7 +4379,7 @@ int i;
 int splaction;
 {
     int splnum = !flags.spellorder ? i : (int)spl_orderindx[i];
-    char buf[BUFSIZ], availablebuf[BUFSZ], matcompbuf[BUFSZ];
+    char buf[BUFSZ * 2], availablebuf[BUFSZ], matcompbuf[BUFSZ];
     anything any = zeroany;
     char fullname[BUFSZ];
     char addsbuf[BUFSZ];

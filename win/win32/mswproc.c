@@ -323,7 +323,7 @@ mswin_init_nhwindows(int *argc, char **argv)
             {0, 0, 0}
         };
 
-        static char buf[BUFSIZ], shortcutbuf[BUFSIZ];
+        static char buf[BUFSZ * 2], shortcutbuf[BUFSZ * 2];
         uchar altmask = 0x80;
         uchar ctrlmask = 0x20 | 0x40;
         register const struct ext_func_tab* efp;
@@ -3957,7 +3957,7 @@ size_t bufsize;
         return;
 
     char* bp, * wp;
-    char copybuf[BUFSIZ] = "";
+    char copybuf[BUFSZ * 8] = "";
     wp = copybuf;
     boolean was_unicode = FALSE;
     uchar uc;

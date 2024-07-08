@@ -1298,6 +1298,7 @@ E void FDECL(show_gamelog, (int));
 E void FDECL(gamelog_add, (int64_t, int64_t, const char*));
 E void VDECL(livelog_printf, (unsigned int, const char*, ...)) PRINTF_F(2, 3);
 E void FDECL(livelog_dump_url, (unsigned int));
+E void VDECL(post_to_forum_printf, (unsigned int, const char*, ...)) PRINTF_F(2, 3);
 #ifdef WHEREIS_FILE
 E void NDECL(touch_whereis);
 E void NDECL(delete_whereis);
@@ -3067,6 +3068,8 @@ E int FDECL(validate, (int, const char *));
 E void NDECL(reset_restpref);
 E void FDECL(set_restpref, (const char *));
 E void FDECL(set_savepref, (const char *));
+E void FDECL(print_dgnlvl_buf, (char*, char*, const char*, const char*, int, boolean*));
+E void FDECL(print_current_dgnlvl, (char*));
 
 /* ### rip.c ### */
 

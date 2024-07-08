@@ -93,7 +93,7 @@ boolean usethe, isangry;
             /* Sidenote on "A watchman angrily waves her arms!"
              * Female being called watchman is correct (career name).
              */
-            char adjbuf[BUFSIZ] = "";
+            char adjbuf[BUFSZ * 2] = "";
             if (adverb && strcmp(adverb, "") != 0)
                 Sprintf(adjbuf, "%s ", adverb);
             
