@@ -15330,8 +15330,7 @@ namespace GnollHackX.Pages.Game
                         break;
                     if (MenuCanvas.MenuItems[idx].DrawBounds.Contains(e.Location))
                     {
-                        GHMenuItem mi = MenuCanvas.MenuItems[idx];
-                        doclickok = ClickMenuItem(mi);
+                        doclickok = ClickMenuItem(idx);
                         //if (mi.Identifier == 0)
                         //{
                         //    if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (mi.Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0)
@@ -15399,8 +15398,12 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private bool ClickMenuItem(GHMenuItem mi)
+        private bool ClickMenuItem(int menuItemIdx)
         {
+            if (menuItemIdx < 0 || menuItemIdx >= MenuCanvas.MenuItems.Count)
+                return false;
+
+            GHMenuItem mi = MenuCanvas.MenuItems[menuItemIdx];
             bool doclickok = false;
             lock (MenuCanvas.MenuItemLock)
             {
@@ -15453,7 +15456,7 @@ namespace GnollHackX.Pages.Game
                             MenuCanvas.MenuItems[MenuCanvas.SelectionIndex].Count = 0;
 
                         int oldselidx = MenuCanvas.SelectionIndex;
-                        MenuCanvas.SelectionIndex = MenuCanvas.MenuItems.IndexOf(mi);
+                        MenuCanvas.SelectionIndex = menuItemIdx;
                         if (mi.Count == 0)
                             mi.Count = _menuCountNumber > 0 && _menuCountNumber < mi.MaxCount ? _menuCountNumber : -1;
 
@@ -18087,7 +18090,7 @@ namespace GnollHackX.Pages.Game
                             if (MenuCanvas.MenuItems[idx].Accelerator == c)
                             {
                                 somethingFound = true;
-                                doclickok = ClickMenuItem(MenuCanvas.MenuItems[idx]);
+                                doclickok = ClickMenuItem(idx);
                                 //location = new SKPoint(MenuCanvas.MenuItems[idx].DrawBounds.MidX, MenuCanvas.MenuItems[idx].DrawBounds.MidY);
                                 break;
                             }
@@ -18095,7 +18098,7 @@ namespace GnollHackX.Pages.Game
                                 && (_menuCountNumber < 0 || MenuCanvas.MenuItems[idx].HeadingGroupAccelerator < '0' || MenuCanvas.MenuItems[idx].HeadingGroupAccelerator > '9'))
                             {
                                 somethingFound = true;
-                                doclickok = ClickMenuItem(MenuCanvas.MenuItems[idx]);
+                                doclickok = ClickMenuItem(idx);
                                 //location = new SKPoint(MenuCanvas.MenuItems[idx].DrawBounds.MidX, MenuCanvas.MenuItems[idx].DrawBounds.MidY);
                                 break;
                             }
