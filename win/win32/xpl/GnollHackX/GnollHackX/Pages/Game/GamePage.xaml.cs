@@ -126,6 +126,7 @@ namespace GnollHackX.Pages.Game
             "Grabbed",
             "Mummy rot",
             "Lycanthropy",
+            "Wounded legs",
         };
 
         public string[] _status_names = new string[(int)game_ui_status_mark_types.MAX_STATUS_MARKS] {

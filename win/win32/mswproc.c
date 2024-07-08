@@ -3281,6 +3281,7 @@ static mswin_condition_field _condition_fields[BL_MASK_BITS] = {
     { BL_MASK_GRAB, "Grab" },
     { BL_MASK_ROT, "Rot" },
     { BL_MASK_LYCANTHROPY, "Lyca" },
+    { BL_MASK_WOUNDED_LEGS, "Legs" },
 };
 
 

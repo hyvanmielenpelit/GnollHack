@@ -928,7 +928,8 @@ static uint64_t* cond_hilites;
 static uint64_t active_conditions;
 static const char* cond_names[NUM_BL_CONDITIONS] = {
     "Stone", "Slime", "Strngl", "Suffoc", "FoodPois", "TermIll", "Blind",
-    "Deaf", "Stun", "Conf", "Hallu", "Lev", "Fly", "Ride", "Slow", "Paral", "Fear", "Sleep", "Cancl", "Silent", "Grab", "Rot", "Lyca"
+    "Deaf", "Stun", "Conf", "Hallu", "Lev", "Fly", "Ride", "Slow", "Paral",
+    "Fear", "Sleep", "Cancl", "Silent", "Grab", "Rot", "Lyca", "Legs"
 };
 
 void lib_status_init(int reassessment)

@@ -411,6 +411,7 @@ const char* condition_names[NUM_BL_CONDITIONS] = {
     "Grabbed",
     "Mummy rot",
     "Lycanthropy",
+    "Wounded Legs",
 };
 
 const char* status_names[MAX_STATUS_MARKS] = {

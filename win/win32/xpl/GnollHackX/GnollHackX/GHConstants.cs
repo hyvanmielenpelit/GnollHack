@@ -778,6 +778,7 @@ namespace GnollHackX
         BL_COND_GRAB,
         BL_COND_ROT,
         BL_COND_LYCANTHROPY,
+        BL_COND_WOUNDED_LEGS,
         NUM_BL_CONDITIONS
     }
 

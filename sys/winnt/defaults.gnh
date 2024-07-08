@@ -291,6 +291,7 @@ OPTIONS=hilite_status:condition/fear/yellow
 OPTIONS=hilite_status:condition/cancl/yellow
 OPTIONS=hilite_status:condition/silent/yellow
 OPTIONS=hilite_status:condition/blind/yellow
+OPTIONS=hilite_status:condition/legs/yellow
 
 ## Health
 OPTIONS=hilite_status:condition/termill/red&inverse

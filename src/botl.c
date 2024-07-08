@@ -38,7 +38,6 @@ const enum statusfields* fieldorders_alt[MAX_STATUS_LINES + 1] = { fieldorder1_a
 
 const struct condition_t condition_definitions[NUM_BL_CONDITIONS] = {
     /* The sequence order of these matters */
-    { BL_MASK_GRAB,     { "Grab",     "Grb",   "Gr"  } },
     { BL_MASK_STONE,    { "Stone",    "Ston",  "Sto" } },
     { BL_MASK_SLIME,    { "Slime",    "Slim",  "Slm" } },
     { BL_MASK_STRNGL,   { "Strngl",   "Stngl", "Str" } },
@@ -59,8 +58,10 @@ const struct condition_t condition_definitions[NUM_BL_CONDITIONS] = {
     { BL_MASK_SLEEPING, { "Sleep",    "Slp",   "Sl"  } },
     { BL_MASK_CANCELLED,{ "Cancl",    "Cnl",   "Cl"  } },
     { BL_MASK_SILENCED, { "Silent",   "Sil",   "Si"  } },
+    { BL_MASK_GRAB,     { "Grab",     "Grb",   "Gr"  } },
     { BL_MASK_ROT,      { "Rot",      "Rot",   "Rt"  } },
-    { BL_MASK_LYCANTHROPY,{ "Lyca",   "Lyc",   "Ly"  } },
+    { BL_MASK_LYCANTHROPY, { "Lyca",   "Lyc",   "Ly"  } },
+    { BL_MASK_WOUNDED_LEGS,{ "Legs",   "Leg",   "Lg"  } },
 };
 
 STATIC_OVL NEARDATA size_t mrank_sz = 0; /* loaded by max_rank_sz (from u_init) */
@@ -1250,6 +1251,8 @@ get_u_condition_bits()
         conditions |= BL_MASK_ROT;
     if (u.ulycn >= LOW_PM)
         conditions |= BL_MASK_LYCANTHROPY;
+    if (Wounded_legs)
+        conditions |= BL_MASK_WOUNDED_LEGS;
     if (Slowed)
         conditions |= BL_MASK_SLOWED;
     if (Silenced)
@@ -1319,6 +1322,8 @@ struct monst* mon;
         conditions |= BL_MASK_ROT;
     if (is_were(mon->data))
         conditions |= BL_MASK_LYCANTHROPY;
+    if (has_wounded_legs(mon))
+        conditions |= BL_MASK_WOUNDED_LEGS;
     if (is_slow(mon))
         conditions |= BL_MASK_SLOWED;
     if (is_silenced(mon))
@@ -3346,6 +3351,7 @@ const struct condmap valid_conditions[] = {
     { "silent",   BL_MASK_SILENCED },
     { "rot",      BL_MASK_ROT },
     { "lyca",     BL_MASK_LYCANTHROPY },
+    { "legs",     BL_MASK_WOUNDED_LEGS },
 };
 
 #ifdef STATUS_HILITES
@@ -3359,7 +3365,8 @@ const struct condmap condition_aliases[] = {
                         | BL_MASK_CONF | BL_MASK_HALLU | BL_MASK_SUFFOC
                         | BL_MASK_LEV | BL_MASK_FLY | BL_MASK_RIDE | BL_MASK_SLOWED 
                         | BL_MASK_PARALYZED | BL_MASK_FEARFUL | BL_MASK_SLEEPING 
-                        | BL_MASK_CANCELLED | BL_MASK_SILENCED | BL_MASK_GRAB | BL_MASK_ROT | BL_MASK_LYCANTHROPY },
+                        | BL_MASK_CANCELLED | BL_MASK_SILENCED | BL_MASK_GRAB
+                        | BL_MASK_ROT | BL_MASK_LYCANTHROPY | BL_MASK_WOUNDED_LEGS },
     { "major_troubles", BL_MASK_STONE | BL_MASK_SLIME | BL_MASK_STRNGL
                         | BL_MASK_FOODPOIS | BL_MASK_TERMILL | BL_MASK_ROT | BL_MASK_LYCANTHROPY },
     { "minor_troubles", BL_MASK_BLIND | BL_MASK_DEAF | BL_MASK_STUN

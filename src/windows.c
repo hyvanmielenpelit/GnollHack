@@ -1302,6 +1302,8 @@ uint64_t *colormasks UNUSED;
                 Strcpy(nb = eos(nb), " Rot");
             if (cond & BL_MASK_LYCANTHROPY)
                 Strcpy(nb = eos(nb), " Lyca");
+            if (cond & BL_MASK_WOUNDED_LEGS)
+                Strcpy(nb = eos(nb), " Legs");
             if (cond & BL_MASK_PARALYZED)
                 Strcpy(nb = eos(nb), " Paral");
             if (cond & BL_MASK_FEARFUL)

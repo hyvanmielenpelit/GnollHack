@@ -1045,13 +1045,13 @@ namespace GnollHackX
         static public string[] cond_names_short = new string[(int)bl_conditions.NUM_BL_CONDITIONS] {
             "Stone", "Slime", "Strngl", "Suffoc", "FoodPois", "TermIll", "Blind",
             "Deaf", "Stun", "Conf", "Hallu", "Lev", "Fly", "Ride", "Slow", "Paral", 
-            "Fear", "Sleep", "Cancl", "Silent", "Grab", "Rot", "Lyca"
+            "Fear", "Sleep", "Cancl", "Silent", "Grab", "Rot", "Lyca", "Legs"
         };
 
         static public string[] cond_names_long = new string[(int)bl_conditions.NUM_BL_CONDITIONS] {
             "Petrifying", "Slimed", "Being Strangled", "Suffocating", "Food Poisoned", "Terminally Ill", "Blind",
             "Deaf", "Stunned", "Confused", "Hallucinating", "Levitating", "Flying", "Riding", "Slowed", "Paralyzed", 
-            "Frightened", "Sleeping", "Cancelled", "Silenced", "Grabbed", "Mummy Rot", "Lycanthropy"
+            "Frightened", "Sleeping", "Cancelled", "Silenced", "Grabbed", "Mummy Rot", "Lycanthropy", "Wounded Legs"
         };
 
         public void ClientCallback_StatusUpdate(int fieldidx, string text, long condbits, int cng, int percent, int color, IntPtr condcolorptr)

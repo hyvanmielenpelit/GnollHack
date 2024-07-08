@@ -81,6 +81,7 @@ enum bl_conditions {
     BL_COND_GRAB,
     BL_COND_ROT,
     BL_COND_LYCANTHROPY,
+    BL_COND_WOUNDED_LEGS,
     NUM_BL_CONDITIONS
 };
 
@@ -107,6 +108,7 @@ enum bl_conditions {
 #define BL_MASK_GRAB            (1UL << BL_COND_GRAB) // 0x00100000UL
 #define BL_MASK_ROT             (1UL << BL_COND_ROT) // 0x00200000UL
 #define BL_MASK_LYCANTHROPY     (1UL << BL_COND_LYCANTHROPY) // 0x00400000UL
+#define BL_MASK_WOUNDED_LEGS    (1UL << BL_COND_WOUNDED_LEGS) // 0x00800000UL
 #define BL_MASK_BITS            NUM_BL_CONDITIONS /* number of mask bits that can be set */
 /* clang-format on */
 
