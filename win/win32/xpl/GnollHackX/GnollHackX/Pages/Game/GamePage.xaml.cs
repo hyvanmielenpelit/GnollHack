@@ -2101,7 +2101,7 @@ namespace GnollHackX.Pages.Game
                             break;
                     }
                     break;
-                case (char)27:
+                case (char)GHConstants.CancelChar:
                     switch (data.style)
                     {
                         case (int)context_menu_styles.CONTEXT_MENU_STYLE_CLOSE_DISPLAY:
@@ -3811,7 +3811,7 @@ namespace GnollHackX.Pages.Game
             }
             else if (TextGrid.IsVisible)
             {
-                GenericButton_Clicked(sender, e, 27);
+                GenericButton_Clicked(sender, e, GHConstants.CancelChar);
                 TextGrid.IsVisible = false;
                 MainGrid.IsVisible = true;
                 if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
@@ -13906,7 +13906,7 @@ namespace GnollHackX.Pages.Game
         {
             GHApp.PlayButtonClickedSound();
             TouchDictionary.Clear();
-            GenericButton_Clicked(sender, e, 27);
+            GenericButton_Clicked(sender, e, GHConstants.CancelChar);
         }
 
         public void ToggleAutoCenterMode()
@@ -14060,7 +14060,7 @@ namespace GnollHackX.Pages.Game
 
         private void PopupOkButton_Clicked(object sender, EventArgs e)
         {
-            GenericButton_Clicked(sender, e, 27);
+            GenericButton_Clicked(sender, e, GHConstants.CancelChar);
         }
 
         private void HidePopupGrid()
@@ -16330,7 +16330,7 @@ namespace GnollHackX.Pages.Game
 
         private void TextCanvas_Pressed(object sender, EventArgs e)
         {
-            GenericButton_Clicked(sender, e, 27);
+            GenericButton_Clicked(sender, e, GHConstants.CancelChar);
             MainThread.BeginInvokeOnMainThread(() =>
             { 
                 DelayedTextHide(); 
@@ -18206,16 +18206,6 @@ namespace GnollHackX.Pages.Game
                     handled = true;
                 }
             }
-            else if (PopupGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space))
-            {
-                PopupOkButton_Clicked(sender, new EventArgs());
-                handled = true;
-            }
-            else if (GetLineGrid.IsVisible && (key == Windows.System.VirtualKey.Escape))
-            {
-                GetLineCancelButton_Clicked(sender, new EventArgs());
-                handled = true;
-            }
             else if (TextGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space || key == Windows.System.VirtualKey.Up || key == Windows.System.VirtualKey.Down))
             {
                 if (key == Windows.System.VirtualKey.Enter || TextGrid.IsVisible && key == Windows.System.VirtualKey.Escape)
@@ -18240,6 +18230,16 @@ namespace GnollHackX.Pages.Game
                     ScrollMenu(-120);
                 else if (key == Windows.System.VirtualKey.Space)
                     ScrollMenu(-1200);
+                handled = true;
+            }
+            else if (GetLineGrid.IsVisible && (key == Windows.System.VirtualKey.Escape))
+            {
+                GetLineCancelButton_Clicked(sender, new EventArgs());
+                handled = true;
+            }
+            else if (YnGrid.IsVisible && (key == Windows.System.VirtualKey.Escape))
+            {
+                YnButton_Pressed(sender, new EventArgs(), GHConstants.CancelChar);
                 handled = true;
             }
             else if (!MenuGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible)

@@ -685,7 +685,7 @@ namespace GnollHackX
                     Thread.Sleep(GHConstants.PollingInterval);
                     pollResponseQueue();
                 }
-                int res = 27;
+                int res = GHConstants.CancelChar;
                 if (_inputBufferLocation >= 0)
                 {
                     res = _inputBuffer[0];
@@ -751,11 +751,13 @@ namespace GnollHackX
                     while (cnt < 5)
                     {
                         int val = ClientCallback_nhgetch();
+                        if (!string.IsNullOrEmpty(def) && (val == 0 || val == GHConstants.CancelChar))
+                            val = (int)def[0];
                         string desc = "";
                         if (val < 0)
                         {
                             desc = "Numpad direction " + Math.Abs(val);
-                            val = 27;
+                            val = GHConstants.CancelChar;
                         }
 
                         string res = "n";
@@ -789,8 +791,8 @@ namespace GnollHackX
             {
                 queue.Enqueue(new GHRequest(this, GHRequestType.HideYnResponses));
             }
-            RecordFunctionCall(RecordedFunctionID.YnFunction, style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags, 27);
-            return 27;
+            RecordFunctionCall(RecordedFunctionID.YnFunction, style, attr, color, glyph, title, question, responses, def, descriptions, introline, ynflags, GHConstants.CancelChar);
+            return GHConstants.CancelChar;
         }
 
         public void ClientCallback_Cliparound(int x, int y, byte force)
