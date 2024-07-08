@@ -9,7 +9,6 @@
              Appearing="ContentPage_Appearing" Disappearing ="ContentPage_Disappearing" >
 
     <Grid x:Name="RootGrid" HorizontalOptions="Fill" VerticalOptions="Fill">
-        <Button x:Name="KeyboardFocusButton" Clicked="KeyboardFocusButton_Clicked" Text="" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill"/>
         <AbsoluteLayout  HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Black">
             <local:GHCachedImage x:Name="FmodLogoImage" Source="resource://GnollHackM.Assets.FMOD-Logo-192-White.png" Opacity="0" IsVisible="true" WidthRequest="121" HeightRequest="32"
                HorizontalOptions="Center" VerticalOptions="Center"
@@ -29,14 +28,17 @@
             <Grid x:Name="LogoGrid" RowSpacing="0" IsVisible="false" Opacity="0" AbsoluteLayout.LayoutBounds="60, 35, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="None" >
                 <StackLayout Spacing="6">
-                    <local:GHCachedImage Grid.Row="0" x:Name="MainLogoImage" Source="resource://GnollHackM.Assets.gnollhack-icon-v2-512.png" HeightRequest="100" WidthRequest="100"
-                   HorizontalOptions="Center" VerticalOptions="End"/>
+                    <Grid Grid.Row="0" ColumnSpacing="0" RowSpacing="0" Padding="0" Margin="0" HeightRequest="100" WidthRequest="100" >
+                        <local:GHCachedImage x:Name="MainLogoImage" Source="resource://GnollHackM.Assets.gnollhack-icon-v2-512.png" HeightRequest="100" WidthRequest="100"
+                           HorizontalOptions="Center" VerticalOptions="End"/>
+                        <Button x:Name="KeyboardFocusButton" Clicked="KeyboardFocusButton_Clicked" Text="" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill"/>
+                    </Grid>
                     <Label x:Name="GnollHackLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start" 
-                   TextColor="White"
-                   FontFamily="ARChristy" FontSize="27" />
+                       TextColor="White"
+                       FontFamily="ARChristy" FontSize="27" />
                     <Label x:Name="MobileVersionLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start"  
-                   Text="Mobile Version" TextColor="White"
-                   FontFamily="ARChristy" FontSize="18" />
+                       Text="Mobile Version" TextColor="White"
+                       FontFamily="ARChristy" FontSize="18" />
                 </StackLayout>
             </Grid>
 
