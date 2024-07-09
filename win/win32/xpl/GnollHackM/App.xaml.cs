@@ -28,6 +28,13 @@ public partial class App : Application
                 handler.PlatformView.PlaceholderForeground = new XamlUI.SolidColorBrush(WindowsUI.Color.FromArgb(a, r, g, b));
             }
         });
+        Microsoft.Maui.Handlers.SwitchHandler.Mapper.AppendToMapping("NoLabel", (handler, View) =>
+        {
+            handler.PlatformView.OnContent = null;
+            handler.PlatformView.OffContent = null;
+            handler.PlatformView.MinWidth = 0;
+            handler.PlatformView.MinHeight = 0;
+        });
 #endif
         GHApp.Initialize();
 		MainPage = new AppShell();

@@ -59,7 +59,7 @@
             <StackLayout x:Name="StartButtonLayout" Spacing="6" Opacity="0" IsVisible="false"
               HorizontalOptions="Center" VerticalOptions="Center" AbsoluteLayout.LayoutBounds="0.5, 0.90, AutoSize, AutoSize"
               AbsoluteLayout.LayoutFlags="PositionProportional" WidthRequest="300" >
-                <Grid x:Name="classicModeGrid" ColumnSpacing="6" IsVisible="True" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="Center">
+                <Grid x:Name="classicModeGrid" RowSpacing="6" ColumnSpacing="12" IsVisible="True" Margin="0,0,0,10" HeightRequest="32" HorizontalOptions="Center" VerticalOptions="Center">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
@@ -75,7 +75,7 @@
                     </local:CustomLabel>
                     <Switch x:Name="classicModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="ClassicModeSwitch_Toggled"  />
                 </Grid>
-                <Grid x:Name="casualModeGrid" ColumnSpacing="6" IsVisible="True" Margin="0,0,0,10" HorizontalOptions="Center" VerticalOptions="Center">
+                <Grid x:Name="casualModeGrid" RowSpacing="6" ColumnSpacing="12" IsVisible="True" Margin="0,0,0,10" HeightRequest="32" HorizontalOptions="Center" VerticalOptions="Center">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
@@ -91,7 +91,7 @@
                     </local:CustomLabel>
                     <Switch x:Name="casualModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="CasualModeSwitch_Toggled"  />
                 </Grid>
-                <Grid x:Name="wizardModeGrid" ColumnSpacing="6" Margin="0,0,0,15" HorizontalOptions="Center" VerticalOptions="Center">
+                <Grid x:Name="wizardModeGrid" RowSpacing="6" ColumnSpacing="12" Margin="0,0,0,15" HorizontalOptions="Center" HeightRequest="32" VerticalOptions="Center">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
@@ -107,7 +107,7 @@
                     </local:CustomLabel>
                     <Switch x:Name="wizardModeSwitch" IsToggled="false" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" Toggled="wizardModeSwitch_Toggled" />
                 </Grid>
-                <Grid x:Name="tournamentModeGrid" ColumnSpacing="6" Margin="0,0,0,15" HorizontalOptions="Center" VerticalOptions="Center">
+                <Grid x:Name="tournamentModeGrid" RowSpacing="6" ColumnSpacing="6" Margin="0,0,0,15" HeightRequest="32" HorizontalOptions="Center" VerticalOptions="Center">
                     <local:CustomLabel x:Name="tournamentModeLabel" Text="Tournament" TextColor="LightGreen" FontSize="19" OutlineWidth="3" FontFamily="Diablo" Grid.Column="0" 
                                    WidthRequest="280" HeightRequest="30" HorizontalTextAlignment="Center" HorizontalOptions="End" VerticalTextAlignment="Center" VerticalOptions="Center">
                         <local:CustomLabel.GestureRecognizers>

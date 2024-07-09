@@ -75,6 +75,12 @@ namespace GnollHackX
             GHApp.CurrentMainPage = this;
             On<iOS>().SetUseSafeArea(true);
             GHApp.SetPageThemeOnHandler(this, GHApp.DarkMode);
+#if WINDOWS
+            classicModeGrid.HeightRequest = 40;
+            casualModeGrid.HeightRequest = 40;
+            wizardModeGrid.HeightRequest = 40;
+            tournamentModeGrid.HeightRequest = 40;
+#endif
 #if GNH_MAUI
             Shell.SetNavBarIsVisible(this, false);
             _generalTimer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
