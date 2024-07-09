@@ -782,7 +782,7 @@ calculate_current_game_duration(used_realtime)
 struct u_realtime used_realtime;
 {
     int64_t res = 0L;
-    res = !context.game_started ? 0 : iflags.in_dumplog ? used_realtime.realtime : used_realtime.realtime + ((int64_t)getnow() - (int64_t)used_realtime.start_timing);
+    res = !context.game_started ? 0 : iflags.in_dumplog ? used_realtime.realtime : used_realtime.realtime + ((int64_t)getnow() - used_realtime.start_timing);
     return res;
 }
 

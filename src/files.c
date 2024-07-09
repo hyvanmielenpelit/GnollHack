@@ -5996,7 +5996,7 @@ const char* buffer;
                 LLOG_SEP,
                 (long long)moves,
                 LLOG_SEP,
-                (long long)(urealtime.realtime + ((int64_t)getnow() - (int64_t)urealtime.start_timing)), LLOG_SEP,
+                (long long)(urealtime.realtime + ((int64_t)getnow() - urealtime.start_timing)), LLOG_SEP,
                 (long long)ubirthday,
                 LLOG_SEP,
                 (long long)time(NULL),

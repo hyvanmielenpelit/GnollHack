@@ -2246,7 +2246,7 @@ donamelevel()
        empty string after mungspaces() above) */
     if (*nbuf && strcmp(nbuf, " ")) {
         mptr->custom = dupstr(nbuf);
-        mptr->custom_lth = strlen(mptr->custom);
+        mptr->custom_lth = (uint64_t)strlen(mptr->custom);
     }
     return 0;
 }
@@ -2423,7 +2423,7 @@ size_t* total_size;
         }
         if (mptr->custom_lth) {
             ++acount;
-            asize += (mptr->custom_lth + 1);
+            asize += (size_t)(mptr->custom_lth + 1);
         }
     }
 

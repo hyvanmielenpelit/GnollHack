@@ -109,7 +109,7 @@ struct obj_split {
 };
 
 struct tribute_info {
-    size_t tributesz;       /* make it possible to skip this in future */
+    uint64_t tributesz;       /* make it possible to skip this in future */
     uchar enabled;        /* Do we have tributes turned on? */
     uchar bookstock; /* Have we stocked the book? */
     uchar Deathnotice;    /* Did Death notice the book? */

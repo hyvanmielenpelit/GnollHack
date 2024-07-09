@@ -291,7 +291,7 @@ typedef struct mapseen {
     } flags;
     /* custom naming */
     char *custom;
-    size_t custom_lth;
+    uint64_t custom_lth;
     struct mapseen_rooms {
         boolean seen;
         boolean untended;         /* flag for shop without shk */

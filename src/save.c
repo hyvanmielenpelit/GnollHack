@@ -411,8 +411,8 @@ register int fd, mode;
     bwrite(fd, (genericptr_t) &sysflags, sizeof(struct sysflag));
 #endif
     bwrite(fd, (genericptr_t)&spl_orderindx, sizeof(spl_orderindx));
-    urealtime.finish_time = getnow();
-    urealtime.realtime += (int64_t) (urealtime.finish_time
+    urealtime.finish_time = (int64_t)getnow();
+    urealtime.realtime += (urealtime.finish_time
                                   - urealtime.start_timing);
     bwrite(fd, (genericptr_t) &u, sizeof(struct you));
     bwrite(fd, yyyymmddhhmmss(ubirthday), 14);
@@ -1460,7 +1460,7 @@ int fd;
     gamestats.modern_mode = ModernMode;
     gamestats.casual_mode = CasualMode;
     gamestats.save_flags = (flags.non_scoring ? SAVEFLAGS_NON_SCORING : 0) | (TournamentMode ? SAVEFLAGS_TOURNAMENT_MODE : 0);
-    gamestats.time_stamp = getnow();
+    gamestats.time_stamp = (int64_t)getnow();
     gamestats.num_recoveries = n_game_recoveries;
 
     bufoff(fd);

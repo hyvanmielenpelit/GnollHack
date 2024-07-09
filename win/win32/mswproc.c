@@ -2142,7 +2142,7 @@ mswin_outrip(winid wid, int how, time_t when)
     char buf[BUFSZ];
     int64_t year;
 
-    logDebug("mswin_outrip(%d, %d, %ld)\n", wid, how, (long) when);
+    logDebug("mswin_outrip(%d, %d, %lld)\n", wid, how, (long long) when);
     if ((wid >= 0) && (wid < MAXWINDOWS)) {
         DestroyWindow(GetNHApp()->windowlist[wid].win);
         GetNHApp()->windowlist[wid].win = mswin_init_RIP_window();

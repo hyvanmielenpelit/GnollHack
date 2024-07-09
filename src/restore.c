@@ -1937,7 +1937,8 @@ struct save_game_data* saved;
             Sprintf(playingbuf, "%sPlaying at %s difficulty in %s mode for %lld turns", prefix, get_game_difficulty_text(saved[k].gamestats.game_difficulty),
                 get_game_mode_text_core(saved[k].gamestats.debug_mode, saved[k].gamestats.explore_mode, saved[k].gamestats.modern_mode, saved[k].gamestats.casual_mode, (boolean)((saved[k].gamestats.save_flags & SAVEFLAGS_NON_SCORING) != 0), (boolean)((saved[k].gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0), TRUE),
                 (long long)saved[k].gamestats.umoves);
-            char* timestr = ctime(&saved[k].gamestats.time_stamp);
+            time_t stamp = (time_t)saved[k].gamestats.time_stamp;
+            char* timestr = ctime(&stamp);
             if (timestr && *timestr)
             {
                 Strncpy(timebuf, timestr, strlen(timestr) - 1);

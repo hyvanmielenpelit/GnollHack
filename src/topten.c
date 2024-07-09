@@ -565,47 +565,6 @@ int how;
 #endif
         issue_gui_command(GUI_CMD_POST_XLOG_ENTRY, GAME_STATUS_RESULT, 0, buf);
     }
-
-//#define XLOG_SEP '\t' /* xlogfile field separator. */
-//    Sprintf(buf, "version=%d.%d.%d", tt->ver_major, tt->ver_minor,
-//            tt->patchlevel);
-//    Sprintf(eos(buf), "%cpoints=%ld%cdeathdnum=%d%cdeathlev=%d", XLOG_SEP,
-//            tt->points, XLOG_SEP, tt->deathdnum, XLOG_SEP, tt->deathlev);
-//    Sprintf(eos(buf), "%cmaxlvl=%d%chp=%d%cmaxhp=%d", XLOG_SEP, tt->maxlvl,
-//            XLOG_SEP, tt->hp, XLOG_SEP, tt->maxhp);
-//    Sprintf(eos(buf), "%cdeaths=%d%cdeathdate=%ld%cbirthdate=%ld%cuid=%d",
-//            XLOG_SEP, tt->deaths, XLOG_SEP, tt->deathdate, XLOG_SEP,
-//            tt->birthdate, XLOG_SEP, tt->uid);
-//    Fprintf(rfile, "%s", buf);
-//    Sprintf(buf, "%crole=%s%crace=%s%cgender=%s%calign=%s", XLOG_SEP,
-//            tt->plrole, XLOG_SEP, tt->plrace, XLOG_SEP, tt->plgend, XLOG_SEP,
-//            tt->plalign);
-//    /* make a copy of death reason that doesn't include ", while helpless" */
-//    formatkiller(tmpbuf, sizeof tmpbuf, how, FALSE);
-//    Fprintf(rfile, "%s%cname=%s%cdeath=%s",
-//            buf, /* (already includes separator) */
-//            XLOG_SEP, plname, XLOG_SEP, tmpbuf);
-//    if (multi)
-//        Fprintf(rfile, "%cwhile=%s", XLOG_SEP,
-//                multi_reason ? multi_reason : "helpless");
-//    Fprintf(rfile, "%cconduct=0x%lx%cturns=%ld%cachieve=0x%lx", XLOG_SEP,
-//            encodeconduct(), XLOG_SEP, moves, XLOG_SEP, encodeachieve());
-//    Fprintf(rfile, "%cachieveX=%s", XLOG_SEP, encode_extended_achievements());
-//    Fprintf(rfile, "%cconductX=%s", XLOG_SEP, encode_extended_conducts());
-//    lock_thread_lock();
-//    Fprintf(rfile, "%crealtime=%ld%cstarttime=%ld%cendtime=%ld", XLOG_SEP,
-//            (int64_t) urealtime.realtime, XLOG_SEP,
-//            (int64_t) ubirthday, XLOG_SEP, (int64_t) urealtime.finish_time);
-//    unlock_thread_lock();
-//    Fprintf(rfile, "%cgender0=%s%calign0=%s", XLOG_SEP,
-//            genders[flags.initgend].filecode, XLOG_SEP,
-//            aligns[1 - u.ualignbase[A_ORIGINAL]].filecode);
-//    Fprintf(rfile, "%cflags=0x%lx", XLOG_SEP, encodexlogflags());
-//    Fprintf(rfile, "%cdifficulty=%d", XLOG_SEP, (int)context.game_difficulty);
-//    Fprintf(rfile, "%cmode=%s", XLOG_SEP, wizard ? "debug" : discover ? "explore" : CasualMode ? (ModernMode ? "casual" : "reloadable") : ModernMode ? "modern" : "normal");
-//    Fprintf(rfile, "%cscoring=%s", XLOG_SEP, discover || CasualMode || flags.non_scoring ? "no" : "yes");
-//    Fprintf(rfile, "\n");
-//#undef XLOG_SEP
 }
 
 STATIC_OVL int64_t

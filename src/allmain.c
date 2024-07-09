@@ -1378,7 +1378,7 @@ newgame()
     context.warnlevel = 1;
     context.next_attrib_check = 600L; /* arbitrary first setting */
     context.tribute.enabled = TRUE;   /* turn on 3.6 tributes    */
-    context.tribute.tributesz = sizeof(struct tribute_info);
+    context.tribute.tributesz = (uint64_t)sizeof(struct tribute_info);
     Strcpy(context.used_names, "|");
 
     init_rm();
@@ -1449,7 +1449,7 @@ newgame()
     lock_thread_lock();
     context.game_started = TRUE;
     urealtime.realtime = 0L;
-    urealtime.start_timing = getnow();
+    urealtime.start_timing = (int64_t)getnow();
     unlock_thread_lock();
 
 #ifdef INSURANCE

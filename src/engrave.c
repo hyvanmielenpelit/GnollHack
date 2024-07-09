@@ -441,7 +441,7 @@ unsigned short e_flags;
     ep->engr_time = e_time;
     ep->engr_type = e_type > 0 ? e_type : rnd(ENGR_BLOOD);
     ep->engr_flags = e_flags | (!in_mklev && u.ux > 0 && x == u.ux && y == u.uy ? ENGR_FLAGS_SEEN : 0);
-    ep->engr_lth = smem;
+    ep->engr_lth = (uint64_t)smem;
 }
 
 /* delete any engraving at location <x,y> */
@@ -1369,7 +1369,7 @@ int fd, mode;
         ep2 = ep->nxt_engr;
         if (ep->engr_lth && ep->engr_txt[0] && perform_bwrite(mode)) {
             bwrite(fd, (genericptr_t) &ep->engr_lth, sizeof ep->engr_lth);
-            bwrite(fd, (genericptr_t) ep, sizeof (struct engr) + ep->engr_lth);
+            bwrite(fd, (genericptr_t) ep, sizeof (struct engr) + (size_t)ep->engr_lth);
         }
         if (release_data(mode))
             dealloc_engr(ep);
@@ -1432,7 +1432,7 @@ size_t* size;
     *size = 0;
     for (ep = head_engr; ep; ep = ep->nxt_engr) {
         ++*count;
-        *size += sizeof *ep + ep->engr_lth;
+        *size += sizeof *ep + (size_t)ep->engr_lth;
     }
 }
 

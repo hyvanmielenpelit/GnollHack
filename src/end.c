@@ -1850,8 +1850,9 @@ int how;
        time or even day if player is slow responding to --More-- */
     int64_t realtime;
     lock_thread_lock();
-    urealtime.finish_time = endtime = getnow();
-    urealtime.realtime += (int64_t) (endtime - urealtime.start_timing);
+    endtime = getnow();
+    urealtime.finish_time = (int64_t)endtime;
+    urealtime.realtime += ((int64_t)endtime - urealtime.start_timing);
     realtime = urealtime.realtime;
     unlock_thread_lock();
     issue_simple_gui_command(GUI_CMD_REPORT_PLAY_TIME);
@@ -3980,7 +3981,7 @@ tally_realtime(VOID_ARGS)
         return;
     }
     urealtime.finish_time = getnow();
-    urealtime.realtime += (int64_t)(urealtime.finish_time - urealtime.start_timing);
+    urealtime.realtime += (urealtime.finish_time - urealtime.start_timing);
     unlock_thread_lock();
     issue_simple_gui_command(GUI_CMD_REPORT_PLAY_TIME);
     lock_thread_lock();
