@@ -44,8 +44,7 @@ namespace GnollHackX.Pages.Game
             }
 
             btnOptions.IsVisible = btnMessages.IsVisible = GHApp.DeveloperMode;
-            btnGC.IsVisible = btnDebug.IsVisible = 
-                GHApp.DeveloperMode && GHApp.DebugLogMessages;
+            btnGC.IsVisible = GHApp.DeveloperMode && GHApp.DebugLogMessages;
             UpdateDarknessMode();
         }
 
@@ -59,7 +58,6 @@ namespace GnollHackX.Pages.Game
                 btnOptions.IsVisible = false;
                 btnMessages.IsVisible = false;
                 btnGC.IsVisible = false;
-                btnDebug.IsVisible = false;
                 btnVersion.IsVisible = false;
                 btnTips.IsVisible = false;
             }
@@ -131,8 +129,7 @@ namespace GnollHackX.Pages.Game
         {
             MainLayout.IsEnabled = true;
             btnOptions.IsVisible = btnMessages.IsVisible = GHApp.DeveloperMode;
-            btnGC.IsVisible = btnDebug.IsVisible = 
-                GHApp.DeveloperMode && GHApp.DebugLogMessages;
+            btnGC.IsVisible = GHApp.DeveloperMode && GHApp.DebugLogMessages;
         }
 
         private bool _backPressed = false;
@@ -165,13 +162,6 @@ namespace GnollHackX.Pages.Game
 
             btnGC.Text = "Done";
             btnGC.TextColor = GHColors.Red;
-            MainLayout.IsEnabled = true;
-        }
-
-        private async void btnDebug_Clicked(object sender, EventArgs e)
-        {
-            MainLayout.IsEnabled = false;
-            await GHApp.ListFileDescriptors(this);
             MainLayout.IsEnabled = true;
         }
 

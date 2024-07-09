@@ -182,14 +182,6 @@
                                 <Switch Grid.Column="1" x:Name="SimpleCmdLayoutSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="SimpleCmdLayoutSwitch_Toggled" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Dark Mode"
-                                            FontFamily="Underwood" TextColor="Black"
-                                            FontSize="15"
-                                            VerticalOptions="Center" 
-                                            HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="DarkModeSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="DarkModeSwitch_Toggled" />
-                            </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label x:Name="DesktopButtonsLabel"
                                             Text="Desktop Buttons"
                                             FontFamily="Underwood" TextColor="Black"
@@ -197,6 +189,14 @@
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="DesktopButtonsSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Dark Mode"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center" 
+                                            HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="DarkModeSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="DarkModeSwitch_Toggled" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Messages"
