@@ -4776,18 +4776,20 @@ namespace GnollHackX
             try
             {
                 Pageable<BlobContainerItem> conts = blobServiceClient.GetBlobContainers();
-
-                bool found = false;
-                foreach (BlobContainerItem cont in conts)
+                if(conts != null)
                 {
-                    if (cont.Name == replayContainerName)
+                    bool found = false;
+                    foreach (BlobContainerItem cont in conts)
                     {
-                        found = true;
-                        break;
+                        if (cont?.Name == replayContainerName)
+                        {
+                            found = true;
+                            break;
+                        }
                     }
+                    if (!found)
+                        await blobServiceClient.CreateBlobContainerAsync(replayContainerName);
                 }
-                if (!found)
-                    await blobServiceClient.CreateBlobContainerAsync(replayContainerName);
             }
             catch (Exception ex)
             {
@@ -4799,32 +4801,45 @@ namespace GnollHackX
         public static async Task<SendResult> SendReplayFile(string replay_filename, int status_type, int status_datatype, bool is_from_queue)
         {
             SendResult res = new SendResult();
-            BlobServiceClient blobServiceClient = GetBlobServiceClient();
-            string replayContainerName = GetAzureBlobStorageReplayContainerName();
-            BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(replayContainerName);
-            string prefix = XlogUserNameVerified ? XlogUserName : GHConstants.AzureBlobStorageGeneralDirectoryName;
-            string full_filepath = replay_filename;
-            bool fileexists = File.Exists(full_filepath);
-            if (fileexists)
+            try
             {
-                if (_uploadCts == null)
-                    _uploadCts = new CancellationTokenSource();
+                BlobServiceClient blobServiceClient = GetBlobServiceClient();
+                if (blobServiceClient != null)
+                {
+                    string replayContainerName = GetAzureBlobStorageReplayContainerName();
+                    BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(replayContainerName);
+                    if (blobContainerClient != null)
+                    {
+                        string prefix = XlogUserNameVerified ? XlogUserName : GHConstants.AzureBlobStorageGeneralDirectoryName;
+                        string full_filepath = replay_filename;
+                        bool fileexists = File.Exists(full_filepath);
+                        if (fileexists)
+                        {
+                            if (_uploadCts == null)
+                                _uploadCts = new CancellationTokenSource();
 
-                try
-                {
-                    await UploadFromFileAsync(blobContainerClient, prefix, full_filepath, _uploadCts.Token);
-                    res.IsSuccess = true;
-                }
-                catch (Exception ex)
-                {
-                    WriteGHLog(ex.Message);
+                            try
+                            {
+                                await UploadFromFileAsync(blobContainerClient, prefix, full_filepath, _uploadCts.Token);
+                                res.IsSuccess = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                WriteGHLog(ex.Message);
+                            }
+                        }
+
+                        if (_uploadCts != null)
+                        {
+                            _uploadCts.Dispose();
+                            _uploadCts = null;
+                        }
+                    }
                 }
             }
-
-            if (_uploadCts != null)
+            catch (Exception ex)
             {
-                _uploadCts.Dispose();
-                _uploadCts = null;
+                Debug.WriteLine(ex.Message);
             }
             return res;
         }
