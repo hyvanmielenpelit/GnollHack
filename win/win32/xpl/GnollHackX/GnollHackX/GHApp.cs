@@ -4767,12 +4767,41 @@ namespace GnollHackX
             return GHConstants.AzureBlobStorageReplayContainerNamePrefix + "-" + verCompat.ToString();
         }
 
+        public static async Task CheckCreateReplayContainer(string replayContainerName)
+        {
+            BlobServiceClient blobServiceClient = GetBlobServiceClient();
+            if (blobServiceClient == null || string.IsNullOrEmpty(replayContainerName))
+                return;
+
+            try
+            {
+                Pageable<BlobContainerItem> conts = blobServiceClient.GetBlobContainers();
+
+                bool found = false;
+                foreach (BlobContainerItem cont in conts)
+                {
+                    if (cont.Name == replayContainerName)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                    await blobServiceClient.CreateBlobContainerAsync(replayContainerName);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+
         private static CancellationTokenSource _uploadCts = null;
         public static async Task<SendResult> SendReplayFile(string replay_filename, int status_type, int status_datatype, bool is_from_queue)
         {
             SendResult res = new SendResult();
             BlobServiceClient blobServiceClient = GetBlobServiceClient();
-            BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(GetAzureBlobStorageReplayContainerName());
+            string replayContainerName = GetAzureBlobStorageReplayContainerName();
+            BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(replayContainerName);
             string prefix = XlogUserNameVerified ? XlogUserName : GHConstants.AzureBlobStorageGeneralDirectoryName;
             string full_filepath = replay_filename;
             bool fileexists = File.Exists(full_filepath);

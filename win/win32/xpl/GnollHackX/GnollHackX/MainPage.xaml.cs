@@ -41,6 +41,7 @@ using GnollHackX.Pages.MainScreen;
 using Xamarin.Essentials;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
+using Azure.Storage.Blobs;
 
 namespace GnollHackX
 #endif
@@ -253,6 +254,7 @@ namespace GnollHackX
                 string[] filepaths = Directory.GetFiles(dir);
                 if (filepaths != null)
                 {
+                    bool firstReplay = true;
                     GHApp.MaybeWriteGHLog("ProcessSavedPosts in " + dir + ": " + filepaths.Length);
                     foreach (string str in filepaths)
                     {
@@ -299,8 +301,13 @@ namespace GnollHackX
                                         switch(post_type)
                                         {
                                             case 3:
-                                                typestr = "Replay";
-                                                res = await GHApp.SendReplayFile(post.status_string, post.status_type, post.status_datatype, true);
+                                                {
+                                                    typestr = "Replay";
+                                                    if(firstReplay)
+                                                        await GHApp.CheckCreateReplayContainer(GHApp.GetAzureBlobStorageReplayContainerName());
+                                                    firstReplay = false;
+                                                    res = await GHApp.SendReplayFile(post.status_string, post.status_type, post.status_datatype, true);
+                                                }
                                                 break;
                                             case 2:
                                                 typestr = "Bones file";
