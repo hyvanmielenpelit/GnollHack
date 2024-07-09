@@ -283,7 +283,7 @@ namespace GnollHackX
             var canvas = new SKCanvas(bitmap);
             canvas.Clear(SKColors.Transparent);
 
-            DrawOnCanvas(canvas);
+            DrawOnCanvas(canvas, false);
 
             var skImage = SKImage.FromBitmap(bitmap);            
             var result = skImage.Encode(SKEncodedImageFormat.Png, 100).AsStream();
@@ -334,7 +334,7 @@ namespace GnollHackX
             }
         }
 
-        public void DrawOnCanvas(SKCanvas canvas)
+        public void DrawOnCanvas(SKCanvas canvas, bool usingGL)
         {
             int signed_glyph = Glyph;
             int abs_glyph = Math.Abs(signed_glyph);
@@ -422,12 +422,13 @@ namespace GnollHackX
                             scale = tileWidth / GHConstants.TileWidth;
                         }
 
+                        ReferenceGamePage.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL);
                         canvas.DrawImage(ReferenceGamePage.TileMap[sheet_idx], sourcerect, targetrect, paint);
                         ReferenceGamePage.DrawAutoDraw(autodraw, canvas, false, paint, ObjData,
                             (int)layer_types.LAYER_OBJECT, 0, 0,
                             tileflag_halfsize, false, tileflag_fullsizeditem,
                             0, 0, tileWidth, tileHeight,
-                            1, scale, xpadding, ypadding, scaled_tile_height, true, drawwallends);
+                            1, scale, xpadding, ypadding, scaled_tile_height, true, drawwallends, usingGL);
                     }
                     else
                     {
@@ -459,12 +460,13 @@ namespace GnollHackX
                             canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
                             SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                             SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
+                            ReferenceGamePage.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL);
                             canvas.DrawImage(ReferenceGamePage.TileMap[sheet_idx], sourcerect, targetrect, paint);
                             ReferenceGamePage.DrawAutoDraw(autodraw, canvas, false, paint, ObjData,
                                 (int)layer_types.LAYER_OBJECT, 0, 0,
                                 tileflag_halfsize, false, true,
                                 0, 0, tileWidth, tileHeight,
-                                1, scale, 0, 0, tileHeight, true, drawwallends);
+                                1, scale, 0, 0, tileHeight, true, drawwallends, usingGL);
 
                         }
 
@@ -528,12 +530,13 @@ namespace GnollHackX
                                     canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
                                     SKRect sourcerect = new SKRect(etile_x, etile_y, etile_x + GHConstants.TileWidth, etile_y + GHConstants.TileHeight);
                                     SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
+                                    ReferenceGamePage.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL);
                                     canvas.DrawImage(ReferenceGamePage.TileMap[e_sheet_idx], sourcerect, targetrect, paint);
                                     ReferenceGamePage.DrawAutoDraw(autodraw, canvas, false, paint, ObjData,
                                         (int)layer_types.LAYER_OBJECT, 0, 0,
                                         tileflag_halfsize, false, true,
                                         0, 0, tileWidth, tileHeight,
-                                        1, scale, 0, 0, tileHeight, true, drawwallends);
+                                        1, scale, 0, 0, tileHeight, true, drawwallends, usingGL);
                                 }
                             }
                         }
