@@ -257,6 +257,7 @@ STATIC_DCL int FDECL(open_levelfile_exclusively, (const char *, int, int));
 
 STATIC_DCL void FDECL(livelog_write_string, (unsigned int, const char*));
 STATIC_DCL void FDECL(livelog_post_to_forum, (unsigned int, const char*));
+STATIC_DCL void FDECL(livelog_post_to_forum_rt, (unsigned int, struct u_realtime, const char*));
 STATIC_DCL int FDECL(copy_savefile, (const char*, const char*));
 
 #define INBUF_SIZ 4 * BUFSIZ
@@ -6063,6 +6064,18 @@ livelog_post_to_forum(ll_type, str)
 unsigned int ll_type;
 const char* str;
 {
+    lock_thread_lock();
+    struct u_realtime used_realtime = urealtime;
+    unlock_thread_lock();
+    livelog_post_to_forum_rt(ll_type, used_realtime, str);
+}
+
+STATIC_OVL void
+livelog_post_to_forum_rt(ll_type, used_realtime, str)
+unsigned int ll_type;
+struct u_realtime used_realtime;
+const char* str;
+{
     if (!str)
         return;
 
@@ -6077,7 +6090,7 @@ const char* str;
             Sprintf(cbuf, "%.3s %.3s %.3s %.3s XL:%d", urole.filecode,
                 urace.filecode, genders[Ufemale].filecode,
                 aligns[1 - u.ualign.type].filecode, u.ulevel);
-            int64_t currenttime = get_current_game_duration();
+            int64_t currenttime = calculate_current_game_duration(used_realtime);
             char* duration = format_duration_with_units(currenttime);
             Sprintf(postbuf, "%s (%s) %s, on T:%lld (%s) [%s]", plname, cbuf, str, (long long)moves, duration, mbuf);
 
@@ -6085,9 +6098,6 @@ const char* str;
             if (ll_type & (LL_GAME_START | LL_GAME_RESTORE | LL_GAME_SAVE))
             {
                 post_type = GAME_STATUS_POST_IF_CLOUD_REPLAY_ON;
-                lock_thread_lock();
-                struct u_realtime used_realtime = urealtime;
-                unlock_thread_lock();
                 if (ll_type & (LL_GAME_RESTORE | LL_GAME_SAVE))
                 {
                     Sprintf(eos(postbuf), " [%llx]", (unsigned long long)used_realtime.finish_time);
@@ -6166,6 +6176,18 @@ VA_DECL2(unsigned int, ll_type, const char*, fmt)
     VA_INIT(fmt, char*);
     vsnprintf(ll_msgbuf, 512, fmt, VA_ARGS);
     livelog_post_to_forum(ll_type, ll_msgbuf);
+    VA_END();
+}
+
+void
+post_to_forum_rt_printf
+VA_DECL3(unsigned int, ll_type, struct u_realtime, used_realtime, const char*, fmt)
+{
+    char ll_msgbuf[512];
+    VA_START(fmt);
+    VA_INIT(fmt, char*);
+    vsnprintf(ll_msgbuf, 512, fmt, VA_ARGS);
+    livelog_post_to_forum_rt(ll_type, used_realtime, ll_msgbuf);
     VA_END();
 }
 

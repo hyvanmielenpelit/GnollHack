@@ -41,6 +41,7 @@ STATIC_OVL void FDECL(restore_msghistory, (int));
 STATIC_DCL void FDECL(reset_oattached_mids, (BOOLEAN_P));
 STATIC_DCL void FDECL(rest_levl, (int, BOOLEAN_P));
 STATIC_DCL void FDECL(restore_gamelog, (int));
+STATIC_DCL void FDECL(post_restore_to_forum, (struct u_realtime));
 
 STATIC_VAR struct restore_procs {
     const char *name;
@@ -1139,13 +1140,17 @@ register int fd;
     else
         (void)delete_tmp_backup_savefile();
 
-    char dgnlvlbuf[BUFSZ * 2];
-    struct u_realtime saved_realtime = urealtime;
-    print_current_dgnlvl(dgnlvlbuf);
-    urealtime = restored_realtime;
-    post_to_forum_printf(LL_GAME_RESTORE, "resumed %s journey %s", uhis(), dgnlvlbuf);
-    urealtime = saved_realtime;
+    post_restore_to_forum(restored_realtime);
     return 1;
+}
+
+STATIC_OVL void
+post_restore_to_forum(restored_realtime)
+struct u_realtime restored_realtime;
+{
+    char dgnlvlbuf[BUFSZ * 2];
+    print_current_dgnlvl(dgnlvlbuf);
+    post_to_forum_rt_printf(LL_GAME_RESTORE, restored_realtime, "resumed %s journey %s", uhis(), dgnlvlbuf);
 }
 
 void

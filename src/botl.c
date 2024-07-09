@@ -771,8 +771,18 @@ get_current_game_duration(VOID_ARGS)
 {
     int64_t res = 0L;
     lock_thread_lock();
-    res = !context.game_started ? 0 : iflags.in_dumplog ? urealtime.realtime : urealtime.realtime + ((int64_t)getnow() - (int64_t)urealtime.start_timing);
+    struct u_realtime used_realtime = urealtime;
     unlock_thread_lock();
+    res = calculate_current_game_duration(used_realtime);
+    return res;
+}
+
+int64_t
+calculate_current_game_duration(used_realtime)
+struct u_realtime used_realtime;
+{
+    int64_t res = 0L;
+    res = !context.game_started ? 0 : iflags.in_dumplog ? used_realtime.realtime : used_realtime.realtime + ((int64_t)getnow() - (int64_t)used_realtime.start_timing);
     return res;
 }
 

@@ -13,6 +13,7 @@
 #include "prop.h"
 #include "soundset.h"
 #include "tiledata.h"
+#include "you.h"
 
 #define E extern
 
@@ -303,6 +304,7 @@ E void FDECL(get_m_buff_bits, (struct monst*, uint64_t*, BOOLEAN_P));
 E void NDECL(status_reassess);
 E char* NDECL(botl_realtime);
 E int64_t NDECL(get_current_game_duration);
+E int64_t FDECL(calculate_current_game_duration, (struct u_realtime));
 E size_t FDECL(print_conditions, (char*));
 E void FDECL(compose_partystatline, (char*, char*, char*, char*, char*));
 E char* FDECL(format_duration_with_units, (int64_t));
@@ -1299,6 +1301,7 @@ E void FDECL(gamelog_add, (int64_t, int64_t, const char*));
 E void VDECL(livelog_printf, (unsigned int, const char*, ...)) PRINTF_F(2, 3);
 E void FDECL(livelog_dump_url, (unsigned int));
 E void VDECL(post_to_forum_printf, (unsigned int, const char*, ...)) PRINTF_F(2, 3);
+E void VDECL(post_to_forum_rt_printf, (unsigned int, struct u_realtime, const char*, ...)) PRINTF_F(3, 4);
 #ifdef WHEREIS_FILE
 E void NDECL(touch_whereis);
 E void NDECL(delete_whereis);
