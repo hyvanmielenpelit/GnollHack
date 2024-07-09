@@ -534,8 +534,12 @@ namespace GnollHackX
         {
             get
             {
+#if GNH_MAUI
 #if WINDOWS
-                return true;
+                return true; //Windows needs this currently
+#else
+                return true; //Currently both Android and iOS on MAUI just in case
+#endif
 #else
                 return IsAndroid;
 #endif
