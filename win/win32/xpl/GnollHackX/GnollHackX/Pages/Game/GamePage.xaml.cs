@@ -631,9 +631,6 @@ namespace GnollHackX.Pages.Game
         private Stopwatch _stopWatch = new Stopwatch();
         private Stopwatch _mapUpdateStopWatch = new Stopwatch();
 
-        private Stopwatch _animationStopwatch = new Stopwatch();
-        private TimeSpan _previousTimeSpan;
-
         private readonly object _mapGridLock = new object();
         private bool _mapGrid = false;
         public bool MapGrid { get { lock (_mapGridLock) { return _mapGrid; } } set { lock (_mapGridLock) { _mapGrid = value; } } }
@@ -936,6 +933,7 @@ namespace GnollHackX.Pages.Game
             ToggleZoomAlternateButton_Clicked(null, null);
             MapNoClipMode = !MapNoClipMode;
             ToggleAutoCenterModeButton_Clicked(null, null);
+            StartAtBlack();
 
             /* Do this last just in case */
             DesktopButtons = Preferences.Get("DesktopButtons", GHApp.IsDesktop);
@@ -1245,10 +1243,6 @@ namespace GnollHackX.Pages.Game
             _stopWatch.Start();
 
             await LoadingProgressBar.ProgressTo(0.99, 40, Easing.Linear);
-
-            _animationStopwatch.Reset();
-            _previousTimeSpan = _animationStopwatch.Elapsed;
-            _animationStopwatch.Start();
 
             canvasView._gamePage = this;
             CommandCanvas._gamePage = this;
@@ -1958,6 +1952,7 @@ namespace GnollHackX.Pages.Game
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 LoadingGrid.IsVisible = false;
+                FadeFromBlack(GHConstants.FadeFromBlackDurationAtStart, false);
             });
         }
 
@@ -2577,10 +2572,10 @@ namespace GnollHackX.Pages.Game
                                 //lSkillButton.IsVisible = false;
                                 break;
                             case GHRequestType.FadeToBlack:
-                                FadeToBlack((uint)req.RequestInt);
+                                FadeToBlack((uint)req.RequestInt, true);
                                 break;
                             case GHRequestType.FadeFromBlack:
-                                FadeFromBlack((uint)req.RequestInt);
+                                FadeFromBlack((uint)req.RequestInt, true);
                                 break;
                             case GHRequestType.ShowGUITips:
                                 ShowGUITips(true);
@@ -13807,9 +13802,20 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        public void FadeToBlack(uint milliseconds)
+        public void StartAtBlack()
         {
-            MainGrid.IsEnabled = false;
+#if WINDOWS
+            FadeFrame.Opacity = 1.0;
+            FadeFrame.IsVisible = true;
+#else
+            canvasView.Opacity = 0.0;
+#endif
+        }
+
+        public void FadeToBlack(uint milliseconds, bool toggleEnabled)
+        {
+            if(toggleEnabled)
+                MainGrid.IsEnabled = false;
 #if WINDOWS
             FadeFrame.Opacity = 0.0;
             FadeFrame.IsVisible = true;
@@ -13820,9 +13826,10 @@ namespace GnollHackX.Pages.Game
 #endif
         }
 
-        public async void FadeFromBlack(uint milliseconds)
+        public async void FadeFromBlack(uint milliseconds, bool toggleEnabled)
         {
-            MainGrid.IsEnabled = true;
+            if(toggleEnabled)
+                MainGrid.IsEnabled = true;
 #if WINDOWS
             FadeFrame.Opacity = 1.0;
             await FadeFrame.FadeTo(0.0, milliseconds);
