@@ -20,7 +20,6 @@
                                                   MousePointer="canvasView_MousePointer"
                                                   HorizontalOptions="Fill" VerticalOptions="Fill" >
                 </controls:SwitchableCanvasView>
-                <Frame x:Name="FadeFrame" IsVisible="False" BackgroundColor="Black" BorderColor="Black" CornerRadius="0" HorizontalOptions="Fill" VerticalOptions="Fill" />
 
                 <controls:LabeledImageButton x:Name="lWornItemsButton" LblText="" BtnLetter="]" LargerFont="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="End" VerticalOptions="Start" />
                 <controls:LabeledImageButton x:Name="lAbilitiesButton" LblText="" BtnLetter="A" LargerFont="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="Start" VerticalOptions="Start" />
@@ -359,6 +358,9 @@
                     <TapGestureRecognizer />
                 </Grid.GestureRecognizers>
             </Grid>
+
+            <Frame x:Name="FadeFrame" IsVisible="False" BackgroundColor="Black" BorderColor="Black" CornerRadius="0" HorizontalOptions="Fill" VerticalOptions="Fill" />
+
             <Grid x:Name="MoreCommandsGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#FF000000" IsVisible="False">
                 <controls:SwitchableCanvasView x:Name="CommandCanvas" UseGL="False" CanvasType="CommandCanvas" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#FF000000"
                                                PaintSurface="CommandCanvas_PaintSurface" Touch="CommandCanvas_Touch" MouseWheel="CommandCanvas_MouseWheel" MousePointer="CommandCanvas_MousePointer"
