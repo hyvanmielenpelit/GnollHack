@@ -963,6 +963,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="AdamE.MemoryToolkit.Maui" Version="1.0.0" />
 		<PackageReference Include="Azure.Identity" Version="1.12.0" />
 		<PackageReference Include="Azure.Storage.Blobs" Version="12.13.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0-preview.6.24327.7" />
