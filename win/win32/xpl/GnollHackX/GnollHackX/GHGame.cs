@@ -2103,7 +2103,7 @@ namespace GnollHackX
                         return;
                     if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
-                        queue.Enqueue(new GHRequest(this, GHRequestType.FadeFromBlack, GHConstants.FadeFromBlackDurationAtStart));
+                        queue.Enqueue(new GHRequest(this, GHRequestType.FadeFromBlack, GHConstants.FadeFromBlackDurationAtStart + (int)(GHConstants.FadeFromBlackAtStartExtraDelaySecs * 1000)));
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_SET_TO_BLACK:
