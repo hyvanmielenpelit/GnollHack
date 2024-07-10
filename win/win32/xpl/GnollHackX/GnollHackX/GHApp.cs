@@ -6663,7 +6663,11 @@ namespace GnollHackX
         {
             string res = "";
 #if WINDOWS10_0_19041_0_OR_GREATER
-            var t2 = Windows.ApplicationModel.AppInfo.Current.AppUserModelId;
+            OperatingSystem osVer = System.Environment.OSVersion;
+            int build = osVer?.Version?.Build ?? 0;
+#pragma warning disable CA1416
+            var t2 = build >= 19041 ? Windows.ApplicationModel.AppInfo.Current.AppUserModelId : Windows.ApplicationModel.Package.Current.Id.FamilyName + "!App";
+#pragma warning restore CA1416
 #else
             var t2 = Windows.ApplicationModel.Package.Current.Id.FamilyName + "!App";
 #endif
