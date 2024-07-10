@@ -33,6 +33,10 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'">
+		<DefineConstants>$(DefineConstants);BETA</DefineConstants>
+	</PropertyGroup>
+
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
 	  <!--<AotAssemblies>true</AotAssemblies>
 	  <RunAOTCompilation>true</RunAOTCompilation>-->

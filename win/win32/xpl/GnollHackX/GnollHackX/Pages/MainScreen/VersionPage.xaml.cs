@@ -255,6 +255,9 @@ namespace GnollHackX.Pages.MainScreen
             PortVersionTitleLabel.Text = GHApp.RuntimePlatform + " Port Version:";
             PortBuildTitleLabel.Text = GHApp.RuntimePlatform + " Port Build:";
             PortConfigurationTitleLabel.Text ="Port Configuration:";
+#if BETA
+            PortVersionLabel.Text += " (Beta)";
+#endif
 
             GnollHackVersionLabel.Text = GHApp.GHVersionString;
             GnollHackConfigurationLabel.Text = GHApp.GHDebug ? "Debug" : "Release";
