@@ -1583,8 +1583,6 @@ namespace GnollHackX
         public const int FadeToBlackDelay = 325;
         public const int FadeToBlackDuration = 200;
         public const int FadeFromBlackDuration = 200;
-        public const int FadeFromBlackDurationAtStart = 1000;
-        public const double FadeFromBlackAtStartExtraDelaySecs = 0.25;
         public const int MaxMessageHistoryLength = 256;
         public const int MaxLongerMessageHistoryLength = 16384;
         public const float MoveDistanceThreshold = 25.0f;
@@ -1809,9 +1807,13 @@ namespace GnollHackX
 #if WINDOWS
         public const bool DefaultCharacterClickAction = true;
         public const bool DefaultSimpleCmdLayout = false;
+        public const int FadeFromBlackDurationAtStart = 700;
+        public const double FadeFromBlackAtStartExtraDelaySecs = 0.25;
 #else
         public const bool DefaultCharacterClickAction = false;
         public const bool DefaultSimpleCmdLayout = true;
+        public const int FadeFromBlackDurationAtStart = 700;
+        public const double FadeFromBlackAtStartExtraDelaySecs = 0.15;
 #endif
     }
 
