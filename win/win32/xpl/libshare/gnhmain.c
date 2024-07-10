@@ -68,6 +68,8 @@ char** argv;
     /* Now initialize windows */
     choose_windows(DEFAULT_WINDOW_SYS);
     init_nhwindows(&argc, argv);
+    if (!exit_hack_code_at_start)
+        issue_simple_gui_command(GUI_CMD_SET_TO_BLACK);
     process_options_file();
 
     /*
@@ -125,6 +127,8 @@ char** argv;
 
         newgame();
         mode_message();
+        if (!exit_hack_code_at_start)
+            issue_simple_gui_command(GUI_CMD_FADE_FROM_BLACK_SLOWLY_NONBLOCKING);
     }
     else
     {

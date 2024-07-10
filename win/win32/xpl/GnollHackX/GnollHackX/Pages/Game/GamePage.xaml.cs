@@ -2618,6 +2618,9 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.FadeFromBlack:
                                 FadeFromBlack((uint)req.RequestInt);
                                 break;
+                            case GHRequestType.SetToBlack:
+                                SetToBlack();
+                                break;
                             case GHRequestType.ShowGUITips:
                                 ShowGUITips(true);
                                 break;
@@ -13873,6 +13876,16 @@ namespace GnollHackX.Pages.Game
             FadeFrameAtStart.Opacity = 1.0;
             await FadeFrameAtStart.FadeTo(0.0, milliseconds);
             FadeFrameAtStart.IsVisible = false;
+        }
+
+        public void SetToBlack()
+        {
+#if WINDOWS
+            FadeFrame.Opacity = 1.0;
+            FadeFrame.IsVisible = true;
+#else
+            canvasView.Opacity = 0.0;
+#endif
         }
 
         public void FadeToBlack(uint milliseconds)

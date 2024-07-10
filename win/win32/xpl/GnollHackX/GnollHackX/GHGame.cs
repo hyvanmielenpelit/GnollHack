@@ -2098,6 +2098,22 @@ namespace GnollHackX
                         Thread.Sleep(GHConstants.FadeToBlackDelay);
                     }
                     break;
+                case (int)gui_command_types.GUI_CMD_FADE_FROM_BLACK_SLOWLY_NONBLOCKING:
+                    if (PlayingReplay && GHApp.IsReplaySearching)
+                        return;
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.FadeFromBlack, GHConstants.FadeFromBlackDurationAtStart));
+                    }
+                    break;
+                case (int)gui_command_types.GUI_CMD_SET_TO_BLACK:
+                    if (PlayingReplay && GHApp.IsReplaySearching)
+                        return;
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.SetToBlack));
+                    }
+                    break;
                 case (int)gui_command_types.GUI_CMD_COLLECT_GARBAGE:
                     if (PlayingReplay && GHApp.IsReplaySearching)
                         return;

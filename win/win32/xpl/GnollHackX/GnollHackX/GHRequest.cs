@@ -74,6 +74,7 @@ namespace GnollHackX
         ToggleMenuPositionSaving,
         SetCharacterClickAction,
         ClipAround,
+        SetToBlack,
     }
 
     public struct AddContextMenuData
