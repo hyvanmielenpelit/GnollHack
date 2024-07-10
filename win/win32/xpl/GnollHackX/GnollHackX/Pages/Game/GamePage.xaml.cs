@@ -73,6 +73,10 @@ namespace GnollHackX.Pages.Game
         private bool _isGameOn = false;
         public bool IsGameOn { get { lock (_isGameOnLock) { return _isGameOn; } } set { lock (_isGameOnLock) { _isGameOn = value; } } }
 
+        private object _isMainCanvasOnLock = new object();
+        private bool _isMainCanvasOn = false;
+        public bool IsMainCanvasOn { get { lock (_isMainCanvasOnLock) { return _isMainCanvasOn; } } set { lock (_isMainCanvasOnLock) { _isMainCanvasOn = value; } } }
+
         private readonly string _fontSizeString = "FontS";
         private bool _refreshMsgHistoryRowCounts = true;
         //private readonly object _refreshMsgHistoryRowCountLock = new object();
@@ -1257,6 +1261,7 @@ namespace GnollHackX.Pages.Game
             TipView._parentGrid = null;
 
             IsGameOn = true;
+            IsMainCanvasOn = true;
             MainGrid.IsVisible = true;
             canvasView.InvalidateSurface();
 
@@ -1929,7 +1934,8 @@ namespace GnollHackX.Pages.Game
         {
             DelayedLoadingScreenHide();
             DelayedFadeFromBlackAtStart();
-            MainGrid.IsVisible = true;
+            //MainGrid.IsVisible = true;
+            IsMainCanvasOn = true;
             StartMainCanvasAnimation();
         }
 
@@ -1985,7 +1991,7 @@ namespace GnollHackX.Pages.Game
                     _delayedMenuShow = false;
                     DoShowMenuCanvas(_delayedMenuShowDoTextHide);
                 }
-                FadeFromBlack(GHConstants.FadeFromBlackDurationAtStart, false);
+                FadeFromBlackAtStart(GHConstants.FadeFromBlackDurationAtStart);
                 _delayedFadeFromBlackAtStartOn = false;
             });
         }
@@ -2607,10 +2613,10 @@ namespace GnollHackX.Pages.Game
                                 //lSkillButton.IsVisible = false;
                                 break;
                             case GHRequestType.FadeToBlack:
-                                FadeToBlack((uint)req.RequestInt, true);
+                                FadeToBlack((uint)req.RequestInt);
                                 break;
                             case GHRequestType.FadeFromBlack:
-                                FadeFromBlack((uint)req.RequestInt, true);
+                                FadeFromBlack((uint)req.RequestInt);
                                 break;
                             case GHRequestType.ShowGUITips:
                                 ShowGUITips(true);
@@ -2729,9 +2735,10 @@ namespace GnollHackX.Pages.Game
             YnGrid.IsVisible = false;
             DoHideDirections();
 
-            if (!LoadingGrid.IsVisible && (/* !MainGrid.IsVisible || */ !canvasView.AnimationIsRunning("GeneralAnimationCounter")))
+            if (!LoadingGrid.IsVisible && ( !IsMainCanvasOn || /* !MainGrid.IsVisible || */ !canvasView.AnimationIsRunning("GeneralAnimationCounter")))
             {
                 //MainGrid.IsVisible = true;
+                IsMainCanvasOn = true;
                 lock (RefreshScreenLock)
                 {
                     RefreshScreen = true;
@@ -2894,6 +2901,7 @@ namespace GnollHackX.Pages.Game
             {
                 TextGrid.IsVisible = true;
                 //MainGrid.IsVisible = false;
+                IsMainCanvasOn = false;
                 if (dohidemenu)
                 {
                     MenuGrid.IsVisible = false;
@@ -2921,6 +2929,7 @@ namespace GnollHackX.Pages.Game
 
                 TextGrid.IsVisible = true;
                 //MainGrid.IsVisible = false;
+                IsMainCanvasOn = false;
                 if (dohidemenu)
                 {
                     MenuGrid.IsVisible = false;
@@ -3767,6 +3776,7 @@ namespace GnollHackX.Pages.Game
             {
                 MenuGrid.IsVisible = true;
                 //MainGrid.IsVisible = false;
+                IsMainCanvasOn = false;
                 if (dohidetext)
                 {
                     TextGrid.IsVisible = false;
@@ -3789,6 +3799,7 @@ namespace GnollHackX.Pages.Game
 
                 MenuGrid.IsVisible = true;
                 //MainGrid.IsVisible = false;
+                IsMainCanvasOn = false;
                 if (dohidetext)
                 {
                     TextGrid.IsVisible = false;
@@ -3820,6 +3831,7 @@ namespace GnollHackX.Pages.Game
             {
                 MoreCommandsGrid.IsVisible = false;
                 //MainGrid.IsVisible = true;
+                IsMainCanvasOn = true;
                 UpdateMoreNextPrevButtonVisibility(true, true);
                 if (CommandCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                     CommandCanvas.AbortAnimation("GeneralAnimationCounter");
@@ -3857,6 +3869,7 @@ namespace GnollHackX.Pages.Game
                 GenericButton_Clicked(sender, e, GHConstants.CancelChar);
                 TextGrid.IsVisible = false;
                 //MainGrid.IsVisible = true;
+                IsMainCanvasOn = true;
                 if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                     TextCanvas.AbortAnimation("GeneralAnimationCounter");
                 lock (RefreshScreenLock)
@@ -3874,6 +3887,7 @@ namespace GnollHackX.Pages.Game
                 }
                 MenuGrid.IsVisible = false;
                 //MainGrid.IsVisible = true;
+                IsMainCanvasOn = true;
                 if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                     MenuCanvas.AbortAnimation("GeneralAnimationCounter");
                 lock (RefreshScreenLock)
@@ -6082,7 +6096,7 @@ namespace GnollHackX.Pages.Game
 
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
         {
-            if (/* !MainGrid.IsVisible || */ GHApp.IsReplaySearching)
+            if (!IsMainCanvasOn || /* !MainGrid.IsVisible || */ GHApp.IsReplaySearching)
                 return;
 
             SKImageInfo info = e.Info;
@@ -13850,40 +13864,41 @@ namespace GnollHackX.Pages.Game
 
         public void StartAtBlack()
         {
-//#if WINDOWS
-            FadeFrame.Opacity = 1.0;
-            FadeFrame.IsVisible = true;
-//#else
-//            canvasView.Opacity = 0.0;
-//#endif
+            FadeFrameAtStart.Opacity = 1.0;
+            FadeFrameAtStart.IsVisible = true;
         }
 
-        public void FadeToBlack(uint milliseconds, bool toggleEnabled)
+        public async void FadeFromBlackAtStart(uint milliseconds)
         {
-            if(toggleEnabled)
-                MainGrid.IsEnabled = false;
-//#if WINDOWS
+            FadeFrameAtStart.Opacity = 1.0;
+            await FadeFrameAtStart.FadeTo(0.0, milliseconds);
+            FadeFrameAtStart.IsVisible = false;
+        }
+
+        public void FadeToBlack(uint milliseconds)
+        {
+            MainGrid.IsEnabled = false;
+#if WINDOWS
             FadeFrame.Opacity = 0.0;
             FadeFrame.IsVisible = true;
             FadeFrame.FadeTo(1.0, milliseconds);
-//#else
-//            canvasView.Opacity = 1.0;
-//            canvasView.FadeTo(0.0, milliseconds);
-//#endif
+#else
+            canvasView.Opacity = 1.0;
+            canvasView.FadeTo(0.0, milliseconds);
+#endif
         }
 
-        public async void FadeFromBlack(uint milliseconds, bool toggleEnabled)
+        public async void FadeFromBlack(uint milliseconds)
         {
-            if(toggleEnabled)
-                MainGrid.IsEnabled = true;
-//#if WINDOWS
+            MainGrid.IsEnabled = true;
+#if WINDOWS
             FadeFrame.Opacity = 1.0;
             await FadeFrame.FadeTo(0.0, milliseconds);
             FadeFrame.IsVisible = false;
-//#else
-//            canvasView.Opacity = 0.0;
-//            await canvasView.FadeTo(1.0, milliseconds);
-//#endif
+#else
+            canvasView.Opacity = 0.0;
+            await canvasView.FadeTo(1.0, milliseconds);
+#endif
         }
 
         public void GenericButton_Clicked(object sender, EventArgs e, int resp)
@@ -13917,6 +13932,7 @@ namespace GnollHackX.Pages.Game
             UpdateMoreNextPrevButtonVisibility(true, true);
             MoreCommandsGrid.IsVisible = true;
             //MainGrid.IsVisible = false;
+            IsMainCanvasOn = false;
             if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
                 canvasView.AbortAnimation("GeneralAnimationCounter");
             _mapUpdateStopWatch.Stop();
@@ -15714,6 +15730,7 @@ namespace GnollHackX.Pages.Game
             {
                 MenuGrid.IsVisible = false;
                 //MainGrid.IsVisible = true;
+                IsMainCanvasOn = true;
                 if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                     MenuCanvas.AbortAnimation("GeneralAnimationCounter");
                 MenuWindowGlyphImage.StopAnimation();
@@ -15778,6 +15795,7 @@ namespace GnollHackX.Pages.Game
             {
                 TextGrid.IsVisible = false;
                 //MainGrid.IsVisible = true;
+                IsMainCanvasOn = true;
                 TextWindowGlyphImage.StopAnimation();
                 lock (_textScrollLock)
                 {
@@ -16868,6 +16886,7 @@ namespace GnollHackX.Pages.Game
         {
             MoreCommandsGrid.IsVisible = false;
             //MainGrid.IsVisible = true;
+            IsMainCanvasOn = true;
             UpdateMoreNextPrevButtonVisibility(true, true);
             if (CommandCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                 CommandCanvas.AbortAnimation("GeneralAnimationCounter");
@@ -17643,7 +17662,7 @@ namespace GnollHackX.Pages.Game
             }
             else if (MoreCommandsGrid.IsVisible && !CommandCanvas.AnimationIsRunning("GeneralAnimationCounter"))
                 StartCommandCanvasAnimation();
-            else if (!LoadingGrid.IsVisible /* && MainGrid.IsVisible */ && !canvasView.AnimationIsRunning("GeneralAnimationCounter"))
+            else if (!LoadingGrid.IsVisible && IsMainCanvasOn /* && MainGrid.IsVisible */ && !canvasView.AnimationIsRunning("GeneralAnimationCounter"))
                 StartMainCanvasAnimation();
         }
 
