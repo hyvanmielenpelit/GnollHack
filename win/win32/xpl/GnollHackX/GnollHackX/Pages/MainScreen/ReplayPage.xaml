@@ -19,9 +19,9 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Label x:Name="HeaderLabel" Grid.Row="0" Text="Select Recorded Game" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="Black" FontFamily="Immortal"/>
+                <Label Grid.Row="0" x:Name="HeaderLabel" Text="Select Recorded Game" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="Large" TextColor="Black" FontFamily="Immortal"/>
                 <Label Grid.Row="1" x:Name="RecordingsLabel" Text="0 replays available" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="16" TextColor="Black" FontFamily="Immortal"/>
-                <CollectionView x:Name="ReplayCollectionView" Grid.Row="2" HorizontalOptions="Fill" VerticalOptions="Start" SelectionMode="Single"  BackgroundColor="Transparent" SelectionChanged="MainListView_SelectionChanged" >
+                <CollectionView Grid.Row="2" x:Name="ReplayCollectionView" HorizontalOptions="Fill" VerticalOptions="Start" SelectionMode="Single"  BackgroundColor="Transparent" SelectionChanged="MainListView_SelectionChanged" >
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="gnh:GHRecordedGameFile">
                             <Grid ColumnSpacing="6" HorizontalOptions="Fill" VerticalOptions="Fill" Margin="0,8">
@@ -51,6 +51,7 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
+                <Label Grid.Row="2" x:Name="EmptyLabel" IsVisible="False" Text="No replays found" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="18" TextColor="Black" FontFamily="Immortal"/>
                 <Grid x:Name="BottomLayout" Grid.Row="3" HorizontalOptions="Fill" VerticalOptions="End">
                     <StackLayout x:Name="OuterButtonMainStack" Spacing="6" Orientation="Vertical"  HorizontalOptions="Center">
                         <StackLayout x:Name="ServerStack" Grid.Row="3" Spacing="6" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">

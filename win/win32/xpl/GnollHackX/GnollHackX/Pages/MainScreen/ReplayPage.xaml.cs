@@ -61,6 +61,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 HeaderLabel.TextColor = GHColors.White;
                 RecordingsLabel.TextColor = GHColors.White;
+                EmptyLabel.TextColor = GHColors.White;
                 FolderPicker.TextColor = GHColors.White;
                 FolderPicker.TitleColor = GHColors.White;
             }
@@ -401,9 +402,17 @@ namespace GnollHackX.Pages.MainScreen
             {
                 int i = 0;
                 long totalBytes = 0;
+                bool showEmptyLabel = true;
+                if (ReplayCollectionView.ItemsSource != null)
+                {
+                    if (ReplayCollectionView.ItemsSource is ObservableCollection<GHRecordedGameFile>)
+                    {
+                        ObservableCollection<GHRecordedGameFile> fileCollection = (ObservableCollection<GHRecordedGameFile>)ReplayCollectionView.ItemsSource;
+                        showEmptyLabel = fileCollection.Count == 0;
+                    }
+                }
                 if (ReplayCollectionView.SelectedItems != null)
                 {
-                    //i = ReplayCollectionView.SelectedItems.Count;
                     foreach (object Obj in ReplayCollectionView.SelectedItems)
                     {
                         if(Obj is GHRecordedGameFile)
@@ -418,17 +427,19 @@ namespace GnollHackX.Pages.MainScreen
                     }
                 }
                 RecordingsLabel.Text = i.ToString() + " replay" + (i == 1 ? "" : "s") + " selected, " + (totalBytes < 1024 * 1024 ? string.Format("{0} kB", totalBytes / 1024) : string.Format("{0:0.0} MB", (double)totalBytes / (1024 * 1024)));
+                EmptyLabel.IsVisible = showEmptyLabel;
             }
             else
             {
                 int i = 0;
                 long totalBytes = 0;
+                bool showEmptyLabel = true;
                 if(ReplayCollectionView.ItemsSource != null)
                 {
                     if(ReplayCollectionView.ItemsSource is ObservableCollection<GHRecordedGameFile>)
                     {
                         ObservableCollection<GHRecordedGameFile> fileCollection = (ObservableCollection<GHRecordedGameFile>)ReplayCollectionView.ItemsSource;
-                        //i = fileCollection.Count;
+                        showEmptyLabel = fileCollection.Count == 0;
                         foreach(GHRecordedGameFile file in fileCollection)
                         {
                             if(!file.IsFolder)
@@ -440,6 +451,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                 }
                 RecordingsLabel.Text = i.ToString() + " replay" + (i == 1 ? "" : "s") + ", " + (totalBytes < 1024 * 1024 ? string.Format("{0} kB", totalBytes / 1024) : string.Format("{0:0.0} MB", (double)totalBytes / (1024 * 1024)));
+                EmptyLabel.IsVisible = showEmptyLabel && i == 0;
             }
         }
 
@@ -903,12 +915,32 @@ namespace GnollHackX.Pages.MainScreen
                 if (ReplayCollectionView.SelectedItems != null && ReplayCollectionView.SelectedItems.Count > 0)
                 {
                     int noErrors = 0;
-                    int noFiles = ReplayCollectionView.SelectedItems.Count;
+                    int noEntries = ReplayCollectionView.SelectedItems.Count;
+                    int noFiles = 0;
+                    int noFolders = 0;
+                    foreach(object item in ReplayCollectionView.SelectedItems)
+                    {
+                        GHRecordedGameFile gHRecordedGameFile = item as GHRecordedGameFile;
+                        if (gHRecordedGameFile != null)
+                        {
+                            if(gHRecordedGameFile.IsFolder)
+                                noFolders++;
+                            else
+                                noFiles++;
+                        }
+                    }
+                    bool areAllFiles = noFiles == noEntries;
+                    bool areAllFolders = noFolders == noEntries;
+
                     string qText;
-                    if (noFiles == 1 && ReplayCollectionView.SelectedItems[0] is GHRecordedGameFile)
-                        qText = "Are you sure to delete the replay " + ((GHRecordedGameFile)ReplayCollectionView.SelectedItems[0]).FileName + "?";
+                    if (noEntries == 1 && ReplayCollectionView.SelectedItems[0] is GHRecordedGameFile)
+                        qText = "Are you sure to delete the " + (areAllFolders ? "folder" : "replay") + " " + ((GHRecordedGameFile)ReplayCollectionView.SelectedItems[0]).FileName + "?";
                     else
-                        qText = "Are you sure to delete the " + noFiles + " selected replay" + (noFiles != 1 ? "s" : "") + "?";
+                        qText = "Are you sure to delete the " + noEntries + " selected " + 
+                            (areAllFolders ? "folder" + (noEntries != 1 ? "s" : "") : 
+                               areAllFiles ? "replay" + (noEntries != 1 ? "s" : "") : 
+                               "replay" + (noFiles != 1 ? "s" : "") + " and folder" + (noFolders != 1 ? "s" : "")) + 
+                            "?";
                     if (await DisplayAlert("Confirm Deletion", qText, "Yes", "No"))
                     {
                         foreach (object selItem in ReplayCollectionView.SelectedItems)
@@ -926,7 +958,10 @@ namespace GnollHackX.Pages.MainScreen
                             {
                                 try
                                 {
-                                    GHApp.DeleteReplay(filePath);
+                                    if(recfile.IsFolder)
+                                        Directory.Delete(filePath, true);
+                                    else
+                                        GHApp.DeleteReplay(filePath);
                                 }
                                 catch (Exception ex)
                                 {
@@ -938,7 +973,7 @@ namespace GnollHackX.Pages.MainScreen
                         if (noErrors > 0)
                         {
                             await DisplayAlert("Deletion Failed",
-                                noErrors + " error" + (noErrors != 1 ? "s" : "") + " occurred when trying to delete " + noFiles + " replay" + (noFiles != 1 ? "s" : "") + "."
+                                noErrors + " error" + (noErrors != 1 ? "s" : "") + " occurred when trying to delete " + noEntries + " replay" + (noEntries != 1 ? "s" : "") + "."
                                 + (GHApp.DebugLogMessages ? " See App Log for details." : ""),
                                 "OK");
                         }
@@ -961,11 +996,15 @@ namespace GnollHackX.Pages.MainScreen
 
                 if (filePath != null && recfile != null)
                 {
-                    if (await DisplayAlert("Confirm Deletion", "Are you sure to delete the game recording " + recfile.FileName + "?", "Yes", "No"))
+                    if (await DisplayAlert("Confirm Deletion", "Are you sure to delete the " + 
+                        (recfile.IsFolder ? "folder" : "game recording") + " " + recfile.FileName + "?", "Yes", "No"))
                     {
                         try
                         {
-                            GHApp.DeleteReplay(filePath);
+                            if (recfile.IsFolder)
+                                Directory.Delete(filePath, true);
+                            else
+                                GHApp.DeleteReplay(filePath);
                             UpdateRecordings();
                         }
                         catch (Exception ex)
@@ -1009,6 +1048,7 @@ namespace GnollHackX.Pages.MainScreen
                 return;
 
             RecordingsLabel.Text = "(Loading...)";
+            EmptyLabel.IsVisible = false;
             ReplayCollectionView.SelectedItem = null;
             ReplayCollectionView.SelectedItems.Clear();
             ReplayCollectionView.ItemsSource = null;

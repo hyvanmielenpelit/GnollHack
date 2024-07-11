@@ -87,7 +87,8 @@ namespace GnollHackX.Pages.MainScreen
 
             int maxManuals = GHApp.GnollHackService.GetMaxManuals();
             List<StoredManual> manuallist = _manuals.Values.ToList();
-            if(manuallist.Count > 0)
+            lblSubtitle.Text = "Found " + manuallist.Count + " of " + maxManuals + " manuals";
+            if (manuallist.Count > 0)
             {
                 Comparison<StoredManual> comp = new Comparison<StoredManual>((m1, m2) => { return string.Compare(m1.Name, m2.Name); });
                 manuallist.Sort(comp);
@@ -108,10 +109,10 @@ namespace GnollHackX.Pages.MainScreen
                     rib.BtnClicked += LibraryButton_Clicked;
                     LibraryLayout.Children.Add(rib);
                 }
-                lblSubtitle.Text = "Found " + manuallist.Count + " of " + maxManuals + " manuals";
             }
             else
                 EmptyLabel.IsVisible = true;
+
         }
 
         private async void LibraryButton_Clicked(object sender, EventArgs e)
