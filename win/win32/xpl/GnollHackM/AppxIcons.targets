@@ -11,10 +11,16 @@
 			DestinationFiles="$(_IntermediateDir)\appiconLargeTile.scale-125.png" />
 		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-512-465_x_465.png"
 			DestinationFiles="$(_IntermediateDir)\appiconLargeTile.scale-150.png" />
-		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-512-620_x_620.png"
+		<!-- This is smaller than expected to keep the image under 200KB -->
+		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-512.png"
 			DestinationFiles="$(_IntermediateDir)\appiconLargeTile.scale-200.png" />
-		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-512-1240_x_1240.png"
+		<!-- This is smaller than expected to keep the image under 200KB -->
+		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-512.png"
 			DestinationFiles="$(_IntermediateDir)\appiconLargeTile.scale-400.png" />
+		<!--<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-512-620_x_620.png"
+			DestinationFiles="$(_IntermediateDir)\appiconLargeTile.scale-200.png" />-->
+		<!--<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-512-1240_x_1240.png"
+			DestinationFiles="$(_IntermediateDir)\appiconLargeTile.scale-400.png" />-->
 
 		<!-- appiconLogo.altform-lightunplated -->
 		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-512-16_x_16.png"
@@ -73,8 +79,11 @@
 			DestinationFiles="$(_IntermediateDir)\appiconMediumTile.scale-150.png" />
 		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-512-300_x_300.png"
 			DestinationFiles="$(_IntermediateDir)\appiconMediumTile.scale-200.png" />
-		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-512-600_x_600.png"
+		<!-- This is smaller than expected to keep the image under 200KB -->
+		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-512.png"
 			DestinationFiles="$(_IntermediateDir)\appiconMediumTile.scale-400.png" />
+		<!--<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-512-600_x_600.png"
+			DestinationFiles="$(_IntermediateDir)\appiconMediumTile.scale-400.png" />-->
 
 		<!-- appiconSmallTile -->
 		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-512-71_x_71.png"
@@ -100,5 +109,22 @@
 		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-512-200_x_200.png"
 			DestinationFiles="$(_IntermediateDir)\appiconStoreLogo.scale-400.png" />
 
+		<!-- appiconWideTile -->
+		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-wide-v2-310_x_150.png"
+			DestinationFiles="$(_IntermediateDir)\appiconWideTile.scale-100.png" />
+		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-wide-v2-387_x_187.png"
+			DestinationFiles="$(_IntermediateDir)\appiconWideTile.scale-125.png" />
+		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-wide-v2-465_x_225.png"
+			DestinationFiles="$(_IntermediateDir)\appiconWideTile.scale-150.png" />
+		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-wide-v2-620_x_300.png"
+			DestinationFiles="$(_IntermediateDir)\appiconWideTile.scale-200.png" />
+		<!-- This is smaller than expected to keep the image under 200KB -->
+		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-wide-v2-930_x_450.png"
+			DestinationFiles="$(_IntermediateDir)\appiconWideTile.scale-400.png" />
+		
+		<!-- ico -->
+		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-64.ico"
+			DestinationFiles="$(_IntermediateDir)\appicon.ico" />
+		
 	</Target>
 </Project>
