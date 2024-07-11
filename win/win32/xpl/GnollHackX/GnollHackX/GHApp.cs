@@ -40,12 +40,22 @@ using System.Text.RegularExpressions;
 namespace GnollHackX
 {
     public delegate Task<bool> BackButtonHandler(object sender, EventArgs e);
+
+    public class LogPostResponseInfo
+    {
+        public long DatabaseRowId { get; set; }
+        public long TopScoreDisplayIndex { get; set; }
+        public long TopScoreIndex { get; set; }
+        public string TopScorePageUrl { get; set; }
+    }
+
     public struct SendResult
     {
         public bool IsSuccess;
         public bool HasHttpStatusCode;
         public HttpStatusCode StatusCode;
         public string Message;
+        public LogPostResponseInfo PostResponseInfo;
     }
 
     public struct CacheUsageInfo
@@ -3913,8 +3923,7 @@ namespace GnollHackX
                         string adjusted_entry_string = "";
                         if(!string.IsNullOrWhiteSpace(xlogentry_string))
                         {
-                            adjusted_entry_string = xlogentry_string.Replace("○", "\t").Replace("◙", Environment.NewLine);
-                            adjusted_entry_string = adjusted_entry_string.Replace(Environment.NewLine, "") // Should be just on at the end
+                            adjusted_entry_string = xlogentry_string
                                     + "\tplatform=" + DeviceInfo.Platform.ToString()?.ToLower()
                                     + "\tplatformversion=" + DeviceInfo.VersionString?.ToLower()
                                     + "\tport=" + GHConstants.PortName?.ToLower()
@@ -3970,6 +3979,15 @@ namespace GnollHackX
                                     responseContent = await response.Content.ReadAsStringAsync();
                                     Debug.WriteLine("XLog entry response content:");
                                     Debug.WriteLine(responseContent);
+                                    try
+                                    {
+                                        LogPostResponseInfo resInfo = JsonConvert.DeserializeObject<LogPostResponseInfo>(responseContent);
+                                        res.PostResponseInfo = resInfo;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine(ex.Message);
+                                    }
                                     res.IsSuccess = response.IsSuccessStatusCode;
                                     res.HasHttpStatusCode = true;
                                     res.StatusCode = response.StatusCode;

@@ -132,17 +132,30 @@
                             <Label Text="" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
                                        VerticalTextAlignment="Center" HorizontalOptions="Center"  />
                             <Label Text="" x:Name="PopupLabel" FontFamily="Underwood" FontSize="16" TextColor="White"
-                                       VerticalTextAlignment="Start" HorizontalOptions="Center"  />
+                                       VerticalTextAlignment="Start" HorizontalOptions="Center" />
                             <StackLayout x:Name="PopupCheckBoxLayout" Spacing="6" IsVisible="false" Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
                                 <CheckBox x:Name="PopupNoAgainCheckBox" IsChecked="False" VerticalOptions="Center" Color="Green" />
                                 <Label Text="Do not show again" FontFamily="Underwood" FontSize="16" TextColor="White" VerticalOptions="Center" VerticalTextAlignment="Center">
                                     <Label.GestureRecognizers>
-                                        <TapGestureRecognizer x:Name="PopupLabelTapGestureRecognizer" Tapped="PopupLabelTapGestureRecognizer_Tapped" />
+                                        <TapGestureRecognizer x:Name="PopupNoAgainTapGestureRecognizer" Tapped="PopupNoAgainTapGestureRecognizer_Tapped" />
                                     </Label.GestureRecognizers>
                                 </Label>
                             </StackLayout>
                             <controls:CustomImageButton x:Name="PopupOkButton" Text="OK" FontSize="19" WidthRequest="170" Margin="0,10,0,0" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="PopupOkButton_Clicked" />
+                            <Grid x:Name="PopupButtonGrid" IsVisible="False" ColumnSpacing="6" HorizontalOptions="Center" >
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <controls:CustomImageButton Grid.Column="0" x:Name="PopupViewButton" Text="View" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="End" BackgroundColor="Transparent" TextColor="White"
+                                        Clicked="PopupViewButton_Clicked" />
+                                <controls:CustomImageButton Grid.Column="1" x:Name="PopupOkButton2" Text="OK" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="Start" BackgroundColor="Transparent" TextColor="White"
+                                        Clicked="PopupOkButton_Clicked" />
+                            </Grid>
                         </StackLayout>
                     </Frame>
                 </Grid>

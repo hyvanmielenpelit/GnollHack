@@ -156,14 +156,10 @@ namespace GnollHackX
         public long BirthDate { get; set; }
         public long DeathDate { get; set; }
 
-        TopScorePage _page = null;
-
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public GHTopScoreItem(TopScorePage topScorePage, string line)
+        public GHTopScoreItem(string line)
         {
-
-            _page = topScorePage;
             if (string.IsNullOrEmpty(line))
                 return;
             string[] lineitems = line.Split('\t');
