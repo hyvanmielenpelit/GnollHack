@@ -43,7 +43,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 HeaderLabel.TextColor = GHColors.White;
                 NoScoresLabel.TextColor = GHColors.White;
-                foreach(View view in HeaderStack.Children)
+                foreach(View view in HeaderGrid.Children)
                 {
                     if(view is Label)
                     {

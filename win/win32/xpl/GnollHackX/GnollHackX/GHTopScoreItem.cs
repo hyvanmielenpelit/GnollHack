@@ -34,6 +34,14 @@ namespace GnollHackX
         public long StartTime { get; set; }
         public long EndTime { get; set; }
 
+        public string CharacterHPModeString
+        {
+            get
+            {
+                return CharacterString + " " + HPString + " " + DifficultyString;
+            }
+        }
+
         public string CharacterString
         {
             get
@@ -103,7 +111,7 @@ namespace GnollHackX
             get
             {
                 string res = "";
-                if (Mode == "wizard")
+                if (Mode == "wizard" || Mode == "debug")
                     res += "W";
                 else if (Mode == "explore")
                     res += "X";
@@ -154,6 +162,7 @@ namespace GnollHackX
 
         public GHTopScoreItem(TopScorePage topScorePage, string line)
         {
+
             _page = topScorePage;
             if (string.IsNullOrEmpty(line))
                 return;
