@@ -515,6 +515,7 @@ int how;
     Sprintf(eos(buffer), "%cgender0=%s%calign0=%s", XLOG_SEP,
         genders[flags.initgend].filecode, XLOG_SEP,
         aligns[1 - u.ualignbase[A_ORIGINAL]].filecode);
+    Sprintf(eos(buffer), "%cxplvl=%d", XLOG_SEP, u.ulevel);
     Sprintf(eos(buffer), "%cflags=0x%llx", XLOG_SEP, (long long)encodexlogflags());
     Sprintf(eos(buffer), "%cdifficulty=%d", XLOG_SEP, (int)context.game_difficulty);
     Sprintf(eos(buffer), "%cmode=%s", XLOG_SEP, wizard ? "debug" : discover ? "explore" : CasualMode ? (ModernMode ? "casual" : "reloadable") : ModernMode ? "modern" : "normal");

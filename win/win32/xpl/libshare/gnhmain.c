@@ -119,6 +119,8 @@ char** argv;
 
     if (!load_saved_game(exit_hack_code_at_start))
     {
+        if(exit_hack_code_at_start)
+            issue_simple_gui_command(GUI_CMD_SET_TO_BLACK);
         player_selection();
         resuming = FALSE;
 
@@ -127,8 +129,6 @@ char** argv;
 
         newgame();
         mode_message();
-        if (!exit_hack_code_at_start)
-            issue_simple_gui_command(GUI_CMD_FADE_FROM_BLACK_SLOWLY_NONBLOCKING);
     }
     else
     {

@@ -320,8 +320,14 @@ namespace GnollHackX
                                                 res = await GHApp.SendBonesFile(post.status_string, post.status_type, post.status_datatype, true);
                                                 break;
                                             case 1:
-                                                typestr = "Xlog";
-                                                res = await GHApp.SendXLogEntry(post.status_string, post.status_datatype, post.status_type, post.attachments, true);
+                                                {
+                                                    typestr = "Xlog";
+                                                    string adjusted_string = post.status_string;
+                                                    if(!string.IsNullOrWhiteSpace(adjusted_string))
+                                                        adjusted_string = adjusted_string.Replace("○", "\t").Replace("◙", Environment.NewLine).Replace(Environment.NewLine, "");
+                                                    res = await GHApp.SendXLogEntry(adjusted_string, post.status_datatype, post.status_type, post.attachments, true);
+                                                    CheckTopScore(res, adjusted_string);
+                                                }
                                                 break;
                                             case 0:
                                             default:
@@ -352,6 +358,32 @@ namespace GnollHackX
                             }
                         }
                     }
+                }
+            }
+        }
+
+        private void CheckTopScore(SendResult res, string xlogentry_string)
+        {
+            if (res.IsSuccess && res.PostResponseInfo != null && res.PostResponseInfo.TopScoreDisplayIndex > 0)
+            {
+                if (res.PostResponseInfo.TopScoreDisplayIndex <= 10)
+                {
+                    GHTopScoreItem tsi = new GHTopScoreItem(xlogentry_string);
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        _popupStyle = popup_style.GeneralDialog;
+                        _popupViewUrl = res.PostResponseInfo.TopScorePageUrl;
+                        PopupCheckBoxLayout.IsVisible = false;
+                        PopupOkButton.IsVisible = false;
+                        PopupButtonGrid.IsVisible = true;
+                        PopupTitleLabel.TextColor = GHColors.BrighterGreen;
+                        PopupTitleLabel.Text = "Top Ten List";
+                        PopupLabel.Text = 
+                            "You made the top ten list!" + 
+                            Environment.NewLine + Environment.NewLine +
+                            "#" + res.PostResponseInfo.TopScoreDisplayIndex + ". " + tsi.Name + ": " + tsi.Score;
+                        PopupGrid.IsVisible = true;
+                    });
                 }
             }
         }
@@ -1287,12 +1319,16 @@ namespace GnollHackX
             DisableAutoUpdate
         }
 
+        private string _popupViewUrl = string.Empty;
         private popup_style _popupStyle = popup_style.GeneralDialog;
         private async void PopupOkButton_Clicked(object sender, EventArgs e)
         {
             PopupOkButton.IsEnabled = false;
+            PopupOkButton2.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             PopupGrid.IsVisible = false;
+            PopupOkButton.IsVisible = true;
+            PopupButtonGrid.IsVisible = false;
             if (_popupStyle == popup_style.DisableAutoUpdate)
             {
                 if (PopupNoAgainCheckBox.IsChecked)
@@ -1304,6 +1340,7 @@ namespace GnollHackX
                 await CheckPendingTasksAndExit();
             }
             PopupOkButton.IsEnabled = true;
+            PopupOkButton2.IsEnabled = true;
         }
 
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
@@ -1341,7 +1378,7 @@ namespace GnollHackX
 
         }
 
-        private void PopupLabelTapGestureRecognizer_Tapped(object sender, EventArgs e)
+        private void PopupNoAgainTapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
             PopupNoAgainCheckBox.IsChecked = !PopupNoAgainCheckBox.IsChecked;
         }
@@ -1402,6 +1439,14 @@ namespace GnollHackX
             {
                 GHApp.CurrentGamePage.SendEnterPressed();
             }
+        }
+
+        private async void PopupViewButton_Clicked(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(_popupViewUrl) && Uri.IsWellFormedUriString(_popupViewUrl, UriKind.Absolute))
+                await GHApp.OpenBrowser(this, new Uri(_popupViewUrl));
+            else
+                await DisplayAlert("Malformed URL", "The URL was malformed: " + _popupViewUrl, "OK");
         }
     }
 

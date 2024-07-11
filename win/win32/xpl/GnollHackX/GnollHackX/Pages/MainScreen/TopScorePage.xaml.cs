@@ -43,7 +43,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 HeaderLabel.TextColor = GHColors.White;
                 NoScoresLabel.TextColor = GHColors.White;
-                foreach(View view in HeaderStack.Children)
+                foreach(View view in HeaderGrid.Children)
                 {
                     if(view is Label)
                     {
@@ -89,12 +89,7 @@ namespace GnollHackX.Pages.MainScreen
                 List<GHTopScoreItem> newTopScores = new List<GHTopScoreItem>();
                 foreach (string line in lines)
                 {
-                    string[] lineitems = line.Split('\t');
-                    GHTopScoreItem tsi = new GHTopScoreItem(this);
-                    foreach(string lineitem in lineitems)
-                    {
-                        tsi.AddXlogLineItemData(lineitem);
-                    }
+                    GHTopScoreItem tsi = new GHTopScoreItem(line);
                     newTopScores.Add(tsi);
                 }
 
@@ -147,7 +142,7 @@ namespace GnollHackX.Pages.MainScreen
                 HeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 CloseButton.Margin = UIUtils.GetFooterMarginWithBorderWithTop(bkgView.BorderStyle, width, height, 20.0);
                 double bordermargin = UIUtils.GetBorderWidth(bkgView.BorderStyle, width, height);
-                ScoresView.Margin = new Thickness(bordermargin, 0, bordermargin, 0);
+                ScoresView.Margin = new Thickness(bordermargin + 6, 0, bordermargin + 6, 0);
 
                 if (ScoresView.ItemsSource != null)
                 {

@@ -2021,10 +2021,10 @@ int load_type; // 0 = at start normally, 1 = load after saving, corresponds to e
         {
         case 0:
             /* Welcome */
+            issue_simple_gui_command(GUI_CMD_FADE_FROM_BLACK_SLOWLY_NONBLOCKING);
             welcome(FALSE);
             check_special_room(FALSE);
             mode_message();
-            issue_simple_gui_command(GUI_CMD_FADE_FROM_BLACK_SLOWLY_NONBLOCKING);
             break;
         case 1:
             flush_screen(1);

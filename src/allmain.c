@@ -1364,7 +1364,7 @@ choose_game_difficulty()
 #undef QUIT_DUMMY
 
 void
-newgame()
+newgame(VOID_ARGS)
 {
     int i;
 
@@ -1471,6 +1471,10 @@ newgame()
     play_environment_ambient_sounds();
 
     /* Success! */
+    /* Fade from black */
+    issue_simple_gui_command(GUI_CMD_FADE_FROM_BLACK_SLOWLY_NONBLOCKING);
+
+    /* Welcome! */
     welcome(TRUE);
 
     /* GUI tips */

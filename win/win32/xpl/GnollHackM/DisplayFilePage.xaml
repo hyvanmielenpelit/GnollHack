@@ -9,7 +9,7 @@
     
         <Grid x:Name="RootGrid">
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
-            <Grid x:Name="MainGrid" MaximumWidthRequest="900" RowSpacing="6" HorizontalOptions="Center" VerticalOptions="Fill" >
+            <Grid x:Name="MainGrid" MaximumWidthRequest="780" RowSpacing="6" HorizontalOptions="Fill" VerticalOptions="Fill" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
