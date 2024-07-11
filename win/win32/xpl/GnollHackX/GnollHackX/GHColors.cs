@@ -15,6 +15,7 @@ namespace GnollHackX
         public static Color White = Colors.White;
         public static Color Black = Colors.Black;
         public static Color DarkGray = Colors.DarkGray;
+        public static Color DarkBlue = Colors.DarkBlue;
         public static Color Red = Colors.Red;
         public static Color Green = Colors.Green;
         public static Color Brown = Colors.Brown;
@@ -47,6 +48,7 @@ namespace GnollHackX
         public static Color White = Color.White;
         public static Color Black = Color.Black;
         public static Color DarkGray = Color.DarkGray;
+        public static Color DarkBlue = Color.DarkBlue;
         public static Color Red = Color.Red;
         public static Color Green = Color.Green;
         public static Color Brown = Color.Brown;

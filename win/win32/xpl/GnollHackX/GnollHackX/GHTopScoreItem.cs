@@ -22,9 +22,11 @@ namespace GnollHackX
         public string Race { get; set; }
         public string Gender { get; set; }
         public string Alignment { get; set; }
+        public int XPLevel { get; set; }
         public int HP { get; set; }
         public int HPMax { get; set; }
         public int Turns { get; set; }
+        public long RealTime { get; set; }
         public int dnum { get; set; }
         public int dlevel { get; set; }
         public int Difficulty { get; set; }
@@ -32,6 +34,70 @@ namespace GnollHackX
         public long StartTime { get; set; }
         public long EndTime { get; set; }
 
+        public string CharacterString
+        {
+            get
+            {
+                return Role + " " + Race + " " + Gender + " " + Alignment + (XPLevel > 0 ? " XL:" +XPLevel : ""); 
+            }
+        }
+        public string HPString
+        {
+            get
+            {
+                return "HP:" + HP + "/" + HPMax;
+            }
+        }
+        public string TurnTimeString
+        {
+            get
+            {
+                return "on " + DeathDateString + " " + TurnString + " (" + RealTimeString + ")";
+            }
+        }
+
+        public string TurnString
+        {
+            get
+            {
+                return "T:" + Turns;
+            }
+        }
+
+        public string RealTimeString
+        {
+            get
+            {
+                long GameDurationTime = RealTime;
+                long GameDurationDays = GameDurationTime / (3600 * 24);
+                long GameDurationHours = (GameDurationTime / 3600) % 24;
+                long GameDurationMinutes = (GameDurationTime % 3600) / 60;
+                long GameDurationSeconds = GameDurationTime - GameDurationHours * 3600 - GameDurationMinutes * 60;
+                return
+                    (GameDurationDays > 0 ? GameDurationDays + "d:" : "") +
+                    (GameDurationDays > 0 || GameDurationHours > 0 ? GameDurationHours + "h:" : "") +
+                    (GameDurationDays > 0 || GameDurationHours > 0 || GameDurationMinutes > 0 ? GameDurationMinutes + "m:" : "") + GameDurationSeconds + "s";
+            }
+        }
+
+        public string DeathDateString
+        {
+            get
+            {
+                string str = DeathDate.ToString();
+                if (str.Length == 8)
+                {
+                    string res = str.Substring(0,4) + "-" + str.Substring(4, 2) + "-" + str.Substring(6, 2);
+                    return res;
+                }
+                else if(DeathDate > 0)
+                {
+                    return str;
+                }
+                else
+                    return "";
+            }
+        }
         public string DifficultyString
         {
             get
@@ -75,19 +141,35 @@ namespace GnollHackX
                         res += "?";
                         break;
                 }
-                return res;
+                return "@:" + res;
             }
         }
         public string Mode { get; set; }
-        public int BirthDate { get; set; }
+        public long BirthDate { get; set; }
+        public long DeathDate { get; set; }
 
         TopScorePage _page = null;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public GHTopScoreItem(TopScorePage topScorePage)
+        public GHTopScoreItem(TopScorePage topScorePage, string line)
         {
             _page = topScorePage;
+            if (string.IsNullOrEmpty(line))
+                return;
+            string[] lineitems = line.Split('\t');
+            if(lineitems == null) 
+                return;
+            foreach (string lineitem in lineitems)
+            {
+                AddXlogLineItemData(lineitem);
+            }
+
+            string fulltargetpath = Path.Combine(GHApp.GHPath, GHConstants.DumplogDirectory, GetDumplogFileName());
+            string fullhtmltargetpath = Path.Combine(GHApp.GHPath, GHConstants.DumplogDirectory, GetHTMLDumplogFileName());
+            bool dumplogexists = File.Exists(fulltargetpath);
+            bool htmldumplogexists = File.Exists(fullhtmltargetpath);
+            _dumplogFileFound = GHApp.UseSingleDumpLog ? (GHApp.UseHTMLDumpLogs ? htmldumplogexists : dumplogexists) : htmldumplogexists || dumplogexists;
         }
 
         public void AddXlogLineItemData(string xloglineitem)
@@ -149,10 +231,20 @@ namespace GnollHackX
             {
                 Alignment = elements[1];
             }
+            else if (elements[0] == "xplvl")
+            {
+                if (int.TryParse(elements[1], out parseint))
+                    XPLevel = parseint;
+            }
             else if (elements[0] == "turns")
             {
                 if (int.TryParse(elements[1], out parseint))
                     Turns = parseint;
+            }
+            else if (elements[0] == "realtime")
+            {
+                if (long.TryParse(elements[1], out parselong))
+                    RealTime = parselong;
             }
             else if (elements[0] == "deathdnum")
             {
@@ -166,8 +258,13 @@ namespace GnollHackX
             }
             else if (elements[0] == "birthdate")
             {
-                if (int.TryParse(elements[1], out parseint))
-                    BirthDate = parseint;
+                if (long.TryParse(elements[1], out parselong))
+                    BirthDate = parselong;
+            }
+            else if (elements[0] == "deathdate")
+            {
+                if (long.TryParse(elements[1], out parselong))
+                    DeathDate = parselong;
             }
             else if (elements[0] == "uid")
             {
@@ -210,136 +307,12 @@ namespace GnollHackX
             return "gnollhack." + FormattedName + "." + startdatestring + ".html";
         }
 
+        private bool _dumplogFileFound = false;
         public bool IsDumplogButtonEnabled
         {
             get
             {
-                //string filename = GetDumplogFileName();
-                //string fulltargetpath = Path.Combine(GHApp.GHPath, GHConstants.DumplogDirectory, filename);
-                //bool res = File.Exists(fulltargetpath);
-                //return res;
-                return true;
-            }
-        }
-
-        private bool _raceVisible;
-        public bool IsRaceVisible
-        {
-            get
-            {
-                bool newvalue = _page.IsRaceVisible;
-                if (newvalue != _raceVisible)
-                {
-                    _raceVisible = newvalue;
-                    OnPropertyChanged("IsRaceVisible");
-                }
-                return _raceVisible;
-            }
-        }
-
-        private bool _genderVisible;
-        public bool IsGenderVisible
-        {
-            get
-            {
-                bool newvalue = _page.IsGenderVisible;
-                if (newvalue != _genderVisible)
-                {
-                    _genderVisible = newvalue;
-                    OnPropertyChanged("IsGenderVisible");
-                }
-                return _genderVisible;
-            }
-        }
-
-        private bool _alignmentVisible;
-        public bool IsAlignmentVisible
-        {
-            get
-            {
-                bool newvalue = _page.IsAlignmentVisible;
-                if (newvalue != _alignmentVisible)
-                {
-                    _alignmentVisible = newvalue;
-                    OnPropertyChanged("IsAlignmentVisible");
-                }
-                return _alignmentVisible;
-            }
-        }
-
-        private bool _hpVisible;
-        public bool IsHPVisible
-        {
-            get
-            {
-                bool newvalue = _page.IsHPVisible;
-                if (newvalue != _hpVisible)
-                {
-                    _hpVisible = newvalue;
-                    OnPropertyChanged("IsHPVisible");
-                }
-                return _hpVisible;
-            }
-        }
-
-        private bool _hpMaxVisible;
-        public bool IsHPMaxVisible
-        {
-            get
-            {
-                bool newvalue = _page.IsHPMaxVisible;
-                if (newvalue != _hpMaxVisible)
-                {
-                    _hpMaxVisible = newvalue;
-                    OnPropertyChanged("IsHPMaxVisible");
-                }
-                return _hpMaxVisible;
-            }
-        }
-
-
-        private bool _turnsVisible;
-        public bool IsTurnsVisible
-        {
-            get
-            {
-                bool newvalue = _page.IsTurnsVisible;
-                if (newvalue != _turnsVisible)
-                {
-                    _turnsVisible = newvalue;
-                    OnPropertyChanged("IsTurnsVisible");
-                }
-                return _turnsVisible;
-            }
-        }
-
-        private bool _birthDateVisible;
-        public bool IsBirthDateVisible
-        {
-            get
-            {
-                bool newvalue = _page.IsBirthDateVisible;
-                if (newvalue != _birthDateVisible)
-                {
-                    _birthDateVisible = newvalue;
-                    OnPropertyChanged("IsBirthDateVisible");
-                }
-                return _birthDateVisible;
-            }
-        }
-
-        private bool _outcomeVisible;
-        public bool IsOutcomeVisible
-        {
-            get
-            {
-                bool newvalue = _page.IsOutcomeVisible;
-                if (newvalue != _outcomeVisible)
-                {
-                    _outcomeVisible = newvalue;
-                    OnPropertyChanged("IsOutcomeVisible");
-                }
-                return _outcomeVisible;
+                return _dumplogFileFound;
             }
         }
 
@@ -347,7 +320,10 @@ namespace GnollHackX
         {
             get
             {
-                return GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                if(IsDumplogButtonEnabled)
+                    return GHApp.DarkMode ? GHColors.LightBlue : GHColors.DarkBlue;
+                else
+                    return GHApp.DarkMode ? GHColors.White : GHColors.Black;
             }
         }
 

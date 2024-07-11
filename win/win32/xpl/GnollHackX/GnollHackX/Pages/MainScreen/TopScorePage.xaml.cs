@@ -89,12 +89,7 @@ namespace GnollHackX.Pages.MainScreen
                 List<GHTopScoreItem> newTopScores = new List<GHTopScoreItem>();
                 foreach (string line in lines)
                 {
-                    string[] lineitems = line.Split('\t');
-                    GHTopScoreItem tsi = new GHTopScoreItem(this);
-                    foreach(string lineitem in lineitems)
-                    {
-                        tsi.AddXlogLineItemData(lineitem);
-                    }
+                    GHTopScoreItem tsi = new GHTopScoreItem(this, line);
                     newTopScores.Add(tsi);
                 }
 
