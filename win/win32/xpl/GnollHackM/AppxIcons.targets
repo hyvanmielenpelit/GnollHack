@@ -116,5 +116,21 @@
 		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-64.ico"
 			DestinationFiles="$(_IntermediateDir)\appicon.ico" />
 
+		<!-- Splash Screen -->
+		<PropertyGroup>
+			<_IntermediateDir2>$(IntermediateOutputPath)\resizetizer\sp</_IntermediateDir2>
+		</PropertyGroup>
+		
+		<Copy SourceFiles="Assets\SplashScreen\gnollhackiconSplashScreen.scale-100.png"
+			DestinationFiles="$(_IntermediateDir2)\gnollhackiconSplashScreen.scale-100.png" />
+		<Copy SourceFiles="Assets\SplashScreen\gnollhackiconSplashScreen.scale-125.png"
+			DestinationFiles="$(_IntermediateDir2)\gnollhackiconSplashScreen.scale-125.png" />
+		<Copy SourceFiles="Assets\SplashScreen\gnollhackiconSplashScreen.scale-150.png"
+			DestinationFiles="$(_IntermediateDir2)\gnollhackiconSplashScreen.scale-150.png" />
+		<Copy SourceFiles="Assets\SplashScreen\gnollhackiconSplashScreen.scale-200.png"
+			DestinationFiles="$(_IntermediateDir2)\gnollhackiconSplashScreen.scale-200.png" />
+		<Copy SourceFiles="Assets\SplashScreen\gnollhackiconSplashScreen.scale-400.png"
+			DestinationFiles="$(_IntermediateDir2)\gnollhackiconSplashScreen.scale-400.png" />
+
 	</Target>
 </Project>
