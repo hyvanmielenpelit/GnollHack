@@ -1,9 +1,9 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Target Name="CopyCustomImages" AfterTargets="ResizetizeImages">
+	<Target Name="CopyCustomImages" AfterTargets="ResizetizeImages">
 		<PropertyGroup>
 			<_IntermediateDir>$(IntermediateOutputPath)\resizetizer\r</_IntermediateDir>
 		</PropertyGroup>
-		
+
 		<!-- appiconLargeTile -->
 		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-512-310_x_310.png"
 			DestinationFiles="$(_IntermediateDir)\appiconLargeTile.scale-100.png" />
@@ -73,7 +73,7 @@
 			DestinationFiles="$(_IntermediateDir)\appiconMediumTile.scale-150.png" />
 		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-512-300_x_300.png"
 			DestinationFiles="$(_IntermediateDir)\appiconMediumTile.scale-200.png" />
-'		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-512-600_x_600_min.png"
+		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-512-600_x_600_min.png"
 			DestinationFiles="$(_IntermediateDir)\appiconMediumTile.scale-400.png" />
 
 		<!-- appiconSmallTile -->
@@ -111,10 +111,10 @@
 			DestinationFiles="$(_IntermediateDir)\appiconWideTile.scale-200.png" />
 		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-wide-v2-1240_x_600_min.png"
 			DestinationFiles="$(_IntermediateDir)\appiconWideTile.scale-400.png" />
-		
+
 		<!-- ico -->
 		<Copy SourceFiles="Assets\AppIcon\gnollhack-icon-v2-64.ico"
 			DestinationFiles="$(_IntermediateDir)\appicon.ico" />
-		
+
 	</Target>
 </Project>
