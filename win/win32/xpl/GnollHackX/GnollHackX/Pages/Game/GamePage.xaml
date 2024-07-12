@@ -20,7 +20,7 @@
                                                   MousePointer="canvasView_MousePointer"
                                                   HorizontalOptions="Fill" VerticalOptions="Fill" >
                 </controls:SwitchableCanvasView>
-                <Frame x:Name="FadeFrame" IsVisible="False" BackgroundColor="Black" BorderColor="Black" CornerRadius="0" HorizontalOptions="Fill" VerticalOptions="Fill" />
+                <Frame x:Name="FadeFrame" IsVisible="False" InputTransparent="True" BackgroundColor="Black" BorderColor="Black" CornerRadius="0" HorizontalOptions="Fill" VerticalOptions="Fill" />
 
                 <controls:LabeledImageButton x:Name="lWornItemsButton" LblText="" BtnLetter="]" LargerFont="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="End" VerticalOptions="Start" />
                 <controls:LabeledImageButton x:Name="lAbilitiesButton" LblText="" BtnLetter="A" LargerFont="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="Start" VerticalOptions="Start" />
@@ -456,7 +456,7 @@
                     </Frame>
                 </Grid>
             </Grid>
-            <Frame x:Name="FadeFrameAtStart" IsVisible="False" BackgroundColor="Black" BorderColor="Black" CornerRadius="0" HorizontalOptions="Fill" VerticalOptions="Fill" />
+            <Frame x:Name="FadeFrameAtStart" IsVisible="False" InputTransparent="True" BackgroundColor="Black" BorderColor="Black" CornerRadius="0" HorizontalOptions="Fill" VerticalOptions="Fill" />
             <Grid x:Name="LoadingGrid" HorizontalOptions="Fill" VerticalOptions="Fill" >
                 <gnh:GHCachedImage Source="resource://GnollHackX.Assets.dgn_entrance.jpg" HorizontalOptions="Fill" VerticalOptions="Fill" 
                                 Aspect="AspectFill" CacheImage="False" />
