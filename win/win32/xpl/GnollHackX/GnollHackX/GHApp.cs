@@ -1127,6 +1127,18 @@ namespace GnollHackX
             }
         }
 
+        private const string _tapWord = "tap";
+        private const string _TapWord = "Tap";
+        private const string _clickWord = "click";
+        private const string _ClickWord = "Click";
+        public static string GetClickTapWord(bool isCapitalized, bool isIng)
+        {
+            if(IsDesktop)
+                return (isCapitalized ? _ClickWord : _clickWord) + (isIng ? "ing" : "");
+            else
+                return (isCapitalized ? _TapWord : _tapWord) + (isIng ? "ping" : "");
+        }
+
         public static async Task<bool> OnBackButtonPressed()
         {
             var handler = BackButtonPressed;

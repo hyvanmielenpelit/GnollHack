@@ -17073,22 +17073,22 @@ namespace GnollHackX.Pages.Game
                         PaintTipButton(canvas, textPaint, ToggleTravelModeButton, "Use this to set how you move around.", "Travel Mode", 1.5f, centerfontsize, fontsize, false, landscape ? -1.5f : -0.15f, landscape ? -0.5f : 0);
                         break;
                     case 8:
-                        PaintTipButtonByRect(canvas, textPaint, statusBarCenterRect, "You can tap the status bar.", "Open status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f);
+                        PaintTipButtonByRect(canvas, textPaint, statusBarCenterRect, "You can " + GHApp.GetClickTapWord(false, false) + " the status bar.", "Open status screen", 1.0f, centerfontsize, fontsize, false, -0.15f, 1.0f);
                         break;
                     case 9:
                         PaintTipButton(canvas, textPaint, DesktopButtons ? lRowAbilitiesButton : lAbilitiesButton, DesktopButtons ? "Some commands are specially located." : "Some commands do not have buttons.", "Character and game status", 1.0f, centerfontsize, fontsize, true, 0.15f, DesktopButtons ? -1.0f : 1.0f);
                         break;
                     case 10:
-                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowWornItemsButton : lWornItemsButton, "", "Tap here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, DesktopButtons ? -2.0f : 2.0f);
+                        PaintTipButton(canvas, textPaint, DesktopButtons ? lRowWornItemsButton : lWornItemsButton, "", GHApp.GetClickTapWord(true, false) + " here to access worn items", 1.0f, centerfontsize, fontsize, false, landscape ? -2.0f : -0.5f, DesktopButtons ? -2.0f : 2.0f);
                         break;
                     case 11:
-                        PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "", "Tap here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f);
+                        PaintTipButton(canvas, textPaint, ToggleMessageNumberButton, "", GHApp.GetClickTapWord(true, false) + " here to see more messages", 1.0f, centerfontsize, fontsize, true, 0.5f, -1.0f);
                         break;
                     case 12:
-                        PaintTipButtonByRect(canvas, textPaint, HealthRect, "Tapping shows your maximum health.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
+                        PaintTipButtonByRect(canvas, textPaint, HealthRect, GHApp.GetClickTapWord(true, true) + " shows your maximum health.", "Health Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
                         break;
                     case 13:
-                        PaintTipButtonByRect(canvas, textPaint, ManaRect, "Tapping reveals your maximum mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
+                        PaintTipButtonByRect(canvas, textPaint, ManaRect, GHApp.GetClickTapWord(true, true) + " reveals your maximum mana.", "Mana Orb", 1.1f, centerfontsize, fontsize, true, 0.15f, 0.0f);
                         break;
                     case 14:
                         textPaint.TextSize = 36;
@@ -17115,7 +17115,7 @@ namespace GnollHackX.Pages.Game
 
                         textPaint.TextSize = 36;
                         textPaint.Typeface = GHApp.UnderwoodTypeface;
-                        str = "Tap to start playing";
+                        str = GHApp.GetClickTapWord(true, false) + " to start playing";
                         textPaint.MeasureText(str, ref bounds);
                         scale_canvas = bounds.Width / Math.Max(1, Math.Min(canvaswidth, canvasheight)); //Math.Max(bounds.Width / canvaswidth, bounds.Height / canvasheight);
                         target_scale_canvas = 0.8f;
