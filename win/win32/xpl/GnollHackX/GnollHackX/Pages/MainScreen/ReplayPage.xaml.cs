@@ -91,7 +91,6 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
-
         private void UpdateLocalRecordings()
         {
             ReplayCollectionView.SelectedItem = null;
@@ -462,8 +461,22 @@ namespace GnollHackX.Pages.MainScreen
 
             if(IsMultiSelect && ReplayCollectionView.SelectedItems != null && ReplayCollectionView.SelectedItems.Count != 1)
             {
-                int noFiles = ReplayCollectionView.SelectedItems.Count;
-                if (noFiles > 0)
+                int noEntries = ReplayCollectionView.SelectedItems.Count;
+                int noFolders = 0;
+                int noFiles = 0;
+                foreach (object item in ReplayCollectionView.SelectedItems)
+                {
+                    GHRecordedGameFile gHRecordedGameFile = item as GHRecordedGameFile;
+                    if (gHRecordedGameFile != null)
+                    {
+                        if (gHRecordedGameFile.IsFolder)
+                            noFolders++;
+                        else
+                            noFiles++;
+                    }
+                }
+
+                if (noEntries > 0)
                 {
                     try
                     {
@@ -472,7 +485,7 @@ namespace GnollHackX.Pages.MainScreen
                         if (!Directory.Exists(targetpath))
                             GHApp.CheckCreateDirectory(targetpath);
 
-                        string zipFile = Path.Combine(targetpath, GHConstants.ReplaySharedZipFileNamePrefix + "archive-of-" + noFiles + "-replays" + GHConstants.ReplaySharedZipFileNameSuffix);
+                        string zipFile = Path.Combine(targetpath, GHConstants.ReplaySharedZipFileNamePrefix + "archive-of-" + noEntries + "-replays" + GHConstants.ReplaySharedZipFileNameSuffix);
                         if (File.Exists(zipFile))
                             File.Delete(zipFile);
 
@@ -490,37 +503,70 @@ namespace GnollHackX.Pages.MainScreen
                                         filePath = recfile.FilePath;
                                 }
 
-                                if (!string.IsNullOrWhiteSpace(filePath) && recfile != null && File.Exists(filePath))
+                                if (!string.IsNullOrWhiteSpace(filePath) && recfile != null)
                                 {
-                                    FileInfo fi = new FileInfo(filePath);
-                                    string fileName = fi.Name;
-                                    string dir = fi.DirectoryName;
-                                    if (!string.IsNullOrWhiteSpace(fileName) && fileName.StartsWith(GHConstants.ReplayFileNamePrefix) && Directory.Exists(dir))
+                                    if (recfile.IsFolder)
                                     {
-                                        archive.CreateEntryFromFile(filePath, Path.GetFileName(filePath));
-
-                                        bool isGZip = fileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
-                                        bool isNormalZip = fileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
-                                        bool isZip = isGZip || isNormalZip;
-                                        string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
-                                        int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
-                                        if (subLen > 0)
+                                        if (Directory.Exists(filePath))
                                         {
-                                            string subString = fileName.Substring(GHConstants.ReplayFileNamePrefix.Length, subLen);
-                                            string[] files = Directory.GetFiles(dir);
-                                            if (files != null)
+                                            string[] files = Directory.GetFiles(filePath);
+                                            DirectoryInfo di = new DirectoryInfo(filePath);
+                                            string dirName = di?.Name;
+                                            if (files != null && !string.IsNullOrEmpty(dirName))
                                             {
+                                                noFolders++;
                                                 foreach (string file in files)
                                                 {
                                                     if (!string.IsNullOrWhiteSpace(file))
                                                     {
-                                                        string contStart = GHConstants.ReplayContinuationFileNamePrefix + subString;
-                                                        FileInfo contFI = new FileInfo(file);
-                                                        if (contFI != null && !string.IsNullOrWhiteSpace(contFI.Name))
+                                                        FileInfo fi = new FileInfo(file);
+                                                        if (fi != null && !string.IsNullOrWhiteSpace(fi.Name))
                                                         {
-                                                            if (contFI.Name.StartsWith(contStart) && (!isZip || file.EndsWith(usedZipSuffix)) && File.Exists(file))
+                                                            archive.CreateEntryFromFile(file, Path.Combine(dirName, Path.GetFileName(file)));
+                                                            noFiles++;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(filePath) && recfile != null && File.Exists(filePath))
+                                        {
+                                            FileInfo fi = new FileInfo(filePath);
+                                            string fileName = fi.Name;
+                                            string dir = fi.DirectoryName;
+                                            if (!string.IsNullOrWhiteSpace(fileName) && fileName.StartsWith(GHConstants.ReplayFileNamePrefix) && Directory.Exists(dir))
+                                            {
+                                                archive.CreateEntryFromFile(filePath, Path.GetFileName(filePath));
+                                                noFiles++;
+
+                                                bool isGZip = fileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
+                                                bool isNormalZip = fileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+                                                bool isZip = isGZip || isNormalZip;
+                                                string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
+                                                int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
+                                                if (subLen > 0)
+                                                {
+                                                    string subString = fileName.Substring(GHConstants.ReplayFileNamePrefix.Length, subLen);
+                                                    string[] files = Directory.GetFiles(dir);
+                                                    if (files != null)
+                                                    {
+                                                        foreach (string file in files)
+                                                        {
+                                                            if (!string.IsNullOrWhiteSpace(file))
                                                             {
-                                                                archive.CreateEntryFromFile(file, Path.GetFileName(file));
+                                                                string contStart = GHConstants.ReplayContinuationFileNamePrefix + subString;
+                                                                FileInfo contFI = new FileInfo(file);
+                                                                if (contFI != null && !string.IsNullOrWhiteSpace(contFI.Name))
+                                                                {
+                                                                    if (contFI.Name.StartsWith(contStart) && (!isZip || file.EndsWith(usedZipSuffix)) && File.Exists(file))
+                                                                    {
+                                                                        archive.CreateEntryFromFile(file, Path.GetFileName(file));
+                                                                        noFiles++;
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -533,13 +579,13 @@ namespace GnollHackX.Pages.MainScreen
                         }
                         await Share.RequestAsync(new ShareFileRequest
                         {
-                            Title = "Sharing " + noFiles + " Replay" + (noFiles != 1 ? "s" : ""),
+                            Title = "Sharing " + noEntries + " Replay" + (noEntries != 1 ? "s" : ""),
                             File = new ShareFile(zipFile)
                         });
                     }
                     catch (Exception ex)
                     {
-                        await DisplayAlert("Share File Failure", "GnollHack failed to share " + noFiles + " replay" + (noFiles != 1 ? "s" : "") + ": " + ex.Message, "OK");
+                        await DisplayAlert("Share File Failure", "GnollHack failed to share " + noEntries + " selected item" + (noEntries != 1 ? "s" : "") + ": " + ex.Message, "OK");
                     }
                 }
             }
@@ -577,51 +623,113 @@ namespace GnollHackX.Pages.MainScreen
                         if (!Directory.Exists(targetpath))
                             GHApp.CheckCreateDirectory(targetpath);
 
-                        FileInfo fi = new FileInfo(filePath);
-                        string fileName = fi.Name;
-                        string dir = fi.DirectoryName;
-                        if (!string.IsNullOrWhiteSpace(fileName) && fileName.StartsWith(GHConstants.ReplayFileNamePrefix) && Directory.Exists(dir))
+                        if (recfile.IsFolder)
                         {
-                            bool isGZip = fileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
-                            bool isNormalZip = fileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
-                            bool isZip = isGZip || isNormalZip;
-                            string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
-                            int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
-                            if (subLen > 0)
+                            if (Directory.Exists(filePath))
                             {
-                                string subString = fileName.Substring(GHConstants.ReplayFileNamePrefix.Length, subLen);
-                                string zipFile = Path.Combine(targetpath, GHConstants.ReplaySharedZipFileNamePrefix + subString + GHConstants.ReplaySharedZipFileNameSuffix);
-                                if (File.Exists(zipFile))
-                                    File.Delete(zipFile);
-
-                                using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+                                DirectoryInfo di = new DirectoryInfo(filePath);
+                                string dirName = di?.Name;
+                                if (!string.IsNullOrEmpty(dirName))
                                 {
-                                    archive.CreateEntryFromFile(filePath, Path.GetFileName(filePath));
-                                    string[] files = Directory.GetFiles(dir);
-                                    if (files != null)
+                                    string zipFile = Path.Combine(targetpath, GHConstants.ReplaySharedZipFileNamePrefix + "archive-of-replays-in-" + dirName + GHConstants.ReplaySharedZipFileNameSuffix);
+                                    if (File.Exists(zipFile))
+                                        File.Delete(zipFile);
+
+                                    using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
                                     {
-                                        foreach (string file in files)
+                                        if (!string.IsNullOrWhiteSpace(filePath) && recfile != null)
                                         {
-                                            if (!string.IsNullOrWhiteSpace(file))
+                                            string[] files = Directory.GetFiles(filePath);
+                                            if (files != null && !string.IsNullOrEmpty(dirName))
                                             {
-                                                string contStart = GHConstants.ReplayContinuationFileNamePrefix + subString;
-                                                FileInfo contFI = new FileInfo(file);
-                                                if (contFI != null && !string.IsNullOrWhiteSpace(contFI.Name))
+                                                foreach (string file in files)
                                                 {
-                                                    if (contFI.Name.StartsWith(contStart) && (!isZip || file.EndsWith(usedZipSuffix)) && File.Exists(file))
+                                                    if (!string.IsNullOrWhiteSpace(file))
                                                     {
-                                                        archive.CreateEntryFromFile(file, Path.GetFileName(file));
+                                                        FileInfo fi = new FileInfo(file);
+                                                        if (fi != null && !string.IsNullOrWhiteSpace(fi.Name))
+                                                        {
+                                                            archive.CreateEntryFromFile(file, Path.Combine(dirName, Path.GetFileName(file)));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if (Directory.Exists(filePath))
+                                        {
+                                            string[] files = Directory.GetFiles(filePath);
+                                            if (files != null && !string.IsNullOrEmpty(dirName))
+                                            {
+                                                foreach (string file in files)
+                                                {
+                                                    if (!string.IsNullOrWhiteSpace(file))
+                                                    {
+                                                        FileInfo fi = new FileInfo(file);
+                                                        if (fi != null && !string.IsNullOrWhiteSpace(fi.Name))
+                                                        {
+                                                            archive.CreateEntryFromFile(file, Path.Combine(dirName, Path.GetFileName(file)));
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
                                     }
+                                    await Share.RequestAsync(new ShareFileRequest
+                                    {
+                                        Title = "Sharing " + dirName,
+                                        File = new ShareFile(zipFile)
+                                    });
                                 }
-                                await Share.RequestAsync(new ShareFileRequest
+                            }
+                        }
+                        else
+                        {
+                            FileInfo fi = new FileInfo(filePath);
+                            string fileName = fi.Name;
+                            string dir = fi.DirectoryName;
+                            if (!string.IsNullOrWhiteSpace(fileName) && fileName.StartsWith(GHConstants.ReplayFileNamePrefix) && Directory.Exists(dir))
+                            {
+                                bool isGZip = fileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
+                                bool isNormalZip = fileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+                                bool isZip = isGZip || isNormalZip;
+                                string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
+                                int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
+                                if (subLen > 0)
                                 {
-                                    Title = "Sharing " + recfile.FileName,
-                                    File = new ShareFile(zipFile)
-                                });
+                                    string subString = fileName.Substring(GHConstants.ReplayFileNamePrefix.Length, subLen);
+                                    string zipFile = Path.Combine(targetpath, GHConstants.ReplaySharedZipFileNamePrefix + subString + GHConstants.ReplaySharedZipFileNameSuffix);
+                                    if (File.Exists(zipFile))
+                                        File.Delete(zipFile);
+
+                                    using (ZipArchive archive = ZipFile.Open(zipFile, ZipArchiveMode.Create))
+                                    {
+                                        archive.CreateEntryFromFile(filePath, Path.GetFileName(filePath));
+                                        string[] files = Directory.GetFiles(dir);
+                                        if (files != null)
+                                        {
+                                            foreach (string file in files)
+                                            {
+                                                if (!string.IsNullOrWhiteSpace(file))
+                                                {
+                                                    string contStart = GHConstants.ReplayContinuationFileNamePrefix + subString;
+                                                    FileInfo contFI = new FileInfo(file);
+                                                    if (contFI != null && !string.IsNullOrWhiteSpace(contFI.Name))
+                                                    {
+                                                        if (contFI.Name.StartsWith(contStart) && (!isZip || file.EndsWith(usedZipSuffix)) && File.Exists(file))
+                                                        {
+                                                            archive.CreateEntryFromFile(file, Path.GetFileName(file));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    await Share.RequestAsync(new ShareFileRequest
+                                    {
+                                        Title = "Sharing " + recfile.FileName,
+                                        File = new ShareFile(zipFile)
+                                    });
+                                }
                             }
                         }
                     }
@@ -746,7 +854,16 @@ namespace GnollHackX.Pages.MainScreen
 
         private void UpdateButtons()
         {
-            if(IsCloud)
+            /* More Menu Buttons */
+            UploadButton.IsEnabled = !IsCloud && !IsDownload;
+            UploadButton.TextColor = UploadButton.IsEnabled ? GHColors.White : GHColors.Gray;
+            ShareButton.IsEnabled = !IsCloud;
+            ShareButton.TextColor = ShareButton.IsEnabled ? GHColors.White : GHColors.Gray;
+            DeleteButton.IsEnabled = !IsCloud;
+            DeleteButton.TextColor = DeleteButton.IsEnabled ? GHColors.Red : GHColors.Gray;
+
+            /* Other Buttons */
+            if (IsCloud)
             {
                 MoreButton.IsEnabled = false;
                 MoreButton.TextColor = GHColors.Gray;
