@@ -15140,22 +15140,25 @@ namespace GnollHackX.Pages.Game
                             if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_menuTouchMoved && MenuCanvas.SelectionHow != SelectionMode.None)
                             {
                                 MenuClickResult clickRes = MenuCanvas_NormalClickRelease(sender, e);
-                                long timeSincePreviousReleaseInMs = (nowTicks - _savedPreviousMenuReleaseTimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
-                                if (!clickRes.OkClicked && _menuPreviousReleaseClick && 
-                                    clickRes.MenuItemClickIndex >= 0 && clickRes.MenuItemClickIndex == _menuPreviousReleaseClickIndex && 
-                                    GHApp.OkOnDoubleClick && timeSincePreviousReleaseInMs <= GHConstants.DoubleClickTimeThreshold)
+                                if(GHApp.OkOnDoubleClick)
                                 {
-                                    MenuCanvas.InvalidateSurface();
-                                    MenuOKButton_Clicked(sender, e);
-                                    _menuPreviousReleaseClick = false;
-                                    _menuPreviousReleaseClickIndex = -1;
-                                    _savedPreviousMenuReleaseTimeStamp = new DateTime();
-                                }
-                                else
-                                {
-                                    _menuPreviousReleaseClick = true;
-                                    _menuPreviousReleaseClickIndex = clickRes.MenuItemClickIndex;
-                                    _savedPreviousMenuReleaseTimeStamp = _savedMenuTimeStamp;
+                                    long timeSincePreviousReleaseInMs = (nowTicks - _savedPreviousMenuReleaseTimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                                    if (!clickRes.OkClicked && _menuPreviousReleaseClick &&
+                                        clickRes.MenuItemClickIndex >= 0 && clickRes.MenuItemClickIndex == _menuPreviousReleaseClickIndex &&
+                                        timeSincePreviousReleaseInMs <= GHConstants.DoubleClickTimeThreshold)
+                                    {
+                                        MenuCanvas.InvalidateSurface();
+                                        MenuOKButton_Clicked(sender, e);
+                                        _menuPreviousReleaseClick = false;
+                                        _menuPreviousReleaseClickIndex = -1;
+                                        _savedPreviousMenuReleaseTimeStamp = new DateTime();
+                                    }
+                                    else
+                                    {
+                                        _menuPreviousReleaseClick = true;
+                                        _menuPreviousReleaseClickIndex = clickRes.MenuItemClickIndex;
+                                        _savedPreviousMenuReleaseTimeStamp = _savedMenuTimeStamp;
+                                    }
                                 }
                             }
                             if (MenuTouchDictionary.ContainsKey(e.Id))
