@@ -161,6 +161,7 @@ namespace GnollHackX
             PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
             SecondaryGPUCacheLimit = Preferences.Get("SecondaryGPUCacheLimit", -2L);
             FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
+            OkOnDoubleClick = Preferences.Get("OkOnDoubleClick", IsDesktop);
 
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if(FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
@@ -3403,13 +3404,13 @@ namespace GnollHackX
         private static bool _allowBones;
         public static bool AllowBones { get { bool t = TournamentMode; lock (_allowBonesLock) { return _allowBones || t; } } set { lock (_allowBonesLock) { _allowBones = value; } } }
 
-        private static readonly object _emptyWishIsNothingLock = new object();
+        private static readonly object _behaviorLock = new object();
         private static bool _emptyWishIsNothing;
-        public static bool EmptyWishIsNothing { get { lock (_emptyWishIsNothingLock) { return _emptyWishIsNothing; } } set { lock (_emptyWishIsNothingLock) { _emptyWishIsNothing = value; } } }
-
-        private static readonly object _characterClickActionLock = new object();
         private static bool _characterClickAction;
-        public static bool CharacterClickAction { get { lock (_characterClickActionLock) { return _characterClickAction; } } set { lock (_characterClickActionLock) { _characterClickAction = value; } } }
+        private static bool _okOnDoubleClick;
+        public static bool EmptyWishIsNothing { get { lock (_behaviorLock) { return _emptyWishIsNothing; } } set { lock (_behaviorLock) { _emptyWishIsNothing = value; } } }
+        public static bool CharacterClickAction { get { lock (_behaviorLock) { return _characterClickAction; } } set { lock (_behaviorLock) { _characterClickAction = value; } } }
+        public static bool OkOnDoubleClick { get { lock (_behaviorLock) { return _okOnDoubleClick; } } set { lock (_behaviorLock) { _okOnDoubleClick = value; } } }
 
         public static string CustomGameStatusLink { get; set; }
         public static string CustomXlogAccountLink { get; set; }

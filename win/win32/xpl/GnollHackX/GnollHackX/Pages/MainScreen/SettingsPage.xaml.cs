@@ -331,11 +331,15 @@ namespace GnollHackX.Pages.MainScreen
 
             GHApp.EmptyWishIsNothing = EmptyWishIsNothingSwitch.IsToggled;
             Preferences.Set("EmptyWishIsNothing", EmptyWishIsNothingSwitch.IsToggled);
+
             GHApp.CharacterClickAction = CharacterClickActionSwitch.IsToggled;
             if (_gamePage != null) /* During game only doubles as the option; outside of game sets the default */
                 _gamePage.SetCharacterClickAction(CharacterClickActionSwitch.IsToggled);
             else
                 Preferences.Set("CharacterClickAction", CharacterClickActionSwitch.IsToggled);
+
+            GHApp.OkOnDoubleClick = DoubleClickSwitch.IsToggled;
+            Preferences.Set("OkOnDoubleClick", DoubleClickSwitch.IsToggled);
 
             GHApp.PostingGameStatus = PostGameStatusSwitch.IsToggled;
             Preferences.Set("PostingGameStatus", PostGameStatusSwitch.IsToggled);
@@ -699,7 +703,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             int cursor = 0, graphics = 0, savestyle = 0, maprefresh = (int)UIUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
             bool mem = false, fps = false, zoom = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, darkmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
-            bool allowbones = true, emptywishisnothing = true, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
+            bool allowbones = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, desktopbuttons = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false;
@@ -734,7 +738,6 @@ namespace GnollHackX.Pages.MainScreen
                 int listselidx = GHApp.SelectableShortcutButtonIndexInList(savedCmd, defCmd);
                 fullCmdIdxs[i] = listselidx;
             }
-
 
             darkmode = GHApp.DarkMode; // Preferences.Get("DarkMode", false);
             silentmode = Preferences.Get("SilentMode", false);
@@ -771,6 +774,7 @@ namespace GnollHackX.Pages.MainScreen
             forcepostbones = Preferences.Get("ForcePostBones", false);
             allowbones = Preferences.Get("AllowBones", true);
             emptywishisnothing = Preferences.Get("EmptyWishIsNothing", true);
+            doubleclick = Preferences.Get("OkOnDoubleClick", GHApp.IsDesktop);
             recordgame = Preferences.Get("RecordGame", false);
             gzip = Preferences.Get("UseGZipForReplays", GHConstants.GZipIsDefaultReplayCompression);
             fixrects = Preferences.Get("FixRects", GHApp.IsFixRectsDefault);
@@ -945,6 +949,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             EmptyWishIsNothingSwitch.IsToggled = emptywishisnothing;
             CharacterClickActionSwitch.IsToggled = characterclickaction;
+            DoubleClickSwitch.IsToggled = doubleclick;
             FixRectsSwitch.IsToggled = fixrects;
             FixRectsSwitch.IsEnabled = gpu;
             FixRectsLabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;

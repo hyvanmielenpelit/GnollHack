@@ -58,6 +58,17 @@ namespace GnollHackX.Pages.Game
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class GamePage : ContentPage
     {
+        private struct MenuClickResult
+        {
+            public bool OkClicked;
+            public int MenuItemClickIndex;
+            public MenuClickResult(bool okClicked, int menuItemClickIndex)
+            {
+                OkClicked = okClicked;
+                MenuItemClickIndex = menuItemClickIndex;
+            }
+        };
+
         private readonly object _canvasButtonLock = new object();
         private SKRect _canvasButtonRect = new SKRect(0, 0, 0, 0);
         private SKColor _cursorDefaultGreen = new SKColor(0, 255, 0);
@@ -14939,6 +14950,9 @@ namespace GnollHackX.Pages.Game
         private SKTouchEventArgs _savedMenuEventArgs = null;
         private DateTime _savedMenuTimeStamp;
         private bool _menuTouchMoved = false;
+        private bool _menuPreviousReleaseClick = false;
+        private int _menuPreviousReleaseClickIndex = -1;
+        private DateTime _savedPreviousMenuReleaseTimeStamp;
         private void MenuCanvas_Touch(object sender, SKTouchEventArgs e)
         {
             lock (_menuDrawOnlyLock)
@@ -14970,7 +14984,12 @@ namespace GnollHackX.Pages.Game
                     }
 
                     if (MenuTouchDictionary.Count > 1)
+                    {
                         _menuTouchMoved = true;
+                        _menuPreviousReleaseClick = false;
+                        _menuPreviousReleaseClickIndex = -1;
+                        _savedPreviousMenuReleaseTimeStamp = new DateTime();
+                    }
                     else
                     {
                         _savedMenuSender = sender;
@@ -15093,6 +15112,9 @@ namespace GnollHackX.Pages.Game
                                         {  /* Cancel any press, if long move */
                                             _menuTouchMoved = true;
                                             _savedMenuTimeStamp = DateTime.Now;
+                                            _menuPreviousReleaseClick = false;
+                                            _menuPreviousReleaseClickIndex = -1;
+                                            _savedPreviousMenuReleaseTimeStamp = new DateTime();
                                         }
                                     }
                                 }
@@ -15112,12 +15134,29 @@ namespace GnollHackX.Pages.Game
                         TouchEntry entry;
                         bool res = MenuTouchDictionary.TryGetValue(e.Id, out entry);
                         if (res)
-                        {
-                            long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
-
+                        { 
+                            long nowTicks = _savedMenuTimeStamp.Ticks;
+                            long elapsedms = (nowTicks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
                             if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_menuTouchMoved && MenuCanvas.SelectionHow != SelectionMode.None)
                             {
-                                MenuCanvas_NormalClickRelease(sender, e);
+                                MenuClickResult clickRes = MenuCanvas_NormalClickRelease(sender, e);
+                                long timeSincePreviousReleaseInMs = (nowTicks - _savedPreviousMenuReleaseTimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                                if (!clickRes.OkClicked && _menuPreviousReleaseClick && 
+                                    clickRes.MenuItemClickIndex >= 0 && clickRes.MenuItemClickIndex == _menuPreviousReleaseClickIndex && 
+                                    GHApp.OkOnDoubleClick && timeSincePreviousReleaseInMs <= GHConstants.DoubleClickTimeThreshold)
+                                {
+                                    MenuCanvas.InvalidateSurface();
+                                    MenuOKButton_Clicked(sender, e);
+                                    _menuPreviousReleaseClick = false;
+                                    _menuPreviousReleaseClickIndex = -1;
+                                    _savedPreviousMenuReleaseTimeStamp = new DateTime();
+                                }
+                                else
+                                {
+                                    _menuPreviousReleaseClick = true;
+                                    _menuPreviousReleaseClickIndex = clickRes.MenuItemClickIndex;
+                                    _savedPreviousMenuReleaseTimeStamp = _savedMenuTimeStamp;
+                                }
                             }
                             if (MenuTouchDictionary.ContainsKey(e.Id))
                             {
@@ -15266,7 +15305,12 @@ namespace GnollHackX.Pages.Game
                 menuItemMainText = MenuCanvas.MenuItems[selectedidx].MainText;
             }
 
-            _menuTouchMoved = true; /* No further action upon release */
+            /* No further action upon release */
+            _menuTouchMoved = true;
+            _menuPreviousReleaseClick = false;
+            _menuPreviousReleaseClickIndex = -1;
+            _savedPreviousMenuReleaseTimeStamp = new DateTime();
+
             if ((MenuCanvas.SelectionHow == SelectionMode.Multiple && !menuItemSelected)
                 || (MenuCanvas.SelectionHow == SelectionMode.Single && selectedidx != MenuCanvas.SelectionIndex))
                 MenuCanvas_NormalClickRelease(sender, e); /* Normal click selection first */
@@ -15367,13 +15411,14 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private void MenuCanvas_NormalClickRelease(object sender, SKTouchEventArgs e)
+        private MenuClickResult MenuCanvas_NormalClickRelease(object sender, SKTouchEventArgs e)
         {
             bool doclickok = false;
+            int clickIdx = -1;
             lock (MenuCanvas.MenuItemLock)
             {
                 if (MenuCanvas.MenuItems == null)
-                    return;
+                    return new MenuClickResult(doclickok, clickIdx);
 
                 for (int idx = _firstDrawnMenuItemIdx; idx >= 0 && idx <= _lastDrawnMenuItemIdx; idx++)
                 {
@@ -15381,6 +15426,7 @@ namespace GnollHackX.Pages.Game
                         break;
                     if (MenuCanvas.MenuItems[idx].DrawBounds.Contains(e.Location))
                     {
+                        clickIdx = idx;
                         doclickok = ClickMenuItem(idx);
                         //if (mi.Identifier == 0)
                         //{
@@ -15447,6 +15493,7 @@ namespace GnollHackX.Pages.Game
                 MenuCanvas.InvalidateSurface();
                 MenuOKButton_Clicked(sender, e);
             }
+            return new MenuClickResult(doclickok, clickIdx);
         }
 
         private bool ClickMenuItem(int menuItemIdx)

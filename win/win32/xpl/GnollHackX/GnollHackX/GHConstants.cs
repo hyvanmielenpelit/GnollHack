@@ -1589,6 +1589,7 @@ namespace GnollHackX
         public const int MaxLongerMessageHistoryLength = 16384;
         public const float MoveDistanceThreshold = 25.0f;
         public const long MoveOrPressTimeThreshold = 200; /* Milliseconds */
+        public const long DoubleClickTimeThreshold = 500; /* Milliseconds */
         public const long SwipeTimeThreshold = 300; /* Milliseconds */
         public const long FreeScrollingTime = 200; /* Milliseconds */
         public const long ScrollRecordThreshold = 200; /* Milliseconds */
