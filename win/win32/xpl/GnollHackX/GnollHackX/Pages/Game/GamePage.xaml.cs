@@ -13374,8 +13374,8 @@ namespace GnollHackX.Pages.Game
                                 if (Math.Abs(x - ux) <= 1 && Math.Abs(y - uy) <= 1)
                                 {
                                     int dres = -1 * (5 + dx - 3 * dy);
-                                    if (dres == 5)
-                                        resp = 46; /* '.', or self */
+                                    if (dres == -5)
+                                        resp = GHConstants.SelfChar; /* '.', or self */
                                     else
                                         resp += dres;
                                 }
@@ -13387,7 +13387,7 @@ namespace GnollHackX.Pages.Game
                                 if (ShowNumberPad)
                                     resp += -5;
                                 else
-                                    resp = 46; /* '.', or self */
+                                    resp = GHConstants.SelfChar; /* '.', or self */
                             }
                         }
 

@@ -1574,6 +1574,7 @@ namespace GnollHackX
     {
         public const int MinimumFileDescriptorLimit = 16384;
         public const int CancelChar = 27;
+        public const int SelfChar = 46;
         public const int InputBufferLength = 32;
         public const int BUFSZ = 256;
         public const int UTF8BUFSZ = 256 * 4;
