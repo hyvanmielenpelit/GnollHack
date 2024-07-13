@@ -1152,7 +1152,7 @@ unsigned int button;
         click_y = ROWNO - 1;
 
     /* Map all buttons but the first to the second click */
-    click_button = (button == Button1) ? CLICK_1 : CLICK_2;
+    click_button = (button == Button1) ? CLICK_PRIMARY : CLICK_LOOK;
 }
 
 /*

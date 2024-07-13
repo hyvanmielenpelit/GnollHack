@@ -1518,8 +1518,8 @@ void and_you_die()
 //		   a position in the MAP window is returned in x, y and mod.
 //		   mod may be one of
 //
-//			CLICK_1		/* mouse click type 1 */
-//			CLICK_2		/* mouse click type 2 */
+//			CLICK_PRIMARY		/* mouse click type 1 */
+//			CLICK_LOOK		/* mouse click type 2 */
 //
 //		   The different click types can map to whatever the
 //		   hardware supports.  If no mouse is supported, this
@@ -1542,7 +1542,7 @@ int and_nh_poskey(int *x, int *y, int *mod)
 		int* e = (*jEnv)->GetIntArrayElements(jEnv, a, 0);
 		*x = e[0];
 		*y = e[1];
-		*mod = CLICK_1;
+		*mod = CLICK_PRIMARY;
 		(*jEnv)->ReleaseIntArrayElements(jEnv, a, e, 0);
 	}
 	quit_if_possible = FALSE;

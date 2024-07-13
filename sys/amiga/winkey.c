@@ -32,7 +32,7 @@ amii_nh_poskey(x, y, mod) int *x, *y, *mod;
     while (1) {
         type = WindowGetevent();
         if (type == WEMOUSE) {
-            *mod = CLICK_1;
+            *mod = CLICK_PRIMARY;
             if (lastevent.un.mouse.qual)
                 *mod = 0;
 

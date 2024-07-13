@@ -375,7 +375,7 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 x = u.ux;
                 y = u.uy;
             }
-            NHEVENT_MS(CLICK_1, x, y);
+            NHEVENT_MS(CLICK_PRIMARY, x, y);
         }
             return 0;
         }

@@ -2199,7 +2199,7 @@ BaseClick(NhWindow *wind, Point pt, UInt32 modifiers)
 {
     pt.h = pt.h / wind->char_width + 1;
     pt.v = pt.v / wind->row_height;
-    clicked_mod = (modifiers & shiftKey) ? CLICK_2 : CLICK_1;
+    clicked_mod = (modifiers & shiftKey) ? CLICK_LOOK : CLICK_PRIMARY;
 
     if (strchr(topl_resp, *click_to_cmd(pt.h, pt.v, clicked_mod)))
         nhbell();
@@ -2228,7 +2228,7 @@ BaseCursor(NhWindow *wind, Point pt)
         dir_bas = (char *) Cmd.dirchars;
         dir =
             strchr(dir_bas, *click_to_cmd(pt.h / wind->char_width + 1,
-                                          pt.v / wind->row_height, CLICK_1));
+                                          pt.v / wind->row_height, CLICK_PRIMARY));
     }
     ch = GetCursor(dir ? dir - dir_bas + 513 : 512);
     if (ch) {

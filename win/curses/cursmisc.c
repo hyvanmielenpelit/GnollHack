@@ -1016,7 +1016,7 @@ curses_get_mouse(int *mousex, int *mousey, int *mod)
                     (*mousey)--;
                 }
 
-                *mod = CLICK_1;
+                *mod = CLICK_PRIMARY;
             }
         }
     }

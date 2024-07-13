@@ -228,7 +228,7 @@ struct xwindow {
 
 
 #define NO_CLICK 0 /* No click occurred on the map window. Must */
-                   /* be different than CLICK_1 and CLICK_2.    */
+                   /* be different than CLICK_PRIMARY and CLICK_LOOK.    */
 
 #define DEFAULT_MESSAGE_WIDTH 60 /* width in chars of the message window */
 

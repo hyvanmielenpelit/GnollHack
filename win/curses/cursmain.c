@@ -835,8 +835,8 @@ int nh_poskey(int *x, int *y, int *mod)
                    a position in the MAP window is returned in x, y and mod.
                    mod may be one of
 
-                        CLICK_1         -- mouse click type 1
-                        CLICK_2         -- mouse click type 2
+                        CLICK_PRIMARY         -- mouse click type 1
+                        CLICK_LOOK         -- mouse click type 2
 
                    The different click types can map to whatever the
                    hardware supports.  If no mouse is supported, this

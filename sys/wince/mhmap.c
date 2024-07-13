@@ -405,7 +405,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                                   + (HIWORD(lParam) - data->map_orig.y)
                                         / data->yScrTile));
 
-        NHEVENT_MS(CLICK_1, x, y);
+        NHEVENT_MS(CLICK_PRIMARY, x, y);
 
         data->xLastMouseClick = x;
         data->yLastMouseClick = y;
@@ -422,7 +422,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         /* if map has scrolled since the last mouse click - ignore
          * double-click message */
         if (data->xLastMouseClick == x && data->yLastMouseClick == y) {
-            NHEVENT_MS(CLICK_1, x, y);
+            NHEVENT_MS(CLICK_PRIMARY, x, y);
         }
         return 0;
 
