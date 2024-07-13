@@ -7702,7 +7702,7 @@ register char *cmd;
     /* handle most movement commands */
     prefix_seen = FALSE;
     clear_run_and_travel();
-    spkey = ch2spkeys(*cmd, NHKF_RUN, NHKF_CLICKLOOK);
+    spkey = ch2spkeys(*cmd, NHKF_RUN, NHKF_CLICKCAST);
 
     if (flags.prefer_fast_move)
     {
@@ -8824,6 +8824,16 @@ int x, y, mod;
 
                 x = sgn(x), y = sgn(y);
                 cmd[0] = Cmd.spkeys[NHKF_CLICKCAST];
+                if (!x && !y)
+                {
+                    cmd[1] = Cmd.spkeys[NHKF_GETDIR_SELF];
+                }
+                else
+                {
+                    dir = xytod(x, y);
+                    cmd[1] = dir >= 0 ? Cmd.dirchars[dir] : '\0';
+                }
+                cmd[2] = '\0';
             }
             return cmd;
         }

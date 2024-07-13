@@ -1496,9 +1496,6 @@ dosetquickspell()
             pline_multi_ex(ATR_NONE, CLR_MSG_HINT, no_multiattrs, multicolors, "Your quick spell has been set to \'%s\'.", spellnam);
         }
     }
-    else
-        pline1(Never_mind);
-
     return 0;
 }
 
