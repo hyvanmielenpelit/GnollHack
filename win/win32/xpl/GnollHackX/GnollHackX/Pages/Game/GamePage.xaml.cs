@@ -13391,7 +13391,7 @@ namespace GnollHackX.Pages.Game
                             }
                         }
 
-                        if (ShowNumberPad)
+                        if (ShowNumberPad && resp <= -1 && resp >= -9)
                             resp -= 10;
 
                         ConcurrentQueue<GHResponse> queue;
