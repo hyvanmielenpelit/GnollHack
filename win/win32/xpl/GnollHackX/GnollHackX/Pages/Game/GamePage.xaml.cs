@@ -15143,7 +15143,7 @@ namespace GnollHackX.Pages.Game
                                 if(GHApp.OkOnDoubleClick)
                                 {
                                     long timeSincePreviousReleaseInMs = (nowTicks - _savedPreviousMenuReleaseTimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
-                                    if (!clickRes.OkClicked && _menuPreviousReleaseClick &&
+                                    if (!clickRes.OkClicked && MenuOKButton.IsEnabled && _menuPreviousReleaseClick &&
                                         clickRes.MenuItemClickIndex >= 0 && clickRes.MenuItemClickIndex == _menuPreviousReleaseClickIndex &&
                                         timeSincePreviousReleaseInMs <= GHConstants.DoubleClickTimeThreshold)
                                     {
@@ -15417,11 +15417,12 @@ namespace GnollHackX.Pages.Game
         private MenuClickResult MenuCanvas_NormalClickRelease(object sender, SKTouchEventArgs e)
         {
             bool doclickok = false;
+            bool okClicked = false;
             int clickIdx = -1;
             lock (MenuCanvas.MenuItemLock)
             {
                 if (MenuCanvas.MenuItems == null)
-                    return new MenuClickResult(doclickok, clickIdx);
+                    return new MenuClickResult(okClicked, clickIdx);
 
                 for (int idx = _firstDrawnMenuItemIdx; idx >= 0 && idx <= _lastDrawnMenuItemIdx; idx++)
                 {
@@ -15491,12 +15492,13 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
-            if (doclickok)
+            okClicked = doclickok && MenuOKButton.IsEnabled;
+            if (okClicked)
             {
                 MenuCanvas.InvalidateSurface();
                 MenuOKButton_Clicked(sender, e);
             }
-            return new MenuClickResult(doclickok, clickIdx);
+            return new MenuClickResult(okClicked, clickIdx);
         }
 
         private bool ClickMenuItem(int menuItemIdx)
@@ -18212,15 +18214,18 @@ namespace GnollHackX.Pages.Game
                     if(somethingFound)
                     {
                         _menuCountNumber = -1;
-                        if (doclickok)
+                        if (MenuOKButton.IsEnabled)
                         {
-                            MenuCanvas.InvalidateSurface();
-                            MenuOKButton_Clicked(sender, new EventArgs());
-                        }
-                        else
-                        {
-                            if (MenuCanvas.SelectionHow == SelectionMode.Single)
+                            if (doclickok)
+                            {
+                                MenuCanvas.InvalidateSurface();
                                 MenuOKButton_Clicked(sender, new EventArgs());
+                            }
+                            else
+                            {
+                                if (MenuCanvas.SelectionHow == SelectionMode.Single)
+                                    MenuOKButton_Clicked(sender, new EventArgs());
+                            }
                         }
                         args.Handled = true;
                     }
