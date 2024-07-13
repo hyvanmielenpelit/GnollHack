@@ -14182,11 +14182,12 @@ namespace GnollHackX.Pages.Game
 
         private readonly SKColor _suffixTextColor = new SKColor(220, 220, 220);
         private readonly SKColor _suffixTextColorReverted = new SKColor(35, 35, 35);
-        private readonly SKColor _menuHighlightColor = new SKColor(0xFF, 0x88, 0x00, 0x88);
-        private readonly SKColor _menuHighlight2Color = new SKColor(0xFF, 0xAA, 0x00, 0xAA);
-        private readonly SKColor _menuHighlight3Color = new SKColor(0xFF, 0x88, 0x00, 0x44);
-        private readonly SKColor _menuHighlight4Color = new SKColor(0xFF, 0x88, 0x00, 0xAA);
-        private readonly SKColor _menuHighlight5Color = new SKColor(0xFF, 0xAA, 0x00, 0xCC);
+        private readonly SKColor _menuHighlightSelectedColor = new SKColor(0xFF, 0x88, 0x00, 0x88);
+        private readonly SKColor _menuHighlightAutoClickedColor = new SKColor(0xFF, 0xBB, 0x00, 0x99);
+        private readonly SKColor _menuHighlightHoverOverSelectableColor = new SKColor(0xFF, 0x88, 0x00, 0x44);
+        private readonly SKColor _menuHighlightHoverOverAutoClickableColor = new SKColor(0xFF, 0xBB, 0x00, 0x55);
+        private readonly SKColor _menuHighlightHoverOverSelectedColor = new SKColor(0xFF, 0x88, 0x00, 0xAA);
+        private readonly SKColor _menuHighlightHoverOverAutoClickedColor = new SKColor(0xFF, 0xBB, 0x00, 0xAA);
         private int _firstDrawnMenuItemIdx = -1;
         private int _lastDrawnMenuItemIdx = -1;
         private readonly object _totalMenuHeightLock = new object();
@@ -14404,19 +14405,19 @@ namespace GnollHackX.Pages.Game
                                 {
                                     if (isselected)
                                     {
-                                        textPaint.Color = isHover ? _menuHighlight4Color : _menuHighlightColor;
+                                        textPaint.Color = isHover ? _menuHighlightHoverOverSelectedColor : _menuHighlightSelectedColor;
                                         textPaint.Style = SKPaintStyle.Fill;
                                         canvas.DrawRect(selectionrect, textPaint.Paint);
                                     }
                                     else if (mi.Highlighted)
                                     {
-                                        textPaint.Color = isHover ? _menuHighlight5Color : _menuHighlight2Color;
+                                        textPaint.Color = isHover ? _menuHighlightHoverOverAutoClickedColor : _menuHighlightAutoClickedColor;
                                         textPaint.Style = SKPaintStyle.Fill;
                                         canvas.DrawRect(selectionrect, textPaint.Paint);
                                     }
                                     else if (isHover && isSelectable)
                                     {
-                                        textPaint.Color = _menuHighlight3Color;
+                                        textPaint.Color = mi.IsAutoClickOk || MenuCanvas.ClickOKOnSelection ? _menuHighlightHoverOverAutoClickableColor : _menuHighlightHoverOverSelectableColor;
                                         textPaint.Style = SKPaintStyle.Fill;
                                         canvas.DrawRect(selectionrect, textPaint.Paint);
                                     }
