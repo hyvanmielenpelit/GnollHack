@@ -47,11 +47,13 @@ extern const char *enc_stat[]; /* encumbrance status from botl.c */
 #endif
 #endif
 
-#define CMD_TRAVEL (char) 0xFC //0x90
-#define CMD_CLICKLOOK (char) 0xFD //0x8F
-#define CMD_TRAVEL_ATTACK (char) 0xFE
-#define CMD_TRAVEL_WALK (char) 0xFB
+#define CMD_TRAVEL (char) 0xFC //(Meta-0x7C) //0x90
+#define CMD_CLICKLOOK (char) 0xFD //(Meta-0x7D) //0x8F
+#define CMD_TRAVEL_ATTACK (char) 0xFE //(Meta-0x7E)
+#define CMD_TRAVEL_WALK (char) 0xFB //(Meta-0x7B)
 #define CMD_CLICKFIRE (char) 0xE0 //(Meta-0x60)
+#define CMD_CLICKCAST (char) 0xDE //(Meta-0x5E)
+/* Meta-DB-DD available */
 
 #ifdef DEBUG
 extern int NDECL(wiz_debug_cmd_bury);
@@ -6317,11 +6319,13 @@ struct ext_func_tab extcmdlist[] = {
     { M(8), "favorite", "mark an item as favorite", dofavorite, SINGLE_OBJ_CMD_GENERAL | ALLOW_RETURN_TO_INVENTORY, 0, getobj_favorites, "mark as favorite", "mark as favorite"  },
     { M(9), "unfavorite", "unmark an item as favorite", dounfavorite, SINGLE_OBJ_CMD_GENERAL | ALLOW_RETURN_TO_INVENTORY, 0, getobj_favorites, "unmark as favorite", "unmark as favorite" },
     { 'Z', "cast", "cast a spell", docast, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
+    { M(26), "castquick", "cast the quick spell", docastquick, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
     { 'X', "mix", "prepare a spell from material components",
             domix, AUTOCOMPLETE | INSPELLMENU },
     { M('z'), "viewspell", "view spells", dospellview, IFBURIED | AUTOCOMPLETE | INSPELLMENU },
     { '\0', "managespell", "manage spells",
             dospellmanage, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
+    { M(4), "setquick", "set quick spell", dosetquickspell, IFBURIED | AUTOCOMPLETE | INSPELLMENU },
     { '\0', "sortspells", "sort known spells",
             dosortspell, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
     { '\0', "reorderspells", "reorder known spells",
@@ -7201,6 +7205,7 @@ struct {
     { NHKF_TRAVEL_WALK,      CMD_TRAVEL_WALK, (char*)0 }, /* no binding */
     { NHKF_CLICKFIRE,        CMD_CLICKFIRE, (char*)0 }, /* no binding */
     { NHKF_CLICKLOOK,        CMD_CLICKLOOK, (char *) 0 }, /* no binding */
+    { NHKF_CLICKCAST,        CMD_CLICKCAST, (char*)0 }, /* no binding */
     { NHKF_REDRAW,           C('r'), "redraw" },
     { NHKF_REDRAW2,          C('l'), "redraw.numpad" },
     { NHKF_GETDIR_SELF,      '.', "getdir.self" },
@@ -7798,6 +7803,13 @@ register char *cmd;
             int fireres = dofire();
             if (!fireres)
                 readchar_queue = ""; //Prevent movement if firing failed.
+        }
+        return;
+    case NHKF_CLICKCAST:
+        {
+            int castres = docastquick();
+            if (!castres)
+                readchar_queue = ""; //Prevent movement if casting failed.
         }
         return;
     case NHKF_TRAVEL:
@@ -8696,7 +8708,8 @@ int x, y, mod;
     int target_y = y;
     memset(cmd, 0, sizeof(cmd));
 
-    if (iflags.clicklook && mod == CLICK_2) 
+    /* Look */
+    if (iflags.clicklook && mod == CLICK_LOOK)
     {
         clicklook_cc.x = target_x;
         clicklook_cc.y = target_y;
@@ -8707,13 +8720,123 @@ int x, y, mod;
     x -= u.ux;
     y -= u.uy;
 
-    if (flags.travelcmd) 
+    /* Cast spell */
+    if (mod == CLICK_CAST)
+    {
+        if (!context.quick_cast_spell_set || context.quick_cast_spell_no < 0 || spl_book[context.quick_cast_spell_no].sp_id <= STRANGE_OBJECT)
+        {
+            /* Quick cast handles error messaging */
+            cmd[0] = Cmd.spkeys[NHKF_CLICKCAST];
+            cmd[1] = '\0';
+            return cmd;
+        }
+        
+        int targeting_type = objects[spl_book[context.quick_cast_spell_no].sp_id].oc_dir;
+        boolean is_directional = targeting_type > NODIR && targeting_type != TARGETED;
+        if (!is_directional)
+        {
+            cmd[0] = Cmd.spkeys[NHKF_CLICKCAST];
+            cmd[1] = '\0';
+            return cmd;
+        }
+        else if (abs(x) <= 1 && abs(y) <= 1)
+        {
+            x = sgn(x), y = sgn(y);
+            cmd[0] = Cmd.spkeys[NHKF_CLICKCAST];
+            if (!x && !y)
+            {
+                cmd[1] = Cmd.spkeys[NHKF_GETDIR_SELF];
+            }
+            else
+            {
+                dir = xytod(x, y);
+                cmd[1] = dir >= 0 ? Cmd.dirchars[dir] : '\0';
+            }
+            cmd[2] = '\0';
+            return cmd;
+        }
+        else
+        {
+            struct monst* mtmp = 0;
+            if (isok(target_x, target_y))
+            {
+                mtmp = m_at(target_x, target_y);
+            }
+
+            boolean mon_mimic = FALSE;
+            boolean sensed = FALSE;
+            if (mtmp)
+            {
+                mon_mimic = (M_AP_TYPE(mtmp) != M_AP_NOTHING);
+                sensed = (mon_mimic && (Protection_from_shape_changers || sensemon(mtmp)));
+            }
+
+            cmd[0] = cmd[1] = '\0';
+            if (mtmp && canspotmon(mtmp) && !is_peaceful(mtmp) && !is_tame(mtmp) && (!mon_mimic || sensed))
+            {
+                const char* spellnam = spl_book[context.quick_cast_spell_no].sp_id > STRANGE_OBJECT ? OBJ_NAME(objects[spl_book[context.quick_cast_spell_no].sp_id]) : "";
+                if (!x || !y || abs(x) == abs(y)) /* straight line or diagonal */
+                {
+                    boolean path_is_clear = clear_path(u.ux, u.uy, target_x, target_y);
+                    struct monst* mtmpinway = spotted_linedup_monster_in_way(u.ux, u.uy, target_x, target_y);
+                    if (path_is_clear && !mtmpinway)
+                    {
+                        cmd[0] = Cmd.spkeys[NHKF_CLICKCAST];
+                        x = sgn(x), y = sgn(y);
+                        dir = xytod(x, y);
+                        cmd[1] = dir >= 0 ? Cmd.dirchars[dir] : '\0';
+                        cmd[2] = '\0';
+                    }
+                    else if (!path_is_clear)
+                    {
+                        play_sfx_sound(SFX_GENERAL_CANNOT);
+                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot cast \'%s\' at %s; the path to it is not clear.", spellnam, mon_nam(mtmp));
+                        cmd[0] = '\0';
+                    }
+                    else if (mtmpinway)
+                    {
+                        play_sfx_sound(SFX_GENERAL_CANNOT);
+                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot cast \'%s\' at %s; %s is in the way.", spellnam, mon_nam(mtmp), mon_nam(mtmpinway));
+                        cmd[0] = '\0';
+                    }
+                    else
+                    {
+                        play_sfx_sound(SFX_GENERAL_CANNOT);
+                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot cast \'%s\' at %s; there is something in the way.", spellnam, mon_nam(mtmp));
+                        cmd[0] = '\0';
+                    }
+                }
+                else
+                {
+                    play_sfx_sound(SFX_GENERAL_CANNOT);
+                    pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot cast \'%s\' at %s; it is not lined up.", spellnam, mon_nam(mtmp));
+                    cmd[0] = '\0';
+                }
+            }
+            else
+            {
+                /* Normal cast */
+                if (abs(y) <= (max(0, abs(x) - 1) / 2))
+                    y = 0;
+
+                if (abs(x) <= (max(0, abs(y) - 1) / 2))
+                    x = 0;
+
+                x = sgn(x), y = sgn(y);
+                cmd[0] = Cmd.spkeys[NHKF_CLICKCAST];
+            }
+            return cmd;
+        }
+    }
+
+    /* Travel, move, or attack */
+    if (flags.travelcmd || mod == CLICK_MOVE)
     {
         if (abs(x) <= 1 && abs(y) <= 1)
         {
             x = sgn(x), y = sgn(y);
         }
-        else if (mod == CLICK_3)
+        else if (mod == CLICK_MOVE)
         {
             if (abs(y) <= (max(0, abs(x) - 1) / 2))
                 y = 0;
@@ -8813,7 +8936,7 @@ int x, y, mod;
             return cmd;
         }
 
-        if (x == 0 && y == 0)
+        if (x == 0 && y == 0 && mod != CLICK_CAST)
         {
             if (!flags.self_click_action)
             {
@@ -8837,7 +8960,7 @@ int x, y, mod;
             if (IS_FOUNTAIN(levl[u.ux][u.uy].typ)
                 || IS_SINK(levl[u.ux][u.uy].typ)) 
             {
-                cmd[0] = cmd_from_func(mod == CLICK_1 || mod == CLICK_3 ? dodrink : dodip);
+                cmd[0] = cmd_from_func(mod == CLICK_PRIMARY || mod == CLICK_MOVE ? dodrink : dodip);
                 return cmd;
             } 
             else if (IS_THRONE(levl[u.ux][u.uy].typ)) 
@@ -8960,7 +9083,7 @@ int x, y, mod;
 
     /* move, attack, etc. */
     cmd[1] = '\0';
-    if (mod == CLICK_1 || mod == CLICK_3) 
+    if (mod == CLICK_PRIMARY || mod == CLICK_MOVE) 
     {
         cmd[0] = Cmd.dirchars[dir];
     } 
@@ -10006,19 +10129,6 @@ enum create_context_menu_types menu_type;
         {
             add_context_menu(':', cmd_from_func(dolook), CONTEXT_MENU_STYLE_GENERAL, NO_GLYPH, "Look Here", "", 0, NO_COLOR);
         }
-
-        //if (uwep && !cantwield(youmonst.data) && (is_pick(uwep) || is_saw(uwep) || is_lamp(uwep))) // Axes are too often main weapons
-        //{
-        //    struct obj* prevwep;
-        //    for (prevwep = invent; prevwep; prevwep = prevwep->nobj)
-        //    {
-        //        if (prevwep->speflags & SPEFLAGS_PREVIOUSLY_WIELDED)
-        //        {
-        //            add_context_menu(M(16), cmd_from_func(dowieldprevwep), CONTEXT_MENU_STYLE_GENERAL, prevwep->gui_glyph, "Wield Last", "", 0, NO_COLOR);
-        //            break;
-        //        }
-        //    }
-        //}
 
         if (context.last_picked_obj_oid > 0 && context.last_picked_obj_show_duration_left > 0)
         {

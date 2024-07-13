@@ -678,7 +678,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         return FALSE;
 
     case WM_LBUTTONDOWN:
-        NHEVENT_MS(CLICK_1,
+        NHEVENT_MS(CLICK_PRIMARY,
                    max(1, min((COLNO - 1), data->xPos + 1
                                          + (LOWORD(lParam) - data->map_orig.x)
                                                / data->xFrontTile)),
@@ -689,7 +689,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_LBUTTONDBLCLK:
     case WM_RBUTTONDOWN:
-        NHEVENT_MS(CLICK_2,
+        NHEVENT_MS(CLICK_LOOK,
                    max(1, min((COLNO - 1), data->xPos + 1
                                          + (LOWORD(lParam) - data->map_orig.x)
                                                / data->xFrontTile)),

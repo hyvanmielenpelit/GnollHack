@@ -1094,7 +1094,7 @@ int spell;
     return FALSE;
 }
 
-#define MAX_SPELL_LIST_TYPES 6
+#define MAX_SPELL_LIST_TYPES 7
 /*
  * Return TRUE if a spell was picked, with the spell index in the return
  * parameter.  Otherwise return FALSE.
@@ -1109,7 +1109,7 @@ int spell_list_type;
 
     int nspells, idx;
     char ilet, lets[BUFSZ], qbuf[QBUFSZ];
-    const char* const verbs[MAX_SPELL_LIST_TYPES] = { "cast", "prepare", "manage", "view", "set a hotkey for", "forget" };
+    const char* const verbs[MAX_SPELL_LIST_TYPES] = { "cast", "prepare", "manage", "view", "set a hotkey for", "forget", "make quick" };
     char titlebuf[BUFSZ];
     char verbbufC[BUFSZ];
     char verbtitlebufC[BUFSZ];
@@ -1291,6 +1291,10 @@ int* spell_no;
                 glyph = REORDER_SPELLS_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
                 add_active_menu(tmpwin, glyph, &any, '>', 0, ATR_NONE, NO_COLOR,
                     "Reorder Spells", MENU_UNSELECTED);
+                any.a_int = -5;
+                glyph = SET_QUICK_SPELL_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+                add_active_menu(tmpwin, glyph, &any, '=', 0, ATR_NONE, NO_COLOR,
+                    "Set Quick Spell", MENU_UNSELECTED);
             }
         }
 
@@ -1361,6 +1365,9 @@ int* spell_no;
                 case -4:
                     action_result = dovspell();
                     break;
+                case -5:
+                    action_result = dosetquickspell();
+                    break;
                 default:
                     return 0;
                 }
@@ -1416,6 +1423,22 @@ docast()
     return 0;
 }
 
+/* cast a quick spell (via right-click) */
+int
+docastquick()
+{
+    if (context.quick_cast_spell_set && context.quick_cast_spell_no > -1)
+    {
+        return spelleffects(context.quick_cast_spell_no, FALSE, &youmonst);
+    }
+    else
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Quick spell has not been set.");
+        return 0;
+    }
+}
+
 
 int
 dospellmanage()
@@ -1449,6 +1472,33 @@ dospellview()
         if(didselect)
             (void)spelldescription(spell_no);
     } while (didselect);
+    return 0;
+}
+
+int
+dosetquickspell()
+{
+    int spell_no = -1;
+    boolean didselect = getspell(&spell_no, 6);
+    if (didselect)
+    {
+        if (spell_no < 0)
+        {
+            context.quick_cast_spell_set = FALSE;
+            pline_ex(ATR_NONE, CLR_MSG_HINT, "Your quick spell selection has been cleared.");
+        }
+        else
+        {
+            context.quick_cast_spell_set = TRUE;
+            context.quick_cast_spell_no = spell_no;
+            const char* spellnam = spl_book[spell_no].sp_id > STRANGE_OBJECT ? OBJ_NAME(objects[spl_book[context.quick_cast_spell_no].sp_id]) : "";
+            int multicolors[2] = { CLR_MSG_SPELL, 0 };
+            pline_multi_ex(ATR_NONE, CLR_MSG_HINT, no_multiattrs, multicolors, "Your quick spell has been set to \'%s\'.", spellnam);
+        }
+    }
+    else
+        pline1(Never_mind);
+
     return 0;
 }
 
@@ -3788,6 +3838,10 @@ dovspell()
                 spl_tmp = spl_book[splnum];
                 spl_book[splnum] = spl_book[othnum];
                 spl_book[othnum] = spl_tmp;
+                if (context.quick_cast_spell_no == splnum)
+                    context.quick_cast_spell_no = othnum;
+                else if (context.quick_cast_spell_no == othnum)
+                    context.quick_cast_spell_no = splnum;
 
                 flags.spellorder = SORTBY_CURRENT; /* sorting needs to be turned off */
                 sortspells();
@@ -4799,6 +4853,10 @@ int spell;
                     break;
             }
         }
+        if (context.quick_cast_spell_no == spell)
+            context.quick_cast_spell_set = FALSE;
+        else if (context.quick_cast_spell_no > spell)
+            context.quick_cast_spell_no--;
         sortspells();
         char buf[BUFSZ] = "";
         int multicolors[1] = { CLR_MSG_HINT };

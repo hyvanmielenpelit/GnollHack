@@ -13320,11 +13320,13 @@ namespace GnollHackX.Pages.Game
                 if (x > 0 && x < GHConstants.MapCols && y >= 0 && y < GHConstants.MapRows)
                 {
                     if (MapLookMode)
-                        mod = (int)NhGetPosMods.Click2;
+                        mod = (int)NhGetPosMods.ClickLook;
+                    else if (e.MouseButton == SKMouseButton.Right)
+                        mod = (int)NhGetPosMods.ClickCast;
                     else if (MapTravelMode)
-                        mod = (int)NhGetPosMods.Click1;
+                        mod = (int)NhGetPosMods.ClickPrimary;
                     else
-                        mod = (int)NhGetPosMods.Click3;
+                        mod = (int)NhGetPosMods.ClickMove;
 
                     ConcurrentQueue<GHResponse> queue;
                     if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))

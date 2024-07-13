@@ -188,9 +188,10 @@ namespace GnollHackX
     public enum NhGetPosMods
     {
         None = 0,
-        Click1,
-        Click2,
-        Click3
+        ClickPrimary,
+        ClickLook,
+        ClickMove,
+        ClickCast,
     }
 
     [Flags]
@@ -1536,6 +1537,7 @@ namespace GnollHackX
         NHKF_TRAVEL_WALK,
         NHKF_CLICKFIRE,
         NHKF_CLICKLOOK,
+        NHKF_CLICKCAST,
 
         NHKF_REDRAW,
         NHKF_REDRAW2,

@@ -259,7 +259,7 @@ struct context_info
     int64_t reserved_int64_2;
     int64_t reserved_int64_3;
     int64_t reserved_int64_4;
-    int reserved_int1;
+    int quick_cast_spell_no;
     int reserved_int2;
     int reserved_int3;
     int reserved_int4;
@@ -273,7 +273,7 @@ struct context_info
     char reserved_char4;
 
     /* Emergency reserved booleans to make non-save-game-breaking changes */
-    boolean reserved_bool1;
+    boolean quick_cast_spell_set;
     boolean reserved_bool2;
     boolean reserved_bool3;
     boolean reserved_bool4;

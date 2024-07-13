@@ -228,6 +228,8 @@
 		<None Remove="Assets\UI\page-next.png" />
 		<None Remove="Assets\UI\page-previous.png" />
 		<None Remove="Assets\UI\picktobag.png" />
+		<None Remove="Assets\UI\quickcast.png" />
+		<None Remove="Assets\UI\quickset.png" />
 		<None Remove="Assets\UI\status-align-chaotic.png" />
 		<None Remove="Assets\UI\status-align-lawful.png" />
 		<None Remove="Assets\UI\status-align-neutral.png" />
@@ -850,6 +852,8 @@
 	  <EmbeddedResource Include="Assets\UI\previous.png" />
 	  <EmbeddedResource Include="Assets\UI\puton.png" />
 	  <EmbeddedResource Include="Assets\UI\quaff.png" />
+	  <EmbeddedResource Include="Assets\UI\quickcast.png" />
+	  <EmbeddedResource Include="Assets\UI\quickset.png" />
 	  <EmbeddedResource Include="Assets\UI\quiver.png" />
 	  <EmbeddedResource Include="Assets\UI\read.png" />
 	  <EmbeddedResource Include="Assets\UI\remove.png" />
