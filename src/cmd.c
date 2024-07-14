@@ -8718,7 +8718,7 @@ int x, y, mod;
     memset(cmd, 0, sizeof(cmd));
 
     if (mod == CLICK_SECONDARY)
-        mod = flags.right_click_command > CLICK_TERTIARY ? flags.right_click_command : CLICK_PRIMARY;
+        mod = flags.right_click_command > CLICK_TERTIARY ? flags.right_click_command : iflags.clicklook ? CLICK_LOOK : CLICK_PRIMARY;
     else if (mod == CLICK_TERTIARY)
         mod = flags.middle_click_command > CLICK_TERTIARY ? flags.middle_click_command : CLICK_PRIMARY;
 

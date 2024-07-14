@@ -1032,9 +1032,6 @@ finish_options()
         update_bindings_list();
     }
 
-    if (iflags.clicklook && !flags.right_click_command)
-        flags.right_click_command = CLICK_LOOK;
-
 #ifdef STATUS_HILITES
     /*
      * A multi-interface binary might only support status highlighting
