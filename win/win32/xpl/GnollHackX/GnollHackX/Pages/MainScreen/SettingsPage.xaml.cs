@@ -885,9 +885,9 @@ namespace GnollHackX.Pages.MainScreen
                 //put2bag = _gamePage.ShowPut2BagContextCommand;
                 //prevwep = _gamePage.ShowPrevWepContextCommand;
                 longermsghistory = _gamePage.LongerMessageHistory;
-                characterclickaction = GHApp.CharacterClickAction; /* Value of the option in the (saved) game */
-                rightmouse = GHApp.RightMouseCommand;
-                middlemouse = GHApp.MiddleMouseCommand;
+                characterclickaction = _gamePage.GetCharacterClickAction(); /* Value of the option in the (saved) game */
+                rightmouse = _gamePage.GetRightMouseCommand();
+                middlemouse = _gamePage.GetMiddleMouseCommand();
             }
 
             CursorPicker.SelectedIndex = cursor;

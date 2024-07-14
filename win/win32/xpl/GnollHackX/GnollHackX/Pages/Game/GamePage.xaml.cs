@@ -1039,6 +1039,11 @@ namespace GnollHackX.Pages.Game
             return GHConstants.MapFontDefaultSize * (density * c_numerator) / c_denominator;
         }
 
+        public bool GetCharacterClickAction()
+        {
+            return _gnollHackService.GetCharacterClickAction();
+        }
+
         public void SetCharacterClickAction(bool newValue)
         {
             if (_currentGame != null)
@@ -1049,6 +1054,16 @@ namespace GnollHackX.Pages.Game
                     queue.Enqueue(new GHResponse(_currentGame, GHRequestType.SetCharacterClickAction, newValue));
                 }
             }
+        }
+
+        public int GetRightMouseCommand()
+        {
+            return _gnollHackService.GetMouseCommand(false);
+        }
+
+        public int GetMiddleMouseCommand()
+        {
+            return _gnollHackService.GetMouseCommand(true);
         }
 
         public void SetRightMouseCommand(int newValue)

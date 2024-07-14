@@ -301,6 +301,8 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetCharacterClickAction(int new_value);
         [DllImport(PlatformConstants.dll)]
+        public static extern int LibGetMouseCommand(int is_middle);
+        [DllImport(PlatformConstants.dll)]
         public static extern void LibSetMouseCommand(int new_value, int is_middle);
 
         private void LoadNativeLibrary(string libName)
@@ -1051,6 +1053,11 @@ namespace GnollHackX.Unknown
             LibSetCharacterClickAction(newValue ? 1 : 0);
         }
 
+        public int GetMouseCommand(bool isMiddle)
+        {
+            return LibGetMouseCommand(isMiddle ? 1 : 0);
+        }
+
         public void SetMouseCommand(int newValue, bool isMiddle)
         {
             LibSetMouseCommand(newValue, isMiddle ? 1 : 0);
@@ -1069,7 +1076,7 @@ namespace GnollHackX.Unknown
                 (ulong)(allowbones ? 0 : RunGnollHackFlags.DisableBones) |
                 (ulong)(GHApp.TournamentMode ? RunGnollHackFlags.TournamentMode : 0) |
                 (ulong)(GHApp.IsDebug ? RunGnollHackFlags.GUIDebugMode : 0) |
-                (ulong)(Preferences.Get("CharacterClickAction", false) ? RunGnollHackFlags.CharacterClickAction : 0) | /* Use the default; GHApp.CharacterClickAction may contain the option value from the last game */
+                (ulong)(GHApp.CharacterClickAction ? RunGnollHackFlags.CharacterClickAction : 0) | /* Use the default; GHApp.CharacterClickAction may contain the option value from the last game */
                 rightmouse | middlemouse | (ulong)ghGame.StartFlags;
             string lastusedplname = GHApp.TournamentMode && !ghGame.PlayingReplay ? Preferences.Get("LastUsedTournamentPlayerName", "") : Preferences.Get("LastUsedPlayerName", "");
 
