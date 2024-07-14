@@ -770,10 +770,7 @@ int64_t
 get_current_game_duration(VOID_ARGS)
 {
     int64_t res = 0L;
-    lock_thread_lock();
-    struct u_realtime used_realtime = urealtime;
-    unlock_thread_lock();
-    res = calculate_current_game_duration(used_realtime);
+    res = calculate_current_game_duration(urealtime);
     return res;
 }
 

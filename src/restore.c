@@ -667,7 +667,6 @@ unsigned int *stuckid, *steedid;
     process_tiledata(1, (const char*)0, glyph2tile, glyphtileflags);
 #endif
 
-    lock_thread_lock();
     *newgamecontext = context; /* copy statically init'd context */
     mread(fd, (genericptr_t) &context, sizeof (struct context_info));
     context.warntype.species = (context.warntype.speciesidx >= LOW_PM)
@@ -724,7 +723,6 @@ unsigned int *stuckid, *steedid;
     //ReadTimebuf(urealtime.start_timing); /** [not used] **/
     /* current time is the time to use for next urealtime.realtime update */
     urealtime.start_timing = getnow();
-    unlock_thread_lock();
 
     set_uasmon();
 #ifdef CLIPPING

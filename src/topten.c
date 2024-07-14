@@ -507,11 +507,9 @@ int how;
         (long long)encodeconduct(), XLOG_SEP, (long long)moves, XLOG_SEP, (long long)encodeachieve());
     Sprintf(eos(buffer), "%cachieveX=%s", XLOG_SEP, encode_extended_achievements());
     Sprintf(eos(buffer), "%cconductX=%s", XLOG_SEP, encode_extended_conducts());
-    lock_thread_lock();
     Sprintf(eos(buffer), "%crealtime=%lld%cstarttime=%lld%cendtime=%lld%cstarttimeUTC=%lld%cendtimeUTC=%lld", XLOG_SEP,
         (long long)urealtime.realtime, XLOG_SEP,
         (long long)ubirthday, XLOG_SEP, (long long)urealtime.finish_time, XLOG_SEP, (long long)convert2UTC(ubirthday), XLOG_SEP, (long long)convert2UTC(urealtime.finish_time));
-    unlock_thread_lock();
     Sprintf(eos(buffer), "%cgender0=%s%calign0=%s", XLOG_SEP,
         genders[flags.initgend].filecode, XLOG_SEP,
         aligns[1 - u.ualignbase[A_ORIGINAL]].filecode);

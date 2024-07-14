@@ -6065,9 +6065,7 @@ livelog_post_to_forum(ll_type, str)
 unsigned int ll_type;
 const char* str;
 {
-    lock_thread_lock();
     struct u_realtime used_realtime = urealtime;
-    unlock_thread_lock();
     livelog_post_to_forum_rt(ll_type, used_realtime, str);
 }
 

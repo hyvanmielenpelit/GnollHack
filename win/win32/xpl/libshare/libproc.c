@@ -670,10 +670,8 @@ void lib_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char
     }
     case GUI_CMD_REPORT_PLAY_TIME:
     {
-        lock_thread_lock();
         int64_t timePassed = urealtime.finish_time - urealtime.start_timing;
         int64_t realtime = urealtime.realtime;
-        unlock_thread_lock();
         lib_callbacks.callback_report_play_time(timePassed, realtime);
         break;
     }

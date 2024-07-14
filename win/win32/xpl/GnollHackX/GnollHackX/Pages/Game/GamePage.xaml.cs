@@ -3938,7 +3938,7 @@ namespace GnollHackX.Pages.Game
             else
             {
                 var menu = new GameMenuPage(this);
-                TallyRealTime();
+                SendRequestForTallyRealTime();
                 await App.Current.MainPage.Navigation.PushModalAsync(menu);
             }
 
@@ -3947,7 +3947,7 @@ namespace GnollHackX.Pages.Game
         public async Task ShowGameMenu(object sender, EventArgs e)
         {
             var menu = new GameMenuPage(this);
-            TallyRealTime();
+            SendRequestForTallyRealTime();
             await App.Current.MainPage.Navigation.PushModalAsync(menu);
         }
 
@@ -17783,7 +17783,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        public void TallyRealTime()
+        public void SendRequestForTallyRealTime()
         {
             if (_currentGame != null)
             {

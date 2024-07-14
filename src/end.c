@@ -1849,12 +1849,10 @@ int how;
        topten figure it out separately and possibly getting different
        time or even day if player is slow responding to --More-- */
     int64_t realtime;
-    lock_thread_lock();
     endtime = getnow();
     urealtime.finish_time = (int64_t)endtime;
     urealtime.realtime += ((int64_t)endtime - urealtime.start_timing);
     realtime = urealtime.realtime;
-    unlock_thread_lock();
     issue_simple_gui_command(GUI_CMD_REPORT_PLAY_TIME);
 
     fixup_death(how); /* actually, fixup multi_reason */
@@ -3834,11 +3832,8 @@ reset_msghistory(VOID_ARGS)
 STATIC_OVL void
 reset_gamestate(VOID_ARGS)
 {
-    lock_thread_lock();
     memset((genericptr_t)&context, 0, sizeof(struct context_info));
     memset((genericptr_t)&urealtime.realtime, 0, sizeof urealtime.realtime);
-    unlock_thread_lock();
-
     memset((genericptr_t)&flags, 0, sizeof(struct flag));
 #ifdef SYSFLAGS
     memset((genericptr_t)&sysflags, 0, sizeof(struct sysflag));
@@ -3974,19 +3969,14 @@ reset_gamestate_ex(VOID_ARGS)
 void
 tally_realtime(VOID_ARGS)
 {
-    lock_thread_lock();
     if (!context.game_started)
     {
-        unlock_thread_lock();
         return;
     }
     urealtime.finish_time = getnow();
     urealtime.realtime += (urealtime.finish_time - urealtime.start_timing);
-    unlock_thread_lock();
     issue_simple_gui_command(GUI_CMD_REPORT_PLAY_TIME);
-    lock_thread_lock();
     urealtime.start_timing = urealtime.finish_time;
-    unlock_thread_lock();
 }
 
 /* yes/no question via GUI when the game windows may already have been closed */
