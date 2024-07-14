@@ -157,10 +157,12 @@ typedef struct mi {
 #define CLICK_PRIMARY   1 /* Primary (left): Travel or attack */
 #define CLICK_SECONDARY 2 /* Secondary (right): flags.right_click_command */
 #define CLICK_TERTIARY  3 /* Tertiary (middle): flags.middle_click_command */
+
 #define CLICK_LOOK      4 /* Look */
 #define CLICK_MOVE      5 /* Move (no travel) */
-#define CLICK_CAST      6 /* Cast selected directional spell (normally right mouse button) */
+#define CLICK_CAST      6 /* Cast the selected directional spell (normally right mouse button) */
 #define CLICK_FIRE      7 /* Fire a ranged weapon */
+#define CLICK_ZAP       8 /* Zap the selected wand */
 
 /* invalid winid */
 #define WIN_ERR ((winid) -1)

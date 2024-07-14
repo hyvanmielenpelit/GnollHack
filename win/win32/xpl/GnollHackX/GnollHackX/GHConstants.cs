@@ -195,6 +195,7 @@ namespace GnollHackX
         ClickMove,
         ClickCast,
         ClickFire,
+        ClickZap,
     }
 
     [Flags]

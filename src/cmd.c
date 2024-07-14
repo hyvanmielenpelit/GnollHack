@@ -8722,6 +8722,21 @@ int x, y, mod;
     x -= u.ux;
     y -= u.uy;
 
+    struct monst* mtmp = 0;
+    if (isok(target_x, target_y))
+    {
+        mtmp = m_at(target_x, target_y);
+    }
+
+    boolean mon_mimic = FALSE;
+    boolean sensed = FALSE;
+    if (mtmp)
+    {
+        mon_mimic = (M_AP_TYPE(mtmp) != M_AP_NOTHING);
+        sensed = (mon_mimic && (Protection_from_shape_changers || sensemon(mtmp)));
+    }
+    boolean is_mtmp_spotted = mtmp && canspotmon(mtmp) && !is_peaceful(mtmp) && !is_tame(mtmp) && (!mon_mimic || sensed);
+
     /* Cast spell */
     if (mod == CLICK_CAST)
     {
@@ -8759,22 +8774,8 @@ int x, y, mod;
         }
         else
         {
-            struct monst* mtmp = 0;
-            if (isok(target_x, target_y))
-            {
-                mtmp = m_at(target_x, target_y);
-            }
-
-            boolean mon_mimic = FALSE;
-            boolean sensed = FALSE;
-            if (mtmp)
-            {
-                mon_mimic = (M_AP_TYPE(mtmp) != M_AP_NOTHING);
-                sensed = (mon_mimic && (Protection_from_shape_changers || sensemon(mtmp)));
-            }
-
             cmd[0] = cmd[1] = '\0';
-            if (mtmp && canspotmon(mtmp) && !is_peaceful(mtmp) && !is_tame(mtmp) && (!mon_mimic || sensed))
+            if (is_mtmp_spotted)
             {
                 const char* spellnam = spl_book[context.quick_cast_spell_no].sp_id > STRANGE_OBJECT ? OBJ_NAME(objects[spl_book[context.quick_cast_spell_no].sp_id]) : "";
                 if (!x || !y || abs(x) == abs(y)) /* straight line or diagonal */
@@ -8841,6 +8842,90 @@ int x, y, mod;
         }
     }
 
+    boolean has_launcher = (uwep && is_launcher(uwep));
+    boolean has_swapped_launcher_and_ammo = (uswapwep && is_launcher(uswapwep) && ammo_and_launcher(uquiver, uswapwep));
+    boolean has_throwing_weapon_quivered = (uquiver && throwing_weapon(uquiver));
+    boolean cursed_weapon_blocks_swap = (uswapwep && objects[uswapwep->otyp].oc_bimanual) || (uswapwep && uswapwep2 && !flags.swap_rhand_only) ? ((uwep && welded(uwep, &youmonst)) || (uarms && welded(uarms, &youmonst))) : (uwep && welded(uwep, &youmonst));
+
+    /* Fire a bow */
+    if (mod == CLICK_FIRE)
+    {
+        if (is_mtmp_spotted)
+        {
+            if (has_launcher || (iflags.autoswap_launchers && has_swapped_launcher_and_ammo && !cursed_weapon_blocks_swap) || has_throwing_weapon_quivered)
+            {
+                if (!x || !y || abs(x) == abs(y)) /* straight line or diagonal */
+                {
+                    boolean path_is_clear = clear_path(u.ux, u.uy, target_x, target_y);
+                    struct monst* mtmpinway = spotted_linedup_monster_in_way(u.ux, u.uy, target_x, target_y);
+                    if (path_is_clear && !mtmpinway)
+                    {
+                        if (iflags.autoswap_launchers && !has_launcher && has_swapped_launcher_and_ammo && !cursed_weapon_blocks_swap)
+                        {
+                            if (uswapwep && objects[uswapwep->otyp].oc_bimanual)
+                                (void)doswapweapon();
+                            else
+                                (void)doswapweapon_right_or_both();
+                        }
+                        cmd[0] = Cmd.spkeys[NHKF_CLICKFIRE];
+                        x = sgn(x), y = sgn(y);
+                        dir = xytod(x, y);
+                        cmd[1] = dir >= 0 ? Cmd.dirchars[dir] : '\0';
+                        cmd[2] = '\0';
+                    }
+                    else if (!path_is_clear)
+                    {
+                        play_sfx_sound(SFX_GENERAL_CANNOT);
+                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; the path to it is not clear.", uwep && is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp));
+                        cmd[0] = '\0';
+                    }
+                    else if (mtmpinway)
+                    {
+                        play_sfx_sound(SFX_GENERAL_CANNOT);
+                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; %s is in the way.", uwep && is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp), mon_nam(mtmpinway));
+                        cmd[0] = '\0';
+                    }
+                    else
+                    {
+                        play_sfx_sound(SFX_GENERAL_CANNOT);
+                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; there is something in the way.", uwep && is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp));
+                        cmd[0] = '\0';
+                    }
+                }
+                else
+                {
+                    play_sfx_sound(SFX_GENERAL_CANNOT);
+                    pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s at %s; it is not lined up.", uwep && is_launcher(uwep) ? "fire" : "throw", mon_nam(mtmp));
+                    cmd[0] = '\0';
+                }
+            }
+            else
+            {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
+                if (iflags.autoswap_launchers && has_swapped_launcher_and_ammo) /* Cursed weapon blocks swap */
+                    pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot swap your weapons to %s; a cursed item blocks the swap.", "fire");
+                else
+                    pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s; you have no throwing weapons quivered.", "throw");
+                cmd[0] = '\0';
+            }
+        }
+        else
+        {
+            if (abs(y) <= (max(0, abs(x) - 1) / 2))
+                y = 0;
+
+            if (abs(x) <= (max(0, abs(y) - 1) / 2))
+                x = 0;
+
+            cmd[0] = Cmd.spkeys[NHKF_CLICKFIRE];
+            x = sgn(x), y = sgn(y);
+            dir = xytod(x, y);
+            cmd[1] = dir >= 0 ? Cmd.dirchars[dir] : '\0';
+            cmd[2] = '\0';
+        }
+        return cmd;
+    }
+
     /* Travel, move, or attack */
     if (flags.travelcmd || mod == CLICK_MOVE)
     {
@@ -8860,26 +8945,8 @@ int x, y, mod;
         }
         else 
         {
-            struct monst* mtmp = 0;
-            if (isok(target_x, target_y))
+            if (is_mtmp_spotted)
             {
-                mtmp = m_at(target_x, target_y);
-            }
-
-            boolean mon_mimic = FALSE;
-            boolean sensed = FALSE;
-            if (mtmp)
-            {
-                mon_mimic = (M_AP_TYPE(mtmp) != M_AP_NOTHING);
-                sensed = (mon_mimic && (Protection_from_shape_changers || sensemon(mtmp)));
-            }
-
-            if (mtmp && canspotmon(mtmp) && !is_peaceful(mtmp) && !is_tame(mtmp) && (!mon_mimic || sensed))
-            {
-                boolean has_launcher = (uwep && is_launcher(uwep));
-                boolean has_swapped_launcher_and_ammo = (uswapwep && is_launcher(uswapwep) && ammo_and_launcher(uquiver, uswapwep));
-                boolean has_throwing_weapon_quivered = (uquiver && throwing_weapon(uquiver));
-                boolean cursed_weapon_blocks_swap = (uswapwep && objects[uswapwep->otyp].oc_bimanual) || (uswapwep && uswapwep2 && !flags.swap_rhand_only) ? ((uwep && welded(uwep, &youmonst)) || (uarms && welded(uarms, &youmonst))) : (uwep && welded(uwep, &youmonst));
                 if (iflags.clickfire && dist2(u.ux, u.uy, target_x, target_y) > 2 &&
                     (has_launcher || (iflags.autoswap_launchers && has_swapped_launcher_and_ammo && !cursed_weapon_blocks_swap) || has_throwing_weapon_quivered))
                 {
@@ -8896,8 +8963,6 @@ int x, y, mod;
                                 else
                                     (void)doswapweapon_right_or_both();
                             }
-                            //clickfire_cc.x = target_x;
-                            //clickfire_cc.y = target_y;
                             cmd[0] = Cmd.spkeys[NHKF_CLICKFIRE];
                             x = sgn(x), y = sgn(y);
                             dir = xytod(x, y);

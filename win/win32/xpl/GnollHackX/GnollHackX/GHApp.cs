@@ -2785,6 +2785,7 @@ namespace GnollHackX
             new MouseCommandItem("Move", (int)NhGetPosMods.ClickMove),
             new MouseCommandItem("Cast", (int)NhGetPosMods.ClickCast),
             new MouseCommandItem("Fire", (int)NhGetPosMods.ClickFire),
+            new MouseCommandItem("Zap", (int)NhGetPosMods.ClickZap),
         };
 
 #if DEBUG
