@@ -446,7 +446,7 @@
                                             TitleColor="Black"
                                             HorizontalTextAlignment="End"
                                             BackgroundColor="Transparent"
-                                            WidthRequest="150"
+                                            WidthRequest="140"
                                             VerticalOptions="Center"
                                             HorizontalOptions="End" >
                                 </Picker>
@@ -465,7 +465,7 @@
                                             TitleColor="Black"
                                             HorizontalTextAlignment="End"
                                             BackgroundColor="Transparent"
-                                            WidthRequest="150"
+                                            WidthRequest="140"
                                             VerticalOptions="Center"
                                             HorizontalOptions="End" >
                                 </Picker>
