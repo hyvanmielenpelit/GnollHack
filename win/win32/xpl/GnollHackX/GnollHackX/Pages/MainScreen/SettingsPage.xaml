@@ -432,7 +432,45 @@
                                     HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="DoubleClickSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
-
+                            <Grid x:Name="RightMouseButtonGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Right Mouse Button"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center" 
+                                            HorizontalOptions="Start" />
+                                <Picker Grid.Column="1" x:Name="RightMousePicker"
+                                            Title="Select a command"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="150"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="End" >
+                                </Picker>
+                            </Grid>
+                            <Grid x:Name="MiddleMouseButtonGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Middle Mouse Button"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center" 
+                                            HorizontalOptions="Start" />
+                                <Picker Grid.Column="1" x:Name="MiddleMousePicker"
+                                            Title="Select a command"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="150"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="End" >
+                                </Picker>
+                            </Grid>
+                            
                             <Label Text="Bar Commands" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                             <StackLayout x:Name="SimpleCommandBarButtonsLayout" Spacing="6" >
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">

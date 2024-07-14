@@ -75,6 +75,8 @@ namespace GnollHackX
         SetCharacterClickAction,
         ClipAround,
         SetToBlack,
+        SetRightMouseCommand,
+        SetMiddleMouseCommand,
     }
 
     public struct AddContextMenuData

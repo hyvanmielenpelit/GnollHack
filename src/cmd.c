@@ -7792,14 +7792,11 @@ register char *cmd;
         context.move = FALSE;
         return;
     case NHKF_CLICKLOOK:
-        if (iflags.clicklook) {
-            context.move = FALSE;
-            do_look(2, &clicklook_cc);
-        }
+        context.move = FALSE;
+        do_look(2, &clicklook_cc);
         return;
     case NHKF_CLICKFIRE:
-        if (iflags.clickfire) {
-            //context.move = FALSE;
+        {
             int fireres = dofire();
             if (!fireres)
                 readchar_queue = ""; //Prevent movement if firing failed.
@@ -8708,8 +8705,13 @@ int x, y, mod;
     int target_y = y;
     memset(cmd, 0, sizeof(cmd));
 
+    if (mod == CLICK_SECONDARY)
+        mod = flags.right_click_command > CLICK_TERTIARY ? flags.right_click_command : CLICK_PRIMARY;
+    else if (mod == CLICK_TERTIARY)
+        mod = flags.middle_click_command > CLICK_TERTIARY ? flags.middle_click_command : CLICK_PRIMARY;
+
     /* Look */
-    if (iflags.clicklook && mod == CLICK_LOOK)
+    if (mod == CLICK_LOOK)
     {
         clicklook_cc.x = target_x;
         clicklook_cc.y = target_y;
@@ -8946,7 +8948,7 @@ int x, y, mod;
             return cmd;
         }
 
-        if (x == 0 && y == 0 && mod != CLICK_CAST)
+        if (x == 0 && y == 0)
         {
             if (!flags.self_click_action)
             {

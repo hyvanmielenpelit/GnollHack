@@ -2199,7 +2199,7 @@ BaseClick(NhWindow *wind, Point pt, UInt32 modifiers)
 {
     pt.h = pt.h / wind->char_width + 1;
     pt.v = pt.v / wind->row_height;
-    clicked_mod = (modifiers & shiftKey) ? CLICK_LOOK : CLICK_PRIMARY;
+    clicked_mod = (modifiers & shiftKey) ? CLICK_SECONDARY : CLICK_PRIMARY;
 
     if (strchr(topl_resp, *click_to_cmd(pt.h, pt.v, clicked_mod)))
         nhbell();

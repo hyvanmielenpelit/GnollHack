@@ -1051,6 +1051,29 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        public void SetRightMouseCommand(int newValue)
+        {
+            if (_currentGame != null)
+            {
+                ConcurrentQueue<GHResponse> queue;
+                if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                {
+                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.SetRightMouseCommand, newValue));
+                }
+            }
+        }
+
+        public void SetMiddleMouseCommand(int newValue)
+        {
+            if (_currentGame != null)
+            {
+                ConcurrentQueue<GHResponse> queue;
+                if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                {
+                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.SetMiddleMouseCommand, newValue));
+                }
+            }
+        }
 
         public async void StartNewGame()
         {
@@ -13322,7 +13345,9 @@ namespace GnollHackX.Pages.Game
                     if (MapLookMode)
                         mod = (int)NhGetPosMods.ClickLook;
                     else if (e.MouseButton == SKMouseButton.Right)
-                        mod = (int)NhGetPosMods.ClickCast;
+                        mod = (int)NhGetPosMods.ClickSecondary;
+                    else if (e.MouseButton == SKMouseButton.Middle)
+                        mod = (int)NhGetPosMods.ClickTertiary;
                     else if (MapTravelMode)
                         mod = (int)NhGetPosMods.ClickPrimary;
                     else

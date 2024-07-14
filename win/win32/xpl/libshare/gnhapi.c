@@ -583,6 +583,15 @@ LibSetCharacterClickAction(int new_value)
     flags.self_click_action = new_value != 0;
 }
 
+DLLEXPORT void
+LibSetMouseCommand(int new_value, int is_middle)
+{
+    if(is_middle)
+        flags.middle_click_command = (uchar)new_value;
+    else
+        flags.right_click_command = (uchar)new_value;
+}
+
 DLLEXPORT int
 LibGetCharacterClickAction(VOID_ARGS)
 {
@@ -828,6 +837,9 @@ DLLEXPORT int RunGnollHack(
         initial_flags.click_action_set = TRUE;
         initial_flags.click_action_value = TRUE;
     }
+
+    initial_flags.right_click_action = (runflags & GHRUNFLAGS_RIGHT_MOUSE_BIT_MASK) >> GHRUNFLAGS_RIGHT_MOUSE_BIT_INDEX;
+    initial_flags.middle_click_action = (runflags & GHRUNFLAGS_MIDDLE_MOUSE_BIT_MASK) >> GHRUNFLAGS_MIDDLE_MOUSE_BIT_INDEX;
 
     /* Set directly, as other parts of GnollHack do not purposedly set this */
     if (last_used_player_name && strcmp(last_used_player_name, ""))

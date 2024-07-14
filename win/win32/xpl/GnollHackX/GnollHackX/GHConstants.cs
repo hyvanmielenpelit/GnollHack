@@ -189,9 +189,12 @@ namespace GnollHackX
     {
         None = 0,
         ClickPrimary,
+        ClickSecondary,
+        ClickTertiary,
         ClickLook,
         ClickMove,
         ClickCast,
+        ClickFire,
     }
 
     [Flags]
@@ -230,6 +233,18 @@ namespace GnollHackX
         TournamentMode =        0x00000100, /* Playing with server-like settings */
         GUIDebugMode =          0x00000200, /* GUI has been built in debug mode (not a release mode game?) */
         CharacterClickAction =  0x00000400, /* Set character-click action to true by default */
+
+        RightMouseButtonBit1 =  0x00400000, 
+        RightMouseButtonBit2 =  0x00800000, 
+        RightMouseButtonBit3 =  0x01000000, 
+        RightMouseButtonBit4 =  0x02000000,
+        RightMouseButtonBit5 =  0x04000000,
+
+        MiddleMouseButtonBit1 = 0x08000000,
+        MiddleMouseButtonBit2 = 0x10000000, 
+        MiddleMouseButtonBit3 = 0x20000000, 
+        MiddleMouseButtonBit4 = 0x40000000, 
+        MiddleMouseButtonBit5 = 0x80000000, 
     }
 
     [Flags]
@@ -1725,6 +1740,10 @@ namespace GnollHackX
 #endif
         public const bool DefaultHTMLDumpLogs = true;
         public const bool DefaultUseSingleDumpLog = true;
+        public const int DefaultRightMouseCommand = (int)NhGetPosMods.ClickCast;
+        public const int DefaultMiddleMouseCommand = (int)NhGetPosMods.None;
+        public const int RightMouseBitIndex = 22;
+        public const int MiddleMouseBitIndex = 27;
         public const string InstallTimePackName = "installtimepack";
         public const string OnDemandPackName = "ondemandpack";
         public const string UserDataDirectory = "usrdata";

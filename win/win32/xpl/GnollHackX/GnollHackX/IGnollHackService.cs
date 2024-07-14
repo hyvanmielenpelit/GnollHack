@@ -69,5 +69,6 @@ namespace GnollHackX
 
         bool GetCharacterClickAction();
         void SetCharacterClickAction(bool newValue);
+        void SetMouseCommand(int newValue, bool isMiddle);
     }
 }

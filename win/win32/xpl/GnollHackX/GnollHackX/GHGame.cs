@@ -209,6 +209,10 @@ namespace GnollHackX
                         case GHRequestType.SetCharacterClickAction:
                             GHApp.GnollHackService.SetCharacterClickAction(response.ResponseBoolValue);
                             break;
+                        case GHRequestType.SetRightMouseCommand:
+                        case GHRequestType.SetMiddleMouseCommand:
+                            GHApp.GnollHackService.SetMouseCommand(response.ResponseIntValue, response.RequestType == GHRequestType.SetMiddleMouseCommand);
+                            break;
                         default:
                             break;
                     }

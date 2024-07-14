@@ -836,7 +836,7 @@ int nh_poskey(int *x, int *y, int *mod)
                    mod may be one of
 
                         CLICK_PRIMARY         -- mouse click type 1
-                        CLICK_LOOK         -- mouse click type 2
+                        CLICK_SECONDARY       -- mouse click type 2
 
                    The different click types can map to whatever the
                    hardware supports.  If no mouse is supported, this

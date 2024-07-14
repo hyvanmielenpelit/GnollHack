@@ -1600,7 +1600,7 @@ void NetHackQtMapWindow::mousePressEvent(QMouseEvent* event)
     clicksink.Put(
 	event->pos().x()/qt_settings->glyphs().width(),
 	event->pos().y()/qt_settings->glyphs().height(),
-	event->button()==LeftButton ? CLICK_PRIMARY : CLICK_LOOK
+	event->button()==LeftButton ? CLICK_PRIMARY : CLICK_SECONDARY
     );
     qApp->exit_loop();
 }

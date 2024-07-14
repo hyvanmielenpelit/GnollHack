@@ -117,6 +117,8 @@ namespace GnollHackX
 
             DarkMode = Preferences.Get("DarkMode", false);
             CharacterClickAction = Preferences.Get("CharacterClickAction", GHConstants.DefaultCharacterClickAction);
+            RightMouseCommand = Preferences.Get("RightMouseCommand", GHConstants.DefaultRightMouseCommand);
+            MiddleMouseCommand = Preferences.Get("MiddleMouseCommand", GHConstants.DefaultMiddleMouseCommand);
             HideAndroidNavigationBar = Preferences.Get("HideAndroidNavigationBar", GHConstants.DefaultHideNavigation);
             HideiOSStatusBar = Preferences.Get("HideiOSStatusBar", GHConstants.DefaultHideStatusBar);
             DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
@@ -2776,6 +2778,15 @@ namespace GnollHackX
             return -1;
         }
 
+        public static readonly List<MouseCommandItem> MouseCommandItems = new List<MouseCommandItem>()
+        {
+            new MouseCommandItem("None", (int)NhGetPosMods.None),
+            new MouseCommandItem("Look", (int)NhGetPosMods.ClickLook),
+            new MouseCommandItem("Move", (int)NhGetPosMods.ClickMove),
+            new MouseCommandItem("Cast", (int)NhGetPosMods.ClickCast),
+            new MouseCommandItem("Fire", (int)NhGetPosMods.ClickFire),
+        };
+
 #if DEBUG
         public static object ProfilingStopwatchLock = new object();
         private static Stopwatch _profilingStopwatch = new Stopwatch();
@@ -3412,9 +3423,13 @@ namespace GnollHackX
         private static bool _emptyWishIsNothing;
         private static bool _characterClickAction;
         private static bool _okOnDoubleClick;
+        private static int _rightMouseCommand;
+        private static int _middleMouseCommand;
         public static bool EmptyWishIsNothing { get { lock (_behaviorLock) { return _emptyWishIsNothing; } } set { lock (_behaviorLock) { _emptyWishIsNothing = value; } } }
         public static bool CharacterClickAction { get { lock (_behaviorLock) { return _characterClickAction; } } set { lock (_behaviorLock) { _characterClickAction = value; } } }
         public static bool OkOnDoubleClick { get { lock (_behaviorLock) { return _okOnDoubleClick; } } set { lock (_behaviorLock) { _okOnDoubleClick = value; } } }
+        public static int RightMouseCommand { get { lock (_behaviorLock) { return _rightMouseCommand; } } set { lock (_behaviorLock) { _rightMouseCommand = value; } } }
+        public static int MiddleMouseCommand { get { lock (_behaviorLock) { return _middleMouseCommand; } } set { lock (_behaviorLock) { _middleMouseCommand = value; } } }
 
         public static string CustomGameStatusLink { get; set; }
         public static string CustomXlogAccountLink { get; set; }
@@ -6794,4 +6809,22 @@ namespace GnollHackX
         }
     }
 
+    public class MouseCommandItem
+    {
+        public string DisplayName = "";
+        public int Value = 0;
+        public MouseCommandItem()
+        {
+        }
+        public MouseCommandItem(string displayName, int value)
+        {
+            DisplayName = displayName;
+            Value = value;
+        }
+
+        public override string ToString()
+        {
+            return DisplayName;
+        }
+    }
 }

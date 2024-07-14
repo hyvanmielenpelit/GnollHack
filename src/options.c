@@ -47,6 +47,7 @@ enum window_option_types {
 #define PILE_LIMIT_DFLT 5
 #define HERE_WIN_SIZ_DFLT 8
 #define DEFAULT_PILE_LIMIT (iflags.wc2_herewindow ? iflags.wc2_here_window_size + 1 : PILE_LIMIT_DFLT)
+const char* mouse_cmd_names[8] = { "not specified", "primary", "secondary", "tertiary", "look", "move", "cast", "fire" };
 
 /*
  *  NOTE:  If you add (or delete) an option, please update the short
@@ -411,6 +412,7 @@ static struct Comp_Opt {
     { "menu_select_all", "select all items in a menu", 4, SET_IN_FILE },
     { "menu_select_page", "select all items on this page of a menu", 4,
       SET_IN_FILE },
+    { "middle_click_command", "command upon clicking middle mouse button", 32, SET_IN_GAME },
     { "monsters", "the symbols to use for monsters", MAX_MONSTER_CLASSES,
       SET_IN_FILE },
     { "move_interval", "normal movement interval in milliseconds", 3, SET_IN_GAME },
@@ -462,6 +464,7 @@ static struct Comp_Opt {
     { "ramgender", "the gender of your (first) ram (e.g., ramgender:male)", 7, DISP_IN_GAME },
     { "ramname", "the name of your (first) ram (e.g., ramname:Silver)",
       PL_PSIZ, DISP_IN_GAME },
+    { "right_click_command", "command upon clicking right mouse button", 32, SET_IN_GAME },
     { "role", "your starting role (e.g., Barbarian, Valkyrie)", PL_CSIZ,
       DISP_IN_GAME },
     { "runmode", "display frequency when `running' or `travelling'",
@@ -1028,6 +1031,9 @@ finish_options()
         (void)bind_key(' ', "wait");
         update_bindings_list();
     }
+
+    if (iflags.clicklook && !flags.right_click_command)
+        flags.right_click_command = CLICK_LOOK;
 
 #ifdef STATUS_HILITES
     /*
@@ -4884,6 +4890,65 @@ boolean tinitial, tfrom_file;
         return retval;
     }
 
+    fullname = "right_click_command";
+    fullname2 = "middle_click_command";
+    boolean is_middle = match_optname(opts, fullname2, 20, TRUE);
+    if (is_middle || match_optname(opts, fullname, 19, TRUE))
+    {
+        int itmp = 0;
+
+        op = string_for_opt(opts, negated);
+        if (negated)
+        {
+            bad_negation(fullname, TRUE);
+            itmp = 0;
+            retval = FALSE;
+        }
+        else if (op)
+        {
+            boolean found = FALSE;
+            for (i = 0; i < SIZE(mouse_cmd_names); i++) {
+                if (i >= 1 && i <= 3)
+                    continue;
+                if (!strcmp(op, mouse_cmd_names[i]))
+                {
+                    found = TRUE;
+                    itmp = i;
+                    break;
+                }
+            }
+            if(!found)
+                itmp = -1;
+        }
+
+        if (itmp < 0)
+        {
+            char valuesbuf[BUFSZ * 2] = "";
+            for (i = 0; i < SIZE(mouse_cmd_names); i++) {
+                if (i >= 1 && i <= 3)
+                    continue;
+                if (*valuesbuf)
+                {
+                    Strcat(valuesbuf, ", ");
+                    if(i == SIZE(mouse_cmd_names) - 1)
+                        Strcat(valuesbuf, "or ");
+                }
+                Strcat(valuesbuf, mouse_cmd_names[i]);
+            }
+
+            config_error_add("'%s' requires one of the following values: %s", is_middle ? fullname2 : fullname, valuesbuf);
+            retval = FALSE;
+        }
+        else
+        {
+            if(is_middle)
+                flags.middle_click_command = (uchar)itmp;
+            else
+                flags.right_click_command = (uchar)itmp;
+        }
+        return retval;
+    }
+
     fullname = "run_spot_distance";
     if (match_optname(opts, fullname, 17, TRUE))
     {
@@ -6551,6 +6616,30 @@ boolean setinitial, setfromfile;
             free((genericptr_t)mode_pick);
         }
         destroy_nhwindow(tmpwin);
+    } else if (!strcmp("right_click_command", optname) || !strcmp("middle_click_command", optname)) {
+        boolean is_middle = !strcmp("middle_click_command", optname);
+        menu_item *mode_pick = (menu_item *) 0;
+
+        tmpwin = create_nhwindow(NHW_MENU);
+        start_menu(tmpwin);
+        any = zeroany;
+        for (i = 0; i < SIZE(mouse_cmd_names); i++) {
+            if (i >= 1 && i <= 3)
+                continue;
+            any.a_int = i + 1;
+            add_menu(tmpwin, NO_GLYPH, &any, 'a' + i, 0, ATR_NONE, NO_COLOR,
+                mouse_cmd_names[i], MENU_UNSELECTED);
+        }
+        end_menu(tmpwin, is_middle ? "Select middle button command:" : "Select right button command:");
+        if (select_menu(tmpwin, PICK_ONE, &mode_pick) > 0) {
+            int res = mode_pick->item.a_int - 1;
+            if (is_middle)
+                flags.middle_click_command = (uchar)res;
+            else
+                flags.right_click_command = (uchar)res;
+            free((genericptr_t) mode_pick);
+        }
+        destroy_nhwindow(tmpwin);
     } else if (!strcmp("menu_headings", optname)) {
         int mhattr = query_attr("How to highlight menu headings:");
 
@@ -7316,6 +7405,11 @@ char *buf;
         char dlbuf[BUFSZ];
         Strcpy(dlbuf, flags.max_hint_difficulty < MIN_DIFFICULTY_LEVEL ? "off" : get_game_difficulty_text(flags.max_hint_difficulty));
         Sprintf(buf, "%s (%d)", dlbuf, (int)flags.max_hint_difficulty);
+    }
+    else if (!strcmp(optname, "right_click_command") || !strcmp(optname, "middle_click_command"))
+    {
+        boolean is_middle = !strcmp(optname, "middle_click_command");
+        Sprintf(buf, "%s", mouse_cmd_names[is_middle ? flags.middle_click_command : flags.right_click_command]);
     }
     else if (!strcmp(optname, "run_spot_distance"))
     {

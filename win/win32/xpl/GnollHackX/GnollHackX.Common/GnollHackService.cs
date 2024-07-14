@@ -300,6 +300,8 @@ namespace GnollHackX.Unknown
         public static extern int LibGetCharacterClickAction();
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetCharacterClickAction(int new_value);
+        [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetMouseCommand(int new_value, int is_middle);
 
         private void LoadNativeLibrary(string libName)
         {
@@ -1049,10 +1051,17 @@ namespace GnollHackX.Unknown
             LibSetCharacterClickAction(newValue ? 1 : 0);
         }
 
+        public void SetMouseCommand(int newValue, bool isMiddle)
+        {
+            LibSetMouseCommand(newValue, isMiddle ? 1 : 0);
+        }
+
         public int StartGnollHack(GHGame ghGame)
         {
             string filesdir = GetGnollHackPath();
             bool allowbones = GHApp.AllowBones;
+            ulong rightmouse = (ulong)GHApp.RightMouseCommand << GHConstants.RightMouseBitIndex;
+            ulong middlemouse = (ulong)GHApp.MiddleMouseCommand << GHConstants.MiddleMouseBitIndex;
             ulong runflags = (ulong)(ghGame.WizardMode ? RunGnollHackFlags.WizardMode : 0) |
                 (ulong)(GHApp.FullVersionMode ? RunGnollHackFlags.FullVersion : 0) |
                 (ulong)(ghGame.ModernMode ? RunGnollHackFlags.ModernMode : 0) |
@@ -1061,7 +1070,7 @@ namespace GnollHackX.Unknown
                 (ulong)(GHApp.TournamentMode ? RunGnollHackFlags.TournamentMode : 0) |
                 (ulong)(GHApp.IsDebug ? RunGnollHackFlags.GUIDebugMode : 0) |
                 (ulong)(Preferences.Get("CharacterClickAction", false) ? RunGnollHackFlags.CharacterClickAction : 0) | /* Use the default; GHApp.CharacterClickAction may contain the option value from the last game */
-                (ulong)ghGame.StartFlags;
+                rightmouse | middlemouse | (ulong)ghGame.StartFlags;
             string lastusedplname = GHApp.TournamentMode && !ghGame.PlayingReplay ? Preferences.Get("LastUsedTournamentPlayerName", "") : Preferences.Get("LastUsedPlayerName", "");
 
             return RunGnollHack(

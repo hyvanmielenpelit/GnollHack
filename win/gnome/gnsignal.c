@@ -175,7 +175,7 @@ ghack_handle_button_press(GtkWidget *widget, GdkEventButton *event,
 
     click->x = (int) x1 / ghack_glyph_width();
     click->y = (int) y1 / ghack_glyph_height();
-    click->mod = (event->button == 1) ? CLICK_PRIMARY : CLICK_LOOK;
+    click->mod = (event->button == 1) ? CLICK_PRIMARY : CLICK_SECONDARY;
 
     g_clickBuffer = g_list_prepend(g_clickBuffer, click);
     /* Could use g_list_length(), but it is stupid and just

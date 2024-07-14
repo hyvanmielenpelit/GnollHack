@@ -154,10 +154,13 @@ typedef struct mi {
 #define ATR_LINE_ATTR_MASK      0x7FFFFFF0 /* because this is signed integer */
 
 /* nh_poskey() modifier types */
-#define CLICK_PRIMARY   1 /* Primary: Travel or attack */
-#define CLICK_LOOK      2 /* Look */
-#define CLICK_MOVE      3 /* Move (no travel) */
-#define CLICK_CAST      4 /* Cast selected directional spell (normally right mouse button) */
+#define CLICK_PRIMARY   1 /* Primary (left): Travel or attack */
+#define CLICK_SECONDARY 2 /* Secondary (right): flags.right_click_command */
+#define CLICK_TERTIARY  3 /* Tertiary (middle): flags.middle_click_command */
+#define CLICK_LOOK      4 /* Look */
+#define CLICK_MOVE      5 /* Move (no travel) */
+#define CLICK_CAST      6 /* Cast selected directional spell (normally right mouse button) */
+#define CLICK_FIRE      7 /* Fire a ranged weapon */
 
 /* invalid winid */
 #define WIN_ERR ((winid) -1)

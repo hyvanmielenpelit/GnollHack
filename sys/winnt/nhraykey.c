@@ -532,7 +532,7 @@ coord *cc;
                                 *mod = CLICK_PRIMARY;
                             else if (ir->Event.MouseEvent.dwButtonState
                                      & RIGHTBUTTON)
-                                *mod = CLICK_LOOK;
+                                *mod = CLICK_SECONDARY;
 #if 0 /* middle button */                   
                 else if (ir->Event.MouseEvent.dwButtonState & MIDBUTTON)
                           *mod = CLICK_MOVE;

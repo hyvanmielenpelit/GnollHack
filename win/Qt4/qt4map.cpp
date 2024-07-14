@@ -462,7 +462,7 @@ void NetHackQtMapViewport::mousePressEvent(QMouseEvent* event)
     clicksink.Put(
 	event->pos().x()/qt_settings->glyphs().width(),
 	event->pos().y()/qt_settings->glyphs().height(),
-	event->button()==Qt::LeftButton ? CLICK_PRIMARY : CLICK_LOOK
+	event->button()==Qt::LeftButton ? CLICK_PRIMARY : CLICK_SECONDARY
     );
     qApp->exit();
 }
@@ -776,7 +776,7 @@ void NetHackQtMapWindow::mousePressEvent(QMouseEvent* event)
     clicksink.Put(
 	event->pos().x()/qt_settings->glyphs().width(),
 	event->pos().y()/qt_settings->glyphs().height(),
-	event->button()==Qt::LeftButton ? CLICK_PRIMARY : CLICK_LOOK
+	event->button()==Qt::LeftButton ? CLICK_PRIMARY : CLICK_SECONDARY
     );
     qApp->exit();
 }

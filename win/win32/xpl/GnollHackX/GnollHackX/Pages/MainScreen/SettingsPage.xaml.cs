@@ -80,10 +80,11 @@ namespace GnollHackX.Pages.MainScreen
                 list.Add("120 fps");
             RefreshRatePicker.ItemsSource = list;
 
-
             PrimaryGPUCachePicker.ItemsSource = GHApp.GetGPUCacheSizeList(false);
             SecondaryGPUCachePicker.ItemsSource = GHApp.GetGPUCacheSizeList(true);
 
+            RightMousePicker.ItemsSource = GHApp.MouseCommandItems;
+            MiddleMousePicker.ItemsSource = GHApp.MouseCommandItems;
 
             SimpleCommandBarButton1Picker.ItemsSource = GHApp.SelectableShortcutButtons;
             SimpleCommandBarButton2Picker.ItemsSource = GHApp.SelectableShortcutButtons;
@@ -337,6 +338,24 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage.SetCharacterClickAction(CharacterClickActionSwitch.IsToggled);
             else
                 Preferences.Set("CharacterClickAction", CharacterClickActionSwitch.IsToggled);
+
+            if (RightMousePicker.SelectedIndex > -1 && RightMousePicker.SelectedItem != null && RightMousePicker.SelectedItem is MouseCommandItem)
+            {
+                GHApp.RightMouseCommand = ((MouseCommandItem)RightMousePicker.SelectedItem).Value;
+                if (_gamePage != null)  /* During game only doubles as the option; outside of game sets the default */
+                    _gamePage.SetRightMouseCommand(((MouseCommandItem)RightMousePicker.SelectedItem).Value);
+                else
+                    Preferences.Set("RightMouseCommand", ((MouseCommandItem)RightMousePicker.SelectedItem).Value);
+            }
+
+            if (MiddleMousePicker.SelectedIndex > -1 && MiddleMousePicker.SelectedItem != null && MiddleMousePicker.SelectedItem is MouseCommandItem)
+            {
+                GHApp.MiddleMouseCommand = ((MouseCommandItem)MiddleMousePicker.SelectedItem).Value;
+                if (_gamePage != null)  /* During game only doubles as the option; outside of game sets the default */
+                    _gamePage.SetMiddleMouseCommand(((MouseCommandItem)MiddleMousePicker.SelectedItem).Value);
+                else
+                    Preferences.Set("MiddleMouseCommand", ((MouseCommandItem)MiddleMousePicker.SelectedItem).Value);
+            }
 
             GHApp.OkOnDoubleClick = DoubleClickSwitch.IsToggled;
             Preferences.Set("OkOnDoubleClick", DoubleClickSwitch.IsToggled);
@@ -710,6 +729,7 @@ namespace GnollHackX.Pages.MainScreen
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false;
             bool longermsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false;
             long primarygpucache = -2, secondarygpucache = -2;
+            int rightmouse = GHConstants.DefaultRightMouseCommand, middlemouse = GHConstants.DefaultMiddleMouseCommand;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             string customlink = "";
             string customxlogaccountlink = "";
@@ -823,6 +843,8 @@ namespace GnollHackX.Pages.MainScreen
                 //prevwep = Preferences.Get("ShowPrevWepContextCommand", GHConstants.DefaultShowPrevWepContextCommand);
                 longermsghistory = GHApp.SavedLongerMessageHistory; // Preferences.Get("LongerMessageHistory", false);
                 characterclickaction = Preferences.Get("CharacterClickAction", GHConstants.DefaultCharacterClickAction); /* Default value */
+                rightmouse = Preferences.Get("RightMouseCommand", GHConstants.DefaultRightMouseCommand);
+                middlemouse = Preferences.Get("MiddleMouseCommand", GHConstants.DefaultMiddleMouseCommand);
             }
             else
             {
@@ -864,6 +886,8 @@ namespace GnollHackX.Pages.MainScreen
                 //prevwep = _gamePage.ShowPrevWepContextCommand;
                 longermsghistory = _gamePage.LongerMessageHistory;
                 characterclickaction = GHApp.CharacterClickAction; /* Value of the option in the (saved) game */
+                rightmouse = GHApp.RightMouseCommand;
+                middlemouse = GHApp.MiddleMouseCommand;
             }
 
             CursorPicker.SelectedIndex = cursor;
@@ -950,6 +974,39 @@ namespace GnollHackX.Pages.MainScreen
             EmptyWishIsNothingSwitch.IsToggled = emptywishisnothing;
             CharacterClickActionSwitch.IsToggled = characterclickaction;
             DoubleClickSwitch.IsToggled = doubleclick;
+
+            if(RightMousePicker.ItemsSource != null)
+            {
+                for (int i = 0; i < RightMousePicker.ItemsSource.Count; i++)
+                {
+                    object o = RightMousePicker.ItemsSource[i];
+                    if (o is MouseCommandItem)
+                    {
+                        if (((MouseCommandItem)o).Value == rightmouse)
+                        {
+                            RightMousePicker.SelectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (MiddleMousePicker.ItemsSource != null)
+            {
+                for (int i = 0; i < MiddleMousePicker.ItemsSource.Count; i++)
+                {
+                    object o = MiddleMousePicker.ItemsSource[i];
+                    if (o is MouseCommandItem)
+                    {
+                        if (((MouseCommandItem)o).Value == middlemouse)
+                        {
+                            MiddleMousePicker.SelectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+
             FixRectsSwitch.IsToggled = fixrects;
             FixRectsSwitch.IsEnabled = gpu;
             FixRectsLabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
@@ -1818,4 +1875,6 @@ namespace GnollHackX.Pages.MainScreen
             ShowTournamentInfoPopup();
         }
     }
+
+
 }

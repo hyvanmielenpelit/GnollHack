@@ -244,9 +244,16 @@ struct flag {
     schar max_hint_difficulty; /* Maximum difficulty level where hints are shown */
     boolean non_scoring; /* The game has been, for example, loaded from an imported save file and has thereby become non-scoring */
     uchar auto_bag_in_style;
-    boolean reserved_bool_special; /* to have 8 chars in a row */
+    boolean reserved_special_bool; /* to have 8 chars in a row */
 
-    int64_t reserved_int64_special2; /* to have highest alignment before the emergency variables */
+    uchar right_click_command;
+    uchar middle_click_command;
+    uchar reserved_uchar1;
+    uchar reserved_uchar2;
+    uchar reserved_uchar3;
+    uchar reserved_uchar4;
+    uchar reserved_uchar5;
+    uchar reserved_uchar6;
 
     /* Emergency reserved variables to make non-save-game-breaking changes */
     uint64_t reserved_ulong1;
@@ -471,7 +478,7 @@ struct instance_flags {
     boolean vt_tiledata;     /* output console codes for tile support in TTY */
 #endif
     boolean clicklook;       /* allow right-clicking for look */
-    boolean clickfire;       /* allow right-clicking for look */
+    boolean clickfire;       /* allow left-click to fire */
     boolean cmdassist;       /* provide detailed assistance for some comnds */
     boolean time_botl;       /* context.botl for 'time' (moves) only */
     boolean wizweight;       /* display weight of everything in wizard mode */
@@ -767,6 +774,8 @@ extern NEARDATA struct cmd Cmd;
 struct startup_flags {
     boolean click_action_set;
     boolean click_action_value;
+    uchar right_click_action;
+    uchar middle_click_action;
 };
 
 extern NEARDATA struct startup_flags initial_flags;
