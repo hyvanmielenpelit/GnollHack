@@ -259,8 +259,9 @@ struct context_info
     int64_t reserved_int64_2;
     int64_t reserved_int64_3;
     int64_t reserved_int64_4;
+    
     int quick_cast_spell_no;
-    int reserved_int2;
+    unsigned quick_zap_wand_oid;
     int reserved_int3;
     int reserved_int4;
     short reserved_short1;

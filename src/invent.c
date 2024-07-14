@@ -3236,6 +3236,10 @@ struct obj* otmp_only;
                     && (otmp->speflags & SPEFLAGS_FAVORITE))
                 || (!strcmp(word, "unmark as favorite") /* exclude if not a favorite */
                     && !(otmp->speflags & SPEFLAGS_FAVORITE))
+                || (!strcmp(word, "set as quick wand") /* exclude if already a quick wand */
+                    && otmp->o_id == context.quick_zap_wand_oid)
+                || (!strcmp(word, "unset as quick wand") /* exclude if not the quick wand */
+                    && otmp->o_id != context.quick_zap_wand_oid)
                 || (putting_on(word) /* exclude if already worn */
                     && (otmp->owornmask & (W_ARMOR | W_ACCESSORY | W_MISCITEMS)))
                 || (trading_items(word) /* exclude if already worn and unpaid items */

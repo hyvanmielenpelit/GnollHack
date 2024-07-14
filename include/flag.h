@@ -697,6 +697,7 @@ enum nh_keyfunc {
     NHKF_CLICKFIRE,
     NHKF_CLICKLOOK,
     NHKF_CLICKCAST,
+    NHKF_CLICKZAP,
 
     NHKF_REDRAW,
     NHKF_REDRAW2,

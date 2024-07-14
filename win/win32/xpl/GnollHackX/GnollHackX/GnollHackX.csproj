@@ -297,6 +297,7 @@
     <None Remove="Assets\UI\yestoall.png" />
     <None Remove="Assets\UI\you.png" />
     <None Remove="Assets\UI\zap.png" />
+    <None Remove="Assets\UI\zapquick.png" />
     <None Remove="Assets\UI\zoom.png" />
     <None Remove="Assets\uwch.ttf" />
   </ItemGroup>
@@ -549,6 +550,7 @@
     <EmbeddedResource Include="Assets\UI\yestoall.png" />
     <EmbeddedResource Include="Assets\UI\you.png" />
     <EmbeddedResource Include="Assets\UI\zap.png" />
+    <EmbeddedResource Include="Assets\UI\zapquick.png" />
     <EmbeddedResource Include="Assets\UI\zoom.png" />
     <EmbeddedResource Include="Assets\uwch.ttf" />
   </ItemGroup>

@@ -247,6 +247,7 @@
 		<None Remove="Assets\UI\symbol-damage.png" />
 		<None Remove="Assets\UI\wiki.png" />
 		<None Remove="Assets\UI\worn.png" />
+		<None Remove="Assets\UI\zapquick.png" />
 		<None Remove="Assets\UI\zoom.png" />
 		<None Remove="Platforms\Android\Environment.txt" />
 		<None Remove="Resources\AppIcon\appicon.svg" />
@@ -970,6 +971,7 @@
 	  <EmbeddedResource Include="Assets\UI\yestoall.png" />
 	  <EmbeddedResource Include="Assets\UI\you.png" />
 	  <EmbeddedResource Include="Assets\UI\zap.png" />
+	  <EmbeddedResource Include="Assets\UI\zapquick.png" />
 	  <EmbeddedResource Include="Assets\UI\zoom.png" />
 	  <EmbeddedResource Include="Assets\uwch.ttf" />
 	</ItemGroup>

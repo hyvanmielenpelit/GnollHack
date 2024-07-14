@@ -37,6 +37,7 @@ STATIC_DCL int FDECL(m_spell_hit_dex_bonus, (struct monst*, int));
 STATIC_DCL int FDECL(m_wand_hit_skill_bonus, (struct monst*, int));
 STATIC_DCL void FDECL(wishcmdassist, (int));
 STATIC_DCL int FDECL(get_summon_monster_type, (int));
+STATIC_DCL int FDECL(dozapcore, (struct obj*));
 
 #define ZT_MAGIC_MISSILE (AD_MAGM - 1)
 #define ZT_FIRE (AD_FIRE - 1)
@@ -6208,13 +6209,43 @@ STATIC_VAR NEARDATA const char zap_syms[] = { WAND_CLASS, 0 };
 int
 dozap()
 {
-    register struct obj *obj;
-    double damage;
-    boolean taketurn = TRUE;
-
+    struct obj *obj;
     if (check_capacity((char *) 0))
         return 0;
     obj = getobj(zap_syms, "zap", 0, "");
+    return dozapcore(obj);
+}
+
+int
+dozapquick()
+{
+    struct obj* obj;
+    if (check_capacity((char*)0))
+        return 0;
+
+    if (!context.quick_zap_wand_oid)
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Your quick zap wand is not set.");
+        return 0;
+    }
+    obj = o_on(context.quick_zap_wand_oid, invent);
+    if (!obj)
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Your quick zap wand is not in your inventory.");
+        return 0;
+    }
+    return dozapcore(obj);
+}
+
+STATIC_OVL int
+dozapcore(obj)
+struct obj* obj;
+{
+    double damage;
+    boolean taketurn = TRUE;
+
     if (!obj)
         return 0;
 
@@ -6244,7 +6275,7 @@ dozap()
         pline_ex1(ATR_NONE, CLR_MSG_FAIL, nothing_happens);
 
         //Mark empty query
-        if((obj->speflags & SPEFLAGS_EMPTY_NOTICED) == 0 && obj->charges >= 0)
+        if ((obj->speflags & SPEFLAGS_EMPTY_NOTICED) == 0 && obj->charges >= 0)
         {
             obj->speflags |= SPEFLAGS_EMPTY_NOTICED;
             boolean canstash = can_stash_objs();
@@ -6265,10 +6296,10 @@ dozap()
                 Sprintf(markbuf, "Mark %s empty and then ", the(cxname(obj)));
 
             Sprintf(querybuf, "%s%sDrop it?", markbuf, canstash ? "Stash or " : "");
-            char ans = yn_function_es(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, 
-                markempty ? "Mark Empty" : obj->oclass == WAND_CLASS ? "Wand Empty" : "Item Empty", 
-                querybuf, markempty ? (!canstash ? "dmq" : "sdmq") : (!canstash ? "dq" : "sdq"), 'q', 
-                markempty ? (!canstash ? "Drop\nMark Only\nQuit" : "Stash\nDrop\nMark Only\nQuit") : (!canstash ? "Drop\nQuit" : "Stash\nDrop\nQuit"), 
+            char ans = yn_function_es(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR,
+                markempty ? "Mark Empty" : obj->oclass == WAND_CLASS ? "Wand Empty" : "Item Empty",
+                querybuf, markempty ? (!canstash ? "dmq" : "sdmq") : (!canstash ? "dq" : "sdq"), 'q',
+                markempty ? (!canstash ? "Drop\nMark Only\nQuit" : "Stash\nDrop\nMark Only\nQuit") : (!canstash ? "Drop\nQuit" : "Stash\nDrop\nQuit"),
                 (const char*)0);
 
             if (ans != 'q' && markempty && !(has_uoname(obj) && strstri(UONAME(obj), "empty")))
@@ -6310,26 +6341,26 @@ dozap()
             }
         }
     }
-    else if (obj->cursed && !rn2(WAND_BACKFIRE_CHANCE)) 
+    else if (obj->cursed && !rn2(WAND_BACKFIRE_CHANCE))
     {
         backfire(obj); /* the wand blows up in your face! */
         exercise(A_STR, FALSE);
         return taketurn;
     }
-    else if (!(objects[obj->otyp].oc_dir == NODIR) && !getdir((char *) 0)) 
+    else if (!(objects[obj->otyp].oc_dir == NODIR) && !getdir((char*)0))
     {
         play_sfx_sound(SFX_WALL_GLOWS_THEN_FADES);
         if (!Blind)
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s glows and fades.", The(xname(obj)));
         /* make him pay for knowing !NODIR */
-    } 
+    }
     else if (!u.dx && !u.dy && !u.dz
-               && !(objects[obj->otyp].oc_dir == NODIR)) 
+        && !(objects[obj->otyp].oc_dir == NODIR))
     {
 
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_ZAP);
 
-        if ((damage = zapyourself(obj, TRUE)) != 0) 
+        if ((damage = zapyourself(obj, TRUE)) != 0)
         {
             char buf[BUFSZ];
 
@@ -6353,7 +6384,7 @@ dozap()
         obj = current_wand;
         current_wand = 0;
     }
-    if (obj && obj->charges < 0) 
+    if (obj && obj->charges < 0)
     {
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         pline("%s to dust.", Tobjnam(obj, "turn"));
@@ -6362,6 +6393,47 @@ dozap()
     update_inventory(); /* maybe used a charge */
     return taketurn;
 }
+
+int
+dosetquickwand()
+{
+    struct obj* obj;
+    obj = getobj(zap_syms, "set as quick wand", 0, "");
+    if (!obj)
+    {
+        pline1(Never_mind);
+        return 0;
+    }
+    if (obj == &zeroobj)
+    {
+        context.quick_zap_wand_oid = 0;
+        pline_ex(ATR_NONE, CLR_MSG_HINT, "Your quick zap wand selection has been cleared.");
+        return 0;
+    }
+    if (obj->oclass != WAND_CLASS)
+    {
+        pline_ex(ATR_NONE, CLR_MSG_HINT, "You cannot set that as a quick wand; it is not a wand!.");
+        return 0;
+    }
+
+    context.quick_zap_wand_oid = obj->o_id;
+    pline_ex(ATR_NONE, CLR_MSG_HINT, "Your quick zap wand is now set to \'%s\'.", cxname(obj));
+    return 0;
+}
+
+int
+dounsetquickwand()
+{
+    struct obj* obj;
+    obj = getobj(zap_syms, "unset as quick wand", 0, "");
+    if (!obj)
+        return 0;
+
+    context.quick_zap_wand_oid = 0;
+    pline_ex(ATR_NONE, CLR_MSG_HINT, "Your quick zap wand selection has been cleared.");
+    return 0;
+}
+
 
 double
 zapyourself(obj, ordinary)

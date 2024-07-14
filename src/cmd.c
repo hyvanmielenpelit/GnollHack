@@ -53,7 +53,8 @@ extern const char *enc_stat[]; /* encumbrance status from botl.c */
 #define CMD_TRAVEL_WALK (char) 0xFB //(Meta-0x7B)
 #define CMD_CLICKFIRE (char) 0xE0 //(Meta-0x60)
 #define CMD_CLICKCAST (char) 0xDE //(Meta-0x5E)
-/* Meta-DB-DD available */
+#define CMD_CLICKZAP (char) 0xDD //(Meta-0x5D)
+ /* Meta-DB-DC available */
 
 #ifdef DEBUG
 extern int NDECL(wiz_debug_cmd_bury);
@@ -6316,6 +6317,7 @@ struct ext_func_tab extcmdlist[] = {
     { C('y'), "yell", "yell for your companions",
             doyell, IFBURIED | AUTOCOMPLETE | INCMDMENU },
     { 'z', "zap", "zap a wand", dozap, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_zap_syms, "zap" },
+    { M(27), "zapquick", "zap the quick wand", dozapquick, 0, 0, getobj_zap_syms, "zap" },
     { M(8), "favorite", "mark an item as favorite", dofavorite, SINGLE_OBJ_CMD_GENERAL | ALLOW_RETURN_TO_INVENTORY, 0, getobj_favorites, "mark as favorite", "mark as favorite"  },
     { M(9), "unfavorite", "unmark an item as favorite", dounfavorite, SINGLE_OBJ_CMD_GENERAL | ALLOW_RETURN_TO_INVENTORY, 0, getobj_favorites, "unmark as favorite", "unmark as favorite" },
     { 'Z', "cast", "cast a spell", docast, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
@@ -6325,7 +6327,9 @@ struct ext_func_tab extcmdlist[] = {
     { M('z'), "viewspell", "view spells", dospellview, IFBURIED | AUTOCOMPLETE | INSPELLMENU },
     { '\0', "managespell", "manage spells",
             dospellmanage, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
-    { M(4), "setquick", "set quick spell", dosetquickspell, IFBURIED | AUTOCOMPLETE | INSPELLMENU },
+    { M(4), "setquickspell", "set quick spell", dosetquickspell, IFBURIED | AUTOCOMPLETE | INSPELLMENU },
+    { '\0', "setquickwand", "set quick wand", dosetquickwand, IFBURIED | SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_zap_syms, "set as quick wand", "set as quick wand" },
+    { '\0', "unsetquickwand", "unset quick wand", dounsetquickwand, IFBURIED | SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_zap_syms, "unset as quick wand", "unset as quick wand" },
     { '\0', "sortspells", "sort known spells",
             dosortspell, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
     { '\0', "reorderspells", "reorder known spells",
@@ -7206,6 +7210,7 @@ struct {
     { NHKF_CLICKFIRE,        CMD_CLICKFIRE, (char*)0 }, /* no binding */
     { NHKF_CLICKLOOK,        CMD_CLICKLOOK, (char *) 0 }, /* no binding */
     { NHKF_CLICKCAST,        CMD_CLICKCAST, (char*)0 }, /* no binding */
+    { NHKF_CLICKZAP,         CMD_CLICKZAP, (char*)0 }, /* no binding */
     { NHKF_REDRAW,           C('r'), "redraw" },
     { NHKF_REDRAW2,          C('l'), "redraw.numpad" },
     { NHKF_GETDIR_SELF,      '.', "getdir.self" },
@@ -7702,7 +7707,7 @@ register char *cmd;
     /* handle most movement commands */
     prefix_seen = FALSE;
     clear_run_and_travel();
-    spkey = ch2spkeys(*cmd, NHKF_RUN, NHKF_CLICKCAST);
+    spkey = ch2spkeys(*cmd, NHKF_RUN, NHKF_CLICKZAP);
 
     if (flags.prefer_fast_move)
     {
@@ -7809,6 +7814,13 @@ register char *cmd;
                 readchar_queue = ""; //Prevent movement if casting failed.
         }
         return;
+    case NHKF_CLICKZAP:
+    {
+        int zapres = dozapquick();
+        if (!zapres)
+            readchar_queue = ""; //Prevent movement if casting failed.
+    }
+    return;
     case NHKF_TRAVEL:
     case NHKF_TRAVEL_ATTACK:
     case NHKF_TRAVEL_WALK:
@@ -8842,6 +8854,111 @@ int x, y, mod;
         }
     }
 
+    /* Zap Wand */
+    if (mod == CLICK_ZAP)
+    {
+        struct obj* obj;
+        if (!context.quick_zap_wand_oid || !(obj = o_on(context.quick_zap_wand_oid, invent)))
+        {
+            /* Quick zap handles error messaging */
+            cmd[0] = Cmd.spkeys[NHKF_CLICKZAP];
+            cmd[1] = '\0';
+            return cmd;
+        }
+
+        int targeting_type = objects[obj->otyp].oc_dir;
+        boolean is_directional = targeting_type > NODIR && targeting_type != TARGETED;
+        if (!is_directional)
+        {
+            cmd[0] = Cmd.spkeys[NHKF_CLICKZAP];
+            cmd[1] = '\0';
+            return cmd;
+        }
+        else if (abs(x) <= 1 && abs(y) <= 1)
+        {
+            x = sgn(x), y = sgn(y);
+            cmd[0] = Cmd.spkeys[NHKF_CLICKZAP];
+            if (!x && !y)
+            {
+                cmd[1] = Cmd.spkeys[NHKF_GETDIR_SELF];
+            }
+            else
+            {
+                dir = xytod(x, y);
+                cmd[1] = dir >= 0 ? Cmd.dirchars[dir] : '\0';
+            }
+            cmd[2] = '\0';
+            return cmd;
+        }
+        else
+        {
+            cmd[0] = cmd[1] = '\0';
+            if (is_mtmp_spotted)
+            {
+                if (!x || !y || abs(x) == abs(y)) /* straight line or diagonal */
+                {
+                    boolean path_is_clear = clear_path(u.ux, u.uy, target_x, target_y);
+                    struct monst* mtmpinway = spotted_linedup_monster_in_way(u.ux, u.uy, target_x, target_y);
+                    if (path_is_clear && !mtmpinway)
+                    {
+                        cmd[0] = Cmd.spkeys[NHKF_CLICKZAP];
+                        x = sgn(x), y = sgn(y);
+                        dir = xytod(x, y);
+                        cmd[1] = dir >= 0 ? Cmd.dirchars[dir] : '\0';
+                        cmd[2] = '\0';
+                    }
+                    else if (!path_is_clear)
+                    {
+                        play_sfx_sound(SFX_GENERAL_CANNOT);
+                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot zap %s at %s; the path to it is not clear.", yname(obj), mon_nam(mtmp));
+                        cmd[0] = '\0';
+                    }
+                    else if (mtmpinway)
+                    {
+                        play_sfx_sound(SFX_GENERAL_CANNOT);
+                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot zap %s at %s; %s is in the way.", yname(obj), mon_nam(mtmp), mon_nam(mtmpinway));
+                        cmd[0] = '\0';
+                    }
+                    else
+                    {
+                        play_sfx_sound(SFX_GENERAL_CANNOT);
+                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot zap %s at %s; there is something in the way.", yname(obj), mon_nam(mtmp));
+                        cmd[0] = '\0';
+                    }
+                }
+                else
+                {
+                    play_sfx_sound(SFX_GENERAL_CANNOT);
+                    pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot zap %s at %s; it is not lined up.", yname(obj), mon_nam(mtmp));
+                    cmd[0] = '\0';
+                }
+            }
+            else
+            {
+                /* Normal zap */
+                if (abs(y) <= (max(0, abs(x) - 1) / 2))
+                    y = 0;
+
+                if (abs(x) <= (max(0, abs(y) - 1) / 2))
+                    x = 0;
+
+                x = sgn(x), y = sgn(y);
+                cmd[0] = Cmd.spkeys[NHKF_CLICKZAP];
+                if (!x && !y)
+                {
+                    cmd[1] = Cmd.spkeys[NHKF_GETDIR_SELF];
+                }
+                else
+                {
+                    dir = xytod(x, y);
+                    cmd[1] = dir >= 0 ? Cmd.dirchars[dir] : '\0';
+                }
+                cmd[2] = '\0';
+            }
+            return cmd;
+        }
+    }
+
     boolean has_launcher = (uwep && is_launcher(uwep));
     boolean has_swapped_launcher_and_ammo = (uswapwep && is_launcher(uswapwep) && ammo_and_launcher(uquiver, uswapwep));
     boolean has_throwing_weapon_quivered = (uquiver && throwing_weapon(uquiver));
@@ -8927,7 +9044,7 @@ int x, y, mod;
     }
 
     /* Travel, move, or attack */
-    if (flags.travelcmd || mod == CLICK_MOVE)
+    if (flags.travelcmd)
     {
         if (abs(x) <= 1 && abs(y) <= 1)
         {

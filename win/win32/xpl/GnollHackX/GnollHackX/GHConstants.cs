@@ -1743,7 +1743,7 @@ namespace GnollHackX
         public const bool DefaultHTMLDumpLogs = true;
         public const bool DefaultUseSingleDumpLog = true;
         public const int DefaultRightMouseCommand = (int)NhGetPosMods.ClickCast;
-        public const int DefaultMiddleMouseCommand = (int)NhGetPosMods.None;
+        public const int DefaultMiddleMouseCommand = (int)NhGetPosMods.ClickZap;
         public const int RightMouseBitIndex = 22;
         public const int MiddleMouseBitIndex = 27;
         public const string InstallTimePackName = "installtimepack";
