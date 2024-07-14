@@ -8,6 +8,7 @@
 #include <math.h>
 
 /* spellmenu arguments; 0 thru n-1 used as spl_book[] index when swapping */
+#define SPELLMENU_QUICK (-5)
 #define SPELLMENU_DETAILS (-4)
 #define SPELLMENU_PREPARE (-3)
 #define SPELLMENU_CAST (-2)
@@ -1167,7 +1168,7 @@ int spell_list_type;
         }
     }
 
-    int splaction = (spell_list_type >= 2 ? SPELLMENU_DETAILS : spell_list_type == 1 ? SPELLMENU_PREPARE : SPELLMENU_CAST);
+    int splaction = (spell_list_type == 6 ? SPELLMENU_QUICK : spell_list_type >= 2 ? SPELLMENU_DETAILS : spell_list_type == 1 ? SPELLMENU_PREPARE : SPELLMENU_CAST);
     return dospellmenu(titlebuf, splaction, spell_no);
 }
 
@@ -1204,10 +1205,10 @@ int* spell_no;
     do
     {
         tmpwin = create_nhwindow(NHW_MENU);
-        start_menu_ex(tmpwin, splaction == SPELLMENU_DETAILS ? GHMENU_STYLE_VIEW_SPELL_ALTERNATE :  GHMENU_STYLE_SPELLS_ALTERNATE);
+        start_menu_ex(tmpwin, splaction <= SPELLMENU_DETAILS ? GHMENU_STYLE_VIEW_SPELL_ALTERNATE :  GHMENU_STYLE_SPELLS_ALTERNATE);
         any = zeroany; /* zero out all bits */
 
-        if (splaction == SPELLMENU_DETAILS || splaction == SPELLMENU_REORDER || splaction == SPELLMENU_SORT || splaction >= 0)
+        if (splaction <= SPELLMENU_DETAILS || splaction == SPELLMENU_REORDER || splaction == SPELLMENU_SORT || splaction >= 0)
         {
             for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
             {
@@ -1231,6 +1232,7 @@ int* spell_no;
                     Strcpy(descbuf, nodesc);
 
                 boolean inactive = FALSE;
+                boolean selected = splaction == SPELLMENU_QUICK ? (context.quick_cast_spell_set && splnum == context.quick_cast_spell_no) : (splnum == splaction);
                 struct extended_menu_info info = zeroextendedmenuinfo;
                 int mcolor = NO_COLOR;
                 info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
@@ -1252,7 +1254,16 @@ int* spell_no;
 
                 any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
                 add_extended_menu(tmpwin, glyph, &any, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, mcolor, buf,
-                    (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED, info);
+                    selected ? MENU_SELECTED : MENU_UNSELECTED, info);
+            }
+            if (splaction == SPELLMENU_QUICK)
+            {
+                any.a_int = 0;
+                add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
+                    "", MENU_UNSELECTED);
+                any.a_int = -6;
+                add_menu(tmpwin, NO_GLYPH, &any, '!', 0, ATR_NONE, NO_COLOR,
+                    "Clear Quick Spell", MENU_UNSELECTED);
             }
         }
         else if (splaction == SPELLMENU_PREPARE)
@@ -1367,7 +1378,10 @@ int* spell_no;
                     break;
                 case -5:
                     action_result = dosetquickspell();
-                    break;
+                    return 0;
+                case -6:
+                    context.quick_cast_spell_set = FALSE;
+                    return 0;
                 default:
                     return 0;
                 }
@@ -3872,7 +3886,7 @@ int *spell_no;
     //}
 
     tmpwin = create_nhwindow(NHW_MENU);
-    start_menu_ex(tmpwin, splaction == SPELLMENU_DETAILS ? GHMENU_STYLE_VIEW_SPELL : GHMENU_STYLE_SPELLS);
+    start_menu_ex(tmpwin, splaction <= SPELLMENU_DETAILS ? GHMENU_STYLE_VIEW_SPELL : GHMENU_STYLE_SPELLS);
     any = zeroany; /* zero out all bits */
 
     int hotkeys[11] = { 0 };
@@ -3894,7 +3908,7 @@ int *spell_no;
      * (2) that selection letters are pre-pended to the
      * given string and are of the form "a - ".
      */
-    if (splaction == SPELLMENU_DETAILS || splaction == SPELLMENU_REORDER || splaction == SPELLMENU_SORT || splaction >= 0)
+    if (splaction <= SPELLMENU_DETAILS || splaction == SPELLMENU_REORDER || splaction == SPELLMENU_SORT || splaction >= 0)
     {
         int maxlen = 15;
         int maxnamelen = 0;
