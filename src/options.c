@@ -47,7 +47,7 @@ enum window_option_types {
 #define PILE_LIMIT_DFLT 5
 #define HERE_WIN_SIZ_DFLT 8
 #define DEFAULT_PILE_LIMIT (iflags.wc2_herewindow ? iflags.wc2_here_window_size + 1 : PILE_LIMIT_DFLT)
-const char* mouse_cmd_names[8] = { "not specified", "primary", "secondary", "tertiary", "look", "move", "cast", "fire" };
+const char* mouse_cmd_names[MAX_CLICK_TYPES] = { "not specified", "primary", "secondary", "tertiary", "look", "move", "cast", "fire", "zap" };
 
 /*
  *  NOTE:  If you add (or delete) an option, please update the short
@@ -7411,7 +7411,8 @@ char *buf;
     else if (!strcmp(optname, "right_click_command") || !strcmp(optname, "middle_click_command"))
     {
         boolean is_middle = !strcmp(optname, "middle_click_command");
-        Sprintf(buf, "%s", mouse_cmd_names[is_middle ? flags.middle_click_command : flags.right_click_command]);
+        uchar cmdidx = is_middle ? flags.middle_click_command : flags.right_click_command;
+        Sprintf(buf, "%s", cmdidx >= MAX_CLICK_TYPES ? "invalid" : mouse_cmd_names[cmdidx]);
     }
     else if (!strcmp(optname, "run_spot_distance"))
     {
