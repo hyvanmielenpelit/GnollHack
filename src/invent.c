@@ -2039,6 +2039,12 @@ struct obj *obj;
         }
     }
 
+    if (obj->o_id == context.quick_zap_wand_oid)
+    {
+        //context.quick_zap_wand_oid = 0;
+        issue_gui_command(GUI_CMD_TOGGLE_QUICK_ZAP_WAND, NO_GLYPH, 0, "");
+    }
+
     if (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED) {
         curse(obj);
     }

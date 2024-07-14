@@ -6407,6 +6407,7 @@ dosetquickwand()
     if (obj == &zeroobj)
     {
         context.quick_zap_wand_oid = 0;
+        issue_gui_command(GUI_CMD_TOGGLE_QUICK_ZAP_WAND, NO_GLYPH, 0, "");
         pline_ex(ATR_NONE, CLR_MSG_HINT, "Your quick zap wand selection has been cleared.");
         return 0;
     }
@@ -6417,6 +6418,7 @@ dosetquickwand()
     }
 
     context.quick_zap_wand_oid = obj->o_id;
+    issue_gui_command(GUI_CMD_TOGGLE_QUICK_ZAP_WAND, (int)obj_to_glyph(obj, rn2_on_display_rng), Hallucination ? 0 : (int)obj->exceptionality, cxname(obj));
     pline_ex(ATR_NONE, CLR_MSG_HINT, "Your quick zap wand is now set to \'%s\'.", cxname(obj));
     return 0;
 }
@@ -6430,6 +6432,7 @@ dounsetquickwand()
         return 0;
 
     context.quick_zap_wand_oid = 0;
+    issue_gui_command(GUI_CMD_TOGGLE_QUICK_ZAP_WAND, 0, NO_GLYPH, "");
     pline_ex(ATR_NONE, CLR_MSG_HINT, "Your quick zap wand selection has been cleared.");
     return 0;
 }

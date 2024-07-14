@@ -34,6 +34,7 @@ struct spell {
 #define decrnknow(spell) spl_book[spell].sp_know--
 #define spellid(spell) spl_book[spell].sp_id
 #define spellknow(spell) spl_book[spell].sp_know
+#define spell_to_glyph(spell) (spellid(spell) - FIRST_SPELL + GLYPH_SPELL_TILE_OFF)
 
 extern const char* spl_sortchoices[NUM_SPELL_SORTBY];
 extern short spl_orderindx[MAXSPELL];

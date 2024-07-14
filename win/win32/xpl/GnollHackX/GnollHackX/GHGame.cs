@@ -2457,6 +2457,12 @@ namespace GnollHackX
                     else
                         GHApp.RightMouseCommand = cmd_param;
                     break;
+                case (int)gui_command_types.GUI_CMD_TOGGLE_QUICK_ZAP_WAND:
+                    _gamePage.SetQuickZapWand(cmd_param, cmd_param2, cmd_str);
+                    break;
+                case (int)gui_command_types.GUI_CMD_TOGGLE_QUICK_CAST_SPELL:
+                    _gamePage.SetQuickCastSpell(cmd_param, cmd_param2, cmd_str);
+                    break;
                 default:
                     break;
             }

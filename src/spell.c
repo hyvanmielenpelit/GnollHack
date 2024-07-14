@@ -26,7 +26,6 @@
 #define spellname(spell) OBJ_NAME(objects[spellid(spell)])
 #define spellet(spell) \
     ((char) ((spell < 26) ? ('a' + spell) : ('A' + spell - 26)))  /* Obsolete! Do not use! */
-#define spell_to_glyph(spell) (spellid(spell) - FIRST_SPELL + GLYPH_SPELL_TILE_OFF)
 
 STATIC_DCL void FDECL(print_spell_level_symbol, (char*, int));
 STATIC_DCL int FDECL(spell_let_to_idx, (CHAR_P));
@@ -1381,6 +1380,7 @@ int* spell_no;
                     return 0;
                 case -6:
                     context.quick_cast_spell_set = FALSE;
+                    issue_gui_command(GUI_CMD_TOGGLE_QUICK_CAST_SPELL, NO_GLYPH, 0, "");
                     return 0;
                 default:
                     return 0;
@@ -1499,13 +1499,15 @@ dosetquickspell()
         if (spell_no < 0)
         {
             context.quick_cast_spell_set = FALSE;
+            issue_gui_command(GUI_CMD_TOGGLE_QUICK_CAST_SPELL, NO_GLYPH, 0, "");
             pline_ex(ATR_NONE, CLR_MSG_HINT, "Your quick spell selection has been cleared.");
         }
         else
         {
             context.quick_cast_spell_set = TRUE;
             context.quick_cast_spell_no = spell_no;
-            const char* spellnam = spl_book[spell_no].sp_id > STRANGE_OBJECT ? OBJ_NAME(objects[spl_book[context.quick_cast_spell_no].sp_id]) : "";
+            const char* spellnam = spl_book[context.quick_cast_spell_no].sp_id > STRANGE_OBJECT ? OBJ_NAME(objects[spl_book[context.quick_cast_spell_no].sp_id]) : "";
+            issue_gui_command(GUI_CMD_TOGGLE_QUICK_CAST_SPELL, spell_to_glyph(spell_no), spellid(spell_no), spellnam);
             int multicolors[2] = { CLR_MSG_SPELL, 0 };
             pline_multi_ex(ATR_NONE, CLR_MSG_HINT, no_multiattrs, multicolors, "Your quick spell has been set to \'%s\'.", spellnam);
         }
@@ -4865,7 +4867,10 @@ int spell;
             }
         }
         if (context.quick_cast_spell_no == spell)
+        {
             context.quick_cast_spell_set = FALSE;
+            issue_gui_command(GUI_CMD_TOGGLE_QUICK_CAST_SPELL, NO_GLYPH, 0, "");
+        }
         else if (context.quick_cast_spell_no > spell)
             context.quick_cast_spell_no--;
         sortspells();

@@ -30,6 +30,8 @@ using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
 using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
 using Microsoft.Maui.Controls;
+using System.Security.AccessControl;
+
 
 
 #if WINDOWS
@@ -8931,6 +8933,75 @@ namespace GnollHackX.Pages.Game
                                 }
                                 curx += stdspacing;
                             }
+
+                            /* Quick spell and wand */
+                            int qWandGlyph, qWandExceptinality, qSpellGlyph, qSpellOtyp;
+                            string qWandName, qSpellName;
+                            lock(_quickLock)
+                            {
+                                qWandExceptinality = _quickWandExceptionality;
+                                qWandGlyph = _quickWandGlyph;
+                                qWandName = _quickWandName;
+                                qSpellOtyp = _quickSpellOtyp;
+                                qSpellGlyph = _quickSpellGlyph;
+                                qSpellName = _quickSpellName;
+                            }
+                            if (qWandGlyph != GHApp.NoGlyph)
+                            {
+                                target_width = target_scale * GHApp._statusQuickWandBitmap.Width;
+                                target_height = target_scale * GHApp._statusQuickWandBitmap.Height;
+                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                canvas.DrawImage(GHApp._statusQuickWandBitmap, statusDest);
+                                curx += target_width;
+                                curx += innerspacing;
+
+                                using (new SKAutoCanvasRestore(canvas, true))
+                                {
+                                    GlyphImageSource gis = _paintGlyphImageSource;
+                                    gis.ReferenceGamePage = this;
+                                    gis.UseUpperSide = false;
+                                    gis.AutoSize = true;
+                                    gis.Glyph = Math.Abs(_quickWandGlyph);
+                                    gis.ObjData = new ObjectDataItem(new Obj() { exceptionality = (byte)qWandExceptinality }, new ObjClassData(), false);
+                                    gis.DoAutoSize();
+                                    float wep_scale = gis.Height == 0 ? 1.0f : target_height / gis.Height;
+                                    float weppicturewidth = wep_scale * gis.Width;
+                                    float weppictureheight = wep_scale * gis.Height;
+                                    canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
+                                    canvas.Scale(wep_scale);
+                                    gis.DrawOnCanvas(canvas, usingGL);
+                                    curx += weppicturewidth;
+                                }
+                                curx += stdspacing;
+                            }
+                            if (qSpellGlyph != GHApp.NoGlyph)
+                            {
+                                target_width = target_scale * GHApp._statusQuickSpellBitmap.Width;
+                                target_height = target_scale * GHApp._statusQuickSpellBitmap.Height;
+                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                canvas.DrawImage(GHApp._statusQuickSpellBitmap, statusDest);
+                                curx += target_width;
+                                curx += innerspacing;
+                                using (new SKAutoCanvasRestore(canvas, true))
+                                {
+                                    GlyphImageSource gis = _paintGlyphImageSource;
+                                    gis.ReferenceGamePage = this;
+                                    gis.UseUpperSide = true;
+                                    gis.AutoSize = true;
+                                    gis.ObjData = null;
+                                    gis.Glyph = Math.Abs(_quickSpellGlyph);
+                                    gis.DoAutoSize();
+                                    float wep_scale = gis.Height == 0 ? 1.0f : target_height / gis.Height;
+                                    float weppicturewidth = wep_scale * gis.Width;
+                                    float weppictureheight = wep_scale * gis.Height;
+                                    canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
+                                    canvas.Scale(wep_scale);
+                                    gis.DrawOnCanvas(canvas, usingGL);
+                                    curx += weppicturewidth;
+                                }
+                                curx += stdspacing;
+                            }
+
 
                             /* Right aligned */
                             bool turnsprinted = false;
@@ -18187,6 +18258,34 @@ namespace GnollHackX.Pages.Game
                 MorePreviousButton.IsVisible = false;
             if(resetNextButton || !MoreNextGrid.IsVisible)
                 MoreNextButton.IsVisible = false;
+        }
+
+        private readonly object _quickLock = new object();
+        private int _quickWandGlyph = 0;
+        private int _quickWandExceptionality = 0;
+        private string _quickWandName = "";
+        private int _quickSpellGlyph = 0;
+        private int _quickSpellOtyp = 0;
+        private string _quickSpellName = "";
+
+        public void SetQuickZapWand(int glyph, int exceptionality, string name)
+        {
+            lock(_quickLock)
+            {
+                _quickWandGlyph = glyph;
+                _quickWandExceptionality = exceptionality;
+                _quickWandName = name;
+            }
+        }
+
+        public void SetQuickCastSpell(int glyph, int otyp, string name)
+        {
+            lock (_quickLock)
+            {
+                _quickSpellGlyph = glyph;
+                _quickSpellOtyp = otyp;
+                _quickSpellName = name;
+            }
         }
 
 #if WINDOWS

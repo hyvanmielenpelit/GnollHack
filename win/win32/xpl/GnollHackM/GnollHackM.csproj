@@ -234,6 +234,8 @@
 		<None Remove="Assets\UI\status-align-lawful.png" />
 		<None Remove="Assets\UI\status-align-neutral.png" />
 		<None Remove="Assets\UI\status-align-unknown.png" />
+		<None Remove="Assets\UI\status-quick-spell.png" />
+		<None Remove="Assets\UI\status-quick-wand.png" />
 		<None Remove="Assets\UI\status-quivered-weapon-style.png" />
 		<None Remove="Assets\UI\status-score.png" />
 		<None Remove="Assets\UI\status-separator.png" />
@@ -897,6 +899,8 @@
 	  <EmbeddedResource Include="Assets\UI\status-mc.png" />
 	  <EmbeddedResource Include="Assets\UI\status-modern-mode.png" />
 	  <EmbeddedResource Include="Assets\UI\status-move.png" />
+	  <EmbeddedResource Include="Assets\UI\status-quick-spell.png" />
+	  <EmbeddedResource Include="Assets\UI\status-quick-wand.png" />
 	  <EmbeddedResource Include="Assets\UI\status-quivered-weapon-style.png" />
 	  <EmbeddedResource Include="Assets\UI\status-score.png" />
 	  <EmbeddedResource Include="Assets\UI\status-separator.png" />

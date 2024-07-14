@@ -1817,6 +1817,8 @@ namespace GnollHackX
 
         public static SKImage _statusDungeonLevelBitmap;
         public static SKImage _statusSeparatorBitmap;
+        public static SKImage _statusQuickWandBitmap;
+        public static SKImage _statusQuickSpellBitmap;
 
         public static SKImage _searchBitmap;
         public static SKImage _waitBitmap;
@@ -2626,6 +2628,18 @@ namespace GnollHackX
                 SKBitmap bmp = SKBitmap.Decode(stream);
                 bmp.SetImmutable();
                 _statusDungeonLevelBitmap = SKImage.FromBitmap(bmp);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-quick-wand.png"))
+            {
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusQuickWandBitmap = SKImage.FromBitmap(bmp);
+            }
+            using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-quick-spell.png"))
+            {
+                SKBitmap bmp = SKBitmap.Decode(stream);
+                bmp.SetImmutable();
+                _statusQuickSpellBitmap = SKImage.FromBitmap(bmp);
             }
 
             using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets.UI.status-separator.png"))

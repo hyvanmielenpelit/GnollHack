@@ -149,6 +149,20 @@ notify_gui_pregame(VOID_ARGS)
     issue_boolean_gui_command(GUI_CMD_TOGGLE_CHARACTER_CLICK_ACTION, flags.self_click_action); /* Notification is needed */
     issue_gui_command(GUI_CMD_REPORT_MOUSE_COMMAND, (int)flags.right_click_command, 0, (const char*)0); /* Notification is needed */
     issue_gui_command(GUI_CMD_REPORT_MOUSE_COMMAND, (int)flags.middle_click_command, 1, (const char*)0); /* Notification is needed */
+    
+    if (context.quick_cast_spell_set)
+    {
+        const char* spellnam = spl_book[context.quick_cast_spell_no].sp_id > STRANGE_OBJECT ? OBJ_NAME(objects[spl_book[context.quick_cast_spell_no].sp_id]) : "";
+        issue_gui_command(GUI_CMD_TOGGLE_QUICK_CAST_SPELL, spell_to_glyph(context.quick_cast_spell_no), spellid(context.quick_cast_spell_no), spellnam); /* Notification is needed */
+    }
+    else
+        issue_gui_command(GUI_CMD_TOGGLE_QUICK_CAST_SPELL, NO_GLYPH, 0, "");
+
+    struct obj* obj;
+    if (context.quick_zap_wand_oid > 0 && (obj = o_on(context.quick_zap_wand_oid, invent)) != 0)
+        issue_gui_command(GUI_CMD_TOGGLE_QUICK_ZAP_WAND, (int)obj_to_glyph(obj, rn2_on_display_rng), Hallucination ? 0 : (int)obj->exceptionality, cxname(obj)); /* Notification is needed */
+    else
+        issue_gui_command(GUI_CMD_TOGGLE_QUICK_ZAP_WAND, NO_GLYPH, 0, "");
 }
 
 boolean 
