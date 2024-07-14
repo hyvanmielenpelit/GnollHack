@@ -860,7 +860,7 @@ update_extrinsics()
             }
 
             /* Material */
-            if (uitem->material != objects[uitem->otyp].oc_material)
+            if (uitem->material != objects[uitem->otyp].oc_material && bit != W_CARRIED)
             {
                 if (is_armor(uitem))
                 {
@@ -908,8 +908,6 @@ update_extrinsics()
                 u.uprops[artilist[uitem->oartifact].inv_prop].extrinsic |= W_ARTIFACT_INVOKED;
             }
         }
-
-
     }
 
     /* Check environment */
