@@ -6638,6 +6638,11 @@ boolean setinitial, setfromfile;
             else
                 flags.right_click_command = (uchar)res;
             free((genericptr_t) mode_pick);
+            /* Notification is needed */
+            if (is_middle)
+                issue_gui_command(GUI_CMD_REPORT_MOUSE_COMMAND, (int)flags.middle_click_command, 1, (const char*)0);
+            else
+                issue_gui_command(GUI_CMD_REPORT_MOUSE_COMMAND, (int)flags.right_click_command, 0, (const char*)0);
         }
         destroy_nhwindow(tmpwin);
     } else if (!strcmp("menu_headings", optname)) {

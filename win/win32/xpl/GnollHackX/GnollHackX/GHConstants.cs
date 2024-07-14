@@ -1378,6 +1378,7 @@ namespace GnollHackX
         GUI_CMD_TOGGLE_CHARACTER_CLICK_ACTION,
         GUI_CMD_SET_TO_BLACK,
         GUI_CMD_FADE_FROM_BLACK_SLOWLY_NONBLOCKING,
+        GUI_CMD_REPORT_MOUSE_COMMAND,
     }
 
     public enum game_status_types

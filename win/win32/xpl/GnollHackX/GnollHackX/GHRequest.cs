@@ -77,6 +77,9 @@ namespace GnollHackX
         SetToBlack,
         SetRightMouseCommand,
         SetMiddleMouseCommand,
+        GetCharacterClickAction,
+        GetRightMouseCommand,
+        GetMiddleMouseCommand,
     }
 
     public struct AddContextMenuData

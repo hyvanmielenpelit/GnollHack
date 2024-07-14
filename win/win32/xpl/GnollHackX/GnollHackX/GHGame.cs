@@ -2451,6 +2451,12 @@ namespace GnollHackX
                     //_savedSendMonsterDataCalls.Clear();
                     //_savedSendEngravingDataCalls.Clear();
                     break;
+                case (int)gui_command_types.GUI_CMD_REPORT_MOUSE_COMMAND:
+                    if (cmd_param2 != 0)
+                        GHApp.MiddleMouseCommand = cmd_param;
+                    else
+                        GHApp.RightMouseCommand = cmd_param;
+                    break;
                 default:
                     break;
             }
