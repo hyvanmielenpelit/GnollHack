@@ -8967,9 +8967,9 @@ int x, y, mod;
     /* Fire a bow */
     if (mod == CLICK_FIRE)
     {
-        if (is_mtmp_spotted)
+        if (has_launcher || (iflags.autoswap_launchers && has_swapped_launcher_and_ammo && !cursed_weapon_blocks_swap) || has_throwing_weapon_quivered)
         {
-            if (has_launcher || (iflags.autoswap_launchers && has_swapped_launcher_and_ammo && !cursed_weapon_blocks_swap) || has_throwing_weapon_quivered)
+            if (is_mtmp_spotted)
             {
                 if (!x || !y || abs(x) == abs(y)) /* straight line or diagonal */
                 {
@@ -9018,27 +9018,35 @@ int x, y, mod;
             }
             else
             {
-                play_sfx_sound(SFX_GENERAL_CANNOT);
-                if (iflags.autoswap_launchers && has_swapped_launcher_and_ammo) /* Cursed weapon blocks swap */
-                    pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot swap your weapons to %s; a cursed item blocks the swap.", "fire");
-                else
-                    pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s; you have no throwing weapons quivered.", "throw");
-                cmd[0] = '\0';
+                if (iflags.autoswap_launchers && !has_launcher && has_swapped_launcher_and_ammo && !cursed_weapon_blocks_swap)
+                {
+                    if (uswapwep && objects[uswapwep->otyp].oc_bimanual)
+                        (void)doswapweapon();
+                    else
+                        (void)doswapweapon_right_or_both();
+                }
+
+                if (abs(y) <= (max(0, abs(x) - 1) / 2))
+                    y = 0;
+
+                if (abs(x) <= (max(0, abs(y) - 1) / 2))
+                    x = 0;
+
+                cmd[0] = Cmd.spkeys[NHKF_CLICKFIRE];
+                x = sgn(x), y = sgn(y);
+                dir = xytod(x, y);
+                cmd[1] = dir >= 0 ? Cmd.dirchars[dir] : '\0';
+                cmd[2] = '\0';
             }
         }
         else
         {
-            if (abs(y) <= (max(0, abs(x) - 1) / 2))
-                y = 0;
-
-            if (abs(x) <= (max(0, abs(y) - 1) / 2))
-                x = 0;
-
-            cmd[0] = Cmd.spkeys[NHKF_CLICKFIRE];
-            x = sgn(x), y = sgn(y);
-            dir = xytod(x, y);
-            cmd[1] = dir >= 0 ? Cmd.dirchars[dir] : '\0';
-            cmd[2] = '\0';
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            if (iflags.autoswap_launchers && has_swapped_launcher_and_ammo) /* Cursed weapon blocks swap */
+                pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot swap your weapons to %s; a cursed item blocks the swap.", "fire");
+            else
+                pline_ex(ATR_NONE, CLR_MSG_FAIL, "You cannot %s; you have no throwing weapons quivered.", "throw");
+            cmd[0] = '\0';
         }
         return cmd;
     }
