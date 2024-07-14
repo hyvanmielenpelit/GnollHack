@@ -982,6 +982,11 @@ struct obj *obj;
         }
     }
 
+    if (obj->o_id == context.quick_zap_wand_oid)
+    {
+        issue_gui_command(GUI_CMD_TOGGLE_QUICK_ZAP_WAND, (int)obj_to_glyph(obj, rn2_on_display_rng), Hallucination ? 0 : (int)obj->exceptionality, cxname(obj));
+    }
+
     if (is_mines_prize(obj))
     {
         if (flags.showscore && !u.uachieve.mines_luckstone)
