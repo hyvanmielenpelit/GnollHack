@@ -18397,6 +18397,11 @@ namespace GnollHackX.Pages.Game
                 YnButton_Pressed(sender, new EventArgs(), GHConstants.CancelChar);
                 handled = true;
             }
+            else if (PopupGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space))
+            {
+                PopupOkButton_Clicked(sender, new EventArgs());
+                handled = true;
+            }
             else if (!MenuGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible)
             {
                 if (MoreCommandsGrid.IsVisible)
