@@ -1,10 +1,12 @@
-﻿using GnollHackM;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-
+#if GNH_MAUI
+namespace GnollHackM
+#else
 namespace GnollHackX
+#endif
 {
     public interface IFmodService
     {
