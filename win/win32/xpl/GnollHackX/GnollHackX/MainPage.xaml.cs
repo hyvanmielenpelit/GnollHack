@@ -955,7 +955,7 @@ namespace GnollHackX
             {
                 GHApp.FmodService.AdjustVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume);
                 if (GHApp.LoadBanks)
-                    GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+                    GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
 
                 /* Check silent mode; this also mutes everything if need be */
                 GHApp.SilentMode = Preferences.Get("SilentMode", false);
@@ -1020,7 +1020,7 @@ namespace GnollHackX
 
             try
             {
-                GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+                GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
                 _mainScreenMusicStarted = true;
             }
             catch(Exception ex)

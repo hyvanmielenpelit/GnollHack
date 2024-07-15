@@ -1688,6 +1688,8 @@ namespace GnollHackX
         public const int IntroBankId = 0;
         public const int MusicGHSound = 2;
         public const string MusicEventPath = "event:/Music/Start/Player Selection";
+        public const float IntroMusicVolume = 0.5f;
+        public const float BackgroundMusicVolume = 0.08f;
         public const int ButtonClickGHSound = 28;
         public const string ButtonClickEventPath = "event:/UI/Button Down";
         public const int ButtonClickBankId = 0;

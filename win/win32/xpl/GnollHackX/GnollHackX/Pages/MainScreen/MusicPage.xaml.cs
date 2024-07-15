@@ -95,7 +95,7 @@ namespace GnollHackX.Pages.MainScreen
                     float volume = GHApp.GnollHackService.GetVolumeForGHSound(ghsound);
                     if (!string.IsNullOrWhiteSpace(eventPath) && volume > 0)
                     {
-                        GHApp.FmodService.PlayMusic(ghsound, eventPath, 0, Math.Min(1.0f, volume * 2), 1.0f);
+                        GHApp.FmodService.PlayMusic(ghsound, eventPath, 0, Math.Min(1.0f, volume * GHConstants.IntroMusicVolume / GHConstants.BackgroundMusicVolume), 1.0f);
                     }
                 }
             }
@@ -108,7 +108,7 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.FmodService.StopAllSounds((uint)StopSoundFlags.All, 0);
             GHApp.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
-            GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+            GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
             GHApp.FmodService.UnloadBanks(3);
         }
 
@@ -137,7 +137,7 @@ namespace GnollHackX.Pages.MainScreen
                 _backPressed = true;
                 GHApp.FmodService.StopAllSounds((uint)StopSoundFlags.All, 0);
                 await App.Current.MainPage.Navigation.PopModalAsync();
-                GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+                GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
                 GHApp.FmodService.UnloadBanks(3);
             }
             return false;

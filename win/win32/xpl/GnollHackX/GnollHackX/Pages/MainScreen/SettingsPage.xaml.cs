@@ -675,7 +675,7 @@ namespace GnollHackX.Pages.MainScreen
                     GHApp.FmodService.LoadBanks(3);
                     if (_gamePage == null)
                     {
-                        GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);
+                        GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
                     }
                 }
                 catch
