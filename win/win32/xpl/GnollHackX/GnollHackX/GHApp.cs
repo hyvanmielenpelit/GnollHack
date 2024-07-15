@@ -175,7 +175,7 @@ namespace GnollHackX
             FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
             OkOnDoubleClick = Preferences.Get("OkOnDoubleClick", IsDesktop);
             DiscoveredMusicBits = Preferences.Get("DiscoveredMusicBits", 0L);
-            //AddPreDiscoveredMusic(); /* It probably is better to not to add anything at start; this shifts workload from AddDiscoveredMusic to SaveDiscoveredMusic */
+            AddPreDiscoveredMusic();
 
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if(FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
@@ -6703,12 +6703,18 @@ namespace GnollHackX
         private static bool _discoveredMusicFound = false;
         private static int _discoveredMusicSaveIndex = -1;
         public static long DiscoveredMusicBits { get { lock (_discoveredMusicLock) { return _discoveredMusicBits; } } set { lock (_discoveredMusicLock) { _discoveredMusicBits = value; } } }
-        public static bool DiscoveredMusicFound { get { lock (_discoveredMusicLock) { return _discoveredMusicFound; } } } 
+        public static bool DiscoveredMusicFound { get { lock (_discoveredMusicLock) { return _discoveredMusicFound; } } }
 
+        private static int _ghSoundCache = -1; /* PlayMusic generally calls with the same music every turn until the music changes, so it makes sense to check first if the ghsound is the same as previous one */
         public static void AddDiscoveredMusic(int ghsound)
         {
+            if (ghsound == _ghSoundCache)
+                return;
+            _ghSoundCache = ghsound;
+
             lock (_discoveredMusicLock)
             {
+
                 foreach (DiscoveredMusic discoveredMusic in _discoveredMusicList)
                 {
                     if (discoveredMusic.ghsound == ghsound)
