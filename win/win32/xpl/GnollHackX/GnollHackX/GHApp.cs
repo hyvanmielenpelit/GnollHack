@@ -175,7 +175,7 @@ namespace GnollHackX
             FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
             OkOnDoubleClick = Preferences.Get("OkOnDoubleClick", IsDesktop);
             DiscoveredMusicBits = Preferences.Get("DiscoveredMusicBits", 0L);
-            AddPreDiscoveredMusic(DiscoveredMusicBits);
+            AddPreDiscoveredMusic();
 
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if(FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
@@ -6719,10 +6719,11 @@ namespace GnollHackX
             }
         }
 
-        public static void AddPreDiscoveredMusic(long bits)
+        public static void AddPreDiscoveredMusic()
         {
             lock (_discoveredMusicLock)
             {
+                long bits = _discoveredMusicBits;
                 for (int i = 0; i < GHSoundTrack.GnollHackSoundTracks.Count && i < 64; i++)
                 {
                     long bit = 1L << i;
@@ -6731,7 +6732,10 @@ namespace GnollHackX
                         GHSoundTrack track = GHSoundTrack.GnollHackSoundTracks[i];
                         if (track.GHSoundList.Count > 0)
                         {
-                            _discoveredMusicList.Add(new DiscoveredMusic(track.GHSoundList[0]));
+                            for (int k = 0; k < track.GHSoundList.Count; k++)
+                            {
+                                AddDiscoveredMusic(track.GHSoundList[k]);
+                            }
                         }
                     }
                 }
@@ -6869,8 +6873,7 @@ namespace GnollHackX
             return res;
         }
 #endif
-
-        }
+    }
 
     public class DeviceGPU
     {
