@@ -58,6 +58,16 @@ namespace GnollHackX
         public LogPostResponseInfo PostResponseInfo;
     }
 
+    public class DiscoveredMusic
+    {
+        public int ghsound;
+
+        public DiscoveredMusic(int ghsound)
+        {
+            this.ghsound = ghsound;
+        }
+    }
+
     public struct CacheUsageInfo
     {
         public int MaxResources;
@@ -164,6 +174,8 @@ namespace GnollHackX
             SecondaryGPUCacheLimit = Preferences.Get("SecondaryGPUCacheLimit", -2L);
             FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
             OkOnDoubleClick = Preferences.Get("OkOnDoubleClick", IsDesktop);
+            DiscoveredMusicBits = Preferences.Get("DiscoveredMusicBits", 0L);
+            AddPreDiscoveredMusic(DiscoveredMusicBits);
 
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if(FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
@@ -6683,6 +6695,84 @@ namespace GnollHackX
             if (topPage == null) 
                 return false;
             return topPage == page;
+        }
+
+        private static readonly object _discoveredMusicLock = new object();
+        private static List<DiscoveredMusic> _discoveredMusicList = new List<DiscoveredMusic>();
+        private static long _discoveredMusicBits = 0L;
+        private static bool _discoveredMusicFound = false;
+        private static int _discoveredMusicSaveIndex = -1;
+        public static long DiscoveredMusicBits { get { lock (_discoveredMusicLock) { return _discoveredMusicBits; } } set { lock (_discoveredMusicLock) { _discoveredMusicBits = value; } } }
+        public static bool DiscoveredMusicFound { get { lock (_discoveredMusicLock) { return _discoveredMusicFound; } } } 
+
+        public static void AddDiscoveredMusic(int ghsound)
+        {
+            lock (_discoveredMusicLock)
+            {
+                foreach (DiscoveredMusic discoveredMusic in _discoveredMusicList)
+                {
+                    if (discoveredMusic.ghsound == ghsound)
+                        return;
+                }
+                _discoveredMusicList.Add(new DiscoveredMusic(ghsound));
+                _discoveredMusicFound = true;
+            }
+        }
+
+        public static void AddPreDiscoveredMusic(long bits)
+        {
+            lock (_discoveredMusicLock)
+            {
+                for (int i = 0; i < GHSoundTrack.GnollHackSoundTracks.Count && i < 64; i++)
+                {
+                    long bit = 1L << i;
+                    if((bits & bit) != 0)
+                    {
+                        GHSoundTrack track = GHSoundTrack.GnollHackSoundTracks[i];
+                        if (track.GHSoundList.Count > 0)
+                        {
+                            _discoveredMusicList.Add(new DiscoveredMusic(track.GHSoundList[0]));
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void SaveDiscoveredMusic()
+        {
+            lock (_discoveredMusicLock)
+            {
+                if (!_discoveredMusicFound)
+                    return;
+
+                bool changed = false;
+                long bits = _discoveredMusicBits;
+                for (int j = _discoveredMusicSaveIndex + 1; j < _discoveredMusicList.Count; j++)
+                {
+                    DiscoveredMusic discoveredMusic = _discoveredMusicList[j];
+                    for (int i = 0; i < GHSoundTrack.GnollHackSoundTracks.Count && i < 64; i++)
+                    {
+                        long bit = 1L << i;
+                        if ((bits & bit) == 0)
+                        {
+                            /* Note: Several soundtracks can be present in the same ghsound */
+                            GHSoundTrack track = GHSoundTrack.GnollHackSoundTracks[i];
+                            if (track.GHSoundList.Contains(discoveredMusic.ghsound))
+                            {
+                                bits |= bit;
+                                changed = true;
+                            }
+                        }
+                    }
+                }
+                if(changed)
+                {
+                    _discoveredMusicBits = bits;
+                    Preferences.Set("DiscoveredMusicBits", _discoveredMusicBits);
+                }
+                _discoveredMusicFound = false;
+                _discoveredMusicSaveIndex = _discoveredMusicList.Count - 1;
+            }
         }
 
         public static readonly List<DeviceGPU> DeviceGPUs = new List<DeviceGPU>();

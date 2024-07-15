@@ -119,6 +119,8 @@ namespace GnollHackX
                 GHApp.GnollHackService.TallyRealTime();
             }
 
+            GHApp.SaveDiscoveredMusic();
+
             ConcurrentQueue<GHResponse> queue;
             GHResponse response;
             if(GHGame.ResponseDictionary.TryGetValue(this, out queue))
@@ -605,6 +607,7 @@ namespace GnollHackX
                 default:
                 case 0:
                     GHApp.FmodService.StopAllSounds((uint)StopSoundFlags.All, 0);
+                    GHApp.SaveDiscoveredMusic();
                     if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
                         queue.Enqueue(new GHRequest(this, GHRequestType.ReturnToMainMenu));
@@ -1938,6 +1941,7 @@ namespace GnollHackX
         public int ClientCallback_PlayMusic(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume)
         {
             RecordFunctionCall(RecordedFunctionID.PlayMusic, ghsound, eventPath, bankid, eventVolume, soundVolume);
+            GHApp.AddDiscoveredMusic(ghsound);
 
             if (GHApp.FmodService != null)
             {
