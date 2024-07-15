@@ -175,7 +175,7 @@ namespace GnollHackX
             FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
             OkOnDoubleClick = Preferences.Get("OkOnDoubleClick", IsDesktop);
             DiscoveredMusicBits = Preferences.Get("DiscoveredMusicBits", 0L);
-            AddPreDiscoveredMusic();
+            //AddPreDiscoveredMusic(); /* It probably is better to not to add anything at start; this shifts workload from AddDiscoveredMusic to SaveDiscoveredMusic */
 
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if(FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
