@@ -2919,10 +2919,6 @@ namespace GnollHackX
             }
         }
 
-        private static void Player_PlaybackEnded(object sender, EventArgs e)
-        {
-        }
-
         private static Stream GetStreamFromFile(string filename)
         {
             var assembly = typeof(App).GetTypeInfo().Assembly;
@@ -2938,6 +2934,7 @@ namespace GnollHackX
                 _fmodService.PlayUISound(GHConstants.MenuSelectGHSound, GHConstants.MenuSelectEventPath, GHConstants.MenuSelectBankId, GHConstants.MenuSelectVolume, 1.0f);
             }
         }
+
         public static string CreateGameZipArchive()
         {
             string ghdir = GnollHackService.GetGnollHackPath();
