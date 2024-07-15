@@ -699,8 +699,9 @@ namespace GnollHackX.Unknown
                         long curlength = curfile.Length;
                         string curfileversion = Preferences.Get("Verify_" + sfile.id + "_Version", "");
                         DateTime moddate = Preferences.Get("Verify_" + sfile.id + "_LastWriteTime", DateTime.MinValue);
+                        long used_length = GHApp.IsDesktop ? sfile.length_desktop : sfile.length_mobile;
 
-                        if (curlength != sfile.length || curfileversion != sfile.version || moddate != curfile.LastWriteTimeUtc)
+                        if (curlength != used_length || curfileversion != sfile.version || moddate != curfile.LastWriteTimeUtc)
                         {
                             File.Delete(fulltargetpath);
                             if (Preferences.ContainsKey("Verify_" + sfile.id + "_Version"))
@@ -776,7 +777,8 @@ namespace GnollHackX.Unknown
                         if (curfile.Exists)
                         {
                             long curlength = curfile.Length;
-                            if (curlength == sfile.length)
+                            long used_length = GHApp.IsDesktop ? sfile.length_desktop : sfile.length_mobile;
+                            if (curlength == used_length)
                             {
                                 Preferences.Set("Verify_" + sfile.id + "_Version", sfile.version);
                                 Preferences.Set("Verify_" + sfile.id + "_LastWriteTime", curfile.LastWriteTimeUtc);

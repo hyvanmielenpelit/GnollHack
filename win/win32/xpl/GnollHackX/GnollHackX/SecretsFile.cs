@@ -13,7 +13,8 @@ namespace GnollHackX
         public string description;
         public string version;
         public string source_directory;
-        public int length;
+        public long length_mobile;
+        public long length_desktop;
         public string target_directory;
         public int on_demand;
         public int streaming_asset;

@@ -6910,7 +6910,10 @@ namespace GnollHackX
 
         public int Compare(SecretsFile x, SecretsFile y)
         {
-            return y.length - x.length;
+            if(GHApp.IsDesktop)
+                return (int)(y.length_desktop - x.length_desktop);
+            else
+                return (int)(y.length_mobile - x.length_mobile);
         }
     }
 
