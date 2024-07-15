@@ -2792,6 +2792,7 @@ struct ghsound_immediate_info {
 #define PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING             0x00000001U
 #define PLAY_FLAGS_NO_PLAY_IF_ALREADY_QUEUED              0x00000002U
 #define PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING_OR_QUEUED (PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING | PLAY_FLAGS_NO_PLAY_IF_ALREADY_QUEUED)
+#define PLAY_FLAGS_SONG                                   0x00000004U
 
 
 struct ghsound_music_info {

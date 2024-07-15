@@ -1532,6 +1532,15 @@ namespace GnollHackX
         None = 0x00
     }
 
+    [Flags]
+    public enum playsound_play_flags : uint
+    {
+        PLAY_FLAGS_NONE =                           0x00000000U,
+        PLAY_FLAGS_NO_PLAY_IF_ALREADY_PLAYING =     0x00000001U,
+        PLAY_FLAGS_NO_PLAY_IF_ALREADY_QUEUED =      0x00000002U,
+        PLAY_FLAGS_SONG =                           0x00000004U,
+    }
+
     /* special key functions */
     public enum nh_keyfunc
     {

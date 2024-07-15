@@ -254,14 +254,25 @@ struct context_info
     uint64_t quest_flags;
     int64_t role_score;
 
+    unsigned quick_zap_wand_oid;
+    int quick_cast_spell_no;
+    boolean quick_cast_spell_set;
+    boolean reserved_boolA;
+    boolean reserved_boolB;
+    boolean reserved_boolC;
+    boolean reserved_boolD;
+    boolean reserved_boolE;
+    boolean reserved_boolF;
+    boolean reserved_boolG;
+
     /* Emergency reserved variables to make non-save-game-breaking changes */
     int64_t reserved_int64_1;
     int64_t reserved_int64_2;
     int64_t reserved_int64_3;
     int64_t reserved_int64_4;
     
-    int quick_cast_spell_no;
-    unsigned quick_zap_wand_oid;
+    int reserved_int1;
+    int reserved_int2;
     int reserved_int3;
     int reserved_int4;
     short reserved_short1;
@@ -274,7 +285,7 @@ struct context_info
     char reserved_char4;
 
     /* Emergency reserved booleans to make non-save-game-breaking changes */
-    boolean quick_cast_spell_set;
+    boolean reserved_bool1;
     boolean reserved_bool2;
     boolean reserved_bool3;
     boolean reserved_bool4;

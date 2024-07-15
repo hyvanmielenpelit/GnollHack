@@ -8366,6 +8366,7 @@ struct monst* mtmp;
     immediateinfo.dialogue_mid = mtmp->m_id;
     immediateinfo.sound_type = IMMEDIATE_SOUND_DIALOGUE;
     immediateinfo.play_group = SOUND_PLAY_GROUP_LONG;
+    immediateinfo.play_flags = PLAY_FLAGS_SONG;
 
     play_immediate_ghsound(immediateinfo);
 
