@@ -71,5 +71,8 @@ namespace GnollHackX
         void SetCharacterClickAction(bool newValue);
         int GetMouseCommand(bool isMiddle);
         void SetMouseCommand(int newValue, bool isMiddle);
+
+        string GetEventPathForGHSound(int ghsound);
+        float GetVolumeForGHSound(int ghsound);
     }
 }

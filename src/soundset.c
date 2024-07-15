@@ -2264,6 +2264,8 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Ill Add That to Your Bill", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/Costly Alteration/Alter Pay", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Music/Sound Tracks/Our Mountain", BACKGROUND_MUSIC_VOLUME },
+    { SOUND_BANK_MASTER, "event:/Music/Sound Tracks/The Sword and the Raven", BACKGROUND_MUSIC_VOLUME },
 };
 
 NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS] =

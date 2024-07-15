@@ -305,6 +305,12 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetMouseCommand(int new_value, int is_middle);
 
+        [DllImport(PlatformConstants.dll)]
+        public static extern IntPtr LibGetEventPathForGHSound(int ghsound);
+        [DllImport(PlatformConstants.dll)]
+        public static extern float LibGetVolumeForGHSound(int ghsound);
+
+
         private void LoadNativeLibrary(string libName)
         {
 #if __ANDROID__
@@ -1061,6 +1067,18 @@ namespace GnollHackX.Unknown
         public void SetMouseCommand(int newValue, bool isMiddle)
         {
             LibSetMouseCommand(newValue, isMiddle ? 1 : 0);
+        }
+
+        public string GetEventPathForGHSound(int ghsound)
+        {
+            IntPtr resptr = LibGetEventPathForGHSound(ghsound);
+            string ret = Marshal.PtrToStringAnsi(resptr);
+            return ret;
+        }
+
+        public float GetVolumeForGHSound(int ghsound)
+        {
+            return LibGetVolumeForGHSound(ghsound);
         }
 
         public int StartGnollHack(GHGame ghGame)

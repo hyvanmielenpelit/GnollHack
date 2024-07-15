@@ -193,7 +193,8 @@
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\VaultPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\TopScorePage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\LibraryPage.xaml.cs" />
-		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\DisplayFilePage.xaml.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\MusicPage.xaml.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\DisplayFilePage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\ReplayPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\ImportExportPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\EditorPage.xaml.cs" />
@@ -337,7 +338,8 @@
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\VaultPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\TopScorePage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\LibraryPage.xaml.cs" />
-		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\DisplayFilePage.xaml.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\MusicPage.xaml.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\DisplayFilePage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\ReplayPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\ImportExportPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\EditorPage.xaml.cs" />
@@ -567,11 +569,11 @@
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-android'">
       <EmbeddedJar Include="Platforms\Android\jars\fmod.jar" />
-	  <AndroidLibrary Include="Platforms\Android\jars\fmod.jar" />
-	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libfmod.so" />
+      <AndroidLibrary Include="Platforms\Android\jars\fmod.jar" />
+      <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libfmod.so" />
   	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libfmodstudio.so" />
-	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libgnollhackdroid.so" />
-	  <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libc++_shared.so" />
+      <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libgnollhackdroid.so" />
+      <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libc++_shared.so" />
       <AndroidAsset Include="Platforms\Android\gnh\license" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
       <AndroidAsset Include="Platforms\Android\gnh\logfile" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
       <AndroidAsset Include="Platforms\Android\gnh\nhdat" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />

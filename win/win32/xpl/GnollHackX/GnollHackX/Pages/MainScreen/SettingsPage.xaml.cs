@@ -672,6 +672,7 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     GHApp.FmodService.LoadBanks(0);
                     GHApp.FmodService.LoadBanks(2);
+                    GHApp.FmodService.LoadBanks(3);
                     if (_gamePage == null)
                     {
                         GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, 0.5f, 1.0f);

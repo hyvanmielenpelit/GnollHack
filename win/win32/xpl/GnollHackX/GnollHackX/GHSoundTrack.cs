@@ -13,6 +13,7 @@ namespace GnollHackX
         public string Contact = "";
         public string Notes = "";
 
+        public int GHSoundForPlayback = -1; /* If the first element of GHSoundList is not appropriate (e.g., if it includes many songs) */
         public List<int> GHSoundList = new List<int>();
         public List<string> GameAppearanceList = new List<string>();
 
@@ -63,6 +64,7 @@ namespace GnollHackX
                 Length = 71,
                 Songwriter = "Eric Matayas",
                 Contact = "soundimage.org",
+                GHSoundForPlayback = 2043,
                 GHSoundList = new List<int>()
                 { 4 },
                 GameAppearanceList = new List<string>()
@@ -262,6 +264,7 @@ namespace GnollHackX
                 Length = 226,
                 Songwriter = "Avalkis",
                 Contact = "jukkaeronen.com",
+                GHSoundForPlayback = 2044,
                 GHSoundList = new List<int>()
                 { 4 },
                 GameAppearanceList = new List<string>()

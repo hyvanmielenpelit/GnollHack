@@ -82,6 +82,20 @@ namespace GnollHackX.Pages.MainScreen
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
             rib.BtnClicked += btnReplays_Clicked;
             VaultLayout.Children.Add(rib);
+
+            rib = new LabeledImageButton();
+            rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.vitruvian-gnoll.png";
+            rib.LblText = "Sound Tracks";
+            rib.LblFontSize = 20;
+            rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            rib.LblFontFamily = "Immortal";
+            rib.ImgWidth = 120;
+            rib.ImgHeight = 120;
+            rib.GridWidth = 120;
+            rib.GridHeight = 150;
+            rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.BtnClicked += btnSoundTracks_Clicked;
+            VaultLayout.Children.Add(rib);
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
@@ -164,6 +178,15 @@ namespace GnollHackX.Pages.MainScreen
             var libPage = new LibraryPage();
             libPage.ReadLibrary();
             await App.Current.MainPage.Navigation.PushModalAsync(libPage);
+            VaultLayout.IsEnabled = true;
+        }
+
+        private async void btnSoundTracks_Clicked(object sender, EventArgs e)
+        {
+            VaultLayout.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            var musicPage = new MusicPage();
+            await App.Current.MainPage.Navigation.PushModalAsync(musicPage);
             VaultLayout.IsEnabled = true;
         }
 

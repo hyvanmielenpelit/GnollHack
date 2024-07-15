@@ -941,6 +941,7 @@ namespace GnollHackX
             {
                 await TryLoadBanks(0);
                 await TryLoadBanks(2);
+                await TryLoadBanks(3);
             }
 
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;

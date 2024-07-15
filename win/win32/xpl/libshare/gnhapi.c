@@ -607,6 +607,25 @@ LibGetMouseCommand(int is_middle)
         return flags.right_click_command;
 }
 
+DLLEXPORT const char*
+LibGetEventPathForGHSound(int ghsound)
+{
+    if (ghsound < 0 || ghsound >= MAX_GHSOUNDS)
+        return "";
+
+    return ghsound2event[ghsound].eventPath;
+}
+
+DLLEXPORT float
+LibGetVolumeForGHSound(int ghsound)
+{
+    if (ghsound < 0 || ghsound >= MAX_GHSOUNDS)
+        return 0.0f;
+
+    return ghsound2event[ghsound].volume;
+}
+
+
 DLLEXPORT int GnollHackStart(cmdlineargs)
 char* cmdlineargs;
 {
