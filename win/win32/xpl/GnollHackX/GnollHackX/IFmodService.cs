@@ -17,6 +17,7 @@ namespace GnollHackX
         void UnloadIntroSoundBank();
         void PlayTestSound();
         void StopTestSound();
+        int PlayUISound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume);
         int PlayImmediateSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid, uint play_flags);
         int PlayMusic(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume);
         int PlayLevelAmbient(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume);

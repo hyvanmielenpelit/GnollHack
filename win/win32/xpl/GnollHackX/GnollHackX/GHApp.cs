@@ -2909,15 +2909,11 @@ namespace GnollHackX
             {
                 try
                 {
-                    string[] parameterNames = new string[1];
-                    float[] parameterValues = new float[1];
-
-                    _fmodService.PlayImmediateSound(GHConstants.ButtonClickGHSound, GHConstants.ButtonClickEventPath, GHConstants.ButtonClickBankId, GHConstants.ButtonClickVolume,
-                        1.0f, parameterNames, parameterValues, 0, 0, 0, 0, 0U);
+                    _fmodService.PlayUISound(GHConstants.ButtonClickGHSound, GHConstants.ButtonClickEventPath, GHConstants.ButtonClickBankId, GHConstants.ButtonClickVolume, 1.0f);
                 }
-                catch
+                catch (Exception ex)
                 {
-
+                    Debug.WriteLine(ex.Message);
                 }
 
             }
@@ -2939,11 +2935,7 @@ namespace GnollHackX
         {
             if (_fmodService != null)
             {
-                string[] parameterNames = new string[1];
-                float[] parameterValues = new float[1];
-
-                _fmodService.PlayImmediateSound(GHConstants.MenuSelectGHSound, GHConstants.MenuSelectEventPath, GHConstants.MenuSelectBankId, GHConstants.MenuSelectVolume,
-                    1.0f, parameterNames, parameterValues, 0, 0, 0, 0, 0U);
+                _fmodService.PlayUISound(GHConstants.MenuSelectGHSound, GHConstants.MenuSelectEventPath, GHConstants.MenuSelectBankId, GHConstants.MenuSelectVolume, 1.0f);
             }
         }
         public static string CreateGameZipArchive()

@@ -1646,6 +1646,7 @@ namespace GnollHackX
         public const int MaxPlayedZapAnimations = 16;
         public const int MaxNormalImmediateSoundInstances = 36;
         public const int MaxLongImmediateSoundInstances = 48;
+        public const int MaxUISoundInstances = 8;
         public const int MaxChannels = 512;
         public const int MaxBitmapCacheSize = 64;
         public const int MaxDarkenedBitmapCacheSize = 256;

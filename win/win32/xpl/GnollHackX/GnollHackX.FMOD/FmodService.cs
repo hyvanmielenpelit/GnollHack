@@ -346,18 +346,19 @@ namespace GnollHackX.Unknown
         public List<GHSoundInstance> musicInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> immediateInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> longImmediateInstances = new List<GHSoundInstance>();
+        public List<GHSoundInstance> uiInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> levelAmbientInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> environmentAmbientInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> occupationAmbientInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> effectAmbientInstances = new List<GHSoundInstance>();
         public List<GHSoundInstance> ambientList = new List<GHSoundInstance>();
 
-        public const int nooflists = 8;
+        public const int nooflists = 9;
         public void ReleaseAllSoundInstances()
         {
             List<GHSoundInstance>[] listoflists = new List<GHSoundInstance>[nooflists]
             {
-                musicInstances, immediateInstances, longImmediateInstances, levelAmbientInstances,
+                musicInstances, immediateInstances, longImmediateInstances, uiInstances, levelAmbientInstances,
                 environmentAmbientInstances, occupationAmbientInstances, effectAmbientInstances, ambientList
             };
 
@@ -374,6 +375,34 @@ namespace GnollHackX.Unknown
             RESULT res = _system.update();
         }
 
+        /* Returns to UI thread */
+        public static RESULT GNHUIEventCallback(EVENT_CALLBACK_TYPE type, IntPtr _event, IntPtr parameters)
+        {
+            FmodService service = _latestService;
+
+            if (service == null)
+                return RESULT.ERR_UNSUPPORTED;
+
+            EventInstance instance = new FMOD.Studio.EventInstance(_event);
+
+            if (type == EVENT_CALLBACK_TYPE.STOPPED || type == EVENT_CALLBACK_TYPE.START_FAILED)
+            {
+                for (int i = 0; i < GHConstants.MaxUISoundInstances; i++)
+                {
+                    if (i >= service.uiInstances.Count)
+                        break;
+
+                    if (service.uiInstances[i].instance.handle == instance.handle)
+                    {
+                        service.uiInstances[i].stopped = true;
+                        return RESULT.OK;
+                    }
+                }
+            }
+            return RESULT.OK;
+        }
+
+        /* Returns to game thread */
         public static RESULT GNHImmediateEventCallback(EVENT_CALLBACK_TYPE type, IntPtr _event, IntPtr parameters)
         {
             FmodService service = _latestService;
@@ -411,6 +440,7 @@ namespace GnollHackX.Unknown
             return RESULT.OK;
         }
 
+        /* Returns to game thread */
         public static RESULT GNHDialogueEventCallback(EVENT_CALLBACK_TYPE type, IntPtr _event, IntPtr parameters)
         {
             RESULT result;
@@ -483,7 +513,65 @@ namespace GnollHackX.Unknown
             return RESULT.OK;
         }
 
+        /* Called from UI thread */
+        public int PlayUISound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume)
+        {
+            if (!FMODup())
+                return 1;
 
+            EventDescription eventDescription;
+            RESULT res = _system.getEvent(eventPath, out eventDescription);
+            if (res != RESULT.OK)
+                return (int)res;
+            EventInstance eventInstance;
+            res = eventDescription.createInstance(out eventInstance);
+            if (res != RESULT.OK)
+                return (int)res;
+
+            res = eventInstance.setCallback(GNHUIEventCallback, EVENT_CALLBACK_TYPE.STOPPED | EVENT_CALLBACK_TYPE.START_FAILED);
+            if (res != RESULT.OK)
+                return (int)res;
+            res = eventInstance.setVolume(Math.Max(0.0f, Math.Min(1.0f, eventVolume * soundVolume * _generalVolume * _uiVolume)));
+            if (res != RESULT.OK)
+                return (int)res;
+
+            GHSoundInstance ghinstance = new GHSoundInstance();
+            ghinstance.instance = eventInstance;
+            ghinstance.ghsound = ghsound;
+            ghinstance.normalEventVolume = eventVolume;
+            ghinstance.normalSoundVolume = soundVolume;
+            ghinstance.sound_type = immediate_sound_types.IMMEDIATE_SOUND_UI;
+            ghinstance.dialogue_mid = 0;
+            ghinstance.queued = false;
+            ghinstance.stopped = false;
+            uiInstances.Insert(0, ghinstance);
+
+            if (uiInstances.Count > GHConstants.MaxUISoundInstances)
+            {
+                GHSoundInstance ghsi = uiInstances[uiInstances.Count - 1];
+                if (ghsi != null)
+                {
+                    if (ghsi.stopped == false)
+                    {
+                        ghsi.stopped = true;
+                        ghsi.instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+                    }
+                    ghsi.instance.release();
+                }
+                uiInstances.RemoveAt(uiInstances.Count - 1);
+            }
+
+            res = eventInstance.start();
+            if (res != RESULT.OK)
+                return (int)res;
+            res = _system.update();
+            if (res != RESULT.OK)
+                return (int)res;
+
+            return 0;
+        }
+
+        /* Called from game thread */
         public int PlayImmediateSound(int ghsound, string eventPath, int bankid, float eventVolume, float soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid, uint play_flags)
         {
             if (!FMODup())
