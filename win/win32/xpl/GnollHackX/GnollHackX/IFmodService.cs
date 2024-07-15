@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GnollHackM;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +12,8 @@ namespace GnollHackX
         void ReleaseAllSoundInstances();
         void ClearLoadableSoundBanks();
         Task AddLoadableSoundBank(string fullFilePath, int subType, bool isResource, bool readToMemory);
-        void LoadBanks(int subType);
-        void UnloadBanks(int subType);
+        void LoadBanks(sound_bank_loading_type loadingType);
+        void UnloadBanks(sound_bank_loading_type loadingType);
         void LoadIntroSoundBank();
         void UnloadIntroSoundBank();
         void PlayTestSound();

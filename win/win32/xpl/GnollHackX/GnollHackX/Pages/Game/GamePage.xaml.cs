@@ -1106,6 +1106,7 @@ namespace GnollHackX.Pages.Game
             var tasks = new List<Task>();
             _gnollHackService = GHApp.GnollHackService;
             await _gnollHackService.InitializeGnollHack();
+            GHApp.FmodService.LoadBanks(sound_bank_loading_type.Music);
 
             if (!GHApp.StartGameDataSet)
             {
@@ -1113,6 +1114,7 @@ namespace GnollHackX.Pages.Game
                 tasks.Add(LoadingProgressBar.ProgressTo(0.3, 600, Easing.Linear));
                 tasks.Add(Task.Run(() =>
                 {
+                    GHApp.FmodService.LoadBanks(sound_bank_loading_type.Game);
                     using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack_64x96_transparent_32bits.png"))
                     {
                         SKBitmap tileMap = SKBitmap.Decode(stream);
@@ -3472,6 +3474,8 @@ namespace GnollHackX.Pages.Game
             }
             _mainPage.UpdateLayout();
             _mainPage.ActivateLocalGameButton();
+            GHApp.FmodService.StopAllSounds((uint)StopSoundFlags.All, 0);
+            GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Music);
             _mainPage.PlayMainScreenVideoAndMusic(); /* Just to be doubly sure */
             if (GHApp.GameMuteMode)
                 GHApp.GameMuteMode = false;

@@ -186,17 +186,25 @@ namespace GnollHackX.Unknown
             return _initialized && GHApp.LoadBanks;
         }
 
-        public void UnloadBanks(int subType)
+        public void UnloadBanks(sound_bank_loading_type loadingType)
         {
-            RESULT res;
-            for (int i = _banks.Count - 1; i >= 0; i--)
+            try
             {
-                if (_banks[i].SubType == subType)
+                int subType = (int)loadingType;
+                RESULT res;
+                for (int i = _banks.Count - 1; i >= 0; i--)
                 {
-                    res = _banks[i].Bank.unload();
-                    _banks[i].Bank.clearHandle();
-                    _banks.RemoveAt(i);
+                    if (_banks[i].SubType == subType)
+                    {
+                        res = _banks[i].Bank.unload();
+                        _banks[i].Bank.clearHandle();
+                        _banks.RemoveAt(i);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("Unload Banks: "+ ex.Message);
             }
 
             //RESULT res;
@@ -209,39 +217,47 @@ namespace GnollHackX.Unknown
             //_banks.Clear();
         }
 
-        public void LoadBanks(int subType)
+        public void LoadBanks(sound_bank_loading_type loadingType)
         {
-            RESULT res;
-            foreach (LoadableBank loadableBank in _loadableSoundBanks)
+            try
             {
-                if(loadableBank.SubType == subType)
+                int subType = (int)loadingType;
+                RESULT res;
+                foreach (LoadableBank loadableBank in _loadableSoundBanks)
                 {
-                    if(loadableBank.ReadToMemory)
+                    if (loadableBank.SubType == subType)
                     {
-                        if(loadableBank.ByteBuffer != null)
+                        if (loadableBank.ReadToMemory)
                         {
-                            Bank tmpbank = new Bank();
-                            res = _system.loadBankMemory(loadableBank.ByteBuffer, LOAD_BANK_FLAGS.NORMAL, out tmpbank);
-                            if (res == RESULT.OK)
-                                _banks.Add(new LoadedBank(tmpbank, loadableBank.SubType));
-                            else
-                                GHApp.MaybeWriteGHLog("LoadBanks, ReadToMemory: Result: " + ((int)res).ToString() + "(" + res.ToString() + ") , bank_path: " + loadableBank.FullPathName);
+                            if (loadableBank.ByteBuffer != null)
+                            {
+                                Bank tmpbank = new Bank();
+                                res = _system.loadBankMemory(loadableBank.ByteBuffer, LOAD_BANK_FLAGS.NORMAL, out tmpbank);
+                                if (res == RESULT.OK)
+                                    _banks.Add(new LoadedBank(tmpbank, loadableBank.SubType));
+                                else
+                                    GHApp.MaybeWriteGHLog("LoadBanks, ReadToMemory: Result: " + ((int)res).ToString() + "(" + res.ToString() + ") , bank_path: " + loadableBank.FullPathName);
+                            }
                         }
-                    }
-                    else
-                    {
-                        string bank_path = loadableBank.FullPathName;
-                        if (loadableBank.IsResource || File.Exists(bank_path))
+                        else
                         {
-                            Bank tmpbank = new Bank();
-                            res = _system.loadBankFile(bank_path, LOAD_BANK_FLAGS.NORMAL, out tmpbank);
-                            if (res == RESULT.OK)
-                                _banks.Add(new LoadedBank(tmpbank, loadableBank.SubType));
-                            else
-                                GHApp.MaybeWriteGHLog("LoadBanks, Non-ReadToMemory: Result: " + ((int)res).ToString() + "(" + res.ToString() + ") , bank_path: " + bank_path);
+                            string bank_path = loadableBank.FullPathName;
+                            if (loadableBank.IsResource || File.Exists(bank_path))
+                            {
+                                Bank tmpbank = new Bank();
+                                res = _system.loadBankFile(bank_path, LOAD_BANK_FLAGS.NORMAL, out tmpbank);
+                                if (res == RESULT.OK)
+                                    _banks.Add(new LoadedBank(tmpbank, loadableBank.SubType));
+                                else
+                                    GHApp.MaybeWriteGHLog("LoadBanks, Non-ReadToMemory: Result: " + ((int)res).ToString() + "(" + res.ToString() + ") , bank_path: " + bank_path);
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex) 
+            {
+                GHApp.MaybeWriteGHLog("LoadBanks: " + ex.Message);
             }
         }
 
@@ -312,12 +328,12 @@ namespace GnollHackX.Unknown
 
         public void LoadIntroSoundBank()
         {
-            LoadBanks(1);
+            LoadBanks(sound_bank_loading_type.Intro);
         }
 
         public void UnloadIntroSoundBank()
         {
-            UnloadBanks(1);
+            UnloadBanks(sound_bank_loading_type.Intro);
         }
 
         public void PlayTestSound()

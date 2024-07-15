@@ -1526,6 +1526,15 @@ namespace GnollHackX
         Cancelled,
     }
 
+    public enum sound_bank_loading_type : int
+    {
+        Master = 0,
+        Preliminary,
+        Intro,
+        Music,
+        Game,
+    }
+
     [Flags]
     public enum secrets_flags : int
     {

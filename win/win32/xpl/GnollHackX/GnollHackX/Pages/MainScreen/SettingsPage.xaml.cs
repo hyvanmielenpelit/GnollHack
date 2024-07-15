@@ -644,12 +644,17 @@ namespace GnollHackX.Pages.MainScreen
                 try
                 {
                     GHApp.FmodService.ReleaseAllSoundInstances();
-                    GHApp.FmodService.UnloadBanks(0);
-                    GHApp.FmodService.UnloadBanks(2);
+                    GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Master);
+                    GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Preliminary);
+                    if(_gamePage != null)
+                    {
+                        GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Music);
+                        GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Game);
+                    }
                 }
-                catch
+                catch (Exception ex)
                 {
-
+                    Debug.WriteLine(ex.Message);
                 }
             }
 
@@ -670,17 +675,21 @@ namespace GnollHackX.Pages.MainScreen
             {
                 try
                 {
-                    GHApp.FmodService.LoadBanks(0);
-                    GHApp.FmodService.LoadBanks(2);
-                    GHApp.FmodService.LoadBanks(3);
+                    GHApp.FmodService.LoadBanks(sound_bank_loading_type.Master);
+                    GHApp.FmodService.LoadBanks(sound_bank_loading_type.Preliminary);
+                    if(_gamePage != null)
+                    {
+                        GHApp.FmodService.LoadBanks(sound_bank_loading_type.Music);
+                        GHApp.FmodService.LoadBanks(sound_bank_loading_type.Game);
+                    }
                     if (_gamePage == null)
                     {
                         GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-
+                    Debug.WriteLine(ex.Message);
                 }
             }
 

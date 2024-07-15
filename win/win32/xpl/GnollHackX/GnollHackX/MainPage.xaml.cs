@@ -809,18 +809,6 @@ namespace GnollHackX
             }
         }
 
-        public async Task TryLoadBanks(int subType)
-        {
-            try
-            {
-                GHApp.FmodService.LoadBanks(subType);
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Loading FMOD Banks Failed", "GnollHack failed to load FMOD banks of type " + subType + ": " + ex.Message, "OK");
-            }
-        }
-
         private async Task StartUpTasks()
         {
             GHApp.InitFileDescriptors();
@@ -939,9 +927,8 @@ namespace GnollHackX
             await GHApp.SetSoundBanksUpForLoading();
             if (GHApp.LoadBanks)
             {
-                await TryLoadBanks(0);
-                await TryLoadBanks(2);
-                await TryLoadBanks(3);
+                GHApp.FmodService.LoadBanks(sound_bank_loading_type.Master);
+                GHApp.FmodService.LoadBanks(sound_bank_loading_type.Preliminary);
             }
 
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
