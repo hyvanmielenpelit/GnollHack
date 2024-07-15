@@ -145,10 +145,6 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 else
                 {
-                    topScorePage.Disappearing += (sender2, e2) =>
-                    {
-                        VaultLayout.IsEnabled = true;
-                    };
                     await App.Current.MainPage.Navigation.PushModalAsync(topScorePage);
                 }
             }
@@ -156,10 +152,6 @@ namespace GnollHackX.Pages.MainScreen
             {
                 /* No top scores */
                 var topScorePage = new TopScorePage();
-                topScorePage.Disappearing += (sender2, e2) =>
-                {
-                    VaultLayout.IsEnabled = true;
-                };
                 await App.Current.MainPage.Navigation.PushModalAsync(topScorePage);
             }
             VaultLayout.IsEnabled = true;
