@@ -37,20 +37,26 @@ namespace GnollHackX
 
         private void PlatformView_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            e.Handled = true;
-            MainThread.BeginInvokeOnMainThread(() =>
+            if (PointerEntered != null)
             {
-                PointerEntered?.Invoke(sender, new EventArgs());
-            });
+                e.Handled = true;
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    PointerEntered?.Invoke(sender, new EventArgs());
+                });
+            }
         }
 
         private void PlatformView_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            e.Handled = true;
-            MainThread.BeginInvokeOnMainThread(() =>
+            if(PointerExited != null)
             {
-                PointerExited?.Invoke(sender, new EventArgs());
-            });
+                e.Handled = true;
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    PointerExited?.Invoke(sender, new EventArgs());
+                });
+            }
         }
 #endif
     }
