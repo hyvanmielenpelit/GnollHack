@@ -554,7 +554,7 @@ namespace GnollHackX
             {
 #if GNH_MAUI
 #if WINDOWS
-                return false;
+                return !HasCrashingDesktopGPU();
 #else
                 return true;
 #endif
@@ -634,6 +634,19 @@ namespace GnollHackX
                     isDoogee = true;
             }
             return isGoogleMali || isSamsungMali || isVivo || isAlldocube || isDoogee ? true : false;
+        }
+
+        private static bool HasCrashingDesktopGPU()
+        {
+            string model = DeviceInfo.Model;
+            bool isThinkPad = false;
+            if (!string.IsNullOrWhiteSpace(model))
+            {
+                string model_lc = model.ToLower();
+                if (model_lc.Contains("thinkpad"))
+                    isThinkPad = true;
+            }
+            return isThinkPad ? true : false;
         }
 
         public static void InitFileDescriptors()
@@ -6868,22 +6881,22 @@ namespace GnollHackX
                         }
                         else
                         {
-                            res = "[Choice error]";
+                            res = "Not parsed";
                         }
                     }
                     else
                     {
-                        res = "[Preference error]";
+                        res = "Error";
                     }
                 }
                 else
                 {
-                    res = "[Preference empty]";
+                    res = "Not set";
                 }
             }
             else
             {
-                res = "Not set";
+                res = "Not found";
             }
             return res;
         }
