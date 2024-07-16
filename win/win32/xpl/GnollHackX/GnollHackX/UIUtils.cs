@@ -1173,6 +1173,36 @@ namespace GnollHackX
 #endif
         }
 
+        public static Color HoveringColorAdjustment(Color rawColor, bool darkMode)
+        {
+#if GNH_MAUI
+            if (darkMode)
+                return rawColor;
+            else
+                return new Color(rawColor.Red + (1.0f - rawColor.Red) * GHConstants.HoveringColorMultiplier, rawColor.Green + (1.0f - rawColor.Green) * GHConstants.HoveringColorMultiplier, rawColor.Blue + (1.0f - rawColor.Blue) * GHConstants.HoveringColorMultiplier, rawColor.Alpha);
+#else
+            if (darkMode)
+                return rawColor;
+            else
+                return new Color(rawColor.R + (1.0 - rawColor.R) * GHConstants.HoveringColorMultiplier, rawColor.G + (1.0 - rawColor.G) * GHConstants.HoveringColorMultiplier, rawColor.B + (1.0 - rawColor.B) * GHConstants.HoveringColorMultiplier, rawColor.A);
+#endif
+        }
+
+        public static Color NonHoveringColorAdjustment(Color rawColor, bool darkMode)
+        {
+#if GNH_MAUI
+            if (darkMode)
+                return new Color(rawColor.Red * GHConstants.NonHoveringColorMultiplier, rawColor.Green * GHConstants.NonHoveringColorMultiplier, rawColor.Blue * GHConstants.NonHoveringColorMultiplier, rawColor.Alpha);
+            else
+                return rawColor;
+#else
+            if (darkMode)
+                return new Color(rawColor.R * GHConstants.NonHoveringColorMultiplier, rawColor.G * GHConstants.NonHoveringColorMultiplier, rawColor.B * GHConstants.NonHoveringColorMultiplier, rawColor.A);
+            else
+                return rawColor;
+#endif
+        }
+
         public static SKColor NonHoveringSKColorAdjustment(SKColor rawColor)
         {
             return new SKColor((byte)(rawColor.Red * GHConstants.NonHoveringColorMultiplier), (byte)(rawColor.Green * GHConstants.NonHoveringColorMultiplier), (byte)(rawColor.Blue * GHConstants.NonHoveringColorMultiplier), rawColor.Alpha);

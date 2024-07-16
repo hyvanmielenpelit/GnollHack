@@ -172,6 +172,7 @@ namespace GnollHackX
             SetAvailableGPUCacheLimits(TotalMemory);
             PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
             SecondaryGPUCacheLimit = Preferences.Get("SecondaryGPUCacheLimit", -2L);
+            UseGPU = Preferences.Get("UseMainGLCanvas", IsGPUDefault);
             FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
             OkOnDoubleClick = Preferences.Get("OkOnDoubleClick", IsDesktop);
             DiscoveredMusicBits = Preferences.Get("DiscoveredMusicBits", 0L);
@@ -420,6 +421,10 @@ namespace GnollHackX
             }
         }
 
+        private static readonly object _useGPULock = new object();
+        private static bool _useGPU = false;
+        public static bool UseGPU { get { lock (_useGPULock) { return _useGPU; } } set { lock (_useGPULock) { _useGPU = value; } } }
+
         private static readonly object _fixRectLock = new object();
         private static bool _fixRects = false;
         public static bool FixRects { get { lock (_fixRectLock) { return _fixRects; } } set { lock (_fixRectLock) { _fixRects = value; } } }
@@ -536,7 +541,7 @@ namespace GnollHackX
             get
             {
 #if WINDOWS
-                return !HasInformedAboutGPU && DeviceGPUs.Count > 1 && GetActiveGPU() != "Dedicated";
+                return UseGPU && !HasInformedAboutGPU && DeviceGPUs.Count > 1 && GetActiveGPU() != "Dedicated";
 #else
                 return false;
 #endif
@@ -548,7 +553,11 @@ namespace GnollHackX
             get
             {
 #if GNH_MAUI
+#if WINDOWS
+                return false;
+#else
                 return true;
+#endif
 #else
                 return !HasUnstableGPU();
 #endif

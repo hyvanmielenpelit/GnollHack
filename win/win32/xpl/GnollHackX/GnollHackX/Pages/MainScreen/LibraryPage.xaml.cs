@@ -102,6 +102,7 @@ namespace GnollHackX.Pages.MainScreen
                     else
                         rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.catalogue.png";
                     rib.LblText = sm.Name;
+                    rib.LblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
                     rib.LblFontSize = 17;
                     rib.ImgWidth = 80;
                     rib.ImgHeight = 80;

@@ -302,7 +302,7 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage.ShowRecording = ShowRecordingSwitch.IsToggled;
             Preferences.Set("ShowRecording", ShowRecordingSwitch.IsToggled);
 
-
+            GHApp.UseGPU = GPUSwitch.IsToggled;
             if (_gamePage != null)
                 _gamePage.UseMainGLCanvas = GPUSwitch.IsToggled;
             Preferences.Set("UseMainGLCanvas", GPUSwitch.IsToggled);

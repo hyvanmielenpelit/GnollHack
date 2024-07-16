@@ -118,7 +118,7 @@ namespace GnollHackX.Controls
             if (cib != null && newValue is Color)
             {
                 Color newColor = (Color)newValue;
-                cib.customButton.TextColor = cib._isHoveringEnabled && (!cib._isHovering || !cib.IsEnabled) ? cib.NonHoveringColorAdjustment(newColor) : newColor;
+                cib.customButton.TextColor = cib._isHoveringEnabled && (!cib._isHovering || !cib.IsEnabled) ? UIUtils.NonHoveringColorAdjustment(newColor, true) : UIUtils.HoveringColorAdjustment(newColor, true);
             }
         }
 
@@ -133,7 +133,7 @@ namespace GnollHackX.Controls
             set 
             { 
                 SetValue(TextColorProperty, value);
-                customButton.TextColor = _isHoveringEnabled && (!_isHovering || !IsEnabled) ? NonHoveringColorAdjustment(value) : value;
+                customButton.TextColor = _isHoveringEnabled && (!_isHovering || !IsEnabled) ? UIUtils.NonHoveringColorAdjustment(value, true) : UIUtils.HoveringColorAdjustment(value, true);
             }
         }
         public Color NormalTextColor
@@ -217,15 +217,6 @@ namespace GnollHackX.Controls
             SKRect sourcerect = new SKRect(0, 0, targetBitmap.Width, targetBitmap.Height);
             SKRect targetrect = new SKRect(0, 0, canvaswidth, canvasheight);
             canvas.DrawImage(targetBitmap, sourcerect, targetrect);
-        }
-
-        private Color NonHoveringColorAdjustment(Color rawColor)
-        {
-#if GNH_MAUI
-            return new Color(rawColor.Red * GHConstants.NonHoveringColorMultiplier, rawColor.Green * GHConstants.NonHoveringColorMultiplier, rawColor.Blue * GHConstants.NonHoveringColorMultiplier, rawColor.Alpha);
-#else
-            return new Color(rawColor.R * GHConstants.NonHoveringColorMultiplier, rawColor.G * GHConstants.NonHoveringColorMultiplier, rawColor.B * GHConstants.NonHoveringColorMultiplier, rawColor.A);
-#endif
         }
     }
 }

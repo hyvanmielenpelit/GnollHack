@@ -50,10 +50,25 @@ namespace GnollHackX.Pages.MainScreen
                 long bit = 1L << i;
                 if((discoBits & bit) != 0)
                 {
+                    GHSoundTrack track = GHSoundTrack.GnollHackSoundTracks[i];
+                    int length = track.Length;
+                    int min = length / 60;
+                    int sec = length % 60;
+                    bool hasSongwriter = !string.IsNullOrWhiteSpace(track.Songwriter);
+                    bool hasDuration = length > 0;
+                    string durationString = hasDuration ? min + ":" + sec : "";
                     RowImageButton rib = new RowImageButton();
                     rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.soundtrack.png";
-                    rib.LblText = ((GHSoundTrack)GHSoundTrack.GnollHackSoundTracks[i]).DisplayName;
+                    rib.LblText = track.DisplayName;
                     rib.LblFontSize = 16;
+                    rib.LblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                    rib.SubLblText = (hasSongwriter ? track.Songwriter : "")
+                        + (hasDuration && hasSongwriter ? " (" : "")
+                        + (hasDuration ? durationString : "")
+                        + (hasDuration && hasSongwriter ? ")" : "");
+                    rib.SubLblFontSize = 13;
+                    rib.SubLblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                    rib.IsSubLblVisible = hasDuration || hasSongwriter;
                     rib.ImgWidth = 80;
                     rib.ImgHeight = 80;
                     rib.GridWidth = 480;
