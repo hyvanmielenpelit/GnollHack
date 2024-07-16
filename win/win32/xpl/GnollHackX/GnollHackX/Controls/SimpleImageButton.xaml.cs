@@ -43,13 +43,19 @@ namespace GnollHackX.Controls
         private void PlatformView_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             e.Handled = true;
-            ViewImage.IsHighlighted = true;
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                ViewImage.IsHighlighted = true;
+            });
         }
 
         private void PlatformView_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             e.Handled = true;
-            ViewImage.IsHighlighted = false;
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                ViewImage.IsHighlighted = false;
+            });
         }
 #endif
 

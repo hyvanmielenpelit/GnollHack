@@ -143,19 +143,25 @@ namespace GnollHackX.Controls
         private void PlatformView_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             e.Handled = true;
-            ViewImage.IsHighlighted = true;
-            _isHovering = true;
-            LblTextColor = LblTextColor;
-            SubLblTextColor = SubLblTextColor;
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                ViewImage.IsHighlighted = true;
+                _isHovering = true;
+                LblTextColor = LblTextColor;
+                SubLblTextColor = SubLblTextColor;
+            });
         }
 
         private void PlatformView_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             e.Handled = true;
-            ViewImage.IsHighlighted = false;
-            _isHovering = false;
-            LblTextColor = LblTextColor;
-            SubLblTextColor = SubLblTextColor;
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                ViewImage.IsHighlighted = false;
+                _isHovering = false;
+                LblTextColor = LblTextColor;
+                SubLblTextColor = SubLblTextColor;
+            });
         }
 #else
         private bool _isHoveringEnabled = false;

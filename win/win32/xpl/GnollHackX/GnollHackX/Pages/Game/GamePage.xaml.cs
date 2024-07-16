@@ -989,7 +989,7 @@ namespace GnollHackX.Pages.Game
 
         private void NextLabelHandler_PointerEntered(object sender, EventArgs e)
         {
-            if(!MoreNextButton.IsVisible)
+            if (!MoreNextButton.IsVisible)
             {
                 MoreNextButton.Opacity = 0;
                 MoreNextButton.IsVisible = true;

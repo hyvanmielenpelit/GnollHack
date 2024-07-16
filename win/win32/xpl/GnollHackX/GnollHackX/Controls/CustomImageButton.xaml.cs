@@ -86,15 +86,23 @@ namespace GnollHackX.Controls
         private bool _isHovering = false;
         private void Canvas_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            _isHovering = true;
-            customCanvasView.InvalidateSurface();
-            TextColor = TextColor;
+            e.Handled = true;
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                _isHovering = true;
+                customCanvasView.InvalidateSurface();
+                TextColor = TextColor;
+            });
         }
         private void Canvas_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            _isHovering = false;
-            customCanvasView.InvalidateSurface();
-            TextColor = TextColor;
+            e.Handled = true;
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                _isHovering = false;
+                customCanvasView.InvalidateSurface();
+                TextColor = TextColor;
+            });
         }
 #else
         private bool _isHoveringEnabled = false;

@@ -493,7 +493,10 @@ namespace GnollHackX.Controls
                 if(MousePointer != null)
                 {
                     e.Handled = true;
-                    MousePointer?.Invoke(sender, args);
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        MousePointer?.Invoke(sender, args);
+                    });
                 }
             }
         }
