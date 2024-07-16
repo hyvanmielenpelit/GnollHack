@@ -81,20 +81,24 @@ namespace GnollHackX.Controls
 
         public void InvalidateSurface()
         {
-#if WINDOWS
-            if(GHApp.WindowsXamlWindow != null)
+            if (UseGL)
             {
-                GHApp.WindowsXamlWindow.DispatcherQueue?.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.High, () => 
-                {
-#endif
-                    if(UseGL)
-                        internalGLView.InvalidateSurface();
-                    else
-                        internalCanvasView.InvalidateSurface();
 #if WINDOWS
-                });
-            }
+                if(GHApp.WindowsXamlWindow != null)
+                {
+                    GHApp.WindowsXamlWindow.DispatcherQueue?.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.High, () => 
+                    {
 #endif
+                        internalGLView.InvalidateSurface();
+#if WINDOWS
+                    });
+                }
+#endif
+            }
+            else
+            {
+                internalCanvasView.InvalidateSurface();
+            }
         }
 
         protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
