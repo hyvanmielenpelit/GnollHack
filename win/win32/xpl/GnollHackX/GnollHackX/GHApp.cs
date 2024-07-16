@@ -2830,7 +2830,8 @@ namespace GnollHackX
 
         public static readonly List<MouseCommandItem> MouseCommandItems = new List<MouseCommandItem>()
         {
-            new MouseCommandItem("None", (int)NhGetPosMods.None),
+            new MouseCommandItem("Default", (int)NhGetPosMods.Default),
+            new MouseCommandItem("Off", (int)NhGetPosMods.ClickOff),
             new MouseCommandItem("Look", (int)NhGetPosMods.ClickLook),
             new MouseCommandItem("Move", (int)NhGetPosMods.ClickMove),
             new MouseCommandItem("Cast", (int)NhGetPosMods.ClickCast),

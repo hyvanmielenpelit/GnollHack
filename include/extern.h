@@ -35,6 +35,7 @@ E void NDECL(stop_occupation);
 E void NDECL(display_gamewindows);
 E void NDECL(newgame);
 E void NDECL(choose_game_difficulty);
+E void NDECL(set_mouse_buttons);
 E const char* FDECL(get_game_difficulty_text, (int));
 E const char* FDECL(get_game_difficulty_symbol, (int));
 E const char* FDECL(get_game_mode_text, (BOOLEAN_P));

@@ -7749,8 +7749,8 @@ register struct obj *obj;
     (void) safe_qbuf(qbuf, "Contents of ", ":", obj, doname, ansimpleoname,
                      "that");
 
-    if (obj->cobj) {
-        n = query_objlist(qbuf, &(obj->cobj), INVORDER_SORT | OBJECT_COMPARISON,
+    if (contained_object_chain(obj)) {
+        n = query_objlist(qbuf, contained_object_chain_ptr(obj), INVORDER_SORT | OBJECT_COMPARISON,
                           &selected, PICK_NONE, allow_all, 5); //Looking at things in container's inventory far away
     } else {
         invdisp_nothing(qbuf, "(empty)");

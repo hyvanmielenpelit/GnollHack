@@ -187,10 +187,14 @@ namespace GnollHackX
     }
     public enum NhGetPosMods
     {
-        None = 0,
-        ClickPrimary,
+        Default = 0,
+        DefClickRole = 1,
+
+        ClickPrimary = 1,
         ClickSecondary,
         ClickTertiary,
+
+        ClickOff = 3,
         ClickLook,
         ClickMove,
         ClickCast,
@@ -1767,8 +1771,8 @@ namespace GnollHackX
 #endif
         public const bool DefaultHTMLDumpLogs = true;
         public const bool DefaultUseSingleDumpLog = true;
-        public const int DefaultRightMouseCommand = (int)NhGetPosMods.ClickCast;
-        public const int DefaultMiddleMouseCommand = (int)NhGetPosMods.ClickZap;
+        public const int DefaultRightMouseCommand = (int)NhGetPosMods.DefClickRole;
+        public const int DefaultMiddleMouseCommand = (int)NhGetPosMods.DefClickRole;
         public const int RightMouseBitIndex = 22;
         public const int MiddleMouseBitIndex = 27;
         public const string InstallTimePackName = "installtimepack";

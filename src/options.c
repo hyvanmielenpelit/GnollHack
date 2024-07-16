@@ -47,7 +47,7 @@ enum window_option_types {
 #define PILE_LIMIT_DFLT 5
 #define HERE_WIN_SIZ_DFLT 8
 #define DEFAULT_PILE_LIMIT (iflags.wc2_herewindow ? iflags.wc2_here_window_size + 1 : PILE_LIMIT_DFLT)
-const char* mouse_cmd_names[MAX_CLICK_TYPES] = { "not specified", "primary", "secondary", "tertiary", "look", "move", "cast", "fire", "zap" };
+const char* mouse_cmd_names[MAX_CLICK_TYPES] = { "default", "by role", "?", "off", "look", "move", "cast", "fire", "zap" };
 
 /*
  *  NOTE:  If you add (or delete) an option, please update the short
@@ -4905,7 +4905,7 @@ boolean tinitial, tfrom_file;
         {
             boolean found = FALSE;
             for (i = 0; i < SIZE(mouse_cmd_names); i++) {
-                if (i >= 1 && i <= 3)
+                if (i >= 2 && i <= 2)
                     continue;
                 if (!strcmp(op, mouse_cmd_names[i]))
                 {
@@ -4922,7 +4922,7 @@ boolean tinitial, tfrom_file;
         {
             char valuesbuf[BUFSZ * 2] = "";
             for (i = 0; i < SIZE(mouse_cmd_names); i++) {
-                if (i >= 1 && i <= 3)
+                if (i >= 2 && i <= 2)
                     continue;
                 if (*valuesbuf)
                 {
@@ -6621,7 +6621,7 @@ boolean setinitial, setfromfile;
         start_menu(tmpwin);
         any = zeroany;
         for (i = 0; i < SIZE(mouse_cmd_names); i++) {
-            if (i >= 1 && i <= 3)
+            if (i >= 1 && i <= 2)
                 continue;
             any.a_int = i + 1;
             add_menu(tmpwin, NO_GLYPH, &any, 'a' + i, 0, ATR_NONE, NO_COLOR,

@@ -8717,10 +8717,18 @@ int x, y, mod;
     int target_y = y;
     memset(cmd, 0, sizeof(cmd));
 
+    /* mod can be any value except CLICK_OFF */
     if (mod == CLICK_SECONDARY)
-        mod = flags.right_click_command > CLICK_TERTIARY ? flags.right_click_command : iflags.clicklook ? CLICK_LOOK : CLICK_PRIMARY;
+        mod = flags.right_click_command >= CLICK_OFF ? flags.right_click_command : iflags.clicklook ? CLICK_LOOK : CLICK_PRIMARY;
     else if (mod == CLICK_TERTIARY)
-        mod = flags.middle_click_command > CLICK_TERTIARY ? flags.middle_click_command : CLICK_PRIMARY;
+        mod = flags.middle_click_command >= CLICK_OFF ? flags.middle_click_command : CLICK_OFF;
+
+    /* Nothing */
+    if (mod == CLICK_OFF)
+    {
+        cmd[0] = '\0';
+        return cmd;
+    }
 
     /* Look */
     if (mod == CLICK_LOOK)

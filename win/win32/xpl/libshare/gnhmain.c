@@ -119,16 +119,17 @@ char** argv;
 
     if (!load_saved_game(exit_hack_code_at_start))
     {
+        resuming = FALSE;
         if(exit_hack_code_at_start)
             issue_simple_gui_command(GUI_CMD_SET_TO_BLACK);
         player_selection();
-        resuming = FALSE;
 
         /* CHOOSE DIFFICULTY */
         choose_game_difficulty();
 
         newgame();
         mode_message();
+        set_mouse_buttons();
     }
     else
     {

@@ -1283,7 +1283,7 @@ boolean iswizardmode, isexporemode, ismodernmode, iscasualmode;
 
 #define QUIT_DUMMY 100
 void 
-choose_game_difficulty()
+choose_game_difficulty(VOID_ARGS)
 {
     int mindifficulty = TournamentMode ? max(0, sysopt.min_difficulty) : sysopt.min_difficulty;
     int maxdifficulty = sysopt.max_difficulty;
@@ -1362,6 +1362,59 @@ choose_game_difficulty()
     }
 }
 #undef QUIT_DUMMY
+
+void
+set_mouse_buttons(VOID_ARGS)
+{
+    if (flags.right_click_command == DEFCLICK_ROLE)
+    {
+        switch (Role_switch)
+        {
+        default:
+        case PM_ARCHAEOLOGIST:
+        case PM_BARBARIAN:
+        case PM_CAVEMAN:
+        case PM_KNIGHT:
+        case PM_RANGER:
+        case PM_ROGUE:
+        case PM_SAMURAI:
+        case PM_TOURIST:
+        case PM_VALKYRIE:
+            flags.right_click_command = CLICK_FIRE;
+            break;
+        case PM_MONK:
+        case PM_HEALER:
+        case PM_PRIEST:
+        case PM_WIZARD:
+            flags.right_click_command = CLICK_CAST;
+            break;
+        }
+    }
+    if (flags.middle_click_command == DEFCLICK_ROLE)
+    {
+        switch (Role_switch)
+        {
+        default:
+        case PM_ARCHAEOLOGIST:
+        case PM_BARBARIAN:
+        case PM_CAVEMAN:
+        case PM_KNIGHT:
+        case PM_RANGER:
+        case PM_ROGUE:
+        case PM_SAMURAI:
+        case PM_TOURIST:
+        case PM_VALKYRIE:
+            flags.middle_click_command = CLICK_LOOK;
+            break;
+        case PM_MONK:
+        case PM_HEALER:
+        case PM_PRIEST:
+        case PM_WIZARD:
+            flags.middle_click_command = CLICK_ZAP;
+            break;
+        }
+    }
+}
 
 void
 newgame(VOID_ARGS)

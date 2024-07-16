@@ -3465,7 +3465,12 @@ namespace GnollHackX.Pages.Game
 
         private async void ReturnToMainMenu()
         {
-            GHApp.TournamentMode = Preferences.Get("TournamentMode", false); /* In the case it was changed by loading a Tournament Mode game while not in tournament mode */
+            /* These need to be returned to their non-game default values */
+            GHApp.TournamentMode = Preferences.Get("TournamentMode", false);
+            GHApp.CharacterClickAction = Preferences.Get("CharacterClickAction", GHConstants.DefaultCharacterClickAction);
+            GHApp.RightMouseCommand = Preferences.Get("RightMouseCommand", GHConstants.DefaultRightMouseCommand);
+            GHApp.MiddleMouseCommand = Preferences.Get("MiddleMouseCommand", GHConstants.DefaultMiddleMouseCommand);
+
             StopKeyListening();
             if (MainPageBackgroundNeedsUpdate)
             {

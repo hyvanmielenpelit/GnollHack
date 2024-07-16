@@ -83,8 +83,16 @@ namespace GnollHackX.Pages.MainScreen
             PrimaryGPUCachePicker.ItemsSource = GHApp.GetGPUCacheSizeList(false);
             SecondaryGPUCachePicker.ItemsSource = GHApp.GetGPUCacheSizeList(true);
 
-            RightMousePicker.ItemsSource = GHApp.MouseCommandItems;
-            MiddleMousePicker.ItemsSource = GHApp.MouseCommandItems;
+            List<MouseCommandItem> mouseCommandItems = new List<MouseCommandItem>();
+            mouseCommandItems.AddRange(GHApp.MouseCommandItems);
+
+            if(_gamePage == null)
+            {
+                mouseCommandItems.Add(new MouseCommandItem("By Role", (int)NhGetPosMods.DefClickRole));
+            }
+
+            RightMousePicker.ItemsSource = mouseCommandItems;
+            MiddleMousePicker.ItemsSource = mouseCommandItems;
 
             SimpleCommandBarButton1Picker.ItemsSource = GHApp.SelectableShortcutButtons;
             SimpleCommandBarButton2Picker.ItemsSource = GHApp.SelectableShortcutButtons;
