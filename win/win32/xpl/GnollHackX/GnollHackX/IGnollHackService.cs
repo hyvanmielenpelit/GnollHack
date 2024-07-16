@@ -65,6 +65,8 @@ namespace GnollHackX
         bool IncreaseFileDescriptorLimitToAtLeast(int min_cur);
         int GetFileDescriptorLimit(bool is_max_limit);
         int GetMaxManuals();
+        int GetFirstCatalogue();
+        int GetNumCatalogues();
         bool IsDebug();
 
         bool GetCharacterClickAction();

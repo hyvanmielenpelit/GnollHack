@@ -51,7 +51,7 @@ namespace GnollHackX.Pages.MainScreen
                 if((discoBits & bit) != 0)
                 {
                     RowImageButton rib = new RowImageButton();
-                    rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.vitruvian-gnoll.png";
+                    rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.soundtrack.png";
                     rib.LblText = ((GHSoundTrack)GHSoundTrack.GnollHackSoundTracks[i]).DisplayName;
                     rib.LblFontSize = 16;
                     rib.ImgWidth = 80;

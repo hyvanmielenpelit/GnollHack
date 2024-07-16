@@ -96,6 +96,7 @@
     <None Remove="Assets\UI\break.png" />
     <None Remove="Assets\UI\cancel.png" />
     <None Remove="Assets\UI\cast.png" />
+    <None Remove="Assets\UI\catalogue.png" />
     <None Remove="Assets\UI\chat.png" />
     <None Remove="Assets\UI\chatsteed.png" />
     <None Remove="Assets\UI\chronicle.png" />
@@ -148,11 +149,13 @@
     <None Remove="Assets\UI\leftring.png" />
     <None Remove="Assets\UI\levelchange.png" />
     <None Remove="Assets\UI\levelport.png" />
+    <None Remove="Assets\UI\library.png" />
     <None Remove="Assets\UI\light.png" />
     <None Remove="Assets\UI\load.png" />
     <None Remove="Assets\UI\lookfar.png" />
     <None Remove="Assets\UI\lookhere.png" />
     <None Remove="Assets\UI\loot.png" />
+    <None Remove="Assets\UI\manual.png" />
     <None Remove="Assets\UI\memory.png" />
     <None Remove="Assets\UI\menubackground.png" />
     <None Remove="Assets\UI\messages.png" />
@@ -160,6 +163,7 @@
     <None Remove="Assets\UI\mix.png" />
     <None Remove="Assets\UI\monster.png" />
     <None Remove="Assets\UI\more.png" />
+    <None Remove="Assets\UI\music.png" />
     <None Remove="Assets\UI\name.png" />
     <None Remove="Assets\UI\next.png" />
     <None Remove="Assets\UI\no.png" />
@@ -198,6 +202,7 @@
     <None Remove="Assets\UI\select.png" />
     <None Remove="Assets\UI\sit.png" />
     <None Remove="Assets\UI\skill.png" />
+    <None Remove="Assets\UI\soundtrack.png" />
     <None Remove="Assets\UI\spells.png" />
     <None Remove="Assets\UI\stairs-down.png" />
     <None Remove="Assets\UI\stairs-up.png" />
@@ -326,6 +331,7 @@
     <EmbeddedResource Include="Assets\UI\autostash.png" />
     <EmbeddedResource Include="Assets\UI\background-darkmarble.png" />
     <EmbeddedResource Include="Assets\UI\battery-frame.png" />
+    <EmbeddedResource Include="Assets\UI\catalogue.png" />
     <EmbeddedResource Include="Assets\UI\fps.png" />
     <EmbeddedResource Include="Assets\UI\frame-darkmode-horizontal.png" />
     <EmbeddedResource Include="Assets\UI\frame-darkmode-topleft-small.png" />
@@ -340,6 +346,8 @@
     <EmbeddedResource Include="Assets\UI\frame2-topleft.png" />
     <EmbeddedResource Include="Assets\UI\frame2-vertical.png" />
     <EmbeddedResource Include="Assets\UI\home.png" />
+    <EmbeddedResource Include="Assets\UI\library.png" />
+    <EmbeddedResource Include="Assets\UI\manual.png" />
     <EmbeddedResource Include="Assets\UI\memory.png" />
     <EmbeddedResource Include="Assets\UI\messages.png" />
     <EmbeddedResource Include="Assets\UI\missing_icon.png" />
@@ -353,6 +361,7 @@
     <EmbeddedResource Include="Assets\UI\chronicle.png" />
     <EmbeddedResource Include="Assets\UI\droptypes.png" />
     <EmbeddedResource Include="Assets\UI\load.png" />
+    <EmbeddedResource Include="Assets\UI\music.png" />
     <EmbeddedResource Include="Assets\UI\page-next.png" />
     <EmbeddedResource Include="Assets\UI\page-previous.png" />
     <EmbeddedResource Include="Assets\UI\picktobag.png" />
@@ -360,6 +369,7 @@
     <EmbeddedResource Include="Assets\UI\quickset.png" />
     <EmbeddedResource Include="Assets\UI\rest.png" />
     <EmbeddedResource Include="Assets\UI\save.png" />
+    <EmbeddedResource Include="Assets\UI\soundtrack.png" />
     <EmbeddedResource Include="Assets\UI\status-align-chaotic.png" />
     <EmbeddedResource Include="Assets\UI\status-align-lawful.png" />
     <EmbeddedResource Include="Assets\UI\status-align-neutral.png" />

@@ -86,6 +86,8 @@ namespace GnollHackX.Pages.MainScreen
             }
 
             int maxManuals = GHApp.GnollHackService.GetMaxManuals();
+            int firstCatalogue = GHApp.GnollHackService.GetFirstCatalogue();
+            int numCatalogues = GHApp.GnollHackService.GetNumCatalogues();
             List<StoredManual> manuallist = _manuals.Values.ToList();
             lblSubtitle.Text = "Found " + manuallist.Count + " of " + maxManuals + " manuals";
             if (manuallist.Count > 0)
@@ -95,7 +97,10 @@ namespace GnollHackX.Pages.MainScreen
                 foreach (StoredManual sm in manuallist)
                 {
                     RowImageButton rib = new RowImageButton();
-                    rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.examine.png";
+                    if(sm.Id >= firstCatalogue && sm.Id < firstCatalogue + numCatalogues)
+                        rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.manual.png";
+                    else
+                        rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.catalogue.png";
                     rib.LblText = sm.Name;
                     rib.LblFontSize = 17;
                     rib.ImgWidth = 80;

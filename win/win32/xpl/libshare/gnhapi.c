@@ -439,6 +439,18 @@ LibGetMaxManuals(VOID_ARGS)
 }
 
 DLLEXPORT int
+LibGetFirstCatalogue()
+{
+    return FIRST_CATALOGUE;
+}
+
+DLLEXPORT int
+LibGetNumCatalogues()
+{
+    return NUM_CATALOGUES;
+}
+
+DLLEXPORT int
 LibIsDebug(VOID_ARGS)
 {
 #ifdef DEBUG
