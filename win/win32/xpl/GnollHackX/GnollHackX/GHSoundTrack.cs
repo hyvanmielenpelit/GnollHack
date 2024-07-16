@@ -29,7 +29,7 @@ namespace GnollHackX
             { 
                 DisplayName = "Tower Defense", 
                 Length = 114,
-                Songwriter = "Eric Matayas", 
+                Songwriter = "Eric Matyas", 
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 1, 8 },
@@ -40,7 +40,7 @@ namespace GnollHackX
             {
                 DisplayName = "Mysterious Deep",
                 Length = 179,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 3, 5, 149, 668 },
@@ -51,7 +51,7 @@ namespace GnollHackX
             {
                 DisplayName = "RPG Map Music",
                 Length = 77,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 2 },
@@ -62,7 +62,7 @@ namespace GnollHackX
             {
                 DisplayName = "Our Mountain",
                 Length = 71,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundForPlayback = 2043,
                 GHSoundList = new List<int>()
@@ -74,7 +74,7 @@ namespace GnollHackX
             {
                 DisplayName = "Of Castles, Magic and Spells",
                 Length = 31,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 6 },
@@ -85,7 +85,7 @@ namespace GnollHackX
             {
                 DisplayName = "Something Freaky This Way Comes",
                 Length = 54,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 7 },
@@ -96,7 +96,7 @@ namespace GnollHackX
             {
                 DisplayName = "Haunted Tunnels",
                 Length = 84,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 10, 147 },
@@ -107,7 +107,7 @@ namespace GnollHackX
             {
                 DisplayName = "RPG Theme",
                 Length = 90,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 11 },
@@ -118,7 +118,7 @@ namespace GnollHackX
             {
                 DisplayName = "Dreaming in Puzzles",
                 Length = 131,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 12 },
@@ -129,7 +129,7 @@ namespace GnollHackX
             {
                 DisplayName = "Dream Voyager",
                 Length = 141,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 13, 148 },
@@ -140,7 +140,7 @@ namespace GnollHackX
             {
                 DisplayName = "Welcome to the Mansion",
                 Length = 141,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 14, 15, 16, 141 },
@@ -151,7 +151,7 @@ namespace GnollHackX
             {
                 DisplayName = "Of Legends and Fables 2",
                 Length = 58,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 17 },
@@ -162,7 +162,7 @@ namespace GnollHackX
             {
                 DisplayName = "Move It Out",
                 Length = 48,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 18 },
@@ -173,7 +173,7 @@ namespace GnollHackX
             {
                 DisplayName = "Lurking in the Shadows",
                 Length = 94,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 19 },
@@ -184,7 +184,7 @@ namespace GnollHackX
             {
                 DisplayName = "Disturbing Chimes",
                 Length = 64,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 20 },
@@ -195,7 +195,7 @@ namespace GnollHackX
             {
                 DisplayName = "Dark Fantasy Open",
                 Length = 64,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 90, 146, 150 },
@@ -206,7 +206,7 @@ namespace GnollHackX
             {
                 DisplayName = "Into Battle",
                 Length = 55,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 144 },
@@ -217,7 +217,7 @@ namespace GnollHackX
             {
                 DisplayName = "Clock-Maker the Hero",
                 Length = 94,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 145 },
@@ -228,7 +228,7 @@ namespace GnollHackX
             {
                 DisplayName = "RPG Battle Climax",
                 Length = 69,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 152 },
@@ -239,7 +239,7 @@ namespace GnollHackX
             {
                 DisplayName = "Ye Olde Pub",
                 Length = 71,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 172 },
@@ -250,7 +250,7 @@ namespace GnollHackX
             {
                 DisplayName = "Once Around the Kingdom",
                 Length = 100,
-                Songwriter = "Eric Matayas",
+                Songwriter = "Eric Matyas",
                 Contact = "soundimage.org",
                 GHSoundList = new List<int>()
                 { 173 },
@@ -316,7 +316,7 @@ namespace GnollHackX
             },
             new GHSoundTrack()
             {
-                DisplayName = "Return to th Meadows",
+                DisplayName = "Return to the Meadows",
                 Length = 168,
                 Songwriter = "Avalkis",
                 Contact = "jukkaeronen.com",
