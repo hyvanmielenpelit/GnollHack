@@ -3467,9 +3467,7 @@ namespace GnollHackX.Pages.Game
         {
             /* These need to be returned to their non-game default values */
             GHApp.TournamentMode = Preferences.Get("TournamentMode", false);
-            GHApp.CharacterClickAction = Preferences.Get("CharacterClickAction", GHConstants.DefaultCharacterClickAction);
-            GHApp.RightMouseCommand = Preferences.Get("RightMouseCommand", GHConstants.DefaultRightMouseCommand);
-            GHApp.MiddleMouseCommand = Preferences.Get("MiddleMouseCommand", GHConstants.DefaultMiddleMouseCommand);
+            GHApp.SetMirroredOptionsToDefaults();
 
             StopKeyListening();
             if (MainPageBackgroundNeedsUpdate)

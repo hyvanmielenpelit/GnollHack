@@ -2446,7 +2446,7 @@ namespace GnollHackX
                     }
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_CHARACTER_CLICK_ACTION:
-                    GHApp.CharacterClickAction = cmd_param != 0;
+                    GHApp.MirroredCharacterClickAction = cmd_param != 0;
                     break;
                 case (int)gui_command_types.GUI_CMD_START_FLUSH:
                     break;
@@ -2459,9 +2459,9 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_REPORT_MOUSE_COMMAND:
                     if (cmd_param2 != 0)
-                        GHApp.MiddleMouseCommand = cmd_param;
+                        GHApp.MirroredMiddleMouseCommand = cmd_param;
                     else
-                        GHApp.RightMouseCommand = cmd_param;
+                        GHApp.MirroredRightMouseCommand = cmd_param;
                     break;
                 case (int)gui_command_types.GUI_CMD_TOGGLE_QUICK_ZAP_WAND:
                     _gamePage.SetQuickZapWand(cmd_param, cmd_param2, cmd_str);

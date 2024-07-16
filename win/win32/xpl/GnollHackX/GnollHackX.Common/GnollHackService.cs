@@ -1099,10 +1099,11 @@ namespace GnollHackX.Unknown
 
         public int StartGnollHack(GHGame ghGame)
         {
+            GHApp.SetMirroredOptionsToDefaults();
             string filesdir = GetGnollHackPath();
             bool allowbones = GHApp.AllowBones;
-            ulong rightmouse = (ulong)GHApp.RightMouseCommand << GHConstants.RightMouseBitIndex;
-            ulong middlemouse = (ulong)GHApp.MiddleMouseCommand << GHConstants.MiddleMouseBitIndex;
+            ulong rightmouse = (ulong)GHApp.MirroredRightMouseCommand << GHConstants.RightMouseBitIndex;
+            ulong middlemouse = (ulong)GHApp.MirroredMiddleMouseCommand << GHConstants.MiddleMouseBitIndex;
             ulong runflags = (ulong)(ghGame.WizardMode ? RunGnollHackFlags.WizardMode : 0) |
                 (ulong)(GHApp.FullVersionMode ? RunGnollHackFlags.FullVersion : 0) |
                 (ulong)(ghGame.ModernMode ? RunGnollHackFlags.ModernMode : 0) |
@@ -1110,7 +1111,7 @@ namespace GnollHackX.Unknown
                 (ulong)(allowbones ? 0 : RunGnollHackFlags.DisableBones) |
                 (ulong)(GHApp.TournamentMode ? RunGnollHackFlags.TournamentMode : 0) |
                 (ulong)(GHApp.IsDebug ? RunGnollHackFlags.GUIDebugMode : 0) |
-                (ulong)(GHApp.CharacterClickAction ? RunGnollHackFlags.CharacterClickAction : 0) | /* Use the default; GHApp.CharacterClickAction may contain the option value from the last game */
+                (ulong)(GHApp.MirroredCharacterClickAction ? RunGnollHackFlags.CharacterClickAction : 0) | /* Use the default; GHApp.CharacterClickAction may contain the option value from the last game */
                 rightmouse | middlemouse | (ulong)ghGame.StartFlags;
             string lastusedplname = GHApp.TournamentMode && !ghGame.PlayingReplay ? Preferences.Get("LastUsedTournamentPlayerName", "") : Preferences.Get("LastUsedPlayerName", "");
 

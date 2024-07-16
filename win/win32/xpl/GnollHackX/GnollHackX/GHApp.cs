@@ -125,10 +125,8 @@ namespace GnollHackX
             InitBaseCachedBitmaps(assembly);
             InitBaseButtonBitmaps(assembly);
 
+            SetMirroredOptionsToDefaults();
             DarkMode = Preferences.Get("DarkMode", false);
-            CharacterClickAction = Preferences.Get("CharacterClickAction", GHConstants.DefaultCharacterClickAction);
-            RightMouseCommand = Preferences.Get("RightMouseCommand", GHConstants.DefaultRightMouseCommand);
-            MiddleMouseCommand = Preferences.Get("MiddleMouseCommand", GHConstants.DefaultMiddleMouseCommand);
             HideAndroidNavigationBar = Preferences.Get("HideAndroidNavigationBar", GHConstants.DefaultHideNavigation);
             HideiOSStatusBar = Preferences.Get("HideiOSStatusBar", GHConstants.DefaultHideStatusBar);
             DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
@@ -195,6 +193,13 @@ namespace GnollHackX
             }
 
             BackButtonPressed += EmptyBackButtonPressed;
+        }
+
+        public static void SetMirroredOptionsToDefaults()
+        {
+            MirroredCharacterClickAction = Preferences.Get("CharacterClickAction", GHConstants.DefaultCharacterClickAction);
+            MirroredRightMouseCommand = Preferences.Get("RightMouseCommand", GHConstants.DefaultRightMouseCommand);
+            MirroredMiddleMouseCommand = Preferences.Get("MiddleMouseCommand", GHConstants.DefaultMiddleMouseCommand);
         }
 
         public static void LoadCustomCursor()
@@ -3467,10 +3472,10 @@ namespace GnollHackX
         private static int _rightMouseCommand;
         private static int _middleMouseCommand;
         public static bool EmptyWishIsNothing { get { lock (_behaviorLock) { return _emptyWishIsNothing; } } set { lock (_behaviorLock) { _emptyWishIsNothing = value; } } }
-        public static bool CharacterClickAction { get { lock (_behaviorLock) { return _characterClickAction; } } set { lock (_behaviorLock) { _characterClickAction = value; } } }
         public static bool OkOnDoubleClick { get { lock (_behaviorLock) { return _okOnDoubleClick; } } set { lock (_behaviorLock) { _okOnDoubleClick = value; } } }
-        public static int RightMouseCommand { get { lock (_behaviorLock) { return _rightMouseCommand; } } set { lock (_behaviorLock) { _rightMouseCommand = value; } } }
-        public static int MiddleMouseCommand { get { lock (_behaviorLock) { return _middleMouseCommand; } } set { lock (_behaviorLock) { _middleMouseCommand = value; } } }
+        public static bool MirroredCharacterClickAction { get { lock (_behaviorLock) { return _characterClickAction; } } set { lock (_behaviorLock) { _characterClickAction = value; } } }
+        public static int MirroredRightMouseCommand { get { lock (_behaviorLock) { return _rightMouseCommand; } } set { lock (_behaviorLock) { _rightMouseCommand = value; } } }
+        public static int MirroredMiddleMouseCommand { get { lock (_behaviorLock) { return _middleMouseCommand; } } set { lock (_behaviorLock) { _middleMouseCommand = value; } } }
 
         public static string CustomGameStatusLink { get; set; }
         public static string CustomXlogAccountLink { get; set; }

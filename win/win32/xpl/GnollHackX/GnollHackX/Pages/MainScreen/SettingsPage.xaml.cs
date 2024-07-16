@@ -341,7 +341,7 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.EmptyWishIsNothing = EmptyWishIsNothingSwitch.IsToggled;
             Preferences.Set("EmptyWishIsNothing", EmptyWishIsNothingSwitch.IsToggled);
 
-            GHApp.CharacterClickAction = CharacterClickActionSwitch.IsToggled;
+            GHApp.MirroredCharacterClickAction = CharacterClickActionSwitch.IsToggled;
             if (_gamePage != null) /* During game only doubles as the option; outside of game sets the default */
                 _gamePage.SetCharacterClickAction(CharacterClickActionSwitch.IsToggled);
             else
@@ -349,7 +349,7 @@ namespace GnollHackX.Pages.MainScreen
 
             if (RightMousePicker.SelectedIndex > -1 && RightMousePicker.SelectedItem != null && RightMousePicker.SelectedItem is MouseCommandItem)
             {
-                GHApp.RightMouseCommand = ((MouseCommandItem)RightMousePicker.SelectedItem).Value;
+                GHApp.MirroredRightMouseCommand = ((MouseCommandItem)RightMousePicker.SelectedItem).Value;
                 if (_gamePage != null)  /* During game only doubles as the option; outside of game sets the default */
                     _gamePage.SetRightMouseCommand(((MouseCommandItem)RightMousePicker.SelectedItem).Value);
                 else
@@ -358,7 +358,7 @@ namespace GnollHackX.Pages.MainScreen
 
             if (MiddleMousePicker.SelectedIndex > -1 && MiddleMousePicker.SelectedItem != null && MiddleMousePicker.SelectedItem is MouseCommandItem)
             {
-                GHApp.MiddleMouseCommand = ((MouseCommandItem)MiddleMousePicker.SelectedItem).Value;
+                GHApp.MirroredMiddleMouseCommand = ((MouseCommandItem)MiddleMousePicker.SelectedItem).Value;
                 if (_gamePage != null)  /* During game only doubles as the option; outside of game sets the default */
                     _gamePage.SetMiddleMouseCommand(((MouseCommandItem)MiddleMousePicker.SelectedItem).Value);
                 else
@@ -903,9 +903,9 @@ namespace GnollHackX.Pages.MainScreen
                 //put2bag = _gamePage.ShowPut2BagContextCommand;
                 //prevwep = _gamePage.ShowPrevWepContextCommand;
                 longermsghistory = _gamePage.LongerMessageHistory;
-                characterclickaction = GHApp.CharacterClickAction; // _gamePage.GetCharacterClickAction(); /* Value of the option in the (saved) game */
-                rightmouse = GHApp.RightMouseCommand; //_gamePage.GetRightMouseCommand();
-                middlemouse = GHApp.MiddleMouseCommand; //_gamePage.GetMiddleMouseCommand();
+                characterclickaction = GHApp.MirroredCharacterClickAction; // _gamePage.GetCharacterClickAction(); /* Value of the option in the (saved) game */
+                rightmouse = GHApp.MirroredRightMouseCommand; //_gamePage.GetRightMouseCommand();
+                middlemouse = GHApp.MirroredMiddleMouseCommand; //_gamePage.GetMiddleMouseCommand();
             }
 
             CursorPicker.SelectedIndex = cursor;
