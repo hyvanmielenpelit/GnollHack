@@ -455,7 +455,10 @@ namespace GnollHackX.Controls
                 var delta = e.GetCurrentPoint((UIElement)sender).Properties.MouseWheelDelta;
                 if (delta != 0)
                 {
-                    MouseWheel?.Invoke(sender, new GHMouseWheelEventArgs(delta));
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        MouseWheel?.Invoke(sender, new GHMouseWheelEventArgs(delta));
+                    });
                 }
             }
         }
