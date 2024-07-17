@@ -70,9 +70,9 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
-	    <UseInterpreter>false</UseInterpreter>
-      <JavaMaximumHeapSize>2G</JavaMaximumHeapSize>
-      <AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>
+	  <UseInterpreter>false</UseInterpreter>
+    <JavaMaximumHeapSize>2G</JavaMaximumHeapSize>
+    <AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>
     <!--<AndroidEnableProfiler>true</AndroidEnableProfiler> 
 		<RuntimeIdentifier>android-arm64</RuntimeIdentifier>
 		<RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>-->
