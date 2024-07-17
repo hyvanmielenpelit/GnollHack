@@ -427,20 +427,20 @@ namespace GnollHackX
                             res = "Immortal";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_SKILLS:
-                            res = "DejaVuSansMono-Bold";
+                            res = "DejaVuSansMonoBold";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_SPELLS:
                         case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL:
-                            res = "DejaVuSansMono-Bold";
+                            res = "DejaVuSansMonoBold";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_DUNGEON_OVERVIEW:
                             res = "Immortal";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_OPTIONS:
-                            res = "DejaVuSansMono-Bold";
+                            res = "DejaVuSansMonoBold";
                             break;
                         case ghmenu_styles.GHMENU_STYLE_HELP:
-                            res = "DejaVuSansMono-Bold";
+                            res = "DejaVuSansMonoBold";
                             break;
                         case ghmenu_styles.MAX_GHMENU_STYLES:
                             break;

@@ -1368,7 +1368,7 @@ namespace GnollHackX
                     try
                     {
                         DejaVuSansMonoBoldTypeface = SKTypeface.FromStream(stream);
-                        TypefaceDictionary.Add("DejaVuSansMono-Bold", DejaVuSansMonoBoldTypeface);
+                        TypefaceDictionary.Add("DejaVuSansMonoBold", DejaVuSansMonoBoldTypeface);
                     }
                     catch (Exception ex)
                     {
@@ -1383,7 +1383,7 @@ namespace GnollHackX
                     try
                     {
                         LatoRegular = SKTypeface.FromStream(stream);
-                        TypefaceDictionary.Add("Lato-Regular", LatoRegular);
+                        TypefaceDictionary.Add("LatoRegular", LatoRegular);
                     }
                     catch (Exception ex)
                     {
@@ -1398,7 +1398,7 @@ namespace GnollHackX
                     try
                     {
                         LatoBold = SKTypeface.FromStream(stream);
-                        TypefaceDictionary.Add("Lato-Bold", LatoBold);
+                        TypefaceDictionary.Add("LatoBold", LatoBold);
                     }
                     catch (Exception ex)
                     {
@@ -1407,42 +1407,6 @@ namespace GnollHackX
                 }
             }
         }
-
-        //public static void SaveDumplogTypefaces(Assembly assembly)
-        //{
-        //    string targetdir = Path.Combine(GHPath, GHConstants.DumplogDirectory);
-        //    if (!Directory.Exists(targetdir))
-        //        return;
-
-        //    string[] fileNames = { "DejaVuSansMono.woff", "DejaVuSansMono-Bold.woff", "DejaVuSansMono-Oblique.woff", "DejaVuSansMono-BoldOblique.woff" };
-        //    for(int i = 0; i < 4; i++) 
-        //    { 
-        //        string filename = fileNames[i];
-        //        using (Stream stream = assembly.GetManifestResourceStream(AppResourceName + ".Assets." + filename))
-        //        {
-        //            if (stream != null)
-        //            {
-        //                try
-        //                {
-        //                    string fulltargetpath = Path.Combine(targetdir, filename);
-        //                    if (File.Exists(fulltargetpath))
-        //                        File.Delete(fulltargetpath);
-        //                    if (!File.Exists(fulltargetpath))
-        //                    {
-        //                        using (FileStream filestream = new FileStream(fulltargetpath, FileMode.Create, FileAccess.Write, FileShare.None))
-        //                        {
-        //                            stream.CopyTo(filestream);
-        //                        }
-        //                    }
-        //                }
-        //                catch (Exception ex)
-        //                {
-        //                    Debug.WriteLine(ex.Message);
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
 
         public static SKImage MenuBackgroundBitmap { get; set; }
         public static SKImage OldPaperBackgroundBitmap { get; set; }

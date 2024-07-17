@@ -2,9 +2,12 @@
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Newtonsoft.Json.Linq;
 
-#if WINDOWS10_0_19041_0_OR_GREATER
+#if WINDOWS
 using WindowsUI = Windows.UI;
 using XamlUI = Microsoft.UI.Xaml.Media;
+#endif
+#if WINDOWS || IOS
+using Sentry;
 #endif
 
 namespace GnollHackM;
@@ -35,6 +38,9 @@ public partial class App : Application
             handler.PlatformView.MinWidth = 0;
             handler.PlatformView.MinHeight = 0;
         });
+#endif
+#if DEBUG
+        SentrySdk.CaptureMessage("Sentry started at " + DateTime.Now.ToLongTimeString());
 #endif
         GHApp.Initialize();
 		MainPage = new AppShell();

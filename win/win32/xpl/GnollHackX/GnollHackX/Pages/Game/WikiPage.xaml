@@ -14,9 +14,9 @@
             <StackLayout x:Name="NavigationLayout" HorizontalOptions="Fill" Spacing="6" Padding="2" VerticalOptions="Start" Orientation="Horizontal" BackgroundColor="Transparent" >
                 <controls:CustomImageButton Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" 
                                         WidthRequest="130" HeightRequest="45" HorizontalOptions="Start" VerticalOptions="Center"/>
-                <controls:CustomImageButton Text="&lt;" x:Name="BackButton" Clicked="BackButton_Clicked" FontFamily="DejaVuSansMono-Bold" FontSize="16" TextColor="White" BackgroundColor="Transparent" 
+                <controls:CustomImageButton Text="&lt;" x:Name="BackButton" Clicked="BackButton_Clicked" FontFamily="DejaVuSansMonoBold" FontSize="16" TextColor="White" BackgroundColor="Transparent" 
                                         WidthRequest="55" HeightRequest="45" HorizontalOptions="Start" VerticalOptions="Center" />
-                <controls:CustomImageButton Text="&gt;" x:Name="ForwardButton" Clicked="ForwardButton_Clicked" FontFamily="DejaVuSansMono-Bold" FontSize="16" TextColor="White" BackgroundColor="Transparent" 
+                <controls:CustomImageButton Text="&gt;" x:Name="ForwardButton" Clicked="ForwardButton_Clicked" FontFamily="DejaVuSansMonoBold" FontSize="16" TextColor="White" BackgroundColor="Transparent" 
                                         WidthRequest="55" HeightRequest="45" HorizontalOptions="Start" VerticalOptions="Center" />
                 <Label x:Name="NavigationLabel" Text="" FontFamily="Diablo" FontSize="14" TextColor="White" HorizontalOptions="Start" HorizontalTextAlignment="Start" VerticalOptions="Center" VerticalTextAlignment="Center" />
             </StackLayout>

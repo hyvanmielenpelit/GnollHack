@@ -28,9 +28,9 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" Text="#" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="15" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
-                            <Label Grid.Column="1" Text="Name" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="15" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
-                            <Label Grid.Column="2" Text="Points" HorizontalOptions="End" VerticalOptions="Center" HorizontalTextAlignment="End" VerticalTextAlignment="Center" FontSize="15" TextColor="Black" FontFamily="DejaVuSansMono-Bold"/>
+                            <Label Grid.Column="0" Text="#" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="15" TextColor="Black" FontFamily="DejaVuSansMonoBold"/>
+                            <Label Grid.Column="1" Text="Name" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="15" TextColor="Black" FontFamily="DejaVuSansMonoBold"/>
+                            <Label Grid.Column="2" Text="Points" HorizontalOptions="End" VerticalOptions="Center" HorizontalTextAlignment="End" VerticalTextAlignment="Center" FontSize="15" TextColor="Black" FontFamily="DejaVuSansMonoBold"/>
                         </Grid>
                     </CollectionView.Header>
                     <CollectionView.ItemTemplate>
@@ -41,15 +41,15 @@
                                         <ColumnDefinition Width="35" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <Label Grid.Column="0" WidthRequest="35" Text="{Binding Rank}" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start" FontSize="13" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono-Bold"/>
+                                    <Label Grid.Column="0" WidthRequest="35" Text="{Binding Rank}" HorizontalOptions="Start" VerticalOptions="Start" HorizontalTextAlignment="Start" VerticalTextAlignment="Start" FontSize="13" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMonoBold"/>
                                     <StackLayout Grid.Column="1" Padding="0" Spacing="0" Margin="0" HorizontalOptions="Fill" >
                                         <Grid Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0" HorizontalOptions="Fill">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*" />
                                                 <ColumnDefinition Width="Auto" />
                                             </Grid.ColumnDefinitions>
-                                            <Label Grid.Column="0" Text="{Binding Name}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono-Bold"/>
-                                            <Label Grid.Column="1" Text="{Binding Score}" HorizontalOptions="End" VerticalOptions="Center" HorizontalTextAlignment="End" VerticalTextAlignment="Center" FontSize="13" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono-Bold"/>
+                                            <Label Grid.Column="0" Text="{Binding Name}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMonoBold"/>
+                                            <Label Grid.Column="1" Text="{Binding Score}" HorizontalOptions="End" VerticalOptions="Center" HorizontalTextAlignment="End" VerticalTextAlignment="Center" FontSize="13" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMonoBold"/>
                                         </Grid>
                                         <Label Text="{Binding CharacterHPModeString}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="13" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono"/>
                                         <Label Text="{Binding Outcome}" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Start" FontSize="13" TextColor="{Binding ItemTextColor}" FontFamily="DejaVuSansMono"/>

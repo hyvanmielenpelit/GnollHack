@@ -112,7 +112,7 @@
                     <Frame x:Name="UploadDownloadFrame" BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout Spacing="6">
                             <Label Text="Uploading..." x:Name="UploadDownloadTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" VerticalTextAlignment="Center" HorizontalOptions="Center"  />
-                            <Label Text="replay.gnhrec.gz" x:Name="UploadDownloadFileLabel" FontFamily="Lato-Regular" FontSize="16" TextColor="White" VerticalTextAlignment="Start" HorizontalOptions="Center"  />
+                            <Label Text="replay.gnhrec.gz" x:Name="UploadDownloadFileLabel" FontFamily="LatoRegular" FontSize="16" TextColor="White" VerticalTextAlignment="Start" HorizontalOptions="Center"  />
                             <Label Text="Please wait..." x:Name="UploadDownloadStatusLabel" FontFamily="Underwood" FontSize="16" TextColor="White" VerticalTextAlignment="Start" HorizontalOptions="Center"  />
                             <controls:CustomImageButton Text="Cancel" x:Name="UploadDownloadCancelButton" Clicked="UploadDownloadCancelButton_Clicked" Margin="0,10,0,0" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="Center" VerticalOptions="Center" />
                         </StackLayout>

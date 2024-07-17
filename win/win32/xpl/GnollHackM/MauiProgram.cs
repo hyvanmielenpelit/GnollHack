@@ -4,12 +4,14 @@ using SkiaSharp.Views.Maui.Controls.Hosting;
 using System.Runtime.Intrinsics.Arm;
 using MemoryToolkit.Maui;
 using GnollHackX;
+using Sentry.Maui;
 
 #if IOS
 using GnollHackM.Platforms.iOS;
 #endif
 #if WINDOWS
 using GnollHackM.Platforms.Windows;
+using Sentry.Profiling;
 #endif
 
 namespace GnollHackM;
@@ -28,6 +30,64 @@ public static class MauiProgram
                 handlers.AddHandler(typeof(Shell), typeof(CustomShellRenderer));  
 #endif
             })
+
+#if !WINDOWS
+            .UseSentry(options => {
+                  // The DSN is the only required setting.
+                  options.Dsn = "https://c45d9f5d2540eae9538cb9aa78eb25cd@o4507617242906624.ingest.de.sentry.io/4507617248608336";
+
+                  // Use debug mode if you want to see what the SDK is doing.
+                  // Debug messages are written to stdout with Console.Writeline,
+                  // and are viewable in your IDE's debug console or with 'adb logcat', etc.
+                  // This option is not recommended when deploying your application.
+                  options.Debug = true;
+
+                  // Set TracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+                  // We recommend adjusting this value in production.
+                  options.TracesSampleRate = 1.0;
+
+                  // Sample rate for profiling, applied on top of othe TracesSampleRate,
+                  // e.g. 0.2 means we want to profile 20 % of the captured transactions.
+                  // We recommend adjusting this value in production.
+                  options.ProfilesSampleRate = 1.0;
+
+                  // Other Sentry options can be set here.
+            })
+#endif
+#if WINDOWS
+            // Add this section anywhere on the builder:
+            .UseSentry(options =>
+            {
+                // The DSN is the only required setting.
+                options.Dsn = "https://c45d9f5d2540eae9538cb9aa78eb25cd@o4507617242906624.ingest.de.sentry.io/4507617248608336";
+
+                // Use debug mode if you want to see what the SDK is doing.
+                // Debug messages are written to stdout with Console.Writeline,
+                // and are viewable in your IDE's debug console or with 'adb logcat', etc.
+                // This option is not recommended when deploying your application.
+                options.Debug = true;
+
+                // Set TracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+                // We recommend adjusting this value in production.
+                options.TracesSampleRate = 1.0;
+
+                // Sample rate for profiling, applied on top of othe TracesSampleRate,
+                // e.g. 0.2 means we want to profile 20 % of the captured transactions.
+                // We recommend adjusting this value in production.
+                options.ProfilesSampleRate = 1.0;
+
+                // Requires NuGet package: Sentry.Profiling
+                // Note: By default, the profiler is initialized asynchronously. This can
+                // be tuned by passing a desired initialization timeout to the constructor.
+                options.AddIntegration(new ProfilingIntegration(
+                    // During startup, wait up to 500ms to profile the app startup code.
+                    // This could make launching the app a bit slower so comment it out if you
+                    // prefer profiling to start asynchronously
+                    TimeSpan.FromMilliseconds(500)
+                ));
+            })
+#endif
+
 #if WINDOWS
             .ConfigureLifecycleEvents(events =>
             {
@@ -58,14 +118,14 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 fonts.AddFont("archristy.ttf", "ARChristy");
                 fonts.AddFont("DejaVuSansMono.ttf", "DejaVuSansMono");
-                fonts.AddFont("DejaVuSansMono-Bold.ttf", "DejaVuSansMono-Bold");
-                fonts.AddFont("DejaVuSansMono-BoldOblique.ttf", "DejaVuSansMono-BoldOblique");
-                fonts.AddFont("DejaVuSansMono-Oblique.ttf", "DejaVuSansMono-Oblique");
+                fonts.AddFont("DejaVuSansMono-Bold.ttf", "DejaVuSansMonoBold");
+                fonts.AddFont("DejaVuSansMono-BoldOblique.ttf", "DejaVuSansMonoBoldOblique");
+                fonts.AddFont("DejaVuSansMono-Oblique.ttf", "DejaVuSansMonoOblique");
                 fonts.AddFont("diablo_h.ttf", "Diablo");
                 fonts.AddFont("endr.ttf", "Endor");
                 fonts.AddFont("Immortal-Regular.ttf", "Immortal");
-                fonts.AddFont("Lato-Regular.ttf", "Lato-Regular");
-                fonts.AddFont("Lato-Bold.ttf", "Lato-Bold");
+                fonts.AddFont("Lato-Regular.ttf", "LatoRegular");
+                fonts.AddFont("Lato-Bold.ttf", "LatoBold");
                 fonts.AddFont("shxi.ttf", "Xizor");
                 fonts.AddFont("uwch.ttf", "Underwood");
             });
@@ -80,6 +140,7 @@ public static class MauiProgram
             //    $" {collectionTarget.Name} is a zombie!", "OK");
         });
 #endif
+
 
         return builder.Build();
 	}
