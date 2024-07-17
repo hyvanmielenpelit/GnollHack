@@ -602,6 +602,8 @@ namespace GnollHackX
             catch (Exception ex)
             {
                 GHApp.MaybeWriteGHLog("StartLocalGameButton_Clicked: " + ex.Message);
+                SentrySdk.CaptureException(ex);
+                await DisplayAlert("Error", "Error occurred when starting the game: " + ex.Message, "OK");
             }
         }
 

@@ -1341,6 +1341,8 @@ namespace GnollHackX.Pages.Game
             catch(Exception ex)
             {
                 GHApp.MaybeWriteGHLog("StartGame: " + ex.Message);
+                SentrySdk.CaptureException(ex);
+                await DisplayAlert("Error", "Error occurred when setting up the game: " + ex.Message, "OK");
             }
         }
 
