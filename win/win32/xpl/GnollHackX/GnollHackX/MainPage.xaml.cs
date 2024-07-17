@@ -602,7 +602,9 @@ namespace GnollHackX
             catch (Exception ex)
             {
                 GHApp.MaybeWriteGHLog("StartLocalGameButton_Clicked: " + ex.Message);
+#if GNH_MAUI
                 SentrySdk.CaptureException(ex);
+#endif
                 await DisplayAlert("Error", "Error occurred when starting the game: " + ex.Message, "OK");
             }
         }
