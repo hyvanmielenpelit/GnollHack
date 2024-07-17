@@ -1098,243 +1098,250 @@ namespace GnollHackX.Pages.Game
 #endif
         public async Task StartGame(string replayFileName, int fromTurn)
         {
-            ReplayFileName = replayFileName;
-            _mainPage.GameStarted = true;
-            LoadingProgressBar.Progress = 0.0;
-            canvasView.Focus();
-
-            var tasks = new List<Task>();
-            _gnollHackService = GHApp.GnollHackService;
-            await _gnollHackService.InitializeGnollHack();
-            GHApp.FmodService.LoadBanks(sound_bank_loading_type.Music);
-
-            if (!GHApp.StartGameDataSet)
+            try
             {
-                Assembly assembly = GetType().GetTypeInfo().Assembly;
-                tasks.Add(LoadingProgressBar.ProgressTo(0.3, 600, Easing.Linear));
+                ReplayFileName = replayFileName;
+                _mainPage.GameStarted = true;
+                LoadingProgressBar.Progress = 0.0;
+                canvasView.Focus();
+
+                var tasks = new List<Task>();
+                _gnollHackService = GHApp.GnollHackService;
+                await _gnollHackService.InitializeGnollHack();
+                GHApp.FmodService.LoadBanks(sound_bank_loading_type.Music);
+
+                if (!GHApp.StartGameDataSet)
+                {
+                    Assembly assembly = GetType().GetTypeInfo().Assembly;
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.3, 600, Easing.Linear));
+                    tasks.Add(Task.Run(() =>
+                    {
+                        GHApp.FmodService.LoadBanks(sound_bank_loading_type.Game);
+                        using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack_64x96_transparent_32bits.png"))
+                        {
+                            SKBitmap tileMap = SKBitmap.Decode(stream);
+                            tileMap.SetImmutable();
+                            GHApp._tileMap[0] = SKImage.FromBitmap(tileMap);
+                        }
+                    }));
+                    await Task.WhenAll(tasks);
+                    tasks.Clear();
+
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.4, 100, Easing.Linear));
+                    tasks.Add(Task.Run(() =>
+                    {
+                        using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack_64x96_transparent_32bits-2.png"))
+                        {
+                            SKBitmap tileMap = SKBitmap.Decode(stream);
+                            tileMap.SetImmutable();
+                            GHApp._tileMap[1] = SKImage.FromBitmap(tileMap);
+                        }
+                    }));
+                    await Task.WhenAll(tasks);
+                    tasks.Clear();
+
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.5, 100, Easing.Linear));
+                    tasks.Add(Task.Run(() =>
+                    {
+                        using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack-icon-v2-512.png"))
+                        {
+                            SKBitmap bmp = SKBitmap.Decode(stream);
+                            bmp.SetImmutable();
+                            GHApp._logoBitmap = SKImage.FromBitmap(bmp);
+                        }
+                    }));
+                    await Task.WhenAll(tasks);
+                    tasks.Clear();
+
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.6, 100, Easing.Linear));
+                    tasks.Add(Task.Run(() =>
+                    {
+                        using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.UI.skill.png"))
+                        {
+                            SKBitmap bmp = SKBitmap.Decode(stream);
+                            bmp.SetImmutable();
+                            GHApp._skillBitmap = SKImage.FromBitmap(bmp);
+                        }
+                        using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.UI.wield.png"))
+                        {
+                            SKBitmap bmp = SKBitmap.Decode(stream);
+                            bmp.SetImmutable();
+                            GHApp._prevWepBitmap = SKImage.FromBitmap(bmp);
+                        }
+                        using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.UI.unwield.png"))
+                        {
+                            SKBitmap bmp = SKBitmap.Decode(stream);
+                            bmp.SetImmutable();
+                            GHApp._prevUnwieldBitmap = SKImage.FromBitmap(bmp);
+                        }
+
+                        GHApp.InitializeArrowButtons(assembly);
+                        GHApp.InitializeUIBitmaps(assembly);
+                        GHApp.InitializeMoreCommandButtons(assembly, UseSimpleCmdLayout);
+
+                        GHApp.UnexploredGlyph = _gnollHackService.GetUnexploredGlyph();
+                        GHApp.NoGlyph = _gnollHackService.GetNoGlyph();
+
+                        int animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, spell_tile_off, skill_tile_off, command_tile_off, buff_tile_off, cursor_off;
+                        _gnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off, out ui_tile_off, out spell_tile_off, out skill_tile_off, out command_tile_off, out buff_tile_off,
+                            out cursor_off);
+                        GHApp.AnimationOff = animoff;
+                        GHApp.EnlargementOff = enloff;
+                        GHApp.ReplacementOff = reoff;
+                        GHApp.GeneralTileOff = general_tile_off;
+                        GHApp.HitTileOff = hit_tile_off;
+                        GHApp.UITileOff = ui_tile_off;
+                        GHApp.SpellTileOff = spell_tile_off;
+                        GHApp.SkillTileOff = skill_tile_off;
+                        GHApp.CommandTileOff = command_tile_off;
+                        GHApp.BuffTileOff = buff_tile_off;
+                        GHApp.CursorOff = cursor_off;
+
+                    }));
+                    await Task.WhenAll(tasks);
+                    tasks.Clear();
+
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.7, 100, Easing.Linear));
+                    tasks.Add(Task.Run(() =>
+                    {
+                        GHApp._animationDefs = _gnollHackService.GetAnimationArray();
+                        GHApp._enlargementDefs = _gnollHackService.GetEnlargementArray();
+                    }));
+                    await Task.WhenAll(tasks);
+                    tasks.Clear();
+
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.80, 100, Easing.Linear));
+                    tasks.Add(Task.Run(() =>
+                    {
+                        GHApp._replacementDefs = _gnollHackService.GetReplacementArray();
+                        GHApp._autodraws = _gnollHackService.GetAutoDrawArray();
+                    }));
+                    await Task.WhenAll(tasks);
+                    tasks.Clear();
+                    GHApp.StartGameDataSet = true;
+                }
+
+                tasks.Add(LoadingProgressBar.ProgressTo(0.90, 100, Easing.Linear));
                 tasks.Add(Task.Run(() =>
                 {
-                    GHApp.FmodService.LoadBanks(sound_bank_loading_type.Game);
-                    using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack_64x96_transparent_32bits.png"))
-                    {
-                        SKBitmap tileMap = SKBitmap.Decode(stream);
-                        tileMap.SetImmutable();
-                        GHApp._tileMap[0] = SKImage.FromBitmap(tileMap);
-                    }
+                    ExtendedCommands = _gnollHackService.GetExtendedCommands();
                 }));
                 await Task.WhenAll(tasks);
                 tasks.Clear();
 
-                tasks.Add(LoadingProgressBar.ProgressTo(0.4, 100, Easing.Linear));
-                tasks.Add(Task.Run(() =>
+                await LoadingProgressBar.ProgressTo(0.95, 50, Easing.Linear);
+
+                if (PlayingReplay)
                 {
-                    using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack_64x96_transparent_32bits-2.png"))
-                    {
-                        SKBitmap tileMap = SKBitmap.Decode(stream);
-                        tileMap.SetImmutable();
-                        GHApp._tileMap[1] = SKImage.FromBitmap(tileMap);
-                    }
-                }));
-                await Task.WhenAll(tasks);
-                tasks.Clear();
+                    //MainGrid.IsEnabled = false;
+                    lWornItemsButton.IsEnabled = false;
+                    lAbilitiesButton.IsEnabled = false;
+                    lRowWornItemsButton.IsEnabled = false;
+                    lRowAbilitiesButton.IsEnabled = false;
+                    ContextLayout.IsEnabled = false;
 
-                tasks.Add(LoadingProgressBar.ProgressTo(0.5, 100, Easing.Linear));
-                tasks.Add(Task.Run(() =>
-                {
-                    using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack-icon-v2-512.png"))
-                    {
-                        SKBitmap bmp = SKBitmap.Decode(stream);
-                        bmp.SetImmutable();
-                        GHApp._logoBitmap = SKImage.FromBitmap(bmp);
-                    }
-                }));
-                await Task.WhenAll(tasks);
-                tasks.Clear();
+                    GameMenuButton.IsEnabled = false;
+                    ESCButton.IsEnabled = false;
+                    LookModeButton.IsEnabled = false;
+                    ToggleTravelModeButton.IsEnabled = false;
+                    ButtonRowStack.IsEnabled = false;
 
-                tasks.Add(LoadingProgressBar.ProgressTo(0.6, 100, Easing.Linear));
-                tasks.Add(Task.Run(() =>
-                {
-                    using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.UI.skill.png"))
-                    {
-                        SKBitmap bmp = SKBitmap.Decode(stream);
-                        bmp.SetImmutable();
-                        GHApp._skillBitmap = SKImage.FromBitmap(bmp);
-                    }
-                    using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.UI.wield.png"))
-                    {
-                        SKBitmap bmp = SKBitmap.Decode(stream);
-                        bmp.SetImmutable();
-                        GHApp._prevWepBitmap = SKImage.FromBitmap(bmp);
-                    }
-                    using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.UI.unwield.png"))
-                    {
-                        SKBitmap bmp = SKBitmap.Decode(stream);
-                        bmp.SetImmutable();
-                        GHApp._prevUnwieldBitmap = SKImage.FromBitmap(bmp);
-                    }
+                    GameMenuButton.Opacity = 0.5;
+                    ESCButton.Opacity = 0.5;
+                    LookModeButton.Opacity = 0.5;
+                    ToggleTravelModeButton.Opacity = 0.5;
 
-                    GHApp.InitializeArrowButtons(assembly);
-                    GHApp.InitializeUIBitmaps(assembly);
-                    GHApp.InitializeMoreCommandButtons(assembly, UseSimpleCmdLayout);
+                    SimpleGameMenuButton.IsEnabled = false;
+                    SimpleESCButton.IsEnabled = false;
+                    SimpleLookModeButton.IsEnabled = false;
+                    SimpleButtonRowStack.IsEnabled = false;
 
-                    GHApp.UnexploredGlyph = _gnollHackService.GetUnexploredGlyph();
-                    GHApp.NoGlyph = _gnollHackService.GetNoGlyph();
+                    SimpleGameMenuButton.Opacity = 0.5;
+                    SimpleESCButton.Opacity = 0.5;
+                    SimpleLookModeButton.Opacity = 0.5;
 
-                    int animoff, enloff, reoff, general_tile_off, hit_tile_off, ui_tile_off, spell_tile_off, skill_tile_off, command_tile_off, buff_tile_off, cursor_off;
-                    _gnollHackService.GetOffs(out animoff, out enloff, out reoff, out general_tile_off, out hit_tile_off, out ui_tile_off, out spell_tile_off, out skill_tile_off, out command_tile_off, out buff_tile_off,
-                        out cursor_off);
-                    GHApp.AnimationOff = animoff;
-                    GHApp.EnlargementOff = enloff;
-                    GHApp.ReplacementOff = reoff;
-                    GHApp.GeneralTileOff = general_tile_off;
-                    GHApp.HitTileOff = hit_tile_off;
-                    GHApp.UITileOff = ui_tile_off;
-                    GHApp.SpellTileOff = spell_tile_off;
-                    GHApp.SkillTileOff = skill_tile_off;
-                    GHApp.CommandTileOff = command_tile_off;
-                    GHApp.BuffTileOff = buff_tile_off;
-                    GHApp.CursorOff = cursor_off;
+                    MenuGrid.IsEnabled = false;
+                    TextGrid.IsEnabled = false;
+                    GetLineGrid.IsEnabled = false;
+                    YnGrid.IsEnabled = false;
+                    PopupGrid.IsEnabled = false;
+                    MoreCommandsGrid.IsEnabled = false;
+                    TipView.IsEnabled = false;
+                    ReplayRealTimeLabel.Text = "";
+                    ReplayHeaderLabel.Text = "";
+                    GHApp.ResetReplay();
+                    GHApp.GoToTurn = fromTurn;
+                    UpdateReplaySpeedButtons();
+                    UpdateReplayPauseButton();
+                    ReplayGrid.IsVisible = true;
+                }
 
-                }));
-                await Task.WhenAll(tasks);
-                tasks.Clear();
+                Thread t;
+                if (PlayingReplay)
+                    t = new Thread(new ThreadStart(GNHThreadProcForReplay));
+                else
+                    t = new Thread(new ThreadStart(GNHThreadProc));
+                _gnhthread = t;
+                _gnhthread.Start();
 
-                tasks.Add(LoadingProgressBar.ProgressTo(0.7, 100, Easing.Linear));
-                tasks.Add(Task.Run(() =>
-                {
-                    GHApp._animationDefs = _gnollHackService.GetAnimationArray();
-                    GHApp._enlargementDefs = _gnollHackService.GetEnlargementArray();
-                }));
-                await Task.WhenAll(tasks);
-                tasks.Clear();
+                _stopWatch.Start();
 
-                tasks.Add(LoadingProgressBar.ProgressTo(0.80, 100, Easing.Linear));
-                tasks.Add(Task.Run(() =>
-                {
-                    GHApp._replacementDefs = _gnollHackService.GetReplacementArray();
-                    GHApp._autodraws = _gnollHackService.GetAutoDrawArray();
-                }));
-                await Task.WhenAll(tasks);
-                tasks.Clear();
-                GHApp.StartGameDataSet = true;
-            }
+                await LoadingProgressBar.ProgressTo(0.99, 40, Easing.Linear);
 
-            tasks.Add(LoadingProgressBar.ProgressTo(0.90, 100, Easing.Linear));
-            tasks.Add(Task.Run(() =>
-            {
-                ExtendedCommands = _gnollHackService.GetExtendedCommands();
-            }));
-            await Task.WhenAll(tasks);
-            tasks.Clear();
+                canvasView._gamePage = this;
+                CommandCanvas._gamePage = this;
+                MenuCanvas._gamePage = this;
+                TextCanvas._gamePage = this;
+                TipView._gamePage = this;
 
-            await LoadingProgressBar.ProgressTo(0.95, 50, Easing.Linear);
+                canvasView._parentGrid = MainGrid;
+                CommandCanvas._parentGrid = MoreCommandsGrid;
+                MenuCanvas._parentGrid = MenuGrid;
+                TextCanvas._parentGrid = TextGrid;
+                TipView._parentGrid = null;
 
-            if (PlayingReplay)
-            {
-                //MainGrid.IsEnabled = false;
-                lWornItemsButton.IsEnabled = false;
-                lAbilitiesButton.IsEnabled = false;
-                lRowWornItemsButton.IsEnabled = false;
-                lRowAbilitiesButton.IsEnabled = false;
-                ContextLayout.IsEnabled = false;
+                IsGameOn = true;
+                IsMainCanvasOn = true;
+                MainGrid.IsVisible = true;
+                canvasView.InvalidateSurface();
 
-                GameMenuButton.IsEnabled = false;
-                ESCButton.IsEnabled = false;
-                LookModeButton.IsEnabled = false;
-                ToggleTravelModeButton.IsEnabled = false;
-                ButtonRowStack.IsEnabled = false;
-
-                GameMenuButton.Opacity = 0.5;
-                ESCButton.Opacity = 0.5;
-                LookModeButton.Opacity = 0.5;
-                ToggleTravelModeButton.Opacity = 0.5;
-
-                SimpleGameMenuButton.IsEnabled = false;
-                SimpleESCButton.IsEnabled = false;
-                SimpleLookModeButton.IsEnabled = false;
-                SimpleButtonRowStack.IsEnabled = false;
-
-                SimpleGameMenuButton.Opacity = 0.5;
-                SimpleESCButton.Opacity = 0.5;
-                SimpleLookModeButton.Opacity = 0.5;
-
-                MenuGrid.IsEnabled = false;
-                TextGrid.IsEnabled = false;
-                GetLineGrid.IsEnabled = false;
-                YnGrid.IsEnabled = false;
-                PopupGrid.IsEnabled = false;
-                MoreCommandsGrid.IsEnabled = false;
-                TipView.IsEnabled = false;
-                ReplayRealTimeLabel.Text = "";
-                ReplayHeaderLabel.Text = "";
-                GHApp.ResetReplay();
-                GHApp.GoToTurn = fromTurn;
-                UpdateReplaySpeedButtons();
-                UpdateReplayPauseButton();
-                ReplayGrid.IsVisible = true;
-            }
-
-            Thread t;
-            if(PlayingReplay)
-                t = new Thread(new ThreadStart(GNHThreadProcForReplay));
-            else
-                t = new Thread(new ThreadStart(GNHThreadProc));
-            _gnhthread = t;
-            _gnhthread.Start();
-
-            _stopWatch.Start();
-
-            await LoadingProgressBar.ProgressTo(0.99, 40, Easing.Linear);
-
-            canvasView._gamePage = this;
-            CommandCanvas._gamePage = this;
-            MenuCanvas._gamePage = this;
-            TextCanvas._gamePage = this;
-            TipView._gamePage = this;
-
-            canvasView._parentGrid = MainGrid;
-            CommandCanvas._parentGrid = MoreCommandsGrid;
-            MenuCanvas._parentGrid = MenuGrid;
-            TextCanvas._parentGrid = TextGrid;
-            TipView._parentGrid = null;
-
-            IsGameOn = true;
-            IsMainCanvasOn = true;
-            MainGrid.IsVisible = true;
-            canvasView.InvalidateSurface();
-
-            /* Polling timer */
+                /* Polling timer */
 #if GNH_MAUI
-            _pollingTimer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
-            _pollingTimer.Interval = TimeSpan.FromSeconds(1.0 / GHConstants.PollingFrequency);
-            _pollingTimer.IsRepeating = true;
-            _pollingTimer.Tick += (s, e) => { DoPolling(); if (!IsGameOn) _pollingTimer?.Stop(); };
-            _pollingTimer.Start();
+                _pollingTimer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+                _pollingTimer.Interval = TimeSpan.FromSeconds(1.0 / GHConstants.PollingFrequency);
+                _pollingTimer.IsRepeating = true;
+                _pollingTimer.Tick += (s, e) => { DoPolling(); if (!IsGameOn) _pollingTimer?.Stop(); };
+                _pollingTimer.Start();
 #else
-            Device.StartTimer(TimeSpan.FromSeconds(1.0 / GHConstants.PollingFrequency), () =>
-            {
-                DoPolling();
-                return IsGameOn;
-            });
+                Device.StartTimer(TimeSpan.FromSeconds(1.0 / GHConstants.PollingFrequency), () =>
+                {
+                    DoPolling();
+                    return IsGameOn;
+                });
 #endif
-            /* Cursor and FPS update timer */
+                /* Cursor and FPS update timer */
 #if GNH_MAUI
-            _updateTimer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
-            _updateTimer.Interval = TimeSpan.FromSeconds(0.5);
-            _updateTimer.IsRepeating = true;
-            _updateTimer.Tick += (s, e) => { DoUpdateTimer(); if (!IsGameOn) _updateTimer?.Stop(); };
-            _updateTimer.Start();
+                _updateTimer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+                _updateTimer.Interval = TimeSpan.FromSeconds(0.5);
+                _updateTimer.IsRepeating = true;
+                _updateTimer.Tick += (s, e) => { DoUpdateTimer(); if (!IsGameOn) _updateTimer?.Stop(); };
+                _updateTimer.Start();
 #else
-            Device.StartTimer(TimeSpan.FromSeconds(0.5), () =>
-            {
-                DoUpdateTimer();
-                return IsGameOn;
-            });
+                Device.StartTimer(TimeSpan.FromSeconds(0.5), () =>
+                {
+                    DoUpdateTimer();
+                    return IsGameOn;
+                });
 #endif
 
-            await LoadingProgressBar.ProgressTo(1.0, 20, Easing.Linear);
-            SetupKeyListening();
-            GHApp.DebugCheckCurrentFileDescriptor("StartGameFinished");
+                await LoadingProgressBar.ProgressTo(1.0, 20, Easing.Linear);
+                SetupKeyListening();
+                GHApp.DebugCheckCurrentFileDescriptor("StartGameFinished");
+            }
+            catch(Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("StartGame: " + ex.Message);
+            }
         }
 
         private void DoPolling()

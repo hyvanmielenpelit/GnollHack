@@ -554,48 +554,55 @@ namespace GnollHackX
 
         private async void StartLocalGameButton_Clicked(object sender, EventArgs e)
         {
-            StartLocalGrid.IsEnabled = false;
-            GHApp.PlayButtonClickedSound();
-
-            if(GHApp.TournamentMode)
+            try
             {
-                if(!GHApp.XlogUserNameVerified)
+                StartLocalGrid.IsEnabled = false;
+                GHApp.PlayButtonClickedSound();
+
+                if (GHApp.TournamentMode)
                 {
-                    _popupStyle = popup_style.GeneralDialog;
-                    PopupCheckBoxLayout.IsVisible = false;
-                    PopupTitleLabel.TextColor = GHColors.Orange;
-                    PopupTitleLabel.Text = "Tournament Verification Failed";
-                    PopupLabel.Text = "User name and password for Server Posting have not been verified. Please set and verify these in Settings in the Server Posting section.";
-                    PopupGrid.IsVisible = true;
-                    StartLocalGrid.IsEnabled = true;
-                    return;
+                    if (!GHApp.XlogUserNameVerified)
+                    {
+                        _popupStyle = popup_style.GeneralDialog;
+                        PopupCheckBoxLayout.IsVisible = false;
+                        PopupTitleLabel.TextColor = GHColors.Orange;
+                        PopupTitleLabel.Text = "Tournament Verification Failed";
+                        PopupLabel.Text = "User name and password for Server Posting have not been verified. Please set and verify these in Settings in the Server Posting section.";
+                        PopupGrid.IsVisible = true;
+                        StartLocalGrid.IsEnabled = true;
+                        return;
+                    }
+                    else if (!GHApp.HasInternetAccess)
+                    {
+                        _popupStyle = popup_style.GeneralDialog;
+                        PopupCheckBoxLayout.IsVisible = false;
+                        PopupTitleLabel.TextColor = GHColors.Orange;
+                        PopupTitleLabel.Text = "No Internet";
+                        PopupLabel.Text = "You must be connected to internet to start a Tournament game. Please make sure you have an internet connection.";
+                        PopupGrid.IsVisible = true;
+                        StartLocalGrid.IsEnabled = true;
+                        return;
+                    }
                 }
-                else if (!GHApp.HasInternetAccess)
-                {
-                    _popupStyle = popup_style.GeneralDialog;
-                    PopupCheckBoxLayout.IsVisible = false;
-                    PopupTitleLabel.TextColor = GHColors.Orange;
-                    PopupTitleLabel.Text = "No Internet";
-                    PopupLabel.Text = "You must be connected to internet to start a Tournament game. Please make sure you have an internet connection.";
-                    PopupGrid.IsVisible = true;
-                    StartLocalGrid.IsEnabled = true;
-                    return;
-                }
+
+                StartLocalGameButton.TextColor = GHColors.Gray;
+                carouselView.Stop();
+
+                long numberofgames = Preferences.Get("NumberOfGames", 0L);
+                Preferences.Set("NumberOfGames", numberofgames + 1L);
+
+                var gamePage = new GamePage(this);
+                GHApp.CurrentGamePage = gamePage;
+                gamePage.EnableWizardMode = wizardModeSwitch.IsToggled;
+                gamePage.EnableCasualMode = casualModeSwitch.IsToggled;
+                gamePage.EnableModernMode = !classicModeSwitch.IsToggled;
+                await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
+                gamePage.StartNewGame();
             }
-
-            StartLocalGameButton.TextColor = GHColors.Gray;
-            carouselView.Stop();
-
-            long numberofgames = Preferences.Get("NumberOfGames", 0L);
-            Preferences.Set("NumberOfGames", numberofgames + 1L);
-
-            var gamePage = new GamePage(this);
-            GHApp.CurrentGamePage = gamePage;
-            gamePage.EnableWizardMode = wizardModeSwitch.IsToggled;
-            gamePage.EnableCasualMode = casualModeSwitch.IsToggled;
-            gamePage.EnableModernMode = !classicModeSwitch.IsToggled;
-            await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
-            gamePage.StartNewGame();
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("StartLocalGameButton_Clicked: " + ex.Message);
+            }
         }
 
         private bool _firsttime = true;
@@ -1042,20 +1049,6 @@ namespace GnollHackX
             carouselView.Play();
 
             UpperButtonGrid.IsVisible = true;
-
-            //if(GHApp.IsiOS && GHApp.IsMaui)
-            //{
-            //    StartLocalGameButton.Redraw();
-            //    ResetButton.Redraw();
-            //    VaultButton.Redraw();
-            //    OptionsButton.Redraw();
-            //    SettingsButton.Redraw();
-            //    AboutButton.Redraw();
-            //    ExitButton.Redraw();
-            //    PopupOkButton.Redraw();
-            //    PendingTasksOkButton.Redraw();
-            //    PendingTasksCancelButton.Redraw();
-            //}
 
             await UpperButtonGrid.FadeTo(1, 250);
             UpperButtonGrid.Opacity = 1.0;  /* To make sure */
