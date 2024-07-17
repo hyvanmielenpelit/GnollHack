@@ -25,7 +25,8 @@ public static class MauiProgram
             .ConfigureMauiHandlers((handlers) => {
                 handlers.AddHandler(typeof(CustomLabel), typeof(AutoSizeSKCanvasViewHandler));
 #if IOS
-                handlers.AddHandler(typeof(Shell), typeof(CustomShellRenderer));  
+                handlers.AddHandler(typeof(Shell), typeof(CustomShellRenderer));
+                handlers.AddHandler(typeof(SKAcceleratedCanvasView), typeof(SKAcceleratedCanvasViewHandler));
 #endif
             })
 #if WINDOWS

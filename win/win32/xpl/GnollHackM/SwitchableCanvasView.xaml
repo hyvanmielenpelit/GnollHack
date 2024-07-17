@@ -5,7 +5,7 @@
              xmlns:skia="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
              x:Class="GnollHackM.SwitchableCanvasView">
   
-      <Grid>
+      <Grid x:Name="RootGrid">
           <skia:SKCanvasView x:Name="internalCanvasView" IsVisible="true" PaintSurface="internalCanvasView_PaintSurface" Touch="internalCanvasView_Touch" HorizontalOptions="Fill" VerticalOptions="Fill" />
           <skia:SKGLView x:Name="internalGLView" IsVisible="false" PaintSurface="internalGLView_PaintSurface" Touch="internalGLView_Touch" HorizontalOptions="Fill" VerticalOptions="Fill" />
       </Grid>

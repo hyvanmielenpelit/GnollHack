@@ -13,7 +13,9 @@ using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
 using Microsoft.Maui.Controls;
 using static System.Collections.Specialized.BitVector32;
-
+#if IOS
+using GnollHackM.Platforms.iOS;
+#endif
 
 
 #if WINDOWS
@@ -34,6 +36,15 @@ namespace GnollHackX.Controls
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SwitchableCanvasView : ContentView
     {
+#if IOS
+        private SKAcceleratedCanvasView internalMetalView = new SKAcceleratedCanvasView
+        {
+            HorizontalOptions = LayoutOptions.Fill,
+            VerticalOptions = LayoutOptions.Fill,
+            IsVisible = false,
+        };
+#endif
+
         private object _glLock = new object();
         private bool _useGL = false;
         public bool UseGL 
@@ -45,16 +56,30 @@ namespace GnollHackX.Controls
                     _useGL = value;
                 }
                 internalCanvasView.IsVisible = !value;
+#if IOS
+                internalMetalView.IsVisible = value;
+#else
                 internalGLView.IsVisible = value;
+#endif
             }
         }
 
         public SwitchableCanvasView()
         {
             InitializeComponent();
+#if IOS
+            internalMetalView.PaintSurface += internalGLView_PaintSurface;
+            RootGrid.Children.Add(internalMetalView);
+#endif
         }
 
-        public SKSize CanvasSize { get { return UseGL ? internalGLView.CanvasSize : internalCanvasView.CanvasSize; } }
+        public SKSize CanvasSize { get { return UseGL ?
+#if IOS
+                    internalMetalView.CanvasSize
+#else
+                    internalGLView.CanvasSize 
+#endif
+                    : internalCanvasView.CanvasSize; } }
         public bool IgnorePixelScaling
         {
             get { return UseGL ? false : internalCanvasView.IgnorePixelScaling; }
@@ -70,6 +95,9 @@ namespace GnollHackX.Controls
             {
                 internalGLView.EnableTouchEvents = value;
                 internalCanvasView.EnableTouchEvents = value;
+#if IOS
+                internalMetalView.EnableTouchEvents = value;
+#endif
             }
         }
         public event EventHandler<SKPaintSurfaceEventArgs> PaintSurface;
@@ -89,7 +117,11 @@ namespace GnollHackX.Controls
                     GHApp.WindowsXamlWindow.DispatcherQueue?.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.High, () => 
                     {
 #endif
-                        internalGLView.InvalidateSurface();
+#if IOS
+                    internalMetalView.InvalidateSurface();
+#else
+                    internalGLView.InvalidateSurface();
+#endif
 #if WINDOWS
                     });
                 }
