@@ -643,15 +643,16 @@ namespace GnollHackX
 
         private static bool HasCrashingDesktopGPU()
         {
-            string model = DeviceInfo.Model;
-            bool isThinkPad = false;
-            if (!string.IsNullOrWhiteSpace(model))
-            {
-                string model_lc = model.ToLower();
-                if (model_lc.Contains("thinkpad"))
-                    isThinkPad = true;
-            }
-            return isThinkPad ? true : false;
+            return false;
+            //string model = DeviceInfo.Model;
+            //bool isThinkPad = false;
+            //if (!string.IsNullOrWhiteSpace(model))
+            //{
+            //    string model_lc = model.ToLower();
+            //    if (model_lc.Contains("thinkpad"))
+            //        isThinkPad = true;
+            //}
+            //return isThinkPad ? true : false;
         }
 
         public static void InitFileDescriptors()
