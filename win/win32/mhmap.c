@@ -688,6 +688,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         return 0;
 
     case WM_LBUTTONDBLCLK:
+        break;
     case WM_RBUTTONDOWN:
         NHEVENT_MS(CLICK_SECONDARY,
                    max(1, min((COLNO - 1), data->xPos + 1

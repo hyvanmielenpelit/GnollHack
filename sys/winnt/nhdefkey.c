@@ -258,8 +258,7 @@ INPUT_RECORD *ir;
                 }
 
             } else if ((ir->EventType == MOUSE_EVENT
-                        && (ir->Event.MouseEvent.dwButtonState
-                            & MOUSEMASK))) {
+                        && (ir->Event.MouseEvent.dwButtonState & MOUSEMASK))) {
                 done = 1;
                 retval = 1;
             }
@@ -318,13 +317,10 @@ coord *cc;
 
                         if (ir->Event.MouseEvent.dwButtonState & LEFTBUTTON)
                             *mod = CLICK_PRIMARY;
-                        else if (ir->Event.MouseEvent.dwButtonState
-                                 & RIGHTBUTTON)
+                        else if (ir->Event.MouseEvent.dwButtonState & RIGHTBUTTON)
                             *mod = CLICK_SECONDARY;
-#if 0 /* middle button */
                     else if (ir->Event.MouseEvent.dwButtonState & MIDBUTTON)
-                          *mod = CLICK_MOVE;
-#endif
+                          *mod = CLICK_TERTIARY;
                         return 0;
                     }
                 }

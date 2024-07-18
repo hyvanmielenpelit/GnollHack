@@ -445,6 +445,7 @@ attempt_restore:
         newgame();
         if (discover || CasualMode)
             You_ex(ATR_NONE, CLR_MSG_HINT, "are in %s mode.", get_game_mode_text(TRUE));
+        set_mouse_buttons();
     }
     else
     {
@@ -454,7 +455,6 @@ attempt_restore:
     }
 
     //    iflags.debug_fuzzer = TRUE;
-
     moveloop(resuming);
     //gnollhack_exit(EXIT_SUCCESS);
     /*NOTREACHED*/
@@ -1053,7 +1053,8 @@ windows_init_platform(VOID_ARGS)
 #ifdef USE_TILES
     process_tiledata(1, (const char*)0, glyph2tile, glyphtileflags);
 #endif
-
+    if(flags.right_click_command == 0 && flags.middle_click_command == 0)
+        flags.right_click_command = flags.middle_click_command = DEFCLICK_ROLE;
 }
 
 /*windmain.c*/

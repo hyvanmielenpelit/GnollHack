@@ -527,16 +527,12 @@ coord *cc;
                             cc->y =
                                 ir->Event.MouseEvent.dwMousePosition.Y - 1;
 
-                            if (ir->Event.MouseEvent.dwButtonState
-                                & LEFTBUTTON)
+                            if (ir->Event.MouseEvent.dwButtonState & LEFTBUTTON)
                                 *mod = CLICK_PRIMARY;
-                            else if (ir->Event.MouseEvent.dwButtonState
-                                     & RIGHTBUTTON)
+                            else if (ir->Event.MouseEvent.dwButtonState & RIGHTBUTTON)
                                 *mod = CLICK_SECONDARY;
-#if 0 /* middle button */                   
-                else if (ir->Event.MouseEvent.dwButtonState & MIDBUTTON)
-                          *mod = CLICK_MOVE;
-#endif
+                            else if (ir->Event.MouseEvent.dwButtonState & MIDBUTTON)
+                                *mod = CLICK_TERTIARY;
                             return 0;
                         }
                     }
