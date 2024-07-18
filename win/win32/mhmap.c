@@ -699,6 +699,16 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                                                / data->yFrontTile)));
         return 0;
 
+    case WM_MBUTTONDOWN:
+        NHEVENT_MS(CLICK_TERTIARY,
+            max(1, min((COLNO - 1), data->xPos + 1
+                + (LOWORD(lParam) - data->map_orig.x)
+                / data->xFrontTile)),
+            max(0, min(ROWNO, data->yPos
+                + (HIWORD(lParam) - data->map_orig.y)
+                / data->yFrontTile)));
+        return 0;
+
     case WM_DESTROY:
         if (data->hMapFont)
             DeleteObject(data->hMapFont);
