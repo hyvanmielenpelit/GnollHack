@@ -211,6 +211,7 @@
 		<None Remove="Assets\Cursor\custom-cursor-64.cur" />
 		<None Remove="Assets\Cursor\info-cursor-32.cur" />
 		<None Remove="Assets\Cursor\info-cursor-64.cur" />
+		<None Remove="Assets\Fonts\Lato.ttf" />
 		<None Remove="Assets\gnollhack-icon-v2-512.png" />
 		<None Remove="Assets\UI\autostash.png" />
 		<None Remove="Assets\UI\background-darkmarble.png" />
@@ -996,6 +997,10 @@
 	  <EmbeddedResource Include="Assets\UI\zapquick.png" />
 	  <EmbeddedResource Include="Assets\UI\zoom.png" />
 	  <EmbeddedResource Include="Assets\uwch.ttf" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Assets\Fonts\Lato.ttf" />
 	</ItemGroup>
 
 	<ItemGroup>
