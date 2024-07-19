@@ -12,6 +12,7 @@ using GnollHackM.Platforms.iOS;
 #if WINDOWS
 using GnollHackM.Platforms.Windows;
 using Sentry.Profiling;
+using Microsoft.Maui.Platform;
 #endif
 
 namespace GnollHackM;
@@ -96,8 +97,8 @@ public static class MauiProgram
                 {
                     windowsLifecycleBuilder.OnWindowCreated(window =>
                     {
-                        window.ExtendsContentIntoTitleBar = false;
                         GHApp.WindowsXamlWindow = window;
+                        window.ExtendsContentIntoTitleBar = false;
                         var handle = WinRT.Interop.WindowNative.GetWindowHandle(window);
                         var id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
                         var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(id);
