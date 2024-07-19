@@ -39,9 +39,6 @@ public partial class App : Application
             handler.PlatformView.MinHeight = 0;
         });
 #endif
-#if DEBUG
-        SentrySdk.CaptureMessage("Sentry started at " + DateTime.Now.ToLongTimeString());
-#endif
         GHApp.Initialize();
 		MainPage = new AppShell();
     }

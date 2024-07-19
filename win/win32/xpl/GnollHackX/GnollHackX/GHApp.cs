@@ -1251,162 +1251,41 @@ namespace GnollHackX
                 return LatoRegular;
         }
 
+        private static SKTypeface LoadEmbeddedAssetTypeface(string typefaceAlias, string typefaceFileName)
+        {
+            string resourcePath = AppResourceName + ".Assets." + typefaceFileName;
+            SKTypeface res = null;
+            try
+            {
+                using (Stream stream = _assembly.GetManifestResourceStream(resourcePath))
+                {
+                    res = SKTypeface.FromStream(stream);
+                    TypefaceDictionary.Add(typefaceAlias, res);
+                }
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog("LoadEmbeddedAssetTypeface (" + resourcePath + "): " + ex.Message);
+            }
+            return res;
+        }
+
         public static void InitBaseTypefaces()
         {
-            using (Stream stream = _assembly.GetManifestResourceStream(AppResourceName + ".Assets.diablo_h.ttf"))
-            {
-                if (stream != null)
-                {
-                    try
-                    {
-                        DiabloTypeface = SKTypeface.FromStream(stream);
-                        TypefaceDictionary.Add("Diablo", DiabloTypeface);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                }
-            }
-            using (Stream stream = _assembly.GetManifestResourceStream(AppResourceName + ".Assets.uwch.ttf"))
-            {
-                if (stream != null)
-                {
-                    try
-                    {
-                        UnderwoodTypeface = SKTypeface.FromStream(stream);
-                        TypefaceDictionary.Add("Underwood", UnderwoodTypeface);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                }
-            }
-            using (Stream stream = _assembly.GetManifestResourceStream(AppResourceName + ".Assets.Immortal-Regular.ttf"))
-            {
-                if (stream != null)
-                {
-                    try
-                    {
-                        ImmortalTypeface = SKTypeface.FromStream(stream);
-                        TypefaceDictionary.Add("Immortal", ImmortalTypeface);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                }
-            }
-            using (Stream stream = _assembly.GetManifestResourceStream(AppResourceName + ".Assets.archristy.ttf"))
-            {
-                if (stream != null)
-                {
-                    try
-                    {
-                        ARChristyTypeface = SKTypeface.FromStream(stream);
-                        TypefaceDictionary.Add("ARChristy", ARChristyTypeface);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                }
-            }
+            DiabloTypeface = LoadEmbeddedAssetTypeface("Diablo", "diablo_h.ttf");
+            UnderwoodTypeface = LoadEmbeddedAssetTypeface("Underwood", "uwch.ttf");
+            ImmortalTypeface = LoadEmbeddedAssetTypeface("Immortal", "Immortal-Regular.ttf");
+            ARChristyTypeface = LoadEmbeddedAssetTypeface("ARChristy", "archristy.ttf");
         }
 
         public static void InitAdditionalTypefaces()
         {
-            using (Stream stream = _assembly.GetManifestResourceStream(AppResourceName + ".Assets.endr.ttf"))
-            {
-                if (stream != null)
-                {
-                    try
-                    {
-                        EndorTypeface = SKTypeface.FromStream(stream);
-                        TypefaceDictionary.Add("Endor", EndorTypeface);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                }
-            }
-            using (Stream stream = _assembly.GetManifestResourceStream(AppResourceName + ".Assets.shxi.ttf"))
-            {
-                if (stream != null)
-                {
-                    try
-                    {
-                        XizorTypeface = SKTypeface.FromStream(stream);
-                        TypefaceDictionary.Add("Xizor", XizorTypeface);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                }
-            }
-            using (Stream stream = _assembly.GetManifestResourceStream(AppResourceName + ".Assets.DejaVuSansMono.ttf"))
-            {
-                if (stream != null)
-                {
-                    try
-                    {
-                        DejaVuSansMonoTypeface = SKTypeface.FromStream(stream);
-                        TypefaceDictionary.Add("DejaVuSansMono", DejaVuSansMonoTypeface);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                }
-            }
-            using (Stream stream = _assembly.GetManifestResourceStream(AppResourceName + ".Assets.DejaVuSansMono-Bold.ttf"))
-            {
-                if (stream != null)
-                {
-                    try
-                    {
-                        DejaVuSansMonoBoldTypeface = SKTypeface.FromStream(stream);
-                        TypefaceDictionary.Add("DejaVuSansMonoBold", DejaVuSansMonoBoldTypeface);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                }
-            }
-            using (Stream stream = _assembly.GetManifestResourceStream(AppResourceName + ".Assets.Lato-Regular.ttf"))
-            {
-                if (stream != null)
-                {
-                    try
-                    {
-                        LatoRegular = SKTypeface.FromStream(stream);
-                        TypefaceDictionary.Add("LatoRegular", LatoRegular);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                }
-            }
-            using (Stream stream = _assembly.GetManifestResourceStream(AppResourceName + ".Assets.Lato-Bold.ttf"))
-            {
-                if (stream != null)
-                {
-                    try
-                    {
-                        LatoBold = SKTypeface.FromStream(stream);
-                        TypefaceDictionary.Add("LatoBold", LatoBold);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                }
-            }
+            EndorTypeface = LoadEmbeddedAssetTypeface("Endor", "endr.ttf");
+            XizorTypeface = LoadEmbeddedAssetTypeface("Xizor", "shxi.ttf");
+            DejaVuSansMonoTypeface = LoadEmbeddedAssetTypeface("DejaVuSansMono", "DejaVuSansMono.ttf");
+            DejaVuSansMonoBoldTypeface = LoadEmbeddedAssetTypeface("DejaVuSansMonoBold", "DejaVuSansMono-Bold.ttf");
+            LatoRegular = LoadEmbeddedAssetTypeface("LatoRegular", "Lato-Regular.ttf");
+            LatoBold = LoadEmbeddedAssetTypeface("LatoBold", "Lato-Bold.ttf");
         }
 
         public static SKImage MenuBackgroundBitmap { get; set; }
