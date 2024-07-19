@@ -1010,9 +1010,9 @@
 		<PackageReference Include="Sentry.Maui" Version="4.9.0" />
 		<PackageReference Include="System.Text.Json" Version="9.0.0-preview.6.24327.7" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="SkiaSharp" Version="3.0.0-preview.3.1" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.0.0-preview.3.1" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.0.0-preview.3.1" />
+		<PackageReference Include="SkiaSharp" Version="3.0.0-preview.4.1" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.0.0-preview.4.1" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.0.0-preview.4.1" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 	</ItemGroup>
