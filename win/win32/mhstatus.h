@@ -9,7 +9,6 @@
 
 #include "winMS.h"
 #include "config.h"
-#include "global.h"
 #include "botl.h"
 
 #define NHSW_LINES MAX_STATUS_LINES

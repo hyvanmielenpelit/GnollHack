@@ -9,7 +9,6 @@
 
 #include "winMS.h"
 #include "config.h"
-#include "global.h"
 
 void mswin_finish_rip_text(winid wid);
 HWND mswin_init_RIP_window(void);

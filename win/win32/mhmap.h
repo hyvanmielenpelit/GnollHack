@@ -9,7 +9,6 @@
 
 #include "winMS.h"
 #include "config.h"
-#include "global.h"
 
 COLORREF nhcolor_to_RGB(int c);
 HWND mswin_init_map_window(void);

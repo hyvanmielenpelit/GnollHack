@@ -9,7 +9,6 @@
 
 #include "winMS.h"
 #include "config.h"
-#include "global.h"
 
 int mswin_getlin_window(int style, int attr, int color, const char *question, char *result,
                         size_t result_size);

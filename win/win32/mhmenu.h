@@ -9,7 +9,6 @@
 
 #include "winMS.h"
 #include "config.h"
-#include "global.h"
 
 #define MENU_TYPE_TEXT 1
 #define MENU_TYPE_MENU 2
