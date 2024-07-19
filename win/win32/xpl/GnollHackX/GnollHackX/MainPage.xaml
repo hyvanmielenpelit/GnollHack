@@ -163,6 +163,28 @@
                     <TapGestureRecognizer />
                 </Grid.GestureRecognizers>
             </Grid>
+
+            <Grid x:Name="AlertGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
+              BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
+              AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
+                <Grid WidthRequest  ="600" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
+                    <Frame x:Name="AlertFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                        <StackLayout x:Name="AlertLayout" Padding="5" Spacing="6"
+                                     HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label Text="" x:Name="AlertTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
+                                       VerticalTextAlignment="Center" HorizontalOptions="Center"  />
+                            <Label Text="" x:Name="AlertLabel" FontFamily="Underwood" FontSize="16" TextColor="White"
+                                       VerticalTextAlignment="Start" HorizontalOptions="Center" />
+                            <controls:CustomImageButton x:Name="AlertOkButton" Text="OK" FontSize="19" WidthRequest="170" Margin="0,10,0,0" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
+                                        Clicked="AlertOkButton_Clicked" />
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
+            </Grid>
+
             <Grid x:Name="PendingTasksGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
               BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">

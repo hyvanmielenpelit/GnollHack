@@ -605,7 +605,7 @@ namespace GnollHackX
 #if GNH_MAUI
                 SentrySdk.CaptureException(ex);
 #endif
-                await DisplayAlert("Error", "Error occurred when starting the game: " + ex.Message, "OK");
+                await DisplayAlertOrGrid("Error", "Error occurred when starting the game: " + ex.Message, "OK", GHColors.Red);
             }
         }
 
@@ -678,34 +678,34 @@ namespace GnollHackX
                 if (GHApp.InformAboutGameTermination && (GHApp.DebugLogMessages ||  GHApp.GameSaveStatus == 0))
                 {
                     GHApp.InformAboutGameTermination = false;
-                    await DisplayAlert("Unexpected Game Termination", "GnollHack was unexpectedly terminated when running on background. This may have been instructed by the operating system or the user." + (GHApp.GameSaveStatus == 0 ? " Your game may be recoverable from the crash." : " Your game was saved before the termination."), "OK");
+                    await DisplayAlertOrGrid("Unexpected Game Termination", "GnollHack was unexpectedly terminated when running on background. This may have been instructed by the operating system or the user." + (GHApp.GameSaveStatus == 0 ? " Your game may be recoverable from the crash." : " Your game was saved before the termination."), "OK", GHColors.Orange);
                     previousInformationShown = true;
                 }
                 if (GHApp.InformAboutIncompatibleSavedGames)
                 {
                     GHApp.InformAboutIncompatibleSavedGames = false;
-                    await DisplayAlert("Incompatible Saved Games", "GnollHack has been updated to a newer version, for which your existing saved games are incompatible.", "OK"); // To downgrade back to the earlier version, back up first your save files using About -> Export Saved Games and then follow the instructions at About -> Downgrade.
+                    await DisplayAlertOrGrid("Incompatible Saved Games", "GnollHack has been updated to a newer version, for which your existing saved games are incompatible.", "OK", GHColors.Orange); // To downgrade back to the earlier version, back up first your save files using About -> Export Saved Games and then follow the instructions at About -> Downgrade.
                     previousInformationShown = true;
                 }
                 if (GHApp.InformAboutSlowSounds)
                 {
-                    await DisplayAlert("Slow Sounds", "GnollHack is running on Android in Debug Mode using the APK format, which causes sounds to play slow. Please switch Streaming Banks to Memory on in Settings.", "OK");
+                    await DisplayAlertOrGrid("Slow Sounds", "GnollHack is running on Android in Debug Mode using the APK format, which causes sounds to play slow. Please switch Streaming Banks to Memory on in Settings.", "OK", GHColors.Orange);
                     previousInformationShown = true;
                 }
                 if (GHApp.InformAboutGPU)
                 {
-                    await DisplayAlert("Multiple GPUs", "GnollHack is currently not using a high-performance GPU, which may impact performance. Please switch to a high performance graphics preference in Windows Settings App at System > Display > Graphics > Add App > Microsoft Store App > Options.", "OK");
+                    await DisplayAlertOrGrid("Multiple GPUs", "GnollHack is currently not using a high-performance GPU, which may impact performance. Please switch to a high performance graphics preference in Windows Settings App at System > Display > Graphics > Add App > Microsoft Store App > Options.", "OK", GHColors.Orange);
                     GHApp.HasInformedAboutGPU = true;
                     previousInformationShown = true;
                 }
                 if (GHApp.InformAboutRecordingSetOff)
                 {
-                    await DisplayAlert("Recording Switched Off", string.Format("You are are running low on free disk space ({0:0.00} GB). Game recording has been switched off in Settings." + (GHApp.InformAboutFreeDiskSpace ? " Please consider freeing disk space on your device." : ""), (double)GHConstants.LowFreeDiskSpaceThresholdInBytes / (1024 * 1024 * 1024)), "OK");
+                    await DisplayAlertOrGrid("Recording Switched Off", string.Format("You are are running low on free disk space ({0:0.00} GB). Game recording has been switched off in Settings." + (GHApp.InformAboutFreeDiskSpace ? " Please consider freeing disk space on your device." : ""), (double)GHConstants.LowFreeDiskSpaceThresholdInBytes / (1024 * 1024 * 1024)), "OK", GHColors.Orange);
                     previousInformationShown = true;
                 }
                 else if (GHApp.InformAboutFreeDiskSpace)
                 {
-                    await DisplayAlert("Very Low Free Disk Space", string.Format("You are are running very low on free disk space ({0:0.00} GB). Please consider freeing disk space on your device.", (double)GHConstants.VeryLowFreeDiskSpaceThresholdInBytes / (1024 * 1024 * 1024)), "OK");
+                    await DisplayAlertOrGrid("Very Low Free Disk Space", string.Format("You are are running very low on free disk space ({0:0.00} GB). Please consider freeing disk space on your device.", (double)GHConstants.VeryLowFreeDiskSpaceThresholdInBytes / (1024 * 1024 * 1024)), "OK", GHColors.Orange);
                     previousInformationShown = true;
                 }
                 if (!previousInformationShown)
@@ -761,7 +761,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Reading Secrets File Failed", "GnollHack failed to read secrets file: " + ex.Message, "OK");
+                await DisplayAlertOrGrid("Reading Secrets File Failed", "GnollHack failed to read secrets file: " + ex.Message, "OK", GHColors.Red);
             }
             try
             {
@@ -769,7 +769,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Reading User Secrets File Failed", "GnollHack failed to read user secrets file: " + ex.Message, "OK");
+                await DisplayAlertOrGrid("Reading User Secrets File Failed", "GnollHack failed to read user secrets file: " + ex.Message, "OK", GHColors.Red);
             }
         }
 
@@ -781,7 +781,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                await DisplayAlert("GnollHack Initialization Failed", "Initializing GnollHack failed: " + ex.Message, "OK");
+                await DisplayAlertOrGrid("GnollHack Initialization Failed", "Initializing GnollHack failed: " + ex.Message, "OK", GHColors.Red);
             }
         }
         public async Task TryInitializeSecrets()
@@ -792,7 +792,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Secrets Initialization Failed", "Initializing secrets failed: " + ex.Message, "OK");
+                await DisplayAlertOrGrid("Secrets Initialization Failed", "Initializing secrets failed: " + ex.Message, "OK", GHColors.Red);
             }
         }
 
@@ -804,7 +804,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                await DisplayAlert("FMOD Initialization Failed", "Initializing FMOD failed: " + ex.Message, "OK");
+                await DisplayAlertOrGrid("FMOD Initialization Failed", "Initializing FMOD failed: " + ex.Message, "OK", GHColors.Red);
             }
         }
 
@@ -816,7 +816,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                await DisplayAlert("File Clearing Failure", "GnollHack failed to clear core files: " + ex.Message, "OK");
+                await DisplayAlertOrGrid("File Clearing Failure", "GnollHack failed to clear core files: " + ex.Message, "OK", GHColors.Orange);
             }
         }
 
@@ -1198,7 +1198,7 @@ namespace GnollHackX
             string errormsg = "";
             if (!editorPage.ReadFile(out errormsg))
             {
-                await DisplayAlert("Reading Options File Failed", "GnollHack failed to read the options file: " + errormsg, "OK");
+                await DisplayAlertOrGrid("Reading Options File Failed", "GnollHack failed to read the options file: " + errormsg, "OK", GHColors.Red);
                 UpperButtonGrid.IsEnabled = true;
             }
             else
@@ -1431,7 +1431,32 @@ namespace GnollHackX
             if (!string.IsNullOrWhiteSpace(_popupViewUrl) && Uri.IsWellFormedUriString(_popupViewUrl, UriKind.Absolute))
                 await GHApp.OpenBrowser(this, new Uri(_popupViewUrl));
             else
-                await DisplayAlert("Malformed URL", "The URL was malformed: " + _popupViewUrl, "OK");
+                await DisplayAlertOrGrid("Malformed URL", "The URL was malformed: " + _popupViewUrl, "OK", GHColors.Orange);
+        }
+
+        private void AlertOkButton_Clicked(object sender, EventArgs e)
+        {
+            AlertOkButton.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            AlertGrid.IsVisible = false;
+            AlertOkButton.IsEnabled = true;
+        }
+
+        private void DisplayAlertGrid(string title, string message, string buttonText, Color titleColor)
+        {
+            AlertTitleLabel.Text = title;
+            AlertTitleLabel.TextColor = titleColor;
+            AlertLabel.Text = message;
+            AlertOkButton.Text = buttonText;
+            AlertGrid.IsVisible = true;
+        }
+
+        private async Task DisplayAlertOrGrid(string title, string message, string buttonText, Color titleColor)
+        {
+            if (AlertGrid.IsVisible)
+                await DisplayAlert(title, message, buttonText);
+            else
+                DisplayAlertGrid(title, message, buttonText, titleColor);
         }
     }
 
