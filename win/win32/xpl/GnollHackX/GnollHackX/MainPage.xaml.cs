@@ -827,11 +827,10 @@ namespace GnollHackX
             await TryReadSecrets();
             await InitializeServices();
 
-            Assembly assembly = GetType().GetTypeInfo().Assembly;
-            GHApp.InitAdditionalTypefaces(assembly);
-            GHApp.InitAdditionalCachedBitmaps(assembly);
-            GHApp.InitSymbolBitmaps(assembly);
-            GHApp.InitGameBitmaps(assembly);
+            GHApp.InitAdditionalTypefaces();
+            GHApp.InitAdditionalCachedBitmaps();
+            GHApp.InitSymbolBitmaps();
+            GHApp.InitGameBitmaps();
             carouselView.Init();
 
             string verstr = "?";
@@ -962,7 +961,6 @@ namespace GnollHackX
             {
                 Debug.WriteLine(ex.Message);
             }
-
             GHApp.DebugCheckCurrentFileDescriptor("StartUpTasksFinish");
         }
 

@@ -1112,17 +1112,11 @@ namespace GnollHackX.Pages.Game
 
                 if (!GHApp.StartGameDataSet)
                 {
-                    Assembly assembly = GetType().GetTypeInfo().Assembly;
                     tasks.Add(LoadingProgressBar.ProgressTo(0.3, 600, Easing.Linear));
                     tasks.Add(Task.Run(() =>
                     {
                         GHApp.FmodService.LoadBanks(sound_bank_loading_type.Game);
-                        using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack_64x96_transparent_32bits.png"))
-                        {
-                            SKBitmap tileMap = SKBitmap.Decode(stream);
-                            tileMap.SetImmutable();
-                            GHApp._tileMap[0] = SKImage.FromBitmap(tileMap);
-                        }
+                        GHApp._tileMap[0] = GHApp.LoadEmbeddedAssetsBitmap("gnollhack_64x96_transparent_32bits.png");
                     }));
                     await Task.WhenAll(tasks);
                     tasks.Clear();
@@ -1130,12 +1124,7 @@ namespace GnollHackX.Pages.Game
                     tasks.Add(LoadingProgressBar.ProgressTo(0.4, 100, Easing.Linear));
                     tasks.Add(Task.Run(() =>
                     {
-                        using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack_64x96_transparent_32bits-2.png"))
-                        {
-                            SKBitmap tileMap = SKBitmap.Decode(stream);
-                            tileMap.SetImmutable();
-                            GHApp._tileMap[1] = SKImage.FromBitmap(tileMap);
-                        }
+                        GHApp._tileMap[1] = GHApp.LoadEmbeddedAssetsBitmap("gnollhack_64x96_transparent_32bits-2.png");
                     }));
                     await Task.WhenAll(tasks);
                     tasks.Clear();
@@ -1143,12 +1132,7 @@ namespace GnollHackX.Pages.Game
                     tasks.Add(LoadingProgressBar.ProgressTo(0.5, 100, Easing.Linear));
                     tasks.Add(Task.Run(() =>
                     {
-                        using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.gnollhack-icon-v2-512.png"))
-                        {
-                            SKBitmap bmp = SKBitmap.Decode(stream);
-                            bmp.SetImmutable();
-                            GHApp._logoBitmap = SKImage.FromBitmap(bmp);
-                        }
+                        GHApp._logoBitmap = GHApp.LoadEmbeddedAssetsBitmap("gnollhack-icon-v2-512.png");
                     }));
                     await Task.WhenAll(tasks);
                     tasks.Clear();
@@ -1156,28 +1140,13 @@ namespace GnollHackX.Pages.Game
                     tasks.Add(LoadingProgressBar.ProgressTo(0.6, 100, Easing.Linear));
                     tasks.Add(Task.Run(() =>
                     {
-                        using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.UI.skill.png"))
-                        {
-                            SKBitmap bmp = SKBitmap.Decode(stream);
-                            bmp.SetImmutable();
-                            GHApp._skillBitmap = SKImage.FromBitmap(bmp);
-                        }
-                        using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.UI.wield.png"))
-                        {
-                            SKBitmap bmp = SKBitmap.Decode(stream);
-                            bmp.SetImmutable();
-                            GHApp._prevWepBitmap = SKImage.FromBitmap(bmp);
-                        }
-                        using (Stream stream = assembly.GetManifestResourceStream(GHApp.AppResourceName + ".Assets.UI.unwield.png"))
-                        {
-                            SKBitmap bmp = SKBitmap.Decode(stream);
-                            bmp.SetImmutable();
-                            GHApp._prevUnwieldBitmap = SKImage.FromBitmap(bmp);
-                        }
+                        GHApp._skillBitmap = GHApp.LoadEmbeddedUIBitmap("skill.png");
+                        GHApp._prevWepBitmap = GHApp.LoadEmbeddedUIBitmap("wield.png");
+                        GHApp._prevUnwieldBitmap = GHApp.LoadEmbeddedUIBitmap("unwield.png");
 
-                        GHApp.InitializeArrowButtons(assembly);
-                        GHApp.InitializeUIBitmaps(assembly);
-                        GHApp.InitializeMoreCommandButtons(assembly, UseSimpleCmdLayout);
+                        GHApp.InitializeArrowButtons();
+                        GHApp.InitializeUIBitmaps();
+                        GHApp.InitializeMoreCommandButtons(UseSimpleCmdLayout);
 
                         GHApp.UnexploredGlyph = _gnollHackService.GetUnexploredGlyph();
                         GHApp.NoGlyph = _gnollHackService.GetNoGlyph();

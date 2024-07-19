@@ -568,8 +568,7 @@ namespace GnollHackX.Pages.MainScreen
                 }
             }
 
-            Assembly assembly = GetType().GetTypeInfo().Assembly;
-            GHApp.InitializeMoreCommandButtons(assembly, SimpleCmdLayoutSwitch.IsToggled);
+            GHApp.InitializeMoreCommandButtons(SimpleCmdLayoutSwitch.IsToggled);
             if (_gamePage != null)
             {
                 _gamePage.UseSimpleCmdLayout = SimpleCmdLayoutSwitch.IsToggled;
