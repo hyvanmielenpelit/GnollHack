@@ -945,7 +945,7 @@ void lib_status_finish(void)
 
 void lib_status_enablefield(int fieldidx, const char* nm, const char* fmt, BOOLEAN_P enable)
 {
-    lib_callbacks.callback_status_enablefield(fieldidx, nm, fmt, enable);
+    lib_callbacks.callback_status_enablefield(fieldidx, nm, fmt, (uchar)enable);
     genl_status_enablefield(fieldidx, nm, fmt, enable);
 
     if (!enable)
