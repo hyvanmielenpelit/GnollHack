@@ -6169,27 +6169,34 @@ namespace GnollHackX
         public static void ListGPUs()
         {
 #if WINDOWS && GNH_MAUI
-            ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
-            var mos = searcher.Get();
-            foreach (ManagementObject mo in mos)
+            try
             {
-                string minRefreshRate = mo.Properties["MinRefreshRate"]?.Value?.ToString();
-                string maxRefreshRate = mo.Properties["MaxRefreshRate"]?.Value?.ToString();
-                int minRefreshInt = -1;
-                if (string.IsNullOrWhiteSpace(minRefreshRate))
-                    minRefreshInt = -2;
-                else if (!int.TryParse(minRefreshRate, out minRefreshInt))
-                    minRefreshInt = -3;
-                int maxRefreshInt = -1;
-                if (string.IsNullOrWhiteSpace(maxRefreshRate))
-                    maxRefreshInt = -2;
-                else if (!int.TryParse(maxRefreshRate, out maxRefreshInt))
-                    maxRefreshInt = -3;
-                string description = mo.Properties["Description"]?.Value?.ToString();
-                string adapterDACType = mo.Properties["AdapterDACType"]?.Value?.ToString();
-                bool isCurrent = !string.IsNullOrWhiteSpace(minRefreshRate);
-                bool isIntegratedGraphics = adapterDACType == "Internal";
-                DeviceGPUs.Add(new DeviceGPU(description ?? "", isCurrent, isIntegratedGraphics, minRefreshInt, maxRefreshInt));
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
+                var mos = searcher.Get();
+                foreach (ManagementObject mo in mos)
+                {
+                    string minRefreshRate = mo.Properties["MinRefreshRate"]?.Value?.ToString();
+                    string maxRefreshRate = mo.Properties["MaxRefreshRate"]?.Value?.ToString();
+                    int minRefreshInt = -1;
+                    if (string.IsNullOrWhiteSpace(minRefreshRate))
+                        minRefreshInt = -2;
+                    else if (!int.TryParse(minRefreshRate, out minRefreshInt))
+                        minRefreshInt = -3;
+                    int maxRefreshInt = -1;
+                    if (string.IsNullOrWhiteSpace(maxRefreshRate))
+                        maxRefreshInt = -2;
+                    else if (!int.TryParse(maxRefreshRate, out maxRefreshInt))
+                        maxRefreshInt = -3;
+                    string description = mo.Properties["Description"]?.Value?.ToString();
+                    string adapterDACType = mo.Properties["AdapterDACType"]?.Value?.ToString();
+                    bool isCurrent = !string.IsNullOrWhiteSpace(minRefreshRate);
+                    bool isIntegratedGraphics = adapterDACType == "Internal";
+                    DeviceGPUs.Add(new DeviceGPU(description ?? "", isCurrent, isIntegratedGraphics, minRefreshInt, maxRefreshInt));
+                }
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog(ex.Message);
             }
 #endif
         }
@@ -6198,63 +6205,71 @@ namespace GnollHackX
         public static string GetActiveGPU()
         {
             string res = "";
+            try
+            {
 #if WINDOWS10_0_19041_0_OR_GREATER
-            OperatingSystem osVer = System.Environment.OSVersion;
-            int build = osVer?.Version?.Build ?? 0;
+                OperatingSystem osVer = System.Environment.OSVersion;
+                int build = osVer?.Version?.Build ?? 0;
 #pragma warning disable CA1416
-            var t2 = build >= 19041 ? Windows.ApplicationModel.AppInfo.Current.AppUserModelId : Windows.ApplicationModel.Package.Current.Id.FamilyName + "!App";
+                var t2 = build >= 19041 ? Windows.ApplicationModel.AppInfo.Current.AppUserModelId : Windows.ApplicationModel.Package.Current.Id.FamilyName + "!App";
 #pragma warning restore CA1416
 #else
-            var t2 = Windows.ApplicationModel.Package.Current.Id.FamilyName + "!App";
+                var t2 = Windows.ApplicationModel.Package.Current.Id.FamilyName + "!App";
 #endif
-            var gpuPref = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\DirectX\UserGpuPreferences");
-            if (gpuPref != null)
-            {
-                var gnollHackGpuPref = gpuPref.GetValue(t2)?.ToString();
-                if (!string.IsNullOrEmpty(gnollHackGpuPref))
+                var gpuPref = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\DirectX\UserGpuPreferences");
+                if (gpuPref != null)
                 {
-                    var gnollHackGpuPrefSplit = gnollHackGpuPref.Trim(';').Split('=', StringSplitOptions.RemoveEmptyEntries);
-                    if (gnollHackGpuPrefSplit.Length == 2)
+                    var gnollHackGpuPref = gpuPref.GetValue(t2)?.ToString();
+                    if (!string.IsNullOrEmpty(gnollHackGpuPref))
                     {
-                        int gnollHackGpuPrefInt = 0;
-                        bool ok = int.TryParse(gnollHackGpuPrefSplit[1], out gnollHackGpuPrefInt);
-                        if (ok)
+                        var gnollHackGpuPrefSplit = gnollHackGpuPref.Trim(';').Split('=', StringSplitOptions.RemoveEmptyEntries);
+                        if (gnollHackGpuPrefSplit.Length == 2)
                         {
-                            if (gnollHackGpuPrefInt == 0)
+                            int gnollHackGpuPrefInt = 0;
+                            bool ok = int.TryParse(gnollHackGpuPrefSplit[1], out gnollHackGpuPrefInt);
+                            if (ok)
                             {
-                                res = "Auto";
-                            }
-                            else if (gnollHackGpuPrefInt == 1)
-                            {
-                                res = "Integrated";
-                            }
-                            else if (gnollHackGpuPrefInt == 2)
-                            {
-                                res = "Dedicated";
+                                if (gnollHackGpuPrefInt == 0)
+                                {
+                                    res = "Auto";
+                                }
+                                else if (gnollHackGpuPrefInt == 1)
+                                {
+                                    res = "Integrated";
+                                }
+                                else if (gnollHackGpuPrefInt == 2)
+                                {
+                                    res = "Dedicated";
+                                }
+                                else
+                                {
+                                    res = "Unknown";
+                                }
                             }
                             else
                             {
-                                res = "Unknown";
+                                res = "Not parsed";
                             }
                         }
                         else
                         {
-                            res = "Not parsed";
+                            res = "Error";
                         }
                     }
                     else
                     {
-                        res = "Error";
+                        res = "Not set";
                     }
                 }
                 else
                 {
-                    res = "Not set";
+                    res = "Not found";
                 }
             }
-            else
+            catch (Exception ex) 
             {
-                res = "Not found";
+                res = "Exception";
+                MaybeWriteGHLog(ex.Message);
             }
             return res;
         }
