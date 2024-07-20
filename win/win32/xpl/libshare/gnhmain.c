@@ -67,9 +67,9 @@ char** argv;
 
     /* Now initialize windows */
     choose_windows(DEFAULT_WINDOW_SYS);
+    maybe_issue_simple_gui_command(!exit_hack_code_at_start, GUI_CMD_LOAD_GLYPHS);
     init_nhwindows(&argc, argv);
-    if (!exit_hack_code_at_start)
-        issue_simple_gui_command(GUI_CMD_SET_TO_BLACK);
+    maybe_issue_simple_gui_command(!exit_hack_code_at_start, GUI_CMD_SET_TO_BLACK);
     process_options_file();
 
     /*
@@ -120,8 +120,7 @@ char** argv;
     if (!load_saved_game(exit_hack_code_at_start))
     {
         resuming = FALSE;
-        if(exit_hack_code_at_start)
-            issue_simple_gui_command(GUI_CMD_SET_TO_BLACK);
+        maybe_issue_simple_gui_command(exit_hack_code_at_start, GUI_CMD_SET_TO_BLACK);
         player_selection();
 
         /* CHOOSE DIFFICULTY */

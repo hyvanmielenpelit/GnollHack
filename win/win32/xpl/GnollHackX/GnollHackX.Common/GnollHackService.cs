@@ -193,7 +193,9 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern int CountTotalTiles();
         [DllImport(PlatformConstants.dll)]
-        public static extern int LibSetArrays(IntPtr ptr_gl2ti, int size_gl2ti, IntPtr ptr_gltifl, int size_gltifl, IntPtr ptr_ti2an, int size_ti2an);
+        public static extern void LibSetGlyphArrays(IntPtr ptr_gl2ti, int size_gl2ti, IntPtr ptr_gltifl, int size_gltifl);
+        [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetTile2AnimationArray(IntPtr ptr_ti2an, int size_ti2an);
         [DllImport(PlatformConstants.dll)]
         public static extern int LibGetUnexploredGlyph();
         [DllImport(PlatformConstants.dll)]
@@ -920,10 +922,15 @@ namespace GnollHackX.Unknown
 
             return array;
         }
-        public void SetArrays(IntPtr ptr_gl2ti, int size_gl2ti, IntPtr ptr_gltifl, int size_gltifl, IntPtr ptr_ti2an, int size_ti2an)
+        public void SetGlyphArrays(IntPtr ptr_gl2ti, int size_gl2ti, IntPtr ptr_gltifl, int size_gltifl)
         {
-            LibSetArrays(ptr_gl2ti, size_gl2ti, ptr_gltifl, size_gltifl, ptr_ti2an, size_ti2an);
+            LibSetGlyphArrays(ptr_gl2ti, size_gl2ti, ptr_gltifl, size_gltifl);
         }
+        public void SetTile2AnimationArray(IntPtr ptr_ti2an, int size_ti2an)
+        {
+            LibSetTile2AnimationArray(ptr_ti2an, size_ti2an);
+        }
+
         public int GetTileAnimationIndexFromGlyph(int glyph)
         {
             return LibGetTileAnimationIndexFromGlyph(glyph);

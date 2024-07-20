@@ -235,10 +235,10 @@ namespace GnollHackX
             {
                 /* In replay, the arrays are not initialized by the game, so should not fetch them, but read them from the replay file. */
                 /* Initialize now glyph2tile and other relevant arrays */
-                IntPtr gl2ti_ptr;
-                int gl2ti_size;
-                IntPtr gltifl_ptr;
-                int gltifl_size;
+                //IntPtr gl2ti_ptr;
+                //int gl2ti_size;
+                //IntPtr gltifl_ptr;
+                //int gltifl_size;
                 IntPtr ti2an_ptr;
                 int ti2an_size;
                 IntPtr ti2en_ptr;
@@ -251,21 +251,21 @@ namespace GnollHackX
                 int enoff_size;
                 IntPtr reoff_ptr;
                 int reoff_size;
-                _gamePage.GnollHackService.GetGlyphArrays(out gl2ti_ptr, out gl2ti_size, out gltifl_ptr, out gltifl_size);
+                //_gamePage.GnollHackService.GetGlyphArrays(out gl2ti_ptr, out gl2ti_size, out gltifl_ptr, out gltifl_size);
                 _gamePage.GnollHackService.GetTileArrays(out ti2an_ptr, out ti2an_size, out ti2en_ptr, out ti2en_size, out ti2ad_ptr, out ti2ad_size,
                     out anoff_ptr, out anoff_size, out enoff_ptr, out enoff_size, out reoff_ptr, out reoff_size);
                 lock (GHApp.Glyph2TileLock)
                 {
-                    if (gl2ti_ptr != IntPtr.Zero && gl2ti_size > 0)
-                    {
-                        GHApp.Glyph2Tile = new int[gl2ti_size];
-                        Marshal.Copy(gl2ti_ptr, GHApp.Glyph2Tile, 0, gl2ti_size);
-                    }
-                    if (gltifl_ptr != IntPtr.Zero && gltifl_size > 0)
-                    {
-                        GHApp.GlyphTileFlags = new byte[gltifl_size];
-                        Marshal.Copy(gltifl_ptr, GHApp.GlyphTileFlags, 0, gltifl_size);
-                    }
+                    //if (gl2ti_ptr != IntPtr.Zero && gl2ti_size > 0)
+                    //{
+                    //    GHApp.Glyph2Tile = new int[gl2ti_size];
+                    //    Marshal.Copy(gl2ti_ptr, GHApp.Glyph2Tile, 0, gl2ti_size);
+                    //}
+                    //if (gltifl_ptr != IntPtr.Zero && gltifl_size > 0)
+                    //{
+                    //    GHApp.GlyphTileFlags = new byte[gltifl_size];
+                    //    Marshal.Copy(gltifl_ptr, GHApp.GlyphTileFlags, 0, gltifl_size);
+                    //}
                     if (ti2an_ptr != IntPtr.Zero && ti2an_size > 0)
                     {
                         GHApp.Tile2Animation = new short[ti2an_size];
@@ -325,8 +325,8 @@ namespace GnollHackX
             int[] tilesperrow = null;
             lock (GHApp.Glyph2TileLock)
             {
-                gl2ti = GHApp.Glyph2Tile;
-                gltifl = GHApp.GlyphTileFlags;
+                //gl2ti = GHApp.Glyph2Tile;
+                //gltifl = GHApp.GlyphTileFlags;
                 ti2an = GHApp.Tile2Animation;
                 ti2en = GHApp.Tile2Enlargement;
                 ti2ad = GHApp.Tile2Autodraw;

@@ -30,8 +30,6 @@ namespace GnollHackX
         public int CanvasHeight { get { return _canvasHeight == 0 ? Height :_canvasHeight; } set { _canvasHeight = value; } }
         public int CanvasXStart { get; set; }
 
-        public override bool IsEmpty => (ReferenceGamePage == null || Glyph == 0 || Glyph >= GHApp.Glyph2Tile.Length);
-
         protected override void OnPropertyChanged(string propertyName)
         {
             if (propertyName == GlyphProperty.PropertyName ||
@@ -258,7 +256,7 @@ namespace GnollHackX
             int signed_glyph = Glyph;
             int abs_glyph = Math.Abs(signed_glyph);
 
-            if (ReferenceGamePage == null || abs_glyph <= 0 || abs_glyph >= GHApp.Glyph2Tile.Length)
+            if (ReferenceGamePage == null || abs_glyph <= 0 || abs_glyph >= GHApp.NumberOfGlyphs)
             {
                 if (AutoSize)
                 {
@@ -339,7 +337,7 @@ namespace GnollHackX
             int signed_glyph = Glyph;
             int abs_glyph = Math.Abs(signed_glyph);
 
-            if (ReferenceGamePage != null && abs_glyph > 0 && CanvasWidth > 0 && CanvasHeight > 0 && abs_glyph < GHApp.Glyph2Tile.Length)
+            if (ReferenceGamePage != null && abs_glyph > 0 && CanvasWidth > 0 && CanvasHeight > 0 && abs_glyph < GHApp.NumberOfGlyphs)
             {
                 bool drawwallends = ReferenceGamePage.DrawWallEnds;
                 byte glyphflags = GHApp.GlyphTileFlags[abs_glyph];

@@ -179,15 +179,15 @@ namespace GnollHackX
             AddPreDiscoveredMusic();
 
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
-            if(FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
+            if (FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
             {
-                if(RecordGame)
+                if (RecordGame)
                 {
                     RecordGame = false;
                     Preferences.Set("RecordGame", false);
                     InformAboutRecordingSetOff = true;
                 }
-                
+
                 if (FreeDiskSpaceInBytes < GHConstants.VeryLowFreeDiskSpaceThresholdInBytes)
                 {
                     InformAboutFreeDiskSpace = true;
@@ -342,7 +342,7 @@ namespace GnollHackX
                 if (item.Size >= TotalMemInBytes)
                     _cacheSizeList.RemoveAt(i);
             }
-            foreach(CacheSizeItem item in _cacheSizeList)
+            foreach (CacheSizeItem item in _cacheSizeList)
             {
                 _cacheSizeList2.Add(new CacheSizeItem(item.Description, item.Size));
             }
@@ -368,7 +368,7 @@ namespace GnollHackX
         }
 
         public static bool RecommendedSettingsChecked { get; set; }
-        
+
         private static readonly object _recordGameLock = new object();
         private static bool _recordGame = false;
         public static bool RecordGame { get { bool t = TournamentMode; lock (_recordGameLock) { return _recordGame || t; } } set { lock (_recordGameLock) { _recordGame = value; } } }
@@ -399,18 +399,18 @@ namespace GnollHackX
 
         private static void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
-            lock(_networkAccessLock)
+            lock (_networkAccessLock)
             {
                 _networkAccessState = e.NetworkAccess;
             }
         }
 
         public static ulong TotalMemory { get; private set; }
-        public static bool DefaultStreamingBankToMemory 
-        { 
-            get 
+        public static bool DefaultStreamingBankToMemory
+        {
+            get
             {
-                return GHConstants.DefaultReadStreamingBankToMemory || 
+                return GHConstants.DefaultReadStreamingBankToMemory ||
                     IsDebug && IsAndroid && TotalMemory >= GHConstants.AndroidBanksToMemoryThreshold;
             }
         }
@@ -482,14 +482,14 @@ namespace GnollHackX
             }
         }
 
-        public static double BatteryChargeLevel {  get { lock (_batteryLock) { return _batteryChargeLevel * 100.0; } } }
+        public static double BatteryChargeLevel { get { lock (_batteryLock) { return _batteryChargeLevel * 100.0; } } }
         public static double BatteryConsumption
-        { 
+        {
             get
-            { 
+            {
                 lock (_batteryLock)
                 {
-                    if(_batteryChargeLevel < 0 || _previousBatteryChargeLevel < 0)
+                    if (_batteryChargeLevel < 0 || _previousBatteryChargeLevel < 0)
                         return 0;
                     TimeSpan ts = _batteryChargeLevelTimeStamp - _previousBatteryChargeLevelTimeStamp;
                     double ms = ts.TotalMilliseconds;
@@ -499,8 +499,8 @@ namespace GnollHackX
                     }
                     else
                         return 0;
-                } 
-            } 
+                }
+            }
         }
 
 #if GNH_MAUI
@@ -530,16 +530,16 @@ namespace GnollHackX
             }
         }
 
-        public static bool HasInformedAboutGPU 
-        { 
+        public static bool HasInformedAboutGPU
+        {
             get
             {
                 return Preferences.Get("HasInformedAboutGPU", false);
             }
             set
-            { 
+            {
                 Preferences.Set("HasInformedAboutGPU", value);
-            } 
+            }
         }
 
         public static bool InformAboutGPU
@@ -881,9 +881,9 @@ namespace GnollHackX
 
         private readonly static object _darkModeLock = new object();
         private static bool _darkMode = false;
-        public static bool DarkMode 
-        { 
-            get { lock (_darkModeLock) { return _darkMode; } } 
+        public static bool DarkMode
+        {
+            get { lock (_darkModeLock) { return _darkMode; } }
             set { lock (_darkModeLock) { _darkMode = value; } UpdateTheme(value);
             }
         }
@@ -1118,7 +1118,7 @@ namespace GnollHackX
         public static string FMODVersionString { get; set; }
         public static string FrameworkVersionString { get; set; }
         public static string RuntimeVersionString { get; set; }
-        
+
         public static string GHPath { get; private set; } = ".";
         public static bool LoadBanks { get; set; }
 
@@ -1177,7 +1177,7 @@ namespace GnollHackX
         private const string _ClickWord = "Click";
         public static string GetClickTapWord(bool isCapitalized, bool isIng)
         {
-            if(IsDesktop)
+            if (IsDesktop)
                 return (isCapitalized ? _ClickWord : _clickWord) + (isIng ? "ing" : "");
             else
                 return (isCapitalized ? _TapWord : _tapWord) + (isIng ? "ping" : "");
@@ -1524,6 +1524,18 @@ namespace GnollHackX
         public static int BuffTileOff { get; set; }
         public static int CursorOff { get; set; }
 
+        public static int NumberOfGlyphs
+        {
+            get
+            {
+                lock (Glyph2TileLock)
+                {
+                    if (Glyph2Tile == null)
+                        return 0;
+                    return Glyph2Tile.Length;
+                }
+            }
+        }
 
         public static int[] _tilesPerRow = new int[GHConstants.MaxTileSheets];
         public static int[] TilesPerRow { get { return _tilesPerRow; } }
@@ -4897,8 +4909,12 @@ namespace GnollHackX
 
                                                     lock (Glyph2TileLock)
                                                     {
-                                                        Glyph2Tile = gl2ti;
-                                                        GlyphTileFlags = gltifl;
+                                                        if(gl2ti.Length > 0)
+                                                            Glyph2Tile = gl2ti;
+                                                        if(gltifl.Length > 0)
+                                                            GlyphTileFlags = gltifl;
+                                                        gl2ti = Glyph2Tile;
+                                                        gltifl = GlyphTileFlags;
                                                         Tile2Animation = ti2an;
                                                         Tile2Enlargement = ti2en;
                                                         Tile2Autodraw = ti2ad;
@@ -4918,12 +4934,13 @@ namespace GnollHackX
                                                             fixed (byte* p2 = gltifl)
                                                             {
                                                                 IntPtr ptr_gltifl = (IntPtr)p2;
-                                                                fixed (short* p3 = ti2an)
-                                                                {
-                                                                    IntPtr ptr_ti2an = (IntPtr)p3;
-                                                                    GnollHackService.SetArrays(ptr_gl2ti, gl2ti.Length, ptr_gltifl, gltifl.Length, ptr_ti2an, ti2an.Length); /* Need to initialize since the drawing routine uses the library table to do the animations */
-                                                                }
+                                                                GnollHackService.SetGlyphArrays(ptr_gl2ti, gl2ti.Length, ptr_gltifl, gltifl.Length); /* Need to initialize since the drawing routine uses the library table to do the animations */
                                                             }
+                                                        }
+                                                        fixed (short* p3 = ti2an)
+                                                        {
+                                                            IntPtr ptr_ti2an = (IntPtr)p3;
+                                                            GnollHackService.SetTile2AnimationArray(ptr_ti2an, ti2an.Length); /* Need to initialize since the drawing routine uses the library table to do the animations */
                                                         }
                                                     }
                                                     game.ClientCallback_InitWindows();
@@ -5674,11 +5691,22 @@ namespace GnollHackX
                                                             byte[] gltifl = new byte[gltifl_sz];
                                                             for (int j = 0; j < gltifl_sz; j++)
                                                                 gltifl[j] = br.ReadByte();
-
                                                             lock (Glyph2TileLock)
                                                             {
                                                                 Glyph2Tile = gl2ti;
                                                                 GlyphTileFlags = gltifl;
+                                                            }
+                                                            unsafe
+                                                            {
+                                                                fixed (int* p1 = gl2ti)
+                                                                {
+                                                                    IntPtr ptr_gl2ti = (IntPtr)p1;
+                                                                    fixed (byte* p2 = gltifl)
+                                                                    {
+                                                                        IntPtr ptr_gltifl = (IntPtr)p2;
+                                                                        GnollHackService.SetGlyphArrays(ptr_gl2ti, gl2ti.Length, ptr_gltifl, gltifl.Length); /* Need to initialize since the drawing routine uses the library table to do the animations */
+                                                                    }
+                                                                }
                                                             }
                                                             break;
                                                         default:

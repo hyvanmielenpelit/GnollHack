@@ -126,7 +126,7 @@ DLLEXPORT int CountTotalTiles(VOID_ARGS)
     return process_tiledata(2, (const char*)0, (int*)0, (uchar*)0);
 }
 
-DLLEXPORT void LibSetArrays(int* gl2ti, int size_gl2ti, uchar* gltifl, int size_gltifl, short* ti2an, int size_ti2an)
+DLLEXPORT void LibSetGlyphArrays(int* gl2ti, int size_gl2ti, uchar* gltifl, int size_gltifl)
 {
 #ifdef USE_TILES
     int i;
@@ -146,6 +146,13 @@ DLLEXPORT void LibSetArrays(int* gl2ti, int size_gl2ti, uchar* gltifl, int size_
             glyphtileflags[i] = gltifl[i];
         }
     }
+#endif
+}
+
+DLLEXPORT void LibSetTile2AnimationArray(short* ti2an, int size_ti2an)
+{
+#ifdef USE_TILES
+    int i;
     if (ti2an)
     {
         int arrsiz_ti2an = min(size_ti2an, (int)SIZE(tile2animation));
