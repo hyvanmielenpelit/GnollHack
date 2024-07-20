@@ -262,8 +262,6 @@ struct callback_procs {
     SendEngravingDataCallback callback_send_engraving_data;
 };
 
-
-extern int common_player_selection();
 extern struct objclassdata get_objclassdata(struct obj* otmp);
 
 #endif /* CALLBACK_H */

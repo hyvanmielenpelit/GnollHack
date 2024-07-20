@@ -3851,6 +3851,7 @@ E void NDECL(u_skills_init);
 E char* FDECL(get_role_achievement_description, (UCHAR_P));
 E uint64_t FDECL(mon_known_spell_schools, (struct monst*));
 E boolean FDECL(is_known_spell_school, (uint64_t, int));
+E int NDECL(common_player_selection);
 
 /* ### uhitm.c ### */
 
