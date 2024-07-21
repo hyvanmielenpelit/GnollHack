@@ -5,6 +5,7 @@
 #ifndef CALLBACK_H
 #define CALLBACK_H
 
+#include "config.h"
 #include "general.h"
 #include "layer.h"
 
@@ -18,7 +19,7 @@
 #define OSAPI
 #endif
 
-typedef char ghchar; /* For use with C# chars in callback functions */
+typedef char cschar; /* For use with C# chars in callback functions; assuming (default) value of CharSet.Ansi */
 
 struct objclassdata
 {
@@ -42,8 +43,8 @@ struct objclassdata
 
     uchar is_uchain;
     uchar is_uball;
-    xchar obj_loc_x;
-    xchar obj_loc_y;
+    schar obj_loc_x;
+    schar obj_loc_y;
 };
 
  /* General callback types */
@@ -71,18 +72,18 @@ typedef void(__callconv* PutStrEx2ColorCallback)(int, const char*, const char*, 
 typedef PutStrExColorCallback PutStrExCallback;
 typedef PutStrEx2ColorCallback PutStrEx2Callback;
 typedef PutStrExColorCallback PutMixedCallback;
-typedef void(__callconv* DisplayFileCallback)(const char*, boolean);
+typedef void(__callconv* DisplayFileCallback)(const char*, uchar);
 typedef void(__callconv* StartMenuCallback)(int, int);
-typedef void(__callconv* AddMenuCallback)(int, int, int64_t, ghchar, ghchar, int, int, const char*, uchar);
-typedef void(__callconv* AddExtendedMenuCallback)(int, int, int64_t, ghchar, ghchar, int, int, const char*, uchar, int,
-    uint64_t, uint64_t, ghchar, ghchar, uint64_t, uchar, int, struct obj*, struct objclassdata*, const char*, const char*);
+typedef void(__callconv* AddMenuCallback)(int, int, int64_t, cschar, cschar, int, int, const char*, uchar);
+typedef void(__callconv* AddExtendedMenuCallback)(int, int, int64_t, cschar, cschar, int, int, const char*, uchar, int,
+    uint64_t, uint64_t, cschar, cschar, uint64_t, uchar, int, struct obj*, struct objclassdata*, const char*, const char*);
 typedef void(__callconv* EndMenuCallback)(int, const char*, const char*);
 typedef int(__callconv* SelectMenuCallback)(int, int, int64_t**, int*);
 typedef void(__callconv* MessageMenuCallback)(int);
 typedef VoidVoidCallback UpdateInventoryCallback;
 typedef VoidVoidCallback MarkSynchCallback;
 typedef VoidVoidCallback WaitSynchCallback;
-typedef void(__callconv* ClipAroundCallback)(int, int, boolean);
+typedef void(__callconv* ClipAroundCallback)(int, int, uchar);
 typedef void(__callconv* UpdatePositionBarCallback)(char*);
 typedef void(__callconv* PrintGlyphCallback)(int, int, int, int, int, int32_t, int, uint32_t, struct layer_info*);
 typedef void(__callconv* IssueGuiCommandCallback)(int, int, int, const char*);
@@ -113,7 +114,7 @@ typedef VoidIntCallback StatusInitCallback;
 typedef VoidVoidCallback StatusFinishCallback;
 typedef void(__callconv* StatusEnableFieldCallback)(int, const char*, const char*, uchar);
 typedef void(__callconv* StatusUpdateCallback)(int, char*, int64_t, int, int, int, short*);
-typedef unsigned char(__callconv* CanSuspendYesCallback)();
+typedef uchar(__callconv* CanSuspendYesCallback)();
 typedef VoidVoidCallback StretchWindowCallback;
 typedef void(__callconv* SetAnimationTimerCallback)(uint64_t);
 typedef int(__callconv* OpenSpecialViewCallback)(int, const char*, const char*, int, int);
@@ -125,7 +126,7 @@ typedef PlayMusicCallback PlayEffectAmbientCallback;
 typedef int(__callconv* SetEffectAmbientVolumeCallback)(double);
 typedef PlayMusicCallback PlayLevelAmbientCallback;
 typedef PlayMusicCallback PlayEnvironmentAmbientCallback;
-typedef unsigned char(__callconv* AdjustGeneralVolumesCallback)(double, double, double, double, double, double);
+typedef uchar(__callconv* AdjustGeneralVolumesCallback)(double, double, double, double, double, double);
 typedef int(__callconv* AddAmbientSoundCallback)(int, const char*, int, double, double, uint64_t*);
 typedef int(__callconv* DeleteAmbientSoundCallback)(uint64_t);
 typedef int(__callconv* SetAmbientVolumeCallback)(uint64_t, double);

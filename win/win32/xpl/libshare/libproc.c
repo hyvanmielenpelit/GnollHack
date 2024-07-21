@@ -258,8 +258,8 @@ winid lib_create_nhwindow_ex(int type, int style, int glyph, struct extended_cre
 {
     struct objclassdata ocdata = get_objclassdata(info.object);
     return lib_callbacks.callback_create_nhwindow_ex(type, style, glyph,
-        (info.object ? 1 : 0) | (info.monster ? 2 : 0) | (Hallucination ? 4 : 0) | (info.create_flags & WINDOW_CREATE_FLAGS_ACTIVE ? 8 : 0)
-        | (info.create_flags & WINDOW_CREATE_FLAGS_USE_SPECIAL_SYMBOLS ? 16 : 0) | (info.create_flags & WINDOW_CREATE_FLAGS_ASCENDED ? 32 : 0),
+        (uchar)((info.object ? 1 : 0) | (info.monster ? 2 : 0) | (Hallucination ? 4 : 0) | (info.create_flags & WINDOW_CREATE_FLAGS_ACTIVE ? 8 : 0)
+        | (info.create_flags & WINDOW_CREATE_FLAGS_USE_SPECIAL_SYMBOLS ? 16 : 0) | (info.create_flags & WINDOW_CREATE_FLAGS_ASCENDED ? 32 : 0)),
         info.object, &ocdata);
 }
 
@@ -270,7 +270,7 @@ void lib_clear_nhwindow(winid wid)
 
 void lib_display_nhwindow(winid wid, BOOLEAN_P block)
 {
-    lib_callbacks.callback_display_nhwindow(wid, block);
+    lib_callbacks.callback_display_nhwindow(wid, (uchar)block);
 }
 
 void lib_destroy_nhwindow(winid wid)
@@ -364,7 +364,7 @@ void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,
     if(iflags.use_menu_color && menu_style_allows_menu_coloring(last_menu_style))
         get_menu_coloring(str, &color, &attr);
 #endif
-    lib_callbacks.callback_add_menu(wid, glyph, identifier->a_int64, (ghchar)accelerator, (ghchar)group_accel, attr, color, str ? buf : 0, presel);
+    lib_callbacks.callback_add_menu(wid, glyph, identifier->a_int64, (cschar)accelerator, (cschar)group_accel, attr, color, str ? buf : 0, (uchar)presel);
 }
 
 void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
@@ -386,13 +386,13 @@ void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
         set_obj_glyph(info.object);
 
     struct objclassdata ocdata = get_objclassdata(info.object);
-    lib_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_int64, (ghchar)accelerator, (ghchar)group_accel, attr, color, str ? buf : 0, (uchar)presel,
+    lib_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_int64, (cschar)accelerator, (cschar)group_accel, attr, color, str ? buf : 0, (uchar)presel,
         (info.object ? (!(info.menu_flags & MENU_FLAGS_COUNT_DISALLOWED) ? (int)info.object->quan : 0) : ((info.menu_flags & MENU_FLAGS_USE_NUM_ITEMS) ? info.num_items : 0)),
         (uint64_t)(info.object ? info.object->o_id : 0), 
         (uint64_t)(info.monster ? info.monster->m_id : 0),
-        (ghchar)info.heading_for_group_accelerator, (ghchar)info.special_mark,
+        (cschar)info.heading_for_group_accelerator, (cschar)info.special_mark,
         (uint64_t)info.menu_flags,
-        (info.object ? MENU_DATAFLAGS_HAS_OBJECT_DATA : 0) | (info.monster ? MENU_DATAFLAGS_HAS_MONSTER_DATA : 0) | (Hallucination ? MENU_DATAFLAGS_HALLUCINATED : 0) | (info.monster && info.monster->female ? MENU_DATAFLAGS_FEMALE : 0),
+        (uchar)((info.object ? MENU_DATAFLAGS_HAS_OBJECT_DATA : 0) | (info.monster ? MENU_DATAFLAGS_HAS_MONSTER_DATA : 0) | (Hallucination ? MENU_DATAFLAGS_HALLUCINATED : 0) | (info.monster && info.monster->female ? MENU_DATAFLAGS_FEMALE : 0)),
         info.style, info.object, &ocdata, info.attrs, info.colors);
 }
 
@@ -455,7 +455,7 @@ void lib_wait_synch(void)
 
 void lib_cliparound(int x, int y, BOOLEAN_P force)
 {
-    lib_callbacks.callback_cliparound(x, y, force);
+    lib_callbacks.callback_cliparound(x, y, (uchar)force);
 }
 
 extern const nhsym cp437toUnicode[256];
