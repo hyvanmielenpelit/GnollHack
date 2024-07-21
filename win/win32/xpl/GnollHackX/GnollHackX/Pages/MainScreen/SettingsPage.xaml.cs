@@ -1204,6 +1204,12 @@ namespace GnollHackX.Pages.MainScreen
                 PetsLabel.TextColor = GHColors.Gray;
                 DesktopStatusBarSwitch.IsEnabled = false;
                 DesktopStatusBarLabel.TextColor = GHColors.Gray;
+                ShowScoreSwitch.IsEnabled = false;
+                ShowScoreLabel.TextColor = GHColors.Gray;
+                ShowXPSwitch.IsEnabled = false;
+                ShowXPLabel.TextColor = GHColors.Gray;
+                RightAligned2ndRowSwitch.IsEnabled = false;
+                RightAligned2ndRowLabel.TextColor = GHColors.Gray;
             }
             else
             {
@@ -1213,6 +1219,12 @@ namespace GnollHackX.Pages.MainScreen
                 PetsLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
                 DesktopStatusBarSwitch.IsEnabled = true;
                 DesktopStatusBarLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                ShowScoreSwitch.IsEnabled = true;
+                ShowScoreLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                ShowXPSwitch.IsEnabled = true;
+                ShowXPLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                RightAligned2ndRowSwitch.IsEnabled = true;
+                RightAligned2ndRowLabel.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             }
             OrbSwitch_Toggled(sender, new ToggledEventArgs(OrbSwitch.IsToggled));
             PetSwitch_Toggled(sender, new ToggledEventArgs(PetSwitch.IsToggled));

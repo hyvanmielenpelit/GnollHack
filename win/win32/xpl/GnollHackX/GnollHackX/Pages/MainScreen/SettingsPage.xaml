@@ -288,7 +288,7 @@
                                 <Switch Grid.Column="1" x:Name="ShowScoreSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label x:Name="ShowXP"
+                                <Label x:Name="ShowXPLabel"
                                             Text="Show XP"
                                             FontFamily="Underwood" TextColor="Black"
                                             FontSize="15"
