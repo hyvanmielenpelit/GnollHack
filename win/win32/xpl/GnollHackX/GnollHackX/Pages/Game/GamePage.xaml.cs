@@ -681,10 +681,16 @@ namespace GnollHackX.Pages.Game
         public bool ClassicStatusBar { get { lock (_classicStatusBarLock) { return _classicStatusBar; } } set { lock (_classicStatusBarLock) { _classicStatusBar = value; } } }
 
         private readonly object _desktopLock = new object();
-        private bool _desktopStatusBar = true;
-        private bool _desktopButtons = true;
+        private bool _desktopStatusBar = false;
+        private bool _desktopButtons = false;
+        private bool _showScore = false;
+        private bool _showXP = false;
+        private bool _rightAligned2ndRow = false;
         public bool DesktopStatusBar { get { lock (_desktopLock) { return _desktopStatusBar; } } set { lock (_desktopLock) { _desktopStatusBar = value; } } }
         public bool DesktopButtons { get { lock (_desktopLock) { return _desktopButtons; } } set { lock (_desktopLock) { _desktopButtons = value; } UpdateAbilityButtonVisibility(value); } }
+        public bool ShowScore { get { lock (_desktopLock) { return _showScore; } } set { lock (_desktopLock) { _showScore = value; } } }
+        public bool ShowXP { get { lock (_desktopLock) { return _showXP; } } set { lock (_desktopLock) { _showXP = value; } } }
+        public bool RightAligned2ndRow { get { lock (_desktopLock) { return _rightAligned2ndRow; } } set { lock (_desktopLock) { _rightAligned2ndRow = value; } } }
 
         private readonly object _showPetsLock = new object();
         private bool _showPets = false;
@@ -895,6 +901,9 @@ namespace GnollHackX.Pages.Game
             HitPointBars = Preferences.Get("HitPointBars", false);
             ClassicStatusBar = Preferences.Get("ClassicStatusBar", GHConstants.IsDefaultStatusBarClassic);
             DesktopStatusBar = Preferences.Get("DesktopStatusBar", GHApp.IsDesktop);
+            ShowScore = Preferences.Get("ShowScore", GHApp.IsDesktop);
+            ShowXP = Preferences.Get("ShowXP", GHApp.IsDesktop);
+            RightAligned2ndRow = Preferences.Get("RightAligned2ndRow", false);
             ShowOrbs = Preferences.Get("ShowOrbs", true);
             ShowPets = Preferences.Get("ShowPets", true);
             PlayerMark = Preferences.Get("PlayerMark", false);
@@ -9040,137 +9049,105 @@ namespace GnollHackX.Pages.Game
                             /* Gold */
                             bool goldprinted = false;
                             float goldleft = curx;
-                            valtext = "";
-                            lock (StatusFieldLock)
+                            if (!RightAligned2ndRow)
                             {
-                                if (StatusFields[(int)NhStatusFields.BL_GOLD] != null && StatusFields[(int)NhStatusFields.BL_GOLD].IsEnabled && StatusFields[(int)NhStatusFields.BL_GOLD].Text != null)
+                                valtext = "";
+                                lock (StatusFieldLock)
                                 {
-                                    valtext = StatusFields[(int)NhStatusFields.BL_GOLD].Text;
+                                    if (StatusFields[(int)NhStatusFields.BL_GOLD] != null && StatusFields[(int)NhStatusFields.BL_GOLD].IsEnabled && StatusFields[(int)NhStatusFields.BL_GOLD].Text != null)
+                                    {
+                                        valtext = StatusFields[(int)NhStatusFields.BL_GOLD].Text;
+                                    }
                                 }
-                            }
-                            if (valtext != "")
-                            {
-                                string printtext;
-                                if (valtext.Length > 11 && valtext.Substring(0, 1) == "\\")
-                                    printtext = valtext.Substring(11);
-                                else
-                                    printtext = valtext;
-
-                                target_width = target_scale * GHApp._statusGoldBitmap.Width;
-                                target_height = target_scale * GHApp._statusGoldBitmap.Height;
-                                float print_width = textPaint.MeasureText(printtext);
-                                float newcurx = turnsleft - (turnsprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
-                                if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
+                                if (valtext != "")
                                 {
-                                    goldprinted = true;
-                                    curx = newcurx;
-                                    goldleft = curx;
-                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-#if GNH_MAP_PROFILING && DEBUG
-                                    StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                    canvas.DrawImage(GHApp._statusGoldBitmap, statusDest);
-#if GNH_MAP_PROFILING && DEBUG
-                                    StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                    curx += target_width;
-                                    curx += innerspacing;
-#if GNH_MAP_PROFILING && DEBUG
-                                    StartProfiling(GHProfilingStyle.Text);
-#endif
-                                    textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
-#if GNH_MAP_PROFILING && DEBUG
-                                    StopProfiling(GHProfilingStyle.Text);
-#endif
-                                    curx += print_width;
-                                }
-                            }
+                                    string printtext;
+                                    if (valtext.Length > 11 && valtext.Substring(0, 1) == "\\")
+                                        printtext = valtext.Substring(11);
+                                    else
+                                        printtext = valtext;
 
-                            if(DesktopStatusBar)
-                            {
-                                /* Score */
-                                bool scoreprinted = false;
+                                    target_width = target_scale * GHApp._statusGoldBitmap.Width;
+                                    target_height = target_scale * GHApp._statusGoldBitmap.Height;
+                                    float print_width = textPaint.MeasureText(printtext);
+                                    float newcurx = turnsleft - (turnsprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
+                                    if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
+                                    {
+                                        goldprinted = true;
+                                        curx = newcurx;
+                                        goldleft = curx;
+                                        statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                        canvas.DrawImage(GHApp._statusGoldBitmap, statusDest);
+                                        curx += target_width;
+                                        curx += innerspacing;
+                                        textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                        curx += print_width;
+                                    }
+                                }
+
                                 float scoreleft = curx;
-                                valtext = "";
-                                lock (StatusFieldLock)
+                                bool scoreprinted = false;
+                                if (ShowScore)
                                 {
-                                    if (StatusFields[(int)NhStatusFields.BL_SCORE] != null && StatusFields[(int)NhStatusFields.BL_GOLD].IsEnabled && StatusFields[(int)NhStatusFields.BL_SCORE].Text != null)
+                                    /* Score */
+                                    valtext = "";
+                                    lock (StatusFieldLock)
                                     {
-                                        valtext = StatusFields[(int)NhStatusFields.BL_SCORE].Text;
+                                        if (StatusFields[(int)NhStatusFields.BL_SCORE] != null && StatusFields[(int)NhStatusFields.BL_SCORE].IsEnabled && StatusFields[(int)NhStatusFields.BL_SCORE].Text != null)
+                                        {
+                                            valtext = StatusFields[(int)NhStatusFields.BL_SCORE].Text;
+                                        }
+                                    }
+                                    if (valtext != "")
+                                    {
+                                        target_width = target_scale * GHApp._statusScoreBitmap.Width;
+                                        target_height = target_scale * GHApp._statusScoreBitmap.Height;
+                                        float print_width = textPaint.MeasureText(valtext);
+                                        float newcurx = goldleft - (goldprinted || turnsprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
+                                        if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
+                                        {
+                                            scoreprinted = true;
+                                            curx = newcurx;
+                                            scoreleft = curx;
+                                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                            canvas.DrawImage(GHApp._statusScoreBitmap, statusDest);
+                                            curx += target_width;
+                                            curx += innerspacing;
+                                            textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                            curx += print_width;
+                                        }
                                     }
                                 }
-                                if (valtext != "")
+                                if (ShowXP)
                                 {
-                                    target_width = target_scale * GHApp._statusScoreBitmap.Width;
-                                    target_height = target_scale * GHApp._statusScoreBitmap.Height;
-                                    float print_width = textPaint.MeasureText(valtext);
-                                    float newcurx = goldleft - (goldprinted || turnsprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
-                                    if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
+                                    /* XP Points */
+                                    valtext = "";
+                                    lock (StatusFieldLock)
                                     {
-                                        scoreprinted = true;
-                                        curx = newcurx;
-                                        scoreleft = curx;
-                                        statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-#if GNH_MAP_PROFILING && DEBUG
-                                        StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                        canvas.DrawImage(GHApp._statusScoreBitmap, statusDest);
-#if GNH_MAP_PROFILING && DEBUG
-                                        StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                        curx += target_width;
-                                        curx += innerspacing;
-#if GNH_MAP_PROFILING && DEBUG
-                                        StartProfiling(GHProfilingStyle.Text);
-#endif
-                                        textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
-#if GNH_MAP_PROFILING && DEBUG
-                                        StopProfiling(GHProfilingStyle.Text);
-#endif
-                                        curx += print_width;
+                                        if (StatusFields[(int)NhStatusFields.BL_EXP] != null && StatusFields[(int)NhStatusFields.BL_EXP].IsEnabled && StatusFields[(int)NhStatusFields.BL_EXP].Text != null)
+                                        {
+                                            valtext = StatusFields[(int)NhStatusFields.BL_EXP].Text;
+                                        }
                                     }
-                                }
-
-                                /* XP Points */
-                                valtext = "";
-                                lock (StatusFieldLock)
-                                {
-                                    if (StatusFields[(int)NhStatusFields.BL_EXP] != null && StatusFields[(int)NhStatusFields.BL_GOLD].IsEnabled && StatusFields[(int)NhStatusFields.BL_EXP].Text != null)
+                                    if (valtext != "")
                                     {
-                                        valtext = StatusFields[(int)NhStatusFields.BL_EXP].Text;
-                                    }
-                                }
-                                if (valtext != "")
-                                {
-                                    target_width = target_scale * GHApp._statusXPPointsBitmap.Width;
-                                    target_height = target_scale * GHApp._statusXPPointsBitmap.Height;
-                                    float print_width = textPaint.MeasureText(valtext);
-                                    float newcurx = scoreleft - (goldprinted || turnsprinted || scoreprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
-                                    if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
-                                    {
-                                        curx = newcurx;
-                                        statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-#if GNH_MAP_PROFILING && DEBUG
-                                        StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                        canvas.DrawImage(GHApp._statusXPPointsBitmap, statusDest);
-#if GNH_MAP_PROFILING && DEBUG
-                                        StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                        curx += target_width;
-                                        curx += innerspacing;
-#if GNH_MAP_PROFILING && DEBUG
-                                        StartProfiling(GHProfilingStyle.Text);
-#endif
-                                        textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
-#if GNH_MAP_PROFILING && DEBUG
-                                        StopProfiling(GHProfilingStyle.Text);
-#endif
-                                        curx += print_width;
+                                        target_width = target_scale * GHApp._statusXPPointsBitmap.Width;
+                                        target_height = target_scale * GHApp._statusXPPointsBitmap.Height;
+                                        float print_width = textPaint.MeasureText(valtext);
+                                        float newcurx = scoreleft - (goldprinted || turnsprinted || scoreprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
+                                        if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
+                                        {
+                                            curx = newcurx;
+                                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                            canvas.DrawImage(GHApp._statusXPPointsBitmap, statusDest);
+                                            curx += target_width;
+                                            curx += innerspacing;
+                                            textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                            curx += print_width;
+                                        }
                                     }
                                 }
                             }
-
 
 
                             /* Second row */
@@ -9393,6 +9370,9 @@ namespace GnollHackX.Pages.Game
                                 textPaint.Color = SKColors.White;
                             }
 
+                            float final2ndrowleftcurx = curx;
+
+
                             /* Right aligned */
                             float dungeonleft = canvaswidth - hmargin;
                             /* Dungeon level */
@@ -9439,17 +9419,114 @@ namespace GnollHackX.Pages.Game
                                 curx += print_width;
                             }
 
-                            float batteryleft = dungeonleft;
+                            float desktopleft = dungeonleft;
+                            if (RightAligned2ndRow)
+                            {
+                                valtext = "";
+                                lock (StatusFieldLock)
+                                {
+                                    if (StatusFields[(int)NhStatusFields.BL_GOLD] != null && StatusFields[(int)NhStatusFields.BL_GOLD].IsEnabled && StatusFields[(int)NhStatusFields.BL_GOLD].Text != null)
+                                    {
+                                        valtext = StatusFields[(int)NhStatusFields.BL_GOLD].Text;
+                                    }
+                                }
+                                if (valtext != "")
+                                {
+                                    string printtext;
+                                    if (valtext.Length > 11 && valtext.Substring(0, 1) == "\\")
+                                        printtext = valtext.Substring(11);
+                                    else
+                                        printtext = valtext;
+
+                                    target_width = target_scale * GHApp._statusGoldBitmap.Width;
+                                    target_height = target_scale * GHApp._statusGoldBitmap.Height;
+                                    float print_width = textPaint.MeasureText(printtext);
+                                    float newcurx = desktopleft - stdspacing - print_width - innerspacing - target_width;
+                                    if (newcurx >= final2ndrowleftcurx) /* Avoid printing status bar elements over each other */
+                                    {
+                                        curx = newcurx;
+                                        desktopleft = curx;
+                                        statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                        canvas.DrawImage(GHApp._statusGoldBitmap, statusDest);
+                                        curx += target_width;
+                                        curx += innerspacing;
+                                        textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                        curx += print_width;
+                                    }
+                                }
+
+                                if (ShowScore)
+                                {
+                                    /* Score */
+                                    valtext = "";
+                                    lock (StatusFieldLock)
+                                    {
+                                        if (StatusFields[(int)NhStatusFields.BL_SCORE] != null && StatusFields[(int)NhStatusFields.BL_SCORE].IsEnabled && StatusFields[(int)NhStatusFields.BL_SCORE].Text != null)
+                                        {
+                                            valtext = StatusFields[(int)NhStatusFields.BL_SCORE].Text;
+                                        }
+                                    }
+                                    if (valtext != "")
+                                    {
+                                        target_width = target_scale * GHApp._statusScoreBitmap.Width;
+                                        target_height = target_scale * GHApp._statusScoreBitmap.Height;
+                                        float print_width = textPaint.MeasureText(valtext);
+                                        float newcurx = desktopleft - stdspacing - print_width - innerspacing - target_width;
+                                        if (newcurx >= final2ndrowleftcurx) /* Avoid printing status bar elements over each other */
+                                        {
+                                            curx = newcurx;
+                                            desktopleft = curx;
+                                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                            canvas.DrawImage(GHApp._statusScoreBitmap, statusDest);
+                                            curx += target_width;
+                                            curx += innerspacing;
+                                            textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                            curx += print_width;
+                                        }
+                                    }
+                                }
+                                if (ShowXP)
+                                {
+                                    /* XP Points */
+                                    valtext = "";
+                                    lock (StatusFieldLock)
+                                    {
+                                        if (StatusFields[(int)NhStatusFields.BL_EXP] != null && StatusFields[(int)NhStatusFields.BL_EXP].IsEnabled && StatusFields[(int)NhStatusFields.BL_EXP].Text != null)
+                                        {
+                                            valtext = StatusFields[(int)NhStatusFields.BL_EXP].Text;
+                                        }
+                                    }
+                                    if (valtext != "")
+                                    {
+                                        target_width = target_scale * GHApp._statusXPPointsBitmap.Width;
+                                        target_height = target_scale * GHApp._statusXPPointsBitmap.Height;
+                                        float print_width = textPaint.MeasureText(valtext);
+                                        float newcurx = desktopleft - stdspacing - print_width - innerspacing - target_width;
+                                        if (newcurx >= final2ndrowleftcurx) /* Avoid printing status bar elements over each other */
+                                        {
+                                            curx = newcurx;
+                                            desktopleft = curx;
+                                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                            canvas.DrawImage(GHApp._statusXPPointsBitmap, statusDest);
+                                            curx += target_width;
+                                            curx += innerspacing;
+                                            textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                            curx += print_width;
+                                        }
+                                    }
+                                }
+                            }
+
                             double chargeLevel = GHApp.BatteryChargeLevel;
                             float chargePercentage = (float)chargeLevel / 100;
                             if (ShowBattery || chargePercentage <= GHConstants.CriticalBatteryChargeLevel)
                             {
                                 target_width = target_scale * GHApp._batteryFrameBitmap.Width;
                                 target_height = target_scale * GHApp._batteryFrameBitmap.Height;
-                                curx = dungeonleft - innerspacing * 5 - target_width;
+                                curx = desktopleft - innerspacing * 5 - target_width;
                                 statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
                                 canvas.DrawImage(GHApp._batteryFrameBitmap, statusDest);
-                                batteryleft = curx;
+                                desktopleft = curx;
 
                                 int alen = _shineAnimation.Length;
                                 if (chargePercentage <= GHConstants.CriticalBatteryChargeLevel)
@@ -9493,15 +9570,14 @@ namespace GnollHackX.Pages.Game
                                 curx += target_width;
                             }
 
-                            float fpsleft = batteryleft;
-                            if(ShowFPS)
+                            if (ShowFPS)
                             {
                                 target_width = target_scale * GHApp._fpsBitmap.Width;
                                 target_height = target_scale * GHApp._fpsBitmap.Height;
-                                curx = batteryleft - innerspacing * 5 - target_width;
+                                curx = desktopleft - innerspacing * 5 - target_width;
                                 statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
                                 canvas.DrawImage(GHApp._fpsBitmap, statusDest);
-                                fpsleft = curx;
+                                desktopleft = curx;
 
                                 string drawtext;
                                 lock (_fpslock)
@@ -9522,17 +9598,16 @@ namespace GnollHackX.Pages.Game
                                 textPaint.TextSize = basefontsize;
                             }
 
-                            float memoryleft = fpsleft;
                             if (ShowMemory)
                             {
                                 target_width = target_scale * GHApp._memoryBitmap.Width;
                                 target_height = target_scale * GHApp._memoryBitmap.Height;
-                                curx = fpsleft - innerspacing * 5 - target_width;
+                                curx = desktopleft - innerspacing * 5 - target_width;
                                 statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
                                 canvas.DrawImage(GHApp._memoryBitmap, statusDest);
-                                memoryleft = curx;
+                                desktopleft = curx;
 
-                                string drawtext;                                
+                                string drawtext;
                                 lock (_showMemoryLock)
                                 {
                                     drawtext = (_memUsage / 1024).ToString();
@@ -9549,15 +9624,14 @@ namespace GnollHackX.Pages.Game
                                 textPaint.TextSize = basefontsize;
                             }
 
-                            float zoomleft = memoryleft;
                             if (ShowZoom)
                             {
                                 target_width = target_scale * GHApp._zoomBitmap.Width;
                                 target_height = target_scale * GHApp._zoomBitmap.Height;
-                                curx = memoryleft - innerspacing * 5 - target_width;
+                                curx = desktopleft - innerspacing * 5 - target_width;
                                 statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
                                 canvas.DrawImage(GHApp._zoomBitmap, statusDest);
-                                zoomleft = curx;
+                                desktopleft = curx;
 
                                 float percentage = usedFontSize / DefaultMapFontSize;
                                 int percentage_int = (int)(percentage * 100);
@@ -9595,7 +9669,8 @@ namespace GnollHackX.Pages.Game
                                 {
                                     target_width = rowheight / 4;
                                     target_height = rowheight;
-                                    curx = zoomleft - innerspacing * 6 - target_width;
+                                    curx = desktopleft - innerspacing * 6 - target_width;
+                                    desktopleft = curx;
                                     SKPoint dotpoint = new SKPoint(curx + target_width / 2, cury + target_height / 2);
                                     float dotradius = target_width / 2;
                                     textPaint.Color = SKColors.Red;
