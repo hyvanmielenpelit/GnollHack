@@ -364,7 +364,7 @@ void lib_add_menu(winid wid, int glyph, const ANY_P* identifier,
     if(iflags.use_menu_color && menu_style_allows_menu_coloring(last_menu_style))
         get_menu_coloring(str, &color, &attr);
 #endif
-    lib_callbacks.callback_add_menu(wid, glyph, identifier->a_int64, accelerator, group_accel, attr, color, str ? buf : 0, presel);
+    lib_callbacks.callback_add_menu(wid, glyph, identifier->a_int64, (ghchar)accelerator, (ghchar)group_accel, attr, color, str ? buf : 0, presel);
 }
 
 void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
@@ -386,11 +386,11 @@ void lib_add_extended_menu(winid wid, int glyph, const ANY_P* identifier,
         set_obj_glyph(info.object);
 
     struct objclassdata ocdata = get_objclassdata(info.object);
-    lib_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_int64, accelerator, group_accel, attr, color, str ? buf : 0, presel,
+    lib_callbacks.callback_add_extended_menu(wid, glyph, identifier->a_int64, (ghchar)accelerator, (ghchar)group_accel, attr, color, str ? buf : 0, (uchar)presel,
         (info.object ? (!(info.menu_flags & MENU_FLAGS_COUNT_DISALLOWED) ? (int)info.object->quan : 0) : ((info.menu_flags & MENU_FLAGS_USE_NUM_ITEMS) ? info.num_items : 0)),
         (uint64_t)(info.object ? info.object->o_id : 0), 
         (uint64_t)(info.monster ? info.monster->m_id : 0),
-        info.heading_for_group_accelerator, info.special_mark,
+        (ghchar)info.heading_for_group_accelerator, (ghchar)info.special_mark,
         (uint64_t)info.menu_flags,
         (info.object ? MENU_DATAFLAGS_HAS_OBJECT_DATA : 0) | (info.monster ? MENU_DATAFLAGS_HAS_MONSTER_DATA : 0) | (Hallucination ? MENU_DATAFLAGS_HALLUCINATED : 0) | (info.monster && info.monster->female ? MENU_DATAFLAGS_FEMALE : 0),
         info.style, info.object, &ocdata, info.attrs, info.colors);
@@ -887,7 +887,7 @@ char* lib_getmsghistory_ex(char** attrs_ptr, char** colors_ptr, BOOLEAN_P init)
     static char attrs[BUFSZ * 4] = "";
     static char colors[BUFSZ * 4] = "";
     char utf8buf[UTF8BUFSZ * 4] = "";
-    int res = lib_callbacks.callback_getmsghistory(utf8buf, attrs, colors, (int)init);
+    int res = lib_callbacks.callback_getmsghistory(utf8buf, attrs, colors, (uchar)init);
     if (res)
     {
         copyUTF8toCP437(buf, sizeof(buf), utf8buf, sizeof(utf8buf));
@@ -911,7 +911,7 @@ void lib_putmsghistory_ex(const char* msg, const char* attrs, const char* colors
     if (msg)
         write_text2buf_utf8(buf, sizeof(buf), msg);
 
-    lib_callbacks.callback_putmsghistory(buf, attrs, colors, is_restoring);
+    lib_callbacks.callback_putmsghistory(buf, attrs, colors, (uchar)is_restoring);
 }
 
 

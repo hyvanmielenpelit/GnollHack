@@ -14891,8 +14891,10 @@ namespace GnollHackX.Pages.Game
                 else
                 {
                     int char_idx = 0;
-                    while (char_idx < split_str.Length)
+                    bool do_once_empty_string =  split_str.Length == 0;
+                    while (char_idx < split_str.Length || do_once_empty_string)
                     {
+                        do_once_empty_string = false;
                         int charidx_len = 0;
                         int new_nhcolor = colors != null && colors.Length > 0 && char_idx < colors.Length ? colors[char_idx] : (int)NhColor.NO_COLOR;
                         int new_nhattr = attrs != null && attrs.Length > 0 && char_idx < attrs.Length ? attrs[char_idx] : 0;
@@ -14903,8 +14905,8 @@ namespace GnollHackX.Pages.Game
                         while (char_idx2 < split_str.Length && new_nhcolor == new_nhcolor2 && new_nhattr == new_nhattr2)
                         {
                             char_idx2++;
-                            new_nhcolor2 = colors != null && colors.Length > 0 && char_idx < colors.Length ? colors[char_idx2] : (int)NhColor.NO_COLOR;
-                            new_nhattr2 = attrs != null && attrs.Length > 0 && char_idx < attrs.Length ? attrs[char_idx2] : 0;
+                            new_nhcolor2 = colors != null && colors.Length > 0 && char_idx2 < colors.Length ? colors[char_idx2] : (int)NhColor.NO_COLOR;
+                            new_nhattr2 = attrs != null && attrs.Length > 0 && char_idx2 < attrs.Length ? attrs[char_idx2] : 0;
                             charidx_len = char_idx2 - char_idx;
                         }
 
@@ -15000,7 +15002,6 @@ namespace GnollHackX.Pages.Game
                             //}
                             //else
                             textPaint.DrawTextOnCanvas(canvas, printedsubline, x, y);
-
                         }
 
                         if (new_nhcolor != (int)NhColor.NO_COLOR)

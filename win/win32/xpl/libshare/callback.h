@@ -18,6 +18,8 @@
 #define OSAPI
 #endif
 
+typedef char ghchar; /* For use with C# chars in callback functions */
+
 struct objclassdata
 {
     int tile_height;
@@ -71,9 +73,9 @@ typedef PutStrEx2ColorCallback PutStrEx2Callback;
 typedef PutStrExColorCallback PutMixedCallback;
 typedef void(__callconv* DisplayFileCallback)(const char*, boolean);
 typedef void(__callconv* StartMenuCallback)(int, int);
-typedef void(__callconv* AddMenuCallback)(int, int, int64_t, char, char, int, int, const char*, uchar);
-typedef void(__callconv* AddExtendedMenuCallback)(int, int, int64_t, char, char, int, int, const char*, uchar, int,
-    uint64_t, uint64_t, char, char, uint64_t, uchar, int, struct obj*, struct objclassdata*, const char*, const char*);
+typedef void(__callconv* AddMenuCallback)(int, int, int64_t, ghchar, ghchar, int, int, const char*, uchar);
+typedef void(__callconv* AddExtendedMenuCallback)(int, int, int64_t, ghchar, ghchar, int, int, const char*, uchar, int,
+    uint64_t, uint64_t, ghchar, ghchar, uint64_t, uchar, int, struct obj*, struct objclassdata*, const char*, const char*);
 typedef void(__callconv* EndMenuCallback)(int, const char*, const char*);
 typedef int(__callconv* SelectMenuCallback)(int, int, int64_t**, int*);
 typedef void(__callconv* MessageMenuCallback)(int);
@@ -105,8 +107,8 @@ typedef VoidVoidCallback StartScreenCallback;
 typedef VoidVoidCallback EndScreenCallback;
 typedef void(__callconv* OutRipCallback)(int, char*, int, char*, char*);
 typedef VoidConstCharCallback PreferenceUpdateCallback;
-typedef int (__callconv* GetMsgHistoryCallback)(char*, char*, char*, boolean);
-typedef void(__callconv* PutMsgHistoryCallback)(const char*, const char*, const char*, boolean);
+typedef int (__callconv* GetMsgHistoryCallback)(char*, char*, char*, uchar);
+typedef void(__callconv* PutMsgHistoryCallback)(const char*, const char*, const char*, uchar);
 typedef VoidIntCallback StatusInitCallback;
 typedef VoidVoidCallback StatusFinishCallback;
 typedef void(__callconv* StatusEnableFieldCallback)(int, const char*, const char*, uchar);
