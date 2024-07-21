@@ -2495,77 +2495,9 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         }
     }
 
-    if (obj && (obj->oeroded || obj->oeroded2 || (obj->rknown && obj->oerodeproof)))
-    {
-        char erodebuf[BUFSZ] = "";
-        char penaltybuf[BUFSZ] = "";
-        int penalty = 0;
-
-        add_erosion_words(obj, erodebuf);
-        *erodebuf = highc(*erodebuf);
-
-        if (obj->oeroded > 0 || obj->oeroded2 > 0)
-        {
-            if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
-            {
-                penalty = greatest_erosion(obj);
-                Sprintf(penaltybuf, "(%d to damage) ", -penalty);
-                double erosion_bonus = -1.0 * (double)penalty;
-                wep_avg_dmg += erosion_bonus;
-                wep_multipliable_avg_dmg += erosion_bonus;
-                if (wep_avg_dmg < 0)
-                    wep_avg_dmg = 0;
-            }
-
-            if (obj->oclass == ARMOR_CLASS || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
-            {
-                penalty = min(greatest_erosion(obj), get_object_base_ac(obj));
-                Sprintf(eos(penaltybuf), "(+%d penalty to AC)", penalty);
-                knownacbonus += -penalty;
-            }
-        }
-        Sprintf(buf, "Erosion status:         %s%s", erodebuf, penaltybuf);
-        putstr(datawin, ATR_INDENT_AT_COLON, buf);
-    }
-
+    /* Light sources, erosion and other obj-specific properties */
     if (obj)
     {
-        /* Mythic status */
-        boolean nonmythic = (is_weapon(obj) || is_armor(obj)) && otyp_non_mythic(otyp)
-            && !obj->oartifact && !objects[otyp].oc_unique && !(objects[otyp].oc_flags3 & O3_UNIQUE);
-        if (obj->dknown && name_known && (obj->mythic_prefix || obj->mythic_suffix || nonmythic))
-        {
-            Sprintf(buf, "Mythic status:          %s", nonmythic ? "Cannot be mythic" : (obj->mythic_prefix && obj->mythic_suffix) ? "Legendary" : "Mythic");
-            putstr(datawin, ATR_INDENT_AT_COLON, buf);
-        }
-        if (obj->bknown)
-        {
-            Sprintf(buf, "Blessing status:        %s", obj->blessed ? "Blessed" : obj->cursed ? "Cursed" : "Uncursed");
-            putstr(datawin, ATR_INDENT_AT_COLON, buf);
-        }
-        if (obj->opoisoned)
-        {
-            Sprintf(buf, "Poisoned status:        Poisoned (+2d6 poison damage)");
-            wep_avg_dmg += 7.0;
-            putstr(datawin, ATR_INDENT_AT_COLON, buf);
-        }
-
-        if (obj->elemental_enchantment)
-        {
-            Sprintf(buf, "Elemental enchantment:  %s", obj->elemental_enchantment == FIRE_ENCHANTMENT ? "Flaming (+4d6 fire damage)" :
-                obj->elemental_enchantment == COLD_ENCHANTMENT ? "Freezing (+12d6 cold damage)" :
-                obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? "Electrified (+6d6 lightning damage)" :
-                obj->elemental_enchantment == DEATH_ENCHANTMENT ? "Death-magical (kills on hit)" : "Unknown enchantment"
-            );
-
-            wep_all_extra_avg_dmg += obj->elemental_enchantment == FIRE_ENCHANTMENT ? 14.0 :
-                obj->elemental_enchantment == COLD_ENCHANTMENT ? 42.0 :
-                obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? 21.0 :
-                obj->elemental_enchantment == DEATH_ENCHANTMENT ? 0.0 : 0.0;
-
-            putstr(datawin, ATR_INDENT_AT_COLON, buf);
-        }
-
         /* Light sources */
         if (is_obj_light_source(obj))
         {
@@ -2599,6 +2531,105 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     putstr(datawin, ATR_INDENT_AT_COLON, buf);
                 }
             }
+        }
+
+        if (is_damageable(obj) && (!is_obj_identified_when_damageable(obj) || (obj->rknown && obj->oerodeproof) || obj->oeroded || obj->oeroded2))
+        {
+            char erodebuf[BUFSZ] = "";
+            if (obj->rknown)
+            {
+                if (obj->oerodeproof)
+                {
+                    char proofbuf[BUFSZ] = "";
+                    add_erosion_words(obj, proofbuf);
+                    Sprintf(erodebuf, "No, %s", proofbuf);
+                }
+                else
+                {
+                    Strcpy(erodebuf, "Yes");
+                }
+            }
+            else
+            {
+                if (obj->oeroded || obj->oeroded2)
+                    Strcpy(erodebuf, "Yes"); /* Should not happen */
+                else
+                    Strcpy(erodebuf, "Potentially");
+            }
+
+            Sprintf(buf, "Damaged by erosion:     %s", erodebuf);
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+
+        if (obj->oeroded || obj->oeroded2 || (obj->rknown && obj->oerodeproof && !is_damageable(obj)))
+        {
+            char erodebuf[BUFSZ] = "";
+            char penaltybuf[BUFSZ] = "";
+            int penalty = 0;
+
+            add_erosion_words(obj, erodebuf);
+            *erodebuf = highc(*erodebuf);
+
+            if (obj->oeroded > 0 || obj->oeroded2 > 0)
+            {
+                if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
+                {
+                    penalty = greatest_erosion(obj);
+                    Sprintf(penaltybuf, "(%d to damage) ", -penalty);
+                    double erosion_bonus = -1.0 * (double)penalty;
+                    wep_avg_dmg += erosion_bonus;
+                    wep_multipliable_avg_dmg += erosion_bonus;
+                    if (wep_avg_dmg < 0)
+                        wep_avg_dmg = 0;
+                }
+
+                if (obj->oclass == ARMOR_CLASS || (stats_known && (objects[otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
+                {
+                    penalty = min(greatest_erosion(obj), get_object_base_ac(obj));
+                    Sprintf(eos(penaltybuf), "(+%d penalty to AC)", penalty);
+                    knownacbonus += -penalty;
+                }
+            }
+            Sprintf(buf, "Erosion status:         %s%s", erodebuf, penaltybuf);
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+
+        if (obj->oclass != COIN_CLASS && obj->otyp != SCR_MAIL)
+        {
+            Sprintf(buf, "Blessing status:        %s", !obj->bknown ? "Undetermined" : obj->blessed ? "Blessed" : obj->cursed ? "Cursed" : "Uncursed");
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+
+        /* Mythic status */
+        boolean nonmythic = (is_weapon(obj) || is_armor(obj)) && otyp_non_mythic(otyp)
+            && !obj->oartifact && !objects[otyp].oc_unique && !(objects[otyp].oc_flags3 & O3_UNIQUE);
+        if (obj->dknown && name_known && (obj->mythic_prefix || obj->mythic_suffix || nonmythic))
+        {
+            Sprintf(buf, "Mythic status:          %s", nonmythic ? "Cannot be mythic" : (obj->mythic_prefix && obj->mythic_suffix) ? "Legendary" : "Mythic");
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+
+        if (obj->opoisoned)
+        {
+            Sprintf(buf, "Poisoned status:        Poisoned (+2d6 poison damage)");
+            wep_avg_dmg += 7.0;
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+
+        if (obj->elemental_enchantment)
+        {
+            Sprintf(buf, "Elemental enchantment:  %s", obj->elemental_enchantment == FIRE_ENCHANTMENT ? "Flaming (+4d6 fire damage)" :
+                obj->elemental_enchantment == COLD_ENCHANTMENT ? "Freezing (+12d6 cold damage)" :
+                obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? "Electrified (+6d6 lightning damage)" :
+                obj->elemental_enchantment == DEATH_ENCHANTMENT ? "Death-magical (kills on hit)" : "Unknown enchantment"
+            );
+
+            wep_all_extra_avg_dmg += obj->elemental_enchantment == FIRE_ENCHANTMENT ? 14.0 :
+                obj->elemental_enchantment == COLD_ENCHANTMENT ? 42.0 :
+                obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? 21.0 :
+                obj->elemental_enchantment == DEATH_ENCHANTMENT ? 0.0 : 0.0;
+
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
         }
     }
     else

@@ -2233,7 +2233,7 @@ struct obj *otmp;
         return TRUE;
     if ((otmp->mythic_prefix || otmp->mythic_suffix) && !otmp->mknown)
         return TRUE;
-    if (is_obj_rotting_corpse(otmp) && otmp->rotknown)
+    if (is_obj_rotting_corpse(otmp) && !otmp->rotknown)
         return TRUE;
     /* otmp->rknown is the only item of interest if we reach here */
     /*
@@ -2241,14 +2241,10 @@ struct obj *otmp;
      *  rings to become shockproof, this checking will need to be revised.
      *  `rknown' ID only matters if xname() will provide the info about it.
      */
-    if (otmp->rknown
-        || (otmp->oclass != ARMOR_CLASS && otmp->oclass != WEAPON_CLASS
-            && !is_weptool(otmp)            /* (redundant) */
-            && otmp->oclass != BALL_CLASS)) /* (useless) */
+    if (otmp->rknown || is_obj_identified_when_damageable(otmp))
         return FALSE;
     else /* lack of `rknown' only matters for vulnerable objects */
-        return (boolean) (is_rustprone(otmp) || is_corrodeable(otmp)
-                          || is_flammable(otmp));
+        return (boolean)is_damageable(otmp); // (is_rustprone(otmp) || is_corrodeable(otmp) || is_flammable(otmp));
 }
 
 boolean

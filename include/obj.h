@@ -361,6 +361,8 @@ enum elemental_enchantments {
 #define is_otyp_throwing_weapon(otyp) (is_otyp_nonmelee_throwing_weapon(otyp) || (objects[otyp].oc_flags & O1_MELEE_AND_THROWN_WEAPON))
 #define throwing_weapon(o) is_otyp_throwing_weapon((o)->otyp)
 #define nonmelee_throwing_weapon(o) is_otyp_nonmelee_throwing_weapon((o)->otyp)
+#define is_obj_identified_when_damageable(o) \
+    ((o)->oclass != ARMOR_CLASS && (o)->oclass != WEAPON_CLASS  && !is_weptool(o) && (o)->oclass != BALL_CLASS)
 
 #define is_otyp_armor(otyp) (objects[otyp].oc_class == ARMOR_CLASS)
 #define is_armor(o) ((o)->oclass == ARMOR_CLASS)
