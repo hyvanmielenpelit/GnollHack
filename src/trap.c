@@ -73,18 +73,18 @@ const struct trap_type_definition trap_type_definitions[TRAPNUM] = {
     {"teleport trap", "trap", "", MAT_ENERGY,           SIMPLE_MAGICAL_TRAP,        SIMPLE_MAGICAL_TRAP,        30, TRAPDEF_FLAGS_NONE},
     {"level teleport trap", "trap", "", MAT_ENERGY,     SIMPLE_MAGICAL_TRAP,        SIMPLE_MAGICAL_TRAP,        30, TRAPDEF_FLAGS_NONE},
     {"magic portal", "portal", "", MAT_ENERGY,          NOT_DISARMABLE_TRAP,        NOT_DISARMABLE_TRAP,        0,
-        TRAPDEF_FLAGS_NO_TRY_ESCAPE | TRAPDEF_FLAGS_NOT_OVERRIDEN | TRAPDEF_FLAGS_NOT_GENERATED | TRAPDEF_FLAGS_NOT_DISARMABLE},
+        TRAPDEF_FLAGS_NO_TRY_ESCAPE | TRAPDEF_FLAGS_NOT_OVERRIDDEN | TRAPDEF_FLAGS_NOT_GENERATED | TRAPDEF_FLAGS_NOT_DISARMABLE},
     {"web", "web", "", MAT_ORGANIC,                     SPECIALLY_DISARMABLE_TRAP,  SPECIALLY_DISARMABLE_TRAP,  10, TRAPDEF_FLAGS_NONE},
     {"statue", "statue", "", MAT_MINERAL,               SIMPLE_MAGICAL_TRAP,        SIMPLE_MAGICAL_TRAP,        30, TRAPDEF_FLAGS_NO_STEP_CONFIRMATION | TRAPDEF_FLAGS_IGNORED_BY_MONSTERS },
     {"magic trap", "trap", "", MAT_ENERGY,              COMPLEX_MAGICAL_TRAP,       COMPLEX_MAGICAL_TRAP,       40, TRAPDEF_FLAGS_NONE},
     {"anti-magic trap", "trap", "", MAT_ENERGY,         SIMPLE_MAGICAL_TRAP,        SIMPLE_MAGICAL_TRAP,        30, TRAPDEF_FLAGS_NO_TRY_ESCAPE },
     {"polymorph trap", "trap", "", MAT_ENERGY,          COMPLEX_MAGICAL_TRAP,       COMPLEX_MAGICAL_TRAP,       40, TRAPDEF_FLAGS_NONE},
     {"geometric magic portal", "portal","", MAT_ENERGY, NOT_DISARMABLE_TRAP,        NOT_DISARMABLE_TRAP,        0,
-        TRAPDEF_FLAGS_NO_TRY_ESCAPE | TRAPDEF_FLAGS_NOT_OVERRIDEN | TRAPDEF_FLAGS_NOT_GENERATED | TRAPDEF_FLAGS_NOT_DISARMABLE},
+        TRAPDEF_FLAGS_NO_TRY_ESCAPE | TRAPDEF_FLAGS_NOT_OVERRIDDEN | TRAPDEF_FLAGS_NOT_GENERATED | TRAPDEF_FLAGS_NOT_DISARMABLE},
     {"lever", "lever", "pull", MAT_METAL,               NOT_DISARMABLE_TRAP,        NOT_DISARMABLE_TRAP,        0,
-        TRAPDEF_FLAGS_APPLIABLE | TRAPDEF_FLAGS_NO_TRY_ESCAPE | TRAPDEF_FLAGS_TELEOK | TRAPDEF_FLAGS_VISIBLE_AT_START | TRAPDEF_FLAGS_NOT_OVERRIDEN | TRAPDEF_FLAGS_IGNORED_BY_MONSTERS | TRAPDEF_FLAGS_NOT_GENERATED | TRAPDEF_FLAGS_NO_STEP_CONFIRMATION | TRAPDEF_FLAGS_NOT_DISARMABLE},
+        TRAPDEF_FLAGS_APPLIABLE | TRAPDEF_FLAGS_NO_TRY_ESCAPE | TRAPDEF_FLAGS_TELEOK | TRAPDEF_FLAGS_VISIBLE_AT_START | TRAPDEF_FLAGS_NOT_OVERRIDDEN | TRAPDEF_FLAGS_IGNORED_BY_MONSTERS | TRAPDEF_FLAGS_NOT_GENERATED | TRAPDEF_FLAGS_NO_STEP_CONFIRMATION | TRAPDEF_FLAGS_NOT_DISARMABLE},
     {"vibrating square", "vibrating square", "", MAT_MINERAL, NOT_DISARMABLE_TRAP, NOT_DISARMABLE_TRAP,         0,
-        TRAPDEF_FLAGS_NO_TRY_ESCAPE | TRAPDEF_FLAGS_TELEOK | TRAPDEF_FLAGS_NOT_OVERRIDEN | TRAPDEF_FLAGS_NOT_GENERATED | TRAPDEF_FLAGS_NO_STEP_CONFIRMATION | TRAPDEF_FLAGS_IGNORED_BY_MONSTERS | TRAPDEF_FLAGS_NOT_DISARMABLE}
+        TRAPDEF_FLAGS_NO_TRY_ESCAPE | TRAPDEF_FLAGS_TELEOK | TRAPDEF_FLAGS_NOT_OVERRIDDEN | TRAPDEF_FLAGS_NOT_GENERATED | TRAPDEF_FLAGS_NO_STEP_CONFIRMATION | TRAPDEF_FLAGS_IGNORED_BY_MONSTERS | TRAPDEF_FLAGS_NOT_DISARMABLE}
 };
 
 /* called when you're hit by fire (dofiretrap,buzz,zapyourself,explode);
@@ -403,7 +403,7 @@ uint64_t mkflags;
     struct rm *lev = &levl[x][y];
 
     if ((ttmp = t_at(x, y)) != 0) {
-        if (trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDEN)
+        if (trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDDEN)
             return (struct trap *) 0;
         oldplace = TRUE;
         if (u.utrap && x == u.ux && y == u.uy
@@ -607,7 +607,7 @@ boolean td; /* td == TRUE : trap door or hole */
     if (dont_fall) {
         You1(dont_fall);
         /* hero didn't fall through, but any objects here might */
-        impact_drop((struct obj *) 0, u.ux, u.uy, 0);
+        impact_drop((struct obj *) 0, u.ux, u.uy, 0, TRUE);
         if (!td) {
             display_nhwindow(WIN_MESSAGE, FALSE);
             pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "opening under you closes up.");

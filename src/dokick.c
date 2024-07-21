@@ -2022,10 +2022,11 @@ schar loc;
 
 /* player or missile impacts location, causing objects to fall down */
 void
-impact_drop(missile, x, y, dlev)
+impact_drop(missile, x, y, dlev, dropall)
 struct obj *missile; /* caused impact, won't drop itself */
 xchar x, y;          /* location affected */
 xchar dlev;          /* if !0 send to dlev near player */
+boolean dropall;
 {
     schar toloc;
     register struct obj *obj, *obj2;
@@ -2080,7 +2081,7 @@ xchar dlev;          /* if !0 send to dlev near player */
             continue;
         /* boulders can fall too, but rarely & never due to rocks */
         if ((isrock && obj->otyp == BOULDER)
-            || rn2(obj->otyp == BOULDER ? 30 : 3))
+            || (!dropall && rn2(obj->otyp == BOULDER ? 30 : 3)))
             continue;
         Strcpy(debug_buf_2, "impact_drop");
         obj_extract_self(obj);
@@ -2113,6 +2114,9 @@ xchar dlev;          /* if !0 send to dlev near player */
         if (missile)
             pline("From the impact, %sother %s.",
                   dct == oct ? "the " : dct == 1L ? "an" : "", what);
+        else if (dropall)
+            pline("%sther %s.",
+                dct == oct ? "The o" : dct == 1L ? "Ano" : "O", what);
         else if (oct == dct)
             pline("%s adjacent %s %s.", dct == 1L ? "The" : "All the", what,
                   gate_str);
@@ -2205,7 +2209,7 @@ boolean shop_floor_obj;
     if (otmp->otyp == BOULDER && ((t = t_at(x, y)) != 0)
         && is_hole(t->ttyp)) {
         if (impact)
-            impact_drop(otmp, x, y, 0);
+            impact_drop(otmp, x, y, 0, FALSE);
         return FALSE; /* let caller finish the drop */
     }
 
@@ -2214,7 +2218,7 @@ boolean shop_floor_obj;
 
     if (nodrop) {
         if (impact)
-            impact_drop(otmp, x, y, 0);
+            impact_drop(otmp, x, y, 0, FALSE);
         return FALSE;
     }
 
@@ -2284,7 +2288,7 @@ boolean shop_floor_obj;
          * fall down a trap door--thereby getting two shopkeepers
          * angry at the hero in one shot.
          */
-        impact_drop(otmp, x, y, 0);
+        impact_drop(otmp, x, y, 0, FALSE);
         newsym(x, y);
     }
     return TRUE;

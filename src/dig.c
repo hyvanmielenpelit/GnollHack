@@ -255,7 +255,7 @@ int x, y;
     } 
     else if ((IS_ROCK(levl[x][y].typ) && levl[x][y].typ != SDOOR
                 && (levl[x][y].wall_info & W_NONDIGGABLE) != 0)
-               || (ttmp && ((trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDEN) || (!Can_dig_down(&u.uz) && !levl[x][y].candig)))
+               || (ttmp && ((trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDDEN) || (!Can_dig_down(&u.uz) && !levl[x][y].candig)))
                || (IS_DOOR_OR_SDOOR(levl[x][y].typ) && !is_door_diggable_at(x, y))
               ) 
     {
@@ -849,7 +849,7 @@ int ttyp;
              */
             if (u.ustuck || wont_fall) {
                 if (newobjs)
-                    impact_drop((struct obj *) 0, x, y, 0);
+                    impact_drop((struct obj *) 0, x, y, 0, TRUE);
                 if (oldobjs != newobjs)
                     (void) pickup(1, FALSE);
                 if (shopdoor && madeby_u)
@@ -879,7 +879,7 @@ int ttyp;
             if (shopdoor && madeby_u)
                 pay_for_damage("ruin", FALSE);
             if (newobjs)
-                impact_drop((struct obj *) 0, x, y, 0);
+                impact_drop((struct obj *) 0, x, y, 0, TRUE);
             if (mtmp) {
                 /*[don't we need special sokoban handling here?]*/
                 if (is_flying(mtmp) || is_levitating(mtmp)
@@ -968,7 +968,7 @@ coord *cc;
     lev = &levl[dig_x][dig_y];
     nohole = (!Can_dig_down(&u.uz) && !lev->candig);
 
-    if ((ttmp && ((trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDEN) != 0 || nohole))
+    if ((ttmp && ((trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDDEN) != 0 || nohole))
         || (IS_ROCK(lev->typ) && lev->typ != SDOOR
             && (lev->wall_info & W_NONDIGGABLE) != 0)) {
         play_sfx_sound(SFX_GENERAL_TRIED_ACTION_BUT_IT_FAILED);

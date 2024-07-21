@@ -354,7 +354,7 @@ d_level *lev;
                It might still fail if there's a dungeon feature here. */
             struct trap *t = t_at(x, y);
 
-            if (t && !(trap_type_definitions[t->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDEN))
+            if (t && !(trap_type_definitions[t->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDDEN))
                 deltrap(t);
             if (bad_location(x, y, nlx, nly, nhx, nhy))
                 return FALSE;

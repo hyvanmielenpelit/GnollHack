@@ -1760,7 +1760,7 @@ dospinweb(VOID_ARGS)
     }
     exercise(A_DEX, TRUE);
     if (ttmp) {
-        if(trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDEN)
+        if(trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDDEN)
         {
             Your("webbing vanishes!");
             return 0;

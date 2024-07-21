@@ -6979,7 +6979,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
        hero returns to the previous level without any intervening dig */
 
     if (falling) /* assuming this is only trap door or hole */
-        impact_drop((struct obj *) 0, u.ux, u.uy, newlevel->dlevel);
+        impact_drop((struct obj *) 0, u.ux, u.uy, newlevel->dlevel, TRUE);
 
     check_special_room(TRUE); /* probably was a trap door */
     if (Punished)

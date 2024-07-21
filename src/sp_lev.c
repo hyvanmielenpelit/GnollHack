@@ -6878,7 +6878,7 @@ ensure_way_out()
         selection_floodfill(ov, xdnladder, ydnladder, TRUE);
 
     while (ttmp) {
-        if (((trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDEN)
+        if (((trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDDEN)
             || is_hole(ttmp->ttyp))
             && !selection_getpoint(ttmp->tx, ttmp->ty, ov))
             selection_floodfill(ov, ttmp->tx, ttmp->ty, TRUE);

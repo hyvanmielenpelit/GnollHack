@@ -129,7 +129,7 @@ namespace GnollHackX
     }
 
     [Flags]
-    public enum MenuFlags : uint
+    public enum MenuFlags : ulong
     {
         MENU_FLAGS_NONE =                       0x00000000,
         MENU_FLAGS_IS_HEADING =                 0x00000001,
@@ -224,7 +224,7 @@ namespace GnollHackX
     }
 
     [Flags]
-    public enum RunGnollHackFlags: uint
+    public enum RunGnollHackFlags: ulong
     {
         None =                  0x00000000,
         SetWinCaps =            0x00000001,
@@ -270,7 +270,7 @@ namespace GnollHackX
     }
 
     [Flags]
-    public enum LayerFlags : uint
+    public enum LayerFlags : ulong
     {
          None =                     0x00000000U,
          LFLAGS_L_LEGAL =           0x00000001U,
@@ -298,7 +298,7 @@ namespace GnollHackX
     }
 
     [Flags]
-    public enum LayerMonsterFlags : uint
+    public enum LayerMonsterFlags : ulong
     {
         None =                              0x00000000U,
         LMFLAGS_PET =                       0x00000001U,
@@ -336,7 +336,7 @@ namespace GnollHackX
     }
 
     [Flags]
-    public enum LayerMissileFlags : uint
+    public enum LayerMissileFlags : ulong
     {
         MISSILE_FLAGS_CORRODEABLE =  0x00000001U,
         MISSILE_FLAGS_ROTTABLE =     0x00000002U,
@@ -584,15 +584,6 @@ namespace GnollHackX
         GHWINDOW_STYLE_HAS_INDENTED_TEXT,
         GHWINDOW_STYLE_DISPLAY_FILE_WITH_INDENTED_TEXT,
         MAX_GHWINDOW_STYLES
-    }
-
-    [Flags]
-    public enum window_create_flags : uint
-    {
-        WINDOW_CREATE_FLAGS_NONE                    = 0x00000000U,
-        WINDOW_CREATE_FLAGS_ACTIVE                  = 0x00000001U,
-        WINDOW_CREATE_FLAGS_USE_SPECIAL_SYMBOLS     = 0x00000002U, //For text window only; use menu flags for menu window
-        WINDOW_CREATE_FLAGS_ASCENDED                = 0x00000004U
     }
 
     /* GHMenu styles */
@@ -1209,44 +1200,44 @@ namespace GnollHackX
     }
 
     [Flags]
-    public enum speflag_types : uint
+    public enum speflag_types : ulong
     {
-        SPEFLAGS_YOURS                         = 0x00000001U,
-        SPEFLAGS_FEMALE                        = 0x00000002U,
-        SPEFLAGS_MALE                          = 0x00000004U,
-        SPEFLAGS_FACING_RIGHT                  = 0x00000008U,
-        SPEFLAGS_SCHROEDINGERS_BOX             = 0x00000010U,
-        SPEFLAGS_INTENDED_FOR_SALE             = 0x00000020U,
-        SPEFLAGS_CORPSE_ON_ICE                 = 0x00000040U,
-        SPEFLAGS_DETECTED                      = 0x00000080U,
-        SPEFLAGS_SERVICED_SPELL                = 0x00000100U,
-        SPEFLAGS_MINES_PRIZE                   = 0x00000200U,
-        SPEFLAGS_SOKO_PRIZE1                   = 0x00000400U,
-        SPEFLAGS_SOKO_PRIZE2                   = 0x00000800U,
-        SPEFLAGS_FROM_SINK                     = 0x00001000U,
-        SPEFLAGS_INDESTRUCTIBLE                = 0x00002000U,
-        SPEFLAGS_USES_UP_KEY                   = 0x00004000U,
-        SPEFLAGS_NO_PICKUP                     = 0x00008000U,  /* Monsters will not pick up this item */
-        SPEFLAGS_ROYAL_COFFER                  = 0x00010000U,
-        SPEFLAGS_LID_OPENED                    = 0x00020000U,
-        SPEFLAGS_GRABBED_FROM_YOU              = 0x00040000U,
-        SPEFLAGS_ADDED_TO_YOUR_BILL            = 0x00080000U,
-        SPEFLAGS_CERTAIN_WISH                  = 0x00100000U,
-        SPEFLAGS_CAUGHT_IN_LEAVES              = 0x00200000U,
-        SPEFLAGS_CLONED_ITEM                   = 0x00400000U,
-        SPEFLAGS_NO_PREVIOUS_WEAPON            = 0x00800000U,
-        SPEFLAGS_ALTERNATIVE_APPEARANCE        = 0x01000000U, /* Alternative glyph is used for the object */
-        SPEFLAGS_PREVIOUSLY_WIELDED            = 0x02000000U,
-        SPEFLAGS_FAVORITE                      = 0x04000000U,
-        SPEFLAGS_EMPTY_NOTICED                 = 0x08000000U,
-        SPEFLAGS_BEING_BROKEN                  = 0x10000000U,
-        SPEFLAGS_GIVEN_OUT_BLUE_SMOKE          = 0x20000000U,
-        SPEFLAGS_FOUND_THIS_TURN               = 0x40000000U,
-        SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO    = 0x80000000U
+        SPEFLAGS_YOURS                         = 0x00000001UL,
+        SPEFLAGS_FEMALE                        = 0x00000002UL,
+        SPEFLAGS_MALE                          = 0x00000004UL,
+        SPEFLAGS_FACING_RIGHT                  = 0x00000008UL,
+        SPEFLAGS_SCHROEDINGERS_BOX             = 0x00000010UL,
+        SPEFLAGS_INTENDED_FOR_SALE             = 0x00000020UL,
+        SPEFLAGS_CORPSE_ON_ICE                 = 0x00000040UL,
+        SPEFLAGS_DETECTED                      = 0x00000080UL,
+        SPEFLAGS_SERVICED_SPELL                = 0x00000100UL,
+        SPEFLAGS_MINES_PRIZE                   = 0x00000200UL,
+        SPEFLAGS_SOKO_PRIZE1                   = 0x00000400UL,
+        SPEFLAGS_SOKO_PRIZE2                   = 0x00000800UL,
+        SPEFLAGS_FROM_SINK                     = 0x00001000UL,
+        SPEFLAGS_INDESTRUCTIBLE                = 0x00002000UL,
+        SPEFLAGS_USES_UP_KEY                   = 0x00004000UL,
+        SPEFLAGS_NO_PICKUP                     = 0x00008000UL,  /* Monsters will not pick up this item */
+        SPEFLAGS_ROYAL_COFFER                  = 0x00010000UL,
+        SPEFLAGS_LID_OPENED                    = 0x00020000UL,
+        SPEFLAGS_GRABBED_FROM_YOU              = 0x00040000UL,
+        SPEFLAGS_ADDED_TO_YOUR_BILL            = 0x00080000UL,
+        SPEFLAGS_CERTAIN_WISH                  = 0x00100000UL,
+        SPEFLAGS_CAUGHT_IN_LEAVES              = 0x00200000UL,
+        SPEFLAGS_CLONED_ITEM                   = 0x00400000UL,
+        SPEFLAGS_NO_PREVIOUS_WEAPON            = 0x00800000UL,
+        SPEFLAGS_ALTERNATIVE_APPEARANCE        = 0x01000000UL, /* Alternative glyph is used for the object */
+        SPEFLAGS_PREVIOUSLY_WIELDED            = 0x02000000UL,
+        SPEFLAGS_FAVORITE                      = 0x04000000UL,
+        SPEFLAGS_EMPTY_NOTICED                 = 0x08000000UL,
+        SPEFLAGS_BEING_BROKEN                  = 0x10000000UL,
+        SPEFLAGS_GIVEN_OUT_BLUE_SMOKE          = 0x20000000UL,
+        SPEFLAGS_FOUND_THIS_TURN               = 0x40000000UL,
+        SPEFLAGS_HAS_BEEN_PICKED_UP_BY_HERO    = 0x80000000UL,
     }
 
     [Flags]
-    public enum obj_bitfield_types : uint
+    public enum obj_bitfield_types : ulong
     {
         cursed =        0x00000001U,
         blessed =       0x00000002U,
@@ -1281,7 +1272,7 @@ namespace GnollHackX
     }
 
     [Flags]
-    public enum objdata_flags : uint
+    public enum objdata_flags : ulong
     {
         None = 0x00000000U,
         OBJDATA_FLAGS_DRAWN_IN_FRONT =  0x00000001U,
@@ -1441,7 +1432,7 @@ namespace GnollHackX
     }
 
     [Flags]
-    public enum popup_text_flags : uint
+    public enum popup_text_flags : ulong
     {
         POPUP_FLAGS_NONE =          0x00000000U,
         POPUP_FLAGS_ADD_QUOTES =    0x00000001U,
@@ -1537,12 +1528,6 @@ namespace GnollHackX
         Intro,
         Music,
         Game,
-    }
-
-    [Flags]
-    public enum secrets_flags : int
-    {
-        None = 0x00
     }
 
     [Flags]

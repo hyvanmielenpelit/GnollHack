@@ -905,7 +905,7 @@ E boolean FDECL(ship_object, (struct obj *, XCHAR_P, XCHAR_P, BOOLEAN_P));
 E void FDECL(obj_delivery, (BOOLEAN_P));
 E void FDECL(deliver_obj_to_mon, (struct monst *mtmp, int, uint64_t));
 E schar FDECL(down_gate, (XCHAR_P, XCHAR_P));
-E void FDECL(impact_drop, (struct obj *, XCHAR_P, XCHAR_P, XCHAR_P));
+E void FDECL(impact_drop, (struct obj *, XCHAR_P, XCHAR_P, XCHAR_P, BOOLEAN_P));
 E int FDECL(kick_object, (XCHAR_P, XCHAR_P, char *, BOOLEAN_P));
 E void NDECL(reset_kick);
 
