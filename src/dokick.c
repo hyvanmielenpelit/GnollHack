@@ -2102,7 +2102,7 @@ boolean dropall;
         add_to_migration(obj);
         obj->ox = cc.x;
         obj->oy = cc.y;
-        obj->owornmask = (int64_t) toloc;
+        obj->owornmask = (int64_t) toloc | MIGR_NOSCATTER;
 
         /* number of fallen objects */
         dct += obj->quan;
@@ -2313,7 +2313,7 @@ boolean near_hero;
             continue;
 
         nobreak = (where & MIGR_NOBREAK) != 0;
-        noscatter = (where & MIGR_WITH_HERO) != 0;
+        noscatter = (where & MIGR_NOSCATTER) != 0;
         where &= ~(MIGR_NOBREAK | MIGR_NOSCATTER);
 
         if (!near_hero ^ (where == MIGR_WITH_HERO))
