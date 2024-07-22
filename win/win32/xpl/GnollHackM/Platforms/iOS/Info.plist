@@ -32,8 +32,6 @@
 	<string>12.2</string>
 	<key>CFBundleIdentifier</key>
 	<string></string>
-	<key>CFBundleShortVersionString</key>
-	<string>2.0</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>UIStatusBarHidden</key>
