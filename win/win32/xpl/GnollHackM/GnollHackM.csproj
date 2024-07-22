@@ -12,7 +12,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<InvariantGlobalization>true</InvariantGlobalization>
-		<DefineConstants>$(DefineConstants);GNH_MAUI;BITFIELDS;SENTRY</DefineConstants>
+		<DefineConstants>$(DefineConstants);GNH_MAUI;BITFIELDS;SENTRY;BETA</DefineConstants>
 
 		<!-- Display name -->
 		<ApplicationTitle>GnollHack</ApplicationTitle>
@@ -41,13 +41,9 @@
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'">
-		<DefineConstants>$(DefineConstants);BETA</DefineConstants>
-	</PropertyGroup>
-
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-	  <!--<AotAssemblies>true</AotAssemblies>
-	  <RunAOTCompilation>true</RunAOTCompilation>-->
+	  <!--<AotAssemblies>true</AotAssemblies>-->
+	  <!--<RunAOTCompilation>true</RunAOTCompilation>-->
 	  <!-- Optional -->
 	  <!--<EnableLLVM>true</EnableLLVM>-->
 	</PropertyGroup>
@@ -73,9 +69,9 @@
 	  <UseInterpreter>false</UseInterpreter>
     <JavaMaximumHeapSize>2G</JavaMaximumHeapSize>
     <AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>
-    <!--<AndroidEnableProfiler>true</AndroidEnableProfiler> 
-		<RuntimeIdentifier>android-arm64</RuntimeIdentifier>
-		<RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>-->
+    <!--<AndroidEnableProfiler>true</AndroidEnableProfiler>--> 
+		<!--<RuntimeIdentifier>android-arm64</RuntimeIdentifier>-->
+		<!--<RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>-->
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
