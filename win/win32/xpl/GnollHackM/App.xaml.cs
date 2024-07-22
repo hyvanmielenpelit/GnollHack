@@ -6,9 +6,6 @@ using Newtonsoft.Json.Linq;
 using WindowsUI = Windows.UI;
 using XamlUI = Microsoft.UI.Xaml.Media;
 #endif
-#if WINDOWS || IOS
-using Sentry;
-#endif
 
 namespace GnollHackM;
 

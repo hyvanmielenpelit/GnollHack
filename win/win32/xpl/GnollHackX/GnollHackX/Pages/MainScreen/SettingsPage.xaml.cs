@@ -1325,7 +1325,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 WaitLayout.IsVisible = true;
                 ForceLayout();
-                await Task.Delay(50);
+                await Task.Delay(100);
             }
         }
 

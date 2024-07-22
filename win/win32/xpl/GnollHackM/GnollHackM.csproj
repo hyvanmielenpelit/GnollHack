@@ -12,7 +12,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<InvariantGlobalization>true</InvariantGlobalization>
-		<DefineConstants>$(DefineConstants);GNH_MAUI;BITFIELDS</DefineConstants>
+		<DefineConstants>$(DefineConstants);GNH_MAUI;BITFIELDS;SENTRY</DefineConstants>
 
 		<!-- Display name -->
 		<ApplicationTitle>GnollHack</ApplicationTitle>
@@ -1007,7 +1007,6 @@
 		<PackageReference Include="Azure.Identity" Version="1.12.0" />
 		<PackageReference Include="Azure.Storage.Blobs" Version="12.13.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0-preview.6.24327.7" />
-		<PackageReference Include="Sentry.Maui" Version="4.9.0" />
 		<PackageReference Include="System.Text.Json" Version="9.0.0-preview.6.24327.7" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="SkiaSharp" Version="3.0.0-preview.4.1" />
@@ -1015,14 +1014,15 @@
 		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.0.0-preview.4.1" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'">
-		<PackageReference Include="System.Management" Version="9.0.0-preview.6.24327.7" />
-    <PackageReference Include="Sentry.Profiling" Version="4.9.0" />
+    <PackageReference Include="System.Management" Version="9.0.0-preview.6.24327.7" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
   </ItemGroup>
-	
-	<ItemGroup>
+
+  <ItemGroup Condition="$(DefineConstants.Contains('SENTRY'))">
+    <PackageReference Include="Sentry.Maui" Version="4.9.0" />
+    <PackageReference Include="Sentry.Profiling" Version="4.9.0" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
+  </ItemGroup>
+
+  <ItemGroup>
 	  <Compile Update="GamePage.xaml.cs">
 	    <DependentUpon>GamePage.xaml</DependentUpon>
 	  </Compile>

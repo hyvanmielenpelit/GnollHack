@@ -4,15 +4,21 @@ using SkiaSharp.Views.Maui.Controls.Hosting;
 using System.Runtime.Intrinsics.Arm;
 using MemoryToolkit.Maui;
 using GnollHackX;
-using Sentry.Maui;
 
 #if IOS
 using GnollHackM.Platforms.iOS;
 #endif
+
 #if WINDOWS
 using GnollHackM.Platforms.Windows;
-using Sentry.Profiling;
 using Microsoft.Maui.Platform;
+#endif
+
+#if SENTRY
+using Sentry.Maui;
+#if WINDOWS
+using Sentry.Profiling;
+#endif
 #endif
 
 namespace GnollHackM;
@@ -32,7 +38,7 @@ public static class MauiProgram
 #endif
             })
 
-#if !WINDOWS
+#if SENTRY && !WINDOWS
             .UseSentry(options => {
                   // The DSN is the only required setting.
                   options.Dsn = "https://c45d9f5d2540eae9538cb9aa78eb25cd@o4507617242906624.ingest.de.sentry.io/4507617248608336";
@@ -55,7 +61,7 @@ public static class MauiProgram
                   // Other Sentry options can be set here.
             })
 #endif
-#if WINDOWS
+#if SENTRY && WINDOWS
             // Add this section anywhere on the builder:
             .UseSentry(options =>
             {
