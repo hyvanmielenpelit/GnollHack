@@ -69,9 +69,8 @@
 	  <UseInterpreter>false</UseInterpreter>
     <JavaMaximumHeapSize>2G</JavaMaximumHeapSize>
     <AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>
+    <RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>
     <!--<AndroidEnableProfiler>true</AndroidEnableProfiler>--> 
-		<!--<RuntimeIdentifier>android-arm64</RuntimeIdentifier>-->
-		<!--<RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>-->
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
