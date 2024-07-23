@@ -5529,41 +5529,41 @@ register struct obj *obj;
         int monstcount = 0;
         int hatchlingcount = 0;
         int radius = (int)objects[obj->otyp].oc_spell_radius;
-        struct obj* sobj;
-        sobj = fobj;
+        struct obj* corpse;
+        corpse = fobj;
 
-        while (sobj)
+        while (corpse)
         {
             zombietype = -1;
-            if ((radius < 0 || dist2(u.ux, u.uy, sobj->ox, sobj->oy) <= radius * (radius + 1)) //+1 to make a bit larger and square-like
-                && cansee(sobj->ox, sobj->oy)
-                && !IS_STWALL(levl[sobj->ox][sobj->oy].typ))
+            if ((radius < 0 || dist2(u.ux, u.uy, corpse->ox, corpse->oy) <= radius * (radius + 1)) //+1 to make a bit larger and square-like
+                && cansee(corpse->ox, corpse->oy)
+                && !IS_STWALL(levl[corpse->ox][corpse->oy].typ))
             {
-                if (sobj->otyp == CORPSE && sobj->corpsenm >= LOW_PM)
+                if (corpse->otyp == CORPSE && corpse->corpsenm >= LOW_PM)
                 {
-                    if ((obj->corpsenm >= PM_GRAY_DRAGON && obj->corpsenm <= PM_ANCIENT_YELLOW_DRAGON)
-                        || obj->corpsenm == PM_GOLD_DRAGON || obj->corpsenm == PM_ANCIENT_GOLD_DRAGON
-                        || obj->corpsenm == PM_BAHAMUT || obj->corpsenm == PM_TIAMAT
+                    if ((corpse->corpsenm >= PM_GRAY_DRAGON && corpse->corpsenm <= PM_ANCIENT_YELLOW_DRAGON)
+                        || corpse->corpsenm == PM_GOLD_DRAGON || corpse->corpsenm == PM_ANCIENT_GOLD_DRAGON
+                        || corpse->corpsenm == PM_BAHAMUT || corpse->corpsenm == PM_TIAMAT
                         )
                     {
-                        if ((mons[obj->corpsenm].geno & G_UNIQ) || (obj->corpsenm >= PM_ANCIENT_GRAY_DRAGON && obj->corpsenm <= PM_ANCIENT_YELLOW_DRAGON) || obj->corpsenm == PM_ANCIENT_GOLD_DRAGON)
+                        if ((mons[corpse->corpsenm].geno & G_UNIQ) || (corpse->corpsenm >= PM_ANCIENT_GRAY_DRAGON && corpse->corpsenm <= PM_ANCIENT_YELLOW_DRAGON) || corpse->corpsenm == PM_ANCIENT_GOLD_DRAGON)
                             zombietype = PM_ELDER_DRACOLICH;
                         else
                             zombietype = PM_DRACOLICH;
 
-                        if (animate_corpse(sobj, zombietype))
+                        if (animate_corpse(corpse, zombietype))
                             monstcount++;
-                        sobj = fobj; //The corpse got deleted, so move to the beginning
+                        corpse = fobj; //The corpse got deleted, so move to the beginning
                         continue;
                     }
-                    else if (sobj->corpsenm >= PM_GRAY_DRAGON_HATCHLING && sobj->corpsenm <= PM_YELLOW_DRAGON_HATCHLING)
+                    else if (corpse->corpsenm >= PM_GRAY_DRAGON_HATCHLING && corpse->corpsenm <= PM_YELLOW_DRAGON_HATCHLING)
                     {
                         hatchlingcount++;
-                        pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s twitches for a moment, but nothing else happens.", The(cxname(sobj)));
+                        pline_ex(ATR_NONE, CLR_MSG_SPELL, "%s twitches for a moment, but nothing else happens.", The(cxname(corpse)));
                     }
                 }
             }
-            sobj = sobj->nobj;
+            corpse = corpse->nobj;
         }
 
         if (monstcount == 0)
