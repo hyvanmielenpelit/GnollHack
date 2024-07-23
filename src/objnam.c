@@ -5556,13 +5556,7 @@ retry:
                         otmp->exceptionality = (uchar)((!rn2(halfchance ? 40 : doublechance ? 10 : 20) && Luck >= 0) ? exceptionality : EXCEPTIONALITY_NORMAL);
                 }
             }
-
-            if (((objects[otmp->otyp].oc_flags5 & O5_CANNOT_BE_CELESTIAL) || (objects[otmp->otyp].oc_flags2 & (O2_DEMON_ITEM | O2_UNDEAD_ITEM))) && otmp->exceptionality == EXCEPTIONALITY_CELESTIAL)
-                otmp->exceptionality = EXCEPTIONALITY_ELITE;
-            else if (((objects[otmp->otyp].oc_flags5 & O5_CANNOT_BE_PRIMORDIAL) || (objects[otmp->otyp].oc_flags2 & (O2_DEMON_ITEM | O2_ANGEL_ITEM))) && otmp->exceptionality == EXCEPTIONALITY_PRIMORDIAL)
-                otmp->exceptionality = EXCEPTIONALITY_ELITE;
-            else if (((objects[otmp->otyp].oc_flags5 & O5_CANNOT_BE_INFERNAL) || (objects[otmp->otyp].oc_flags2 & (O2_ANGEL_ITEM)) || otmp->material == MAT_SILVER) && otmp->exceptionality == EXCEPTIONALITY_INFERNAL)
-                otmp->exceptionality = EXCEPTIONALITY_ELITE;
+            exceptionality_checks(otmp);
         }
     }
 

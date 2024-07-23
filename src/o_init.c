@@ -1369,6 +1369,24 @@ rename_disco()
 }
 
 void
+exceptionality_checks(otmp)
+struct obj* otmp;
+{
+    if (!otmp)
+        return;
+
+    if (((objects[otmp->otyp].oc_flags5 & O5_CANNOT_BE_CELESTIAL) || (objects[otmp->otyp].oc_flags2 & (O2_DEMON_ITEM | O2_UNDEAD_ITEM))) && otmp->exceptionality == EXCEPTIONALITY_CELESTIAL)
+        otmp->exceptionality = EXCEPTIONALITY_ELITE;
+    else if (((objects[otmp->otyp].oc_flags5 & O5_CANNOT_BE_PRIMORDIAL) || (objects[otmp->otyp].oc_flags2 & (O2_DEMON_ITEM | O2_ANGEL_ITEM))) && otmp->exceptionality == EXCEPTIONALITY_PRIMORDIAL)
+        otmp->exceptionality = EXCEPTIONALITY_ELITE;
+    else if (((objects[otmp->otyp].oc_flags5 & O5_CANNOT_BE_INFERNAL) || (objects[otmp->otyp].oc_flags2 & (O2_ANGEL_ITEM)) || otmp->material == MAT_SILVER) && otmp->exceptionality == EXCEPTIONALITY_INFERNAL)
+        otmp->exceptionality = EXCEPTIONALITY_ELITE;
+    
+    if (otmp->oclass == WAND_CLASS && otmp->exceptionality > EXCEPTIONALITY_ELITE)
+        otmp->exceptionality = EXCEPTIONALITY_ELITE;
+}
+
+void
 randomize_mythic_quality(obj, is_wish, prefix_ptr, suffix_ptr)
 struct obj* obj;
 uchar is_wish; /* 1 = mythic wishing, 2 = legendary wishing */
