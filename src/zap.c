@@ -3878,23 +3878,29 @@ int id;
     if (obj->opoisoned && is_poisonable(otmp))
         otmp->opoisoned = TRUE;
 
+    boolean multigendif = objects[obj->otyp].oc_multigen_type > MULTIGEN_SINGLE && objects[otmp->otyp].oc_multigen_type == MULTIGEN_SINGLE;
     if (obj->elemental_enchantment > 0 && is_elemental_enchantable(otmp))
     {
         if (obj->elemental_enchantment < DEATH_ENCHANTMENT || (obj->elemental_enchantment == DEATH_ENCHANTMENT && is_death_enchantable(otmp)))
         {
-            otmp->elemental_enchantment = obj->elemental_enchantment;
+            if(!multigendif || !rn2(3))
+                otmp->elemental_enchantment = obj->elemental_enchantment;
         }
     }
 
     if (obj->exceptionality > 0 && can_have_exceptionality(otmp) && otmp->oartifact == 0 && !is_normally_non_exceptional(otmp))
     {
-        otmp->exceptionality = obj->exceptionality;
-        exceptionality_checks(otmp);
+        if (!multigendif || !rn2(3))
+        {
+            otmp->exceptionality = obj->exceptionality;
+            exceptionality_checks(otmp);
+        }
     }
     
     if ((obj->mythic_prefix > 0 || obj->mythic_suffix > 0) && can_obj_have_mythic(otmp) && otmp->oartifact == 0)
     {
-        randomize_mythic_quality(otmp, obj->mythic_prefix > 0 && obj->mythic_suffix > 0 ? 2 : 1, &otmp->mythic_prefix, &otmp->mythic_suffix);
+        if (!multigendif || !rn2(3))
+            randomize_mythic_quality(otmp, obj->mythic_prefix > 0 && obj->mythic_suffix > 0 ? 2 : 1, &otmp->mythic_prefix, &otmp->mythic_suffix);
     }
 
     if (id == STRANGE_OBJECT && obj->otyp == CORPSE)
