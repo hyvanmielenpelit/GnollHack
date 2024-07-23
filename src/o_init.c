@@ -1379,7 +1379,7 @@ struct obj* otmp;
         otmp->exceptionality = EXCEPTIONALITY_ELITE;
     else if (((objects[otmp->otyp].oc_flags5 & O5_CANNOT_BE_PRIMORDIAL) || (objects[otmp->otyp].oc_flags2 & (O2_DEMON_ITEM | O2_ANGEL_ITEM))) && otmp->exceptionality == EXCEPTIONALITY_PRIMORDIAL)
         otmp->exceptionality = EXCEPTIONALITY_ELITE;
-    else if (((objects[otmp->otyp].oc_flags5 & O5_CANNOT_BE_INFERNAL) || (objects[otmp->otyp].oc_flags2 & (O2_ANGEL_ITEM)) || otmp->material == MAT_SILVER) && otmp->exceptionality == EXCEPTIONALITY_INFERNAL)
+    else if (((objects[otmp->otyp].oc_flags5 & O5_CANNOT_BE_INFERNAL) || (objects[otmp->otyp].oc_flags2 & (O2_ANGEL_ITEM)) || obj_counts_as_silver(otmp)) && otmp->exceptionality == EXCEPTIONALITY_INFERNAL)
         otmp->exceptionality = EXCEPTIONALITY_ELITE;
     
     if (otmp->oclass == WAND_CLASS && otmp->exceptionality > EXCEPTIONALITY_ELITE)
