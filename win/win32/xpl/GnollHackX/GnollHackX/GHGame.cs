@@ -2587,9 +2587,13 @@ namespace GnollHackX
                     }
                 case (int)special_view_types.SPECIAL_VIEW_PANIC:
                     {
+                        if(!PlayingReplay)
+                        {
 #if SENTRY
-                        SentrySdk.CaptureMessage("Panic: " + text);
+                            SentrySdk.CaptureMessage("Panic: " + text);
 #endif
+                        }
+
                         ConcurrentQueue<GHRequest> queue;
                         if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                         {
