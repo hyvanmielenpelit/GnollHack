@@ -5489,7 +5489,7 @@ register struct obj *obj;
     }
     case SPE_MASS_CREATE_MUMMY:
     {
-        You_ex(ATR_NONE, CLR_MSG_SPELL, "successfully permormed the embalming magic.");
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "successfully performed the embalming magic.");
         int zombietype;
         int monstcount = 0;
         int radius = (int)objects[obj->otyp].oc_spell_radius;
@@ -5524,7 +5524,7 @@ register struct obj *obj;
     }
     case SPE_MASS_CREATE_DRACOLICH:
     {
-        You_ex(ATR_NONE, CLR_MSG_SPELL, "successfully permormed the necromantic magic.");
+        You_ex(ATR_NONE, CLR_MSG_SPELL, "successfully performed the necromantic magic.");
         int zombietype;
         int monstcount = 0;
         int hatchlingcount = 0;
