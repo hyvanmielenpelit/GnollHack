@@ -98,9 +98,9 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     RowImageButton rib = new RowImageButton();
                     if(sm.Id >= firstCatalogue && sm.Id < firstCatalogue + numCatalogues)
-                        rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.manual.png";
-                    else
                         rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.catalogue.png";
+                    else
+                        rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.manual.png";
                     rib.LblText = sm.Name;
                     rib.LblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
                     rib.LblFontSize = 17;

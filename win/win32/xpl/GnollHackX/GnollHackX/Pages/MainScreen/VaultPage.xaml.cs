@@ -56,7 +56,7 @@ namespace GnollHackX.Pages.MainScreen
             VaultLayout.Children.Add(rib);
 
             rib = new LabeledImageButton();
-            rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.library.png";
+            rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.manual.png";
             rib.LblText = "Library";
             rib.LblFontSize = 20;
             rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
