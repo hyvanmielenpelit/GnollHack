@@ -58,7 +58,7 @@
 		<ProvisioningType>manual</ProvisioningType>
 		<CodesignKey>Apple Distribution: Hyvan mielen pelit ry (CUG8RS847T)</CodesignKey>
 		<CodesignProvision>Apple Dev M July 2024 Distribution Profile</CodesignProvision>
-	</PropertyGroup>
+  </PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-android'">
 		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
