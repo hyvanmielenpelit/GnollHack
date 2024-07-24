@@ -427,4 +427,17 @@ namespace GnollHackX
             },
         };
     }
+
+    public class SoundTrackComparer : IComparer<GHSoundTrack>
+    {
+        public SoundTrackComparer() 
+        {
+            
+        }
+
+        public int Compare(GHSoundTrack track1, GHSoundTrack track2)
+        {
+            return string.Compare(track1.DisplayName, track2.DisplayName);
+        }
+    }
 }
