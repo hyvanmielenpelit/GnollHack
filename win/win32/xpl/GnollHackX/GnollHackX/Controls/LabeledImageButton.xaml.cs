@@ -159,10 +159,13 @@ namespace GnollHackX.Controls
                 if (ViewButton.Handler?.PlatformView is Microsoft.UI.Xaml.Controls.Button)
                 {
                     var platformView = ViewButton.Handler?.PlatformView as Microsoft.UI.Xaml.Controls.Button;
-                    platformView.PointerEntered += PlatformView_PointerEntered;
-                    platformView.PointerExited += PlatformView_PointerExited;
-                    platformView.PointerCanceled += PlatformView_PointerExited;
-                    platformView.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush();
+                    if (platformView != null)
+                    {
+                        platformView.PointerEntered += PlatformView_PointerEntered;
+                        platformView.PointerExited += PlatformView_PointerExited;
+                        platformView.PointerCanceled += PlatformView_PointerExited;
+                        platformView.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush();
+                    }
                 }
             };
 #endif

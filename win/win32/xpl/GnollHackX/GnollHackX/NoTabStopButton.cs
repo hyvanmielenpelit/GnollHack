@@ -19,7 +19,10 @@ namespace GnollHackX
                 if (Handler?.PlatformView is Microsoft.UI.Xaml.Controls.Button)
                 {
                     var platformView = Handler?.PlatformView as Microsoft.UI.Xaml.Controls.Button;
-                    platformView.IsTabStop = false;
+                    if (platformView != null)
+                    {
+                        platformView.IsTabStop = false;
+                    }
                 }
             };
 #endif
