@@ -49,7 +49,7 @@ namespace GnollHackX.Pages.MainScreen
             rib.LblFontFamily = "Immortal";
             rib.ImgWidth = 120;
             rib.ImgHeight = 120;
-            rib.GridWidth = 120;
+            rib.GridWidth = 200;
             rib.GridHeight = 150;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
             rib.BtnClicked += btnTopScores_Clicked;
@@ -63,7 +63,7 @@ namespace GnollHackX.Pages.MainScreen
             rib.LblFontFamily = "Immortal";
             rib.ImgWidth = 120;
             rib.ImgHeight = 120;
-            rib.GridWidth = 120;
+            rib.GridWidth = 200;
             rib.GridHeight = 150;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
             rib.BtnClicked += btnLibrary_Clicked;
@@ -77,7 +77,7 @@ namespace GnollHackX.Pages.MainScreen
             rib.LblFontFamily = "Immortal";
             rib.ImgWidth = 120;
             rib.ImgHeight = 120;
-            rib.GridWidth = 120;
+            rib.GridWidth = 200;
             rib.GridHeight = 150;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
             rib.BtnClicked += btnReplays_Clicked;
@@ -91,7 +91,7 @@ namespace GnollHackX.Pages.MainScreen
             rib.LblFontFamily = "Immortal";
             rib.ImgWidth = 120;
             rib.ImgHeight = 120;
-            rib.GridWidth = 120;
+            rib.GridWidth = 200;
             rib.GridHeight = 150;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
             rib.BtnClicked += btnSoundTracks_Clicked;
