@@ -4016,9 +4016,12 @@ struct monst *mtmp, *victim;
         if (mvitals[newtype].mvflags & MV_GENOCIDED)
         { /* allow MV_EXTINCT */
             if (canspotmon(mtmp))
-                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "As %s grows up into %s, %s %s!", mon_nam(mtmp),
-                      an(pm_monster_name(ptr, mtmp->female)), mhe(mtmp),
-                      is_not_living(ptr) ? "expires" : "dies");
+            {
+                int multi_colors[4] = { NO_COLOR, CLR_MSG_HINT, NO_COLOR, NO_COLOR };
+                pline_multi_ex(ATR_NONE, CLR_MSG_WARNING, no_multiattrs, multi_colors, "As %s grows up into %s, %s %s!", mon_nam(mtmp),
+                    an(pm_monster_name(ptr, mtmp->female)), mhe(mtmp),
+                    is_not_living(ptr) ? "expires" : "dies");
+            }
             set_mon_data(mtmp, ptr, mtmp->subtype); /* keep mvitals[] accurate */
             change_mon_ability_scores(mtmp, oldtype, newtype);
             mondied(mtmp);
@@ -4040,7 +4043,8 @@ struct monst *mtmp, *victim;
                            slightly less sexist if prepared for it...) */
                       : (fem && !mtmp->female) ? "female " : "",
                     pm_monster_name(ptr, !!fem));
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s %s.", upstart(y_monnam(mtmp)),
+            int multi_colors[3] = { NO_COLOR, NO_COLOR, CLR_MSG_HINT };
+            pline_multi_ex(ATR_NONE, is_tame(mtmp) ? CLR_MSG_SUCCESS : CLR_MSG_ATTENTION, no_multiattrs, multi_colors, "%s %s %s.", upstart(y_monnam(mtmp)),
                   (fem != mtmp->female) ? "changes into"
                                         : humanoid(ptr) ? "becomes"
                                                         : "grows up into",
