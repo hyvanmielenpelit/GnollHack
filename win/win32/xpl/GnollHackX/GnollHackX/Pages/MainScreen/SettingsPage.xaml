@@ -874,7 +874,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Slider Grid.Column="1" x:Name="GeneralVolumeSlider" ThumbColor="DarkGreen" MinimumTrackColor="#DD22BB22" MaximumTrackColor="Gray" HorizontalOptions="End" VerticalOptions="Center" 
+                                <Slider Grid.Column="1" x:Name="GeneralVolumeSlider" ThumbColor="#EAEAEA" MinimumTrackColor="#017AFF" MaximumTrackColor="#70666666" HorizontalOptions="End" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -883,7 +883,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Slider Grid.Column="1" x:Name="MusicVolumeSlider" ThumbColor="DarkGreen" MinimumTrackColor="#DD22BB22" MaximumTrackColor="Gray" HorizontalOptions="End" VerticalOptions="Center" 
+                                <Slider Grid.Column="1" x:Name="MusicVolumeSlider" ThumbColor="#EAEAEA" MinimumTrackColor="#017AFF" MaximumTrackColor="#70666666" HorizontalOptions="End" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -892,7 +892,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Slider Grid.Column="1" x:Name="AmbientVolumeSlider" ThumbColor="DarkGreen" MinimumTrackColor="#DD22BB22" MaximumTrackColor="Gray" HorizontalOptions="End" VerticalOptions="Center" 
+                                <Slider Grid.Column="1" x:Name="AmbientVolumeSlider" ThumbColor="#EAEAEA" MinimumTrackColor="#017AFF" MaximumTrackColor="#70666666" HorizontalOptions="End" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -901,7 +901,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Slider Grid.Column="1" x:Name="DialogueVolumeSlider" ThumbColor="DarkGreen" MinimumTrackColor="#DD22BB22" MaximumTrackColor="Gray" HorizontalOptions="End" VerticalOptions="Center" 
+                                <Slider Grid.Column="1" x:Name="DialogueVolumeSlider" ThumbColor="#EAEAEA" MinimumTrackColor="#017AFF" MaximumTrackColor="#70666666" HorizontalOptions="End" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -910,7 +910,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Slider Grid.Column="1" x:Name="EffectsVolumeSlider" ThumbColor="DarkGreen" MinimumTrackColor="#DD22BB22" MaximumTrackColor="Gray" HorizontalOptions="End" VerticalOptions="Center" 
+                                <Slider Grid.Column="1" x:Name="EffectsVolumeSlider" ThumbColor="#EAEAEA" MinimumTrackColor="#017AFF" MaximumTrackColor="#70666666" HorizontalOptions="End" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -919,7 +919,7 @@
                                     FontSize="15"
                                     VerticalOptions="Center"
                                     HorizontalOptions="Start" />
-                                <Slider Grid.Column="1" x:Name="UIVolumeSlider" ThumbColor="DarkGreen" MinimumTrackColor="#DD22BB22" MaximumTrackColor="Gray" HorizontalOptions="End" VerticalOptions="Center" 
+                                <Slider Grid.Column="1" x:Name="UIVolumeSlider" ThumbColor="#EAEAEA" MinimumTrackColor="#017AFF" MaximumTrackColor="#70666666" HorizontalOptions="End" VerticalOptions="Center" 
                                     WidthRequest="200" ValueChanged="VolumeSlider_ValueChanged" />
                             </Grid>
 
