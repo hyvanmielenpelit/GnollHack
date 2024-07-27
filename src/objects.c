@@ -3858,7 +3858,7 @@ SPELL("wish",  "jewel-encrusted", None, "ancient conjuration magic", "The caster
     P_CONJURATION_SPELL, 2, 15, 0,
     10,300, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0, 
     S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, S2_NONE, ALL_TARGETS, AD_NONE, CLR_GREEN, OBJECT_SOUNDSET_SPELLBOOK, 
-    O1_NONE, O2_NONE, O3_NO_WISH, O4_VERY_RARE, O5_NONE, O6_NONE),
+    O1_NONE, O2_NONE, O3_NO_WISH, O4_VERY_RARE, O5_NONE, O6_ALWAYS_FULL_INK_COST),
 SPELL("black blade of disaster", "ebony", None, "long-forgotten conjuration magic", "Summons a blade that disintegrates targets on hit",
     P_CONJURATION_SPELL,   2, 10, 0,
     11,200, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 3, 10, 30, 

@@ -1157,6 +1157,8 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         int ink = otyp_ink_cost(otyp);
         Sprintf(buf, "Base write cost:        %d charge%s", ink, plur(ink));        
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        Sprintf(buf, "Actual write cost:      %s", (objects[otyp].oc_flags6 & O6_ALWAYS_FULL_INK_COST) != 0 ? "Always base cost" : "From half to full base cost");
+        putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
 
     if (is_otyp_candelabrum(otyp))

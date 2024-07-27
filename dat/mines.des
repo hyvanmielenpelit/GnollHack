@@ -253,6 +253,8 @@ CONTAINER:('(',"chest"),locked,(20,14),keytype:('(',"bronze key"),no_pickup {
   [50%]:OBJECT:'['
   [20%]:OBJECT:class_treasure_weapon, notcursed
   [20%]:OBJECT:class_treasure_armor, notcursed
+  OBJECT:('/',"identify")
+  OBJECT:('/',"town portal")
 }
 #ENGRAVING:(20,14),engrave,"Gilthoniel"
 

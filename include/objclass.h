@@ -1091,6 +1091,7 @@ struct objclass {
 #define O6_JAPANESE_ITEM               0x00000001UL
 #define O6_MAGIC_CHEST                 0x00000002UL
 #define O6_NORMALLY_NON_EXCEPTIONAL    0x00000004UL
+#define O6_ALWAYS_FULL_INK_COST        0x00000008UL
 
 /* flag values for CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */
 #define PERMITTED_ALL                 0x00000000UL

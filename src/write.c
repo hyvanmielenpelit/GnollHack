@@ -272,7 +272,11 @@ found:
 
     /* we're really going to write now, so calculate cost
      */
-    actualcost = rn1(max(2, basecost / 2), basecost / 2);
+    if (objects[i].oc_flags6 & O6_ALWAYS_FULL_INK_COST)
+        actualcost = basecost;
+    else
+        actualcost = rn1(max(2, basecost / 2), basecost / 2);
+
     curseval = bcsign(pen) + bcsign(paper);
     exercise(A_WIS, TRUE);
     /* dry out marker */
