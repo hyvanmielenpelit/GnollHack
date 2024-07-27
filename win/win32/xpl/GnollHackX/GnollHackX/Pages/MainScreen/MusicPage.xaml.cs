@@ -73,7 +73,11 @@ namespace GnollHackX.Pages.MainScreen
                     rib.ImgHeight = 80;
                     rib.GridWidth = 480;
                     rib.GridHeight = 80;
+#if GNH_MAUI
+                    rib.MaximumWidthRequest = 480;
+#else
                     rib.WidthRequest = 480;
+#endif
                     rib.HeightRequest = 80;
                     rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
                     rib.BtnCommand = i;

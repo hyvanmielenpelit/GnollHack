@@ -7,7 +7,7 @@
              x:Class="GnollHackX.Controls.RowImageButton"
              x:DataType="controls:RowImageButton">
   <ContentView.Content>
-        <Grid x:Name="ViewGrid" CascadeInputTransparent="True" BindingContext="{x:Reference this}" Margin="{Binding GridMargin}" WidthRequest="{Binding GridWidth, FallbackValue='80'}" HeightRequest="{Binding GridHeight, FallbackValue='320'}" >
+        <Grid x:Name="ViewGrid" CascadeInputTransparent="True" BindingContext="{x:Reference this}" Margin="{Binding GridMargin}" WidthRequest  ="{Binding GridWidth, FallbackValue='320'}" HeightRequest="{Binding GridHeight, FallbackValue='80'}" >
             <Grid VerticalOptions="Fill" HorizontalOptions="Fill" ColumnSpacing="6">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
