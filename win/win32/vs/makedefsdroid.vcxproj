@@ -219,7 +219,7 @@
       </PropertyGroup>
       <WriteLinesToFile
           File="$(OutputFile)"
-          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui').Replace('%3CContentView.Content%3E','').Replace('%3C/ContentView.Content%3E',''))"
+          Lines="$([System.IO.File]::ReadAllText($(InputFile)).Replace('GnollHackX.Controls','GnollHackM').Replace('GnollHackX','GnollHackM').Replace('SkiaSharp.Views.Forms','SkiaSharp.Views.Maui.Controls').Replace('http://xamarin.com/schemas/2014/forms','http://schemas.microsoft.com/dotnet/2021/maui').Replace('%3CContentView.Content%3E','').Replace('%3C/ContentView.Content%3E','').Replace('WidthRequest  =','MaximumWidthRequest='))"
           Overwrite="true"
           Encoding="UTF-8"/>
 	  <!-- <Copy SourceFiles="$(InputFile).cs" DestinationFolder="$(MauiMainDir)"/> -->
