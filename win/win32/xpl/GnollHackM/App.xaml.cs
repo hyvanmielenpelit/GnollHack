@@ -1,5 +1,6 @@
 ﻿using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Platform;
 using Newtonsoft.Json.Linq;
 
 #if WINDOWS
@@ -34,6 +35,10 @@ public partial class App : Application
             handler.PlatformView.OffContent = null;
             handler.PlatformView.MinWidth = 0;
             handler.PlatformView.MinHeight = 0;
+        });
+        Microsoft.Maui.Handlers.ButtonHandler.Mapper.AppendToMapping("NoFocusBorder", (handler, View) =>
+        {
+            handler.PlatformView.BorderThickness = new Microsoft.UI.Xaml.Thickness(0);
         });
 #endif
         GHApp.Initialize();
