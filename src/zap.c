@@ -12476,6 +12476,7 @@ reset_zap(VOID_ARGS)
 {
     obj_zapped = FALSE;
     poly_zapped = 0;
+    m_using = FALSE;
 }
 
 /*zap.c*/
