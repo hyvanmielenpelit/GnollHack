@@ -6056,7 +6056,12 @@ namespace GnollHackX
         {
             try
             {
+#if WINDOWS
+                var wikiPage = new WikiPage(uri.ToString(), uri.ToString());
+                await App.Current.MainPage.Navigation.PushModalAsync(wikiPage);
+#else
                 await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+#endif
             }
             catch (Exception ex)
             {

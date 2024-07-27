@@ -25,6 +25,9 @@ namespace GnollHackX.Pages.Game
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class WikiPage : ContentPage
     {
+#if GNH_MAUI
+        IDispatcherTimer _timer = null;
+#endif
         public WikiPage(string title, string wikiUrl)
         {
             InitializeComponent();
@@ -38,6 +41,30 @@ namespace GnollHackX.Pages.Game
             };
             DisplayWebView.Source = Source;
             UpdateNavigationButtons();
+#if GNH_MAUI && WINDOWS
+            ButtonRowDefinition.Height = 82;
+            Appearing += (s, e) =>
+            {
+                _timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+                _timer.Interval = TimeSpan.FromSeconds(0.5);
+                _timer.IsRepeating = true;
+                _timer.Tick += (s, e) =>
+                {
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        UpdateNavigationButtons();
+                    });
+                };
+                _timer.Start();
+            };
+            Disappearing += (s, e) =>
+            {
+                if (_timer != null)
+                {
+                    _timer.Stop();
+                }
+            };
+#endif
         }
 
         private void DisplayWebView_Navigating(object sender, WebNavigatingEventArgs e)
@@ -51,17 +78,20 @@ namespace GnollHackX.Pages.Game
             NavigationLabel.Text = "";
             UpdateNavigationButtons();
 #if GNH_MAUI
-            var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
-            timer.Interval = TimeSpan.FromSeconds(0.5);
-            timer.IsRepeating = false;
-            timer.Tick += (s, e) => 
+            if(_timer == null)
             {
-                MainThread.BeginInvokeOnMainThread(() =>
+                var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+                timer.Interval = TimeSpan.FromSeconds(0.5);
+                timer.IsRepeating = false;
+                timer.Tick += (s, e) =>
                 {
-                    UpdateNavigationButtons();
-                });
-            };
-            timer.Start();
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        UpdateNavigationButtons();
+                    });
+                };
+                timer.Start();
+            }
 #else
             Device.StartTimer(TimeSpan.FromSeconds(0.5), () =>
             {

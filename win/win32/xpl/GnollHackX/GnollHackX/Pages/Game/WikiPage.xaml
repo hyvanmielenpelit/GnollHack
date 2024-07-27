@@ -8,10 +8,10 @@
     <ContentPage.Content>
         <Grid x:Name="RootGrid" BackgroundColor="Black" HorizontalOptions="Fill" VerticalOptions="Fill">
             <Grid.RowDefinitions>
-                <RowDefinition Height="50" />
+                <RowDefinition Height="50" x:Name="ButtonRowDefinition" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <StackLayout x:Name="NavigationLayout" HorizontalOptions="Fill" Spacing="6" Padding="2" VerticalOptions="Start" Orientation="Horizontal" BackgroundColor="Transparent" >
+            <StackLayout x:Name="NavigationLayout" HorizontalOptions="Fill" Spacing="6" Padding="2" VerticalOptions="End" Orientation="Horizontal" BackgroundColor="Transparent" >
                 <controls:CustomImageButton Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" 
                                         WidthRequest="130" HeightRequest="45" HorizontalOptions="Start" VerticalOptions="Center"/>
                 <controls:CustomImageButton Text="&lt;" x:Name="BackButton" Clicked="BackButton_Clicked" FontFamily="DejaVuSansMonoBold" FontSize="16" TextColor="White" BackgroundColor="Transparent" 
