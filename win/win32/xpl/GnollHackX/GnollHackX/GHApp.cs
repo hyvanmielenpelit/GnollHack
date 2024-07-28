@@ -176,7 +176,7 @@ namespace GnollHackX
             FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
             OkOnDoubleClick = Preferences.Get("OkOnDoubleClick", IsDesktop);
             DiscoveredMusicBits = Preferences.Get("DiscoveredMusicBits", 0L);
-            AddPreDiscoveredMusic();
+            //AddPreDiscoveredMusic();
 
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if (FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
@@ -6106,28 +6106,28 @@ namespace GnollHackX
             }
         }
 
-        public static void AddPreDiscoveredMusic()
-        {
-            lock (_discoveredMusicLock)
-            {
-                long bits = _discoveredMusicBits;
-                for (int i = 0; i < GHSoundTrack.GnollHackSoundTracks.Count && i < 64; i++)
-                {
-                    long bit = 1L << i;
-                    if((bits & bit) != 0)
-                    {
-                        GHSoundTrack track = GHSoundTrack.GnollHackSoundTracks[i];
-                        if (track.GHSoundList.Count > 0)
-                        {
-                            for (int k = 0; k < track.GHSoundList.Count; k++)
-                            {
-                                AddDiscoveredMusic(track.GHSoundList[k]);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        //public static void AddPreDiscoveredMusic()
+        //{
+        //    lock (_discoveredMusicLock)
+        //    {
+        //        long bits = _discoveredMusicBits;
+        //        for (int i = 0; i < GHSoundTrack.GnollHackSoundTracks.Count && i < 64; i++)
+        //        {
+        //            long bit = 1L << i;
+        //            if((bits & bit) != 0)
+        //            {
+        //                GHSoundTrack track = GHSoundTrack.GnollHackSoundTracks[i];
+        //                if (track.GHSoundList.Count > 0)
+        //                {
+        //                    for (int k = 0; k < track.GHSoundList.Count; k++)
+        //                    {
+        //                        AddDiscoveredMusic(track.GHSoundList[k]);
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
         public static void SaveDiscoveredMusic()
         {
