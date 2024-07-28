@@ -832,7 +832,8 @@ namespace GnollHackX
             GHApp.InitAdditionalCachedBitmaps();
             GHApp.InitSymbolBitmaps();
             GHApp.InitGameBitmaps();
-            GHSoundTrack.GnollHackSoundTracks.Sort(new SoundTrackComparer());
+            GHApp.AddPreDiscoveredMusic();
+
             carouselView.Init();
 
             string verstr = "?";

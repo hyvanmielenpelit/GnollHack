@@ -41,51 +41,84 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.FmodService.PlayMusic(GHConstants.MusicGHSound, GHConstants.MusicEventPath, 0, 0.3f, 1.0f);
         }
 
+        private class DiscoveredSoundTrackItem
+        {
+            public int Index;
+            public GHSoundTrack Track;
+            public DiscoveredSoundTrackItem(int index, GHSoundTrack track)
+            {
+                Index = index;
+                Track = track;
+            }
+        }
+        private class DiscoveredSoundTrackItemComparer : IComparer<DiscoveredSoundTrackItem>
+        {
+            public DiscoveredSoundTrackItemComparer()
+            {
+
+            }
+
+            public int Compare(DiscoveredSoundTrackItem track1, DiscoveredSoundTrackItem track2)
+            {
+                return string.Compare(track1.Track?.DisplayName ?? "A", track2.Track?.DisplayName ?? "B");
+            }
+        }
+
         private void AddDiscoveredSoundTracks()
         {
             long discoBits = GHApp.DiscoveredMusicBits;
             int discoCount = 0;
+            List<DiscoveredSoundTrackItem> discoList = new List<DiscoveredSoundTrackItem>();
             for (int i = 0; i < GHSoundTrack.GnollHackSoundTracks.Count && i < 64; i++)
             {
                 long bit = 1L << i;
-                if((discoBits & bit) != 0)
+                if ((discoBits & bit) != 0)
                 {
-                    GHSoundTrack track = GHSoundTrack.GnollHackSoundTracks[i];
-                    int length = track.Length;
-                    int min = length / 60;
-                    int sec = length % 60;
-                    bool hasSongwriter = !string.IsNullOrWhiteSpace(track.Songwriter);
-                    bool hasDuration = length > 0;
-                    string durationString = hasDuration ? min + ":" + sec : "";
-                    RowImageButton rib = new RowImageButton();
-                    rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.soundtrack.png";
-                    rib.LblText = track.DisplayName;
-                    rib.LblFontSize = 16;
-                    rib.LblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
-                    rib.SubLblText = (hasSongwriter ? track.Songwriter : "")
-                        + (hasDuration && hasSongwriter ? " (" : "")
-                        + (hasDuration ? durationString : "")
-                        + (hasDuration && hasSongwriter ? ")" : "");
-                    rib.SubLblFontSize = 13;
-                    rib.SubLblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
-                    rib.IsSubLblVisible = hasDuration || hasSongwriter;
-                    rib.ImgWidth = 80;
-                    rib.ImgHeight = 80;
-                    rib.GridWidth = 480;
-                    rib.GridHeight = 80;
-#if GNH_MAUI
-                    rib.MaximumWidthRequest = 480;
-#else
-                    rib.WidthRequest = 480;
-#endif
-                    rib.HeightRequest = 80;
-                    rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
-                    rib.BtnCommand = i;
-                    rib.BtnClicked += SoundTrackButton_Clicked;
-                    SoundTrackLayout.Children.Add(rib); 
-                    
-                    discoCount++;
+                    discoList.Add(new DiscoveredSoundTrackItem(i, GHSoundTrack.GnollHackSoundTracks[i]));
                 }
+            }
+
+            discoList.Sort(new DiscoveredSoundTrackItemComparer());
+
+            foreach (DiscoveredSoundTrackItem trackItem in discoList)
+            {
+                GHSoundTrack track = trackItem.Track;
+                if (track == null)
+                    continue;
+                int length = track.Length;
+                int min = length / 60;
+                int sec = length % 60;
+                bool hasSongwriter = !string.IsNullOrWhiteSpace(track.Songwriter);
+                bool hasDuration = length > 0;
+                string durationString = hasDuration ? min + ":" + sec : "";
+                RowImageButton rib = new RowImageButton();
+                rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.soundtrack.png";
+                rib.LblText = track.DisplayName;
+                rib.LblFontSize = 16;
+                rib.LblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                rib.SubLblText = (hasSongwriter ? track.Songwriter : "")
+                    + (hasDuration && hasSongwriter ? " (" : "")
+                    + (hasDuration ? durationString : "")
+                    + (hasDuration && hasSongwriter ? ")" : "");
+                rib.SubLblFontSize = 13;
+                rib.SubLblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                rib.IsSubLblVisible = hasDuration || hasSongwriter;
+                rib.ImgWidth = 80;
+                rib.ImgHeight = 80;
+                rib.GridWidth = 480;
+                rib.GridHeight = 80;
+#if GNH_MAUI
+                rib.MaximumWidthRequest = 480;
+#else
+                rib.WidthRequest = 480;
+#endif
+                rib.HeightRequest = 80;
+                rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
+                rib.BtnCommand = trackItem.Index;
+                rib.BtnClicked += SoundTrackButton_Clicked;
+                SoundTrackLayout.Children.Add(rib); 
+                    
+                discoCount++;
             }
 
             lblSubtitle.Text = "Found " + discoCount + " of " + GHSoundTrack.GnollHackSoundTracks.Count + " sound tracks";
