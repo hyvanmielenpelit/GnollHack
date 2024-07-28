@@ -1438,11 +1438,11 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 {
     boolean youattack = (magr == &youmonst);
     boolean youdefend = (mdef == &youmonst);
-    boolean vis = (!youattack && magr && cansee(magr->mx, magr->my))
-                  || (!youdefend && cansee(mdef->mx, mdef->my))
+    boolean vis = (!youattack && magr && canseemon(magr))
+                  || (!youdefend && mdef && canseemon(mdef))
                   || (youattack && u.uswallow && mdef == u.ustuck && !Blind);
     boolean realizes_damage;
-    char wepdesc[BUFSZ * 2] ="";
+    char wepdesc[BUFSZ * 2] = "";
     static const char you[] = "you";
     char hittee[BUFSZ];
 
@@ -1571,7 +1571,10 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                 if (bigmonst(mdef->data)) 
                 {
                     if (youattack)
-                        You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "slice deeply into %s!", mon_nam(mdef));
+                    {
+                        if(vis)
+                            You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "slice deeply into %s!", mon_nam(mdef));
+                    }
                     else if (vis)
                         pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s cuts deeply into %s!", Monnam(magr),
                               hittee);
@@ -1581,8 +1584,11 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                 //*dmgptr = 2 * (double)mdef->mhp + FATAL_DAMAGE_MODIFIER;
                 //mdef->mhp = 0;
                 *instakillptr = TRUE;
-                pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s cuts %s in half!", wepdesc, mon_nam(mdef));
-                otmp->dknown = TRUE;
+                if (vis)
+                {
+                    pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s cuts %s in half!", wepdesc, mon_nam(mdef));
+                    otmp->dknown = TRUE;
+                }
                 return 2;
             } 
             else
@@ -1625,25 +1631,32 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                 if (!has_neck(mdef->data) || notonhead || u.uswallow || mdef->heads_left == 0)
                 {
                     if (youattack)
-                        pline_ex(ATR_NONE, CLR_MSG_FAIL, "Somehow, you miss %s wildly.", mon_nam(mdef));
+                    {
+                        if(vis)
+                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "Somehow, you miss %s wildly.", mon_nam(mdef));
+                    }
                     else if (vis)
                         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Somehow, %s misses wildly.", mon_nam(magr));
                     *dmgptr = 0;
-                    return (youattack || vis) * 2;
+                    return ((youattack && vis) || vis) * 2;
                 }
                 if (is_incorporeal(mdef->data) || amorphous(mdef->data) || (is_shade(mdef->data) && !shade_glare(otmp)))
                 {
-                    pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s slices through %s %s.", The(wepdesc),
-                          s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
+                    if (vis)
+                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s slices through %s %s.", The(wepdesc),
+                              s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
                     return 2;
                 }
                 if (mdef->heads_left > 1)
                 {
                     mdef->heads_left--;
                     *dmgptr += 0.625 * (double)mdef->mhpmax / (double)max(1, mdef->data->heads); //Adjusted based on Tiamat in AD&D
-                    pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s cuts one of %s heads off!", The(wepdesc),
-                        s_suffix(mon_nam(mdef)));
-                    otmp->dknown = TRUE;
+                    if (vis)
+                    {
+                        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s cuts one of %s heads off!", The(wepdesc),
+                            s_suffix(mon_nam(mdef)));
+                        otmp->dknown = TRUE;
+                    }
                     return 1;
                 }
                 else
@@ -1654,14 +1667,17 @@ int dieroll; /* needed for Magicbane and vorpal blades */
                     //mdef->mhp = 0;
                     *instakillptr = TRUE;
 
-                    if(mdef->data->heads <= 1)
-                        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, behead_msg[rn2(SIZE(behead_msg))], The(wepdesc),mon_nam(mdef));
-                    else
-                        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s cuts off %s last head!", The(wepdesc), s_suffix(mon_nam(mdef)));
+                    if (vis)
+                    {
+                        if (mdef->data->heads <= 1)
+                            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, behead_msg[rn2(SIZE(behead_msg))], The(wepdesc), mon_nam(mdef));
+                        else
+                            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s cuts off %s last head!", The(wepdesc), s_suffix(mon_nam(mdef)));
 
-                    if (Hallucination && !flags.female)
-                        pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Good job Henry, but that wasn't Anne.");
-                    otmp->dknown = TRUE;
+                        if (Hallucination && !flags.female)
+                            pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Good job Henry, but that wasn't Anne.");
+                        otmp->dknown = TRUE;
+                    }
                     return 2;
                 }
             }
@@ -1815,8 +1831,8 @@ short* adtyp_ptr; /* return value is the type of damage caused */
 
     boolean youattack = (magr == &youmonst);
     boolean youdefend = (mdef == &youmonst);
-    boolean vis = (!youattack && magr && cansee(magr->mx, magr->my))
-        || (!youdefend && cansee(mdef->mx, mdef->my))
+    boolean vis = (!youattack && magr && canseemon(magr))
+        || (!youdefend && mdef && canseemon(mdef))
         || (youattack && u.uswallow && mdef == u.ustuck && !Blind);
     boolean realizes_damage;
     boolean extradamagedone = (extradmg > 0);
@@ -1925,15 +1941,24 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                     )
                 )
             {
-                if (youattack && u.uswallow && mdef == u.ustuck) {
+                if (youattack && u.uswallow && mdef == u.ustuck) 
+                {
                     You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "slice %s wide open!", mon_nam(mdef));
                     lethaldamage = TRUE;
                 }
                 else if (!youdefend)
                 {
-                    if (is_incorporeal(mdef->data) || amorphous(mdef->data)) {
-                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s body.", Yobjnam2(otmp, "cut"),
-                            s_suffix(mon_nam(mdef)));
+                    if (is_incorporeal(mdef->data) || amorphous(mdef->data)) 
+                    {
+                        if (youattack)
+                        {
+                            if (vis)
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s body.", Yobjnam2(otmp, "cut"),
+                                    s_suffix(mon_nam(mdef)));
+                        }
+                        else if (vis)
+                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s body.", Tobjnam(otmp, "cut"),
+                                s_suffix(mon_nam(mdef)));
                     }
                     else if (notonhead)
                         ;
@@ -1955,22 +1980,28 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                             else
                                 update_mon_maxhp(mdef);
                         }
-                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s slices a part of %s off!", The(xname(otmp)),
-                            mon_nam(mdef));
-                        if (Hallucination && !lethaldamage)
+                        if (vis)
                         {
-                            pline("But %s retorts:", mon_nam(mdef));
-                            if (rn2(2))
-                                verbalize_talk1("Hah! It's just a scratch.");
-                            else
-                                verbalize_talk1("Hah! It's just a flesh wound.");
+                            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s slices a part of %s off!", The(xname(otmp)),
+                                mon_nam(mdef));
+                            if (Hallucination && !lethaldamage)
+                            {
+                                pline("But %s retorts:", mon_nam(mdef));
+                                if (rn2(2))
+                                    verbalize_talk1("Hah! It's just a scratch.");
+                                else
+                                    verbalize_talk1("Hah! It's just a flesh wound.");
+                            }
+                            otmp->dknown = TRUE;
                         }
-                        otmp->dknown = TRUE;
                     }
                     else
                     {
-                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s cuts %s in half!", The(xname(otmp)), mon_nam(mdef));
-                        otmp->dknown = TRUE;
+                        if (vis)
+                        {
+                            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s cuts %s in half!", The(xname(otmp)), mon_nam(mdef));
+                            otmp->dknown = TRUE;
+                        }
                         lethaldamage = TRUE;
                     }
                 }
@@ -2057,9 +2088,17 @@ short* adtyp_ptr; /* return value is the type of damage caused */
             {
                 if (!youdefend)
                 {
-                    if (is_incorporeal(mdef->data) || amorphous(mdef->data)) {
-                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s %s.", Yobjnam2(otmp, "slice"),
-                            s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
+                    if (is_incorporeal(mdef->data) || amorphous(mdef->data)) 
+                    {
+                        if (youattack)
+                        { 
+                            if (vis)
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s %s.", Yobjnam2(otmp, "slice"),
+                                    s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
+                        }
+                        else if (vis)
+                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s %s.", Tobjnam(otmp, "slice"),
+                                s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
                     }
                     else
                     {
@@ -2068,23 +2107,26 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                             damagedone = 1;
 
                         totaldamagedone += damagedone;
-
-                        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s slices a part of %s off!", The(xname(otmp)),
-                            mon_nam(mdef));
-                        if (Hallucination && !lethaldamage)
+                        if (vis)
                         {
-                            pline("But %s retorts:", mon_nam(mdef));
-                            if (rn2(2))
-                                verbalize_talk1("Hah! It's just a scratch.");
-                            else
-                                verbalize_talk1("Hah! It's just a flesh wound.");
+                            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s slices a part of %s off!", The(xname(otmp)),
+                                mon_nam(mdef));
+                            if (Hallucination && !lethaldamage)
+                            {
+                                pline("But %s retorts:", mon_nam(mdef));
+                                if (rn2(2))
+                                    verbalize_talk1("Hah! It's just a scratch.");
+                                else
+                                    verbalize_talk1("Hah! It's just a flesh wound.");
+                            }
+                            otmp->dknown = TRUE;
                         }
-                        otmp->dknown = TRUE;
                     }
                 }
                 else
                 {
-                    if (is_incorporeal(youmonst.data) || amorphous(youmonst.data)) {
+                    if (is_incorporeal(youmonst.data) || amorphous(youmonst.data)) 
+                    {
                         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s slices through your %s.", The(xname(otmp)),
                             body_part(NECK));
                     }
@@ -2138,16 +2180,29 @@ short* adtyp_ptr; /* return value is the type of damage caused */
 
                 if (youattack && u.uswallow && mdef == u.ustuck)
                     ;
-                else if (!youdefend) {
-                    if (!has_neck(mdef->data) || notonhead || u.uswallow) {
+                else if (!youdefend) 
+                {
+                    if (!has_neck(mdef->data) || notonhead || u.uswallow) 
+                    {
                         if (youattack)
-                            pline_ex(ATR_NONE, CLR_MSG_FAIL, "Somehow, you miss %s wildly.", mon_nam(mdef));
+                        {
+                            if(vis)
+                                pline_ex(ATR_NONE, CLR_MSG_FAIL, "Somehow, you miss %s wildly.", mon_nam(mdef));
+                        }
                         else if (vis)
                             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Somehow, %s misses wildly.", mon_nam(magr));
                     }
-                    else if (is_incorporeal(mdef->data) || amorphous(mdef->data)) {
-                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s %s.", Yobjnam2(otmp, "slice"),
-                            s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
+                    else if (is_incorporeal(mdef->data) || amorphous(mdef->data)) 
+                    {
+                        if (youattack)
+                        {
+                            if (vis)
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s %s.", Yobjnam2(otmp, "slice"),
+                                    s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
+                        }
+                        else if (vis)
+                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s %s.", Tobjnam(otmp, "slice"),
+                                s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
                     }
                     else
                     {
@@ -2155,19 +2210,25 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                         {
                             mdef->heads_left--;
                             totaldamagedone += (int)(0.625 * (double)mdef->mhpmax / (double)max(1, mdef->data->heads)); //Adjusted based on Tiamat in AD&D
-                            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s cuts one of %s heads off!", The(xname(otmp)), s_suffix(mon_nam(mdef)));
-                            otmp->dknown = TRUE;
+                            if (vis)
+                            {
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s cuts one of %s heads off!", The(xname(otmp)), s_suffix(mon_nam(mdef)));
+                                otmp->dknown = TRUE;
+                            }
                         }
                         else
                         {
                             if (mdef->heads_left > 0)
                                 mdef->heads_left--;
 
-                            pline_ex(ATR_NONE, CLR_MSG_WARNING, behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)),
-                                mon_nam(mdef));
-                            if (Hallucination && !flags.female)
-                                pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Good job Henry, but that wasn't Anne.");
-                            otmp->dknown = TRUE;
+                            if (vis)
+                            {
+                                pline_ex(ATR_NONE, CLR_MSG_WARNING, behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)),
+                                    mon_nam(mdef));
+                                if (Hallucination && !flags.female)
+                                    pline_ex(ATR_NONE, CLR_MSG_HALLUCINATED, "Good job Henry, but that wasn't Anne.");
+                                otmp->dknown = TRUE;
+                            }
                             lethaldamage = TRUE;
                         }
                     }
