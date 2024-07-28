@@ -11,6 +11,7 @@
                 <RowDefinition Height="50" x:Name="ButtonRowDefinition" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+            <Label x:Name="TitleLabel" IsVisible="False" Margin="0,3" TextColor="White" FontSize="16" FontFamily="Diablo" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start"/>
             <StackLayout x:Name="NavigationLayout" HorizontalOptions="Fill" Spacing="6" Padding="2" VerticalOptions="End" Orientation="Horizontal" BackgroundColor="Transparent" >
                 <controls:CustomImageButton Text="Close" x:Name="CloseButton" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" 
                                         WidthRequest="130" HeightRequest="45" HorizontalOptions="Start" VerticalOptions="Center"/>

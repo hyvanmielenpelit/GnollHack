@@ -6052,12 +6052,12 @@ namespace GnollHackX
             await blobClient.DownloadToAsync(targetPath, cancellationToken);
         }
 
-        public static async Task OpenBrowser(ContentPage page, Uri uri)
+        public static async Task OpenBrowser(ContentPage page, string title, Uri uri)
         {
             try
             {
 #if WINDOWS
-                var wikiPage = new WikiPage(uri.ToString(), uri.ToString());
+                var wikiPage = new WikiPage(title, uri.ToString());
                 await App.Current.MainPage.Navigation.PushModalAsync(wikiPage);
 #else
                 await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);

@@ -42,6 +42,11 @@ namespace GnollHackX.Pages.Game
             DisplayWebView.Source = Source;
             UpdateNavigationButtons();
 #if GNH_MAUI && WINDOWS
+            if (!string.IsNullOrWhiteSpace(title))
+            {
+                TitleLabel.Text = title;
+                TitleLabel.IsVisible = true;
+            }
             ButtonRowDefinition.Height = 82;
             Appearing += (s, e) =>
             {

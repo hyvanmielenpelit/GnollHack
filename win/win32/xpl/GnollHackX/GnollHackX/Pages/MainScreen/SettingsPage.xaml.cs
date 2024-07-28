@@ -1584,7 +1584,7 @@ namespace GnollHackX.Pages.MainScreen
             XlogAccountButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             GHApp.XlogReleaseAccount = XlogReleaseAccountSwitch.IsToggled;
-            await GHApp.OpenBrowser(this, new Uri(GHApp.XlogAccountAddress));
+            await GHApp.OpenBrowser(this, "GnollHack Account", new Uri(GHApp.XlogAccountAddress));
             XlogAccountButton.IsEnabled = true;
         }
 

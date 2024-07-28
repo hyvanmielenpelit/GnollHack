@@ -373,6 +373,7 @@ namespace GnollHackX
                     {
                         _popupStyle = popup_style.GeneralDialog;
                         _popupViewUrl = res.PostResponseInfo.TopScorePageUrl;
+                        _popupViewTitle = "Top Scores";
                         PopupCheckBoxLayout.IsVisible = false;
                         PopupOkButton.IsVisible = false;
                         PopupButtonGrid.IsVisible = true;
@@ -1304,6 +1305,7 @@ namespace GnollHackX
         }
 
         private string _popupViewUrl = string.Empty;
+        private string _popupViewTitle = string.Empty;
         private popup_style _popupStyle = popup_style.GeneralDialog;
         private async void PopupOkButton_Clicked(object sender, EventArgs e)
         {
@@ -1428,7 +1430,7 @@ namespace GnollHackX
         private async void PopupViewButton_Clicked(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(_popupViewUrl) && Uri.IsWellFormedUriString(_popupViewUrl, UriKind.Absolute))
-                await GHApp.OpenBrowser(this, new Uri(_popupViewUrl));
+                await GHApp.OpenBrowser(this, _popupViewTitle, new Uri(_popupViewUrl));
             else
                 await DisplayAlertOrGrid("Malformed URL", "The URL was malformed: " + _popupViewUrl, "OK", GHColors.Orange);
         }

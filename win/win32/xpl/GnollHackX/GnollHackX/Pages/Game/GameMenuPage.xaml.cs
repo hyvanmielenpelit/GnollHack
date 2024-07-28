@@ -257,7 +257,7 @@ namespace GnollHackX.Pages.Game
             if (GHApp.IsiOS)
             {
                 /* Navigated event does not trigger with WebView on iOS, making navigation buttons inactivate all the time; use OpenBrowser instead (does not trigger OnSleep / OnResume on iOS) */
-                await GHApp.OpenBrowser(this, new Uri(GHConstants.GnollHackWikiPage));
+                await GHApp.OpenBrowser(this, "Wiki", new Uri(GHConstants.GnollHackWikiPage));
             }
             else
             {

@@ -100,7 +100,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await GHApp.OpenBrowser(this, new Uri(GHConstants.GnollHackGitHubPage));
+            await GHApp.OpenBrowser(this, "Source", new Uri(GHConstants.GnollHackGitHubPage));
             AboutGrid.IsEnabled = true;
         }
 
@@ -108,7 +108,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await GHApp.OpenBrowser(this, new Uri(GHConstants.GnollHackWebPage));
+            await GHApp.OpenBrowser(this, "GnollHack.com", new Uri(GHConstants.GnollHackWebPage));
             AboutGrid.IsEnabled = true;
         }
 
@@ -116,7 +116,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await GHApp.OpenBrowser(this, new Uri(GHConstants.GnollHackWikiPage));
+            await GHApp.OpenBrowser(this, "Wiki", new Uri(GHConstants.GnollHackWikiPage));
             AboutGrid.IsEnabled = true;
         }
 
@@ -124,7 +124,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await GHApp.OpenBrowser(this, new Uri(GHApp.IsAndroid ? GHConstants.GnollHackAndroidDowngradePage : GHApp.IsiOS ? GHConstants.GnollHackiOSDowngradePage :  GHConstants.GnollHackGeneralDowngradePage));
+            await GHApp.OpenBrowser(this, "Downgrade", new Uri(GHApp.IsAndroid ? GHConstants.GnollHackAndroidDowngradePage : GHApp.IsiOS ? GHConstants.GnollHackiOSDowngradePage :  GHConstants.GnollHackGeneralDowngradePage));
             AboutGrid.IsEnabled = true;
         }
 
@@ -132,7 +132,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await GHApp.OpenBrowser(this, new Uri(GHConstants.GnollHackSponsorPage));
+            await GHApp.OpenBrowser(this, "Sponsor", new Uri(GHConstants.GnollHackSponsorPage));
             AboutGrid.IsEnabled = true;
         }
 

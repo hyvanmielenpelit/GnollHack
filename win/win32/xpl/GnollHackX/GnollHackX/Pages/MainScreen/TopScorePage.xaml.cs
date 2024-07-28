@@ -378,7 +378,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             ServerButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await GHApp.OpenBrowser(this, new Uri(GHApp.XlogTopScoreAddress));
+            await GHApp.OpenBrowser(this, "Top Scores", new Uri(GHApp.XlogTopScoreAddress));
             ServerButton.IsEnabled = true;
         }
     }
