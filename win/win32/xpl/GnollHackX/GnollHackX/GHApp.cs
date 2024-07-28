@@ -744,21 +744,17 @@ namespace GnollHackX
             }
         }
 
-        private static readonly object _cancelSaveGameLock = new object();
-        private static bool _cancelSaveGame = false;
-        public static bool CancelSaveGame { get { lock (_cancelSaveGameLock) { return _cancelSaveGame; } } set { lock (_cancelSaveGameLock) { _cancelSaveGame = value; } } }
-
-        private static readonly object _savingGameLock = new object();
+        private static readonly object _saveResumeLock = new object();
         private static bool _savingGame = false;
-        public static bool SavingGame { get { lock (_savingGameLock) { return _savingGame; } } set { lock (_savingGameLock) { _savingGame = value; } } }
-
-        private static readonly object _appSwitchLock = new object();
+        private static bool _cancelSaveGame = false;
         private static int _appSwitchSaveStyle = 0;
-        public static int AppSwitchSaveStyle { get { bool t = TournamentMode; lock (_appSwitchLock) { return t ? 0 : _appSwitchSaveStyle; } } set { lock (_appSwitchLock) { _appSwitchSaveStyle = value; } } }
-
-        private static readonly object _gameSavedLock = new object();
         private static bool _gameSaved = false;
-        public static bool GameSaved { get { lock (_gameSavedLock) { return _gameSaved; } } set { lock (_gameSavedLock) { _gameSaved = value; } } }
+
+        public static bool CancelSaveGame { get { lock (_saveResumeLock) { return _cancelSaveGame; } } set { lock (_saveResumeLock) { _cancelSaveGame = value; } } }
+        public static bool SavingGame { get { lock (_saveResumeLock) { return _savingGame; } } set { lock (_saveResumeLock) { _savingGame = value; } } }
+        public static int AppSwitchSaveStyle { get { bool t = TournamentMode; lock (_saveResumeLock) { return t ? 0 : _appSwitchSaveStyle; } } set { lock (_saveResumeLock) { _appSwitchSaveStyle = value; } } }
+        public static bool GameSaved { get { lock (_saveResumeLock) { return _gameSaved; } } set { lock (_saveResumeLock) { _gameSaved = value; } } }
+
 
         private static readonly object _gameSaveResultLock = new object();
         public static int GameSaveResult { get { lock (_gameSaveResultLock) { return Preferences.Get("GameSaveResult", 0); } } set { lock (_gameSaveResultLock) { Preferences.Set("GameSaveResult", value); } } }

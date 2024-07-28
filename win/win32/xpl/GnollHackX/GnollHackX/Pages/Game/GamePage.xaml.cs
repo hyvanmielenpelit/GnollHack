@@ -101,8 +101,10 @@ namespace GnollHackX.Pages.Game
         public IGnollHackService GnollHackService { get { return _gnollHackService; } }
         private bool _isFirstAppearance = true;
         private Thread _gnhthread;
+
+        private readonly object _currentGameLock = new object();
         private GHGame _currentGame;
-        public GHGame CurrentGame { get { return _currentGame; } }
+        public GHGame CurrentGame { get { lock (_currentGameLock) { return _currentGame; } } set { lock (_currentGameLock) { _currentGame = value; } } }
 
         private MapData[,] _mapData = new MapData[GHConstants.MapCols, GHConstants.MapRows];
         private readonly object _mapDataLock = new object();
@@ -517,12 +519,14 @@ namespace GnollHackX.Pages.Game
                 }
                 else
                     RefreshMsgHistoryRowCounts = true;
-                if (_currentGame != null)
+
+                GHGame curGame = CurrentGame;
+                if (curGame != null)
                 {
                     ConcurrentQueue<GHResponse> queue;
-                    if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                    if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
                     {
-                        queue.Enqueue(new GHResponse(_currentGame, GHRequestType.UseLongerMessageHistory, value));
+                        queue.Enqueue(new GHResponse(curGame, GHRequestType.UseLongerMessageHistory, value));
                     }
                 }
             }
@@ -1059,36 +1063,39 @@ namespace GnollHackX.Pages.Game
 
         public void SetCharacterClickAction(bool newValue)
         {
-            if (_currentGame != null)
+            GHGame curGame = CurrentGame;
+            if (curGame != null)
             {
                 ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
                 {
-                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.SetCharacterClickAction, newValue));
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SetCharacterClickAction, newValue));
                 }
             }
         }
 
         public void SetRightMouseCommand(int newValue)
         {
-            if (_currentGame != null)
+            GHGame curGame = CurrentGame;
+            if (curGame != null)
             {
                 ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
                 {
-                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.SetRightMouseCommand, newValue));
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SetRightMouseCommand, newValue));
                 }
             }
         }
 
         public void SetMiddleMouseCommand(int newValue)
         {
-            if (_currentGame != null)
+            GHGame curGame = CurrentGame;
+            if (curGame != null)
             {
                 ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
                 {
-                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.SetMiddleMouseCommand, newValue));
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SetMiddleMouseCommand, newValue));
                 }
             }
         }
@@ -1427,15 +1434,20 @@ namespace GnollHackX.Pages.Game
 
         public async void RestartGame()
         {
-            _currentGame = null;
+            if(_gnhthread != null)
+            {
+                for (int i = 0; i < 20 && _gnhthread.IsAlive; i++)
+                {
+                    await Task.Delay(50);
+                }
+            }
+            CurrentGame = null;
             GHApp.CurrentGHGame = null;
             _gnhthread = null;
 
             /* Collect garbage at this point */
-            await Task.Delay(50);
             GHApp.CollectGarbage();
-            await Task.Delay(50);
-
+            
             Thread t = new Thread(new ThreadStart(GNHThreadProcForRestart));
             _gnhthread = t;
             _gnhthread.Start();
@@ -1443,7 +1455,7 @@ namespace GnollHackX.Pages.Game
 
         public async void RestartReplay()
         {
-            _currentGame = null;
+            CurrentGame = null;
             GHApp.CurrentGHGame = null;
             _gnhthread = null;
 
@@ -2290,12 +2302,13 @@ namespace GnollHackX.Pages.Game
                 _screenText = new GHScreenText(data, countervalue, this);
             }
 
-            if (_currentGame != null)
+            GHGame curGame = CurrentGame;
+            if (curGame != null)
             {
                 ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
                 {
-                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.DisplayScreenText));
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.DisplayScreenText));
                 }
             }
         }
@@ -2497,34 +2510,38 @@ namespace GnollHackX.Pages.Game
 
         protected void GNHThreadProc()
         {
-            _currentGame = new GHGame(this);
-            GHApp.CurrentGHGame = _currentGame;
-            _gnollHackService.StartGnollHack(_currentGame);
+            GHGame curGame = new GHGame(this);
+            CurrentGame = curGame;
+            GHApp.CurrentGHGame = curGame;
+            _gnollHackService.StartGnollHack(curGame);
         }
 
         protected void GNHThreadProcForRestart()
         {
-            _currentGame = new GHGame(this);
-            _currentGame.StartFlags = RunGnollHackFlags.ForceLastPlayerName;
-            GHApp.CurrentGHGame = _currentGame;
-            _gnollHackService.StartGnollHack(_currentGame);
+            GHGame curGame = new GHGame(this);
+            CurrentGame = curGame;
+            GHApp.CurrentGHGame = curGame;
+            curGame.StartFlags = RunGnollHackFlags.ForceLastPlayerName;
+            _gnollHackService.StartGnollHack(curGame);
         }
 
         protected void GNHThreadProcForReplay()
         {
-            _currentGame = new GHGame(this);
-            _currentGame.StartFlags = RunGnollHackFlags.PlayingReplay;
-            GHApp.CurrentGHGame = _currentGame;
-            GHApp.PlayReplay(_currentGame, ReplayFileName);
+            GHGame curGame = new GHGame(this);
+            CurrentGame = curGame;
+            GHApp.CurrentGHGame = curGame;
+            curGame.StartFlags = RunGnollHackFlags.PlayingReplay;
+            GHApp.PlayReplay(curGame, ReplayFileName);
         }
 
         private void pollRequestQueue()
         {
-            if (_currentGame != null)
+            GHGame curGame = CurrentGame;
+            if (curGame != null)
             {
                 GHRequest req;
                 ConcurrentQueue<GHRequest> queue;
-                if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
+                if (GHGame.RequestDictionary.TryGetValue(curGame, out queue))
                 {
                     while (queue.TryDequeue(out req))
                     {
@@ -2569,7 +2586,7 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.ReturnToMainMenu:
                                 IsGameOn = false;
                                 ClearMap();
-                                _currentGame = null;
+                                CurrentGame = null;
                                 GHApp.CurrentGHGame = null;
                                 _mainPage.GameStarted = false;
                                 if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
@@ -2833,9 +2850,10 @@ namespace GnollHackX.Pages.Game
         private void DisplayWindowView(int winid, List<GHPutStrItem> strs)
         {
             GHWindow window;
-            lock (_currentGame.WindowsLock)
+            GHGame curGame = CurrentGame;
+            lock (curGame.WindowsLock)
             {
-                window = _currentGame.Windows[winid];
+                window = curGame.Windows[winid];
             }
             if(window != null)
                 ShowWindowCanvas(window, strs);
@@ -3411,9 +3429,10 @@ namespace GnollHackX.Pages.Game
             }
 
             ConcurrentQueue<GHResponse> queue;
-            if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+            GHGame curGame = CurrentGame;
+            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.GetLine, res));
+                queue.Enqueue(new GHResponse(curGame, GHRequestType.GetLine, res));
             }
 
             HideGetLine();
@@ -3428,9 +3447,10 @@ namespace GnollHackX.Pages.Game
 
             string res = "?";
             ConcurrentQueue<GHResponse> queue;
-            if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+            GHGame curGame = CurrentGame;
+            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.GetLine, res));
+                queue.Enqueue(new GHResponse(curGame, GHRequestType.GetLine, res));
             }
 
             HideGetLine();
@@ -3444,9 +3464,10 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             
             ConcurrentQueue<GHResponse> queue;
-            if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+            GHGame curGame = CurrentGame;
+            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.GetLine, '\x1B'.ToString()));
+                queue.Enqueue(new GHResponse(curGame, GHRequestType.GetLine, '\x1B'.ToString()));
             }
 
             HideGetLine();
@@ -3923,9 +3944,10 @@ namespace GnollHackX.Pages.Game
             else if (MenuGrid.IsVisible)
             {
                 ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                GHGame curGame = CurrentGame;
+                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
                 {
-                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(), true));
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(), true));
                 }
                 MenuGrid.IsVisible = false;
                 //MainGrid.IsVisible = true;
@@ -6247,14 +6269,15 @@ namespace GnollHackX.Pages.Game
 
                 float tx = 0, ty = 0;
                 float startx = 0, starty = 0;
-                if (_currentGame != null)
+                GHGame curGame = CurrentGame;
+                if (curGame != null)
                 {
-                    lock (_currentGame.WindowsLock)
+                    lock (curGame.WindowsLock)
                     {
-                        if (_currentGame.Windows[_currentGame.MapWindowId] != null)
+                        if (curGame.Windows[curGame.MapWindowId] != null)
                         {
-                            startx = _currentGame.Windows[_currentGame.MapWindowId].Left;
-                            starty = _currentGame.Windows[_currentGame.MapWindowId].Top;
+                            startx = curGame.Windows[curGame.MapWindowId].Left;
+                            starty = curGame.Windows[curGame.MapWindowId].Top;
                         }
                     }
                 }
@@ -7717,12 +7740,12 @@ namespace GnollHackX.Pages.Game
                     GHWindow messageWindow = null;
                     for (int i = 0; i < GHConstants.MaxGHWindows; i++)
                     {
-                        if (_currentGame == null)
+                        if (curGame == null)
                             break;
-                        lock (_currentGame.WindowsLock)
+                        lock (curGame.WindowsLock)
                         {
-                            ghWindow = _currentGame.Windows[i];
-                            messageWindow = _currentGame.Windows[_currentGame.MessageWindowId];
+                            ghWindow = curGame.Windows[i];
+                            messageWindow = curGame.Windows[curGame.MessageWindowId];
                         }
                         if (ghWindow == null || messageWindow == null)
                             break;
@@ -7802,9 +7825,9 @@ namespace GnollHackX.Pages.Game
 
                                 }
 
-                                if (i == _currentGame.StatusWindowId && ClassicStatusBar)
+                                if (i == curGame.StatusWindowId && ClassicStatusBar)
                                     _canvasButtonRect.Top = winRect.Bottom;
-                                else if (i == _currentGame.MessageWindowId)
+                                else if (i == curGame.MessageWindowId)
                                     _canvasButtonRect.Bottom = winRect.Top;
                             }
 
@@ -12729,7 +12752,8 @@ namespace GnollHackX.Pages.Game
 
         private void canvasView_Touch_MainPage(object sender, SKTouchEventArgs e)
         {
-            if (_currentGame != null)
+            GHGame curGame = CurrentGame;
+            if (curGame != null)
             {
                 switch (e?.ActionType)
                 {
@@ -13144,10 +13168,10 @@ namespace GnollHackX.Pages.Game
                             else if (_touchWithinPet > 0 && !ShowDirections && !ShowNumberPad && !PlayingReplay)
                             {
                                 ConcurrentQueue<GHResponse> queue;
-                                if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
                                 {
-                                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.SetPetMID, _touchWithinPet));
-                                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.GetChar, (int)'{'));
+                                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SetPetMID, _touchWithinPet));
+                                    queue.Enqueue(new GHResponse(curGame, GHRequestType.GetChar, (int)'{'));
                                 }
                             }
                             else if (!PlayingReplay || ShowExtendedStatusBar)
@@ -13428,6 +13452,7 @@ namespace GnollHackX.Pages.Game
 
         public void IssueNHCommandViaTouch(object sender, SKTouchEventArgs e)
         {
+            GHGame curGame = CurrentGame;
             int x = 0, y = 0, mod = 0;
             float canvaswidth = canvasView.CanvasSize.Width;
             float canvasheight = canvasView.CanvasSize.Height;
@@ -13494,9 +13519,9 @@ namespace GnollHackX.Pages.Game
                         mod = (int)NhGetPosMods.ClickMove;
 
                     ConcurrentQueue<GHResponse> queue;
-                    if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                    if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
                     {
-                        queue.Enqueue(new GHResponse(_currentGame, GHRequestType.Location, x, y, mod));
+                        queue.Enqueue(new GHResponse(curGame, GHRequestType.Location, x, y, mod));
                     }
                 }
             }
@@ -13562,9 +13587,9 @@ namespace GnollHackX.Pages.Game
                             resp -= 10;
 
                         ConcurrentQueue<GHResponse> queue;
-                        if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                        if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
                         {
-                            queue.Enqueue(new GHResponse(_currentGame, GHRequestType.GetChar, resp));
+                            queue.Enqueue(new GHResponse(curGame, GHRequestType.GetChar, resp));
                         }
                     }
                     else if (ShowNumberPad && e.Location.X < _canvasButtonRect.Left
@@ -13573,9 +13598,9 @@ namespace GnollHackX.Pages.Game
                     {
                         int resp = -10;
                         ConcurrentQueue<GHResponse> queue;
-                        if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                        if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
                         {
-                            queue.Enqueue(new GHResponse(_currentGame, GHRequestType.GetChar, resp));
+                            queue.Enqueue(new GHResponse(curGame, GHRequestType.GetChar, resp));
                         }
                     }
                 }
@@ -14097,12 +14122,13 @@ namespace GnollHackX.Pages.Game
             if (!((resp >= '0' && resp <= '9') || (resp <= -1 && resp >= -19)))
                 ShowNumberPad = false;
 
-            if (_currentGame != null)
+            GHGame curGame = CurrentGame;
+            if (curGame != null)
             {
                 ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
                 {
-                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.GetChar, resp));
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.GetChar, resp));
                 }
             }
         }
@@ -15865,9 +15891,10 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
-            if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+            GHGame curGame = CurrentGame;
+            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, resultlist, false));
+                queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, resultlist, false));
             }
 
             if(!UIUtils.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
@@ -15903,9 +15930,10 @@ namespace GnollHackX.Pages.Game
             }
 
             ConcurrentQueue<GHResponse> queue;
-            if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+            GHGame curGame = CurrentGame;
+            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(1), true));
+                queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(1), true));
             }
 
             if (!UIUtils.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
@@ -17393,9 +17421,10 @@ namespace GnollHackX.Pages.Game
                         if (_blockingTipView)
                         {
                             ConcurrentQueue<GHResponse> queue;
-                            if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                            GHGame curGame = CurrentGame;
+                            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
                             {
-                                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.ShowGUITips));
+                                queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowGUITips));
                             }
                         }
                     }
@@ -17657,9 +17686,10 @@ namespace GnollHackX.Pages.Game
             }
 
             ConcurrentQueue<GHResponse> queue;
-            if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+            GHGame curGame = CurrentGame;
+            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.Panic));
+                queue.Enqueue(new GHResponse(curGame, GHRequestType.Panic));
             }
         }
 
@@ -17668,9 +17698,10 @@ namespace GnollHackX.Pages.Game
             await DisplayAlert("Message", text != null ? text : "No message.", "OK");
 
             ConcurrentQueue<GHResponse> queue;
-            if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+            GHGame curGame = CurrentGame;
+            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.Message));
+                queue.Enqueue(new GHResponse(curGame, GHRequestType.Message));
             }
         }
 
@@ -17680,9 +17711,10 @@ namespace GnollHackX.Pages.Game
                 accept != null ? accept : "Yes", cancel != null ? cancel : "No");
 
             ConcurrentQueue<GHResponse> queue;
-            if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+            GHGame curGame = CurrentGame;
+            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.YnConfirmation, res));
+                queue.Enqueue(new GHResponse(curGame, GHRequestType.YnConfirmation, res));
             }
         }
 
@@ -17713,9 +17745,10 @@ namespace GnollHackX.Pages.Game
             }
 
             ConcurrentQueue<GHResponse> queue;
-            if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+            GHGame curGame = CurrentGame;
+            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
             {
-                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.CrashReport));
+                queue.Enqueue(new GHResponse(curGame, GHRequestType.CrashReport));
             }
         }
 
@@ -17813,12 +17846,13 @@ namespace GnollHackX.Pages.Game
 
         public void StopWaitAndResumeSavedGame()
         {
-            if (_currentGame != null)
+            GHGame curGame = CurrentGame;
+            if (curGame != null)
             {
                 ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
                 {
-                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.StopWaitAndRestoreSavedGame));
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.StopWaitAndRestoreSavedGame));
                 }
             }
         }
@@ -17831,36 +17865,39 @@ namespace GnollHackX.Pages.Game
 
         public void SaveGameAndWaitForResume()
         {
-            if (_currentGame != null) // && !IgnoreSave()
+            GHGame curGame = CurrentGame;
+            if (curGame != null) // && !IgnoreSave()
             {
                 ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
                 {
-                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.SaveGameAndWaitForResume));
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SaveGameAndWaitForResume));
                 }
             }
         }
 
         public void SaveCheckPoint()
         {
-            if (_currentGame != null)
+            GHGame curGame = CurrentGame;
+            if (curGame != null)
             {
                 ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
                 {
-                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.SaveInsuranceCheckPoint));
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SaveInsuranceCheckPoint));
                 }
             }
         }
 
         public void SendRequestForTallyRealTime()
         {
-            if (_currentGame != null)
+            GHGame curGame = CurrentGame;
+            if (curGame != null)
             {
                 ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
                 {
-                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.TallyRealTime));
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.TallyRealTime));
                 }
             }
         }
@@ -17934,12 +17971,13 @@ namespace GnollHackX.Pages.Game
 
         public void RequestEndReplayFile()
         {
-            if (_currentGame != null)
+            GHGame curGame = CurrentGame;
+            if (curGame != null)
             {
                 ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
+                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
                 {
-                    queue.Enqueue(new GHResponse(_currentGame, GHRequestType.EndReplayFile));
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.EndReplayFile));
                 }
             }
         }

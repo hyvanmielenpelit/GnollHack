@@ -386,7 +386,7 @@ unsigned int mode;
 DLLEXPORT void LibSaveAndRestoreSavedGame(save_style)
 int save_style;
 {
-    if (program_state.something_worth_saving 
+    if (program_state.something_worth_saving && context.game_started
         && !program_state.gameover && !program_state.panicking && !program_state.in_tricked
         && !program_state.exiting && !program_state.freeing_dynamic_data
         && !saving && !restoring && !reseting && !check_pointing && !ignore_onsleep_autosave)
