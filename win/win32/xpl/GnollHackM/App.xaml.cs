@@ -41,6 +41,7 @@ public partial class App : Application
             handler.PlatformView.BorderThickness = new Microsoft.UI.Xaml.Thickness(0);
         });
 #endif
+
         GHApp.Initialize();
         MainPage = new AppShell();
     }
