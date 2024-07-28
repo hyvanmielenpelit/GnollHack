@@ -553,35 +553,41 @@ namespace GnollHackX.Pages.Game
         private readonly object _weaponStyleObjDataItemLock = new object();
         private bool _drawWeaponStyleAsGlyphs = true;
 
-        private readonly object _petDataLock = new object();
-        private List<GHPetDataItem> _petData = new List<GHPetDataItem>();
-
-        private int _shownMessageRows = GHConstants.DefaultMessageRows;
-        public int NumDisplayedMessages { get { return _shownMessageRows; } set { _shownMessageRows = value; } }
-        public int ActualDisplayedMessages { get { return ForceAllMessages ? (LongerMessageHistory ? GHConstants.MaxLongerMessageHistoryLength : GHConstants.AllMessageRows) : NumDisplayedMessages; } }
-
-        private int _shownPetRows = GHConstants.DefaultPetRows;
-        public int NumDisplayedPetRows { get { return _shownPetRows; } set { _shownPetRows = value; } }
         public SimpleImageButton StandardMeasurementButton { get { return UseSimpleCmdLayout ? SimpleESCButton : ESCButton; } }
         public StackLayout StandardMeasurementCmdLayout { get { return UseSimpleCmdLayout ? SimpleUpperCmdLayout : UpperCmdLayout; } }
         public LabeledImageButton StandardReferenceButton { get { return UseSimpleCmdLayout ? lSimpleInventoryButton : lInventoryButton; } } // { get { return DesktopButtons ? lRowAbilitiesButton : lAbilitiesButton; } }
+        public StackLayout UsedButtonRowStack { get { return UseSimpleCmdLayout ? SimpleButtonRowStack : ButtonRowStack; } }
 
-        public TTYCursorStyle CursorStyle { get; set; }
-        public GHGraphicsStyle GraphicsStyle { get; set; }
+        private readonly object _petDataLock = new object();
+        private List<GHPetDataItem> _petData = new List<GHPetDataItem>();
+
+        private readonly object _styleLock = new object();
+        private int _shownMessageRows = GHConstants.DefaultMessageRows;
+        private int _shownPetRows = GHConstants.DefaultPetRows;
+        private TTYCursorStyle _cursorStyle;
+        private GHGraphicsStyle _graphicsStyle;
         private MapRefreshRateStyle _mapRefreshRate = MapRefreshRateStyle.MapFPS60;
+
+        public int NumDisplayedMessages { get { lock (_styleLock) { return _shownMessageRows; } } set { lock (_styleLock) { _shownMessageRows = value;} } }
+        public int ActualDisplayedMessages { get { return ForceAllMessages ? (LongerMessageHistory ? GHConstants.MaxLongerMessageHistoryLength : GHConstants.AllMessageRows) : NumDisplayedMessages; } }
+        public int NumDisplayedPetRows { get { lock (_styleLock) { return _shownPetRows; } } set { lock (_styleLock) { _shownPetRows = value; } } }
+        public TTYCursorStyle CursorStyle { get { lock (_styleLock) { return _cursorStyle; } } set { lock (_styleLock) { _cursorStyle = value; } } }
+        public GHGraphicsStyle GraphicsStyle { get { lock (_styleLock) { return _graphicsStyle; } } set { lock (_styleLock) { _graphicsStyle = value; } } }
         public MapRefreshRateStyle MapRefreshRate
         {
             get
             {
-                return _mapRefreshRate;
+                lock (_styleLock) { return _mapRefreshRate; }
             }
             set
             {
-                if (_mapRefreshRate == value)
-                    return;
+                lock (_styleLock)
+                {
+                    if (_mapRefreshRate == value)
+                        return;
 
-                _mapRefreshRate = value;
-
+                    _mapRefreshRate = value;
+                }
                 if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
                     canvasView.AbortAnimation("GeneralAnimationCounter");
                 _mapUpdateStopWatch.Stop();
@@ -604,20 +610,23 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        private readonly object _useSimpleCmdLock = new object();
         private bool _useSimpleCmdLayout = GHConstants.DefaultSimpleCmdLayout;
         public bool UseSimpleCmdLayout
         {
-            get { return _useSimpleCmdLayout; }
+            get { lock(_useSimpleCmdLock) { return _useSimpleCmdLayout; } }
             set
             {
-                _useSimpleCmdLayout = value;
+                lock (_useSimpleCmdLock)
+                {
+                    _useSimpleCmdLayout = value;
+                }
                 ButtonRowStack.IsVisible = !value;
                 UpperCmdLayout.IsVisible = !value;
                 SimpleButtonRowStack.IsVisible = value;
                 SimpleUpperCmdLayout.IsVisible = value;
             }
         }
-        public StackLayout UsedButtonRowStack { get { return UseSimpleCmdLayout ? SimpleButtonRowStack : ButtonRowStack; } }
 
         private readonly object _showBatteryLock = new object();
         private bool _showBattery;
@@ -712,8 +721,6 @@ namespace GnollHackX.Pages.Game
         public readonly GHStatusField[] StatusFields = new GHStatusField[(int)NhStatusFields.MAXBLSTATS];
 
         private MainPage _mainPage;
-
-
 
 
         /* Persistent temporary bitmap */
