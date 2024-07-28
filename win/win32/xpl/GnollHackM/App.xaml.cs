@@ -42,7 +42,7 @@ public partial class App : Application
         });
 #endif
         GHApp.Initialize();
-		MainPage = new AppShell();
+        MainPage = new AppShell();
     }
 
     protected override void OnStart()
