@@ -921,6 +921,17 @@ namespace GnollHackX
                     if (sender != null && sender is Page)
                     {
                         SetPageTheme((Page)sender, isDarkTheme);
+                        if (!(page is MainPage))
+                        {
+                            Microsoft.UI.Xaml.Controls.Panel p = page?.Handler?.PlatformView as Microsoft.UI.Xaml.Controls.Panel;
+                            if (p != null)
+                            {
+                                p.Transitions = new Microsoft.UI.Xaml.Media.Animation.TransitionCollection()
+                                {
+                                    new Microsoft.UI.Xaml.Media.Animation.PaneThemeTransition() { Edge = Microsoft.UI.Xaml.Controls.Primitives.EdgeTransitionLocation.Bottom }
+                                };
+                            }
+                        }
                     }
                 };
             }
