@@ -4607,6 +4607,10 @@ struct obj* obj;
             putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Demons and devils are immune to death attacks.");
             putstr(datawin, ATR_INDENT_AT_PERIOD, "2. Some devils can spawn with a bullwhip that can disarm you from your weapon. It is best to kill them from a distance.");
             putstr(datawin, ATR_INDENT_AT_PERIOD, "3. Demons and devils can gate in more of their kind with their melee attack. It is often best to kill them from a distance.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "4. The topmost level of Gehennom is the Valley of the Dead, which is inhabited by a large number of undead beings.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "5. You will need at least drain resistance to successfully fight these creatures.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "6. The entrance to lower levels of Gehennom is guarded by the dreaded dracolich, which can breathe a death ray.");
+            putstr(datawin, ATR_INDENT_AT_PERIOD, "7. Be sure to possess either reflection or death resistance before engaging with the dracolich.");
             break;
         case MANUAL_ADVANCED_READING_IN_KNOWN_MONSTERS:
             putstr(datawin, ATR_INDENT_AT_PERIOD, "1. Some sea monsters, such as eels, can drown you. It is often a good idea to kill them from a distance.");
