@@ -2954,7 +2954,14 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
-                TextGrid.IsVisible = true;
+                if (!MenuGrid.IsVisible && !TextGrid.IsVisible)
+                {
+                    TextGrid.Opacity = 0;
+                    TextGrid.IsVisible = true;
+                    TextGrid.FadeTo(1.0);
+                }
+                else
+                    TextGrid.IsVisible = true;
                 //MainGrid.IsVisible = false;
                 IsMainCanvasOn = false;
                 if (dohidemenu)
@@ -3837,7 +3844,15 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
-                MenuGrid.IsVisible = true;
+                if(!MenuGrid.IsVisible && !TextGrid.IsVisible)
+                {
+                    MenuGrid.Opacity = 0;
+                    MenuGrid.IsVisible = true;
+                    MenuGrid.FadeTo(1.0);
+                }
+                else
+                    MenuGrid.IsVisible = true;
+
                 //MainGrid.IsVisible = false;
                 IsMainCanvasOn = false;
                 if (dohidetext)

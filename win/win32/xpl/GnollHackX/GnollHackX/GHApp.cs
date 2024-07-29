@@ -928,7 +928,7 @@ namespace GnollHackX
                             {
                                 p.Transitions = new Microsoft.UI.Xaml.Media.Animation.TransitionCollection()
                                 {
-                                    new Microsoft.UI.Xaml.Media.Animation.PaneThemeTransition() { Edge = Microsoft.UI.Xaml.Controls.Primitives.EdgeTransitionLocation.Bottom }
+                                    new Microsoft.UI.Xaml.Media.Animation.EntranceThemeTransition()
                                 };
                             }
                         }
