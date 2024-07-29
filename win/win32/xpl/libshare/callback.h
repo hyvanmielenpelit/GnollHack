@@ -19,7 +19,7 @@
 #define OSAPI
 #endif
 
-typedef char cschar; /* For use with C# chars in callback functions; assuming (default) value of CharSet.Ansi */
+typedef short cschar; /* For use with C# chars in callback functions; assuming (default) value of CharSet.Ansi */
 
 struct objclassdata
 {
