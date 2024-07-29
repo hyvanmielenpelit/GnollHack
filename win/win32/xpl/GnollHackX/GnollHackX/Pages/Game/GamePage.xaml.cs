@@ -64,10 +64,12 @@ namespace GnollHackX.Pages.Game
         {
             public bool OkClicked;
             public int MenuItemClickIndex;
-            public MenuClickResult(bool okClicked, int menuItemClickIndex)
+            public long ItemIdentifier;
+            public MenuClickResult(bool okClicked, int menuItemClickIndex, long itemIdentifier)
             {
                 OkClicked = okClicked;
                 MenuItemClickIndex = menuItemClickIndex;
+                ItemIdentifier = itemIdentifier;
             }
         };
 
@@ -15352,9 +15354,11 @@ namespace GnollHackX.Pages.Game
                                 MenuClickResult clickRes = MenuCanvas_NormalClickRelease(sender, e);
                                 if(GHApp.OkOnDoubleClick)
                                 {
+
                                     long timeSincePreviousReleaseInMs = (nowTicks - _savedPreviousMenuReleaseTimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
                                     if (!clickRes.OkClicked && MenuOKButton.IsEnabled && _menuPreviousReleaseClick &&
                                         clickRes.MenuItemClickIndex >= 0 && clickRes.MenuItemClickIndex == _menuPreviousReleaseClickIndex &&
+                                        clickRes.ItemIdentifier != 0 &&
                                         timeSincePreviousReleaseInMs <= GHConstants.DoubleClickTimeThreshold)
                                     {
                                         MenuCanvas.InvalidateSurface();
@@ -15629,10 +15633,11 @@ namespace GnollHackX.Pages.Game
             bool doclickok = false;
             bool okClicked = false;
             int clickIdx = -1;
+            long identifier = 0;
             lock (MenuCanvas.MenuItemLock)
             {
                 if (MenuCanvas.MenuItems == null)
-                    return new MenuClickResult(okClicked, clickIdx);
+                    return new MenuClickResult(okClicked, clickIdx, identifier);
 
                 for (int idx = _firstDrawnMenuItemIdx; idx >= 0 && idx <= _lastDrawnMenuItemIdx; idx++)
                 {
@@ -15641,6 +15646,7 @@ namespace GnollHackX.Pages.Game
                     if (MenuCanvas.MenuItems[idx].DrawBounds.Contains(e.Location))
                     {
                         clickIdx = idx;
+                        identifier = MenuCanvas.MenuItems[idx].Identifier;
                         doclickok = ClickMenuItem(idx);
                         //if (mi.Identifier == 0)
                         //{
@@ -15708,7 +15714,7 @@ namespace GnollHackX.Pages.Game
                 MenuCanvas.InvalidateSurface();
                 MenuOKButton_Clicked(sender, e);
             }
-            return new MenuClickResult(okClicked, clickIdx);
+            return new MenuClickResult(okClicked, clickIdx, identifier);
         }
 
         private bool ClickMenuItem(int menuItemIdx)
