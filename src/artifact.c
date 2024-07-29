@@ -1570,14 +1570,13 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 
                 if (bigmonst(mdef->data)) 
                 {
-                    if (youattack)
+                    if (vis)
                     {
-                        if(vis)
+                        if (youattack)
                             You_ex(ATR_NONE, CLR_MSG_MYSTICAL, "slice deeply into %s!", mon_nam(mdef));
+                        else
+                            pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s cuts deeply into %s!", Monnam(magr), hittee);
                     }
-                    else if (vis)
-                        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "%s cuts deeply into %s!", Monnam(magr),
-                              hittee);
                     *dmgptr *= 2;
                     return 2;
                 }
@@ -1630,15 +1629,15 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             {
                 if (!has_neck(mdef->data) || notonhead || u.uswallow || mdef->heads_left == 0)
                 {
-                    if (youattack)
+                    if (vis)
                     {
-                        if(vis)
+                        if (youattack)
                             pline_ex(ATR_NONE, CLR_MSG_FAIL, "Somehow, you miss %s wildly.", mon_nam(mdef));
+                        else
+                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Somehow, %s misses wildly.", mon_nam(magr));
                     }
-                    else if (vis)
-                        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Somehow, %s misses wildly.", mon_nam(magr));
                     *dmgptr = 0;
-                    return ((youattack && vis) || vis) * 2;
+                    return (vis) * 2;
                 }
                 if (is_incorporeal(mdef->data) || amorphous(mdef->data) || (is_shade(mdef->data) && !shade_glare(otmp)))
                 {
@@ -1950,15 +1949,13 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                 {
                     if (is_incorporeal(mdef->data) || amorphous(mdef->data)) 
                     {
-                        if (youattack)
+                        if (vis)
                         {
-                            if (vis)
-                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s body.", Yobjnam2(otmp, "cut"),
-                                    s_suffix(mon_nam(mdef)));
+                            if (youattack)
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s body.", Yobjnam2(otmp, "cut"), s_suffix(mon_nam(mdef)));
+                            else
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s body.", Tobjnam(otmp, "cut"), s_suffix(mon_nam(mdef)));
                         }
-                        else if (vis)
-                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s body.", Tobjnam(otmp, "cut"),
-                                s_suffix(mon_nam(mdef)));
                     }
                     else if (notonhead)
                         ;
@@ -2090,15 +2087,15 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                 {
                     if (is_incorporeal(mdef->data) || amorphous(mdef->data)) 
                     {
-                        if (youattack)
-                        { 
-                            if (vis)
+                        if (vis)
+                        {
+                            if (youattack)
                                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s %s.", Yobjnam2(otmp, "slice"),
                                     s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
+                            else
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s %s.", Tobjnam(otmp, "slice"),
+                                    s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
                         }
-                        else if (vis)
-                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s %s.", Tobjnam(otmp, "slice"),
-                                s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
                     }
                     else
                     {
@@ -2184,25 +2181,25 @@ short* adtyp_ptr; /* return value is the type of damage caused */
                 {
                     if (!has_neck(mdef->data) || notonhead || u.uswallow) 
                     {
-                        if (youattack)
+                        if (vis)
                         {
-                            if(vis)
+                            if (youattack)
                                 pline_ex(ATR_NONE, CLR_MSG_FAIL, "Somehow, you miss %s wildly.", mon_nam(mdef));
+                            else
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Somehow, %s misses wildly.", mon_nam(magr));
                         }
-                        else if (vis)
-                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "Somehow, %s misses wildly.", mon_nam(magr));
                     }
                     else if (is_incorporeal(mdef->data) || amorphous(mdef->data)) 
                     {
-                        if (youattack)
+                        if (vis)
                         {
-                            if (vis)
+                            if (youattack)
                                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s %s.", Yobjnam2(otmp, "slice"),
                                     s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
+                            else
+                                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s %s.", Tobjnam(otmp, "slice"),
+                                    s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
                         }
-                        else if (vis)
-                            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s through %s %s.", Tobjnam(otmp, "slice"),
-                                s_suffix(mon_nam(mdef)), mbodypart(mdef, NECK));
                     }
                     else
                     {
