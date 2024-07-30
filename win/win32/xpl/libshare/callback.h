@@ -12,11 +12,9 @@
 #ifdef WIN32
 #define __callconv __stdcall
 #define DLLEXPORT __declspec(dllexport)
-#define OSAPI WINAPI
 #else
 #define __callconv 
 #define DLLEXPORT
-#define OSAPI
 #endif
 
 typedef short cschar; /* For use with C# chars in callback functions; assuming (default) value of CharSet.Ansi */
