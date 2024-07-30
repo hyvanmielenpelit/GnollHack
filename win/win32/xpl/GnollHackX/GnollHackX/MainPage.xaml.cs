@@ -879,11 +879,7 @@ namespace GnollHackX
                     string fullverid = attr[0].InformationalVersion;
                     if (!string.IsNullOrWhiteSpace(fullverid))
                     {
-                        int dashpos = fullverid.IndexOf("-");
-                        if (dashpos >= 0)
-                            skiasharpverstr = fullverid.Substring(0, dashpos);
-                        else
-                            skiasharpverstr = fullverid;
+                        skiasharpverstr = GHApp.ParseSkiaSharpVersionString(fullverid);
                     }
                 }
                 GHApp.ListGPUs();

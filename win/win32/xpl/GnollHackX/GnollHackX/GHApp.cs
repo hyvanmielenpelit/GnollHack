@@ -6088,6 +6088,39 @@ namespace GnollHackX
             return topPage == page;
         }
 
+        public static string ParseSkiaSharpVersionString(string fullverid)
+        {
+            if (fullverid == null)
+                return "Null";
+
+            string res;
+
+            int pluspos = fullverid.IndexOf("+");
+            if(pluspos >= 0)
+            {
+                res = fullverid.Substring(0, pluspos);
+                int lastdashpos = fullverid.LastIndexOf("-");
+                int lastdotpos = fullverid.LastIndexOf(".");
+                if (lastdotpos > lastdashpos && lastdashpos > 0 && lastdashpos < fullverid.Length - 1)
+                {
+                    int previewLen = lastdotpos - lastdashpos;
+                    if(previewLen > 1) //More than just the dash
+                        res += fullverid.Substring(lastdashpos, previewLen);
+                }
+            }
+            else
+            {
+                int dashpos = fullverid.IndexOf("-");
+                if (dashpos >= 0)
+                    res = fullverid.Substring(0, dashpos);
+                else
+                    res = fullverid;
+            }
+            return res;
+        }
+
+
+
         private static readonly object _discoveredMusicLock = new object();
         private static List<DiscoveredMusic> _discoveredMusicList = new List<DiscoveredMusic>();
         private static long _discoveredMusicBits = 0L;
