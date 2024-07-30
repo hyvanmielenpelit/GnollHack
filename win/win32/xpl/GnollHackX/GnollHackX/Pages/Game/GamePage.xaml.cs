@@ -15352,9 +15352,8 @@ namespace GnollHackX.Pages.Game
                             if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_menuTouchMoved && MenuCanvas.SelectionHow != SelectionMode.None)
                             {
                                 MenuClickResult clickRes = MenuCanvas_NormalClickRelease(sender, e);
-                                if(GHApp.OkOnDoubleClick)
+                                if(GHApp.OkOnDoubleClick && MenuCanvas.SelectionHow == SelectionMode.Single)
                                 {
-
                                     long timeSincePreviousReleaseInMs = (nowTicks - _savedPreviousMenuReleaseTimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
                                     if (!clickRes.OkClicked && MenuOKButton.IsEnabled && _menuPreviousReleaseClick &&
                                         clickRes.MenuItemClickIndex >= 0 && clickRes.MenuItemClickIndex == _menuPreviousReleaseClickIndex &&
@@ -15648,61 +15647,6 @@ namespace GnollHackX.Pages.Game
                         clickIdx = idx;
                         identifier = MenuCanvas.MenuItems[idx].Identifier;
                         doclickok = ClickMenuItem(idx);
-                        //if (mi.Identifier == 0)
-                        //{
-                        //    if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (mi.Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0)
-                        //    {
-                        //        foreach (GHMenuItem o in MenuCanvas.MenuItems)
-                        //        {
-                        //            if (o.GroupAccelerator == mi.HeadingGroupAccelerator)
-                        //            {
-                        //                if (!mi.HeadingUnselectGroup)
-                        //                {
-                        //                    o.Selected = true;
-                        //                    o.Count = -1;
-                        //                }
-                        //                else
-                        //                {
-                        //                    o.Selected = false;
-                        //                    o.Count = 0;
-                        //                }
-                        //            }
-                        //        }
-                        //        mi.HeadingUnselectGroup = !mi.HeadingUnselectGroup;
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    if (MenuCanvas.SelectionHow == SelectionMode.Multiple)
-                        //    {
-                        //        MenuCanvas.MenuItems[idx].Selected = !MenuCanvas.MenuItems[idx].Selected;
-                        //        if (MenuCanvas.MenuItems[idx].Selected)
-                        //        {
-                        //            MenuCanvas.MenuItems[idx].Count = -1;
-                        //            if(MenuCanvas.MenuItems[idx].IsAutoClickOk)
-                        //                doclickok = true;
-                        //        }
-                        //        else
-                        //            MenuCanvas.MenuItems[idx].Count = 0;
-                        //    }
-                        //    else
-                        //    {
-                        //        if (idx != MenuCanvas.SelectionIndex && MenuCanvas.SelectionIndex >= 0 && MenuCanvas.SelectionIndex < MenuCanvas.MenuItems.Count)
-                        //            MenuCanvas.MenuItems[MenuCanvas.SelectionIndex].Count = 0;
-
-                        //        int oldselidx = MenuCanvas.SelectionIndex;
-                        //        MenuCanvas.SelectionIndex = idx;
-                        //        if (MenuCanvas.MenuItems[idx].Count == 0)
-                        //            MenuCanvas.MenuItems[idx].Count = -1;
-
-                        //        /* Else keep the current selection number */
-                        //        if(!MenuOKButton.IsEnabled)
-                        //            MenuOKButton.IsEnabled = true;
-
-                        //        if (MenuCanvas.MenuItems[idx].IsAutoClickOk || MenuCanvas.ClickOKOnSelection)
-                        //            doclickok = true;
-                        //    }
-                        //}
                         break;
                     }
                 }
