@@ -597,8 +597,16 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
 
         /* if the weapon is going to get a double damage bonus, adjust
            this bonus so that effectively it's added after the doubling */
-        if (bonus > 1 && otmp->oartifact && spec_dbon(otmp, mon, 25) >= 25)
-            bonus = (bonus + 1) / 2;
+        if (bonus > 1 && otmp->oartifact)
+        {
+            double sbonus = spec_dbon(otmp, mon, 25.0);
+            if (sbonus > 0)
+            {
+                double bonmult =  1.0 / (sbonus / 25.0 + 1.0);
+                bonus = max(1, (int)((double)bonus * bonmult));
+                //bonus = (bonus + 1) / 2;
+            }
+        }
 
         tmp += bonus;
     }
