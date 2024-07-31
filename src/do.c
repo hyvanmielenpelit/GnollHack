@@ -5968,7 +5968,7 @@ boolean with_impact;
 
     if (!u.uswallow && flooreffects(obj, u.ux, u.uy, "drop"))
     {
-        if (iflags.using_gui_sounds)
+        if (iflags.using_gui_sounds && !ui_has_input())
         {
             play_object_floor_sound_at_location(obj, OBJECT_SOUND_TYPE_DROP, u.ux, u.uy, Underwater);
             delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
@@ -6033,7 +6033,7 @@ boolean with_impact;
     else
     {
         place_object(obj, u.ux, u.uy);
-        if (iflags.using_gui_sounds)
+        if (iflags.using_gui_sounds && !ui_has_input())
         {
             play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP, Underwater);
             delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);

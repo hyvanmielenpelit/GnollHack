@@ -2085,7 +2085,7 @@ struct obj *otmp;
     boolean robshop = (!u.uswallow && otmp != uball && costly_spot(ox, oy));
 
     /* Play first so the location is still available */
-    if (iflags.using_gui_sounds)
+    if (iflags.using_gui_sounds && !ui_has_input())
     {
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_PICK_UP);
         delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
@@ -3401,7 +3401,7 @@ boolean dobot;
     {
         Strcpy(buf, the(xname(current_container)));
         You("put %s into %s.", doname(obj), buf);
-        if (iflags.using_gui_sounds)
+        if (iflags.using_gui_sounds && !ui_has_input())
         {
             play_object_container_in_sound(obj, current_container);
             delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
@@ -3679,7 +3679,7 @@ uchar* obj_gone_ptr;
                         : "You have much trouble removing")
                   : (char *) 0,
           otmp, count);
-    if (iflags.using_gui_sounds)
+    if (iflags.using_gui_sounds && !ui_has_input())
     {
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_PICK_UP);
         delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
