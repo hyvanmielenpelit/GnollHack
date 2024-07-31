@@ -2252,7 +2252,7 @@ namespace GnollHackX.Pages.Game
             lib.ImgSourcePath = "resource://" + icon_string;
             lib.LargerFont = false;
             lib.LblText = data.cmd_text;
-            lib.SetSideSize(_currentPageWidth, _currentPageHeight, DesktopButtons);
+            lib.SetSideSize(_currentPageWidth, _currentPageHeight, DesktopButtons, UseSimpleCmdLayout);
             lib.GridMargin = new Thickness(lib.ImgWidth / 15, lib.ImgWidth / 30);
             lib.BtnCommand = cmdcurchar;
             lib.BtnClicked += GHButton_Clicked;
@@ -3142,8 +3142,9 @@ namespace GnollHackX.Pages.Game
             _ynResponses = responses;
 
             bool usingDesktopButtons = DesktopButtons;
+            bool usingSimpleCmdLayout = UseSimpleCmdLayout;
             for (int i = 0; i < 5; i++)
-                btnList[i].SetSideSize(_currentPageWidth, _currentPageHeight, usingDesktopButtons);
+                btnList[i].SetSideSize(_currentPageWidth, _currentPageHeight, usingDesktopButtons, usingSimpleCmdLayout);
 
             YnButtonStack.HeightRequest = btnList[0].GridHeight;
             switch(style)
@@ -12559,40 +12560,42 @@ namespace GnollHackX.Pages.Game
                 return;
 
             bool usingDesktopButtons = DesktopButtons;
-            GameMenuButton.SetSideSize(width, height, usingDesktopButtons);
-            ESCButton.SetSideSize(width, height, usingDesktopButtons);
-            ToggleAutoCenterModeButton.SetSideSize(width, height, usingDesktopButtons);
-            LookModeButton.SetSideSize(width, height, usingDesktopButtons);
-            ToggleTravelModeButton.SetSideSize(width, height, usingDesktopButtons);
-            ToggleZoomMiniButton.SetSideSize(width, height, usingDesktopButtons);
-            ToggleZoomAlternateButton.SetSideSize(width, height, usingDesktopButtons);
+            bool usingSimpleCmdLayout = UseSimpleCmdLayout;
 
-            SimpleGameMenuButton.SetSideSize(width, height, usingDesktopButtons);
-            SimpleESCButton.SetSideSize(width, height, usingDesktopButtons);
-            SimpleToggleAutoCenterModeButton.SetSideSize(width, height, usingDesktopButtons);
-            SimpleLookModeButton.SetSideSize(width, height, usingDesktopButtons);
-            SimpleToggleZoomMiniButton.SetSideSize(width, height, usingDesktopButtons);
+            GameMenuButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
+            ESCButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
+            ToggleAutoCenterModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
+            LookModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
+            ToggleTravelModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
+            ToggleZoomMiniButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
+            ToggleZoomAlternateButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
 
-            ZeroButton.SetSideSize(width, height, usingDesktopButtons);
-            FirstButton.SetSideSize(width, height, usingDesktopButtons);
-            SecondButton.SetSideSize(width, height, usingDesktopButtons);
-            ThirdButton.SetSideSize(width, height, usingDesktopButtons);
-            FourthButton.SetSideSize(width, height, usingDesktopButtons);
+            SimpleGameMenuButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
+            SimpleESCButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
+            SimpleToggleAutoCenterModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
+            SimpleLookModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
+            SimpleToggleZoomMiniButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
+
+            ZeroButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
+            FirstButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
+            SecondButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
+            ThirdButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
+            FourthButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
 
             foreach (View v in UpperCmdGrid.Children)
             {
                 LabeledImageButton lib = (LabeledImageButton)v;
-                lib.SetSideSize(width, height, usingDesktopButtons);
+                lib.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
             }
             foreach (View v in LowerCmdGrid.Children)
             {
                 LabeledImageButton lib = (LabeledImageButton)v;
-                lib.SetSideSize(width, height, usingDesktopButtons);
+                lib.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
             }
             foreach (View v in SimpleCmdGrid.Children)
             {
                 LabeledImageButton lib = (LabeledImageButton)v;
-                lib.SetSideSize(width, height, usingDesktopButtons);
+                lib.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
             }
 
             LabeledImageButton firstchild = (LabeledImageButton)UpperCmdGrid.Children[0];
@@ -12602,10 +12605,10 @@ namespace GnollHackX.Pages.Game
             LabeledImageButton simplefirstchild = (LabeledImageButton)SimpleCmdGrid.Children[0];
             SimpleCmdGrid.HeightRequest = simplefirstchild.GridHeight;
 
-            lAbilitiesButton.SetSideSize(width, height, usingDesktopButtons);
-            lWornItemsButton.SetSideSize(width, height, usingDesktopButtons);
-            lRowAbilitiesButton.SetSideSize(width, height, usingDesktopButtons);
-            lRowWornItemsButton.SetSideSize(width, height, usingDesktopButtons);
+            lAbilitiesButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
+            lWornItemsButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
+            lRowAbilitiesButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
+            lRowWornItemsButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout);
             double statusbarheight = GetStatusBarHeight(); /* Requires lInventoryButton size having set to determine scaling */
             lAbilitiesButton.HeightRequest = statusbarheight;
             lWornItemsButton.HeightRequest = statusbarheight;
@@ -12647,7 +12650,7 @@ namespace GnollHackX.Pages.Game
                 _textScrollOffset = 0;
             }
 
-            bool useTwoRows = UIUtils.UseTwoButtonRows(width, height, lInventoryButton.GridWidth, DesktopButtons);
+            bool useTwoRows = UIUtils.UseTwoButtonRows(width, height, lInventoryButton.GridWidth, usingDesktopButtons, usingSimpleCmdLayout);
             if (!useTwoRows)
             {
                 /* Landscape */

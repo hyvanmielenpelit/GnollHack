@@ -1143,18 +1143,18 @@ namespace GnollHackX
             }
         }
 
-        public static int LandscapeButtonsInRow(bool usingDesktopButtons)
+        public static int LandscapeButtonsInRow(bool usingDesktopButtons, bool usingSimpleLayout)
         {
-            return usingDesktopButtons ? 16 : 14;
+            return usingSimpleLayout ? PortraitButtonsInRow(usingDesktopButtons, usingSimpleLayout) : usingDesktopButtons ? 16 : 14;
         }
-        public static int PortraitButtonsInRow(bool usingDesktopButtons)
+        public static int PortraitButtonsInRow(bool usingDesktopButtons, bool usingSimpleLayout)
         {
             return usingDesktopButtons ? 9 : 7;
         }
 
-        public static bool UseTwoButtonRows(double width, double height, double buttonWidth, bool usingDesktopButtons)
+        public static bool UseTwoButtonRows(double width, double height, double buttonWidth, bool usingDesktopButtons, bool usingSimpleLayout)
         {
-            int buttonsPerRow = LandscapeButtonsInRow(usingDesktopButtons);
+            int buttonsPerRow = LandscapeButtonsInRow(usingDesktopButtons, usingSimpleLayout);
             double sideWidth = buttonWidth;
             bool useTwoRows = width <= height || sideWidth * buttonsPerRow + (buttonsPerRow - 1) * 6 > width;
             return useTwoRows;
