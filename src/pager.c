@@ -108,8 +108,8 @@ char *outbuf;
 {
     struct obj *otmp;
     boolean fakeobj, isyou = (mon == &youmonst);
-    int x = isyou ? u.ux : mon->mx, y = isyou ? u.uy : mon->my,
-        glyph = abs((level.flags.hero_memory && !isyou) ? levl[x][y].hero_memory_layers.glyph
+    int x = isyou ? u.ux : mon->mx, y = isyou ? u.uy : mon->my;
+    int glyph = !isok(x, y) ? NO_GLYPH : abs((level.flags.hero_memory && !isyou) ? levl[x][y].hero_memory_layers.glyph
                                                     : glyph_at(x, y));
 
     *outbuf = '\0';
@@ -167,9 +167,12 @@ struct obj **obj_p;
     boolean fakeobj = FALSE, mimic_obj = FALSE;
     struct monst *mtmp;
     struct obj *otmp;
-    int glyphotyp = glyph_to_obj(glyph);
 
     *obj_p = (struct obj *) 0;
+    if (!isok(x, y))
+        return FALSE;
+
+    int glyphotyp = glyph_to_obj(glyph);
     otmp = any_obj_at(glyphotyp, x, y);
 
     /* there might be a mimic here posing as an object */
@@ -254,6 +257,9 @@ look_at_object(buf, x, y, glyph)
 char *buf; /* output buffer */
 int x, y, glyph;
 {
+    if (!isok(x, y))
+        return;
+
     struct obj *otmp = 0;
     boolean fakeobj = object_from_map(glyph, x, y, &otmp);
 
@@ -480,12 +486,18 @@ lookat(x, y, buf, simplebuf, extrabuf)
 int x, y;
 char *buf, *simplebuf, *extrabuf;
 {
+    if (!buf || !simplebuf || !extrabuf)
+        return (struct permonst*)0;
+
     struct monst* mtmp = (struct monst*)0;
     struct permonst* pm = (struct permonst*)0;
     int glyph;
     boolean noarticle = FALSE;
 
     buf[0] = simplebuf[0] = extrabuf[0] = '\0';
+    if (!isok(x, y))
+        return (struct permonst*)0;
+
     glyph = glyph_at(x, y);
     if (u.ux == x && u.uy == y && canspotself()
         && !(iflags.save_uswallow &&
