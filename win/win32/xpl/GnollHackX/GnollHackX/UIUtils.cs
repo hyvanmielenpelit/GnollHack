@@ -39,6 +39,13 @@ namespace GnollHackX
         private static readonly SKColor GHDarkYellow = new SKColor(192, 192, 0);
 
         public static readonly SKColorFilter HighlightColorFilter = SKColorFilter.CreateLighting(new SKColor(255, 255, 255), new SKColor(20, 20, 20));
+        public static readonly SKColorFilter GrayedColorFilter = SKColorFilter.CreateColorMatrix(new float[]
+                            {
+                                0.21f, 0.72f, 0.07f, 0, 0,
+                                0.21f, 0.72f, 0.07f, 0, 0,
+                                0.21f, 0.72f, 0.07f, 0, 0,
+                                0,     0,     0,     1, 0
+                            });
 
         public static SKColor NHColor2SKColor(int nhclr, int attr)
         {
