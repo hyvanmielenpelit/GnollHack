@@ -596,7 +596,7 @@ namespace GnollHackX.Pages.MainScreen
 
             if(WindowedModeStackLayout.IsVisible && WindowedModeSwitch.IsEnabled)
             {
-                GHApp.WindowedMode = WindowedModeSwitch.IsToggled;
+                /* Do not update GHApp.WindowedMode, because it needs a restart */
                 Preferences.Set("WindowedMode", WindowedModeSwitch.IsToggled);
             }
 
