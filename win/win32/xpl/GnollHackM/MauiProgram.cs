@@ -129,19 +129,23 @@ public static class MauiProgram
                             int sizeHeight = Preferences.Get("WindowedSizeHeight", 0);
 
                             Microsoft.UI.Windowing.DisplayArea displayArea = Microsoft.UI.Windowing.DisplayArea.GetFromWindowId(id, Microsoft.UI.Windowing.DisplayAreaFallback.Nearest);
-                            if (displayArea != null)
-                            {
-                                if (sizeX + sizeWidth > displayArea.WorkArea.Width * 1.1 + 32)
-                                    sizeX = sizeWidth = 0;
-                                if (sizeY + sizeHeight > displayArea.WorkArea.Height * 1.1 + 32)
-                                    sizeY = sizeHeight = 0;
-                            }
-
                             if (sizeWidth > 0 && sizeHeight > 0)
                             {
+                                if (displayArea != null && displayArea.WorkArea.Width > 0 && displayArea.WorkArea.Height > 0)
+                                {
+                                    if (sizeX + sizeWidth > displayArea.WorkArea.X + displayArea.WorkArea.Width * 1.1 + 32)
+                                        sizeX = sizeWidth = 0;
+                                    else if (sizeX < displayArea.WorkArea.X - 16)
+                                        sizeX = sizeWidth = 0;
+
+                                    if (sizeY + sizeHeight > displayArea.WorkArea.Y + displayArea.WorkArea.Height * 1.1 + 32)
+                                        sizeY = sizeHeight = 0;
+                                    else if (sizeY < displayArea.WorkArea.Y - 16)
+                                        sizeY = sizeHeight = 0;
+                                }
                                 appWindow.MoveAndResize(new Windows.Graphics.RectInt32(sizeX, sizeY, sizeWidth, sizeHeight));
                             }
-                            else if (displayArea != null)
+                            else if (displayArea != null && displayArea.WorkArea.Width > 0 && displayArea.WorkArea.Height > 0)
                             {
                                 var CenteredPosition = appWindow.Position;
                                 CenteredPosition.X = ((displayArea.WorkArea.Width - appWindow.Size.Width) / 2);

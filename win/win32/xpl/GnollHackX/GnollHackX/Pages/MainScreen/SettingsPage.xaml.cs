@@ -1936,7 +1936,7 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
                     PopupTitleLabel.Text = "Restart Required";
-                    PopupLabel.Text = "Please restart GnollHack to apply changes to Windowed Mode.";
+                    PopupLabel.Text = "Please restart GnollHack for the changes in Windowed Mode to take effect.";
                     PopupOkButton.IsEnabled = true;
                     PopupGrid.IsVisible = true;
                 }
