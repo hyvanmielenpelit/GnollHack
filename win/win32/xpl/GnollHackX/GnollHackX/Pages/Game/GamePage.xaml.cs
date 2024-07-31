@@ -702,7 +702,24 @@ namespace GnollHackX.Pages.Game
         private bool _showXP = false;
         private bool _rightAligned2ndRow = false;
         public bool DesktopStatusBar { get { lock (_desktopLock) { return _desktopStatusBar; } } set { lock (_desktopLock) { _desktopStatusBar = value; } } }
-        public bool DesktopButtons { get { lock (_desktopLock) { return _desktopButtons; } } set { lock (_desktopLock) { _desktopButtons = value; } UpdateAbilityButtonVisibility(value); } }
+        public bool DesktopButtons 
+        { 
+            get { lock (_desktopLock) { return _desktopButtons; } } 
+            set 
+            { 
+                bool changed; 
+                lock (_desktopLock) 
+                { 
+                    changed = _desktopButtons != value;
+                    _desktopButtons = value; 
+                } 
+                if (changed) 
+                { 
+                    UpdateAbilityButtonVisibility(value);
+                    UpdateButtonAndUISizes();
+                } 
+            }
+        }
         public bool ShowScore { get { lock (_desktopLock) { return _showScore; } } set { lock (_desktopLock) { _showScore = value; } } }
         public bool ShowXP { get { lock (_desktopLock) { return _showXP; } } set { lock (_desktopLock) { _showXP = value; } } }
         public bool RightAligned2ndRow { get { lock (_desktopLock) { return _rightAligned2ndRow; } } set { lock (_desktopLock) { _rightAligned2ndRow = value; } } }
@@ -2235,7 +2252,7 @@ namespace GnollHackX.Pages.Game
             lib.ImgSourcePath = "resource://" + icon_string;
             lib.LargerFont = false;
             lib.LblText = data.cmd_text;
-            lib.SetSideSize(_currentPageWidth, _currentPageHeight);
+            lib.SetSideSize(_currentPageWidth, _currentPageHeight, DesktopButtons);
             lib.GridMargin = new Thickness(lib.ImgWidth / 15, lib.ImgWidth / 30);
             lib.BtnCommand = cmdcurchar;
             lib.BtnClicked += GHButton_Clicked;
@@ -3124,8 +3141,9 @@ namespace GnollHackX.Pages.Game
             }
             _ynResponses = responses;
 
+            bool usingDesktopButtons = DesktopButtons;
             for (int i = 0; i < 5; i++)
-                btnList[i].SetSideSize(_currentPageWidth, _currentPageHeight);
+                btnList[i].SetSideSize(_currentPageWidth, _currentPageHeight, usingDesktopButtons);
 
             YnButtonStack.HeightRequest = btnList[0].GridHeight;
             switch(style)
@@ -12528,131 +12546,143 @@ namespace GnollHackX.Pages.Game
                 if (TipView.IsVisible)
                     TipView.InvalidateSurface();
 
-                GameMenuButton.SetSideSize(width, height);
-                ESCButton.SetSideSize(width, height);
-                ToggleAutoCenterModeButton.SetSideSize(width, height);
-                LookModeButton.SetSideSize(width, height);
-                ToggleTravelModeButton.SetSideSize(width, height);
-                ToggleZoomMiniButton.SetSideSize(width, height);
-                ToggleZoomAlternateButton.SetSideSize(width, height);
-
-                SimpleGameMenuButton.SetSideSize(width, height);
-                SimpleESCButton.SetSideSize(width, height);
-                SimpleToggleAutoCenterModeButton.SetSideSize(width, height);
-                SimpleLookModeButton.SetSideSize(width, height);
-                SimpleToggleZoomMiniButton.SetSideSize(width, height);
-
-                ZeroButton.SetSideSize(width, height);
-                FirstButton.SetSideSize(width, height);
-                SecondButton.SetSideSize(width, height);
-                ThirdButton.SetSideSize(width, height);
-                FourthButton.SetSideSize(width, height);
-
-                foreach (View v in UpperCmdGrid.Children)
-                {
-                    LabeledImageButton lib = (LabeledImageButton)v;
-                    lib.SetSideSize(width, height);
-                }
-                foreach (View v in LowerCmdGrid.Children)
-                {
-                    LabeledImageButton lib = (LabeledImageButton)v;
-                    lib.SetSideSize(width, height);
-                }
-                foreach (View v in SimpleCmdGrid.Children)
-                {
-                    LabeledImageButton lib = (LabeledImageButton)v;
-                    lib.SetSideSize(width, height);
-                }
-
-                LabeledImageButton firstchild = (LabeledImageButton)UpperCmdGrid.Children[0];
-                UpperCmdGrid.HeightRequest = firstchild.GridHeight;
-                LowerCmdGrid.HeightRequest = firstchild.GridHeight;
-
-                LabeledImageButton simplefirstchild = (LabeledImageButton)SimpleCmdGrid.Children[0];
-                SimpleCmdGrid.HeightRequest = simplefirstchild.GridHeight;
-
-                lAbilitiesButton.SetSideSize(width, height);
-                lWornItemsButton.SetSideSize(width, height);
-                lRowAbilitiesButton.SetSideSize(width, height);
-                lRowWornItemsButton.SetSideSize(width, height);
-                double statusbarheight = GetStatusBarHeight(); /* Requires lInventoryButton size having set to determine scaling */
-                lAbilitiesButton.HeightRequest = statusbarheight;
-                lWornItemsButton.HeightRequest = statusbarheight;
-                UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
-                SimpleUpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
-
-                MenuHeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(MenuBackground.BorderStyle, width, height);
-                MenuCloseGrid.Margin = UIUtils.GetFooterMarginWithBorder(MenuBackground.BorderStyle, width, height);
-                Thickness smallthick = UIUtils.GetSmallBorderThickness(width, height, 1.5);
-                TextCanvas.Margin = smallthick;
-                TextWindowGlyphImage.Margin = smallthick;
-                Thickness subthick = smallthick;
-                subthick.Top = MenuSubtitleLabel.Margin.Top;
-                subthick.Bottom = MenuSubtitleLabel.Margin.Bottom;
-                MenuSubtitleLabel.Margin = subthick;
-                Thickness glyphthick = smallthick;
-                glyphthick.Top = MenuWindowGlyphImage.Margin.Top;
-                glyphthick.Bottom = MenuWindowGlyphImage.Margin.Bottom;
-                MenuWindowGlyphImage.Margin = glyphthick;
-
-                lock (_statusOffsetLock)
-                {
-                    _statusOffsetY = 0;
-                }
-                lock (_messageScrollLock)
-                {
-                    _messageScrollOffset = 0;
-                }
-                lock (_menuScrollLock)
-                {
-                    _menuScrollOffset = 0;
-                }
-                lock(_menuPositionLock)
-                {
-                    Array.Clear(_savedMenuScrollOffset, 0, _savedMenuScrollOffset.Length);
-                }
-                lock (_textScrollLock)
-                {
-                    _textScrollOffset = 0;
-                }
-
-                if (width > height)
-                {
-                    /* Landscape */
-                    ButtonRowStack.Orientation = StackOrientation.Horizontal;
-                    ModeLayout.Orientation = StackOrientation.Vertical;
-                    ModeSubLayout1.Orientation = StackOrientation.Horizontal;
-                    ModeSubLayout2.Orientation = StackOrientation.Horizontal;
-                    GameMenuLayout.Orientation = StackOrientation.Horizontal;
-                    //UpperCmdLayout.Orientation = StackOrientation.Vertical;
-
-                    SimpleButtonRowStack.Orientation = StackOrientation.Horizontal;
-                    SimpleModeLayout.Orientation = StackOrientation.Vertical;
-                    SimpleModeSubLayout1.Orientation = StackOrientation.Horizontal;
-                    SimpleModeSubLayout2.Orientation = StackOrientation.Horizontal;
-                    SimpleGameMenuLayout.Orientation = StackOrientation.Horizontal;
-                }
-                else
-                {
-                    /* Portrait */
-                    ButtonRowStack.Orientation = StackOrientation.Vertical;
-                    ModeLayout.Orientation = StackOrientation.Vertical;
-                    ModeSubLayout1.Orientation = StackOrientation.Vertical;
-                    ModeSubLayout2.Orientation = StackOrientation.Vertical;
-                    GameMenuLayout.Orientation = StackOrientation.Horizontal;
-                    //UpperCmdLayout.Orientation = StackOrientation.Horizontal;
-
-                    SimpleButtonRowStack.Orientation = StackOrientation.Vertical;
-                    SimpleModeLayout.Orientation = StackOrientation.Vertical;
-                    SimpleModeSubLayout1.Orientation = StackOrientation.Vertical;
-                    SimpleModeSubLayout2.Orientation = StackOrientation.Vertical;
-                    SimpleGameMenuLayout.Orientation = StackOrientation.Horizontal;
-                }
-
-                RefreshMenuRowCounts = true;
-                RefreshMsgHistoryRowCounts = true;
+                UpdateButtonAndUISizes();
                 IsSizeAllocatedProcessed = true;
             }
+        }
+
+        public void UpdateButtonAndUISizes()
+        {
+            double width = _currentPageWidth;
+            double height = _currentPageHeight;
+            if (width == 0 || height == 0)
+                return;
+
+            bool usingDesktopButtons = DesktopButtons;
+            GameMenuButton.SetSideSize(width, height, usingDesktopButtons);
+            ESCButton.SetSideSize(width, height, usingDesktopButtons);
+            ToggleAutoCenterModeButton.SetSideSize(width, height, usingDesktopButtons);
+            LookModeButton.SetSideSize(width, height, usingDesktopButtons);
+            ToggleTravelModeButton.SetSideSize(width, height, usingDesktopButtons);
+            ToggleZoomMiniButton.SetSideSize(width, height, usingDesktopButtons);
+            ToggleZoomAlternateButton.SetSideSize(width, height, usingDesktopButtons);
+
+            SimpleGameMenuButton.SetSideSize(width, height, usingDesktopButtons);
+            SimpleESCButton.SetSideSize(width, height, usingDesktopButtons);
+            SimpleToggleAutoCenterModeButton.SetSideSize(width, height, usingDesktopButtons);
+            SimpleLookModeButton.SetSideSize(width, height, usingDesktopButtons);
+            SimpleToggleZoomMiniButton.SetSideSize(width, height, usingDesktopButtons);
+
+            ZeroButton.SetSideSize(width, height, usingDesktopButtons);
+            FirstButton.SetSideSize(width, height, usingDesktopButtons);
+            SecondButton.SetSideSize(width, height, usingDesktopButtons);
+            ThirdButton.SetSideSize(width, height, usingDesktopButtons);
+            FourthButton.SetSideSize(width, height, usingDesktopButtons);
+
+            foreach (View v in UpperCmdGrid.Children)
+            {
+                LabeledImageButton lib = (LabeledImageButton)v;
+                lib.SetSideSize(width, height, usingDesktopButtons);
+            }
+            foreach (View v in LowerCmdGrid.Children)
+            {
+                LabeledImageButton lib = (LabeledImageButton)v;
+                lib.SetSideSize(width, height, usingDesktopButtons);
+            }
+            foreach (View v in SimpleCmdGrid.Children)
+            {
+                LabeledImageButton lib = (LabeledImageButton)v;
+                lib.SetSideSize(width, height, usingDesktopButtons);
+            }
+
+            LabeledImageButton firstchild = (LabeledImageButton)UpperCmdGrid.Children[0];
+            UpperCmdGrid.HeightRequest = firstchild.GridHeight;
+            LowerCmdGrid.HeightRequest = firstchild.GridHeight;
+
+            LabeledImageButton simplefirstchild = (LabeledImageButton)SimpleCmdGrid.Children[0];
+            SimpleCmdGrid.HeightRequest = simplefirstchild.GridHeight;
+
+            lAbilitiesButton.SetSideSize(width, height, usingDesktopButtons);
+            lWornItemsButton.SetSideSize(width, height, usingDesktopButtons);
+            lRowAbilitiesButton.SetSideSize(width, height, usingDesktopButtons);
+            lRowWornItemsButton.SetSideSize(width, height, usingDesktopButtons);
+            double statusbarheight = GetStatusBarHeight(); /* Requires lInventoryButton size having set to determine scaling */
+            lAbilitiesButton.HeightRequest = statusbarheight;
+            lWornItemsButton.HeightRequest = statusbarheight;
+            UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
+            SimpleUpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
+
+            MenuHeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(MenuBackground.BorderStyle, width, height);
+            MenuCloseGrid.Margin = UIUtils.GetFooterMarginWithBorder(MenuBackground.BorderStyle, width, height);
+            Thickness smallthick = UIUtils.GetSmallBorderThickness(width, height, 1.5);
+            TextCanvas.Margin = smallthick;
+            TextWindowGlyphImage.Margin = smallthick;
+            Thickness subthick = smallthick;
+            subthick.Top = MenuSubtitleLabel.Margin.Top;
+            subthick.Bottom = MenuSubtitleLabel.Margin.Bottom;
+            MenuSubtitleLabel.Margin = subthick;
+            Thickness glyphthick = smallthick;
+            glyphthick.Top = MenuWindowGlyphImage.Margin.Top;
+            glyphthick.Bottom = MenuWindowGlyphImage.Margin.Bottom;
+            MenuWindowGlyphImage.Margin = glyphthick;
+
+            lock (_statusOffsetLock)
+            {
+                _statusOffsetY = 0;
+            }
+            lock (_messageScrollLock)
+            {
+                _messageScrollOffset = 0;
+            }
+            lock (_menuScrollLock)
+            {
+                _menuScrollOffset = 0;
+            }
+            lock (_menuPositionLock)
+            {
+                Array.Clear(_savedMenuScrollOffset, 0, _savedMenuScrollOffset.Length);
+            }
+            lock (_textScrollLock)
+            {
+                _textScrollOffset = 0;
+            }
+
+            bool useTwoRows = UIUtils.UseTwoButtonRows(width, height, lInventoryButton.GridWidth, DesktopButtons);
+            if (!useTwoRows)
+            {
+                /* Landscape */
+                ButtonRowStack.Orientation = StackOrientation.Horizontal;
+                ModeLayout.Orientation = StackOrientation.Vertical;
+                ModeSubLayout1.Orientation = StackOrientation.Horizontal;
+                ModeSubLayout2.Orientation = StackOrientation.Horizontal;
+                GameMenuLayout.Orientation = StackOrientation.Horizontal;
+                //UpperCmdLayout.Orientation = StackOrientation.Vertical;
+
+                SimpleButtonRowStack.Orientation = StackOrientation.Horizontal;
+                SimpleModeLayout.Orientation = StackOrientation.Vertical;
+                SimpleModeSubLayout1.Orientation = StackOrientation.Horizontal;
+                SimpleModeSubLayout2.Orientation = StackOrientation.Horizontal;
+                SimpleGameMenuLayout.Orientation = StackOrientation.Horizontal;
+            }
+            else
+            {
+                /* Portrait */
+                ButtonRowStack.Orientation = StackOrientation.Vertical;
+                ModeLayout.Orientation = StackOrientation.Vertical;
+                ModeSubLayout1.Orientation = StackOrientation.Vertical;
+                ModeSubLayout2.Orientation = StackOrientation.Vertical;
+                GameMenuLayout.Orientation = StackOrientation.Horizontal;
+                //UpperCmdLayout.Orientation = StackOrientation.Horizontal;
+
+                SimpleButtonRowStack.Orientation = StackOrientation.Vertical;
+                SimpleModeLayout.Orientation = StackOrientation.Vertical;
+                SimpleModeSubLayout1.Orientation = StackOrientation.Vertical;
+                SimpleModeSubLayout2.Orientation = StackOrientation.Vertical;
+                SimpleGameMenuLayout.Orientation = StackOrientation.Horizontal;
+            }
+
+            RefreshMenuRowCounts = true;
+            RefreshMsgHistoryRowCounts = true;
         }
 
         public float GetStatusBarSkiaHeight()

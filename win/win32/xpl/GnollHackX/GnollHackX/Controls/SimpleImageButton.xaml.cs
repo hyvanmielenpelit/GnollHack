@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GnollHackX;
 
 #if GNH_MAUI
 namespace GnollHackM
@@ -80,17 +81,15 @@ namespace GnollHackX.Controls
             set => SetValue(SimpleImageButton.GridHeightProperty, value);
         }
 
-        public int LandscapeButtonsInRow { get; set; } = 16;
-        public int PortraitButtonsInRow { get; set; } = 8;
+        public int LandscapeButtonsInRow { get; set; } = 0;
+        public int PortraitButtonsInRow { get; set; } = 0;
 
-        public void SetSideSize(double canvaswidth, double canvasheight)
+        public void SetSideSize(double canvaswidth, double canvasheight, bool usingDesktopButtons)
         {
-            double imgsidewidth = 0;
-            if (canvaswidth > canvasheight)
-                imgsidewidth = Math.Min(75.0, Math.Max(35.0, canvaswidth / Math.Max(1, LandscapeButtonsInRow)));
-            else
-                imgsidewidth = Math.Min(75.0, Math.Max(35.0, canvaswidth / Math.Max(1, PortraitButtonsInRow)));
-
+            int bigRowNoOfButtons = LandscapeButtonsInRow > 0 ? LandscapeButtonsInRow : UIUtils.LandscapeButtonsInRow(usingDesktopButtons);
+            bool tooWide = 35.0 * bigRowNoOfButtons + (bigRowNoOfButtons - 1) * 6 > canvaswidth;
+            int noOfButtons = canvaswidth > canvasheight && !tooWide ? bigRowNoOfButtons : PortraitButtonsInRow > 0 ? PortraitButtonsInRow : UIUtils.PortraitButtonsInRow(usingDesktopButtons);
+            double imgsidewidth = Math.Min(75.0, Math.Max(35.0, (canvaswidth - (noOfButtons - 1) * 6) / Math.Max(1, noOfButtons)));
             GridWidth = imgsidewidth;
             GridHeight = imgsidewidth;
         }

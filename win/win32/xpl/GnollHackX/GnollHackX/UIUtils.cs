@@ -1143,6 +1143,23 @@ namespace GnollHackX
             }
         }
 
+        public static int LandscapeButtonsInRow(bool usingDesktopButtons)
+        {
+            return usingDesktopButtons ? 16 : 14;
+        }
+        public static int PortraitButtonsInRow(bool usingDesktopButtons)
+        {
+            return usingDesktopButtons ? 9 : 7;
+        }
+
+        public static bool UseTwoButtonRows(double width, double height, double buttonWidth, bool usingDesktopButtons)
+        {
+            int buttonsPerRow = LandscapeButtonsInRow(usingDesktopButtons);
+            double sideWidth = buttonWidth;
+            bool useTwoRows = width <= height || sideWidth * buttonsPerRow + (buttonsPerRow - 1) * 6 > width;
+            return useTwoRows;
+        }
+
         public static void AdjustRootLayout(Layout layout)
         {
             /* Hopefully a temporary workaround for Maui Windows modal bug */
