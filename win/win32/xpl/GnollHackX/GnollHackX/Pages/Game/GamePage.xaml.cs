@@ -3803,6 +3803,7 @@ namespace GnollHackX.Pages.Game
                 MenuCanvas.MenuItems = newmis;
             }
             RefreshMenuRowCounts = true;
+            _unselectOnTap = false;
 
             lock (_menuDrawOnlyLock)
             {
@@ -16071,7 +16072,7 @@ namespace GnollHackX.Pages.Game
             });
         }
 
-        private bool unselect_on_tap = false;
+        private bool _unselectOnTap = false;
 
 #if GNH_MAUI
         private void MenuTapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
@@ -16090,7 +16091,7 @@ namespace GnollHackX.Pages.Game
                     {
                         if (o.Identifier != 0)
                         {
-                            if (!unselect_on_tap)
+                            if (!_unselectOnTap)
                             {
                                 o.Selected = true;
                                 o.Count = -1;
@@ -16102,7 +16103,7 @@ namespace GnollHackX.Pages.Game
                             }
                         }
                     }
-                    unselect_on_tap = !unselect_on_tap;
+                    _unselectOnTap = !_unselectOnTap;
                 }
                 MenuCanvas.InvalidateSurface();
             }
