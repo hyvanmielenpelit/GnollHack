@@ -281,6 +281,7 @@ namespace GnollHackX.Controls
         public bool ClickOKOnSelection { get; set; }
         public bool MenuGlyphAtBottom { get; set; }
         public bool AllowLongTap { get; set; } = true;
+        public bool SpecialClickOnLongTap { get; set; }
         public bool AllowHighlight { get; set; }
 
         private long _delayedResourceCacheLimit = -1L;

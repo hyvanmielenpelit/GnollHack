@@ -3669,6 +3669,7 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.ClickOKOnSelection = true;
                     MenuCanvas.MenuGlyphAtBottom = false;
                     MenuCanvas.AllowLongTap = false;
+                    MenuCanvas.SpecialClickOnLongTap = false;
                     MenuCanvas.AllowHighlight = true;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY:
@@ -3683,6 +3684,7 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.ClickOKOnSelection = true;
                     MenuCanvas.MenuGlyphAtBottom = true;
                     MenuCanvas.AllowLongTap = false;
+                    MenuCanvas.SpecialClickOnLongTap = false;
                     MenuCanvas.AllowHighlight = true;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
@@ -3704,6 +3706,7 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.MenuGlyphAtBottom = false;
                     MenuBackground.BorderStyle = MenuCanvas.ClickOKOnSelection ? BorderStyles.SimpleAlternative : BorderStyles.Simple;
                     MenuCanvas.AllowLongTap = false;
+                    MenuCanvas.SpecialClickOnLongTap = false;
                     MenuCanvas.AllowHighlight = true;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_PICK_CATEGORY_LIST:
@@ -3717,6 +3720,7 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.ClickOKOnSelection = false;
                     MenuCanvas.MenuGlyphAtBottom = false;
                     MenuCanvas.AllowLongTap = false;
+                    MenuCanvas.SpecialClickOnLongTap = false;
                     MenuCanvas.AllowHighlight = true;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_PICK_ITEM_LIST_AUTO_OK:
@@ -3730,6 +3734,7 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.ClickOKOnSelection = true;
                     MenuCanvas.MenuGlyphAtBottom = false;
                     MenuCanvas.AllowLongTap = false;
+                    MenuCanvas.SpecialClickOnLongTap = false;
                     MenuCanvas.AllowHighlight = true;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND:
@@ -3744,7 +3749,23 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.ClickOKOnSelection = false;
                     MenuCanvas.MenuGlyphAtBottom = false;
                     MenuCanvas.AllowLongTap = true;
+                    MenuCanvas.SpecialClickOnLongTap = false;
                     MenuCanvas.AllowHighlight = true;
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_SPELLS:
+                case ghmenu_styles.GHMENU_STYLE_SPELLS_ALTERNATE:
+                    MenuBackground.BackgroundStyle = BackgroundStyles.Automatic;
+                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.AutoMenuBackground;
+                    MenuBackground.BorderStyle = BorderStyles.Simple;
+                    MenuCanvas.RevertBlackAndWhite = !GHApp.DarkMode;
+                    MenuCanvas.UseTextOutline = false;
+                    MenuCanvas.HideMenuLetters = false;
+                    MenuCanvas.MenuButtonStyle = false;
+                    MenuCanvas.ClickOKOnSelection = false;
+                    MenuCanvas.MenuGlyphAtBottom = false;
+                    MenuCanvas.AllowLongTap = true;
+                    MenuCanvas.SpecialClickOnLongTap = true;
+                    MenuCanvas.AllowHighlight = false;
                     break;
                 default:
                     MenuBackground.BackgroundStyle = BackgroundStyles.Automatic;
@@ -3757,6 +3778,7 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.ClickOKOnSelection = false;
                     MenuCanvas.MenuGlyphAtBottom = false;
                     MenuCanvas.AllowLongTap = true;
+                    MenuCanvas.SpecialClickOnLongTap = false;
                     MenuCanvas.AllowHighlight = false;
                     break;
             }
@@ -15383,7 +15405,7 @@ namespace GnollHackX.Pages.Game
                             long elapsedms = (nowTicks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
                             if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_menuTouchMoved && MenuCanvas.SelectionHow != SelectionMode.None)
                             {
-                                MenuClickResult clickRes = MenuCanvas_NormalClickRelease(sender, e);
+                                MenuClickResult clickRes = MenuCanvas_NormalClickRelease(sender, e, false);
                                 if(GHApp.OkOnDoubleClick && MenuCanvas.SelectionHow == SelectionMode.Single)
                                 {
                                     long timeSincePreviousReleaseInMs = (nowTicks - _savedPreviousMenuReleaseTimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
@@ -15546,7 +15568,12 @@ namespace GnollHackX.Pages.Game
 
                 menuItemMaxCount = MenuCanvas.MenuItems[selectedidx].MaxCount;
                 if (menuItemMaxCount <= 1)
+                {
+                    if (MenuCanvas.SpecialClickOnLongTap)
+                        MenuCanvas_NormalClickRelease(sender, e, true);
+
                     return;
+                }
 
                 _countMenuItem = MenuCanvas.MenuItems[selectedidx];
                 menuItemSelected = MenuCanvas.MenuItems[selectedidx].Selected;
@@ -15561,7 +15588,7 @@ namespace GnollHackX.Pages.Game
 
             if ((MenuCanvas.SelectionHow == SelectionMode.Multiple && !menuItemSelected)
                 || (MenuCanvas.SelectionHow == SelectionMode.Single && selectedidx != MenuCanvas.SelectionIndex))
-                MenuCanvas_NormalClickRelease(sender, e); /* Normal click selection first */
+                MenuCanvas_NormalClickRelease(sender, e, false); /* Normal click selection first */
 
             if (_countMenuItem.MaxCount > 100)
             {
@@ -15659,7 +15686,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private MenuClickResult MenuCanvas_NormalClickRelease(object sender, SKTouchEventArgs e)
+        private MenuClickResult MenuCanvas_NormalClickRelease(object sender, SKTouchEventArgs e, bool isLongTap)
         {
             bool doclickok = false;
             bool okClicked = false;
@@ -15678,7 +15705,7 @@ namespace GnollHackX.Pages.Game
                     {
                         clickIdx = idx;
                         identifier = MenuCanvas.MenuItems[idx].Identifier;
-                        doclickok = ClickMenuItem(idx);
+                        doclickok = ClickMenuItem(idx, isLongTap);
                         break;
                     }
                 }
@@ -15693,7 +15720,7 @@ namespace GnollHackX.Pages.Game
             return new MenuClickResult(okClicked, clickIdx, identifier);
         }
 
-        private bool ClickMenuItem(int menuItemIdx)
+        private bool ClickMenuItem(int menuItemIdx, bool isLongTap)
         {
             bool doclickok = false;
             lock (MenuCanvas.MenuItemLock)
@@ -15754,13 +15781,15 @@ namespace GnollHackX.Pages.Game
                         int oldselidx = MenuCanvas.SelectionIndex;
                         MenuCanvas.SelectionIndex = menuItemIdx;
                         if (mi.Count == 0)
-                            mi.Count = _menuCountNumber > 0 && _menuCountNumber < mi.MaxCount ? _menuCountNumber : -1;
+                            mi.Count = _menuCountNumber > 0 && _menuCountNumber < mi.MaxCount ? _menuCountNumber : isLongTap ? -2 : -1;
+                        else if (isLongTap)
+                            mi.Count = -2;
 
                         /* Else keep the current selection number */
                         if (!MenuOKButton.IsEnabled)
                             MenuOKButton.IsEnabled = true;
 
-                        if (mi.IsAutoClickOk || MenuCanvas.ClickOKOnSelection)
+                        if (mi.IsAutoClickOk || MenuCanvas.ClickOKOnSelection || isLongTap)
                             doclickok = true;
                     }
                 }
@@ -18434,7 +18463,7 @@ namespace GnollHackX.Pages.Game
                             if (MenuCanvas.MenuItems[idx].Accelerator == c)
                             {
                                 somethingFound = true;
-                                doclickok = ClickMenuItem(idx);
+                                doclickok = ClickMenuItem(idx, false);
                                 //location = new SKPoint(MenuCanvas.MenuItems[idx].DrawBounds.MidX, MenuCanvas.MenuItems[idx].DrawBounds.MidY);
                                 break;
                             }
@@ -18442,7 +18471,7 @@ namespace GnollHackX.Pages.Game
                                 && (_menuCountNumber < 0 || MenuCanvas.MenuItems[idx].HeadingGroupAccelerator < '0' || MenuCanvas.MenuItems[idx].HeadingGroupAccelerator > '9'))
                             {
                                 somethingFound = true;
-                                doclickok = ClickMenuItem(idx);
+                                doclickok = ClickMenuItem(idx, false);
                                 //location = new SKPoint(MenuCanvas.MenuItems[idx].DrawBounds.MidX, MenuCanvas.MenuItems[idx].DrawBounds.MidY);
                                 break;
                             }

@@ -66,6 +66,8 @@ STATIC_DCL int FDECL(count_matcomp_alternatives, (struct materialcomponent*));
 STATIC_DCL struct extended_create_window_info FDECL(extended_create_window_info_for_spell, (BOOLEAN_P));
 STATIC_DCL const char* FDECL(get_spell_attribute_description, (int));
 STATIC_DCL const char* FDECL(get_targeting_description, (int));
+STATIC_DCL void FDECL(move_spell_to_top, (int));
+STATIC_DCL void FDECL(move_spell_to_bottom, (int));
 
 /* since the spellbook itself doesn't blow up, don't say just "explodes" */
 STATIC_VAR const char explodes[] = "radiates explosive energy";
@@ -1355,6 +1357,7 @@ int* spell_no;
         n = select_menu(tmpwin, how, &selected);
         destroy_nhwindow(tmpwin);
 
+        boolean docont = FALSE;
         if (n > 0)
         {
             if (selected[0].item.a_int <= 0)
@@ -1391,17 +1394,112 @@ int* spell_no;
                     return action_result;
             }
 
-            *spell_no = selected[0].item.a_int - 1;
-            /* menu selection for `PICK_ONE' does not
-               de-select any preselected entry */
-            if (n > 1 && *spell_no == splaction)
-                *spell_no = selected[1].item.a_int - 1;
-            free((genericptr_t)selected);
-            /* default selection of preselected spell means that
-               user chose not to swap it with anything */
-            if (*spell_no == splaction)
-                return FALSE;
-            return TRUE;
+            int64_t val = selected[0].count;
+            int splidx = selected[0].item.a_int - 1;
+            if (val == -2 && splaction == SPELLMENU_CAST && splidx >= 0 && splidx < MAXSPELL) /* Long tap */
+            {
+                int secondselidx = 0;
+                if (n > 1 && splidx == splaction)
+                    secondselidx = selected[1].item.a_int - 1;
+
+                free((genericptr_t)selected);
+                selected = (menu_item*)0;
+
+                char titleprompt[BUFSZ];
+                Sprintf(titleprompt, "What do you want to do with \'%s\'?", spellname(splidx));
+                int glyph = splidx - FIRST_SPELL + GLYPH_SPELL_TILE_OFF;
+                winid actionwin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SPELL_COMMAND_MENU, glyph, extended_create_window_info_for_spell(TRUE));
+                start_menu_ex(actionwin, GHMENU_STYLE_SPELL_COMMAND);
+                any = zeroany; /* zero out all bits */
+                any.a_int = 1;
+                glyph = CAST_SPELL_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+                add_active_menu(actionwin, glyph, &any, 'Z', 0, ATR_NONE, NO_COLOR,
+                    "Cast Spell", MENU_UNSELECTED);
+                any.a_int = 2;
+                glyph = VIEW_SPELLS_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+                add_active_menu(actionwin, glyph, &any, '?', 0, ATR_NONE, NO_COLOR,
+                    "View Information", MENU_UNSELECTED);
+                any.a_int = 3;
+                glyph = MIX_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+                add_active_menu(actionwin, glyph, &any, '!', 0, ATR_NONE, NO_COLOR,
+                    "Mix Reagents", MENU_UNSELECTED);
+                any.a_int = 4;
+                glyph = MOVE_SPELL_TO_TOP_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+                add_active_menu(actionwin, glyph, &any, '<', 0, ATR_NONE, NO_COLOR,
+                    "Move to Top", MENU_UNSELECTED);
+                any.a_int = 5;
+                glyph = MOVE_SPELL_TO_BOTTOM_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+                add_active_menu(actionwin, glyph, &any, '>', 0, ATR_NONE, NO_COLOR,
+                    "Move to Bottom", MENU_UNSELECTED);
+                any.a_int = 6;
+                glyph = FORGET_SPELL_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+                add_active_menu(actionwin, glyph, &any, 'F', 0, ATR_NONE, NO_COLOR,
+                    "Forget", MENU_UNSELECTED);
+                any.a_int = 7;
+                glyph = CANCEL_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+                add_active_menu(actionwin, glyph, &any, 'q', 0, ATR_NONE, NO_COLOR,
+                    "Cancel", MENU_UNSELECTED);
+                end_menu(actionwin, titleprompt);
+
+                int act_n = select_menu(actionwin, how, &selected);
+                destroy_nhwindow(actionwin);
+                if (act_n > 0)
+                {
+                    int selidx = selected[0].item.a_int;
+                    free((genericptr_t)selected);
+                    switch (selidx)
+                    {
+                    case 1:
+                        *spell_no = splidx;
+                        /* menu selection for `PICK_ONE' does not
+                           de-select any preselected entry */
+                        if (n > 1 && *spell_no == splaction)
+                            *spell_no = secondselidx;
+                        /* default selection of preselected spell means that
+                           user chose not to swap it with anything */
+                        if (*spell_no == splaction)
+                            return FALSE;
+                        return TRUE;
+                    case 2:
+                        (void)spelldescription(splidx);
+                        docont = TRUE;
+                        break;
+                    case 3:
+                        return domaterialcomponentsmenu(splidx);
+                    case 4:
+                        move_spell_to_top(splidx);
+                        docont = TRUE;
+                        break;
+                    case 5:
+                        move_spell_to_bottom(splidx);
+                        docont = TRUE;
+                        break;
+                    case 6:
+                        (void)forgetspell(splidx);
+                        docont = TRUE;
+                        break;
+                    case 7:
+                        docont = TRUE;
+                        break;
+                    default:
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                *spell_no = selected[0].item.a_int - 1;
+                /* menu selection for `PICK_ONE' does not
+                   de-select any preselected entry */
+                if (n > 1 && *spell_no == splaction)
+                    *spell_no = selected[1].item.a_int - 1;
+                free((genericptr_t)selected);
+                /* default selection of preselected spell means that
+                   user chose not to swap it with anything */
+                if (*spell_no == splaction)
+                    return FALSE;
+                return TRUE;
+            }
         }
         else if (splaction >= 0)
         {
@@ -1410,7 +1508,8 @@ int* spell_no;
             *spell_no = splaction;
             return TRUE;
         }
-        return FALSE;
+        if(!docont)
+            return FALSE;
     } while (TRUE); /* continue repeats the menu */
 }
 
@@ -5701,6 +5800,66 @@ int spell;
         cooldown = 14;
         */
     return cooldown;
+}
+
+STATIC_OVL
+void move_spell_to_top(splidx)
+int splidx;
+{
+    if (splidx < 0 || splidx >= MAXSPELL)
+        return;
+
+    if (spl_orderindx[0] == splidx)
+        return;
+
+    int i;
+    for (i = 0; i < MAXSPELL && spl_orderindx[i] != NO_SPELL; i++)
+    {
+        if (spl_orderindx[i] == splidx)
+            break;
+    }
+    if (i >= MAXSPELL || spl_book[i].sp_id == NO_SPELL)
+        return;
+
+    int j;
+    for (j = i; j >= 1; j--)
+    {
+        spl_orderindx[j] = spl_orderindx[j - 1];
+    }
+    spl_orderindx[0] = splidx;
+
+    flags.spellorder = SORTBY_CURRENT; /* sorting needs to be turned off */
+    sortspells();
+}
+
+STATIC_OVL
+void move_spell_to_bottom(splidx)
+int splidx;
+{
+    if (splidx < 0 || splidx >= MAXSPELL)
+        return;
+
+    int i;
+    for (i = 0; i < MAXSPELL && spl_book[i].sp_id != NO_SPELL; i++)
+    {
+        if (spl_orderindx[i] == splidx)
+            break;
+    }
+    if (i >= MAXSPELL || spl_orderindx[i] == NO_SPELL)
+        return;
+
+    if (i == MAXSPELL - 1 || spl_book[i + 1].sp_id == NO_SPELL)
+        return;
+
+    int j;
+    for (j = i + 1; j < MAXSPELL && spl_book[j].sp_id != NO_SPELL; j++)
+    {
+        spl_orderindx[j - 1] = spl_orderindx[j];
+    }
+    spl_orderindx[j - 1] = splidx;
+
+    flags.spellorder = SORTBY_CURRENT; /* sorting needs to be turned off */
+    sortspells();
 }
 
 #if defined (DUMPLOG) || defined (DUMPHTML)
