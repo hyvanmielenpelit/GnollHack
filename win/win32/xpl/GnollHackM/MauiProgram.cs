@@ -155,7 +155,7 @@ public static class MauiProgram
 
                             appWindow.Destroying += (sender, args) =>
                             {
-                                if(sender != null)
+                                if(sender != null && GHApp.WindowedMode)
                                 {
                                     Preferences.Set("WindowedSizeX", sender.Position.X);
                                     Preferences.Set("WindowedSizeY", sender.Position.Y);

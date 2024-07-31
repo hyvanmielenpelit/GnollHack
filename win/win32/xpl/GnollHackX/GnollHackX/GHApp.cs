@@ -200,7 +200,7 @@ namespace GnollHackX
         public static void SaveWindowPosition()
         {
 #if WINDOWS
-            if(WindowsXamlWindow != null)
+            if(WindowsXamlWindow != null && WindowedMode)
             {
                 var handle = WinRT.Interop.WindowNative.GetWindowHandle(WindowsXamlWindow);
                 var id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
