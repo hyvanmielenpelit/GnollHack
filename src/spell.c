@@ -68,6 +68,8 @@ STATIC_DCL const char* FDECL(get_spell_attribute_description, (int));
 STATIC_DCL const char* FDECL(get_targeting_description, (int));
 STATIC_DCL void FDECL(move_spell_to_top, (int));
 STATIC_DCL void FDECL(move_spell_to_bottom, (int));
+STATIC_DCL int FDECL(dosetquickspell_core, (int));
+
 
 /* since the spellbook itself doesn't blow up, don't say just "explodes" */
 STATIC_VAR const char explodes[] = "radiates explosive energy";
@@ -1407,7 +1409,7 @@ int* spell_no;
 
                 char titleprompt[BUFSZ];
                 Sprintf(titleprompt, "What do you want to do with \'%s\'?", spellname(splidx));
-                int glyph = splidx - FIRST_SPELL + GLYPH_SPELL_TILE_OFF;
+                int glyph = spellid(splidx) - FIRST_SPELL + GLYPH_SPELL_TILE_OFF;
                 winid actionwin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SPELL_COMMAND_MENU, glyph, extended_create_window_info_for_spell(TRUE));
                 start_menu_ex(actionwin, GHMENU_STYLE_SPELL_COMMAND);
                 any = zeroany; /* zero out all bits */
@@ -1432,10 +1434,14 @@ int* spell_no;
                 add_active_menu(actionwin, glyph, &any, '>', 0, ATR_NONE, NO_COLOR,
                     "Move to Bottom", MENU_UNSELECTED);
                 any.a_int = 6;
+                glyph = SET_QUICK_SPELL_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+                add_active_menu(actionwin, glyph, &any, '=', 0, ATR_NONE, NO_COLOR,
+                    "Set as Quick Spell", MENU_UNSELECTED);
+                any.a_int = 7;
                 glyph = FORGET_SPELL_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
                 add_active_menu(actionwin, glyph, &any, 'F', 0, ATR_NONE, NO_COLOR,
                     "Forget", MENU_UNSELECTED);
-                any.a_int = 7;
+                any.a_int = 8;
                 glyph = CANCEL_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
                 add_active_menu(actionwin, glyph, &any, 'q', 0, ATR_NONE, NO_COLOR,
                     "Cancel", MENU_UNSELECTED);
@@ -1475,15 +1481,21 @@ int* spell_no;
                         docont = TRUE;
                         break;
                     case 6:
+                        (void)dosetquickspell_core(splidx);
+                        break;
+                    case 7:
                         (void)forgetspell(splidx);
                         docont = TRUE;
                         break;
-                    case 7:
+                    default:
+                    case 8:
                         docont = TRUE;
                         break;
-                    default:
-                        break;
                     }
+                }
+                else
+                {
+                    docont = TRUE;
                 }
             }
             else
@@ -1520,7 +1532,7 @@ STATIC_VAR int docast_spell_no = -1;
 
 /* the 'Z' command -- cast a spell */
 int
-docast()
+docast(VOID_ARGS)
 {
     if (in_doagain && docast_spell_no > -1)
     {
@@ -1538,7 +1550,7 @@ docast()
 
 /* cast a quick spell (via right-click) */
 int
-docastquick()
+docastquick(VOID_ARGS)
 {
     if (context.quick_cast_spell_set && context.quick_cast_spell_no > -1)
     {
@@ -1554,7 +1566,7 @@ docastquick()
 
 
 int
-dospellmanage()
+dospellmanage(VOID_ARGS)
 {
     int spell_no;
     int action = dospellmanagemenu();
@@ -1575,7 +1587,7 @@ dospellmanage()
 
 /* the M('z') command -- spell info / descriptions */
 int
-dospellview()
+dospellview(VOID_ARGS)
 {
     int spell_no;
     boolean didselect = FALSE;
@@ -1589,27 +1601,35 @@ dospellview()
 }
 
 int
-dosetquickspell()
+dosetquickspell(VOID_ARGS)
 {
     int spell_no = -1;
     boolean didselect = getspell(&spell_no, 6);
     if (didselect)
     {
-        if (spell_no < 0)
-        {
-            context.quick_cast_spell_set = FALSE;
-            issue_gui_command(GUI_CMD_TOGGLE_QUICK_CAST_SPELL, NO_GLYPH, 0, "");
-            pline_ex(ATR_NONE, CLR_MSG_HINT, "Your quick spell selection has been cleared.");
-        }
-        else
-        {
-            context.quick_cast_spell_set = TRUE;
-            context.quick_cast_spell_no = spell_no;
-            const char* spellnam = spl_book[context.quick_cast_spell_no].sp_id > STRANGE_OBJECT ? OBJ_NAME(objects[spl_book[context.quick_cast_spell_no].sp_id]) : "";
-            issue_gui_command(GUI_CMD_TOGGLE_QUICK_CAST_SPELL, spell_to_glyph(spell_no), spellid(spell_no), spellnam);
-            int multicolors[2] = { CLR_MSG_SPELL, 0 };
-            pline_multi_ex(ATR_NONE, CLR_MSG_HINT, no_multiattrs, multicolors, "Your quick spell has been set to \'%s\'.", spellnam);
-        }
+        return dosetquickspell_core(spell_no);
+    }
+    return 0;
+}
+
+STATIC_OVL int
+dosetquickspell_core(spell_no)
+int spell_no;
+{
+    if (spell_no < 0)
+    {
+        context.quick_cast_spell_set = FALSE;
+        issue_gui_command(GUI_CMD_TOGGLE_QUICK_CAST_SPELL, NO_GLYPH, 0, "");
+        pline_ex(ATR_NONE, CLR_MSG_HINT, "Your quick spell selection has been cleared.");
+    }
+    else
+    {
+        context.quick_cast_spell_set = TRUE;
+        context.quick_cast_spell_no = spell_no;
+        const char* spellnam = spl_book[context.quick_cast_spell_no].sp_id > STRANGE_OBJECT ? OBJ_NAME(objects[spl_book[context.quick_cast_spell_no].sp_id]) : "";
+        issue_gui_command(GUI_CMD_TOGGLE_QUICK_CAST_SPELL, spell_to_glyph(spell_no), spellid(spell_no), spellnam);
+        int multicolors[2] = { CLR_MSG_SPELL, 0 };
+        pline_multi_ex(ATR_NONE, CLR_MSG_HINT, no_multiattrs, multicolors, "Your quick spell has been set to \'%s\'.", spellnam);
     }
     return 0;
 }

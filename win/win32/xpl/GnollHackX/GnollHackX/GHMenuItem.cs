@@ -573,7 +573,7 @@ namespace GnollHackX
                         res = res * 16.0 / 15.0;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
-                        res = res * 17.0 / 15.0;
+                        res = res * 17.5 / 15.0;
                         break;
                     case ghmenu_styles.GHMENU_STYLE_CHAT:
                         break;

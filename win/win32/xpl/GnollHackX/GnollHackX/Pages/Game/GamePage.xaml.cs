@@ -3688,7 +3688,6 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.AllowHighlight = true;
                     break;
                 case ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND:
-                case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
                 case ghmenu_styles.GHMENU_STYLE_SKILL_COMMAND:
                 case ghmenu_styles.GHMENU_STYLE_CHARACTER:
                 case ghmenu_styles.GHMENU_STYLE_VIEW_SPELL:
@@ -3705,6 +3704,20 @@ namespace GnollHackX.Pages.Game
                     MenuCanvas.ClickOKOnSelection = menuinfo.SelectionHow == SelectionMode.Single;
                     MenuCanvas.MenuGlyphAtBottom = false;
                     MenuBackground.BorderStyle = MenuCanvas.ClickOKOnSelection ? BorderStyles.SimpleAlternative : BorderStyles.Simple;
+                    MenuCanvas.AllowLongTap = false;
+                    MenuCanvas.SpecialClickOnLongTap = false;
+                    MenuCanvas.AllowHighlight = true;
+                    break;
+                case ghmenu_styles.GHMENU_STYLE_SPELL_COMMAND:
+                    MenuBackground.BackgroundStyle = BackgroundStyles.Automatic;
+                    MenuBackground.BackgroundBitmap = BackgroundBitmaps.AutoMenuBackground;
+                    MenuCanvas.RevertBlackAndWhite = !GHApp.DarkMode;
+                    MenuCanvas.UseTextOutline = false;
+                    MenuCanvas.HideMenuLetters = false;
+                    MenuCanvas.MenuButtonStyle = false;
+                    MenuCanvas.ClickOKOnSelection = false;
+                    MenuCanvas.MenuGlyphAtBottom = false;
+                    MenuBackground.BorderStyle = BorderStyles.Simple;
                     MenuCanvas.AllowLongTap = false;
                     MenuCanvas.SpecialClickOnLongTap = false;
                     MenuCanvas.AllowHighlight = true;
