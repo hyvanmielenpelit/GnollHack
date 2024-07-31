@@ -2764,7 +2764,7 @@ int skill_id;
             }
             if (strcmp(tcbuf, ""))
             {
-                Sprintf(buf, "    * Extra %s skill level adjustment to critical strike when throwing weapons of any kind", tcbuf);
+                Sprintf(buf, "    * Extra %s skill level adjustment to critical strike", tcbuf);
                 putstr_ex(win, buf, ATR_INDENT_AT_ASTR, color, 0);
             }
             if (strcmp(succbuf, ""))

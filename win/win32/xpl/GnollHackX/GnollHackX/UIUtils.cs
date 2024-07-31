@@ -1147,7 +1147,8 @@ namespace GnollHackX
         {
             /* Hopefully a temporary workaround for Maui Windows modal bug */
 #if WINDOWS
-            layout.Margin = new(0, -32, 0, 0);
+            if (!GHApp.WindowedMode)
+                layout.Margin = new(0, -32, 0, 0);
 #endif
         }
 

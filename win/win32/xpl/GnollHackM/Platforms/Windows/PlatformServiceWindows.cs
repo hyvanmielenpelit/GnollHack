@@ -110,6 +110,7 @@ namespace GnollHackM
         public void CloseApplication()
         {
             RevertAnimatorDuration(true);
+            GHApp.SaveWindowPosition();
             Environment.Exit(0);
         }
 

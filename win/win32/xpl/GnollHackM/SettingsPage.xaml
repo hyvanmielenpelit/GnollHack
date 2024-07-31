@@ -150,6 +150,15 @@
                                     HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="AllowBonesSwitch" Toggled="AllowBonesSwitch_Toggled" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
+                            <Grid x:Name="WindowedModeStackLayout" RowSpacing="6" HeightRequest="40">
+                                <Label Text="Windowed Mode"
+                                            x:Name="WindowedModeLabel"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center" 
+                                            HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="WindowedModeSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="WindowedModeSwitch_Toggled" />
+                            </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Silent Mode"
                                             FontFamily="Underwood" TextColor="Black"

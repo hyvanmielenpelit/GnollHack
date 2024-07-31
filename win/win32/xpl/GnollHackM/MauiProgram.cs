@@ -18,6 +18,7 @@ using Microsoft.Maui.Platform;
 using Sentry.Maui;
 #if WINDOWS
 using Sentry.Profiling;
+using Microsoft.UI;
 #endif
 #endif
 
@@ -104,16 +105,60 @@ public static class MauiProgram
                     windowsLifecycleBuilder.OnWindowCreated(window =>
                     {
                         GHApp.WindowsXamlWindow = window;
-                        window.ExtendsContentIntoTitleBar = false;
                         var handle = WinRT.Interop.WindowNative.GetWindowHandle(window);
                         var id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
                         var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(id);
-                        switch (appWindow.Presenter)
+
+                        bool maximizeWindow = !Preferences.Get("WindowedMode", false);
+                        if(maximizeWindow)
                         {
-                            case Microsoft.UI.Windowing.OverlappedPresenter overlappedPresenter:
-                                overlappedPresenter.SetBorderAndTitleBar(false, false);
-                                overlappedPresenter.Maximize();
-                                break;
+                            window.ExtendsContentIntoTitleBar = false;
+                            switch (appWindow.Presenter)
+                            {
+                                case Microsoft.UI.Windowing.OverlappedPresenter overlappedPresenter:
+                                    overlappedPresenter.SetBorderAndTitleBar(false, false);
+                                    overlappedPresenter.Maximize();
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            int sizeX = Preferences.Get("WindowedSizeX", 0);
+                            int sizeY = Preferences.Get("WindowedSizeY", 0);
+                            int sizeWidth = Preferences.Get("WindowedSizeWidth", 0);
+                            int sizeHeight = Preferences.Get("WindowedSizeHeight", 0);
+
+                            Microsoft.UI.Windowing.DisplayArea displayArea = Microsoft.UI.Windowing.DisplayArea.GetFromWindowId(id, Microsoft.UI.Windowing.DisplayAreaFallback.Nearest);
+                            if (displayArea != null)
+                            {
+                                if (sizeX + sizeWidth > displayArea.WorkArea.Width * 1.1 + 32)
+                                    sizeX = sizeWidth = 0;
+                                if (sizeY + sizeHeight > displayArea.WorkArea.Height * 1.1 + 32)
+                                    sizeY = sizeHeight = 0;
+                            }
+
+                            if (sizeWidth > 0 && sizeHeight > 0)
+                            {
+                                appWindow.MoveAndResize(new Windows.Graphics.RectInt32(sizeX, sizeY, sizeWidth, sizeHeight));
+                            }
+                            else if (displayArea != null)
+                            {
+                                var CenteredPosition = appWindow.Position;
+                                CenteredPosition.X = ((displayArea.WorkArea.Width - appWindow.Size.Width) / 2);
+                                CenteredPosition.Y = ((displayArea.WorkArea.Height - appWindow.Size.Height) / 2);
+                                appWindow.Move(CenteredPosition);
+                            }
+
+                            appWindow.Destroying += (sender, args) =>
+                            {
+                                if(sender != null)
+                                {
+                                    Preferences.Set("WindowedSizeX", sender.Position.X);
+                                    Preferences.Set("WindowedSizeY", sender.Position.Y);
+                                    Preferences.Set("WindowedSizeWidth", sender.Size.Width);
+                                    Preferences.Set("WindowedSizeHeight", sender.Size.Height);
+                                }
+                            };
                         }
                     });
                 });

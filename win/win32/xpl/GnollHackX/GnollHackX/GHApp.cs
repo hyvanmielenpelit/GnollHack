@@ -129,6 +129,7 @@ namespace GnollHackX
 
             SetMirroredOptionsToDefaults();
             DarkMode = Preferences.Get("DarkMode", false);
+            WindowedMode = Preferences.Get("WindowedMode", false);
             HideAndroidNavigationBar = Preferences.Get("HideAndroidNavigationBar", GHConstants.DefaultHideNavigation);
             HideiOSStatusBar = Preferences.Get("HideiOSStatusBar", GHConstants.DefaultHideStatusBar);
             DeveloperMode = Preferences.Get("DeveloperMode", GHConstants.DefaultDeveloperMode);
@@ -195,6 +196,26 @@ namespace GnollHackX
 
             BackButtonPressed += EmptyBackButtonPressed;
         }
+
+        public static void SaveWindowPosition()
+        {
+#if WINDOWS
+            if(WindowsXamlWindow != null)
+            {
+                var handle = WinRT.Interop.WindowNative.GetWindowHandle(WindowsXamlWindow);
+                var id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
+                var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(id);
+                if(appWindow != null)
+                {
+                    Preferences.Set("WindowedSizeX", appWindow.Position.X);
+                    Preferences.Set("WindowedSizeY", appWindow.Position.Y);
+                    Preferences.Set("WindowedSizeWidth", appWindow.Size.Width);
+                    Preferences.Set("WindowedSizeHeight", appWindow.Size.Height);
+                }
+            }
+#endif
+        }
+
 
         public static void SetMirroredOptionsToDefaults()
         {
@@ -874,13 +895,20 @@ namespace GnollHackX
             }
         }
 
+        private readonly static object _windowedModeLock = new object();
+        private static bool _windowedMode = false;
+        public static bool WindowedMode
+        {
+            get { lock (_windowedModeLock) { return _windowedMode; } }
+            set { lock (_windowedModeLock) { _windowedMode = value; } }
+        }
+
         private readonly static object _darkModeLock = new object();
         private static bool _darkMode = false;
         public static bool DarkMode
         {
             get { lock (_darkModeLock) { return _darkMode; } }
-            set { lock (_darkModeLock) { _darkMode = value; } UpdateTheme(value);
-            }
+            set { lock (_darkModeLock) { _darkMode = value; } UpdateTheme(value); }
         }
 
         public static void UpdateTheme(bool isDarkTheme)
