@@ -15418,26 +15418,33 @@ namespace GnollHackX.Pages.Game
                             long elapsedms = (nowTicks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
                             if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_menuTouchMoved && MenuCanvas.SelectionHow != SelectionMode.None)
                             {
-                                MenuClickResult clickRes = MenuCanvas_NormalClickRelease(sender, e, false);
-                                if(GHApp.OkOnDoubleClick && MenuCanvas.SelectionHow == SelectionMode.Single)
+                                if (MenuCanvas.AllowLongTap && e.MouseButton == SKMouseButton.Right)
                                 {
-                                    long timeSincePreviousReleaseInMs = (nowTicks - _savedPreviousMenuReleaseTimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
-                                    if (!clickRes.OkClicked && MenuOKButton.IsEnabled && _menuPreviousReleaseClick &&
-                                        clickRes.MenuItemClickIndex >= 0 && clickRes.MenuItemClickIndex == _menuPreviousReleaseClickIndex &&
-                                        clickRes.ItemIdentifier != 0 &&
-                                        timeSincePreviousReleaseInMs <= GHConstants.DoubleClickTimeThreshold)
+                                    MenuCanvas_LongTap(sender, e);
+                                }
+                                else
+                                {
+                                    MenuClickResult clickRes = MenuCanvas_NormalClickRelease(sender, e, false);
+                                    if (GHApp.OkOnDoubleClick && MenuCanvas.SelectionHow == SelectionMode.Single && e.MouseButton == SKMouseButton.Left)
                                     {
-                                        MenuCanvas.InvalidateSurface();
-                                        MenuOKButton_Clicked(sender, e);
-                                        _menuPreviousReleaseClick = false;
-                                        _menuPreviousReleaseClickIndex = -1;
-                                        _savedPreviousMenuReleaseTimeStamp = new DateTime();
-                                    }
-                                    else
-                                    {
-                                        _menuPreviousReleaseClick = true;
-                                        _menuPreviousReleaseClickIndex = clickRes.MenuItemClickIndex;
-                                        _savedPreviousMenuReleaseTimeStamp = _savedMenuTimeStamp;
+                                        long timeSincePreviousReleaseInMs = (nowTicks - _savedPreviousMenuReleaseTimeStamp.Ticks) / TimeSpan.TicksPerMillisecond;
+                                        if (!clickRes.OkClicked && MenuOKButton.IsEnabled && _menuPreviousReleaseClick &&
+                                            clickRes.MenuItemClickIndex >= 0 && clickRes.MenuItemClickIndex == _menuPreviousReleaseClickIndex &&
+                                            clickRes.ItemIdentifier != 0 &&
+                                            timeSincePreviousReleaseInMs <= GHConstants.DoubleClickTimeThreshold)
+                                        {
+                                            MenuCanvas.InvalidateSurface();
+                                            MenuOKButton_Clicked(sender, e);
+                                            _menuPreviousReleaseClick = false;
+                                            _menuPreviousReleaseClickIndex = -1;
+                                            _savedPreviousMenuReleaseTimeStamp = new DateTime();
+                                        }
+                                        else
+                                        {
+                                            _menuPreviousReleaseClick = true;
+                                            _menuPreviousReleaseClickIndex = clickRes.MenuItemClickIndex;
+                                            _savedPreviousMenuReleaseTimeStamp = _savedMenuTimeStamp;
+                                        }
                                     }
                                 }
                             }
