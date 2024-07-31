@@ -10088,7 +10088,7 @@ namespace GnollHackX.Pages.Game
                             SKRect orbBorderDest = new SKRect(tx, ty, tx + orbbordersize, ty + orbbordersize);
                             HealthRect = orbBorderDest;
                             _healthRectDrawn = true;
-                            DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Red, valtext, maxtext, orbfillpercentage, ShowMaxHealthInOrb);
+                            DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Red, valtext, maxtext, orbfillpercentage, ShowMaxHealthInOrb, false /* isPointerHovering && orbBorderDest.Contains(pointerHoverLocation) */);
 
                             orbfillpercentage = 0.0f;
                             valtext = "";
@@ -10112,7 +10112,7 @@ namespace GnollHackX.Pages.Game
                             orbBorderDest = new SKRect(tx, ty + orbbordersize + 5, tx + orbbordersize, ty + orbbordersize + 5 + orbbordersize);
                             ManaRect = orbBorderDest;
                             _manaRectDrawn = true;
-                            DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Blue, valtext, maxtext, orbfillpercentage, ShowMaxManaInOrb);
+                            DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Blue, valtext, maxtext, orbfillpercentage, ShowMaxManaInOrb, false /* isPointerHovering && orbBorderDest.Contains(pointerHoverLocation) */);
                             lastdrawnrecty = orbBorderDest.Bottom;
                         }
 
@@ -10943,7 +10943,7 @@ namespace GnollHackX.Pages.Game
                 bool doChangeCursor = false;
                 lock (_canvasPointerLock)
                 {
-                    GameCursorType usedCursor = _isCanvasHovering && (StatusBarRect.Contains(_canvasHoverLocation) || YouRect.Contains(_canvasHoverLocation)) ? GameCursorType.Info : GameCursorType.Normal;
+                    GameCursorType usedCursor = _isCanvasHovering && (StatusBarRect.Contains(_canvasHoverLocation) || YouRect.Contains(_canvasHoverLocation) || HealthRect.Contains(_canvasHoverLocation) || ManaRect.Contains(_canvasHoverLocation)) ? GameCursorType.Info : GameCursorType.Normal;
                     if (usedCursor != _currentCursorType)
                     {
                         doChangeCursor = true;
@@ -17580,7 +17580,7 @@ namespace GnollHackX.Pages.Game
             textPaint.DrawTextOnCanvas(canvas, str, rect.Left + padding, ty + usedoffsety + (textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent) / 2 - textPaint.FontMetrics.Ascent);
         }
 
-        private void DrawOrb(SKCanvas canvas, GHSkiaFontPaint textPaint, SKRect orbBorderDest, SKColor fillcolor, string val, string maxval, float orbfillpercentage, bool showmax)
+        private void DrawOrb(SKCanvas canvas, GHSkiaFontPaint textPaint, SKRect orbBorderDest, SKColor fillcolor, string val, string maxval, float orbfillpercentage, bool showmax, bool isHighlighted)
         {
             float orbwidth = orbBorderDest.Width / 230.0f * 210.0f;
             float orbheight = orbBorderDest.Width / 230.0f * 210.0f;
@@ -17593,16 +17593,21 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
             StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-            canvas.DrawImage(GHApp._orbBorderBitmap, orbBorderDest);
-            if (orbfillpercentage < 0)
-                orbfillpercentage = 0;
-            if (orbfillpercentage > 1)
-                orbfillpercentage = 1;
-            SKImage fillBitmap = fillcolor == SKColors.Red ? GHApp._orbFillBitmapRed : fillcolor == SKColors.Blue ? GHApp._orbFillBitmapBlue : GHApp._orbFillBitmap;
-            SKRect orbFillSrc = new SKRect(0.0f, (float)fillBitmap.Height * (1.0f - orbfillpercentage), (float)fillBitmap.Width, (float)fillBitmap.Height);
-            SKRect orbFillDest = new SKRect(orbDest.Left, orbDest.Top + orbDest.Height * (1.0f - orbfillpercentage), orbDest.Right, orbDest.Bottom);
-            canvas.DrawImage(fillBitmap, orbFillSrc, orbFillDest);
-            canvas.DrawImage(GHApp._orbGlassBitmap, orbDest);
+            using(SKPaint paint = new SKPaint())
+            {
+                if (isHighlighted)
+                    paint.ColorFilter = UIUtils.HighlightColorFilter;
+                canvas.DrawImage(GHApp._orbBorderBitmap, orbBorderDest, paint);
+                if (orbfillpercentage < 0)
+                    orbfillpercentage = 0;
+                if (orbfillpercentage > 1)
+                    orbfillpercentage = 1;
+                SKImage fillBitmap = fillcolor == SKColors.Red ? GHApp._orbFillBitmapRed : fillcolor == SKColors.Blue ? GHApp._orbFillBitmapBlue : GHApp._orbFillBitmap;
+                SKRect orbFillSrc = new SKRect(0.0f, (float)fillBitmap.Height * (1.0f - orbfillpercentage), (float)fillBitmap.Width, (float)fillBitmap.Height);
+                SKRect orbFillDest = new SKRect(orbDest.Left, orbDest.Top + orbDest.Height * (1.0f - orbfillpercentage), orbDest.Right, orbDest.Bottom);
+                canvas.DrawImage(fillBitmap, orbFillSrc, orbFillDest, paint);
+                canvas.DrawImage(GHApp._orbGlassBitmap, orbDest, paint);
+            }
 #if GNH_MAP_PROFILING && DEBUG
             StopProfiling(GHProfilingStyle.Bitmap);
 #endif
