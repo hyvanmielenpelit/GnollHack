@@ -57,7 +57,10 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-ios'">
 		<ProvisioningType>manual</ProvisioningType>
 		<CodesignKey>Apple Distribution: Hyvan mielen pelit ry (CUG8RS847T)</CodesignKey>
-		<CodesignProvision>Apple Dev M July 2024 Distribution Profile</CodesignProvision>
+    <CodesignProvision>Apple Dev M July 2024 Distribution Profile</CodesignProvision>
+    <!--<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>-->
+    <!--<CodesignProvision>Apple Dev M July 2024 Profile</CodesignProvision>-->
+    <MtouchUseLlvm>false</MtouchUseLlvm>
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-android'">
@@ -721,7 +724,7 @@
 	  <MtouchLink>None</MtouchLink>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-ios'">
-	  <MtouchLink>SdkOnly</MtouchLink>
+	  <MtouchLink>None</MtouchLink>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-android'">
 	  <PublishTrimmed>False</PublishTrimmed>
