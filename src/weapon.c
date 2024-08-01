@@ -4541,7 +4541,7 @@ int skill_level;
         res = 3.0;
         break;
     case P_GRAND_MASTER:
-        res = 4.0;
+        res = 3.5;
         break;
     default:
         break;
