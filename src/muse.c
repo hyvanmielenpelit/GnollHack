@@ -2037,9 +2037,11 @@ struct monst *mtmp;
          * sight, a problem not existing with wands because wand rays
          * are not objects.  Also set dknown in mthrowu.c.
          */
-        if (cansee(mtmp->mx, mtmp->my)) {
+        if (cansee(mtmp->mx, mtmp->my)) 
+        {
             otmp->dknown = 1;
-            pline("%s hurls %s!", Monnam(mtmp), singular(otmp, doname));
+            int multicolors[2] = { NO_COLOR, CLR_MSG_HINT };
+            pline_multi_ex(ATR_NONE, CLR_MSG_WARNING, no_multiattrs, multicolors, "%s hurls %s!", Monnam(mtmp), singular(otmp, doname));
         }
         m_throw(mtmp, mtmp->mx, mtmp->my, sgn(mtmp->mux - mtmp->mx),
                 sgn(mtmp->muy - mtmp->my),

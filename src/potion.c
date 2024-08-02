@@ -2264,8 +2264,7 @@ int how;
         tx = u.ux, ty = u.uy;
         distance = 0;
         play_simple_object_sound_at_location(obj, tx, ty, OBJECT_SOUND_TYPE_BREAK);
-        pline_The("%s crashes on your %s and breaks into shards.", botlnam,
-                  body_part(HEAD));
+        pline_The_ex(ATR_NONE, CLR_MSG_WARNING, "%s crashes on your %s and breaks into shards.", botlnam, body_part(HEAD));
         losehp(adjust_damage(rnd(2), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE),
                (how == POTHIT_OTHER_THROW) ? "propelled potion" /* scatter */
                                            : "thrown potion",
@@ -2310,8 +2309,7 @@ int how;
                 Strcpy(buf, mnam);
             }
             play_simple_object_sound_at_location(obj, tx, ty, OBJECT_SOUND_TYPE_BREAK);
-            pline_The_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s crashes on %s and breaks into shards.", botlnam,
-                      buf);
+            pline_The_ex(ATR_NONE, is_tame(mon) ? CLR_MSG_WARNING : CLR_MSG_ATTENTION, "%s crashes on %s and breaks into shards.", botlnam, buf);
         }
         if (rn2(5) && mon->mhp > 1 && !hit_saddle)
             mon->mhp--;
