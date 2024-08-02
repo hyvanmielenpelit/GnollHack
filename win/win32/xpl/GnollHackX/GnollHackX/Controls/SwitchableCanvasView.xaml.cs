@@ -252,7 +252,7 @@ namespace GnollHackX.Controls
             }
 
             /* Note: this case most likely will never happen, but is here still as a backup */
-            if (_delayedResourceCacheLimit != -1 && internalGLView.GRContext != null)
+            if (_delayedResourceCacheLimit != -1 && internalGLView?.GRContext != null)
             {
                 Debug.WriteLine("CanvasType is " + CanvasType.ToString());
                 Debug.WriteLine("ResourceCacheSize is " + ResourceCacheLimit);
@@ -341,7 +341,7 @@ namespace GnollHackX.Controls
             {
                 try
                 {
-                    return internalGLView.GRContext != null ? internalGLView.GRContext.GetResourceCacheLimit() : -1;
+                    return internalGLView?.GRContext != null ? internalGLView.GRContext.GetResourceCacheLimit() : -1;
                 }
                 catch (Exception ex)
                 {
@@ -351,7 +351,7 @@ namespace GnollHackX.Controls
             }
             set
             {
-                if(internalGLView.GRContext != null)
+                if(internalGLView?.GRContext != null)
                 {
                     try
                     {
@@ -394,7 +394,7 @@ namespace GnollHackX.Controls
             get
             {
                 CacheUsageInfo res = new CacheUsageInfo(-1, -1);
-                if (internalGLView.GRContext != null)
+                if (internalGLView?.GRContext != null)
                 {
                     try
                     {
