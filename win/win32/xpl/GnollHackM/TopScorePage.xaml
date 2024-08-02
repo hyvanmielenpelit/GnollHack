@@ -30,7 +30,7 @@
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Text="#" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="15" TextColor="Black" FontFamily="DejaVuSansMonoBold"/>
                             <Label Grid.Column="1" Text="Name" HorizontalOptions="Start" VerticalOptions="Center" HorizontalTextAlignment="Start" VerticalTextAlignment="Center" FontSize="15" TextColor="Black" FontFamily="DejaVuSansMonoBold"/>
-                            <Label Grid.Column="2" Text="Points" HorizontalOptions="End" VerticalOptions="Center" HorizontalTextAlignment="End" VerticalTextAlignment="Center" FontSize="15" TextColor="Black" FontFamily="DejaVuSansMonoBold"/>
+                            <Label Grid.Column="2" Text="Score" HorizontalOptions="End" VerticalOptions="Center" HorizontalTextAlignment="End" VerticalTextAlignment="Center" FontSize="15" TextColor="Black" FontFamily="DejaVuSansMonoBold"/>
                         </Grid>
                     </CollectionView.Header>
                     <CollectionView.ItemTemplate>
