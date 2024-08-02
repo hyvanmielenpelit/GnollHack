@@ -116,10 +116,7 @@ namespace GnollHackX
             GetDependencyServices();
             PlatformService.InitializePlatform();
             GHPath = GnollHackService.GetGnollHackPath();
-
-            _batteryChargeLevel = Battery.ChargeLevel;
-            _batteryChargeLevelTimeStamp = DateTime.Now;
-            Battery.BatteryInfoChanged += Battery_BatteryInfoChanged;
+            InitializeBattery();
 
             TotalMemory = GHApp.PlatformService.GetDeviceMemoryInBytes();
 
@@ -195,6 +192,23 @@ namespace GnollHackX
             }
 
             BackButtonPressed += EmptyBackButtonPressed;
+        }
+
+        public static void InitializeBattery()
+        {
+            try
+            {
+                Battery.BatteryInfoChanged += Battery_BatteryInfoChanged;
+                lock (_batteryLock)
+                {
+                    _batteryChargeLevel = Battery.ChargeLevel;
+                    _batteryChargeLevelTimeStamp = DateTime.Now;
+                }
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog(ex.Message);
+            }
         }
 
         public static void SaveWindowPosition()
@@ -279,7 +293,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                MaybeWriteGHLog(ex.Message);
             }
 #endif
         }
@@ -408,20 +422,30 @@ namespace GnollHackX
         {
             try
             {
-                _networkAccessState = Connectivity.NetworkAccess;
+                Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
+                lock (_networkAccessLock)
+                {
+                    _networkAccessState = Connectivity.NetworkAccess;
+                }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                MaybeWriteGHLog(ex.Message);
             }
-            Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
         }
 
         private static void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
-            lock (_networkAccessLock)
+            try
             {
-                _networkAccessState = e.NetworkAccess;
+                lock (_networkAccessLock)
+                {
+                    _networkAccessState = e.NetworkAccess;
+                }
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog(ex.Message);
             }
         }
 
@@ -480,25 +504,32 @@ namespace GnollHackX
 
         private static void Battery_BatteryInfoChanged(object sender, BatteryInfoChangedEventArgs e)
         {
-            double chargediff;
-            double prevcheckpointcharge;
-            lock (_batteryLock)
+            try
             {
-                prevcheckpointcharge = _previousBatteryCheckPointChargeLevel;
-                _previousBatteryChargeLevel = _batteryChargeLevel;
-                _previousBatteryChargeLevelTimeStamp = _batteryChargeLevelTimeStamp;
-                _batteryChargeLevel = e.ChargeLevel;
-                _batteryChargeLevelTimeStamp = DateTime.Now;
-                chargediff = _batteryChargeLevel - _previousBatteryChargeLevel;
-            }
-
-            if (chargediff < 0 && CurrentGHGame != null && e.ChargeLevel >= 0.04 && e.ChargeLevel <= 0.06 && e.ChargeLevel - prevcheckpointcharge < -0.0075)
-            {
+                double chargediff;
+                double prevcheckpointcharge;
                 lock (_batteryLock)
                 {
-                    _previousBatteryCheckPointChargeLevel = e.ChargeLevel;
+                    prevcheckpointcharge = _previousBatteryCheckPointChargeLevel;
+                    _previousBatteryChargeLevel = _batteryChargeLevel;
+                    _previousBatteryChargeLevelTimeStamp = _batteryChargeLevelTimeStamp;
+                    _batteryChargeLevel = e.ChargeLevel;
+                    _batteryChargeLevelTimeStamp = DateTime.Now;
+                    chargediff = _batteryChargeLevel - _previousBatteryChargeLevel;
                 }
-                CurrentGHGame.ActiveGamePage.SaveCheckPoint();
+
+                if (chargediff < 0 && CurrentGHGame != null && e.ChargeLevel >= 0.04 && e.ChargeLevel <= 0.06 && e.ChargeLevel - prevcheckpointcharge < -0.0075)
+                {
+                    lock (_batteryLock)
+                    {
+                        _previousBatteryCheckPointChargeLevel = e.ChargeLevel;
+                    }
+                    CurrentGHGame.ActiveGamePage.SaveCheckPoint();
+                }
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog(ex.Message);
             }
         }
 
@@ -579,11 +610,7 @@ namespace GnollHackX
             get
             {
 #if GNH_MAUI
-#if WINDOWS
-                return !HasCrashingDesktopGPU();
-#else
-                return true;
-#endif
+                return IsPackaged;
 #else
                 return !HasUnstableGPU();
 #endif
@@ -660,20 +687,6 @@ namespace GnollHackX
                     isDoogee = true;
             }
             return isGoogleMali || isSamsungMali || isVivo || isAlldocube || isDoogee ? true : false;
-        }
-
-        private static bool HasCrashingDesktopGPU()
-        {
-            return false;
-            //string model = DeviceInfo.Model;
-            //bool isThinkPad = false;
-            //if (!string.IsNullOrWhiteSpace(model))
-            //{
-            //    string model_lc = model.ToLower();
-            //    if (model_lc.Contains("thinkpad"))
-            //        isThinkPad = true;
-            //}
-            //return isThinkPad ? true : false;
         }
 
         public static void InitFileDescriptors()
@@ -826,7 +839,7 @@ namespace GnollHackX
                 //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
                 Preferences.Set("WentToSleepWithGameOn", true);
                 Preferences.Set("GameSaveResult", 0);
-                if (GHApp.BatteryChargeLevel > 3) /* Save only if there is enough battery left to prevent save file corruption when the phone powers off */
+                if (BatteryChargeLevel > 3) /* Save only if there is enough battery left to prevent save file corruption when the phone powers off */
                 {
                     CurrentGHGame.ActiveGamePage.SaveGameAndWaitForResume();
                 }
@@ -1180,6 +1193,7 @@ namespace GnollHackX
 #endif
         public static readonly bool IsMaui = true;
         public static readonly string RuntimePlatform = DeviceInfo.Platform.ToString();
+        public static readonly bool IsPackaged = (Microsoft.Maui.ApplicationModel.AppInfo.Current?.PackagingModel ?? AppPackagingModel.Unpackaged) == AppPackagingModel.Packaged;
 #else
         public static float DisplayRefreshRate = Math.Max(60.0f, DeviceDisplay.MainDisplayInfo.RefreshRate);
         public static float DisplayDensity = DeviceDisplay.MainDisplayInfo.Density <= 0.0 ? 1.0f : (float)DeviceDisplay.MainDisplayInfo.Density;
@@ -1190,6 +1204,7 @@ namespace GnollHackX
         public static readonly bool IsMaui = false;
         public static readonly bool IsDesktop = false;
         public static readonly string RuntimePlatform = Device.RuntimePlatform;
+        public static readonly bool IsPackaged = true;
 #endif
 
         public static GHPlatform PlatformId

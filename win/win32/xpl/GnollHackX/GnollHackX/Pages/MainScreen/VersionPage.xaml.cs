@@ -271,6 +271,9 @@ namespace GnollHackX.Pages.MainScreen
 #else
                 "Release";
 #endif
+
+            PackagingModelLabel.Text = GHApp.IsPackaged ? "Packaged" : "Unpackaged";
+
             GnollHackCompatibilityLabel.Text = compatstr == "" ? "" : "From " + compatstr;
             FMODVersionLabel.Text = GHApp.FMODVersionString;
             SkiaVersionLabel.Text = GHApp.SkiaVersionString + " (# " + GHApp.SkiaSharpVersionString + ")";
