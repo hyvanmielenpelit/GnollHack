@@ -713,7 +713,7 @@ namespace GnollHackX
                 {
                     bool ReviewRequested = Preferences.Get("StoreReviewRequested", false);
                     long NumberOfGames = Preferences.Get("NumberOfGames", 0L);
-                    long TotalPlayTime = Preferences.Get("RealPlayTime", 0L);
+                    long TotalPlayTime = GHApp.RealPlayTime;
 
                     if (!ReviewRequested && ((NumberOfGames >= GHConstants.StoreReviewRequestNumberOfGames && TotalPlayTime >= GHConstants.StoreReviewRequestTotalPlayTime) || GHApp.DeveloperMode))
                     {

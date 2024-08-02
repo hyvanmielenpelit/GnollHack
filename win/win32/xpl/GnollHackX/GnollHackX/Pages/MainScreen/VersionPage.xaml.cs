@@ -65,7 +65,7 @@ namespace GnollHackX.Pages.MainScreen
             ulong TotalDiskSpaceInBytes = GHApp.PlatformService.GetDeviceTotalDiskSpaceInBytes();
             ulong TotalDiskSpaceInGB = ((TotalDiskSpaceInBytes / 1024) / 1024) / 1024;
 
-            long TotalPlayTime = Preferences.Get("RealPlayTime", 0L);
+            long TotalPlayTime = GHApp.RealPlayTime;
             long TotalPlayHours = TotalPlayTime / 3600;
             long TotalPlayMinutes = (TotalPlayTime % 3600) / 60;
             long TotalPlaySeconds = TotalPlayTime - TotalPlayHours * 3600 - TotalPlayMinutes * 60;

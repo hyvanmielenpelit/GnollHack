@@ -174,6 +174,10 @@ namespace GnollHackX
             FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
             OkOnDoubleClick = Preferences.Get("OkOnDoubleClick", IsDesktop);
             DiscoveredMusicBits = Preferences.Get("DiscoveredMusicBits", 0L);
+            LastUsedPlayerName = Preferences.Get("LastUsedPlayerName", "");
+            LastUsedTournamentPlayerName = Preferences.Get("LastUsedTournamentPlayerName", "");
+            GUITipsShown = Preferences.Get("GUITipsShown", false);
+            RealPlayTime = Preferences.Get("RealPlayTime", 0L);
 
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if (FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
@@ -4416,7 +4420,9 @@ namespace GnollHackX
             string totmem = TotalMemInMB + " MB";
             string diskspace = FreeDiskSpaceInGB + " GB" + " / " + TotalDiskSpaceInGB + " GB";
 
-            string player_name = GHApp.TournamentMode ? Preferences.Get("LastUsedTournamentPlayerName", "Unknown Player") : Preferences.Get("LastUsedPlayerName", "Unknown Player");
+            string player_name = TournamentMode ? LastUsedTournamentPlayerName : LastUsedPlayerName;
+            if (string.IsNullOrEmpty(player_name))
+                player_name = "Unknown player";
             string info = ver + ", " + platform_with_version + ", " + device_model + ", " + totmem + ", " + diskspace;
 
             switch (status_type)
@@ -6162,6 +6168,43 @@ namespace GnollHackX
             return res;
         }
 
+        private static readonly object _preferencesLock = new object();
+        private static string _lastUsedPlayerName = "";
+        private static string _lastUsedTournamentPlayerName = "";
+        private static bool _gUITipsShown = false;
+        private static long _realPlayTime = 0L;
+
+        public static string LastUsedPlayerName { get { lock (_preferencesLock) { return _lastUsedPlayerName; } } set { lock (_preferencesLock) { _lastUsedPlayerName = value; } } }
+        public static string LastUsedTournamentPlayerName { get { lock (_preferencesLock) { return _lastUsedTournamentPlayerName; } } set { lock (_preferencesLock) { _lastUsedTournamentPlayerName = value; } } }
+        public static bool GUITipsShown { get { lock (_preferencesLock) { return _gUITipsShown; } } set { lock (_preferencesLock) { _gUITipsShown = value; } } }
+        public static long RealPlayTime { get { lock (_preferencesLock) { return _realPlayTime; } } set { lock (_preferencesLock) { _realPlayTime = value; } } }
+
+        public static void SaveLastUsedTournamentPlayerName(string used_player_name)
+        {
+            LastUsedTournamentPlayerName = used_player_name;
+            MainThread.BeginInvokeOnMainThread(() => 
+            { 
+                Preferences.Set("LastUsedTournamentPlayerName", used_player_name);
+            });
+        }
+
+        public static void SaveLastUsedPlayerName(string used_player_name)
+        {
+            LastUsedPlayerName = used_player_name;
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                Preferences.Set("LastUsedPlayerName", used_player_name);
+            });
+        }
+
+        public static void SaveRealPlayTime(long totaltime)
+        {
+            RealPlayTime = totaltime;
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                Preferences.Set("RealPlayTime", totaltime);
+            });
+        }
 
 
         private static readonly object _discoveredMusicLock = new object();

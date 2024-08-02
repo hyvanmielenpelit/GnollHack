@@ -1120,7 +1120,7 @@ namespace GnollHackX.Unknown
                 (ulong)(GHApp.IsDebug ? RunGnollHackFlags.GUIDebugMode : 0) |
                 (ulong)(GHApp.MirroredCharacterClickAction ? RunGnollHackFlags.CharacterClickAction : 0) | /* Use the default; GHApp.CharacterClickAction may contain the option value from the last game */
                 rightmouse | middlemouse | (ulong)ghGame.StartFlags;
-            string lastusedplname = GHApp.TournamentMode && !ghGame.PlayingReplay ? Preferences.Get("LastUsedTournamentPlayerName", "") : Preferences.Get("LastUsedPlayerName", "");
+            string lastusedplname = GHApp.TournamentMode && !ghGame.PlayingReplay ? GHApp.LastUsedTournamentPlayerName : GHApp.LastUsedPlayerName;
 
             return RunGnollHack(
                 filesdir,

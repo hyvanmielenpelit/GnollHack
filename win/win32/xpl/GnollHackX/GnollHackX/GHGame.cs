@@ -1575,9 +1575,9 @@ namespace GnollHackX
             if (used_player_name != null && used_player_name != "")
             {
                 if(GHApp.TournamentMode && !PlayingReplay)
-                    Preferences.Set("LastUsedTournamentPlayerName", used_player_name);
+                    GHApp.SaveLastUsedTournamentPlayerName(used_player_name);
                 else
-                    Preferences.Set("LastUsedPlayerName", used_player_name);
+                    GHApp.SaveLastUsedPlayerName(used_player_name);
             }
         }
 
@@ -1600,9 +1600,9 @@ namespace GnollHackX
         {
             RecordFunctionCall(RecordedFunctionID.ReportPlayTime, timePassed, currentPlayTime);
 
-            long playedalready = Preferences.Get("RealPlayTime", 0L);
+            long playedalready = GHApp.RealPlayTime;
             long totaltime = playedalready + timePassed;
-            Preferences.Set("RealPlayTime", totaltime);
+            GHApp.SaveRealPlayTime(totaltime);
             GamePlayTime = currentPlayTime;
             AddSessionPlayTime(timePassed);
             GHApp.AddAggragateSessionPlayTime(timePassed);
@@ -2549,7 +2549,7 @@ namespace GnollHackX
                             break;
                         }
 
-                        if (Preferences.Get("GUITipsShown", false))
+                        if (GHApp.GUITipsShown)
                             break;
 
                         ConcurrentQueue<GHRequest> queue;
@@ -2837,7 +2837,7 @@ namespace GnollHackX
 
         private void ContinueToNextReplayFile()
         {
-            string plName = Preferences.Get("LastUsedPlayerName", "");
+            string plName = GHApp.LastUsedPlayerName;
             DateTime saved_timestamp = _replayTimeStamp;
             int next_replayContinuation = _replayContinuation + 1;
             RecordFunctionCallImmediately(RecordedFunctionID.ContinueToNextFile, GHApp.GHVersionNumber, _replayTimeStamp.ToBinary(), plName, next_replayContinuation);
