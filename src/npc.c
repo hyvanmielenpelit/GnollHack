@@ -192,7 +192,10 @@ register struct monst* npc;
 
     npc_room = ENPC(npc)->npc_room;
 
-    if (rn2(3))
+    boolean moveaway = isok(omx, omy) && levl[omx][omy].typ == STAIRS || levl[omx][omy].typ == LADDER || 
+        levl[omx][omy].typ == ALTAR || OBJ_AT(omx, omy);
+
+    if (!moveaway && rn2(3))
     {
         gx = omx;
         gy = omy;
