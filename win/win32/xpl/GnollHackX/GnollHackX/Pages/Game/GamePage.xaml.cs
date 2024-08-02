@@ -924,7 +924,7 @@ namespace GnollHackX.Pages.Game
             ShowBattery = Preferences.Get("ShowBattery", false);
             ShowZoom = Preferences.Get("ShowZoom", false);
             ShowRecording = Preferences.Get("ShowRecording", true);
-            UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", GHApp.IsGPUDefault);
+            UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", GHApp.IsGPUDefault && GHApp.IsGPUAvailable);
             UseSimpleCmdLayout = Preferences.Get("UseSimpleCmdLayout", GHConstants.DefaultSimpleCmdLayout);
             ShowMemory = Preferences.Get("ShowMemory", false);
             MapGrid = Preferences.Get("MapGrid", false);

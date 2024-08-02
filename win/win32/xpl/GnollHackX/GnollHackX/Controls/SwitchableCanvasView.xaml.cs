@@ -61,7 +61,7 @@ namespace GnollHackX.Controls
         public SwitchableCanvasView()
         {
             InitializeComponent();
-            if (GHApp.IsPackaged)
+            if (GHApp.IsGPUAvailable)
             {
                 internalGLView = new SKGLView()
                 {

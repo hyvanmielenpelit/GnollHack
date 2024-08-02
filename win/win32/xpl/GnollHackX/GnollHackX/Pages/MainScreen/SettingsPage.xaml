@@ -23,7 +23,7 @@
                         <StackLayout x:Name="RootLayout" Spacing="6" Margin="18,0">
                             <Label Text="General" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="GPU Acceleration"
+                                <Label x:Name="GPULabel" Text="GPU Acceleration"
                                             FontFamily="Underwood" TextColor="Black"
                                             FontSize="15"
                                             VerticalOptions="Center" 

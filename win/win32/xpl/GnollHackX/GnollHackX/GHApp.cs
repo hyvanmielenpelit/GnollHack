@@ -170,7 +170,7 @@ namespace GnollHackX
             SetAvailableGPUCacheLimits(TotalMemory);
             PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
             SecondaryGPUCacheLimit = Preferences.Get("SecondaryGPUCacheLimit", -2L);
-            UseGPU = Preferences.Get("UseMainGLCanvas", IsGPUDefault);
+            UseGPU = Preferences.Get("UseMainGLCanvas", IsGPUDefault && IsGPUAvailable);
             FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
             OkOnDoubleClick = Preferences.Get("OkOnDoubleClick", IsDesktop);
             DiscoveredMusicBits = Preferences.Get("DiscoveredMusicBits", 0L);
@@ -617,6 +617,18 @@ namespace GnollHackX
                 return IsPackaged;
 #else
                 return !HasUnstableGPU();
+#endif
+            }
+        }
+
+        public static bool IsGPUAvailable
+        {
+            get
+            {
+#if WINDOWS
+                return IsPackaged;
+#else
+                return true;
 #endif
             }
         }

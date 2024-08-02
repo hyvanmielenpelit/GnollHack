@@ -870,7 +870,7 @@ namespace GnollHackX.Pages.MainScreen
                 battery = Preferences.Get("ShowBattery", false);
                 showrecording = Preferences.Get("ShowRecording", true);
                 autoupload = Preferences.Get("AutoUploadReplays", false);
-                gpu = Preferences.Get("UseMainGLCanvas", GHApp.IsGPUDefault);
+                gpu = Preferences.Get("UseMainGLCanvas", GHApp.IsGPUDefault && GHApp.IsGPUAvailable);
                 simplecmdlayout = Preferences.Get("UseSimpleCmdLayout", GHConstants.DefaultSimpleCmdLayout);
                 msgnum = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
                 petrows = Preferences.Get("NumDisplayedPetRows", GHConstants.DefaultPetRows);
@@ -958,7 +958,17 @@ namespace GnollHackX.Pages.MainScreen
             BatterySwitch.IsToggled = battery;
             ShowRecordingSwitch.IsToggled = showrecording;
             AutoUploadReplaysSwitch.IsToggled = autoupload;
-            GPUSwitch.IsToggled = gpu;
+            if(GHApp.IsGPUAvailable)
+            {
+                GPUSwitch.IsToggled = gpu;
+            }
+            else
+            {
+                GPUSwitch.IsToggled = false;
+                GPUSwitch.IsEnabled = false;
+                GPULabel.IsEnabled = false;
+                GPULabel.TextColor = GHColors.Gray;
+            }
             SimpleCmdLayoutSwitch.IsToggled = simplecmdlayout;
             DarkModeSwitch.IsToggled = darkmode;
             SilentModeSwitch.IsToggled = silentmode;
