@@ -36,6 +36,8 @@ namespace GnollHackX.Controls
     {
         private object _glLock = new object();
         private bool _useGL = false;
+        private SKGLView internalGLView = null;
+
         public bool UseGL 
         {   get { lock (_glLock) { return _useGL; } }
             set
@@ -44,20 +46,53 @@ namespace GnollHackX.Controls
                 {
                     _useGL = value;
                 }
-                internalCanvasView.IsVisible = !value;
-                internalGLView.IsVisible = value;
+                if(HasGL)
+                {
+                    internalCanvasView.IsVisible = !value;
+                    internalGLView.IsVisible = value;
+                }
+                else
+                    internalCanvasView.IsVisible = true;
             }
         }
+
+        public bool HasGL {  get { return internalGLView != null; } }
 
         public SwitchableCanvasView()
         {
             InitializeComponent();
+            if (GHApp.IsPackaged)
+            {
+                internalGLView = new SKGLView()
+                {
+                    IsVisible = false,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Fill,
+                };
+                internalGLView.PaintSurface += internalGLView_PaintSurface;
+                internalGLView.Touch += internalCanvasView_Touch;
+                RootGrid.Children.Add(internalGLView);
+#if WINDOWS
+                internalGLView.HandlerChanged += (s, e) =>
+                {
+                    SkiaSharp.Views.Windows.SKSwapChainPanel glView = internalGLView?.Handler?.PlatformView as SkiaSharp.Views.Windows.SKSwapChainPanel;
+                    if (glView != null)
+                    {
+                        glView.PointerWheelChanged += View_PointerWheelChanged;
+                        glView.PointerEntered += View_PointerEntered;
+                        glView.PointerExited += View_PointerExited;
+                        glView.PointerMoved += View_PointerMoved;
+                        glView.PointerCanceled += View_PointerCanceled;
+                    }
+                };
+#endif
+            }
         }
 
-        public SKSize CanvasSize { get { return UseGL ? internalGLView.CanvasSize : internalCanvasView.CanvasSize; } }
+        public SKSize CanvasSize { get { return UseGL && HasGL ? internalGLView.CanvasSize : internalCanvasView.CanvasSize; } }
         public bool IgnorePixelScaling
         {
-            get { return UseGL ? false : internalCanvasView.IgnorePixelScaling; }
+            get { return UseGL && HasGL ? false : internalCanvasView.IgnorePixelScaling; }
             set
             {
                 internalCanvasView.IgnorePixelScaling = value;
@@ -65,10 +100,11 @@ namespace GnollHackX.Controls
         }
         public bool EnableTouchEvents 
         { 
-            get { return UseGL ? internalGLView.EnableTouchEvents : internalCanvasView.EnableTouchEvents; } 
+            get { return UseGL && HasGL ? internalGLView.EnableTouchEvents : internalCanvasView.EnableTouchEvents; } 
             set 
             {
-                internalGLView.EnableTouchEvents = value;
+                if (HasGL)
+                    internalGLView.EnableTouchEvents = value;
                 internalCanvasView.EnableTouchEvents = value;
             }
         }
@@ -81,7 +117,7 @@ namespace GnollHackX.Controls
 
         public void InvalidateSurface()
         {
-            if (UseGL)
+            if (UseGL && HasGL)
             {
 #if WINDOWS
                 if(GHApp.WindowsXamlWindow != null)
@@ -124,7 +160,7 @@ namespace GnollHackX.Controls
 
         private void internalCanvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
-            if (UseGL)
+            if (UseGL && HasGL)
                 return; /* Insurance in the case both canvases mistakenly are updated */
 
             if(_firstCanvasDraw)
@@ -146,7 +182,7 @@ namespace GnollHackX.Controls
 
         private void internalGLView_PaintSurface(object sender, SKPaintGLSurfaceEventArgs e)
         {
-            if (!UseGL)
+            if (!UseGL || !HasGL)
                 return; /* Insurance in the case both canvases mistakenly are updated */
 
             if(_firstDraw)
@@ -440,7 +476,7 @@ namespace GnollHackX.Controls
         {
             base.OnHandlerChanged();
 #if WINDOWS
-            SkiaSharp.Views.Windows.SKXamlCanvas view = internalCanvasView.Handler.PlatformView as SkiaSharp.Views.Windows.SKXamlCanvas;
+            SkiaSharp.Views.Windows.SKXamlCanvas view = internalCanvasView.Handler?.PlatformView as SkiaSharp.Views.Windows.SKXamlCanvas;
             if(view != null)
             {
                 view.PointerWheelChanged += View_PointerWheelChanged;
@@ -448,15 +484,6 @@ namespace GnollHackX.Controls
                 view.PointerExited += View_PointerExited;
                 view.PointerMoved += View_PointerMoved;
                 view.PointerCanceled += View_PointerCanceled;
-            }
-            SkiaSharp.Views.Windows.SKSwapChainPanel glView = internalGLView.Handler.PlatformView as SkiaSharp.Views.Windows.SKSwapChainPanel;
-            if (glView != null)
-            {
-                glView.PointerWheelChanged += View_PointerWheelChanged;
-                glView.PointerEntered += View_PointerEntered;
-                glView.PointerExited += View_PointerExited;
-                glView.PointerMoved += View_PointerMoved;
-                glView.PointerCanceled += View_PointerCanceled;
             }
 #endif
         }
