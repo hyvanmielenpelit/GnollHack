@@ -60,8 +60,8 @@ namespace GnollHackX.Controls
 
         public SwitchableCanvasView()
         {
-            InitializeComponent();
-            if (GHApp.IsGPUAvailable)
+            bool gpuAvailable = GHApp.IsGPUAvailable;
+            if (gpuAvailable)
             {
                 internalGLView = new SKGLView()
                 {
@@ -71,7 +71,6 @@ namespace GnollHackX.Controls
                 };
                 internalGLView.PaintSurface += internalGLView_PaintSurface;
                 internalGLView.Touch += internalCanvasView_Touch;
-                RootGrid.Children.Add(internalGLView);
 #if WINDOWS
                 internalGLView.HandlerChanged += (s, e) =>
                 {
@@ -86,6 +85,11 @@ namespace GnollHackX.Controls
                     }
                 };
 #endif
+            }
+            InitializeComponent();
+            if(gpuAvailable)
+            {
+                RootGrid.Children.Add(internalGLView);
             }
         }
 
