@@ -89,7 +89,14 @@ namespace GnollHackX.Controls
                     GHApp.WindowsXamlWindow.DispatcherQueue?.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.High, () => 
                     {
 #endif
-                        internalGLView.InvalidateSurface();
+                        try
+                        {
+                            internalGLView.InvalidateSurface();
+                        }
+                        catch (Exception ex) 
+                        {
+                            Debug.WriteLine(ex);    
+                        }
 #if WINDOWS
                     });
                 }
@@ -97,7 +104,14 @@ namespace GnollHackX.Controls
             }
             else
             {
-                internalCanvasView.InvalidateSurface();
+                try
+                {
+                    internalCanvasView.InvalidateSurface();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
             }
         }
 
