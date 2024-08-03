@@ -7,6 +7,8 @@ using System.Text;
 using System.Runtime.InteropServices;
 using GnollHackX;
 using System.Runtime.Intrinsics.Arm;
+using Windows.Services.Store;
+using Windows.System;
 
 namespace GnollHackM
 {
@@ -164,13 +166,84 @@ namespace GnollHackM
         {
             try
             {
-
+                await PromptUserToRateApp(page);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
             await System.Threading.Tasks.Task.Delay(50);
+        }
+
+
+        private StoreContext _storeContext;
+
+        public void InitializeStoreReview()
+        {
+            try
+            {
+                _storeContext = StoreContext.GetDefault();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+        }
+
+        private async Task PromptUserToRateApp(ContentPage page)
+        {
+            if(_storeContext == null)
+                InitializeStoreReview();
+
+            if (_storeContext == null || GHApp.WindowsXamlWindow == null)
+                return;
+
+            try
+            {
+                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(GHApp.WindowsXamlWindow);
+                WinRT.Interop.InitializeWithWindow.Initialize(_storeContext, hwnd);
+
+                StoreRateAndReviewResult result = await _storeContext.RequestRateAndReviewAppAsync();
+                if (result != null)
+                {
+                    switch (result.Status)
+                    {
+                        case StoreRateAndReviewStatus.Succeeded:
+                            // Was this an updated review or a new review, if Updated is false it means it was a users first time reviewing
+                            if (result.WasUpdated)
+                            {
+                                // This was an updated review thank user
+                            }
+                            else
+                            {
+                                // This was a new review, thank user for reviewing and give some free in app tokens
+                            }
+                            // Keep track that we prompted user and don’t do it again for a while
+                            break;
+
+                        case StoreRateAndReviewStatus.CanceledByUser:
+                            // Keep track that we prompted user and don’t prompt again for a while
+                            break;
+
+                        case StoreRateAndReviewStatus.NetworkError:
+                            // User is probably not connected, so we’ll try again, but keep track so we don’t try too often
+                            break;
+
+                        // Something else went wrong
+                        case StoreRateAndReviewStatus.Error:
+                        default:
+                            if(result.ExtendedError?.Message != null)
+                                System.Diagnostics.Debug.WriteLine(result.ExtendedError.Message);
+                            if (result.ExtendedJsonData != null)
+                                System.Diagnostics.Debug.WriteLine(result.ExtendedJsonData);
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
         }
 
         private string GetAssemblyDirectory()

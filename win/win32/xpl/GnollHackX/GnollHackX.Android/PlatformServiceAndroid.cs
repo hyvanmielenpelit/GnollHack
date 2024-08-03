@@ -13,15 +13,15 @@ using GnollHackX;
 using Android;
 using Java.IO;
 using System.IO;
-#if GNH_MAUI
-#else
-using Xamarin.Forms;
-using Xamarin.Google.Android.Play.Core.AssetPacks;
-using System.Runtime.Remoting.Contexts;
 using Xamarin.Google.Android.Play.Core.Review;
 using Xamarin.Google.Android.Play.Core.Review.Model;
 using Xamarin.Google.Android.Play.Core.Tasks;
 using Xamarin.Google.Android.Play.Core.Review.Testing;
+
+#if !GNH_MAUI
+using Xamarin.Forms;
+using Xamarin.Google.Android.Play.Core.AssetPacks;
+using System.Runtime.Remoting.Contexts;
 #endif
 using System.Threading.Tasks;
 using System.Threading;
@@ -30,6 +30,7 @@ using AndroidX.Core.App;
 using Android.Content.PM;
 using Android.Views.InputMethods;
 using Android.Provider;
+using System.Linq.Expressions;
 
 #if GNH_MAUI
 namespace GnollHackM
@@ -230,12 +231,6 @@ namespace GnollHackX.Droid
             }
         }
 
-#if GNH_MAUI
-        public async void RequestAppReview(ContentPage page)
-        {
-            await Task.Delay(50);
-        }
-#else
         IReviewManager _manager;
         TaskCompletionSource<bool> _tcs;
         TaskCompletionSource<bool> _tcs2 = null;
@@ -251,23 +246,41 @@ namespace GnollHackX.Droid
                 Log.Add("Starting App Review");
             }
 
-            _tcs?.TrySetCanceled();
-            _tcs = new TaskCompletionSource<bool>();
-            _manager = ReviewManagerFactory.Create(MainActivity.CurrentMainActivity);
-
-            var request = _manager.RequestReviewFlow();
-            var listener = new StoreReviewTaskCompleteListener(_manager, _tcs, this, false);
-            request.AddOnCompleteListener(listener);
-
-            lock (LogLock)
+            Xamarin.Google.Android.Play.Core.Tasks.Task request = null;
+            _manager = null;
+            try
             {
-                Log.Add("Awaiting");
+                _tcs?.TrySetCanceled();
+                _tcs = new TaskCompletionSource<bool>();
+                _manager = ReviewManagerFactory.Create(MainActivity.CurrentMainActivity);
+                if (_manager != null)
+                {
+                    request = _manager.RequestReviewFlow();
+                    if (request != null)
+                    {
+                        var listener = new StoreReviewTaskCompleteListener(_manager, _tcs, this, false);
+                        request.AddOnCompleteListener(listener);
+                        lock (LogLock)
+                        {
+                            Log.Add("Awaiting");
+                        }
+                        await _tcs.Task;
+                        if (_tcs2 != null)
+                            await _tcs2.Task;
+                    }
+                }
             }
-            await _tcs.Task;
-            if (_tcs2 != null)
-                await _tcs2.Task;
-            _manager.Dispose();
-            request.Dispose();
+            catch(Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+            finally
+            {
+                if(_manager != null)
+                    _manager.Dispose();
+                if(request != null)
+                    request.Dispose();
+            }
             lock (LogLock)
             {
                 Log.Add("Done");
@@ -284,10 +297,8 @@ namespace GnollHackX.Droid
                 }
                 Log.Clear();
             }
-            if (GHApp.DebugLogMessages)
-                GHApp.MaybeWriteGHLog("App Review Log: " + logs);
+            GHApp.MaybeWriteGHLog("App Review Log: " + logs);
         }
-#endif
 
         public string GetBaseUrl()
         {
@@ -434,8 +445,6 @@ namespace GnollHackX.Droid
         }
     }
 
-#if GNH_MAUI
-#else
     public class StoreReviewTaskCompleteListener : Java.Lang.Object, IOnCompleteListener
     {
         IReviewManager _manager;
@@ -512,5 +521,4 @@ namespace GnollHackX.Droid
             }
         }
     }
-#endif
 }
