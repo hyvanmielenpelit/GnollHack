@@ -701,6 +701,7 @@ namespace GnollHackX.Pages.Game
         private bool _showScore = false;
         private bool _showXP = false;
         private bool _rightAligned2ndRow = false;
+        private bool _menuFadeEffects = false;
         public bool DesktopStatusBar { get { lock (_desktopLock) { return _desktopStatusBar; } } set { lock (_desktopLock) { _desktopStatusBar = value; } } }
         public bool DesktopButtons 
         { 
@@ -720,6 +721,7 @@ namespace GnollHackX.Pages.Game
                 } 
             }
         }
+        public bool MenuFadeEffects { get { lock (_desktopLock) { return _menuFadeEffects; } } set { lock (_desktopLock) { _menuFadeEffects = value; } } }
         public bool ShowScore { get { lock (_desktopLock) { return _showScore; } } set { lock (_desktopLock) { _showScore = value; } } }
         public bool ShowXP { get { lock (_desktopLock) { return _showXP; } } set { lock (_desktopLock) { _showXP = value; } } }
         public bool RightAligned2ndRow { get { lock (_desktopLock) { return _rightAligned2ndRow; } } set { lock (_desktopLock) { _rightAligned2ndRow = value; } } }
@@ -934,6 +936,7 @@ namespace GnollHackX.Pages.Game
             ShowScore = Preferences.Get("ShowScore", GHApp.IsDesktop);
             ShowXP = Preferences.Get("ShowXP", GHApp.IsDesktop);
             RightAligned2ndRow = Preferences.Get("RightAligned2ndRow", false);
+            MenuFadeEffects = Preferences.Get("MenuFadeEffects", GHConstants.AreMenuFadeEffectsDefault);
             ShowOrbs = Preferences.Get("ShowOrbs", true);
             ShowPets = Preferences.Get("ShowPets", true);
             PlayerMark = Preferences.Get("PlayerMark", false);
@@ -2973,7 +2976,7 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
-                if (!MenuGrid.IsVisible && !TextGrid.IsVisible)
+                if (MenuFadeEffects && !MenuGrid.IsVisible && !TextGrid.IsVisible)
                 {
                     TextGrid.Opacity = 0;
                     TextGrid.IsVisible = true;
@@ -3901,7 +3904,7 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
-                if(!MenuGrid.IsVisible && !TextGrid.IsVisible)
+                if(MenuFadeEffects && !MenuGrid.IsVisible && !TextGrid.IsVisible)
                 {
                     MenuGrid.Opacity = 0;
                     MenuGrid.IsVisible = true;

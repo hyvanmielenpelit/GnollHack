@@ -207,6 +207,15 @@
                                             HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="DarkModeSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="DarkModeSwitch_Toggled" />
                             </Grid>
+                            <Grid x:Name="MenuFadeEffectsGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label x:Name="MenuFadeEffectsLabel"
+                                            Text="Menu Fade Effects"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="MenuFadeEffectsSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Messages"
                                             FontFamily="Underwood" TextColor="Black"
