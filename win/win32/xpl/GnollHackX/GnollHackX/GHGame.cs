@@ -721,7 +721,7 @@ namespace GnollHackX
             WriteFunctionCallsAndCheckEnd();
 
             ConcurrentQueue<GHRequest> queue;
-            if (responses == null || responses == "")
+            if (string.IsNullOrEmpty(responses))
             {
                 if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                 {

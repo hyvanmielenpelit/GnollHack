@@ -3105,14 +3105,17 @@ namespace GnollHackX.Pages.Game
             else
                 YnTitleLayout.IsVisible = true;
 
+            string txt;
             /* Question */
-            if(string.IsNullOrWhiteSpace(introline))
-                YnQuestionLabel.Text = "";
+            if(!string.IsNullOrWhiteSpace(introline))
+                txt = introline + " ";
             else
-                YnQuestionLabel.Text = introline + " ";
-            
-            if(question != null)
-                YnQuestionLabel.Text += question;
+                txt = "";
+
+            if (!string.IsNullOrWhiteSpace(question))
+                txt += question;
+
+            YnQuestionLabel.Text = txt;
 
             /* Buttons */
             LabeledImageButton[] btnList = { ZeroButton, FirstButton, SecondButton, ThirdButton, FourthButton };
