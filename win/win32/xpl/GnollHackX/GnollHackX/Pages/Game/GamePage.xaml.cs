@@ -15418,9 +15418,10 @@ namespace GnollHackX.Pages.Game
                             long elapsedms = (nowTicks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
                             if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_menuTouchMoved && MenuCanvas.SelectionHow != SelectionMode.None)
                             {
-                                if (MenuCanvas.AllowLongTap && e.MouseButton == SKMouseButton.Right)
+                                if (e.MouseButton == SKMouseButton.Right)
                                 {
-                                    MenuCanvas_LongTap(sender, e);
+                                    if(MenuCanvas.AllowLongTap)
+                                        MenuCanvas_LongTap(sender, e);
                                 }
                                 else
                                 {
