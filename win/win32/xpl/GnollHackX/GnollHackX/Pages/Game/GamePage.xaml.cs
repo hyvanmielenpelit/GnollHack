@@ -14567,7 +14567,6 @@ namespace GnollHackX.Pages.Game
 
             using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
-                //textPaint.SetSubPixelAntiAliasing(true);
                 textPaint.Typeface = GHApp.UnderwoodTypeface;
                 textPaint.TextSize = GHConstants.MenuDefaultRowHeight * scale;
                 float picturewidth = 64.0f * textPaint.FontSpacing / 48.0f;
@@ -14636,7 +14635,9 @@ namespace GnollHackX.Pages.Game
                             float mainfontsize = (float)mi.FontSize * scale;
                             float relsuffixsize = (float)mi.RelativeSuffixFontSize;
                             float suffixfontsize = relsuffixsize * mainfontsize;
-                            textPaint.Typeface = GHApp.GetTypefaceByName(mi.FontFamily);
+                            string mainFontFamily = mi.FontFamily;
+                            SKTypeface mainFont = GHApp.GetTypefaceByName(mainFontFamily);
+                            textPaint.Typeface = mainFont;
                             textPaint.TextSize = mainfontsize;
                             //textPaint.TextAlign = SKTextAlign.Left;
 
@@ -14825,7 +14826,11 @@ namespace GnollHackX.Pages.Game
                                 {
                                     indent_start_x += textPaint.MeasureText(indentstr);
                                 }
+                                string altFontFamily = UIUtils.MaybeSmallFontFamily(mainFontFamily, textPaint.TextSize);
+                                if(altFontFamily != mainFontFamily)
+                                    textPaint.Typeface = GHApp.GetTypefaceByName(altFontFamily);
                                 DrawTextSplit(canvas, maintextsplit, mainattrssplit, maincolorssplit, mainrowwidths, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
+                                textPaint.Typeface = mainFont;
                                 /* Rewind and next line */
                                 x = start_x;
                                 y += textPaint.FontMetrics.Descent + fontspacingpadding;
@@ -14839,7 +14844,11 @@ namespace GnollHackX.Pages.Game
                                     textPaint.TextSize = suffixfontsize;
                                     y += fontspacingpadding;
                                     y -= textPaint.FontMetrics.Ascent;
+                                    altFontFamily = UIUtils.MaybeSmallFontFamily(mainFontFamily, textPaint.TextSize);
+                                    if (altFontFamily != mainFontFamily)
+                                        textPaint.Typeface = GHApp.GetTypefaceByName(altFontFamily);
                                     DrawTextSplit(canvas, suffixtextsplit, suffixattrssplit, suffixcolorssplit, suffixrowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
+                                    textPaint.Typeface = mainFont;
                                     /* Rewind and next line */
                                     x = start_x;
                                     y += textPaint.FontMetrics.Descent + fontspacingpadding;
@@ -14855,7 +14864,11 @@ namespace GnollHackX.Pages.Game
                                     fontspacingpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
                                     y += fontspacingpadding;
                                     y -= textPaint.FontMetrics.Ascent;
+                                    altFontFamily = UIUtils.MaybeSmallFontFamily(mainFontFamily, textPaint.TextSize);
+                                    if (altFontFamily != mainFontFamily)
+                                        textPaint.Typeface = GHApp.GetTypefaceByName(altFontFamily);
                                     DrawTextSplit(canvas, suffix2textsplit, suffix2attrssplit, suffix2colorssplit, suffix2rowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, MenuCanvas.RevertBlackAndWhite && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
+                                    textPaint.Typeface = mainFont;
                                     /* Rewind and next line */
                                     x = start_x;
                                     y += textPaint.FontMetrics.Descent + fontspacingpadding;

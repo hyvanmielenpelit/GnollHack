@@ -1233,6 +1233,14 @@ namespace GnollHackX
             return new SKColor((byte)(rawColor.Red * GHConstants.NonHoveringColorMultiplier), (byte)(rawColor.Green * GHConstants.NonHoveringColorMultiplier), (byte)(rawColor.Blue * GHConstants.NonHoveringColorMultiplier), rawColor.Alpha);
         }
 
+        public static string MaybeSmallFontFamily(string fontFamily, float fontSize)
+        {
+            if (fontFamily == "Immortal" && fontSize < 15)
+                return "LatoRegular";
+            else if (fontFamily == "Underwood" && fontSize < 15)
+                return "DejaVuSansMono";
+            return fontFamily;
+        }
     }
 
     public class TouchEntry
