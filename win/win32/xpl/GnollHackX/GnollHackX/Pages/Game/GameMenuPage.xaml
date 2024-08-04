@@ -11,7 +11,7 @@
         <Grid x:Name="RootGrid" HorizontalOptions="Fill" VerticalOptions="Fill">
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
             <StackLayout x:Name="MainLayout" Spacing="6" WidthRequest  ="400" HorizontalOptions  ="Center" VerticalOptions="Fill">
-                <Label x:Name="lblHeader" Text="Menu" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
+                <Label x:Name="lblHeader" Text="Menu" FontSize="24" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="CenterAndExpand" Margin="0,10,0,20" />
                 <ScrollView x:Name="GameMenuScrollView" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Transparent">
                     <StackLayout HorizontalOptions="Fill" Orientation="Vertical" Spacing="2">

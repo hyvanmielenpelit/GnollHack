@@ -281,7 +281,7 @@ namespace GnollHackX
             var canvas = new SKCanvas(bitmap);
             canvas.Clear(SKColors.Transparent);
 
-            DrawOnCanvas(canvas, false, false);
+            DrawOnCanvas(canvas, false, false, false);
 
             var skImage = SKImage.FromBitmap(bitmap);            
             var result = skImage.Encode(SKEncodedImageFormat.Png, 100).AsStream();
@@ -332,7 +332,7 @@ namespace GnollHackX
             }
         }
 
-        public void DrawOnCanvas(SKCanvas canvas, bool usingGL, bool isHighlighted)
+        public void DrawOnCanvas(SKCanvas canvas, bool usingGL, bool isHighlighted, bool highFilterQuality)
         {
             int signed_glyph = Glyph;
             int abs_glyph = Math.Abs(signed_glyph);
@@ -362,14 +362,13 @@ namespace GnollHackX
 
                 using (SKPaint paint = new SKPaint())
                 {
+                    if(highFilterQuality)
+                        paint.FilterQuality = SKFilterQuality.High;
+                    
                     if (Grayed)
-                    {
                         paint.ColorFilter = UIUtils.GrayedColorFilter;
-                    }
                     else if (isHighlighted)
-                    {
                         paint.ColorFilter = UIUtils.HighlightColorFilter;
-                    }
 
                     paint.Color = paint.Color.WithAlpha((byte)(0xFF * Math.Min(1.0f, Math.Max(0.0f, Opacity))));
 

@@ -243,7 +243,7 @@ namespace GnollHackX
             {
                 ActiveGlyphImageSource.Width = (int)canvaswidth;
                 ActiveGlyphImageSource.Height = (int)canvasheight;
-                ActiveGlyphImageSource.DrawOnCanvas(canvas, false, false);
+                ActiveGlyphImageSource.DrawOnCanvas(canvas, false, false, false);
             }
             else
             {

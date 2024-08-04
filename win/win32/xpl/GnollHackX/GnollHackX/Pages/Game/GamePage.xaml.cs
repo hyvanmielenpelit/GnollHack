@@ -8727,7 +8727,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                    gis.DrawOnCanvas(canvas, usingGL, false);
+                                                    gis.DrawOnCanvas(canvas, usingGL, false, true);
 #if GNH_MAP_PROFILING && DEBUG
                                                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -8861,7 +8861,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                    gis.DrawOnCanvas(canvas, usingGL, false);
+                                                    gis.DrawOnCanvas(canvas, usingGL, false, true);
 #if GNH_MAP_PROFILING && DEBUG
                                                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -9011,7 +9011,7 @@ namespace GnollHackX.Pages.Game
                                                     float weppictureheight = wep_scale * gis.Height;
                                                     canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
                                                     canvas.Scale(wep_scale);
-                                                    gis.DrawOnCanvas(canvas, usingGL, false);
+                                                    gis.DrawOnCanvas(canvas, usingGL, false, true);
                                                     curx += weppicturewidth;
                                                     curx += innerspacing;
                                                 }
@@ -9081,7 +9081,7 @@ namespace GnollHackX.Pages.Game
                                     float weppictureheight = wep_scale * gis.Height;
                                     canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
                                     canvas.Scale(wep_scale);
-                                    gis.DrawOnCanvas(canvas, usingGL, false);
+                                    gis.DrawOnCanvas(canvas, usingGL, false, true);
                                     curx += weppicturewidth;
                                 }
                                 curx += stdspacing;
@@ -9108,7 +9108,7 @@ namespace GnollHackX.Pages.Game
                                     float weppictureheight = wep_scale * gis.Height;
                                     canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
                                     canvas.Scale(wep_scale);
-                                    gis.DrawOnCanvas(canvas, usingGL, false);
+                                    gis.DrawOnCanvas(canvas, usingGL, false, true);
                                     curx += weppicturewidth;
                                 }
                                 curx += stdspacing;
@@ -9852,7 +9852,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                gis.DrawOnCanvas(canvas, usingGL, isPointerHovering && pdi.Rect.Contains(pointerHoverLocation));
+                                                gis.DrawOnCanvas(canvas, usingGL, isPointerHovering && pdi.Rect.Contains(pointerHoverLocation), false);
 #if GNH_MAP_PROFILING && DEBUG
                                                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
@@ -14746,7 +14746,7 @@ namespace GnollHackX.Pages.Game
                                                 float glyphxcenterpadding = (picturewidth - minrowheight * mi.GlyphImageSource.Width / mi.GlyphImageSource.Height) / 2;
                                                 canvas.Translate(x + glyphxcenterpadding, glyph_start_y);
                                                 canvas.Scale(minrowheight / mi.GlyphImageSource.Height);
-                                                mi.GlyphImageSource.DrawOnCanvas(canvas, usingGL, false);
+                                                mi.GlyphImageSource.DrawOnCanvas(canvas, usingGL, false, false);
                                             }
                                         }
                                     }
