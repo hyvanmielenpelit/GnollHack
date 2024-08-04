@@ -105,9 +105,18 @@ public static class MauiProgram
                     windowsLifecycleBuilder.OnWindowCreated(window =>
                     {
                         GHApp.WindowsXamlWindow = window;
+                        window.Closed += (s, e) =>
+                        {
+                            Environment.Exit(0);
+                        };
                         var handle = WinRT.Interop.WindowNative.GetWindowHandle(window);
                         var id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
                         var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(id);
+                        appWindow.Closing += (s, e) =>
+                        {
+                            GHApp.SaveWindowPosition();
+                            GHApp.FmodService?.StopAllSounds((uint)StopSoundFlags.All, 0U);
+                        };
 
                         bool maximizeWindow = !Preferences.Get("WindowedMode", false);
                         if(maximizeWindow)
