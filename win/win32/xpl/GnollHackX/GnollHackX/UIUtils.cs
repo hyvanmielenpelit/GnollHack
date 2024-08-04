@@ -1235,10 +1235,13 @@ namespace GnollHackX
 
         public static string MaybeSmallFontFamily(string fontFamily, float fontSize)
         {
-            if (fontFamily == "Immortal" && fontSize < 15)
-                return "LatoRegular";
-            else if (fontFamily == "Underwood" && fontSize < 15)
-                return "DejaVuSansMono";
+            if (fontSize < 15)
+            {
+                if (fontFamily == "Immortal")
+                    return "LatoRegular";
+                else if (fontFamily == "Underwood")
+                    return "DejaVuSansMono";
+            }
             return fontFamily;
         }
     }
