@@ -13,7 +13,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <gnh:GHCachedImage Grid.Column="0" x:Name="ViewImage" Source="{Binding ImgSourcePath}"
+                <gnh:GHCachedImage Grid.Column="0" x:Name="ViewImage" Source="{Binding ImgSourcePath}" HighFilterQuality="{Binding ImgHighFilterQuality}"
                                 WidthRequest="{Binding ImgWidth, FallbackValue='80'}" HeightRequest="{Binding ImgHeight, FallbackValue='80'}" 
                                 BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
                 <StackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center">

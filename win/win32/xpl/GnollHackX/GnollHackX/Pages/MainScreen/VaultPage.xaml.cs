@@ -43,6 +43,7 @@ namespace GnollHackX.Pages.MainScreen
 
             LabeledImageButton rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.conduct.png";
+            rib.ImgHighFilterQuality = true;
             rib.LblText = "Top Scores";
             rib.LblFontSize = 20;
             rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
@@ -57,6 +58,7 @@ namespace GnollHackX.Pages.MainScreen
 
             rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.manual.png";
+            rib.ImgHighFilterQuality = true;
             rib.LblText = "Library";
             rib.LblFontSize = 20;
             rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
@@ -71,6 +73,7 @@ namespace GnollHackX.Pages.MainScreen
 
             rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.chronicle.png";
+            rib.ImgHighFilterQuality = true;
             rib.LblText = "Replays";
             rib.LblFontSize = 20;
             rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
@@ -85,6 +88,7 @@ namespace GnollHackX.Pages.MainScreen
 
             rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.music.png";
+            rib.ImgHighFilterQuality = true;
             rib.LblText = "Sound Tracks";
             rib.LblFontSize = 20;
             rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;

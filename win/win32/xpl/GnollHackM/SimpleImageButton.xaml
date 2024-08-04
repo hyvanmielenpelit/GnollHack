@@ -8,7 +8,7 @@
              x:DataType="controls:SimpleImageButton">
     
         <Grid x:Name="ViewGrid" CascadeInputTransparent="True" BindingContext="{x:Reference this}" WidthRequest="{Binding GridWidth, FallbackValue='45'}" HeightRequest="{Binding GridHeight, FallbackValue='45'}" >
-            <gnh:GHCachedImage x:Name="ViewImage" Source="{Binding ImgSourcePath}"
+            <gnh:GHCachedImage x:Name="ViewImage" Source="{Binding ImgSourcePath}" HighFilterQuality="{Binding ImgHighFilterQuality}"
                             BackgroundColor="Transparent" VerticalOptions="Fill" HorizontalOptions="Fill" InputTransparent="True" />
             <Button x:Name="ViewButton" Text="" 
                              BackgroundColor="Transparent" VerticalOptions="Fill" HorizontalOptions="Fill" />

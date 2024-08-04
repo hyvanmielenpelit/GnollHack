@@ -93,6 +93,7 @@ namespace GnollHackX.Pages.MainScreen
                 string durationString = hasDuration ? min + ":" + sec : "";
                 RowImageButton rib = new RowImageButton();
                 rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.soundtrack.png";
+                rib.ImgHighFilterQuality = true;
                 rib.LblText = track.DisplayName;
                 rib.LblFontSize = 16;
                 rib.LblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;

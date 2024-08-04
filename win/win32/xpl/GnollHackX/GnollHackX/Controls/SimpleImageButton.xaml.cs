@@ -18,6 +18,7 @@ namespace GnollHackX.Controls
     public partial class SimpleImageButton : ContentView
     {
         public static readonly BindableProperty ImgSourcePathProperty = BindableProperty.Create(nameof(ImgSourcePath), typeof(string), typeof(SimpleImageButton), string.Empty);
+        public static readonly BindableProperty ImgHighFilterQualityProperty = BindableProperty.Create(nameof(ImgHighFilterQuality), typeof(bool), typeof(LabeledImageButton), false);
         public static readonly BindableProperty GridWidthProperty = BindableProperty.Create(nameof(GridWidth), typeof(double), typeof(SimpleImageButton), 45.0);
         public static readonly BindableProperty GridHeightProperty = BindableProperty.Create(nameof(GridHeight), typeof(double), typeof(SimpleImageButton), 45.0);
 
@@ -79,6 +80,11 @@ namespace GnollHackX.Controls
         {
             get => (double)GetValue(SimpleImageButton.GridHeightProperty);
             set => SetValue(SimpleImageButton.GridHeightProperty, value);
+        }
+        public bool ImgHighFilterQuality
+        {
+            get => (bool)GetValue(LabeledImageButton.ImgHighFilterQualityProperty);
+            set => SetValue(LabeledImageButton.ImgHighFilterQualityProperty, value);
         }
 
         public int LandscapeButtonsInRow { get; set; } = 0;

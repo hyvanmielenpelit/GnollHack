@@ -27,6 +27,7 @@ namespace GnollHackX.Controls
         public static readonly BindableProperty IsSubLblVisibleProperty = BindableProperty.Create(nameof(IsSubLblVisible), typeof(bool), typeof(RowImageButton), false);
 
         public static readonly BindableProperty ImgSourcePathProperty = BindableProperty.Create(nameof(ImgSourcePath), typeof(string), typeof(RowImageButton), string.Empty);
+        public static readonly BindableProperty ImgHighFilterQualityProperty = BindableProperty.Create(nameof(ImgHighFilterQuality), typeof(bool), typeof(LabeledImageButton), false);
         public static readonly BindableProperty GridWidthProperty = BindableProperty.Create(nameof(GridWidth), typeof(double), typeof(RowImageButton), 320.0);
         public static readonly BindableProperty GridHeightProperty = BindableProperty.Create(nameof(GridHeight), typeof(double), typeof(RowImageButton), 80.0);
         public static readonly BindableProperty GridMarginProperty = BindableProperty.Create(nameof(GridMargin), typeof(Thickness), typeof(RowImageButton), new Thickness());
@@ -116,6 +117,11 @@ namespace GnollHackX.Controls
         {
             get => (Thickness)GetValue(RowImageButton.GridMarginProperty);
             set => SetValue(RowImageButton.GridMarginProperty, value);
+        }
+        public bool ImgHighFilterQuality
+        {
+            get => (bool)GetValue(LabeledImageButton.ImgHighFilterQualityProperty);
+            set => SetValue(LabeledImageButton.ImgHighFilterQualityProperty, value);
         }
 
         public RowImageButton()

@@ -23,6 +23,7 @@ namespace GnollHackX.Controls
         public static readonly BindableProperty LblFontFamilyProperty = BindableProperty.Create(nameof(LblFontFamily), typeof(string), typeof(LabeledImageButton), "LatoRegular");
         public static readonly BindableProperty LblFontColorProperty = BindableProperty.Create(nameof(LblFontColor), typeof(Color), typeof(LabeledImageButton), GHColors.White);
         public static readonly BindableProperty ImgSourcePathProperty = BindableProperty.Create(nameof(ImgSourcePath), typeof(string), typeof(LabeledImageButton), string.Empty);
+        public static readonly BindableProperty ImgHighFilterQualityProperty = BindableProperty.Create(nameof(ImgHighFilterQuality), typeof(bool), typeof(LabeledImageButton), false);
         public static readonly BindableProperty GridWidthProperty = BindableProperty.Create(nameof(GridWidth), typeof(double), typeof(LabeledImageButton), 50.0);
         public static readonly BindableProperty GridHeightProperty = BindableProperty.Create(nameof(GridHeight), typeof(double), typeof(LabeledImageButton), 60.0);
         public static readonly BindableProperty GridMarginProperty = BindableProperty.Create(nameof(GridMargin), typeof(Thickness), typeof(LabeledImageButton), new Thickness());
@@ -90,6 +91,11 @@ namespace GnollHackX.Controls
         {
             get => (double)GetValue(LabeledImageButton.ImgHeightProperty);
             set => SetValue(LabeledImageButton.ImgHeightProperty, value);
+        }
+        public bool ImgHighFilterQuality
+        {
+            get => (bool)GetValue(LabeledImageButton.ImgHighFilterQualityProperty);
+            set => SetValue(LabeledImageButton.ImgHighFilterQualityProperty, value);
         }
 
         public double GridWidth

@@ -224,6 +224,20 @@ namespace GnollHackX
                 img.InvalidateSurface();
         }
 
+        public static readonly BindableProperty HighFilterQualityProperty = BindableProperty.Create(nameof(HighFilterQuality), typeof(bool), typeof(GHCachedImage), false, propertyChanged: OnHighFilterQualityChanged);
+
+        public bool HighFilterQuality
+        {
+            get => (bool)GetValue(HighFilterQualityProperty);
+            set => SetValue(HighFilterQualityProperty, value);
+        }
+
+        private static void OnHighFilterQualityChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            GHCachedImage img = bindable as GHCachedImage;
+            if (img != null && oldValue is bool && newValue is bool && (bool)oldValue != (bool)newValue)
+                img.InvalidateSurface();
+        }
 
 
         private readonly object _sourceBitmapLock = new object();
@@ -291,7 +305,13 @@ namespace GnollHackX
                 {
                     if (IsHighlighted)
                         paint.ColorFilter = UIUtils.HighlightColorFilter;
+#if GNH_MAUI
+                    canvas.DrawImage(targetBitmap, sourcerect, targetrect, new SKSamplingOptions(HighFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest), paint);
+#else
+                    if (HighFilterQuality)
+                        paint.FilterQuality = SKFilterQuality.High;
                     canvas.DrawImage(targetBitmap, sourcerect, targetrect, paint);
+#endif
                 }
             }
         }
