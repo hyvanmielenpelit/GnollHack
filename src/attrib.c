@@ -533,7 +533,7 @@ const char* reason,    /* controls what messages we display */
 uchar elemental_enchantment;
 boolean lifesavedalready;
 {
-    int i, kprefix = KILLED_BY_AN;
+    int kprefix = KILLED_BY_AN;
     double damage = 0;
 
     boolean plural = (reason[strlen(reason) - 1] == 's') ? 1 : 0;
