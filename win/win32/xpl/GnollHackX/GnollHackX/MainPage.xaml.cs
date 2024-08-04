@@ -832,6 +832,10 @@ namespace GnollHackX
             GHApp.InitAdditionalCachedBitmaps();
             GHApp.InitSymbolBitmaps();
             GHApp.InitGameBitmaps();
+
+            GHApp.ReadUserData();
+            GHApp.CheckUserData();
+            GHApp.DiscoveredMusicBits = GHApp.GetDiscoveredTracks();
             GHApp.AddPreDiscoveredMusic();
 
             carouselView.Init();

@@ -178,10 +178,6 @@ namespace GnollHackX
             GUITipsShown = Preferences.Get("GUITipsShown", false);
             RealPlayTime = Preferences.Get("RealPlayTime", 0L);
 
-            ReadUserData();
-            CheckUserData();
-            DiscoveredMusicBits = GetDiscoveredTracks();
-
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if (FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
             {
