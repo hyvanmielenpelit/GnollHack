@@ -538,16 +538,8 @@ boolean lifesavedalready;
 
     boolean plural = (reason[strlen(reason) - 1] == 's') ? 1 : 0;
 
-    //Handle killer
     /* suppress killer prefix if it already has one */
-    i = name_to_mon(pkiller);
-    if (i >= LOW_PM && (mons[i].geno & G_UNIQ))
-    {
-        kprefix = KILLED_BY;
-        if (!is_mname_proper_name(&mons[i]))
-            pkiller = the(pkiller);
-    }
-    else if (!strncmpi(pkiller, "the ", 4) || !strncmpi(pkiller, "an ", 3)
+    if (!strncmpi(pkiller, "the ", 4) || !strncmpi(pkiller, "an ", 3)
         || !strncmpi(pkiller, "a ", 2)) 
     {
         /*[ does this need a plural check too? ]*/
@@ -555,84 +547,93 @@ boolean lifesavedalready;
     }
 
     //Effects
-    if(elemental_enchantment == COLD_ENCHANTMENT)
+    switch (elemental_enchantment)
     {
-        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s %s ice-cold!",
-            isupper((uchar)* reason) ? "" : "The ", reason,
-            plural ? "are" : "is");
-        if (Cold_immunity || Invulnerable) 
+    case COLD_ENCHANTMENT:
         {
-            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
-            u_shieldeff();
-            pline_The_ex(ATR_NONE, CLR_MSG_SUCCESS, "cold doesn't seem to affect you.");
-            return;
-        }
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s %s ice-cold!",
+                isupper((uchar)*reason) ? "" : "The ", reason,
+                plural ? "are" : "is");
+            if (Cold_immunity || Invulnerable)
+            {
+                play_sfx_sound(SFX_GENERAL_UNAFFECTED);
+                u_shieldeff();
+                pline_The_ex(ATR_NONE, CLR_MSG_SUCCESS, "cold doesn't seem to affect you.");
+                return;
+            }
 
-        play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
-        damage = adjust_damage(d(12, 6), (struct monst*)0, &youmonst, AD_COLD, ADFLAGS_NONE);
-        losehp(damage, pkiller, kprefix);
-    }
-    else if (elemental_enchantment == FIRE_ENCHANTMENT)
-    {
-        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s %s burning hot!",
-            isupper((uchar)* reason) ? "" : "The ", reason,
-            plural ? "are" : "is");
-        if (Fire_immunity || Invulnerable)
-        {
-            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
-            u_shieldeff();
-            pline_The_ex(ATR_NONE, CLR_MSG_SUCCESS, "fire doesn't seem to affect you.");
-            return;
-        }
-
-        play_sfx_sound(SFX_MONSTER_ON_FIRE);
-        damage = adjust_damage(d(4, 6), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE);
-        losehp(damage, pkiller, kprefix);
-    }
-    else if (elemental_enchantment == LIGHTNING_ENCHANTMENT)
-    {
-        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s %s you with lightning!",
-            isupper((uchar)* reason) ? "" : "The ", reason,
-            plural ? "jolt" : "jolts");
-        if (Shock_immunity || Invulnerable) 
-        {
-            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
-            u_shieldeff();
-            pline_The_ex(ATR_NONE, CLR_MSG_SUCCESS, "lightning doesn't seem to affect you.");
-            return;
-        }
-
-        play_sfx_sound(SFX_MONSTER_GETS_ZAPPED);
-        damage = adjust_damage(d(6, 6), (struct monst*)0, &youmonst, AD_ELEC, ADFLAGS_NONE);
-        losehp(damage, pkiller, kprefix);
-    }
-    else if (elemental_enchantment == DEATH_ENCHANTMENT)
-    {
-        pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s %s imbued by death magic!",
-            isupper((uchar)* reason) ? "" : "The ", reason,
-            plural ? "were" : "was");
-        if (Death_resistance || is_not_living(youmonst.data) || is_demon(youmonst.data))
-        {
-            play_sfx_sound(SFX_GENERAL_UNAFFECTED);
-            u_shieldeff();
-            pline_The_ex(ATR_NONE, CLR_MSG_SUCCESS, "death magic doesn't seem to affect you.");
-            return;
-        }
-
-        play_sfx_sound(SFX_MONSTER_IS_HIT_WITH_DEATH_MAGIC);
-
-        if (lifesavedalready)
-        {
-            //Just do 10d6 damage if life was saved by amulet of life saving
-            damage = adjust_damage(d(10, 6), (struct monst*)0, &youmonst, AD_DRAY, ADFLAGS_NONE);
+            play_sfx_sound(SFX_MONSTER_COVERED_IN_FROST);
+            damage = adjust_damage(d(12, 6), (struct monst*)0, &youmonst, AD_COLD, ADFLAGS_NONE);
             losehp(damage, pkiller, kprefix);
+            break;
         }
-        else
+    case FIRE_ENCHANTMENT:
         {
-            u.uhp = -1;
-            context.botl = TRUE;
-            pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "magic was deadly...");
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s %s burning hot!",
+                isupper((uchar)*reason) ? "" : "The ", reason,
+                plural ? "are" : "is");
+            if (Fire_immunity || Invulnerable)
+            {
+                play_sfx_sound(SFX_GENERAL_UNAFFECTED);
+                u_shieldeff();
+                pline_The_ex(ATR_NONE, CLR_MSG_SUCCESS, "fire doesn't seem to affect you.");
+                return;
+            }
+
+            play_sfx_sound(SFX_MONSTER_ON_FIRE);
+            damage = adjust_damage(d(4, 6), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE);
+            losehp(damage, pkiller, kprefix);
+            break;
         }
+    case LIGHTNING_ENCHANTMENT:
+        {
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s %s you with lightning!",
+                isupper((uchar)*reason) ? "" : "The ", reason,
+                plural ? "jolt" : "jolts");
+            if (Shock_immunity || Invulnerable)
+            {
+                play_sfx_sound(SFX_GENERAL_UNAFFECTED);
+                u_shieldeff();
+                pline_The_ex(ATR_NONE, CLR_MSG_SUCCESS, "lightning doesn't seem to affect you.");
+                return;
+            }
+
+            play_sfx_sound(SFX_MONSTER_GETS_ZAPPED);
+            damage = adjust_damage(d(6, 6), (struct monst*)0, &youmonst, AD_ELEC, ADFLAGS_NONE);
+            losehp(damage, pkiller, kprefix);
+            break;
+        }
+    case DEATH_ENCHANTMENT:
+        {
+            pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s%s %s imbued by death magic!",
+                isupper((uchar)*reason) ? "" : "The ", reason,
+                plural ? "were" : "was");
+            if (Death_resistance || is_not_living(youmonst.data) || is_demon(youmonst.data))
+            {
+                play_sfx_sound(SFX_GENERAL_UNAFFECTED);
+                u_shieldeff();
+                pline_The_ex(ATR_NONE, CLR_MSG_SUCCESS, "death magic doesn't seem to affect you.");
+                return;
+            }
+
+            play_sfx_sound(SFX_MONSTER_IS_HIT_WITH_DEATH_MAGIC);
+
+            if (lifesavedalready)
+            {
+                //Just do 10d6 damage if life was saved by amulet of life saving
+                damage = adjust_damage(d(10, 6), (struct monst*)0, &youmonst, AD_DRAY, ADFLAGS_NONE);
+                losehp(damage, pkiller, kprefix);
+            }
+            else
+            {
+                u.uhp = -1;
+                context.botl = TRUE;
+                pline_The_ex(ATR_NONE, CLR_MSG_NEGATIVE, "magic was deadly...");
+            }
+            break;
+        }
+    default:
+        break;
     }
 
     if (u.uhp < 1) {

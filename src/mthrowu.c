@@ -1008,7 +1008,7 @@ struct obj *obj;         /* missile (or stack providing it) */
                 char onmbuf[BUFSZ], knmbuf[BUFSZ];
 
                 Strcpy(onmbuf, xname(singleobj));
-                Strcpy(knmbuf, killer_xname(singleobj));
+                Sprintf(knmbuf, "%s thrown by %s", killer_xname(singleobj), a_monnam(mon));
                 
                 /* if damage triggered life-saving,
                    major death magic is limited to minor death magic */

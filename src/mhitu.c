@@ -3249,7 +3249,7 @@ register struct obj* omonwep;
             char onmbuf[BUFSZ], knmbuf[BUFSZ];
 
             Strcpy(onmbuf, xname(mweapon));
-            Strcpy(knmbuf, killer_xname(mweapon));
+            Sprintf(knmbuf, "%s wielded by %s", killer_xname(mweapon), a_monnam(mtmp));
 
             extra_enchantment_damage(onmbuf, omonwep->elemental_enchantment, knmbuf, (u.umortality > oldumort));
 
