@@ -1233,16 +1233,23 @@ namespace GnollHackX
             return new SKColor((byte)(rawColor.Red * GHConstants.NonHoveringColorMultiplier), (byte)(rawColor.Green * GHConstants.NonHoveringColorMultiplier), (byte)(rawColor.Blue * GHConstants.NonHoveringColorMultiplier), rawColor.Alpha);
         }
 
-        public static string MaybeSmallFontFamily(string fontFamily, float fontSize)
+        public static bool MaybeSmallFontFamily(string fontFamily, float fontSize, out string smallerFontFamily)
         {
             if (fontSize < 15)
             {
                 if (fontFamily == "Immortal")
-                    return "LatoRegular";
+                {
+                    smallerFontFamily = "LatoRegular";
+                    return true;
+                }
                 else if (fontFamily == "Underwood")
-                    return "DejaVuSansMono";
+                {
+                    smallerFontFamily = "DejaVuSansMono";
+                    return true;
+                }
             }
-            return fontFamily;
+            smallerFontFamily = fontFamily;
+            return false;
         }
     }
 
