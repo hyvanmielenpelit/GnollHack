@@ -161,7 +161,8 @@
 		<None Remove="..\GnollHackX\GnollHackX\GHSkiaFontPaint.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHSoundTrack.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHStatusField.cs" />
-		<None Remove="..\GnollHackX\GnollHackX\GHUtils.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\GHUserData.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\GHUtils.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHWindow.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GlyphImageSource.cs" />
 		<None Remove="..\GnollHackX\GnollHackX.Common\GnollHackService.cs" />
@@ -313,7 +314,8 @@
     <Compile Include="..\GnollHackX\GnollHackX\GHSoundTrack.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHStatusField.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHTopScoreItem.cs" />
-		<Compile Include="..\GnollHackX\GnollHackX\GHUtils.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\GHUserData.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\GHUtils.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHWindow.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GlyphImageSource.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX.Common\GnollHackService.cs" />

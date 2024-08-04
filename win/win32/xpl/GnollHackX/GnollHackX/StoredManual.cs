@@ -12,9 +12,11 @@ namespace GnollHackX
         public string Text;
 
         public StoredManual() 
-        { 
+        {
+            
         }
-        public StoredManual(string name, int id, string text)
+
+        public StoredManual(string name, int id, string text) : base()
         {
             Name = name;
             Id = id;

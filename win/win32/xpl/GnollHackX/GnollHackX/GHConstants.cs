@@ -1764,6 +1764,7 @@ namespace GnollHackX
         public const string InstallTimePackName = "installtimepack";
         public const string OnDemandPackName = "ondemandpack";
         public const string UserDataDirectory = "usrdata";
+        public const string UserDataFileName = "userdata.json";
         public const string AppLogDirectory = "log";
         public const string AppLogFileName = "ghlog.txt";
         public const string SaveDirectory = "save";

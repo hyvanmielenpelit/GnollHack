@@ -173,11 +173,13 @@ namespace GnollHackX
             UseGPU = Preferences.Get("UseMainGLCanvas", IsGPUDefault && IsGPUAvailable);
             FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
             OkOnDoubleClick = Preferences.Get("OkOnDoubleClick", IsDesktop);
-            DiscoveredMusicBits = Preferences.Get("DiscoveredMusicBits", 0L);
             LastUsedPlayerName = Preferences.Get("LastUsedPlayerName", "");
             LastUsedTournamentPlayerName = Preferences.Get("LastUsedTournamentPlayerName", "");
             GUITipsShown = Preferences.Get("GUITipsShown", false);
             RealPlayTime = Preferences.Get("RealPlayTime", 0L);
+
+            OrganizeDiscoveredTracks();
+            DiscoveredMusicBits = GetDiscoveredTracks();
 
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if (FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
@@ -6272,13 +6274,14 @@ namespace GnollHackX
 
         public static void SaveDiscoveredMusic()
         {
+            bool changed = false;
+            long bits = 0L;
             lock (_discoveredMusicLock)
             {
                 if (!_discoveredMusicFound)
                     return;
 
-                bool changed = false;
-                long bits = _discoveredMusicBits;
+                bits = _discoveredMusicBits;
                 for (int j = _discoveredMusicSaveIndex + 1; j < _discoveredMusicList.Count; j++)
                 {
                     DiscoveredMusic discoveredMusic = _discoveredMusicList[j];
@@ -6300,10 +6303,13 @@ namespace GnollHackX
                 if(changed)
                 {
                     _discoveredMusicBits = bits;
-                    Preferences.Set("DiscoveredMusicBits", _discoveredMusicBits);
                 }
                 _discoveredMusicFound = false;
                 _discoveredMusicSaveIndex = _discoveredMusicList.Count - 1;
+            }
+            if (changed)
+            {
+                SetDiscoveredTracks(bits);
             }
         }
 
@@ -6416,6 +6422,161 @@ namespace GnollHackX
             return res;
         }
 #endif
+
+        public static void OrganizeDiscoveredTracks()
+        {
+            if(Preferences.ContainsKey("DiscoveredMusicBits"))
+            {
+                long val = Preferences.Get("DiscoveredMusicBits", 0L);
+                SetDiscoveredTracks(val);
+                Preferences.Remove("DiscoveredMusicBits");
+            }
+        }
+
+        public static long GetDiscoveredTracks()
+        {
+            return GetUserData("DiscoveredMusicBits", 0L);
+        }
+
+        public static long GetUserData(string key, long defVal)
+        {
+            if(string.IsNullOrEmpty(key))
+                return defVal;
+            string ghUserDataPath = Path.Combine(GHPath, GHConstants.UserDataDirectory, GHConstants.UserDataFileName);
+            if (!File.Exists(ghUserDataPath))
+                return defVal;
+            try
+            {
+                using (FileStream fs = File.OpenRead(ghUserDataPath))
+                {
+                    GHUserData gHUserData;
+                    using (StreamReader sr = new StreamReader(fs))
+                    {
+                        string json = sr.ReadToEnd();
+                        gHUserData = JsonConvert.DeserializeObject<GHUserData>(json);
+                        if(gHUserData != null)
+                        {
+                            long res;
+                            if (gHUserData.LongDictionary.TryGetValue(key, out res))
+                                return res;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+            return defVal;
+        }
+
+
+        public static void SetDiscoveredTracks(long val)
+        {
+            SetUserData("DiscoveredMusicBits", val);
+        }
+
+        public static void SetUserData(string key, long val)
+        {
+            string dirPath = Path.Combine(GHPath, GHConstants.UserDataDirectory);
+            string filePath = Path.Combine(dirPath, GHConstants.UserDataFileName);
+            GHUserData gHUserData = null;
+            if (File.Exists(filePath))
+            {
+                bool readSuccessful = false;
+                try
+                {
+                    using (FileStream fs = File.OpenRead(filePath))
+                    {
+                        using (StreamReader sr = new StreamReader(fs))
+                        {
+                            string json = sr.ReadToEnd();
+                            gHUserData = JsonConvert.DeserializeObject<GHUserData>(json);
+                            readSuccessful = true;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+                if(!readSuccessful)
+                {
+                    try
+                    {
+                        File.Delete(filePath);
+                    }
+                    catch (Exception ex)
+                    { 
+                        Debug.WriteLine(ex.Message); 
+                    }
+                }
+
+                if (gHUserData == null)
+                    gHUserData = new GHUserData();
+            }
+            else
+            {
+                gHUserData = new GHUserData();
+            }
+
+            if(gHUserData != null)
+            {
+                bool addSuccessful = false;
+                if (gHUserData.LongDictionary.ContainsKey(key))
+                {
+                    try
+                    {
+                        gHUserData.LongDictionary[key] = val;
+                        addSuccessful = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                }
+                else
+                    addSuccessful = gHUserData.LongDictionary.TryAdd(key, val);
+
+                if(addSuccessful)
+                {
+                    try
+                    {
+                        if (File.Exists(filePath))
+                            File.Delete(filePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                    try
+                    {
+                        if (!Directory.Exists(dirPath))
+                            CheckCreateDirectory(dirPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                    try
+                    {
+                        using (FileStream fs = File.OpenWrite(filePath))
+                        {
+                            using (StreamWriter sr = new StreamWriter(fs))
+                            {
+                                string json = JsonConvert.SerializeObject(gHUserData);
+                                sr.Write(json);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                }
+            }
+        }
     }
 
     public class DeviceGPU
