@@ -178,7 +178,8 @@ namespace GnollHackX
             GUITipsShown = Preferences.Get("GUITipsShown", false);
             RealPlayTime = Preferences.Get("RealPlayTime", 0L);
 
-            OrganizeDiscoveredTracks();
+            ReadUserData();
+            CheckUserData();
             DiscoveredMusicBits = GetDiscoveredTracks();
 
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
@@ -6309,7 +6310,7 @@ namespace GnollHackX
             }
             if (changed)
             {
-                SetDiscoveredTracks(bits);
+                SetDiscoveredTracks(bits, true);
             }
         }
 
@@ -6423,14 +6424,28 @@ namespace GnollHackX
         }
 #endif
 
-        public static void OrganizeDiscoveredTracks()
+        public static void CheckUserData()
         {
             if(Preferences.ContainsKey("DiscoveredMusicBits"))
             {
                 long val = Preferences.Get("DiscoveredMusicBits", 0L);
-                SetDiscoveredTracks(val);
-                Preferences.Remove("DiscoveredMusicBits");
+                long val2 = GetDiscoveredTracks();
+                if(val != val2)
+                {
+                    DeleteUserData();
+                    SetDiscoveredTracks(val, false);
+                }
             }
+            else
+            {
+                if(UserDataContainsDiscoveredTracks())
+                    Preferences.Set("DiscoveredMusicBits", GetDiscoveredTracks());
+            }
+        }
+
+        public static bool UserDataContainsDiscoveredTracks()
+        {
+            return _userData != null && _userData.LongDictionary.ContainsKey("DiscoveredMusicBits");
         }
 
         public static long GetDiscoveredTracks()
@@ -6442,46 +6457,26 @@ namespace GnollHackX
         {
             if(string.IsNullOrEmpty(key))
                 return defVal;
-            string ghUserDataPath = Path.Combine(GHPath, GHConstants.UserDataDirectory, GHConstants.UserDataFileName);
-            if (!File.Exists(ghUserDataPath))
+            if (_userData == null)
                 return defVal;
-            try
-            {
-                using (FileStream fs = File.OpenRead(ghUserDataPath))
-                {
-                    GHUserData gHUserData;
-                    using (StreamReader sr = new StreamReader(fs))
-                    {
-                        string json = sr.ReadToEnd();
-                        gHUserData = JsonConvert.DeserializeObject<GHUserData>(json);
-                        if(gHUserData != null)
-                        {
-                            long res;
-                            if (gHUserData.LongDictionary.TryGetValue(key, out res))
-                                return res;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-
+            long res;
+            if (_userData.LongDictionary.TryGetValue(key, out res))
+                return res;
             return defVal;
         }
 
-
-        public static void SetDiscoveredTracks(long val)
+        public static void SetDiscoveredTracks(long val, bool preferencesToo)
         {
-            SetUserData("DiscoveredMusicBits", val);
+            if(preferencesToo)
+                Preferences.Set("DiscoveredMusicBits", val);
+            AddAndWriteUserData("DiscoveredMusicBits", val);
         }
 
-        public static void SetUserData(string key, long val)
+        private static GHUserData _userData = null;
+        public static void ReadUserData()
         {
             string dirPath = Path.Combine(GHPath, GHConstants.UserDataDirectory);
             string filePath = Path.Combine(dirPath, GHConstants.UserDataFileName);
-            GHUserData gHUserData = null;
             if (File.Exists(filePath))
             {
                 bool readSuccessful = false;
@@ -6492,7 +6487,7 @@ namespace GnollHackX
                         using (StreamReader sr = new StreamReader(fs))
                         {
                             string json = sr.ReadToEnd();
-                            gHUserData = JsonConvert.DeserializeObject<GHUserData>(json);
+                            _userData = JsonConvert.DeserializeObject<GHUserData>(json);
                             readSuccessful = true;
                         }
                     }
@@ -6501,34 +6496,57 @@ namespace GnollHackX
                 {
                     Debug.WriteLine(ex.Message);
                 }
-                if(!readSuccessful)
+                if (!readSuccessful)
                 {
                     try
                     {
                         File.Delete(filePath);
                     }
                     catch (Exception ex)
-                    { 
-                        Debug.WriteLine(ex.Message); 
+                    {
+                        Debug.WriteLine(ex.Message);
                     }
                 }
-
-                if (gHUserData == null)
-                    gHUserData = new GHUserData();
-            }
-            else
-            {
-                gHUserData = new GHUserData();
             }
 
-            if(gHUserData != null)
+            if (_userData == null)
+                _userData = new GHUserData();
+        }
+
+        public static void DeleteUserData()
+        {
+            string dirPath = Path.Combine(GHPath, GHConstants.UserDataDirectory);
+            string filePath = Path.Combine(dirPath, GHConstants.UserDataFileName);
+            try
             {
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            if (_userData != null)
+                _userData.Clear();
+        }
+
+        public static void AddAndWriteUserData(string key, long val)
+        {
+            string dirPath = Path.Combine(GHPath, GHConstants.UserDataDirectory);
+            string filePath = Path.Combine(dirPath, GHConstants.UserDataFileName);
+            if(_userData == null)
+                _userData = new GHUserData();
+            if(_userData != null)
+            {
+                /* Add first */
                 bool addSuccessful = false;
-                if (gHUserData.LongDictionary.ContainsKey(key))
+                if (_userData.LongDictionary.ContainsKey(key))
                 {
                     try
                     {
-                        gHUserData.LongDictionary[key] = val;
+                        _userData.LongDictionary[key] = val;
                         addSuccessful = true;
                     }
                     catch (Exception ex)
@@ -6537,9 +6555,10 @@ namespace GnollHackX
                     }
                 }
                 else
-                    addSuccessful = gHUserData.LongDictionary.TryAdd(key, val);
+                    addSuccessful = _userData.LongDictionary.TryAdd(key, val);
 
-                if(addSuccessful)
+                /* Then write to disk */
+                if (addSuccessful)
                 {
                     try
                     {
@@ -6565,7 +6584,7 @@ namespace GnollHackX
                         {
                             using (StreamWriter sr = new StreamWriter(fs))
                             {
-                                string json = JsonConvert.SerializeObject(gHUserData);
+                                string json = JsonConvert.SerializeObject(_userData);
                                 sr.Write(json);
                             }
                         }

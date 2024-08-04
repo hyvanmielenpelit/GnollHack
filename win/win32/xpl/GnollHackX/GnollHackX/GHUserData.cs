@@ -16,5 +16,15 @@ namespace GnollHackX
         {
 
         }
+
+        public void Clear()
+        {
+            StringDictionary.Clear();
+            BoolDictionary.Clear();
+            IntDictionary.Clear();
+            LongDictionary.Clear();
+            DoubleDictionary.Clear();
+            DateTimeDictionary.Clear();
+        }
     }
 }
