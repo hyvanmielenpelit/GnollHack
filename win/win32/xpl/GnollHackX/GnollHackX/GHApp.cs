@@ -6555,7 +6555,21 @@ namespace GnollHackX
                     }
                 }
                 else
+                {
+#if GNH_MAUI
                     addSuccessful = _userData.LongDictionary.TryAdd(key, val);
+#else
+                    try
+                    {
+                        _userData.LongDictionary.Add(key, val);
+                        addSuccessful = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+#endif
+                }
 
                 /* Then write to disk */
                 if (addSuccessful)
