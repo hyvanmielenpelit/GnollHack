@@ -17706,6 +17706,9 @@ namespace GnollHackX.Pages.Game
 #endif
             using(SKPaint paint = new SKPaint())
             {
+#if !GNH_MAUI
+                paint.FilterQuality = SKFilterQuality.High;
+#endif
                 if (isHighlighted)
                     paint.ColorFilter = UIUtils.HighlightColorFilter;
                 canvas.DrawImage(GHApp._orbBorderBitmap, orbBorderDest, paint);
@@ -17716,8 +17719,16 @@ namespace GnollHackX.Pages.Game
                 SKImage fillBitmap = fillcolor == SKColors.Red ? GHApp._orbFillBitmapRed : fillcolor == SKColors.Blue ? GHApp._orbFillBitmapBlue : GHApp._orbFillBitmap;
                 SKRect orbFillSrc = new SKRect(0.0f, (float)fillBitmap.Height * (1.0f - orbfillpercentage), (float)fillBitmap.Width, (float)fillBitmap.Height);
                 SKRect orbFillDest = new SKRect(orbDest.Left, orbDest.Top + orbDest.Height * (1.0f - orbfillpercentage), orbDest.Right, orbDest.Bottom);
-                canvas.DrawImage(fillBitmap, orbFillSrc, orbFillDest, paint);
-                canvas.DrawImage(GHApp._orbGlassBitmap, orbDest, paint);
+                canvas.DrawImage(fillBitmap, orbFillSrc, orbFillDest,
+#if GNH_MAUI
+                    new SKSamplingOptions(SKFilterMode.Linear),
+#endif
+                    paint);
+                canvas.DrawImage(GHApp._orbGlassBitmap, orbDest,
+#if GNH_MAUI
+                    new SKSamplingOptions(SKFilterMode.Linear),
+#endif
+                    paint);
             }
 #if GNH_MAP_PROFILING && DEBUG
             StopProfiling(GHProfilingStyle.Bitmap);
