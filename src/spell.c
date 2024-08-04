@@ -2425,7 +2425,7 @@ int spell, booktype;
     }
 
     /* Statistics */
-    if (damageprinted)
+    if (damageprinted && spell >= 0)
     {
         int cnt = 1;
         Strcpy(buf, "Spell statistics:");        
