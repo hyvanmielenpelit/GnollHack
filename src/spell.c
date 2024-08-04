@@ -2362,6 +2362,13 @@ int spell, booktype;
     Sprintf(buf, "Train chance:     %lld%%", (long long)objects[booktype].oc_spell_skill_chance);
     putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
+    /* Ink costs also in spell descriptions */
+    int ink = otyp_ink_cost(booktype);
+    Sprintf(buf, "Base write cost:  %d charge%s", ink, plur(ink));
+    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+    Sprintf(buf, "Write cost:       %s", (objects[booktype].oc_flags6 & O6_ALWAYS_FULL_INK_COST) != 0 ? "Always base cost" : "From half to full base cost");
+    putstr(datawin, ATR_INDENT_AT_COLON, buf);
+
     /* Flags */
     if (objects[booktype].oc_spell_flags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
     {
@@ -2377,6 +2384,7 @@ int spell, booktype;
         Sprintf(buf, "Other:            %s", "Learning does not yield castings");
         putstr(datawin, ATR_INDENT_AT_COLON, buf);
     }
+
 
     Strcpy(buf2, "");
     if (!(objects[booktype].oc_spell_flags & S1_NO_VERBAL_COMPONENT))
