@@ -14771,7 +14771,8 @@ namespace GnollHackX.Pages.Game
                                         str = mi.FormattedSpecialMark;
                                     else
                                         str = mi.FormattedAccelerator;
-                                    textPaint.Color = SKColors.Gray;
+                                    textPaint.Color = SKColors.Gray; /* !GHApp.IsDesktop ? SKColors.Gray:
+                                        UIUtils.NHColor2SKColorCore((int)NhColor.CLR_WHITE, 0, MenuCanvas.RevertBlackAndWhite, false); */
                                     str = str.Trim();
                                     float identifier_y =
                                         mi.IsSuffixTextVisible || mi.IsSuffix2TextVisible ? (selectionrect.Top + selectionrect.Bottom) / 2 - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent
