@@ -209,5 +209,14 @@ namespace GnollHackX
             return _paint.MeasureText(text, ref bounds);
 #endif
         }
+
+        public void SetSubPixelAntiAliasing(bool isSubPixel)
+        {
+#if GNH_MAUI
+            _font.Edging = isSubPixel ? SKFontEdging.SubpixelAntialias : SKFontEdging.Antialias;
+#else
+
+#endif
+        }
     }
 }

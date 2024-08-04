@@ -14567,6 +14567,7 @@ namespace GnollHackX.Pages.Game
 
             using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
+                //textPaint.SetSubPixelAntiAliasing(true);
                 textPaint.Typeface = GHApp.UnderwoodTypeface;
                 textPaint.TextSize = GHConstants.MenuDefaultRowHeight * scale;
                 float picturewidth = 64.0f * textPaint.FontSpacing / 48.0f;
