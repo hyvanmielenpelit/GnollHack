@@ -6463,9 +6463,12 @@ namespace GnollHackX
 
         public static void SetDiscoveredTracks(long val, bool preferencesToo)
         {
-            if(preferencesToo)
-                Preferences.Set("DiscoveredMusicBits", val);
-            AddAndWriteUserData("DiscoveredMusicBits", val);
+            MainThread.BeginInvokeOnMainThread(() => 
+            {
+                if (preferencesToo)
+                    Preferences.Set("DiscoveredMusicBits", val);
+                AddAndWriteUserData("DiscoveredMusicBits", val);
+            });
         }
 
         private static GHUserData _userData = null;
