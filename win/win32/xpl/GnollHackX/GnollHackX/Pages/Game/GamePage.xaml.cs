@@ -615,8 +615,8 @@ namespace GnollHackX.Pages.Game
             set
             {
                 /* SKGLView is non-transparent on Windows */
-#if !WINDOWS
                 CommandCanvas.UseGL = value;
+#if !WINDOWS
                 MenuCanvas.UseGL = value;
                 TextCanvas.UseGL = value;
 #endif
