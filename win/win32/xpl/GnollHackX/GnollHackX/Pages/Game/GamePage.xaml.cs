@@ -15091,10 +15091,13 @@ namespace GnollHackX.Pages.Game
             if (textsplit == null)
                 return;
 
+#if !GNH_MAUI
+            SKColor oldColor = textPaint.Paint.Color;
+            SKFilterQuality oldFilterQuality = textPaint.Paint.FilterQuality;
+#endif
             float spacelength = textPaint.MeasureText(" ");
             int idx = 0;
             int rowidx = 0;
-            //int special_coloring = 0;
             SKColor orig_color = textPaint.Color;
             foreach (string split_str in textsplit)
             {
@@ -15124,7 +15127,6 @@ namespace GnollHackX.Pages.Game
                 SKRect source_rect = new SKRect();
                 if(usespecialsymbols && (symbolbitmap = GetGameSpecialSymbol(split_str, out source_rect)) != null)
                 {
-                    //special_coloring = 0;
                     textPaint.Color = orig_color;
                     float bmpheight = textPaint.FontMetrics.Descent / 2 - textPaint.FontMetrics.Ascent;
                     float bmpwidth = bmpheight * (float)symbolbitmap.Width / (float)Math.Max(1, symbolbitmap.Height);
@@ -15143,12 +15145,19 @@ namespace GnollHackX.Pages.Game
                         float bmpx = x;
                         float bmpy = y + textPaint.FontMetrics.Ascent;
                         SKRect bmptargetrect = new SKRect(bmpx, bmpy, bmpx + bmpwidth, bmpy + bmpheight);
-                        canvas.DrawImage(symbolbitmap, source_rect, bmptargetrect);
+#if !GNH_MAUI
+                        textPaint.Paint.Color = SKColors.White;
+                        textPaint.Paint.FilterQuality = SKFilterQuality.High;
+#endif
+                        canvas.DrawImage(symbolbitmap, source_rect, bmptargetrect,
+#if GNH_MAUI
+                            new SKSamplingOptions(SKFilterMode.Linear));
+#else
+                            textPaint.Paint);
+                        textPaint.Paint.FilterQuality = oldFilterQuality;
+                        textPaint.Paint.Color = oldColor;
+#endif
                     }
-                    //if (split_str == "&damage;" || split_str == "&MC;")
-                    //    special_coloring = 1;
-                    //else if (split_str == "&AC;")
-                    //    special_coloring = -1;
                     isfirstprintonrow = false;
                 }
                 else
@@ -15213,68 +15222,12 @@ namespace GnollHackX.Pages.Game
                                 textPaint.Style = SKPaintStyle.Fill;
                                 textPaint.StrokeWidth = 0;
                             }
-                            //if (special_coloring != 0)
-                            //{
-                            //    string[] subsplit = split_str.Split('/');
-                            //    if(subsplit.Length > 1)
-                            //    {
-                            //        float xdelta = 0;
-                            //        int subidx = 0;
-                            //        foreach(string substr in subsplit)
-                            //        {
-                            //            subidx++;
-                            //            double res;
-                            //            if (double.TryParse(substr, NumberStyles.Any, CultureInfo.InvariantCulture, out res))
-                            //            {
-                            //                res = res * special_coloring;
-                            //                if (res > 0)
-                            //                    textPaint.Color = UIUtils.NHColor2SKColorCore((int)NhColor.CLR_BRIGHT_GREEN, (int)MenuItemAttributes.None, revertblackandwhite, false);
-                            //                else if (res < 0)
-                            //                    textPaint.Color = UIUtils.NHColor2SKColorCore((int)NhColor.CLR_RED, (int)MenuItemAttributes.None, revertblackandwhite, false);
-                            //                else
-                            //                    textPaint.Color = orig_color;
-                            //            }
-                            //            else
-                            //                textPaint.Color = orig_color;
-
-                            //            textPaint.DrawTextOnCanvas(canvas, substr, x + xdelta, y);
-                            //            xdelta += textPaint.MeasureText(substr);
-                            //            if(subidx < subsplit.Length)
-                            //            {
-                            //                textPaint.Color = orig_color;
-                            //                textPaint.DrawTextOnCanvas(canvas, "/", x + xdelta, y);
-                            //                xdelta += textPaint.MeasureText("/");
-                            //            }
-                            //        }
-                            //    }
-                            //    else
-                            //    {
-                            //        double res;
-                            //        if (double.TryParse(split_str, NumberStyles.Any, CultureInfo.InvariantCulture, out res))
-                            //        {
-                            //            res = res * special_coloring;
-                            //            if (res > 0)
-                            //                textPaint.Color = UIUtils.NHColor2SKColorCore((int)NhColor.CLR_BRIGHT_GREEN, (int)MenuItemAttributes.None, revertblackandwhite, false);
-                            //            else if (res < 0)
-                            //                textPaint.Color = UIUtils.NHColor2SKColorCore((int)NhColor.CLR_RED, (int)MenuItemAttributes.None, revertblackandwhite, false);
-                            //            else
-                            //                textPaint.Color = orig_color;
-                            //        }
-                            //        textPaint.DrawTextOnCanvas(canvas, split_str, x, y);
-                            //    }
-                            //}
-                            //else
                             textPaint.DrawTextOnCanvas(canvas, printedsubline, x, y);
                         }
 
                         if (new_nhcolor != (int)NhColor.NO_COLOR)
                             textPaint.Color = orig_color;
 
-                        //if (special_coloring != 0)
-                        //{
-                        //    special_coloring = 0;
-                        //    textPaint.Color = orig_color;
-                        //}
                         isfirstprintonrow = false;
                         char_idx += charidx_len;
                     }
@@ -16374,29 +16327,6 @@ namespace GnollHackX.Pages.Game
             {
                 if (TextCanvas.GHWindow != null && TextCanvas.GHWindow.Ascension)
                 {
-                    //float ssize = 10 * scale;
-                    //float padding = ssize / 2;
-                    //float sspacing = ssize * 5;
-                    //int wsparkes = Math.Max(1, (int)Math.Ceiling((canvaswidth - 2 * padding) / sspacing));
-                    //int hsparkes = Math.Max(1, (int)Math.Ceiling((canvasheight - 2 * padding) / sspacing));
-                    //float wspacing = (canvaswidth - 2 * padding) / wsparkes;
-                    //float hspacing = (canvasheight - 2 * padding) / hsparkes;
-                    //long df = 2;
-                    //long counter;
-                    //lock (AnimationTimerLock)
-                    //{
-                    //    counter = AnimationTimers.general_animation_counter;
-                    //}
-                    //long ctr_diff = 0;
-                    //for (int i = 0; i <= wsparkes; i++)
-                    //    UIUtils.DrawSparkle(canvas, textPaint, padding + i * wspacing, padding, ssize, counter - (ctr_diff += df), true);
-                    //for (int i = 0; i <= wsparkes; i++)
-                    //    UIUtils.DrawSparkle(canvas, textPaint, padding + i * wspacing, canvasheight - padding, ssize, counter - (ctr_diff += df), true);
-                    //for (int j = 1; j < hsparkes; j++)
-                    //    UIUtils.DrawSparkle(canvas, textPaint, padding, padding + j * hspacing, ssize, counter - (ctr_diff += df), true);
-                    //for (int j = 1; j < hsparkes; j++)
-                    //    UIUtils.DrawSparkle(canvas, textPaint, canvaswidth - padding, padding + j * hspacing, ssize, counter - (ctr_diff += df), true);
-
                     long counter;
                     lock (AnimationTimerLock)
                     {

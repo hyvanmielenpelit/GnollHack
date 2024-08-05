@@ -557,6 +557,9 @@ namespace GnollHackX
 
                 using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
                 {
+#if !GNH_MAUI
+                    SKFilterQuality oldFilterQuality = textPaint.Paint.FilterQuality;
+#endif
                     float x = 0, y = 0;
                     textPaint.Typeface = GetFontTypeface();
                     textPaint.TextSize = (float)FontSize * scale;
@@ -642,7 +645,16 @@ namespace GnollHackX
                                     float bmpx = x;
                                     float bmpy = y + textPaint.FontMetrics.Ascent;
                                     SKRect bmptargetrect = new SKRect(bmpx, bmpy, bmpx + bmpwidth, bmpy + bmpheight);
-                                    canvas.DrawImage(symbolbitmap, source_rect, bmptargetrect, textPaint.Paint); 
+#if !GNH_MAUI
+                                    textPaint.Paint.FilterQuality = SKFilterQuality.High;
+#endif
+                                    canvas.DrawImage(symbolbitmap, source_rect, bmptargetrect,
+#if GNH_MAUI
+                                        new SKSamplingOptions(SKFilterMode.Linear));
+#else
+                                        textPaint.Paint);
+                                    textPaint.Paint.FilterQuality = oldFilterQuality;
+#endif
                                     x += bmpwidth + bmpmargin;
                                 }
                                 else

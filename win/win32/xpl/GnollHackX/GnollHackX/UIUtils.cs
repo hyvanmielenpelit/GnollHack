@@ -1235,7 +1235,7 @@ namespace GnollHackX
 
         public static bool MaybeSmallFontFamily(string fontFamily, float fontSize, out string smallerFontFamily)
         {
-            if (fontSize < 15)
+            if (fontSize <= 14.9f)
             {
                 if (fontFamily == "Immortal")
                 {
