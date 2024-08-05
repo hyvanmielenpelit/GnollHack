@@ -606,9 +606,15 @@ namespace GnollHackX.Pages.Game
         public bool UseMainGLCanvas
         {
             get { return canvasView.UseGL; }
-            set {
-                canvasView.UseGL = value;
-/* SKGLView is non-transparent on Windows */
+            set { canvasView.UseGL = value; }
+        }
+
+        public bool UseAuxiliaryGLCanvas
+        {
+            get { return CommandCanvas.UseGL; }
+            set
+            {
+                /* SKGLView is non-transparent on Windows */
 #if !WINDOWS
                 CommandCanvas.UseGL = value;
                 MenuCanvas.UseGL = value;
@@ -930,6 +936,7 @@ namespace GnollHackX.Pages.Game
             ShowZoom = Preferences.Get("ShowZoom", false);
             ShowRecording = Preferences.Get("ShowRecording", true);
             UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", GHApp.IsGPUDefault && GHApp.IsGPUAvailable);
+            UseAuxiliaryGLCanvas = Preferences.Get("UseAuxiliaryGLCanvas", GHApp.IsGPUDefault && GHApp.IsGPUAvailable);
             UseSimpleCmdLayout = Preferences.Get("UseSimpleCmdLayout", GHConstants.DefaultSimpleCmdLayout);
             ShowMemory = Preferences.Get("ShowMemory", false);
             MapGrid = Preferences.Get("MapGrid", false);

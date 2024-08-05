@@ -315,6 +315,14 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage.UseMainGLCanvas = GPUSwitch.IsToggled;
             Preferences.Set("UseMainGLCanvas", GPUSwitch.IsToggled);
 
+            GHApp.DisableAuxGPU = DisableAuxGPUSwitch.IsToggled;
+            Preferences.Set("DisableAuxiliaryGLCanvas", DisableAuxGPUSwitch.IsToggled);
+            bool useAuxGPU = GPUSwitch.IsToggled && !DisableAuxGPUSwitch.IsToggled;
+            GHApp.UseAuxGPU = useAuxGPU;
+            if (_gamePage != null)
+                _gamePage.UseAuxiliaryGLCanvas = useAuxGPU;
+            Preferences.Set("UseAuxiliaryGLCanvas", useAuxGPU);
+
             GHApp.AllowBones = AllowBonesSwitch.IsToggled;
             Preferences.Set("AllowBones", AllowBonesSwitch.IsToggled);
 
@@ -767,7 +775,7 @@ namespace GnollHackX.Pages.MainScreen
         private void SetInitialValues()
         {
             int cursor = 0, graphics = 0, savestyle = 0, maprefresh = (int)UIUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
-            bool mem = false, fps = false, zoom = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, darkmode = false, windowedmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
+            bool mem = false, fps = false, zoom = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, disableauxgpu = false, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, darkmode = false, windowedmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
@@ -849,6 +857,7 @@ namespace GnollHackX.Pages.MainScreen
             savestyle = Preferences.Get("AppSwitchSaveStyle", 0);
             primarygpucache = Preferences.Get("PrimaryGPUCacheLimit", -2L);
             secondarygpucache = Preferences.Get("SecondaryGPUCacheLimit", -2L);
+            disableauxgpu = Preferences.Get("DisableAuxiliaryGLCanvas", false);
             if (_gamePage == null)
             {
                 cursor = Preferences.Get("CursorStyle", 1);
@@ -984,9 +993,15 @@ namespace GnollHackX.Pages.MainScreen
             BatterySwitch.IsToggled = battery;
             ShowRecordingSwitch.IsToggled = showrecording;
             AutoUploadReplaysSwitch.IsToggled = autoupload;
-            if(GHApp.IsGPUAvailable)
+            DisableAuxGPUSwitch.IsToggled = disableauxgpu;
+            FixRectsSwitch.IsToggled = fixrects;
+            if (GHApp.IsGPUAvailable)
             {
                 GPUSwitch.IsToggled = gpu;
+                DisableAuxGPUSwitch.IsEnabled = gpu;
+                DisableAuxGPULabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+                FixRectsSwitch.IsEnabled = gpu;
+                FixRectsLabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
             }
             else
             {
@@ -994,6 +1009,12 @@ namespace GnollHackX.Pages.MainScreen
                 GPUSwitch.IsEnabled = false;
                 GPULabel.IsEnabled = false;
                 GPULabel.TextColor = GHColors.Gray;
+
+                FixRectsSwitch.IsEnabled = false;
+                FixRectsLabel.TextColor = GHColors.Gray;
+
+                DisableAuxGPUSwitch.IsEnabled = false;
+                DisableAuxGPULabel.TextColor = GHColors.Gray;
             }
             SimpleCmdLayoutSwitch.IsToggled = simplecmdlayout;
             DarkModeSwitch.IsToggled = darkmode;
@@ -1095,10 +1116,6 @@ namespace GnollHackX.Pages.MainScreen
                     }
                 }
             }
-
-            FixRectsSwitch.IsToggled = fixrects;
-            FixRectsSwitch.IsEnabled = gpu;
-            FixRectsLabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
 
             PostGameStatusSwitch.IsToggled = postgamestatus;
             PostDiagnosticDataSwitch.IsToggled = postdiagnostics;
@@ -1854,6 +1871,8 @@ namespace GnollHackX.Pages.MainScreen
         {
             FixRectsSwitch.IsEnabled = e.Value;
             FixRectsLabel.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            DisableAuxGPUSwitch.IsEnabled = e.Value;
+            DisableAuxGPULabel.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
 
             if (_isManualTogglingEnabled && e.Value && !GHApp.IsGPUDefault)
             {

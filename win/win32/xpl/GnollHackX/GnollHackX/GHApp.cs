@@ -177,6 +177,8 @@ namespace GnollHackX
             PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
             SecondaryGPUCacheLimit = Preferences.Get("SecondaryGPUCacheLimit", -2L);
             UseGPU = Preferences.Get("UseMainGLCanvas", IsGPUDefault && IsGPUAvailable);
+            UseAuxGPU = Preferences.Get("UseAuxiliaryGLCanvas", IsGPUDefault && IsGPUAvailable);
+            DisableAuxGPU = Preferences.Get("DisableAuxiliaryGLCanvas", false);
             FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
 
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
@@ -477,7 +479,11 @@ namespace GnollHackX
 
         private static readonly object _useGPULock = new object();
         private static bool _useGPU = false;
+        private static bool _useAuxGPU = false;
+        private static bool _disableAuxGPU = false;
         public static bool UseGPU { get { lock (_useGPULock) { return _useGPU; } } set { lock (_useGPULock) { _useGPU = value; } } }
+        public static bool UseAuxGPU { get { lock (_useGPULock) { return _useAuxGPU; } } set { lock (_useGPULock) { _useAuxGPU = value; } } }
+        public static bool DisableAuxGPU { get { lock (_useGPULock) { return _disableAuxGPU; } } set { lock (_useGPULock) { _disableAuxGPU = value; } } }
 
         private static readonly object _fixRectLock = new object();
         private static bool _fixRects = false;
