@@ -683,7 +683,7 @@ namespace GnollHackX
         {
             get
             {
-                return IsUseAuxGPUDefault;
+                return IsWindows || IsUseAuxGPUDefault;
             }
         }
 
