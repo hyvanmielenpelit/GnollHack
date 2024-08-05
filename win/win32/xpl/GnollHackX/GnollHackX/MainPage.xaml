@@ -10,12 +10,12 @@
 
     <Grid x:Name="RootGrid" HorizontalOptions="Fill" VerticalOptions="Fill">
         <AbsoluteLayout  HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Black">
-            <local:GHCachedImage x:Name="FmodLogoImage" Source="resource://GnollHackX.Assets.FMOD-Logo-192-White.png" Opacity="0" IsVisible="true" WidthRequest="121" HeightRequest="32"
+            <local:GHCachedImage x:Name="FmodLogoImage" Source="resource://GnollHackX.Assets.FMOD-Logo-192-White.png" HighFilterQuality="True" Opacity="0" IsVisible="true" WidthRequest="121" HeightRequest="32"
                HorizontalOptions="Center" VerticalOptions="Center"
                AbsoluteLayout.LayoutBounds="20, 20, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="None" Aspect="AspectFit"/>
 
-            <local:GHCachedImage x:Name="StartLogoImage" Source="resource://GnollHackX.Assets.gnollhack-logo-test-2.png" Opacity="0" IsVisible="true" HeightRequest="180" WidthRequest="180"
+            <local:GHCachedImage x:Name="StartLogoImage" Source="resource://GnollHackX.Assets.gnollhack-logo-test-2.png" HighFilterQuality="True" Opacity="0" IsVisible="true" HeightRequest="180" WidthRequest="180"
                HorizontalOptions="Center" VerticalOptions="Center"
                AbsoluteLayout.LayoutBounds="0.5, 0.5, AutoSize, AutoSize"
                AbsoluteLayout.LayoutFlags="PositionProportional" />
@@ -29,7 +29,7 @@
                AbsoluteLayout.LayoutFlags="None" >
                 <StackLayout Spacing="6">
                     <Grid Grid.Row="0" ColumnSpacing="0" RowSpacing="0" Padding="0" Margin="0" HeightRequest="100" WidthRequest="100" >
-                        <local:GHCachedImage x:Name="MainLogoImage" Source="resource://GnollHackX.Assets.gnollhack-icon-v2-512.png" HeightRequest="100" WidthRequest="100"
+                        <local:GHCachedImage x:Name="MainLogoImage" Source="resource://GnollHackX.Assets.gnollhack-icon-v2-512.png" HighFilterQuality="True" HeightRequest="100" WidthRequest="100"
                            HorizontalOptions="Center" VerticalOptions="End"/>
                         <Button x:Name="KeyboardFocusButton" Clicked="KeyboardFocusButton_Clicked" Text="" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill"/>
                     </Grid>

@@ -8245,1182 +8245,1097 @@ namespace GnollHackX.Pages.Game
                             StopProfiling(GHProfilingStyle.Rect);
 #endif
                             textPaint.Color = SKColors.White;
-                            //textPaint.TextAlign = SKTextAlign.Left;
                             textPaint.Typeface = GHApp.LatoRegular;
                             float target_scale = rowheight / GHApp._statusWizardBitmap.Height; // All are 64px high
 
-                            string valtext = "";
-                            int valcolor = (int)NhColor.CLR_WHITE;
-                            SKRect statusDest;
-                            SKRect bounds = new SKRect();
+                            using (SKPaint highQualityPaint = new SKPaint())
+                            {
+#if !GNH_MAUI
+                                highQualityPaint.FilterQuality = SKFilterQuality.High;
+#endif
+                                string valtext = "";
+                                int valcolor = (int)NhColor.CLR_WHITE;
+                                SKRect statusDest;
+                                SKRect bounds = new SKRect();
 
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)NhStatusFields.BL_MODE] != null && StatusFields[(int)NhStatusFields.BL_MODE].IsEnabled && StatusFields[(int)NhStatusFields.BL_MODE].Text != null)
-                                {
-                                    valtext = StatusFields[(int)NhStatusFields.BL_MODE].Text;
-                                }
-                            }
-
-                            float target_width = 0;
-                            float target_height = 0;
-                            if (valtext.Contains("W"))
-                            {
-                                target_width = target_scale * GHApp._statusWizardBitmap.Width;
-                                target_height = target_scale * GHApp._statusWizardBitmap.Height;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-#if GNH_MAP_PROFILING && DEBUG
-                                StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                canvas.DrawImage(GHApp._statusWizardBitmap, statusDest);
-#if GNH_MAP_PROFILING && DEBUG
-                                StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                curx += target_width;
-                                curx += innerspacing;
-                            }
-
-                            if (valtext.Contains("C"))
-                            {
-                                target_width = target_scale * GHApp._statusCasualBitmap.Width;
-                                target_height = target_scale * GHApp._statusCasualBitmap.Height;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-#if GNH_MAP_PROFILING && DEBUG
-                                StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                canvas.DrawImage(GHApp._statusCasualBitmap, statusDest);
-#if GNH_MAP_PROFILING && DEBUG
-                                StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                curx += target_width;
-                                curx += innerspacing;
-                            }
-                            else if (valtext.Contains("R"))
-                            {
-                                target_width = target_scale * GHApp._statusCasualClassicBitmap.Width;
-                                target_height = target_scale * GHApp._statusCasualClassicBitmap.Height;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-#if GNH_MAP_PROFILING && DEBUG
-                                StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                canvas.DrawImage(GHApp._statusCasualClassicBitmap, statusDest);
-#if GNH_MAP_PROFILING && DEBUG
-                                StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                curx += target_width;
-                                curx += innerspacing;
-                            }
-                            else if (valtext.Contains("M"))
-                            {
-                                target_width = target_scale * GHApp._statusModernBitmap.Width;
-                                target_height = target_scale * GHApp._statusModernBitmap.Height;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-#if GNH_MAP_PROFILING && DEBUG
-                                StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                canvas.DrawImage(GHApp._statusModernBitmap, statusDest);
-#if GNH_MAP_PROFILING && DEBUG
-                                StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                curx += target_width;
-                                curx += innerspacing;
-                            }
-
-                            SKImage difbmp = GHApp._statusDifficultyBitmap;
-                            string diftext = "";
-                            if (valtext.Contains("s"))
-                            {
-                                diftext = "s";
-                                difbmp = GHApp._statusDifficultyVeryEasyBitmap;
-                            }
-                            else if (valtext.Contains("e"))
-                            {
-                                diftext = "e";
-                                difbmp = GHApp._statusDifficultyEasyBitmap;
-                            }
-                            else if (valtext.Contains("a"))
-                            {
-                                diftext = "a";
-                                difbmp = GHApp._statusDifficultyAverageBitmap;
-                            }
-                            else if (valtext.Contains("v"))
-                            {
-                                diftext = "v";
-                                difbmp = GHApp._statusDifficultyHardBitmap;
-                            }
-                            else if (valtext.Contains("x"))
-                            {
-                                diftext = "x";
-                                difbmp = GHApp._statusDifficultyExpertBitmap;
-                            }
-                            else if (valtext.Contains("m"))
-                            {
-                                diftext = "m";
-                                difbmp = GHApp._statusDifficultyMasterBitmap;
-                            }
-                            else if (valtext.Contains("g"))
-                            {
-                                diftext = "g";
-                                difbmp = GHApp._statusDifficultyGrandMasterBitmap;
-                            }
-
-                            if (diftext != "")
-                            {
-                                target_width = target_scale * difbmp.Width;
-                                target_height = target_scale * difbmp.Height;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-#if GNH_MAP_PROFILING && DEBUG
-                                StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                canvas.DrawImage(difbmp, statusDest);
-#if GNH_MAP_PROFILING && DEBUG
-                                StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                textPaint.MeasureText(diftext, ref bounds);
-                                //textPaint.TextAlign = SKTextAlign.Center;
-                                textPaint.Color = SKColors.Black;
-                                textPaint.TextSize = diffontsize;
-#if GNH_MAP_PROFILING && DEBUG
-                                StartProfiling(GHProfilingStyle.Text);
-#endif
-                                //canvas.DrawText(diftext, curx + target_width / 2, cury + (rowheight - (textPaint.FontSpacing)) / 2 - textPaint.FontMetrics.Ascent, textPaint);
-                                textPaint.DrawTextOnCanvas(canvas, diftext, curx + target_width / 2, cury + (rowheight - (textPaint.FontSpacing)) / 2 - textPaint.FontMetrics.Ascent, SKTextAlign.Center);
-#if GNH_MAP_PROFILING && DEBUG
-                                StopProfiling(GHProfilingStyle.Text);
-#endif
-                                curx += target_width;
-                                curx += stdspacing;
-                                //textPaint.TextAlign = SKTextAlign.Left;
-                                textPaint.Color = SKColors.White;
-                                textPaint.TextSize = basefontsize;
-                            }
-
-
-                            /* STATS on Desktop */
-                            if (DesktopStatusBar)
-                            {
-                                curx += stdspacing * 2;
-                                //target_width = target_scale * GHApp._statusSeparatorBitmap.Width;
-                                //target_height = target_scale * GHApp._statusSeparatorBitmap.Height;
-                                //statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                //canvas.DrawImage(GHApp._statusSeparatorBitmap, statusDest);
-                                //curx += target_width;
-                                //curx += stdspacing;
-
-                                for (int i = 0; i < 6; i++)
-                                {
-                                    valtext = "";
-                                    lock (StatusFieldLock)
-                                    {
-                                        if (StatusFields[(int)NhStatusFields.BL_STR + i] != null && StatusFields[(int)NhStatusFields.BL_STR + i].IsEnabled && StatusFields[(int)NhStatusFields.BL_STR + i].Text != null)
-                                        {
-                                            valtext = StatusFields[(int)NhStatusFields.BL_STR + i].Text;
-                                            valcolor = StatusFields[(int)NhStatusFields.BL_STR + i].Color;
-                                        }
-                                    }
-                                    if (valtext != "")
-                                    {
-                                        SKImage statIcon = GetStatIcon(i);
-                                        target_width = target_scale * statIcon.Width;
-                                        target_height = target_scale * statIcon.Height;
-                                        statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                        canvas.DrawImage(statIcon, statusDest);
-                                        curx += target_width;
-                                        curx += innerspacing;
-                                        float print_width = textPaint.MeasureText(valtext);
-                                        SKColor oldColor = textPaint.Color;
-                                        textPaint.Color = UIUtils.NHColor2SKColorCore(valcolor, 0, false, false);
-                                        textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
-                                        textPaint.Color = oldColor;
-                                        curx += print_width + stdspacing;
-                                    }
-                                }
-
-                                valtext = "";
                                 lock (StatusFieldLock)
                                 {
-                                    if (StatusFields[(int)NhStatusFields.BL_ALIGN] != null && StatusFields[(int)NhStatusFields.BL_ALIGN].IsEnabled && StatusFields[(int)NhStatusFields.BL_ALIGN].Text != null)
+                                    if (StatusFields[(int)NhStatusFields.BL_MODE] != null && StatusFields[(int)NhStatusFields.BL_MODE].IsEnabled && StatusFields[(int)NhStatusFields.BL_MODE].Text != null)
                                     {
-                                        valtext = StatusFields[(int)NhStatusFields.BL_ALIGN].Text;
+                                        valtext = StatusFields[(int)NhStatusFields.BL_MODE].Text;
                                     }
                                 }
-                                if (valtext != "")
-                                {
-                                    curx += stdspacing / 2;
 
-                                    SKImage statIcon = GetAlignmentIcon(valtext);
-                                    target_width = target_scale * statIcon.Width;
-                                    target_height = target_scale * statIcon.Height;
+                                float target_width = 0;
+                                float target_height = 0;
+                                if (valtext.Contains("W"))
+                                {
+                                    target_width = target_scale * GHApp._statusWizardBitmap.Width;
+                                    target_height = target_scale * GHApp._statusWizardBitmap.Height;
                                     statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                    canvas.DrawImage(statIcon, statusDest);
+#if GNH_MAP_PROFILING && DEBUG
+                                StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                    canvas.DrawImage(GHApp._statusWizardBitmap, statusDest);
+#if GNH_MAP_PROFILING && DEBUG
+                                StopProfiling(GHProfilingStyle.Bitmap);
+#endif
                                     curx += target_width;
-                                    if(valtext.Length >= 3)
-                                    {
-                                        curx += innerspacing;
-                                        string print_text = valtext.Substring(0, 3);
-                                        float print_width = textPaint.MeasureText(print_text);
-                                        textPaint.DrawTextOnCanvas(canvas, print_text, curx, cury - textPaint.FontMetrics.Ascent);
-                                        curx += print_width;
-                                    }
-
-                                    curx += stdspacing / 2;
-                                    curx += stdspacing;
+                                    curx += innerspacing;
                                 }
 
-                                //target_width = target_scale * GHApp._statusSeparatorBitmap.Width;
-                                //target_height = target_scale * GHApp._statusSeparatorBitmap.Height;
-                                //statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                //canvas.DrawImage(GHApp._statusSeparatorBitmap, statusDest);
-                                //curx += target_width;
-                                curx += stdspacing * 2;
-                            }
-
-
-                            /* Normal non-desktop stats */
-                            valtext = "";
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)NhStatusFields.BL_XP] != null && StatusFields[(int)NhStatusFields.BL_XP].IsEnabled && StatusFields[(int)NhStatusFields.BL_XP].Text != null)
+                                if (valtext.Contains("C"))
                                 {
-                                    valtext = StatusFields[(int)NhStatusFields.BL_XP].Text;
-                                }
-                            }
-                            if (valtext != "")
-                            {
-                                target_width = target_scale * GHApp._statusXPLevelBitmap.Width;
-                                target_height = target_scale * GHApp._statusXPLevelBitmap.Height;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                    target_width = target_scale * GHApp._statusCasualBitmap.Width;
+                                    target_height = target_scale * GHApp._statusCasualBitmap.Height;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
 #if GNH_MAP_PROFILING && DEBUG
                                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                canvas.DrawImage(GHApp._statusXPLevelBitmap, statusDest);
+                                    canvas.DrawImage(GHApp._statusCasualBitmap, statusDest);
 #if GNH_MAP_PROFILING && DEBUG
                                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                curx += target_width;
-                                curx += innerspacing;
-                                float print_width = textPaint.MeasureText(valtext);
-#if GNH_MAP_PROFILING && DEBUG
-                                StartProfiling(GHProfilingStyle.Text);
-#endif
-                                //canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
-#if GNH_MAP_PROFILING && DEBUG
-                                StopProfiling(GHProfilingStyle.Text);
-#endif
-                                curx += print_width + stdspacing;
-                            }
-
-                            valtext = "";
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)NhStatusFields.BL_HD] != null && StatusFields[(int)NhStatusFields.BL_HD].IsEnabled && StatusFields[(int)NhStatusFields.BL_HD].Text != null)
-                                {
-                                    valtext = StatusFields[(int)NhStatusFields.BL_HD].Text;
+                                    curx += target_width;
+                                    curx += innerspacing;
                                 }
-                            }
-                            if (valtext != "")
-                            {
-                                target_width = target_scale * GHApp._statusHDBitmap.Width;
-                                target_height = target_scale * GHApp._statusHDBitmap.Height;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                else if (valtext.Contains("R"))
+                                {
+                                    target_width = target_scale * GHApp._statusCasualClassicBitmap.Width;
+                                    target_height = target_scale * GHApp._statusCasualClassicBitmap.Height;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
 #if GNH_MAP_PROFILING && DEBUG
                                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                canvas.DrawImage(GHApp._statusHDBitmap, statusDest);
+                                    canvas.DrawImage(GHApp._statusCasualClassicBitmap, statusDest);
 #if GNH_MAP_PROFILING && DEBUG
                                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                curx += target_width;
-                                curx += innerspacing;
-                                float print_width = textPaint.MeasureText(valtext);
-#if GNH_MAP_PROFILING && DEBUG
-                                StartProfiling(GHProfilingStyle.Text);
-#endif
-                                //canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
-#if GNH_MAP_PROFILING && DEBUG
-                                StopProfiling(GHProfilingStyle.Text);
-#endif
-                                curx += print_width + stdspacing;
-                            }
-
-                            valtext = "";
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)NhStatusFields.BL_AC] != null && StatusFields[(int)NhStatusFields.BL_AC].IsEnabled && StatusFields[(int)NhStatusFields.BL_AC].Text != null)
-                                {
-                                    valtext = StatusFields[(int)NhStatusFields.BL_AC].Text;
+                                    curx += target_width;
+                                    curx += innerspacing;
                                 }
-                            }
-                            if (valtext != "")
-                            {
-                                target_width = target_scale * GHApp._statusACBitmap.Width;
-                                target_height = target_scale * GHApp._statusACBitmap.Height;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                else if (valtext.Contains("M"))
+                                {
+                                    target_width = target_scale * GHApp._statusModernBitmap.Width;
+                                    target_height = target_scale * GHApp._statusModernBitmap.Height;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
 #if GNH_MAP_PROFILING && DEBUG
                                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                canvas.DrawImage(GHApp._statusACBitmap, statusDest);
+                                    canvas.DrawImage(GHApp._statusModernBitmap, statusDest);
 #if GNH_MAP_PROFILING && DEBUG
                                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                //textPaint.TextAlign = SKTextAlign.Center;
-                                textPaint.Color = SKColors.Black;
-                                textPaint.TextSize = shieldfontsize;
-#if GNH_MAP_PROFILING && DEBUG
-                                StartProfiling(GHProfilingStyle.Text);
-#endif
-                                //canvas.DrawText(valtext, curx + target_width / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, textPaint);
-                                textPaint.DrawTextOnCanvas(canvas, valtext, curx + target_width / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, SKTextAlign.Center);
-#if GNH_MAP_PROFILING && DEBUG
-                                StopProfiling(GHProfilingStyle.Text);
-#endif
-                                curx += target_width;
-                                curx += stdspacing;
-                                //textPaint.TextAlign = SKTextAlign.Left;
-                                textPaint.Color = SKColors.White;
-                                textPaint.TextSize = basefontsize;
-                            }
-
-                            valtext = "";
-                            string valtext2 = "";
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)NhStatusFields.BL_MC_LVL] != null && StatusFields[(int)NhStatusFields.BL_MC_LVL].IsEnabled && StatusFields[(int)NhStatusFields.BL_MC_LVL].Text != null)
-                                {
-                                    valtext = StatusFields[(int)NhStatusFields.BL_MC_LVL].Text;
+                                    curx += target_width;
+                                    curx += innerspacing;
                                 }
-                                if (StatusFields[(int)NhStatusFields.BL_MC_PCT] != null && StatusFields[(int)NhStatusFields.BL_MC_PCT].IsEnabled && StatusFields[(int)NhStatusFields.BL_MC_PCT].Text != null)
+
+                                SKImage difbmp = GHApp._statusDifficultyBitmap;
+                                string diftext = "";
+                                if (valtext.Contains("s"))
                                 {
-                                    valtext2 = StatusFields[(int)NhStatusFields.BL_MC_PCT].Text;
+                                    diftext = "s";
+                                    difbmp = GHApp._statusDifficultyVeryEasyBitmap;
                                 }
-                            }
-                            if (valtext != "")
-                            {
-                                target_width = target_scale * GHApp._statusMCBitmap.Width;
-                                target_height = target_scale * GHApp._statusMCBitmap.Height;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-#if GNH_MAP_PROFILING && DEBUG
-                                StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                canvas.DrawImage(GHApp._statusMCBitmap, statusDest);
-#if GNH_MAP_PROFILING && DEBUG
-                                StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                //textPaint.TextAlign = SKTextAlign.Center;
-                                textPaint.Color = SKColors.Black;
-                                textPaint.TextSize = shieldfontsize;
-#if GNH_MAP_PROFILING && DEBUG
-                                StartProfiling(GHProfilingStyle.Text);
-#endif
-                                //canvas.DrawText(valtext, curx + target_width / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, textPaint);
-                                textPaint.DrawTextOnCanvas(canvas, valtext, curx + target_width / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, SKTextAlign.Center);
-#if GNH_MAP_PROFILING && DEBUG
-                                StopProfiling(GHProfilingStyle.Text);
-#endif
-                                curx += target_width;
-                                curx += innerspacing;
-                                //textPaint.TextAlign = SKTextAlign.Left;
-                                textPaint.Color = SKColors.White;
-                                textPaint.TextSize = basefontsize;
-                                string printtext = valtext2 + "%";
-                                float print_width = textPaint.MeasureText(printtext);
-                                //canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
-                                curx += print_width + stdspacing;
-                            }
-
-                            valtext = "";
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)NhStatusFields.BL_MOVE] != null && StatusFields[(int)NhStatusFields.BL_MOVE].IsEnabled && StatusFields[(int)NhStatusFields.BL_MOVE].Text != null)
+                                else if (valtext.Contains("e"))
                                 {
-                                    valtext = StatusFields[(int)NhStatusFields.BL_MOVE].Text;
+                                    diftext = "e";
+                                    difbmp = GHApp._statusDifficultyEasyBitmap;
                                 }
-                            }
-                            if (valtext != "")
-                            {
-                                target_width = target_scale * GHApp._statusMoveBitmap.Width;
-                                target_height = target_scale * GHApp._statusMoveBitmap.Height;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-#if GNH_MAP_PROFILING && DEBUG
-                                StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                canvas.DrawImage(GHApp._statusMoveBitmap, statusDest);
-#if GNH_MAP_PROFILING && DEBUG
-                                StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                curx += target_width;
-                                curx += innerspacing;
-                                float print_width = textPaint.MeasureText(valtext);
-                                //canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
-                                curx += print_width + stdspacing;
-                            }
-
-                            valtext = "";
-                            valtext2 = "";
-                            string valtext3 = "";
-                            bool isenabled1 = false;
-                            bool isenabled2 = false;
-                            bool isenabled3 = false;
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)NhStatusFields.BL_UWEP] != null && StatusFields[(int)NhStatusFields.BL_UWEP].IsEnabled && StatusFields[(int)NhStatusFields.BL_UWEP].Text != null)
+                                else if (valtext.Contains("a"))
                                 {
-                                    valtext = StatusFields[(int)NhStatusFields.BL_UWEP].Text;
-                                    isenabled1 = StatusFields[(int)NhStatusFields.BL_UWEP].IsEnabled;
+                                    diftext = "a";
+                                    difbmp = GHApp._statusDifficultyAverageBitmap;
                                 }
-                                if (StatusFields[(int)NhStatusFields.BL_UWEP2] != null && StatusFields[(int)NhStatusFields.BL_UWEP2].IsEnabled && StatusFields[(int)NhStatusFields.BL_UWEP2].Text != null)
+                                else if (valtext.Contains("v"))
                                 {
-                                    valtext2 = StatusFields[(int)NhStatusFields.BL_UWEP2].Text;
-                                    isenabled2 = StatusFields[(int)NhStatusFields.BL_UWEP2].IsEnabled;
+                                    diftext = "v";
+                                    difbmp = GHApp._statusDifficultyHardBitmap;
                                 }
-                                if (StatusFields[(int)NhStatusFields.BL_UQUIVER] != null && StatusFields[(int)NhStatusFields.BL_UQUIVER].IsEnabled && StatusFields[(int)NhStatusFields.BL_UQUIVER].Text != null)
+                                else if (valtext.Contains("x"))
                                 {
-                                    valtext3 = StatusFields[(int)NhStatusFields.BL_UQUIVER].Text;
-                                    isenabled3 = StatusFields[(int)NhStatusFields.BL_UQUIVER].IsEnabled;
+                                    diftext = "x";
+                                    difbmp = GHApp._statusDifficultyExpertBitmap;
                                 }
-                            }
-                            if (valtext != "" || valtext2 != "" || valtext3 != "")
-                            {
-                                target_width = target_scale * GHApp._statusWeaponStyleBitmap.Width;
-                                target_height = target_scale * GHApp._statusWeaponStyleBitmap.Height;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-#if GNH_MAP_PROFILING && DEBUG
-                                StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                canvas.DrawImage(GHApp._statusWeaponStyleBitmap, statusDest);
-#if GNH_MAP_PROFILING && DEBUG
-                                StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                curx += target_width;
-                                curx += innerspacing;
-                                float print_width = 0;
-                                if (_drawWeaponStyleAsGlyphs)
+                                else if (valtext.Contains("m"))
                                 {
-                                    SKTypeface savedtypeface = textPaint.Typeface;
-                                    float savedfontsize = textPaint.TextSize;
-                                    lock (_weaponStyleObjDataItemLock)
-                                    {
-                                        if (isenabled1 && valtext != "")
-                                        {
-                                            /* Right-hand weapon */
-                                            if (_weaponStyleObjDataItem[0] != null)
-                                            {
-                                                float startpicturex = curx;
-                                                using (new SKAutoCanvasRestore(canvas, true))
-                                                {
-                                                    GlyphImageSource gis = _paintGlyphImageSource;
-                                                    gis.ReferenceGamePage = this;
-                                                    gis.UseUpperSide = false;
-                                                    gis.AutoSize = true;
-                                                    gis.Glyph = Math.Abs(_weaponStyleObjDataItem[0].ObjData.gui_glyph);
-                                                    gis.ObjData = _weaponStyleObjDataItem[0];
-                                                    gis.DoAutoSize();
-                                                    float wep_scale = gis.Height == 0 ? 1.0f : target_height / gis.Height;
-                                                    float weppicturewidth = wep_scale * gis.Width;
-                                                    float weppictureheight = wep_scale * gis.Height;
-                                                    canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
-                                                    canvas.Scale(wep_scale);
-#if GNH_MAP_PROFILING && DEBUG
-                                                    StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                                    gis.DrawOnCanvas(canvas, usingGL, false, true);
-#if GNH_MAP_PROFILING && DEBUG
-                                                    StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                                    curx += weppicturewidth;
-                                                    curx += innerspacing;
-                                                }
-                                                float endpicturex = curx;
-#if GNH_MAP_PROFILING && DEBUG
-                                                StartProfiling(GHProfilingStyle.Text);
-#endif
-                                                if (_weaponStyleObjDataItem[0].OutOfAmmo)
-                                                {
-                                                    textPaint.TextSize = basefontsize;
-                                                    string printtext = "X";
-                                                    SKColor oldcolor = textPaint.Color;
-                                                    print_width = textPaint.MeasureText(printtext);
-                                                    float font_height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
-                                                    float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
-                                                    textPaint.Color = SKColors.Black;
-                                                    textPaint.Style = SKPaintStyle.Stroke;
-                                                    textPaint.StrokeWidth = textPaint.TextSize / 5;
-                                                    //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
-                                                    textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
-                                                    textPaint.Style = SKPaintStyle.Fill;
-                                                    textPaint.Color = SKColors.Red;
-                                                    //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
-                                                    textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
-                                                    textPaint.Color = oldcolor;
-                                                }
-
-                                                if (_weaponStyleObjDataItem[0].WrongAmmoType)
-                                                {
-                                                    textPaint.Typeface = GHApp.LatoBold;
-                                                    textPaint.TextSize = basefontsize;
-                                                    string printtext = "?";
-                                                    SKColor oldcolor = textPaint.Color;
-                                                    print_width = textPaint.MeasureText(printtext);
-                                                    float font_height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
-                                                    float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
-                                                    textPaint.Color = SKColors.Black;
-                                                    textPaint.Style = SKPaintStyle.Stroke;
-                                                    textPaint.StrokeWidth = textPaint.TextSize / 5;
-                                                    //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
-                                                    textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
-                                                    textPaint.Style = SKPaintStyle.Fill;
-                                                    textPaint.Color = SKColors.Red;
-                                                    //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
-                                                    textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
-                                                    textPaint.Color = oldcolor;
-                                                    textPaint.Typeface = GHApp.LatoRegular;
-                                                }
-                                                if (_weaponStyleObjDataItem[0].NotBeingUsed || _weaponStyleObjDataItem[0].NotWeapon)
-                                                {
-                                                    textPaint.Typeface = GHApp.LatoBold;
-                                                    textPaint.TextSize = basefontsize;
-                                                    string printtext = "!";
-                                                    SKColor oldcolor = textPaint.Color;
-                                                    print_width = textPaint.MeasureText(printtext);
-                                                    float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
-                                                    float font_height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
-                                                    textPaint.Color = SKColors.Black;
-                                                    textPaint.Style = SKPaintStyle.Stroke;
-                                                    textPaint.StrokeWidth = textPaint.TextSize / 5;
-                                                    //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
-                                                    textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
-                                                    textPaint.Style = SKPaintStyle.Fill;
-                                                    textPaint.Color = SKColors.Orange;
-                                                    //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
-                                                    textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
-                                                    textPaint.Color = oldcolor;
-                                                    textPaint.Typeface = GHApp.LatoRegular;
-                                                }
-#if GNH_MAP_PROFILING && DEBUG
-                                                StopProfiling(GHProfilingStyle.Text);
-#endif
-                                            }
-                                            else
-                                            {
-                                                SKRect emptyHandedSource = new SKRect(0, 0, GHApp._statusEmptyHandedBitmap.Width, GHApp._statusEmptyHandedBitmap.Height);
-                                                float empty_handed_scale = rowheight / GHApp._statusEmptyHandedBitmap.Height;
-                                                if (valtext2 != "")
-                                                {
-                                                    emptyHandedSource = new SKRect(0, 0, GHApp._statusEmptyHandedBitmap.Width / 2, GHApp._statusEmptyHandedBitmap.Height);
-                                                    target_width = empty_handed_scale * GHApp._statusEmptyHandedBitmap.Width / 2;
-                                                    target_height = empty_handed_scale * GHApp._statusEmptyHandedBitmap.Height;
-                                                }
-                                                else
-                                                {
-                                                    target_width = empty_handed_scale * GHApp._statusEmptyHandedBitmap.Width;
-                                                    target_height = empty_handed_scale * GHApp._statusEmptyHandedBitmap.Height;
-                                                }
-                                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-#if GNH_MAP_PROFILING && DEBUG
-                                                StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                                canvas.DrawImage(GHApp._statusEmptyHandedBitmap, emptyHandedSource, statusDest);
-#if GNH_MAP_PROFILING && DEBUG
-                                                StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                                curx += target_width;
-                                                curx += innerspacing;
-                                            }
-                                        }
-                                        if (isenabled2 && valtext2 != "")
-                                        {
-                                            /* Left-hand weapon */
-                                            if (_weaponStyleObjDataItem[1] != null)
-                                            {
-                                                textPaint.TextSize = shieldfontsize;
-                                                string printtext = "+";
-                                                print_width = textPaint.MeasureText(printtext);
-                                                //canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                                textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
-                                                curx += print_width;
-
-                                                float startpicturex = curx;
-                                                using (new SKAutoCanvasRestore(canvas, true))
-                                                {
-                                                    GlyphImageSource gis = _paintGlyphImageSource;
-                                                    gis.ReferenceGamePage = this;
-                                                    gis.UseUpperSide = false;
-                                                    gis.AutoSize = true;
-                                                    gis.Glyph = Math.Abs(_weaponStyleObjDataItem[1].ObjData.gui_glyph);
-                                                    gis.ObjData = _weaponStyleObjDataItem[1];
-                                                    gis.DoAutoSize();
-                                                    float wep_scale = gis.Height == 0 ? 1.0f : target_height / gis.Height;
-                                                    float weppicturewidth = wep_scale * gis.Width;
-                                                    float weppictureheight = wep_scale * gis.Height;
-                                                    canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
-                                                    canvas.Scale(wep_scale);
-#if GNH_MAP_PROFILING && DEBUG
-                                                    StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                                    gis.DrawOnCanvas(canvas, usingGL, false, true);
-#if GNH_MAP_PROFILING && DEBUG
-                                                    StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                                    curx += weppicturewidth;
-                                                    curx += innerspacing;
-                                                }
-                                                float endpicturex = curx;
-#if GNH_MAP_PROFILING && DEBUG
-                                                StartProfiling(GHProfilingStyle.Text);
-#endif
-                                                if (_weaponStyleObjDataItem[1].OutOfAmmo)
-                                                {
-                                                    textPaint.TextSize = basefontsize;
-                                                    printtext = "X";
-                                                    SKColor oldcolor = textPaint.Color;
-                                                    print_width = textPaint.MeasureText(printtext);
-                                                    float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
-                                                    float font_height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
-                                                    textPaint.Color = SKColors.Black;
-                                                    textPaint.Style = SKPaintStyle.Stroke;
-                                                    textPaint.StrokeWidth = textPaint.TextSize / 5;
-                                                    //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
-                                                    textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
-                                                    textPaint.Style = SKPaintStyle.Fill;
-                                                    textPaint.Color = SKColors.Red;
-                                                    //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
-                                                    textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
-                                                    textPaint.Color = oldcolor;
-
-                                                }
-                                                if (_weaponStyleObjDataItem[1].WrongAmmoType)
-                                                {
-                                                    textPaint.Typeface = GHApp.LatoBold;
-                                                    textPaint.TextSize = basefontsize;
-                                                    printtext = "?";
-                                                    SKColor oldcolor = textPaint.Color;
-                                                    print_width = textPaint.MeasureText(printtext);
-                                                    float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
-                                                    float font_height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
-                                                    textPaint.Color = SKColors.Black;
-                                                    textPaint.Style = SKPaintStyle.Stroke;
-                                                    textPaint.StrokeWidth = textPaint.TextSize / 5;
-                                                    //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
-                                                    textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
-                                                    textPaint.Style = SKPaintStyle.Fill;
-                                                    textPaint.Color = SKColors.Red;
-                                                    //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
-                                                    textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
-                                                    textPaint.Color = oldcolor;
-                                                    textPaint.Typeface = GHApp.LatoRegular;
-                                                }
-                                                if (_weaponStyleObjDataItem[1].NotBeingUsed || _weaponStyleObjDataItem[1].NotWeapon)
-                                                {
-                                                    textPaint.Typeface = GHApp.LatoBold;
-                                                    textPaint.TextSize = basefontsize;
-                                                    printtext = "!";
-                                                    SKColor oldcolor = textPaint.Color;
-                                                    textPaint.Color = SKColors.Orange;
-                                                    print_width = textPaint.MeasureText(printtext);
-                                                    float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
-                                                    float font_height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
-                                                    textPaint.Color = SKColors.Black;
-                                                    textPaint.Style = SKPaintStyle.Stroke;
-                                                    textPaint.StrokeWidth = textPaint.TextSize / 5;
-                                                    textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
-                                                    textPaint.Style = SKPaintStyle.Fill;
-                                                    textPaint.Color = SKColors.Orange;
-                                                    textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
-                                                    textPaint.Color = oldcolor;
-                                                    textPaint.Typeface = GHApp.LatoRegular;
-                                                }
-#if GNH_MAP_PROFILING && DEBUG
-                                                StopProfiling(GHProfilingStyle.Text);
-#endif
-                                            }
-                                            else
-                                            {
-                                                SKRect emptyHandedSource = new SKRect(0, 0, GHApp._statusEmptyHandedBitmap.Width, GHApp._statusEmptyHandedBitmap.Height);
-                                                float empty_handed_scale = rowheight / GHApp._statusEmptyHandedBitmap.Height;
-                                                if (valtext != "")
-                                                {
-                                                    string printtext = "+";
-                                                    print_width = textPaint.MeasureText(printtext);
-                                                    textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
-                                                    curx += print_width;
-
-                                                    emptyHandedSource = new SKRect(GHApp._statusEmptyHandedBitmap.Width / 2, 0, GHApp._statusEmptyHandedBitmap.Width, GHApp._statusEmptyHandedBitmap.Height);
-                                                    target_width = empty_handed_scale * GHApp._statusEmptyHandedBitmap.Width / 2;
-                                                    target_height = empty_handed_scale * GHApp._statusEmptyHandedBitmap.Height;
-                                                }
-                                                else
-                                                {
-                                                    target_width = empty_handed_scale * GHApp._statusEmptyHandedBitmap.Width;
-                                                    target_height = empty_handed_scale * GHApp._statusEmptyHandedBitmap.Height;
-                                                }
-                                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-#if GNH_MAP_PROFILING && DEBUG
-                                                StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                                canvas.DrawImage(GHApp._statusEmptyHandedBitmap, emptyHandedSource, statusDest);
-#if GNH_MAP_PROFILING && DEBUG
-                                                StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                                curx += target_width;
-                                                curx += innerspacing;
-                                            }
-                                        }
-
-                                        if (isenabled3 && valtext3 != "")
-                                        {
-                                            /* Throwing weapons in quiver (which are not ammo by definition) */
-                                            if (_weaponStyleObjDataItem[2] != null && _weaponStyleObjDataItem[2].IsThrowingWeapon && !_weaponStyleObjDataItem[2].IsAmmo)
-                                            {
-                                                curx += innerspacing; /* More space to other weapon styles */
-                                                target_width = target_scale * GHApp._statusQuiveredWeaponStyleBitmap.Width;
-                                                target_height = target_scale * GHApp._statusQuiveredWeaponStyleBitmap.Height;
-                                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-#if GNH_MAP_PROFILING && DEBUG
-                                                StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                                canvas.DrawImage(GHApp._statusQuiveredWeaponStyleBitmap, statusDest);
-#if GNH_MAP_PROFILING && DEBUG
-                                                StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                                curx += target_width;
-                                                curx += innerspacing;
-
-                                                //SKColor oldcolor = textPaint.Color;
-                                                //textPaint.Color = SKColors.Cyan;
-                                                //textPaint.TextSize = shieldfontsize;
-                                                //string printtext = "+";
-                                                //print_width = textPaint.MeasureText(printtext);
-                                                //canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
-                                                //textPaint.Color = oldcolor;
-                                                //curx += print_width;
-                                                using (new SKAutoCanvasRestore(canvas, true))
-                                                {
-                                                    GlyphImageSource gis = _paintGlyphImageSource;
-                                                    gis.ReferenceGamePage = this;
-                                                    gis.UseUpperSide = false;
-                                                    gis.AutoSize = true;
-                                                    gis.Glyph = Math.Abs(_weaponStyleObjDataItem[2].ObjData.gui_glyph);
-                                                    gis.ObjData = _weaponStyleObjDataItem[2];
-                                                    gis.DoAutoSize();
-                                                    float wep_scale = gis.Height == 0 ? 1.0f : target_height / gis.Height;
-                                                    float weppicturewidth = wep_scale * gis.Width;
-                                                    float weppictureheight = wep_scale * gis.Height;
-                                                    canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
-                                                    canvas.Scale(wep_scale);
-                                                    gis.DrawOnCanvas(canvas, usingGL, false, true);
-                                                    curx += weppicturewidth;
-                                                    curx += innerspacing;
-                                                }
-                                            }
-                                        }
-                                    }
-                                    textPaint.TextSize = savedfontsize;
-                                    textPaint.Typeface = savedtypeface;
+                                    diftext = "m";
+                                    difbmp = GHApp._statusDifficultyMasterBitmap;
                                 }
-                                else
+                                else if (valtext.Contains("g"))
                                 {
-#if GNH_MAP_PROFILING && DEBUG
-                                    StartProfiling(GHProfilingStyle.Text);
-#endif
-                                    if (valtext != "")
-                                    {
-                                        print_width = textPaint.MeasureText(valtext);
-                                        textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
-                                        curx += print_width;
-                                    }
-                                    if (valtext2 != "")
-                                    {
-                                        string printtext = "/" + valtext2;
-                                        print_width = textPaint.MeasureText(printtext);
-                                        textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
-                                        curx += print_width;
-                                    }
-#if GNH_MAP_PROFILING && DEBUG
-                                    StopProfiling(GHProfilingStyle.Text);
-#endif
+                                    diftext = "g";
+                                    difbmp = GHApp._statusDifficultyGrandMasterBitmap;
                                 }
-                                curx += stdspacing;
-                            }
 
-                            /* Quick spell and wand */
-                            int qWandGlyph, qWandExceptinality, qSpellGlyph, qSpellOtyp;
-                            string qWandName, qSpellName;
-                            lock(_quickLock)
-                            {
-                                qWandExceptinality = _quickWandExceptionality;
-                                qWandGlyph = _quickWandGlyph;
-                                qWandName = _quickWandName;
-                                qSpellOtyp = _quickSpellOtyp;
-                                qSpellGlyph = _quickSpellGlyph;
-                                qSpellName = _quickSpellName;
-                            }
-                            if (qWandGlyph != GHApp.NoGlyph)
-                            {
-                                target_width = target_scale * GHApp._statusQuickWandBitmap.Width;
-                                target_height = target_scale * GHApp._statusQuickWandBitmap.Height;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                canvas.DrawImage(GHApp._statusQuickWandBitmap, statusDest);
-                                curx += target_width;
-                                curx += innerspacing;
-
-                                using (new SKAutoCanvasRestore(canvas, true))
+                                if (diftext != "")
                                 {
-                                    GlyphImageSource gis = _paintGlyphImageSource;
-                                    gis.ReferenceGamePage = this;
-                                    gis.UseUpperSide = false;
-                                    gis.AutoSize = true;
-                                    gis.Glyph = Math.Abs(_quickWandGlyph);
-                                    gis.ObjData = new ObjectDataItem(new Obj() { exceptionality = (byte)qWandExceptinality }, new ObjClassData(), false);
-                                    gis.DoAutoSize();
-                                    float wep_scale = gis.Height == 0 ? 1.0f : target_height / gis.Height;
-                                    float weppicturewidth = wep_scale * gis.Width;
-                                    float weppictureheight = wep_scale * gis.Height;
-                                    canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
-                                    canvas.Scale(wep_scale);
-                                    gis.DrawOnCanvas(canvas, usingGL, false, true);
-                                    curx += weppicturewidth;
-                                }
-                                curx += stdspacing;
-                            }
-                            if (qSpellGlyph != GHApp.NoGlyph)
-                            {
-                                target_width = target_scale * GHApp._statusQuickSpellBitmap.Width;
-                                target_height = target_scale * GHApp._statusQuickSpellBitmap.Height;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                canvas.DrawImage(GHApp._statusQuickSpellBitmap, statusDest);
-                                curx += target_width;
-                                curx += innerspacing;
-                                using (new SKAutoCanvasRestore(canvas, true))
-                                {
-                                    GlyphImageSource gis = _paintGlyphImageSource;
-                                    gis.ReferenceGamePage = this;
-                                    gis.UseUpperSide = true;
-                                    gis.AutoSize = true;
-                                    gis.ObjData = null;
-                                    gis.Glyph = Math.Abs(_quickSpellGlyph);
-                                    gis.DoAutoSize();
-                                    float wep_scale = gis.Height == 0 ? 1.0f : target_height / gis.Height;
-                                    float weppicturewidth = wep_scale * gis.Width;
-                                    float weppictureheight = wep_scale * gis.Height;
-                                    canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
-                                    canvas.Scale(wep_scale);
-                                    gis.DrawOnCanvas(canvas, usingGL, false, true);
-                                    curx += weppicturewidth;
-                                }
-                                curx += stdspacing;
-                            }
-
-
-                            /* Right aligned */
-                            bool turnsprinted = false;
-                            float finalleftcurx = curx;
-                            curx = canvaswidth - hmargin;
-                            float turnsleft = curx;
-
-                            /* Turns */
-                            valtext = "";
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)NhStatusFields.BL_TIME] != null && StatusFields[(int)NhStatusFields.BL_TIME].IsEnabled && StatusFields[(int)NhStatusFields.BL_TIME].Text != null)
-                                {
-                                    valtext = StatusFields[(int)NhStatusFields.BL_TIME].Text;
-                                }
-                            }
-                            if (valtext != "")
-                            {
-                                target_width = target_scale * GHApp._statusTurnsBitmap.Width;
-                                target_height = target_scale * GHApp._statusTurnsBitmap.Height;
-                                float print_width = textPaint.MeasureText(valtext);
-                                float newcurx = canvaswidth - hmargin - print_width - innerspacing - target_width;
-                                if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
-                                {
-                                    turnsprinted = true;
-                                    curx = newcurx;
-                                    turnsleft = curx;
+                                    target_width = target_scale * difbmp.Width;
+                                    target_height = target_scale * difbmp.Height;
                                     statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
 #if GNH_MAP_PROFILING && DEBUG
                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                    canvas.DrawImage(GHApp._statusTurnsBitmap, statusDest);
+                                    canvas.DrawImage(difbmp, statusDest);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                    textPaint.MeasureText(diftext, ref bounds);
+                                    //textPaint.TextAlign = SKTextAlign.Center;
+                                    textPaint.Color = SKColors.Black;
+                                    textPaint.TextSize = diffontsize;
+#if GNH_MAP_PROFILING && DEBUG
+                                    StartProfiling(GHProfilingStyle.Text);
+#endif
+                                    //canvas.DrawText(diftext, curx + target_width / 2, cury + (rowheight - (textPaint.FontSpacing)) / 2 - textPaint.FontMetrics.Ascent, textPaint);
+                                    textPaint.DrawTextOnCanvas(canvas, diftext, curx + target_width / 2, cury + (rowheight - (textPaint.FontSpacing)) / 2 - textPaint.FontMetrics.Ascent, SKTextAlign.Center);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StopProfiling(GHProfilingStyle.Text);
+#endif
+                                    curx += target_width;
+                                    curx += stdspacing;
+                                    //textPaint.TextAlign = SKTextAlign.Left;
+                                    textPaint.Color = SKColors.White;
+                                    textPaint.TextSize = basefontsize;
+                                }
+
+
+                                /* STATS on Desktop */
+                                if (DesktopStatusBar)
+                                {
+                                    curx += stdspacing * 2;
+                                    //target_width = target_scale * GHApp._statusSeparatorBitmap.Width;
+                                    //target_height = target_scale * GHApp._statusSeparatorBitmap.Height;
+                                    //statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                    //canvas.DrawImage(GHApp._statusSeparatorBitmap, statusDest);
+                                    //curx += target_width;
+                                    //curx += stdspacing;
+
+                                    for (int i = 0; i < 6; i++)
+                                    {
+                                        valtext = "";
+                                        lock (StatusFieldLock)
+                                        {
+                                            if (StatusFields[(int)NhStatusFields.BL_STR + i] != null && StatusFields[(int)NhStatusFields.BL_STR + i].IsEnabled && StatusFields[(int)NhStatusFields.BL_STR + i].Text != null)
+                                            {
+                                                valtext = StatusFields[(int)NhStatusFields.BL_STR + i].Text;
+                                                valcolor = StatusFields[(int)NhStatusFields.BL_STR + i].Color;
+                                            }
+                                        }
+                                        if (valtext != "")
+                                        {
+                                            SKImage statIcon = GetStatIcon(i);
+                                            target_width = target_scale * statIcon.Width;
+                                            target_height = target_scale * statIcon.Height;
+                                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                            canvas.DrawImage(statIcon, statusDest);
+                                            curx += target_width;
+                                            curx += innerspacing;
+                                            float print_width = textPaint.MeasureText(valtext);
+                                            SKColor oldColor = textPaint.Color;
+                                            textPaint.Color = UIUtils.NHColor2SKColorCore(valcolor, 0, false, false);
+                                            textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                            textPaint.Color = oldColor;
+                                            curx += print_width + stdspacing;
+                                        }
+                                    }
+
+                                    valtext = "";
+                                    lock (StatusFieldLock)
+                                    {
+                                        if (StatusFields[(int)NhStatusFields.BL_ALIGN] != null && StatusFields[(int)NhStatusFields.BL_ALIGN].IsEnabled && StatusFields[(int)NhStatusFields.BL_ALIGN].Text != null)
+                                        {
+                                            valtext = StatusFields[(int)NhStatusFields.BL_ALIGN].Text;
+                                        }
+                                    }
+                                    if (valtext != "")
+                                    {
+                                        curx += stdspacing / 2;
+
+                                        SKImage statIcon = GetAlignmentIcon(valtext);
+                                        target_width = target_scale * statIcon.Width;
+                                        target_height = target_scale * statIcon.Height;
+                                        statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                        canvas.DrawImage(statIcon, statusDest,
+#if GNH_MAUI
+                                            new SKSamplingOptions(SKFilterMode.Linear),
+#endif
+                                            highQualityPaint);
+                                        curx += target_width;
+                                        if (valtext.Length >= 3)
+                                        {
+                                            curx += innerspacing;
+                                            string print_text = valtext.Substring(0, 3);
+                                            float print_width = textPaint.MeasureText(print_text);
+                                            textPaint.DrawTextOnCanvas(canvas, print_text, curx, cury - textPaint.FontMetrics.Ascent);
+                                            curx += print_width;
+                                        }
+
+                                        curx += stdspacing / 2;
+                                        curx += stdspacing;
+                                    }
+                                    curx += stdspacing * 2;
+                                }
+
+
+                                /* Normal non-desktop stats */
+                                valtext = "";
+                                lock (StatusFieldLock)
+                                {
+                                    if (StatusFields[(int)NhStatusFields.BL_XP] != null && StatusFields[(int)NhStatusFields.BL_XP].IsEnabled && StatusFields[(int)NhStatusFields.BL_XP].Text != null)
+                                    {
+                                        valtext = StatusFields[(int)NhStatusFields.BL_XP].Text;
+                                    }
+                                }
+                                if (valtext != "")
+                                {
+                                    target_width = target_scale * GHApp._statusXPLevelBitmap.Width;
+                                    target_height = target_scale * GHApp._statusXPLevelBitmap.Height;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                    canvas.DrawImage(GHApp._statusXPLevelBitmap, statusDest,
+#if GNH_MAUI
+                                        new SKSamplingOptions(SKFilterMode.Linear),
+#endif
+                                        highQualityPaint);
 #if GNH_MAP_PROFILING && DEBUG
                                     StopProfiling(GHProfilingStyle.Bitmap);
 #endif
                                     curx += target_width;
                                     curx += innerspacing;
+                                    float print_width = textPaint.MeasureText(valtext);
 #if GNH_MAP_PROFILING && DEBUG
                                     StartProfiling(GHProfilingStyle.Text);
 #endif
+                                    //canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
                                     textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
 #if GNH_MAP_PROFILING && DEBUG
                                     StopProfiling(GHProfilingStyle.Text);
 #endif
-                                    curx += print_width;
+                                    curx += print_width + stdspacing;
                                 }
-                            }
 
-                            /* Gold */
-                            bool goldprinted = false;
-                            float goldleft = curx;
-                            if (!RightAligned2ndRow)
-                            {
                                 valtext = "";
                                 lock (StatusFieldLock)
                                 {
-                                    if (StatusFields[(int)NhStatusFields.BL_GOLD] != null && StatusFields[(int)NhStatusFields.BL_GOLD].IsEnabled && StatusFields[(int)NhStatusFields.BL_GOLD].Text != null)
+                                    if (StatusFields[(int)NhStatusFields.BL_HD] != null && StatusFields[(int)NhStatusFields.BL_HD].IsEnabled && StatusFields[(int)NhStatusFields.BL_HD].Text != null)
                                     {
-                                        valtext = StatusFields[(int)NhStatusFields.BL_GOLD].Text;
+                                        valtext = StatusFields[(int)NhStatusFields.BL_HD].Text;
                                     }
                                 }
                                 if (valtext != "")
                                 {
-                                    string printtext;
-                                    if (valtext.Length > 11 && valtext.Substring(0, 1) == "\\")
-                                        printtext = valtext.Substring(11);
-                                    else
-                                        printtext = valtext;
+                                    target_width = target_scale * GHApp._statusHDBitmap.Width;
+                                    target_height = target_scale * GHApp._statusHDBitmap.Height;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                    canvas.DrawImage(GHApp._statusHDBitmap, statusDest,
+#if GNH_MAUI
+                                        new SKSamplingOptions(SKFilterMode.Linear),
+#endif
+                                        highQualityPaint);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                    curx += target_width;
+                                    curx += innerspacing;
+                                    float print_width = textPaint.MeasureText(valtext);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StartProfiling(GHProfilingStyle.Text);
+#endif
+                                    //canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                    textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StopProfiling(GHProfilingStyle.Text);
+#endif
+                                    curx += print_width + stdspacing;
+                                }
 
-                                    target_width = target_scale * GHApp._statusGoldBitmap.Width;
-                                    target_height = target_scale * GHApp._statusGoldBitmap.Height;
+                                valtext = "";
+                                lock (StatusFieldLock)
+                                {
+                                    if (StatusFields[(int)NhStatusFields.BL_AC] != null && StatusFields[(int)NhStatusFields.BL_AC].IsEnabled && StatusFields[(int)NhStatusFields.BL_AC].Text != null)
+                                    {
+                                        valtext = StatusFields[(int)NhStatusFields.BL_AC].Text;
+                                    }
+                                }
+                                if (valtext != "")
+                                {
+                                    target_width = target_scale * GHApp._statusACBitmap.Width;
+                                    target_height = target_scale * GHApp._statusACBitmap.Height;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                    canvas.DrawImage(GHApp._statusACBitmap, statusDest);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                    //textPaint.TextAlign = SKTextAlign.Center;
+                                    textPaint.Color = SKColors.Black;
+                                    textPaint.TextSize = shieldfontsize;
+#if GNH_MAP_PROFILING && DEBUG
+                                    StartProfiling(GHProfilingStyle.Text);
+#endif
+                                    //canvas.DrawText(valtext, curx + target_width / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, textPaint);
+                                    textPaint.DrawTextOnCanvas(canvas, valtext, curx + target_width / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, SKTextAlign.Center);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StopProfiling(GHProfilingStyle.Text);
+#endif
+                                    curx += target_width;
+                                    curx += stdspacing;
+                                    //textPaint.TextAlign = SKTextAlign.Left;
+                                    textPaint.Color = SKColors.White;
+                                    textPaint.TextSize = basefontsize;
+                                }
+
+                                valtext = "";
+                                string valtext2 = "";
+                                lock (StatusFieldLock)
+                                {
+                                    if (StatusFields[(int)NhStatusFields.BL_MC_LVL] != null && StatusFields[(int)NhStatusFields.BL_MC_LVL].IsEnabled && StatusFields[(int)NhStatusFields.BL_MC_LVL].Text != null)
+                                    {
+                                        valtext = StatusFields[(int)NhStatusFields.BL_MC_LVL].Text;
+                                    }
+                                    if (StatusFields[(int)NhStatusFields.BL_MC_PCT] != null && StatusFields[(int)NhStatusFields.BL_MC_PCT].IsEnabled && StatusFields[(int)NhStatusFields.BL_MC_PCT].Text != null)
+                                    {
+                                        valtext2 = StatusFields[(int)NhStatusFields.BL_MC_PCT].Text;
+                                    }
+                                }
+                                if (valtext != "")
+                                {
+                                    target_width = target_scale * GHApp._statusMCBitmap.Width;
+                                    target_height = target_scale * GHApp._statusMCBitmap.Height;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                    canvas.DrawImage(GHApp._statusMCBitmap, statusDest);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                    //textPaint.TextAlign = SKTextAlign.Center;
+                                    textPaint.Color = SKColors.Black;
+                                    textPaint.TextSize = shieldfontsize;
+#if GNH_MAP_PROFILING && DEBUG
+                                    StartProfiling(GHProfilingStyle.Text);
+#endif
+                                    //canvas.DrawText(valtext, curx + target_width / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, textPaint);
+                                    textPaint.DrawTextOnCanvas(canvas, valtext, curx + target_width / 2, cury + (rowheight - textPaint.FontSpacing) / 2 - textPaint.FontMetrics.Ascent, SKTextAlign.Center);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StopProfiling(GHProfilingStyle.Text);
+#endif
+                                    curx += target_width;
+                                    curx += innerspacing;
+                                    //textPaint.TextAlign = SKTextAlign.Left;
+                                    textPaint.Color = SKColors.White;
+                                    textPaint.TextSize = basefontsize;
+                                    string printtext = valtext2 + "%";
                                     float print_width = textPaint.MeasureText(printtext);
-                                    float newcurx = turnsleft - (turnsprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
+                                    //canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                    textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                    curx += print_width + stdspacing;
+                                }
+
+                                valtext = "";
+                                lock (StatusFieldLock)
+                                {
+                                    if (StatusFields[(int)NhStatusFields.BL_MOVE] != null && StatusFields[(int)NhStatusFields.BL_MOVE].IsEnabled && StatusFields[(int)NhStatusFields.BL_MOVE].Text != null)
+                                    {
+                                        valtext = StatusFields[(int)NhStatusFields.BL_MOVE].Text;
+                                    }
+                                }
+                                if (valtext != "")
+                                {
+                                    target_width = target_scale * GHApp._statusMoveBitmap.Width;
+                                    target_height = target_scale * GHApp._statusMoveBitmap.Height;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                    canvas.DrawImage(GHApp._statusMoveBitmap, statusDest,
+#if GNH_MAUI
+                                        new SKSamplingOptions(SKFilterMode.Linear),
+#endif
+                                        highQualityPaint);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                    curx += target_width;
+                                    curx += innerspacing;
+                                    float print_width = textPaint.MeasureText(valtext);
+                                    //canvas.DrawText(valtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                    textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                    curx += print_width + stdspacing;
+                                }
+
+                                valtext = "";
+                                valtext2 = "";
+                                string valtext3 = "";
+                                bool isenabled1 = false;
+                                bool isenabled2 = false;
+                                bool isenabled3 = false;
+                                lock (StatusFieldLock)
+                                {
+                                    if (StatusFields[(int)NhStatusFields.BL_UWEP] != null && StatusFields[(int)NhStatusFields.BL_UWEP].IsEnabled && StatusFields[(int)NhStatusFields.BL_UWEP].Text != null)
+                                    {
+                                        valtext = StatusFields[(int)NhStatusFields.BL_UWEP].Text;
+                                        isenabled1 = StatusFields[(int)NhStatusFields.BL_UWEP].IsEnabled;
+                                    }
+                                    if (StatusFields[(int)NhStatusFields.BL_UWEP2] != null && StatusFields[(int)NhStatusFields.BL_UWEP2].IsEnabled && StatusFields[(int)NhStatusFields.BL_UWEP2].Text != null)
+                                    {
+                                        valtext2 = StatusFields[(int)NhStatusFields.BL_UWEP2].Text;
+                                        isenabled2 = StatusFields[(int)NhStatusFields.BL_UWEP2].IsEnabled;
+                                    }
+                                    if (StatusFields[(int)NhStatusFields.BL_UQUIVER] != null && StatusFields[(int)NhStatusFields.BL_UQUIVER].IsEnabled && StatusFields[(int)NhStatusFields.BL_UQUIVER].Text != null)
+                                    {
+                                        valtext3 = StatusFields[(int)NhStatusFields.BL_UQUIVER].Text;
+                                        isenabled3 = StatusFields[(int)NhStatusFields.BL_UQUIVER].IsEnabled;
+                                    }
+                                }
+                                if (valtext != "" || valtext2 != "" || valtext3 != "")
+                                {
+                                    target_width = target_scale * GHApp._statusWeaponStyleBitmap.Width;
+                                    target_height = target_scale * GHApp._statusWeaponStyleBitmap.Height;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                    canvas.DrawImage(GHApp._statusWeaponStyleBitmap, statusDest,
+#if GNH_MAUI
+                                        new SKSamplingOptions(SKFilterMode.Linear),
+#endif
+                                        highQualityPaint);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                    curx += target_width;
+                                    curx += innerspacing;
+                                    float print_width = 0;
+                                    if (_drawWeaponStyleAsGlyphs)
+                                    {
+                                        SKTypeface savedtypeface = textPaint.Typeface;
+                                        float savedfontsize = textPaint.TextSize;
+                                        lock (_weaponStyleObjDataItemLock)
+                                        {
+                                            if (isenabled1 && valtext != "")
+                                            {
+                                                /* Right-hand weapon */
+                                                if (_weaponStyleObjDataItem[0] != null)
+                                                {
+                                                    float startpicturex = curx;
+                                                    using (new SKAutoCanvasRestore(canvas, true))
+                                                    {
+                                                        GlyphImageSource gis = _paintGlyphImageSource;
+                                                        gis.ReferenceGamePage = this;
+                                                        gis.UseUpperSide = false;
+                                                        gis.AutoSize = true;
+                                                        gis.Glyph = Math.Abs(_weaponStyleObjDataItem[0].ObjData.gui_glyph);
+                                                        gis.ObjData = _weaponStyleObjDataItem[0];
+                                                        gis.DoAutoSize();
+                                                        float wep_scale = gis.Height == 0 ? 1.0f : target_height / gis.Height;
+                                                        float weppicturewidth = wep_scale * gis.Width;
+                                                        float weppictureheight = wep_scale * gis.Height;
+                                                        canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
+                                                        canvas.Scale(wep_scale);
+#if GNH_MAP_PROFILING && DEBUG
+                                                        StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                                        gis.DrawOnCanvas(canvas, usingGL, false, true);
+#if GNH_MAP_PROFILING && DEBUG
+                                                        StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                                        curx += weppicturewidth;
+                                                        curx += innerspacing;
+                                                    }
+                                                    float endpicturex = curx;
+#if GNH_MAP_PROFILING && DEBUG
+                                                    StartProfiling(GHProfilingStyle.Text);
+#endif
+                                                    if (_weaponStyleObjDataItem[0].OutOfAmmo)
+                                                    {
+                                                        textPaint.TextSize = basefontsize;
+                                                        string printtext = "X";
+                                                        SKColor oldcolor = textPaint.Color;
+                                                        print_width = textPaint.MeasureText(printtext);
+                                                        float font_height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
+                                                        float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                        textPaint.Color = SKColors.Black;
+                                                        textPaint.Style = SKPaintStyle.Stroke;
+                                                        textPaint.StrokeWidth = textPaint.TextSize / 5;
+                                                        //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
+                                                        textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        textPaint.Color = SKColors.Red;
+                                                        //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
+                                                        textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
+                                                        textPaint.Color = oldcolor;
+                                                    }
+
+                                                    if (_weaponStyleObjDataItem[0].WrongAmmoType)
+                                                    {
+                                                        textPaint.Typeface = GHApp.LatoBold;
+                                                        textPaint.TextSize = basefontsize;
+                                                        string printtext = "?";
+                                                        SKColor oldcolor = textPaint.Color;
+                                                        print_width = textPaint.MeasureText(printtext);
+                                                        float font_height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
+                                                        float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                        textPaint.Color = SKColors.Black;
+                                                        textPaint.Style = SKPaintStyle.Stroke;
+                                                        textPaint.StrokeWidth = textPaint.TextSize / 5;
+                                                        //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
+                                                        textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        textPaint.Color = SKColors.Red;
+                                                        //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
+                                                        textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
+                                                        textPaint.Color = oldcolor;
+                                                        textPaint.Typeface = GHApp.LatoRegular;
+                                                    }
+                                                    if (_weaponStyleObjDataItem[0].NotBeingUsed || _weaponStyleObjDataItem[0].NotWeapon)
+                                                    {
+                                                        textPaint.Typeface = GHApp.LatoBold;
+                                                        textPaint.TextSize = basefontsize;
+                                                        string printtext = "!";
+                                                        SKColor oldcolor = textPaint.Color;
+                                                        print_width = textPaint.MeasureText(printtext);
+                                                        float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                        float font_height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
+                                                        textPaint.Color = SKColors.Black;
+                                                        textPaint.Style = SKPaintStyle.Stroke;
+                                                        textPaint.StrokeWidth = textPaint.TextSize / 5;
+                                                        //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
+                                                        textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        textPaint.Color = SKColors.Orange;
+                                                        //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
+                                                        textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
+                                                        textPaint.Color = oldcolor;
+                                                        textPaint.Typeface = GHApp.LatoRegular;
+                                                    }
+#if GNH_MAP_PROFILING && DEBUG
+                                                    StopProfiling(GHProfilingStyle.Text);
+#endif
+                                                }
+                                                else
+                                                {
+                                                    SKRect emptyHandedSource = new SKRect(0, 0, GHApp._statusEmptyHandedBitmap.Width, GHApp._statusEmptyHandedBitmap.Height);
+                                                    float empty_handed_scale = rowheight / GHApp._statusEmptyHandedBitmap.Height;
+                                                    if (valtext2 != "")
+                                                    {
+                                                        emptyHandedSource = new SKRect(0, 0, GHApp._statusEmptyHandedBitmap.Width / 2, GHApp._statusEmptyHandedBitmap.Height);
+                                                        target_width = empty_handed_scale * GHApp._statusEmptyHandedBitmap.Width / 2;
+                                                        target_height = empty_handed_scale * GHApp._statusEmptyHandedBitmap.Height;
+                                                    }
+                                                    else
+                                                    {
+                                                        target_width = empty_handed_scale * GHApp._statusEmptyHandedBitmap.Width;
+                                                        target_height = empty_handed_scale * GHApp._statusEmptyHandedBitmap.Height;
+                                                    }
+                                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+#if GNH_MAP_PROFILING && DEBUG
+                                                    StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                                    canvas.DrawImage(GHApp._statusEmptyHandedBitmap, emptyHandedSource, statusDest);
+#if GNH_MAP_PROFILING && DEBUG
+                                                    StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                                    curx += target_width;
+                                                    curx += innerspacing;
+                                                }
+                                            }
+                                            if (isenabled2 && valtext2 != "")
+                                            {
+                                                /* Left-hand weapon */
+                                                if (_weaponStyleObjDataItem[1] != null)
+                                                {
+                                                    textPaint.TextSize = shieldfontsize;
+                                                    string printtext = "+";
+                                                    print_width = textPaint.MeasureText(printtext);
+                                                    //canvas.DrawText(printtext, curx, cury - textPaint.FontMetrics.Ascent, textPaint);
+                                                    textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                                    curx += print_width;
+
+                                                    float startpicturex = curx;
+                                                    using (new SKAutoCanvasRestore(canvas, true))
+                                                    {
+                                                        GlyphImageSource gis = _paintGlyphImageSource;
+                                                        gis.ReferenceGamePage = this;
+                                                        gis.UseUpperSide = false;
+                                                        gis.AutoSize = true;
+                                                        gis.Glyph = Math.Abs(_weaponStyleObjDataItem[1].ObjData.gui_glyph);
+                                                        gis.ObjData = _weaponStyleObjDataItem[1];
+                                                        gis.DoAutoSize();
+                                                        float wep_scale = gis.Height == 0 ? 1.0f : target_height / gis.Height;
+                                                        float weppicturewidth = wep_scale * gis.Width;
+                                                        float weppictureheight = wep_scale * gis.Height;
+                                                        canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
+                                                        canvas.Scale(wep_scale);
+#if GNH_MAP_PROFILING && DEBUG
+                                                        StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                                        gis.DrawOnCanvas(canvas, usingGL, false, true);
+#if GNH_MAP_PROFILING && DEBUG
+                                                        StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                                        curx += weppicturewidth;
+                                                        curx += innerspacing;
+                                                    }
+                                                    float endpicturex = curx;
+#if GNH_MAP_PROFILING && DEBUG
+                                                    StartProfiling(GHProfilingStyle.Text);
+#endif
+                                                    if (_weaponStyleObjDataItem[1].OutOfAmmo)
+                                                    {
+                                                        textPaint.TextSize = basefontsize;
+                                                        printtext = "X";
+                                                        SKColor oldcolor = textPaint.Color;
+                                                        print_width = textPaint.MeasureText(printtext);
+                                                        float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                        float font_height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
+                                                        textPaint.Color = SKColors.Black;
+                                                        textPaint.Style = SKPaintStyle.Stroke;
+                                                        textPaint.StrokeWidth = textPaint.TextSize / 5;
+                                                        //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
+                                                        textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        textPaint.Color = SKColors.Red;
+                                                        //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
+                                                        textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
+                                                        textPaint.Color = oldcolor;
+
+                                                    }
+                                                    if (_weaponStyleObjDataItem[1].WrongAmmoType)
+                                                    {
+                                                        textPaint.Typeface = GHApp.LatoBold;
+                                                        textPaint.TextSize = basefontsize;
+                                                        printtext = "?";
+                                                        SKColor oldcolor = textPaint.Color;
+                                                        print_width = textPaint.MeasureText(printtext);
+                                                        float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                        float font_height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
+                                                        textPaint.Color = SKColors.Black;
+                                                        textPaint.Style = SKPaintStyle.Stroke;
+                                                        textPaint.StrokeWidth = textPaint.TextSize / 5;
+                                                        //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
+                                                        textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        textPaint.Color = SKColors.Red;
+                                                        //canvas.DrawText(printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2, textPaint);
+                                                        textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
+                                                        textPaint.Color = oldcolor;
+                                                        textPaint.Typeface = GHApp.LatoRegular;
+                                                    }
+                                                    if (_weaponStyleObjDataItem[1].NotBeingUsed || _weaponStyleObjDataItem[1].NotWeapon)
+                                                    {
+                                                        textPaint.Typeface = GHApp.LatoBold;
+                                                        textPaint.TextSize = basefontsize;
+                                                        printtext = "!";
+                                                        SKColor oldcolor = textPaint.Color;
+                                                        textPaint.Color = SKColors.Orange;
+                                                        print_width = textPaint.MeasureText(printtext);
+                                                        float ontopx = ((endpicturex - startpicturex) - print_width) / 2 + startpicturex;
+                                                        float font_height = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
+                                                        textPaint.Color = SKColors.Black;
+                                                        textPaint.Style = SKPaintStyle.Stroke;
+                                                        textPaint.StrokeWidth = textPaint.TextSize / 5;
+                                                        textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        textPaint.Color = SKColors.Orange;
+                                                        textPaint.DrawTextOnCanvas(canvas, printtext, ontopx, cury - textPaint.FontMetrics.Ascent + (target_height - font_height) / 2);
+                                                        textPaint.Color = oldcolor;
+                                                        textPaint.Typeface = GHApp.LatoRegular;
+                                                    }
+#if GNH_MAP_PROFILING && DEBUG
+                                                    StopProfiling(GHProfilingStyle.Text);
+#endif
+                                                }
+                                                else
+                                                {
+                                                    SKRect emptyHandedSource = new SKRect(0, 0, GHApp._statusEmptyHandedBitmap.Width, GHApp._statusEmptyHandedBitmap.Height);
+                                                    float empty_handed_scale = rowheight / GHApp._statusEmptyHandedBitmap.Height;
+                                                    if (valtext != "")
+                                                    {
+                                                        string printtext = "+";
+                                                        print_width = textPaint.MeasureText(printtext);
+                                                        textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                                        curx += print_width;
+
+                                                        emptyHandedSource = new SKRect(GHApp._statusEmptyHandedBitmap.Width / 2, 0, GHApp._statusEmptyHandedBitmap.Width, GHApp._statusEmptyHandedBitmap.Height);
+                                                        target_width = empty_handed_scale * GHApp._statusEmptyHandedBitmap.Width / 2;
+                                                        target_height = empty_handed_scale * GHApp._statusEmptyHandedBitmap.Height;
+                                                    }
+                                                    else
+                                                    {
+                                                        target_width = empty_handed_scale * GHApp._statusEmptyHandedBitmap.Width;
+                                                        target_height = empty_handed_scale * GHApp._statusEmptyHandedBitmap.Height;
+                                                    }
+                                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+#if GNH_MAP_PROFILING && DEBUG
+                                                    StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                                    canvas.DrawImage(GHApp._statusEmptyHandedBitmap, emptyHandedSource, statusDest);
+#if GNH_MAP_PROFILING && DEBUG
+                                                    StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                                    curx += target_width;
+                                                    curx += innerspacing;
+                                                }
+                                            }
+
+                                            if (isenabled3 && valtext3 != "")
+                                            {
+                                                /* Throwing weapons in quiver (which are not ammo by definition) */
+                                                if (_weaponStyleObjDataItem[2] != null && _weaponStyleObjDataItem[2].IsThrowingWeapon && !_weaponStyleObjDataItem[2].IsAmmo)
+                                                {
+                                                    curx += innerspacing; /* More space to other weapon styles */
+                                                    target_width = target_scale * GHApp._statusQuiveredWeaponStyleBitmap.Width;
+                                                    target_height = target_scale * GHApp._statusQuiveredWeaponStyleBitmap.Height;
+                                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+#if GNH_MAP_PROFILING && DEBUG
+                                                    StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                                    canvas.DrawImage(GHApp._statusQuiveredWeaponStyleBitmap, statusDest,
+#if GNH_MAUI
+                                                        new SKSamplingOptions(SKFilterMode.Linear),
+#endif
+                                                        highQualityPaint);
+#if GNH_MAP_PROFILING && DEBUG
+                                                    StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                                    curx += target_width;
+                                                    curx += innerspacing;
+
+                                                    using (new SKAutoCanvasRestore(canvas, true))
+                                                    {
+                                                        GlyphImageSource gis = _paintGlyphImageSource;
+                                                        gis.ReferenceGamePage = this;
+                                                        gis.UseUpperSide = false;
+                                                        gis.AutoSize = true;
+                                                        gis.Glyph = Math.Abs(_weaponStyleObjDataItem[2].ObjData.gui_glyph);
+                                                        gis.ObjData = _weaponStyleObjDataItem[2];
+                                                        gis.DoAutoSize();
+                                                        float wep_scale = gis.Height == 0 ? 1.0f : target_height / gis.Height;
+                                                        float weppicturewidth = wep_scale * gis.Width;
+                                                        float weppictureheight = wep_scale * gis.Height;
+                                                        canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
+                                                        canvas.Scale(wep_scale);
+                                                        gis.DrawOnCanvas(canvas, usingGL, false, true);
+                                                        curx += weppicturewidth;
+                                                        curx += innerspacing;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        textPaint.TextSize = savedfontsize;
+                                        textPaint.Typeface = savedtypeface;
+                                    }
+                                    else
+                                    {
+#if GNH_MAP_PROFILING && DEBUG
+                                        StartProfiling(GHProfilingStyle.Text);
+#endif
+                                        if (valtext != "")
+                                        {
+                                            print_width = textPaint.MeasureText(valtext);
+                                            textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                            curx += print_width;
+                                        }
+                                        if (valtext2 != "")
+                                        {
+                                            string printtext = "/" + valtext2;
+                                            print_width = textPaint.MeasureText(printtext);
+                                            textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                            curx += print_width;
+                                        }
+#if GNH_MAP_PROFILING && DEBUG
+                                        StopProfiling(GHProfilingStyle.Text);
+#endif
+                                    }
+                                    curx += stdspacing;
+                                }
+
+                                /* Quick spell and wand */
+                                int qWandGlyph, qWandExceptinality, qSpellGlyph, qSpellOtyp;
+                                string qWandName, qSpellName;
+                                lock (_quickLock)
+                                {
+                                    qWandExceptinality = _quickWandExceptionality;
+                                    qWandGlyph = _quickWandGlyph;
+                                    qWandName = _quickWandName;
+                                    qSpellOtyp = _quickSpellOtyp;
+                                    qSpellGlyph = _quickSpellGlyph;
+                                    qSpellName = _quickSpellName;
+                                }
+                                if (qWandGlyph != GHApp.NoGlyph)
+                                {
+                                    target_width = target_scale * GHApp._statusQuickWandBitmap.Width;
+                                    target_height = target_scale * GHApp._statusQuickWandBitmap.Height;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                    canvas.DrawImage(GHApp._statusQuickWandBitmap, statusDest);
+                                    curx += target_width;
+                                    curx += innerspacing;
+
+                                    using (new SKAutoCanvasRestore(canvas, true))
+                                    {
+                                        GlyphImageSource gis = _paintGlyphImageSource;
+                                        gis.ReferenceGamePage = this;
+                                        gis.UseUpperSide = false;
+                                        gis.AutoSize = true;
+                                        gis.Glyph = Math.Abs(_quickWandGlyph);
+                                        gis.ObjData = new ObjectDataItem(new Obj() { exceptionality = (byte)qWandExceptinality }, new ObjClassData(), false);
+                                        gis.DoAutoSize();
+                                        float wep_scale = gis.Height == 0 ? 1.0f : target_height / gis.Height;
+                                        float weppicturewidth = wep_scale * gis.Width;
+                                        float weppictureheight = wep_scale * gis.Height;
+                                        canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
+                                        canvas.Scale(wep_scale);
+                                        gis.DrawOnCanvas(canvas, usingGL, false, true);
+                                        curx += weppicturewidth;
+                                    }
+                                    curx += stdspacing;
+                                }
+                                if (qSpellGlyph != GHApp.NoGlyph)
+                                {
+                                    target_width = target_scale * GHApp._statusQuickSpellBitmap.Width;
+                                    target_height = target_scale * GHApp._statusQuickSpellBitmap.Height;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                    canvas.DrawImage(GHApp._statusQuickSpellBitmap, statusDest);
+                                    curx += target_width;
+                                    curx += innerspacing;
+                                    using (new SKAutoCanvasRestore(canvas, true))
+                                    {
+                                        GlyphImageSource gis = _paintGlyphImageSource;
+                                        gis.ReferenceGamePage = this;
+                                        gis.UseUpperSide = true;
+                                        gis.AutoSize = true;
+                                        gis.ObjData = null;
+                                        gis.Glyph = Math.Abs(_quickSpellGlyph);
+                                        gis.DoAutoSize();
+                                        float wep_scale = gis.Height == 0 ? 1.0f : target_height / gis.Height;
+                                        float weppicturewidth = wep_scale * gis.Width;
+                                        float weppictureheight = wep_scale * gis.Height;
+                                        canvas.Translate(curx + 0, cury + (target_height - weppictureheight) / 2);
+                                        canvas.Scale(wep_scale);
+                                        gis.DrawOnCanvas(canvas, usingGL, false, true);
+                                        curx += weppicturewidth;
+                                    }
+                                    curx += stdspacing;
+                                }
+
+
+                                /* Right aligned */
+                                bool turnsprinted = false;
+                                float finalleftcurx = curx;
+                                curx = canvaswidth - hmargin;
+                                float turnsleft = curx;
+
+                                /* Turns */
+                                valtext = "";
+                                lock (StatusFieldLock)
+                                {
+                                    if (StatusFields[(int)NhStatusFields.BL_TIME] != null && StatusFields[(int)NhStatusFields.BL_TIME].IsEnabled && StatusFields[(int)NhStatusFields.BL_TIME].Text != null)
+                                    {
+                                        valtext = StatusFields[(int)NhStatusFields.BL_TIME].Text;
+                                    }
+                                }
+                                if (valtext != "")
+                                {
+                                    target_width = target_scale * GHApp._statusTurnsBitmap.Width;
+                                    target_height = target_scale * GHApp._statusTurnsBitmap.Height;
+                                    float print_width = textPaint.MeasureText(valtext);
+                                    float newcurx = canvaswidth - hmargin - print_width - innerspacing - target_width;
                                     if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
                                     {
-                                        goldprinted = true;
+                                        turnsprinted = true;
                                         curx = newcurx;
-                                        goldleft = curx;
+                                        turnsleft = curx;
                                         statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                        canvas.DrawImage(GHApp._statusGoldBitmap, statusDest);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                        canvas.DrawImage(GHApp._statusTurnsBitmap, statusDest);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StopProfiling(GHProfilingStyle.Bitmap);
+#endif
                                         curx += target_width;
                                         curx += innerspacing;
-                                        textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StartProfiling(GHProfilingStyle.Text);
+#endif
+                                        textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StopProfiling(GHProfilingStyle.Text);
+#endif
                                         curx += print_width;
                                     }
                                 }
 
-                                float scoreleft = curx;
-                                bool scoreprinted = false;
-                                if (ShowScore)
+                                /* Gold */
+                                bool goldprinted = false;
+                                float goldleft = curx;
+                                if (!RightAligned2ndRow)
                                 {
-                                    /* Score */
                                     valtext = "";
                                     lock (StatusFieldLock)
                                     {
-                                        if (StatusFields[(int)NhStatusFields.BL_SCORE] != null && StatusFields[(int)NhStatusFields.BL_SCORE].IsEnabled && StatusFields[(int)NhStatusFields.BL_SCORE].Text != null)
+                                        if (StatusFields[(int)NhStatusFields.BL_GOLD] != null && StatusFields[(int)NhStatusFields.BL_GOLD].IsEnabled && StatusFields[(int)NhStatusFields.BL_GOLD].Text != null)
                                         {
-                                            valtext = StatusFields[(int)NhStatusFields.BL_SCORE].Text;
+                                            valtext = StatusFields[(int)NhStatusFields.BL_GOLD].Text;
                                         }
                                     }
                                     if (valtext != "")
                                     {
-                                        target_width = target_scale * GHApp._statusScoreBitmap.Width;
-                                        target_height = target_scale * GHApp._statusScoreBitmap.Height;
-                                        float print_width = textPaint.MeasureText(valtext);
-                                        float newcurx = goldleft - (goldprinted || turnsprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
+                                        string printtext;
+                                        if (valtext.Length > 11 && valtext.Substring(0, 1) == "\\")
+                                            printtext = valtext.Substring(11);
+                                        else
+                                            printtext = valtext;
+
+                                        target_width = target_scale * GHApp._statusGoldBitmap.Width;
+                                        target_height = target_scale * GHApp._statusGoldBitmap.Height;
+                                        float print_width = textPaint.MeasureText(printtext);
+                                        float newcurx = turnsleft - (turnsprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
                                         if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
                                         {
-                                            scoreprinted = true;
+                                            goldprinted = true;
                                             curx = newcurx;
-                                            scoreleft = curx;
+                                            goldleft = curx;
                                             statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                            canvas.DrawImage(GHApp._statusScoreBitmap, statusDest);
+                                            canvas.DrawImage(GHApp._statusGoldBitmap, statusDest);
                                             curx += target_width;
                                             curx += innerspacing;
-                                            textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                            textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
                                             curx += print_width;
                                         }
                                     }
-                                }
-                                if (ShowXP)
-                                {
-                                    /* XP Points */
-                                    valtext = "";
-                                    lock (StatusFieldLock)
+
+                                    float scoreleft = curx;
+                                    bool scoreprinted = false;
+                                    if (ShowScore)
                                     {
-                                        if (StatusFields[(int)NhStatusFields.BL_EXP] != null && StatusFields[(int)NhStatusFields.BL_EXP].IsEnabled && StatusFields[(int)NhStatusFields.BL_EXP].Text != null)
+                                        /* Score */
+                                        valtext = "";
+                                        lock (StatusFieldLock)
                                         {
-                                            valtext = StatusFields[(int)NhStatusFields.BL_EXP].Text;
+                                            if (StatusFields[(int)NhStatusFields.BL_SCORE] != null && StatusFields[(int)NhStatusFields.BL_SCORE].IsEnabled && StatusFields[(int)NhStatusFields.BL_SCORE].Text != null)
+                                            {
+                                                valtext = StatusFields[(int)NhStatusFields.BL_SCORE].Text;
+                                            }
+                                        }
+                                        if (valtext != "")
+                                        {
+                                            target_width = target_scale * GHApp._statusScoreBitmap.Width;
+                                            target_height = target_scale * GHApp._statusScoreBitmap.Height;
+                                            float print_width = textPaint.MeasureText(valtext);
+                                            float newcurx = goldleft - (goldprinted || turnsprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
+                                            if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
+                                            {
+                                                scoreprinted = true;
+                                                curx = newcurx;
+                                                scoreleft = curx;
+                                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                                canvas.DrawImage(GHApp._statusScoreBitmap, statusDest);
+                                                curx += target_width;
+                                                curx += innerspacing;
+                                                textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                                curx += print_width;
+                                            }
                                         }
                                     }
-                                    if (valtext != "")
+                                    if (ShowXP)
                                     {
-                                        target_width = target_scale * GHApp._statusXPPointsBitmap.Width;
-                                        target_height = target_scale * GHApp._statusXPPointsBitmap.Height;
-                                        float print_width = textPaint.MeasureText(valtext);
-                                        float newcurx = scoreleft - (goldprinted || turnsprinted || scoreprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
-                                        if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
+                                        /* XP Points */
+                                        valtext = "";
+                                        lock (StatusFieldLock)
                                         {
-                                            curx = newcurx;
-                                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                            canvas.DrawImage(GHApp._statusXPPointsBitmap, statusDest);
-                                            curx += target_width;
-                                            curx += innerspacing;
-                                            textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
-                                            curx += print_width;
+                                            if (StatusFields[(int)NhStatusFields.BL_EXP] != null && StatusFields[(int)NhStatusFields.BL_EXP].IsEnabled && StatusFields[(int)NhStatusFields.BL_EXP].Text != null)
+                                            {
+                                                valtext = StatusFields[(int)NhStatusFields.BL_EXP].Text;
+                                            }
+                                        }
+                                        if (valtext != "")
+                                        {
+                                            target_width = target_scale * GHApp._statusXPPointsBitmap.Width;
+                                            target_height = target_scale * GHApp._statusXPPointsBitmap.Height;
+                                            float print_width = textPaint.MeasureText(valtext);
+                                            float newcurx = scoreleft - (goldprinted || turnsprinted || scoreprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
+                                            if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
+                                            {
+                                                curx = newcurx;
+                                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                                canvas.DrawImage(GHApp._statusXPPointsBitmap, statusDest,
+#if GNH_MAUI
+                                                    new SKSamplingOptions(SKFilterMode.Linear),
+#endif
+                                                    highQualityPaint);
+                                                curx += target_width;
+                                                curx += innerspacing;
+                                                textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                                curx += print_width;
+                                            }
                                         }
                                     }
                                 }
-                            }
 
 
-                            /* Second row */
-                            curx = hmargin;
-                            cury += rowheight + rowmargin;
+                                /* Second row */
+                                curx = hmargin;
+                                cury += rowheight + rowmargin;
 
-                            /* Title */
-                            valtext = "";
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)NhStatusFields.BL_TITLE] != null && StatusFields[(int)NhStatusFields.BL_TITLE].IsEnabled && StatusFields[(int)NhStatusFields.BL_TITLE].Text != null)
+                                /* Title */
+                                valtext = "";
+                                lock (StatusFieldLock)
                                 {
-                                    valtext = StatusFields[(int)NhStatusFields.BL_TITLE].Text;
+                                    if (StatusFields[(int)NhStatusFields.BL_TITLE] != null && StatusFields[(int)NhStatusFields.BL_TITLE].IsEnabled && StatusFields[(int)NhStatusFields.BL_TITLE].Text != null)
+                                    {
+                                        valtext = StatusFields[(int)NhStatusFields.BL_TITLE].Text;
+                                    }
                                 }
-                            }
-                            valtext = valtext.Trim();
-                            if (valtext != "")
-                            {
+                                valtext = valtext.Trim();
+                                if (valtext != "")
+                                {
 #if GNH_MAP_PROFILING && DEBUG
                                 StartProfiling(GHProfilingStyle.Text);
 #endif
-                                textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                    textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
 #if GNH_MAP_PROFILING && DEBUG
                                 StopProfiling(GHProfilingStyle.Text);
 #endif
-                                float textprint_length = textPaint.MeasureText(valtext);
-                                curx += textprint_length;
-                                curx += stdspacing;
-                            }
-
-                            {
-                                /* Condition, status and buff marks */
-                                float marksize = rowheight * 0.80f;
-                                float markpadding = marksize / 8;
-                                ulong status_bits;
-                                lock (_uLock)
-                                {
-                                    status_bits = _u_status_bits;
-                                }
-                                if (status_bits != 0)
-                                {
-                                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                    foreach (int status_mark in _statusmarkorder)
-                                    {
-                                        ulong statusbit = 1UL << status_mark;
-                                        if ((status_bits & statusbit) != 0)
-                                        {
-                                            int mglyph = (int)game_ui_tile_types.STATUS_MARKS + status_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
-                                            int mtile = GHApp.Glyph2Tile[mglyph];
-                                            int sheet_idx = GHApp.TileSheetIdx(mtile);
-                                            int tile_x = GHApp.TileSheetX(mtile);
-                                            int tile_y = GHApp.TileSheetY(mtile);
-                                            int within_tile_x = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
-                                            int within_tile_y = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
-                                            int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
-                                            int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
-
-                                            SKRect source_rt = new SKRect();
-                                            source_rt.Left = c_x;
-                                            source_rt.Right = c_x + GHConstants.StatusMarkWidth;
-                                            source_rt.Top = c_y;
-                                            source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
-
-                                            SKRect target_rt = new SKRect();
-                                            target_rt.Left = curx;
-                                            target_rt.Right = target_rt.Left + marksize;
-                                            target_rt.Top = cury + (rowheight - marksize) / 2;
-                                            target_rt.Bottom = target_rt.Top + marksize;
-#if GNH_MAP_PROFILING && DEBUG
-                                            StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                            canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
-#if GNH_MAP_PROFILING && DEBUG
-                                            StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-
-                                            curx += marksize;
-                                            curx += markpadding;
-                                        }
-                                    }
+                                    float textprint_length = textPaint.MeasureText(valtext);
+                                    curx += textprint_length;
+                                    curx += stdspacing;
                                 }
 
-                                ulong condition_bits;
-                                lock (_uLock)
                                 {
-                                    condition_bits = _u_condition_bits;
-                                }
-                                if (condition_bits != 0)
-                                {
-                                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                    for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
-                                    {
-                                        ulong conditionbit = 1UL << condition_mark;
-                                        if ((condition_bits & conditionbit) != 0)
-                                        {
-                                            int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + condition_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
-                                            int mtile = GHApp.Glyph2Tile[mglyph];
-                                            int sheet_idx = GHApp.TileSheetIdx(mtile);
-                                            int tile_x = GHApp.TileSheetX(mtile);
-                                            int tile_y = GHApp.TileSheetY(mtile);
-                                            int within_tile_x = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
-                                            int within_tile_y = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
-                                            int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
-                                            int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
-
-                                            SKRect source_rt = new SKRect();
-                                            source_rt.Left = c_x;
-                                            source_rt.Right = c_x + GHConstants.StatusMarkWidth;
-                                            source_rt.Top = c_y;
-                                            source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
-
-                                            SKRect target_rt = new SKRect();
-                                            target_rt.Left = curx;
-                                            target_rt.Right = target_rt.Left + marksize;
-                                            target_rt.Top = cury + (rowheight - marksize) / 2;
-                                            target_rt.Bottom = target_rt.Top + marksize;
-#if GNH_MAP_PROFILING && DEBUG
-                                            StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                            canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
-#if GNH_MAP_PROFILING && DEBUG
-                                            StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-
-                                            curx += marksize;
-                                            curx += markpadding;
-                                        }
-                                    }
-                                }
-
-                                ulong buff_bits;
-                                for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
-                                {
+                                    /* Condition, status and buff marks */
+                                    float marksize = rowheight * 0.80f;
+                                    float markpadding = marksize / 8;
+                                    ulong status_bits;
                                     lock (_uLock)
                                     {
-                                        buff_bits = _u_buff_bits[buff_ulong];
+                                        status_bits = _u_status_bits;
                                     }
-                                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                    if (buff_bits != 0)
+                                    if (status_bits != 0)
                                     {
-                                        for (int buff_idx = 0; buff_idx < 32; buff_idx++)
+                                        int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                        foreach (int status_mark in _statusmarkorder)
                                         {
-                                            ulong buffbit = 1UL << buff_idx;
-                                            if ((buff_bits & buffbit) != 0)
+                                            ulong statusbit = 1UL << status_mark;
+                                            if ((status_bits & statusbit) != 0)
                                             {
-                                                int propidx = buff_ulong * 32 + buff_idx;
-                                                if (propidx > GHConstants.LAST_PROP)
-                                                    break;
-                                                int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + GHApp.BuffTileOff;
+                                                int mglyph = (int)game_ui_tile_types.STATUS_MARKS + status_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
                                                 int mtile = GHApp.Glyph2Tile[mglyph];
                                                 int sheet_idx = GHApp.TileSheetIdx(mtile);
                                                 int tile_x = GHApp.TileSheetX(mtile);
                                                 int tile_y = GHApp.TileSheetY(mtile);
-
-                                                int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
-                                                int within_tile_x = buff_mark % tiles_per_row;
-                                                int within_tile_y = buff_mark / tiles_per_row;
+                                                int within_tile_x = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
+                                                int within_tile_y = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                                                 int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
                                                 int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
 
@@ -9436,11 +9351,11 @@ namespace GnollHackX.Pages.Game
                                                 target_rt.Top = cury + (rowheight - marksize) / 2;
                                                 target_rt.Bottom = target_rt.Top + marksize;
 #if GNH_MAP_PROFILING && DEBUG
-                                                StartProfiling(GHProfilingStyle.Bitmap);
+                                            StartProfiling(GHProfilingStyle.Bitmap);
 #endif
                                                 canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
 #if GNH_MAP_PROFILING && DEBUG
-                                                StopProfiling(GHProfilingStyle.Bitmap);
+                                            StopProfiling(GHProfilingStyle.Bitmap);
 #endif
 
                                                 curx += marksize;
@@ -9448,218 +9363,366 @@ namespace GnollHackX.Pages.Game
                                             }
                                         }
                                     }
-                                }
 
-                                bool colorfound = false;
-                                for (int i = (int)NhColor.CLR_BLACK + 1; i < (int)NhColor.CLR_WHITE; i++)
-                                {
-                                    if (i == (int)NhColor.NO_COLOR || i == (int)NhColor.CLR_GRAY)
-                                        continue;
-
-                                    colorfound = false;
-                                    for (int j = 0; j < 6; j++)
+                                    ulong condition_bits;
+                                    lock (_uLock)
                                     {
-                                        lock (StatusFieldLock)
+                                        condition_bits = _u_condition_bits;
+                                    }
+                                    if (condition_bits != 0)
+                                    {
+                                        int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                        for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
                                         {
-                                            if (StatusFields[(int)NhStatusFields.BL_STR + j] != null && StatusFields[(int)NhStatusFields.BL_STR + j].IsEnabled && StatusFields[(int)NhStatusFields.BL_STR + j].Text != null)
+                                            ulong conditionbit = 1UL << condition_mark;
+                                            if ((condition_bits & conditionbit) != 0)
                                             {
-                                                if (StatusFields[(int)NhStatusFields.BL_STR + j].Color == i)
+                                                int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + condition_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
+                                                int mtile = GHApp.Glyph2Tile[mglyph];
+                                                int sheet_idx = GHApp.TileSheetIdx(mtile);
+                                                int tile_x = GHApp.TileSheetX(mtile);
+                                                int tile_y = GHApp.TileSheetY(mtile);
+                                                int within_tile_x = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
+                                                int within_tile_y = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
+                                                int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                                int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                                SKRect source_rt = new SKRect();
+                                                source_rt.Left = c_x;
+                                                source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                                source_rt.Top = c_y;
+                                                source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                                SKRect target_rt = new SKRect();
+                                                target_rt.Left = curx;
+                                                target_rt.Right = target_rt.Left + marksize;
+                                                target_rt.Top = cury + (rowheight - marksize) / 2;
+                                                target_rt.Bottom = target_rt.Top + marksize;
+#if GNH_MAP_PROFILING && DEBUG
+                                            StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+#if GNH_MAP_PROFILING && DEBUG
+                                            StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+
+                                                curx += marksize;
+                                                curx += markpadding;
+                                            }
+                                        }
+                                    }
+
+                                    ulong buff_bits;
+                                    for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
+                                    {
+                                        lock (_uLock)
+                                        {
+                                            buff_bits = _u_buff_bits[buff_ulong];
+                                        }
+                                        int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                        if (buff_bits != 0)
+                                        {
+                                            for (int buff_idx = 0; buff_idx < 32; buff_idx++)
+                                            {
+                                                ulong buffbit = 1UL << buff_idx;
+                                                if ((buff_bits & buffbit) != 0)
                                                 {
-                                                    colorfound = true;
-                                                    break;
+                                                    int propidx = buff_ulong * 32 + buff_idx;
+                                                    if (propidx > GHConstants.LAST_PROP)
+                                                        break;
+                                                    int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + GHApp.BuffTileOff;
+                                                    int mtile = GHApp.Glyph2Tile[mglyph];
+                                                    int sheet_idx = GHApp.TileSheetIdx(mtile);
+                                                    int tile_x = GHApp.TileSheetX(mtile);
+                                                    int tile_y = GHApp.TileSheetY(mtile);
+
+                                                    int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
+                                                    int within_tile_x = buff_mark % tiles_per_row;
+                                                    int within_tile_y = buff_mark / tiles_per_row;
+                                                    int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                                    int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                                    SKRect source_rt = new SKRect();
+                                                    source_rt.Left = c_x;
+                                                    source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                                    source_rt.Top = c_y;
+                                                    source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                                    SKRect target_rt = new SKRect();
+                                                    target_rt.Left = curx;
+                                                    target_rt.Right = target_rt.Left + marksize;
+                                                    target_rt.Top = cury + (rowheight - marksize) / 2;
+                                                    target_rt.Bottom = target_rt.Top + marksize;
+#if GNH_MAP_PROFILING && DEBUG
+                                                StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                                    canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+#if GNH_MAP_PROFILING && DEBUG
+                                                StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+
+                                                    curx += marksize;
+                                                    curx += markpadding;
                                                 }
                                             }
                                         }
                                     }
-                                    if (colorfound)
+
+                                    bool colorfound = false;
+                                    for (int i = (int)NhColor.CLR_BLACK + 1; i < (int)NhColor.CLR_WHITE; i++)
                                     {
-                                        SKColor dotcolor = UIUtils.NHColor2SKColorCore(i, 0, true, false);
-                                        SKPoint dotpoint = new SKPoint(curx + marksize / 4, cury + (rowheight - marksize) / 2 + marksize / 2);
-                                        float dotradius = marksize / 8;
-                                        textPaint.Color = dotcolor;
-                                        textPaint.Style = SKPaintStyle.Fill;
-                                        canvas.DrawCircle(dotpoint, dotradius, textPaint.Paint);
-                                        curx += marksize / 2;
-                                        curx += markpadding;
+                                        if (i == (int)NhColor.NO_COLOR || i == (int)NhColor.CLR_GRAY)
+                                            continue;
+
+                                        colorfound = false;
+                                        for (int j = 0; j < 6; j++)
+                                        {
+                                            lock (StatusFieldLock)
+                                            {
+                                                if (StatusFields[(int)NhStatusFields.BL_STR + j] != null && StatusFields[(int)NhStatusFields.BL_STR + j].IsEnabled && StatusFields[(int)NhStatusFields.BL_STR + j].Text != null)
+                                                {
+                                                    if (StatusFields[(int)NhStatusFields.BL_STR + j].Color == i)
+                                                    {
+                                                        colorfound = true;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if (colorfound)
+                                        {
+                                            SKColor dotcolor = UIUtils.NHColor2SKColorCore(i, 0, true, false);
+                                            SKPoint dotpoint = new SKPoint(curx + marksize / 4, cury + (rowheight - marksize) / 2 + marksize / 2);
+                                            float dotradius = marksize / 8;
+                                            textPaint.Color = dotcolor;
+                                            textPaint.Style = SKPaintStyle.Fill;
+                                            canvas.DrawCircle(dotpoint, dotradius, textPaint.Paint);
+                                            curx += marksize / 2;
+                                            curx += markpadding;
+                                        }
                                     }
+                                    textPaint.Color = SKColors.White;
                                 }
-                                textPaint.Color = SKColors.White;
-                            }
 
-                            float final2ndrowleftcurx = curx;
+                                float final2ndrowleftcurx = curx;
 
 
-                            /* Right aligned */
-                            float dungeonleft = canvaswidth - hmargin;
-                            /* Dungeon level */
-                            valtext = "";
-                            lock (StatusFieldLock)
-                            {
-                                if (StatusFields[(int)NhStatusFields.BL_LEVELDESC] != null && StatusFields[(int)NhStatusFields.BL_LEVELDESC].IsEnabled && StatusFields[(int)NhStatusFields.BL_LEVELDESC].Text != null)
-                                {
-                                    valtext = StatusFields[(int)NhStatusFields.BL_LEVELDESC].Text;
-                                }
-                            }
-                            if (valtext != "")
-                            {
-                                string printtext;
-                                if (valtext.Length > 3 && valtext.Substring(0, 3) == "DL:")
-                                    printtext = valtext.Substring(3);
-                                else if (valtext.Length > 5 && valtext.Substring(0, 5) == "Dlvl:")
-                                    printtext = valtext.Substring(5);
-                                else
-                                    printtext = valtext;
-
-                                target_width = target_scale * GHApp._statusDungeonLevelBitmap.Width;
-                                target_height = target_scale * GHApp._statusDungeonLevelBitmap.Height;
-                                float print_width = textPaint.MeasureText(printtext);
-                                curx = canvaswidth - hmargin - print_width - innerspacing - target_width;
-                                dungeonleft = curx;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-#if GNH_MAP_PROFILING && DEBUG
-                                StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                canvas.DrawImage(GHApp._statusDungeonLevelBitmap, statusDest);
-#if GNH_MAP_PROFILING && DEBUG
-                                StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                curx += target_width;
-                                curx += innerspacing;
-#if GNH_MAP_PROFILING && DEBUG
-                                StartProfiling(GHProfilingStyle.Text);
-#endif
-                                textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
-#if GNH_MAP_PROFILING && DEBUG
-                                StopProfiling(GHProfilingStyle.Text);
-#endif
-                                curx += print_width;
-                            }
-
-                            float desktopleft = dungeonleft;
-                            if (RightAligned2ndRow)
-                            {
+                                /* Right aligned */
+                                float dungeonleft = canvaswidth - hmargin;
+                                /* Dungeon level */
                                 valtext = "";
                                 lock (StatusFieldLock)
                                 {
-                                    if (StatusFields[(int)NhStatusFields.BL_GOLD] != null && StatusFields[(int)NhStatusFields.BL_GOLD].IsEnabled && StatusFields[(int)NhStatusFields.BL_GOLD].Text != null)
+                                    if (StatusFields[(int)NhStatusFields.BL_LEVELDESC] != null && StatusFields[(int)NhStatusFields.BL_LEVELDESC].IsEnabled && StatusFields[(int)NhStatusFields.BL_LEVELDESC].Text != null)
                                     {
-                                        valtext = StatusFields[(int)NhStatusFields.BL_GOLD].Text;
+                                        valtext = StatusFields[(int)NhStatusFields.BL_LEVELDESC].Text;
                                     }
                                 }
                                 if (valtext != "")
                                 {
                                     string printtext;
-                                    if (valtext.Length > 11 && valtext.Substring(0, 1) == "\\")
-                                        printtext = valtext.Substring(11);
+                                    if (valtext.Length > 3 && valtext.Substring(0, 3) == "DL:")
+                                        printtext = valtext.Substring(3);
+                                    else if (valtext.Length > 5 && valtext.Substring(0, 5) == "Dlvl:")
+                                        printtext = valtext.Substring(5);
                                     else
                                         printtext = valtext;
 
-                                    target_width = target_scale * GHApp._statusGoldBitmap.Width;
-                                    target_height = target_scale * GHApp._statusGoldBitmap.Height;
+                                    target_width = target_scale * GHApp._statusDungeonLevelBitmap.Width;
+                                    target_height = target_scale * GHApp._statusDungeonLevelBitmap.Height;
                                     float print_width = textPaint.MeasureText(printtext);
-                                    float newcurx = desktopleft - stdspacing - print_width - innerspacing - target_width;
-                                    if (newcurx >= final2ndrowleftcurx) /* Avoid printing status bar elements over each other */
-                                    {
-                                        curx = newcurx;
-                                        desktopleft = curx;
-                                        statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                        canvas.DrawImage(GHApp._statusGoldBitmap, statusDest);
-                                        curx += target_width;
-                                        curx += innerspacing;
-                                        textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
-                                        curx += print_width;
-                                    }
+                                    curx = canvaswidth - hmargin - print_width - innerspacing - target_width;
+                                    dungeonleft = curx;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+#if GNH_MAP_PROFILING && DEBUG
+                                StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                    canvas.DrawImage(GHApp._statusDungeonLevelBitmap, statusDest);
+#if GNH_MAP_PROFILING && DEBUG
+                                StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                    curx += target_width;
+                                    curx += innerspacing;
+#if GNH_MAP_PROFILING && DEBUG
+                                StartProfiling(GHProfilingStyle.Text);
+#endif
+                                    textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
+#if GNH_MAP_PROFILING && DEBUG
+                                StopProfiling(GHProfilingStyle.Text);
+#endif
+                                    curx += print_width;
                                 }
 
-                                if (ShowScore)
+                                float desktopleft = dungeonleft;
+                                if (RightAligned2ndRow)
                                 {
-                                    /* Score */
                                     valtext = "";
                                     lock (StatusFieldLock)
                                     {
-                                        if (StatusFields[(int)NhStatusFields.BL_SCORE] != null && StatusFields[(int)NhStatusFields.BL_SCORE].IsEnabled && StatusFields[(int)NhStatusFields.BL_SCORE].Text != null)
+                                        if (StatusFields[(int)NhStatusFields.BL_GOLD] != null && StatusFields[(int)NhStatusFields.BL_GOLD].IsEnabled && StatusFields[(int)NhStatusFields.BL_GOLD].Text != null)
                                         {
-                                            valtext = StatusFields[(int)NhStatusFields.BL_SCORE].Text;
+                                            valtext = StatusFields[(int)NhStatusFields.BL_GOLD].Text;
                                         }
                                     }
                                     if (valtext != "")
                                     {
-                                        target_width = target_scale * GHApp._statusScoreBitmap.Width;
-                                        target_height = target_scale * GHApp._statusScoreBitmap.Height;
-                                        float print_width = textPaint.MeasureText(valtext);
+                                        string printtext;
+                                        if (valtext.Length > 11 && valtext.Substring(0, 1) == "\\")
+                                            printtext = valtext.Substring(11);
+                                        else
+                                            printtext = valtext;
+
+                                        target_width = target_scale * GHApp._statusGoldBitmap.Width;
+                                        target_height = target_scale * GHApp._statusGoldBitmap.Height;
+                                        float print_width = textPaint.MeasureText(printtext);
                                         float newcurx = desktopleft - stdspacing - print_width - innerspacing - target_width;
                                         if (newcurx >= final2ndrowleftcurx) /* Avoid printing status bar elements over each other */
                                         {
                                             curx = newcurx;
                                             desktopleft = curx;
                                             statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                            canvas.DrawImage(GHApp._statusScoreBitmap, statusDest);
+                                            canvas.DrawImage(GHApp._statusGoldBitmap, statusDest);
                                             curx += target_width;
                                             curx += innerspacing;
-                                            textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                            textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
                                             curx += print_width;
                                         }
                                     }
-                                }
-                                if (ShowXP)
-                                {
-                                    /* XP Points */
-                                    valtext = "";
-                                    lock (StatusFieldLock)
+
+                                    if (ShowScore)
                                     {
-                                        if (StatusFields[(int)NhStatusFields.BL_EXP] != null && StatusFields[(int)NhStatusFields.BL_EXP].IsEnabled && StatusFields[(int)NhStatusFields.BL_EXP].Text != null)
+                                        /* Score */
+                                        valtext = "";
+                                        lock (StatusFieldLock)
                                         {
-                                            valtext = StatusFields[(int)NhStatusFields.BL_EXP].Text;
+                                            if (StatusFields[(int)NhStatusFields.BL_SCORE] != null && StatusFields[(int)NhStatusFields.BL_SCORE].IsEnabled && StatusFields[(int)NhStatusFields.BL_SCORE].Text != null)
+                                            {
+                                                valtext = StatusFields[(int)NhStatusFields.BL_SCORE].Text;
+                                            }
+                                        }
+                                        if (valtext != "")
+                                        {
+                                            target_width = target_scale * GHApp._statusScoreBitmap.Width;
+                                            target_height = target_scale * GHApp._statusScoreBitmap.Height;
+                                            float print_width = textPaint.MeasureText(valtext);
+                                            float newcurx = desktopleft - stdspacing - print_width - innerspacing - target_width;
+                                            if (newcurx >= final2ndrowleftcurx) /* Avoid printing status bar elements over each other */
+                                            {
+                                                curx = newcurx;
+                                                desktopleft = curx;
+                                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                                canvas.DrawImage(GHApp._statusScoreBitmap, statusDest);
+                                                curx += target_width;
+                                                curx += innerspacing;
+                                                textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                                curx += print_width;
+                                            }
                                         }
                                     }
-                                    if (valtext != "")
+                                    if (ShowXP)
                                     {
-                                        target_width = target_scale * GHApp._statusXPPointsBitmap.Width;
-                                        target_height = target_scale * GHApp._statusXPPointsBitmap.Height;
-                                        float print_width = textPaint.MeasureText(valtext);
-                                        float newcurx = desktopleft - stdspacing - print_width - innerspacing - target_width;
-                                        if (newcurx >= final2ndrowleftcurx) /* Avoid printing status bar elements over each other */
+                                        /* XP Points */
+                                        valtext = "";
+                                        lock (StatusFieldLock)
                                         {
-                                            curx = newcurx;
-                                            desktopleft = curx;
-                                            statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                            canvas.DrawImage(GHApp._statusXPPointsBitmap, statusDest);
-                                            curx += target_width;
-                                            curx += innerspacing;
-                                            textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
-                                            curx += print_width;
+                                            if (StatusFields[(int)NhStatusFields.BL_EXP] != null && StatusFields[(int)NhStatusFields.BL_EXP].IsEnabled && StatusFields[(int)NhStatusFields.BL_EXP].Text != null)
+                                            {
+                                                valtext = StatusFields[(int)NhStatusFields.BL_EXP].Text;
+                                            }
+                                        }
+                                        if (valtext != "")
+                                        {
+                                            target_width = target_scale * GHApp._statusXPPointsBitmap.Width;
+                                            target_height = target_scale * GHApp._statusXPPointsBitmap.Height;
+                                            float print_width = textPaint.MeasureText(valtext);
+                                            float newcurx = desktopleft - stdspacing - print_width - innerspacing - target_width;
+                                            if (newcurx >= final2ndrowleftcurx) /* Avoid printing status bar elements over each other */
+                                            {
+                                                curx = newcurx;
+                                                desktopleft = curx;
+                                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                                canvas.DrawImage(GHApp._statusXPPointsBitmap, statusDest);
+                                                curx += target_width;
+                                                curx += innerspacing;
+                                                textPaint.DrawTextOnCanvas(canvas, valtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                                curx += print_width;
+                                            }
                                         }
                                     }
                                 }
-                            }
 
-                            double chargeLevel = GHApp.BatteryChargeLevel;
-                            float chargePercentage = (float)chargeLevel / 100;
-                            if (ShowBattery || chargePercentage <= GHConstants.CriticalBatteryChargeLevel)
-                            {
-                                target_width = target_scale * GHApp._batteryFrameBitmap.Width;
-                                target_height = target_scale * GHApp._batteryFrameBitmap.Height;
-                                curx = desktopleft - innerspacing * 5 - target_width;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                canvas.DrawImage(GHApp._batteryFrameBitmap, statusDest);
-                                desktopleft = curx;
-
-                                int alen = _shineAnimation.Length;
-                                if (chargePercentage <= GHConstants.CriticalBatteryChargeLevel)
+                                double chargeLevel = GHApp.BatteryChargeLevel;
+                                float chargePercentage = (float)chargeLevel / 100;
+                                if (ShowBattery || chargePercentage <= GHConstants.CriticalBatteryChargeLevel)
                                 {
-                                    textPaint.Color = _magicShineOutlineColor.WithAlpha((byte)(_shineAnimation[generalcountervalue % alen] * 255));
-                                    canvas.DrawImage(GHApp._batteryRedFrameBitmap, statusDest, textPaint.Paint);
+                                    target_width = target_scale * GHApp._batteryFrameBitmap.Width;
+                                    target_height = target_scale * GHApp._batteryFrameBitmap.Height;
+                                    curx = desktopleft - innerspacing * 5 - target_width;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                    canvas.DrawImage(GHApp._batteryFrameBitmap, statusDest);
+                                    desktopleft = curx;
+
+                                    int alen = _shineAnimation.Length;
+                                    if (chargePercentage <= GHConstants.CriticalBatteryChargeLevel)
+                                    {
+                                        textPaint.Color = _magicShineOutlineColor.WithAlpha((byte)(_shineAnimation[generalcountervalue % alen] * 255));
+                                        canvas.DrawImage(GHApp._batteryRedFrameBitmap, statusDest, textPaint.Paint);
+                                    }
+
+                                    const int topMargin = 12, bottomMargin = 5, hMargin = 6;
+
+                                    if (chargeLevel <= 9)
+                                    {
+                                        string drawtext = ((int)chargeLevel).ToString();
+                                        textPaint.TextSize = diffontsize;
+                                        //textPaint.TextAlign = SKTextAlign.Center;
+                                        float alpha = _shineAnimation[generalcountervalue % alen];
+                                        textPaint.Color = new SKColor(255, (byte)(alpha * 0 + (1 - alpha) * 255), (byte)(alpha * 0 + (1 - alpha) * 255));
+                                        float vsize = target_height - (topMargin + bottomMargin) * target_scale;
+                                        float fsize = textPaint.FontSpacing;
+                                        float vpadding = (vsize - fsize) / 2;
+                                        SKPoint drawpoint = new SKPoint(curx + target_width / 2, cury + (topMargin * target_scale) + vpadding - textPaint.FontMetrics.Ascent);
+                                        textPaint.DrawTextOnCanvas(canvas, drawtext, drawpoint, SKTextAlign.Center);
+                                        //textPaint.TextAlign = SKTextAlign.Left;
+                                        textPaint.TextSize = basefontsize;
+                                        textPaint.Color = SKColors.White;
+                                    }
+
+                                    int totalHeight = GHApp._batteryFrameBitmap.Height;
+                                    int fillHeight = totalHeight - topMargin - bottomMargin;
+                                    float calcFillHeight = fillHeight * chargePercentage;
+                                    float addedFillTop = fillHeight - calcFillHeight;
+
+                                    float r_mult = chargePercentage <= 0.25f ? chargePercentage * 2.0f + 0.5f : chargePercentage <= 0.5f ? 1.0f : (1.0f - chargePercentage) * 2.0f;
+                                    float g_mult = chargePercentage <= 0.25f ? 0 : chargePercentage <= 0.5f ? (chargePercentage - 0.25f) * 4.0f : 1.0f;
+                                    textPaint.Color = new SKColor((byte)(255 * r_mult), (byte)(255 * g_mult), 0);
+
+                                    statusDest = new SKRect(curx + hMargin * target_scale, cury + (topMargin + addedFillTop) * target_scale, curx + target_width - hMargin * target_scale, cury + target_height - bottomMargin * target_scale);
+                                    canvas.DrawRect(statusDest, textPaint.Paint);
+                                    textPaint.Color = SKColors.White;
+
+                                    curx += target_width;
                                 }
 
-                                const int topMargin = 12, bottomMargin = 5, hMargin = 6;
-
-                                if (chargeLevel <= 9)
+                                if (ShowFPS)
                                 {
-                                    string drawtext = ((int)chargeLevel).ToString();
+                                    target_width = target_scale * GHApp._fpsBitmap.Width;
+                                    target_height = target_scale * GHApp._fpsBitmap.Height;
+                                    curx = desktopleft - innerspacing * 5 - target_width;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                    canvas.DrawImage(GHApp._fpsBitmap, statusDest);
+                                    desktopleft = curx;
+
+                                    string drawtext;
+                                    lock (_fpslock)
+                                    {
+                                        drawtext = string.Format("{0:0.0}", _fps);
+                                    }
+
+                                    const int topMargin = 4, bottomMargin = 16;
+                                    textPaint.Color = SKColors.White;
                                     textPaint.TextSize = diffontsize;
                                     //textPaint.TextAlign = SKTextAlign.Center;
-                                    float alpha = _shineAnimation[generalcountervalue % alen];
-                                    textPaint.Color = new SKColor(255, (byte)(alpha * 0 + (1 - alpha) * 255), (byte)(alpha * 0 + (1 - alpha) * 255));
                                     float vsize = target_height - (topMargin + bottomMargin) * target_scale;
                                     float fsize = textPaint.FontSpacing;
                                     float vpadding = (vsize - fsize) / 2;
@@ -9667,356 +9730,212 @@ namespace GnollHackX.Pages.Game
                                     textPaint.DrawTextOnCanvas(canvas, drawtext, drawpoint, SKTextAlign.Center);
                                     //textPaint.TextAlign = SKTextAlign.Left;
                                     textPaint.TextSize = basefontsize;
-                                    textPaint.Color = SKColors.White;
                                 }
 
-                                int totalHeight = GHApp._batteryFrameBitmap.Height;
-                                int fillHeight = totalHeight - topMargin - bottomMargin;
-                                float calcFillHeight = fillHeight * chargePercentage;
-                                float addedFillTop = fillHeight - calcFillHeight;
-
-                                float r_mult = chargePercentage <= 0.25f ? chargePercentage * 2.0f + 0.5f : chargePercentage <= 0.5f ? 1.0f : (1.0f - chargePercentage) * 2.0f;
-                                float g_mult = chargePercentage <= 0.25f ? 0 : chargePercentage <= 0.5f ? (chargePercentage - 0.25f) * 4.0f : 1.0f;
-                                textPaint.Color = new SKColor((byte)(255 * r_mult), (byte)(255 * g_mult), 0);
-
-                                statusDest = new SKRect(curx + hMargin * target_scale, cury + (topMargin + addedFillTop) * target_scale, curx + target_width - hMargin * target_scale, cury + target_height - bottomMargin * target_scale);
-                                canvas.DrawRect(statusDest, textPaint.Paint);
-                                textPaint.Color = SKColors.White;
-
-                                curx += target_width;
-                            }
-
-                            if (ShowFPS)
-                            {
-                                target_width = target_scale * GHApp._fpsBitmap.Width;
-                                target_height = target_scale * GHApp._fpsBitmap.Height;
-                                curx = desktopleft - innerspacing * 5 - target_width;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                canvas.DrawImage(GHApp._fpsBitmap, statusDest);
-                                desktopleft = curx;
-
-                                string drawtext;
-                                lock (_fpslock)
+                                if (ShowMemory)
                                 {
-                                    drawtext = string.Format("{0:0.0}", _fps);
-                                }
-
-                                const int topMargin = 4, bottomMargin = 16;
-                                textPaint.Color = SKColors.White;
-                                textPaint.TextSize = diffontsize;
-                                //textPaint.TextAlign = SKTextAlign.Center;
-                                float vsize = target_height - (topMargin + bottomMargin) * target_scale;
-                                float fsize = textPaint.FontSpacing;
-                                float vpadding = (vsize - fsize) / 2;
-                                SKPoint drawpoint = new SKPoint(curx + target_width / 2, cury + (topMargin * target_scale) + vpadding - textPaint.FontMetrics.Ascent);
-                                textPaint.DrawTextOnCanvas(canvas, drawtext, drawpoint, SKTextAlign.Center);
-                                //textPaint.TextAlign = SKTextAlign.Left;
-                                textPaint.TextSize = basefontsize;
-                            }
-
-                            if (ShowMemory)
-                            {
-                                target_width = target_scale * GHApp._memoryBitmap.Width;
-                                target_height = target_scale * GHApp._memoryBitmap.Height;
-                                curx = desktopleft - innerspacing * 5 - target_width;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                canvas.DrawImage(GHApp._memoryBitmap, statusDest);
-                                desktopleft = curx;
-
-                                string drawtext;
-                                lock (_showMemoryLock)
-                                {
-                                    drawtext = (_memUsage / 1024).ToString();
-                                }
-
-                                const int topMargin = 7, bottomMargin = 20;
-                                textPaint.Color = SKColors.White;
-                                textPaint.TextSize = diffontsize;
-                                float vsize = target_height - (topMargin + bottomMargin) * target_scale;
-                                float fsize = textPaint.FontSpacing;
-                                float vpadding = (vsize - fsize) / 2;
-                                SKPoint drawpoint = new SKPoint(curx + target_width / 2, cury + (topMargin * target_scale) + vpadding - textPaint.FontMetrics.Ascent);
-                                textPaint.DrawTextOnCanvas(canvas, drawtext, drawpoint, SKTextAlign.Center);
-                                textPaint.TextSize = basefontsize;
-                            }
-
-                            if (ShowZoom)
-                            {
-                                target_width = target_scale * GHApp._zoomBitmap.Width;
-                                target_height = target_scale * GHApp._zoomBitmap.Height;
-                                curx = desktopleft - innerspacing * 5 - target_width;
-                                statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
-                                canvas.DrawImage(GHApp._zoomBitmap, statusDest);
-                                desktopleft = curx;
-
-                                float percentage = usedFontSize / DefaultMapFontSize;
-                                int percentage_int = (int)(percentage * 100);
-                                string drawtext = percentage_int.ToString();
-
-                                const int topMargin = 12, bottomMargin = 12;
-                                const int leftMargin = 5, rightMargin = 11;
-                                textPaint.Color = SKColors.White;
-                                textPaint.TextSize = diffontsize * 0.9f;
-                                float vsize = target_height - (topMargin + bottomMargin) * target_scale;
-                                float fsize = textPaint.FontSpacing;
-                                float vpadding = (vsize - fsize) / 2;
-                                SKPoint drawpoint = new SKPoint(curx + leftMargin + (target_width - leftMargin - rightMargin) / 2, cury + (topMargin * target_scale) + vpadding - textPaint.FontMetrics.Ascent);
-                                textPaint.DrawTextOnCanvas(canvas, drawtext, drawpoint, SKTextAlign.Center);
-
-                                if (MapFontShowPercentageDecimal)
-                                {
-                                    const int topFractionMargin = 46, bottomFractionMargin = 4;
-                                    int fraction_int = (int)((percentage * 100 - (float)Math.Floor(percentage * 100)) * 10);
-                                    string drawtext2 = fraction_int.ToString();
-                                    textPaint.TextSize = textPaint.TextSize * 0.7f;
-                                    float vsize2 = target_height - (topFractionMargin + bottomFractionMargin) * target_scale;
-                                    float fsize2 = textPaint.FontSpacing;
-                                    float vpadding2 = (vsize2 - fsize2) / 2;
-                                    SKPoint drawpoint2 = new SKPoint(curx + leftMargin + (target_width - leftMargin - rightMargin) / 2, cury + (topFractionMargin * target_scale) + vpadding2 - textPaint.FontMetrics.Ascent);
-                                    textPaint.DrawTextOnCanvas(canvas, drawtext2, drawpoint2, SKTextAlign.Center);
-                                }
-
-                                textPaint.TextSize = basefontsize;
-                            }
-
-                            if (ShowRecording)
-                            {
-                                if (GHApp.RecordGame && !PlayingReplay)
-                                {
-                                    target_width = rowheight / 4;
-                                    target_height = rowheight;
-                                    curx = desktopleft - innerspacing * 6 - target_width;
+                                    target_width = target_scale * GHApp._memoryBitmap.Width;
+                                    target_height = target_scale * GHApp._memoryBitmap.Height;
+                                    curx = desktopleft - innerspacing * 5 - target_width;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                    canvas.DrawImage(GHApp._memoryBitmap, statusDest);
                                     desktopleft = curx;
-                                    SKPoint dotpoint = new SKPoint(curx + target_width / 2, cury + target_height / 2);
-                                    float dotradius = target_width / 2;
-                                    textPaint.Color = SKColors.Red;
-                                    textPaint.Style = SKPaintStyle.Fill;
-                                    canvas.DrawCircle(dotpoint, dotradius, textPaint.Paint);
-                                    curx += target_width;
-                                }
-                            }
 
-                            /* Pets */
-                            if (ShowPets)
-                            {
-                                lock (_petDataLock)
-                                {
-                                    textPaint.Color = SKColors.White;
-                                    textPaint.Typeface = GHApp.LatoRegular;
-                                    textPaint.TextSize = 36;
-                                    float pet_target_height = inverse_canvas_scale * (float)(StandardMeasurementButton.Height + StandardReferenceButton.Width) / 2;
-                                    //float pet_name_target_height = pet_target_height * 0.4f;
-                                    float pet_picture_target_height = pet_target_height * 0.56f;
-                                    float pet_hp_target_height = pet_target_height * 0.24f;
-                                    float pet_status_target_height = pet_target_height * 0.2f;
-                                    //float pet_name_size = textPaint.TextSize * pet_name_target_height / textPaint.FontSpacing;
-                                    float pet_hp_size = textPaint.TextSize * pet_hp_target_height / textPaint.FontSpacing; //pet_name_size * pet_hp_target_height / pet_name_target_height;
-                                                                                                                            //textPaint.TextSize = pet_name_size;
-                                                                                                                            //string pet_test_text = "Large Dog";
-                                                                                                                            //float pet_target_width = textPaint.MeasureText(pet_test_text);
-                                                                                                                            //pet_target_width += textPaint.FontSpacing; // For picture
-                                    float pet_target_width = pet_target_height; // inverse_canvas_scale * (float)StandardMeasurementButton.Width;
-
-                                    SKRect menubuttonrect = GetViewScreenRect(UseSimpleCmdLayout ? SimpleGameMenuButton : GameMenuButton);
-                                    SKRect canvasrect = GetViewScreenRect(canvasView);
-                                    SKRect adjustedrect = new SKRect(menubuttonrect.Left - canvasrect.Left, menubuttonrect.Top - canvasrect.Top, menubuttonrect.Right - canvasrect.Left, menubuttonrect.Bottom - canvasrect.Top);
-                                    float menu_button_left = adjustedrect.Left;
-                                    float pet_tx_start = orbleft + orbbordersize * 1.1f;
-                                    tx = pet_tx_start;
-                                    ty = statusbarheight + 5.0f;
-                                    int petrownum = 0;
-
-                                    foreach (GHPetDataItem pdi in _petData)
+                                    string drawtext;
+                                    lock (_showMemoryLock)
                                     {
-                                        monst_info mi = pdi.Data;
-                                        using (new SKAutoCanvasRestore(canvas, true))
-                                        {
-                                            canvas.ClipRect(new SKRect(tx - 1, ty - 1, tx + pet_target_width + 1, ty + pet_target_height + 2));
-                                            pdi.Rect = new SKRect(tx, ty, tx + pet_target_width, ty + pet_target_height);
+                                        drawtext = (_memUsage / 1024).ToString();
+                                    }
 
-                                            float petpicturewidth = 0f;
-                                            float petpictureheight = 0f;
+                                    const int topMargin = 7, bottomMargin = 20;
+                                    textPaint.Color = SKColors.White;
+                                    textPaint.TextSize = diffontsize;
+                                    float vsize = target_height - (topMargin + bottomMargin) * target_scale;
+                                    float fsize = textPaint.FontSpacing;
+                                    float vpadding = (vsize - fsize) / 2;
+                                    SKPoint drawpoint = new SKPoint(curx + target_width / 2, cury + (topMargin * target_scale) + vpadding - textPaint.FontMetrics.Ascent);
+                                    textPaint.DrawTextOnCanvas(canvas, drawtext, drawpoint, SKTextAlign.Center);
+                                    textPaint.TextSize = basefontsize;
+                                }
+
+                                if (ShowZoom)
+                                {
+                                    target_width = target_scale * GHApp._zoomBitmap.Width;
+                                    target_height = target_scale * GHApp._zoomBitmap.Height;
+                                    curx = desktopleft - innerspacing * 5 - target_width;
+                                    statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
+                                    canvas.DrawImage(GHApp._zoomBitmap, statusDest);
+                                    desktopleft = curx;
+
+                                    float percentage = usedFontSize / DefaultMapFontSize;
+                                    int percentage_int = (int)(percentage * 100);
+                                    string drawtext = percentage_int.ToString();
+
+                                    const int topMargin = 12, bottomMargin = 12;
+                                    const int leftMargin = 5, rightMargin = 11;
+                                    textPaint.Color = SKColors.White;
+                                    textPaint.TextSize = diffontsize * 0.9f;
+                                    float vsize = target_height - (topMargin + bottomMargin) * target_scale;
+                                    float fsize = textPaint.FontSpacing;
+                                    float vpadding = (vsize - fsize) / 2;
+                                    SKPoint drawpoint = new SKPoint(curx + leftMargin + (target_width - leftMargin - rightMargin) / 2, cury + (topMargin * target_scale) + vpadding - textPaint.FontMetrics.Ascent);
+                                    textPaint.DrawTextOnCanvas(canvas, drawtext, drawpoint, SKTextAlign.Center);
+
+                                    if (MapFontShowPercentageDecimal)
+                                    {
+                                        const int topFractionMargin = 46, bottomFractionMargin = 4;
+                                        int fraction_int = (int)((percentage * 100 - (float)Math.Floor(percentage * 100)) * 10);
+                                        string drawtext2 = fraction_int.ToString();
+                                        textPaint.TextSize = textPaint.TextSize * 0.7f;
+                                        float vsize2 = target_height - (topFractionMargin + bottomFractionMargin) * target_scale;
+                                        float fsize2 = textPaint.FontSpacing;
+                                        float vpadding2 = (vsize2 - fsize2) / 2;
+                                        SKPoint drawpoint2 = new SKPoint(curx + leftMargin + (target_width - leftMargin - rightMargin) / 2, cury + (topFractionMargin * target_scale) + vpadding2 - textPaint.FontMetrics.Ascent);
+                                        textPaint.DrawTextOnCanvas(canvas, drawtext2, drawpoint2, SKTextAlign.Center);
+                                    }
+
+                                    textPaint.TextSize = basefontsize;
+                                }
+
+                                if (ShowRecording)
+                                {
+                                    if (GHApp.RecordGame && !PlayingReplay)
+                                    {
+                                        target_width = rowheight / 4;
+                                        target_height = rowheight;
+                                        curx = desktopleft - innerspacing * 6 - target_width;
+                                        desktopleft = curx;
+                                        SKPoint dotpoint = new SKPoint(curx + target_width / 2, cury + target_height / 2);
+                                        float dotradius = target_width / 2;
+                                        textPaint.Color = SKColors.Red;
+                                        textPaint.Style = SKPaintStyle.Fill;
+                                        canvas.DrawCircle(dotpoint, dotradius, textPaint.Paint);
+                                        curx += target_width;
+                                    }
+                                }
+
+                                /* Pets */
+                                if (ShowPets)
+                                {
+                                    lock (_petDataLock)
+                                    {
+                                        textPaint.Color = SKColors.White;
+                                        textPaint.Typeface = GHApp.LatoRegular;
+                                        textPaint.TextSize = 36;
+                                        float pet_target_height = inverse_canvas_scale * (float)(StandardMeasurementButton.Height + StandardReferenceButton.Width) / 2;
+                                        //float pet_name_target_height = pet_target_height * 0.4f;
+                                        float pet_picture_target_height = pet_target_height * 0.56f;
+                                        float pet_hp_target_height = pet_target_height * 0.24f;
+                                        float pet_status_target_height = pet_target_height * 0.2f;
+                                        //float pet_name_size = textPaint.TextSize * pet_name_target_height / textPaint.FontSpacing;
+                                        float pet_hp_size = textPaint.TextSize * pet_hp_target_height / textPaint.FontSpacing; //pet_name_size * pet_hp_target_height / pet_name_target_height;
+                                                                                                                               //textPaint.TextSize = pet_name_size;
+                                                                                                                               //string pet_test_text = "Large Dog";
+                                                                                                                               //float pet_target_width = textPaint.MeasureText(pet_test_text);
+                                                                                                                               //pet_target_width += textPaint.FontSpacing; // For picture
+                                        float pet_target_width = pet_target_height; // inverse_canvas_scale * (float)StandardMeasurementButton.Width;
+
+                                        SKRect menubuttonrect = GetViewScreenRect(UseSimpleCmdLayout ? SimpleGameMenuButton : GameMenuButton);
+                                        SKRect canvasrect = GetViewScreenRect(canvasView);
+                                        SKRect adjustedrect = new SKRect(menubuttonrect.Left - canvasrect.Left, menubuttonrect.Top - canvasrect.Top, menubuttonrect.Right - canvasrect.Left, menubuttonrect.Bottom - canvasrect.Top);
+                                        float menu_button_left = adjustedrect.Left;
+                                        float pet_tx_start = orbleft + orbbordersize * 1.1f;
+                                        tx = pet_tx_start;
+                                        ty = statusbarheight + 5.0f;
+                                        int petrownum = 0;
+
+                                        foreach (GHPetDataItem pdi in _petData)
+                                        {
+                                            monst_info mi = pdi.Data;
                                             using (new SKAutoCanvasRestore(canvas, true))
                                             {
-                                                GlyphImageSource gis = new GlyphImageSource();
-                                                gis.ReferenceGamePage = this;
-                                                gis.UseUpperSide = false; /* Monsters are generally full-sized */
-                                                gis.AutoSize = true;
-                                                gis.Glyph = Math.Abs(mi.gui_glyph);
-                                                gis.DoAutoSize();
-                                                float pet_scale = Math.Min(gis.Width == 0 ? 1.0f : pet_target_width / gis.Width, gis.Height == 0 ? 1.0f : pet_picture_target_height / gis.Height);
-                                                petpicturewidth = pet_scale * gis.Width;
-                                                petpictureheight = pet_scale * gis.Height;
-                                                canvas.Translate(tx + (pet_target_width - petpicturewidth) / 2, ty + (pet_picture_target_height - petpictureheight));
-                                                canvas.Scale(pet_scale);
+                                                canvas.ClipRect(new SKRect(tx - 1, ty - 1, tx + pet_target_width + 1, ty + pet_target_height + 2));
+                                                pdi.Rect = new SKRect(tx, ty, tx + pet_target_width, ty + pet_target_height);
+
+                                                float petpicturewidth = 0f;
+                                                float petpictureheight = 0f;
+                                                using (new SKAutoCanvasRestore(canvas, true))
+                                                {
+                                                    GlyphImageSource gis = new GlyphImageSource();
+                                                    gis.ReferenceGamePage = this;
+                                                    gis.UseUpperSide = false; /* Monsters are generally full-sized */
+                                                    gis.AutoSize = true;
+                                                    gis.Glyph = Math.Abs(mi.gui_glyph);
+                                                    gis.DoAutoSize();
+                                                    float pet_scale = Math.Min(gis.Width == 0 ? 1.0f : pet_target_width / gis.Width, gis.Height == 0 ? 1.0f : pet_picture_target_height / gis.Height);
+                                                    petpicturewidth = pet_scale * gis.Width;
+                                                    petpictureheight = pet_scale * gis.Height;
+                                                    canvas.Translate(tx + (pet_target_width - petpicturewidth) / 2, ty + (pet_picture_target_height - petpictureheight));
+                                                    canvas.Scale(pet_scale);
 #if GNH_MAP_PROFILING && DEBUG
                                                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                gis.DrawOnCanvas(canvas, usingGL, isPointerHovering && pdi.Rect.Contains(pointerHoverLocation), false);
+                                                    gis.DrawOnCanvas(canvas, usingGL, isPointerHovering && pdi.Rect.Contains(pointerHoverLocation), false);
 #if GNH_MAP_PROFILING && DEBUG
                                                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                            }
+                                                }
 
-                                            float curpety = ty + pet_picture_target_height;
-                                            textPaint.TextSize = pet_hp_size;
-                                            //textPaint.TextAlign = SKTextAlign.Center;
-                                            float petHPHeight = textPaint.FontSpacing;
-                                            float barpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
-                                            SKRect petHPRect = new SKRect(tx, curpety, tx + pet_target_width, curpety + petHPHeight);
-                                            float petpct = mi.mhpmax <= 0 ? 0.0f : (float)mi.mhp / (float)mi.mhpmax;
-                                            SKRect petHPFill = new SKRect(tx, curpety, tx + pet_target_width * petpct, curpety + petHPHeight);
-                                            textPaint.Color = SKColors.Red.WithAlpha(144);
+                                                float curpety = ty + pet_picture_target_height;
+                                                textPaint.TextSize = pet_hp_size;
+                                                //textPaint.TextAlign = SKTextAlign.Center;
+                                                float petHPHeight = textPaint.FontSpacing;
+                                                float barpadding = (textPaint.FontSpacing - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent)) / 2;
+                                                SKRect petHPRect = new SKRect(tx, curpety, tx + pet_target_width, curpety + petHPHeight);
+                                                float petpct = mi.mhpmax <= 0 ? 0.0f : (float)mi.mhp / (float)mi.mhpmax;
+                                                SKRect petHPFill = new SKRect(tx, curpety, tx + pet_target_width * petpct, curpety + petHPHeight);
+                                                textPaint.Color = SKColors.Red.WithAlpha(144);
 #if GNH_MAP_PROFILING && DEBUG
                                             StartProfiling(GHProfilingStyle.Rect);
 #endif
-                                            canvas.DrawRect(petHPFill, textPaint.Paint);
-                                            SKRect petHPNonFill = new SKRect(tx + pet_target_width * petpct, curpety, tx + pet_target_width, curpety + petHPHeight);
-                                            textPaint.Color = SKColors.Gray.WithAlpha(144);
-                                            canvas.DrawRect(petHPNonFill, textPaint.Paint);
-                                            textPaint.Color = SKColors.Black.WithAlpha(144);
-                                            textPaint.Style = SKPaintStyle.Stroke;
-                                            textPaint.StrokeWidth = 2;
-                                            canvas.DrawRect(petHPRect, textPaint.Paint);
+                                                canvas.DrawRect(petHPFill, textPaint.Paint);
+                                                SKRect petHPNonFill = new SKRect(tx + pet_target_width * petpct, curpety, tx + pet_target_width, curpety + petHPHeight);
+                                                textPaint.Color = SKColors.Gray.WithAlpha(144);
+                                                canvas.DrawRect(petHPNonFill, textPaint.Paint);
+                                                textPaint.Color = SKColors.Black.WithAlpha(144);
+                                                textPaint.Style = SKPaintStyle.Stroke;
+                                                textPaint.StrokeWidth = 2;
+                                                canvas.DrawRect(petHPRect, textPaint.Paint);
 #if GNH_MAP_PROFILING && DEBUG
                                             StopProfiling(GHProfilingStyle.Rect);
 #endif
 
-                                            curpety += barpadding - textPaint.FontMetrics.Ascent;
-                                            textPaint.Style = SKPaintStyle.Fill;
-                                            textPaint.Color = SKColors.White;
+                                                curpety += barpadding - textPaint.FontMetrics.Ascent;
+                                                textPaint.Style = SKPaintStyle.Fill;
+                                                textPaint.Color = SKColors.White;
 #if GNH_MAP_PROFILING && DEBUG
                                             StartProfiling(GHProfilingStyle.Text);
 #endif
-                                            textPaint.DrawTextOnCanvas(canvas, mi.mhp + "(" + mi.mhpmax + ")", tx + pet_target_width / 2, curpety, SKTextAlign.Center);
+                                                textPaint.DrawTextOnCanvas(canvas, mi.mhp + "(" + mi.mhpmax + ")", tx + pet_target_width / 2, curpety, SKTextAlign.Center);
 #if GNH_MAP_PROFILING && DEBUG
                                             StopProfiling(GHProfilingStyle.Text);
 #endif
 
-                                            {
-                                                /* Condition, status and buff marks */
-                                                curx = tx;
-                                                cury = petHPRect.Bottom;
-                                                rowheight = pet_status_target_height;
-
-                                                float marksize = rowheight * 0.95f;
-                                                float markpadding = marksize / 8;
-                                                ulong status_bits;
-                                                status_bits = mi.status_bits;
-                                                if (status_bits != 0)
                                                 {
-                                                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                                    foreach (int status_mark in _statusmarkorder)
+                                                    /* Condition, status and buff marks */
+                                                    curx = tx;
+                                                    cury = petHPRect.Bottom;
+                                                    rowheight = pet_status_target_height;
+
+                                                    float marksize = rowheight * 0.95f;
+                                                    float markpadding = marksize / 8;
+                                                    ulong status_bits;
+                                                    status_bits = mi.status_bits;
+                                                    if (status_bits != 0)
                                                     {
-                                                        ulong statusbit = 1UL << status_mark;
-                                                        if ((status_bits & statusbit) != 0)
+                                                        int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                                        foreach (int status_mark in _statusmarkorder)
                                                         {
-                                                            int mglyph = (int)game_ui_tile_types.STATUS_MARKS + status_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
-                                                            int mtile = GHApp.Glyph2Tile[mglyph];
-                                                            int sheet_idx = GHApp.TileSheetIdx(mtile);
-                                                            int tile_x = GHApp.TileSheetX(mtile);
-                                                            int tile_y = GHApp.TileSheetY(mtile);
-                                                            int within_tile_x = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
-                                                            int within_tile_y = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
-                                                            int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
-                                                            int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
-
-                                                            SKRect source_rt = new SKRect();
-                                                            source_rt.Left = c_x;
-                                                            source_rt.Right = c_x + GHConstants.StatusMarkWidth;
-                                                            source_rt.Top = c_y;
-                                                            source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
-
-                                                            SKRect target_rt = new SKRect();
-                                                            target_rt.Left = curx;
-                                                            target_rt.Right = target_rt.Left + marksize;
-                                                            target_rt.Top = cury + (rowheight - marksize) / 2;
-                                                            target_rt.Bottom = target_rt.Top + marksize;
-#if GNH_MAP_PROFILING && DEBUG
-                                                            StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                                            MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL);
-                                                            canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
-#if GNH_MAP_PROFILING && DEBUG
-                                                            StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-
-                                                            curx += marksize;
-                                                            curx += markpadding;
-                                                        }
-                                                    }
-                                                }
-
-                                                ulong condition_bits;
-                                                condition_bits = mi.condition_bits;
-                                                if (condition_bits != 0)
-                                                {
-                                                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                                    for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
-                                                    {
-                                                        ulong conditionbit = 1UL << condition_mark;
-                                                        if ((condition_bits & conditionbit) != 0)
-                                                        {
-                                                            int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + condition_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
-                                                            int mtile = GHApp.Glyph2Tile[mglyph];
-                                                            int sheet_idx = GHApp.TileSheetIdx(mtile);
-                                                            int tile_x = GHApp.TileSheetX(mtile);
-                                                            int tile_y = GHApp.TileSheetY(mtile);
-                                                            int within_tile_x = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
-                                                            int within_tile_y = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
-                                                            int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
-                                                            int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
-
-                                                            SKRect source_rt = new SKRect();
-                                                            source_rt.Left = c_x;
-                                                            source_rt.Right = c_x + GHConstants.StatusMarkWidth;
-                                                            source_rt.Top = c_y;
-                                                            source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
-
-                                                            SKRect target_rt = new SKRect();
-                                                            target_rt.Left = curx;
-                                                            target_rt.Right = target_rt.Left + marksize;
-                                                            target_rt.Top = cury + (rowheight - marksize) / 2;
-                                                            target_rt.Bottom = target_rt.Top + marksize;
-#if GNH_MAP_PROFILING && DEBUG
-                                                            StartProfiling(GHProfilingStyle.Bitmap);
-#endif
-                                                            MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL);
-                                                            canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
-#if GNH_MAP_PROFILING && DEBUG
-                                                            StopProfiling(GHProfilingStyle.Bitmap);
-#endif
-
-                                                            curx += marksize;
-                                                            curx += markpadding;
-                                                        }
-                                                    }
-                                                }
-
-                                                ulong buff_bits;
-                                                for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
-                                                {
-                                                    buff_bits = mi.buff_bits[buff_ulong];
-                                                    int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
-                                                    if (buff_bits != 0)
-                                                    {
-                                                        for (int buff_idx = 0; buff_idx < 32; buff_idx++)
-                                                        {
-                                                            ulong buffbit = 1UL << buff_idx;
-                                                            if ((buff_bits & buffbit) != 0)
+                                                            ulong statusbit = 1UL << status_mark;
+                                                            if ((status_bits & statusbit) != 0)
                                                             {
-                                                                int propidx = buff_ulong * 32 + buff_idx;
-                                                                if (propidx > GHConstants.LAST_PROP)
-                                                                    break;
-                                                                int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + GHApp.BuffTileOff;
+                                                                int mglyph = (int)game_ui_tile_types.STATUS_MARKS + status_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
                                                                 int mtile = GHApp.Glyph2Tile[mglyph];
                                                                 int sheet_idx = GHApp.TileSheetIdx(mtile);
                                                                 int tile_x = GHApp.TileSheetX(mtile);
                                                                 int tile_y = GHApp.TileSheetY(mtile);
-
-                                                                int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
-                                                                int within_tile_x = buff_mark % tiles_per_row;
-                                                                int within_tile_y = buff_mark / tiles_per_row;
+                                                                int within_tile_x = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
+                                                                int within_tile_y = (status_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
                                                                 int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
                                                                 int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
 
@@ -10032,12 +9951,12 @@ namespace GnollHackX.Pages.Game
                                                                 target_rt.Top = cury + (rowheight - marksize) / 2;
                                                                 target_rt.Bottom = target_rt.Top + marksize;
 #if GNH_MAP_PROFILING && DEBUG
-                                                                StartProfiling(GHProfilingStyle.Bitmap);
+                                                            StartProfiling(GHProfilingStyle.Bitmap);
 #endif
                                                                 MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL);
                                                                 canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
 #if GNH_MAP_PROFILING && DEBUG
-                                                                StopProfiling(GHProfilingStyle.Bitmap);
+                                                            StopProfiling(GHProfilingStyle.Bitmap);
 #endif
 
                                                                 curx += marksize;
@@ -10045,34 +9964,134 @@ namespace GnollHackX.Pages.Game
                                                             }
                                                         }
                                                     }
+
+                                                    ulong condition_bits;
+                                                    condition_bits = mi.condition_bits;
+                                                    if (condition_bits != 0)
+                                                    {
+                                                        int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                                        for (int condition_mark = 0; condition_mark < (int)bl_conditions.NUM_BL_CONDITIONS; condition_mark++)
+                                                        {
+                                                            ulong conditionbit = 1UL << condition_mark;
+                                                            if ((condition_bits & conditionbit) != 0)
+                                                            {
+                                                                int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + condition_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
+                                                                int mtile = GHApp.Glyph2Tile[mglyph];
+                                                                int sheet_idx = GHApp.TileSheetIdx(mtile);
+                                                                int tile_x = GHApp.TileSheetX(mtile);
+                                                                int tile_y = GHApp.TileSheetY(mtile);
+                                                                int within_tile_x = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) % tiles_per_row;
+                                                                int within_tile_y = (condition_mark % GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS) / tiles_per_row;
+                                                                int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                                                int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                                                SKRect source_rt = new SKRect();
+                                                                source_rt.Left = c_x;
+                                                                source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                                                source_rt.Top = c_y;
+                                                                source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                                                SKRect target_rt = new SKRect();
+                                                                target_rt.Left = curx;
+                                                                target_rt.Right = target_rt.Left + marksize;
+                                                                target_rt.Top = cury + (rowheight - marksize) / 2;
+                                                                target_rt.Bottom = target_rt.Top + marksize;
+#if GNH_MAP_PROFILING && DEBUG
+                                                            StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                                                MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL);
+                                                                canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+#if GNH_MAP_PROFILING && DEBUG
+                                                            StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+
+                                                                curx += marksize;
+                                                                curx += markpadding;
+                                                            }
+                                                        }
+                                                    }
+
+                                                    ulong buff_bits;
+                                                    for (int buff_ulong = 0; buff_ulong < GHConstants.NUM_BUFF_BIT_ULONGS; buff_ulong++)
+                                                    {
+                                                        buff_bits = mi.buff_bits[buff_ulong];
+                                                        int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
+                                                        if (buff_bits != 0)
+                                                        {
+                                                            for (int buff_idx = 0; buff_idx < 32; buff_idx++)
+                                                            {
+                                                                ulong buffbit = 1UL << buff_idx;
+                                                                if ((buff_bits & buffbit) != 0)
+                                                                {
+                                                                    int propidx = buff_ulong * 32 + buff_idx;
+                                                                    if (propidx > GHConstants.LAST_PROP)
+                                                                        break;
+                                                                    int mglyph = (propidx - 1) / GHConstants.BUFFS_PER_TILE + GHApp.BuffTileOff;
+                                                                    int mtile = GHApp.Glyph2Tile[mglyph];
+                                                                    int sheet_idx = GHApp.TileSheetIdx(mtile);
+                                                                    int tile_x = GHApp.TileSheetX(mtile);
+                                                                    int tile_y = GHApp.TileSheetY(mtile);
+
+                                                                    int buff_mark = (propidx - 1) % GHConstants.BUFFS_PER_TILE;
+                                                                    int within_tile_x = buff_mark % tiles_per_row;
+                                                                    int within_tile_y = buff_mark / tiles_per_row;
+                                                                    int c_x = tile_x + within_tile_x * GHConstants.StatusMarkWidth;
+                                                                    int c_y = tile_y + within_tile_y * GHConstants.StatusMarkHeight;
+
+                                                                    SKRect source_rt = new SKRect();
+                                                                    source_rt.Left = c_x;
+                                                                    source_rt.Right = c_x + GHConstants.StatusMarkWidth;
+                                                                    source_rt.Top = c_y;
+                                                                    source_rt.Bottom = c_y + GHConstants.StatusMarkHeight;
+
+                                                                    SKRect target_rt = new SKRect();
+                                                                    target_rt.Left = curx;
+                                                                    target_rt.Right = target_rt.Left + marksize;
+                                                                    target_rt.Top = cury + (rowheight - marksize) / 2;
+                                                                    target_rt.Bottom = target_rt.Top + marksize;
+#if GNH_MAP_PROFILING && DEBUG
+                                                                StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                                                                    MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL);
+                                                                    canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
+#if GNH_MAP_PROFILING && DEBUG
+                                                                StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+
+                                                                    curx += marksize;
+                                                                    curx += markpadding;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
                                                 }
+
+                                                /* Next pet */
+                                                tx += pet_target_width;
+                                                if (tx + pet_target_width * 1.08f > menu_button_left)
+                                                {
+                                                    tx = pet_tx_start;
+                                                    ty += pet_target_height + textPaint.FontSpacing / 2;
+                                                    petrownum++;
+                                                    if (petrownum >= NumDisplayedPetRows)
+                                                        break;
+                                                }
+                                                else
+                                                    tx += pet_target_width * 0.08f;
                                             }
 
-                                            /* Next pet */
-                                            tx += pet_target_width;
-                                            if (tx + pet_target_width * 1.08f > menu_button_left)
-                                            {
-                                                tx = pet_tx_start;
-                                                ty += pet_target_height + textPaint.FontSpacing / 2;
-                                                petrownum++;
-                                                if (petrownum >= NumDisplayedPetRows)
-                                                    break;
-                                            }
-                                            else
-                                                tx += pet_target_width * 0.08f;
+                                            //textPaint.TextAlign = SKTextAlign.Left;
                                         }
-
-                                        //textPaint.TextAlign = SKTextAlign.Left;
                                     }
                                 }
-                            }
-                            else
-                            {
-                                lock (_petDataLock)
+                                else
                                 {
-                                    foreach (GHPetDataItem pdi in _petData)
+                                    lock (_petDataLock)
                                     {
-                                        pdi.Rect = new SKRect();
+                                        foreach (GHPetDataItem pdi in _petData)
+                                        {
+                                            pdi.Rect = new SKRect();
+                                        }
                                     }
                                 }
                             }
@@ -14801,7 +14820,7 @@ namespace GnollHackX.Pages.Game
                                                 float glyphxcenterpadding = (picturewidth - minrowheight * mi.GlyphImageSource.Width / mi.GlyphImageSource.Height) / 2;
                                                 canvas.Translate(x + glyphxcenterpadding, glyph_start_y);
                                                 canvas.Scale(minrowheight / mi.GlyphImageSource.Height);
-                                                mi.GlyphImageSource.DrawOnCanvas(canvas, usingGL, false, false);
+                                                mi.GlyphImageSource.DrawOnCanvas(canvas, usingGL, false, true);
                                             }
                                         }
                                     }
