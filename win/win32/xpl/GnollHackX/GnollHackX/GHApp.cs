@@ -167,16 +167,17 @@ namespace GnollHackX
             RecordGame = Preferences.Get("RecordGame", false);
             AutoUploadReplays = Preferences.Get("AutoUploadReplays", false);
             UseGZipForReplays = Preferences.Get("UseGZipForReplays", GHConstants.GZipIsDefaultReplayCompression);
-            SetAvailableGPUCacheLimits(TotalMemory);
-            PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
-            SecondaryGPUCacheLimit = Preferences.Get("SecondaryGPUCacheLimit", -2L);
-            UseGPU = Preferences.Get("UseMainGLCanvas", IsGPUDefault && IsGPUAvailable);
-            FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
             OkOnDoubleClick = Preferences.Get("OkOnDoubleClick", IsDesktop);
             LastUsedPlayerName = Preferences.Get("LastUsedPlayerName", "");
             LastUsedTournamentPlayerName = Preferences.Get("LastUsedTournamentPlayerName", "");
             GUITipsShown = Preferences.Get("GUITipsShown", false);
             RealPlayTime = Preferences.Get("RealPlayTime", 0L);
+
+            SetAvailableGPUCacheLimits(TotalMemory);
+            PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
+            SecondaryGPUCacheLimit = Preferences.Get("SecondaryGPUCacheLimit", -2L);
+            UseGPU = Preferences.Get("UseMainGLCanvas", IsGPUDefault && IsGPUAvailable);
+            FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
 
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
             if (FreeDiskSpaceInBytes < GHConstants.LowFreeDiskSpaceThresholdInBytes)
