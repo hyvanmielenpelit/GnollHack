@@ -1811,7 +1811,7 @@ namespace GnollHackX
         public const ulong LowFreeDiskSpaceThresholdInBytes = 1536 * 1024 * 1024UL;
         public const ulong VeryLowFreeDiskSpaceThresholdInBytes = 1024 * 1024 * 1024UL;
         public const ulong CritiallyLowFreeDiskSpaceThresholdInBytes = 128 * 1024 * 1024UL;
-        public const ulong DisableAuxGPUbyDefaultThresholdInBytes = 4000 * 1024 * 1024UL;
+        public const ulong DisableAuxGPUbyDefaultThresholdInBytes = 4096 * 1024 * 1024UL;
         public const long MaxSingleReplayFileSizeInBytes = 12 * 1024 * 1024L;
         public const string ReplayFileNamePrefix = "replay-";
         public const string ReplayContinuationFileNamePrefix = "rpcont-";
