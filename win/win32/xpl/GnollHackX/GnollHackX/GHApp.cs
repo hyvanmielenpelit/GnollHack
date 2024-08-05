@@ -6425,10 +6425,17 @@ namespace GnollHackX
             if(Preferences.ContainsKey("DiscoveredMusicBits"))
             {
                 long val = Preferences.Get("DiscoveredMusicBits", 0L);
-                long val2 = GetDiscoveredTracks();
-                if(val != val2)
+                if(UserDataContainsDiscoveredTracks())
                 {
-                    DeleteUserData();
+                    long val2 = GetDiscoveredTracks();
+                    if (val != val2)
+                    {
+                        DeleteUserData();
+                        SetDiscoveredTracks(val, false);
+                    }
+                }
+                else
+                {
                     SetDiscoveredTracks(val, false);
                 }
             }
