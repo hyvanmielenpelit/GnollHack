@@ -1720,7 +1720,6 @@ namespace GnollHackX
         public const bool DownloadFromWebInDebugMode = true;
         public const bool IsDefaultStatusBarClassic = false;
         public const bool AreMenuFadeEffectsDefault = true;
-        public const bool IsMenuHighFilterQualityDefault = true;
         public const string GnollHackGitHubPage = "https://github.com/hyvanmielenpelit/GnollHack";
         public const string GnollHackWebPage = "https://gnollhack.com";
         public const string GnollHackWikiPage = "https://github.com/hyvanmielenpelit/GnollHack/wiki";
@@ -1812,6 +1811,7 @@ namespace GnollHackX
         public const ulong LowFreeDiskSpaceThresholdInBytes = 1536 * 1024 * 1024UL;
         public const ulong VeryLowFreeDiskSpaceThresholdInBytes = 1024 * 1024 * 1024UL;
         public const ulong CritiallyLowFreeDiskSpaceThresholdInBytes = 128 * 1024 * 1024UL;
+        public const ulong DisableAuxGPUbyDefaultThresholdInBytes = 4000 * 1024 * 1024UL;
         public const long MaxSingleReplayFileSizeInBytes = 12 * 1024 * 1024L;
         public const string ReplayFileNamePrefix = "replay-";
         public const string ReplayContinuationFileNamePrefix = "rpcont-";

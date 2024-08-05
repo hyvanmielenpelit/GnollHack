@@ -857,7 +857,7 @@ namespace GnollHackX.Pages.MainScreen
             savestyle = Preferences.Get("AppSwitchSaveStyle", 0);
             primarygpucache = Preferences.Get("PrimaryGPUCacheLimit", -2L);
             secondarygpucache = Preferences.Get("SecondaryGPUCacheLimit", -2L);
-            disableauxgpu = Preferences.Get("DisableAuxiliaryGLCanvas", false);
+            disableauxgpu = Preferences.Get("DisableAuxiliaryGLCanvas", GHApp.IsDisableAuxGPUDefault);
             if (_gamePage == null)
             {
                 cursor = Preferences.Get("CursorStyle", 1);
@@ -875,7 +875,7 @@ namespace GnollHackX.Pages.MainScreen
                 desktopstatusbar = Preferences.Get("DesktopStatusBar", GHApp.IsDesktop);
                 desktopbuttons = Preferences.Get("DesktopButtons", GHApp.IsDesktop);
                 menufadeeffects = Preferences.Get("MenuFadeEffects", GHConstants.AreMenuFadeEffectsDefault);
-                menuhighfilterquality = Preferences.Get("MenuHighFilterQuality", GHConstants.IsMenuHighFilterQualityDefault);
+                menuhighfilterquality = Preferences.Get("MenuHighFilterQuality", GHApp.IsMenuHighFilterQualityDefault);
                 showscore = Preferences.Get("ShowScore", GHApp.IsDesktop);
                 showxp = Preferences.Get("ShowXP", GHApp.IsDesktop);
                 rightaligned2ndrow = Preferences.Get("RightAligned2ndRow", false);
@@ -892,7 +892,7 @@ namespace GnollHackX.Pages.MainScreen
                 battery = Preferences.Get("ShowBattery", false);
                 showrecording = Preferences.Get("ShowRecording", true);
                 autoupload = Preferences.Get("AutoUploadReplays", false);
-                gpu = Preferences.Get("UseMainGLCanvas", GHApp.IsGPUDefault && GHApp.IsGPUAvailable);
+                gpu = Preferences.Get("UseMainGLCanvas", GHApp.IsUseMainGPUDefault);
                 simplecmdlayout = Preferences.Get("UseSimpleCmdLayout", GHConstants.DefaultSimpleCmdLayout);
                 msgnum = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
                 petrows = Preferences.Get("NumDisplayedPetRows", GHConstants.DefaultPetRows);

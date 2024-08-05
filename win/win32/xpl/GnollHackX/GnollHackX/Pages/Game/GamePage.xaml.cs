@@ -935,8 +935,8 @@ namespace GnollHackX.Pages.Game
             ShowBattery = Preferences.Get("ShowBattery", false);
             ShowZoom = Preferences.Get("ShowZoom", false);
             ShowRecording = Preferences.Get("ShowRecording", true);
-            UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", GHApp.IsGPUDefault && GHApp.IsGPUAvailable);
-            UseAuxiliaryGLCanvas = Preferences.Get("UseAuxiliaryGLCanvas", GHApp.IsGPUDefault && GHApp.IsGPUAvailable);
+            UseMainGLCanvas = Preferences.Get("UseMainGLCanvas", GHApp.IsUseMainGPUDefault);
+            UseAuxiliaryGLCanvas = Preferences.Get("UseAuxiliaryGLCanvas", GHApp.IsUseAuxGPUDefault);
             UseSimpleCmdLayout = Preferences.Get("UseSimpleCmdLayout", GHConstants.DefaultSimpleCmdLayout);
             ShowMemory = Preferences.Get("ShowMemory", false);
             MapGrid = Preferences.Get("MapGrid", false);
@@ -947,7 +947,7 @@ namespace GnollHackX.Pages.Game
             ShowXP = Preferences.Get("ShowXP", GHApp.IsDesktop);
             RightAligned2ndRow = Preferences.Get("RightAligned2ndRow", false);
             MenuFadeEffects = Preferences.Get("MenuFadeEffects", GHConstants.AreMenuFadeEffectsDefault);
-            MenuHighFilterQuality = Preferences.Get("MenuHighFilterQuality", GHConstants.IsMenuHighFilterQualityDefault);
+            MenuHighFilterQuality = Preferences.Get("MenuHighFilterQuality", GHApp.IsMenuHighFilterQualityDefault);
             ShowOrbs = Preferences.Get("ShowOrbs", true);
             ShowPets = Preferences.Get("ShowPets", true);
             PlayerMark = Preferences.Get("PlayerMark", false);

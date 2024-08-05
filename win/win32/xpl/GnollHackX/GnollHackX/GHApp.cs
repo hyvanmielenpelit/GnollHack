@@ -176,9 +176,9 @@ namespace GnollHackX
             SetAvailableGPUCacheLimits(TotalMemory);
             PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
             SecondaryGPUCacheLimit = Preferences.Get("SecondaryGPUCacheLimit", -2L);
-            UseGPU = Preferences.Get("UseMainGLCanvas", IsGPUDefault && IsGPUAvailable);
-            UseAuxGPU = Preferences.Get("UseAuxiliaryGLCanvas", IsGPUDefault && IsGPUAvailable);
-            DisableAuxGPU = Preferences.Get("DisableAuxiliaryGLCanvas", false);
+            UseGPU = Preferences.Get("UseMainGLCanvas", IsUseMainGPUDefault);
+            UseAuxGPU = Preferences.Get("UseAuxiliaryGLCanvas", IsUseAuxGPUDefault);
+            DisableAuxGPU = Preferences.Get("DisableAuxiliaryGLCanvas", IsDisableAuxGPUDefault);
             FixRects = Preferences.Get("FixRects", IsFixRectsDefault);
 
             ulong FreeDiskSpaceInBytes = PlatformService.GetDeviceFreeDiskSpaceInBytes();
@@ -652,6 +652,38 @@ namespace GnollHackX
 #else
                 return IsAndroid;
 #endif
+            }
+        }
+
+        public static bool IsDisableAuxGPUDefault
+        {
+            get
+            {
+                return IsAndroid && TotalMemory < GHConstants.DisableAuxGPUbyDefaultThresholdInBytes;
+            }
+        }
+
+        public static bool IsUseMainGPUDefault
+        {
+            get
+            {
+                return IsGPUDefault && IsGPUAvailable;
+            }
+        }
+
+        public static bool IsUseAuxGPUDefault
+        {
+            get
+            {
+                return IsGPUDefault && IsGPUAvailable && !IsDisableAuxGPUDefault;
+            }
+        }
+
+        public static bool IsMenuHighFilterQualityDefault
+        {
+            get
+            {
+                return IsUseAuxGPUDefault;
             }
         }
 
