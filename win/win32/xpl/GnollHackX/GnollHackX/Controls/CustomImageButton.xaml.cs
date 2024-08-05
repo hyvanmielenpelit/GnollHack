@@ -224,7 +224,17 @@ namespace GnollHackX.Controls
             canvas.Clear();
             SKRect sourcerect = new SKRect(0, 0, targetBitmap.Width, targetBitmap.Height);
             SKRect targetrect = new SKRect(0, 0, canvaswidth, canvasheight);
-            canvas.DrawImage(targetBitmap, sourcerect, targetrect);
+            using (SKPaint paint = new SKPaint() )
+            {
+#if !GNH_MAUI
+                paint.FilterQuality = SKFilterQuality.High;
+#endif
+                canvas.DrawImage(targetBitmap, sourcerect, targetrect,
+#if GNH_MAUI
+                    new SKSamplingOptions(SKFilterMode.Linear),
+#endif
+                    paint);
+            }
         }
     }
 }
