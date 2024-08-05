@@ -608,7 +608,8 @@ namespace GnollHackX.Pages.Game
             get { return canvasView.UseGL; }
             set {
                 canvasView.UseGL = value;
-#if !GNH_MAUI
+/* SKGLView is non-transparent on Windows */
+#if !WINDOWS
                 CommandCanvas.UseGL = value;
                 MenuCanvas.UseGL = value;
                 TextCanvas.UseGL = value;
@@ -702,6 +703,7 @@ namespace GnollHackX.Pages.Game
         private bool _showXP = false;
         private bool _rightAligned2ndRow = false;
         private bool _menuFadeEffects = false;
+        private bool _menuHighFilterQuality = false;
         public bool DesktopStatusBar { get { lock (_desktopLock) { return _desktopStatusBar; } } set { lock (_desktopLock) { _desktopStatusBar = value; } } }
         public bool DesktopButtons 
         { 
@@ -722,6 +724,7 @@ namespace GnollHackX.Pages.Game
             }
         }
         public bool MenuFadeEffects { get { lock (_desktopLock) { return _menuFadeEffects; } } set { lock (_desktopLock) { _menuFadeEffects = value; } } }
+        public bool MenuHighFilterQuality { get { lock (_desktopLock) { return _menuHighFilterQuality; } } set { lock (_desktopLock) { _menuHighFilterQuality = value; } } }
         public bool ShowScore { get { lock (_desktopLock) { return _showScore; } } set { lock (_desktopLock) { _showScore = value; } } }
         public bool ShowXP { get { lock (_desktopLock) { return _showXP; } } set { lock (_desktopLock) { _showXP = value; } } }
         public bool RightAligned2ndRow { get { lock (_desktopLock) { return _rightAligned2ndRow; } } set { lock (_desktopLock) { _rightAligned2ndRow = value; } } }
@@ -937,6 +940,7 @@ namespace GnollHackX.Pages.Game
             ShowXP = Preferences.Get("ShowXP", GHApp.IsDesktop);
             RightAligned2ndRow = Preferences.Get("RightAligned2ndRow", false);
             MenuFadeEffects = Preferences.Get("MenuFadeEffects", GHConstants.AreMenuFadeEffectsDefault);
+            MenuHighFilterQuality = Preferences.Get("MenuHighFilterQuality", GHConstants.IsMenuHighFilterQualityDefault);
             ShowOrbs = Preferences.Get("ShowOrbs", true);
             ShowPets = Preferences.Get("ShowPets", true);
             PlayerMark = Preferences.Get("PlayerMark", false);
@@ -14562,6 +14566,7 @@ namespace GnollHackX.Pages.Game
             SwitchableCanvasView referenceCanvasView = MenuCanvas;
             float canvaswidth = referenceCanvasView.CanvasSize.Width;
             float canvasheight = referenceCanvasView.CanvasSize.Height;
+            bool isHighFilterQuality = MenuHighFilterQuality;
             bool usingGL = MenuCanvas.UseGL;
             float x, y;
             string str;
@@ -14820,7 +14825,7 @@ namespace GnollHackX.Pages.Game
                                                 float glyphxcenterpadding = (picturewidth - minrowheight * mi.GlyphImageSource.Width / mi.GlyphImageSource.Height) / 2;
                                                 canvas.Translate(x + glyphxcenterpadding, glyph_start_y);
                                                 canvas.Scale(minrowheight / mi.GlyphImageSource.Height);
-                                                mi.GlyphImageSource.DrawOnCanvas(canvas, usingGL, false, true);
+                                                mi.GlyphImageSource.DrawOnCanvas(canvas, usingGL, false, isHighFilterQuality);
                                             }
                                         }
                                     }

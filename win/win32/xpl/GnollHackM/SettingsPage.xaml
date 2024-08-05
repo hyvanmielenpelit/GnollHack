@@ -216,6 +216,15 @@
                                             HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="MenuFadeEffectsSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
+                            <Grid x:Name="MenuHighFilterQualityGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label x:Name="MenuHighFilterQualityLabel"
+                                            Text="Improved Menu Images"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="MenuHighFilterQualitySwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Messages"
                                             FontFamily="Underwood" TextColor="Black"
