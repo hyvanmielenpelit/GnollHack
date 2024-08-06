@@ -3490,13 +3490,15 @@ get_current_game_score(VOID_ARGS)
     int64_t Deepest_Dungeon_Level = deepest_lev_reached(FALSE);
     int64_t Achievements_Score = (int64_t)(u.uachieve.amulet + u.uachieve.ascended + u.uachieve.bell + u.uachieve.book + u.uachieve.enter_gehennom + u.uachieve.finish_sokoban +
         u.uachieve.killed_medusa + u.uachieve.killed_yacc + u.uachieve.killed_demogorgon + u.uachieve.menorah + u.uachieve.prime_codex + u.uachieve.mines_luckstone +
-        + u.uachieve.entered_astral_plane + u.uachieve.entered_elemental_planes + u.uevent.invoked + u.uachieve.crowned
+        + u.uachieve.entered_astral_plane + u.uachieve.entered_elemental_planes + u.uevent.invoked + u.uachieve.crowned + u.uachieve.learned_castle_tune
         );
 
     int64_t Small_Achievements_Score = (int64_t)(u.uachieve.consulted_oracle + u.uachieve.read_discworld_novel
-        + u.uachieve.entered_gnomish_mines + u.uachieve.entered_mine_town + u.uachieve.entered_shop + u.uachieve.entered_temple
-        + u.uachieve.entered_sokoban + u.uachieve.entered_bigroom + u.uachieve.learned_castle_tune 
-        + u.uachieve.entered_large_circular_dungeon + u.uachieve.entered_plane_of_modron + u.uachieve.entered_hellish_pastures
+        + u.uachieve.entered_gnomish_mines + u.uachieve.entered_mine_town 
+        + u.uachieve.entered_shop + u.uachieve.entered_temple
+        + u.uachieve.entered_sokoban + u.uachieve.entered_bigroom
+        + u.uachieve.entered_large_circular_dungeon + u.uachieve.entered_plane_of_modron 
+        + u.uachieve.entered_hellish_pastures
         );
 
     int64_t Conduct_Score = (int64_t)(u.uachieve.ascended) * get_conduct_score_upon_ascension();
