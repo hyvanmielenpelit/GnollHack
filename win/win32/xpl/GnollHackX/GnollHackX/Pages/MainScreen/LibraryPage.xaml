@@ -15,7 +15,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Row="0" x:Name="lblHeader" Text="Library" HorizontalTextAlignment="Center" FontSize="Large" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
+                <Label Grid.Row="0" x:Name="lblHeader" Text="Library" HorizontalTextAlignment="Center" FontSize="23" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="CenterAndExpand" VerticalOptions="Fill" Margin="30,10,30,10" />
                 <Label Grid.Row="1" x:Name="lblSubtitle" TextColor="Black" Margin="1,2,1,6" BackgroundColor="Transparent" FontFamily="Immortal"
                        HorizontalOptions="CenterAndExpand" VerticalOptions="Fill" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />

@@ -111,14 +111,13 @@ namespace GnollHackX.Droid
         public void CloseApplication()
         {
             RevertAnimatorDuration(true);
-            //StopForegroundService();
 #if GNH_MAUI
-            //Platform.CurrentActivity.Finish();
             Platform.CurrentActivity.FinishAffinity();
-            //Microsoft.Maui.Controls.Application.Current.Quit();
+            Platform.CurrentActivity.Finish();
+            Microsoft.Maui.Controls.Application.Current.Quit();
 #else
-            //MainActivity.CurrentMainActivity.Finish();
             MainActivity.CurrentMainActivity.FinishAffinity();
+            MainActivity.CurrentMainActivity.Finish();
 #endif
         }
 
