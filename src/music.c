@@ -923,7 +923,7 @@ struct obj *instr;
 
                                 if (!u.uachieve.learned_castle_tune)
                                 {
-                                    //achievement_gained("Learned Castle Drawbridge Tune");
+                                    achievement_gained("Solved Castle Drawbridge Tune");
                                     u.uachieve.learned_castle_tune = 1;
                                 }
 

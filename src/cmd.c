@@ -5759,7 +5759,7 @@ int final;
     }
     if (u.uachieve.learned_castle_tune)
     {
-        you_have("learned the castle tune", "");
+        you_have("solved the castle tune", "");
         num_achievements++;
     }
     if (u.uachieve.entered_large_circular_dungeon)
