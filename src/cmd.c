@@ -5634,6 +5634,8 @@ int final;
     putstr(en_win, ATR_TITLE, "Achievements:");
     if (!final)
         putstr(en_win, ATR_HALF_SIZE, " ");
+    
+    /* Major achievements */
     if (u.uachieve.ascended)
     {
         you_have("ascended to demigodhood", "");
@@ -5697,14 +5699,26 @@ int final;
         you_have("entered the Elemental Planes", "");
         num_achievements++;
     }
-    if (u.uachieve.enter_gehennom)
-    {
-        you_have("entered Gehennom", "");
-        num_achievements++;
-    }
     if (u.uachieve.killed_medusa)
     {
         you_have("defeated Medusa", "");
+        num_achievements++;
+    }
+    if (u.uachieve.learned_castle_tune)
+    {
+        you_have("solved the castle tune", "");
+        num_achievements++;
+    }
+    if (u.uachieve.killed_demogorgon)
+    {
+        you_have("defeated Demogorgon, the Prince of Demons", "");
+        num_achievements++;
+    }
+
+    /* Minor achievements + a couple of related major ones */
+    if (u.uachieve.enter_gehennom)
+    {
+        you_have("entered Gehennom", "");
         num_achievements++;
     }
     if (u.uachieve.consulted_oracle)
@@ -5757,11 +5771,6 @@ int final;
         you_have("found the Big Room", "");
         num_achievements++;
     }
-    if (u.uachieve.learned_castle_tune)
-    {
-        you_have("solved the castle tune", "");
-        num_achievements++;
-    }
     if (u.uachieve.entered_large_circular_dungeon)
     {
         you_have("entered the Large Circular Dungeon", "");
@@ -5780,11 +5789,6 @@ int final;
     if (u.uachieve.killed_yacc)
     {
         you_have("defeated Yacc, the Demon Lord of Bovines", "");
-        num_achievements++;
-    }
-    if (u.uachieve.killed_demogorgon)
-    {
-        you_have("defeated Demogorgon, the Prince of Demons", "");
         num_achievements++;
     }
     if (!num_achievements)
