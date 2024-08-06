@@ -1469,6 +1469,7 @@ namespace GnollHackX.Pages.Game
         {
             if(_gnhthread != null)
             {
+                /* Game thread may have outstanding things to do, but wait for up to 1 second to let them finish */
                 for (int i = 0; i < 20 && _gnhthread.IsAlive; i++)
                 {
                     await Task.Delay(50);
@@ -1480,7 +1481,8 @@ namespace GnollHackX.Pages.Game
 
             /* Collect garbage at this point */
             GHApp.CollectGarbage();
-            
+            await Task.Delay(50);
+
             Thread t = new Thread(new ThreadStart(GNHThreadProcForRestart));
             _gnhthread = t;
             _gnhthread.Start();
@@ -1488,12 +1490,15 @@ namespace GnollHackX.Pages.Game
 
         public async void RestartReplay()
         {
+            /* Replay thread should have finished by now since it does not have any outstanding things to do, but wait for 50 millisecs just in case if this is not the case */
+            if (_gnhthread != null && _gnhthread.IsAlive)
+                await Task.Delay(50);
+
             CurrentGame = null;
             GHApp.CurrentGHGame = null;
             _gnhthread = null;
 
             /* Collect garbage at this point */
-            await Task.Delay(50);
             GHApp.CollectGarbage();
             await Task.Delay(50);
 
