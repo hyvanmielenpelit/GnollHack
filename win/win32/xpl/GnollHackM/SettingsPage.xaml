@@ -168,6 +168,14 @@
                                 <Switch Grid.Column="1" x:Name="SilentModeSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="SilentModeSwitch_Toggled" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Dark Mode"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center" 
+                                            HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="DarkModeSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="DarkModeSwitch_Toggled" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Tournament Mode"
                                     x:Name="TournamentLabel" 
                                     FontFamily="Underwood" TextColor="Black"
@@ -199,94 +207,7 @@
                                             HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="DesktopButtonsSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Dark Mode"
-                                            FontFamily="Underwood" TextColor="Black"
-                                            FontSize="15"
-                                            VerticalOptions="Center" 
-                                            HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="DarkModeSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="DarkModeSwitch_Toggled" />
-                            </Grid>
-                            <Grid x:Name="MenuFadeEffectsGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label x:Name="MenuFadeEffectsLabel"
-                                            Text="Menu Fade Effects"
-                                            FontFamily="Underwood" TextColor="Black"
-                                            FontSize="15"
-                                            VerticalOptions="Center"
-                                            HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="MenuFadeEffectsSwitch" HorizontalOptions="End" VerticalOptions="Center" />
-                            </Grid>
-                            <Grid x:Name="MenuHighFilterQualityGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label x:Name="MenuHighFilterQualityLabel"
-                                            Text="Improved Menu Images"
-                                            FontFamily="Underwood" TextColor="Black"
-                                            FontSize="15"
-                                            VerticalOptions="Center"
-                                            HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="MenuHighFilterQualitySwitch" HorizontalOptions="End" VerticalOptions="Center" />
-                            </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Messages"
-                                            FontFamily="Underwood" TextColor="Black"
-                                            FontSize="15"
-                                            VerticalOptions="Center" 
-                                            HorizontalOptions="Start" />
-                                <Picker Grid.Column="1" x:Name="MessageLengthPicker"
-                                            Title="Select the number of messages"
-                                            FontFamily="Underwood" 
-                                            FontSize="17"
-                                            TextColor="Black"
-                                            TitleColor="Black" 
-                                            HorizontalTextAlignment="End"
-                                            BackgroundColor="Transparent"
-                                            WidthRequest="200"
-                                            VerticalOptions="Center"
-                                            HorizontalOptions="End" >
-                                    <Picker.ItemsSource>
-                                        <x:Array Type="{x:Type x:String}">
-                                            <x:String>1</x:String>
-                                            <x:String>2</x:String>
-                                            <x:String>3</x:String>
-                                            <x:String>4</x:String>
-                                            <x:String>5</x:String>
-                                            <x:String>6</x:String>
-                                            <x:String>7</x:String>
-                                            <x:String>8</x:String>
-                                            <x:String>9</x:String>
-                                            <x:String>10</x:String>
-                                            <x:String>15</x:String>
-                                            <x:String>20</x:String>
-                                            <x:String>30</x:String>
-                                            <x:String>50</x:String>
-                                        </x:Array>
-                                    </Picker.ItemsSource>
-                                </Picker>
-                            </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label x:Name="ForceMaxMessageLabel"
-                                            Text=" Show All"
-                                            FontFamily="Underwood" TextColor="Black"
-                                            FontSize="15"
-                                            VerticalOptions="Center"
-                                            HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="ForceMaxMessageSwitch" HorizontalOptions="End" VerticalOptions="Center" />
-                            </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Grid"
-                                            FontFamily="Underwood" TextColor="Black"
-                                            FontSize="15"
-                                            VerticalOptions="Center"
-                                            HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="GridSwitch" HorizontalOptions="End" VerticalOptions="Center" />
-                            </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Hit Point Bars"
-                                            FontFamily="Underwood" TextColor="Black"
-                                            FontSize="15"
-                                            VerticalOptions="Center"
-                                            HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="HitPointBarSwitch" HorizontalOptions="End" VerticalOptions="Center" />
-                            </Grid>
+                            
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Classic Status Bar"
                                             FontFamily="Underwood" TextColor="Black"
@@ -341,6 +262,40 @@
                                             HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="ShowExtendedStatusBarSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
+
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Grid"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="GridSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Hit Point Bars"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="HitPointBarSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Player Mark"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="PlayerMarkSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Targeting"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="MonsterTargetingSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Show Pets" x:Name="PetsLabel"
                                             FontFamily="Underwood" TextColor="Black"
@@ -403,23 +358,53 @@
                                             HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="MaxManaInOrbSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Messages"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center" 
+                                            HorizontalOptions="Start" />
+                                <Picker Grid.Column="1" x:Name="MessageLengthPicker"
+                                            Title="Select the number of messages"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black" 
+                                            HorizontalTextAlignment="End"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="200"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="End" >
+                                    <Picker.ItemsSource>
+                                        <x:Array Type="{x:Type x:String}">
+                                            <x:String>1</x:String>
+                                            <x:String>2</x:String>
+                                            <x:String>3</x:String>
+                                            <x:String>4</x:String>
+                                            <x:String>5</x:String>
+                                            <x:String>6</x:String>
+                                            <x:String>7</x:String>
+                                            <x:String>8</x:String>
+                                            <x:String>9</x:String>
+                                            <x:String>10</x:String>
+                                            <x:String>15</x:String>
+                                            <x:String>20</x:String>
+                                            <x:String>30</x:String>
+                                            <x:String>50</x:String>
+                                        </x:Array>
+                                    </Picker.ItemsSource>
+                                </Picker>
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label x:Name="ForceMaxMessageLabel"
+                                            Text=" Show All"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="ForceMaxMessageSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
 
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Player Mark"
-                                            FontFamily="Underwood" TextColor="Black"
-                                            FontSize="15"
-                                            VerticalOptions="Center"
-                                            HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="PlayerMarkSwitch" HorizontalOptions="End" VerticalOptions="Center" />
-                            </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Targeting"
-                                            FontFamily="Underwood" TextColor="Black"
-                                            FontSize="15"
-                                            VerticalOptions="Center"
-                                            HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="MonsterTargetingSwitch" HorizontalOptions="End" VerticalOptions="Center" />
-                            </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Walk Arrows"
                                             FontFamily="Underwood" TextColor="Black"
@@ -459,6 +444,24 @@
                                             VerticalOptions="Center"
                                             HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="YesClipNormalSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid x:Name="MenuFadeEffectsGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label x:Name="MenuFadeEffectsLabel"
+                                            Text="Menu Fade Effects"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="MenuFadeEffectsSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid x:Name="MenuHighFilterQualityGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label x:Name="MenuHighFilterQualityLabel"
+                                            Text="Improved Menu Images"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="MenuHighFilterQualitySwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
 
                             <Label Text="Behavior" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
