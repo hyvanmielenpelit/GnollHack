@@ -18,7 +18,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Label x:Name="HeaderLabel" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="24" TextColor="Black" FontFamily="Immortal"/>
+                <Label x:Name="HeaderLabel" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="23" TextColor="Black" FontFamily="Immortal"/>
                 <gnh:CustomLabel Grid.Row="1" x:Name="TextLabel" IsVisible="False" VerticalTextAlignment="Start" HorizontalOptions="Center" VerticalOptions="Fill" Text="" TextColor="Black" BackgroundColor="Transparent"
                         FontFamily="DejaVuSansMono" FontSize="13" IsScrollable="True" />
                 <WebView Grid.Row="1" x:Name="DisplayWebView" IsVisible="False" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent" />

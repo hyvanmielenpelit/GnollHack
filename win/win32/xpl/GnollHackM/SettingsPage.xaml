@@ -16,7 +16,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Row="0" x:Name="lblHeader" Text="Settings" FontSize="24" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
+                <Label Grid.Row="0" x:Name="lblHeader" Text="Settings" FontSize="23" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="Center" VerticalOptions="Center" Margin="0,10,0,0" />
                 <Grid Grid.Row="1" MaximumWidthRequest="440" HorizontalOptions="Fill" VerticalOptions="Fill">
                     <ScrollView x:Name="MainScrollView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
