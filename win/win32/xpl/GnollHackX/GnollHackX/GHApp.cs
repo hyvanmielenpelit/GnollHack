@@ -176,6 +176,7 @@ namespace GnollHackX
             SetAvailableGPUCacheLimits(TotalMemory);
             PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
             SecondaryGPUCacheLimit = Preferences.Get("SecondaryGPUCacheLimit", -2L);
+            UseMipMap = Preferences.Get("UseMainMipMap", IsUseMainMipMapDefault);
             UseGPU = Preferences.Get("UseMainGLCanvas", IsUseMainGPUDefault);
             UseAuxGPU = Preferences.Get("UseAuxiliaryGLCanvas", IsUseAuxGPUDefault);
             DisableAuxGPU = Preferences.Get("DisableAuxiliaryGLCanvas", IsDisableAuxGPUDefault);
@@ -478,9 +479,11 @@ namespace GnollHackX
         }
 
         private static readonly object _useGPULock = new object();
+        private static bool _useMipMap = false;
         private static bool _useGPU = false;
         private static bool _useAuxGPU = false;
         private static bool _disableAuxGPU = false;
+        public static bool UseMipMap { get { lock (_useGPULock) { return _useMipMap; } } set { lock (_useGPULock) { _useMipMap = value; } } }
         public static bool UseGPU { get { lock (_useGPULock) { return _useGPU; } } set { lock (_useGPULock) { _useGPU = value; } } }
         public static bool UseAuxGPU { get { lock (_useGPULock) { return _useAuxGPU; } } set { lock (_useGPULock) { _useAuxGPU = value; } } }
         public static bool DisableAuxGPU { get { lock (_useGPULock) { return _disableAuxGPU; } } set { lock (_useGPULock) { _disableAuxGPU = value; } } }
@@ -652,6 +655,15 @@ namespace GnollHackX
 #else
                 return IsAndroid;
 #endif
+            }
+        }
+
+        public static bool IsUseMainMipMapDefault
+        {
+            get
+            {
+                return false;
+                //return TotalMemory >= GHConstants.UseMipMapThresholdInBytes;
             }
         }
 

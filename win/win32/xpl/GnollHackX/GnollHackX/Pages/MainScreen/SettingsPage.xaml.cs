@@ -310,6 +310,14 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage.ShowRecording = ShowRecordingSwitch.IsToggled;
             Preferences.Set("ShowRecording", ShowRecordingSwitch.IsToggled);
 
+            if(MipMapGrid.IsVisible && MipMapSwitch.IsEnabled)
+            {
+                GHApp.UseMipMap = MipMapSwitch.IsToggled;
+                if (_gamePage != null)
+                    _gamePage.UseMainMipMap = MipMapSwitch.IsToggled;
+                Preferences.Set("UseMainMipMap", MipMapSwitch.IsToggled);
+            }
+
             GHApp.UseGPU = GPUSwitch.IsToggled;
             if (_gamePage != null)
                 _gamePage.UseMainGLCanvas = GPUSwitch.IsToggled;
@@ -775,7 +783,7 @@ namespace GnollHackX.Pages.MainScreen
         private void SetInitialValues()
         {
             int cursor = 0, graphics = 0, savestyle = 0, maprefresh = (int)UIUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
-            bool mem = false, fps = false, zoom = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, disableauxgpu = false, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, darkmode = false, windowedmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
+            bool mem = false, fps = false, zoom = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, disableauxgpu = false, mipmap = false, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, darkmode = false, windowedmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
@@ -892,6 +900,7 @@ namespace GnollHackX.Pages.MainScreen
                 battery = Preferences.Get("ShowBattery", false);
                 showrecording = Preferences.Get("ShowRecording", true);
                 autoupload = Preferences.Get("AutoUploadReplays", false);
+                mipmap = Preferences.Get("UseMainMipMap", GHApp.IsUseMainMipMapDefault);
                 gpu = Preferences.Get("UseMainGLCanvas", GHApp.IsUseMainGPUDefault);
                 simplecmdlayout = Preferences.Get("UseSimpleCmdLayout", GHConstants.DefaultSimpleCmdLayout);
                 msgnum = Preferences.Get("NumDisplayedMessages", GHConstants.DefaultMessageRows);
@@ -940,6 +949,7 @@ namespace GnollHackX.Pages.MainScreen
                 zoom = _gamePage.ShowZoom;
                 battery = _gamePage.ShowBattery;
                 showrecording = _gamePage.ShowRecording;
+                mipmap = _gamePage.UseMainMipMap;
                 gpu = _gamePage.UseMainGLCanvas;
                 simplecmdlayout = _gamePage.UseSimpleCmdLayout;
                 msgnum = _gamePage.NumDisplayedMessages;
@@ -995,6 +1005,11 @@ namespace GnollHackX.Pages.MainScreen
             AutoUploadReplaysSwitch.IsToggled = autoupload;
             DisableAuxGPUSwitch.IsToggled = disableauxgpu;
             FixRectsSwitch.IsToggled = fixrects;
+            MipMapSwitch.IsToggled = mipmap;
+            if (!GHApp.IsMaui)
+            {
+                MipMapGrid.IsVisible = false;
+            }
             if (GHApp.IsGPUAvailable)
             {
                 GPUSwitch.IsToggled = gpu;
@@ -1002,6 +1017,8 @@ namespace GnollHackX.Pages.MainScreen
                 DisableAuxGPULabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
                 FixRectsSwitch.IsEnabled = gpu;
                 FixRectsLabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+                MipMapSwitch.IsEnabled = gpu;
+                MipMapLabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
             }
             else
             {
@@ -1015,6 +1032,9 @@ namespace GnollHackX.Pages.MainScreen
 
                 DisableAuxGPUSwitch.IsEnabled = false;
                 DisableAuxGPULabel.TextColor = GHColors.Gray;
+
+                MipMapSwitch.IsEnabled = false;
+                MipMapLabel.TextColor = GHColors.Gray;
             }
             SimpleCmdLayoutSwitch.IsToggled = simplecmdlayout;
             DarkModeSwitch.IsToggled = darkmode;
@@ -1873,6 +1893,8 @@ namespace GnollHackX.Pages.MainScreen
             FixRectsLabel.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
             DisableAuxGPUSwitch.IsEnabled = e.Value;
             DisableAuxGPULabel.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            MipMapSwitch.IsEnabled = e.Value;
+            MipMapLabel.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
 
             if (_isManualTogglingEnabled && e.Value && !GHApp.IsGPUDefault)
             {
@@ -1992,6 +2014,25 @@ namespace GnollHackX.Pages.MainScreen
                     PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
                     PopupTitleLabel.Text = "Restart Required";
                     PopupLabel.Text = "Please restart GnollHack for the changes in Windowed Mode to take effect.";
+                    PopupOkButton.IsEnabled = true;
+                    PopupGrid.IsVisible = true;
+                }
+            }
+        }
+
+        private void MipMapSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if (_isManualTogglingEnabled)
+            {
+                bool oldValue = GHApp.UseMipMap;
+                if (!GHApp.IsUseMainMipMapDefault && e.Value && oldValue != e.Value)
+                {
+                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.CLR_ORANGE, 0, false, true);
+                    PopupTitleLabel.Text = "Memory Warning";
+                    ulong memreq = GHConstants.UseMipMapThresholdInBytes / 1024 / 1024;
+                    ulong mem = GHApp.TotalMemory / 1024 / 1024;
+                    PopupLabel.Text = "Mipmaps require more memory than normal. It is recommended for the device to have at least " + 
+                        memreq + " MB of memory before turning on mipmapping. Your device has " + mem + " MB of memory.";
                     PopupOkButton.IsEnabled = true;
                     PopupGrid.IsVisible = true;
                 }
