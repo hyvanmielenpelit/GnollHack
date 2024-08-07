@@ -2025,14 +2025,15 @@ namespace GnollHackX.Pages.MainScreen
             if (_isManualTogglingEnabled)
             {
                 bool oldValue = GHApp.UseMipMap;
-                if (!GHApp.IsUseMainMipMapDefault && e.Value && oldValue != e.Value)
+                if (oldValue != e.Value)
                 {
                     PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.CLR_ORANGE, 0, false, true);
-                    PopupTitleLabel.Text = "Memory Warning";
-                    ulong memreq = GHConstants.UseMipMapThresholdInBytes / 1024 / 1024;
-                    ulong mem = GHApp.TotalMemory / 1024 / 1024;
-                    PopupLabel.Text = "Mipmaps require more memory than normal. It is recommended for the device to have at least " + 
-                        memreq + " MB of memory before turning on mipmapping. Your device has " + mem + " MB of memory.";
+                    PopupTitleLabel.Text = "Resource Usage Warning";
+                    //ulong memreq = GHConstants.UseMipMapThresholdInBytes / 1024 / 1024;
+                    //ulong mem = GHApp.TotalMemory / 1024 / 1024;
+                    PopupLabel.Text = "Changing the mipmap setting may require more memory or CPU power than normal.";
+                    //"It is recommended for the device to have at least " + 
+                    //    memreq + " MB of memory. Your device has " + mem + " MB of memory.";
                     PopupOkButton.IsEnabled = true;
                     PopupGrid.IsVisible = true;
                 }
