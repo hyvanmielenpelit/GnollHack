@@ -732,9 +732,11 @@
 	  <PublishTrimmed>False</PublishTrimmed>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-android'">
-	  <PublishTrimmed>True</PublishTrimmed>
-      <TrimMode>partial</TrimMode>
-	</PropertyGroup>
+    <!--<PublishTrimmed>True</PublishTrimmed>-->
+    <!--<TrimMode>partial</TrimMode>-->
+    <PublishTrimmed>False</PublishTrimmed>
+    <RunAOTCompilation>False</RunAOTCompilation>
+  </PropertyGroup>
 
 	<ItemGroup>
 	  <EmbeddedResource Include="Assets\archristy.ttf" />
