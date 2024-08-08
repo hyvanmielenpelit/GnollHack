@@ -867,6 +867,16 @@ namespace GnollHackX
 #endif
         }
 
+        public static bool IsAutoSaveUponSwitchingAppsOn
+        {
+            get { return true; }
+        }
+
+        public static bool OperatingSystemKillsAppsOnBackground
+        {
+            get { return !IsDesktop; }
+        }
+
         public static void OnStart()
         {
             if (PlatformService != null)
@@ -875,16 +885,20 @@ namespace GnollHackX
             CtrlDown = false;
             AltDown = false;
             ShiftDown = false;
-            CancelSaveGame = true;
             SleepMuteMode = false;
-            if (CurrentGHGame != null && !CurrentGHGame.PlayingReplay)
+
+            if (IsAutoSaveUponSwitchingAppsOn)
             {
-                //Detect background app killing OS, check if last exit is through going to sleep, and notify player that the app probably had been terminated by OS but game has been saved
-                bool wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
-                Preferences.Set("WentToSleepWithGameOn", false);
-                if (wenttosleep && (GameSaved || SavingGame))
+                CancelSaveGame = true;
+                if (CurrentGHGame != null && !CurrentGHGame.PlayingReplay)
                 {
-                    CurrentGHGame.ActiveGamePage.StopWaitAndResumeSavedGame();
+                    //Detect background app killing OS, check if last exit is through going to sleep, and notify player that the app probably had been terminated by OS but game has been saved
+                    bool wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
+                    Preferences.Set("WentToSleepWithGameOn", false);
+                    if (wenttosleep && (GameSaved || SavingGame))
+                    {
+                        CurrentGHGame.ActiveGamePage.StopWaitAndResumeSavedGame();
+                    }
                 }
             }
         }
@@ -894,20 +908,25 @@ namespace GnollHackX
             if (PlatformService != null)
                 PlatformService.RevertAnimatorDuration(false);
 
-            CancelSaveGame = false;
-            SleepMuteMode = true;
             if (CurrentMainPage != null)
                 CurrentMainPage.Suspend();
             if (CurrentGamePage != null)
                 CurrentGamePage.Suspend();
-            if (CurrentGHGame != null && !CurrentGHGame.PlayingReplay)
+
+            SleepMuteMode = true;
+
+            if (IsAutoSaveUponSwitchingAppsOn)
             {
-                //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
-                Preferences.Set("WentToSleepWithGameOn", true);
-                Preferences.Set("GameSaveResult", 0);
-                if (BatteryChargeLevel > 3) /* Save only if there is enough battery left to prevent save file corruption when the phone powers off */
+                CancelSaveGame = false;
+                if (CurrentGHGame != null && !CurrentGHGame.PlayingReplay)
                 {
-                    CurrentGHGame.ActiveGamePage.SaveGameAndWaitForResume();
+                    //Detect background app killing OS, mark that exit has been through going to sleep, and save the game
+                    Preferences.Set("WentToSleepWithGameOn", true);
+                    Preferences.Set("GameSaveResult", 0);
+                    if (BatteryChargeLevel > 3) /* Save only if there is enough battery left to prevent save file corruption when the phone powers off */
+                    {
+                        CurrentGHGame.ActiveGamePage.SaveGameAndWaitForResume();
+                    }
                 }
             }
             CollectGarbage();
@@ -934,21 +953,36 @@ namespace GnollHackX
             }
             TryVerifyXlogUserName();
 
-            CancelSaveGame = true;
-            SleepMuteMode = false;
             if (CurrentMainPage != null)
                 CurrentMainPage.Resume();
             if (CurrentGamePage != null)
                 CurrentGamePage.Resume();
-            if (CurrentGHGame != null && !CurrentGHGame.PlayingReplay)
+
+            SleepMuteMode = false;
+
+#if WINDOWS
+            if (WindowsXamlWindow?.AppWindow?.Presenter is OverlappedPresenter presenter)
             {
-                //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
-                bool wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
-                Preferences.Set("WentToSleepWithGameOn", false);
-                Preferences.Set("GameSaveResult", 0);
-                if (wenttosleep && (GameSaved || SavingGame))
+                if (WindowedMode)
+                    presenter.Restore();
+                else
+                    presenter.Maximize();
+            }
+#endif
+
+            if (IsAutoSaveUponSwitchingAppsOn)
+            {
+                CancelSaveGame = true;
+                if (CurrentGHGame != null && !CurrentGHGame.PlayingReplay)
                 {
-                    CurrentGHGame.ActiveGamePage.StopWaitAndResumeSavedGame();
+                    //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
+                    bool wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
+                    Preferences.Set("WentToSleepWithGameOn", false);
+                    Preferences.Set("GameSaveResult", 0);
+                    if (wenttosleep && (GameSaved || SavingGame))
+                    {
+                        CurrentGHGame.ActiveGamePage.StopWaitAndResumeSavedGame();
+                    }
                 }
             }
         }

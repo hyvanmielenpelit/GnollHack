@@ -43,6 +43,15 @@ namespace GnollHackX.Pages.Game
                 btnQuit.Text = "Quit Game";
             }
 
+            if (gamePage.GameEnded)
+            {
+                btnQuit.Text = "Finish Game Over";
+                btnSave.TextColor = GHColors.Gray;
+                btnSave.IsEnabled = false;
+                btnOptions.TextColor = GHColors.Gray;
+                btnOptions.IsEnabled = false;
+            }
+
             btnOptions.IsVisible = btnMessages.IsVisible = GHApp.DeveloperMode;
             btnGC.IsVisible = GHApp.DeveloperMode && GHApp.DebugLogMessages;
             UpdateDarknessMode();
@@ -82,7 +91,7 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             await App.Current.MainPage.Navigation.PopModalAsync();
-            _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta('q'));
+            _gamePage.GenericButton_Clicked(sender, e, _gamePage.GameEnded ? 'q' : GHUtils.Meta('q'));
         }
 
         private async void btnBackToGame_Clicked(object sender, EventArgs e)

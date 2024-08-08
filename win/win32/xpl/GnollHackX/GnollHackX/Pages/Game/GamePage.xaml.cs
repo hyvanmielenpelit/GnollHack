@@ -86,7 +86,9 @@ namespace GnollHackX.Pages.Game
 
         private object _isGameOnLock = new object();
         private bool _isGameOn = false;
+        private bool _gameEnded = false;
         public bool IsGameOn { get { lock (_isGameOnLock) { return _isGameOn; } } set { lock (_isGameOnLock) { _isGameOn = value; } } }
+        public bool GameEnded { get { lock (_isGameOnLock) { return _gameEnded; } } set { lock (_isGameOnLock) { _gameEnded = value; } } }
 
         private object _isMainCanvasOnLock = new object();
         private bool _isMainCanvasOn = false;
@@ -2794,6 +2796,9 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.ClipAround:
                                 SetTargetClip(req.RequestInt, req.RequestInt2, req.RequestBool);
                                 break;
+                            case GHRequestType.GameEnded:
+                                GameEnded = true;
+                                break;
                         }
                     }
                 }
@@ -3544,6 +3549,9 @@ namespace GnollHackX.Pages.Game
             /* These need to be returned to their non-game default values */
             GHApp.TournamentMode = Preferences.Get("TournamentMode", false);
             GHApp.SetMirroredOptionsToDefaults();
+            /* These need to be set also here in the case game over was fast forwarded */
+            Preferences.Set("WentToSleepWithGameOn", false);
+            Preferences.Set("GameSaveResult", 0);
 
             StopKeyListening();
             if (MainPageBackgroundNeedsUpdate)

@@ -19,6 +19,7 @@ using Sentry.Maui;
 #if WINDOWS
 using Sentry.Profiling;
 using Microsoft.UI;
+using Microsoft.UI.Windowing;
 #endif
 #endif
 
@@ -102,6 +103,32 @@ public static class MauiProgram
                 // Make sure to add "using Microsoft.Maui.LifecycleEvents;" in the top of the file 
                 events.AddWindows(windowsLifecycleBuilder =>
                 {
+                    windowsLifecycleBuilder.OnPlatformMessage((window, e) => 
+                    {
+                        switch(e.MessageId)
+                        {
+                            case 0x0112: /* WM_SYSCOMMAND */
+                                if (e.WParam == 0xF020)
+                                {
+                                    System.Diagnostics.Debug.WriteLine("Minimizing!");
+                                }
+                                else if (e.WParam == 0xF120)
+                                {
+                                    System.Diagnostics.Debug.WriteLine("Restoring!");
+                                }
+                                break;
+                            case 0x0005: /* WM_SIZE */
+                                if (e.WParam == 0)
+                                {
+                                    System.Diagnostics.Debug.WriteLine("SIZE_RESTORED!");
+                                }
+                                else if (e.WParam == 1)
+                                {
+                                    System.Diagnostics.Debug.WriteLine("SIZE_MINIMIZED!");
+                                }
+                                break;
+                        }
+                    });
                     windowsLifecycleBuilder.OnWindowCreated(window =>
                     {
                         GHApp.WindowsXamlWindow = window;
@@ -114,10 +141,17 @@ public static class MauiProgram
                         var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(id);
                         appWindow.Closing += (s, e) =>
                         {
-                            GHApp.SaveWindowPosition();
-                            GHApp.FmodService?.StopAllSounds((uint)StopSoundFlags.All, 0U);
+                            if(GHApp.CurrentGamePage != null)
+                            {
+                                e.Cancel = true;
+                                GHApp.CurrentGamePage?.GenericButton_Clicked(s, new EventArgs(), GHUtils.Meta('q'));
+                            }
+                            else
+                            {
+                                GHApp.SaveWindowPosition();
+                                GHApp.FmodService?.StopAllSounds((uint)StopSoundFlags.All, 0U);
+                            }
                         };
-
                         bool maximizeWindow = !Preferences.Get("WindowedMode", false);
                         if(maximizeWindow)
                         {

@@ -1747,15 +1747,14 @@ int how;
 #endif
     /* render vision subsystem inoperative */
     iflags.vision_inited = 0;
-    
+    issue_simple_gui_command(GUI_CMD_GAME_ENDED);
+
     if (stop_all_sounds && how != ASCENDED)
     {
         struct stop_all_info sainfo = { 0 };
         stop_all_sounds(sainfo);
     }
     update_game_music();
-
-    issue_simple_gui_command(GUI_CMD_GAME_ENDED);
 
     const char* endtext = 0;
     const char* endinfotext = 0;
