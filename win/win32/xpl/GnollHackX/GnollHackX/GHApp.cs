@@ -156,7 +156,7 @@ namespace GnollHackX
             ReadStreamingBankToMemory = Preferences.Get("ReadStreamingBankToMemory", DefaultStreamingBankToMemory);
             CopyStreamingBankToDisk = Preferences.Get("CopyStreamingBankToDisk", GHConstants.DefaultCopyStreamingBankToDisk);
             ForcePostBones = IsDebug && Preferences.Get("ForcePostBones", false);
-            AppSwitchSaveStyle = Preferences.Get("AppSwitchSaveStyle", 0);
+            AppSwitchSaveStyle = Preferences.Get("AppSwitchSaveStyle", IsDesktop ? 1 : 0);
             XlogUserName = Preferences.Get("XlogUserName", "");
             XlogPassword = Preferences.Get("XlogPassword", "");
             XlogReleaseAccount = Preferences.Get("XlogReleaseAccount", false);
@@ -877,7 +877,7 @@ namespace GnollHackX
             ShiftDown = false;
             CancelSaveGame = true;
             SleepMuteMode = false;
-            if (CurrentGHGame != null && !CurrentGHGame.CasualMode)
+            if (CurrentGHGame != null && !CurrentGHGame.PlayingReplay)
             {
                 //Detect background app killing OS, check if last exit is through going to sleep, and notify player that the app probably had been terminated by OS but game has been saved
                 bool wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);
@@ -940,7 +940,7 @@ namespace GnollHackX
                 CurrentMainPage.Resume();
             if (CurrentGamePage != null)
                 CurrentGamePage.Resume();
-            if (CurrentGHGame != null)
+            if (CurrentGHGame != null && !CurrentGHGame.PlayingReplay)
             {
                 //Detect background app killing OS, check if last exit is through going to sleep & game has been saved, and load previously saved game
                 bool wenttosleep = Preferences.Get("WentToSleepWithGameOn", false);

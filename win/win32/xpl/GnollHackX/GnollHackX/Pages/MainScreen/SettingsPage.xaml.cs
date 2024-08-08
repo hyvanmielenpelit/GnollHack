@@ -862,7 +862,7 @@ namespace GnollHackX.Pages.MainScreen
             gzip = Preferences.Get("UseGZipForReplays", GHConstants.GZipIsDefaultReplayCompression);
             fixrects = Preferences.Get("FixRects", GHApp.IsFixRectsDefault);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
-            savestyle = Preferences.Get("AppSwitchSaveStyle", 0);
+            savestyle = Preferences.Get("AppSwitchSaveStyle", GHApp.IsDesktop ? 1 : 0);
             primarygpucache = Preferences.Get("PrimaryGPUCacheLimit", -2L);
             secondarygpucache = Preferences.Get("SecondaryGPUCacheLimit", -2L);
             disableauxgpu = Preferences.Get("DisableAuxiliaryGLCanvas", GHApp.IsDisableAuxGPUDefault);
