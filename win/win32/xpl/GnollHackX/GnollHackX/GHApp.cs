@@ -36,7 +36,6 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure;
 using System.Text.RegularExpressions;
-using Microsoft.UI.Windowing;
 
 namespace GnollHackX
 {
