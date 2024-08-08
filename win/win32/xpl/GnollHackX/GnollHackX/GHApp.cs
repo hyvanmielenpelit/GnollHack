@@ -36,6 +36,7 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure;
 using System.Text.RegularExpressions;
+using Microsoft.UI.Windowing;
 
 namespace GnollHackX
 {
@@ -961,7 +962,7 @@ namespace GnollHackX
             SleepMuteMode = false;
 
 #if WINDOWS
-            if (WindowsXamlWindow?.AppWindow?.Presenter is OverlappedPresenter presenter)
+            if (WindowsXamlWindow?.AppWindow?.Presenter is Microsoft.UI.Windowing.OverlappedPresenter presenter)
             {
                 if (WindowedMode)
                     presenter.Restore();
