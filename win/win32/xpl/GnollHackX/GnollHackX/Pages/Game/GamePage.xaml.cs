@@ -576,7 +576,7 @@ namespace GnollHackX.Pages.Game
         private GHGraphicsStyle _graphicsStyle;
         private MapRefreshRateStyle _mapRefreshRate = MapRefreshRateStyle.MapFPS60;
 
-        public int NumDisplayedMessages { get { lock (_styleLock) { return _shownMessageRows; } } set { lock (_styleLock) { _shownMessageRows = value;} } }
+        public int NumDisplayedMessages { get { lock (_styleLock) { return _shownMessageRows; } } set { lock (_styleLock) { _shownMessageRows = value; } } }
         public int ActualDisplayedMessages { get { return ForceAllMessages ? (LongerMessageHistory ? GHConstants.MaxLongerMessageHistoryLength : GHConstants.AllMessageRows) : NumDisplayedMessages; } }
         public int NumDisplayedPetRows { get { lock (_styleLock) { return _shownPetRows; } } set { lock (_styleLock) { _shownPetRows = value; } } }
         public TTYCursorStyle CursorStyle { get { lock (_styleLock) { return _cursorStyle; } } set { lock (_styleLock) { _cursorStyle = value; } } }
@@ -596,8 +596,7 @@ namespace GnollHackX.Pages.Game
 
                     _mapRefreshRate = value;
                 }
-                if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
-                    canvasView.AbortAnimation("GeneralAnimationCounter");
+                StopMainCanvasAnimation();
                 _mapUpdateStopWatch.Stop();
 
                 if (!LoadingGrid.IsVisible)
@@ -637,7 +636,7 @@ namespace GnollHackX.Pages.Game
         private bool _useSimpleCmdLayout = GHConstants.DefaultSimpleCmdLayout;
         public bool UseSimpleCmdLayout
         {
-            get { lock(_useSimpleCmdLock) { return _useSimpleCmdLayout; } }
+            get { lock (_useSimpleCmdLock) { return _useSimpleCmdLayout; } }
             set
             {
                 lock (_useSimpleCmdLock)
@@ -721,22 +720,22 @@ namespace GnollHackX.Pages.Game
         private bool _menuFadeEffects = false;
         private bool _menuHighFilterQuality = false;
         public bool DesktopStatusBar { get { lock (_desktopLock) { return _desktopStatusBar; } } set { lock (_desktopLock) { _desktopStatusBar = value; } } }
-        public bool DesktopButtons 
-        { 
-            get { lock (_desktopLock) { return _desktopButtons; } } 
-            set 
-            { 
-                bool changed; 
-                lock (_desktopLock) 
-                { 
+        public bool DesktopButtons
+        {
+            get { lock (_desktopLock) { return _desktopButtons; } }
+            set
+            {
+                bool changed;
+                lock (_desktopLock)
+                {
                     changed = _desktopButtons != value;
-                    _desktopButtons = value; 
-                } 
-                if (changed) 
-                { 
+                    _desktopButtons = value;
+                }
+                if (changed)
+                {
                     UpdateAbilityButtonVisibility(value);
                     UpdateButtonAndUISizes();
-                } 
+                }
             }
         }
         public bool MenuFadeEffects { get { lock (_desktopLock) { return _menuFadeEffects; } } set { lock (_desktopLock) { _menuFadeEffects = value; } } }
@@ -770,7 +769,7 @@ namespace GnollHackX.Pages.Game
         /* Persistent temporary bitmap */
         SKBitmap _tempBitmap = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight, SKImageInfo.PlatformColorType, SKAlphaType.Unpremul);
 
-        private readonly object _skillRectLock = new object(); 
+        private readonly object _skillRectLock = new object();
         private SKRect _skillRect = new SKRect();
         public SKRect SkillRect { get { lock (_skillRectLock) { return _skillRect; } } set { lock (_skillRectLock) { _skillRect = value; } } }
         private bool _skillRectDrawn = false;
@@ -790,7 +789,7 @@ namespace GnollHackX.Pages.Game
         public SKRect ManaRect { get { lock (_manaRectLock) { return _manaRect; } } set { lock (_manaRectLock) { _manaRect = value; } } }
         private bool _manaRectDrawn = false;
 
-        private readonly object _statusBarRectLock = new object(); 
+        private readonly object _statusBarRectLock = new object();
         private SKRect _statusBarRect = new SKRect();
         public SKRect StatusBarRect { get { lock (_statusBarRectLock) { return _statusBarRect; } } set { lock (_statusBarRectLock) { _statusBarRect = value; } } }
         private bool _statusBarRectDrawn = false;
@@ -813,7 +812,7 @@ namespace GnollHackX.Pages.Game
         private int _clipX;
         private int _clipY;
         private readonly object _clipLock = new object();
-        
+
         private readonly object _mapNoClipModeLock = new object();
         private bool _mapNoClipMode = false;
         public bool MapNoClipMode { get { lock (_mapNoClipModeLock) { return _mapNoClipMode; } } set { lock (_mapNoClipModeLock) { _mapNoClipMode = value; } } }
@@ -1084,7 +1083,7 @@ namespace GnollHackX.Pages.Game
             float density = (float)mainDisplayInfo.Density;
 #if GNH_MAUI
             DeviceIdiom ti = DeviceInfo.Idiom;
-            if(ti == DeviceIdiom.Tablet || ti == DeviceIdiom.Phone)
+            if (ti == DeviceIdiom.Tablet || ti == DeviceIdiom.Phone)
             {
                 c_numerator = 2.0f;
                 c_denominator = 3.0f;
@@ -1374,7 +1373,7 @@ namespace GnollHackX.Pages.Game
                 SetupKeyListening();
                 GHApp.DebugCheckCurrentFileDescriptor("StartGameFinished");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 GHApp.MaybeWriteGHLog("StartGame: " + ex.Message);
 #if SENTRY
@@ -1408,7 +1407,7 @@ namespace GnollHackX.Pages.Game
             {
                 lock (_cursorIsOnLock)
                 {
-                    _cursorIsOn = !_cursorIsOn;                    
+                    _cursorIsOn = !_cursorIsOn;
                 }
                 lock (_showMemoryLock)
                 {
@@ -1478,7 +1477,7 @@ namespace GnollHackX.Pages.Game
 
         public async void RestartGame()
         {
-            if(_gnhthread != null)
+            if (_gnhthread != null)
             {
                 /* Game thread may have outstanding things to do, but wait for up to 1 second to let them finish */
                 for (int i = 0; i < 20 && _gnhthread.IsAlive; i++)
@@ -1528,11 +1527,11 @@ namespace GnollHackX.Pages.Game
 
             IncrementCounters();
 
-            if(canvasView.IsVisible && refresh)
+            if (canvasView.IsVisible && refresh)
             {
                 canvasView.InvalidateSurface();
 
-                if(ForceAllMessages)
+                if (ForceAllMessages)
                 {
                     float timePassed = 0;
                     if (!_mapUpdateStopWatch.IsRunning)
@@ -1690,18 +1689,18 @@ namespace GnollHackX.Pages.Game
                                 float target_speed_at_edge = GHConstants.ScrollTargetSpeedAtEdge;
                                 float dist_factor = (Math.Abs(distance_from_edge) - close_anchor_distance) / (distance_anchor_distance - close_anchor_distance);
                                 float close_factor = Math.Abs(distance_from_edge) / close_anchor_distance;
-                                float target_speed = -1.0f * (float)Math.Sign(distance_from_edge) 
+                                float target_speed = -1.0f * (float)Math.Sign(distance_from_edge)
                                     * (
                                     Math.Max(0f, dist_factor) * (target_speed_at_distance - target_speed_at_close)
-                                    + Math.Min(1f, close_factor) * (target_speed_at_close - target_speed_at_edge) 
+                                    + Math.Min(1f, close_factor) * (target_speed_at_close - target_speed_at_edge)
                                     + target_speed_at_edge
-                                    ) 
+                                    )
                                     * MenuCanvas.CanvasSize.Height;
                                 if (_menuScrollOffset > 0 ? _menuScrollSpeed <= 0 : _menuScrollSpeed >= 0)
                                 {
                                     float target_factor = Math.Abs(distance_from_edge) / distance_anchor_distance;
                                     _menuScrollSpeed += (-1.0f * deceleration3) * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval() / 1000;
-                                    if(target_factor < 1.0f)
+                                    if (target_factor < 1.0f)
                                     {
                                         _menuScrollSpeed = _menuScrollSpeed * target_factor + target_speed * (1.0f - target_factor);
                                     }
@@ -1719,7 +1718,7 @@ namespace GnollHackX.Pages.Game
                                         float deceleration1 = (float)MenuCanvas.CanvasSize.Height * GHConstants.ScrollConstantDeceleration;
                                         float deceleration2 = Math.Abs(_menuScrollSpeed) * GHConstants.ScrollSpeedDeceleration;
                                         float deceleration_per_second = deceleration1 + deceleration2;
-                                        _menuScrollSpeed += - 1.0f * (float)sgn * ((deceleration_per_second * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval()) / 1000);
+                                        _menuScrollSpeed += -1.0f * (float)sgn * ((deceleration_per_second * (float)UIUtils.GetAuxiliaryCanvasAnimationInterval()) / 1000);
                                         if (sgn == 0 || (sgn > 0 && _menuScrollSpeed < 0) || (sgn < 0 && _menuScrollSpeed > 0))
                                             _menuScrollSpeed = 0;
                                     }
@@ -1817,16 +1816,28 @@ namespace GnollHackX.Pages.Game
         {
             uint mainAnimationLength = 20; // GHConstants.MainCanvasAnimationTime / UIUtils.GetMainCanvasAnimationInterval(MapRefreshRate);
             Animation canvasAnimation = new Animation(v => canvasView.GeneralAnimationCounter = (long)v, 1, mainAnimationLength);
-            canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: GHConstants.MainCanvasAnimationTime, 
+            canvasAnimation.Commit(canvasView, "GeneralAnimationCounter", length: GHConstants.MainCanvasAnimationTime,
                 rate: UIUtils.GetMainCanvasAnimationInterval(MapRefreshRate), repeat: () => true /* MainGrid.IsVisible */);
             _mapUpdateStopWatch.Restart();
+        }
+
+        private void StopMainCanvasAnimation()
+        {
+            if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
+                canvasView.AbortAnimation("GeneralAnimationCounter");
         }
 
         private void StartCommandCanvasAnimation()
         {
             Animation commandAnimation = new Animation(v => CommandCanvas.GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
-            commandAnimation.Commit(CommandCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime, 
+            commandAnimation.Commit(CommandCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime,
                 rate: UIUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => true /* MoreCommandsGrid.IsVisible */);
+        }
+
+        private void StopCommandCanvasAnimation()
+        {
+            if (CommandCanvas.AnimationIsRunning("GeneralAnimationCounter"))
+                CommandCanvas.AbortAnimation("GeneralAnimationCounter");
         }
 
         private void StartMenuCanvasAnimation()
@@ -1835,11 +1846,24 @@ namespace GnollHackX.Pages.Game
             commandAnimation.Commit(MenuCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime, 
                 rate: UIUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => true /* MenuGrid.IsVisible */);
         }
+
+        private void StopMenuCanvasAnimation()
+        {
+            if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
+                MenuCanvas.AbortAnimation("GeneralAnimationCounter");
+        }
+
         private void StartTextCanvasAnimation()
         {
             Animation commandAnimation = new Animation(v => TextCanvas.GeneralAnimationCounter = (long)v, 1, _auxAnimationLength);
             commandAnimation.Commit(TextCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime, 
                 rate: UIUtils.GetAuxiliaryCanvasAnimationInterval(), repeat: () => true /* TextGrid.IsVisible */);
+        }
+
+        private void StopTextCanvasAnimation()
+        {
+            if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
+                TextCanvas.AbortAnimation("GeneralAnimationCounter");
         }
 
         private bool StartingPositionsSet { get; set; }
@@ -2638,14 +2662,10 @@ namespace GnollHackX.Pages.Game
                                 CurrentGame = null;
                                 GHApp.CurrentGHGame = null;
                                 _mainPage.GameStarted = false;
-                                if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
-                                    canvasView.AbortAnimation("GeneralAnimationCounter");
-                                if (CommandCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                                    CommandCanvas.AbortAnimation("GeneralAnimationCounter");
-                                if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                                    MenuCanvas.AbortAnimation("GeneralAnimationCounter");
-                                if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                                    TextCanvas.AbortAnimation("GeneralAnimationCounter");
+                                StopMainCanvasAnimation();
+                                StopCommandCanvasAnimation();
+                                StopMenuCanvasAnimation();
+                                StopTextCanvasAnimation();
                                 _mapUpdateStopWatch.Stop();
                                 ReturnToMainMenu();
                                 break;
@@ -2825,10 +2845,8 @@ namespace GnollHackX.Pages.Game
 
         private void CloseAllDialogs()
         {
-            if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                MenuCanvas.AbortAnimation("GeneralAnimationCounter");
-            if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                TextCanvas.AbortAnimation("GeneralAnimationCounter");
+            StopMenuCanvasAnimation();
+            StopTextCanvasAnimation();
 
             TextGrid.IsVisible = false;
             MenuGrid.IsVisible = false;
@@ -3022,8 +3040,7 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
-            if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
-                canvasView.AbortAnimation("GeneralAnimationCounter");
+            StopMainCanvasAnimation();
             _mapUpdateStopWatch.Stop();
             StartTextCanvasAnimation();
         }
@@ -3032,17 +3049,11 @@ namespace GnollHackX.Pages.Game
         {
             MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                //if (TextStack.AnimationIsRunning("TextHideAnimation"))
-                //    TextStack.AbortAnimation("TextHideAnimation");
                 TextStack.CancelAnimations();
                 TextStack.Opacity = 0.0;
                 TextStack.IsVisible = true;
-                //Animation textAnimation = new Animation(v => TextStack.Opacity = (double)v, 0.0, 1.0);
-                //textAnimation.Commit(TextStack, "TextShowAnimation", length: 256,
-                //    rate: 16, repeat: () => false);
 
                 TextGrid.IsVisible = true;
-                //MainGrid.IsVisible = false;
                 IsMainCanvasOn = false;
                 if (dohidemenu)
                 {
@@ -3912,8 +3923,7 @@ namespace GnollHackX.Pages.Game
             if (!_delayedMenuShow)
                 DoShowMenuCanvas(dohidetext);
 
-            if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
-                canvasView.AbortAnimation("GeneralAnimationCounter");
+            StopMainCanvasAnimation();
             _mapUpdateStopWatch.Stop();
             StartMenuCanvasAnimation();
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuCanvas End");
@@ -3963,16 +3973,10 @@ namespace GnollHackX.Pages.Game
             MainThread.InvokeOnMainThreadAsync(async () =>
             {
                 MenuStack.CancelAnimations();
-                //if (MenuStack.AnimationIsRunning("MenuHideAnimation"))
-                //    MenuStack.AbortAnimation("MenuHideAnimation");
                 MenuStack.Opacity = 0.0;
                 MenuStack.IsVisible = true;
-                //Animation menuAnimation = new Animation(v => MenuStack.Opacity = (double)v, 0.0, 1.0);
-                //menuAnimation.Commit(MenuStack, "MenuShowAnimation", length: 256,
-                //    rate: 16, repeat: () => false);
 
                 MenuGrid.IsVisible = true;
-                //MainGrid.IsVisible = false;
                 IsMainCanvasOn = false;
                 if (dohidetext)
                 {
@@ -4007,8 +4011,7 @@ namespace GnollHackX.Pages.Game
                 //MainGrid.IsVisible = true;
                 IsMainCanvasOn = true;
                 UpdateMoreNextPrevButtonVisibility(true, true);
-                if (CommandCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                    CommandCanvas.AbortAnimation("GeneralAnimationCounter");
+                StopCommandCanvasAnimation();
                 lock (RefreshScreenLock)
                 {
                     RefreshScreen = true;
@@ -4044,8 +4047,7 @@ namespace GnollHackX.Pages.Game
                 TextGrid.IsVisible = false;
                 //MainGrid.IsVisible = true;
                 IsMainCanvasOn = true;
-                if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                    TextCanvas.AbortAnimation("GeneralAnimationCounter");
+                StopTextCanvasAnimation();
                 lock (RefreshScreenLock)
                 {
                     RefreshScreen = true;
@@ -4063,8 +4065,7 @@ namespace GnollHackX.Pages.Game
                 MenuGrid.IsVisible = false;
                 //MainGrid.IsVisible = true;
                 IsMainCanvasOn = true;
-                if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                    MenuCanvas.AbortAnimation("GeneralAnimationCounter");
+                StopMenuCanvasAnimation();
                 lock (RefreshScreenLock)
                 {
                     RefreshScreen = true;
@@ -14353,8 +14354,7 @@ namespace GnollHackX.Pages.Game
             MoreCommandsGrid.IsVisible = true;
             //MainGrid.IsVisible = false;
             IsMainCanvasOn = false;
-            if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
-                canvasView.AbortAnimation("GeneralAnimationCounter");
+            StopMainCanvasAnimation();
             _mapUpdateStopWatch.Stop();
             StartCommandCanvasAnimation();
         }
@@ -14519,8 +14519,7 @@ namespace GnollHackX.Pages.Game
             SimpleGameMenuButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
 
-            if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
-                canvasView.AbortAnimation("GeneralAnimationCounter");
+            StopMainCanvasAnimation();
             _mapUpdateStopWatch.Stop();
             TouchDictionary.Clear();
 
@@ -16084,14 +16083,7 @@ namespace GnollHackX.Pages.Game
             if(GHApp.IsiOS)
             {
                 MenuStack.CancelAnimations();
-                //if (MenuStack.AnimationIsRunning("MenuShowAnimation"))
-                //    MenuStack.AbortAnimation("MenuShowAnimation");
-                //double currentOpacity = MenuStack.Opacity;
-                //Animation menuAnimation = new Animation(v => MenuStack.Opacity = (double)v, currentOpacity, 0.0);
-                //menuAnimation.Commit(MenuStack, "MenuHideAnimation", length: 64,
-                //    rate: 16, repeat: () => false);
                 MenuStack.FadeTo(0.0, 64);
-                //MenuStack.IsVisible = false;
             }
 
 #if GNH_MAUI
@@ -16126,8 +16118,7 @@ namespace GnollHackX.Pages.Game
                 MenuGrid.IsVisible = false;
                 //MainGrid.IsVisible = true;
                 IsMainCanvasOn = true;
-                if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                    MenuCanvas.AbortAnimation("GeneralAnimationCounter");
+                StopMenuCanvasAnimation();
                 MenuWindowGlyphImage.StopAnimation();
                 lock (RefreshScreenLock)
                 {
@@ -16150,14 +16141,7 @@ namespace GnollHackX.Pages.Game
             if (GHApp.IsiOS)
             {
                 TextStack.CancelAnimations();
-                //if (TextStack.AnimationIsRunning("TextShowAnimation"))
-                //    TextStack.AbortAnimation("TextShowAnimation");
-                //double currentOpacity = TextStack.Opacity;
-                //Animation textAnimation = new Animation(v => TextStack.Opacity = (double)v, currentOpacity, 0.0);
-                //textAnimation.Commit(TextStack, "TextHideAnimation", length: 64,
-                //    rate: 16, repeat: () => false);
                 TextStack.FadeTo(0.0, 64);
-                //TextStack.IsVisible = false;
             }
 #if GNH_MAUI
             var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
@@ -16198,8 +16182,7 @@ namespace GnollHackX.Pages.Game
                     _textScrollSpeed = 0;
                     _textScrollSpeedOn = false;
                 }
-                if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                    TextCanvas.AbortAnimation("GeneralAnimationCounter");
+                StopTextCanvasAnimation();
                 lock (RefreshScreenLock)
                 {
                     RefreshScreen = true;
@@ -17260,8 +17243,7 @@ namespace GnollHackX.Pages.Game
             //MainGrid.IsVisible = true;
             IsMainCanvasOn = true;
             UpdateMoreNextPrevButtonVisibility(true, true);
-            if (CommandCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                CommandCanvas.AbortAnimation("GeneralAnimationCounter");
+            StopCommandCanvasAnimation();
             lock (RefreshScreenLock)
             {
                 RefreshScreen = true;
@@ -18030,15 +18012,11 @@ namespace GnollHackX.Pages.Game
 
         public void Suspend()
         {
-            if (canvasView.AnimationIsRunning("GeneralAnimationCounter"))
-                canvasView.AbortAnimation("GeneralAnimationCounter");
-            if (CommandCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                CommandCanvas.AbortAnimation("GeneralAnimationCounter");
-            if (MenuCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                MenuCanvas.AbortAnimation("GeneralAnimationCounter");
+            StopMainCanvasAnimation();
+            StopCommandCanvasAnimation();
+            StopMenuCanvasAnimation();
             MenuWindowGlyphImage.StopAnimation();
-            if (TextCanvas.AnimationIsRunning("GeneralAnimationCounter"))
-                TextCanvas.AbortAnimation("GeneralAnimationCounter");
+            StopTextCanvasAnimation();
             TextWindowGlyphImage.StopAnimation();
             _mapUpdateStopWatch.Stop();
         }
