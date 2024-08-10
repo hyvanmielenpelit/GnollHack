@@ -12,7 +12,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<InvariantGlobalization>true</InvariantGlobalization>
-		<DefineConstants>$(DefineConstants);GNH_MAUI;BITFIELDS;BETA</DefineConstants>
+		<DefineConstants>$(DefineConstants);GNH_MAUI;BITFIELDS;SENTRY;BETA</DefineConstants>
 
 		<!-- Display name -->
 		<ApplicationTitle>GnollHack</ApplicationTitle>
@@ -727,9 +727,6 @@
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-ios'">
 	  <MtouchLink>None</MtouchLink>
-    <!--<AotAssemblies>true</AotAssemblies>-->
-    <!--<RunAOTCompilation>true</RunAOTCompilation>-->
-    <!-- Optional -->
   </PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-android'">
 	  <PublishTrimmed>False</PublishTrimmed>
@@ -739,7 +736,6 @@
     <!--<TrimMode>partial</TrimMode>-->
     <PublishTrimmed>False</PublishTrimmed>
     <RunAOTCompilation>False</RunAOTCompilation>
-    <EnableLLVM>true</EnableLLVM>
   </PropertyGroup>
 
 	<ItemGroup>
