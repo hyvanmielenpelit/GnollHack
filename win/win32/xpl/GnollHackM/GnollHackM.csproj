@@ -727,7 +727,11 @@
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-ios'">
 	  <MtouchLink>None</MtouchLink>
-	</PropertyGroup>
+    <!--<AotAssemblies>true</AotAssemblies>-->
+    <!--<RunAOTCompilation>true</RunAOTCompilation>-->
+    <!-- Optional -->
+    <EnableLLVM>true</EnableLLVM>
+  </PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-android'">
 	  <PublishTrimmed>False</PublishTrimmed>
 	</PropertyGroup>
