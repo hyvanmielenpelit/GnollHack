@@ -12,7 +12,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<InvariantGlobalization>true</InvariantGlobalization>
-		<DefineConstants>$(DefineConstants);GNH_MAUI;BITFIELDS;SENTRY;BETA</DefineConstants>
+		<DefineConstants>$(DefineConstants);GNH_MAUI;BITFIELDS;BETA</DefineConstants>
 
 		<!-- Display name -->
 		<ApplicationTitle>GnollHack</ApplicationTitle>
@@ -730,7 +730,6 @@
     <!--<AotAssemblies>true</AotAssemblies>-->
     <!--<RunAOTCompilation>true</RunAOTCompilation>-->
     <!-- Optional -->
-    <EnableLLVM>true</EnableLLVM>
   </PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-android'">
 	  <PublishTrimmed>False</PublishTrimmed>
@@ -740,6 +739,7 @@
     <!--<TrimMode>partial</TrimMode>-->
     <PublishTrimmed>False</PublishTrimmed>
     <RunAOTCompilation>False</RunAOTCompilation>
+    <EnableLLVM>true</EnableLLVM>
   </PropertyGroup>
 
 	<ItemGroup>

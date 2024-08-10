@@ -1734,8 +1734,8 @@ namespace GnollHackX
         public const int PollingInterval = 15;
         public const double DefaultTextWindowMaxWidth = 600.0;
         public const double WindowHideIntervals = 5.0;
-        public const uint MainCanvasAnimationTime = 250;
-        public const uint AuxiliaryCanvasAnimationTime = 240;
+        public const uint MainCanvasAnimationTime = 2500000;
+        public const uint AuxiliaryCanvasAnimationTime = 3600000;
         public const float MenuDefaultRowHeight = 30.0f;
         public const float DefaultGeneralVolume = 1.0f;
         public const float DefaultMusicVolume = 0.5f;
