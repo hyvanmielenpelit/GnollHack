@@ -222,5 +222,10 @@ namespace GnollHackX.iOS
         {
 
         }
+
+        public void CollectGarbage()
+        {
+
+        }
     }
 }

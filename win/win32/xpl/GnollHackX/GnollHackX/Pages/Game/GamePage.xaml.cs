@@ -1652,6 +1652,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        private int _menuUpdateGCCounter = 0;
         public void UpdateMenuCanvas()
         {
             bool refresh = false;
@@ -1676,7 +1677,7 @@ namespace GnollHackX.Pages.Game
                     //    timePassed = (float)_mapUpdateStopWatch.ElapsedMilliseconds / 1000f;
                     //    _mapUpdateStopWatch.Restart();
                     //}
-
+                    //bool doGC = false;
                     lock (_menuScrollLock)
                     {
                         float speed = _menuScrollSpeed; /* pixels per second */
@@ -1749,9 +1750,22 @@ namespace GnollHackX.Pages.Game
                                 }
                             }
                         }
+                        //if (!_menuScrollSpeedOn && GHApp.IsAndroid)
+                        //{
+                        //    if (_menuUpdateGCCounter >= 20)
+                        //        doGC = true;
+                        //    else
+                        //        _menuUpdateGCCounter++;
+                        //}
                     }
 
                     MenuCanvas.InvalidateSurface();
+                    //if(doGC)
+                    //{
+                    //    _menuUpdateGCCounter = 0;
+                    //    GHApp.PlatformService?.CollectGarbage();
+                    //    GC.Collect();
+                    //}
                 }
             }
         }

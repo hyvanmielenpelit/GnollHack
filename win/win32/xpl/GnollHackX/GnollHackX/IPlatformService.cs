@@ -22,6 +22,7 @@ namespace GnollHackX
         bool GetStatusBarHidden();
         void HideOsNavigationBar();
         void ShowOsNavigationBar();
+        void CollectGarbage();
 
         float GetAnimatorDurationScaleSetting();
         float GetTransitionAnimationScaleSetting();

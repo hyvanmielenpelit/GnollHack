@@ -133,6 +133,10 @@ namespace GnollHackM
         {
             throw new NotImplementedException();
         }
+        public void CollectGarbage()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 #endif

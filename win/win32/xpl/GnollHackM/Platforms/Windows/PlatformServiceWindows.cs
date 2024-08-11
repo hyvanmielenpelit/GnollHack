@@ -321,7 +321,10 @@ namespace GnollHackM
         {
 
         }
+        public void CollectGarbage()
+        {
 
+        }
     }
 
     public class MemoryStatus

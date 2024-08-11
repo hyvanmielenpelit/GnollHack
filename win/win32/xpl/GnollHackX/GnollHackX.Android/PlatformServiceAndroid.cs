@@ -442,6 +442,13 @@ namespace GnollHackX.Droid
                 MainActivity.ShowOsNavigationBar();
 #endif
         }
+
+        public void CollectGarbage()
+        {
+            var rt = Java.Lang.Runtime.GetRuntime();
+            if (rt != null)
+                rt.Gc();
+        }
     }
 
     public class StoreReviewTaskCompleteListener : Java.Lang.Object, IOnCompleteListener
