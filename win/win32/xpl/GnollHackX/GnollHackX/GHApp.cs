@@ -650,10 +650,10 @@ namespace GnollHackX
 #if WINDOWS
                 return true; //Windows needs this currently
 #else
-                return true; //Currently both Android and iOS on MAUI just in case
+                return false;
 #endif
 #else
-                return IsAndroid;
+                return false;
 #endif
             }
         }
