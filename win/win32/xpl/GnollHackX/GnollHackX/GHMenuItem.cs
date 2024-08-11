@@ -51,34 +51,62 @@ namespace GnollHackX
         public int MaxCount { get; set; }
         public bool UseNumItems { get; set; }
         public int NumItems { get; set; }
-        public char Accelerator { get; set; }
+        private char _accelerator;
+        public char Accelerator 
+        {
+            get { return _accelerator; }
+            set 
+            {
+                _accelerator = value;
+                _formattedAccelerator = _accelerator == '\0' ? "" : _accelerator.ToString();
+            }
+        }
         public char GroupAccelerator { get; set; }
-        public char SpecialMark { get; set; }
+
+        private char _specialMark;
+        public char SpecialMark 
+        { 
+            get { return _specialMark; } 
+            set 
+            {
+                _specialMark = value;
+                _formattedSpecialMark = _specialMark == '\0' ? "" : _specialMark.ToString();
+            }
+        }
+
+        private string _formattedAccelerator = "";
         public string FormattedAccelerator
         {
             get
-            { string res = Accelerator.ToString();
-                if (res == "" || res == "\0")
-                    return "";
-                else
-                    return "   " + res;
+            {
+                return _formattedAccelerator;
+                //string res = Accelerator.ToString();
+                //if (res == "" || res == "\0")
+                //    return "";
+                //else
+                //    return "   " + res;
             }
         }
+        private string _formattedSpecialMark = "";
         public string FormattedSpecialMark
         {
             get
             {
-                string res = SpecialMark.ToString();
-                if (res == "" || res == "\0")
-                    return "";
-                else
-                    return "   " + res;
+                return _formattedSpecialMark;
+                //string res = SpecialMark.ToString();
+                //if (res == "" || res == "\0")
+                //    return "";
+                //else
+                //    return "   " + res;
             }
         }
         private string _text;
         private string _mainText;
         private string _suffixText;
         private string _suffix2Text;
+        private string _trimmedMainText;
+        private string _trimmedSuffixText;
+        private string _trimmedSuffix2Text;
         private List<byte[]> _mainSplitAttrs = new List<byte[]>(1);
         private List<byte[]> _mainSplitColors = new List<byte[]>(1);
         private List<byte[]> _suffixSplitAttrs = new List<byte[]>(1);
@@ -106,8 +134,8 @@ namespace GnollHackX
                 else
                     _mainText = "";
 
-                string trimmed_maintext = _mainText.Trim();
-                _mainTextSplit = trimmed_maintext.Split(' ');
+                _trimmedMainText = _mainText.Trim();
+                _mainTextSplit = _trimmedMainText.Split(' ');
 
                 if (first_parenthesis_open > 0 && !(_menuInfo.Style == ghmenu_styles.GHMENU_STYLE_ITEM_COMMAND || _menuInfo.Style == ghmenu_styles.GHMENU_STYLE_GENERAL_COMMAND))  /* Ignore cases where the entire row is in parentheses */
                 {
@@ -119,10 +147,10 @@ namespace GnollHackX
                     _suffixText = "";
                     _suffix2Text = "";
                 }
-                string trimmed_suffixtext = _suffixText.Trim();
-                _suffixTextSplit = trimmed_suffixtext.Split(' ');
-                string trimmed_suffix2text = _suffix2Text.Trim();
-                _suffix2TextSplit = trimmed_suffix2text.Split(' ');
+                _trimmedSuffixText = _suffixText.Trim();
+                _suffixTextSplit = _trimmedSuffixText.Split(' ');
+                _trimmedSuffix2Text = _suffix2Text.Trim();
+                _suffix2TextSplit = _trimmedSuffix2Text.Split(' ');
 
                 ProcessSplitAttrsColors();
             }
@@ -260,9 +288,13 @@ namespace GnollHackX
             }
         }
         public string MainText { get { return _mainText; } }
+        public string TrimmedMainText { get { return _trimmedMainText; } }
+
         public string SuffixText { get { return _suffixText; } }
+        public string TrimmedSuffixText { get { return _trimmedSuffixText; } }
         public bool IsSuffixTextVisible { get { return (SuffixText != null && SuffixText != ""); } }
         public string Suffix2Text { get { return _suffix2Text; } }
+        public string TrimmedSuffix2Text { get { return _trimmedSuffix2Text; } }
         public bool IsSuffix2TextVisible { get { return (Suffix2Text != null && Suffix2Text != ""); } }
         private string ParseSuffixText(string text, bool issuffix2, bool altdivisors)
         {

@@ -14896,7 +14896,7 @@ namespace GnollHackX.Pages.Game
                                         str = mi.FormattedAccelerator;
                                     textPaint.Color = SKColors.Gray; /* !GHApp.IsDesktop ? SKColors.Gray:
                                         UIUtils.NHColor2SKColorCore((int)NhColor.CLR_WHITE, 0, MenuCanvas.RevertBlackAndWhite, false); */
-                                    str = str.Trim();
+                                    //str = str.Trim();
                                     float identifier_y =
                                         mi.IsSuffixTextVisible || mi.IsSuffix2TextVisible ? (selectionrect.Top + selectionrect.Bottom) / 2 - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent
                                         : y + singlelinepadding;
@@ -14941,7 +14941,7 @@ namespace GnollHackX.Pages.Game
                                 bool firstprintonrow = true;
                                 float start_x = x;
                                 float indent_start_x = start_x;
-                                string trimmed_maintext = mi.MainText.Trim();
+                                string trimmed_maintext = mi.TrimmedMainText;
                                 string indentstr = GHUtils.GetIndentationString(trimmed_maintext, mi.NHAttribute);
                                 if (indentstr != "")
                                 {
