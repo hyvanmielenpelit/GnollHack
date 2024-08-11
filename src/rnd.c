@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2021-09-14 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2024-08-11 */
 
 /* GnollHack 4.0    rnd.c    $NHDT-Date: 1524689470 2018/04/25 20:51:10 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.18 $ */
 /*      Copyright (c) 2004 by Robert Patrick Rankin               */

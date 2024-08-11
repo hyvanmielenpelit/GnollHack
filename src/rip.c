@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-07-16 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2024-08-11 */
 
 /* GnollHack 4.0    rip.c    $NHDT-Date: 1488788514 2017/03/06 08:21:54 $  $NHDT-Branch: GnollHack-3.6.0 $:$NHDT-Revision: 1.23 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */

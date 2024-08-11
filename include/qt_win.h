@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-07-16 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2024-08-11 */
 
 // NetHack 3.6	qt_win.h	$NHDT-Date: 1447755972 2015/11/17 10:26:12 $  $NHDT-Branch: master $:$NHDT-Revision: 1.17 $
 // Copyright (c) Warwick Allison, 1999.

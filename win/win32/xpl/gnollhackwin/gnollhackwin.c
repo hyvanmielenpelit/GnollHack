@@ -1,3 +1,5 @@
+﻿/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2024-08-11 */
+
 /* GnollHack 4.1.0 gnollhackwin.c */
 /* Copyright (c) Janne Gustafsson, 2024. */
 /* GnollHack may be freely redistributed.  See license for details. */

@@ -1,4 +1,4 @@
-/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-08-01 */
+/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2024-08-11 */
 
 /* GnollHack 4.0    do_wear.c    $NHDT-Date: 1551138255 2019/02/25 23:44:15 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.108 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
@@ -1667,7 +1667,7 @@ int* result_style_ptr;
     if (curobj)
         mask = curobj->owornmask; /* Override */
 
-    if (context.takeoff.command != TAKEOFF_WEAR_CMD_WEAR) /* Exchange prompt while wearing should be incremental and not trigger reset óf the command */
+    if (context.takeoff.command != TAKEOFF_WEAR_CMD_WEAR) /* Exchange prompt while wearing should be incremental and not trigger reset ï¿½f the command */
     {
         int takeoffcmd = curobj ? TAKEOFF_WEAR_CMD_EXCHANGE : TAKEOFF_WEAR_CMD_TAKEOFF_AND_WEAR;
         boolean contoccupation = FALSE;
