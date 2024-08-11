@@ -3,6 +3,7 @@ using Android.Content.PM;
 using Android.Content.Res;
 using Android.OS;
 using Android.Views;
+using GnollHackX;
 //using Xamarin.Google.Android.Play.Core.AssetPacks;
 //using Xamarin.Google.Android.Play.Core.AssetPacks.Model;
 
@@ -20,6 +21,7 @@ public class MainActivity : MauiAppCompatActivity
         base.OnCreate(savedInstanceState);
         CurrentMainActivity = this;
         Platform.Init(this, savedInstanceState);
+        GHApp.InitializeGC();
         Window.AddFlags(WindowManagerFlags.Fullscreen);
         if (DefaultShowNavigationBar)
             ShowOsNavigationBar();

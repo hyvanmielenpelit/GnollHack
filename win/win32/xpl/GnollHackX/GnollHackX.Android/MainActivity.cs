@@ -69,6 +69,7 @@ namespace GnollHackX.Droid
 
             Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+            GHApp.InitializeGC();
             FmodService.AndroidInit(this);
 
             MainActivity.StaticAssets = this.Assets;

@@ -201,6 +201,18 @@ namespace GnollHackX
             BackButtonPressed += EmptyBackButtonPressed;
         }
 
+        public static void InitializeGC()
+        {
+            //try
+            //{
+            //    System.Runtime.GCSettings.LatencyMode = System.Runtime.GCLatencyMode.LowLatency;
+            //}
+            //catch(Exception ex)
+            //{
+            //    MaybeWriteGHLog(ex.Message);
+            //}
+        }
+
         public static void InitializeBattery()
         {
             try

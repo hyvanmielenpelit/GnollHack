@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI.Xaml;
+using GnollHackX;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -16,10 +17,11 @@ public partial class App : MauiWinUIApplication
 	/// </summary>
 	public App()
 	{
-		this.InitializeComponent();
+        this.InitializeComponent();
 		this.RequestedTheme = ApplicationTheme.Dark;
-	}
+        GHApp.InitializeGC();
+    }
 
-	protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
+    protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
 }
 
