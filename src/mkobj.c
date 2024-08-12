@@ -512,7 +512,7 @@ uint64_t rndflags;
         }
         goto random_spellbook_here;
     }
-    else if (cnt >= 2 && cnt <= 15 && rn2(3))
+    else if (cnt >= 2 && cnt <= 10 && rn2(2))
     {
         int nofound = -1;
         int noselected = rn2(cnt);
