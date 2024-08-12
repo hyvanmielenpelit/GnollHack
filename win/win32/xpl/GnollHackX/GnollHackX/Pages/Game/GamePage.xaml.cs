@@ -7929,6 +7929,7 @@ namespace GnollHackX.Pages.Game
                     _canvasButtonRect.Bottom = canvasheight; /* Maybe overrwritten below */
                     GHWindow ghWindow = null;
                     GHWindow messageWindow = null;
+                    GHSubstring substr;
                     for (int i = 0; i < GHConstants.MaxGHWindows; i++)
                     {
                         if (curGame == null)
@@ -8035,15 +8036,15 @@ namespace GnollHackX.Pages.Game
                                         foreach (GHPutStrInstructions instr in putstritem.InstructionList)
                                         {
                                             if (putstritem.Text == null)
-                                                str = "";
+                                                substr = new GHSubstring("");
                                             else if (pos + instr.PrintLength <= putstritem.Text.Length)
-                                                str = putstritem.Text.Substring(pos, instr.PrintLength);
+                                                substr = new GHSubstring(putstritem.Text, pos, instr.PrintLength);
                                             else if (putstritem.Text.Length - pos > 0)
-                                                str = putstritem.Text.Substring(pos, putstritem.Text.Length - pos);
+                                                substr = new GHSubstring(putstritem.Text, pos, putstritem.Text.Length - pos);
                                             else
-                                                str = "";
-                                            pos += str.Length;
-                                            totwidth = textPaint.MeasureText(str, ref textBounds);
+                                                substr = new GHSubstring("");
+                                            pos += substr.Length;
+                                            totwidth = textPaint.MeasureText(substr.Value, ref textBounds);
 
                                             /* attributes */
                                             tx = xpos + winRect.Left + ghWindow.Padding.Left;
@@ -8058,7 +8059,7 @@ namespace GnollHackX.Pages.Game
                                                 textPaint.Color = SKColors.Black;
                                                 textPaint.MaskFilter = _blur;
                                                 float shadow_offset = 0.15f * textPaint.TextSize;
-                                                textPaint.DrawTextOnCanvas(canvas, str, tx + shadow_offset, ty + shadow_offset);
+                                                textPaint.DrawTextOnCanvas(canvas, substr.Value, tx + shadow_offset, ty + shadow_offset);
                                                 textPaint.MaskFilter = null;
                                             }
                                             if (ghWindow.StrokeWidth > 0)
@@ -8066,13 +8067,11 @@ namespace GnollHackX.Pages.Game
                                                 textPaint.Style = SKPaintStyle.Stroke;
                                                 textPaint.StrokeWidth = ghWindow.StrokeWidth * textscale;
                                                 textPaint.Color = SKColors.Black;
-                                                //canvas.DrawText(str, tx, ty, textPaint);
-                                                textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
+                                                textPaint.DrawTextOnCanvas(canvas, substr.Value, tx, ty);
                                             }
                                             textPaint.Style = SKPaintStyle.Fill;
                                             textPaint.Color = UIUtils.NHColor2SKColor(instr.Color < (int)NhColor.CLR_MAX ? instr.Color : (int)NhColor.CLR_WHITE, instr.Attributes);
-                                            //canvas.DrawText(str, tx, ty, textPaint);
-                                            textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
+                                            textPaint.DrawTextOnCanvas(canvas, substr.Value, tx, ty);
                                             textPaint.Style = SKPaintStyle.Fill;
                                             xpos += totwidth;
 #if GNH_MAP_PROFILING && DEBUG
@@ -8226,18 +8225,16 @@ namespace GnollHackX.Pages.Game
                                                         StartProfiling(GHProfilingStyle.Text);
 #endif
                                                         SKColor new_skcolor = UIUtils.NHColor2SKColor(new_nhcolor, new_nhattr);
-                                                        string printedsubline = wrappedLine.Substring(charidx_start, charidx_len);
+                                                        GHSubstring printedsubline = new GHSubstring(wrappedLine, charidx_start, charidx_len);
                                                         textPaint.Style = SKPaintStyle.Stroke;
                                                         textPaint.StrokeWidth = ghWindow.StrokeWidth * textscale;
                                                         textPaint.Color = SKColors.Black;
-                                                        //canvas.DrawText(printedsubline, tx, ty, textPaint);
-                                                        textPaint.DrawTextOnCanvas(canvas, printedsubline, tx, ty);
+                                                        textPaint.DrawTextOnCanvas(canvas, printedsubline.Value, tx, ty);
                                                         textPaint.Style = SKPaintStyle.Fill;
                                                         textPaint.StrokeWidth = 0;
                                                         textPaint.Color = new_skcolor;
-                                                        //canvas.DrawText(printedsubline, tx, ty, textPaint);
-                                                        textPaint.DrawTextOnCanvas(canvas, printedsubline, tx, ty);
-                                                        float twidth = textPaint.MeasureText(printedsubline);
+                                                        textPaint.DrawTextOnCanvas(canvas, printedsubline.Value, tx, ty);
+                                                        float twidth = textPaint.MeasureText(printedsubline.Value);
                                                         textPaint.Style = SKPaintStyle.Fill;
                                                         textPaint.StrokeWidth = 0;
                                                         textPaint.Color = SKColors.White;
@@ -8570,9 +8567,9 @@ namespace GnollHackX.Pages.Game
                                         if (valtext.Length >= 3)
                                         {
                                             curx += innerspacing;
-                                            string print_text = valtext.Substring(0, 3);
-                                            float print_width = textPaint.MeasureText(print_text);
-                                            textPaint.DrawTextOnCanvas(canvas, print_text, curx, cury - textPaint.FontMetrics.Ascent);
+                                            GHSubstring print_text = new GHSubstring(valtext, 0, 3);
+                                            float print_width = textPaint.MeasureText(print_text.Value);
+                                            textPaint.DrawTextOnCanvas(canvas, print_text.Value, curx, cury - textPaint.FontMetrics.Ascent);
                                             curx += print_width;
                                         }
 
@@ -9296,15 +9293,10 @@ namespace GnollHackX.Pages.Game
                                     }
                                     if (valtext != "")
                                     {
-                                        string printtext;
-                                        if (valtext.Length > 11 && valtext.Substring(0, 1) == "\\")
-                                            printtext = valtext.Substring(11);
-                                        else
-                                            printtext = valtext;
-
+                                        GHSubstring printtext = valtext.Length > 11 && valtext[0] == '\\' ? new GHSubstring(valtext, 11) : new GHSubstring(valtext);
                                         target_width = target_scale * GHApp._statusGoldBitmap.Width;
                                         target_height = target_scale * GHApp._statusGoldBitmap.Height;
-                                        float print_width = textPaint.MeasureText(printtext);
+                                        float print_width = textPaint.MeasureText(printtext.Value);
                                         float newcurx = turnsleft - (turnsprinted ? stdspacing : 0) - print_width - innerspacing - target_width;
                                         if (newcurx >= finalleftcurx) /* Avoid printing status bar elements over each other */
                                         {
@@ -9315,7 +9307,7 @@ namespace GnollHackX.Pages.Game
                                             canvas.DrawImage(GHApp._statusGoldBitmap, statusDest);
                                             curx += target_width;
                                             curx += innerspacing;
-                                            textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                            textPaint.DrawTextOnCanvas(canvas, printtext.Value, curx, cury - textPaint.FontMetrics.Ascent);
                                             curx += print_width;
                                         }
                                     }
@@ -9625,17 +9617,21 @@ namespace GnollHackX.Pages.Game
                                 }
                                 if (valtext != "")
                                 {
-                                    string printtext;
-                                    if (valtext.Length > 3 && valtext.Substring(0, 3) == "DL:")
-                                        printtext = valtext.Substring(3);
-                                    else if (valtext.Length > 5 && valtext.Substring(0, 5) == "Dlvl:")
-                                        printtext = valtext.Substring(5);
+                                    GHSubstring printtext;
+                                    if (valtext.Length > 3 && (new GHSubstring(valtext, 0, 3)).IsEqualTo("DL:"))
+                                    {
+                                        printtext = new GHSubstring(valtext, 3);
+                                    }
+                                    else if (valtext.Length > 5 && (new GHSubstring(valtext, 0, 5)).IsEqualTo("Dlvl:"))
+                                    {
+                                        printtext = new GHSubstring(valtext, 5);
+                                    }
                                     else
-                                        printtext = valtext;
+                                        printtext = new GHSubstring(valtext);
 
                                     target_width = target_scale * GHApp._statusDungeonLevelBitmap.Width;
                                     target_height = target_scale * GHApp._statusDungeonLevelBitmap.Height;
-                                    float print_width = textPaint.MeasureText(printtext);
+                                    float print_width = textPaint.MeasureText(printtext.Value);
                                     curx = canvaswidth - hmargin - print_width - innerspacing - target_width;
                                     dungeonleft = curx;
                                     statusDest = new SKRect(curx, cury, curx + target_width, cury + target_height);
@@ -9651,7 +9647,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                     StartProfiling(GHProfilingStyle.Text);
 #endif
-                                    textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                    textPaint.DrawTextOnCanvas(canvas, printtext.Value, curx, cury - textPaint.FontMetrics.Ascent);
 #if GNH_MAP_PROFILING && DEBUG
                                     StopProfiling(GHProfilingStyle.Text);
 #endif
@@ -9671,15 +9667,10 @@ namespace GnollHackX.Pages.Game
                                     }
                                     if (valtext != "")
                                     {
-                                        string printtext;
-                                        if (valtext.Length > 11 && valtext.Substring(0, 1) == "\\")
-                                            printtext = valtext.Substring(11);
-                                        else
-                                            printtext = valtext;
-
+                                        GHSubstring printtext = valtext.Length > 11 && valtext[0] == '\\' ? new GHSubstring(valtext, 11) : new GHSubstring(valtext);
                                         target_width = target_scale * GHApp._statusGoldBitmap.Width;
                                         target_height = target_scale * GHApp._statusGoldBitmap.Height;
-                                        float print_width = textPaint.MeasureText(printtext);
+                                        float print_width = textPaint.MeasureText(printtext.Value);
                                         float newcurx = desktopleft - stdspacing - print_width - innerspacing - target_width;
                                         if (newcurx >= final2ndrowleftcurx) /* Avoid printing status bar elements over each other */
                                         {
@@ -9689,7 +9680,7 @@ namespace GnollHackX.Pages.Game
                                             canvas.DrawImage(GHApp._statusGoldBitmap, statusDest);
                                             curx += target_width;
                                             curx += innerspacing;
-                                            textPaint.DrawTextOnCanvas(canvas, printtext, curx, cury - textPaint.FontMetrics.Ascent);
+                                            textPaint.DrawTextOnCanvas(canvas, printtext.Value, curx, cury - textPaint.FontMetrics.Ascent);
                                             curx += print_width;
                                         }
                                     }
@@ -10893,14 +10884,9 @@ namespace GnollHackX.Pages.Game
                             {
                                 _statusLargestBottom = ty + textPaint.FontMetrics.Descent;
                             }
-                            string printtext;
-                            if (valtext.Length > 11 && valtext.Substring(0, 1) == "\\")
-                                printtext = valtext.Substring(11);
-                            else
-                                printtext = valtext;
-
+                            GHSubstring printtext = valtext.Length > 11 && valtext[0] == '\\' ? new GHSubstring(valtext, 11) : new GHSubstring(valtext);
                             textPaint.DrawTextOnCanvas(canvas, "Gold:", tx, ty);
-                            textPaint.DrawTextOnCanvas(canvas, printtext, tx + indentation, ty);
+                            textPaint.DrawTextOnCanvas(canvas, printtext.Value, tx + indentation, ty);
                             icon_width = icon_height * (float)GHApp._statusGoldBitmap.Width / (float)GHApp._statusGoldBitmap.Height;
                             icon_tx = icon_base_left + (icon_max_width - icon_width) / 2f;
                             icon_ty = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - icon_height) / 2;
@@ -15123,7 +15109,8 @@ namespace GnollHackX.Pages.Game
             else if (str.StartsWith("&status-") && str.Length > 8)
             {
                 int status_mark = 0;
-                if (int.TryParse(str.Substring(8).Substring(0, str.Length - 8 - 1), out status_mark))
+                GHSubstring substr = new GHSubstring(str, 8).Substring(str.Length - 8 - 1);
+                if (int.TryParse(substr.Value, out status_mark))
                 {
                     int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
                     int mglyph = (int)game_ui_tile_types.STATUS_MARKS + status_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
@@ -15148,7 +15135,8 @@ namespace GnollHackX.Pages.Game
             else if (str.StartsWith("&cond-") && str.Length > 6)
             {
                 int condition_mark = 0;
-                if (int.TryParse(str.Substring(6).Substring(0, str.Length - 6 - 1), out condition_mark))
+                GHSubstring substr = new GHSubstring(str, 6).Substring(0, str.Length - 6 - 1);
+                if (int.TryParse(substr.Value, out condition_mark))
                 {
                     int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
                     int mglyph = (int)game_ui_tile_types.CONDITION_MARKS + condition_mark / GHConstants.MAX_UI_TILE_16_x_16_COMPONENTS + GHApp.UITileOff;
@@ -15173,7 +15161,8 @@ namespace GnollHackX.Pages.Game
             else if (str.StartsWith("&buff-") && str.Length > 6)
             {
                 int propidx = 0;
-                if (int.TryParse(str.Substring(6).Substring(0, str.Length - 6 - 1), out propidx))
+                GHSubstring substr = new GHSubstring(str, 6).Substring(0, str.Length - 6 - 1);
+                if (int.TryParse(substr.Value, out propidx))
                 {
                     if (propidx <= GHConstants.LAST_PROP)
                     {
@@ -15304,11 +15293,11 @@ namespace GnollHackX.Pages.Game
                         }
 
                         SKColor new_skcolor = UIUtils.NHColor2SKColorCore(new_nhcolor, new_nhattr, revertblackandwhite, false);
-                        string printedsubline = split_str.Substring(char_idx, charidx_len);
+                        GHSubstring printedsubline = new GHSubstring(split_str, char_idx, charidx_len);
                         if (new_nhcolor != (int)NhColor.NO_COLOR)
                             textPaint.Color = new_skcolor;
 
-                        float printlength = textPaint.MeasureText(printedsubline);
+                        float printlength = textPaint.MeasureText(printedsubline.Value);
                         endposition = x + printlength;
                         if (idx < textsplit.Length - 1)
                             endposition += spacelength;
@@ -15338,12 +15327,12 @@ namespace GnollHackX.Pages.Game
                                 textPaint.Color = revertblackandwhite ? SKColors.White : SKColors.Black;
                                 textPaint.StrokeWidth = textPaint.TextSize / 10;
                                 textPaint.Style = SKPaintStyle.Stroke;
-                                textPaint.DrawTextOnCanvas(canvas, printedsubline, x, y);
+                                textPaint.DrawTextOnCanvas(canvas, printedsubline.Value, x, y);
                                 textPaint.Color = oldcolor;
                                 textPaint.Style = SKPaintStyle.Fill;
                                 textPaint.StrokeWidth = 0;
                             }
-                            textPaint.DrawTextOnCanvas(canvas, printedsubline, x, y);
+                            textPaint.DrawTextOnCanvas(canvas, printedsubline.Value, x, y);
                         }
 
                         if (new_nhcolor != (int)NhColor.NO_COLOR)

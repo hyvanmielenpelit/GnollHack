@@ -114,7 +114,6 @@ namespace GnollHackX.Pages.MainScreen
                                 text = text.Substring(0, firstLineBreak) + new string(' ', _fixedWidth - len) + text.Substring(firstLineBreak);
                             }
                         }
-
                     }
                     TextLabel.Text = text;
                     TextLabel.IsVisible = true;

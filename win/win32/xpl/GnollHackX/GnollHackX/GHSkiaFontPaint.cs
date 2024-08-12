@@ -192,6 +192,18 @@ namespace GnollHackX
             DrawTextOnCanvas(canvas, text, p.X, p.Y);
         }
 
+#if GNH_MAUI
+        public void DrawTextOnCanvas(SKCanvas canvas, ReadOnlySpan<char> text, float x, float y)
+        {
+            canvas.DrawText(SKTextBlob.Create(text, _font), x, y, _paint);
+        }
+
+        public void DrawTextOnCanvas(SKCanvas canvas, ReadOnlySpan<char> text, SKPoint p)
+        {
+            DrawTextOnCanvas(canvas, text, p.X, p.Y);
+        }
+#endif
+
         public float MeasureText(string text)
         {
 #if GNH_MAUI
@@ -202,6 +214,25 @@ namespace GnollHackX
         }
 
         public float MeasureText(string text, ref SKRect bounds)
+        {
+#if GNH_MAUI
+            return _font.MeasureText(text, out bounds, _paint);
+#else
+            return _paint.MeasureText(text, ref bounds);
+#endif
+        }
+
+
+        public float MeasureText(ReadOnlySpan<char> text)
+        {
+#if GNH_MAUI
+            return _font.MeasureText(text, _paint);
+#else
+            return _paint.MeasureText(text);
+#endif
+        }
+
+        public float MeasureText(ReadOnlySpan<char> text, ref SKRect bounds)
         {
 #if GNH_MAUI
             return _font.MeasureText(text, out bounds, _paint);
