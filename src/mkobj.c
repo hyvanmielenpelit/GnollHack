@@ -504,7 +504,7 @@ uint64_t rndflags;
         {
             if (acceptable[id])
             {
-                if (objects[FIRST_SPELL + id].oc_spell_level < 7 || !rn2(2))
+                if (objects[FIRST_SPELL + id].oc_spell_level < 7 || !rn2(3))
                     return FIRST_SPELL + id;
                 else
                     break;
@@ -512,7 +512,7 @@ uint64_t rndflags;
         }
         goto random_spellbook_here;
     }
-    else if (cnt >= 2 && cnt < 10 && !rn2(2))
+    else if (cnt >= 2 && cnt <= 15 && rn2(3))
     {
         int nofound = -1;
         int noselected = rn2(cnt);
@@ -523,7 +523,7 @@ uint64_t rndflags;
                 nofound++;
                 if (nofound != noselected)
                     continue;
-                if (objects[FIRST_SPELL + id].oc_spell_level < 7 || !rn2(2))
+                if (objects[FIRST_SPELL + id].oc_spell_level < 7 || !rn2(3))
                     return FIRST_SPELL + id;
                 else
                     break;
