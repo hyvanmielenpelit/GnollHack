@@ -496,7 +496,7 @@ uint64_t rndflags;
     }
 
     int id;
-    if (cnt == 0)
+    if (cnt == 0 || (cnt < 5 && rn2(6 - cnt)))
         goto random_spellbook_here;
     else if (cnt == 1)
     {
