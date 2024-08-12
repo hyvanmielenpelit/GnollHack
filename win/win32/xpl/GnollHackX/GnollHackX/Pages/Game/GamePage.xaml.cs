@@ -7929,7 +7929,7 @@ namespace GnollHackX.Pages.Game
                     _canvasButtonRect.Bottom = canvasheight; /* Maybe overrwritten below */
                     GHWindow ghWindow = null;
                     GHWindow messageWindow = null;
-                    GHSubstring substr;
+                    GHSubstring substr = new GHSubstring("");
                     for (int i = 0; i < GHConstants.MaxGHWindows; i++)
                     {
                         if (curGame == null)
@@ -8036,13 +8036,13 @@ namespace GnollHackX.Pages.Game
                                         foreach (GHPutStrInstructions instr in putstritem.InstructionList)
                                         {
                                             if (putstritem.Text == null)
-                                                substr = new GHSubstring("");
+                                                substr.SetValue("");
                                             else if (pos + instr.PrintLength <= putstritem.Text.Length)
-                                                substr = new GHSubstring(putstritem.Text, pos, instr.PrintLength);
+                                                substr.SetValue(putstritem.Text, pos, instr.PrintLength);
                                             else if (putstritem.Text.Length - pos > 0)
-                                                substr = new GHSubstring(putstritem.Text, pos, putstritem.Text.Length - pos);
+                                                substr.SetValue(putstritem.Text, pos, putstritem.Text.Length - pos);
                                             else
-                                                substr = new GHSubstring("");
+                                                substr.SetValue("");
                                             pos += substr.Length;
                                             totwidth = textPaint.MeasureText(substr.Value, ref textBounds);
 
@@ -8100,6 +8100,7 @@ namespace GnollHackX.Pages.Game
                                         float spaceLength = textPaint.MeasureText(" ");
 
                                         bool refreshsmallesttop = false;
+                                        GHSubstring printedsubline = new GHSubstring("");
                                         for (idx = _msgHistory.Length - 1; idx >= 0 && j >= 0; idx--)
                                         {
                                             GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
@@ -8225,7 +8226,7 @@ namespace GnollHackX.Pages.Game
                                                         StartProfiling(GHProfilingStyle.Text);
 #endif
                                                         SKColor new_skcolor = UIUtils.NHColor2SKColor(new_nhcolor, new_nhattr);
-                                                        GHSubstring printedsubline = new GHSubstring(wrappedLine, charidx_start, charidx_len);
+                                                        printedsubline.SetValue(wrappedLine, charidx_start, charidx_len);
                                                         textPaint.Style = SKPaintStyle.Stroke;
                                                         textPaint.StrokeWidth = ghWindow.StrokeWidth * textscale;
                                                         textPaint.Color = SKColors.Black;
@@ -15209,6 +15210,7 @@ namespace GnollHackX.Pages.Game
             int idx = 0;
             int rowidx = 0;
             SKColor orig_color = textPaint.Color;
+            GHSubstring printedsubline = new GHSubstring("");
             foreach (string split_str in textsplit)
             {
                 byte[] attrs = attrs_list != null && idx < attrs_list.Count ? attrs_list[idx] : null;
@@ -15293,7 +15295,7 @@ namespace GnollHackX.Pages.Game
                         }
 
                         SKColor new_skcolor = UIUtils.NHColor2SKColorCore(new_nhcolor, new_nhattr, revertblackandwhite, false);
-                        GHSubstring printedsubline = new GHSubstring(split_str, char_idx, charidx_len);
+                        printedsubline.SetValue(split_str, char_idx, charidx_len);
                         if (new_nhcolor != (int)NhColor.NO_COLOR)
                             textPaint.Color = new_skcolor;
 
