@@ -503,7 +503,31 @@ uint64_t rndflags;
         for (id = 0; id < MAXSPELL; id++)
         {
             if (acceptable[id])
-                return FIRST_SPELL + id;
+            {
+                if (objects[FIRST_SPELL + id].oc_spell_level < 7 || !rn2(2))
+                    return FIRST_SPELL + id;
+                else
+                    break;
+            }
+        }
+        goto random_spellbook_here;
+    }
+    else if (cnt >= 2 && cnt < 10 && !rn2(2))
+    {
+        int nofound = -1;
+        int noselected = rn2(cnt);
+        for (id = 0; id < MAXSPELL; id++)
+        {
+            if (acceptable[id])
+            {
+                nofound++;
+                if (nofound != noselected)
+                    continue;
+                if (objects[FIRST_SPELL + id].oc_spell_level < 7 || !rn2(2))
+                    return FIRST_SPELL + id;
+                else
+                    break;
+            }
         }
         goto random_spellbook_here;
     }
