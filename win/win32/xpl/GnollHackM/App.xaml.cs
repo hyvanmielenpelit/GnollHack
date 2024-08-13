@@ -48,8 +48,7 @@ public partial class App : Application
 
     protected override Window CreateWindow(IActivationState activationState)
     {
-        Window window = base.CreateWindow(activationState);
-        window.Page = new AppShell();
+        Window window = new Window(new AppShell());
         return window;  
     }
 
