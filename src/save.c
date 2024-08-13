@@ -1204,6 +1204,7 @@ register struct obj *otmp;
             otmp->cobj = NULL;      /* contents handled above */
             otmp->timed = 0;        /* not timed any more */
             otmp->lamplit = 0;      /* caller handled lights */
+            otmp->makingsound = 0;  /* caller handled sounds */
             dealloc_obj(otmp);
         }
         otmp = otmp2;

@@ -8338,6 +8338,8 @@ void
 delete_location(x, y)
 xchar x, y;
 {
+    Strcpy(debug_buf_4, "delete_location");
+
     if (levl[x][y].typ == FOUNTAIN)
         level.flags.nfountains--;
     else if (levl[x][y].typ == SINK)
@@ -8380,6 +8382,8 @@ void
 delete_decoration(x, y)
 xchar x, y;
 {
+    Strcpy(debug_buf_4, "delete_decoration");
+
     if (levl[x][y].decoration_typ)
     {
         if (levl[x][y].lamplit)
@@ -8556,6 +8560,8 @@ transform_location_type(x, y, type, subtype)
 xchar x, y;
 int type, subtype;
 {
+    Strcpy(debug_buf_4, "transform_location_type");
+
     /* First, only limited delete */
     if (levl[x][y].typ == FOUNTAIN)
         level.flags.nfountains--;

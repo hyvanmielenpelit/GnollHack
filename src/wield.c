@@ -130,6 +130,7 @@ boolean verbose;
     }
 
     if (uwep == obj && olduwep && (artifact_light(olduwep) || has_obj_mythic_magical_light(olduwep) || obj_shines_magical_light(olduwep)) && olduwep->lamplit) {
+        Strcpy(debug_buf_3, "setuwepcore");
         end_burn(olduwep, FALSE);
         if (!Blind && verbose)
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s shining.", Tobjnam(olduwep, "stop"));
@@ -1717,6 +1718,7 @@ uwepgone()
 {
     if (uwep) {
         if ((artifact_light(uwep) || has_obj_mythic_magical_light(uwep) || obj_shines_magical_light(uwep)) && uwep->lamplit) {
+            Strcpy(debug_buf_3, "uwepgone");
             end_burn(uwep, FALSE);
             if (!Blind)
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s shining.", Tobjnam(uwep, "stop"));
@@ -1733,6 +1735,7 @@ uwep2gone()
 {
     if (uarms) {
         if ((artifact_light(uarms) || has_obj_mythic_magical_light(uarms) || obj_shines_magical_light(uarms)) && uarms->lamplit) {
+            Strcpy(debug_buf_3, "uwep2gone");
             end_burn(uarms, FALSE);
             if (!Blind)
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s shining.", Tobjnam(uarms, "stop"));

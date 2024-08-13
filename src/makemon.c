@@ -1824,7 +1824,7 @@ register struct monst *mtmp;
             otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE, FALSE);
             otmp->quan = 1;
             otmp->owt = weight(otmp);
-            if (!mpickobj(mtmp, otmp) && !levl[mtmp->mx][mtmp->my].lit)
+            if (!mpickobj(mtmp, otmp) && !otmp->lamplit && !levl[mtmp->mx][mtmp->my].lit)
                 begin_burn(otmp, FALSE);
         }
 
@@ -2173,7 +2173,7 @@ register struct monst *mtmp;
             otmp = mksobj(rn2(4) ? TALLOW_CANDLE : WAX_CANDLE, TRUE, FALSE, FALSE);
             otmp->quan = 1;
             otmp->owt = weight(otmp);
-            if (!mpickobj(mtmp, otmp) && !levl[mtmp->mx][mtmp->my].lit)
+            if (!mpickobj(mtmp, otmp) && !otmp->lamplit && !levl[mtmp->mx][mtmp->my].lit)
                 begin_burn(otmp, FALSE);
         }
         break;
@@ -4166,7 +4166,6 @@ uchar material;
             otmp->enchantment = 0;
             otmp->special_quality = 0;
             otmp->age = 0L;
-            otmp->lamplit = FALSE;
             otmp->blessed = otmp->cursed = FALSE;
         }
         else if (otmp->otyp == BELL_OF_OPENING)

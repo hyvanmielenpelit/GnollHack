@@ -2439,6 +2439,7 @@ boolean* got_something_ptr;
         {
             if (levl[x][y].lamplit)
             {
+                Strcpy(debug_buf_4, "loot_decoration");
                 itemlit = TRUE;
                 del_light_source(LS_LOCATION, xy_to_any(x, y));
                 levl[x][y].lamplit = 0;

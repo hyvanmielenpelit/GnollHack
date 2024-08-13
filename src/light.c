@@ -142,8 +142,8 @@ anything *id;
             return;
         }
     }
-    impossible("del_light_source: not found type=%d, id=%s", type,
-               fmt_ptr((genericptr_t) id->a_obj));
+    impossible("del_light_source: not found type=%d, id=%s, otyp=%d, debug3=%s, debug4=%s", type,
+               fmt_ptr((genericptr_t) id->a_obj), id->a_obj->otyp, debug_buf_3, debug_buf_4);
 }
 
 /* Mark locations that are temporarily lit via mobile light sources. */
@@ -614,23 +614,6 @@ light_source *ls;
     }
 }
 
-/* Change light source's ID from src to dest. */
-void
-obj_move_light_source(src, dest)
-struct obj *src, *dest;
-{
-    light_source *ls;
-
-    for (ls = light_base; ls; ls = ls->next)
-    {
-        if (ls->type == LS_OBJECT && ls->id.a_obj == src)
-            ls->id.a_obj = dest;
-    }
-
-    src->lamplit = 0;
-    dest->lamplit = 1;
-}
-
 /* return true if there exist any light sources */
 boolean
 any_light_source()
@@ -666,6 +649,7 @@ int x, y;
                  */
                 if (artifact_light(obj))
                     continue;
+                Strcpy(debug_buf_3, "snuff_light_source");
                 end_burn(obj, obj->otyp != MAGIC_LAMP && obj->otyp != MAGIC_CANDLE);
                 /*
                  * The current ls element has just been removed (and
@@ -679,6 +663,7 @@ int x, y;
         {
             if (levl[x][y].lamplit)
             {
+                Strcpy(debug_buf_4, "snuff_light_source");
                 levl[x][y].lamplit = 0;
                 del_light_source(LS_LOCATION, xy_to_any(x, y));
                 newsym(x, y);
@@ -746,6 +731,7 @@ struct obj *src, *dest;
 {
     light_source *ls;
 
+    Strcpy(debug_buf_3, "obj_merge_light_sources");
     /* src == dest implies adding to candelabrum */
     if (src != dest)
         end_burn(src, TRUE); /* extinguish candles */

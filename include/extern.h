@@ -1650,7 +1650,6 @@ E void FDECL(restore_light_sources, (int));
 E void FDECL(light_stats, (const char *, char *, int64_t *, size_t *));
 E void FDECL(relink_light_sources, (BOOLEAN_P));
 E void NDECL(light_sources_sanity_check);
-E void FDECL(obj_move_light_source, (struct obj *, struct obj *));
 E boolean NDECL(any_light_source);
 E void FDECL(snuff_light_source, (int, int));
 E boolean FDECL(obj_sheds_light, (struct obj *));

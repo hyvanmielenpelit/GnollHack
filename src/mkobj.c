@@ -855,7 +855,7 @@ int64_t num;
     otmp->o_id = nextoid(obj, otmp);
     otmp->timed = 0;                  /* not timed, yet */
     otmp->lamplit = 0;                /* ditto */
-    otmp->makingsound = 0;                /* ditto */
+    otmp->makingsound = 0;            /* ditto */
     otmp->owornmask = 0L;             /* new object isn't worn */
     obj->quan -= num;
     obj->owt = weight(obj);
@@ -1044,8 +1044,6 @@ struct obj *otmp;
         extract_nobj(obj, &memoryobjs);
         extract_nexthere(obj, &level.locations[obj->ox][obj->oy].hero_memory_layers.memory_objchn);
         update_last_memoryobj();
-        obj->lamplit = 0;
-        obj->makingsound = 0;
         break;
     case OBJ_MAGIC:
         otmp->nobj = obj->nobj;
@@ -1111,8 +1109,7 @@ register struct obj *otmp;
     copy_oextra(dummy, otmp);
     if (has_omid(dummy))
         free_omid(dummy); /* only one association with m_id*/
-    if (is_candle(dummy) || is_torch(dummy))
-        dummy->lamplit = 0;
+    dummy->lamplit = 0;
     dummy->makingsound = 0;
     dummy->owornmask = 0L; /* dummy object is not worn */
     addtobill(dummy, FALSE, TRUE, TRUE);
@@ -1151,6 +1148,8 @@ register struct obj* otmp;
     if (!dummy->o_id)
         dummy->o_id = context.ident++; /* ident overflowed */
     dummy->timed = 0;
+    dummy->lamplit = 0;
+    dummy->makingsound = 0;
     copy_oextra(dummy, otmp);
     if (has_omid(dummy))
         free_omid(dummy); /* only one association with m_id*/
@@ -1746,20 +1745,17 @@ uint64_t mkflags;
             case WAX_CANDLE:
                 otmp->special_quality = SPEQUAL_LIGHT_SOURCE_FUNCTIONAL;
                 otmp->age = candle_starting_burn_time(otmp);
-                otmp->lamplit = 0;
                 otmp->quan = 1L + (int64_t) (rn2(2) ? rn2(7) : 0);
                 blessorcurse(otmp, 5);
                 break;
             case TORCH:
                 otmp->special_quality = SPEQUAL_LIGHT_SOURCE_FUNCTIONAL;
                 otmp->age = torch_starting_burn_time(otmp);
-                otmp->lamplit = 0;
                 otmp->quan = 1L;
                 blessorcurse(otmp, 5);
                 break;
             case LARGE_FIVE_BRANCHED_CANDELABRUM:
                 otmp->special_quality = !rn2(3) ? 0 : !rn2(2) ? objects[otmp->otyp].oc_special_quality : (short)rnd((int)objects[otmp->otyp].oc_special_quality);
-                otmp->lamplit = 0;
                 if (otmp->special_quality > 0)
                 {
                     otmp->age = candlelabrum_starting_burn_time(otmp);
@@ -1774,17 +1770,14 @@ uint64_t mkflags;
             case OIL_LAMP:
                 otmp->special_quality = SPEQUAL_LIGHT_SOURCE_FUNCTIONAL;
                 otmp->age = lamp_starting_burn_time(otmp);
-                otmp->lamplit = 0;
                 blessorcurse(otmp, 5);
                 break;
             case MAGIC_CANDLE:
                 otmp->special_quality = SPEQUAL_MAGIC_CANDLE_UNUSED;
-                otmp->lamplit = 0;
                 blessorcurse(otmp, 2);
                 break;
             case MAGIC_LAMP:
                 otmp->special_quality = SPEQUAL_MAGIC_LAMP_CONTAINS_DJINN;
-                otmp->lamplit = 0;
                 blessorcurse(otmp, 2);
                 break;
             case CHEST:
@@ -3850,8 +3843,6 @@ register struct obj* otmp;
     extract_nexthere(otmp, &level.locations[x][y].hero_memory_layers.memory_objchn);
     extract_nobj(otmp, &memoryobjs);
     update_last_memoryobj();
-    otmp->lamplit = 0;
-    otmp->makingsound = 0;
 }
 
 void
@@ -4321,6 +4312,7 @@ struct obj *obj;
      * list must track all objects that can have a light source
      * attached to it (and also requires lamplit to be set).
      */
+    Strcpy(debug_buf_4, "dealloc_obj");
     if (obj_sheds_light(obj))
         del_light_source(LS_OBJECT, obj_to_any(obj));
 

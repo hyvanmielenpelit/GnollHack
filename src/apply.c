@@ -1942,6 +1942,7 @@ register struct obj *obj;
     {
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY2);
         You("snuff the %s.", s);
+        Strcpy(debug_buf_3, "use_candelabrum");
         end_burn(obj, TRUE);
         return;
     }
@@ -2267,6 +2268,7 @@ struct obj **optr;
     if (otmp->lamplit)
         obj_merge_light_sources(otmp, otmp);
 
+    Strcpy(debug_buf_3, "use_candle");
     /* candles are no longer a separate light source */
     if (obj->lamplit)
         end_burn(obj, TRUE);
@@ -2299,6 +2301,7 @@ struct obj *otmp;
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s%scandle%s flame%s extinguished.", Shk_Your(buf, otmp),
                   (candle ? "" : "candelabrum's "), (many ? "s'" : "'s"),
                   (many ? "s are" : " is"));
+        Strcpy(debug_buf_3, "snuff_candle");
         end_burn(otmp, TRUE);
         return TRUE;
     }
@@ -2380,6 +2383,7 @@ struct obj* otmp;
         if (otmp->where == OBJ_MINVENT ? cansee(x, y) : !Blind)
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%storch%s flame%s extinguished.", Shk_Your(buf, otmp),
                 (many ? "es'" : "'s"), (many ? "s are" : " is"));
+        Strcpy(debug_buf_3, "snuff_torch");
         end_burn(otmp, TRUE);
         return TRUE;
     }
@@ -2402,6 +2406,7 @@ struct obj *obj;
             (void) get_obj_location(obj, &x, &y, 0);
             if (obj->where == OBJ_MINVENT ? cansee(x, y) : !Blind)
                 pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s %s out!", Yname2(obj), otense(obj, "go"));
+            Strcpy(debug_buf_3, "snuff_lit");
             end_burn(obj, TRUE);
             return TRUE;
         }
@@ -2489,6 +2494,7 @@ struct obj *obj;
         {
             You_ex(ATR_NONE, CLR_MSG_ATTENTION, "snuff out %s.", yname(obj));
         }
+        Strcpy(debug_buf_3, "use_lamp");
         end_burn(obj, TRUE);
         return;
     }
@@ -2643,6 +2649,7 @@ struct obj **optr;
     {        
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY2);
         You_ex(ATR_NONE, CLR_MSG_ATTENTION, "snuff the lit potion.");
+        Strcpy(debug_buf_3, "light_cocktail");
         end_burn(obj, TRUE);
         /*
          * Free & add to re-merge potion.  This will average the

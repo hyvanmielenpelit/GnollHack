@@ -5281,7 +5281,7 @@ retry:
     otmp = typ ? mksobj_with_flags(typ, TRUE, FALSE, MKOBJ_TYPE_WISHING, (struct monst*)0, MAT_NONE, 0L, 0L, mkflags) : mkobj(oclass, FALSE, MKOBJ_TYPE_WISHING);
     typ = otmp->otyp, oclass = otmp->oclass; /* what we actually got */
 
-    if (islit && (is_lamp(otmp) || is_candle(otmp) || is_torch(otmp) || is_obj_candelabrum(otmp) || typ == POT_OIL))
+    if (islit && !otmp->lamplit && (is_lamp(otmp) || is_candle(otmp) || is_torch(otmp) || is_obj_candelabrum(otmp) || typ == POT_OIL))
     {
         place_object(otmp, u.ux, u.uy); /* make it viable light source */
         begin_burn(otmp, FALSE);

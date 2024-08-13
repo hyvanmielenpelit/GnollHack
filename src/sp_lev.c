@@ -2021,6 +2021,7 @@ struct mkroom *croom;
 
                     if (emitted_light_range(olddata) != emitted_light_range(mtmp->data))
                     {
+                        Strcpy(debug_buf_4, "create_monster");
                         /* used to give light, now doesn't, or vice versa,
                            or light's range has changed */
                         if (emitted_light_range(olddata))

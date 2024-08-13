@@ -540,6 +540,7 @@ struct kinfo *kptr;
      * [formerly implicit] change of form; polymon() takes care of that.
      * Temporarily ungenocide if necessary.
      */
+    Strcpy(debug_buf_4, "slimed_to_death");
     if (emitted_light_range(youmonst.data))
         del_light_source(LS_MONSTER, monst_to_any(&youmonst));
     if (mon_ambient_sound(youmonst.data))
@@ -1892,6 +1893,7 @@ int64_t timeout;
 
         if (how_long >= obj->age) {
             obj->age = 0;
+            Strcpy(debug_buf_3, "burn_object1");
             end_burn(obj, FALSE);
 
             if (is_candelabrum) {
@@ -1944,6 +1946,7 @@ int64_t timeout;
                 break;
             }
         }
+        Strcpy(debug_buf_3, "burn_object2");
         end_burn(obj, FALSE); /* turn off light source */
         if (carried(obj)) {
             useupall(obj);
@@ -2016,6 +2019,7 @@ int64_t timeout;
                     break;
                 }
             }
+            Strcpy(debug_buf_3, "burn_object3");
             end_burn(obj, FALSE);
             break;
 
@@ -2103,6 +2107,7 @@ int64_t timeout;
                         : "Its flame dies."));
                 
             }
+            Strcpy(debug_buf_3, "burn_object4");
             end_burn(obj, FALSE);
 
             if (carried(obj)) 
@@ -2228,6 +2233,7 @@ int64_t timeout;
                                                    : "Its flame dies."));
                 }
             }
+            Strcpy(debug_buf_3, "burn_object5");
             end_burn(obj, FALSE);
 
             if (is_candelabrum) {
@@ -2318,11 +2324,14 @@ boolean already_lit;
     int radius = obj_light_radius(obj);
     int64_t turns = 0;
     boolean do_timer = TRUE;
+    boolean do_lamplit = FALSE;
+    boolean do_update_inventory = FALSE;
     if (obj_burns_infinitely(obj))
     {
         /* Infinite burn */
         do_timer = FALSE;
-        obj->lamplit = 1;
+        do_lamplit = TRUE;
+        //obj->lamplit = 1;
 
         if (obj->otyp == MAGIC_CANDLE)
         {
@@ -2332,16 +2341,19 @@ boolean already_lit;
     }
     else
     {
-        switch (obj->otyp) {
+        switch (obj->otyp) 
+        {
         case MAGIC_LAMP:
             //obj->lamplit = 1;
-            //do_timer = FALSE;
+            do_timer = FALSE;
+            do_lamplit = TRUE;
             break;
         case MAGIC_CANDLE:
             //obj->lamplit = 1;
+            do_lamplit = TRUE;
             if (obj->special_quality == SPEQUAL_MAGIC_CANDLE_UNUSED)
                 obj->special_quality = SPEQUAL_MAGIC_CANDLE_PARTLY_USED;
-            //do_timer = FALSE;
+            do_timer = FALSE;
             break;
         case POT_OIL:
             turns = obj->age;
@@ -2397,28 +2409,42 @@ boolean already_lit;
         }
     }
 
-    if (do_timer) {
+    if (do_timer) 
+    {
         if (start_timer(turns, TIMER_OBJECT, BURN_OBJECT, obj_to_any(obj))) {
-            obj->lamplit = 1;
+            //obj->lamplit = 1;
+            do_lamplit = TRUE;
             obj->age -= turns;
             if (carried(obj) && !already_lit)
-                update_inventory();
-        } else {
-            obj->lamplit = 0;
+                do_update_inventory = TRUE;
         }
-    } else {
+        else 
+        {
+            //obj->lamplit = 0;
+            do_lamplit = FALSE;
+        }
+    } 
+    else 
+    {
         if (carried(obj) && !already_lit)
-            update_inventory();
+            do_update_inventory = TRUE;
     }
 
-    if (obj->lamplit && !already_lit) {
+    if (do_lamplit && !already_lit && !obj->lamplit /* Insurance against doing two light sources */)
+    {
         xchar x, y;
 
         if (get_obj_location(obj, &x, &y, CONTAINED_TOO | BURIED_TOO))
+        {
             new_light_source(x, y, radius, LS_OBJECT, obj_to_any(obj), 0);
+            obj->lamplit = 1;
+        }
         else
             impossible("begin_burn: can't get obj position");
     }
+
+    if (do_update_inventory)
+        update_inventory(); 
 }
 
 /*
@@ -2439,6 +2465,7 @@ boolean timer_attached;
         timer_attached = FALSE;
 
     if (!timer_attached) {
+        Strcpy(debug_buf_4, "end_burn");
         /* [DS] Cleanup explicitly, since timer cleanup won't happen */
         del_light_source(LS_OBJECT, obj_to_any(obj));
         obj->lamplit = 0;
@@ -2462,12 +2489,12 @@ int64_t expire_time;
         return;
     }
 
+    Strcpy(debug_buf_4, "cleanup_burn");
     del_light_source(LS_OBJECT, obj_to_any(obj));
+    obj->lamplit = 0;
 
     /* restore unused time */
     obj->age += expire_time - monstermoves;
-
-    obj->lamplit = 0;
 
     if (obj->where == OBJ_INVENT)
         update_inventory();

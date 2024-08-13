@@ -1021,6 +1021,7 @@ int x, y;
 
     if (!obj->lamplit)
         impossible("exploding unlit oil");
+    Strcpy(debug_buf_3, "explode_oil");
     end_burn(obj, TRUE);
     splatter_burning_oil(x, y, diluted_oil);
 }

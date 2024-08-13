@@ -62,6 +62,7 @@ struct obj *ochain;
 boolean restore;
 {
     struct obj *otmp, *nobj;
+    Strcpy(debug_buf_3, "resetobjs");
 
     for (otmp = ochain; otmp; otmp = nobj)
     {
@@ -334,6 +335,7 @@ int x, y;
     while ((otmp = invent) != 0) 
     {
         Strcpy(debug_buf_2, "drop_upon_death");
+        Strcpy(debug_buf_3, "drop_upon_death");
         obj_extract_self(otmp);
         /* when turning into green slime, all gear remains held;
            other types "arise from the dead" do aren't holding

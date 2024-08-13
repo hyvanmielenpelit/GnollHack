@@ -3012,6 +3012,7 @@ boolean *dealloced;
     if (otmp->otyp == LEASH && otmp->leashmon != 0)
         o_unleash(otmp);
 
+    Strcpy(debug_buf_3, "bury_an_obj");
     if (otmp->lamplit && otmp->otyp != POT_OIL)
         end_burn(otmp, TRUE);
 

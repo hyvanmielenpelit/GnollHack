@@ -686,6 +686,7 @@ made_change:
     new_light = emitted_light_range(youmonst.data);
     if (old_light != new_light)
     {
+        Strcpy(debug_buf_4, "polyself");
         if (old_light)
             del_light_source(LS_MONSTER, monst_to_any(&youmonst));
         if (new_light == 1)
@@ -1513,6 +1514,7 @@ rehumanize(VOID_ARGS)
         }
     }
 
+    Strcpy(debug_buf_4, "rehumanize");
     if (emitted_light_range(youmonst.data))
         del_light_source(LS_MONSTER, monst_to_any(&youmonst));
     if (mon_ambient_sound(youmonst.data))

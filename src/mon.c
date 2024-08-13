@@ -2910,6 +2910,7 @@ struct monst *mtmp, *mtmp2;
 
     if (emitted_light_range(mtmp2->data)) 
     {
+        Strcpy(debug_buf_4, "replmon");
         /* since this is so rare, we don't have any `mon_move_light_source' */
         new_light_source(mtmp2->mx, mtmp2->my, emitted_light_range(mtmp2->data), LS_MONSTER, monst_to_any(mtmp2), 0);
         /* here we rely on fact that `mtmp' hasn't actually been deleted */
@@ -3179,6 +3180,7 @@ boolean is_mon_dead;
 {
     boolean onmap = (mtmp->mx > 0);
 
+    Strcpy(debug_buf_4, "m_detach");
     if (mtmp == context.polearm.hitmon)
         context.polearm.hitmon = 0;
     if (mtmp->mleashed)
@@ -3851,6 +3853,7 @@ struct monst *mdef;
                     continue;
                 place_object(obj, x, y);
             } else {
+                Strcpy(debug_buf_3, "monstone");
                 if (obj->lamplit)
                     end_burn(obj, TRUE);
                 if (obj->makingsound)
@@ -5638,6 +5641,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
         mtmp->mhp = 1;
 
     if (emitted_light_range(olddata) != emitted_light_range(mtmp->data)) {
+        Strcpy(debug_buf_4, "newcham");
         /* used to give light, now doesn't, or vice versa,
            or light's range has changed */
         if (emitted_light_range(olddata))
@@ -6711,6 +6715,7 @@ boolean override_mextra, polyspot, msg;
 
     struct permonst* mdat = mtmp->data;
     if (emitted_light_range(olddata) != emitted_light_range(mtmp->data)) {
+        Strcpy(debug_buf_4, "revert_mon_polymorph");
         /* used to give light, now doesn't, or vice versa,
            or light's range has changed */
         if (emitted_light_range(olddata))

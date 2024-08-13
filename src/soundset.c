@@ -19443,7 +19443,7 @@ struct obj* src, * dest;
             new_ss->id.a_obj = dest;
             new_ss->next = sound_base;
             sound_base = new_ss;
-            //dest->lamplit = 1; /* now an active sound source */
+            dest->makingsound = 1; /* now an active sound source */
         }
 }
 

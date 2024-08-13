@@ -4385,6 +4385,7 @@ register struct obj *obj;
         return;
 
     if ((artifact_light(obj) || has_obj_mythic_magical_light(obj) || obj_shines_magical_light(obj)) && obj->lamplit) {
+        Strcpy(debug_buf_3, "setmnotwielded");
         end_burn(obj, FALSE);
         if (canseemon(mon))
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s in %s %s %s shining.", The(xname(obj)),
