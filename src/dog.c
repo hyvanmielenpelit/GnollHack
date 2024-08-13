@@ -1951,11 +1951,9 @@ boolean was_dead;
 {
     struct edog *edog;
     boolean quietly = was_dead;
+    schar was_tame = mtmp->mtame;
 
     finish_meating(mtmp);
-
-    if (!mtmp->mtame)
-        return;
     edog = !mtmp->isminion ? EDOG(mtmp) : 0;
 
     /* if monster was starving when it died, undo that now */
@@ -1997,7 +1995,7 @@ boolean was_dead;
             mtmp->mpeaceful = rn2(2);
     }
 
-    if (!mtmp->mtame)
+    if (was_tame && !mtmp->mtame)
     {
         if (!quietly && canspotmon(mtmp))
             pline("%s %s.", Monnam(mtmp),
@@ -2010,7 +2008,8 @@ boolean was_dead;
         if (mtmp == u.usteed)
             dismount_steed(DISMOUNT_THROWN);
     }
-    else if (edog)
+    
+    if (edog)
     {
         /* it's still a pet; start a clean pet-slate now */
         edog->revivals++;
