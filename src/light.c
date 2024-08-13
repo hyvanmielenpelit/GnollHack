@@ -142,8 +142,8 @@ anything *id;
             return;
         }
     }
-    impossible("del_light_source: not found type=%d, id=%s, otyp=%d, debug3=%s, debug4=%s", type,
-               fmt_ptr((genericptr_t) id->a_obj), id->a_obj->otyp, debug_buf_3, debug_buf_4);
+    impossible("del_light_source: not found type=%d, id=%s, otyp=%d, where=%d, ox=%d, oy=%d, debug3=%s, debug4=%s", type,
+               fmt_ptr((genericptr_t) id->a_obj), id->a_obj->otyp, id->a_obj->where, id->a_obj->ox, id->a_obj->oy, debug_buf_3, debug_buf_4);
 }
 
 /* Mark locations that are temporarily lit via mobile light sources. */
