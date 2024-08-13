@@ -2,7 +2,6 @@
 using Microsoft.Maui.LifecycleEvents;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using System.Runtime.Intrinsics.Arm;
-using MemoryToolkit.Maui;
 using GnollHackX;
 
 #if IOS
@@ -231,16 +230,7 @@ public static class MauiProgram
 
 #if DEBUG
 		builder.Logging.AddDebug();
-        // Ensure UseLeakDetection is called after logging has been configured!
-        builder.UseLeakDetection(collectionTarget =>
-        {
-            GHApp.MaybeWriteGHLog($"Leak Detected: {collectionTarget.Name} is a zombie!");
-            //Application.Current?.MainPage?.DisplayAlert("Leak Detected",
-            //    $" {collectionTarget.Name} is a zombie!", "OK");
-        });
 #endif
-
-
         return builder.Build();
 	}
 }

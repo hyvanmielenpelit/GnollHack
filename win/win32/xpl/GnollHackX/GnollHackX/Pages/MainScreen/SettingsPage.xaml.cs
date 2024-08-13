@@ -1488,7 +1488,7 @@ namespace GnollHackX.Pages.MainScreen
             await MaybeShowPleaseWait();
             await SetSettingValues();
             GHApp.CurrentMainPage?.InvalidateCarousel();
-            await App.Current.MainPage.Navigation.PopModalAsync();
+            await GHApp.Navigation.PopModalAsync();
         }
 
 
@@ -1545,7 +1545,10 @@ namespace GnollHackX.Pages.MainScreen
 
             if (res != "" && !isValid)
             {
+#if GNH_MAUI
+#else
                 TextFrame.BorderColor = GHColors.Red;
+#endif
                 TextEntry.Focus();
                 TextOkButton.IsEnabled = true;
                 TextCancelButton.IsEnabled = true;
@@ -1590,7 +1593,10 @@ namespace GnollHackX.Pages.MainScreen
             TextEntry.Unfocus();
             TextEntry.IsEnabled = false;
             TextCaption.Text = "";
+#if GNH_MAUI
+#else
             TextFrame.BorderColor = GHColors.Black;
+#endif
 
             _linkButtonClicked.IsEnabled = true;
         }
@@ -1607,7 +1613,10 @@ namespace GnollHackX.Pages.MainScreen
             TextEntry.Unfocus();
             TextEntry.IsEnabled = false;
             TextCaption.Text = "";
+#if GNH_MAUI
+#else
             TextFrame.BorderColor = GHColors.Black;
+#endif
 
             if (_linkButtonClicked == null) _linkButtonClicked = CustomLinkButton;
             _linkButtonClicked.IsEnabled = true;
@@ -1622,7 +1631,7 @@ namespace GnollHackX.Pages.MainScreen
                 await MaybeShowPleaseWait();
                 await SetSettingValues();
                 GHApp.CurrentMainPage?.InvalidateCarousel();
-                await App.Current.MainPage.Navigation.PopModalAsync();
+                await GHApp.Navigation.PopModalAsync();
             }
             return false;
         }
@@ -2040,6 +2049,4 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
     }
-
-
 }

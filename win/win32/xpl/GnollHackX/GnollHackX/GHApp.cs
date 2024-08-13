@@ -201,6 +201,20 @@ namespace GnollHackX
             BackButtonPressed += EmptyBackButtonPressed;
         }
 
+        public static INavigation Navigation
+        {
+            get
+            {
+                return App.Current?.
+#if GNH_MAUI
+                    Windows[0]?.
+#else
+                    MainPage?.
+#endif
+                    Navigation;
+            }
+        }
+
         public static void InitializeGC()
         {
             //try
@@ -6221,7 +6235,7 @@ namespace GnollHackX
             {
 #if WINDOWS
                 var wikiPage = new WikiPage(title, uri.ToString());
-                await App.Current.MainPage.Navigation.PushModalAsync(wikiPage);
+                await GHApp.Navigation.PushModalAsync(wikiPage);
 #else
                 await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
 #endif
@@ -6236,10 +6250,10 @@ namespace GnollHackX
         {
             if(page == null) 
                 return false;
-            int cnt = App.Current.MainPage.Navigation.NavigationStack.Count;
+            int cnt = GHApp.Navigation.NavigationStack.Count;
             if (cnt == 0)
                 return false;
-            Page topPage = App.Current?.MainPage?.Navigation?.ModalStack[cnt - 1];
+            Page topPage = GHApp.Navigation?.ModalStack[cnt - 1];
             if (topPage == null) 
                 return false;
             return topPage == page;

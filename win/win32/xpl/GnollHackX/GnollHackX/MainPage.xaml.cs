@@ -597,7 +597,7 @@ namespace GnollHackX
                 gamePage.EnableWizardMode = wizardModeSwitch.IsToggled;
                 gamePage.EnableCasualMode = casualModeSwitch.IsToggled;
                 gamePage.EnableModernMode = !classicModeSwitch.IsToggled;
-                await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
+                await GHApp.Navigation.PushModalAsync(gamePage);
                 gamePage.StartNewGame();
             }
             catch (Exception ex)
@@ -1170,7 +1170,7 @@ namespace GnollHackX
                 carouselView.Play();
                 UpperButtonGrid.IsEnabled = true;
             };
-            await App.Current.MainPage.Navigation.PushModalAsync(resetPage);
+            await GHApp.Navigation.PushModalAsync(resetPage);
             StopGeneralTimer = false;
             StartGeneralTimer();
             UpperButtonGrid.IsEnabled = true;
@@ -1186,7 +1186,7 @@ namespace GnollHackX
             {
                 UpperButtonGrid.IsEnabled = true;
             };
-            await App.Current.MainPage.Navigation.PushModalAsync(settingsPage);
+            await GHApp.Navigation.PushModalAsync(settingsPage);
             UpperButtonGrid.IsEnabled = true;
         }
 
@@ -1210,7 +1210,7 @@ namespace GnollHackX
                     UpperButtonGrid.IsEnabled = true;
                 };
                 carouselView.Stop();
-                await App.Current.MainPage.Navigation.PushModalAsync(editorPage);
+                await GHApp.Navigation.PushModalAsync(editorPage);
             }
             UpperButtonGrid.IsEnabled = true;
         }
@@ -1227,7 +1227,7 @@ namespace GnollHackX
                 carouselView.Play();
                 UpperButtonGrid.IsEnabled = true;
             };
-            await App.Current.MainPage.Navigation.PushModalAsync(aboutPage);
+            await GHApp.Navigation.PushModalAsync(aboutPage);
             StopGeneralTimer = false;
             StartGeneralTimer();
             UpperButtonGrid.IsEnabled = true;
@@ -1273,7 +1273,7 @@ namespace GnollHackX
                 carouselView.Play();
                 UpperButtonGrid.IsEnabled = true;
             };
-            await App.Current.MainPage.Navigation.PushModalAsync(vaultPage);
+            await GHApp.Navigation.PushModalAsync(vaultPage);
             UpperButtonGrid.IsEnabled = true;
         }
 

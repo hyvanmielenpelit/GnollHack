@@ -107,7 +107,7 @@ namespace GnollHackX.Pages.MainScreen
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             GHApp.CurrentMainPage?.InvalidateCarousel();
-            await App.Current.MainPage.Navigation.PopModalAsync();
+            await GHApp.Navigation.PopModalAsync();
         }
 
         private bool _backPressed = false;
@@ -117,7 +117,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 _backPressed = true;
                 GHApp.CurrentMainPage?.InvalidateCarousel();
-                await App.Current.MainPage.Navigation.PopModalAsync();
+                await GHApp.Navigation.PopModalAsync();
             }
             return false;
         }
@@ -163,14 +163,14 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 else
                 {
-                    await App.Current.MainPage.Navigation.PushModalAsync(topScorePage);
+                    await GHApp.Navigation.PushModalAsync(topScorePage);
                 }
             }
             else
             {
                 /* No top scores */
                 var topScorePage = new TopScorePage();
-                await App.Current.MainPage.Navigation.PushModalAsync(topScorePage);
+                await GHApp.Navigation.PushModalAsync(topScorePage);
             }
             VaultLayout.IsEnabled = true;
         }
@@ -181,7 +181,7 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
             var libPage = new LibraryPage();
             libPage.ReadLibrary();
-            await App.Current.MainPage.Navigation.PushModalAsync(libPage);
+            await GHApp.Navigation.PushModalAsync(libPage);
             VaultLayout.IsEnabled = true;
         }
 
@@ -190,7 +190,7 @@ namespace GnollHackX.Pages.MainScreen
             VaultLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             var musicPage = new MusicPage();
-            await App.Current.MainPage.Navigation.PushModalAsync(musicPage);
+            await GHApp.Navigation.PushModalAsync(musicPage);
             VaultLayout.IsEnabled = true;
         }
 
@@ -200,7 +200,7 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
 
             ReplayPage selectFilePage = new ReplayPage(_mainPage);
-            await App.Current.MainPage.Navigation.PushModalAsync(selectFilePage);
+            await GHApp.Navigation.PushModalAsync(selectFilePage);
 
             VaultLayout.IsEnabled = true;
         }

@@ -155,10 +155,10 @@ namespace GnollHackX.Controls
             }
         }
 
-        protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
-        {
-            return new SizeRequest();
-        }
+        //protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
+        //{
+        //    return new SizeRequest();
+        //}
 
         private bool _firstCanvasDraw = true;
 

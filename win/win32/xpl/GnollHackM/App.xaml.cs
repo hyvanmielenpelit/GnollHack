@@ -43,7 +43,14 @@ public partial class App : Application
 #endif
 
         GHApp.Initialize();
-        MainPage = new AppShell();
+        //MainPage = new AppShell();
+    }
+
+    protected override Window CreateWindow(IActivationState activationState)
+    {
+        Window window = base.CreateWindow(activationState);
+        window.Page = new AppShell();
+        return window;  
     }
 
     protected override void OnStart()

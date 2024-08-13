@@ -3360,14 +3360,17 @@ namespace GnollHackX.Pages.Game
         private async void AskName(string modeName, string modeDescription, string replayEnteredPlayerName)
         {
             var namePage = new NamePage(this, modeName, modeDescription, replayEnteredPlayerName);
-            await App.Current.MainPage.Navigation.PushModalAsync(namePage);
+            await GHApp.Navigation.PushModalAsync(namePage);
         }
 
         private int _getLineStyle = 0;
         private Regex _getLineRegex = null;
         private void GetLine(string query, string placeholder, string linesuffix, string introline, int style, int attr, int color)
         {
+#if GNH_MAUI
+#else
             GetLineFrame.BorderColor = GHColors.Black;
+#endif
             GetLineOkButton.IsEnabled = true;
             GetLineCancelButton.IsEnabled = true;
             GetLineQuestionMarkButton.IsEnabled = true;
@@ -3541,14 +3544,20 @@ namespace GnollHackX.Pages.Game
 
             if(_getLineRegex != null && !_getLineRegex.IsMatch(res))
             {
+#if GNH_MAUI
+#else
                 GetLineFrame.BorderColor = GHColors.Red;
+#endif
                 GetLineEntryText.Focus();
                 GetLineOkButton.IsEnabled = true;
                 GetLineCancelButton.IsEnabled = true;
                 GetLineQuestionMarkButton.IsEnabled = true;
                 return;
             }
+#if GNH_MAUI
+#else
             GetLineFrame.BorderColor = GHColors.Black;
+#endif
 
             /* Style-dependent behavior */
             switch (_getLineStyle)
@@ -3641,7 +3650,7 @@ namespace GnollHackX.Pages.Game
             if (GHApp.GameMuteMode)
                 GHApp.GameMuteMode = false;
             GHApp.CurrentGamePage = null;
-            await App.Current.MainPage.Navigation.PopModalAsync();
+            await GHApp.Navigation.PopModalAsync();
             _mainPage.StartGeneralTimer(); /* Just to be doubly sure */
         }
 
@@ -4054,15 +4063,15 @@ namespace GnollHackX.Pages.Game
         private async void ShowOutRipPage(GHOutRipInfo outripinfo, GHWindow ghwindow)
         {
             var outRipPage = new OutRipPage(this, ghwindow, outripinfo);
-            await App.Current.MainPage.Navigation.PushModalAsync(outRipPage);
+            await GHApp.Navigation.PushModalAsync(outRipPage);
         }
         private async void HideOutRipPage()
         {
-            await App.Current.MainPage.Navigation.PopModalAsync();
+            await GHApp.Navigation.PopModalAsync();
         }
         private async void HideAskNamePage()
         {
-            await App.Current.MainPage.Navigation.PopModalAsync();
+            await GHApp.Navigation.PopModalAsync();
         }
 
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
@@ -4138,7 +4147,7 @@ namespace GnollHackX.Pages.Game
             {
                 var menu = new GameMenuPage(this);
                 SendRequestForTallyRealTime();
-                await App.Current.MainPage.Navigation.PushModalAsync(menu);
+                await GHApp.Navigation.PushModalAsync(menu);
             }
 
             return false;
@@ -4147,7 +4156,7 @@ namespace GnollHackX.Pages.Game
         {
             var menu = new GameMenuPage(this);
             SendRequestForTallyRealTime();
-            await App.Current.MainPage.Navigation.PushModalAsync(menu);
+            await GHApp.Navigation.PushModalAsync(menu);
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
@@ -18264,7 +18273,10 @@ namespace GnollHackX.Pages.Game
             if (GotoStylePicker.SelectedIndex < 1)
                 GotoTurnEntryText.Text = "";
             GotoTurnEntryText.IsEnabled = true;
+#if GNH_MAUI
+#else
             GotoTurnFrame.BorderColor = GHColors.Black;
+#endif
             GotoTurnOkButton.IsEnabled = true;
             GotoTurnCancelButton.IsEnabled = true;
             if (GotoStylePicker.SelectedIndex < 0)
@@ -18306,7 +18318,10 @@ namespace GnollHackX.Pages.Game
                         }
                         else
                         {
+#if GNH_MAUI
+#else
                             GotoTurnFrame.BorderColor = GHColors.Red;
+#endif
                             GotoTurnEntryText.Focus();
                             GotoTurnOkButton.IsEnabled = true;
                             GotoTurnCancelButton.IsEnabled = true;
@@ -18328,7 +18343,10 @@ namespace GnollHackX.Pages.Game
                         }
                         else
                         {
+#if GNH_MAUI
+#else
                             GotoTurnFrame.BorderColor = GHColors.Red;
+#endif
                             GotoTurnEntryText.Focus();
                             GotoTurnOkButton.IsEnabled = true;
                             GotoTurnCancelButton.IsEnabled = true;
@@ -18401,7 +18419,7 @@ namespace GnollHackX.Pages.Game
                     GetLineCaption.IsEnabled = false;
                     GHApp.PlayButtonClickedSound();
                     var menuPage = new GameMenuPage(this, true);
-                    await App.Current.MainPage.Navigation.PushModalAsync(menuPage);
+                    await GHApp.Navigation.PushModalAsync(menuPage);
                     GetLineCaption.IsEnabled = true;
                     break;
                 default:
@@ -18415,7 +18433,7 @@ namespace GnollHackX.Pages.Game
             GetLineMenuButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             var menuPage = new GameMenuPage(this, true);
-            await App.Current.MainPage.Navigation.PushModalAsync(menuPage);
+            await GHApp.Navigation.PushModalAsync(menuPage);
             GetLineMenuButton.IsEnabled = true;
         }
 

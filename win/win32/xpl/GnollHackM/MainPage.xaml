@@ -126,7 +126,7 @@
               BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
-                    <Frame x:Name="PopupFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Border x:Name="PopupFrame"  BackgroundColor="#99000000" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="PopupLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
                             <Label Text="" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
@@ -157,7 +157,7 @@
                                         Clicked="PopupOkButton_Clicked" />
                             </Grid>
                         </StackLayout>
-                    </Frame>
+                    </Border>
                 </Grid>
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer />
@@ -168,7 +168,7 @@
               BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
-                    <Frame x:Name="AlertFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Border x:Name="AlertFrame"  BackgroundColor="#99000000" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="AlertLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
                             <Label Text="" x:Name="AlertTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
@@ -178,7 +178,7 @@
                             <controls:CustomImageButton x:Name="AlertOkButton" Text="OK" FontSize="19" WidthRequest="170" Margin="0,10,0,0" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="AlertOkButton_Clicked" />
                         </StackLayout>
-                    </Frame>
+                    </Border>
                 </Grid>
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer />
@@ -189,7 +189,7 @@
               BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
-                    <Frame x:Name="PendingTasksFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Border x:Name="PendingTasksFrame"  BackgroundColor="#99000000" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="PendingTasksLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
                             <Label Text="Pending Tasks" x:Name="PendingTasksTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="Orange"
@@ -212,7 +212,7 @@
                                         Clicked="PendingTasksCancelButton_Clicked" />
                             </Grid>
                         </StackLayout>
-                    </Frame>
+                    </Border>
                 </Grid>
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer />

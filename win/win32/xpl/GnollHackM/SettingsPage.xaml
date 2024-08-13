@@ -1382,7 +1382,7 @@
             <Grid x:Name="TextGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
                 <Grid MaximumWidthRequest="440" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,50,0,10" >
-                    <Frame x:Name="TextFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Border x:Name="TextFrame" BackgroundColor="#66000000" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout x:Name="TextLayout" Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center">
                             <Label x:Name="TextCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
                             <Entry x:Name="TextEntry" WidthRequest="320" HorizontalOptions="Center" Placeholder="Enter the link here" PlaceholderColor="Gray" TextColor="White" BackgroundColor="#40000000"
@@ -1403,7 +1403,7 @@
                                             Clicked="TextCancelButton_Clicked" />
                             </Grid>
                         </StackLayout>
-                    </Frame>
+                    </Border>
                 </Grid>
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer />
@@ -1414,7 +1414,7 @@
               BackgroundColor="#66000000" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
                 <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
-                    <Frame x:Name="PopupFrame"  BackgroundColor="#99000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Border x:Name="PopupFrame"  BackgroundColor="#99000000" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="PopupLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
                             <Label Text="" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White"
@@ -1424,7 +1424,7 @@
                             <controls:CustomImageButton x:Name="PopupOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="60" Margin="0,10,0,0" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="PopupOkButton_Clicked" />
                         </StackLayout>
-                    </Frame>
+                    </Border>
                 </Grid>
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer />

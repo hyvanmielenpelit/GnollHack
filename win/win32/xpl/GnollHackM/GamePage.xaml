@@ -20,17 +20,17 @@
                                                   MousePointer="canvasView_MousePointer"
                                                   HorizontalOptions="Fill" VerticalOptions="Fill" >
                 </controls:SwitchableCanvasView>
-                <Frame x:Name="FadeFrame" IsVisible="False" InputTransparent="True" BackgroundColor="Black" BorderColor="Black" CornerRadius="0" HorizontalOptions="Fill" VerticalOptions="Fill" />
+                <Border x:Name="FadeFrame" IsVisible="False" InputTransparent="True" BackgroundColor="Black" Stroke="Black" StrokeThickness="1" StrokeShape="Rectangle" HorizontalOptions="Fill" VerticalOptions="Fill" />
 
                 <controls:LabeledImageButton x:Name="lWornItemsButton" LblText="" BtnLetter="]" LargerFont="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="End" VerticalOptions="Start" />
                 <controls:LabeledImageButton x:Name="lAbilitiesButton" LblText="" BtnLetter="A" LargerFont="True" BtnClicked="GHButton_Clicked" Margin="0,2" HorizontalOptions="Start" VerticalOptions="Start" />
 
-                <Frame x:Name="MessageFilterFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Start" >
+                <Border x:Name="MessageFilterFrame" BackgroundColor="#66000000" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" IsVisible="False" HorizontalOptions="Start" VerticalOptions="Start" >
                     <StackLayout> <!-- Some versions of MAUI do not support placing Entrys in Frames -->
                         <Entry x:Name="MessageFilterEntry" FontFamily="Underwood" FontSize="18" TextColor="White" BackgroundColor="#66000000" Placeholder="Search" PlaceholderColor="LightGray"
                                    WidthRequest="200" Keyboard="Default" HorizontalTextAlignment="Center" TextChanged="MessageFilterEntry_TextChanged" />
                     </StackLayout>
-                </Frame>
+                </Border>
                 <Grid x:Name="UIGrid" Grid.Row="0" RowSpacing="0" ColumnSpacing="0" InputTransparent="True" CascadeInputTransparent="False" HorizontalOptions="Fill" VerticalOptions="Fill">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -194,7 +194,7 @@
                 <Grid x:Name="MenuCountBackgroundGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
                          BackgroundColor="#66000000" IsVisible="False">
                     <Grid x:Name="MenuCountForegroundGrid" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="Center">
-                        <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                        <Border BackgroundColor="#66000000" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Fill" VerticalOptions="Center">
                             <StackLayout Spacing="6" x:Name="MenuCountLayout" HorizontalOptions="Fill" VerticalOptions="Center">
                                 <Label x:Name="MenuCountCaption" Text="Select Count" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
                                 <Picker x:Name="CountPicker"
@@ -241,7 +241,7 @@
                                             Clicked="MenuCountCancelButton_Clicked" />
                                 </Grid>
                             </StackLayout>
-                        </Frame>
+                        </Border>
                     </Grid>
                     <Grid.GestureRecognizers>
                         <TapGestureRecognizer />
@@ -266,7 +266,7 @@
                 <controls:SimpleImageButton x:Name="GetLineMenuButton" IsVisible="False" ImgSourcePath="resource://GnollHackM.Assets.UI.wiki.png" WidthRequest="50" HeightRequest="50" 
                                                    BtnClicked="GetLineMenuButton_BtnClicked" HorizontalOptions="End" VerticalOptions="Start" />
                 <Grid MaximumWidthRequest="440" HorizontalOptions="Fill" VerticalOptions="Start" Margin="0,50,0,10" >
-                    <Frame x:Name="GetLineFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Border x:Name="GetLineFrame" BackgroundColor="#66000000" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout x:Name="GetLineLayout" Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center">
                             <Label x:Name="GetLineCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White">
                                 <Label.GestureRecognizers>
@@ -301,7 +301,7 @@
                                             Clicked="GetLineCancelButton_Clicked" />
                             </Grid>
                         </StackLayout>
-                    </Frame>
+                    </Border>
                 </Grid>
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer />
@@ -310,7 +310,7 @@
             <Grid x:Name="YnGrid" HorizontalOptions="Fill" VerticalOptions="Fill" InputTransparent="false" 
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
                 <Grid MaximumWidthRequest="600" HorizontalOptions="Fill" VerticalOptions="Center">
-                    <Frame x:Name="YnFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Border x:Name="YnFrame" BackgroundColor="#66000000" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="YnLayout" Padding="5" Spacing="6" HorizontalOptions="Center" VerticalOptions="Center" >
                             <StackLayout x:Name="YnTitleLayout" Orientation="Horizontal" Spacing="6"
                                      HorizontalOptions="CenterAndExpand" VerticalOptions="Center">
@@ -329,7 +329,7 @@
                                 <controls:LabeledImageButton x:Name="FourthButton" ImgSourcePath="resource://GnollHackM.Assets.UI.missing_icon.png" BtnClicked="YnButton_Clicked" PortraitButtonsInRow="5" LandscapeButtonsInRow="5" LargerFont="True" />
                             </StackLayout>
                         </StackLayout>
-                    </Frame>
+                    </Border>
                 </Grid>
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer />
@@ -338,7 +338,7 @@
             <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
                          BackgroundColor="#66000000" IsVisible="False">
                 <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
-                    <Frame x:Name="PopupFrame"  BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Border x:Name="PopupFrame"  BackgroundColor="#66000000" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="PopupLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
                             <StackLayout x:Name="PopupTitleLayout" Orientation="Horizontal" Spacing="6"
@@ -353,7 +353,7 @@
                             <controls:CustomImageButton Grid.Column="0" Margin="0,10,0,0" x:Name="PopupOkButton" Text="OK" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="PopupOkButton_Clicked" />
                         </StackLayout>
-                    </Frame>
+                    </Border>
                 </Grid>
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer />
@@ -388,7 +388,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Frame x:Name="ReplayFrame" HorizontalOptions="Center" VerticalOptions="End" HeightRequest="65" BackgroundColor="#88000000" BorderColor="Black" CornerRadius="10" Padding="4" Margin="1">
+                <Border x:Name="ReplayFrame" HorizontalOptions="Center" VerticalOptions="End" HeightRequest="65" BackgroundColor="#88000000" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" Padding="4" Margin="1">
                     <Grid Margin="0" BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="60" Padding="0" RowSpacing="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -408,9 +408,9 @@
                             <controls:CustomImageButton x:Name="ReplayQuitButton" Text="Quit" Clicked="ReplayQuitButton_Clicked" WidthRequest="75" HeightRequest="40" FontFamily="Diablo" FontSize="13" BackgroundColor="Transparent" TextColor="#FFFFAAAA"/>
                         </StackLayout>
                     </Grid>
-                </Frame>
+                </Border>
                 <Grid x:Name="GotoTurnGrid" IsVisible="False"  BackgroundColor="#66000000" HorizontalOptions="Fill" VerticalOptions="Fill" >
-                    <Frame x:Name="GotoTurnFrame" Margin="0,50,0,10" MaximumWidthRequest="440" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Start">
+                    <Border x:Name="GotoTurnFrame" Margin="0,50,0,10" MaximumWidthRequest="440" BackgroundColor="#66000000" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Start">
                         <StackLayout x:Name="GotoTurnLayout" HorizontalOptions="Fill" VerticalOptions="Center">
                             <Picker x:Name="GotoStylePicker"
                                         Title="Select functionality"
@@ -453,10 +453,10 @@
                                             Clicked="GotoTurnCancelButton_Clicked" />
                             </Grid>
                         </StackLayout>
-                    </Frame>
+                    </Border>
                 </Grid>
             </Grid>
-            <Frame x:Name="FadeFrameAtStart" IsVisible="False" InputTransparent="True" BackgroundColor="Black" BorderColor="Black" CornerRadius="0" HorizontalOptions="Fill" VerticalOptions="Fill" />
+            <Border x:Name="FadeFrameAtStart" IsVisible="False" InputTransparent="True" BackgroundColor="Black" Stroke="Black" StrokeThickness="1" StrokeShape="Rectangle" HorizontalOptions="Fill" VerticalOptions="Fill" />
             <Grid x:Name="LoadingGrid" HorizontalOptions="Fill" VerticalOptions="Fill" >
                 <gnh:GHCachedImage Source="resource://GnollHackM.Assets.dgn_entrance.jpg" HorizontalOptions="Fill" VerticalOptions="Fill" 
                                 Aspect="AspectFill" CacheImage="False" />

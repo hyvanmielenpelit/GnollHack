@@ -56,7 +56,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             else
             {
-                await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
+                await GHApp.Navigation.PushModalAsync(displFilePage);
             }
             AboutGrid.IsEnabled = true;
         }
@@ -74,7 +74,7 @@ namespace GnollHackX.Pages.MainScreen
         //    }
         //    else
         //    {
-        //        await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
+        //        await GHApp.Navigation.PushModalAsync(displFilePage);
         //    }
         //    AboutGrid.IsEnabled = true;
         //}
@@ -92,7 +92,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             else
             {
-                await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
+                await GHApp.Navigation.PushModalAsync(displFilePage);
             }
             AboutGrid.IsEnabled = true;
         }
@@ -141,7 +141,7 @@ namespace GnollHackX.Pages.MainScreen
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             GHApp.CurrentMainPage?.InvalidateCarousel();
-            await App.Current.MainPage.Navigation.PopModalAsync();
+            await GHApp.Navigation.PopModalAsync();
         }
 
         private bool _backPressed = false;
@@ -152,7 +152,7 @@ namespace GnollHackX.Pages.MainScreen
                 _backPressed = true;
                 AboutGrid.IsEnabled = false;
                 GHApp.CurrentMainPage?.InvalidateCarousel();
-                await App.Current.MainPage.Navigation.PopModalAsync();
+                await GHApp.Navigation.PopModalAsync();
             }
             return false;
         }
@@ -196,7 +196,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             else
             {
-                await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
+                await GHApp.Navigation.PushModalAsync(displFilePage);
             }
             AboutGrid.IsEnabled = true;
         }
@@ -219,7 +219,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             else
             {
-                await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
+                await GHApp.Navigation.PushModalAsync(displFilePage);
             }
             AboutGrid.IsEnabled = true;
         }
@@ -244,7 +244,7 @@ namespace GnollHackX.Pages.MainScreen
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             var verPage = new VersionPage(null);
-            await App.Current.MainPage.Navigation.PushModalAsync(verPage);
+            await GHApp.Navigation.PushModalAsync(verPage);
             AboutGrid.IsEnabled = true;
 
         }
@@ -255,7 +255,7 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
 
             ReplayPage selectFilePage = new ReplayPage(_mainPage);
-            await App.Current.MainPage.Navigation.PushModalAsync(selectFilePage);
+            await GHApp.Navigation.PushModalAsync(selectFilePage);
 
             AboutGrid.IsEnabled = true;
         }
@@ -266,7 +266,7 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
 
             ImportExportPage manageFilesPage = new ImportExportPage();
-            await App.Current.MainPage.Navigation.PushModalAsync(manageFilesPage);
+            await GHApp.Navigation.PushModalAsync(manageFilesPage);
 
             AboutGrid.IsEnabled = true;
         }

@@ -61,7 +61,7 @@ namespace GnollHackX.Pages.Game
             {
                 _tapHide = true;
                 OutRipGrid.IsEnabled = false;
-                await App.Current.MainPage.Navigation.PopModalAsync();
+                await GHApp.Navigation.PopModalAsync();
                 _gamePage.GenericButton_Clicked(sender, e, GHConstants.CancelChar);
             }
         }
