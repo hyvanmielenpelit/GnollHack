@@ -1652,7 +1652,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private int _menuUpdateGCCounter = 0;
+        //private int _menuUpdateGCCounter = 0;
         public void UpdateMenuCanvas()
         {
             bool refresh = false;
