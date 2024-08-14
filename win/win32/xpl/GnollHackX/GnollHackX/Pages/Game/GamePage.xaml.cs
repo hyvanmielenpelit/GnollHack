@@ -3368,6 +3368,7 @@ namespace GnollHackX.Pages.Game
         private void GetLine(string query, string placeholder, string linesuffix, string introline, int style, int attr, int color)
         {
 #if GNH_MAUI
+            GetLineFrame.Stroke = SolidColorBrush.Black;
 #else
             GetLineFrame.BorderColor = GHColors.Black;
 #endif
@@ -3545,6 +3546,7 @@ namespace GnollHackX.Pages.Game
             if(_getLineRegex != null && !_getLineRegex.IsMatch(res))
             {
 #if GNH_MAUI
+                GetLineFrame.Stroke = SolidColorBrush.Red;
 #else
                 GetLineFrame.BorderColor = GHColors.Red;
 #endif
@@ -3555,6 +3557,7 @@ namespace GnollHackX.Pages.Game
                 return;
             }
 #if GNH_MAUI
+            GetLineFrame.Stroke = SolidColorBrush.Black;
 #else
             GetLineFrame.BorderColor = GHColors.Black;
 #endif
@@ -18274,6 +18277,7 @@ namespace GnollHackX.Pages.Game
                 GotoTurnEntryText.Text = "";
             GotoTurnEntryText.IsEnabled = true;
 #if GNH_MAUI
+            GotoTurnFrame.Stroke = SolidColorBrush.Black;
 #else
             GotoTurnFrame.BorderColor = GHColors.Black;
 #endif
@@ -18319,6 +18323,7 @@ namespace GnollHackX.Pages.Game
                         else
                         {
 #if GNH_MAUI
+                            GotoTurnFrame.Stroke = SolidColorBrush.Red;
 #else
                             GotoTurnFrame.BorderColor = GHColors.Red;
 #endif
@@ -18344,6 +18349,7 @@ namespace GnollHackX.Pages.Game
                         else
                         {
 #if GNH_MAUI
+                            GotoTurnFrame.Stroke = SolidColorBrush.Red;
 #else
                             GotoTurnFrame.BorderColor = GHColors.Red;
 #endif

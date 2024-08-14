@@ -93,7 +93,7 @@
             </Grid>
             <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
                 <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
-                    <Border x:Name="PopupFrame" BackgroundColor="#99000000" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Border x:Name="PopupFrame" BackgroundColor="#99000000" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout Spacing="6">
                             <Label Text="Actions" x:Name="PopupTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" VerticalTextAlignment="Center" HorizontalOptions="Center"  />
                             <controls:CustomImageButton Text="Upload" x:Name="UploadButton" Clicked="UploadButton_Clicked" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" WidthRequest="180" HeightRequest="50" HorizontalOptions="End" VerticalOptions="Center" />
@@ -109,7 +109,7 @@
             </Grid>
             <Grid x:Name="UploadDownloadGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#66000000" IsVisible="False">
                 <Grid MaximumWidthRequest="600" Margin="5" HorizontalOptions="Center" VerticalOptions="Center">
-                    <Border x:Name="UploadDownloadFrame" BackgroundColor="#99000000" Stroke="Black" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Border x:Name="UploadDownloadFrame" BackgroundColor="#99000000" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout Spacing="6">
                             <Label Text="Uploading..." x:Name="UploadDownloadTitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" VerticalTextAlignment="Center" HorizontalOptions="Center"  />
                             <Label Text="replay.gnhrec.gz" x:Name="UploadDownloadFileLabel" FontFamily="LatoRegular" FontSize="16" TextColor="White" VerticalTextAlignment="Start" HorizontalOptions="Center"  />

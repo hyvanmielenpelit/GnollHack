@@ -1546,6 +1546,7 @@ namespace GnollHackX.Pages.MainScreen
             if (res != "" && !isValid)
             {
 #if GNH_MAUI
+                TextFrame.Stroke = SolidColorBrush.Red;
 #else
                 TextFrame.BorderColor = GHColors.Red;
 #endif
@@ -1594,6 +1595,7 @@ namespace GnollHackX.Pages.MainScreen
             TextEntry.IsEnabled = false;
             TextCaption.Text = "";
 #if GNH_MAUI
+            TextFrame.Stroke = SolidColorBrush.Black;
 #else
             TextFrame.BorderColor = GHColors.Black;
 #endif
@@ -1614,6 +1616,7 @@ namespace GnollHackX.Pages.MainScreen
             TextEntry.IsEnabled = false;
             TextCaption.Text = "";
 #if GNH_MAUI
+            TextFrame.Stroke = SolidColorBrush.Black;
 #else
             TextFrame.BorderColor = GHColors.Black;
 #endif
