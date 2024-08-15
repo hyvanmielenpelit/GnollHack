@@ -236,6 +236,7 @@
 #define is_cloned_wizard(m) (((m)->mon_flags & MON_FLAGS_CLONED_WIZ) != 0L)
 #define is_level_boss(m) (((m)->mon_flags & MON_FLAGS_LEVEL_BOSS) != 0L)
 #define uses_level_boss_hostility(m) (((m)->mon_flags & MON_FLAGS_BOSS_HOSTILITY) != 0L)
+#define has_vorpal_warning_been_given(m) (((m)->mon_flags & MON_FLAGS_VORPAL_WARNING_GIVEN) != 0L)
 
 /* Resistances and properties */
 #define has_innate(ptr, bit) \

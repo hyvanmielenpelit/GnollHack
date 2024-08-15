@@ -1120,7 +1120,7 @@ struct monst* mtmp;
         return;
 
     /* Trigger a boss fight if you can see the monster */
-    if ((windowprocs.wincap2 & WC2_SCREEN_TEXT) && (is_boss_monster(mtmp->data) || is_level_boss(mtmp)) && !mtmp->boss_fight_started 
+    if ((windowprocs.wincap2 & WC2_SCREEN_TEXT) && (is_boss_monster(mtmp->data) || is_level_boss(mtmp)) && !mtmp->boss_fight_started && !Hallucination
         && !DEADMONSTER(mtmp) && !is_peaceful(mtmp) && canspotmon(mtmp) && couldsee(mtmp->mx, mtmp->my) && !(mtmp->mstrategy & STRAT_WAITFORU) && !mtmp->msleeping && !is_cloned_wizard(mtmp))
     {
         mtmp->boss_fight_started = 1;
@@ -1130,6 +1130,16 @@ struct monst* mtmp;
         play_sfx_sound(SFX_BOSS_FIGHT);
         display_screen_text(Monnam(mtmp), (char*)0, (char*)0, SCREEN_TEXT_BOSS_FIGHT, ATR_NONE, NO_COLOR, 1UL);
         cliparound(u.ux, u.uy, 2);
+    }
+
+    if (MON_WEP(mtmp) && MON_WEP(mtmp)->oartifact == ART_VORPAL_BLADE && !has_vorpal_warning_been_given(mtmp) && !Hallucination && !Confusion && !Stunned
+        && !DEADMONSTER(mtmp) && !is_peaceful(mtmp) && canspotmon(mtmp) && couldsee(mtmp->mx, mtmp->my))
+    {
+        mtmp->mon_flags |= MON_FLAGS_VORPAL_WARNING_GIVEN;
+        MON_WEP(mtmp)->dknown = 1;
+        play_sfx_sound(SFX_WARNING);
+        int multicolors[3] = { CLR_MSG_WARNING, NO_COLOR, CLR_MSG_GOD };
+        pline_multi_ex(ATR_NONE, CLR_WHITE, no_multiattrs, multicolors, "%s - %s is wielding %s.", "WARNING", Monnam(mtmp), thecxname(MON_WEP(mtmp)));
     }
 }
 

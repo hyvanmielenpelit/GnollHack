@@ -212,6 +212,7 @@ struct monst {
 #define MON_FLAGS_SPOTTED_IN_RUN_AT_START       0x00000040UL /* Spotted for purposes of determining whether to stop travel, run and similar commands; determined when starting running */
 #define MON_FLAGS_LEVEL_BOSS                    0x00000080UL
 #define MON_FLAGS_BOSS_HOSTILITY                0x00000100UL
+#define MON_FLAGS_VORPAL_WARNING_GIVEN          0x00000200UL
 
     uint64_t mstrategy; /* for monsters with mflag3: current strategy */
 
