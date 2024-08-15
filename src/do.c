@@ -4826,7 +4826,7 @@ struct permonst* ptr;
 
     //int mnum = mon->mnum;
     boolean is_you = (mon == &youmonst);
-    short cham = mon ? mon->cham : NON_PM;
+    short cham = mon && !is_you ? mon->cham : NON_PM;
 
     char buf[BUFSZ];
     char buf2[BUFSZ];
