@@ -15301,8 +15301,6 @@ namespace GnollHackX.Pages.Game
 
                         float printlength = textPaint.MeasureText(printedsubline.Value);
                         endposition = x + printlength;
-                        if (idx < textsplit.Length - 1)
-                            endposition += spacelength;
                         bool pastend = x + printlength > canvaswidth - usedglyphpadding - rightmenupadding;
                         if (pastend && !isfirstprintonrow && !nowrap)
                         {
@@ -15342,7 +15340,10 @@ namespace GnollHackX.Pages.Game
 
                         isfirstprintonrow = false;
                         char_idx += charidx_len;
+                        x += printlength;
                     }
+                    if (idx < textsplit.Length - 1)
+                        endposition += spacelength;
                 }
 
                 x = endposition;
