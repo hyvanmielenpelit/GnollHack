@@ -1139,7 +1139,7 @@ struct monst* mtmp;
         MON_WEP(mtmp)->dknown = 1;
         play_sfx_sound(SFX_WARNING);
         int multicolors[3] = { CLR_MSG_WARNING, NO_COLOR, CLR_MSG_GOD };
-        pline_multi_ex(ATR_NONE, CLR_WHITE, no_multiattrs, multicolors, "%s - %s is wielding %s.", "WARNING", Monnam(mtmp), thecxname(MON_WEP(mtmp)));
+        pline_multi_ex(ATR_NONE, CLR_MSG_HIGHLIGHT, no_multiattrs, multicolors, "%s - %s is wielding %s.", "WARNING", Monnam(mtmp), thecxname(MON_WEP(mtmp)));
     }
 }
 
