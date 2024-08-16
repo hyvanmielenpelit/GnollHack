@@ -728,7 +728,7 @@
 	  <MtouchLink>None</MtouchLink>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-ios'">
-	  <MtouchLink>None</MtouchLink>
+	  <MtouchLink>SdkOnly</MtouchLink>
   </PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-android'">
 	  <PublishTrimmed>False</PublishTrimmed>
