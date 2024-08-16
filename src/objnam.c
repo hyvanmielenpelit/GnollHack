@@ -6180,12 +6180,13 @@ boolean use_symbols;
     (void)itemdescription_core(obj, obj->otyp, &obj_stats);
 
     struct obj* launcher = uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : 0;
-    struct obj* cwep = is_ammo(obj) ? (uquiver && launcher && ammo_and_launcher(uquiver, launcher) && ammo_and_launcher(obj, launcher) ? uquiver : 0) :
+    struct obj* cwep = is_boots(obj) && is_weapon(obj) ? uarmf : is_gloves(obj) && is_weapon(obj) ? uarmg :
+        is_ammo(obj) ? (uquiver && launcher && ammo_and_launcher(uquiver, launcher) && ammo_and_launcher(obj, launcher) ? uquiver : 0) :
         is_thrown_weapon_only(obj) ? (uquiver && is_thrown_weapon_only(uquiver) ? uquiver : 0) :
         (is_wieldable_weapon(obj) && uwep && is_launcher(obj) == is_launcher(uwep)) ? uwep :
         (is_wieldable_weapon(obj) && uswapwep && is_launcher(obj) == is_launcher(uswapwep)) ? uswapwep : 0;
 
-    struct obj* cwep2 = u.twoweap && uwep2 && is_wieldable_weapon(uwep2) ? uwep2 : 0;
+    struct obj* cwep2 = u.twoweap && uwep2 && is_wieldable_weapon(uwep2) && is_wieldable_weapon(obj) && !is_boots(obj) && !is_gloves(obj) && !is_ammo(obj) && !is_thrown_weapon_only(obj) ? uwep2 : 0;
 
     int dmgpos = -1;
     int dmg2pos = -1;
@@ -6222,7 +6223,7 @@ boolean use_symbols;
         else
             skip_weapon_print1 = TRUE;
 
-        if (cwep2 && cwep2 != obj && uwep != obj && uwep2 != obj && uswapwep != obj && !bimanual(obj) && !is_ammo(obj) && !is_launcher(obj) && !is_thrown_weapon_only(obj))
+        if (cwep2 && cwep2 != obj && uwep != obj && uwep2 != obj && uswapwep != obj && !bimanual(obj) && !is_ammo(obj) && !is_launcher(obj) && !is_thrown_weapon_only(obj) && !is_boots(obj) && !is_gloves(obj))
         {
             struct item_description_stats cwep2_stats = { 0 };
             (void)itemdescription_core(cwep2, cwep2->otyp, &cwep2_stats);
