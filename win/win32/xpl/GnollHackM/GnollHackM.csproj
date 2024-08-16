@@ -71,7 +71,7 @@
 	<PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
 	  <UseInterpreter>false</UseInterpreter>
     <JavaMaximumHeapSize>2G</JavaMaximumHeapSize>
-    <AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>
+    <!--<AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>-->
     <RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>
     <!--<AndroidEnableProfiler>true</AndroidEnableProfiler>--> 
 	</PropertyGroup>
@@ -734,10 +734,10 @@
 	  <PublishTrimmed>False</PublishTrimmed>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-android'">
-    <!--<PublishTrimmed>True</PublishTrimmed>-->
-    <!--<TrimMode>partial</TrimMode>-->
-    <PublishTrimmed>False</PublishTrimmed>
-    <RunAOTCompilation>False</RunAOTCompilation>
+    <PublishTrimmed>True</PublishTrimmed>
+    <TrimMode>partial</TrimMode>
+    <!--<PublishTrimmed>False</PublishTrimmed>-->
+    <!--<RunAOTCompilation>False</RunAOTCompilation>-->
   </PropertyGroup>
 
 	<ItemGroup>
