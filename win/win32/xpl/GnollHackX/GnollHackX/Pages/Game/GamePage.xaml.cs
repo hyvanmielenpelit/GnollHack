@@ -883,8 +883,20 @@ namespace GnollHackX.Pages.Game
         private bool _enableModernMode = false;
         public bool EnableModernMode { get { lock (_enableModernModeLock) { return _enableModernMode; } } set { lock (_enableModernModeLock) { _enableModernMode = value; } } }
 
-        private List<AddContextMenuData> _contextMenuData = new List<AddContextMenuData>();
+        private readonly object _contextMenuDataLock = new object();
+        private List<ContextMenuButton> _contextMenuData = new List<ContextMenuButton>();
+        private class ContextMenuButton
+        {
+            public string LblText;
+            public string ImgSourcePath;
+            public SKImage Bitmap;
+            public int BtnCommand;
+            public SKRect Rect;
+            public ContextMenuButton()
+            {
 
+            }
+        }
 
         public void SetPrimaryCanvasResourceCacheLimit(long cacheLimit)
         {
@@ -1275,7 +1287,7 @@ namespace GnollHackX.Pages.Game
                     lAbilitiesButton.IsEnabled = false;
                     lRowWornItemsButton.IsEnabled = false;
                     lRowAbilitiesButton.IsEnabled = false;
-                    ContextLayout.IsEnabled = false;
+                    //ContextLayout.IsEnabled = false;
 
                     GameMenuButton.IsEnabled = false;
                     ESCButton.IsEnabled = false;
@@ -2187,9 +2199,12 @@ namespace GnollHackX.Pages.Game
 
         public void ClearContextMenu()
         {
-            ContextLayout.Children.Clear();
-            _contextMenuData.Clear();
-            ContextLayout.IsVisible = false;
+            //ContextLayout.Children.Clear();
+            //ContextLayout.IsVisible = false;
+            lock (_contextMenuDataLock)
+            {
+                _contextMenuData.Clear();
+            }
         }
         public void AddContextMenu(AddContextMenuData data)
         {
@@ -2213,8 +2228,6 @@ namespace GnollHackX.Pages.Game
             //    return; /* Do not add */
             //if (cmddefchar == PrevWepCmd && !ShowPrevWepContextCommand)
             //    return; /* Do not add */
-
-            _contextMenuData.Add(data);
 
             switch ((char)cmddefchar)
             {
@@ -2371,16 +2384,26 @@ namespace GnollHackX.Pages.Game
                     break;
             }
 
-            LabeledImageButton lib = new LabeledImageButton();
-            lib.ImgSourcePath = "resource://" + icon_string;
-            lib.LargerFont = false;
-            lib.LblText = data.cmd_text;
-            lib.SetSideSize(_currentPageWidth, _currentPageHeight, DesktopButtons, UseSimpleCmdLayout);
-            lib.GridMargin = new Thickness(lib.ImgWidth / 15, lib.ImgWidth / 30);
-            lib.BtnCommand = cmdcurchar;
-            lib.BtnClicked += GHButton_Clicked;
-            ContextLayout.IsVisible = true;
-            ContextLayout.Children.Add(lib);
+            //LabeledImageButton lib = new LabeledImageButton();
+            //lib.ImgSourcePath = "resource://" + icon_string;
+            //lib.LargerFont = false;
+            //lib.LblText = data.cmd_text;
+            //lib.SetSideSize(_currentPageWidth, _currentPageHeight, DesktopButtons, UseSimpleCmdLayout);
+            //lib.GridMargin = new Thickness(lib.ImgWidth / 15, lib.ImgWidth / 30);
+            //lib.BtnCommand = cmdcurchar;
+            //lib.BtnClicked += GHButton_Clicked;
+            //ContextLayout.IsVisible = true;
+            //ContextLayout.Children.Add(lib);
+
+            ContextMenuButton cmb = new ContextMenuButton();
+            cmb.ImgSourcePath = "resource://" + icon_string;
+            cmb.Bitmap = GHApp.GetCachedImageSourceBitmap(cmb.ImgSourcePath, true);
+            cmb.LblText = data.cmd_text;
+            cmb.BtnCommand = cmdcurchar;
+            lock (_contextMenuDataLock)
+            {
+                _contextMenuData.Add(cmb);
+            }
         }
 
         public void DisplayFloatingText(DisplayFloatingTextData data)
@@ -3363,10 +3386,7 @@ namespace GnollHackX.Pages.Game
         {
             lock (_msgHistoryLock)
             {
-                if (msgHistory == null)
-                    _msgHistory.Clear();
-                else
-                    _msgHistory = msgHistory;
+                _msgHistory = msgHistory;
             }
             RefreshMsgHistoryRowCounts = true;
         }
@@ -3374,6 +3394,8 @@ namespace GnollHackX.Pages.Game
         {
             lock (_msgHistoryLock)
             {
+                if (_msgHistory == null)
+                    _msgHistory = new List<GHMsgHistoryItem>(GHConstants.MaxMessageHistoryLength + 1);
                 _msgHistory.Add(msgHistoryItem);
             }
             RefreshMsgHistoryRowCounts = true;
@@ -8117,7 +8139,8 @@ namespace GnollHackX.Pages.Game
                             {
                                 lock (_msgHistoryLock)
                                 {
-                                    if (_msgHistory != null)
+                                    List<GHMsgHistoryItem> msgHistoryPtrCopy = _msgHistory;
+                                    if (msgHistoryPtrCopy != null)
                                     {
                                         int j = ActualDisplayedMessages - 1, idx;
                                         float lineLengthLimit = 0.85f * canvaswidth;
@@ -8125,9 +8148,9 @@ namespace GnollHackX.Pages.Game
 
                                         bool refreshsmallesttop = false;
                                         GHSubstring printedsubline = new GHSubstring("");
-                                        for (idx = _msgHistory.Count - 1; idx >= 0 && j >= 0; idx--)
+                                        for (idx = msgHistoryPtrCopy.Count - 1; idx >= 0 && j >= 0; idx--)
                                         {
-                                            GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
+                                            GHMsgHistoryItem msgHistoryItem = msgHistoryPtrCopy[idx];
                                             //longLine = msgHistoryItem.Text;
                                             SKColor printColor = UIUtils.NHColor2SKColor(
                                                 msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 ? msgHistoryItem.Colors[0] : msgHistoryItem.NHColor < (int)NhColor.CLR_MAX ? msgHistoryItem.NHColor : (int)NhColor.CLR_WHITE, 
@@ -8284,9 +8307,9 @@ namespace GnollHackX.Pages.Game
                                             {
                                                 _messageSmallestTop = canvasheight;
                                                 j = ActualDisplayedMessages - 1;
-                                                for (idx = _msgHistory.Count - 1; idx >= 0 && j >= 0; idx--)
+                                                for (idx = msgHistoryPtrCopy.Count - 1; idx >= 0 && j >= 0; idx--)
                                                 {
-                                                    GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
+                                                    GHMsgHistoryItem msgHistoryItem = msgHistoryPtrCopy[idx];
                                                     if (!msgHistoryItem.MatchFilter)
                                                         continue;
                                                     int lineidx;
@@ -10369,6 +10392,62 @@ namespace GnollHackX.Pages.Game
                             StopProfiling(GHProfilingStyle.Text);
 #endif
                             //textPaint.TextAlign = SKTextAlign.Left;
+                        }
+                    }
+
+                    /* Context Menu */
+                    lock(_contextMenuDataLock)
+                    {
+                        float startBottom = canvasheight - (float)UsedButtonRowStack.Height * canvasheight / Math.Max(1.0f, (float)canvasView.Height) - 30;
+                        float textSize = 9.5f * orbbordersize / 50.0f;
+                        float internalPadding = 10f * orbbordersize / 50.0f;
+                        float startTop = startBottom + internalPadding;
+                        float horizontalPadding = 2f * orbbordersize / 50.0f;
+                        float startLeft = canvaswidth - orbbordersize - horizontalPadding;
+                        float topLimit = (float)(StandardMeasurementCmdLayout.Height + StandardMeasurementCmdLayout.Margin.Top) * inverse_canvas_scale;
+                        bool isFirstCmb = true;
+                        for (int cmbIndex = 0, cmbNumber = _contextMenuData.Count; cmbIndex < cmbNumber; cmbIndex++)
+                        {
+                            ContextMenuButton cmb = _contextMenuData[cmbIndex];
+                            startTop -= (orbbordersize + internalPadding + textSize);
+                            if (startTop < topLimit && !isFirstCmb)
+                            {
+                                startTop = startBottom - orbbordersize - textSize;
+                                startLeft -= (internalPadding + orbbordersize);
+                            }
+                            else
+                            {
+                                isFirstCmb = false;
+                            }
+                            cmb.Rect = new SKRect(startLeft, startTop, startLeft + orbbordersize, startTop + orbbordersize + textSize);
+                            SKRect imgDest = new SKRect(startLeft, startTop, startLeft + orbbordersize, startTop + orbbordersize);
+                            textPaint.Color = SKColors.White;
+                            textPaint.Typeface = GHApp.LatoRegular;
+                            textPaint.TextSize = textSize;
+                            //textPaint.TextAlign = SKTextAlign.Center;
+#if GNH_MAP_PROFILING && DEBUG
+                            StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                            using (SKPaint btnPaint = new SKPaint())
+                            {
+                                if (isPointerHovering && cmb.Rect.Contains(pointerHoverLocation))
+                                {
+                                    btnPaint.ColorFilter = UIUtils.HighlightColorFilter;
+                                }
+                                canvas.DrawImage(cmb.Bitmap, imgDest, btnPaint);
+                            }
+#if GNH_MAP_PROFILING && DEBUG
+                            StopProfiling(GHProfilingStyle.Bitmap);
+#endif
+                            float text_x = (imgDest.Left + imgDest.Right) / 2;
+                            float text_y = imgDest.Bottom - textPaint.FontMetrics.Ascent;
+#if GNH_MAP_PROFILING && DEBUG
+                            StartProfiling(GHProfilingStyle.Text);
+#endif
+                            textPaint.DrawTextOnCanvas(canvas, cmb.LblText, text_x, text_y, SKTextAlign.Center);
+#if GNH_MAP_PROFILING && DEBUG
+                            StopProfiling(GHProfilingStyle.Text);
+#endif
                         }
                     }
                     
@@ -13005,6 +13084,7 @@ namespace GnollHackX.Pages.Game
         private bool _touchWithinStatusBar = false;
         private uint _touchWithinPet = 0;
         private bool _touchWithinYouButton = false;
+        private int _touchWithinContextButton = 0;
         private object _savedSender = null;
         private SKTouchEventArgs _savedEventArgs = null;
 
@@ -13043,6 +13123,7 @@ namespace GnollHackX.Pages.Game
                         _touchWithinStatusBar = false;
                         _touchWithinPet = 0;
                         _touchWithinYouButton = false;
+                        _touchWithinContextButton = 0;
 
                         if (TouchDictionary.ContainsKey(e.Id))
                             TouchDictionary[e.Id] = new TouchEntry(e.Location, DateTime.Now);
@@ -13054,6 +13135,7 @@ namespace GnollHackX.Pages.Game
                         else if (!ForceAllMessages && !ShowExtendedStatusBar)
                         {
                             uint m_id = 0;
+                            int cmd = 0;
                             if (SkillRect.Contains(e.Location))
                             {
                                 _touchWithinSkillButton = true;
@@ -13073,6 +13155,10 @@ namespace GnollHackX.Pages.Game
                             else if (StatusBarRect.Contains(e.Location))
                             {
                                 _touchWithinStatusBar = true;
+                            }
+                            else if ((cmd = PointWithinContextMenuButton(e.Location)) != 0)
+                            {
+                                _touchWithinContextButton = cmd;
                             }
                             else if (!ShowDirections && !ShowNumberPad && ShowPets && (m_id = PetRectContains(e.Location)) != 0)
                             {
@@ -13129,7 +13215,7 @@ namespace GnollHackX.Pages.Game
 
                                 if (TouchDictionary.Count == 1)
                                 {
-                                    if (_touchWithinSkillButton || _touchWithinPrevWepButton || _touchWithinHealthOrb || _touchWithinManaOrb || _touchWithinStatusBar || (_touchWithinPet > 0 && !ShowDirections && !ShowNumberPad) || _touchWithinYouButton)
+                                    if (_touchWithinSkillButton || _touchWithinPrevWepButton || _touchWithinHealthOrb || _touchWithinManaOrb || _touchWithinStatusBar || (_touchWithinPet > 0 && !ShowDirections && !ShowNumberPad) || _touchWithinYouButton || _touchWithinContextButton != 0)
                                     {
                                         /* Do nothing */
                                     }
@@ -13317,6 +13403,7 @@ namespace GnollHackX.Pages.Game
                                     _touchWithinStatusBar = false;
                                     _touchWithinPet = 0;
                                     _touchWithinYouButton = false;
+                                    _touchWithinContextButton = 0;
 
                                     SKPoint prevloc = TouchDictionary[e.Id].Location;
                                     SKPoint curloc = e.Location;
@@ -13418,6 +13505,10 @@ namespace GnollHackX.Pages.Game
                             else if (_touchWithinPrevWepButton && !PlayingReplay)
                             {
                                 GenericButton_Clicked(sender, e, GHUtils.Meta('P'));
+                            }
+                            else if (_touchWithinContextButton != 0 && !PlayingReplay)
+                            {
+                                GenericButton_Clicked(sender, e, _touchWithinContextButton);
                             }
                             else if (_touchWithinHealthOrb)
                             {
@@ -13527,6 +13618,21 @@ namespace GnollHackX.Pages.Game
                         break;
                 }
             }
+        }
+
+        private int PointWithinContextMenuButton(SKPoint point)
+        {
+            lock (_contextMenuDataLock)
+            {
+                for (int i = 0, n = _contextMenuData.Count; i < n; i++)
+                {
+                    ContextMenuButton cmb = _contextMenuData[i];
+                    if (cmb.Rect.Contains(point))
+                        return cmb.BtnCommand;
+                }
+            }
+            return 0;
+
         }
 
         private void AdjustZoomByRatio(float ratio, SKPoint curloc, SKPoint prevloc, SKPoint otherloc)
@@ -18126,14 +18232,15 @@ namespace GnollHackX.Pages.Game
         {
             lock (_msgHistoryLock)
             {
-                if (_msgHistory != null)
+                List<GHMsgHistoryItem> msgHistoryPtrCopy = _msgHistory;
+                if (msgHistoryPtrCopy != null)
                 {
-                    int cnt = _msgHistory.Count;
+                    int cnt = msgHistoryPtrCopy.Count;
                     if (_longerMessageHistory)
                     {
                         for (int i = 0; i < cnt; i++)
                         {
-                            GHMsgHistoryItem msg = _msgHistory[i];
+                            GHMsgHistoryItem msg = msgHistoryPtrCopy[i];
                             if (msg != null)
                                 msg.Filter = MessageFilterEntry.Text;
                         }
@@ -18142,7 +18249,7 @@ namespace GnollHackX.Pages.Game
                     {
                         for (int i = 0; i < cnt; i++)
                         {
-                            GHMsgHistoryItem msg = _msgHistory[i];
+                            GHMsgHistoryItem msg = msgHistoryPtrCopy[i];
                             if (msg != null)
                                 msg.Filter = null;
                         }
@@ -18899,4 +19006,5 @@ namespace GnollHackX.Pages.Game
         }
 #endif
     }
+
 }
