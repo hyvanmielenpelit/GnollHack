@@ -11610,6 +11610,7 @@ namespace GnollHackX.Pages.Game
 
                     foreach (ObjectDataItem contained_obj in otmp_round.ContainedObjs)
                     {
+                        ObjectDataItem contained_obj = otmp_round.ContainedObjs[cnt];
                         int src_x = 0, src_y = 0;
                         float dest_x = 0, dest_y = 0;
                         if (contained_obj.ObjData.oclass == (int)obj_class_types.SPBOOK_CLASS)
@@ -11684,6 +11685,7 @@ namespace GnollHackX.Pages.Game
 
                     foreach (ObjectDataItem contained_obj in otmp_round.ContainedObjs)
                     {
+                        ObjectDataItem contained_obj = otmp_round.ContainedObjs[cnt];
                         int source_glyph = Math.Abs(contained_obj.ObjData.gui_glyph);
                         if (source_glyph <= 0 || source_glyph == GHApp.NoGlyph)
                             continue;
