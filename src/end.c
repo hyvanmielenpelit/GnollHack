@@ -352,7 +352,7 @@ done2()
     char paranoidbuf[BUFSZ] = "";
     Sprintf(paranoidbuf, "%s%s%s", 
         !has_existing_save_file && (wizard || discover || CasualMode) ? "There is no saved game. " : "",
-        !wizard && !has_existing_save_file ? "This will end the game and delete your character! " : "", 
+        !wizard && !has_existing_save_file ? "This will delete your character! " : "", 
         has_existing_save_file ? "Your progress will not be saved in the existing save file. Really quit?" : "Are you sure to quit?");
     if (!paranoid_query_ex(ATR_NONE, CLR_MSG_NEGATIVE, ParanoidQuit, "Confirm Quit", paranoidbuf)) {
 #ifndef NO_SIGNAL
