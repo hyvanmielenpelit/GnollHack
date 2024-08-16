@@ -89,5 +89,10 @@ namespace GnollHackX.Pages.Game
             if (!_playingReplay && !_tapHide)
                 _gamePage.GenericButton_Clicked(sender, e, GHConstants.CancelChar);
         }
+
+        protected override bool OnBackButtonPressed()
+        {
+            return true;
+        }
     }
 }

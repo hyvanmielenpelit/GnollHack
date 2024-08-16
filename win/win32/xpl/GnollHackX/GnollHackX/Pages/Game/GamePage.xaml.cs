@@ -907,6 +907,11 @@ namespace GnollHackX.Pages.Game
             return canvasView.ResourceCacheUsage;
         }
 
+        protected override bool OnBackButtonPressed()
+        {
+            return true;  
+        }
+
         public GamePage(MainPage mainPage)
         {
             InitializeComponent();
@@ -1015,7 +1020,6 @@ namespace GnollHackX.Pages.Game
 
             /* Do this last just in case */
             DesktopButtons = Preferences.Get("DesktopButtons", GHApp.IsDesktop);
-
 #if WINDOWS
             Loaded += (s, e) => 
             {
