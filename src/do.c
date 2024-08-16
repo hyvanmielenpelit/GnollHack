@@ -814,7 +814,6 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
     boolean desc_known = (!obj || obj->dknown);
     boolean has_conferred_powers = FALSE;
     boolean has_extra_damage = FALSE;
-    boolean has_slaying = FALSE;
     double wep_avg_dmg = 0;
     double wep_multipliable_avg_dmg = 0; //Multiplied by slaying
     double wep_all_extra_avg_dmg = 0;
@@ -3471,7 +3470,6 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                         Strcpy(mbuf, mythic_prefix_powers[i].description);
                         if (mythic_prefix_powers[i].power_type == MYTHIC_POWER_TYPE_SLAYING)
                         {
-                            has_slaying = TRUE;
                             if (index(mythic_prefix_powers[i].description, '%'))
                             {
                                 double mdmgmult = mythic_prefix_powers[i].parameter2 * (is_ammo(obj) || is_missile(obj) ? 2.0 : 1.0);
@@ -3480,8 +3478,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                             }
                         }
 
-                        Sprintf(buf, " %2d - %s", powercnt, mbuf);
-                        
+                        Sprintf(buf, " %2d - %s", powercnt, mbuf);                        
                         putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
                     }
                     if (!mythic_prefix_powers[i].description)
@@ -3499,7 +3496,6 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                         Strcpy(mbuf, mythic_suffix_powers[i].description);
                         if (mythic_suffix_powers[i].power_type == MYTHIC_POWER_TYPE_SLAYING)
                         {
-                            has_slaying = TRUE;
                             if (index(mythic_suffix_powers[i].description, '%'))
                             {
                                 double mdmgmult = mythic_suffix_powers[i].parameter2 * (is_ammo(obj) || is_missile(obj) ? 2.0 : 1.0);
@@ -3508,11 +3504,8 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                             }
                         }
 
-                        Sprintf(buf, " %2d - %s", powercnt, mbuf);
-                        
+                        Sprintf(buf, " %2d - %s", powercnt, mbuf);                        
                         putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-                        if (mythic_suffix_powers[i].power_type == MYTHIC_POWER_TYPE_SLAYING)
-                            has_slaying = TRUE;
                     }
                     if (!mythic_suffix_powers[i].description)
                         break;
