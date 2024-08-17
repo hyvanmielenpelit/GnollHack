@@ -83,7 +83,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-		<_MauiForceXamlCForDebug>true</_MauiForceXamlCForDebug>
+		<!--<_MauiForceXamlCForDebug>true</_MauiForceXamlCForDebug>-->
 		<DebugType>full</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
@@ -726,7 +726,8 @@
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-ios'">
 	  <MtouchLink>None</MtouchLink>
-	</PropertyGroup>
+    <_MauiForceXamlCForDebug>true</_MauiForceXamlCForDebug>
+  </PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-ios'">
 	  <MtouchLink>SdkOnly</MtouchLink>
   </PropertyGroup>
