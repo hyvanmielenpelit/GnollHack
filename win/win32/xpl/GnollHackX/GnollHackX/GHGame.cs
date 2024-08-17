@@ -863,18 +863,18 @@ namespace GnollHackX
                 if(relevantlist.Count == 0)
                     queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory)); /* Clear history */
                 else
-                    queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, relevantlist));
+                    queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistory, relevantlist.ToArray()));
             }
         }
 
-        public void UpdateMessageHistoryItem(GHMsgHistoryItem msgHistoryItem)
-        {
-            ConcurrentQueue<GHRequest> queue;
-            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
-            {
-                queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistoryItem, msgHistoryItem));
-            }
-        }
+        //public void UpdateMessageHistoryItem(GHMsgHistoryItem msgHistoryItem)
+        //{
+        //    ConcurrentQueue<GHRequest> queue;
+        //    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+        //    {
+        //        queue.Enqueue(new GHRequest(this, GHRequestType.PrintHistoryItem, msgHistoryItem));
+        //    }
+        //}
 
         public void AddNewMessage(GHMsgHistoryItem newmsg, bool updateMessageHistory, bool isFullRefresh)
         {
@@ -907,14 +907,15 @@ namespace GnollHackX
 
             if(updateMessageHistory)
             {
-                if(isFullRefresh)
-                {
-                    UpdateMessageHistory();
-                }
-                else
-                {
-                    UpdateMessageHistoryItem(newmsg);
-                }
+                UpdateMessageHistory();
+                //if (isFullRefresh)
+                //{
+                //    UpdateMessageHistory();
+                //}
+                //else
+                //{
+                //    UpdateMessageHistoryItem(newmsg);
+                //}
                 SwitchOffLongerMessageHistory(); /* Just to make sure that it does not remain on the slow down the game */
             }
         }
@@ -935,13 +936,13 @@ namespace GnollHackX
         public void RawPrintEx(string str, int attr, int color, bool is_restoring)
         {
             GHMsgHistoryItem newmsg = new GHMsgHistoryItem(str, attr, color);
-            AddNewMessage(newmsg, !is_restoring, false);
+            AddNewMessage(newmsg, true, false);
         }
 
         public void RawPrintEx2(string str, byte[] attrs, byte[] colors, int attr, int color, bool is_restoring)
         {
             GHMsgHistoryItem newmsg = new GHMsgHistoryItem(str, attrs, colors, attr, color);
-            AddNewMessage(newmsg, !is_restoring, false);
+            AddNewMessage(newmsg, true, false);
 
             //if (_message_history.Count > 0)
             //    _message_history[_message_history.Count - 1].IsLast = false;

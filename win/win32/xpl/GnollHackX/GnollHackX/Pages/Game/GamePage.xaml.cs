@@ -2720,7 +2720,7 @@ namespace GnollHackX.Pages.Game
                                 PrintHistory(req.MessageHistory);
                                 break;
                             case GHRequestType.PrintHistoryItem:
-                                PrintHistoryItem(req.MessageHistoryItem);
+                                //PrintHistoryItem(req.MessageHistoryItem);
                                 break;
                             case GHRequestType.PrintTopLine:
                                 PrintTopLine(req.RequestString, req.RequestStringAttributes);
@@ -3381,25 +3381,26 @@ namespace GnollHackX.Pages.Game
             TipView.InvalidateSurface();
         }
         private readonly object _msgHistoryLock = new object();
-        private List<GHMsgHistoryItem> _msgHistory = new List<GHMsgHistoryItem>(GHConstants.MaxMessageHistoryLength + 1);
-        private void PrintHistory(List<GHMsgHistoryItem> msgHistory)
+        private GHMsgHistoryItem[] _msgHistory = null;
+        private void PrintHistory(GHMsgHistoryItem[] msgHistory)
         {
-            lock (_msgHistoryLock)
+            lock(_msgHistoryLock)
             {
                 _msgHistory = msgHistory;
             }
             RefreshMsgHistoryRowCounts = true;
         }
-        private void PrintHistoryItem(GHMsgHistoryItem msgHistoryItem)
-        {
-            lock (_msgHistoryLock)
-            {
-                if (_msgHistory == null)
-                    _msgHistory = new List<GHMsgHistoryItem>(GHConstants.MaxMessageHistoryLength + 1);
-                _msgHistory.Add(msgHistoryItem);
-            }
-            RefreshMsgHistoryRowCounts = true;
-        }
+
+        //private void PrintHistoryItem(GHMsgHistoryItem msgHistoryItem)
+        //{
+        //    lock (_msgHistoryLock)
+        //    {
+        //        if (_msgHistory == null)
+        //            _msgHistory = new List<GHMsgHistoryItem>(GHConstants.MaxMessageHistoryLength + 1);
+        //        _msgHistory.Add(msgHistoryItem);
+        //    }
+        //    RefreshMsgHistoryRowCounts = true;
+        //}
 
         private async void AskName(string modeName, string modeDescription, string replayEnteredPlayerName)
         {
@@ -8139,8 +8140,7 @@ namespace GnollHackX.Pages.Game
                             {
                                 lock (_msgHistoryLock)
                                 {
-                                    List<GHMsgHistoryItem> msgHistoryPtrCopy = _msgHistory;
-                                    if (msgHistoryPtrCopy != null)
+                                    if (_msgHistory != null)
                                     {
                                         int j = ActualDisplayedMessages - 1, idx;
                                         float lineLengthLimit = 0.85f * canvaswidth;
@@ -8148,9 +8148,9 @@ namespace GnollHackX.Pages.Game
 
                                         bool refreshsmallesttop = false;
                                         GHSubstring printedsubline = new GHSubstring("");
-                                        for (idx = msgHistoryPtrCopy.Count - 1; idx >= 0 && j >= 0; idx--)
+                                        for (idx = _msgHistory.Length - 1; idx >= 0 && j >= 0; idx--)
                                         {
-                                            GHMsgHistoryItem msgHistoryItem = msgHistoryPtrCopy[idx];
+                                            GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
                                             //longLine = msgHistoryItem.Text;
                                             SKColor printColor = UIUtils.NHColor2SKColor(
                                                 msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 ? msgHistoryItem.Colors[0] : msgHistoryItem.NHColor < (int)NhColor.CLR_MAX ? msgHistoryItem.NHColor : (int)NhColor.CLR_WHITE, 
@@ -8307,9 +8307,9 @@ namespace GnollHackX.Pages.Game
                                             {
                                                 _messageSmallestTop = canvasheight;
                                                 j = ActualDisplayedMessages - 1;
-                                                for (idx = msgHistoryPtrCopy.Count - 1; idx >= 0 && j >= 0; idx--)
+                                                for (idx = _msgHistory.Length - 1; idx >= 0 && j >= 0; idx--)
                                                 {
-                                                    GHMsgHistoryItem msgHistoryItem = msgHistoryPtrCopy[idx];
+                                                    GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
                                                     if (!msgHistoryItem.MatchFilter)
                                                         continue;
                                                     int lineidx;
@@ -18232,15 +18232,14 @@ namespace GnollHackX.Pages.Game
         {
             lock (_msgHistoryLock)
             {
-                List<GHMsgHistoryItem> msgHistoryPtrCopy = _msgHistory;
-                if (msgHistoryPtrCopy != null)
+                if (_msgHistory != null)
                 {
-                    int cnt = msgHistoryPtrCopy.Count;
+                    int cnt = _msgHistory.Length;
                     if (_longerMessageHistory)
                     {
                         for (int i = 0; i < cnt; i++)
                         {
-                            GHMsgHistoryItem msg = msgHistoryPtrCopy[i];
+                            GHMsgHistoryItem msg = _msgHistory[i];
                             if (msg != null)
                                 msg.Filter = MessageFilterEntry.Text;
                         }
@@ -18249,7 +18248,7 @@ namespace GnollHackX.Pages.Game
                     {
                         for (int i = 0; i < cnt; i++)
                         {
-                            GHMsgHistoryItem msg = msgHistoryPtrCopy[i];
+                            GHMsgHistoryItem msg = _msgHistory[i];
                             if (msg != null)
                                 msg.Filter = null;
                         }
