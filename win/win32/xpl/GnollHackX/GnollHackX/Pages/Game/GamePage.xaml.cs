@@ -10407,9 +10407,8 @@ namespace GnollHackX.Pages.Game
                         float startLeft = canvaswidth - orbbordersize - horizontalPadding;
                         float topLimit = (float)(StandardMeasurementCmdLayout.Height + StandardMeasurementCmdLayout.Margin.Top) * inverse_canvas_scale;
                         bool isFirstCmb = true;
-                        for (int cmbIndex = 0, cmbNumber = _contextMenuData.Count; cmbIndex < cmbNumber; cmbIndex++)
+                        foreach (ContextMenuButton cmb in _contextMenuData) /* foreach, since _contextMenuData may in theory be cleared concurrently in the same thread */
                         {
-                            ContextMenuButton cmb = _contextMenuData[cmbIndex];
                             startTop -= (orbbordersize + internalPadding + textSize);
                             if (startTop < topLimit && !isFirstCmb)
                             {
