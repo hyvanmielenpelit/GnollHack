@@ -341,6 +341,7 @@ int use_type; // OBSOLETE: /* 0 = Melee weapon (full enchantment bonuses), 1 = t
     int tmp = 0;
     boolean Is_weapon = is_weapon(otmp);
     boolean Is_worn_gauntlets = is_gloves(otmp) && (otmp->owornmask & W_ARMG);
+    boolean Is_worn_boots = is_boots(otmp) && (otmp->owornmask & W_ARMF);
 
     int applicable_enchantment = otmp->enchantment;
     if (obj_has_dual_runesword_bonus(otmp))
@@ -354,7 +355,7 @@ int use_type; // OBSOLETE: /* 0 = Melee weapon (full enchantment bonuses), 1 = t
 
     if(mattacker && cursed_items_are_positive_mon(mattacker) && otmp->cursed)
     { 
-        if (Is_weapon || Is_worn_gauntlets)
+        if (Is_weapon || Is_worn_gauntlets || Is_worn_boots)
         {
             tmp += abs(applicable_enchantment);
             if (has_obj_mythic_great_accuracy(otmp))
@@ -363,7 +364,7 @@ int use_type; // OBSOLETE: /* 0 = Melee weapon (full enchantment bonuses), 1 = t
     }
     else
     {
-        if (Is_weapon || Is_worn_gauntlets)
+        if (Is_weapon || Is_worn_gauntlets || Is_worn_boots)
         { 
             tmp += applicable_enchantment;
             if (has_obj_mythic_great_accuracy(otmp))
@@ -462,12 +463,13 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
     struct permonst *ptr = mon->data;
     boolean Is_weapon = is_weapon(otmp);
     boolean Is_worn_gauntlets = is_gloves(otmp) && (otmp->owornmask & W_ARMG);
+    boolean Is_worn_boots = is_boots(otmp) && (otmp->owornmask & W_ARMF);
     boolean youdefend = (mon == &youmonst);
 
     if (otyp == CREAM_PIE)
         return 0;
     
-    if(Is_weapon || Is_worn_gauntlets || objects[otyp].oc_class == GEM_CLASS || otmp->oclass == ROCK_CLASS)
+    if(Is_weapon || Is_worn_gauntlets || Is_worn_boots || objects[otyp].oc_class == GEM_CLASS || otmp->oclass == ROCK_CLASS)
     {
         if (
             (objects[otyp].oc_damagetype == AD_FIRE && (youdefend ? Fire_immunity : is_mon_immune_to_fire(mon)))
@@ -579,7 +581,7 @@ int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thr
     }
 
     /* Put weapon vs. monster type damage bonuses in below: */
-    if (Is_weapon || Is_worn_gauntlets || otmp->oclass == GEM_CLASS || otmp->oclass == BALL_CLASS
+    if (Is_weapon || Is_worn_gauntlets || Is_worn_boots || otmp->oclass == GEM_CLASS || otmp->oclass == BALL_CLASS
         || otmp->oclass == CHAIN_CLASS || otmp->oclass == ROCK_CLASS)
     {
         int bonus = 0;
@@ -2602,7 +2604,7 @@ int skill_id;
                 || skill_id == P_DIGGING)
             {
                 int tohitbonus, dmgbonus, criticalhitpct;
-                if (skill_id == P_BARE_HANDED_COMBAT && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED)
+                if (skill_id == P_BARE_HANDED_COMBAT && P_SKILL_LEVEL(P_BARE_HANDED_COMBAT) >= P_GRAND_MASTER && P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_UNSKILLED)
                 {
                     tohitbonus = weapon_skill_hit_bonus((struct obj*)0, P_MARTIAL_ARTS, FALSE, FALSE, FALSE, 0, FALSE, FALSE);
                     dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, P_MARTIAL_ARTS, FALSE, FALSE, FALSE, 0, FALSE, FALSE);
@@ -3676,11 +3678,12 @@ uchar apply_extra_bonuses; /* 1 = normal bonus and extra bonuses, 2 = Just the e
     boolean apply_two_handed_weapon_bonus = apply_extra_bonuses && weapon && bimanual(weapon) && is_weapon(weapon) && !is_launcher(weapon);
     boolean apply_thrown_weapon_bonus = apply_extra_bonuses && being_thrown;
     boolean Is_worn_gauntlets = (weapon && is_gloves(weapon) && (weapon->owornmask & W_ARMG));
+    boolean Is_worn_boots = (weapon && is_boots(weapon) && (weapon->owornmask & W_ARMF));
     int wep_type = weapon_skill_type(weapon);
     int type = apply_extra_bonuses == 2 ? P_NONE : use_this_skill > P_NONE ? use_this_skill : wep_type;
-    boolean apply_martial_arts_bonus = type == P_MARTIAL_ARTS && ((!weapon/* && (!uarmg || (uarmg && !is_metallic(uarmg)))*/) || (Is_worn_gauntlets/* && !is_metallic(weapon)*/));
+    boolean apply_martial_arts_bonus = type == P_MARTIAL_ARTS && ((!weapon/* && (!uarmg || (uarmg && !is_metallic(uarmg)))*/) || (Is_worn_gauntlets/* && !is_metallic(weapon)*/) || Is_worn_boots);
 
-    if (type == P_BARE_HANDED_COMBAT || type == P_MARTIAL_ARTS || Is_worn_gauntlets)
+    if (type == P_BARE_HANDED_COMBAT || type == P_MARTIAL_ARTS || Is_worn_gauntlets || Is_worn_boots)
     {
         enum p_skills type2 = (enum p_skills)type;
         if (type == P_NONE || type == P_MARTIAL_ARTS)
@@ -3895,11 +3898,12 @@ uchar apply_extra_bonuses; /* 1 = normal bonus and extra bonuses, 2 = Just the e
     boolean apply_two_handed_weapon_bonus = apply_extra_bonuses && weapon && bimanual(weapon) && is_weapon(weapon) && !is_launcher(weapon);
     boolean apply_thrown_weapon_bonus = apply_extra_bonuses && being_thrown;
     boolean Is_worn_gauntlets = (weapon && is_gloves(weapon) && (weapon->owornmask & W_ARMG));
+    boolean Is_worn_boots = (weapon && is_boots(weapon) && (weapon->owornmask & W_ARMF));
     int wep_type = weapon_skill_type(weapon);
     int type = apply_extra_bonuses == 2 ? P_NONE : use_this_skill > P_NONE ? use_this_skill : wep_type;
-    boolean apply_martial_arts_bonus = type == P_MARTIAL_ARTS && ((!weapon/* && (!uarmg || (uarmg && !is_metallic(uarmg)))*/) || (Is_worn_gauntlets/* && !is_metallic(weapon)*/));
+    boolean apply_martial_arts_bonus = type == P_MARTIAL_ARTS && ((!weapon/* && (!uarmg || (uarmg && !is_metallic(uarmg)))*/) || (Is_worn_gauntlets/* && !is_metallic(weapon)*/) || Is_worn_boots);
 
-    if (type == P_BARE_HANDED_COMBAT || type == P_MARTIAL_ARTS || Is_worn_gauntlets)
+    if (type == P_BARE_HANDED_COMBAT || type == P_MARTIAL_ARTS || Is_worn_gauntlets || Is_worn_boots)
     {
         int type2 = type;
         if (type == P_NONE || type == P_MARTIAL_ARTS)
