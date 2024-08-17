@@ -814,7 +814,6 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
     boolean desc_known = (!obj || obj->dknown);
     boolean has_conferred_powers = FALSE;
     boolean has_extra_damage = FALSE;
-    boolean has_slaying = FALSE;
     double wep_avg_dmg = 0;
     double wep_multipliable_avg_dmg = 0; //Multiplied by slaying
     double wep_all_extra_avg_dmg = 0;
@@ -2415,7 +2414,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             boolean display_ac = affectsac && !(objects[otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_AC);
             boolean display_mc = affectsmc && !(objects[otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_MC);
 
-            if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
+            if (is_weapon(obj)) // obj->oclass == WEAPON_CLASS || is_weptool(obj)
             {
                 int enchplus = obj->enchantment;
                 int tohitplus = enchplus; // is_launcher(obj) ? (enchplus + 1 * sgn(enchplus)) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 0) / 2 : enchplus;
@@ -3075,6 +3074,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 powercnt++;
                 Sprintf(buf, " %2d - Deals double damage on hit", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+                //wep_all_extra_avg_dmg += wep_multipliable_avg_dmg;
             }
             if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_SVB_MASK) == A1_VORPAL)
             {
@@ -3470,13 +3470,15 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                         Strcpy(mbuf, mythic_prefix_powers[i].description);
                         if (mythic_prefix_powers[i].power_type == MYTHIC_POWER_TYPE_SLAYING)
                         {
-                            has_slaying = TRUE;
                             if (index(mythic_prefix_powers[i].description, '%'))
-                                Sprintf(mbuf, mythic_prefix_powers[i].description, mythic_prefix_powers[i].parameter2 * (is_ammo(obj) || is_missile(obj) ? 2.0 : 1.0));
+                            {
+                                double mdmgmult = mythic_prefix_powers[i].parameter2 * (is_ammo(obj) || is_missile(obj) ? 2.0 : 1.0);
+                                Sprintf(mbuf, mythic_prefix_powers[i].description, mdmgmult);
+                                wep_all_extra_avg_dmg += wep_multipliable_avg_dmg * (mdmgmult - 1);
+                            }
                         }
 
-                        Sprintf(buf, " %2d - %s", powercnt, mbuf);
-                        
+                        Sprintf(buf, " %2d - %s", powercnt, mbuf);                        
                         putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
                     }
                     if (!mythic_prefix_powers[i].description)
@@ -3494,16 +3496,16 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                         Strcpy(mbuf, mythic_suffix_powers[i].description);
                         if (mythic_suffix_powers[i].power_type == MYTHIC_POWER_TYPE_SLAYING)
                         {
-                            has_slaying = TRUE;
                             if (index(mythic_suffix_powers[i].description, '%'))
+                            {
+                                double mdmgmult = mythic_suffix_powers[i].parameter2 * (is_ammo(obj) || is_missile(obj) ? 2.0 : 1.0);
                                 Sprintf(mbuf, mythic_suffix_powers[i].description, mythic_suffix_powers[i].parameter2 * (is_ammo(obj) || is_missile(obj) ? 2.0 : 1.0));
+                                wep_all_extra_avg_dmg += wep_multipliable_avg_dmg * (mdmgmult - 1);
+                            }
                         }
 
-                        Sprintf(buf, " %2d - %s", powercnt, mbuf);
-                        
+                        Sprintf(buf, " %2d - %s", powercnt, mbuf);                        
                         putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
-                        if (mythic_suffix_powers[i].power_type == MYTHIC_POWER_TYPE_SLAYING)
-                            has_slaying = TRUE;
                     }
                     if (!mythic_suffix_powers[i].description)
                         break;
@@ -4480,9 +4482,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
                 wep_avg_dmg *= average_multi_shot_times;
                 wep_multipliable_avg_dmg *= average_multi_shot_times;
-
-                if (has_slaying)
-                    wep_all_extra_avg_dmg += wep_multipliable_avg_dmg * 1;
+                wep_all_extra_avg_dmg *= average_multi_shot_times;
 
                 if (stats_ptr)
                 {
@@ -4598,7 +4598,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         if (!stats_ptr)
         {
             struct obj* launcher = uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : 0;
-            struct obj* cwep = is_ammo(obj) ? (uquiver && launcher && ammo_and_launcher(uquiver, launcher) && ammo_and_launcher(obj, launcher) ? uquiver : 0) :
+            struct obj* cwep = is_boots(obj) && is_weapon(obj) ? uarmf : is_gloves(obj) && is_weapon(obj) ? uarmg : is_ammo(obj) ? (uquiver && launcher && ammo_and_launcher(uquiver, launcher) && ammo_and_launcher(obj, launcher) ? uquiver : 0) :
                 is_thrown_weapon_only(obj) ? (uquiver && is_thrown_weapon_only(uquiver) ? uquiver : 0) :
                 (is_wieldable_weapon(obj) && uwep && is_launcher(obj) == is_launcher(uwep)) ? uwep :
                 (is_wieldable_weapon(obj) && uswapwep && is_launcher(obj) == is_launcher(uswapwep)) ? uswapwep : 0;
@@ -4609,8 +4609,11 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 if (cwep_stats.stats_set && cwep_stats.weapon_stats_printed)
                 {
                     int powercnt = 0;
-                    Sprintf(buf, "Comparison to current %s%s:", u.twoweap ? "right-hand " : "", cwep == uwep ? "weapon" : cwep == uswapwep ? "alternative weapon" :
-                        cwep == uquiver ? (is_ammo(obj) ? "quivered ammo" : "readied thrown weapon") : "readied item");
+                    if(is_boots(obj) || is_gloves(obj))
+                        Sprintf(buf, "Comparison to current %s:", is_boots(obj) ? "weapon boots" : "weapon gloves");
+                    else
+                        Sprintf(buf, "Comparison to current %s%s:", u.twoweap ? "right-hand " : "", cwep == uwep ? "weapon" : cwep == uswapwep ? "alternative weapon" :
+                            cwep == uquiver ? (is_ammo(obj) ? "quivered ammo" : "readied thrown weapon") : "readied item");
                     putstr(datawin, ATR_HEADING, buf);
                     powercnt++;
                     Sprintf(buf, " %2d - Change in average damage is ", powercnt);
@@ -4629,7 +4632,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     }
                 }
             }
-            if (u.twoweap && uwep2 && is_wieldable_weapon(uwep2) && !bimanual(obj) && !is_ammo(obj) && !is_launcher(obj) && !is_thrown_weapon_only(obj) && obj != uwep2 && obj != uwep)
+            if (u.twoweap && uwep2 && is_wieldable_weapon(uwep2) && !bimanual(obj) && !is_ammo(obj) && !is_launcher(obj) && !is_thrown_weapon_only(obj) && !is_boots(obj) && !is_gloves(obj) && obj != uwep2 && obj != uwep)
             {
                 struct obj* cwep2 = uwep2;
                 struct item_description_stats cwep2_stats = { 0 };
@@ -4826,7 +4829,7 @@ struct permonst* ptr;
 
     //int mnum = mon->mnum;
     boolean is_you = (mon == &youmonst);
-    short cham = mon ? mon->cham : NON_PM;
+    short cham = mon && !is_you ? mon->cham : NON_PM;
 
     char buf[BUFSZ];
     char buf2[BUFSZ];
@@ -7556,7 +7559,7 @@ xchar portal; /* 1 = Magic portal, 2 = Modron portal down (find portal up), 3 = 
         {
             u.uevent.polymorph_trap_warning = 1;
             play_sfx_sound(SFX_WARNING);
-            custompline_ex_prefix(ATR_NONE, CLR_MSG_WARNING, "WARNING", ATR_NONE, NO_COLOR, " - ", ATR_NONE, CLR_MSG_WARNING, 0U, "Polymorph traps can be present on dungeon level %d and below.", MINIMUM_DGN_LEVEL_POLY_TRAP);
+            custompline_ex_prefix(ATR_NONE, CLR_MSG_WARNING, "WARNING", ATR_NONE, NO_COLOR, " - ", ATR_NONE, CLR_MSG_HIGHLIGHT, 0U, "Polymorph traps can be present on dungeon level %d and below.", MINIMUM_DGN_LEVEL_POLY_TRAP);
         }
 
         if (!u.uhint.secret_doors_and_corridors && u.uz.dnum == main_dungeon_dnum &&
@@ -8738,7 +8741,7 @@ const char* hint_text;
         //Sprintf(hintbuf, "HINT - %s", hint_text);
         play_sfx_sound(SFX_HINT);
         //pline_ex1(ATR_NONE, CLR_MSG_HINT, hintbuf);
-        custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "HINT", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0, "%s", hint_text);
+        custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "HINT", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "%s", hint_text);
     }
 }
 
@@ -8949,8 +8952,8 @@ check_closed_for_inventory_hint(VOID_ARGS)
         play_sfx_sound(SFX_WARNING);
         char buf[BUFSZ];
         Sprintf(buf, "A \"%s\" sign is adjacent a locked shop door.", Closed_for_inventory);
-        custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "HINT", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0U, "%s", buf);
-        custompline_ex_prefix(ATR_NONE, CLR_MSG_WARNING, "WARNING", ATR_NONE, NO_COLOR, " - ", ATR_NONE, CLR_MSG_WARNING, 0U, "The shopkeeper will get angry if you break the door.");
+        custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "HINT", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0U, "%s", buf);
+        custompline_ex_prefix(ATR_NONE, CLR_MSG_WARNING, "WARNING", ATR_NONE, NO_COLOR, " - ", ATR_NONE, CLR_MSG_HIGHLIGHT, 0U, "The shopkeeper will get angry if you break the door.");
         //standard_hint("A \"Closed for inventory\" sign indicates that the door is a locked shop door.  The shopkeeper will get angry if you break the door.", &u.uhint.closed_for_inventory);
     }
 }

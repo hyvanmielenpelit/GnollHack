@@ -78,6 +78,7 @@ namespace GnollHackX
         SetRightMouseCommand,
         SetMiddleMouseCommand,
         GameEnded,
+        PrintHistoryItem,
     }
 
     public struct AddContextMenuData
@@ -166,6 +167,7 @@ namespace GnollHackX
         public int RequestGlyph { get; set; }
         public ulong RequestFlags { get; set; }
         public GHMsgHistoryItem[] MessageHistory { get; set; } = null;
+        public GHMsgHistoryItem MessageHistoryItem { get; set; } = null;
         public string Responses { get; set; }
         public string ResponseDescriptions { get; set; }
         public List<GHPutStrItem> RequestPutStrItems { get; set; }
@@ -335,6 +337,12 @@ namespace GnollHackX
             RequestingGame = ghGame;
             RequestType = requesttype;
             MessageHistory = msgHistory;
+        }
+        public GHRequest(GHGame ghGame, GHRequestType requesttype, GHMsgHistoryItem msgHistoryItem)
+        {
+            RequestingGame = ghGame;
+            RequestType = requesttype;
+            MessageHistoryItem = msgHistoryItem;
         }
         public GHRequest(GHGame ghGame, GHRequestType requesttype, int style, int attr, int color, int glyph, string titlestring, string requeststring, string responses, string descriptions, string introline, ulong ynflags)
         {

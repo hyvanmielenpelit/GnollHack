@@ -398,8 +398,9 @@ namespace GnollHackX
                     textPaint.StrokeWidth = (float)OutlineWidth * scale;
                 }
                 string[] textRows = SplitTextWithConstraint(Text, widthConstraint, textPaint);
-                foreach (string textRow in textRows)
+                for (int i = 0, n = textRows.Length; i < n; i++)
                 {
+                    string textRow = textRows[i];
                     totalheight += textPaint.FontSpacing;
                     string[] textParts;
                     if (UseSpecialSymbols)
@@ -412,8 +413,9 @@ namespace GnollHackX
                     }
                     int cnt = 0;
                     float totalwidth = 0;
-                    foreach (string textPart in textParts)
+                    for (int j = 0, m = textParts.Length; j < m; j++)
                     {
+                        string textPart = textParts[j];
                         SKImage symbolbitmap;
                         SKRect source_rect = new SKRect();
                         if (UseSpecialSymbols && (symbolbitmap = GHApp.GetSpecialSymbol(textPart, out source_rect)) != null)
@@ -632,8 +634,9 @@ namespace GnollHackX
                             }
 
                             int cnt = 0;
-                            foreach (string textPart in textParts)
+                            for (int j = 0, m = textParts.Length; j < m; j++)
                             {
+                                string textPart = textParts[j];
                                 SKImage symbolbitmap;
                                 SKRect source_rect = new SKRect();
                                 if (UseSpecialSymbols && (symbolbitmap = GHApp.GetSpecialSymbol(textPart, out source_rect)) != null)

@@ -2051,5 +2051,10 @@ namespace GnollHackX.Pages.MainScreen
                 }
             }
         }
+        protected override bool OnBackButtonPressed()
+        {
+            return true;
+        }
+
     }
 }

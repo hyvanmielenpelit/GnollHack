@@ -89,9 +89,10 @@ namespace GnollHackX
         {
             attrlist = new List<int>();
             colorlist = new List<int>();
-            foreach(GHPutStrInstructions instr in instrlist)
+            for(int j = 0, m = instrlist.Count; j < m; j++)
             {
-                for(int i = 0; i < instr.PrintLength; i++)
+                GHPutStrInstructions instr = instrlist[j];
+                for (int i = 0, n = instr.PrintLength; i < n; i++)
                 {
                     attrlist.Add(instr.Attributes);
                     colorlist.Add(instr.Color);

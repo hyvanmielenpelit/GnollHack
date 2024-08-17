@@ -228,7 +228,7 @@ NEARDATA struct artifact artilist[] = {
      */
     A("Vorpal Blade", "runed long sword", "Vorpal Blade", LONG_SWORD, LONG_SWORD, 
         MAT_NONE, EXCEPTIONALITY_ELITE, MYTHIC_PREFIX_NONE, MYTHIC_SUFFIX_NONE,
-        (AF_RESTR | AF_BEHEAD), AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
+        (AF_RESTR | AF_BEHEAD | AF_FAMOUS), AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
         1, 5, 0, PHYSI(0, 0, 1), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NEUTRAL, NON_PM, NON_PM, 4000L,
         NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
     /*

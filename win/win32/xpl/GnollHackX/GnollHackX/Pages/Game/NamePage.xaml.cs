@@ -214,5 +214,10 @@ namespace GnollHackX.Pages.Game
                 btnOK_Clicked(sender, e);
             }
         }
+
+        protected override bool OnBackButtonPressed()
+        {
+            return true;
+        }
     }
 }

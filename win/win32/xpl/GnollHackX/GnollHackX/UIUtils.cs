@@ -1144,8 +1144,9 @@ namespace GnollHackX
             float padding = ssize / 2;
             float width = canvaswidth - 2 * padding;
             float height = canvasheight - 2 * padding;
-            foreach (SKPoint point in sparkleList)
+            for (int i = 0, cnt = sparkleList.Count; i < cnt; i++)
             {
+                SKPoint point = sparkleList[i];
                 DrawSparkle(canvas, paint, padding + point.X * width, padding + point.Y * height,  ssize, generalcounter - (ctr_diff += df), true);
             }
         }

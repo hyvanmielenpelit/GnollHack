@@ -864,13 +864,13 @@ struct obj *obj;
                 delay_output_milliseconds(500);
                 play_sfx_sound(SFX_HINT);
             }
-            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0, "Sacrifice the Amulet of Yendor on the Astral Plane");
+            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "Sacrifice the Amulet of Yendor on the Astral Plane");
             if (iflags.using_gui_sounds)
             {
                 delay_output_milliseconds(500);
                 play_sfx_sound(SFX_HINT);
             }
-            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "HINT", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0, "%s", "Exit the dungeon on level 1 to enter the Elemental Planes");
+            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "HINT", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "%s", "Exit the dungeon on level 1 to enter the Elemental Planes");
         }
         u.uachieve.amulet = 1;
     }
@@ -1047,45 +1047,45 @@ boolean dodelay;
         if (!u.uachieve.bell && !u.uachieve.book && !u.uachieve.menorah)
         {
             play_hint_sound_with_delay(dodelay);
-            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0, "Find the Candelabrum of Invocation, Silver Bell, and the Book of the Dead");
+            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "Find the Candelabrum of Invocation, Silver Bell, and the Book of the Dead");
         }
         else if (!u.uachieve.bell && !u.uachieve.book)
         {
             play_hint_sound_with_delay(dodelay);
-            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0, "Find the Silver Bell and the Book of the Dead");
+            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "Find the Silver Bell and the Book of the Dead");
         }
         else if (!u.uachieve.bell && !u.uachieve.menorah)
         {
             play_hint_sound_with_delay(dodelay);
-            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0, "Find the Candelabrum of Invocation and the Silver Bell");
+            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "Find the Candelabrum of Invocation and the Silver Bell");
         }
         else if (!u.uachieve.book && !u.uachieve.menorah)
         {
             play_hint_sound_with_delay(dodelay);
-            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0, "Find the Candelabrum of Invocation and the Book of the Dead");
+            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "Find the Candelabrum of Invocation and the Book of the Dead");
         }
         else if (!u.uachieve.menorah)
         {
             play_hint_sound_with_delay(dodelay);
-            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0, "Find the Candelabrum of Invocation");
+            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "Find the Candelabrum of Invocation");
         }
         else if (!u.uachieve.book)
         {
             play_hint_sound_with_delay(dodelay);
-            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0, "Find the Book of the Dead");
+            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "Find the Book of the Dead");
         }
         else if (!u.uachieve.bell)
         {
             play_hint_sound_with_delay(dodelay);
-            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0, "Find the Silver Bell");
+            custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "Find the Silver Bell");
         }
         else if (u.uevent.invocation_ritual_known)
         {
             play_hint_sound_with_delay(dodelay);
             if (!u.uevent.uvibrated)
-                custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0, "Locate the Vibrating Square at the bottom of Gehennom");
+                custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "Locate the Vibrating Square at the bottom of Gehennom");
             else
-                custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_WHITE, 0, "Perform the Invocation Ritual at the Vibrating Square");
+                custompline_ex_prefix(ATR_NONE, CLR_MSG_HINT, "QUEST UPDATE", ATR_NONE, NO_COLOR, " - ", ATR_BOLD, CLR_MSG_HIGHLIGHT, 0, "Perform the Invocation Ritual at the Vibrating Square");
         }
     }
 }
