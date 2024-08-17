@@ -273,13 +273,14 @@ int floortyp, floorsubtyp, mtype, tileset;
                     levl[lowx][lowy - 1].decoration_typ = DECORATION_COBWEB_CORNER; // 0 + (DOODAD_COBWEB_CORNER_SMALL_DECORATED + rn2(DOODAD_COBWEB_CORNER_LARGE - DOODAD_COBWEB_CORNER_SMALL_DECORATED + 1)) * NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
                     levl[lowx][lowy - 1].decoration_subtyp = decoration_type_definitions[DECORATION_COBWEB_CORNER].num_subtypes > 1 ? rn2(decoration_type_definitions[DECORATION_COBWEB_CORNER].num_subtypes) : 0;
                     levl[lowx][lowy - 1].decoration_dir = 0;
+                    levl[lowx][lowy - 1].decoration_flags = 0;
                 }
                 if (IS_WALL(levl[hix][lowy - 1].typ) && !rn2(5 + webmod))
                 {
                     levl[hix][lowy - 1].decoration_typ = DECORATION_COBWEB_CORNER; // 1 + (DOODAD_COBWEB_CORNER_SMALL_DECORATED + rn2(DOODAD_COBWEB_CORNER_LARGE - DOODAD_COBWEB_CORNER_SMALL_DECORATED + 1)) * NUM_DOODAD_MIRRORINGS + GLYPH_MIRRORABLE_DOODAD_OFF;
                     levl[hix][lowy - 1].decoration_subtyp = decoration_type_definitions[DECORATION_COBWEB_CORNER].num_subtypes > 1 ? rn2(decoration_type_definitions[DECORATION_COBWEB_CORNER].num_subtypes) : 0;
-                    levl[hix][lowy - 1].decoration_dir = 1;
-                    levl[hix][lowy - 1].decoration_flags = 0;
+                    levl[hix][lowy - 1].decoration_dir = 0;
+                    levl[hix][lowy - 1].decoration_flags = DECORATION_FLAGS_HORIZONTAL_MIRRORING;
                 }
 
                 if (lowx + 1 < hix && !rn2(7 + webmod))
@@ -289,8 +290,8 @@ int floortyp, floorsubtyp, mtype, tileset;
                     {
                         levl[lowx + roll + 1][lowy - 1].decoration_typ = DECORATION_COBWEB;
                         levl[lowx + roll + 1][lowy - 1].decoration_subtyp = 0;
-                        levl[lowx + roll + 1][lowy - 1].decoration_dir = rn2(2);
-                        levl[lowx + roll + 1][lowy - 1].decoration_flags = 0;
+                        levl[lowx + roll + 1][lowy - 1].decoration_dir = 0;
+                        levl[lowx + roll + 1][lowy - 1].decoration_flags = !rn2(2) ? DECORATION_FLAGS_HORIZONTAL_MIRRORING : 0;
                     }
                 }
 
