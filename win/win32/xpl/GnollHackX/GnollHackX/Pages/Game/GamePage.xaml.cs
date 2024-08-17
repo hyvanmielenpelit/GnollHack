@@ -8007,7 +8007,7 @@ namespace GnollHackX.Pages.Game
                                 if (ghWindow.WindowType == GHWinType.Message)
                                 {
                                     float newleft = 0;
-                                    float newtop = canvasheight - height * ActualDisplayedMessages - canvasheight * (float)UsedButtonRowStack.Height / Math.Max(1.0f, (float)canvasView.Height) - 30;
+                                    float newtop = canvasheight - height * ActualDisplayedMessages - (float)UsedButtonRowStack.Height * inverse_canvas_scale - 30;
                                     ghWindow.Left = newleft;
                                     ghWindow.Top = newtop;
                                 }
@@ -10398,11 +10398,11 @@ namespace GnollHackX.Pages.Game
                     /* Context Menu */
                     lock(_contextMenuDataLock)
                     {
-                        float startBottom = canvasheight - (float)UsedButtonRowStack.Height * canvasheight / Math.Max(1.0f, (float)canvasView.Height) - 30;
-                        float textSize = 9.5f * orbbordersize / 50.0f;
-                        float internalPadding = 10f * orbbordersize / 50.0f;
+                        float startBottom = canvasheight - (float)UsedButtonRowStack.Height * inverse_canvas_scale - 30;
+                        float textSize = 9.0f * orbbordersize / 50.0f;
+                        float internalPadding = 10f * inverse_canvas_scale;
                         float startTop = startBottom + internalPadding;
-                        float horizontalPadding = 2f * orbbordersize / 50.0f;
+                        float horizontalPadding = 2f * inverse_canvas_scale;
                         float startLeft = canvaswidth - orbbordersize - horizontalPadding;
                         float topLimit = (float)(StandardMeasurementCmdLayout.Height + StandardMeasurementCmdLayout.Margin.Top) * inverse_canvas_scale;
                         bool isFirstCmb = true;
