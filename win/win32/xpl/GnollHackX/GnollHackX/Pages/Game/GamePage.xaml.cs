@@ -15220,7 +15220,7 @@ namespace GnollHackX.Pages.Game
             else if (str.StartsWith("&status-") && str.Length > 8)
             {
                 int status_mark = 0;
-                GHSubstring substr = new GHSubstring(str, 8).Substring(str.Length - 8 - 1);
+                GHSubstring substr = new GHSubstring(str, 8).Substring(0, str.Length - 8 - 1);
                 if (int.TryParse(substr.Value, out status_mark))
                 {
                     int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
