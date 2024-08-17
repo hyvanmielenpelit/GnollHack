@@ -8140,7 +8140,8 @@ namespace GnollHackX.Pages.Game
                             {
                                 lock (_msgHistoryLock)
                                 {
-                                    if (_msgHistory != null)
+                                    GHMsgHistoryItem[] msgHistoryPtr = _msgHistory;
+                                    if (msgHistoryPtr != null)
                                     {
                                         int j = ActualDisplayedMessages - 1, idx;
                                         float lineLengthLimit = 0.85f * canvaswidth;
@@ -8148,9 +8149,9 @@ namespace GnollHackX.Pages.Game
 
                                         bool refreshsmallesttop = false;
                                         GHSubstring printedsubline = new GHSubstring("");
-                                        for (idx = _msgHistory.Length - 1; idx >= 0 && j >= 0; idx--)
+                                        for (idx = msgHistoryPtr.Length - 1; idx >= 0 && j >= 0; idx--)
                                         {
-                                            GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
+                                            GHMsgHistoryItem msgHistoryItem = msgHistoryPtr[idx];
                                             //longLine = msgHistoryItem.Text;
                                             SKColor printColor = UIUtils.NHColor2SKColor(
                                                 msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 ? msgHistoryItem.Colors[0] : msgHistoryItem.NHColor < (int)NhColor.CLR_MAX ? msgHistoryItem.NHColor : (int)NhColor.CLR_WHITE, 
@@ -8307,9 +8308,9 @@ namespace GnollHackX.Pages.Game
                                             {
                                                 _messageSmallestTop = canvasheight;
                                                 j = ActualDisplayedMessages - 1;
-                                                for (idx = _msgHistory.Length - 1; idx >= 0 && j >= 0; idx--)
+                                                for (idx = msgHistoryPtr.Length - 1; idx >= 0 && j >= 0; idx--)
                                                 {
-                                                    GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
+                                                    GHMsgHistoryItem msgHistoryItem = msgHistoryPtr[idx];
                                                     if (!msgHistoryItem.MatchFilter)
                                                         continue;
                                                     int lineidx;
@@ -18232,14 +18233,15 @@ namespace GnollHackX.Pages.Game
         {
             lock (_msgHistoryLock)
             {
-                if (_msgHistory != null)
+                GHMsgHistoryItem[] msgHistoryPtr = _msgHistory;
+                if (msgHistoryPtr != null)
                 {
-                    int cnt = _msgHistory.Length;
+                    int cnt = msgHistoryPtr.Length;
                     if (_longerMessageHistory)
                     {
                         for (int i = 0; i < cnt; i++)
                         {
-                            GHMsgHistoryItem msg = _msgHistory[i];
+                            GHMsgHistoryItem msg = msgHistoryPtr[i];
                             if (msg != null)
                                 msg.Filter = MessageFilterEntry.Text;
                         }
@@ -18248,7 +18250,7 @@ namespace GnollHackX.Pages.Game
                     {
                         for (int i = 0; i < cnt; i++)
                         {
-                            GHMsgHistoryItem msg = _msgHistory[i];
+                            GHMsgHistoryItem msg = msgHistoryPtr[i];
                             if (msg != null)
                                 msg.Filter = null;
                         }
