@@ -19,6 +19,7 @@ public partial class App : MauiWinUIApplication
 	{
         this.InitializeComponent();
 		this.RequestedTheme = ApplicationTheme.Dark;
+		GHApp.WindowsApp = this;
         GHApp.InitializeGC();
     }
 

@@ -134,7 +134,10 @@ public static class MauiProgram
                         GHApp.WindowsXamlWindow = window;
                         window.Closed += (s, e) =>
                         {
-                            Environment.Exit(0);
+                            if (GHApp.WindowsApp != null)
+                                GHApp.WindowsApp.Exit();
+                            else
+                                Environment.Exit(0);
                         };
                         var handle = WinRT.Interop.WindowNative.GetWindowHandle(window);
                         var id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);

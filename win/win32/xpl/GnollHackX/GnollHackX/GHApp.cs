@@ -102,6 +102,7 @@ namespace GnollHackX
     public static class GHApp
     {
 #if WINDOWS
+        public static Microsoft.UI.Xaml.Application WindowsApp = null;
         public static Microsoft.UI.Xaml.Window WindowsXamlWindow = null;
         public static Microsoft.UI.Input.InputCursor WindowsCursor = null;
         public static Microsoft.UI.Input.InputCursor WindowsInfoCursor = null;
