@@ -11320,9 +11320,8 @@ namespace GnollHackX.Pages.Game
                     item_lit = otmp_round.LampLit;
                     if(otmp_round.ContainedObjs != null)
                     {
-                        for (int otmp_idx = 0, otmp_cnt = otmp_round.ContainedObjs.Count; otmp_idx < otmp_cnt; otmp_idx++)
+                        foreach (ObjectDataItem otmp in otmp_round.ContainedObjs)
                         {
-                            ObjectDataItem otmp = otmp_round.ContainedObjs[otmp_idx];
                             if (otmp != null)
                             {
                                 contents_no++;
@@ -11684,9 +11683,8 @@ namespace GnollHackX.Pages.Game
                     int src_scroll_y = 0;
                     int cnt = 0;
                     int items_per_row = shelf_width / shelf_item_width;
-                    for (int otmp_idx = 0, otmp_cnt = otmp_round.ContainedObjs.Count; otmp_idx < otmp_cnt; otmp_idx++)
+                    foreach (ObjectDataItem contained_obj in otmp_round.ContainedObjs)
                     {
-                        ObjectDataItem contained_obj = otmp_round.ContainedObjs[otmp_idx];
                         int src_x = 0, src_y = 0;
                         float dest_x = 0, dest_y = 0;
                         if (contained_obj.ObjData.oclass == (int)obj_class_types.SPBOOK_CLASS)
@@ -11756,9 +11754,8 @@ namespace GnollHackX.Pages.Game
                     int rack_height = GHConstants.TileHeight - y_to_rack_top;
                     int rack_item_spacing = 6;
                     int cnt = 0;
-                    for (int otmp_idx = 0, otmp_cnt = otmp_round.ContainedObjs.Count; otmp_idx < otmp_cnt; otmp_idx++)
+                    foreach (ObjectDataItem contained_obj in otmp_round.ContainedObjs)
                     {
-                        ObjectDataItem contained_obj = otmp_round.ContainedObjs[otmp_idx];
                         int source_glyph = Math.Abs(contained_obj.ObjData.gui_glyph);
                         if (source_glyph <= 0 || source_glyph == GHApp.NoGlyph)
                             continue;
