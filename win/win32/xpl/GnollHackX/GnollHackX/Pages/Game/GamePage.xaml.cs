@@ -15232,7 +15232,7 @@ namespace GnollHackX.Pages.Game
             else if (str.StartsWith("&status-") && str.Length > 8)
             {
                 int status_mark = 0;
-                GHSubstring substr = new GHSubstring(str, 8).Substring(str.Length - 8 - 1);
+                GHSubstring substr = new GHSubstring(str, 8).Substring(0, str.Length - 8 - 1);
                 if (int.TryParse(substr.Value, out status_mark))
                 {
                     int tiles_per_row = GHConstants.TileWidth / GHConstants.StatusMarkWidth;
@@ -15438,8 +15438,6 @@ namespace GnollHackX.Pages.Game
 
                             y += textPaint.FontSpacing;
                             endposition = x + printlength;
-                            if (idx < textsplit.Length - 1)
-                                endposition += spacelength;
                         }
 
                         if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
