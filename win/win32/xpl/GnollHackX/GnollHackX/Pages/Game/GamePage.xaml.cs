@@ -15426,8 +15426,6 @@ namespace GnollHackX.Pages.Game
 
                             y += textPaint.FontSpacing;
                             endposition = x + printlength;
-                            if (idx < textsplit.Length - 1)
-                                endposition += spacelength;
                         }
 
                         if (!(y + textPaint.FontSpacing + textPaint.FontMetrics.Ascent <= 0 || y + textPaint.FontMetrics.Ascent >= canvasheight))
