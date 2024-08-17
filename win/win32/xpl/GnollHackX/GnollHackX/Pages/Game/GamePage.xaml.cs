@@ -2089,7 +2089,7 @@ namespace GnollHackX.Pages.Game
 
             lock (_floatingTextLock)
             {
-                for (i = _floatingTexts.Count - 1; i >= 0; i--)
+                for (i = _floatingTexts.Count - 1; i >= 0 && i < _floatingTexts.Count; i--)
                 {
                     if (_floatingTexts[i].IsFinished(maincountervalue))
                         _floatingTexts.RemoveAt(i);
@@ -2098,7 +2098,7 @@ namespace GnollHackX.Pages.Game
 
             lock (_conditionTextLock)
             {
-                for (i = _conditionTexts.Count - 1; i >= 0; i--)
+                for (i = _conditionTexts.Count - 1; i >= 0 && i < _conditionTexts.Count; i--)
                 {
                     if (_conditionTexts[i].IsFinished(maincountervalue))
                         _conditionTexts.RemoveAt(i);
@@ -2107,7 +2107,7 @@ namespace GnollHackX.Pages.Game
 
             lock (_screenFilterLock)
             {
-                for (i = _screenFilters.Count - 1; i >= 0; i--)
+                for (i = _screenFilters.Count - 1; i >= 0 && i < _screenFilters.Count; i--)
                 {
                     if (_screenFilters[i].IsFinished(maincountervalue))
                         _screenFilters.RemoveAt(i);
@@ -2116,7 +2116,7 @@ namespace GnollHackX.Pages.Game
 
             lock (_guiEffectLock)
             {
-                for (i = _guiEffects.Count - 1; i >= 0; i--)
+                for (i = _guiEffects.Count - 1; i >= 0 && i < _guiEffects.Count; i--)
                 {
                     if (_guiEffects[i].IsFinished(maincountervalue))
                         _guiEffects.RemoveAt(i);
@@ -2413,9 +2413,8 @@ namespace GnollHackX.Pages.Game
                 bool foundanother = false;
                 long highestcounter = 0;
                 SKPoint speedvector = new SKPoint(0, -1);
-                for (int i = 0, n = _floatingTexts.Count; i < n; i++)
+                foreach (GHFloatingText fl in _floatingTexts)
                 {
-                    GHFloatingText fl = _floatingTexts[i];
                     if (fl.X == data.x && fl.Y == data.y)
                     {
                         foundanother = true;
@@ -2494,9 +2493,8 @@ namespace GnollHackX.Pages.Game
             lock (_conditionTextLock)
             {
                 long highestcounter = 0;
-                for (int i = 0, n = _conditionTexts.Count; i < n; i++)
+                foreach (GHConditionText fl in _conditionTexts)
                 {
-                    GHConditionText fl = _conditionTexts[i];
                     long finishcount = fl.GetFinishCounterValue();
                     if (finishcount > highestcounter)
                     {
@@ -2528,9 +2526,8 @@ namespace GnollHackX.Pages.Game
             lock (_screenFilterLock)
             {
                 long highestcounter = 0;
-                for (int i = 0, n = _screenFilters.Count; i < n; i++)
+                foreach (GHScreenFilter fl in _screenFilters)
                 {
-                    GHScreenFilter fl = _screenFilters[i];
                     long finishcount = fl.GetFinishCounterValue();
                     if (finishcount > highestcounter)
                     {
@@ -2561,9 +2558,8 @@ namespace GnollHackX.Pages.Game
 
             lock (_guiEffectLock)
             {
-                for (int i = _guiEffects.Count - 1; i >= 0; i--)
+                foreach (GHGUIEffect eff in _guiEffects)
                 {
-                    GHGUIEffect eff = _guiEffects[i];
                     if (eff.X == data.x && eff.Y == data.y)
                     {
                         _guiEffects.Remove(eff);
@@ -3807,9 +3803,10 @@ namespace GnollHackX.Pages.Game
             if (MenuCanvas.SelectionHow == SelectionMode.Single)
             {
                 bool selectedFound = false;
-                for (int idx = 0, cnt = menuinfo.MenuItems.Count; idx < cnt; idx++)
+                int idx = -1;
+                foreach (GHMenuItem mi in menuinfo.MenuItems)
                 {
-                    GHMenuItem mi = menuinfo.MenuItems[idx];
+                    idx++;
                     if (mi.Selected)
                     {
                         mi.Selected = false; /* Clear out, with single selection we are using SelectionIndex */
@@ -6984,7 +6981,7 @@ namespace GnollHackX.Pages.Game
                                                         bool dodarkening = true;
                                                         using (SKCanvas darkeningCanvas = new SKCanvas(_paintBitmap))
                                                         {
-                                                            for (int dc_idx = 0, dc_num = _drawCommandList.Count; dc_idx < dc_num; dc_idx++)
+                                                            for (int dc_idx = 0; dc_idx < _drawCommandList.Count; dc_idx++)
                                                             {
                                                                 GHDrawCommand dc = _drawCommandList[dc_idx];
                                                                 if (dc.EndDarkening)
@@ -7227,9 +7224,8 @@ namespace GnollHackX.Pages.Game
                     /* Screen Filter */
                     lock (_screenFilterLock)
                     {
-                        for (int sf_idx = 0, sf_num = _screenFilters.Count; sf_idx < sf_num; sf_idx++)
+                        foreach (GHScreenFilter ft in _screenFilters)
                         {
-                            GHScreenFilter ft = _screenFilters[sf_idx];
                             SKColor fillcolor = SKColors.White;
                             fillcolor = ft.GetColor(generalcountervalue);
                             textPaint.Style = SKPaintStyle.Fill;
@@ -7250,9 +7246,8 @@ namespace GnollHackX.Pages.Game
                     {
                         lock (_floatingTextLock)
                         {
-                            for (int ft_idx = 0, ft_num = _floatingTexts.Count; ft_idx < ft_num; ft_idx++)
+                            foreach (GHFloatingText ft in _floatingTexts)
                             {
-                                GHFloatingText ft = _floatingTexts[ft_idx];
                                 SKPoint p;
                                 float relativestrokewidth = 0.0f;
                                 SKColor strokecolor = SKColors.White;
@@ -7453,9 +7448,8 @@ namespace GnollHackX.Pages.Game
                         }
                         lock (_conditionTextLock)
                         {
-                            for (int ct_idx = 0, ct_num = _conditionTexts.Count; ct_idx < ct_num; ct_idx++)
+                            foreach (GHConditionText ft in _conditionTexts)
                             {
-                                GHConditionText ft = _conditionTexts[ct_idx];
                                 float relativestrokewidth = 0.0f;
                                 SKColor strokecolor = SKColors.White;
                                 SKColor fillcolor = SKColors.White;
@@ -7503,9 +7497,8 @@ namespace GnollHackX.Pages.Game
                         }
                         lock (_guiEffectLock)
                         {
-                            for (int ge_idx = 0, ge_cnt = _guiEffects.Count; ge_idx < ge_cnt; ge_idx++)
+                            foreach (GHGUIEffect eff in _guiEffects)
                             {
-                                GHGUIEffect eff = _guiEffects[ge_idx];
                                 SKPoint p;
                                 SKColor effcolor;
                                 p = eff.GetPosition(maincountervalue);
@@ -8086,15 +8079,15 @@ namespace GnollHackX.Pages.Game
                             {
                                 lock (ghWindow.PutStrsLock)
                                 {
-                                    for (int j = 0, num_j = ghWindow.PutStrs.Count; j < num_j; j++)
+                                    int j = -1;
+                                    foreach (GHPutStrItem putstritem in ghWindow.PutStrs)
                                     {
-                                        GHPutStrItem putstritem = ghWindow.PutStrs[j];
+                                        j++;
                                         int pos = 0;
                                         float xpos = 0;
                                         float totwidth = 0;
-                                        for (int p = 0, num_p = putstritem.InstructionList.Count; p < num_p; p++)
+                                        foreach (GHPutStrInstructions instr in putstritem.InstructionList)
                                         {
-                                            GHPutStrInstructions instr = putstritem.InstructionList[p];
                                             if (putstritem.Text == null)
                                                 substr.SetValue("");
                                             else if (pos + instr.PrintLength <= putstritem.Text.Length)
@@ -8152,7 +8145,8 @@ namespace GnollHackX.Pages.Game
                             {
                                 lock (_msgHistoryLock)
                                 {
-                                    if (_msgHistory != null)
+                                    GHMsgHistoryItem[] msgHistoryPtr = _msgHistory;
+                                    if (msgHistoryPtr != null)
                                     {
                                         int j = ActualDisplayedMessages - 1, idx;
                                         float lineLengthLimit = 0.85f * canvaswidth;
@@ -8160,9 +8154,9 @@ namespace GnollHackX.Pages.Game
 
                                         bool refreshsmallesttop = false;
                                         GHSubstring printedsubline = new GHSubstring("");
-                                        for (idx = _msgHistory.Length - 1; idx >= 0 && j >= 0; idx--)
+                                        for (idx = msgHistoryPtr.Length - 1; idx >= 0 && j >= 0; idx--)
                                         {
-                                            GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
+                                            GHMsgHistoryItem msgHistoryItem = msgHistoryPtr[idx];
                                             //longLine = msgHistoryItem.Text;
                                             SKColor printColor = UIUtils.NHColor2SKColor(
                                                 msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 ? msgHistoryItem.Colors[0] : msgHistoryItem.NHColor < (int)NhColor.CLR_MAX ? msgHistoryItem.NHColor : (int)NhColor.CLR_WHITE, 
@@ -8319,9 +8313,9 @@ namespace GnollHackX.Pages.Game
                                             {
                                                 _messageSmallestTop = canvasheight;
                                                 j = ActualDisplayedMessages - 1;
-                                                for (idx = _msgHistory.Length - 1; idx >= 0 && j >= 0; idx--)
+                                                for (idx = msgHistoryPtr.Length - 1; idx >= 0 && j >= 0; idx--)
                                                 {
-                                                    GHMsgHistoryItem msgHistoryItem = _msgHistory[idx];
+                                                    GHMsgHistoryItem msgHistoryItem = msgHistoryPtr[idx];
                                                     if (!msgHistoryItem.MatchFilter)
                                                         continue;
                                                     int lineidx;
@@ -9979,17 +9973,11 @@ namespace GnollHackX.Pages.Game
                                         textPaint.Typeface = GHApp.LatoRegular;
                                         textPaint.TextSize = 36;
                                         float pet_target_height = inverse_canvas_scale * (float)(StandardMeasurementButton.Height + StandardReferenceButton.Width) / 2;
-                                        //float pet_name_target_height = pet_target_height * 0.4f;
                                         float pet_picture_target_height = pet_target_height * 0.56f;
                                         float pet_hp_target_height = pet_target_height * 0.24f;
                                         float pet_status_target_height = pet_target_height * 0.2f;
-                                        //float pet_name_size = textPaint.TextSize * pet_name_target_height / textPaint.FontSpacing;
-                                        float pet_hp_size = textPaint.TextSize * pet_hp_target_height / textPaint.FontSpacing; //pet_name_size * pet_hp_target_height / pet_name_target_height;
-                                                                                                                               //textPaint.TextSize = pet_name_size;
-                                                                                                                               //string pet_test_text = "Large Dog";
-                                                                                                                               //float pet_target_width = textPaint.MeasureText(pet_test_text);
-                                                                                                                               //pet_target_width += textPaint.FontSpacing; // For picture
-                                        float pet_target_width = pet_target_height; // inverse_canvas_scale * (float)StandardMeasurementButton.Width;
+                                        float pet_hp_size = textPaint.TextSize * pet_hp_target_height / textPaint.FontSpacing;
+                                        float pet_target_width = pet_target_height;
 
                                         SKRect menubuttonrect = GetViewScreenRect(UseSimpleCmdLayout ? SimpleGameMenuButton : GameMenuButton);
                                         SKRect canvasrect = GetViewScreenRect(canvasView);
@@ -10000,9 +9988,8 @@ namespace GnollHackX.Pages.Game
                                         ty = statusbarheight + 5.0f;
                                         int petrownum = 0;
 
-                                        for (int pet_idx = 0, pet_num = _petData.Count; pet_idx < pet_num; pet_idx++)
+                                        foreach (GHPetDataItem pdi in _petData)
                                         {
-                                            GHPetDataItem pdi = _petData[pet_idx];
                                             monst_info mi = pdi.Data;
                                             using (new SKAutoCanvasRestore(canvas, true))
                                             {
@@ -10245,9 +10232,8 @@ namespace GnollHackX.Pages.Game
                                 {
                                     lock (_petDataLock)
                                     {
-                                        for (int pet_idx = 0, pet_num = _petData.Count; pet_idx < pet_num; pet_idx++)
+                                        foreach (GHPetDataItem pdi in _petData)
                                         {
-                                            GHPetDataItem pdi = _petData[pet_idx];
                                             pdi.Rect = new SKRect();
                                         }
                                     }
@@ -10418,9 +10404,8 @@ namespace GnollHackX.Pages.Game
                         float startLeft = canvaswidth - orbbordersize - horizontalPadding;
                         float topLimit = (float)(StandardMeasurementCmdLayout.Height + StandardMeasurementCmdLayout.Margin.Top) * inverse_canvas_scale;
                         bool isFirstCmb = true;
-                        for (int cmbIndex = 0, cmbNumber = _contextMenuData.Count; cmbIndex < cmbNumber; cmbIndex++)
+                        foreach (ContextMenuButton cmb in _contextMenuData) /* foreach, since _contextMenuData may in theory be cleared concurrently in the same thread */
                         {
-                            ContextMenuButton cmb = _contextMenuData[cmbIndex];
                             startTop -= (orbbordersize + internalPadding + textSize);
                             if (startTop < topLimit && !isFirstCmb)
                             {
@@ -11347,9 +11332,8 @@ namespace GnollHackX.Pages.Game
                     item_lit = otmp_round.LampLit;
                     if(otmp_round.ContainedObjs != null)
                     {
-                        for (int otmp_idx = 0, otmp_cnt = otmp_round.ContainedObjs.Count; otmp_idx < otmp_cnt; otmp_idx++)
+                        foreach (ObjectDataItem otmp in otmp_round.ContainedObjs)
                         {
-                            ObjectDataItem otmp = otmp_round.ContainedObjs[otmp_idx];
                             if (otmp != null)
                             {
                                 contents_no++;
@@ -11711,9 +11695,8 @@ namespace GnollHackX.Pages.Game
                     int src_scroll_y = 0;
                     int cnt = 0;
                     int items_per_row = shelf_width / shelf_item_width;
-                    for (int otmp_idx = 0, otmp_cnt = otmp_round.ContainedObjs.Count; otmp_idx < otmp_cnt; otmp_idx++)
+                    foreach (ObjectDataItem contained_obj in otmp_round.ContainedObjs)
                     {
-                        ObjectDataItem contained_obj = otmp_round.ContainedObjs[otmp_idx];
                         int src_x = 0, src_y = 0;
                         float dest_x = 0, dest_y = 0;
                         if (contained_obj.ObjData.oclass == (int)obj_class_types.SPBOOK_CLASS)
@@ -11783,9 +11766,8 @@ namespace GnollHackX.Pages.Game
                     int rack_height = GHConstants.TileHeight - y_to_rack_top;
                     int rack_item_spacing = 6;
                     int cnt = 0;
-                    for (int otmp_idx = 0, otmp_cnt = otmp_round.ContainedObjs.Count; otmp_idx < otmp_cnt; otmp_idx++)
+                    foreach (ObjectDataItem contained_obj in otmp_round.ContainedObjs)
                     {
-                        ObjectDataItem contained_obj = otmp_round.ContainedObjs[otmp_idx];
                         int source_glyph = Math.Abs(contained_obj.ObjData.gui_glyph);
                         if (source_glyph <= 0 || source_glyph == GHApp.NoGlyph)
                             continue;
@@ -13346,9 +13328,8 @@ namespace GnollHackX.Pages.Game
                                                             /* Sum up the distances and durations of current records to get an average */
                                                             float totaldistance = 0;
                                                             float totalsecs = 0;
-                                                            for (int r_idx = 0, r_cnt = _messageScrollSpeedRecords.Count; r_idx < r_cnt; r_idx++)
+                                                            foreach (TouchSpeedRecord r in _messageScrollSpeedRecords)
                                                             {
-                                                                TouchSpeedRecord r = _messageScrollSpeedRecords[r_idx];
                                                                 totaldistance += r.Distance;
                                                                 totalsecs += r.Duration;
                                                             }
@@ -13636,9 +13617,8 @@ namespace GnollHackX.Pages.Game
         {
             lock (_contextMenuDataLock)
             {
-                for (int i = 0, n = _contextMenuData.Count; i < n; i++)
+                foreach (ContextMenuButton cmb in _contextMenuData)
                 {
-                    ContextMenuButton cmb = _contextMenuData[i];
                     if (cmb.Rect.Contains(point))
                         return cmb.BtnCommand;
                 }
@@ -13834,9 +13814,8 @@ namespace GnollHackX.Pages.Game
         {
             lock(_petDataLock)
             {
-                for (int pet_idx = 0, pet_num = _petData.Count; pet_idx < pet_num; pet_idx++)
+                foreach (GHPetDataItem pdi in _petData)
                 {
-                    GHPetDataItem pdi = _petData[pet_idx];
                     if (pdi.Rect.Contains(p))
                         return pdi.Data.m_id;
                 }
@@ -14848,9 +14827,8 @@ namespace GnollHackX.Pages.Game
                     bool has_identifiers = false;
                     _firstDrawnMenuItemIdx = -1;
                     _lastDrawnMenuItemIdx = -1;
-                    for (int mi_idx = 0, mi_cnt = referenceCanvasView.MenuItems.Count; mi_idx < mi_cnt; mi_idx++)
+                    foreach (GHMenuItem mi in referenceCanvasView.MenuItems)
                     {
-                        GHMenuItem mi = referenceCanvasView.MenuItems[mi_idx];
                         if (mi.Identifier != 0 || mi.SpecialMark != '\0')
                             has_identifiers = true;
 
@@ -14863,9 +14841,10 @@ namespace GnollHackX.Pages.Game
 
                     lock (_refreshMenuRowCountLock)
                     {
-                        for (int idx = 0; idx < referenceCanvasView.MenuItems.Count; idx++)
+                        int idx = -1;
+                        foreach (GHMenuItem mi in referenceCanvasView.MenuItems)
                         {
-                            GHMenuItem mi = referenceCanvasView.MenuItems[idx];
+                            idx++;
                             bool IsMiButton = mi.IsButton;
                             float extra_vertical_padding = IsMiButton ? 12f : 0f;
 
@@ -15657,9 +15636,8 @@ namespace GnollHackX.Pages.Game
                                                 /* Sum up the distances and durations of current records to get an average */
                                                 float totaldistance = 0;
                                                 float totalsecs = 0;
-                                                for (int r_idx = 0, r_cnt = _menuScrollSpeedRecords.Count; r_idx < r_cnt; r_idx++)
+                                                foreach (TouchSpeedRecord r in _menuScrollSpeedRecords)
                                                 {
-                                                    TouchSpeedRecord r = _menuScrollSpeedRecords[r_idx];
                                                     totaldistance += r.Distance;
                                                     totalsecs += r.Duration;
                                                 }
@@ -16603,9 +16581,8 @@ namespace GnollHackX.Pages.Game
                 {
                     int j = 0;
                     y += topPadding;
-                    for (int p_idx = 0, p_cnt = TextCanvas.PutStrItems.Count; p_idx < p_cnt; p_idx++)
+                    foreach (GHPutStrItem putstritem in TextCanvas.PutStrItems)
                     {
-                        GHPutStrItem putstritem = TextCanvas.PutStrItems[p_idx];
                         int pos = 0;
                         x = leftmenupadding + leftinnerpadding;
                         x += (float)putstritem.LeftPaddingWidth * scale;
@@ -16650,9 +16627,8 @@ namespace GnollHackX.Pages.Game
                         else
                             glyphpadding = 0;
 
-                        for (int i_idx = 0, i_cnt = putstritem.InstructionList.Count; i_idx < i_cnt; i_idx++)
+                        foreach (GHPutStrInstructions instr in putstritem.InstructionList)
                         {
-                            GHPutStrInstructions instr = putstritem.InstructionList[i_idx];
                             if (putstritem.Text == null)
                                 str = "";
                             else if (pos + instr.PrintLength <= putstritem.Text.Length)
@@ -16809,9 +16785,8 @@ namespace GnollHackX.Pages.Game
                                                         /* Sum up the distances and durations of current records to get an average */
                                                         float totaldistance = 0;
                                                         float totalsecs = 0;
-                                                        for (int r_idx = 0, r_cnt = _textScrollSpeedRecords.Count; r_idx < r_cnt; r_idx++)
+                                                        foreach (TouchSpeedRecord r in _textScrollSpeedRecords)
                                                         {
-                                                            TouchSpeedRecord r = _textScrollSpeedRecords[r_idx];
                                                             totaldistance += r.Distance;
                                                             totalsecs += r.Duration;
                                                         }
@@ -18244,14 +18219,15 @@ namespace GnollHackX.Pages.Game
         {
             lock (_msgHistoryLock)
             {
-                if (_msgHistory != null)
+                GHMsgHistoryItem[] msgHistoryPtr = _msgHistory;
+                if (msgHistoryPtr != null)
                 {
-                    int cnt = _msgHistory.Length;
+                    int cnt = msgHistoryPtr.Length;
                     if (_longerMessageHistory)
                     {
                         for (int i = 0; i < cnt; i++)
                         {
-                            GHMsgHistoryItem msg = _msgHistory[i];
+                            GHMsgHistoryItem msg = msgHistoryPtr[i];
                             if (msg != null)
                                 msg.Filter = MessageFilterEntry.Text;
                         }
@@ -18260,7 +18236,7 @@ namespace GnollHackX.Pages.Game
                     {
                         for (int i = 0; i < cnt; i++)
                         {
-                            GHMsgHistoryItem msg = _msgHistory[i];
+                            GHMsgHistoryItem msg = msgHistoryPtr[i];
                             if (msg != null)
                                 msg.Filter = null;
                         }

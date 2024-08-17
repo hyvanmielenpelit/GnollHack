@@ -1245,11 +1245,13 @@ struct rm {
     Bitfield(click_kick_ok, 1); /* No query when clicking to kick  */
 };
 
-#define DECORATION_FLAGS_NONE               ((uchar)0x00)
-#define DECORATION_FLAGS_ITEM_IN_HOLDER     ((uchar)0x01)
-#define DECORATION_FLAGS_ITEM2_IN_HOLDER    ((uchar)0x02)
-#define DECORATION_FLAGS_ITEM3_IN_HOLDER    ((uchar)0x04)
-#define DECORATION_FLAGS_SEEN               ((uchar)0x08)
+#define DECORATION_FLAGS_NONE                   ((uchar)0x00)
+#define DECORATION_FLAGS_ITEM_IN_HOLDER         ((uchar)0x01)
+#define DECORATION_FLAGS_ITEM2_IN_HOLDER        ((uchar)0x02)
+#define DECORATION_FLAGS_ITEM3_IN_HOLDER        ((uchar)0x04)
+#define DECORATION_FLAGS_SEEN                   ((uchar)0x08)
+#define DECORATION_FLAGS_HORIZONTAL_MIRRORING   ((uchar)0x10)
+#define DECORATION_FLAGS_VERTICAL_MIRRORING     ((uchar)0x20)
 
 #define SET_TYPLIT(x, y, ttyp, tsubtyp, llit)                              \
     {                                                             \
