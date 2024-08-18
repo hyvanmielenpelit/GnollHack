@@ -1252,6 +1252,45 @@ namespace GnollHackX
             smallerFontFamily = fontFamily;
             return false;
         }
+
+        public static double CalculateButtonSideWidth(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale, int noOfLandscapeButtonsInRow, int noOfPortraitButtonsInRow, bool isSmaller)
+        {
+            double tmpSideWidth = UIUtils.CalculatePreliminaryButtonSideWidth(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, noOfLandscapeButtonsInRow, noOfPortraitButtonsInRow, isSmaller);
+            double tmpSideHeight = UIUtils.CalculatePreliminaryButtonSideHeight(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, noOfLandscapeButtonsInRow, noOfPortraitButtonsInRow, isSmaller);
+            return Math.Min(tmpSideWidth, tmpSideHeight);
+        }
+
+        public static double CalculatePreliminaryButtonSideWidth(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale, int noOfLandscapeButtonsInRow, int noOfPortraitButtonsInRow, bool isSmaller)
+        {
+            bool isLandscape = canvasViewWidth > canvasViewHeight;
+            int bigRowNoOfButtons = noOfLandscapeButtonsInRow > 0 ? noOfLandscapeButtonsInRow : LandscapeButtonsInRow(usingDesktopButtons, usingSimpleCmdLayout);
+            bool tooWide = (isSmaller ? 35.0 : 40.0) * bigRowNoOfButtons + (bigRowNoOfButtons - 1) * 6 > canvasViewWidth;
+            int noOfButtons = isLandscape && !tooWide ? bigRowNoOfButtons : noOfPortraitButtonsInRow > 0 ? noOfPortraitButtonsInRow : PortraitButtonsInRow(usingDesktopButtons, usingSimpleCmdLayout);
+            double tmpsidewidth = Math.Min(isSmaller ? 75.0 : 80.0, Math.Max(isSmaller ? 35.0 : 40.0, (canvasViewWidth - (noOfButtons - 1) * 6) / Math.Max(1, noOfButtons)));
+            return tmpsidewidth;
+        }
+
+        public static double CalculatePreliminaryButtonSideHeight(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale, int noOfLandscapeButtonsInRow, int noOfPortraitButtonsInRow, bool isSmaller)
+        {
+            if(inverseCanvasScale == 0.0f)
+                inverseCanvasScale = 1.0f;
+            bool isLandscape = canvasViewWidth > canvasViewHeight;
+            int bigRowNoOfButtons = noOfLandscapeButtonsInRow > 0 ? noOfLandscapeButtonsInRow : LandscapeButtonsInRow(usingDesktopButtons, usingSimpleCmdLayout);
+            bool tooWide = 40.0 * bigRowNoOfButtons + (bigRowNoOfButtons - 1) * 6 > canvasViewWidth;
+            int minNoOfContextButtonRows = 2;
+            int noOfCommandRows = usingSimpleCmdLayout ? 1 : isLandscape && !tooWide ? 1 : 2;
+            float statusBarRowSizeRelativeToButtonWidth = 2 * (GHConstants.StatusBarBaseFontSize / 50.0f * inverseCanvasScale);
+            float minNoOfLabeledButtonRows = minNoOfContextButtonRows + noOfCommandRows;
+            int noOfVerticalSmallerButtons = usingSimpleCmdLayout ? (isLandscape ? 3 : 4) : (isLandscape ? 3 : 5);
+            float labeledButtonFontSizeRelativeToButtonSize = GHConstants.ContextButtonBaseFontSize / 50f;
+            float noOfButtonWidthsNeededForHeight = minNoOfLabeledButtonRows * (1.0f + labeledButtonFontSizeRelativeToButtonSize)
+                + statusBarRowSizeRelativeToButtonWidth
+                + noOfVerticalSmallerButtons * 75f / 80f;
+            float verticalMargins = (noOfVerticalSmallerButtons - 1) * 6 + (noOfCommandRows - 1) * 6 + (minNoOfContextButtonRows - 1) * GHConstants.ContextButtonSpacing + (GHConstants.StatusBarVerticalMargin * 2 + GHConstants.StatusBarRowMargin + GHConstants.ContextButtonBottomStartMargin) / inverseCanvasScale;
+            double verticalSpaceAvailable = canvasViewHeight - verticalMargins - 1.0;
+            double tmpsideheight = Math.Min(isSmaller ? 75.0 : 80.0, Math.Max(isSmaller ? 35.0 : 40.0, verticalSpaceAvailable / Math.Max(1, noOfButtonWidthsNeededForHeight)));
+            return tmpsideheight;
+        }
     }
 
     public class TouchEntry

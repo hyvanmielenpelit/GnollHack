@@ -1306,8 +1306,8 @@ namespace GnollHackX
         public static IPlatformService PlatformService { get { return _platformService; } }
 
 #if GNH_MAUI
-        public static float DisplayRefreshRate = Math.Max(60.0f, DeviceDisplay.Current.MainDisplayInfo.RefreshRate);
-        public static float DisplayDensity = DeviceDisplay.Current.MainDisplayInfo.Density <= 0.0 ? 1.0f : (float)DeviceDisplay.Current.MainDisplayInfo.Density;
+        public static float _displayRefreshRate = Math.Max(60.0f, DeviceDisplay.Current.MainDisplayInfo.RefreshRate);
+        public static float _displayDensity = DeviceDisplay.Current.MainDisplayInfo.Density <= 0.0 ? 1.0f : (float)DeviceDisplay.Current.MainDisplayInfo.Density;
         public static readonly bool IsAndroid = (DeviceInfo.Platform == DevicePlatform.Android);
         public static readonly bool IsiOS = (DeviceInfo.Platform == DevicePlatform.iOS);
         public static readonly bool IsWindows = (DeviceInfo.Platform == DevicePlatform.WinUI);
@@ -1322,8 +1322,8 @@ namespace GnollHackX
         public static readonly string RuntimePlatform = DeviceInfo.Platform.ToString();
         public static readonly bool IsPackaged = (Microsoft.Maui.ApplicationModel.AppInfo.Current?.PackagingModel ?? AppPackagingModel.Unpackaged) == AppPackagingModel.Packaged;
 #else
-        public static float DisplayRefreshRate = Math.Max(60.0f, DeviceDisplay.MainDisplayInfo.RefreshRate);
-        public static float DisplayDensity = DeviceDisplay.MainDisplayInfo.Density <= 0.0 ? 1.0f : (float)DeviceDisplay.MainDisplayInfo.Density;
+        public static float _displayRefreshRate = Math.Max(60.0f, DeviceDisplay.MainDisplayInfo.RefreshRate);
+        public static float _displayDensity = DeviceDisplay.MainDisplayInfo.Density <= 0.0 ? 1.0f : (float)DeviceDisplay.MainDisplayInfo.Density;
         public static readonly bool IsAndroid = (Device.RuntimePlatform == Device.Android);
         public static readonly bool IsiOS = (Device.RuntimePlatform == Device.iOS);
         public static readonly bool IsWindows = false;
@@ -1333,6 +1333,18 @@ namespace GnollHackX
         public static readonly string RuntimePlatform = Device.RuntimePlatform;
         public static readonly bool IsPackaged = true;
 #endif
+
+        private static readonly object _displayDataLock = new object();
+        public static float DisplayDensity
+        {
+            get { lock (_displayDataLock) { return _displayDensity <= 0.0f ? 1.0f : _displayDensity; } }
+            set { lock (_displayDataLock) { _displayDensity = value; } }
+        }
+        public static float DisplayRefreshRate
+        {
+            get { lock (_displayDataLock) { return _displayRefreshRate <= 0.0f ? 1.0f : _displayRefreshRate; } }
+            set { lock (_displayDataLock) { _displayRefreshRate = value; } }
+        }
 
         public static GHPlatform PlatformId
         {

@@ -1028,7 +1028,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
     int ntile;
     int t_x, t_y;
-    int glyph, signed_glyph;
+    int glyph, signed_glyph, base_glyph, signed_base_glyph;
 
     boolean hflip_glyph = FALSE;
     boolean vflip_glyph = FALSE;
@@ -1375,7 +1375,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                     }
                     if (!isok(adj_x, adj_y))
-                        signed_glyph = NO_GLYPH;
+                    {
+                        signed_glyph = signed_base_glyph = NO_GLYPH;
+                    }
                     else
                     {
                         if (base_layer == LAYER_ZAP)
@@ -1384,9 +1386,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             adjacent_layer_flags = data->map[adj_x][adj_y].layer_flags;
 
                             if (adjacent_zap_glyph == NO_GLYPH || !glyph_is_zap(adjacent_zap_glyph))
-                                signed_glyph = NO_GLYPH;
+                                signed_glyph = signed_base_glyph = NO_GLYPH;
                             else
-                                signed_glyph = zap_glyph_to_corner_glyph(adjacent_zap_glyph, adjacent_layer_flags, source_dir_idx);
+                                signed_glyph = signed_base_glyph = zap_glyph_to_corner_glyph(adjacent_zap_glyph, adjacent_layer_flags, source_dir_idx);
 
                             if (signed_glyph != NO_GLYPH)
                                 is_corner_tile = TRUE;
@@ -1399,13 +1401,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             unsigned worm_id_stored = data->map[adj_x][adj_y].m_id;
                             struct monst* worm_here = m_at(adj_x, adj_y);
                             struct monst* worm = !is_adj_worm_tail ? (struct monst*)0 : is_adj_worm_seen ? ((worm_here && worm_here->m_id == worm_id_stored) ? worm_here : (struct monst*)0) : worm_here;
-                            signed_glyph = NO_GLYPH;
+                            signed_glyph = signed_base_glyph = NO_GLYPH;
 
                             if (worm && (cansee(enl_i, enl_j) || is_adj_worm_seen || (data->map[worm->mx][worm->my].monster_flags & LMFLAGS_WORM_SEEN)))
                             {
                                 if (is_long_worm_with_tail(worm->data) && !is_adj_worm_tail)
                                 {
-                                    signed_glyph = NO_GLYPH;
+                                    signed_glyph = signed_base_glyph = NO_GLYPH;
                                 }
                                 else if (worm->mnum == PM_LONG_WORM_TAIL || worm->mnum == PM_ELDER_LONG_WORM_TAIL || (is_long_worm_with_tail(worm->data) && is_adj_worm_tail))
                                 {
@@ -1502,7 +1504,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                 break;
                                             }
                                             if(tilenum > -1)
-                                                signed_glyph = tilenum + base_source_glyph;
+                                                signed_glyph = signed_base_glyph = tilenum + base_source_glyph;
                                         }
                                     }
                                 }
@@ -1513,16 +1515,16 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             /* Chain */
                             if (data->map[adj_x][adj_y].layer_flags & LFLAGS_O_CHAIN)
                             {
-                                signed_glyph = (source_dir_idx / 2 - 1) + GENERAL_TILE_CHAIN_IS_UP + GLYPH_GENERAL_TILE_OFF;
+                                signed_glyph = signed_base_glyph = (source_dir_idx / 2 - 1) + GENERAL_TILE_CHAIN_IS_UP + GLYPH_GENERAL_TILE_OFF;
                             }
                             else
-                                signed_glyph = NO_GLYPH;
+                                signed_glyph = signed_base_glyph = NO_GLYPH;
                         }
                     }
                 }
                 else if (base_layer == LAYER_LEASH && enlarg_idx == -1 && cansee(enl_i, enl_j))
                 {
-                    signed_glyph = NO_GLYPH;
+                    signed_glyph = signed_base_glyph = NO_GLYPH;
                     /* This is effectively a non-tile-related autodraw */
 
                     int ux = u.ux, uy = u.uy;
@@ -1808,21 +1810,27 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 }
                 else if (base_layer == LAYER_CHAIN && enlarg_idx == -1 && tile_move_idx == 0 && source_dir_idx == 0 && (data->map[adj_x][adj_y].layer_flags & LFLAGS_O_CHAIN))
                 {
-                    signed_glyph = GENERAL_TILE_CHAIN_MAIN + GLYPH_GENERAL_TILE_OFF;
+                    signed_glyph = signed_base_glyph = GENERAL_TILE_CHAIN_MAIN + GLYPH_GENERAL_TILE_OFF;
                     signed_glyph = maybe_get_replaced_glyph(signed_glyph, enl_i, enl_j, data_to_replacement_info(signed_glyph, base_layer, otmp_round, mtmp, data->map[enl_i][enl_j].layer_flags, data->map[enl_i][enl_j].monster_flags, data->map[adj_x][adj_y].missile_flags, data->map[adj_x][adj_y].missile_material, data->map[adj_x][adj_y].missile_special_quality));
                 }
                 else if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
+                {
                     signed_glyph = otmp_round->gui_glyph;
+                    signed_base_glyph = otmp_round->glyph;
+                }
                 else
+                {
                     signed_glyph = data->map[enl_i][enl_j].layer_gui_glyphs[base_layer];
-
+                    signed_base_glyph = data->map[enl_i][enl_j].layer_glyphs[base_layer];
+                }
                 glyph = abs(signed_glyph);
+                base_glyph = abs(signed_base_glyph);
 
                 /* Kludge for the time being */
                 if (base_layer == LAYER_FLOOR && glyph == NO_GLYPH)
-                    glyph = cmap_to_glyph(S_unexplored);
+                    glyph = base_glyph = cmap_to_glyph(S_unexplored);
 
-                if (showing_detection || u.uswallow || (base_layer == LAYER_FLOOR && glyph_is_specific_cmap_or_its_variation(glyph, S_unexplored)))
+                if (showing_detection || u.uswallow || (base_layer == LAYER_FLOOR && glyph_is_specific_cmap_or_its_variation(base_glyph, S_unexplored)))
                     skip_darkening = TRUE;
 
                 /*
@@ -1917,7 +1925,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     int anim_frame_idx = -1, main_tile_idx = -1;
                     int tile_animation_idx = get_tile_animation_index_from_glyph(glyph);
                     boolean skip_drawing = FALSE;
-                    boolean full_sized_item = !!(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM) || glyph_is_monster(glyph); /* hallucinated statue */
+                    boolean full_sized_item = !!(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM) || glyph_is_monster(base_glyph); /* hallucinated statue */
                     boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && base_layer == LAYER_MISSILE && !full_sized_item);
                     boolean does_not_cause_monster_shadow = FALSE;
                     boolean is_dropping_piercer = mtmp && (data->map[enl_i][enl_j].monster_flags & LMFLAGS_DROPPING_PIERCER);
@@ -1928,9 +1936,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, animation_timers.u_action_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     else if (animation_timers.m_action_animation_counter_on && ((!is_dropping_piercer && base_layer == LAYER_MONSTER) || (is_dropping_piercer && base_layer == LAYER_MISSILE)) && animation_timers.m_action_animation_x == enl_i && animation_timers.m_action_animation_y == enl_j)
                         ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, animation_timers.m_action_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
-                    else if (glyph_is_explosion(glyph))
+                    else if (glyph_is_explosion(base_glyph))
                         ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, animation_timers.explosion_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
-                    else if (glyph_is_zap(glyph))
+                    else if (glyph_is_zap(base_glyph))
                     {
                         boolean zap_found = FALSE;
                         for (int zap_anim_idx = 0; zap_anim_idx < MAX_PLAYED_ZAP_ANIMATIONS; zap_anim_idx++)
@@ -2054,20 +2062,20 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         boolean is_object = FALSE;
                         int base_source_top_added = 0;
 
-                        if (base_layer == LAYER_MISSILE && glyph_is_missile(glyph))
+                        if (base_layer == LAYER_MISSILE && glyph_is_missile(base_glyph))
                         {
                             is_obj_missile = TRUE;
                             boolean use_floor_tile = FALSE;
-                            if (glyph_is_object_missile(glyph))
+                            if (glyph_is_object_missile(base_glyph))
                             {
-                                int otyp = (glyph - GLYPH_OBJ_MISSILE_OFF) / NUM_MISSILE_DIRS;
+                                int otyp = (base_glyph - GLYPH_OBJ_MISSILE_OFF) / NUM_MISSILE_DIRS;
                                 use_floor_tile = has_otyp_floor_tile(otyp);
                                 if (!has_otyp_floor_tile(otyp) && !has_otyp_height_clipping(otyp) && OBJ_TILE_HEIGHT(otyp) > 0)
                                     obj_scaling_factor = ((double)OBJ_TILE_HEIGHT(otyp)) / 48.0;
                             }
-                            else if (glyph_is_artifact_missile(glyph))
+                            else if (glyph_is_artifact_missile(base_glyph))
                             {
-                                int artidx = ((glyph - GLYPH_ARTIFACT_MISSILE_OFF) / NUM_MISSILE_DIRS) + 1;
+                                int artidx = ((base_glyph - GLYPH_ARTIFACT_MISSILE_OFF) / NUM_MISSILE_DIRS) + 1;
                                 use_floor_tile = has_artifact_floor_tile(artidx);
                                 if (!has_artifact_floor_tile(artidx) && !has_artifact_height_clipping(artidx) && artilist[artidx].tile_floor_height > 0)
                                     obj_scaling_factor = ((double)artilist[artidx].tile_floor_height) / 48.0;
@@ -5770,7 +5778,9 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                 enum autodraw_types autodraw = AUTODRAW_NONE;
                 int anim_frame_idx = -1, main_tile_idx = -1;
                 int signed_glyph = data->map[x][y].layer_gui_glyphs[layer_idx];
+                int signed_base_glyph = data->map[x][y].layer_glyphs[layer_idx];
                 int glyph = abs(signed_glyph);
+                int base_glyph = abs(signed_base_glyph);
                 if (glyph <= 0 || glyph >= MAX_GLYPH)
                     continue;
                 flipped = (signed_glyph < 0);
@@ -5783,9 +5793,9 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                     ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, animation_timers.u_action_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
                 else if (animation_timers.m_action_animation_counter_on && ((!is_dropping_piercer && layer_idx == LAYER_MONSTER) || (is_dropping_piercer && layer_idx == LAYER_MISSILE)) && animation_timers.m_action_animation_x == x && animation_timers.m_action_animation_y == y)
                     ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, animation_timers.m_action_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
-                else if (glyph_is_explosion(glyph))
+                else if (glyph_is_explosion(base_glyph))
                     ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, animation_timers.explosion_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
-                else if (glyph_is_zap(glyph))
+                else if (glyph_is_zap(base_glyph))
                 {
                     for (int zap_anim_idx = 0; zap_anim_idx < MAX_PLAYED_ZAP_ANIMATIONS; zap_anim_idx++)
                     {
