@@ -144,8 +144,10 @@ boolean restore;
                 else
                 {
                     if (artilist[otmp->oartifact].material == MAT_NONE)
+                    {
                         otmp->material = objects[otmp->otyp].oc_material; /* Base material may have been randomized (using the dead character's randomization) */
-
+                        otmp->owt = weight(otmp);
+                    }
                     artifact_exists(otmp, safe_oname(otmp), TRUE);
                 }
             }
