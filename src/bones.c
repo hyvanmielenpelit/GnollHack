@@ -88,8 +88,7 @@ boolean restore;
                restore; other fixups are done while saving */
             if (otmp->oartifact)
             {
-                if (exist_artifact(otmp->otyp, safe_oname(otmp))
-                    || is_quest_artifact(otmp)) 
+                if (exist_artifact(otmp->otyp, safe_oname(otmp)) || is_quest_artifact(otmp)) 
                 {
                     /* prevent duplicate--revert to ordinary obj */
                     /* Non-generable base item*/
@@ -132,6 +131,10 @@ boolean restore;
                             otmp->enchantment = 0;
                         }
                     }
+                    else
+                    {
+                        otmp->material = objects[otmp->otyp].oc_material; /* Base material may have been randomized (using the dead character's randomization) */
+                    }
                     otmp->oartifact = 0;
                     otmp->owt = weight(otmp);
                     if (has_oname(otmp))
@@ -140,6 +143,11 @@ boolean restore;
                 } 
                 else
                 {
+                    if (artilist[otmp->oartifact].material == MAT_NONE)
+                    {
+                        otmp->material = objects[otmp->otyp].oc_material; /* Base material may have been randomized (using the dead character's randomization) */
+                        otmp->owt = weight(otmp);
+                    }
                     artifact_exists(otmp, safe_oname(otmp), TRUE);
                 }
             }
@@ -278,12 +286,14 @@ boolean restore;
             else if (otmp->otyp == SPE_BOOK_OF_THE_DEAD) 
             {
                 otmp->otyp = SPE_BLANK_PAPER;
+                otmp->material = objects[otmp->otyp].oc_material;
                 curse(otmp);
             } 
             else if (otmp->otyp == SPE_BOOK_OF_MODRON) 
             {
                 otmp->otyp = SPE_BLANK_PAPER;
                 otmp->oartifact = 0;
+                otmp->material = objects[otmp->otyp].oc_material;
                 curse(otmp);
             }
             otmp->owt = weight(otmp);
