@@ -646,6 +646,9 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         }
     }
 
+    if (dknown && obj->oclass == POTION_CLASS && obj->odiluted)
+        Strcat(buf, "diluted ");
+
     if (dknown && (obj->mythic_prefix || obj->mythic_suffix))
     {
         if (!mknown)
@@ -690,10 +693,18 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
                )
            )
         {
-            Strcat(actualn_fullbuf, material_definitions[obj->material].object_prefix);
-            Strcat(actualn_fullbuf, " ");
-            Strcat(dn_fullbuf, material_definitions[obj->material].object_prefix);
-            Strcat(dn_fullbuf, " ");
+            if (obj->oclass == RING_CLASS || obj->oclass == WAND_CLASS || obj->oclass == POTION_CLASS || obj->oclass == SCROLL_CLASS)
+            {
+                Strcat(buf, material_definitions[obj->material].object_prefix);
+                Strcat(buf, " ");
+            }
+            else
+            {
+                Strcat(actualn_fullbuf, material_definitions[obj->material].object_prefix);
+                Strcat(actualn_fullbuf, " ");
+                Strcat(dn_fullbuf, material_definitions[obj->material].object_prefix);
+                Strcat(dn_fullbuf, " ");
+            }
         }
     }
 
@@ -932,8 +943,6 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
                 (obj->owt > ocl->oc_weight) ? "very " : "");
         break;
     case POTION_CLASS:
-        if (dknown && obj->odiluted)
-            Strcpy(buf, "diluted ");
         if (nn || un || !dknown) {
             Strcat(buf, "potion");
             if (!dknown)
@@ -955,7 +964,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         }
         break;
     case SCROLL_CLASS:
-        Strcpy(buf, "scroll");
+        Strcat(buf, "scroll");
         if (!dknown)
             break;
         if (nn) {
@@ -985,13 +994,13 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     case SPBOOK_CLASS:
         if (objects[typ].oc_subtyp == BOOKTYPE_NOVEL || objects[typ].oc_subtyp == BOOKTYPE_MANUAL) { /* 3.6 tribute */
             if (!dknown)
-                Strcpy(buf, "book");
+                Strcat(buf, "book");
             else if (nn)
-                Strcpy(buf, actualn_fullbuf);
+                Strcat(buf, actualn_fullbuf);
             else if (un)
-                Sprintf(buf, "%s called %s", book_type_names[objects[typ].oc_subtyp], un);
+                Sprintf(eos(buf), "%s called %s", book_type_names[objects[typ].oc_subtyp], un);
             else
-                Sprintf(buf, "%s book", dn_fullbuf);
+                Sprintf(eos(buf), "%s book", dn_fullbuf);
             break;
             /* end of tribute */
         } else if (!dknown) {
@@ -1001,19 +1010,19 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
                 Sprintf(buf, "%s of ", book_type_names[objects[typ].oc_subtyp]);
             Strcat(buf, actualn_fullbuf);
         } else if (un) {
-            Sprintf(buf, "%s called %s", book_type_names[objects[typ].oc_subtyp], un);
+            Sprintf(eos(buf), "%s called %s", book_type_names[objects[typ].oc_subtyp], un);
         } else
-            Sprintf(buf, "%s %s", dn_fullbuf, book_type_names[objects[typ].oc_subtyp]);
+            Sprintf(eos(buf), "%s %s", dn_fullbuf, book_type_names[objects[typ].oc_subtyp]);
         break;
     case RING_CLASS:
         if (!dknown)
             Strcpy(buf, "ring");
         else if (nn)
-            Sprintf(buf, "ring of %s", actualn_fullbuf);
+            Sprintf(eos(buf), "ring of %s", actualn_fullbuf);
         else if (un)
-            Sprintf(buf, "ring called %s", un);
+            Sprintf(eos(buf), "ring called %s", un);
         else
-            Sprintf(buf, "%s ring", dn_fullbuf);
+            Sprintf(eos(buf), "%s ring", dn_fullbuf);
         break;
     default:
         Sprintf(buf, "glorkum %d %d %d %d", obj->oclass, typ, obj->enchantment, obj->charges);

@@ -132,6 +132,10 @@ boolean restore;
                             otmp->enchantment = 0;
                         }
                     }
+                    else
+                    {
+                        otmp->material = objects[otmp->otyp].oc_material; /* Base material may have been randomized (using the dead character's randomization) */
+                    }
                     otmp->oartifact = 0;
                     otmp->owt = weight(otmp);
                     if (has_oname(otmp))
@@ -278,12 +282,14 @@ boolean restore;
             else if (otmp->otyp == SPE_BOOK_OF_THE_DEAD) 
             {
                 otmp->otyp = SPE_BLANK_PAPER;
+                otmp->material = objects[otmp->otyp].oc_material;
                 curse(otmp);
             } 
             else if (otmp->otyp == SPE_BOOK_OF_MODRON) 
             {
                 otmp->otyp = SPE_BLANK_PAPER;
                 otmp->oartifact = 0;
+                otmp->material = objects[otmp->otyp].oc_material;
                 curse(otmp);
             }
             otmp->owt = weight(otmp);
