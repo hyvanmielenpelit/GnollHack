@@ -182,7 +182,7 @@ register struct monst* npc;
 {
     register xchar gx, gy, omx, omy;
     schar npc_room;
-    boolean avoid = TRUE;
+    boolean avoid = FALSE; /* FALSE to avoid being stuck on a square in small rooms */
 
     omx = npc->mx;
     omy = npc->my;
