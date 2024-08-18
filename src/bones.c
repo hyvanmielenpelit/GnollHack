@@ -88,8 +88,7 @@ boolean restore;
                restore; other fixups are done while saving */
             if (otmp->oartifact)
             {
-                if (exist_artifact(otmp->otyp, safe_oname(otmp))
-                    || is_quest_artifact(otmp)) 
+                if (exist_artifact(otmp->otyp, safe_oname(otmp)) || is_quest_artifact(otmp)) 
                 {
                     /* prevent duplicate--revert to ordinary obj */
                     /* Non-generable base item*/
@@ -144,6 +143,9 @@ boolean restore;
                 } 
                 else
                 {
+                    if (artilist[otmp->oartifact].material == MAT_NONE)
+                        otmp->material = objects[otmp->otyp].oc_material; /* Base material may have been randomized (using the dead character's randomization) */
+
                     artifact_exists(otmp, safe_oname(otmp), TRUE);
                 }
             }
