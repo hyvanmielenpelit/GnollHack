@@ -78,9 +78,9 @@
                             </StackLayout>
                         </StackLayout>
                     </StackLayout>
-                    <FlexLayout Grid.Row="1" x:Name="ContextLayout" InputTransparent="True" CascadeInputTransparent="False" Padding="0,2" Direction="Column" Wrap="Reverse" 
+                    <!--<FlexLayout Grid.Row="1" x:Name="ContextLayout" InputTransparent="True" CascadeInputTransparent="False" Padding="0,2" Direction="Column" Wrap="Reverse" 
                                 JustifyContent="End" AlignItems="End" AlignContent="Start" HorizontalOptions="End" VerticalOptions="End" >
-                    </FlexLayout>
+                    </FlexLayout>-->
                     <StackLayout Grid.Row="1" x:Name="MessageNumberGrid" Padding="0,2" Spacing="6"
                         HorizontalOptions="Start" VerticalOptions="End">
                         <Button x:Name="ToggleMessageNumberButton" Text="" Clicked="ToggleMessageNumberButton_Clicked" HeightRequest="80" WidthRequest="80" BackgroundColor="Transparent" />

@@ -126,13 +126,9 @@ namespace GnollHackX.Controls
         public int LandscapeButtonsInRow { get; set; } = 0;
         public int PortraitButtonsInRow { get; set; } = 0;
 
-        public void SetSideSize(double canvaswidth, double canvasheight, bool usingDesktopButtons, bool usingSimpleCmdLayout)
+        public void SetSideSize(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout)
         {
-            int bigRowNoOfButtons = LandscapeButtonsInRow > 0 ? LandscapeButtonsInRow : UIUtils.LandscapeButtonsInRow(usingDesktopButtons, usingSimpleCmdLayout);
-            bool tooWide = 40.0 * bigRowNoOfButtons + (bigRowNoOfButtons - 1) * 6 > canvaswidth;
-            int noOfButtons = canvaswidth > canvasheight && !tooWide ? bigRowNoOfButtons : PortraitButtonsInRow > 0 ? PortraitButtonsInRow : UIUtils.PortraitButtonsInRow(usingDesktopButtons, usingSimpleCmdLayout);
-            double imgsidewidth = Math.Min(80.0, Math.Max(40.0, (canvaswidth - (noOfButtons - 1) * 6) / Math.Max(1, noOfButtons)));
-
+            double imgsidewidth = UIUtils.CalculateButtonSideWidth(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, LandscapeButtonsInRow, PortraitButtonsInRow, false);
             double imgsideheight = imgsidewidth;
             double fontsize = 8.5 * imgsidewidth / 50.0;
             double fontsize_larger = 9.0 * imgsidewidth / 50.0;
