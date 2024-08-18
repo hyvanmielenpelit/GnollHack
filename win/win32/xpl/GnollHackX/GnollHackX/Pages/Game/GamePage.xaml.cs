@@ -12913,7 +12913,7 @@ namespace GnollHackX.Pages.Game
             lRowAbilitiesButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
             lRowWornItemsButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
             //double statusbarheight = GetStatusBarHeight(); /* Requires lInventoryButton size having set to determine scaling */
-            double statusbarheight = GetStatusBarHeightEx(width, height, usingDesktopButtons, usingSimpleCmdLayout); /* Requires lInventoryButton size having set to determine scaling */
+            double statusbarheight = GetStatusBarHeightEx(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
             lAbilitiesButton.HeightRequest = statusbarheight;
             lWornItemsButton.HeightRequest = statusbarheight;
             UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
