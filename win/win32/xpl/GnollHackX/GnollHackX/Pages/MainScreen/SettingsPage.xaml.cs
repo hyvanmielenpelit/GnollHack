@@ -773,6 +773,9 @@ namespace GnollHackX.Pages.MainScreen
 
             if (_gameMenuPage != null)
                 _gameMenuPage.UpdateLayout();
+
+            if(_gamePage != null)
+                _gamePage.UpdateButtonAndUISizes();
         }
 
         private void ContentPage_Appearing(object sender, EventArgs e)

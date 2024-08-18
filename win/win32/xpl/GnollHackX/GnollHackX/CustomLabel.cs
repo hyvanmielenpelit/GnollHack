@@ -1155,7 +1155,7 @@ namespace GnollHackX
         {
             base.OnHandlerChanged();
 #if WINDOWS
-            SkiaSharp.Views.Windows.SKXamlCanvas view = Handler.PlatformView as SkiaSharp.Views.Windows.SKXamlCanvas;
+            SkiaSharp.Views.Windows.SKXamlCanvas view = Handler?.PlatformView as SkiaSharp.Views.Windows.SKXamlCanvas;
             if(view != null)
                 view.PointerWheelChanged += View_PointerWheelChanged;
 #endif

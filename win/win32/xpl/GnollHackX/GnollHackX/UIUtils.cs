@@ -1256,6 +1256,8 @@ namespace GnollHackX
         public static double CalculateButtonSideWidth(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale, int noOfLandscapeButtonsInRow, int noOfPortraitButtonsInRow, bool isSmaller)
         {
             double tmpSideWidth = UIUtils.CalculatePreliminaryButtonSideWidth(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, noOfLandscapeButtonsInRow, noOfPortraitButtonsInRow, isSmaller);
+            if (noOfLandscapeButtonsInRow > 0 && noOfPortraitButtonsInRow > 0) /* Yes/no buttons are not limited by height */
+                return tmpSideWidth;
             double tmpSideHeight = UIUtils.CalculatePreliminaryButtonSideHeight(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, noOfLandscapeButtonsInRow, noOfPortraitButtonsInRow, isSmaller);
             return Math.Min(tmpSideWidth, tmpSideHeight);
         }
