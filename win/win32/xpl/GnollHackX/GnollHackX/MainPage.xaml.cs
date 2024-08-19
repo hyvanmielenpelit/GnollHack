@@ -903,7 +903,7 @@ namespace GnollHackX
             GHApp.FrameworkVersionString = frameworkverstr;
             GHApp.RuntimeVersionString = runtimeverstr;
 
-            VersionLabel.Text = verid;
+            //VersionLabel.Text = verid;
             GnollHackLabel.Text = "GnollHack";
 
             string prev_version = Preferences.Get("VersionId", "");
