@@ -278,14 +278,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
      * It seems you really want to play.
      */
 
-#if (defined(DUMPLOG) || defined(DUMPHTML)) && defined(DUMPLOG_DIR)
-     /* Make DUMPLOG_DIR if defined */
-    struct stat st = { 0 };
-
-    if (stat(DUMPLOG_DIR, &st) == -1) {
-        (void)mkdir(DUMPLOG_DIR);
-    }
-#endif
+    make_dumplog_dir();
 
     if (argc >= 1
         && (!strcmpi(default_window_sys, "mswin") || !strcmpi(default_window_sys, "nuklear") || !strcmpi(default_window_sys, "dll"))

@@ -1452,6 +1452,7 @@ uint64_t *colormasks UNUSED;
 STATIC_VAR struct window_procs dumplog_windowprocs_backup;
 STATIC_VAR int menu_headings_backup;
 STATIC_VAR time_t dumplog_now;
+STATIC_VAR boolean dumplog_is_snapshot;
 
 #ifdef DUMPLOG
 char*
@@ -1461,24 +1462,12 @@ char* buf;
     char* fname;
 
 #ifdef SYSCF
-    if (!sysopt.dumplogfile)
+    char* used_sysopt_file = dumplog_is_snapshot ? sysopt.snapshotfile : sysopt.dumplogfile;
+    if (!used_sysopt_file)
         return 0;
-    fname = dump_fmtstr(sysopt.dumplogfile, buf);
-#elif defined(ANDROID)
-    if (iflags.dumplog)
-    {
-        char buf_[BUFSZ];
-        dump_fmtstr(DUMPLOG_FILE, buf_);
-        and_get_dumplog_dir(buf);
-        if (strlen(buf_) + strlen(buf) < BUFSZ - 1)
-            fname = strcat(buf, buf_);
-        else
-            fname = strcpy(buf, buf_);
-    }
-    else
-        fname = 0;
+    fname = dump_fmtstr(used_sysopt_file, buf);
 #else
-    fname = dump_fmtstr(DUMPLOG_FILE, buf);
+    fname = dump_fmtstr(dumplog_is_snapshot ? SNAPSHOT_FILE : DUMPLOG_FILE, buf);
 #endif
     return fname;
 }
@@ -1492,24 +1481,12 @@ char* buf;
     char* fname;
 
 #ifdef SYSCF
-    if (!sysopt.dumphtmlfile)
+    char* used_sysopt_htmlfile = dumplog_is_snapshot ? sysopt.snaphtmlfile : sysopt.dumphtmlfile;
+    if (!used_sysopt_htmlfile)
         return 0;
-    fname = dump_fmtstr(sysopt.dumphtmlfile, buf);
-#elif defined(ANDROID)
-    if (iflags.dumplog)
-    {
-        char buf_[BUFSZ];
-        dump_fmtstr(DUMPHTML_FILE, buf_);
-        and_get_dumplog_dir(buf);
-        if (strlen(buf_) + strlen(buf) < BUFSZ - 1)
-            fname = strcat(buf, buf_);
-        else
-            fname = strcpy(buf, buf_);
-    }
-    else
-        fname = 0;
+    fname = dump_fmtstr(used_sysopt_htmlfile, buf);
 #else
-    fname = dump_fmtstr(DUMPHTML_FILE, buf);
+    fname = dump_fmtstr(dumplog_is_snapshot ? SNAPSHOT_FILE : DUMPHTML_FILE, buf);
 #endif
     return fname;
 }
@@ -3116,8 +3093,9 @@ dump_end_screendump()
 
 
 void
-dump_open_log(now)
+dump_open_log(now, is_snapshot)
 time_t now;
+boolean is_snapshot;
 {
 #if defined (DUMPLOG) || defined (DUMPHTML)
     char buf[BUFSZ];
@@ -3125,6 +3103,7 @@ time_t now;
     boolean fileexists = FALSE;
 
     dumplog_now = now;
+    dumplog_is_snapshot = is_snapshot;
 #ifdef DUMPLOG
     fname = print_dumplog_filename_to_buffer(buf);
     if (fname)
@@ -3217,6 +3196,11 @@ reset_windows(VOID_ARGS)
 #ifdef DUMPHTML
     in_list = 0;
     //in_preform = 0;
+#endif
+#if defined (DUMPLOG) || defined (DUMPHTML)
+    menu_headings_backup = 0;
+    dumplog_now = 0;
+    dumplog_is_snapshot = FALSE;
 #endif
 }
 

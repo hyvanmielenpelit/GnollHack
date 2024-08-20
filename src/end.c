@@ -65,7 +65,7 @@ STATIC_DCL boolean FDECL(should_query_disclose_option, (int, char *));
 #if defined (DUMPLOG) || defined (DUMPHTML)
 STATIC_DCL void NDECL(dump_plines);
 #endif
-STATIC_DCL void FDECL(dump_everything, (int, time_t));
+STATIC_DCL void FDECL(dump_everything, (int, time_t, BOOLEAN_P));
 STATIC_DCL int NDECL(num_extinct);
 
 STATIC_DCL void FDECL(reset_objchn, (struct obj*));
@@ -889,9 +889,10 @@ dump_plines()
 
 /*ARGSUSED*/
 STATIC_OVL void
-dump_everything(how, when)
+dump_everything(how, when, is_snapshot)
 int how;
 time_t when; /* date+time at end of game */
+boolean is_snapshot;
 {
 #if defined (DUMPLOG) || defined (DUMPHTML)
     char pbuf[BUFSZ], datetimebuf[24]; /* [24]: room for 64-bit bogus value */
@@ -915,7 +916,8 @@ time_t when; /* date+time at end of game */
             &datetimebuf[0], &datetimebuf[4], &datetimebuf[6],
             &datetimebuf[8], &datetimebuf[10], &datetimebuf[12]);
     Strcpy(datetimebuf, yyyymmddhhmmss(when));
-    Sprintf(eos(pbuf), ", ended %4.4s-%2.2s-%2.2s %2.2s:%2.2s:%2.2s",
+    Sprintf(eos(pbuf), ", %s %4.4s-%2.2s-%2.2s %2.2s:%2.2s:%2.2s",
+            is_snapshot ? "snapshot at" : "ended",
             &datetimebuf[0], &datetimebuf[4], &datetimebuf[6],
             &datetimebuf[8], &datetimebuf[10], &datetimebuf[12]);
     putstr(0, ATR_SUBHEADING, pbuf);
@@ -998,6 +1000,9 @@ wiz_dumplog(VOID_ARGS)
         char htmlbuf[BUFSZ] = "";
         char* dumplogfilename = 0;
         char* htmldumplogfilename = 0;
+
+        dump_open_log(dumptime, TRUE);
+
 #if defined (DUMPLOG)
         dumplogfilename = print_dumplog_filename_to_buffer(buf);
 #endif
@@ -1008,14 +1013,49 @@ wiz_dumplog(VOID_ARGS)
             pline("Writing dumplog to %s...", dumplogfilename);
         if (htmldumplogfilename)
             pline("Writing HTML dumplog to %s...", htmldumplogfilename);
-        dump_open_log(dumptime);
-        dump_everything(ASCENDED, dumptime);
+
+        dump_everything(ASCENDED, dumptime, TRUE);
         dump_close_log();
         pline1("Done.");
     }
     else
 #endif
         pline(unavailcmd, visctrl((int)cmd_from_func(wiz_dumplog)));
+
+    return 0;
+}
+
+int
+dosnapshot(VOID_ARGS)
+{
+#if (defined (DUMPLOG) || defined (DUMPHTML)) && (defined(GNH_MOBILE) || defined(WIN32))
+    time_t dumptime = getnow();
+    //char buf[BUFSZ] = "";
+    //char htmlbuf[BUFSZ] = "";
+    //char* dumplogfilename = 0;
+    //char* htmldumplogfilename = 0;
+
+    dump_open_log(dumptime, TRUE);
+
+//#if defined (DUMPLOG)
+//    dumplogfilename = print_dumplog_filename_to_buffer(buf);
+//#endif
+//#if defined (DUMPHTML)
+//    htmldumplogfilename = print_dumphtml_filename_to_buffer(htmlbuf);
+//#endif
+
+    dump_everything(ASCENDED, dumptime, TRUE);
+    dump_close_log();
+
+#if !defined (GNH_MOBILE)
+    pline("Snapshot saved.");
+#else
+    //Send to GUI
+#endif
+
+#else
+    pline(unavailcmd, visctrl((int)cmd_from_func(dosnapshot)));
+#endif
 
     return 0;
 }
@@ -1858,7 +1898,7 @@ int how;
 
     /* Write dumplog */
     if (disclose_and_dumplog_ok)
-        dump_open_log(endtime);
+        dump_open_log(endtime, FALSE);
 
     char postbuf[BUFSZ * 3];
     Strcpy(postbuf, "");
@@ -2003,7 +2043,7 @@ int how;
         if (strcmp(flags.end_disclose, "none"))
             disclose(how, taken);
 
-        dump_everything(how, endtime);
+        dump_everything(how, endtime, FALSE);
     }
     else if (how != QUIT)
     {

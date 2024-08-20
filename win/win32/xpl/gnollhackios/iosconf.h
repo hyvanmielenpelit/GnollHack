@@ -26,10 +26,25 @@
 #undef SHELL				/* we do not support the '!' command */
 
 #if defined (DUMPLOG) || defined (DUMPHTML)
+#ifdef DUMPLOG_FILE
 #undef DUMPLOG_FILE
+#endif
 #define DUMPLOG_FILE        "dumplog/gnollhack.%n.%d.txt" /* Note: Actually the one in sysconf is used, not this one */
+
+#ifdef SNAPSHOT_FILE
+#undef SNAPSHOT_FILE
+#endif
+#define SNAPSHOT_FILE        "snapshot/gnollhack.%n.%d.%D.txt" /* Note: Actually the one in sysconf is used, not this one */
+
+#ifdef DUMPLOG_DIR
 #undef DUMPLOG_DIR
+#endif
 #define DUMPLOG_DIR        "dumplog" /* Note: this is just used to create a directory, DUMPLOG_FILE still needs to have the full path */
+
+#ifdef SNAPSHOT_DIR
+#undef SNAPSHOT_DIR
+#endif
+#define SNAPSHOT_DIR        "snapshot" /* Note: this is just used to create a directory, SNAPSHOT_FILE still needs to have the full path */
 #endif
 
 //#undef MAIL

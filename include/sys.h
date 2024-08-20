@@ -19,10 +19,12 @@ struct sysopt {
     char *debugfiles; /* files to show debugplines in. '*' is all. */
 #if defined (DUMPLOG)
     char *dumplogfile; /* where the dump file is saved */
-    char* dumplogurl;  /* url path for the above */
+    char *snapshotfile; /* where the snapshot file is saved */
+    char *dumplogurl;  /* url path for the above */
 #endif
 #ifdef DUMPHTML
     char* dumphtmlfile; /* where the html dump is saved */
+    char* snaphtmlfile; /* where the html snapshot is saved */
     char* dumphtmlfontname; /* font name for html dump */
 #ifdef DUMPHTML_WEBFONT_LINK
     char* dumphtmlfontlink; /* css web link for the font */

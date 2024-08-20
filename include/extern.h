@@ -1125,6 +1125,7 @@ void and_you_die();
 E int64_t NDECL(get_current_game_score);
 E int64_t NDECL(get_conduct_score_upon_ascension);
 E int NDECL(wiz_dumplog);
+E int NDECL(dosnapshot);
 E void FDECL(print_selfies, (winid, int));
 E void FDECL(print_knight_slayings, (winid, int));
 E void NDECL(reset_game);
@@ -1321,6 +1322,7 @@ E char* NDECL(gnh_lsof);
 E boolean FDECL(increase_file_descriptor_limit_to_at_least, (uint64_t));
 E int FDECL(get_file_descriptor_limit, (BOOLEAN_P));
 #endif
+E void NDECL(make_dumplog_dir);
 
 /* ### fountain.c ### */
 
@@ -4301,7 +4303,7 @@ E void FDECL(genl_update_cursor, (int, int, int));
 E int NDECL(genl_ui_has_input);
 E void FDECL(genl_exit_hack, (int));
 
-E void FDECL(dump_open_log, (time_t));
+E void FDECL(dump_open_log, (time_t, BOOLEAN_P));
 E void NDECL(dump_close_log);
 E void FDECL(dump_forward_putstr, (winid, int, const char*, int, int));
 #if defined (DUMPLOG) || defined (DUMPHTML)

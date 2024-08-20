@@ -616,6 +616,10 @@ typedef unsigned char uchar;
 */
 #endif
 
+#ifndef SNAPSHOT_FILE
+#define SNAPSHOT_FILE        "/tmp/gnollhack.%n.%d.%D.txt"
+#endif
+
 #endif
 
 #ifdef DUMPHTML

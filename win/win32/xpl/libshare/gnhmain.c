@@ -5,7 +5,6 @@
 #include "hack.h"
 #include "libproc.h"
 #include "dlb.h"
-extern void NDECL(make_dumplog_dir);
 extern void NDECL(gnh_umask);
 
 STATIC_DCL void FDECL(process_command_line_arguments, (int, char **));
