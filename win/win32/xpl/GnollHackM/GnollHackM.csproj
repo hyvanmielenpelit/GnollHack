@@ -159,6 +159,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\GHScreenFilter.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHScreenText.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\GHSkiaFontPaint.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\GHSnapshot.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHSoundTrack.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHStatusField.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHSubstring.cs" />
@@ -199,6 +200,7 @@
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\TopScorePage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\LibraryPage.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\MusicPage.xaml.cs" />
+		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\SnapshotPage.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\DisplayFilePage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\ReplayPage.xaml.cs" />
 		<None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\ImportExportPage.xaml.cs" />
@@ -313,6 +315,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\GHScreenText.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\GHSkiaFontPaint.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHSoundTrack.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\GHSnapshot.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHStatusField.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHSubstring.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHTopScoreItem.cs" />
@@ -353,6 +356,7 @@
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\TopScorePage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\LibraryPage.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\MusicPage.xaml.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\SnapshotPage.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\DisplayFilePage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\ReplayPage.xaml.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\ImportExportPage.xaml.cs" />

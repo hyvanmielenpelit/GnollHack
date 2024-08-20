@@ -110,6 +110,14 @@ namespace GnollHackX.Pages.Game
             _gamePage.GenericButton_Clicked(sender, e, 'O');
         }
 
+        private async void btnSnapshot_Clicked(object sender, EventArgs e)
+        {
+            MainLayout.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            await App.Current.MainPage.Navigation.PopModalAsync();
+            _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta(28));
+        }
+
         private async void btnSettings_Clicked(object sender, EventArgs e)
         {
             MainLayout.IsEnabled = false;

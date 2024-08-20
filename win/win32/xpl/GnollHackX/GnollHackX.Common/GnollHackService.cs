@@ -344,6 +344,7 @@ namespace GnollHackX.Unknown
             ClearTopScores();
             ClearSavedGames();
             ClearDumplogs();
+            ClearSnapshots();
         }
 
         public void ClearAllFilesInMainDirectory()
@@ -424,7 +425,35 @@ namespace GnollHackX.Unknown
                 DirectoryInfo disave = new DirectoryInfo(fulldirepath);
                 foreach (FileInfo file in disave.GetFiles())
                 {
-                    file.Delete();
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
+                }
+            }
+        }
+
+        public void ClearSnapshots()
+        {
+            string filesdir = GetGnollHackPath();
+            string fulldirepath = Path.Combine(filesdir, GHConstants.SnapshotDirectory);
+            if (Directory.Exists(fulldirepath))
+            {
+                DirectoryInfo disave = new DirectoryInfo(fulldirepath);
+                foreach (FileInfo file in disave.GetFiles())
+                {
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
                 }
             }
         }
@@ -437,7 +466,14 @@ namespace GnollHackX.Unknown
             {
                 if(file.Name.Length > 4 && file.Name.Substring(0, 4) == "bon-")
                 {
-                    file.Delete();
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(ex);
+                    }
                 }
             }
         }
@@ -542,7 +578,7 @@ namespace GnollHackX.Unknown
                 //}
 
                 /* Make relevant directories */
-                string[] ghdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory };
+                string[] ghdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory, GHConstants.SnapshotDirectory };
                 foreach (string ghdir in ghdirlist)
                 {
                     string fulldirepath = Path.Combine(filesdir, ghdir);

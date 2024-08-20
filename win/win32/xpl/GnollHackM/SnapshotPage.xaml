@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="Black"
              xmlns:controls="clr-namespace:GnollHackM" 
              xmlns:gnh="clr-namespace:GnollHackM"
-             x:Class="GnollHackM.LibraryPage">
+             x:Class="GnollHackM.SnapshotPage">
     
         <Grid x:Name="RootGrid" HorizontalOptions="Fill" VerticalOptions="Fill">
             <gnh:BackgroundView x:Name="bkgView" BackgroundStyle="Automatic" BackgroundBitmap="AutoMenuBackground" BorderStyle="Simple" HorizontalOptions="Fill" VerticalOptions="Fill"/>
@@ -15,20 +15,20 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Row="0" x:Name="lblHeader" Text="Library" HorizontalTextAlignment="Center" FontSize="23" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
+                <Label Grid.Row="0" x:Name="lblHeader" Text="Snapshots" HorizontalTextAlignment="Center" FontSize="23" FontAttributes="Bold" FontFamily="Diablo" TextColor="Black"
                     HorizontalOptions="CenterAndExpand" VerticalOptions="Fill" Margin="30,10,30,10" />
                 <Label Grid.Row="1" x:Name="lblSubtitle" TextColor="Black" Margin="1,2,1,6" BackgroundColor="Transparent" FontFamily="Immortal"
                        HorizontalOptions="CenterAndExpand" VerticalOptions="Fill" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
                 <Grid Grid.Row="2" MaximumWidthRequest="480" HorizontalOptions="Fill" VerticalOptions="Fill">
                     <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill">
-                        <StackLayout x:Name="LibraryLayout" Spacing="6" HorizontalOptions="Fill">
-                            <Label x:Name="EmptyLabel" IsVisible="False" Text="Your library is empty" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="18" TextColor="Black" FontFamily="Immortal"/>
+                        <StackLayout x:Name="SnapshotLayout" Spacing="6" HorizontalOptions="Fill">
+                            <Label x:Name="EmptyLabel" IsVisible="False" Text="There are no snapshots" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="18" TextColor="Black" FontFamily="Immortal"/>
                         </StackLayout>
                     </ScrollView>
                 </Grid>
                 <controls:CustomImageButton Grid.Row="3" x:Name="CloseButton" Text="Close" Margin="0,10,0,10" WidthRequest="280" HeightRequest="60" FontFamily="Diablo" FontSize="20" HorizontalOptions="Center" VerticalOptions="End" BackgroundColor="Transparent" TextColor="White"
                         Clicked="Button_Clicked" />
             </Grid>
-        </Grid>    
+        </Grid>
     
 </ContentPage>

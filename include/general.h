@@ -453,6 +453,7 @@ enum screen_text_types {
     SCREEN_TEXT_SPECIAL_END,
     SCREEN_TEXT_BOSS_FIGHT,
     SCREEN_TEXT_EXTRA_LIFE_SPENT,
+    SCREEN_TEXT_SNAPSHOT,
 };
 
 enum popup_text_types {

@@ -221,6 +221,8 @@ namespace GnollHackX
                     return SKColors.Yellow;
                 case (int)screen_text_types.SCREEN_TEXT_EXTRA_LIFE_SPENT:
                     return SKColors.Green;
+                case (int)screen_text_types.SCREEN_TEXT_SNAPSHOT:
+                    return TransparentGold;
                 default:
                     break;
             }

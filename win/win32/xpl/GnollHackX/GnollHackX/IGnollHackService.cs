@@ -22,6 +22,7 @@ namespace GnollHackX
         void ClearTopScores();
         void ClearSavedGames();
         void ClearDumplogs();
+        void ClearSnapshots();
         void ClearBones();
         void ClearAllFilesInMainDirectory();
         void GetGlyphArrays(out IntPtr gl2ti, out int size1, out IntPtr gltifl, out int gltifl_size);

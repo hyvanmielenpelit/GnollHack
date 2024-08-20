@@ -1053,8 +1053,14 @@ dosnapshot(VOID_ARGS)
 
     free(buf);
     free(htmlbuf);
-    pline("Snapshot taken.");
-
+    if (windowprocs.wincap2 & WC2_SCREEN_TEXT)
+    {
+        display_screen_text("Snapshot taken", (const char*)0, (const char*)0, SCREEN_TEXT_SNAPSHOT, ATR_NONE, NO_COLOR, 0UL);
+    }
+    else
+    {
+        pline("Snapshot taken.");
+    }
 #else
     pline(unavailcmd, visctrl((int)cmd_from_func(dosnapshot)));
 #endif
