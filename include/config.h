@@ -596,9 +596,15 @@ typedef unsigned char uchar;
 /* #define DUMPLOG */  /* End-of-game dump logs */
 #if defined(DUMPLOG) || defined(DUMPHTML)
 
+#ifndef SNAPJSON_FILE
+#define SNAPJSON_FILE        "/tmp/gnollhack.%n.%d.%D.json"
+#endif
+
 #ifndef DUMPLOG_MSG_COUNT
 #define DUMPLOG_MSG_COUNT   50
 #endif
+
+#if defined(DUMPLOG)
 
 #ifndef DUMPLOG_FILE
 #define DUMPLOG_FILE        "/tmp/gnollhack.%n.%d.txt"
@@ -620,9 +626,9 @@ typedef unsigned char uchar;
 #define SNAPSHOT_FILE        "/tmp/gnollhack.%n.%d.%D.txt"
 #endif
 
-#endif
+#endif /* DUMPLOG */
 
-#ifdef DUMPHTML
+#if defined (DUMPHTML)
 
 #ifndef DUMPHTML_FILE
 #define DUMPHTML_FILE        "/tmp/gnollhack.%n.%d.html"
@@ -630,7 +636,15 @@ typedef unsigned char uchar;
  * DUMPHTML_FILE is not used if SYSCF is defiined
  */
 #endif
+
+#ifndef SNAPHTML_FILE
+#define SNAPHTML_FILE        "/tmp/gnollhack.%n.%d.%D.html"
+#endif
+
 #endif /* DUMPHTML */
+
+#endif /* DUMPLOG || DUMPHTML */
+
 
 #define USE_ISAAC64 /* Use cross-plattform, bundled RNG */
 

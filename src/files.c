@@ -3870,6 +3870,13 @@ char *origbuf;
             sysopt.debugfiles = dupstr(bufp);
         }
     } 
+    else if (src == SET_IN_SYS && match_varname(buf, "SNAPJSONFILE", 12)) {
+#if defined (DUMPLOG) || defined (DUMPHTML)
+        if (sysopt.snapjsonfile)
+            free((genericptr_t)sysopt.snapjsonfile);
+        sysopt.snapjsonfile = dupstr(bufp);
+#endif
+    }
     else if (src == SET_IN_SYS && match_varname(buf, "DUMPLOGFILE", 7))
     {
 #if defined (DUMPLOG)

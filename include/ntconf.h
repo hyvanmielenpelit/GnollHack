@@ -30,6 +30,9 @@
 
 #define DUMPLOG      /* Enable dumplog files */
 #define DUMPHTML     /* Enable HTML dumplog files */
+#define ALLOW_SNAPSHOT
+#define WRITE_SNAPSHOT_JSON
+
 /*#define DUMPLOG_FILE "GnollHack-%n-%d.txt"*/
 #ifdef DUMPLOG_DIR
 #undef DUMPLOG_DIR

@@ -104,6 +104,7 @@ DUMPLOGFILE=/tmp/gnollhack.%n.%t.txt
 DUMPHTMLFILE=/tmp/gnollhack.%n.%t.html
 SNAPSHOTFILE=/tmp/gnollhack.%n.%t.%T.txt
 SNAPHTMLFILE=/tmp/gnollhack.%n.%t.%T.html
+SNAPJSONFILE=/tmp/gnollhack.%n.%t.%T.json
 
 # Use "Live logging" for in-game progress (achievements, wishes, etc)
 # Bitmask for kinds of things you want to log - combine the following values

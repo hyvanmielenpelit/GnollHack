@@ -26,6 +26,13 @@
 #undef SHELL				/* we do not support the '!' command */
 
 #if defined (DUMPLOG) || defined (DUMPHTML)
+#ifndef ALLOW_SNAPSHOT
+#define ALLOW_SNAPSHOT
+#endif
+#ifndef WRITE_SNAPSHOT_JSON
+#define WRITE_SNAPSHOT_JSON
+#endif
+
 #ifdef DUMPLOG_FILE
 #undef DUMPLOG_FILE
 #endif

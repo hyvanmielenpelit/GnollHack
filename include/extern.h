@@ -3973,6 +3973,8 @@ E int64_t FDECL(contained_gem_value, (struct obj*));
 
 /* ### version.c ### */
 
+E uint64_t NDECL(get_version_number);
+E uint64_t NDECL(get_version_compatibility);
 E char *FDECL(version_string, (char *));
 E char *FDECL(getversionstring, (char *));
 E int NDECL(doversion);
@@ -4303,6 +4305,7 @@ E void FDECL(genl_update_cursor, (int, int, int));
 E int NDECL(genl_ui_has_input);
 E void FDECL(genl_exit_hack, (int));
 
+E void FDECL(write_snapshot_json, (time_t, const char*, const char*));
 E void FDECL(dump_open_log, (time_t, BOOLEAN_P));
 E void NDECL(dump_close_log);
 E void FDECL(dump_forward_putstr, (winid, int, const char*, int, int));
@@ -4312,6 +4315,7 @@ E void NDECL(dump_start_screendump); /* defined in windows.c */
 E void NDECL(dump_end_screendump);
 E char* FDECL(dump_fmtstr, (const char*, char*));
 E void FDECL(dump_putstr_no_utf8, (winid, int, const char*));
+E char* FDECL(print_snapshot_json_filename_to_buffer, (char*));
 #ifdef DUMPLOG
 E char* FDECL(print_dumplog_filename_to_buffer, (char*));
 #endif

@@ -6237,7 +6237,7 @@ struct ext_func_tab extcmdlist[] = {
     { 'S', "skill", "view and advance skills", doskill, IFBURIED | AUTOCOMPLETE },
 #if defined (DUMPLOG) || defined (DUMPHTML)
     { M(28), "snapshot", "save a snapshot log", dosnapshot, IFBURIED
-#if defined (GNH_MOBILE) || defined (WIN32)
+#if defined (ALLOW_SNAPSHOT)
         | AUTOCOMPLETE
 #endif
     },
@@ -6327,8 +6327,7 @@ struct ext_func_tab extcmdlist[] = {
     { '\0', "wizlightsources", "show mobile light sources",
             wiz_light_sources, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 #if defined (DUMPLOG) || defined (DUMPHTML)
-    { '\0', "wizdumplog", "write the dumplog",
-            wiz_dumplog, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+    { '\0', "wizdumplog", "write the dumplog", wiz_dumplog, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 #endif
     { '\0', "wizmakemap", "recreate the current level",
             wiz_makemap, IFBURIED | WIZMODECMD },

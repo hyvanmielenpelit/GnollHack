@@ -996,23 +996,23 @@ wiz_dumplog(VOID_ARGS)
 #if defined (DUMPLOG) || defined (DUMPHTML)
     if (wizard) {
         time_t dumptime = getnow();
-        char buf[BUFSZ] = "";
-        char htmlbuf[BUFSZ] = "";
         char* dumplogfilename = 0;
         char* htmldumplogfilename = 0;
+        char buf[BUFSIZ] = "";
 
         dump_open_log(dumptime, TRUE);
 
 #if defined (DUMPLOG)
         dumplogfilename = print_dumplog_filename_to_buffer(buf);
 #endif
-#if defined (DUMPHTML)
-        htmldumplogfilename = print_dumphtml_filename_to_buffer(htmlbuf);
-#endif
-        if(dumplogfilename)
+        if (dumplogfilename)
             pline("Writing dumplog to %s...", dumplogfilename);
+
+#if defined (DUMPHTML)
+        htmldumplogfilename = print_dumphtml_filename_to_buffer(buf);
+#endif
         if (htmldumplogfilename)
-            pline("Writing HTML dumplog to %s...", htmldumplogfilename);
+            pline("Writing HTML dumplog to %s...", buf);
 
         dump_everything(ASCENDED, dumptime, TRUE);
         dump_close_log();
@@ -1028,30 +1028,32 @@ wiz_dumplog(VOID_ARGS)
 int
 dosnapshot(VOID_ARGS)
 {
-#if (defined (DUMPLOG) || defined (DUMPHTML)) && (defined(GNH_MOBILE) || defined(WIN32))
+#if (defined (DUMPLOG) || defined (DUMPHTML)) && defined(ALLOW_SNAPSHOT)
     time_t dumptime = getnow();
-    //char buf[BUFSZ] = "";
-    //char htmlbuf[BUFSZ] = "";
-    //char* dumplogfilename = 0;
-    //char* htmldumplogfilename = 0;
+    char* dumplogfilename = 0;
+    char* htmldumplogfilename = 0;
+    char* buf = (char*)alloc(BUFSIZ); /* BUFSIZ can be a big number, and perhaps cannot be allocated twice from the stack */
+    char* htmlbuf = (char*)alloc(BUFSIZ);
+    if (!buf || !htmlbuf)
+        return 0;
 
     dump_open_log(dumptime, TRUE);
 
-//#if defined (DUMPLOG)
-//    dumplogfilename = print_dumplog_filename_to_buffer(buf);
-//#endif
-//#if defined (DUMPHTML)
-//    htmldumplogfilename = print_dumphtml_filename_to_buffer(htmlbuf);
-//#endif
+#if defined (DUMPLOG)
+    dumplogfilename = print_dumplog_filename_to_buffer(buf);
+#endif
+#if defined (DUMPHTML)
+    htmldumplogfilename = print_dumphtml_filename_to_buffer(htmlbuf);
+#endif
 
     dump_everything(ASCENDED, dumptime, TRUE);
     dump_close_log();
 
-#if !defined (GNH_MOBILE)
-    pline("Snapshot saved.");
-#else
-    //Send to GUI
-#endif
+    write_snapshot_json(dumptime, dumplogfilename, htmldumplogfilename);
+
+    free(buf);
+    free(htmlbuf);
+    pline("Snapshot taken.");
 
 #else
     pline(unavailcmd, visctrl((int)cmd_from_func(dosnapshot)));

@@ -43,6 +43,9 @@ sys_early_init()
 #else
     sysopt.debugfiles = dupstr(DEBUGFILES);
 #endif
+#if defined (DUMPLOG) || defined (DUMPHTML)
+    sysopt.snapjsonfile = (char*)0;
+#endif
 #if defined (DUMPLOG)
     sysopt.dumplogfile = (char *) 0;
     sysopt.snapshotfile = (char*)0;
@@ -131,11 +134,17 @@ sysopt_release()
     if (sysopt.debugfiles)
         free((genericptr_t) sysopt.debugfiles),
         sysopt.debugfiles = (char *) 0;
+#if defined (DUMPLOG) || defined (DUMPHTML)
+    if (sysopt.snapjsonfile)
+        free((genericptr_t)sysopt.snapjsonfile), sysopt.snapjsonfile = (char*)0;
+#endif
 #if defined (DUMPLOG)
     if (sysopt.dumplogfile)
         free((genericptr_t)sysopt.dumplogfile), sysopt.dumplogfile=(char *)0;
     if (sysopt.snapshotfile)
         free((genericptr_t)sysopt.snapshotfile), sysopt.snapshotfile = (char*)0;
+    if (sysopt.dumplogurl)
+        free((genericptr_t)sysopt.dumplogurl), sysopt.dumplogurl = (char*)0;
 #endif
 #if defined (DUMPHTML)
     if (sysopt.dumphtmlfile)
