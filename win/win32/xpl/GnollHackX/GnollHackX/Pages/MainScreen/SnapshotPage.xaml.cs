@@ -86,17 +86,37 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     i++;
                     RowImageButton rib = new RowImageButton();
-                    rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.you.png";
+                    if(GHApp.Glyph2Tile != null && GHApp._tileMap[0] != null && snap.gnh_compatibility <= GHApp.GHVersionNumber)
+                    {
+                        GlyphImageSource gis = new GlyphImageSource();
+                        gis.Glyph = snap.gui_glyph;
+                        gis.AutoSize = true;
+                        rib.ImgGlyphImageSource = gis;
+                    }
+                    else
+                    {
+                        rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.you.png";
+                    }
                     rib.ImgHighFilterQuality = true;
                     rib.LblText = snap.name;
                     rib.LblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
-                    rib.LblFontSize = 17;
-                    rib.SubLblText = snap.character + Environment.NewLine 
-                        + snap.location + Environment.NewLine
-                        + snap.timing;
+                    rib.LblFontSize = 19;
+                    rib.SubLblText = snap.character;
+                    rib.SubLbl2Text = snap.location;
+                    rib.SubLbl3Text = snap.gamemode;
+                    rib.SubLbl4Text =  snap.timing;
                     rib.SubLblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                    rib.SubLbl2TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                    rib.SubLbl3TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                    rib.SubLbl4TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
                     rib.SubLblFontSize = 15;
+                    rib.SubLbl2FontSize = 15;
+                    rib.SubLbl3FontSize = 15;
+                    rib.SubLbl4FontSize = 15;
                     rib.IsSubLblVisible = true;
+                    rib.IsSubLbl2Visible = true;
+                    rib.IsSubLbl3Visible = true;
+                    rib.IsSubLbl4Visible = true;
                     rib.ImgWidth = 80;
                     rib.ImgHeight = 80;
                     rib.GridWidth = 480;

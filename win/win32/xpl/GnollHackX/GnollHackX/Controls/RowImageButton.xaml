@@ -7,25 +7,53 @@
              x:Class="GnollHackX.Controls.RowImageButton"
              x:DataType="controls:RowImageButton">
   <ContentView.Content>
-        <Grid x:Name="ViewGrid" CascadeInputTransparent="True" BindingContext="{x:Reference this}" Margin="{Binding GridMargin}" WidthRequest  ="{Binding GridWidth, FallbackValue='320'}" HeightRequest="{Binding GridHeight, FallbackValue='80'}" >
+        <Grid x:Name="ViewGrid" BindingContext="{x:Reference this}" Margin="{Binding GridMargin}" WidthRequest  ="{Binding GridWidth, FallbackValue='320'}" HeightRequest="{Binding GridHeight}" >
             <Grid VerticalOptions="Fill" HorizontalOptions="Fill" ColumnSpacing="6">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <gnh:GHCachedImage Grid.Column="0" x:Name="ViewImage" Source="{Binding ImgSourcePath}" HighFilterQuality="{Binding ImgHighFilterQuality}"
+                <gnh:GHCachedImage Grid.Column="0" x:Name="ViewImage" ActiveGlyphImageSource="{Binding ImgGlyphImageSource}" Source="{Binding ImgSourcePath}" HighFilterQuality="{Binding ImgHighFilterQuality}"
                                 WidthRequest="{Binding ImgWidth, FallbackValue='80'}" HeightRequest="{Binding ImgHeight, FallbackValue='80'}" 
-                                BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center" InputTransparent="True" />
+                                BackgroundColor="Transparent" VerticalOptions="Start" HorizontalOptions="Center">
+                    <gnh:GHCachedImage.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="ViewButton_Clicked"/>
+                    </gnh:GHCachedImage.GestureRecognizers>
+                </gnh:GHCachedImage>
                 <StackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center">
-                    <Label x:Name="ViewLabel" Text="{Binding LblText}" TextColor="{Binding LblTextColor}" FontFamily="Immortal" FontSize="{Binding LblFontSize, FallbackValue='14'}" 
-                       BackgroundColor="Transparent" VerticalOptions="Center" VerticalTextAlignment="Center" HorizontalOptions="Start" HorizontalTextAlignment="Start" 
-                       InputTransparent="True" />
-                    <Label x:Name="SubViewLabel" IsVisible="{Binding IsSubLblVisible}" Text="{Binding SubLblText}" TextColor="{Binding SubLblTextColor}" FontFamily="Immortal" FontSize="{Binding SubLblFontSize, FallbackValue='13'}" 
-                       BackgroundColor="Transparent" VerticalOptions="Center" VerticalTextAlignment="Center" HorizontalOptions="Start" HorizontalTextAlignment="Start" 
-                       InputTransparent="True" />
+                    <Label x:Name="ViewLabel" Text="{Binding LblText}" TextColor="{Binding LblTextColor}" FontFamily="{Binding LblFontFamily}" FontSize="{Binding LblFontSize, FallbackValue='14'}" 
+                       BackgroundColor="Transparent" VerticalOptions="Center" VerticalTextAlignment="Center" HorizontalOptions="Start" HorizontalTextAlignment="Start">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="ViewButton_Clicked"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label x:Name="SubViewLabel" IsVisible="{Binding IsSubLblVisible}" Text="{Binding SubLblText}" TextColor="{Binding SubLblTextColor}" FontFamily="{Binding SubLblFontFamily}" FontSize="{Binding SubLblFontSize, FallbackValue='13'}" 
+                       BackgroundColor="Transparent" VerticalOptions="Center" VerticalTextAlignment="Center" HorizontalOptions="Start" HorizontalTextAlignment="Start">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="ViewButton_Clicked"/>
+                        </Label.GestureRecognizers>
+                        </Label>
+                        <Label x:Name="SubViewLabel2" IsVisible="{Binding IsSubLbl2Visible}" Text="{Binding SubLbl2Text}" TextColor="{Binding SubLbl2TextColor}" FontFamily="{Binding SubLbl2FontFamily}" FontSize="{Binding SubLbl2FontSize, FallbackValue='13'}" 
+                       BackgroundColor="Transparent" VerticalOptions="Center" VerticalTextAlignment="Center" HorizontalOptions="Start" HorizontalTextAlignment="Start">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="ViewButton_Clicked"/>
+                        </Label.GestureRecognizers>
+                        </Label>
+                    <Label x:Name="SubViewLabel3" IsVisible="{Binding IsSubLbl3Visible}" Text="{Binding SubLbl3Text}" TextColor="{Binding SubLbl3TextColor}" FontFamily="{Binding SubLbl3FontFamily}" FontSize="{Binding SubLbl3FontSize, FallbackValue='13'}" 
+                       BackgroundColor="Transparent" VerticalOptions="Center" VerticalTextAlignment="Center" HorizontalOptions="Start" HorizontalTextAlignment="Start">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="ViewButton_Clicked"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Label x:Name="SubViewLabel4" IsVisible="{Binding IsSubLbl4Visible}" Text="{Binding SubLbl4Text}" TextColor="{Binding SubLbl4TextColor}" FontFamily="{Binding SubLbl4FontFamily}" FontSize="{Binding SubLbl4FontSize, FallbackValue='13'}" 
+                       BackgroundColor="Transparent" VerticalOptions="Center" VerticalTextAlignment="Center" HorizontalOptions="Start" HorizontalTextAlignment="Start">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="ViewButton_Clicked"/>
+                        </Label.GestureRecognizers>
+                    </Label>
                 </StackLayout>
             </Grid>
-            <gnh:NoTabStopButton x:Name="ViewButton" Text="" BackgroundColor="Transparent" VerticalOptions="Fill" HorizontalOptions="Fill" />
+            <gnh:NoTabStopButton Text="" x:Name="ViewButton" Clicked="ViewButton_Clicked" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill" />
         </Grid>
     </ContentView.Content>
 </ContentView>

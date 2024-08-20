@@ -257,6 +257,28 @@ namespace GnollHackX
             MirroredMiddleMouseCommand = Preferences.Get("MiddleMouseCommand", GHConstants.DefaultMiddleMouseCommand);
         }
 
+        public static void MaybeFixRects(ref SKRect source, ref SKRect dest, float targetscale, bool usingGL)
+        {
+            if (usingGL && FixRects)
+            {
+                //if (targetscale <= 0)
+                //    targetscale = 1.0f;
+
+                if (source.Width > 0.02f)
+                {
+                    source.Left += 0.01f;
+                    source.Right -= 0.01f;
+                }
+                if (source.Height > 0.02f)
+                {
+                    source.Top += 0.01f;
+                    source.Bottom -= 0.01f;
+                }
+                dest.Right += 1.0f;
+                dest.Bottom += 1.0f;
+            }
+        }
+
         public static void LoadCustomCursor()
         {
 #if WINDOWS
