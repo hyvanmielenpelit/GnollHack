@@ -5,7 +5,6 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
 
 #if GNH_MAUI
 using GnollHackX;
@@ -13,6 +12,7 @@ using GnollHackM;
 #else
 using GnollHackX.Pages.Game;
 using Xamarin.Forms;
+using Xamarin.Essentials;
 #endif
 using SkiaSharp;
 
@@ -342,7 +342,7 @@ namespace GnollHackX
             if (GHApp.Glyph2Tile != null && GHApp._tileMap[0] != null && abs_glyph > 0 && CanvasWidth > 0 && CanvasHeight > 0 && abs_glyph < GHApp.NumberOfGlyphs)
             {
                 GamePage refPage = ReferenceGamePage;
-                bool drawwallends = refPage != null ? refPage.DrawWallEnds : Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
+                bool drawwallends = refPage != null ? refPage.DrawWallEnds : GHApp.DrawWallEnds;
                 byte glyphflags = GHApp.GlyphTileFlags[abs_glyph];
                 bool tileflag_halfsize = (glyphflags & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_HALF_SIZED_TILE) != 0;
                 bool tileflag_fullsizeditem = (glyphflags & (byte)glyph_tile_flags.GLYPH_TILE_FLAG_FULL_SIZED_ITEM) != 0;

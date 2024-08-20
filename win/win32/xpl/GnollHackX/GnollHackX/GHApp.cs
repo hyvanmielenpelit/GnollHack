@@ -172,6 +172,7 @@ namespace GnollHackX
             LastUsedTournamentPlayerName = Preferences.Get("LastUsedTournamentPlayerName", "");
             GUITipsShown = Preferences.Get("GUITipsShown", false);
             RealPlayTime = Preferences.Get("RealPlayTime", 0L);
+            DrawWallEnds = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
 
             SetAvailableGPUCacheLimits(TotalMemory);
             PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
@@ -525,6 +526,10 @@ namespace GnollHackX
         private static readonly object _fixRectLock = new object();
         private static bool _fixRects = false;
         public static bool FixRects { get { lock (_fixRectLock) { return _fixRects; } } set { lock (_fixRectLock) { _fixRects = value; } } }
+
+        private static readonly object _drawWallEndsLock = new object();
+        private static bool _drawWallEnds = GHConstants.DefaultDrawWallEnds;
+        public static bool DrawWallEnds { get { lock (_drawWallEndsLock) { return _drawWallEnds; } } set { lock (_drawWallEndsLock) { _drawWallEnds = value; } } }
 
         public static bool BatterySavingMode { get; set; }
 
