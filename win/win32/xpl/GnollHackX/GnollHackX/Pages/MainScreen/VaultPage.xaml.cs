@@ -215,7 +215,7 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
             var snapPage = new SnapshotPage();
             snapPage.LoadSnapshots();
-            await App.Current.MainPage.Navigation.PushModalAsync(snapPage);
+            await GHApp.Navigation.PushModalAsync(snapPage);
             VaultLayout.IsEnabled = true;
         }
 
