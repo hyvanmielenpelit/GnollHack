@@ -3205,31 +3205,10 @@ const char* dumphtml_filepath;
         fprintf(snapjson_file, "  \"dumphtml\": \"%s\",\n", dumphtml_filepath ? dumphtml_filepath : "");
         
         schar dgn_depth = depth(&u.uz);
-        char namebuf[BUFSZ], characterbuf[BUFSZ], alignbuf[BUFSZ], genderwithspacebuf[BUFSZ], racebuf[BUFSZ], rolebuf[BUFSZ];
-        char tmpbuf[BUFSZ], timebuf[BUFSZ] = "";
-        strcpy_capitalized_for_title(alignbuf, aligns[1 - u.ualign.type].adj);
-        strcpy_capitalized_for_title(racebuf, races[urace.racenum].adj);
-        if (roles[urole.rolenum].name.f)
-        {
-            Strcpy(genderwithspacebuf, "");
-            if (Ufemale)
-            {
-                strcpy_capitalized_for_title(rolebuf, roles[urole.rolenum].name.f);
-            }
-            else
-                strcpy_capitalized_for_title(rolebuf, roles[urole.rolenum].name.m);
-        }
-        else
-        {
-            Sprintf(tmpbuf, "%s ", genders[Ufemale].adj);
-            strcpy_capitalized_for_title(genderwithspacebuf, tmpbuf);
-            strcpy_capitalized_for_title(rolebuf, roles[urole.rolenum].name.m);
-        }
-
-        char adventuringbuf[BUFSZ], lvlbuf[BUFSZ], dgnbuf[BUFSZ], totallevelbuf[BUFSZ] = "";
-        boolean has_lvl_name = FALSE;
-
+        char characterbuf[BUFSZ] = "", adventuringbuf[BUFSZ] = "";
+        char playingbuf[BUFSZ] = "", savedbuf[BUFSZ] = "";
         char level_name_buf[BUFSZ] = "";
+
         s_level* slev = Is_special(&u.uz);
         mapseen* mptr = 0;
         if (slev)
@@ -3240,30 +3219,35 @@ const char* dumphtml_filepath;
             Sprintf(level_name_buf, "%s", slev->name);
         }
 
-        print_dgnlvl_buf(lvlbuf, dgnbuf, level_name_buf, dungeons[u.uz.dnum].dname, (int)u.uz.dlevel, &has_lvl_name);
+        print_character_description(characterbuf, u.ulevel, urole.rolenum, urace.racenum, Ufemale, u.ualign.type, "");
+        print_location_description(adventuringbuf, level_name_buf, dungeons[u.uz.dnum].dname, (int)u.uz.dlevel, dgn_depth, "");
+        print_mode_duration_description(playingbuf, context.game_difficulty, moves, wizard, discover, ModernMode, CasualMode, flags.non_scoring, TournamentMode, "");
+        print_timestamp_description(savedbuf, "Snapshot was taken on", now, "");
 
-        if (!has_lvl_name && dgn_depth != (schar)u.uz.dlevel)
-            Sprintf(totallevelbuf, ", which is dungeon level %d", dgn_depth);
+        //print_dgnlvl_buf(lvlbuf, dgnbuf, level_name_buf, dungeons[u.uz.dnum].dname, (int)u.uz.dlevel, &has_lvl_name);
 
-        char playingbuf[BUFSZ], savedbuf[BUFSZ];
-        Sprintf(characterbuf, "Level %d %s %s%s %s", u.ulevel, alignbuf, genderwithspacebuf, racebuf, rolebuf);
-        Sprintf(adventuringbuf, "Adventuring %s%s%s", lvlbuf, dgnbuf, totallevelbuf);
-        Sprintf(playingbuf, "Playing at %s difficulty in %s mode for %lld turns", get_game_difficulty_text(context.game_difficulty),
-            get_game_mode_text_core(wizard, discover, ModernMode, CasualMode, flags.non_scoring, TournamentMode, TRUE),
-            (long long)moves);
-        time_t stamp = (time_t)now;
-        char* timestr = ctime(&stamp);
-        if (timestr && *timestr)
-        {
-            Strncpy(timebuf, timestr, strlen(timestr) - 1);
-            timebuf[strlen(timestr) - 1] = 0;
-        }
-        else
-        {
-            Strcpy(timebuf, "unknown date");
-        }
+        //if (!has_lvl_name && dgn_depth != (schar)u.uz.dlevel)
+        //    Sprintf(totallevelbuf, ", which is dungeon level %d", dgn_depth);
 
-        Sprintf(savedbuf, "Snapshot was taken on %s", timebuf);
+        //Sprintf(characterbuf, "Level %d %s %s%s %s", u.ulevel, alignbuf, genderwithspacebuf, racebuf, rolebuf);
+        //Sprintf(adventuringbuf, "Adventuring %s%s%s", lvlbuf, dgnbuf, totallevelbuf);
+        //Sprintf(playingbuf, "Playing at %s difficulty in %s mode for %lld turns", get_game_difficulty_text(context.game_difficulty),
+        //    get_game_mode_text_core(wizard, discover, ModernMode, CasualMode, flags.non_scoring, TournamentMode, TRUE),
+        //    (long long)moves);
+        //time_t stamp = (time_t)now;
+        //char* timestr = ctime(&stamp);
+        //if (timestr && *timestr)
+        //{
+        //    Strncpy(timebuf, timestr, strlen(timestr) - 1);
+        //    timebuf[strlen(timestr) - 1] = 0;
+        //}
+        //else
+        //{
+        //    Strcpy(timebuf, "unknown date");
+        //}
+
+        //Sprintf(savedbuf, "Snapshot was taken on %s", timebuf);
+
         int uglyph = u_to_glyph();
         int absglyph = abs(uglyph);
         int guiglyph = maybe_get_replaced_glyph(absglyph, u.ux, u.uy, data_to_replacement_info(absglyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, 0UL, MAT_NONE, 0));
@@ -3287,7 +3271,7 @@ const char* dumphtml_filepath;
         fprintf(snapjson_file, "  \"tournament\": %d,\n", (int)TournamentMode);
         fprintf(snapjson_file, "  \"nonscoring\": %d,\n", (int)flags.non_scoring);
         fprintf(snapjson_file, "  \"collapses\": %llu,\n", (unsigned long long)n_game_recoveries);
-        fprintf(snapjson_file, "  \"timestamp\": %lld,\n", (long long)stamp);
+        fprintf(snapjson_file, "  \"timestamp\": %lld,\n", (long long)now);
 
         fprintf(snapjson_file, "  \"character\": \"%s\",\n", characterbuf);
         fprintf(snapjson_file, "  \"location\": \"%s\",\n", adventuringbuf);
