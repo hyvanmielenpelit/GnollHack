@@ -2177,7 +2177,7 @@ boolean onoff_flag;
 #ifdef STATUS_HILITES
             botl_save_hilites();
 #endif
-            status_finish(); // 
+            status_finish();
             windowprocs.win_create_nhwindow_ex = dump_create_nhwindow_ex;
             windowprocs.win_clear_nhwindow = dump_clear_nhwindow;
             windowprocs.win_display_nhwindow = dump_display_nhwindow;
@@ -2201,7 +2201,9 @@ boolean onoff_flag;
             botl_restore_hilites();
 #endif
         } else {
+            status_finish();
             windowprocs = dumplog_windowprocs_backup;
+            status_initialize(FALSE);
         }
         iflags.in_dumplog = onoff_flag;
     } else {

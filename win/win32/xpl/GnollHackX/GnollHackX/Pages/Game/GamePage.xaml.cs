@@ -10254,7 +10254,7 @@ namespace GnollHackX.Pages.Game
                             skillbuttonok = false;
 
                         /* HP and MP */
-                        if ((ShowOrbs | !ClassicStatusBar) && orbsok)
+                        if ((ShowOrbs || !ClassicStatusBar) && orbsok)
                         {
                             float orbfillpercentage = 0.0f;
                             string valtext = "";
