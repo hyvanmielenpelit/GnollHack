@@ -92,7 +92,10 @@ namespace GnollHackX.Pages.Game
 
         private object _isMainCanvasOnLock = new object();
         private bool _isMainCanvasOn = false;
+        private bool _isMainCanvasDrawing = false;
         public bool IsMainCanvasOn { get { lock (_isMainCanvasOnLock) { return _isMainCanvasOn; } } set { lock (_isMainCanvasOnLock) { _isMainCanvasOn = value; } } }
+        public bool IsMainCanvasDrawing { get { lock (_isMainCanvasOnLock) { return _isMainCanvasDrawing; } } set { lock (_isMainCanvasOnLock) { _isMainCanvasDrawing = value; } } }
+        public bool IsMainCanvasDrawingAndSetTrue { get { lock (_isMainCanvasOnLock) { bool val = _isMainCanvasDrawing; _isMainCanvasDrawing = true; return val; } } }
 
         private readonly string _fontSizeString = "FontS";
         private bool _refreshMsgHistoryRowCounts = true;
@@ -4281,6 +4284,9 @@ namespace GnollHackX.Pages.Game
             if (MenuGrid.IsVisible || TextGrid.IsVisible || MoreCommandsGrid.IsVisible)
                 return;
 
+            if (IsMainCanvasDrawingAndSetTrue) /* In the case of some sort of reentrancy or new draw before previous is finished */
+                return;
+
             PaintMainGamePage(sender, e);
 
             lock (_mainFPSCounterLock)
@@ -4296,6 +4302,7 @@ namespace GnollHackX.Pages.Game
 
             /* Finally, flush */
             canvas.Flush();
+            IsMainCanvasDrawing = false;
         }
 
         private float[] _gridIntervals = { 2.0f, 2.0f };
@@ -6986,9 +6993,8 @@ namespace GnollHackX.Pages.Game
                                                         bool dodarkening = true;
                                                         using (SKCanvas darkeningCanvas = new SKCanvas(_paintBitmap))
                                                         {
-                                                            for (int dc_idx = 0; dc_idx < _drawCommandList.Count; dc_idx++)
+                                                            foreach (GHDrawCommand dc in _drawCommandList)
                                                             {
-                                                                GHDrawCommand dc = _drawCommandList[dc_idx];
                                                                 if (dc.EndDarkening)
                                                                 {
                                                                     dodarkening = false;
