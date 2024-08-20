@@ -100,6 +100,21 @@ namespace GnollHackX.Pages.MainScreen
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
             rib.BtnClicked += btnSoundTracks_Clicked;
             VaultLayout.Children.Add(rib);
+
+            rib = new LabeledImageButton();
+            rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.you.png";
+            rib.ImgHighFilterQuality = true;
+            rib.LblText = "Snapshots";
+            rib.LblFontSize = 20;
+            rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            rib.LblFontFamily = "Immortal";
+            rib.ImgWidth = 120;
+            rib.ImgHeight = 120;
+            rib.GridWidth = 200;
+            rib.GridHeight = 150;
+            rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.BtnClicked += btnSnapshots_Clicked;
+            VaultLayout.Children.Add(rib);
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
@@ -191,6 +206,16 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
             var musicPage = new MusicPage();
             await GHApp.Navigation.PushModalAsync(musicPage);
+            VaultLayout.IsEnabled = true;
+        }
+
+        private async void btnSnapshots_Clicked(object sender, EventArgs e)
+        {
+            VaultLayout.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            var snapPage = new SnapshotPage();
+            snapPage.LoadSnapshots();
+            await App.Current.MainPage.Navigation.PushModalAsync(snapPage);
             VaultLayout.IsEnabled = true;
         }
 

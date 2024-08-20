@@ -3870,6 +3870,13 @@ char *origbuf;
             sysopt.debugfiles = dupstr(bufp);
         }
     } 
+    else if (src == SET_IN_SYS && match_varname(buf, "SNAPJSONFILE", 12)) {
+#if defined (DUMPLOG) || defined (DUMPHTML)
+        if (sysopt.snapjsonfile)
+            free((genericptr_t)sysopt.snapjsonfile);
+        sysopt.snapjsonfile = dupstr(bufp);
+#endif
+    }
     else if (src == SET_IN_SYS && match_varname(buf, "DUMPLOGFILE", 7))
     {
 #if defined (DUMPLOG)
@@ -3878,11 +3885,26 @@ char *origbuf;
         sysopt.dumplogfile = dupstr(bufp);
 #endif
     }
+    else if (src == SET_IN_SYS && match_varname(buf, "SNAPSHOTFILE", 8))
+    {
+#if defined (DUMPLOG)
+        if (sysopt.snapshotfile)
+            free((genericptr_t)sysopt.snapshotfile);
+        sysopt.snapshotfile = dupstr(bufp);
+#endif
+    }
     else if (src == SET_IN_SYS && match_varname(buf, "DUMPHTMLFILE", 12)) {
 #if defined (DUMPHTML)
         if (sysopt.dumphtmlfile)
             free((genericptr_t)sysopt.dumphtmlfile);
         sysopt.dumphtmlfile = dupstr(bufp);
+#endif
+    }
+    else if (src == SET_IN_SYS && match_varname(buf, "SNAPHTMLFILE", 12)) {
+#if defined (DUMPHTML)
+        if (sysopt.snaphtmlfile)
+            free((genericptr_t)sysopt.snaphtmlfile);
+        sysopt.snaphtmlfile = dupstr(bufp);
 #endif
     }
     else if (src == SET_IN_SYS && match_varname(buf, "DUMPHTMLFONTNAME", 16)) {
@@ -3894,7 +3916,7 @@ char *origbuf;
     }
     else if (src == SET_IN_SYS && match_varname(buf, "DUMPHTMLFONTLINK", 16)) {
 #if defined (DUMPHTML) && defined (DUMPHTML_WEBFONT_LINK)
-        if (sysopt.dumphtmlfile)
+        if (sysopt.dumphtmlfontlink)
             free((genericptr_t)sysopt.dumphtmlfontlink);
         sysopt.dumphtmlfontlink = dupstr(bufp);
 #endif
@@ -6557,5 +6579,39 @@ out_error:
     errno = saved_errno;
     return -1;
 }
+
+void
+make_dumplog_dir(VOID_ARGS)
+{
+#if (defined(DUMPLOG) || defined(DUMPHTML))
+#if defined(DUMPLOG_DIR)
+    /* Make DUMPLOG_DIR if defined */
+    struct stat st = { 0 };
+
+    if (stat(DUMPLOG_DIR, &st) == -1)
+    {
+#if WIN32
+        (void)mkdir(DUMPLOG_DIR);
+#else
+        (void)mkdir(DUMPLOG_DIR, 0700);
+#endif
+    }
+#endif
+#if defined(SNAPSHOT_DIR)
+    /* Make SNAPSHOT_DIR if defined */
+    struct stat st2 = { 0 };
+
+    if (stat(SNAPSHOT_DIR, &st2) == -1)
+    {
+#if WIN32
+        (void)mkdir(SNAPSHOT_DIR);
+#else
+        (void)mkdir(SNAPSHOT_DIR, 0700);
+#endif
+    }
+#endif
+#endif
+}
+
 
 /*files.c*/

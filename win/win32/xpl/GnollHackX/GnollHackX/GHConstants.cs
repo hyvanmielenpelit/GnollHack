@@ -657,6 +657,7 @@ namespace GnollHackX
         SCREEN_TEXT_SPECIAL_END,
         SCREEN_TEXT_BOSS_FIGHT,
         SCREEN_TEXT_EXTRA_LIFE_SPENT,
+        SCREEN_TEXT_SNAPSHOT,
     }
 
     public enum game_cursor_types
@@ -1776,6 +1777,7 @@ namespace GnollHackX
         public const string AppLogFileName = "ghlog.txt";
         public const string SaveDirectory = "save";
         public const string DumplogDirectory = "dumplog";
+        public const string SnapshotDirectory = "snapshot";
         public const string ReplayDirectory = "replay";
         public const string ReplayDownloadFromCloudDirectory = "replay-cloud";
         public const string ArchiveDirectory = "archive"; /* Directory for sharable archives and files; cleaned and deleted at program start */

@@ -6235,6 +6235,13 @@ struct ext_func_tab extcmdlist[] = {
     },
     { C('s'), "sit", "sit down", dosit, AUTOCOMPLETE | INCMDMENU },
     { 'S', "skill", "view and advance skills", doskill, IFBURIED | AUTOCOMPLETE },
+#if defined (DUMPLOG) || defined (DUMPHTML)
+    { M(28), "snapshot", "save a snapshot log", dosnapshot, IFBURIED
+#if defined (ALLOW_SNAPSHOT)
+        | AUTOCOMPLETE
+#endif
+    },
+#endif
     { '\0', "sortspells", "sort known spells", dosortspell, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
     { M(7), "stash", "stash an item into a container",
         dostash, SINGLE_OBJ_CMD_GENERAL, 0, 
@@ -6320,8 +6327,7 @@ struct ext_func_tab extcmdlist[] = {
     { '\0', "wizlightsources", "show mobile light sources",
             wiz_light_sources, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 #if defined (DUMPLOG) || defined (DUMPHTML)
-    { '\0', "wizdumplog", "write the dumplog",
-            wiz_dumplog, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+    { '\0', "wizdumplog", "write the dumplog", wiz_dumplog, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 #endif
     { '\0', "wizmakemap", "recreate the current level",
             wiz_makemap, IFBURIED | WIZMODECMD },

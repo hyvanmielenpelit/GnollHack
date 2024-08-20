@@ -1452,6 +1452,23 @@ uint64_t *colormasks UNUSED;
 STATIC_VAR struct window_procs dumplog_windowprocs_backup;
 STATIC_VAR int menu_headings_backup;
 STATIC_VAR time_t dumplog_now;
+STATIC_VAR boolean dumplog_is_snapshot;
+
+char*
+print_snapshot_json_filename_to_buffer(buf)
+char* buf;
+{
+    char* fname;
+
+#ifdef SYSCF
+    if (!sysopt.snapjsonfile)
+        return 0;
+    fname = dump_fmtstr(sysopt.snapjsonfile, buf);
+#else
+    fname = dump_fmtstr(SNAPJSON_FILE, buf);
+#endif
+    return fname;
+}
 
 #ifdef DUMPLOG
 char*
@@ -1461,24 +1478,12 @@ char* buf;
     char* fname;
 
 #ifdef SYSCF
-    if (!sysopt.dumplogfile)
+    char* used_sysopt_file = dumplog_is_snapshot ? sysopt.snapshotfile : sysopt.dumplogfile;
+    if (!used_sysopt_file)
         return 0;
-    fname = dump_fmtstr(sysopt.dumplogfile, buf);
-#elif defined(ANDROID)
-    if (iflags.dumplog)
-    {
-        char buf_[BUFSZ];
-        dump_fmtstr(DUMPLOG_FILE, buf_);
-        and_get_dumplog_dir(buf);
-        if (strlen(buf_) + strlen(buf) < BUFSZ - 1)
-            fname = strcat(buf, buf_);
-        else
-            fname = strcpy(buf, buf_);
-    }
-    else
-        fname = 0;
+    fname = dump_fmtstr(used_sysopt_file, buf);
 #else
-    fname = dump_fmtstr(DUMPLOG_FILE, buf);
+    fname = dump_fmtstr(dumplog_is_snapshot ? SNAPSHOT_FILE : DUMPLOG_FILE, buf);
 #endif
     return fname;
 }
@@ -1492,24 +1497,12 @@ char* buf;
     char* fname;
 
 #ifdef SYSCF
-    if (!sysopt.dumphtmlfile)
+    char* used_sysopt_htmlfile = dumplog_is_snapshot ? sysopt.snaphtmlfile : sysopt.dumphtmlfile;
+    if (!used_sysopt_htmlfile)
         return 0;
-    fname = dump_fmtstr(sysopt.dumphtmlfile, buf);
-#elif defined(ANDROID)
-    if (iflags.dumplog)
-    {
-        char buf_[BUFSZ];
-        dump_fmtstr(DUMPHTML_FILE, buf_);
-        and_get_dumplog_dir(buf);
-        if (strlen(buf_) + strlen(buf) < BUFSZ - 1)
-            fname = strcat(buf, buf_);
-        else
-            fname = strcpy(buf, buf_);
-    }
-    else
-        fname = 0;
+    fname = dump_fmtstr(used_sysopt_htmlfile, buf);
 #else
-    fname = dump_fmtstr(DUMPHTML_FILE, buf);
+    fname = dump_fmtstr(dumplog_is_snapshot ? SNAPHTML_FILE : DUMPHTML_FILE, buf);
 #endif
     return fname;
 }
@@ -2184,7 +2177,7 @@ boolean onoff_flag;
 #ifdef STATUS_HILITES
             botl_save_hilites();
 #endif
-            status_finish(); // 
+            status_finish();
             windowprocs.win_create_nhwindow_ex = dump_create_nhwindow_ex;
             windowprocs.win_clear_nhwindow = dump_clear_nhwindow;
             windowprocs.win_display_nhwindow = dump_display_nhwindow;
@@ -2208,7 +2201,9 @@ boolean onoff_flag;
             botl_restore_hilites();
 #endif
         } else {
+            status_finish();
             windowprocs = dumplog_windowprocs_backup;
+            status_initialize(FALSE);
         }
         iflags.in_dumplog = onoff_flag;
     } else {
@@ -3116,8 +3111,9 @@ dump_end_screendump()
 
 
 void
-dump_open_log(now)
+dump_open_log(now, is_snapshot)
 time_t now;
+boolean is_snapshot;
 {
 #if defined (DUMPLOG) || defined (DUMPHTML)
     char buf[BUFSZ];
@@ -3125,6 +3121,7 @@ time_t now;
     boolean fileexists = FALSE;
 
     dumplog_now = now;
+    dumplog_is_snapshot = is_snapshot;
 #ifdef DUMPLOG
     fname = print_dumplog_filename_to_buffer(buf);
     if (fname)
@@ -3181,6 +3178,120 @@ int no_forward, app;
         putstr_ex(win, str, attr, NO_COLOR, app);
 }
 
+void
+write_snapshot_json(now, dumplog_filepath, dumphtml_filepath)
+time_t now;
+const char* dumplog_filepath;
+const char* dumphtml_filepath;
+{
+#if (defined (DUMPLOG) || defined (DUMPHTML)) && defined(WRITE_SNAPSHOT_JSON)
+    char buf[BUFSZ];
+    char* fname;
+    FILE* snapjson_file = 0;
+
+    dumplog_now = now;
+    fname = print_snapshot_json_filename_to_buffer(buf);
+    if (fname)
+        snapjson_file = fopen(fname, "w");
+
+    if (snapjson_file != 0)
+    {
+        fprintf(snapjson_file, "{\n");
+        fprintf(snapjson_file, "  \"version\": %d,\n", 1);
+        fprintf(snapjson_file, "  \"gnh_version\": %llu,\n", (unsigned long long)get_version_number());
+        fprintf(snapjson_file, "  \"gnh_compatibility\": %llu,\n", (unsigned long long)get_version_compatibility());
+
+        fprintf(snapjson_file, "  \"name\": \"%s\",\n", plname);
+
+        fprintf(snapjson_file, "  \"dumplog\": \"%s\",\n", dumplog_filepath ? dumplog_filepath : "");
+        fprintf(snapjson_file, "  \"dumphtml\": \"%s\",\n", dumphtml_filepath ? dumphtml_filepath : "");
+        
+        schar dgn_depth = depth(&u.uz);
+        char characterbuf[BUFSZ] = "", adventuringbuf[BUFSZ] = "";
+        char playingbuf[BUFSZ] = "", savedbuf[BUFSZ] = "";
+        char level_name_buf[BUFSZ] = "";
+
+        s_level* slev = Is_special(&u.uz);
+        mapseen* mptr = 0;
+        if (slev)
+            mptr = find_mapseen(&u.uz);
+
+        if (slev && mptr && mptr->flags.special_level_true_nature_known)
+        {
+            Sprintf(level_name_buf, "%s", slev->name);
+        }
+
+        print_character_description(characterbuf, u.ulevel, urole.rolenum, urace.racenum, Ufemale, u.ualign.type, "");
+        print_location_description(adventuringbuf, level_name_buf, dungeons[u.uz.dnum].dname, (int)u.uz.dlevel, dgn_depth, "");
+        print_mode_duration_description(playingbuf, context.game_difficulty, moves, wizard, discover, ModernMode, CasualMode, flags.non_scoring, TournamentMode, "");
+        print_timestamp_description(savedbuf, "Snapshot was taken on", now, "");
+
+        //print_dgnlvl_buf(lvlbuf, dgnbuf, level_name_buf, dungeons[u.uz.dnum].dname, (int)u.uz.dlevel, &has_lvl_name);
+
+        //if (!has_lvl_name && dgn_depth != (schar)u.uz.dlevel)
+        //    Sprintf(totallevelbuf, ", which is dungeon level %d", dgn_depth);
+
+        //Sprintf(characterbuf, "Level %d %s %s%s %s", u.ulevel, alignbuf, genderwithspacebuf, racebuf, rolebuf);
+        //Sprintf(adventuringbuf, "Adventuring %s%s%s", lvlbuf, dgnbuf, totallevelbuf);
+        //Sprintf(playingbuf, "Playing at %s difficulty in %s mode for %lld turns", get_game_difficulty_text(context.game_difficulty),
+        //    get_game_mode_text_core(wizard, discover, ModernMode, CasualMode, flags.non_scoring, TournamentMode, TRUE),
+        //    (long long)moves);
+        //time_t stamp = (time_t)now;
+        //char* timestr = ctime(&stamp);
+        //if (timestr && *timestr)
+        //{
+        //    Strncpy(timebuf, timestr, strlen(timestr) - 1);
+        //    timebuf[strlen(timestr) - 1] = 0;
+        //}
+        //else
+        //{
+        //    Strcpy(timebuf, "unknown date");
+        //}
+
+        //Sprintf(savedbuf, "Snapshot was taken on %s", timebuf);
+
+        int uglyph = u_to_glyph();
+        int absglyph = abs(uglyph);
+        int guiglyph = maybe_get_replaced_glyph(absglyph, u.ux, u.uy, data_to_replacement_info(absglyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, 0UL, MAT_NONE, 0));
+
+        fprintf(snapjson_file, "  \"glyph\": %d,\n", absglyph);
+        fprintf(snapjson_file, "  \"gui_glyph\": %d,\n", guiglyph);        
+        fprintf(snapjson_file, "  \"rolenum\": %d,\n", urole.rolenum);
+        fprintf(snapjson_file, "  \"racenum\": %d,\n", urace.racenum);
+        fprintf(snapjson_file, "  \"gender\": %d,\n", (int)Ufemale);
+        fprintf(snapjson_file, "  \"alignment\": %d,\n", (int)u.ualign.type);
+        fprintf(snapjson_file, "  \"ulevel\": %d,\n", u.ulevel);
+        fprintf(snapjson_file, "  \"moves\": %lld,\n", (long long)moves);
+        fprintf(snapjson_file, "  \"dnum\": %d,\n", (int)u.uz.dnum);
+        fprintf(snapjson_file, "  \"dlevel\": %d,\n", (int)u.uz.dlevel);
+        fprintf(snapjson_file, "  \"depth\": %d,\n", dgn_depth);
+        fprintf(snapjson_file, "  \"difficulty\": %d,\n", context.game_difficulty);
+        fprintf(snapjson_file, "  \"wizard\": %d,\n", (int)wizard);
+        fprintf(snapjson_file, "  \"explore\": %d,\n", (int)discover);
+        fprintf(snapjson_file, "  \"modern\": %d,\n", (int)ModernMode);
+        fprintf(snapjson_file, "  \"casual\": %d,\n", (int)CasualMode);
+        fprintf(snapjson_file, "  \"tournament\": %d,\n", (int)TournamentMode);
+        fprintf(snapjson_file, "  \"nonscoring\": %d,\n", (int)flags.non_scoring);
+        fprintf(snapjson_file, "  \"collapses\": %llu,\n", (unsigned long long)n_game_recoveries);
+        fprintf(snapjson_file, "  \"timestamp\": %lld,\n", (long long)now);
+
+        fprintf(snapjson_file, "  \"character\": \"%s\",\n", characterbuf);
+        fprintf(snapjson_file, "  \"location\": \"%s\",\n", adventuringbuf);
+        fprintf(snapjson_file, "  \"gamemode\": \"%s\",\n", playingbuf);
+        fprintf(snapjson_file, "  \"timing\": \"%s\"\n", savedbuf);
+
+        fprintf(snapjson_file, "}");
+
+        (void)fclose(snapjson_file);
+    }
+#else /*!DUMPLOG*/
+    nhUse(now);
+    nhUse(dumplog_filepath);
+    nhUse(dumphtml_filepath);
+#endif /*?DUMPLOG*/
+}
+
+
 STATIC_OVL void
 itemdesc_putstr_ex(win, str, attr, color, app)
 winid win UNUSED;
@@ -3217,6 +3328,11 @@ reset_windows(VOID_ARGS)
 #ifdef DUMPHTML
     in_list = 0;
     //in_preform = 0;
+#endif
+#if defined (DUMPLOG) || defined (DUMPHTML)
+    menu_headings_backup = 0;
+    dumplog_now = 0;
+    dumplog_is_snapshot = FALSE;
 #endif
 }
 

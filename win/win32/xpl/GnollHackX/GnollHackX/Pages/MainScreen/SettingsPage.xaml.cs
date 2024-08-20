@@ -497,6 +497,7 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage.WalkArrows = WalkArrowSwitch.IsToggled;
             Preferences.Set("WalkArrows", WalkArrowSwitch.IsToggled);
 
+            GHApp.DrawWallEnds = WallEndSwitch.IsToggled;
             if (_gamePage != null)
                 _gamePage.DrawWallEnds = WallEndSwitch.IsToggled;
             Preferences.Set("DrawWallEnds", WallEndSwitch.IsToggled);

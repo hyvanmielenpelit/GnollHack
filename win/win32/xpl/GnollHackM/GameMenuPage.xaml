@@ -27,6 +27,8 @@
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnMessages_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnGC" Text="Collect Garbage" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnGC_Clicked" UseVaryingBackgroundImages ="True" />
+                        <controls:CustomImageButton x:Name="btnSnapshot" Text="Take Snapshot" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
+                                        HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnSnapshot_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnVersion" Margin="0,0,0,20" Text="Version" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnVersion_Clicked" UseVaryingBackgroundImages ="True" />
                         <controls:CustomImageButton x:Name="btnTips" Text="User Interface Guide" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"

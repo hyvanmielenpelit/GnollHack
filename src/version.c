@@ -40,6 +40,18 @@ char *buf;
     return strcpy(buf, VERSION_STRING);
 }
 
+uint64_t
+get_version_number(VOID_ARGS)
+{
+    return VERSION_NUMBER;
+}
+
+uint64_t
+get_version_compatibility(VOID_ARGS)
+{
+    return EARLIEST_COMPATIBLE_VERSION_NUMBER;
+}
+
 /* fill and return the given buffer with the int64_t GnollHack version string */
 char *
 getversionstring(buf)

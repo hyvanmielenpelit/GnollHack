@@ -202,19 +202,6 @@ thread_lock_unlock(VOID_ARGS)
 }
 
 void
-make_dumplog_dir(VOID_ARGS)
-{
-#if (defined(DUMPLOG) || defined(DUMPHTML)) && defined(DUMPLOG_DIR)
-    /* Make DUMPLOG_DIR if defined */
-    struct stat st = { 0 };
-
-    if (stat(DUMPLOG_DIR, &st) == -1) {
-        (void)mkdir(DUMPLOG_DIR, 0700);
-    }
-#endif
-}
-
-void
 gnollhack_exit(code)
 int code;
 {

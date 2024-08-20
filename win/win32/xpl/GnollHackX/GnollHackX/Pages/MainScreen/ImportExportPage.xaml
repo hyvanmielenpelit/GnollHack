@@ -41,6 +41,8 @@
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnExportDumplogs_Clicked" UseVaryingBackgroundImages ="False" />
                             <controls:CustomImageButton x:Name="btnDeleteDumplogs" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Dumplogs" BackgroundColor="Transparent" TextColor="White"
                                         Margin="0,0,0,16" HorizontalOptions="Center" Clicked="btnDeleteDumplogs_Clicked" UseVaryingBackgroundImages ="False" />
+                            <controls:CustomImageButton x:Name="btnDeleteSnapshots" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" Text="Delete Snapshots" BackgroundColor="Transparent" TextColor="White"
+                                        Margin="0,0,0,16" HorizontalOptions="Center" Clicked="btnDeleteSnapshots_Clicked" UseVaryingBackgroundImages ="False" />
 
                             <controls:CustomImageButton x:Name="btnClearPendingTasks" Text="Clear Pending Tasks" WidthRequest="320" HeightRequest="50" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                         HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnClearPendingTasks_Clicked" UseVaryingBackgroundImages ="False" />

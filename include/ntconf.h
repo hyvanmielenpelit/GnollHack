@@ -30,11 +30,18 @@
 
 #define DUMPLOG      /* Enable dumplog files */
 #define DUMPHTML     /* Enable HTML dumplog files */
+#define ALLOW_SNAPSHOT
+#define WRITE_SNAPSHOT_JSON
+
 /*#define DUMPLOG_FILE "GnollHack-%n-%d.txt"*/
 #ifdef DUMPLOG_DIR
 #undef DUMPLOG_DIR
 #endif
 #define DUMPLOG_DIR        "dumplog" /* Note: this is just used to create a directory, DUMPLOG_FILE still needs to have the full path */
+#ifdef SNAPSHOT_DIR
+#undef SNAPSHOT_DIR
+#endif
+#define SNAPSHOT_DIR        "snapshot" /* Note: this is just used to create a directory, SNAPSHOT_DIR still needs to have the full path */
 #define DUMPLOG_MSG_COUNT 50
 
 #define USER_SOUNDS

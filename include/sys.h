@@ -17,14 +17,19 @@ struct sysopt {
     char *shellers;   /* like wizards, for ! command (-DSHELL); also ^Z */
     char *genericusers; /* usernames that prompt for user name */
     char *debugfiles; /* files to show debugplines in. '*' is all. */
+#if defined (DUMPLOG) || defined (DUMPHTML)
+    char* snapjsonfile; /* where the snapshot json file is saved */
+#endif
 #if defined (DUMPLOG)
     char *dumplogfile; /* where the dump file is saved */
-    char* dumplogurl;  /* url path for the above */
+    char *snapshotfile; /* where the snapshot file is saved */
+    char *dumplogurl;  /* url path for the above */
 #endif
-#ifdef DUMPHTML
+#if defined (DUMPHTML)
     char* dumphtmlfile; /* where the html dump is saved */
+    char* snaphtmlfile; /* where the html snapshot is saved */
     char* dumphtmlfontname; /* font name for html dump */
-#ifdef DUMPHTML_WEBFONT_LINK
+#if defined(DUMPHTML_WEBFONT_LINK)
     char* dumphtmlfontlink; /* css web link for the font */
 #endif
     char* dumphtml_css_fontface_normal; /* css @fontface definition for normal font */

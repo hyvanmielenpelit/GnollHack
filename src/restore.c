@@ -1670,6 +1670,117 @@ boolean* has_lvl_name_ptr;
         Sprintf(lvlbuf, "on level %d of ", dlevel);
 }
 
+void
+print_character_description(characterbuf, ulevel, rolenum, racenum, gender, aligntype, prefix)
+char* characterbuf;
+short ulevel;
+short rolenum;
+short racenum;
+boolean gender;
+aligntyp aligntype;
+const char* prefix;
+{
+    if (!characterbuf)
+        return;
+
+    if (!prefix)
+        prefix = "";
+
+    char alignbuf[BUFSZ], genderwithspacebuf[BUFSZ], racebuf[BUFSZ], rolebuf[BUFSZ], tmpbuf[BUFSZ];
+
+    strcpy_capitalized_for_title(alignbuf, aligns[1 - aligntype].adj);
+    strcpy_capitalized_for_title(racebuf, races[racenum].adj);
+    if (roles[rolenum].name.f)
+    {
+        Strcpy(genderwithspacebuf, "");
+        if (gender)
+        {
+            strcpy_capitalized_for_title(rolebuf, roles[rolenum].name.f);
+        }
+        else
+            strcpy_capitalized_for_title(rolebuf, roles[rolenum].name.m);
+    }
+    else
+    {
+        Sprintf(tmpbuf, "%s ", genders[gender].adj);
+        strcpy_capitalized_for_title(genderwithspacebuf, tmpbuf);
+        strcpy_capitalized_for_title(rolebuf, roles[rolenum].name.m);
+    }
+
+    Sprintf(characterbuf, "%sLevel %d %s %s%s %s", prefix, ulevel, alignbuf, genderwithspacebuf, racebuf, rolebuf);
+}
+
+void
+print_location_description(adventuringbuf, level_name, dgn_name, dlevel, dgn_depth, prefix)
+char* adventuringbuf;
+const char* level_name;
+const char* dgn_name;
+int dlevel;
+schar dgn_depth;
+const char* prefix;
+{
+    if (!adventuringbuf)
+        return;
+
+    if (!prefix)
+        prefix = "";
+
+    char lvlbuf[BUFSZ] = "", dgnbuf[BUFSZ] = "", totallevelbuf[BUFSZ] = "";
+    boolean has_lvl_name = FALSE;
+    print_dgnlvl_buf(lvlbuf, dgnbuf, level_name, dgn_name, dlevel, &has_lvl_name);
+
+    if (!has_lvl_name && dgn_depth != (schar)dlevel)
+        Sprintf(totallevelbuf, ", which is dungeon level %d", dgn_depth);
+    Sprintf(adventuringbuf, "%sAdventuring %s%s%s", prefix, lvlbuf, dgnbuf, totallevelbuf);
+}
+
+void
+print_mode_duration_description(playingbuf, difficulty, umoves, debug_mode, explore_mode, modern_mode, casual_mode, is_non_scoring, tournament_mode, prefix)
+char* playingbuf;
+schar difficulty;
+int64_t umoves;
+boolean debug_mode, explore_mode, modern_mode, casual_mode, is_non_scoring, tournament_mode;
+const char* prefix;
+{
+    if (!playingbuf)
+        return;
+
+    if (!prefix)
+        prefix = "";
+
+    Sprintf(playingbuf, "%sPlaying at %s difficulty in %s mode for %lld turns", prefix, get_game_difficulty_text(difficulty),
+        get_game_mode_text_core(debug_mode, explore_mode, modern_mode, casual_mode, is_non_scoring, tournament_mode, TRUE),
+        (long long)umoves);
+}
+
+void
+print_timestamp_description(savedbuf, descr, stamp, prefix)
+char* savedbuf;
+time_t stamp;
+const char* descr, * prefix;
+{
+    if (!savedbuf)
+        return;
+
+    if (!prefix)
+        prefix = "";
+
+    char timebuf[BUFSZ] = "";
+    char* timestr = ctime(&stamp);
+    if (timestr && *timestr)
+    {
+        Strncpy(timebuf, timestr, strlen(timestr) - 1);
+        timebuf[strlen(timestr) - 1] = 0;
+    }
+    else
+    {
+        Strcpy(timebuf, "unknown date");
+    }
+
+    Sprintf(savedbuf, "%s%s %s", prefix, descr, timebuf);
+}
+
+
 #ifdef SELECTSAVED
 /* put up a menu listing each character from this player's saved games;
    returns 1: use plname[], 0: new game, -1: quit */
@@ -1892,62 +2003,45 @@ struct save_game_data* saved;
             titlestr, MENU_UNSELECTED);
     #endif
 
+#if defined(TTY_GRAPHICS) || defined(CURSES_GRAPHICS)
+        char prefix[8] = "    ";
+#else
+        char prefix[8] = "";
+#endif
         for (k = 0; saved[k].playername; ++k)
         {
-            char namebuf[BUFSZ], characterbuf[BUFSZ], alignbuf[BUFSZ], genderwithspacebuf[BUFSZ], racebuf[BUFSZ], rolebuf[BUFSZ], tmpbuf[BUFSZ], timebuf[BUFSZ] = "";
-            strcpy_capitalized_for_title(alignbuf, aligns[1 - saved[k].gamestats.alignment].adj);
-            strcpy_capitalized_for_title(racebuf, races[saved[k].gamestats.racenum].adj);
-            if (roles[saved[k].gamestats.rolenum].name.f)
-            {
-                Strcpy(genderwithspacebuf, "");
-                if (saved[k].gamestats.gender)
-                {
-                    strcpy_capitalized_for_title(rolebuf, roles[saved[k].gamestats.rolenum].name.f);
-                }
-                else
-                    strcpy_capitalized_for_title(rolebuf, roles[saved[k].gamestats.rolenum].name.m);
-            }
-            else
-            {
-                Sprintf(tmpbuf, "%s ", genders[saved[k].gamestats.gender].adj);
-                strcpy_capitalized_for_title(genderwithspacebuf, tmpbuf);
-                strcpy_capitalized_for_title(rolebuf, roles[saved[k].gamestats.rolenum].name.m);
-            }
-
-            char adventuringbuf[BUFSZ], lvlbuf[BUFSZ], dgnbuf[BUFSZ], totallevelbuf[BUFSZ] = "";
-            boolean has_lvl_name = FALSE;
-
-            print_dgnlvl_buf(lvlbuf, dgnbuf, saved[k].gamestats.level_name, saved[k].gamestats.dgn_name, (int)saved[k].gamestats.dlevel, &has_lvl_name);
-
-            if (!has_lvl_name && saved[k].gamestats.depth != (schar)saved[k].gamestats.dlevel)
-                Sprintf(totallevelbuf, ", which is dungeon level %d", saved[k].gamestats.depth);
-
+            char namebuf[BUFSZ], characterbuf[BUFSZ], adventuringbuf[BUFSZ];
             char playingbuf[BUFSZ], savedbuf[BUFSZ];
-    #if defined(TTY_GRAPHICS) || defined(CURSES_GRAPHICS)
-            char prefix[8] = "    ";
-    #else
-            char prefix[8] = "";
-    #endif
+            //char adventuringbuf[BUFSZ], lvlbuf[BUFSZ], dgnbuf[BUFSZ], totallevelbuf[BUFSZ] = "";
+            //boolean has_lvl_name = FALSE;
 
             Sprintf(namebuf, "%s%s%s%s", saved[k].playername, saved[k].is_running ? " [Crashed]" : "", saved[k].is_error_save_file ? " [Saved upon Error]" : "", saved[k].is_imported_save_file ? " [Imported]" : "");
-            Sprintf(characterbuf, "%sLevel %d %s %s%s %s", prefix, saved[k].gamestats.ulevel, alignbuf, genderwithspacebuf, racebuf, rolebuf);
-            Sprintf(adventuringbuf, "%sAdventuring %s%s%s", prefix, lvlbuf, dgnbuf, totallevelbuf);
-            Sprintf(playingbuf, "%sPlaying at %s difficulty in %s mode for %lld turns", prefix, get_game_difficulty_text(saved[k].gamestats.game_difficulty),
-                get_game_mode_text_core(saved[k].gamestats.debug_mode, saved[k].gamestats.explore_mode, saved[k].gamestats.modern_mode, saved[k].gamestats.casual_mode, (boolean)((saved[k].gamestats.save_flags & SAVEFLAGS_NON_SCORING) != 0), (boolean)((saved[k].gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0), TRUE),
-                (long long)saved[k].gamestats.umoves);
-            time_t stamp = (time_t)saved[k].gamestats.time_stamp;
-            char* timestr = ctime(&stamp);
-            if (timestr && *timestr)
-            {
-                Strncpy(timebuf, timestr, strlen(timestr) - 1);
-                timebuf[strlen(timestr) - 1] = 0;
-            }
-            else
-            {
-                Strcpy(timebuf, "unknown date");
-            }
+            print_character_description(characterbuf, saved[k].gamestats.ulevel, saved[k].gamestats.rolenum, saved[k].gamestats.racenum, saved[k].gamestats.gender, saved[k].gamestats.alignment, prefix);
+            print_location_description(adventuringbuf, saved[k].gamestats.level_name, saved[k].gamestats.dgn_name, (int)saved[k].gamestats.dlevel, saved[k].gamestats.depth, prefix);
+            print_mode_duration_description(playingbuf, saved[k].gamestats.game_difficulty, saved[k].gamestats.umoves, saved[k].gamestats.debug_mode, saved[k].gamestats.explore_mode, saved[k].gamestats.modern_mode, saved[k].gamestats.casual_mode, (boolean)((saved[k].gamestats.save_flags& SAVEFLAGS_NON_SCORING) != 0), (boolean)((saved[k].gamestats.save_flags& SAVEFLAGS_TOURNAMENT_MODE) != 0), prefix);
+            print_timestamp_description(savedbuf, "Game was saved on", (time_t)saved[k].gamestats.time_stamp, prefix);
 
-            Sprintf(savedbuf, "%sGame was saved on %s", prefix, timebuf);
+            //print_dgnlvl_buf(lvlbuf, dgnbuf, saved[k].gamestats.level_name, saved[k].gamestats.dgn_name, (int)saved[k].gamestats.dlevel, &has_lvl_name);
+            //if (!has_lvl_name && saved[k].gamestats.depth != (schar)saved[k].gamestats.dlevel)
+            //    Sprintf(totallevelbuf, ", which is dungeon level %d", saved[k].gamestats.depth);
+
+            //Sprintf(adventuringbuf, "%sAdventuring %s%s%s", prefix, lvlbuf, dgnbuf, totallevelbuf);
+            //Sprintf(playingbuf, "%sPlaying at %s difficulty in %s mode for %lld turns", prefix, get_game_difficulty_text(saved[k].gamestats.game_difficulty),
+            //    get_game_mode_text_core(saved[k].gamestats.debug_mode, saved[k].gamestats.explore_mode, saved[k].gamestats.modern_mode, saved[k].gamestats.casual_mode, (boolean)((saved[k].gamestats.save_flags & SAVEFLAGS_NON_SCORING) != 0), (boolean)((saved[k].gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0), TRUE),
+            //    (long long)saved[k].gamestats.umoves);
+            //time_t stamp = (time_t)saved[k].gamestats.time_stamp;
+            //char* timestr = ctime(&stamp);
+            //if (timestr && *timestr)
+            //{
+            //    Strncpy(timebuf, timestr, strlen(timestr) - 1);
+            //    timebuf[strlen(timestr) - 1] = 0;
+            //}
+            //else
+            //{
+            //    Strcpy(timebuf, "unknown date");
+            //}
+
+            //Sprintf(savedbuf, "%sGame was saved on %s", prefix, timebuf);
 
             //int glyph = saved[k].gamestats.glyph;
             int gui_glyph = saved[k].gamestats.gui_glyph;

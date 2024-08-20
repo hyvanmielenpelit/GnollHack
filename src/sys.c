@@ -43,12 +43,17 @@ sys_early_init()
 #else
     sysopt.debugfiles = dupstr(DEBUGFILES);
 #endif
+#if defined (DUMPLOG) || defined (DUMPHTML)
+    sysopt.snapjsonfile = (char*)0;
+#endif
 #if defined (DUMPLOG)
     sysopt.dumplogfile = (char *) 0;
+    sysopt.snapshotfile = (char*)0;
     sysopt.dumplogurl = (char*)0;
 #endif
 #if defined (DUMPHTML)
     sysopt.dumphtmlfile = (char*)0;
+    sysopt.snaphtmlfile = (char*)0;
     sysopt.dumphtmlfontname = (char*)0;
     sysopt.dumphtml_css_fontface_normal = (char*)0;
     sysopt.dumphtml_css_fontface_bold = (char*)0;
@@ -129,13 +134,23 @@ sysopt_release()
     if (sysopt.debugfiles)
         free((genericptr_t) sysopt.debugfiles),
         sysopt.debugfiles = (char *) 0;
+#if defined (DUMPLOG) || defined (DUMPHTML)
+    if (sysopt.snapjsonfile)
+        free((genericptr_t)sysopt.snapjsonfile), sysopt.snapjsonfile = (char*)0;
+#endif
 #if defined (DUMPLOG)
     if (sysopt.dumplogfile)
         free((genericptr_t)sysopt.dumplogfile), sysopt.dumplogfile=(char *)0;
+    if (sysopt.snapshotfile)
+        free((genericptr_t)sysopt.snapshotfile), sysopt.snapshotfile = (char*)0;
+    if (sysopt.dumplogurl)
+        free((genericptr_t)sysopt.dumplogurl), sysopt.dumplogurl = (char*)0;
 #endif
 #if defined (DUMPHTML)
     if (sysopt.dumphtmlfile)
         free((genericptr_t)sysopt.dumphtmlfile), sysopt.dumphtmlfile = (char*)0;
+    if (sysopt.snaphtmlfile)
+        free((genericptr_t)sysopt.snaphtmlfile), sysopt.snaphtmlfile = (char*)0;
     if (sysopt.dumphtmlfontname)
         free((genericptr_t)sysopt.dumphtmlfontname), sysopt.dumphtmlfontname = (char*)0;
 #if defined (DUMPHTML_WEBFONT_LINK)

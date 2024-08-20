@@ -92,7 +92,10 @@ namespace GnollHackX.Pages.Game
 
         private object _isMainCanvasOnLock = new object();
         private bool _isMainCanvasOn = false;
+        private bool _isMainCanvasDrawing = false;
         public bool IsMainCanvasOn { get { lock (_isMainCanvasOnLock) { return _isMainCanvasOn; } } set { lock (_isMainCanvasOnLock) { _isMainCanvasOn = value; } } }
+        public bool IsMainCanvasDrawing { get { lock (_isMainCanvasOnLock) { return _isMainCanvasDrawing; } } set { lock (_isMainCanvasOnLock) { _isMainCanvasDrawing = value; } } }
+        public bool IsMainCanvasDrawingAndSetTrue { get { lock (_isMainCanvasOnLock) { bool val = _isMainCanvasDrawing; _isMainCanvasDrawing = true; return val; } } }
 
         private readonly string _fontSizeString = "FontS";
         private bool _refreshMsgHistoryRowCounts = true;
@@ -4293,6 +4296,9 @@ namespace GnollHackX.Pages.Game
             if (MenuGrid.IsVisible || TextGrid.IsVisible || MoreCommandsGrid.IsVisible)
                 return;
 
+            if (IsMainCanvasDrawingAndSetTrue) /* In the case of some sort of reentrancy or new draw before previous is finished */
+                return;
+
             PaintMainGamePage(sender, e);
 
             lock (_mainFPSCounterLock)
@@ -4308,6 +4314,7 @@ namespace GnollHackX.Pages.Game
 
             /* Finally, flush */
             canvas.Flush();
+            IsMainCanvasDrawing = false;
         }
 
         private float[] _gridIntervals = { 2.0f, 2.0f };
@@ -4442,7 +4449,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL);
+                GHApp.MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL);
                 canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect);
 #if GNH_MAP_PROFILING && DEBUG
                 StopProfiling(GHProfilingStyle.Bitmap);
@@ -4504,7 +4511,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL);
+                GHApp.MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL);
                 canvas.DrawImage(TileMap[m_sheet_idx], sourcerect, targetrect);
 #if GNH_MAP_PROFILING && DEBUG
                 StopProfiling(GHProfilingStyle.Bitmap);
@@ -4529,7 +4536,7 @@ namespace GnollHackX.Pages.Game
 
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL);
+                GHApp.MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL);
                 canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect);
 
                 if (_mapData[mapx, mapy].Symbol != null && _mapData[mapx, mapy].Symbol != "")
@@ -4555,7 +4562,7 @@ namespace GnollHackX.Pages.Game
 
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL);
+                GHApp.MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL);
                 canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect);
 
                 if (_mapData[mapx, mapy].Symbol != null && _mapData[mapx, mapy].Symbol != "")
@@ -4629,7 +4636,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                             StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                            MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
+                            GHApp.MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
                             canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
 #if GNH_MAP_PROFILING && DEBUG
                             StopProfiling(GHProfilingStyle.Bitmap);
@@ -4681,7 +4688,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                             StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                            MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
+                            GHApp.MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
                             canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
 #if GNH_MAP_PROFILING && DEBUG
                             StopProfiling(GHProfilingStyle.Bitmap);
@@ -4744,7 +4751,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
+                                GHApp.MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
                                 canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
 #if GNH_MAP_PROFILING && DEBUG
                                 StopProfiling(GHProfilingStyle.Bitmap);
@@ -4768,7 +4775,7 @@ namespace GnollHackX.Pages.Game
 
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL);
+                GHApp.MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL);
                 canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect);
             }
             else if ((_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_BEING_HIT) != 0)
@@ -4782,7 +4789,7 @@ namespace GnollHackX.Pages.Game
 
                 SKRect targetrect = new SKRect(tx, ty, tx + width, ty + height);
                 SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
-                MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL);
+                GHApp.MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL);
                 canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect);
             }
         }
@@ -5296,7 +5303,7 @@ namespace GnollHackX.Pages.Game
                     _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, source, dest, bitmap, paint.Color, mapX, mapY));
                 else
                 {
-                    MaybeFixRects(ref source, ref dest, targetscale, usingGL);
+                    GHApp.MaybeFixRects(ref source, ref dest, targetscale, usingGL);
                     canvas.DrawImage(bitmap, source, dest,
 #if GNH_MAUI
                         new SKSamplingOptions(SKFilterMode.Nearest, usingGL && usingMipMap ? SKMipmapMode.Nearest: SKMipmapMode.None),
@@ -5319,35 +5326,13 @@ namespace GnollHackX.Pages.Game
                 float sourceSplitY = source.Top + (source.Bottom - source.Top) * topDestScale;
                 SKRect enlSource = new SKRect(source.Left, source.Top, source.Right, sourceSplitY);
                 SKRect baseSource = new SKRect(source.Left, sourceSplitY, source.Right, source.Bottom);
-                MaybeFixRects(ref baseSource, ref baseDest, targetscale, usingGL);
+                GHApp.MaybeFixRects(ref baseSource, ref baseDest, targetscale, usingGL);
                 canvas.DrawImage(bitmap, baseSource, baseDest,
 #if GNH_MAUI
                     new SKSamplingOptions(SKFilterMode.Nearest, usingGL && usingMipMap ? SKMipmapMode.Nearest : SKMipmapMode.None),
 #endif
                     paint);
                 _drawCommandList.Add(new GHDrawCommand(canvas.TotalMatrix, enlSource, enlDest, bitmap, paint.Color, mapX, mapY));
-            }
-        }
-
-        public void MaybeFixRects(ref SKRect source, ref SKRect dest, float targetscale, bool usingGL)
-        {
-            if(usingGL && GHApp.FixRects)
-            {
-                //if (targetscale <= 0)
-                //    targetscale = 1.0f;
-
-                if(source.Width > 0.02f)
-                {
-                    source.Left += 0.01f;
-                    source.Right -= 0.01f;
-                }
-                if(source.Height > 0.02f)
-                {
-                    source.Top += 0.01f;
-                    source.Bottom -= 0.01f;
-                }
-                dest.Right += 1.0f;
-                dest.Bottom += 1.0f;
             }
         }
 
@@ -6998,9 +6983,8 @@ namespace GnollHackX.Pages.Game
                                                         bool dodarkening = true;
                                                         using (SKCanvas darkeningCanvas = new SKCanvas(_paintBitmap))
                                                         {
-                                                            for (int dc_idx = 0; dc_idx < _drawCommandList.Count; dc_idx++)
+                                                            foreach (GHDrawCommand dc in _drawCommandList)
                                                             {
-                                                                GHDrawCommand dc = _drawCommandList[dc_idx];
                                                                 if (dc.EndDarkening)
                                                                 {
                                                                     dodarkening = false;
@@ -7038,7 +7022,7 @@ namespace GnollHackX.Pages.Game
                                                                             {
                                                                                 paint.Color = dc.PaintColor;
                                                                                 canvas.SetMatrix(dc.Matrix);
-                                                                                MaybeFixRects(ref sourceRect, ref destRect, targetscale, usingGL);
+                                                                                GHApp.MaybeFixRects(ref sourceRect, ref destRect, targetscale, usingGL);
                                                                                 canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect, paint);
                                                                             }
                                                                             else
@@ -7081,7 +7065,7 @@ namespace GnollHackX.Pages.Game
                                                                                     doDisposeImage = true;
                                                                                 }
 
-                                                                                MaybeFixRects(ref sourceRect, ref destRect, targetscale, usingGL);
+                                                                                GHApp.MaybeFixRects(ref sourceRect, ref destRect, targetscale, usingGL);
                                                                                 canvas.DrawImage(usedDarkenedBitmap, sourceRect, destRect, paint);
                                                                                 if (doDisposeImage)
                                                                                     usedDarkenedBitmap.Dispose();
@@ -7102,7 +7086,7 @@ namespace GnollHackX.Pages.Game
                                                                             {
                                                                                 paint.Color = dc.PaintColor;
                                                                                 canvas.SetMatrix(dc.Matrix);
-                                                                                MaybeFixRects(ref cacheRect, ref dc.DestinationRect, targetscale, usingGL);
+                                                                                GHApp.MaybeFixRects(ref cacheRect, ref dc.DestinationRect, targetscale, usingGL);
                                                                                 canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect, paint);
                                                                             }
                                                                             else
@@ -7141,7 +7125,7 @@ namespace GnollHackX.Pages.Game
 
                                                                                 paint.Color = dc.PaintColor;
                                                                                 canvas.SetMatrix(dc.Matrix);
-                                                                                MaybeFixRects(ref cacheRect, ref dc.DestinationRect, targetscale, usingGL);
+                                                                                GHApp.MaybeFixRects(ref cacheRect, ref dc.DestinationRect, targetscale, usingGL);
                                                                                 canvas.DrawImage(usedDarkenedBitmap, cacheRect, dc.DestinationRect, paint);
                                                                                 if (doDisposeImage)
                                                                                     usedDarkenedBitmap.Dispose();
@@ -7164,7 +7148,7 @@ namespace GnollHackX.Pages.Game
                                                                     }
                                                                     else
                                                                     {
-                                                                        MaybeFixRects(ref dc.SourceRect, ref dc.DestinationRect, targetscale, usingGL);
+                                                                        GHApp.MaybeFixRects(ref dc.SourceRect, ref dc.DestinationRect, targetscale, usingGL);
                                                                         canvas.DrawImage(dc.SourceBitmap, dc.SourceRect, dc.DestinationRect, paint);
                                                                     }
                                                                 }
@@ -7545,7 +7529,7 @@ namespace GnollHackX.Pages.Game
                                                 float recttop = ty + search_y * height + rectymargin;
                                                 SKRect effRect = new SKRect(rectleft, recttop, rectleft + rectsize, recttop + rectsize);
                                                 SKRect sourcerect = new SKRect(0, 0, GHApp._searchBitmap.Width, GHApp._searchBitmap.Height);
-                                                MaybeFixRects(ref sourcerect, ref effRect, targetscale, usingGL);
+                                                GHApp.MaybeFixRects(ref sourcerect, ref effRect, targetscale, usingGL);
                                                 canvas.DrawImage(GHApp._searchBitmap, sourcerect, effRect, textPaint.Paint);
                                             }
                                         }
@@ -7559,7 +7543,7 @@ namespace GnollHackX.Pages.Game
                                             float recttop = ty + rectymargin;
                                             SKRect effRect = new SKRect(rectleft, recttop, rectleft + rectsize, recttop + rectsize);
                                             SKRect sourcerect = new SKRect(0, 0, GHApp._waitBitmap.Width, GHApp._waitBitmap.Height);
-                                            MaybeFixRects(ref sourcerect, ref effRect, targetscale, usingGL);
+                                            GHApp.MaybeFixRects(ref sourcerect, ref effRect, targetscale, usingGL);
                                             canvas.DrawImage(GHApp._waitBitmap, effRect, textPaint.Paint);
                                         }
                                         break;
@@ -10114,7 +10098,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                                MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL);
+                                                                GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL);
                                                                 canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
 #if GNH_MAP_PROFILING && DEBUG
                                                                 StopProfiling(GHProfilingStyle.Bitmap);
@@ -10160,7 +10144,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                                MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL);
+                                                                GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL);
                                                                 canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
 #if GNH_MAP_PROFILING && DEBUG
                                                                 StopProfiling(GHProfilingStyle.Bitmap);
@@ -10213,7 +10197,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                                                    MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL);
+                                                                    GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL);
                                                                     canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
 #if GNH_MAP_PROFILING && DEBUG
                                                                     StopProfiling(GHProfilingStyle.Bitmap);
@@ -10282,7 +10266,7 @@ namespace GnollHackX.Pages.Game
                             skillbuttonok = false;
 
                         /* HP and MP */
-                        if ((ShowOrbs | !ClassicStatusBar) && orbsok)
+                        if ((ShowOrbs || !ClassicStatusBar) && orbsok)
                         {
                             float orbfillpercentage = 0.0f;
                             string valtext = "";
@@ -11086,7 +11070,7 @@ namespace GnollHackX.Pages.Game
                                     target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
                                     target_rt.Bottom = target_rt.Top + marksize;
 
-                                    MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL);
+                                    GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL);
                                     canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
                                     textPaint.DrawTextOnCanvas(canvas, statusname, tx + marksize + markpadding, ty);
                                     lock (_statusOffsetLock)
@@ -11134,7 +11118,7 @@ namespace GnollHackX.Pages.Game
                                     target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
                                     target_rt.Bottom = target_rt.Top + marksize;
 
-                                    MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL);
+                                    GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL);
                                     canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
                                     textPaint.DrawTextOnCanvas(canvas, conditionname, tx + marksize + markpadding, ty);
                                     lock (_statusOffsetLock)
@@ -11192,7 +11176,7 @@ namespace GnollHackX.Pages.Game
                                         target_rt.Top = ty + textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent / 2 + (textPaint.FontSpacing - marksize) / 2;
                                         target_rt.Bottom = target_rt.Top + marksize;
 
-                                        MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL);
+                                        GHApp.MaybeFixRects(ref source_rt, ref target_rt, 1.0f, usingGL);
                                         canvas.DrawImage(TileMap[sheet_idx], source_rt, target_rt);
                                         if (propname != null)
                                             textPaint.DrawTextOnCanvas(canvas, propname, tx + marksize + markpadding, ty);
@@ -11272,7 +11256,7 @@ namespace GnollHackX.Pages.Game
             paint.BlendMode = old_bm;
         }
 
-        bool IsNoWallEndAutoDraw(int x, int y)
+        private bool IsNoWallEndAutoDraw(int x, int y)
         {
             if (!GHUtils.isok(x, y))
                 return true;
@@ -11556,7 +11540,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                    MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
+                                    GHApp.MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
                                     canvas.DrawImage(TileMap[a_sheet_idx], source_rt, target_rt,
 #if GNH_MAUI
                                         new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
@@ -11687,7 +11671,7 @@ namespace GnollHackX.Pages.Game
                                 canvas.Translate(target_x + (hflip_seg ? width : 0), target_y + (vflip_seg ? height : 0));
                                 canvas.Scale(hflip_seg ? -1 : 1, vflip_seg ? -1 : 1, 0, 0);
                                 paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                                MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL);
+                                GHApp.MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL);
                                 canvas.DrawImage(TileMap[sheet_idx], sourcerect, targetrect,
 #if GNH_MAUI
                                     new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
@@ -11764,7 +11748,7 @@ namespace GnollHackX.Pages.Game
                                 canvas.Translate(target_x, target_y);
                                 canvas.Scale(1, 1, 0, 0);
                                 paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                                MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
+                                GHApp.MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
                                 canvas.DrawImage(TileMap[a_sheet_idx], source_rt, target_rt,
 #if GNH_MAUI
                                     new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
@@ -11841,7 +11825,7 @@ namespace GnollHackX.Pages.Game
                             canvas.RotateDegrees(-90);
                             canvas.Translate(-target_width, 0);
                             paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                            MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
+                            GHApp.MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
                             canvas.DrawImage(TileMap[a_sheet_idx], source_rt, target_rt,
 #if GNH_MAUI
                                 new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
@@ -11909,7 +11893,7 @@ namespace GnollHackX.Pages.Game
                             canvas.Translate(target_x, target_y);
                             canvas.Scale(1, 1, 0, 0);
                             paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                            MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
+                            GHApp.MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
                             canvas.DrawImage(TileMap[a_sheet_idx], source_rt, target_rt,
 #if GNH_MAUI
                                 new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
@@ -11997,7 +11981,7 @@ namespace GnollHackX.Pages.Game
                             canvas.Translate(target_x, target_y);
                             canvas.Scale(1, 1, 0, 0);
                             paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                            MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
+                            GHApp.MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
                             canvas.DrawImage(TileMap[a_sheet_idx], source_rt, target_rt,
 #if GNH_MAUI
                                 new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
@@ -12049,7 +12033,7 @@ namespace GnollHackX.Pages.Game
                         {
                             canvas.Translate(dest_x, dest_y);
                             paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                            MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
+                            GHApp.MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
                             canvas.DrawImage(TileMap[a_sheet_idx], source_rt, target_rt,
 #if GNH_MAUI
                                 new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
@@ -12269,7 +12253,7 @@ namespace GnollHackX.Pages.Game
                         using (new SKAutoCanvasRestore(canvas, true))
                         {
                             canvas.Translate(dest_x, dest_y);
-                            MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
+                            GHApp.MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
                             canvas.DrawImage(TileMap[a2_sheet_idx], source_rt, target_rt,
 #if GNH_MAUI
                                 new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
@@ -12571,7 +12555,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                     StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                    MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
+                    GHApp.MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL);
                     canvas.DrawImage(TileMap[a_sheet_idx], source_rt, target_rt
 #if GNH_MAUI
                         , new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest)
@@ -12710,7 +12694,7 @@ namespace GnollHackX.Pages.Game
                                     {
                                         canvas.Translate(target_x + (hflip_link ? target_width : 0), target_y + (vflip_link ? target_height : 0));
                                         canvas.Scale(hflip_link ? -1 : 1, vflip_link ? -1 : 1, 0, 0);
-                                        MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL);
+                                        GHApp.MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL);
                                         canvas.DrawImage(TileMap[a_sheet_idx], sourcerect, targetrect,
 #if GNH_MAUI
                                             new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
@@ -12823,7 +12807,7 @@ namespace GnollHackX.Pages.Game
                                     {
                                         canvas.Translate(target_x + (hflip_link ? target_width : 0), target_y + (vflip_link ? target_height : 0));
                                         canvas.Scale(hflip_link ? -1 : 1, vflip_link ? -1 : 1, 0, 0);
-                                        MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL);
+                                        GHApp.MaybeFixRects(ref sourcerect, ref targetrect, targetscale, usingGL);
                                         canvas.DrawImage(TileMap[a_sheet_idx], sourcerect, targetrect,
 #if GNH_MAUI
                                             new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),

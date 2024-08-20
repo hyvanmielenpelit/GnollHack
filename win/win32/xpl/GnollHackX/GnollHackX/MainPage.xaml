@@ -44,7 +44,7 @@
 
             <StackLayout Spacing="6" AbsoluteLayout.LayoutBounds="0.99, 0.99, AutoSize, AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
                 <Label x:Name="DownloadLabel" TextColor="White" FontSize="6" FontFamily="Lato" />
-                <Label x:Name="VersionLabel" TextColor="White" FontSize="6" FontFamily="Lato" />
+                <!--<Label x:Name="VersionLabel" TextColor="White" FontSize="6" FontFamily="Lato" />-->
             </StackLayout>
             <Grid x:Name="UpperButtonGrid" IsVisible="false" WidthRequest="130" Opacity="0" HorizontalOptions="End" VerticalOptions="Start" Margin="10,10,10,5" AbsoluteLayout.LayoutBounds="1,0,AutoSize,AutoSize" AbsoluteLayout.LayoutFlags="PositionProportional">
                 <StackLayout Spacing="4">

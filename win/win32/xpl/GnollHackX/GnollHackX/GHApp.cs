@@ -173,6 +173,7 @@ namespace GnollHackX
             LastUsedTournamentPlayerName = Preferences.Get("LastUsedTournamentPlayerName", "");
             GUITipsShown = Preferences.Get("GUITipsShown", false);
             RealPlayTime = Preferences.Get("RealPlayTime", 0L);
+            DrawWallEnds = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
 
             SetAvailableGPUCacheLimits(TotalMemory);
             PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
@@ -270,6 +271,28 @@ namespace GnollHackX
             MirroredCharacterClickAction = Preferences.Get("CharacterClickAction", GHConstants.DefaultCharacterClickAction);
             MirroredRightMouseCommand = Preferences.Get("RightMouseCommand", GHConstants.DefaultRightMouseCommand);
             MirroredMiddleMouseCommand = Preferences.Get("MiddleMouseCommand", GHConstants.DefaultMiddleMouseCommand);
+        }
+
+        public static void MaybeFixRects(ref SKRect source, ref SKRect dest, float targetscale, bool usingGL)
+        {
+            if (usingGL && FixRects)
+            {
+                //if (targetscale <= 0)
+                //    targetscale = 1.0f;
+
+                if (source.Width > 0.02f)
+                {
+                    source.Left += 0.01f;
+                    source.Right -= 0.01f;
+                }
+                if (source.Height > 0.02f)
+                {
+                    source.Top += 0.01f;
+                    source.Bottom -= 0.01f;
+                }
+                dest.Right += 1.0f;
+                dest.Bottom += 1.0f;
+            }
         }
 
         public static void LoadCustomCursor()
@@ -518,6 +541,10 @@ namespace GnollHackX
         private static readonly object _fixRectLock = new object();
         private static bool _fixRects = false;
         public static bool FixRects { get { lock (_fixRectLock) { return _fixRects; } } set { lock (_fixRectLock) { _fixRects = value; } } }
+
+        private static readonly object _drawWallEndsLock = new object();
+        private static bool _drawWallEnds = GHConstants.DefaultDrawWallEnds;
+        public static bool DrawWallEnds { get { lock (_drawWallEndsLock) { return _drawWallEnds; } } set { lock (_drawWallEndsLock) { _drawWallEnds = value; } } }
 
         public static bool BatterySavingMode { get; set; }
 
@@ -2519,7 +2546,7 @@ namespace GnollHackX
                 {
                     archive.CreateEntryFromFile(fPath, Path.GetFileName(fPath));
                 }
-                string[] ghsubdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory, GHConstants.UserDataDirectory }; //These may be too large: GHConstants.ReplayDirectory, GHConstants.ReplayDownloadFromCloudDirectory, 
+                string[] ghsubdirlist = { GHConstants.SaveDirectory, GHConstants.DumplogDirectory, GHConstants.SnapshotDirectory, GHConstants.UserDataDirectory }; //These may be too large: GHConstants.ReplayDirectory, GHConstants.ReplayDownloadFromCloudDirectory, 
                 foreach (string ghsubdir in ghsubdirlist)
                 {
                     string subdirpath = Path.Combine(ghdir, ghsubdir);

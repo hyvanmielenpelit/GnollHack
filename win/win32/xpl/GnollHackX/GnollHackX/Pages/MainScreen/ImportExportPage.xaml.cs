@@ -557,6 +557,20 @@ namespace GnollHackX.Pages.MainScreen
             ImportExportGrid.IsEnabled = true;
         }
 
+        private async void btnDeleteSnapshots_Clicked(object sender, EventArgs e)
+        {
+            ImportExportGrid.IsEnabled = false;
+            GHApp.PlayButtonClickedSound();
+            bool answer = await DisplayAlert("Delete Snapshots?", "Are you sure to delete all snapshots?", "Yes", "No");
+            if (answer)
+            {
+                GHApp.GnollHackService.ClearSnapshots();
+                btnDeleteSnapshots.Text = "Done";
+                btnDeleteSnapshots.TextColor = GHColors.Red;
+            }
+            ImportExportGrid.IsEnabled = true;
+        }
+
         private async void btnClearPendingTasks_Clicked(object sender, EventArgs e)
         {
             ImportExportGrid.IsEnabled = false;
