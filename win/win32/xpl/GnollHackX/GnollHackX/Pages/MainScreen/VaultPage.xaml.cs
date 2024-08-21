@@ -184,7 +184,7 @@ namespace GnollHackX.Pages.MainScreen
 
                 if (width > 0)
                 {
-                    bool shouldUseFlex = width >= 460;
+                    bool shouldUseFlex = width >= 460 && !GHApp.IsWindows;
                     bool widerWidth = height < 280 + 6 + 24 + 60 + lblHeader.Margin.Top + lblHeader.Margin.Bottom + CloseButton.Margin.Top + CloseButton.Margin.Bottom;
                     double usedWidth = widerWidth ? 2048 : 720;
 #if GNH_MAUI
