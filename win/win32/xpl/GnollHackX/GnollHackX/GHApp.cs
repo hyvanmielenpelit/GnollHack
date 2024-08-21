@@ -2912,6 +2912,11 @@ namespace GnollHackX
                     AppResourceName + ".Assets.UI.offer.png",
                     AppResourceName + ".Assets.UI.loot.png",
                     AppResourceName + ".Assets.UI.lastitem.png",
+                    AppResourceName + ".Assets.UI.conduct.png",
+                    AppResourceName + ".Assets.UI.manual.png",
+                    AppResourceName + ".Assets.UI.chronicle.png",
+                    AppResourceName + ".Assets.UI.music.png",
+                    AppResourceName + ".Assets.UI.you.png",
                     AppResourceName + ".Assets.tombstone.png",
                     };
                     foreach (string imagePath in cachedBitmaps)
