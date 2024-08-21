@@ -1928,12 +1928,8 @@ boolean dopopup;
 
     int max_ench = get_obj_max_enchantment(weapon);
 
-    int ench_limit_multiplier = 1;
-    if(bimanual(weapon) && !is_launcher(weapon))
-        ench_limit_multiplier = 2;
-
     /* there is a (soft) upper and lower limit to weapon->enchantment */
-    if (((weapon->enchantment > max_ench * ench_limit_multiplier && amount >= 0) || (weapon->enchantment < -max_ench * ench_limit_multiplier && amount < 0)) && rn2(3))
+    if (((weapon->enchantment > max_ench && amount >= 0) || (weapon->enchantment < -max_ench && amount < 0)) && rn2(3))
     {
         if (((weapon->speflags & SPEFLAGS_GIVEN_OUT_BLUE_SMOKE) == 0 || rn2(3)) && (weapon->material == MAT_ORICHALCUM || obj_resists(weapon, 0, 75)))
         {
