@@ -169,6 +169,22 @@ namespace GnollHackX.Controls
                     }
                 }
             };
+            ViewButton.HandlerChanging += (s, e) =>
+            {
+                if (e.OldHandler != null && e.NewHandler == null)
+                {
+                    if (e.OldHandler?.PlatformView is Microsoft.UI.Xaml.Controls.Button)
+                    {
+                        var platformView = e.OldHandler?.PlatformView as Microsoft.UI.Xaml.Controls.Button;
+                        if (platformView != null)
+                        {
+                            platformView.PointerEntered -= PlatformView_PointerEntered;
+                            platformView.PointerExited -= PlatformView_PointerExited;
+                            platformView.PointerCanceled -= PlatformView_PointerExited;
+                        }
+                    }
+                }
+            };
 #endif
         }
 

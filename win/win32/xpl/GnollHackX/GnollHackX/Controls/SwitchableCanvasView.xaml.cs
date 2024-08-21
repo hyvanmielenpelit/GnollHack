@@ -84,6 +84,21 @@ namespace GnollHackX.Controls
                         glView.PointerCanceled += View_PointerCanceled;
                     }
                 };
+                internalGLView.HandlerChanging += (s, e) =>
+                {
+                    if(e.OldHandler != null && e.NewHandler == null)
+                    {
+                        SkiaSharp.Views.Windows.SKSwapChainPanel glView = internalGLView?.Handler?.PlatformView as SkiaSharp.Views.Windows.SKSwapChainPanel;
+                        if (glView != null)
+                        {
+                            glView.PointerWheelChanged -= View_PointerWheelChanged;
+                            glView.PointerEntered -= View_PointerEntered;
+                            glView.PointerExited -= View_PointerExited;
+                            glView.PointerMoved -= View_PointerMoved;
+                            glView.PointerCanceled -= View_PointerCanceled;
+                        }
+                    }
+                };
 #endif
             }
             InitializeComponent();
@@ -488,6 +503,25 @@ namespace GnollHackX.Controls
                 view.PointerExited += View_PointerExited;
                 view.PointerMoved += View_PointerMoved;
                 view.PointerCanceled += View_PointerCanceled;
+            }
+#endif
+        }
+
+        protected override void OnHandlerChanging(HandlerChangingEventArgs args)
+        {
+            base.OnHandlerChanging(args);
+#if WINDOWS
+            if(args.OldHandler != null && args.NewHandler == null)
+            {
+                SkiaSharp.Views.Windows.SKXamlCanvas view = internalCanvasView.Handler?.PlatformView as SkiaSharp.Views.Windows.SKXamlCanvas;
+                if (view != null)
+                {
+                    view.PointerWheelChanged -= View_PointerWheelChanged;
+                    view.PointerEntered -= View_PointerEntered;
+                    view.PointerExited -= View_PointerExited;
+                    view.PointerMoved -= View_PointerMoved;
+                    view.PointerCanceled -= View_PointerCanceled;
+                }
             }
 #endif
         }

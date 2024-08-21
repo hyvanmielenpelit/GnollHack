@@ -26,8 +26,12 @@ namespace GnollHackX.Pages.MainScreen
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ResetPage : ContentPage
     {
-        public ResetPage()
+        private MainPage _mainPage;
+        public ResetPage(MainPage mainPage)
         {
+            _mainPage = mainPage;
+            Disappearing += (s, e) => { _mainPage.StartCarouselViewAndEnableButtons(); };
+
             InitializeComponent();
             On<iOS>().SetUseSafeArea(true);
             UIUtils.AdjustRootLayout(RootGrid);

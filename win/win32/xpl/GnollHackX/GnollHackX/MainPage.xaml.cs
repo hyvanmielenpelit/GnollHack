@@ -1164,12 +1164,7 @@ namespace GnollHackX
             GHApp.PlayButtonClickedSound();
             carouselView.Stop();
             StopGeneralTimer = true;
-            var resetPage = new ResetPage();
-            resetPage.Disappearing += (sender2, e2) =>
-            {
-                carouselView.Play();
-                UpperButtonGrid.IsEnabled = true;
-            };
+            var resetPage = new ResetPage(this);
             await App.Current.MainPage.Navigation.PushModalAsync(resetPage);
             StopGeneralTimer = false;
             StartGeneralTimer();
@@ -1182,10 +1177,6 @@ namespace GnollHackX
             GHApp.PlayButtonClickedSound();
             carouselView.Stop();
             var settingsPage = new SettingsPage(null, this);
-            settingsPage.Disappearing += (sender2, e2) =>
-            {
-                UpperButtonGrid.IsEnabled = true;
-            };
             await App.Current.MainPage.Navigation.PushModalAsync(settingsPage);
             UpperButtonGrid.IsEnabled = true;
         }
@@ -1195,7 +1186,7 @@ namespace GnollHackX
             UpperButtonGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             string fulltargetpath = Path.Combine(GHApp.GHPath, "defaults.gnh");
-            var editorPage = new EditorPage(fulltargetpath, "Default Options File");
+            var editorPage = new EditorPage(this, fulltargetpath, "Default Options File");
             string errormsg = "";
             if (!editorPage.ReadFile(out errormsg))
             {
@@ -1204,11 +1195,6 @@ namespace GnollHackX
             }
             else
             {
-                editorPage.Disappearing += (sender2, e2) =>
-                {
-                    carouselView.Play();
-                    UpperButtonGrid.IsEnabled = true;
-                };
                 carouselView.Stop();
                 await App.Current.MainPage.Navigation.PushModalAsync(editorPage);
             }
@@ -1222,11 +1208,6 @@ namespace GnollHackX
             carouselView.Stop();
             StopGeneralTimer = true;
             var aboutPage = new AboutPage(this);
-            aboutPage.Disappearing += (sender2, e2) =>
-            {
-                carouselView.Play();
-                UpperButtonGrid.IsEnabled = true;
-            };
             await App.Current.MainPage.Navigation.PushModalAsync(aboutPage);
             StopGeneralTimer = false;
             StartGeneralTimer();
@@ -1268,12 +1249,13 @@ namespace GnollHackX
             GHApp.PlayButtonClickedSound();
             carouselView.Stop();
             var vaultPage = new VaultPage(this);
-            vaultPage.Disappearing += (sender2, e2) =>
-            {
-                carouselView.Play();
-                UpperButtonGrid.IsEnabled = true;
-            };
             await App.Current.MainPage.Navigation.PushModalAsync(vaultPage);
+            UpperButtonGrid.IsEnabled = true;
+        }
+
+        public void StartCarouselViewAndEnableButtons()
+        {
+            carouselView.Play();
             UpperButtonGrid.IsEnabled = true;
         }
 

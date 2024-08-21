@@ -31,6 +31,7 @@ namespace GnollHackX.Pages.MainScreen
         public AboutPage(MainPage mainPage)
         {
             _mainPage = mainPage;
+            Disappearing += (s, e) => { _mainPage.StartCarouselViewAndEnableButtons(); };
 
             InitializeComponent();
             On<iOS>().SetUseSafeArea(true);

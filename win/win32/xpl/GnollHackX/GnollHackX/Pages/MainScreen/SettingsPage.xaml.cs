@@ -43,6 +43,12 @@ namespace GnollHackX.Pages.MainScreen
 
         public SettingsPage(GameMenuPage gameMenuPage, MainPage mainPage)
         {
+            _mainPage = mainPage;
+            if(_mainPage != null)
+            {
+                Disappearing += (s, e) => { _mainPage.StartCarouselViewAndEnableButtons(); };
+            }
+
             InitializeComponent();
             On<iOS>().SetUseSafeArea(true);
             UIUtils.AdjustRootLayout(RootGrid);
@@ -58,7 +64,6 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage = _gameMenuPage._gamePage;
             else
                 _gamePage = null;
-            _mainPage = mainPage;
 
             lblHeader.TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             SetTournamentModeLabelColors(GHApp.TournamentMode);
