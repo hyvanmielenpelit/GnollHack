@@ -55,6 +55,8 @@ namespace GnollHackX.Pages.MainScreen
             rib.GridWidth = 200;
             rib.GridHeight = 150;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.WidthRequest = 200 + rib.ImgWidth / 5;
+            rib.HeightRequest = 150;
             rib.BtnClicked += btnTopScores_Clicked;
             _buttons.Add(rib);
 
@@ -70,6 +72,8 @@ namespace GnollHackX.Pages.MainScreen
             rib.GridWidth = 200;
             rib.GridHeight = 150;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.WidthRequest = 200 + rib.ImgWidth / 5;
+            rib.HeightRequest = 150;
             rib.BtnClicked += btnLibrary_Clicked;
             _buttons.Add(rib);
 
@@ -85,6 +89,8 @@ namespace GnollHackX.Pages.MainScreen
             rib.GridWidth = 200;
             rib.GridHeight = 150;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.WidthRequest = 200 + rib.ImgWidth / 5;
+            rib.HeightRequest = 150;
             rib.BtnClicked += btnReplays_Clicked;
             _buttons.Add(rib);
 
@@ -100,6 +106,8 @@ namespace GnollHackX.Pages.MainScreen
             rib.GridWidth = 200;
             rib.GridHeight = 150;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.WidthRequest = 200 + rib.ImgWidth / 5;
+            rib.HeightRequest = 150;
             rib.BtnClicked += btnSoundTracks_Clicked;
             _buttons.Add(rib);
 
@@ -115,6 +123,8 @@ namespace GnollHackX.Pages.MainScreen
             rib.GridWidth = 200;
             rib.GridHeight = 150;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.WidthRequest = 200 + rib.ImgWidth / 5;
+            rib.HeightRequest = 150;
             rib.BtnClicked += btnSnapshots_Clicked;
             _buttons.Add(rib);
 
