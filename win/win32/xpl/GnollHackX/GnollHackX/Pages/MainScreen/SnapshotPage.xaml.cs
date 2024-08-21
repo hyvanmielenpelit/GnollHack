@@ -79,7 +79,7 @@ namespace GnollHackX.Pages.MainScreen
             lblSubtitle.Text = _snapshots.Count + " snapshot" + (_snapshots.Count != 1 ? "s" : "") + " taken";
             if (_snapshots.Count > 0)
             {
-                Comparison<GHSnapshot> comp = new Comparison<GHSnapshot>((snap1, snap2) => { return (int)(snap1.timestamp - snap2.timestamp); });
+                Comparison<GHSnapshot> comp = new Comparison<GHSnapshot>((snap1, snap2) => { return (int)(snap2.timestamp - snap1.timestamp); }); /* Descending */
                 _snapshots.Sort(comp);
                 int i = -1;
                 foreach (GHSnapshot snap in _snapshots)
@@ -120,16 +120,17 @@ namespace GnollHackX.Pages.MainScreen
                     rib.ImgWidth = 80;
                     rib.ImgHeight = 80;
                     rib.GridWidth = 480;
-                    rib.GridWidth = 160;
+                    rib.GridHeight = 200;
 #if GNH_MAUI
                     rib.MaximumWidthRequest = 480;
 #else
                     rib.WidthRequest = 480;
 #endif
-                    rib.HeightRequest = 80;
+                    rib.HeightRequest = 200;
                     rib.GridMargin = new Thickness(rib.ImgWidth / 15, 0);
                     rib.BtnCommand = i;
                     rib.BtnClicked += SnapshotButton_Clicked;
+
                     SnapshotLayout.Children.Add(rib);
                 }
             }

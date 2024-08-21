@@ -16,6 +16,7 @@ using GnollHackX.Controls;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
+using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 
@@ -26,6 +27,7 @@ namespace GnollHackX.Pages.MainScreen
     public partial class VaultPage : ContentPage
     {
         private MainPage _mainPage;
+        List<LabeledImageButton> _buttons = new List<LabeledImageButton>();
 
         public VaultPage(MainPage mainPage)
         {
@@ -48,13 +50,15 @@ namespace GnollHackX.Pages.MainScreen
             rib.LblFontSize = 20;
             rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             rib.LblFontFamily = "Immortal";
-            rib.ImgWidth = 120;
-            rib.ImgHeight = 120;
+            rib.ImgWidth = 110;
+            rib.ImgHeight = 110;
             rib.GridWidth = 200;
-            rib.GridHeight = 150;
+            rib.GridHeight = 140;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.WidthRequest = 200 + rib.ImgWidth / 5;
+            rib.HeightRequest = 140;
             rib.BtnClicked += btnTopScores_Clicked;
-            VaultLayout.Children.Add(rib);
+            _buttons.Add(rib);
 
             rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.manual.png";
@@ -63,13 +67,15 @@ namespace GnollHackX.Pages.MainScreen
             rib.LblFontSize = 20;
             rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             rib.LblFontFamily = "Immortal";
-            rib.ImgWidth = 120;
-            rib.ImgHeight = 120;
+            rib.ImgWidth = 110;
+            rib.ImgHeight = 110;
             rib.GridWidth = 200;
-            rib.GridHeight = 150;
+            rib.GridHeight = 140;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.WidthRequest = 200 + rib.ImgWidth / 5;
+            rib.HeightRequest = 140;
             rib.BtnClicked += btnLibrary_Clicked;
-            VaultLayout.Children.Add(rib);
+            _buttons.Add(rib);
 
             rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.chronicle.png";
@@ -78,13 +84,15 @@ namespace GnollHackX.Pages.MainScreen
             rib.LblFontSize = 20;
             rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             rib.LblFontFamily = "Immortal";
-            rib.ImgWidth = 120;
-            rib.ImgHeight = 120;
+            rib.ImgWidth = 110;
+            rib.ImgHeight = 110;
             rib.GridWidth = 200;
-            rib.GridHeight = 150;
+            rib.GridHeight = 140;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.WidthRequest = 200 + rib.ImgWidth / 5;
+            rib.HeightRequest = 140;
             rib.BtnClicked += btnReplays_Clicked;
-            VaultLayout.Children.Add(rib);
+            _buttons.Add(rib);
 
             rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.music.png";
@@ -93,13 +101,15 @@ namespace GnollHackX.Pages.MainScreen
             rib.LblFontSize = 20;
             rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             rib.LblFontFamily = "Immortal";
-            rib.ImgWidth = 120;
-            rib.ImgHeight = 120;
+            rib.ImgWidth = 110;
+            rib.ImgHeight = 110;
             rib.GridWidth = 200;
-            rib.GridHeight = 150;
+            rib.GridHeight = 140;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.WidthRequest = 200 + rib.ImgWidth / 5;
+            rib.HeightRequest = 140;
             rib.BtnClicked += btnSoundTracks_Clicked;
-            VaultLayout.Children.Add(rib);
+            _buttons.Add(rib);
 
             rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.you.png";
@@ -108,13 +118,23 @@ namespace GnollHackX.Pages.MainScreen
             rib.LblFontSize = 20;
             rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             rib.LblFontFamily = "Immortal";
-            rib.ImgWidth = 120;
-            rib.ImgHeight = 120;
+            rib.ImgWidth = 110;
+            rib.ImgHeight = 110;
             rib.GridWidth = 200;
-            rib.GridHeight = 150;
+            rib.GridHeight = 140;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
+            rib.WidthRequest = 200 + rib.ImgWidth / 5;
+            rib.HeightRequest = 140;
             rib.BtnClicked += btnSnapshots_Clicked;
-            VaultLayout.Children.Add(rib);
+            _buttons.Add(rib);
+
+            VaultScrollView.HorizontalScrollBarVisibility =  ScrollBarVisibility.Never;
+            VaultScrollView.VerticalScrollBarVisibility = ScrollBarVisibility.Never;
+            foreach (LabeledImageButton button in _buttons)
+                VaultLayout.Children.Add(button);
+
+            _buttonsAdded = true;
+            _usingFlex = false;
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
@@ -149,6 +169,8 @@ namespace GnollHackX.Pages.MainScreen
 
         private double _currentPageWidth = 0;
         private double _currentPageHeight = 0;
+        private bool _buttonsAdded = false;
+        private bool _usingFlex = false;
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
@@ -159,6 +181,46 @@ namespace GnollHackX.Pages.MainScreen
 
                 lblHeader.Margin = UIUtils.GetHeaderMarginWithBorder(bkgView.BorderStyle, width, height);
                 CloseButton.Margin = UIUtils.GetFooterMarginWithBorder(bkgView.BorderStyle, width, height);
+
+                if (width > 0)
+                {
+                    bool shouldUseFlex = width >= 460;
+                    bool widerWidth = height < 280 + 6 + 24 + 60 + lblHeader.Margin.Top + lblHeader.Margin.Bottom + CloseButton.Margin.Top + CloseButton.Margin.Bottom;
+                    double usedWidth = widerWidth ? 2048 : 720;
+#if GNH_MAUI
+                    ViewGrid.MaximumWidthRequest = usedWidth;
+#else
+                    ViewGrid.WidthRequest = usedWidth;
+#endif
+
+                    if (!_buttonsAdded || _usingFlex != shouldUseFlex)
+                    {
+                        if(_buttonsAdded)
+                        {
+                            if (_usingFlex)
+                                VaultFlexLayout.Children.Clear();
+                            else
+                                VaultLayout.Children.Clear();
+                        }
+
+                        if (shouldUseFlex)
+                        {
+                            foreach (LabeledImageButton button in _buttons)
+                                VaultFlexLayout.Children.Add(button);
+                        }
+                        else
+                        {
+                            foreach (LabeledImageButton button in _buttons)
+                                VaultLayout.Children.Add(button);
+                        }
+                        _buttonsAdded = true;
+                        _usingFlex = shouldUseFlex;
+                        VaultFlexLayout.IsVisible = shouldUseFlex;
+                        VaultLayout.IsVisible = !shouldUseFlex;
+                    }
+                    if(!_usingFlex)
+                        VaultScrollView.VerticalScrollBarVisibility = ScrollBarVisibility.Default;
+                }
             }
         }
 
