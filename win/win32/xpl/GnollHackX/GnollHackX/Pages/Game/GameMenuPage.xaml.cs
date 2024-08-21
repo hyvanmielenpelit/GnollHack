@@ -82,7 +82,7 @@ namespace GnollHackX.Pages.Game
         {
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await App.Current.MainPage.Navigation.PopModalAsync();
+            await GHApp.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta('s'));
         }
 
@@ -90,7 +90,7 @@ namespace GnollHackX.Pages.Game
         {
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await App.Current.MainPage.Navigation.PopModalAsync();
+            await GHApp.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, _gamePage.GameEnded ? 'q' : GHUtils.Meta('q'));
         }
 
@@ -98,7 +98,7 @@ namespace GnollHackX.Pages.Game
         {
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await App.Current.MainPage.Navigation.PopModalAsync();
+            await GHApp.Navigation.PopModalAsync();
         }
 
         private async void btnOptions_Clicked(object sender, EventArgs e)
@@ -106,7 +106,7 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             GHApp.DebugWriteRestart("ProfilingStopwatch.Restart: Options");
-            await App.Current.MainPage.Navigation.PopModalAsync();
+            await GHApp.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, 'O');
         }
 
@@ -114,7 +114,7 @@ namespace GnollHackX.Pages.Game
         {
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await App.Current.MainPage.Navigation.PopModalAsync();
+            await GHApp.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta(28));
         }
 
@@ -123,7 +123,7 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             var settingsPage = new SettingsPage(this, null);
-            await App.Current.MainPage.Navigation.PushModalAsync(settingsPage);
+            await GHApp.Navigation.PushModalAsync(settingsPage);
             MainLayout.IsEnabled = true;
         }
 
@@ -133,7 +133,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             var libPage = new LibraryPage();
             libPage.ReadLibrary();
-            await App.Current.MainPage.Navigation.PushModalAsync(libPage);
+            await GHApp.Navigation.PushModalAsync(libPage);
             MainLayout.IsEnabled = true;
         }
 
@@ -156,7 +156,7 @@ namespace GnollHackX.Pages.Game
             {
                 _backPressed = true;
                 MainLayout.IsEnabled = false;
-                await App.Current.MainPage.Navigation.PopModalAsync();
+                await GHApp.Navigation.PopModalAsync();
             }
             return false;
         }
@@ -188,7 +188,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             if(_gamePage.ShownTip == -1)
                 _gamePage.ShowGUITips(false);
-            await App.Current.MainPage.Navigation.PopModalAsync();
+            await GHApp.Navigation.PopModalAsync();
         }
 
         private double _currentPageWidth = 0;
@@ -210,7 +210,7 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             var verPage = new VersionPage(_gamePage);
-            await App.Current.MainPage.Navigation.PushModalAsync(verPage);
+            await GHApp.Navigation.PushModalAsync(verPage);
             MainLayout.IsEnabled = true;
         }
 
@@ -280,7 +280,7 @@ namespace GnollHackX.Pages.Game
             {
                 /* Android seems to trigger app switching (OnSleep / OnResume) using OpenBrowser; use WebView instead */
                 var wikiPage = new WikiPage("Wiki", GHConstants.GnollHackWikiPage);
-                await App.Current.MainPage.Navigation.PushModalAsync(wikiPage);
+                await GHApp.Navigation.PushModalAsync(wikiPage);
             }
             MainLayout.IsEnabled = true;
         }

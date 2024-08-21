@@ -792,7 +792,7 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     var gamePage = new GamePage(_mainPage);
                     GHApp.CurrentGamePage = gamePage;
-                    await App.Current.MainPage.Navigation.PushModalAsync(gamePage);
+                    await GHApp.Navigation.PushModalAsync(gamePage);
                     gamePage.StartReplay(filePath, -1);
                 }
                 else
@@ -820,7 +820,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await App.Current.MainPage.Navigation.PopModalAsync();
+            await GHApp.Navigation.PopModalAsync();
         }
 
         private double _currentPageWidth = 0;

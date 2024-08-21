@@ -122,7 +122,7 @@ namespace GnollHackX.Pages.Game
         {
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await App.Current.MainPage.Navigation.PopModalAsync();
+            await GHApp.Navigation.PopModalAsync();
         }
 
         private void BackButton_Clicked(object sender, EventArgs e)

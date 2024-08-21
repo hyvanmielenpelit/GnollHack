@@ -2,7 +2,6 @@
 using Microsoft.Maui.LifecycleEvents;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using System.Runtime.Intrinsics.Arm;
-using MemoryToolkit.Maui;
 using GnollHackX;
 
 #if IOS
@@ -36,7 +35,8 @@ public static class MauiProgram
             .ConfigureMauiHandlers((handlers) => {
                 handlers.AddHandler(typeof(CustomLabel), typeof(AutoSizeSKCanvasViewHandler));
 #if IOS
-                handlers.AddHandler(typeof(Shell), typeof(CustomShellRenderer));  
+                handlers.AddHandler(typeof(Shell), typeof(CustomShellRenderer));
+                handlers.AddHandler<Border, NotAnimatedBorderHandler>();
 #endif
             })
 
@@ -134,7 +134,10 @@ public static class MauiProgram
                         GHApp.WindowsXamlWindow = window;
                         window.Closed += (s, e) =>
                         {
-                            Environment.Exit(0);
+                            if (GHApp.WindowsApp != null)
+                                GHApp.WindowsApp.Exit();
+                            else
+                                Environment.Exit(0);
                         };
                         var handle = WinRT.Interop.WindowNative.GetWindowHandle(window);
                         var id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
@@ -231,16 +234,7 @@ public static class MauiProgram
 
 #if DEBUG
 		builder.Logging.AddDebug();
-        // Ensure UseLeakDetection is called after logging has been configured!
-        builder.UseLeakDetection(collectionTarget =>
-        {
-            GHApp.MaybeWriteGHLog($"Leak Detected: {collectionTarget.Name} is a zombie!");
-            //Application.Current?.MainPage?.DisplayAlert("Leak Detected",
-            //    $" {collectionTarget.Name} is a zombie!", "OK");
-        });
 #endif
-
-
         return builder.Build();
 	}
 }

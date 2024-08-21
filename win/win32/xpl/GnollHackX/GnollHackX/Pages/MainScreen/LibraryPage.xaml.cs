@@ -43,7 +43,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await App.Current.MainPage.Navigation.PopModalAsync();
+            await GHApp.Navigation.PopModalAsync();
         }
 
         Dictionary<int, StoredManual> _manuals = new Dictionary<int, StoredManual>();
@@ -141,7 +141,7 @@ namespace GnollHackX.Pages.MainScreen
                     dispfilepage.UseFixedFontSize = true;
                     dispfilepage.FontSize = 14;
                     if (dispfilepage.ReadFile(out errormsg))
-                        await App.Current.MainPage.Navigation.PushModalAsync(dispfilepage);
+                        await GHApp.Navigation.PushModalAsync(dispfilepage);
                     else
                         await DisplayAlert("Error Reading Manual", "Reading the manual entitled " + sm.Name + " failed: " + errormsg, "OK");
                 }
@@ -171,7 +171,7 @@ namespace GnollHackX.Pages.MainScreen
             if (!_backPressed)
             {
                 _backPressed = true;
-                await App.Current.MainPage.Navigation.PopModalAsync();
+                await GHApp.Navigation.PopModalAsync();
             }
             return false;
         }

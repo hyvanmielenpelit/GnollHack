@@ -441,7 +441,7 @@ namespace GnollHackX
             }
         }
 
-        private SizeRequest CalculateLabelSize(double widthConstraint, double heightConstraint)
+        private Size CalculateLabelSize(double widthConstraint, double heightConstraint)
         {
             double usedMaximumValue = 1000000.0;
             double adjWidthConstraint = double.IsInfinity(widthConstraint) ?
@@ -471,7 +471,7 @@ namespace GnollHackX
                 else
                     hr = (double)(textAreaSize.Height / scale); // Math.Min(adjHeightConstraint, (double)(textAreaSize.Height / scale));
             }
-            return new SizeRequest(new Size(wr, hr));
+            return new Size(wr, hr);
         }
 
         Dictionary<string, CustomLabelFonts> _fontDictionary = new Dictionary<string, CustomLabelFonts>
@@ -1099,17 +1099,16 @@ namespace GnollHackX
                 }
             }
         }
-        protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
-        {
-            return CalculateLabelSize(widthConstraint, heightConstraint);
-        }
 
 #if GNH_MAUI
         public Size CustomMeasureSize(double widthConstraint, double heightConstraint)
         {
-            SizeRequest sizeRequest = CalculateLabelSize(widthConstraint, heightConstraint);
-            Size size = new Size(sizeRequest.Request.Width, sizeRequest.Request.Height);
-            return size;
+            return CalculateLabelSize(widthConstraint, heightConstraint);
+        }
+#else
+        protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
+        {
+            return new SizeRequest(CalculateLabelSize(widthConstraint, heightConstraint));
         }
 #endif
 

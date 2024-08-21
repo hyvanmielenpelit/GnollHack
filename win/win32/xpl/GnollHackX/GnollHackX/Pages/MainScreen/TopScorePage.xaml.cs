@@ -77,7 +77,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await App.Current.MainPage.Navigation.PopModalAsync();
+            await GHApp.Navigation.PopModalAsync();
         }
 
         public bool ReadFile(out string errorMessage)
@@ -328,7 +328,7 @@ namespace GnollHackX.Pages.MainScreen
                             }
                             else
                             {
-                                await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
+                                await GHApp.Navigation.PushModalAsync(displFilePage);
                                 HTMLDumplogDisplayed = true;
                             }
                         }
@@ -353,7 +353,7 @@ namespace GnollHackX.Pages.MainScreen
                             }
                             else
                             {
-                                await App.Current.MainPage.Navigation.PushModalAsync(displFilePage);
+                                await GHApp.Navigation.PushModalAsync(displFilePage);
                             }
                         }
                         else

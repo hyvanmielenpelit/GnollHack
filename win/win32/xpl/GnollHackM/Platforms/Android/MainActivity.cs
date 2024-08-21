@@ -38,7 +38,9 @@ public class MainActivity : MauiAppCompatActivity
         {
 #pragma warning disable CA1416 // Supported on: 'android' 30.0 and later
             activity.Window.SetDecorFitsSystemWindows(false);
-            activity.Window.InsetsController?.Hide(WindowInsets.Type.NavigationBars());
+            activity.Window.InsetsController?.Hide(WindowInsets.Type.SystemBars());
+            if (activity.Window.InsetsController != null)
+                activity.Window.InsetsController.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
 #pragma warning restore CA1416 // Supported on: 'android' 30.0 and later
         }
         else
@@ -60,7 +62,7 @@ public class MainActivity : MauiAppCompatActivity
         {
 #pragma warning disable CA1416 // Supported on: 'android' 30.0 and later
             activity.Window.SetDecorFitsSystemWindows(true);
-            activity.Window.InsetsController?.Show(WindowInsets.Type.NavigationBars());
+            activity.Window.InsetsController?.Show(WindowInsets.Type.SystemBars());
 #pragma warning restore CA1416 // Supported on: 'android' 30.0 and later
         }
         else

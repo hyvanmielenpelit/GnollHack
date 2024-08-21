@@ -388,7 +388,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Frame x:Name="ReplayFrame" HorizontalOptions="Center" VerticalOptions="End" HeightRequest="65" BackgroundColor="#88000000" BorderColor="Black" CornerRadius="10" Padding="4" Margin="1">
+                <Frame x:Name="ReplayFrame" HorizontalOptions="Center" VerticalOptions="End" HeightRequest="65" BackgroundColor="#88000000" BorderColor="Black" Padding="4" CornerRadius="10" Margin="1">
                     <Grid Margin="0" BackgroundColor="Transparent" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="60" Padding="0" RowSpacing="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />

@@ -224,7 +224,7 @@ namespace GnollHackX.Pages.MainScreen
             ResetGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             GHApp.CurrentMainPage?.InvalidateCarousel(); 
-            await App.Current.MainPage.Navigation.PopModalAsync();
+            await GHApp.Navigation.PopModalAsync();
         }
 
         private bool _backPressed = false;
@@ -235,7 +235,7 @@ namespace GnollHackX.Pages.MainScreen
                 _backPressed = true;
                 ResetGrid.IsEnabled = false;
                 GHApp.CurrentMainPage?.InvalidateCarousel();
-                await App.Current.MainPage.Navigation.PopModalAsync();
+                await GHApp.Navigation.PopModalAsync();
             }
             return false;
         }

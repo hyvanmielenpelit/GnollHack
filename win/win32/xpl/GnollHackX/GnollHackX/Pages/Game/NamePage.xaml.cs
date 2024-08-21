@@ -132,7 +132,7 @@ namespace GnollHackX.Pages.Game
             if (!_backPressed)
             {
                 _backPressed = true;
-                //await App.Current.MainPage.Navigation.PopModalAsync();
+                //await GHApp.Navigation.PopModalAsync();
             }
             await Task.FromResult(0);
             return false;

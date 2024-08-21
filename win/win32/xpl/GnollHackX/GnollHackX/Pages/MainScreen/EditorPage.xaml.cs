@@ -87,7 +87,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     ErrorLabel.Text = "";
                     GHApp.CurrentMainPage?.InvalidateCarousel();
-                    await App.Current.MainPage.Navigation.PopModalAsync();
+                    await GHApp.Navigation.PopModalAsync();
                 }
                 else
                 {
@@ -98,7 +98,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 ErrorLabel.Text = "";
                 GHApp.CurrentMainPage?.InvalidateCarousel();
-                await App.Current.MainPage.Navigation.PopModalAsync();
+                await GHApp.Navigation.PopModalAsync();
             }
         }
 
@@ -113,7 +113,7 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     ErrorLabel.Text = "";
                     GHApp.CurrentMainPage?.InvalidateCarousel();
-                    await App.Current.MainPage.Navigation.PopModalAsync();
+                    await GHApp.Navigation.PopModalAsync();
                 }
                 else 
                 {
@@ -124,7 +124,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 ErrorLabel.Text = "";
                 GHApp.CurrentMainPage?.InvalidateCarousel();
-                await App.Current.MainPage.Navigation.PopModalAsync();
+                await GHApp.Navigation.PopModalAsync();
             }
         }
 
@@ -138,7 +138,7 @@ namespace GnollHackX.Pages.MainScreen
                 ErrorLabel.Text = "";
                 await GHApp.GnollHackService.ResetDefaultsFile();
                 GHApp.CurrentMainPage?.InvalidateCarousel();
-                await App.Current.MainPage.Navigation.PopModalAsync();
+                await GHApp.Navigation.PopModalAsync();
             }
             else
             {

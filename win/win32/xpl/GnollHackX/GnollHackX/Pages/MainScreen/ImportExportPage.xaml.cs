@@ -387,7 +387,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             ImportExportGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await App.Current.MainPage.Navigation.PopModalAsync();
+            await GHApp.Navigation.PopModalAsync();
         }
 
         private bool _backPressed = false;
@@ -397,7 +397,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 _backPressed = true;
                 ImportExportGrid.IsEnabled = false;
-                await App.Current.MainPage.Navigation.PopModalAsync();
+                await GHApp.Navigation.PopModalAsync();
             }
             return false;
         }
