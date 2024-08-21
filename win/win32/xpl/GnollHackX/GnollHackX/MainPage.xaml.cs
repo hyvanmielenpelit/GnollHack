@@ -1259,12 +1259,6 @@ namespace GnollHackX
             UpperButtonGrid.IsEnabled = true;
         }
 
-        public void StartCarouselViewAndEnableButtons()
-        {
-            carouselView.Play();
-            UpperButtonGrid.IsEnabled = true;
-        }
-
         public void PlayCarouselView()
         {
             carouselView.Play();
