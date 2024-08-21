@@ -282,6 +282,9 @@ namespace GnollHackX.Controls
                 _isHovering = true;
                 LblTextColor = LblTextColor;
                 SubLblTextColor = SubLblTextColor;
+                SubLbl2TextColor = SubLbl2TextColor;
+                SubLbl3TextColor = SubLbl3TextColor;
+                SubLbl4TextColor = SubLbl4TextColor;
             });
         }
 
@@ -294,6 +297,9 @@ namespace GnollHackX.Controls
                 _isHovering = false;
                 LblTextColor = LblTextColor;
                 SubLblTextColor = SubLblTextColor;
+                SubLbl2TextColor = SubLbl2TextColor;
+                SubLbl3TextColor = SubLbl3TextColor;
+                SubLbl4TextColor = SubLbl4TextColor;
             });
         }
 #else
