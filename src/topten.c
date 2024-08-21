@@ -103,8 +103,8 @@ boolean incl_helpless;
         "drowned in ", "drowned by ", "burned by ", "dissolved in ", "crushed to death by ", "strangled to death by ", "suffocated by ",
         /* STONING, DISINTEGRATION, TURNED_SLIME, ILLNESS, ROTTED, GENOCIDED,   */
         "petrified by ", "disintegrated by ", "turned to slime by ", "died of an illness contracted by ", "died of mummy rot contracted by ", "killed by ",
-        /* PANICKED, TRICKED, QUIT, ESCAPED, ASCENDED */
-        "", "", "", "", ""
+        /* PANICKED, TRICKED, QUIT, ESCAPED, ASCENDED, SNAPSHOT */
+        "", "", "", "", "", ""
     };
     size_t l;
     char c, *kname = killer.name;
