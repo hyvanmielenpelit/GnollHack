@@ -82,6 +82,8 @@ namespace GnollHackX.Pages.MainScreen
                 Comparison<GHSnapshot> comp = new Comparison<GHSnapshot>((snap1, snap2) => { return (int)(snap2.timestamp - snap1.timestamp); }); /* Descending */
                 _snapshots.Sort(comp);
                 int i = -1;
+                Color btnLblColor = GHApp.DarkMode ? GHColors.LightBlue : GHColors.DarkBlue;
+                Color btnSubLblColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
                 foreach (GHSnapshot snap in _snapshots)
                 {
                     i++;
@@ -99,16 +101,16 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     rib.ImgHighFilterQuality = true;
                     rib.LblText = snap.name;
-                    rib.LblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                    rib.LblTextColor = btnLblColor;
                     rib.LblFontSize = 19;
                     rib.SubLblText = snap.character;
                     rib.SubLbl2Text = snap.location;
                     rib.SubLbl3Text = snap.gamemode;
                     rib.SubLbl4Text =  snap.timing;
-                    rib.SubLblTextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
-                    rib.SubLbl2TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
-                    rib.SubLbl3TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
-                    rib.SubLbl4TextColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+                    rib.SubLblTextColor = btnSubLblColor;
+                    rib.SubLbl2TextColor = btnSubLblColor;
+                    rib.SubLbl3TextColor = btnSubLblColor;
+                    rib.SubLbl4TextColor = btnSubLblColor;
                     rib.SubLblFontSize = 15;
                     rib.SubLbl2FontSize = 15;
                     rib.SubLbl3FontSize = 15;
