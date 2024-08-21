@@ -1161,6 +1161,16 @@ namespace GnollHackX
 #endif
         }
 
+        protected override void OnHandlerChanging(HandlerChangingEventArgs args)
+        {
+            base.OnHandlerChanging(args);
+#if WINDOWS
+            SkiaSharp.Views.Windows.SKXamlCanvas view = args.OldHandler?.PlatformView as SkiaSharp.Views.Windows.SKXamlCanvas;
+            if (view != null && args.NewHandler == null)
+                view.PointerWheelChanged -= View_PointerWheelChanged;
+#endif
+        }
+
 #if WINDOWS
         private void View_PointerWheelChanged(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {

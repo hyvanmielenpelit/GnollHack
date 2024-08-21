@@ -24,9 +24,12 @@ namespace GnollHackX.Pages.MainScreen
     public partial class EditorPage : ContentPage
     {
         private string _fileName;
-
-        public EditorPage(string fileName, string header)
+        private MainPage _mainPage;
+        public EditorPage(MainPage mainPage, string fileName, string header)
         {
+            _mainPage = mainPage;
+            Disappearing += (s, e) => { _mainPage.StartCarouselViewAndEnableButtons(); };
+
             InitializeComponent();
             On<iOS>().SetUseSafeArea(true);
             UIUtils.AdjustRootLayout(RootGrid);
