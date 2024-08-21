@@ -1948,10 +1948,9 @@ boolean dopopup;
             {
                 Sprintf(buf, "%s for a while, and then suddenly %s out a puff of smoke.", Yobjnam2(weapon, "violently vibrate"), otense(weapon, "give"));
                 pline_ex1_popup(ATR_NONE, CLR_MSG_NEGATIVE, buf, Blind ? "Puff of Smoke" : "Puff of Blue Smoke", dopopup);
-                otmp->enchantment = 0;
             }
-            otmp->enchantment = 0;
-            otmp->speflags |= SPEFLAGS_GIVEN_OUT_BLUE_SMOKE;
+            weapon->enchantment = 0;
+            weapon->speflags |= SPEFLAGS_GIVEN_OUT_BLUE_SMOKE;
             update_inventory();
             special_effect_wait_until_end(0);
         }
