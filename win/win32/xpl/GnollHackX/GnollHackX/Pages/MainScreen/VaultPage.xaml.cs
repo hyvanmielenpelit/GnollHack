@@ -50,13 +50,13 @@ namespace GnollHackX.Pages.MainScreen
             rib.LblFontSize = 20;
             rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             rib.LblFontFamily = "Immortal";
-            rib.ImgWidth = 120;
-            rib.ImgHeight = 120;
+            rib.ImgWidth = 110;
+            rib.ImgHeight = 110;
             rib.GridWidth = 200;
-            rib.GridHeight = 150;
+            rib.GridHeight = 140;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
             rib.WidthRequest = 200 + rib.ImgWidth / 5;
-            rib.HeightRequest = 150;
+            rib.HeightRequest = 140;
             rib.BtnClicked += btnTopScores_Clicked;
             _buttons.Add(rib);
 
@@ -67,13 +67,13 @@ namespace GnollHackX.Pages.MainScreen
             rib.LblFontSize = 20;
             rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             rib.LblFontFamily = "Immortal";
-            rib.ImgWidth = 120;
-            rib.ImgHeight = 120;
+            rib.ImgWidth = 110;
+            rib.ImgHeight = 110;
             rib.GridWidth = 200;
-            rib.GridHeight = 150;
+            rib.GridHeight = 140;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
             rib.WidthRequest = 200 + rib.ImgWidth / 5;
-            rib.HeightRequest = 150;
+            rib.HeightRequest = 140;
             rib.BtnClicked += btnLibrary_Clicked;
             _buttons.Add(rib);
 
@@ -84,13 +84,13 @@ namespace GnollHackX.Pages.MainScreen
             rib.LblFontSize = 20;
             rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             rib.LblFontFamily = "Immortal";
-            rib.ImgWidth = 120;
-            rib.ImgHeight = 120;
+            rib.ImgWidth = 110;
+            rib.ImgHeight = 110;
             rib.GridWidth = 200;
-            rib.GridHeight = 150;
+            rib.GridHeight = 140;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
             rib.WidthRequest = 200 + rib.ImgWidth / 5;
-            rib.HeightRequest = 150;
+            rib.HeightRequest = 140;
             rib.BtnClicked += btnReplays_Clicked;
             _buttons.Add(rib);
 
@@ -101,13 +101,13 @@ namespace GnollHackX.Pages.MainScreen
             rib.LblFontSize = 20;
             rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             rib.LblFontFamily = "Immortal";
-            rib.ImgWidth = 120;
-            rib.ImgHeight = 120;
+            rib.ImgWidth = 110;
+            rib.ImgHeight = 110;
             rib.GridWidth = 200;
-            rib.GridHeight = 150;
+            rib.GridHeight = 140;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
             rib.WidthRequest = 200 + rib.ImgWidth / 5;
-            rib.HeightRequest = 150;
+            rib.HeightRequest = 140;
             rib.BtnClicked += btnSoundTracks_Clicked;
             _buttons.Add(rib);
 
@@ -118,13 +118,13 @@ namespace GnollHackX.Pages.MainScreen
             rib.LblFontSize = 20;
             rib.LblFontColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
             rib.LblFontFamily = "Immortal";
-            rib.ImgWidth = 120;
-            rib.ImgHeight = 120;
+            rib.ImgWidth = 110;
+            rib.ImgHeight = 110;
             rib.GridWidth = 200;
-            rib.GridHeight = 150;
+            rib.GridHeight = 140;
             rib.GridMargin = new Thickness(rib.ImgWidth / 10, 0);
             rib.WidthRequest = 200 + rib.ImgWidth / 5;
-            rib.HeightRequest = 150;
+            rib.HeightRequest = 140;
             rib.BtnClicked += btnSnapshots_Clicked;
             _buttons.Add(rib);
 
@@ -185,6 +185,14 @@ namespace GnollHackX.Pages.MainScreen
                 if (width > 0)
                 {
                     bool shouldUseFlex = width >= 460;
+                    bool widerWidth = height < 280 + 6 + 24 + 60 + lblHeader.Margin.Top + lblHeader.Margin.Bottom + CloseButton.Margin.Top + CloseButton.Margin.Bottom;
+                    double usedWidth = widerWidth ? 2048 : 720;
+#if GNH_MAUI
+                    ViewGrid.MaximumWidthRequest = usedWidth;
+#else
+                    ViewGrid.WidthRequest = usedWidth;
+#endif
+
                     if (!_buttonsAdded || _usingFlex != shouldUseFlex)
                     {
                         if(_buttonsAdded)
