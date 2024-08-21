@@ -2943,7 +2943,7 @@ int reason; /* how hero died; used when disclosing end-of-game level */
     if (In_endgame(&u.uz))
         traverse_mapseenchn(TRUE, win, why, reason, &lastdun);
     /* if game is over or we're not in the endgame yet, show the dungeon */
-    if (why > 0 || !In_endgame(&u.uz))
+    if (why > 0 || !In_endgame(&u.uz) || reason == SNAPSHOT)
         traverse_mapseenchn(FALSE, win, why, reason, &lastdun);
     display_nhwindow(win, TRUE);
     destroy_nhwindow(win);
@@ -3191,7 +3191,7 @@ boolean printdun;
             putstr(win, ATR_SUBTITLE | ATR_ALIGN_CENTER, dbuf);
 #else
         Sprintf(buf, "%s: %s", dungeons[dnum].dname, dbuf);
-        putstr(win, (!final ? ATR_INVERSE : 0) | ATR_TITLE, buf);
+        putstr(win, (!final && !iflags.in_dumplog ? ATR_INVERSE : 0) | ATR_TITLE, buf);
 #endif
     }
 
@@ -3202,7 +3202,7 @@ boolean printdun;
     else
         Sprintf(buf, "%sLevel %d:", TAB, i);
 
-    putstr_ex(win, buf, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, NO_COLOR, 1);
+    putstr_ex(win, buf, (!final && !iflags.in_dumplog ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, NO_COLOR, 1);
 
     /* wizmode prints out proto dungeon names for clarity */
     if (wizard) {
@@ -3211,7 +3211,7 @@ boolean printdun;
         if ((slev = Is_special(&mptr->lev)) != 0 && !mptr->flags.special_level_true_nature_known)
         {
             Sprintf(buf, " [%s]", slev->name);
-            putstr_ex(win, buf, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, CLR_MSG_GOD, 1);
+            putstr_ex(win, buf, (!final && !iflags.in_dumplog ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, CLR_MSG_GOD, 1);
         }
     }
 
@@ -3219,7 +3219,7 @@ boolean printdun;
     if (mptr->custom)
     {
         Sprintf(buf, " \"%s\"", mptr->custom);
-        putstr_ex(win, buf, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, CLR_MSG_HINT, 1);
+        putstr_ex(win, buf, (!final && !iflags.in_dumplog ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, CLR_MSG_HINT, 1);
     }
     if (on_level(&u.uz, &mptr->lev))
     {
@@ -3228,10 +3228,10 @@ boolean printdun;
             : (final == 1 && how == ESCAPED) ? "left from"
             : "were");
 
-        putstr_ex(win, buf, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, CLR_RED, 1);
+        putstr_ex(win, buf, (!final && !iflags.in_dumplog ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, CLR_RED, 1);
     }
-    putstr(win, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, "");
-    //putstr(win, (!final ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, buf);
+    putstr(win, (!final && !iflags.in_dumplog ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, "");
+    //putstr(win, (!final && !iflags.in_dumplog ? ATR_BOLD : 0) | ATR_SUBHEADING | ATR_INDENT_AT_COLON, buf);
 
     if (mptr->flags.forgot)
         return;

@@ -303,7 +303,7 @@ STATIC_VAR NEARDATA const char *deaths[NUM_GAME_END_TYPES] = {
     "died", "choked", "poisoned", "starvation", "drowning", "drowned", "burning",
     "dissolving under the heat and pressure", "crushed", "strangled", "suffocated", "turned to stone", "disintegrated",
     "turned into slime", "illness", "mummy rot", "genocided", "panic", "trickery", "quit",
-    "escaped", "ascended"
+    "escaped", "ascended", "snapshot"
 };
 
 STATIC_VAR NEARDATA const char *ends[NUM_GAME_END_TYPES] = {
@@ -314,7 +314,7 @@ STATIC_VAR NEARDATA const char *ends[NUM_GAME_END_TYPES] = {
     "were crushed", "were strangled", "suffocated", "turned to stone", "were disintegrated",
     "turned into slime", "died of your illness", "died of mummy rot", "were genocided",
     "panicked", "were tricked", "quit",
-    "escaped", "ascended"
+    "escaped", "ascended", "snapshot"
 };
 
 STATIC_VAR boolean Schroedingers_cat = FALSE;
@@ -965,22 +965,22 @@ boolean is_snapshot;
     putstr(0, ATR_HEADING, "Inventory:");
     (void) display_inventory((char *) 0, TRUE, 0);
     container_contents(invent, TRUE, TRUE, FALSE, 0);
-    enlightenment((BASICENLIGHTENMENT | MAGICENLIGHTENMENT),
-                  (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
+    enlightenment(how == SNAPSHOT ? BASICENLIGHTENMENT : (BASICENLIGHTENMENT | MAGICENLIGHTENMENT),
+                  how == SNAPSHOT ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
     putstr(NHW_DUMPTXT, 0, "");
     dump_skills();
     putstr(NHW_DUMPTXT, 0, "");
     dump_spells();
     putstr(NHW_DUMPTXT, 0, "");
-    show_gamelog((how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
+    show_gamelog(how == SNAPSHOT ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
     putstr(NHW_DUMPTXT, 0, "");
     list_vanquished('d', FALSE, TRUE); /* 'd' => 'y' */
     putstr(NHW_DUMPTXT, 0, "");
     list_genocided('d', FALSE, TRUE); /* 'd' => 'y' */
     putstr(NHW_DUMPTXT, 0, "");
-    show_conduct((how >= PANICKED) ? 1 : 2);
+    show_conduct(how == SNAPSHOT ? 0 : (how >= PANICKED) ? 1 : 2);
     putstr(NHW_DUMPTXT, 0, "");
-    show_overview((how >= PANICKED) ? 1 : 2, how);
+    show_overview(how == SNAPSHOT ? 0 : (how >= PANICKED) ? 1 : 2, how);
     putstr(NHW_DUMPTXT, 0, "");
     dump_redirect(FALSE);
 #else
@@ -1046,7 +1046,7 @@ dosnapshot(VOID_ARGS)
     htmldumplogfilename = print_dumphtml_filename_to_buffer(htmlbuf);
 #endif
 
-    dump_everything(ASCENDED, dumptime, TRUE);
+    dump_everything(SNAPSHOT, dumptime, TRUE);
     dump_close_log();
 
     write_snapshot_json(dumptime, dumplogfilename, htmldumplogfilename);

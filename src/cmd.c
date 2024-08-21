@@ -3281,7 +3281,7 @@ int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
     int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, 0UL, MAT_NONE, 0));
 
     en_win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_ENLIGHTENMENT_SCREEN, gui_glyph, extended_create_window_info_from_mon(&youmonst));
-    en_via_menu = !final;
+    en_via_menu = !final && !iflags.in_dumplog;
     if (en_via_menu)
         start_menu_ex(en_win, GHMENU_STYLE_ATTRIBUTES);
 
@@ -3290,7 +3290,7 @@ int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
     /* as in background_enlightenment, when poly'd we need to use the saved
        gender in u.mfemale rather than the current you-as-monster gender */
 #ifdef GNH_MOBILE
-    if (final)
+    if (final || iflags.in_dumplog)
 #endif
     {
         Sprintf(buf, "%s the %s's attributes:", tmpbuf,
@@ -3435,7 +3435,7 @@ int final;
 
     boolean usenextrow = TRUE;
 #ifdef GNH_MOBILE
-    usenextrow = (boolean)final;
+    usenextrow = (boolean)(final || iflags.in_dumplog);
 #endif
     if (usenextrow)
     {
@@ -5479,7 +5479,7 @@ int final;
     {
         added_goals = TRUE;
         putstr(en_win, ATR_TITLE, "Goals:");
-        if (!final)
+        if (!final && !iflags.in_dumplog)
             putstr(en_win, ATR_HALF_SIZE, " ");
 
         if (!u.uachieve.amulet)
@@ -5514,7 +5514,7 @@ int final;
         if(added_goals)
             putstr(dumpwin, ATR_NONE, "");
         putstr(en_win, ATR_TITLE, "Quests:");
-        if (!final)
+        if (!final && !iflags.in_dumplog)
             putstr(en_win, ATR_HALF_SIZE, " ");
 
         if (!(u.uevent.qcompleted || u.uevent.qexpelled || quest_status.leader_is_dead))
@@ -5632,7 +5632,7 @@ int final;
         putstr(dumpwin, ATR_NONE, "");
     
     putstr(en_win, ATR_TITLE, "Achievements:");
-    if (!final)
+    if (!final && !iflags.in_dumplog)
         putstr(en_win, ATR_HALF_SIZE, " ");
     
     /* Major achievements */
@@ -5798,7 +5798,7 @@ int final;
 
     putstr(dumpwin, ATR_NONE, "");
     putstr(en_win, ATR_TITLE, "Voluntary challenges:");
-    if(!final)
+    if(!final && !iflags.in_dumplog)
         putstr(en_win, ATR_HALF_SIZE, " ");
 
     if (u.uroleplay.blind)
@@ -5914,7 +5914,7 @@ int final;
 
     putstr(dumpwin, ATR_NONE, "");
     putstr(en_win, ATR_TITLE, "Role score:");
-    if (!final)
+    if (!final && !iflags.in_dumplog)
         putstr(en_win, ATR_HALF_SIZE, " ");
 
     if (u.uachieve.role_achievement)
@@ -5971,7 +5971,7 @@ int final;
     else if (Role_if(PM_KNIGHT) && u.ualign.type != A_NEUTRAL)
     { 
         putstr(en_win, ATR_SUBTITLE, u.ualign.type == A_LAWFUL ? " Demons, devils, and chaotic dragons slain:" : " Angels and lawful dragons slain:");
-        if (!final)
+        if (!final && !iflags.in_dumplog)
             putstr(en_win, ATR_HALF_SIZE, " ");
 
         print_knight_slayings(en_win, final);
@@ -6026,7 +6026,7 @@ int final;
     else if (Role_if(PM_TOURIST))
     {
         putstr(en_win, ATR_SUBTITLE, " Selfies taken with:");
-        if (!final)
+        if (!final && !iflags.in_dumplog)
             putstr(en_win, ATR_HALF_SIZE, " ");
 
         print_selfies(en_win, final);
