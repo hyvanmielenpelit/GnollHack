@@ -41,6 +41,7 @@
 #define nohands(ptr) (((ptr)->mflags1 & M1_NOHANDS) != 0L) /* also covers no limbs because of the bit in M1_NOLIMBS  */
 #define notake(ptr) (((ptr)->mflags1 & M1_NOTAKE) != 0L)
 #define can_operate_objects(ptr) (!(nohands(ptr) || verysmall(ptr)) || is_telekinetic_operator(ptr))
+#define is_armed(ptr) attacktype(ptr, AT_WEAP)
 
 #define has_head(ptr) ((ptr)->heads > 0)
 #define has_neck(ptr) (((ptr)->mflags1 & M1_NONECK) == 0L && has_head(ptr))
@@ -882,8 +883,6 @@
 #define has_sickening_corpse(ptr) (((ptr)->mconveys & MC_SICKENING_CORPSE) != 0L)
 #define has_mummy_rotted_corpse(ptr) (((ptr)->mconveys & MC_MUMMY_ROTTED_CORPSE) != 0L)
 
-#define is_armed(ptr) attacktype(ptr, AT_WEAP)
-
 
 #define is_mplayer(ptr) \
     (((ptr) >= &mons[PM_ARCHAEOLOGIST]) && ((ptr) <= &mons[PM_WIZARD]))
@@ -964,7 +963,7 @@
 #define can_wear_rings(ptr) (!nohands(ptr))
 #define can_wear_shield(ptr) (!nohands(ptr))
 #define can_wear_blindfold(ptr) (haseyes(ptr) && has_head(ptr))
-#define can_wield_weapons(ptr) (!nohands(ptr))
+#define can_wield_weapons(ptr) is_armed(ptr)
 #define can_wear_objects(ptr) (can_operate_objects(ptr) && !(is_animal(ptr) && !able_to_wear_objects(ptr)))
 #define can_wear_saddle(ptr) is_steed(ptr)
 
