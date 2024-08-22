@@ -2511,7 +2511,7 @@ int show_weights;
             {
                 continue; /* wrong type of container */
             } 
-            else if (box->cobj) 
+            else if (contained_object_chain(box))
             {
                 winid tmpwin = create_nhwindow(NHW_MENU);
                 Loot *sortedcobj, *srtc;
@@ -2531,13 +2531,13 @@ int show_weights;
                 if (!dumping)
                     putstr(tmpwin, ATR_HALF_SIZE, " ");
                 buf[0] = buf[1] = ' '; /* two leading spaces */
-                if (box->cobj && !cat) 
+                if (contained_object_chain(box) && !cat)
                 {
                     sortflags = (((flags.sortloot == 'l'
                                    || flags.sortloot == 'f')
                                      ? SORTLOOT_LOOT : 0)
                                  | (flags.sortpack ? SORTLOOT_PACK : 0));
-                    sortedcobj = sortloot(&box->cobj, sortflags, FALSE,
+                    sortedcobj = sortloot(contained_object_chain_ptr(box), sortflags, FALSE,
                                           (boolean FDECL((*), (OBJ_P))) 0);
                     totalweight = 0;
                     for (srtc = sortedcobj; ((obj = srtc->obj) != 0); ++srtc) 
@@ -2581,7 +2581,7 @@ int show_weights;
                 display_nhwindow(tmpwin, TRUE);
                 destroy_nhwindow(tmpwin);
                 if (all_containers)
-                    container_contents(box->cobj, identified, TRUE,
+                    container_contents(contained_object_chain(box), identified, TRUE,
                                        reportempty, show_weights);
             } 
             else if (reportempty) 
