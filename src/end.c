@@ -1059,7 +1059,7 @@ dosnapshot(VOID_ARGS)
     }
     else
     {
-        pline("Snapshot taken.");
+        custompline(SUPPRESS_HISTORY, "%s", "Snapshot taken.");
     }
 #else
     pline(unavailcmd, visctrl((int)cmd_from_func(dosnapshot)));
