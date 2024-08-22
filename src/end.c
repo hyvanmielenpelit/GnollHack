@@ -65,7 +65,7 @@ STATIC_DCL boolean FDECL(should_query_disclose_option, (int, char *));
 #if defined (DUMPLOG) || defined (DUMPHTML)
 STATIC_DCL void NDECL(dump_plines);
 #endif
-STATIC_DCL void FDECL(dump_everything, (int, time_t, BOOLEAN_P));
+STATIC_DCL void FDECL(dump_everything, (int, time_t));
 STATIC_DCL int NDECL(num_extinct);
 
 STATIC_DCL void FDECL(reset_objchn, (struct obj*));
@@ -889,10 +889,9 @@ dump_plines()
 
 /*ARGSUSED*/
 STATIC_OVL void
-dump_everything(how, when, is_snapshot)
+dump_everything(how, when)
 int how;
 time_t when; /* date+time at end of game */
-boolean is_snapshot;
 {
 #if defined (DUMPLOG) || defined (DUMPHTML)
     char pbuf[BUFSZ], datetimebuf[24]; /* [24]: room for 64-bit bogus value */
@@ -917,7 +916,7 @@ boolean is_snapshot;
             &datetimebuf[8], &datetimebuf[10], &datetimebuf[12]);
     Strcpy(datetimebuf, yyyymmddhhmmss(when));
     Sprintf(eos(pbuf), ", %s %4.4s-%2.2s-%2.2s %2.2s:%2.2s:%2.2s",
-            is_snapshot ? "snapshot at" : "ended",
+            how == SNAPSHOT ? "snapshot at" : "ended",
             &datetimebuf[0], &datetimebuf[4], &datetimebuf[6],
             &datetimebuf[8], &datetimebuf[10], &datetimebuf[12]);
     putstr(0, ATR_SUBHEADING, pbuf);
@@ -964,7 +963,7 @@ boolean is_snapshot;
     putstr(NHW_DUMPTXT, 0, "");
     putstr(0, ATR_HEADING, "Inventory:");
     (void) display_inventory((char *) 0, TRUE, 0);
-    container_contents(invent, TRUE, TRUE, FALSE, 0);
+    container_contents(invent, how != SNAPSHOT, TRUE, FALSE, 0);
     enlightenment(how == SNAPSHOT ? BASICENLIGHTENMENT : (BASICENLIGHTENMENT | MAGICENLIGHTENMENT),
                   how == SNAPSHOT ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
     putstr(NHW_DUMPTXT, 0, "");
@@ -1014,7 +1013,7 @@ wiz_dumplog(VOID_ARGS)
         if (htmldumplogfilename)
             pline("Writing HTML dumplog to %s...", buf);
 
-        dump_everything(ASCENDED, dumptime, TRUE);
+        dump_everything(ASCENDED, dumptime);
         dump_close_log();
         pline1("Done.");
     }
@@ -1046,7 +1045,7 @@ dosnapshot(VOID_ARGS)
     htmldumplogfilename = print_dumphtml_filename_to_buffer(htmlbuf);
 #endif
 
-    dump_everything(SNAPSHOT, dumptime, TRUE);
+    dump_everything(SNAPSHOT, dumptime);
     dump_close_log();
 
     write_snapshot_json(dumptime, dumplogfilename, htmldumplogfilename);
@@ -2051,7 +2050,7 @@ int how;
         if (strcmp(flags.end_disclose, "none"))
             disclose(how, taken);
 
-        dump_everything(how, endtime, FALSE);
+        dump_everything(how, endtime);
     }
     else if (how != QUIT)
     {
@@ -2497,7 +2496,15 @@ int show_weights;
     {
         if (Is_container(box) || box->otyp == STATUE) 
         {
-            box->cknown = 1; /* we're looking at the contents now */
+            if (dumping)
+            {
+                if (identified)
+                    box->cknown = 1; /* we're looking at the contents now */
+                else if (!box->cknown) /* Do not list containers whose contents we do not know */
+                    continue;
+            }
+            else
+                box->cknown = 1; /* we're looking at the contents now */
             if (identified)
                 box->lknown = 1;
             if (Is_noncontainer(box) /*->otyp == BAG_OF_TRICKS*/) 
