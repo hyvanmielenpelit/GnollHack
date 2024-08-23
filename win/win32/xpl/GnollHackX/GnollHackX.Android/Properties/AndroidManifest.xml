@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="136" android:versionName="1.80" package="com.soundmindentertainment.gnollhack" android:installLocation="auto">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="137" android:versionName="1.81" package="com.soundmindentertainment.gnollhack" android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="26" android:targetSdkVersion="34" />
 	<application android:label="GnollHack" android:theme="@style/MainTheme" android:usesCleartextTraffic="true" android:icon="@mipmap/icon"></application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
