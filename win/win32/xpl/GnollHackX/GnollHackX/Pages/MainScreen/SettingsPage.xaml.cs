@@ -99,6 +99,8 @@ namespace GnollHackX.Pages.MainScreen
             RightMousePicker.ItemsSource = mouseCommandItems;
             MiddleMousePicker.ItemsSource = mouseCommandItems;
 
+            ScreenScalePicker.ItemsSource = GHApp.ScreenScaleItems;
+
             SimpleCommandBarButton1Picker.ItemsSource = GHApp.SelectableShortcutButtons;
             SimpleCommandBarButton2Picker.ItemsSource = GHApp.SelectableShortcutButtons;
             SimpleCommandBarButton3Picker.ItemsSource = GHApp.SelectableShortcutButtons;
@@ -275,6 +277,13 @@ namespace GnollHackX.Pages.MainScreen
                 if (_gamePage != null)
                     _gamePage.MapRefreshRate = (MapRefreshRateStyle)RefreshRatePicker.SelectedIndex;
                 Preferences.Set("MapRefreshRate", RefreshRatePicker.SelectedIndex);
+            }
+
+            if (ScreenScalePicker.SelectedIndex > -1 && ScreenScalePicker.SelectedItem != null && ScreenScalePicker.SelectedItem is ScreenScaleItem)
+            {
+                float val = ((ScreenScaleItem)ScreenScalePicker.SelectedItem).Value;
+                GHApp.CustomScreenScale = val;
+                Preferences.Set("CustomScreenScale", val);
             }
 
             if (PrimaryGPUCachePicker.SelectedIndex > -1 && PrimaryGPUCachePicker.SelectedItem != null && PrimaryGPUCachePicker.SelectedItem is CacheSizeItem)
@@ -801,6 +810,7 @@ namespace GnollHackX.Pages.MainScreen
             bool longermsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false;
             long primarygpucache = -2, secondarygpucache = -2;
             int rightmouse = GHConstants.DefaultRightMouseCommand, middlemouse = GHConstants.DefaultMiddleMouseCommand;
+            float screenscale = 0.0f;
             float generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, UIVolume;
             string customlink = "";
             string customxlogaccountlink = "";
@@ -875,6 +885,7 @@ namespace GnollHackX.Pages.MainScreen
             primarygpucache = Preferences.Get("PrimaryGPUCacheLimit", -2L);
             secondarygpucache = Preferences.Get("SecondaryGPUCacheLimit", -2L);
             disableauxgpu = Preferences.Get("DisableAuxiliaryGLCanvas", GHApp.IsDisableAuxGPUDefault);
+            screenscale = Preferences.Get("CustomScreenScale", 0.0f);
             if (_gamePage == null)
             {
                 cursor = Preferences.Get("CursorStyle", 1);
@@ -978,6 +989,23 @@ namespace GnollHackX.Pages.MainScreen
             CursorPicker.SelectedIndex = cursor;
             GraphicsPicker.SelectedIndex = graphics;
             RefreshRatePicker.SelectedIndex = Math.Min(RefreshRatePicker.Items.Count - 1, maprefresh);
+
+            if (ScreenScalePicker.ItemsSource != null)
+            {
+                for (int i = 0; i < ScreenScalePicker.ItemsSource.Count; i++)
+                {
+                    object o = ScreenScalePicker.ItemsSource[i];
+                    if (o is ScreenScaleItem)
+                    {
+                        if (((ScreenScaleItem)o).Value == screenscale)
+                        {
+                            ScreenScalePicker.SelectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+
             SaveStylePicker.SelectedIndex = savestyle;
             GridSwitch.IsToggled = mapgrid;
             HitPointBarSwitch.IsToggled = hpbars;

@@ -113,10 +113,9 @@ namespace GnollHackM
         {
             RevertAnimatorDuration(true);
             GHApp.SaveWindowPosition();
-            if(GHApp.WindowsApp != null)
-                GHApp.WindowsApp.Exit();
-            else
-                Environment.Exit(0);
+            GHApp.WindowsApp?.Exit();
+            Application.Current?.Quit();
+            Environment.Exit(0);
         }
 
         public void SetStatusBarHidden(bool ishidden)

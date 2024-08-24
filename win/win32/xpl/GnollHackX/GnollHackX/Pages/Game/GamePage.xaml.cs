@@ -2387,17 +2387,6 @@ namespace GnollHackX.Pages.Game
                     break;
             }
 
-            //LabeledImageButton lib = new LabeledImageButton();
-            //lib.ImgSourcePath = "resource://" + icon_string;
-            //lib.LargerFont = false;
-            //lib.LblText = data.cmd_text;
-            //lib.SetSideSize(_currentPageWidth, _currentPageHeight, DesktopButtons, UseSimpleCmdLayout);
-            //lib.GridMargin = new Thickness(lib.ImgWidth / 15, lib.ImgWidth / 30);
-            //lib.BtnCommand = cmdcurchar;
-            //lib.BtnClicked += GHButton_Clicked;
-            //ContextLayout.IsVisible = true;
-            //ContextLayout.Children.Add(lib);
-
             ContextMenuButton cmb = new ContextMenuButton();
             cmb.ImgSourcePath = "resource://" + icon_string;
             cmb.Bitmap = GHApp.GetCachedImageSourceBitmap(cmb.ImgSourcePath, true);
@@ -3285,10 +3274,11 @@ namespace GnollHackX.Pages.Game
             _ynResponses = responses;
 
             float inverseCanvasScale = GetInverseCanvasScale();
+            float customScale = GHApp.CustomScreenScale;
             bool usingDesktopButtons = DesktopButtons;
             bool usingSimpleCmdLayout = UseSimpleCmdLayout;
             for (int i = 0; i < 5; i++)
-                btnList[i].SetSideSize(_currentPageWidth, _currentPageHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
+                btnList[i].SetSideSize(_currentPageWidth, _currentPageHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
 
             YnButtonStack.HeightRequest = btnList[0].GridHeight;
             switch(style)
@@ -4327,12 +4317,12 @@ namespace GnollHackX.Pages.Game
 
         public float GetTextScaleEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout)
         {
-            return GetTextScaleEx(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, GetInverseCanvasScale());
+            return GetTextScaleEx(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, GetInverseCanvasScale(), GHApp.CustomScreenScale);
         }
 
-        public float GetTextScaleEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale)
+        public float GetTextScaleEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale, float customScale)
         {
-            return ((float)UIUtils.CalculateButtonSideWidth(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, 0, 0, false) / 50.0f) * inverseCanvasScale;
+            return ((float)UIUtils.CalculateButtonSideWidth(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale, 0, 0, false) / 50.0f) * inverseCanvasScale;
         }
 
 #if GNH_MAP_PROFILING && DEBUG
@@ -6424,7 +6414,8 @@ namespace GnollHackX.Pages.Game
             //double canvas_scale = GetCanvasScale();
             //float inverse_canvas_scale = canvas_scale == 0 ? 0.0f : 1.0f / (float)canvas_scale;
             float inverse_canvas_scale = GetInverseCanvasScale();
-            float textscale = GetTextScaleEx(canvasView.Width, canvasView.Height, usingDesktopButtons, usingSimpleCmdLayout, inverse_canvas_scale);
+            float customScale = GHApp.CustomScreenScale;
+            float textscale = GetTextScaleEx(canvasView.Width, canvasView.Height, usingDesktopButtons, usingSimpleCmdLayout, inverse_canvas_scale, customScale);
             float statusBarSkiaHeight = GetStatusBarSkiaHeightEx(textscale);
             long generalcountervalue, maincountervalue;
             lock (AnimationTimerLock)
@@ -12860,41 +12851,42 @@ namespace GnollHackX.Pages.Game
             bool usingDesktopButtons = DesktopButtons;
             bool usingSimpleCmdLayout = UseSimpleCmdLayout;
             float inverseCanvasScale = GetInverseCanvasScale();
+            float customScale = GHApp.CustomScreenScale;
 
-            GameMenuButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
-            ESCButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
-            ToggleAutoCenterModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
-            LookModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
-            ToggleTravelModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
-            ToggleZoomMiniButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
-            ToggleZoomAlternateButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
+            GameMenuButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            ESCButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            ToggleAutoCenterModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            LookModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            ToggleTravelModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            ToggleZoomMiniButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            ToggleZoomAlternateButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
 
-            SimpleGameMenuButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
-            SimpleESCButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
-            SimpleToggleAutoCenterModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
-            SimpleLookModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
-            SimpleToggleZoomMiniButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
+            SimpleGameMenuButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            SimpleESCButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            SimpleToggleAutoCenterModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            SimpleLookModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            SimpleToggleZoomMiniButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
 
-            ZeroButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
-            FirstButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
-            SecondButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
-            ThirdButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
-            FourthButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
+            ZeroButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            FirstButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            SecondButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            ThirdButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            FourthButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
 
             foreach (View v in UpperCmdGrid.Children)
             {
                 LabeledImageButton lib = (LabeledImageButton)v;
-                lib.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
+                lib.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             }
             foreach (View v in LowerCmdGrid.Children)
             {
                 LabeledImageButton lib = (LabeledImageButton)v;
-                lib.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
+                lib.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             }
             foreach (View v in SimpleCmdGrid.Children)
             {
                 LabeledImageButton lib = (LabeledImageButton)v;
-                lib.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
+                lib.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             }
 
             LabeledImageButton firstchild = (LabeledImageButton)UpperCmdGrid.Children[0];
@@ -12904,12 +12896,12 @@ namespace GnollHackX.Pages.Game
             LabeledImageButton simplefirstchild = (LabeledImageButton)SimpleCmdGrid.Children[0];
             SimpleCmdGrid.HeightRequest = simplefirstchild.GridHeight;
 
-            lAbilitiesButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
-            lWornItemsButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
-            lRowAbilitiesButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
-            lRowWornItemsButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
+            lAbilitiesButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            lWornItemsButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            lRowAbilitiesButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            lRowWornItemsButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             //double statusbarheight = GetStatusBarHeight(); /* Requires lInventoryButton size having set to determine scaling */
-            double statusbarheight = GetStatusBarHeightEx(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
+            double statusbarheight = GetStatusBarHeightEx(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             lAbilitiesButton.HeightRequest = statusbarheight;
             lWornItemsButton.HeightRequest = statusbarheight;
             UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
@@ -13007,9 +12999,9 @@ namespace GnollHackX.Pages.Game
             return GetStatusBarSkiaHeightEx(textScale);
         }
 
-        public float GetStatusBarSkiaHeightEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale)
+        public float GetStatusBarSkiaHeightEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale, float customScale)
         {
-            float textScale = GetTextScaleEx(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
+            float textScale = GetTextScaleEx(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             return GetStatusBarSkiaHeightEx(textScale);
         }
 
@@ -13051,15 +13043,14 @@ namespace GnollHackX.Pages.Game
 
         public double GetStatusBarHeightEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout)
         {
-            float inverseCanvasScale = GetInverseCanvasScale();
-            return GetStatusBarHeightEx(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
+            return GetStatusBarHeightEx(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, GetInverseCanvasScale(), GHApp.CustomScreenScale);
         }
 
-        public double GetStatusBarHeightEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale)
+        public double GetStatusBarHeightEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale, float customScale)
         {
             if(inverseCanvasScale == 0.0f) 
                 inverseCanvasScale = 1.0f;
-            float statusbarheight = GetStatusBarSkiaHeightEx(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale);
+            float statusbarheight = GetStatusBarSkiaHeightEx(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             return (double)statusbarheight / (double)inverseCanvasScale;
         }
 

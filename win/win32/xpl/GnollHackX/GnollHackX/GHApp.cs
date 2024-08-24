@@ -174,6 +174,7 @@ namespace GnollHackX
             GUITipsShown = Preferences.Get("GUITipsShown", false);
             RealPlayTime = Preferences.Get("RealPlayTime", 0L);
             DrawWallEnds = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
+            CustomScreenScale = Preferences.Get("CustomScreenScale", 0.0f); /* Note that preferences have a default of zero but the property return 1.0f */
 
             SetAvailableGPUCacheLimits(TotalMemory);
             PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
@@ -1364,13 +1365,25 @@ namespace GnollHackX
         private static readonly object _displayDataLock = new object();
         public static float DisplayDensity
         {
-            get { lock (_displayDataLock) { return _displayDensity <= 0.0f ? 1.0f : _displayDensity; } }
-            set { lock (_displayDataLock) { _displayDensity = value; } }
+            get { lock (_displayDataLock) { return _displayDensity; } }
+            set { lock (_displayDataLock) { _displayDensity = value <= 0.0f ? 1.0f : value; } }
         }
         public static float DisplayRefreshRate
         {
-            get { lock (_displayDataLock) { return _displayRefreshRate <= 0.0f ? 1.0f : _displayRefreshRate; } }
-            set { lock (_displayDataLock) { _displayRefreshRate = value; } }
+            get { lock (_displayDataLock) { return _displayRefreshRate; } }
+            set { lock (_displayDataLock) { _displayRefreshRate = value <= 0.0f ? 1.0f : value; } }
+        }
+
+        private static float _customScreenScale = 1.0f;
+        public static float CustomScreenScale
+        {
+            get { lock (_displayDataLock) { return _customScreenScale; } }
+            set { lock (_displayDataLock) { _customScreenScale = value <= 0.0f ? 1.0f : value; } }
+        }
+
+        public static float TotalScreenScale
+        {
+            get { lock (_displayDataLock) { return _displayDensity * _customScreenScale; } }
         }
 
         public static GHPlatform PlatformId
@@ -2393,6 +2406,26 @@ namespace GnollHackX
             new MouseCommandItem("Cast", (int)NhGetPosMods.ClickCast),
             new MouseCommandItem("Fire", (int)NhGetPosMods.ClickFire),
             new MouseCommandItem("Zap", (int)NhGetPosMods.ClickZap),
+        };
+
+        public static readonly List<ScreenScaleItem> ScreenScaleItems = new List<ScreenScaleItem>()
+        {
+            new ScreenScaleItem("Default", 0.0f),
+            new ScreenScaleItem("0.5x", 0.5f),
+            new ScreenScaleItem("0.75x", 0.75f),
+            new ScreenScaleItem("1.0x", 1.0f),
+            new ScreenScaleItem("1.25x", 1.25f),
+            new ScreenScaleItem("1.50x", 1.50f),
+            new ScreenScaleItem("1.75x", 1.75f),
+            new ScreenScaleItem("2.0x", 2.0f),
+            new ScreenScaleItem("2.25x", 2.25f),
+            new ScreenScaleItem("2.5x", 2.5f),
+            new ScreenScaleItem("2.75x", 2.75f),
+            new ScreenScaleItem("3.0x", 3.0f),
+            new ScreenScaleItem("3.5x", 3.5f),
+            new ScreenScaleItem("4.0x", 4.0f),
+            new ScreenScaleItem("4.5x", 4.5f),
+            new ScreenScaleItem("5.0x", 5.0f),
         };
 
 #if DEBUG
@@ -6295,10 +6328,10 @@ namespace GnollHackX
         {
             if(page == null) 
                 return false;
-            int cnt = GHApp.Navigation.NavigationStack.Count;
+            int cnt = Navigation.ModalStack.Count;
             if (cnt == 0)
                 return false;
-            Page topPage = GHApp.Navigation?.ModalStack[cnt - 1];
+            Page topPage = Navigation?.ModalStack[cnt - 1];
             if (topPage == null) 
                 return false;
             return topPage == page;
@@ -6818,6 +6851,25 @@ namespace GnollHackX
         {
         }
         public MouseCommandItem(string displayName, int value)
+        {
+            DisplayName = displayName;
+            Value = value;
+        }
+
+        public override string ToString()
+        {
+            return DisplayName;
+        }
+    }
+
+    public class ScreenScaleItem
+    {
+        public string DisplayName = "";
+        public float Value = 0.0f;
+        public ScreenScaleItem()
+        {
+        }
+        public ScreenScaleItem(string displayName, float value)
         {
             DisplayName = displayName;
             Value = value;

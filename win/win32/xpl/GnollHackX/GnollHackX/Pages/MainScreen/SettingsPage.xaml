@@ -56,6 +56,44 @@
                                 </Picker>
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Map FPS"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center" 
+                                            HorizontalOptions="Start" />
+                                <Picker Grid.Column="1" x:Name="RefreshRatePicker"
+                                            Title="Select a map refresh rate"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            WidthRequest="200"
+                                            BackgroundColor="Transparent"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="End" >
+                                </Picker>
+                            </Grid>
+                            <Grid x:Name="ScreenScaleGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Screen Scale"
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="15"
+                                            VerticalOptions="Center" 
+                                            HorizontalOptions="Start" />
+                                <Picker Grid.Column="1" x:Name="ScreenScalePicker"
+                                            Title="Select a command"
+                                            FontFamily="Underwood" 
+                                            FontSize="17"
+                                            TextColor="Black"
+                                            TitleColor="Black"
+                                            HorizontalTextAlignment="End"
+                                            BackgroundColor="Transparent"
+                                            WidthRequest="140"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="End" >
+                                </Picker>
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Cursor Style"
                                             FontFamily="Underwood" TextColor="Black"
                                             FontSize="15"
@@ -78,25 +116,6 @@
                                             <x:String>Green Block</x:String>
                                         </x:Array>
                                     </Picker.ItemsSource>
-                                </Picker>
-                            </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Map FPS"
-                                            FontFamily="Underwood" TextColor="Black"
-                                            FontSize="15"
-                                            VerticalOptions="Center" 
-                                            HorizontalOptions="Start" />
-                                <Picker Grid.Column="1" x:Name="RefreshRatePicker"
-                                            Title="Select a map refresh rate"
-                                            FontFamily="Underwood" 
-                                            FontSize="17"
-                                            TextColor="Black"
-                                            TitleColor="Black"
-                                            HorizontalTextAlignment="End"
-                                            WidthRequest="200"
-                                            BackgroundColor="Transparent"
-                                            VerticalOptions="Center"
-                                            HorizontalOptions="End" >
                                 </Picker>
                             </Grid>
                             <Grid x:Name="NavBarStackLayout" RowSpacing="6" HeightRequest="40">
