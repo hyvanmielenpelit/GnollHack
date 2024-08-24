@@ -9326,7 +9326,7 @@ namespace GnollHackX.Pages.Game
 
                                 /* Gold */
                                 bool goldprinted = false;
-                                float goldleft = curx;
+                                float goldleft = turnsleft;
                                 if (!RightAligned2ndRow)
                                 {
                                     valtext = "";
@@ -9358,7 +9358,7 @@ namespace GnollHackX.Pages.Game
                                         }
                                     }
 
-                                    float scoreleft = curx;
+                                    float scoreleft = goldleft;
                                     bool scoreprinted = false;
                                     if (ShowScore)
                                     {
@@ -12945,15 +12945,25 @@ namespace GnollHackX.Pages.Game
             bool useTwoRows = UIUtils.UseTwoButtonRows(width, height, lInventoryButton.GridWidth, usingDesktopButtons, usingSimpleCmdLayout);
             if (!useTwoRows)
             {
-                /* Landscape */
+                /* One row */
                 ButtonRowStack.Orientation = StackOrientation.Horizontal;
+                SimpleButtonRowStack.Orientation = StackOrientation.Horizontal;
+            }
+            else
+            {
+                /* Two rows */
+                ButtonRowStack.Orientation = StackOrientation.Vertical;
+                SimpleButtonRowStack.Orientation = StackOrientation.Vertical;
+            }
+
+            if (width > height)
+            {
+                /* Landscape */
                 ModeLayout.Orientation = StackOrientation.Vertical;
                 ModeSubLayout1.Orientation = StackOrientation.Horizontal;
                 ModeSubLayout2.Orientation = StackOrientation.Horizontal;
                 GameMenuLayout.Orientation = StackOrientation.Horizontal;
-                //UpperCmdLayout.Orientation = StackOrientation.Vertical;
 
-                SimpleButtonRowStack.Orientation = StackOrientation.Horizontal;
                 SimpleModeLayout.Orientation = StackOrientation.Vertical;
                 SimpleModeSubLayout1.Orientation = StackOrientation.Horizontal;
                 SimpleModeSubLayout2.Orientation = StackOrientation.Horizontal;
@@ -12962,14 +12972,11 @@ namespace GnollHackX.Pages.Game
             else
             {
                 /* Portrait */
-                ButtonRowStack.Orientation = StackOrientation.Vertical;
                 ModeLayout.Orientation = StackOrientation.Vertical;
                 ModeSubLayout1.Orientation = StackOrientation.Vertical;
                 ModeSubLayout2.Orientation = StackOrientation.Vertical;
                 GameMenuLayout.Orientation = StackOrientation.Horizontal;
-                //UpperCmdLayout.Orientation = StackOrientation.Horizontal;
 
-                SimpleButtonRowStack.Orientation = StackOrientation.Vertical;
                 SimpleModeLayout.Orientation = StackOrientation.Vertical;
                 SimpleModeSubLayout1.Orientation = StackOrientation.Vertical;
                 SimpleModeSubLayout2.Orientation = StackOrientation.Vertical;
