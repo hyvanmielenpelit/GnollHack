@@ -37,14 +37,14 @@
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
                                 <Picker Grid.Column="1" x:Name="GraphicsPicker"
-                                            Title="Select a graphics style"
+                                            Title="Select graphics style"
                                             FontFamily="Underwood" 
                                             FontSize="17"
                                             TextColor="Black"
                                             TitleColor="Black"
                                             HorizontalTextAlignment="End"
                                             BackgroundColor="Transparent"
-                                            WidthRequest="200"
+                                            WidthRequest="150"
                                             VerticalOptions="Center"
                                             HorizontalOptions="End" >
                                     <Picker.ItemsSource>
@@ -62,13 +62,13 @@
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
                                 <Picker Grid.Column="1" x:Name="RefreshRatePicker"
-                                            Title="Select a map refresh rate"
+                                            Title="Select refresh rate"
                                             FontFamily="Underwood" 
                                             FontSize="17"
                                             TextColor="Black"
                                             TitleColor="Black"
                                             HorizontalTextAlignment="End"
-                                            WidthRequest="200"
+                                            WidthRequest="150"
                                             BackgroundColor="Transparent"
                                             VerticalOptions="Center"
                                             HorizontalOptions="End" >
@@ -81,14 +81,14 @@
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
                                 <Picker Grid.Column="1" x:Name="ScreenScalePicker"
-                                            Title="Select a command"
+                                            Title="Select scale"
                                             FontFamily="Underwood" 
                                             FontSize="17"
                                             TextColor="Black"
                                             TitleColor="Black"
                                             HorizontalTextAlignment="End"
                                             BackgroundColor="Transparent"
-                                            WidthRequest="140"
+                                            WidthRequest="150"
                                             VerticalOptions="Center"
                                             HorizontalOptions="End" >
                                 </Picker>
@@ -100,19 +100,19 @@
                                             VerticalOptions="Center" 
                                             HorizontalOptions="Start" />
                                 <Picker Grid.Column="1" x:Name="CursorPicker"
-                                            Title="Select a cursor style"
+                                            Title="Select cursor style"
                                             FontFamily="Underwood" 
                                             FontSize="17"
                                             TextColor="Black"
                                             TitleColor="Black"
                                             HorizontalTextAlignment="End"
-                                            WidthRequest="200"
+                                            WidthRequest="150"
                                             BackgroundColor="Transparent"
                                             VerticalOptions="Center"
                                             HorizontalOptions="End" >
                                     <Picker.ItemsSource>
                                         <x:Array Type="{x:Type x:String}">
-                                            <x:String>Blinking Underline</x:String>
+                                            <x:String>Underline</x:String>
                                             <x:String>Green Block</x:String>
                                         </x:Array>
                                     </Picker.ItemsSource>
