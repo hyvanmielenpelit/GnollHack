@@ -3063,6 +3063,9 @@ namespace GnollHackX.Pages.Game
             _textGlyphImageSource.Glyph = window.Glyph;
             _textGlyphImageSource.UseUpperSide = window.UseUpperSide;
 
+            float customScale = GHApp.CustomScreenScale;
+            TextWindowGlyphImage.WidthRequest = 75 * customScale;
+            TextWindowGlyphImage.HeightRequest = 75 * customScale;
             TextWindowGlyphImage.ActiveGlyphImageSource = TextGlyphImage;
             TextWindowGlyphImage.IsVisible = IsTextGlyphVisible;
 
@@ -3741,6 +3744,7 @@ namespace GnollHackX.Pages.Game
             }
 
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("ShowMenuCanvas Start");
+            float customScale = GHApp.CustomScreenScale;
             MenuTouchDictionary.Clear();
             lock(_menuScrollLock)
             {
@@ -3763,7 +3767,7 @@ namespace GnollHackX.Pages.Game
                 MenuHeaderLabel.OutlineWidth = UIUtils.MenuHeaderOutlineWidth(menuinfo.Style);
             }
             MenuHeaderLabel.FontFamily = UIUtils.MenuHeaderFontFamily(menuinfo.Style);
-            MenuHeaderLabel.FontSize = UIUtils.MenuHeaderFontSize(menuinfo.Style);
+            MenuHeaderLabel.FontSize = UIUtils.MenuHeaderFontSize(menuinfo.Style) * customScale;
             MenuHeaderLabel.TextColor = UIUtils.MenuHeaderTextColor(menuinfo.Style);
             MenuHeaderLabel.OutlineColor = UIUtils.MenuHeaderOutlineColor(menuinfo.Style);
 
@@ -3779,7 +3783,7 @@ namespace GnollHackX.Pages.Game
                 MenuSubtitleLabel.IsVisible = true;
                 MenuSubtitleLabel.Text = menuinfo.Subtitle;
                 MenuSubtitleLabel.FontFamily = UIUtils.MenuSubtitleFontFamily(menuinfo.Style);
-                MenuSubtitleLabel.FontSize = UIUtils.MenuSubtitleFontSize(menuinfo.Style);
+                MenuSubtitleLabel.FontSize = UIUtils.MenuSubtitleFontSize(menuinfo.Style) * customScale;
                 MenuSubtitleLabel.UseSpecialSymbols = UIUtils.MenuSubtitleUsesSpecialSymbols(menuinfo.Style);
                 MenuSubtitleLabel.WordWrapSeparator = UIUtils.MenuSubtitleWordWrapSeparator(menuinfo.Style);
                 MenuSubtitleLabel.DisplayWrapSeparator = UIUtils.MenuSubtitleDisplayWrapSeparator(menuinfo.Style);
@@ -3976,12 +3980,20 @@ namespace GnollHackX.Pages.Game
             _menuGlyphImageSource.Glyph = ghwindow.Glyph;
             _menuGlyphImageSource.UseUpperSide = ghwindow.UseUpperSide;
 
+            MenuWindowGlyphImage.WidthRequest = 75 * customScale;
+            MenuWindowGlyphImage.HeightRequest = 75 * customScale;
             MenuWindowGlyphImage.ActiveGlyphImageSource = MenuGlyphImage;
             MenuWindowGlyphImage.VerticalOptions = MenuCanvas.MenuGlyphAtBottom ? LayoutOptions.End : LayoutOptions.Start;
             MenuWindowGlyphImage.IsVisible = IsMenuGlyphVisible;
 
             MenuHeaderLabel.Margin = UIUtils.GetHeaderMarginWithBorder(MenuBackground.BorderStyle, _currentPageWidth, _currentPageHeight);
             MenuCloseGrid.Margin = UIUtils.GetFooterMarginWithBorder(MenuBackground.BorderStyle, _currentPageWidth, _currentPageHeight);
+            MenuOKButton.WidthRequest = 135 * customScale;
+            MenuOKButton.HeightRequest = 60 * customScale;
+            MenuOKButton.FontSize = 20 * customScale;
+            MenuCancelButton.WidthRequest = 135 * customScale;
+            MenuCancelButton.HeightRequest = 60 * customScale;
+            MenuCancelButton.FontSize = 20 * customScale;
 
             ObservableCollection<GHMenuItem> newmis = new ObservableCollection<GHMenuItem>();
             if (menuinfo != null)
@@ -12867,11 +12879,66 @@ namespace GnollHackX.Pages.Game
             SimpleLookModeButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             SimpleToggleZoomMiniButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
 
+#if GNH_MAUI
+            YnWidthGrid.MaximumWidthRequest = 600 * customScale;
+            PopupWidthGrid.MaximumWidthRequest = 600 * customScale;
+            GetLineWidthGrid.MaximumWidthRequest = 440 * customScale;
+            GetLineFrame.Padding = new Thickness(12 * customScale);
+            MenuCountForegroundGrid.MaximumWidthRequest = 360 * customScale;
+            MenuCountFrame.Padding = new Thickness(12 * customScale);
+#else
+            YnWidthGrid.WidthRequest = 600 * customScale;
+            PopupWidthGrid.WidthRequest = 600 * customScale;
+            GetLineWidthGrid.WidthRequest = 440 * customScale;
+            MenuCountForegroundGrid.WidthRequest = 360 * customScale;
+#endif
+            YnTitleLabel.FontSize = 22 * customScale;
+            YnQuestionLabel.FontSize = 19 * customScale;
+            YnImage.WidthRequest = 32 * customScale;
+            YnImage.HeightRequest = 48 * customScale;
             ZeroButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             FirstButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             SecondButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             ThirdButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             FourthButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+
+            PopupTitleLabel.FontSize = 20 * customScale;
+            PopupLabel.FontSize = 16 * customScale;
+            PopupImage.WidthRequest = 32 * customScale;
+            PopupImage.HeightRequest = 48 * customScale;
+            PopupOkButton.FontSize = 19 * customScale;
+            PopupOkButton.WidthRequest = 170 * customScale;
+            PopupOkButton.HeightRequest = 60 * customScale;
+
+            GetLineCaption.FontSize = 20 * customScale;
+            GetLineEntryText.FontSize = 20 * customScale;
+            GetLineEntryText.WidthRequest = 320 * customScale;
+            GetLineQuestionMarkButton.FontSize = 18 * customScale;
+            GetLineQuestionMarkButton.WidthRequest = 50 * customScale;
+            GetLineQuestionMarkButton.HeightRequest = 50 * customScale;
+            GetLineAutoComplete.FontSize = 18 * customScale;
+            GetLineButtonGrid.WidthRequest = 360 * customScale;
+            GetLineButtonRowDefinition.Height = 65 * customScale;
+            GetLineOkButton.FontSize = 19 * customScale;
+            GetLineOkButton.WidthRequest = 135 * customScale;
+            GetLineOkButton.HeightRequest = 60 * customScale;
+            GetLineCancelButton.FontSize = 19 * customScale;
+            GetLineCancelButton.WidthRequest = 135 * customScale;
+            GetLineCancelButton.HeightRequest = 60 * customScale;
+
+            MenuCountCaption.FontSize = 20 * customScale;
+            CountPicker.FontSize = 15 * customScale;
+            CountPicker.WidthRequest = 180 * customScale;
+            MenuCountEntry.FontSize = 15 * customScale;
+            MenuCountEntry.WidthRequest = 180 * customScale;
+            MenuCountButtonGrid.WidthRequest = 360 * customScale;
+            MenuCountButtonRowDefinition.Height = 65 * customScale;
+            MenuCountOkButton.FontSize = 19 * customScale;
+            MenuCountOkButton.WidthRequest = 135 * customScale;
+            MenuCountOkButton.HeightRequest = 60 * customScale;
+            MenuCountCancelButton.FontSize = 19 * customScale;
+            MenuCountCancelButton.WidthRequest = 135 * customScale;
+            MenuCountCancelButton.HeightRequest = 60 * customScale;
 
             foreach (View v in UpperCmdGrid.Children)
             {
@@ -14818,12 +14885,6 @@ namespace GnollHackX.Pages.Game
             SwitchableCanvasView referenceCanvasView = MenuCanvas;
             float canvaswidth = referenceCanvasView.CanvasSize.Width;
             float canvasheight = referenceCanvasView.CanvasSize.Height;
-            bool isHighFilterQuality = MenuHighFilterQuality;
-            bool usingGL = MenuCanvas.UseGL;
-            float x, y;
-            string str;
-            SKRect textBounds = new SKRect();
-            float scale = (float)Math.Sqrt((double)(canvaswidth * canvasheight / (float)(referenceCanvasView.Width * referenceCanvasView.Height)));
 
             canvas.Clear();
             lock (_menuDrawOnlyLock)
@@ -14841,12 +14902,20 @@ namespace GnollHackX.Pages.Game
                     return;
             }
 
+            float scale = GetInverseCanvasScale(); // (float)Math.Sqrt((double)(canvaswidth * canvasheight / (float)(referenceCanvasView.Width * referenceCanvasView.Height)));
+            float customScale = GHApp.CustomScreenScale;
+            bool isHighFilterQuality = MenuHighFilterQuality;
+            bool usingGL = MenuCanvas.UseGL;
+            float x, y;
+            string str;
+            SKRect textBounds = new SKRect();
+
             using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
                 textPaint.Typeface = GHApp.UnderwoodTypeface;
-                textPaint.TextSize = GHConstants.MenuDefaultRowHeight * scale;
+                textPaint.TextSize = GHConstants.MenuDefaultRowHeight * scale * customScale;
                 float picturewidth = 64.0f * textPaint.FontSpacing / 48.0f;
-                float picturepadding = 9 * scale;
+                float picturepadding = 9 * scale * customScale;
                 float leftinnerpadding = 5;
                 float curmenuoffset = 0;
                 lock (_menuScrollLock)
@@ -14855,7 +14924,7 @@ namespace GnollHackX.Pages.Game
                 }
                 y = curmenuoffset;
                 double menumarginx = MenuCanvas.MenuButtonStyle ? 30.0 : 15.0;
-                double menuwidth = Math.Max(1, Math.Min(MenuCanvas.Width - menumarginx * 2, UIUtils.MenuViewWidthRequest(referenceCanvasView.MenuStyle)));
+                double menuwidth = Math.Max(1, Math.Min(MenuCanvas.Width - menumarginx * 2, UIUtils.MenuViewWidthRequest(referenceCanvasView.MenuStyle) * customScale));
                 float menuwidthoncanvas = (float)(menuwidth * scale);
                 float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
                 float rightmenupadding = leftmenupadding;
@@ -14897,19 +14966,19 @@ namespace GnollHackX.Pages.Game
                             float extra_vertical_padding = IsMiButton ? 12f : 0f;
 
                             /* Padding */
-                            bottomPadding = (mi.BottomPadding + extra_vertical_padding) * scale;
-                            topPadding = (mi.TopPadding + extra_vertical_padding) * scale;
+                            bottomPadding = (mi.BottomPadding + extra_vertical_padding) * scale * customScale;
+                            topPadding = (mi.TopPadding + extra_vertical_padding) * scale * customScale;
 
                             /* Text Size and Minimum Row Height */
                             if ((mi.NHAttribute & (int)MenuItemAttributes.HalfSize) != 0)
-                                textPaint.TextSize = (mi.MinimumTouchableTextSize / 2) * scale;
+                                textPaint.TextSize = (mi.MinimumTouchableTextSize / 2) * scale * customScale;
                             else
-                                textPaint.TextSize = mi.MinimumTouchableTextSize * scale;
+                                textPaint.TextSize = mi.MinimumTouchableTextSize * scale * customScale;
                             float minrowheight = mi.MinimumRowHeight(textPaint.FontSpacing, bottomPadding, topPadding, canvaswidth, canvasheight);
 
                             x = leftmenupadding;
                             mi.DrawBounds.Left = x;
-                            float mainfontsize = (float)mi.FontSize * scale;
+                            float mainfontsize = (float)mi.FontSize * scale * customScale;
                             float relsuffixsize = (float)mi.RelativeSuffixFontSize;
                             float suffixfontsize = relsuffixsize * mainfontsize;
                             string mainFontFamily = mi.FontFamily;
@@ -14987,7 +15056,7 @@ namespace GnollHackX.Pages.Game
 
                             float totalRowHeight = topPadding + bottomPadding + ((float)maintextrows + suffixtextrows * (mi.IsSuffixTextVisible ? relsuffixsize : 0.0f) + (mi.IsSuffix2TextVisible ? relsuffixsize : 0.0f)) * (textPaint.FontSpacing) + 2 * generallinepadding;
                             float totalRowWidth = canvaswidth - leftmenupadding - rightmenupadding;
-                            float totalRowExtraSpacing = IsMiButton ? 12.0f * scale : 0f;
+                            float totalRowExtraSpacing = IsMiButton ? 12.0f * scale * customScale : 0f;
 
                             if (y + totalRowHeight <= 0 || y >= canvasheight)
                             {
@@ -15169,7 +15238,7 @@ namespace GnollHackX.Pages.Game
                                     textPaint.Color = SKColors.White;
                                     str = mi.Count.ToString();
                                     float maxsize = 1.0f * 2.0f * circleradius / (float)Math.Sqrt(2);
-                                    textPaint.TextSize = (float)mi.FontSize * scale;
+                                    textPaint.TextSize = (float)mi.FontSize * scale * customScale;
                                     textPaint.MeasureText(str, ref textBounds);
                                     float scalex = textBounds.Width / maxsize;
                                     float scaley = textBounds.Height / maxsize;
@@ -15191,7 +15260,7 @@ namespace GnollHackX.Pages.Game
                                     textPaint.Color = SKColors.Black;
                                     str = mi.NumItems.ToString();
                                     float maxsize = 1.0f * 2.0f * circleradius / (float)Math.Sqrt(2);
-                                    textPaint.TextSize = (float)mi.FontSize * scale;
+                                    textPaint.TextSize = (float)mi.FontSize * scale * customScale;
                                     textPaint.MeasureText(str, ref textBounds);
                                     float scalex = textBounds.Width / maxsize;
                                     float scaley = textBounds.Height / maxsize;
@@ -16578,6 +16647,7 @@ namespace GnollHackX.Pages.Game
             float x = 0, y = 0;
             string str;
             float scale = canvaswidth / (float)TextCanvas.Width;
+            float customScale = GHApp.CustomScreenScale;
             canvas.Clear();
 
             if (canvaswidth <= 16 || canvasheight <= 16)
@@ -16613,7 +16683,7 @@ namespace GnollHackX.Pages.Game
                 }
                 y += curmenuoffset;
                 double canvasmaxwidth = TextCanvas.GHWindow != null ? TextCanvas.GHWindow.TextWindowMaximumWidth : GHConstants.DefaultTextWindowMaxWidth;
-                double menuwidth = Math.Max(1, Math.Min(TextCanvas.Width, canvasmaxwidth));
+                double menuwidth = Math.Max(1, Math.Min(TextCanvas.Width, canvasmaxwidth) * customScale);
                 float menuwidthoncanvas = (float)(menuwidth * scale);
                 float leftmenupadding = Math.Max(0, (canvaswidth - menuwidthoncanvas) / 2);
                 float rightmenupadding = leftmenupadding;
@@ -16631,9 +16701,9 @@ namespace GnollHackX.Pages.Game
                     {
                         int pos = 0;
                         x = leftmenupadding + leftinnerpadding;
-                        x += (float)putstritem.LeftPaddingWidth * scale;
+                        x += (float)putstritem.LeftPaddingWidth * scale * customScale;
                         textPaint.Typeface = GHApp.GetTypefaceByName(putstritem.TextWindowFontFamily);
-                        textPaint.TextSize = (float)putstritem.TextWindowFontSize * scale;
+                        textPaint.TextSize = (float)putstritem.TextWindowFontSize * scale * customScale;
                         /* Heading margin, except on the first row */
                         if(putstritem.InstructionList.Count > 0 && j > 0)
                         {

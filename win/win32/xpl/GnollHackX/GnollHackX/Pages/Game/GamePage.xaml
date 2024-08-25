@@ -193,8 +193,8 @@
                 </StackLayout>
                 <Grid x:Name="MenuCountBackgroundGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
                          BackgroundColor="#66000000" IsVisible="False">
-                    <Grid x:Name="MenuCountForegroundGrid" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="Center">
-                        <Frame BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                    <Grid x:Name="MenuCountForegroundGrid" WidthRequest  ="360" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Frame x:Name="MenuCountFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
                             <StackLayout Spacing="6" x:Name="MenuCountLayout" HorizontalOptions="Fill" VerticalOptions="Center">
                                 <Label x:Name="MenuCountCaption" Text="Select Count" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
                                 <Picker x:Name="CountPicker"
@@ -225,9 +225,9 @@
                                     WidthRequest="180"
                                     Completed="MenuEntry_Completed"
                                     />
-                                <Grid ColumnSpacing="6" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" WidthRequest="360">
+                                <Grid x:Name="MenuCountButtonGrid" ColumnSpacing="6" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" WidthRequest="360">
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="65" />
+                                        <RowDefinition x:Name="MenuCountButtonRowDefinition" Height="65" />
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
@@ -265,7 +265,7 @@
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
                 <controls:SimpleImageButton x:Name="GetLineMenuButton" IsVisible="False" ImgSourcePath="resource://GnollHackX.Assets.UI.wiki.png" WidthRequest="50" HeightRequest="50" 
                                                    BtnClicked="GetLineMenuButton_BtnClicked" HorizontalOptions="End" VerticalOptions="Start" />
-                <Grid WidthRequest  ="440" HorizontalOptions  ="Center" VerticalOptions="Start" Margin="0,50,0,10" >
+                <Grid x:Name="GetLineWidthGrid" WidthRequest  ="440" HorizontalOptions  ="Center" VerticalOptions="Start" Margin="0,50,0,10" >
                     <Frame x:Name="GetLineFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout x:Name="GetLineLayout" Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center">
                             <Label x:Name="GetLineCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White">
@@ -285,9 +285,9 @@
                                     <TapGestureRecognizer Tapped="GetLineAutoCompleteTapGestureRecognizer_Tapped" />
                                 </Label.GestureRecognizers>
                             </Label>
-                            <Grid ColumnSpacing="6" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+                            <Grid x:Name="GetLineButtonGrid" ColumnSpacing="6" WidthRequest="360" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="65" />
+                                    <RowDefinition x:Name="GetLineButtonRowDefinition" Height="65" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -309,7 +309,7 @@
             </Grid>
             <Grid x:Name="YnGrid" HorizontalOptions="Fill" VerticalOptions="Fill" InputTransparent="false" 
                          Padding="10" BackgroundColor="#66000000" IsVisible="False">
-                <Grid WidthRequest  ="600" HorizontalOptions  ="Center" VerticalOptions="Center">
+                <Grid x:Name="YnWidthGrid" WidthRequest  ="600" HorizontalOptions  ="Center" VerticalOptions="Center">
                     <Frame x:Name="YnFrame" BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="YnLayout" Padding="5" Spacing="6" HorizontalOptions="Center" VerticalOptions="Center" >
                             <StackLayout x:Name="YnTitleLayout" Orientation="Horizontal" Spacing="6"
@@ -337,7 +337,7 @@
             </Grid>
             <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
                          BackgroundColor="#66000000" IsVisible="False">
-                <Grid WidthRequest  ="600" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
+                <Grid x:Name="PopupWidthGrid" WidthRequest  ="600" Margin="5" HorizontalOptions  ="Center" VerticalOptions="Center">
                     <Frame x:Name="PopupFrame"  BackgroundColor="#66000000" BorderColor="Black" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center">
                         <StackLayout x:Name="PopupLayout" Padding="5" Spacing="6"
                                      HorizontalOptions="Center" VerticalOptions="Center">
@@ -350,7 +350,7 @@
                             </StackLayout>
                             <Label Text="" x:Name="PopupLabel" FontFamily="Underwood" FontSize="16" TextColor="White"
                                        VerticalTextAlignment="Start" HorizontalOptions="Center"  />
-                            <controls:CustomImageButton Grid.Column="0" Margin="0,10,0,0" x:Name="PopupOkButton" Text="OK" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton Grid.Column="0" Margin="0,10,0,0" x:Name="PopupOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="60" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="PopupOkButton_Clicked" />
                         </StackLayout>
                     </Frame>
