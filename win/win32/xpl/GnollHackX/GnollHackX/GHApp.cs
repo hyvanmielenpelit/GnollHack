@@ -2428,9 +2428,9 @@ namespace GnollHackX
             new ScreenScaleItem("167%", 1.67f), /* 5f / 3f */
             new ScreenScaleItem("175%", 1.75f), /* 7f / 4f */ 
             new ScreenScaleItem("200%", 2.0f),  /* 2f / 1f */
-            new ScreenScaleItem("225x", 2.25f),
-            new ScreenScaleItem("250x", 2.5f),
-            new ScreenScaleItem("275x", 2.75f),
+            new ScreenScaleItem("225%", 2.25f),
+            new ScreenScaleItem("250%", 2.5f),
+            new ScreenScaleItem("275%", 2.75f),
             new ScreenScaleItem("300%", 3.0f),
             new ScreenScaleItem("350%", 3.5f),
             new ScreenScaleItem("400%", 4.0f),
