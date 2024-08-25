@@ -2411,21 +2411,31 @@ namespace GnollHackX
         public static readonly List<ScreenScaleItem> ScreenScaleItems = new List<ScreenScaleItem>()
         {
             new ScreenScaleItem("Default", 0.0f),
-            new ScreenScaleItem("0.5x", 0.5f),
-            new ScreenScaleItem("0.75x", 0.75f),
-            new ScreenScaleItem("1.0x", 1.0f),
-            new ScreenScaleItem("1.25x", 1.25f),
-            new ScreenScaleItem("1.50x", 1.50f),
-            new ScreenScaleItem("1.75x", 1.75f),
-            new ScreenScaleItem("2.0x", 2.0f),
-            new ScreenScaleItem("2.25x", 2.25f),
-            new ScreenScaleItem("2.5x", 2.5f),
-            new ScreenScaleItem("2.75x", 2.75f),
-            new ScreenScaleItem("3.0x", 3.0f),
-            new ScreenScaleItem("3.5x", 3.5f),
-            new ScreenScaleItem("4.0x", 4.0f),
-            new ScreenScaleItem("4.5x", 4.5f),
-            new ScreenScaleItem("5.0x", 5.0f),
+            new ScreenScaleItem("50%", 0.5f),   /* 1f / 2f */
+            new ScreenScaleItem("57%", 0.57f),  /* 4f / 7f */
+            new ScreenScaleItem("60%", 0.6f),   /* 3f / 5f */
+            new ScreenScaleItem("67%", 0.67f),  /* 2f / 3f */
+            new ScreenScaleItem("70%", 0.70f),  /* 7f / 10f */
+            new ScreenScaleItem("75%", 0.75f),  /* 3f / 4f */
+            new ScreenScaleItem("80%", 0.80f),  /* 4f / 5f */
+            new ScreenScaleItem("90%", 0.90f),  /* 9f / 10f */
+            new ScreenScaleItem("100%", 1.0f),
+            new ScreenScaleItem("111%", 1.11f), /* 10f / 9f */
+            new ScreenScaleItem("125%", 1.25f), /* 5f / 4f */ 
+            new ScreenScaleItem("133%", 1.33f), /* 4f / 3f */
+            new ScreenScaleItem("143%", 1.43f), /* 10f / 7f */
+            new ScreenScaleItem("150%", 1.50f), /* 3f / 2f */ 
+            new ScreenScaleItem("167%", 1.67f), /* 5f / 3f */
+            new ScreenScaleItem("175%", 1.75f), /* 7f / 4f */ 
+            new ScreenScaleItem("200%", 2.0f),  /* 2f / 1f */
+            new ScreenScaleItem("225x", 2.25f),
+            new ScreenScaleItem("250x", 2.5f),
+            new ScreenScaleItem("275x", 2.75f),
+            new ScreenScaleItem("300%", 3.0f),
+            new ScreenScaleItem("350%", 3.5f),
+            new ScreenScaleItem("400%", 4.0f),
+            new ScreenScaleItem("450%", 4.5f),
+            new ScreenScaleItem("500%", 5.0f),
         };
 
 #if DEBUG
