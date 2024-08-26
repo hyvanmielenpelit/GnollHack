@@ -63,7 +63,7 @@ namespace GnollHackX
             PaintSurface += Base_PaintSurface;
             Touch += Base_Touch;
             MouseWheel += Base_MouseWheel;
-            SizeChanged += Base_SizeChanged;
+            //SizeChanged += Base_SizeChanged;
         }
 
         public static readonly BindableProperty TextProperty = BindableProperty.Create(
@@ -1152,11 +1152,11 @@ namespace GnollHackX
             }
         }
 
-        private void Base_SizeChanged(object sender, EventArgs e)
-        {
-            if(_currentWidth > 0 && _currentHeight > 0)
-                InvalidateSurface();
-        }
+        //private void Base_SizeChanged(object sender, EventArgs e)
+        //{
+        //    if(_currentWidth > 0 && _currentHeight > 0)
+        //        InvalidateSurface();
+        //}
 
 #if GNH_MAUI
         protected override void OnHandlerChanged()
