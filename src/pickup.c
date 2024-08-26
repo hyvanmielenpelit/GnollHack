@@ -1863,10 +1863,10 @@ uchar* obj_gone_ptr; /* 1 = merged, 2 = put in bag, 3 = gone */
     }
     else if (obj->otyp == CORPSE) 
     {
-        boolean corpse_rivived = FALSE;
-        if (fatal_corpse_mistake(obj, telekinesis) || rider_corpse_revival(obj, telekinesis, &corpse_rivived))
+        boolean corpse_revived = FALSE;
+        if (fatal_corpse_mistake(obj, telekinesis) || rider_corpse_revival(obj, telekinesis, &corpse_revived))
         {
-            if (corpse_rivived && obj_gone_ptr)
+            if (corpse_revived && obj_gone_ptr)
                 *obj_gone_ptr = 3;
             return -1;
         }
