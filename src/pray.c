@@ -2356,7 +2356,7 @@ dosacrifice()
         /* you're handling this corpse, even if it was killed upon the altar
          */
         feel_cockatrice(otmp, TRUE);
-        if (rider_corpse_revival(otmp, FALSE))
+        if (rider_corpse_revival(otmp, FALSE, (boolean*)0))
             return 1;
 
         if (otmp->corpsenm == PM_ACID_BLOB

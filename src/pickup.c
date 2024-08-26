@@ -322,16 +322,19 @@ boolean remotely;
 
 /* attempting to manipulate a Rider's corpse triggers its revival */
 boolean
-rider_corpse_revival(obj, remotely)
+rider_corpse_revival(obj, remotely, was_revived_ptr)
 struct obj *obj;
 boolean remotely;
+boolean* was_revived_ptr;
 {
-    if (!obj || obj->otyp != CORPSE || !is_rider(&mons[obj->corpsenm]))
+    if (!obj || obj->otyp != CORPSE || obj->corpsenm < LOW_PM || !is_rider(&mons[obj->corpsenm]))
         return FALSE;
 
     pline_ex(ATR_NONE, CLR_MSG_WARNING, "At your %s, the corpse suddenly moves...",
           remotely ? "attempted acquisition" : "touch");
-    (void) revive_corpse(obj);
+    boolean res = revive_corpse(obj);
+    if (was_revived_ptr)
+        *was_revived_ptr = res;
     exercise(A_WIS, FALSE);
     return TRUE;
 }
@@ -1860,9 +1863,13 @@ uchar* obj_gone_ptr; /* 1 = merged, 2 = put in bag, 3 = gone */
     }
     else if (obj->otyp == CORPSE) 
     {
-        if (fatal_corpse_mistake(obj, telekinesis)
-            || rider_corpse_revival(obj, telekinesis))
+        boolean corpse_rivived = FALSE;
+        if (fatal_corpse_mistake(obj, telekinesis) || rider_corpse_revival(obj, telekinesis, &corpse_rivived))
+        {
+            if (corpse_rivived && obj_gone_ptr)
+                *obj_gone_ptr = 3;
             return -1;
+        }
     } 
     else if (obj->otyp == SCR_SCARE_MONSTER) 
     {
