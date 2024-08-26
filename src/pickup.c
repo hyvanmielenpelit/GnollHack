@@ -1884,6 +1884,8 @@ uchar* obj_gone_ptr; /* 1 = merged, 2 = put in bag, 3 = gone */
                 && !(objects[SCR_SCARE_MONSTER].oc_uname))
                 docall(obj, dcbuf);
             useupf(obj, obj->quan);
+            if (obj_gone_ptr) /* gone */
+                *obj_gone_ptr = 3;
             return 1; /* tried to pick something up and failed, but
                          don't want to terminate pickup loop yet   */
         }
