@@ -3520,10 +3520,12 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
     {
         uint64_t ocflags = obj ? get_obj_oc_flags(obj) : objects[otyp].oc_flags;
         uint64_t ocflags5 = obj ? get_obj_oc_flags5(obj) : objects[otyp].oc_flags5;
+        uint64_t ocflags6 = obj ? get_obj_oc_flags6(obj) : objects[otyp].oc_flags6;
         /* Item properties */
         if (ocflags & ~(O1_THROWN_WEAPON_ONLY | O1_MELEE_AND_THROWN_WEAPON
             | O1_SPELLTOOL | O1_NON_SPELL_SPELLBOOK | O1_EDIBLE_NONFOOD) 
             || (ocflags5 & (O5_MBAG_DESTROYING_ITEM | O5_CANCELLATION_NO_EXPLOSION_BUT_DRAIN | O5_PERMANENTLY_GREASED))
+            || (ocflags6 & (O6_THROWING_REQUIRES_STR_18_00))
             || otyp_shines_magical_light(otyp)
             || (obj && has_obj_mythic_fire_resistance(obj)) || (obj && has_obj_mythic_cold_resistance(obj)) || (obj && has_obj_mythic_shock_resistance(obj))
             || is_otyp_special_praying_item(otyp) || otyp_consumes_nutrition_every_20_rounds(otyp)
@@ -3639,6 +3641,30 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             {
                 powercnt++;
                 Sprintf(buf, " %2d - Is weapon when worn", powercnt);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (ocflags & O1_RETURNS_TO_HAND_AFTER_THROWING)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Returns to hand after throwing", powercnt);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (ocflags & O1_WEIGHT_DOES_NOT_REDUCE_RANGE)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Weight does not reduce throwing range", powercnt);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (ocflags & O1_CAN_BE_THROWN_ONLY_IF_WIELDED)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Can be thrown only if wielded", powercnt);
+                putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (ocflags6 & O6_THROWING_REQUIRES_STR_18_00)
+            {
+                powercnt++;
+                Sprintf(buf, " %2d - Throwing requires strength of 18/00 or higher", powercnt);
                 putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
             }
 

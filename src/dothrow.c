@@ -81,8 +81,8 @@ boolean firing;
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s must be wielded before it can be thrown.", The(xname(obj)));
         return 0;
     }
-    if (//(obj->oartifact == ART_MJOLLNIR && ACURR(A_STR) < STR18(100)) //STR19(25)
-        (obj->otyp == BOULDER && !(throws_rocks(youmonst.data))))  // || (int)obj->owt <= enclevelmaximumweight(UNENCUMBERED))))
+    if (((objects[obj->otyp].oc_flags6 & O6_THROWING_REQUIRES_STR_18_00) != 0 && ACURR(A_STR) < STR18(100))
+        || (obj->otyp == BOULDER && !(throws_rocks(youmonst.data))))
     {
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "It's too heavy.");
         return 1;
@@ -1441,7 +1441,7 @@ int64_t wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / J
         if (u.dz < 0
             /* Mjollnir must we wielded to be thrown--caller verifies this;
                aklys must we wielded as primary to return when thrown */
-            && (((objects[obj->otyp].oc_flags & O1_RETURNS_TO_HAND_AFTER_THROWING) && !((objects[obj->otyp].oc_flags & O1_CAN_BE_THROWN_ONLY_IF_WIELDED) && 1)  && !inappropriate_character_type(obj))
+            && (((objects[obj->otyp].oc_flags & O1_RETURNS_TO_HAND_AFTER_THROWING) && !((objects[obj->otyp].oc_flags & O1_CAN_BE_THROWN_ONLY_IF_WIELDED))  && !inappropriate_character_type(obj))
                 || tethered_weapon || has_obj_mythic_return_to_hand(obj))
             && !impaired)
         {
