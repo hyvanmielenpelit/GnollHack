@@ -267,6 +267,7 @@ namespace GnollHackX
                     Preferences.Set("WindowedSizeY", appWindow.Position.Y);
                     Preferences.Set("WindowedSizeWidth", appWindow.Size.Width);
                     Preferences.Set("WindowedSizeHeight", appWindow.Size.Height);
+                    Preferences.Set("WindowedSizeDisplayDensity", DisplayDensity);
                 }
             }
 #endif

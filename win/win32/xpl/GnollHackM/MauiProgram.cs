@@ -173,23 +173,25 @@ public static class MauiProgram
                             int sizeY = Preferences.Get("WindowedSizeY", 0);
                             int sizeWidth = Preferences.Get("WindowedSizeWidth", 0);
                             int sizeHeight = Preferences.Get("WindowedSizeHeight", 0);
+                            float sizeDisplayDensity = Preferences.Get("WindowedSizeDisplayDensity", 1.0f);
 
                             Microsoft.UI.Windowing.DisplayArea displayArea = Microsoft.UI.Windowing.DisplayArea.GetFromWindowId(id, Microsoft.UI.Windowing.DisplayAreaFallback.Nearest);
                             if (sizeWidth > 0 && sizeHeight > 0)
                             {
-                                if (displayArea != null && displayArea.WorkArea.Width > 0 && displayArea.WorkArea.Height > 0)
-                                {
-                                    if (sizeX + sizeWidth > displayArea.WorkArea.X + displayArea.WorkArea.Width * 1.1 + 32)
-                                        sizeX = sizeWidth = 0;
-                                    else if (sizeX < displayArea.WorkArea.X - 16)
-                                        sizeX = sizeWidth = 0;
+                                //if (displayArea != null && displayArea.WorkArea.Width > 0 && displayArea.WorkArea.Height > 0)
+                                //{
+                                //    if (sizeX + sizeWidth > displayArea.WorkArea.X + displayArea.WorkArea.Width * 1.1 + 32)
+                                //        sizeX = sizeWidth = 0;
+                                //    else if (sizeX < displayArea.WorkArea.X - 16)
+                                //        sizeX = sizeWidth = 0;
 
-                                    if (sizeY + sizeHeight > displayArea.WorkArea.Y + displayArea.WorkArea.Height * 1.1 + 32)
-                                        sizeY = sizeHeight = 0;
-                                    else if (sizeY < displayArea.WorkArea.Y - 16)
-                                        sizeY = sizeHeight = 0;
-                                }
-                                appWindow.MoveAndResize(new Windows.Graphics.RectInt32(sizeX, sizeY, sizeWidth, sizeHeight));
+                                //    if (sizeY + sizeHeight > displayArea.WorkArea.Y + displayArea.WorkArea.Height * 1.1 + 32)
+                                //        sizeY = sizeHeight = 0;
+                                //    else if (sizeY < displayArea.WorkArea.Y - 16)
+                                //        sizeY = sizeHeight = 0;
+                                //}
+                                float scale = GHApp.DisplayDensity / (sizeDisplayDensity <= 0 ? 1.0f : sizeDisplayDensity);
+                                appWindow.MoveAndResize(new Windows.Graphics.RectInt32(sizeX, sizeY, (int)(sizeWidth * scale), (int)(sizeHeight * scale)));
                             }
                             else if (displayArea != null && displayArea.WorkArea.Width > 0 && displayArea.WorkArea.Height > 0)
                             {
@@ -207,6 +209,7 @@ public static class MauiProgram
                                     Preferences.Set("WindowedSizeY", sender.Position.Y);
                                     Preferences.Set("WindowedSizeWidth", sender.Size.Width);
                                     Preferences.Set("WindowedSizeHeight", sender.Size.Height);
+                                    Preferences.Set("WindowedSizeDisplayDensity", GHApp.DisplayDensity);
                                 }
                             };
                         }
