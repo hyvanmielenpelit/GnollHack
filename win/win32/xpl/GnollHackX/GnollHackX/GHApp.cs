@@ -4,6 +4,7 @@ using GnollHackM;
 #if WINDOWS
 using GnollHackM.Platforms.Windows;
 using System.Management;
+using Windows.Graphics;
 #endif
 #else
 using Xamarin.Essentials;
@@ -38,7 +39,6 @@ using Azure;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using Windows.Graphics;
 
 namespace GnollHackX
 {
@@ -6924,7 +6924,7 @@ namespace GnollHackX
         public RectInt32 Bounds { get; }
         public string DeviceName { get; }
 
-        public static IEnumerable<GHMonitor> All
+        public static List<GHMonitor> All
         {
             get
             {

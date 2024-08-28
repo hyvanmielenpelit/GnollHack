@@ -180,12 +180,12 @@ public static class MauiProgram
                             int sizeWidth = Preferences.Get("WindowedSizeWidth", 0);
                             int sizeHeight = Preferences.Get("WindowedSizeHeight", 0);
                             float sizeDisplayDensity = Preferences.Get("WindowedSizeDisplayDensity", 1.0f);
-                            var monitors = GHMonitor.All.ToArray();
-                            if (monitors?.Length >= 1)
+                            var monitors = GHMonitor.All;
+                            if (monitors?.Count >= 1)
                             {
-                                foreach(var monitor in monitors)
+                                SKRect r1 = new SKRect(sizeX, sizeY, sizeX + sizeWidth, sizeY + sizeHeight);
+                                foreach (var monitor in monitors)
                                 {
-                                    SKRect r1 = new SKRect(sizeX, sizeY, sizeX + sizeWidth, sizeY + sizeHeight);
                                     SKRect r2 = new SKRect(monitor.WorkingArea.X, monitor.WorkingArea.Y, monitor.WorkingArea.X + monitor.WorkingArea.Width, monitor.WorkingArea.Y + monitor.WorkingArea.Height);
                                     if (r1.IntersectsWith(r2))
                                     {

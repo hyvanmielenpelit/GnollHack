@@ -111,12 +111,18 @@ namespace GnollHackM
 
         public void CloseApplication()
         {
-            RevertAnimatorDuration(true);
-            GHApp.SaveWindowPosition();
-            GHApp.WindowsApp?.Exit();
-            GHApp.WindowsApp = null;
-            Application.Current?.Quit();
-            Environment.Exit(0);
+            MainThread.BeginInvokeOnMainThread(() => 
+            {
+                RevertAnimatorDuration(true);
+                GHApp.SaveWindowPosition();
+                if (GHApp.WindowsApp != null)
+                {
+                    GHApp.WindowsApp?.Exit();
+                    GHApp.WindowsApp = null;
+                }
+                Application.Current?.Quit();
+                Environment.Exit(0);
+            });
         }
 
         public void SetStatusBarHidden(bool ishidden)
