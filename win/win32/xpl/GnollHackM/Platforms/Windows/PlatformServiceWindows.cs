@@ -114,6 +114,7 @@ namespace GnollHackM
             RevertAnimatorDuration(true);
             GHApp.SaveWindowPosition();
             GHApp.WindowsApp?.Exit();
+            GHApp.WindowsApp = null;
             Application.Current?.Quit();
             Environment.Exit(0);
         }

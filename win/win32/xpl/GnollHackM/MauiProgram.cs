@@ -135,7 +135,10 @@ public static class MauiProgram
                         window.Closed += (s, e) =>
                         {
                             if (GHApp.WindowsApp != null)
+                            {
                                 GHApp.WindowsApp.Exit();
+                                GHApp.WindowsApp = null;
+                            }
                             else
                                 Environment.Exit(0);
                         };
