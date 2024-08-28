@@ -183,7 +183,7 @@ namespace GnollHackX.Pages.MainScreen
             string winRTAssemblyVersion = GetAssemblyInformationalVersion(typeof(WinRT.AgileReference));
             WinRTLabel.Text = !string.IsNullOrEmpty(winRTAssemblyVersion) ? winRTAssemblyVersion : "?";
 
-            string winUIAssemblyVersion = GetAssemblyInformationalVersion(typeof(Microsoft.UI.Xaml.Application));
+            string winUIAssemblyVersion = GetAssemblyFileVersion(typeof(Microsoft.UI.Xaml.Application));
             WinUILabel.Text = !string.IsNullOrEmpty(winUIAssemblyVersion) ? winUIAssemblyVersion : "?";
 
             string winSDKAssemblyVersion = GetAssemblyInformationalVersion(typeof(Windows.UI.Color));
@@ -349,6 +349,20 @@ namespace GnollHackX.Pages.MainScreen
             }
 
             return TrimVersion(assembly?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion);
+        }
+
+        private string GetAssemblyFileVersion(Type type)
+        {
+            return GetAssemblyFileVersion(type?.Assembly);
+        }
+        private string GetAssemblyFileVersion(Assembly assembly)
+        {
+            if (assembly == null)
+            {
+                return null;
+            }
+
+            return assembly?.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version ?? "";
         }
 
         private string TrimVersion(string version)
