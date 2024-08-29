@@ -994,8 +994,8 @@ struct monst *mon;
     /* return True if it is actually a gecko */
     if (mon->data == &mons[PM_GECKO])
         return TRUE;
-    /* return False if it is a int64_t worm; we might be chatting to its tail
-       (not strictly needed; int64_t worms are MS_SILENT so won't get here) */
+    /* return False if it is a long worm; we might be chatting to its tail
+       (not strictly needed; long worms are MS_SILENT so won't get here) */
     if (is_long_worm_with_tail(mon->data))
         return FALSE;
     /* result depends upon whether map spot shows a gecko, which will
@@ -7345,7 +7345,7 @@ struct monst* mtmp;
 
             Sprintf(talkbuf, "Thus, %s wait %sbefore bothering %s again.",
                 u.uprayer_timeout >= 50 ? "it would be wise to" : "you must",
-                u.uprayer_timeout < 50 ? "a little longer " : u.uprayer_timeout > 200 ? "a int64_t time " : "",
+                u.uprayer_timeout < 50 ? "a little longer " : u.uprayer_timeout > 200 ? "a long time " : "",
                 iflags.using_gui_sounds ? "your god" : u_gname());
             popup_talk_line(mtmp, talkbuf);
         }
@@ -9719,7 +9719,7 @@ struct monst* mtmp;
         return 0;
 
     const char* linearray[3] = {
-        "These mines have been inhabited by the Gnomes of Yendor as int64_t as I can remember.",
+        "These mines have been inhabited by the Gnomes of Yendor as long as I can remember.",
         "Their most precious treasures, including the famed Gladstone, are located on the bottom level of the complex, a few levels down from here.",
         0 };
     hermit_talk(mtmp, linearray, GHSOUND_HERMIT3_GNOMISH_MINES);
@@ -9738,7 +9738,7 @@ struct monst* mtmp;
     const char* linearray[5] = {
         "The Gladstone is a magnificent magical stone that is known to bestow unparalleled good luck on the wearer.",
         "They also say that it can grant protection from poison and heal the bearer upon invocation.",
-        "It has been worshipped by the gnomes as int64_t as anyone can remember, and they will jealously guard it from anyone attempting to take it from them.",
+        "It has been worshipped by the gnomes as long as anyone can remember, and they will jealously guard it from anyone attempting to take it from them.",
         "However, such a powerful artifact can greatly help you in your quest for the Amulet of Yendor.",
         0 };
     hermit_talk(mtmp, linearray, GHSOUND_HERMIT3_LUCKSTONE);
@@ -10059,7 +10059,7 @@ const char *mapping;
         filename[255] = '\0';
 
         if (strlen(sounddir) + strlen(filename) > 254) {
-            raw_print("sound file name too int64_t");
+            raw_print("sound file name too long");
             return 0;
         }
         Sprintf(filespec, "%s/%s", sounddir, filename);

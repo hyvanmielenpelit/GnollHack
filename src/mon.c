@@ -2582,7 +2582,7 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                     || (IS_DOOR(ntyp) && (levl[nx][ny].doormask & ~D_BROKEN))
                     || ((IS_DOOR(nowtyp) || IS_DOOR(ntyp))
                         && Is_really_rogue_level(&u.uz))
-                    /* mustn't pass between adjacent int64_t worm segments,
+                    /* mustn't pass between adjacent long worm segments,
                        but can attack that way */
                     || (m_at(x, ny) && m_at(nx, y) && worm_cross(x, y, nx, ny)
                         && !m_at(nx, ny) && (nx != u.ux || ny != u.uy))))
@@ -2596,7 +2596,7 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                 boolean checkobj = OBJ_AT(nx, ny);
 
                 /* Displacement also displaces the Elbereth/scare monster,
-                 * as int64_t as you are visible.
+                 * as long as you are visible.
                  */
                 if (Displaced && monseeu && mon->mux == nx && mon->muy == ny) 
                 {
@@ -3243,7 +3243,7 @@ struct monst *mtmp;
     if (lifesave) 
     {
         /* not canseemon; amulets are on the head, so you don't want
-         * to show this for a int64_t worm with only a tail visible.
+         * to show this for a long worm with only a tail visible.
          * Nor do you check invisibility, because glowing and
          * disintegrating amulets are always visible. */
         if (cansee(mtmp->mx, mtmp->my)) 

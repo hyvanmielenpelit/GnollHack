@@ -477,7 +477,7 @@ const genericptr vptr2;
  *      object at a time to the routine which populates it, traverse
  *      the objects via stepping through the array, then free the
  *      array.  The ordering process used a basic insertion sort which
- *      is fine for short lists but inefficient for int64_t ones.
+ *      is fine for short lists but inefficient for long ones.
  *
  *      3.6.0 (and continuing with 3.6.1) changed all that so that
  *      sortloot was self-contained as far as callers were concerned.

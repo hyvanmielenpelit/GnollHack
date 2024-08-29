@@ -52,7 +52,7 @@ get_version_compatibility(VOID_ARGS)
     return EARLIEST_COMPATIBLE_VERSION_NUMBER;
 }
 
-/* fill and return the given buffer with the int64_t GnollHack version string */
+/* fill and return the given buffer with the long GnollHack version string */
 char *
 getversionstring(buf)
 char *buf;
