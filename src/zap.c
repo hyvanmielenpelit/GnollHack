@@ -448,7 +448,7 @@ struct monst* origmonst;
         if (disguised_mimic)
             seemimic(mtmp);
 
-        if (!(is_demon(mtmp->data) || is_undead(mtmp->data) || is_vampshifter(mtmp)))
+        if (!(is_demon(mtmp->data) || is_undead(mtmp->data) || is_were(mtmp->data) || is_vampshifter(mtmp)))
         {
             play_sfx_sound_at_location(SFX_GENERAL_UNAFFECTED, mtmp->mx, mtmp->my);
             m_shieldeff(mtmp);
@@ -511,7 +511,7 @@ struct monst* origmonst;
         if (disguised_mimic)
             seemimic(mtmp);
 
-        if (is_undead(mtmp->data) || is_demon(mtmp->data) || is_vampshifter(mtmp) || hates_light(mtmp->data))
+        if (is_undead(mtmp->data) || is_demon(mtmp->data) || is_were(mtmp->data) || is_vampshifter(mtmp) || hates_light(mtmp->data))
         {
             /* resist deals the damage and displays the damage dealt */
             play_sfx_sound(SFX_MONSTER_IS_HIT_WITH_CELESTIAL_MAGIC);
@@ -5670,7 +5670,7 @@ register struct obj *obj;
             if (dist2(u.ux, u.uy, mon->mx, mon->my) <= radius * (radius + 1))
             {
                 int dmg = get_spell_damage(obj->otyp, 0, &youmonst, mon);
-                if (is_undead(mon->data) || is_demon(mon->data) || is_vampshifter(mon) || hates_light(mon->data))
+                if (is_undead(mon->data) || is_demon(mon->data) || is_were(mon->data) || is_vampshifter(mon) || hates_light(mon->data))
                 {
                     if (is_peaceful(mon))
                         setmangry(mon, FALSE);
@@ -6560,7 +6560,7 @@ boolean ordinary;
     case SPE_HEAVENLY_TOUCH:
     case SPE_TOUCH_OF_DIVINITY:
         learn_it = TRUE;
-        if ((is_demon(youmonst.data) || is_undead(youmonst.data)) && !Invulnerable)
+        if ((is_demon(youmonst.data) || is_undead(youmonst.data) || is_were(youmonst.data)) && !Invulnerable)
         {
             play_sfx_sound(SFX_MONSTER_IS_HIT_WITH_CELESTIAL_MAGIC);
             You_ex(ATR_NONE, CLR_MSG_NEGATIVE, "sear yourself!");

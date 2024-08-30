@@ -230,7 +230,7 @@ int expltype;
                     explmask[i][j] = !!Acid_immunity;
                     break;
                 case AD_CLRC:
-                    explmask[i][j] = 3 * !(is_demon(youmonst.data) || is_undead(youmonst.data));
+                    explmask[i][j] = 3 * !(is_demon(youmonst.data) || is_undead(youmonst.data) || is_were(youmonst.data) || hates_light(youmonst.data));
                     break;
                 default:
                     impossible("explosion type %d?", adtyp);
@@ -276,7 +276,7 @@ int expltype;
                         explmask[i][j] |= is_mon_immune_to_acid(mtmp);
                         break;
                     case AD_CLRC:
-                        explmask[i][j] |= 3 * !(is_demon(mtmp->data) || is_undead(mtmp->data) || is_vampshifter(mtmp) || hates_light(mtmp->data)); /* Hide shield effect */
+                        explmask[i][j] |= 3 * !(is_demon(mtmp->data) || is_undead(mtmp->data) || is_were(mtmp->data) || is_vampshifter(mtmp) || hates_light(mtmp->data)); /* Hide shield effect */
                         break;
                     default:
                         impossible("explosion type %d?", adtyp);
