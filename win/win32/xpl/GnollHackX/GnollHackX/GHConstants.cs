@@ -1618,12 +1618,12 @@ namespace GnollHackX
         public const int MaxMessageHistoryLength = 256;
         public const int MaxLongerMessageHistoryLength = 16384;
         public const float WindowBaseFontSize = 16f;
-        public const float WindowMessageFontSize = 13f;
+        public const float WindowMessageFontSize = 12f;
         public const float WindowMenuFontSize = 16f;
-        public const float WindowStatusBarFontSize = 13f;
-        public const float WindowMessageFontSizeMaxMultiplier = 1.30f;
-        public const float StatusBarBaseFontSize = 16f;
-        public const float StatusBarFontSizeMaxMultiplier = 1.40f;
+        public const float WindowStatusBarFontSize = 12f;
+        public const float WindowMessageFontSizeMaxMultiplier = 1.40f;
+        public const float StatusBarBaseFontSize = 13.5f;
+        public const float StatusBarFontSizeMaxMultiplier = 1.55f;
         public const float StatusBarHorizontalMargin = 5.0f;
         public const float StatusBarVerticalMargin = 5.0f;
         public const float StatusBarRowMargin = 5.0f;

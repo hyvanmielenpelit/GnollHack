@@ -1340,13 +1340,13 @@ namespace GnollHackX
         }
         public static float CalculateStatusBarFontSizeMultiplier(double canvasViewWidth, double canvasViewHeight)
         {
-            double relevantScale = canvasViewWidth / 640;
+            double relevantScale = canvasViewWidth / 360;
             return Math.Max(1.0f, Math.Min(GHConstants.StatusBarFontSizeMaxMultiplier, (float)relevantScale));
         }
         public static float CalculateMessageFontSizeMultiplier(double buttonWidth, double buttonHeight, float skiaStatusBarHeight, float messageFontSize, float skiaCanvasWidth, float skiaCanvasHeight, double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale, float customScale)
         {
             bool isLandscape = canvasViewWidth > canvasViewHeight;
-            double relevantScale = canvasViewWidth / 640;
+            double relevantScale = canvasViewWidth / 480;
             if (relevantScale < 1.0f)
                 return 1.0f;
             if (inverseCanvasScale == 0.0f)
