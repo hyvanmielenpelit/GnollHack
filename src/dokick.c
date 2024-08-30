@@ -193,89 +193,91 @@ boolean clumsy;
     if(effortlessly)
         Strcpy(effbuf, "effortlessly ");
 
-    if (dmg > 0)
+    display_m_being_hit(mon, HIT_GENERAL, dmg, 0UL, TRUE);
+    if (M_AP_TYPE(mon))
+        seemimic(mon);
+    check_caitiff(mon);
+
+    double damage = adjust_damage(dmg, &youmonst, mon, AD_PHYS, ADFLAGS_NONE);
+    int hp_before = mon->mhp;
+    deduct_monster_hp(mon, damage);
+    int hp_after = mon->mhp;
+    int damagedealt = hp_before - hp_after;
+    play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), BAREFOOTED_ATTACK_NUMBER, uarmf, damage, HMON_MELEE);
+
+    if (damagedealt > 0)
     {
-        pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_orange4, "You %s%skick %s for %d damage.", effbuf, kickstylebuf, mon_nam(mon), dmg);
+        pline_multi_ex(ATR_NONE, NO_COLOR, no_multiattrs, multicolor_orange4, "You %s%skick %s for %d damage.", effbuf, kickstylebuf, mon_nam(mon), damagedealt);
     }
     else
     {
         You("%s%skick %s for no damage.", effbuf, kickstylebuf, mon_nam(mon));
     }
-    display_m_being_hit(mon, HIT_GENERAL, dmg, 0UL, TRUE);
-
     if (silverhit)
         pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "Your silver boots sear %s flesh!", s_suffix(mon_nam(mon)));
 
-    if (M_AP_TYPE(mon))
-        seemimic(mon);
-
-    check_caitiff(mon);
-
-    /* squeeze some guilt feelings... */
-    if (mon->mtame)
+    if (!DEADMONSTER(mon))
     {
-        abuse_dog(mon);
-        if (is_tame(mon))
-            monflee(mon, (dmg ? rnd(dmg) : 1), FALSE, FALSE);
-        else
-            mon->mflee = 0;
-    }
-
-    double damage = adjust_damage(dmg, &youmonst, mon, AD_PHYS, ADFLAGS_NONE);
-    if (dmg > 0)
-        deduct_monster_hp(mon, damage);
-
-    play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), BAREFOOTED_ATTACK_NUMBER, uarmf, damage, HMON_MELEE);
-
-    boolean hurtles = FALSE;
-    boolean reels = FALSE;
-
-    if (kicksuccessful && !DEADMONSTER(mon))
-    {
-        int skilllevel = adjusted_skill_level(P_MARTIAL_ARTS) + (Jumping ? 1 : 0);
-        if (verysmall(mon->data) || mon->data->msize == MZ_SMALL)
-            hurtles = TRUE;
-        else if (!bigmonst(mon->data))
+        /* squeeze some guilt feelings... */
+        if (mon->mtame)
         {
-            if ((skilllevel == P_BASIC && rn2(2)) || skilllevel >= P_SKILLED || Magical_kicking)
-                hurtles = TRUE;
+            abuse_dog(mon);
+            if (is_tame(mon))
+                monflee(mon, (dmg ? rnd(dmg) : 1), FALSE, FALSE);
             else
-                reels = TRUE;
+                mon->mflee = 0;
         }
-        else if (!hugemonst(mon->data))
-        {
-            if (skilllevel >= P_MASTER || Magical_kicking)
-                hurtles = TRUE;
-            else if(skilllevel >= P_EXPERT && !rn2(2))
-                hurtles = TRUE;
-            else if (skilllevel == P_SKILLED && !rn2(4))
-                hurtles = TRUE;
-            else if (skilllevel >= P_SKILLED)
-                reels = TRUE;
-        }
-    }
 
-    if(hurtles)
-    {
-        pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s hurtles backwards from the force of your kick!", Monnam(mon));
-        mhurtle(mon, u.dx, u.dy, 1);
-    }
-    else if (reels) 
-    {
-        /* see if the monster has a place to move into */
-        mdx = mon->mx + u.dx;
-        mdy = mon->my + u.dy;
-        if (goodpos(mdx, mdy, mon, 0)) 
+        boolean hurtles = FALSE;
+        boolean reels = FALSE;
+
+        if (kicksuccessful)
         {
-            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s reels from the blow.", Monnam(mon));
-            if (m_in_out_region(mon, mdx, mdy)) {
-                remove_monster(mon->mx, mon->my);
-                newsym(mon->mx, mon->my);
-                place_monster(mon, mdx, mdy);
-                newsym(mon->mx, mon->my);
-                set_apparxy(mon);
-                if (mintrap(mon) == 2)
-                    trapkilled = TRUE;
+            int skilllevel = adjusted_skill_level(P_MARTIAL_ARTS) + (Jumping ? 1 : 0);
+            if (verysmall(mon->data) || mon->data->msize == MZ_SMALL)
+                hurtles = TRUE;
+            else if (!bigmonst(mon->data))
+            {
+                if ((skilllevel == P_BASIC && rn2(2)) || skilllevel >= P_SKILLED || Magical_kicking)
+                    hurtles = TRUE;
+                else
+                    reels = TRUE;
+            }
+            else if (!hugemonst(mon->data))
+            {
+                if (skilllevel >= P_MASTER || Magical_kicking)
+                    hurtles = TRUE;
+                else if (skilllevel >= P_EXPERT && !rn2(2))
+                    hurtles = TRUE;
+                else if (skilllevel == P_SKILLED && !rn2(4))
+                    hurtles = TRUE;
+                else if (skilllevel >= P_SKILLED)
+                    reels = TRUE;
+            }
+        }
+
+        if (hurtles)
+        {
+            pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s hurtles backwards from the force of your kick!", Monnam(mon));
+            mhurtle(mon, u.dx, u.dy, 1);
+        }
+        else if (reels)
+        {
+            /* see if the monster has a place to move into */
+            mdx = mon->mx + u.dx;
+            mdy = mon->my + u.dy;
+            if (goodpos(mdx, mdy, mon, 0))
+            {
+                pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s reels from the blow.", Monnam(mon));
+                if (m_in_out_region(mon, mdx, mdy)) {
+                    remove_monster(mon->mx, mon->my);
+                    newsym(mon->mx, mon->my);
+                    place_monster(mon, mdx, mdy);
+                    newsym(mon->mx, mon->my);
+                    set_apparxy(mon);
+                    if (mintrap(mon) == 2)
+                        trapkilled = TRUE;
+                }
             }
         }
     }
@@ -491,7 +493,6 @@ xchar x, y;
         
         if (!mon || DEADMONSTER(mon) || m_at(x, y) != mon)
             break;
-
     }
 }
 
