@@ -6825,6 +6825,11 @@ namespace GnollHackX
                 }
             }
         }
+
+        public static void SendKeyPress(int key, bool isCtrl, bool isMeta)
+        {
+            CurrentGamePage?.HandleKeyPress(key, isCtrl, isMeta);
+        }
     }
 
     public class DeviceGPU
