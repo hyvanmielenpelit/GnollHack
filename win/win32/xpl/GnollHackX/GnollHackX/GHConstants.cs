@@ -1617,13 +1617,20 @@ namespace GnollHackX
         public const int FadeFromBlackDuration = 200;
         public const int MaxMessageHistoryLength = 256;
         public const int MaxLongerMessageHistoryLength = 16384;
-        public const float StatusBarBaseFontSize = 14f;
+        public const float WindowBaseFontSize = 16f;
+        public const float WindowMessageFontSize = 12.5f;
+        public const float WindowMenuFontSize = 16f;
+        public const float WindowStatusBarFontSize = 11.5f;
+        public const float StatusBarBaseFontSize = 16f;
         public const float StatusBarHorizontalMargin = 5.0f;
         public const float StatusBarVerticalMargin = 5.0f;
         public const float StatusBarRowMargin = 5.0f;
+        public const float StatusBarShieldFontSize = StatusBarBaseFontSize * 32f / 42f;
+        public const float StatusBarDifFontSize = StatusBarBaseFontSize * 24f / 42f;
+        public const float SkillButtonBaseFontSize = 9.5f;
         public const float ContextButtonBottomStartMargin = 30.0f;
+        public const double ContextButtonSpacing = 10.0;
         public const float ContextButtonBaseFontSize = 8.5f;
-        public const float ContextButtonSpacing = 10.0f;
         public const float MoveDistanceThreshold = 25.0f;
         public const long MoveOrPressTimeThreshold = 200L; /* Milliseconds */
         public const long DoubleClickTimeThreshold = 500L; /* Milliseconds */
@@ -1849,6 +1856,7 @@ namespace GnollHackX
         public const int ReplayGetLineDelay2 = 1024; /* Milliseconds */
         public const int ReplayDisplayWindowDelay = 512; /* Milliseconds */
         //public const GHlong GPUResourceCacheSize = 800000000L;
+
 #if GNH_MAUI
         public const string PortName = "GnollHackM";
         public const UnmanagedType GHStringMarshallingType = UnmanagedType.LPUTF8Str;

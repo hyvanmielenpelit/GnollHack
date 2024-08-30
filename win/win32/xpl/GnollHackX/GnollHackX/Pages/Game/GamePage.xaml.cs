@@ -77,13 +77,6 @@ namespace GnollHackX.Pages.Game
         private SKRect _canvasButtonRect = new SKRect(0, 0, 0, 0);
         private SKColor _cursorDefaultGreen = new SKColor(0, 255, 0);
 
-        private const float _statusbar_hmargin = GHConstants.StatusBarHorizontalMargin;
-        private const float _statusbar_vmargin = GHConstants.StatusBarVerticalMargin;
-        private const float _statusbar_rowmargin = GHConstants.StatusBarRowMargin;
-        private const float _statusbar_basefontsize = GHConstants.StatusBarBaseFontSize;
-        private const float _statusbar_shieldfontsize = _statusbar_basefontsize * 32f / 42f;
-        private const float _statusbar_diffontsize = _statusbar_basefontsize * 24f / 42f;
-
         private object _isGameOnLock = new object();
         private bool _isGameOn = false;
         private bool _gameEnded = false;
@@ -3276,7 +3269,7 @@ namespace GnollHackX.Pages.Game
             }
             _ynResponses = responses;
 
-            float inverseCanvasScale = GetInverseCanvasScale();
+            float inverseCanvasScale = GHApp.DisplayDensity;
             float customScale = GHApp.CustomScreenScale;
             bool usingDesktopButtons = DesktopButtons;
             bool usingSimpleCmdLayout = UseSimpleCmdLayout;
@@ -4323,19 +4316,28 @@ namespace GnollHackX.Pages.Game
 
         public float GetTextScale()
         {
-            //return (float)((StandardReferenceButton.Width <= 0 ? StandardReferenceButton.WidthRequest : StandardReferenceButton.Width) / 50.0f) * GetInverseCanvasScale();
-            return GetTextScaleEx(canvasView.Width, canvasView.Height, DesktopButtons, UseSimpleCmdLayout);
+            return UIUtils.CalculateTextScale();
         }
+        //public float GetTextScale()
+        //{
+        //    //return (float)((StandardReferenceButton.Width <= 0 ? StandardReferenceButton.WidthRequest : StandardReferenceButton.Width) / 50.0f) * GetInverseCanvasScale();
+        //    return GetTextScaleEx(canvasView.Width, canvasView.Height, DesktopButtons, UseSimpleCmdLayout);
+        //}
 
-        public float GetTextScaleEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout)
-        {
-            return GetTextScaleEx(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, GetInverseCanvasScale(), GHApp.CustomScreenScale);
-        }
+        //public float GetTextScaleEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout)
+        //{
+        //    return GetTextScaleEx(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, GHApp.DisplayDensity, GHApp.CustomScreenScale);
+        //}
 
-        public float GetTextScaleEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale, float customScale)
-        {
-            return ((float)UIUtils.CalculateButtonSideWidth(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale, 0, 0, false) / 50.0f) * inverseCanvasScale;
-        }
+        //public float GetTextScaleEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale, float customScale)
+        //{
+        //    return ((float)UIUtils.CalculateButtonSideWidth(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale, 0, 0, false) / 50.0f) * inverseCanvasScale;
+        //}
+
+        //public float GetTextScaleEx2(float inverseCanvasScale, float customScale)
+        //{
+        //    return UIUtils.CalculateTextScale(customScale, inverseCanvasScale);
+        //}
 
 #if GNH_MAP_PROFILING && DEBUG
         private static Stopwatch _profilingStopwatchBmp = new Stopwatch();
@@ -6425,10 +6427,10 @@ namespace GnollHackX.Pages.Game
 
             //double canvas_scale = GetCanvasScale();
             //float inverse_canvas_scale = canvas_scale == 0 ? 0.0f : 1.0f / (float)canvas_scale;
-            float inverse_canvas_scale = GetInverseCanvasScale();
+            float inverse_canvas_scale = GHApp.DisplayDensity;
             float customScale = GHApp.CustomScreenScale;
-            float textscale = GetTextScaleEx(canvasView.Width, canvasView.Height, usingDesktopButtons, usingSimpleCmdLayout, inverse_canvas_scale, customScale);
-            float statusBarSkiaHeight = GetStatusBarSkiaHeightEx(textscale);
+            float textscale = UIUtils.CalculateTextScale(customScale, inverse_canvas_scale);// GetTextScaleEx(canvasView.Width, canvasView.Height, usingDesktopButtons, usingSimpleCmdLayout, inverse_canvas_scale, customScale);
+            float statusBarSkiaHeight = UIUtils.CalculateStatusBarSkiaHeight(textscale); // GetStatusBarSkiaHeightEx(textscale);
             long generalcountervalue, maincountervalue;
             lock (AnimationTimerLock)
             {
@@ -8378,12 +8380,12 @@ namespace GnollHackX.Pages.Game
                         float statusbarheight = 0;
                         if (!ClassicStatusBar)
                         {
-                            float hmargin = _statusbar_hmargin;
-                            float vmargin = _statusbar_vmargin;
-                            float rowmargin = GHConstants.StatusBarVerticalMargin;
-                            float basefontsize = _statusbar_basefontsize * textscale;
-                            float shieldfontsize = _statusbar_shieldfontsize * textscale;
-                            float diffontsize = _statusbar_diffontsize * textscale;
+                            float hmargin = GHConstants.StatusBarHorizontalMargin;
+                            float vmargin = GHConstants.StatusBarVerticalMargin;
+                            float rowmargin = GHConstants.StatusBarRowMargin;
+                            float basefontsize = GHConstants.StatusBarBaseFontSize * textscale;
+                            float shieldfontsize = GHConstants.StatusBarShieldFontSize * textscale;
+                            float diffontsize = GHConstants.StatusBarDifFontSize * textscale;
 
                             float curx = hmargin;
                             float cury = vmargin;
@@ -10332,7 +10334,7 @@ namespace GnollHackX.Pages.Game
                             _skillRectDrawn = true;
                             textPaint.Color = SKColors.White;
                             textPaint.Typeface = GHApp.LatoRegular;
-                            textPaint.TextSize = 9.5f * skillDest.Width / 50.0f;
+                            textPaint.TextSize = GHConstants.SkillButtonBaseFontSize * skillDest.Width / 50.0f;
                             //textPaint.TextAlign = SKTextAlign.Center;
 #if GNH_MAP_PROFILING && DEBUG
                             StartProfiling(GHProfilingStyle.Bitmap);
@@ -10368,7 +10370,7 @@ namespace GnollHackX.Pages.Game
                             _prevWepRectDrawn = true;
                             textPaint.Color = SKColors.White;
                             textPaint.Typeface = GHApp.LatoRegular;
-                            textPaint.TextSize = 9.5f * prevWepDest.Width / 50.0f;
+                            textPaint.TextSize = GHConstants.SkillButtonBaseFontSize * prevWepDest.Width / 50.0f;
                             //textPaint.TextAlign = SKTextAlign.Center;
 #if GNH_MAP_PROFILING && DEBUG
                             StartProfiling(GHProfilingStyle.Bitmap);
@@ -10402,7 +10404,7 @@ namespace GnollHackX.Pages.Game
                     {
                         float startBottom = canvasheight - (float)UsedButtonRowStack.Height * inverse_canvas_scale - GHConstants.ContextButtonBottomStartMargin;
                         float textSize = GHConstants.ContextButtonBaseFontSize * orbbordersize / 50.0f;
-                        float internalPadding = GHConstants.ContextButtonSpacing * inverse_canvas_scale;
+                        float internalPadding = (float)GHConstants.ContextButtonSpacing * inverse_canvas_scale;
                         float startTop = startBottom + internalPadding;
                         float horizontalPadding = 2f * inverse_canvas_scale;
                         float startLeft = canvaswidth - orbbordersize - horizontalPadding;
@@ -12862,7 +12864,7 @@ namespace GnollHackX.Pages.Game
 
             bool usingDesktopButtons = DesktopButtons;
             bool usingSimpleCmdLayout = UseSimpleCmdLayout;
-            float inverseCanvasScale = GetInverseCanvasScale();
+            float inverseCanvasScale = GHApp.DisplayDensity;
             float customScale = GHApp.CustomScreenScale;
 
             GameMenuButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
@@ -12968,7 +12970,7 @@ namespace GnollHackX.Pages.Game
             lRowAbilitiesButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             lRowWornItemsButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             //double statusbarheight = GetStatusBarHeight(); /* Requires lInventoryButton size having set to determine scaling */
-            double statusbarheight = GetStatusBarHeightEx(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            double statusbarheight = GetStatusBarHeightEx2(inverseCanvasScale, customScale); // GetStatusBarHeightEx(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             lAbilitiesButton.HeightRequest = statusbarheight;
             lWornItemsButton.HeightRequest = statusbarheight;
             UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
@@ -13067,44 +13069,56 @@ namespace GnollHackX.Pages.Game
         //    return statusbarheight;
         //}
 
-        public float GetStatusBarSkiaHeightEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout)
-        {
-            float textScale = GetTextScaleEx(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout);
-            return GetStatusBarSkiaHeightEx(textScale);
-        }
+        //public float GetStatusBarSkiaHeightEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout)
+        //{
+        //    float textScale = GetTextScaleEx(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout);
+        //    return GetStatusBarSkiaHeightEx(textScale);
+        //}
 
-        public float GetStatusBarSkiaHeightEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale, float customScale)
-        {
-            float textScale = GetTextScaleEx(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
-            return GetStatusBarSkiaHeightEx(textScale);
-        }
+        //public float GetStatusBarSkiaHeightEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale, float customScale)
+        //{
+        //    float textScale = GetTextScaleEx(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+        //    return GetStatusBarSkiaHeightEx(textScale);
+        //}
+        
+        //public float GetStatusBarSkiaHeightEx2(float inverseCanvasScale, float customScale)
+        //{
+        //    float textScale = UIUtils.CalculateTextScale(inverseCanvasScale, customScale);
+        //    return GetStatusBarSkiaHeightEx(textScale);
+        //}
 
-        public float GetStatusBarSkiaHeightEx(float textScale)
-        {
-            float statusbarheight;
-            using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
-            {
-                textPaint.Typeface = GHApp.LatoRegular;
-                textPaint.TextSize = _statusbar_basefontsize * textScale;
-                float rowheight = textPaint.FontSpacing;
-                statusbarheight = rowheight * 2 + _statusbar_vmargin * 2 + _statusbar_rowmargin;
-            }
-            return statusbarheight;
-        }
+        //public float GetStatusBarSkiaHeightEx2()
+        //{
+        //    float textScale = UIUtils.CalculateTextScale(GHApp.DisplayDensity, GHApp.CustomScreenScale);
+        //    return GetStatusBarSkiaHeightEx(textScale);
+        //}
 
-        public double GetCanvasScale()
-        {
-            return 1.0 / GHApp.DisplayDensity;
-            //if (canvasView.CanvasSize.Width <= 0 || canvasView.CanvasSize.Height <= 0)
-            //    return 1.0;
-            //return Math.Sqrt(canvasView.Width / (double)canvasView.CanvasSize.Width * canvasView.Height / (double)canvasView.CanvasSize.Height);
-        }
+        //public float GetStatusBarSkiaHeightEx(float textScale)
+        //{
+        //    float statusbarheight;
+        //    using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
+        //    {
+        //        textPaint.Typeface = GHApp.LatoRegular;
+        //        textPaint.TextSize = GHConstants.StatusBarBaseFontSize * textScale;
+        //        float rowheight = textPaint.FontSpacing;
+        //        statusbarheight = rowheight * 2 + GHConstants.StatusBarRowMargin * 2 + GHConstants.StatusBarVerticalMargin;
+        //    }
+        //    return statusbarheight;
+        //}
 
-        public float GetInverseCanvasScale()
-        {
-            return GHApp.DisplayDensity;
-            //return (float)(1.0 / GetCanvasScale());
-        }
+        //public double GetCanvasScale()
+        //{
+        //    return 1.0 / GHApp.DisplayDensity;
+        //    //if (canvasView.CanvasSize.Width <= 0 || canvasView.CanvasSize.Height <= 0)
+        //    //    return 1.0;
+        //    //return Math.Sqrt(canvasView.Width / (double)canvasView.CanvasSize.Width * canvasView.Height / (double)canvasView.CanvasSize.Height);
+        //}
+
+        //public float GetInverseCanvasScale()
+        //{
+        //    return GHApp.DisplayDensity;
+        //    //return (float)(1.0 / GetCanvasScale());
+        //}
 
         //public double GetStatusBarHeight()
         //{
@@ -13115,16 +13129,29 @@ namespace GnollHackX.Pages.Game
         //    return sb_xheight;
         //}
 
-        public double GetStatusBarHeightEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout)
-        {
-            return GetStatusBarHeightEx(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, GetInverseCanvasScale(), GHApp.CustomScreenScale);
-        }
+        //public double GetStatusBarHeightEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout)
+        //{
+        //    return GetStatusBarHeightEx(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, GHApp.DisplayDensity, GHApp.CustomScreenScale);
+        //}
 
-        public double GetStatusBarHeightEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale, float customScale)
+        //public double GetStatusBarHeightEx(double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale, float customScale)
+        //{
+        //    if(inverseCanvasScale == 0.0f) 
+        //        inverseCanvasScale = 1.0f;
+        //    float statusbarheight = GetStatusBarSkiaHeightEx(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+        //    return (double)statusbarheight / (double)inverseCanvasScale;
+        //}
+
+        //public double GetStatusBarHeightEx2()
+        //{
+        //    return GetStatusBarHeightEx2(GHApp.DisplayDensity, GHApp.CustomScreenScale);
+        //}
+
+        public double GetStatusBarHeightEx2(float inverseCanvasScale, float customScale)
         {
-            if(inverseCanvasScale == 0.0f) 
+            if (inverseCanvasScale == 0.0f)
                 inverseCanvasScale = 1.0f;
-            float statusbarheight = GetStatusBarSkiaHeightEx(canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            float statusbarheight = UIUtils.CalculateStatusBarSkiaHeight(inverseCanvasScale, customScale);
             return (double)statusbarheight / (double)inverseCanvasScale;
         }
 
@@ -14902,7 +14929,7 @@ namespace GnollHackX.Pages.Game
                     return;
             }
 
-            float scale = GetInverseCanvasScale(); // (float)Math.Sqrt((double)(canvaswidth * canvasheight / (float)(referenceCanvasView.Width * referenceCanvasView.Height)));
+            float scale = GHApp.DisplayDensity; // (float)Math.Sqrt((double)(canvaswidth * canvasheight / (float)(referenceCanvasView.Width * referenceCanvasView.Height)));
             float customScale = GHApp.CustomScreenScale;
             bool isHighFilterQuality = MenuHighFilterQuality;
             bool usingGL = MenuCanvas.UseGL;
@@ -17225,7 +17252,7 @@ namespace GnollHackX.Pages.Game
                 if (ShowFPS)
                 {
                     float textscale = GetTextScale();
-                    textPaint.TextSize = _statusbar_basefontsize * textscale;
+                    textPaint.TextSize = GHConstants.StatusBarBaseFontSize * textscale;
                     float target_scale = textPaint.FontSpacing / GHApp._statusWizardBitmap.Height; // All are 64px high
                     float target_width = target_scale * GHApp._fpsBitmap.Width;
                     float target_height = target_scale * GHApp._fpsBitmap.Height;
@@ -17242,7 +17269,7 @@ namespace GnollHackX.Pages.Game
 
                     const int topMargin = 4, bottomMargin = 16;
                     textPaint.Color = SKColors.White;
-                    textPaint.TextSize = _statusbar_diffontsize * textscale;
+                    textPaint.TextSize = GHConstants.StatusBarDifFontSize * textscale;
                     //textPaint.TextAlign = SKTextAlign.Center;
                     float vsize = target_height - (topMargin + bottomMargin) * target_scale;
                     float fsize = textPaint.FontSpacing;
@@ -17250,7 +17277,7 @@ namespace GnollHackX.Pages.Game
                     SKPoint drawpoint = new SKPoint(curx + target_width / 2, cury + (topMargin * target_scale) + vpadding - textPaint.FontMetrics.Ascent);
                     textPaint.DrawTextOnCanvas(canvas, drawtext, drawpoint, SKTextAlign.Center);
                     //textPaint.TextAlign = SKTextAlign.Left;
-                    textPaint.TextSize = _statusbar_basefontsize * textscale;
+                    textPaint.TextSize = GHConstants.StatusBarBaseFontSize * textscale;
                 }
             }
             lock (_commandFPSCounterLock)
@@ -17635,7 +17662,7 @@ namespace GnollHackX.Pages.Game
                 float target_scale_canvas = 1.0f;
                 float mult_canvas = 1.0f;
                 float prev_bottom = 0;
-                float sbheight = GetStatusBarSkiaHeightEx(canvasView.Width, canvasView.Height, DesktopButtons, UseSimpleCmdLayout);
+                float sbheight = UIUtils.CalculateStatusBarSkiaHeight(); // GetStatusBarSkiaHeightEx(canvasView.Width, canvasView.Height, DesktopButtons, UseSimpleCmdLayout);
                 SKRect statusBarCenterRect = new SKRect(canvaswidth / 2 - sbheight / 2, 0, canvaswidth / 2 + sbheight / 2, sbheight);
 
                 switch (ShownTip)

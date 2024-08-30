@@ -221,21 +221,20 @@ namespace GnollHackX
         {
             Typeface = GHApp.LatoRegular;
             TextColor = SKColors.White;
-            TextSize = 14.0f;
+            TextSize = GHConstants.WindowBaseFontSize;
             BackgroundColor = SKColors.Transparent;
             switch (_winType)
             {
                 case GHWinType.None:
                     break;
                 case GHWinType.Message:
-                    TextSize = TextSize * 32.0f / 42f;
+                    TextSize = GHConstants.WindowMessageFontSize;
                     Typeface = GHApp.DejaVuSansMonoTypeface;
                     StrokeWidth = TextSize / 4.0f;
                     AutoPlacement = true;
                     break;
                 case GHWinType.Status:
-                    //BackgroundColor = TransparentBlack;
-                    TextSize = TextSize * 30.0f / 42.0f;
+                    TextSize = GHConstants.WindowStatusBarFontSize;
                     Typeface = GHApp.LatoRegular;
                     StrokeWidth = TextSize / 4.0f;
                     HasShadow = true;
@@ -243,21 +242,21 @@ namespace GnollHackX
                     Top = 0;
                     break;
                 case GHWinType.Map:
-                    TextSize = TextSize * 30.0f / 42.0f;
+                    TextSize = GHConstants.WindowStatusBarFontSize;
                     Typeface = GHApp.LatoRegular;
                     Left = 0;
                     Top = 120;
                     break;
                 case GHWinType.Menu:
+                    TextSize = GHConstants.WindowMenuFontSize;
                     Typeface = GHApp.UnderwoodTypeface;
-                    TextSize = TextSize * 42.0f / 42.0f;
                     Left = 0;
                     Top = 150;
                     CenterHorizontally = true;
                     break;
                 case GHWinType.Text:
-                    Typeface = GHApp.EndorTypeface;
-                    TextSize = TextSize * 42.0f / 42.0f;
+                    TextSize = GHConstants.WindowMenuFontSize;
+                    Typeface = GHApp.UnderwoodTypeface;
                     Left = 0;
                     Top = 150;
                     CenterHorizontally = true;
@@ -265,7 +264,7 @@ namespace GnollHackX
                 case GHWinType.Base:
                     break;
                 case GHWinType.Here:
-                    TextSize = TextSize * 32.0f / 42.0f;
+                    TextSize = GHConstants.WindowMessageFontSize;
                     Typeface = GHApp.DejaVuSansMonoTypeface;
                     StrokeWidth = TextSize / 4.0f;
                     AutoPlacement = true;
@@ -383,7 +382,7 @@ namespace GnollHackX
                 using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint()
                 {
                     Typeface = Typeface,
-                    TextSize = TextSize * _gamePage.GetTextScale()
+                    TextSize = TextSize * UIUtils.CalculateTextScale()
                 })
                 {
                     if (CursY >= PutStrs.Count)
@@ -498,7 +497,7 @@ namespace GnollHackX
                     using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint()
                     {
                         Typeface = Typeface,
-                        TextSize = TextSize * _gamePage.GetTextScale()
+                        TextSize = TextSize * UIUtils.CalculateTextScale()
                     })
                     {
                         if (CursY >= PutStrs.Count)
