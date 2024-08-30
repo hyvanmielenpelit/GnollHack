@@ -17775,7 +17775,6 @@ namespace GnollHackX.Pages.Game
 
         private void TipView_Touch(object sender, SKTouchEventArgs e)
         {
-
             switch (e?.ActionType)
             {
                 case SKTouchAction.Entered:
@@ -17833,8 +17832,9 @@ namespace GnollHackX.Pages.Game
         public SKRect GetViewScreenRect(Xamarin.Forms.VisualElement view)
 #endif
         {
-            float canvaswidth = canvasView.CanvasSize.Width;
-            float canvasheight = canvasView.CanvasSize.Height;
+            //float canvaswidth = canvasView.CanvasSize.Width;
+            //float canvasheight = canvasView.CanvasSize.Height;
+            float scale = GHApp.DisplayDensity;
 
             double screenCoordinateX = view.X;
             double screenCoordinateY = view.Y;
@@ -17866,10 +17866,10 @@ namespace GnollHackX.Pages.Game
 #endif
                 }
             }
-            float relX = (float)(screenCoordinateX / canvasView.Width) * canvaswidth;
-            float relY = (float)(screenCoordinateY / canvasView.Height) * canvasheight;
-            float relWidth = (float)(StandardMeasurementButton.Width / canvasView.Width) * canvaswidth;
-            float relHeight = (float)(StandardMeasurementButton.Height / canvasView.Height) * canvasheight;
+            float relX = (float)(screenCoordinateX * scale); // / canvasView.Width) * canvaswidth;
+            float relY = (float)(screenCoordinateY * scale); // / canvasView.Height) * canvasheight;
+            float relWidth = (float)(StandardMeasurementButton.Width * scale); // / canvasView.Width) * canvaswidth;
+            float relHeight = (float)(StandardMeasurementButton.Height * scale); // / canvasView.Height) * canvasheight;
 
             SKRect res = new SKRect(relX, relY, relX + relWidth, relY + relHeight);
             return res;
