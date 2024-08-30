@@ -6431,8 +6431,8 @@ namespace GnollHackX.Pages.Game
             float inverse_canvas_scale = GHApp.DisplayDensity;
             float customScale = GHApp.CustomScreenScale;
             float textscale = UIUtils.CalculateTextScale(inverse_canvas_scale, customScale);// GetTextScaleEx(canvasView.Width, canvasView.Height, usingDesktopButtons, usingSimpleCmdLayout, inverse_canvas_scale, customScale);
-            float landscapeMultiplier = UIUtils.CalculateStatusBarFontSizeMultiplier(canvasView.Width, canvasView.Height);
-            float statusBarTextScale = textscale * landscapeMultiplier;
+            float statusBarTextMultiplier = UIUtils.CalculateStatusBarFontSizeMultiplier(canvasView.Width, canvasView.Height);
+            float statusBarTextScale = textscale * statusBarTextMultiplier;
             float statusBarSkiaHeight = UIUtils.CalculateStatusBarSkiaHeight(statusBarTextScale); // GetStatusBarSkiaHeightEx(textscale);
             float messageTextMultiplier = UIUtils.CalculateMessageFontSizeMultiplier(StandardMeasurementButton.Width, StandardMeasurementButton.Height, statusBarSkiaHeight, textscale * GHConstants.WindowMessageFontSize, 
                 canvaswidth, canvasheight, canvasView.Width, canvasView.Height, usingDesktopButtons, usingSimpleCmdLayout, inverse_canvas_scale, customScale);
