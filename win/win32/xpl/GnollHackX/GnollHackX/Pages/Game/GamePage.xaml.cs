@@ -8380,7 +8380,7 @@ namespace GnollHackX.Pages.Game
                         {
                             float hmargin = _statusbar_hmargin;
                             float vmargin = _statusbar_vmargin;
-                            float rowmargin = _statusbar_rowmargin;
+                            float rowmargin = GHConstants.StatusBarVerticalMargin;
                             float basefontsize = _statusbar_basefontsize * textscale;
                             float shieldfontsize = _statusbar_shieldfontsize * textscale;
                             float diffontsize = _statusbar_diffontsize * textscale;
