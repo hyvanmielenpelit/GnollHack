@@ -1288,7 +1288,7 @@ namespace GnollHackX
             double noOfButtonWidthsNeededForHeight = minNoOfLabeledButtonRows * (1.0f + labeledButtonFontSizeRelativeToButtonSize)
                 //+ statusBarRowSizeRelativeToButtonWidth
                 + noOfVerticalSmallerButtons * 75f / 80f;
-            double statusBarSize = CalculateStatusBarSkiaHeight(CalculateTextScale(inverseCanvasScale, customScale)) / inverseCanvasScale;
+            double statusBarSize = CalculateStatusBarSkiaHeight(inverseCanvasScale, customScale, canvasViewWidth, canvasViewHeight) / inverseCanvasScale;
             double verticalMargins =
                 /* Upper UI buttons */  (noOfVerticalSmallerButtons - 1) * 6 + 2 * 6 /* Bottom and top margins just in case */
                 /* Bottom UI buttons */ + (noOfCommandRows - 1) * 6 + 2 * 6 /* Bottom and top margins just in case */
@@ -1320,14 +1320,14 @@ namespace GnollHackX
             return statusbarheight;
         }
 
-        public static float CalculateStatusBarSkiaHeight()
+        public static float CalculateStatusBarSkiaHeight(double canvasViewWidth, double canvasViewHeight)
         {
-            return CalculateStatusBarSkiaHeight(CalculateTextScale());
+            return CalculateStatusBarSkiaHeight(CalculateTextScale() * CalculateStatusBarFontSizeMultiplier(canvasViewWidth, canvasViewHeight));
         }
 
-        public static float CalculateStatusBarSkiaHeight(float inverseCanvasScale, float customScale)
+        public static float CalculateStatusBarSkiaHeight(float inverseCanvasScale, float customScale, double canvasViewWidth, double canvasViewHeight)
         {
-            return CalculateStatusBarSkiaHeight(CalculateTextScale(inverseCanvasScale, customScale));
+            return CalculateStatusBarSkiaHeight(CalculateTextScale(inverseCanvasScale, customScale) * CalculateStatusBarFontSizeMultiplier(canvasViewWidth, canvasViewHeight));
         }
 
         public static float CalculateTextScale(float inverseCanvasScale, float customScale)
@@ -1337,6 +1337,33 @@ namespace GnollHackX
         public static float CalculateTextScale()
         {
             return GHApp.TotalScreenScale;
+        }
+        public static float CalculateStatusBarFontSizeMultiplier(double canvasViewWidth, double canvasViewHeight)
+        {
+            double relevantScale = canvasViewWidth / 640;
+            return Math.Max(1.0f, Math.Min(GHConstants.StatusBarFontSizeMaxMultiplier, (float)relevantScale));
+        }
+        public static float CalculateMessageFontSizeMultiplier(double buttonWidth, double buttonHeight, float skiaStatusBarHeight, float messageFontSize, float skiaCanvasWidth, float skiaCanvasHeight, double canvasViewWidth, double canvasViewHeight, bool usingDesktopButtons, bool usingSimpleCmdLayout, float inverseCanvasScale, float customScale)
+        {
+            bool isLandscape = canvasViewWidth > canvasViewHeight;
+            double relevantScale = canvasViewWidth / 640;
+            if (relevantScale < 1.0f)
+                return 1.0f;
+            if (inverseCanvasScale == 0.0f)
+                inverseCanvasScale = 1.0f;
+            int bigRowNoOfButtons = isLandscape ? LandscapeButtonsInRow(usingDesktopButtons, usingSimpleCmdLayout) : PortraitButtonsInRow(usingDesktopButtons, usingSimpleCmdLayout);
+            bool tooWide = customScale * 40.0 * bigRowNoOfButtons + (bigRowNoOfButtons - 1) * 6 > canvasViewWidth;
+            int noOfCommandRows = usingSimpleCmdLayout ? 1 : isLandscape && !tooWide ? 1 : 2;
+            float orbHeight = (float)buttonWidth * inverseCanvasScale + 5;
+            float skillButtonHeight = (float)buttonHeight * inverseCanvasScale;
+            float commandRowHeight = (float)buttonHeight * inverseCanvasScale;
+            float freeSpace = skiaCanvasHeight - skiaStatusBarHeight - 2 * orbHeight - skillButtonHeight - noOfCommandRows * commandRowHeight + (noOfCommandRows - 1) * 6 * inverseCanvasScale;
+            int requiredNumberOfTextRows = 9;
+            float freeSpacePerTextRow = freeSpace / requiredNumberOfTextRows;
+            float fontHeight = messageFontSize * inverseCanvasScale;
+            float possibleScaling = freeSpacePerTextRow / fontHeight;
+
+            return Math.Max(1.0f, Math.Min(possibleScaling, Math.Min(GHConstants.WindowMessageFontSizeMaxMultiplier, (float)relevantScale)));
         }
     }
 

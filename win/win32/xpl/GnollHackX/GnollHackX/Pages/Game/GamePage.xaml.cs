@@ -4314,10 +4314,10 @@ namespace GnollHackX.Pages.Game
 
         private float[] _gridIntervals = { 2.0f, 2.0f };
 
-        public float GetTextScale()
-        {
-            return UIUtils.CalculateTextScale();
-        }
+        //public float GetTextScale()
+        //{
+        //    return UIUtils.CalculateTextScale();
+        //}
         //public float GetTextScale()
         //{
         //    //return (float)((StandardReferenceButton.Width <= 0 ? StandardReferenceButton.WidthRequest : StandardReferenceButton.Width) / 50.0f) * GetInverseCanvasScale();
@@ -6414,6 +6414,7 @@ namespace GnollHackX.Pages.Game
             bool usingMipMap = UseMainMipMap;
             bool usingDesktopButtons = DesktopButtons;
             bool usingSimpleCmdLayout = UseSimpleCmdLayout;
+            bool isLandscape = canvaswidth > canvasheight;
 
             _drawCommandList.Clear();
 
@@ -6429,8 +6430,14 @@ namespace GnollHackX.Pages.Game
             //float inverse_canvas_scale = canvas_scale == 0 ? 0.0f : 1.0f / (float)canvas_scale;
             float inverse_canvas_scale = GHApp.DisplayDensity;
             float customScale = GHApp.CustomScreenScale;
-            float textscale = UIUtils.CalculateTextScale(customScale, inverse_canvas_scale);// GetTextScaleEx(canvasView.Width, canvasView.Height, usingDesktopButtons, usingSimpleCmdLayout, inverse_canvas_scale, customScale);
-            float statusBarSkiaHeight = UIUtils.CalculateStatusBarSkiaHeight(textscale); // GetStatusBarSkiaHeightEx(textscale);
+            float textscale = UIUtils.CalculateTextScale(inverse_canvas_scale, customScale);// GetTextScaleEx(canvasView.Width, canvasView.Height, usingDesktopButtons, usingSimpleCmdLayout, inverse_canvas_scale, customScale);
+            float landscapeMultiplier = UIUtils.CalculateStatusBarFontSizeMultiplier(canvasView.Width, canvasView.Height);
+            float statusBarTextScale = textscale * landscapeMultiplier;
+            float statusBarSkiaHeight = UIUtils.CalculateStatusBarSkiaHeight(statusBarTextScale); // GetStatusBarSkiaHeightEx(textscale);
+            float messageTextMultiplier = UIUtils.CalculateMessageFontSizeMultiplier(StandardMeasurementButton.Width, StandardMeasurementButton.Height, statusBarSkiaHeight, textscale * GHConstants.WindowMessageFontSize, 
+                canvaswidth, canvasheight, canvasView.Width, canvasView.Height, usingDesktopButtons, usingSimpleCmdLayout, inverse_canvas_scale, customScale);
+            float messageTextScale = textscale * messageTextMultiplier;
+
             long generalcountervalue, maincountervalue;
             lock (AnimationTimerLock)
             {
@@ -8008,7 +8015,7 @@ namespace GnollHackX.Pages.Game
                                 continue;
 
                             textPaint.Typeface = ghWindow.Typeface;
-                            textPaint.TextSize = ghWindow.TextSize * textscale;
+                            textPaint.TextSize = ghWindow.TextSize * (ghWindow.WindowType == GHWinType.Status ? statusBarTextScale : messageTextScale);
                             textPaint.Color = ghWindow.TextColor;
                             width = textPaint.MeasureText("A"); // textPaint.FontMetrics.AverageCharacterWidth;
                             height = textPaint.FontSpacing; // textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
@@ -8026,7 +8033,7 @@ namespace GnollHackX.Pages.Game
                                 {
                                     float newleft = 0;
                                     float messagetop = messageWindow.Top;
-                                    float newtop = messagetop - ghWindow.Height - 10 * textscale;
+                                    float newtop = messagetop - ghWindow.Height - 10f * messageTextScale;
                                     ghWindow.Left = newleft;
                                     ghWindow.Top = newtop;
                                 }
@@ -8124,7 +8131,7 @@ namespace GnollHackX.Pages.Game
                                             if (ghWindow.StrokeWidth > 0)
                                             {
                                                 textPaint.Style = SKPaintStyle.Stroke;
-                                                textPaint.StrokeWidth = ghWindow.StrokeWidth * textscale;
+                                                textPaint.StrokeWidth = ghWindow.StrokeWidth * (ghWindow.WindowType == GHWinType.Status ? statusBarTextScale : messageTextScale);
                                                 textPaint.Color = SKColors.Black;
                                                 textPaint.DrawTextOnCanvas(canvas, substr.Value, tx, ty);
                                             }
@@ -8244,7 +8251,7 @@ namespace GnollHackX.Pages.Game
                                                     StartProfiling(GHProfilingStyle.Text);
 #endif
                                                     textPaint.Style = SKPaintStyle.Stroke;
-                                                    textPaint.StrokeWidth = ghWindow.StrokeWidth * textscale;
+                                                    textPaint.StrokeWidth = ghWindow.StrokeWidth * (ghWindow.WindowType == GHWinType.Status ? statusBarTextScale : messageTextScale);
                                                     textPaint.Color = SKColors.Black;
                                                     //canvas.DrawText(wrappedLine, tx, ty, textPaint);
                                                     textPaint.DrawTextOnCanvas(canvas, wrappedLine, tx, ty);
@@ -8287,7 +8294,7 @@ namespace GnollHackX.Pages.Game
                                                         SKColor new_skcolor = UIUtils.NHColor2SKColor(new_nhcolor, new_nhattr);
                                                         printedsubline.SetValue(wrappedLine, charidx_start, charidx_len);
                                                         textPaint.Style = SKPaintStyle.Stroke;
-                                                        textPaint.StrokeWidth = ghWindow.StrokeWidth * textscale;
+                                                        textPaint.StrokeWidth = ghWindow.StrokeWidth * (ghWindow.WindowType == GHWinType.Status ? statusBarTextScale : messageTextScale);
                                                         textPaint.Color = SKColors.Black;
                                                         textPaint.DrawTextOnCanvas(canvas, printedsubline.Value, tx, ty);
                                                         textPaint.Style = SKPaintStyle.Fill;
@@ -8373,7 +8380,7 @@ namespace GnollHackX.Pages.Game
                     _skillRectDrawn = false;
                     _prevWepRectDrawn = false;
                     float orbleft = 5.0f;
-                    float orbbordersize = (float)(StandardReferenceButton.Width / canvasView.Width) * canvaswidth;
+                    float orbbordersize = (float)(StandardReferenceButton.Width * inverse_canvas_scale);
 
                     if (statusfieldsok && !ForceAllMessages)
                     {
@@ -8383,9 +8390,9 @@ namespace GnollHackX.Pages.Game
                             float hmargin = GHConstants.StatusBarHorizontalMargin;
                             float vmargin = GHConstants.StatusBarVerticalMargin;
                             float rowmargin = GHConstants.StatusBarRowMargin;
-                            float basefontsize = GHConstants.StatusBarBaseFontSize * textscale;
-                            float shieldfontsize = GHConstants.StatusBarShieldFontSize * textscale;
-                            float diffontsize = GHConstants.StatusBarDifFontSize * textscale;
+                            float basefontsize = GHConstants.StatusBarBaseFontSize * statusBarTextScale;
+                            float shieldfontsize = GHConstants.StatusBarShieldFontSize * statusBarTextScale;
+                            float diffontsize = GHConstants.StatusBarDifFontSize * statusBarTextScale;
 
                             float curx = hmargin;
                             float cury = vmargin;
@@ -12970,7 +12977,7 @@ namespace GnollHackX.Pages.Game
             lRowAbilitiesButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             lRowWornItemsButton.SetSideSize(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             //double statusbarheight = GetStatusBarHeight(); /* Requires lInventoryButton size having set to determine scaling */
-            double statusbarheight = GetStatusBarHeightEx2(inverseCanvasScale, customScale); // GetStatusBarHeightEx(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
+            double statusbarheight = GetStatusBarHeightEx2(inverseCanvasScale, customScale, width, height); // GetStatusBarHeightEx(width, height, usingDesktopButtons, usingSimpleCmdLayout, inverseCanvasScale, customScale);
             lAbilitiesButton.HeightRequest = statusbarheight;
             lWornItemsButton.HeightRequest = statusbarheight;
             UpperCmdLayout.Margin = new Thickness(0, statusbarheight, 0, 0);
@@ -13147,11 +13154,11 @@ namespace GnollHackX.Pages.Game
         //    return GetStatusBarHeightEx2(GHApp.DisplayDensity, GHApp.CustomScreenScale);
         //}
 
-        public double GetStatusBarHeightEx2(float inverseCanvasScale, float customScale)
+        public double GetStatusBarHeightEx2(float inverseCanvasScale, float customScale, double canvasViewWidth, double canvasViewHeight)
         {
             if (inverseCanvasScale == 0.0f)
                 inverseCanvasScale = 1.0f;
-            float statusbarheight = UIUtils.CalculateStatusBarSkiaHeight(inverseCanvasScale, customScale);
+            float statusbarheight = UIUtils.CalculateStatusBarSkiaHeight(inverseCanvasScale, customScale, canvasViewWidth, canvasViewHeight);
             return (double)statusbarheight / (double)inverseCanvasScale;
         }
 
@@ -17251,8 +17258,10 @@ namespace GnollHackX.Pages.Game
 
                 if (ShowFPS)
                 {
-                    float textscale = GetTextScale();
-                    textPaint.TextSize = GHConstants.StatusBarBaseFontSize * textscale;
+                    float textscale = UIUtils.CalculateTextScale();
+                    float landscapeMultiplier = UIUtils.CalculateStatusBarFontSizeMultiplier(canvasView.Width, canvasView.Height);
+                    float statusBarTextScale = landscapeMultiplier * textscale;
+                    textPaint.TextSize = GHConstants.StatusBarBaseFontSize * statusBarTextScale;
                     float target_scale = textPaint.FontSpacing / GHApp._statusWizardBitmap.Height; // All are 64px high
                     float target_width = target_scale * GHApp._fpsBitmap.Width;
                     float target_height = target_scale * GHApp._fpsBitmap.Height;
@@ -17269,7 +17278,7 @@ namespace GnollHackX.Pages.Game
 
                     const int topMargin = 4, bottomMargin = 16;
                     textPaint.Color = SKColors.White;
-                    textPaint.TextSize = GHConstants.StatusBarDifFontSize * textscale;
+                    textPaint.TextSize = GHConstants.StatusBarDifFontSize * statusBarTextScale;
                     //textPaint.TextAlign = SKTextAlign.Center;
                     float vsize = target_height - (topMargin + bottomMargin) * target_scale;
                     float fsize = textPaint.FontSpacing;
@@ -17277,7 +17286,7 @@ namespace GnollHackX.Pages.Game
                     SKPoint drawpoint = new SKPoint(curx + target_width / 2, cury + (topMargin * target_scale) + vpadding - textPaint.FontMetrics.Ascent);
                     textPaint.DrawTextOnCanvas(canvas, drawtext, drawpoint, SKTextAlign.Center);
                     //textPaint.TextAlign = SKTextAlign.Left;
-                    textPaint.TextSize = GHConstants.StatusBarBaseFontSize * textscale;
+                    textPaint.TextSize = GHConstants.StatusBarBaseFontSize * statusBarTextScale;
                 }
             }
             lock (_commandFPSCounterLock)
@@ -17662,7 +17671,7 @@ namespace GnollHackX.Pages.Game
                 float target_scale_canvas = 1.0f;
                 float mult_canvas = 1.0f;
                 float prev_bottom = 0;
-                float sbheight = UIUtils.CalculateStatusBarSkiaHeight(); // GetStatusBarSkiaHeightEx(canvasView.Width, canvasView.Height, DesktopButtons, UseSimpleCmdLayout);
+                float sbheight = UIUtils.CalculateStatusBarSkiaHeight(canvasView.Width, canvasView.Height); // GetStatusBarSkiaHeightEx(canvasView.Width, canvasView.Height, DesktopButtons, UseSimpleCmdLayout);
                 SKRect statusBarCenterRect = new SKRect(canvaswidth / 2 - sbheight / 2, 0, canvaswidth / 2 + sbheight / 2, sbheight);
 
                 switch (ShownTip)
