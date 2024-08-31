@@ -28,7 +28,7 @@ namespace GnollHackX.iOS
         {
             bool wasHandled = false;
             int cnt = 0;
-            GHApp.MaybeWriteGHLog("PressesEnded started (" + presses.Count + ", " + evt.AllPresses.Count + ")");
+            //GHApp.MaybeWriteGHLog("PressesEnded started (" + presses.Count + ", " + evt.AllPresses.Count + ")");
             foreach (UIPress p in presses) 
             {
                 cnt++;
@@ -39,7 +39,7 @@ namespace GnollHackX.iOS
                 }
                 if (p?.Key?.CharactersIgnoringModifiers?.Length == 0)
                 {
-                    GHApp.MaybeWriteGHLog("Press #" + cnt + "/" + presses.Count + " has no characters");
+                    //GHApp.MaybeWriteGHLog("Press #" + cnt + "/" + presses.Count + " has no characters");
                     continue;
                 }
                 string strcharsim = p.Key.CharactersIgnoringModifiers;
@@ -71,9 +71,9 @@ namespace GnollHackX.iOS
                 }
                 else
                 {
-                    GHApp.MaybeWriteGHLog("Press #" + cnt + "/" + presses.Count);
-                    GHApp.MaybeWriteGHLog("Chars (" + p.Key.Characters.Length + (p.Key.Characters.Length >= 1 ? ", " + (int)p.Key.Characters[0] : "") + (p.Key.Characters.Length >= 2 ? ", " + (int)p.Key.Characters[1] : "") + "): " + p.Key.Characters);
-                    GHApp.MaybeWriteGHLog("CharsIM (" + p.Key.CharactersIgnoringModifiers.Length + (p.Key.CharactersIgnoringModifiers.Length >= 1 ? ", " + (int)p.Key.CharactersIgnoringModifiers[0] : "") + (p.Key.CharactersIgnoringModifiers.Length >= 2 ? ", " + (int)p.Key.CharactersIgnoringModifiers[1] : "") + "): " + p.Key.CharactersIgnoringModifiers);
+                    //GHApp.MaybeWriteGHLog("Press #" + cnt + "/" + presses.Count);
+                    //GHApp.MaybeWriteGHLog("Chars (" + p.Key.Characters.Length + (p.Key.Characters.Length >= 1 ? ", " + (int)p.Key.Characters[0] : "") + (p.Key.Characters.Length >= 2 ? ", " + (int)p.Key.Characters[1] : "") + "): " + p.Key.Characters);
+                    //GHApp.MaybeWriteGHLog("CharsIM (" + p.Key.CharactersIgnoringModifiers.Length + (p.Key.CharactersIgnoringModifiers.Length >= 1 ? ", " + (int)p.Key.CharactersIgnoringModifiers[0] : "") + (p.Key.CharactersIgnoringModifiers.Length >= 2 ? ", " + (int)p.Key.CharactersIgnoringModifiers[1] : "") + "): " + p.Key.CharactersIgnoringModifiers);
                     string strchars = p.Key.Characters;
                     if(strchars?.Length > 0 && strcharsim?.Length > 0)
                     {
