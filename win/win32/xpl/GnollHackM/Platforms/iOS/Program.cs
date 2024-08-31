@@ -1,4 +1,5 @@
-﻿using ObjCRuntime;
+﻿using GnollHackM.Platforms.iOS;
+using ObjCRuntime;
 using System.Runtime.InteropServices;
 using UIKit;
 
@@ -17,6 +18,6 @@ public class Program
         int res = LibTest();
         System.Diagnostics.Debug.WriteLine(res);
 
-        UIApplication.Main(args, null, typeof(AppDelegate));
+        UIApplication.Main(args, typeof(GHUIApplication), typeof(AppDelegate));
 	}
 }

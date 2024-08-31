@@ -657,6 +657,7 @@
 		<BundleResource Include="Platforms\iOS\banks\Music.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
 		<BundleResource Include="Platforms\iOS\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
 		<Compile Include="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
+		<Compile Include="..\GnollHackX\GnollHackX.iOS\GHUIApplication.cs" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'">

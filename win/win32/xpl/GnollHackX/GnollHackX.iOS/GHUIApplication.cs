@@ -5,7 +5,13 @@ using System.Linq;
 using System.Text;
 using UIKit;
 
+#if GNH_MAUI
+using GnollHackX;
+
+namespace GnollHackM.Platforms.iOS
+#else
 namespace GnollHackX.iOS
+#endif
 {
     public class GHUIApplication : UIApplication
     {
