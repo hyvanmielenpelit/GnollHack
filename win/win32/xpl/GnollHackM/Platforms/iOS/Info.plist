@@ -29,7 +29,7 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
 	<key>MinimumOSVersion</key>
-	<string>12.2</string>
+	<string>14.0</string>
 	<key>CFBundleIdentifier</key>
 	<string></string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
