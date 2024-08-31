@@ -14639,15 +14639,6 @@ namespace GnollHackX.Pages.Game
 #endif
         }
 
-        public void HandleKeyPress(int key, bool isCtrl, bool isMeta)
-        {
-            if (GetLineGrid.IsVisible)
-                return;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-               
-            int resp = isMeta ? GHUtils.Meta(key) : isCtrl ? GHUtils.Ctrl(key) : key;
-            GenericButton_Clicked(null, null, resp);
-        }
-
         public void GenericButton_Clicked(object sender, EventArgs e, int resp)
         {
             if (!((resp >= '0' && resp <= '9') || (resp <= -1 && resp >= -19)))
@@ -18851,6 +18842,283 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        public void HandleKeyPress(int key, bool isCtrl, bool isMeta)
+        {
+            if (LoadingGrid.IsVisible || !GHApp.IsPageOnTopOfModalNavigationStack(this))
+            {
+                /* Nothing */
+            }
+            else if (YnGrid.IsVisible && !string.IsNullOrWhiteSpace(_ynResponses) && _ynResponses.Contains((char)key))
+            {
+                YnButton_Pressed(null, null, key);
+                //args.Handled = true;
+            }
+            else if (MenuGrid.IsVisible)
+            {
+                char c = (char)key;
+                if (MenuCanvas.SelectionHow == SelectionMode.Multiple && c == '.')
+                {
+                    MenuTapGestureRecognizer_Tapped(null, null);
+                    //args.Handled = true;
+                }
+                else
+                {
+                    //SKPoint location = new SKPoint();
+                    bool doclickok = false;
+                    bool somethingFound = false;
+                    lock (MenuCanvas.MenuItemLock)
+                    {
+                        if (MenuCanvas.MenuItems == null)
+                            return;
+
+                        for (int idx = 0; idx < MenuCanvas.MenuItems.Count; idx++)
+                        {
+                            if (MenuCanvas.MenuItems[idx].Accelerator == c)
+                            {
+                                somethingFound = true;
+                                doclickok = ClickMenuItem(idx, false);
+                                //location = new SKPoint(MenuCanvas.MenuItems[idx].DrawBounds.MidX, MenuCanvas.MenuItems[idx].DrawBounds.MidY);
+                                break;
+                            }
+                            else if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (MenuCanvas.MenuItems[idx].Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0 && MenuCanvas.MenuItems[idx].HeadingGroupAccelerator == c
+                                && (_menuCountNumber < 0 || MenuCanvas.MenuItems[idx].HeadingGroupAccelerator < '0' || MenuCanvas.MenuItems[idx].HeadingGroupAccelerator > '9'))
+                            {
+                                somethingFound = true;
+                                doclickok = ClickMenuItem(idx, false);
+                                //location = new SKPoint(MenuCanvas.MenuItems[idx].DrawBounds.MidX, MenuCanvas.MenuItems[idx].DrawBounds.MidY);
+                                break;
+                            }
+                        }
+                    }
+                    if (somethingFound)
+                    {
+                        _menuCountNumber = -1;
+                        if (MenuOKButton.IsEnabled)
+                        {
+                            if (doclickok)
+                            {
+                                MenuCanvas.InvalidateSurface();
+                                MenuOKButton_Clicked(null, null);
+                            }
+                            else
+                            {
+                                if (MenuCanvas.SelectionHow == SelectionMode.Single)
+                                    MenuOKButton_Clicked(null, null);
+                            }
+                        }
+                        //args.Handled = true;
+                    }
+                    else if (c >= '0' && c <= '9' && _menuCountNumber < int.MaxValue / 10 - 10)
+                    {
+                        int res;
+                        if (int.TryParse(c.ToString(), out res))
+                        {
+                            if (_menuCountNumber >= 0)
+                                _menuCountNumber *= 10;
+                            else
+                                _menuCountNumber = 0;
+                            _menuCountNumber += res;
+                        }
+                    }
+
+                    //if (location.X > 0 && location.Y > 0)
+                    //{
+                    //    SKTouchEventArgs e = new SKTouchEventArgs(-1, SKTouchAction.Released, location, false);
+                    //    MenuCanvas_NormalClickRelease(sender, e);
+                    //    if (MenuCanvas.SelectionHow == SelectionMode.Single)
+                    //        MenuOKButton_Clicked(sender, new EventArgs());
+                    //    args.Handled = true;
+                    //}
+                }
+            }
+            else if (!MenuGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible)
+            {
+                if (MoreCommandsGrid.IsVisible)
+                {
+                    CommandCanvas_Pressed(null, null);
+                }
+
+                if (key != 0)
+                {
+                    if (isMeta)
+                        GenericButton_Clicked(null, null, GHUtils.Meta(key));
+                    else if (isCtrl)
+                        GenericButton_Clicked(null, null, GHUtils.Ctrl(key));
+                    else
+                        GenericButton_Clicked(null, null, key);
+
+                    //args.Handled = true;
+                }
+            }
+            //if (GetLineGrid.IsVisible)
+            //    return;
+
+            //int resp = isMeta ? GHUtils.Meta(key) : isCtrl ? GHUtils.Ctrl(key) : key;
+            //GenericButton_Clicked(null, null, resp);
+        }
+
+        public void HandleSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)
+        {
+            //bool handled = false;
+            if (LoadingGrid.IsVisible || !GHApp.IsPageOnTopOfModalNavigationStack(this))
+            {
+                /* Nothing */
+            }
+            else if (MoreCommandsGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space))
+            {
+                CommandCanvas_Pressed(null, null);
+                //handled = true;
+            }
+            else if (MoreCommandsGrid.IsVisible && (key == GHSpecialKey.Left || key == GHSpecialKey.Right))
+            {
+                int cmdPage = MoreCmdPage;
+                if (key == GHSpecialKey.Left)
+                {
+                    if (cmdPage > (EnableWizardMode ? 0 : 1))
+                    {
+                        MoreCmdPage = cmdPage - 1;
+                        MoreCmdOffsetX = 0;
+                        CommandCanvas.InvalidateSurface();
+                        UpdateMoreNextPrevButtonVisibility(true, true);
+                    }
+                    //handled = true;
+                }
+                else if (key == GHSpecialKey.Right)
+                {
+                    if (cmdPage < CurrentMoreButtonPageMaxNumber - 1)
+                    {
+                        MoreCmdPage = cmdPage + 1;
+                        MoreCmdOffsetX = 0;
+                        CommandCanvas.InvalidateSurface();
+                        UpdateMoreNextPrevButtonVisibility(true, true);
+                    }
+                    //handled = true;
+                }
+            }
+            else if (TextGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space || key == GHSpecialKey.Up || key == GHSpecialKey.Down))
+            {
+                if (key == GHSpecialKey.Enter || TextGrid.IsVisible && key == GHSpecialKey.Escape)
+                    TextCanvas_Pressed(null, null);
+                else if (key == GHSpecialKey.Up)
+                    ScrollTextWindow(120);
+                else if (key == GHSpecialKey.Down)
+                    ScrollTextWindow(-120);
+                else if (key == GHSpecialKey.Space)
+                    ScrollTextWindow(-1200);
+                //handled = true;
+            }
+            else if (MenuGrid.IsVisible && (key == GHSpecialKey.Escape || (MenuOKButton.IsEnabled && (key == GHSpecialKey.Enter)) || key == GHSpecialKey.Up || key == GHSpecialKey.Down || key == GHSpecialKey.Space))
+            {
+                if (key == GHSpecialKey.Escape)
+                    MenuCancelButton_Clicked(null, null);
+                else if (MenuOKButton.IsEnabled && (key == GHSpecialKey.Enter))
+                    MenuOKButton_Clicked(null, null);
+                else if (key == GHSpecialKey.Up)
+                    ScrollMenu(120);
+                else if (key == GHSpecialKey.Down)
+                    ScrollMenu(-120);
+                else if (key == GHSpecialKey.Space)
+                    ScrollMenu(-1200);
+                //handled = true;
+            }
+            else if (GetLineGrid.IsVisible && (key == GHSpecialKey.Escape))
+            {
+                GetLineCancelButton_Clicked(null, null);
+                //handled = true;
+            }
+            else if (YnGrid.IsVisible && (key == GHSpecialKey.Escape))
+            {
+                YnButton_Pressed(null, null, GHConstants.CancelChar);
+                //handled = true;
+            }
+            else if (PopupGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space))
+            {
+                PopupOkButton_Clicked(null, null);
+                //handled = true;
+            }
+            else if (!MenuGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible)
+            {
+                if (MoreCommandsGrid.IsVisible)
+                {
+                    CommandCanvas_Pressed(null, null);
+                }
+
+                if (isCtrl && key == GHSpecialKey.Number0)
+                {
+                    if (ZoomAlternateMode)
+                        MapFontAlternateSize = DefaultMapFontSize * GHConstants.MapFontRelativeAlternateSize;
+                    else if (ZoomMiniMode)
+                        MapFontMiniRelativeSize = 1.0f;
+                    else
+                        MapFontSize = DefaultMapFontSize;
+                    //handled = true;
+                }
+                else if (isCtrl && (key == GHSpecialKey.Add || key == GHSpecialKey.Subtract))
+                {
+                    if (ZoomMiniMode)
+                    {
+                        float canvaswidth = canvasView.CanvasSize.Width;
+                        float canvasheight = canvasView.CanvasSize.Height;
+                        SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
+                        float ratio = key == GHSpecialKey.Add ? (1 + (isMeta ? 0.001f : 0.01f)) : 1 / (1 + (isMeta ? 0.001f : 0.01f));
+                        AdjustZoomByRatio(ratio, point, point, point);
+                    }
+                    else
+                    {
+                        float multiplier = key == GHSpecialKey.Subtract ? -1.0f : 1.0f;
+                        float newfontsize;
+                        if (ZoomAlternateMode)
+                            newfontsize = MapFontAlternateSize + multiplier * (isMeta ? 0.001f : 0.01f) * DefaultMapFontSize;
+                        else
+                            newfontsize = MapFontSize + multiplier * (isMeta ? 0.001f : 0.01f) * DefaultMapFontSize;
+
+                        float canvaswidth = canvasView.CanvasSize.Width;
+                        float canvasheight = canvasView.CanvasSize.Height;
+                        SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
+                        SetZoomFontSize(newfontsize, point, point, point);
+                    }
+                    MapFontShowPercentageDecimal = isMeta;
+                    //handled = true;
+                }
+                else if (ForceAllMessages)
+                {
+                    if (key == GHSpecialKey.Up)
+                        ScrollMessages(120);
+                    else if (key == GHSpecialKey.Down)
+                        ScrollMessages(-120);
+                    else if (key == GHSpecialKey.Space)
+                        ScrollMessages(1200);
+                    //handled = true;
+                }
+                else
+                {
+                    int resp = 0;
+                    if (key == GHSpecialKey.Escape)
+                        resp = GHConstants.CancelChar;
+                    else if (key == GHSpecialKey.Left)
+                        resp = -4;
+                    else if (key == GHSpecialKey.Right)
+                        resp = -6;
+                    else if (key == GHSpecialKey.Up)
+                        resp = -8;
+                    else if (key == GHSpecialKey.Down)
+                        resp = -2;
+                    else if (key >= GHSpecialKey.NumberPad1 && key <= GHSpecialKey.NumberPad9)
+                        resp = -1 - (key - GHSpecialKey.NumberPad1);
+                    else if (isMeta && key >= GHSpecialKey.A && key <= GHSpecialKey.Z)
+                        resp = GHUtils.Meta((isShift ? (int)'A' : (int)'a') + (int)key - (int)GHSpecialKey.A);
+
+                    if (resp != 0)
+                    {
+                        if (isShift && resp <= -1 && resp >= -9)
+                            GenericButton_Clicked(null, null, -100 - (int)nh_keyfunc.NHKF_RUN);
+                        GenericButton_Clicked(null, null, resp);
+                        //handled = true;
+                    }
+                }
+            }
+        }
+
 #if WINDOWS
         private void PageContent_CharacterReceived(Microsoft.UI.Xaml.UIElement sender, Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs args)
         {
@@ -18954,7 +19222,7 @@ namespace GnollHackX.Pages.Game
                 {
                     if (GHApp.AltDown)
                         GenericButton_Clicked(sender, new EventArgs(), GHUtils.Meta((int)c));
-                    if (GHApp.CtrlDown)
+                    else if (GHApp.CtrlDown)
                         GenericButton_Clicked(sender, new EventArgs(), GHUtils.Ctrl((int)c));
                     else
                         GenericButton_Clicked(sender, new EventArgs(), (int)c);
@@ -19121,7 +19389,9 @@ namespace GnollHackX.Pages.Game
                 else
                 {
                     int resp = 0;
-                    if (key == Windows.System.VirtualKey.Left)
+                    if (key == Windows.System.VirtualKey.Escape)
+                        resp = GHConstants.CancelChar;
+                    else if (key == Windows.System.VirtualKey.Left)
                         resp = -4;
                     else if (key == Windows.System.VirtualKey.Right)
                         resp = -6;

@@ -2108,4 +2108,43 @@ namespace GnollHackX
         Normal = 0,
         Info = 1
     }
+
+    public enum GHSpecialKey
+    {
+        None = 0,
+        Left,
+        Right,
+        Up,
+        Down,
+        Escape,
+        Enter,
+        Space,
+        Add,
+        Subtract,
+        Multiply,
+        Divide,
+        Decimal,
+        Number0,
+        Number1,
+        Number2,
+        Number3,
+        Number4,
+        Number5,
+        Number6,
+        Number7,
+        Number8,
+        Number9,
+        NumberPad0,
+        NumberPad1,
+        NumberPad2,
+        NumberPad3,
+        NumberPad4,
+        NumberPad5,
+        NumberPad6,
+        NumberPad7,
+        NumberPad8,
+        NumberPad9,
+        A,
+        Z = A + 25,
+    }
 }

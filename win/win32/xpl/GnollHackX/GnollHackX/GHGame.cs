@@ -811,7 +811,7 @@ namespace GnollHackX
 
                         if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                         {
-                            queue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses));
+                            queue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses, style, attr, color, glyph, title, question, responses, descriptions, introline, ynflags));
                         }
                         ClientCallback_RawPrint("'" + desc + "': Invalid input!");
                         cnt++;

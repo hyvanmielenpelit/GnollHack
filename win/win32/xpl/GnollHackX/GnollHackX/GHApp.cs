@@ -6830,6 +6830,10 @@ namespace GnollHackX
         {
             CurrentGamePage?.HandleKeyPress(key, isCtrl, isMeta);
         }
+        public static void SendSpecialKeyPress(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift)
+        {
+            CurrentGamePage?.HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
+        }
     }
 
     public class DeviceGPU
