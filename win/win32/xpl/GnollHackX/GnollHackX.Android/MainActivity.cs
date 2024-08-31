@@ -14,7 +14,7 @@ using Xamarin.Google.Android.Play.Core.AssetPacks.Model;
 
 namespace GnollHackX.Droid
 {
-    [Activity(Label = "GnollHack", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize )]
+    [Activity(Label = "GnollHack", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden | ConfigChanges.Navigation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         public static MainActivity CurrentMainActivity = null;
@@ -26,9 +26,18 @@ namespace GnollHackX.Droid
         public IAssetPackManager AssetPackManager { get; private set; }
         public AssetPackStateUpdateListenerWrapper AssetPackListener { get; private set; }
 
+
+        private static readonly object _activityLock = new object();
+        private static bool _isHardKeyboardConnected = false;
+        public static bool IsHardKeyboardConnected
+        {
+            get { lock (_activityLock) { return _isHardKeyboardConnected; } }
+            set { lock (_activityLock) { _isHardKeyboardConnected = value; } }
+        }
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            IsHardKeyboardConnected = Resources?.Configuration?.HardKeyboardHidden == HardKeyboardHidden.No ? true : false;
             Window.AddFlags(WindowManagerFlags.Fullscreen);
             Window.ClearFlags(WindowManagerFlags.ForceNotFullscreen);
             MessagingCenter.Subscribe<Object>(this, "HideOsNavigationBar", (sender) =>
@@ -197,6 +206,21 @@ namespace GnollHackX.Droid
             {
                 base.OnBackPressed();
             }
+        }
+
+        public override void OnConfigurationChanged(Configuration newConfig)
+        {
+            if (newConfig.HardKeyboardHidden == HardKeyboardHidden.No)
+            {
+                //A hardware keyboard is being connected
+                IsHardKeyboardConnected = true;
+            }
+            else if (newConfig.HardKeyboardHidden == HardKeyboardHidden.Yes)
+            {
+                //A hardware keyboard is being disconnected
+                IsHardKeyboardConnected = false;
+            }
+            base.OnConfigurationChanged(newConfig);
         }
 
         public override bool OnKeyUp([GeneratedEnum] Keycode keyCode, KeyEvent e)

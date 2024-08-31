@@ -227,6 +227,14 @@ namespace GnollHackX
             }
         }
 
+        public static bool IsKeyboardConnected
+        {
+            get
+            {
+                return PlatformService == null ? false : PlatformService.GetKeyboardConnected();
+            }
+        }
+
         public static void InitializeGC()
         {
             //try

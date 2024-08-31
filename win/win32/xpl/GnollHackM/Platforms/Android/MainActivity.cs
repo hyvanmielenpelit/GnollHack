@@ -11,7 +11,7 @@ using GnollHackX;
 
 namespace GnollHackM;
 
-[Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density)]
+[Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden | ConfigChanges.Navigation)]
 public class MainActivity : MauiAppCompatActivity
 {
     public static Activity CurrentMainActivity = null;
@@ -22,6 +22,7 @@ public class MainActivity : MauiAppCompatActivity
         base.OnCreate(savedInstanceState);
         CurrentMainActivity = this;
         Platform.Init(this, savedInstanceState);
+        IsHardKeyboardConnected = Resources?.Configuration?.HardKeyboardHidden == HardKeyboardHidden.No ? true : false;
         GHApp.InitializeGC();
         Window.AddFlags(WindowManagerFlags.Fullscreen);
         if (DefaultShowNavigationBar)
@@ -37,6 +38,29 @@ public class MainActivity : MauiAppCompatActivity
             return base.OnKeyUp(keyCode, e);
         else
             return true;
+    }
+
+    private static readonly object _activityLock = new object();
+    private static bool _isHardKeyboardConnected = false;
+    public static bool IsHardKeyboardConnected
+    {
+        get { lock (_activityLock) { return _isHardKeyboardConnected; } }
+        set { lock (_activityLock) { _isHardKeyboardConnected = value; } }
+    }
+
+    public override void OnConfigurationChanged(Configuration newConfig)
+    {
+        if (newConfig.HardKeyboardHidden == HardKeyboardHidden.No)
+        {
+            //A hardware keyboard is being connected
+            IsHardKeyboardConnected = true;
+        }
+        else if (newConfig.HardKeyboardHidden == HardKeyboardHidden.Yes)
+        {
+            //A hardware keyboard is being disconnected
+            IsHardKeyboardConnected = false;
+        }
+        base.OnConfigurationChanged(newConfig);
     }
 
     public static void HideOsNavigationBar()

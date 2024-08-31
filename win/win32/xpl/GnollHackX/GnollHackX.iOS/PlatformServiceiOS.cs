@@ -227,5 +227,11 @@ namespace GnollHackX.iOS
         {
 
         }
+
+        public bool GetKeyboardConnected()
+        {
+            return false;
+        }
+
     }
 }

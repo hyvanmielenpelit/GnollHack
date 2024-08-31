@@ -3530,9 +3530,8 @@ namespace GnollHackX.Pages.Game
 
             if(!PlayingReplay)
             {
-#if WINDOWS
-                GetLineEntryText.Focus();
-#endif
+                if(GHApp.IsKeyboardConnected)
+                    GetLineEntryText.Focus();
             }
         }
 
@@ -16059,9 +16058,8 @@ namespace GnollHackX.Pages.Game
             MenuCountBackgroundGrid.IsVisible = true;
             if(MenuCountEntry.IsVisible)
             {
-#if WINDOWS
-                MenuCountEntry.Focus();
-#endif
+                if(GHApp.IsKeyboardConnected)
+                    MenuCountEntry.Focus();
             }
         }
 

@@ -331,6 +331,11 @@ namespace GnollHackM
         {
 
         }
+        public bool GetKeyboardConnected()
+        {
+            return true;
+        }
+
     }
 
     public class MemoryStatus

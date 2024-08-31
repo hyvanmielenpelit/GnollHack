@@ -137,6 +137,10 @@ namespace GnollHackM
         {
             throw new NotImplementedException();
         }
+        public bool GetKeyboardConnected()
+        {
+            return false;
+        }
     }
 }
 #endif

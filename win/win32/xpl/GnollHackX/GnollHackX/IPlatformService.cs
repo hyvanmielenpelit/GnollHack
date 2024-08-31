@@ -23,6 +23,7 @@ namespace GnollHackX
         void HideOsNavigationBar();
         void ShowOsNavigationBar();
         void CollectGarbage();
+        bool GetKeyboardConnected();
 
         float GetAnimatorDurationScaleSetting();
         float GetTransitionAnimationScaleSetting();

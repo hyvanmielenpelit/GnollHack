@@ -450,6 +450,11 @@ namespace GnollHackX.Droid
                 rt.Gc();
         }
 
+        public bool GetKeyboardConnected()
+        {
+            return MainActivity.IsHardKeyboardConnected;
+        }
+
         public static bool HandleOnKeyUp([GeneratedEnum] Keycode keyCode, KeyEvent e)
         {
             bool wasHandled = false;
