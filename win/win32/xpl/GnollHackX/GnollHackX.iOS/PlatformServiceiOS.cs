@@ -13,6 +13,7 @@ using GnollHackX;
 using Foundation;
 using UIKit;
 using StoreKit;
+using GameController;
 
 #if GNH_MAUI
 namespace GnollHackM
@@ -230,8 +231,7 @@ namespace GnollHackX.iOS
 
         public bool GetKeyboardConnected()
         {
-            return false;
+            return GCKeyboard.CoalescedKeyboard != null;
         }
-
     }
 }
