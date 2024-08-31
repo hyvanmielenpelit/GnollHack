@@ -201,8 +201,11 @@ namespace GnollHackX.Droid
 
         public override bool OnKeyUp([GeneratedEnum] Keycode keyCode, KeyEvent e)
         {
-            //process key press
-            return base.OnKeyUp(keyCode, e);
+            bool wasHandled = PlatformService.HandleOnKeyUp(keyCode, e);
+            if (!wasHandled)
+                return base.OnKeyUp(keyCode, e);
+            else
+                return true;
         }
 
         protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)

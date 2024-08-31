@@ -19103,6 +19103,14 @@ namespace GnollHackX.Pages.Game
                         resp = -8;
                     else if (key == GHSpecialKey.Down)
                         resp = -2;
+                    else if (key == GHSpecialKey.UpLeft)
+                        resp = -7;
+                    else if (key == GHSpecialKey.UpRight)
+                        resp = -9;
+                    else if (key == GHSpecialKey.DownLeft)
+                        resp = -1;
+                    else if (key == GHSpecialKey.DownRight)
+                        resp = -3;
                     else if (key >= GHSpecialKey.NumberPad1 && key <= GHSpecialKey.NumberPad9)
                         resp = -1 - (key - GHSpecialKey.NumberPad1);
                     else if (isMeta && key >= GHSpecialKey.A && key <= GHSpecialKey.Z)

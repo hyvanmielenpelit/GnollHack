@@ -3,6 +3,7 @@ using Android.Content.PM;
 using Android.Content.Res;
 using Android.OS;
 using Android.Views;
+using Android.Runtime;
 using GnollHackX;
 //using Xamarin.Google.Android.Play.Core.AssetPacks;
 //using Xamarin.Google.Android.Play.Core.AssetPacks.Model;
@@ -27,6 +28,15 @@ public class MainActivity : MauiAppCompatActivity
             ShowOsNavigationBar();
         else
             HideOsNavigationBar();
+    }
+
+    public override bool OnKeyUp([GeneratedEnum] Keycode keyCode, KeyEvent e)
+    {
+        bool wasHandled = PlatformService.HandleOnKeyUp(keyCode, e);
+        if (!wasHandled)
+            return base.OnKeyUp(keyCode, e);
+        else
+            return true;
     }
 
     public static void HideOsNavigationBar()
