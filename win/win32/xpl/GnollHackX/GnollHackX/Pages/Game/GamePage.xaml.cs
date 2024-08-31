@@ -18842,8 +18842,9 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        public void HandleKeyPress(int key, bool isCtrl, bool isMeta)
+        public bool HandleKeyPress(int key, bool isCtrl, bool isMeta)
         {
+            bool handled = false;
             if (LoadingGrid.IsVisible || !GHApp.IsPageOnTopOfModalNavigationStack(this))
             {
                 /* Nothing */
@@ -18851,7 +18852,7 @@ namespace GnollHackX.Pages.Game
             else if (YnGrid.IsVisible && !string.IsNullOrWhiteSpace(_ynResponses) && _ynResponses.Contains((char)key))
             {
                 YnButton_Pressed(null, null, key);
-                //args.Handled = true;
+                handled = true;
             }
             else if (MenuGrid.IsVisible)
             {
@@ -18859,17 +18860,16 @@ namespace GnollHackX.Pages.Game
                 if (MenuCanvas.SelectionHow == SelectionMode.Multiple && c == '.')
                 {
                     MenuTapGestureRecognizer_Tapped(null, null);
-                    //args.Handled = true;
+                    handled = true;
                 }
                 else
                 {
-                    //SKPoint location = new SKPoint();
                     bool doclickok = false;
                     bool somethingFound = false;
                     lock (MenuCanvas.MenuItemLock)
                     {
                         if (MenuCanvas.MenuItems == null)
-                            return;
+                            return true;
 
                         for (int idx = 0; idx < MenuCanvas.MenuItems.Count; idx++)
                         {
@@ -18877,7 +18877,6 @@ namespace GnollHackX.Pages.Game
                             {
                                 somethingFound = true;
                                 doclickok = ClickMenuItem(idx, false);
-                                //location = new SKPoint(MenuCanvas.MenuItems[idx].DrawBounds.MidX, MenuCanvas.MenuItems[idx].DrawBounds.MidY);
                                 break;
                             }
                             else if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (MenuCanvas.MenuItems[idx].Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0 && MenuCanvas.MenuItems[idx].HeadingGroupAccelerator == c
@@ -18885,7 +18884,6 @@ namespace GnollHackX.Pages.Game
                             {
                                 somethingFound = true;
                                 doclickok = ClickMenuItem(idx, false);
-                                //location = new SKPoint(MenuCanvas.MenuItems[idx].DrawBounds.MidX, MenuCanvas.MenuItems[idx].DrawBounds.MidY);
                                 break;
                             }
                         }
@@ -18906,7 +18904,7 @@ namespace GnollHackX.Pages.Game
                                     MenuOKButton_Clicked(null, null);
                             }
                         }
-                        //args.Handled = true;
+                        handled = true;
                     }
                     else if (c >= '0' && c <= '9' && _menuCountNumber < int.MaxValue / 10 - 10)
                     {
@@ -18920,15 +18918,6 @@ namespace GnollHackX.Pages.Game
                             _menuCountNumber += res;
                         }
                     }
-
-                    //if (location.X > 0 && location.Y > 0)
-                    //{
-                    //    SKTouchEventArgs e = new SKTouchEventArgs(-1, SKTouchAction.Released, location, false);
-                    //    MenuCanvas_NormalClickRelease(sender, e);
-                    //    if (MenuCanvas.SelectionHow == SelectionMode.Single)
-                    //        MenuOKButton_Clicked(sender, new EventArgs());
-                    //    args.Handled = true;
-                    //}
                 }
             }
             else if (!MenuGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible)
@@ -18947,19 +18936,15 @@ namespace GnollHackX.Pages.Game
                     else
                         GenericButton_Clicked(null, null, key);
 
-                    //args.Handled = true;
+                    handled = true;
                 }
             }
-            //if (GetLineGrid.IsVisible)
-            //    return;
-
-            //int resp = isMeta ? GHUtils.Meta(key) : isCtrl ? GHUtils.Ctrl(key) : key;
-            //GenericButton_Clicked(null, null, resp);
+            return handled;
         }
 
-        public void HandleSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)
+        public bool HandleSpecialKeyPress(GHSpecialKey key, bool isCtrl, bool isMeta, bool isShift)
         {
-            //bool handled = false;
+            bool handled = false;
             if (LoadingGrid.IsVisible || !GHApp.IsPageOnTopOfModalNavigationStack(this))
             {
                 /* Nothing */
@@ -18967,7 +18952,7 @@ namespace GnollHackX.Pages.Game
             else if (MoreCommandsGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space))
             {
                 CommandCanvas_Pressed(null, null);
-                //handled = true;
+                handled = true;
             }
             else if (MoreCommandsGrid.IsVisible && (key == GHSpecialKey.Left || key == GHSpecialKey.Right))
             {
@@ -18981,7 +18966,7 @@ namespace GnollHackX.Pages.Game
                         CommandCanvas.InvalidateSurface();
                         UpdateMoreNextPrevButtonVisibility(true, true);
                     }
-                    //handled = true;
+                    handled = true;
                 }
                 else if (key == GHSpecialKey.Right)
                 {
@@ -18992,7 +18977,7 @@ namespace GnollHackX.Pages.Game
                         CommandCanvas.InvalidateSurface();
                         UpdateMoreNextPrevButtonVisibility(true, true);
                     }
-                    //handled = true;
+                    handled = true;
                 }
             }
             else if (TextGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space || key == GHSpecialKey.Up || key == GHSpecialKey.Down))
@@ -19005,7 +18990,7 @@ namespace GnollHackX.Pages.Game
                     ScrollTextWindow(-120);
                 else if (key == GHSpecialKey.Space)
                     ScrollTextWindow(-1200);
-                //handled = true;
+                handled = true;
             }
             else if (MenuGrid.IsVisible && (key == GHSpecialKey.Escape || (MenuOKButton.IsEnabled && (key == GHSpecialKey.Enter)) || key == GHSpecialKey.Up || key == GHSpecialKey.Down || key == GHSpecialKey.Space))
             {
@@ -19019,22 +19004,22 @@ namespace GnollHackX.Pages.Game
                     ScrollMenu(-120);
                 else if (key == GHSpecialKey.Space)
                     ScrollMenu(-1200);
-                //handled = true;
+                handled = true;
             }
             else if (GetLineGrid.IsVisible && (key == GHSpecialKey.Escape))
             {
                 GetLineCancelButton_Clicked(null, null);
-                //handled = true;
+                handled = true;
             }
             else if (YnGrid.IsVisible && (key == GHSpecialKey.Escape))
             {
                 YnButton_Pressed(null, null, GHConstants.CancelChar);
-                //handled = true;
+                handled = true;
             }
             else if (PopupGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space))
             {
                 PopupOkButton_Clicked(null, null);
-                //handled = true;
+                handled = true;
             }
             else if (!MenuGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible)
             {
@@ -19051,7 +19036,7 @@ namespace GnollHackX.Pages.Game
                         MapFontMiniRelativeSize = 1.0f;
                     else
                         MapFontSize = DefaultMapFontSize;
-                    //handled = true;
+                    handled = true;
                 }
                 else if (isCtrl && (key == GHSpecialKey.Add || key == GHSpecialKey.Subtract))
                 {
@@ -19078,7 +19063,7 @@ namespace GnollHackX.Pages.Game
                         SetZoomFontSize(newfontsize, point, point, point);
                     }
                     MapFontShowPercentageDecimal = isMeta;
-                    //handled = true;
+                    handled = true;
                 }
                 else if (ForceAllMessages)
                 {
@@ -19088,7 +19073,7 @@ namespace GnollHackX.Pages.Game
                         ScrollMessages(-120);
                     else if (key == GHSpecialKey.Space)
                         ScrollMessages(1200);
-                    //handled = true;
+                    handled = true;
                 }
                 else
                 {
@@ -19121,123 +19106,126 @@ namespace GnollHackX.Pages.Game
                         if (isShift && resp <= -1 && resp >= -9)
                             GenericButton_Clicked(null, null, -100 - (int)nh_keyfunc.NHKF_RUN);
                         GenericButton_Clicked(null, null, resp);
-                        //handled = true;
+                        handled = true;
                     }
                 }
             }
+            return handled;
         }
 
 #if WINDOWS
         private void PageContent_CharacterReceived(Microsoft.UI.Xaml.UIElement sender, Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs args)
         {
-            if (LoadingGrid.IsVisible || !GHApp.IsPageOnTopOfModalNavigationStack(this))
-            {
-                /* Nothing */
-            }
-            else if(YnGrid.IsVisible && !string.IsNullOrWhiteSpace(_ynResponses) && _ynResponses.Contains(args.Character))
-            {
-                char c = args.Character;
-                YnButton_Pressed(sender, new EventArgs(), (int)c);
-                args.Handled = true;
-            }
-            else if (MenuGrid.IsVisible)
-            {
-                char c = args.Character;
-                if(MenuCanvas.SelectionHow == SelectionMode.Multiple && c == '.')
-                {
-                    MenuTapGestureRecognizer_Tapped(sender, new TappedEventArgs(new object()));
-                    args.Handled = true;
-                }
-                else
-                {
-                    //SKPoint location = new SKPoint();
-                    bool doclickok = false;
-                    bool somethingFound = false;
-                    lock (MenuCanvas.MenuItemLock)
-                    {
-                        if (MenuCanvas.MenuItems == null)
-                            return;
+            char c = args.Character;
+            args.Handled = HandleKeyPress((int)c, GHApp.CtrlDown, GHApp.AltDown);
+            //if (LoadingGrid.IsVisible || !GHApp.IsPageOnTopOfModalNavigationStack(this))
+            //{
+            //    /* Nothing */
+            //}
+            //else if(YnGrid.IsVisible && !string.IsNullOrWhiteSpace(_ynResponses) && _ynResponses.Contains(args.Character))
+            //{
+            //    char c = args.Character;
+            //    YnButton_Pressed(sender, new EventArgs(), (int)c);
+            //    args.Handled = true;
+            //}
+            //else if (MenuGrid.IsVisible)
+            //{
+            //    char c = args.Character;
+            //    if(MenuCanvas.SelectionHow == SelectionMode.Multiple && c == '.')
+            //    {
+            //        MenuTapGestureRecognizer_Tapped(sender, new TappedEventArgs(new object()));
+            //        args.Handled = true;
+            //    }
+            //    else
+            //    {
+            //        //SKPoint location = new SKPoint();
+            //        bool doclickok = false;
+            //        bool somethingFound = false;
+            //        lock (MenuCanvas.MenuItemLock)
+            //        {
+            //            if (MenuCanvas.MenuItems == null)
+            //                return;
 
-                        for (int idx = 0; idx < MenuCanvas.MenuItems.Count; idx++)
-                        {
-                            if (MenuCanvas.MenuItems[idx].Accelerator == c)
-                            {
-                                somethingFound = true;
-                                doclickok = ClickMenuItem(idx, false);
-                                //location = new SKPoint(MenuCanvas.MenuItems[idx].DrawBounds.MidX, MenuCanvas.MenuItems[idx].DrawBounds.MidY);
-                                break;
-                            }
-                            else if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (MenuCanvas.MenuItems[idx].Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0 && MenuCanvas.MenuItems[idx].HeadingGroupAccelerator == c
-                                && (_menuCountNumber < 0 || MenuCanvas.MenuItems[idx].HeadingGroupAccelerator < '0' || MenuCanvas.MenuItems[idx].HeadingGroupAccelerator > '9'))
-                            {
-                                somethingFound = true;
-                                doclickok = ClickMenuItem(idx, false);
-                                //location = new SKPoint(MenuCanvas.MenuItems[idx].DrawBounds.MidX, MenuCanvas.MenuItems[idx].DrawBounds.MidY);
-                                break;
-                            }
-                        }
-                    }
-                    if(somethingFound)
-                    {
-                        _menuCountNumber = -1;
-                        if (MenuOKButton.IsEnabled)
-                        {
-                            if (doclickok)
-                            {
-                                MenuCanvas.InvalidateSurface();
-                                MenuOKButton_Clicked(sender, new EventArgs());
-                            }
-                            else
-                            {
-                                if (MenuCanvas.SelectionHow == SelectionMode.Single)
-                                    MenuOKButton_Clicked(sender, new EventArgs());
-                            }
-                        }
-                        args.Handled = true;
-                    }
-                    else if (c >= '0' && c <= '9' && _menuCountNumber < int.MaxValue / 10 - 10)
-                    {
-                        int res;
-                        if(int.TryParse(c.ToString(), out res))
-                        {
-                            if (_menuCountNumber >= 0)
-                                _menuCountNumber *= 10;
-                            else
-                                _menuCountNumber = 0;
-                            _menuCountNumber += res;
-                        }
-                    }
+            //            for (int idx = 0; idx < MenuCanvas.MenuItems.Count; idx++)
+            //            {
+            //                if (MenuCanvas.MenuItems[idx].Accelerator == c)
+            //                {
+            //                    somethingFound = true;
+            //                    doclickok = ClickMenuItem(idx, false);
+            //                    //location = new SKPoint(MenuCanvas.MenuItems[idx].DrawBounds.MidX, MenuCanvas.MenuItems[idx].DrawBounds.MidY);
+            //                    break;
+            //                }
+            //                else if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (MenuCanvas.MenuItems[idx].Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0 && MenuCanvas.MenuItems[idx].HeadingGroupAccelerator == c
+            //                    && (_menuCountNumber < 0 || MenuCanvas.MenuItems[idx].HeadingGroupAccelerator < '0' || MenuCanvas.MenuItems[idx].HeadingGroupAccelerator > '9'))
+            //                {
+            //                    somethingFound = true;
+            //                    doclickok = ClickMenuItem(idx, false);
+            //                    //location = new SKPoint(MenuCanvas.MenuItems[idx].DrawBounds.MidX, MenuCanvas.MenuItems[idx].DrawBounds.MidY);
+            //                    break;
+            //                }
+            //            }
+            //        }
+            //        if(somethingFound)
+            //        {
+            //            _menuCountNumber = -1;
+            //            if (MenuOKButton.IsEnabled)
+            //            {
+            //                if (doclickok)
+            //                {
+            //                    MenuCanvas.InvalidateSurface();
+            //                    MenuOKButton_Clicked(sender, new EventArgs());
+            //                }
+            //                else
+            //                {
+            //                    if (MenuCanvas.SelectionHow == SelectionMode.Single)
+            //                        MenuOKButton_Clicked(sender, new EventArgs());
+            //                }
+            //            }
+            //            args.Handled = true;
+            //        }
+            //        else if (c >= '0' && c <= '9' && _menuCountNumber < int.MaxValue / 10 - 10)
+            //        {
+            //            int res;
+            //            if(int.TryParse(c.ToString(), out res))
+            //            {
+            //                if (_menuCountNumber >= 0)
+            //                    _menuCountNumber *= 10;
+            //                else
+            //                    _menuCountNumber = 0;
+            //                _menuCountNumber += res;
+            //            }
+            //        }
 
-                    //if (location.X > 0 && location.Y > 0)
-                    //{
-                    //    SKTouchEventArgs e = new SKTouchEventArgs(-1, SKTouchAction.Released, location, false);
-                    //    MenuCanvas_NormalClickRelease(sender, e);
-                    //    if (MenuCanvas.SelectionHow == SelectionMode.Single)
-                    //        MenuOKButton_Clicked(sender, new EventArgs());
-                    //    args.Handled = true;
-                    //}
-                }
-            }
-            else if (!MenuGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible)
-            {
-                if (MoreCommandsGrid.IsVisible)
-                {
-                    CommandCanvas_Pressed(sender, new EventArgs());
-                }
+            //        //if (location.X > 0 && location.Y > 0)
+            //        //{
+            //        //    SKTouchEventArgs e = new SKTouchEventArgs(-1, SKTouchAction.Released, location, false);
+            //        //    MenuCanvas_NormalClickRelease(sender, e);
+            //        //    if (MenuCanvas.SelectionHow == SelectionMode.Single)
+            //        //        MenuOKButton_Clicked(sender, new EventArgs());
+            //        //    args.Handled = true;
+            //        //}
+            //    }
+            //}
+            //else if (!MenuGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible)
+            //{
+            //    if (MoreCommandsGrid.IsVisible)
+            //    {
+            //        CommandCanvas_Pressed(sender, new EventArgs());
+            //    }
 
-                char c = args.Character;
-                if(c != 0)
-                {
-                    if (GHApp.AltDown)
-                        GenericButton_Clicked(sender, new EventArgs(), GHUtils.Meta((int)c));
-                    else if (GHApp.CtrlDown)
-                        GenericButton_Clicked(sender, new EventArgs(), GHUtils.Ctrl((int)c));
-                    else
-                        GenericButton_Clicked(sender, new EventArgs(), (int)c);
+            //    char c = args.Character;
+            //    if(c != 0)
+            //    {
+            //        if (GHApp.AltDown)
+            //            GenericButton_Clicked(sender, new EventArgs(), GHUtils.Meta((int)c));
+            //        else if (GHApp.CtrlDown)
+            //            GenericButton_Clicked(sender, new EventArgs(), GHUtils.Ctrl((int)c));
+            //        else
+            //            GenericButton_Clicked(sender, new EventArgs(), (int)c);
 
-                    args.Handled = true;
-                }
-            }
+            //        args.Handled = true;
+            //    }
+            //}
         }
 
         private void PageContent_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
@@ -19264,163 +19252,208 @@ namespace GnollHackX.Pages.Game
                 GHApp.ShiftDown = true;
                 handled = true;
             }
-            else if (LoadingGrid.IsVisible || !GHApp.IsPageOnTopOfModalNavigationStack(this))
+            else
             {
-                /* Nothing */
-            }
-            else if (MoreCommandsGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space))
-            {
-                CommandCanvas_Pressed(sender, new EventArgs());
-                handled = true;
-            }
-            else if (MoreCommandsGrid.IsVisible && (key == Windows.System.VirtualKey.Left || key == Windows.System.VirtualKey.Right))
-            {
-                int cmdPage = MoreCmdPage;
-                if (key == Windows.System.VirtualKey.Left)
+                GHSpecialKey spkey = GHSpecialKey.None;
+                switch(key)
                 {
-                    if (cmdPage > (EnableWizardMode ? 0 : 1))
-                    {
-                        MoreCmdPage = cmdPage - 1;
-                        MoreCmdOffsetX = 0;
-                        CommandCanvas.InvalidateSurface();
-                        UpdateMoreNextPrevButtonVisibility(true, true);
-                    }
-                    handled = true;
+                    case VirtualKey.Left:
+                        spkey = GHSpecialKey.Left;
+                        break;
+                    case VirtualKey.Right:
+                        spkey = GHSpecialKey.Right;
+                        break;
+                    case VirtualKey.Up:
+                        spkey = GHSpecialKey.Up;
+                        break;
+                    case VirtualKey.Down:
+                        spkey = GHSpecialKey.Down;
+                        break;
+                    case VirtualKey.Escape:
+                        spkey = GHSpecialKey.Escape;
+                        break;
+                    case VirtualKey.Enter:
+                        spkey = GHSpecialKey.Enter;
+                        break;
+                    case VirtualKey.Space:
+                        spkey = GHSpecialKey.Space;
+                        break;
+                    case VirtualKey.Add:
+                        spkey = GHSpecialKey.Add;
+                        break;
+                    case VirtualKey.Subtract:
+                        spkey = GHSpecialKey.Subtract;
+                        break;
+                    default:
+                        if (key >= VirtualKey.Number0 && key <= VirtualKey.Number9)
+                            spkey = key - VirtualKey.Number0 + GHSpecialKey.Number0;
+                        else if (key >= VirtualKey.NumberPad0 && key <= VirtualKey.NumberPad9)
+                            spkey = key - VirtualKey.NumberPad0 + GHSpecialKey.NumberPad0;
+                        else if (key >= VirtualKey.A && key <= VirtualKey.Z)
+                            spkey = key - VirtualKey.A + GHSpecialKey.A;
+                        break;
                 }
-                else if (key == Windows.System.VirtualKey.Right)
-                {
-                    if (cmdPage < CurrentMoreButtonPageMaxNumber - 1)
-                    {
-                        MoreCmdPage = cmdPage + 1;
-                        MoreCmdOffsetX = 0;
-                        CommandCanvas.InvalidateSurface();
-                        UpdateMoreNextPrevButtonVisibility(true, true);
-                    }
-                    handled = true;
-                }
+                if(spkey != GHSpecialKey.None)
+                    handled = HandleSpecialKeyPress(spkey, GHApp.CtrlDown, GHApp.AltDown, GHApp.ShiftDown);
             }
-            else if (TextGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space || key == Windows.System.VirtualKey.Up || key == Windows.System.VirtualKey.Down))
-            {
-                if (key == Windows.System.VirtualKey.Enter || TextGrid.IsVisible && key == Windows.System.VirtualKey.Escape)
-                    TextCanvas_Pressed(sender, new EventArgs());
-                else if (key == Windows.System.VirtualKey.Up)
-                    ScrollTextWindow(120);
-                else if (key == Windows.System.VirtualKey.Down)
-                    ScrollTextWindow(-120);
-                else if (key == Windows.System.VirtualKey.Space)
-                    ScrollTextWindow(-1200);
-                handled = true;
-            }
-            else if (MenuGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || (MenuOKButton.IsEnabled && (key == Windows.System.VirtualKey.Enter)) || key == Windows.System.VirtualKey.Up || key == Windows.System.VirtualKey.Down || key == Windows.System.VirtualKey.Space))
-            {
-                if(key == Windows.System.VirtualKey.Escape)
-                    MenuCancelButton_Clicked(sender, new EventArgs());
-                else if (MenuOKButton.IsEnabled && (key == Windows.System.VirtualKey.Enter))
-                    MenuOKButton_Clicked(sender, new EventArgs());
-                else if (key == Windows.System.VirtualKey.Up)
-                    ScrollMenu(120);
-                else if (key == Windows.System.VirtualKey.Down)
-                    ScrollMenu(-120);
-                else if (key == Windows.System.VirtualKey.Space)
-                    ScrollMenu(-1200);
-                handled = true;
-            }
-            else if (GetLineGrid.IsVisible && (key == Windows.System.VirtualKey.Escape))
-            {
-                GetLineCancelButton_Clicked(sender, new EventArgs());
-                handled = true;
-            }
-            else if (YnGrid.IsVisible && (key == Windows.System.VirtualKey.Escape))
-            {
-                YnButton_Pressed(sender, new EventArgs(), GHConstants.CancelChar);
-                handled = true;
-            }
-            else if (PopupGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space))
-            {
-                PopupOkButton_Clicked(sender, new EventArgs());
-                handled = true;
-            }
-            else if (!MenuGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible)
-            {
-                if (MoreCommandsGrid.IsVisible)
-                {
-                    CommandCanvas_Pressed(sender, new EventArgs());
-                }
 
-                if (GHApp.CtrlDown && key == Windows.System.VirtualKey.Number0)
-                {
-                    if (ZoomAlternateMode)
-                        MapFontAlternateSize = DefaultMapFontSize * GHConstants.MapFontRelativeAlternateSize;
-                    else if (ZoomMiniMode)
-                        MapFontMiniRelativeSize = 1.0f;
-                    else
-                        MapFontSize = DefaultMapFontSize;
-                    handled = true;
-                }
-                else if (GHApp.CtrlDown &&  (key == Windows.System.VirtualKey.Add || key == Windows.System.VirtualKey.Subtract))
-                {
-                    if (ZoomMiniMode)
-                    {
-                        float canvaswidth = canvasView.CanvasSize.Width;
-                        float canvasheight = canvasView.CanvasSize.Height;
-                        SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
-                        float ratio = key == Windows.System.VirtualKey.Add ? (1 + (GHApp.AltDown ? 0.001f : 0.01f)) : 1 / (1 + (GHApp.AltDown ? 0.001f : 0.01f));
-                        AdjustZoomByRatio(ratio, point, point, point);
-                    }
-                    else
-                    {
-                        float multiplier = key == Windows.System.VirtualKey.Subtract ? -1.0f : 1.0f;
-                        float newfontsize;
-                        if (ZoomAlternateMode)
-                            newfontsize = MapFontAlternateSize + multiplier * (GHApp.AltDown ? 0.001f : 0.01f) * DefaultMapFontSize;
-                        else
-                            newfontsize = MapFontSize + multiplier * (GHApp.AltDown ? 0.001f : 0.01f) * DefaultMapFontSize;
+            //if (LoadingGrid.IsVisible || !GHApp.IsPageOnTopOfModalNavigationStack(this))
+            //{
+            //    /* Nothing */
+            //}
+            //else if (MoreCommandsGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space))
+            //{
+            //    CommandCanvas_Pressed(sender, new EventArgs());
+            //    handled = true;
+            //}
+            //else if (MoreCommandsGrid.IsVisible && (key == Windows.System.VirtualKey.Left || key == Windows.System.VirtualKey.Right))
+            //{
+            //    int cmdPage = MoreCmdPage;
+            //    if (key == Windows.System.VirtualKey.Left)
+            //    {
+            //        if (cmdPage > (EnableWizardMode ? 0 : 1))
+            //        {
+            //            MoreCmdPage = cmdPage - 1;
+            //            MoreCmdOffsetX = 0;
+            //            CommandCanvas.InvalidateSurface();
+            //            UpdateMoreNextPrevButtonVisibility(true, true);
+            //        }
+            //        handled = true;
+            //    }
+            //    else if (key == Windows.System.VirtualKey.Right)
+            //    {
+            //        if (cmdPage < CurrentMoreButtonPageMaxNumber - 1)
+            //        {
+            //            MoreCmdPage = cmdPage + 1;
+            //            MoreCmdOffsetX = 0;
+            //            CommandCanvas.InvalidateSurface();
+            //            UpdateMoreNextPrevButtonVisibility(true, true);
+            //        }
+            //        handled = true;
+            //    }
+            //}
+            //else if (TextGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space || key == Windows.System.VirtualKey.Up || key == Windows.System.VirtualKey.Down))
+            //{
+            //    if (key == Windows.System.VirtualKey.Enter || TextGrid.IsVisible && key == Windows.System.VirtualKey.Escape)
+            //        TextCanvas_Pressed(sender, new EventArgs());
+            //    else if (key == Windows.System.VirtualKey.Up)
+            //        ScrollTextWindow(120);
+            //    else if (key == Windows.System.VirtualKey.Down)
+            //        ScrollTextWindow(-120);
+            //    else if (key == Windows.System.VirtualKey.Space)
+            //        ScrollTextWindow(-1200);
+            //    handled = true;
+            //}
+            //else if (MenuGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || (MenuOKButton.IsEnabled && (key == Windows.System.VirtualKey.Enter)) || key == Windows.System.VirtualKey.Up || key == Windows.System.VirtualKey.Down || key == Windows.System.VirtualKey.Space))
+            //{
+            //    if(key == Windows.System.VirtualKey.Escape)
+            //        MenuCancelButton_Clicked(sender, new EventArgs());
+            //    else if (MenuOKButton.IsEnabled && (key == Windows.System.VirtualKey.Enter))
+            //        MenuOKButton_Clicked(sender, new EventArgs());
+            //    else if (key == Windows.System.VirtualKey.Up)
+            //        ScrollMenu(120);
+            //    else if (key == Windows.System.VirtualKey.Down)
+            //        ScrollMenu(-120);
+            //    else if (key == Windows.System.VirtualKey.Space)
+            //        ScrollMenu(-1200);
+            //    handled = true;
+            //}
+            //else if (GetLineGrid.IsVisible && (key == Windows.System.VirtualKey.Escape))
+            //{
+            //    GetLineCancelButton_Clicked(sender, new EventArgs());
+            //    handled = true;
+            //}
+            //else if (YnGrid.IsVisible && (key == Windows.System.VirtualKey.Escape))
+            //{
+            //    YnButton_Pressed(sender, new EventArgs(), GHConstants.CancelChar);
+            //    handled = true;
+            //}
+            //else if (PopupGrid.IsVisible && (key == Windows.System.VirtualKey.Escape || key == Windows.System.VirtualKey.Enter || key == Windows.System.VirtualKey.Space))
+            //{
+            //    PopupOkButton_Clicked(sender, new EventArgs());
+            //    handled = true;
+            //}
+            //else if (!MenuGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible)
+            //{
+            //    if (MoreCommandsGrid.IsVisible)
+            //    {
+            //        CommandCanvas_Pressed(sender, new EventArgs());
+            //    }
 
-                        float canvaswidth = canvasView.CanvasSize.Width;
-                        float canvasheight = canvasView.CanvasSize.Height;
-                        SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
-                        SetZoomFontSize(newfontsize, point, point, point);
-                    }
-                    MapFontShowPercentageDecimal = GHApp.AltDown;
-                    handled = true;
-                }
-                else if (ForceAllMessages)
-                {
-                    if (key == Windows.System.VirtualKey.Up)
-                        ScrollMessages(120);
-                    else if (key == Windows.System.VirtualKey.Down)
-                        ScrollMessages(-120);
-                    else if (key == Windows.System.VirtualKey.Space)
-                        ScrollMessages(1200);
-                    handled = true;
-                }
-                else
-                {
-                    int resp = 0;
-                    if (key == Windows.System.VirtualKey.Escape)
-                        resp = GHConstants.CancelChar;
-                    else if (key == Windows.System.VirtualKey.Left)
-                        resp = -4;
-                    else if (key == Windows.System.VirtualKey.Right)
-                        resp = -6;
-                    else if (key == Windows.System.VirtualKey.Up)
-                        resp = -8;
-                    else if (key == Windows.System.VirtualKey.Down)
-                        resp = -2;
-                    else if (key >= Windows.System.VirtualKey.NumberPad1 && key <= Windows.System.VirtualKey.NumberPad9)
-                        resp = -1 - (key - Windows.System.VirtualKey.NumberPad1);
-                    else if (GHApp.AltDown && key >= Windows.System.VirtualKey.A && key <= Windows.System.VirtualKey.Z)
-                        resp = GHUtils.Meta((GHApp.ShiftDown ? (int)'A' : (int)'a') + (int)key - (int)Windows.System.VirtualKey.A);
+            //    if (GHApp.CtrlDown && key == Windows.System.VirtualKey.Number0)
+            //    {
+            //        if (ZoomAlternateMode)
+            //            MapFontAlternateSize = DefaultMapFontSize * GHConstants.MapFontRelativeAlternateSize;
+            //        else if (ZoomMiniMode)
+            //            MapFontMiniRelativeSize = 1.0f;
+            //        else
+            //            MapFontSize = DefaultMapFontSize;
+            //        handled = true;
+            //    }
+            //    else if (GHApp.CtrlDown &&  (key == Windows.System.VirtualKey.Add || key == Windows.System.VirtualKey.Subtract))
+            //    {
+            //        if (ZoomMiniMode)
+            //        {
+            //            float canvaswidth = canvasView.CanvasSize.Width;
+            //            float canvasheight = canvasView.CanvasSize.Height;
+            //            SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
+            //            float ratio = key == Windows.System.VirtualKey.Add ? (1 + (GHApp.AltDown ? 0.001f : 0.01f)) : 1 / (1 + (GHApp.AltDown ? 0.001f : 0.01f));
+            //            AdjustZoomByRatio(ratio, point, point, point);
+            //        }
+            //        else
+            //        {
+            //            float multiplier = key == Windows.System.VirtualKey.Subtract ? -1.0f : 1.0f;
+            //            float newfontsize;
+            //            if (ZoomAlternateMode)
+            //                newfontsize = MapFontAlternateSize + multiplier * (GHApp.AltDown ? 0.001f : 0.01f) * DefaultMapFontSize;
+            //            else
+            //                newfontsize = MapFontSize + multiplier * (GHApp.AltDown ? 0.001f : 0.01f) * DefaultMapFontSize;
 
-                    if (resp != 0)
-                    {
-                        if (GHApp.ShiftDown && resp <= -1 && resp >= -9)
-                            GenericButton_Clicked(sender, new EventArgs(), -100 - (int)nh_keyfunc.NHKF_RUN);
-                        GenericButton_Clicked(sender, new EventArgs(), resp);
-                        handled = true;
-                    }
-                }
-            }
+            //            float canvaswidth = canvasView.CanvasSize.Width;
+            //            float canvasheight = canvasView.CanvasSize.Height;
+            //            SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
+            //            SetZoomFontSize(newfontsize, point, point, point);
+            //        }
+            //        MapFontShowPercentageDecimal = GHApp.AltDown;
+            //        handled = true;
+            //    }
+            //    else if (ForceAllMessages)
+            //    {
+            //        if (key == Windows.System.VirtualKey.Up)
+            //            ScrollMessages(120);
+            //        else if (key == Windows.System.VirtualKey.Down)
+            //            ScrollMessages(-120);
+            //        else if (key == Windows.System.VirtualKey.Space)
+            //            ScrollMessages(1200);
+            //        handled = true;
+            //    }
+            //    else
+            //    {
+            //        int resp = 0;
+            //        if (key == Windows.System.VirtualKey.Escape)
+            //            resp = GHConstants.CancelChar;
+            //        else if (key == Windows.System.VirtualKey.Left)
+            //            resp = -4;
+            //        else if (key == Windows.System.VirtualKey.Right)
+            //            resp = -6;
+            //        else if (key == Windows.System.VirtualKey.Up)
+            //            resp = -8;
+            //        else if (key == Windows.System.VirtualKey.Down)
+            //            resp = -2;
+            //        else if (key >= Windows.System.VirtualKey.NumberPad1 && key <= Windows.System.VirtualKey.NumberPad9)
+            //            resp = -1 - (key - Windows.System.VirtualKey.NumberPad1);
+            //        else if (GHApp.AltDown && key >= Windows.System.VirtualKey.A && key <= Windows.System.VirtualKey.Z)
+            //            resp = GHUtils.Meta((GHApp.ShiftDown ? (int)'A' : (int)'a') + (int)key - (int)Windows.System.VirtualKey.A);
+
+            //        if (resp != 0)
+            //        {
+            //            if (GHApp.ShiftDown && resp <= -1 && resp >= -9)
+            //                GenericButton_Clicked(sender, new EventArgs(), -100 - (int)nh_keyfunc.NHKF_RUN);
+            //            GenericButton_Clicked(sender, new EventArgs(), resp);
+            //            handled = true;
+            //        }
+            //    }
+            //}
             return handled;
         }
 
