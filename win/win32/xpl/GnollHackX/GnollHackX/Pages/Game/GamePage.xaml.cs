@@ -16612,25 +16612,10 @@ namespace GnollHackX.Pages.Game
 
         private void MenuCountEntry_Completed(object sender, EventArgs e)
         {
-            //if (_countMenuItem != null)
-            //{
-            //    string str = MenuCountEntry.Text;
-            //    int value;
-            //    bool res = int.TryParse(str, out value);
-            //    if (res)
-            //    {
-            //        MenuCountEntry.TextColor = GHColors.Green;
-            //    }
-            //    else
-            //    {
-            //        MenuCountEntry.TextColor = GHColors.Red;
-            //    }
-            //}
-
-            //if(MenuCountGrid.IsVisible && MenuCountOkButton.IsEnabled)
-            //{
-            //    MenuCountOkButton_Clicked(sender, e);
-            //}
+            if (MenuCountGrid.IsVisible && MenuCountOkButton.IsEnabled && !GHApp.IsKeyboardConnected)
+            {
+                MenuCountOkButton_Clicked(sender, e);
+            }
         }
 
 
@@ -18199,7 +18184,7 @@ namespace GnollHackX.Pages.Game
 
         private void GetLineEntryText_Completed(object sender, EventArgs e)
         {
-            if (GetLineGrid.IsVisible && GetLineOkButton.IsEnabled)
+            if (GetLineGrid.IsVisible && GetLineOkButton.IsEnabled && !GHApp.IsKeyboardConnected)
             {
                 GetLineOkButton_Clicked(sender, e);
             }
@@ -18770,7 +18755,7 @@ namespace GnollHackX.Pages.Game
 
         private void GotoTurnEntryText_Completed(object sender, EventArgs e)
         {
-            if(ReplayGrid.IsVisible && GotoTurnOkButton.IsEnabled)
+            if(ReplayGrid.IsVisible && GotoTurnOkButton.IsEnabled && !GHApp.IsKeyboardConnected)
             {
                 GotoTurnOkButton_Clicked(sender, e);
             }
