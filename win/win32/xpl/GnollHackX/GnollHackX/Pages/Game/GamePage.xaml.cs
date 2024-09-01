@@ -2930,7 +2930,7 @@ namespace GnollHackX.Pages.Game
             TextGrid.IsVisible = false;
             MenuGrid.IsVisible = false;
             MenuWindowGlyphImage.StopAnimation();
-            MenuCountBackgroundGrid.IsVisible = false;
+            MenuCountGrid.IsVisible = false;
             MenuCountEntry.IsEnabled = false;
             GetLineGrid.IsVisible = false;
             PopupGrid.IsVisible = false;
@@ -12892,13 +12892,13 @@ namespace GnollHackX.Pages.Game
             PopupWidthGrid.MaximumWidthRequest = 600 * customScale;
             GetLineWidthGrid.MaximumWidthRequest = 440 * customScale;
             GetLineFrame.Padding = new Thickness(12 * customScale);
-            MenuCountForegroundGrid.MaximumWidthRequest = 360 * customScale;
+            MenuCountWidthGrid.MaximumWidthRequest = 360 * customScale;
             MenuCountFrame.Padding = new Thickness(12 * customScale);
 #else
             YnWidthGrid.WidthRequest = 600 * customScale;
             PopupWidthGrid.WidthRequest = 600 * customScale;
             GetLineWidthGrid.WidthRequest = 440 * customScale;
-            MenuCountForegroundGrid.WidthRequest = 360 * customScale;
+            MenuCountWidthGrid.WidthRequest = 360 * customScale;
 #endif
             YnTitleLabel.FontSize = 22 * customScale;
             YnQuestionLabel.FontSize = 19 * customScale;
@@ -16021,8 +16021,8 @@ namespace GnollHackX.Pages.Game
 
             if (_countMenuItem.MaxCount > 100)
             {
-                MenuCountForegroundGrid.VerticalOptions = LayoutOptions.Start;
-                MenuCountForegroundGrid.Margin = new Thickness(0, 50, 0, 0);
+                MenuCountWidthGrid.VerticalOptions = LayoutOptions.Start;
+                MenuCountWidthGrid.Margin = new Thickness(0, 50, 0, 0);
                 CountPicker.IsVisible = false;
                 MenuCountEntry.IsVisible = true;
                 MenuCountEntry.IsEnabled = true;
@@ -16033,8 +16033,8 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
-                MenuCountForegroundGrid.VerticalOptions = LayoutOptions.Center;
-                MenuCountForegroundGrid.Margin = new Thickness(0, 0, 0, 0);
+                MenuCountWidthGrid.VerticalOptions = LayoutOptions.Center;
+                MenuCountWidthGrid.Margin = new Thickness(0, 0, 0, 0);
                 CountPicker.IsVisible = true;
                 MenuCountEntry.IsVisible = false;
                 MenuCountEntry.IsEnabled = false;
@@ -16055,7 +16055,7 @@ namespace GnollHackX.Pages.Game
             }
 
             MenuCountCaption.Text = (MenuCountEntry.IsVisible ? "Type" : "Select") + " Count for " + menuItemMainText;
-            MenuCountBackgroundGrid.IsVisible = true;
+            MenuCountGrid.IsVisible = true;
             if(MenuCountEntry.IsVisible)
             {
                 if(GHApp.IsKeyboardConnected)
@@ -16585,14 +16585,14 @@ namespace GnollHackX.Pages.Game
                     }
                 }
             }
-            MenuCountBackgroundGrid.IsVisible = false;
+            MenuCountGrid.IsVisible = false;
             MenuCountEntry.Unfocus();
             MenuCountEntry.IsEnabled = false;
         }
 
         private void MenuCountCancelButton_Clicked(object sender, EventArgs e)
         {
-            MenuCountBackgroundGrid.IsVisible = false;
+            MenuCountGrid.IsVisible = false;
             MenuCountEntry.Unfocus();
             MenuCountEntry.IsEnabled = false;
         }
@@ -18852,7 +18852,7 @@ namespace GnollHackX.Pages.Game
                 YnButton_Pressed(null, null, key);
                 handled = true;
             }
-            else if (MenuGrid.IsVisible)
+            else if (MenuGrid.IsVisible && !MenuCountGrid.IsVisible)
             {
                 char c = (char)key;
                 if (MenuCanvas.SelectionHow == SelectionMode.Multiple && c == '.')
@@ -18990,7 +18990,7 @@ namespace GnollHackX.Pages.Game
                     ScrollTextWindow(-1200);
                 handled = true;
             }
-            else if (MenuGrid.IsVisible && (key == GHSpecialKey.Escape || (MenuOKButton.IsEnabled && (key == GHSpecialKey.Enter)) || key == GHSpecialKey.Up || key == GHSpecialKey.Down || key == GHSpecialKey.Space))
+            else if (MenuGrid.IsVisible && !MenuCountGrid.IsVisible && (key == GHSpecialKey.Escape || (MenuOKButton.IsEnabled && (key == GHSpecialKey.Enter)) || key == GHSpecialKey.Up || key == GHSpecialKey.Down || key == GHSpecialKey.Space))
             {
                 if (key == GHSpecialKey.Escape)
                     MenuCancelButton_Clicked(null, null);
@@ -19002,6 +19002,14 @@ namespace GnollHackX.Pages.Game
                     ScrollMenu(-120);
                 else if (key == GHSpecialKey.Space)
                     ScrollMenu(-1200);
+                handled = true;
+            }
+            else if (MenuGrid.IsVisible && MenuCountGrid.IsVisible && (key == GHSpecialKey.Escape || (MenuOKButton.IsEnabled && (key == GHSpecialKey.Enter))))
+            {
+                if (key == GHSpecialKey.Escape)
+                    MenuCountCancelButton_Clicked(null, null);
+                else if (MenuCountOkButton.IsEnabled && (key == GHSpecialKey.Enter))
+                    MenuCountOkButton_Clicked(null, null);
                 handled = true;
             }
             else if (GetLineGrid.IsVisible && (key == GHSpecialKey.Escape))

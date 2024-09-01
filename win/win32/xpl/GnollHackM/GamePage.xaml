@@ -191,9 +191,9 @@
                         <controls:CustomImageButton Grid.Column="1" HorizontalOptions="Start" WidthRequest="135"  HeightRequest="60" UseVaryingTextColors="True" Text="Cancel" x:Name="MenuCancelButton" Clicked="MenuCancelButton_Clicked" FontFamily="Diablo" FontSize="20" TextColor="White" BackgroundColor="Transparent" />
                     </Grid>
                 </StackLayout>
-                <Grid x:Name="MenuCountBackgroundGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
+                <Grid x:Name="MenuCountGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
                          BackgroundColor="#66000000" IsVisible="False">
-                    <Grid x:Name="MenuCountForegroundGrid" MaximumWidthRequest="360" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Grid x:Name="MenuCountWidthGrid" MaximumWidthRequest="360" HorizontalOptions="Center" VerticalOptions="Center">
                         <Border x:Name="MenuCountFrame" BackgroundColor="#66000000" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Fill" VerticalOptions="Center">
                             <StackLayout Spacing="6" x:Name="MenuCountLayout" HorizontalOptions="Fill" VerticalOptions="Center">
                                 <Label x:Name="MenuCountCaption" Text="Select Count" FontFamily="Immortal" FontSize="20" HorizontalOptions="CenterAndExpand" TextColor="White" />
