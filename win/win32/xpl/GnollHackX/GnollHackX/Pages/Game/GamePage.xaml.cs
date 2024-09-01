@@ -3530,7 +3530,7 @@ namespace GnollHackX.Pages.Game
 
             if(!PlayingReplay)
             {
-                if(GHApp.IsKeyboardConnected)
+                if(GHApp.AutoFocusOnEntry)
                     GetLineEntryText.Focus();
             }
         }
@@ -16060,7 +16060,7 @@ namespace GnollHackX.Pages.Game
             MenuCountGrid.IsVisible = true;
             if(MenuCountEntry.IsVisible)
             {
-                if(GHApp.IsKeyboardConnected)
+                if(GHApp.AutoFocusOnEntry)
                     MenuCountEntry.Focus();
             }
         }
@@ -16612,7 +16612,7 @@ namespace GnollHackX.Pages.Game
 
         private void MenuCountEntry_Completed(object sender, EventArgs e)
         {
-            if (MenuCountGrid.IsVisible && MenuCountOkButton.IsEnabled && !GHApp.IsKeyboardConnected)
+            if (MenuCountGrid.IsVisible && MenuCountOkButton.IsEnabled && GHApp.PressOkOnEntryCompleted)
             {
                 MenuCountOkButton_Clicked(sender, e);
             }
@@ -18184,7 +18184,7 @@ namespace GnollHackX.Pages.Game
 
         private void GetLineEntryText_Completed(object sender, EventArgs e)
         {
-            if (GetLineGrid.IsVisible && GetLineOkButton.IsEnabled && !GHApp.IsKeyboardConnected)
+            if (GetLineGrid.IsVisible && GetLineOkButton.IsEnabled && GHApp.PressOkOnEntryCompleted)
             {
                 GetLineOkButton_Clicked(sender, e);
             }
@@ -18755,7 +18755,7 @@ namespace GnollHackX.Pages.Game
 
         private void GotoTurnEntryText_Completed(object sender, EventArgs e)
         {
-            if(ReplayGrid.IsVisible && GotoTurnOkButton.IsEnabled && !GHApp.IsKeyboardConnected)
+            if(ReplayGrid.IsVisible && GotoTurnOkButton.IsEnabled && GHApp.PressOkOnEntryCompleted)
             {
                 GotoTurnOkButton_Clicked(sender, e);
             }

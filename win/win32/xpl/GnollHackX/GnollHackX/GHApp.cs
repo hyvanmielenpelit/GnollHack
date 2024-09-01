@@ -235,6 +235,23 @@ namespace GnollHackX
             }
         }
 
+        public static bool PressOkOnEntryCompleted
+        {
+            get
+            {
+                return IsiOS /* Completed does not fire */
+                    || !IsKeyboardConnected; /* Keyboard handling does not fire */
+            }
+        }
+
+        public static bool AutoFocusOnEntry
+        {
+            get
+            {
+                return IsKeyboardConnected; /* Does not bring up the soft keyboard, so can focus immediately */
+            }
+        }
+
         public static void InitializeGC()
         {
             //try
