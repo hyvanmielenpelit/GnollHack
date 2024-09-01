@@ -18918,7 +18918,24 @@ namespace GnollHackX.Pages.Game
                     }
                 }
             }
-            else if (!MenuGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible)
+            else if (ReplayGrid.IsVisible && !GotoTurnGrid.IsVisible)
+            {
+                if ((key == (int)'p' || key == (int)' ') && ReplayPauseButton.IsEnabled)
+                    ReplayPauseButton_Clicked(null, null);
+                else if ((key == (int)'<' || key == (int)'s' || key == (int)'-') && ReplaySlowerButton.IsEnabled)
+                    ReplaySlowerButton_Clicked(null, null);
+                else if ((key == (int)'>' || key == (int)'f' || key == (int)'+') && ReplayFasterButton.IsEnabled)
+                    ReplayFasterButton_Clicked(null, null);
+                else if ((key == (int)'g' || key == (int)'?') && ReplayGotoButton.IsEnabled)
+                    ReplayGotoButton_Clicked(null, null);
+                else if ((key == (int)'n' || key == (int)'1' || key == (int)'.') && ReplayNextButton.IsEnabled)
+                    ReplayNextButton_Clicked(null, null);
+                else if (key == (int)'q' && ReplayQuitButton.IsEnabled)
+                    ReplayQuitButton_Clicked(null, null);
+
+                handled = true;
+            }
+            else if (!MenuGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !ReplayGrid.IsVisible && !PlayingReplay)
             {
                 if (MoreCommandsGrid.IsVisible)
                 {
@@ -18980,7 +18997,7 @@ namespace GnollHackX.Pages.Game
             }
             else if (TextGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space || key == GHSpecialKey.Up || key == GHSpecialKey.Down))
             {
-                if (key == GHSpecialKey.Enter || TextGrid.IsVisible && key == GHSpecialKey.Escape)
+                if ((key == GHSpecialKey.Enter || TextGrid.IsVisible && key == GHSpecialKey.Escape) && !PlayingReplay)
                     TextCanvas_Pressed(null, null);
                 else if (key == GHSpecialKey.Up)
                     ScrollTextWindow(120);
@@ -18992,9 +19009,9 @@ namespace GnollHackX.Pages.Game
             }
             else if (MenuGrid.IsVisible && !MenuCountGrid.IsVisible && (key == GHSpecialKey.Escape || (MenuOKButton.IsEnabled && (key == GHSpecialKey.Enter)) || key == GHSpecialKey.Up || key == GHSpecialKey.Down || key == GHSpecialKey.Space))
             {
-                if (key == GHSpecialKey.Escape)
+                if (key == GHSpecialKey.Escape && !PlayingReplay)
                     MenuCancelButton_Clicked(null, null);
-                else if (MenuOKButton.IsEnabled && (key == GHSpecialKey.Enter))
+                else if (MenuOKButton.IsEnabled && (key == GHSpecialKey.Enter) && !PlayingReplay)
                     MenuOKButton_Clicked(null, null);
                 else if (key == GHSpecialKey.Up)
                     ScrollMenu(120);
@@ -19004,7 +19021,7 @@ namespace GnollHackX.Pages.Game
                     ScrollMenu(-1200);
                 handled = true;
             }
-            else if (MenuGrid.IsVisible && MenuCountGrid.IsVisible && (key == GHSpecialKey.Escape || (MenuOKButton.IsEnabled && (key == GHSpecialKey.Enter))))
+            else if (MenuGrid.IsVisible && MenuCountGrid.IsVisible && !PlayingReplay && (key == GHSpecialKey.Escape || (MenuOKButton.IsEnabled && (key == GHSpecialKey.Enter))))
             {
                 if (key == GHSpecialKey.Escape)
                     MenuCountCancelButton_Clicked(null, null);
@@ -19012,22 +19029,46 @@ namespace GnollHackX.Pages.Game
                     MenuCountOkButton_Clicked(null, null);
                 handled = true;
             }
-            else if (GetLineGrid.IsVisible && (key == GHSpecialKey.Escape))
+            else if (GetLineGrid.IsVisible && (key == GHSpecialKey.Escape) && !PlayingReplay)
             {
                 GetLineCancelButton_Clicked(null, null);
                 handled = true;
             }
-            else if (YnGrid.IsVisible && (key == GHSpecialKey.Escape))
+            else if (YnGrid.IsVisible && (key == GHSpecialKey.Escape) && !PlayingReplay)
             {
                 YnButton_Pressed(null, null, GHConstants.CancelChar);
                 handled = true;
             }
-            else if (PopupGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space))
+            else if (PopupGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space) && !PlayingReplay)
             {
                 PopupOkButton_Clicked(null, null);
                 handled = true;
             }
-            else if (!MenuGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible)
+            else if (ReplayGrid.IsVisible && !GotoTurnGrid.IsVisible && (key == GHSpecialKey.Enter || key == GHSpecialKey.Space || key == GHSpecialKey.Escape || key == GHSpecialKey.Down || key == GHSpecialKey.Up || key == GHSpecialKey.Right))
+            {
+                if ((key == GHSpecialKey.Enter || key == GHSpecialKey.Space) && ReplayPauseButton.IsEnabled)
+                    ReplayPauseButton_Clicked(null, null);
+                else if ((key == GHSpecialKey.Down) && ReplaySlowerButton.IsEnabled)
+                    ReplaySlowerButton_Clicked(null, null);
+                else if ((key == GHSpecialKey.Up) && ReplayFasterButton.IsEnabled)
+                    ReplayFasterButton_Clicked(null, null);
+                else if ((key == GHSpecialKey.Right) && ReplayNextButton.IsEnabled)
+                    ReplayNextButton_Clicked(null, null);
+                else if (key == GHSpecialKey.Escape && ReplayQuitButton.IsEnabled)
+                    ReplayQuitButton_Clicked(null, null);
+
+                handled = true;
+            }
+            else if (ReplayGrid.IsVisible && GotoTurnGrid.IsVisible && (key == GHSpecialKey.Enter || key == GHSpecialKey.Space || key == GHSpecialKey.Escape))
+            {
+                if ((key == GHSpecialKey.Enter || key == GHSpecialKey.Space) && GotoTurnOkButton.IsEnabled)
+                    GotoTurnOkButton_Clicked(null, null);
+                else if (key == GHSpecialKey.Escape && GotoTurnCancelButton.IsEnabled)
+                    GotoTurnCancelButton_Clicked(null, null);
+
+                handled = true;
+            }
+            else if (!MenuGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible && !ReplayGrid.IsVisible)
             {
                 if (MoreCommandsGrid.IsVisible)
                 {
@@ -19081,7 +19122,7 @@ namespace GnollHackX.Pages.Game
                         ScrollMessages(1200);
                     handled = true;
                 }
-                else
+                else if (!PlayingReplay)
                 {
                     int resp = 0;
                     if (key == GHSpecialKey.Escape)
