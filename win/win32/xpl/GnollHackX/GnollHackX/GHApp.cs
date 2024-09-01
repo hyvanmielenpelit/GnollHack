@@ -5598,13 +5598,13 @@ namespace GnollHackX
                                                                 byte[] attrs_bytes = attrs_size > 0 ? br.ReadBytes(attrs_size) : null;
                                                                 fixed (byte* attrs_byte_ptr = attrs_bytes)
                                                                 {
-                                                                    IntPtr attrs_ptr = attrs_bytes == null ? IntPtr.Zero : (IntPtr)otypdata_byte_ptr;
+                                                                    IntPtr attrs_ptr = attrs_bytes == null ? IntPtr.Zero : (IntPtr)attrs_byte_ptr;
 
                                                                     int colors_size = br.ReadInt32();
                                                                     byte[] colors_bytes = colors_size > 0 ? br.ReadBytes(colors_size) : null;
                                                                     fixed (byte* colors_byte_ptr = colors_bytes)
                                                                     {
-                                                                        IntPtr colors_ptr = colors_bytes == null ? IntPtr.Zero : (IntPtr)otypdata_byte_ptr;
+                                                                        IntPtr colors_ptr = colors_bytes == null ? IntPtr.Zero : (IntPtr)colors_byte_ptr;
                                                                         game.ClientCallback_AddExtendedMenu(winid, glyph, identifier, accel, groupaccel, attr, color, text, presel,
                                                                             maxcount, oid, mid, headingaccel, special_mark, menuflags, dataflags, style, otmpdata_ptr, otypdata_ptr, attrs_ptr, colors_ptr);
                                                                     }
