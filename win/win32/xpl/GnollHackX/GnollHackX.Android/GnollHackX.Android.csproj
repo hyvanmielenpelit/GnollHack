@@ -112,6 +112,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GHButtonRenderer.cs" />
     <Compile Include="GHGamePageRenderer.cs" />
     <Compile Include="PlatformServiceAndroid.cs" />
     <Compile Include="..\GnollHackX.FMOD\FmodService.cs" />
