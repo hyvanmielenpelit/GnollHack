@@ -36,6 +36,9 @@ public static class MauiProgram
             .UseSkiaSharp()
             .ConfigureMauiHandlers((handlers) => {
                 handlers.AddHandler(typeof(CustomLabel), typeof(AutoSizeSKCanvasViewHandler));
+#if ANDROID
+                handlers.AddHandler(typeof(Button), typeof(NoFocusButtonHandler));
+#endif
 #if IOS
                 handlers.AddHandler(typeof(Shell), typeof(CustomShellRenderer));
                 handlers.AddHandler<Border, NotAnimatedBorderHandler>();
