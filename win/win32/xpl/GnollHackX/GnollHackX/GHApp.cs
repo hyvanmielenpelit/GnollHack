@@ -239,8 +239,7 @@ namespace GnollHackX
         {
             get
             {
-                return IsiOS /* Completed does not fire */
-                    || !IsKeyboardConnected; /* Keyboard handling does not fire */
+                return !IsKeyboardConnected; /* Keyboard handling does not fire */
             }
         }
 

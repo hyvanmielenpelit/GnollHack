@@ -18834,7 +18834,7 @@ namespace GnollHackX.Pages.Game
         public bool HandleKeyPress(int key, bool isCtrl, bool isMeta)
         {
             bool handled = false;
-            if (LoadingGrid.IsVisible || !GHApp.IsPageOnTopOfModalNavigationStack(this))
+            if (LoadingGrid.IsVisible || key == 13 || !GHApp.IsPageOnTopOfModalNavigationStack(this))
             {
                 /* Nothing */
             }
@@ -18998,9 +18998,9 @@ namespace GnollHackX.Pages.Game
                     ScrollTextWindow(-1200);
                 handled = true;
             }
-            else if (MenuGrid.IsVisible && !MenuCountGrid.IsVisible && (key == GHSpecialKey.Escape || (MenuOKButton.IsEnabled && (key == GHSpecialKey.Enter)) || key == GHSpecialKey.Up || key == GHSpecialKey.Down || key == GHSpecialKey.Space))
+            else if (MenuGrid.IsVisible && !MenuCountGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Up || key == GHSpecialKey.Down || key == GHSpecialKey.Space))
             {
-                if (key == GHSpecialKey.Escape && !PlayingReplay)
+                if (MenuCancelButton.IsEnabled && key == GHSpecialKey.Escape && !PlayingReplay)
                     MenuCancelButton_Clicked(null, null);
                 else if (MenuOKButton.IsEnabled && (key == GHSpecialKey.Enter) && !PlayingReplay)
                     MenuOKButton_Clicked(null, null);
@@ -19012,7 +19012,7 @@ namespace GnollHackX.Pages.Game
                     ScrollMenu(-1200);
                 handled = true;
             }
-            else if (MenuGrid.IsVisible && MenuCountGrid.IsVisible && !PlayingReplay && (key == GHSpecialKey.Escape || (MenuOKButton.IsEnabled && (key == GHSpecialKey.Enter))))
+            else if (MenuGrid.IsVisible && MenuCountGrid.IsVisible && !PlayingReplay && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter))
             {
                 if (MenuCountCancelButton.IsEnabled && key == GHSpecialKey.Escape)
                     MenuCountCancelButton_Clicked(null, null);
@@ -19020,9 +19020,12 @@ namespace GnollHackX.Pages.Game
                     MenuCountOkButton_Clicked(null, null);
                 handled = true;
             }
-            else if (GetLineGrid.IsVisible && (key == GHSpecialKey.Escape) && !PlayingReplay)
+            else if (GetLineGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter) && !PlayingReplay)
             {
-                GetLineCancelButton_Clicked(null, null);
+                if (key == GHSpecialKey.Enter && GetLineOkButton.IsEnabled)
+                    GetLineOkButton_Clicked(null, null);
+                else if (key == GHSpecialKey.Escape && GetLineCancelButton.IsEnabled)
+                    GetLineCancelButton_Clicked(null, null);
                 handled = true;
             }
             else if (YnGrid.IsVisible && (key == GHSpecialKey.Escape) && !PlayingReplay)
