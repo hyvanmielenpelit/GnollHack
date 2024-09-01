@@ -223,7 +223,7 @@
                                     PlaceholderColor="Gray" Placeholder="Count" 
                                     Keyboard="Numeric" 
                                     WidthRequest="180"
-                                    Completed="MenuEntry_Completed"
+                                    Completed="MenuCountEntry_Completed"
                                     />
                                 <Grid x:Name="MenuCountButtonGrid" ColumnSpacing="6" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" WidthRequest="360">
                                     <Grid.RowDefinitions>
