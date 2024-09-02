@@ -291,7 +291,7 @@ dig(VOID_ARGS)
     register boolean ispick = wep && is_pick(wep);
     register boolean isaxe = wep && is_axe(wep);
     register boolean issaw = wep && is_saw(wep);
-    const char *verb = (!wep || is_pick(wep)) ? "dig into" : isaxe ? "chop through" : issaw ? "cut into" : "dig into";
+    const char *verb = (!wep || ispick) ? "dig into" : isaxe ? "chop through" : issaw ? "cut into" : "dig into";
 
     lev = &levl[dpx][dpy];
     /* perhaps a nymph stole your pick-axe while you were busy digging */

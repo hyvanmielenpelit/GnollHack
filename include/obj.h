@@ -293,9 +293,13 @@ enum elemental_enchantments {
      && objects[otyp].oc_skill == P_AXE))
 #define is_axe(o) \
     (is_otyp_axe((o)->otyp) || ((o)->oartifact && is_artifact_applicable_as_axe(o)))
+#define is_otyp_saw(otyp) \
+    (objects[otyp].oc_class == TOOL_CLASS \
+     && objects[otyp].oc_subtyp == TOOLTYPE_SAW)
+#define is_saw(o) is_otyp_saw((o)->otyp) 
 #define is_otyp_pick(otyp) \
     ((objects[otyp].oc_class == WEAPON_CLASS || objects[otyp].oc_class == TOOL_CLASS) \
-     && objects[otyp].oc_skill == P_DIGGING)
+     && objects[otyp].oc_skill == P_DIGGING && !is_otyp_saw(otyp))
 #define is_pick(o) is_otyp_pick((o)->otyp)
 #define is_otyp_whip(otyp)                                             \
     (objects[otyp].oc_class == WEAPON_CLASS && objects[otyp].oc_subtyp == WEP_WHIP)
@@ -610,10 +614,6 @@ enum elemental_enchantments {
     || objects[(otyp)].oc_class == POTION_CLASS || objects[(otyp)].oc_class == SCROLL_CLASS)
 
 /* Other tools */
-#define is_otyp_saw(otyp) \
-    (objects[otyp].oc_class == TOOL_CLASS \
-     && objects[otyp].oc_subtyp == TOOLTYPE_SAW)
-#define is_saw(o) is_otyp_saw((o)->otyp) 
 #define is_otyp_chest(otyp) \
     (objects[otyp].oc_class == TOOL_CLASS \
      && objects[otyp].oc_subtyp == TOOLTYPE_CHEST)

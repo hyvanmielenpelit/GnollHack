@@ -1234,7 +1234,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
     }
 
     boolean weapon_stats_shown = FALSE;
-    if (!uses_spell_flags && desc_known &&(is_otyp_weapon(otyp) || ((is_otyp_gloves(otyp) || is_otyp_boots(otyp) || objects[otyp].oc_class == GEM_CLASS))))
+    if (!uses_spell_flags && desc_known && (is_otyp_weapon(otyp) || is_otyp_pick(otyp) || is_otyp_saw(otyp) || ((is_otyp_gloves(otyp) || is_otyp_boots(otyp) || objects[otyp].oc_class == GEM_CLASS))))
     {
         weapon_stats_shown = TRUE;
         boolean maindiceprinted = FALSE;
@@ -1250,7 +1250,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
 
-            if (obj ? is_appliable_weapon(obj) : is_otyp_appliable_weapon(otyp))
+            if (obj ? is_appliable_weapon(obj) || is_pick(obj) || is_saw(obj) : is_otyp_appliable_weapon(otyp) || is_otyp_pick(otyp) || is_otyp_saw(otyp))
             {
                 /* Single or two-handed */
                 if (obj ? is_appliable_pole_type_weapon(obj) : is_otyp_appliable_pole_type_weapon(otyp))
