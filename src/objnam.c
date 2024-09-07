@@ -28,7 +28,7 @@ const char* weapon_type_names[MAX_WEAPON_TYPES] = {
     "axe", "throwing axe", "two-handed axe", "dagger", "knife", "mace", "spiked mace", "flail", "morning star", "club", "spiked club",
     "hammer", "spiked hammer",  "staff", "rod", "spear", "javelin", "polearm", "trident",
     "dart", "shuriken", "boomerang", "short bow", "long bow", "hand crossbow", "crossbow", "repeating crossbow", "sling",
-    "arrow", "quarrel", "sling-bullet", "pick-axe", "unicorn horn", "horn", "worm tooth",
+    "arrow", "quarrel", "sling-bullet", "mattock", "unicorn horn", "horn", "worm tooth",
     "shovel", "hook", "lance", "hose", "fork", "whip", "double-headed flail", "triple-headed flail"
 };
 

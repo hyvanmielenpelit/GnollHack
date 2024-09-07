@@ -293,6 +293,10 @@ enum elemental_enchantments {
      && objects[otyp].oc_skill == P_AXE))
 #define is_axe(o) \
     (is_otyp_axe((o)->otyp) || ((o)->oartifact && is_artifact_applicable_as_axe(o)))
+#define is_otyp_mattock(otyp) \
+    (objects[otyp].oc_class == WEAPON_CLASS \
+     && objects[otyp].oc_subtyp == WEP_MATTOCK)
+#define is_mattock(o) is_otyp_mattock((o)->otyp) 
 #define is_otyp_saw(otyp) \
     (objects[otyp].oc_class == TOOL_CLASS \
      && objects[otyp].oc_subtyp == TOOLTYPE_SAW)

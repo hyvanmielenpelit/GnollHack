@@ -168,6 +168,7 @@ struct obj *obj;
     if (!obj)
         return "";
 
+    /* Maybe should use weapon_type_names instead? --JG */
     enum p_skills skill = weapon_skill_type(obj);
     const char *descr = P_NAME(skill);
 
@@ -216,6 +217,14 @@ struct obj *obj;
             descr = "mattock";
         break;
 #endif
+    case P_DIGGING:
+        if (is_saw(obj))
+            descr = "saw";
+        else if (is_mattock(obj))
+            descr = "mattock";
+        else
+            descr = "digging tool";
+        break;
     default:
         break;
     }

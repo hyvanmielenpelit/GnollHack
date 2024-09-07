@@ -119,7 +119,7 @@ enum obj_weapon_types {
     WEP_ARROW = 37,
     WEP_QUARREL = 38,
     WEP_SLING_BULLET = 39,
-    WEP_PICK_AXE = 40,
+    WEP_MATTOCK = 40,
     WEP_UNICORN_HORN = 41,
     WEP_HORN = 42,
     WEP_WORM_TOOTH = 43,
