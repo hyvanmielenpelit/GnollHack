@@ -8675,7 +8675,6 @@ int otyp;
 
     if (objects[otyp].oc_class == WEAPON_CLASS)
     {
-
         return weapon_type_names[objects[otyp].oc_subtyp];
     }
     else if (objects[otyp].oc_class == ARMOR_CLASS)

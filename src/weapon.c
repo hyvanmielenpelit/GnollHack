@@ -166,11 +166,22 @@ weapon_descr(obj)
 struct obj *obj;
 {
     if (!obj)
-        return "";
+        return empty_string;
 
-    /* Maybe should use weapon_type_names instead? --JG */
     enum p_skills skill = weapon_skill_type(obj);
-    const char *descr = P_NAME(skill);
+    const char* descr = empty_string;
+    if (obj->oclass == WEAPON_CLASS)
+        descr = weapon_type_names[objects[obj->otyp].oc_subtyp];
+    else if (obj->oclass == ARMOR_CLASS)
+        descr = armor_type_names[objects[obj->otyp].oc_subtyp];
+    else if (obj->oclass == TOOL_CLASS && objects[obj->otyp].oc_subtyp > TOOLTYPE_GENERAL)
+        descr = tool_type_names[objects[obj->otyp].oc_subtyp];
+    else if (obj->oclass == MISCELLANEOUS_CLASS && objects[obj->otyp].oc_subtyp > MISC_MULTIPLE_PERMITTED)
+        descr = misc_type_names[objects[obj->otyp].oc_subtyp];
+    else
+    {
+        descr = P_NAME(skill);
+    }
 
     /* assorted special cases */
     switch (skill) {
@@ -194,10 +205,11 @@ struct obj *obj;
                         : (obj->oclass == GEM_CLASS)
                             ? "gem"
                             /* in case somebody adds odd sling ammo */
-                            : (obj->otyp == SLING_BULLET || is_graystone(obj))
+                            : (obj->otyp == SLING_BULLET)
                                 ? "sling-bullet"
                                 : def_oc_syms[(int) obj->oclass].name;
         break;
+#if 0
     case P_BOW:
         if (is_ammo(obj))
             descr = "arrow";
@@ -206,7 +218,6 @@ struct obj *obj;
         if (is_ammo(obj))
             descr = "bolt";
         break;
-#if 0
     case P_FLAIL:
         if (obj->otyp == GRAPPLING_HOOK)
             descr = "hook";
@@ -218,11 +229,12 @@ struct obj *obj;
         break;
 #endif
     case P_DIGGING:
-        if (is_saw(obj))
-            descr = "saw";
-        else if (is_mattock(obj))
-            descr = "mattock";
-        else
+        //if (is_saw(obj))
+        //    descr = "saw";
+        //else if (is_mattock(obj))
+        //    descr = "mattock";
+        //else
+        if(descr && !*descr)
             descr = "digging tool";
         break;
     default:

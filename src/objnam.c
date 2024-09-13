@@ -26,7 +26,7 @@ const char* armor_type_names[MAX_ARMOR_TYPES] = {
 const char* weapon_type_names[MAX_WEAPON_TYPES] = {
     "short sword", "long sword", "two-handed sword", "broadsword", "bastard sword", "scimitar", "saber", "katana",  "tsurugi",
     "axe", "throwing axe", "two-handed axe", "dagger", "knife", "mace", "spiked mace", "flail", "morning star", "club", "spiked club",
-    "hammer", "spiked hammer",  "staff", "rod", "spear", "javelin", "polearm", "trident",
+    "hammer", "spiked hammer", "staff", "rod", "spear", "javelin", "polearm", "trident",
     "dart", "shuriken", "boomerang", "short bow", "long bow", "hand crossbow", "crossbow", "repeating crossbow", "sling",
     "arrow", "quarrel", "sling-bullet", "mattock", "unicorn horn", "horn", "worm tooth",
     "shovel", "hook", "lance", "hose", "fork", "whip", "double-headed flail", "triple-headed flail"
