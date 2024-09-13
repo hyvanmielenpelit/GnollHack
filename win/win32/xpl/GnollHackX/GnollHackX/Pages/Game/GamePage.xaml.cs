@@ -8032,7 +8032,7 @@ namespace GnollHackX.Pages.Game
                                 {
                                     float newleft = 0;
                                     float messagetop = messageWindow.Top;
-                                    float newtop = messagetop - ghWindow.Height * messageTextMultiplier - 10f * messageTextScale;
+                                    float newtop = messagetop - height * ghWindow.HeightInChars - ghWindow.Padding.Top - ghWindow.Padding.Bottom - 10f * messageTextScale;
                                     ghWindow.Left = newleft;
                                     ghWindow.Top = newtop;
                                 }
