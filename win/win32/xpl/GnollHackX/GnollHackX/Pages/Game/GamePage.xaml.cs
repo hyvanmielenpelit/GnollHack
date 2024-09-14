@@ -8038,9 +8038,7 @@ namespace GnollHackX.Pages.Game
                                 }
                             }
 
-                            SKRect winRect = new SKRect(ghWindow.Left, ghWindow.Top,
-                                ghWindow.Right,
-                                ghWindow.Bottom);
+                            SKRect winRect = ghWindow.GetWindowRect(ghWindow.WindowType == GHWinType.Status ? statusBarTextMultiplier : messageTextMultiplier);
 
                             if (ghWindow.CenterHorizontally && winRect.Right - winRect.Left < canvaswidth)
                             {
@@ -8078,7 +8076,6 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
                                     StopProfiling(GHProfilingStyle.Rect);
 #endif
-
                                 }
 
                                 if (i == curGame.StatusWindowId && ClassicStatusBar)

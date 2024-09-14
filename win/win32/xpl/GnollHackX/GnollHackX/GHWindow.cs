@@ -182,10 +182,8 @@ namespace GnollHackX
         }
         public float Left { get; set; }
         public float Top { get; set; }
-        public float Right { get { return Left + _pixelWidth; } }
-        public float Bottom { get { return Top + _pixelHeight; } }
-        public float Width { get { return _pixelHeight; } }
-        public float Height { get { return _pixelHeight; } }
+        public float UnscaledWidth { get { return _pixelHeight; } }
+        public float UnscaledHeight { get { return _pixelHeight; } }
 
         private float _pixelWidth = 0;
         private float _pixelHeight = 0;
@@ -588,6 +586,11 @@ namespace GnollHackX
                     }
                 }
             }
+        }
+
+        public SKRect GetWindowRect(float textScalingFactor)
+        {
+            return new SKRect(Left, Top, Left + UnscaledWidth * textScalingFactor, Top + UnscaledHeight * textScalingFactor);
         }
 
         public double TextWindowMaximumWidth
