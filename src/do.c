@@ -25,11 +25,29 @@ STATIC_DCL void NDECL(final_level);
 STATIC_DCL void FDECL(print_corpse_properties, (winid, int));
 STATIC_DCL void FDECL(revive_handle_magic_chest, (xchar*, struct obj**, int*, struct monst**));
 /* STATIC_DCL boolean FDECL(badspot, (XCHAR_P,XCHAR_P)); */
+STATIC_PTR int FDECL(CFDECLSPEC item_wiki_cmp, (const genericptr, const genericptr));
 
 extern int n_dgns; /* number of dungeons, from dungeon.c */
 
 STATIC_VAR NEARDATA const char drop_types[] = { ALLOW_COUNT, COIN_CLASS,
                                             ALL_CLASSES, 0 };
+
+STATIC_OVL int CFDECLSPEC
+item_wiki_cmp(p, q)
+const genericptr p;
+const genericptr q;
+{
+    if (!p || !q)
+        return 0;
+
+    short idx1 = *(short*)p;
+    short idx2 = *(short*)q;
+
+    const char* name1 = OBJ_NAME(objects[idx1]);
+    const char* name2 = OBJ_NAME(objects[idx2]);
+
+    return strcmpi(name1, name2);
+}
 
 /* 'd' command: drop one inventory item */
 int
@@ -4310,13 +4328,21 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
     else if (!obj)
     {
         int spellcnt = 0;
+        short* spellbook_indices = (short*)alloc(MAXSPELL * sizeof(short));
+        memset(spellbook_indices, 0, MAXSPELL * sizeof(short));
+
         for (i = FIRST_SPELL; i < FIRST_SPELL + MAXSPELL; i++)
         {
             if (is_otyp_component_for_spellbook(i, otyp, (uint64_t*)0, (int*)0) > 0)
+            {
+                spellbook_indices[spellcnt] = (short)i;
                 spellcnt++;
+            }
         }
         if (spellcnt > 0)
         {
+            qsort(spellbook_indices, spellcnt, sizeof(short), item_wiki_cmp);
+
             Sprintf(buf, "Component for the following spell%s:", plur(spellcnt));
             putstr(datawin, ATR_HEADING, buf);
             int compcnt = 0;
@@ -4324,15 +4350,15 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             char sbuf[BUFSZ];
             char fbuf[BUFSZ];
             int splres;
-            for (i = FIRST_SPELL; i < FIRST_SPELL + MAXSPELL; i++)
+            for (i = 0; i < spellcnt; i++)
             {
                 uint64_t mcflags = 0;
                 int mccorpsenm = -1;
-                splres = is_otyp_component_for_spellbook(i, otyp, &mcflags, &mccorpsenm);
+                splres = is_otyp_component_for_spellbook((int)spellbook_indices[i], otyp, &mcflags, &mccorpsenm);
                 if (splres > 0)
                 {
                     compcnt++;
-                    splname = OBJ_NAME(objects[i]);
+                    splname = OBJ_NAME(objects[spellbook_indices[i]]);
                     Strcpy(sbuf, splname);
                     *sbuf = highc(*sbuf);
                     Strcpy(fbuf, "");
@@ -4372,11 +4398,13 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                             Strcat(fbuf, ", ");
                         Strcat(fbuf, "death-enchanted");
                     }
-                    Sprintf(buf, " %2d - %s%s%s%s", compcnt, sbuf, *fbuf ? " (" : "", fbuf, *fbuf ? ")" : "");
+                    Sprintf(buf, " %2d - [[%s]]%s%s%s", compcnt, sbuf, *fbuf ? " (" : "", fbuf, *fbuf ? ")" : "");
                     putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
                 }
             }
         }
+
+        free(spellbook_indices);
     }
 
     /* Notable */
@@ -9194,7 +9222,6 @@ STATIC_DCL void FDECL(write_putstr_ex, (winid, const char*, int, int, int));
 STATIC_DCL void FDECL(write_putstr_ex2, (winid, const char*, const char*, const char*, int, int, int));
 STATIC_PTR int FDECL(CFDECLSPEC spell_wiki_cmp, (const genericptr, const genericptr));
 STATIC_PTR int FDECL(CFDECLSPEC monster_wiki_cmp, (const genericptr, const genericptr));
-STATIC_PTR int FDECL(CFDECLSPEC item_wiki_cmp, (const genericptr, const genericptr));
 
 STATIC_VAR int write_fd = -1;
 
@@ -9717,23 +9744,6 @@ write_monsters()
     pline("Done!");
 }
 
-
-STATIC_OVL int CFDECLSPEC
-item_wiki_cmp(p, q)
-const genericptr p;
-const genericptr q;
-{
-    if (!p || !q)
-        return 0;
-
-    short idx1 = *(short*)p;
-    short idx2 = *(short*)q;
-
-    const char* name1 = OBJ_NAME(objects[idx1]);
-    const char* name2 = OBJ_NAME(objects[idx2]);
-
-    return strcmpi(name1, name2);
-}
 
 void
 write_items()
