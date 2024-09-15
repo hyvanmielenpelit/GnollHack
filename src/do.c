@@ -1742,7 +1742,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             wep_avg_dmg += dmg_bonus;
             wep_multipliable_avg_dmg += dmg_bonus;
         }
-        else
+        else if (obj)
         {
             /* Otherwise get full melee strength damage bonus */
             double str_bonus = strength_damage_bonus_core(ACURR(A_STR), TRUE);
