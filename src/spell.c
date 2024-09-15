@@ -5741,6 +5741,31 @@ struct obj* otmp;
     return 0;
 }
 
+
+uchar
+is_otyp_component_for_spellbook(booktype, otyp, flags_ptr, corpsenm_ptr)
+int booktype, otyp;
+uint64_t* flags_ptr;
+int* corpsenm_ptr;
+{
+    int j;
+    uchar res;
+    for (j = 0; matlists[objects[booktype].oc_material_components].matcomp[j].amount != 0; j++)
+    {
+        struct materialcomponent* mc = &matlists[objects[booktype].oc_material_components].matcomp[j];
+        res = is_acceptable_component_object_type(mc, otyp);
+        if (res)
+        {
+            if (flags_ptr)
+                *flags_ptr = mc->flags;
+            if (corpsenm_ptr)
+                *corpsenm_ptr = mc->monsterid[0];
+            return res;
+        }
+    }
+    return 0;
+}
+
 const char*
 domatcompname(mc)
 struct materialcomponent* mc;
