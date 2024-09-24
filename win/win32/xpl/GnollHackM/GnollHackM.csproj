@@ -83,8 +83,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-		<!--<_MauiForceXamlCForDebug>true</_MauiForceXamlCForDebug>-->
-		<DebugType>full</DebugType>
+		<_MauiForceXamlCForDebug>true</_MauiForceXamlCForDebug>
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-android'">
