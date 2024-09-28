@@ -546,8 +546,10 @@ LibValidateSaveFile(const char* filename, char* output_str)
     SAVEF[strlen(SAVEF) - strlen(COMPRESS_EXTENSION)] = '\0';
 #endif
     nh_uncompress(SAVEF);
-    if ((fd = open_savefile()) >= 0) {
-        if (validate(fd, filename) == 0) {
+    if ((fd = open_savefile()) >= 0) 
+    {
+        if (validate(fd, filename) == 0) 
+        {
             res = 1;
         }
         (void)nhclose(fd);

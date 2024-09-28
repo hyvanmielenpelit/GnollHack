@@ -38,7 +38,8 @@ eraseoldlocks()
      * before starting everything (including the dungeon initialization
      * that sets astral_level, needed for maxledgerno()) up
      */
-    for(i = 1; i <= MAXDUNGEON * MAXLEVEL + 1; i++) {
+    for(i = 1; i <= MAXDUNGEON * MAXLEVEL + 1; i++) 
+    {
         /* try to remove all */
         set_levelfile_name(lock, i);
         (void) unlink(fqname(lock, LEVELPREFIX, 0));
@@ -257,7 +258,8 @@ sys_random_seed()
     FILE* fptr;
 
     fptr = fopen(DEV_RANDOM, "r");
-    if (fptr) {
+    if (fptr) 
+    {
         fread(&seed, sizeof(int64_t), 1, fptr);
         has_strong_rngseed = TRUE;  /* decl.c */
         no_seed = FALSE;
@@ -268,10 +270,12 @@ sys_random_seed()
         paniclog("sys_random_seed", "falling back to weak seed");
     }
 #endif
-    if (no_seed) {
+    if (no_seed) 
+    {
         seed = (uint64_t)getnow(); /* time((TIME_type) 0) */
         /* Quick dirty band-aid to prevent PRNG prediction */
-        if (pid) {
+        if (pid) 
+        {
             if (!(pid & 3L))
                 pid -= 1L;
             seed *= pid;

@@ -1153,7 +1153,8 @@ int get_condition_attr(int cond_mask)
 void lib_print_conditions(const char** names)
 {
     int i;
-    for (i = 0; i < NUM_BL_CONDITIONS; i++) {
+    for (i = 0; i < NUM_BL_CONDITIONS; i++) 
+    {
         int cond_mask = 1 << i;
         if (active_conditions & cond_mask)
         {
