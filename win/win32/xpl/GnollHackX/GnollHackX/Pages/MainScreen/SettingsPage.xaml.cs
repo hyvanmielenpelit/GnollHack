@@ -347,6 +347,8 @@ namespace GnollHackX.Pages.MainScreen
 
             GHApp.AllowBones = AllowBonesSwitch.IsToggled;
             Preferences.Set("AllowBones", AllowBonesSwitch.IsToggled);
+            GHApp.AllowPet = AllowPetSwitch.IsToggled;
+            Preferences.Set("AllowPet", AllowPetSwitch.IsToggled);
 
             if (RecordSwitch.IsEnabled)
             {
@@ -802,7 +804,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             int cursor = 0, graphics = 0, savestyle = 0, maprefresh = (int)UIUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
             bool mem = false, fps = false, zoom = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, disableauxgpu = false, mipmap = false, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, darkmode = false, windowedmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
-            bool allowbones = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
+            bool allowbones = true, allowpet = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false;
@@ -875,6 +877,7 @@ namespace GnollHackX.Pages.MainScreen
             bones_allowed_users = Preferences.Get("BonesAllowedUsers", "");
             forcepostbones = Preferences.Get("ForcePostBones", false);
             allowbones = Preferences.Get("AllowBones", true);
+            allowpet = Preferences.Get("AllowPet", true);
             emptywishisnothing = Preferences.Get("EmptyWishIsNothing", true);
             doubleclick = Preferences.Get("OkOnDoubleClick", GHApp.IsDesktop);
             recordgame = Preferences.Get("RecordGame", false);
@@ -1126,6 +1129,7 @@ namespace GnollHackX.Pages.MainScreen
             StreamingBankToMemorySwitch.IsToggled = streamingbanktomemory;
             StreamingBankToDiskSwitch.IsToggled = streamingbanktodisk;
             AllowBonesSwitch.IsToggled = allowbones;
+            AllowPetSwitch.IsToggled = allowpet;
             RecordSwitch.IsToggled = recordgame;
             if (_gamePage != null || (!RecordSwitch.IsToggled && GHApp.PlatformService.GetDeviceFreeDiskSpaceInBytes() < GHConstants.LowFreeDiskSpaceThresholdInBytes)) /* Cannot turn on or off in the middle of the game; need to save and restart; otherwise either relevant commands are not recorded or things may get prone to bugs */
             {

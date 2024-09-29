@@ -1145,6 +1145,7 @@ namespace GnollHackX.Unknown
             GHApp.SetMirroredOptionsToDefaults();
             string filesdir = GetGnollHackPath();
             bool allowbones = GHApp.AllowBones;
+            bool allowpet = GHApp.AllowPet;
             ulong rightmouse = (ulong)GHApp.MirroredRightMouseCommand << GHConstants.RightMouseBitIndex;
             ulong middlemouse = (ulong)GHApp.MirroredMiddleMouseCommand << GHConstants.MiddleMouseBitIndex;
             ulong runflags = (ulong)(ghGame.WizardMode ? RunGnollHackFlags.WizardMode : 0) |
@@ -1152,6 +1153,7 @@ namespace GnollHackX.Unknown
                 (ulong)(ghGame.ModernMode ? RunGnollHackFlags.ModernMode : 0) |
                 (ulong)(ghGame.CasualMode ? RunGnollHackFlags.CasualMode : 0) |
                 (ulong)(allowbones ? 0 : RunGnollHackFlags.DisableBones) |
+                (ulong)(allowpet ? 0 : RunGnollHackFlags.NoPet) |
                 (ulong)(GHApp.TournamentMode ? RunGnollHackFlags.TournamentMode : 0) |
                 (ulong)(GHApp.IsDebug ? RunGnollHackFlags.GUIDebugMode : 0) |
                 (ulong)(GHApp.MirroredCharacterClickAction ? RunGnollHackFlags.CharacterClickAction : 0) | /* Use the default; GHApp.CharacterClickAction may contain the option value from the last game */

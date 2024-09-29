@@ -165,6 +165,7 @@ namespace GnollHackX
             XlogPassword = Preferences.Get("XlogPassword", "");
             XlogReleaseAccount = Preferences.Get("XlogReleaseAccount", false);
             AllowBones = Preferences.Get("AllowBones", true);
+            AllowPet = Preferences.Get("AllowPet", true);
             BonesAllowedUsers = Preferences.Get("BonesAllowedUsers", "");
             EmptyWishIsNothing = Preferences.Get("EmptyWishIsNothing", true);
             RecommendedSettingsChecked = Preferences.Get("RecommendedSettingsChecked", false);
@@ -3094,9 +3095,11 @@ namespace GnollHackX
         private static bool _bonesUserListIsBlack;
         public static bool BonesUserListIsBlack { get { lock (_bonesUserListIsBlackLock) { return _bonesUserListIsBlack; } } set { lock (_bonesUserListIsBlackLock) { _bonesUserListIsBlack = value; } } }
 
-        private static readonly object _allowBonesLock = new object();
+        private static readonly object _allowInGameLock = new object();
         private static bool _allowBones;
-        public static bool AllowBones { get { bool t = TournamentMode; lock (_allowBonesLock) { return _allowBones || t; } } set { lock (_allowBonesLock) { _allowBones = value; } } }
+        private static bool _allowPet;
+        public static bool AllowBones { get { bool t = TournamentMode; lock (_allowInGameLock) { return _allowBones || t; } } set { lock (_allowInGameLock) { _allowBones = value; } } }
+        public static bool AllowPet { get { lock (_allowInGameLock) { return _allowPet; } } set { lock (_allowInGameLock) { _allowPet = value; } } }
 
         private static readonly object _behaviorLock = new object();
         private static bool _emptyWishIsNothing;

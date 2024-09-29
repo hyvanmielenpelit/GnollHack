@@ -238,6 +238,7 @@ namespace GnollHackX
         TournamentMode =        0x00000100, /* Playing with server-like settings */
         GUIDebugMode =          0x00000200, /* GUI has been built in debug mode (not a release mode game?) */
         CharacterClickAction =  0x00000400, /* Set character-click action to true by default */
+        NoPet =                 0x00000800, /* Same as pettype:none in options file */
 
         RightMouseButtonBit1 =  0x00400000, 
         RightMouseButtonBit2 =  0x00800000, 

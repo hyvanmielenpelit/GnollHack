@@ -573,6 +573,9 @@ char *argv[];
         case 'B':
             flags.bones = TRUE;
             break;
+        case 'P': /* Petless */
+            preferred_pet = 'n';
+            break;
         case 'T':
             TournamentMode = TRUE;
             break;

@@ -653,7 +653,7 @@ LibGetVolumeForGHSound(int ghsound)
 DLLEXPORT int GnollHackStart(cmdlineargs)
 char* cmdlineargs;
 {
-#define MAX_CMD_PARAMS 16
+#define MAX_CMD_PARAMS 24
 
     char cmdbuf[BUFSZ + MAX_CMD_PARAMS * PL_NSIZ];
     Strcpy(cmdbuf, cmdlineargs);
@@ -891,6 +891,13 @@ DLLEXPORT int RunGnollHack(
 
     initial_flags.right_click_action = (uchar)((runflags & GHRUNFLAGS_RIGHT_MOUSE_BIT_MASK) >> GHRUNFLAGS_RIGHT_MOUSE_BIT_INDEX);
     initial_flags.middle_click_action = (uchar)((runflags & GHRUNFLAGS_MIDDLE_MOUSE_BIT_MASK) >> GHRUNFLAGS_MIDDLE_MOUSE_BIT_INDEX);
+
+    if (runflags & GHRUNFLAGS_NO_PET)
+    {
+        if (*cmdbuf)
+            Strcat(cmdbuf, " ");
+        Strcat(cmdbuf, "-P");
+    }
 
     /* Set directly, as other parts of GnollHack do not purposedly set this */
     if (last_used_player_name && strcmp(last_used_player_name, ""))

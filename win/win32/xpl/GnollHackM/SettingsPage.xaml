@@ -160,15 +160,6 @@
                                             HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="ZoomSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label x:Name="AllowBonesLabel" 
-                                    Text="Allow Ghost Levels"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="AllowBonesSwitch" Toggled="AllowBonesSwitch_Toggled" HorizontalOptions="End" VerticalOptions="Center" />
-                            </Grid>
                             <Grid x:Name="WindowedModeStackLayout" RowSpacing="6" HeightRequest="40">
                                 <Label Text="Windowed Mode"
                                             x:Name="WindowedModeLabel"
@@ -206,6 +197,27 @@
                                     </Label.GestureRecognizers>
                                 </Label>
                                 <Switch Grid.Column="1" x:Name="TournamentSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="TournamentSwitch_Toggled" />
+                            </Grid>
+                            
+                            <!-- These are settings influencing game settings at start -->
+                            <Label Text="Adventuring" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label x:Name="AllowPetLabel" 
+                                    Text="Start with Pet"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="AllowPetSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label x:Name="AllowBonesLabel" 
+                                    Text="Allow Ghost Levels"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="AllowBonesSwitch" Toggled="AllowBonesSwitch_Toggled" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
 
                             <Label Text="Interface" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
