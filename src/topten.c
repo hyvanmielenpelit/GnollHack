@@ -380,6 +380,10 @@ encodeconduct()
         e |= 1L << 15;
     if (!u.umortality)
         e |= 1L << 16;
+    if (!u.uconduct.pets)
+        e |= 1L << 17;
+    if (!u.uroleplay.numbones)
+        e |= 1L << 18;
 
     return e;
 }
