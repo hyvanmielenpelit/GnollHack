@@ -1485,7 +1485,7 @@ boolean* obj_destroyed;
                 obfree(o, (struct obj*) 0); \
             else                             \
                 useupall(o);                 \
-                o = (struct obj*) 0;            \
+            o = (struct obj*) 0;            \
     } while (0) /* now gone */
                 case EGG: 
                 {
