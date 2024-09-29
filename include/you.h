@@ -299,10 +299,10 @@ struct u_conduct {     /* number of times... */
     int64_t genocides;     /* genocided a monster */
     int64_t elbereths;     /* wrote Elbereth */
     int64_t conflicts;     /* caused conflict */
+    int64_t pets;          /* number of pets acquired */
+    int64_t bones;         /* number of bones levels visited */
 
     /* Reserved */
-    int64_t reserved1;    /* reserved for new conducts */
-    int64_t reserved2;    /* reserved for new conducts */
     int64_t reserved3;    /* reserved for new conducts */
     int64_t reserved4;    /* reserved for new conducts */
     int64_t reserved5;    /* reserved for new conducts */

@@ -2472,6 +2472,7 @@ boolean tinitial, tfrom_file;
                     break;
                 case 'n': /* no pet */
                     preferred_pet = 'n';
+                    flags.no_pets_preference = TRUE;
                     break;
                 case '*': /* random */
                     preferred_pet = '\0';
@@ -2481,8 +2482,12 @@ boolean tinitial, tfrom_file;
                     return FALSE;
                     break;
                 }
-        } else if (negated)
+        }
+        else if (negated)
+        {
             preferred_pet = 'n';
+            flags.no_pets_preference = TRUE;
+        }
         return retval;
     }
 

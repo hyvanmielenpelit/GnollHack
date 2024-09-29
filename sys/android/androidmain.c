@@ -265,6 +265,7 @@ static void process_command_line_arguments(argc, argv)
 			break;
 		case 'P': /* Petless */
 			preferred_pet = 'n';
+			flags.no_pets_preference = TRUE;
 			break;
 		case 'T':
 			TournamentMode = TRUE;

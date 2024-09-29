@@ -49,6 +49,7 @@ boolean set_tameness;
     {
         mtmp->mtame = is_domestic(mtmp->data) ? 10 : 5;
         mtmp->mpeaceful = 1;
+        u.uconduct.pets++;
     }
     mtmp->ispartymember = 0;
     mtmp->mavenge = 0;
@@ -1863,15 +1864,20 @@ boolean thrown;
         {
             mtmp->mtame = is_domestic(mtmp->data) ? 10 : 5;
             mtmp->mpeaceful = 1;
+            u.uconduct.pets++;
         }
 
         if (charm_type == 1)
         {
             (void)set_mon_property_b(mtmp, CHARMED, !duration ? -1 : duration, verbose);
+            if (is_tame(mtmp) && !was_tame)
+                u.uconduct.pets++;
         }
         else if (charm_type == 2)
         {
             (void)set_mon_property_b(mtmp, UNDEAD_CONTROL, !duration ? -1 : duration, verbose);
+            if (is_tame(mtmp) && !was_tame)
+                u.uconduct.pets++;
         }
         else if (is_tame(mtmp) && !was_tame)
         {

@@ -269,6 +269,7 @@ char *argv[];
             break;
         case 'P': /* Petless */
             preferred_pet = 'n';
+            flags.no_pets_preference = TRUE;
             break;
         case 'T':
         case 't':

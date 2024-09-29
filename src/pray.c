@@ -1480,7 +1480,7 @@ gcrownu()
             if ((obj && obj->oartifact == ART_EXCALIBUR) || (obj2 && obj2->oartifact == ART_EXCALIBUR))
                 discover_artifact(ART_EXCALIBUR);
 
-            if (Role_if(PM_KNIGHT))
+            if (Role_if(PM_KNIGHT) && !flags.no_pets_preference)
             {
                 /* acquire Rhongomyniad's skill regardless of weapon or gift */
                 unrestrict_weapon_skill(P_THRUSTING_WEAPON);
@@ -1562,7 +1562,7 @@ gcrownu()
             if ((obj && obj->oartifact == ART_VORPAL_BLADE) || (obj2 && obj2->oartifact == ART_VORPAL_BLADE))
                 discover_artifact(ART_VORPAL_BLADE);
 
-            if (Role_if(PM_KNIGHT))
+            if (Role_if(PM_KNIGHT) && !flags.no_pets_preference)
             {
                 /* Summon a roc as a steed, too */
                 steed_gift = summoncreature(STRANGE_OBJECT, PM_ROC, "%s appears in a puff of smoke.", MM_SUMMON_IN_SMOKE_ANIMATION | MM_SADDLED,
@@ -1635,7 +1635,7 @@ gcrownu()
             if (obj && obj->oartifact == chaotic_crowning_gift_oartifact)
                 discover_artifact(chaotic_crowning_gift_oartifact);
 
-            if (Role_if(PM_KNIGHT))
+            if (Role_if(PM_KNIGHT) && !flags.no_pets_preference)
             {
                 /* A chaotic knight gets a gorgon as a steed */
                 steed_gift = summoncreature(STRANGE_OBJECT, PM_GORGON, "%s appears in a puff of smoke.", MM_SUMMON_IN_SMOKE_ANIMATION | MM_SADDLED,

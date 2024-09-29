@@ -1465,7 +1465,10 @@ int64_t timeout;
                     || (carried(egg) && mon->data->mlet == S_DRAGON)) {
                     if (tamedog(mon, (struct obj *) 0, TAMEDOG_NO_FORCED_TAMING, FALSE, 0, FALSE, FALSE)) {
                         if (carried(egg) && mon->data->mlet != S_DRAGON)
+                        {
                             mon->mtame = 20;
+                            u.uconduct.pets++;
+                        }
                     }
                 }
                 if (mon) /* Hatched monsters do not have rumors obviously */

@@ -244,7 +244,7 @@ struct flag {
     schar max_hint_difficulty; /* Maximum difficulty level where hints are shown */
     boolean non_scoring; /* The game has been, for example, loaded from an imported save file and has thereby become non-scoring */
     uchar auto_bag_in_style;
-    boolean reserved_special_bool; /* to have 8 chars in a row */
+    boolean no_pets_preference;
 
     uchar right_click_command;
     uchar middle_click_command;

@@ -1571,6 +1571,8 @@ struct monst* origmonst;
                 duration += existing_charmed_duration;
                 duration += d(objects[sobj->otyp].oc_spell_dur_dice, objects[sobj->otyp].oc_spell_dur_diesize) + objects[sobj->otyp].oc_spell_dur_plus;
                 charmed = 1;
+                if (is_tame(mtmp) && !was_tame)
+                    u.uconduct.pets++;
             }
 
             /* tame dog verbosely */
@@ -1634,6 +1636,8 @@ struct monst* origmonst;
                 duration += existing_control_duration;
                 duration += d(objects[sobj->otyp].oc_spell_dur_dice, objects[sobj->otyp].oc_spell_dur_diesize) + objects[sobj->otyp].oc_spell_dur_plus;
                 controlled = 2;
+                if (is_tame(mtmp) && !was_tame)
+                    u.uconduct.pets++;
             }
 
             /* tame dog verbosely */

@@ -5912,6 +5912,27 @@ int final;
         you_have_X(buf);
     }
 
+    if (!u.uconduct.pets) {
+        you_have_never("had a pet or ally");
+    }
+    else 
+    {
+        Sprintf(buf, "had %lld pet%s or %s", (long long)u.uconduct.pets,
+            plur(u.uconduct.pets), u.uconduct.pets == 1 ? "ally" : "allies");
+        you_have_X(buf);
+    }
+
+    if (final)
+    {
+        if (!u.uroleplay.numbones) {
+            you_have_never("found a bones level");
+        }
+        else {
+            Sprintf(buf, "found %lld bones level%s", (long long)u.uroleplay.numbones, plur(u.uroleplay.numbones));
+            you_have_X(buf);
+        }
+    }
+
     putstr(dumpwin, ATR_NONE, "");
     putstr(en_win, ATR_TITLE, "Role score:");
     if (!final && !iflags.in_dumplog)

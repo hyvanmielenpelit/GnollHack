@@ -1110,7 +1110,7 @@ boolean fromspell;
         /* send in some hostile angels instead */
         lose_guardian_angel((struct monst *) 0);
     }
-    else if (fromspell || u.ualign.record > 8) 
+    else if (fromspell || (u.ualign.record > 8 && !flags.no_pets_preference))
     { /* fervent */
         play_voice_god_simple_line_by_align(u.ualign.type, GOD_LINE_THOU_HAST_BEEN_WORTHY_OF_ME);
         pline("A voice whispers:");
@@ -1131,6 +1131,7 @@ boolean fromspell;
              */
             mtmp->mtame = 10;
             mtmp->isprotector = TRUE;
+            u.uconduct.pets++;
             newsym(mtmp->mx, mtmp->my);
             /* make him strong enough vs. endgame foes */
             mtmp->m_lev = rn1(8, 15);
