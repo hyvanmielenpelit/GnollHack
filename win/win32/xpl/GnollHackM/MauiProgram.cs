@@ -4,6 +4,15 @@ using SkiaSharp.Views.Maui.Controls.Hosting;
 using System.Runtime.Intrinsics.Arm;
 using GnollHackX;
 
+#if ANDROID
+using AndroidX.Activity;
+using Android.App;
+using AndroidX.Fragment.App;
+using Microsoft.Maui.Platform;
+using Android.OS;
+using Android.Views;
+#endif
+
 #if IOS
 using GnollHackM.Platforms.iOS;
 #endif
@@ -239,7 +248,46 @@ public static class MauiProgram
                     });
                 });
             })
-#endif            
+#endif
+            .ConfigureLifecycleEvents(static lifecycleBuilder =>
+            {
+            #if ANDROID
+                lifecycleBuilder.AddAndroid(androidLifecycleBuilder =>
+                {
+                    androidLifecycleBuilder.OnCreate((activity, savedInstance) =>
+                    {
+                        if (activity is ComponentActivity componentActivity)
+                        {
+                            componentActivity.GetFragmentManager()?.RegisterFragmentLifecycleCallbacks(new MyFragmentLifecycleCallbacks((fragmentManager, fragment) =>
+                            {
+                                // Modals in MAUI in NET9 use DialogFragment
+                                if (fragment is AndroidX.Fragment.App.DialogFragment dialogFragment)
+                                {
+                                    if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
+                                    {
+#pragma warning disable CA1416 // Supported on: 'android' 30.0 and later
+                                        dialogFragment.Dialog!.Window!.SetDecorFitsSystemWindows(false);
+                                        dialogFragment.Dialog!.Window!.InsetsController?.Hide(WindowInsets.Type.SystemBars());
+                                        if (dialogFragment.Dialog!.Window!.InsetsController != null)
+                                            dialogFragment.Dialog!.Window!.InsetsController.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
+#pragma warning restore CA1416 // Supported on: 'android' 30.0 and later
+                                    }
+                                    else
+                                    {
+#pragma warning disable CS0618 // Type or member is obsolete
+                                        SystemUiFlags systemUiVisibility = (SystemUiFlags)dialogFragment.Dialog!.Window!.DecorView.SystemUiVisibility;
+                                        systemUiVisibility |= SystemUiFlags.HideNavigation;
+                                        systemUiVisibility |= SystemUiFlags.Immersive;
+                                        dialogFragment.Dialog!.Window!.DecorView.SystemUiVisibility = (StatusBarVisibility)systemUiVisibility;
+#pragma warning restore CS0618 // Type or member is obsolete
+                                    }
+                                }
+                            }), false);
+                        }
+                    });
+                });
+            #endif
+            })
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -257,10 +305,22 @@ public static class MauiProgram
                 fonts.AddFont("shxi.ttf", "Xizor");
                 fonts.AddFont("uwch.ttf", "Underwood");
             });
-
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
         return builder.Build();
 	}
+
 }
+
+#if ANDROID
+public class MyFragmentLifecycleCallbacks(Action<AndroidX.Fragment.App.FragmentManager, AndroidX.Fragment.App.Fragment> onFragmentStarted) : AndroidX.Fragment.App.FragmentManager.FragmentLifecycleCallbacks
+{
+    public override void OnFragmentStarted(AndroidX.Fragment.App.FragmentManager fm, AndroidX.Fragment.App.Fragment f)
+    {
+        onFragmentStarted?.Invoke(fm, f);
+        base.OnFragmentStarted(fm, f);
+    }
+}
+#endif
+
