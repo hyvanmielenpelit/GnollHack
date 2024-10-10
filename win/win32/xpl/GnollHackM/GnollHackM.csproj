@@ -82,7 +82,11 @@
     <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+  <PropertyGroup Condition="$(TargetFramework.Contains('-windows'))">
+    <!--<WindowsSdkPackageVersion>10.0.19041.34</WindowsSdkPackageVersion>-->
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
 		<_MauiForceXamlCForDebug>true</_MauiForceXamlCForDebug>
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
