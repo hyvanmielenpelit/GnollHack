@@ -263,23 +263,27 @@ public static class MauiProgram
                                 // Modals in MAUI in NET9 use DialogFragment
                                 if (fragment is AndroidX.Fragment.App.DialogFragment dialogFragment)
                                 {
-                                    if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
+                                    var window = dialogFragment.Dialog?.Window;
+                                    if(window != null)
                                     {
+                                        if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
+                                        {
 #pragma warning disable CA1416 // Supported on: 'android' 30.0 and later
-                                        dialogFragment.Dialog!.Window!.SetDecorFitsSystemWindows(false);
-                                        dialogFragment.Dialog!.Window!.InsetsController?.Hide(WindowInsets.Type.SystemBars());
-                                        if (dialogFragment.Dialog!.Window!.InsetsController != null)
-                                            dialogFragment.Dialog!.Window!.InsetsController.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
+                                            window!.SetDecorFitsSystemWindows(false);
+                                            window!.InsetsController?.Hide(WindowInsets.Type.SystemBars());
+                                            if (window!.InsetsController != null)
+                                                window!.InsetsController.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
 #pragma warning restore CA1416 // Supported on: 'android' 30.0 and later
-                                    }
-                                    else
-                                    {
+                                        }
+                                        else
+                                        {
 #pragma warning disable CS0618 // Type or member is obsolete
-                                        SystemUiFlags systemUiVisibility = (SystemUiFlags)dialogFragment.Dialog!.Window!.DecorView.SystemUiVisibility;
-                                        systemUiVisibility |= SystemUiFlags.HideNavigation;
-                                        systemUiVisibility |= SystemUiFlags.Immersive;
-                                        dialogFragment.Dialog!.Window!.DecorView.SystemUiVisibility = (StatusBarVisibility)systemUiVisibility;
+                                            SystemUiFlags systemUiVisibility = (SystemUiFlags)window!.DecorView.SystemUiVisibility;
+                                            systemUiVisibility |= SystemUiFlags.HideNavigation;
+                                            systemUiVisibility |= SystemUiFlags.Immersive;
+                                            window!.DecorView.SystemUiVisibility = (StatusBarVisibility)systemUiVisibility;
 #pragma warning restore CS0618 // Type or member is obsolete
+                                        }
                                     }
                                 }
                             }), false);
