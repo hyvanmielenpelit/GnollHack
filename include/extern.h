@@ -84,6 +84,8 @@ E boolean FDECL(no_wall_end_autodraw, (int, int));
 /* ### apply.c ### */
 
 E int NDECL(doapply);
+E int NDECL(doputitemsin);
+E int NDECL(dotakeitemsout);
 E int NDECL(dobreak);
 E int NDECL(dorub);
 E int NDECL(dojump);

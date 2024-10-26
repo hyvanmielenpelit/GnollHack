@@ -6219,6 +6219,7 @@ struct ext_func_tab extcmdlist[] = {
     { C('p'), "prevmsg", "view recent game messages", doprev_message, IFBURIED | GENERALCMD },
     { M('P'), "prevwep", "wield a previously wielded weapon", dowieldprevwep}, /* For wielding back weapons that were wielded before wielding a pick-axe or a saw */
     { 'P', "puton", "put on an accessory (ring, amulet, etc)", doputon, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_accessories, "put on", "put on" },
+    { M(29), "putitemsin", "put items in", doputitemsin, SINGLE_OBJ_CMD_SPECIFIC, 0, 0, "put items in"},
     { 'q', "quaff", "quaff (drink) something", dodrink, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_beverages, "drink", "drink" },
     { M('q'), "quit", "exit without saving current game", done2, IFBURIED | AUTOCOMPLETE | GENERALCMD },
     { 'Q', "quiver", "select ammunition for quiver", dowieldquiver, SINGLE_OBJ_CMD_SPECIFIC, 0, 0, "ready" },
@@ -6278,6 +6279,7 @@ struct ext_func_tab extcmdlist[] = {
     },
     { 'x', "swap", "swap wielded and secondary weapons", doswapweapon_right_or_both, INCMDMENU },
     { 'T', "takeoff", "take off one piece of armor", dotakeoff, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_clothes, "take off", "take off" },
+    { M(30), "takeitemsout", "take items out", dotakeitemsout, SINGLE_OBJ_CMD_SPECIFIC, 0, 0, "take items out" },
     { M('t')/*'A'*/, "takeoffall", "remove all armor", doddoremarm },
 #if defined (USE_TILES) && !defined(GNH_MOBILE)
     { M(';'), "targeting", "toggle tile targeting graphics on/off", dotogglemonstertargeting, IFBURIED | AUTOCOMPLETE },
