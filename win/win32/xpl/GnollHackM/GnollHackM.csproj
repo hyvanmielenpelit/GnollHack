@@ -87,7 +87,7 @@
   </ItemGroup>
   
   <PropertyGroup Condition="$(TargetFramework.Contains('-windows'))">
-    <WindowsSdkPackageVersion>10.0.19041.34</WindowsSdkPackageVersion>
+    <WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -1023,8 +1023,8 @@
 	<ItemGroup>
 		<PackageReference Include="Azure.Identity" Version="1.12.0" />
 		<PackageReference Include="Azure.Storage.Blobs" Version="12.13.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0-rc.2.24473.5" />
-		<PackageReference Include="System.Text.Json" Version="9.0.0-rc.2.24473.5" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
+		<PackageReference Include="System.Text.Json" Version="9.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     
     <PackageReference Include="SkiaSharp" Version="3.118.0-preview.1.2" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0'" />
@@ -1039,7 +1039,7 @@
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
     
     <!-- Platform-specific packages -->
-    <PackageReference Include="System.Management" Version="9.0.0-rc.2.24473.5" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
+    <PackageReference Include="System.Management" Version="9.0.0" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
     <PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.14" Condition="'$(TargetFramework)'=='net9.0-android'" />
   </ItemGroup>
 
