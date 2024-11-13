@@ -11,7 +11,7 @@
             <gnh:GHCachedImage x:Name="ViewImage" Source="{Binding ImgSourcePath}" HighFilterQuality="{Binding ImgHighFilterQuality}"
                             BackgroundColor="Transparent" VerticalOptions="Fill" HorizontalOptions="Fill" InputTransparent="True" />
             <Button x:Name="ViewButton" Text="" 
-                             BackgroundColor="Transparent" VerticalOptions="Fill" HorizontalOptions="Fill" />
+                             BackgroundColor="Transparent" VerticalOptions="Fill" HorizontalOptions="Fill" Padding="0" />
         </Grid>
     
 </ContentView>

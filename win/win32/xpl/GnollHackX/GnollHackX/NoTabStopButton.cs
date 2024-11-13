@@ -43,6 +43,7 @@ namespace GnollHackX
         {
             base.ConnectHandler(platformView);
             platformView.Focusable = false;
+            platformView.SetBackgroundColor(Android.Graphics.Color.Transparent);
         }
 #endif
     }

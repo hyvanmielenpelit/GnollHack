@@ -10,7 +10,7 @@
   <ContentView.Content>
         <Grid x:Name="customGrid" CascadeInputTransparent="True" HorizontalOptions="Fill" VerticalOptions="Fill">
             <gnh:CustomCanvasView x:Name="customCanvasView" HorizontalOptions="Fill" VerticalOptions="Fill" EnableTouchEvents="false" PaintSurface="CustomCanvasView_PaintSurface" />
-            <gnh:NoTabStopButton Text="" x:Name="customButton" Clicked="CustomButton_Clicked" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill" />
+            <gnh:NoTabStopButton Text="" x:Name="customButton" Clicked="CustomButton_Clicked" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill" Padding="0" />
         </Grid>
     </ContentView.Content>
 </ContentView>

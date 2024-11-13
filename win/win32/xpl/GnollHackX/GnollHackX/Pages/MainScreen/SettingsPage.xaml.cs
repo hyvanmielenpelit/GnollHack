@@ -164,6 +164,20 @@ namespace GnollHackX.Pages.MainScreen
                 }
             }
 
+#if GNH_MAUI && ANDROID
+            /* Workaround for ScrollView bug in .NET MAUI 9.0 GA */
+            PostXlogUserNameEntry.IsEnabled = false;
+            PostXlogPasswordEntry.IsEnabled = false;
+            IDispatcherTimer timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+            timer.Interval = TimeSpan.FromSeconds(0.5);
+            timer.IsRepeating = false;
+            timer.Tick += (s, e) => 
+            {
+                PostXlogUserNameEntry.IsEnabled = true;
+                PostXlogPasswordEntry.IsEnabled = true;
+            };
+            timer.Start();
+#endif
             _isManualTogglingEnabled = true;
         }
 

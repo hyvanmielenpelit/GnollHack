@@ -16,7 +16,7 @@
                    InputTransparent="True" />
             <gnh:GHButton x:Name="ViewButton" BindingContext="{x:Reference this}" Text="" 
                              Letter="{Binding BtnLetter}" ApplyMeta="{Binding BtnMeta}" ApplyCtrl="{Binding BtnCtrl}" RawCommand="{Binding BtnCommand}" 
-                             BackgroundColor="Transparent" VerticalOptions="Fill" HorizontalOptions="Fill" />
+                             BackgroundColor="Transparent" VerticalOptions="Fill" HorizontalOptions="Fill" Padding="0" />
         </Grid>
     
 </ContentView>
