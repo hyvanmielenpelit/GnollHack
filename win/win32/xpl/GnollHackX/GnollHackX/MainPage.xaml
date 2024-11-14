@@ -141,7 +141,7 @@
                                     </Label.GestureRecognizers>
                                 </Label>
                             </StackLayout>
-                            <controls:CustomImageButton x:Name="PopupOkButton" Text="OK" FontSize="19" WidthRequest="170" Margin="0,10,0,0" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="PopupOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="55" Margin="0,10,0,0" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="PopupOkButton_Clicked" />
                             <Grid x:Name="PopupButtonGrid" IsVisible="False" ColumnSpacing="6" HorizontalOptions="Center" >
                                 <Grid.RowDefinitions>
@@ -151,9 +151,9 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <controls:CustomImageButton Grid.Column="0" x:Name="PopupViewButton" Text="View" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="End" BackgroundColor="Transparent" TextColor="White"
+                                <controls:CustomImageButton Grid.Column="0" x:Name="PopupViewButton" Text="View" FontSize="19" WidthRequest="170" HeightRequest="55" FontFamily="Diablo" HorizontalOptions="End" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="PopupViewButton_Clicked" />
-                                <controls:CustomImageButton Grid.Column="1" x:Name="PopupOkButton2" Text="OK" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="Start" BackgroundColor="Transparent" TextColor="White"
+                                <controls:CustomImageButton Grid.Column="1" x:Name="PopupOkButton2" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="55" FontFamily="Diablo" HorizontalOptions="Start" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="PopupOkButton_Clicked" />
                             </Grid>
                         </StackLayout>
@@ -175,7 +175,7 @@
                                        VerticalTextAlignment="Center" HorizontalOptions="Center"  />
                             <Label Text="" x:Name="AlertLabel" FontFamily="Underwood" FontSize="16" TextColor="White"
                                        VerticalTextAlignment="Start" HorizontalOptions="Center" />
-                            <controls:CustomImageButton x:Name="AlertOkButton" Text="OK" FontSize="19" WidthRequest="170" Margin="0,10,0,0" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
+                            <controls:CustomImageButton x:Name="AlertOkButton" Text="OK" FontSize="19" WidthRequest="170" HeightRequest="55" Margin="0,10,0,0" FontFamily="Diablo" HorizontalOptions="Center" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="AlertOkButton_Clicked" />
                         </StackLayout>
                     </Frame>
@@ -206,9 +206,9 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <controls:CustomImageButton Grid.Column="0" x:Name="PendingTasksOkButton" Text="Yes" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="End" BackgroundColor="Transparent" TextColor="White"
+                                <controls:CustomImageButton Grid.Column="0" x:Name="PendingTasksOkButton" Text="Yes" FontSize="19" WidthRequest="170" HeightRequest="55" FontFamily="Diablo" HorizontalOptions="End" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="PendingTasksOkButton_Clicked" />
-                                <controls:CustomImageButton Grid.Column="1" x:Name="PendingTasksCancelButton" Text="No" FontSize="19" WidthRequest="170" FontFamily="Diablo" HorizontalOptions="Start" BackgroundColor="Transparent" TextColor="White"
+                                <controls:CustomImageButton Grid.Column="1" x:Name="PendingTasksCancelButton" Text="No" FontSize="19" WidthRequest="170" HeightRequest="55" FontFamily="Diablo" HorizontalOptions="Start" BackgroundColor="Transparent" TextColor="White"
                                         Clicked="PendingTasksCancelButton_Clicked" />
                             </Grid>
                         </StackLayout>
