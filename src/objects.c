@@ -3990,7 +3990,7 @@ SPELL("hold undead",    "palm-patterned", None, None, "Paralyzes the target unde
     4, 30, A_MAX_WIS_CHA, 18, 0, 100, 0, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 1, 6, 10,
     S1_NO_SOMATIC_COMPONENT | S1_FLAGS_EFFECT_USES_SAVING_THROW_VS_WIS, S2_NONE, ALL_TARGETS, AD_CLRC, CLR_YELLOW, OBJECT_SOUNDSET_SPELLBOOK,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
-SPELL("heavenly serpent", "feather-patterned", None, None, "Summons a permanent Aleax",
+SPELL("heavenly serpent", "feather-patterned", None, None, "Summons a permanent couatl",
     P_CELESTIAL_SPELL,4,   5, 0, 
     4, 60, A_MAX_WIS_CHA, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0,
     S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, CLR_YELLOW, OBJECT_SOUNDSET_SPELLBOOK,
