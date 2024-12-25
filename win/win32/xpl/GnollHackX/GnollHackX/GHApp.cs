@@ -6395,6 +6395,7 @@ namespace GnollHackX
             if(pluspos >= 0)
             {
                 res = fullverid.Substring(0, pluspos);
+#if !WINDOWS
                 int lastdashpos = fullverid.LastIndexOf("-");
                 int lastdotpos = fullverid.LastIndexOf(".");
                 if (lastdotpos > lastdashpos && lastdashpos > 0 && lastdashpos < fullverid.Length - 1)
@@ -6403,6 +6404,7 @@ namespace GnollHackX
                     if(previewLen > 1) //More than just the dash
                         res += fullverid.Substring(lastdashpos, previewLen);
                 }
+#endif
             }
             else
             {
