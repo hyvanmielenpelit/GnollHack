@@ -965,6 +965,16 @@ struct obj *otmp;
         0);
 
     int extra_data1 = otmp->oclass == POTION_CLASS ? (int)objects[otmp->otyp].oc_potion_extra_data1 : 0;
+
+    /* Adjustment for dilution */
+    boolean isdiluted = otmp->oclass == POTION_CLASS && otmp->odiluted;
+    if (isdiluted)
+    {
+        nutrition /= 2;
+        duration /= 2;
+        extra_data1 /= 2;
+    }
+
     boolean cures_sick = FALSE;
     boolean cures_blind = FALSE;
     boolean cures_hallucination = FALSE;
@@ -1014,7 +1024,7 @@ struct obj *otmp;
                     ABASE(i) = lim;
                     context.botl = 1;
                     /* only first found if not blessed */
-                    if (!otmp->blessed)
+                    if (!otmp->blessed || isdiluted)
                         break;
                 }
                 if (++i >= A_MAX)
@@ -1176,7 +1186,7 @@ struct obj *otmp;
         }
         else 
         {
-            if (otmp->blessed)
+            if (otmp->blessed && !isdiluted)
             {
                 play_sfx_sound(SFX_GAIN_ABILITY);
                 (void) adjattrib(A_INT, 1, FALSE);
@@ -1248,7 +1258,7 @@ struct obj *otmp;
              */
             make_blinded(0L, TRUE);
         }
-        if (otmp->blessed)
+        if (otmp->blessed && !isdiluted)
             HSee_invisible |= FROM_ACQUIRED;
         else
             incr_itimeout(&HSee_invisible, duration);
@@ -1282,7 +1292,7 @@ struct obj *otmp;
         else
             You_ex(ATR_NONE, CLR_MSG_POSITIVE, "feel refreshed.");
 
-        u.uhunger += nutrition / (otmp->odiluted ? 2 : 1);
+        u.uhunger += nutrition;
         update_hunger_status(FALSE);
 
         if (!otmp->odiluted)
@@ -1375,7 +1385,7 @@ struct obj *otmp;
         break;
     case POT_SICKNESS:
         pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Ulch!  This potion was contaminated!");
-        if (otmp->blessed)
+        if (otmp->blessed || isdiluted)
         {
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "(But in fact it was mildly stale %s.)", fruitname(TRUE));
             if (!Role_if(PM_HEALER) && !Sick_resistance)
@@ -1470,30 +1480,39 @@ struct obj *otmp;
             int prev_ability = -1;
             int abilities_to_increase = (otmp->blessed ? 2 : 1);
             i = -1;   /* increment to 0 */
-            int cnt;
-            for (cnt = 0; cnt < 10; cnt++)
+            if (isdiluted && !rn2(2))
             {
-                do
+                /* Nothing */
+            }
+            else
+            {
+                int cnt;
+                for (cnt = 0; cnt < 10; cnt++)
                 {
-                    i = rn2(A_MAX);
-                } 
-                while (i == prev_ability);
+                    do
+                    {
+                        i = rn2(A_MAX);
+                    } while (i == prev_ability);
 
-                /* On tenth try, give STR if that's not maxed out */
-                if (cnt == 9 && ABASE(A_STR) < ATTRMAX(A_STR) && prev_ability != A_STR)
-                    i = A_STR;
+                    /* On tenth try, give STR if that's not maxed out */
+                    if (cnt == 9 && ABASE(A_STR) < ATTRMAX(A_STR) && prev_ability != A_STR)
+                        i = A_STR;
 
-                if (adjattrib(i, 1, -1))
-                {
-                    prev_ability = i;
-                    added_abilities++;
+                    if (adjattrib(i, 1, -1))
+                    {
+                        prev_ability = i;
+                        added_abilities++;
+                    }
+                    if (added_abilities >= abilities_to_increase)
+                        break;
                 }
-                if (added_abilities >= abilities_to_increase)
-                    break;
             }
 
             if (added_abilities == 0)
+            {
                 You_feel("a bit more competent for a moment, but then the feeling subsides.");
+                play_sfx_sound(SFX_GENERAL_THAT_DID_NOTHING);
+            }
             else
             {
                 play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
@@ -1527,7 +1546,9 @@ struct obj *otmp;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_ACQUIRE_HASTE);
         special_effect_wait_until_action(0);
-        incr_itimeout(otmp->otyp == POT_LIGHTNING_SPEED ? &HLightning_fast : otmp->otyp == POT_GREATER_SPEED ? &HSuper_fast : &HUltra_fast, duration);
+        incr_itimeout(otmp->otyp == POT_LIGHTNING_SPEED && !isdiluted ? &HLightning_fast : 
+            (otmp->otyp == POT_GREATER_SPEED && !isdiluted) || (otmp->otyp == POT_LIGHTNING_SPEED && isdiluted) ? &HSuper_fast : 
+            &HUltra_fast, duration);
         special_effect_wait_until_end(0);
         refresh_u_tile_gui_info(TRUE);
         break;
@@ -1676,8 +1697,8 @@ struct obj *otmp;
         if (otmp->cursed) {
             unkn++;
             /* they went up a level */
-            if ((ledger_no(&u.uz) == 1 && u.uhave.amulet)
-                || Can_rise_up(u.ux, u.uy, &u.uz)) 
+            if (((ledger_no(&u.uz) == 1 && u.uhave.amulet) || Can_rise_up(u.ux, u.uy, &u.uz)) 
+                && (!isdiluted || !rn2(2)))
             {
                 const char *riseup = "rise up, through the %s!";
                 play_sfx_sound(SFX_CURSED_GAIN_LEVEL);
@@ -1703,20 +1724,31 @@ struct obj *otmp;
                 }
             } 
             else
-                You("have an uneasy feeling.");
+            {
+                You_ex(ATR_NONE, CLR_MSG_ATTENTION, "have an uneasy feeling.");
+                play_sfx_sound(SFX_GENERAL_THAT_DID_NOTHING);
+            }
             break;
         }
 
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
-        special_effect_wait_until_action(0);
+        if (!isdiluted || !rn2(2))
+        {
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
+            special_effect_wait_until_action(0);
 
-        pluslvl(FALSE);
-        /* blessed potions place you at a random spot in the
-           middle of the new level instead of the low point */
-        if (otmp->blessed)
-            u.uexp = rndexp(TRUE);
+            pluslvl(FALSE);
+            /* blessed potions place you at a random spot in the
+               middle of the new level instead of the low point */
+            if (otmp->blessed)
+                u.uexp = rndexp(TRUE);
 
-        special_effect_wait_until_end(0);
+            special_effect_wait_until_end(0);
+        }
+        else
+        {
+            You_ex(ATR_NONE, CLR_MSG_ATTENTION, "have an elevated feeling for a moment.");
+            play_sfx_sound(SFX_GENERAL_THAT_DID_NOTHING);
+        }
         break;
     case POT_HEALING:
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
@@ -1955,10 +1987,17 @@ struct obj *otmp;
     case POT_POLYMORPH:
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
-        You_feel("a little %s.", Hallucination ? "normal" : "strange");
+        You_feel_ex(ATR_NONE, CLR_MSG_ATTENTION, "a little %s.", Hallucination ? "normal" : "strange");
         if (!Unchanging)
         {
-            polyself(0);
+            if (isdiluted && !rn2(2))
+            {
+                You_ex1(ATR_NONE, CLR_MSG_ATTENTION, shudder_for_moment);
+            }
+            else
+            {
+                polyself(0);
+            }
         }
         special_effect_wait_until_end(0);
         break;
@@ -2679,6 +2718,13 @@ const char* introline;
         + objects[obj->otyp].oc_potion_breathe_plus
         + bcsign(obj) * objects[obj->otyp].oc_potion_breathe_buc_multiplier);
 
+    /* Adjustment for dilution */
+    boolean isdiluted = obj->oclass == POTION_CLASS && obj->odiluted;
+    if (isdiluted)
+    {
+        duration /= 2;
+    }
+
     obj->in_use = 1;
 
     switch (obj->otyp) 
@@ -2725,26 +2771,35 @@ const char* introline;
         }
         break;
     case POT_FULL_HEALING:
-        if (Upolyd && u.mh < u.mhmax)
-            u.mh++, context.botl = context.botlx = 1;
-        if (u.uhp < u.uhpmax)
-            u.uhp++, context.botl = context.botlx = 1;
+        if (!isdiluted || !rn2(2))
+        {
+            if (Upolyd && u.mh < u.mhmax)
+                u.mh++, context.botl = context.botlx = 1;
+            if (u.uhp < u.uhpmax)
+                u.uhp++, context.botl = context.botlx = 1;
+        }
         cureblind = TRUE;
         /*FALLTHRU*/
     case POT_GREATER_HEALING:
     case POT_EXTRA_HEALING:
-        if (Upolyd && u.mh < u.mhmax)
-            u.mh++, context.botl = context.botlx = 1;
-        if (u.uhp < u.uhpmax)
-            u.uhp++, context.botl = context.botlx = 1;
+        if (!isdiluted || !rn2(2))
+        {
+            if (Upolyd && u.mh < u.mhmax)
+                u.mh++, context.botl = context.botlx = 1;
+            if (u.uhp < u.uhpmax)
+                u.uhp++, context.botl = context.botlx = 1;
+        }
         if (!obj->cursed)
             cureblind = TRUE;
         /*FALLTHRU*/
     case POT_HEALING:
-        if (Upolyd && u.mh < u.mhmax)
-            u.mh++, context.botl = context.botlx = 1;
-        if (u.uhp < u.uhpmax)
-            u.uhp++, context.botl = context.botlx = 1;
+        if (!isdiluted || !rn2(2))
+        {
+            if (Upolyd && u.mh < u.mhmax)
+                u.mh++, context.botl = context.botlx = 1;
+            if (u.uhp < u.uhpmax)
+                u.uhp++, context.botl = context.botlx = 1;
+        }
         if (obj->blessed)
             cureblind = TRUE;
         if (cureblind) {
@@ -4334,7 +4389,7 @@ split_mon(mon, mtmp)
 struct monst *mon,  /* monster being split */
              *mtmp; /* optional attacker whose heat triggered it */
 {
-    struct monst *mtmp2;
+    struct monst *mtmp2 = 0;
     char reason[BUFSZ];
 
     reason[0] = '\0';
@@ -4343,35 +4398,38 @@ struct monst *mon,  /* monster being split */
                 (mtmp == &youmonst) ? the_your[1]
                                     : (const char *) s_suffix(mon_nam(mtmp)));
 
-    if (mon == &youmonst) 
+    if (mon)
     {
-        mtmp2 = cloneu();
-        if (mtmp2)
+        if (mon == &youmonst)
         {
-            mtmp2->mbasehpmax = u.basemhmax / 2;
-            u.basemhmax -= mtmp2->mbasehpmax;
-            mtmp2->mbasehpdrain = u.basemhdrain / 2;
-            u.basemhdrain -= mtmp2->mbasehpdrain;
-            updatemaxhp();
-            update_mon_maxhp(mtmp2);
-            context.botl = context.botlx = 1;
-            You("multiply%s!", reason);
+            mtmp2 = cloneu();
+            if (mtmp2)
+            {
+                mtmp2->mbasehpmax = u.basemhmax / 2;
+                u.basemhmax -= mtmp2->mbasehpmax;
+                mtmp2->mbasehpdrain = u.basemhdrain / 2;
+                u.basemhdrain -= mtmp2->mbasehpdrain;
+                updatemaxhp();
+                update_mon_maxhp(mtmp2);
+                context.botl = context.botlx = 1;
+                You("multiply%s!", reason);
+            }
         }
-    } 
-    else 
-    {
-        mtmp2 = clone_mon(mon, 0, 0, TRUE);
-        if (mtmp2)
+        else
         {
-            /* Gremlins are half strength */
-            mtmp2->mbasehpmax = mon->mbasehpmax / 2;
-            mon->mbasehpmax -= mtmp2->mbasehpmax;
-            mtmp2->mbasehpdrain = mon->mbasehpdrain / 2;
-            mon->mbasehpdrain -= mtmp2->mbasehpdrain;
-            update_mon_maxhp(mon);
-            update_mon_maxhp(mtmp2);
-            if (canspotmon(mon))
-                pline("%s multiplies%s!", Monnam(mon), reason);
+            mtmp2 = clone_mon(mon, 0, 0, TRUE);
+            if (mtmp2)
+            {
+                /* Gremlins are half strength */
+                mtmp2->mbasehpmax = mon->mbasehpmax / 2;
+                mon->mbasehpmax -= mtmp2->mbasehpmax;
+                mtmp2->mbasehpdrain = mon->mbasehpdrain / 2;
+                mon->mbasehpdrain -= mtmp2->mbasehpdrain;
+                update_mon_maxhp(mon);
+                update_mon_maxhp(mtmp2);
+                if (canspotmon(mon))
+                    pline("%s multiplies%s!", Monnam(mon), reason);
+            }
         }
     }
     return mtmp2;

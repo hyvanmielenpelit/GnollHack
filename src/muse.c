@@ -834,6 +834,13 @@ struct monst *mtmp;
                 d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus
             );
         extra_data1 = otmp->oclass == POTION_CLASS ? (int)objects[otyp].oc_potion_extra_data1 : 0;
+        /* Adjustment for dilution */
+        boolean isdiluted = otmp->oclass == POTION_CLASS && otmp->odiluted;
+        if (isdiluted)
+        {
+            duration /= 2;
+            extra_data1 /= 2;
+        }
         if (objects[otmp->otyp].oc_flags5 & O5_EFFECT_FLAGS_ARE_HEALING)
         {
             cures_sick = otmp->blessed ? !!(objects[otmp->otyp].oc_potion_effect_flags & POTFLAGS_BLESSED_CURE_SICKNESS) :
@@ -885,6 +892,9 @@ struct monst *mtmp;
             impossible("No need for unicorn horn?");
         return 2;
     case MUSE_BUGLE:
+        if (!otmp)
+            return 2;
+
         play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_APPLY);
         if (vismon)
             pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s plays %s!", Monnam(mtmp), doname(otmp));
@@ -2598,6 +2608,7 @@ struct monst *mtmp;
 
     int duration = 0, dicebuc = 0;
     int sfx = 0;
+    boolean isdiluted = FALSE;
 
     if (otmp)
     {
@@ -2607,6 +2618,12 @@ struct monst *mtmp;
                 otmp->oclass == POTION_CLASS ? (objects[otmp->otyp].oc_potion_normal_diesize == 0 ? 0 : d(max(0, objects[otmp->otyp].oc_potion_normal_dice + dicebuc * bcsign(otmp)), max(1, objects[otmp->otyp].oc_potion_normal_diesize))) + objects[otmp->otyp].oc_potion_normal_plus + bcsign(otmp) * objects[otmp->otyp].oc_potion_normal_buc_multiplier :
                 d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus
             );
+        /* Adjustment for dilution */
+        isdiluted = otmp->oclass == POTION_CLASS && otmp->odiluted;
+        if (isdiluted)
+        {
+            duration /= 2;
+        }
     }
 
     vis = cansee(mtmp->mx, mtmp->my);
@@ -2619,7 +2636,7 @@ struct monst *mtmp;
             return 2;
         mquaffmsg(mtmp, otmp);
         if (otmp->cursed) {
-            if (Can_rise_up(mtmp->mx, mtmp->my, &u.uz)) {
+            if (Can_rise_up(mtmp->mx, mtmp->my, &u.uz) && (!isdiluted || !rn2(2))) {
                 register int tolev = depth(&u.uz) - 1;
                 d_level tolevel;
 
@@ -2655,16 +2672,30 @@ struct monst *mtmp;
                 return 2;
             }
         }
-        if (vismon)
+
+        if (!isdiluted || !rn2(2))
         {
-            pline("%s seems more experienced.", Monnam(mtmp));
+            if (vismon)
+            {
+                pline("%s seems more experienced.", Monnam(mtmp));
+            }
+            if (oseen)
+                makeknown(POT_GAIN_LEVEL);
+            m_useup(mtmp, otmp);
+            if (!grow_up(mtmp, (struct monst*)0))
+                return 1;
+            /* grew into genocided monster */
         }
-        if (oseen)
-            makeknown(POT_GAIN_LEVEL);
-        m_useup(mtmp, otmp);
-        if (!grow_up(mtmp, (struct monst *) 0))
-            return 1;
-        /* grew into genocided monster */
+        else
+        {
+            if (vismon)
+            {
+                pline("%s looks peculiarly elevated.", Monnam(mtmp));
+            }
+            if (oseen)
+                makeknown(POT_GAIN_LEVEL);
+            m_useup(mtmp, otmp);
+        }
         return 2;
     case MUSE_WAN_MAKE_INVISIBLE:
     case MUSE_POT_INVISIBILITY:
@@ -2767,10 +2798,10 @@ struct monst *mtmp;
         mtmp->mspec_used = 0;
         mtmp->mmagespell_used = 0;
         mtmp->mclericspell_used = 0;
-        mtmp->mmageintermediate_used /= 4;
-        mtmp->mclericintermediate_used /= 4;
-        mtmp->mmageultimate_used /= 2;
-        mtmp->mclericultimate_used /= 2;
+        mtmp->mmageintermediate_used /= (!isdiluted ? 4 : 2);
+        mtmp->mclericintermediate_used /= (!isdiluted ? 4 : 2);
+        mtmp->mmageultimate_used /= (!isdiluted ? 2 : 1);
+        mtmp->mclericultimate_used /= (!isdiluted ? 2 : 1);
         m_useup(mtmp, otmp);
         return 2;
     case MUSE_POT_EXTRA_ENERGY:
@@ -2780,10 +2811,10 @@ struct monst *mtmp;
         mtmp->mspec_used = 0;
         mtmp->mmagespell_used = 0;
         mtmp->mclericspell_used = 0;
-        mtmp->mmageintermediate_used /= 8;
-        mtmp->mclericintermediate_used /= 8;
-        mtmp->mmageultimate_used /= 4;
-        mtmp->mclericultimate_used /= 4;
+        mtmp->mmageintermediate_used /= (!isdiluted ? 8 : 4);
+        mtmp->mclericintermediate_used /= (!isdiluted ? 8 : 4);
+        mtmp->mmageultimate_used /= (!isdiluted ? 4 : 2);
+        mtmp->mclericultimate_used /= (!isdiluted ? 4 : 2);
         m_useup(mtmp, otmp);
         return 2;
     case MUSE_POT_GREATER_ENERGY:
@@ -2795,8 +2826,8 @@ struct monst *mtmp;
         mtmp->mclericspell_used = 0;
         mtmp->mmageintermediate_used = 0;
         mtmp->mclericintermediate_used = 0;
-        mtmp->mmageultimate_used /= 8;
-        mtmp->mclericultimate_used /= 8;
+        mtmp->mmageultimate_used /= (!isdiluted ? 8 : 4);
+        mtmp->mclericultimate_used /= (!isdiluted ? 8 : 4);
         m_useup(mtmp, otmp);
         return 2;
     case MUSE_POT_FULL_ENERGY:
@@ -2860,6 +2891,8 @@ struct monst *mtmp;
 
         return 2;
     case MUSE_WAN_WISHING: {
+        if (!otmp)
+            return 2;
         /* wear any armor items previously wished for before
          * using another wish */
         m_dowear(mtmp, FALSE, FALSE);
