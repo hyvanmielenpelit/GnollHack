@@ -2661,6 +2661,21 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         }
     }
 
+    /* Historic status for statues */
+    if (obj && otyp == STATUE && obj->dknown)
+    {
+        if (obj->special_quality == SPEQUAL_STATUE_HISTORIC)
+        {
+            Sprintf(buf, "Historic statue:        %s", "Yes");
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+        else
+        {
+            Sprintf(buf, "Historic statue:        %s", "No");
+            putstr(datawin, ATR_INDENT_AT_COLON, buf);
+        }
+    }
+
     /* Identification status */
     boolean notfullyidentified = FALSE;
     if (obj && obj->dknown)
