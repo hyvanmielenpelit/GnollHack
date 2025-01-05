@@ -65,10 +65,10 @@ NEARDATA struct artifact artilist[] = {
     A("Stormbringer", "black runesword", "black blade", RUNESWORD, ELVEN_BROADSWORD,
         MAT_NONE, EXCEPTIONALITY_ELITE, MYTHIC_PREFIX_NONE, MYTHIC_SUFFIX_NONE,
         (AF_RESTR | AF_INTEL | AF_DRLI | AF_NAME_KNOWN_WHEN_PICKED_UP),
-        AF2_NAME_IS_PROPER_NAME | AF2_DUAL_RUNESWORD_BONUS,
+        AF2_NAME_IS_PROPER_NAME | AF2_DUAL_RUNESWORD_BONUS | AF2_FLOOR_TILE,
         SPFX_DRAIN_RES, SPFX_NONE, 0, 
         1, 5, 0, DRLI(1, 5), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_CHAOTIC, NON_PM, NON_PM, 8000L,
-        NO_COLOR, CLR_BLACK, 0, OBJECT_SOUNDSET_NONE),
+        NO_COLOR, CLR_BLACK, 20, OBJECT_SOUNDSET_NONE),
     /*
      *      Mjollnir will return to the hand of the wielder when thrown
      *      if the wielder is a Valkyrie wearing Gauntlets of Power.
@@ -449,10 +449,10 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL, CRYSTAL_BALL,
     A("Mournblade", "black runesword", "black blade", RUNESWORD, ELVEN_BROADSWORD,
         MAT_NONE, EXCEPTIONALITY_ELITE, MYTHIC_PREFIX_NONE, MYTHIC_SUFFIX_NONE,
         (AF_RESTR | AF_INTEL | AF_DRLI | AF_NAME_KNOWN_WHEN_PICKED_UP),
-        AF2_NAME_IS_PROPER_NAME | AF2_DUAL_RUNESWORD_BONUS,
+        AF2_NAME_IS_PROPER_NAME | AF2_DUAL_RUNESWORD_BONUS | AF2_FLOOR_TILE,
         SPFX_DRAIN_RES, SPFX_NONE, 0, 
         1, 5, 0, DRLI(1, 5), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_CHAOTIC, NON_PM, NON_PM, 8000L,
-        NO_COLOR, CLR_BLACK, 0, OBJECT_SOUNDSET_NONE),
+        NO_COLOR, CLR_BLACK, 20, OBJECT_SOUNDSET_NONE),
 
     A("The Staff-Sling of the Ancients", "ornate staff-sling", None, STAFF_SLING, STAFF_SLING,
         MAT_NONE, EXCEPTIONALITY_ELITE, MYTHIC_PREFIX_NONE, MYTHIC_SUFFIX_NONE,
