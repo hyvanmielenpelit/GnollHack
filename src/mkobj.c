@@ -3427,7 +3427,7 @@ register struct obj *obj;
     } else if (obj->oclass == FOOD_CLASS && obj->oeaten) {
         return eaten_stat((int) obj->quan * wt, obj);
     } else if (obj->oclass == COIN_CLASS) {
-        return (int) ((obj->quan) / 10L) + 1;
+        return (int) ((obj->quan - 1) / 10L) + 1;
     } else if (obj->otyp == HEAVY_IRON_BALL && obj->owt != 0) {
         return (int) obj->owt; /* kludge for "very" heavy iron ball */
     } else if (is_obj_candelabrum(obj) && obj->special_quality > 0) {
