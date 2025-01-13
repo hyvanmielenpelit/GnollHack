@@ -13,7 +13,9 @@ assignees: ''
 ## Describe why you want the feature
 
 
-## Describe alternatives you've considered *(optional)*
+## Describe alternatives you've considered
+*(Optional)*
 
 
-## Additional context *(optional)*
+## Additional context
+*(Optional)*
