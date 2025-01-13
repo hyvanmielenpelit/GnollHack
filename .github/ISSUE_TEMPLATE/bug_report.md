@@ -15,19 +15,21 @@ assignees: ''
 2. 
 
 
-## Expected and actual behavior *(optional)*
+## Expected behavior
+*(Optional)*
 
-
-## Screenshots *(optional)*
+## Screenshots
+*(Optional)*
 
 
 ## Device
-- Device (mobile only): [e.g. iPhone6]
-- OS: [e.g. iOS]
-- Version: [e.g. 22]
-- Game version:
+- Device (mobile only): *(e.g. iPhone6)*
+- OS: *(e.g. iOS)*
+- OS Version: *(e.g. 18.1)*
+- Game version: *(e.g. 1.87)*
 
-You can also take a screenshot of the **About → Version** page.
+*(You can also take a screenshot of the **About → Version** page.)*
 
 
-## Additional context (optional)
+## Additional context
+*(Optional)*
