@@ -10,7 +10,7 @@ assignees: ''
 ## Describe the bug
 
 
-## Steps To Reproduce
+## Steps to reproduce
 1. 
 2. 
 
