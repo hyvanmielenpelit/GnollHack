@@ -5130,7 +5130,7 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
     },
     {
         "Artificer Female",
-        MONSTER_SOUNDSET_HUMAN_MALE,
+        MONSTER_SOUNDSET_HUMAN_FEMALE,
         {
             {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_AMBIENT */
             {MAX_GHSOUNDS, 1.0f}, /* MONSTER_SOUND_TYPE_SWALLOW_AMBIENT */
