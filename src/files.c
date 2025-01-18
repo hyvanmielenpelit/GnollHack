@@ -2472,7 +2472,7 @@ get_saved_games()
                     n4 = 0;
                     do {
                         char* r;
-                        Sprintf(usedfoundfile, "%s%s", foundfileprefix, foundfile);
+                        Sprintf(usedfoundfile, "%s", foundfile); //"%s%s", foundfileprefix, foundfile);
                         r = plname_from_running(usedfoundfile, &gamestats);
                         if (r)
                         {
