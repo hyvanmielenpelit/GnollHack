@@ -7770,25 +7770,29 @@ revival_at_altar(wakeupbuf)
 char* wakeupbuf;
 {
     int altar_x = 0, altar_y = 0;
-    int x, y;
-    boolean dobreak = FALSE;
-    for (x = 1; x < COLNO; x++)
+
+    if (!Is_astralevel(&u.uz))
     {
-        for (y = 0; y < ROWNO; y++)
+        int x, y;
+        boolean dobreak = FALSE;
+        for (x = 1; x < COLNO; x++)
         {
-            if (IS_ALTAR(levl[x][y].typ))
+            for (y = 0; y < ROWNO; y++)
             {
-                altar_x = x;
-                altar_y = y;
-                if (a_align(x, y) == u.ualign.type)
+                if (IS_ALTAR(levl[x][y].typ))
                 {
-                    dobreak = TRUE;
-                    break;
+                    altar_x = x;
+                    altar_y = y;
+                    if (a_align(x, y) == u.ualign.type)
+                    {
+                        dobreak = TRUE;
+                        break;
+                    }
                 }
             }
+            if (dobreak)
+                break;
         }
-        if (dobreak)
-            break;
     }
 
     set_itimeout(&HInvulnerable, 0L);
