@@ -105,6 +105,9 @@
     <PackageReference Include="Xamarin.AndroidX.Annotation">
       <Version>1.7.1.1</Version>
     </PackageReference>
+    <PackageReference Include="Xamarin.Build.Download">
+      <Version>0.11.4</Version>
+    </PackageReference>
     <PackageReference Include="Xamarin.Firebase.Analytics">
       <Version>119.0.1</Version>
     </PackageReference>
