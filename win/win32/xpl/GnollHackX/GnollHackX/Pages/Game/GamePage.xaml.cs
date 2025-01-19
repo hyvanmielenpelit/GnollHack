@@ -2270,6 +2270,12 @@ namespace GnollHackX.Pages.Game
                 case 'l':
                     icon_string = GHApp.AppResourceName + ".Assets.UI.loot.png";
                     break;
+                case 'b':
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.lootout.png";
+                    break;
+                case 'B':
+                    icon_string = GHApp.AppResourceName + ".Assets.UI.lootin.png";
+                    break;
                 case 'p':
                     icon_string = GHApp.AppResourceName + ".Assets.UI.pay.png";
                     break;

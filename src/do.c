@@ -6357,7 +6357,7 @@ int retry;
         n = query_category("Drop what type of items?", invent,
                            UNPAID_TYPES | UNIDENTIFIED_TYPES | UNKNOWN_TYPES | ALL_TYPES | CHOOSE_ALL | BUC_BLESSED
                                | BUC_CURSED | BUC_UNCURSED | BUC_UNKNOWN,
-                           &pick_list, PICK_ANY);
+                           &pick_list, PICK_ANY, 0);
         if (!n)
             goto drop_done;
         for (i = 0; i < n; i++) 
@@ -6528,7 +6528,7 @@ int retry;
         n = query_category("Put what type of items into bag?", invent,
             UNPAID_TYPES | UNIDENTIFIED_TYPES | UNKNOWN_TYPES | ALL_TYPES | CHOOSE_ALL | BUC_BLESSED
             | BUC_CURSED | BUC_UNCURSED | BUC_UNKNOWN,
-            &pick_list, PICK_ANY);
+            &pick_list, PICK_ANY, 0);
         if (!n)
             goto autobag_done;
         for (i = 0; i < n; i++)

@@ -84,6 +84,8 @@ E boolean FDECL(no_wall_end_autodraw, (int, int));
 /* ### apply.c ### */
 
 E int NDECL(doapply);
+E int NDECL(doputitemsin);
+E int NDECL(dotakeitemsout);
 E int NDECL(dobreak);
 E int NDECL(dorub);
 E int NDECL(dojump);
@@ -2719,7 +2721,7 @@ E int FDECL(count_bags_for_stashing, (struct obj*, struct obj*, BOOLEAN_P, BOOLE
 E int FDECL(pickup, (int, BOOLEAN_P));
 E int FDECL(pickup_object, (struct obj *, int64_t, BOOLEAN_P, BOOLEAN_P, uchar*));
 E int FDECL(query_category, (const char *, struct obj *, int,
-                             menu_item **, int));
+                             menu_item **, int, int));
 E int FDECL(query_objlist, (const char *, struct obj **, int,
                             menu_item **, int, boolean (*)(OBJ_P), int));
 E void FDECL(add_weight_summary, (winid, int, int));
@@ -2730,10 +2732,12 @@ E struct obj *FDECL(pick_obj, (struct obj *));
 E int NDECL(encumber_msg);
 E int FDECL(container_at, (int, int, BOOLEAN_P));
 E int NDECL(doloot);
+E int NDECL(dolootin);
+E int NDECL(dolootout);
 E void FDECL(observe_quantum_cat, (struct obj *, BOOLEAN_P, BOOLEAN_P));
 E boolean FDECL(container_gone, (int (*)(OBJ_P)));
 E boolean NDECL(u_handsy);
-E int FDECL(use_container, (struct obj **, int, BOOLEAN_P));
+E int FDECL(use_container, (struct obj **, int, BOOLEAN_P, int));
 E int FDECL(loot_mon, (struct monst *, int *, boolean *, BOOLEAN_P));
 E int NDECL(dotip);
 E boolean FDECL(is_autopickup_exception, (struct obj *, BOOLEAN_P));

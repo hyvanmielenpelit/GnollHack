@@ -16,7 +16,7 @@
 STATIC_DCL void FDECL(simple_look, (struct obj *, BOOLEAN_P));
 STATIC_DCL boolean FDECL(query_classes, (char *, boolean *, boolean *,
                                          const char *, struct obj *,
-                                         BOOLEAN_P, int *));
+                                         BOOLEAN_P, int *, int));
 STATIC_DCL boolean FDECL(fatal_corpse_mistake, (struct obj *, BOOLEAN_P));
 STATIC_DCL void FDECL(check_here, (BOOLEAN_P));
 STATIC_DCL boolean FDECL(n_or_more, (struct obj *));
@@ -53,18 +53,19 @@ STATIC_PTR int FDECL(pickup_and_in_container_nobot, (struct obj*));
 STATIC_DCL void FDECL(removed_from_icebox, (struct obj *));
 STATIC_DCL int64_t FDECL(mbag_item_gone, (int, struct obj *));
 STATIC_DCL void FDECL(explain_container_prompt, (BOOLEAN_P));
-STATIC_DCL int FDECL(traditional_loot, (int, struct obj*, struct obj*));
-STATIC_DCL int FDECL(menu_loot, (int, int, struct obj*, struct obj*));
+STATIC_DCL int FDECL(traditional_loot, (int, struct obj*, struct obj*, int));
+STATIC_DCL int FDECL(menu_loot, (int, int, struct obj*, struct obj*, int));
 STATIC_DCL char FDECL(in_or_out_menu, (const char *, struct obj *, BOOLEAN_P,
-                                       BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
+                                       BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, int));
 STATIC_DCL boolean FDECL(able_to_loot, (int, int, BOOLEAN_P));
 STATIC_DCL boolean NDECL(reverse_loot);
 //STATIC_DCL boolean FDECL(mon_beside, (int, int));
-STATIC_DCL int FDECL(do_loot_cont, (struct obj **, int, int));
+STATIC_DCL int FDECL(do_loot_cont, (struct obj **, int, int, int));
 STATIC_DCL void FDECL(tipcontainer, (struct obj *));
 STATIC_DCL void FDECL(loot_decoration, (int, int, int, boolean*));
 STATIC_OVL boolean FDECL(check_nonmergeable_nobj, (struct obj*));
 STATIC_DCL boolean FDECL(check_nonmergeable_pick_list, (menu_item*, int, int));
+STATIC_DCL int FDECL(doloot_core, (int));
 
 /* define for query_objlist() and autopickup() */
 #define FOLLOW(curr, flags) \
@@ -153,13 +154,14 @@ int *itemcount;
  *          (ie, treated as if it had just been "?a").
  */
 STATIC_OVL boolean
-query_classes(oclasses, one_at_a_time, everything, action, objs, here, menu_on_demand)
+query_classes(oclasses, one_at_a_time, everything, action, objs, here, menu_on_demand, applymode)
 char oclasses[];
 boolean *one_at_a_time, *everything;
 const char *action;
 struct obj *objs;
 boolean here;
 int *menu_on_demand;
+int applymode;
 {
     char ilets[BUFSZ], inbuf[BUFSZ] = DUMMY; /* FIXME: hardcoded ilets[] length */
     int iletct, oclassct;
@@ -221,9 +223,16 @@ int *menu_on_demand;
         oclasses[oclassct = 0] = '\0';
         *one_at_a_time = *everything = FALSE;
         not_everything = filtered = FALSE;
-        Sprintf(qbuf, "What kinds of thing do you want to %s?", action);
-        Sprintf(ebuf, "[%s]", ilets);
-        getlin_ex(GETLINE_GENERAL, ATR_NONE, NO_COLOR, qbuf, inbuf, (char*)0, ebuf, (char*)0);
+        if (applymode && index(ilets, 'a'))
+        {
+            Strcpy(inbuf, "a");
+        }
+        else
+        {
+            Sprintf(qbuf, "What kinds of thing do you want to %s?", action);
+            Sprintf(ebuf, "[%s]", ilets);
+            getlin_ex(GETLINE_GENERAL, ATR_NONE, NO_COLOR, qbuf, inbuf, (char*)0, ebuf, (char*)0);
+        }
         if (*inbuf == '\033')
             return FALSE;
 
@@ -746,7 +755,7 @@ boolean do_auto_in_bag;
             if (!query_classes(oclasses, &selective, &all_of_a_type,
                 do_auto_in_bag ? "pick up and auto-stash" : "pick up", *objchain_p,
                                (traverse_how & BY_NEXTHERE) ? TRUE : FALSE,
-                               &via_menu)) 
+                               &via_menu, 0)) 
             {
                 if (!via_menu)
                     goto pickupdone;
@@ -920,9 +929,9 @@ handle_knapsack_full(VOID_ARGS)
                     current_container = container;
                     add_valid_menu_class(0); /* reset */
                     if (flags.menu_style == MENU_TRADITIONAL)
-                        more_action |= traditional_loot(1, (struct obj*)0, (struct obj*)0);
+                        more_action |= traditional_loot(1, (struct obj*)0, (struct obj*)0, 2);
                     else
-                        more_action |= (menu_loot(0, 1, (struct obj*)0, (struct obj*)0) > 0);
+                        more_action |= (menu_loot(0, 1, (struct obj*)0, (struct obj*)0, 2) > 0);
                     add_valid_menu_class(0);
                     if (more_action)
                         update_inventory();
@@ -1294,12 +1303,13 @@ int show_weights;
  *
  */
 int
-query_category(qstr, olist, qflags, pick_list, how)
+query_category(qstr, olist, qflags, pick_list, how, applymode)
 const char *qstr;      /* query string */
 struct obj *olist;     /* the list to pick from */
 int qflags;            /* behaviour modification flags */
 menu_item **pick_list; /* return list of items picked */
 int how;               /* type of query */
+int applymode;
 {
     int n;
     winid win;
@@ -1377,6 +1387,13 @@ int how;               /* type of query */
             debugpline0("query_category: no single object match");
         }
         return 0;
+    }
+
+    if (applymode && ((qflags & ALL_TYPES) != 0 || ccount == 1))
+    {
+        *pick_list = (menu_item*)alloc(sizeof(menu_item));
+        (*pick_list)->item.a_int = ALL_TYPES_SELECTED;
+        return 1;
     }
 
     win = create_nhwindow(NHW_MENU);
@@ -2271,9 +2288,9 @@ int x, y;
 #endif
 
 int
-do_loot_cont(cobjp, cindex, ccount)
+do_loot_cont(cobjp, cindex, ccount, applymode)
 struct obj **cobjp;
-int cindex, ccount; /* index of this container (1..N), number of them (N) */
+int cindex, ccount, applymode; /* index of this container (1..N), number of them (N) */
 {
     if (!cobjp)
         return 0;
@@ -2369,7 +2386,7 @@ int cindex, ccount; /* index of this container (1..N), number of them (N) */
         }
     }
 
-    return use_container(cobjp, 0, (boolean) (cindex < ccount));
+    return use_container(cobjp, 0, (boolean) (cindex < ccount), applymode);
 }
 
 boolean
@@ -2516,7 +2533,26 @@ boolean* got_something_ptr;
 
 /* loot a container on the floor or loot saddle from mon. */
 int
-doloot()
+doloot(VOID_ARGS)
+{
+    return doloot_core(0);
+}
+
+int
+dolootout(VOID_ARGS)
+{
+    return doloot_core(1);
+}
+
+int
+dolootin(VOID_ARGS)
+{
+    return doloot_core(2);
+}
+
+STATIC_OVL int
+doloot_core(applymode)
+int applymode;
 {
     struct obj *cobj, *nobj;
     register int c = -1;
@@ -2534,22 +2570,26 @@ doloot()
 
     abort_looting = FALSE;
 
-    if (check_capacity((char *) 0)) {
+    if (check_capacity((char *) 0)) 
+    {
         /* "Can't do that while carrying so much stuff." */
         play_sfx_sound(SFX_GENERAL_CURRENTLY_UNABLE_TO_DO);
         return 0;
     }
 #if 0
-    if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
+    if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) 
+    {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
         You("have no hands!"); /* not `body_part(HAND)' */
         return 0;
     }
 #endif
-    if (Confusion) {
+    if (Confusion) 
+    {
         if (rn2(6) && reverse_loot())
             return 1;
-        if (rn2(2)) {
+        if (rn2(2)) 
+        {
             play_sfx_sound(SFX_GENERAL_NOTHING_THERE);
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "Being confused, you find nothing to loot.");
             return 1; /* costs a turn */
@@ -2562,7 +2602,8 @@ doloot()
         goto lootmon;
 
  lootcont:
-    if ((num_conts = container_at(cc.x, cc.y, TRUE)) > 0) {
+    if ((num_conts = container_at(cc.x, cc.y, TRUE)) > 0) 
+    {
         boolean anyfound = FALSE;
 
         if (!able_to_loot(cc.x, cc.y, TRUE))
@@ -2571,13 +2612,14 @@ doloot()
             return 0;
         }
 
-        if (Blind && !uarmg) {
+        if (Blind && !uarmg) 
+        {
             /* if blind and without gloves, attempting to #loot at the
                location of a cockatrice corpse is fatal before asking
                whether to manipulate any containers */
-            for (nobj = sobj_at(CORPSE, cc.x, cc.y); nobj;
-                 nobj = nxtobj(nobj, CORPSE, TRUE))
-                if (will_feel_cockatrice(nobj, FALSE)) {
+            for (nobj = sobj_at(CORPSE, cc.x, cc.y); nobj; nobj = nxtobj(nobj, CORPSE, TRUE))
+                if (will_feel_cockatrice(nobj, FALSE)) 
+                {
                     feel_cockatrice(nobj, FALSE);
                     /* if life-saved (or poly'd into stone golem),
                        terminate attempt to loot */
@@ -2585,7 +2627,8 @@ doloot()
                 }
         }
 
-        if (num_conts > 1) {
+        if (num_conts > 1) 
+        {
             /* use a menu to loot many containers */
             int n, i;
             winid win;
@@ -2596,22 +2639,27 @@ doloot()
             win = create_nhwindow(NHW_MENU);
             start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST);
 
-            for (cobj = level.objects[cc.x][cc.y]; cobj;
-                 cobj = cobj->nexthere)
-                if (Is_container(cobj)) {
+            for (cobj = level.objects[cc.x][cc.y]; cobj; cobj = cobj->nexthere)
+                if (Is_container(cobj)) 
+                {
+                    int glyph = obj_to_glyph(cobj, rn2_on_display_rng);
+                    int gui_glyph = maybe_get_replaced_glyph(glyph, cc.x, cc.y, data_to_replacement_info(glyph, LAYER_OBJECT, cobj, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));
+                    struct extended_menu_info eminfo = obj_to_extended_menu_info(cobj);
                     any.a_obj = cobj;
-                    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
-                             doname(cobj), MENU_UNSELECTED);
+                    add_extended_menu(win, gui_glyph, &any, 0, 0, ATR_NONE, NO_COLOR, doname(cobj), MENU_UNSELECTED, eminfo);
                 }
             end_menu(win, "Loot which containers?");
             n = select_menu(win, PICK_ANY, &pick_list);
             destroy_nhwindow(win);
 
-            if (n > 0) {
-                for (i = 1; i <= n; i++) {
+            if (n > 0) 
+            {
+                for (i = 1; i <= n; i++) 
+                {
                     cobj = pick_list[i - 1].item.a_obj;
-                    timepassed |= do_loot_cont(&cobj, i, n);
-                    if (abort_looting) {
+                    timepassed |= do_loot_cont(&cobj, i, n, applymode);
+                    if (abort_looting) 
+                    {
                         /* chest trap or magic bag explosion or <esc> */
                         free((genericptr_t) pick_list);
                         return timepassed;
@@ -2621,21 +2669,30 @@ doloot()
             }
             if (n != 0)
                 c = 'y';
-        } else {
-            for (cobj = level.objects[cc.x][cc.y]; cobj; cobj = nobj) {
+        } 
+        else 
+        {
+            for (cobj = level.objects[cc.x][cc.y]; cobj; cobj = nobj) 
+            {
                 nobj = cobj->nexthere;
 
-                if (Is_container(cobj)) {
-                    c = ynq(safe_qbuf(qbuf, "There is ", " here, loot it?",
-                                      cobj, doname, ansimpleoname,
-                                      "a container"));
+                if (Is_container(cobj)) 
+                {
+                    if (!applymode)
+                        c = ynq(safe_qbuf(qbuf, "There is ",
+                            applymode == 1 ? " here, take items out of it?" : applymode == 2 ? " here, put items into it?" : " here, loot it?",
+                            cobj, doname, ansimpleoname,
+                            "a container"));
+                    else
+                        c = 'y';
+
                     if (c == 'q')
                         return timepassed;
                     if (c == 'n')
                         continue;
                     anyfound = TRUE;
 
-                    timepassed |= do_loot_cont(&cobj, 1, 1);
+                    timepassed |= do_loot_cont(&cobj, 1, 1, applymode);
                     if (abort_looting)
                         /* chest trap or magic bag explosion or <esc> */
                         return timepassed;
@@ -2644,7 +2701,9 @@ doloot()
             if (anyfound)
                 c = 'y';
         }
-    } else if (IS_GRAVE(levl[cc.x][cc.y].typ)) {
+    } 
+    else if (IS_GRAVE(levl[cc.x][cc.y].typ)) 
+    {
         play_sfx_sound(SFX_GENERAL_ANOTHER_ACTION_NEEDED);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "need to dig up the grave to effectively loot it...");
     }
@@ -3884,10 +3943,11 @@ u_handsy()
 STATIC_VAR const char stashable[] = { ALLOW_COUNT, COIN_CLASS, ALL_CLASSES, 0 };
 
 int
-use_container(objp, held, more_containers)
+use_container(objp, held, more_containers, applymode)
 struct obj **objp;
 int held;
 boolean more_containers; /* True iff #loot multiple and this isn't last one */
+int applymode; /* 0 = normal, 1 = take out items, 2 = put in items */
 {
     struct obj *otmp, *obj = *objp;
     boolean quantum_cat, cursed_mbag, loot_out, loot_in, loot_in_first,
@@ -4034,7 +4094,7 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
             else 
             {
                 c = in_or_out_menu(qbuf, current_container, outmaybe, inokay,
-                                   (boolean) (used != 0), more_containers);
+                                   (boolean) (used != 0), more_containers, applymode);
             }
         } 
         else 
@@ -4113,14 +4173,15 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
                 used |= traditional_loot(
                     move_to_another ? 2 : move_to_another_on_floor ? 3 : loot_out_and_drop ? 4 : loot_out_and_stash ? 5 : 0,
                     current_container, 
-                    move_to_another_on_floor ? (floor_containter_count == 1 && last_floor_container ? last_floor_container : (struct obj*)0) : (other_containter_count == 1 && last_container ? last_container : (struct obj*)0)
+                    move_to_another_on_floor ? (floor_containter_count == 1 && last_floor_container ? last_floor_container : (struct obj*)0) : (other_containter_count == 1 && last_container ? last_container : (struct obj*)0),
+                    applymode
                 );
             else
                 used |= (menu_loot(0, 
                     move_to_another ? 2 : move_to_another_on_floor ? 3 : loot_out_and_drop ? 4 : loot_out_and_stash ? 5 : 0,
                     current_container, 
-                    move_to_another_on_floor ? (floor_containter_count == 1 && last_floor_container ? last_floor_container : (struct obj*)0) : (other_containter_count == 1 && last_container ? last_container : (struct obj*)0)
-                ) > 0 );
+                    move_to_another_on_floor ? (floor_containter_count == 1 && last_floor_container ? last_floor_container : (struct obj*)0) : (other_containter_count == 1 && last_container ? last_container : (struct obj*)0),
+                    applymode) > 0);
             add_valid_menu_class(0);
         }
     }
@@ -4152,9 +4213,9 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
     {
         add_valid_menu_class(0); /* reset */
         if (flags.menu_style == MENU_TRADITIONAL)
-            used |= traditional_loot(pickup_and_loot_in ? 6 : 1, (struct obj*)0, (struct obj*)0);
+            used |= traditional_loot(pickup_and_loot_in ? 6 : 1, (struct obj*)0, (struct obj*)0, applymode);
         else
-            used |= (menu_loot(0, pickup_and_loot_in ? 6 : 1, (struct obj*)0, (struct obj*)0) > 0);
+            used |= (menu_loot(0, pickup_and_loot_in ? 6 : 1, (struct obj*)0, (struct obj*)0, applymode) > 0);
         add_valid_menu_class(0);
     } 
     else if (stash_one) 
@@ -4193,9 +4254,9 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
         {
             add_valid_menu_class(0); /* reset */
             if (flags.menu_style == MENU_TRADITIONAL)
-                used |= traditional_loot(0, (struct obj*)0, (struct obj*)0);
+                used |= traditional_loot(0, (struct obj*)0, (struct obj*)0, applymode);
             else
-                used |= (menu_loot(0, 0, (struct obj*)0, (struct obj*)0) > 0);
+                used |= (menu_loot(0, 0, (struct obj*)0, (struct obj*)0, applymode) > 0);
             add_valid_menu_class(0);
         }
     }
@@ -4223,7 +4284,7 @@ containerdone:
 
 /* loot current_container (take things out or put things in), by prompting */
 STATIC_OVL int
-traditional_loot(command_id, applied_container, other_container)
+traditional_loot(command_id, applied_container, other_container, applymode)
 int command_id;
 /* 0 = take out,
    1 = put in,
@@ -4235,6 +4296,7 @@ int command_id;
  */
 struct obj* applied_container;
 struct obj* other_container;
+int applymode;
 {
     int FDECL((*actionfunc), (OBJ_P)), FDECL((*checkfunc), (OBJ_P));
     struct obj **objlist;
@@ -4320,14 +4382,14 @@ struct obj* other_container;
     if(command_id == 4 && *u.ushops)
         sellobj_state(SELL_DELIBERATE);
 
-    if (query_classes(selection, &one_by_one, &allflag, action, *objlist, FALSE, &menu_on_request)) 
+    if (query_classes(selection, &one_by_one, &allflag, action, *objlist, FALSE, &menu_on_request, applymode)) 
     {
         if (askchain(objlist, (one_by_one ? (char *) 0 : selection), allflag, actionfunc, checkfunc, 0, action))
             used = 1;
     } 
     else if (menu_on_request < 0) 
     {
-        used = (menu_loot(menu_on_request, command_id, applied_container, other_container) > 0);
+        used = (menu_loot(menu_on_request, command_id, applied_container, other_container, applymode) > 0);
     }
 
     if (command_id == 4 && *u.ushops)
@@ -4338,7 +4400,7 @@ struct obj* other_container;
 
 /* loot current_container (take things out or put things in), using a menu */
 STATIC_OVL int
-menu_loot(retry, command_id, applied_container, other_container) 
+menu_loot(retry, command_id, applied_container, other_container, applymode)
 int retry;
 int command_id; 
 /* 0 = take out, 
@@ -4351,6 +4413,7 @@ int command_id;
  */
 struct obj* applied_container;
 struct obj* other_container UNUSED;
+int applymode;
 {
     int n, i, n_looted = 0;
     boolean all_categories = TRUE, loot_everything = FALSE;
@@ -4435,7 +4498,7 @@ struct obj* other_container UNUSED;
         if (command_id == 6)
             mflags |= BY_NEXTHERE;
         n = query_category(buf, command_id == 1 ? invent : command_id == 6 ? level.objects[u.ux][u.uy] : contained_object_chain(current_container),
-                           mflags, &pick_list, PICK_ANY);
+                           mflags, &pick_list, PICK_ANY, applymode);
         if (!n)
             return 0;
 
@@ -4581,9 +4644,22 @@ struct obj* other_container UNUSED;
             current_container->cknown = 1;
 
         char movebuf[BUFSZ] = "";
-        if (command_id == 2 || command_id == 3)
+        if ((command_id == 2 || command_id == 3) && current_container && move_target_container)
             Sprintf(movebuf, " from %s to %s", cxname(current_container), cxname(move_target_container));
-
+        else if (applymode && current_container)
+        {
+            switch (command_id)
+            {
+            case 0:
+                Sprintf(movebuf, " of %s", cxname(current_container));
+                break;
+            case 1:
+                Sprintf(movebuf, " to %s", cxname(current_container));
+                break;
+            default:
+                break;
+            }
+        }
         Sprintf(buf, "%s what%s?", action, movebuf);
         n = query_objlist(buf, command_id == 1 ? &invent : command_id == 6 ? &level.objects[u.ux][u.uy] : contained_object_chain_ptr(current_container),
                           mflags, &pick_list, PICK_ANY,
@@ -4703,10 +4779,11 @@ int i, n;
 }
 
 STATIC_OVL char
-in_or_out_menu(prompt, obj, outokay, inokay, alreadyused, more_containers)
+in_or_out_menu(prompt, obj, outokay, inokay, alreadyused, more_containers, applymode)
 const char *prompt;
 struct obj *obj;
 boolean outokay, inokay, alreadyused, more_containers;
+int applymode;
 {
     /* underscore is not a choice; it's used to skip element [0] */
     static const char lootchars[] = "_:oibrsnqmcdpa", abc_chars[] = "_:abcdenqfghij";
@@ -4716,6 +4793,11 @@ boolean outokay, inokay, alreadyused, more_containers;
     char buf[BUFSZ];
     int n;
     const char *menuselector = flags.lootabc ? abc_chars : lootchars;
+
+    if (applymode == 1 && outokay)
+        return lootchars[2];  //'o';
+    else if (applymode == 2 && inokay)
+        return lootchars[3];  //'i';
 
     struct obj* last_container = (struct obj*)0;
     int other_containter_count = count_other_containers(invent, obj, &last_container, FALSE);

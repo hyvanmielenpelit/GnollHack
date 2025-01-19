@@ -155,6 +155,8 @@
     <None Remove="Assets\UI\lookfar.png" />
     <None Remove="Assets\UI\lookhere.png" />
     <None Remove="Assets\UI\loot.png" />
+    <None Remove="Assets\UI\lootin.png" />
+    <None Remove="Assets\UI\lootout.png" />
     <None Remove="Assets\UI\manual.png" />
     <None Remove="Assets\UI\memory.png" />
     <None Remove="Assets\UI\menubackground.png" />
@@ -347,6 +349,8 @@
     <EmbeddedResource Include="Assets\UI\frame2-vertical.png" />
     <EmbeddedResource Include="Assets\UI\home.png" />
     <EmbeddedResource Include="Assets\UI\library.png" />
+    <EmbeddedResource Include="Assets\UI\lootin.png" />
+    <EmbeddedResource Include="Assets\UI\lootout.png" />
     <EmbeddedResource Include="Assets\UI\manual.png" />
     <EmbeddedResource Include="Assets\UI\memory.png" />
     <EmbeddedResource Include="Assets\UI\messages.png" />

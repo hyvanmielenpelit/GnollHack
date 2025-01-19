@@ -3839,7 +3839,7 @@ int retry;
         n = query_category("What type of things do you want to take off?",
                            invent, (WORN_TYPES | ALL_TYPES
                                     | UNPAID_TYPES | UNIDENTIFIED_TYPES | UNKNOWN_TYPES | BUCX_TYPES),
-                           &pick_list, PICK_ANY);
+                           &pick_list, PICK_ANY, 0);
         if (!n)
             return 0;
         for (i = 0; i < n; i++) {
@@ -3892,7 +3892,7 @@ int retry;
         n = query_category("What type of things do you want to wear?",
             invent, (WEARABLE_TYPES | ALL_TYPES
                 | UNPAID_TYPES | UNIDENTIFIED_TYPES | UNKNOWN_TYPES | BUCX_TYPES),
-            &pick_list, PICK_ANY);
+            &pick_list, PICK_ANY, 0);
         if (!n)
             return 0;
         for (i = 0; i < n; i++) {

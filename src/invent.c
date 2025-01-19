@@ -3306,6 +3306,8 @@ struct obj* otmp_only;
                         || (otmp->oclass == MISCELLANEOUS_CLASS
                             && !is_obj_appliable(otmp))
                         || (otmp->oclass == GEM_CLASS && !is_graystone(otmp))))
+                || (!strcmp(word, "take items out of") && !Is_container(otmp))
+                || (!strcmp(word, "put items in") && !Is_container(otmp))
                 || (!strcmp(word, "invoke")
                     && !otmp->oartifact
                     && !is_otyp_unique(otyp)
@@ -4514,7 +4516,11 @@ boolean* return_to_inv_ptr;
                     setbreakclasses(class_list);
                 else if (!strcmp(extcmdlist[i].getobj_word, "use or apply"))
                     setapplyclasses(class_list);
-                else  if (!strcmp(extcmdlist[i].getobj_word, "ready"))
+                else if (!strcmp(extcmdlist[i].getobj_word, "take items out of"))
+                    setapplyclasses(class_list);
+                else if (!strcmp(extcmdlist[i].getobj_word, "put items in"))
+                    setapplyclasses(class_list);
+                else if (!strcmp(extcmdlist[i].getobj_word, "ready"))
                 {
                     Strcpy(class_list, (uslinging()
                         || (uswapwep
@@ -4566,6 +4572,10 @@ boolean* return_to_inv_ptr;
                 else if (!strcmp(extcmdlist[i].getobj_word, "break"))
                     setbreakclasses(class_list);
                 else if (!strcmp(extcmdlist[i].getobj_word, "use or apply"))
+                    setapplyclasses(class_list);
+                else if (!strcmp(extcmdlist[i].getobj_word, "take items out of"))
+                    setapplyclasses(class_list);
+                else if (!strcmp(extcmdlist[i].getobj_word, "put items in"))
                     setapplyclasses(class_list);
                 else  if (!strcmp(extcmdlist[i].getobj_word, "ready"))
                 {
@@ -5965,7 +5975,7 @@ dotypeinv()
                 i |= BUC_CURSED;
             if (xcnt)
                 i |= BUC_UNKNOWN;
-            n = query_category(prompt, invent, i, &pick_list, PICK_ONE);
+            n = query_category(prompt, invent, i, &pick_list, PICK_ONE, 0);
             if (!n)
                 return 0;
             this_type = c = pick_list[0].item.a_int;

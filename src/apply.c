@@ -43,6 +43,7 @@ STATIC_DCL boolean FDECL(is_valid_jump_pos, (int, int, int, BOOLEAN_P));
 STATIC_DCL int FDECL(get_invalid_jump_position, (int, int));
 STATIC_DCL int FDECL(get_invalid_polearm_position, (int, int));
 STATIC_DCL boolean FDECL(find_poleable_mon, (coord *, int, int));
+STATIC_DCL int FDECL(doapply_core, (int));
 
 #ifdef AMIGA
 void FDECL(amii_speaker, (struct obj *, char *, int));
@@ -5816,6 +5817,27 @@ dobreak(VOID_ARGS)
 int
 doapply(VOID_ARGS)
 {
+    return doapply_core(0);
+}
+
+/* the 'b' command */
+int
+dotakeitemsout(VOID_ARGS)
+{
+    return doapply_core(1);
+}
+
+/* the 'B' command */
+int
+doputitemsin(VOID_ARGS)
+{
+    return doapply_core(2);
+}
+
+STATIC_OVL int
+doapply_core(applymode)
+int applymode; /* 0 = normal, 1 = take out items, 2 = put in items */
+{
     struct obj *obj;
     register int res = 1;
     char class_list[MAX_OBJECT_CLASSES + 2];
@@ -5823,21 +5845,32 @@ doapply(VOID_ARGS)
     if (check_capacity((char *) 0))
         return 0;
 
-    int fres = 0;
-    if ((fres = floorapply()) > -1) /* -1 = nothing to floor apply or selected not to do it */
+    if (!applymode)
     {
-        return fres;
+        int fres = 0;
+        if ((fres = floorapply()) > -1) /* -1 = nothing to floor apply or selected not to do it */
+        {
+            return fres;
+        }
     }
 
     setapplyclasses(class_list); /* tools[] */
-    obj = getobj(class_list, "use or apply", 0, "");
+    const char* getobjverb = applymode == 1 ? "take items out of" : applymode == 2 ? "put items in" : "use or apply";
+    obj = getobj(class_list, getobjverb, 0, "");
     if (!obj)
         return 0;
+
+    if (applymode && !Is_container(obj))
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot %s %s.", getobjverb, thecxname(obj));
+        return 0;
+    }
 
     if (obj->cooldownleft > 0)
     {
         play_sfx_sound(SFX_NOT_READY_YET);
-        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot apply %s before its cooldown has expired.", the(cxname(obj)));
+        You_ex(ATR_NONE, CLR_MSG_ATTENTION, "cannot apply %s before its cooldown has expired.", thecxname(obj));
         return 0;
     }
 
@@ -5853,7 +5886,7 @@ doapply(VOID_ARGS)
     if (Is_proper_container(obj))
     {
         /* Regular containers */
-        res = use_container(&obj, 1, FALSE);
+        res = use_container(&obj, 1, FALSE, applymode);
     }
     else if (is_key(obj))
     {

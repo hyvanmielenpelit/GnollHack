@@ -244,6 +244,8 @@
 		<None Remove="Assets\UI\frame2-vertical.png" />
 		<None Remove="Assets\UI\home.png" />
 		<None Remove="Assets\UI\library.png" />
+		<None Remove="Assets\UI\lootin.png" />
+		<None Remove="Assets\UI\lootout.png" />
 		<None Remove="Assets\UI\manual.png" />
 		<None Remove="Assets\UI\memory.png" />
 		<None Remove="Assets\UI\messages.png" />
@@ -771,6 +773,8 @@
 	  <EmbeddedResource Include="Assets\diablo_h.ttf" />
 	  <EmbeddedResource Include="Assets\endr.ttf" />
 	  <EmbeddedResource Include="Assets\FMOD-Logo-192-White.png" />
+	  <EmbeddedResource Include="Assets\UI\lootin.png" />
+	  <EmbeddedResource Include="Assets\UI\lootout.png" />
 	  <MauiAsset Include="Assets\Fonts\Lato.otf" />
     <MauiAsset Include="Assets\Fonts\Lato.ttf" />
     <EmbeddedResource Include="Assets\ghsecrets.sjson" />

@@ -6186,6 +6186,8 @@ struct ext_func_tab extcmdlist[] = {
     { M('i'), "invoke", "invoke an object's special powers", 
         doinvoke, IFBURIED | AUTOCOMPLETE | INCMDMENU | SINGLE_OBJ_CMD_SPECIFIC, 0, 
         getobj_invoke_types, "invoke" },
+    { 'B', "itemsin", "put items into a container", doputitemsin, SINGLE_OBJ_CMD_SPECIFIC, 0, 0, "put items in", "put items in" },
+    { 'b', "itemsout", "take items out of a container", dotakeitemsout, SINGLE_OBJ_CMD_SPECIFIC, 0, 0, "take items out of", "take items out" },
     { M('j'), "jump", "jump to another location", dojump, AUTOCOMPLETE | INCMDMENU },
     { C('d'), "kick", "kick something", dokick, AUTOCOMPLETE | INCMDMENU },
     { M('k'), "killed", "list killed monsters", dokilledmonsters, IFBURIED },
@@ -6197,6 +6199,8 @@ struct ext_func_tab extcmdlist[] = {
     { ':', "look", "look at what is here", dolook, IFBURIED },
     { 'L', "lookat", "show what type of thing a symbol corresponds to", dowhatis, IFBURIED | GENERALCMD },
     { M('l'), "loot", "loot a box on the floor", doloot, AUTOCOMPLETE },
+    { 'Y', "lootin", "put items into a container on the floor", dolootin},
+    { 'y', "lootout", "take items out of a container on the floor", dolootout },
     { '\0', "managespell", "manage spells", dospellmanage, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
     { M(8), "favorite", "mark an item as favorite",
         dofavorite, SINGLE_OBJ_CMD_GENERAL | ALLOW_RETURN_TO_INVENTORY, 0,
@@ -10319,6 +10323,15 @@ enum create_context_menu_types menu_type;
                 if (!loot_added && Is_container(otmp_here))
                 {
                     add_context_menu('l', cmd_from_func(doloot), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Loot", cxname(otmp_here), 0, NO_COLOR);
+                    boolean isknownempty = FALSE;
+                    if (otmp_here->cknown
+                        && (otmp_here->otyp == BAG_OF_TRICKS ? (otmp_here->charges == 0) : !Has_contained_contents(otmp_here))
+                       )
+                        isknownempty = TRUE;
+                    if (!isknownempty)
+                        add_context_menu('b', cmd_from_func(dolootout), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Take out", cxname(otmp_here), 0, NO_COLOR);
+                    if (invent)
+                        add_context_menu('B', cmd_from_func(dolootin), CONTEXT_MENU_STYLE_GENERAL, otmp_here->gui_glyph, "Put in", cxname(otmp_here), 0, NO_COLOR);
                     loot_added = TRUE;
                 }
             }
