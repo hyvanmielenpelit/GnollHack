@@ -3959,7 +3959,7 @@ uint64_t excludedtitles, excludedtitles2; /* Requires a 64-bit long to work for 
     if (excludedtitles)
     {
         int i;
-        for (i = 0; i < 32 && i < num; i++)
+        for (i = 0; i < 64 && i < num; i++)
         {
             uint64_t bit = (uint64_t)1 << i;
             if (excludedtitles & bit)
@@ -3971,9 +3971,9 @@ uint64_t excludedtitles, excludedtitles2; /* Requires a 64-bit long to work for 
     if (excludedtitles2)
     {
         int i;
-        for (i = 32; i < 64 && i < num; i++)
+        for (i = 64; i < 128 && i < num; i++)
         {
-            uint64_t bit = (uint64_t)1 << (i - 32);
+            uint64_t bit = (uint64_t)1 << (i - 64);
             if (excludedtitles2 & bit)
             {
                 k--;
@@ -3991,15 +3991,15 @@ uint64_t excludedtitles, excludedtitles2; /* Requires a 64-bit long to work for 
             for (j = 0; j < num; j++)
             {
                 uint64_t bit = 0UL;
-                if (j < 32)
+                if (j < 64)
                 {
                     bit = (uint64_t)1 << j;
                     if (excludedtitles & bit)
                         continue;
                 }
-                else if (j < 64)
+                else if (j < 128)
                 {
-                    bit = (uint64_t)1 << (j - 32);
+                    bit = (uint64_t)1 << (j - 64);
                     if (excludedtitles2 & bit)
                         continue;
                 }
