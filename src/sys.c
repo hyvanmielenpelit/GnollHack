@@ -318,6 +318,7 @@ reset_global_variables(VOID_ARGS)
 
     flags.right_click_command = initial_flags.right_click_action;
     flags.middle_click_command = initial_flags.middle_click_action;
+    iflags.found_manuals = initial_flags.found_manuals;
 }
 
 void

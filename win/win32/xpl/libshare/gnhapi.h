@@ -49,6 +49,7 @@ DLLEXPORT int RunGnollHack(
     char* preset_player_name,
     char* recovery_name,
     uint64_t runflags,
+    uint64_t foundmanuals,
     uint64_t wincap1,
     uint64_t wincap2,
     InitWindowsCallback callback_init_nhwindows,

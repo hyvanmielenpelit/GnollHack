@@ -676,6 +676,62 @@ namespace GnollHackX
         public static bool InformAboutFreeDiskSpace = false;
         public static bool SavedLongerMessageHistory { get; set; }
         public static bool SavedHideMessageHistory { get; set; }
+        public static ulong FoundManuals { get; set; }
+
+        public static void PopulateManuals(Dictionary<int, StoredManual> manuals)
+        {
+            manuals.Clear();
+            string datadir = Path.Combine(GHApp.GHPath, GHConstants.UserDataDirectory);
+            if (Directory.Exists(datadir))
+            {
+                string[] files = Directory.GetFiles(datadir);
+                foreach (string file in files)
+                {
+                    bool fileexists = File.Exists(file);
+                    FileInfo fileinfo = new FileInfo(file);
+                    if (fileinfo.Name.Length > GHConstants.ManualFilePrefix.Length &&
+                        fileinfo.Name.Substring(0, GHConstants.ManualFilePrefix.Length) == GHConstants.ManualFilePrefix &&
+                        fileexists)
+                    {
+                        StoredManual sm = null;
+                        try
+                        {
+                            using (FileStream fs = File.OpenRead(file))
+                            {
+                                using (StreamReader sr = new StreamReader(fs))
+                                {
+                                    string json = sr.ReadToEnd();
+                                    sm = JsonConvert.DeserializeObject<StoredManual>(json);
+                                }
+                            }
+                        }
+                        catch
+                        {
+
+                        }
+                        if (sm != null)
+                            manuals.Add(sm.Id, sm);
+                    }
+                }
+            }
+        }
+
+        public static void CalculateFoundManuals()
+        {
+            Dictionary<int, StoredManual> manuals = new Dictionary<int, StoredManual>();
+            PopulateManuals(manuals);
+            ulong manualBits = 0UL;
+            List<StoredManual> manuallist = manuals.Values.ToList();
+            if (manuallist.Count > 0)
+            {
+                foreach (StoredManual sm in manuallist)
+                {
+                    ulong bit = 1UL << sm.Id;
+                    manualBits |= bit;
+                }
+            }
+            FoundManuals = manualBits;
+        }
 
         public static bool InformAboutSlowSounds
         {

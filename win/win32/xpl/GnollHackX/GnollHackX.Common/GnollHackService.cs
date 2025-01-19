@@ -74,6 +74,7 @@ namespace GnollHackX.Unknown
             [MarshalAs(UnmanagedType.LPStr)] string preset_player_name,
             [MarshalAs(UnmanagedType.LPStr)] string recovery_name,
             ulong runflags,
+            ulong foundmanuals,
             ulong wincaps1,
             ulong wincaps2,
             VoidVoidCallback callback_init_nhwindows,
@@ -1158,6 +1159,7 @@ namespace GnollHackX.Unknown
                 (ulong)(GHApp.IsDebug ? RunGnollHackFlags.GUIDebugMode : 0) |
                 (ulong)(GHApp.MirroredCharacterClickAction ? RunGnollHackFlags.CharacterClickAction : 0) | /* Use the default; GHApp.CharacterClickAction may contain the option value from the last game */
                 rightmouse | middlemouse | (ulong)ghGame.StartFlags;
+            ulong foundManuals = GHApp.FoundManuals;
             string lastusedplname = GHApp.TournamentMode && !ghGame.PlayingReplay ? GHApp.LastUsedTournamentPlayerName : GHApp.LastUsedPlayerName;
 
             return RunGnollHack(
@@ -1166,6 +1168,7 @@ namespace GnollHackX.Unknown
                 "",
                 lastusedplname,
                 runflags,
+                foundManuals,
                 0,
                 0,
                 ghGame.ClientCallback_InitWindows,

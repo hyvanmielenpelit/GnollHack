@@ -50,40 +50,7 @@ namespace GnollHackX.Pages.MainScreen
 
         public void ReadLibrary()
         {
-            _manuals.Clear();
-            string datadir = Path.Combine(GHApp.GHPath, GHConstants.UserDataDirectory);
-            if (Directory.Exists(datadir))
-            {
-                string[] files = Directory.GetFiles(datadir);
-                foreach (string file in files)
-                {
-                    bool fileexists = File.Exists(file);
-                    FileInfo fileinfo = new FileInfo(file);
-                    if (fileinfo.Name.Length > GHConstants.ManualFilePrefix.Length &&
-                        fileinfo.Name.Substring(0, GHConstants.ManualFilePrefix.Length) == GHConstants.ManualFilePrefix &&
-                        fileexists)
-                    {
-                        StoredManual sm = null;
-                        try
-                        {
-                            using(FileStream fs = File.OpenRead(file)) 
-                            {
-                                using(StreamReader sr = new StreamReader(fs))
-                                {
-                                    string json = sr.ReadToEnd();
-                                    sm = JsonConvert.DeserializeObject<StoredManual>(json);
-                                }
-                            }
-                        }
-                        catch 
-                        {
-
-                        }
-                        if(sm != null)
-                            _manuals.Add(sm.Id, sm);
-                    }
-                }
-            }
+            GHApp.PopulateManuals(_manuals);
 
             int maxManuals = GHApp.GnollHackService.GetMaxManuals();
             int firstCatalogue = GHApp.GnollHackService.GetFirstCatalogue();

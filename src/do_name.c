@@ -4656,6 +4656,9 @@ struct obj* obj;
     Sprintf(buf, "[%s]", manual_names[mnlidx]);
     putmsghistory(buf, FALSE);
 
+    uint64_t bit = (uint64_t)1 << mnlidx;
+    initial_flags.found_manuals |= bit;
+    iflags.found_manuals |= bit;
 }
 
 const char *

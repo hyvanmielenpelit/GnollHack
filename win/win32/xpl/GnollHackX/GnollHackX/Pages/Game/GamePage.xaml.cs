@@ -1302,6 +1302,7 @@ namespace GnollHackX.Pages.Game
                 tasks.Clear();
 
                 await LoadingProgressBar.ProgressTo(0.95, 50, Easing.Linear);
+                GHApp.CalculateFoundManuals();
 
                 if (PlayingReplay)
                 {

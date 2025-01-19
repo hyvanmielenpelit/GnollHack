@@ -1826,6 +1826,14 @@ weapon_here:
         if (objects[obj->otyp].oc_enchantable && (obj->enchantment != 0 || obj->elemental_enchantment != 0 || obj->exceptionality != 0))
             goto weapon_here;
         break;
+    case SPBOOK_CLASS:
+        if (obj->otyp == SPE_MANUAL && iflags.found_manuals > 0 && obj->manualidx >= 0)
+        {
+            uint64_t bit = (uint64_t)1 << obj->manualidx;
+            if(iflags.found_manuals & bit)
+                Strcat(bp, " (already in your library)");
+        }
+        break;
     }
 
     const char* hand_s = body_part(HAND);

@@ -582,6 +582,7 @@ struct instance_flags {
     boolean obsolete;  /* obsolete options can point at this, it isn't used */
 
     struct monst* spell_target_monster;
+    uint64_t found_manuals;
 };
 
 /*
@@ -777,6 +778,7 @@ struct startup_flags {
     boolean click_action_value;
     uchar right_click_action;
     uchar middle_click_action;
+    uint64_t found_manuals;
 };
 
 extern NEARDATA struct startup_flags initial_flags;
