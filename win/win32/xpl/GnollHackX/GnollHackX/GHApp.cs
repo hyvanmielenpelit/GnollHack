@@ -675,6 +675,7 @@ namespace GnollHackX
         public static bool InformAboutRecordingSetOff = false;
         public static bool InformAboutFreeDiskSpace = false;
         public static bool SavedLongerMessageHistory { get; set; }
+        public static bool SavedHideMessageHistory { get; set; }
 
         public static bool InformAboutSlowSounds
         {

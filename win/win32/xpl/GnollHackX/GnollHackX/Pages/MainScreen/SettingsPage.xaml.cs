@@ -538,8 +538,11 @@ namespace GnollHackX.Pages.MainScreen
 
             if (_gamePage != null)
                 _gamePage.LongerMessageHistory = LongerMessageHistorySwitch.IsToggled;
-            //Preferences.Set("LongerMessageHistory", LongerMessageHistorySwitch.IsToggled);
             GHApp.SavedLongerMessageHistory = LongerMessageHistorySwitch.IsToggled;
+
+            if (_gamePage != null)
+                _gamePage.HideMessageHistory = HideMessageHistorySwitch.IsToggled;
+            GHApp.SavedHideMessageHistory = HideMessageHistorySwitch.IsToggled;
 
             //if (_gamePage != null)
             //    _gamePage.ShowPut2BagContextCommand = Put2BagSwitch.IsToggled;
@@ -823,7 +826,7 @@ namespace GnollHackX.Pages.MainScreen
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false;
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false;
-            bool longermsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false;
+            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false;
             long primarygpucache = -2, secondarygpucache = -2;
             int rightmouse = GHConstants.DefaultRightMouseCommand, middlemouse = GHConstants.DefaultMiddleMouseCommand;
             float screenscale = 0.0f;
@@ -949,6 +952,7 @@ namespace GnollHackX.Pages.MainScreen
                 //put2bag = Preferences.Get("ShowPut2BagContextCommand", GHConstants.DefaultShowPickNStashContextCommand);
                 //prevwep = Preferences.Get("ShowPrevWepContextCommand", GHConstants.DefaultShowPrevWepContextCommand);
                 longermsghistory = GHApp.SavedLongerMessageHistory; // Preferences.Get("LongerMessageHistory", false);
+                hidemsghistory = GHApp.SavedHideMessageHistory; // Preferences.Get("HideMessageHistory", false);
                 characterclickaction = Preferences.Get("CharacterClickAction", GHConstants.DefaultCharacterClickAction); /* Default value */
                 rightmouse = Preferences.Get("RightMouseCommand", GHConstants.DefaultRightMouseCommand);
                 middlemouse = Preferences.Get("MiddleMouseCommand", GHConstants.DefaultMiddleMouseCommand);
@@ -998,6 +1002,7 @@ namespace GnollHackX.Pages.MainScreen
                 //put2bag = _gamePage.ShowPut2BagContextCommand;
                 //prevwep = _gamePage.ShowPrevWepContextCommand;
                 longermsghistory = _gamePage.LongerMessageHistory;
+                hidemsghistory = _gamePage.HideMessageHistory;
                 characterclickaction = GHApp.MirroredCharacterClickAction; // _gamePage.GetCharacterClickAction(); /* Value of the option in the (saved) game */
                 rightmouse = GHApp.MirroredRightMouseCommand; //_gamePage.GetRightMouseCommand();
                 middlemouse = GHApp.MirroredMiddleMouseCommand; //_gamePage.GetMiddleMouseCommand();
@@ -1333,6 +1338,7 @@ namespace GnollHackX.Pages.MainScreen
             //Put2BagSwitch.IsToggled = put2bag;
             //PrevWepSwitch.IsToggled = prevwep;
             LongerMessageHistorySwitch.IsToggled = longermsghistory;
+            HideMessageHistorySwitch.IsToggled = hidemsghistory;
 
             _doChangeVolume = !GHApp.IsMuted;
         }

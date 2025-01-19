@@ -532,6 +532,33 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        bool _hideMessageHistory = false;
+        public bool HideMessageHistory
+        {
+            get
+            {
+                lock (_msgHistoryLock) { return _hideMessageHistory; };
+            }
+            set
+            {
+                lock (_msgHistoryLock)
+                {
+                    _hideMessageHistory = value;
+                }
+                RefreshMsgHistoryRowCounts = true;
+
+                GHGame curGame = CurrentGame;
+                if (curGame != null)
+                {
+                    ConcurrentQueue<GHResponse> queue;
+                    if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
+                    {
+                        queue.Enqueue(new GHResponse(curGame, GHRequestType.UseHideMessageHistory, value));
+                    }
+                }
+            }
+        }
+
         private readonly object _accurateLayerDrawingLock = new object();
         private bool _accurateLayerDrawing = false;
         public bool AlternativeLayerDrawing { get { lock (_accurateLayerDrawingLock) { return _accurateLayerDrawing; } } set { lock (_accurateLayerDrawingLock) { _accurateLayerDrawing = value; } } }
@@ -2889,6 +2916,10 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.UseLongerMessageHistory:
                                 LongerMessageHistory = req.RequestBool;
                                 GHApp.SavedLongerMessageHistory = req.RequestBool;
+                                break;
+                            case GHRequestType.UseHideMessageHistory:
+                                HideMessageHistory = req.RequestBool;
+                                GHApp.SavedHideMessageHistory = req.RequestBool;
                                 break;
                             case GHRequestType.InformRecordingWentOff:
                                 GHApp.RecordGame = false;

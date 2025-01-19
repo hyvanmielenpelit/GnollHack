@@ -79,6 +79,7 @@ namespace GnollHackX
         SetMiddleMouseCommand,
         GameEnded,
         PrintHistoryItem,
+        UseHideMessageHistory,
     }
 
     public struct AddContextMenuData
