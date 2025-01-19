@@ -861,10 +861,10 @@ uchar noncoin_nonmergeable_found;
                 if (flags.knapsack_prompt)
                 {
                     bot();
-                    Your_ex1(ATR_NONE, CLR_MSG_ATTENTION, "knapsack cannot accommodate any more items.");
+                    Your_ex1(ATR_NONE, CLR_MSG_ATTENTION, "inventory cannot accommodate any more items.");
                     char qbuf[QBUFSZ];
                     Sprintf(qbuf, "Stash %s and the remaining items into a container?", thecxname(obj));
-                    char ans = yn_function_es(YN_STYLE_KNAPSACK_FULL, ATR_NONE, CLR_MSG_ATTENTION, "Your Knapsack Is Full", qbuf, ynaqchars, 'a', ynaq3descs, (const char*)0);
+                    char ans = yn_function_es(YN_STYLE_KNAPSACK_FULL, ATR_NONE, CLR_MSG_ATTENTION, "Your Inventory Is Full", qbuf, ynaqchars, 'a', ynaq3descs, (const char*)0);
                     switch (ans)
                     {
                     default:
@@ -909,7 +909,7 @@ handle_knapsack_full(VOID_ARGS)
     if (cnt > 0)
     {
         /* Ask for putting things in a bag or drop items */
-        char ans = yn_function_es(YN_STYLE_KNAPSACK_FULL, ATR_NONE, CLR_MSG_ATTENTION, "Your Knapsack Is Full", "Stash items into a container or Drop them?", sadqchars, 'q', sadqdescs, (const char*)0);
+        char ans = yn_function_es(YN_STYLE_KNAPSACK_FULL, ATR_NONE, CLR_MSG_ATTENTION, "Your Inventory Is Full", "Stash items into a container or Drop them?", sadqchars, 'q', sadqdescs, (const char*)0);
         switch (ans)
         {
         case 's':
@@ -1777,7 +1777,7 @@ boolean telekinesis;
            "grandcaller" aren't prepared to skip stuff and then pickup
            just gold, so the best we can do here is vary the message */
         play_ui_sound(UI_SOUND_KNAPSACK_FULL);
-        Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "knapsack cannot accommodate any more items%s.",
+        Your_ex(ATR_NONE, CLR_MSG_ATTENTION, "inventory cannot accommodate any more items%s.",
             /* floor follows by nexthere, otherwise container so by nobj */
             nxtobj(obj, GOLD_PIECE, (boolean)(obj->where == OBJ_FLOOR))
             ? " (except gold)" : "");        

@@ -7592,7 +7592,7 @@ doorganize() /* inventory organizer by Del Lamb */
                     extract_nobj(obj, &invent);
                 } else if (inv_cnt(FALSE) >= 52) {
                     (void) merged(&splitting, &obj); /* undo split */
-                    /* "knapsack cannot accommodate any more items" */
+                    /* "inventory cannot accommodate any more items" */
                     Your("pack is too full.");
                     return 0;
                 } else {

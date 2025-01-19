@@ -186,7 +186,7 @@ static struct Bool_Opt {
     { "implicit_uncursed", "omit \"uncursed\" from inventory", &iflags.implicit_uncursed, TRUE, SET_IN_GAME },
     { "inventory_obj_cmd", "display a command menu upon selecting an object in inventory", &flags.inventory_obj_cmd, TRUE, SET_IN_GAME},
     { "inventory_weights_last", "display object weights in parentheses after object name", &flags.inventory_weights_last, FALSE, SET_IN_GAME},
-    { "knapsack_prompt", "prompt for an action when knapsack is full", &flags.knapsack_prompt, TRUE, SET_IN_GAME},
+    { "knapsack_prompt", "prompt for an action when inventory is full", &flags.knapsack_prompt, TRUE, SET_IN_GAME},
     { "large_font", "obsolete: use large font", &iflags.obsolete, FALSE, SET_IN_FILE}, /* OBSOLETE */
     { "legacy", "show introductory message", &flags.legacy, TRUE, DISP_IN_GAME },
     { "lit_corridor", "show dark corridors as lit if in sight", &flags.lit_corridor, FALSE, SET_IN_GAME },
