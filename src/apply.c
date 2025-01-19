@@ -932,7 +932,7 @@ xchar x, y, n;
 }
 
 int
-number_leashed()
+number_leashed(VOID_ARGS)
 {
     int i = 0;
     struct obj *obj;
@@ -981,7 +981,7 @@ boolean feedback;
 
 /* player is about to die (for bones) */
 void
-unleash_all()
+unleash_all(VOID_ARGS)
 {
     register struct obj *otmp;
     register struct monst *mtmp;
@@ -1156,7 +1156,7 @@ struct monst *mtmp;
 }
 
 boolean
-next_to_u()
+next_to_u(VOID_ARGS)
 {
     register struct monst *mtmp;
     register struct obj *otmp;
@@ -1280,7 +1280,7 @@ register xchar x, y;
 }
 
 const char *
-beautiful()
+beautiful(VOID_ARGS)
 {
     return ((ACURR(A_CHA) > 14)
                ? ((poly_gender() == 1)
@@ -2709,7 +2709,7 @@ struct obj **optr;
 STATIC_VAR NEARDATA const char cuddly[] = { TOOL_CLASS, GEM_CLASS, 0 };
 
 int
-dorub()
+dorub(VOID_ARGS)
 {
     struct obj *obj = getobj(cuddly, "rub", 0, "");
 
@@ -2773,7 +2773,7 @@ dorub()
 }
 
 int
-dojump()
+dojump(VOID_ARGS)
 {
     /* Physical jump */
     return jump(0);
@@ -4492,9 +4492,9 @@ struct obj *otmp;
     return;
 }
 
-STATIC_PTR
+STATIC_OVL
 int
-set_trap()
+set_trap(VOID_ARGS)
 {
     struct obj *otmp = trapinfo.tobj;
     struct trap *ttmp;
@@ -5761,9 +5761,9 @@ char* class_list;
     }
 }
 
-
+/* the C('b') command */
 int
-dobreak()
+dobreak(VOID_ARGS)
 {
     int res = 1;
     char class_list[MAX_OBJECT_CLASSES + 2];
@@ -5814,7 +5814,7 @@ dobreak()
 
 /* the 'a' command */
 int
-doapply()
+doapply(VOID_ARGS)
 {
     struct obj *obj;
     register int res = 1;
@@ -6681,7 +6681,7 @@ thump:
 
 /* -1 to continue to inventory, 0 = did not take a turn, 1 = take a turn */
 int
-floorapply()
+floorapply(VOID_ARGS)
 {
     register struct trap* ttmp = t_at(u.ux, u.uy);
     char qbuf[QBUFSZ];
