@@ -997,6 +997,8 @@ namespace GnollHackX.Pages.Game
             MenuFadeEffects = Preferences.Get("MenuFadeEffects", GHConstants.AreMenuFadeEffectsDefault);
             MenuHighFilterQuality = Preferences.Get("MenuHighFilterQuality", GHApp.IsMenuHighFilterQualityDefault);
             ShowOrbs = Preferences.Get("ShowOrbs", true);
+            ShowMaxHealthInOrb = Preferences.Get("ShowMaxHealthInOrb", false);
+            ShowMaxManaInOrb = Preferences.Get("ShowMaxManaInOrb", false);
             ShowPets = Preferences.Get("ShowPets", true);
             PlayerMark = Preferences.Get("PlayerMark", false);
             MonsterTargeting = Preferences.Get("MonsterTargeting", false);
