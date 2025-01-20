@@ -4767,7 +4767,7 @@ dump_skills(VOID_ARGS)
     char skillnamebufC[BUFSZ];
     char skilllevelbuf[BUFSZ];
     char skillmaxbuf[BUFSZ];
-    putstr(0, ATR_HEADING, "Final Skills:");
+    putstr(0, ATR_HEADING, program_state.gameover ? "Final Skills:" : "Current Skills:");
 
     int skill_cnt = 0;
     for (i = 1; i < P_NUM_SKILLS; i++)
@@ -4793,7 +4793,7 @@ dump_skills(VOID_ARGS)
         Sprintf(buf, "  %-34s  %s / %s", skillnamebufC, skilllevelbuf, skillmaxbuf);
         putstr(0, ATR_TABLE_ROW | (skill_idx == 1 ? ATR_START_TABLE : 0) | (skill_idx == skill_cnt ? ATR_END_TABLE : 0), buf);
     }
-    Sprintf(buf, "You had %d skill slot%s available", u.weapon_slots, plur(u.weapon_slots));
+    Sprintf(buf, "You %s %d skill slot%s available", program_state.gameover ? "had" : "have", u.weapon_slots, plur(u.weapon_slots));
     putstr(0, ATR_PARAGRAPH_LINE, buf);
 }
 

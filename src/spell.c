@@ -5917,11 +5917,11 @@ int splidx;
 
 #if defined (DUMPLOG) || defined (DUMPHTML)
 void
-dump_spells()
+dump_spells(VOID_ARGS)
 {
     if (spellid(0) == NO_SPELL)
     {
-        putstr(0, ATR_HEADING, "You did not know any spells.");
+        putstr(0, ATR_HEADING, program_state.gameover ? "You did not know any spells." : "You do not know any spells.");
     }
     else
     {
