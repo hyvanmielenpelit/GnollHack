@@ -179,7 +179,7 @@ namespace GnollHackX
                 if (bkgStyle == BackgroundStyles.Automatic)
                 {
                     if (bitmapStyle == BackgroundBitmaps.AutoMenuBackground)
-                        bkgStyle = GHApp.DarkMode ? BackgroundStyles.SeamlessBitmap : BackgroundStyles.StretchedBitmap;
+                        bkgStyle = GHApp.DarkMode ? BackgroundStyles.StretchedBitmap : BackgroundStyles.StretchedBitmap;
                     else
                         bkgStyle = BackgroundStyles.StretchedBitmap;
                 }
