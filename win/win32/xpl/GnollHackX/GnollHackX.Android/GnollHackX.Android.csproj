@@ -108,9 +108,6 @@
     <PackageReference Include="Xamarin.Build.Download">
       <Version>0.11.4</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Firebase.Analytics">
-      <Version>119.0.1</Version>
-    </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2662" />
     <PackageReference Include="Xamarin.Essentials" Version="1.8.1" />
     <PackageReference Include="Xamarin.Google.Android.Play.Core">
