@@ -494,6 +494,14 @@
                                             HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="MenuHighFilterQualitySwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Show Dice as Ranges"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="DiceAsRangesSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
 
                             <Label Text="Behavior" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
@@ -503,14 +511,6 @@
                                     VerticalOptions="Center" 
                                     HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="EmptyWishIsNothingSwitch" HorizontalOptions="End" VerticalOptions="Center" />
-                            </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Show Dice as Ranges"
-                                    FontFamily="Underwood" TextColor="Black"
-                                    FontSize="15"
-                                    VerticalOptions="Center" 
-                                    HorizontalOptions="Start" />
-                                <Switch Grid.Column="1" x:Name="DiceAsRangesSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Character Click Action"
