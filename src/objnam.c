@@ -1827,12 +1827,14 @@ weapon_here:
             goto weapon_here;
         break;
     case SPBOOK_CLASS:
+#ifdef GNH_MOBILE
         if (obj->otyp == SPE_MANUAL && iflags.found_manuals > 0 && obj->manualidx >= 0)
         {
             uint64_t bit = (uint64_t)1 << obj->manualidx;
             if(iflags.found_manuals & bit)
                 Strcat(bp, " (already in your library)");
         }
+#endif
         break;
     }
 
