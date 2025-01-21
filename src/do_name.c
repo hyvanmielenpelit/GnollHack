@@ -22,8 +22,11 @@ STATIC_DCL void NDECL(namefloorobj);
 STATIC_DCL char *FDECL(bogusmon, (char *,char *));
 STATIC_DCL void FDECL(print_catalogue, (winid, struct obj*, int, uint64_t));
 STATIC_DCL void FDECL(print_artifact_catalogue, (winid, struct obj*));
+STATIC_DCL void FDECL(print_mythic_power_catalogue, (winid, struct obj*));
 STATIC_DCL int FDECL(CFDECLSPEC citemsortcmp, (const void*, const void*));
 STATIC_DCL int FDECL(CFDECLSPEC artilistsortcmp, (const void*, const void*));
+STATIC_DCL int FDECL(CFDECLSPEC mythicprefixsortcmp, (const void*, const void*));
+STATIC_DCL int FDECL(CFDECLSPEC mythicsuffixsortcmp, (const void*, const void*));
 STATIC_DCL const char* FDECL(gettitle, (short*, const char* const*, int, int, uint64_t, uint64_t));
 STATIC_DCL void NDECL(set_valid_pos_flags);
 STATIC_DCL void NDECL(clear_valid_pos_flags);
@@ -4046,7 +4049,7 @@ STATIC_VAR const char* const manual_names[MAX_MANUAL_TYPES] = {
     /* Catalogues */
     "Catalogue of Weapons", "Catalogue of Armor", "Catalogue of Rings", "Catalogue of Potions", "Catalogue of Scrolls", "Catalogue of Wands",
     "Catalogue of Miscellaneous Magic Items", "Catalogue of Tools", "Catalogue of Magic Spells", "Catalogue of Clerical Spells",
-    "Catalogue of Comestibles", "Catalogue of Gems and Stones", "Catalogue of Artifacts", "Catalogue of Amulets",
+    "Catalogue of Comestibles", "Catalogue of Gems and Stones", "Catalogue of Artifacts", "Catalogue of Amulets", "Catalogue of Mythic Powers",
 };
 
 const char*
@@ -4099,6 +4102,35 @@ const void* q;
 
     return namediff;
 }
+
+STATIC_OVL int
+mythicprefixsortcmp(p, q)
+const void* p;
+const void* q;
+{
+    short sp = *(short*)p;
+    short sq = *(short*)q;
+    const char* namep = mythic_prefix_qualities[sp].name;
+    const char* nameq = mythic_prefix_qualities[sq].name;
+    int namediff = namep && nameq ? strcmpi(namep, nameq) : namep ? 1 : nameq ? -1 : 0;
+
+    return namediff;
+}
+
+STATIC_OVL int
+mythicsuffixsortcmp(p, q)
+const void* p;
+const void* q;
+{
+    short sp = *(short*)p;
+    short sq = *(short*)q;
+    const char* namep = mythic_suffix_qualities[sp].name;
+    const char* nameq = mythic_suffix_qualities[sq].name;
+    int namediff = namep && nameq ? strcmpi(namep, nameq) : namep ? 1 : nameq ? -1 : 0;
+
+    return namediff;
+}
+
 
 STATIC_VAR short sorted_citems[NUM_OBJECTS];
 
@@ -4264,6 +4296,87 @@ struct obj* obj;
     }
 }
 
+STATIC_OVL void
+print_mythic_power_catalogue(datawin, obj)
+winid datawin;
+struct obj* obj;
+{
+    int prefixcnt = 0;
+    int suffixcnt = 0;
+    int nowishcnt = 0;
+    int i, idx;
+    char buf[BUFSZ];
+    char qualbuf[BUFSZ];
+
+    short sorted_prefixes[MAX_MYTHIC_PREFIXES - 1];
+    for (i = MYTHIC_PREFIX_NONE + 1; i < MAX_MYTHIC_PREFIXES; i++)
+    {
+        sorted_prefixes[i - 1] = i;
+        prefixcnt++;
+    }
+    qsort((genericptr_t)sorted_prefixes, prefixcnt, sizeof(short), mythicprefixsortcmp);
+
+    suffixcnt = 0;
+    short sorted_suffixes[MAX_MYTHIC_SUFFIXES - 1];
+    for (i = MYTHIC_SUFFIX_NONE + 1; i < MAX_MYTHIC_SUFFIXES; i++)
+    {
+        sorted_suffixes[i - 1] = i;
+        suffixcnt++;
+    }
+    qsort((genericptr_t)sorted_suffixes, suffixcnt, sizeof(short), mythicsuffixsortcmp);
+
+    Strcpy(buf, "Mythic prefix qualities");
+    putstr(datawin, ATR_NONE, buf);
+    for (i = 0; i < prefixcnt; i++)
+    {
+        idx = sorted_prefixes[i];
+        if (!mythic_prefix_qualities[idx].name)
+            continue;
+
+        boolean has_desc = mythic_prefix_qualities[idx].description && *mythic_prefix_qualities[idx].description;
+        boolean not_directly_wishable = (mythic_prefix_qualities[idx].mythic_flags & MYTHIC_FLAG_DIRECTLY_WISHABLE) == 0;
+        if (not_directly_wishable)
+            nowishcnt++;
+        Strcpy(qualbuf, mythic_prefix_qualities[idx].name);
+        qualbuf[0] = highc(qualbuf[0]);
+        Sprintf(buf, "%3d - %s%s%s%s", i + 1,
+            qualbuf,
+            not_directly_wishable ? "*" : "",
+            has_desc ? ": " : "",
+            has_desc ? mythic_prefix_qualities[idx].description : "");
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+    }
+
+    putstr(datawin, ATR_NONE, "");
+    Strcpy(buf, "Mythic suffix qualities");
+    putstr(datawin, ATR_NONE, buf);
+    for (i = 0; i < suffixcnt; i++)
+    {
+        idx = sorted_suffixes[i];
+        if (!mythic_suffix_qualities[idx].name)
+            continue;
+
+        boolean has_desc = mythic_suffix_qualities[idx].description && *mythic_suffix_qualities[idx].description;
+        boolean not_directly_wishable = (mythic_suffix_qualities[idx].mythic_flags & MYTHIC_FLAG_DIRECTLY_WISHABLE) == 0;
+        if (not_directly_wishable)
+            nowishcnt++;
+        Strcpy(qualbuf, mythic_suffix_qualities[idx].name);
+        qualbuf[0] = highc(qualbuf[0]);
+        Sprintf(buf, "%3d - %s%s%s%s", i + 1,
+            qualbuf,
+            not_directly_wishable ? "*" : "",
+            has_desc ? ": " : "",
+            has_desc ? mythic_suffix_qualities[idx].description : "");
+        putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+    }
+
+    if (nowishcnt > 0)
+    {
+        putstr(datawin, 0, "");
+        putstr(datawin, ATR_INDENT_AT_DASH, "* Wishing for this quality is not guaranteed to succeed");
+    }
+}
+
 void
 read_manual(obj)
 struct obj* obj;
@@ -4290,6 +4403,13 @@ struct obj* obj;
             putstr(datawin, ATR_HEADING, "The manual contains a list of artifacts found in Yendor:");
             putstr(datawin, 0, "");
             print_artifact_catalogue(datawin, obj);
+
+        }
+        else if (mnlidx == MANUAL_CATALOGUE_OF_MYTHIC_POWERS)
+        {
+            putstr(datawin, ATR_HEADING, "The manual contains a list of mythic powers:");
+            putstr(datawin, 0, "");
+            print_mythic_power_catalogue(datawin, obj);
 
         }
         else
