@@ -4299,7 +4299,7 @@ struct obj* obj;
 STATIC_OVL void
 print_mythic_power_catalogue(datawin, obj)
 winid datawin;
-struct obj* obj;
+struct obj* obj UNUSED; /* Could be used to check for cursed status etc. */
 {
     int prefixcnt = 0;
     int suffixcnt = 0;
