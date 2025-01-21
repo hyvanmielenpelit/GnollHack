@@ -255,6 +255,13 @@ static struct Bool_Opt {
     { "search_box_traps", "search command searches boxes for traps first", &flags.search_box_traps, TRUE, SET_IN_GAME },
     { "selectsaved", "select a saved game at program start", &iflags.wc2_selectsaved, TRUE, DISP_IN_GAME}, /*WC*/
     { "self_click_action", "clicking the player character executes an action", &flags.self_click_action, TRUE, SET_IN_GAME},
+    { "show_dice_as_ranges", "show dice as ranges (e.g., 2-12 instead of 2d6)", &iflags.show_dice_as_ranges, 
+#ifdef GNH_MOBILE
+        TRUE,
+#else
+        FALSE,
+#endif
+        SET_IN_GAME },
     { "showexp", "show experience points in status line", &flags.showexp, TRUE, SET_IN_GAME},
     { "showmove", "show current movement speed in status line", &flags.showmove, TRUE, SET_IN_GAME },
     { "showrace", "show your character by race rather than role", &flags.showrace, FALSE, SET_IN_GAME },
@@ -5338,6 +5345,10 @@ boolean tinitial, tfrom_file;
             else if (boolopt[i].addr == &flags.self_click_action)
             {
                 issue_boolean_gui_command(GUI_CMD_TOGGLE_CHARACTER_CLICK_ACTION, flags.self_click_action);
+            }
+            else if (boolopt[i].addr == &iflags.show_dice_as_ranges)
+            {
+                issue_boolean_gui_command(GUI_CMD_TOGGLE_DICE_AS_RANGES, iflags.show_dice_as_ranges);
             }
             else if (boolopt[i].addr == &flags.classic_statue_symbol || boolopt[i].addr == &flags.classic_colors || boolopt[i].addr == &flags.show_decorations)
             {

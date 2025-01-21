@@ -2101,31 +2101,33 @@ int spell, booktype;
     {
         damageprinted = TRUE;
 
-        char plusbuf[BUFSZ];
-        boolean maindiceprinted = FALSE;
+        //char plusbuf[BUFSZ];
+        //boolean maindiceprinted = FALSE;
 
         if (objects[booktype].oc_skill == P_HEALING_SPELL)
             Sprintf(buf, "Healing:          ");
         else
             Sprintf(buf, "Damage:           ");
 
+        printdice(eos(buf), objects[booktype].oc_spell_dmg_dice, objects[booktype].oc_spell_dmg_diesize, objects[booktype].oc_spell_dmg_plus);
+
         if (objects[booktype].oc_spell_dmg_dice > 0 && objects[booktype].oc_spell_dmg_diesize > 0)
         {
-            maindiceprinted = TRUE;
-            Sprintf(plusbuf, "%dd%d", objects[booktype].oc_spell_dmg_dice, objects[booktype].oc_spell_dmg_diesize);
-            Strcat(buf, plusbuf);
+            //maindiceprinted = TRUE;
+            //Sprintf(plusbuf, "%dd%d", objects[booktype].oc_spell_dmg_dice, objects[booktype].oc_spell_dmg_diesize);
+            //Strcat(buf, plusbuf);
             baseavg += (double)objects[booktype].oc_spell_dmg_dice * (double)(1.0 + objects[booktype].oc_spell_dmg_diesize) / 2.0;
         }
 
         if (objects[booktype].oc_spell_dmg_plus != 0)
         {
-            if (maindiceprinted && objects[booktype].oc_spell_dmg_plus > 0)
-            {
-                Sprintf(plusbuf, "+");
-                Strcat(buf, plusbuf);
-            }
-            Sprintf(plusbuf, "%d", objects[booktype].oc_spell_dmg_plus);
-            Strcat(buf, plusbuf);
+            //if (maindiceprinted && objects[booktype].oc_spell_dmg_plus > 0)
+            //{
+            //    Sprintf(plusbuf, "+");
+            //    Strcat(buf, plusbuf);
+            //}
+            //Sprintf(plusbuf, "%d", objects[booktype].oc_spell_dmg_plus);
+            //Strcat(buf, plusbuf);
             baseavg += (double)objects[booktype].oc_spell_dmg_plus;
         }
 
@@ -2136,23 +2138,25 @@ int spell, booktype;
         if ((objects[booktype].oc_spell_flags & S1_LDMG_IS_PER_LEVEL_DMG_INCREASE) && objects[booktype].oc_spell_per_level_step > 0)
         {
             Sprintf(buf, "Level bonus:      ");
+            printdice(eos(buf), objects[booktype].oc_spell_per_level_dice, objects[booktype].oc_spell_per_level_diesize, objects[booktype].oc_spell_per_level_plus);
+
             if (objects[booktype].oc_spell_per_level_dice > 0 && objects[booktype].oc_spell_per_level_diesize > 0)
             {
-                maindiceprinted = TRUE;
-                Sprintf(plusbuf, "%dd%d", objects[booktype].oc_spell_per_level_dice, objects[booktype].oc_spell_per_level_diesize);
-                Strcat(buf, plusbuf);
+                //maindiceprinted = TRUE;
+                //Sprintf(plusbuf, "%dd%d", objects[booktype].oc_spell_per_level_dice, objects[booktype].oc_spell_per_level_diesize);
+                //Strcat(buf, plusbuf);
                 perlevelavg += (double)objects[booktype].oc_spell_per_level_dice * (double)(1.0 + objects[booktype].oc_spell_per_level_diesize) / 2.0;
             }
 
             if (objects[booktype].oc_spell_per_level_plus != 0)
             {
-                if (maindiceprinted && objects[booktype].oc_spell_per_level_plus > 0)
-                {
-                    Sprintf(plusbuf, "+");
-                    Strcat(buf, plusbuf);
-                }
-                Sprintf(plusbuf, "%d", objects[booktype].oc_spell_per_level_plus);
-                Strcat(buf, plusbuf);
+                //if (maindiceprinted && objects[booktype].oc_spell_per_level_plus > 0)
+                //{
+                //    Sprintf(plusbuf, "+");
+                //    Strcat(buf, plusbuf);
+                //}
+                //Sprintf(plusbuf, "%d", objects[booktype].oc_spell_per_level_plus);
+                //Strcat(buf, plusbuf);
                 perlevelavg += (double)objects[booktype].oc_spell_per_level_plus;
             }
 
@@ -2286,27 +2290,28 @@ int spell, booktype;
     if (!has_spell_otyp_per_level_bonus(booktype) && (objects[booktype].oc_spell_dur_dice > 0 || objects[booktype].oc_spell_dur_diesize > 0 || objects[booktype].oc_spell_dur_plus > 0))
     {
         char plusbuf[BUFSZ];
-        boolean maindiceprinted = FALSE;
+        //boolean maindiceprinted = FALSE;
 
         Sprintf(buf, "Duration:         ");
+        printdice(eos(buf), objects[booktype].oc_spell_dur_dice, objects[booktype].oc_spell_dur_diesize, objects[booktype].oc_spell_dur_plus);
 
-        if (objects[booktype].oc_spell_dur_dice > 0 && objects[booktype].oc_spell_dur_diesize > 0)
-        {
-            maindiceprinted = TRUE;
-            Sprintf(plusbuf, "%dd%d", objects[booktype].oc_spell_dur_dice, objects[booktype].oc_spell_dur_diesize);
-            Strcat(buf, plusbuf); 
-        }
+        //if (objects[booktype].oc_spell_dur_dice > 0 && objects[booktype].oc_spell_dur_diesize > 0)
+        //{
+        //    maindiceprinted = TRUE;
+        //    Sprintf(plusbuf, "%dd%d", objects[booktype].oc_spell_dur_dice, objects[booktype].oc_spell_dur_diesize);
+        //    Strcat(buf, plusbuf); 
+        //}
 
-        if (objects[booktype].oc_spell_dur_plus != 0)
-        {
-            if (maindiceprinted && objects[booktype].oc_spell_dur_plus > 0)
-            {
-                Sprintf(plusbuf, "+");
-                Strcat(buf, plusbuf);
-            }
-            Sprintf(plusbuf, "%d", objects[booktype].oc_spell_dur_plus);
-            Strcat(buf, plusbuf);
-        }
+        //if (objects[booktype].oc_spell_dur_plus != 0)
+        //{
+        //    if (maindiceprinted && objects[booktype].oc_spell_dur_plus > 0)
+        //    {
+        //        Sprintf(plusbuf, "+");
+        //        Strcat(buf, plusbuf);
+        //    }
+        //    Sprintf(plusbuf, "%d", objects[booktype].oc_spell_dur_plus);
+        //    Strcat(buf, plusbuf);
+        //}
         Sprintf(plusbuf, " round%s", (objects[booktype].oc_spell_dur_dice == 0 && objects[booktype].oc_spell_dur_diesize == 0 && objects[booktype].oc_spell_dur_plus == 1) ? "" : "s");
         Strcat(buf, plusbuf);        
         putstr(datawin, ATR_INDENT_AT_COLON, buf);

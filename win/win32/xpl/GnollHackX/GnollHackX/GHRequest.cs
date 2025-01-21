@@ -80,6 +80,7 @@ namespace GnollHackX
         GameEnded,
         PrintHistoryItem,
         UseHideMessageHistory,
+        SetDiceAsRanges,
     }
 
     public struct AddContextMenuData

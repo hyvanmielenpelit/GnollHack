@@ -712,6 +712,7 @@ enum gui_command_types {
     GUI_CMD_REPORT_MOUSE_COMMAND,
     GUI_CMD_TOGGLE_QUICK_ZAP_WAND,
     GUI_CMD_TOGGLE_QUICK_CAST_SPELL,
+    GUI_CMD_TOGGLE_DICE_AS_RANGES,
 };
 
 enum game_status_types

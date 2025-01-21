@@ -239,6 +239,7 @@ namespace GnollHackX
         GUIDebugMode =          0x00000200, /* GUI has been built in debug mode (not a release mode game?) */
         CharacterClickAction =  0x00000400, /* Set character-click action to true by default */
         NoPet =                 0x00000800, /* Same as pettype:none in options file */
+        DiceAsRanges =          0x00001000, /* Set show_dice_as_ranges to true by default */
 
         RightMouseButtonBit1 =  0x00400000, 
         RightMouseButtonBit2 =  0x00800000, 
@@ -1379,6 +1380,7 @@ namespace GnollHackX
         GUI_CMD_REPORT_MOUSE_COMMAND,
         GUI_CMD_TOGGLE_QUICK_ZAP_WAND,
         GUI_CMD_TOGGLE_QUICK_CAST_SPELL,
+        GUI_CMD_TOGGLE_DICE_AS_RANGES,
     }
 
     public enum game_status_types
@@ -1882,6 +1884,7 @@ namespace GnollHackX
         public const int FadeFromBlackDurationAtStart = 700;
         public const double FadeFromBlackAtStartExtraDelaySecs = 0.15;
 #endif
+        public const bool DefaultDiceAsRanges = true;
     }
 
     [StructLayout(LayoutKind.Sequential)]

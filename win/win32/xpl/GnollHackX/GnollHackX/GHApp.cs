@@ -3161,12 +3161,14 @@ namespace GnollHackX
         private static readonly object _behaviorLock = new object();
         private static bool _emptyWishIsNothing;
         private static bool _characterClickAction;
+        private static bool _diceAsRanges;
         private static bool _okOnDoubleClick;
         private static int _rightMouseCommand;
         private static int _middleMouseCommand;
         public static bool EmptyWishIsNothing { get { lock (_behaviorLock) { return _emptyWishIsNothing; } } set { lock (_behaviorLock) { _emptyWishIsNothing = value; } } }
         public static bool OkOnDoubleClick { get { lock (_behaviorLock) { return _okOnDoubleClick; } } set { lock (_behaviorLock) { _okOnDoubleClick = value; } } }
         public static bool MirroredCharacterClickAction { get { lock (_behaviorLock) { return _characterClickAction; } } set { lock (_behaviorLock) { _characterClickAction = value; } } }
+        public static bool MirroredDiceAsRanges { get { lock (_behaviorLock) { return _diceAsRanges; } } set { lock (_behaviorLock) { _diceAsRanges = value; } } }
         public static int MirroredRightMouseCommand { get { lock (_behaviorLock) { return _rightMouseCommand; } } set { lock (_behaviorLock) { _rightMouseCommand = value; } } }
         public static int MirroredMiddleMouseCommand { get { lock (_behaviorLock) { return _middleMouseCommand; } } set { lock (_behaviorLock) { _middleMouseCommand = value; } } }
 

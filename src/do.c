@@ -460,6 +460,53 @@ floorexamine(VOID_ARGS)
 }
 
 void
+printdice(buf, dice, diesize, plus)
+char* buf;
+int dice, diesize, plus;
+{
+    if (!buf)
+        return;
+
+    *buf = 0;
+    if (iflags.show_dice_as_ranges)
+    {
+        int minval = (dice > 0 && diesize > 0 ? dice : 0) + plus;
+        int maxval = (dice > 0 && diesize > 0 ? dice * diesize : 0) + plus;
+        
+        if (minval == maxval)
+        {
+            Sprintf(buf, "%d", minval);
+        }
+        else
+        {
+            Sprintf(buf, "%d-%d", minval, maxval);
+        }
+    }
+    else
+    {
+        char plusbuf[BUFSZ];
+        boolean maindiceprinted = FALSE;
+        if (dice > 0 && diesize > 0)
+        {
+            maindiceprinted = TRUE;
+            Sprintf(plusbuf, "%dd%d", dice, diesize);
+            Strcat(buf, plusbuf);
+        }
+
+        if (plus != 0 || !maindiceprinted)
+        {
+            if (maindiceprinted && plus > 0)
+            {
+                Sprintf(plusbuf, "+");
+                Strcat(buf, plusbuf);
+            }
+            Sprintf(plusbuf, "%d", plus);
+            Strcat(buf, plusbuf);
+        }
+    }
+}
+
+void
 printweight(buf, weight_in_ounces, weight_fixed_width, unit_fixed_width, allow_long)
 char* buf;
 int weight_in_ounces;
@@ -1255,7 +1302,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
     if (!uses_spell_flags && desc_known && (is_otyp_weapon(otyp) || is_otyp_pick(otyp) || is_otyp_saw(otyp) || ((is_otyp_gloves(otyp) || is_otyp_boots(otyp) || objects[otyp].oc_class == GEM_CLASS))))
     {
         weapon_stats_shown = TRUE;
-        boolean maindiceprinted = FALSE;
+        //boolean maindiceprinted = FALSE;
         if (!is_otyp_ammo(otyp) && !is_otyp_gloves(otyp) && !is_otyp_boots(otyp))
         {
             /* Single or two-handed */
@@ -1443,24 +1490,24 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         {
             printmaindmgtype = TRUE;
             Sprintf(buf, "Base damage - Small:    ");
+            printdice(eos(buf), wsdice * exceptionality_multiplier, wsdam, wsdmgplus * exceptionality_multiplier);
+            //if (wsdice > 0 && wsdam > 0)
+            //{
+            //    maindiceprinted = TRUE;
+            //    Sprintf(plusbuf, "%dd%d", wsdice * exceptionality_multiplier, wsdam);
+            //    Strcat(buf, plusbuf);
+            //}
 
-            if (wsdice > 0 && wsdam > 0)
-            {
-                maindiceprinted = TRUE;
-                Sprintf(plusbuf, "%dd%d", wsdice * exceptionality_multiplier, wsdam);
-                Strcat(buf, plusbuf);
-            }
-
-            if (wsdmgplus != 0)
-            {
-                if (maindiceprinted && wsdmgplus > 0)
-                {
-                    Sprintf(plusbuf, "+");
-                    Strcat(buf, plusbuf);
-                }
-                Sprintf(plusbuf, "%d", wsdmgplus * exceptionality_multiplier);
-                Strcat(buf, plusbuf);
-            }
+            //if (wsdmgplus != 0)
+            //{
+            //    if (maindiceprinted && wsdmgplus > 0)
+            //    {
+            //        Sprintf(plusbuf, "+");
+            //        Strcat(buf, plusbuf);
+            //    }
+            //    Sprintf(plusbuf, "%d", wsdmgplus * exceptionality_multiplier);
+            //    Strcat(buf, plusbuf);
+            //}
 
             Strcpy(endbuf, "");
             double avgdmg = (double)exceptionality_multiplier * ((double)wsdice * (double)(1 + wsdam) / 2.0 + (double)wsdmgplus);
@@ -1509,26 +1556,27 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         if((wldice > 0 && wldam > 0) || wldmgplus != 0)
         {
             printmaindmgtype = TRUE;
-            maindiceprinted = FALSE;
+            //maindiceprinted = FALSE;
             Sprintf(buf, "Base damage - Large:    ");
+            printdice(eos(buf), wldice * exceptionality_multiplier, wldam, wldmgplus * exceptionality_multiplier);
 
-            if (wldice > 0 && wldam > 0)
-            {
-                maindiceprinted = TRUE;
-                Sprintf(plusbuf, "%dd%d", wldice * exceptionality_multiplier, wldam);
-                Strcat(buf, plusbuf);
-            }
+            //if (wldice > 0 && wldam > 0)
+            //{
+            //    maindiceprinted = TRUE;
+            //    Sprintf(plusbuf, "%dd%d", wldice * exceptionality_multiplier, wldam);
+            //    Strcat(buf, plusbuf);
+            //}
 
-            if (wldmgplus != 0)
-            {
-                if (maindiceprinted && wldmgplus > 0)
-                {
-                    Sprintf(plusbuf, "+");
-                    Strcat(buf, plusbuf);
-                }
-                Sprintf(plusbuf, "%d", wldmgplus * exceptionality_multiplier);
-                Strcat(buf, plusbuf);
-            }
+            //if (wldmgplus != 0)
+            //{
+            //    if (maindiceprinted && wldmgplus > 0)
+            //    {
+            //        Sprintf(plusbuf, "+");
+            //        Strcat(buf, plusbuf);
+            //    }
+            //    Sprintf(plusbuf, "%d", wldmgplus * exceptionality_multiplier);
+            //    Strcat(buf, plusbuf);
+            //}
 
             Strcpy(endbuf, "");
             double avgdmg = (double)exceptionality_multiplier * ((double)wldice * (double)(1 + wldam) / 2.0 + (double)wldmgplus);
@@ -1613,26 +1661,26 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             has_extra_damage = TRUE;
 
             /* Damage - Extra */
-            maindiceprinted = FALSE;
+            //maindiceprinted = FALSE;
             Sprintf(buf, "Extra damage:           ");
+            printdice(eos(buf), objects[otyp].oc_wedice, objects[otyp].oc_wedam, objects[otyp].oc_wedmgplus);
+            //if (objects[otyp].oc_wedice > 0 && objects[otyp].oc_wedam > 0)
+            //{
+            //    maindiceprinted = TRUE;
+            //    Sprintf(plusbuf, "%dd%d", objects[otyp].oc_wedice, objects[otyp].oc_wedam);
+            //    Strcat(buf, plusbuf);
+            //}
 
-            if (objects[otyp].oc_wedice > 0 && objects[otyp].oc_wedam > 0)
-            {
-                maindiceprinted = TRUE;
-                Sprintf(plusbuf, "%dd%d", objects[otyp].oc_wedice, objects[otyp].oc_wedam);
-                Strcat(buf, plusbuf);
-            }
-
-            if (objects[otyp].oc_wedmgplus != 0)
-            {
-                if (maindiceprinted && objects[otyp].oc_wedmgplus > 0)
-                {
-                    Sprintf(plusbuf, "+");
-                    Strcat(buf, plusbuf);
-                }
-                Sprintf(plusbuf, "%d", objects[otyp].oc_wedmgplus);
-                Strcat(buf, plusbuf);
-            }
+            //if (objects[otyp].oc_wedmgplus != 0)
+            //{
+            //    if (maindiceprinted && objects[otyp].oc_wedmgplus > 0)
+            //    {
+            //        Sprintf(plusbuf, "+");
+            //        Strcat(buf, plusbuf);
+            //    }
+            //    Sprintf(plusbuf, "%d", objects[otyp].oc_wedmgplus);
+            //    Strcat(buf, plusbuf);
+            //}
 
             Strcpy(endbuf, "");
             double avgdmg = ((double)objects[otyp].oc_wedice * (double)(1 + objects[otyp].oc_wedam) / 2.0 + (double)objects[otyp].oc_wedmgplus);
@@ -1720,8 +1768,9 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         if (obj ? obj_counts_as_silver(obj) : objects[otyp].oc_material == MAT_SILVER)
         {
             Sprintf(buf, "Silver bonus damage:    ");
-            maindiceprinted = TRUE;
-            Sprintf(plusbuf, "%dd%d", 1, 20);
+            //maindiceprinted = TRUE;
+            printdice(plusbuf, 1, 20, 0);
+            //Sprintf(plusbuf, "%dd%d", 1, 20);
             Strcat(buf, plusbuf);
             putstr(datawin, ATR_INDENT_AT_COLON, buf);
             wep_all_extra_avg_dmg += (1.0 + 20.0) / 2.0;
@@ -1941,7 +1990,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             const char* itempadding = objects[otyp].oc_class == SCROLL_CLASS ? "" : "  ";
             if (objects[otyp].oc_spell_dmg_dice > 0 || objects[otyp].oc_spell_dmg_diesize > 0 || objects[otyp].oc_spell_dmg_plus != 0)
             {
-                boolean maindiceprinted = FALSE;
+                //boolean maindiceprinted = FALSE;
                 if(objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
                     Sprintf(buf, "%s healing amount:  %s", itemname_hc, itempadding);
                 else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_DAMAGE)
@@ -1951,23 +2000,29 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 else
                     Sprintf(buf, "%s effect damage:   %s", itemname_hc, itempadding);
 
-                if (objects[otyp].oc_spell_dmg_dice > 0 && objects[otyp].oc_spell_dmg_diesize > 0)
-                {
-                    maindiceprinted = TRUE;
-                    Sprintf(plusbuf, "%dd%d", max(1, (int)((double)objects[otyp].oc_spell_dmg_dice * skill_multiplier * exceptionality_multiplier)), objects[otyp].oc_spell_dmg_diesize);
-                    Strcat(buf, plusbuf);
-                }
 
-                if (objects[otyp].oc_spell_dmg_plus != 0)
-                {
-                    if (maindiceprinted && objects[otyp].oc_spell_dmg_plus > 0)
-                    {
-                        Sprintf(plusbuf, "+");
-                        Strcat(buf, plusbuf);
-                    }
-                    Sprintf(plusbuf, "%d", objects[otyp].oc_spell_dmg_plus);
-                    Strcat(buf, plusbuf);
-                }
+                printdice(eos(buf), 
+                    max(1, (int)((double)objects[otyp].oc_spell_dmg_dice * skill_multiplier * exceptionality_multiplier)), 
+                    objects[otyp].oc_spell_dmg_diesize, 
+                    objects[otyp].oc_spell_dmg_plus);
+
+                //if (objects[otyp].oc_spell_dmg_dice > 0 && objects[otyp].oc_spell_dmg_diesize > 0)
+                //{
+                //    maindiceprinted = TRUE;
+                //    Sprintf(plusbuf, "%dd%d", max(1, (int)((double)objects[otyp].oc_spell_dmg_dice * skill_multiplier * exceptionality_multiplier)), objects[otyp].oc_spell_dmg_diesize);
+                //    Strcat(buf, plusbuf);
+                //}
+
+                //if (objects[otyp].oc_spell_dmg_plus != 0)
+                //{
+                //    if (maindiceprinted && objects[otyp].oc_spell_dmg_plus > 0)
+                //    {
+                //        Sprintf(plusbuf, "+");
+                //        Strcat(buf, plusbuf);
+                //    }
+                //    Sprintf(plusbuf, "%d", objects[otyp].oc_spell_dmg_plus);
+                //    Strcat(buf, plusbuf);
+                //}
 
                 if (objects[otyp].oc_flags5 & O5_EFFECT_FOR_BLESSED_ONLY)
                     Strcat(buf, " (blessed only)");
@@ -1977,27 +2032,29 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             }
             if (objects[otyp].oc_spell_dur_dice > 0 || objects[otyp].oc_spell_dur_diesize > 0 || objects[otyp].oc_spell_dur_plus != 0)
             {
-                boolean maindiceprinted = FALSE;
+                //boolean maindiceprinted = FALSE;
                 Sprintf(buf, "%s effect duration: %s", itemname_hc, itempadding);
 
-                if (objects[otyp].oc_spell_dur_dice > 0 && objects[otyp].oc_spell_dur_diesize > 0)
-                {
-                    maindiceprinted = TRUE;
-                    Sprintf(plusbuf, "%dd%d", objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize);
-                    Strcat(buf, plusbuf);
-                }
-
                 int applied_plus = objects[otyp].oc_spell_dur_plus + (obj && obj->bknown ? bcsign(obj) * objects[otyp].oc_spell_dur_buc_plus : 0);
-                if (applied_plus != 0)
-                {
-                    if (maindiceprinted && applied_plus > 0)
-                    {
-                        Sprintf(plusbuf, "+");
-                        Strcat(buf, plusbuf);
-                    }
-                    Sprintf(plusbuf, "%d", applied_plus);
-                    Strcat(buf, plusbuf);
-                }
+                printdice(eos(buf), objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize, applied_plus);
+
+                //if (objects[otyp].oc_spell_dur_dice > 0 && objects[otyp].oc_spell_dur_diesize > 0)
+                //{
+                //    maindiceprinted = TRUE;
+                //    Sprintf(plusbuf, "%dd%d", objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize);
+                //    Strcat(buf, plusbuf);
+                //}
+
+                //if (applied_plus != 0)
+                //{
+                //    if (maindiceprinted && applied_plus > 0)
+                //    {
+                //        Sprintf(plusbuf, "+");
+                //        Strcat(buf, plusbuf);
+                //    }
+                //    Sprintf(plusbuf, "%d", applied_plus);
+                //    Strcat(buf, plusbuf);
+                //}
 
                 Sprintf(plusbuf, " round%s", (objects[otyp].oc_spell_dur_dice == 0 && objects[otyp].oc_spell_dur_diesize == 0 && applied_plus == 1) ? "" : "s");
                 Strcat(buf, plusbuf);
@@ -2075,7 +2132,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         {
             if (objects[otyp].oc_potion_normal_dice > 0 || objects[otyp].oc_potion_normal_diesize > 0 || objects[otyp].oc_potion_normal_plus != 0)
             {
-                boolean maindiceprinted = FALSE;
+                //boolean maindiceprinted = FALSE;
                 if(objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
                     Sprintf(buf, "Healing amount:         ");
                 else if (objects[otyp].oc_flags5 & O5_EFFECT_IS_DAMAGE)
@@ -2086,24 +2143,26 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                     Sprintf(buf, "Effect duration:        ");
 
                 int dice = objects[otyp].oc_potion_normal_dice + (obj && obj->bknown ? (int)objects[otyp].oc_potion_normal_dice_buc_multiplier * bcsign(obj) : 0);
-                if (dice > 0 && objects[otyp].oc_potion_normal_diesize > 0)
-                {
-                    maindiceprinted = TRUE;
-                    Sprintf(plusbuf, "%dd%d", dice, objects[otyp].oc_potion_normal_diesize);
-                    Strcat(buf, plusbuf);
-                }
-
                 int plus = objects[otyp].oc_potion_normal_plus + (obj && obj->bknown ? bcsign(obj) * (int)objects[otyp].oc_potion_normal_buc_multiplier : 0);
-                if (plus != 0)
-                {
-                    if (maindiceprinted && plus > 0)
-                    {
-                        Sprintf(plusbuf, "+");
-                        Strcat(buf, plusbuf);
-                    }
-                    Sprintf(plusbuf, "%d", plus);
-                    Strcat(buf, plusbuf);
-                }
+                printdice(eos(buf), dice, objects[otyp].oc_potion_normal_diesize, plus);
+
+                //if (dice > 0 && objects[otyp].oc_potion_normal_diesize > 0)
+                //{
+                //    maindiceprinted = TRUE;
+                //    Sprintf(plusbuf, "%dd%d", dice, objects[otyp].oc_potion_normal_diesize);
+                //    Strcat(buf, plusbuf);
+                //}
+
+                //if (plus != 0)
+                //{
+                //    if (maindiceprinted && plus > 0)
+                //    {
+                //        Sprintf(plusbuf, "+");
+                //        Strcat(buf, plusbuf);
+                //    }
+                //    Sprintf(plusbuf, "%d", plus);
+                //    Strcat(buf, plusbuf);
+                //}
 
                 if (objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
                     Sprintf(plusbuf, " hit point%s", (dice == 0 && objects[otyp].oc_potion_normal_diesize == 0 && plus == 1) ? "" : "s");
@@ -2122,7 +2181,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             }
             if (objects[otyp].oc_potion_breathe_dice > 0 || objects[otyp].oc_potion_breathe_diesize > 0 || objects[otyp].oc_potion_breathe_plus != 0)
             {
-                boolean maindiceprinted = FALSE;
+                //boolean maindiceprinted = FALSE;
                 const char* brtype = "duration";
                 const char* brtypepadding = "";
                 if (objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
@@ -2144,24 +2203,26 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 Sprintf(buf, "Breathe %s:       %s", brtype, brtypepadding);
 
                 int dice = objects[otyp].oc_potion_breathe_dice + (obj && obj->bknown ? (int)objects[otyp].oc_potion_breathe_dice_buc_multiplier * bcsign(obj) : 0);
-                if (dice > 0 && objects[otyp].oc_potion_breathe_diesize > 0)
-                {
-                    maindiceprinted = TRUE;
-                    Sprintf(plusbuf, "%dd%d", dice, objects[otyp].oc_potion_breathe_diesize);
-                    Strcat(buf, plusbuf);
-                }
-
                 int plus = objects[otyp].oc_potion_breathe_plus + (obj && obj->bknown ? bcsign(obj) * (int)objects[otyp].oc_potion_breathe_buc_multiplier : 0);
-                if (plus != 0)
-                {
-                    if (maindiceprinted && plus > 0)
-                    {
-                        Sprintf(plusbuf, "+");
-                        Strcat(buf, plusbuf);
-                    }
-                    Sprintf(plusbuf, "%d", plus);
-                    Strcat(buf, plusbuf);
-                }
+                printdice(eos(buf), dice, objects[otyp].oc_potion_breathe_diesize, plus);
+
+                //if (dice > 0 && objects[otyp].oc_potion_breathe_diesize > 0)
+                //{
+                //    maindiceprinted = TRUE;
+                //    Sprintf(plusbuf, "%dd%d", dice, objects[otyp].oc_potion_breathe_diesize);
+                //    Strcat(buf, plusbuf);
+                //}
+
+                //if (plus != 0)
+                //{
+                //    if (maindiceprinted && plus > 0)
+                //    {
+                //        Sprintf(plusbuf, "+");
+                //        Strcat(buf, plusbuf);
+                //    }
+                //    Sprintf(plusbuf, "%d", plus);
+                //    Strcat(buf, plusbuf);
+                //}
 
                 if (objects[otyp].oc_flags5 & O5_EFFECT_IS_HEALING)
                     Sprintf(plusbuf, " hit point%s", (dice == 0 && objects[otyp].oc_potion_breathe_diesize == 0 && plus == 1) ? "" : "s");
@@ -2322,28 +2383,30 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
 
             if (objects[otyp].oc_potion_nutrition_dice > 0 || objects[otyp].oc_potion_nutrition_diesize > 0 || objects[otyp].oc_potion_nutrition_plus != 0)
             {
-                boolean maindiceprinted = FALSE;
+                //boolean maindiceprinted = FALSE;
                 Sprintf(buf, "Nutrition:              ");
 
                 int dice = objects[otyp].oc_potion_nutrition_dice + (obj && obj->bknown ? (int)objects[otyp].oc_potion_nutrition_dice_buc_multiplier * bcsign(obj) : 0);
-                if (dice > 0 && objects[otyp].oc_potion_nutrition_diesize > 0)
-                {
-                    maindiceprinted = TRUE;
-                    Sprintf(plusbuf, "%dd%d", dice, objects[otyp].oc_potion_nutrition_diesize);
-                    Strcat(buf, plusbuf);
-                }
-
                 int plus = objects[otyp].oc_potion_nutrition_plus + (obj && obj->bknown ? bcsign(obj) * (int)objects[otyp].oc_potion_nutrition_buc_multiplier : 0);
-                if (plus != 0)
-                {
-                    if (maindiceprinted && plus > 0)
-                    {
-                        Sprintf(plusbuf, "+");
-                        Strcat(buf, plusbuf);
-                    }
-                    Sprintf(plusbuf, "%d", plus);
-                    Strcat(buf, plusbuf);
-                }
+                printdice(eos(buf), dice, objects[otyp].oc_potion_nutrition_diesize, plus);
+
+                //if (dice > 0 && objects[otyp].oc_potion_nutrition_diesize > 0)
+                //{
+                //    maindiceprinted = TRUE;
+                //    Sprintf(plusbuf, "%dd%d", dice, objects[otyp].oc_potion_nutrition_diesize);
+                //    Strcat(buf, plusbuf);
+                //}
+
+                //if (plus != 0)
+                //{
+                //    if (maindiceprinted && plus > 0)
+                //    {
+                //        Sprintf(plusbuf, "+");
+                //        Strcat(buf, plusbuf);
+                //    }
+                //    Sprintf(plusbuf, "%d", plus);
+                //    Strcat(buf, plusbuf);
+                //}
 
                 Sprintf(plusbuf, " round%s", (dice == 0 && objects[otyp].oc_potion_nutrition_diesize == 0 && plus == 1) ? "" : "s");
                 Strcat(buf, plusbuf);
@@ -3810,16 +3873,19 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         if (artilist[obj->oartifact].tohit_dice != 0 || artilist[obj->oartifact].tohit_diesize != 0 || artilist[obj->oartifact].tohit_plus != 0)
         {
             char tohitbuf[BUFSZ] = "";
-            Strcpy(plusbuf, "");
-            if (artilist[obj->oartifact].tohit_plus != 0)
-                Sprintf(plusbuf, "%s%d", artilist[obj->oartifact].tohit_plus >= 0 ? "+" : "", artilist[obj->oartifact].tohit_plus);
+            printdice(plusbuf, artilist[obj->oartifact].tohit_dice, artilist[obj->oartifact].tohit_diesize, artilist[obj->oartifact].tohit_plus);
+            Sprintf(tohitbuf, "Artifact to-hit bonus is %s", plusbuf);
 
-            if (artilist[obj->oartifact].tohit_dice > 0 && artilist[obj->oartifact].tohit_diesize > 0)
-            {
-                Sprintf(tohitbuf, "Artifact to-hit bonus is %dd%d%s", artilist[obj->oartifact].tohit_dice, artilist[obj->oartifact].tohit_diesize, plusbuf);
-            }
-            else
-                Sprintf(tohitbuf, "Artifact to-hit bonus is %s", plusbuf);
+            //Strcpy(plusbuf, "");
+            //if (artilist[obj->oartifact].tohit_plus != 0)
+            //    Sprintf(plusbuf, "%s%d", artilist[obj->oartifact].tohit_plus >= 0 ? "+" : "", artilist[obj->oartifact].tohit_plus);
+
+            //if (artilist[obj->oartifact].tohit_dice > 0 && artilist[obj->oartifact].tohit_diesize > 0)
+            //{
+            //    Sprintf(tohitbuf, "Artifact to-hit bonus is %dd%d%s", artilist[obj->oartifact].tohit_dice, artilist[obj->oartifact].tohit_diesize, plusbuf);
+            //}
+            //else
+            //    Sprintf(tohitbuf, "Artifact to-hit bonus is %s", plusbuf);
 
             powercnt++;
             Sprintf(buf, " %2d - %s", powercnt, tohitbuf);
@@ -3829,15 +3895,17 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
         if (artilist[obj->oartifact].attk.damn != 0 || artilist[obj->oartifact].attk.damd != 0 || artilist[obj->oartifact].attk.damp != 0)
         {
             char dmgbuf[BUFSZ] = "";
-            Strcpy(plusbuf, "");
-            if (artilist[obj->oartifact].attk.damp != 0)
-                Sprintf(plusbuf, "%s%d", artilist[obj->oartifact].attk.damp >= 0 ? "+" : "", artilist[obj->oartifact].attk.damp);
+            printdice(plusbuf, artilist[obj->oartifact].attk.damn, artilist[obj->oartifact].attk.damd, artilist[obj->oartifact].attk.damp);
+            //Strcpy(plusbuf, "");
+            //if (artilist[obj->oartifact].attk.damp != 0)
+            //    Sprintf(plusbuf, "%s%d", artilist[obj->oartifact].attk.damp >= 0 ? "+" : "", artilist[obj->oartifact].attk.damp);
 
-            if (artilist[obj->oartifact].attk.damn > 0 && artilist[obj->oartifact].attk.damd > 0)
-            {
-                Sprintf(dmgbuf, "Artifact damage bonus is %dd%d%s", artilist[obj->oartifact].attk.damn, artilist[obj->oartifact].attk.damd, plusbuf);
-            }
-            else if (artilist[obj->oartifact].attk.damn == ARTDMG_DOUBLE_DAMAGE)
+            //if (artilist[obj->oartifact].attk.damn > 0 && artilist[obj->oartifact].attk.damd > 0)
+            //{
+            //    Sprintf(dmgbuf, "Artifact damage bonus is %dd%d%s", artilist[obj->oartifact].attk.damn, artilist[obj->oartifact].attk.damd, plusbuf);
+            //}
+            //else 
+            if (artilist[obj->oartifact].attk.damn == ARTDMG_DOUBLE_DAMAGE)
                 Sprintf(dmgbuf, "Artifact deals double normal damage");
             else if (artilist[obj->oartifact].attk.damn == ARTDMG_TRIPLE_DAMAGE)
                 Sprintf(dmgbuf, "Artifact deals triple normal damage");
@@ -3947,16 +4015,19 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                 }
                 else
                 {
-                    Strcpy(plusbuf, "");
-                    if (artilist[obj->oartifact].inv_duration_plus != 0)
-                        Sprintf(plusbuf, "%s%d", artilist[obj->oartifact].inv_duration_plus >= 0 ? "+" : "", artilist[obj->oartifact].inv_duration_plus);
+                    printdice(plusbuf, artilist[obj->oartifact].inv_duration_dice, artilist[obj->oartifact].inv_duration_diesize, artilist[obj->oartifact].inv_duration_plus);
+                    Sprintf(buf, "      * Effect duration is %s", plusbuf);
 
-                    if (artilist[obj->oartifact].inv_duration_dice > 0 && artilist[obj->oartifact].inv_duration_diesize > 0)
-                    {
-                        Sprintf(buf, "      * Effect duration is %dd%d%s rounds", artilist[obj->oartifact].inv_duration_dice, artilist[obj->oartifact].inv_duration_diesize, plusbuf);
-                    }
-                    else
-                        Sprintf(buf, "      * Effect duration is %s", plusbuf);
+                    //Strcpy(plusbuf, "");
+                    //if (artilist[obj->oartifact].inv_duration_plus != 0)
+                    //    Sprintf(plusbuf, "%s%d", artilist[obj->oartifact].inv_duration_plus >= 0 ? "+" : "", artilist[obj->oartifact].inv_duration_plus);
+
+                    //if (artilist[obj->oartifact].inv_duration_dice > 0 && artilist[obj->oartifact].inv_duration_diesize > 0)
+                    //{
+                    //    Sprintf(buf, "      * Effect duration is %dd%d%s rounds", artilist[obj->oartifact].inv_duration_dice, artilist[obj->oartifact].inv_duration_diesize, plusbuf);
+                    //}
+                    //else
+                    //    Sprintf(buf, "      * Effect duration is %s", plusbuf);
                 }
                 
                 putstr(datawin, ATR_INDENT_AT_ASTR, buf);
@@ -5166,20 +5237,21 @@ struct permonst* ptr;
         Strcpy(damagebuf, "");
         if ((ptr->mattk[i].damn > 0 && ptr->mattk[i].damd > 0) || ptr->mattk[i].damp != 0)
         {
-            boolean dpart = FALSE;
+            //boolean dpart = FALSE;
             Strcpy(damagebuf, " ");
+            printdice(eos(damagebuf), ptr->mattk[i].damn, ptr->mattk[i].damd, ptr->mattk[i].damp);
 
-            if ((ptr->mattk[i].damn > 0 && ptr->mattk[i].damd > 0))
-            {
-                dpart = TRUE;
-                Sprintf(eos(damagebuf), "%dd%d", ptr->mattk[i].damn, ptr->mattk[i].damd);
-            }
+            //if ((ptr->mattk[i].damn > 0 && ptr->mattk[i].damd > 0))
+            //{
+            //    dpart = TRUE;
+            //    Sprintf(eos(damagebuf), "%dd%d", ptr->mattk[i].damn, ptr->mattk[i].damd);
+            //}
 
-            if (dpart && ptr->mattk[i].damp > 0)
-                Strcat(damagebuf, "+");
+            //if (dpart && ptr->mattk[i].damp > 0)
+            //    Strcat(damagebuf, "+");
 
-            if(ptr->mattk[i].damp != 0)
-                Sprintf(eos(damagebuf), "%d", ptr->mattk[i].damp);
+            //if(ptr->mattk[i].damp != 0)
+            //    Sprintf(eos(damagebuf), "%d", ptr->mattk[i].damp);
         }
         
         Strcpy(specialbuf, "");

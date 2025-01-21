@@ -308,6 +308,10 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetCharacterClickAction(int new_value);
         [DllImport(PlatformConstants.dll)]
+        public static extern int LibGetDiceAsRanges();
+        [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetDiceAsRanges(int new_value);
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetMouseCommand(int is_middle);
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetMouseCommand(int new_value, int is_middle);
@@ -1119,6 +1123,16 @@ namespace GnollHackX.Unknown
             LibSetCharacterClickAction(newValue ? 1 : 0);
         }
 
+        public bool GetDiceAsRanges()
+        {
+            return LibGetDiceAsRanges() != 0;
+        }
+
+        public void SetDiceAsRanges(bool newValue)
+        {
+            LibSetDiceAsRanges(newValue ? 1 : 0);
+        }
+
         public int GetMouseCommand(bool isMiddle)
         {
             return LibGetMouseCommand(isMiddle ? 1 : 0);
@@ -1158,6 +1172,7 @@ namespace GnollHackX.Unknown
                 (ulong)(GHApp.TournamentMode ? RunGnollHackFlags.TournamentMode : 0) |
                 (ulong)(GHApp.IsDebug ? RunGnollHackFlags.GUIDebugMode : 0) |
                 (ulong)(GHApp.MirroredCharacterClickAction ? RunGnollHackFlags.CharacterClickAction : 0) | /* Use the default; GHApp.CharacterClickAction may contain the option value from the last game */
+                (ulong)(GHApp.MirroredDiceAsRanges ? RunGnollHackFlags.DiceAsRanges : 0) | /* Use the default; GHApp.DiceAsRanges may contain the option value from the last game */
                 rightmouse | middlemouse | (ulong)ghGame.StartFlags;
             ulong foundManuals = GHApp.FoundManuals;
             string lastusedplname = GHApp.TournamentMode && !ghGame.PlayingReplay ? GHApp.LastUsedTournamentPlayerName : GHApp.LastUsedPlayerName;

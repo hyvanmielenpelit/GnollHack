@@ -614,6 +614,18 @@ LibGetCharacterClickAction(VOID_ARGS)
 }
 
 DLLEXPORT void
+LibSetDiceAsRanges(int new_value)
+{
+    iflags.show_dice_as_ranges = new_value != 0;
+}
+
+DLLEXPORT int
+LibGetDiceAsRanges(VOID_ARGS)
+{
+    return (int)iflags.show_dice_as_ranges;
+}
+
+DLLEXPORT void
 LibSetMouseCommand(int new_value, int is_middle)
 {
     if (is_middle)

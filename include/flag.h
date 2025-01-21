@@ -583,6 +583,7 @@ struct instance_flags {
 
     struct monst* spell_target_monster;
     uint64_t found_manuals;
+    boolean show_dice_as_ranges;
 };
 
 /*
