@@ -255,13 +255,6 @@ static struct Bool_Opt {
     { "search_box_traps", "search command searches boxes for traps first", &flags.search_box_traps, TRUE, SET_IN_GAME },
     { "selectsaved", "select a saved game at program start", &iflags.wc2_selectsaved, TRUE, DISP_IN_GAME}, /*WC*/
     { "self_click_action", "clicking the player character executes an action", &flags.self_click_action, TRUE, SET_IN_GAME},
-    { "show_dice_as_ranges", "show dice as ranges (e.g., 2-12 instead of 2d6)", &iflags.show_dice_as_ranges, 
-#ifdef GNH_MOBILE
-        TRUE,
-#else
-        FALSE,
-#endif
-        SET_IN_GAME },
     { "showexp", "show experience points in status line", &flags.showexp, TRUE, SET_IN_GAME},
     { "showmove", "show current movement speed in status line", &flags.showmove, TRUE, SET_IN_GAME },
     { "showrace", "show your character by race rather than role", &flags.showrace, FALSE, SET_IN_GAME },
@@ -270,6 +263,13 @@ static struct Bool_Opt {
     { "show_buff_timer", "show buff timer on tiles", &flags.show_buff_timer, FALSE, SET_IN_GAME},
     { "show_comparison_stats", "show comparison statistics for items when picking them up", &iflags.show_comparison_stats, TRUE, SET_IN_GAME },
     { "show_decorations", "show decorations via colors in ASCII mode", &flags.show_decorations, TRUE, SET_IN_GAME },
+    { "show_dice_as_ranges", "show dice as ranges (e.g., 2-12 instead of 2d6)", &iflags.show_dice_as_ranges,
+#ifdef GNH_MOBILE
+        TRUE,
+#else
+        FALSE,
+#endif
+        SET_IN_GAME },
     { "show_grid", "show grid between tiles", &flags.show_grid, FALSE, SET_IN_GAME},
     { "show_tile_mon_hp_bar", "show monster hit points on tiles", &flags.show_tile_mon_hp_bar, FALSE, SET_IN_GAME},
     { "show_tile_pet_hp_bar", "show pet hit points on tiles", &flags.show_tile_pet_hp_bar, FALSE, SET_IN_GAME },

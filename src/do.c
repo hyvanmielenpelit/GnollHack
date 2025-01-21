@@ -24,6 +24,7 @@ STATIC_DCL int NDECL(currentlevel_rewrite);
 STATIC_DCL void NDECL(final_level);
 STATIC_DCL void FDECL(print_corpse_properties, (winid, int));
 STATIC_DCL void FDECL(revive_handle_magic_chest, (xchar*, struct obj**, int*, struct monst**));
+STATIC_DCL void FDECL(convert_dice_to_ranges, (char*));
 /* STATIC_DCL boolean FDECL(badspot, (XCHAR_P,XCHAR_P)); */
 STATIC_PTR int FDECL(CFDECLSPEC item_wiki_cmp, (const genericptr, const genericptr));
 
@@ -457,6 +458,60 @@ floorexamine(VOID_ARGS)
     }
 
     return res;
+}
+
+void
+convert_dice_to_ranges(buf)
+char* buf;
+{
+    if (!buf || !*buf || !iflags.show_dice_as_ranges)
+        return;
+
+    int len = (int)strlen(buf);
+    char* p;
+    boolean found = FALSE;
+    for (p = buf; (int)(p - buf) < len - 3; p++)
+    {
+        if (*p == ' ' && *(p + 1) >= '0' && *(p + 1) <= '9' && *(p + 2) <= 'd' && *(p + 3) >= '0' && *(p + 3) <= '9')
+        {
+            found = TRUE;
+            break;
+        }
+    }
+
+    if (found)
+    {
+        int offset = (int)(p - buf);
+        if (offset < len - 3)
+        {
+            char* qp = strstr(p + 1, "+");
+            char* qs = strstr(p + 1, " ");
+            if (qs)
+            {
+                int dice = 0;
+                int diesize = 0;
+                int plus = 0;
+                int res = 0;
+                if (qp && qp < qs && *(qp + 1) >= '0' && *(qp + 1) <= '9')
+                    res = sscanf(p, " %dd%d+%d", &dice, &diesize, &plus);
+                else
+                    res = sscanf(p, " %dd%d", &dice, &diesize);
+
+                char* tmpstr = (char*)alloc(len + 32);
+                Strcpy(tmpstr, buf);
+                char* tptr = tmpstr + offset;
+                int minvalue = dice + plus;
+                int maxvalue = dice * diesize + plus;
+                if (minvalue == maxvalue)
+                    Sprintf(tptr, " %d", minvalue);
+                else
+                    Sprintf(tptr, " %d-%d", minvalue, maxvalue);
+                Strcat(tptr, qs);
+                Strcpy(buf, tmpstr);
+                free(tmpstr);
+            }
+        }
+    }
 }
 
 void
@@ -3574,7 +3629,8 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                             }
                         }
 
-                        Sprintf(buf, " %2d - %s", powercnt, mbuf);                        
+                        convert_dice_to_ranges(mbuf);
+                        Sprintf(buf, " %2d - %s", powercnt, mbuf);
                         putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
                     }
                     if (!mythic_prefix_powers[i].description)
@@ -3600,6 +3656,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                             }
                         }
 
+                        convert_dice_to_ranges(mbuf);
                         Sprintf(buf, " %2d - %s", powercnt, mbuf);                        
                         putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
                     }
