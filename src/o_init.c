@@ -212,13 +212,13 @@ NEARDATA const struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFI
         MYTHIC_FLAG_NO_CELESTIAL_WEAPONS | MYTHIC_FLAG_RACIAL_PREFIX
     },
     {
-        "Hyperborean", "Hyperborean ", "Spell casting bonus and added enchantability; adds mana in armors", 
+        "Hyperborean", "Hyperborean ", "Spell casting bonus and added enchantability; increases mana in armors", 
         25, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_PREFIX_POWER_ARMOR_MANA_GAIN | MYTHIC_PREFIX_POWER_SPELL_CASTING | MYTHIC_PREFIX_POWER_ADDED_ENCHANTABILITY,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_RACIAL_PREFIX
     },
     {
-        "Asgardian", "Asgardian ", "Confers enhanced accuracy and damage in weapons; adds health in armors", 
+        "Asgardian", "Asgardian ", "Confers enhanced accuracy and damage in weapons; increases hit points in armors", 
         25, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_PREFIX_POWER_ARMOR_HP_GAIN | MYTHIC_PREFIX_POWER_GREAT_ACCURACY | MYTHIC_PREFIX_POWER_GREAT_DAMAGE,
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_RACIAL_PREFIX
