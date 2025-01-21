@@ -497,18 +497,21 @@ char* buf;
                 else
                     res = sscanf(p, " %dd%d", &dice, &diesize);
 
-                char* tmpstr = (char*)alloc(len + 32);
-                Strcpy(tmpstr, buf);
-                char* tptr = tmpstr + offset;
-                int minvalue = dice + plus;
-                int maxvalue = dice * diesize + plus;
-                if (minvalue == maxvalue)
-                    Sprintf(tptr, " %d", minvalue);
-                else
-                    Sprintf(tptr, " %d-%d", minvalue, maxvalue);
-                Strcat(tptr, qs);
-                Strcpy(buf, tmpstr);
-                free(tmpstr);
+                if (res >= 2)
+                {
+                    char* tmpstr = (char*)alloc(len + 32);
+                    Strcpy(tmpstr, buf);
+                    char* tptr = tmpstr + offset;
+                    int minvalue = dice + plus;
+                    int maxvalue = dice * diesize + plus;
+                    if (minvalue == maxvalue)
+                        Sprintf(tptr, " %d", minvalue);
+                    else
+                        Sprintf(tptr, " %d-%d", minvalue, maxvalue);
+                    Strcat(tptr, qs);
+                    Strcpy(buf, tmpstr);
+                    free(tmpstr);
+                }
             }
         }
     }
