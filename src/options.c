@@ -284,6 +284,7 @@ static struct Bool_Opt {
     { "spell_table_format", "show spells in a table format rather than a list", &iflags.spell_table_format, TRUE, SET_IN_GAME },
     { "splash_screen", "show splash screen", &iflags.wc_splash_screen, TRUE, DISP_IN_GAME}, /*WC*/
     { "standout", "use standout for --more--", &flags.standout, FALSE, SET_IN_GAME },
+    { "stash_on_autopickup", "stash items into a container on autopickup (but no thrown if pick_thrown is on)", &flags.stash_on_autopickup, FALSE, SET_IN_GAME },
     { "status_updates", "allow the status lines to update", &iflags.status_updates, TRUE, DISP_IN_GAME },
     { "swap_rhand_only", "swap right hand weapon only rather than objects in both hands", &flags.swap_rhand_only, FALSE, SET_IN_GAME},
     { "takeoff_uses_all", "takeoff command uses takeoffall command rather than normal implementation", &iflags.takeoff_uses_all, TRUE, SET_IN_GAME},
