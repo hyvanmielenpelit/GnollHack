@@ -18771,6 +18771,7 @@ namespace GnollHackX.Pages.Game
                     xamlWindow.Content.KeyDown += PageContent_KeyDown;
                     xamlWindow.Content.KeyUp += PageContent_KeyUp;
                     xamlWindow.Content.CharacterReceived += PageContent_CharacterReceived;
+                    xamlWindow.Content.Focus(Microsoft.UI.Xaml.FocusState.Keyboard);
                 }
             }
             catch (Exception ex)
