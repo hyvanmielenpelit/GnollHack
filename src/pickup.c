@@ -710,7 +710,7 @@ boolean do_auto_in_bag;
         for (n_picked = i = 0; i < n; i++) 
         {
             uchar obj_gone = FALSE;
-            res = pickup_object(pick_list[i].item.a_obj, pick_list[i].count, FALSE, do_auto_in_bag, &obj_gone);
+            res = pickup_object(pick_list[i].item.a_obj, pick_list[i].count, FALSE, do_auto_in_bag || (autopickup && flags.stash_on_autopickup && (!flags.pickup_thrown || !pick_list[i].item.a_obj->was_thrown)), &obj_gone);
             if (res < 0)
                 break; /* can't continue */
             n_picked += res;
@@ -743,7 +743,7 @@ boolean do_auto_in_bag;
             obj = *objchain_p;
             lcount = min(obj->quan, (int64_t) count);
             n_tried++;
-            if (pickup_object(obj, lcount, FALSE, do_auto_in_bag, (uchar*)0) > 0)
+            if (pickup_object(obj, lcount, FALSE, do_auto_in_bag || (autopickup && flags.stash_on_autopickup && (!flags.pickup_thrown || !obj->was_thrown)), (uchar*)0) > 0)
                 n_picked++; /* picked something */
             goto end_query;
         } 
@@ -816,7 +816,7 @@ boolean do_auto_in_bag;
                 lcount = obj->quan;
 
             n_tried++;
-            if ((res = pickup_object(obj, lcount, FALSE, do_auto_in_bag, (uchar*)0)) < 0)
+            if ((res = pickup_object(obj, lcount, FALSE, do_auto_in_bag || (autopickup && flags.stash_on_autopickup && (!flags.pickup_thrown || !obj->was_thrown)), (uchar*)0)) < 0)
                 break;
             n_picked += res;
         }

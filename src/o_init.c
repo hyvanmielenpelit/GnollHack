@@ -215,7 +215,7 @@ NEARDATA const struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFI
         "Hyperborean", "Hyperborean ", "Spell casting bonus and added enchantability; increases mana in armors", 
         25, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_PREFIX_POWER_ARMOR_MANA_GAIN | MYTHIC_PREFIX_POWER_SPELL_CASTING | MYTHIC_PREFIX_POWER_ADDED_ENCHANTABILITY,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_RACIAL_PREFIX
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_RACIAL_PREFIX | MYTHIC_FLAG_NO_THROWN_OR_AMMO
     },
     {
         "Asgardian", "Asgardian ", "Confers enhanced accuracy and damage in weapons; increases hit points in armors", 
@@ -263,13 +263,13 @@ NEARDATA const struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFI
         "hallowed", "hallowed ", "Uncurseable and counts as silver; armors confer curse resistance", 
         20, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
         MYTHIC_PREFIX_POWER_ARMOR_CURSE_RESISTANCE | MYTHIC_PREFIX_POWER_UNCURSEABLE | MYTHIC_PREFIX_POWER_COUNTS_AS_SILVER,
-        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_NO_INFERNAL_WEAPONS | MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS | MYTHIC_FLAG_NO_THROWN_OR_AMMO | MYTHIC_FLAG_NO_DEMONIC_ITEMS
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_NO_INFERNAL_WEAPONS | MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS | MYTHIC_FLAG_NO_DEMONIC_ITEMS
     },
     {
         "witch-king's", "witch-king's ", "Causes level drain in weapons; enhances spell casting; increases mana and hit point in armors; added enchantability", 
         4, MYTHIC_STANDARD_PRICE_MULTIPLIER + 0.5, MYTHIC_STANDARD_PRICE_ADDITION * 3L,
         MYTHIC_PREFIX_POWER_LEVEL_DRAIN | MYTHIC_PREFIX_POWER_SPELL_CASTING | MYTHIC_PREFIX_POWER_ARMOR_MANA_GAIN | MYTHIC_PREFIX_POWER_ARMOR_HP_GAIN | MYTHIC_PREFIX_POWER_ADDED_ENCHANTABILITY,
-        MYTHIC_FLAG_NO_CELESTIAL_WEAPONS | MYTHIC_FLAG_RACIAL_PREFIX
+        MYTHIC_FLAG_NO_CELESTIAL_WEAPONS | MYTHIC_FLAG_RACIAL_PREFIX | MYTHIC_FLAG_NO_THROWN_OR_AMMO
     },
     {
         "sorcerer's", "sorcerer's ", "No spell-casting penalty (armors only)", 
@@ -278,13 +278,13 @@ NEARDATA const struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFI
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_ARMOR_REQUIRED | MYTHIC_FLAG_NO_LOW_SPELLCASTING_PENALTY_ITEMS | MYTHIC_FLAG_NO_OTHER_SORCERY
     },
     {
-        "Olympian", "Olympian ", "Triple base damage; added enchantability; uncurseable; counts as silver; curse resistance (weapons only)", 
+        "Olympian", "Olympian ", "Triple base damage; added enchantability; uncurseable; counts as silver (weapons only)", 
         5, MYTHIC_STANDARD_PRICE_MULTIPLIER + 0.5, MYTHIC_STANDARD_PRICE_ADDITION * 2L,
         MYTHIC_PREFIX_POWER_TRIPLE_BASE_DAMAGE | MYTHIC_PREFIX_POWER_ADDED_ENCHANTABILITY | MYTHIC_PREFIX_POWER_ARMOR_CURSE_RESISTANCE | MYTHIC_PREFIX_POWER_UNCURSEABLE | MYTHIC_PREFIX_POWER_COUNTS_AS_SILVER,
-        MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_RACIAL_PREFIX | MYTHIC_FLAG_NO_INFERNAL_WEAPONS | MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS | MYTHIC_FLAG_NO_THROWN_OR_AMMO | MYTHIC_FLAG_NO_DEMONIC_ITEMS
+        MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_RACIAL_PREFIX | MYTHIC_FLAG_NO_INFERNAL_WEAPONS | MYTHIC_FLAG_NO_PRIMORDIAL_WEAPONS | MYTHIC_FLAG_NO_DEMONIC_ITEMS
     },
     {
-        "Jotunheimian", "Jotunheimian ", "Triple base damage and causes life drain; added enchantability (weapons only)", 
+        "Jotunheimian", "Jotunheimian ", "Triple base damage and causes life leech; added enchantability (weapons only)", 
         5, MYTHIC_STANDARD_PRICE_MULTIPLIER + 0.5, MYTHIC_STANDARD_PRICE_ADDITION * 3L,
         MYTHIC_PREFIX_POWER_TRIPLE_BASE_DAMAGE | MYTHIC_PREFIX_POWER_ADDED_ENCHANTABILITY | MYTHIC_PREFIX_POWER_LIFE_DRAINING,
         MYTHIC_FLAG_WEAPON_REQUIRED | MYTHIC_FLAG_RACIAL_PREFIX | MYTHIC_FLAG_NO_THROWN_OR_AMMO | MYTHIC_FLAG_NO_CELESTIAL_WEAPONS
