@@ -4174,6 +4174,9 @@ namespace GnollHackX.Pages.Game
             if (MoreCommandsGrid.IsVisible)
             {
                 MoreCommandsGrid.IsVisible = false;
+                MoreCommandsFilterEntry.Text = "";
+                MoreCommandsFilterEntry.Unfocus();
+                MoreCommandsFilterEntry.IsEnabled = false;
                 //MainGrid.IsVisible = true;
                 IsMainCanvasOn = true;
                 UpdateMoreNextPrevButtonVisibility(true, true);
@@ -14719,6 +14722,9 @@ namespace GnollHackX.Pages.Game
 
             UpdateMoreNextPrevButtonVisibility(true, true);
             MoreCommandsGrid.IsVisible = true;
+            MoreCommandsFilterEntry.Text = "";
+            MoreCommandsFilterEntry.IsVisible = GHApp.IsDesktop;
+            MoreCommandsFilterEntry.IsEnabled = GHApp.IsDesktop;
             //MainGrid.IsVisible = false;
             IsMainCanvasOn = false;
             StopMainCanvasAnimation();
@@ -17191,7 +17197,15 @@ namespace GnollHackX.Pages.Game
             if (canvaswidth <= 16 || canvasheight <= 16)
                 return;
 
+            SKColor nonFilteredColor = SKColors.White.WithAlpha(32);
             CmdBtnMatrixRect = new SKRect();
+            string filter = MoreCommandsFilterEntry.Text;
+            bool useFilter;
+
+            if (string.IsNullOrWhiteSpace(filter))
+                useFilter = false;
+            else
+                useFilter = true;
 
             using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint())
             {
@@ -17272,6 +17286,7 @@ namespace GnollHackX.Pages.Game
                                 {
                                     if (GHApp._moreBtnMatrix[page, i, j] != null && GHApp._moreBtnBitmaps[page, i, j] != null)
                                     {
+                                        bool notInFilter = useFilter && !GHApp._moreBtnMatrix[page, i, j].Text.StartsWith(filter, StringComparison.InvariantCultureIgnoreCase);
                                         SKRect targetrect = new SKRect();
                                         int x = isLandscape ? pos_j : i;
                                         int y = isLandscape ? i : pos_j;
@@ -17285,6 +17300,10 @@ namespace GnollHackX.Pages.Game
                                             paint.ColorFilter = UIUtils.HighlightColorFilter;
                                         else
                                             paint.ColorFilter = null;
+                                        if(useFilter)
+                                        {
+                                            textPaint.Color = paint.Color = notInFilter ? nonFilteredColor : SKColors.White;
+                                        }
                                         canvas.DrawImage(GHApp._moreBtnBitmaps[page, i, j], targetrect, paint);
                                         textPaint.DrawTextOnCanvas(canvas, GHApp._moreBtnMatrix[page, i, j].Text, text_x, text_y, SKTextAlign.Center);
                                     }
@@ -17606,6 +17625,9 @@ namespace GnollHackX.Pages.Game
         private void CommandCanvas_Pressed(object sender, EventArgs e)
         {
             MoreCommandsGrid.IsVisible = false;
+            MoreCommandsFilterEntry.Unfocus();
+            MoreCommandsFilterEntry.IsVisible = false;
+            MoreCommandsFilterEntry.IsEnabled = false;
             //MainGrid.IsVisible = true;
             IsMainCanvasOn = true;
             UpdateMoreNextPrevButtonVisibility(true, true);
@@ -18889,6 +18911,10 @@ namespace GnollHackX.Pages.Game
             {
                 /* Nothing */
             }
+            else if (MoreCommandsGrid.IsVisible && MoreCommandsFilterEntry.IsFocused)
+            {
+                handled = false;
+            }
             else if (YnGrid.IsVisible && !string.IsNullOrWhiteSpace(_ynResponses) && _ynResponses.Contains((char)key))
             {
                 YnButton_Pressed(null, null, key);
@@ -18979,21 +19005,28 @@ namespace GnollHackX.Pages.Game
             }
             else if (!MenuGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !ReplayGrid.IsVisible && !PlayingReplay)
             {
-                if (MoreCommandsGrid.IsVisible)
+                if (!MoreCommandsGrid.IsVisible && ForceAllMessages && MessageFilterEntry.IsFocused)
                 {
-                    CommandCanvas_Pressed(null, null);
+                    handled = false;
                 }
-
-                if (key != 0)
+                else
                 {
-                    if (isMeta)
-                        GenericButton_Clicked(null, null, GHUtils.Meta(key));
-                    else if (isCtrl)
-                        GenericButton_Clicked(null, null, GHUtils.Ctrl(key));
-                    else
-                        GenericButton_Clicked(null, null, key);
+                    if (MoreCommandsGrid.IsVisible)
+                    {
+                        CommandCanvas_Pressed(null, null);
+                    }
 
-                    handled = true;
+                    if (key != 0)
+                    {
+                        if (isMeta)
+                            GenericButton_Clicked(null, null, GHUtils.Meta(key));
+                        else if (isCtrl)
+                            GenericButton_Clicked(null, null, GHUtils.Ctrl(key));
+                        else
+                            GenericButton_Clicked(null, null, key);
+
+                        handled = true;
+                    }
                 }
             }
             return handled;
@@ -19115,7 +19148,7 @@ namespace GnollHackX.Pages.Game
             }
             else if (!MenuGrid.IsVisible && !PopupGrid.IsVisible && !GetLineGrid.IsVisible && !YnGrid.IsVisible && !TextGrid.IsVisible && !PopupGrid.IsVisible && !ReplayGrid.IsVisible)
             {
-                if (MoreCommandsGrid.IsVisible)
+                if (MoreCommandsGrid.IsVisible && !MoreCommandsFilterEntry.IsFocused)
                 {
                     CommandCanvas_Pressed(null, null);
                 }
@@ -19203,6 +19236,11 @@ namespace GnollHackX.Pages.Game
                 }
             }
             return handled;
+        }
+
+        private void MoreCommandsFilterEntry_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
 
 #if WINDOWS

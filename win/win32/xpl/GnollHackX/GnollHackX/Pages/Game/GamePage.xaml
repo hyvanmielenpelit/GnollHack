@@ -371,6 +371,9 @@
                     <gnh:PointableButton x:Name="MoreNextLabel" Background="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill" PointerEntered="NextLabelHandler_PointerEntered" PointerExited="NextLabelHandler_PointerExited" />
                     <controls:SimpleImageButton x:Name="MoreNextButton" IsVisible="False" ImgSourcePath="resource://GnollHackX.Assets.UI.page-next.png" BtnClicked="MoreNextButton_BtnClicked" HorizontalOptions="End" VerticalOptions="Center" />
                 </Grid>
+                <Entry x:Name="MoreCommandsFilterEntry" FontFamily="Underwood" FontSize="14" TextColor="White" BackgroundColor="#FF111111" Placeholder="Search" PlaceholderColor="#FF666666"
+                                   WidthRequest="120" Keyboard="Default" HorizontalTextAlignment="Start" TextChanged="MoreCommandsFilterEntry_TextChanged" 
+                                   HorizontalOptions="Start" VerticalOptions="End" Margin="5" />
             </Grid>
             <controls:SwitchableCanvasView x:Name="TipView" 
                                            IsVisible="False"
