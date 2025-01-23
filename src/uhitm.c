@@ -1777,11 +1777,17 @@ boolean* obj_destroyed;
 
         if (thrown == HMON_MELEE && obj && uwep && obj == uwep && two_handed_bonus_applies(obj))
             use_skill(P_TWO_HANDED_WEAPON, 1);
+
+        if (thrown == HMON_THROWN && wtype != P_THROWN_WEAPON && ordinary_thrown)
+            use_skill(P_THROWN_WEAPON, 1);
     }
     else if (ordinary_thrown) //Thrown weapon skill bonus to thrown objects
     {
         damage += adjust_damage(weapon_skill_dmg_bonus((struct obj*)0, P_NONE, FALSE, FALSE, 2, 0, TRUE, TRUE),
             &youmonst, mon, wep ? objects[wep->otyp].oc_damagetype : AD_PHYS, ADFLAGS_NONE);
+
+        if (thrown == HMON_THROWN && wtype != P_THROWN_WEAPON && damage > 0)
+            use_skill(P_THROWN_WEAPON, 1);
     }
 
     if (ispoisoned && !isdisintegrated) 
