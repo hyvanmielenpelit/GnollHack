@@ -301,12 +301,12 @@ namespace GnollHackX
 #endif
         }
 
-
         public static void SetMirroredOptionsToDefaults()
         {
             MirroredCharacterClickAction = Preferences.Get("CharacterClickAction", GHConstants.DefaultCharacterClickAction);
             MirroredRightMouseCommand = Preferences.Get("RightMouseCommand", GHConstants.DefaultRightMouseCommand);
             MirroredMiddleMouseCommand = Preferences.Get("MiddleMouseCommand", GHConstants.DefaultMiddleMouseCommand);
+            MirroredDiceAsRanges = Preferences.Get("DiceAsRanges", GHConstants.DefaultDiceAsRanges);
         }
 
         public static void MaybeFixRects(ref SKRect source, ref SKRect dest, float targetscale, bool usingGL)
