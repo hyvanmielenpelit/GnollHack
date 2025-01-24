@@ -3306,7 +3306,7 @@ struct obj* otmp_only;
                         || (otmp->oclass == MISCELLANEOUS_CLASS
                             && !is_obj_appliable(otmp))
                         || (otmp->oclass == GEM_CLASS && !is_graystone(otmp))))
-                || (!strcmp(word, "take items out of") && (!Is_container(otmp) || (objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp))))
+                || (!strcmp(word, "take items out of") && (!Is_container(otmp) || (objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp)) || (otmp->cknown && (otmp->otyp == BAG_OF_TRICKS ? (otmp->charges == 0) : !Has_contained_contents(otmp)))))
                 || (!strcmp(word, "put items in") && (!Is_container(otmp) || (objects[otmp->otyp].oc_name_known && !Is_proper_container(otmp))))
                 || (!strcmp(word, "invoke")
                     && !otmp->oartifact
