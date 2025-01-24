@@ -37,7 +37,6 @@
 		<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
 		<AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
 		<GenerateTestArtifacts>True</GenerateTestArtifacts>
-		<GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
 	</PropertyGroup>
 
@@ -46,7 +45,9 @@
 	  <!--<RunAOTCompilation>true</RunAOTCompilation>-->
 	  <!-- Optional -->
 	  <!--<EnableLLVM>true</EnableLLVM>-->
-	</PropertyGroup>
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>None</DebugType>
+  </PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-ios'">
 		<ProvisioningType>manual</ProvisioningType>
