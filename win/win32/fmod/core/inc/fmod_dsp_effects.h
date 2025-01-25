@@ -1,8 +1,6 @@
-﻿/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-07-16 */
-
 /* ============================================================================================================= */
 /* FMOD Core API - Built-in effects header file.                                                                 */
-/* Copyright (c), Firelight Technologies Pty, Ltd. 2004-2023.                                                    */
+/* Copyright (c), Firelight Technologies Pty, Ltd. 2004-2024.                                                    */
 /*                                                                                                               */
 /* In this header you can find parameter structures for FMOD system registered DSP effects                       */
 /* and generators.                                                                                               */

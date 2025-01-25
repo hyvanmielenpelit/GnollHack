@@ -1,6 +1,6 @@
 /* ======================================================================================== */
 /* FMOD Core API - DSP header file.                                                         */
-/* Copyright (c), Firelight Technologies Pty, Ltd. 2004-2023.                               */
+/* Copyright (c), Firelight Technologies Pty, Ltd. 2004-2024.                               */
 /*                                                                                          */
 /* Use this header if you are wanting to develop your own DSP plugin to use with FMODs      */
 /* dsp system.  With this header you can make your own DSP plugin that FMOD can             */
@@ -20,10 +20,46 @@ namespace FMOD
     public struct DSP_BUFFER_ARRAY
     {
         public int              numbuffers;
-        public int[]            buffernumchannels;
-        public CHANNELMASK[]    bufferchannelmask;
-        public IntPtr[]         buffers;
+        public IntPtr           buffernumchannels;
+        public IntPtr           bufferchannelmask;
+        public IntPtr           buffers;
         public SPEAKERMODE      speakermode;
+
+        /*
+            These properties take advantage of the fact that numbuffers is always zero or one
+        */
+
+        public int numchannels
+        {
+            get 
+            {
+                if (buffernumchannels != IntPtr.Zero && numbuffers != 0)
+                    return Marshal.ReadInt32(buffernumchannels);
+
+                return 0;
+            }
+            set
+            {
+                if (buffernumchannels != IntPtr.Zero && numbuffers != 0)
+                    Marshal.WriteInt32(buffernumchannels, value);
+            }
+        }
+
+        public IntPtr buffer
+        {
+            get
+            {
+                if (buffers != IntPtr.Zero && numbuffers != 0)
+                    return Marshal.ReadIntPtr(buffers);
+
+                return IntPtr.Zero;
+            }
+            set
+            {
+                if (buffers != IntPtr.Zero && numbuffers != 0)
+                    Marshal.WriteIntPtr(buffers, value);
+            }
+        }
     }
 
     public enum DSP_PROCESS_OPERATION

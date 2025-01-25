@@ -1,8 +1,6 @@
-﻿/* GnollHack File Change Notice: This file has been changed from the original. Date of last change: 2023-07-16 */
-
 /* ======================================================================================== */
 /* FMOD Studio API - C++ header file.                                                       */
-/* Copyright (c), Firelight Technologies Pty, Ltd. 2004-2023.                               */
+/* Copyright (c), Firelight Technologies Pty, Ltd. 2004-2024.                               */
 /*                                                                                          */
 /* Use this header in conjunction with fmod_studio_common.h (which contains all the         */
 /* constants / callbacks) to develop using the C++ language.                                */
