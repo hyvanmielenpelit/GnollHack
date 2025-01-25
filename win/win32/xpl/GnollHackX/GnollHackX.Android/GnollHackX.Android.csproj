@@ -37,7 +37,7 @@
     <EnableLLVM>false</EnableLLVM>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
     <BundleAssemblies>false</BundleAssemblies>
-    <AndroidSupportedAbis>arm64-v8a</AndroidSupportedAbis>
+    <AndroidSupportedAbis>x86_64;arm64-v8a</AndroidSupportedAbis>
     <Debugger>Xamarin</Debugger>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
@@ -156,6 +156,10 @@
     <AndroidAsset Include="Assets\DejaVuSansMono.woff" />
     <AndroidAppBundleModules Include="assetpacks\ondemandassetpack.zip" />
     <AndroidAppBundleModules Include="assetpacks\installtimeassetpack.zip" />
+    <AndroidNativeLibrary Include="libs\x86_64\libc++_shared.so" />
+    <AndroidNativeLibrary Include="libs\x86_64\libfmod.so" />
+    <AndroidNativeLibrary Include="libs\x86_64\libfmodstudio.so" />
+    <None Include="libs\x86_64\libgnollhackdroid.so" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
