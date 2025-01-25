@@ -3185,9 +3185,18 @@ boolean ismana;
     {
         int totalrnd = rolernd + racernd + 1;
         int mfix = fix - 1;
-        Sprintf(buf, "+1d%d", totalrnd);
-        if (mfix != 0)
-            Sprintf(eos(buf), "%s%d", mfix >= 0 ? "+" : "", mfix);
+        if (iflags.show_dice_as_ranges)
+        {
+            int minr = 1 + mfix;
+            int maxr = totalrnd + mfix;
+            Sprintf(buf, "+%d-%d", minr, maxr);
+        }
+        else
+        {
+            Sprintf(buf, "+1d%d", totalrnd);
+            if (mfix != 0)
+                Sprintf(eos(buf), "%s%d", mfix >= 0 ? "+" : "", mfix);
+        }
     }
     else
     {
