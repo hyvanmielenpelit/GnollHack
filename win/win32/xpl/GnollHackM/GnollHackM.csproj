@@ -279,6 +279,10 @@
 		<None Remove="Assets\UI\zapquick.png" />
 		<None Remove="Assets\UI\zoom.png" />
 		<None Remove="Platforms\Android\Environment.txt" />
+		<None Remove="Platforms\Android\libs\x86_64\libc++_shared.so" />
+		<None Remove="Platforms\Android\libs\x86_64\libfmod.so" />
+		<None Remove="Platforms\Android\libs\x86_64\libfmodstudio.so" />
+		<None Remove="Platforms\Android\libs\x86_64\libgnollhackdroid.so" />
 		<None Remove="Resources\AppIcon\appicon.svg" />
 		<None Remove="Resources\AppIcon\appiconfg.svg" />
 	</ItemGroup>
@@ -756,6 +760,12 @@
     <!--<PublishTrimmed>False</PublishTrimmed>-->
     <!--<RunAOTCompilation>False</RunAOTCompilation>-->
   </PropertyGroup>
+	<ItemGroup>
+	  <AndroidNativeLibrary Include="Platforms\Android\libs\x86_64\libc++_shared.so" />
+	  <AndroidNativeLibrary Include="Platforms\Android\libs\x86_64\libfmod.so" />
+	  <AndroidNativeLibrary Include="Platforms\Android\libs\x86_64\libfmodstudio.so" />
+	  <AndroidNativeLibrary Include="Platforms\Android\libs\x86_64\libgnollhackdroid.so" />
+	</ItemGroup>
 
 	<ItemGroup>
 	  <EmbeddedResource Include="Assets\archristy.ttf" />
