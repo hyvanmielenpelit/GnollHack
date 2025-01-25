@@ -779,6 +779,9 @@ struct startup_flags {
     boolean click_action_value;
     uchar right_click_action;
     uchar middle_click_action;
+    boolean dice_as_ranges_set;
+    boolean dice_as_ranges_value;
+
     uint64_t found_manuals;
 };
 
