@@ -4983,7 +4983,7 @@ int* max_range;
         *max_range = (has_otyp_extended_polearm_reach(obj->otyp) || has_obj_mythic_reach(obj) ? POLEARM_EXTENDED_MAX_DISTANCE : POLEARM_NORMAL_MAX_DISTANCE);
 
     }
-    else if (is_spear(obj))
+    else if (is_spear(obj) || is_trident(obj))
     {
         *min_range = SPEAR_MIN_DISTANCE;
         if (has_otyp_extended_polearm_reach(obj->otyp) || has_obj_mythic_reach(obj))
@@ -5179,7 +5179,7 @@ struct obj *obj;
 
         play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_SWING_MELEE);
         if(dist2(u.ux, u.uy, bhitpos.x, bhitpos.y) > 0)
-            display_gui_effect(GUI_EFFECT_POLEARM, is_spear(obj) ? GUI_POLEARM_SPEAR : is_lance(obj) ? GUI_POLEARM_LANCE : GUI_POLEARM_THRUSTED, u.ux, u.uy, bhitpos.x, bhitpos.y, 0UL);
+            display_gui_effect(GUI_EFFECT_POLEARM, is_spear(obj) ? GUI_POLEARM_SPEAR : is_lance(obj) ? GUI_POLEARM_LANCE : is_trident(obj) ? GUI_POLEARM_SPEAR : GUI_POLEARM_THRUSTED, u.ux, u.uy, bhitpos.x, bhitpos.y, 0UL);
         context.polearm.hitmon = mtmp;
         check_caitiff(mtmp);
         notonhead = (bhitpos.x != mtmp->mx || bhitpos.y != mtmp->my);
@@ -5190,7 +5190,7 @@ struct obj *obj;
     {
         play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_SWING_MELEE);
         if (dist2(u.ux, u.uy, bhitpos.x, bhitpos.y) > 0)
-            display_gui_effect(GUI_EFFECT_POLEARM, is_spear(obj) ? GUI_POLEARM_SPEAR : is_lance(obj) ? GUI_POLEARM_LANCE : GUI_POLEARM_THRUSTED, u.ux, u.uy, bhitpos.x, bhitpos.y, 0UL);
+            display_gui_effect(GUI_EFFECT_POLEARM, is_spear(obj) ? GUI_POLEARM_SPEAR : is_lance(obj) ? GUI_POLEARM_LANCE : is_trident(obj) ? GUI_POLEARM_SPEAR : GUI_POLEARM_THRUSTED, u.ux, u.uy, bhitpos.x, bhitpos.y, 0UL);
 
         struct trap *t = t_at(bhitpos.x, bhitpos.y);
 
@@ -5215,7 +5215,7 @@ struct obj *obj;
     {
         play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_SWING_MELEE);
         if (dist2(u.ux, u.uy, bhitpos.x, bhitpos.y) > 0)
-            display_gui_effect(GUI_EFFECT_POLEARM, is_spear(obj) ? GUI_POLEARM_SPEAR : is_lance(obj) ? GUI_POLEARM_LANCE : GUI_POLEARM_THRUSTED, u.ux, u.uy, bhitpos.x, bhitpos.y, 0UL);
+            display_gui_effect(GUI_EFFECT_POLEARM, is_spear(obj) ? GUI_POLEARM_SPEAR : is_lance(obj) ? GUI_POLEARM_LANCE : is_trident(obj) ? GUI_POLEARM_SPEAR : GUI_POLEARM_THRUSTED, u.ux, u.uy, bhitpos.x, bhitpos.y, 0UL);
 
         /* no monster here and no statue seen or remembered here */
         (void) unmap_invisible(bhitpos.x, bhitpos.y);

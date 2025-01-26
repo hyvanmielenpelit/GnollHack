@@ -2903,7 +2903,7 @@ eatspecial()
     }
 
     /* KMH -- idea by "Tommy the Terrorist" */
-    if (otmp->otyp == TRIDENT && !otmp->cursed) {
+    if (is_trident(otmp) && !otmp->cursed) {
         /* sugarless chewing gum which used to be heavily advertised on TV */
         pline(Hallucination ? "Four out of five dentists agree."
                             : "That was pure chewing satisfaction!");

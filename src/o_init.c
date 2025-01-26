@@ -1590,7 +1590,7 @@ uchar is_wish; /* 1 = mythic wishing, 2 = legendary wishing */
         return FALSE;
     if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_INFERNAL_WEAPONS) && obj->exceptionality == EXCEPTIONALITY_INFERNAL)
         return FALSE;
-    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_POLEARM_LANCE_SPEAR_ONLY) && !(is_pole(obj) || is_lance(obj) || is_spear(obj)))
+    if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_POLEARM_LANCE_SPEAR_ONLY) && !(is_pole(obj) || is_lance(obj) || is_spear(obj) || is_trident(obj)))
         return FALSE;
     if ((mythic_definitions[affix_idx].mythic_flags & MYTHIC_FLAG_NO_WEAPON) && is_weapon(obj))
         return FALSE;

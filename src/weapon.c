@@ -420,7 +420,7 @@ int use_type;
         tmp += 2;
 
     /* trident is highly effective against swimmers */
-    if (otmp->otyp == TRIDENT && is_swimmer(ptr))
+    if (is_trident(otmp) && is_swimmer(ptr))
     {
         if (is_pool(mon->mx, mon->my))
             tmp += 4;

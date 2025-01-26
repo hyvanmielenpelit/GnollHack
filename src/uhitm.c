@@ -1192,7 +1192,7 @@ boolean* obj_destroyed;
                 /* or strike with a missile in your hand... */
                 || (!thrown && (is_missile(obj) || is_ammo(obj)))
                 /* or use a pole at short range and not mounted... */
-                || (!thrown && !u.usteed && is_appliable_pole_type_weapon(obj) && !is_spear(obj))
+                || (!thrown && !u.usteed && is_appliable_pole_type_weapon(obj) && !is_spear(obj) && !is_trident(obj))
                 /* or throw a missile without the proper bow... */
                 || (is_ammo(obj) && !is_golf_swing_with_stone && (thrown != HMON_THROWN
                     || !ammo_and_launcher(obj, uwep)))) 
