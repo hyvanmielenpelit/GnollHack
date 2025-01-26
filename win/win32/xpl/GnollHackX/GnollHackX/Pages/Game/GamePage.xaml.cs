@@ -740,6 +740,7 @@ namespace GnollHackX.Pages.Game
         private bool _rightAligned2ndRow = false;
         private bool _menuFadeEffects = false;
         private bool _menuHighFilterQuality = false;
+        private bool _menuHighlightedKeys = false;
         public bool DesktopStatusBar { get { lock (_desktopLock) { return _desktopStatusBar; } } set { lock (_desktopLock) { _desktopStatusBar = value; } } }
         public bool DesktopButtons
         {
@@ -761,6 +762,7 @@ namespace GnollHackX.Pages.Game
         }
         public bool MenuFadeEffects { get { lock (_desktopLock) { return _menuFadeEffects; } } set { lock (_desktopLock) { _menuFadeEffects = value; } } }
         public bool MenuHighFilterQuality { get { lock (_desktopLock) { return _menuHighFilterQuality; } } set { lock (_desktopLock) { _menuHighFilterQuality = value; } } }
+        public bool MenuHighlightedKeys { get { lock (_desktopLock) { return _menuHighlightedKeys; } } set { lock (_desktopLock) { _menuHighlightedKeys = value; } } }
         public bool ShowScore { get { lock (_desktopLock) { return _showScore; } } set { lock (_desktopLock) { _showScore = value; } } }
         public bool ShowXP { get { lock (_desktopLock) { return _showXP; } } set { lock (_desktopLock) { _showXP = value; } } }
         public bool RightAligned2ndRow { get { lock (_desktopLock) { return _rightAligned2ndRow; } } set { lock (_desktopLock) { _rightAligned2ndRow = value; } } }
@@ -996,6 +998,7 @@ namespace GnollHackX.Pages.Game
             RightAligned2ndRow = Preferences.Get("RightAligned2ndRow", false);
             MenuFadeEffects = Preferences.Get("MenuFadeEffects", GHConstants.AreMenuFadeEffectsDefault);
             MenuHighFilterQuality = Preferences.Get("MenuHighFilterQuality", GHApp.IsMenuHighFilterQualityDefault);
+            MenuHighlightedKeys = Preferences.Get("MenuHighlightedKeys", GHApp.IsMenuHighlightedKeysDefault);
             ShowOrbs = Preferences.Get("ShowOrbs", true);
             ShowMaxHealthInOrb = Preferences.Get("ShowMaxHealthInOrb", false);
             ShowMaxManaInOrb = Preferences.Get("ShowMaxManaInOrb", false);
@@ -14948,12 +14951,16 @@ namespace GnollHackX.Pages.Game
 
         private readonly SKColor _suffixTextColor = new SKColor(220, 220, 220);
         private readonly SKColor _suffixTextColorReverted = new SKColor(35, 35, 35);
+        private readonly SKColor _keyIdentifierTextColor = new SKColor(192, 192, 192);
+        private readonly SKColor _keyIdentifierTextColorReverted = new SKColor(64, 64, 64);
+
         private readonly SKColor _menuHighlightSelectedColor = new SKColor(0xFF, 0x88, 0x00, 0x88);
         private readonly SKColor _menuHighlightAutoClickedColor = new SKColor(0xFF, 0xBB, 0x00, 0x99);
         private readonly SKColor _menuHighlightHoverOverSelectableColor = new SKColor(0xFF, 0x88, 0x00, 0x44);
         private readonly SKColor _menuHighlightHoverOverAutoClickableColor = new SKColor(0xFF, 0xBB, 0x00, 0x55);
         private readonly SKColor _menuHighlightHoverOverSelectedColor = new SKColor(0xFF, 0x88, 0x00, 0xAA);
         private readonly SKColor _menuHighlightHoverOverAutoClickedColor = new SKColor(0xFF, 0xBB, 0x00, 0xAA);
+
         private int _firstDrawnMenuItemIdx = -1;
         private int _lastDrawnMenuItemIdx = -1;
         private readonly object _totalMenuHeightLock = new object();
@@ -14994,6 +15001,7 @@ namespace GnollHackX.Pages.Game
             float scale = GHApp.DisplayDensity; // (float)Math.Sqrt((double)(canvaswidth * canvasheight / (float)(referenceCanvasView.Width * referenceCanvasView.Height)));
             float customScale = GHApp.CustomScreenScale;
             bool isHighFilterQuality = MenuHighFilterQuality;
+            bool isHighlightedKeys = MenuHighlightedKeys;
             bool usingGL = MenuCanvas.UseGL;
             float x, y;
             string str;
@@ -15208,9 +15216,7 @@ namespace GnollHackX.Pages.Game
                                         str = mi.FormattedSpecialMark;
                                     else
                                         str = mi.FormattedAccelerator;
-                                    textPaint.Color = SKColors.Gray; /* !GHApp.IsDesktop ? SKColors.Gray:
-                                        UIUtils.NHColor2SKColorCore((int)NhColor.CLR_WHITE, 0, MenuCanvas.RevertBlackAndWhite, false); */
-                                    //str = str.Trim();
+                                    textPaint.Color = isHighlightedKeys ? (MenuCanvas.RevertBlackAndWhite ? _keyIdentifierTextColorReverted : _keyIdentifierTextColor) : SKColors.Gray;
                                     float identifier_y =
                                         mi.IsSuffixTextVisible || mi.IsSuffix2TextVisible ? (selectionrect.Top + selectionrect.Bottom) / 2 - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent
                                         : y + singlelinepadding;

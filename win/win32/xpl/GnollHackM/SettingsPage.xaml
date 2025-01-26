@@ -495,6 +495,14 @@
                                 <Switch Grid.Column="1" x:Name="MenuHighFilterQualitySwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Highlighted Menu Keys"
+                                    FontFamily="Underwood" TextColor="Black"
+                                    FontSize="15"
+                                    VerticalOptions="Center" 
+                                    HorizontalOptions="Start" />
+                                <Switch Grid.Column="1" x:Name="MenuHighlightedKeysSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Show Dice as Ranges"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"

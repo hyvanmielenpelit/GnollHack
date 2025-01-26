@@ -209,6 +209,8 @@ namespace GnollHackX.Pages.MainScreen
                     l.TextColor = darkmode ? GHColors.White : GHColors.Black;
                 else if (darkmode ? l.TextColor == GHColors.Green : l.TextColor == GHColors.LightGreen)
                     l.TextColor = darkmode ? GHColors.LightGreen : GHColors.Green;
+                else if (darkmode ? l.TextColor == GHColors.Blue : l.TextColor == GHColors.LightBlue)
+                    l.TextColor = darkmode ? GHColors.LightBlue : GHColors.Blue;
             }
 #if GNH_MAUI
             else if (view is Microsoft.Maui.Controls.Entry)
@@ -399,22 +401,28 @@ namespace GnollHackX.Pages.MainScreen
             else
                 Preferences.Set("DiceAsRanges", DiceAsRangesSwitch.IsToggled);
 
-            if (RightMousePicker.SelectedIndex > -1 && RightMousePicker.SelectedItem != null && RightMousePicker.SelectedItem is MouseCommandItem)
+            if(RightMouseButtonGrid.IsVisible)
             {
-                GHApp.MirroredRightMouseCommand = ((MouseCommandItem)RightMousePicker.SelectedItem).Value;
-                if (_gamePage != null)  /* During game only doubles as the option; outside of game sets the default */
-                    _gamePage.SetRightMouseCommand(((MouseCommandItem)RightMousePicker.SelectedItem).Value);
-                else
-                    Preferences.Set("RightMouseCommand", ((MouseCommandItem)RightMousePicker.SelectedItem).Value);
+                if (RightMousePicker.SelectedIndex > -1 && RightMousePicker.SelectedItem != null && RightMousePicker.SelectedItem is MouseCommandItem)
+                {
+                    GHApp.MirroredRightMouseCommand = ((MouseCommandItem)RightMousePicker.SelectedItem).Value;
+                    if (_gamePage != null)  /* During game only doubles as the option; outside of game sets the default */
+                        _gamePage.SetRightMouseCommand(((MouseCommandItem)RightMousePicker.SelectedItem).Value);
+                    else
+                        Preferences.Set("RightMouseCommand", ((MouseCommandItem)RightMousePicker.SelectedItem).Value);
+                }
             }
 
-            if (MiddleMousePicker.SelectedIndex > -1 && MiddleMousePicker.SelectedItem != null && MiddleMousePicker.SelectedItem is MouseCommandItem)
+            if (MiddleMouseButtonGrid.IsVisible)
             {
-                GHApp.MirroredMiddleMouseCommand = ((MouseCommandItem)MiddleMousePicker.SelectedItem).Value;
-                if (_gamePage != null)  /* During game only doubles as the option; outside of game sets the default */
-                    _gamePage.SetMiddleMouseCommand(((MouseCommandItem)MiddleMousePicker.SelectedItem).Value);
-                else
-                    Preferences.Set("MiddleMouseCommand", ((MouseCommandItem)MiddleMousePicker.SelectedItem).Value);
+                if (MiddleMousePicker.SelectedIndex > -1 && MiddleMousePicker.SelectedItem != null && MiddleMousePicker.SelectedItem is MouseCommandItem)
+                {
+                    GHApp.MirroredMiddleMouseCommand = ((MouseCommandItem)MiddleMousePicker.SelectedItem).Value;
+                    if (_gamePage != null)  /* During game only doubles as the option; outside of game sets the default */
+                        _gamePage.SetMiddleMouseCommand(((MouseCommandItem)MiddleMousePicker.SelectedItem).Value);
+                    else
+                        Preferences.Set("MiddleMouseCommand", ((MouseCommandItem)MiddleMousePicker.SelectedItem).Value);
+                }
             }
 
             GHApp.OkOnDoubleClick = DoubleClickSwitch.IsToggled;
@@ -492,6 +500,10 @@ namespace GnollHackX.Pages.MainScreen
             if (_gamePage != null)
                 _gamePage.MenuHighFilterQuality = MenuHighFilterQualitySwitch.IsToggled;
             Preferences.Set("MenuHighFilterQuality", MenuHighFilterQualitySwitch.IsToggled);
+
+            if (_gamePage != null)
+                _gamePage.MenuHighlightedKeys = MenuHighlightedKeysSwitch.IsToggled;
+            Preferences.Set("MenuHighlightedKeys", MenuHighlightedKeysSwitch.IsToggled);
 
             if (_gamePage != null)
                 _gamePage.ShowScore = ShowScoreSwitch.IsToggled;
@@ -829,7 +841,7 @@ namespace GnollHackX.Pages.MainScreen
             bool mem = false, fps = false, zoom = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, disableauxgpu = false, mipmap = false, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, darkmode = false, windowedmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, allowpet = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
-            bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
+            bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, menuhighlightedkeys = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false, diceasranges = true;
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false;
             bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false;
@@ -930,6 +942,7 @@ namespace GnollHackX.Pages.MainScreen
                 desktopbuttons = Preferences.Get("DesktopButtons", GHApp.IsDesktop);
                 menufadeeffects = Preferences.Get("MenuFadeEffects", GHConstants.AreMenuFadeEffectsDefault);
                 menuhighfilterquality = Preferences.Get("MenuHighFilterQuality", GHApp.IsMenuHighFilterQualityDefault);
+                menuhighlightedkeys = Preferences.Get("MenuHighlightedKeys", GHApp.IsMenuHighlightedKeysDefault);
                 showscore = Preferences.Get("ShowScore", GHApp.IsDesktop);
                 showxp = Preferences.Get("ShowXP", GHApp.IsDesktop);
                 rightaligned2ndrow = Preferences.Get("RightAligned2ndRow", false);
@@ -981,6 +994,7 @@ namespace GnollHackX.Pages.MainScreen
                 desktopbuttons = _gamePage.DesktopButtons;
                 menufadeeffects = _gamePage.MenuFadeEffects;
                 menuhighfilterquality = _gamePage.MenuHighFilterQuality;
+                menuhighlightedkeys = _gamePage.MenuHighlightedKeys;
                 showscore = _gamePage.ShowScore;
                 showxp = _gamePage.ShowXP;
                 rightaligned2ndrow = _gamePage.RightAligned2ndRow;
@@ -1056,6 +1070,7 @@ namespace GnollHackX.Pages.MainScreen
                 MenuFadeEffectsSwitch.IsToggled = menufadeeffects;
             }
             MenuHighFilterQualitySwitch.IsToggled = menuhighfilterquality;
+            MenuHighlightedKeysSwitch.IsToggled = menuhighlightedkeys;
             PetSwitch.IsToggled = pets;
             OrbSwitch.IsToggled = orbs;
             MaxHealthInOrbSwitch.IsToggled = orbmaxhp;
@@ -1204,6 +1219,12 @@ namespace GnollHackX.Pages.MainScreen
                         }
                     }
                 }
+            }
+
+            if(!GHApp.IsWindows)
+            {
+                RightMouseButtonGrid.IsVisible = false;
+                MiddleMouseButtonGrid.IsVisible = false;
             }
 
             PostGameStatusSwitch.IsToggled = postgamestatus;

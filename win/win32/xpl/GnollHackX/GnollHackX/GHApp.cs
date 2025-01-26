@@ -846,6 +846,14 @@ namespace GnollHackX
             }
         }
 
+        public static bool IsMenuHighlightedKeysDefault
+        {
+            get
+            {
+                return IsDesktop;
+            }
+        }
+
         private static bool HasUnstableGPU()
         {
             if (IsiOS)
