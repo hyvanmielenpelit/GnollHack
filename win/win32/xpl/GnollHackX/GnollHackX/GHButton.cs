@@ -13,7 +13,7 @@ namespace GnollHackM
 namespace GnollHackX
 #endif
 {
-    public class GHButton : Button
+    public class GHButton : NoTabStopButton
     {
         public int GHCommand 
         { 
