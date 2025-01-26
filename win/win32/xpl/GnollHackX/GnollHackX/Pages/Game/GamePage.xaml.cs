@@ -19050,10 +19050,10 @@ namespace GnollHackX.Pages.Game
                 CommandCanvas_Pressed(null, null);
                 handled = true;
             }
-            else if (MoreCommandsGrid.IsVisible && (key == GHSpecialKey.Left || key == GHSpecialKey.Right))
+            else if (MoreCommandsGrid.IsVisible && (key == GHSpecialKey.Left || key == GHSpecialKey.Right || key == GHSpecialKey.PageUp || key == GHSpecialKey.PageDown || key == GHSpecialKey.Home || key == GHSpecialKey.End))
             {
                 int cmdPage = MoreCmdPage;
-                if (key == GHSpecialKey.Left)
+                if (key == GHSpecialKey.Left || key == GHSpecialKey.PageUp)
                 {
                     if (cmdPage > (EnableWizardMode ? 0 : 1))
                     {
@@ -19064,7 +19064,7 @@ namespace GnollHackX.Pages.Game
                     }
                     handled = true;
                 }
-                else if (key == GHSpecialKey.Right)
+                else if (key == GHSpecialKey.Right || key == GHSpecialKey.PageDown)
                 {
                     if (cmdPage < CurrentMoreButtonPageMaxNumber - 1)
                     {
@@ -19075,8 +19075,30 @@ namespace GnollHackX.Pages.Game
                     }
                     handled = true;
                 }
+                else if (key == GHSpecialKey.Home)
+                {
+                    if (cmdPage > (EnableWizardMode ? 0 : 1))
+                    {
+                        MoreCmdPage = 1;
+                        MoreCmdOffsetX = 0;
+                        CommandCanvas.InvalidateSurface();
+                        UpdateMoreNextPrevButtonVisibility(true, true);
+                    }
+                    handled = true;
+                }
+                else if (key == GHSpecialKey.End)
+                {
+                    if (cmdPage < CurrentMoreButtonPageMaxNumber - 1)
+                    {
+                        MoreCmdPage = CurrentMoreButtonPageMaxNumber - 1;
+                        MoreCmdOffsetX = 0;
+                        CommandCanvas.InvalidateSurface();
+                        UpdateMoreNextPrevButtonVisibility(true, true);
+                    }
+                    handled = true;
+                }
             }
-            else if (TextGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space || key == GHSpecialKey.Up || key == GHSpecialKey.Down))
+            else if (TextGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space || key == GHSpecialKey.Up || key == GHSpecialKey.Down || key == GHSpecialKey.PageUp || key == GHSpecialKey.PageDown || key == GHSpecialKey.Home || key == GHSpecialKey.End))
             {
                 if ((key == GHSpecialKey.Enter || TextGrid.IsVisible && key == GHSpecialKey.Escape) && !PlayingReplay)
                     TextCanvas_Pressed(null, null);
@@ -19084,11 +19106,19 @@ namespace GnollHackX.Pages.Game
                     ScrollTextWindow(120);
                 else if (key == GHSpecialKey.Down)
                     ScrollTextWindow(-120);
+                else if (key == GHSpecialKey.PageUp)
+                    ScrollTextWindow(1200);
+                else if (key == GHSpecialKey.PageDown)
+                    ScrollTextWindow(-1200);
+                else if (key == GHSpecialKey.Home)
+                    ScrollTextWindow(1200000);
+                else if (key == GHSpecialKey.End)
+                    ScrollTextWindow(-1200000);
                 else if (key == GHSpecialKey.Space)
                     ScrollTextWindow(-1200);
                 handled = true;
             }
-            else if (MenuGrid.IsVisible && !MenuCountGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Up || key == GHSpecialKey.Down || key == GHSpecialKey.Space))
+            else if (MenuGrid.IsVisible && !MenuCountGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Up || key == GHSpecialKey.Down || key == GHSpecialKey.Space || key == GHSpecialKey.PageUp || key == GHSpecialKey.PageDown || key == GHSpecialKey.Home || key == GHSpecialKey.End))
             {
                 if (MenuCancelButton.IsEnabled && key == GHSpecialKey.Escape && !PlayingReplay)
                     MenuCancelButton_Clicked(null, null);
@@ -19098,6 +19128,14 @@ namespace GnollHackX.Pages.Game
                     ScrollMenu(120);
                 else if (key == GHSpecialKey.Down)
                     ScrollMenu(-120);
+                else if (key == GHSpecialKey.PageUp)
+                    ScrollMenu(1200);
+                else if (key == GHSpecialKey.PageDown)
+                    ScrollMenu(-1200);
+                else if (key == GHSpecialKey.Home)
+                    ScrollMenu(1200000);
+                else if (key == GHSpecialKey.End)
+                    ScrollMenu(-1200000);
                 else if (key == GHSpecialKey.Space)
                     ScrollMenu(-1200);
                 handled = true;
@@ -19202,6 +19240,14 @@ namespace GnollHackX.Pages.Game
                         ScrollMessages(120);
                     else if (key == GHSpecialKey.Down)
                         ScrollMessages(-120);
+                    else if (key == GHSpecialKey.PageUp)
+                        ScrollMessages(1200);
+                    else if (key == GHSpecialKey.PageDown)
+                        ScrollMessages(-1200);
+                    else if (key == GHSpecialKey.Home)
+                        ScrollMessages(1200000);
+                    else if (key == GHSpecialKey.End)
+                        ScrollMessages(-1200000);
                     else if (key == GHSpecialKey.Space)
                         ScrollMessages(1200);
                     handled = true;
@@ -19404,6 +19450,18 @@ namespace GnollHackX.Pages.Game
                         break;
                     case VirtualKey.Down:
                         spkey = GHSpecialKey.Down;
+                        break;
+                    case VirtualKey.PageUp:
+                        spkey = GHSpecialKey.PageUp;
+                        break;
+                    case VirtualKey.PageDown:
+                        spkey = GHSpecialKey.PageDown;
+                        break;
+                    case VirtualKey.Home:
+                        spkey = GHSpecialKey.Home;
+                        break;
+                    case VirtualKey.End:
+                        spkey = GHSpecialKey.End;
                         break;
                     case VirtualKey.Escape:
                         spkey = GHSpecialKey.Escape;

@@ -69,6 +69,26 @@ namespace GnollHackX.iOS
                     GHApp.SendSpecialKeyPress(GHSpecialKey.Right, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
                     wasHandled = true;
                 }
+                else if (strcharsim == UIKeyCommand.PageUp)
+                {
+                    GHApp.SendSpecialKeyPress(GHSpecialKey.PageUp, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
+                    wasHandled = true;
+                }
+                else if (strcharsim == UIKeyCommand.PageDown)
+                {
+                    GHApp.SendSpecialKeyPress(GHSpecialKey.PageDown, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
+                    wasHandled = true;
+                }
+                else if (strcharsim == UIKeyCommand.Home)
+                {
+                    GHApp.SendSpecialKeyPress(GHSpecialKey.Home, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
+                    wasHandled = true;
+                }
+                else if (strcharsim == UIKeyCommand.End)
+                {
+                    GHApp.SendSpecialKeyPress(GHSpecialKey.End, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Shift) != 0);
+                    wasHandled = true;
+                }
                 else if (strcharsim == UIKeyCommand.Escape)
                 {
                     //GHApp.SendKeyPress(GHConstants.CancelChar, (evt.ModifierFlags & UIKeyModifierFlags.Control) != 0, (evt.ModifierFlags & UIKeyModifierFlags.Alternate) != 0);
