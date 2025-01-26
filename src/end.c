@@ -3769,8 +3769,8 @@ get_current_game_score(VOID_ARGS)
     double Turn_Count_Multiplier = sqrt(50000.0) / sqrt((double)max(1L, moves));
     double Ascension_Multiplier = u.uachieve.ascended ? min(16.0, max(2.0, 4.0 * Turn_Count_Multiplier)) : 1.0;
     double Difficulty_Multiplier = pow(10.0, 0.5 * (double)context.game_difficulty);
-    double mortexp = (double)(u.utruemortality > 4 ? 5 : u.utruemortality + 1);
-    double mortmult = (double)(u.utruemortality > 4 ? u.utruemortality - 3 : 1);
+    double mortexp = (double)(u.utruemortality > 2 ? 3 : u.utruemortality + 1);
+    double mortmult = (double)(u.utruemortality > 2 ? u.utruemortality - 1 : 1);
     double Modern_Multiplier = ModernMode ? 1.0 / (pow(3, mortexp) * mortmult) : 1.0;
 
     utotal = (int64_t)(round((double)Base_Score * Ascension_Multiplier * Difficulty_Multiplier * Modern_Multiplier));
