@@ -896,18 +896,10 @@ DLLEXPORT int RunGnollHack(
 
     /* The following does the same as the default options file, but accessible easier from the GUI settings */
     memset(&initial_flags, 0, sizeof(initial_flags));
-    if (runflags & GHRUNFLAGS_CHARACTER_CLICK_ACTION)
-    {
-        initial_flags.click_action_set = TRUE;
-        initial_flags.click_action_value = TRUE;
-    }
-
-    if (runflags & GHRUNFLAGS_DICE_AS_RANGES)
-    {
-        initial_flags.dice_as_ranges_set = TRUE;
-        initial_flags.dice_as_ranges_value = TRUE;
-    }
-
+    initial_flags.click_action_set = TRUE;
+    initial_flags.click_action_value = (runflags & GHRUNFLAGS_CHARACTER_CLICK_ACTION) != 0;
+    initial_flags.dice_as_ranges_set = TRUE;
+    initial_flags.dice_as_ranges_value = (runflags & GHRUNFLAGS_DICE_AS_RANGES) != 0;
     initial_flags.right_click_action = (uchar)((runflags & GHRUNFLAGS_RIGHT_MOUSE_BIT_MASK) >> GHRUNFLAGS_RIGHT_MOUSE_BIT_INDEX);
     initial_flags.middle_click_action = (uchar)((runflags & GHRUNFLAGS_MIDDLE_MOUSE_BIT_MASK) >> GHRUNFLAGS_MIDDLE_MOUSE_BIT_INDEX);
     initial_flags.found_manuals = foundmanuals;

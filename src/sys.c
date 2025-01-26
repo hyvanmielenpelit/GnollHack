@@ -313,15 +313,10 @@ reset_global_variables(VOID_ARGS)
     }
 
     /* Set initial flags */
-    if (initial_flags.click_action_set)
-        flags.self_click_action = initial_flags.click_action_value;
-
-    if (initial_flags.dice_as_ranges_set)
-        iflags.show_dice_as_ranges = initial_flags.dice_as_ranges_value;
-
     flags.right_click_command = initial_flags.right_click_action;
     flags.middle_click_command = initial_flags.middle_click_action;
     iflags.found_manuals = initial_flags.found_manuals;
+    /* The rest (overriding booleans) are set in init_options */
 }
 
 void

@@ -226,32 +226,32 @@ namespace GnollHackX
     [Flags]
     public enum RunGnollHackFlags: ulong
     {
-        None =                  0x00000000,
-        SetWinCaps =            0x00000001,
-        WizardMode =            0x00000002,
-        FullVersion =           0x00000004,
-        ModernMode =            0x00000008, /* Upon death, the character teleports back to starting altar */
-        CasualMode =            0x00000010, /* Save games are preserved */
-        DisableBones =          0x00000020, /* Force flags.bones to off */
-        ForceLastPlayerName =   0x00000040, /* Use LastUsedPlayerName as preset player name */
-        PlayingReplay =         0x00000080, /* Game is a replay */
-        TournamentMode =        0x00000100, /* Playing with server-like settings */
-        GUIDebugMode =          0x00000200, /* GUI has been built in debug mode (not a release mode game?) */
-        CharacterClickAction =  0x00000400, /* Set character-click action to true by default */
-        NoPet =                 0x00000800, /* Same as pettype:none in options file */
-        DiceAsRanges =          0x00001000, /* Set show_dice_as_ranges to true by default */
+        None =                  0x00000000UL,
+        SetWinCaps =            0x00000001UL,
+        WizardMode =            0x00000002UL,
+        FullVersion =           0x00000004UL,
+        ModernMode =            0x00000008UL, /* Upon death, the character teleports back to starting altar */
+        CasualMode =            0x00000010UL, /* Save games are preserved */
+        DisableBones =          0x00000020UL, /* Force flags.bones to off */
+        ForceLastPlayerName =   0x00000040UL, /* Use LastUsedPlayerName as preset player name */
+        PlayingReplay =         0x00000080UL, /* Game is a replay */
+        TournamentMode =        0x00000100UL, /* Playing with server-like settings */
+        GUIDebugMode =          0x00000200UL, /* GUI has been built in debug mode (not a release mode game?) */
+        CharacterClickAction =  0x00000400UL, /* Set character-click action to true by default */
+        NoPet =                 0x00000800UL, /* Same as pettype:none in options file */
+        DiceAsRanges =          0x00001000UL, /* Set show_dice_as_ranges to true by default */
 
-        RightMouseButtonBit1 =  0x00400000, 
-        RightMouseButtonBit2 =  0x00800000, 
-        RightMouseButtonBit3 =  0x01000000, 
-        RightMouseButtonBit4 =  0x02000000,
-        RightMouseButtonBit5 =  0x04000000,
+        RightMouseButtonBit1 =  0x00400000UL, 
+        RightMouseButtonBit2 =  0x00800000UL, 
+        RightMouseButtonBit3 =  0x01000000UL, 
+        RightMouseButtonBit4 =  0x02000000UL,
+        RightMouseButtonBit5 =  0x04000000UL,
 
-        MiddleMouseButtonBit1 = 0x08000000,
-        MiddleMouseButtonBit2 = 0x10000000, 
-        MiddleMouseButtonBit3 = 0x20000000, 
-        MiddleMouseButtonBit4 = 0x40000000, 
-        MiddleMouseButtonBit5 = 0x80000000, 
+        MiddleMouseButtonBit1 = 0x08000000UL,
+        MiddleMouseButtonBit2 = 0x10000000UL, 
+        MiddleMouseButtonBit3 = 0x20000000UL, 
+        MiddleMouseButtonBit4 = 0x40000000UL, 
+        MiddleMouseButtonBit5 = 0x80000000UL, 
     }
 
     [Flags]

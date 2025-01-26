@@ -972,6 +972,12 @@ init_options()
     flags.max_hint_difficulty = DEFAULT_MAX_HINT_DIFFICULTY;
     iflags.run_spot_distance = DEFAULT_RUN_SPOT_DISTANCE;
 
+    if (initial_flags.click_action_set)
+        flags.self_click_action = initial_flags.click_action_value;
+
+    if (initial_flags.dice_as_ranges_set)
+        iflags.show_dice_as_ranges = initial_flags.dice_as_ranges_value;
+
     /* since this is done before init_objects(), do partial init here */
     objects[SLIME_MOLD].oc_name_idx = SLIME_MOLD;
     nmcpy(pl_fruit, OBJ_NAME(objects[SLIME_MOLD]), PL_FSIZ);
