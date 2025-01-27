@@ -35,6 +35,7 @@ namespace GnollHackX.Pages.MainScreen
             if (GHApp.DarkMode)
             {
                 lblHeader.TextColor = GHColors.White;
+                lblSubtitle.TextColor = GHColors.White;
                 EmptyLabel.TextColor = GHColors.White;
             }
         }
