@@ -2727,7 +2727,7 @@ int show_weights;
     }
     else if (reportempty)
     {
-        pline("Your %s is empty.", upstart(chest_name));
+        pline("Your %s is empty.", chest_name);
         display_nhwindow(WIN_MESSAGE, FALSE);
     }
 }
