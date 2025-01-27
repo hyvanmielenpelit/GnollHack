@@ -29,6 +29,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using GnollHackM.Platforms.Windows;
 #endif
 
@@ -82,6 +83,32 @@ namespace GnollHackX
             tournamentModeGrid.HeightRequest = 40;
 #endif
 #if GNH_MAUI
+#if WINDOWS
+            classicModeSwitch.HandlerChanged += (s, e) =>
+            {
+                var pv = classicModeSwitch.Handler?.PlatformView as ToggleSwitch;
+                if (pv != null)
+                {
+                    pv.IsTabStop = false;
+                }
+            };
+            casualModeSwitch.HandlerChanged += (s, e) =>
+            {
+                var pv = casualModeSwitch.Handler?.PlatformView as ToggleSwitch;
+                if (pv != null)
+                {
+                    pv.IsTabStop = false;
+                }
+            };
+            wizardModeSwitch.HandlerChanged += (s, e) =>
+            {
+                var pv = wizardModeSwitch.Handler?.PlatformView as ToggleSwitch;
+                if (pv != null)
+                {
+                    pv.IsTabStop = false;
+                }
+            };
+#endif
             Shell.SetNavBarIsVisible(this, false);
             _generalTimer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
             _generalTimer.Interval = TimeSpan.FromSeconds(GHConstants.MainScreenGeneralCounterIntervalInSeconds);
