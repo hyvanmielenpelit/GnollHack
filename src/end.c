@@ -964,6 +964,7 @@ time_t when; /* date+time at end of game */
     putstr(0, ATR_HEADING, "Inventory:");
     (void) display_inventory((char *) 0, TRUE, 0);
     container_contents(invent, how != SNAPSHOT, TRUE, FALSE, 0);
+    magic_chest_contents(how != SNAPSHOT, TRUE, FALSE, 0);
     enlightenment(how == SNAPSHOT ? BASICENLIGHTENMENT : (BASICENLIGHTENMENT | MAGICENLIGHTENMENT),
                   how == SNAPSHOT ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
     putstr(NHW_DUMPTXT, 0, "");
@@ -1092,6 +1093,7 @@ boolean taken;
             /* caller has already ID'd everything */
             (void) display_inventory((char *) 0, FALSE, 0);
             container_contents(invent, TRUE, TRUE, FALSE, 0);
+            magic_chest_contents(TRUE, TRUE, FALSE, 0);
         }
         if (c == 'q')
             done_stopprint++;
@@ -2640,6 +2642,96 @@ int show_weights;
             break;
     }
 }
+
+void
+magic_chest_contents(identified, all_containers, reportempty, show_weights)
+boolean identified, all_containers, reportempty;
+int show_weights;
+{
+    register struct obj* obj;
+    char buf[BUFSZ];
+    boolean dumping = iflags.in_dumplog;
+    int count = 0;
+    int totalweight = 0;
+    boolean loadstonecorrectly = FALSE;
+    const char* chest_name = objects[MAGIC_CHEST].oc_name_known || identified ? OBJ_NAME(objects[MAGIC_CHEST]) : OBJ_DESCR(objects[MAGIC_CHEST]);
+
+    if (show_weights == 1) // Inventory
+        loadstonecorrectly = TRUE;
+    else if (show_weights == 2)
+    { // Pick up
+        loadstonecorrectly = (boolean)objects[LOADSTONE].oc_name_known;
+    }
+    else if (show_weights == 3) // Drop
+        loadstonecorrectly = TRUE;
+
+    if (magic_objs)
+    {
+        winid tmpwin = create_nhwindow(NHW_MENU);
+        Loot* sortedcobj, * srtc;
+        unsigned sortflags;
+
+        count = 0;
+
+        Sprintf(buf, "Contents of your %s:", chest_name);
+        putstr(tmpwin, ATR_TITLE, buf);
+        if (!dumping)
+            putstr(tmpwin, ATR_HALF_SIZE, " ");
+        buf[0] = buf[1] = ' '; /* two leading spaces */
+        if (magic_objs)
+        {
+            sortflags = (((flags.sortloot == 'l'
+                || flags.sortloot == 'f')
+                ? SORTLOOT_LOOT : 0)
+                | (flags.sortpack ? SORTLOOT_PACK : 0));
+            sortedcobj = sortloot(&magic_objs, sortflags, FALSE,
+                (boolean FDECL((*), (OBJ_P))) 0);
+            totalweight = 0;
+            for (srtc = sortedcobj; ((obj = srtc->obj) != 0); ++srtc)
+            {
+                if (identified)
+                {
+                    discover_object(obj->otyp, TRUE, FALSE);
+                    obj->known = obj->bknown = obj->dknown
+                        = obj->rknown = obj->nknown = obj->aknown = obj->mknown = 1;
+                    if (Is_container(obj) || obj->otyp == STATUE)
+                        obj->cknown = obj->lknown = obj->tknown = 1;
+                }
+                count++;
+
+                /* total sum here */
+                if (obj->otyp == LOADSTONE && !loadstonecorrectly)
+                    totalweight += objects[LUCKSTONE].oc_weight;
+                else
+                    totalweight += obj->owt;
+
+                Sprintf(&buf[2], "%2d - %s", count, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_price_and_weight_last(obj, loadstonecorrectly) : doname_with_price_and_weight_first(obj, loadstonecorrectly)) : doname_with_price(obj));
+                //Strcpy(&buf[2], doname_with_price_and_weight_first(obj));
+                putstr(tmpwin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+            }
+            if (flags.show_weight_summary)
+            {
+                if (flags.inventory_weights_last)
+                    putstr(tmpwin, ATR_HALF_SIZE, " ");
+                add_weight_summary_putstr(tmpwin, totalweight, show_weights);
+            }
+
+            unsortloot(&sortedcobj);
+        }
+        if (dumping)
+            putstr(0, ATR_HALF_SIZE, " ");
+        display_nhwindow(tmpwin, TRUE);
+        destroy_nhwindow(tmpwin);
+        if (all_containers)
+            container_contents(magic_objs, identified, TRUE, reportempty, show_weights);
+    }
+    else if (reportempty)
+    {
+        pline("Your %s is empty.", upstart(chest_name));
+        display_nhwindow(WIN_MESSAGE, FALSE);
+    }
+}
+
 
 /* should be called with either EXIT_SUCCESS or EXIT_FAILURE */
 /* called between displaying gamewindows and before newgame / restore, after getlock doclearlocks must be set to TRUE */

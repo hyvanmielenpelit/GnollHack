@@ -1099,8 +1099,8 @@ E void FDECL(done_in_by, (struct monst *, int));
 E void VDECL(panic, (const char *, ...)) PRINTF_F(1, 2) NORETURN;
 #if !defined(MAKEDEFS_C) && !defined(LEV_LEX_C)
 E void FDECL(done, (int));
-E void FDECL(container_contents, (struct obj *, BOOLEAN_P,
-                                  BOOLEAN_P, BOOLEAN_P, int));
+E void FDECL(container_contents, (struct obj *, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, int));
+E void FDECL(magic_chest_contents, (BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, int));
 #ifdef VMS
 E void FDECL(nh_terminate, (int));
 E void FDECL(nh_bail, (int, const char*, BOOLEAN_P));
