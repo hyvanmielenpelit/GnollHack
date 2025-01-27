@@ -9316,7 +9316,7 @@ const char *fltxt;
             if (origmonst == &youmonst)
                 Sprintf(hisbuf, "%s own", uhis());
             else
-                Sprintf(hisbuf, "%s's", an(mon_monster_name(origmonst)));
+                Sprintf(hisbuf, "%s's", mon_monster_name(origmonst));
 
             if (origobj)
             {
