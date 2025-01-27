@@ -41,7 +41,15 @@ public partial class App : Application
             handler.PlatformView.BorderThickness = new Microsoft.UI.Xaml.Thickness(0);
         });
 #endif
-
+#if ANDROID
+        Microsoft.Maui.Handlers.ButtonHandler.Mapper.AppendToMapping("NoRippleEffect", (handler, view) =>
+        {
+            if (handler.PlatformView.Background is Android.Graphics.Drawables.RippleDrawable ripple )
+            {
+                ripple.SetColor(Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent));
+            };
+        });
+#endif
         GHApp.Initialize();
         //MainPage = new AppShell();
     }
