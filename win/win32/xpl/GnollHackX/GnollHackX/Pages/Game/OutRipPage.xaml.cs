@@ -63,6 +63,7 @@ namespace GnollHackX.Pages.Game
                 OutRipGrid.IsEnabled = false;
                 await GHApp.Navigation.PopModalAsync();
                 _gamePage.GenericButton_Clicked(sender, e, GHConstants.CancelChar);
+                GHApp.DisconnectIViewHandlers(this);
             }
         }
 

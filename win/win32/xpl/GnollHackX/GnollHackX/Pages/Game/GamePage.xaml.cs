@@ -3741,6 +3741,7 @@ namespace GnollHackX.Pages.Game
             GHApp.CurrentGamePage = null;
             await GHApp.Navigation.PopModalAsync();
             _mainPage.StartGeneralTimer(); /* Just to be doubly sure */
+            GHApp.DisconnectIViewHandlers(this);
         }
 
         private readonly object _menuDrawOnlyLock = new object();
@@ -4165,11 +4166,13 @@ namespace GnollHackX.Pages.Game
         }
         private async void HideOutRipPage()
         {
-            await GHApp.Navigation.PopModalAsync();
+            var page = await GHApp.Navigation.PopModalAsync();
+            GHApp.DisconnectIViewHandlers(page);
         }
         private async void HideAskNamePage()
         {
-            await GHApp.Navigation.PopModalAsync();
+            var page = await GHApp.Navigation.PopModalAsync();
+            GHApp.DisconnectIViewHandlers(page);
         }
 
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)

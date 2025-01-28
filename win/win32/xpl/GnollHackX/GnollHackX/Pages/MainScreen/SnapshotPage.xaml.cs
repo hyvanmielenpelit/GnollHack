@@ -181,6 +181,7 @@ namespace GnollHackX.Pages.MainScreen
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             await GHApp.Navigation.PopModalAsync();
+            GHApp.DisconnectIViewHandlers(this);
         }
 
         private double _currentPageWidth = 0;
@@ -206,6 +207,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 _backPressed = true;
                 await GHApp.Navigation.PopModalAsync();
+                GHApp.DisconnectIViewHandlers(this);
             }
             return false;
         }

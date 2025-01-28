@@ -113,9 +113,14 @@ namespace GnollHackX.Pages.Game
             {
                 await _gamePage.Navigation.PopModalAsync();
                 queue.Enqueue(new GHResponse(_currentGame, GHRequestType.AskName, usedName));
+                GHApp.DisconnectIViewHandlers(this);
             }
-            btnOK.IsEnabled = true;
-            btnCancel.IsEnabled = true;
+            else
+            {
+                btnOK.IsEnabled = true;
+                btnCancel.IsEnabled = true;
+
+            }
         }
 
         private void ReplayDoEnterName()
@@ -202,9 +207,13 @@ namespace GnollHackX.Pages.Game
             {
                 await _gamePage.Navigation.PopModalAsync();
                 queue.Enqueue(new GHResponse(_currentGame, GHRequestType.AskName, ""));
+                GHApp.DisconnectIViewHandlers(this);
             }
-            btnOK.IsEnabled = true;
-            btnCancel.IsEnabled = true;
+            else
+            {
+                btnOK.IsEnabled = true;
+                btnCancel.IsEnabled = true;
+            }
         }
 
         private void eName_Completed(object sender, EventArgs e)

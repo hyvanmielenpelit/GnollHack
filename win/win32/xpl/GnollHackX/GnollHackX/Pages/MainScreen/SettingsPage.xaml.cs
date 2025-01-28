@@ -1580,6 +1580,7 @@ namespace GnollHackX.Pages.MainScreen
             await SetSettingValues();
             GHApp.CurrentMainPage?.InvalidateCarousel();
             await GHApp.Navigation.PopModalAsync();
+            GHApp.DisconnectIViewHandlers(this);
         }
 
 
@@ -1726,6 +1727,7 @@ namespace GnollHackX.Pages.MainScreen
                 await SetSettingValues();
                 GHApp.CurrentMainPage?.InvalidateCarousel();
                 await GHApp.Navigation.PopModalAsync();
+                GHApp.DisconnectIViewHandlers(this);
             }
             return false;
         }

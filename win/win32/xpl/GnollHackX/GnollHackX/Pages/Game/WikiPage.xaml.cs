@@ -123,6 +123,7 @@ namespace GnollHackX.Pages.Game
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             await GHApp.Navigation.PopModalAsync();
+            GHApp.DisconnectIViewHandlers(this);
         }
 
         private void BackButton_Clicked(object sender, EventArgs e)

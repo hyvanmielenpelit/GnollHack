@@ -84,6 +84,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             await GHApp.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta('s'));
+            GHApp.DisconnectIViewHandlers(this);
         }
 
         private async void btnQuit_Clicked(object sender, EventArgs e)
@@ -92,6 +93,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             await GHApp.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, _gamePage.GameEnded ? 'q' : GHUtils.Meta('q'));
+            GHApp.DisconnectIViewHandlers(this);
         }
 
         private async void btnBackToGame_Clicked(object sender, EventArgs e)
@@ -99,6 +101,7 @@ namespace GnollHackX.Pages.Game
             MainLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             await GHApp.Navigation.PopModalAsync();
+            GHApp.DisconnectIViewHandlers(this);
         }
 
         private async void btnOptions_Clicked(object sender, EventArgs e)
@@ -108,6 +111,7 @@ namespace GnollHackX.Pages.Game
             GHApp.DebugWriteRestart("ProfilingStopwatch.Restart: Options");
             await GHApp.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, 'O');
+            GHApp.DisconnectIViewHandlers(this);
         }
 
         private async void btnSnapshot_Clicked(object sender, EventArgs e)
@@ -116,6 +120,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             await GHApp.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta(28));
+            GHApp.DisconnectIViewHandlers(this);
         }
 
         private async void btnSettings_Clicked(object sender, EventArgs e)
@@ -157,6 +162,7 @@ namespace GnollHackX.Pages.Game
                 _backPressed = true;
                 MainLayout.IsEnabled = false;
                 await GHApp.Navigation.PopModalAsync();
+                GHApp.DisconnectIViewHandlers(this);
             }
             return false;
         }
@@ -189,6 +195,7 @@ namespace GnollHackX.Pages.Game
             if(_gamePage.ShownTip == -1)
                 _gamePage.ShowGUITips(false);
             await GHApp.Navigation.PopModalAsync();
+            GHApp.DisconnectIViewHandlers(this);
         }
 
         private double _currentPageWidth = 0;

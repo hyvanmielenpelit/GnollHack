@@ -45,6 +45,7 @@ namespace GnollHackX.Pages.MainScreen
             CloseButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             await GHApp.Navigation.PopModalAsync();
+            GHApp.DisconnectIViewHandlers(this);
         }
 
         Dictionary<int, StoredManual> _manuals = new Dictionary<int, StoredManual>();
@@ -140,6 +141,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 _backPressed = true;
                 await GHApp.Navigation.PopModalAsync();
+                GHApp.DisconnectIViewHandlers(this);
             }
             return false;
         }

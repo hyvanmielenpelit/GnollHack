@@ -6930,6 +6930,17 @@ namespace GnollHackX
         {
             CurrentGamePage?.HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
         }
+#if GNH_MAUI
+        public static void DisconnectIViewHandlers(IView view)
+        {
+            view?.DisconnectHandlers();
+        }
+#else
+        public static void DisconnectIViewHandlers(Page view)
+        {
+            // Nothing
+        }
+#endif
     }
 
     public class DeviceGPU

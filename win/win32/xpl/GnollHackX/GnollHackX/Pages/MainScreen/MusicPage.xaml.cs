@@ -164,6 +164,7 @@ namespace GnollHackX.Pages.MainScreen
             await GHApp.Navigation.PopModalAsync();
             GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
             GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Music);
+            GHApp.DisconnectIViewHandlers(this);
         }
 
 
@@ -193,6 +194,7 @@ namespace GnollHackX.Pages.MainScreen
                 await GHApp.Navigation.PopModalAsync();
                 GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
                 GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Music);
+                GHApp.DisconnectIViewHandlers(this);
             }
             return false;
         }

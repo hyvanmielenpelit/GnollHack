@@ -144,6 +144,7 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.PlayButtonClickedSound();
             GHApp.CurrentMainPage?.InvalidateCarousel();
             await GHApp.Navigation.PopModalAsync();
+            GHApp.DisconnectIViewHandlers(this);
         }
 
         private bool _backPressed = false;
@@ -154,6 +155,7 @@ namespace GnollHackX.Pages.MainScreen
                 _backPressed = true;
                 GHApp.CurrentMainPage?.InvalidateCarousel();
                 await GHApp.Navigation.PopModalAsync();
+                GHApp.DisconnectIViewHandlers(this);
             }
             return false;
         }
