@@ -3,6 +3,7 @@ using Microsoft.Maui.LifecycleEvents;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using System.Runtime.Intrinsics.Arm;
 using GnollHackX;
+using SkiaSharp;
 
 #if ANDROID
 using AndroidX.Activity;
@@ -29,7 +30,6 @@ using Sentry.Profiling;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Windows.Graphics;
-using SkiaSharp;
 #endif
 #endif
 
