@@ -6934,7 +6934,9 @@ namespace GnollHackX
         /* Note: var page = await GHApp.Navigation.PopModalAsync(); GHApp.DisconnectIViewHandlers(page); is preferred to await GHApp.Navigation.PopModalAsync(); GHApp.DisconnectIViewHandlers(this); since this ensures that the program does not crash if the wrong page is accidentally popped  */
         public static void DisconnectIViewHandlers(IView view)
         {
+#if !WINDOWS
             view?.DisconnectHandlers();
+#endif
         }
 #else
         public static void DisconnectIViewHandlers(Page view)
