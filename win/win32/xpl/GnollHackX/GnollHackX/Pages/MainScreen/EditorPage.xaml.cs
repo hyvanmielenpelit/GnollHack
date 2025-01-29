@@ -87,8 +87,8 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     ErrorLabel.Text = "";
                     GHApp.CurrentMainPage?.InvalidateCarousel();
-                    await GHApp.Navigation.PopModalAsync();
-                    GHApp.DisconnectIViewHandlers(this);
+                    var page = await GHApp.Navigation.PopModalAsync();
+                    GHApp.DisconnectIViewHandlers(page);
                 }
                 else
                 {
@@ -99,8 +99,8 @@ namespace GnollHackX.Pages.MainScreen
             {
                 ErrorLabel.Text = "";
                 GHApp.CurrentMainPage?.InvalidateCarousel();
-                await GHApp.Navigation.PopModalAsync();
-                GHApp.DisconnectIViewHandlers(this);
+                var page = await GHApp.Navigation.PopModalAsync();
+                GHApp.DisconnectIViewHandlers(page);
             }
         }
 
@@ -115,8 +115,8 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     ErrorLabel.Text = "";
                     GHApp.CurrentMainPage?.InvalidateCarousel();
-                    await GHApp.Navigation.PopModalAsync();
-                    GHApp.DisconnectIViewHandlers(this);
+                    var page = await GHApp.Navigation.PopModalAsync();
+                    GHApp.DisconnectIViewHandlers(page);
                 }
                 else 
                 {
@@ -127,8 +127,8 @@ namespace GnollHackX.Pages.MainScreen
             {
                 ErrorLabel.Text = "";
                 GHApp.CurrentMainPage?.InvalidateCarousel();
-                await GHApp.Navigation.PopModalAsync();
-                GHApp.DisconnectIViewHandlers(this);
+                var page = await GHApp.Navigation.PopModalAsync();
+                GHApp.DisconnectIViewHandlers(page);
             }
         }
 
@@ -142,8 +142,8 @@ namespace GnollHackX.Pages.MainScreen
                 ErrorLabel.Text = "";
                 await GHApp.GnollHackService.ResetDefaultsFile();
                 GHApp.CurrentMainPage?.InvalidateCarousel();
-                await GHApp.Navigation.PopModalAsync();
-                GHApp.DisconnectIViewHandlers(this);
+                var page = await GHApp.Navigation.PopModalAsync();
+                GHApp.DisconnectIViewHandlers(page);
             }
             else
             {

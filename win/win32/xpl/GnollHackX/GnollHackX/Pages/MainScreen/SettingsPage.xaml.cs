@@ -1579,8 +1579,8 @@ namespace GnollHackX.Pages.MainScreen
             await MaybeShowPleaseWait();
             await SetSettingValues();
             GHApp.CurrentMainPage?.InvalidateCarousel();
-            await GHApp.Navigation.PopModalAsync();
-            GHApp.DisconnectIViewHandlers(this);
+            var page = await GHApp.Navigation.PopModalAsync();
+            GHApp.DisconnectIViewHandlers(page);
         }
 
 
@@ -1726,8 +1726,8 @@ namespace GnollHackX.Pages.MainScreen
                 await MaybeShowPleaseWait();
                 await SetSettingValues();
                 GHApp.CurrentMainPage?.InvalidateCarousel();
-                await GHApp.Navigation.PopModalAsync();
-                GHApp.DisconnectIViewHandlers(this);
+                var page = await GHApp.Navigation.PopModalAsync();
+                GHApp.DisconnectIViewHandlers(page);
             }
             return false;
         }

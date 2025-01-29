@@ -387,8 +387,8 @@ namespace GnollHackX.Pages.MainScreen
         {
             ImportExportGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            await GHApp.Navigation.PopModalAsync();
-            GHApp.DisconnectIViewHandlers(this);
+            var page = await GHApp.Navigation.PopModalAsync();
+            GHApp.DisconnectIViewHandlers(page);
         }
 
         private bool _backPressed = false;
@@ -398,8 +398,8 @@ namespace GnollHackX.Pages.MainScreen
             {
                 _backPressed = true;
                 ImportExportGrid.IsEnabled = false;
-                await GHApp.Navigation.PopModalAsync();
-                GHApp.DisconnectIViewHandlers(this);
+                var page = await GHApp.Navigation.PopModalAsync();
+                GHApp.DisconnectIViewHandlers(page);
             }
             return false;
         }

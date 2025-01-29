@@ -111,9 +111,9 @@ namespace GnollHackX.Pages.Game
             ConcurrentQueue<GHResponse> queue;
             if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
             {
-                await _gamePage.Navigation.PopModalAsync();
+                var page = await _gamePage.Navigation.PopModalAsync();
                 queue.Enqueue(new GHResponse(_currentGame, GHRequestType.AskName, usedName));
-                GHApp.DisconnectIViewHandlers(this);
+                GHApp.DisconnectIViewHandlers(page);
             }
             else
             {
@@ -205,9 +205,9 @@ namespace GnollHackX.Pages.Game
             ConcurrentQueue<GHResponse> queue;
             if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
             {
-                await _gamePage.Navigation.PopModalAsync();
+                var page = await _gamePage.Navigation.PopModalAsync();
                 queue.Enqueue(new GHResponse(_currentGame, GHRequestType.AskName, ""));
-                GHApp.DisconnectIViewHandlers(this);
+                GHApp.DisconnectIViewHandlers(page);
             }
             else
             {

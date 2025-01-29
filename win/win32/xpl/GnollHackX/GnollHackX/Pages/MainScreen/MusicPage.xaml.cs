@@ -161,10 +161,10 @@ namespace GnollHackX.Pages.MainScreen
             CloseButton.IsEnabled = false;
             GHApp.FmodService.StopAllSounds((uint)StopSoundFlags.All, 0);
             GHApp.PlayButtonClickedSound();
-            await GHApp.Navigation.PopModalAsync();
+            var page = await GHApp.Navigation.PopModalAsync();
             GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
             GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Music);
-            GHApp.DisconnectIViewHandlers(this);
+            GHApp.DisconnectIViewHandlers(page);
         }
 
 
@@ -191,10 +191,10 @@ namespace GnollHackX.Pages.MainScreen
             {
                 _backPressed = true;
                 GHApp.FmodService.StopAllSounds((uint)StopSoundFlags.All, 0);
-                await GHApp.Navigation.PopModalAsync();
+                var page = await GHApp.Navigation.PopModalAsync();
                 GHApp.FmodService.PlayMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
                 GHApp.FmodService.UnloadBanks(sound_bank_loading_type.Music);
-                GHApp.DisconnectIViewHandlers(this);
+                GHApp.DisconnectIViewHandlers(page);
             }
             return false;
         }

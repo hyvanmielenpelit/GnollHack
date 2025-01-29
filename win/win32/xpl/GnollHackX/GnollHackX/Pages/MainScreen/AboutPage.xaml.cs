@@ -142,8 +142,8 @@ namespace GnollHackX.Pages.MainScreen
             AboutGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             GHApp.CurrentMainPage?.InvalidateCarousel();
-            await GHApp.Navigation.PopModalAsync();
-            GHApp.DisconnectIViewHandlers(this);
+            var page = await GHApp.Navigation.PopModalAsync();
+            GHApp.DisconnectIViewHandlers(page);
         }
 
         private bool _backPressed = false;
@@ -154,8 +154,8 @@ namespace GnollHackX.Pages.MainScreen
                 _backPressed = true;
                 AboutGrid.IsEnabled = false;
                 GHApp.CurrentMainPage?.InvalidateCarousel();
-                await GHApp.Navigation.PopModalAsync();
-                GHApp.DisconnectIViewHandlers(this);
+                var page = await GHApp.Navigation.PopModalAsync();
+                GHApp.DisconnectIViewHandlers(page);
             }
             return false;
         }

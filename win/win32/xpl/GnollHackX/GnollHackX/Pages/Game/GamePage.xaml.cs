@@ -3739,9 +3739,9 @@ namespace GnollHackX.Pages.Game
             if (GHApp.GameMuteMode)
                 GHApp.GameMuteMode = false;
             GHApp.CurrentGamePage = null;
-            await GHApp.Navigation.PopModalAsync();
+            var page = await GHApp.Navigation.PopModalAsync();
             _mainPage.StartGeneralTimer(); /* Just to be doubly sure */
-            GHApp.DisconnectIViewHandlers(this);
+            GHApp.DisconnectIViewHandlers(page);
         }
 
         private readonly object _menuDrawOnlyLock = new object();
