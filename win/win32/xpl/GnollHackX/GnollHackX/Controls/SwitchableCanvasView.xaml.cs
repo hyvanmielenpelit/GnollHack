@@ -138,7 +138,7 @@ namespace GnollHackX.Controls
         {
             if (UseGL && HasGL)
             {
-#if WINDOWS
+#if false
                 if(GHApp.WindowsXamlWindow != null)
                 {
                     GHApp.WindowsXamlWindow.DispatcherQueue?.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.High, () => 
@@ -152,7 +152,7 @@ namespace GnollHackX.Controls
                         {
                             Debug.WriteLine(ex);    
                         }
-#if WINDOWS
+#if false
                     });
                 }
 #endif
