@@ -146,7 +146,11 @@ namespace GnollHackX.Unknown
         public void InitializeFmod()
         {
             RESULT res;
-
+#if DEBUG && FMOD_DEBUG_LOG
+            res = FMOD.Debug.Initialize(DEBUG_FLAGS.LOG);
+            if (res != RESULT.OK)
+                return;
+#endif
             //uint ver;
             //res = Factory.System_Create(out _coresystem);
             //if (res != RESULT.OK)
@@ -159,7 +163,7 @@ namespace GnollHackX.Unknown
             res = FMOD.Studio.System.create(out _system);
             if (res != RESULT.OK)
                 return;
-
+            
             res = _system.getCoreSystem(out _coresystem);
             if (res != RESULT.OK)
                 return;
@@ -172,7 +176,7 @@ namespace GnollHackX.Unknown
             if (res != RESULT.OK)
                 return;
 
-#if __IOS__ 
+#if __IOS__
             AVAudioSession si = AVAudioSession.SharedInstance();
             if(si != null)
                 si.SetCategory(AVAudioSessionCategory.Ambient);

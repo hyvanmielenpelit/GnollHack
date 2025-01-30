@@ -3,6 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <DefineConstants>$(DefineConstants);FMOD_DEBUG_LOG</DefineConstants>
     <ProjectGuid>{E4915AD3-CA01-44FE-A99F-0D6E9DC49F08}</ProjectGuid>
     <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TemplateGuid>{c9e5eea5-ca05-42a1-839b-61506e0a37df}</TemplateGuid>
@@ -160,6 +161,10 @@
     <AndroidNativeLibrary Include="libs\x86_64\libfmod.so" />
     <AndroidNativeLibrary Include="libs\x86_64\libfmodstudio.so" />
     <AndroidNativeLibrary Include="libs\x86_64\libgnollhackdroid.so" />
+    <AndroidNativeLibrary Include="libs\arm64-v8a\libfmodstudioL.so" />
+    <AndroidNativeLibrary Include="libs\arm64-v8a\libfmodL.so" />
+    <AndroidNativeLibrary Include="libs\x86_64\libfmodL.so" />
+    <AndroidNativeLibrary Include="libs\x86_64\libfmodstudioL.so" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />

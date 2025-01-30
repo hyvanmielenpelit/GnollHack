@@ -23,7 +23,11 @@ namespace FMOD
 #if (UNITY_IPHONE || UNITY_TVOS || UNITY_SWITCH || UNITY_WEBGL) && !UNITY_EDITOR
         public const string dll    = "__Internal";
 #elif !UNITY_2019_4_OR_NEWER
+#if FMOD_DEBUG_LOG
+        public const string dll    = "fmodL";
+#else
         public const string dll    = "fmod";
+#endif
 #endif
     }
 
