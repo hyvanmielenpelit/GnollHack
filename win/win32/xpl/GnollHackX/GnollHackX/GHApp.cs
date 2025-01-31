@@ -6463,13 +6463,17 @@ namespace GnollHackX
             {
                 res = fullverid.Substring(0, pluspos);
 #if !WINDOWS
-                int lastdashpos = fullverid.LastIndexOf("-");
-                int lastdotpos = fullverid.LastIndexOf(".");
-                if (lastdotpos > lastdashpos && lastdashpos > 0 && lastdashpos < fullverid.Length - 1)
+                int previewpos = fullverid.IndexOf("preview", StringComparison.InvariantCultureIgnoreCase);
+                if (previewpos >= 0)
                 {
-                    int previewLen = lastdotpos - lastdashpos;
-                    if(previewLen > 1) //More than just the dash
-                        res += fullverid.Substring(lastdashpos, previewLen);
+                    int lastdashpos = fullverid.LastIndexOf("-");
+                    int lastdotpos = fullverid.LastIndexOf(".");
+                    if (lastdotpos > lastdashpos && lastdashpos > 0 && lastdashpos < fullverid.Length - 1)
+                    {
+                        int previewLen = lastdotpos - lastdashpos;
+                        if (previewLen > 1) //More than just the dash
+                            res += fullverid.Substring(lastdashpos, previewLen);
+                    }
                 }
 #endif
             }
