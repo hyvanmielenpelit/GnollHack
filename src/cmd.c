@@ -6337,12 +6337,20 @@ struct ext_func_tab extcmdlist[] = {
     { 'z', "zap", "zap a wand", dozap, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_zap_syms, "zap" },
     { M(27), "zapquick", "zap the quick wand", dozapquick, 0, 0, getobj_zap_syms, "zap" },
 #if defined (USE_TILES)
+#if defined (GNH_MOBILE)
+    { '\0', "zoomnormal", "revert to normal zoom level", dozoomnormal, IFBURIED | AUTOCOMPLETE },
+    { '\0', "zoomin", "zoom map out", dozoomin, IFBURIED | AUTOCOMPLETE },
+    { '\0', "zoomout", "zoom map in", dozoomout, IFBURIED | AUTOCOMPLETE },
+    { '\0', "zoommini", "zoom map to fit to screen", dozoommini, IFBURIED | AUTOCOMPLETE },
+    { '\0', "zoomhalf", "zoom map out to 50% of normal", dozoomhalf, IFBURIED | AUTOCOMPLETE },
+#else
     { M('.'), "zoomnormal", "revert to normal zoom level", dozoomnormal, IFBURIED | AUTOCOMPLETE },
     { M('+'), "zoomin", "zoom map out", dozoomin, IFBURIED | AUTOCOMPLETE },
     { M('-'), "zoomout", "zoom map in", dozoomout, IFBURIED | AUTOCOMPLETE },
     { M(','), "zoommini", "zoom map to fit to screen", dozoommini, IFBURIED | AUTOCOMPLETE },
     { C(','), "zoomhalf", "zoom map out to 50% of normal", dozoomhalf, IFBURIED | AUTOCOMPLETE },
-#endif
+#endif //GNH_MOBILE
+#endif //USE_TILES
 #ifdef GNH_MOBILE
     { '{', "viewpet", "view currently active pet", doviewpet, IFBURIED },
 #endif
