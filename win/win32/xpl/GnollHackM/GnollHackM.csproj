@@ -79,7 +79,7 @@
 
 	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
 		<UseInterpreter>false</UseInterpreter>
-		<MtouchInterpreter>-all,FMODService.dll</MtouchInterpreter>
+		<MtouchInterpreter>-all</MtouchInterpreter>
     <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
 	</PropertyGroup>
 
