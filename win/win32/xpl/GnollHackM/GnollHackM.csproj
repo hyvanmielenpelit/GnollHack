@@ -61,7 +61,7 @@
     <!--<CodesignProvision>Apple Dev M July 2024 Distribution Profile</CodesignProvision>-->
     <CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
     <CodesignProvision>Apple Dev M July 2024 Profile</CodesignProvision>
-    <MtouchUseLlvm>false</MtouchUseLlvm>
+    <!--<MtouchUseLlvm>false</MtouchUseLlvm>-->
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-android'">
