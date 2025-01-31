@@ -6336,7 +6336,7 @@ struct ext_func_tab extcmdlist[] = {
     { '}', "you", "describe your character", docharacterstatistics, IFBURIED | AUTOCOMPLETE },
     { 'z', "zap", "zap a wand", dozap, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_zap_syms, "zap" },
     { M(27), "zapquick", "zap the quick wand", dozapquick, 0, 0, getobj_zap_syms, "zap" },
-#if defined (USE_TILES) && !defined(GNH_MOBILE)
+#if defined (USE_TILES)
     { M('.'), "zoomnormal", "revert to normal zoom level", dozoomnormal, IFBURIED | AUTOCOMPLETE },
     { M('+'), "zoomin", "zoom map out", dozoomin, IFBURIED | AUTOCOMPLETE },
     { M('-'), "zoomout", "zoom map in", dozoomout, IFBURIED | AUTOCOMPLETE },

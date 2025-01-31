@@ -81,6 +81,14 @@ namespace GnollHackX
         PrintHistoryItem,
         UseHideMessageHistory,
         SetDiceAsRanges,
+        ZoomNormal,
+        ZoomIn,
+        ZoomOut,
+        ZoomMini,
+        ZoomHalf,
+        ZoomToScale,
+        SaveZoom,
+        RestoreZoom,
     }
 
     public struct AddContextMenuData

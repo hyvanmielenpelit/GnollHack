@@ -2547,6 +2547,42 @@ namespace GnollHackX
                 case (int)gui_command_types.GUI_CMD_TOGGLE_QUICK_CAST_SPELL:
                     _gamePage.SetQuickCastSpell(cmd_param, cmd_param2, cmd_str);
                     break;
+                case (int)gui_command_types.GUI_CMD_ZOOM_NORMAL:
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.ZoomNormal));
+                    }
+                    break;
+                case (int)gui_command_types.GUI_CMD_ZOOM_IN:
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.ZoomIn));
+                    }
+                    break;
+                case (int)gui_command_types.GUI_CMD_ZOOM_OUT:
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.ZoomOut));
+                    }
+                    break;
+                case (int)gui_command_types.GUI_CMD_ZOOM_MINI:
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.ZoomMini));
+                    }
+                    break;
+                case (int)gui_command_types.GUI_CMD_ZOOM_HALF:
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.ZoomHalf));
+                    }
+                    break;
+                case (int)gui_command_types.GUI_CMD_ZOOM_TO_SCALE:
+                    break;
+                case (int)gui_command_types.GUI_CMD_SAVE_ZOOM:
+                    break;
+                case (int)gui_command_types.GUI_CMD_RESTORE_ZOOM:
+                    break;
                 default:
                     break;
             }

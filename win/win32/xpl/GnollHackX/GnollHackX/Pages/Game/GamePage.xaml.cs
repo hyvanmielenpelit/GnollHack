@@ -2954,6 +2954,27 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.GameEnded:
                                 GameEnded = true;
                                 break;
+                            case GHRequestType.ZoomNormal:
+                                SetZoomNormal();
+                                break;
+                            case GHRequestType.ZoomIn:
+                                ZoomIn();
+                                break;
+                            case GHRequestType.ZoomOut:
+                                ZoomOut();
+                                break;
+                            case GHRequestType.ZoomMini:
+                                SetZoomMini();
+                                break;
+                            case GHRequestType.ZoomHalf:
+                                SetZoomHalf();
+                                break;
+                            case GHRequestType.ZoomToScale:
+                                break;
+                            case GHRequestType.SaveZoom:
+                                break;
+                            case GHRequestType.RestoreZoom:
+                                break;
                         }
                     }
                 }
@@ -18913,6 +18934,84 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        public void SetZoomNormal()
+        {
+            if (ZoomMiniMode)
+                ToggleZoomMiniButton_Clicked(null, null);
+            if (ZoomAlternateMode)
+                ToggleZoomAlternateButton_Clicked(null, null);
+            MapFontSize = DefaultMapFontSize;
+        }
+
+        public void SetZoomNormalInCurrentMode()
+        {
+            if (ZoomAlternateMode)
+                MapFontAlternateSize = DefaultMapFontSize * GHConstants.MapFontRelativeAlternateSize;
+            else if (ZoomMiniMode)
+                MapFontMiniRelativeSize = 1.0f;
+            else
+                MapFontSize = DefaultMapFontSize;
+        }
+
+        public void ZoomIn()
+        {
+            if (ZoomMiniMode)
+                ToggleZoomMiniButton_Clicked(null, null);
+            if (ZoomAlternateMode)
+                ToggleZoomAlternateButton_Clicked(null, null);
+            ZoomInOutInCurrentMode(false, false);
+        }
+
+        public void ZoomOut()
+        {
+            if (ZoomMiniMode)
+                ToggleZoomMiniButton_Clicked(null, null);
+            if (ZoomAlternateMode)
+                ToggleZoomAlternateButton_Clicked(null, null);
+            ZoomInOutInCurrentMode(true, false);
+        }
+
+        public void ZoomInOutInCurrentMode(bool isOut, bool isSmallChange)
+        {
+            bool isMeta = isSmallChange;
+            if (ZoomMiniMode)
+            {
+                float canvaswidth = canvasView.CanvasSize.Width;
+                float canvasheight = canvasView.CanvasSize.Height;
+                SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
+                float ratio = !isOut ? (1 + (isMeta ? 0.001f : 0.01f)) : 1 / (1 + (isMeta ? 0.001f : 0.01f));
+                AdjustZoomByRatio(ratio, point, point, point);
+            }
+            else
+            {
+                float multiplier = isOut ? -1.0f : 1.0f;
+                float newfontsize;
+                if (ZoomAlternateMode)
+                    newfontsize = MapFontAlternateSize + multiplier * (isMeta ? 0.001f : 0.01f) * DefaultMapFontSize;
+                else
+                    newfontsize = MapFontSize + multiplier * (isMeta ? 0.001f : 0.01f) * DefaultMapFontSize;
+
+                float canvaswidth = canvasView.CanvasSize.Width;
+                float canvasheight = canvasView.CanvasSize.Height;
+                SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
+                SetZoomFontSize(newfontsize, point, point, point);
+            }
+            MapFontShowPercentageDecimal = isMeta;
+        }
+
+        public void SetZoomMini()
+        {
+            if (!ZoomMiniMode)
+                ToggleZoomMiniButton_Clicked(null, null);
+        }
+        public void SetZoomHalf()
+        {
+            if (ZoomMiniMode)
+                ToggleZoomMiniButton_Clicked(null, null);
+            if (!ZoomAlternateMode)
+                ToggleZoomAlternateButton_Clicked(null, null);
+        }
+
         public bool HandleKeyPress(int key, bool isCtrl, bool isMeta)
         {
             bool handled = false;
@@ -19200,41 +19299,19 @@ namespace GnollHackX.Pages.Game
                     CommandCanvas_Pressed(null, null);
                 }
 
-                if (isCtrl && key == GHSpecialKey.Number0)
+                if ((isCtrl || isMeta) && (key == GHSpecialKey.Number0 || key == GHSpecialKey.NumberPad0))
                 {
-                    if (ZoomAlternateMode)
-                        MapFontAlternateSize = DefaultMapFontSize * GHConstants.MapFontRelativeAlternateSize;
-                    else if (ZoomMiniMode)
-                        MapFontMiniRelativeSize = 1.0f;
-                    else
-                        MapFontSize = DefaultMapFontSize;
+                    SetZoomNormalInCurrentMode();
                     handled = true;
                 }
-                else if (isCtrl && (key == GHSpecialKey.Add || key == GHSpecialKey.Subtract))
+                else if ((isCtrl || isMeta) && (key == GHSpecialKey.Decimal))
                 {
-                    if (ZoomMiniMode)
-                    {
-                        float canvaswidth = canvasView.CanvasSize.Width;
-                        float canvasheight = canvasView.CanvasSize.Height;
-                        SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
-                        float ratio = key == GHSpecialKey.Add ? (1 + (isMeta ? 0.001f : 0.01f)) : 1 / (1 + (isMeta ? 0.001f : 0.01f));
-                        AdjustZoomByRatio(ratio, point, point, point);
-                    }
-                    else
-                    {
-                        float multiplier = key == GHSpecialKey.Subtract ? -1.0f : 1.0f;
-                        float newfontsize;
-                        if (ZoomAlternateMode)
-                            newfontsize = MapFontAlternateSize + multiplier * (isMeta ? 0.001f : 0.01f) * DefaultMapFontSize;
-                        else
-                            newfontsize = MapFontSize + multiplier * (isMeta ? 0.001f : 0.01f) * DefaultMapFontSize;
-
-                        float canvaswidth = canvasView.CanvasSize.Width;
-                        float canvasheight = canvasView.CanvasSize.Height;
-                        SKPoint point = new SKPoint(canvaswidth / 2, canvasheight / 2);
-                        SetZoomFontSize(newfontsize, point, point, point);
-                    }
-                    MapFontShowPercentageDecimal = isMeta;
+                    ToggleZoomMiniButton_Clicked(null, null);
+                    handled = true;
+                }
+                else if ((isCtrl || isMeta) && (key == GHSpecialKey.Add || key == GHSpecialKey.Subtract))
+                {
+                    ZoomInOutInCurrentMode(key == GHSpecialKey.Subtract, isMeta);
                     handled = true;
                 }
                 else if (ForceAllMessages)
@@ -19480,6 +19557,9 @@ namespace GnollHackX.Pages.Game
                         break;
                     case VirtualKey.Subtract:
                         spkey = GHSpecialKey.Subtract;
+                        break;
+                    case VirtualKey.Decimal:
+                        spkey = GHSpecialKey.Decimal;
                         break;
                     default:
                         if (key >= VirtualKey.Number0 && key <= VirtualKey.Number9)
