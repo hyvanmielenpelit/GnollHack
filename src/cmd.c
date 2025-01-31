@@ -9841,57 +9841,40 @@ dosh_core(VOID_ARGS)
 int
 dozoomnormal(VOID_ARGS)
 {
-    flags.screen_scale_adjustment = flags.preferred_screen_scale <= 0 ? 0.0 
-        : max(MIN_SCREEN_SCALE_ADJUSTMENT, min(MAX_SCREEN_SCALE_ADJUSTMENT, (((double)flags.preferred_screen_scale) / 100.0 - 1.0) ));
-
+    issue_simple_gui_command(GUI_CMD_ZOOM_NORMAL);
     stretch_window();
-
     return 0;
 }
 
 int
 dozoomin(VOID_ARGS)
 {
-    double scale_level = round(flags.screen_scale_adjustment / KEYBOARD_SCREEN_SCALE_ADJUSTMENT_STEP);
-    flags.screen_scale_adjustment = (scale_level + 1) * KEYBOARD_SCREEN_SCALE_ADJUSTMENT_STEP;
-    if(flags.screen_scale_adjustment > MAX_SCREEN_SCALE_ADJUSTMENT)
-        flags.screen_scale_adjustment = MAX_SCREEN_SCALE_ADJUSTMENT;
-    
+    issue_simple_gui_command(GUI_CMD_ZOOM_IN);
     stretch_window();
-
     return 0;
 }
 
 int
 dozoomout(VOID_ARGS)
 {
-    double scale_level = round(flags.screen_scale_adjustment / KEYBOARD_SCREEN_SCALE_ADJUSTMENT_STEP);
-    flags.screen_scale_adjustment = (scale_level - 1) * KEYBOARD_SCREEN_SCALE_ADJUSTMENT_STEP;
-    if (flags.screen_scale_adjustment < MIN_SCREEN_SCALE_ADJUSTMENT)
-        flags.screen_scale_adjustment = MIN_SCREEN_SCALE_ADJUSTMENT;
-
+    issue_simple_gui_command(GUI_CMD_ZOOM_OUT);
     stretch_window();
-
     return 0;
 }
 
 int
 dozoommini(VOID_ARGS)
 {
-    flags.screen_scale_adjustment = -1.0; /* In fact fit-to-screen */
-
+    issue_simple_gui_command(GUI_CMD_ZOOM_MINI);
     stretch_window();
-
     return 0;
 }
 
 int
 dozoomhalf(VOID_ARGS)
 {
-    flags.screen_scale_adjustment = -0.5;
-
+    issue_simple_gui_command(GUI_CMD_ZOOM_HALF);
     stretch_window();
-
     return 0;
 }
 
@@ -9899,7 +9882,7 @@ void
 zoomtoscale(scale)
 double scale;
 {
-    flags.screen_scale_adjustment = scale;
+    issue_gui_command(GUI_CMD_ZOOM_TO_SCALE, (int)(scale * 10000), 0, (char*)0);
     stretch_window();
 }
 

@@ -1489,10 +1489,50 @@ mswin_cliparound(int x, int y, BOOLEAN_P force)
     }
 }
 
+STATIC_VAR double saved_zoom = 1.0;
 void
 mswin_issue_gui_command(int cmd_id, int cmd_param, int cmd_param2, const char* cmd_str)
 {
-    return;
+    switch (cmd_id)
+    {
+    case GUI_CMD_ZOOM_NORMAL:
+        flags.screen_scale_adjustment = flags.preferred_screen_scale <= 0 ? 0.0
+            : max(MIN_SCREEN_SCALE_ADJUSTMENT, min(MAX_SCREEN_SCALE_ADJUSTMENT, (((double)flags.preferred_screen_scale) / 100.0 - 1.0)));
+        break;
+    case GUI_CMD_ZOOM_IN:
+    {
+        double scale_level = round(flags.screen_scale_adjustment / KEYBOARD_SCREEN_SCALE_ADJUSTMENT_STEP);
+        flags.screen_scale_adjustment = (scale_level + 1) * KEYBOARD_SCREEN_SCALE_ADJUSTMENT_STEP;
+        if (flags.screen_scale_adjustment > MAX_SCREEN_SCALE_ADJUSTMENT)
+            flags.screen_scale_adjustment = MAX_SCREEN_SCALE_ADJUSTMENT;
+        break;
+    }
+    case GUI_CMD_ZOOM_OUT:
+    {
+        double scale_level = round(flags.screen_scale_adjustment / KEYBOARD_SCREEN_SCALE_ADJUSTMENT_STEP);
+        flags.screen_scale_adjustment = (scale_level - 1) * KEYBOARD_SCREEN_SCALE_ADJUSTMENT_STEP;
+        if (flags.screen_scale_adjustment < MIN_SCREEN_SCALE_ADJUSTMENT)
+            flags.screen_scale_adjustment = MIN_SCREEN_SCALE_ADJUSTMENT;
+        break;
+    }
+    case GUI_CMD_ZOOM_MINI:
+        flags.screen_scale_adjustment = -1.0; /* In fact fit-to-screen */
+        break;
+    case GUI_CMD_ZOOM_HALF:
+        flags.screen_scale_adjustment = -0.5;
+        break;
+    case GUI_CMD_ZOOM_TO_SCALE:
+        flags.screen_scale_adjustment = (double)cmd_param / 10000;
+        break;
+    case GUI_CMD_SAVE_ZOOM:
+        saved_zoom = flags.screen_scale_adjustment;
+        break;
+    case GUI_CMD_RESTORE_ZOOM:
+        flags.screen_scale_adjustment = saved_zoom;
+        break;
+    default:
+        break;
+    }
 }
 
 /*
@@ -3839,6 +3879,7 @@ mswin_init_platform(VOID_ARGS)
 void
 mswin_exit_platform(int status)
 {
+    saved_zoom = 1.0;
     StopGdiplus();
     (void)close_fmod_studio();
 }

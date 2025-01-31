@@ -1439,10 +1439,11 @@ newgame(VOID_ARGS)
     init_animations();
     init_tiledata();
 
-#ifdef USE_TILES
-    flags.screen_scale_adjustment = flags.preferred_screen_scale == 0 ? 0.0
-        : max(MIN_SCREEN_SCALE_ADJUSTMENT, min(MAX_SCREEN_SCALE_ADJUSTMENT, ((double)flags.preferred_screen_scale) / 100.0 - 1.0));
-#endif
+    issue_simple_gui_command(GUI_CMD_ZOOM_NORMAL);
+//#ifdef USE_TILES
+    //flags.screen_scale_adjustment = flags.preferred_screen_scale == 0 ? 0.0
+    //    : max(MIN_SCREEN_SCALE_ADJUSTMENT, min(MAX_SCREEN_SCALE_ADJUSTMENT, ((double)flags.preferred_screen_scale) / 100.0 - 1.0));
+//#endif
 
     for (i = LOW_PM; i < NUM_MONSTERS; i++)
         if((mons[i].geno & G_NOCORPSE) != 0)
