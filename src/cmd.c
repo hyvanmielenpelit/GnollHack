@@ -6336,12 +6336,12 @@ struct ext_func_tab extcmdlist[] = {
     { '}', "you", "describe your character", docharacterstatistics, IFBURIED | AUTOCOMPLETE },
     { 'z', "zap", "zap a wand", dozap, SINGLE_OBJ_CMD_SPECIFIC, 0, getobj_zap_syms, "zap" },
     { M(27), "zapquick", "zap the quick wand", dozapquick, 0, 0, getobj_zap_syms, "zap" },
-#if defined (USE_TILES) && !defined (GNH_MOBILE)
+#if defined (USE_TILES)
     { M('.'), "zoomnormal", "revert to normal zoom level", dozoomnormal, IFBURIED | AUTOCOMPLETE },
     { M('+'), "zoomin", "zoom map out", dozoomin, IFBURIED | AUTOCOMPLETE },
     { M('-'), "zoomout", "zoom map in", dozoomout, IFBURIED | AUTOCOMPLETE },
     { M(','), "zoommini", "zoom map to fit to screen", dozoommini, IFBURIED | AUTOCOMPLETE },
-    { C(','), "zoomhalf", "zoom map out to 50% of normal", dozoomhalf, IFBURIED | AUTOCOMPLETE },
+    { M('/'), "zoomhalf", "zoom map out to 50% of normal", dozoomhalf, IFBURIED | AUTOCOMPLETE },
 #endif //USE_TILES
 #ifdef GNH_MOBILE
     { '{', "viewpet", "view currently active pet", doviewpet, IFBURIED },
@@ -6507,13 +6507,13 @@ commands_init(VOID_ARGS)
     (void) bind_key(M('N'), "name");
     (void) bind_key('u',    "untrap"); /* if number_pad is on */
 
-#ifdef USE_TILES
-    (void) bind_key(C('0'), "zoommini");
-    (void) bind_key(C('1'), "zoomnormal");
-    (void) bind_key(C('.'), "zoomnormal");
-    (void) bind_key(C('+'), "zoomin");
-    (void) bind_key(C('-'), "zoomout");
-#endif
+//#ifdef USE_TILES
+//    (void) bind_key(C('0'), "zoommini");
+//    (void) bind_key(C('1'), "zoomnormal");
+//    (void) bind_key(C('.'), "zoomnormal");
+//    (void) bind_key(C('+'), "zoomin");
+//    (void) bind_key(C('-'), "zoomout");
+//#endif
 
     /* alt keys: */
     (void) bind_key(M('O'), "overview");
