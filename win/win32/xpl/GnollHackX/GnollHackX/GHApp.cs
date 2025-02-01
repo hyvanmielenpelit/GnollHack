@@ -173,6 +173,7 @@ namespace GnollHackX
             AutoUploadReplays = Preferences.Get("AutoUploadReplays", false);
             UseGZipForReplays = Preferences.Get("UseGZipForReplays", GHConstants.GZipIsDefaultReplayCompression);
             OkOnDoubleClick = Preferences.Get("OkOnDoubleClick", IsDesktop);
+            GetPositionArrows = Preferences.Get("GetPositionArrows", false);
             LastUsedPlayerName = Preferences.Get("LastUsedPlayerName", "");
             LastUsedTournamentPlayerName = Preferences.Get("LastUsedTournamentPlayerName", "");
             GUITipsShown = Preferences.Get("GUITipsShown", false);
@@ -3171,10 +3172,12 @@ namespace GnollHackX
         private static bool _characterClickAction;
         private static bool _diceAsRanges;
         private static bool _okOnDoubleClick;
+        private static bool _getPositionArrows;
         private static int _rightMouseCommand;
         private static int _middleMouseCommand;
         public static bool EmptyWishIsNothing { get { lock (_behaviorLock) { return _emptyWishIsNothing; } } set { lock (_behaviorLock) { _emptyWishIsNothing = value; } } }
         public static bool OkOnDoubleClick { get { lock (_behaviorLock) { return _okOnDoubleClick; } } set { lock (_behaviorLock) { _okOnDoubleClick = value; } } }
+        public static bool GetPositionArrows { get { lock (_behaviorLock) { return _getPositionArrows; } } set { lock (_behaviorLock) { _getPositionArrows = value; } } }
         public static bool MirroredCharacterClickAction { get { lock (_behaviorLock) { return _characterClickAction; } } set { lock (_behaviorLock) { _characterClickAction = value; } } }
         public static bool MirroredDiceAsRanges { get { lock (_behaviorLock) { return _diceAsRanges; } } set { lock (_behaviorLock) { _diceAsRanges = value; } } }
         public static int MirroredRightMouseCommand { get { lock (_behaviorLock) { return _rightMouseCommand; } } set { lock (_behaviorLock) { _rightMouseCommand = value; } } }

@@ -389,6 +389,13 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.EmptyWishIsNothing = EmptyWishIsNothingSwitch.IsToggled;
             Preferences.Set("EmptyWishIsNothing", EmptyWishIsNothingSwitch.IsToggled);
 
+            /* There's an iflag but not a corresponding option; iflag just need to be set always to the same value as here */
+            GHApp.GetPositionArrows = GetPositionArrowsSwitch.IsToggled;
+            Preferences.Set("GetPositionArrows", GetPositionArrowsSwitch.IsToggled);
+            if (_gamePage != null)
+                _gamePage.SetGetPositionArrows(GetPositionArrowsSwitch.IsToggled);
+
+            /* There's both a flag and a corresponding option */
             GHApp.MirroredCharacterClickAction = CharacterClickActionSwitch.IsToggled;
             if (_gamePage != null) /* During game only doubles as the option; outside of game sets the default */
                 _gamePage.SetCharacterClickAction(CharacterClickActionSwitch.IsToggled);
@@ -839,7 +846,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             int cursor = 0, graphics = 0, savestyle = 0, maprefresh = (int)UIUtils.GetDefaultMapFPS(), msgnum = 0, petrows = 0;
             bool mem = false, fps = false, zoom = false, battery = false, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, disableauxgpu = false, mipmap = false, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, darkmode = false, windowedmode = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
-            bool allowbones = true, allowpet = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
+            bool allowbones = true, allowpet = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, getpositionarrows = false, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = false, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, menuhighlightedkeys = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false, diceasranges = true;
@@ -972,6 +979,7 @@ namespace GnollHackX.Pages.MainScreen
                 //prevwep = Preferences.Get("ShowPrevWepContextCommand", GHConstants.DefaultShowPrevWepContextCommand);
                 longermsghistory = GHApp.SavedLongerMessageHistory; // Preferences.Get("LongerMessageHistory", false);
                 hidemsghistory = GHApp.SavedHideMessageHistory; // Preferences.Get("HideMessageHistory", false);
+                getpositionarrows = Preferences.Get("GetPositionArrows", false);
                 characterclickaction = Preferences.Get("CharacterClickAction", GHConstants.DefaultCharacterClickAction); /* Default value */
                 diceasranges = Preferences.Get("DiceAsRanges", GHConstants.DefaultDiceAsRanges); /* Default value */
                 rightmouse = Preferences.Get("RightMouseCommand", GHConstants.DefaultRightMouseCommand);
@@ -1024,6 +1032,7 @@ namespace GnollHackX.Pages.MainScreen
                 //prevwep = _gamePage.ShowPrevWepContextCommand;
                 longermsghistory = _gamePage.LongerMessageHistory;
                 hidemsghistory = _gamePage.HideMessageHistory;
+                getpositionarrows = GHApp.GetPositionArrows; /* Not mirrored, but there is an iflag */
                 characterclickaction = GHApp.MirroredCharacterClickAction; // _gamePage.GetCharacterClickAction(); /* Value of the option in the (saved) game */
                 diceasranges = GHApp.MirroredDiceAsRanges;
                 rightmouse = GHApp.MirroredRightMouseCommand; //_gamePage.GetRightMouseCommand();
@@ -1188,8 +1197,9 @@ namespace GnollHackX.Pages.MainScreen
             CharacterClickActionSwitch.IsToggled = characterclickaction;
             DiceAsRangesSwitch.IsToggled = diceasranges;
             DoubleClickSwitch.IsToggled = doubleclick;
+            GetPositionArrowsSwitch.IsToggled = getpositionarrows;
 
-            if(RightMousePicker.ItemsSource != null)
+            if (RightMousePicker.ItemsSource != null)
             {
                 for (int i = 0; i < RightMousePicker.ItemsSource.Count; i++)
                 {

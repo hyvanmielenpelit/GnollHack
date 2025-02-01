@@ -733,6 +733,7 @@ enum game_cursor_types cursor_style;
     coord *garr[NUM_GLOCS] = DUMMY;
     int gcount[NUM_GLOCS] = DUMMY;
     int gidx[NUM_GLOCS] = DUMMY;
+    boolean getpos_arrows_at_start = iflags.getpos_arrows;
 
     flags.show_cursor_on_u = TRUE;
     flags.force_paint_at_cursor = TRUE;
@@ -773,7 +774,7 @@ enum game_cursor_types cursor_style;
 #endif
     curs(WIN_MAP, cx, cy);
     flush_screen(0);
-    if(cursor_style != CURSOR_STYLE_TELEPORT_CURSOR)
+    if (getpos_arrows_at_start || cursor_style == CURSOR_STYLE_LOOK_CURSOR || cursor_style == CURSOR_STYLE_TRAVEL_CURSOR) // (cursor_style != CURSOR_STYLE_TELEPORT_CURSOR)
         issue_simple_gui_command(GUI_CMD_SAVE_AND_DISABLE_TRAVEL_MODE);
 #if defined(MAC) || defined(ANDROID)
     lock_mouse_cursor(TRUE);
@@ -1143,7 +1144,7 @@ enum game_cursor_types cursor_style;
     flags.force_paint_at_cursor = TRUE;
     flags.active_cursor_style = CURSOR_STYLE_GENERIC_CURSOR;
     update_cursor(flags.active_cursor_style, flags.force_paint_at_cursor, flags.show_cursor_on_u);
-    if (cursor_style != CURSOR_STYLE_TELEPORT_CURSOR)
+    if (getpos_arrows_at_start || cursor_style == CURSOR_STYLE_LOOK_CURSOR || cursor_style == CURSOR_STYLE_TRAVEL_CURSOR) // (cursor_style != CURSOR_STYLE_TELEPORT_CURSOR)
         issue_simple_gui_command(GUI_CMD_RESTORE_TRAVEL_MODE);
     create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
     clear_valid_pos_flags();

@@ -584,6 +584,7 @@ struct instance_flags {
     struct monst* spell_target_monster;
     uint64_t found_manuals;
     boolean show_dice_as_ranges;
+    boolean getpos_arrows;
 };
 
 /*
@@ -781,6 +782,8 @@ struct startup_flags {
     uchar middle_click_action;
     boolean dice_as_ranges_set;
     boolean dice_as_ranges_value;
+    boolean getpos_arrows_set;
+    boolean getpos_arrows_value;
 
     uint64_t found_manuals;
 };

@@ -308,6 +308,10 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetCharacterClickAction(int new_value);
         [DllImport(PlatformConstants.dll)]
+        public static extern int LibGetGetPositionArrows();
+        [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetGetPositionArrows(int new_value);
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetDiceAsRanges();
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetDiceAsRanges(int new_value);
@@ -1123,6 +1127,15 @@ namespace GnollHackX.Unknown
             LibSetCharacterClickAction(newValue ? 1 : 0);
         }
 
+        public bool GetGetPositionArrows()
+        {
+            return LibGetGetPositionArrows() != 0;
+        }
+        public void SetGetPositionArrows(bool newValue)
+        {
+            LibSetGetPositionArrows(newValue ? 1 : 0);
+        }
+
         public bool GetDiceAsRanges()
         {
             return LibGetDiceAsRanges() != 0;
@@ -1161,6 +1174,7 @@ namespace GnollHackX.Unknown
             string filesdir = GetGnollHackPath();
             bool allowbones = GHApp.AllowBones;
             bool allowpet = GHApp.AllowPet;
+            bool getposarrows = GHApp.GetPositionArrows;
             bool characterclickaction = GHApp.MirroredCharacterClickAction;
             bool diceasranges = GHApp.MirroredDiceAsRanges;
             ulong rightmouse = (ulong)GHApp.MirroredRightMouseCommand << GHConstants.RightMouseBitIndex;
@@ -1173,6 +1187,7 @@ namespace GnollHackX.Unknown
                 (ulong)(allowpet ? 0 : RunGnollHackFlags.NoPet) |
                 (ulong)(GHApp.TournamentMode ? RunGnollHackFlags.TournamentMode : 0) |
                 (ulong)(GHApp.IsDebug ? RunGnollHackFlags.GUIDebugMode : 0) |
+                (ulong)(getposarrows ? RunGnollHackFlags.GetPositionArrows : 0) | /* Set the iflag to right value */
                 (ulong)(characterclickaction ? RunGnollHackFlags.CharacterClickAction : 0) | /* Use the default; GHApp.CharacterClickAction may contain the option value from the last game */
                 (ulong)(diceasranges ? RunGnollHackFlags.DiceAsRanges : 0) | /* Use the default; GHApp.DiceAsRanges may contain the option value from the last game */
                 rightmouse | middlemouse | (ulong)ghGame.StartFlags;

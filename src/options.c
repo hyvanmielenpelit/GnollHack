@@ -978,6 +978,9 @@ init_options()
     if (initial_flags.dice_as_ranges_set)
         iflags.show_dice_as_ranges = initial_flags.dice_as_ranges_value;
 
+    if (initial_flags.getpos_arrows_set)
+        iflags.getpos_arrows = initial_flags.getpos_arrows_value;
+
     /* since this is done before init_objects(), do partial init here */
     objects[SLIME_MOLD].oc_name_idx = SLIME_MOLD;
     nmcpy(pl_fruit, OBJ_NAME(objects[SLIME_MOLD]), PL_FSIZ);

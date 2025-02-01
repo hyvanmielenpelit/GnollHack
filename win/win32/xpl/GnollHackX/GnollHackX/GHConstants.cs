@@ -240,6 +240,7 @@ namespace GnollHackX
         CharacterClickAction =  0x00000400UL, /* Set character-click action to true by default */
         NoPet =                 0x00000800UL, /* Same as pettype:none in options file */
         DiceAsRanges =          0x00001000UL, /* Set show_dice_as_ranges to true by default */
+        GetPositionArrows =     0x00002000UL, /* Show move arrows by default in getpos (i.e., turn travel mode off) */
 
         RightMouseButtonBit1 =  0x00400000UL, 
         RightMouseButtonBit2 =  0x00800000UL, 
@@ -1389,6 +1390,7 @@ namespace GnollHackX
         GUI_CMD_ZOOM_TO_SCALE,
         GUI_CMD_SAVE_ZOOM,
         GUI_CMD_RESTORE_ZOOM,
+        GUI_CMD_TOGGLE_GETPOS_ARROWS,
     }
 
     public enum game_status_types

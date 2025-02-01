@@ -89,6 +89,7 @@ namespace GnollHackX
         ZoomToScale,
         SaveZoom,
         RestoreZoom,
+        SetGetPositionArrows,
     }
 
     public struct AddContextMenuData

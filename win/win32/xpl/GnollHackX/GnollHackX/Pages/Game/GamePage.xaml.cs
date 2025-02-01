@@ -1159,6 +1159,18 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        public void SetGetPositionArrows(bool newValue)
+        {
+            GHGame curGame = CurrentGame;
+            if (curGame != null)
+            {
+                ConcurrentQueue<GHResponse> queue;
+                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
+                {
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SetGetPositionArrows, newValue));
+                }
+            }
+        }
         public void SetDiceAsRanges(bool newValue)
         {
             GHGame curGame = CurrentGame;
