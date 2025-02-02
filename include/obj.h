@@ -784,6 +784,7 @@ enum elemental_enchantments {
     ((o)->oclass == COIN_CLASS || (o)->oclass == GEM_CLASS \
     || (o)->oclass == RING_CLASS || (o)->oclass == AMULET_CLASS \
     || (o)->oclass == MISCELLANEOUS_CLASS \
+    || (o)->oclass == ART_CLASS \
     || (o)->material == MAT_SILVER \
     || (o)->material == MAT_GOLD \
     || (o)->material == MAT_PLATINUM \
