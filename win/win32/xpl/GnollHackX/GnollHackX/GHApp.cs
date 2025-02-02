@@ -1180,70 +1180,19 @@ namespace GnollHackX
             set { lock (_darkModeLock) { _darkMode = value; } UpdateTheme(value); }
         }
 
-        public static void UpdateTheme(bool isDarkTheme)
+        private static void UpdateTheme(bool isDarkTheme)
         {
 #if GNH_MAUI
             Microsoft.Maui.Controls.Application.Current.UserAppTheme = isDarkTheme ? AppTheme.Dark : AppTheme.Light;
 #endif
 #if WINDOWS
-            SetPageTheme(CurrentMainPage, isDarkTheme);
+            UIUtils.SetPageTheme(CurrentMainPage, isDarkTheme);
             if (CurrentMainPage != null && CurrentMainPage.Navigation.ModalStack.Count > 0)
             {
                 foreach (Page page in CurrentMainPage.Navigation.ModalStack)
                 {
-                    SetPageTheme(page, isDarkTheme);
+                    UIUtils.SetPageTheme(page, isDarkTheme);
                 }
-            }
-#endif
-        }
-
-        public static void SetPageTheme(Page page, bool isDarkTheme)
-        {
-#if WINDOWS
-            if(page != null)
-            {
-                var handler = page.Handler;
-                if (handler != null && handler.PlatformView is Microsoft.UI.Xaml.FrameworkElement)
-                    ((Microsoft.UI.Xaml.FrameworkElement)handler.PlatformView).RequestedTheme = isDarkTheme ? Microsoft.UI.Xaml.ElementTheme.Dark : Microsoft.UI.Xaml.ElementTheme.Light;
-            }
-#endif
-        }
-        public static void SetPageThemeOnHandler(Page page, bool isDarkTheme)
-        {
-#if WINDOWS
-            if (page != null)
-            {
-                page.HandlerChanged += (sender, e) =>
-                {
-                    if (sender != null && sender is Page)
-                    {
-                        SetPageTheme((Page)sender, isDarkTheme);
-                        if (!(page is MainPage))
-                        {
-                            Microsoft.UI.Xaml.Controls.Panel p = page?.Handler?.PlatformView as Microsoft.UI.Xaml.Controls.Panel;
-                            if (p != null)
-                            {
-                                p.Transitions = new Microsoft.UI.Xaml.Media.Animation.TransitionCollection()
-                                {
-                                    new Microsoft.UI.Xaml.Media.Animation.EntranceThemeTransition()
-                                };
-                            }
-                        }
-                    }
-                };
-            }
-#endif
-        }
-
-        public static void SetViewCursorOnHandler(View layout, GameCursorType cursorType)
-        {
-#if WINDOWS
-            if (layout != null)
-            {
-                layout.HandlerChanged += (sender, e) =>
-                {
-                    UIUtils.ChangeElementCursor(layout, cursorType);
-                };
             }
 #endif
         }

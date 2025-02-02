@@ -75,7 +75,7 @@ namespace GnollHackX
             InitializeComponent();
             GHApp.CurrentMainPage = this;
             On<iOS>().SetUseSafeArea(true);
-            GHApp.SetPageThemeOnHandler(this, GHApp.DarkMode);
+            UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
 #if WINDOWS
             classicModeGrid.HeightRequest = 40;
             casualModeGrid.HeightRequest = 40;

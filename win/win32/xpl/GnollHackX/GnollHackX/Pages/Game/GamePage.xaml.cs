@@ -954,9 +954,9 @@ namespace GnollHackX.Pages.Game
             InitializeComponent();
             On<iOS>().SetUseSafeArea(true);
             UIUtils.AdjustRootLayout(RootGrid);
-            GHApp.SetPageThemeOnHandler(this, GHApp.DarkMode);
-            GHApp.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
-            GHApp.SetViewCursorOnHandler(ToggleMessageNumberButton, GameCursorType.Info);
+            UIUtils.SetPageThemeOnHandler(this, GHApp.DarkMode);
+            UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
+            UIUtils.SetViewCursorOnHandler(ToggleMessageNumberButton, GameCursorType.Info);
 
             _mainPage = mainPage;
 
