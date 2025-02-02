@@ -537,7 +537,7 @@
                                 <Switch Grid.Column="1" x:Name="DoubleClickSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Get Position Arrows"
+                                <Label Text="Traditional Get Position"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"
                                     VerticalOptions="Center" 
