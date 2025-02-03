@@ -18836,6 +18836,8 @@ namespace GnollHackX.Pages.Game
                 {
                     xamlWindow.Content.KeyDown += PageContent_KeyDown;
                     xamlWindow.Content.KeyUp += PageContent_KeyUp;
+                    xamlWindow.Content.PreviewKeyDown += Content_PreviewKeyDown;
+                    xamlWindow.Content.PreviewKeyUp += Content_PreviewKeyUp;
                     xamlWindow.Content.CharacterReceived += PageContent_CharacterReceived;
                     xamlWindow.Content.Focus(Microsoft.UI.Xaml.FocusState.Keyboard);
                 }
@@ -18860,6 +18862,8 @@ namespace GnollHackX.Pages.Game
                 {
                     xamlWindow.Content.KeyDown -= PageContent_KeyDown;
                     xamlWindow.Content.KeyUp -= PageContent_KeyUp;
+                    xamlWindow.Content.PreviewKeyDown -= Content_PreviewKeyDown;
+                    xamlWindow.Content.PreviewKeyUp -= Content_PreviewKeyUp;
                     xamlWindow.Content.CharacterReceived -= PageContent_CharacterReceived;
                 }
             }
@@ -19765,6 +19769,16 @@ namespace GnollHackX.Pages.Game
                 GHApp.ShiftDown = false;
                 e.Handled = true;
             }
+        }
+
+        private void Content_PreviewKeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            //e.Handled = true;
+        }
+
+        private void Content_PreviewKeyUp(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            //e.Handled = true;
         }
 #endif
     }
