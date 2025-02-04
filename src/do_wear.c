@@ -2805,11 +2805,11 @@ find_ac()
 
     if (Magical_stoneskin)
         uac -= MAGICAL_STONESKIN_AC_BONUS;
-    else if (Magical_barkskin)
+    if (Magical_barkskin)
         uac -= MAGICAL_BARKSKIN_AC_BONUS;
-    else if (Magical_shielding)
+    if (Magical_shielding)
         uac -= MAGICAL_SHIELDING_AC_BONUS;
-    else if (Magical_protection)
+    if (Magical_protection)
         uac -= MAGICAL_PROTECTION_AC_BONUS;
     
     /* Divine protection */

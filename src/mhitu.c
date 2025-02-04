@@ -1623,11 +1623,11 @@ struct monst *mon;
     {
         if (Magical_stoneskin)
             mc += MAGICAL_STONESKIN_MC_BONUS;
-        else if (Magical_barkskin)
+        if (Magical_barkskin)
             mc += MAGICAL_BARKSKIN_MC_BONUS;
-        else if (Magical_shielding)
+        if (Magical_shielding)
             mc += MAGICAL_SHIELDING_MC_BONUS;
-        else if (Magical_protection)
+        if (Magical_protection)
             mc += MAGICAL_PROTECTION_MC_BONUS;
 
         /* Divine protection */
