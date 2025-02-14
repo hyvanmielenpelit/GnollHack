@@ -165,12 +165,30 @@ boolean quietly;
 {
     register struct obj *otmp, *otmp2;
 
-    for (otmp = invent; otmp; otmp = otmp2) {
+    for (otmp = invent; otmp; otmp = otmp2) 
+    {
         otmp2 = otmp->nobj;
-        if (otmp->in_use) {
-            if (!quietly)
-                pline("Finishing off %s...", xname(otmp));
-            useup(otmp);
+        if (otmp->in_use) 
+        {
+            if (otmp->otyp == AMULET_OF_YENDOR
+                || otmp->otyp == CANDELABRUM_OF_INVOCATION
+                || otmp->otyp == BELL_OF_OPENING
+                || otmp->otyp == SPE_BOOK_OF_THE_DEAD
+                || is_quest_artifact(otmp)
+                || otmp->oartifact > 0
+                || Is_proper_container(otmp)
+                )
+            {
+                otmp->in_use = 0; /* Likely memory corruption; prevent destruction of any critical items */
+                if (!quietly)
+                    pline("Mysterious force prevents finishing off %s...", xname(otmp));
+            }
+            else
+            {
+                if (!quietly)
+                    pline("Finishing off %s...", xname(otmp));
+                useup(otmp);
+            }
         }
     }
 }
