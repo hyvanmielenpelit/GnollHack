@@ -3463,7 +3463,7 @@ boolean dobot;
         losehp(adjust_damage(d(6, 6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_SPELL_DAMAGE), "magical explosion", KILLED_BY_AN);
         current_container = 0; /* baggone = TRUE; */
 
-        standard_hint("Putting a wand of cancellation into a magical bag will typically cause it explode. To avoid doing this accidently, put unidentified wands into a non-magical bag.", &u.uhint.bag_destroyed_by_cancellation);
+        standard_hint("Putting a wand of cancellation into a magical bag will typically cause it to explode. To avoid doing this accidently, put unidentified wands into a non-magical bag.", &u.uhint.bag_destroyed_by_cancellation);
     }
 
     if (current_container) 
@@ -3970,8 +3970,8 @@ int applymode; /* 0 = normal, 1 = take out items, 2 = put in items */
 
     if (Is_magic_chest(obj) && insider)
     {
-        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "A mysterious force prevents you from opening %s.", thecxname(obj));
         play_sfx_sound(SFX_MYSTERIOUS_FORCE_PREVENTS);
+        pline_ex(ATR_NONE, CLR_MSG_MYSTICAL, "A mysterious force prevents you from opening %s.", thecxname(obj));
         return 0;
     }
     else if (obj->olocked)
