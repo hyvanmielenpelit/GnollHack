@@ -287,11 +287,12 @@ namespace GnollHackX
 #if WINDOWS
             if(WindowsXamlWindow != null && WindowedMode)
             {
-                var handle = WinRT.Interop.WindowNative.GetWindowHandle(WindowsXamlWindow);
-                var id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
-                var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(id);
+                //var handle = WinRT.Interop.WindowNative.GetWindowHandle(WindowsXamlWindow);
+                //var id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
+                //var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(id);
+                var appWindow = WindowsXamlWindow.AppWindow;
                 bool isMaximized = false;
-                var presenter = WindowsXamlWindow?.AppWindow?.Presenter as Microsoft.UI.Windowing.OverlappedPresenter;
+                var presenter = appWindow?.Presenter as Microsoft.UI.Windowing.OverlappedPresenter;
                 if (presenter != null)
                 {
                     if (presenter.State == Microsoft.UI.Windowing.OverlappedPresenterState.Maximized)

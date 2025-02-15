@@ -167,7 +167,8 @@ public static class MauiProgram
                         };
                         var handle = WinRT.Interop.WindowNative.GetWindowHandle(window);
                         var id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
-                        var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(id);
+                        //var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(id);
+                        var appWindow = window.AppWindow;
                         appWindow.Closing += (s, e) =>
                         {
                             if(GHApp.CurrentGamePage != null)
