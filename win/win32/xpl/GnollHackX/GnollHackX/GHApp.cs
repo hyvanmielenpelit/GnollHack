@@ -290,13 +290,27 @@ namespace GnollHackX
                 var handle = WinRT.Interop.WindowNative.GetWindowHandle(WindowsXamlWindow);
                 var id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
                 var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(id);
-                if(appWindow != null)
+                bool isMaximized = false;
+                var presenter = WindowsXamlWindow?.AppWindow?.Presenter as Microsoft.UI.Windowing.OverlappedPresenter;
+                if (presenter != null)
                 {
-                    Preferences.Set("WindowedSizeX", appWindow.Position.X);
-                    Preferences.Set("WindowedSizeY", appWindow.Position.Y);
-                    Preferences.Set("WindowedSizeWidth", appWindow.Size.Width);
-                    Preferences.Set("WindowedSizeHeight", appWindow.Size.Height);
+                    if (presenter.State == Microsoft.UI.Windowing.OverlappedPresenterState.Maximized)
+                    {
+                        isMaximized = true;
+                    }
+                }
+
+                if (appWindow != null)
+                {
                     Preferences.Set("WindowedSizeDisplayDensity", DisplayDensity);
+                    Preferences.Set("WindowedSizeIsMaximized", isMaximized);
+                    if(!isMaximized)
+                    {
+                        Preferences.Set("WindowedSizeX", appWindow.Position.X);
+                        Preferences.Set("WindowedSizeY", appWindow.Position.Y);
+                        Preferences.Set("WindowedSizeWidth", appWindow.Size.Width);
+                        Preferences.Set("WindowedSizeHeight", appWindow.Size.Height);
+                    }
                 }
             }
 #endif
@@ -1128,7 +1142,10 @@ namespace GnollHackX
             if (WindowsXamlWindow?.AppWindow?.Presenter is Microsoft.UI.Windowing.OverlappedPresenter presenter)
             {
                 if (WindowedMode)
-                    presenter.Restore();
+                {
+                    if (presenter.State == Microsoft.UI.Windowing.OverlappedPresenterState.Minimized)
+                        presenter.Restore();
+                }
                 else
                     presenter.Maximize();
             }

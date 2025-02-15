@@ -182,17 +182,18 @@ public static class MauiProgram
                             }
                         };
 
-                        bool maximizeWindow = !Preferences.Get("WindowedMode", false);
-                        if(maximizeWindow)
+                        bool fullScreen = !Preferences.Get("WindowedMode", false);
+                        if (fullScreen)
                         {
-                            window.ExtendsContentIntoTitleBar = false;
-                            switch (appWindow.Presenter)
-                            {
-                                case Microsoft.UI.Windowing.OverlappedPresenter overlappedPresenter:
-                                    overlappedPresenter.SetBorderAndTitleBar(false, false);
-                                    overlappedPresenter.Maximize();
-                                    break;
-                            }
+                            window.AppWindow.SetPresenter(AppWindowPresenterKind.FullScreen);
+                            //window.ExtendsContentIntoTitleBar = false;
+                            //switch (appWindow.Presenter)
+                            //{
+                            //    case Microsoft.UI.Windowing.OverlappedPresenter overlappedPresenter:
+                            //        overlappedPresenter.SetBorderAndTitleBar(false, false);
+                            //        overlappedPresenter.Maximize();
+                            //        break;
+                            //}
                         }
                         else
                         {
@@ -220,18 +221,6 @@ public static class MauiProgram
                             Microsoft.UI.Windowing.DisplayArea displayArea = Microsoft.UI.Windowing.DisplayArea.GetFromWindowId(id, Microsoft.UI.Windowing.DisplayAreaFallback.Nearest);
                             if (sizeWidth > 0 && sizeHeight > 0 && onSomeMonitor)
                             {
-                                //if (displayArea != null && displayArea.WorkArea.Width > 0 && displayArea.WorkArea.Height > 0)
-                                //{
-                                //    if (sizeX + sizeWidth > displayArea.WorkArea.X + displayArea.WorkArea.Width * 1.1 + 32)
-                                //        sizeX = sizeWidth = 0;
-                                //    else if (sizeX < displayArea.WorkArea.X - 16)
-                                //        sizeX = sizeWidth = 0;
-
-                                //    if (sizeY + sizeHeight > displayArea.WorkArea.Y + displayArea.WorkArea.Height * 1.1 + 32)
-                                //        sizeY = sizeHeight = 0;
-                                //    else if (sizeY < displayArea.WorkArea.Y - 16)
-                                //        sizeY = sizeHeight = 0;
-                                //}
                                 float scale = GHApp.DisplayDensity / (sizeDisplayDensity <= 0 ? 1.0f : sizeDisplayDensity);
                                 appWindow.MoveAndResize(new Windows.Graphics.RectInt32(sizeX, sizeY, (int)(sizeWidth * scale), (int)(sizeHeight * scale)));
                             }
@@ -243,15 +232,39 @@ public static class MauiProgram
                                 appWindow.Move(CenteredPosition);
                             }
 
+                            bool sizeMaximized = Preferences.Get("WindowedSizeIsMaximized", false);
+                            if(sizeMaximized)
+                            {
+                                switch (appWindow.Presenter)
+                                {
+                                    case Microsoft.UI.Windowing.OverlappedPresenter overlappedPresenter:
+                                        overlappedPresenter.Maximize();
+                                        break;
+                                }
+                            }
+
                             appWindow.Destroying += (sender, args) =>
                             {
                                 if(sender != null && GHApp.WindowedMode)
                                 {
-                                    Preferences.Set("WindowedSizeX", sender.Position.X);
-                                    Preferences.Set("WindowedSizeY", sender.Position.Y);
-                                    Preferences.Set("WindowedSizeWidth", sender.Size.Width);
-                                    Preferences.Set("WindowedSizeHeight", sender.Size.Height);
+                                    bool isMaximized = false;
+                                    var presenter = sender.Presenter as OverlappedPresenter;
+                                    if (presenter != null)
+                                    {
+                                        if (presenter.State == OverlappedPresenterState.Maximized)
+                                        {
+                                            isMaximized = true;
+                                        }
+                                    }
                                     Preferences.Set("WindowedSizeDisplayDensity", GHApp.DisplayDensity);
+                                    Preferences.Set("WindowedSizeIsMaximized", isMaximized);
+                                    if (!isMaximized)
+                                    {
+                                        Preferences.Set("WindowedSizeX", sender.Position.X);
+                                        Preferences.Set("WindowedSizeY", sender.Position.Y);
+                                        Preferences.Set("WindowedSizeWidth", sender.Size.Width);
+                                        Preferences.Set("WindowedSizeHeight", sender.Size.Height);
+                                    }
                                 }
                             };
                         }
