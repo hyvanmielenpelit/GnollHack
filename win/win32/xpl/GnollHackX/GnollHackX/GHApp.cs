@@ -1033,6 +1033,12 @@ namespace GnollHackX
             get { return !IsDesktop; }
         }
 
+        public static void DoKeyboardFocus()
+        {
+            if (CurrentMainPage != null)
+                CurrentMainPage.DoKeyboardFocus();
+        }
+
         public static void OnStart()
         {
             if (PlatformService != null)
@@ -1042,6 +1048,8 @@ namespace GnollHackX
             AltDown = false;
             ShiftDown = false;
             SleepMuteMode = false;
+
+            DoKeyboardFocus();
 
             if (IsAutoSaveUponSwitchingAppsOn)
             {

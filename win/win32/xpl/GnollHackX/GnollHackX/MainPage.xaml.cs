@@ -1394,6 +1394,18 @@ namespace GnollHackX
             }
             StopGeneralTimer = false;
             StartGeneralTimer();
+            DoKeyboardFocus();
+        }
+
+        public void DoKeyboardFocus()
+        {
+#if WINDOWS
+            Microsoft.UI.Xaml.Controls.Button fbtn = KeyboardFocusButton.Handler?.PlatformView as Microsoft.UI.Xaml.Controls.Button;
+            if (fbtn != null)
+            {
+                fbtn.Focus(FocusState.Keyboard);
+            }
+#endif
         }
 
         private async void PendingTasksOkButton_Clicked(object sender, EventArgs e)

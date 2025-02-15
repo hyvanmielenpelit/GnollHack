@@ -129,16 +129,25 @@ public static class MauiProgram
                                 else if (e.WParam == 0xF120)
                                 {
                                     System.Diagnostics.Debug.WriteLine("Restoring!");
+                                    GHApp.DoKeyboardFocus();
                                 }
                                 break;
                             case 0x0005: /* WM_SIZE */
-                                if (e.WParam == 0)
                                 {
-                                    System.Diagnostics.Debug.WriteLine("SIZE_RESTORED!");
-                                }
-                                else if (e.WParam == 1)
-                                {
-                                    System.Diagnostics.Debug.WriteLine("SIZE_MINIMIZED!");
+                                    switch (e.WParam)
+                                    {
+                                        case 0:
+                                            System.Diagnostics.Debug.WriteLine("SIZE_RESTORED!");
+                                            GHApp.DoKeyboardFocus();
+                                            break;
+                                        case 1:
+                                            System.Diagnostics.Debug.WriteLine("SIZE_MINIMIZED!");
+                                            break;
+                                        case 2:
+                                            System.Diagnostics.Debug.WriteLine("SIZE_MAXIMIZED!");
+                                            GHApp.DoKeyboardFocus();
+                                            break;
+                                    }
                                 }
                                 break;
                         }
@@ -172,6 +181,7 @@ public static class MauiProgram
                                 GHApp.FmodService?.StopAllSounds((uint)StopSoundFlags.All, 0U);
                             }
                         };
+
                         bool maximizeWindow = !Preferences.Get("WindowedMode", false);
                         if(maximizeWindow)
                         {
