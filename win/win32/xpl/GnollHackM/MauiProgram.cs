@@ -122,14 +122,21 @@ public static class MauiProgram
                         switch(e.MessageId)
                         {
                             case 0x0112: /* WM_SYSCOMMAND */
-                                if (e.WParam == 0xF020)
                                 {
-                                    System.Diagnostics.Debug.WriteLine("Minimizing!");
-                                }
-                                else if (e.WParam == 0xF120)
-                                {
-                                    System.Diagnostics.Debug.WriteLine("Restoring!");
-                                    GHApp.DoKeyboardFocus();
+                                    switch (e.WParam)
+                                    {
+                                        case 0xF100:
+                                            System.Diagnostics.Debug.WriteLine("MenuKey Pressed!");
+                                            return;
+                                        case 0xF020:
+                                            System.Diagnostics.Debug.WriteLine("Minimizing!");
+                                            break;
+                                        case 0xF120:
+                                            System.Diagnostics.Debug.WriteLine("Restoring!");
+                                            GHApp.DoKeyboardFocus();
+                                            break;
+                                    }
+
                                 }
                                 break;
                             case 0x0005: /* WM_SIZE */
