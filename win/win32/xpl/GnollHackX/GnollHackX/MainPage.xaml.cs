@@ -120,6 +120,9 @@ namespace GnollHackX
                 GHApp.DisplayDensity = DeviceDisplay.Current.MainDisplayInfo.Density <= 0.0 ? 1.0f : (float)DeviceDisplay.Current.MainDisplayInfo.Density;
                 GHApp.LoadCustomCursor();
                 UIUtils.ChangeElementCursor(RootGrid, GameCursorType.Normal);
+                UIUtils.ChangeElementCursor(classicModeLabel, GameCursorType.Info);
+                UIUtils.ChangeElementCursor(casualModeLabel, GameCursorType.Info);
+                UIUtils.ChangeElementCursor(wizardModeLabel, GameCursorType.Info);
             };
 #endif
         }

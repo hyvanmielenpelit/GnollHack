@@ -58,6 +58,7 @@ namespace GnollHackX.Pages.MainScreen
             UIUtils.SetViewCursorOnHandler(BonesAllowedUsersLabel, GameCursorType.Info);
             UIUtils.SetViewCursorOnHandler(RecordLabel, GameCursorType.Info);
             UIUtils.SetViewCursorOnHandler(GZipLabel, GameCursorType.Info);
+            UIUtils.SetViewCursorOnHandler(PostDiagnosticDataLabel, GameCursorType.Info);
 
             _gameMenuPage = gameMenuPage;
             if (_gameMenuPage != null)
@@ -2154,10 +2155,19 @@ namespace GnollHackX.Pages.MainScreen
                 }
             }
         }
+
         protected override bool OnBackButtonPressed()
         {
             return true;
         }
 
+        private void PostDiagnosticDataLabel_TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
+            PopupTitleLabel.Text = "Post Diagnostic Data";
+            PopupLabel.Text = "Diagnostic data consists of short notifications about panics and other similar errors, which are sent only upon such occurences. The data also includes device memory and disk space information to rule out related causes.\n\nIt helps development if posting diagnostic data is switched on.";
+            PopupOkButton.IsEnabled = true;
+            PopupGrid.IsVisible = true;
+        }
     }
 }
