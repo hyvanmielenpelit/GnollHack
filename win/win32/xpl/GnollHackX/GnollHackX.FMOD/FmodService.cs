@@ -36,6 +36,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using System.Diagnostics;
 
 #if GNH_MAUI
 namespace GnollHackM
@@ -135,8 +136,13 @@ namespace GnollHackX.Unknown
 
         public static void AndroidInit(Context p0)
         {
+#if FMOD_DEBUG_LOG
+            LoadNativeLibrary("fmodL");
+            LoadNativeLibrary("fmodstudioL");
+#else
             LoadNativeLibrary("fmod");
             LoadNativeLibrary("fmodstudio");
+#endif
             Org.Fmod.FMOD.Init(p0);
         }
 #endif
