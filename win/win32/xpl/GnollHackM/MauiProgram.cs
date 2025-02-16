@@ -398,7 +398,7 @@ public class KeyboardHook
     private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
     {
         Debug.WriteLine("HookCallback: {0}, {1}, {2}", nCode, wParam, lParam);
-        if (nCode >= 0 && GHApp.WindowedMode)
+        if (nCode >= 0)
         {
             if (wParam == (IntPtr)WM_SYSKEYUP)
             {
