@@ -85,6 +85,7 @@ namespace GnollHackX.Pages.Game
             var page = await GHApp.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta('s'));
             GHApp.DisconnectIViewHandlers(page);
+            GHApp.DoKeyboardFocus();
         }
 
         private async void btnQuit_Clicked(object sender, EventArgs e)
@@ -94,6 +95,7 @@ namespace GnollHackX.Pages.Game
             var page = await GHApp.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, _gamePage.GameEnded ? 'q' : GHUtils.Meta('q'));
             GHApp.DisconnectIViewHandlers(page);
+            GHApp.DoKeyboardFocus();
         }
 
         private async void btnBackToGame_Clicked(object sender, EventArgs e)
@@ -102,6 +104,7 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
             var page = await GHApp.Navigation.PopModalAsync();
             GHApp.DisconnectIViewHandlers(page);
+            GHApp.DoKeyboardFocus();
         }
 
         private async void btnOptions_Clicked(object sender, EventArgs e)
@@ -112,6 +115,7 @@ namespace GnollHackX.Pages.Game
             var page = await GHApp.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, 'O');
             GHApp.DisconnectIViewHandlers(page);
+            GHApp.DoKeyboardFocus();
         }
 
         private async void btnSnapshot_Clicked(object sender, EventArgs e)
@@ -121,6 +125,7 @@ namespace GnollHackX.Pages.Game
             var page = await GHApp.Navigation.PopModalAsync();
             _gamePage.GenericButton_Clicked(sender, e, GHUtils.Meta(28));
             GHApp.DisconnectIViewHandlers(page);
+            GHApp.DoKeyboardFocus();
         }
 
         private async void btnSettings_Clicked(object sender, EventArgs e)
@@ -163,6 +168,7 @@ namespace GnollHackX.Pages.Game
                 MainLayout.IsEnabled = false;
                 var page = await GHApp.Navigation.PopModalAsync();
                 GHApp.DisconnectIViewHandlers(page);
+                GHApp.DoKeyboardFocus();
             }
             return false;
         }
@@ -196,6 +202,7 @@ namespace GnollHackX.Pages.Game
                 _gamePage.ShowGUITips(false);
             var page = await GHApp.Navigation.PopModalAsync();
             GHApp.DisconnectIViewHandlers(page);
+            GHApp.DoKeyboardFocus();
         }
 
         private double _currentPageWidth = 0;

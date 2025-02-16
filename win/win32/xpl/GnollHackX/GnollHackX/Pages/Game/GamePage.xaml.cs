@@ -1057,6 +1057,7 @@ namespace GnollHackX.Pages.Game
             MapNoClipMode = !MapNoClipMode;
             ToggleAutoCenterModeButton_Clicked(null, null);
             StartAtBlack();
+            GHApp.DoKeyboardFocus();
 
             /* Do this last just in case */
             DesktopButtons = Preferences.Get("DesktopButtons", GHApp.IsDesktop);
