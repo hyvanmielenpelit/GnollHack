@@ -413,8 +413,8 @@ public class KeyboardHook
                 //bool isShiftPressed = (keyStates[VK_SHIFT] & 0x80) != 0;
                 //Debug.WriteLine("isShiftPressed=" + isShiftPressed);
 
-                bool isShiftDown = (shiftVal & 0x8000) != 0 || GHApp.ShiftDown;
-                bool isCtrlDown = (ctrlVal & 0x8000) != 0 || GHApp.CtrlDown;
+                bool isShiftDown = /*(shiftVal & 0x8000) != 0 || */ GHApp.ShiftDown;
+                bool isCtrlDown = /*(ctrlVal & 0x8000) != 0 || */ GHApp.CtrlDown;
 
                 GHApp.ShiftDown = false;
                 GHApp.CtrlDown = false;
