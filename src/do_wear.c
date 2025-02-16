@@ -4033,7 +4033,7 @@ register struct obj *atmp;
         (void) Boots_off();
         useup(otmp);
     }
-    else if (DESTROY_ARM(uarms) && is_shield(otmp)) {
+    else if (uarms && is_shield(uarms) && DESTROY_ARM(uarms)) {
         if (donning(otmp))
             cancel_don();
         play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);

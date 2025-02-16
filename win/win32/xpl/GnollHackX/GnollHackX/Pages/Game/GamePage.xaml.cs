@@ -19165,6 +19165,10 @@ namespace GnollHackX.Pages.Game
             {
                 /* Nothing */
             }
+            else if(key == GHSpecialKey.None)
+            {
+                handled = true;
+            }
             else if (MoreCommandsGrid.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space))
             {
                 CommandCanvas_Pressed(null, null);
@@ -19773,12 +19777,12 @@ namespace GnollHackX.Pages.Game
 
         private void Content_PreviewKeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
-            //e.Handled = true;
+
         }
 
         private void Content_PreviewKeyUp(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
         {
-            //e.Handled = true;
+
         }
 #endif
     }

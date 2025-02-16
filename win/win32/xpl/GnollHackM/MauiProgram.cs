@@ -27,9 +27,9 @@ using Microsoft.Maui.Platform;
 using Sentry.Maui;
 #if WINDOWS
 using Sentry.Profiling;
-using Microsoft.UI;
 using Microsoft.UI.Windowing;
-using Windows.Graphics;
+using System.Runtime.InteropServices;
+using System.Diagnostics;
 #endif
 #endif
 
@@ -37,7 +37,7 @@ namespace GnollHackM;
 
 public static class MauiProgram
 {
-	public static MauiApp CreateMauiApp()
+    public static MauiApp CreateMauiApp()
 	{
 		var builder = MauiApp.CreateBuilder();
 		builder
@@ -175,6 +175,8 @@ public static class MauiProgram
                         var handle = WinRT.Interop.WindowNative.GetWindowHandle(window);
                         var id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(handle);
                         //var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(id);
+                        KeyboardHook.Start();
+
                         var appWindow = window.AppWindow;
                         appWindow.Closing += (s, e) =>
                         {
@@ -253,7 +255,8 @@ public static class MauiProgram
 
                             appWindow.Destroying += (sender, args) =>
                             {
-                                if(sender != null && GHApp.WindowedMode)
+                                KeyboardHook.Stop();
+                                if (sender != null && GHApp.WindowedMode)
                                 {
                                     bool isMaximized = false;
                                     var presenter = sender.Presenter as OverlappedPresenter;
@@ -345,7 +348,6 @@ public static class MauiProgram
 #endif
         return builder.Build();
 	}
-
 }
 
 #if ANDROID
@@ -356,6 +358,134 @@ public class MyFragmentLifecycleCallbacks(Action<AndroidX.Fragment.App.FragmentM
         onFragmentStarted?.Invoke(fm, f);
         base.OnFragmentStarted(fm, f);
     }
+}
+#endif
+
+#if WINDOWS
+public class KeyboardHook
+{
+    private const int WH_KEYBOARD_LL = 13;
+    private const int WM_SYSKEYDOWN = 0x0104; // ALT + Key messages
+    private const int WM_SYSKEYUP = 0x0105; // ALT + Key messages    
+    private const int VK_SHIFT = 0x10;
+    private const int VK_CONTROL = 0x11;
+
+    private static LowLevelKeyboardProc _proc = HookCallback;
+    private static IntPtr _hookID = IntPtr.Zero;
+
+    public static void Start()
+    {
+        _hookID = SetHook(_proc);
+    }
+
+    public static void Stop()
+    {
+        UnhookWindowsHookEx(_hookID);
+    }
+
+    private static IntPtr SetHook(LowLevelKeyboardProc proc)
+    {
+        using (Process curProcess = Process.GetCurrentProcess())
+        using (ProcessModule curModule = curProcess.MainModule)
+        {
+            return SetWindowsHookEx(WH_KEYBOARD_LL, proc,
+                GetModuleHandle(curModule.ModuleName), 0);
+        }
+    }
+
+    private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+    private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+    {
+        Debug.WriteLine("HookCallback: {0}, {1}, {2}", nCode, wParam, lParam);
+        if (nCode >= 0 && GHApp.WindowedMode)
+        {
+            if (wParam == (IntPtr)WM_SYSKEYUP)
+            {
+                short shiftVal = GetKeyState(VK_SHIFT);
+                short ctrlVal = GetKeyState(VK_CONTROL);
+                Debug.WriteLine("shiftVal=" + shiftVal);
+                Debug.WriteLine("ctrlVal=" + ctrlVal);
+                //byte[] keyStates = new byte[256];
+                //GetKeyboardState(keyStates);
+
+                //// Check if Shift is pressed
+                //bool isShiftPressed = (keyStates[VK_SHIFT] & 0x80) != 0;
+                //Debug.WriteLine("isShiftPressed=" + isShiftPressed);
+
+                bool isShiftDown = (shiftVal & 0x8000) != 0 || GHApp.ShiftDown;
+                bool isCtrlDown = (ctrlVal & 0x8000) != 0 || GHApp.CtrlDown;
+
+                GHApp.ShiftDown = false;
+                GHApp.CtrlDown = false;
+                GHApp.AltDown = false;
+
+                int vkCode = Marshal.ReadInt32(lParam);
+                GHSpecialKey spkey = GHSpecialKey.None;
+                if (vkCode >= 0x41 && vkCode <= 0x5A)
+                    spkey = GHSpecialKey.A + vkCode - 0x41;
+                else if (vkCode >= 0x30 && vkCode <= 0x39)
+                    spkey = GHSpecialKey.Number0 + vkCode - 0x30;
+                else if (vkCode >= 0x60 && vkCode <= 0x69)
+                    spkey = GHSpecialKey.NumberPad0 + vkCode - 0x60;
+                else
+                {
+                    switch(vkCode)
+                    {
+                        case 0xBB:
+                            spkey = GHSpecialKey.Plus;
+                            break;
+                        case 0xBC:
+                            spkey = GHSpecialKey.Comma;
+                            break;
+                        case 0xBD:
+                            spkey = GHSpecialKey.Minus;
+                            break;
+                        case 0xBE:
+                            spkey = GHSpecialKey.Period;
+                            break;
+                    }
+                }
+                GHApp.SendSpecialKeyPress(spkey, isCtrlDown, true, isShiftDown);
+                return (IntPtr)1;
+            }
+            else if (wParam == (IntPtr)WM_SYSKEYDOWN)
+            {
+                int vkCode = Marshal.ReadInt32(lParam);
+                if (vkCode == 0x10)
+                {
+                    GHApp.ShiftDown = true;
+                    return 1;
+                }
+                else if (vkCode == 0x11)
+                {
+                    GHApp.CtrlDown = true;
+                    return 1;
+                }
+                return (IntPtr)1;
+            }
+        }
+        return CallNextHookEx(_hookID, nCode, wParam, lParam);
+    }
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern bool UnhookWindowsHookEx(IntPtr hhk);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern IntPtr GetModuleHandle(string lpModuleName);
+
+    [DllImport("user32.dll")]
+    private static extern short GetKeyState(int nVirtKey);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern bool GetKeyboardState(byte[] lpKeyState);
+
 }
 #endif
 
