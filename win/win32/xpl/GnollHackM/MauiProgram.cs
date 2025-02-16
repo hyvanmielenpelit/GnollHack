@@ -365,6 +365,9 @@ public class MyFragmentLifecycleCallbacks(Action<AndroidX.Fragment.App.FragmentM
 public class KeyboardHook
 {
     private const int WH_KEYBOARD_LL = 13;
+
+    private const int WM_KEYDOWN = 0x0100; // Key messages
+    private const int WM_KEYUP = 0x0101; // Key messages
     private const int WM_SYSKEYDOWN = 0x0104; // ALT + Key messages
     private const int WM_SYSKEYUP = 0x0105; // ALT + Key messages    
     private const int VK_SHIFT = 0x10;
@@ -398,9 +401,37 @@ public class KeyboardHook
     private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
     {
         Debug.WriteLine("HookCallback: {0}, {1}, {2}", nCode, wParam, lParam);
-        if (nCode >= 0)
+        if (nCode >= 0 && GHApp.WindowedMode)
         {
-            if (wParam == (IntPtr)WM_SYSKEYUP)
+            if (wParam == (IntPtr)WM_KEYUP)
+            {
+                int vkCode = Marshal.ReadInt32(lParam);
+                if (vkCode == 0x10)
+                {
+                    GHApp.ShiftDown = false;
+                    return 1;
+                }
+                else if (vkCode == 0x11)
+                {
+                    GHApp.CtrlDown = false;
+                    return 1;
+                }
+            }
+            else if (wParam == (IntPtr)WM_KEYDOWN)
+            {
+                int vkCode = Marshal.ReadInt32(lParam);
+                if (vkCode == 0x10)
+                {
+                    GHApp.ShiftDown = true;
+                    return 1;
+                }
+                else if (vkCode == 0x11)
+                {
+                    GHApp.CtrlDown = true;
+                    return 1;
+                }
+            }
+            else if (wParam == (IntPtr)WM_SYSKEYUP)
             {
                 short shiftVal = GetKeyState(VK_SHIFT);
                 short ctrlVal = GetKeyState(VK_CONTROL);
@@ -430,7 +461,7 @@ public class KeyboardHook
                     spkey = GHSpecialKey.NumberPad0 + vkCode - 0x60;
                 else
                 {
-                    switch(vkCode)
+                    switch (vkCode)
                     {
                         case 0xBB:
                             spkey = GHSpecialKey.Plus;
