@@ -400,58 +400,66 @@ public class KeyboardHook
 
     private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
     {
-        Debug.WriteLine("HookCallback: {0}, {1}, {2}", nCode, wParam, lParam);
+        Debug.WriteLine("HookCallback: " + nCode + ", " + wParam + ", " + lParam);
         if (nCode >= 0 && GHApp.WindowedMode)
         {
             if (wParam == (IntPtr)WM_KEYUP)
             {
+                Debug.WriteLine("HookCallback: WM_KEYUP");
                 int vkCode = Marshal.ReadInt32(lParam);
-                if (vkCode == 0x10)
+                if (vkCode == 0x10 || vkCode == 0xA0 || vkCode == 0xA1)
                 {
                     GHApp.ShiftDown = false;
-                    return 1;
+                    Debug.WriteLine("HookCallback: Shift Up");
                 }
-                else if (vkCode == 0x11)
+                else if (vkCode == 0x11 || vkCode == 0xA2 || vkCode == 0xA3)
                 {
                     GHApp.CtrlDown = false;
-                    return 1;
+                    Debug.WriteLine("HookCallback: Control Up");
                 }
             }
             else if (wParam == (IntPtr)WM_KEYDOWN)
             {
+                Debug.WriteLine("HookCallback: WM_KEYDOWN");
                 int vkCode = Marshal.ReadInt32(lParam);
-                if (vkCode == 0x10)
+                if (vkCode == 0x10 || vkCode == 0xA0 || vkCode == 0xA1)
                 {
                     GHApp.ShiftDown = true;
-                    return 1;
+                    Debug.WriteLine("HookCallback: Shift Down");
                 }
-                else if (vkCode == 0x11)
+                else if (vkCode == 0x11 || vkCode == 0xA2 || vkCode == 0xA3)
                 {
                     GHApp.CtrlDown = true;
-                    return 1;
+                    Debug.WriteLine("HookCallback: Control Down");
                 }
             }
             else if (wParam == (IntPtr)WM_SYSKEYUP)
             {
-                short shiftVal = GetKeyState(VK_SHIFT);
-                short ctrlVal = GetKeyState(VK_CONTROL);
-                Debug.WriteLine("shiftVal=" + shiftVal);
-                Debug.WriteLine("ctrlVal=" + ctrlVal);
-                //byte[] keyStates = new byte[256];
-                //GetKeyboardState(keyStates);
+                Debug.WriteLine("HookCallback: WM_SYSKEYUP");
 
-                //// Check if Shift is pressed
-                //bool isShiftPressed = (keyStates[VK_SHIFT] & 0x80) != 0;
-                //Debug.WriteLine("isShiftPressed=" + isShiftPressed);
+                bool isShiftDown = GHApp.ShiftDown;
+                bool isCtrlDown = GHApp.CtrlDown;
 
-                bool isShiftDown = /*(shiftVal & 0x8000) != 0 || */ GHApp.ShiftDown;
-                bool isCtrlDown = /*(ctrlVal & 0x8000) != 0 || */ GHApp.CtrlDown;
-
-                GHApp.ShiftDown = false;
-                GHApp.CtrlDown = false;
                 GHApp.AltDown = false;
-
                 int vkCode = Marshal.ReadInt32(lParam);
+                if (vkCode == 0x10 || vkCode == 0xA0 || vkCode == 0xA1)
+                {
+                    GHApp.ShiftDown = false;
+                    Debug.WriteLine("HookCallback: Syskey Shift Up");
+                    return 1;
+                }
+                else if (vkCode == 0x11 || vkCode == 0xA2 || vkCode == 0xA3)
+                {
+                    GHApp.CtrlDown = false;
+                    Debug.WriteLine("HookCallback: Syskey Control Up");
+                    return 1;
+                }
+                else if (isCtrlDown) /* AltGr, also includes $ on Finnish keyboard */
+                {
+                    Debug.WriteLine("HookCallback: Syskey with Ctrl (AltGr)");
+                    return CallNextHookEx(_hookID, nCode, wParam, lParam);
+                }
+
                 GHSpecialKey spkey = GHSpecialKey.None;
                 if (vkCode >= 0x41 && vkCode <= 0x5A)
                     spkey = GHSpecialKey.A + vkCode - 0x41;
@@ -478,22 +486,33 @@ public class KeyboardHook
                     }
                 }
                 GHApp.SendSpecialKeyPress(spkey, isCtrlDown, true, isShiftDown);
-                return (IntPtr)1;
+                return 1;
             }
             else if (wParam == (IntPtr)WM_SYSKEYDOWN)
             {
                 int vkCode = Marshal.ReadInt32(lParam);
-                if (vkCode == 0x10)
+                Debug.WriteLine("HookCallback: WM_SYSKEYDOWN, vkCode=" + vkCode);
+                if (vkCode == 0x10 || vkCode == 0xA0 || vkCode == 0xA1)
                 {
                     GHApp.ShiftDown = true;
-                    return 1;
+                    Debug.WriteLine("HookCallback: Syskey Shift Down");
                 }
-                else if (vkCode == 0x11)
+                else if (vkCode == 0x11 || vkCode == 0xA2 || vkCode == 0xA3)
                 {
                     GHApp.CtrlDown = true;
-                    return 1;
+                    Debug.WriteLine("HookCallback: Syskey Control Down");
                 }
-                return (IntPtr)1;
+                else if (vkCode == 0x12 || vkCode == 0xA4 || vkCode == 0xA5)
+                {
+                    GHApp.AltDown = true;
+                    Debug.WriteLine("HookCallback: Syskey Alt Down");
+                }
+                else if (GHApp.CtrlDown)
+                {
+                    Debug.WriteLine("HookCallback: Syskey Down with Ctrl (AltGr)");
+                }
+                else
+                    return 1;
             }
         }
         return CallNextHookEx(_hookID, nCode, wParam, lParam);
