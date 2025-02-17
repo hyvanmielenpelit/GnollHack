@@ -73,7 +73,7 @@
 	  <UseInterpreter>false</UseInterpreter>
     <JavaMaximumHeapSize>2G</JavaMaximumHeapSize>
     <!--<AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>-->
-    <RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>android-arm64;android-x64</RuntimeIdentifiers>
     <!--<AndroidEnableProfiler>true</AndroidEnableProfiler>--> 
 	</PropertyGroup>
 
