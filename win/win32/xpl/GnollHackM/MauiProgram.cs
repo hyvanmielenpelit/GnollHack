@@ -411,6 +411,7 @@ public class KeyboardHook
                 {
                     GHApp.ShiftDown = false;
                     Debug.WriteLine("HookCallback: Shift Up");
+                    return 1;
                 }
                 else if (vkCode == 0x11 || vkCode == 0xA2 || vkCode == 0xA3)
                 {
@@ -426,6 +427,7 @@ public class KeyboardHook
                 {
                     GHApp.ShiftDown = true;
                     Debug.WriteLine("HookCallback: Shift Down");
+                    return 1;
                 }
                 else if (vkCode == 0x11 || vkCode == 0xA2 || vkCode == 0xA3)
                 {
@@ -452,16 +454,12 @@ public class KeyboardHook
                 {
                     GHApp.CtrlDown = false;
                     Debug.WriteLine("HookCallback: Syskey Control Up");
-                    return 1;
                 }
                 else if (isCtrlDown) /* AltGr, also includes $ on Finnish keyboard */
                 {
                     Debug.WriteLine("HookCallback: Syskey with Ctrl (AltGr)");
                     return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 }
-
-                GHApp.ShiftDown = false;
-                GHApp.CtrlDown = false;
 
                 GHSpecialKey spkey = GHSpecialKey.None;
                 if (vkCode >= 0x41 && vkCode <= 0x5A)
@@ -499,6 +497,7 @@ public class KeyboardHook
                 {
                     GHApp.ShiftDown = true;
                     Debug.WriteLine("HookCallback: Syskey Shift Down");
+                    return 1;
                 }
                 else if (vkCode == 0x11 || vkCode == 0xA2 || vkCode == 0xA3)
                 {
