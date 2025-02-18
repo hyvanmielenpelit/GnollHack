@@ -4334,7 +4334,7 @@ SPELL("detect traps","incongruous", None, None, "The caster gains the knowledge 
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 SPELL("x-ray vision",    "transparent", None, None, "Grants the caster X-ray vision",
     P_DIVINATION_SPELL,   2,   3, 0, 
-    8, 160, A_MAX_INT_WIS_CHA, 0, 0, 100, 0, 1, NODIR, WARNING, 0, 0, 0, 0, 10, 10, 600,
+    8, 160, A_MAX_INT_WIS_CHA, 0, 0, 100, 0, 1, NODIR, XRAY_VISION, 0, 0, 0, 0, 10, 10, 600,
     S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_NONE, HI_LEATHER, OBJECT_SOUNDSET_SPELLBOOK,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 SPELL("minor consultation","damaged", None, None, "The caster receives a minor hint about the game",
