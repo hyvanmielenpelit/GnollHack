@@ -1707,6 +1707,7 @@ namespace GnollHackX
         public const float MinimumMapFontSize = 4.0f;
         public const float MaximumMapFontSize = 500.0f;
         public const float MapFontDefaultSize = 72.0f;
+        public const float TileSizeAdjustmentModifier = 0.9f;        
         public const float MapFontRelativeAlternateSize = 7.0f / 16.0f;
         public const int DefaultMessageRows = 5;
         public const int AllMessageRows = 250;

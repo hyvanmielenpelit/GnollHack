@@ -6590,8 +6590,8 @@ namespace GnollHackX.Pages.Game
 
                 if (GraphicsStyle == GHGraphicsStyle.Tiles && !ForceAscii)
                 {
-                    width = GHConstants.TileWidth * usedFontSize / GHConstants.MapFontDefaultSize;
-                    height = GHConstants.TileHeight * usedFontSize / GHConstants.MapFontDefaultSize;
+                    width = GHConstants.TileWidth * usedFontSize / GHConstants.MapFontDefaultSize * GHConstants.TileSizeAdjustmentModifier;
+                    height = GHConstants.TileHeight * usedFontSize / GHConstants.MapFontDefaultSize * GHConstants.TileSizeAdjustmentModifier;
                 }
 
                 float mapwidth = width * (GHConstants.MapCols - 1);

@@ -454,6 +454,11 @@ public class KeyboardHook
                     Debug.WriteLine("HookCallback: Syskey Control Up");
                     return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 }
+                else if (vkCode == 0x09)
+                {
+                    Debug.WriteLine("HookCallback: Tab Up");
+                    return CallNextHookEx(_hookID, nCode, wParam, lParam);
+                }
                 else if (isCtrlDown) /* AltGr, also includes $ on Finnish keyboard */
                 {
                     Debug.WriteLine("HookCallback: Syskey with Ctrl (AltGr)");
@@ -506,6 +511,10 @@ public class KeyboardHook
                 {
                     GHApp.AltDown = true;
                     Debug.WriteLine("HookCallback: Syskey Alt Down");
+                }
+                else if (vkCode == 0x09)
+                {
+                    Debug.WriteLine("HookCallback: Tab Down");
                 }
                 else if (GHApp.CtrlDown)
                 {
