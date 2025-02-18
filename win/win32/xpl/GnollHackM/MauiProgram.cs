@@ -460,6 +460,9 @@ public class KeyboardHook
                     return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 }
 
+                GHApp.ShiftDown = false;
+                GHApp.CtrlDown = false;
+
                 GHSpecialKey spkey = GHSpecialKey.None;
                 if (vkCode >= 0x41 && vkCode <= 0x5A)
                     spkey = GHSpecialKey.A + vkCode - 0x41;
