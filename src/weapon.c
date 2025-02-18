@@ -2082,13 +2082,14 @@ int skill;
 {
     if (P_RESTRICTED(skill))
         return FALSE;
+    if (P_SKILL_LEVEL(skill) >= P_GRAND_MASTER)
+        return TRUE;
 
     return (boolean) (P_SKILL_LEVEL(skill) >= P_MAX_SKILL_LEVEL(skill)
-                      && (
-                           ((int)P_ADVANCE(skill) >= practice_needed_to_advance(skill, P_SKILL_LEVEL(skill)))
-                              || (P_SKILL_LEVEL(skill) < P_GRAND_MASTER && P_SKILL_LEVEL(skill) > P_ISRESTRICTED && urole.skill_advance_levels[skill][P_SKILL_LEVEL(skill) + 1] > 0
+                      && (((int)P_ADVANCE(skill) >= practice_needed_to_advance(skill, P_SKILL_LEVEL(skill)))
+                              || (urole.skill_advance_levels[skill][P_SKILL_LEVEL(skill) + 1] > 0
                                   && u.ulevel >= urole.skill_advance_levels[skill][P_SKILL_LEVEL(skill) + 1])
-                              ));
+                         ));
 }
 
 STATIC_OVL void
