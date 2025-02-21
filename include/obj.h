@@ -1193,6 +1193,11 @@ extern NEARDATA const struct mythic_power_definition mythic_suffix_powers[MAX_MY
      || obj_resists(o, 0, 0) \
      || is_quest_artifact(o) )
 
+#define obj_destroyed_in_lava_effects(o) \
+    ((melts_in_lava(o) || o->oclass == POTION_CLASS) \
+        && !o->oerodeproof \
+        && !oresist_fire(o))
+
 /* Manuals */
 enum manual_types
 {
