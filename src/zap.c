@@ -12112,9 +12112,10 @@ int otyp;
                 : "Oops!  %s to the floor!");
 
         /* The(aobjnam()) is safe since otmp is unidentified -dlc */
-        (void)hold_another_object(otmp, oops_msg,
-            The(aobjnam(otmp, verb)),
-            (const char*)0);
+        otmp = hold_another_object(otmp, oops_msg, The(aobjnam(otmp, verb)), (const char*)0);
+
+        if (otmp)
+            otmp->nomerge = 0;
     }
 }
 
