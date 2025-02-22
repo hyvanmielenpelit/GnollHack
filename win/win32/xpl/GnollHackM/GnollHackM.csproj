@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
+  <!-- BASE PROPERTIES -->
+  <PropertyGroup>
     <TargetFrameworks>net9.0-android;net9.0-ios;net9.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
@@ -40,7 +41,15 @@
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
 	</PropertyGroup>
 
-	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+  
+  <!-- CONFIGURATION SPECIFIC PROPERTIES -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <!--<UseInterpreter>false</UseInterpreter>-->
+    <_MauiForceXamlCForDebug>true</_MauiForceXamlCForDebug>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
 	  <!--<AotAssemblies>true</AotAssemblies>-->
 	  <!--<RunAOTCompilation>true</RunAOTCompilation>-->
 	  <!-- Optional -->
@@ -49,27 +58,9 @@
     <DebugType>None</DebugType>
   </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-ios'">
-		<ProvisioningType>manual</ProvisioningType>
-		<CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
-		<CodesignProvision>Apple Dev M July 2024 Profile</CodesignProvision>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-ios'">
-		<ProvisioningType>manual</ProvisioningType>
-		<!--<CodesignKey>Apple Distribution: Hyvan mielen pelit ry (CUG8RS847T)</CodesignKey>-->
-    <!--<CodesignProvision>Apple Dev M July 2024 Distribution Profile</CodesignProvision>-->
-    <CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
-    <CodesignProvision>Apple Dev M July 2024 Profile</CodesignProvision>
-    <!--<MtouchUseLlvm>false</MtouchUseLlvm>-->
-  </PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-android'">
-		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
-		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
+  
+  <!-- FRAMEWORK SPECIFIC PROPERTIES -->
+  <PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
 	  <UseInterpreter>false</UseInterpreter>
     <JavaMaximumHeapSize>2G</JavaMaximumHeapSize>
     <!--<AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>-->
@@ -89,30 +80,53 @@
   
   <PropertyGroup Condition="$(TargetFramework.Contains('-windows'))">
     <!--<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>-->
+    <UseInterpreter>false</UseInterpreter>
     <WindowsPackageType>MSIX</WindowsPackageType>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <SelfContained>true</SelfContained>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-		<_MauiForceXamlCForDebug>true</_MauiForceXamlCForDebug>
-		<DebugSymbols>true</DebugSymbols>
-	</PropertyGroup>
-	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-android'">
-		<MauiIcon Include="Resources\AppIcon\appicon.png" Color="#FFFFFF" ForegroundScale="0.6" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'">
-		<MauiIcon Include="Resources\AppIcon\appicon.png" ForegroundScale="1.0" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
-		<MauiIcon Include="Resources\AppIcon\appicon.png" Color="#FFCCCC" ForegroundScale="1.0" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-maccatalyst'">
-		<MauiIcon Include="Resources\AppIcon\appicon.png" Color="#FFCCCC" ForegroundScale="1.0" />
-	</ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='net9.0-android'">
+    <MauiIcon Include="Resources\AppIcon\appicon.png" Color="#FFFFFF" ForegroundScale="0.6" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'">
+    <MauiIcon Include="Resources\AppIcon\appicon.png" ForegroundScale="1.0" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
+    <MauiIcon Include="Resources\AppIcon\appicon.png" Color="#FFCCCC" ForegroundScale="1.0" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='net9.0-maccatalyst'">
+    <MauiIcon Include="Resources\AppIcon\appicon.png" Color="#FFCCCC" ForegroundScale="1.0" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<!-- Splash Screen -->
+
+  <!-- CONFIGURATION + FRAMEWORK SPECIFIC PROPERTIES -->
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-ios'">
+    <ProvisioningType>manual</ProvisioningType>
+    <CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
+    <CodesignProvision>Apple Dev M July 2024 Profile</CodesignProvision>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-ios'">
+    <ProvisioningType>manual</ProvisioningType>
+    <!--<CodesignKey>Apple Distribution: Hyvan mielen pelit ry (CUG8RS847T)</CodesignKey>-->
+    <!--<CodesignProvision>Apple Dev M July 2024 Distribution Profile</CodesignProvision>-->
+    <CodesignKey>Apple Development: Janne Gustafsson (3JF32923Y3)</CodesignKey>
+    <CodesignProvision>Apple Dev M July 2024 Profile</CodesignProvision>
+    <!--<MtouchUseLlvm>false</MtouchUseLlvm>-->
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-android'">
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+
+  <!-- GENERAL PROPERTIES -->
+  <ItemGroup>
+    <!-- MauiIcon has been set above on a platform-specific manner -->
+    
+    <!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\gnollhackicon.png" Color="#000000" BaseSize="160,160" />
 
 		<!-- Images -->
@@ -121,6 +135,7 @@
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" Condition="'$(TargetFramework)'=='net9.0-ios'" />
     <MauiFont Include="Resources\Fonts\*" Condition="'$(TargetFramework)'=='net9.0-maccatalyst'" />
+    <!-- Note: MauiFont has been unreliable on Android and Windows; workaround is to copy the files using MauiAsset to the right location instead -->
     <MauiAsset Include="Resources\Fonts\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" Condition="'$(TargetFramework)'=='net9.0-android'" />
     <MauiAsset Include="Resources\Fonts\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
 
@@ -603,6 +618,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-android'">
+    <!-- Both EmbeddedJar and AndroidLibrary seem to be required for things to work; this results in some warnings, though -->
     <EmbeddedJar Include="Platforms\Android\jars\fmod.jar" />
     <AndroidLibrary Include="Platforms\Android\jars\fmod.jar" />
     <AndroidNativeLibrary Include="Platforms\Android\libs\arm64-v8a\libfmod.so" />
@@ -748,7 +764,6 @@
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net9.0-ios'">
 	  <MtouchLink>None</MtouchLink>
-    <_MauiForceXamlCForDebug>true</_MauiForceXamlCForDebug>
   </PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-ios'">
 	  <MtouchLink>SdkOnly</MtouchLink>
@@ -1050,14 +1065,18 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.2" />
 		<PackageReference Include="System.Text.Json" Version="9.0.2" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    
-    <PackageReference Include="SkiaSharp" Version="3.116.1" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0'" />
+
+    <PackageReference Include="SkiaSharp" Version="3.116.1" />
+    <PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.116.1" />
+    <PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.116.1" />
+
+    <!--<PackageReference Include="SkiaSharp" Version="3.116.1" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0'" />
     <PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.116.1" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0'" />
     <PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.116.1" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0'" />
     
     <PackageReference Include="SkiaSharp" Version="3.116.1" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.116.1" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.116.1" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.116.1" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />-->
 		
     <!--<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />-->
