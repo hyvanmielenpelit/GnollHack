@@ -251,7 +251,13 @@ static struct Bool_Opt {
       DISP_IN_GAME },
 #endif
     { "safe_pet", "prevent you from hitting pets", &flags.safe_dog, TRUE, SET_IN_GAME },
-    { "sanity_check", "perform data sanity checks", &iflags.sanity_check, FALSE, SET_IN_WIZGAME },
+    { "sanity_check", "perform data sanity checks", &iflags.sanity_check, 
+#ifdef DEBUG
+        TRUE,  /* Set to false in set_playmode if not in wizard mode */
+#else
+        FALSE,
+#endif
+        SET_IN_WIZGAME },
     { "search_box_traps", "search command searches boxes for traps first", &flags.search_box_traps, TRUE, SET_IN_GAME },
     { "selectsaved", "select a saved game at program start", &iflags.wc2_selectsaved, TRUE, DISP_IN_GAME}, /*WC*/
     { "self_click_action", "clicking the player character executes an action", &flags.self_click_action, TRUE, SET_IN_GAME},
@@ -8607,6 +8613,10 @@ set_playmode()
     }
     /* don't need to do anything special for explore mode or normal play */
 #endif
+
+    /* Turn off sanity_check if not in wizard mode */
+    if (!wizard)
+        iflags.sanity_check = FALSE;
 }
 
 #endif /* OPTION_LISTS_ONLY */
