@@ -170,15 +170,18 @@ namespace GnollHackM
 
         public async void RequestAppReview(ContentPage page)
         {
-            try
+            if (GHApp.IsPackaged) /* Microsoft Store */
             {
-                await PromptUserToRateApp(page);
+                try
+                {
+                    await PromptUserToRateApp(page);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                }
+                await System.Threading.Tasks.Task.Delay(50);
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-            }
-            await System.Threading.Tasks.Task.Delay(50);
         }
 
 
@@ -198,7 +201,7 @@ namespace GnollHackM
 
         private async Task PromptUserToRateApp(ContentPage page)
         {
-            if(_storeContext == null)
+            if (_storeContext == null)
                 InitializeStoreReview();
 
             if (_storeContext == null || GHApp.WindowsXamlWindow == null)
@@ -238,7 +241,7 @@ namespace GnollHackM
                         // Something else went wrong
                         case StoreRateAndReviewStatus.Error:
                         default:
-                            if(result.ExtendedError?.Message != null)
+                            if (result.ExtendedError?.Message != null)
                                 System.Diagnostics.Debug.WriteLine(result.ExtendedError.Message);
                             if (result.ExtendedJsonData != null)
                                 System.Diagnostics.Debug.WriteLine(result.ExtendedJsonData);
