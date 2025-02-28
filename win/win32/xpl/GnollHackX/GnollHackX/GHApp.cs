@@ -121,6 +121,7 @@ namespace GnollHackX
             PlatformService.InitializePlatform();
             GHPath = GnollHackService.GetGnollHackPath();
             InitializeBattery();
+            ProcessCommandLineArguments();
 
             TotalMemory = GHApp.PlatformService.GetDeviceMemoryInBytes();
 
@@ -250,6 +251,31 @@ namespace GnollHackX
             get
             {
                 return IsKeyboardConnected; /* Does not bring up the soft keyboard, so can focus immediately */
+            }
+        }
+
+        public static bool IsSteam { get; set; }
+
+        private static void ProcessCommandLineArguments()
+        {
+            string[] args = Environment.GetCommandLineArgs();
+            if (args != null && args.Length > 0)
+            {
+                int cnt = args.Length;
+                for(int i = 0; i < cnt; i++)
+                {
+                    if (args[i] != null && args[i].ToLower() == "-store")
+                    {
+                        if (i + 1 < cnt)
+                        {
+                            if (args[i + 1] != null && args[i + 1].ToLower() == "steam")
+                            {
+                                IsSteam = true;
+                                i++;
+                            }
+                        }
+                    }
+                }
             }
         }
 
