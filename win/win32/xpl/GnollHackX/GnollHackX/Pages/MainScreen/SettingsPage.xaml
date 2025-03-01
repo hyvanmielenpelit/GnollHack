@@ -1378,7 +1378,7 @@
                                 <Switch Grid.Column="1" x:Name="MipMapSwitch" Toggled="MipMapSwitch_Toggled" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                <Label Text="Adjust GL Rectangles"
+                                <Label Text="Adjust Rectangles"
                                     x:Name="FixRectsLabel"
                                     FontFamily="Underwood" TextColor="Black"
                                     FontSize="15"

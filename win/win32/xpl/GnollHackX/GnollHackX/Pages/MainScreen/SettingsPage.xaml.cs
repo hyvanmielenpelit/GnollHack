@@ -1107,8 +1107,8 @@ namespace GnollHackX.Pages.MainScreen
                 GPUSwitch.IsToggled = gpu;
                 DisableAuxGPUSwitch.IsEnabled = gpu;
                 DisableAuxGPULabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
-                FixRectsSwitch.IsEnabled = gpu;
-                FixRectsLabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+                //FixRectsSwitch.IsEnabled = gpu;
+                //FixRectsLabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
                 MipMapSwitch.IsEnabled = gpu;
                 MipMapLabel.TextColor = gpu ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
             }
@@ -1119,8 +1119,8 @@ namespace GnollHackX.Pages.MainScreen
                 GPULabel.IsEnabled = false;
                 GPULabel.TextColor = GHColors.Gray;
 
-                FixRectsSwitch.IsEnabled = false;
-                FixRectsLabel.TextColor = GHColors.Gray;
+                //FixRectsSwitch.IsEnabled = false;
+                //FixRectsLabel.TextColor = GHColors.Gray;
 
                 DisableAuxGPUSwitch.IsEnabled = false;
                 DisableAuxGPULabel.TextColor = GHColors.Gray;
@@ -2005,8 +2005,8 @@ namespace GnollHackX.Pages.MainScreen
 
         private void GPUSwitch_Toggled(object sender, ToggledEventArgs e)
         {
-            FixRectsSwitch.IsEnabled = e.Value;
-            FixRectsLabel.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            //FixRectsSwitch.IsEnabled = e.Value;
+            //FixRectsLabel.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
             DisableAuxGPUSwitch.IsEnabled = e.Value;
             DisableAuxGPULabel.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
             MipMapSwitch.IsEnabled = e.Value;

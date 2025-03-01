@@ -353,7 +353,7 @@ namespace GnollHackX
 
         public static void MaybeFixRects(ref SKRect source, ref SKRect dest, float targetscale, bool usingGL)
         {
-            if (usingGL && FixRects)
+            if ((usingGL || IsWindows) && FixRects)
             {
                 //if (targetscale <= 0)
                 //    targetscale = 1.0f;
