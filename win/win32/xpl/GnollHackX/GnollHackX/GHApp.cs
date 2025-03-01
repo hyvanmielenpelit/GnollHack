@@ -800,7 +800,7 @@ namespace GnollHackX
             get
             {
 #if WINDOWS
-                return UseGPU && !HasInformedAboutGPU && DeviceGPUs.Count > 1 && GetActiveGPU() != "Dedicated";
+                return UseGPU && !HasInformedAboutGPU && DeviceGPUs.Count > 1 && (IsPackaged ? GetActiveGPU() != "Dedicated" : GetActiveGPU() == "Integrated");
 #else
                 return false;
 #endif
