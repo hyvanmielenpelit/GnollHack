@@ -6665,14 +6665,17 @@ namespace GnollHackX
             string res = "";
             try
             {
+                string ghFilePath = Process.GetCurrentProcess()?.MainModule?.FileName;
+                if (ghFilePath == null)
+                    ghFilePath = "";
 #if WINDOWS10_0_19041_0_OR_GREATER
                 OperatingSystem osVer = System.Environment.OSVersion;
                 int build = osVer?.Version?.Build ?? 0;
 #pragma warning disable CA1416
-                var t2 = build >= 19041 ? Windows.ApplicationModel.AppInfo.Current.AppUserModelId : Windows.ApplicationModel.Package.Current.Id.FamilyName + "!App";
+                var t2 = !IsPackaged ? ghFilePath : build >= 19041 ? Windows.ApplicationModel.AppInfo.Current.AppUserModelId : Windows.ApplicationModel.Package.Current.Id.FamilyName + "!App";
 #pragma warning restore CA1416
 #else
-                var t2 = Windows.ApplicationModel.Package.Current.Id.FamilyName + "!App";
+                var t2 = !IsPackaged ? ghFilePath : Windows.ApplicationModel.Package.Current.Id.FamilyName + "!App";
 #endif
                 var gpuPref = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\DirectX\UserGpuPreferences");
                 if (gpuPref != null)
@@ -6680,38 +6683,39 @@ namespace GnollHackX
                     var gnollHackGpuPref = gpuPref.GetValue(t2)?.ToString();
                     if (!string.IsNullOrEmpty(gnollHackGpuPref))
                     {
-                        var gnollHackGpuPrefSplit = gnollHackGpuPref.Trim(';').Split('=', StringSplitOptions.RemoveEmptyEntries);
-                        if (gnollHackGpuPrefSplit.Length == 2)
+                        string[] gnollHackGpuPrefSplitLarge = gnollHackGpuPref.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                        foreach(string ghSplitStr in gnollHackGpuPrefSplitLarge)
                         {
-                            int gnollHackGpuPrefInt = 0;
-                            bool ok = int.TryParse(gnollHackGpuPrefSplit[1], out gnollHackGpuPrefInt);
-                            if (ok)
+                            var gnollHackGpuPrefSplit = ghSplitStr.Split('=', StringSplitOptions.RemoveEmptyEntries);
+                            if(gnollHackGpuPrefSplit.Length == 2 && gnollHackGpuPrefSplit[0] == "GpuPreference")
                             {
-                                if (gnollHackGpuPrefInt == 0)
+                                int gnollHackGpuPrefInt = 0;
+                                bool ok = int.TryParse(gnollHackGpuPrefSplit[1], out gnollHackGpuPrefInt);
+                                if (ok)
                                 {
-                                    res = "Auto";
-                                }
-                                else if (gnollHackGpuPrefInt == 1)
-                                {
-                                    res = "Integrated";
-                                }
-                                else if (gnollHackGpuPrefInt == 2)
-                                {
-                                    res = "Dedicated";
+                                    if (gnollHackGpuPrefInt == 0)
+                                    {
+                                        res = "Auto";
+                                    }
+                                    else if (gnollHackGpuPrefInt == 1)
+                                    {
+                                        res = "Integrated";
+                                    }
+                                    else if (gnollHackGpuPrefInt == 2)
+                                    {
+                                        res = "Dedicated";
+                                    }
+                                    else
+                                    {
+                                        res = "Unknown";
+                                    }
                                 }
                                 else
                                 {
-                                    res = "Unknown";
+                                    res = "Not parsed";
                                 }
+                                break;
                             }
-                            else
-                            {
-                                res = "Not parsed";
-                            }
-                        }
-                        else
-                        {
-                            res = "Error";
                         }
                     }
                     else
