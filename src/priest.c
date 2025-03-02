@@ -1793,7 +1793,7 @@ boolean showheads;
         if (wizard && flags.wiz_mstatusline)
         {
             Sprintf(eos(info), " (tameness %d", mtmp->mtame);
-            if (!mtmp->isminion)
+            if (has_edog(mtmp))
                 Sprintf(eos(info), "; hungry on turn %lld; apport %d",
                     (long long)EDOG(mtmp)->hungrytime, EDOG(mtmp)->apport);
             Strcat(info, ")");
