@@ -1794,7 +1794,7 @@ boolean showheads;
         {
             Sprintf(eos(info), " (%d", is_tame(mtmp));
             if (!mtmp->isminion)
-                Sprintf(eos(info), "; hungry %lld; apport %d",
+                Sprintf(eos(info), "; gets hungry on turn %lld; apport %d",
                     (long long)EDOG(mtmp)->hungrytime, EDOG(mtmp)->apport);
             Strcat(info, ")");
         }
