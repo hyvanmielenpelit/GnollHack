@@ -9526,7 +9526,7 @@ const genericptr q;
 }
 
 void
-write_spells()
+write_spells(VOID_ARGS)
 {
     pline("Starting writing spells...");
 
@@ -9698,7 +9698,7 @@ const genericptr q;
 
 
 void
-write_monsters()
+write_monsters(VOID_ARGS)
 {
     pline("Starting writing monsters...");
 
@@ -9897,7 +9897,7 @@ write_monsters()
 
 
 void
-write_items()
+write_items(VOID_ARGS)
 {
     pline("Starting writing items...");
 
