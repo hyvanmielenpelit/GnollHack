@@ -1792,9 +1792,9 @@ boolean showheads;
     {
         if (wizard && flags.wiz_mstatusline)
         {
-            Sprintf(eos(info), " (%d", is_tame(mtmp));
+            Sprintf(eos(info), " (tameness %d", mtmp->mtame);
             if (!mtmp->isminion)
-                Sprintf(eos(info), "; gets hungry on turn %lld; apport %d",
+                Sprintf(eos(info), "; hungry on turn %lld; apport %d",
                     (long long)EDOG(mtmp)->hungrytime, EDOG(mtmp)->apport);
             Strcat(info, ")");
         }
