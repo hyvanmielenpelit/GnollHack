@@ -74,14 +74,14 @@
     <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
 	</PropertyGroup>
 
-  <!--<ItemGroup Condition=" '$(IncludeWindowsSDKRefFrameworkReferences)' == 'True'">
+  <ItemGroup Condition=" '$(IncludeWindowsSDKRefFrameworkReferences)' == 'True'">
     <FrameworkReference Include="Microsoft.Windows.SDK.NET.Ref" IsImplicitlyDefined="true" Pack="false" PrivateAssets="All" />
-  </ItemGroup>-->
+  </ItemGroup>
   
   <PropertyGroup Condition="$(TargetFramework.Contains('-windows'))">
-    <!--<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>-->
+    <WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
     <UseInterpreter>false</UseInterpreter>
-    <WindowsPackageType>None</WindowsPackageType>
+    <WindowsPackageType>MSIX</WindowsPackageType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(WindowsPackageType)'=='None'">
