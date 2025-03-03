@@ -82,6 +82,9 @@
     <!--<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>-->
     <UseInterpreter>false</UseInterpreter>
     <WindowsPackageType>None</WindowsPackageType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(WindowsPackageType)'=='None'">
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <SelfContained>true</SelfContained>
   </PropertyGroup>
