@@ -82,11 +82,10 @@
     <!--<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>-->
     <UseInterpreter>false</UseInterpreter>
     <WindowsPackageType>None</WindowsPackageType>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(WindowsPackageType)'=='None'">
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <SelfContained>true</SelfContained>
+    <!--<WindowsAppSDKSelfContained Condition="'$(WindowsPackageType)'=='None'">true</WindowsAppSDKSelfContained>
+    <SelfContained Condition="'$(WindowsPackageType)'=='None'">true</SelfContained>-->
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net9.0-android'">
@@ -1084,8 +1083,11 @@
     <!--<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />-->
 
-    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.40" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.40" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.40" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0' or '$(WindowsPackageType)'!='MSIX'" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.40" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0' or '$(WindowsPackageType)'!='MSIX'" />
+
+    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.30" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0' and '$(WindowsPackageType)'=='MSIX'" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.30" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0' and '$(WindowsPackageType)'=='MSIX'" />
 
     <!-- Platform-specific packages -->
     <PackageReference Include="System.Management" Version="9.0.2" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
@@ -1116,4 +1118,3 @@
 	<Import Project="AppxIcons.targets" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0'" />
 
 </Project>
- 
