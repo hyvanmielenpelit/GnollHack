@@ -1131,7 +1131,6 @@ register int fd;
             setwornquietly(otmp, otmp->owornmask);
 
     update_all_character_properties((struct obj*)0, FALSE);
-    update_inventory();
 
     /* in_use processing must be after:
      *    + The inventory has been read so that freeinv() works.
@@ -1139,6 +1138,7 @@ register int fd;
      *      is available.
      */
     inven_inuse(FALSE);
+    update_inventory();
 
     load_qtlist(); /* re-load the quest text info */
     /* Set up the vision internals, after levl[] data is loaded
