@@ -334,7 +334,7 @@ namespace GnollHackX
             }
         }
 
-        public void DrawOnCanvas(SKCanvas canvas, bool usingGL, bool isHighlighted, bool highFilterQuality)
+        public void DrawOnCanvas(SKCanvas canvas, bool usingGL, bool isHighlighted, bool highFilterQuality, bool fixRects)
         {
             int signed_glyph = Glyph;
             int abs_glyph = Math.Abs(signed_glyph);
@@ -427,7 +427,7 @@ namespace GnollHackX
                             scale = tileWidth / GHConstants.TileWidth;
                         }
 
-                        GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL);
+                        GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects);
                         canvas.DrawImage(GHApp._tileMap[sheet_idx], sourcerect, targetrect,
 #if GNH_MAUI
                             new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
@@ -439,7 +439,7 @@ namespace GnollHackX
                                 (int)layer_types.LAYER_OBJECT, 0, 0,
                                 tileflag_halfsize, false, tileflag_fullsizeditem,
                                 0, 0, tileWidth, tileHeight,
-                                1, scale, xpadding, ypadding, scaled_tile_height, true, drawwallends, usingGL, highFilterQuality);
+                                1, scale, xpadding, ypadding, scaled_tile_height, true, drawwallends, usingGL, highFilterQuality, fixRects);
                     }
                     else
                     {
@@ -471,7 +471,7 @@ namespace GnollHackX
                             canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
                             SKRect sourcerect = new SKRect(tile_x, tile_y, tile_x + GHConstants.TileWidth, tile_y + GHConstants.TileHeight);
                             SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
-                            GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL);
+                            GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects);
                             canvas.DrawImage(GHApp._tileMap[sheet_idx], sourcerect, targetrect,
 #if GNH_MAUI
                             new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
@@ -482,7 +482,7 @@ namespace GnollHackX
                                     (int)layer_types.LAYER_OBJECT, 0, 0,
                                     tileflag_halfsize, false, true,
                                     0, 0, tileWidth, tileHeight,
-                                    1, scale, 0, 0, tileHeight, true, drawwallends, usingGL, highFilterQuality);
+                                    1, scale, 0, 0, tileHeight, true, drawwallends, usingGL, highFilterQuality, fixRects);
 
                         }
 
@@ -546,7 +546,7 @@ namespace GnollHackX
                                     canvas.Scale(flip_tile ? -1 : 1, 1, 0, 0);
                                     SKRect sourcerect = new SKRect(etile_x, etile_y, etile_x + GHConstants.TileWidth, etile_y + GHConstants.TileHeight);
                                     SKRect targetrect = new SKRect(0, 0, tileWidth, tileHeight);
-                                    GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL);
+                                    GHApp.MaybeFixRects(ref sourcerect, ref targetrect, scale, usingGL, fixRects);
                                     canvas.DrawImage(GHApp._tileMap[e_sheet_idx], sourcerect, targetrect,
 #if GNH_MAUI
                                         new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
@@ -557,7 +557,7 @@ namespace GnollHackX
                                             (int)layer_types.LAYER_OBJECT, 0, 0,
                                             tileflag_halfsize, false, true,
                                             0, 0, tileWidth, tileHeight,
-                                            1, scale, 0, 0, tileHeight, true, drawwallends, usingGL, highFilterQuality);
+                                            1, scale, 0, 0, tileHeight, true, drawwallends, usingGL, highFilterQuality, fixRects);
                                 }
                             }
                         }

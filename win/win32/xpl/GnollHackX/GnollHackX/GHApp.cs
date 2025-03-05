@@ -351,9 +351,9 @@ namespace GnollHackX
             MirroredDiceAsRanges = Preferences.Get("DiceAsRanges", GHConstants.DefaultDiceAsRanges);
         }
 
-        public static void MaybeFixRects(ref SKRect source, ref SKRect dest, float targetscale, bool usingGL)
+        public static void MaybeFixRects(ref SKRect source, ref SKRect dest, float targetscale, bool usingGL, bool fixRects)
         {
-            if ((usingGL || IsWindows) && FixRects)
+            if ((usingGL || IsWindows) && fixRects)
             {
                 //if (targetscale <= 0)
                 //    targetscale = 1.0f;
