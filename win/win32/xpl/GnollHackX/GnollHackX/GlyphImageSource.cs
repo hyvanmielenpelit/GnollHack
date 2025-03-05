@@ -283,7 +283,7 @@ namespace GnollHackX
             var canvas = new SKCanvas(bitmap);
             canvas.Clear(SKColors.Transparent);
 
-            DrawOnCanvas(canvas, false, false, false);
+            DrawOnCanvas(canvas, false, false, false, GHApp.FixRects);
 
             var skImage = SKImage.FromBitmap(bitmap);            
             var result = skImage.Encode(SKEncodedImageFormat.Png, 100).AsStream();
