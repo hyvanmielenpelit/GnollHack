@@ -4934,12 +4934,19 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
             if (is_armor(obj) && armor_stats_printed)
             {
                 struct obj* current_armor = 0;
+                struct obj* extra_armor = 0;
                 if (is_suit(obj))
+                {
                     current_armor = uarm;
+                    extra_armor = uarmo;
+                }
                 else if (is_cloak(obj))
                     current_armor = uarmc;
                 else if (is_robe(obj))
+                {
                     current_armor = uarmo;
+                    extra_armor = uarm;
+                }
                 else if (is_shirt(obj))
                     current_armor = uarmu;
                 else if (is_helmet(obj))
@@ -4962,7 +4969,7 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                         int armor_type = objects[current_armor->otyp].oc_subtyp;
                         const char* atypename = armor_type_names[armor_type];
                         int powercnt = 0;
-                        Sprintf(buf, "Comparison to current %s", atypename);
+                        Sprintf(buf, "Comparison to current %s:", atypename);
                         putstr(datawin, ATR_HEADING, buf);
                         powercnt++;
                         Sprintf(buf, " %2d - Change in AC is ", powercnt);
@@ -4974,6 +4981,31 @@ struct item_description_stats* stats_ptr; /* If non-null, only returns item stat
                         Sprintf(buf, " %2d - Change in MC is ", powercnt);
                         putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, NO_COLOR, 1);
                         int mcdiff = totalmcbonus - armor_stats.mc_bonus;
+                        Sprintf(buf, "%s%d", mcdiff >= 0 ? "+" : "", mcdiff);
+                        putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, mcdiff > 0 ? CLR_BRIGHT_GREEN : mcdiff < 0 ? CLR_RED : NO_COLOR, 0);
+                    }
+                }
+                if (extra_armor && obj != extra_armor && is_armor(extra_armor))
+                {
+                    struct item_description_stats extra_armor_stats = { 0 };
+                    (void)itemdescription_core(extra_armor, extra_armor->otyp, &extra_armor_stats);
+                    if (extra_armor_stats.stats_set && extra_armor_stats.armor_stats_printed)
+                    {
+                        int armor_type = objects[extra_armor->otyp].oc_subtyp;
+                        const char* atypename = armor_type_names[armor_type];
+                        int powercnt = 0;
+                        Sprintf(buf, "Comparison to current %s:", atypename);
+                        putstr(datawin, ATR_HEADING, buf);
+                        powercnt++;
+                        Sprintf(buf, " %2d - Change in AC is ", powercnt);
+                        putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, NO_COLOR, 1);
+                        int acdiff = totalacbonus - extra_armor_stats.ac_bonus;
+                        Sprintf(buf, "%s%d", acdiff >= 0 ? "+" : "", acdiff);
+                        putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, acdiff < 0 ? CLR_BRIGHT_GREEN : acdiff > 0 ? CLR_RED : NO_COLOR, 0);
+                        powercnt++;
+                        Sprintf(buf, " %2d - Change in MC is ", powercnt);
+                        putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, NO_COLOR, 1);
+                        int mcdiff = totalmcbonus - extra_armor_stats.mc_bonus;
                         Sprintf(buf, "%s%d", mcdiff >= 0 ? "+" : "", mcdiff);
                         putstr_ex(datawin, buf, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, mcdiff > 0 ? CLR_BRIGHT_GREEN : mcdiff < 0 ? CLR_RED : NO_COLOR, 0);
                     }
