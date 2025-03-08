@@ -279,37 +279,8 @@ namespace GnollHackX.Pages.MainScreen
             FMODVersionLabel.Text = GHApp.FMODVersionString;
             SkiaVersionLabel.Text = GHApp.SkiaVersionString + " (# " + GHApp.SkiaSharpVersionString + ")";
             FrameworkVersionLabel.Text = GHApp.FrameworkVersionString;
+            AppendMAUIVersionInfo();
             RuntimeVersionLabel.Text = GHApp.RuntimeVersionString;
-#if GNH_MAUI
-            try
-            {
-                string assemblyPath = AppContext.BaseDirectory;
-                FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(Path.Combine(assemblyPath, "Microsoft.Maui.dll"));
-                if (myFileVersionInfo != null)
-                {
-                    string pverstr = myFileVersionInfo.ProductVersion;
-                    if(!string.IsNullOrWhiteSpace(pverstr))
-                    {
-                        int plusIdx = pverstr.IndexOf("+");
-                        if(plusIdx > 0)
-                        {
-                            pverstr = pverstr.Substring(0, plusIdx);
-                        }
-                        int minusIdx = pverstr.IndexOf("-");
-                        if (minusIdx > 0)
-                        {
-                            pverstr = pverstr.Substring(0, minusIdx);
-                        }
-
-                        FrameworkVersionLabel.Text += " / MAUI " + pverstr;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-#endif
             PlatformLabel.Text = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
             DeviceLabel.Text = manufacturer + " " + DeviceInfo.Model;
             TotalMemoryLabel.Text = TotalMemInMB + " MB";
@@ -318,6 +289,43 @@ namespace GnollHackX.Pages.MainScreen
             CurrentPlayTimeLabel.Text = CurrentPlayHours + " h " + CurrentPlayMinutes + " min " + CurrentPlaySeconds + " s";
             LongTitleLabel.Text = Environment.NewLine + "GnollHack Long Version Identifier:";
             LongLabel.Text = GHApp.GHVersionId;
+        }
+
+        private void AppendMAUIVersionInfo()
+        {
+#if GNH_MAUI
+            if (GHApp.IsWindows)
+            {
+                try
+                {
+                    string assemblyPath = AppContext.BaseDirectory;
+                    FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(Path.Combine(assemblyPath, "Microsoft.Maui.dll"));
+                    if (myFileVersionInfo != null)
+                    {
+                        string pverstr = myFileVersionInfo.ProductVersion;
+                        if (!string.IsNullOrWhiteSpace(pverstr))
+                        {
+                            int plusIdx = pverstr.IndexOf("+");
+                            if (plusIdx > 0)
+                            {
+                                pverstr = pverstr.Substring(0, plusIdx);
+                            }
+                            int minusIdx = pverstr.IndexOf("-");
+                            if (minusIdx > 0)
+                            {
+                                pverstr = pverstr.Substring(0, minusIdx);
+                            }
+
+                            FrameworkVersionLabel.Text += " / MAUI " + pverstr;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
+#endif
         }
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
