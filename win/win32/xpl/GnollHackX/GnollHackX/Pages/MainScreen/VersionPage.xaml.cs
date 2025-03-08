@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -279,6 +280,36 @@ namespace GnollHackX.Pages.MainScreen
             SkiaVersionLabel.Text = GHApp.SkiaVersionString + " (# " + GHApp.SkiaSharpVersionString + ")";
             FrameworkVersionLabel.Text = GHApp.FrameworkVersionString;
             RuntimeVersionLabel.Text = GHApp.RuntimeVersionString;
+#if GNH_MAUI
+            try
+            {
+                string assemblyPath = AppContext.BaseDirectory;
+                FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(Path.Combine(assemblyPath, "Microsoft.Maui.dll"));
+                if (myFileVersionInfo != null)
+                {
+                    string pverstr = myFileVersionInfo.ProductVersion;
+                    if(!string.IsNullOrWhiteSpace(pverstr))
+                    {
+                        int plusIdx = pverstr.IndexOf("+");
+                        if(plusIdx > 0)
+                        {
+                            pverstr = pverstr.Substring(0, plusIdx);
+                        }
+                        int minusIdx = pverstr.IndexOf("-");
+                        if (minusIdx > 0)
+                        {
+                            pverstr = pverstr.Substring(0, minusIdx);
+                        }
+
+                        FrameworkVersionLabel.Text += " / MAUI " + pverstr;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+#endif
             PlatformLabel.Text = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
             DeviceLabel.Text = manufacturer + " " + DeviceInfo.Model;
             TotalMemoryLabel.Text = TotalMemInMB + " MB";
