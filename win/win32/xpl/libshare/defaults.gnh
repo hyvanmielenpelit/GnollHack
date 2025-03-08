@@ -65,6 +65,9 @@ OPTIONS=menucolors
 #    MENUCOLOR="regular expression"=color
 # or
 #    MENUCOLOR="regular expression"=color&attribute
+
+MENUCOLOR="being worn" = brightblue
+MENUCOLOR="on .* hand" = brightblue
 #  Show all blessed items in green
 MENUCOLOR=" blessed " = green
 #  Show all holy water in green
@@ -73,17 +76,18 @@ MENUCOLOR=" holy water" = green
 MENUCOLOR=" cursed " = red
 #  Show all unholy water in red
 MENUCOLOR=" unholy water" = red
-#  Show all cursed worn items in orange and underlined
-MENUCOLOR=" cursed .* (being worn)" = orange&underline
+#  Show all cursed worn items in magenta and underlined
+MENUCOLOR=" cursed .*being worn" = magenta&underline
 #  Show all cooling down items in black
 MENUCOLOR="cooling down" = gray
-MENUCOLOR="repowering" = magenta
+MENUCOLOR="repowering" = blue
 #  Show all forgotten spells in black
 # MENUCOLOR="(You cannot recall this spell)" = black
 #  Show all spells that do not have any components in black
 # MENUCOLOR="(Not required)" = black
-
-
+MENUCOLOR="readied as alternate weapon" = cyan
+MENUCOLOR="in quiver pouch" = lightcyan
+MENUCOLOR="weapon in hand" = cyan&bold
 
 # General options.  You might also set "silent" so as not to attract
 # the boss's attention.

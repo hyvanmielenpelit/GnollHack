@@ -4553,6 +4553,16 @@ int splaction;
     boolean inactive = FALSE;
     struct extended_menu_info info = zeroextendedmenuinfo;
     int mcolor = NO_COLOR;
+
+    if (percent_success(splnum, TRUE) < 50)
+        mcolor = CLR_YELLOW;
+    if (displayed_manacost > u.uen / 2 || spellamount(splnum) == 1)
+        mcolor = CLR_ORANGE;
+    if (displayed_manacost > u.uen || spellamount(splnum) == 0)
+        mcolor = CLR_RED;
+    if (percent_success(splnum, TRUE) <= 0)
+        inactive = TRUE;
+
     info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
     if (spellcooldownleft(splnum) > 0 || spellknow(splnum) <= 0)
     {
@@ -4564,9 +4574,10 @@ int splaction;
         info.menu_flags |= MENU_FLAGS_ACTIVE;
 
     any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
-
-    add_extended_menu(tmpwin, glyph, &any, 0, 0, ATR_NONE, mcolor, buf,
-        (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED, info);
+    
+    if (!inactive)
+        add_extended_menu(tmpwin, glyph, &any, 0, 0, ATR_NONE, mcolor, buf,
+            (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED, info);
 
 }
 
@@ -4753,6 +4764,7 @@ boolean usehotkey;
 
     double spellmanacost = get_spell_mana_cost(splnum);
     double displayed_manacost = ceil(10 * spellmanacost) / 10;
+    boolean inactive = FALSE;
 
     //Category
     if (spellknow(splnum) <= 0)
@@ -4766,21 +4778,32 @@ boolean usehotkey;
             spellcooldownleft(splnum) > 0 ? spellcooldownleft(splnum) : getspellcooldown(splnum),
             availablebuf);  //spellretention(splnum, retentionbuf));
 
+    int mcolor = NO_COLOR;
+    if (percent_success(splnum, TRUE) < 50)
+        mcolor = CLR_YELLOW;
+    if (displayed_manacost > u.uen / 2 || spellamount(splnum) == 1)
+        mcolor = CLR_ORANGE;
+    if (displayed_manacost > u.uen || spellamount(splnum) == 0)
+        mcolor = CLR_RED;
+    if (percent_success(splnum, TRUE) <= 0)
+        inactive = TRUE;
+
     any.a_int = splnum + 1; /* must be non-zero */
 
-    char letter = '\0';
-    if (usehotkey)
-    {
-        if (spellhotkey(i) == 10)
-            letter = '0';
+    if (!inactive) {
+        char letter = '\0';
+        if (usehotkey)
+        {
+            if (spellhotkey(i) == 10)
+                letter = '0';
+            else
+                letter = spellhotkey(i) + '0';
+        }
         else
-            letter = spellhotkey(i) + '0';
+            letter = 0; // spellet(splnum);
+        add_menu(tmpwin, NO_GLYPH, &any, letter, 0, ATR_NONE, (spellcooldownleft(splnum) > 0 && splaction != SPELLMENU_PREPARE) || spellknow(splnum) <= 0 ? CLR_BLACK : mcolor, buf,
+            (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
     }
-    else
-        letter = 0; // spellet(splnum);
-
-    add_menu(tmpwin, NO_GLYPH, &any, letter, 0, ATR_NONE, (spellcooldownleft(splnum) > 0 && splaction != SPELLMENU_PREPARE) || spellknow(splnum) <= 0 ? CLR_BLACK : NO_COLOR, buf,
-        (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
 
     //Strcat(shortenedname, "=black");
     //if (spellcooldownleft(splnum) > 0 && splaction != SPELLMENU_PREPARE)
