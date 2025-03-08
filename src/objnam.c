@@ -6342,9 +6342,10 @@ boolean use_symbols;
         int acdiff = obj_stats.ac_bonus;
         int mcdiff = obj_stats.mc_bonus;
         boolean skip_armor_print = FALSE;
+        struct item_description_stats armor_stats = { 0 };
+
         if (current_armor && obj != current_armor && is_armor(current_armor))
         {
-            struct item_description_stats armor_stats = { 0 };
             (void)itemdescription_core(current_armor, current_armor->otyp, &armor_stats);
             if (armor_stats.stats_set && armor_stats.armor_stats_printed)
             {
@@ -6354,6 +6355,23 @@ boolean use_symbols;
             else
                 skip_armor_print = TRUE;
         }
+
+        struct obj* extra_armor = 0;
+        if (is_suit(obj))
+            extra_armor = uarmo; // also compare with robes
+        else if (is_robe(obj))
+            extra_armor = uarm;  // also compare with suits
+        if (extra_armor && obj != extra_armor && is_armor(extra_armor))
+        {
+            struct item_description_stats extra_armor_stats = { 0 };
+            (void)itemdescription_core(extra_armor, extra_armor->otyp, &extra_armor_stats);
+            if (extra_armor_stats.stats_set && extra_armor_stats.armor_stats_printed)
+            {
+                acdiff = obj_stats.ac_bonus - min(extra_armor_stats.ac_bonus, armor_stats.ac_bonus);
+                mcdiff = obj_stats.mc_bonus - max(extra_armor_stats.mc_bonus, armor_stats.mc_bonus);
+            }
+        }
+
         if (!skip_armor_print)
         {
             if (*buf)
