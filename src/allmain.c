@@ -270,10 +270,13 @@ uchar resuming; /* 0 = new game, 1 = loaded a saved game, 2 = continued playing 
 
                     if (!u.uinvulnerable) 
                     {
-                        if (Teleportation && (!Teleport_control || Stunned || Confusion) && !rn2(85))
+                        // TELEPORTITIS
+                        int teleport_chance = (5 * (ACURR(A_WIS) + ACURR(A_INT))); // higher is less often
+                        int teleport_manacost = 20;
+                        if (Teleportation && (!Teleport_control || Stunned || Confusion) && !rn2(teleport_chance) && (u.uen >= teleport_manacost))
                         {
                             xchar old_ux = u.ux, old_uy = u.uy;
-
+                            u.uen -= teleport_manacost;
                             tele();
                             if (u.ux != old_ux || u.uy != old_uy) {
                                 if (!next_to_u()) {
