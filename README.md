@@ -16,11 +16,11 @@ GnollHack takes everything that's great about NetHack and refines it for todayâ€
 - **Modernized Interface**: With a user-friendly design and touch controls, GnollHack is intuitive to play, making the classic roguelike formula more accessible than ever.
 - **Enhanced Visuals**: Unlike NetHackâ€™s traditional ASCII graphics, GnollHack offers polished visuals.
 - **Sounds, Music, and Voiceovers**: GnollHack's rich sound design brings the dungeon alive and improves your immersion to the game.
-- **In-game hints and gameplay advice**: Built right into the game, contextual hints and informative manuals teach a beginning adventurer the basics of the game.
-- **Difficulty levels**: Difficulty levels allow both a beginner and a veteran play the same game at a difficulty that is appropriate for their skills.
-- **In-game item and monster information**: Item and monster stats are baked right into the game. There's no need to check them in an online wiki.
-- **More items and item slots**: In NetHack, you usually end up with one "ascension kit," but in GnollHack you have more viable options for your equipment in the late game.
-- **More late game monsters**: NetHack had only very few dangerous late game monsters, but GnollHack offers a large roster of end-game baddies.
+- **In-Game Hints and Gameplay Advice**: Built right into the game, contextual hints and informative manuals teach a beginning adventurer the basics of the game.
+- **Difficulty Levels**: Difficulty levels allow both a beginner and a veteran play the same game at a difficulty that is appropriate for their skills.
+- **In-Game Item and Monster Information**: Item and monster stats are baked right into the game. There's no need to check them in an online wiki.
+- **More Items and Item Slots**: In NetHack, you usually end up with one "ascension kit," but in GnollHack you have more viable options for your equipment in the late game.
+- **More Late-Game Monsters**: NetHack had only very few dangerous late-game monsters, but GnollHack offers a large roster of end-game baddies.
 - **Modern Platform Support**: GnollHack is compatible with modern operating systems, including Android, iOS, and Windows.
 
 ## Find Out More
