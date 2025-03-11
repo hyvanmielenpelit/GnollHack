@@ -279,7 +279,9 @@ namespace GnollHackX.Pages.MainScreen
             FMODVersionLabel.Text = GHApp.FMODVersionString;
             SkiaVersionLabel.Text = GHApp.SkiaVersionString + " (# " + GHApp.SkiaSharpVersionString + ")";
             FrameworkVersionLabel.Text = GHApp.FrameworkVersionString;
-            AppendMAUIVersionInfo();
+#if GNH_MAUI
+            FrameworkVersionLabel.Text += " / MAUI " + GHApp.FrameworkMAUIVersionString;
+#endif
             RuntimeVersionLabel.Text = GHApp.RuntimeVersionString;
             PlatformLabel.Text = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
             DeviceLabel.Text = manufacturer + " " + DeviceInfo.Model;
@@ -290,36 +292,6 @@ namespace GnollHackX.Pages.MainScreen
             LongTitleLabel.Text = Environment.NewLine + "GnollHack Long Version Identifier:";
             LongLabel.Text = GHApp.GHVersionId;
         }
-
-        private void AppendMAUIVersionInfo()
-        {
-#if GNH_MAUI
-            try
-            {
-                //string pverstr_detailed = (Attribute.GetCustomAttribute(typeof(Button).Assembly, typeof(AssemblyFileVersionAttribute), false) as AssemblyFileVersionAttribute)?.Version;
-                string pverstr = (Attribute.GetCustomAttribute(typeof(Button).Assembly, typeof(AssemblyInformationalVersionAttribute), false) as AssemblyInformationalVersionAttribute)?.InformationalVersion;
-                if (!string.IsNullOrWhiteSpace(pverstr))
-                {
-                    int plusIdx = pverstr.IndexOf("+");
-                    if (plusIdx > 0)
-                    {
-                        pverstr = pverstr.Substring(0, plusIdx);
-                    }
-                    int minusIdx = pverstr.IndexOf("-");
-                    if (minusIdx > 0)
-                    {
-                        pverstr = pverstr.Substring(0, minusIdx);
-                    }
-
-                    FrameworkVersionLabel.Text += " / MAUI " + pverstr;
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-        }
-#endif
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {

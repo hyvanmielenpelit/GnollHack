@@ -883,6 +883,7 @@ namespace GnollHackX
             string skiaverstr = "?";
             string skiasharpverstr = "?";
             string frameworkverstr = "?";
+            string frameworkMAUIverstr = "?";
             string runtimeverstr = "?";
             ulong vernum = 0UL;
             ulong vercompat = 0UL;
@@ -902,6 +903,25 @@ namespace GnollHackX
                 {
                     frameworkverstr = frameworkverstr.Substring(0, pidx);
                 }
+#if GNH_MAUI
+                //string pverstr_detailed = (Attribute.GetCustomAttribute(typeof(Button).Assembly, typeof(AssemblyFileVersionAttribute), false) as AssemblyFileVersionAttribute)?.Version;
+                string pverstr = (Attribute.GetCustomAttribute(typeof(Microsoft.Maui.Controls.Button).Assembly, typeof(AssemblyInformationalVersionAttribute), false) as AssemblyInformationalVersionAttribute)?.InformationalVersion;
+                if (!string.IsNullOrWhiteSpace(pverstr))
+                {
+                    int plusIdx = pverstr.IndexOf("+");
+                    if (plusIdx > 0)
+                    {
+                        pverstr = pverstr.Substring(0, plusIdx);
+                    }
+                    int minusIdx = pverstr.IndexOf("-");
+                    if (minusIdx > 0)
+                    {
+                        pverstr = pverstr.Substring(0, minusIdx);
+                    }
+
+                    frameworkMAUIverstr = pverstr;
+                }
+#endif
                 runtimeverstr = Environment.Version.ToString() ?? "?";
                 pidx = runtimeverstr.IndexOf(" (");
                 if (pidx > 0)
@@ -938,6 +958,7 @@ namespace GnollHackX
             GHApp.SkiaVersionString = skiaverstr;
             GHApp.SkiaSharpVersionString = skiasharpverstr;
             GHApp.FrameworkVersionString = frameworkverstr;
+            GHApp.FrameworkMAUIVersionString = frameworkMAUIverstr;
             GHApp.RuntimeVersionString = runtimeverstr;
 
             //VersionLabel.Text = verid;
