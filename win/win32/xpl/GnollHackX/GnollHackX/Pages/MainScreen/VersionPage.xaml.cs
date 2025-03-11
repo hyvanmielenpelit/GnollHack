@@ -294,39 +294,32 @@ namespace GnollHackX.Pages.MainScreen
         private void AppendMAUIVersionInfo()
         {
 #if GNH_MAUI
-            if (GHApp.IsWindows)
+            try
             {
-                try
+                //string pverstr_detailed = (Attribute.GetCustomAttribute(typeof(Button).Assembly, typeof(AssemblyFileVersionAttribute), false) as AssemblyFileVersionAttribute)?.Version;
+                string pverstr = (Attribute.GetCustomAttribute(typeof(Button).Assembly, typeof(AssemblyInformationalVersionAttribute), false) as AssemblyInformationalVersionAttribute)?.InformationalVersion;
+                if (!string.IsNullOrWhiteSpace(pverstr))
                 {
-                    string assemblyPath = AppContext.BaseDirectory;
-                    FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(Path.Combine(assemblyPath, "Microsoft.Maui.dll"));
-                    if (myFileVersionInfo != null)
+                    int plusIdx = pverstr.IndexOf("+");
+                    if (plusIdx > 0)
                     {
-                        string pverstr = myFileVersionInfo.ProductVersion;
-                        if (!string.IsNullOrWhiteSpace(pverstr))
-                        {
-                            int plusIdx = pverstr.IndexOf("+");
-                            if (plusIdx > 0)
-                            {
-                                pverstr = pverstr.Substring(0, plusIdx);
-                            }
-                            int minusIdx = pverstr.IndexOf("-");
-                            if (minusIdx > 0)
-                            {
-                                pverstr = pverstr.Substring(0, minusIdx);
-                            }
-
-                            FrameworkVersionLabel.Text += " / MAUI " + pverstr;
-                        }
+                        pverstr = pverstr.Substring(0, plusIdx);
                     }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
+                    int minusIdx = pverstr.IndexOf("-");
+                    if (minusIdx > 0)
+                    {
+                        pverstr = pverstr.Substring(0, minusIdx);
+                    }
+
+                    FrameworkVersionLabel.Text += " / MAUI " + pverstr;
                 }
             }
-#endif
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
+#endif
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
