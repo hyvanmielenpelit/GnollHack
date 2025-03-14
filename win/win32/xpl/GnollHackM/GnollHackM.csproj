@@ -1083,11 +1083,11 @@
     <!--<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />-->
 
-    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.40" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0' or '$(WindowsPackageType)'!='MSIX'" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.40" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0' or '$(WindowsPackageType)'!='MSIX'" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.50" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0' or '$(WindowsPackageType)'!='MSIX'" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.50" Condition="'$(TargetFramework)'!='net9.0-windows10.0.19041.0' or '$(WindowsPackageType)'!='MSIX'" />
 
-    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.30" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0' and '$(WindowsPackageType)'=='MSIX'" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.30" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0' and '$(WindowsPackageType)'=='MSIX'" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.50" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0' and '$(WindowsPackageType)'=='MSIX'" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.50" Condition="'$(TargetFramework)'=='net9.0-windows10.0.19041.0' and '$(WindowsPackageType)'=='MSIX'" />
 
     <!--<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.40" />
     <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.40" />
