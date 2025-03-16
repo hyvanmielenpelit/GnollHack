@@ -248,6 +248,7 @@ namespace GnollHackX.Pages.MainScreen
             Version ver = AppInfo.Current.Version;
             string portVersion = (ver?.Major.ToString() ?? "?") + "." + (ver?.Minor.ToString() ?? "?");
             PortVersionLabel.Text = portVersion; // GetAssemblyInformationalVersion(Assembly.GetEntryAssembly()); //This can also be AppInfo.Current.VersionString, but it is longer and the build number
+            UIFrameworkVersionLabel.Text = ".NET MAUI " + GHApp.UIFrameworkVersionString;
 #if WINDOWS
             PortBuildLabel.Text = AppInfo.Current.Version.Build.ToString();
 #else
@@ -256,6 +257,14 @@ namespace GnollHackX.Pages.MainScreen
 #else
             PortVersionLabel.Text = VersionTracking.CurrentVersion;
             PortBuildLabel.Text = VersionTracking.CurrentBuild;
+
+            UIFrameworkVersionLabel.Text = "XF " + GHApp.UIFrameworkVersionString;
+            //UIFrameworkVersionLabel.Text = "";
+            //UIFrameworkVersionLabel.IsVisible = false;
+            //UIFrameworkVersionTitleLabel.IsVisible = false;
+            //VersionInfoGrid.Children.Remove(UIFrameworkVersionLabel);
+            //VersionInfoGrid.Children.Remove(UIFrameworkVersionTitleLabel);
+            //UIFrameworkVersionRowDefinition.Height = 0;
 #endif
             PortVersionTitleLabel.Text = GHApp.RuntimePlatform + " Port Version:";
             PortBuildTitleLabel.Text = GHApp.RuntimePlatform + " Port Build:";
@@ -279,9 +288,6 @@ namespace GnollHackX.Pages.MainScreen
             FMODVersionLabel.Text = GHApp.FMODVersionString;
             SkiaVersionLabel.Text = GHApp.SkiaVersionString + " (# " + GHApp.SkiaSharpVersionString + ")";
             FrameworkVersionLabel.Text = GHApp.FrameworkVersionString;
-#if GNH_MAUI
-            FrameworkVersionLabel.Text += " (UI " + GHApp.FrameworkMAUIVersionString + ")";
-#endif
             RuntimeVersionLabel.Text = GHApp.RuntimeVersionString;
             PlatformLabel.Text = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
             DeviceLabel.Text = manufacturer + " " + DeviceInfo.Model;

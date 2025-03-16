@@ -883,7 +883,7 @@ namespace GnollHackX
             string skiaverstr = "?";
             string skiasharpverstr = "?";
             string frameworkverstr = "?";
-            string frameworkMAUIverstr = "?";
+            string frameworkUIverstr = "?";
             string runtimeverstr = "?";
             ulong vernum = 0UL;
             ulong vercompat = 0UL;
@@ -903,9 +903,13 @@ namespace GnollHackX
                 {
                     frameworkverstr = frameworkverstr.Substring(0, pidx);
                 }
-#if GNH_MAUI
                 //string pverstr_detailed = (Attribute.GetCustomAttribute(typeof(Button).Assembly, typeof(AssemblyFileVersionAttribute), false) as AssemblyFileVersionAttribute)?.Version;
-                string pverstr = (Attribute.GetCustomAttribute(typeof(Microsoft.Maui.Controls.Button).Assembly, typeof(AssemblyInformationalVersionAttribute), false) as AssemblyInformationalVersionAttribute)?.InformationalVersion;
+                string pverstr = "";
+#if GNH_MAUI
+                pverstr = (Attribute.GetCustomAttribute(typeof(Microsoft.Maui.Controls.Button).Assembly, typeof(AssemblyInformationalVersionAttribute), false) as AssemblyInformationalVersionAttribute)?.InformationalVersion;
+#else
+                pverstr = (Attribute.GetCustomAttribute(typeof(Xamarin.Forms.Button).Assembly, typeof(AssemblyInformationalVersionAttribute), false) as AssemblyInformationalVersionAttribute)?.InformationalVersion;
+#endif
                 if (!string.IsNullOrWhiteSpace(pverstr))
                 {
                     int plusIdx = pverstr.IndexOf("+");
@@ -919,9 +923,8 @@ namespace GnollHackX
                         pverstr = pverstr.Substring(0, minusIdx);
                     }
 
-                    frameworkMAUIverstr = pverstr;
+                    frameworkUIverstr = pverstr;
                 }
-#endif
                 runtimeverstr = Environment.Version.ToString() ?? "?";
                 pidx = runtimeverstr.IndexOf(" (");
                 if (pidx > 0)
@@ -958,7 +961,7 @@ namespace GnollHackX
             GHApp.SkiaVersionString = skiaverstr;
             GHApp.SkiaSharpVersionString = skiasharpverstr;
             GHApp.FrameworkVersionString = frameworkverstr;
-            GHApp.FrameworkMAUIVersionString = frameworkMAUIverstr;
+            GHApp.UIFrameworkVersionString = frameworkUIverstr;
             GHApp.RuntimeVersionString = runtimeverstr;
 
             //VersionLabel.Text = verid;
