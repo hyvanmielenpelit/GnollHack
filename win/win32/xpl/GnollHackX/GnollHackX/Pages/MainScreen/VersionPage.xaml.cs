@@ -280,7 +280,7 @@ namespace GnollHackX.Pages.MainScreen
             SkiaVersionLabel.Text = GHApp.SkiaVersionString + " (# " + GHApp.SkiaSharpVersionString + ")";
             FrameworkVersionLabel.Text = GHApp.FrameworkVersionString;
 #if GNH_MAUI
-            FrameworkVersionLabel.Text += " / MAUI " + GHApp.FrameworkMAUIVersionString;
+            FrameworkVersionLabel.Text += " (UI " + GHApp.FrameworkMAUIVersionString + ")";
 #endif
             RuntimeVersionLabel.Text = GHApp.RuntimeVersionString;
             PlatformLabel.Text = DeviceInfo.Platform + " " + DeviceInfo.VersionString;

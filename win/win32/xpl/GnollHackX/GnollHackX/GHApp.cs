@@ -123,7 +123,8 @@ namespace GnollHackX
             InitializeBattery();
             ProcessCommandLineArguments();
 
-            TotalMemory = GHApp.PlatformService.GetDeviceMemoryInBytes();
+            TotalMemory = PlatformService.GetDeviceMemoryInBytes();
+            PlatformScreenScale = PlatformService.GetPlatformScreenScale();
 
             InitBaseTypefaces();
             InitBaseCachedBitmaps();
@@ -1484,9 +1485,16 @@ namespace GnollHackX
             set { lock (_displayDataLock) { _customScreenScale = value <= 0.0f ? 1.0f : value; } }
         }
 
+        private static float _platformScreenScale = 1.0f;
+        public static float PlatformScreenScale
+        {
+            get { lock (_displayDataLock) { return _platformScreenScale; } }
+            set { lock (_displayDataLock) { _platformScreenScale = value <= 0.0f ? 1.0f : value; } }
+        }
+
         public static float TotalScreenScale
         {
-            get { lock (_displayDataLock) { return _displayDensity * _customScreenScale; } }
+            get { lock (_displayDataLock) { return _displayDensity * _platformScreenScale * _customScreenScale; } }
         }
 
         public static GHPlatform PlatformId

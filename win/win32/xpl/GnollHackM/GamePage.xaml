@@ -382,8 +382,7 @@
                                            EnableTouchEvents="True"
                                            PaintSurface="TipView_PaintSurface" 
                                            Touch="TipView_Touch"
-                                           AbsoluteLayout.LayoutBounds="0.0, 0, 1.0, 1.0"
-                                           AbsoluteLayout.LayoutFlags="HeightProportional,WidthProportional"/>
+                                           HorizontalOptions="Fill" VerticalOptions="Fill" />
             <Grid x:Name="ReplayGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent" InputTransparent="True" CascadeInputTransparent="False" IsVisible="False">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
