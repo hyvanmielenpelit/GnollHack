@@ -523,6 +523,17 @@ int how;
     Sprintf(eos(buffer), "%cmode=%s", XLOG_SEP, wizard ? "debug" : discover ? "explore" : CasualMode ? (ModernMode ? "casual" : "reloadable") : ModernMode ? "modern" : "normal");
     Sprintf(eos(buffer), "%cscoring=%s", XLOG_SEP, discover || CasualMode || flags.non_scoring ? "no" : "yes");
     Sprintf(eos(buffer), "%ctournament=%s", XLOG_SEP, TournamentMode ? "yes" : "no");
+    Sprintf(eos(buffer), "%cseclvl=%d", XLOG_SEP, 
+#if defined(DGAMELAUNCH) /* Public server */
+        3
+#elif defined(GNH_ANDROID) /* Mobile, Android */
+        2
+#elif defined(GNH_IOS) /* Mobile, iOS */
+        2
+#else /* Desktop, or unknown mobile platform */
+        flags.is_offline_only ? 0 : 1
+#endif
+    );
 #if 0
     Sprintf(eos(buffer), "%cservergame=%s", XLOG_SEP, 
 #ifdef DGAMELAUNCH

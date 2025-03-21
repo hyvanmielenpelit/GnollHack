@@ -122,6 +122,7 @@ namespace GnollHackX
             GHPath = GnollHackService.GetGnollHackPath();
             InitializeBattery();
             ProcessCommandLineArguments();
+            ProcessEnvironment();
 
             TotalMemory = PlatformService.GetDeviceMemoryInBytes();
             PlatformScreenScale = PlatformService.GetPlatformScreenScale();
@@ -256,6 +257,30 @@ namespace GnollHackX
         }
 
         public static bool IsSteam { get; set; }
+        public static bool IsPlaytest { get; set; }
+
+        private static void ProcessEnvironment()
+        {
+#if WINDOWS
+            try
+            {
+                string packstr = AppInfo.PackageName;
+                if (!string.IsNullOrEmpty(packstr))
+                {
+                    if (packstr.EndsWith(".Playtest"))
+                    {
+                        IsPlaytest = true;
+                        return;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+#endif
+            IsPlaytest = false;
+        }
 
         private static void ProcessCommandLineArguments()
         {
@@ -3723,6 +3748,8 @@ namespace GnollHackX
                                     + "\tport=" + GHConstants.PortName?.ToLower()
                                     + "\tportversion=" + VersionTracking.CurrentVersion?.ToLower()
                                     + "\tportbuild=" + VersionTracking.CurrentBuild?.ToLower()
+                                    + "\tseclvl=0"
+                                    + "\tstore=" + GHApp.GetStoreString()
                                     + Environment.NewLine;
                         }
 
@@ -3860,6 +3887,32 @@ namespace GnollHackX
                 xlogattachments.Clear();
             }
             return res;
+        }
+
+        public static string GetStoreString()
+        {
+            if (IsAndroid)
+                return "google";
+            else if (IsiOS)
+                return "apple";
+            else if (IsWindows)
+            {
+                if (IsPackaged)
+                    return "microsoft";
+                else
+                {
+                    if (IsSteam)
+                    {
+                        if (IsPlaytest)
+                            return "steam-playtest";
+                        else
+                            return "steam";
+                    }
+                    else
+                        return "none";
+                }
+            }
+            return "unknown";
         }
 
         public static void SaveXLogEntryToDisk(int status_type, int status_datatype, string xlogentry_string, List<GHPostAttachment> xlogattachments)
