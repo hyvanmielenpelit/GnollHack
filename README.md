@@ -1,6 +1,6 @@
 # GnollHack
 
-**GnollHack** is an open-source remaster the classic roguelike game [NetHack](https://github.com/NetHack/NetHack). It originally started as a NetHack variant, but it turned into a remaster, when graphics, sounds, voiceovers, and a modern UI were developed for it.
+**GnollHack** is a remastered and enhanced version of the classic roguelike game [NetHack](https://github.com/NetHack/NetHack).
 
 ## What Made NetHack Legendary?
 NetHack is one of the most revered roguelikes in gaming history. Released in 1987 and developed evere since, it stood out for its:
