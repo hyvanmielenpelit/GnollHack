@@ -1848,6 +1848,15 @@ namespace GnollHackX.Pages.MainScreen
                     PopupOkButton.IsEnabled = true;
                     PopupGrid.IsVisible = true;
                 }
+                else if (res.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    XlogTestButton.TextColor = GHColors.Red;
+                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
+                    PopupTitleLabel.Text = "Login Failed";
+                    PopupLabel.Text = "Logging in to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "GnollHack Server failed. Check your user name and password.";
+                    PopupOkButton.IsEnabled = true;
+                    PopupGrid.IsVisible = true;
+                }
                 else
                 {
                     XlogTestButton.TextColor = GHColors.Red;
