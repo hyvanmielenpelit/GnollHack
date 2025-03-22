@@ -525,11 +525,11 @@ int how;
     Sprintf(eos(buffer), "%ctournament=%s", XLOG_SEP, TournamentMode ? "yes" : "no");
     Sprintf(eos(buffer), "%cseclvl=%d", XLOG_SEP, 
 #if defined(DGAMELAUNCH) /* Public server */
-        3
+        100
 #elif defined(GNH_ANDROID) /* Mobile, Android */
-        2
+        10
 #elif defined(GNH_IOS) /* Mobile, iOS */
-        2
+        10
 #else /* Desktop, or unknown mobile platform */
         flags.is_offline_only ? 0 : 1
 #endif
