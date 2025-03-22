@@ -1817,36 +1817,50 @@ namespace GnollHackX.Pages.MainScreen
         {
             XlogTestButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
-            XlogTestButton.TextColor = GHColors.Yellow;
-            XlogTestButton.Text = "Wait";
-            GHApp.XlogUserName = PostXlogUserNameEntry.Text;
-            GHApp.XlogPassword = PostXlogPasswordEntry.Text;
-            GHApp.XlogReleaseAccount = XlogReleaseAccountSwitch.IsToggled;
-            GHApp.SetXlogUserNameVerified(false, null, null);
-            GHApp.XlogCredentialsIncorrect = false;
-            SendResult res = await GHApp.SendXLogEntry("", 1, 0, new List<GHPostAttachment>(), true);
-            XlogTestButton.Text = "Test";
-            if (res.IsSuccess)
+            bool hasNoUserName = string.IsNullOrEmpty(PostXlogUserNameEntry.Text);
+            bool hasNoPassword = string.IsNullOrEmpty(PostXlogPasswordEntry.Text);
+            if (hasNoUserName || hasNoPassword)
             {
-                XlogTestButton.TextColor = GHColors.BrighterGreen;
                 PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
-                PopupTitleLabel.Text = "Connection Success";
-                PopupLabel.Text = "Connection to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "GnollHack Server was successful." +
-                    (res.HasHttpStatusCode && res.StatusCode != System.Net.HttpStatusCode.OK? " Status Code: " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : "");
+                PopupTitleLabel.Text = "Credentials Not Set";
+                PopupLabel.Text = (hasNoUserName && hasNoPassword ? "User name and password have" : hasNoUserName ? "User name has" : "Password has") +" not been set.";
                 PopupOkButton.IsEnabled = true;
                 PopupGrid.IsVisible = true;
             }
             else
             {
-                XlogTestButton.TextColor = GHColors.Red;
-                PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
-                PopupTitleLabel.Text = "Connection Failed";
-                PopupLabel.Text = "Connection to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "GnollHack Server failed." +
-                    (res.HasHttpStatusCode ? " Status Code: " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : "") +
-                    (res.Message != null ? " Message: " + res.Message : "");
-                PopupOkButton.IsEnabled = true;
-                PopupGrid.IsVisible = true;
+                XlogTestButton.TextColor = GHColors.Yellow;
+                XlogTestButton.Text = "Wait";
+                GHApp.XlogUserName = PostXlogUserNameEntry.Text;
+                GHApp.XlogPassword = PostXlogPasswordEntry.Text;
+                GHApp.XlogReleaseAccount = XlogReleaseAccountSwitch.IsToggled;
+                GHApp.SetXlogUserNameVerified(false, null, null);
+                GHApp.XlogCredentialsIncorrect = false;
+                SendResult res = await GHApp.SendXLogEntry("", 1, 0, new List<GHPostAttachment>(), true);
+                XlogTestButton.Text = "Test";
+                if (res.IsSuccess)
+                {
+                    XlogTestButton.TextColor = GHColors.BrighterGreen;
+                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
+                    PopupTitleLabel.Text = "Connection Success";
+                    PopupLabel.Text = "Connection to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "GnollHack Server was successful." +
+                        (res.HasHttpStatusCode && res.StatusCode != System.Net.HttpStatusCode.OK ? " Status Code: " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : "");
+                    PopupOkButton.IsEnabled = true;
+                    PopupGrid.IsVisible = true;
+                }
+                else
+                {
+                    XlogTestButton.TextColor = GHColors.Red;
+                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
+                    PopupTitleLabel.Text = "Connection Failed";
+                    PopupLabel.Text = "Connection to " + (GHApp.IsDebug && !GHApp.XlogReleaseAccount ? "Test " : "") + "GnollHack Server failed." +
+                        (res.HasHttpStatusCode ? " Status Code: " + (int)res.StatusCode + " (" + res.StatusCode.ToString() + ")" : "") +
+                        (res.Message != null ? " Message: " + res.Message : "");
+                    PopupOkButton.IsEnabled = true;
+                    PopupGrid.IsVisible = true;
+                }
             }
+
             XlogTestButton.IsEnabled = true;
         }
 

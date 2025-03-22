@@ -1082,34 +1082,6 @@
                                         HorizontalOptions="End" />
                                 </StackLayout>
                             </Grid>
-                            <Grid ColumnSpacing="6" ColumnDefinitions="Auto,*" HeightRequest="40" HorizontalOptions="Fill">
-                                <StackLayout Grid.Column="0" Spacing="12" Orientation="Horizontal" HeightRequest="40" HorizontalOptions="Start">
-                                    <Label x:Name="PostingTitleLabel"
-                                        Text="Posting"
-                                        FontFamily="Underwood" TextColor="Black"
-                                        FontSize="15"
-                                        VerticalOptions="CenterAndExpand" 
-                                        HorizontalOptions="Start" />
-                                    <controls:CustomImageButton x:Name="XlogTestButton" Text="Test" FontSize="13" WidthRequest="90" HeightRequest="35" FontFamily="Diablo"
-                                        BackgroundColor="Transparent" TextColor="White"
-                                        Clicked="XlogTestButton_Clicked"
-                                        VerticalOptions="CenterAndExpand" 
-                                        HorizontalOptions="Start" />
-                                </StackLayout>
-                                <StackLayout Grid.Column="1" Spacing="12" Orientation="Horizontal" HeightRequest="40" HorizontalOptions="End">
-                                        <Label x:Name="CustomXlogPostLinkLabel"
-                                        Text="Default"
-                                        FontFamily="Underwood" TextColor="Blue"
-                                        FontSize="14"
-                                        VerticalOptions="CenterAndExpand" 
-                                        HorizontalOptions="End" />
-                                    <controls:CustomImageButton x:Name="CustomXlogPostButton" Text="Link" FontSize="13" WidthRequest="80" HeightRequest="35" FontFamily="Diablo"
-                                        BackgroundColor="Transparent" TextColor="White"
-                                        Clicked="CustomXlogPostButton_Clicked"
-                                        VerticalOptions="CenterAndExpand" 
-                                        HorizontalOptions="End" />
-                                </StackLayout>
-                            </Grid>
                             <Grid x:Name="PostXlogUserNameStackLayout" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="User Name"
                                     x:Name="PostXlogUserNameLabel" 
@@ -1129,6 +1101,34 @@
                                     HorizontalOptions="Start" />
                                 <Entry Grid.Column="1" x:Name="PostXlogPasswordEntry" IsPassword="True" MaxLength="63" HorizontalOptions="End" VerticalOptions="Center" Placeholder="Enter password" PlaceholderColor="Gray"
                                     TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
+                            </Grid>
+                            <Grid ColumnSpacing="6" ColumnDefinitions="Auto,*" HeightRequest="40" HorizontalOptions="Fill">
+                                <StackLayout Grid.Column="0" Spacing="12" Orientation="Horizontal" HeightRequest="40" HorizontalOptions="Start">
+                                    <Label x:Name="PostingTitleLabel"
+                                        Text="Posting"
+                                        FontFamily="Underwood" TextColor="Black"
+                                        FontSize="15"
+                                        VerticalOptions="CenterAndExpand" 
+                                        HorizontalOptions="Start" />
+                                    <controls:CustomImageButton x:Name="XlogTestButton" Text="Test" FontSize="13" WidthRequest="90" HeightRequest="35" FontFamily="Diablo"
+                                        BackgroundColor="Transparent" TextColor="White"
+                                        Clicked="XlogTestButton_Clicked"
+                                        VerticalOptions="CenterAndExpand" 
+                                        HorizontalOptions="Start" />
+                                </StackLayout>
+                                <StackLayout Grid.Column="1" Spacing="12" Orientation="Horizontal" HeightRequest="40" HorizontalOptions="End">
+                                    <Label x:Name="CustomXlogPostLinkLabel"
+                                        Text="Default"
+                                        FontFamily="Underwood" TextColor="Blue"
+                                        FontSize="14"
+                                        VerticalOptions="CenterAndExpand" 
+                                        HorizontalOptions="End" />
+                                    <controls:CustomImageButton x:Name="CustomXlogPostButton" Text="Link" FontSize="13" WidthRequest="80" HeightRequest="35" FontFamily="Diablo"
+                                        BackgroundColor="Transparent" TextColor="White"
+                                        Clicked="CustomXlogPostButton_Clicked"
+                                        VerticalOptions="CenterAndExpand" 
+                                        HorizontalOptions="End" />
+                                </StackLayout>
                             </Grid>
                             <Grid x:Name="XlogReleaseAccountStackLayout" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40" IsVisible="False">
                                 <Label Text="Use Release Account"
