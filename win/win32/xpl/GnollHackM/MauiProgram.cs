@@ -12,6 +12,8 @@ using AndroidX.Fragment.App;
 using Microsoft.Maui.Platform;
 using Android.OS;
 using Android.Views;
+using Android.Content;
+
 #endif
 
 #if IOS
@@ -297,28 +299,38 @@ public static class MauiProgram
                                 // Modals in MAUI in NET9 use DialogFragment
                                 if (fragment is AndroidX.Fragment.App.DialogFragment dialogFragment)
                                 {
-                                    var window = dialogFragment.Dialog?.Window;
-                                    if(window != null)
+                                    if(dialogFragment.IsAdded)
                                     {
-                                        if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
+                                        var window = dialogFragment.Dialog?.Window;
+                                        if (window != null)
                                         {
+                                            if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
+                                            {
 #pragma warning disable CA1416 // Supported on: 'android' 30.0 and later
-                                            window!.SetDecorFitsSystemWindows(false);
-                                            window!.InsetsController?.Hide(WindowInsets.Type.SystemBars());
-                                            if (window!.InsetsController != null)
-                                                window!.InsetsController.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
+                                                window!.SetDecorFitsSystemWindows(false);
+                                                window!.InsetsController?.Hide(WindowInsets.Type.SystemBars());
+                                                if (window!.InsetsController != null)
+                                                    window!.InsetsController.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
 #pragma warning restore CA1416 // Supported on: 'android' 30.0 and later
-                                        }
-                                        else
-                                        {
+                                            }
+                                            else
+                                            {
 #pragma warning disable CS0618 // Type or member is obsolete
-                                            SystemUiFlags systemUiVisibility = (SystemUiFlags)window!.DecorView.SystemUiVisibility;
-                                            systemUiVisibility |= SystemUiFlags.HideNavigation;
-                                            systemUiVisibility |= SystemUiFlags.Immersive;
-                                            window!.DecorView.SystemUiVisibility = (StatusBarVisibility)systemUiVisibility;
+                                                SystemUiFlags systemUiVisibility = (SystemUiFlags)window!.DecorView.SystemUiVisibility;
+                                                systemUiVisibility |= SystemUiFlags.HideNavigation;
+                                                systemUiVisibility |= SystemUiFlags.Immersive;
+                                                window!.DecorView.SystemUiVisibility = (StatusBarVisibility)systemUiVisibility;
 #pragma warning restore CS0618 // Type or member is obsolete
+                                            }
                                         }
+                                        if(dialogFragment.Dialog != null)
+                                            dialogFragment.Dialog.KeyPress += AndroidDialogKeyPress;
                                     }
+                                    //else if (dialogFragment.IsRemoving)
+                                    //{
+                                    //    if (dialogFragment.Dialog != null)
+                                    //        dialogFragment.Dialog.KeyPress -= AndroidDialogKeyPress;
+                                    //}
                                 }
                             }), false);
                         }
@@ -348,15 +360,28 @@ public static class MauiProgram
 #endif
         return builder.Build();
 	}
+
+#if ANDROID
+    public static void AndroidDialogKeyPress(object sender, DialogKeyEventArgs e)
+    {
+        if (e.Event.Action == KeyEventActions.Up)
+            e.Handled = PlatformService.HandleOnKeyUp(e.KeyCode, e.Event);
+    }
+#endif
 }
 
 #if ANDROID
-public class MyFragmentLifecycleCallbacks(Action<AndroidX.Fragment.App.FragmentManager, AndroidX.Fragment.App.Fragment> onFragmentStarted) : AndroidX.Fragment.App.FragmentManager.FragmentLifecycleCallbacks
+public class MyFragmentLifecycleCallbacks(Action<AndroidX.Fragment.App.FragmentManager, AndroidX.Fragment.App.Fragment> fragmentCallback) : AndroidX.Fragment.App.FragmentManager.FragmentLifecycleCallbacks
 {
     public override void OnFragmentStarted(AndroidX.Fragment.App.FragmentManager fm, AndroidX.Fragment.App.Fragment f)
     {
-        onFragmentStarted?.Invoke(fm, f);
+        fragmentCallback?.Invoke(fm, f);
         base.OnFragmentStarted(fm, f);
+    }
+    public override void OnFragmentDetached(AndroidX.Fragment.App.FragmentManager fm, AndroidX.Fragment.App.Fragment f)
+    {
+        fragmentCallback?.Invoke(fm, f);
+        base.OnFragmentDetached(fm, f);
     }
 }
 #endif
