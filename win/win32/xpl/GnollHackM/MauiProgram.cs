@@ -323,7 +323,7 @@ public static class MauiProgram
 #pragma warning restore CS0618 // Type or member is obsolete
                                             }
                                         }
-                                        if(dialogFragment.Dialog != null)
+                                        if (dialogFragment.Dialog != null)
                                             dialogFragment.Dialog.KeyPress += AndroidDialogKeyPress;
                                     }
                                     else if (dialogFragment.IsRemoving)
@@ -364,6 +364,7 @@ public static class MauiProgram
 #if ANDROID
     public static void AndroidDialogKeyPress(object sender, DialogKeyEventArgs e)
     {
+        e.Handled = false;
         if (e.Event.Action == KeyEventActions.Up)
             e.Handled = PlatformService.HandleOnKeyUp(e.KeyCode, e.Event);
     }
