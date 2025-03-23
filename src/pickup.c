@@ -2964,7 +2964,7 @@ reverse_loot()
          */
         for (n = inv_cnt(TRUE), otmp = invent; otmp; --n, otmp = otmp->nobj)
             if (!rn2(n + 1)) {
-                prinv("You find old loot:", otmp, 0L);
+                prinvc("You find old loot:", otmp, 0L);
                 return TRUE;
             }
         return FALSE;

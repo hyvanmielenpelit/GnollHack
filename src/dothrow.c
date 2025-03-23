@@ -581,7 +581,7 @@ dofire()
         if (uquiver) 
         {
             uquiver->owornmask &= ~W_QUIVER; /* less verbose */
-            prinv("You ready:", uquiver, 0L);
+            prinvc("You ready:", uquiver, 0L);
             uquiver->owornmask |= W_QUIVER;
         }
     }
