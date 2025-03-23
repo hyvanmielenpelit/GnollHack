@@ -326,11 +326,11 @@ public static class MauiProgram
                                         if(dialogFragment.Dialog != null)
                                             dialogFragment.Dialog.KeyPress += AndroidDialogKeyPress;
                                     }
-                                    //else if (dialogFragment.IsRemoving)
-                                    //{
-                                    //    if (dialogFragment.Dialog != null)
-                                    //        dialogFragment.Dialog.KeyPress -= AndroidDialogKeyPress;
-                                    //}
+                                    else if (dialogFragment.IsRemoving)
+                                    {
+                                        if (dialogFragment.Dialog != null)
+                                            dialogFragment.Dialog.KeyPress -= AndroidDialogKeyPress;
+                                    }
                                 }
                             }), false);
                         }
@@ -378,10 +378,10 @@ public class MyFragmentLifecycleCallbacks(Action<AndroidX.Fragment.App.FragmentM
         fragmentCallback?.Invoke(fm, f);
         base.OnFragmentStarted(fm, f);
     }
-    public override void OnFragmentDetached(AndroidX.Fragment.App.FragmentManager fm, AndroidX.Fragment.App.Fragment f)
+    public override void OnFragmentStopped(AndroidX.Fragment.App.FragmentManager fm, AndroidX.Fragment.App.Fragment f)
     {
         fragmentCallback?.Invoke(fm, f);
-        base.OnFragmentDetached(fm, f);
+        base.OnFragmentStopped(fm, f);
     }
 }
 #endif
