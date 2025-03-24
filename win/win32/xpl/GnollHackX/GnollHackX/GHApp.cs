@@ -122,8 +122,10 @@ namespace GnollHackX
             GHPath = GnollHackService.GetGnollHackPath();
             InitializeBattery();
             ProcessCommandLineArguments();
+            ProcessEnvironment();
 
-            TotalMemory = GHApp.PlatformService.GetDeviceMemoryInBytes();
+            TotalMemory = PlatformService.GetDeviceMemoryInBytes();
+            PlatformScreenScale = PlatformService.GetPlatformScreenScale();
 
             InitBaseTypefaces();
             InitBaseCachedBitmaps();
@@ -255,6 +257,30 @@ namespace GnollHackX
         }
 
         public static bool IsSteam { get; set; }
+        public static bool IsPlaytest { get; set; }
+
+        private static void ProcessEnvironment()
+        {
+#if WINDOWS
+            try
+            {
+                string packstr = AppInfo.PackageName;
+                if (!string.IsNullOrEmpty(packstr))
+                {
+                    if (packstr.EndsWith(".Playtest"))
+                    {
+                        IsPlaytest = true;
+                        return;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+#endif
+            IsPlaytest = false;
+        }
 
         private static void ProcessCommandLineArguments()
         {
@@ -1421,7 +1447,7 @@ namespace GnollHackX
         public static string SkiaSharpVersionString { get; set; }
         public static string FMODVersionString { get; set; }
         public static string FrameworkVersionString { get; set; }
-        public static string FrameworkMAUIVersionString { get; set; }
+        public static string UIFrameworkVersionString { get; set; }
         public static string RuntimeVersionString { get; set; }
 
         public static string GHPath { get; private set; } = ".";
@@ -1484,9 +1510,16 @@ namespace GnollHackX
             set { lock (_displayDataLock) { _customScreenScale = value <= 0.0f ? 1.0f : value; } }
         }
 
+        private static float _platformScreenScale = 1.0f;
+        public static float PlatformScreenScale
+        {
+            get { lock (_displayDataLock) { return _platformScreenScale; } }
+            set { lock (_displayDataLock) { _platformScreenScale = value <= 0.0f ? 1.0f : value; } }
+        }
+
         public static float TotalScreenScale
         {
-            get { lock (_displayDataLock) { return _displayDensity * _customScreenScale; } }
+            get { lock (_displayDataLock) { return _displayDensity * _platformScreenScale * _customScreenScale; } }
         }
 
         public static GHPlatform PlatformId
@@ -3715,6 +3748,8 @@ namespace GnollHackX
                                     + "\tport=" + GHConstants.PortName?.ToLower()
                                     + "\tportversion=" + VersionTracking.CurrentVersion?.ToLower()
                                     + "\tportbuild=" + VersionTracking.CurrentBuild?.ToLower()
+                                    + "\tseclvl=0"
+                                    + "\tstore=" + GHApp.GetStoreString()
                                     + Environment.NewLine;
                         }
 
@@ -3852,6 +3887,32 @@ namespace GnollHackX
                 xlogattachments.Clear();
             }
             return res;
+        }
+
+        public static string GetStoreString()
+        {
+            if (IsAndroid)
+                return "google";
+            else if (IsiOS)
+                return "apple";
+            else if (IsWindows)
+            {
+                if (IsPackaged)
+                    return "microsoft";
+                else
+                {
+                    if (IsSteam)
+                    {
+                        if (IsPlaytest)
+                            return "steam-playtest";
+                        else
+                            return "steam";
+                    }
+                    else
+                        return "none";
+                }
+            }
+            return "unknown";
         }
 
         public static void SaveXLogEntryToDisk(int status_type, int status_datatype, string xlogentry_string, List<GHPostAttachment> xlogattachments)

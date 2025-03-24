@@ -108,6 +108,18 @@ namespace GnollHackX.Droid
             }
         }
 
+        public float GetPlatformScreenScale()
+        {
+            try
+            {
+                return 1.0f;
+            }
+            catch
+            {
+                return 1.0f;
+            }
+        }
+
         public void CloseApplication()
         {
             RevertAnimatorDuration(true);

@@ -6331,7 +6331,7 @@ struct obj* obj;
 
                 if (ans == 'm')
                 {
-                    prinv("Marked empty:", obj, 0L);
+                    prinvc("Marked empty:", obj, 0L);
                     update_inventory();
                 }
             }

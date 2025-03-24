@@ -70,6 +70,26 @@ namespace GnollHackX.iOS
             }
         }
 
+        public float GetPlatformScreenScale()
+        {
+            try
+            {
+                //var nativeScale = UIKit.UIScreen.MainScreen.NativeScale;
+                //var scale = UIKit.UIScreen.MainScreen.Scale;
+
+                //if (nativeScale == scale || nativeScale == 0 || scale == 0)
+                //    return 1.0f;
+
+                //float platformScale = (float)(scale / nativeScale);
+                //return platformScale;
+                return 1.0f;
+            }
+            catch
+            {
+                return 1.0f;
+            }
+        }
+
         public void CloseApplication()
         {
             RevertAnimatorDuration(true);

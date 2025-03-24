@@ -13,6 +13,7 @@ namespace GnollHackX
         void InitializePlatform();
         void CloseApplication();
         void HideKeyboard();
+        float GetPlatformScreenScale();
 
         string GetVersionString();
         ulong GetDeviceMemoryInBytes();

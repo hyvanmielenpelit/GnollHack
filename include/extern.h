@@ -1576,6 +1576,7 @@ E int FDECL(count_objects_in_class, (struct obj*, CHAR_P, boolean(*)(OBJ_P), BOO
 E int FDECL(identify_pack, (int, BOOLEAN_P));
 E void NDECL(learn_unseen_invent);
 E void FDECL(prinv, (const char *, struct obj *, int64_t));
+E void FDECL(prinvc, (const char*, struct obj*, int64_t));
 E void FDECL(prinv_ex, (const char*, struct obj*, int64_t, int, int, int, int, BOOLEAN_P, BOOLEAN_P));
 E char *FDECL(xprname,
               (struct obj *, const char *, CHAR_P, BOOLEAN_P, int64_t, int64_t));

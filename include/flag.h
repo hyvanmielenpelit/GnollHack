@@ -249,7 +249,7 @@ struct flag {
     uchar right_click_command;
     uchar middle_click_command;
     boolean stash_on_autopickup;
-    uchar reserved_uchar2;
+    boolean is_offline_only;
     uchar reserved_uchar3;
     uchar reserved_uchar4;
     uchar reserved_uchar5;

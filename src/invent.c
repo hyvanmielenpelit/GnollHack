@@ -1929,7 +1929,7 @@ const char *drop_fmt, *drop_arg, *hold_msg;
                     || ammo_and_launcher(obj, uswapwep)))
                 setuqwep(obj);
             if (hold_msg || drop_fmt)
-                prinv(hold_msg, obj, oquan);
+                prinvc(hold_msg, obj, oquan);
         }
     }
     newsym(u.ux, u.uy);
@@ -4214,6 +4214,15 @@ int64_t quan;
     //pline("%s%s%s", prefix, *prefix ? " " : "",
     //      xprname(obj, (char *) 0, obj_to_let(obj), TRUE, 0L, quan));
     prinv_ex(prefix, obj, quan, ATR_NONE, NO_COLOR, ATR_NONE, NO_COLOR, TRUE, FALSE);
+}
+
+void
+prinvc(prefix, obj, quan)
+const char* prefix;
+struct obj* obj;
+int64_t quan;
+{
+    prinv_ex(prefix, obj, quan, ATR_NONE, CLR_MSG_HINT, ATR_NONE, NO_COLOR, TRUE, FALSE);
 }
 
 void
@@ -7632,10 +7641,11 @@ doorganize() /* inventory organizer by Del Lamb */
         reorder_invent();
     }
 
-    /* messages deferred until inventory has been fully reestablished */
-    prinv(adj_type, obj, 0L);
+    /* messages deferred until inventory has been fully reestablished */    
+    prinvc(adj_type, obj, 0L);
     if (bumped)
-        prinv("Moving:", bumped, 0L);
+        prinvc("Moving:", bumped, 0L);
+        
     if (splitting)
         clear_splitobjs(); /* reset splitobj context */
     update_inventory();

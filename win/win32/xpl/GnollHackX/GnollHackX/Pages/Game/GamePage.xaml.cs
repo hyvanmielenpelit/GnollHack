@@ -17934,7 +17934,7 @@ namespace GnollHackX.Pages.Game
                     ShownTip++;
                     if (ShownTip == 12 && HealthRect.Width == 0)
                         ShownTip++;
-                    if (ShownTip == 12 && HealthRect.Width == 0)
+                    if (ShownTip == 13 && ManaRect.Width == 0)
                         ShownTip++;
                     if (UseSimpleCmdLayout && (ShownTip == 5 || ShownTip == 7))
                         ShownTip++;
