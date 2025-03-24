@@ -260,7 +260,7 @@ STATIC_DCL void FDECL(livelog_post_to_forum, (unsigned int, const char*));
 STATIC_DCL void FDECL(livelog_post_to_forum_rt, (unsigned int, struct u_realtime, const char*));
 STATIC_DCL int FDECL(copy_savefile, (const char*, const char*));
 
-#define INBUF_SIZ 4 * BUFSIZ
+#define INBUF_SIZ 8 * BUFSZ
 
 STATIC_VAR char config_section_chosen[INBUF_SIZ]; // = (char*)0;
 STATIC_VAR char config_section_current[INBUF_SIZ]; // = (char*)0;
