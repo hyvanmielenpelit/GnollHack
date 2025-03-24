@@ -1253,7 +1253,9 @@ int* spell_no;
                     info.menu_flags |= MENU_FLAGS_ACTIVE;
                 }
                 if (!is_inactive)
+                {
                     info.menu_flags |= MENU_FLAGS_ACTIVE;
+                }
 
                 any.a_int = is_inactive ? 0 : splnum + 1; /* must be non-zero */
                 add_extended_menu(tmpwin, glyph, &any, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, mcolor, buf,
@@ -4530,6 +4532,7 @@ int splaction;
 
     double spellmanacost = get_spell_mana_cost(splnum);
     double displayed_manacost = ceil(10 * spellmanacost) / 10;
+    int percent = percent_success(splnum, TRUE);
 
     if (spellknow(splnum) <= 0)
     {
@@ -4544,7 +4547,7 @@ int splaction;
             "%s%s {%s &success; %d%% &mana; %.1f &cool; %s%d &casts; %s}" : "%s%s {%s Success %d%% Mana %.1f Cool %s%d Casts %s}";
         Sprintf(buf, fmt, fullname, descbuf,
             levelbuf,
-            percent_success(splnum, TRUE),
+            percent,
             displayed_manacost,
             extrabuf, getspellcooldown(splnum),
             availablebuf);
@@ -4560,8 +4563,22 @@ int splaction;
         info.menu_flags |= MENU_FLAGS_USE_COLOR_FOR_SUFFIXES;
         inactive = TRUE;
     }
-    if(!inactive)
+    if (!inactive)
+    {
         info.menu_flags |= MENU_FLAGS_ACTIVE;
+        if (percent <= 0)
+        {
+            mcolor = CLR_RED;
+        }
+        else if (spellamount(splnum) == 0)
+        {
+            mcolor = CLR_BROWN;
+        }
+        else if ((double)u.uen + (double)u.uen_fraction / 10000 < spellmanacost)
+        {
+            mcolor = CLR_BLUE;
+        }
+    }
 
     any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
 
@@ -4753,6 +4770,7 @@ boolean usehotkey;
 
     double spellmanacost = get_spell_mana_cost(splnum);
     double displayed_manacost = ceil(10 * spellmanacost) / 10;
+    int percent = percent_success(splnum, TRUE);
 
     //Category
     if (spellknow(splnum) <= 0)
@@ -4762,7 +4780,7 @@ boolean usehotkey;
             categorybuf,
             displayed_manacost >= 100 ? 0 : 1, displayed_manacost,
             statbuf,
-            100 - percent_success(splnum, TRUE),
+            100 - percent,
             spellcooldownleft(splnum) > 0 ? spellcooldownleft(splnum) : getspellcooldown(splnum),
             availablebuf);  //spellretention(splnum, retentionbuf));
 
@@ -4779,7 +4797,30 @@ boolean usehotkey;
     else
         letter = 0; // spellet(splnum);
 
-    add_menu(tmpwin, NO_GLYPH, &any, letter, 0, ATR_NONE, (spellcooldownleft(splnum) > 0 && splaction != SPELLMENU_PREPARE) || spellknow(splnum) <= 0 ? CLR_BLACK : NO_COLOR, buf,
+    boolean inactive = FALSE;
+    int mcolor = NO_COLOR;
+    if ((spellcooldownleft(splnum) > 0 && splaction != SPELLMENU_PREPARE) || spellknow(splnum) <= 0)
+    {
+        inactive = TRUE;
+        mcolor = CLR_GRAY;
+    }
+    if (!inactive && splaction == SPELLMENU_CAST)
+    {
+        if (percent <= 0)
+        {
+            mcolor = CLR_RED;
+        }
+        else if (spellamount(splnum) == 0)
+        {
+            mcolor = CLR_BROWN;
+        }
+        else if ((double)u.uen + (double)u.uen_fraction / 10000 < spellmanacost)
+        {
+            mcolor = CLR_BLUE;
+        }
+    }
+
+    add_menu(tmpwin, NO_GLYPH, &any, letter, 0, ATR_NONE, mcolor, buf,
         (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
 
     //Strcat(shortenedname, "=black");
