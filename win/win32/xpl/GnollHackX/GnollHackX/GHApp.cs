@@ -620,17 +620,12 @@ namespace GnollHackX
             }
         }
 
-        public static bool IsDebug
-        {
-            get
-            {
+        public static readonly bool IsDebug = 
 #if DEBUG
-                return true;
+            true;
 #else
-                return false;
+            false;
 #endif
-            }
-        }
 
         private static readonly object _useGPULock = new object();
         private static bool _useMipMap = false;
@@ -1461,6 +1456,13 @@ namespace GnollHackX
         public static IFmodService FmodService { get { return _fmodService; } }
         private static IPlatformService _platformService = null;
         public static IPlatformService PlatformService { get { return _platformService; } }
+
+        public static readonly bool IsBeta =
+#if BETA
+            true;
+#else
+            false;
+#endif
 
 #if GNH_MAUI
         public static float _displayRefreshRate = Math.Max(60.0f, DeviceDisplay.Current.MainDisplayInfo.RefreshRate);

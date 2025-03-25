@@ -269,19 +269,14 @@ namespace GnollHackX.Pages.MainScreen
             PortVersionTitleLabel.Text = GHApp.RuntimePlatform + " Port Version:";
             PortBuildTitleLabel.Text = GHApp.RuntimePlatform + " Port Build:";
             PortConfigurationTitleLabel.Text ="Port Configuration:";
-#if BETA
-            PortVersionLabel.Text += " (Beta)";
-#endif
+            if (GHApp.IsBeta)
+                PortVersionLabel.Text += " (Beta)";
+            if (GHApp.IsPlaytest)
+                PortBuildTitleLabel.Text += " (Playtest)";
 
             GnollHackVersionLabel.Text = GHApp.GHVersionString;
             GnollHackConfigurationLabel.Text = GHApp.GHDebug ? "Debug" : "Release";
-            PortConfigurationLabel.Text =
-#if DEBUG
-                "Debug";
-#else
-                "Release";
-#endif
-
+            PortConfigurationLabel.Text = GHApp.IsDebug ? "Debug" : "Release";
             PackagingModelLabel.Text = GHApp.IsPackaged ? "Packaged" : "Unpackaged";
 
             GnollHackCompatibilityLabel.Text = compatstr == "" ? "" : "From " + compatstr;
