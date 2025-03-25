@@ -506,7 +506,7 @@ namespace GnollHackX.Unknown
 #elif WINDOWS
                 string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
                 using Stream fileStream = await FileSystem.Current.OpenAppPackageFileAsync(fullsourcepath);
-                using (StreamReader sr = new StreamReader(fullsourcepath))
+                using (StreamReader sr = new StreamReader(fileStream))
 #else
                 string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
                 using (StreamReader sr = new StreamReader(fullsourcepath))
@@ -613,23 +613,23 @@ namespace GnollHackX.Unknown
                 foreach (string txtfile in _txtfileslist)
                 {
 #if __IOS__
-                string extension = Path.GetExtension(txtfile);
-                if (extension != null && extension.Length > 0)
-                    extension = extension.Substring(1); /* Remove . from the start */
-                string fname = Path.GetFileNameWithoutExtension(txtfile);
-                string fullsourcepath = NSBundle.MainBundle.PathForResource(fname, extension, assetsourcedir);
-                using (StreamReader sr = new StreamReader(fullsourcepath))
+                    string extension = Path.GetExtension(txtfile);
+                    if (extension != null && extension.Length > 0)
+                        extension = extension.Substring(1); /* Remove . from the start */
+                    string fname = Path.GetFileNameWithoutExtension(txtfile);
+                    string fullsourcepath = NSBundle.MainBundle.PathForResource(fname, extension, assetsourcedir);
+                    using (StreamReader sr = new StreamReader(fullsourcepath))
 #elif __ANDROID__
                     string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
                     using Stream assetsStream = assets.Open(fullsourcepath);
                     using (StreamReader sr = new StreamReader(assetsStream))
 #elif WINDOWS
-                string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
-                using Stream fileStream = await FileSystem.Current.OpenAppPackageFileAsync(fullsourcepath);
-                using (StreamReader sr = new StreamReader(fileStream))
+                    string fullsourcepath = Path.Combine(assetsourcedir, txtfile);
+                    using Stream fileStream = await FileSystem.Current.OpenAppPackageFileAsync(fullsourcepath);
+                    using (StreamReader sr = new StreamReader(fileStream))
 #else
-                string fullsourcepath = Path.Combine(filesdir, assetsourcedir, txtfile);
-                using (StreamReader sr = new StreamReader(fullsourcepath))
+                    string fullsourcepath = Path.Combine(filesdir, assetsourcedir, txtfile);
+                    using (StreamReader sr = new StreamReader(fullsourcepath))
 #endif
                     {
                         content = sr.ReadToEnd();
