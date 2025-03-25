@@ -272,7 +272,7 @@ namespace GnollHackX.Pages.MainScreen
             if (GHApp.IsBeta)
                 PortVersionLabel.Text += " (Beta)";
             if (GHApp.IsPlaytest)
-                PortBuildTitleLabel.Text += " (Playtest)";
+                PortBuildLabel.Text += " (Playtest)";
 
             GnollHackVersionLabel.Text = GHApp.GHVersionString;
             GnollHackConfigurationLabel.Text = GHApp.GHDebug ? "Debug" : "Release";
