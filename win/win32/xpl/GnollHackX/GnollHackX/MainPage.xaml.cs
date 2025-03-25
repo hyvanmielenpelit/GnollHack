@@ -1263,16 +1263,16 @@ namespace GnollHackX
             GHApp.PlayButtonClickedSound();
             string fulltargetpath = Path.Combine(GHApp.GHPath, "defaults.gnh");
             var editorPage = new EditorPage(this, fulltargetpath, "Default Options File");
-            string errormsg = "";
-            if (!editorPage.ReadFile(out errormsg))
+            try
             {
-                await DisplayAlertOrGrid("Reading Options File Failed", "GnollHack failed to read the options file: " + errormsg, "OK", GHColors.Red);
-                UpperButtonGrid.IsEnabled = true;
-            }
-            else
-            {
+                editorPage.ReadFile();
                 carouselView.Stop();
                 await GHApp.Navigation.PushModalAsync(editorPage);
+            }
+            catch (Exception ex)
+            {
+                editorPage.ClearTextEditor();
+                await DisplayAlertOrGrid("Reading Options File Failed", "GnollHack failed to read the options file: " + ex.Message, "OK", GHColors.Red);
             }
             UpperButtonGrid.IsEnabled = true;
         }

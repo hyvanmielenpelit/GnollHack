@@ -45,25 +45,18 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
-        public bool ReadFile(out string errorMessage)
+        public void ReadFile()
         {
-            string res = "";
             TextEditor.Text = "(Reading file)";
-            try
-            {
-                TextEditor.Text = File.ReadAllText(_fileName, Encoding.UTF8);
-                TextEditor.IsEnabled = true;
-            }
-            catch (Exception e)
-            {
-                TextEditor.Text = "";
-                errorMessage = e.Message;
-                return false;
-            }
-            errorMessage = res;
+            string str = File.ReadAllText(_fileName, Encoding.UTF8);
+            TextEditor.Text = str; //Note that in UWP on Windows each Environment.NewLine gets here changed into \r only (!)
+            TextEditor.IsEnabled = true;
             _registerChanges = true;
- 
-            return true;
+        }
+
+        public void ClearTextEditor()
+        {
+            TextEditor.Text = "";
         }
 
         private async void OKButton_Clicked(object sender, EventArgs e)
@@ -77,7 +70,15 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     try
                     {
-                        File.WriteAllText(_fileName, TextEditor.Text, Encoding.UTF8);
+#if WINDOWS
+                        // In UWP on Windows line endings are just \r so they need to be changed back to Environment.NewLine
+                        string str = TextEditor.Text.Replace("\r", Environment.NewLine);
+#else
+                        string str = TextEditor.Text;
+#endif
+                        byte[] data = Encoding.UTF8.GetBytes(str);
+                        File.WriteAllBytes(_fileName, data);
+                        //File.WriteAllText(_fileName, str4, Encoding.UTF8); //WriteAllText seems to add 3 bytes in the front of the file on Windows, so cannot be used
                     }
                     catch (Exception ex)
                     {

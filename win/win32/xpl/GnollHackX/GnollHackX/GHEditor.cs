@@ -11,9 +11,9 @@ namespace GnollHackX
 {
     public class GHEditor : Editor
     {
-        public GHEditor()
-        {
-
+        public GHEditor() : base() 
+        { 
+            
         }
     }
 }
