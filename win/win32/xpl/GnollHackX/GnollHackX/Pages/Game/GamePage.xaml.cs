@@ -3101,7 +3101,10 @@ namespace GnollHackX.Pages.Game
         private void ShowWindowCanvas(GHWindow window, List<GHPutStrItem> strs)
         {
             /* Cancel delayed text hide */
-            lock(_delayedTextHideLock)
+#if GNH_MAUI
+            StopTextHideTimers();
+#endif
+            lock (_delayedTextHideLock)
             {
                 _delayedTextHideCancelled = true;
             }
@@ -3112,6 +3115,9 @@ namespace GnollHackX.Pages.Game
             {
                 if (_menuHideOn)
                 {
+#if GNH_MAUI
+                    StopMenuHideTimers();
+#endif
                     _menuHideCancelled = true;
                     dohidemenu = true;
                 }
@@ -3787,6 +3793,9 @@ namespace GnollHackX.Pages.Game
         private void ShowMenuCanvas(GHMenuInfo menuinfo, GHWindow ghwindow)
         {
             /* Cancel delayed menu hide */
+#if GNH_MAUI
+            StopMenuHideTimers();
+#endif
             lock (_menuHideCancelledLock)
             {
                 if(_menuHideOn)
@@ -16499,8 +16508,32 @@ namespace GnollHackX.Pages.Game
                 DelayedMenuHide();
         }
 
+#if GNH_MAUI
+        private readonly List<IDispatcherTimer> _menuHideTimers = new List<IDispatcherTimer>();
+        private void StopMenuHideTimers()
+        {
+            foreach (IDispatcherTimer t in _menuHideTimers)
+            {
+                t.Stop();
+            }
+            _menuHideTimers.Clear();
+        }
+        private readonly List<IDispatcherTimer> _textHideTimers = new List<IDispatcherTimer>();
+        private void StopTextHideTimers()
+        {
+            foreach (IDispatcherTimer t in _textHideTimers)
+            {
+                t.Stop();
+            }
+            _textHideTimers.Clear();
+        }
+#endif
+
         private void DelayedMenuHide()
         {
+#if GNH_MAUI
+            StopMenuHideTimers();
+#endif
             lock(_menuHideCancelledLock)
             {
                 _menuHideCancelled = false;
@@ -16518,6 +16551,7 @@ namespace GnollHackX.Pages.Game
             timer.Interval = TimeSpan.FromSeconds(UIUtils.GetWindowHideSecs());
             timer.IsRepeating = false;
             timer.Tick += (s, e) => { DoTimedMenuHide(); };
+            _menuHideTimers.Add(timer);
             timer.Start();
 #else
             Device.StartTimer(TimeSpan.FromSeconds(UIUtils.GetWindowHideSecs()), () =>
@@ -16560,6 +16594,9 @@ namespace GnollHackX.Pages.Game
         private bool _delayedTextHideCancelled = false;
         private void DelayedTextHide()
         {
+#if GNH_MAUI
+            StopTextHideTimers();
+#endif
             lock (_delayedTextHideLock)
             {
                 _delayedTextHideOn = true;
@@ -16575,6 +16612,7 @@ namespace GnollHackX.Pages.Game
             timer.Interval = TimeSpan.FromSeconds(UIUtils.GetWindowHideSecs());
             timer.IsRepeating = false;
             timer.Tick += (s, e) => { DoTimedTextHide(); };
+            _textHideTimers.Add(timer);
             timer.Start();
 #else
             Device.StartTimer(TimeSpan.FromSeconds(UIUtils.GetWindowHideSecs()), () =>
