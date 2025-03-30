@@ -137,7 +137,7 @@
       </AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
+      <AdditionalOptions>-lm -lc -shared -Wl -z max-page-size=16384</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -152,7 +152,7 @@
       </AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
+      <AdditionalOptions>-lm -lc -shared -Wl -z max-page-size=16384</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">

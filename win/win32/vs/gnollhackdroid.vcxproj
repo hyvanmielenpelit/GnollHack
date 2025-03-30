@@ -193,7 +193,7 @@
       </AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
+      <AdditionalOptions>-lm -lc -shared -Wl -z max-page-size=16384</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
@@ -208,7 +208,7 @@
       </AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalOptions>-lm -lc -shared</AdditionalOptions>
+      <AdditionalOptions>-lm -lc -shared -Wl -z max-page-size=16384</AdditionalOptions>
     </Link>
     <PostBuildEvent>
       <Command>..\xpl\GnollHackX\GnollHackX.Android.GooglePlay\copy-assetpack.bat</Command>
