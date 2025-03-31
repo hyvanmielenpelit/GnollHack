@@ -42,6 +42,10 @@ namespace GnollHackX.Pages.Game
                 btnSave.Text = "Save Game";
                 btnQuit.Text = "Quit Game";
             }
+            else if (!gamePage.EnableWizardMode)
+            {
+                btnQuit.Text = "Delete Character";
+            }
 
             if (gamePage.GameEnded)
             {

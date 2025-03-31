@@ -128,13 +128,13 @@ public static class MauiProgram
                                     switch (e.WParam)
                                     {
                                         case 0xF100:
-                                            System.Diagnostics.Debug.WriteLine("MenuKey Pressed!");
+                                            //System.Diagnostics.Debug.WriteLine("MenuKey Pressed!");
                                             return;
                                         case 0xF020:
-                                            System.Diagnostics.Debug.WriteLine("Minimizing!");
+                                            //System.Diagnostics.Debug.WriteLine("Minimizing!");
                                             break;
                                         case 0xF120:
-                                            System.Diagnostics.Debug.WriteLine("Restoring!");
+                                            //System.Diagnostics.Debug.WriteLine("Restoring!");
                                             GHApp.DoKeyboardFocus();
                                             break;
                                     }
@@ -146,14 +146,14 @@ public static class MauiProgram
                                     switch (e.WParam)
                                     {
                                         case 0:
-                                            System.Diagnostics.Debug.WriteLine("SIZE_RESTORED!");
+                                            //System.Diagnostics.Debug.WriteLine("SIZE_RESTORED!");
                                             GHApp.DoKeyboardFocus();
                                             break;
                                         case 1:
-                                            System.Diagnostics.Debug.WriteLine("SIZE_MINIMIZED!");
+                                            //System.Diagnostics.Debug.WriteLine("SIZE_MINIMIZED!");
                                             break;
                                         case 2:
-                                            System.Diagnostics.Debug.WriteLine("SIZE_MAXIMIZED!");
+                                            //System.Diagnostics.Debug.WriteLine("SIZE_MAXIMIZED!");
                                             GHApp.DoKeyboardFocus();
                                             break;
                                     }
@@ -185,7 +185,7 @@ public static class MauiProgram
                             if(GHApp.CurrentGamePage != null)
                             {
                                 e.Cancel = true;
-                                GHApp.CurrentGamePage?.GenericButton_Clicked(s, new EventArgs(), GHUtils.Meta('q'));
+                                GHApp.CurrentGamePage?.GenericButton_Clicked(s, new EventArgs(), GHUtils.Meta('s'));
                             }
                             else
                             {
