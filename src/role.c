@@ -538,7 +538,7 @@ const struct Role roles[] = {
       /* Init   Lower  Higher */
       { 12, 0, 1, 7, 1, 0 }, /* Hit points */
       { 6, 2, 2, 3, 2, 3 },  /* Energy 1d4+4*/
-      10,
+      MAXULEV,
       0,
       0,
         {
@@ -617,7 +617,7 @@ const struct Role roles[] = {
       /* Init   Lower  Higher */
       { 10, 0, 1, 8, 1, 0 }, /* Hit points */
       { 3, 1, 1, 2, 1, 2 },  /* Energy 1d3*/
-      11,
+      MAXULEV,
       10,
       0,
         {
@@ -709,7 +709,7 @@ const struct Role roles[] = {
       /* Init   Lower  Higher */
       { 13, 0, 1, 9, 1, 0 }, /* Hit points */
       { 3, 1, 1, 2, 1, 2 },  /* Energy 1d3*/
-      12,
+      MAXULEV,
       10,
       0,
         {
