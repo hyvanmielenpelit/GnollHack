@@ -3750,8 +3750,8 @@ namespace GnollHackX
                                     + "\tport=" + GHConstants.PortName?.ToLower()
                                     + "\tportversion=" + VersionTracking.CurrentVersion?.ToLower()
                                     + "\tportbuild=" + VersionTracking.CurrentBuild?.ToLower()
-                                    + "\tseclvl=0"
-                                    + "\tstore=" + GHApp.GetStoreString()
+                                    + "\tportseclvl=" + GetPortSecurityLevel()
+                                    + "\tstore=" + GetStoreString()
                                     + Environment.NewLine;
                         }
 
@@ -3889,6 +3889,18 @@ namespace GnollHackX
                 xlogattachments.Clear();
             }
             return res;
+        }
+
+        public static int GetPortSecurityLevel()
+        {
+            if (IsiOS || IsAndroid)
+            {
+                return 10;
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         public static string GetStoreString()
