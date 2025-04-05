@@ -1054,6 +1054,16 @@
                             </Grid>
 
                             <Label Text="Server Posting" FontSize="21" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,16,0,2" />
+                            <Grid x:Name="SaveFileTrackingGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                <Label Text="Save File Tracking"
+                                       x:Name="SaveFileTrackingLabel"
+                                       FontFamily="Underwood" TextColor="Black"
+                                       FontSize="15"
+                                       VerticalOptions="Center" 
+                                       HorizontalOptions="Start">
+                                </Label>
+                                <Switch Grid.Column="1" x:Name="SaveFileTrackingSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="SaveFileTrackingSwitch_Toggled" />
+                            </Grid>
                             <Grid ColumnSpacing="6" ColumnDefinitions="Auto,*" HeightRequest="40" HorizontalOptions="Fill">
                                 <StackLayout Grid.Column="0" Orientation="Horizontal" Spacing="12" HeightRequest="40" HorizontalOptions="Start">
                                     <Label x:Name="AccountTitleLabel"
@@ -1082,7 +1092,7 @@
                                         HorizontalOptions="End" />
                                 </StackLayout>
                             </Grid>
-                            <Grid x:Name="PostXlogUserNameStackLayout" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                            <Grid x:Name="PostXlogUserNameGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="User Name"
                                     x:Name="PostXlogUserNameLabel" 
                                     FontFamily="Underwood" TextColor="Black"
@@ -1130,7 +1140,7 @@
                                         HorizontalOptions="End" />
                                 </StackLayout>
                             </Grid>
-                            <Grid x:Name="XlogReleaseAccountStackLayout" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40" IsVisible="False">
+                            <Grid x:Name="XlogReleaseAccountGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40" IsVisible="False">
                                 <Label Text="Use Release Account"
                                     x:Name="XlogReleaseAccountLabel"
                                     FontFamily="Underwood" TextColor="Black"
@@ -1174,7 +1184,7 @@
                                     HorizontalOptions="Start" />
                                 <Switch Grid.Column="1" x:Name="BonesListSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="BonesListSwitch_Toggled" />
                             </Grid>
-                            <Grid x:Name="BonesAllowedUsersStackLayout" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                            <Grid x:Name="BonesAllowedUsersGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="  Whitelist"
                                     x:Name="BonesAllowedUsersLabel" 
                                     FontFamily="Underwood" TextColor="Black"
@@ -1188,7 +1198,7 @@
                                 <Entry Grid.Column="1" x:Name="BonesAllowedUsersEntry" MaxLength="2047" HorizontalOptions="End" VerticalOptions="Center" Placeholder="All users" PlaceholderColor="Gray"
                                     TextColor="Black" FontFamily="DejaVuSansMono" FontSize="16" BackgroundColor="Transparent" HorizontalTextAlignment="Center" WidthRequest="200" />
                             </Grid>
-                            <Grid x:Name="ForcePostBonesStackLayout" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40" IsVisible="False">
+                            <Grid x:Name="ForcePostBonesGrid" ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40" IsVisible="False">
                                 <Label Text="  Force Post Bones"
                                     x:Name="ForcePostBonesLabel"
                                     FontFamily="Underwood" TextColor="Black"

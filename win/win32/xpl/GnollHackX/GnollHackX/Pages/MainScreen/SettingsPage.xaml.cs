@@ -150,8 +150,10 @@ namespace GnollHackX.Pages.MainScreen
             ClassicStatusBarSwitch_Toggled(null, new ToggledEventArgs(ClassicStatusBarSwitch.IsToggled));
             AllowBonesSwitch_Toggled(null, new ToggledEventArgs(AllowBonesSwitch.IsToggled));
             BonesListSwitch_Toggled(null, new ToggledEventArgs(BonesListSwitch.IsToggled));
+            if(SaveFileTrackingGrid.IsVisible && !SaveFileTrackingSwitch.IsToggled)
+                UpdateServerPostingEnabled(SaveFileTrackingSwitch.IsToggled);
 
-            if(!GHApp.RecommendedSettingsChecked)
+            if (!GHApp.RecommendedSettingsChecked)
             {
                 GHApp.RecommendedSettingsChecked = true;
                 Preferences.Set("RecommendedSettingsChecked", true);
@@ -468,6 +470,11 @@ namespace GnollHackX.Pages.MainScreen
             {
                 GHApp.ForcePostBones = ForcePostBonesSwitch.IsToggled;
                 Preferences.Set("ForcePostBones", ForcePostBonesSwitch.IsToggled);
+            }
+            if (SaveFileTrackingGrid.IsVisible)
+            {
+                GHApp.SaveFileTracking = SaveFileTrackingSwitch.IsToggled;
+                Preferences.Set("SaveFileTracking", SaveFileTrackingSwitch.IsToggled);
             }
 
             GHApp.CustomCloudStorageConnectionString = _customCloudStorageConnectionString;
@@ -852,7 +859,7 @@ namespace GnollHackX.Pages.MainScreen
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, menuhighlightedkeys = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false, diceasranges = true;
             bool postgamestatus = GHConstants.DefaultPosting, postdiagnostics = GHConstants.DefaultPosting, postxlog = GHConstants.DefaultPosting, postreplays = GHConstants.DefaultPosting, postbones = GHConstants.DefaultPosting, boneslistisblack = false;
-            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false;
+            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, save_file_tracking = false;
             long primarygpucache = -2, secondarygpucache = -2;
             int rightmouse = GHConstants.DefaultRightMouseCommand, middlemouse = GHConstants.DefaultMiddleMouseCommand;
             float screenscale = 0.0f;
@@ -932,6 +939,7 @@ namespace GnollHackX.Pages.MainScreen
             secondarygpucache = Preferences.Get("SecondaryGPUCacheLimit", -2L);
             disableauxgpu = Preferences.Get("DisableAuxiliaryGLCanvas", GHApp.IsDisableAuxGPUDefault);
             screenscale = Preferences.Get("CustomScreenScale", 0.0f);
+            save_file_tracking = GHApp.SaveFileTracking;
             if (_gamePage == null)
             {
                 cursor = Preferences.Get("CursorStyle", 1);
@@ -1260,9 +1268,18 @@ namespace GnollHackX.Pages.MainScreen
             PostXlogPasswordEntry.Text = xlog_password;
             BonesAllowedUsersEntry.Text = bones_allowed_users;
             XlogReleaseAccountSwitch.IsToggled = xlog_release_account;
-            XlogReleaseAccountStackLayout.IsVisible = GHApp.IsDebug;
+            XlogReleaseAccountGrid.IsVisible = GHApp.IsDebug;
             ForcePostBonesSwitch.IsToggled = forcepostbones;
-            ForcePostBonesStackLayout.IsVisible = GHApp.IsDebug;
+            ForcePostBonesGrid.IsVisible = GHApp.IsDebug;
+            if (GHApp.IsDesktop)
+            {
+                SaveFileTrackingSwitch.IsToggled = save_file_tracking;
+            }
+            else
+            {
+                SaveFileTrackingGrid.IsVisible = false;
+                SaveFileTrackingSwitch.IsToggled = false;
+            }
 
             _customCloudStorageConnectionString = customcloudstorage;
             CustomCloudStorageLabel.Text = customcloudstorage == "" ? "Default" : "Custom";
@@ -1556,7 +1573,7 @@ namespace GnollHackX.Pages.MainScreen
                 if (!XlogUserNameValidationExpression.IsMatch(PostXlogUserNameEntry.Text))
                 {
                     PostXlogUserNameLabel.TextColor = GHColors.Red;
-                    await MainScrollView.ScrollToAsync(PostXlogUserNameStackLayout.X, PostXlogUserNameStackLayout.Y, true);
+                    await MainScrollView.ScrollToAsync(PostXlogUserNameGrid.X, PostXlogUserNameGrid.Y, true);
                     PostXlogUserNameEntry.Focus();
                     CloseButton.IsEnabled = true;
                     return;
@@ -1567,7 +1584,7 @@ namespace GnollHackX.Pages.MainScreen
                 if (!BonesAllowedUsersValidationExpression.IsMatch(BonesAllowedUsersEntry.Text))
                 {
                     BonesAllowedUsersLabel.TextColor = GHColors.Red;
-                    await MainScrollView.ScrollToAsync(BonesAllowedUsersStackLayout.X, BonesAllowedUsersStackLayout.Y, true);
+                    await MainScrollView.ScrollToAsync(BonesAllowedUsersGrid.X, BonesAllowedUsersGrid.Y, true);
                     BonesAllowedUsersEntry.Focus();
                     CloseButton.IsEnabled = true;
                     return;
@@ -1583,7 +1600,7 @@ namespace GnollHackX.Pages.MainScreen
                     PopupOkButton.IsEnabled = true;
                     PopupGrid.IsVisible = true;
                     CloseButton.IsEnabled = true;
-                    await MainScrollView.ScrollToAsync(0, PostXlogUserNameStackLayout.Y, true);
+                    await MainScrollView.ScrollToAsync(0, PostXlogUserNameGrid.Y, true);
                     return;
                 }
             }
@@ -2191,6 +2208,45 @@ namespace GnollHackX.Pages.MainScreen
             PopupLabel.Text = "Diagnostic data consists of short notifications about panics and other similar errors, which are sent only upon such occurences. The data also includes device memory and disk space information to rule out related causes.\n\nIt helps development if posting diagnostic data is switched on.";
             PopupOkButton.IsEnabled = true;
             PopupGrid.IsVisible = true;
+        }
+
+        private void SaveFileTrackingSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            if(_isManualTogglingEnabled)
+            {
+                UpdateServerPostingEnabled(e.Value);
+            }
+        }
+
+        private void UpdateServerPostingEnabled(bool trackSaveFiles) 
+        {
+            if(SaveFileTrackingGrid.IsVisible)
+            {
+                PostXlogUserNameEntry.IsEnabled = trackSaveFiles;
+                PostXlogPasswordEntry.IsEnabled = trackSaveFiles;
+                PostXlogSwitch.IsEnabled = trackSaveFiles;
+                PostReplaysSwitch.IsEnabled = trackSaveFiles;
+                PostBonesSwitch.IsEnabled = trackSaveFiles;
+                BonesListSwitch.IsEnabled = trackSaveFiles;
+                BonesAllowedUsersEntry.IsEnabled = trackSaveFiles;
+                ForcePostBonesSwitch.IsEnabled = trackSaveFiles;
+
+                Color labelColor = trackSaveFiles ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+                PostXlogUserNameLabel.TextColor = labelColor;
+                PostXlogPasswordLabel.TextColor = labelColor;
+                PostXlogLabel.TextColor = labelColor;
+                PostReplaysLabel.TextColor = labelColor;
+                PostBonesLabel.TextColor = labelColor;
+                BonesListLabel.TextColor = labelColor;
+                BonesAllowedUsersLabel.TextColor = labelColor;
+                ForcePostBonesLabel.TextColor = labelColor;
+
+                if (trackSaveFiles)
+                {
+                    AllowBonesSwitch_Toggled(null, new ToggledEventArgs(AllowBonesSwitch.IsToggled));
+                    BonesListSwitch_Toggled(null, new ToggledEventArgs(BonesListSwitch.IsToggled));
+                }
+            }
         }
     }
 }

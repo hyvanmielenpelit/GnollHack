@@ -183,6 +183,7 @@ namespace GnollHackX
             RealPlayTime = Preferences.Get("RealPlayTime", 0L);
             DrawWallEnds = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
             CustomScreenScale = Preferences.Get("CustomScreenScale", 0.0f); /* Note that preferences have a default of zero but the property return 1.0f */
+            SaveFileTracking = Preferences.Get("SaveFileTracking", IsDesktop && !string.IsNullOrEmpty(XlogUserName) && !string.IsNullOrEmpty(XlogPassword));
 
             SetAvailableGPUCacheLimits(TotalMemory);
             PrimaryGPUCacheLimit = Preferences.Get("PrimaryGPUCacheLimit", -2L);
@@ -3359,6 +3360,10 @@ namespace GnollHackX
         private static string _bonesAllowedUsers = "";
         public static string BonesAllowedUsers { get { lock (_bonesAllowedUsersLock) { return _bonesAllowedUsers; } } set { lock (_bonesAllowedUsersLock) { _bonesAllowedUsers = value; } } }
 
+        private static readonly object _saveFileTrackingLock = new object();
+        private static bool _saveFileTracking = false;
+        public static bool SaveFileTracking { get { lock (_saveFileTrackingLock) { return _saveFileTracking; } } set { lock (_saveFileTrackingLock) { _saveFileTracking = value; } } }
+
         private static readonly object _xlogCreditialLock = new object();
         private static string _xlogUserName = "";
         private static string _xlogPassword = "";
@@ -3373,23 +3378,20 @@ namespace GnollHackX
             }
         }
 
-        private static readonly object _xlogReleaseAccountLock = new object();
         private static bool _xlogReleaseAccount;
-        public static bool XlogReleaseAccount { get { lock (_xlogReleaseAccountLock) { return _xlogReleaseAccount; } } set { lock (_xlogReleaseAccountLock) { _xlogReleaseAccount = value; } } }
+        public static bool XlogReleaseAccount { get { lock (_xlogCreditialLock) { return _xlogReleaseAccount; } } set { lock (_xlogCreditialLock) { _xlogReleaseAccount = value; } } }
 
         private static string _verifiedUserName;
         private static string _verifiedPassword;
         private static bool _xlogUserNameVerified;
-        private static readonly object _xlogUserNameVerifiedLock = new object();
-        public static bool XlogUserNameVerified { get { lock (_xlogUserNameVerifiedLock) { return _xlogUserNameVerified; } } }
+        public static bool XlogUserNameVerified { get { lock (_xlogCreditialLock) { return _xlogUserNameVerified; } } }
 
-        private static readonly object _xlogCredentialsIncorrectLock = new object();
         private static bool _xlogCredentialsIncorrect;
-        public static bool XlogCredentialsIncorrect { get { lock (_xlogCredentialsIncorrectLock) { return _xlogCredentialsIncorrect; } } set { lock (_xlogCredentialsIncorrectLock) { _xlogCredentialsIncorrect = value; } } }
+        public static bool XlogCredentialsIncorrect { get { lock (_xlogCreditialLock) { return _xlogCredentialsIncorrect; } } set { lock (_xlogCreditialLock) { _xlogCredentialsIncorrect = value; } } }
 
         public static void SetXlogUserNameVerified(bool isverified, string username, string password)
         {
-            lock(_xlogUserNameVerifiedLock)
+            lock(_xlogCreditialLock)
             {
                 _xlogUserNameVerified = isverified;
                 _verifiedUserName = username;
@@ -3399,7 +3401,7 @@ namespace GnollHackX
 
         public static bool AreCredentialsVerified(string username, string password)
         {
-            lock (_xlogUserNameVerifiedLock)
+            lock (_xlogCreditialLock)
             {
                 return _xlogUserNameVerified && _verifiedUserName != null && _verifiedPassword != null && username == _verifiedUserName && password == _verifiedPassword;
             }
@@ -3426,7 +3428,7 @@ namespace GnollHackX
             {
                 if(_verifiedUserName != null && _verifiedPassword != null && username == _verifiedUserName && password == _verifiedPassword)
                 {
-                    lock (_xlogUserNameVerifiedLock)
+                    lock (_xlogCreditialLock)
                     {
                         _xlogUserNameVerified = true;
                     }
