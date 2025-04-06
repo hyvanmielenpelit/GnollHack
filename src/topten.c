@@ -525,13 +525,13 @@ int how;
     Sprintf(eos(buffer), "%ctournament=%s", XLOG_SEP, TournamentMode ? "yes" : "no");
     Sprintf(eos(buffer), "%cseclvl=%d", XLOG_SEP, 
 #if defined(DGAMELAUNCH) /* Public server */
-        100
+        SAVEFILETRACKPLATFORM_SERVER
 #elif defined(GNH_ANDROID) /* Mobile, Android */
-        10
+        SAVEFILETRACKPLATFORM_MOBILE
 #elif defined(GNH_IOS) /* Mobile, iOS */
-        10
+        SAVEFILETRACKPLATFORM_MOBILE
 #else /* Desktop, or unknown mobile platform */
-        flags.is_offline_only ? 0 : 1
+        flags.save_file_tracking_support ? (int)flags.save_file_tracking_value : SAVEFILETRACK_ON
 #endif
     );
 #if 0

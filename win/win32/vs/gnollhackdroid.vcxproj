@@ -100,9 +100,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>
+    <IntDir>$(ObjDir)gnollhackdroid\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>
+    <IntDir>$(ObjDir)gnollhackdroid\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>
@@ -112,9 +114,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>
+    <IntDir>$(ObjDir)gnollhackdroid\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>
+    <IntDir>$(ObjDir)gnollhackdroid\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>

@@ -1271,7 +1271,7 @@ namespace GnollHackX.Pages.MainScreen
             XlogReleaseAccountGrid.IsVisible = GHApp.IsDebug;
             ForcePostBonesSwitch.IsToggled = forcepostbones;
             ForcePostBonesGrid.IsVisible = GHApp.IsDebug;
-            if (GHApp.IsDesktop)
+            if (GHApp.IsSaveFileTrackingNeeded)
             {
                 SaveFileTrackingSwitch.IsToggled = save_file_tracking;
             }

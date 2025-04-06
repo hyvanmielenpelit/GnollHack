@@ -914,6 +914,10 @@ DLLEXPORT int RunGnollHack(
     initial_flags.getpos_arrows_value = (runflags & GHRUNFLAGS_GETPOS_ARROWS) != 0;
     initial_flags.dice_as_ranges_set = TRUE;
     initial_flags.dice_as_ranges_value = (runflags & GHRUNFLAGS_DICE_AS_RANGES) != 0;
+    initial_flags.save_file_tracking_needed_set = TRUE;
+    initial_flags.save_file_tracking_needed_value = (runflags & GHRUNFLAGS_SAVE_FILE_TRACKING_NEEDED) != 0;
+    initial_flags.save_file_tracking_on_set = TRUE;
+    initial_flags.save_file_tracking_on_value = (runflags & GHRUNFLAGS_SAVE_FILE_TRACKING_ON) != 0;
     initial_flags.right_click_action = (uchar)((runflags & GHRUNFLAGS_RIGHT_MOUSE_BIT_MASK) >> GHRUNFLAGS_RIGHT_MOUSE_BIT_INDEX);
     initial_flags.middle_click_action = (uchar)((runflags & GHRUNFLAGS_MIDDLE_MOUSE_BIT_MASK) >> GHRUNFLAGS_MIDDLE_MOUSE_BIT_INDEX);
     initial_flags.found_manuals = foundmanuals;

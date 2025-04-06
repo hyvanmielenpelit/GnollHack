@@ -241,6 +241,8 @@ namespace GnollHackX
         NoPet =                 0x00000800UL, /* Same as pettype:none in options file */
         DiceAsRanges =          0x00001000UL, /* Set show_dice_as_ranges to true by default */
         GetPositionArrows =     0x00002000UL, /* Show move arrows by default in getpos (i.e., turn travel mode off) */
+        SaveFileTrackingNeeded = 0x00004000UL, /* Save file tracking is needed and available on client (= is desktop) */
+        SaveFileTrackingOn =    0x00008000UL, /* Save file tracking is switched on */
 
         RightMouseButtonBit1 =  0x00400000UL, 
         RightMouseButtonBit2 =  0x00800000UL, 

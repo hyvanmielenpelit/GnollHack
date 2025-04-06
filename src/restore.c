@@ -23,6 +23,7 @@ STATIC_DCL int NDECL(zerocomp_mgetc);
 STATIC_DCL void NDECL(def_minit);
 STATIC_DCL void FDECL(def_mread, (int, genericptr_t, size_t));
 
+STATIC_DCL int NDECL(check_save_file_tracking);
 STATIC_DCL void NDECL(find_lev_obj);
 STATIC_DCL void NDECL(find_memory_obj);
 STATIC_DCL void FDECL(restlevchn, (int));
@@ -1116,6 +1117,12 @@ register int fd;
     restlevelstate(stuckid, steedid);
     program_state.something_worth_saving = 1; /* useful data now exists */
 
+    if (!check_save_file_tracking())
+    {
+        restoring = FALSE;
+        return 0;
+    }
+
     if (!wizard && !discover && !CasualMode)
         (void) delete_savefile();
     if (Is_really_rogue_level(&u.uz))
@@ -1163,6 +1170,51 @@ register int fd;
         (void)delete_tmp_backup_savefile();
 
     post_restore_to_forum(restored_realtime);
+    return 1;
+}
+
+STATIC_OVL int
+check_save_file_tracking(VOID_ARGS)
+{
+    if (!flags.save_file_tracking_support)
+    {
+        flags.save_file_tracking_support = 1;
+        flags.save_file_tracking_value = SAVEFILETRACK_ON;
+    }
+    else
+    {
+        if (flags.save_file_tracking_value == SAVEFILETRACK_ON)
+        {
+            if (iflags.save_file_tracking_needed && !iflags.save_file_tracking_on)
+            {
+                //Query if save file tracking should be turned off, turn save file tracking on in settings, or return to main menu
+                if (1)
+                    flags.save_file_tracking_value = SAVEFILETRACK_OFF;
+                else
+                    ; // return to main menu
+            }
+            else
+            {
+                //Verify that save file tracking is ok
+                if (0)
+                {
+                    //If save file tracking failed, query if it will be turned off or return to main menu
+                    if (0)
+                    {
+                        flags.save_file_tracking_value = SAVEFILETRACK_OFF;
+                    }
+                    else
+                    {
+                        // Return to main menu
+                    }
+                }
+            }
+        }
+        else if (flags.save_file_tracking_value == SAVEFILETRACK_NOSAVE)
+        {
+            impossible("Save file with NOSAVE save file tracking?");
+        }
+    }
     return 1;
 }
 

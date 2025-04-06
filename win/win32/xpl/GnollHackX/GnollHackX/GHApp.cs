@@ -3363,6 +3363,7 @@ namespace GnollHackX
         private static readonly object _saveFileTrackingLock = new object();
         private static bool _saveFileTracking = false;
         public static bool SaveFileTracking { get { lock (_saveFileTrackingLock) { return _saveFileTracking; } } set { lock (_saveFileTrackingLock) { _saveFileTracking = value; } } }
+        public static bool IsSaveFileTrackingNeeded { get { return IsDesktop; } }
 
         private static readonly object _xlogCreditialLock = new object();
         private static string _xlogUserName = "";

@@ -987,6 +987,25 @@ init_options()
     if (initial_flags.getpos_arrows_set)
         iflags.getpos_arrows = initial_flags.getpos_arrows_value;
 
+    if (initial_flags.save_file_tracking_needed_set)
+        iflags.save_file_tracking_needed = initial_flags.save_file_tracking_needed_value;
+
+    if (initial_flags.save_file_tracking_on_set)
+        iflags.save_file_tracking_on = initial_flags.save_file_tracking_on_value;
+
+    flags.save_file_tracking_support = 1; /* Always set by this new version for migration (old version has it at 0) */
+    if (iflags.save_file_tracking_needed)
+    {
+        if (iflags.save_file_tracking_on)
+            flags.save_file_tracking_value = SAVEFILETRACK_NOSAVE;
+        else
+            flags.save_file_tracking_value = SAVEFILETRACK_OFF;
+    }
+    else
+    {
+        flags.save_file_tracking_value = SAVEFILETRACK_NOSAVE;
+    }
+
     /* since this is done before init_objects(), do partial init here */
     objects[SLIME_MOLD].oc_name_idx = SLIME_MOLD;
     nmcpy(pl_fruit, OBJ_NAME(objects[SLIME_MOLD]), PL_FSIZ);

@@ -101,10 +101,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>
     <TargetName>libgnollhackdroid</TargetName>
+    <IntDir>$(ObjDir)gnollhackdroid2\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>
     <TargetName>libgnollhackdroid</TargetName>
+    <IntDir>$(ObjDir)gnollhackdroid2\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>
@@ -114,9 +116,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>
+    <IntDir>$(ObjDir)gnollhackdroid2\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>
+    <IntDir>$(ObjDir)gnollhackdroid2\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <OutDir>$(AndroidLibsDir)$(TargetArchAbi)\</OutDir>

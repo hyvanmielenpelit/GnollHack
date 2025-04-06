@@ -249,8 +249,8 @@ struct flag {
     uchar right_click_command;
     uchar middle_click_command;
     boolean stash_on_autopickup;
-    boolean is_offline_only;
-    uchar reserved_uchar3;
+    uchar save_file_tracking_support; /* 1 = supports save file tracking (if 0, migrate to save file tracking) */
+    uchar save_file_tracking_value; /* this is the track value when there's support and tracking is available / needed (desktop) */
     uchar reserved_uchar4;
     uchar reserved_uchar5;
     uchar reserved_uchar6;
@@ -271,6 +271,13 @@ struct flag {
     boolean reserved_bool3;
     boolean reserved_bool4;
 };
+
+#define SAVEFILETRACK_OFF 0 /* Tracking the save file has failed at some point */
+#define SAVEFILETRACK_ON 1  /* Tracking the save file has been successful when needed */
+#define SAVEFILETRACK_NOSAVE 2 /* Initial value when starting to track before first save */
+
+#define SAVEFILETRACKPLATFORM_MOBILE 10
+#define SAVEFILETRACKPLATFORM_SERVER 100
 
 /*
  * System-specific flags that are saved with the game if SYSFLAGS is defined.
@@ -585,6 +592,8 @@ struct instance_flags {
     uint64_t found_manuals;
     boolean show_dice_as_ranges;
     boolean getpos_arrows;
+    boolean save_file_tracking_needed; /* Does GUI need save file tracking (= is desktop) */
+    boolean save_file_tracking_on; /* Is save file tracking turned on in GUI settings */
 };
 
 /*
@@ -784,6 +793,10 @@ struct startup_flags {
     boolean dice_as_ranges_value;
     boolean getpos_arrows_set;
     boolean getpos_arrows_value;
+    boolean save_file_tracking_needed_set;
+    boolean save_file_tracking_needed_value;
+    boolean save_file_tracking_on_set;
+    boolean save_file_tracking_on_value;
 
     uint64_t found_manuals;
 };

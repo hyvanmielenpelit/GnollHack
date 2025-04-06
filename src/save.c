@@ -24,6 +24,9 @@ STATIC_VAR int count_only;
 int dotcnt, dotrow; /* also used in restore */
 #endif
 
+STATIC_DCL void NDECL(handle_save_file_tracking);
+STATIC_DCL void FDECL(track_new_save_file, (char*));
+
 STATIC_DCL void FDECL(savelevchn, (int, int));
 STATIC_DCL void FDECL(savedamage, (int, int));
 STATIC_DCL void FDECL(saveobj, (int, struct obj *));
@@ -283,6 +286,7 @@ boolean quietly;
     }
 #endif /* MFLOPPY */
 
+    handle_save_file_tracking();
     store_version(fd);
     store_savefileinfo(fd);
     store_plname_in_file(fd);
@@ -339,6 +343,7 @@ boolean quietly;
         savelev(fd, ltmp, WRITE_SAVE | FREE_SAVE);     /* actual level*/
     }
     bclose(fd);
+    track_new_save_file(fq_save);
     nh_compress(fq_save);
 
     u.uz = uz_save;
@@ -361,6 +366,42 @@ boolean quietly;
     post_to_forum_printf(LL_GAME_SAVE, "saved %s game %s", uhis(), saved_dgnlvl_name_buf);
     Strcpy(saved_dgnlvl_name_buf, "");
     return 1;
+}
+
+STATIC_OVL void
+handle_save_file_tracking(VOID_ARGS)
+{
+    if (!flags.save_file_tracking_support) /* Migrate older versions; this should already be handled in restore, but here just in case */
+    {
+        flags.save_file_tracking_support = 1;
+        flags.save_file_tracking_value = SAVEFILETRACK_ON;
+        impossible("Handling tracking for save file without save file tracking support on?");
+    }
+    else
+    {
+        if (flags.save_file_tracking_value > SAVEFILETRACK_OFF)
+        {
+            if (iflags.save_file_tracking_needed && !iflags.save_file_tracking_on)
+                flags.save_file_tracking_value = SAVEFILETRACK_OFF;
+            else
+                flags.save_file_tracking_value = SAVEFILETRACK_ON;
+        }
+    }
+}
+
+STATIC_OVL
+void track_new_save_file(filename)
+char* filename;
+{
+    if (!filename)
+        return;
+
+    if (iflags.save_file_tracking_needed && iflags.save_file_tracking_on)
+    {
+        //Inform GUI of the new save file
+        //If tracking somehow failed on GUI side at this stage, inform the player (it won't be turned off)
+        //Some part of sending the data to server might happen later and an error message may come after this, too
+    }
 }
 
 STATIC_OVL void
@@ -1456,7 +1497,9 @@ int fd;
     gamestats.explore_mode = discover;
     gamestats.modern_mode = ModernMode;
     gamestats.casual_mode = CasualMode;
-    gamestats.save_flags = (flags.non_scoring ? SAVEFLAGS_NON_SCORING : 0) | (TournamentMode ? SAVEFLAGS_TOURNAMENT_MODE : 0);
+    gamestats.save_flags = 
+        (flags.non_scoring ? SAVEFLAGS_NON_SCORING : 0) | (TournamentMode ? SAVEFLAGS_TOURNAMENT_MODE : 0) |
+        SAVEFLAGS_FILETRACK_SUPPORT | (flags.save_file_tracking_value ? SAVEFLAGS_FILETRACK_ON : 0);
     gamestats.time_stamp = (int64_t)getnow();
     gamestats.num_recoveries = n_game_recoveries;
 
