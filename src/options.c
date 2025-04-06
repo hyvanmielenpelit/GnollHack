@@ -987,23 +987,32 @@ init_options()
     if (initial_flags.getpos_arrows_set)
         iflags.getpos_arrows = initial_flags.getpos_arrows_value;
 
+    if (initial_flags.save_file_tracking_supported_set)
+        iflags.save_file_tracking_supported = initial_flags.save_file_tracking_supported_value;
+
     if (initial_flags.save_file_tracking_needed_set)
         iflags.save_file_tracking_needed = initial_flags.save_file_tracking_needed_value;
 
     if (initial_flags.save_file_tracking_on_set)
         iflags.save_file_tracking_on = initial_flags.save_file_tracking_on_value;
 
-    flags.save_file_tracking_support = 1; /* Always set by this new version for migration (old version has it at 0) */
-    if (iflags.save_file_tracking_needed)
+#if defined(DGAMELAUNCH) // Unix server
+    iflags.save_file_secure = TRUE;
+#endif
+
+    flags.save_file_tracking_migrated = TRUE; /* Always set by this new version for migration (old version has it at 0) */
+    flags.save_file_tracking_value = iflags.save_file_secure ? SAVEFILETRACK_VALID : SAVEFILETRACK_INVALID;
+    if (iflags.save_file_tracking_supported)
     {
-        if (iflags.save_file_tracking_on)
-            flags.save_file_tracking_value = SAVEFILETRACK_NOSAVE;
+        if (iflags.save_file_tracking_needed)
+        {
+            if (iflags.save_file_tracking_on)
+                flags.save_file_tracking_value = SAVEFILETRACK_VALID;
+        }
         else
-            flags.save_file_tracking_value = SAVEFILETRACK_OFF;
-    }
-    else
-    {
-        flags.save_file_tracking_value = SAVEFILETRACK_NOSAVE;
+        {
+            flags.save_file_tracking_value = SAVEFILETRACK_VALID;
+        }
     }
 
     /* since this is done before init_objects(), do partial init here */

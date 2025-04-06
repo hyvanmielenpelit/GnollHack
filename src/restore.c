@@ -1176,22 +1176,38 @@ register int fd;
 STATIC_OVL int
 check_save_file_tracking(VOID_ARGS)
 {
-    if (!flags.save_file_tracking_support)
+    if (!iflags.save_file_tracking_supported)
     {
-        flags.save_file_tracking_support = 1;
-        flags.save_file_tracking_value = SAVEFILETRACK_ON;
-    }
-    else
-    {
-        if (flags.save_file_tracking_value == SAVEFILETRACK_ON)
+        if (flags.save_file_tracking_value == SAVEFILETRACK_VALID)
         {
-            if (iflags.save_file_tracking_needed && !iflags.save_file_tracking_on)
+            //Query about platform without no save file track support
+            if (1)
             {
+                flags.save_file_tracking_migrated = TRUE;
+                flags.save_file_tracking_value = SAVEFILETRACK_INVALID;
+            }
+            else
+                return 0; // Return to main menu
+        }
+    }
+    else if (!flags.save_file_tracking_migrated)
+    {
+        flags.save_file_tracking_migrated = TRUE;
+        flags.save_file_tracking_value = SAVEFILETRACK_VALID;
+    }
+    else if (iflags.save_file_tracking_needed && flags.save_file_tracking_value == SAVEFILETRACK_VALID)
+    {
+        if (iflags.save_file_tracking_on)
+        {
+            //Check if save file tracking has been successful
+            if (0)
+            {
+                //FAILED
                 //Query if save file tracking should be turned off, turn save file tracking on in settings, or return to main menu
                 if (1)
-                    flags.save_file_tracking_value = SAVEFILETRACK_OFF;
+                    flags.save_file_tracking_value = SAVEFILETRACK_INVALID;
                 else
-                    ; // return to main menu
+                    return 0; // Return to main menu
             }
             else
             {
@@ -1199,20 +1215,25 @@ check_save_file_tracking(VOID_ARGS)
                 if (0)
                 {
                     //If save file tracking failed, query if it will be turned off or return to main menu
-                    if (0)
+                    if (1)
                     {
-                        flags.save_file_tracking_value = SAVEFILETRACK_OFF;
+                        flags.save_file_tracking_value = SAVEFILETRACK_INVALID;
                     }
                     else
                     {
-                        // Return to main menu
+                        return 0; // Return to main menu
                     }
                 }
             }
         }
-        else if (flags.save_file_tracking_value == SAVEFILETRACK_NOSAVE)
+        else
         {
-            impossible("Save file with NOSAVE save file tracking?");
+            //Save game tracking is needed but is going to be switched off in the save game
+            //Query if save file tracking should be turned off, turn save file tracking on in settings, or return to main menu
+            if (1)
+                flags.save_file_tracking_value = SAVEFILETRACK_INVALID;
+            else
+                return 0; // Return to main menu
         }
     }
     return 1;

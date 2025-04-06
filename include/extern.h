@@ -3259,7 +3259,7 @@ E void FDECL(savecemetery, (int, int, struct cemetery **));
 E void FDECL(savefruitchn, (int, int));
 E void NDECL(reset_fruitchn);
 E void FDECL(store_plname_in_file, (int));
-E void FDECL(store_save_game_stats_in_file, (int));
+E void FDECL(store_save_game_stats_in_file, (int, int64_t));
 E void NDECL(free_dungeons);
 E void NDECL(free_dynamic_data_A);
 E void NDECL(free_dynamic_data_B);

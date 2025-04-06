@@ -1186,6 +1186,7 @@ namespace GnollHackX.Unknown
                 (ulong)(allowbones ? 0 : RunGnollHackFlags.DisableBones) |
                 (ulong)(allowpet ? 0 : RunGnollHackFlags.NoPet) |
                 (ulong)(GHApp.TournamentMode ? RunGnollHackFlags.TournamentMode : 0) |
+                (ulong)(RunGnollHackFlags.SaveFileTrackingSupported) |
                 (ulong)(GHApp.IsSaveFileTrackingNeeded ? RunGnollHackFlags.SaveFileTrackingNeeded : 0) |
                 (ulong)(GHApp.SaveFileTracking ? RunGnollHackFlags.SaveFileTrackingOn : 0) |
                 (ulong)(GHApp.IsDebug ? RunGnollHackFlags.GUIDebugMode : 0) |

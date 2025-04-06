@@ -249,8 +249,8 @@ struct flag {
     uchar right_click_command;
     uchar middle_click_command;
     boolean stash_on_autopickup;
-    uchar save_file_tracking_support; /* 1 = supports save file tracking (if 0, migrate to save file tracking) */
-    uchar save_file_tracking_value; /* this is the track value when there's support and tracking is available / needed (desktop) */
+    boolean save_file_tracking_migrated; /* 1 = save file tracking in use (if 0, migrate to save file tracking) */
+    uchar save_file_tracking_value; /* this is the track value when tracking is supported and needed (desktop) */
     uchar reserved_uchar4;
     uchar reserved_uchar5;
     uchar reserved_uchar6;
@@ -272,9 +272,8 @@ struct flag {
     boolean reserved_bool4;
 };
 
-#define SAVEFILETRACK_OFF 0 /* Tracking the save file has failed at some point */
-#define SAVEFILETRACK_ON 1  /* Tracking the save file has been successful when needed */
-#define SAVEFILETRACK_NOSAVE 2 /* Initial value when starting to track before first save */
+#define SAVEFILETRACK_INVALID 0 /* Tracking the save file has failed at some point */
+#define SAVEFILETRACK_VALID 1  /* Tracking the save file has been successful when needed */
 
 #define SAVEFILETRACKPLATFORM_MOBILE 10
 #define SAVEFILETRACKPLATFORM_SERVER 100
@@ -592,6 +591,8 @@ struct instance_flags {
     uint64_t found_manuals;
     boolean show_dice_as_ranges;
     boolean getpos_arrows;
+    boolean save_file_secure; /* Is the save file secure (like on Unix servers) */
+    boolean save_file_tracking_supported; /* Does this version of GnollHack support save file tracking (= modern GUI) */
     boolean save_file_tracking_needed; /* Does GUI need save file tracking (= is desktop) */
     boolean save_file_tracking_on; /* Is save file tracking turned on in GUI settings */
 };
@@ -793,6 +794,8 @@ struct startup_flags {
     boolean dice_as_ranges_value;
     boolean getpos_arrows_set;
     boolean getpos_arrows_value;
+    boolean save_file_tracking_supported_set;
+    boolean save_file_tracking_supported_value;
     boolean save_file_tracking_needed_set;
     boolean save_file_tracking_needed_value;
     boolean save_file_tracking_on_set;

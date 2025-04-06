@@ -523,17 +523,7 @@ int how;
     Sprintf(eos(buffer), "%cmode=%s", XLOG_SEP, wizard ? "debug" : discover ? "explore" : CasualMode ? (ModernMode ? "casual" : "reloadable") : ModernMode ? "modern" : "normal");
     Sprintf(eos(buffer), "%cscoring=%s", XLOG_SEP, discover || CasualMode || flags.non_scoring ? "no" : "yes");
     Sprintf(eos(buffer), "%ctournament=%s", XLOG_SEP, TournamentMode ? "yes" : "no");
-    Sprintf(eos(buffer), "%cseclvl=%d", XLOG_SEP, 
-#if defined(DGAMELAUNCH) /* Public server */
-        SAVEFILETRACKPLATFORM_SERVER
-#elif defined(GNH_ANDROID) /* Mobile, Android */
-        SAVEFILETRACKPLATFORM_MOBILE
-#elif defined(GNH_IOS) /* Mobile, iOS */
-        SAVEFILETRACKPLATFORM_MOBILE
-#else /* Desktop, or unknown mobile platform */
-        flags.save_file_tracking_support ? (int)flags.save_file_tracking_value : SAVEFILETRACK_ON
-#endif
-    );
+    Sprintf(eos(buffer), "%cseclvl=%d", XLOG_SEP, (int)flags.save_file_tracking_value);
 #if 0
     Sprintf(eos(buffer), "%cservergame=%s", XLOG_SEP, 
 #ifdef DGAMELAUNCH
