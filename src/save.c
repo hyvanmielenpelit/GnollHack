@@ -372,6 +372,9 @@ boolean quietly;
 STATIC_OVL void
 handle_save_file_tracking(VOID_ARGS)
 {
+    if (wizard || discover || CasualMode)
+        return; //No save file tracking in these modes
+
     if (!flags.save_file_tracking_migrated) /* Migrate older versions; this should already be handled in restore, but here just in case */
     {
         flags.save_file_tracking_migrated = TRUE;
@@ -390,6 +393,9 @@ void track_new_save_file(filename, time_stamp)
 const char* filename;
 int64_t time_stamp;
 {
+    if (wizard || discover || CasualMode)
+        return; //No save file tracking in these modes
+
     if (iflags.save_file_tracking_supported && iflags.save_file_tracking_needed && iflags.save_file_tracking_on && flags.save_file_tracking_value == SAVEFILETRACK_VALID)
     {
         //Inform GUI of the new save file

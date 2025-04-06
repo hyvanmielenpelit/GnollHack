@@ -1178,6 +1178,9 @@ STATIC_OVL int
 check_save_file_tracking(time_stamp)
 int64_t time_stamp UNUSED;
 {
+    if (wizard || discover || CasualMode)
+        return 1; //No save file tracking in these modes
+
     if (!iflags.save_file_tracking_supported)
     {
         if (flags.save_file_tracking_value == SAVEFILETRACK_VALID)
