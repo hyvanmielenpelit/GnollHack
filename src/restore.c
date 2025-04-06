@@ -23,7 +23,7 @@ STATIC_DCL int NDECL(zerocomp_mgetc);
 STATIC_DCL void NDECL(def_minit);
 STATIC_DCL void FDECL(def_mread, (int, genericptr_t, size_t));
 
-STATIC_DCL int NDECL(check_save_file_tracking);
+STATIC_DCL int FDECL(check_save_file_tracking, (int64_t));
 STATIC_DCL void NDECL(find_lev_obj);
 STATIC_DCL void NDECL(find_memory_obj);
 STATIC_DCL void FDECL(restlevchn, (int));
@@ -998,7 +998,7 @@ register int fd;
     xchar ltmp;
     int rtmp;
     struct obj *otmp;
-    struct save_game_stats dummy_stats = { 0 };
+    struct save_game_stats game_stats = { 0 };
     boolean was_corrupted = FALSE;
     Strcpy(debug_buf_1, "dorestore0");
     Strcpy(debug_buf_2, "dorestore0");
@@ -1007,7 +1007,7 @@ register int fd;
 
     restoring = TRUE;
     get_plname_from_file(fd, plname);
-    get_save_game_stats_from_file(fd, &dummy_stats);
+    get_save_game_stats_from_file(fd, &game_stats);
     getlev(fd, 0, (xchar) 0, FALSE);
     if (!restgamestate(fd, &stuckid, &steedid)) {
         display_nhwindow(WIN_MESSAGE, TRUE);
@@ -1103,8 +1103,8 @@ register int fd;
 #endif
     (void) validate(fd, (char *) 0); /* skip version and savefile info */
     get_plname_from_file(fd, plname);
-    get_save_game_stats_from_file(fd, &dummy_stats);
-    n_game_recoveries = dummy_stats.num_recoveries;
+    get_save_game_stats_from_file(fd, &game_stats);
+    n_game_recoveries = game_stats.num_recoveries;
 
     getlev(fd, 0, (xchar) 0, FALSE);
     (void) nhclose(fd);
@@ -1117,7 +1117,7 @@ register int fd;
     restlevelstate(stuckid, steedid);
     program_state.something_worth_saving = 1; /* useful data now exists */
 
-    if (!check_save_file_tracking())
+    if (!check_save_file_tracking(game_stats.time_stamp))
     {
         restoring = FALSE;
         return 0;
@@ -1174,7 +1174,8 @@ register int fd;
 }
 
 STATIC_OVL int
-check_save_file_tracking(VOID_ARGS)
+check_save_file_tracking(time_stamp)
+int64_t time_stamp UNUSED;
 {
     if (!iflags.save_file_tracking_supported)
     {
@@ -1199,6 +1200,8 @@ check_save_file_tracking(VOID_ARGS)
     {
         if (iflags.save_file_tracking_on)
         {
+            //const char* fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+
             //Check if save file tracking has been successful
             if (0)
             {
