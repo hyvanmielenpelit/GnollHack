@@ -75,8 +75,8 @@ E void FDECL(play_special_effect_at, (enum special_effect_types, int, int, int, 
 E void FDECL(special_effect_wait_until_action, (int));
 E void FDECL(special_effect_wait_until_end, (int));
 E int FDECL(get_u_move_speed, (BOOLEAN_P));
-E void reduce_counters(int);
-E void reduce_counters_intervals(int);
+E void FDECL(reduce_counters, (int));
+E void FDECL(reduce_counters_intervals, (int));
 E void NDECL(stop_animations);
 E boolean FDECL(glyph_is_specific_cmap_or_its_variation, (int, int));
 E boolean FDECL(no_wall_end_autodraw, (int, int));

@@ -9,6 +9,7 @@
 
 #include "general.h"
 #include "layer.h"
+#include "lev.h"
 #include "obj.h"
 #include "wintype.h"
 

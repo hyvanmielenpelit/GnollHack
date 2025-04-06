@@ -2501,7 +2501,7 @@ namespace GnollHackX
                     break;
                 case (int)gui_command_types.GUI_CMD_DEBUGLOG:
                     if(!string.IsNullOrWhiteSpace(cmd_str) && GHApp.DebugLogMessages)
-                        GHApp.WriteGHLog(cmd_str);
+                        GHApp.WriteGHLog(cmd_str + (cmd_param2 != 0 ? " [" + cmd_param2 + "]" : ""));
                     //if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     //{
                     //    queue.Enqueue(new GHRequest(this, GHRequestType.DebugLog, cmd_param, cmd_param2, cmd_str));
@@ -2651,9 +2651,9 @@ namespace GnollHackX
             return 0;
         }
 
-        public int ClientCallback_OpenSpecialView(int viewtype, string text, string title, int attr, int color)
+        public int ClientCallback_OpenSpecialView(int viewtype, string text, string title, int attr, int color, long time_stamp)
         {
-            RecordFunctionCall(RecordedFunctionID.OpenSpecialView, viewtype, text, title, attr, color);
+            RecordFunctionCall(RecordedFunctionID.OpenSpecialView, viewtype, text, title, attr, color); //add time_stamp here later
             switch (viewtype)
             {
                 case (int)special_view_types.SPECIAL_VIEW_CHAT_MESSAGE:
@@ -2728,8 +2728,8 @@ namespace GnollHackX
                         break;
                     }
                 case (int)special_view_types.SPECIAL_VIEW_DEBUGLOG:
-                    if (text != null)
-                        Debug.WriteLine(text);
+                    if (!string.IsNullOrWhiteSpace(text) && GHApp.DebugLogMessages)
+                        GHApp.WriteGHLog(text + (attr != 0 ? " [" + attr + "]" : ""));
                     break;
                 case (int)special_view_types.SPECIAL_VIEW_MESSAGE:
                     {
@@ -2781,6 +2781,18 @@ namespace GnollHackX
                         }
                         break;
                     }
+                case (int)special_view_types.SPECIAL_VIEW_SAVE_FILE_TRACKING_SAVE:
+                    if(!PlayingReplay)
+                    {
+
+                    }
+                    break;
+                case (int)special_view_types.SPECIAL_VIEW_SAVE_FILE_TRACKING_LOAD:
+                    if (!PlayingReplay)
+                    {
+
+                    }
+                    break;
                 default:
                     break;
             }

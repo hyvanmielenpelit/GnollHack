@@ -388,16 +388,23 @@ handle_save_file_tracking(VOID_ARGS)
 STATIC_OVL
 void track_new_save_file(filename, time_stamp)
 const char* filename;
-int64_t time_stamp UNUSED;
+int64_t time_stamp;
 {
-    if (!filename)
-        return;
-
     if (iflags.save_file_tracking_supported && iflags.save_file_tracking_needed && iflags.save_file_tracking_on && flags.save_file_tracking_value == SAVEFILETRACK_VALID)
     {
         //Inform GUI of the new save file
-        //If tracking somehow failed on GUI side at this stage, inform the player (it won't be turned off)
-        //Some part of sending the data to server might happen later and an error message may come after this, too
+        struct special_view_info info = { 0 };
+        info.viewtype = SPECIAL_VIEW_SAVE_FILE_TRACKING_SAVE;
+        info.text = filename;
+        info.time_stamp = time_stamp;
+        int errorcode = open_special_view(info);
+        if (errorcode)
+        {
+            issue_debuglog(errorcode, "Save file tracking encountered a problem upon save.");
+            //If tracking somehow failed on GUI side at this stage, inform the player (it won't be turned off)
+            //Some part of sending the data to server might happen later and an error message may come after this, too
+            //Inform player of the problem
+        }
     }
 }
 

@@ -1332,7 +1332,7 @@ int lib_open_special_view(struct special_view_info info)
     if (info.title)
         write_text2buf_utf8(buf2, UTF8BUFSZ, info.title);
 
-    return lib_callbacks.callback_open_special_view(info.viewtype, info.text ? buf : 0, info.title ? buf2 : 0, info.attr, info.color);
+    return lib_callbacks.callback_open_special_view(info.viewtype, info.text ? buf : 0, info.title ? buf2 : 0, info.attr, info.color, info.time_stamp);
 }
 
 void lib_stop_all_sounds(struct stop_all_info info)

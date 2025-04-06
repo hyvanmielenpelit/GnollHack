@@ -187,7 +187,7 @@ boolean quietly;
                 {
                     char dbuf[BUFSZ * 2];
                     Sprintf(dbuf, "Mysterious force prevents finishing off %s...", xname(otmp));
-                    issue_debuglog(DEBUGLOG_GENERAL, dbuf);
+                    issue_debuglog(0, dbuf);
                 }
             }
             else
@@ -1120,6 +1120,7 @@ register int fd;
     if (!check_save_file_tracking(game_stats.time_stamp))
     {
         restoring = FALSE;
+        nh_bail(EXIT_SUCCESS, "Aborting restoring save file...", TRUE);
         return 0;
     }
 
@@ -1181,8 +1182,8 @@ int64_t time_stamp UNUSED;
     {
         if (flags.save_file_tracking_value == SAVEFILETRACK_VALID)
         {
-            //Query about platform without no save file track support
-            if (1)
+            char ans = yn_query("Save file tracking is not supported. Do you want to mark this save file unsuccessfully tracked?");
+            if (ans == 'y')
             {
                 flags.save_file_tracking_migrated = TRUE;
                 flags.save_file_tracking_value = SAVEFILETRACK_INVALID;
@@ -1200,40 +1201,28 @@ int64_t time_stamp UNUSED;
     {
         if (iflags.save_file_tracking_on)
         {
-            //const char* fq_save = fqname(SAVEF, SAVEPREFIX, 0);
-
-            //Check if save file tracking has been successful
-            if (0)
+            const char* fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+            struct special_view_info info = { 0 };
+            info.viewtype = SPECIAL_VIEW_SAVE_FILE_TRACKING_LOAD;
+            info.text = fq_save;
+            info.time_stamp = time_stamp;
+            int errorcode = open_special_view(info);
+            if (errorcode > 0)
             {
-                //FAILED
                 //Query if save file tracking should be turned off, turn save file tracking on in settings, or return to main menu
-                if (1)
+                char ans = yn_query("Save file tracking validation failed. Do you want to mark this save file unsuccessfully tracked?");
+                if (ans == 'y')
                     flags.save_file_tracking_value = SAVEFILETRACK_INVALID;
                 else
                     return 0; // Return to main menu
-            }
-            else
-            {
-                //Verify that save file tracking is ok
-                if (0)
-                {
-                    //If save file tracking failed, query if it will be turned off or return to main menu
-                    if (1)
-                    {
-                        flags.save_file_tracking_value = SAVEFILETRACK_INVALID;
-                    }
-                    else
-                    {
-                        return 0; // Return to main menu
-                    }
-                }
             }
         }
         else
         {
             //Save game tracking is needed but is going to be switched off in the save game
             //Query if save file tracking should be turned off, turn save file tracking on in settings, or return to main menu
-            if (1)
+            char ans = yn_query("Save file tracking is turned off. Do you want to mark this save file unsuccessfully tracked?");
+            if (ans == 'y')
                 flags.save_file_tracking_value = SAVEFILETRACK_INVALID;
             else
                 return 0; // Return to main menu

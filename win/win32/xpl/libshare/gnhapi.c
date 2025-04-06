@@ -915,7 +915,7 @@ DLLEXPORT int RunGnollHack(
     initial_flags.dice_as_ranges_set = TRUE;
     initial_flags.dice_as_ranges_value = (runflags & GHRUNFLAGS_DICE_AS_RANGES) != 0;
     initial_flags.save_file_tracking_supported_set = TRUE;
-    initial_flags.save_file_tracking_supported_value = (runflags & GHRUNFLAGS_SAVE_FILE_TRACKING_NEEDED) != 0;
+    initial_flags.save_file_tracking_supported_value = (runflags & GHRUNFLAGS_SAVE_FILE_TRACKING_SUPPORTED) != 0;
     initial_flags.save_file_tracking_needed_set = TRUE;
     initial_flags.save_file_tracking_needed_value = (runflags & GHRUNFLAGS_SAVE_FILE_TRACKING_NEEDED) != 0;
     initial_flags.save_file_tracking_on_set = TRUE;

@@ -6193,7 +6193,8 @@ namespace GnollHackX
                                                     string title = br.ReadInt32() == 0 ? null : br.ReadString();
                                                     int attr = br.ReadInt32();
                                                     int color = br.ReadInt32();
-                                                    game.ClientCallback_OpenSpecialView(viewtype, text, title, attr, color);
+                                                    //long time_stamp = br.ReadInt64();
+                                                    game.ClientCallback_OpenSpecialView(viewtype, text, title, attr, color, 0);
                                                 }
                                                 break;
                                             case (int)RecordedFunctionID.ExitHack:

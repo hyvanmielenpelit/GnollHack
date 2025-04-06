@@ -220,7 +220,7 @@ namespace GnollHackX
     public delegate void UpdateCursorCallback(int style, int force_paint, int show_on_u);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate int OpenSpecialViewCallback(int viewtype, [MarshalAs(GHConstants.GHStringMarshallingType)] string text, [MarshalAs(GHConstants.GHStringMarshallingType)] string title, int attr, int color);
+    public delegate int OpenSpecialViewCallback(int viewtype, [MarshalAs(GHConstants.GHStringMarshallingType)] string text, [MarshalAs(GHConstants.GHStringMarshallingType)] string title, int attr, int color, long time_stamp);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void SendObjectDataCallback(int x, int y, IntPtr otmp_ptr, int cmdtype, int where, IntPtr otypdata_ptr, ulong oflags);

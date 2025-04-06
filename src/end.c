@@ -3178,7 +3178,7 @@ int final;
         {
             char dbuf[BUFSZ];
             Sprintf(dbuf, "print_selfies: selfiescore of %lld does not match context.role_score of %lld.", (long long)selfiescore, (long long)context.role_score);
-            issue_debuglog(DEBUGLOG_GENERAL, dbuf);
+            issue_debuglog(0, dbuf);
             context.role_score = selfiescore;
         }
         int64_t score_percentage = ((selfiescore + (int64_t)u.uachieve.role_achievement * TOURIST_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
@@ -3278,7 +3278,7 @@ int final;
         {
             char dbuf[BUFSZ];
             Sprintf(dbuf, "print_knight_slayings: killscore of %lld does not match context.role_score of %lld.", (long long)killscore, (long long)context.role_score);
-            issue_debuglog(DEBUGLOG_GENERAL, dbuf);
+            issue_debuglog(0, dbuf);
             context.role_score = killscore;
         }
         int64_t score_percentage = ((killscore + (int64_t)u.uachieve.role_achievement * KNIGHT_ROLE_ACHIEVEMENT_SCORE) * 100) / MAXIMUM_ROLE_SCORE;
