@@ -1120,7 +1120,9 @@ register int fd;
     if (!check_save_file_tracking(game_stats.time_stamp))
     {
         restoring = FALSE;
-        nh_bail(EXIT_SUCCESS, "Aborting restoring save file...", TRUE);
+        const char* fq_save = fqname(SAVEF, SAVEPREFIX, 1);
+        nh_compress(fq_save);
+        nh_bail(EXIT_SUCCESS, "Aborting loading save file due to save file tracking...", TRUE);
         return 0;
     }
 

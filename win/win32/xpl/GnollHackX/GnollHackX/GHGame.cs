@@ -22,6 +22,7 @@ using System.IO.Compression;
 using static System.Net.Mime.MediaTypeNames;
 using System.Collections;
 using Azure;
+using System.Security.Cryptography;
 
 namespace GnollHackX
 {
@@ -46,6 +47,8 @@ namespace GnollHackX
         private readonly object _characterNameLock = new object();
         private bool _useLongerMessageHistory = false;
         private bool _useHideMessageHistory = false;
+        private int _saveFileTrackingSaveFinished = -1;
+        private int _saveFileTrackingLoadFinished = -1;
 
         private readonly GamePage _gamePage;
         public GamePage ActiveGamePage { get { return _gamePage; } }
@@ -240,6 +243,12 @@ namespace GnollHackX
                         case GHRequestType.SetRightMouseCommand:
                         case GHRequestType.SetMiddleMouseCommand:
                             GHApp.GnollHackService.SetMouseCommand(response.ResponseIntValue, response.RequestType == GHRequestType.SetMiddleMouseCommand);
+                            break;
+                        case GHRequestType.SaveFileTrackingSave:
+                            _saveFileTrackingSaveFinished = response.ResponseIntValue;
+                            break;
+                        case GHRequestType.SaveFileTrackingLoad:
+                            _saveFileTrackingLoadFinished = response.ResponseIntValue;
                             break;
                         default:
                             break;
@@ -2784,13 +2793,72 @@ namespace GnollHackX
                 case (int)special_view_types.SPECIAL_VIEW_SAVE_FILE_TRACKING_SAVE:
                     if(!PlayingReplay)
                     {
+                        string filename = text;
+                        try
+                        {
+                            if (time_stamp > 0)
+                            {
 
+                                //Calculate
+                                if (!string.IsNullOrEmpty(filename) && File.Exists(filename))
+                                {
+                                    FileInfo fi = new FileInfo(filename);
+                                    long length = fi.Length;
+                                    string shaHashBase64 = "";
+                                    using (var shaAlgorithm = SHA256.Create())
+                                    {
+                                        using (FileStream fs = File.OpenRead(filename))
+                                        {
+                                            byte[] shaHashbytes = shaAlgorithm.ComputeHash(fs);
+                                            shaHashBase64 = Convert.ToBase64String(shaHashbytes);
+                                        }
+                                    }
+                                    if (length > 0 && !string.IsNullOrEmpty(shaHashBase64))
+                                    {
+                                        //Start contacting server and saving the code to disk
+                                        //Wait until contacting is done, or fails due to timeout etc.
+                                        ConcurrentQueue<GHRequest> queue;
+                                        if (RequestDictionary.TryGetValue(this, out queue))
+                                        {
+                                            //_saveFileTrackingSaveFinished = -1;
+                                            //queue.Enqueue(new GHRequest(this, GHRequestType.SaveFileTrackingSave, time_stamp, length, shaHashBase64));
+                                            //while (_saveFileTrackingSaveFinished < 0)
+                                            //{
+                                            //    Thread.Sleep(GHConstants.PollingInterval);
+                                            //    pollResponseQueue();
+                                            //    if (_fastForwardGameOver)
+                                            //        return 0;
+                                            //}
+                                            //return _saveFileTrackingSaveFinished;
+                                            return 0;
+                                        }
+                                        return 5;
+                                    }
+                                    else
+                                    {
+                                        return 4;
+                                    }
+                                }
+                                else
+                                {
+                                    return 3;
+                                }
+                            }
+                            else
+                            {
+                                return 2;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                            return 1;
+                        }
                     }
                     break;
                 case (int)special_view_types.SPECIAL_VIEW_SAVE_FILE_TRACKING_LOAD:
                     if (!PlayingReplay)
                     {
-
                     }
                     break;
                 default:

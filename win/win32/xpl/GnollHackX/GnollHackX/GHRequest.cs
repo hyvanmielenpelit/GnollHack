@@ -90,6 +90,8 @@ namespace GnollHackX
         SaveZoom,
         RestoreZoom,
         SetGetPositionArrows,
+        SaveFileTrackingSave,
+        SaveFileTrackingLoad,
     }
 
     public struct AddContextMenuData
@@ -173,6 +175,8 @@ namespace GnollHackX
         public bool RequestBool { get; set; }
         public int RequestInt { get; set; }
         public int RequestInt2 { get; set; }
+        public long RequestLong { get; set; }
+        public long RequestLong2 { get; set; }
         public int RequestAttr { get; set; }
         public int RequestNhColor { get; set; }
         public int RequestGlyph { get; set; }
@@ -236,6 +240,16 @@ namespace GnollHackX
             RequestInt = requestint;
             RequestString = requeststring;
         }
+
+        public GHRequest(GHGame ghGame, GHRequestType requesttype, long requestlong, long requestlong2, string requeststring)
+        {
+            RequestingGame = ghGame;
+            RequestType = requesttype;
+            RequestLong = requestlong;
+            RequestLong2 = requestlong2;
+            RequestString = requeststring;
+        }
+
 
         public GHRequest(GHGame ghGame, GHRequestType requesttype, int requestint, int requestint2, string requeststring)
         {
