@@ -3894,6 +3894,286 @@ namespace GnollHackX
             return res;
         }
 
+        public static async Task<SendResult> SendSaveFileTrackingSaveRequest(Page displayPage, long timeStamp, string fileName, long fileLength, string sha256hash)
+        {
+            SendResult res;
+            bool tryAgain = false;
+            do
+            {
+                res = new SendResult();
+                try
+                {
+                    string postaddress = XlogPostAddress?.Replace("/xlogfile", "/api/savefiletracking/create");
+                    Debug.WriteLine("Save File Tracking address: " + postaddress);
+                    if (postaddress != null && postaddress.Length > 8 && postaddress.Substring(0, 8) == "https://" && Uri.IsWellFormedUriString(postaddress, UriKind.Absolute))
+                    {
+                        using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
+                        {
+                            MultipartFormDataContent multicontent = new MultipartFormDataContent("-------------------boundary");
+
+                            string username = XlogUserName;
+                            string password = XlogPassword;
+                            StringContent content1 = new StringContent(username, Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhv1 = new ContentDispositionHeaderValue("form-data");
+                            cdhv1.Name = "UserName";
+                            content1.Headers.ContentDisposition = cdhv1;
+                            multicontent.Add(content1);
+                            Debug.WriteLine("UserName: " + username);
+
+                            StringContent content3 = new StringContent(password, Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhv3 = new ContentDispositionHeaderValue("form-data");
+                            cdhv3.Name = "Password";
+                            content3.Headers.ContentDisposition = cdhv3;
+                            multicontent.Add(content3);
+                            Debug.WriteLine("Password: " + password);
+
+                            StringContent content4 = new StringContent(XlogAntiForgeryToken, Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhv4 = new ContentDispositionHeaderValue("form-data");
+                            cdhv4.Name = "AntiForgeryToken";
+                            content4.Headers.ContentDisposition = cdhv4;
+                            multicontent.Add(content4);
+                            Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
+
+                            StringContent content2 = new StringContent(timeStamp.ToString(), Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
+                            cdhv2.Name = "TimeStamp";
+                            content2.Headers.ContentDisposition = cdhv2;
+                            multicontent.Add(content2);
+                            Debug.WriteLine("TimeStamp: " + timeStamp);
+
+                            StringContent content5 = new StringContent(fileLength.ToString(), Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhv5 = new ContentDispositionHeaderValue("form-data");
+                            cdhv5.Name = "FileLength";
+                            content5.Headers.ContentDisposition = cdhv5;
+                            multicontent.Add(content5);
+                            Debug.WriteLine("FileLength: " + fileLength);
+
+                            StringContent content6 = new StringContent(sha256hash, Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhv6 = new ContentDispositionHeaderValue("form-data");
+                            cdhv6.Name = "Sha256";
+                            content6.Headers.ContentDisposition = cdhv6;
+                            multicontent.Add(content6);
+                            Debug.WriteLine("Sha256: " + sha256hash);
+
+                            using (var cts = new CancellationTokenSource())
+                            {
+                                cts.CancelAfter(10000);
+                                string responseContent = "";
+
+                                try
+                                {
+                                    using (HttpResponseMessage response = await client.PostAsync(postaddress, multicontent, cts.Token))
+                                    {
+                                        responseContent = await response.Content.ReadAsStringAsync();
+                                        Debug.WriteLine("Save file tracking on save, entry response content:");
+                                        Debug.WriteLine(responseContent);
+                                        res.Message = responseContent;
+                                        res.IsSuccess = response.IsSuccessStatusCode;
+                                        res.HasHttpStatusCode = true;
+                                        res.StatusCode = response.StatusCode;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    tryAgain = await displayPage.DisplayAlert("Save File Tracking Exception", "Exception occurred while sending save file tracking request on save: " + ex.Message + "\n\nTry again?", "Yes", "No");
+                                    res.IsSuccess = false;
+                                    res.Message = ex.Message;
+                                }
+
+                                XlogCredentialsIncorrect = false;
+                                if (res.IsSuccess)
+                                {
+                                    SetXlogUserNameVerified(true, username, password);
+                                    WriteGHLog("Save file tracking on save successfully sent");
+                                    try
+                                    {
+                                        File.WriteAllText(fileName + GHConstants.SaveFileTrackingSuffix, res.Message);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine(ex.Message);
+                                        tryAgain = await displayPage.DisplayAlert("Save File Tracking Exception", "Sending save file tracking request on save failed. Exception: " + ex.Message + "\n\nTry again?", "Yes", "No");
+                                    }
+                                }
+                                else
+                                {
+                                    if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */)) // || res.StatusCode == HttpStatusCode.Locked /* 423 */
+                                        SetXlogUserNameVerified(false, null, null);
+                                    if (res.StatusCode == HttpStatusCode.Forbidden)
+                                        XlogCredentialsIncorrect = true;
+
+                                    if (!XlogCredentialsIncorrect && XlogUserNameVerified)
+                                        tryAgain = await displayPage.DisplayAlert("Save File Tracking Error", "Sending save file tracking request on save failed. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message + "\n\nTry again?", "Yes", "No");
+                                    else
+                                        await displayPage.DisplayAlert("Save File Tracking Error", "Sending save file tracking request on save failed. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                }
+
+                                //if (!res.IsSuccess && !is_from_queue && !string.IsNullOrWhiteSpace(xlogentry_string))
+                                //{
+                                //    WriteGHLog((string.IsNullOrEmpty(xlogentry_string) ? "Server authentication failed." : "Sending XLog entry failed.") + " Writing the send request to disk. Status Code: " + (int)res.StatusCode + ", Message: " + res.Message);
+                                //    SaveXLogEntryToDisk(status_type, status_datatype, xlogentry_string, xlogattachments);
+                                //}
+                            }
+                            content1.Dispose();
+                            content2.Dispose();
+                            content3.Dispose();
+                            content4.Dispose();
+                            content5.Dispose();
+                            content6.Dispose();
+                            multicontent.Dispose();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                    await displayPage.DisplayAlert("Save File Tracking Exception", "Exception occurred while sending save file tracking request on save: " + ex.Message, "OK");
+                    res.Message = ex.Message;
+                }
+            } while (tryAgain);
+            return res;
+        }
+
+        public static async Task<SendResult> SendSaveFileTrackingLoadRequest(Page displayPage, long timeStamp, string fileName, long fileLength, string sha256hash)
+        {
+            SendResult res;
+            bool tryAgain = false;
+            do
+            {
+                res = new SendResult();
+                try
+                {
+                    string postaddress = XlogPostAddress?.Replace("/xlogfile", "/api/savefiletracking/use");
+                    Debug.WriteLine("Save File Tracking address: " + postaddress);
+                    if (postaddress != null && postaddress.Length > 8 && postaddress.Substring(0, 8) == "https://" && Uri.IsWellFormedUriString(postaddress, UriKind.Absolute))
+                    {
+                        using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
+                        {
+                            MultipartFormDataContent multicontent = new MultipartFormDataContent("-------------------boundary");
+
+                            string encryptedId = "";
+                            encryptedId = File.ReadAllText(fileName + GHConstants.SaveFileTrackingSuffix);
+                            StringContent content0 = new StringContent(encryptedId, Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhv0 = new ContentDispositionHeaderValue("form-data");
+                            cdhv0.Name = "EncryptedId";
+                            content0.Headers.ContentDisposition = cdhv0;
+                            multicontent.Add(content0);
+                            Debug.WriteLine("EncryptedId: " + encryptedId);
+
+                            string username = XlogUserName;
+                            string password = XlogPassword;
+                            StringContent content1 = new StringContent(username, Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhv1 = new ContentDispositionHeaderValue("form-data");
+                            cdhv1.Name = "UserName";
+                            content1.Headers.ContentDisposition = cdhv1;
+                            multicontent.Add(content1);
+                            Debug.WriteLine("UserName: " + username);
+
+                            StringContent content3 = new StringContent(password, Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhv3 = new ContentDispositionHeaderValue("form-data");
+                            cdhv3.Name = "Password";
+                            content3.Headers.ContentDisposition = cdhv3;
+                            multicontent.Add(content3);
+                            Debug.WriteLine("Password: " + password);
+
+                            StringContent content4 = new StringContent(XlogAntiForgeryToken, Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhv4 = new ContentDispositionHeaderValue("form-data");
+                            cdhv4.Name = "AntiForgeryToken";
+                            content4.Headers.ContentDisposition = cdhv4;
+                            multicontent.Add(content4);
+                            Debug.WriteLine("AntiForgeryToken: " + XlogAntiForgeryToken);
+
+                            StringContent content2 = new StringContent(timeStamp.ToString(), Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhv2 = new ContentDispositionHeaderValue("form-data");
+                            cdhv2.Name = "TimeStamp";
+                            content2.Headers.ContentDisposition = cdhv2;
+                            multicontent.Add(content2);
+                            Debug.WriteLine("TimeStamp: " + timeStamp);
+
+                            StringContent content5 = new StringContent(fileLength.ToString(), Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhv5 = new ContentDispositionHeaderValue("form-data");
+                            cdhv5.Name = "FileLength";
+                            content5.Headers.ContentDisposition = cdhv5;
+                            multicontent.Add(content5);
+                            Debug.WriteLine("FileLength: " + fileLength);
+
+                            StringContent content6 = new StringContent(sha256hash, Encoding.UTF8, "text/plain");
+                            ContentDispositionHeaderValue cdhv6 = new ContentDispositionHeaderValue("form-data");
+                            cdhv6.Name = "Sha256";
+                            content6.Headers.ContentDisposition = cdhv6;
+                            multicontent.Add(content6);
+                            Debug.WriteLine("Sha256: " + sha256hash);
+
+                            using (var cts = new CancellationTokenSource())
+                            {
+                                cts.CancelAfter(10000);
+                                string responseContent = "";
+
+                                try
+                                {
+                                    using (HttpResponseMessage response = await client.PostAsync(postaddress, multicontent, cts.Token))
+                                    {
+                                        responseContent = await response.Content.ReadAsStringAsync();
+                                        Debug.WriteLine("Save file tracking on save, entry response content:");
+                                        Debug.WriteLine(responseContent);
+                                        res.Message = responseContent;
+                                        res.IsSuccess = response.IsSuccessStatusCode;
+                                        res.HasHttpStatusCode = true;
+                                        res.StatusCode = response.StatusCode;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    tryAgain = await displayPage.DisplayAlert("Save File Tracking Exception", "Exception occurred while sending save file tracking request on load: " + ex.Message + "\n\nTry again?", "Yes", "No");
+                                    res.IsSuccess = false;
+                                    res.Message = ex.Message;
+                                }
+
+                                XlogCredentialsIncorrect = false;
+                                if (res.IsSuccess)
+                                {
+                                    SetXlogUserNameVerified(true, username, password);
+                                    WriteGHLog("Save file tracking on load successful");
+                                }
+                                else
+                                {
+                                    if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */)) // || res.StatusCode == HttpStatusCode.Locked /* 423 */
+                                        SetXlogUserNameVerified(false, null, null);
+                                    if (res.StatusCode == HttpStatusCode.Forbidden)
+                                        XlogCredentialsIncorrect = true;
+
+                                    if (!XlogCredentialsIncorrect && XlogUserNameVerified)
+                                        tryAgain = await displayPage.DisplayAlert("Save File Tracking Error", "Sending save file tracking request on load failed. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message + "\n\nTry again?", "Yes", "No");
+                                    else
+                                        await displayPage.DisplayAlert("Save File Tracking Error", "Sending save file tracking request on load failed. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                }
+
+                                //if (!res.IsSuccess && !is_from_queue && !string.IsNullOrWhiteSpace(xlogentry_string))
+                                //{
+                                //    WriteGHLog((string.IsNullOrEmpty(xlogentry_string) ? "Server authentication failed." : "Sending XLog entry failed.") + " Writing the send request to disk. Status Code: " + (int)res.StatusCode + ", Message: " + res.Message);
+                                //    SaveXLogEntryToDisk(status_type, status_datatype, xlogentry_string, xlogattachments);
+                                //}
+                            }
+                            content1.Dispose();
+                            content2.Dispose();
+                            content3.Dispose();
+                            content4.Dispose();
+                            content5.Dispose();
+                            content6.Dispose();
+                            multicontent.Dispose();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                    await displayPage.DisplayAlert("Save File Tracking Exception", "Exception occurred while sending save file tracking request on save: " + ex.Message, "OK");
+                    res.Message = ex.Message;
+                }
+            } while (tryAgain);
+            return res;
+        }
+
         public static int GetPortSecurityLevel()
         {
             if (IsiOS || IsAndroid)

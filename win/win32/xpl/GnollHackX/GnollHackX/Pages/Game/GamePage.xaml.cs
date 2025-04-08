@@ -2988,11 +2988,40 @@ namespace GnollHackX.Pages.Game
                                 break;
                             case GHRequestType.RestoreZoom:
                                 break;
+                            case GHRequestType.SaveFileTrackingSave:
+                                DoSaveFileTrackingSave(req.RequestLong, req.RequestString, req.RequestLong2, req.RequestString2);
+                                break;
+                            case GHRequestType.SaveFileTrackingLoad:
+                                DoSaveFileTrackingLoad(req.RequestLong, req.RequestString, req.RequestLong2, req.RequestString2);
+                                break;
                         }
                     }
                 }
             }
         }
+
+        public async void DoSaveFileTrackingSave(long timeStamp, string fileName, long fileLength, string sha256hash)
+        {
+            SendResult res = await GHApp.SendSaveFileTrackingSaveRequest(this, timeStamp, fileName, fileLength, sha256hash);
+            ConcurrentQueue<GHResponse> queue;
+            GHGame curGame = CurrentGame;
+            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
+            {
+                queue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingSave, res.IsSuccess ? 0 : (int)res.StatusCode));
+            }
+        }
+
+        public async void DoSaveFileTrackingLoad(long timeStamp, string fileName, long fileLength, string sha256hash)
+        {
+            SendResult res = await GHApp.SendSaveFileTrackingLoadRequest(this, timeStamp, fileName, fileLength, sha256hash);
+            ConcurrentQueue<GHResponse> queue;
+            GHGame curGame = CurrentGame;
+            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
+            {
+                queue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingLoad, res.IsSuccess ? 0 : (int)res.StatusCode));
+            }
+        }
+
 
         private readonly object _menuPositionLock = new object();
         private bool[] _menuPositionSavingOn = new bool[(int)ghmenu_styles.MAX_GHMENU_STYLES];

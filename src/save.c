@@ -407,9 +407,6 @@ int64_t time_stamp;
         if (errorcode)
         {
             issue_debuglog(errorcode, "Save file tracking encountered a problem upon save.");
-            //If tracking somehow failed on GUI side at this stage, inform the player (it won't be turned off)
-            //Some part of sending the data to server might happen later and an error message may come after this, too
-            //Inform player of the problem
         }
     }
 }

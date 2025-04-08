@@ -999,6 +999,7 @@ register int fd;
     int rtmp;
     struct obj *otmp;
     struct save_game_stats game_stats = { 0 };
+    struct save_game_stats dummy_stats = { 0 };
     boolean was_corrupted = FALSE;
     Strcpy(debug_buf_1, "dorestore0");
     Strcpy(debug_buf_2, "dorestore0");
@@ -1103,8 +1104,8 @@ register int fd;
 #endif
     (void) validate(fd, (char *) 0); /* skip version and savefile info */
     get_plname_from_file(fd, plname);
-    get_save_game_stats_from_file(fd, &game_stats);
-    n_game_recoveries = game_stats.num_recoveries;
+    get_save_game_stats_from_file(fd, &dummy_stats);
+    n_game_recoveries = dummy_stats.num_recoveries;
 
     getlev(fd, 0, (xchar) 0, FALSE);
     (void) nhclose(fd);

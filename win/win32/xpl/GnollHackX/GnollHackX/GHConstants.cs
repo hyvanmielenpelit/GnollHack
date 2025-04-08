@@ -1842,6 +1842,7 @@ namespace GnollHackX
         public const string ReplayPostQueueDirectory = "replaypost";
         public const string ReplayPostFileNamePrefix = "queued_replay_post_";
         public const string ReplayPostFileNameSuffix = ".txt";
+        public const string SaveFileTrackingSuffix = ".ghsft";
         public const double MainScreenGeneralCounterIntervalInSeconds = 2.0;
         public const long MaxGHLogSize = 4194304L;
         public const int LineBuilderInitialCapacity = 256;

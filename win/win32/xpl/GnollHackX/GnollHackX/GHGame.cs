@@ -47,8 +47,7 @@ namespace GnollHackX
         private readonly object _characterNameLock = new object();
         private bool _useLongerMessageHistory = false;
         private bool _useHideMessageHistory = false;
-        private int _saveFileTrackingSaveFinished = -1;
-        private int _saveFileTrackingLoadFinished = -1;
+        private int _saveFileTrackingFinished = -1;
 
         private readonly GamePage _gamePage;
         public GamePage ActiveGamePage { get { return _gamePage; } }
@@ -244,11 +243,9 @@ namespace GnollHackX
                         case GHRequestType.SetMiddleMouseCommand:
                             GHApp.GnollHackService.SetMouseCommand(response.ResponseIntValue, response.RequestType == GHRequestType.SetMiddleMouseCommand);
                             break;
-                        case GHRequestType.SaveFileTrackingSave:
-                            _saveFileTrackingSaveFinished = response.ResponseIntValue;
-                            break;
                         case GHRequestType.SaveFileTrackingLoad:
-                            _saveFileTrackingLoadFinished = response.ResponseIntValue;
+                        case GHRequestType.SaveFileTrackingSave:
+                            _saveFileTrackingFinished = response.ResponseIntValue;
                             break;
                         default:
                             break;
@@ -2790,6 +2787,7 @@ namespace GnollHackX
                         }
                         break;
                     }
+                case (int)special_view_types.SPECIAL_VIEW_SAVE_FILE_TRACKING_LOAD:
                 case (int)special_view_types.SPECIAL_VIEW_SAVE_FILE_TRACKING_SAVE:
                     if(!PlayingReplay)
                     {
@@ -2820,17 +2818,14 @@ namespace GnollHackX
                                         ConcurrentQueue<GHRequest> queue;
                                         if (RequestDictionary.TryGetValue(this, out queue))
                                         {
-                                            //_saveFileTrackingSaveFinished = -1;
-                                            //queue.Enqueue(new GHRequest(this, GHRequestType.SaveFileTrackingSave, time_stamp, length, shaHashBase64));
-                                            //while (_saveFileTrackingSaveFinished < 0)
-                                            //{
-                                            //    Thread.Sleep(GHConstants.PollingInterval);
-                                            //    pollResponseQueue();
-                                            //    if (_fastForwardGameOver)
-                                            //        return 0;
-                                            //}
-                                            //return _saveFileTrackingSaveFinished;
-                                            return 0;
+                                            _saveFileTrackingFinished = -1;
+                                            queue.Enqueue(new GHRequest(this, viewtype == (int)special_view_types.SPECIAL_VIEW_SAVE_FILE_TRACKING_LOAD ? GHRequestType.SaveFileTrackingLoad : GHRequestType.SaveFileTrackingSave, time_stamp, filename, length, shaHashBase64));
+                                            while (_saveFileTrackingFinished < 0)
+                                            {
+                                                Thread.Sleep(GHConstants.PollingInterval);
+                                                pollResponseQueue();
+                                            }
+                                            return _saveFileTrackingFinished;
                                         }
                                         return 5;
                                     }
@@ -2854,11 +2849,6 @@ namespace GnollHackX
                             Debug.WriteLine(ex.Message);
                             return 1;
                         }
-                    }
-                    break;
-                case (int)special_view_types.SPECIAL_VIEW_SAVE_FILE_TRACKING_LOAD:
-                    if (!PlayingReplay)
-                    {
                     }
                     break;
                 default:

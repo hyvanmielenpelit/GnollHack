@@ -131,6 +131,7 @@ char lock[PL_NSIZ + 27]; /* long enough for username+-+name+.99 */
 #define BACKUP_EXTENSION "bup"       /* extension for backup save files */
 #define ALT_BACKUP_EXTENSION "bak"   /* extension for backup save files (alternative) */
 #define TEMP_BACKUP_EXTENSION "tmp"  /* extension for temp backup save files */
+#define SAVE_FILE_TRACKING_EXTENSION "ghsft"  /* extension for save file tracking files */
 
 #ifdef WIN32
 #include <io.h>
@@ -358,6 +359,27 @@ const char* savefilename;
     char ebuf[BUFSZ] = "";
     print_special_savefile_extension(ebuf, BACKUP_EXTENSION);
     print_imported_savefile_extension(ebuf);
+    size_t elen = strlen(ebuf);
+    if (dlen <= elen)
+        return FALSE;
+
+    size_t i;
+    for (i = 0; i < elen; i++)
+        if (savefilename[dlen - 1 - i] != ebuf[elen - 1 - i])
+            return FALSE;
+
+    return TRUE;
+}
+
+int is_save_file_tracking_file_name(savefilename)
+const char* savefilename;
+{
+    if (!savefilename || !*savefilename)
+        return FALSE;
+
+    size_t dlen = strlen(savefilename);
+    char ebuf[BUFSZ] = "";
+    print_special_savefile_extension(ebuf, SAVE_FILE_TRACKING_EXTENSION);
     size_t elen = strlen(ebuf);
     if (dlen <= elen)
         return FALSE;
@@ -2408,6 +2430,8 @@ get_saved_games()
                         if (is_backup_savefile_name(usedfoundfile))
                             continue;
                         if (is_imported_backup_savefile_name(usedfoundfile))
+                            continue;
+                        if (is_save_file_tracking_file_name(usedfoundfile))
                             continue;
                         char* r;
                         r = plname_from_file(usedfoundfile, &gamestats);
