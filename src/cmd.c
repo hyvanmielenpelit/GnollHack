@@ -3684,14 +3684,23 @@ int final;
             enl_msg("Save file tracking ", "is ", "was ", "not supported on your platform", "");
         else
         {
-            if (!iflags.save_file_tracking_needed)
-                enl_msg("Save file tracking ", "is ", "was ", "supported but not needed on your platform", "");
+            if (wizard || discover || CasualMode)
+            {
+                enl_msg("Your game mode ", "is ", "was ", "not eligible for save file tracking", "");
+            }
             else
             {
-                enl_msg("Save file tracking ", "is ", "was ", "supported and needed on your platform", "");
-                enl_msg("Save file tracking ", "is ", "was ", iflags.save_file_tracking_on ? "on" : "off", "");
+                if (!iflags.save_file_tracking_needed)
+                {
+                    enl_msg("Save file tracking ", "is ", "was ", "supported but not needed on your platform", "");
+                }
+                else
+                {
+                    enl_msg("Save file tracking ", "is ", "was ", "supported and needed on your platform", "");
+                    enl_msg("Save file tracking ", "is ", "was ", iflags.save_file_tracking_on ? "on" : "off", "");
+                }
+                enl_msg("Your save file ", "has been ", "had been ", flags.save_file_tracking_value ? "successfully " : "unsuccessfully ", "tracked");
             }
-            enl_msg("Your save file ", "has been ", "had been ", flags.save_file_tracking_value ? "successfully " : "unsuccessfully", "tracked");
         }
     }
 }
