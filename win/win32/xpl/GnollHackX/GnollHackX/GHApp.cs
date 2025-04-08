@@ -55,6 +55,7 @@ namespace GnollHackX
     public struct SendResult
     {
         public bool IsSuccess;
+        public bool IsException;
         public bool HasHttpStatusCode;
         public HttpStatusCode StatusCode;
         public string Message;
@@ -3362,7 +3363,7 @@ namespace GnollHackX
 
         private static readonly object _saveFileTrackingLock = new object();
         private static bool _saveFileTracking = false;
-        public static bool SaveFileTracking { get { lock (_saveFileTrackingLock) { return _saveFileTracking; } } set { lock (_saveFileTrackingLock) { _saveFileTracking = value; } } }
+        public static bool SaveFileTracking { get { bool t = TournamentMode; lock (_saveFileTrackingLock) { return _saveFileTracking || t; } } set { lock (_saveFileTrackingLock) { _saveFileTracking = value; } } }
         public static bool IsSaveFileTrackingNeeded { get { return IsDesktop; } }
 
         private static readonly object _xlogCreditialLock = new object();
@@ -3823,6 +3824,7 @@ namespace GnollHackX
                             {
                                 Debug.WriteLine("Exception occurred while sending XLog entry: " + ex.Message);
                                 res.IsSuccess = false;
+                                res.IsException = true;
                                 res.Message = ex.Message;
                             }
 
@@ -3868,6 +3870,8 @@ namespace GnollHackX
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
+                res.IsSuccess = false;
+                res.IsException = true;
                 res.Message = e.Message;
             }
             if (xlogattachments != null)
@@ -3975,8 +3979,9 @@ namespace GnollHackX
                                 }
                                 catch (Exception ex)
                                 {
-                                    tryAgain = await displayPage.DisplayAlert("Save File Tracking Exception", "Exception occurred while sending save file tracking request on save: " + ex.Message + "\n\nTry again?", "Yes", "No");
+                                    tryAgain = await displayPage.DisplayAlert("Save File Tracking Exception", "Exception occurred while sending save file tracking information to the server after saving the game: " + ex.Message + "\n\nTry again?", "Yes", "No");
                                     res.IsSuccess = false;
+                                    res.IsException = true;
                                     res.Message = ex.Message;
                                 }
 
@@ -3985,15 +3990,22 @@ namespace GnollHackX
                                 {
                                     SetXlogUserNameVerified(true, username, password);
                                     WriteGHLog("Save file tracking on save successfully sent");
-                                    try
+                                    bool writeAgain = false;
+                                    do
                                     {
-                                        File.WriteAllText(fileName + GHConstants.SaveFileTrackingSuffix, res.Message);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Debug.WriteLine(ex.Message);
-                                        tryAgain = await displayPage.DisplayAlert("Save File Tracking Exception", "Sending save file tracking request on save failed. Exception: " + ex.Message + "\n\nTry again?", "Yes", "No");
-                                    }
+                                        try
+                                        {
+                                            File.WriteAllText(fileName + GHConstants.SaveFileTrackingSuffix, res.Message);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Debug.WriteLine(ex.Message);
+                                            writeAgain = await displayPage.DisplayAlert("Tracking File Write Exception", "Could not write the tracking file \'" + fileName + GHConstants.SaveFileTrackingSuffix + "\'. Please check that you have enough disk space available. Exception: " + ex.Message + "\n\nTry again?", "Yes", "No");
+                                            res.IsSuccess = false;
+                                            res.IsException = true;
+                                            res.Message = ex.Message;
+                                        }
+                                    } while (writeAgain);
                                 }
                                 else
                                 {
@@ -4003,9 +4015,11 @@ namespace GnollHackX
                                         XlogCredentialsIncorrect = true;
 
                                     if (!XlogCredentialsIncorrect && XlogUserNameVerified)
-                                        tryAgain = await displayPage.DisplayAlert("Save File Tracking Error", "Sending save file tracking request on save failed. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message + "\n\nTry again?", "Yes", "No");
+                                        tryAgain = await displayPage.DisplayAlert("Save File Tracking Error", "Failed to send save file tracking information to the server after saving the game. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message + "\n\nTry again?", "Yes", "No");
+                                    else if (XlogCredentialsIncorrect)
+                                        await displayPage.DisplayAlert("Save File Tracking Credentials Error", "Failed to send save file tracking information to the server after saving the game, likely due to incorrect credentials. Please check your user name and password. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
                                     else
-                                        await displayPage.DisplayAlert("Save File Tracking Error", "Sending save file tracking request on save failed. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                        await displayPage.DisplayAlert("Save File Tracking Error", "Failed to send save file tracking information to the server after saving the game. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
                                 }
 
                                 //if (!res.IsSuccess && !is_from_queue && !string.IsNullOrWhiteSpace(xlogentry_string))
@@ -4027,7 +4041,9 @@ namespace GnollHackX
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex.Message);
-                    await displayPage.DisplayAlert("Save File Tracking Exception", "Exception occurred while sending save file tracking request on save: " + ex.Message, "OK");
+                    await displayPage.DisplayAlert("Save File Tracking Exception", "Exception occurred while sending save file tracking information to the server after saving the game: " + ex.Message, "OK");
+                    res.IsSuccess = false;
+                    res.IsException = true;
                     res.Message = ex.Message;
                 }
             } while (tryAgain);
@@ -4124,8 +4140,9 @@ namespace GnollHackX
                                 }
                                 catch (Exception ex)
                                 {
-                                    tryAgain = await displayPage.DisplayAlert("Save File Tracking Exception", "Exception occurred while sending save file tracking request on load: " + ex.Message + "\n\nTry again?", "Yes", "No");
+                                    tryAgain = await displayPage.DisplayAlert("Save File Tracking Exception", "Exception occurred while sending a save file tracking request upon loading a saved game: " + ex.Message + "\n\nTry again?", "Yes", "No");
                                     res.IsSuccess = false;
+                                    res.IsException = true;
                                     res.Message = ex.Message;
                                 }
 
@@ -4143,9 +4160,11 @@ namespace GnollHackX
                                         XlogCredentialsIncorrect = true;
 
                                     if (!XlogCredentialsIncorrect && XlogUserNameVerified)
-                                        tryAgain = await displayPage.DisplayAlert("Save File Tracking Error", "Sending save file tracking request on load failed. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message + "\n\nTry again?", "Yes", "No");
+                                        tryAgain = await displayPage.DisplayAlert("Save File Tracking Error", "Failed to send a save file tracking verification request to the server upon loading a saved game. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message + "\n\nTry again?", "Yes", "No");
+                                    else if (XlogCredentialsIncorrect)
+                                        await displayPage.DisplayAlert("Credentials Error", "Failed to send a save file tracking verification request to the server upon loading a saved game, likely due to incorrect credentials provided to the server. Please check your user name and password. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
                                     else
-                                        await displayPage.DisplayAlert("Save File Tracking Error", "Sending save file tracking request on load failed. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                        await displayPage.DisplayAlert("Save File Tracking Error", "Failed to send a save file tracking verification request to the server upon loading a saved game. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
                                 }
 
                                 //if (!res.IsSuccess && !is_from_queue && !string.IsNullOrWhiteSpace(xlogentry_string))
@@ -4167,7 +4186,9 @@ namespace GnollHackX
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex.Message);
-                    await displayPage.DisplayAlert("Save File Tracking Exception", "Exception occurred while sending save file tracking request on save: " + ex.Message, "OK");
+                    await displayPage.DisplayAlert("Save File Tracking Exception", "Exception occurred while sending a save file tracking verification request upon loading a saved game: " + ex.Message, "OK");
+                    res.IsSuccess = false;
+                    res.IsException = true;
                     res.Message = ex.Message;
                 }
             } while (tryAgain);

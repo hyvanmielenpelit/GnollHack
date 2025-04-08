@@ -226,6 +226,7 @@ STATIC_DCL boolean FDECL(cause_known, (int));
 STATIC_DCL char *FDECL(attrval, (int, int, char *));
 STATIC_DCL void FDECL(background_enlightenment, (int, int));
 STATIC_DCL void FDECL(basics_enlightenment, (int, int));
+STATIC_DCL void FDECL(game_enlightenment, (int, int));
 STATIC_DCL void FDECL(characteristics_enlightenment, (int, int));
 STATIC_DCL void FDECL(one_characteristic, (int, int, int));
 STATIC_DCL void FDECL(status_enlightenment, (int, int));
@@ -3273,7 +3274,7 @@ char resultbuf[]; /* should be at least [7] to hold "18/100\0" */
 
 void
 enlightenment(mode, final)
-int mode;  /* BASICENLIGHTENMENT | MAGICENLIGHTENMENT (| both) */
+int mode;  /* BASICENLIGHTENMENT | MAGICENLIGHTENMENT | GAMEENLIGHTENMENT  */
 int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
 {
     char buf[BUFSZ], tmpbuf[BUFSZ];
@@ -3322,6 +3323,11 @@ int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
     if (mode & MAGICENLIGHTENMENT) {
         /* intrinsics and other traditional enlightenment feedback */
         attributes_enlightenment(mode, final);
+    }
+
+    if (mode & GAMEENLIGHTENMENT) {
+        /* game status */
+        game_enlightenment(mode, final);
     }
 
     if (!en_via_menu) {
@@ -3542,6 +3548,9 @@ int final;
         }
         you_have(buf, "");
     }
+
+    Sprintf(buf, "%lld", (long long)get_current_game_score());
+    enl_msg("Your game score ", "is ", "was ", buf, "");
 }
 
 /* hit points, energy points, armor class -- essential information which
@@ -3634,6 +3643,17 @@ int final;
     else
         Strcpy(buf, "off");
     enl_msg("Autopickup ", "is ", "was ", buf, "");
+}
+
+STATIC_OVL void
+game_enlightenment(mode, final)
+int mode UNUSED;
+int final;
+{
+    char buf[BUFSZ];
+
+    enlght_out(" ", ATR_HALF_SIZE); /* separator after background */
+    enlght_out("Game:", ATR_SUBHEADING);
 
     const char* game_dif_text = get_game_difficulty_text(context.game_difficulty);
     Strcpy(buf, game_dif_text);
@@ -3650,12 +3670,30 @@ int final;
     Sprintf(modebuf, " mode (%s)", get_game_mode_description());
     enl_msg("You ", "are playing in ", "were playing in ", get_game_mode_text(TRUE), modebuf);
 
-    Sprintf(buf, "%lld", (long long)get_current_game_score());
-    enl_msg("Your game score ", "is ", "was ", buf, "");
-
     print_realtime(modebuf, get_current_game_duration());
     Sprintf(buf, "%s", modebuf);
     enl_msg("You ", "have been playing the game for ", "had been playing the game for ", buf, "");
+
+    if (iflags.save_file_secure)
+    {
+        enl_msg("You ", "are ", "were ", "playing the game on a secure server", "");
+    }
+    else
+    {
+        if (!iflags.save_file_tracking_supported)
+            enl_msg("Save file tracking ", "is ", "was ", "not supported on your platform", "");
+        else
+        {
+            if (!iflags.save_file_tracking_needed)
+                enl_msg("Save file tracking ", "is ", "was ", "supported but not needed on your platform", "");
+            else
+            {
+                enl_msg("Save file tracking ", "is ", "was ", "supported and needed on your platform", "");
+                enl_msg("Save file tracking ", "is ", "was ", iflags.save_file_tracking_on ? "on" : "off", "");
+            }
+            enl_msg("Your save file ", "has been ", "had been ", flags.save_file_tracking_value ? "successfully " : "unsuccessfully", "tracked");
+        }
+    }
 }
 
 /* characteristics: expanded version of bottom line strength, dexterity, &c */
@@ -5207,7 +5245,7 @@ doviewpetstatistics(struct monst* mon)
 STATIC_PTR int
 doattributes(VOID_ARGS)
 {
-    int mode = BASICENLIGHTENMENT;
+    int mode = BASICENLIGHTENMENT | GAMEENLIGHTENMENT;
 
     /* show more--as if final disclosure--for wizard and explore modes */
     if ((wizard && yn_query("Enforce magic enlightenment?") == 'y') || discover)

@@ -534,6 +534,7 @@ extern short tile2enlargement[MAX_TILES];
 /* enlightenment control flags */
 #define BASICENLIGHTENMENT 1 /* show mundane stuff */
 #define MAGICENLIGHTENMENT 2 /* show intrinsics and such */
+#define GAMEENLIGHTENMENT  4 /* show game status */
 #define ENL_GAMEINPROGRESS 0
 #define ENL_GAMEOVERALIVE  1 /* ascension, escape, quit, trickery */
 #define ENL_GAMEOVERDEAD   2

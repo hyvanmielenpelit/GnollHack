@@ -266,6 +266,7 @@ namespace GnollHackX.Pages.MainScreen
             PostXlogUserNameLabel.TextColor = usedColor;
             PostXlogPasswordLabel.TextColor = usedColor;
             CloudStorageTitleLabel.TextColor = usedColor;
+            SaveFileTrackingLabel.TextColor = usedColor;
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
@@ -2106,7 +2107,11 @@ namespace GnollHackX.Pages.MainScreen
         {
             PopupTitleLabel.TextColor = GHColors.Orange;
             PopupTitleLabel.Text = "Tournament Mode";
-            PopupLabel.Text = "Tournament Mode will force on Post Game Progress, Post Top Scores, Allow Ghost Levels, Share Bones Files, Record Game, and Auto-Upload to Cloud settings. The mode will also disable all special game play modes, custom links, and custom webhooks." + (GHApp.XlogUserNameVerified ? "" : Environment.NewLine + Environment.NewLine + "Please make sure that your user name and password for Server Posting are verified before proceeding.");
+            PopupLabel.Text = "Tournament Mode will force on Post Game Progress, Post Top Scores, Allow Ghost Levels, Share Bones Files, " + 
+                (SaveFileTrackingGrid.IsVisible ? "Save File Tracking, " : "") + 
+                "Record Game, and Auto-Upload to Cloud settings. The mode will also disable all special game play modes, custom links, and custom webhooks." + 
+                (GHApp.XlogUserNameVerified ? "" : Environment.NewLine + Environment.NewLine + 
+                "Please make sure that your user name and password for Server Posting are verified before proceeding.");
             PopupOkButton.IsEnabled = true;
             PopupGrid.IsVisible = true;
         }

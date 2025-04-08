@@ -3002,23 +3002,62 @@ namespace GnollHackX.Pages.Game
 
         public async void DoSaveFileTrackingSave(long timeStamp, string fileName, long fileLength, string sha256hash)
         {
-            SendResult res = await GHApp.SendSaveFileTrackingSaveRequest(this, timeStamp, fileName, fileLength, sha256hash);
+            if (!GHApp.HasInternetAccess)
+            {
+                await DisplayAlert("No Internet for Save File Tracking", "You have no internet access. Please switch the internet on before proceeding.", "OK");
+            }
+
             ConcurrentQueue<GHResponse> queue;
             GHGame curGame = CurrentGame;
+            if (string.IsNullOrEmpty(fileName))
+            {
+                await DisplayAlert("No File Name for Save File Tracking", "The file name for save file tracking is null or empty. Aborting tracking after saving.", "OK");
+                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
+                {
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingSave, 10));
+                }
+                return;
+            }
+
+            SendResult res = await GHApp.SendSaveFileTrackingSaveRequest(this, timeStamp, fileName, fileLength, sha256hash);
             if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
             {
-                queue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingSave, res.IsSuccess ? 0 : (int)res.StatusCode));
+                queue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingSave, res.IsSuccess ? 0 : res.IsException ? 1000 : (int)res.StatusCode));
             }
         }
 
         public async void DoSaveFileTrackingLoad(long timeStamp, string fileName, long fileLength, string sha256hash)
         {
-            SendResult res = await GHApp.SendSaveFileTrackingLoadRequest(this, timeStamp, fileName, fileLength, sha256hash);
+            if (!GHApp.HasInternetAccess)
+            {
+                await DisplayAlert("No Internet for Save File Tracking", "You have no internet access. Please switch the internet on before proceeding.", "OK");
+            }
+
             ConcurrentQueue<GHResponse> queue;
             GHGame curGame = CurrentGame;
+            if (string.IsNullOrEmpty(fileName))
+            {
+                await DisplayAlert("No File Name for Save File Tracking", "The file name for save file tracking is null or empty. Aborting tracking after loading.", "OK");
+                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
+                {
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingLoad, 10));
+                }
+                return;
+            }
+            if (!File.Exists(fileName + GHConstants.SaveFileTrackingSuffix))
+            {
+                await DisplayAlert("No Tracking File for Save File", "The tracking file for the save file \'" + fileName + "' does not exist. Aborting tracking after loading.", "OK");
+                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
+                {
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingLoad, 11));
+                }
+                return;
+            }
+
+            SendResult res = await GHApp.SendSaveFileTrackingLoadRequest(this, timeStamp, fileName, fileLength, sha256hash);
             if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
             {
-                queue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingLoad, res.IsSuccess ? 0 : (int)res.StatusCode));
+                queue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingLoad, res.IsSuccess ? 0 : res.IsException ? 1000 : (int)res.StatusCode));
             }
         }
 

@@ -965,7 +965,7 @@ time_t when; /* date+time at end of game */
     (void) display_inventory((char *) 0, TRUE, 0);
     container_contents(invent, how != SNAPSHOT, TRUE, FALSE, 0);
     magic_chest_contents(how != SNAPSHOT, TRUE, FALSE, 0);
-    enlightenment(how == SNAPSHOT ? BASICENLIGHTENMENT : (BASICENLIGHTENMENT | MAGICENLIGHTENMENT),
+    enlightenment(how == SNAPSHOT ? BASICENLIGHTENMENT | GAMEENLIGHTENMENT : (BASICENLIGHTENMENT | MAGICENLIGHTENMENT | GAMEENLIGHTENMENT),
                   how == SNAPSHOT ? ENL_GAMEINPROGRESS : (how >= PANICKED) ? ENL_GAMEOVERALIVE : ENL_GAMEOVERDEAD);
     putstr(NHW_DUMPTXT, 0, "");
     dump_skills();
@@ -1105,7 +1105,7 @@ boolean taken;
                               defquery, ynq2descs)
                 : defquery;
         if (c == 'y')
-            enlightenment((BASICENLIGHTENMENT | MAGICENLIGHTENMENT),
+            enlightenment((BASICENLIGHTENMENT | MAGICENLIGHTENMENT | GAMEENLIGHTENMENT),
                           (how >= PANICKED) ? ENL_GAMEOVERALIVE
                                             : ENL_GAMEOVERDEAD);
         if (c == 'q')
