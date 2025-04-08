@@ -1394,6 +1394,7 @@ namespace GnollHackX
         GUI_CMD_SAVE_ZOOM,
         GUI_CMD_RESTORE_ZOOM,
         GUI_CMD_TOGGLE_GETPOS_ARROWS,
+        GUI_CMD_DELETE_TRACKING_FILE,
     }
 
     public enum game_status_types

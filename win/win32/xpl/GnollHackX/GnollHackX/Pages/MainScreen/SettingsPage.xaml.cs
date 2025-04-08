@@ -259,6 +259,7 @@ namespace GnollHackX.Pages.MainScreen
             PostBonesLabel.TextColor = PostBonesSwitch.IsEnabled ? usedColor : GHColors.Gray;
             AllowBonesLabel.TextColor= AllowBonesSwitch.IsEnabled ? usedColor : GHColors.Gray;
             GZipLabel.TextColor = GZipSwitch.IsEnabled ? usedColor : GHColors.Gray;
+            SaveFileTrackingLabel.TextColor = SaveFileTrackingSwitch.IsEnabled ? usedColor : GHColors.Gray;
 
             CustomWebHookLinkTitleLabel.TextColor = usedColor;
             AccountTitleLabel.TextColor = usedColor;
@@ -266,7 +267,6 @@ namespace GnollHackX.Pages.MainScreen
             PostXlogUserNameLabel.TextColor = usedColor;
             PostXlogPasswordLabel.TextColor = usedColor;
             CloudStorageTitleLabel.TextColor = usedColor;
-            SaveFileTrackingLabel.TextColor = usedColor;
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
@@ -1275,6 +1275,11 @@ namespace GnollHackX.Pages.MainScreen
             if (GHApp.IsSaveFileTrackingNeeded)
             {
                 SaveFileTrackingSwitch.IsToggled = save_file_tracking;
+                if (_gamePage != null)
+                {
+                    SaveFileTrackingSwitch.IsEnabled = false;
+                    SaveFileTrackingLabel.TextColor = GHColors.Gray;
+                }
             }
             else
             {

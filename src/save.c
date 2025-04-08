@@ -24,7 +24,7 @@ STATIC_VAR int count_only;
 int dotcnt, dotrow; /* also used in restore */
 #endif
 
-STATIC_DCL void NDECL(handle_save_file_tracking);
+STATIC_DCL boolean FDECL(handle_save_file_tracking, (const char*));
 STATIC_DCL void FDECL(track_new_save_file, (const char*, int64_t));
 
 STATIC_DCL void FDECL(savelevchn, (int, int));
@@ -186,6 +186,8 @@ boolean quietly;
     if (!program_state.something_worth_saving || !SAVEF[0])
         return 0;
     fq_save = fqname(SAVEF, SAVEPREFIX, 1); /* level files take 0 */
+    if (!handle_save_file_tracking(fq_save))
+        return 0;
 
 #if !defined(ANDROID) && !defined(GNH_MOBILE)
 #if defined(UNIX) || defined(VMS)
@@ -287,7 +289,6 @@ boolean quietly;
     }
 #endif /* MFLOPPY */
 
-    handle_save_file_tracking();
     store_version(fd);
     store_savefileinfo(fd);
     store_plname_in_file(fd);
@@ -369,23 +370,34 @@ boolean quietly;
     return 1;
 }
 
-STATIC_OVL void
-handle_save_file_tracking(VOID_ARGS)
+STATIC_OVL boolean
+handle_save_file_tracking(fq_save)
+const char* fq_save;
 {
-    if (wizard || discover || CasualMode)
-        return; //No save file tracking in these modes
+    if (wizard || discover || CasualMode || iflags.save_file_secure || !iflags.save_file_tracking_supported)
+        return TRUE;
 
     if (!flags.save_file_tracking_migrated) /* Migrate older versions; this should already be handled in restore, but here just in case */
     {
         flags.save_file_tracking_migrated = TRUE;
         flags.save_file_tracking_value = SAVEFILETRACK_VALID;
-        impossible("Handling tracking for non-migrated save file?");
+        impossible("Handling tracking for a non-migrated save file?");
     }
     else if(flags.save_file_tracking_value == SAVEFILETRACK_VALID)
     {
-        if (iflags.save_file_tracking_needed && !iflags.save_file_tracking_on)
-            flags.save_file_tracking_value = SAVEFILETRACK_INVALID;
+        if (iflags.save_file_tracking_needed && !iflags.save_file_tracking_on) /* This should not happen since tracking cannot be currently be switched off in the middle of the game */
+        {
+            char ans = yn_query("Save file tracking has been turned off. Do you want to mark this save file unsuccessfully tracked?");
+            if (ans == 'y')
+            {
+                flags.save_file_tracking_value = SAVEFILETRACK_INVALID;
+                issue_gui_command(GUI_CMD_DELETE_TRACKING_FILE, 0, 0, fq_save);
+            }
+            else
+                return FALSE; /* Abort save */
+        }
     }
+    return TRUE;
 }
 
 STATIC_OVL

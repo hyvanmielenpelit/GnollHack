@@ -1193,6 +1193,8 @@ int64_t time_stamp UNUSED;
             {
                 flags.save_file_tracking_migrated = TRUE;
                 flags.save_file_tracking_value = SAVEFILETRACK_INVALID;
+                const char* fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+                issue_gui_command(GUI_CMD_DELETE_TRACKING_FILE, 0, 0, fq_save);
             }
             else
                 return 0; // Return to main menu
@@ -1205,9 +1207,9 @@ int64_t time_stamp UNUSED;
     }
     else if (iflags.save_file_tracking_needed && flags.save_file_tracking_value == SAVEFILETRACK_VALID)
     {
+        const char* fq_save = fqname(SAVEF, SAVEPREFIX, 0);
         if (iflags.save_file_tracking_on)
         {
-            const char* fq_save = fqname(SAVEF, SAVEPREFIX, 0);
             struct special_view_info info = { 0 };
             info.viewtype = SPECIAL_VIEW_SAVE_FILE_TRACKING_LOAD;
             info.text = fq_save;
@@ -1218,7 +1220,10 @@ int64_t time_stamp UNUSED;
                 //Query if save file tracking should be turned off, turn save file tracking on in settings, or return to main menu
                 char ans = yn_query("Save file tracking validation failed. Do you want to mark this save file unsuccessfully tracked?");
                 if (ans == 'y')
+                {
                     flags.save_file_tracking_value = SAVEFILETRACK_INVALID;
+                    issue_gui_command(GUI_CMD_DELETE_TRACKING_FILE, 0, 0, fq_save);
+                }
                 else
                     return 0; // Return to main menu
             }
@@ -1229,7 +1234,10 @@ int64_t time_stamp UNUSED;
             //Query if save file tracking should be turned off, turn save file tracking on in settings, or return to main menu
             char ans = yn_query("Save file tracking is turned off. Do you want to mark this save file unsuccessfully tracked?");
             if (ans == 'y')
+            {
                 flags.save_file_tracking_value = SAVEFILETRACK_INVALID;
+                issue_gui_command(GUI_CMD_DELETE_TRACKING_FILE, 0, 0, fq_save);
+            }
             else
                 return 0; // Return to main menu
         }

@@ -2538,6 +2538,21 @@ namespace GnollHackX
                 case (int)gui_command_types.GUI_CMD_TOGGLE_GETPOS_ARROWS:
                     GHApp.GetPositionArrows = cmd_param != 0;
                     break;
+                case (int)gui_command_types.GUI_CMD_DELETE_TRACKING_FILE:
+                    try
+                    {
+                        if (!string.IsNullOrEmpty(status_str))
+                        {
+                            string trackingFile = status_str + GHConstants.SaveFileTrackingSuffix;
+                            if (File.Exists(trackingFile))
+                                File.Delete(trackingFile);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        GHApp.WriteGHLog("Delete tracking file: " + ex.Message);
+                    }
+                    break;
                 case (int)gui_command_types.GUI_CMD_START_FLUSH:
                     break;
                 case (int)gui_command_types.GUI_CMD_FINISH_FLUSH:

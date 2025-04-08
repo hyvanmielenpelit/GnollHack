@@ -696,6 +696,7 @@ enum gui_command_types {
     GUI_CMD_SAVE_ZOOM,
     GUI_CMD_RESTORE_ZOOM,
     GUI_CMD_TOGGLE_GETPOS_ARROWS,
+    GUI_CMD_DELETE_TRACKING_FILE,
 };
 
 enum game_status_types
