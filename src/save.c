@@ -405,10 +405,10 @@ void track_new_save_file(filename, time_stamp)
 const char* filename;
 int64_t time_stamp;
 {
-    if (wizard || discover || CasualMode)
-        return; //No save file tracking in these modes
+    if (wizard || discover || CasualMode || iflags.save_file_secure || !iflags.save_file_tracking_supported)
+        return;
 
-    if (iflags.save_file_tracking_supported && iflags.save_file_tracking_needed && iflags.save_file_tracking_on && flags.save_file_tracking_value == SAVEFILETRACK_VALID)
+    if (iflags.save_file_tracking_needed && iflags.save_file_tracking_on && flags.save_file_tracking_value == SAVEFILETRACK_VALID)
     {
         //Inform GUI of the new save file
         struct special_view_info info = { 0 };
@@ -418,7 +418,7 @@ int64_t time_stamp;
         int errorcode = open_special_view(info);
         if (errorcode)
         {
-            issue_debuglog(errorcode, "Save file tracking encountered a problem upon save.");
+            //issue_debuglog(errorcode, "Save file tracking encountered a problem upon save.");
         }
     }
 }
