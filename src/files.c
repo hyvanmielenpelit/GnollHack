@@ -5420,8 +5420,9 @@ recover_savefile()
         return FALSE;
     }
 
-    /* Add number of recoveries by one */
+    /* Add number of recoveries by one and update gamestats time_stamp so it can be used for new save file tracking */
     gamestats.num_recoveries++;
+    gamestats.time_stamp = (int64_t)getnow();
 
     /* save file should contain:
      *  version info
@@ -5547,6 +5548,7 @@ recover_savefile()
 #ifdef HOLD_LOCKFILE_OPEN
     really_close();
 #endif
+
     /*
      * We have a successful savefile!
      * Only now do we erase the level files.
@@ -5561,12 +5563,15 @@ recover_savefile()
         }
     }
 
+    const char* fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+    track_new_save_file(fq_save, gamestats.time_stamp);
+
 #ifdef ANDROID
     /* if the new savefile isn't compressed
      * it will be overwritten when the old
      * savefile is restored in open_and_validate_saved_game(TRUE, (boolean*)0)
      */
-    nh_compress(fqname(SAVEF, SAVEPREFIX, 0));
+    nh_compress(fq_save);
 #endif
 
     return TRUE;

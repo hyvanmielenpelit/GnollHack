@@ -24,8 +24,7 @@ STATIC_VAR int count_only;
 int dotcnt, dotrow; /* also used in restore */
 #endif
 
-STATIC_DCL boolean FDECL(handle_save_file_tracking, (const char*));
-STATIC_DCL void FDECL(track_new_save_file, (const char*, int64_t));
+STATIC_DCL boolean FDECL(precheck_save_file_tracking, (const char*));
 
 STATIC_DCL void FDECL(savelevchn, (int, int));
 STATIC_DCL void FDECL(savedamage, (int, int));
@@ -186,7 +185,7 @@ boolean quietly;
     if (!program_state.something_worth_saving || !SAVEF[0])
         return 0;
     fq_save = fqname(SAVEF, SAVEPREFIX, 1); /* level files take 0 */
-    if (!handle_save_file_tracking(fq_save))
+    if (!precheck_save_file_tracking(fq_save))
         return 0;
 
 #if !defined(ANDROID) && !defined(GNH_MOBILE)
@@ -371,7 +370,7 @@ boolean quietly;
 }
 
 STATIC_OVL boolean
-handle_save_file_tracking(fq_save)
+precheck_save_file_tracking(fq_save)
 const char* fq_save;
 {
     if (wizard || discover || CasualMode || iflags.save_file_secure || !iflags.save_file_tracking_supported)
@@ -400,8 +399,8 @@ const char* fq_save;
     return TRUE;
 }
 
-STATIC_OVL
-void track_new_save_file(filename, time_stamp)
+void 
+track_new_save_file(filename, time_stamp)
 const char* filename;
 int64_t time_stamp;
 {

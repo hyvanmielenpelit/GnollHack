@@ -3266,6 +3266,7 @@ E void NDECL(free_dynamic_data_B);
 E void NDECL(free_dynamic_data_C);
 E void NDECL(freedynamicdata);
 E void FDECL(store_savefileinfo, (int));
+E void FDECL(track_new_save_file, (const char*, int64_t));
 
 /* ### shk.c ### */
 
