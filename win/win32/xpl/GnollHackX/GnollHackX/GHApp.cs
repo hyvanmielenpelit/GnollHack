@@ -3901,9 +3901,10 @@ namespace GnollHackX
         public static async Task<SendResult> SendSaveFileTrackingSaveRequest(Page displayPage, long timeStamp, string fileName, long fileLength, string sha256hash)
         {
             SendResult res;
-            bool tryAgain = false;
+            bool tryAgain;
             do
             {
+                tryAgain = false;
                 res = new SendResult();
                 try
                 {
@@ -4009,17 +4010,27 @@ namespace GnollHackX
                                 }
                                 else
                                 {
-                                    if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */)) // || res.StatusCode == HttpStatusCode.Locked /* 423 */
-                                        SetXlogUserNameVerified(false, null, null);
-                                    if (res.StatusCode == HttpStatusCode.Forbidden)
-                                        XlogCredentialsIncorrect = true;
-
-                                    if (!XlogCredentialsIncorrect && XlogUserNameVerified)
-                                        tryAgain = await displayPage.DisplayAlert("Save File Tracking Error", "Failed to send save file tracking information to the server after saving the game. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message + "\n\nTry again?", "Yes", "No");
-                                    else if (XlogCredentialsIncorrect)
-                                        await displayPage.DisplayAlert("Save File Tracking Credentials Error", "Failed to send save file tracking information to the server after saving the game, likely due to incorrect credentials. Please check your user name and password. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                    if (res.HasHttpStatusCode && res.StatusCode == HttpStatusCode.NotFound)
+                                        tryAgain = await displayPage.DisplayAlert("Save File Tracking Server Unavailable", "Save file tracking server is not available for recording save file information.\n\nTry again?", "Yes", "No");
                                     else
-                                        await displayPage.DisplayAlert("Save File Tracking Error", "Failed to send save file tracking information to the server after saving the game. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                    {
+                                        if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */)) // || res.StatusCode == HttpStatusCode.Locked /* 423 */
+                                            SetXlogUserNameVerified(false, null, null);
+                                        if (res.HasHttpStatusCode && res.StatusCode == HttpStatusCode.Forbidden)
+                                            XlogCredentialsIncorrect = true;
+
+                                        if (!XlogCredentialsIncorrect && XlogUserNameVerified)
+                                        {
+                                            if (res.HasHttpStatusCode && res.StatusCode == HttpStatusCode.Conflict)
+                                                await displayPage.DisplayAlert("Save File Recorded Before", "Information of this save file has already been recorded on the server before and cannot be recorded more than once. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                            else
+                                                tryAgain = await displayPage.DisplayAlert("Save File Tracking Error", "Sending save file tracking information to the server failed. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message + "\n\nTry again?", "Yes", "No");
+                                        }
+                                        else if (XlogCredentialsIncorrect)
+                                            await displayPage.DisplayAlert("Save File Tracking Credentials Error", "Sending save file tracking information to the server failed, likely due to incorrect credentials. Please check your user name and password. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                        else
+                                            await displayPage.DisplayAlert("Save File Tracking Error", "Sending save file tracking information to the server failed. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                    }
                                 }
 
                                 //if (!res.IsSuccess && !is_from_queue && !string.IsNullOrWhiteSpace(xlogentry_string))
@@ -4053,9 +4064,10 @@ namespace GnollHackX
         public static async Task<SendResult> SendSaveFileTrackingLoadRequest(Page displayPage, long timeStamp, string fileName, long fileLength, string sha256hash)
         {
             SendResult res;
-            bool tryAgain = false;
+            bool tryAgain;
             do
             {
+                tryAgain = false;
                 res = new SendResult();
                 try
                 {
@@ -4154,17 +4166,27 @@ namespace GnollHackX
                                 }
                                 else
                                 {
-                                    if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */)) // || res.StatusCode == HttpStatusCode.Locked /* 423 */
-                                        SetXlogUserNameVerified(false, null, null);
-                                    if (res.StatusCode == HttpStatusCode.Forbidden)
-                                        XlogCredentialsIncorrect = true;
-
-                                    if (!XlogCredentialsIncorrect && XlogUserNameVerified)
-                                        tryAgain = await displayPage.DisplayAlert("Save File Tracking Error", "Failed to send a save file tracking verification request to the server upon loading a saved game. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message + "\n\nTry again?", "Yes", "No");
-                                    else if (XlogCredentialsIncorrect)
-                                        await displayPage.DisplayAlert("Credentials Error", "Failed to send a save file tracking verification request to the server upon loading a saved game, likely due to incorrect credentials provided to the server. Please check your user name and password. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                    if (res.HasHttpStatusCode && res.StatusCode == HttpStatusCode.NotFound)
+                                        tryAgain = await displayPage.DisplayAlert("Save File Tracking Server Unavailable", "Save file tracking server is not available for verifying the save file.\n\nTry again?", "Yes", "No");
                                     else
-                                        await displayPage.DisplayAlert("Save File Tracking Error", "Failed to send a save file tracking verification request to the server upon loading a saved game. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                    {
+                                        if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */)) // || res.StatusCode == HttpStatusCode.Locked /* 423 */
+                                            SetXlogUserNameVerified(false, null, null);
+                                        if (res.HasHttpStatusCode && res.StatusCode == HttpStatusCode.Forbidden)
+                                            XlogCredentialsIncorrect = true;
+
+                                        if (!XlogCredentialsIncorrect && XlogUserNameVerified)
+                                        {
+                                            if (res.HasHttpStatusCode && res.StatusCode == HttpStatusCode.Conflict)
+                                                await displayPage.DisplayAlert("Save File Loaded Before", "This save file has already been loaded before and cannot be loaded more than once. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                            else
+                                                tryAgain = await displayPage.DisplayAlert("Save File Tracking Error", "Save file tracking verification failed upon loading a saved game. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message + "\n\nTry again?", "Yes", "No");
+                                        }
+                                        else if (XlogCredentialsIncorrect)
+                                            await displayPage.DisplayAlert("Credentials Error", "Sending a save file tracking verification request to the server upon loading a saved game failed, likely due to incorrect credentials provided to the server. Please check your user name and password. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                        else
+                                            await displayPage.DisplayAlert("Save File Tracking Error", "Save file tracking verification failed upon loading a saved game. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                    }
                                 }
 
                                 //if (!res.IsSuccess && !is_from_queue && !string.IsNullOrWhiteSpace(xlogentry_string))

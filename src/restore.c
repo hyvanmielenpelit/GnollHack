@@ -1009,6 +1009,15 @@ register int fd;
     restoring = TRUE;
     get_plname_from_file(fd, plname);
     get_save_game_stats_from_file(fd, &game_stats);
+    if (!check_save_file_tracking(game_stats.time_stamp))
+    {
+        (void)nhclose(fd);
+        restoring = FALSE;
+        const char* fq_save = fqname(SAVEF, SAVEPREFIX, 1);
+        nh_compress(fq_save);
+        nh_bail(EXIT_SUCCESS, "Aborting loading the save file due to save file tracking...", TRUE);
+        return 0;
+    }
     getlev(fd, 0, (xchar) 0, FALSE);
     if (!restgamestate(fd, &stuckid, &steedid)) {
         display_nhwindow(WIN_MESSAGE, TRUE);
@@ -1117,15 +1126,6 @@ register int fd;
 
     restlevelstate(stuckid, steedid);
     program_state.something_worth_saving = 1; /* useful data now exists */
-
-    if (!check_save_file_tracking(game_stats.time_stamp))
-    {
-        restoring = FALSE;
-        const char* fq_save = fqname(SAVEF, SAVEPREFIX, 1);
-        nh_compress(fq_save);
-        nh_bail(EXIT_SUCCESS, "Aborting loading save file due to save file tracking...", TRUE);
-        return 0;
-    }
 
     if (!wizard && !discover && !CasualMode)
         (void) delete_savefile();
