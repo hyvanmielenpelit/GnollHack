@@ -3405,6 +3405,7 @@ boolean update_inv;
                 costly_alteration(obj, COST_CANCEL);
                 obj->otyp = SPE_BLANK_PAPER;
                 obj->material = objects[obj->otyp].oc_material;
+                obj->owt = weight(obj);
             }
             break;
         case POTION_CLASS:
@@ -3968,6 +3969,7 @@ int id;
         {
             otmp->otyp = rnd_class(SPE_DIG, SPE_BLANK_PAPER);
             otmp->material = objects[otmp->otyp].oc_material;
+            otmp->owt = weight(otmp);
         }
         /* reduce spellbook abuse; non-blank books degrade */
         if (otmp->otyp != SPE_BLANK_PAPER) 
@@ -3976,6 +3978,8 @@ int id;
             if (otmp->spestudied > MAX_SPELL_STUDY) 
             {
                 otmp->otyp = SPE_BLANK_PAPER;
+                otmp->material = objects[otmp->otyp].oc_material;
+                otmp->owt = weight(otmp);
                 /* writing a new book over it will yield an unstudied
                    one; re-polymorphing this one as-is may or may not
                    get something non-blank */

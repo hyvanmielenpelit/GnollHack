@@ -287,6 +287,7 @@ boolean restore;
             {
                 otmp->otyp = SPE_BLANK_PAPER;
                 otmp->material = objects[otmp->otyp].oc_material;
+                otmp->owt = weight(otmp);
                 curse(otmp);
             } 
             else if (otmp->otyp == SPE_BOOK_OF_MODRON) 
@@ -294,6 +295,7 @@ boolean restore;
                 otmp->otyp = SPE_BLANK_PAPER;
                 otmp->oartifact = 0;
                 otmp->material = objects[otmp->otyp].oc_material;
+                otmp->owt = weight(otmp);
                 curse(otmp);
             }
             otmp->owt = weight(otmp);

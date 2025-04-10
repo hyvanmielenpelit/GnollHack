@@ -4681,6 +4681,7 @@ boolean force;
 
         obj->otyp = SPE_BLANK_PAPER;
         obj->material = objects[obj->otyp].oc_material;
+        obj->owt = weight(obj);
         obj->dknown = 0;
         if (carried(obj))
             update_inventory();
