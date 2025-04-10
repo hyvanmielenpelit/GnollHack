@@ -190,7 +190,7 @@ register struct obj *pen;
         nm += 7;
     else if (!strncmpi(nm, "spellbook ", 10))
         nm += 10;
-    else if (!strncmpi(nm, "manual ", 7))
+    else if (!strncmpi(nm, "manual ", 7) && strncmpi(nm, "manual of the planes", 20))
         nm += 7;
     else if (!strncmpi(nm, "novel ", 6))
         nm += 6;
@@ -209,25 +209,21 @@ register struct obj *pen;
         (void) mungspaces(bp + 1);        /* remove the extra space */
     }
 
+    const char* bookname = 0;
+    short bookidx = -1;
     if (paper->otyp == SPE_NOVEL)
     {
         i = SPE_NOVEL;
-        const char* novelname = lookup_novel(nm, &paper->novelidx);
-        if (novelname)
-        {
-            paper = oname(paper, novelname);
+        bookname = lookup_novel(nm, &bookidx);
+        if (bookname)
             goto found_novel_or_manual;
-        }
     }
     else if (paper->otyp == SPE_MANUAL)
     {
         i = SPE_MANUAL;
-        const char* manualname = lookup_manual(nm, &paper->manualidx);
-        if (manualname)
-        {
-            paper = oname(paper, manualname);
+        bookname = lookup_manual(nm, &bookidx);
+        if (bookname)
             goto found_novel_or_manual;
-        }
     }
     else
     {
@@ -331,7 +327,8 @@ found_novel_or_manual:
     curseval = bcsign(pen) + bcsign(paper);
     exercise(A_WIS, TRUE);
     /* dry out marker */
-    if (pen->charges < actualcost) {
+    if (pen->charges < actualcost) 
+    {
         pen->charges = 0;
         play_simple_object_sound(pen, OBJECT_SOUND_TYPE_APPLY2);
         Your_ex(ATR_NONE, CLR_MSG_FAIL, "marker dries out!");
@@ -353,12 +350,21 @@ found_novel_or_manual:
 
     if (paper->otyp == SPE_NOVEL || paper->otyp == SPE_MANUAL)
     {
-        /* A bit easier way to show the newly written object than below */
-        play_simple_object_sound(pen, OBJECT_SOUND_TYPE_APPLY);
-        paper->blessed = (curseval > 0);
-        paper->cursed = (curseval < 0);
-        prinv((const char*)0, paper, 0L);
-        update_inventory(); /* pen charges */
+        if (bookname && bookidx >= 0)
+        {
+            /* A bit easier way to show the newly written object than below */
+            play_simple_object_sound(pen, OBJECT_SOUND_TYPE_APPLY);
+            paper->special_quality = bookidx;
+            paper = oname(paper, bookname);
+            paper->blessed = (curseval > 0);
+            paper->cursed = (curseval < 0);
+            prinv((const char*)0, paper, 0L);
+            update_inventory(); /* pen charges */
+        }
+        else
+        {
+            impossible("Writing a novel or manual without bookname or bookidx?");
+        }
         obfree(new_obj, (struct obj*)0);
         return 1;
     }
