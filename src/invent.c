@@ -3372,8 +3372,11 @@ struct obj* otmp_only;
                     && inaccessible_equipment(otmp, (const char*)0,
                         (boolean)(otmp->oclass == RING_CLASS), TRUE))
                 || (!strcmp(word, "write on")
-                    && (((!(otyp == SCR_BLANK_PAPER || otyp == SPE_BLANK_PAPER) || !objects[otyp].oc_name_known))
-                          && !((otyp == SPE_NOVEL || otyp == SPE_MANUAL) && otmp->special_quality == -1)) || !otmp->dknown)
+                    && (((!(otyp == SCR_BLANK_PAPER || otyp == SPE_BLANK_PAPER) || !objects[otyp].oc_name_known)
+                          && !((otyp == SPE_NOVEL || otyp == SPE_MANUAL) && otmp->special_quality == -1)
+                        ) || !otmp->dknown
+                       )
+                   )
                 ) {
                 /* acceptable but not listed as likely candidate */
                 foo--;
