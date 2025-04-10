@@ -649,6 +649,9 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     if (dknown && obj->oclass == POTION_CLASS && obj->odiluted)
         Strcat(buf, "diluted ");
 
+    if (dknown && (obj->otyp == SPE_NOVEL || obj->otyp == SPE_MANUAL) && obj->special_quality == -1)
+        Strcat(buf, "blank ");
+
     if (dknown && (obj->mythic_prefix || obj->mythic_suffix))
     {
         if (!mknown)
@@ -4655,6 +4658,14 @@ boolean* removed_from_game_ptr;
         typ = SPE_BLANK_PAPER;
         goto typfnd;
     }
+    if (unlabeled && !BSTRCMPI(bp, p - 6, "manual")) {
+        typ = SPE_MANUAL;
+        goto typfnd;
+    }
+    if (unlabeled && !BSTRCMPI(bp, p - 5, "novel")) {
+        typ = SPE_NOVEL;
+        goto typfnd;
+    }
     /* specific food rather than color of gem/potion/spellbook[/scales] */
     if (!BSTRCMPI(bp, p - 6, "orange") && mntmp == NON_PM) {
         typ = ORANGE;
@@ -5300,6 +5311,12 @@ retry:
     otmp = typ ? mksobj_with_flags(typ, TRUE, FALSE, MKOBJ_TYPE_WISHING, (struct monst*)0, MAT_NONE, 0L, 0L, mkflags) : mkobj(oclass, FALSE, MKOBJ_TYPE_WISHING);
     typ = otmp->otyp, oclass = otmp->oclass; /* what we actually got */
 
+    if (unlabeled && (typ == SPE_MANUAL || typ == SPE_NOVEL))
+    {
+        otmp->special_quality = -1;
+        otmp = oname(otmp, (const char*)0);
+    }
+
     if (islit && !otmp->lamplit && (is_lamp(otmp) || is_candle(otmp) || is_torch(otmp) || is_obj_candelabrum(otmp) || typ == POT_OIL))
     {
         place_object(otmp, u.ux, u.uy); /* make it viable light source */
@@ -5693,7 +5710,7 @@ retry:
             name = aname;
 
         /* 3.6 tribute - fix up novel */
-        if (objects[otmp->otyp].oc_class == SPBOOK_CLASS && objects[otmp->otyp].oc_subtyp == BOOKTYPE_NOVEL) {
+        if (objects[otmp->otyp].oc_class == SPBOOK_CLASS && objects[otmp->otyp].oc_subtyp == BOOKTYPE_NOVEL && otmp->novelidx >= 0) {
             const char *novelname;
 
             novelname = lookup_novel(name, &otmp->novelidx);
@@ -5702,7 +5719,7 @@ retry:
 
             otmp = oname(otmp, name);
         }
-        else if (objects[otmp->otyp].oc_class == SPBOOK_CLASS && objects[otmp->otyp].oc_subtyp == BOOKTYPE_MANUAL) {
+        else if (objects[otmp->otyp].oc_class == SPBOOK_CLASS && objects[otmp->otyp].oc_subtyp == BOOKTYPE_MANUAL && otmp->manualidx >= 0) {
             const char* manualname;
 
             manualname = lookup_manual(name, &otmp->manualidx);

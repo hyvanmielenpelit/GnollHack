@@ -621,10 +621,13 @@ int mtype;
                 struct obj* otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, exclusionbits, exclusionbits2, MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS);
                 if (otmp)
                 {
-                    if (otmp->manualidx < 64)
-                        exclusionbits |= (int64_t)1 << otmp->manualidx;
-                    else if (otmp->manualidx < 128)
-                        exclusionbits2 |= (int64_t)1 << (otmp->manualidx - 64);
+                    if (otmp->manualidx >= 0)
+                    {
+                        if (otmp->manualidx < 64)
+                            exclusionbits |= (int64_t)1 << otmp->manualidx;
+                        else if (otmp->manualidx < 128)
+                            exclusionbits2 |= (int64_t)1 << (otmp->manualidx - 64);
+                    }
                     (void)mpickobj(npc, otmp);
                 }
             }
@@ -685,10 +688,13 @@ int mtype;
                 otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NPC_SELLING, npc, MAT_NONE, exclusionbits, exclusionbits2, MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS);
                 if (otmp)
                 {
-                    if(otmp->manualidx < 64)
-                        exclusionbits |= (int64_t)1 << otmp->manualidx;
-                    else if (otmp->manualidx < 128)
-                        exclusionbits2 |= (int64_t)1 << (otmp->manualidx - 64);
+                    if (otmp->manualidx >= 0)
+                    {
+                        if (otmp->manualidx < 64)
+                            exclusionbits |= (int64_t)1 << otmp->manualidx;
+                        else if (otmp->manualidx < 128)
+                            exclusionbits2 |= (int64_t)1 << (otmp->manualidx - 64);
+                    }
                     (void)mpickobj(npc, otmp);
                 }
             }

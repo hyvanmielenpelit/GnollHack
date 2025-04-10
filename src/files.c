@@ -5789,8 +5789,14 @@ unsigned oid; /* book identifier */
         *nowin_buf = '\0';
 
     /* check for mandatories */
-    if (!tribsection || !tribtitle) {
-        if (!nowin_buf)
+    if (!tribsection || !tribtitle) 
+    {
+        if (!tribtitle)
+        {
+            pline1("This novel is all blank.");
+            makeknown(SPE_NOVEL);
+        }
+        else if (!nowin_buf)
             pline("It's %s of \"%s\"!", badtranslation, tribtitle);
         return grasped;
     }

@@ -3399,7 +3399,7 @@ boolean update_inv;
             obj->special_quality = 0;
             break;
         case SPBOOK_CLASS:
-            if (objects[otyp].oc_multigen_type == BOOKTYPE_SPELLBOOK
+            if (objects[otyp].oc_subtyp == BOOKTYPE_SPELLBOOK && otyp != SPE_BOOK_OF_THE_DEAD && objects[otyp].oc_magic
                 && !objects[otyp].oc_unique && !(objects[otyp].oc_flags & O1_INDESTRUCTIBLE) && obj->oartifact == 0)
             {
                 costly_alteration(obj, COST_CANCEL);

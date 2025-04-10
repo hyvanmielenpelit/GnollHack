@@ -1548,7 +1548,7 @@ const char *name;
     size_t lth;
     char buf[PL_PSIZ];
 
-    lth = *name ? (strlen(name) + 1) : 0;
+    lth = name && *name ? (strlen(name) + 1) : 0;
     if (lth > PL_PSIZ) {
         lth = PL_PSIZ;
         name = strncpy(buf, name, PL_PSIZ - 1);
@@ -4018,7 +4018,7 @@ uint64_t excludedtitles, excludedtitles2; /* Requires a 64-bit long to work for 
 
     if (titleidx)  /* Randomized or non-randomized if titleidx != 0 */
     {
-        if (*titleidx == -1)
+        if (*titleidx < 0)
             *titleidx = j; /* Randomized, set titleidx to the randomized index */
         else if (*titleidx >= 0 && *titleidx < arraysize)
             j = *titleidx;  /* Set to value determined by titleidx */
@@ -4031,6 +4031,8 @@ noveltitle(novidx, excludedtitles, excludedtitles2)
 short* novidx;
 uint64_t excludedtitles, excludedtitles2;
 {
+    if (novidx && *novidx == -1)
+        return (const char*)0; /* Blank */
     return gettitle(novidx, sir_Terry_novels, SIZE(sir_Terry_novels), SIZE(sir_Terry_novels), excludedtitles, excludedtitles2);
 }
 
@@ -4055,9 +4057,11 @@ STATIC_VAR const char* const manual_names[MAX_MANUAL_TYPES] = {
 
 const char*
 manualtitle(mnlidx, excludedtitles, excludedtitles2)
-short* mnlidx;
+short* mnlidx; /* >= 0 from array, -1 = blank, -2 = random */
 uint64_t excludedtitles, excludedtitles2;
 {
+    if (mnlidx && *mnlidx == -1)
+        return (const char*)0; /* Blank */
     return gettitle(mnlidx, manual_names, SIZE(manual_names), NUM_RANDOM_MANUALS, excludedtitles, excludedtitles2);
 }
 
@@ -4387,7 +4391,12 @@ struct obj* obj;
 
     short mnlidx = obj->manualidx;
 
-    if (mnlidx < 0)
+    if (mnlidx == -1)
+    {
+        pline1("This manual is all blank.");
+        return;
+    }
+    if (mnlidx < -1)
     {
         pline("%s unintelligibly scribbled.", Tobjnam(obj, "be"));
         return;
@@ -4788,7 +4797,6 @@ const char *lookname;
 short* idx;
 {
     short k;
-
     /* Take American or U.K. spelling of this one */
     if (!strcmpi(The(lookname), "The Color of Magic"))
         lookname = sir_Terry_novels[0];
@@ -4814,7 +4822,6 @@ const char* lookname;
 short* idx;
 {
     short k;
-
     for (k = 0; k < SIZE(manual_names); ++k) {
         if (!strcmpi(lookname, manual_names[k])
             || !strcmpi(The(lookname), manual_names[k])) {

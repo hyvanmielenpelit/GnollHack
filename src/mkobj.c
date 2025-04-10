@@ -2258,18 +2258,25 @@ uint64_t mkflags;
         if(mkflags & MKOBJ_FLAGS_PARAM_IS_TITLE)
             otmp->novelidx = (short)param;
         else
-            otmp->novelidx = -1; /* "none of the above"; will be changed */
-        otmp = oname(otmp, noveltitle(&otmp->novelidx, excludedtitles, excludedtitles2));
-        otmp->nknown = TRUE;
+            otmp->novelidx = -2; /* "none of the above"; will be changed */
+
+        if (otmp->novelidx != -1) /* Not blank */
+        {
+            otmp = oname(otmp, noveltitle(&otmp->novelidx, excludedtitles, excludedtitles2));
+            otmp->nknown = TRUE;
+        }
         break;
     case SPE_MANUAL:
         if (mkflags & MKOBJ_FLAGS_PARAM_IS_TITLE)
             otmp->manualidx = (short)param;
         else
-            otmp->manualidx = -1; /* "none of the above"; will be changed */
+            otmp->manualidx = -2; /* "none of the above"; will be changed */
 
-        otmp = oname(otmp, manualtitle(&otmp->manualidx, excludedtitles, excludedtitles2));
-        otmp->nknown = TRUE;
+        if (otmp->manualidx != -1) /* Not blank */
+        {
+            otmp = oname(otmp, manualtitle(&otmp->manualidx, excludedtitles, excludedtitles2));
+            otmp->nknown = TRUE;
+        }
         otmp->cursed = otmp->blessed = 0; /* Never blessed or cursed */
         break;
     }

@@ -2505,9 +2505,9 @@ struct mkroom *croom;
         otmp->special_quality = o->special_quality;
         if(is_obj_candelabrum(otmp) && otmp->special_quality > 0)
             otmp->age = MAX_BURN_IN_CANDELABRUM;
-        if (otmp->oclass == SPBOOK_CLASS && otmp->special_quality >= -1)
+        if (otmp->oclass == SPBOOK_CLASS && otmp->special_quality >= -2)
         {
-            if (objects[otmp->otyp].oc_subtyp == BOOKTYPE_NOVEL)
+            if (otmp->otyp == SPE_NOVEL || objects[otmp->otyp].oc_subtyp == BOOKTYPE_NOVEL)
             {
                 const char* ntitle = noveltitle(&otmp->novelidx, 0UL, 0UL);
                 if (ntitle)
@@ -2515,7 +2515,7 @@ struct mkroom *croom;
                     otmp = oname(otmp, ntitle);
                 }
             }
-            else if (objects[otmp->otyp].oc_subtyp == BOOKTYPE_MANUAL)
+            else if (otmp->otyp == SPE_MANUAL || objects[otmp->otyp].oc_subtyp == BOOKTYPE_MANUAL)
             {
                 const char* mtitle = manualtitle(&otmp->manualidx, 0UL, 0UL);
                 if (mtitle)

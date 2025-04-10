@@ -4668,20 +4668,24 @@ boolean force;
             play_sfx_sound_at_location(SFX_SCROLL_FADES, x, y);
             pline_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Your %s %s.", ostr, vtense(ostr, "fade"));
         }
-        if (objects[obj->otyp].oc_subtyp == BOOKTYPE_NOVEL) 
+        if (obj->otyp == SPE_NOVEL || objects[obj->otyp].oc_subtyp == BOOKTYPE_NOVEL)
         {
-            obj->novelidx = 0;
-            free_oname(obj);
+            obj->novelidx = -1; /* Blank */
+            if (has_oname(obj))
+                free_oname(obj);
         }
-        else if (objects[obj->otyp].oc_subtyp == BOOKTYPE_MANUAL)
+        else if (obj->otyp == SPE_MANUAL || objects[obj->otyp].oc_subtyp == BOOKTYPE_MANUAL)
         {
-            obj->manualidx = 0;
-            free_oname(obj);
+            obj->manualidx = -1; /* Blank */
+            if(has_oname(obj))
+                free_oname(obj);
         }
-
-        obj->otyp = SPE_BLANK_PAPER;
-        obj->material = objects[obj->otyp].oc_material;
-        obj->owt = weight(obj);
+        else
+        {
+            obj->otyp = SPE_BLANK_PAPER;
+            obj->material = objects[obj->otyp].oc_material;
+            obj->owt = weight(obj);
+        }
         obj->dknown = 0;
         if (carried(obj))
             update_inventory();

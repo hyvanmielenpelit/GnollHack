@@ -26,7 +26,14 @@ otyp_ink_cost(otyp)
 int otyp;
 {
     if (objects[otyp].oc_class == SPBOOK_CLASS)
-        return (10 * ((int)objects[otyp].oc_spell_level + 2));
+    {
+        if (otyp == SPE_NOVEL)
+            return 30; /* It is very long */
+        else if (otyp == SPE_MANUAL)
+            return 20; /* It is long */
+        else
+            return (10 * ((int)objects[otyp].oc_spell_level + 2));
+    }
 
     switch (otyp)
     {
@@ -121,11 +128,14 @@ register struct obj *pen;
     boolean by_descr = FALSE;
     const char *typeword;
 
-    if (nohands(youmonst.data)) {
+    if (nohands(youmonst.data)) 
+    {
         play_sfx_sound(SFX_GENERAL_CURRENT_FORM_DOES_NOT_ALLOW);
         You_ex(ATR_NONE, CLR_MSG_FAIL, "need hands to be able to write!");
         return 0;
-    } else if (Glib) {
+    } 
+    else if (Glib) 
+    {
         pline("%s from your %s.", Tobjnam(pen, "slip"),
               makeplural(body_part(FINGER)));
         dropxf(pen);
@@ -138,16 +148,21 @@ register struct obj *pen;
         return 0;
     /* can't write on a novel (unless/until it's been converted into a blank
        spellbook), but we want messages saying so to avoid "spellbook" */
-    typeword = (paper->oclass == SPBOOK_CLASS) ? ((objects[paper->otyp].oc_subtyp != BOOKTYPE_SPELLBOOK)
-                  ? "book"
-                  : "spellbook")
+    typeword = (paper->oclass == SPBOOK_CLASS) ? 
+        (paper->otyp == SPE_NOVEL || (objects[paper->otyp].oc_subtyp == BOOKTYPE_NOVEL) ? "novel" :
+            paper->otyp == SPE_MANUAL || (objects[paper->otyp].oc_subtyp == BOOKTYPE_MANUAL) ? "manual" :
+                objects[paper->otyp].oc_subtyp != BOOKTYPE_SPELLBOOK ? "book": "spellbook")
                      : "scroll";
-    if (Blind) {
-        if (!paper->dknown) {
+    if (Blind) 
+    {
+        if (!paper->dknown) 
+        {
             play_sfx_sound(SFX_GENERAL_CANNOT);
             You_ex(ATR_NONE, CLR_MSG_FAIL, "don't know if that %s is blank or not.", typeword);
             return 0;
-        } else if (paper->oclass == SPBOOK_CLASS) {
+        }
+        else if (paper->oclass == SPBOOK_CLASS) 
+        {
             /* can't write a magic book while blind */
             play_sfx_sound(SFX_GENERAL_CANNOT);
             pline_ex(ATR_NONE, CLR_MSG_FAIL, "%s can't create braille text.",
@@ -156,7 +171,8 @@ register struct obj *pen;
         }
     }
     paper->dknown = 1;
-    if (paper->otyp != SCR_BLANK_PAPER && paper->otyp != SPE_BLANK_PAPER) {
+    if (paper->otyp != SCR_BLANK_PAPER && paper->otyp != SPE_BLANK_PAPER && !((paper->otyp == SPE_NOVEL || paper->otyp == SPE_MANUAL) && paper->special_quality == -1)) 
+    {
         play_sfx_sound(SFX_GENERAL_NOT_IN_THE_RIGHT_CONDITION);
         pline_ex(ATR_NONE, CLR_MSG_FAIL, "That %s is not blank!", typeword);
         exercise(A_WIS, FALSE);
@@ -174,54 +190,88 @@ register struct obj *pen;
         nm += 7;
     else if (!strncmpi(nm, "spellbook ", 10))
         nm += 10;
+    else if (!strncmpi(nm, "manual ", 7))
+        nm += 7;
+    else if (!strncmpi(nm, "novel ", 6))
+        nm += 6;
+
     if (!strncmpi(nm, "of ", 3))
         nm += 3;
+    else if (!strncmpi(nm, "entitled ", 9))
+        nm += 9;
+    else if (!strncmpi(nm, "called ", 7))
+        nm += 7;
+    else if (!strncmpi(nm, "named ", 6))
+        nm += 6;
 
     if ((bp = strstri(nm, " armour")) != 0) {
         Strncpy(bp, " armor ", 7); /* won't add '\0' */
         (void) mungspaces(bp + 1);        /* remove the extra space */
     }
 
-    deferred = 0;       /* not any scroll or book */
-    deferralchance = 0; /* incremented for each oc_uname match */
-    first = bases[(int) paper->oclass];
-    last = bases[(int) paper->oclass + 1] - 1;
-    for (i = first; i <= last; i++) {
-        /* extra shufflable descr not representing a real object */
-        if (!OBJ_NAME(objects[i]))
-            continue;
+    if (paper->otyp == SPE_NOVEL)
+    {
+        i = SPE_NOVEL;
+        const char* novelname = lookup_novel(nm, &paper->novelidx);
+        if (novelname)
+        {
+            paper = oname(paper, novelname);
+            goto found_novel_or_manual;
+        }
+    }
+    else if (paper->otyp == SPE_MANUAL)
+    {
+        i = SPE_MANUAL;
+        const char* manualname = lookup_manual(nm, &paper->manualidx);
+        if (manualname)
+        {
+            paper = oname(paper, manualname);
+            goto found_novel_or_manual;
+        }
+    }
+    else
+    {
+        deferred = 0;       /* not any scroll or book */
+        deferralchance = 0; /* incremented for each oc_uname match */
+        first = bases[(int)paper->oclass];
+        last = bases[(int)paper->oclass + 1] - 1;
+        for (i = first; i <= last; i++) {
+            /* extra shufflable descr not representing a real object */
+            if (!OBJ_NAME(objects[i]))
+                continue;
 
-        if (!strcmpi(OBJ_NAME(objects[i]), nm))
-            goto found;
-        if (OBJ_DESCR(objects[i]) && !strcmpi(OBJ_DESCR(objects[i]), nm)) {
+            if (!strcmpi(OBJ_NAME(objects[i]), nm))
+                goto found;
+            if (OBJ_DESCR(objects[i]) && !strcmpi(OBJ_DESCR(objects[i]), nm)) {
+                by_descr = TRUE;
+                goto found;
+            }
+            /* user-assigned name might match real name of a later
+               entry, so we don't simply use first match with it;
+               also, player might assign same name multiple times
+               and if so, we choose one of those matches randomly */
+            if (objects[i].oc_uname && !strcmpi(objects[i].oc_uname, nm)
+                /*
+                 * First match: chance incremented to 1,
+                 *   !rn2(1) is 1, we remember i;
+                 * second match: chance incremented to 2,
+                 *   !rn2(2) has 1/2 chance to replace i;
+                 * third match: chance incremented to 3,
+                 *   !rn2(3) has 1/3 chance to replace i
+                 *   and 2/3 chance to keep previous 50:50
+                 *   choice; so on for higher match counts.
+                 */
+                && !rn2(++deferralchance))
+                deferred = i;
+        }
+        /* writing by user-assigned name is same as by description:
+           fails for books, works for scrolls (having an assigned
+           type name guarantees presence on discoveries list) */
+        if (deferred) {
+            i = deferred;
             by_descr = TRUE;
             goto found;
         }
-        /* user-assigned name might match real name of a later
-           entry, so we don't simply use first match with it;
-           also, player might assign same name multiple times
-           and if so, we choose one of those matches randomly */
-        if (objects[i].oc_uname && !strcmpi(objects[i].oc_uname, nm)
-            /*
-             * First match: chance incremented to 1,
-             *   !rn2(1) is 1, we remember i;
-             * second match: chance incremented to 2,
-             *   !rn2(2) has 1/2 chance to replace i;
-             * third match: chance incremented to 3,
-             *   !rn2(3) has 1/3 chance to replace i
-             *   and 2/3 chance to keep previous 50:50
-             *   choice; so on for higher match counts.
-             */
-            && !rn2(++deferralchance))
-            deferred = i;
-    }
-    /* writing by user-assigned name is same as by description:
-       fails for books, works for scrolls (having an assigned
-       type name guarantees presence on discoveries list) */
-    if (deferred) {
-        i = deferred;
-        by_descr = TRUE;
-        goto found;
     }
 
     play_sfx_sound(SFX_GENERAL_CANNOT);
@@ -250,6 +300,7 @@ found:
         return 1;
     }
 
+found_novel_or_manual:
     /* KMH, conduct */
     if (!u.uconduct.literate++)
         livelog_printf(LL_CONDUCT,
@@ -285,17 +336,32 @@ found:
         play_simple_object_sound(pen, OBJECT_SOUND_TYPE_APPLY2);
         Your_ex(ATR_NONE, CLR_MSG_FAIL, "marker dries out!");
         /* scrolls disappear, spellbooks don't */
-        if (paper->oclass == SPBOOK_CLASS) {
-            pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "spellbook is left unfinished and your writing fades.");
-            update_inventory(); /* pen charges */
-        } else {
+        if (paper->oclass == SPBOOK_CLASS)
+        {
+            pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "%s is left unfinished and your writing fades.", paper->otyp == SPE_NOVEL ? "novel" : paper->otyp == SPE_MANUAL ? "manual" : "spellbook");
+        } 
+        else
+        {
             pline_The_ex(ATR_NONE, CLR_MSG_FAIL, "scroll is now useless and disappears!");
             useup(paper);
         }
+        update_inventory(); /* pen charges */
         obfree(new_obj, (struct obj *) 0);
         return 1;
     }
     pen->charges -= actualcost;
+
+    if (paper->otyp == SPE_NOVEL || paper->otyp == SPE_MANUAL)
+    {
+        /* A bit easier way to show the newly written object than below */
+        play_simple_object_sound(pen, OBJECT_SOUND_TYPE_APPLY);
+        paper->blessed = (curseval > 0);
+        paper->cursed = (curseval < 0);
+        prinv((const char*)0, paper, 0L);
+        update_inventory(); /* pen charges */
+        obfree(new_obj, (struct obj*)0);
+        return 1;
+    }
 
     /*
      * Writing by name requires that the hero knows the scroll or

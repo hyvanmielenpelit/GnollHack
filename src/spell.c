@@ -842,8 +842,7 @@ register struct obj *spellbook;
             /* Obtain current Terry Pratchett book title */
             const char *tribtitle = noveltitle(&spellbook->novelidx, 0UL, 0UL);
 
-            if (read_tribute("books", tribtitle, 0, (char *) 0, 0,
-                             spellbook->o_id))
+            if (read_tribute("books", tribtitle, 0, (char *) 0, 0, spellbook->o_id))
             {
                 if (!u.uconduct.literate++)
                     livelog_printf(LL_CONDUCT,

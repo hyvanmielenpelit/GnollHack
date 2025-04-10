@@ -1565,10 +1565,13 @@ makelevel()
                     {
                         otmp->bknown = 1;
                         (void)add_to_magic_chest(otmp);
-                        if(otmp->manualidx < 64)
-                            bits |= (int64_t)1 << otmp->special_quality;
-                        else if (otmp->manualidx < 128)
-                            bits2 |= (int64_t)1 << (otmp->special_quality - 64);
+                        if (otmp->manualidx >= 0)
+                        {
+                            if (otmp->manualidx < 64)
+                                bits |= (int64_t)1 << otmp->manualidx;
+                            else if (otmp->manualidx < 128)
+                                bits2 |= (int64_t)1 << (otmp->manualidx - 64);
+                        }
                     }
 
                     otmp = mksobj_with_flags(SPE_MANUAL, TRUE, FALSE, MKOBJ_TYPE_NORMAL, (struct monst*)0, MAT_NONE, bits, bits2, MKOBJ_FLAGS_PARAM_IS_EXCLUDED_INDEX_BITS);
