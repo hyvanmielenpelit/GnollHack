@@ -171,7 +171,15 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
+#if GNH_MAUI
+                var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
+                timer.Interval = TimeSpan.FromSeconds(0.25);
+                timer.IsRepeating = false;
+                timer.Tick += (s, e) => { eName.Focus(); };
+                timer.Start();
+#else
                 eName.Focus();
+#endif
             }
         }
 
