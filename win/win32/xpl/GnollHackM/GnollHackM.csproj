@@ -65,7 +65,7 @@
     <JavaMaximumHeapSize>2G</JavaMaximumHeapSize>
     <!--<AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>-->
     <RuntimeIdentifiers>android-arm64;android-x64</RuntimeIdentifiers>
-    <!--<AndroidEnableProfiler>true</AndroidEnableProfiler>--> 
+    <!--<AndroidEnableProfiler>true</AndroidEnableProfiler>-->
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
@@ -123,6 +123,10 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
+  <!--<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net9.0-android'">
+    <EnableLLVM>true</EnableLLVM>
+    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+  </PropertyGroup>-->
 
   <!-- GENERAL PROPERTIES -->
   <ItemGroup>
