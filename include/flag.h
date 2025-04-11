@@ -275,9 +275,6 @@ struct flag {
 #define SAVEFILETRACK_INVALID 0 /* Tracking the save file has failed at some point */
 #define SAVEFILETRACK_VALID 1  /* Tracking the save file has been successful when needed */
 
-#define SAVEFILETRACKPLATFORM_MOBILE 10
-#define SAVEFILETRACKPLATFORM_SERVER 100
-
 /*
  * System-specific flags that are saved with the game if SYSFLAGS is defined.
  */
