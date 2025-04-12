@@ -4001,7 +4001,7 @@ int id_limit;
 
         n = query_objlist(buf, &invent, (SIGNAL_NOMENU | SIGNAL_ESCAPE
                                          | USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON),
-                          &pick_list, id_limit == 1 ? PICK_ONE : PICK_ANY, not_fully_identified, 0);
+                          &pick_list, id_limit == 1 ? PICK_ONE : PICK_ANY, not_fully_identified, SHOWWEIGHTS_NONE);
 
         if (n > 0)
         {
@@ -4363,7 +4363,7 @@ ddoinv()
     {
         pickcnt = 0;
         return_to_inv = FALSE;
-        invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, 1, FALSE);
+        invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, SHOWWEIGHTS_INVENTORY, FALSE);
         if (invlet == '\033' || invlet == '\0')
         {
             issue_gui_command(GUI_CMD_TOGGLE_MENU_POSITION_SAVING, GHMENU_STYLE_INVENTORY, 0, (char*)0);
@@ -4407,7 +4407,7 @@ doseeworn()
     {
         pickcnt = 0;
         return_to_inv = FALSE;
-        invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, 1, TRUE);
+        invlet = display_inventory_with_header((const char*)0, TRUE, &pickcnt, SHOWWEIGHTS_INVENTORY, TRUE);
         if (!invlet || invlet == '\033' || invlet == '\0')
             return 0;
 
@@ -4832,7 +4832,7 @@ int* wtcount_ptr;
     memset(attrs, ATR_NONE, sizeof(attrs));
     memset(colors, NO_COLOR, sizeof(colors));
     Strcpy(objbuf,
-        show_weights > 0 ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply)
+        show_weights > SHOWWEIGHTS_NONE ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply)
             : doname_with_weight_first(otmp, loadstonecorrectly, iflags.perm_invent && !want_reply))
         : doname_with_flags(otmp, iflags.perm_invent && !want_reply ? DONAME_HIDE_REMAINING_LIT_TURNS : 0, (char**)0, (char**)0));
     struct extended_menu_info eminfo = obj_to_extended_menu_info(otmp);
@@ -4879,17 +4879,8 @@ boolean addinventoryheader, wornonly;
     boolean wizid = FALSE;
     int wtcount = 0;
     boolean comparison_stats = !wornonly && iflags.show_comparison_stats && !iflags.in_dumplog && !program_state.gameover;
-    boolean loadstonecorrectly = FALSE;
+    boolean loadstonecorrectly = loadstone_weight_shown_correctly(show_weights);
     boolean listedsomething = FALSE;
-
-    if(show_weights == 1) // Inventory
-        loadstonecorrectly = TRUE;
-    else if (show_weights == 2) 
-    { // Pick up
-        loadstonecorrectly = (boolean)objects[LOADSTONE].oc_name_known;
-    }
-    else if (show_weights == 3) // Drop
-        loadstonecorrectly = TRUE;
 
     if (lets && !*lets)
         lets = 0; /* simplify tests: (lets) instead of (lets && *lets) */
@@ -5223,7 +5214,7 @@ winid win;
 int total_ounce_weight;
 int show_weights;
 {
-    if (show_weights > 0)
+    if (show_weights > SHOWWEIGHTS_NONE)
     {
         anything any = zeroany;
         add_extended_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR,
@@ -5286,7 +5277,7 @@ int show_weights;
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR, wtbuf, MENU_UNSELECTED);
         }
 
-        if (show_weights > 0 && show_weights <= 3)
+        if (show_weights > SHOWWEIGHTS_NONE && show_weights <= SHOWWEIGHTS_DROP)
         {
             //Back end of printout
             if (yourenclevel == UNENCUMBERED)
@@ -5298,7 +5289,7 @@ int show_weights;
 
 
             //Front end of printout
-            if (show_weights == 1 || (show_weights == 2 && total_ounce_weight == yourweight))
+            if (show_weights == SHOWWEIGHTS_INVENTORY || (show_weights == SHOWWEIGHTS_PICKUP && total_ounce_weight == yourweight))
             {
                 Sprintf(carrybuf, "%s", "You are ");
             }
@@ -5354,7 +5345,7 @@ winid win;
 int total_ounce_weight;
 int show_weights;
 {
-    if (show_weights > 0)
+    if (show_weights > SHOWWEIGHTS_NONE)
     {
         char buf[BUFSZ];
         char wtbuf[BUFSZ];
@@ -5415,7 +5406,7 @@ int show_weights;
         putstr(win, 0, buf);
 
 
-        if (show_weights > 0 && show_weights <= 3)
+        if (show_weights > SHOWWEIGHTS_NONE && show_weights <= SHOWWEIGHTS_DROP)
         {
             //Back end of printout
             if (yourenclevel == UNENCUMBERED)
@@ -6139,7 +6130,7 @@ dotypeinv()
     if (query_objlist((char *) 0, &invent,
                       ((flags.invlet_constant ? USE_INVLET : 0)
                        | INVORDER_SORT | OBJECT_COMPARISON),
-                      &pick_list, PICK_NONE, this_type_only, 1) > 0)
+                      &pick_list, PICK_NONE, this_type_only, SHOWWEIGHTS_INVENTORY) > 0)
         free((genericptr_t) pick_list);
     return 0;
 }
@@ -6611,7 +6602,7 @@ boolean picked_some, explicit_cmd;
             {
                 if (flags.inventory_weights_last)
                     putstr(tmpwin, ATR_HALF_SIZE, " ");
-                add_weight_summary_putstr(tmpwin, totalweight, 1);
+                add_weight_summary_putstr(tmpwin, totalweight, SHOWWEIGHTS_INVENTORY);
             }
 
             display_nhwindow(tmpwin, TRUE);
@@ -7090,7 +7081,7 @@ doprarm()
         if (uarmf)
             lets[ct++] = obj_to_let(uarmf);
         lets[ct] = 0;
-        (void) display_inventory(lets, FALSE, 0);
+        (void) display_inventory(lets, FALSE, SHOWWEIGHTS_NONE);
     }
     return 0;
 }
@@ -7110,7 +7101,7 @@ doprring()
         if (uright)
             lets[ct++] = obj_to_let(uright);
         lets[ct] = 0;
-        (void) display_inventory(lets, FALSE, 0);
+        (void) display_inventory(lets, FALSE, SHOWWEIGHTS_NONE);
     }
     return 0;
 }
@@ -7153,7 +7144,7 @@ doprtool()
     if (!ct)
         You1("are not using any tools.");
     else
-        (void) display_inventory(lets, FALSE, 0);
+        (void) display_inventory(lets, FALSE, SHOWWEIGHTS_NONE);
     return 0;
 }
 
@@ -7174,7 +7165,7 @@ doprinuse()
         You1("are not wearing or wielding anything.");
     else
     {
-        //(void)display_inventory(lets, FALSE, 0);
+        //(void)display_inventory(lets, FALSE, SHOWWEIGHTS_NONE);
         char invlet;
         int64_t pickcnt;
         boolean return_to_inv;
@@ -7182,7 +7173,7 @@ doprinuse()
         {
             pickcnt = 0;
             return_to_inv = FALSE;
-            invlet = display_inventory_with_header(lets, TRUE, &pickcnt, 1, FALSE);
+            invlet = display_inventory_with_header(lets, TRUE, &pickcnt, SHOWWEIGHTS_INVENTORY, FALSE);
             if (!invlet || invlet == '\033' || invlet == '\0')
                 return 0;
 
@@ -7738,7 +7729,7 @@ char *title;
         n = query_objlist(title ? title : tmp, &(mon->minvent),
                           (INVORDER_SORT | (incl_hero ? INCLUDE_HERO : 0)),
                           &selected, pickings,
-                          do_all ? allow_all : worn_wield_only, 5); //Looking at things in monster's inventory far away
+                          do_all ? allow_all : worn_wield_only, SHOWWEIGHTS_OTHER_PICKUP); //Looking at things in monster's inventory far away
 
         iflags.suppress_price--;
         /* was 'set_uasmon();' but that potentially has side-effects */
@@ -7774,7 +7765,7 @@ register struct obj *obj;
 
     if (contained_object_chain(obj)) {
         n = query_objlist(qbuf, contained_object_chain_ptr(obj), INVORDER_SORT | OBJECT_COMPARISON,
-                          &selected, PICK_NONE, allow_all, 5); //Looking at things in container's inventory far away
+                          &selected, PICK_NONE, allow_all, SHOWWEIGHTS_OTHER_PICKUP); //Looking at things in container's inventory far away
     } else {
         invdisp_nothing(qbuf, "(empty)");
         n = 0;
@@ -7826,7 +7817,7 @@ boolean as_if_seen;
         only.y = y;
         if (query_objlist("Things that are buried here:",
                           &level.buriedobjlist, INVORDER_SORT | OBJECT_COMPARISON,
-                          &selected, PICK_NONE, only_here, 2) > 0)
+                          &selected, PICK_NONE, only_here, SHOWWEIGHTS_PICKUP) > 0)
             free((genericptr_t) selected);
         only.x = only.y = 0;
     }

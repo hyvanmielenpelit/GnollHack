@@ -1665,7 +1665,7 @@ wiz_identify(VOID_ARGS)
            display_pickinv() and xname() see override_ID as nonzero */
         if (!iflags.override_ID)
             iflags.override_ID = C('I');
-        (void) display_inventory((char *) 0, FALSE, 0);
+        (void) display_inventory((char *) 0, FALSE, SHOWWEIGHTS_NONE);
         iflags.override_ID = 0;
         update_inventory();
     } else

@@ -2754,6 +2754,7 @@ E boolean NDECL(can_floor_stash_objs);
 E void NDECL(set_current_container_to_dummyobj);
 E void NDECL(set_current_container_to_null);
 E void NDECL(reset_pickup);
+E boolean FDECL(loadstone_weight_shown_correctly, (int));
 
 /* ### pline.c ### */
 

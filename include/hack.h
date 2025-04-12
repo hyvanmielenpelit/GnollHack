@@ -477,6 +477,15 @@ extern short tile2enlargement[MAX_TILES];
 #define FM_MYDOGS 0x04  /* search mydogs */
 #define FM_EVERYWHERE (FM_FMON | FM_MIGRATE | FM_MYDOGS)
 
+/* Show weights types */
+#define SHOWWEIGHTS_NONE            0
+#define SHOWWEIGHTS_INVENTORY       1 /* Your inventory */
+#define SHOWWEIGHTS_PICKUP          2
+#define SHOWWEIGHTS_DROP            3 /* Also sell and give */
+#define SHOWWEIGHTS_OTHER_INVENTORY 4 /* Same as 1 but with no "You are" lines */
+#define SHOWWEIGHTS_OTHER_PICKUP    5 /* Same as 2 but with no "You are" lines; used to see monster etc. inventories */
+#define SHOWWEIGHTS_OTHER_DROP      6 /* Same as 3 but with no "You are" lines */
+
 /* Flags to control pick_[race,role,gend,align] routines in role.c */
 #define PICK_RANDOM 0
 #define PICK_RIGID 1

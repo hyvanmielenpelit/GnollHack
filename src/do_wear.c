@@ -3865,7 +3865,7 @@ int retry;
     n = query_objlist("What do you want to take off?", &invent,
                       (SIGNAL_NOMENU | USE_INVLET | INVORDER_SORT),
                       &pick_list, PICK_ANY,
-                      all_worn_categories ? is_worn : is_worn_by_type, 0);
+                      all_worn_categories ? is_worn : is_worn_by_type, SHOWWEIGHTS_NONE);
     if (n > 0) {
         for (i = 0; i < n; i++)
             (void) select_off(pick_list[i].item.a_obj);
@@ -3919,7 +3919,7 @@ int retry;
     n = query_objlist("What do you want to wear?", &invent,
         (SIGNAL_NOMENU | USE_INVLET | INVORDER_SORT | WORN_UNSELECTABLE),
         &pick_list, PICK_ANY,
-        all_wearable_categories ? is_wearable : is_wearable_by_type, 0);
+        all_wearable_categories ? is_wearable : is_wearable_by_type, SHOWWEIGHTS_NONE);
     if (n > 0) {
         for (i = 0; i < n; i++)
             (void)select_on(pick_list[i].item.a_obj);

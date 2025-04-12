@@ -5337,7 +5337,7 @@ struct monst* mtmp;
     /* should coordinate with perm invent, maybe not show worn items */
     n = query_objlist(qbuf, &invent,
         (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON), &pick_list, PICK_ANY,
-        allow_all, 3);
+        allow_all, SHOWWEIGHTS_DROP);
     if (n > 0) 
     {
         bypass_objlist(invent, TRUE);
@@ -5478,7 +5478,7 @@ struct monst* mtmp;
 
     n = query_objlist(qbuf, &invent,
         (USE_INVLET | INVORDER_SORT), &pick_list, PICK_ONE,
-        allow_category, 3);
+        allow_category, SHOWWEIGHTS_DROP);
 
     if (n > 0)
     {
@@ -5742,7 +5742,7 @@ struct monst* mtmp;
     case 1:
         Strcpy(qbuf, "Which potion would you like to dip items into?");
         n = query_objlist(qbuf, &invent, (SIGNAL_NOMENU | SIGNAL_ESCAPE | USE_INVLET | INVORDER_SORT),
-            &pick_list, PICK_ONE, is_potion_of_water, 0);
+            &pick_list, PICK_ONE, is_potion_of_water, SHOWWEIGHTS_NONE);
         if (n && pick_list && pick_list[0].item.a_obj)
         {
             otmp = pick_list[0].item.a_obj;
@@ -5750,7 +5750,7 @@ struct monst* mtmp;
             pick_list = 0;
             Sprintf(qbuf, "What would you like to dip into %s?", the(cxname(otmp)));
             n = query_objlist(qbuf, &mtmp->minvent, (SIGNAL_NOMENU | SIGNAL_ESCAPE | USE_INVLET | INVORDER_SORT),
-                &pick_list, PICK_ONE, allow_all, 0);
+                &pick_list, PICK_ONE, allow_all, SHOWWEIGHTS_NONE);
             if (n && pick_list && pick_list[0].item.a_obj)
             {
                 struct obj* obj = pick_list[0].item.a_obj;
@@ -5768,7 +5768,7 @@ struct monst* mtmp;
     case 2:
         Sprintf(qbuf, "Which scroll would you like to have %s read?", mon_nam(mtmp));
         n = query_objlist(qbuf, &invent, (SIGNAL_NOMENU | SIGNAL_ESCAPE | USE_INVLET | INVORDER_SORT),
-            &pick_list, PICK_ONE, is_scroll_of_remove_curse, 0);
+            &pick_list, PICK_ONE, is_scroll_of_remove_curse, SHOWWEIGHTS_NONE);
         if (n && pick_list && pick_list[0].item.a_obj)
         {
             otmp = pick_list[0].item.a_obj;
@@ -5838,7 +5838,7 @@ struct monst* mtmp;
 
     n = query_objlist(qbuf, &invent,
         (USE_INVLET | INVORDER_SORT), &pick_list, PICK_ONE,
-        allow_category, 3);
+        allow_category, SHOWWEIGHTS_DROP);
 
     boolean res = 0;
     if (n > 0)
@@ -8177,7 +8177,7 @@ boolean FDECL((*allow), (OBJ_P)); /* allow function */
 
     /* should coordinate with perm invent, maybe not show worn items */
     n = query_objlist("What would you like to sell?", &invent,
-        (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON), &pick_list, PICK_ANY, allow, 3);
+        (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON), &pick_list, PICK_ANY, allow, SHOWWEIGHTS_DROP);
 
     if (n > 0 && pick_list)
     {
@@ -9138,7 +9138,7 @@ int64_t id_cost;
 
     n = query_objlist(buf, &invent, (SIGNAL_NOMENU | SIGNAL_ESCAPE
         | USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON),
-        &pick_list, PICK_ANY, not_fully_identified, 0);
+        &pick_list, PICK_ANY, not_fully_identified, SHOWWEIGHTS_NONE);
 
     if (n > 0)
     {

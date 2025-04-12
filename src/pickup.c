@@ -255,7 +255,7 @@ int applymode;
             }
             else if (sym == 'i') 
             {
-                (void) display_inventory((char *) 0, TRUE, 1);
+                (void) display_inventory((char *) 0, TRUE, SHOWWEIGHTS_INVENTORY);
                 goto ask_again;
             }
             else if (sym == 'm') 
@@ -693,7 +693,7 @@ boolean do_auto_in_bag;
             Sprintf(qbuf, "Pick%s %d of what?", do_auto_in_bag ? " and out into bag" : "", count);
             val_for_n_or_more = count; /* set up callback selector */
             n = query_objlist(qbuf, objchain_p, traverse_how | OBJECT_COMPARISON,
-                              &pick_list, PICK_ONE, n_or_more, 2);
+                              &pick_list, PICK_ONE, n_or_more, SHOWWEIGHTS_PICKUP);
             /* correct counts, if any given */
             for (i = 0; i < n; i++)
                 pick_list[i].count = count;
@@ -702,7 +702,7 @@ boolean do_auto_in_bag;
         {
             n = query_objlist(do_auto_in_bag ? "Pick up and auto-stash what?" : "Pick up what?", objchain_p,
                               (traverse_how | FEEL_COCKATRICE | OBJECT_COMPARISON),
-                              &pick_list, PICK_ANY, all_but_uchain, 2);
+                              &pick_list, PICK_ANY, all_but_uchain, SHOWWEIGHTS_PICKUP);
         }
 
     menu_pickup:
@@ -764,7 +764,7 @@ boolean do_auto_in_bag;
                 n = query_objlist(do_auto_in_bag ? "Pick up and auto-stash what?" : "Pick up what?", objchain_p, traverse_how | OBJECT_COMPARISON,
                                   &pick_list, PICK_ANY,
                                   (via_menu == -2) ? allow_all
-                                                   : allow_category, 2);
+                                                   : allow_category, SHOWWEIGHTS_PICKUP);
                 goto menu_pickup;
             }
         }
@@ -1058,6 +1058,27 @@ menu_item **pick_list; /* list of objects and counts to pick up */
     return n;
 }
 
+boolean
+loadstone_weight_shown_correctly(show_weights)
+int show_weights;
+{
+    boolean loadstonecorrectly = FALSE;
+
+    switch (show_weights)
+    {
+    case SHOWWEIGHTS_INVENTORY:
+    case SHOWWEIGHTS_DROP:
+        loadstonecorrectly = TRUE;
+        break;
+    case SHOWWEIGHTS_PICKUP:
+        loadstonecorrectly = (boolean)objects[LOADSTONE].oc_name_known;
+        break;
+    default:
+        break;
+    }
+    return loadstonecorrectly;
+}
+
 /*
  * Put up a menu using the given object list.  Only those objects on the
  * list that meet the approval of the allow function are displayed.  Return
@@ -1099,16 +1120,7 @@ int show_weights;
     unsigned sortflags;
     Loot *sortedolist, *srtoli;
     int wtcount = 0;
-
-    boolean loadstonecorrectly = FALSE;
-
-    if (show_weights == 1) // Inventory
-        loadstonecorrectly = TRUE;
-    else if (show_weights == 2) { // Pick up
-        loadstonecorrectly = (boolean)objects[LOADSTONE].oc_name_known;
-    }
-    else if (show_weights == 3) // Drop or sell
-        loadstonecorrectly = TRUE;
+    boolean loadstonecorrectly = loadstone_weight_shown_correctly(show_weights);
 
     *pick_list = (menu_item *) 0;
     if (!olist && !engulfer)
@@ -1213,7 +1225,7 @@ int show_weights;
                 memset(attrs, ATR_NONE, sizeof(attrs));
                 memset(colors, NO_COLOR, sizeof(colors));
                 Strcpy(objbuf, 
-                    show_weights > 0 ? 
+                    show_weights > SHOWWEIGHTS_NONE ? 
                     (flags.inventory_weights_last ? doname_with_price_and_weight_last(curr, loadstonecorrectly) : doname_with_price_and_weight_first(curr, loadstonecorrectly)) : 
                     doname_with_price(curr));
                 struct extended_menu_info eminfo = obj_to_extended_menu_info(curr);
@@ -4663,7 +4675,7 @@ int applymode;
         Sprintf(buf, "%s what%s?", action, movebuf);
         n = query_objlist(buf, command_id == 1 ? &invent : command_id == 6 ? &level.objects[u.ux][u.uy] : contained_object_chain_ptr(current_container),
                           mflags, &pick_list, PICK_ANY,
-                          all_categories ? allow_all : allow_category, 2);
+                          all_categories ? allow_all : allow_category, SHOWWEIGHTS_PICKUP);
         if (n)
         {
             n_looted = 0;

@@ -6385,7 +6385,7 @@ dodropmany()
 
     /* should coordinate with perm invent, maybe not show worn items */
     n = query_objlist("What would you like to drop?", &invent,
-        (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON), &pick_list, PICK_ANY, allow_all, 3);
+        (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON), &pick_list, PICK_ANY, allow_all, SHOWWEIGHTS_DROP);
 
     if (n > 0 && pick_list)
     {
@@ -6558,7 +6558,7 @@ int retry;
         /* should coordinate with perm invent, maybe not show worn items */
         n = query_objlist("What would you like to drop?", &invent,
                           (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON), &pick_list, PICK_ANY,
-                          all_categories ? allow_all : allow_category, 3);
+                          all_categories ? allow_all : allow_category, SHOWWEIGHTS_DROP);
         if (n > 0 && pick_list)
         {
             /*
@@ -6729,7 +6729,7 @@ int retry;
         /* should coordinate with perm invent, maybe not show worn items */
         n = query_objlist("What would you like to put in bag?", &invent,
             (USE_INVLET | INVORDER_SORT | OBJECT_COMPARISON), &pick_list, PICK_ANY,
-            all_categories ? allow_all : allow_category, 3);
+            all_categories ? allow_all : allow_category, SHOWWEIGHTS_DROP);
         if (n > 0 && pick_list)
         {
             /*
