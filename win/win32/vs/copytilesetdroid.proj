@@ -8,12 +8,12 @@
     <Copy SkipUnchangedFiles="false" SourceFiles="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png" DestinationFolder="$(MauiAssetsDir)"/>
 	  <Message Text="Copied tilesets from $(WinWin32Dir) to $(MauiAssetsDir)" Importance="High" />-->
 
-    <ItemGroup>
-      <GnhTilesetsPng Include="$(TilesetDir)\*.png" />
+    <!--<ItemGroup>
+      <GnhTilesetsPng Include="$(TilesetDir)*.png" />
     </ItemGroup>
     <Copy SkipUnchangedFiles="false" SourceFiles="$(GnhTilesetsPng)" DestinationFiles="@(GnhTilesetsPng->Replace('.png', '.ghpng'))"/>
     <ItemGroup>
-      <GnhTilesetsGhpng Include="$(TilesetDir)\*.ghpng" />
+      <GnhTilesetsGhpng Include="$(TilesetDir)*.ghpng" />
     </ItemGroup>
     <Copy SkipUnchangedFiles="false" SourceFiles="$(GnhTilesetsGhpng)" DestinationFolder="$(AndroidTilesetDir)"/>
     <Copy SkipUnchangedFiles="false" SourceFiles="$(GnhTilesetsGhpng)" DestinationFolder="$(iOSGTilesetDir)"/>
@@ -21,9 +21,9 @@
     <Copy SkipUnchangedFiles="false" SourceFiles="$(GnhTilesetsGhpng)" DestinationFolder="$(MauiiOSTilesetDir)"/>
     <Copy SkipUnchangedFiles="false" SourceFiles="$(GnhTilesetsGhpng)" DestinationFolder="$(MauiWindowsTilesetDir)"/>
     <Message Text="Copied tilesets from $(TilesetDir) to all folders as .ghpng" Importance="High" />
-    <Delete Files="$(GnhTilesetsGhpng)"/>
+    <Delete Files="$(GnhTilesetsGhpng)"/>-->
 
-    <!--<Copy SkipUnchangedFiles="false" SourceFiles="$(TilesetDir)gnollhack_64x96_transparent_32bits.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-2.png" DestinationFiles="$(AndroidTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(AndroidTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng"/>
+    <Copy SkipUnchangedFiles="false" SourceFiles="$(TilesetDir)gnollhack_64x96_transparent_32bits.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-2.png" DestinationFiles="$(AndroidTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(AndroidTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng"/>
     <Message Text="Copied tilesets from $(TilesetDir) to $(AndroidTilesetDir) as .ghpng" Importance="High" />
     <Copy SkipUnchangedFiles="false" SourceFiles="$(TilesetDir)gnollhack_64x96_transparent_32bits.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-2.png" DestinationFiles="$(iOSGTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(iOSGTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng"/>
     <Message Text="Copied tilesets from $(TilesetDir) to $(iOSGTilesetDir) as .ghpng" Importance="High" />
@@ -32,7 +32,7 @@
     <Copy SkipUnchangedFiles="false" SourceFiles="$(TilesetDir)gnollhack_64x96_transparent_32bits.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-2.png" DestinationFiles="$(MauiiOSTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(MauiiOSTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng"/>
     <Message Text="Copied tilesets from $(TilesetDir) to $(MauiiOSTilesetDir) as .ghpng" Importance="High" />
     <Copy SkipUnchangedFiles="false" SourceFiles="$(TilesetDir)gnollhack_64x96_transparent_32bits.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-2.png" DestinationFiles="$(MauiWindowsTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(MauiWindowsTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng"/>
-    <Message Text="Copied tilesets from $(TilesetDir) to $(MauiWindowsTilesetDir) as .ghpng" Importance="High" />-->
+    <Message Text="Copied tilesets from $(TilesetDir) to $(MauiWindowsTilesetDir) as .ghpng" Importance="High" />
 
     <!--<Move SourceFiles="$(AndroidTilesetDir)gnollhack_64x96_transparent_32bits.png;$(AndroidTilesetDir)gnollhack_64x96_transparent_32bits-2.png" DestinationFiles="$(AndroidTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(AndroidTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng" />
     <Message Text="Renamed tilesets in $(AndroidTilesetDir) from .png to .ghpng" Importance="High" />
