@@ -31,6 +31,7 @@ using Android.Content.PM;
 using Android.Views.InputMethods;
 using Android.Provider;
 using System.Linq.Expressions;
+using Android.Content.Res;
 
 #if GNH_MAUI
 namespace GnollHackM
@@ -131,6 +132,18 @@ namespace GnollHackX.Droid
             MainActivity.CurrentMainActivity.FinishAffinity();
             MainActivity.CurrentMainActivity.Finish();
 #endif
+        }
+
+        public Task<Stream> GetPlatformAssetsStreamAsync(string directory, string fileName)
+        {
+            return System.Threading.Tasks.Task.Run(() => GetPlatformAssetsStream(directory, fileName));
+        }
+
+        private Stream GetPlatformAssetsStream(string directory, string fileName)
+        {
+            AssetManager assets = MainActivity.StaticAssets;
+            string relativePath = string.IsNullOrEmpty(directory) ? fileName : Path.Combine(directory, fileName);
+            return assets.Open(relativePath);
         }
 
         public void SetStatusBarHidden(bool ishidden)

@@ -4,10 +4,14 @@
   <!-- TODO not copying record-->
   <Target Name="Build">
     <Copy SkipUnchangedFiles="false" SourceFiles="$(BankDesktopDir)Master.bank;$(BankDesktopDir)Master.strings.bank;$(BankDesktopDir)Auxiliary.bank;$(BankDesktopDir)Intro.bank;$(BankDesktopDir)Preliminary.bank;$(BankDesktopDir)Music.bank" DestinationFolder="$(WinWin32Dir)"/>
-	<Message Text="Copied sound banks from $(BankDesktopDir) to $(WinWin32Dir)" Importance="High" />
+	  <Message Text="Copied sound banks from $(BankDesktopDir) to $(WinWin32Dir)" Importance="High" />
+    <Copy SkipUnchangedFiles="false" SourceFiles="$(TilesetDir)gnollhack_64x96_transparent_32bits.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-2.png" DestinationFolder="$(WinWin32Dir)"/>
+    <Message Text="Copied tileset from $(TilesetDir) to $(WinWin32Dir)" Importance="High" />
   </Target>
   <Target Name="Clean">
     <Delete Files="$(WinWin32Dir)Master.bank;$(WinWin32Dir)Master.strings.bank;$(WinWin32Dir)Auxiliary.bank;$(WinWin32Dir)Intro.bank;$(WinWin32Dir)Preliminary.bank;$(WinWin32Dir)Music.bank"/>
-	<Message Text="Deleted sound banks from $(WinWin32Dir)" Importance="High" />
+	  <Message Text="Deleted sound banks from $(WinWin32Dir)" Importance="High" />
+    <Delete Files="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png"/>
+    <Message Text="Deleted tileset from $(WinWin32Dir)" Importance="High" />
   </Target>
 </Project>

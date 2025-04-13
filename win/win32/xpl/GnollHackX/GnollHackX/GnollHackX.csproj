@@ -54,8 +54,6 @@
     <None Remove="Assets\ghsettings.json" />
     <None Remove="Assets\gnollhack-icon-v2-512.png" />
     <None Remove="Assets\gnollhack-logo-test-2.png" />
-    <None Remove="Assets\gnollhack_64x96_transparent_32bits-2.png" />
-    <None Remove="Assets\gnollhack_64x96_transparent_32bits.png" />
     <None Remove="Assets\Immortal-Regular.ttf" />
     <None Remove="Assets\imrl.otf" />
     <None Remove="Assets\Intro.bank" />
@@ -328,8 +326,6 @@
     <EmbeddedResource Include="Assets\ghsettings.json" />
     <EmbeddedResource Include="Assets\gnollhack-icon-v2-512.png" />
     <EmbeddedResource Include="Assets\gnollhack-logo-test-2.png" />
-    <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-2.png" />
-    <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits.png" />
     <EmbeddedResource Include="Assets\UI\autostash.png" />
     <EmbeddedResource Include="Assets\UI\background-darkmarble.png" />
     <EmbeddedResource Include="Assets\UI\battery-frame.png" />

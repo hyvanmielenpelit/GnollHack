@@ -309,6 +309,8 @@
 		<None Remove="Platforms\Android\libs\x86_64\libfmod.so" />
 		<None Remove="Platforms\Android\libs\x86_64\libfmodstudio.so" />
 		<None Remove="Platforms\Android\libs\x86_64\libgnollhackdroid.so" />
+		<None Remove="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits-2.png" />
+		<None Remove="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits.png" />
 		<None Remove="Resources\AppIcon\appicon.svg" />
 		<None Remove="Resources\AppIcon\appiconfg.svg" />
 	</ItemGroup>
@@ -427,8 +429,6 @@
 	  <None Remove="Assets\ghsecrets.sjson" />
 	  <None Remove="Assets\ghsettings.json" />
 	  <None Remove="Assets\gnollhack-logo-test-2.png" />
-	  <None Remove="Assets\gnollhack_64x96_transparent_32bits-2.png" />
-	  <None Remove="Assets\gnollhack_64x96_transparent_32bits.png" />
 	  <None Remove="Assets\Immortal-Regular.ttf" />
 	  <None Remove="Assets\Lato-Bold.ttf" />
 	  <None Remove="Assets\Lato-Regular.ttf" />
@@ -645,11 +645,15 @@
     <AndroidAsset Include="Platforms\Android\gnh\xlogfile" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
     <AndroidAsset Include="Platforms\Android\gnh\defaults.gnh" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
     <AndroidAsset Include="Platforms\Android\gnh\xcredits" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
-    <AndroidAsset Include="Platforms\Android\banks\Master.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
-    <AndroidAsset Include="Platforms\Android\banks\Auxiliary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
-    <AndroidAsset Include="Platforms\Android\banks\Intro.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
-    <AndroidAsset Include="Platforms\Android\banks\Master.strings.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
-    <AndroidAsset Include="Platforms\Android\banks\Music.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
+
+    <AndroidAsset Include="Platforms\Android\banks\Master.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk'" />
+    <AndroidAsset Include="Platforms\Android\banks\Auxiliary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk'" />
+    <AndroidAsset Include="Platforms\Android\banks\Intro.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk'" />
+    <AndroidAsset Include="Platforms\Android\banks\Master.strings.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk'" />
+    <AndroidAsset Include="Platforms\Android\banks\Music.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk'" />
+    <AndroidAsset Include="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits.png" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk'" />
+    <AndroidAsset Include="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits-2.png" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk'" />
+
     <AndroidAsset Include="Platforms\Android\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
     <AndroidAsset Include="Platforms\Android\banks\Master.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
     <AndroidAsset Include="Platforms\Android\banks\Auxiliary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
@@ -657,6 +661,8 @@
     <AndroidAsset Include="Platforms\Android\banks\Master.strings.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
     <AndroidAsset Include="Platforms\Android\banks\Music.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
 	  <AndroidAsset Include="Platforms\Android\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
+    <AndroidAsset Include="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits.png" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
+    <AndroidAsset Include="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits-2.png" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
     <!--<AndroidAppBundleModules Include="Platforms\Android\assetpacks\ondemandassetpack.zip" Condition=" '$(AndroidPackageFormat)' != 'apk' " />-->
     <!--<AndroidAppBundleModules Include="Platforms\Android\assetpacks\installtimeassetpack.zip" Condition=" '$(AndroidPackageFormat)' != 'apk' " />-->
 	  <Compile Include="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
@@ -698,7 +704,9 @@
 		<BundleResource Include="Platforms\iOS\banks\Master.strings.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
 		<BundleResource Include="Platforms\iOS\banks\Music.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
 		<BundleResource Include="Platforms\iOS\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" />
-		<Compile Include="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
+    <BundleResource Include="Platforms\iOS\tileset\gnollhack_64x96_transparent_32bits.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" />
+    <BundleResource Include="Platforms\iOS\tileset\gnollhack_64x96_transparent_32bits-2.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" />
+    <Compile Include="..\GnollHackX\GnollHackX.iOS\PlatformServiceiOS.cs" />
 		<Compile Include="..\GnollHackX\GnollHackX.iOS\GHUIApplication.cs" />
 	</ItemGroup>
 
@@ -766,7 +774,13 @@
 		<MauiAsset Include="Platforms\Windows\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-	</ItemGroup>
+    <MauiAsset Include="Platforms\Windows\tileset\gnollhack_64x96_transparent_32bits.png" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </MauiAsset>
+    <MauiAsset Include="Platforms\Windows\tileset\gnollhack_64x96_transparent_32bits-2.png" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </MauiAsset>
+  </ItemGroup>
 	
 	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
 		<DefineConstants>$(DefineConstants);UNITY_IPHONE</DefineConstants>
@@ -824,8 +838,6 @@
 	  <EmbeddedResource Include="Assets\ghsettings.json" />
 	  <EmbeddedResource Include="Assets\gnollhack-icon-v2-512.png" />
 	  <EmbeddedResource Include="Assets\gnollhack-logo-test-2.png" />
-	  <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits-2.png" />
-	  <EmbeddedResource Include="Assets\gnollhack_64x96_transparent_32bits.png" />
 	  <EmbeddedResource Include="Assets\Immortal-Regular.ttf" />
 	  <EmbeddedResource Include="Assets\Lato-Bold.ttf" />
 	  <EmbeddedResource Include="Assets\Lato-Regular.ttf" />

@@ -269,7 +269,7 @@ namespace GnollHackX.Pages.MainScreen
             PortVersionTitleLabel.Text = GHApp.RuntimePlatform + " Port Version:";
             PortBuildTitleLabel.Text = GHApp.RuntimePlatform + " Port Build:";
             PortConfigurationTitleLabel.Text ="Port Configuration:";
-            if (GHApp.IsBeta)
+            if (GHApp.IsBeta && (!GHApp.IsSteam || GHApp.IsPlaytest))
                 PortVersionLabel.Text += " (Beta)";
             if (GHApp.IsPlaytest)
                 PortBuildLabel.Text += " (Playtest)";

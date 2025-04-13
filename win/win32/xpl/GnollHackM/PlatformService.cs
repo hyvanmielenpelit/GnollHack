@@ -12,6 +12,11 @@ namespace GnollHackM
     {
         public event EventHandler<AssetPackStatusEventArgs> OnDemandPackStatusNotification;
 
+        public void Stream GetPlatformAssetsStream(string fileName)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CloseApplication()
         {
             throw new NotImplementedException();

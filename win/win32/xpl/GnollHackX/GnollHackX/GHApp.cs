@@ -1723,10 +1723,64 @@ namespace GnollHackX
             return res;
         }
 
+        private async static Task<SKImage> LoadTilesetFromPlatformAssetsAsync(string tilesetName)
+        {
+            SKImage res = null;
+            try
+            {
+                using (Stream stream = await GHApp.PlatformService.GetPlatformAssetsStreamAsync(GHConstants.AssetsTilesetDirectory, tilesetName))
+                {
+                    SKBitmap bmp = SKBitmap.Decode(stream);
+                    bmp.SetImmutable();
+                    res = SKImage.FromBitmap(bmp);
+                }
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog("LoadTilesetFromPlatformAssetsAsync (" + tilesetName + "): " + ex.Message);
+            }
+            return res;
+        }
+
+        //private static SKImage LoadTilesetFromPlatformAssets(string tilesetName)
+        //{
+        //    SKImage res = null;
+        //    try
+        //    {
+        //        byte[] data = PlatformService.GetPlatformAssetsTilesetBytes(GHConstants.AssetsTilesetDirectory, tilesetName);
+        //        WriteGHLog("data: " + (data != null ? "not null" : "null"));
+        //        WriteGHLog("data length: " + data.Length);
+        //        using (MemoryStream ms = new MemoryStream(data))
+        //        {
+        //            WriteGHLog("ms length: " + ms.Length);
+        //            SKBitmap bmp = SKBitmap.Decode(ms);
+        //            WriteGHLog("bmp: " + (bmp != null ? "not null" : "null"));
+        //            bmp.SetImmutable();
+        //            res = SKImage.FromBitmap(bmp);
+        //            WriteGHLog("res: " + (res != null ? "not null" : "null"));
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MaybeWriteGHLog("LoadTilesetFromPlatformAssets (" + tilesetName + "): " + ex.Message);
+        //    }
+        //    return res;
+        //}
+
         public static SKImage LoadEmbeddedAssetsBitmap(string bitmapName)
         {
             return LoadEmbeddedResourceBitmap(AppResourceName + ".Assets." + bitmapName);
         }
+
+        public async static Task<SKImage> LoadTilesetAsync(string bitmapName)
+        {
+            return await LoadTilesetFromPlatformAssetsAsync(bitmapName);
+        }
+
+        //public static SKImage LoadTileset(string bitmapName)
+        //{
+        //    return LoadTilesetFromPlatformAssets(bitmapName);
+        //}
 
         public static void InitBaseButtonBitmaps()
         {

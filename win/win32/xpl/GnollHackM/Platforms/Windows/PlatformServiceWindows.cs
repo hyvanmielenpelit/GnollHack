@@ -9,6 +9,7 @@ using GnollHackX;
 using System.Runtime.Intrinsics.Arm;
 using Windows.Services.Store;
 using Windows.System;
+using System.IO;
 
 namespace GnollHackM
 {
@@ -132,6 +133,12 @@ namespace GnollHackM
             }
             Application.Current?.Quit();
             Environment.Exit(0);
+        }
+
+        public Task<Stream> GetPlatformAssetsStreamAsync(string directory, string fileName)
+        {
+            string relativePath = string.IsNullOrEmpty(directory) ? fileName : Path.Combine(directory, fileName);
+            return FileSystem.Current.OpenAppPackageFileAsync(relativePath);
         }
 
         public void SetStatusBarHidden(bool ishidden)

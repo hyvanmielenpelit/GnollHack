@@ -1246,21 +1246,23 @@ namespace GnollHackX.Pages.Game
 
                 if (!GHApp.StartGameDataSet)
                 {
+                    Task<SKImage> tileSetTask;
                     tasks.Add(LoadingProgressBar.ProgressTo(0.3, 600, Easing.Linear));
                     tasks.Add(Task.Run(() =>
                     {
                         GHApp.FmodService.LoadBanks(sound_bank_loading_type.Game);
-                        GHApp._tileMap[0] = GHApp.LoadEmbeddedAssetsBitmap("gnollhack_64x96_transparent_32bits.png");
                     }));
+                    tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits" + (GHApp.IsiOS ? ".ghpng" : ".png"));
+                    tasks.Add(tileSetTask);
                     await Task.WhenAll(tasks);
+                    GHApp._tileMap[0] = tileSetTask.Result;
                     tasks.Clear();
 
                     tasks.Add(LoadingProgressBar.ProgressTo(0.4, 100, Easing.Linear));
-                    tasks.Add(Task.Run(() =>
-                    {
-                        GHApp._tileMap[1] = GHApp.LoadEmbeddedAssetsBitmap("gnollhack_64x96_transparent_32bits-2.png");
-                    }));
+                    tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits-2" + (GHApp.IsiOS ? ".ghpng" : ".png"));
+                    tasks.Add(tileSetTask);
                     await Task.WhenAll(tasks);
+                    GHApp._tileMap[1] = tileSetTask.Result;
                     tasks.Clear();
 
                     tasks.Add(LoadingProgressBar.ProgressTo(0.5, 100, Easing.Linear));

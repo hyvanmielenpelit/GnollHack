@@ -7,6 +7,8 @@ if not exist c:\wsl-in\assetpack\Assets mkdir c:\wsl-in\assetpack\Assets
 del /Q c:\wsl-in\assetpack\Assets\*.*
 if not exist c:\wsl-in\assetpack\Assets\banks mkdir c:\wsl-in\assetpack\Assets\banks
 del /Q c:\wsl-in\assetpack\Assets\banks\*.*
+if not exist c:\wsl-in\assetpack\Assets\tileset mkdir c:\wsl-in\assetpack\Assets\tileset
+del /Q c:\wsl-in\assetpack\Assets\tileset\*.*
 if not exist c:\wsl-in\assetpack\aapt2output mkdir c:\wsl-in\assetpack\aapt2output
 echo Copying banks to c:\wsl-in\assetpack\Assets\banks
 copy ..\bank\Mobile\Master.bank c:\wsl-in\assetpack\Assets\banks
@@ -15,14 +17,19 @@ copy ..\bank\Mobile\Music.bank c:\wsl-in\assetpack\Assets\banks
 copy ..\bank\Mobile\Preliminary.bank c:\wsl-in\assetpack\Assets\banks
 copy ..\bank\Mobile\Auxiliary.bank c:\wsl-in\assetpack\Assets\banks
 copy ..\bank\Mobile\Intro.bank c:\wsl-in\assetpack\Assets\banks
+echo Copying tileset to c:\wsl-in\assetpack\Assets\tileset
+copy ..\tileset\gnollhack_64x96_transparent_32bits.png c:\wsl-in\assetpack\Assets\tileset
+copy ..\tileset\gnollhack_64x96_transparent_32bits-2.png c:\wsl-in\assetpack\Assets\tileset
 
 if not exist c:\wsl-in\assetpack2 mkdir c:\wsl-in\assetpack2
 if not exist c:\wsl-in\assetpack2\Assets mkdir c:\wsl-in\assetpack2\Assets
 del /Q c:\wsl-in\assetpack2\Assets\*.*
 if not exist c:\wsl-in\assetpack2\Assets\banks mkdir c:\wsl-in\assetpack2\Assets\banks
 del /Q c:\wsl-in\assetpack2\Assets\banks\*.*
+if not exist c:\wsl-in\assetpack2\Assets\tileset mkdir c:\wsl-in\assetpack2\Assets\tileset
+del /Q c:\wsl-in\assetpack2\Assets\tileset\*.*
 if not exist c:\wsl-in\assetpack2\aapt2output mkdir c:\wsl-in\assetpack2\aapt2output
-echo Copying text file to c:\wsl-in\assetpack2\Assets\banks
+echo Copying text file to c:\wsl-in\assetpack2\Assets
 copy ..\xpl\GnollHackX\GnollHackX.Android.GooglePlay\OnDemand\AboutAssetPack.txt c:\wsl-in\assetpack2\Assets
 
 rem if not exist c:\wsl-in\assetpack-maui mkdir c:\wsl-in\assetpack-maui
@@ -58,6 +65,16 @@ copy ..\bank\Mobile\*.* ..\xpl\GnollHackX\GnollHackX.Android\banks
 echo Copying banks to X iOS banks
 copy ..\bank\Mobile\*.* ..\xpl\GnollHackX\GnollHackX.iOS\banks
 
+echo Start copying GnollHackX tileset
+if not exist ..\xpl\GnollHackX\GnollHackX.Android\tileset mkdir ..\xpl\GnollHackX\GnollHackX.Android\tileset
+if not exist ..\xpl\GnollHackX\GnollHackX.iOS\tileset mkdir ..\xpl\GnollHackX\GnollHackX.iOS\tileset
+del /Q ..\xpl\GnollHackX\GnollHackX.Android\tileset\*.*
+del /Q ..\xpl\GnollHackX\GnollHackX.iOS\tileset\*.*
+echo Copying tileset to X Android tileset
+copy ..\tileset\*.* ..\xpl\GnollHackX\GnollHackX.Android\tileset
+echo Copying tileset to X iOS tileset
+copy ..\tileset\*.* ..\xpl\GnollHackX\GnollHackX.iOS\tileset
+
 echo Start copying GnollHackM banks
 if not exist ..\xpl\GnollHackM\Platforms\Android\banks mkdir ..\xpl\GnollHackM\Platforms\Android\banks
 if not exist ..\xpl\GnollHackM\Platforms\iOS\banks mkdir ..\xpl\GnollHackM\Platforms\iOS\banks
@@ -71,6 +88,20 @@ echo Copying banks to M iOS banks
 copy ..\bank\Mobile\*.* ..\xpl\GnollHackM\Platforms\iOS\banks
 echo Copying banks to M Windows banks
 copy ..\bank\Desktop\*.* ..\xpl\GnollHackM\Platforms\Windows\banks
+
+echo Start copying GnollHackM tileset
+if not exist ..\xpl\GnollHackM\Platforms\Android\tileset mkdir ..\xpl\GnollHackM\Platforms\Android\tileset
+if not exist ..\xpl\GnollHackM\Platforms\iOS\tileset mkdir ..\xpl\GnollHackM\Platforms\iOS\tileset
+if not exist ..\xpl\GnollHackM\Platforms\Windows\tileset mkdir ..\xpl\GnollHackM\Platforms\Windows\tileset
+del /Q ..\xpl\GnollHackM\Platforms\Android\tileset\*.*
+del /Q ..\xpl\GnollHackM\Platforms\iOS\tileset\*.*
+del /Q ..\xpl\GnollHackM\Platforms\Windows\tileset\*.*
+echo Copying tileset to M Android tileset
+copy ..\tileset\*.* ..\xpl\GnollHackM\Platforms\Android\tileset
+echo Copying tileset to M iOS tileset
+copy ..\tileset\*.* ..\xpl\GnollHackM\Platforms\iOS\tileset
+echo Copying tileset to M Windows tileset
+copy ..\tileset\*.* ..\xpl\GnollHackM\Platforms\Windows\tileset
 
 echo Copying aapt2 to wsl-in\assetpack
 copy ..\xpl\GnollHackX\GnollHackX.Android.GooglePlay\aapt2 c:\wsl-in\assetpack

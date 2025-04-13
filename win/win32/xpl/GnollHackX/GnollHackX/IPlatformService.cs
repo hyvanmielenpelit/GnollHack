@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Threading.Tasks;
+
 #if GNH_MAUI
 #else
 using Xamarin.Forms;
@@ -14,6 +17,7 @@ namespace GnollHackX
         void CloseApplication();
         void HideKeyboard();
         float GetPlatformScreenScale();
+        Task<Stream> GetPlatformAssetsStreamAsync(string directory, string fileName);
 
         string GetVersionString();
         ulong GetDeviceMemoryInBytes();

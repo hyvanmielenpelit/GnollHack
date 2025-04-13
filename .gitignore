@@ -43,6 +43,8 @@ include/animoff.h
 include/animtotals.h
 *.sjson
 gnollhack_64x96_transparent_32bits*.png
+gnollhack_64x96_transparent_32bits*.ghpng
+*.ghpng
 win/win32/vs/*.lev
 win/win32/vs/default.nh
 win/win32/vs/dumplog

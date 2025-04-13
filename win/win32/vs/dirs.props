@@ -31,20 +31,32 @@
     <GooglePlayOnDemandDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX.Android.GooglePlay\OnDemand\</GooglePlayOnDemandDir>
     <!--<GooglePlayInstallTimeMauiDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX.Android.GooglePlay\InstallTime-Maui\</GooglePlayInstallTimeMauiDir>-->
     <!--<GooglePlayOnDemandMauiDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX.Android.GooglePlay\OnDemand-Maui\</GooglePlayOnDemandMauiDir>-->
+    
     <AndroidLibsDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX.Android\libs\</AndroidLibsDir>
     <iOSNativeReferencesDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX.iOS\Native References\</iOSNativeReferencesDir>
     <MauiAndroidLibsDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\Android\libs\</MauiAndroidLibsDir>
     <MauiiOSNativeReferencesDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\iOS\libs\</MauiiOSNativeReferencesDir>
     <MauiWindowsLibsDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\Windows\libs\</MauiWindowsLibsDir>
+    
     <XamarinAssetsDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX\Assets\</XamarinAssetsDir>
     <MauiAssetsDir>$(RootDir)win\win32\xpl\GnollHackM\Assets\</MauiAssetsDir>
+    
     <AndroidGnhDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX.Android\gnh\</AndroidGnhDir>
     <iOSGnhDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX.iOS\gnh\</iOSGnhDir>
     <MauiAndroidGnhDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\Android\gnh\</MauiAndroidGnhDir>
     <MauiiOSGnhDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\iOS\gnh\</MauiiOSGnhDir>
     <MauiWindowsGnhDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\Windows\gnh\</MauiWindowsGnhDir>
+
+    <TilesetDir>$(RootDir)win\win32\tileset\</TilesetDir>
+    <AndroidTilesetDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX.Android\tileset\</AndroidTilesetDir>
+    <iOSGTilesetDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX.iOS\tileset\</iOSGTilesetDir>
+    <MauiAndroidTilesetDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\Android\tileset\</MauiAndroidTilesetDir>
+    <MauiiOSTilesetDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\iOS\tileset\</MauiiOSTilesetDir>
+    <MauiWindowsTilesetDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\Windows\tileset\</MauiWindowsTilesetDir>
+
     <BankDesktopDir>$(WinWin32Dir)bank\Desktop\</BankDesktopDir>
     <BankMobileDir>$(WinWin32Dir)bank\Mobile\</BankMobileDir>
+    
     <XamarinMainDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX\</XamarinMainDir>
     <XamarinGamePagesDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX\Pages\Game\</XamarinGamePagesDir>
     <XamarinStartScreenDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX\Pages\MainScreen\</XamarinStartScreenDir>

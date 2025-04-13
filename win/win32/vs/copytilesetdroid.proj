@@ -3,15 +3,40 @@
   <Import Project="files.props"/>
   <!-- TODO not copying record-->
   <Target Name="Build">
-    <Copy SkipUnchangedFiles="false" SourceFiles="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png" DestinationFolder="$(XamarinAssetsDir)"/>
-	<Message Text="Copied tilesets from $(WinWin32Dir) to $(XamarinAssetsDir)" Importance="High" />
+    <!--<Copy SkipUnchangedFiles="false" SourceFiles="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png" DestinationFolder="$(XamarinAssetsDir)"/>
+	  <Message Text="Copied tilesets from $(WinWin32Dir) to $(XamarinAssetsDir)" Importance="High" />
     <Copy SkipUnchangedFiles="false" SourceFiles="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png;$(WinWin32Dir)gnollhack_64x96_transparent_32bits-2.png" DestinationFolder="$(MauiAssetsDir)"/>
-	<Message Text="Copied tilesets from $(WinWin32Dir) to $(MauiAssetsDir)" Importance="High" />
+	  <Message Text="Copied tilesets from $(WinWin32Dir) to $(MauiAssetsDir)" Importance="High" />-->
+
+    <Copy SkipUnchangedFiles="false" SourceFiles="$(TilesetDir)gnollhack_64x96_transparent_32bits.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-2.png" DestinationFolder="$(AndroidTilesetDir)"/>
+    <Message Text="Copied tilesets from $(TilesetDir) to $(AndroidTilesetDir)" Importance="High" />
+    <Copy SkipUnchangedFiles="false" SourceFiles="$(TilesetDir)gnollhack_64x96_transparent_32bits.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-2.png" DestinationFolder="$(iOSGTilesetDir)"/>
+    <Message Text="Copied tilesets from $(TilesetDir) to $(iOSGTilesetDir)" Importance="High" />
+    <Copy SkipUnchangedFiles="false" SourceFiles="$(TilesetDir)gnollhack_64x96_transparent_32bits.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-2.png" DestinationFolder="$(MauiAndroidTilesetDir)"/>
+    <Message Text="Copied tilesets from $(TilesetDir) to $(MauiAndroidTilesetDir)" Importance="High" />
+    <Copy SkipUnchangedFiles="false" SourceFiles="$(TilesetDir)gnollhack_64x96_transparent_32bits.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-2.png" DestinationFolder="$(MauiiOSTilesetDir)"/>
+    <Message Text="Copied tilesets from $(TilesetDir) to $(MauiiOSTilesetDir)" Importance="High" />
+    <Copy SkipUnchangedFiles="false" SourceFiles="$(TilesetDir)gnollhack_64x96_transparent_32bits.png;$(TilesetDir)gnollhack_64x96_transparent_32bits-2.png" DestinationFolder="$(MauiWindowsTilesetDir)"/>
+    <Message Text="Copied tilesets from $(TilesetDir) to $(MauiWindowsTilesetDir)" Importance="High" />
+    <Move SourceFiles="$(iOSGTilesetDir)gnollhack_64x96_transparent_32bits.png;$(iOSGTilesetDir)gnollhack_64x96_transparent_32bits-2.png" DestinationFiles="$(iOSGTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(iOSGTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng" />
+    <Message Text="Renamed tilesets in $(iOSGTilesetDir) from .png to .ghpng" Importance="High" />
+    <Move SourceFiles="$(MauiiOSTilesetDir)gnollhack_64x96_transparent_32bits.png;$(MauiiOSTilesetDir)gnollhack_64x96_transparent_32bits-2.png" DestinationFiles="$(MauiiOSTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(MauiiOSTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng" />
+    <Message Text="Renamed tilesets in $(MauiiOSTilesetDir) from .png to .ghpng" Importance="High" />
   </Target>
   <Target Name="Clean">
-    <Delete Files="$(XamarinAssetsDir)gnollhack_64x96_transparent_32bits.png;$(XamarinAssetsDir)gnollhack_64x96_transparent_32bits-2.png"/>
-	<Message Text="Deleted tilesets from $(XamarinAssetsDir)" Importance="High" />
+    <!--<Delete Files="$(XamarinAssetsDir)gnollhack_64x96_transparent_32bits.png;$(XamarinAssetsDir)gnollhack_64x96_transparent_32bits-2.png"/>
+	  <Message Text="Deleted tilesets from $(XamarinAssetsDir)" Importance="High" />
     <Delete Files="$(MauiAssetsDir)gnollhack_64x96_transparent_32bits.png;$(MauiAssetsDir)gnollhack_64x96_transparent_32bits-2.png"/>
-	<Message Text="Deleted tilesets from $(MauiAssetsDir)" Importance="High" />
+	  <Message Text="Deleted tilesets from $(MauiAssetsDir)" Importance="High" />-->
+    <Delete Files="$(AndroidTilesetDir)gnollhack_64x96_transparent_32bits.png;$(AndroidTilesetDir)gnollhack_64x96_transparent_32bits-2.png"/>
+    <Message Text="Deleted tilesets from $(AndroidTilesetDir)" Importance="High" />
+    <Delete Files="$(iOSGTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(iOSGTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng"/>
+    <Message Text="Deleted tilesets from $(iOSGTilesetDir)" Importance="High" />
+    <Delete Files="$(MauiAndroidTilesetDir)gnollhack_64x96_transparent_32bits.png;$(MauiAndroidTilesetDir)gnollhack_64x96_transparent_32bits-2.png"/>
+    <Message Text="Deleted tilesets from $(MauiAndroidTilesetDir)" Importance="High" />
+    <Delete Files="$(MauiiOSTilesetDir)gnollhack_64x96_transparent_32bits.ghpng;$(MauiiOSTilesetDir)gnollhack_64x96_transparent_32bits-2.ghpng"/>
+    <Message Text="Deleted tilesets from $(MauiiOSTilesetDir)" Importance="High" />
+    <Delete Files="$(MauiWindowsTilesetDir)gnollhack_64x96_transparent_32bits.png;$(MauiWindowsTilesetDir)gnollhack_64x96_transparent_32bits-2.png"/>
+    <Message Text="Deleted tilesets from $(MauiWindowsTilesetDir)" Importance="High" />
   </Target>
 </Project>

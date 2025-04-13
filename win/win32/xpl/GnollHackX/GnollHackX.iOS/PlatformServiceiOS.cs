@@ -14,6 +14,8 @@ using Foundation;
 using UIKit;
 using StoreKit;
 using GameController;
+using System.IO;
+using System.Threading.Tasks;
 
 #if GNH_MAUI
 namespace GnollHackM
@@ -98,6 +100,21 @@ namespace GnollHackX.iOS
 #else
             /* Do nothing; fall back to Xamarin.Forms termination after this call */
 #endif
+        }
+
+        public Task<Stream> GetPlatformAssetsStreamAsync(string directory, string fileName)
+        {
+            return Task.Run(() => GetPlatformAssetsStream(directory, fileName));
+        }
+
+        private Stream GetPlatformAssetsStream(string directory, string fileName)
+        {
+            string extension = Path.GetExtension(fileName);
+            if (extension != null && extension.Length > 0)
+                extension = extension.Substring(1); /* Remove . from the start */
+            string fname = Path.GetFileNameWithoutExtension(fileName);
+            string fullFilePath = NSBundle.MainBundle.PathForResource(fname, extension, directory);
+            return File.OpenRead(fullFilePath);
         }
 
         public void SetStatusBarHidden(bool ishidden)
