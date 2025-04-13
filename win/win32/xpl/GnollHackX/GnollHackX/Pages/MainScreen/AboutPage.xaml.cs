@@ -42,6 +42,10 @@ namespace GnollHackX.Pages.MainScreen
             {
                 lblHeader.TextColor = GHColors.White;
             }
+            if (GHApp.IsSteam)
+            {
+                btnSponsor.IsVisible = false;
+            }
         }
 
         private async void btnCreditsX_Clicked(object sender, EventArgs e)

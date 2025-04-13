@@ -23,6 +23,7 @@
                         <StackLayout x:Name="AboutLayout" HorizontalOptions="Fill" Orientation="Vertical" Spacing="1">
                             <controls:CustomImageButton x:Name="btnVersion" Text="Version" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                             Margin="0,0,0,16" HorizontalOptions="Center" VerticalOptions="Center" Clicked="btnVersion_Clicked" UseVaryingBackgroundImages ="False" />
+                            
                             <controls:CustomImageButton x:Name="btnCreditsX" Text="Credits" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                             HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnCreditsX_Clicked" UseVaryingBackgroundImages ="False" />
                             <controls:CustomImageButton x:Name="btnLicense" Text="License" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
@@ -34,9 +35,10 @@
                             <controls:CustomImageButton x:Name="btnWebPage" Text="www.gnollhack.com" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                             HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnWebPage_Clicked" UseVaryingBackgroundImages ="False" />
                             <controls:CustomImageButton x:Name="btnSponsor" Text="Sponsor" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                            Margin="0,0,0,16" HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnSponsor_Clicked" UseVaryingBackgroundImages ="False" />
+                                            HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnSponsor_Clicked" UseVaryingBackgroundImages ="False" />
+                            
                             <controls:CustomImageButton x:Name="btnImportExport" Text="Manage Files" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
-                                            HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnImportExport_Clicked" UseVaryingBackgroundImages ="False" />
+                                            Margin="0,16,0,0" HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnImportExport_Clicked" UseVaryingBackgroundImages ="False" />
                             <controls:CustomImageButton x:Name="btnCrashReport" Text="Crash Report" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"
                                             HorizontalOptions="Center" VerticalOptions="Center"  Clicked="btnCrashReport_Clicked" UseVaryingBackgroundImages ="False" />
                             <!--<controls:CustomImageButton x:Name="btnDowngrade" Text="Downgrade" WidthRequest="320" HeightRequest="42" FontFamily="Diablo" BackgroundColor="Transparent" TextColor="White"

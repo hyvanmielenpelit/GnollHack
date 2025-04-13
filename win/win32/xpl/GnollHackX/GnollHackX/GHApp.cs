@@ -263,6 +263,8 @@ namespace GnollHackX
 
         private static void ProcessEnvironment()
         {
+            IsPlaytest = false;
+            IsSteam = false;
 #if WINDOWS
             try
             {
@@ -272,7 +274,22 @@ namespace GnollHackX
                     if (packstr.EndsWith(".Playtest"))
                     {
                         IsPlaytest = true;
-                        return;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+            try
+            {
+                string packstr = AppInfo.PackageName;
+                if (!string.IsNullOrEmpty(packstr))
+                {
+                    if (packstr.EndsWith(".Steam") || packstr.Contains(".Steam."))
+                    {
+                        IsSteam = true;
                     }
                 }
             }
@@ -281,7 +298,6 @@ namespace GnollHackX
                 Debug.WriteLine(ex.Message);
             }
 #endif
-            IsPlaytest = false;
         }
 
         private static void ProcessCommandLineArguments()
