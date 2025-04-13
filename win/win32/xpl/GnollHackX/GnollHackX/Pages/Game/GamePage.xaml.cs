@@ -1252,14 +1252,14 @@ namespace GnollHackX.Pages.Game
                     {
                         GHApp.FmodService.LoadBanks(sound_bank_loading_type.Game);
                     }));
-                    tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits" + (GHApp.IsiOS ? ".ghpng" : ".png"));
+                    tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits.ghpng");
                     tasks.Add(tileSetTask);
                     await Task.WhenAll(tasks);
                     GHApp._tileMap[0] = tileSetTask.Result;
                     tasks.Clear();
 
                     tasks.Add(LoadingProgressBar.ProgressTo(0.4, 100, Easing.Linear));
-                    tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits-2" + (GHApp.IsiOS ? ".ghpng" : ".png"));
+                    tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits-2.ghpng");
                     tasks.Add(tileSetTask);
                     await Task.WhenAll(tasks);
                     GHApp._tileMap[1] = tileSetTask.Result;

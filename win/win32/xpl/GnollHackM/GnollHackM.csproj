@@ -309,8 +309,8 @@
 		<None Remove="Platforms\Android\libs\x86_64\libfmod.so" />
 		<None Remove="Platforms\Android\libs\x86_64\libfmodstudio.so" />
 		<None Remove="Platforms\Android\libs\x86_64\libgnollhackdroid.so" />
-		<None Remove="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits-2.png" />
-		<None Remove="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits.png" />
+		<None Remove="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits-2.ghpng" />
+		<None Remove="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits.ghpng" />
 		<None Remove="Resources\AppIcon\appicon.svg" />
 		<None Remove="Resources\AppIcon\appiconfg.svg" />
 	</ItemGroup>
@@ -651,8 +651,8 @@
     <AndroidAsset Include="Platforms\Android\banks\Intro.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk'" />
     <AndroidAsset Include="Platforms\Android\banks\Master.strings.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk'" />
     <AndroidAsset Include="Platforms\Android\banks\Music.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk'" />
-    <AndroidAsset Include="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits.png" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk'" />
-    <AndroidAsset Include="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits-2.png" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk'" />
+    <AndroidAsset Include="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk'" />
+    <AndroidAsset Include="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits-2.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk'" />
 
     <AndroidAsset Include="Platforms\Android\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" Condition=" '$(AndroidPackageFormat)' == 'apk' " />
     <AndroidAsset Include="Platforms\Android\banks\Master.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
@@ -661,8 +661,8 @@
     <AndroidAsset Include="Platforms\Android\banks\Master.strings.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
     <AndroidAsset Include="Platforms\Android\banks\Music.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
 	  <AndroidAsset Include="Platforms\Android\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
-    <AndroidAsset Include="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits.png" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
-    <AndroidAsset Include="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits-2.png" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
+    <AndroidAsset Include="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
+    <AndroidAsset Include="Platforms\Android\tileset\gnollhack_64x96_transparent_32bits-2.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)" AssetPack="installtimeassetpack" DeliveryType="InstallTime" Condition=" '$(AndroidPackageFormat)' != 'apk'" />
     <!--<AndroidAppBundleModules Include="Platforms\Android\assetpacks\ondemandassetpack.zip" Condition=" '$(AndroidPackageFormat)' != 'apk' " />-->
     <!--<AndroidAppBundleModules Include="Platforms\Android\assetpacks\installtimeassetpack.zip" Condition=" '$(AndroidPackageFormat)' != 'apk' " />-->
 	  <Compile Include="..\GnollHackX\GnollHackX.Android\PlatformServiceAndroid.cs" />
@@ -774,10 +774,10 @@
 		<MauiAsset Include="Platforms\Windows\banks\Preliminary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</MauiAsset>
-    <MauiAsset Include="Platforms\Windows\tileset\gnollhack_64x96_transparent_32bits.png" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)">
+    <MauiAsset Include="Platforms\Windows\tileset\gnollhack_64x96_transparent_32bits.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </MauiAsset>
-    <MauiAsset Include="Platforms\Windows\tileset\gnollhack_64x96_transparent_32bits-2.png" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)">
+    <MauiAsset Include="Platforms\Windows\tileset\gnollhack_64x96_transparent_32bits-2.ghpng" LogicalName="%(RecursiveDir)tileset\%(Filename)%(Extension)">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </MauiAsset>
   </ItemGroup>

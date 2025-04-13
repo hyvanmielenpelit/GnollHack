@@ -17,9 +17,12 @@ copy ..\bank\Mobile\Music.bank c:\wsl-in\assetpack\Assets\banks
 copy ..\bank\Mobile\Preliminary.bank c:\wsl-in\assetpack\Assets\banks
 copy ..\bank\Mobile\Auxiliary.bank c:\wsl-in\assetpack\Assets\banks
 copy ..\bank\Mobile\Intro.bank c:\wsl-in\assetpack\Assets\banks
+
+echo Preparing GnollHack tilesets
+copy ..\tileset\*.png ..\tileset\*.ghpng
+
 echo Copying tileset to c:\wsl-in\assetpack\Assets\tileset
-copy ..\tileset\gnollhack_64x96_transparent_32bits.png c:\wsl-in\assetpack\Assets\tileset
-copy ..\tileset\gnollhack_64x96_transparent_32bits-2.png c:\wsl-in\assetpack\Assets\tileset
+copy ..\tileset\*.ghpng c:\wsl-in\assetpack\Assets\tileset
 
 if not exist c:\wsl-in\assetpack2 mkdir c:\wsl-in\assetpack2
 if not exist c:\wsl-in\assetpack2\Assets mkdir c:\wsl-in\assetpack2\Assets
@@ -71,9 +74,9 @@ if not exist ..\xpl\GnollHackX\GnollHackX.iOS\tileset mkdir ..\xpl\GnollHackX\Gn
 del /Q ..\xpl\GnollHackX\GnollHackX.Android\tileset\*.*
 del /Q ..\xpl\GnollHackX\GnollHackX.iOS\tileset\*.*
 echo Copying tileset to X Android tileset
-copy ..\tileset\*.* ..\xpl\GnollHackX\GnollHackX.Android\tileset
+copy ..\tileset\*.ghpng ..\xpl\GnollHackX\GnollHackX.Android\tileset
 echo Copying tileset to X iOS tileset
-copy ..\tileset\*.* ..\xpl\GnollHackX\GnollHackX.iOS\tileset
+copy ..\tileset\*.ghpng ..\xpl\GnollHackX\GnollHackX.iOS\tileset
 
 echo Start copying GnollHackM banks
 if not exist ..\xpl\GnollHackM\Platforms\Android\banks mkdir ..\xpl\GnollHackM\Platforms\Android\banks
@@ -97,11 +100,13 @@ del /Q ..\xpl\GnollHackM\Platforms\Android\tileset\*.*
 del /Q ..\xpl\GnollHackM\Platforms\iOS\tileset\*.*
 del /Q ..\xpl\GnollHackM\Platforms\Windows\tileset\*.*
 echo Copying tileset to M Android tileset
-copy ..\tileset\*.* ..\xpl\GnollHackM\Platforms\Android\tileset
+copy ..\tileset\*.ghpng ..\xpl\GnollHackM\Platforms\Android\tileset
 echo Copying tileset to M iOS tileset
-copy ..\tileset\*.* ..\xpl\GnollHackM\Platforms\iOS\tileset
+copy ..\tileset\*.ghpng ..\xpl\GnollHackM\Platforms\iOS\tileset
 echo Copying tileset to M Windows tileset
-copy ..\tileset\*.* ..\xpl\GnollHackM\Platforms\Windows\tileset
+copy ..\tileset\*.ghpng ..\xpl\GnollHackM\Platforms\Windows\tileset
+
+del /Q ..\tileset\*.ghpng
 
 echo Copying aapt2 to wsl-in\assetpack
 copy ..\xpl\GnollHackX\GnollHackX.Android.GooglePlay\aapt2 c:\wsl-in\assetpack
