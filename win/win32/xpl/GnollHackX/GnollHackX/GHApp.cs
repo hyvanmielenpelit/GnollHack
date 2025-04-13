@@ -274,6 +274,7 @@ namespace GnollHackX
                     if (packstr.EndsWith(".Playtest"))
                     {
                         IsPlaytest = true;
+                        IsSteam = true;
                     }
                 }
             }
