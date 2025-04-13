@@ -1247,25 +1247,29 @@ namespace GnollHackX.Pages.Game
                 if (!GHApp.StartGameDataSet)
                 {
                     Task<SKImage> tileSetTask;
-                    tasks.Add(LoadingProgressBar.ProgressTo(0.3, 600, Easing.Linear));
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.2, 400, Easing.Linear));
                     tasks.Add(Task.Run(() =>
                     {
                         GHApp.FmodService.LoadBanks(sound_bank_loading_type.Game);
                     }));
+                    await Task.WhenAll(tasks);
+                    tasks.Clear();
+
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.4, 400, Easing.Linear));
                     tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits.ghpng");
                     tasks.Add(tileSetTask);
                     await Task.WhenAll(tasks);
                     GHApp._tileMap[0] = tileSetTask.Result;
                     tasks.Clear();
 
-                    tasks.Add(LoadingProgressBar.ProgressTo(0.4, 100, Easing.Linear));
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.5, 200, Easing.Linear));
                     tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits-2.ghpng");
                     tasks.Add(tileSetTask);
                     await Task.WhenAll(tasks);
                     GHApp._tileMap[1] = tileSetTask.Result;
                     tasks.Clear();
 
-                    tasks.Add(LoadingProgressBar.ProgressTo(0.5, 100, Easing.Linear));
+                    tasks.Add(LoadingProgressBar.ProgressTo(0.55, 100, Easing.Linear));
                     tasks.Add(Task.Run(() =>
                     {
                         GHApp._logoBitmap = GHApp.LoadEmbeddedAssetsBitmap("gnollhack-icon-v2-512.png");
