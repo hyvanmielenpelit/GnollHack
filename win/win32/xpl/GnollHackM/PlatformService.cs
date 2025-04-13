@@ -12,7 +12,7 @@ namespace GnollHackM
     {
         public event EventHandler<AssetPackStatusEventArgs> OnDemandPackStatusNotification;
 
-        public void Stream GetPlatformAssetsStream(string fileName)
+        public Task<Stream> GetPlatformAssetsStreamAsync(string directory, string fileName)
         {
             throw new NotImplementedException();
         }
