@@ -6476,54 +6476,51 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        int GetTileFromAnimation(int ntile, int glyph, int mapx, int mapy, int layer_idx, long generalcountervalue, bool is_monster_or_shadow_layer,
+        int GetTileFromAnimation(GHAnimationTimerList localTimers, int ntile, int glyph, int mapx, int mapy, int layer_idx, long generalcountervalue, bool is_monster_or_shadow_layer,
             ref int anim_frame_idx, ref int main_tile_idx, ref int autodraw)
         {
             sbyte mapAnimated = 0;
             int tile_animation_idx = _gnollHackService.GetTileAnimationIndexFromGlyph(glyph);
             bool is_dropping_piercer = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_DROPPING_PIERCER) != 0;
-            lock (AnimationTimerLock)
+            if (localTimers.u_action_animation_counter_on && is_monster_or_shadow_layer && ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0))
+                ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, localTimers.u_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+            else if (localTimers.m_action_animation_counter_on && ((!is_dropping_piercer && is_monster_or_shadow_layer) || (is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MISSILE)) && localTimers.m_action_animation_x == mapx && localTimers.m_action_animation_y == mapy)
+                ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, localTimers.m_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+            else if (_gnollHackService.GlyphIsExplosion(glyph))
+                ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, localTimers.explosion_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+            else if (_gnollHackService.GlyphIsZap(glyph))
             {
-                if (AnimationTimers.u_action_animation_counter_on && is_monster_or_shadow_layer && ((_mapData[mapx, mapy].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0))
-                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.u_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
-                else if (AnimationTimers.m_action_animation_counter_on && ((!is_dropping_piercer && is_monster_or_shadow_layer) || (is_dropping_piercer && layer_idx == (int)layer_types.LAYER_MISSILE)) && AnimationTimers.m_action_animation_x == mapx && AnimationTimers.m_action_animation_y == mapy)
-                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.m_action_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
-                else if (_gnollHackService.GlyphIsExplosion(glyph))
-                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.explosion_animation_counter, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
-                else if (_gnollHackService.GlyphIsZap(glyph))
+                for (int zap_anim_idx = 0; zap_anim_idx < GHConstants.MaxPlayedZapAnimations; zap_anim_idx++)
                 {
-                    for (int zap_anim_idx = 0; zap_anim_idx < GHConstants.MaxPlayedZapAnimations; zap_anim_idx++)
+                    if (localTimers.zap_animation_counter_on[zap_anim_idx]
+                        && mapx == localTimers.zap_animation_x[zap_anim_idx]
+                        && mapy == localTimers.zap_animation_y[zap_anim_idx])
                     {
-                        if (AnimationTimers.zap_animation_counter_on[zap_anim_idx]
-                            && mapx == AnimationTimers.zap_animation_x[zap_anim_idx]
-                            && mapy == AnimationTimers.zap_animation_y[zap_anim_idx])
-                        {
-                            ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.zap_animation_counter[zap_anim_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
-                            break;
-                        }
+                        ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, localTimers.zap_animation_counter[zap_anim_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                        break;
                     }
                 }
-                else
+            }
+            else
+            {
+                /* Check for special effect animations */
+                bool spef_found = false;
+                for (int spef_idx = 0; spef_idx < GHConstants.MaxPlayedSpecialEffects; spef_idx++)
                 {
-                    /* Check for special effect animations */
-                    bool spef_found = false;
-                    for (int spef_idx = 0; spef_idx < GHConstants.MaxPlayedSpecialEffects; spef_idx++)
+                    if (localTimers.special_effect_animation_counter_on[spef_idx]
+                        && layer_idx == (int)localTimers.spef_action_animation_layer[spef_idx]
+                        && mapx == localTimers.spef_action_animation_x[spef_idx]
+                        && mapy == localTimers.spef_action_animation_y[spef_idx])
                     {
-                        if (AnimationTimers.special_effect_animation_counter_on[spef_idx]
-                            && layer_idx == (int)AnimationTimers.spef_action_animation_layer[spef_idx]
-                            && mapx == AnimationTimers.spef_action_animation_x[spef_idx]
-                            && mapy == AnimationTimers.spef_action_animation_y[spef_idx])
-                        {
-                            ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, AnimationTimers.special_effect_animation_counter[spef_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
-                            spef_found = true;
-                            break;
-                        }
+                        ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, localTimers.special_effect_animation_counter[spef_idx], out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
+                        spef_found = true;
+                        break;
                     }
+                }
 
-                    /* Otherwise, normal animation check */
-                    if (!spef_found)
-                        ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, generalcountervalue, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
-                }
+                /* Otherwise, normal animation check */
+                if (!spef_found)
+                    ntile = _gnollHackService.GetAnimatedTile(ntile, tile_animation_idx, (int)animation_play_types.ANIMATION_PLAY_TYPE_ALWAYS, generalcountervalue, out anim_frame_idx, out main_tile_idx, out mapAnimated, ref autodraw);
             }
             return ntile;
         }
@@ -6570,7 +6567,7 @@ namespace GnollHackX.Pages.Game
         StringBuilder _lineBuilder = new StringBuilder(GHConstants.LineBuilderInitialCapacity);
         string[] _attributeStrings = new string[6] { "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma" };
         short[,] _draw_shadow = new short[GHConstants.MapCols, GHConstants.MapRows];
-
+        GHAnimationTimerList _localAnimationTimers = new GHAnimationTimerList();
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
         {
             if (!IsMainCanvasOn || /* !MainGrid.IsVisible || */ GHApp.IsReplaySearching)
@@ -6621,6 +6618,7 @@ namespace GnollHackX.Pages.Game
             lock (AnimationTimerLock)
             {
                 generalcountervalue = AnimationTimers.general_animation_counter;
+                AnimationTimers.CopyTo(_localAnimationTimers);
             }
             lock (_mainCounterLock)
             {
@@ -6931,7 +6929,7 @@ namespace GnollHackX.Pages.Game
 
                                                                         /* Determine animation tile here */
                                                                         int anim_frame_idx = 0, main_tile_idx = 0;
-                                                                        ntile = GetTileFromAnimation(ntile, glyph, source_x, source_y, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
+                                                                        ntile = GetTileFromAnimation(_localAnimationTimers, ntile, glyph, source_x, source_y, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
 
                                                                         /* Draw enlargement tiles */
                                                                         int enlargement = GHApp.Tile2Enlargement[ntile];
@@ -7064,7 +7062,7 @@ namespace GnollHackX.Pages.Game
 
                                                                     /* Determine animation tile here */
                                                                     int anim_frame_idx = 0, main_tile_idx = 0;
-                                                                    ntile = GetTileFromAnimation(ntile, glyph, mapx, mapy, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
+                                                                    ntile = GetTileFromAnimation(_localAnimationTimers, ntile, glyph, mapx, mapy, layer_idx, generalcountervalue, is_monster_or_shadow_layer, ref anim_frame_idx, ref main_tile_idx, ref autodraw);
 
                                                                     /* Draw enlargement tiles */
                                                                     int enlargement = GHApp.Tile2Enlargement[ntile];

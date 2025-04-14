@@ -36,5 +36,37 @@ namespace GnollHackX
         {
 
         }
+
+        public GHAnimationTimerList Clone()
+        {
+            GHAnimationTimerList clone = new GHAnimationTimerList();
+            CopyTo(clone);
+            return clone;
+        }
+        public void CopyTo(GHAnimationTimerList clone)
+        {
+            clone.u_action_animation_counter_on = u_action_animation_counter_on;
+            clone.m_action_animation_counter_on = m_action_animation_counter_on;
+            clone.explosion_animation_counter_on = explosion_animation_counter_on;
+            zap_animation_counter_on.CopyTo(clone.zap_animation_counter_on, 0);
+            special_effect_animation_counter_on.CopyTo(clone.special_effect_animation_counter_on, 0);
+
+            clone.general_animation_counter = general_animation_counter;
+            clone.u_action_animation_counter = u_action_animation_counter;
+            clone.m_action_animation_counter = m_action_animation_counter;
+            clone.explosion_animation_counter = explosion_animation_counter;
+            zap_animation_counter.CopyTo(clone.zap_animation_counter, 0);
+            special_effect_animation_counter.CopyTo(clone.special_effect_animation_counter, 0);
+
+            clone.m_action_animation_x = m_action_animation_x;
+            clone.m_action_animation_y = m_action_animation_y;
+            clone.explosion_animation_x = explosion_animation_x;
+            clone.explosion_animation_y = explosion_animation_y;
+            zap_animation_x.CopyTo(clone.zap_animation_x, 0);
+            zap_animation_y.CopyTo(clone.zap_animation_y, 0);
+            spef_action_animation_x.CopyTo(clone.spef_action_animation_x, 0);
+            spef_action_animation_y.CopyTo(clone.spef_action_animation_y, 0);
+            spef_action_animation_layer.CopyTo(clone.spef_action_animation_layer, 0);
+        }
     }
 }

@@ -549,16 +549,16 @@ namespace GnollHackX
             LayerInfo layers = layers_ptr == IntPtr.Zero ? new LayerInfo() : (LayerInfo)Marshal.PtrToStructure(layers_ptr, typeof(LayerInfo));
             RecordFunctionCall(RecordedFunctionID.PrintGlyph, winHandle, x, y, glyph, bkglyph, symbol, ocolor, special, layers);
 
-            GHWindow gHWindow = null;
-            lock (_ghWindowsLock)
-            {
-                gHWindow = _ghWindows[winHandle];
-            }
+            //GHWindow gHWindow = null;
+            //lock (_ghWindowsLock)
+            //{
+            //    gHWindow = _ghWindows[winHandle];
+            //}
             //_savedPrintGlyphCalls.Add(new SavedPrintGlyphCall(gHWindow, x, y, glyph, bkglyph, symbol, ocolor, special, ref layers));
 
-            if (gHWindow != null)
-                gHWindow.PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
-
+            //if (gHWindow != null)
+            //    gHWindow.PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
+            _gamePage.SetMapSymbol(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
             _gamePage.ClearAllObjectData(x, y);
             _gamePage.ClearEngravingData(x, y);
         }
