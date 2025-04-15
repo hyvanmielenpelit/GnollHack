@@ -131,6 +131,14 @@ namespace GnollHackX.Pages.Game
             });
         }
 
+        private void FocusToEnterName()
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                eName.Focus();
+            });
+        }
+
         private bool _backPressed = false;
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
         {
@@ -173,9 +181,9 @@ namespace GnollHackX.Pages.Game
             {
 #if GNH_MAUI
                 var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
-                timer.Interval = TimeSpan.FromSeconds(0.25);
+                timer.Interval = TimeSpan.FromSeconds(GHConstants.KeyboardFocusDelay);
                 timer.IsRepeating = false;
-                timer.Tick += (s, e) => { eName.Focus(); };
+                timer.Tick += (s, e) => { FocusToEnterName(); };
                 timer.Start();
 #else
                 eName.Focus();

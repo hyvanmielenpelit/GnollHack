@@ -1674,6 +1674,7 @@ namespace GnollHackX
         public const float ScrollConstantStretch = 0.075f; /* pixels in % of screen height */
         public const double MoveByHoldingDownThreshold = 0.20; /* Seconds */
         public const double LongMenuTapThreshold = 0.75; /* Seconds */
+        public const double KeyboardFocusDelay = 0.25; /* Seconds */        
         public const int TileWidth = 64;
         public const int TileHeight = 96;
         public const int StatusMarkWidth = 16;
