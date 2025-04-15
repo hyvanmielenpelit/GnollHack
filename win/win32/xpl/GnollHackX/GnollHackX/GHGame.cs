@@ -1105,9 +1105,12 @@ namespace GnollHackX
             if (reassessment != 0)
                 return;
 
-            for(int i = 0; i < (int)NhStatusFields.MAXBLSTATS; i++)
+            lock(_gamePage.StatusFieldLock)
             {
-                _gamePage.StatusFields[i] = new GHStatusField();
+                for (int i = 0; i < (int)NhStatusFields.MAXBLSTATS; i++)
+                {
+                    _gamePage.StatusFields[i] = new GHStatusField();
+                }
             }
         }
 

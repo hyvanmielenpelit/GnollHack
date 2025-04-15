@@ -4,19 +4,19 @@ using System.Text;
 
 namespace GnollHackX
 {
-    public class GHStatusField
+    public struct GHStatusField
     {
         /* Base Data */
-        public string Name { get; set; }
-        public string Format { get; set; }
-        public bool IsEnabled { get; set; }
+        public string Name;
+        public string Format;
+        public bool IsEnabled;
 
         /* Values */
-        public string Text { get; set; }
-        public long Bits { get; set; }
-        public int Color { get; set; }
-        public int Change { get; set; }
-        public int Percent { get; set; }
+        public string Text;
+        public long Bits;
+        public int Color;
+        public int Change;
+        public int Percent;
 
         public GHStatusField()
         {
