@@ -92,8 +92,8 @@ namespace GnollHackX.Pages.Game
 
         private readonly string _fontSizeString = "FontS";
         private bool _refreshMsgHistoryRowCounts = true;
-        //private readonly object _refreshMsgHistoryRowCountLock = new object();
-        private bool RefreshMsgHistoryRowCounts { get { lock (_msgHistoryLock) { return _refreshMsgHistoryRowCounts; } } set { lock (_msgHistoryLock) { _refreshMsgHistoryRowCounts = value; } } }
+        private readonly object _refreshMsgHistoryRowCountLock = new object();
+        private bool RefreshMsgHistoryRowCounts { get { lock (_refreshMsgHistoryRowCountLock) { return _refreshMsgHistoryRowCounts; } } set { lock (_refreshMsgHistoryRowCountLock) { _refreshMsgHistoryRowCounts = value; } } }
 
         public List<string> ExtendedCommands { get; set; }
 
@@ -494,17 +494,17 @@ namespace GnollHackX.Pages.Game
         private bool _breatheAnimations = false;
         public bool BreatheAnimations { get { lock (_breatheAnimationLock) { return _breatheAnimations; } } set { lock (_breatheAnimationLock) { _breatheAnimations = value; } } }
 
-        //private readonly object _longerMessageHistoryLock = new object();
+        private readonly object _longerMessageHistoryLock = new object();
         bool _longerMessageHistory = false;
         public bool LongerMessageHistory
         {
             get
             {
-                lock (_msgHistoryLock) { return _longerMessageHistory; };
+                lock (_longerMessageHistoryLock) { return _longerMessageHistory; };
             }
             set
             {
-                lock (_msgHistoryLock)
+                lock (_longerMessageHistoryLock)
                 {
                     _longerMessageHistory = value;
                 }
@@ -533,15 +533,16 @@ namespace GnollHackX.Pages.Game
         }
 
         bool _hideMessageHistory = false;
+        private readonly object _hideMessageHistoryLock = new object();
         public bool HideMessageHistory
         {
             get
             {
-                lock (_msgHistoryLock) { return _hideMessageHistory; };
+                lock (_hideMessageHistoryLock) { return _hideMessageHistory; };
             }
             set
             {
-                lock (_msgHistoryLock)
+                lock (_hideMessageHistoryLock)
                 {
                     _hideMessageHistory = value;
                 }
@@ -1012,7 +1013,7 @@ namespace GnollHackX.Pages.Game
             DrawWallEnds = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
             BreatheAnimations = Preferences.Get("BreatheAnimations", GHConstants.DefaultBreatheAnimations);
             AlternativeLayerDrawing = Preferences.Get("AlternativeLayerDrawing", GHConstants.DefaultAlternativeLayerDrawing);
-            lock (_msgHistoryLock)
+            lock (_longerMessageHistoryLock)
             {
                 _longerMessageHistory = GHApp.SavedLongerMessageHistory; /* Cannot send response command yet, hence using private variable */
             }
@@ -2999,6 +3000,12 @@ namespace GnollHackX.Pages.Game
                                 break;
                             case GHRequestType.SaveFileTrackingLoad:
                                 DoSaveFileTrackingLoad(req.RequestLong, req.RequestString, req.RequestLong2, req.RequestString2);
+                                break;
+                            case GHRequestType.ClearPetData:
+                                ClearPetData();
+                                break;
+                            case GHRequestType.AddPetData:
+                                AddPetData(req.MonstInfoData);
                                 break;
                         }
                     }
@@ -6572,6 +6579,11 @@ namespace GnollHackX.Pages.Game
         private GHStatusField[] _localStatusFields = new GHStatusField[(int)NhStatusFields.MAXBLSTATS];
         private ulong[] _local_u_buff_bits = new ulong[GHConstants.NUM_BUFF_BIT_ULONGS];
 
+        public List<GHFloatingText> _localFloatingTexts = new List<GHFloatingText>();
+        public List<GHConditionText> _localConditionTexts = new List<GHConditionText>();
+        public List<GHScreenFilter> _localScreenFilters = new List<GHScreenFilter>();
+        public List<GHGUIEffect> _localGuiEffects = new List<GHGUIEffect>();
+
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
         {
             if (!IsMainCanvasOn || /* !MainGrid.IsVisible || */ GHApp.IsReplaySearching)
@@ -6648,6 +6660,32 @@ namespace GnollHackX.Pages.Game
                 condition_bits = _u_condition_bits;
                 _u_buff_bits.CopyTo(_local_u_buff_bits, 0);
             }
+            lock (_floatingTextLock)
+            {
+                _localFloatingTexts.Clear();
+                _localFloatingTexts.AddRange(_floatingTexts);
+            }
+            GHScreenText localScreenText = null;
+            lock (_screenTextLock)
+            {
+                localScreenText = _screenText;
+            }
+            lock (_conditionTextLock)
+            {
+                _localConditionTexts.Clear();
+                _localConditionTexts.AddRange(_conditionTexts);
+            }
+            lock (_screenFilterLock)
+            {
+                _localScreenFilters.Clear();
+                _localScreenFilters.AddRange(_screenFilters);
+            }
+            lock (_guiEffectLock)
+            {
+                _localGuiEffects.Clear();
+                _localGuiEffects.AddRange(_guiEffects);
+            }
+
             long moveIntervals = Math.Max(2, (long)Math.Ceiling((double)UIUtils.GetMainCanvasAnimationFrequency(MapRefreshRate) / 10.0));
             bool lighter_darkening = LighterDarkening;
             bool isPointerHovering = false;
@@ -7199,8 +7237,6 @@ namespace GnollHackX.Pages.Game
                                                                 if (dodarkening && DarkenedPos(dc.MapX, dc.MapY))
                                                                 {
                                                                     darkeningCanvas.Clear(SKColors.Transparent);
-                                                                    lock (_lighterDarkeningLock)
-                                                                    {
                                                                         if (dc.IsAutoDraw)
                                                                         {
                                                                             SKImage usedDarkenedBitmap = null;
@@ -7220,7 +7256,7 @@ namespace GnollHackX.Pages.Game
                                                                                 dc.AutoDrawParameters.ty + dc.AutoDrawParameters.scaled_y_padding + dc.AutoDrawParameters.height * dc.AutoDrawParameters.scale * dc.AutoDrawParameters.targetscale);
 
                                                                             bool getsuccessful;
-                                                                            lock(_darkenedAutoDrawBitmapLock)
+                                                                            lock (_darkenedAutoDrawBitmapLock)
                                                                             {
                                                                                 getsuccessful = _darkenedAutodrawBitmaps.ContainsKey(cachekey) && _darkenedAutodrawBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap);
                                                                             }
@@ -7253,7 +7289,7 @@ namespace GnollHackX.Pages.Game
                                                                                     newbmp.SetImmutable();
                                                                                     SKImage newImage = SKImage.FromBitmap(newbmp);
                                                                                     usedDarkenedBitmap = newImage;
-                                                                                    lock(_darkenedAutoDrawBitmapLock)
+                                                                                    lock (_darkenedAutoDrawBitmapLock)
                                                                                     {
                                                                                         if (_darkenedAutodrawBitmaps.Count >= GHConstants.MaxDarkenedAutodrawBitmapCacheSize)
                                                                                         {
@@ -7284,7 +7320,7 @@ namespace GnollHackX.Pages.Game
                                                                             SavedDarkenedBitmap cachekey = new SavedDarkenedBitmap(dc.SourceBitmap, dc.SourceRect, darken_percentage);
                                                                             SKRect cacheRect = new SKRect(0, 0, dc.SourceRect.Width, dc.SourceRect.Height);
                                                                             bool getsuccessful;
-                                                                            lock(_darkenedBitmapLock)
+                                                                            lock (_darkenedBitmapLock)
                                                                             {
                                                                                 getsuccessful = _darkenedBitmaps.ContainsKey(cachekey) && _darkenedBitmaps.TryGetValue(cachekey, out usedDarkenedBitmap);
                                                                             }
@@ -7311,7 +7347,7 @@ namespace GnollHackX.Pages.Game
                                                                                     newbmp.SetImmutable();
                                                                                     SKImage newImage = SKImage.FromBitmap(newbmp);
                                                                                     usedDarkenedBitmap = newImage;
-                                                                                    lock(_darkenedBitmapLock)
+                                                                                    lock (_darkenedBitmapLock)
                                                                                     {
                                                                                         if (_darkenedBitmaps.Count >= GHConstants.MaxDarkenedBitmapCacheSize)
                                                                                         {
@@ -7338,8 +7374,7 @@ namespace GnollHackX.Pages.Game
                                                                             }
                                                                         }
                                                                     }
-                                                                }
-                                                                else
+                                                                    else
                                                                 {
                                                                     paint.Color = dc.PaintColor;
                                                                     canvas.SetMatrix(dc.Matrix);
@@ -7451,89 +7486,131 @@ namespace GnollHackX.Pages.Game
                     /* Floating Texts */
                     if (GraphicsStyle != GHGraphicsStyle.ASCII && !ForceAscii)
                     {
-                        lock (_floatingTextLock)
+                        foreach (GHFloatingText ft in _localFloatingTexts)
                         {
-                            foreach (GHFloatingText ft in _floatingTexts)
+                            SKPoint p;
+                            float relativestrokewidth = 0.0f;
+                            SKColor strokecolor = SKColors.White;
+                            SKColor fillcolor = SKColors.White;
+                            p = ft.GetPosition(maincountervalue);
+                            fillcolor = ft.GetColor(maincountervalue);
+                            textPaint.Typeface = ft.GetTypeface(maincountervalue);
+                            textPaint.TextSize = usedFontSize * ft.GetRelativeTextSize(maincountervalue);
+                            relativestrokewidth = ft.GetRelativeOutlineWidth(maincountervalue);
+                            strokecolor = ft.GetOutlineColor(maincountervalue);
+                            str = ft.GetText(maincountervalue);
+                            textPaint.MeasureText(str, ref textBounds);
+                            tx = (offsetX + usedOffsetX + width * p.X - textBounds.Width / 2);
+                            ty = (offsetY + usedOffsetY + height * p.Y - textBounds.Height / 2);
+                            if (relativestrokewidth > 0)
                             {
-                                SKPoint p;
-                                float relativestrokewidth = 0.0f;
-                                SKColor strokecolor = SKColors.White;
-                                SKColor fillcolor = SKColors.White;
-                                p = ft.GetPosition(maincountervalue);
-                                fillcolor = ft.GetColor(maincountervalue);
-                                textPaint.Typeface = ft.GetTypeface(maincountervalue);
-                                textPaint.TextSize = usedFontSize * ft.GetRelativeTextSize(maincountervalue);
-                                relativestrokewidth = ft.GetRelativeOutlineWidth(maincountervalue);
-                                strokecolor = ft.GetOutlineColor(maincountervalue);
-                                str = ft.GetText(maincountervalue);
-                                textPaint.MeasureText(str, ref textBounds);
-                                tx = (offsetX + usedOffsetX + width * p.X - textBounds.Width / 2);
-                                ty = (offsetY + usedOffsetY + height * p.Y - textBounds.Height / 2);
-                                if (relativestrokewidth > 0)
-                                {
-                                    textPaint.Style = SKPaintStyle.Stroke;
-                                    textPaint.StrokeWidth = textPaint.TextSize * relativestrokewidth;
-                                    textPaint.Color = strokecolor;
+                                textPaint.Style = SKPaintStyle.Stroke;
+                                textPaint.StrokeWidth = textPaint.TextSize * relativestrokewidth;
+                                textPaint.Color = strokecolor;
 #if GNH_MAP_PROFILING && DEBUG
                                     StartProfiling(GHProfilingStyle.Text);
-#endif
-                                    //canvas.DrawText(str, tx, ty, textPaint);
-                                    textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
-#if GNH_MAP_PROFILING && DEBUG
-                                    StopProfiling(GHProfilingStyle.Text);
-#endif
-                                }
-                                textPaint.Style = SKPaintStyle.Fill;
-                                textPaint.Color = fillcolor;
-#if GNH_MAP_PROFILING && DEBUG
-                                StartProfiling(GHProfilingStyle.Bitmap);
 #endif
                                 //canvas.DrawText(str, tx, ty, textPaint);
                                 textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
 #if GNH_MAP_PROFILING && DEBUG
-                                StopProfiling(GHProfilingStyle.Bitmap);
+                                    StopProfiling(GHProfilingStyle.Text);
 #endif
                             }
+                            textPaint.Style = SKPaintStyle.Fill;
+                            textPaint.Color = fillcolor;
+#if GNH_MAP_PROFILING && DEBUG
+                                StartProfiling(GHProfilingStyle.Bitmap);
+#endif
+                            //canvas.DrawText(str, tx, ty, textPaint);
+                            textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
+#if GNH_MAP_PROFILING && DEBUG
+                                StopProfiling(GHProfilingStyle.Bitmap);
+#endif
                         }
-                        lock (_screenTextLock)
+                        if (localScreenText != null)
                         {
-                            if (_screenText != null)
+                            float targetwidth = 0, yoffsetpct = 0, relativestrokewidth = 0, relativesuperstrokewidth = 0, relativesubstrokewidth = 0;
+                            SKColor strokecolor = SKColors.White, superstrokecolor = SKColors.White, substrokecolor = SKColors.White;
+                            SKColor fillcolor = SKColors.White;
+                            float maxfontsize = 9999.0f;
+                            double canvasheightscale = this.Height / canvasView.Height;
+                            fillcolor = localScreenText.GetTextColor(maincountervalue);
+                            textPaint.Typeface = localScreenText.GetTextTypeface(maincountervalue);
+                            targetwidth = Math.Min(canvaswidth, canvasheight * (float)canvasheightscale) * localScreenText.GetMainTextSizeRelativeToScreenWidth(maincountervalue);
+                            maxfontsize = localScreenText.GetMainTextMaxFontSize(maincountervalue);
+                            yoffsetpct = localScreenText.GetYOffsetPctOfScreen(maincountervalue);
+                            relativestrokewidth = localScreenText.GetRelativeTextOutlineWidth(maincountervalue);
+                            strokecolor = localScreenText.GetTextOutlineColor(maincountervalue);
+                            str = localScreenText.GetText(maincountervalue);
+                            bool useFontSizeStr = str == null || str.Length < 5;
+                            textPaint.TextSize = usedFontSize;
+                            textPaint.MeasureText(useFontSizeStr ? _fontSizeString : str, ref textBounds);
+                            if (textBounds.Width > 0)
                             {
-                                float targetwidth = 0, yoffsetpct = 0, relativestrokewidth = 0, relativesuperstrokewidth = 0, relativesubstrokewidth = 0;
-                                SKColor strokecolor = SKColors.White, superstrokecolor = SKColors.White, substrokecolor = SKColors.White;
-                                SKColor fillcolor = SKColors.White;
-                                float maxfontsize = 9999.0f;
-                                double canvasheightscale = this.Height / canvasView.Height;
-                                fillcolor = _screenText.GetTextColor(maincountervalue);
-                                textPaint.Typeface = _screenText.GetTextTypeface(maincountervalue);
-                                targetwidth = Math.Min(canvaswidth, canvasheight * (float)canvasheightscale) * _screenText.GetMainTextSizeRelativeToScreenWidth(maincountervalue);
-                                maxfontsize = _screenText.GetMainTextMaxFontSize(maincountervalue);
-                                yoffsetpct = _screenText.GetYOffsetPctOfScreen(maincountervalue);
-                                relativestrokewidth = _screenText.GetRelativeTextOutlineWidth(maincountervalue);
-                                strokecolor = _screenText.GetTextOutlineColor(maincountervalue);
-                                str = _screenText.GetText(maincountervalue);
-                                bool useFontSizeStr = str == null || str.Length < 5;
-                                textPaint.TextSize = usedFontSize;
-                                textPaint.MeasureText(useFontSizeStr ? _fontSizeString : str, ref textBounds);
-                                if (textBounds.Width > 0)
-                                {
-                                    float relativesize = targetwidth / Math.Max(1.0f, textBounds.Width);
-                                    //if (relativesize > maxfontsize)
-                                    //    relativesize = maxfontsize;
-                                    textPaint.TextSize = usedFontSize * relativesize;
-                                }
+                                float relativesize = targetwidth / Math.Max(1.0f, textBounds.Width);
+                                //if (relativesize > maxfontsize)
+                                //    relativesize = maxfontsize;
+                                textPaint.TextSize = usedFontSize * relativesize;
+                            }
 
-                                textPaint.MeasureText(str, ref textBounds);
-                                float maintextascent = textPaint.FontMetrics.Ascent;
-                                float maintextdescent = textPaint.FontMetrics.Descent;
+                            textPaint.MeasureText(str, ref textBounds);
+                            float maintextascent = textPaint.FontMetrics.Ascent;
+                            float maintextdescent = textPaint.FontMetrics.Descent;
 
-                                tx = (canvaswidth / 2 - textBounds.Width / 2);
-                                ty = (canvasheight / 2 - textBounds.Height / 2 - (maintextascent + maintextdescent) / 2) + yoffsetpct * canvasheight;
+                            tx = (canvaswidth / 2 - textBounds.Width / 2);
+                            ty = (canvasheight / 2 - textBounds.Height / 2 - (maintextascent + maintextdescent) / 2) + yoffsetpct * canvasheight;
 #if GNH_MAP_PROFILING && DEBUG
                                 StartProfiling(GHProfilingStyle.Text);
 #endif
+                            /* Shadow first */
+                            {
+                                textPaint.Color = SKColors.Black.WithAlpha(fillcolor.Alpha);
+                                textPaint.MaskFilter = _blur;
+                                float offset = textPaint.TextSize / 15;
+                                //canvas.DrawText(str, tx + offset, ty + offset, textPaint);
+                                textPaint.DrawTextOnCanvas(canvas, str, tx + offset, ty + offset);
+                                textPaint.MaskFilter = null;
+                            }
+
+                            if (relativestrokewidth > 0)
+                            {
+                                textPaint.Style = SKPaintStyle.Stroke;
+                                textPaint.StrokeWidth = textPaint.TextSize * relativestrokewidth;
+                                textPaint.Color = strokecolor;
+                                //canvas.DrawText(str, tx, ty, textPaint);
+                                textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
+                            }
+
+                            textPaint.Style = SKPaintStyle.Fill;
+                            textPaint.Color = fillcolor;
+                            //canvas.DrawText(str, tx, ty, textPaint);
+                            textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
+#if GNH_MAP_PROFILING && DEBUG
+                                StopProfiling(GHProfilingStyle.Text);
+#endif
+
+                            float maintextsize = textPaint.TextSize;
+                            float maintextspacing = textPaint.FontSpacing;
+                            float maintexty = ty;
+
+                            if (localScreenText.HasSuperText)
+                            {
+                                fillcolor = localScreenText.GetSuperTextColor(maincountervalue);
+                                textPaint.Typeface = localScreenText.GetSuperTextTypeface(maincountervalue);
+                                textPaint.TextSize = maintextsize * localScreenText.GetSuperTextSizeRelativeToMainText(maincountervalue);
+                                relativesuperstrokewidth = localScreenText.GetRelativeSuperTextOutlineWidth(maincountervalue);
+                                superstrokecolor = localScreenText.GetSuperTextOutlineColor(maincountervalue);
+                                str = localScreenText.GetSuperText(maincountervalue);
+                                textPaint.MeasureText(str, ref textBounds);
+                                tx = (canvaswidth / 2 - textBounds.Width / 2);
+                                ty = maintexty + maintextascent - textPaint.FontMetrics.Descent;
+
+#if GNH_MAP_PROFILING && DEBUG
+                                    StartProfiling(GHProfilingStyle.Text);
+#endif
                                 /* Shadow first */
                                 {
+                                    SKMaskFilter oldfilter = textPaint.MaskFilter;
                                     textPaint.Color = SKColors.Black.WithAlpha(fillcolor.Alpha);
                                     textPaint.MaskFilter = _blur;
                                     float offset = textPaint.TextSize / 15;
@@ -7542,11 +7619,11 @@ namespace GnollHackX.Pages.Game
                                     textPaint.MaskFilter = null;
                                 }
 
-                                if (relativestrokewidth > 0)
+                                if (relativesuperstrokewidth > 0)
                                 {
                                     textPaint.Style = SKPaintStyle.Stroke;
-                                    textPaint.StrokeWidth = textPaint.TextSize * relativestrokewidth;
-                                    textPaint.Color = strokecolor;
+                                    textPaint.StrokeWidth = textPaint.TextSize * relativesuperstrokewidth;
+                                    textPaint.Color = superstrokecolor;
                                     //canvas.DrawText(str, tx, ty, textPaint);
                                     textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
                                 }
@@ -7556,586 +7633,532 @@ namespace GnollHackX.Pages.Game
                                 //canvas.DrawText(str, tx, ty, textPaint);
                                 textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
 #if GNH_MAP_PROFILING && DEBUG
-                                StopProfiling(GHProfilingStyle.Text);
-#endif
-
-                                float maintextsize = textPaint.TextSize;
-                                float maintextspacing = textPaint.FontSpacing;
-                                float maintexty = ty;
-
-                                if (_screenText.HasSuperText)
-                                {
-                                    fillcolor = _screenText.GetSuperTextColor(maincountervalue);
-                                    textPaint.Typeface = _screenText.GetSuperTextTypeface(maincountervalue);
-                                    textPaint.TextSize = maintextsize * _screenText.GetSuperTextSizeRelativeToMainText(maincountervalue);
-                                    relativesuperstrokewidth = _screenText.GetRelativeSuperTextOutlineWidth(maincountervalue);
-                                    superstrokecolor = _screenText.GetSuperTextOutlineColor(maincountervalue);
-                                    str = _screenText.GetSuperText(maincountervalue);
-                                    textPaint.MeasureText(str, ref textBounds);
-                                    tx = (canvaswidth / 2 - textBounds.Width / 2);
-                                    ty = maintexty + maintextascent - textPaint.FontMetrics.Descent;
-
-#if GNH_MAP_PROFILING && DEBUG
-                                    StartProfiling(GHProfilingStyle.Text);
-#endif
-                                    /* Shadow first */
-                                    {
-                                        SKMaskFilter oldfilter = textPaint.MaskFilter;
-                                        textPaint.Color = SKColors.Black.WithAlpha(fillcolor.Alpha);
-                                        textPaint.MaskFilter = _blur;
-                                        float offset = textPaint.TextSize / 15;
-                                        //canvas.DrawText(str, tx + offset, ty + offset, textPaint);
-                                        textPaint.DrawTextOnCanvas(canvas, str, tx + offset, ty + offset);
-                                        textPaint.MaskFilter = null;
-                                    }
-
-                                    if (relativesuperstrokewidth > 0)
-                                    {
-                                        textPaint.Style = SKPaintStyle.Stroke;
-                                        textPaint.StrokeWidth = textPaint.TextSize * relativesuperstrokewidth;
-                                        textPaint.Color = superstrokecolor;
-                                        //canvas.DrawText(str, tx, ty, textPaint);
-                                        textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
-                                    }
-
-                                    textPaint.Style = SKPaintStyle.Fill;
-                                    textPaint.Color = fillcolor;
-                                    //canvas.DrawText(str, tx, ty, textPaint);
-                                    textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
-#if GNH_MAP_PROFILING && DEBUG
                                     StopProfiling(GHProfilingStyle.Text);
 #endif
-                                }
-
-                                if (_screenText.HasSubText)
-                                {
-                                    fillcolor = _screenText.GetSubTextColor(maincountervalue);
-                                    textPaint.Typeface = _screenText.GetSubTextTypeface(maincountervalue);
-                                    textPaint.TextSize = maintextsize * _screenText.GetSubTextSizeRelativeToMainText(maincountervalue);
-                                    relativesubstrokewidth = _screenText.GetRelativeSubTextOutlineWidth(maincountervalue);
-                                    substrokecolor = _screenText.GetSubTextOutlineColor(maincountervalue);
-                                    str = _screenText.GetSubText(maincountervalue);
-                                    textPaint.MeasureText(str, ref textBounds);
-                                    tx = (canvaswidth / 2 - textBounds.Width / 2);
-                                    ty = maintexty + maintextdescent - textPaint.FontMetrics.Ascent;
-
-#if GNH_MAP_PROFILING && DEBUG
-                                    StartProfiling(GHProfilingStyle.Text);
-#endif
-                                    /* Shadow first */
-                                    {
-                                        SKMaskFilter oldfilter = textPaint.MaskFilter;
-                                        textPaint.Color = SKColors.Black.WithAlpha(fillcolor.Alpha);
-                                        textPaint.MaskFilter = _blur;
-                                        float offset = textPaint.TextSize / 15;
-                                        //canvas.DrawText(str, tx + offset, ty + offset, textPaint);
-                                        textPaint.DrawTextOnCanvas(canvas, str, tx + offset, ty + offset);
-                                        textPaint.MaskFilter = null;
-                                    }
-
-                                    if (relativesubstrokewidth > 0)
-                                    {
-                                        textPaint.Style = SKPaintStyle.Stroke;
-                                        textPaint.StrokeWidth = textPaint.TextSize * relativesubstrokewidth;
-                                        textPaint.Color = substrokecolor;
-                                        //canvas.DrawText(str, tx, ty, textPaint);
-                                        textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
-                                        textPaint.Style = SKPaintStyle.Fill;
-                                    }
-
-                                    textPaint.Style = SKPaintStyle.Fill;
-                                    textPaint.Color = fillcolor;
-                                    //canvas.DrawText(str, tx, ty, textPaint);
-                                    textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
-#if GNH_MAP_PROFILING && DEBUG
-                                    StopProfiling(GHProfilingStyle.Text);
-#endif
-                                }
                             }
-                        }
-                        lock (_conditionTextLock)
-                        {
-                            foreach (GHConditionText ft in _conditionTexts)
-                            {
-                                float relativestrokewidth = 0.0f;
-                                SKColor strokecolor = SKColors.White;
-                                SKColor fillcolor = SKColors.White;
-                                float relativetoscreenwidth = 0.0f;
-                                string sampletext = "";
-                                fillcolor = ft.GetColor(maincountervalue);
-                                textPaint.Typeface = ft.GetTypeface(maincountervalue);
-                                relativetoscreenwidth = ft.GetRelativeSampleTextSize(maincountervalue);
-                                relativestrokewidth = ft.GetRelativeOutlineWidth(maincountervalue);
-                                strokecolor = ft.GetOutlineColor(maincountervalue);
-                                str = ft.GetText(maincountervalue);
 
-                                textPaint.TextSize = usedFontSize;
-                                sampletext = ft.GetSampleText();
-                                textPaint.MeasureText(sampletext, ref textBounds);
-                                if (textBounds.Width > 0)
+                            if (localScreenText.HasSubText)
+                            {
+                                fillcolor = localScreenText.GetSubTextColor(maincountervalue);
+                                textPaint.Typeface = localScreenText.GetSubTextTypeface(maincountervalue);
+                                textPaint.TextSize = maintextsize * localScreenText.GetSubTextSizeRelativeToMainText(maincountervalue);
+                                relativesubstrokewidth = localScreenText.GetRelativeSubTextOutlineWidth(maincountervalue);
+                                substrokecolor = localScreenText.GetSubTextOutlineColor(maincountervalue);
+                                str = localScreenText.GetSubText(maincountervalue);
+                                textPaint.MeasureText(str, ref textBounds);
+                                tx = (canvaswidth / 2 - textBounds.Width / 2);
+                                ty = maintexty + maintextdescent - textPaint.FontMetrics.Ascent;
+
+#if GNH_MAP_PROFILING && DEBUG
+                                    StartProfiling(GHProfilingStyle.Text);
+#endif
+                                /* Shadow first */
                                 {
-                                    float relativesize = relativetoscreenwidth * Math.Min(canvaswidth, canvasheight) / textBounds.Width;
-                                    textPaint.TextSize = usedFontSize * relativesize;
+                                    SKMaskFilter oldfilter = textPaint.MaskFilter;
+                                    textPaint.Color = SKColors.Black.WithAlpha(fillcolor.Alpha);
+                                    textPaint.MaskFilter = _blur;
+                                    float offset = textPaint.TextSize / 15;
+                                    //canvas.DrawText(str, tx + offset, ty + offset, textPaint);
+                                    textPaint.DrawTextOnCanvas(canvas, str, tx + offset, ty + offset);
+                                    textPaint.MaskFilter = null;
                                 }
 
-                                //textPaint.TextAlign = SKTextAlign.Center;
-                                tx = canvaswidth / 2;
-                                ty = statusBarSkiaHeight + 1.5f * inverse_canvas_scale * (float)StandardMeasurementButton.Height - textPaint.FontMetrics.Ascent;
-#if GNH_MAP_PROFILING && DEBUG
-                                StartProfiling(GHProfilingStyle.Text);
-#endif
-                                if (relativestrokewidth > 0)
+                                if (relativesubstrokewidth > 0)
                                 {
                                     textPaint.Style = SKPaintStyle.Stroke;
-                                    textPaint.StrokeWidth = textPaint.TextSize * relativestrokewidth;
-                                    textPaint.Color = strokecolor;
+                                    textPaint.StrokeWidth = textPaint.TextSize * relativesubstrokewidth;
+                                    textPaint.Color = substrokecolor;
                                     //canvas.DrawText(str, tx, ty, textPaint);
-                                    textPaint.DrawTextOnCanvas(canvas, str, tx, ty, SKTextAlign.Center);
+                                    textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
+                                    textPaint.Style = SKPaintStyle.Fill;
                                 }
+
                                 textPaint.Style = SKPaintStyle.Fill;
                                 textPaint.Color = fillcolor;
                                 //canvas.DrawText(str, tx, ty, textPaint);
+                                textPaint.DrawTextOnCanvas(canvas, str, tx, ty);
+#if GNH_MAP_PROFILING && DEBUG
+                                    StopProfiling(GHProfilingStyle.Text);
+#endif
+                            }
+                        }
+                        foreach (GHConditionText ft in _localConditionTexts)
+                        {
+                            float relativestrokewidth = 0.0f;
+                            SKColor strokecolor = SKColors.White;
+                            SKColor fillcolor = SKColors.White;
+                            float relativetoscreenwidth = 0.0f;
+                            string sampletext = "";
+                            fillcolor = ft.GetColor(maincountervalue);
+                            textPaint.Typeface = ft.GetTypeface(maincountervalue);
+                            relativetoscreenwidth = ft.GetRelativeSampleTextSize(maincountervalue);
+                            relativestrokewidth = ft.GetRelativeOutlineWidth(maincountervalue);
+                            strokecolor = ft.GetOutlineColor(maincountervalue);
+                            str = ft.GetText(maincountervalue);
+
+                            textPaint.TextSize = usedFontSize;
+                            sampletext = ft.GetSampleText();
+                            textPaint.MeasureText(sampletext, ref textBounds);
+                            if (textBounds.Width > 0)
+                            {
+                                float relativesize = relativetoscreenwidth * Math.Min(canvaswidth, canvasheight) / textBounds.Width;
+                                textPaint.TextSize = usedFontSize * relativesize;
+                            }
+
+                            //textPaint.TextAlign = SKTextAlign.Center;
+                            tx = canvaswidth / 2;
+                            ty = statusBarSkiaHeight + 1.5f * inverse_canvas_scale * (float)StandardMeasurementButton.Height - textPaint.FontMetrics.Ascent;
+#if GNH_MAP_PROFILING && DEBUG
+                                StartProfiling(GHProfilingStyle.Text);
+#endif
+                            if (relativestrokewidth > 0)
+                            {
+                                textPaint.Style = SKPaintStyle.Stroke;
+                                textPaint.StrokeWidth = textPaint.TextSize * relativestrokewidth;
+                                textPaint.Color = strokecolor;
+                                //canvas.DrawText(str, tx, ty, textPaint);
                                 textPaint.DrawTextOnCanvas(canvas, str, tx, ty, SKTextAlign.Center);
+                            }
+                            textPaint.Style = SKPaintStyle.Fill;
+                            textPaint.Color = fillcolor;
+                            //canvas.DrawText(str, tx, ty, textPaint);
+                            textPaint.DrawTextOnCanvas(canvas, str, tx, ty, SKTextAlign.Center);
 #if GNH_MAP_PROFILING && DEBUG
                                 StopProfiling(GHProfilingStyle.Text);
 #endif
-                                //textPaint.TextAlign = SKTextAlign.Left;
-                            }
+                            //textPaint.TextAlign = SKTextAlign.Left;
                         }
-                        lock (_guiEffectLock)
+                        foreach (GHGUIEffect eff in _localGuiEffects)
                         {
-                            foreach (GHGUIEffect eff in _guiEffects)
-                            {
-                                SKPoint p;
-                                SKColor effcolor;
-                                p = eff.GetPosition(maincountervalue);
-                                effcolor = eff.GetColor(maincountervalue);
-                                tx = offsetX + usedOffsetX + width * p.X;
-                                ty = offsetY + usedOffsetY + height * p.Y + mapFontAscent;
-                                textPaint.Color = effcolor;
+                            SKPoint p;
+                            SKColor effcolor;
+                            p = eff.GetPosition(maincountervalue);
+                            effcolor = eff.GetColor(maincountervalue);
+                            tx = offsetX + usedOffsetX + width * p.X;
+                            ty = offsetY + usedOffsetY + height * p.Y + mapFontAscent;
+                            textPaint.Color = effcolor;
 #if GNH_MAP_PROFILING && DEBUG
                                 StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                                switch (eff.Style)
-                                {
-                                    case (int)gui_effect_types.GUI_EFFECT_SEARCH:
-                                        for (int search_x = -1; search_x <= 1; search_x++)
+                            switch (eff.Style)
+                            {
+                                case (int)gui_effect_types.GUI_EFFECT_SEARCH:
+                                    for (int search_x = -1; search_x <= 1; search_x++)
+                                    {
+                                        for (int search_y = -1; search_y <= 1; search_y++)
                                         {
-                                            for (int search_y = -1; search_y <= 1; search_y++)
-                                            {
-                                                if (search_x == 0 && search_y == 0)
-                                                    continue;
-                                                if (p.X + search_x < 1 || p.X + search_x >= GHConstants.MapCols
-                                                    || p.Y + search_y < 0 || p.Y + search_y >= GHConstants.MapRows)
-                                                    continue;
-                                                float rectsize = Math.Min(width, height);
-                                                float rectxmargin = (width - rectsize) / 2;
-                                                float rectymargin = (height - rectsize) / 2;
-                                                float rectleft = tx + search_x * width + rectxmargin;
-                                                float recttop = ty + search_y * height + rectymargin;
-                                                SKRect effRect = new SKRect(rectleft, recttop, rectleft + rectsize, recttop + rectsize);
-                                                SKRect sourcerect = new SKRect(0, 0, GHApp._searchBitmap.Width, GHApp._searchBitmap.Height);
-                                                GHApp.MaybeFixRects(ref sourcerect, ref effRect, targetscale, usingGL, fixRects);
-                                                canvas.DrawImage(GHApp._searchBitmap, sourcerect, effRect, textPaint.Paint);
-                                            }
-                                        }
-                                        break;
-                                    case (int)gui_effect_types.GUI_EFFECT_WAIT:
-                                        {
+                                            if (search_x == 0 && search_y == 0)
+                                                continue;
+                                            if (p.X + search_x < 1 || p.X + search_x >= GHConstants.MapCols
+                                                || p.Y + search_y < 0 || p.Y + search_y >= GHConstants.MapRows)
+                                                continue;
                                             float rectsize = Math.Min(width, height);
                                             float rectxmargin = (width - rectsize) / 2;
                                             float rectymargin = (height - rectsize) / 2;
-                                            float rectleft = tx + rectxmargin;
-                                            float recttop = ty + rectymargin;
+                                            float rectleft = tx + search_x * width + rectxmargin;
+                                            float recttop = ty + search_y * height + rectymargin;
                                             SKRect effRect = new SKRect(rectleft, recttop, rectleft + rectsize, recttop + rectsize);
-                                            SKRect sourcerect = new SKRect(0, 0, GHApp._waitBitmap.Width, GHApp._waitBitmap.Height);
+                                            SKRect sourcerect = new SKRect(0, 0, GHApp._searchBitmap.Width, GHApp._searchBitmap.Height);
                                             GHApp.MaybeFixRects(ref sourcerect, ref effRect, targetscale, usingGL, fixRects);
-                                            canvas.DrawImage(GHApp._waitBitmap, effRect, textPaint.Paint);
+                                            canvas.DrawImage(GHApp._searchBitmap, sourcerect, effRect, textPaint.Paint);
                                         }
-                                        break;
-                                    case (int)gui_effect_types.GUI_EFFECT_POLEARM:
+                                    }
+                                    break;
+                                case (int)gui_effect_types.GUI_EFFECT_WAIT:
+                                    {
+                                        float rectsize = Math.Min(width, height);
+                                        float rectxmargin = (width - rectsize) / 2;
+                                        float rectymargin = (height - rectsize) / 2;
+                                        float rectleft = tx + rectxmargin;
+                                        float recttop = ty + rectymargin;
+                                        SKRect effRect = new SKRect(rectleft, recttop, rectleft + rectsize, recttop + rectsize);
+                                        SKRect sourcerect = new SKRect(0, 0, GHApp._waitBitmap.Width, GHApp._waitBitmap.Height);
+                                        GHApp.MaybeFixRects(ref sourcerect, ref effRect, targetscale, usingGL, fixRects);
+                                        canvas.DrawImage(GHApp._waitBitmap, effRect, textPaint.Paint);
+                                    }
+                                    break;
+                                case (int)gui_effect_types.GUI_EFFECT_POLEARM:
+                                    {
+                                        using (new SKAutoCanvasRestore(canvas))
                                         {
-                                            using(new SKAutoCanvasRestore(canvas))
-                                            {
-                                                int dx = eff.X2 - eff.X1;
-                                                int dy = eff.Y2 - eff.Y1;
-                                                if (dx == 0 && dy == 0)
-                                                    break;
+                                            int dx = eff.X2 - eff.X1;
+                                            int dy = eff.Y2 - eff.Y1;
+                                            if (dx == 0 && dy == 0)
+                                                break;
 
-                                                float length;
-                                                canvas.Translate(tx + width / 2, ty + height / 2);
-                                                if (dx == 0)
+                                            float length;
+                                            canvas.Translate(tx + width / 2, ty + height / 2);
+                                            if (dx == 0)
+                                            {
+                                                canvas.RotateDegrees(dy < 0 ? 0f : 180f);
+                                                length = Math.Abs(dy * height);
+                                            }
+                                            else if (dy == 0)
+                                            {
+                                                canvas.RotateDegrees(dx < 0 ? -90f : 90f);
+                                                length = Math.Abs(dx * width);
+                                            }
+                                            else
+                                            {
+                                                canvas.RotateRadians((float)Math.Atan2(-dx * width, dy * height) + (float)Math.PI);
+                                                length = (float)Math.Sqrt(Math.Pow(dx * width, 2) + Math.Pow(dy * height, 2));
+                                            }
+                                            /* Secondary drawing first */
+                                            using (SKPath path = new SKPath())
+                                            {
+                                                switch (eff.SubType)
                                                 {
-                                                    canvas.RotateDegrees(dy < 0 ? 0f: 180f);
-                                                    length = Math.Abs(dy * height);
+                                                    case (int)gui_polearm_types.GUI_POLEARM_LANCE: /* Handle */
+                                                        path.MoveTo(-0.04f * width, 0f);
+                                                        path.LineTo(0.04f * width, 0f);
+                                                        path.LineTo(0.04f * width, -0.52f * width);
+                                                        path.LineTo(-0.04f * width, -0.52f * width);
+                                                        path.LineTo(-0.04f * width, 0f);
+                                                        path.Close();
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        textPaint.Color = eff.GetSecondaryColor(maincountervalue);
+                                                        canvas.DrawPath(path, textPaint.Paint);
+                                                        textPaint.Style = SKPaintStyle.Stroke;
+                                                        textPaint.StrokeWidth = width * 0.02f;
+                                                        textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
+                                                        canvas.DrawPath(path, textPaint.Paint);
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        using (SKPath path2 = new SKPath())
+                                                        {
+                                                            path2.MoveTo(-0.015f * width, -0.05f * width);
+                                                            path2.LineTo(0.015f * width, -0.05f * width);
+                                                            path2.LineTo(0.015f * width, -0.47f * width);
+                                                            path2.LineTo(-0.015f * width, -0.47f * width);
+                                                            path2.LineTo(-0.015f * width, -0.05f * width);
+                                                            path2.Close();
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
+                                                            canvas.DrawPath(path2, textPaint.Paint);
+                                                        }
+                                                        break;
+                                                    default:
+                                                        break;
                                                 }
-                                                else if (dy == 0)
+                                            }
+                                            /* Primary drawing */
+                                            using (SKPath path = new SKPath())
+                                            {
+                                                switch (eff.SubType)
                                                 {
-                                                    canvas.RotateDegrees(dx < 0 ? -90f : 90f);
-                                                    length = Math.Abs(dx * width);
+                                                    case (int)gui_polearm_types.GUI_POLEARM_SPEAR:
+                                                        path.MoveTo(-0.04f * width, 0f);
+                                                        path.LineTo(0.04f * width, 0f);
+                                                        path.LineTo(0.04f * width, -length + 0.4f * width);
+                                                        path.LineTo(-0.04f * width, -length + 0.4f * width);
+                                                        path.LineTo(-0.04f * width, 0f);
+                                                        path.Close();
+                                                        textPaint.Color = eff.GetColor(maincountervalue);
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        canvas.DrawPath(path, textPaint.Paint);
+                                                        textPaint.Style = SKPaintStyle.Stroke;
+                                                        textPaint.StrokeWidth = width * 0.02f;
+                                                        textPaint.Color = eff.GetOutlineColor(maincountervalue);
+                                                        canvas.DrawPath(path, textPaint.Paint);
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        using (SKPath path2 = new SKPath())
+                                                        {
+                                                            path2.MoveTo(-0.015f * width, -0.05f * width);
+                                                            path2.LineTo(0.015f * width, -0.05f * width);
+                                                            path2.LineTo(0.015f * width, -length + 0.35f * width);
+                                                            path2.LineTo(-0.015f * width, -length + 0.35f * width);
+                                                            path2.LineTo(-0.015f * width, -0.05f * width);
+                                                            path2.Close();
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            textPaint.Color = eff.GetInnerColor(maincountervalue);
+                                                            canvas.DrawPath(path2, textPaint.Paint);
+                                                        }
+                                                        break;
+                                                    case (int)gui_polearm_types.GUI_POLEARM_LANCE:
+                                                        path.MoveTo(-0.12f * width, -0.52f * width);
+                                                        path.LineTo(0.12f * width, -0.52f * width);
+                                                        path.LineTo(0.05f * width, -0.68f * width);
+                                                        path.LineTo(0f, -length - 0.2f * width);
+                                                        path.LineTo(-0.05f * width, -0.68f * width);
+                                                        path.LineTo(-0.12f * width, -0.52f * width);
+                                                        path.Close();
+                                                        textPaint.Color = eff.GetColor(maincountervalue);
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        canvas.DrawPath(path, textPaint.Paint);
+                                                        textPaint.Style = SKPaintStyle.Stroke;
+                                                        textPaint.StrokeWidth = width * 0.02f;
+                                                        textPaint.Color = eff.GetOutlineColor(maincountervalue);
+                                                        canvas.DrawPath(path, textPaint.Paint);
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        using (SKPath path2 = new SKPath())
+                                                        {
+                                                            path2.MoveTo(-0.08f * width, -0.58f * width);
+                                                            path2.LineTo(0.08f * width, -0.58f * width);
+                                                            path2.LineTo(0.02f * width, -0.74f * width);
+                                                            path2.LineTo(0f, -length - 0.14f * width);
+                                                            path2.LineTo(-0.02f * width, -0.74f * width);
+                                                            path2.LineTo(-0.08f * width, -0.58f * width);
+                                                            path2.Close();
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            textPaint.Color = eff.GetInnerColor(maincountervalue);
+                                                            canvas.DrawPath(path2, textPaint.Paint);
+                                                        }
+                                                        break;
+                                                    case (int)gui_polearm_types.GUI_POLEARM_THRUSTED:
+                                                    case (int)gui_polearm_types.GUI_POLEARM_POLEAXE:
+                                                    default:
+                                                        path.MoveTo(-0.05f * width, 0f);
+                                                        path.LineTo(0.05f * width, 0f);
+                                                        path.LineTo(0.05f * width, -length);
+                                                        path.LineTo(-0.05f * width, -length);
+                                                        path.LineTo(-0.05f * width, 0f);
+                                                        path.Close();
+                                                        textPaint.Color = eff.GetColor(maincountervalue);
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        canvas.DrawPath(path, textPaint.Paint);
+                                                        textPaint.Style = SKPaintStyle.Stroke;
+                                                        textPaint.StrokeWidth = width * 0.02f;
+                                                        textPaint.Color = eff.GetOutlineColor(maincountervalue);
+                                                        canvas.DrawPath(path, textPaint.Paint);
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        using (SKPath path2 = new SKPath())
+                                                        {
+                                                            path2.MoveTo(-0.02f * width, -0.05f * width);
+                                                            path2.LineTo(0.02f * width, -0.05f * width);
+                                                            path2.LineTo(0.02f * width, -length - 0.05f * width);
+                                                            path2.LineTo(-0.02f * width, -length - 0.05f * width);
+                                                            path2.LineTo(-0.02f * width, -0.05f * width);
+                                                            path2.Close();
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            textPaint.Color = eff.GetInnerColor(maincountervalue);
+                                                            canvas.DrawPath(path2, textPaint.Paint);
+                                                        }
+                                                        break;
                                                 }
-                                                else
+                                            }
+                                            /* Secondary drawing last */
+                                            using (SKPath path = new SKPath())
+                                            {
+                                                switch (eff.SubType)
                                                 {
-                                                    canvas.RotateRadians((float)Math.Atan2(-dx * width, dy * height) + (float)Math.PI);
-                                                    length = (float)Math.Sqrt(Math.Pow(dx * width, 2) + Math.Pow(dy * height, 2));
-                                                }
-                                                /* Secondary drawing first */
-                                                using (SKPath path = new SKPath())
-                                                {
-                                                    switch (eff.SubType)
-                                                    {
-                                                        case (int)gui_polearm_types.GUI_POLEARM_LANCE: /* Handle */
-                                                            path.MoveTo(-0.04f * width, 0f);
-                                                            path.LineTo(0.04f * width, 0f);
-                                                            path.LineTo(0.04f * width, -0.52f * width);
-                                                            path.LineTo(-0.04f * width, -0.52f * width);
-                                                            path.LineTo(-0.04f * width, 0f);
-                                                            path.Close();
+                                                    case (int)gui_polearm_types.GUI_POLEARM_SPEAR: /* Spearhead */
+                                                        path.MoveTo(-0.06f * width, -length + 0.4f * width);
+                                                        path.LineTo(0.06f * width, -length + 0.4f * width);
+                                                        path.LineTo(0f, -length);
+                                                        path.LineTo(-0.06f * width, -length + 0.4f * width);
+                                                        path.Close();
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        textPaint.Color = eff.GetSecondaryColor(maincountervalue);
+                                                        canvas.DrawPath(path, textPaint.Paint);
+                                                        textPaint.Style = SKPaintStyle.Stroke;
+                                                        textPaint.StrokeWidth = width * 0.02f;
+                                                        textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
+                                                        canvas.DrawPath(path, textPaint.Paint);
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        using (SKPath path2 = new SKPath())
+                                                        {
+                                                            path2.MoveTo(-0.025f * width, -length + 0.35f * width);
+                                                            path2.LineTo(0.025f * width, -length + 0.35f * width);
+                                                            path2.LineTo(0f, -length + 0.05f * width);
+                                                            path2.LineTo(-0.025f * width, -length + 0.35f * width);
+                                                            path2.Close();
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
+                                                            canvas.DrawPath(path2, textPaint.Paint);
+                                                        }
+                                                        break;
+                                                    case (int)gui_polearm_types.GUI_POLEARM_POLEAXE: /* Polearm head */
+                                                    case (int)gui_polearm_types.GUI_POLEARM_THRUSTED: /* Polearm head */
+                                                        /* Tip */
+                                                        path.MoveTo(-0.04f * width, -length);
+                                                        path.LineTo(0.04f * width, -length);
+                                                        path.LineTo(0f, -length - 0.4f * width);
+                                                        path.LineTo(-0.04f * width, -length);
+                                                        path.Close();
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        textPaint.Color = eff.GetSecondaryColor(maincountervalue);
+                                                        canvas.DrawPath(path, textPaint.Paint);
+                                                        textPaint.Style = SKPaintStyle.Stroke;
+                                                        textPaint.StrokeWidth = width * 0.02f;
+                                                        textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
+                                                        canvas.DrawPath(path, textPaint.Paint);
+                                                        textPaint.Style = SKPaintStyle.Fill;
+                                                        using (SKPath path2 = new SKPath())
+                                                        {
+                                                            path2.MoveTo(-0.02f * width, -length - 0.05f * width);
+                                                            path2.LineTo(0.02f * width, -length - 0.05f * width);
+                                                            path2.LineTo(0f, -length - 0.35f * width);
+                                                            path2.LineTo(-0.02f * width, -length - 0.05f * width);
+                                                            path2.Close();
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
+                                                            canvas.DrawPath(path2, textPaint.Paint);
+                                                        }
+                                                        /* Left side */
+                                                        using (SKPath path2 = new SKPath())
+                                                        {
+                                                            /* Middle color part 1 */
+                                                            path2.MoveTo(-0.04f * width, -length - 0.4f * width + 0.5f * width);
+                                                            path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.5f * width);
+                                                            path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.65f * width);
+                                                            path2.LineTo(-0.16f * width, -length - 0.4f * width + 0.60f * width);
+                                                            path2.LineTo(-0.16f * width, -length - 0.4f * width + 0.30f * width);
+                                                            path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.25f * width);
+                                                            path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.4f * width);
+                                                            path2.LineTo(-0.04f * width, -length - 0.4f * width + 0.4f * width);
+                                                            path2.LineTo(-0.04f * width, -length - 0.4f * width + 0.5f * width);
+                                                            path2.Close();
+                                                            textPaint.Style = SKPaintStyle.Fill;
+                                                            textPaint.Color = eff.GetSecondaryInner2Color(maincountervalue);
+                                                            canvas.DrawPath(path2, textPaint.Paint);
+                                                        }
+                                                        using (SKPath path2 = new SKPath())
+                                                        {
+                                                            /* Middle color part 2 */
+                                                            path2.MoveTo(-0.1f * width, -length - 0.4f * width + 0.65f * width);
+                                                            path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.75f * width);
+                                                            path2.LineTo(-0.3f * width, -length - 0.4f * width + 0.45f * width);
+                                                            path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.15f * width);
+                                                            path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.25f * width);
+                                                            path2.LineTo(-0.16f * width, -length - 0.4f * width + 0.30f * width);
+                                                            path2.LineTo(-0.24f * width, -length - 0.4f * width + 0.45f * width);
+                                                            path2.LineTo(-0.16f * width, -length - 0.4f * width + 0.60f * width);
+                                                            path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.65f * width);
+                                                            path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryColor(maincountervalue);
-                                                            canvas.DrawPath(path, textPaint.Paint);
+                                                            canvas.DrawPath(path2, textPaint.Paint);
+                                                        }
+                                                        using (SKPath path2 = new SKPath())
+                                                        {
+                                                            /* Outline */
+                                                            path2.MoveTo(-0.04f * width, -length - 0.4f * width + 0.5f * width);
+                                                            path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.5f * width);
+                                                            path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.75f * width);
+                                                            path2.LineTo(-0.3f * width, -length - 0.4f * width + 0.45f * width);
+                                                            path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.15f * width);
+                                                            path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.4f * width);
+                                                            path2.LineTo(-0.04f * width, -length - 0.4f * width + 0.4f * width);
+                                                            path2.LineTo(-0.04f * width, -length - 0.4f * width + 0.5f * width);
+                                                            path2.Close();
                                                             textPaint.Style = SKPaintStyle.Stroke;
-                                                            textPaint.StrokeWidth = width * 0.02f;
+                                                            textPaint.StrokeWidth = width * 0.03f;
                                                             textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
-                                                            canvas.DrawPath(path, textPaint.Paint);
+                                                            canvas.DrawPath(path2, textPaint.Paint);
                                                             textPaint.Style = SKPaintStyle.Fill;
-                                                            using (SKPath path2 = new SKPath())
-                                                            {
-                                                                path2.MoveTo(-0.015f * width, -0.05f * width);
-                                                                path2.LineTo(0.015f * width, -0.05f * width);
-                                                                path2.LineTo(0.015f * width, -0.47f * width);
-                                                                path2.LineTo(-0.015f * width, -0.47f * width);
-                                                                path2.LineTo(-0.015f * width, -0.05f * width);
-                                                                path2.Close();
-                                                                textPaint.Style = SKPaintStyle.Fill;
-                                                                textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
-                                                                canvas.DrawPath(path2, textPaint.Paint);
-                                                            }
-                                                            break;
-                                                        default:
-                                                            break;
-                                                    }
-                                                }
-                                                /* Primary drawing */
-                                                using (SKPath path = new SKPath())
-                                                {
-                                                    switch(eff.SubType)
-                                                    {
-                                                        case (int)gui_polearm_types.GUI_POLEARM_SPEAR:
-                                                            path.MoveTo(-0.04f * width, 0f);
-                                                            path.LineTo(0.04f * width, 0f);
-                                                            path.LineTo(0.04f * width, -length + 0.4f * width);
-                                                            path.LineTo(-0.04f * width, -length + 0.4f * width);
-                                                            path.LineTo(-0.04f * width, 0f);
-                                                            path.Close();
-                                                            textPaint.Color = eff.GetColor(maincountervalue);
+                                                        }
+                                                        using (SKPath path2 = new SKPath())
+                                                        {
+                                                            /* Inner color */
+                                                            path2.MoveTo(-0.16f * width, -length - 0.4f * width + 0.60f * width);
+                                                            path2.LineTo(-0.24f * width, -length - 0.4f * width + 0.45f * width);
+                                                            path2.LineTo(-0.16f * width, -length - 0.4f * width + 0.30f * width);
+                                                            path2.LineTo(-0.16f * width, -length - 0.4f * width + 0.60f * width);
+                                                            path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
-                                                            canvas.DrawPath(path, textPaint.Paint);
-                                                            textPaint.Style = SKPaintStyle.Stroke;
-                                                            textPaint.StrokeWidth = width * 0.02f;
-                                                            textPaint.Color = eff.GetOutlineColor(maincountervalue);
-                                                            canvas.DrawPath(path, textPaint.Paint);
+                                                            textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
+                                                            canvas.DrawPath(path2, textPaint.Paint);
+                                                        }
+                                                        /* Right side */
+                                                        //using (SKPath path2 = new SKPath())
+                                                        //{
+                                                        //    /* Middle color */
+                                                        //    path2.MoveTo(0.04f * width, -length - 0.4f * width + 0.5f * width);
+                                                        //    path2.LineTo(0.1f * width, -length - 0.4f * width + 0.5f * width);
+                                                        //    path2.LineTo(0.1f * width, -length - 0.4f * width + 0.75f * width);
+                                                        //    path2.LineTo(0.3f * width, -length - 0.4f * width + 0.45f * width);
+                                                        //    path2.LineTo(0.1f * width, -length - 0.4f * width + 0.15f * width);
+                                                        //    path2.LineTo(0.1f * width, -length - 0.4f * width + 0.4f * width);
+                                                        //    path2.LineTo(0.04f * width, -length - 0.4f * width + 0.4f * width);
+                                                        //    path2.LineTo(0.04f * width, -length - 0.4f * width + 0.5f * width);
+                                                        //    path2.Close();
+                                                        //    textPaint.Style = SKPaintStyle.Fill;
+                                                        //    textPaint.Color = eff.GetSecondaryColor(maincountervalue);
+                                                        //    canvas.DrawPath(path2, textPaint);
+                                                        //    textPaint.Style = SKPaintStyle.Stroke;
+                                                        //    textPaint.StrokeWidth = width * 0.03f;
+                                                        //    textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
+                                                        //    canvas.DrawPath(path2, textPaint);
+                                                        //    textPaint.Style = SKPaintStyle.Fill;
+                                                        //}
+                                                        using (SKPath path2 = new SKPath())
+                                                        {
+                                                            /* Middle color part 1 */
+                                                            path2.MoveTo(0.04f * width, -length - 0.4f * width + 0.5f * width);
+                                                            path2.LineTo(0.1f * width, -length - 0.4f * width + 0.5f * width);
+                                                            path2.LineTo(0.1f * width, -length - 0.4f * width + 0.65f * width);
+                                                            path2.LineTo(0.16f * width, -length - 0.4f * width + 0.60f * width);
+                                                            path2.LineTo(0.16f * width, -length - 0.4f * width + 0.30f * width);
+                                                            path2.LineTo(0.1f * width, -length - 0.4f * width + 0.25f * width);
+                                                            path2.LineTo(0.1f * width, -length - 0.4f * width + 0.4f * width);
+                                                            path2.LineTo(0.04f * width, -length - 0.4f * width + 0.4f * width);
+                                                            path2.LineTo(0.04f * width, -length - 0.4f * width + 0.5f * width);
+                                                            path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
-                                                            using (SKPath path2 = new SKPath())
-                                                            {
-                                                                path2.MoveTo(-0.015f * width, -0.05f * width);
-                                                                path2.LineTo(0.015f * width, -0.05f * width);
-                                                                path2.LineTo(0.015f * width, -length + 0.35f * width);
-                                                                path2.LineTo(-0.015f * width, -length + 0.35f * width);
-                                                                path2.LineTo(-0.015f * width, -0.05f * width);
-                                                                path2.Close();
-                                                                textPaint.Style = SKPaintStyle.Fill;
-                                                                textPaint.Color = eff.GetInnerColor(maincountervalue);
-                                                                canvas.DrawPath(path2, textPaint.Paint);
-                                                            }
-                                                            break;
-                                                        case (int)gui_polearm_types.GUI_POLEARM_LANCE:
-                                                            path.MoveTo(-0.12f * width, -0.52f * width);
-                                                            path.LineTo(0.12f * width, -0.52f * width);
-                                                            path.LineTo(0.05f * width, -0.68f * width);
-                                                            path.LineTo(0f, -length - 0.2f * width);
-                                                            path.LineTo(-0.05f * width, -0.68f * width);
-                                                            path.LineTo(-0.12f * width, -0.52f * width);
-                                                            path.Close();
-                                                            textPaint.Color = eff.GetColor(maincountervalue);
-                                                            textPaint.Style = SKPaintStyle.Fill;
-                                                            canvas.DrawPath(path, textPaint.Paint);
-                                                            textPaint.Style = SKPaintStyle.Stroke;
-                                                            textPaint.StrokeWidth = width * 0.02f;
-                                                            textPaint.Color = eff.GetOutlineColor(maincountervalue);
-                                                            canvas.DrawPath(path, textPaint.Paint);
-                                                            textPaint.Style = SKPaintStyle.Fill;
-                                                            using (SKPath path2 = new SKPath())
-                                                            {
-                                                                path2.MoveTo(-0.08f * width, -0.58f * width);
-                                                                path2.LineTo(0.08f * width, -0.58f * width);
-                                                                path2.LineTo(0.02f * width, -0.74f * width);
-                                                                path2.LineTo(0f, -length - 0.14f * width);
-                                                                path2.LineTo(-0.02f * width, -0.74f * width);
-                                                                path2.LineTo(-0.08f * width, -0.58f * width);
-                                                                path2.Close();
-                                                                textPaint.Style = SKPaintStyle.Fill;
-                                                                textPaint.Color = eff.GetInnerColor(maincountervalue);
-                                                                canvas.DrawPath(path2, textPaint.Paint);
-                                                            }
-                                                            break;
-                                                        case (int)gui_polearm_types.GUI_POLEARM_THRUSTED:
-                                                        case (int)gui_polearm_types.GUI_POLEARM_POLEAXE:
-                                                        default:
-                                                            path.MoveTo(-0.05f * width, 0f);
-                                                            path.LineTo(0.05f * width, 0f);
-                                                            path.LineTo(0.05f * width, -length);
-                                                            path.LineTo(-0.05f * width, -length);
-                                                            path.LineTo(-0.05f * width, 0f);
-                                                            path.Close();
-                                                            textPaint.Color = eff.GetColor(maincountervalue);
-                                                            textPaint.Style = SKPaintStyle.Fill;
-                                                            canvas.DrawPath(path, textPaint.Paint);
-                                                            textPaint.Style = SKPaintStyle.Stroke;
-                                                            textPaint.StrokeWidth = width * 0.02f;
-                                                            textPaint.Color = eff.GetOutlineColor(maincountervalue);
-                                                            canvas.DrawPath(path, textPaint.Paint);
-                                                            textPaint.Style = SKPaintStyle.Fill;
-                                                            using (SKPath path2 = new SKPath())
-                                                            {
-                                                                path2.MoveTo(-0.02f * width, -0.05f * width);
-                                                                path2.LineTo(0.02f * width, -0.05f * width);
-                                                                path2.LineTo(0.02f * width, -length - 0.05f * width);
-                                                                path2.LineTo(-0.02f * width, -length - 0.05f * width);
-                                                                path2.LineTo(-0.02f * width, -0.05f * width);
-                                                                path2.Close();
-                                                                textPaint.Style = SKPaintStyle.Fill;
-                                                                textPaint.Color = eff.GetInnerColor(maincountervalue);
-                                                                canvas.DrawPath(path2, textPaint.Paint);
-                                                            }
-                                                            break;
-                                                    }
-                                                }
-                                                /* Secondary drawing last */
-                                                using (SKPath path = new SKPath())
-                                                {
-                                                    switch (eff.SubType)
-                                                    {
-                                                        case (int)gui_polearm_types.GUI_POLEARM_SPEAR: /* Spearhead */
-                                                            path.MoveTo(-0.06f * width, -length + 0.4f * width);
-                                                            path.LineTo(0.06f * width, -length + 0.4f * width);
-                                                            path.LineTo(0f, -length);
-                                                            path.LineTo(-0.06f * width, -length + 0.4f * width);
-                                                            path.Close();
+                                                            textPaint.Color = eff.GetSecondaryInner2Color(maincountervalue);
+                                                            canvas.DrawPath(path2, textPaint.Paint);
+                                                        }
+                                                        using (SKPath path2 = new SKPath())
+                                                        {
+                                                            /* Middle color part 2 */
+                                                            path2.MoveTo(0.1f * width, -length - 0.4f * width + 0.65f * width);
+                                                            path2.LineTo(0.1f * width, -length - 0.4f * width + 0.75f * width);
+                                                            path2.LineTo(0.3f * width, -length - 0.4f * width + 0.45f * width);
+                                                            path2.LineTo(0.1f * width, -length - 0.4f * width + 0.15f * width);
+                                                            path2.LineTo(0.1f * width, -length - 0.4f * width + 0.25f * width);
+                                                            path2.LineTo(0.16f * width, -length - 0.4f * width + 0.30f * width);
+                                                            path2.LineTo(0.24f * width, -length - 0.4f * width + 0.45f * width);
+                                                            path2.LineTo(0.16f * width, -length - 0.4f * width + 0.60f * width);
+                                                            path2.LineTo(0.1f * width, -length - 0.4f * width + 0.65f * width);
+                                                            path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
                                                             textPaint.Color = eff.GetSecondaryColor(maincountervalue);
-                                                            canvas.DrawPath(path, textPaint.Paint);
+                                                            canvas.DrawPath(path2, textPaint.Paint);
+                                                        }
+                                                        using (SKPath path2 = new SKPath())
+                                                        {
+                                                            /* Outline */
+                                                            path2.MoveTo(0.04f * width, -length - 0.4f * width + 0.5f * width);
+                                                            path2.LineTo(0.1f * width, -length - 0.4f * width + 0.5f * width);
+                                                            path2.LineTo(0.1f * width, -length - 0.4f * width + 0.75f * width);
+                                                            path2.LineTo(0.3f * width, -length - 0.4f * width + 0.45f * width);
+                                                            path2.LineTo(0.1f * width, -length - 0.4f * width + 0.15f * width);
+                                                            path2.LineTo(0.1f * width, -length - 0.4f * width + 0.4f * width);
+                                                            path2.LineTo(0.04f * width, -length - 0.4f * width + 0.4f * width);
+                                                            path2.LineTo(0.04f * width, -length - 0.4f * width + 0.5f * width);
+                                                            path2.Close();
                                                             textPaint.Style = SKPaintStyle.Stroke;
-                                                            textPaint.StrokeWidth = width * 0.02f;
+                                                            textPaint.StrokeWidth = width * 0.03f;
                                                             textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
-                                                            canvas.DrawPath(path, textPaint.Paint);
+                                                            canvas.DrawPath(path2, textPaint.Paint);
                                                             textPaint.Style = SKPaintStyle.Fill;
-                                                            using (SKPath path2 = new SKPath())
-                                                            {
-                                                                path2.MoveTo(-0.025f * width, -length + 0.35f * width);
-                                                                path2.LineTo(0.025f * width, -length + 0.35f * width);
-                                                                path2.LineTo(0f, -length + 0.05f * width);
-                                                                path2.LineTo(-0.025f * width, -length + 0.35f * width);
-                                                                path2.Close();
-                                                                textPaint.Style = SKPaintStyle.Fill;
-                                                                textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
-                                                                canvas.DrawPath(path2, textPaint.Paint);
-                                                            }
-                                                            break;
-                                                        case (int)gui_polearm_types.GUI_POLEARM_POLEAXE: /* Polearm head */
-                                                        case (int)gui_polearm_types.GUI_POLEARM_THRUSTED: /* Polearm head */
-                                                            /* Tip */
-                                                            path.MoveTo(-0.04f * width, -length);
-                                                            path.LineTo(0.04f * width, -length);
-                                                            path.LineTo(0f, -length - 0.4f * width);
-                                                            path.LineTo(-0.04f * width, -length);
-                                                            path.Close();
+                                                        }
+                                                        using (SKPath path2 = new SKPath())
+                                                        {
+                                                            /* Inner color */
+                                                            path2.MoveTo(0.16f * width, -length - 0.4f * width + 0.60f * width);
+                                                            path2.LineTo(0.24f * width, -length - 0.4f * width + 0.45f * width);
+                                                            path2.LineTo(0.16f * width, -length - 0.4f * width + 0.30f * width);
+                                                            path2.LineTo(0.16f * width, -length - 0.4f * width + 0.60f * width);
+                                                            path2.Close();
                                                             textPaint.Style = SKPaintStyle.Fill;
-                                                            textPaint.Color = eff.GetSecondaryColor(maincountervalue);
-                                                            canvas.DrawPath(path, textPaint.Paint);
-                                                            textPaint.Style = SKPaintStyle.Stroke;
-                                                            textPaint.StrokeWidth = width * 0.02f;
-                                                            textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
-                                                            canvas.DrawPath(path, textPaint.Paint);
-                                                            textPaint.Style = SKPaintStyle.Fill;
-                                                            using (SKPath path2 = new SKPath())
-                                                            {
-                                                                path2.MoveTo(-0.02f * width, -length - 0.05f * width);
-                                                                path2.LineTo(0.02f * width, -length - 0.05f * width);
-                                                                path2.LineTo(0f, -length - 0.35f * width);
-                                                                path2.LineTo(-0.02f * width, -length -0.05f * width);
-                                                                path2.Close();
-                                                                textPaint.Style = SKPaintStyle.Fill;
-                                                                textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
-                                                                canvas.DrawPath(path2, textPaint.Paint);
-                                                            }
-                                                            /* Left side */
-                                                            using (SKPath path2 = new SKPath())
-                                                            {
-                                                                /* Middle color part 1 */
-                                                                path2.MoveTo(-0.04f * width, -length - 0.4f * width + 0.5f * width);
-                                                                path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.5f * width);
-                                                                path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.65f * width);
-                                                                path2.LineTo(-0.16f * width, -length - 0.4f * width + 0.60f * width);
-                                                                path2.LineTo(-0.16f * width, -length - 0.4f * width + 0.30f * width);
-                                                                path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.25f * width);
-                                                                path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.4f * width);
-                                                                path2.LineTo(-0.04f * width, -length - 0.4f * width + 0.4f * width);
-                                                                path2.LineTo(-0.04f * width, -length - 0.4f * width + 0.5f * width);
-                                                                path2.Close();
-                                                                textPaint.Style = SKPaintStyle.Fill;
-                                                                textPaint.Color = eff.GetSecondaryInner2Color(maincountervalue);
-                                                                canvas.DrawPath(path2, textPaint.Paint);
-                                                            }
-                                                            using (SKPath path2 = new SKPath())
-                                                            {
-                                                                /* Middle color part 2 */
-                                                                path2.MoveTo(-0.1f * width, -length - 0.4f * width + 0.65f * width);
-                                                                path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.75f * width);
-                                                                path2.LineTo(-0.3f * width, -length - 0.4f * width + 0.45f * width);
-                                                                path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.15f * width);
-                                                                path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.25f * width);
-                                                                path2.LineTo(-0.16f * width, -length - 0.4f * width + 0.30f * width);
-                                                                path2.LineTo(-0.24f * width, -length - 0.4f * width + 0.45f * width);
-                                                                path2.LineTo(-0.16f * width, -length - 0.4f * width + 0.60f * width);
-                                                                path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.65f * width);
-                                                                path2.Close();
-                                                                textPaint.Style = SKPaintStyle.Fill;
-                                                                textPaint.Color = eff.GetSecondaryColor(maincountervalue);
-                                                                canvas.DrawPath(path2, textPaint.Paint);
-                                                            }
-                                                            using (SKPath path2 = new SKPath())
-                                                            {
-                                                                /* Outline */
-                                                                path2.MoveTo(-0.04f * width, -length - 0.4f * width + 0.5f * width);
-                                                                path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.5f * width);
-                                                                path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.75f * width);
-                                                                path2.LineTo(-0.3f * width, -length - 0.4f * width + 0.45f * width);
-                                                                path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.15f * width);
-                                                                path2.LineTo(-0.1f * width, -length - 0.4f * width + 0.4f * width);
-                                                                path2.LineTo(-0.04f * width, -length - 0.4f * width + 0.4f * width);
-                                                                path2.LineTo(-0.04f * width, -length - 0.4f * width + 0.5f * width);
-                                                                path2.Close();
-                                                                textPaint.Style = SKPaintStyle.Stroke;
-                                                                textPaint.StrokeWidth = width * 0.03f;
-                                                                textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
-                                                                canvas.DrawPath(path2, textPaint.Paint);
-                                                                textPaint.Style = SKPaintStyle.Fill;
-                                                            }
-                                                            using (SKPath path2 = new SKPath())
-                                                            {
-                                                                /* Inner color */
-                                                                path2.MoveTo(-0.16f * width, -length - 0.4f * width + 0.60f * width);
-                                                                path2.LineTo(-0.24f * width, -length - 0.4f * width + 0.45f * width);
-                                                                path2.LineTo(-0.16f * width, -length - 0.4f * width + 0.30f * width);
-                                                                path2.LineTo(-0.16f * width, -length - 0.4f * width + 0.60f * width);
-                                                                path2.Close();
-                                                                textPaint.Style = SKPaintStyle.Fill;
-                                                                textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
-                                                                canvas.DrawPath(path2, textPaint.Paint);
-                                                            }
-                                                            /* Right side */
-                                                            //using (SKPath path2 = new SKPath())
-                                                            //{
-                                                            //    /* Middle color */
-                                                            //    path2.MoveTo(0.04f * width, -length - 0.4f * width + 0.5f * width);
-                                                            //    path2.LineTo(0.1f * width, -length - 0.4f * width + 0.5f * width);
-                                                            //    path2.LineTo(0.1f * width, -length - 0.4f * width + 0.75f * width);
-                                                            //    path2.LineTo(0.3f * width, -length - 0.4f * width + 0.45f * width);
-                                                            //    path2.LineTo(0.1f * width, -length - 0.4f * width + 0.15f * width);
-                                                            //    path2.LineTo(0.1f * width, -length - 0.4f * width + 0.4f * width);
-                                                            //    path2.LineTo(0.04f * width, -length - 0.4f * width + 0.4f * width);
-                                                            //    path2.LineTo(0.04f * width, -length - 0.4f * width + 0.5f * width);
-                                                            //    path2.Close();
-                                                            //    textPaint.Style = SKPaintStyle.Fill;
-                                                            //    textPaint.Color = eff.GetSecondaryColor(maincountervalue);
-                                                            //    canvas.DrawPath(path2, textPaint);
-                                                            //    textPaint.Style = SKPaintStyle.Stroke;
-                                                            //    textPaint.StrokeWidth = width * 0.03f;
-                                                            //    textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
-                                                            //    canvas.DrawPath(path2, textPaint);
-                                                            //    textPaint.Style = SKPaintStyle.Fill;
-                                                            //}
-                                                            using (SKPath path2 = new SKPath())
-                                                            {
-                                                                /* Middle color part 1 */
-                                                                path2.MoveTo(0.04f * width, -length - 0.4f * width + 0.5f * width);
-                                                                path2.LineTo(0.1f * width, -length - 0.4f * width + 0.5f * width);
-                                                                path2.LineTo(0.1f * width, -length - 0.4f * width + 0.65f * width);
-                                                                path2.LineTo(0.16f * width, -length - 0.4f * width + 0.60f * width);
-                                                                path2.LineTo(0.16f * width, -length - 0.4f * width + 0.30f * width);
-                                                                path2.LineTo(0.1f * width, -length - 0.4f * width + 0.25f * width);
-                                                                path2.LineTo(0.1f * width, -length - 0.4f * width + 0.4f * width);
-                                                                path2.LineTo(0.04f * width, -length - 0.4f * width + 0.4f * width);
-                                                                path2.LineTo(0.04f * width, -length - 0.4f * width + 0.5f * width);
-                                                                path2.Close();
-                                                                textPaint.Style = SKPaintStyle.Fill;
-                                                                textPaint.Color = eff.GetSecondaryInner2Color(maincountervalue);
-                                                                canvas.DrawPath(path2, textPaint.Paint);
-                                                            }
-                                                            using (SKPath path2 = new SKPath())
-                                                            {
-                                                                /* Middle color part 2 */
-                                                                path2.MoveTo(0.1f * width, -length - 0.4f * width + 0.65f * width);
-                                                                path2.LineTo(0.1f * width, -length - 0.4f * width + 0.75f * width);
-                                                                path2.LineTo(0.3f * width, -length - 0.4f * width + 0.45f * width);
-                                                                path2.LineTo(0.1f * width, -length - 0.4f * width + 0.15f * width);
-                                                                path2.LineTo(0.1f * width, -length - 0.4f * width + 0.25f * width);
-                                                                path2.LineTo(0.16f * width, -length - 0.4f * width + 0.30f * width);
-                                                                path2.LineTo(0.24f * width, -length - 0.4f * width + 0.45f * width);
-                                                                path2.LineTo(0.16f * width, -length - 0.4f * width + 0.60f * width);
-                                                                path2.LineTo(0.1f * width, -length - 0.4f * width + 0.65f * width);
-                                                                path2.Close();
-                                                                textPaint.Style = SKPaintStyle.Fill;
-                                                                textPaint.Color = eff.GetSecondaryColor(maincountervalue);
-                                                                canvas.DrawPath(path2, textPaint.Paint);
-                                                            }
-                                                            using (SKPath path2 = new SKPath())
-                                                            {
-                                                                /* Outline */
-                                                                path2.MoveTo(0.04f * width, -length - 0.4f * width + 0.5f * width);
-                                                                path2.LineTo(0.1f * width, -length - 0.4f * width + 0.5f * width);
-                                                                path2.LineTo(0.1f * width, -length - 0.4f * width + 0.75f * width);
-                                                                path2.LineTo(0.3f * width, -length - 0.4f * width + 0.45f * width);
-                                                                path2.LineTo(0.1f * width, -length - 0.4f * width + 0.15f * width);
-                                                                path2.LineTo(0.1f * width, -length - 0.4f * width + 0.4f * width);
-                                                                path2.LineTo(0.04f * width, -length - 0.4f * width + 0.4f * width);
-                                                                path2.LineTo(0.04f * width, -length - 0.4f * width + 0.5f * width);
-                                                                path2.Close();
-                                                                textPaint.Style = SKPaintStyle.Stroke;
-                                                                textPaint.StrokeWidth = width * 0.03f;
-                                                                textPaint.Color = eff.GetSecondaryOutlineColor(maincountervalue);
-                                                                canvas.DrawPath(path2, textPaint.Paint);
-                                                                textPaint.Style = SKPaintStyle.Fill;
-                                                            }
-                                                            using (SKPath path2 = new SKPath())
-                                                            {
-                                                                /* Inner color */
-                                                                path2.MoveTo(0.16f * width, -length - 0.4f * width + 0.60f * width);
-                                                                path2.LineTo(0.24f * width, -length - 0.4f * width + 0.45f * width);
-                                                                path2.LineTo(0.16f * width, -length - 0.4f * width + 0.30f * width);
-                                                                path2.LineTo(0.16f * width, -length - 0.4f * width + 0.60f * width);
-                                                                path2.Close();
-                                                                textPaint.Style = SKPaintStyle.Fill;
-                                                                textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
-                                                                canvas.DrawPath(path2, textPaint.Paint);
-                                                            }
-                                                            break;
-                                                        default:
-                                                            break;
-                                                    }
+                                                            textPaint.Color = eff.GetSecondaryInnerColor(maincountervalue);
+                                                            canvas.DrawPath(path2, textPaint.Paint);
+                                                        }
+                                                        break;
+                                                    default:
+                                                        break;
                                                 }
                                             }
                                         }
-                                        break;
-                                    default:
-                                        break;
-                                }
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
 #if GNH_MAP_PROFILING && DEBUG
                                 StopProfiling(GHProfilingStyle.Bitmap);
 #endif
 
-                            }
                         }
                     }
 
@@ -8347,202 +8370,203 @@ namespace GnollHackX.Pages.Game
 
                             if (ghWindow.WindowType == GHWinType.Message)
                             {
+                                GHMsgHistoryItem[] msgHistoryPtr;
                                 lock (_msgHistoryLock)
                                 {
-                                    GHMsgHistoryItem[] msgHistoryPtr = _msgHistory;
-                                    if (msgHistoryPtr != null)
+                                    msgHistoryPtr = _msgHistory;
+                                }
+                                if (msgHistoryPtr != null)
+                                {
+                                    int j = ActualDisplayedMessages - 1, idx;
+                                    float lineLengthLimit = 0.85f * canvaswidth;
+                                    float spaceLength = textPaint.MeasureText(" ");
+
+                                    bool refreshsmallesttop = false;
+                                    GHSubstring printedsubline = new GHSubstring("");
+                                    for (idx = msgHistoryPtr.Length - 1; idx >= 0 && j >= 0; idx--)
                                     {
-                                        int j = ActualDisplayedMessages - 1, idx;
-                                        float lineLengthLimit = 0.85f * canvaswidth;
-                                        float spaceLength = textPaint.MeasureText(" ");
+                                        GHMsgHistoryItem msgHistoryItem = msgHistoryPtr[idx];
+                                        //longLine = msgHistoryItem.Text;
+                                        SKColor printColor = UIUtils.NHColor2SKColor(
+                                            msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 ? msgHistoryItem.Colors[0] : msgHistoryItem.NHColor < (int)NhColor.CLR_MAX ? msgHistoryItem.NHColor : (int)NhColor.CLR_WHITE, 
+                                            msgHistoryItem.Attributes != null && msgHistoryItem.Attributes.Length > 0 ? msgHistoryItem.Attributes[0] : msgHistoryItem.Attribute);
 
-                                        bool refreshsmallesttop = false;
-                                        GHSubstring printedsubline = new GHSubstring("");
-                                        for (idx = msgHistoryPtr.Length - 1; idx >= 0 && j >= 0; idx--)
+                                        bool use_one_color = msgHistoryItem.Colors == null && msgHistoryItem.Attributes == null;
+                                        int char_idx = 0;
+
+                                        if (_refreshMsgHistoryRowCounts || msgHistoryItem.WrappedTextRows.Count == 0)
                                         {
-                                            GHMsgHistoryItem msgHistoryItem = msgHistoryPtr[idx];
-                                            //longLine = msgHistoryItem.Text;
-                                            SKColor printColor = UIUtils.NHColor2SKColor(
-                                                msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 ? msgHistoryItem.Colors[0] : msgHistoryItem.NHColor < (int)NhColor.CLR_MAX ? msgHistoryItem.NHColor : (int)NhColor.CLR_WHITE, 
-                                                msgHistoryItem.Attributes != null && msgHistoryItem.Attributes.Length > 0 ? msgHistoryItem.Attributes[0] : msgHistoryItem.Attribute);
-
-                                            bool use_one_color = msgHistoryItem.Colors == null && msgHistoryItem.Attributes == null;
-                                            int char_idx = 0;
-
-                                            if (_refreshMsgHistoryRowCounts || msgHistoryItem.WrappedTextRows.Count == 0)
+                                            refreshsmallesttop = true;
+                                            msgHistoryItem.WrappedTextRows.Clear();
+                                            float lineLength = 0.0f;
+                                            //string line = "";
+                                            _lineBuilder.Clear();
+                                            string[] txtsplit = msgHistoryItem.TextSplit;
+                                            bool firstonline = true;
+                                            for (int widx = 0; widx < txtsplit.Length; widx++)
                                             {
-                                                refreshsmallesttop = true;
-                                                msgHistoryItem.WrappedTextRows.Clear();
-                                                float lineLength = 0.0f;
-                                                //string line = "";
-                                                _lineBuilder.Clear();
-                                                string[] txtsplit = msgHistoryItem.TextSplit;
-                                                bool firstonline = true;
-                                                for (int widx = 0; widx < txtsplit.Length; widx++)
+                                                string word = txtsplit[widx];
+                                                //string wordWithSpace = word + " ";
+                                                float wordLength = textPaint.MeasureText(word);
+                                                float wordWithSpaceLength = wordLength + spaceLength;
+                                                if (lineLength + wordLength > lineLengthLimit && !firstonline)
                                                 {
-                                                    string word = txtsplit[widx];
-                                                    //string wordWithSpace = word + " ";
-                                                    float wordLength = textPaint.MeasureText(word);
-                                                    float wordWithSpaceLength = wordLength + spaceLength;
-                                                    if (lineLength + wordLength > lineLengthLimit && !firstonline)
-                                                    {
-                                                        msgHistoryItem.WrappedTextRows.Add(_lineBuilder.ToString());
-                                                        //line = wordWithSpace;
-                                                        _lineBuilder.Clear();
-                                                        _lineBuilder.Append(word);
-                                                        _lineBuilder.Append(" ");
-                                                        lineLength = wordWithSpaceLength;
-                                                        firstonline = true;
-                                                    }
-                                                    else
-                                                    {
-                                                        //line += wordWithSpace;
-                                                        _lineBuilder.Append(word);
-                                                        _lineBuilder.Append(" ");
-                                                        lineLength += wordWithSpaceLength;
-                                                        firstonline = false;
-                                                    }
-                                                }
-                                                msgHistoryItem.WrappedTextRows.Add(_lineBuilder.ToString());
-                                            }
-
-                                            if(!msgHistoryItem.MatchFilter)
-                                                continue;
-
-                                            int lineidx;
-                                            for (lineidx = 0; lineidx < msgHistoryItem.WrappedTextRows.Count; lineidx++)
-                                            {
-                                                string wrappedLine = msgHistoryItem.WrappedTextRows[lineidx];
-                                                int window_row_idx = j + lineidx - msgHistoryItem.WrappedTextRows.Count + 1;
-                                                if (window_row_idx < 0)
-                                                {
-                                                    char_idx += wrappedLine.Length;
-                                                    continue;
-                                                }
-                                                tx = winRect.Left + ghWindow.Padding.Left;
-                                                ty = winRect.Top + ghWindow.Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
-                                                if (ForceAllMessages)
-                                                {
-                                                    ty += _messageScrollOffset;
-                                                }
-                                                if (ty + textPaint.FontMetrics.Descent < 0)
-                                                {
-                                                    char_idx += wrappedLine.Length;
-                                                    continue;
-                                                }
-                                                if (ty - textPaint.FontMetrics.Ascent > canvasheight)
-                                                {
-                                                    char_idx += wrappedLine.Length;
-                                                    continue;
-                                                }
-
-                                                if (use_one_color)
-                                                {
-#if GNH_MAP_PROFILING && DEBUG
-                                                    StartProfiling(GHProfilingStyle.Text);
-#endif
-                                                    textPaint.Style = SKPaintStyle.Stroke;
-                                                    textPaint.StrokeWidth = ghWindow.StrokeWidth * (ghWindow.WindowType == GHWinType.Status ? statusBarTextScale : messageTextScale);
-                                                    textPaint.Color = SKColors.Black;
-                                                    //canvas.DrawText(wrappedLine, tx, ty, textPaint);
-                                                    textPaint.DrawTextOnCanvas(canvas, wrappedLine, tx, ty);
-                                                    textPaint.Style = SKPaintStyle.Fill;
-                                                    textPaint.StrokeWidth = 0;
-                                                    textPaint.Color = printColor;
-                                                    //canvas.DrawText(wrappedLine, tx, ty, textPaint);
-                                                    textPaint.DrawTextOnCanvas(canvas, wrappedLine, tx, ty);
-                                                    textPaint.Style = SKPaintStyle.Fill;
-                                                    textPaint.StrokeWidth = 0;
-                                                    textPaint.Color = SKColors.White;
-                                                    char_idx += wrappedLine.Length;
-#if GNH_MAP_PROFILING && DEBUG
-                                                    StopProfiling(GHProfilingStyle.Text);
-#endif
+                                                    msgHistoryItem.WrappedTextRows.Add(_lineBuilder.ToString());
+                                                    //line = wordWithSpace;
+                                                    _lineBuilder.Clear();
+                                                    _lineBuilder.Append(word);
+                                                    _lineBuilder.Append(" ");
+                                                    lineLength = wordWithSpaceLength;
+                                                    firstonline = true;
                                                 }
                                                 else
                                                 {
-                                                    int charidx_start = 0;
-                                                    while (char_idx < msgHistoryItem.Text.Length && charidx_start < wrappedLine.Length)
-                                                    {
-                                                        int charidx_len = 0;
-                                                        int new_nhcolor = msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 && char_idx < msgHistoryItem.Colors.Length ? msgHistoryItem.Colors[char_idx] : msgHistoryItem.NHColor < (int)NhColor.CLR_MAX ? msgHistoryItem.NHColor : (int)NhColor.CLR_WHITE;
-                                                        int new_nhattr = msgHistoryItem.Attributes != null && msgHistoryItem.Attributes.Length > 0 && char_idx < msgHistoryItem.Attributes.Length ? msgHistoryItem.Attributes[char_idx] : msgHistoryItem.Attribute;
-                                                        int char_idx2 = char_idx;
-                                                        int new_nhcolor2 = new_nhcolor;
-                                                        int new_nhattr2 = new_nhattr;
-
-                                                        while (char_idx2 < msgHistoryItem.Text.Length && charidx_start + charidx_len < wrappedLine.Length && new_nhcolor == new_nhcolor2 && new_nhattr == new_nhattr2)
-                                                        {
-                                                            char_idx2++;
-                                                            new_nhcolor2 = msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 && char_idx2 < msgHistoryItem.Colors.Length ? msgHistoryItem.Colors[char_idx2] : msgHistoryItem.NHColor < (int)NhColor.CLR_MAX ? msgHistoryItem.NHColor : (int)NhColor.CLR_WHITE;
-                                                            new_nhattr2 = msgHistoryItem.Attributes != null && msgHistoryItem.Attributes.Length > 0 && char_idx2 < msgHistoryItem.Attributes.Length ? msgHistoryItem.Attributes[char_idx2] : msgHistoryItem.Attribute;
-                                                            charidx_len = char_idx2 - char_idx;
-                                                        }
-
-#if GNH_MAP_PROFILING && DEBUG
-                                                        StartProfiling(GHProfilingStyle.Text);
-#endif
-                                                        SKColor new_skcolor = UIUtils.NHColor2SKColor(new_nhcolor, new_nhattr);
-                                                        printedsubline.SetValue(wrappedLine, charidx_start, charidx_len);
-                                                        textPaint.Style = SKPaintStyle.Stroke;
-                                                        textPaint.StrokeWidth = ghWindow.StrokeWidth * (ghWindow.WindowType == GHWinType.Status ? statusBarTextScale : messageTextScale);
-                                                        textPaint.Color = SKColors.Black;
-                                                        textPaint.DrawTextOnCanvas(canvas, printedsubline.Value, tx, ty);
-                                                        textPaint.Style = SKPaintStyle.Fill;
-                                                        textPaint.StrokeWidth = 0;
-                                                        textPaint.Color = new_skcolor;
-                                                        textPaint.DrawTextOnCanvas(canvas, printedsubline.Value, tx, ty);
-                                                        float twidth = textPaint.MeasureText(printedsubline.Value);
-                                                        textPaint.Style = SKPaintStyle.Fill;
-                                                        textPaint.StrokeWidth = 0;
-                                                        textPaint.Color = SKColors.White;
-#if GNH_MAP_PROFILING && DEBUG
-                                                        StopProfiling(GHProfilingStyle.Text);
-#endif
-
-                                                        tx += twidth;
-                                                        char_idx += charidx_len;
-                                                        charidx_start += charidx_len;
-                                                    }
+                                                    //line += wordWithSpace;
+                                                    _lineBuilder.Append(word);
+                                                    _lineBuilder.Append(" ");
+                                                    lineLength += wordWithSpaceLength;
+                                                    firstonline = false;
                                                 }
                                             }
-                                            j -= msgHistoryItem.WrappedTextRows.Count;
+                                            msgHistoryItem.WrappedTextRows.Add(_lineBuilder.ToString());
                                         }
-                                        _refreshMsgHistoryRowCounts = false;
 
-                                        /* Calculate smallest top */
-                                        if(refreshsmallesttop)
+                                        if(!msgHistoryItem.MatchFilter)
+                                            continue;
+
+                                        int lineidx;
+                                        for (lineidx = 0; lineidx < msgHistoryItem.WrappedTextRows.Count; lineidx++)
                                         {
-                                            lock (_messageScrollLock)
+                                            string wrappedLine = msgHistoryItem.WrappedTextRows[lineidx];
+                                            int window_row_idx = j + lineidx - msgHistoryItem.WrappedTextRows.Count + 1;
+                                            if (window_row_idx < 0)
                                             {
-                                                _messageSmallestTop = canvasheight;
-                                                j = ActualDisplayedMessages - 1;
-                                                for (idx = msgHistoryPtr.Length - 1; idx >= 0 && j >= 0; idx--)
+                                                char_idx += wrappedLine.Length;
+                                                continue;
+                                            }
+                                            tx = winRect.Left + ghWindow.Padding.Left;
+                                            ty = winRect.Top + ghWindow.Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
+                                            if (ForceAllMessages)
+                                            {
+                                                ty += _messageScrollOffset;
+                                            }
+                                            if (ty + textPaint.FontMetrics.Descent < 0)
+                                            {
+                                                char_idx += wrappedLine.Length;
+                                                continue;
+                                            }
+                                            if (ty - textPaint.FontMetrics.Ascent > canvasheight)
+                                            {
+                                                char_idx += wrappedLine.Length;
+                                                continue;
+                                            }
+
+                                            if (use_one_color)
+                                            {
+#if GNH_MAP_PROFILING && DEBUG
+                                                StartProfiling(GHProfilingStyle.Text);
+#endif
+                                                textPaint.Style = SKPaintStyle.Stroke;
+                                                textPaint.StrokeWidth = ghWindow.StrokeWidth * (ghWindow.WindowType == GHWinType.Status ? statusBarTextScale : messageTextScale);
+                                                textPaint.Color = SKColors.Black;
+                                                //canvas.DrawText(wrappedLine, tx, ty, textPaint);
+                                                textPaint.DrawTextOnCanvas(canvas, wrappedLine, tx, ty);
+                                                textPaint.Style = SKPaintStyle.Fill;
+                                                textPaint.StrokeWidth = 0;
+                                                textPaint.Color = printColor;
+                                                //canvas.DrawText(wrappedLine, tx, ty, textPaint);
+                                                textPaint.DrawTextOnCanvas(canvas, wrappedLine, tx, ty);
+                                                textPaint.Style = SKPaintStyle.Fill;
+                                                textPaint.StrokeWidth = 0;
+                                                textPaint.Color = SKColors.White;
+                                                char_idx += wrappedLine.Length;
+#if GNH_MAP_PROFILING && DEBUG
+                                                StopProfiling(GHProfilingStyle.Text);
+#endif
+                                            }
+                                            else
+                                            {
+                                                int charidx_start = 0;
+                                                while (char_idx < msgHistoryItem.Text.Length && charidx_start < wrappedLine.Length)
                                                 {
-                                                    GHMsgHistoryItem msgHistoryItem = msgHistoryPtr[idx];
-                                                    if (!msgHistoryItem.MatchFilter)
-                                                        continue;
-                                                    int lineidx;
-                                                    for (lineidx = 0; lineidx < msgHistoryItem.WrappedTextRows.Count; lineidx++)
+                                                    int charidx_len = 0;
+                                                    int new_nhcolor = msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 && char_idx < msgHistoryItem.Colors.Length ? msgHistoryItem.Colors[char_idx] : msgHistoryItem.NHColor < (int)NhColor.CLR_MAX ? msgHistoryItem.NHColor : (int)NhColor.CLR_WHITE;
+                                                    int new_nhattr = msgHistoryItem.Attributes != null && msgHistoryItem.Attributes.Length > 0 && char_idx < msgHistoryItem.Attributes.Length ? msgHistoryItem.Attributes[char_idx] : msgHistoryItem.Attribute;
+                                                    int char_idx2 = char_idx;
+                                                    int new_nhcolor2 = new_nhcolor;
+                                                    int new_nhattr2 = new_nhattr;
+
+                                                    while (char_idx2 < msgHistoryItem.Text.Length && charidx_start + charidx_len < wrappedLine.Length && new_nhcolor == new_nhcolor2 && new_nhattr == new_nhattr2)
                                                     {
-                                                        string wrappedLine = msgHistoryItem.WrappedTextRows[lineidx];
-                                                        int window_row_idx = j + lineidx - msgHistoryItem.WrappedTextRows.Count + 1;
-                                                        if (window_row_idx < 0)
-                                                            continue;
-                                                        ty = winRect.Top + ghWindow.Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
-                                                        if (ty + textPaint.FontMetrics.Ascent < _messageSmallestTop)
-                                                            _messageSmallestTop = ty + textPaint.FontMetrics.Ascent;
+                                                        char_idx2++;
+                                                        new_nhcolor2 = msgHistoryItem.Colors != null && msgHistoryItem.Colors.Length > 0 && char_idx2 < msgHistoryItem.Colors.Length ? msgHistoryItem.Colors[char_idx2] : msgHistoryItem.NHColor < (int)NhColor.CLR_MAX ? msgHistoryItem.NHColor : (int)NhColor.CLR_WHITE;
+                                                        new_nhattr2 = msgHistoryItem.Attributes != null && msgHistoryItem.Attributes.Length > 0 && char_idx2 < msgHistoryItem.Attributes.Length ? msgHistoryItem.Attributes[char_idx2] : msgHistoryItem.Attribute;
+                                                        charidx_len = char_idx2 - char_idx;
                                                     }
-                                                    j -= msgHistoryItem.WrappedTextRows.Count;
+
+#if GNH_MAP_PROFILING && DEBUG
+                                                    StartProfiling(GHProfilingStyle.Text);
+#endif
+                                                    SKColor new_skcolor = UIUtils.NHColor2SKColor(new_nhcolor, new_nhattr);
+                                                    printedsubline.SetValue(wrappedLine, charidx_start, charidx_len);
+                                                    textPaint.Style = SKPaintStyle.Stroke;
+                                                    textPaint.StrokeWidth = ghWindow.StrokeWidth * (ghWindow.WindowType == GHWinType.Status ? statusBarTextScale : messageTextScale);
+                                                    textPaint.Color = SKColors.Black;
+                                                    textPaint.DrawTextOnCanvas(canvas, printedsubline.Value, tx, ty);
+                                                    textPaint.Style = SKPaintStyle.Fill;
+                                                    textPaint.StrokeWidth = 0;
+                                                    textPaint.Color = new_skcolor;
+                                                    textPaint.DrawTextOnCanvas(canvas, printedsubline.Value, tx, ty);
+                                                    float twidth = textPaint.MeasureText(printedsubline.Value);
+                                                    textPaint.Style = SKPaintStyle.Fill;
+                                                    textPaint.StrokeWidth = 0;
+                                                    textPaint.Color = SKColors.White;
+#if GNH_MAP_PROFILING && DEBUG
+                                                    StopProfiling(GHProfilingStyle.Text);
+#endif
+
+                                                    tx += twidth;
+                                                    char_idx += charidx_len;
+                                                    charidx_start += charidx_len;
                                                 }
-                                                float topScrollLimit = Math.Max(0, -_messageSmallestTop);
-                                                if (_messageScrollOffset > topScrollLimit)
+                                            }
+                                        }
+                                        j -= msgHistoryItem.WrappedTextRows.Count;
+                                    }
+                                    _refreshMsgHistoryRowCounts = false;
+
+                                    /* Calculate smallest top */
+                                    if(refreshsmallesttop)
+                                    {
+                                        lock (_messageScrollLock)
+                                        {
+                                            _messageSmallestTop = canvasheight;
+                                            j = ActualDisplayedMessages - 1;
+                                            for (idx = msgHistoryPtr.Length - 1; idx >= 0 && j >= 0; idx--)
+                                            {
+                                                GHMsgHistoryItem msgHistoryItem = msgHistoryPtr[idx];
+                                                if (!msgHistoryItem.MatchFilter)
+                                                    continue;
+                                                int lineidx;
+                                                for (lineidx = 0; lineidx < msgHistoryItem.WrappedTextRows.Count; lineidx++)
                                                 {
-                                                    _messageScrollOffset = topScrollLimit;
-                                                    _messageScrollSpeed = 0;
-                                                    _messageScrollSpeedOn = false;
-                                                    _messageScrollSpeedRecords.Clear();
+                                                    string wrappedLine = msgHistoryItem.WrappedTextRows[lineidx];
+                                                    int window_row_idx = j + lineidx - msgHistoryItem.WrappedTextRows.Count + 1;
+                                                    if (window_row_idx < 0)
+                                                        continue;
+                                                    ty = winRect.Top + ghWindow.Padding.Top - textPaint.FontMetrics.Ascent + window_row_idx * height;
+                                                    if (ty + textPaint.FontMetrics.Ascent < _messageSmallestTop)
+                                                        _messageSmallestTop = ty + textPaint.FontMetrics.Ascent;
                                                 }
+                                                j -= msgHistoryItem.WrappedTextRows.Count;
+                                            }
+                                            float topScrollLimit = Math.Max(0, -_messageSmallestTop);
+                                            if (_messageScrollOffset > topScrollLimit)
+                                            {
+                                                _messageScrollOffset = topScrollLimit;
+                                                _messageScrollSpeed = 0;
+                                                _messageScrollSpeedOn = false;
+                                                _messageScrollSpeedRecords.Clear();
                                             }
                                         }
                                     }
@@ -18467,33 +18491,34 @@ namespace GnollHackX.Pages.Game
 
         void UpdateMessageFilter()
         {
+            GHMsgHistoryItem[] msgHistoryPtr;
             lock (_msgHistoryLock)
             {
-                GHMsgHistoryItem[] msgHistoryPtr = _msgHistory;
-                if (msgHistoryPtr != null)
+                msgHistoryPtr = _msgHistory;
+            }
+            if (msgHistoryPtr != null)
+            {
+                int cnt = msgHistoryPtr.Length;
+                if (_longerMessageHistory)
                 {
-                    int cnt = msgHistoryPtr.Length;
-                    if (_longerMessageHistory)
+                    for (int i = 0; i < cnt; i++)
                     {
-                        for (int i = 0; i < cnt; i++)
-                        {
-                            GHMsgHistoryItem msg = msgHistoryPtr[i];
-                            if (msg != null)
-                                msg.Filter = MessageFilterEntry.Text;
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < cnt; i++)
-                        {
-                            GHMsgHistoryItem msg = msgHistoryPtr[i];
-                            if (msg != null)
-                                msg.Filter = null;
-                        }
+                        GHMsgHistoryItem msg = msgHistoryPtr[i];
+                        if (msg != null)
+                            msg.Filter = MessageFilterEntry.Text;
                     }
                 }
-                _refreshMsgHistoryRowCounts = true;
+                else
+                {
+                    for (int i = 0; i < cnt; i++)
+                    {
+                        GHMsgHistoryItem msg = msgHistoryPtr[i];
+                        if (msg != null)
+                            msg.Filter = null;
+                    }
+                }
             }
+            _refreshMsgHistoryRowCounts = true;
         }
 
         private void MessageFilterEntry_TextChanged(object sender, TextChangedEventArgs e)

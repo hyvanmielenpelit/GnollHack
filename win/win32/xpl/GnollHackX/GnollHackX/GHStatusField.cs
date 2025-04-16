@@ -17,10 +17,5 @@ namespace GnollHackX
         public int Color;
         public int Change;
         public int Percent;
-
-        public GHStatusField()
-        {
-
-        }
     }
 }

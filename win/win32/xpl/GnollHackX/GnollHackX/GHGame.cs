@@ -854,13 +854,14 @@ namespace GnollHackX
             if (force == 0 && (_gamePage.MapNoClipMode || _gamePage.MapLookMode || _gamePage.ZoomMiniMode)) //|| (!_gamePage.ZoomAlternateMode && _gamePage.MapNoClipMode) || (_gamePage.ZoomAlternateMode && _gamePage.MapAlternateNoClipMode) 
                 return; /* No clip mode ignores cliparound commands */
 
-            //ConcurrentQueue<GHRequest> queue;
-            //if (GHGame.RequestDictionary.TryGetValue(this, out queue))
-            //{
-            //    queue.Enqueue(new GHRequest(this, GHRequestType.ClipAround, x, y, force == 1));
-            //}
+            //This may be slightly slower to register, but likely more often in UI thread, so should cause fewer lock conflicts
+            ConcurrentQueue<GHRequest> queue;
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+            {
+                queue.Enqueue(new GHRequest(this, GHRequestType.ClipAround, x, y, force == 1));
+            }
 
-            _gamePage.SetTargetClip(x, y, force == 1);
+            //_gamePage.SetTargetClip(x, y, force == 1);
         }
 
         public void ClientCallback_RawPrint(string str)
@@ -1707,10 +1708,16 @@ namespace GnollHackX
             monst_info monster_data = monster_data_ptr == IntPtr.Zero ? new monst_info() : (monst_info)Marshal.PtrToStructure(monster_data_ptr, typeof(monst_info));
             RecordFunctionCall(RecordedFunctionID.SendMonsterData, cmdtype, x, y, monster_data, oflags);
             //_savedSendMonsterDataCalls.Add(new SavedSendMonsterDataCall(cmdtype, x, y, ref monster_data, oflags));
+            ConcurrentQueue<GHRequest> queue;
             switch (cmdtype)
             {
                 case 0: /* Add Pet */
-                    _gamePage.AddPetData(monster_data);
+                    //_gamePage.AddPetData(monster_data);
+                    //This may cause fewer lock conflicts since AddPetData is likely to be in the UI thread, but is a bit slower
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.AddPetData, monster_data));
+                    }
                     break;
             }
         }
@@ -2268,7 +2275,11 @@ namespace GnollHackX
                     GHApp.TournamentMode = false;
                     break;
                 case (int)gui_command_types.GUI_CMD_CLEAR_PET_DATA:
-                    _gamePage.ClearPetData();
+                    //_gamePage.ClearPetData();
+                    if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                    {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.ClearPetData));
+                    }
                     break;
                 case (int)gui_command_types.GUI_CMD_SAVE_AND_DISABLE_TRAVEL_MODE:
                     if (GHGame.RequestDictionary.TryGetValue(this, out queue))

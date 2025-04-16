@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
+#if GNH_MAUI
+using GnollHackM;
+#endif
 namespace GnollHackX
 {
     public enum GHRequestType
@@ -92,6 +95,8 @@ namespace GnollHackX
         SetGetPositionArrows,
         SaveFileTrackingSave,
         SaveFileTrackingLoad,
+        ClearPetData,
+        AddPetData,
     }
 
     public struct AddContextMenuData
@@ -188,6 +193,7 @@ namespace GnollHackX
         public List<GHPutStrItem> RequestPutStrItems { get; set; }
 
         public AddContextMenuData ContextMenuData { get; set; }
+        public monst_info MonstInfoData { get; set; }
         public DisplayFloatingTextData FloatingTextData { get; set; }
         public DisplayScreenTextData ScreenTextData { get; set; }
         public DisplayConditionTextData ConditionTextData { get; set; }
@@ -390,6 +396,12 @@ namespace GnollHackX
             RequestingGame = ghGame;
             RequestType = requesttype;
             ContextMenuData = data;
+        }
+        public GHRequest(GHGame ghGame, GHRequestType requesttype, monst_info data)
+        {
+            RequestingGame = ghGame;
+            RequestType = requesttype;
+            MonstInfoData = data;
         }
         public GHRequest(GHGame ghGame, GHRequestType requesttype, DisplayFloatingTextData data)
         {
