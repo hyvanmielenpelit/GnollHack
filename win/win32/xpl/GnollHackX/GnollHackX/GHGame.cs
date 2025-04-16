@@ -62,6 +62,7 @@ namespace GnollHackX
         private readonly object _ghWindowsLock = new object();
         public GHWindow[] Windows { get { return _ghWindows; } }
         public object WindowsLock { get { return _ghWindowsLock; } }
+
         public int MapWindowId { get; set; }
         public int MessageWindowId { get; set; }
         public int StatusWindowId { get; set; }
@@ -1043,6 +1044,37 @@ namespace GnollHackX
             else
             {
                 _ghWindows[win_id].PutStrEx2(str, attributes_ptr != IntPtr.Zero ? attributes : null, colors_ptr != IntPtr.Zero ? colors : null, attr, color, append);
+            }
+        }
+
+        public void GetClonedPutStrs(List<GHPutStrItem>[] clonedPutStrs)
+        {
+            lock(WindowsLock)
+            {
+                for(int win_id = 0; win_id < _ghWindows.Length; win_id++)
+                {
+                    if (_ghWindows[win_id] == null)
+                        continue;
+
+                    if (clonedPutStrs[win_id] == null)
+                        clonedPutStrs[win_id] = new List<GHPutStrItem>();
+
+                    lock (_ghWindows[win_id].PutStrsLock)
+                    {
+                        for (int i = 0; i < _ghWindows[win_id].PutStrs.Count; i++)
+                        {
+                            if (i < clonedPutStrs[win_id].Count)
+                                _ghWindows[win_id].PutStrs[i].CopyTo((clonedPutStrs[win_id])[i]);
+                            else
+                                clonedPutStrs[win_id].Add(_ghWindows[win_id].PutStrs[i].Clone());
+                        }
+
+                        /* Remove the rest */
+                        int excess = clonedPutStrs[win_id].Count - _ghWindows[win_id].PutStrs.Count;
+                        if (excess > 0)
+                            clonedPutStrs[win_id].RemoveRange(_ghWindows[win_id].PutStrs.Count, excess);
+                    }
+                }
             }
         }
 

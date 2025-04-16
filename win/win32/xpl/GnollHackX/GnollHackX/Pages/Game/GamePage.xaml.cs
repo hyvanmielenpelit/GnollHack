@@ -6584,6 +6584,8 @@ namespace GnollHackX.Pages.Game
         public List<GHScreenFilter> _localScreenFilters = new List<GHScreenFilter>();
         public List<GHGUIEffect> _localGuiEffects = new List<GHGUIEffect>();
 
+        public List<GHPutStrItem>[] _localPutStrs = new List<GHPutStrItem>[GHConstants.MaxGHWindows];
+
         private void PaintMainGamePage(object sender, SKPaintSurfaceEventArgs e)
         {
             if (!IsMainCanvasOn || /* !MainGrid.IsVisible || */ GHApp.IsReplaySearching)
@@ -6768,6 +6770,7 @@ namespace GnollHackX.Pages.Game
                 GHGame curGame = CurrentGame;
                 if (curGame != null)
                 {
+                    curGame.GetClonedPutStrs(_localPutStrs);
                     lock (curGame.WindowsLock)
                     {
                         if (curGame.Windows[curGame.MapWindowId] != null)
@@ -8304,68 +8307,67 @@ namespace GnollHackX.Pages.Game
 
                             if (ghWindow.WindowType != GHWinType.Message && !ForceAllMessages)
                             {
-                                lock (ghWindow.PutStrsLock)
+                                int j = -1;
+                                if (_localPutStrs[i] == null)
+                                    break;
+                                foreach (GHPutStrItem putstritem in _localPutStrs[i]) // ghWindow.PutStrs
                                 {
-                                    int j = -1;
-                                    foreach (GHPutStrItem putstritem in ghWindow.PutStrs)
+                                    j++;
+                                    int pos = 0;
+                                    float xpos = 0;
+                                    float totwidth = 0;
+                                    foreach (GHPutStrInstructions instr in putstritem.InstructionList)
                                     {
-                                        j++;
-                                        int pos = 0;
-                                        float xpos = 0;
-                                        float totwidth = 0;
-                                        foreach (GHPutStrInstructions instr in putstritem.InstructionList)
+                                        if (putstritem.Text == null)
+                                            substr.SetValue("");
+                                        else if (pos + instr.PrintLength <= putstritem.Text.Length)
+                                            substr.SetValue(putstritem.Text, pos, instr.PrintLength);
+                                        else if (putstritem.Text.Length - pos > 0)
+                                            substr.SetValue(putstritem.Text, pos, putstritem.Text.Length - pos);
+                                        else
+                                            substr.SetValue("");
+                                        pos += substr.Length;
+                                        totwidth = textPaint.MeasureText(substr.Value, ref textBounds);
+
+                                        /* attributes */
+                                        tx = xpos + winRect.Left + ghWindow.Padding.Left;
+                                        ty = winRect.Top + ghWindow.Padding.Top - textPaint.FontMetrics.Ascent + j * height;
+
+#if GNH_MAP_PROFILING && DEBUG
+                                        StartProfiling(GHProfilingStyle.Text);
+#endif
+                                        if (ghWindow.HasShadow)
                                         {
-                                            if (putstritem.Text == null)
-                                                substr.SetValue("");
-                                            else if (pos + instr.PrintLength <= putstritem.Text.Length)
-                                                substr.SetValue(putstritem.Text, pos, instr.PrintLength);
-                                            else if (putstritem.Text.Length - pos > 0)
-                                                substr.SetValue(putstritem.Text, pos, putstritem.Text.Length - pos);
-                                            else
-                                                substr.SetValue("");
-                                            pos += substr.Length;
-                                            totwidth = textPaint.MeasureText(substr.Value, ref textBounds);
-
-                                            /* attributes */
-                                            tx = xpos + winRect.Left + ghWindow.Padding.Left;
-                                            ty = winRect.Top + ghWindow.Padding.Top - textPaint.FontMetrics.Ascent + j * height;
-
-#if GNH_MAP_PROFILING && DEBUG
-                                            StartProfiling(GHProfilingStyle.Text);
-#endif
-                                            if (ghWindow.HasShadow)
-                                            {
-                                                textPaint.Style = SKPaintStyle.Fill;
-                                                textPaint.Color = SKColors.Black;
-                                                textPaint.MaskFilter = _blur;
-                                                float shadow_offset = 0.15f * textPaint.TextSize;
-                                                textPaint.DrawTextOnCanvas(canvas, substr.Value, tx + shadow_offset, ty + shadow_offset);
-                                                textPaint.MaskFilter = null;
-                                            }
-                                            if (ghWindow.StrokeWidth > 0)
-                                            {
-                                                textPaint.Style = SKPaintStyle.Stroke;
-                                                textPaint.StrokeWidth = ghWindow.StrokeWidth * (ghWindow.WindowType == GHWinType.Status ? statusBarTextScale : messageTextScale);
-                                                textPaint.Color = SKColors.Black;
-                                                textPaint.DrawTextOnCanvas(canvas, substr.Value, tx, ty);
-                                            }
                                             textPaint.Style = SKPaintStyle.Fill;
-                                            textPaint.Color = UIUtils.NHColor2SKColor(instr.Color < (int)NhColor.CLR_MAX ? instr.Color : (int)NhColor.CLR_WHITE, instr.Attributes);
+                                            textPaint.Color = SKColors.Black;
+                                            textPaint.MaskFilter = _blur;
+                                            float shadow_offset = 0.15f * textPaint.TextSize;
+                                            textPaint.DrawTextOnCanvas(canvas, substr.Value, tx + shadow_offset, ty + shadow_offset);
+                                            textPaint.MaskFilter = null;
+                                        }
+                                        if (ghWindow.StrokeWidth > 0)
+                                        {
+                                            textPaint.Style = SKPaintStyle.Stroke;
+                                            textPaint.StrokeWidth = ghWindow.StrokeWidth * (ghWindow.WindowType == GHWinType.Status ? statusBarTextScale : messageTextScale);
+                                            textPaint.Color = SKColors.Black;
                                             textPaint.DrawTextOnCanvas(canvas, substr.Value, tx, ty);
-                                            textPaint.Style = SKPaintStyle.Fill;
-                                            xpos += totwidth;
+                                        }
+                                        textPaint.Style = SKPaintStyle.Fill;
+                                        textPaint.Color = UIUtils.NHColor2SKColor(instr.Color < (int)NhColor.CLR_MAX ? instr.Color : (int)NhColor.CLR_WHITE, instr.Attributes);
+                                        textPaint.DrawTextOnCanvas(canvas, substr.Value, tx, ty);
+                                        textPaint.Style = SKPaintStyle.Fill;
+                                        xpos += totwidth;
 #if GNH_MAP_PROFILING && DEBUG
-                                            StopProfiling(GHProfilingStyle.Text);
+                                        StopProfiling(GHProfilingStyle.Text);
 #endif
 
-                                            if (ghWindow.WindowType == GHWinType.Status && lastStatusRowPrintY < ty + textPaint.FontMetrics.Descent)
-                                            {
-                                                lastStatusRowPrintY = ty + textPaint.FontMetrics.Descent;
-                                                lastStatusRowFontSpacing = textPaint.FontSpacing;
-                                            }
+                                        if (ghWindow.WindowType == GHWinType.Status && lastStatusRowPrintY < ty + textPaint.FontMetrics.Descent)
+                                        {
+                                            lastStatusRowPrintY = ty + textPaint.FontMetrics.Descent;
+                                            lastStatusRowFontSpacing = textPaint.FontSpacing;
                                         }
                                     }
-                                }
+                                }                                
                             }
 
                             if (ghWindow.WindowType == GHWinType.Message)
@@ -8394,7 +8396,7 @@ namespace GnollHackX.Pages.Game
                                         bool use_one_color = msgHistoryItem.Colors == null && msgHistoryItem.Attributes == null;
                                         int char_idx = 0;
 
-                                        if (_refreshMsgHistoryRowCounts || msgHistoryItem.WrappedTextRows.Count == 0)
+                                        if (RefreshMsgHistoryRowCounts || msgHistoryItem.WrappedTextRows.Count == 0)
                                         {
                                             refreshsmallesttop = true;
                                             msgHistoryItem.WrappedTextRows.Clear();
@@ -8533,7 +8535,7 @@ namespace GnollHackX.Pages.Game
                                         }
                                         j -= msgHistoryItem.WrappedTextRows.Count;
                                     }
-                                    _refreshMsgHistoryRowCounts = false;
+                                    RefreshMsgHistoryRowCounts = false;
 
                                     /* Calculate smallest top */
                                     if(refreshsmallesttop)
@@ -18495,30 +18497,30 @@ namespace GnollHackX.Pages.Game
             lock (_msgHistoryLock)
             {
                 msgHistoryPtr = _msgHistory;
-            }
-            if (msgHistoryPtr != null)
-            {
-                int cnt = msgHistoryPtr.Length;
-                if (_longerMessageHistory)
+                if (msgHistoryPtr != null)
                 {
-                    for (int i = 0; i < cnt; i++)
+                    int cnt = msgHistoryPtr.Length;
+                    if (LongerMessageHistory)
                     {
-                        GHMsgHistoryItem msg = msgHistoryPtr[i];
-                        if (msg != null)
-                            msg.Filter = MessageFilterEntry.Text;
+                        for (int i = 0; i < cnt; i++)
+                        {
+                            GHMsgHistoryItem msg = msgHistoryPtr[i];
+                            if (msg != null)
+                                msg.Filter = MessageFilterEntry.Text;
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < cnt; i++)
+                        {
+                            GHMsgHistoryItem msg = msgHistoryPtr[i];
+                            if (msg != null)
+                                msg.Filter = null;
+                        }
                     }
                 }
-                else
-                {
-                    for (int i = 0; i < cnt; i++)
-                    {
-                        GHMsgHistoryItem msg = msgHistoryPtr[i];
-                        if (msg != null)
-                            msg.Filter = null;
-                    }
-                }
             }
-            _refreshMsgHistoryRowCounts = true;
+            RefreshMsgHistoryRowCounts = true;
         }
 
         private void MessageFilterEntry_TextChanged(object sender, TextChangedEventArgs e)

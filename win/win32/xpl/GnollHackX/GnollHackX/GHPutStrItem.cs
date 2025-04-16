@@ -248,8 +248,31 @@ namespace GnollHackX
                             break;
                     }
                     return cnt;
-                } 
+                }
             }
         }
+
+        public void CopyTo(GHPutStrItem destination)
+        {
+            destination.InstructionList.Clear();
+            destination.InstructionList.AddRange(_instructionList);
+            destination.UpdateData(_gamePage, _window, _text);
+        }
+
+        public GHPutStrItem Clone()
+        {
+            List<GHPutStrInstructions> newList = new List<GHPutStrInstructions>();
+            newList.AddRange(_instructionList);
+            GHPutStrItem clone = new GHPutStrItem(_gamePage, _window, _text, newList);
+            return clone;
+        }
+
+        public void UpdateData(GamePage gamePage, GHWindow window, string str)
+        {
+            Text = str;
+            _gamePage = gamePage;
+            _window = window;
+        }
+
     }
 }
