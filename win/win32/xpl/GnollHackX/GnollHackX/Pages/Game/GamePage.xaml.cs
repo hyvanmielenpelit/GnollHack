@@ -8394,7 +8394,7 @@ namespace GnollHackX.Pages.Game
                                         bool use_one_color = msgHistoryItem.Colors == null && msgHistoryItem.Attributes == null;
                                         int char_idx = 0;
 
-                                        if (_refreshMsgHistoryRowCounts || msgHistoryItem.WrappedTextRows.Count == 0)
+                                        if (RefreshMsgHistoryRowCounts || msgHistoryItem.WrappedTextRows.Count == 0)
                                         {
                                             refreshsmallesttop = true;
                                             msgHistoryItem.WrappedTextRows.Clear();
@@ -8533,7 +8533,7 @@ namespace GnollHackX.Pages.Game
                                         }
                                         j -= msgHistoryItem.WrappedTextRows.Count;
                                     }
-                                    _refreshMsgHistoryRowCounts = false;
+                                    RefreshMsgHistoryRowCounts = false;
 
                                     /* Calculate smallest top */
                                     if(refreshsmallesttop)
@@ -18495,30 +18495,31 @@ namespace GnollHackX.Pages.Game
             lock (_msgHistoryLock)
             {
                 msgHistoryPtr = _msgHistory;
-            }
-            if (msgHistoryPtr != null)
-            {
-                int cnt = msgHistoryPtr.Length;
-                if (_longerMessageHistory)
+
+                if (msgHistoryPtr != null)
                 {
-                    for (int i = 0; i < cnt; i++)
+                    int cnt = msgHistoryPtr.Length;
+                    if (LongerMessageHistory)
                     {
-                        GHMsgHistoryItem msg = msgHistoryPtr[i];
-                        if (msg != null)
-                            msg.Filter = MessageFilterEntry.Text;
+                        for (int i = 0; i < cnt; i++)
+                        {
+                            GHMsgHistoryItem msg = msgHistoryPtr[i];
+                            if (msg != null)
+                                msg.Filter = MessageFilterEntry.Text;
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < cnt; i++)
+                        {
+                            GHMsgHistoryItem msg = msgHistoryPtr[i];
+                            if (msg != null)
+                                msg.Filter = null;
+                        }
                     }
                 }
-                else
-                {
-                    for (int i = 0; i < cnt; i++)
-                    {
-                        GHMsgHistoryItem msg = msgHistoryPtr[i];
-                        if (msg != null)
-                            msg.Filter = null;
-                    }
-                }
             }
-            _refreshMsgHistoryRowCounts = true;
+            RefreshMsgHistoryRowCounts = true;
         }
 
         private void MessageFilterEntry_TextChanged(object sender, TextChangedEventArgs e)
