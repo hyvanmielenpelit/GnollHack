@@ -60,23 +60,23 @@ namespace GnollHackX
         private int _lastWindowHandle = 0;
         private GHWindow[] _ghWindows = new GHWindow[GHConstants.MaxGHWindows];
 
-        private readonly object _windowIdLock = new object();
+        //private readonly object _windowIdLock = new object();
         private int _mapWindowId;
         private int _messageWindowId;
         private int _statusWindowId;
-        public int MapWindowId  { get { lock (_windowIdLock) { return _mapWindowId; } } set { lock (_windowIdLock) { _mapWindowId = value; } } }
-        public int MessageWindowId { get { lock (_windowIdLock) { return _messageWindowId; } } set { lock (_windowIdLock) { _messageWindowId = value; } } }
-        public int StatusWindowId { get { lock (_windowIdLock) { return _statusWindowId; } } set { lock (_windowIdLock) { _statusWindowId = value; } } }
+        //public int MapWindowId  { get { lock (_windowIdLock) { return _mapWindowId; } } set { lock (_windowIdLock) { _mapWindowId = value; } } }
+        //public int MessageWindowId { get { lock (_windowIdLock) { return _messageWindowId; } } set { lock (_windowIdLock) { _messageWindowId = value; } } }
+        //public int StatusWindowId { get { lock (_windowIdLock) { return _statusWindowId; } } set { lock (_windowIdLock) { _statusWindowId = value; } } }
 
-        public void GetWindowIds(out int mapWindowId, out int messageWindowId, out int statusWindowId)
-        {
-            lock (_windowIdLock)
-            {
-                mapWindowId = _mapWindowId;
-                messageWindowId = _messageWindowId;
-                statusWindowId = _statusWindowId;
-            }
-        }
+        //public void GetWindowIds(out int mapWindowId, out int messageWindowId, out int statusWindowId)
+        //{
+        //    lock (_windowIdLock)
+        //    {
+        //        mapWindowId = _mapWindowId;
+        //        messageWindowId = _messageWindowId;
+        //        statusWindowId = _statusWindowId;
+        //    }
+        //}
         private List<GHMsgHistoryItem> _message_history = new List<GHMsgHistoryItem>(GHConstants.MaxMessageHistoryLength + 1);
         private List<GHMsgHistoryItem> _longer_message_history = new List<GHMsgHistoryItem>(GHConstants.MaxLongerMessageHistoryLength + 1);
         private List<GHMsgHistoryItem> _empty_message_history = new List<GHMsgHistoryItem>(1);
@@ -421,16 +421,17 @@ namespace GnollHackX
             _ghWindows[handle] = ghwin;
             UIUtils.SetCreateGHWindow(ghwin);
             if (wintype == (int)GHWinType.Map)
-                MapWindowId = handle;
+                _mapWindowId = handle;
             else if (wintype == (int)GHWinType.Message)
-                MessageWindowId = handle;
+                _messageWindowId = handle;
             else if (wintype == (int)GHWinType.Status)
-                StatusWindowId = handle;
+                _statusWindowId = handle;
 
             ConcurrentQueue<GHRequest> queue;
             if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
                 queue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, handle, ghwin.Clone()));
+                //queue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindowIds, _mapWindowId, _messageWindowId, _statusWindowId));
             }
 
             //lock(_ghWindowsLock)
@@ -453,7 +454,11 @@ namespace GnollHackX
                 if (ghwin != null)
                 {
                     if (ghwin.WindowType == GHWinType.Map)
-                        MapWindowId = 0;
+                        _mapWindowId = 0;
+                    else if (ghwin.WindowType == GHWinType.Message)
+                        _messageWindowId = 0;
+                    else if (ghwin.WindowType == GHWinType.Status)
+                        _statusWindowId = 0;
                     DestroyGHWindow(ghwin);
                 }
                 _ghWindows[winHandle] = null;
@@ -503,7 +508,6 @@ namespace GnollHackX
             }
 
             win.PutStrs.Clear();
-
             win.SetWidthHeight(0, 0, 0, 0);
             win.CursX = 0;
             win.CursY = 0;
@@ -604,7 +608,11 @@ namespace GnollHackX
                     if (ghwin == null)
                         continue;
                     if (ghwin.WindowType == GHWinType.Map)
-                        MapWindowId = 0;
+                        _mapWindowId = 0;
+                    else if (ghwin.WindowType == GHWinType.Message)
+                        _messageWindowId = 0;
+                    else if (ghwin.WindowType == GHWinType.Status)
+                        _statusWindowId = 0;
 
                     //ghwin.Destroy();
                     DestroyGHWindow(ghwin);
@@ -1199,7 +1207,7 @@ namespace GnollHackX
             if (str == "statuslines")
             {
                 //_ghWindows[StatusWindowId].Clear();
-                ClearGHWindow(_ghWindows[StatusWindowId]);
+                ClearGHWindow(_ghWindows[_statusWindowId]);
             }
         }
 

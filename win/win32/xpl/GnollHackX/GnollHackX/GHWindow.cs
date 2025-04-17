@@ -76,7 +76,7 @@ namespace GnollHackX
         public bool UseUpperSide { get { return _useUpperSide; } }
         public bool UseSpecialSymbols { get { return _useSpecialSymbols; } }
         public bool Ascension { get { return _ascension; } }
-        public GamePage ActiveGamePage { get { return _gamePage; } }
+        //public GamePage ActiveGamePage { get { return _gamePage; } }
         public bool AutoPlacement { get; set; }
         public bool AutoCarriageReturn
         {
@@ -127,12 +127,6 @@ namespace GnollHackX
 
         private List<GHPutStrItem> _putStrs = new List<GHPutStrItem>();
         public List<GHPutStrItem> PutStrs { get { return _putStrs; } set { _putStrs = value; } }
-
-        public void CopyPutStrsFrom(List<GHPutStrItem> source)
-        {
-            _putStrs.Clear();
-            _putStrs.AddRange(source);
-        }
 
         public bool Visible { get; set; }
         private int _width = 0;

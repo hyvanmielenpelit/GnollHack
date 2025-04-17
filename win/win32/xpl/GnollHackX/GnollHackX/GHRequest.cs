@@ -100,6 +100,7 @@ namespace GnollHackX
         UpdateGHWindow,
         UpdateGHWindowVisibility,
         UpdateGHWindowCurs,
+        UpdateGHWindowIds,
     }
 
     public struct AddContextMenuData

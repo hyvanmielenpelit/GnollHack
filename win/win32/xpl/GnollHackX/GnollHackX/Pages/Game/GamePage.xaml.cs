@@ -20,6 +20,8 @@ using System.Net.Http.Headers;
 using System.Collections;
 using System.Data;
 using System.Xml.Linq;
+using System.Reflection.Metadata;
+
 
 
 #if GNH_MAUI
@@ -3016,6 +3018,9 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.UpdateGHWindowCurs:
                                 UpdateGHWindowCurs(req.RequestInt, req.RequestInt2, req.RequestInt3);
                                 break;
+                            case GHRequestType.UpdateGHWindowIds:
+                                UpdateGHWindowIds(req.RequestInt, req.RequestInt2, req.RequestInt3);
+                                break;
                         }
                     }
                 }
@@ -3024,8 +3029,13 @@ namespace GnollHackX.Pages.Game
 
         private readonly object _localWindowLock = new object();
         private GHWindow[] _localGHWindows = new GHWindow[GHConstants.MaxGHWindows];
+        private int _localMapWindowId = 0;
+        private int _localMessageWindowId = 0;
+        private int _localStatusWindowId = 0;
         private void UpdateGHWindow(int winid, GHWindow ghWindow)
         {
+            if (ghWindow == null)
+                return;
             lock (_localWindowLock)
             {
                 if (ghWindow.AutoPlacement && _localGHWindows[winid] != null)
@@ -3034,6 +3044,20 @@ namespace GnollHackX.Pages.Game
                     ghWindow.Top = _localGHWindows[winid].Top;
                 }
                 _localGHWindows[winid] = ghWindow;
+                switch(ghWindow.WindowType)
+                {
+                    case GHWinType.Map:
+                        _localMapWindowId = winid;
+                        break;
+                    case GHWinType.Message:
+                        _localMessageWindowId = winid;
+                        break;
+                    case GHWinType.Status:
+                        _localStatusWindowId = winid;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
         private void UpdateGHWindowVisibility(int winid, bool isVisible)
@@ -3053,6 +3077,24 @@ namespace GnollHackX.Pages.Game
                     _localGHWindows[winid].CursX = x;
                     _localGHWindows[winid].CursY = y;
                 }
+            }
+        }
+        private void UpdateGHWindowIds(int mapWindowId, int messageWindowId, int statusWindowId)
+        {
+            lock (_localWindowLock)
+            {
+                _localMapWindowId = mapWindowId;
+                _localMessageWindowId = messageWindowId;
+                _localStatusWindowId = statusWindowId;
+            }
+        }
+        public void GetWindowIds(out int mapWindowId, out int messageWindowId, out int statusWindowId)
+        {
+            lock (_localWindowLock)
+            {
+                mapWindowId = _localMapWindowId;
+                messageWindowId = _localMessageWindowId;
+                statusWindowId = _localStatusWindowId;
             }
         }
 
@@ -3207,8 +3249,22 @@ namespace GnollHackX.Pages.Game
                 GHWindow win = _localGHWindows[winid];
                 if (win != null)
                 {
-                    win.Visible = false;
                     _localGHWindows[winid] = null;
+                    win.Visible = false;
+                    switch (win.WindowType)
+                    {
+                        case GHWinType.Map:
+                            _localMapWindowId = 0;
+                            break;
+                        case GHWinType.Message:
+                            _localMessageWindowId = 0;
+                            break;
+                        case GHWinType.Status:
+                            _localStatusWindowId = 0;
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
@@ -6826,7 +6882,7 @@ namespace GnollHackX.Pages.Game
                 GHGame curGame = CurrentGame;
                 if (curGame != null)
                 {
-                    curGame.GetWindowIds(out mapWindowId, out messageWindowId, out statusWindowId);
+                    GetWindowIds(out mapWindowId, out messageWindowId, out statusWindowId);
                     lock (_localWindowLock)
                     {
                         GHWindow win = _localGHWindows[mapWindowId];
