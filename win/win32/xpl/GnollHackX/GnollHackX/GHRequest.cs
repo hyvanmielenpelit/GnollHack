@@ -97,7 +97,6 @@ namespace GnollHackX
         SaveFileTrackingLoad,
         ClearPetData,
         AddPetData,
-        UpdateWindowPutStr,
         UpdateGHWindow,
         UpdateGHWindowVisibility,
         UpdateGHWindowCurs,
@@ -225,6 +224,13 @@ namespace GnollHackX
         {
             RequestingGame = ghGame;
             RequestType = requesttype;
+            RequestBool = requestbool;
+        }
+        public GHRequest(GHGame ghGame, GHRequestType requesttype, int requestint, bool requestbool)
+        {
+            RequestingGame = ghGame;
+            RequestType = requesttype;
+            RequestInt = requestint;
             RequestBool = requestbool;
         }
         public GHRequest(GHGame ghGame, GHRequestType requesttype, int requestint, int requestint2)

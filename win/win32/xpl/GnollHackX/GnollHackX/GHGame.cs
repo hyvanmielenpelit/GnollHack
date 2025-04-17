@@ -187,7 +187,8 @@ namespace GnollHackX
                             }
                             else
                             {
-                                //Throw an error or stop waiting
+                                response.RequestingGHWindow.SelectedMenuItems = new List<GHMenuItem>(); /* Empty selection */
+                                response.RequestingGHWindow.WasCancelled = true;
                             }
                             break;
                         case GHRequestType.DisplayScreenText:
@@ -540,7 +541,7 @@ namespace GnollHackX
                         ConcurrentQueue<GHRequest> queue;
                         if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                         {
-                            queue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindowVisibility, true));
+                            queue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindowVisibility, winHandle, true));
                         }
                     }
                     ismenu = (_ghWindows[winHandle].WindowType == GHWinType.Menu);
@@ -574,20 +575,13 @@ namespace GnollHackX
                 return;
 
             win.Visible = true;
-            if (win.WindowType == GHWinType.Menu || win.WindowType == GHWinType.Text)
+            ConcurrentQueue<GHRequest> queue;
+            if (RequestDictionary.TryGetValue(this, out queue))
             {
-                ConcurrentQueue<GHRequest> queue;
-                if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                queue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindowVisibility, win.WindowID, true));
+                if (win.WindowType == GHWinType.Menu || win.WindowType == GHWinType.Text)
                 {
-                    List<GHPutStrItem> clonestrs = new List<GHPutStrItem>();
-                    //lock (PutStrsLock) //Probably not needed since only reading from PutStrs (UI thread is not writing)
-                    {
-                        foreach (GHPutStrItem item in win.PutStrs)
-                        {
-                            clonestrs.Add(item.Clone());
-                        }
-                    }
-                    queue.Enqueue(new GHRequest(this, GHRequestType.DisplayWindowView, win.WindowID, clonestrs));
+                    queue.Enqueue(new GHRequest(this, GHRequestType.DisplayWindowView, win.WindowID));
                 }
             }
         }
@@ -633,22 +627,24 @@ namespace GnollHackX
         {
             RecordFunctionCall(RecordedFunctionID.Curs, winHandle, x, y);
 
-            GHWindow gHWindow = null;
-            //lock (_ghWindowsLock)
-            {
-                gHWindow = _ghWindows[winHandle];
-            }
+            GHWindow gHWindow = _ghWindows[winHandle];
+            ////lock (_ghWindowsLock)
+            //{
+            //    gHWindow = _ghWindows[winHandle];
+            //}
             if (gHWindow != null)
             {
                 gHWindow.CursX = x;
                 gHWindow.CursY = y;
                 if (gHWindow.WindowType == GHWinType.Map)
                     _gamePage.SetMapCursor(x, y);
-                ConcurrentQueue<GHRequest> queue;
-                if (GHGame.RequestDictionary.TryGetValue(this, out queue))
-                {
-                    queue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindowCurs, winHandle, x, y));
-                }
+
+                /* Cursor position is probably unnecessary on UI side, so commented out */
+                //ConcurrentQueue<GHRequest> queue;
+                //if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                //{
+                //    queue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindowCurs, winHandle, x, y));
+                //}
             }
         }
 
@@ -668,8 +664,6 @@ namespace GnollHackX
             //if (gHWindow != null)
             //    gHWindow.PrintGlyph(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
             _gamePage.SetMapSymbol(x, y, glyph, bkglyph, symbol, ocolor, special, ref layers);
-            _gamePage.ClearAllObjectData(x, y);
-            _gamePage.ClearEngravingData(x, y);
         }
 
         public int Replay_AskName(string modeName, string modeDescription, string enteredPlayerName)
@@ -1622,8 +1616,9 @@ namespace GnollHackX
 
                     if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
-                        queue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, winid, _ghWindows[winid].Clone()));
-                        queue.Enqueue(new GHRequest(this, GHRequestType.ShowMenuPage, _ghWindows[winid], _ghWindows[winid].MenuInfo));
+                        GHWindow clonedWindow = _ghWindows[winid].Clone();
+                        queue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, winid, clonedWindow));
+                        queue.Enqueue(new GHRequest(this, GHRequestType.ShowMenuPage, clonedWindow, clonedWindow.MenuInfo));
                         enqueued = true;
                     }
                 }
@@ -2748,7 +2743,9 @@ namespace GnollHackX
                 {
                     if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
-                        queue.Enqueue(new GHRequest(this, GHRequestType.ShowOutRipPage, _ghWindows[winid], new GHOutRipInfo(plname, points, killer, time)));
+                        GHWindow clonedWindow = _ghWindows[winid].Clone();
+                        queue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, winid, clonedWindow));
+                        queue.Enqueue(new GHRequest(this, GHRequestType.ShowOutRipPage, clonedWindow, new GHOutRipInfo(plname, points, killer, time)));
                     }
                 }
             }

@@ -2848,7 +2848,7 @@ namespace GnollHackX.Pages.Game
                                 ClearWindowView(req.RequestInt);
                                 break;
                             case GHRequestType.DisplayWindowView:
-                                DisplayWindowView(req.RequestInt, req.RequestPutStrItems);
+                                DisplayWindowView(req.RequestInt);
                                 break;
                             case GHRequestType.HideTextWindow:
                                 DelayedTextHide();
@@ -3007,9 +3007,6 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.AddPetData:
                                 AddPetData(req.MonstInfoData);
                                 break;
-                            case GHRequestType.UpdateWindowPutStr:
-                                UpdateWindowPutStr(req.RequestInt, req.RequestPutStrItems);
-                                break;
                             case GHRequestType.UpdateGHWindow:
                                 UpdateGHWindow(req.RequestInt, req.RequestingGHWindow);
                                 break;
@@ -3027,18 +3024,15 @@ namespace GnollHackX.Pages.Game
 
         private readonly object _localWindowLock = new object();
         private GHWindow[] _localGHWindows = new GHWindow[GHConstants.MaxGHWindows];
-        private void UpdateWindowPutStr(int winid, List<GHPutStrItem> putStrItems)
-        {
-            lock(_localWindowLock)
-            {
-                if (_localGHWindows[winid] != null)
-                    _localGHWindows[winid].PutStrs = putStrItems;
-            }
-        }
         private void UpdateGHWindow(int winid, GHWindow ghWindow)
         {
             lock (_localWindowLock)
             {
+                if (ghWindow.AutoPlacement && _localGHWindows[winid] != null)
+                {
+                    ghWindow.Left = _localGHWindows[winid].Left;
+                    ghWindow.Top = _localGHWindows[winid].Top;
+                }
                 _localGHWindows[winid] = ghWindow;
             }
         }
@@ -3224,7 +3218,7 @@ namespace GnollHackX.Pages.Game
 
         }
 
-        private void DisplayWindowView(int winid, List<GHPutStrItem> strs)
+        private void DisplayWindowView(int winid)
         {
             GHWindow window;
             lock (_localWindowLock)
@@ -3232,11 +3226,12 @@ namespace GnollHackX.Pages.Game
                 window = _localGHWindows[winid];
             }
             if(window != null)
-                ShowWindowCanvas(window, strs);
+                ShowWindowCanvas(window);
         }
 
-        private void ShowWindowCanvas(GHWindow window, List<GHPutStrItem> strs)
+        private void ShowWindowCanvas(GHWindow window)
         {
+            List<GHPutStrItem> strs = window.PutStrs;
             /* Cancel delayed text hide */
 #if GNH_MAUI
             StopTextHideTimers();
@@ -4415,7 +4410,13 @@ namespace GnollHackX.Pages.Game
                 GHGame curGame = CurrentGame;
                 if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
                 {
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(), true));
+                    GHWindow origWindow;
+                    if (MenuCanvas.GHWindow.ClonedFrom == null)
+                        queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(), true));
+                    else if (MenuCanvas.GHWindow.ClonedFrom.TryGetTarget(out origWindow))
+                        queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, new List<GHMenuItem>(), true));
+                    else
+                        queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, new List<GHMenuItem>(), true));
                 }
                 MenuGrid.IsVisible = false;
                 //MainGrid.IsVisible = true;
@@ -14305,6 +14306,8 @@ namespace GnollHackX.Pages.Game
             lock (_mapDataLock)
             {
                 SetMapSymbolOnTimerUnlocked(x, y, glyph, bkglyph, c, color, special, ref layers, generalCounter, mainCounter);
+                ClearAllObjectDataUnlocked(x, y);
+                ClearEngravingDataUnlocked(x, y);
             }
         }
 
@@ -14544,21 +14547,18 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        public void ClearAllObjectData(int x, int y)
+        public void ClearAllObjectDataUnlocked(int x, int y)
         {
-            lock (_mapDataLock)
+            if (_objectData[x, y] != null)
             {
-                if (_objectData[x, y] != null)
-                {
-                    if (_objectData[x, y].FloorObjectList != null)
-                        _objectData[x, y].FloorObjectList.Clear();
-                    if (_objectData[x, y].CoverFloorObjectList != null)
-                        _objectData[x, y].CoverFloorObjectList.Clear();
-                    if (_objectData[x, y].MemoryObjectList != null)
-                        _objectData[x, y].MemoryObjectList.Clear();
-                    if (_objectData[x, y].CoverMemoryObjectList != null)
-                        _objectData[x, y].CoverMemoryObjectList.Clear();
-                }
+                if (_objectData[x, y].FloorObjectList != null)
+                    _objectData[x, y].FloorObjectList.Clear();
+                if (_objectData[x, y].CoverFloorObjectList != null)
+                    _objectData[x, y].CoverFloorObjectList.Clear();
+                if (_objectData[x, y].MemoryObjectList != null)
+                    _objectData[x, y].MemoryObjectList.Clear();
+                if (_objectData[x, y].CoverMemoryObjectList != null)
+                    _objectData[x, y].CoverMemoryObjectList.Clear();
             }
         }
 
@@ -14675,13 +14675,10 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        public void ClearEngravingData(int x, int y)
+        public void ClearEngravingDataUnlocked(int x, int y)
         {
-            lock (_mapDataLock)
-            {
-                if (GHUtils.isok(x, y))
-                    _mapData[x, y].Engraving = new EngravingInfo();
-            }
+            if (GHUtils.isok(x, y))
+                _mapData[x, y].Engraving = new EngravingInfo();
         }
 
         public void AddEngravingData(int x, int y, string engraving_text, int etype, ulong eflags, ulong gflags)
@@ -16503,10 +16500,16 @@ namespace GnollHackX.Pages.Game
             GHGame curGame = CurrentGame;
             if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
             {
-                queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, resultlist, false));
+                GHWindow origWindow;
+                if(MenuCanvas.GHWindow.ClonedFrom == null)
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, resultlist, false));
+                else if (MenuCanvas.GHWindow.ClonedFrom.TryGetTarget(out origWindow))
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, resultlist, false));
+                else
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, resultlist, false));
             }
 
-            if(!UIUtils.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
+            if (!UIUtils.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
                 DelayedMenuHide();
         }
 
@@ -16542,7 +16545,13 @@ namespace GnollHackX.Pages.Game
             GHGame curGame = CurrentGame;
             if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
             {
-                queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(1), true));
+                GHWindow origWindow;
+                if (MenuCanvas.GHWindow.ClonedFrom == null)
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(1), true));
+                else if (MenuCanvas.GHWindow.ClonedFrom.TryGetTarget(out origWindow))
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, new List<GHMenuItem>(1), true));
+                else
+                    queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, new List<GHMenuItem>(1), true));
             }
 
             if (!UIUtils.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))

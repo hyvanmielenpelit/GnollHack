@@ -94,9 +94,9 @@ namespace GnollHackX
             }
         }
 
-        public GHPutStrItem Clone()
+        public GHPutStrItem Clone(GHWindow clonedWindow)
         {
-            GHPutStrItem clone = new GHPutStrItem(_gamePage, _window, _text);
+            GHPutStrItem clone = new GHPutStrItem(_gamePage, clonedWindow, _text);
             clone.AttributeList.AddRange(_attributeList);
             clone.ColorList.AddRange(_colorList);
             clone.InstructionList.AddRange(_instructionList);

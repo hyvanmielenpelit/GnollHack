@@ -307,14 +307,14 @@ namespace GnollHackX
         //    //    }
         //    //}
         //}
-
+        public WeakReference<GHWindow> ClonedFrom = null;
         public GHWindow Clone()
         {
             GHWindow clone = new GHWindow(_winType, _winStyle, _glyph, _useUpperSide, _useSpecialSymbols, _ascension, _objdata, _gamePage, _winId);
             List<GHPutStrItem> clonestrs = new List<GHPutStrItem>();
             foreach (GHPutStrItem item in PutStrs)
             {
-                clonestrs.Add(item.Clone());
+                clonestrs.Add(item.Clone(clone));
             }
             clone.PutStrs = clonestrs;
             clone.TextColor = TextColor;
@@ -335,6 +335,7 @@ namespace GnollHackX
             clone.Top = Top;
             clone.SelectedMenuItems = SelectedMenuItems;
             clone.WasCancelled = WasCancelled;
+            clone.ClonedFrom = new WeakReference<GHWindow>(this);
             return clone;
         }
 
@@ -406,10 +407,10 @@ namespace GnollHackX
         //    if(WindowType == GHWinType.Map)
         //        ActiveGamePage.SetMapCursor(x, y);
         //}
-        public void PrintGlyph(int x, int y, int glyph, int bkglyph, int symbol, int color, uint special, ref LayerInfo layers)
-        {
-            ActiveGamePage.SetMapSymbol(x, y, glyph, bkglyph, symbol, color, special, ref layers);
-        }
+        //public void PrintGlyph(int x, int y, int glyph, int bkglyph, int symbol, int color, uint special, ref LayerInfo layers)
+        //{
+        //    ActiveGamePage.SetMapSymbol(x, y, glyph, bkglyph, symbol, color, special, ref layers);
+        //}
 
         public void PutStrEx(int attributes, string str, int append, int color)
         {
@@ -508,14 +509,9 @@ namespace GnollHackX
             }
             if(append == 0)
             {
-                List<GHPutStrItem> cloneStrs = new List<GHPutStrItem>();
-                foreach (GHPutStrItem item in PutStrs)
-                {
-                    cloneStrs.Add(item.Clone());
-                }
                 ConcurrentQueue<GHRequest> queue;
                 if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
-                    queue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateWindowPutStr, _winId, cloneStrs));
+                    queue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateGHWindow, _winId, Clone()));
             }
         }
 
@@ -635,14 +631,9 @@ namespace GnollHackX
             }
             if (append == 0)
             {
-                List<GHPutStrItem> cloneStrs = new List<GHPutStrItem>();
-                foreach (GHPutStrItem item in PutStrs)
-                {
-                    cloneStrs.Add(item.Clone());
-                }
                 ConcurrentQueue<GHRequest> queue;
                 if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
-                    queue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateWindowPutStr, _winId, cloneStrs));
+                    queue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateGHWindow, _winId, Clone()));
             }
         }
 
