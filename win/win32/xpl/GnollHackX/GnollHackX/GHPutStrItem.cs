@@ -22,99 +22,94 @@ namespace GnollHackX
         public GamePage ReferenceGamePage { get { return _gamePage; } }
         public GHWindow Window { get { return _window; } }
 
-        public string Text { get { return _text; } 
+        public string Text { 
+            get 
+            { 
+                return _text;
+            } 
             set 
             { 
                 _text = value; 
-                //if (_instructionList.Count < _text.Length)
-                //{
-                //    _instructionList.Add(new GHPutStrInstructions(0, (int)NhColor.CLR_WHITE, _text.Length - _instructionList.Count));
-                //}
             }
         }
         private List<GHPutStrInstructions> _instructionList;
-        public List<GHPutStrInstructions> InstructionList { get { return _instructionList; } set { _instructionList = value; } }
+
+        public List<GHPutStrInstructions> InstructionList { get { return _instructionList; } }
+
+        private List<int> _attributeList;
+        private List<int> _colorList;
+        public List<int> AttributeList { get { return _attributeList; } }
+        public List<int> ColorList { get { return _colorList; } }
 
         public GHPutStrItem(GamePage gamePage, GHWindow window, string str)
         {
             _instructionList = new List<GHPutStrInstructions>();
-            Text = str;
+            _attributeList = new List<int>();
+            _colorList = new List<int>();
+            _text = str;
             _gamePage = gamePage;
             _window = window;
         }
-        public GHPutStrItem(GamePage gamePage, GHWindow window, string str, List<GHPutStrInstructions> instrlist)
+
+        public void ConvertListFromArrays()
         {
-            InstructionList = instrlist;
-            Text = str;
-            _gamePage = gamePage;
-            _window = window;
-        }
-        public GHPutStrItem(GamePage gamePage, GHWindow window, string str, List<int> attrlist, List<int> colorlist)
-        {
-            InstructionList = ConvertListFromArrays(attrlist, colorlist);
-            Text = str;
-            _gamePage = gamePage;
-            _window = window;
-        }
-        public List<GHPutStrInstructions> ConvertListFromArrays(List<int> attrlist, List<int> colorlist)
-        {
-            List <GHPutStrInstructions> res = new List<GHPutStrInstructions>();
             int prevattr = 0, prevclr = 0;
             int curattr = 0, curclr = 0;
             int cnt = 0;
 
+            _instructionList.Clear();
             for (int i = 0; i < Text.Length; i++)
             {
                 prevattr = curattr;
                 prevclr = curclr;
                 cnt++;
-                curattr = i < attrlist.Count ? attrlist[i] : 0;
-                curclr = i < colorlist.Count ? colorlist[i] : (int)NhColor.CLR_WHITE;
+                curattr = i < _attributeList.Count ? _attributeList[i] : 0;
+                curclr = i < _colorList.Count ? _colorList[i] : (int)NhColor.CLR_WHITE;
 
                 if(cnt > 1 && (curattr != prevattr || curclr != prevclr))
                 {
-                    res.Add(new GHPutStrInstructions(prevattr, prevclr, cnt - 1));
+                    _instructionList.Add(new GHPutStrInstructions(prevattr, prevclr, cnt - 1));
                     cnt = 1;
                 }
                 
                 if(i == Text.Length - 1)
                 {
-                    res.Add(new GHPutStrInstructions(curattr, curclr, cnt));
+                    _instructionList.Add(new GHPutStrInstructions(curattr, curclr, cnt));
                 }
             }
-            return res;
         }
 
-        public void ConvertListToArrays(List<GHPutStrInstructions> instrlist, out List<int> attrlist, out List<int> colorlist)
+        public void ConvertListToArrays()
         {
-            attrlist = new List<int>();
-            colorlist = new List<int>();
-            for(int j = 0, m = instrlist.Count; j < m; j++)
+            _attributeList.Clear();
+            _colorList.Clear();
+            for(int j = 0, m = _instructionList.Count; j < m; j++)
             {
-                GHPutStrInstructions instr = instrlist[j];
+                GHPutStrInstructions instr = _instructionList[j];
                 for (int i = 0, n = instr.PrintLength; i < n; i++)
                 {
-                    attrlist.Add(instr.Attributes);
-                    colorlist.Add(instr.Color);
+                    _attributeList.Add(instr.Attributes);
+                    _colorList.Add(instr.Color);
                 }
             }
         }
-        public void ConvertCurrentListToArrays(out List<int> attrlist, out List<int> colorlist)
+
+        public GHPutStrItem Clone()
         {
-            ConvertListToArrays(InstructionList, out attrlist, out colorlist);
-        }
-        public void ConvertCurrentListFromArrays(List<int> attrlist, List<int> colorlist)
-        {
-            InstructionList = ConvertListFromArrays(attrlist, colorlist);
+            GHPutStrItem clone = new GHPutStrItem(_gamePage, _window, _text);
+            clone.AttributeList.AddRange(_attributeList);
+            clone.ColorList.AddRange(_colorList);
+            clone.InstructionList.AddRange(_instructionList);
+            return clone;
         }
 
         public string TextWindowFontFamily
         {
             get
             {
-                if (InstructionList != null && InstructionList.Count > 0)
+                if (_instructionList != null && _instructionList.Count > 0)
                 {
-                    if ((InstructionList[0].Attributes & ((int)MenuItemAttributes.Bold | (int)MenuItemAttributes.Sub | (int)MenuItemAttributes.Title | (int)MenuItemAttributes.Heading)) != 0)
+                    if ((_instructionList[0].Attributes & ((int)MenuItemAttributes.Bold | (int)MenuItemAttributes.Sub | (int)MenuItemAttributes.Title | (int)MenuItemAttributes.Heading)) != 0)
                         return "Immortal";
                 }
 
@@ -134,25 +129,25 @@ namespace GnollHackX
                     || _window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_SPEAKER)
                 {
                     double basesize = Math.Min(22, Math.Min(15.5 * _gamePage.CurrentPageWidth / 300, Math.Max(15.5, 15.5 * _gamePage.CurrentPageWidth * _gamePage.CurrentPageHeight / (600 * 360))));
-                    if (InstructionList != null && InstructionList.Count > 0)
+                    if (_instructionList != null && _instructionList.Count > 0)
                     {
-                        if ((InstructionList[0].Attributes & (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Title)) == (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Title))
+                        if ((_instructionList[0].Attributes & (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Title)) == (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Title))
                             return basesize / 1.1;
-                        if ((InstructionList[0].Attributes & (int)MenuItemAttributes.Title) == (int)MenuItemAttributes.Title)
+                        if ((_instructionList[0].Attributes & (int)MenuItemAttributes.Title) == (int)MenuItemAttributes.Title)
                             return basesize * 1.2;
                     }
                     return basesize;
                 }
 
-                if (InstructionList != null && InstructionList.Count > 0)
+                if (_instructionList != null && _instructionList.Count > 0)
                 {
-                    if ((InstructionList[0].Attributes & (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Title)) == (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Title))
+                    if ((_instructionList[0].Attributes & (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Title)) == (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Title))
                         return 18;
-                    if ((InstructionList[0].Attributes & (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Heading)) == (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Heading))
+                    if ((_instructionList[0].Attributes & (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Heading)) == (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Heading))
                         return 16;
-                    if ((InstructionList[0].Attributes & (int)MenuItemAttributes.Title) == (int)MenuItemAttributes.Title)
+                    if ((_instructionList[0].Attributes & (int)MenuItemAttributes.Title) == (int)MenuItemAttributes.Title)
                         return 21;
-                    if ((InstructionList[0].Attributes & (int)MenuItemAttributes.Heading) == (int)MenuItemAttributes.Heading)
+                    if ((_instructionList[0].Attributes & (int)MenuItemAttributes.Heading) == (int)MenuItemAttributes.Heading)
                         return 17.5;
                 }
 
@@ -204,15 +199,15 @@ namespace GnollHackX
             get
             {
                 Thickness res = new Thickness(0);
-                if (InstructionList != null && InstructionList.Count > 0)
+                if (_instructionList != null && _instructionList.Count > 0)
                 {
-                    if ((InstructionList[0].Attributes & (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Title)) == (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Title))
+                    if ((_instructionList[0].Attributes & (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Title)) == (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Title))
                         res.Top = 0;
-                    else if ((InstructionList[0].Attributes & (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Heading)) == (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Heading))
+                    else if ((_instructionList[0].Attributes & (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Heading)) == (((int)MenuItemAttributes.Sub) | (int)MenuItemAttributes.Heading))
                         res.Top = 10;
-                    else if ((InstructionList[0].Attributes & (int)MenuItemAttributes.Title) == (int)MenuItemAttributes.Title)
+                    else if ((_instructionList[0].Attributes & (int)MenuItemAttributes.Title) == (int)MenuItemAttributes.Title)
                         res.Top = 0;
-                    else if ((InstructionList[0].Attributes & (int)MenuItemAttributes.Heading) == (int)MenuItemAttributes.Heading)
+                    else if ((_instructionList[0].Attributes & (int)MenuItemAttributes.Heading) == (int)MenuItemAttributes.Heading)
                         res.Top = 8;
                 }
 
@@ -225,9 +220,9 @@ namespace GnollHackX
             if (Text == null || Text == "")
                 return "";
 
-            if (InstructionList != null && InstructionList.Count > 0)
+            if (_instructionList != null && _instructionList.Count > 0)
             {
-                return GHUtils.GetIndentationString(Text, InstructionList[0].Attributes);
+                return GHUtils.GetIndentationString(Text, _instructionList[0].Attributes);
             }
             return "";
         }

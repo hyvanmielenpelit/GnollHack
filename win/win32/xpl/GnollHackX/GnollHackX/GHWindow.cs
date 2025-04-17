@@ -6,6 +6,7 @@ using GnollHackX.Pages.Game;
 #endif
 using SkiaSharp;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
@@ -125,8 +126,13 @@ namespace GnollHackX
         public int WindowID { get { return _winId; } }
 
         private List<GHPutStrItem> _putStrs = new List<GHPutStrItem>();
-        public readonly object PutStrsLock = new object();
-        public List<GHPutStrItem> PutStrs { get { return _putStrs; } }
+        public List<GHPutStrItem> PutStrs { get { return _putStrs; } set { _putStrs = value; } }
+
+        public void CopyPutStrsFrom(List<GHPutStrItem> source)
+        {
+            _putStrs.Clear();
+            _putStrs.AddRange(source);
+        }
 
         public bool Visible { get; set; }
         private int _width = 0;
@@ -136,6 +142,15 @@ namespace GnollHackX
 
         public int WidthInChars { get { return _width; } }
         public int HeightInChars { get { return _height; } }
+
+        public void SetWidthHeight(int width, int height, float pixelWidth, float pixelHeight)
+        {
+            _width = width;
+            _height = height;
+            _pixelWidth = pixelWidth;
+            _pixelHeight = pixelHeight;
+        }
+
         public GHWindowPrintLocations WindowPrintStyle 
         { get {
                 GHWindowPrintLocations res = GHWindowPrintLocations.PrintToWindow;
@@ -208,166 +223,189 @@ namespace GnollHackX
             _useUpperSide = useUpperSide;
             _useSpecialSymbols = useSpecialSymbols;
             _ascension = ascension;
-            ObjData = objdata;
+            _objdata = objdata;
             _gamePage = gamePage;
             _currentGame = gamePage.CurrentGame;
             _winId = winid;
         }
 
-        private SKColor TransparentBlack = new SKColor(0, 0, 0, 128);
-        public void Create()
-        {
-            Typeface = GHApp.LatoRegular;
-            TextColor = SKColors.White;
-            TextSize = GHConstants.WindowBaseFontSize;
-            BackgroundColor = SKColors.Transparent;
-            switch (_winType)
-            {
-                case GHWinType.None:
-                    break;
-                case GHWinType.Message:
-                    TextSize = GHConstants.WindowMessageFontSize;
-                    Typeface = GHApp.DejaVuSansMonoTypeface;
-                    StrokeWidth = TextSize / 4.0f;
-                    AutoPlacement = true;
-                    break;
-                case GHWinType.Status:
-                    TextSize = GHConstants.WindowStatusBarFontSize;
-                    Typeface = GHApp.LatoRegular;
-                    StrokeWidth = TextSize / 4.0f;
-                    HasShadow = true;
-                    Left = 0;
-                    Top = 0;
-                    break;
-                case GHWinType.Map:
-                    TextSize = GHConstants.WindowStatusBarFontSize;
-                    Typeface = GHApp.LatoRegular;
-                    Left = 0;
-                    Top = 120;
-                    break;
-                case GHWinType.Menu:
-                    TextSize = GHConstants.WindowMenuFontSize;
-                    Typeface = GHApp.UnderwoodTypeface;
-                    Left = 0;
-                    Top = 150;
-                    CenterHorizontally = true;
-                    break;
-                case GHWinType.Text:
-                    TextSize = GHConstants.WindowMenuFontSize;
-                    Typeface = GHApp.UnderwoodTypeface;
-                    Left = 0;
-                    Top = 150;
-                    CenterHorizontally = true;
-                    break;
-                case GHWinType.Base:
-                    break;
-                case GHWinType.Here:
-                    TextSize = GHConstants.WindowMessageFontSize;
-                    Typeface = GHApp.DejaVuSansMonoTypeface;
-                    StrokeWidth = TextSize / 4.0f;
-                    AutoPlacement = true;
-                    break;
-                case GHWinType.Inventory:
-                    break;
-                case GHWinType.Reserved_1:
-                case GHWinType.Reserved_2:
-                case GHWinType.Reserved_3:
-                    break;
-                case GHWinType.RIP:
-                    break;
-                case GHWinType.Keypad:
-                    break;
-                case GHWinType.Overview:
-                    break;
-                case GHWinType.Worn:
-                    break;
-            }
+        //private SKColor TransparentBlack = new SKColor(0, 0, 0, 128);
+        //public void Create()
+        //{
+        //    Typeface = GHApp.LatoRegular;
+        //    TextColor = SKColors.White;
+        //    TextSize = GHConstants.WindowBaseFontSize;
+        //    BackgroundColor = SKColors.Transparent;
+        //    switch (_winType)
+        //    {
+        //        case GHWinType.None:
+        //            break;
+        //        case GHWinType.Message:
+        //            TextSize = GHConstants.WindowMessageFontSize;
+        //            Typeface = GHApp.DejaVuSansMonoTypeface;
+        //            StrokeWidth = TextSize / 4.0f;
+        //            AutoPlacement = true;
+        //            break;
+        //        case GHWinType.Status:
+        //            TextSize = GHConstants.WindowStatusBarFontSize;
+        //            Typeface = GHApp.LatoRegular;
+        //            StrokeWidth = TextSize / 4.0f;
+        //            HasShadow = true;
+        //            Left = 0;
+        //            Top = 0;
+        //            break;
+        //        case GHWinType.Map:
+        //            TextSize = GHConstants.WindowStatusBarFontSize;
+        //            Typeface = GHApp.LatoRegular;
+        //            Left = 0;
+        //            Top = 120;
+        //            break;
+        //        case GHWinType.Menu:
+        //            TextSize = GHConstants.WindowMenuFontSize;
+        //            Typeface = GHApp.UnderwoodTypeface;
+        //            Left = 0;
+        //            Top = 150;
+        //            CenterHorizontally = true;
+        //            break;
+        //        case GHWinType.Text:
+        //            TextSize = GHConstants.WindowMenuFontSize;
+        //            Typeface = GHApp.UnderwoodTypeface;
+        //            Left = 0;
+        //            Top = 150;
+        //            CenterHorizontally = true;
+        //            break;
+        //        case GHWinType.Base:
+        //            break;
+        //        case GHWinType.Here:
+        //            TextSize = GHConstants.WindowMessageFontSize;
+        //            Typeface = GHApp.DejaVuSansMonoTypeface;
+        //            StrokeWidth = TextSize / 4.0f;
+        //            AutoPlacement = true;
+        //            break;
+        //        case GHWinType.Inventory:
+        //            break;
+        //        case GHWinType.Reserved_1:
+        //        case GHWinType.Reserved_2:
+        //        case GHWinType.Reserved_3:
+        //            break;
+        //        case GHWinType.RIP:
+        //            break;
+        //        case GHWinType.Keypad:
+        //            break;
+        //        case GHWinType.Overview:
+        //            break;
+        //        case GHWinType.Worn:
+        //            break;
+        //    }
 
-            if (_winType == GHWinType.Menu || _winType == GHWinType.Text)
+        //    //if (_winType == GHWinType.Menu || _winType == GHWinType.Text)
+        //    //{
+        //    //    ConcurrentQueue<GHRequest> queue;
+        //    //    if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
+        //    //    {
+        //    //        queue.Enqueue(new GHRequest(_currentGame, GHRequestType.CreateWindowView, _winId, Clone()));
+        //    //    }
+        //    //}
+        //}
+
+        public GHWindow Clone()
+        {
+            GHWindow clone = new GHWindow(_winType, _winStyle, _glyph, _useUpperSide, _useSpecialSymbols, _ascension, _objdata, _gamePage, _winId);
+            List<GHPutStrItem> clonestrs = new List<GHPutStrItem>();
+            foreach (GHPutStrItem item in PutStrs)
             {
-                ConcurrentQueue<GHRequest> queue;
-                if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
-                {
-                    queue.Enqueue(new GHRequest(_currentGame, GHRequestType.CreateWindowView, _winId));
-                }
+                clonestrs.Add(item.Clone());
             }
+            clone.PutStrs = clonestrs;
+            clone.TextColor = TextColor;
+            clone.TextSize = TextSize;
+            clone.Typeface = Typeface;
+            clone.StrokeWidth = StrokeWidth;
+            clone.AutoPlacement = AutoPlacement;
+            clone.CursX = CursX;
+            clone.CursY = CursY;
+            clone.Visible = Visible;
+            clone.BackgroundColor = BackgroundColor;
+            clone.CenterHorizontally = CenterHorizontally;
+            clone.HasShadow = HasShadow;
+            clone.SetWidthHeight(_width, _height, _pixelWidth, _pixelHeight);
+            clone.Padding = Padding;
+            clone.MenuInfo = MenuInfo != null ? MenuInfo.Clone() : null;
+            clone.Left = Left;
+            clone.Top = Top;
+            clone.SelectedMenuItems = SelectedMenuItems;
+            clone.WasCancelled = WasCancelled;
+            return clone;
         }
 
-        public void Destroy()
-        {
-            Visible = false;
-            if (_winType == GHWinType.Menu)
-            {
-                ConcurrentQueue<GHRequest> queue;
-                if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
-                {
-                    queue.Enqueue(new GHRequest(_currentGame, GHRequestType.DestroyWindowView, _winId));
-                    if (MenuInfo != null && MenuInfo.MenuCloseUponDestroy)
-                    {
-                        queue.Enqueue(new GHRequest(_currentGame, GHRequestType.HideMenuPage, _winId));
-                    }
-                }
-            }
-        }
+        //public void Destroy()
+        //{
+        //    Visible = false;
+        //    ConcurrentQueue<GHRequest> queue;
+        //    if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
+        //    {
+        //        queue.Enqueue(new GHRequest(_currentGame, GHRequestType.DestroyWindowView, _winId));
+        //        if (_winType == GHWinType.Menu && MenuInfo != null && MenuInfo.MenuCloseUponDestroy)
+        //        {
+        //            queue.Enqueue(new GHRequest(_currentGame, GHRequestType.HideMenuPage, _winId));
+        //        }
+        //    }
+        //}
 
-        public void Clear()
-        {
-            switch(WindowType)
-            {
-                case GHWinType.Map:
-                    ActiveGamePage.ClearMap();
-                    break;
-            }
+        //public void Clear()
+        //{
+        //    switch(WindowType)
+        //    {
+        //        case GHWinType.Map:
+        //            ActiveGamePage.ClearMap();
+        //            break;
+        //    }
 
-            lock(PutStrsLock)
-            {
-                PutStrs.Clear();
-            }
+        //    PutStrs.Clear();
 
-            lock(_currentGame.WindowsLock)
-            {
-                _height = 0;
-                _width = 0;
-                _pixelWidth = 0;
-                _pixelHeight = 0;
-                CursX = 0;
-                CursY = 0;
+        //    _height = 0;
+        //    _width = 0;
+        //    _pixelWidth = 0;
+        //    _pixelHeight = 0;
+        //    CursX = 0;
+        //    CursY = 0;
 
-            }
+        //    ConcurrentQueue<GHRequest> queue;
+        //    if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
+        //    {
+        //        if (_winType == GHWinType.Menu || _winType == GHWinType.Text)
+        //            queue.Enqueue(new GHRequest(_currentGame, GHRequestType.ClearWindowView, _winId));
+        //        queue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateGHWindow, _winId, Clone()));
+        //    }
+        //}
 
-            if (_winType == GHWinType.Menu || _winType == GHWinType.Text)
-            {
-                ConcurrentQueue<GHRequest> queue;
-                if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
-                {
-                    queue.Enqueue(new GHRequest(_currentGame, GHRequestType.ClearWindowView, _winId));
-                }
-            }
-        }
-        public void Display(bool blocking)
-        {
-            Visible = true;
-            if(_winType == GHWinType.Menu || _winType == GHWinType.Text)
-            {
-                ConcurrentQueue<GHRequest> queue;
-                if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
-                {
-                    List<GHPutStrItem> clonestrs = new List<GHPutStrItem>();
-                    lock (PutStrsLock)
-                    {
-                        clonestrs.AddRange(PutStrs);
-                    }
-                    queue.Enqueue(new GHRequest(_currentGame, GHRequestType.DisplayWindowView, _winId, clonestrs));
-                }
-            }
-        }
-        public void Curs(int x, int y)
-        {
-            CursX = x;
-            CursY = y;
-            if(WindowType == GHWinType.Map)
-                ActiveGamePage.SetMapCursor(x, y);
-        }
+        //public void Display(bool blocking)
+        //{
+        //    Visible = true;
+        //    if(_winType == GHWinType.Menu || _winType == GHWinType.Text)
+        //    {
+        //        ConcurrentQueue<GHRequest> queue;
+        //        if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
+        //        {
+        //            List<GHPutStrItem> clonestrs = new List<GHPutStrItem>();
+        //            //lock (PutStrsLock) //Probably not needed since only reading from PutStrs (UI thread is not writing)
+        //            {
+        //                foreach (GHPutStrItem item in PutStrs)
+        //                {
+        //                    clonestrs.Add(item.Clone());
+        //                }
+        //            }
+        //            queue.Enqueue(new GHRequest(_currentGame, GHRequestType.DisplayWindowView, _winId, clonestrs));
+        //        }
+        //    }
+        //}
+        //public void Curs(int x, int y)
+        //{
+        //    CursX = x;
+        //    CursY = y;
+        //    if(WindowType == GHWinType.Map)
+        //        ActiveGamePage.SetMapCursor(x, y);
+        //}
         public void PrintGlyph(int x, int y, int glyph, int bkglyph, int symbol, int color, uint special, ref LayerInfo layers)
         {
             ActiveGamePage.SetMapSymbol(x, y, glyph, bkglyph, symbol, color, special, ref layers);
@@ -375,7 +413,7 @@ namespace GnollHackX
 
         public void PutStrEx(int attributes, string str, int append, int color)
         {
-            lock (PutStrsLock)
+            //lock (PutStrsLock)
             {
                 using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint()
                 {
@@ -401,9 +439,8 @@ namespace GnollHackX
                         int len = str.Length;
                         string curstr = PutStrs[CursY].Text;
                         int curlen = curstr.Length;
-                        List<int> curattrs;
-                        List<int> curclrs;
-                        PutStrs[CursY].ConvertCurrentListToArrays(out curattrs, out curclrs);
+                        List<int> curattrs = PutStrs[CursY].AttributeList;
+                        List<int> curclrs = PutStrs[CursY].ColorList;
 
                         //if (append != 0)
                         //    CursX = PutStrs[CursY].Text.Length;
@@ -456,7 +493,7 @@ namespace GnollHackX
                                 curclrs[i] = color;
                         }
 
-                        PutStrs[CursY].ConvertCurrentListFromArrays(curattrs, curclrs);
+                        PutStrs[CursY].ConvertListFromArrays();
 
                         if (AutoCarriageReturn && append == 0)
                         {
@@ -468,6 +505,17 @@ namespace GnollHackX
                     float textHeight = textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent;
                     _pixelHeight = _height * textHeight + Padding.Top + Padding.Bottom;
                 }
+            }
+            if(append == 0)
+            {
+                List<GHPutStrItem> cloneStrs = new List<GHPutStrItem>();
+                foreach (GHPutStrItem item in PutStrs)
+                {
+                    cloneStrs.Add(item.Clone());
+                }
+                ConcurrentQueue<GHRequest> queue;
+                if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
+                    queue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateWindowPutStr, _winId, cloneStrs));
             }
         }
 
@@ -490,7 +538,7 @@ namespace GnollHackX
                 //        i == minlen - 1 ? append : 1, 
                 //        colors[i] == (int)NhColor.NO_COLOR ? color : colors[i]);
 
-                lock (PutStrsLock)
+                //lock (PutStrsLock)
                 {
                     using (GHSkiaFontPaint textPaint = new GHSkiaFontPaint()
                     {
@@ -516,9 +564,8 @@ namespace GnollHackX
                             int len = str.Length;
                             string curstr = PutStrs[CursY].Text;
                             int curlen = curstr.Length;
-                            List<int> curattrs;
-                            List<int> curclrs;
-                            PutStrs[CursY].ConvertCurrentListToArrays(out curattrs, out curclrs);
+                            List<int> curattrs = PutStrs[CursY].AttributeList;
+                            List<int> curclrs = PutStrs[CursY].ColorList;
 
                             //if (append != 0)
                             //    CursX = PutStrs[CursY].Text.Length;
@@ -572,7 +619,7 @@ namespace GnollHackX
                                     curclrs[i] = color;
                             }
 
-                            PutStrs[CursY].ConvertCurrentListFromArrays(curattrs, curclrs);
+                            PutStrs[CursY].ConvertListFromArrays();
 
                             if (AutoCarriageReturn && append == 0)
                             {
@@ -585,6 +632,17 @@ namespace GnollHackX
                         _pixelHeight = _height * textHeight + Padding.Top + Padding.Bottom;
                     }
                 }
+            }
+            if (append == 0)
+            {
+                List<GHPutStrItem> cloneStrs = new List<GHPutStrItem>();
+                foreach (GHPutStrItem item in PutStrs)
+                {
+                    cloneStrs.Add(item.Clone());
+                }
+                ConcurrentQueue<GHRequest> queue;
+                if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
+                    queue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateWindowPutStr, _winId, cloneStrs));
             }
         }
 

@@ -3007,8 +3007,57 @@ namespace GnollHackX.Pages.Game
                             case GHRequestType.AddPetData:
                                 AddPetData(req.MonstInfoData);
                                 break;
+                            case GHRequestType.UpdateWindowPutStr:
+                                UpdateWindowPutStr(req.RequestInt, req.RequestPutStrItems);
+                                break;
+                            case GHRequestType.UpdateGHWindow:
+                                UpdateGHWindow(req.RequestInt, req.RequestingGHWindow);
+                                break;
+                            case GHRequestType.UpdateGHWindowVisibility:
+                                UpdateGHWindowVisibility(req.RequestInt, req.RequestBool);
+                                break;
+                            case GHRequestType.UpdateGHWindowCurs:
+                                UpdateGHWindowCurs(req.RequestInt, req.RequestInt2, req.RequestInt3);
+                                break;
                         }
                     }
+                }
+            }
+        }
+
+        private readonly object _localWindowLock = new object();
+        private GHWindow[] _localGHWindows = new GHWindow[GHConstants.MaxGHWindows];
+        private void UpdateWindowPutStr(int winid, List<GHPutStrItem> putStrItems)
+        {
+            lock(_localWindowLock)
+            {
+                if (_localGHWindows[winid] != null)
+                    _localGHWindows[winid].PutStrs = putStrItems;
+            }
+        }
+        private void UpdateGHWindow(int winid, GHWindow ghWindow)
+        {
+            lock (_localWindowLock)
+            {
+                _localGHWindows[winid] = ghWindow;
+            }
+        }
+        private void UpdateGHWindowVisibility(int winid, bool isVisible)
+        {
+            lock (_localWindowLock)
+            {
+                if (_localGHWindows[winid] != null)
+                    _localGHWindows[winid].Visible = isVisible;
+            }
+        }
+        private void UpdateGHWindowCurs(int winid, int x, int y)
+        {
+            lock (_localWindowLock)
+            {
+                if (_localGHWindows[winid] != null)
+                {
+                    _localGHWindows[winid].CursX = x;
+                    _localGHWindows[winid].CursY = y;
                 }
             }
         }
@@ -3159,7 +3208,15 @@ namespace GnollHackX.Pages.Game
 
         private void DestroyWindowView(int winid)
         {
-
+            lock (_localWindowLock)
+            {
+                GHWindow win = _localGHWindows[winid];
+                if (win != null)
+                {
+                    win.Visible = false;
+                    _localGHWindows[winid] = null;
+                }
+            }
         }
 
         private void ClearWindowView(int winid)
@@ -3170,10 +3227,9 @@ namespace GnollHackX.Pages.Game
         private void DisplayWindowView(int winid, List<GHPutStrItem> strs)
         {
             GHWindow window;
-            GHGame curGame = CurrentGame;
-            lock (curGame.WindowsLock)
+            lock (_localWindowLock)
             {
-                window = curGame.Windows[winid];
+                window = _localGHWindows[winid];
             }
             if(window != null)
                 ShowWindowCanvas(window, strs);
@@ -3239,18 +3295,18 @@ namespace GnollHackX.Pages.Game
             TextWindowGlyphImage.ActiveGlyphImageSource = TextGlyphImage;
             TextWindowGlyphImage.IsVisible = IsTextGlyphVisible;
 
-            List<GHPutStrItem> items = null;
-            if (window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_GENERAL || window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_SPEAKER 
-                || window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_HAS_INDENTED_TEXT || window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_DISPLAY_FILE_WITH_INDENTED_TEXT)
-            {
-                items = new List<GHPutStrItem>();
-                UIUtils.ProcessAdjustedItems(items, strs);
-            }
-            else
-                items = strs;
-
             lock (TextCanvas.TextItemLock)
             {
+                List<GHPutStrItem> items = null;
+                if (window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_GENERAL || window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_PAGER_SPEAKER 
+                    || window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_HAS_INDENTED_TEXT || window.WindowStyle == ghwindow_styles.GHWINDOW_STYLE_DISPLAY_FILE_WITH_INDENTED_TEXT)
+                {
+                    items = new List<GHPutStrItem>();
+                    UIUtils.ProcessAdjustedItems(items, strs);
+                }
+                else
+                    items = strs;
+
                 TextTouchDictionary.Clear();
                 TextCanvas.GHWindow = window;
 
@@ -6765,15 +6821,18 @@ namespace GnollHackX.Pages.Game
 
                 float tx = 0, ty = 0;
                 float startx = 0, starty = 0;
+                int mapWindowId = 0, messageWindowId = 0, statusWindowId = 0;
                 GHGame curGame = CurrentGame;
                 if (curGame != null)
                 {
-                    lock (curGame.WindowsLock)
+                    curGame.GetWindowIds(out mapWindowId, out messageWindowId, out statusWindowId);
+                    lock (_localWindowLock)
                     {
-                        if (curGame.Windows[curGame.MapWindowId] != null)
+                        GHWindow win = _localGHWindows[mapWindowId];
+                        if (win != null)
                         {
-                            startx = curGame.Windows[curGame.MapWindowId].Left;
-                            starty = curGame.Windows[curGame.MapWindowId].Top;
+                            startx = win.Left;
+                            starty = win.Top;
                         }
                     }
                 }
@@ -8216,10 +8275,10 @@ namespace GnollHackX.Pages.Game
                     {
                         if (curGame == null)
                             break;
-                        lock (curGame.WindowsLock)
+                        lock (_localWindowLock)
                         {
-                            ghWindow = curGame.Windows[i];
-                            messageWindow = curGame.Windows[curGame.MessageWindowId];
+                            ghWindow = _localGHWindows[i];
+                            messageWindow = _localGHWindows[messageWindowId];
                         }
                         if (ghWindow == null || messageWindow == null)
                             break;
@@ -8296,72 +8355,78 @@ namespace GnollHackX.Pages.Game
 #endif
                                 }
 
-                                if (i == curGame.StatusWindowId && ClassicStatusBar)
+                                if (i == statusWindowId && ClassicStatusBar)
                                     _canvasButtonRect.Top = winRect.Bottom;
-                                else if (i == curGame.MessageWindowId)
+                                else if (i == messageWindowId)
                                     _canvasButtonRect.Bottom = winRect.Top;
                             }
 
                             if (ghWindow.WindowType != GHWinType.Message && !ForceAllMessages)
                             {
-                                lock (ghWindow.PutStrsLock)
+                                //lock (_localPutStrLock)
                                 {
                                     int j = -1;
-                                    foreach (GHPutStrItem putstritem in ghWindow.PutStrs)
+                                    if (ghWindow.PutStrs != null)
                                     {
-                                        j++;
-                                        int pos = 0;
-                                        float xpos = 0;
-                                        float totwidth = 0;
-                                        foreach (GHPutStrInstructions instr in putstritem.InstructionList)
+                                        List<GHPutStrItem> putStrs = ghWindow.PutStrs;
+                                        foreach (GHPutStrItem putstritem in putStrs)
                                         {
-                                            if (putstritem.Text == null)
-                                                substr.SetValue("");
-                                            else if (pos + instr.PrintLength <= putstritem.Text.Length)
-                                                substr.SetValue(putstritem.Text, pos, instr.PrintLength);
-                                            else if (putstritem.Text.Length - pos > 0)
-                                                substr.SetValue(putstritem.Text, pos, putstritem.Text.Length - pos);
-                                            else
-                                                substr.SetValue("");
-                                            pos += substr.Length;
-                                            totwidth = textPaint.MeasureText(substr.Value, ref textBounds);
+                                            if (putstritem == null)
+                                                break;
+                                            j++;
+                                            int pos = 0;
+                                            float xpos = 0;
+                                            float totwidth = 0;
+                                            foreach (GHPutStrInstructions instr in putstritem.InstructionList)
+                                            {
+                                                if (putstritem.Text == null)
+                                                    substr.SetValue("");
+                                                else if (pos + instr.PrintLength <= putstritem.Text.Length)
+                                                    substr.SetValue(putstritem.Text, pos, instr.PrintLength);
+                                                else if (putstritem.Text.Length - pos > 0)
+                                                    substr.SetValue(putstritem.Text, pos, putstritem.Text.Length - pos);
+                                                else
+                                                    substr.SetValue("");
+                                                pos += substr.Length;
+                                                totwidth = textPaint.MeasureText(substr.Value, ref textBounds);
 
-                                            /* attributes */
-                                            tx = xpos + winRect.Left + ghWindow.Padding.Left;
-                                            ty = winRect.Top + ghWindow.Padding.Top - textPaint.FontMetrics.Ascent + j * height;
+                                                /* attributes */
+                                                tx = xpos + winRect.Left + ghWindow.Padding.Left;
+                                                ty = winRect.Top + ghWindow.Padding.Top - textPaint.FontMetrics.Ascent + j * height;
 
 #if GNH_MAP_PROFILING && DEBUG
                                             StartProfiling(GHProfilingStyle.Text);
 #endif
-                                            if (ghWindow.HasShadow)
-                                            {
+                                                if (ghWindow.HasShadow)
+                                                {
+                                                    textPaint.Style = SKPaintStyle.Fill;
+                                                    textPaint.Color = SKColors.Black;
+                                                    textPaint.MaskFilter = _blur;
+                                                    float shadow_offset = 0.15f * textPaint.TextSize;
+                                                    textPaint.DrawTextOnCanvas(canvas, substr.Value, tx + shadow_offset, ty + shadow_offset);
+                                                    textPaint.MaskFilter = null;
+                                                }
+                                                if (ghWindow.StrokeWidth > 0)
+                                                {
+                                                    textPaint.Style = SKPaintStyle.Stroke;
+                                                    textPaint.StrokeWidth = ghWindow.StrokeWidth * (ghWindow.WindowType == GHWinType.Status ? statusBarTextScale : messageTextScale);
+                                                    textPaint.Color = SKColors.Black;
+                                                    textPaint.DrawTextOnCanvas(canvas, substr.Value, tx, ty);
+                                                }
                                                 textPaint.Style = SKPaintStyle.Fill;
-                                                textPaint.Color = SKColors.Black;
-                                                textPaint.MaskFilter = _blur;
-                                                float shadow_offset = 0.15f * textPaint.TextSize;
-                                                textPaint.DrawTextOnCanvas(canvas, substr.Value, tx + shadow_offset, ty + shadow_offset);
-                                                textPaint.MaskFilter = null;
-                                            }
-                                            if (ghWindow.StrokeWidth > 0)
-                                            {
-                                                textPaint.Style = SKPaintStyle.Stroke;
-                                                textPaint.StrokeWidth = ghWindow.StrokeWidth * (ghWindow.WindowType == GHWinType.Status ? statusBarTextScale : messageTextScale);
-                                                textPaint.Color = SKColors.Black;
+                                                textPaint.Color = UIUtils.NHColor2SKColor(instr.Color < (int)NhColor.CLR_MAX ? instr.Color : (int)NhColor.CLR_WHITE, instr.Attributes);
                                                 textPaint.DrawTextOnCanvas(canvas, substr.Value, tx, ty);
-                                            }
-                                            textPaint.Style = SKPaintStyle.Fill;
-                                            textPaint.Color = UIUtils.NHColor2SKColor(instr.Color < (int)NhColor.CLR_MAX ? instr.Color : (int)NhColor.CLR_WHITE, instr.Attributes);
-                                            textPaint.DrawTextOnCanvas(canvas, substr.Value, tx, ty);
-                                            textPaint.Style = SKPaintStyle.Fill;
-                                            xpos += totwidth;
+                                                textPaint.Style = SKPaintStyle.Fill;
+                                                xpos += totwidth;
 #if GNH_MAP_PROFILING && DEBUG
                                             StopProfiling(GHProfilingStyle.Text);
 #endif
 
-                                            if (ghWindow.WindowType == GHWinType.Status && lastStatusRowPrintY < ty + textPaint.FontMetrics.Descent)
-                                            {
-                                                lastStatusRowPrintY = ty + textPaint.FontMetrics.Descent;
-                                                lastStatusRowFontSpacing = textPaint.FontSpacing;
+                                                if (ghWindow.WindowType == GHWinType.Status && lastStatusRowPrintY < ty + textPaint.FontMetrics.Descent)
+                                                {
+                                                    lastStatusRowPrintY = ty + textPaint.FontMetrics.Descent;
+                                                    lastStatusRowFontSpacing = textPaint.FontSpacing;
+                                                }
                                             }
                                         }
                                     }

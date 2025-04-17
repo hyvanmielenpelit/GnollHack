@@ -97,6 +97,10 @@ namespace GnollHackX
         SaveFileTrackingLoad,
         ClearPetData,
         AddPetData,
+        UpdateWindowPutStr,
+        UpdateGHWindow,
+        UpdateGHWindowVisibility,
+        UpdateGHWindowCurs,
     }
 
     public struct AddContextMenuData
@@ -180,6 +184,7 @@ namespace GnollHackX
         public bool RequestBool { get; set; }
         public int RequestInt { get; set; }
         public int RequestInt2 { get; set; }
+        public int RequestInt3 { get; set; }
         public long RequestLong { get; set; }
         public long RequestLong2 { get; set; }
         public int RequestAttr { get; set; }
@@ -228,6 +233,14 @@ namespace GnollHackX
             RequestType = requesttype;
             RequestInt = requestint;
             RequestInt2 = requestint2;
+        }
+        public GHRequest(GHGame ghGame, GHRequestType requesttype, int requestint, int requestint2, int requestint3)
+        {
+            RequestingGame = ghGame;
+            RequestType = requesttype;
+            RequestInt = requestint;
+            RequestInt2 = requestint2;
+            RequestInt3 = requestint3;
         }
 
         public GHRequest(GHGame ghGame, GHRequestType requesttype, int requestint, int requestint2, bool requestbool)
@@ -283,6 +296,14 @@ namespace GnollHackX
             RequestInt = requestint;
             RequestPutStrItems = strs;
         }
+        public GHRequest(GHGame ghGame, GHRequestType requesttype, int requestint, GHWindow window)
+        {
+            RequestingGame = ghGame;
+            RequestType = requesttype;
+            RequestInt = requestint;
+            RequestingGHWindow = window;
+        }
+
         public GHRequest(GHGame ghGame, GHRequestType requesttype, GHWindow requestingGHWindow, GHMenuInfo menuinfo)
         {
             RequestingGame = ghGame;

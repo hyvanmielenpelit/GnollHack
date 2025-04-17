@@ -59,12 +59,24 @@ namespace GnollHackX
 
         private int _lastWindowHandle = 0;
         private GHWindow[] _ghWindows = new GHWindow[GHConstants.MaxGHWindows];
-        private readonly object _ghWindowsLock = new object();
-        public GHWindow[] Windows { get { return _ghWindows; } }
-        public object WindowsLock { get { return _ghWindowsLock; } }
-        public int MapWindowId { get; set; }
-        public int MessageWindowId { get; set; }
-        public int StatusWindowId { get; set; }
+
+        private readonly object _windowIdLock = new object();
+        private int _mapWindowId;
+        private int _messageWindowId;
+        private int _statusWindowId;
+        public int MapWindowId  { get { lock (_windowIdLock) { return _mapWindowId; } } set { lock (_windowIdLock) { _mapWindowId = value; } } }
+        public int MessageWindowId { get { lock (_windowIdLock) { return _messageWindowId; } } set { lock (_windowIdLock) { _messageWindowId = value; } } }
+        public int StatusWindowId { get { lock (_windowIdLock) { return _statusWindowId; } } set { lock (_windowIdLock) { _statusWindowId = value; } } }
+
+        public void GetWindowIds(out int mapWindowId, out int messageWindowId, out int statusWindowId)
+        {
+            lock (_windowIdLock)
+            {
+                mapWindowId = _mapWindowId;
+                messageWindowId = _messageWindowId;
+                statusWindowId = _statusWindowId;
+            }
+        }
         private List<GHMsgHistoryItem> _message_history = new List<GHMsgHistoryItem>(GHConstants.MaxMessageHistoryLength + 1);
         private List<GHMsgHistoryItem> _longer_message_history = new List<GHMsgHistoryItem>(GHConstants.MaxLongerMessageHistoryLength + 1);
         private List<GHMsgHistoryItem> _empty_message_history = new List<GHMsgHistoryItem>(1);
@@ -405,17 +417,25 @@ namespace GnollHackX
                 (dataflags & 1) == 0 ? null : new ObjectDataItem(objdata, otypdata, (dataflags & 4) != 0), 
                 _gamePage, handle);
 
-            lock(_ghWindowsLock)
+            _ghWindows[handle] = ghwin;
+            UIUtils.SetCreateGHWindow(ghwin);
+            if (wintype == (int)GHWinType.Map)
+                MapWindowId = handle;
+            else if (wintype == (int)GHWinType.Message)
+                MessageWindowId = handle;
+            else if (wintype == (int)GHWinType.Status)
+                StatusWindowId = handle;
+
+            ConcurrentQueue<GHRequest> queue;
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
             {
-                _ghWindows[handle] = ghwin;
-                ghwin.Create();
-                if (wintype == (int)GHWinType.Map)
-                    MapWindowId = handle;
-                else if (wintype == (int)GHWinType.Message)
-                    MessageWindowId = handle;
-                else if (wintype == (int)GHWinType.Status)
-                    StatusWindowId = handle;
+                queue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, handle, ghwin.Clone()));
             }
+
+            //lock(_ghWindowsLock)
+            //{
+            //    //ghwin.Create();
+            //}
             return handle;
         }
 
@@ -426,16 +446,32 @@ namespace GnollHackX
             if (winHandle < 0)
                 return;
 
-            lock (_ghWindowsLock)
+            //lock (_ghWindowsLock)
             {
                 GHWindow ghwin = _ghWindows[winHandle];
                 if (ghwin != null)
                 {
                     if (ghwin.WindowType == GHWinType.Map)
                         MapWindowId = 0;
-                    ghwin.Destroy();
+                    DestroyGHWindow(ghwin);
                 }
                 _ghWindows[winHandle] = null;
+            }
+        }
+
+        private void DestroyGHWindow(GHWindow ghwin)
+        {
+            if (ghwin == null)
+                return;
+            ghwin.Visible = false;
+            ConcurrentQueue<GHRequest> queue;
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+            {
+                queue.Enqueue(new GHRequest(this, GHRequestType.DestroyWindowView, ghwin.WindowID));
+                if (ghwin.WindowType == GHWinType.Menu && ghwin.MenuInfo != null && ghwin.MenuInfo.MenuCloseUponDestroy)
+                {
+                    queue.Enqueue(new GHRequest(this, GHRequestType.HideMenuPage, ghwin.WindowID));
+                }
             }
         }
 
@@ -445,10 +481,38 @@ namespace GnollHackX
 
             if (winHandle < 0)
                 return;
-            lock (_ghWindowsLock)
+            //lock (_ghWindowsLock)
+            //{
+            //    if (_ghWindows[winHandle] != null)
+            //        _ghWindows[winHandle].Clear();
+            //}
+            ClearGHWindow(_ghWindows[winHandle]); //.Clear();
+        }
+
+        private void ClearGHWindow(GHWindow win)
+        {
+            if (win == null)
+                return;
+
+            switch (win.WindowType)
             {
-                if (_ghWindows[winHandle] != null)
-                    _ghWindows[winHandle].Clear();
+                case GHWinType.Map:
+                    _gamePage.ClearMap();
+                    break;
+            }
+
+            win.PutStrs.Clear();
+
+            win.SetWidthHeight(0, 0, 0, 0);
+            win.CursX = 0;
+            win.CursY = 0;
+
+            ConcurrentQueue<GHRequest> queue;
+            if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+            {
+                if (win.WindowType == GHWinType.Menu || win.WindowType == GHWinType.Text)
+                    queue.Enqueue(new GHRequest(this, GHRequestType.ClearWindowView, win.WindowID));
+                queue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, win.WindowID, win.Clone()));
             }
         }
 
@@ -461,14 +525,24 @@ namespace GnollHackX
             bool ismenu = false;
             bool istext = false;
             bool ismap = false;
-            lock (_ghWindowsLock)
+            //lock (_ghWindowsLock)
             {
                 if (_ghWindows[winHandle] != null)
                 {
                     if(!PlayingReplay || !GHApp.IsReplaySearching)
-                        _ghWindows[winHandle].Display(blocking != 0);
+                    {
+                        //_ghWindows[winHandle].Display(blocking != 0);
+                        DisplayGHWindow(_ghWindows[winHandle]);
+                    }
                     else
+                    {
                         _ghWindows[winHandle].Visible = true;
+                        ConcurrentQueue<GHRequest> queue;
+                        if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                        {
+                            queue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindowVisibility, true));
+                        }
+                    }
                     ismenu = (_ghWindows[winHandle].WindowType == GHWinType.Menu);
                     istext = (_ghWindows[winHandle].WindowType == GHWinType.Text);
                     ismap = (_ghWindows[winHandle].WindowType == GHWinType.Map);
@@ -494,6 +568,30 @@ namespace GnollHackX
             }
         }
 
+        private void DisplayGHWindow(GHWindow win)
+        {
+            if (win == null)
+                return;
+
+            win.Visible = true;
+            if (win.WindowType == GHWinType.Menu || win.WindowType == GHWinType.Text)
+            {
+                ConcurrentQueue<GHRequest> queue;
+                if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                {
+                    List<GHPutStrItem> clonestrs = new List<GHPutStrItem>();
+                    //lock (PutStrsLock) //Probably not needed since only reading from PutStrs (UI thread is not writing)
+                    {
+                        foreach (GHPutStrItem item in win.PutStrs)
+                        {
+                            clonestrs.Add(item.Clone());
+                        }
+                    }
+                    queue.Enqueue(new GHRequest(this, GHRequestType.DisplayWindowView, win.WindowID, clonestrs));
+                }
+            }
+        }
+
         public void ClientCallback_ExitWindows(string str)
         {
             Debug.WriteLine("ClientCallback_ExitWindows");
@@ -504,7 +602,7 @@ namespace GnollHackX
             if (!string.IsNullOrWhiteSpace(str) && !GHApp.IsReplaySearching)
                 Thread.Sleep(GHConstants.ExitWindowsWithStringDelay);
 
-            lock (_ghWindowsLock)
+            //lock (_ghWindowsLock)
             {
                 for(int winHandle = 0; winHandle <= _lastWindowHandle; winHandle++)
                 {
@@ -514,7 +612,8 @@ namespace GnollHackX
                     if (ghwin.WindowType == GHWinType.Map)
                         MapWindowId = 0;
 
-                    ghwin.Destroy();
+                    //ghwin.Destroy();
+                    DestroyGHWindow(ghwin);
                     _ghWindows[winHandle] = null;
                 }
                 _lastWindowHandle = -1;
@@ -535,12 +634,22 @@ namespace GnollHackX
             RecordFunctionCall(RecordedFunctionID.Curs, winHandle, x, y);
 
             GHWindow gHWindow = null;
-            lock (_ghWindowsLock)
+            //lock (_ghWindowsLock)
             {
                 gHWindow = _ghWindows[winHandle];
             }
             if (gHWindow != null)
-                gHWindow.Curs(x, y);
+            {
+                gHWindow.CursX = x;
+                gHWindow.CursY = y;
+                if (gHWindow.WindowType == GHWinType.Map)
+                    _gamePage.SetMapCursor(x, y);
+                ConcurrentQueue<GHRequest> queue;
+                if (GHGame.RequestDictionary.TryGetValue(this, out queue))
+                {
+                    queue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindowCurs, winHandle, x, y));
+                }
+            }
         }
 
         //private List<SavedPrintGlyphCall> _savedPrintGlyphCalls = new List<SavedPrintGlyphCall>();
@@ -1095,7 +1204,8 @@ namespace GnollHackX
 
             if (str == "statuslines")
             {
-                _ghWindows[StatusWindowId].Clear();
+                //_ghWindows[StatusWindowId].Clear();
+                ClearGHWindow(_ghWindows[StatusWindowId]);
             }
         }
 
@@ -1401,7 +1511,7 @@ namespace GnollHackX
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("StartMenu");
             RecordFunctionCall(RecordedFunctionID.StartMenu, winid, style);
 
-            lock (_ghWindowsLock)
+            //lock (_ghWindowsLock)
             {
                 if (_ghWindows[winid] != null)
                 {
@@ -1435,7 +1545,7 @@ namespace GnollHackX
             RecordFunctionCall(RecordedFunctionID.AddExtendedMenu, winid, glyph, identifier, accel, groupaccel, attr, color, text, presel,
                 maxcount, oid, mid, headingaccel, special_mark, menuflags, dataflags, style, otmpdata, otypdata, attrs, colors);
 
-            lock (_ghWindowsLock)
+            //lock (_ghWindowsLock)
             {
                 if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
                 {
@@ -1484,7 +1594,7 @@ namespace GnollHackX
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("EndMenu");
             RecordFunctionCall(RecordedFunctionID.EndMenu, winid, prompt, subtitle);
 
-            lock (_ghWindowsLock)
+            //lock (_ghWindowsLock)
             {
                 if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
                 {
@@ -1499,7 +1609,7 @@ namespace GnollHackX
             ConcurrentQueue<GHRequest> queue;
             bool enqueued = false;
 
-            lock (_ghWindowsLock)
+            //lock (_ghWindowsLock)
             {
                 if (_ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
                 {
@@ -1512,6 +1622,7 @@ namespace GnollHackX
 
                     if (GHGame.RequestDictionary.TryGetValue(this, out queue))
                     {
+                        queue.Enqueue(new GHRequest(this, GHRequestType.UpdateGHWindow, winid, _ghWindows[winid].Clone()));
                         queue.Enqueue(new GHRequest(this, GHRequestType.ShowMenuPage, _ghWindows[winid], _ghWindows[winid].MenuInfo));
                         enqueued = true;
                     }
@@ -1572,7 +1683,7 @@ namespace GnollHackX
                 bool continuepolling = true;
                 while (continuepolling)
                 {
-                    lock (_ghWindowsLock)
+                    //lock (_ghWindowsLock)
                     {
                         if (_ghWindows[winid] == null)
                             continuepolling = false;
@@ -1598,7 +1709,7 @@ namespace GnollHackX
 
             IntPtr arrayptr;
 
-            lock (_ghWindowsLock)
+            //lock (_ghWindowsLock)
             {
                 if (_ghWindows[winid] == null || _ghWindows[winid].SelectedMenuItems == null || _ghWindows[winid].WasCancelled || _fastForwardGameOver)
                     cnt = -1;
@@ -2461,18 +2572,15 @@ namespace GnollHackX
                     if (cmd_param >= 0 && cmd_param < GHConstants.MaxGHWindows)
                     {
                         string windowText = "";
-                        lock (_ghWindowsLock)
+                        //lock (_ghWindowsLock)
                         {
                             if (_ghWindows[cmd_param] != null)
                             {
-                                lock(_ghWindows[cmd_param].PutStrsLock)
+                                foreach(GHPutStrItem psi in _ghWindows[cmd_param].PutStrs)
                                 {
-                                    foreach(GHPutStrItem psi in _ghWindows[cmd_param].PutStrs)
-                                    {
-                                        if(windowText != "")
-                                            windowText += Environment.NewLine;
-                                        windowText += psi.Text;
-                                    }
+                                    if(windowText != "")
+                                        windowText += Environment.NewLine;
+                                    windowText += psi.Text;
                                 }
                             }
                         }
@@ -2634,7 +2742,7 @@ namespace GnollHackX
             RecordFunctionCall(RecordedFunctionID.OutRip, winid, plname, points, killer, time);
 
             ConcurrentQueue<GHRequest> queue;
-            lock (_ghWindowsLock)
+            //lock (_ghWindowsLock)
             {
                 if (_ghWindows[winid] != null)
                 {
@@ -2652,7 +2760,7 @@ namespace GnollHackX
                 if (!_fastForwardGameOver && !GHApp.StopReplay && !GHApp.IsReplaySearching) /* No pause, since outrip page hides the controls */
                     Thread.Sleep((int)(GHConstants.ReplayOutripDelay / GHApp.ReplaySpeed));
 
-                lock (_ghWindowsLock)
+                //lock (_ghWindowsLock)
                 {
                     if (_ghWindows[winid] != null)
                     {

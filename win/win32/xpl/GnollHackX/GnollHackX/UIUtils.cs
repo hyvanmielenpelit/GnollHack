@@ -1417,6 +1417,77 @@ namespace GnollHackX
             }
 #endif
         }
+
+        public static void SetCreateGHWindow(GHWindow ghwin)
+        {
+            if(ghwin == null)
+                return;
+            ghwin.Typeface = GHApp.LatoRegular;
+            ghwin.TextColor = SKColors.White;
+            ghwin.TextSize = GHConstants.WindowBaseFontSize;
+            ghwin.BackgroundColor = SKColors.Transparent;
+            switch (ghwin.WindowType)
+            {
+                case GHWinType.None:
+                    break;
+                case GHWinType.Message:
+                    ghwin.TextSize = GHConstants.WindowMessageFontSize;
+                    ghwin.Typeface = GHApp.DejaVuSansMonoTypeface;
+                    ghwin.StrokeWidth = ghwin.TextSize / 4.0f;
+                    ghwin.AutoPlacement = true;
+                    break;
+                case GHWinType.Status:
+                    ghwin.TextSize = GHConstants.WindowStatusBarFontSize;
+                    ghwin.Typeface = GHApp.LatoRegular;
+                    ghwin.StrokeWidth = ghwin.TextSize / 4.0f;
+                    ghwin.HasShadow = true;
+                    ghwin.Left = 0;
+                    ghwin.Top = 0;
+                    break;
+                case GHWinType.Map:
+                    ghwin.TextSize = GHConstants.WindowStatusBarFontSize;
+                    ghwin.Typeface = GHApp.LatoRegular;
+                    ghwin.Left = 0;
+                    ghwin.Top = 120;
+                    break;
+                case GHWinType.Menu:
+                    ghwin.TextSize = GHConstants.WindowMenuFontSize;
+                    ghwin.Typeface = GHApp.UnderwoodTypeface;
+                    ghwin.Left = 0;
+                    ghwin.Top = 150;
+                    ghwin.CenterHorizontally = true;
+                    break;
+                case GHWinType.Text:
+                    ghwin.TextSize = GHConstants.WindowMenuFontSize;
+                    ghwin.Typeface = GHApp.UnderwoodTypeface;
+                    ghwin.Left = 0;
+                    ghwin.Top = 150;
+                    ghwin.CenterHorizontally = true;
+                    break;
+                case GHWinType.Base:
+                    break;
+                case GHWinType.Here:
+                    ghwin.TextSize = GHConstants.WindowMessageFontSize;
+                    ghwin.Typeface = GHApp.DejaVuSansMonoTypeface;
+                    ghwin.StrokeWidth = ghwin.TextSize / 4.0f;
+                    ghwin.AutoPlacement = true;
+                    break;
+                case GHWinType.Inventory:
+                    break;
+                case GHWinType.Reserved_1:
+                case GHWinType.Reserved_2:
+                case GHWinType.Reserved_3:
+                    break;
+                case GHWinType.RIP:
+                    break;
+                case GHWinType.Keypad:
+                    break;
+                case GHWinType.Overview:
+                    break;
+                case GHWinType.Worn:
+                    break;
+            }
+        }
     }
 
     public class TouchEntry
