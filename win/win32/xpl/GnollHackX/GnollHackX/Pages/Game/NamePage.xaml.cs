@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -108,19 +109,9 @@ namespace GnollHackX.Pages.Game
                 return;
             }
 
-            ConcurrentQueue<GHResponse> queue;
-            if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
-            {
-                var page = await _gamePage.Navigation.PopModalAsync();
-                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.AskName, usedName));
-                GHApp.DisconnectIViewHandlers(page);
-            }
-            else
-            {
-                btnOK.IsEnabled = true;
-                btnCancel.IsEnabled = true;
-
-            }
+            var page = await _gamePage.Navigation.PopModalAsync();
+            _currentGame?.ResponseQueue.Enqueue(new GHResponse(_currentGame, GHRequestType.AskName, usedName));
+            GHApp.DisconnectIViewHandlers(page);
         }
 
         private void ReplayDoEnterName()
@@ -218,18 +209,9 @@ namespace GnollHackX.Pages.Game
             btnCancel.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
 
-            ConcurrentQueue<GHResponse> queue;
-            if (GHGame.ResponseDictionary.TryGetValue(_currentGame, out queue))
-            {
-                var page = await _gamePage.Navigation.PopModalAsync();
-                queue.Enqueue(new GHResponse(_currentGame, GHRequestType.AskName, ""));
-                GHApp.DisconnectIViewHandlers(page);
-            }
-            else
-            {
-                btnOK.IsEnabled = true;
-                btnCancel.IsEnabled = true;
-            }
+            var page = await _gamePage.Navigation.PopModalAsync();
+            _currentGame?.ResponseQueue.Enqueue(new GHResponse(_currentGame, GHRequestType.AskName, ""));
+            GHApp.DisconnectIViewHandlers(page);
         }
 
         private void eName_Completed(object sender, EventArgs e)

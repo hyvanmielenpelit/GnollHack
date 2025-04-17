@@ -5542,12 +5542,8 @@ namespace GnollHackX
                     ReplayTurn = 0;
                     GoToTurn = GoToTurn; /* Reset original replay turn */
                     ReplayRestarted = true;
-                    ConcurrentQueue<GHRequest> queue;
-                    if (GHGame.RequestDictionary.TryGetValue(game, out queue))
-                    {
-                        queue.Enqueue(new GHRequest(game, GHRequestType.CloseAllDialogs));
-                        queue.Enqueue(new GHRequest(game, GHRequestType.RestartReplay));
-                    }
+                    game?.RequestQueue.Enqueue(new GHRequest(game, GHRequestType.CloseAllDialogs));
+                    game?.RequestQueue.Enqueue(new GHRequest(game, GHRequestType.RestartReplay));
                     return PlayReplayResult.Restarting;
                 }
 

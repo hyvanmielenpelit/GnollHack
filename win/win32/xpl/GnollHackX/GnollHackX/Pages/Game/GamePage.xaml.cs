@@ -523,14 +523,7 @@ namespace GnollHackX.Pages.Game
                     RefreshMsgHistoryRowCounts = true;
 
                 GHGame curGame = CurrentGame;
-                if (curGame != null)
-                {
-                    ConcurrentQueue<GHResponse> queue;
-                    if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                    {
-                        queue.Enqueue(new GHResponse(curGame, GHRequestType.UseLongerMessageHistory, value));
-                    }
-                }
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.UseLongerMessageHistory, value));
             }
         }
 
@@ -551,14 +544,7 @@ namespace GnollHackX.Pages.Game
                 RefreshMsgHistoryRowCounts = true;
 
                 GHGame curGame = CurrentGame;
-                if (curGame != null)
-                {
-                    ConcurrentQueue<GHResponse> queue;
-                    if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                    {
-                        queue.Enqueue(new GHResponse(curGame, GHRequestType.UseHideMessageHistory, value));
-                    }
-                }
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.UseHideMessageHistory, value));
             }
         }
 
@@ -1153,65 +1139,30 @@ namespace GnollHackX.Pages.Game
         public void SetCharacterClickAction(bool newValue)
         {
             GHGame curGame = CurrentGame;
-            if (curGame != null)
-            {
-                ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                {
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SetCharacterClickAction, newValue));
-                }
-            }
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetCharacterClickAction, newValue));
         }
 
         public void SetGetPositionArrows(bool newValue)
         {
             GHGame curGame = CurrentGame;
-            if (curGame != null)
-            {
-                ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                {
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SetGetPositionArrows, newValue));
-                }
-            }
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetGetPositionArrows, newValue));
         }
         public void SetDiceAsRanges(bool newValue)
         {
             GHGame curGame = CurrentGame;
-            if (curGame != null)
-            {
-                ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                {
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SetDiceAsRanges, newValue));
-                }
-            }
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetDiceAsRanges, newValue));
         }
 
         public void SetRightMouseCommand(int newValue)
         {
             GHGame curGame = CurrentGame;
-            if (curGame != null)
-            {
-                ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                {
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SetRightMouseCommand, newValue));
-                }
-            }
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetRightMouseCommand, newValue));
         }
 
         public void SetMiddleMouseCommand(int newValue)
         {
             GHGame curGame = CurrentGame;
-            if (curGame != null)
-            {
-                ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                {
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SetMiddleMouseCommand, newValue));
-                }
-            }
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetMiddleMouseCommand, newValue));
         }
 
         public async void StartNewGame()
@@ -2527,14 +2478,7 @@ namespace GnollHackX.Pages.Game
             }
 
             GHGame curGame = CurrentGame;
-            if (curGame != null)
-            {
-                ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                {
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.DisplayScreenText));
-                }
-            }
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.DisplayScreenText));
         }
 
         public void DisplayConditionText(DisplayConditionTextData data)
@@ -2764,264 +2708,248 @@ namespace GnollHackX.Pages.Game
             if (curGame != null)
             {
                 GHRequest req;
-                ConcurrentQueue<GHRequest> queue;
-                if (GHGame.RequestDictionary.TryGetValue(curGame, out queue))
+                while (curGame.RequestQueue.TryDequeue(out req))
                 {
-                    while (queue.TryDequeue(out req))
+                    switch (req.RequestType)
                     {
-                        switch (req.RequestType)
-                        {
-                            case GHRequestType.PrintHistory:
-                                PrintHistory(req.MessageHistory);
-                                break;
-                            case GHRequestType.PrintHistoryItem:
-                                //PrintHistoryItem(req.MessageHistoryItem);
-                                break;
-                            case GHRequestType.PrintTopLine:
-                                PrintTopLine(req.RequestString, req.RequestStringAttributes);
-                                break;
-                            case GHRequestType.ShowYnResponses:
-                                ShowYnResponses(req.RequestInt, req.RequestAttr, req.RequestNhColor, req.RequestGlyph, req.TitleString, req.RequestString, req.Responses, req.ResponseDescriptions, req.IntroLineString, req.RequestFlags);
-                                break;
-                            case GHRequestType.HideYnResponses:
-                                HideYnResponses();
-                                break;
-                            case GHRequestType.ShowDirections:
-                                DoShowDirections();
-                                break;
-                            case GHRequestType.HideDirections:
-                                DoHideDirections();
-                                break;
-                            case GHRequestType.GetChar:
-                                GetChar();
-                                break;
-                            case GHRequestType.AskName:
-                                AskName(req.RequestString, req.RequestString2, req.RequestString3);
-                                break;
-                            case GHRequestType.HideAskNamePage:
-                                HideAskNamePage();
-                                break;
-                            case GHRequestType.GetLine:
-                                GetLine(req.RequestString, req.PlaceHolderString, req.DefValueString, req.IntroLineString, req.RequestInt, req.RequestAttr, req.RequestNhColor);
-                                break;
-                            case GHRequestType.HideGetLine:
-                                HideGetLine();
-                                break;
-                            case GHRequestType.EnterGetLineText:
-                                EnterGetLineText(req.RequestString);
-                                break;
-                            case GHRequestType.ReturnToMainMenu:
-                                IsGameOn = false;
-                                ClearMap();
-                                CurrentGame = null;
-                                GHApp.CurrentGHGame = null;
-                                _mainPage.GameStarted = false;
-                                StopMainCanvasAnimation();
-                                StopCommandCanvasAnimation();
-                                StopMenuCanvasAnimation();
-                                StopTextCanvasAnimation();
-                                ReturnToMainMenu();
-                                break;
-                            case GHRequestType.RestartGame:
-                                RestartGame();
-                                break;
-                            case GHRequestType.RestartReplay:
-                                RestartReplay();
-                                break;
-                            case GHRequestType.ShowMenuPage:
-                                ShowMenuCanvas(req.RequestMenuInfo != null ? req.RequestMenuInfo : new GHMenuInfo(ghmenu_styles.GHMENU_STYLE_GENERAL), req.RequestingGHWindow);
-                                break;
-                            case GHRequestType.HideMenuPage:
-                                DelayedMenuHide();
-                                break;
-                            case GHRequestType.ShowOutRipPage:
-                                ShowOutRipPage(req.RequestOutRipInfo != null ? req.RequestOutRipInfo : new GHOutRipInfo("", 0, "", ""), req.RequestingGHWindow);
-                                break;
-                            case GHRequestType.HideOutRipPage:
-                                HideOutRipPage();
-                                break;
-                            case GHRequestType.CreateWindowView:
-                                CreateWindowView(req.RequestInt);
-                                break;
-                            case GHRequestType.DestroyWindowView:
-                                DestroyWindowView(req.RequestInt);
-                                break;
-                            case GHRequestType.ClearWindowView:
-                                ClearWindowView(req.RequestInt);
-                                break;
-                            case GHRequestType.DisplayWindowView:
-                                DisplayWindowView(req.RequestInt);
-                                break;
-                            case GHRequestType.HideTextWindow:
-                                DelayedTextHide();
-                                break;
-                            case GHRequestType.HideLoadingScreen:
-                                HideLoadingScreen();
-                                break;
-                            case GHRequestType.ClearContextMenu:
-                                ClearContextMenu();
-                                break;
-                            case GHRequestType.AddContextMenu:
-                                AddContextMenu(req.ContextMenuData);
-                                break;
-                            case GHRequestType.DisplayFloatingText:
-                                DisplayFloatingText(req.FloatingTextData);
-                                break;
-                            case GHRequestType.DisplayScreenText:
-                                DisplayScreenText(req.ScreenTextData);
-                                break;
-                            case GHRequestType.DisplayPopupText:
-                                DisplayPopupText(req.ScreenTextData);
-                                break;
-                            case GHRequestType.HidePopupText:
-                                HidePopupGrid();
-                                break;
-                            case GHRequestType.DisplayGUIEffect:
-                                DisplayGUIEffect(req.GUIEffectData);
-                                break;
-                            case GHRequestType.ShowSkillButton:
-                                //lSkillButton.IsVisible = true;
-                                break;
-                            case GHRequestType.HideSkillButton:
-                                //lSkillButton.IsVisible = false;
-                                break;
-                            case GHRequestType.FadeToBlack:
-                                FadeToBlack((uint)req.RequestInt);
-                                break;
-                            case GHRequestType.FadeFromBlack:
-                                FadeFromBlack((uint)req.RequestInt);
-                                break;
-                            case GHRequestType.SetToBlack:
-                                SetToBlack();
-                                break;
-                            case GHRequestType.ShowGUITips:
-                                ShowGUITips(true);
-                                break;
-                            case GHRequestType.CrashReport:
-                                ReportCrashDetected();
-                                break;
-                            case GHRequestType.Panic:
-                                ReportPanic(req.RequestString);
-                                break;
-                            case GHRequestType.Message:
-                                ShowMessage(req.RequestString);
-                                break;
-                            case GHRequestType.YnConfirmation:
-                                YnConfirmation(req.TitleString, req.RequestString, req.RequestString2, req.DefValueString);
-                                break;
-                            case GHRequestType.DisplayConditionText:
-                                DisplayConditionText(req.ConditionTextData);
-                                break;
-                            case GHRequestType.DisplayScreenFilter:
-                                DisplayScreenFilter(req.ScreenFilterData);
-                                break;
-                            case GHRequestType.SaveAndDisableTravelMode:
-                                _savedMapTravelMode = MapTravelMode;
-                                if (MapTravelMode)
-                                    ToggleTravelModeButton_Clicked(ToggleTravelModeButton, new EventArgs());
-                                break;
-                            case GHRequestType.RestoreTravelMode:
-                                if (MapTravelMode != _savedMapTravelMode)
-                                    ToggleTravelModeButton_Clicked(ToggleTravelModeButton, new EventArgs());
-                                break;
-                            case GHRequestType.SaveAndDisableTravelModeOnLevel:
-                                _savedMapTravelModeOnLevel = MapTravelMode;
-                                if (MapTravelMode)
-                                    ToggleTravelModeButton_Clicked(ToggleTravelModeButton, new EventArgs());
-                                break;
-                            case GHRequestType.RestoreTravelModeOnLevel:
-                                if (MapTravelMode != _savedMapTravelModeOnLevel)
-                                    ToggleTravelModeButton_Clicked(ToggleTravelModeButton, new EventArgs());
-                                break;
-                            case GHRequestType.PostDiagnosticData:
-                                _mainPage.EnqueuePost(new GHPost(0, req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
-                                break;
-                            case GHRequestType.PostGameStatus:
-                                _mainPage.EnqueuePost(new GHPost(0, req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
-                                break;
-                            case GHRequestType.PostXlogEntry:
-                                _mainPage.EnqueuePost(new GHPost(1, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
-                                break;
-                            case GHRequestType.PostBonesFile:
-                                _mainPage.EnqueuePost(new GHPost(2, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
-                                break;
-                            case GHRequestType.PostReplayFile:
-                                _mainPage.EnqueuePost(new GHPost(3, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
-                                break;
-                            case GHRequestType.DebugLog:
-                                DisplayDebugLog(req.RequestString, req.RequestInt, req.RequestInt2);
-                                break;
-                            case GHRequestType.CloseAllDialogs:
-                                CloseAllDialogs();
-                                break;
-                            case GHRequestType.UseLongerMessageHistory:
-                                LongerMessageHistory = req.RequestBool;
-                                GHApp.SavedLongerMessageHistory = req.RequestBool;
-                                break;
-                            case GHRequestType.UseHideMessageHistory:
-                                HideMessageHistory = req.RequestBool;
-                                GHApp.SavedHideMessageHistory = req.RequestBool;
-                                break;
-                            case GHRequestType.InformRecordingWentOff:
-                                GHApp.RecordGame = false;
-                                Preferences.Set("RecordGame", false);
-                                InformRecordingWentOff();
-                                break;
-                            case GHRequestType.ToggleMenuPositionSaving:
-                                ToggleMenuPositionSaving(req.RequestInt, req.RequestInt2);
-                                break;
-                            case GHRequestType.ClipAround:
-                                SetTargetClip(req.RequestInt, req.RequestInt2, req.RequestBool);
-                                break;
-                            case GHRequestType.GameEnded:
-                                GameEnded = true;
-                                break;
-                            case GHRequestType.ZoomNormal:
-                                SetZoomNormal();
-                                break;
-                            case GHRequestType.ZoomIn:
-                                ZoomIn();
-                                break;
-                            case GHRequestType.ZoomOut:
-                                ZoomOut();
-                                break;
-                            case GHRequestType.ZoomMini:
-                                SetZoomMini();
-                                break;
-                            case GHRequestType.ZoomHalf:
-                                SetZoomHalf();
-                                break;
-                            case GHRequestType.ZoomToScale:
-                                break;
-                            case GHRequestType.SaveZoom:
-                                break;
-                            case GHRequestType.RestoreZoom:
-                                break;
-                            case GHRequestType.SaveFileTrackingSave:
-                                DoSaveFileTrackingSave(req.RequestLong, req.RequestString, req.RequestLong2, req.RequestString2);
-                                break;
-                            case GHRequestType.SaveFileTrackingLoad:
-                                DoSaveFileTrackingLoad(req.RequestLong, req.RequestString, req.RequestLong2, req.RequestString2);
-                                break;
-                            case GHRequestType.ClearPetData:
-                                ClearPetData();
-                                break;
-                            case GHRequestType.AddPetData:
-                                AddPetData(req.MonstInfoData);
-                                break;
-                            case GHRequestType.UpdateGHWindow:
-                                UpdateGHWindow(req.RequestInt, req.RequestingGHWindow);
-                                break;
-                            case GHRequestType.UpdateGHWindowVisibility:
-                                UpdateGHWindowVisibility(req.RequestInt, req.RequestBool);
-                                break;
-                            case GHRequestType.UpdateGHWindowCurs:
-                                UpdateGHWindowCurs(req.RequestInt, req.RequestInt2, req.RequestInt3);
-                                break;
-                            case GHRequestType.UpdateGHWindowIds:
-                                UpdateGHWindowIds(req.RequestInt, req.RequestInt2, req.RequestInt3);
-                                break;
-                        }
+                        case GHRequestType.PrintHistory:
+                            PrintHistory(req.MessageHistory);
+                            break;
+                        case GHRequestType.PrintHistoryItem:
+                            //PrintHistoryItem(req.MessageHistoryItem);
+                            break;
+                        case GHRequestType.PrintTopLine:
+                            PrintTopLine(req.RequestString, req.RequestStringAttributes);
+                            break;
+                        case GHRequestType.ShowYnResponses:
+                            ShowYnResponses(req.RequestInt, req.RequestAttr, req.RequestNhColor, req.RequestGlyph, req.TitleString, req.RequestString, req.Responses, req.ResponseDescriptions, req.IntroLineString, req.RequestFlags);
+                            break;
+                        case GHRequestType.HideYnResponses:
+                            HideYnResponses();
+                            break;
+                        case GHRequestType.ShowDirections:
+                            DoShowDirections();
+                            break;
+                        case GHRequestType.HideDirections:
+                            DoHideDirections();
+                            break;
+                        case GHRequestType.GetChar:
+                            GetChar();
+                            break;
+                        case GHRequestType.AskName:
+                            AskName(req.RequestString, req.RequestString2, req.RequestString3);
+                            break;
+                        case GHRequestType.HideAskNamePage:
+                            HideAskNamePage();
+                            break;
+                        case GHRequestType.GetLine:
+                            GetLine(req.RequestString, req.PlaceHolderString, req.DefValueString, req.IntroLineString, req.RequestInt, req.RequestAttr, req.RequestNhColor);
+                            break;
+                        case GHRequestType.HideGetLine:
+                            HideGetLine();
+                            break;
+                        case GHRequestType.EnterGetLineText:
+                            EnterGetLineText(req.RequestString);
+                            break;
+                        case GHRequestType.ReturnToMainMenu:
+                            IsGameOn = false;
+                            ClearMap();
+                            CurrentGame = null;
+                            GHApp.CurrentGHGame = null;
+                            _mainPage.GameStarted = false;
+                            StopMainCanvasAnimation();
+                            StopCommandCanvasAnimation();
+                            StopMenuCanvasAnimation();
+                            StopTextCanvasAnimation();
+                            ReturnToMainMenu();
+                            break;
+                        case GHRequestType.RestartGame:
+                            RestartGame();
+                            break;
+                        case GHRequestType.RestartReplay:
+                            RestartReplay();
+                            break;
+                        case GHRequestType.ShowMenuPage:
+                            ShowMenuCanvas(req.RequestMenuInfo != null ? req.RequestMenuInfo : new GHMenuInfo(ghmenu_styles.GHMENU_STYLE_GENERAL), req.RequestingGHWindow);
+                            break;
+                        case GHRequestType.HideMenuPage:
+                            DelayedMenuHide();
+                            break;
+                        case GHRequestType.ShowOutRipPage:
+                            ShowOutRipPage(req.RequestOutRipInfo != null ? req.RequestOutRipInfo : new GHOutRipInfo("", 0, "", ""), req.RequestingGHWindow);
+                            break;
+                        case GHRequestType.HideOutRipPage:
+                            HideOutRipPage();
+                            break;
+                        case GHRequestType.DestroyWindowView:
+                            DestroyWindowView(req.RequestInt);
+                            break;
+                        case GHRequestType.DisplayWindowView:
+                            DisplayWindowView(req.RequestInt);
+                            break;
+                        case GHRequestType.HideTextWindow:
+                            DelayedTextHide();
+                            break;
+                        case GHRequestType.HideLoadingScreen:
+                            HideLoadingScreen();
+                            break;
+                        case GHRequestType.ClearContextMenu:
+                            ClearContextMenu();
+                            break;
+                        case GHRequestType.AddContextMenu:
+                            AddContextMenu(req.ContextMenuData);
+                            break;
+                        case GHRequestType.DisplayFloatingText:
+                            DisplayFloatingText(req.FloatingTextData);
+                            break;
+                        case GHRequestType.DisplayScreenText:
+                            DisplayScreenText(req.ScreenTextData);
+                            break;
+                        case GHRequestType.DisplayPopupText:
+                            DisplayPopupText(req.ScreenTextData);
+                            break;
+                        case GHRequestType.HidePopupText:
+                            HidePopupGrid();
+                            break;
+                        case GHRequestType.DisplayGUIEffect:
+                            DisplayGUIEffect(req.GUIEffectData);
+                            break;
+                        case GHRequestType.ShowSkillButton:
+                            //lSkillButton.IsVisible = true;
+                            break;
+                        case GHRequestType.HideSkillButton:
+                            //lSkillButton.IsVisible = false;
+                            break;
+                        case GHRequestType.FadeToBlack:
+                            FadeToBlack((uint)req.RequestInt);
+                            break;
+                        case GHRequestType.FadeFromBlack:
+                            FadeFromBlack((uint)req.RequestInt);
+                            break;
+                        case GHRequestType.SetToBlack:
+                            SetToBlack();
+                            break;
+                        case GHRequestType.ShowGUITips:
+                            ShowGUITips(true);
+                            break;
+                        case GHRequestType.CrashReport:
+                            ReportCrashDetected();
+                            break;
+                        case GHRequestType.Panic:
+                            ReportPanic(req.RequestString);
+                            break;
+                        case GHRequestType.Message:
+                            ShowMessage(req.RequestString);
+                            break;
+                        case GHRequestType.YnConfirmation:
+                            YnConfirmation(req.TitleString, req.RequestString, req.RequestString2, req.DefValueString);
+                            break;
+                        case GHRequestType.DisplayConditionText:
+                            DisplayConditionText(req.ConditionTextData);
+                            break;
+                        case GHRequestType.DisplayScreenFilter:
+                            DisplayScreenFilter(req.ScreenFilterData);
+                            break;
+                        case GHRequestType.SaveAndDisableTravelMode:
+                            _savedMapTravelMode = MapTravelMode;
+                            if (MapTravelMode)
+                                ToggleTravelModeButton_Clicked(ToggleTravelModeButton, new EventArgs());
+                            break;
+                        case GHRequestType.RestoreTravelMode:
+                            if (MapTravelMode != _savedMapTravelMode)
+                                ToggleTravelModeButton_Clicked(ToggleTravelModeButton, new EventArgs());
+                            break;
+                        case GHRequestType.SaveAndDisableTravelModeOnLevel:
+                            _savedMapTravelModeOnLevel = MapTravelMode;
+                            if (MapTravelMode)
+                                ToggleTravelModeButton_Clicked(ToggleTravelModeButton, new EventArgs());
+                            break;
+                        case GHRequestType.RestoreTravelModeOnLevel:
+                            if (MapTravelMode != _savedMapTravelModeOnLevel)
+                                ToggleTravelModeButton_Clicked(ToggleTravelModeButton, new EventArgs());
+                            break;
+                        case GHRequestType.PostDiagnosticData:
+                            _mainPage.EnqueuePost(new GHPost(0, req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
+                            break;
+                        case GHRequestType.PostGameStatus:
+                            _mainPage.EnqueuePost(new GHPost(0, req.RequestType == GHRequestType.PostGameStatus, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
+                            break;
+                        case GHRequestType.PostXlogEntry:
+                            _mainPage.EnqueuePost(new GHPost(1, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
+                            break;
+                        case GHRequestType.PostBonesFile:
+                            _mainPage.EnqueuePost(new GHPost(2, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
+                            break;
+                        case GHRequestType.PostReplayFile:
+                            _mainPage.EnqueuePost(new GHPost(3, true, req.RequestInt, req.RequestInt2, req.RequestString, null, false));
+                            break;
+                        case GHRequestType.DebugLog:
+                            DisplayDebugLog(req.RequestString, req.RequestInt, req.RequestInt2);
+                            break;
+                        case GHRequestType.CloseAllDialogs:
+                            CloseAllDialogs();
+                            break;
+                        case GHRequestType.UseLongerMessageHistory:
+                            LongerMessageHistory = req.RequestBool;
+                            GHApp.SavedLongerMessageHistory = req.RequestBool;
+                            break;
+                        case GHRequestType.UseHideMessageHistory:
+                            HideMessageHistory = req.RequestBool;
+                            GHApp.SavedHideMessageHistory = req.RequestBool;
+                            break;
+                        case GHRequestType.InformRecordingWentOff:
+                            GHApp.RecordGame = false;
+                            Preferences.Set("RecordGame", false);
+                            InformRecordingWentOff();
+                            break;
+                        case GHRequestType.ToggleMenuPositionSaving:
+                            ToggleMenuPositionSaving(req.RequestInt, req.RequestInt2);
+                            break;
+                        case GHRequestType.ClipAround:
+                            SetTargetClip(req.RequestInt, req.RequestInt2, req.RequestBool);
+                            break;
+                        case GHRequestType.GameEnded:
+                            GameEnded = true;
+                            break;
+                        case GHRequestType.ZoomNormal:
+                            SetZoomNormal();
+                            break;
+                        case GHRequestType.ZoomIn:
+                            ZoomIn();
+                            break;
+                        case GHRequestType.ZoomOut:
+                            ZoomOut();
+                            break;
+                        case GHRequestType.ZoomMini:
+                            SetZoomMini();
+                            break;
+                        case GHRequestType.ZoomHalf:
+                            SetZoomHalf();
+                            break;
+                        case GHRequestType.ZoomToScale:
+                            break;
+                        case GHRequestType.SaveZoom:
+                            break;
+                        case GHRequestType.RestoreZoom:
+                            break;
+                        case GHRequestType.SaveFileTrackingSave:
+                            DoSaveFileTrackingSave(req.RequestLong, req.RequestString, req.RequestLong2, req.RequestString2);
+                            break;
+                        case GHRequestType.SaveFileTrackingLoad:
+                            DoSaveFileTrackingLoad(req.RequestLong, req.RequestString, req.RequestLong2, req.RequestString2);
+                            break;
+                        case GHRequestType.ClearPetData:
+                            ClearPetData();
+                            break;
+                        case GHRequestType.AddPetData:
+                            AddPetData(req.MonstInfoData);
+                            break;
+                        case GHRequestType.UpdateGHWindow:
+                            UpdateGHWindow(req.RequestInt, req.RequestingGHWindow);
+                            break;
+                        case GHRequestType.UpdateGHWindowVisibility:
+                            UpdateGHWindowVisibility(req.RequestInt, req.RequestBool);
+                            break;
                     }
                 }
             }
@@ -3068,26 +2996,6 @@ namespace GnollHackX.Pages.Game
                     _localGHWindows[winid].Visible = isVisible;
             }
         }
-        private void UpdateGHWindowCurs(int winid, int x, int y)
-        {
-            lock (_localWindowLock)
-            {
-                if (_localGHWindows[winid] != null)
-                {
-                    _localGHWindows[winid].CursX = x;
-                    _localGHWindows[winid].CursY = y;
-                }
-            }
-        }
-        private void UpdateGHWindowIds(int mapWindowId, int messageWindowId, int statusWindowId)
-        {
-            lock (_localWindowLock)
-            {
-                _localMapWindowId = mapWindowId;
-                _localMessageWindowId = messageWindowId;
-                _localStatusWindowId = statusWindowId;
-            }
-        }
         public void GetWindowIds(out int mapWindowId, out int messageWindowId, out int statusWindowId)
         {
             lock (_localWindowLock)
@@ -3105,23 +3013,16 @@ namespace GnollHackX.Pages.Game
                 await DisplayAlert("No Internet for Save File Tracking", "You have no internet access. Please switch the internet on before proceeding.", "OK");
             }
 
-            ConcurrentQueue<GHResponse> queue;
             GHGame curGame = CurrentGame;
             if (string.IsNullOrEmpty(fileName))
             {
                 await DisplayAlert("No File Name for Save File Tracking", "The file name for save file tracking is null or empty. Aborting tracking after saving.", "OK");
-                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                {
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingSave, 10));
-                }
+                curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingSave, 10));
                 return;
             }
 
             SendResult res = await GHApp.SendSaveFileTrackingSaveRequest(this, timeStamp, fileName, fileLength, sha256hash);
-            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-            {
-                queue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingSave, res.IsSuccess ? 0 : res.IsException ? 1000 : (int)res.StatusCode));
-            }
+            curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingSave, res.IsSuccess ? 0 : res.IsException ? 1000 : (int)res.StatusCode));
         }
 
         public async void DoSaveFileTrackingLoad(long timeStamp, string fileName, long fileLength, string sha256hash)
@@ -3131,32 +3032,22 @@ namespace GnollHackX.Pages.Game
                 await DisplayAlert("No Internet for Save File Tracking", "You have no internet access. Please switch the internet on before proceeding.", "OK");
             }
 
-            ConcurrentQueue<GHResponse> queue;
             GHGame curGame = CurrentGame;
             if (string.IsNullOrEmpty(fileName))
             {
                 await DisplayAlert("No File Name for Save File Tracking", "The file name for save file tracking is null or empty. Aborting tracking after loading.", "OK");
-                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                {
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingLoad, 10));
-                }
+                curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingLoad, 10));
                 return;
             }
             if (!File.Exists(fileName + GHConstants.SaveFileTrackingSuffix))
             {
                 await DisplayAlert("No Tracking File for Save File", "The tracking file for the save file \'" + fileName + "' does not exist. Aborting tracking after loading.", "OK");
-                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                {
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingLoad, 11));
-                }
+                curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingLoad, 11));
                 return;
             }
 
             SendResult res = await GHApp.SendSaveFileTrackingLoadRequest(this, timeStamp, fileName, fileLength, sha256hash);
-            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-            {
-                queue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingLoad, res.IsSuccess ? 0 : res.IsException ? 1000 : (int)res.StatusCode));
-            }
+            curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveFileTrackingLoad, res.IsSuccess ? 0 : res.IsException ? 1000 : (int)res.StatusCode));
         }
 
 
@@ -3237,11 +3128,6 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private void CreateWindowView(int winid)
-        {
-
-        }
-
         private void DestroyWindowView(int winid)
         {
             lock (_localWindowLock)
@@ -3267,11 +3153,6 @@ namespace GnollHackX.Pages.Game
                     }
                 }
             }
-        }
-
-        private void ClearWindowView(int winid)
-        {
-
         }
 
         private void DisplayWindowView(int winid)
@@ -3892,13 +3773,8 @@ namespace GnollHackX.Pages.Game
                     break;
             }
 
-            ConcurrentQueue<GHResponse> queue;
             GHGame curGame = CurrentGame;
-            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-            {
-                queue.Enqueue(new GHResponse(curGame, GHRequestType.GetLine, res));
-            }
-
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.GetLine, res));
             HideGetLine();
         }
 
@@ -3910,13 +3786,8 @@ namespace GnollHackX.Pages.Game
             GHApp.PlayButtonClickedSound();
 
             string res = "?";
-            ConcurrentQueue<GHResponse> queue;
             GHGame curGame = CurrentGame;
-            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-            {
-                queue.Enqueue(new GHResponse(curGame, GHRequestType.GetLine, res));
-            }
-
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.GetLine, res));
             HideGetLine();
         }
 
@@ -3927,12 +3798,8 @@ namespace GnollHackX.Pages.Game
             GetLineQuestionMarkButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             
-            ConcurrentQueue<GHResponse> queue;
             GHGame curGame = CurrentGame;
-            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-            {
-                queue.Enqueue(new GHResponse(curGame, GHRequestType.GetLine, '\x1B'.ToString()));
-            }
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.GetLine, '\x1B'.ToString()));
 
             HideGetLine();
         }
@@ -4462,18 +4329,14 @@ namespace GnollHackX.Pages.Game
             }
             else if (MenuGrid.IsVisible)
             {
-                ConcurrentQueue<GHResponse> queue;
                 GHGame curGame = CurrentGame;
-                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                {
-                    GHWindow origWindow;
-                    if (MenuCanvas.GHWindow.ClonedFrom == null)
-                        queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(), true));
-                    else if (MenuCanvas.GHWindow.ClonedFrom.TryGetTarget(out origWindow))
-                        queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, new List<GHMenuItem>(), true));
-                    else
-                        queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, new List<GHMenuItem>(), true));
-                }
+                GHWindow origWindow;
+                if (MenuCanvas.GHWindow.ClonedFrom == null)
+                    curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(), true));
+                else if (MenuCanvas.GHWindow.ClonedFrom.TryGetTarget(out origWindow))
+                    curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, new List<GHMenuItem>(), true));
+                else
+                    curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, new List<GHMenuItem>(), true));
                 MenuGrid.IsVisible = false;
                 //MainGrid.IsVisible = true;
                 IsMainCanvasOn = true;
@@ -13875,12 +13738,8 @@ namespace GnollHackX.Pages.Game
                             }
                             else if (_touchWithinPet > 0 && !ShowDirections && !ShowNumberPad && !PlayingReplay)
                             {
-                                ConcurrentQueue<GHResponse> queue;
-                                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                                {
-                                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SetPetMID, _touchWithinPet));
-                                    queue.Enqueue(new GHResponse(curGame, GHRequestType.GetChar, (int)'{'));
-                                }
+                                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetPetMID, _touchWithinPet));
+                                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.GetChar, (int)'{'));
                             }
                             else if (!PlayingReplay || ShowExtendedStatusBar)
                             {
@@ -14240,11 +14099,7 @@ namespace GnollHackX.Pages.Game
                     else
                         mod = (int)NhGetPosMods.ClickMove;
 
-                    ConcurrentQueue<GHResponse> queue;
-                    if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                    {
-                        queue.Enqueue(new GHResponse(curGame, GHRequestType.Location, x, y, mod));
-                    }
+                    curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.Location, x, y, mod));
                 }
             }
             else
@@ -14308,22 +14163,14 @@ namespace GnollHackX.Pages.Game
                         if (ShowNumberPad && resp <= -1 && resp >= -9)
                             resp -= 10;
 
-                        ConcurrentQueue<GHResponse> queue;
-                        if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                        {
-                            queue.Enqueue(new GHResponse(curGame, GHRequestType.GetChar, resp));
-                        }
+                        curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.GetChar, resp));
                     }
                     else if (ShowNumberPad && e.Location.X < _canvasButtonRect.Left
                         && e.Location.Y >= _canvasButtonRect.Top + _canvasButtonRect.Height * (1.0f - buttonsize)
                         && e.Location.Y <= _canvasButtonRect.Top + _canvasButtonRect.Height)
                     {
                         int resp = -10;
-                        ConcurrentQueue<GHResponse> queue;
-                        if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                        {
-                            queue.Enqueue(new GHResponse(curGame, GHRequestType.GetChar, resp));
-                        }
+                        curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.GetChar, resp));
                     }
                 }
             }
@@ -14841,14 +14688,7 @@ namespace GnollHackX.Pages.Game
                 ShowNumberPad = false;
 
             GHGame curGame = CurrentGame;
-            if (curGame != null)
-            {
-                ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                {
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.GetChar, resp));
-                }
-            }
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.GetChar, resp));
         }
 
         private void MoreButton_Clicked(object sender, EventArgs e)
@@ -14884,12 +14724,8 @@ namespace GnollHackX.Pages.Game
         private void YnButton_Pressed(object sender, EventArgs e, int resp)
         {
             /* This is slightly slower and flickers less with two consecutive yn questions than a direct call to HideYnResponses() */
-            ConcurrentQueue<GHRequest> queue;
-            if (GHGame.RequestDictionary.TryGetValue(CurrentGame, out queue))
-            {
-                queue.Enqueue(new GHRequest(CurrentGame, GHRequestType.HideYnResponses));
-            }
-
+            GHGame curGame = CurrentGame;
+            curGame.RequestQueue.Enqueue(new GHRequest(curGame, GHRequestType.HideYnResponses));
             GenericButton_Clicked(sender, e, resp);
         }
 
@@ -16526,7 +16362,6 @@ namespace GnollHackX.Pages.Game
                 _menuScrollSpeedRecords.Clear();
             }
 
-            ConcurrentQueue<GHResponse> queue;
             List<GHMenuItem> resultlist = new List<GHMenuItem>();
             lock (MenuCanvas.MenuItemLock)
             {
@@ -16554,16 +16389,13 @@ namespace GnollHackX.Pages.Game
             }
 
             GHGame curGame = CurrentGame;
-            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-            {
-                GHWindow origWindow;
-                if(MenuCanvas.GHWindow.ClonedFrom == null)
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, resultlist, false));
-                else if (MenuCanvas.GHWindow.ClonedFrom.TryGetTarget(out origWindow))
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, resultlist, false));
-                else
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, resultlist, false));
-            }
+            GHWindow origWindow;
+            if (MenuCanvas.GHWindow.ClonedFrom == null)
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, resultlist, false));
+            else if (MenuCanvas.GHWindow.ClonedFrom.TryGetTarget(out origWindow))
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, resultlist, false));
+            else
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, resultlist, false));
 
             if (!UIUtils.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
                 DelayedMenuHide();
@@ -16597,18 +16429,14 @@ namespace GnollHackX.Pages.Game
                 _menuScrollSpeedRecords.Clear();
             }
 
-            ConcurrentQueue<GHResponse> queue;
             GHGame curGame = CurrentGame;
-            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-            {
-                GHWindow origWindow;
-                if (MenuCanvas.GHWindow.ClonedFrom == null)
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(1), true));
-                else if (MenuCanvas.GHWindow.ClonedFrom.TryGetTarget(out origWindow))
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, new List<GHMenuItem>(1), true));
-                else
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, new List<GHMenuItem>(1), true));
-            }
+            GHWindow origWindow;
+            if (MenuCanvas.GHWindow.ClonedFrom == null)
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, MenuCanvas.GHWindow, new List<GHMenuItem>(1), true));
+            else if (MenuCanvas.GHWindow.ClonedFrom.TryGetTarget(out origWindow))
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, new List<GHMenuItem>(1), true));
+            else
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, new List<GHMenuItem>(1), true));
 
             if (!UIUtils.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
                 DelayedMenuHide();
@@ -18090,12 +17918,8 @@ namespace GnollHackX.Pages.Game
                         Preferences.Set("GUITipsShown", true);
                         if (_blockingTipView)
                         {
-                            ConcurrentQueue<GHResponse> queue;
                             GHGame curGame = CurrentGame;
-                            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                            {
-                                queue.Enqueue(new GHResponse(curGame, GHRequestType.ShowGUITips));
-                            }
+                            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowGUITips));
                         }
                     }
                     e.Handled = true;
@@ -18372,24 +18196,16 @@ namespace GnollHackX.Pages.Game
                 await DisplayAlert("Panic (Replay: Press OK)", (text != null ? text : "GnollHack has panicked. See the Panic Log."), "OK");
             }
 
-            ConcurrentQueue<GHResponse> queue;
             GHGame curGame = CurrentGame;
-            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-            {
-                queue.Enqueue(new GHResponse(curGame, GHRequestType.Panic));
-            }
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.Panic));
         }
 
         public async void ShowMessage(string text)
         {
             await DisplayAlert("Message", text != null ? text : "No message.", "OK");
 
-            ConcurrentQueue<GHResponse> queue;
             GHGame curGame = CurrentGame;
-            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-            {
-                queue.Enqueue(new GHResponse(curGame, GHRequestType.Message));
-            }
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.Message));
         }
 
         public async void YnConfirmation(string title, string text, string accept, string cancel)
@@ -18397,12 +18213,8 @@ namespace GnollHackX.Pages.Game
             bool res = await DisplayAlert(title != null ? title : "Confirmation", text != null ? text : "Confirm?",
                 accept != null ? accept : "Yes", cancel != null ? cancel : "No");
 
-            ConcurrentQueue<GHResponse> queue;
             GHGame curGame = CurrentGame;
-            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-            {
-                queue.Enqueue(new GHResponse(curGame, GHRequestType.YnConfirmation, res));
-            }
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.YnConfirmation, res));
         }
 
         public async void ReportCrashDetected()
@@ -18431,12 +18243,8 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
-            ConcurrentQueue<GHResponse> queue;
             GHGame curGame = CurrentGame;
-            if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-            {
-                queue.Enqueue(new GHResponse(curGame, GHRequestType.CrashReport));
-            }
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.CrashReport));
         }
 
         private void GetLineEntryText_TextChanged(object sender, TextChangedEventArgs e)
@@ -18534,14 +18342,7 @@ namespace GnollHackX.Pages.Game
         public void StopWaitAndResumeSavedGame()
         {
             GHGame curGame = CurrentGame;
-            if (curGame != null)
-            {
-                ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                {
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.StopWaitAndRestoreSavedGame));
-                }
-            }
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.StopWaitAndRestoreSavedGame));
         }
 
         //public bool IgnoreSave()
@@ -18553,40 +18354,19 @@ namespace GnollHackX.Pages.Game
         public void SaveGameAndWaitForResume()
         {
             GHGame curGame = CurrentGame;
-            if (curGame != null) // && !IgnoreSave()
-            {
-                ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                {
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SaveGameAndWaitForResume));
-                }
-            }
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveGameAndWaitForResume));
         }
 
         public void SaveCheckPoint()
         {
             GHGame curGame = CurrentGame;
-            if (curGame != null)
-            {
-                ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                {
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.SaveInsuranceCheckPoint));
-                }
-            }
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SaveInsuranceCheckPoint));
         }
 
         public void SendRequestForTallyRealTime()
         {
             GHGame curGame = CurrentGame;
-            if (curGame != null)
-            {
-                ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                {
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.TallyRealTime));
-                }
-            }
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.TallyRealTime));
         }
 
         public void Suspend()
@@ -18660,14 +18440,7 @@ namespace GnollHackX.Pages.Game
         public void RequestEndReplayFile()
         {
             GHGame curGame = CurrentGame;
-            if (curGame != null)
-            {
-                ConcurrentQueue<GHResponse> queue;
-                if (GHGame.ResponseDictionary.TryGetValue(curGame, out queue))
-                {
-                    queue.Enqueue(new GHResponse(curGame, GHRequestType.EndReplayFile));
-                }
-            }
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.EndReplayFile));
         }
 
 

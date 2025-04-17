@@ -27,8 +27,6 @@ namespace GnollHackX
         HideYnResponses,
         ShowDirections,
         HideDirections,
-        CreateWindowView,
-        ClearWindowView,
         DestroyWindowView,
         DisplayWindowView,
         HideTextWindow,
@@ -99,8 +97,6 @@ namespace GnollHackX
         AddPetData,
         UpdateGHWindow,
         UpdateGHWindowVisibility,
-        UpdateGHWindowCurs,
-        UpdateGHWindowIds,
     }
 
     public struct AddContextMenuData

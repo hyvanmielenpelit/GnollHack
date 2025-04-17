@@ -503,9 +503,7 @@ namespace GnollHackX
             }
             if(append == 0)
             {
-                ConcurrentQueue<GHRequest> queue;
-                if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
-                    queue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateGHWindow, _winId, Clone()));
+                _currentGame.RequestQueue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateGHWindow, _winId, Clone()));
             }
         }
 
@@ -625,9 +623,7 @@ namespace GnollHackX
             }
             if (append == 0)
             {
-                ConcurrentQueue<GHRequest> queue;
-                if (GHGame.RequestDictionary.TryGetValue(_currentGame, out queue))
-                    queue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateGHWindow, _winId, Clone()));
+                _currentGame.RequestQueue.Enqueue(new GHRequest(_currentGame, GHRequestType.UpdateGHWindow, _winId, Clone()));
             }
         }
 
