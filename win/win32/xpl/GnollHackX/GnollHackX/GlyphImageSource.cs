@@ -268,8 +268,10 @@ namespace GnollHackX
                     Height = 1;
                 }
                 var bitmaptmp = new SKBitmap(Width, Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
-                var canvastmp = new SKCanvas(bitmaptmp);
-                canvastmp.Clear(SKColors.Transparent);
+                using (var canvastmp = new SKCanvas(bitmaptmp))
+                {
+                    canvastmp.Clear(SKColors.Transparent);
+                }
                 var skImagetmp = SKImage.FromBitmap(bitmaptmp);
                 var resulttmp = skImagetmp.Encode(SKEncodedImageFormat.Png, 100).AsStream();
                 return resulttmp;
@@ -280,10 +282,11 @@ namespace GnollHackX
             DoAutoSize();
 
             var bitmap = new SKBitmap(Width, Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
-            var canvas = new SKCanvas(bitmap);
-            canvas.Clear(SKColors.Transparent);
-
-            DrawOnCanvas(canvas, false, false, false, GHApp.FixRects);
+            using (var canvas = new SKCanvas(bitmap))
+            {
+                canvas.Clear(SKColors.Transparent);
+                DrawOnCanvas(canvas, false, false, false, GHApp.FixRects);
+            }
 
             var skImage = SKImage.FromBitmap(bitmap);            
             var result = skImage.Encode(SKEncodedImageFormat.Png, 100).AsStream();

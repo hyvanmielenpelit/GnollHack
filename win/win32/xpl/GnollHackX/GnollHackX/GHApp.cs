@@ -2380,31 +2380,35 @@ namespace GnollHackX
                 bmpPaint.Color = SKColors.White.WithAlpha(204);
 
                 var redbitmap = new SKBitmap(_orbFillBitmap.Width, _orbFillBitmap.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
-                var redcanvas = new SKCanvas(redbitmap);
-                redcanvas.Clear(SKColors.Transparent);
-                bmpPaint.ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
-                    {
-                    -1.0f, 0,     0,    0, 255f,
-                    0,     1.0f,  0,    0, 0,
-                    0,     0,     1.0f, 0, 0,
-                    0,     0,     0,    1, 0
-                    });
-                redcanvas.DrawImage(_orbFillBitmap, 0, 0, bmpPaint);
+                using (var redcanvas = new SKCanvas(redbitmap))
+                {
+                    redcanvas.Clear(SKColors.Transparent);
+                    bmpPaint.ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
+                        {
+                            -1.0f, 0,     0,    0, 255f,
+                            0,     1.0f,  0,    0, 0,
+                            0,     0,     1.0f, 0, 0,
+                            0,     0,     0,    1, 0
+                        });
+                    redcanvas.DrawImage(_orbFillBitmap, 0, 0, bmpPaint);
+                }
                 redbitmap.SetImmutable();
                 _orbFillBitmapRed = SKImage.FromBitmap(redbitmap);
 
                 var bluebitmap = new SKBitmap(_orbFillBitmap.Width, _orbFillBitmap.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
-                var bluecanvas = new SKCanvas(bluebitmap);
-                bluecanvas.Clear(SKColors.Transparent);
-                bmpPaint.ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
-                    {
-                    1.0f,  0,      0,    0,   0,
-                    0,     1.0f,   0,    0,   0,
-                    0,     0,     -1.0f, 0,   255f,
-                    0,     0,     0,     1,   0
-                    });
+                using (var bluecanvas = new SKCanvas(bluebitmap))
+                {
+                    bluecanvas.Clear(SKColors.Transparent);
+                    bmpPaint.ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
+                        {
+                            1.0f,  0,      0,    0,   0,
+                            0,     1.0f,   0,    0,   0,
+                            0,     0,     -1.0f, 0,   255f,
+                            0,     0,     0,     1,   0
+                        });
 
-                bluecanvas.DrawImage(_orbFillBitmap, 0, 0, bmpPaint);
+                    bluecanvas.DrawImage(_orbFillBitmap, 0, 0, bmpPaint);
+                }
                 bluebitmap.SetImmutable();
                 _orbFillBitmapBlue = SKImage.FromBitmap(bluebitmap);
             }
@@ -2419,16 +2423,18 @@ namespace GnollHackX
             {
                 bmpPaint.Color = SKColors.White;
                 var redbitmap = new SKBitmap(_batteryFrameBitmap.Width, _batteryFrameBitmap.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
-                var redcanvas = new SKCanvas(redbitmap);
-                redcanvas.Clear(SKColors.Transparent);
-                bmpPaint.ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
-                    {
-                    1.0f,  0,     0,    0, 0,
-                    0,     0.0f,  0,    0, 0,
-                    0,     0,     0.0f, 0, 0,
-                    0,     0,     0,    1, 0
-                    });
-                redcanvas.DrawImage(_batteryFrameBitmap, 0, 0, bmpPaint);
+                using (var redcanvas = new SKCanvas(redbitmap))
+                {
+                    redcanvas.Clear(SKColors.Transparent);
+                    bmpPaint.ColorFilter = SKColorFilter.CreateColorMatrix(new float[]
+                        {
+                            1.0f,  0,     0,    0, 0,
+                            0,     0.0f,  0,    0, 0,
+                            0,     0,     0.0f, 0, 0,
+                            0,     0,     0,    1, 0
+                        });
+                    redcanvas.DrawImage(_batteryFrameBitmap, 0, 0, bmpPaint);
+                }
                 redbitmap.SetImmutable();
                 _batteryRedFrameBitmap = SKImage.FromBitmap(redbitmap);
             }
