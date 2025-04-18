@@ -13,6 +13,7 @@
 #else
 #include "date.h"
 #endif
+#include <math.h>
 
 extern int FDECL(GnollHackMain, (int, char**));
 extern void FDECL(set_wincaps, (uint64_t, uint64_t));
@@ -671,6 +672,37 @@ LibGetVolumeForGHSound(int ghsound)
         return 0.0f;
 
     return ghsound2event[ghsound].volume;
+}
+
+DLLEXPORT void
+LibProcessRadialTransparencyTilePointers(unsigned char* tempptr, unsigned char* tileptr, int tilemapwidth, int bytesperpixel,
+    int sourceRectLeft, int sourceRectTop, int copywidth, int copyheight, double mid_x, double mid_y)
+{
+    tileptr += (sourceRectLeft + sourceRectTop * tilemapwidth) * bytesperpixel;
+
+    double r, semi_transparency;
+    unsigned char radial_opacity;
+    for (int row = 0; row < copyheight; row++)
+    {
+        for (int col = 0; col < copywidth; col++)
+        {
+            r = sqrt(pow((double)col - mid_x, 2.0) + pow((double)row - mid_y, 2.0));
+            semi_transparency = r * 0.0375; //r_constant
+            if (semi_transparency > 0.98)
+                semi_transparency = 0.98;
+
+            *tempptr++ = *tileptr;       // red
+            tileptr++;
+            *tempptr++ = *tileptr;       // green
+            tileptr++;
+            *tempptr++ = *tileptr;       // blue
+            tileptr++;
+            radial_opacity = (unsigned char)((double)0xFF * (1.0 - semi_transparency) * ((double)(*tileptr) / (double)0xFF));
+            *tempptr++ = radial_opacity; // alpha
+            tileptr++;
+        }
+        tileptr += (tilemapwidth - copywidth) * bytesperpixel;
+    }
 }
 
 

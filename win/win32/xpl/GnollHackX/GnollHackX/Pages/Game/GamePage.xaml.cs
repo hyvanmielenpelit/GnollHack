@@ -20,9 +20,6 @@ using System.Net.Http.Headers;
 using System.Collections;
 using System.Data;
 using System.Xml.Linq;
-using System.Reflection.Metadata;
-
-
 
 #if GNH_MAUI
 using GnollHackX;
@@ -776,10 +773,6 @@ namespace GnollHackX.Pages.Game
         public readonly GHStatusField[] StatusFields = new GHStatusField[(int)NhStatusFields.MAXBLSTATS];
 
         private MainPage _mainPage;
-
-
-        /* Persistent temporary bitmap */
-        SKBitmap _tempBitmap = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight, SKImageInfo.PlatformColorType, SKAlphaType.Unpremul);
 
         private readonly object _skillRectLock = new object();
         private SKRect _skillRect = new SKRect();
@@ -5335,14 +5328,14 @@ namespace GnollHackX.Pages.Game
         private readonly object _saveRectLock = new object();
         ConcurrentDictionary<SavedRect, SKImage> _savedRects = new ConcurrentDictionary<SavedRect, SKImage>();
         public void DrawTileWithRadialTransparency(SKCanvas canvas, bool delayedDraw, SKImage tileSheet, SKRect sourcerect, SKRect targetrect, ref LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint, int mapX, int mapY, float canvaswidth, float canvasheight, float targetscale, bool usingGL, bool usingMipMap, bool fixRects)
-            //, ref SKRect baseUpdateRect, ref SKRect enlUpdateRect)
+        //, ref SKRect baseUpdateRect, ref SKRect enlUpdateRect)
         {
             bool cache = false;
-            if (sourcerect.Left % GHConstants.TileWidth == 0 && sourcerect.Top % GHConstants.TileHeight == 0 
+            if (sourcerect.Left % GHConstants.TileWidth == 0 && sourcerect.Top % GHConstants.TileHeight == 0
                 && sourcerect.Width == GHConstants.TileWidth && sourcerect.Height == GHConstants.TileHeight)
                 cache = true;
 
-            if(cache)
+            if (cache)
             {
                 SavedRect sr = new SavedRect(tileSheet, sourcerect);
                 SKImage bmp = null;
@@ -5359,52 +5352,63 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
+
             //IntPtr tileptraddr = tileSheet.GetPixels();
             //SKPixmap pixmapTemp = _tempBitmap.PeekPixels();
             //IntPtr tempptraddr = pixmapTemp.GetPixels();
-            SKPixmap pixmapTile = tileSheet.PeekPixels();
-            if (pixmapTile == null)
-                return;
-            IntPtr tempptraddr = _tempBitmap.GetPixels();
-            IntPtr tileptraddr = pixmapTile.GetPixels();
-            double mid_x = (double)GHConstants.TileWidth / 2.0 - 0.5;
-            double mid_y = (double)GHConstants.TileHeight / 2.0 - 0.5;
-            double r = 0, semi_transparency = 0;
-            byte radial_opacity = 0x00;
-            //int bytesperpixel = tileSheet.BytesPerPixel;
-            int bytesperpixel = pixmapTile.BytesPerPixel;
-            int copywidth = Math.Min((int)sourcerect.Width, _tempBitmap.Width);
-            int copyheight = Math.Min((int)sourcerect.Height, _tempBitmap.Height);
-            int tilemapwidth = tileSheet.Width;
-            unsafe
-            {
-                byte* tempptr = (byte*)tempptraddr.ToPointer();
-                byte* tileptr = (byte*)tileptraddr.ToPointer();
-                tileptr += ((int)sourcerect.Left + (int)sourcerect.Top * tilemapwidth) * bytesperpixel;
-
-                for (int row = 0; row < copyheight; row++)
-                {
-                    for (int col = 0; col < copywidth; col++)
-                    {
-                        r = Math.Sqrt(Math.Pow((double)col - mid_x, 2.0) + Math.Pow((double)row - mid_y, 2.0));
-                        semi_transparency = r * 0.0375; //r_constant
-                        if (semi_transparency > 0.98)
-                            semi_transparency = 0.98;
-
-                        *tempptr++ = *tileptr;       // red
-                        tileptr++;
-                        *tempptr++ = *tileptr;       // green
-                        tileptr++;
-                        *tempptr++ = *tileptr;       // blue
-                        tileptr++;
-                        radial_opacity = (byte)((double)0xFF * (1.0 - semi_transparency) * ((double)(*tileptr) / (double)0xFF));
-                        *tempptr++ = radial_opacity; // alpha
-                        tileptr++;
-                    }
-                    tileptr += (tilemapwidth - copywidth) * bytesperpixel;
-                }
-            }
+            int copywidth = Math.Min((int)sourcerect.Width, GHApp._tempBitmap.Width);
+            int copyheight = Math.Min((int)sourcerect.Height, GHApp._tempBitmap.Height);
             SKRect tempsourcerect = new SKRect(0, 0, copywidth, copyheight);
+            using (SKCanvas tempCanvas = new SKCanvas(GHApp._tempBitmap))
+            {
+                tempCanvas.Clear();
+                paint.Color = SKColors.Black;
+                tempCanvas.DrawImage(tileSheet, sourcerect, tempsourcerect, paint);
+            }
+            //SKPixmap pixmapTile = tileSheet.PeekPixels();
+            //if (pixmapTile == null)
+            //    return;
+            //IntPtr tempptraddr = GHApp._tempBitmap.GetPixels();
+            //IntPtr tileptraddr = pixmapTile.GetPixels();
+            //double mid_x = (double)GHConstants.TileWidth / 2.0 - 0.5;
+            //double mid_y = (double)GHConstants.TileHeight / 2.0 - 0.5;
+            ////double r = 0, semi_transparency = 0;
+            ////byte radial_opacity = 0x00;
+            ////int bytesperpixel = tileSheet.BytesPerPixel;
+            //int bytesperpixel = pixmapTile.BytesPerPixel;
+            //int copywidth = Math.Min((int)sourcerect.Width, GHApp._tempBitmap.Width);
+            //int copyheight = Math.Min((int)sourcerect.Height, GHApp._tempBitmap.Height);
+            //int tilemapwidth = tileSheet.Width;
+            //_gnollHackService.ProcessRadialTransparencyTilePointers(tempptraddr, tileptraddr, tilemapwidth, bytesperpixel,
+            //    (int)sourcerect.Left, (int)sourcerect.Top, copywidth, copyheight, mid_x, mid_y);
+            //unsafe
+            //{
+            //    byte* tempptr = (byte*)tempptraddr.ToPointer();
+            //    byte* tileptr = (byte*)tileptraddr.ToPointer();
+            //    tileptr += ((int)sourcerect.Left + (int)sourcerect.Top * tilemapwidth) * bytesperpixel;
+
+            //    for (int row = 0; row < copyheight; row++)
+            //    {
+            //        for (int col = 0; col < copywidth; col++)
+            //        {
+            //            r = Math.Sqrt(Math.Pow((double)col - mid_x, 2.0) + Math.Pow((double)row - mid_y, 2.0));
+            //            semi_transparency = r * 0.0375; //r_constant
+            //            if (semi_transparency > 0.98)
+            //                semi_transparency = 0.98;
+
+            //            *tempptr++ = *tileptr;       // red
+            //            tileptr++;
+            //            *tempptr++ = *tileptr;       // green
+            //            tileptr++;
+            //            *tempptr++ = *tileptr;       // blue
+            //            tileptr++;
+            //            radial_opacity = (byte)((double)0xFF * (1.0 - semi_transparency) * ((double)(*tileptr) / (double)0xFF));
+            //            *tempptr++ = radial_opacity; // alpha
+            //            tileptr++;
+            //        }
+            //        tileptr += (tilemapwidth - copywidth) * bytesperpixel;
+            //    }
+            //}
 
             if ((layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT) != 0)
                 paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
@@ -5421,8 +5425,8 @@ namespace GnollHackX.Pages.Game
                 {
                     try
                     {
-                        SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight, pixmapTile.ColorType, pixmapTile.AlphaType);
-                        _tempBitmap.CopyTo(newbmp);
+                        SKBitmap newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
+                        GHApp._tempBitmap.CopyTo(newbmp);
                         newbmp.SetImmutable();
                         SKImage newimg = SKImage.FromBitmap(newbmp);
                         lock (_saveRectLock)
@@ -5448,7 +5452,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_MAP_PROFILING && DEBUG
             StartProfiling(GHProfilingStyle.Bitmap);
 #endif
-                DrawSplitBitmap(canvas, delayedDraw, destSplitY, SKImage.FromBitmap(_tempBitmap), tempsourcerect, targetrect, paint, mapX, mapY, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects); //, ref baseUpdateRect, ref enlUpdateRect);
+                DrawSplitBitmap(canvas, delayedDraw, destSplitY, SKImage.FromBitmap(GHApp._tempBitmap), tempsourcerect, targetrect, paint, mapX, mapY, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects); //, ref baseUpdateRect, ref enlUpdateRect);
 #if GNH_MAP_PROFILING && DEBUG
             StopProfiling(GHProfilingStyle.Bitmap);
 #endif

@@ -32,6 +32,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.Content.Res;
+using Kotlin;
 
 #if GNH_MAUI
 namespace GnollHackM
@@ -324,7 +325,9 @@ namespace GnollHackX.Unknown
         public static extern IntPtr LibGetEventPathForGHSound(int ghsound);
         [DllImport(PlatformConstants.dll)]
         public static extern float LibGetVolumeForGHSound(int ghsound);
-
+        [DllImport(PlatformConstants.dll)]
+        public static extern void LibProcessRadialTransparencyTilePointers(IntPtr tempptr, IntPtr tileptr, int tilemapwidth, int bytesperpixel,
+            int sourceRectLeft, int sourceRectTop, int copywidth, int copyheight, double mid_x, double mid_y);
 
         private void LoadNativeLibrary(string libName)
         {
@@ -1166,6 +1169,13 @@ namespace GnollHackX.Unknown
         public float GetVolumeForGHSound(int ghsound)
         {
             return LibGetVolumeForGHSound(ghsound);
+        }
+
+        public void ProcessRadialTransparencyTilePointers(IntPtr tempptr, IntPtr tileptr, int tilemapwidth, int bytesperpixel,
+            int sourceRectLeft, int sourceRectTop, int copywidth, int copyheight, double mid_x, double mid_y)
+        {
+            LibProcessRadialTransparencyTilePointers(tempptr, tileptr, tilemapwidth, bytesperpixel,
+                sourceRectLeft, sourceRectTop, copywidth, copyheight, mid_x, mid_y);
         }
 
         public int StartGnollHack(GHGame ghGame)

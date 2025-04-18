@@ -1963,6 +1963,9 @@ namespace GnollHackX
         public static int BuffTileOff { get; set; }
         public static int CursorOff { get; set; }
 
+        /* Persistent temporary bitmap */
+        public static SKBitmap _tempBitmap = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
+
         public static int NumberOfGlyphs
         {
             get

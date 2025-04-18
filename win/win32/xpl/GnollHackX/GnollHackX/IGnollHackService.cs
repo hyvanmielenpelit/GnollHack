@@ -81,5 +81,7 @@ namespace GnollHackX
 
         string GetEventPathForGHSound(int ghsound);
         float GetVolumeForGHSound(int ghsound);
+        void ProcessRadialTransparencyTilePointers(IntPtr tempptr, IntPtr tileptr, int tilemapwidth, int bytesperpixel,
+            int sourceRectLeft, int sourceRectTop, int copywidth, int copyheight, double mid_x, double mid_y);
     }
 }
