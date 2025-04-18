@@ -5116,7 +5116,7 @@ namespace GnollHackX.Pages.Game
 
             float move_offset_x = 0, move_offset_y = 0;
             float opaqueness = 1.0f;
-            bool supportsRadialTransparency = !(GHApp.IsMaui && GHApp.IsAndroid && !GHApp.IsDebug); // Problem with LLVM
+            bool supportsRadialTransparency = true; // !(GHApp.IsMaui && GHApp.IsAndroid && !GHApp.IsDebug); // Problem with LLVM
             if (is_monster_like_layer)
             {
                 move_offset_x = base_move_offset_x;
@@ -5354,8 +5354,8 @@ namespace GnollHackX.Pages.Game
         private readonly object _saveRectLock = new object();
         Dictionary<SavedRect, SKImage> _savedRects = new Dictionary<SavedRect, SKImage>();
         public void DrawTileWithRadialTransparency(SKCanvas canvas, bool delayedDraw, SKImage tileSheet, SKRect sourcerect, SKRect targetrect, ref LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint, int mapX, int mapY, float canvaswidth, float canvasheight, float targetscale, bool usingGL, bool usingMipMap, bool fixRects)
-            //, ref SKRect baseUpdateRect, ref SKRect enlUpdateRect)
         {
+#if !(GNH_MAUI && ANDROID && !DEBUG)
             bool cache = false;
             if (sourcerect.Left % GHConstants.TileWidth == 0 && sourcerect.Top % GHConstants.TileHeight == 0 
                 && sourcerect.Width == GHConstants.TileWidth && sourcerect.Height == GHConstants.TileHeight)
@@ -5377,7 +5377,7 @@ namespace GnollHackX.Pages.Game
                     return;
                 }
             }
-
+#endif
             //IntPtr tileptraddr = tileSheet.GetPixels();
             //SKPixmap pixmapTemp = _tempBitmap.PeekPixels();
             //IntPtr tempptraddr = pixmapTemp.GetPixels();
@@ -5428,6 +5428,7 @@ namespace GnollHackX.Pages.Game
             if ((layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_INVISIBLE_TRANSPARENT) != 0)
                 paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
 
+#if !(GNH_MAUI && ANDROID && !DEBUG)
             if (cache)
             {
                 SavedRect sr = new SavedRect(tileSheet, sourcerect);
@@ -5463,6 +5464,7 @@ namespace GnollHackX.Pages.Game
                 }
             }
             else
+#endif
             {
 #if GNH_MAP_PROFILING && DEBUG
             StartProfiling(GHProfilingStyle.Bitmap);
