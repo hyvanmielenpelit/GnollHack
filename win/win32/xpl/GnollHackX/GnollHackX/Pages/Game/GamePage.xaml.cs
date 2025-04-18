@@ -5116,6 +5116,7 @@ namespace GnollHackX.Pages.Game
 
             float move_offset_x = 0, move_offset_y = 0;
             float opaqueness = 1.0f;
+            bool supportsRadialTransparency = !(GHApp.IsMaui && GHApp.IsAndroid && !GHApp.IsDebug); // Problem with LLVM
             if (is_monster_like_layer)
             {
                 move_offset_x = base_move_offset_x;
@@ -5123,7 +5124,7 @@ namespace GnollHackX.Pages.Game
                 if (layer_idx == (int)layer_types.MAX_LAYERS)
                 {
                     if((_draw_shadow[mapx, mapy] & 2) != 0)
-                        opaqueness = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0 ? 1.0f : (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY) != 0 ? 0.65f : 0.5f;
+                        opaqueness = (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0 ? (supportsRadialTransparency ? 1.0f : 0.5f) : (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_GLASS_TRANSPARENCY) != 0 ? 0.65f : 0.5f;
                     else
                         opaqueness = 0.5f;
                 }
@@ -5294,10 +5295,9 @@ namespace GnollHackX.Pages.Game
                 //SKRect baseUpdateRect = new SKRect();
                 //SKRect enlUpdateRect = new SKRect();
                 paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                if (is_monster_like_layer && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0)
+                if (supportsRadialTransparency && is_monster_like_layer && (_mapData[mapx, mapy].Layers.monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RADIAL_TRANSPARENCY) != 0)
                 {
                     DrawTileWithRadialTransparency(canvas, delayedDraw, TileMap[sheet_idx], sourcerect, targetrect, ref _mapData[mapx, mapy].Layers, splitY, opaqueness, paint, mapx, mapy, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects);
-                        //, ref baseUpdateRect, ref enlUpdateRect);
                 }
                 else
                 {
