@@ -114,9 +114,9 @@ namespace GnollHackX.Pages.Game
         private int _mapCursorY;
 
         private readonly object _darkenedBitmapLock = new object();
-        private ConcurrentDictionary<SavedDarkenedBitmap, SKImage> _darkenedBitmaps = new ConcurrentDictionary<SavedDarkenedBitmap, SKImage>();
+        private Dictionary<SavedDarkenedBitmap, SKImage> _darkenedBitmaps = new Dictionary<SavedDarkenedBitmap, SKImage>();
         private readonly object _darkenedAutoDrawBitmapLock = new object();
-        private ConcurrentDictionary<SavedDarkenedAutodrawBitmap, SKImage> _darkenedAutodrawBitmaps = new ConcurrentDictionary<SavedDarkenedAutodrawBitmap, SKImage>();
+        private Dictionary<SavedDarkenedAutodrawBitmap, SKImage> _darkenedAutodrawBitmaps = new Dictionary<SavedDarkenedAutodrawBitmap, SKImage>();
 
         private readonly object _uLock = new object();
         private int _ux = 0;
@@ -5333,7 +5333,7 @@ namespace GnollHackX.Pages.Game
         }
 
         private readonly object _saveRectLock = new object();
-        ConcurrentDictionary<SavedRect, SKImage> _savedRects = new ConcurrentDictionary<SavedRect, SKImage>();
+        Dictionary<SavedRect, SKImage> _savedRects = new Dictionary<SavedRect, SKImage>();
         public void DrawTileWithRadialTransparency(SKCanvas canvas, bool delayedDraw, SKImage tileSheet, SKRect sourcerect, SKRect targetrect, ref LayerInfo layers, float destSplitY, float opaqueness, SKPaint paint, int mapX, int mapY, float canvaswidth, float canvasheight, float targetscale, bool usingGL, bool usingMipMap, bool fixRects)
             //, ref SKRect baseUpdateRect, ref SKRect enlUpdateRect)
         {
@@ -11385,7 +11385,7 @@ namespace GnollHackX.Pages.Game
         }
 
         private readonly object _saveAutoDrawLock = new object();
-        ConcurrentDictionary<SavedAutodrawBitmap, SKBitmap> _savedAutoDrawBitmaps = new ConcurrentDictionary<SavedAutodrawBitmap, SKBitmap>();
+        Dictionary<SavedAutodrawBitmap, SKBitmap> _savedAutoDrawBitmaps = new Dictionary<SavedAutodrawBitmap, SKBitmap>();
 
         public void DrawAutoDraw(int autodraw, SKCanvas canvas, bool delayedDraw, SKPaint paint, ObjectDataItem otmp_round,
             int layer_idx, int mapx, int mapy,
