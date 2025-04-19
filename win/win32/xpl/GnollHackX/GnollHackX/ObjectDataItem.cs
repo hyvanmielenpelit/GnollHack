@@ -14,7 +14,7 @@ namespace GnollHackX
         private readonly List<ObjectDataItem> ContainedObjs;
 
         public bool HasContainedObjs { get { return ContainedObjs != null && ContainedObjs.Count > 0; } }
-        public IEnumerable<ObjectDataItem> ContainedObjsEnumerable { get { return ContainedObjs?.AsEnumerable(); } }
+        public IEnumerable<ObjectDataItem> ContainedObjsEnumerable { get { return ContainedObjs; } }
 
         public ObjectDataItem CloneWithAddedContainedObj(ObjectDataItem addedContainedObj)
         {
