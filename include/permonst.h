@@ -36,6 +36,8 @@ struct attack {
 
 #define ATTKFLAG_MUST_SEE_TARGET    0x00000001UL
 #define ATTKFLAGS_SAME_HEAD         0x00000002UL /* Does not count towards bite_butt_count */
+#define ATTKFLAGS_NO_OBJ_DMG        0x00000004UL /* Does not cause passive damage to objects */
+
 struct action_info
 {
     short actions[MAX_ACTION_TILES];

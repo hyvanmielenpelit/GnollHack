@@ -559,7 +559,7 @@ NEARDATA struct permonst mons[] = {
         M4_NONE, M5_NONE, M6_NONE, M7_NONE, M8_NONE, 
         2, CLR_GREEN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC, NO_SOUNDSET_SUBTYPE),
     MON("floating eye", None, "floating monster with paralyzing gaze defense", None, None, S_EYE, LVL(2, 1, 9, 0, 10, 0), (G_GENO | 5),
-        A(ATTK(AT_PASV, AD_PLYS, 4, 12, 0, 0, 0, 0, 0UL, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
+        A(ATTK(AT_PASV, AD_PLYS, 4, 12, 0, 0, 0, 0, ATTKFLAGS_NO_OBJ_DMG, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(10, 10, MS_SILENT, MZ_SMALL, 1, 0, MAT_FLESH), STATS(1, 7, 16, 15, 1, 1), 
         MR_BLIND_TELEPATHY | MR_FREE_ACTION,

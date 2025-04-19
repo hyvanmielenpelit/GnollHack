@@ -2181,6 +2181,7 @@ E void NDECL(reset_mon);
 
 E void FDECL(set_mon_data, (struct monst *, struct permonst *, UNSIGNED_SHORT_P));
 E struct attack *FDECL(attacktype_fordmg, (struct permonst *, int, int));
+E int FDECL(does_passive_impact_obj, (struct permonst*, struct obj*));
 E boolean FDECL(attacktype, (struct permonst *, int));
 E boolean FDECL(noattacks, (struct permonst *));
 E boolean FDECL(poly_when_stoned, (struct permonst *));
