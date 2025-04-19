@@ -9,9 +9,35 @@ namespace GnollHackX
 {
     public class ObjectDataItem
     {
-        public Obj ObjData;
-        public ObjClassData OtypData;
-        public List<ObjectDataItem> ContainedObjs;
+        public readonly Obj ObjData;
+        public readonly ObjClassData OtypData;
+        private readonly List<ObjectDataItem> ContainedObjs;
+
+        public bool HasContainedObjs { get { return ContainedObjs != null && ContainedObjs.Count > 0; } }
+        public IEnumerable<ObjectDataItem> ContainedObjsEnumerable { get { return ContainedObjs?.AsEnumerable(); } }
+
+        public ObjectDataItem CloneWithAddedContainedObj(ObjectDataItem addedContainedObj)
+        {
+            List<ObjectDataItem> containedItems = null;
+            if (addedContainedObj != null || ContainedObjs != null)
+            {
+                containedItems = new List<ObjectDataItem>(16);
+                if(ContainedObjs != null)
+                    containedItems.AddRange(ContainedObjs);
+                if(addedContainedObj != null)
+                    containedItems.Add(addedContainedObj);
+            }
+            ObjectDataItem clone = new ObjectDataItem(ObjData, OtypData, Hallucinated, OutOfAmmo, WrongAmmoType, NotBeingUsed, NotWeapon, FoundThisTurn, IsAmmo, IsThrowingWeapon, PreviousWeaponFound, PreviousUnwield, containedItems);
+            return clone;
+        }
+
+        public int ContainedObjectCount { get { return ContainedObjs.Count; } }
+        public ObjectDataItem GetContainedObjectByIndex(int index) => ContainedObjs[index];
+
+        public ObjectDataItem Clone()
+        {
+            return CloneWithAddedContainedObj(null);
+        }
 
         public short TileHeight {
             get
@@ -83,16 +109,16 @@ namespace GnollHackX
             }
         }
 
-        public bool Hallucinated { get; set; }
-        public bool OutOfAmmo { get; set; }
-        public bool WrongAmmoType { get; set; }
-        public bool NotBeingUsed { get; set; }
-        public bool NotWeapon { get; set; }
-        public bool FoundThisTurn { get; set; }
-        public bool IsAmmo { get; set; }
-        public bool IsThrowingWeapon { get; set; }
-        public bool PreviousWeaponFound { get; set; }
-        public bool PreviousUnwield { get; set; }
+        public readonly bool Hallucinated;
+        public readonly bool OutOfAmmo;
+        public readonly bool WrongAmmoType;
+        public readonly bool NotBeingUsed;
+        public readonly bool NotWeapon;
+        public readonly bool FoundThisTurn;
+        public readonly bool IsAmmo;
+        public readonly bool IsThrowingWeapon;
+        public readonly bool PreviousWeaponFound;
+        public readonly bool PreviousUnwield;
 
         public ObjectDataItem()
         {
@@ -125,6 +151,22 @@ namespace GnollHackX
             IsThrowingWeapon = isthrowingweapon;
             PreviousWeaponFound = prevwepfound;
             PreviousUnwield = prevunwield;
+        }
+        public ObjectDataItem(Obj objData, ObjClassData otypdata, bool hallucinated, bool outofammo, bool wrongammo, bool notbeingused, bool notweapon, bool foundthisturn, bool isammo, bool isthrowingweapon, bool prevwepfound, bool prevunwield, List<ObjectDataItem> containedItems)
+        {
+            ObjData = objData;
+            OtypData = otypdata;
+            Hallucinated = hallucinated;
+            OutOfAmmo = outofammo;
+            WrongAmmoType = wrongammo;
+            NotBeingUsed = notbeingused;
+            NotWeapon = notweapon;
+            FoundThisTurn = foundthisturn;
+            IsAmmo = isammo;
+            IsThrowingWeapon = isthrowingweapon;
+            PreviousWeaponFound = prevwepfound;
+            PreviousUnwield = prevunwield;
+            ContainedObjs = containedItems;
         }
     }
 }

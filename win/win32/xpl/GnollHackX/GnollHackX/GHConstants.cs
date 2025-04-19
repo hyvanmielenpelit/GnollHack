@@ -1948,12 +1948,12 @@ namespace GnollHackX
 
     public struct EngravingInfo
     {
-        public bool HasEngraving;
-        public string Text;
-        public int EngrType;
-        public ulong EngrFlags;
-        public ulong GeneralFlags;
-        public string[] RowSplit;
+        public readonly bool HasEngraving;
+        public readonly string Text;
+        public readonly int EngrType;
+        public readonly ulong EngrFlags;
+        public readonly ulong GeneralFlags;
+        public readonly string[] RowSplit;
 
         public EngravingInfo(string text, int etype, ulong eflags, ulong gflags)
         {

@@ -123,9 +123,9 @@ namespace GnollHackX.Pages.Game
         private readonly object _uLock = new object();
         private int _ux = 0;
         private int _uy = 0;
-        private ulong _u_condition_bits = 0;
-        private ulong _u_status_bits = 0;
-        private ulong[] _u_buff_bits = new ulong[GHConstants.NUM_BUFF_BIT_ULONGS];
+        //private ulong _u_condition_bits = 0;
+        //private ulong _u_status_bits = 0;
+        //private ulong[] _u_buff_bits = new ulong[GHConstants.NUM_BUFF_BIT_ULONGS];
         private int[] _statusmarkorder = { (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_PEACEFUL, (int)game_ui_status_mark_types.STATUS_MARK_TOWNGUARD_HOSTILE, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
         public string[] _condition_names = new string[(int)bl_conditions.NUM_BL_CONDITIONS] {
             "Petrifying",
@@ -951,8 +951,8 @@ namespace GnollHackX.Pages.Game
 
             _mainPage = mainPage;
 
-            lock (_mapDataLock)
-            {
+            //lock (_mapDataLock)
+            //{
                 for (int i = 0; i < GHConstants.MapCols; i++)
                 {
                     for (int j = 0; j < GHConstants.MapRows; j++)
@@ -965,7 +965,7 @@ namespace GnollHackX.Pages.Game
                         _objectData[i, j] = new ObjectData();
                     }
                 }
-            }
+            //}
             SetLayerDrawOrder();
 
             CursorStyle = (TTYCursorStyle)Preferences.Get("CursorStyle", 1);
@@ -2774,7 +2774,7 @@ namespace GnollHackX.Pages.Game
                             break;
                         case GHRequestType.ReturnToMainMenu:
                             IsGameOn = false;
-                            ClearMap();
+                            //ClearMap();
                             CurrentGame = null;
                             GHApp.CurrentGHGame = null;
                             _mainPage.GameStarted = false;
@@ -6661,14 +6661,31 @@ namespace GnollHackX.Pages.Game
             int u_y;
             ulong status_bits;
             ulong condition_bits;
+            //lock (_uLock)
+            //{
+            //    u_x = _ux;
+            //    u_y = _uy;
+            //    status_bits = _u_status_bits;
+            //    condition_bits = _u_condition_bits;
+            //    _u_buff_bits.CopyTo(_local_u_buff_bits, 0);
+            //}
+            CurrentGame.GetUData(out u_x, out u_y, out condition_bits, out status_bits, ref _local_u_buff_bits);
             lock (_uLock)
             {
-                u_x = _ux;
-                u_y = _uy;
-                status_bits = _u_status_bits;
-                condition_bits = _u_condition_bits;
-                _u_buff_bits.CopyTo(_local_u_buff_bits, 0);
+                _ux = u_x;
+                _uy = u_y;
             }
+            CurrentGame.GetMapDataCursorXY(out _mapCursorX, out _mapCursorY, out _cursorType, out _force_paint_at_cursor, out _show_cursor_on_u);
+            MapData[,] mapBuffer;
+            ObjectData[,] objectBuffer;
+            if (CurrentGame.GetMapDataBuffer(out mapBuffer, out objectBuffer, out _uBall, out _uChain))
+            {
+                _mapData = mapBuffer;
+                _objectData = objectBuffer;
+            }
+            if (_mapData == null)
+                return;
+
             lock (_floatingTextLock)
             {
                 _localFloatingTexts.Clear();
@@ -11439,9 +11456,9 @@ namespace GnollHackX.Pages.Game
                     item_charges = otmp_round.ObjData.charges;
                     item_special_quality = otmp_round.ObjData.special_quality;
                     item_lit = otmp_round.LampLit;
-                    if(otmp_round.ContainedObjs != null)
+                    if(otmp_round.HasContainedObjs)
                     {
-                        foreach (ObjectDataItem otmp in otmp_round.ContainedObjs)
+                        foreach (ObjectDataItem otmp in otmp_round.ContainedObjsEnumerable)
                         {
                             if (otmp != null)
                             {
@@ -11789,7 +11806,7 @@ namespace GnollHackX.Pages.Game
                         }
                     }
                 }
-                else if (GHApp._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_BOOKSHELF_CONTENTS && otmp_round != null && otmp_round.ContainedObjs != null)
+                else if (GHApp._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_BOOKSHELF_CONTENTS && otmp_round != null && otmp_round.HasContainedObjs)
                 {
                     int num_shelves = 4;
                     int y_to_first_shelf = 49;
@@ -11804,7 +11821,7 @@ namespace GnollHackX.Pages.Game
                     int src_scroll_y = 0;
                     int cnt = 0;
                     int items_per_row = shelf_width / shelf_item_width;
-                    foreach (ObjectDataItem contained_obj in otmp_round.ContainedObjs)
+                    foreach (ObjectDataItem contained_obj in otmp_round.ContainedObjsEnumerable)
                     {
                         int src_x = 0, src_y = 0;
                         float dest_x = 0, dest_y = 0;
@@ -11867,7 +11884,7 @@ namespace GnollHackX.Pages.Game
                         }
                     }
                 }
-                else if (GHApp._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_WEAPON_RACK_CONTENTS && otmp_round != null && otmp_round.ContainedObjs != null)
+                else if (GHApp._autodraws[autodraw].draw_type == (int)autodraw_drawing_types.AUTODRAW_DRAW_WEAPON_RACK_CONTENTS && otmp_round != null && otmp_round.HasContainedObjs)
                 {
                     int y_to_rack_top = 31;
                     int rack_start = 0; /* Assume weapons are drawn reasonably well in the center */
@@ -11875,7 +11892,7 @@ namespace GnollHackX.Pages.Game
                     int rack_height = GHConstants.TileHeight - y_to_rack_top;
                     int rack_item_spacing = 6;
                     int cnt = 0;
-                    foreach (ObjectDataItem contained_obj in otmp_round.ContainedObjs)
+                    foreach (ObjectDataItem contained_obj in otmp_round.ContainedObjsEnumerable)
                     {
                         int source_glyph = Math.Abs(contained_obj.ObjData.gui_glyph);
                         if (source_glyph <= 0 || source_glyph == GHApp.NoGlyph)
@@ -14227,76 +14244,76 @@ namespace GnollHackX.Pages.Game
             return false;
         }
 
-        public void SetMapSymbol(int x, int y, int glyph, int bkglyph, int c, int color, uint special, ref LayerInfo layers)
-        {
-            long generalCounter;
-            long mainCounter;
-            lock (AnimationTimerLock)
-            {
-                generalCounter = AnimationTimers.general_animation_counter;
-            }
-            lock (_mainCounterLock)
-            {
-                mainCounter = _mainCounterValue;
-            }
-            lock (_mapDataLock)
-            {
-                SetMapSymbolOnTimerUnlocked(x, y, glyph, bkglyph, c, color, special, ref layers, generalCounter, mainCounter);
-                ClearAllObjectDataUnlocked(x, y);
-                ClearEngravingDataUnlocked(x, y);
-            }
-        }
+        //public void SetMapSymbol(int x, int y, int glyph, int bkglyph, int c, int color, uint special, ref LayerInfo layers)
+        //{
+        //    long generalCounter;
+        //    long mainCounter;
+        //    lock (AnimationTimerLock)
+        //    {
+        //        generalCounter = AnimationTimers.general_animation_counter;
+        //    }
+        //    lock (_mainCounterLock)
+        //    {
+        //        mainCounter = _mainCounterValue;
+        //    }
+        //    lock (_mapDataLock)
+        //    {
+        //        SetMapSymbolOnTimerUnlocked(x, y, glyph, bkglyph, c, color, special, ref layers, generalCounter, mainCounter);
+        //        ClearAllObjectDataUnlocked(x, y);
+        //        ClearEngravingDataUnlocked(x, y);
+        //    }
+        //}
 
-        private void SetMapSymbolOnTimerUnlocked(int x, int y, int glyph, int bkglyph, int c, int color, uint special, ref LayerInfo layers, long generalCounter, long mainCounter)
-        {
-            if (((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0 && (_mapData[x, y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) == 0) ||
-                (layers.m_id != 0 && layers.m_id != _mapData[x, y].Layers.m_id))
-            {
-                /* Update counter value only if the monster just moved here, not, e.g. if it changes action in the same square,
-                 * or is printed in the same square again with the same origin coordinates. This way, the movement action is played only once. 
-                 */
-                _mapData[x, y].GlyphPrintAnimationCounterValue = generalCounter;
-                _mapData[x, y].GlyphPrintMainCounterValue = mainCounter;
-            }
-            if ((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
-            {
-                lock (_uLock)
-                {
-                    _ux = x;
-                    _uy = y;
-                    _u_condition_bits = layers.condition_bits;
-                    _u_status_bits = layers.status_bits;
-                    if (layers.buff_bits != null)
-                    {
-                        for (int i = 0; i < GHConstants.NUM_BUFF_BIT_ULONGS; i++)
-                        {
-                            _u_buff_bits[i] = layers.buff_bits[i];
-                        }
-                    }
-                }
-            }
-            if (layers.o_id != 0 && layers.o_id != _mapData[x, y].Layers.o_id)
-            {
-                /* Update counter value only if the object just moved here, not, e.g. if it changes action in the same square,
-                 * or is printed in the same square again with the same origin coordinates. This way, the movement action is played only once. 
-                 */
-                _mapData[x, y].GlyphObjectPrintAnimationCounterValue = generalCounter;
-                _mapData[x, y].GlyphObjectPrintMainCounterValue = mainCounter;
-            }
+        //private void SetMapSymbolOnTimerUnlocked(int x, int y, int glyph, int bkglyph, int c, int color, uint special, ref LayerInfo layers, long generalCounter, long mainCounter)
+        //{
+        //    if (((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0 && (_mapData[x, y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) == 0) ||
+        //        (layers.m_id != 0 && layers.m_id != _mapData[x, y].Layers.m_id))
+        //    {
+        //        /* Update counter value only if the monster just moved here, not, e.g. if it changes action in the same square,
+        //         * or is printed in the same square again with the same origin coordinates. This way, the movement action is played only once. 
+        //         */
+        //        _mapData[x, y].GlyphPrintAnimationCounterValue = generalCounter;
+        //        _mapData[x, y].GlyphPrintMainCounterValue = mainCounter;
+        //    }
+        //    if ((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
+        //    {
+        //        lock (_uLock)
+        //        {
+        //            _ux = x;
+        //            _uy = y;
+        //            _u_condition_bits = layers.condition_bits;
+        //            _u_status_bits = layers.status_bits;
+        //            if (layers.buff_bits != null)
+        //            {
+        //                for (int i = 0; i < GHConstants.NUM_BUFF_BIT_ULONGS; i++)
+        //                {
+        //                    _u_buff_bits[i] = layers.buff_bits[i];
+        //                }
+        //            }
+        //        }
+        //    }
+        //    if (layers.o_id != 0 && layers.o_id != _mapData[x, y].Layers.o_id)
+        //    {
+        //        /* Update counter value only if the object just moved here, not, e.g. if it changes action in the same square,
+        //         * or is printed in the same square again with the same origin coordinates. This way, the movement action is played only once. 
+        //         */
+        //        _mapData[x, y].GlyphObjectPrintAnimationCounterValue = generalCounter;
+        //        _mapData[x, y].GlyphObjectPrintMainCounterValue = mainCounter;
+        //    }
 
-            /* General counter that gets always set */
-            _mapData[x, y].GlyphGeneralPrintAnimationCounterValue = generalCounter;
-            _mapData[x, y].GlyphGeneralPrintMainCounterValue = mainCounter;
-            _mapData[x, y].Glyph = glyph;
-            _mapData[x, y].BkGlyph = bkglyph;
-            _mapData[x, y].Symbol = Char.ConvertFromUtf32(c);
-            _mapData[x, y].Color = UIUtils.NHColor2SKColor(color, (special & 0x00002000UL) != 0 ? (int)MenuItemAttributes.AltColors : 0);
-            _mapData[x, y].Special = special;
-            _mapData[x, y].Layers = layers;
+        //    /* General counter that gets always set */
+        //    _mapData[x, y].GlyphGeneralPrintAnimationCounterValue = generalCounter;
+        //    _mapData[x, y].GlyphGeneralPrintMainCounterValue = mainCounter;
+        //    _mapData[x, y].Glyph = glyph;
+        //    _mapData[x, y].BkGlyph = bkglyph;
+        //    _mapData[x, y].Symbol = Char.ConvertFromUtf32(c);
+        //    _mapData[x, y].Color = UIUtils.NHColor2SKColor(color, (special & 0x00002000UL) != 0 ? (int)MenuItemAttributes.AltColors : 0);
+        //    _mapData[x, y].Special = special;
+        //    _mapData[x, y].Layers = layers;
 
-            _mapData[x, y].NeedsUpdate = true;
-            _mapData[x, y].HasEnlargementOrAnimationOrSpecialHeight = AlternativeLayerDrawing ? DetermineHasEnlargementOrAnimationOrSpecialHeight(ref layers) : false;
-        }
+        //    _mapData[x, y].NeedsUpdate = true;
+        //    _mapData[x, y].HasEnlargementOrAnimationOrSpecialHeight = AlternativeLayerDrawing ? DetermineHasEnlargementOrAnimationOrSpecialHeight(ref layers) : false;
+        //}
 
         //public void ProcessPrintGlyphCallList(List<SavedPrintGlyphCall> list, List<SavedSendObjectDataCall> olist, List<SavedSendMonsterDataCall> mlist, List<SavedSendEngravingDataCall> elist)
         //{
@@ -14366,64 +14383,64 @@ namespace GnollHackX.Pages.Game
         //    }
         //}
 
-        public void SetMapCursor(int x, int y)
-        {
-            lock (_mapDataLock)
-            {
-                _mapCursorX = x;
-                _mapCursorY = y;
-            }
-        }
-        public void UpdateCursor(int style, int force_paint, int show_on_u)
-        {
-            lock (_mapDataLock)
-            {
-                _cursorType = (game_cursor_types)style;
-                _force_paint_at_cursor = (force_paint != 0);
-                _show_cursor_on_u = (show_on_u != 0);
-            }
-        }
+        //public void SetMapCursor(int x, int y)
+        //{
+        //    lock (_mapDataLock)
+        //    {
+        //        _mapCursorX = x;
+        //        _mapCursorY = y;
+        //    }
+        //}
+        //public void UpdateCursor(int style, int force_paint, int show_on_u)
+        //{
+        //    lock (_mapDataLock)
+        //    {
+        //        _cursorType = (game_cursor_types)style;
+        //        _force_paint_at_cursor = (force_paint != 0);
+        //        _show_cursor_on_u = (show_on_u != 0);
+        //    }
+        //}
 
-        public void ClearMap()
-        {
-            lock (_mapDataLock)
-            {
-                for (int x = 1; x < GHConstants.MapCols; x++)
-                {
-                    for (int y = 0; y < GHConstants.MapRows; y++)
-                    {
-                        _mapData[x, y].Glyph = GHApp.UnexploredGlyph;
-                        _mapData[x, y].BkGlyph = GHApp.NoGlyph;
-                        _mapData[x, y].Symbol = "";
-                        _mapData[x, y].Color = SKColors.Black;// default(MapData);
-                        _mapData[x, y].Special = 0;
-                        _mapData[x, y].NeedsUpdate = true;
-                        _mapData[x, y].GlyphPrintAnimationCounterValue = 0;
-                        _mapData[x, y].GlyphPrintMainCounterValue = 0;
-                        _mapData[x, y].GlyphObjectPrintAnimationCounterValue = 0;
-                        _mapData[x, y].GlyphObjectPrintMainCounterValue = 0;
-                        _mapData[x, y].GlyphGeneralPrintMainCounterValue = 0;
+        //public void ClearMap()
+        //{
+        //    lock (_mapDataLock)
+        //    {
+        //        for (int x = 1; x < GHConstants.MapCols; x++)
+        //        {
+        //            for (int y = 0; y < GHConstants.MapRows; y++)
+        //            {
+        //                _mapData[x, y].Glyph = GHApp.UnexploredGlyph;
+        //                _mapData[x, y].BkGlyph = GHApp.NoGlyph;
+        //                _mapData[x, y].Symbol = "";
+        //                _mapData[x, y].Color = SKColors.Black;// default(MapData);
+        //                _mapData[x, y].Special = 0;
+        //                _mapData[x, y].NeedsUpdate = true;
+        //                _mapData[x, y].GlyphPrintAnimationCounterValue = 0;
+        //                _mapData[x, y].GlyphPrintMainCounterValue = 0;
+        //                _mapData[x, y].GlyphObjectPrintAnimationCounterValue = 0;
+        //                _mapData[x, y].GlyphObjectPrintMainCounterValue = 0;
+        //                _mapData[x, y].GlyphGeneralPrintMainCounterValue = 0;
 
-                        _mapData[x, y].Layers = new LayerInfo();
-                        _mapData[x, y].Layers.layer_glyphs = new int[(int)layer_types.MAX_LAYERS];
-                        _mapData[x, y].Layers.layer_gui_glyphs = new int[(int)layer_types.MAX_LAYERS];
-                        _mapData[x, y].Layers.leash_mon_x = new sbyte[GHConstants.MaxLeashed + 1];
-                        _mapData[x, y].Layers.leash_mon_y = new sbyte[GHConstants.MaxLeashed + 1];
+        //                _mapData[x, y].Layers = new LayerInfo();
+        //                _mapData[x, y].Layers.layer_glyphs = new int[(int)layer_types.MAX_LAYERS];
+        //                _mapData[x, y].Layers.layer_gui_glyphs = new int[(int)layer_types.MAX_LAYERS];
+        //                _mapData[x, y].Layers.leash_mon_x = new sbyte[GHConstants.MaxLeashed + 1];
+        //                _mapData[x, y].Layers.leash_mon_y = new sbyte[GHConstants.MaxLeashed + 1];
 
-                        _mapData[x, y].Layers.layer_glyphs[0] = GHApp.UnexploredGlyph;
-                        _mapData[x, y].Layers.layer_gui_glyphs[0] = GHApp.UnexploredGlyph;
-                        for (int i = 1; i < (int)layer_types.MAX_LAYERS; i++)
-                        {
-                            _mapData[x, y].Layers.layer_glyphs[i] = GHApp.NoGlyph;
-                            _mapData[x, y].Layers.layer_gui_glyphs[i] = GHApp.NoGlyph;
-                        }
+        //                _mapData[x, y].Layers.layer_glyphs[0] = GHApp.UnexploredGlyph;
+        //                _mapData[x, y].Layers.layer_gui_glyphs[0] = GHApp.UnexploredGlyph;
+        //                for (int i = 1; i < (int)layer_types.MAX_LAYERS; i++)
+        //                {
+        //                    _mapData[x, y].Layers.layer_glyphs[i] = GHApp.NoGlyph;
+        //                    _mapData[x, y].Layers.layer_gui_glyphs[i] = GHApp.NoGlyph;
+        //                }
 
-                        _mapData[x, y].Layers.glyph = GHApp.UnexploredGlyph;
-                        _mapData[x, y].Layers.bkglyph = GHApp.NoGlyph;
-                    }
-                }
-            }
-        }
+        //                _mapData[x, y].Layers.glyph = GHApp.UnexploredGlyph;
+        //                _mapData[x, y].Layers.bkglyph = GHApp.NoGlyph;
+        //            }
+        //        }
+        //    }
+        //}
 
 
         public void SetTargetClip(int x, int y, bool immediate_pan)
@@ -14483,148 +14500,159 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        public void ClearAllObjectDataUnlocked(int x, int y)
-        {
-            if (_objectData[x, y] != null)
-            {
-                if (_objectData[x, y].FloorObjectList != null)
-                    _objectData[x, y].FloorObjectList.Clear();
-                if (_objectData[x, y].CoverFloorObjectList != null)
-                    _objectData[x, y].CoverFloorObjectList.Clear();
-                if (_objectData[x, y].MemoryObjectList != null)
-                    _objectData[x, y].MemoryObjectList.Clear();
-                if (_objectData[x, y].CoverMemoryObjectList != null)
-                    _objectData[x, y].CoverMemoryObjectList.Clear();
-            }
-        }
+        //public void ClearAllObjectDataUnlocked(int x, int y)
+        //{
+        //    if (_objectData[x, y] != null)
+        //    {
+        //        if (_objectData[x, y].FloorObjectList != null)
+        //            _objectData[x, y].FloorObjectList.Clear();
+        //        if (_objectData[x, y].CoverFloorObjectList != null)
+        //            _objectData[x, y].CoverFloorObjectList.Clear();
+        //        if (_objectData[x, y].MemoryObjectList != null)
+        //            _objectData[x, y].MemoryObjectList.Clear();
+        //        if (_objectData[x, y].CoverMemoryObjectList != null)
+        //            _objectData[x, y].CoverMemoryObjectList.Clear();
+        //    }
+        //}
 
-        public void AddObjectData(int x, int y, Obj otmp, int cmdtype, int where, ObjClassData otypdata, ulong oflags)
+        public void AddEquippedObjectData(int x, int y, Obj otmp, int cmdtype, int where, ObjClassData otypdata, ulong oflags)
         {
             bool is_uwep = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UWEP) != 0UL;
             bool is_uwep2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UWEP2) != 0UL;
             bool is_uquiver = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UQUIVER) != 0UL;
-            bool is_equipped = is_uwep | is_uwep2 | is_uquiver;
             bool hallucinated = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_HALLUCINATION) != 0UL;
             bool foundthisturn = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_FOUND_THIS_TURN) != 0UL;
-            bool isuchain = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UCHAIN) != 0UL;
-            bool isuball = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UBALL) != 0UL;
 
-            if (is_equipped)
+            bool outofammo1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_OUT_OF_AMMO1) != 0UL;
+            bool wrongammo1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_WRONG_AMMO_TYPE1) != 0UL;
+            bool notbeingused1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_BEING_USED1) != 0UL;
+            bool notweapon1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_WEAPON1) != 0UL;
+            bool outofammo2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_OUT_OF_AMMO2) != 0UL;
+            bool wrongammo2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_WRONG_AMMO_TYPE2) != 0UL;
+            bool notbeingused2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_BEING_USED2) != 0UL;
+            bool notweapon2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_WEAPON2) != 0UL;
+            bool outofammo = is_uwep ? outofammo1 : is_uwep2 ? outofammo2 : false;
+            bool wrongammo = is_uwep ? wrongammo1 : is_uwep2 ? wrongammo2 : false;
+            bool notbeingused = is_uwep ? notbeingused1 : is_uwep2 ? notbeingused2 : false;
+            bool notweapon = is_uwep ? notweapon1 : is_uwep2 ? notweapon2 : false;
+            bool isammo = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_IS_AMMO) != 0UL;
+            bool isthrowingweapon = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_THROWING_WEAPON) != 0UL;
+            bool prevwepfound = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_PREV_WEP_FOUND) != 0UL;
+            bool prevunwield = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_PREV_UNWIELD) != 0UL;
+
+            int idx = is_uwep ? 0 : is_uwep2 ? 1 : 2;
+            lock (_weaponStyleObjDataItemLock)
             {
-                bool outofammo1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_OUT_OF_AMMO1) != 0UL;
-                bool wrongammo1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_WRONG_AMMO_TYPE1) != 0UL;
-                bool notbeingused1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_BEING_USED1) != 0UL;
-                bool notweapon1 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_WEAPON1) != 0UL;
-                bool outofammo2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_OUT_OF_AMMO2) != 0UL;
-                bool wrongammo2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_WRONG_AMMO_TYPE2) != 0UL;
-                bool notbeingused2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_BEING_USED2) != 0UL;
-                bool notweapon2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_NOT_WEAPON2) != 0UL;
-                bool outofammo = is_uwep ? outofammo1 : is_uwep2 ? outofammo2 : false;
-                bool wrongammo = is_uwep ? wrongammo1 : is_uwep2 ? wrongammo2 : false;
-                bool notbeingused = is_uwep ? notbeingused1 : is_uwep2 ? notbeingused2 : false;
-                bool notweapon = is_uwep ? notweapon1 : is_uwep2 ? notweapon2 : false;
-                bool isammo = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_IS_AMMO) != 0UL;
-                bool isthrowingweapon = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_THROWING_WEAPON) != 0UL;
-                bool prevwepfound = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_PREV_WEP_FOUND) != 0UL;
-                bool prevunwield = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_PREV_UNWIELD) != 0UL;
-
-                int idx = is_uwep ? 0 : is_uwep2 ? 1 : 2;
-                lock (_weaponStyleObjDataItemLock)
+                switch (cmdtype)
                 {
-                    switch (cmdtype)
-                    {
-                        case 1: /* Clear */
-                            _weaponStyleObjDataItem[idx] = null;
-                            break;
-                        case 2: /* Add item */
-                            _weaponStyleObjDataItem[idx] = new ObjectDataItem(otmp, otypdata, hallucinated, outofammo, wrongammo, notbeingused, notweapon, foundthisturn, isammo, isthrowingweapon, prevwepfound, prevunwield);
-                            break;
-                        case 3: /* Add container item to previous item */
-                            _weaponStyleObjDataItem[idx].ContainedObjs.Add(new ObjectDataItem(otmp, otypdata, hallucinated));
-                            break;
-                    }
-                }
-            }
-            else
-            {
-                lock (_mapDataLock)
-                {
-                    if (_objectData[x, y] != null)
-                    {
-                        bool is_memoryobj = (where == (int)obj_where_types.OBJ_HEROMEMORY);
-                        bool is_drawn_in_front = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_DRAWN_IN_FRONT) != 0UL;
-                        List<ObjectDataItem> objectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList);
-                        ObjectDataItem newItem;
-                        switch (cmdtype)
-                        {
-                            case 1: /* Clear */
-                                if (objectList != null)
-                                    objectList.Clear();
-                                break;
-                            case 2: /* Add item */
-                                if (objectList == null)
-                                {
-                                    if (is_memoryobj)
-                                    {
-                                        if (is_drawn_in_front)
-                                            _objectData[x, y].CoverMemoryObjectList = new List<ObjectDataItem>(4);
-                                        else
-                                            _objectData[x, y].MemoryObjectList = new List<ObjectDataItem>(16);
-                                    }
-                                    else
-                                    {
-                                        if (is_drawn_in_front)
-                                            _objectData[x, y].CoverFloorObjectList = new List<ObjectDataItem>(4);
-                                        else
-                                            _objectData[x, y].FloorObjectList = new List<ObjectDataItem>(16);
-                                    }
-
-                                    objectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList);
-                                }
-                                newItem = new ObjectDataItem(otmp, otypdata, hallucinated, foundthisturn);
-                                objectList.Add(newItem);
-                                break;
-                            case 3: /* Add container item to previous item */
-                                if (objectList == null || objectList.Count == 0)
-                                    break;
-                                if (objectList[objectList.Count - 1].ContainedObjs == null)
-                                    objectList[objectList.Count - 1].ContainedObjs = new List<ObjectDataItem>(16);
-                                objectList[objectList.Count - 1].ContainedObjs.Add(new ObjectDataItem(otmp, otypdata, hallucinated));
-                                break;
-                            case 4: /* Clear uchain and uball */
-                                _uChain = null;
-                                _uBall = null;
-                                break;
-                            case 5: /* Add uchain or uball */
-                                if (!is_memoryobj && (isuchain || isuball))
-                                {
-                                    newItem = new ObjectDataItem(otmp, otypdata, hallucinated, foundthisturn);
-                                    if (isuchain)
-                                        _uChain = newItem;
-                                    if (isuball)
-                                        _uBall = newItem;
-                                }
-                                break;
-                        }
-                    }
+                    case 1: /* Clear */
+                        _weaponStyleObjDataItem[idx] = null;
+                        break;
+                    case 2: /* Add item */
+                        _weaponStyleObjDataItem[idx] = new ObjectDataItem(otmp, otypdata, hallucinated, outofammo, wrongammo, notbeingused, notweapon, foundthisturn, isammo, isthrowingweapon, prevwepfound, prevunwield);
+                        break;
+                    case 3: /* Add container item to previous item */
+                        _weaponStyleObjDataItem[idx] = _weaponStyleObjDataItem[idx].CloneWithAddedContainedObj(new ObjectDataItem(otmp, otypdata, hallucinated));
+                        break;
                 }
             }
         }
 
-        public void ClearEngravingDataUnlocked(int x, int y)
-        {
-            if (GHUtils.isok(x, y))
-                _mapData[x, y].Engraving = new EngravingInfo();
-        }
+        //public void AddObjectData(int x, int y, Obj otmp, int cmdtype, int where, ObjClassData otypdata, ulong oflags)
+        //{
+        //    bool is_uwep = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UWEP) != 0UL;
+        //    bool is_uwep2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UWEP2) != 0UL;
+        //    bool is_uquiver = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UQUIVER) != 0UL;
+        //    bool is_equipped = is_uwep | is_uwep2 | is_uquiver;
+        //    bool hallucinated = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_HALLUCINATION) != 0UL;
+        //    bool foundthisturn = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_FOUND_THIS_TURN) != 0UL;
+        //    bool isuchain = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UCHAIN) != 0UL;
+        //    bool isuball = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UBALL) != 0UL;
 
-        public void AddEngravingData(int x, int y, string engraving_text, int etype, ulong eflags, ulong gflags)
-        {
-            lock(_mapDataLock)
-            {
-                if (GHUtils.isok(x, y))
-                    _mapData[x, y].Engraving = new EngravingInfo(engraving_text, etype, eflags, gflags);
-            }
-        }
+        //    if (is_equipped)
+        //    {
+        //        AddEquippedObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);
+        //    }
+        //    else
+        //    {
+        //        lock (_mapDataLock)
+        //        {
+        //            if (_objectData[x, y] != null)
+        //            {
+        //                bool is_memoryobj = (where == (int)obj_where_types.OBJ_HEROMEMORY);
+        //                bool is_drawn_in_front = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_DRAWN_IN_FRONT) != 0UL;
+        //                List<ObjectDataItem> objectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList);
+        //                ObjectDataItem newItem;
+        //                switch (cmdtype)
+        //                {
+        //                    case 1: /* Clear */
+        //                        if (objectList != null)
+        //                            objectList.Clear();
+        //                        break;
+        //                    case 2: /* Add item */
+        //                        if (objectList == null)
+        //                        {
+        //                            if (is_memoryobj)
+        //                            {
+        //                                if (is_drawn_in_front)
+        //                                    _objectData[x, y].CoverMemoryObjectList = new List<ObjectDataItem>(4);
+        //                                else
+        //                                    _objectData[x, y].MemoryObjectList = new List<ObjectDataItem>(16);
+        //                            }
+        //                            else
+        //                            {
+        //                                if (is_drawn_in_front)
+        //                                    _objectData[x, y].CoverFloorObjectList = new List<ObjectDataItem>(4);
+        //                                else
+        //                                    _objectData[x, y].FloorObjectList = new List<ObjectDataItem>(16);
+        //                            }
+
+        //                            objectList = is_memoryobj ? (is_drawn_in_front ? _objectData[x, y].CoverMemoryObjectList : _objectData[x, y].MemoryObjectList) : (is_drawn_in_front ? _objectData[x, y].CoverFloorObjectList : _objectData[x, y].FloorObjectList);
+        //                        }
+        //                        newItem = new ObjectDataItem(otmp, otypdata, hallucinated, foundthisturn);
+        //                        objectList.Add(newItem);
+        //                        break;
+        //                    case 3: /* Add container item to previous item */
+        //                        if (objectList == null || objectList.Count == 0)
+        //                            break;
+        //                        if (objectList[objectList.Count - 1].ContainedObjs == null)
+        //                            objectList[objectList.Count - 1].ContainedObjs = new List<ObjectDataItem>(16);
+        //                        objectList[objectList.Count - 1].ContainedObjs.Add(new ObjectDataItem(otmp, otypdata, hallucinated));
+        //                        break;
+        //                    case 4: /* Clear uchain and uball */
+        //                        _uChain = null;
+        //                        _uBall = null;
+        //                        break;
+        //                    case 5: /* Add uchain or uball */
+        //                        if (!is_memoryobj && (isuchain || isuball))
+        //                        {
+        //                            newItem = new ObjectDataItem(otmp, otypdata, hallucinated, foundthisturn);
+        //                            if (isuchain)
+        //                                _uChain = newItem;
+        //                            if (isuball)
+        //                                _uBall = newItem;
+        //                        }
+        //                        break;
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
+        //public void ClearEngravingDataUnlocked(int x, int y)
+        //{
+        //    if (GHUtils.isok(x, y))
+        //        _mapData[x, y].Engraving = new EngravingInfo();
+        //}
+
+        //public void AddEngravingData(int x, int y, string engraving_text, int etype, ulong eflags, ulong gflags)
+        //{
+        //    lock(_mapDataLock)
+        //    {
+        //        if (GHUtils.isok(x, y))
+        //            _mapData[x, y].Engraving = new EngravingInfo(engraving_text, etype, eflags, gflags);
+        //    }
+        //}
 
         public void ClearPetData()
         {
