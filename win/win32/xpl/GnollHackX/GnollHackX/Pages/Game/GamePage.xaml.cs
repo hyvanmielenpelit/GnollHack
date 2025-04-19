@@ -5421,7 +5421,7 @@ namespace GnollHackX.Pages.Game
                                 bmp.Dispose();
                             _savedRects.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
                         }
-                        _savedRects.TryAdd(sr, newimg);
+                        _savedRects.Add(sr, newimg);
                     }
                     DrawSplitBitmap(canvas, delayedDraw, destSplitY, newimg, tempsourcerect, targetrect, paint, mapX, mapY, canvaswidth, canvasheight, targetscale, usingGL, usingMipMap, fixRects); //, ref baseUpdateRect, ref enlUpdateRect);
                 }
@@ -7324,7 +7324,7 @@ namespace GnollHackX.Pages.Game
                                                                                                 bmp.Dispose();
                                                                                             _darkenedAutodrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
                                                                                         }
-                                                                                        _darkenedAutodrawBitmaps.TryAdd(cachekey, newImage);
+                                                                                        _darkenedAutodrawBitmaps.Add(cachekey, newImage);
                                                                                     }
                                                                                 }
                                                                                 catch (Exception ex)
@@ -7382,7 +7382,7 @@ namespace GnollHackX.Pages.Game
                                                                                                 bmp.Dispose();
                                                                                             _darkenedBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
                                                                                         }
-                                                                                        _darkenedBitmaps.TryAdd(cachekey, newImage);
+                                                                                        _darkenedBitmaps.Add(cachekey, newImage);
                                                                                     }
                                                                                 }
                                                                                 catch (Exception ex)
@@ -12245,7 +12245,7 @@ namespace GnollHackX.Pages.Game
                                                     bmp.Dispose();
                                                 _savedAutoDrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
                                             }
-                                            _savedAutoDrawBitmaps.TryAdd(cachekey, newbmp);
+                                            _savedAutoDrawBitmaps.Add(cachekey, newbmp);
                                         }
                                     }
                                     catch (Exception ex)
@@ -12453,7 +12453,7 @@ namespace GnollHackX.Pages.Game
                                                 bmp.Dispose();
                                             _savedAutoDrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
                                         }
-                                        _savedAutoDrawBitmaps.TryAdd(cachekey2, newbmp);
+                                        _savedAutoDrawBitmaps.Add(cachekey2, newbmp);
                                     }
                                 }
                                 catch (Exception ex)
