@@ -2775,13 +2775,13 @@ namespace GnollHackX.Pages.Game
                         case GHRequestType.ReturnToMainMenu:
                             IsGameOn = false;
                             //ClearMap();
-                            CurrentGame = null;
-                            GHApp.CurrentGHGame = null;
-                            _mainPage.GameStarted = false;
                             StopMainCanvasAnimation();
                             StopCommandCanvasAnimation();
                             StopMenuCanvasAnimation();
                             StopTextCanvasAnimation();
+                            CurrentGame = null;
+                            GHApp.CurrentGHGame = null;
+                            _mainPage.GameStarted = false;
                             ReturnToMainMenu();
                             break;
                         case GHRequestType.RestartGame:
@@ -4470,7 +4470,7 @@ namespace GnollHackX.Pages.Game
 
         private void canvasView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
-            if (MenuGrid.IsVisible || TextGrid.IsVisible || MoreCommandsGrid.IsVisible)
+            if (MenuGrid.IsVisible || TextGrid.IsVisible || MoreCommandsGrid.IsVisible || !IsGameOn)
                 return;
 
             if (IsMainCanvasDrawingAndSetTrue) /* In the case of some sort of reentrancy or new draw before previous is finished */
@@ -6669,16 +6669,20 @@ namespace GnollHackX.Pages.Game
             //    condition_bits = _u_condition_bits;
             //    _u_buff_bits.CopyTo(_local_u_buff_bits, 0);
             //}
-            CurrentGame.GetUData(out u_x, out u_y, out condition_bits, out status_bits, ref _local_u_buff_bits);
+            GHGame curGame = CurrentGame;
+            if (curGame == null)
+                return;
+
+            curGame.GetUData(out u_x, out u_y, out condition_bits, out status_bits, ref _local_u_buff_bits);
             lock (_uLock)
             {
                 _ux = u_x;
                 _uy = u_y;
             }
-            CurrentGame.GetMapDataCursorXY(out _mapCursorX, out _mapCursorY, out _cursorType, out _force_paint_at_cursor, out _show_cursor_on_u);
+            curGame.GetMapDataCursorXY(out _mapCursorX, out _mapCursorY, out _cursorType, out _force_paint_at_cursor, out _show_cursor_on_u);
             MapData[,] mapBuffer;
             ObjectData[,] objectBuffer;
-            if (CurrentGame.GetMapDataBuffer(out mapBuffer, out objectBuffer, out _uBall, out _uChain))
+            if (curGame.GetMapDataBuffer(out mapBuffer, out objectBuffer, out _uBall, out _uChain))
             {
                 _mapData = mapBuffer;
                 _objectData = objectBuffer;
@@ -6792,7 +6796,6 @@ namespace GnollHackX.Pages.Game
                 float tx = 0, ty = 0;
                 float startx = 0, starty = 0;
                 int mapWindowId = 0, messageWindowId = 0, statusWindowId = 0;
-                GHGame curGame = CurrentGame;
                 if (curGame != null)
                 {
                     GetWindowIds(out mapWindowId, out messageWindowId, out statusWindowId);
