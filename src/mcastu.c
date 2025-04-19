@@ -279,7 +279,7 @@ boolean foundyou;
         update_m_action(mtmp, action);
     play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, mtmp->mx, mtmp->my);
     if (show_action_tile)
-        m_wait_until_action();
+        m_wait_until_action(mtmp, action);
 
     if (mattk->adtyp == AD_SPEL)
     {
@@ -306,9 +306,9 @@ boolean foundyou;
         cursetxt(mtmp, nodirspell);
         if (show_action_tile)
         {
-            m_wait_until_end();
+            m_wait_until_end(mtmp, action);
             update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
-            m_wait_until_end();
+            m_wait_until_end(mtmp, action);
         }
         return (0);
     }
@@ -328,9 +328,9 @@ boolean foundyou;
 
         if (show_action_tile)
         {
-            m_wait_until_end();
+            m_wait_until_end(mtmp, action);
             update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
-            m_wait_until_end();
+            m_wait_until_end(mtmp, action);
         }
         return (0);
     }
@@ -359,9 +359,9 @@ boolean foundyou;
 
         if (show_action_tile)
         {
-            m_wait_until_end();
+            m_wait_until_end(mtmp, action);
             update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
-            m_wait_until_end();
+            m_wait_until_end(mtmp, action);
         }
         return (0);
     }
@@ -395,9 +395,9 @@ boolean foundyou;
 
             if (show_action_tile)
             {
-                m_wait_until_end();
+                m_wait_until_end(mtmp, action);
                 update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
-                m_wait_until_end();
+                m_wait_until_end(mtmp, action);
             }
             return (0);
         }
@@ -466,9 +466,9 @@ boolean foundyou;
 
     if (show_action_tile)
     {
-        m_wait_until_end();
+        m_wait_until_end(mtmp, action);
         update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
-        m_wait_until_end();
+        m_wait_until_end(mtmp, action);
     }
     return (ret);
 }

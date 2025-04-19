@@ -2827,7 +2827,7 @@ boolean pick;
             action_taken = TRUE;
             update_m_action_core(mtmp, ACTION_TILE_SPECIAL_ATTACK, 2, NEWSYM_FLAGS_KEEP_OLD_FLAGS | NEWSYM_FLAGS_SHOW_DROPPING_PIERCER);
             play_sfx_sound(SFX_PIERCER_DROPS);
-            m_wait_until_action();
+            m_wait_until_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
             pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s suddenly drops from the %s!", Amonnam(mtmp),
                   ceiling(u.ux, u.uy));
 
@@ -2882,14 +2882,14 @@ boolean pick;
                 action_taken = TRUE;
                 update_m_action_core(mtmp, ACTION_TILE_SPECIAL_ATTACK, 2, NEWSYM_FLAGS_SHOW_DROPPING_PIERCER);
                 play_sfx_sound(SFX_SURPRISE_ATTACK);
-                m_wait_until_action();
+                m_wait_until_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
                 pline_ex(ATR_NONE, CLR_MSG_WARNING, "%s attacks you by surprise!", Amonnam(mtmp));
 
             }
             break;
         }
         if(action_taken)
-            m_wait_until_end();
+            m_wait_until_end(mtmp, ACTION_TILE_SPECIAL_ATTACK);
         update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
         newsym(mtmp->mx, mtmp->my);
         mnexto(mtmp); /* have to move the monster */

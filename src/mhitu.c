@@ -771,7 +771,7 @@ register struct monst *mtmp;
                 }
                 update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : mattk->aatyp == AT_KICK ? ACTION_TILE_KICK : ACTION_TILE_ATTACK);
                 play_monster_attack_sound(mtmp, i, OBJECT_SOUND_TYPE_SWING_MELEE);
-                m_wait_until_action();
+                m_wait_until_action(mtmp, mattk->action_tile ? mattk->action_tile : mattk->aatyp == AT_KICK ? ACTION_TILE_KICK : ACTION_TILE_ATTACK);
                 if (foundyou)
                 {
                     if (tmp > (j = rnd(20 + i)))
@@ -805,7 +805,7 @@ register struct monst *mtmp;
 
                 update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
                 play_monster_attack_sound(mtmp, i, OBJECT_SOUND_TYPE_SWING_MELEE);
-                m_wait_until_action();
+                m_wait_until_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
                 sum[i] = hitmu(mtmp, mattk, (struct obj*)0);
                 update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
             }
@@ -824,7 +824,7 @@ register struct monst *mtmp;
 
                 update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
                 play_monster_attack_sound(mtmp, i, OBJECT_SOUND_TYPE_FIRE);
-                m_wait_until_action();
+                m_wait_until_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
                 sum[i] = gazemu(mtmp, mattk);
                 update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
             }
@@ -841,7 +841,7 @@ register struct monst *mtmp;
 
                 update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
                 play_monster_attack_sound(mtmp, i, OBJECT_SOUND_TYPE_FIRE);
-                m_wait_until_action();
+                m_wait_until_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
                 sum[i] = explmu(mtmp, mattk, foundyou);
                 update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
             }
@@ -859,7 +859,7 @@ register struct monst *mtmp;
                 {
                     update_m_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
                     play_monster_attack_sound(mtmp, i, OBJECT_SOUND_TYPE_SWING_MELEE);
-                    m_wait_until_action();
+                    m_wait_until_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
                     if (u.uswallow
                         || (!mtmp->mspec_used && tmp > (j = rnd(20 + i)))) {
                         /* force swallowing monster to be displayed
@@ -1005,7 +1005,7 @@ register struct monst *mtmp;
                             }
 
                             if (strikeindex == 0)
-                                m_wait_until_action();
+                                m_wait_until_action(mtmp, mattk->action_tile);
 
                             //TO-HIT IS DONE HERE
                             if (tmp > (j = dieroll = rnd(20 + i)))
@@ -1036,7 +1036,7 @@ register struct monst *mtmp;
                 if (range2)
                 {
                     update_m_action(mtmp, ACTION_TILE_CAST_DIR);
-                    m_wait_until_action();
+                    m_wait_until_action(mtmp, ACTION_TILE_CAST_DIR);
                     sum[i] = buzzmu(mtmp, mattk);
                     update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
                 }
@@ -1053,7 +1053,7 @@ register struct monst *mtmp;
                 if (!mtmp->mdemonsummon_used && mattk->adtyp == AD_DMNS)
                 {
                     update_m_action(mtmp, ACTION_TILE_CAST_NODIR);
-                    m_wait_until_action();
+                    m_wait_until_action(mtmp, ACTION_TILE_CAST_NODIR);
                     /*  Special demon handling code */
                     if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
@@ -1079,7 +1079,7 @@ register struct monst *mtmp;
                 else if (!mtmp->mspecialsummon_used && mattk->adtyp == AD_LYCA)
                 {
                     update_m_action(mtmp, ACTION_TILE_CAST_NODIR);
-                    m_wait_until_action();
+                    m_wait_until_action(mtmp, ACTION_TILE_CAST_NODIR);
                     /*  Special lycanthrope handling code */
                     if ((mtmp->cham == NON_PM) && is_were(mdat) && !range2) 
                     {
@@ -1144,7 +1144,7 @@ register struct monst *mtmp;
                 else if (!mtmp->mspecialsummon_used && mattk->adtyp == AD_GNOL)
                 {
                     update_m_action(mtmp, ACTION_TILE_CAST_NODIR);
-                    m_wait_until_action();
+                    m_wait_until_action(mtmp, ACTION_TILE_CAST_NODIR);
                     /*  Special gnoll handling code */
                     if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
@@ -1173,7 +1173,7 @@ register struct monst *mtmp;
                 else if (!mtmp->mspecialsummon2_used && mattk->adtyp == AD_GHUL)
                 {
                     update_m_action(mtmp, ACTION_TILE_CAST_NODIR);
-                    m_wait_until_action();
+                    m_wait_until_action(mtmp, ACTION_TILE_CAST_NODIR);
                     /*  Special ghoul handling code */
                     if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
@@ -1202,7 +1202,7 @@ register struct monst *mtmp;
                 else if (!mtmp->mspecialsummon_used && mattk->adtyp == AD_BISN)
                 {
                     update_m_action(mtmp, ACTION_TILE_CAST_NODIR);
-                    m_wait_until_action();
+                    m_wait_until_action(mtmp, ACTION_TILE_CAST_NODIR);
                     /*  Special bison handling code */
                     if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
@@ -1226,7 +1226,7 @@ register struct monst *mtmp;
                 else if (!mtmp->mspecialsummon_used && mattk->adtyp == AD_UNDO)
                 {
                     update_m_action(mtmp, ACTION_TILE_CAST_NODIR);
-                    m_wait_until_action();
+                    m_wait_until_action(mtmp, ACTION_TILE_CAST_NODIR);
                     /*  Special gnoll handling code */
                     if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
@@ -1253,7 +1253,7 @@ register struct monst *mtmp;
                 else if (!mtmp->mspecialsummon_used && mattk->adtyp == AD_MINO)
                 {
                     update_m_action(mtmp, ACTION_TILE_CAST_NODIR);
-                    m_wait_until_action();
+                    m_wait_until_action(mtmp, ACTION_TILE_CAST_NODIR);
                     if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
                         int chance = mattk->mlevel;
@@ -1283,7 +1283,7 @@ register struct monst *mtmp;
                 else if (!mtmp->mspecialsummon_used && mattk->adtyp == AD_GDRA)
                 {
                     update_m_action(mtmp, ACTION_TILE_CAST_NODIR);
-                    m_wait_until_action();
+                    m_wait_until_action(mtmp, ACTION_TILE_CAST_NODIR);
                     if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
                         int chance = mattk->mlevel;

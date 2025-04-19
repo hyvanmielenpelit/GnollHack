@@ -335,7 +335,7 @@ struct obj *otmp, *mwep;
             play_monster_simple_weapon_sound(mtmp, 0, mwep, OBJECT_SOUND_TYPE_FIRE);
         else
             play_monster_simple_weapon_sound(mtmp, 0, otmp, OBJECT_SOUND_TYPE_THROW);
-        m_wait_until_action();
+        m_wait_until_action(mtmp, is_firing ? ACTION_TILE_FIRE : ACTION_TILE_THROW);
 
         m_throw(mtmp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby), weprange, otmp);
         /* conceptually all N missiles are in flight at once, but
@@ -1665,7 +1665,7 @@ struct monst *mtmp;
         play_monster_simple_weapon_sound(mtmp, 0, otmp, OBJECT_SOUND_TYPE_SWING_MELEE);
         if(!Blind && dist2(mtmp->mx, mtmp->my, u.ux, u.uy) > 0)
             display_gui_effect(GUI_EFFECT_POLEARM, is_spear(otmp) ? GUI_POLEARM_SPEAR : is_lance(otmp) ? GUI_POLEARM_LANCE : is_trident(otmp) ? GUI_POLEARM_SPEAR : GUI_POLEARM_THRUSTED, mtmp->mx, mtmp->my, u.ux, u.uy, 0UL);
-        m_wait_until_action();
+        m_wait_until_action(mtmp, ACTION_TILE_ATTACK);
 
         if (canseemon(mtmp)) {
             onm = xname(otmp);
@@ -1764,7 +1764,7 @@ struct attack *mattk;
             }
             play_monster_simple_weapon_sound(mtmp, get_pm_attack_index(mtmp->data, mattk), (struct obj*)0, OBJECT_SOUND_TYPE_FIRE);
             if (action_taken)
-                m_wait_until_action();
+                m_wait_until_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_FIRE);
             if (canseemon(mtmp))
                 pline("%s spits venom!", Monnam(mtmp));
             m_throw(mtmp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby),
@@ -1817,7 +1817,7 @@ struct attack *mattk;
             }
             play_monster_simple_weapon_sound(mtmp, get_pm_attack_index(mtmp->data, mattk), (struct obj*)0, OBJECT_SOUND_TYPE_FIRE);
             if (action_taken)
-                m_wait_until_action();
+                m_wait_until_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
 
             if (canseemon(mtmp))
                 pline("One of %s eyestalks fires %s!", s_suffix(mon_nam(mtmp)),
@@ -1878,7 +1878,7 @@ struct attack* mattk;
                 play_monster_simple_weapon_sound(mtmp, get_pm_attack_index(mtmp->data, mattk), (struct obj*)0, OBJECT_SOUND_TYPE_FIRE);
 
                 if (action_taken)
-                    m_wait_until_action();
+                    m_wait_until_action(mtmp, mattk->action_tile ? mattk->action_tile : ACTION_TILE_SPECIAL_ATTACK);
 
                 if (canseemon(mtmp))
                     pline("%s breathes %s!", Monnam(mtmp),

@@ -3906,9 +3906,9 @@ E void FDECL(display_being_hit, (struct monst*, int, int, enum hit_tile_types, i
 E void FDECL(display_u_being_hit, (enum hit_tile_types, int, uint64_t));
 E void FDECL(display_m_being_hit, (struct monst*, enum hit_tile_types, int, uint64_t, BOOLEAN_P));
 E void NDECL(u_wait_until_action);
-E void NDECL(m_wait_until_action);
+E void FDECL(m_wait_until_action, (struct monst*, enum action_tile_types));
 E void NDECL(u_wait_until_end);
-E void NDECL(m_wait_until_end);
+E void FDECL(m_wait_until_end, (struct monst*, enum action_tile_types));
 E void FDECL(remove_monster_and_nearby_waitforu, (struct monst*));
 E boolean FDECL(m_slips_free, (struct monst*, struct attack*));
 

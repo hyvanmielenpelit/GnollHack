@@ -4333,7 +4333,7 @@ boolean wep_was_destroyed;
     {
         update_m_action(mon, ptr->mattk[i].action_tile ? ptr->mattk[i].action_tile : ACTION_TILE_PASSIVE_DEFENSE);
         play_monster_simple_weapon_sound(mon, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
-        m_wait_until_action();
+        m_wait_until_action(mon, ptr->mattk[i].action_tile ? ptr->mattk[i].action_tile : ACTION_TILE_PASSIVE_DEFENSE);
     }
 
     /*  These affect you even if they just died.
@@ -5384,7 +5384,7 @@ enum action_tile_types action;
     if(mtmp == &youmonst)
         u_wait_until_action();
     else if(action == ACTION_TILE_DEATH ? canspotmon(mtmp) : canseemon(mtmp))
-        m_wait_until_action();
+        m_wait_until_action((struct monst*)0, action); // Visibility check is above
 }
 
 void
@@ -5398,7 +5398,7 @@ enum action_tile_types action;
     if (mtmp == &youmonst)
         u_wait_until_action();
     else if (action == ACTION_TILE_DEATH ? canspotmon(mtmp) : canseemon(mtmp))
-        m_wait_until_action();
+        m_wait_until_action((struct monst*)0, action); // Visibility check is above
 }
 
 
@@ -5505,11 +5505,14 @@ u_wait_until_action()
 }
 
 void
-m_wait_until_action()
+m_wait_until_action(mon, action)
+struct monst* mon;
+enum action_tile_types action;
 {
     if (context.m_intervals_to_wait_until_action > 0UL)
     {
-        delay_output_intervals((int)context.m_intervals_to_wait_until_action);
+        if (!mon || (action == ACTION_TILE_DEATH ? canspotmon(mon) : canseemon(mon)))
+            delay_output_intervals((int)context.m_intervals_to_wait_until_action);
         context.m_intervals_to_wait_until_action = 0UL;
     }
 }
@@ -5525,15 +5528,17 @@ u_wait_until_end()
 }
 
 void
-m_wait_until_end()
+m_wait_until_end(mon, action)
+struct monst* mon;
+enum action_tile_types action;
 {
     if (context.m_intervals_to_wait_until_end > 0UL)
     {
-        delay_output_intervals((int)context.m_intervals_to_wait_until_end);
+        if (!mon || (action == ACTION_TILE_DEATH ? canspotmon(mon) : canseemon(mon)))
+            delay_output_intervals((int)context.m_intervals_to_wait_until_end);
         context.m_intervals_to_wait_until_end = 0UL;
     }
 }
-
 
 void
 display_being_hit(mon, x, y, hit_symbol_shown, damage_shown, extra_mflags)
@@ -5551,7 +5556,7 @@ uint64_t extra_mflags;
     if(mon == &youmonst)
         u_wait_until_action();
     else
-        m_wait_until_action();
+        m_wait_until_action((struct monst*)0, ACTION_TILE_NO_ACTION); // Visibility check has been before
     flush_screen(1);
     adjusted_delay_output();
     adjusted_delay_output();

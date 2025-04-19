@@ -3437,7 +3437,7 @@ uint64_t mondeadflags;
     {
         add_glyph_buffer_layer_flags(mtmp->mx, mtmp->my, 0UL, LMFLAGS_KILLED | (disintegrated ? LMFLAGS_FADES_UPON_DEATH : 0UL) | (stoned ? LMFLAGS_STONED : 0UL));
         update_m_action_core(mtmp, ACTION_TILE_DEATH, 4, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
-        m_wait_until_action();
+        m_wait_until_action(mtmp, ACTION_TILE_DEATH);
     }
 
     /* Player is thrown from his steed when it dies */
@@ -3615,7 +3615,7 @@ uint64_t mondeadflags;
 
     if (!(mondeadflags & MONDEAD_FLAGS_NO_DEATH_ACTION))
     {
-        m_wait_until_end();
+        m_wait_until_end(mtmp, ACTION_TILE_DEATH);
     }
 
     remove_glyph_buffer_layer_flags(mtmp->mx, mtmp->my, 0UL, LMFLAGS_KILLED | LMFLAGS_STONED);
