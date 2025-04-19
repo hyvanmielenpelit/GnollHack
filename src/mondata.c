@@ -370,6 +370,8 @@ struct obj* obj;
                 return !!is_rustprone(obj);
             case AD_STON:
                 return !!is_organic(obj);
+            case AD_SLIM:
+                return !!is_organic(obj);
             case AD_DISN:
                 return !oresist_disintegration(obj);
             case AD_ENCH:
