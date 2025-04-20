@@ -5511,7 +5511,7 @@ enum action_tile_types action;
 {
     if (context.m_intervals_to_wait_until_action > 0UL)
     {
-        if (!mon || (action == ACTION_TILE_DEATH ? canspotmon(mon) : canseemon(mon)))
+        if (!mon || mon == &youmonst || (action == ACTION_TILE_DEATH ? canspotmon(mon) : canseemon(mon)))
             delay_output_intervals((int)context.m_intervals_to_wait_until_action);
         context.m_intervals_to_wait_until_action = 0UL;
     }
@@ -5534,7 +5534,7 @@ enum action_tile_types action;
 {
     if (context.m_intervals_to_wait_until_end > 0UL)
     {
-        if (!mon || (action == ACTION_TILE_DEATH ? canspotmon(mon) : canseemon(mon)))
+        if (!mon || mon == &youmonst || (action == ACTION_TILE_DEATH ? canspotmon(mon) : canseemon(mon)))
             delay_output_intervals((int)context.m_intervals_to_wait_until_end);
         context.m_intervals_to_wait_until_end = 0UL;
     }
